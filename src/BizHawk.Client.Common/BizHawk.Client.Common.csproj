@@ -16,6 +16,7 @@
 		<PackageReference Include="System.CommandLine" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>

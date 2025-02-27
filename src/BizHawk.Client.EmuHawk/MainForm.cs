@@ -15,6 +15,7 @@ using System.Security.Principal;
 using System.IO.Pipes;
 
 using BizHawk.Bizware.Graphics;
+using BizHawk.Bizware.Input;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -59,9 +60,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
 		private void MainForm_Load(object sender, EventArgs e)
-		{	
+		{
 			UpdateWindowTitle();
-			
+
 			{
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
@@ -538,6 +539,7 @@ namespace BizHawk.Client.EmuHawk
 			ResizeBegin += (o, e) =>
 			{
 				_inResizeLoop = true;
+
 				if (!OSTailoredCode.IsUnixHost)
 				{
 					Sound?.StopSound();
@@ -551,14 +553,27 @@ namespace BizHawk.Client.EmuHawk
 				_inResizeLoop = false;
 				UpdateWindowTitle();
 
-				if (_presentationPanel != null)
-				{
-					_presentationPanel.Resized = true;
-				}
-
 				if (!OSTailoredCode.IsUnixHost)
 				{
 					Sound?.StartSound();
+				}
+			};
+
+			_presentationPanel.Control.Move += (_, _) =>
+			{
+				if (Config.CaptureMouse)
+				{
+					CaptureMouse(false);
+					CaptureMouse(true);
+				}
+			};
+
+			_presentationPanel.Control.Resize += (_, _) =>
+			{
+				if (Config.CaptureMouse)
+				{
+					CaptureMouse(false);
+					CaptureMouse(true);
 				}
 			};
 
@@ -856,6 +871,8 @@ namespace BizHawk.Client.EmuHawk
 				return _exitCode;
 			}
 
+			CaptureMouse(Config.CaptureMouse);
+
 			// incantation required to get the program reliably on top of the console window
 			// we might want it in ToggleFullscreen later, but here, it needs to happen regardless
 			BringToFront();
@@ -959,7 +976,26 @@ namespace BizHawk.Client.EmuHawk
 			if (disposing)
 			{
 				components?.Dispose();
+				_presentationPanel?.Dispose();
 				SingleInstanceDispose();
+			}
+
+			if (OSTailoredCode.IsUnixHost)
+			{
+				if (_x11Display != IntPtr.Zero)
+				{
+					for (var i = 0; i < 4; i++)
+					{
+						if (_pointerBarriers[i] != IntPtr.Zero)
+						{
+							XfixesImports.XFixesDestroyPointerBarrier(_x11Display, _pointerBarriers[i]);
+							_pointerBarriers[i] = IntPtr.Zero;
+						}
+					}
+
+					_ = XlibImports.XCloseDisplay(_x11Display);
+					_x11Display = IntPtr.Zero;
+				}
 			}
 
 			base.Dispose(disposing);
@@ -1164,12 +1200,24 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, true);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
+
+			if (Config.CaptureMouse)
+			{
+				CaptureMouse(false);
+				CaptureMouse(true);
+			}
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, false);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
+
+			if (Config.CaptureMouse)
+			{
+				CaptureMouse(false);
+			}
+
 			base.OnDeactivate(e);
 		}
 
@@ -1287,29 +1335,44 @@ namespace BizHawk.Client.EmuHawk
 				}
 			} // foreach event
 
-			//also handle axes
-			//we'll need to isolate the mouse coordinates so we can translate them
-			KeyValuePair<string, int>? mouseX = null, mouseY = null;
+			// also handle axes
+			// we'll need to isolate the mouse coordinates so we can translate them
+			int? mouseX = null, mouseY = null, mouseDeltaX = null, mouseDeltaY = null;
 			foreach (var f in Input.Instance.GetAxisValues())
 			{
 				if (f.Key == "WMouse X")
-					mouseX = f;
+					mouseX = f.Value;
 				else if (f.Key == "WMouse Y")
-					mouseY = f;
+					mouseY = f.Value;
+				else if (f.Key == "RMouse X")
+					mouseDeltaX = f.Value;
+				else if (f.Key == "RMouse Y")
+					mouseDeltaY = f.Value;
 				else finalHostController.AcceptNewAxis(f.Key, f.Value);
 			}
 
-			//if we found mouse coordinates (and why wouldn't we?) then translate them now
-			//NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
-			if(mouseX != null && mouseY != null)
+			// if we found mouse coordinates (and why wouldn't we?) then translate them now
+			// NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
+			if (mouseX != null && mouseY != null)
 			{
-				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value.Value, mouseY.Value.Value));
-				float x = p.X / (float)_currentVideoProvider.BufferWidth;
-				float y = p.Y / (float)_currentVideoProvider.BufferHeight;
+				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value, mouseY.Value));
+				var x = p.X / (float)_currentVideoProvider.BufferWidth;
+				var y = p.Y / (float)_currentVideoProvider.BufferHeight;
 				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
 				finalHostController.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
 			}
 
+			if (mouseDeltaX != null && mouseDeltaY != null)
+			{
+				var mouseSensitivity = Config.RelativeMouseSensitivity / 100.0f;
+				var x = mouseDeltaX.Value * mouseSensitivity;
+				var y = mouseDeltaY.Value * mouseSensitivity;
+				const int MAX_REL_MOUSE_RANGE = 120; // arbitrary
+				x = Math.Min(Math.Max(x, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				y = Math.Min(Math.Max(y, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				finalHostController.AcceptNewAxis("RMouse X", (int)(x * 10000));
+				finalHostController.AcceptNewAxis("RMouse Y", (int)(y * 10000));
+			}
 		}
 
 		public bool RebootCore()
@@ -1457,7 +1520,6 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
 				PerformLayout();
-				_presentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (!area.Contains(Bounds))
@@ -1476,6 +1538,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			DoPresentationPanelResize();
 			DoPresentationPanelResize();
 		}
@@ -1553,8 +1616,6 @@ namespace BizHawk.Client.EmuHawk
 				SynchChrome();
 				WindowState = FormWindowState.Maximized; // be sure to do this after setting the chrome, otherwise it wont work fully
 				ResumeLayout();
-
-				_presentationPanel.Resized = true;
 			}
 			else
 			{
@@ -2289,7 +2350,7 @@ namespace BizHawk.Client.EmuHawk
 				|| Math.Abs(_lastMouseAutoHidePos.X - mousePos.X) > 5
 				|| Math.Abs(_lastMouseAutoHidePos.Y - mousePos.Y) > 5;
 
-			if (!shouldUpdateCursor)
+			if (!shouldUpdateCursor || Config.CaptureMouse)
 			{
 				return;
 			}
@@ -2779,6 +2840,13 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Background Input {(Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
 		}
 
+		private void ToggleCaptureMouse()
+		{
+			Config.CaptureMouse = !Config.CaptureMouse;
+			CaptureMouse(Config.CaptureMouse);
+			AddOnScreenMessage($"Capture Mouse {(Config.CaptureMouse ? "enabled" : "disabled")}");
+		}
+
 		private void VsyncMessage()
 		{
 			AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
@@ -2802,8 +2870,6 @@ namespace BizHawk.Client.EmuHawk
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == WmDeviceChange) Input.Instance.Adapter.ReInitGamepads(Handle);
-
 			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 			if (m.Msg == 0x0112) // WM_SYSCOMMAND
 			{
@@ -4793,6 +4859,160 @@ namespace BizHawk.Client.EmuHawk
 				});
 
 			RA?.Restart();
+		}
+
+		private IntPtr _x11Display;
+		private bool _hasXFixes;
+		private readonly IntPtr[] _pointerBarriers = new IntPtr[4];
+
+#if false
+		private delegate void CaptureWithConfineDelegate(Control control, Control confineWindow);
+
+		private static readonly Lazy<CaptureWithConfineDelegate> _captureWithConfine = new(() =>
+		{
+			var mi = typeof(Control).GetMethod("CaptureWithConfine", BindingFlags.Instance | BindingFlags.NonPublic);
+			return (CaptureWithConfineDelegate)Delegate.CreateDelegate(typeof(CaptureWithConfineDelegate), mi!);
+		});
+#endif
+
+		private void CaptureMouse(bool wantCapture)
+		{
+			if (wantCapture)
+			{
+				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
+				fbLocation.Offset(_presentationPanel.Control.Location);
+				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
+				Cursor.Hide();
+				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
+				_cursorHidden = true;
+				BringToFront();
+			}
+			else
+			{
+				Cursor.Clip = Rectangle.Empty;
+				Cursor.Show();
+				_presentationPanel.Control.Cursor = Cursors.Default;
+				_cursorHidden = false;
+			}
+
+			// Cursor.Clip is a no-op on Linux, so we need this too
+			if (OSTailoredCode.IsUnixHost)
+			{
+#if true
+				if (_x11Display == IntPtr.Zero)
+				{
+					_x11Display = XlibImports.XOpenDisplay(null);
+					_hasXFixes = XlibImports.XQueryExtension(_x11Display, "XFIXES", out _, out _, out _);
+					if (!_hasXFixes)
+					{
+						Console.Error.WriteLine("XFixes is unsupported, mouse capture will not lock the mouse cursor");
+						return;
+					}
+
+					try
+					{
+						if (!XfixesImports.XFixesQueryVersion(_x11Display, out var major, out var minor))
+						{
+							Console.Error.WriteLine("Failed to query XFixes version, mouse capture will not lock the mouse cursor");
+							_hasXFixes = false;
+						}
+						else if (major * 100 + minor < 500)
+						{
+							Console.Error.WriteLine($"XFixes version is not at least 5.0 (got {major}.{minor}), mouse capture will not lock the mouse cursor");
+							_hasXFixes = false;
+						}
+					}
+					catch
+					{
+						Console.Error.WriteLine("libXfixes.so.3 is not present, mouse capture will not lock the mouse cursor");
+						_hasXFixes = false;
+					}
+				}
+
+				if (_hasXFixes)
+				{
+					for (var i = 0; i < 4; i++)
+					{
+						if (_pointerBarriers[i] != IntPtr.Zero)
+						{
+							XfixesImports.XFixesDestroyPointerBarrier(_x11Display, _pointerBarriers[i]);
+							_pointerBarriers[i] = IntPtr.Zero;
+						}
+					}
+
+					if (wantCapture)
+					{
+						var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
+						fbLocation.Offset(_presentationPanel.Control.Location);
+						var barrierRect = new Rectangle(fbLocation, _presentationPanel.Control.Size);
+
+						// each line of the barrier rect must be a separate barrier object
+						// also, the lines should span the entire screen, to avoid the cursor escaping at the corner
+
+						var mfScreen = Screen.FromControl(this);
+						var screenRect = mfScreen.Bounds;
+
+						// left barrier
+						_pointerBarriers[0] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, barrierRect.X, screenRect.Y, barrierRect.X, screenRect.Bottom,
+							XfixesImports.BarrierDirection.BarrierPositiveX, 0, IntPtr.Zero);
+						// top barrier
+						_pointerBarriers[1] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, screenRect.X, barrierRect.Y, screenRect.Right, barrierRect.Y,
+							XfixesImports.BarrierDirection.BarrierPositiveY, 0, IntPtr.Zero);
+						// right barrier
+						_pointerBarriers[2] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, barrierRect.Right, screenRect.Y, barrierRect.Right, screenRect.Bottom,
+							XfixesImports.BarrierDirection.BarrierNegativeX, 0, IntPtr.Zero);
+						// bottom barrier
+						_pointerBarriers[3] = XfixesImports.XFixesCreatePointerBarrier(
+							_x11Display, Handle, screenRect.X, barrierRect.Bottom, screenRect.Right, barrierRect.Bottom,
+							XfixesImports.BarrierDirection.BarrierNegativeY, 0, IntPtr.Zero);
+
+						// after creating pointer barriers, warp our cursor over to the presentation panel
+						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime); // just in case someone else has grabbed the pointer
+						_ = XlibImports.XGrabPointer(_x11Display, Handle, false, 0,
+							XlibImports.GrabMode.Async, XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
+						_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+					}
+
+					_ = XlibImports.XFlush(_x11Display);
+				}
+#elif false
+				// approach just using XGrabPointer
+				// (doesn't work, Mono won't respond to mouse buttons for whatever reason)
+				if (_x11Display == IntPtr.Zero)
+				{
+					_x11Display = XlibImports.XOpenDisplay(null);
+				}
+
+				// always returns 1
+				_ = XlibImports.XUngrabPointer(_x11Display, XlibImports.CurrentTime);
+
+				if (wantCapture)
+				{
+					const XlibImports.EventMask eventMask = XlibImports.EventMask.ButtonPressMask | XlibImports.EventMask.ButtonMotionMask
+						| XlibImports.EventMask.ButtonReleaseMask | XlibImports.EventMask.PointerMotionMask | XlibImports.EventMask.PointerMotionHintMask
+						| XlibImports.EventMask.EnterWindowMask | XlibImports.EventMask.LeaveWindowMask | XlibImports.EventMask.FocusChangeMask;
+					_ = XlibImports.XGrabPointer(_x11Display, Handle, false, eventMask, XlibImports.GrabMode.Async,
+							XlibImports.GrabMode.Async, _presentationPanel.Control.Handle, IntPtr.Zero, XlibImports.CurrentTime);
+				}
+
+				_ = XlibImports.XFlush(_x11Display);
+#else
+				// approach using internal Mono function that ends up just using XGrabPointer
+				// (doesn't work either, while Mono does respond to mouse buttons, it ends up being able to respond to the top menu bar somehow)
+				// (also interacting with other windows (e.g. right click menu) cancels the capture)
+				if (wantCapture)
+				{
+					_captureWithConfine.Value(this, _presentationPanel.Control);
+				}
+				else
+				{
+					Capture = false;
+				}
+#endif
+			}
 		}
 	}
 }

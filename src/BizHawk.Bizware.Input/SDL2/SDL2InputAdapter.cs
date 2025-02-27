@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 #if BIZHAWKBUILD_DEBUG_RUMBLE
@@ -16,9 +15,9 @@ using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Input
 {
-	public sealed class SDL2InputAdapter : OSTailoredKeyInputAdapter
+	public sealed class SDL2InputAdapter : OSTailoredKeyMouseInputAdapter
 	{
-		private static readonly IReadOnlyCollection<string> SDL2_HAPTIC_CHANNEL_NAMES = new[] { "Left", "Right" };
+		private static readonly IReadOnlyCollection<string> SDL2_HAPTIC_CHANNEL_NAMES = [ "Left", "Right" ];
 
 		private IReadOnlyDictionary<string, int> _lastHapticsSnapshot = new Dictionary<string, int>();
 
@@ -130,11 +129,7 @@ namespace BizHawk.Bizware.Input
 					.Where(pad => pad.HasRumble)
 					.Select(pad => pad.InputNamePrefix)
 					.ToDictionary(s => s, _ => SDL2_HAPTIC_CHANNEL_NAMES)
-				: new();
-		}
-
-		public override void ReInitGamepads(IntPtr mainFormHandle)
-		{
+				: [ ];
 		}
 
 		public override void PreprocessHostGamepads()
@@ -153,15 +148,15 @@ namespace BizHawk.Bizware.Input
 			DoSDLEventLoop();
 		}
 
-		public override void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis)
+		public override void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis)
 		{
 			if (!_isInit) return;
 
 			foreach (var pad in SDL2Gamepad.EnumerateDevices())
 			{
-				foreach (var but in pad.ButtonGetters)
+				foreach (var (ButtonName, GetIsPressed) in pad.ButtonGetters)
 				{
-					handleButton(pad.InputNamePrefix + but.ButtonName, but.GetIsPressed(), ClientInputFocus.Pad);
+					handleButton(pad.InputNamePrefix + ButtonName, GetIsPressed(), HostInputType.Pad);
 				}
 
 				foreach (var (axisID, f) in pad.GetAxes())
@@ -188,7 +183,7 @@ namespace BizHawk.Bizware.Input
 		{
 			return _isInit
 				? base.ProcessHostKeyboards()
-				: Enumerable.Empty<KeyEvent>();
+				: [ ];
 		}
 
 		public override void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot)

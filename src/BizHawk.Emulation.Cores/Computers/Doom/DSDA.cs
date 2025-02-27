@@ -24,9 +24,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			_syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
+			_finalSyncSettings = _syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_settings = lp.Settings ?? new DoomSettings();
-			_controllerDeck = new DoomControllerDeck(_syncSettings.InputFormat, _syncSettings.Player1Present, _syncSettings.Player2Present, _syncSettings.Player3Present, _syncSettings.Player4Present);
+			_controllerDeck = new DoomControllerDeck(
+				_syncSettings.InputFormat,
+				_syncSettings.Player1Present,
+				_syncSettings.Player2Present,
+				_syncSettings.Player3Present,
+				_syncSettings.Player4Present,
+				_syncSettings.TurningResolution == TurningResolution.Longtics);
 			_loadCallback = LoadCallback;
 
 			// Gathering information for the rest of the wads
@@ -100,7 +106,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
-					var initResult = Core.dsda_init(ref initSettings);
+					CreateArguments(initSettings);
+					var initResult = Core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
 					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
 
 					int fps = 35;
@@ -125,34 +132,50 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
-		// Remembering mouse position
-		private const int MOUSE_NO_INPUT = -65535;
-		private int _player1LastMouseRunningValue = MOUSE_NO_INPUT;
-		private int _player1LastMouseTurningValue = MOUSE_NO_INPUT;
-		private int _player2LastMouseRunningValue = MOUSE_NO_INPUT;
-		private int _player2LastMouseTurningValue = MOUSE_NO_INPUT;
-		private int _player3LastMouseRunningValue = MOUSE_NO_INPUT;
-		private int _player3LastMouseTurningValue = MOUSE_NO_INPUT;
-		private int _player4LastMouseRunningValue = MOUSE_NO_INPUT;
-		private int _player4LastMouseTurningValue = MOUSE_NO_INPUT;
+		private void CreateArguments(CInterface.InitSettings initSettings)
+		{
+			_args = new List<string>
+			{
+				"dsda",
+			};
 
-		// IRegionable
-		public DisplayType Region { get; }
+			_args.AddRange([ "-skill", $"{(int)_syncSettings.SkillLevel}" ]);
+			_args.AddRange([ "-warp", $"{_syncSettings.InitialEpisode}", $"{_syncSettings.InitialMap}" ]);
+			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityMode}" ]);
 
-		// IRomInfo
-		public string RomDetails { get; }
+			ConditionalArg(!_syncSettings.StrictMode, "-tas");
+			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
+			ConditionalArg(_syncSettings.NoMonsters, "-nomonsters");
+			ConditionalArg(_syncSettings.ChainEpisodes, "-chain_episodes");
+			ConditionalArg(_syncSettings.TurningResolution == TurningResolution.Longtics, "-longtics");
+			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Deathmatch, "-deathmatch");
+			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Altdeath, "-altdeath");
+			ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
+			ConditionalArg((initSettings._Player1Present + initSettings._Player2Present + initSettings._Player3Present + initSettings._Player4Present) > 1, "-solo-net");
+		}
+
+		private void ConditionalArg(bool condition, string setting)
+		{
+			if (condition)
+			{
+				_args.Add(setting);
+			}
+		}
 
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly CInterface.load_archive_cb _loadCallback;
-
 		private readonly string _dsdaWadFileName = "dsda-doom.wad";
 		private readonly byte[] _dsdaWadFileData;
-		private List<IRomAsset> _wadFiles;
-		
 		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
-
 		private readonly DoomControllerDeck _controllerDeck;
+		private readonly int[] _runSpeeds = [ 25, 50 ];
+		private readonly int[] _strafeSpeeds = [ 24, 40 ];
+		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
+
+		private int[] _turnHeld = [ 0, 0, 0, 0 ];
+		private List<string> _args;
+		private List<IRomAsset> _wadFiles;
 
 		/// <summary>
 		/// core callback for file loading
@@ -214,5 +237,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				throw new InvalidOperationException($"Unknown error processing file '{filename}'");
 			}
 		}
+
+		// IRegionable
+		public DisplayType Region { get; }
+
+		// IRomInfo
+		public string RomDetails { get; }
 	}
 }

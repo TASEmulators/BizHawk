@@ -23,7 +23,6 @@
 		<NoWarn>$(NoWarn);CS1591;SA0001</NoWarn>
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
@@ -36,13 +35,15 @@
 	<PropertyGroup Condition=" '$(MachineExtraCompilationFlag)' != '' ">
 		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
 	</PropertyGroup>
+	<ItemGroup Condition=" '$(RunStyleCop)' != '' OR '$(ContinuousIntegrationBuild)' != '' ">
+		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers" PrivateAssets="all" />
 		<PackageReference Include="Menees.Analyzers" PrivateAssets="all" />
 		<PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="Nullable" PrivateAssets="all" />
 		<PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" />
-		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.Analyzer.dll" />
 		<GlobalAnalyzerConfigFiles Include="$(MSBuildProjectDirectory)/../../.global.editorconfig.ini" />
 		<AdditionalFiles Include="$(MSBuildProjectDirectory)/../../.stylecop.json" />

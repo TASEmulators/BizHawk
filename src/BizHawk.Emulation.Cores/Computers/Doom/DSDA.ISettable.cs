@@ -54,56 +54,64 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public enum SkillLevel : int
 		{
 			[Display(Name = "1 - I'm too young to die")]
-			S1 = 1,
+			ITYTD = 1,
 			[Display(Name = "2 - Hey, not too rough")]
-			S2 = 2,
+			HNTR = 2,
 			[Display(Name = "3 - Hurt me plenty")]
-			S3 = 3,
+			HMP = 3,
 			[Display(Name = "4 - Ultra-Violence")]
-			S4 = 4,
+			UV = 4,
 			[Display(Name = "5 - Nightmare!")]
-			S5 = 5
+			NM = 5
+		}
 
+		public enum TurningResolution : int
+		{
+			[Display(Name = "16 bits (longtics)")]
+			Longtics = 1,
+			[Display(Name = "8 bits (shorttics)")]
+			Shorttics = 2,
 		}
 
 		public enum MultiplayerMode : int
 		{
 			[Display(Name = "0 - Single Player / Coop")]
-			M0 = 0,
+			Single_Coop = 0,
 			[Display(Name = "1 - Deathmatch")]
-			M1 = 1,
+			Deathmatch = 1,
 			[Display(Name = "2 - Altdeath")]
-			M2 = 2
+			Altdeath = 2
 		}
 
 		public enum HexenClass : int
 		{
-			[Display(Name = "Fighter")]
-			C1 = 1,
+			[Display(Name = "FighterFighter")]
+			Fighter = 1,
 			[Display(Name = "Cleric")]
-			C2 = 2,
+			Cleric = 2,
 			[Display(Name = "Mage")]
-			C3 = 3
+			Mage = 3
 		}
 
 		public const int TURBO_AUTO = -1;
 
 		private DoomSettings _settings;
 		private DoomSyncSettings _syncSettings;
+		private DoomSyncSettings _finalSyncSettings;
 
 		public DoomSettings GetSettings()
 			=> _settings.Clone();
 
 		public DoomSyncSettings GetSyncSettings()
-			=> _syncSettings.Clone();
+			=> _finalSyncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(object o)
 			=> PutSettingsDirtyBits.None;
 
 		public PutSettingsDirtyBits PutSyncSettings(DoomSyncSettings o)
 		{
-			var ret = DoomSyncSettings.NeedsReboot(_syncSettings, o);
-			_syncSettings = o;
+			var ret = DoomSyncSettings.NeedsReboot(_finalSyncSettings, o);
+			_finalSyncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
@@ -175,13 +183,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Skill Level")]
 			[Description("Establishes the general difficulty settings.")]
-			[DefaultValue(SkillLevel.S4)]
+			[DefaultValue(SkillLevel.UV)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SkillLevel SkillLevel { get; set; }
 
 			[DisplayName("Multiplayer Mode")]
 			[Description("Indicates the multiplayer mode")]
-			[DefaultValue(MultiplayerMode.M0)]
+			[DefaultValue(MultiplayerMode.Single_Coop)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public MultiplayerMode MultiplayerMode { get; set; }
 
@@ -203,12 +211,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int Turbo { get; set; }
 
 			[DisplayName("Fast Monsters")]
-			[Description("Makes monsters move and attack much faster (overriden to true when playing Nightmare! difficulty)")]
+			[Description("Makes monsters move and attack much faster (forced to true when playing Nightmare! difficulty)")]
 			[DefaultValue(false)]
 			public bool FastMonsters { get; set; }
 
 			[DisplayName("Monsters Respawn")]
-			[Description("Makes monsters respawn shortly after dying (overriden to true when playing Nightmare! difficulty)")]
+			[Description("Makes monsters respawn shortly after dying (forced to true when playing Nightmare! difficulty)")]
 			[DefaultValue(false)]
 			public bool MonstersRespawn { get; set; }
 
@@ -219,25 +227,25 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Player 1 Hexen Class")]
 			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player1Class { get; set; }
 
 			[DisplayName("Player 2 Hexen Class")]
 			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player2Class { get; set; }
 
 			[DisplayName("Player 3 Hexen Class")]
 			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player3Class { get; set; }
 
 			[DisplayName("Player 4 Hexen Class")]
 			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.C1)]
+			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player4Class { get; set; }
 
@@ -250,6 +258,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
 			[DefaultValue(true)]
 			public bool StrictMode { get; set; }
+			
+			[DisplayName("Always Run")]
+			[Description("Toggles whether the player is permanently in the running state, without the slower walking speed available. This emulates a bug in vanilla Doom: setting the joystick run button to an invalid high number causes the game to always have it enabled.")]
+			[DefaultValue(true)]
+			public bool AlwaysRun { get; set; }
+			
+			[DisplayName("Turning Resolution")]
+			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
+			[DefaultValue(TurningResolution.Longtics)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public TurningResolution TurningResolution { get; set; }
 
 			[DisplayName("Prevent Level Exit")]
 			[Description("Level exit triggers won't have an effect. This is useful for debugging / optimizing / botting purposes.")]
@@ -261,15 +280,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PreventGameEnd { get; set; }
 
-			[DisplayName("Mouse Running Sensitivity")]
-			[Description("How fast the Doom player will run when using the mouse")]
+			[DisplayName("Mouse Horizontal Sensitivity")]
+			[Description("How fast the Doom player will turn when using the mouse.")]
 			[DefaultValue(10)]
-			public int MouseRunSensitivity { get; set; }
-
-			[DisplayName("Mouse Turning Sensitivity")]
-			[Description("How fast the Doom player will turn when using the mouse")]
-			[DefaultValue(1)]
 			public int MouseTurnSensitivity { get; set; }
+
+			[DisplayName("Mouse Vertical Sensitivity")]
+			[Description("How fast the Doom player will run when using the mouse.")]
+			[DefaultValue(1)]
+			public int MouseRunSensitivity { get; set; }
 
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
@@ -279,21 +298,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_Player2Present = Player2Present ? 1 : 0,
 					_Player3Present = Player3Present ? 1 : 0,
 					_Player4Present = Player4Present ? 1 : 0,
-					_CompatibilityMode = (int)CompatibilityMode,
-					_SkillLevel = (int) SkillLevel,
-					_MultiplayerMode = (int) MultiplayerMode,
-					_InitialEpisode = InitialEpisode,
-					_InitialMap = InitialMap,
-					_Turbo = Turbo,
-					_FastMonsters = FastMonsters ? 1 : 0,
-					_MonstersRespawn = MonstersRespawn ? 1 : 0,
-					_NoMonsters = NoMonsters ? 1 : 0,
 					_Player1Class = (int) Player1Class,
 					_Player2Class = (int) Player2Class,
 					_Player3Class = (int) Player3Class,
 					_Player4Class = (int) Player4Class,
-					_ChainEpisodes = ChainEpisodes ? 1 : 0,
-					_StrictMode = StrictMode ? 1 : 0,
 					_PreventLevelExit = PreventLevelExit ? 1 : 0,
 					_PreventGameEnd = PreventGameEnd ? 1 : 0
 					// MouseRunSensitivity is handled at Bizhawk level

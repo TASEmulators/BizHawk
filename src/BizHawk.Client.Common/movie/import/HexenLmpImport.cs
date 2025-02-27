@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DoomControllerTypes.Hexen,
-				MultiplayerMode = DSDA.MultiplayerMode.M0,
+				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,
@@ -35,6 +35,7 @@ namespace BizHawk.Client.Common
 				Player3Class = (DSDA.HexenClass) input[i++],
 				Player4Present = input[i++] is not 0,
 				Player4Class = (DSDA.HexenClass) input[i++],
+				TurningResolution = DSDA.TurningResolution.Shorttics,
 			};
 			_ = input[i++]; // player 5 isPresent
 			_ = input[i++]; // player 5 class
@@ -46,25 +47,21 @@ namespace BizHawk.Client.Common
 			_ = input[i++]; // player 8 class
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var hexenController = new HexenController(1);
+			var hexenController = new HexenController(1, false);
 			var controller = new SimpleController(hexenController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)
 			{
 				controller.AcceptNewAxis(playerPfx + "Run Speed", unchecked((sbyte) input[i++]));
-
 				controller.AcceptNewAxis(playerPfx + "Strafing Speed", unchecked((sbyte) input[i++]));
-
 				controller.AcceptNewAxis(playerPfx + "Turning Speed", unchecked((sbyte) input[i++]));
-
 				var specialValue = input[i++];
 				controller[playerPfx + "Fire"] = (specialValue & 0b00000001) is not 0;
-				controller[playerPfx + "Action"] = (specialValue & 0b00000010) is not 0;
-				controller.AcceptNewAxis(playerPfx + "Weapon Select", (specialValue & 0b00011100) >> 2);
-				controller[playerPfx + "Alt Weapon"] = (specialValue & 0b00100000) is not 0;
-
+				controller[playerPfx + "Use"] = (specialValue & 0b00000010) is not 0;
+				bool changeWeapon = (specialValue & 0b00000100) is not 0;
+				int weapon = changeWeapon ? (((specialValue & 0b00111000) >> 3) + 1) : 0;
+				controller.AcceptNewAxis(playerPfx + "Weapon Select", weapon);
 				controller.AcceptNewAxis(playerPfx + "Fly / Look", unchecked((sbyte) input[i++]));
-
 				var useArtifact = input[i++];
 				controller.AcceptNewAxis(playerPfx + "Use Artifact", useArtifact & 0b00111111);
 				controller[playerPfx + "End Player"] = (useArtifact & 0b01000000) is not 0;

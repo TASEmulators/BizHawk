@@ -1,11 +1,8 @@
 namespace BizHawk.Analyzers;
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Operations;
 
 public static class RoslynUtils
 {
@@ -15,6 +12,63 @@ public static class RoslynUtils
 		while (parent is not (null or TypeDeclarationSyntax)) parent = parent.Parent;
 		return parent;
 	}
+
+	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
+		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"
+			? WellKnownMemberNames.ImplicitConversionName
+			: cods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.ExplicitConversionName
+				: WellKnownMemberNames.CheckedExplicitConversionName;
+
+	public static string GetMethodName(this OperatorDeclarationSyntax ods)
+		=> ods.OperatorToken.ToString() switch
+		{
+			"!" => WellKnownMemberNames.LogicalNotOperatorName,
+			"!=" => WellKnownMemberNames.InequalityOperatorName,
+			"%" => WellKnownMemberNames.ModulusOperatorName,
+			"&" => WellKnownMemberNames.BitwiseAndOperatorName,
+			"&&" => WellKnownMemberNames.LogicalAndOperatorName,
+			"*" => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.MultiplyOperatorName
+				: WellKnownMemberNames.CheckedMultiplyOperatorName,
+			"+" => ods.ParameterList.Parameters.Count is 1
+				? WellKnownMemberNames.UnaryPlusOperatorName
+				: ods.CheckedKeyword.IsEmpty()
+					? WellKnownMemberNames.AdditionOperatorName
+					: WellKnownMemberNames.CheckedAdditionOperatorName,
+			"++" => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.IncrementOperatorName
+				: WellKnownMemberNames.CheckedIncrementOperatorName,
+			"-" => ods.ParameterList.Parameters.Count is 1
+				? ods.CheckedKeyword.IsEmpty()
+					? WellKnownMemberNames.UnaryNegationOperatorName
+					: WellKnownMemberNames.CheckedUnaryNegationOperatorName
+				: ods.CheckedKeyword.IsEmpty()
+					? WellKnownMemberNames.SubtractionOperatorName
+					: WellKnownMemberNames.CheckedSubtractionOperatorName,
+			"--" => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.DecrementOperatorName
+				: WellKnownMemberNames.CheckedDecrementOperatorName,
+			"/" => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.DivisionOperatorName
+				: WellKnownMemberNames.CheckedDivisionOperatorName,
+			"<" => WellKnownMemberNames.LessThanOperatorName,
+			"<<" => WellKnownMemberNames.LeftShiftOperatorName,
+			"<=" => WellKnownMemberNames.LessThanOrEqualOperatorName,
+			"==" => WellKnownMemberNames.EqualityOperatorName,
+			">" => WellKnownMemberNames.GreaterThanOperatorName,
+			">=" => WellKnownMemberNames.GreaterThanOrEqualOperatorName,
+			">>" => WellKnownMemberNames.RightShiftOperatorName,
+			">>>" => WellKnownMemberNames.UnsignedRightShiftOperatorName,
+			"^" => WellKnownMemberNames.ExclusiveOrOperatorName,
+			"false" => WellKnownMemberNames.FalseOperatorName,
+			"true" => WellKnownMemberNames.TrueOperatorName,
+			"|" => WellKnownMemberNames.BitwiseOrOperatorName,
+			"||" => WellKnownMemberNames.LogicalOrOperatorName,
+			"~" => WellKnownMemberNames.OnesComplementOperatorName,
+			// ...and some operators only exist in VB.NET (dw, you're not missing anything)
+			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)")
+		};
 
 	private static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ExpressionSyntax exprSyn)
 		=> exprSyn is ObjectCreationExpressionSyntax
@@ -33,6 +87,9 @@ public static class RoslynUtils
 		return model.GetTypeInfo(syn is ArgumentSyntax argSyn ? argSyn.Expression : syn, cancellationToken);
 	}
 
+	public static bool IsEmpty(this SyntaxToken token)
+		=> token.ToString().Length is 0;
+
 	public static bool Matches(this ISymbol expected, ISymbol? actual)
 		=> SymbolEqualityComparer.Default.Equals(expected, actual);
 
@@ -47,4 +104,18 @@ public static class RoslynUtils
 		return expected.Matches(actual as ISymbol);
 	}
 #endif
+
+	public static IEnumerable<AttributeSyntax> Matching(
+		this SyntaxList<AttributeListSyntax> list,
+		INamedTypeSymbol targetAttrSym,
+		SemanticModel semanticModel,
+		CancellationToken cancellationToken)
+			=> list.SelectMany(static als => als.Attributes)
+				.Where(aSyn => targetAttrSym.Matches(semanticModel.GetTypeInfo(aSyn, cancellationToken).Type));
+
+	public static IEnumerable<AttributeSyntax> Matching(
+		this SyntaxList<AttributeListSyntax> list,
+		INamedTypeSymbol targetAttrSym,
+		SyntaxNodeAnalysisContext snac)
+			=> list.Matching(targetAttrSym, snac.SemanticModel, snac.CancellationToken);
 }

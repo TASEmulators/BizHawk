@@ -1542,7 +1542,7 @@ namespace NLua
 		{
 			extractValue = null;
 
-			if (!currentNetParam.GetCustomAttributes(typeof(ParamArrayAttribute), false).Any())
+			if (currentNetParam.GetCustomAttributes(typeof(ParamArrayAttribute), false).Length is 0)
 			{
 				return false;
 			}

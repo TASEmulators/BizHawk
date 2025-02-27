@@ -2,11 +2,6 @@
 
 using System.Collections.Immutable;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseNameofOperatorAnalyzer : DiagnosticAnalyzer
 {
@@ -32,38 +27,35 @@ public sealed class UseNameofOperatorAnalyzer : DiagnosticAnalyzer
 	{
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
-		ISymbol? memberInfoDotNameSym = null;
-		ISymbol? typeDotToStringSym = null;
-		context.RegisterSyntaxNodeAction(
-			snac =>
-			{
-				memberInfoDotNameSym ??= snac.Compilation.GetTypeByMetadataName("System.Reflection.MemberInfo")!.GetMembers("Name")[0];
-				typeDotToStringSym ??= snac.Compilation.GetTypeByMetadataName("System.Type")!.GetMembers("ToString")[0];
-				var toes = (TypeOfExpressionSyntax) snac.Node;
-				switch (toes.Parent)
+		context.RegisterCompilationStartAction(initContext =>
+		{
+			var memberInfoDotNameSym = initContext.Compilation.GetTypeByMetadataName("System.Reflection.MemberInfo")!
+				.GetMembers("Name")[0];
+			var typeDotToStringSym = initContext.Compilation.GetTypeByMetadataName("System.Type")!
+				.GetMembers(WellKnownMemberNames.ObjectToString)[0];
+			initContext.RegisterSyntaxNodeAction(
+				snac =>
 				{
-					case BinaryExpressionSyntax bes:
-						if ((ReferenceEquals(toes, bes.Left) ? bes.Right : bes.Left) is LiteralExpressionSyntax { Token.RawKind: (int) SyntaxKind.StringLiteralToken })
-						{
-							snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, toes.GetLocation(), toes.Type.GetText(), " in string concatenation"));
-						}
-						break;
-					case InterpolationSyntax:
-						snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, toes.GetLocation(), toes.Type.GetText(), " in string interpolation"));
-						break;
-					case MemberAccessExpressionSyntax maes1:
-						var accessed = snac.SemanticModel.GetSymbolInfo(maes1.Name, snac.CancellationToken).Symbol;
-						if (memberInfoDotNameSym.Matches(accessed))
-						{
-							snac.ReportDiagnostic(Diagnostic.Create(DiagUseNameof, maes1.GetLocation(), toes.Type.GetText()));
-						}
-						else if (typeDotToStringSym.Matches(accessed))
-						{
-							snac.ReportDiagnostic(Diagnostic.Create(DiagNoToStringOnType, maes1.GetLocation(), toes.Type.GetText(), ".ToString()"));
-						}
-						break;
-				}
-			},
-			SyntaxKind.TypeOfExpression);
+					var toes = (TypeOfExpressionSyntax) snac.Node;
+					switch (toes.Parent)
+					{
+						case BinaryExpressionSyntax bes:
+							if ((ReferenceEquals(toes, bes.Left) ? bes.Right : bes.Left) is LiteralExpressionSyntax { Token.RawKind: (int) SyntaxKind.StringLiteralToken })
+							{
+								DiagNoToStringOnType.ReportAt(toes, snac, [ toes.Type.GetText(), " in string concatenation" ]);
+							}
+							break;
+						case InterpolationSyntax:
+							DiagNoToStringOnType.ReportAt(toes, snac, [ toes.Type.GetText(), " in string interpolation" ]);
+							break;
+						case MemberAccessExpressionSyntax maes1:
+							var accessed = snac.SemanticModel.GetSymbolInfo(maes1.Name, snac.CancellationToken).Symbol;
+							if (memberInfoDotNameSym.Matches(accessed)) DiagUseNameof.ReportAt(maes1, snac, [ toes.Type.GetText() ]);
+							else if (typeDotToStringSym.Matches(accessed)) DiagNoToStringOnType.ReportAt(maes1, snac, [ toes.Type.GetText(), ".ToString()" ]);
+							break;
+					}
+				},
+				SyntaxKind.TypeOfExpression);
+		});
 	}
 }

@@ -1,9 +1,5 @@
 namespace BizHawk.Tests.Analyzers;
 
-using System.Threading.Tasks;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
 	BizHawk.Analyzers.FeatureNotImplementedAnalyzer,
 	Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
@@ -48,7 +44,7 @@ public sealed class FeatureNotImplementedAnalyzerTests
 				[FeatureNotImplemented] private static int I()
 					=> {|BHI3300:throw (new NotImplementedException())|};
 				// the "wat" cases (at least the ones that are reachable in practice)
-				{|BHI3300:[FeatureNotImplemented] private static int K {
+				{|BHI6660:[FeatureNotImplemented] private static int K {
 					get => default;
 					set => _ = value;
 				}|}

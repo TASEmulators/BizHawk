@@ -1,10 +1,8 @@
 ﻿namespace BizHawk.SrcGen.VersionInfo;
 
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 [Generator]
 public class VersionInfoGenerator : ISourceGenerator

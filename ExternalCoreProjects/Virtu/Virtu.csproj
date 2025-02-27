@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<RunStyleCop>true</RunStyleCop>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 	<Import Project="$(ProjectDir)../../Common.props" />
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<NoWarn>$(NoWarn);MEN018</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>

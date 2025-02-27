@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class LINQOnStringsAnalyzer : DiagnosticAnalyzer
 {
@@ -123,13 +119,7 @@ public sealed class LINQOnStringsAnalyzer : DiagnosticAnalyzer
 								: "Use `str.Contains(c.ToString())`";
 							break;
 					}
-					oac.ReportDiagnostic(Diagnostic.Create(
-						DiagLINQOnStrings,
-						operation.Syntax.GetLocation(),
-						level,
-						additionalLocations: null,
-						properties: null,
-						messageArgs: string.Format(msgFmtStr, receiverExpr.Syntax)));
+					DiagLINQOnStrings.ReportAt(operation, level, oac, string.Format(msgFmtStr, receiverExpr.Syntax));
 				},
 				OperationKind.Invocation);
 		});

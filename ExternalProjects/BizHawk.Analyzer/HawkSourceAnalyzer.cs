@@ -1,12 +1,6 @@
 ﻿namespace BizHawk.Analyzers;
 
-using System;
 using System.Collections.Immutable;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class HawkSourceAnalyzer : DiagnosticAnalyzer
@@ -85,6 +79,40 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	public static readonly DiagnosticDescriptor DiagWTF = new(
+		id: "BHI6660",
+		title: "BizHawk.Analyzer ran into syntax which it doesn't understand/support",
+		messageFormat: "{0}",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Warning,
+		isEnabledByDefault: true);
+
+#if true
+	public static OperationCanceledException ReportWTF(IOperation location, OperationAnalysisContext ctx, string message)
+	{
+		DiagWTF.ReportAt(location, ctx, message);
+		return new(ctx.CancellationToken);
+	}
+
+	public static OperationCanceledException ReportWTF(SyntaxNode location, OperationAnalysisContext ctx, string message)
+	{
+		DiagWTF.ReportAt(location, ctx, message);
+		return new(ctx.CancellationToken);
+	}
+
+	public static OperationCanceledException ReportWTF(SyntaxNode location, SyntaxNodeAnalysisContext ctx, string message)
+	{
+		DiagWTF.ReportAt(location, ctx, message);
+		return new(ctx.CancellationToken);
+	}
+#else // maybe move to something like this?
+	public static OperationCanceledException ReportWTF(SyntaxNode alien, string analyzerName, string disambig, SyntaxNodeAnalysisContext ctx)
+	{
+		DiagWTF.ReportAt(alien, ctx, $"[{analyzerName}{disambig}] AST/model contained {alien.GetType().FullName} unexpectedly; Analyzer needs updating");
+		return new(ctx.CancellationToken);
+	}
+#endif
+
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
 		DiagInterpStringIsDollarAt,
 		DiagListExprSpacing,
@@ -93,7 +121,8 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		DiagNoDiscardingLocals,
 		DiagNoQueryExpression,
 		DiagRecordImplicitlyRefType,
-		DiagSwitchShouldThrowIOE);
+		DiagSwitchShouldThrowIOE,
+		DiagWTF);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -119,74 +148,66 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			=> aes.OperatorToken.RawKind is (int) SyntaxKind.EqualsToken && aes.Left is IdentifierNameSyntax { Identifier.Text: "_" };
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
-		INamedTypeSymbol? invalidOperationExceptionSym = null;
-		INamedTypeSymbol? switchExpressionExceptionSym = null;
-		context.RegisterSyntaxNodeAction(
-			snac =>
-			{
-				if (invalidOperationExceptionSym is null)
+		context.RegisterCompilationStartAction(initContext =>
+		{
+			var invalidOperationExceptionSym = initContext.Compilation.GetTypeByMetadataName("System.InvalidOperationException")!;
+			var switchExpressionExceptionSym = initContext.Compilation.GetTypeByMetadataName("System.Runtime.CompilerServices.SwitchExpressionException");
+			initContext.RegisterSyntaxNodeAction(
+				snac =>
 				{
-					invalidOperationExceptionSym = snac.Compilation.GetTypeByMetadataName("System.InvalidOperationException")!;
-					switchExpressionExceptionSym = snac.Compilation.GetTypeByMetadataName("System.Runtime.CompilerServices.SwitchExpressionException");
-				}
-				switch (snac.Node)
-				{
-					case AnonymousMethodExpressionSyntax:
-						snac.ReportDiagnostic(Diagnostic.Create(DiagNoAnonDelegates, snac.Node.GetLocation()));
-						break;
-					case AnonymousObjectCreationExpressionSyntax:
-						snac.ReportDiagnostic(Diagnostic.Create(DiagNoAnonClasses, snac.Node.GetLocation()));
-						break;
-					case AssignmentExpressionSyntax aes:
-						if (!IsDiscard(aes)) break;
-						if (snac.SemanticModel.GetSymbolInfo(aes.Right, snac.CancellationToken).Symbol?.Kind is not SymbolKind.Local) break;
-						snac.ReportDiagnostic(Diagnostic.Create(DiagNoDiscardingLocals, snac.Node.GetLocation()));
-						break;
-					case CollectionExpressionSyntax ces:
-						var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString);
-						if (cesError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, ces.GetLocation(), cesError));
-						break;
-					case InterpolatedStringExpressionSyntax ises:
-						if (ises.StringStartToken.Text[0] is '@') snac.ReportDiagnostic(Diagnostic.Create(DiagInterpStringIsDollarAt, ises.GetLocation()));
-						break;
-					case ListPatternSyntax lps:
-						var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString);
-						if (lpsError is not null) snac.ReportDiagnostic(Diagnostic.Create(DiagListExprSpacing, lps.GetLocation(), lpsError));
-						break;
-					case QueryExpressionSyntax:
-						snac.ReportDiagnostic(Diagnostic.Create(DiagNoQueryExpression, snac.Node.GetLocation()));
-						break;
-					case RecordDeclarationSyntax rds:
-						if (!rds.ClassOrStructKeyword.ToFullString().Contains("class")) snac.ReportDiagnostic(Diagnostic.Create(DiagRecordImplicitlyRefType, rds.GetLocation()));
-						break;
-					case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
-						var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);
-						if (thrownExceptionType is null)
-						{
-							snac.ReportDiagnostic(Diagnostic.Create(
-								DiagSwitchShouldThrowIOE,
-								tes.GetLocation(),
-								DiagnosticSeverity.Warning,
-								additionalLocations: null,
-								properties: null,
-								ERR_MSG_SWITCH_THROWS_UNKNOWN));
-						}
-						else if (!invalidOperationExceptionSym.Matches(thrownExceptionType) && switchExpressionExceptionSym?.Matches(thrownExceptionType) != true)
-						{
-							snac.ReportDiagnostic(Diagnostic.Create(DiagSwitchShouldThrowIOE, tes.GetLocation(), ERR_MSG_SWITCH_THROWS_WRONG_TYPE));
-						}
-						// else correct usage, do not flag
-						break;
-				}
-			},
-			SyntaxKind.AnonymousObjectCreationExpression,
-			SyntaxKind.AnonymousMethodExpression,
-			SyntaxKind.CollectionExpression,
-			SyntaxKind.InterpolatedStringExpression,
-			SyntaxKind.ListPattern,
-			SyntaxKind.QueryExpression,
-			SyntaxKind.RecordDeclaration,
-			SyntaxKind.SimpleAssignmentExpression,
-			SyntaxKind.SwitchExpressionArm);
+					switch (snac.Node)
+					{
+						case AnonymousMethodExpressionSyntax:
+							DiagNoAnonDelegates.ReportAt(snac.Node, snac);
+							break;
+						case AnonymousObjectCreationExpressionSyntax:
+							DiagNoAnonClasses.ReportAt(snac.Node, snac);
+							break;
+						case AssignmentExpressionSyntax aes:
+							if (!IsDiscard(aes)) break;
+							if (snac.SemanticModel.GetSymbolInfo(aes.Right, snac.CancellationToken).Symbol?.Kind is not SymbolKind.Local) break;
+							DiagNoDiscardingLocals.ReportAt(snac.Node, snac);
+							break;
+						case CollectionExpressionSyntax ces:
+							var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString);
+							if (cesError is not null) DiagListExprSpacing.ReportAt(ces, snac, cesError);
+							break;
+						case InterpolatedStringExpressionSyntax ises:
+							if (ises.StringStartToken.Text[0] is '@') DiagInterpStringIsDollarAt.ReportAt(ises, snac);
+							break;
+						case ListPatternSyntax lps:
+							var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString);
+							if (lpsError is not null) DiagListExprSpacing.ReportAt(lps, snac, lpsError);
+							break;
+						case QueryExpressionSyntax:
+							DiagNoQueryExpression.ReportAt(snac.Node, snac);
+							break;
+						case RecordDeclarationSyntax rds when rds.ClassOrStructKeyword.ToString() is not "class": // `record struct`s don't use this kind
+							DiagRecordImplicitlyRefType.ReportAt(rds, snac);
+							break;
+						case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
+							var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);
+							if (thrownExceptionType is null)
+							{
+								DiagSwitchShouldThrowIOE.ReportAt(tes, DiagnosticSeverity.Warning, snac, ERR_MSG_SWITCH_THROWS_UNKNOWN);
+							}
+							else if (!invalidOperationExceptionSym.Matches(thrownExceptionType) && switchExpressionExceptionSym?.Matches(thrownExceptionType) != true)
+							{
+								DiagSwitchShouldThrowIOE.ReportAt(tes, snac, ERR_MSG_SWITCH_THROWS_WRONG_TYPE);
+							}
+							// else correct usage, do not flag
+							break;
+					}
+				},
+				SyntaxKind.AnonymousObjectCreationExpression,
+				SyntaxKind.AnonymousMethodExpression,
+				SyntaxKind.CollectionExpression,
+				SyntaxKind.InterpolatedStringExpression,
+				SyntaxKind.ListPattern,
+				SyntaxKind.QueryExpression,
+				SyntaxKind.RecordDeclaration,
+				SyntaxKind.SimpleAssignmentExpression,
+				SyntaxKind.SwitchExpressionArm);
+		});
 	}
 }

@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Bizware.Input
 {
 	/// <remarks>this was easier than trying to make static classes instantiable...</remarks>
 	/// TODO: Reconsider if we want to hand over the main form handle
@@ -18,17 +18,17 @@ namespace BizHawk.Client.Common
 		/// <remarks>keys are pad prefixes "X# "/"J# " (with the trailing space)</remarks>
 		IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetHapticsChannels();
 
-		void ReInitGamepads(IntPtr mainFormHandle);
-
 		void PreprocessHostGamepads();
 
-		void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis);
+		void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis);
 
 		IEnumerable<KeyEvent> ProcessHostKeyboards();
+
+		(int DeltaX, int DeltaY) ProcessHostMice();
 
 		/// <remarks>implementors may store this for use during the next <see cref="ProcessHostGamepads"/> call</remarks>
 		void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot);
 
-		void UpdateConfig(Config config);
+		void SetAlternateKeyboardLayoutEnableCallback(Func<bool> getHandleAlternateKeyboardLayouts);
 	}
 }

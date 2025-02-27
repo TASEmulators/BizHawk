@@ -47,9 +47,11 @@ namespace BizHawk.Tests.Emulation.Common
 				}
 			}
 			if (dupes.Count is 0) return;
+#pragma warning disable MA0089 // CI build this for .NET Core where there's a `char` overload for `string.Join`
 			Assert.Fail($"multiple {nameof(FirmwareFile)}s have the same suggested filename (breaks Organize function):\n{
 				string.Join("\n", dupes.Select(static ff => $"\t{ff.RecommendedName} {ff.Hash}").Order())
 			}");
+#pragma warning restore MA0089
 		}
 	}
 }
