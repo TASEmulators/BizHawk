@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -71,6 +72,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine("Reserving {0}kb for WAD file memory", totalWadSizeKb);
 
+			_configFile = Encoding.ASCII.GetBytes("screen_resolution \"320x200\"");
+
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
@@ -104,6 +107,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						var loadWadResult = Core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
 						if (!loadWadResult) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
 					}
+
+					_elf.AddReadonlyFile(_configFile, "dsda-doom.cfg");
 
 					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
 					CreateArguments(initSettings);
@@ -142,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_args.AddRange([ "-skill", $"{(int)_syncSettings.SkillLevel}" ]);
 			_args.AddRange([ "-warp", $"{_syncSettings.InitialEpisode}", $"{_syncSettings.InitialMap}" ]);
 			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityMode}" ]);
+			_args.AddRange([ "-config", "dsda-doom.cfg" ]);
 
 			ConditionalArg(!_syncSettings.StrictMode, "-tas");
 			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
@@ -169,6 +175,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
 		private readonly DoomControllerDeck _controllerDeck;
+		private readonly byte[] _configFile;
 		private readonly int[] _runSpeeds = [ 25, 50 ];
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
 		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
