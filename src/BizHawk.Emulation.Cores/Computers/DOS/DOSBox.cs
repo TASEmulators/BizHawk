@@ -283,6 +283,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.mouse.leftButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.LeftButton) ? 1 : 0;
 			fi.mouse.middleButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.MiddleButton) ? 1 : 0;
 			fi.mouse.rightButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.RightButton) ? 1 : 0;
+			fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
 
 			if (_floppyDiskCount > 1)
 			{

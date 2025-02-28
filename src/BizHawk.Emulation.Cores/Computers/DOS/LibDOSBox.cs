@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int leftButton;
 			public int middleButton;
 			public int rightButton;
+			public float sensitivity;
 		}
 
 		// Follows enumeration in DOSBox-x

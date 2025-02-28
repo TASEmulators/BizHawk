@@ -223,6 +223,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(true)]
 			public bool EnableMouse { get; set; }
 
+			[DisplayName("Mouse Sensitivity")]
+			[Description("Adjusts the mouse relative speed (mickey) multiplier.")]
+			[DefaultValue(4.0)]
+			public float MouseSensitivity { get; set; }
+
 			[DisplayName("Writeable Hard Disk Drive")]
 			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be saved and loaded as SaveRAM.")]
 			[DefaultValue(WriteableHardDiskOptions.FAT16_241Mb)]
