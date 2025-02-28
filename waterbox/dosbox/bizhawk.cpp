@@ -13,13 +13,17 @@
 #include <vga.h>
 #include <mem.h>
 
+// DOSBox functions
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
 extern void VGA_SetupDrawing(Bitu /*val*/);
 extern void swapInDrive(int drive, unsigned int position);
+
+// Coroutines: they allow us to jump in and out the dosbox core
 cothread_t _emuCoroutine;
 cothread_t _driverCoroutine;
 
+// Timing-related stuff
 #define __FPS__ 70
 double ticksTarget;
 constexpr double ticksPerFrame = 1000.0 / __FPS__;
@@ -27,12 +31,21 @@ uint32_t ticksElapsed;
 uint32_t _GetTicks() { return ticksElapsed; }
 void _Delay(uint32_t ticks) { ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
 
+// Memory file directory
 jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
+
+// Audio stuff
+std::vector<int16_t> _audioSamples;
+
+// Keyboard related variables
+bool _keyboardRead;
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
-std::vector<int16_t> _audioSamples;
 
+// mouse related variables
+extern int mickey_threshold;
+extern bool user_cursor_locked;
 MouseInput _prevMouse;
 #define MOUSE_MAX_X 800
 #define MOUSE_MAX_Y 600
@@ -138,6 +151,7 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 	_prevMouse.leftButton = 0;
 	_prevMouse.middleButton = 0;
 	_prevMouse.rightButton = 0;
+	user_cursor_locked = true;
 
 	return true;
 }
@@ -209,6 +223,28 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	{
 		mouse.x = (double)mouse.min_x + ((double) f->mouse.posX / (double)MOUSE_MAX_X) * (double)mouse.max_x;
 		mouse.y = (double)mouse.min_y + ((double) f->mouse.posY / (double)MOUSE_MAX_Y) * (double)mouse.max_y;
+
+  float xrel = f->mouse.posX - _prevMouse.posX;
+		float yrel = f->mouse.posY - _prevMouse.posY;
+
+		float dx = xrel * mouse.pixelPerMickey_x;
+		float dy = yrel * mouse.pixelPerMickey_y;
+
+		mouse.mickey_x = xrel * mouse.mickeysPerPixel_x * f->mouse.sensitivity;
+		mouse.mickey_y = yrel * mouse.mickeysPerPixel_y * f->mouse.sensitivity;
+
+		mouse.mickey_accum_x += (dx * mouse.mickeysPerPixel_x);
+		mouse.mickey_accum_y += (dy * mouse.mickeysPerPixel_y);
+
+		mouse.ps2x += xrel;
+		mouse.ps2y += yrel;
+		if (mouse.ps2x >= 32768.0)       mouse.ps2x -= 65536.0;
+		else if (mouse.ps2x <= -32769.0) mouse.ps2x += 65536.0;
+		if (mouse.ps2y >= 32768.0)       mouse.ps2y -= 65536.0;
+		else if (mouse.ps2y <= -32769.0) mouse.ps2y += 65536.0;
+
+		// printf("%d %f %d %f\n", mouse.mickey_x, mouse.mickey_accum_x, mouse.mickey_y, mouse.mickey_accum_y);
+
 		Mouse_AddEvent(MOUSE_HAS_MOVED);
 	}
 
@@ -229,8 +265,14 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
  // Increasing ticks target
 	ticksTarget += ticksPerFrame;
 	
+ // Clearing keyboard use flag
+	_keyboardRead = false;
+
 	// Advancing until the required tick target is met
 	while (ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
+
+ // Printing whether the keyboard was read
+	// if (_keyboardRead == true) printf("Keyboard read: %u\n", _keyboardRead);
 
 	// Checking audio sample count
 	// size_t checksum = 0;

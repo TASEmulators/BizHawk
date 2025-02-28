@@ -35,6 +35,7 @@ typedef struct
 	int leftButton;
 	int middleButton;
 	int rightButton;
+	float sensitivity;
 } MouseInput;
 
 typedef struct
