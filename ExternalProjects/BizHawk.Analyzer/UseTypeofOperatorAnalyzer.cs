@@ -2,12 +2,6 @@
 
 using System.Collections.Immutable;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 {
@@ -45,7 +39,7 @@ public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 				var enclosingType = operation.SemanticModel!.GetDeclaredSymbol(
 					((CSharpSyntaxNode) operation.Syntax).EnclosingTypeDeclarationSyntax()!,
 					oac.CancellationToken)!;
-				oac.ReportDiagnostic(Diagnostic.Create(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis, operation.Syntax.GetLocation(), enclosingType.Name));
+				(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis).ReportAt(operation, oac, enclosingType.Name);
 			},
 			OperationKind.Invocation);
 	}

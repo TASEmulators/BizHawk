@@ -66,11 +66,13 @@ namespace BizHawk.Common
 			return data;
 		}
 
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
 		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
 		{
 			key = kvp.Key;
 			value = kvp.Value;
 		}
+#endif
 
 		/// <remarks>adapted from https://stackoverflow.com/a/3928856/7467292, values are compared using <see cref="EqualityComparer{T}.Default">EqualityComparer.Default</see></remarks>
 		public static bool DictionaryEqual<TKey, TValue>(IDictionary<TKey, TValue> a, IDictionary<TKey, TValue> b)

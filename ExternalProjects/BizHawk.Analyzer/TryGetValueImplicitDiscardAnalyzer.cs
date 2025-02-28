@@ -3,10 +3,6 @@
 using System.Collections.Immutable;
 using System.Linq;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class TryGetValueImplicitDiscardAnalyzer : DiagnosticAnalyzer
 {
@@ -41,13 +37,10 @@ public sealed class TryGetValueImplicitDiscardAnalyzer : DiagnosticAnalyzer
 					var operation = (IInvocationOperation) oac.Operation;
 					if (operation.Parent?.Kind is not OperationKind.ExpressionStatement) return;
 					var calledSym = operation.TargetMethod.ConstructedFrom;
-					if (calledSym.Name is STR_TGV) oac.ReportDiagnostic(Diagnostic.Create(
-						DiagUncheckedTryGetValue,
-						operation.Syntax.GetLocation(),
-						IsBCLTryGetValue(calledSym) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-						additionalLocations: null,
-						properties: null,
-						messageArgs: null));
+					if (calledSym.Name is STR_TGV)
+					{
+						DiagUncheckedTryGetValue.ReportAt(operation, isErrorSeverity: IsBCLTryGetValue(calledSym), oac);
+					}
 				},
 				OperationKind.Invocation);
 		});

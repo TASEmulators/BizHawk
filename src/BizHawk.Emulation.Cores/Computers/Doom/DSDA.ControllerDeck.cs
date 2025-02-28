@@ -7,14 +7,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public class DoomControllerDeck
 	{
-		public DoomControllerDeck(DoomControllerTypes controllerType, bool player1Present, bool player2Present, bool player3Present, bool player4Present)
+		public DoomControllerDeck(DoomControllerTypes controllerType, bool player1Present, bool player2Present, bool player3Present, bool player4Present, bool longtics)
 		{
 			Definition = new("Doom Demo LMP 1.9 Input Format") { };
 
-			if (player1Present) Port1 = ControllerCtors[controllerType](1);
-			if (player2Present) Port2 = ControllerCtors[controllerType](2);
-			if (player3Present) Port3 = ControllerCtors[controllerType](3);
-			if (player4Present) Port4 = ControllerCtors[controllerType](4);
+			if (player1Present) Port1 = ControllerCtors[controllerType](1, longtics);
+			if (player2Present) Port2 = ControllerCtors[controllerType](2, longtics);
+			if (player3Present) Port3 = ControllerCtors[controllerType](3, longtics);
+			if (player4Present) Port4 = ControllerCtors[controllerType](4, longtics);
 
 			if (player1Present) Definition.BoolButtons.AddRange(Port1.Definition.BoolButtons.ToList());
 			if (player2Present) Definition.BoolButtons.AddRange(Port2.Definition.BoolButtons.ToList());
@@ -60,14 +60,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly IPort Port3;
 		private readonly IPort Port4;
 
-		private static IReadOnlyDictionary<DoomControllerTypes, Func<int, IPort>> _controllerCtors;
+		private static IReadOnlyDictionary<DoomControllerTypes, Func<int, bool, IPort>> _controllerCtors;
 
-		public static IReadOnlyDictionary<DoomControllerTypes, Func<int, IPort>> ControllerCtors => _controllerCtors
-			??= new Dictionary<DoomControllerTypes, Func<int, IPort>>
+		public static IReadOnlyDictionary<DoomControllerTypes, Func<int, bool, IPort>> ControllerCtors => _controllerCtors
+			??= new Dictionary<DoomControllerTypes, Func<int, bool, IPort>>
 			{
-				[DoomControllerTypes.Doom] = portNum => new DoomController(portNum),
-				[DoomControllerTypes.Heretic] = portNum => new HereticController(portNum),
-				[DoomControllerTypes.Hexen] = portNum => new HexenController(portNum),
+				[DoomControllerTypes.Doom] = (portNum, longtics) => new DoomController(portNum, longtics),
+				[DoomControllerTypes.Heretic] = (portNum, longtics) => new HereticController(portNum, longtics),
+				[DoomControllerTypes.Hexen] = (portNum, longtics) => new HexenController(portNum, longtics),
 			};
 	}
 }

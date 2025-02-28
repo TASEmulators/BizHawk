@@ -3,6 +3,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.WinForms.Controls;

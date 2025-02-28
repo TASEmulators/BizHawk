@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			get
 			{
 				bool sramChanged = _libDOSBox.sram_changed();
-				Console.WriteLine("SRAM Changed {0}", sramChanged);
 				return sramChanged;
 			}
 		}
@@ -34,6 +33,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		public override void StoreSaveRam(byte[] data)
 		{
+			if (data.Length != (int) _syncSettings.WriteableHardDisk)
+			{
+				Console.WriteLine("SRAM size {0} does not match that of the chosen writable hard disk {1}. Aborting SRAM loading.", data.Length, (int) _syncSettings.WriteableHardDisk);
+				return;
+			}
+
 			unsafe
 			{
 				fixed (byte* p = data)

@@ -3,11 +3,6 @@
 using System.Collections.Immutable;
 using System.Linq;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 {
@@ -17,7 +12,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 
 	private const string ERR_MSG_THROWS_WRONG_TYPE = "Incorrect exception type in [FeatureNotImplemented] method/prop body, should be NotImplementedException";
 
-	private const string ERR_MSG_UNEXPECTED_INCANTATION = "It seems [FeatureNotImplemented] should not be applied to whatever this is";
+	private const string ERR_MSG_UNEXPECTED_INCANTATION = $"[{nameof(FeatureNotImplementedAnalyzer)}] It seems [FeatureNotImplemented] should not be applied to whatever this is";
 
 	private static readonly DiagnosticDescriptor DiagShouldThrowNIE = new(
 		id: "BHI3300",
@@ -27,7 +22,8 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagShouldThrowNIE);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagShouldThrowNIE);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -41,34 +37,30 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 			initContext.RegisterSyntaxNodeAction(
 				snac =>
 				{
-					void Wat(Location location)
-						=> snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_UNEXPECTED_INCANTATION));
-					void MaybeReportFor(ITypeSymbol? thrownExceptionType, Location location)
+					void MaybeReportFor(ITypeSymbol? thrownExceptionType, SyntaxNode location)
 					{
-						if (thrownExceptionType is null) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_METHOD_THROWS_UNKNOWN));
-						else if (!notImplementedExceptionSym.Matches(thrownExceptionType)) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_THROWS_WRONG_TYPE));
+						if (thrownExceptionType is null) DiagShouldThrowNIE.ReportAt(location, snac, ERR_MSG_METHOD_THROWS_UNKNOWN);
+						else if (!notImplementedExceptionSym.Matches(thrownExceptionType)) DiagShouldThrowNIE.ReportAt(location, snac, ERR_MSG_THROWS_WRONG_TYPE);
 						// else correct usage, do not flag
 					}
 					bool IncludesFNIAttribute(SyntaxList<AttributeListSyntax> mds)
-						=> mds.SelectMany(static als => als.Attributes)
-							.Any(aSyn => featureNotImplementedAttrSym.Matches(snac.SemanticModel.GetTypeInfo(aSyn, snac.CancellationToken).Type));
+						=> mds.Matching(featureNotImplementedAttrSym, snac).Any();
 					void CheckBlockBody(BlockSyntax bs, Location location)
 					{
-						if (bs.Statements.Count is not 1) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
-						else if (bs.Statements[0] is not ThrowStatementSyntax tss) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
-						else MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss.GetLocation());
+						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss);
+						else DiagShouldThrowNIE.ReportAt(location, snac, [ ERR_MSG_DOES_NOT_THROW ]);
 					}
 					void CheckExprBody(ArrowExpressionClauseSyntax aecs, Location location)
 					{
-						if (aecs.Expression is not ThrowExpressionSyntax tes) snac.ReportDiagnostic(Diagnostic.Create(DiagShouldThrowNIE, location, ERR_MSG_DOES_NOT_THROW));
-						else MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes.GetLocation());
+						if (aecs.Expression is ThrowExpressionSyntax tes) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes);
+						else DiagShouldThrowNIE.ReportAt(location, snac, [ ERR_MSG_DOES_NOT_THROW ]);
 					}
 					void CheckAccessor(AccessorDeclarationSyntax ads)
 					{
 						if (!IncludesFNIAttribute(ads.AttributeLists)) return;
 						if (ads.ExpressionBody is not null) CheckExprBody(ads.ExpressionBody, ads.GetLocation());
 						else if (ads.Body is not null) CheckBlockBody(ads.Body, ads.GetLocation());
-						else Wat(ads.GetLocation());
+						else HawkSourceAnalyzer.ReportWTF(ads, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 					}
 					switch (snac.Node)
 					{
@@ -79,7 +71,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							if (!IncludesFNIAttribute(mds.AttributeLists)) return;
 							if (mds.ExpressionBody is not null) CheckExprBody(mds.ExpressionBody, mds.GetLocation());
 							else if (mds.Body is not null) CheckBlockBody(mds.Body, mds.GetLocation());
-							else Wat(mds.GetLocation());
+							else HawkSourceAnalyzer.ReportWTF(mds, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 							break;
 						case PropertyDeclarationSyntax pds:
 							if (pds.ExpressionBody is not null)
@@ -88,7 +80,7 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							}
 							else
 							{
-								if (IncludesFNIAttribute(pds.AttributeLists)) Wat(pds.GetLocation());
+								if (IncludesFNIAttribute(pds.AttributeLists)) HawkSourceAnalyzer.ReportWTF(pds, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 #if false // accessors will be checked separately
 								else foreach (var accessor in pds.AccessorList!.Accessors) CheckAccessor(accessor);
 #endif

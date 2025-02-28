@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DoomControllerTypes.Heretic,
-				MultiplayerMode = DSDA.MultiplayerMode.M0,
+				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,
@@ -31,28 +31,25 @@ namespace BizHawk.Client.Common
 				Player2Present = input[i++] is not 0,
 				Player3Present = input[i++] is not 0,
 				Player4Present = input[i++] is not 0,
+				TurningResolution = DSDA.TurningResolution.Shorttics,
 			};
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var hereticController = new HereticController(1);
+			var hereticController = new HereticController(1, false);
 			var controller = new SimpleController(hereticController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)
 			{
 				controller.AcceptNewAxis(playerPfx + "Run Speed", unchecked((sbyte) input[i++]));
-
 				controller.AcceptNewAxis(playerPfx + "Strafing Speed", unchecked((sbyte) input[i++]));
-
 				controller.AcceptNewAxis(playerPfx + "Turning Speed", unchecked((sbyte) input[i++]));
-
 				var specialValue = input[i++];
 				controller[playerPfx + "Fire"] = (specialValue & 0b00000001) is not 0;
-				controller[playerPfx + "Action"] = (specialValue & 0b00000010) is not 0;
-				controller.AcceptNewAxis(playerPfx + "Weapon Select", (specialValue & 0b00011100) >> 2);
-				controller[playerPfx + "Alt Weapon"] = (specialValue & 0b00100000) is not 0;
-
+				controller[playerPfx + "Use"] = (specialValue & 0b00000010) is not 0;
+				bool changeWeapon = (specialValue & 0b00000100) is not 0;
+				int weapon = changeWeapon ? (((specialValue & 0b00111000) >> 3) + 1) : 0;
+				controller.AcceptNewAxis(playerPfx + "Weapon Select", weapon);
 				controller.AcceptNewAxis(playerPfx + "Fly / Look", unchecked((sbyte) input[i++]));
-
 				controller.AcceptNewAxis(playerPfx + "Use Artifact", unchecked((sbyte) input[i++]));
 			}
 			do

@@ -2,10 +2,6 @@
 
 using System.Collections.Immutable;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 /// <remarks>shoutouts to SimpleFlips</remarks>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
@@ -22,7 +18,8 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagUseSimplerBoolFlip);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagUseSimplerBoolFlip);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -61,16 +58,10 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 						lhsIsSimpleExpr = false;
 						break;
 					default:
-						oac.ReportDiagnostic(Diagnostic.Create(DiagUseSimplerBoolFlip, operation.Syntax.GetLocation(), $"Left-hand side of XOR-assign was of an unexpected kind: {lhsOp.GetType().FullName}"));
+						HawkSourceAnalyzer.ReportWTF(operation, oac, message: $"[{nameof(UseSimplerBoolFlipAnalyzer)}] Left-hand side of XOR-assign was of an unexpected kind: {lhsOp.GetType().FullName}");
 						return;
 				}
-				oac.ReportDiagnostic(Diagnostic.Create(
-					DiagUseSimplerBoolFlip,
-					operation.Syntax.GetLocation(),
-					lhsIsSimpleExpr ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-					additionalLocations: null,
-					properties: null,
-					lhsIsSimpleExpr ? ERR_MSG_SIMPLE : ERR_MSG_COMPLEX));
+				DiagUseSimplerBoolFlip.ReportAt(operation, isErrorSeverity: lhsIsSimpleExpr, oac, lhsIsSimpleExpr ? ERR_MSG_SIMPLE : ERR_MSG_COMPLEX);
 			},
 			OperationKind.CompoundAssignment);
 	}

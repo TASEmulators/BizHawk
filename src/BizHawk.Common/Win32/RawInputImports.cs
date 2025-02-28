@@ -427,12 +427,22 @@ namespace BizHawk.Common
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RAWMOUSE
 		{
-			public ushort usFlags;
+			public MOUSE_FLAGS usFlags;
 			public uint ulButtons;
 			public uint ulRawButtons;
 			public int lLastX;
 			public int lLastY;
 			public uint ulExtraInformation;
+
+			[Flags]
+			public enum MOUSE_FLAGS : ushort
+			{
+				MOVE_RELATIVE = 0,
+				MOVE_ABSOLUTE = 1,
+				VIRTUAL_DESKTOP = 2,
+				ATTRIBUTES_CHANGED = 4,
+				MOVE_NOCOALESCE = 8,
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -492,7 +502,7 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool RegisterRawInputDevices(ref RAWINPUTDEVICE pRawInputDevice, uint uiNumDevices, int cbSize);
+		public static extern unsafe bool RegisterRawInputDevices(RAWINPUTDEVICE* pRawInputDevice, uint uiNumDevices, int cbSize);
 
 		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]

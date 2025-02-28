@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -25,13 +26,13 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, true);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
 			base.OnDeactivate(e);
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, false);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 		}
 
 		private void HotkeyConfig_Load(object sender, EventArgs e)

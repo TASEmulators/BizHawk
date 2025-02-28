@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
@@ -13,10 +13,10 @@ using static BizHawk.Common.WmImports;
 namespace BizHawk.Bizware.Input
 {
 	/// <summary>
-	/// Note: Only 1 window per device class (i.e. keyboards) is actually allowed to RAWINPUT (last one to call RegisterRawInputDevices)
+	/// Note: Only 1 window per device class (e.g. keyboards) is actually allowed to use RAWINPUT (last one to call RegisterRawInputDevices)
 	/// So only one instance can actually be used at the same time
 	/// </summary>
-	internal sealed class RawKeyInput : IKeyInput
+	internal sealed class RawKeyMouseInput : IKeyMouseInput
 	{
 		private const int WM_CLOSE = 0x0010;
 		private const int WM_INPUT = 0x00FF;
@@ -24,6 +24,8 @@ namespace BizHawk.Bizware.Input
 		private IntPtr RawInputWindow;
 		private bool _handleAltKbLayouts;
 		private List<KeyEvent> _keyEvents = [ ];
+		private (int X, int Y) _mouseDelta;
+		private (int X, int Y) _lastMouseAbsPos;
 		private readonly object _lockObj = new();
 		private bool _disposed;
 
@@ -38,7 +40,7 @@ namespace BizHawk.Bizware.Input
 			var wc = default(WNDCLASSW);
 			wc.lpfnWndProc = _wndProc;
 			wc.hInstance = LoaderApiImports.GetModuleHandleW(null);
-			wc.lpszClassName = "RawKeyInputClass";
+			wc.lpszClassName = "RawKeyMouseInputClass";
 
 			var atom = RegisterClassW(ref wc);
 			if (atom == IntPtr.Zero)
@@ -58,15 +60,15 @@ namespace BizHawk.Bizware.Input
 			}
 
 			GCHandle handle;
-			RawKeyInput rawKeyInput;
+			RawKeyMouseInput rawKeyMouseInput;
 			if (uMsg != WM_INPUT)
 			{
 				if (uMsg == WM_CLOSE)
 				{
 					SetWindowLongPtrW(hWnd, GWLP_USERDATA, IntPtr.Zero);
 					handle = GCHandle.FromIntPtr(ud);
-					rawKeyInput = (RawKeyInput)handle.Target;
-					Marshal.FreeCoTaskMem(rawKeyInput.RawInputBuffer);
+					rawKeyMouseInput = (RawKeyMouseInput)handle.Target;
+					Marshal.FreeCoTaskMem(rawKeyMouseInput.RawInputBuffer);
 					handle.Free();
 				}
 
@@ -86,7 +88,7 @@ namespace BizHawk.Bizware.Input
 				: stackalloc IntPtr[(size + sizeof(IntPtr) - 1) / sizeof(IntPtr)];
 
 			handle = GCHandle.FromIntPtr(ud);
-			rawKeyInput = (RawKeyInput)handle.Target;
+			rawKeyMouseInput = (RawKeyMouseInput)handle.Target;
 
 			fixed (IntPtr* p = buffer)
 			{
@@ -99,14 +101,19 @@ namespace BizHawk.Bizware.Input
 
 				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD)
 				{
-					rawKeyInput.AddKeyInput(&input->data.keyboard);
+					rawKeyMouseInput.AddKeyInput(&input->data.keyboard);
+				}
+
+				if (input->header.dwType == RAWINPUTHEADER.RIM_TYPE.MOUSE)
+				{
+					rawKeyMouseInput.AddMouseInput(&input->data.mouse);
 				}
 			}
 
 			while (true)
 			{
-				var rawInputBuffer = (RAWINPUT*)rawKeyInput.RawInputBuffer;
-				size = rawKeyInput.RawInputBufferSize;
+				var rawInputBuffer = (RAWINPUT*)rawKeyMouseInput.RawInputBuffer;
+				size = rawKeyMouseInput.RawInputBufferSize;
 				var count = GetRawInputBuffer(rawInputBuffer, ref size, sizeof(RAWINPUTHEADER));
 				if (count == 0)
 				{
@@ -121,8 +128,8 @@ namespace BizHawk.Bizware.Input
 					const int ERROR_INSUFFICIENT_BUFFER = 0x7A;
 					if (Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
 					{
-						rawKeyInput.RawInputBufferSize *= 2;
-						rawKeyInput.RawInputBuffer = Marshal.ReAllocCoTaskMem(rawKeyInput.RawInputBuffer, rawKeyInput.RawInputBufferSize);
+						rawKeyMouseInput.RawInputBufferSize *= 2;
+						rawKeyMouseInput.RawInputBuffer = Marshal.ReAllocCoTaskMem(rawKeyMouseInput.RawInputBuffer, rawKeyMouseInput.RawInputBufferSize);
 						continue;
 					}
 
@@ -133,8 +140,14 @@ namespace BizHawk.Bizware.Input
 				{
 					if (rawInputBuffer->header.dwType == RAWINPUTHEADER.RIM_TYPE.KEYBOARD)
 					{
-						var keyboard = (RAWKEYBOARD*)((byte*)&rawInputBuffer->data.keyboard + rawKeyInput.RawInputBufferDataOffset);
-						rawKeyInput.AddKeyInput(keyboard);
+						var keyboard = (RAWKEYBOARD*)((byte*)&rawInputBuffer->data.keyboard + rawKeyMouseInput.RawInputBufferDataOffset);
+						rawKeyMouseInput.AddKeyInput(keyboard);
+					}
+
+					if (rawInputBuffer->header.dwType == RAWINPUTHEADER.RIM_TYPE.MOUSE)
+					{
+						var mouse = (RAWMOUSE*)((byte*)&rawInputBuffer->data.mouse + rawKeyMouseInput.RawInputBufferDataOffset);
+						rawKeyMouseInput.AddMouseInput(mouse);
 					}
 
 					var packetSize = rawInputBuffer->header.dwSize;
@@ -174,6 +187,22 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
+		private unsafe void AddMouseInput(RAWMOUSE* mouse)
+		{
+			// raw input usually doesn't report absolute inputs, only in odd cases with e.g. touchscreen and rdp screen
+			if ((mouse->usFlags & RAWMOUSE.MOUSE_FLAGS.MOVE_ABSOLUTE) == RAWMOUSE.MOUSE_FLAGS.MOVE_ABSOLUTE)
+			{
+				_mouseDelta.X += mouse->lLastX - _lastMouseAbsPos.X;
+				_mouseDelta.Y += mouse->lLastY - _lastMouseAbsPos.Y;
+				_lastMouseAbsPos = (mouse->lLastX, mouse->lLastY);
+			}
+			else // ((mouse->usFlags & RAWMOUSE.MOUSE_FLAGS.MOVE_ABSOLUTE) == RAWMOUSE.MOUSE_FLAGS.MOVE_RELATIVE)
+			{
+				_mouseDelta.X += mouse->lLastX;
+				_mouseDelta.Y += mouse->lLastY;
+			}
+		}
+
 		private static IntPtr CreateRawInputWindow()
 		{
 			const int WS_CHILD = 0x40000000;
@@ -196,22 +225,29 @@ namespace BizHawk.Bizware.Input
 				throw new InvalidOperationException("Failed to create RAWINPUT window");
 			}
 
-			var rid = default(RAWINPUTDEVICE);
-			rid.usUsagePage = RAWINPUTDEVICE.HidUsagePage.GENERIC;
-			rid.usUsage = RAWINPUTDEVICE.HidUsageId.GENERIC_KEYBOARD;
-			rid.dwFlags = RAWINPUTDEVICE.RIDEV.INPUTSINK;
-			rid.hwndTarget = window;
-
-			if (!RegisterRawInputDevices(ref rid, 1, Marshal.SizeOf<RAWINPUTDEVICE>()))
+			unsafe
 			{
-				DestroyWindow(window);
-				throw new InvalidOperationException("Failed to register RAWINPUTDEVICE");
+				var rid = stackalloc RAWINPUTDEVICE[2];
+				rid[0].usUsagePage = RAWINPUTDEVICE.HidUsagePage.GENERIC;
+				rid[0].usUsage = RAWINPUTDEVICE.HidUsageId.GENERIC_KEYBOARD;
+				rid[0].dwFlags = RAWINPUTDEVICE.RIDEV.INPUTSINK;
+				rid[0].hwndTarget = window;
+				rid[1].usUsagePage = RAWINPUTDEVICE.HidUsagePage.GENERIC;
+				rid[1].usUsage = RAWINPUTDEVICE.HidUsageId.GENERIC_MOUSE;
+				rid[1].dwFlags = RAWINPUTDEVICE.RIDEV.INPUTSINK;
+				rid[1].hwndTarget = window;
+
+				if (!RegisterRawInputDevices(rid, 2, sizeof(RAWINPUTDEVICE)))
+				{
+					DestroyWindow(window);
+					throw new InvalidOperationException("Failed to register RAWINPUTDEVICE");
+				}
 			}
 
 			return window;
 		}
 
-		public RawKeyInput()
+		public RawKeyMouseInput()
 		{
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -236,7 +272,7 @@ namespace BizHawk.Bizware.Input
 				RawInputBufferDataOffset = isWow64 ? 8 : 0;
 			}
 
-			RawInputBufferSize = (Marshal.SizeOf<RAWINPUT>() + RawInputBufferDataOffset) * 16;
+			RawInputBufferSize = (Unsafe.SizeOf<RAWINPUT>() + RawInputBufferDataOffset) * 16;
 			RawInputBuffer = Marshal.AllocCoTaskMem(RawInputBufferSize);
 		}
 
@@ -261,7 +297,7 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		public IEnumerable<KeyEvent> Update(bool handleAltKbLayouts)
+		public IEnumerable<KeyEvent> UpdateKeyInputs(bool handleAltKbLayouts)
 		{
 			lock (_lockObj)
 			{
@@ -287,6 +323,34 @@ namespace BizHawk.Bizware.Input
 
 				var ret = _keyEvents;
 				_keyEvents = [ ];
+				return ret;
+			}
+		}
+
+		public (int DeltaX, int DeltaY) UpdateMouseInput()
+		{
+			lock (_lockObj)
+			{
+				if (_disposed)
+				{
+					return default;
+				}
+
+				if (RawInputWindow == IntPtr.Zero)
+				{
+					RawInputWindow = CreateRawInputWindow();
+					var handle = GCHandle.Alloc(this, GCHandleType.Normal);
+					SetWindowLongPtrW(RawInputWindow, GWLP_USERDATA, GCHandle.ToIntPtr(handle));
+				}
+
+				while (PeekMessageW(out var msg, RawInputWindow, 0, 0, PM_REMOVE))
+				{
+					TranslateMessage(ref msg);
+					DispatchMessageW(ref msg);
+				}
+
+				var ret = _mouseDelta;
+				_mouseDelta = default;
 				return ret;
 			}
 		}

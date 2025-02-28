@@ -9,6 +9,10 @@
 #include "d_player.h"
 #include "w_wad.h"
 #include "p_mobj.h"
+#include "doomstat.h"
+#include "g_game.h"
+
+#include "dsda/args.h"
 
 extern "C"
 {
@@ -16,7 +20,7 @@ extern "C"
   void headlessRunSingleTick();
   void headlessUpdateSounds(void);
   void headlessClearTickCommand();
-  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int altWeapon, int lookfly, int artifact, int jump, int endPlayer);
+  void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int automap, int lookfly, int artifact, int jump, int endPlayer);
 
   // Video-related functions
   void headlessUpdateVideo(void);
@@ -45,19 +49,13 @@ extern "C"
 
 // Players information
 extern "C" int enableOutput;
-extern "C" player_t players[MAX_MAXPLAYERS];
 extern "C" int preventLevelExit;
 extern "C" int preventGameEnd;
 extern "C" int reachedLevelExit;
 extern "C" int reachedGameEnd;
-extern "C" int gamemap;
-extern "C" int gametic;
-extern "C" dboolean playeringame[MAX_MAXPLAYERS];
-extern "C" int consoleplayer;
-extern "C" int displayplayer;
-extern "C" pclass_t PlayerClass[MAX_MAXPLAYERS];
 extern int numthings;
 extern mobj_t **mobj_ptrs;
+extern dsda_arg_t arg_value[dsda_arg_count];
 
 #define PALETTE_SIZE 256
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
@@ -75,21 +73,10 @@ struct InitSettings
 	int _Player2Present;
 	int _Player3Present;
 	int _Player4Present;
-	int _CompatibilityMode;
-	int _SkillLevel;
-	int _MultiplayerMode;
-	int _InitialEpisode;
-	int _InitialMap;
-	int _Turbo;
-	int _FastMonsters;
-	int _MonstersRespawn;
-	int _NoMonsters;
 	int _Player1Class;
 	int _Player2Class;
 	int _Player3Class;
 	int _Player4Class;
-	int _ChainEpisodes;
-	int _StrictMode;
 	int _PreventLevelExit;
 	int _PreventGameEnd;
 } __attribute__((packed));
@@ -102,7 +89,7 @@ struct PackedPlayerInput
 	int _WeaponSelect;
 	int _Fire;
 	int _Action;
-	int _AltWeapon;
+	int _Automap;
 	int _FlyLook;
 	int _ArtifactUse;
 	int _Jump;
@@ -115,3 +102,7 @@ struct PackedRenderInfo
 	int _RenderAudio;
 	int _PlayerPointOfView;
 } __attribute__((packed));
+
+dboolean dsda_Flag(dsda_arg_identifier_t id) {
+  return arg_value[id].found;
+}

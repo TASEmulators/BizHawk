@@ -23,21 +23,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _Player2Present;
 			public int _Player3Present;
 			public int _Player4Present;
-			public int _CompatibilityMode;
-			public int _SkillLevel;
-			public int _MultiplayerMode;
-			public int _InitialEpisode;
-			public int _InitialMap;
-			public int _Turbo;
-			public int _FastMonsters;
-			public int _MonstersRespawn;
-			public int _NoMonsters;
 			public int _Player1Class;
 			public int _Player2Class;
 			public int _Player3Class;
 			public int _Player4Class;
-			public int _ChainEpisodes;
-			public int _StrictMode;
 			public int _PreventLevelExit;
 			public int _PreventGameEnd;
 		}
@@ -51,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int _WeaponSelect;
 			public int _Fire;
 			public int _Action;
-			public int _AltWeapon;
+			public int _Automap;
 
 			// Hexen + Heretic (Raven Games)
 			public int _FlyLook;
@@ -73,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_audio(ref int n, ref IntPtr buffer);
 
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract bool dsda_init(ref InitSettings settings);
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		public abstract bool dsda_init(ref InitSettings settings, int argc, string[] argv);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_frame_advance(

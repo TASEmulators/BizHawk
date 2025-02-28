@@ -3,11 +3,6 @@
 using System.Collections.Immutable;
 using System.Linq;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class OrderBySelfAnalyzer : DiagnosticAnalyzer
 {
@@ -62,7 +57,7 @@ public class OrderBySelfAnalyzer : DiagnosticAnalyzer
 					var calledSym = operation.TargetMethod.ConstructedFrom;
 					if (!(orderByAscSym!.Matches(calledSym) || orderByDescSym!.Matches(calledSym))) return;
 					if (((ArgumentSyntax) operation.Arguments[1].Syntax).Expression is not AnonymousFunctionExpressionSyntax afes) return;
-					if (IsSelfReturnLambda(afes)) oac.ReportDiagnostic(Diagnostic.Create(DiagUseOrderBySelfExt, afes.GetLocation(), orderByDescSym.Matches(calledSym) ? "Descending" : string.Empty));
+					if (IsSelfReturnLambda(afes)) DiagUseOrderBySelfExt.ReportAt(afes, oac, orderByDescSym.Matches(calledSym) ? "Descending" : string.Empty);
 				},
 				OperationKind.Invocation);
 		});

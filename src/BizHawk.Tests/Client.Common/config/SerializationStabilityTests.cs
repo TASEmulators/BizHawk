@@ -3,7 +3,9 @@ using System.Drawing;
 using System.Reflection;
 
 using BizHawk.Client.Common;
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
 using BizHawk.Common;
+#endif
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
