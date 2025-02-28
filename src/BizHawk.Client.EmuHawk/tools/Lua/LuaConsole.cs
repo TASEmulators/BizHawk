@@ -514,6 +514,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
+				OutputBox.SelectionLength = 0;
 				OutputBox.Text = "";
 				OutputBox.Refresh();
 			});
