@@ -38,7 +38,6 @@ jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 std::vector<int16_t> _audioSamples;
 
 // Keyboard related variables
-bool _keyboardRead;
 std::set<KBD_KEYS> _prevPressedKeys;
 extern std::set<KBD_KEYS> _pressedKeys;
 extern std::set<KBD_KEYS> _releasedKeys;
@@ -265,14 +264,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
  // Increasing ticks target
 	ticksTarget += ticksPerFrame;
 	
- // Clearing keyboard use flag
-	_keyboardRead = false;
-
 	// Advancing until the required tick target is met
 	while (ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
-
- // Printing whether the keyboard was read
-	// if (_keyboardRead == true) printf("Keyboard read: %u\n", _keyboardRead);
 
 	// Checking audio sample count
 	// size_t checksum = 0;
