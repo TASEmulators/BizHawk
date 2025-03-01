@@ -54,8 +54,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _rowCount;
 		private SizeF _charSize;
 
-		private int[] _horizontalColumnTops; // Updated on paint, contains one extra item to allow inference of last column height
-
 		private RollColumn/*?*/ _columnDown;
 
 		private RollColumn/*?*/ _columnResizing;
@@ -299,9 +297,7 @@ namespace BizHawk.Client.EmuHawk
 				int x = MaxColumnWidth;
 				int y = 0;
 				int w = Width - x;
-				int h = VisibleColumns.Any()
-					? GetHColBottom(VisibleColumns.Count() - 1)
-					: 0;
+				int h = TotalColWidth;
 				h = Math.Min(h, _drawHeight);
 
 				Invalidate(new Rectangle(x, y, w, h));
@@ -1664,11 +1660,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CalculateScrollbarsNeeded(int lastVisibleColumn)
+		private void CalculateScrollbarsNeeded()
 		{
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar = GetHColBottom(lastVisibleColumn) > _drawHeight;
+				NeedsVScrollbar = TotalColWidth > _drawHeight;
 				NeedsHScrollbar = RowCount > 1;
 			}
 			else
@@ -1682,7 +1678,7 @@ namespace BizHawk.Client.EmuHawk
 			// if either NeedsVScrollbar or NeedsHScrollbar changed we need to recalculate, so just run this again
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar = GetHColBottom(lastVisibleColumn) > _drawHeight;
+				NeedsVScrollbar = TotalColWidth > _drawHeight;
 				NeedsHScrollbar = RowCount > 1;
 			}
 			else
@@ -1698,8 +1694,7 @@ namespace BizHawk.Client.EmuHawk
 		// See MSDN Page for more information on the dumb ScrollBar.Maximum Property
 		private void RecalculateScrollBars()
 		{
-			int lastVisibleColumn = _columns.VisibleColumns.Count() - 1;
-			CalculateScrollbarsNeeded(lastVisibleColumn);
+			CalculateScrollbarsNeeded();
 
 			if (VisibleRows > 0)
 			{
@@ -1724,7 +1719,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.Maximum = GetHColBottom(lastVisibleColumn) - _drawHeight + _vBar.LargeChange;
+					_vBar.Maximum = TotalColWidth - _drawHeight + _vBar.LargeChange;
 					if (_vBar.Maximum < 0)
 					{
 						_vBar.Maximum = 0;
@@ -1902,7 +1897,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_horizontalOrientation)
 			{
 				return _columns.VisibleColumns.Select(static (n, i) => (Column: n, Index: i))
-					.FirstOrNull(item => pixel >= GetHColTop(item.Index) - _vBar.Value && pixel <= GetHColBottom(item.Index) - _vBar.Value)
+					.FirstOrNull(item => pixel >= item.Column.Left - _vBar.Value && pixel <= item.Column.Right - _vBar.Value)
 					?.Column;
 			}
 			return _columns.VisibleColumns.FirstOrDefault(column => pixel >= column.Left - _hBar.Value && pixel <= column.Right - _hBar.Value);
@@ -1937,19 +1932,6 @@ namespace BizHawk.Client.EmuHawk
 
 			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
 		}
-
-		private int GetHColTop(int index) =>
-			_horizontalColumnTops != null && 0.RangeToExclusive(_horizontalColumnTops.Length).Contains(index)
-				? _horizontalColumnTops[index]
-				: index * CellHeight;
-
-		private int GetHColHeight(int index) =>
-			_horizontalColumnTops != null && 0.RangeToExclusive(_horizontalColumnTops.Length - 1).Contains(index)
-				? _horizontalColumnTops[index + 1] - _horizontalColumnTops[index]
-				: CellHeight;
-
-		private int GetHColBottom(int index) =>
-			GetHColTop(index + 1);
 
 		// The width of the largest column cell in Horizontal Orientation
 		private int MaxColumnWidth { get; set; }

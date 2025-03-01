@@ -360,7 +360,10 @@ namespace BizHawk.Client.EmuHawk
 					name: name,
 					widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
 					type: type,
-					text: mnemonic));
+					text: mnemonic)
+				{
+					Rotatable = type is ColumnType.Axis
+				});
 			}
 
 			var columnsToHide = TasView.AllColumns
