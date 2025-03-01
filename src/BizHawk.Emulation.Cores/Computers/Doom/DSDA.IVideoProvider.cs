@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	{
 		public int[] GetVideoBuffer() => _vidBuff;
 
-		public int VirtualWidth => BufferWidth;
+		public int VirtualWidth => BufferHeight * 4 / 3;
 
 		public int VirtualHeight => BufferHeight;
 

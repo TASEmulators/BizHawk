@@ -117,6 +117,9 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 	// Running a single tick
 	headlessRunSingleTick();
 
+	// Move positional sounds 
+	headlessUpdateSounds();
+
     // Updating video
     if (renderInfo->_RenderVideo == 1)
 	{
