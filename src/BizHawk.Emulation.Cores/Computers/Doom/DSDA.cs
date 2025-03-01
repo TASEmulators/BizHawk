@@ -80,6 +80,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ "uncapped_framerate 0\n"
 				+ "render_stretch_hud 0\n"
 				+ "render_stretchsky 0\n"
+				+ "render_doom_lightmaps 1\n"
+				+ "render_stretchsky 0\n"
+				+ "map_coordinates 0\n"
+				+ "map_totals 0\n"
+				+ "map_time 0\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
