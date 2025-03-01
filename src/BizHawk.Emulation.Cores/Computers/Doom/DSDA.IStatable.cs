@@ -12,7 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			_elf.LoadStateBinary(reader);
 			
-			// Getting last mouse positions
 			_turnHeld[0] = reader.ReadInt32();
 			_turnHeld[1] = reader.ReadInt32();
 			_turnHeld[2] = reader.ReadInt32();
@@ -20,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			Frame = reader.ReadInt32();
 			// any managed pointers that we sent to the core need to be resent now!
-			//Core.stella_set_input_callback(_inputCallback);
 			UpdateVideo();
 		}
 
@@ -28,7 +26,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			_elf.SaveStateBinary(writer);
 
-			// Writing last mouse positions
 			writer.Write(_turnHeld[0]);
 			writer.Write(_turnHeld[1]);
 			writer.Write(_turnHeld[2]);

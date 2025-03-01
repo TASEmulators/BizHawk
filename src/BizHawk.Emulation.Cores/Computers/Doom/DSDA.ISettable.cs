@@ -118,6 +118,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
+			[DisplayName("Internal Resolution Scale Factor")]
+			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.")]
+			[Range(1, 12)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int ScaleFactor { get; set; }
+			
+			[DisplayName("Gamma Correction Level")]
+			[Description("Increases brightness [0 - 4]. Default value in vanilla Doom is 0 (\"OFF\").")]
+			[Range(0, 4)]
+			[DefaultValue(0)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int Gamma { get; set; }
+
 			[JsonIgnore]
 			[DisplayName("Player Point of View")]
 			[Description("Which of the players' point of view to use during rendering")]

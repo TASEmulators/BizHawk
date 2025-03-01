@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -70,9 +71,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSize = (uint)_dsdaWadFileData.Length;
 			foreach (var wadFile in _wadFiles) totalWadSize += (uint) wadFile.FileData.Length;
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
-			Console.WriteLine("Reserving {0}kb for WAD file memory", totalWadSizeKb);
+			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
-			_configFile = Encoding.ASCII.GetBytes("screen_resolution \"320x200\"");
+			_configFile = Encoding.ASCII.GetBytes($"screen_resolution \"{
+				_nativeResolution.X * _settings.ScaleFactor}x{
+				_nativeResolution.Y * _settings.ScaleFactor}\"\n"
+				+ $"usegamma {_settings.Gamma}\n"
+				+ "uncapped_framerate 0\n"
+				+ "render_stretch_hud 0\n"
+				+ "render_stretchsky 0\n"
+			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
@@ -96,15 +104,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 				using (_elf.EnterExit())
 				{
-					Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
+					_core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
 
 					// Adding dsda-doom wad file
-					Core.dsda_add_wad_file(_dsdaWadFileName, _dsdaWadFileData.Length, _loadCallback);
+					_core.dsda_add_wad_file(_dsdaWadFileName, _dsdaWadFileData.Length, _loadCallback);
 
 					// Adding rom files
 					foreach (var wadFile in _wadFiles)
 					{
-						var loadWadResult = Core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+						var loadWadResult = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
 						if (!loadWadResult) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
 					}
 
@@ -112,8 +120,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
 					CreateArguments(initSettings);
-					var initResult = Core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
-					if (!initResult) throw new Exception($"{nameof(Core.dsda_init)}() failed");
+					var initResult = _core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
+					if (!initResult) throw new Exception($"{nameof(_core.dsda_init)}() failed");
 
 					int fps = 35;
 					VsyncNumerator = fps;
@@ -169,17 +177,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-		private readonly CInterface.load_archive_cb _loadCallback;
-		private readonly string _dsdaWadFileName = "dsda-doom.wad";
-		private readonly byte[] _dsdaWadFileData;
-		private readonly CInterface Core;
 		private readonly WaterboxHost _elf;
+		private readonly CInterface _core;
+		private readonly CInterface.load_archive_cb _loadCallback;
 		private readonly DoomControllerDeck _controllerDeck;
-		private readonly byte[] _configFile;
+		private readonly Point _nativeResolution = new(320, 200);
 		private readonly int[] _runSpeeds = [ 25, 50 ];
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
 		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
-
+		private readonly string _dsdaWadFileName = "dsda-doom.wad";
+		private readonly byte[] _dsdaWadFileData;
+		private readonly byte[] _configFile;
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
 		private List<string> _args;
 		private List<IRomAsset> _wadFiles;
@@ -197,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			if (buffer == IntPtr.Zero)
 			{
-				Console.WriteLine("Couldn't satisfy firmware request {0} because buffer == NULL", filename);
+				Console.WriteLine($"Couldn't satisfy firmware request {filename} because buffer == NULL");
 				return 0;
 			}
 
@@ -217,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					if (wadFile.FileData == null)
 					{
-						Console.WriteLine("Could not read from WAD file '{0}'", filename);
+						Console.WriteLine($"Could not read from WAD file '{filename}'");
 						return 0;
 					}
 					srcdata = wadFile.FileData;
@@ -228,14 +236,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if (srcdata.Length > maxsize)
 				{
-					Console.WriteLine("Couldn't satisfy firmware request {0} because {1} > {2}", filename, srcdata.Length, maxsize);
+					Console.WriteLine($"Couldn't satisfy firmware request {filename} because {srcdata.Length} > {maxsize}");
 					return 0;
 				}
 				else
 				{
-					Console.WriteLine("Copying Data from " + srcdata + " to " + buffer + " Size: " + srcdata.Length);
+					Console.WriteLine($"Copying Data from {srcdata} to {buffer}. Size: {srcdata.Length}");
 					Marshal.Copy(srcdata, 0, buffer, srcdata.Length);
-					Console.WriteLine("Firmware request {0} satisfied at size {1}", filename, srcdata.Length);
+					Console.WriteLine($"Firmware request {filename} satisfied at size {srcdata.Length}");
 					return srcdata.Length;
 				}
 			}

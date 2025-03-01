@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private unsafe void UpdateAudio()
 		{
 			var src = IntPtr.Zero;
-			Core.dsda_get_audio(ref _nsamp, ref src);
+			_core.dsda_get_audio(ref _nsamp, ref src);
 
 			if (src != IntPtr.Zero)
 			{

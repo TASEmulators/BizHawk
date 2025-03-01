@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var videoBufferSrc = IntPtr.Zero;
 				var palletteBufferSrc = IntPtr.Zero;
-				Core.dsda_get_video(out var width, out var height, out var pitch, ref videoBufferSrc, out var paletteSize, ref palletteBufferSrc);
+				_core.dsda_get_video(out var width, out var height, out var pitch, ref videoBufferSrc, out var paletteSize, ref palletteBufferSrc);
 
 				// Handling pallette buffer
 				PaletteSize = paletteSize;
