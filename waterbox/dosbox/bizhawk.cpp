@@ -24,9 +24,8 @@ cothread_t _emuCoroutine;
 cothread_t _driverCoroutine;
 
 // Timing-related stuff
-#define __FPS__ 70
 double ticksTarget;
-constexpr double ticksPerFrame = 1000.0 / __FPS__;
+double ticksPerFrame;
 uint32_t ticksElapsed;
 uint32_t _GetTicks() { return ticksElapsed; }
 void _Delay(uint32_t ticks) { ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
@@ -101,7 +100,7 @@ ECL_EXPORT uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(w
 ECL_EXPORT void get_sram(uint8_t* sramBuffer) {	memcpy(sramBuffer, get_sram_buffer(), get_sram_size()); }
 ECL_EXPORT void set_sram(uint8_t* sramBuffer) {	memcpy(get_sram_buffer(), sramBuffer, get_sram_size()); }
 
-ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize)
+ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize, int fps)
 {
 	 // If size is non-negative, we need to load the writable hard disk into memory
 		if (writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
@@ -121,8 +120,10 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 		setenv("SDL_AUDIODRIVER", "dummy", 1);
 
 		// Setting timer
+		ticksPerFrame = 1000.0 / (double)fps;
 		ticksTarget = 0.0;
 		ticksElapsed = 0;
+
 
 	printf("Starting DOSBox-x Coroutine...\n");
 	_driverCoroutine = co_active();

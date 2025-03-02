@@ -43,8 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _currentCDROM = 0;
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
-		public override int VirtualWidth => LibDOSBox.SVGA_MAX_WIDTH;
-		public override int VirtualHeight => LibDOSBox.SVGA_MAX_HEIGHT;
+		public override int VirtualWidth => BufferHeight * 4 / 3;
 		private LibDOSBox _libDOSBox;
 
 		// Image selection / swapping variables
