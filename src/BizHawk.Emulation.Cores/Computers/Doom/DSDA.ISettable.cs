@@ -239,6 +239,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool NoMonsters { get; set; }
 
+			[DisplayName("Pistol Start")]
+			[Description("Starts every level with a clean slate, with nothing carried over from previus levels. Health is reset to 100% as well.")]
+			[DefaultValue(false)]
+			public bool PistolStart { get; set; }
+
 			[DisplayName("Player 1 Hexen Class")]
 			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
 			[DefaultValue(HexenClass.Fighter)]

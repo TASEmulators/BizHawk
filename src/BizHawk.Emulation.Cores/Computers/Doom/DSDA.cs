@@ -77,14 +77,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_nativeResolution.X * _settings.ScaleFactor}x{
 				_nativeResolution.Y * _settings.ScaleFactor}\"\n"
 				+ $"usegamma {_settings.Gamma}\n"
+				+ "dsda_exhud 0\n"
+				+ "dsda_pistol_start 0\n"
 				+ "uncapped_framerate 0\n"
+				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio())
 				+ "render_stretch_hud 0\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
 				+ "render_stretchsky 0\n"
 				+ "map_coordinates 0\n"
 				+ "map_totals 0\n"
-				+ "map_time 0\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -165,6 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ConditionalArg(!_syncSettings.StrictMode, "-tas");
 			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
 			ConditionalArg(_syncSettings.NoMonsters, "-nomonsters");
+			ConditionalArg(_syncSettings.PistolStart, "-pistolstart");
 			ConditionalArg(_syncSettings.ChainEpisodes, "-chain_episodes");
 			ConditionalArg(_syncSettings.TurningResolution == TurningResolution.Longtics, "-longtics");
 			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Deathmatch, "-deathmatch");
