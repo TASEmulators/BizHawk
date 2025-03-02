@@ -234,6 +234,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
 
+			[DisplayName("FPS")]
+			[Description("How many Bizhawk frames to run per second of emulation. Default: 70, the default video frames per second in DOS. We recommend leaving this value unmodified. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]
+			[DefaultValue(70)]
+			public int FPS { get; set; }
+
 			[DisplayName("CPU Cycles")]
 			[Description("How many CPU cycles to emulate per ms. Default: -1, to keep the one included in the configuration preset.")]
 			[DefaultValue(-1)]

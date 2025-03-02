@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize);
+		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, int fps);
 
 		[BizImport(CC, Compatibility = true)]
 

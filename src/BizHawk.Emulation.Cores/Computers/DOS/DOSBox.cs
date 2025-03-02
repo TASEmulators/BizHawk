@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
 
-			VsyncNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS;
+			VsyncNumerator = _syncSettings.FPS * LibDOSBox.VIDEO_DENOMINATOR_DOS;
 			VsyncDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS;
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
-			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize))
+			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize, _syncSettings.FPS))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			PostInit();
