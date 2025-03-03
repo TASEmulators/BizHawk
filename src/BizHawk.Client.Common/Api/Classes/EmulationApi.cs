@@ -15,6 +15,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
 {
@@ -234,6 +235,19 @@ namespace BizHawk.Client.Common
 				s.ShowOBJ_3 = GetSetting(args, 7);
 				core.PutSettings(s);
 			}
+			void SetSnes9x(Snes9x core)
+			{
+				var s = core.GetSettings();
+				s.ShowBg0 = GetSetting(args, 0);
+				s.ShowBg1 = GetSetting(args, 1);
+				s.ShowBg2 = GetSetting(args, 2);
+				s.ShowBg3 = GetSetting(args, 3);
+				s.ShowSprites0 = GetSetting(args, 4);
+				s.ShowSprites1 = GetSetting(args, 5);
+				s.ShowSprites2 = GetSetting(args, 6);
+				s.ShowSprites3 = GetSetting(args, 7);
+				core.PutSettings(s);
+			}
 			void SetBsnes(ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings> settingsProvider)
 			{
 				var s = settingsProvider.GetSettings();
@@ -305,6 +319,9 @@ namespace BizHawk.Client.Common
 			{
 				case GPGX gpgx:
 					SetGPGX(gpgx);
+					break;
+				case Snes9x snes9x:
+					SetSnes9x(snes9x);
 					break;
 				case LibsnesCore snes:
 					SetLibsnes(snes);
