@@ -4876,9 +4876,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (wantCapture)
 			{
+				var size = _presentationPanel.Control.Size;
 				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
 				fbLocation.Offset(_presentationPanel.Control.Location);
-				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
+				fbLocation.Offset(new Point(size.Width / 2, size.Height / 2));
+				Cursor.Clip = new(fbLocation, new(1, 1));
 				Cursor.Hide();
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
