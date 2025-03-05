@@ -223,7 +223,7 @@ namespace BizHawk.Bizware.Input
 
 			if (supportsXkb)
 			{
-				var keyboard = XkbAllocKeyboard(Display);
+				var keyboard = XkbAllocKeyboard();
 				if (keyboard != null)
 				{
 					if (XkbGetNames(Display, 0x3FF, keyboard) == Status.Success)

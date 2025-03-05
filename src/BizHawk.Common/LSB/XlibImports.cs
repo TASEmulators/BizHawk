@@ -704,7 +704,7 @@ namespace BizHawk.Common
 		}
 
 		[DllImport(XLIB)]
-		public static extern unsafe XkbDescRec* XkbAllocKeyboard(IntPtr display);
+		public static extern unsafe XkbDescRec* XkbAllocKeyboard();
 
 		[DllImport(XLIB)]
 		public static extern unsafe void XkbFreeKeyboard(XkbDescRec* xkb, uint which, [MarshalAs(UnmanagedType.Bool)] bool free_all);
