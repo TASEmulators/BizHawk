@@ -244,30 +244,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PistolStart { get; set; }
 
-			[DisplayName("Player 1 Hexen Class")]
-			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player1Class { get; set; }
-
-			[DisplayName("Player 2 Hexen Class")]
-			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player2Class { get; set; }
-
-			[DisplayName("Player 3 Hexen Class")]
-			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player3Class { get; set; }
-
-			[DisplayName("Player 4 Hexen Class")]
-			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player4Class { get; set; }
-
 			[DisplayName("Chain Episodes")]
 			[Description("Completing one episode leads to the next without interruption.")]
 			[DefaultValue(false)]
@@ -308,6 +284,30 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("How fast the Doom player will run when using the mouse.")]
 			[DefaultValue(1)]
 			public int MouseRunSensitivity { get; set; }
+
+			[DisplayName("Player 1 Hexen Class")]
+			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player1Class { get; set; }
+
+			[DisplayName("Player 2 Hexen Class")]
+			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player2Class { get; set; }
+
+			[DisplayName("Player 3 Hexen Class")]
+			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player3Class { get; set; }
+
+			[DisplayName("Player 4 Hexen Class")]
+			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player4Class { get; set; }
 
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{
