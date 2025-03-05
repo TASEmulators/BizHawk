@@ -62,6 +62,34 @@ namespace BizHawk.Common.StringExtensions
 		public static bool In(this string str, params string[] options)
 			=> options.Any(str.EqualsIgnoreCase);
 
+		public static string InsertAfter(this string str, char needle, string insert, out bool found)
+		{
+			var insertPoint = str.IndexOf(needle);
+			found = insertPoint >= 0;
+			return found ? str.Insert(insertPoint + 1, insert) : str;
+		}
+
+		public static string InsertAfterLast(this string str, char needle, string insert, out bool found)
+		{
+			var insertPoint = str.LastIndexOf(needle);
+			found = insertPoint >= 0;
+			return found ? str.Insert(insertPoint + 1, insert) : str;
+		}
+
+		public static string InsertBefore(this string str, char needle, string insert, out bool found)
+		{
+			var insertPoint = str.IndexOf(needle);
+			found = insertPoint >= 0;
+			return found ? str.Insert(insertPoint, insert) : str;
+		}
+
+		public static string InsertBeforeLast(this string str, char needle, string insert, out bool found)
+		{
+			var insertPoint = str.LastIndexOf(needle);
+			found = insertPoint >= 0;
+			return found ? str.Insert(insertPoint, insert) : str;
+		}
+
 		/// <returns>a copy of <paramref name="raw"/> with all characters outside <c>[0-9A-Za-z]</c> removed</returns>
 		public static string OnlyAlphanumeric(this string raw)
 			=> string.Concat(raw.Where(static c => c is (>= '0' and <= '9') or (>= 'A' and <= 'Z') or (>= 'a' and <= 'z')));

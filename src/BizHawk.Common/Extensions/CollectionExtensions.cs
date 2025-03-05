@@ -10,6 +10,10 @@ namespace BizHawk.Common.CollectionExtensions
 	public static class CollectionExtensions
 #pragma warning restore MA0104
 	{
+		private const string ERR_MSG_IMMUTABLE_LIST = "immutable list passed to mutating method";
+
+		private const string WARN_NONGENERIC = "use generic overload";
+
 		public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
 			this IEnumerable<TSource> source,
 			Func<TSource, TKey> keySelector,
@@ -244,6 +248,111 @@ namespace BizHawk.Common.CollectionExtensions
 		{
 			if (list is IList<T> listImpl) return listImpl.IndexOf(elem);
 			for (int i = 0, l = list.Count; i < l; i++) if (elem.Equals(list[i])) return i;
+			return -1;
+		}
+
+		public static bool InsertAfter<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertAfter<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		public static bool InsertAfterLast<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertAfterLast<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		public static bool InsertBefore<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertBefore<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		public static bool InsertBeforeLast<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertBeforeLast<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		public static int LastIndexOf<T>(this IList<T> list, T item)
+		{
+			if (list is T[] arr) return Array.LastIndexOf(arr, item);
+			if (list is List<T> bclList) return bclList.LastIndexOf(item);
+			if (item is null)
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (list[i] is null) return i;
+			}
+			else
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (item.Equals(list[i])) return i;
+			}
+			return -1;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static int LastIndexOf(this IList list, object? item)
+		{
+			if (item is null)
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (list[i] is null) return i;
+			}
+			else
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (item.Equals(list[i])) return i;
+			}
 			return -1;
 		}
 

@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 					i++;
 				}
 			};
-			WatchesSubMenu.DropDownItems.Insert(11, deduperMenuItem);
+			_ = WatchesSubMenu.DropDownItems.InsertBefore(toolStripSeparator3, insert: deduperMenuItem);
 
 			Settings = new RamWatchSettings();
 

@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common.FilterManager
 			if (currState.SurfaceDisposition == SurfaceDisposition.Texture)
 			{
 				var renderer = new Render();
-				Filters.Insert(Filters.Count, renderer);
+				Filters.Add(renderer);
 				Compile(channel, inSize, outsize, finalTarget);
 				return;
 			}

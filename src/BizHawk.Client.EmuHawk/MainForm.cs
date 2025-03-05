@@ -79,9 +79,7 @@ namespace BizHawk.Client.EmuHawk
 #if BIZHAWKBUILD_SUPERHAWK
 			ToolStripMenuItemEx superHawkThrottleMenuItem = new() { Text = "SUPER·HAWK" };
 			superHawkThrottleMenuItem.Click += (_, _) => Config.SuperHawkThrottle = !Config.SuperHawkThrottle;
-			SpeedSkipSubMenu.DropDownItems.Insert(
-				SpeedSkipSubMenu.DropDownItems.IndexOf(MinimizeSkippingMenuItem),
-				superHawkThrottleMenuItem);
+			_ = SpeedSkipSubMenu.DropDownItems.InsertBefore(MinimizeSkippingMenuItem, insert: superHawkThrottleMenuItem);
 			ConfigSubMenu.DropDownOpened += (_, _) => superHawkThrottleMenuItem.Checked = Config.SuperHawkThrottle;
 #endif
 
@@ -159,9 +157,9 @@ namespace BizHawk.Client.EmuHawk
 					submenu.Enabled = false;
 				}
 			}
-			ConfigSubMenu.DropDownItems.Insert(
-				ConfigSubMenu.DropDownItems.IndexOf(CoresSubMenu) + 1,
-				new ToolStripMenuItemEx
+			_ = ConfigSubMenu.DropDownItems.InsertAfter(
+				CoresSubMenu,
+				insert: new ToolStripMenuItemEx
 				{
 					DropDownItems =
 					{
@@ -175,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "Core Settings",
 				});
 
-			MainformMenu.Items.Insert(MainformMenu.Items.IndexOf(ToolsSubMenu) + 1, NullHawkVSysSubmenu);
+			_ = MainformMenu.Items.InsertAfter(ToolsSubMenu, insert: NullHawkVSysSubmenu);
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right

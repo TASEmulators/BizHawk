@@ -135,9 +135,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
 			};
-			EditSubMenu.DropDownItems.Insert(
-				EditSubMenu.DropDownItems.IndexOf(ReselectClipboardMenuItem) + 1,
-				goToFrameMenuItem);
+			_ = EditSubMenu.DropDownItems.InsertAfter(ReselectClipboardMenuItem, insert: goToFrameMenuItem);
 
 			RecentSubMenu.Image = Resources.Recent;
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
