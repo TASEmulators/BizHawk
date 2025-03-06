@@ -13,8 +13,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int SVGA_MAX_WIDTH = 800;
 		public const int SVGA_MAX_HEIGHT = 600;
 
-		public const int VIDEO_NUMERATOR_DOS = 350000000;
-		public const int VIDEO_DENOMINATOR_DOS = 5000000;
+		// Default FPS: 70.086302895322945
+		public const int VIDEO_NUMERATOR_DOS = 226575000;
+		public const int VIDEO_DENOMINATOR_DOS = 3232800;
 
 		public const int FASTMEM_AUTO = -1;
 		public const int MAX_FLOPPIES = 4;
@@ -23,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, int fps);
+		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNominator, ulong fpsDenominator);
 
 		[BizImport(CC, Compatibility = true)]
 
