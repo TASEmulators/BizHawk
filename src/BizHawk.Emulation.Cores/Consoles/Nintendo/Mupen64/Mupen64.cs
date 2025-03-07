@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using static BizHawk.Emulation.Cores.Consoles.Nintendo.Mupen64.Mupen64Api;
 
@@ -79,7 +80,7 @@ public partial class Mupen64 : IEmulator
 		_debuggerUpdateCallback = DebuggerUpdateCallback;
 		Mupen64Api.DebugSetCallbacks(_debuggerInitCallback, _debuggerUpdateCallback, null);
 
-		ThrowIfError(Mupen64Api.CoreStartup(FRONTEND_API_VERSION, null, Path.Combine(AppContext.BaseDirectory, "dll"), IntPtr.Zero, _debugCallback, IntPtr.Zero, _stateCallback), "CoreStartup failed");
+		ThrowIfError(Mupen64Api.CoreStartup(FRONTEND_API_VERSION, null, Path.Combine(PathUtils.ExeDirectoryPath, "gamedb"), IntPtr.Zero, _debugCallback, IntPtr.Zero, _stateCallback), "CoreStartup failed");
 
 		IntPtr coreConfigSection = IntPtr.Zero;
 		Mupen64Api.ConfigOpenSection("Core", ref coreConfigSection);
