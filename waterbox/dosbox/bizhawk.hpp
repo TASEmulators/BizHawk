@@ -32,9 +32,14 @@ typedef struct
 {
 	int posX;
 	int posY;
-	int leftButton;
-	int middleButton;
-	int rightButton;
+	int dX;
+	int dY;
+	int leftButtonPressed;
+	int middleButtonPressed;
+	int rightButtonPressed;
+	int leftButtonReleased;
+	int middleButtonReleased;
+	int rightButtonReleased;
 	float sensitivity;
 } MouseInput;
 

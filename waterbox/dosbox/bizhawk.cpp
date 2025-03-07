@@ -44,7 +44,6 @@ extern std::set<KBD_KEYS> _releasedKeys;
 // mouse related variables
 extern int mickey_threshold;
 extern bool user_cursor_locked;
-MouseInput _prevMouse;
 #define MOUSE_MAX_X 800
 #define MOUSE_MAX_Y 600
 
@@ -147,11 +146,6 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 	stick[1].button[1] = false;
 
  // Initializing mouse
-	_prevMouse.posX = 0;
-	_prevMouse.posY = 0;
-	_prevMouse.leftButton = 0;
-	_prevMouse.middleButton = 0;
-	_prevMouse.rightButton = 0;
 	user_cursor_locked = true;
 
 	return true;
@@ -220,45 +214,40 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 
 	// Processing mouse inputs
-	if (f->mouse.posX != _prevMouse.posX || f->mouse.posY != _prevMouse.posY)
+	if (f->mouse.dX != 0 || f->mouse.dY != 0)
 	{
 		mouse.x = (double)mouse.min_x + ((double) f->mouse.posX / (double)MOUSE_MAX_X) * (double)mouse.max_x;
 		mouse.y = (double)mouse.min_y + ((double) f->mouse.posY / (double)MOUSE_MAX_Y) * (double)mouse.max_y;
 
-  float xrel = f->mouse.posX - _prevMouse.posX;
-		float yrel = f->mouse.posY - _prevMouse.posY;
+		float dx = f->mouse.dX * mouse.pixelPerMickey_x;
+		float dy = f->mouse.dY * mouse.pixelPerMickey_y;
 
-		float dx = xrel * mouse.pixelPerMickey_x;
-		float dy = yrel * mouse.pixelPerMickey_y;
-
-		mouse.mickey_x = xrel * mouse.mickeysPerPixel_x * f->mouse.sensitivity;
-		mouse.mickey_y = yrel * mouse.mickeysPerPixel_y * f->mouse.sensitivity;
+		mouse.mickey_x = f->mouse.dX * mouse.mickeysPerPixel_x * f->mouse.sensitivity;
+		mouse.mickey_y = f->mouse.dY * mouse.mickeysPerPixel_y * f->mouse.sensitivity;
 
 		mouse.mickey_accum_x += (dx * mouse.mickeysPerPixel_x);
 		mouse.mickey_accum_y += (dy * mouse.mickeysPerPixel_y);
 
-		mouse.ps2x += xrel;
-		mouse.ps2y += yrel;
+		mouse.ps2x += f->mouse.dX;
+		mouse.ps2y += f->mouse.dY;
 		if (mouse.ps2x >= 32768.0)       mouse.ps2x -= 65536.0;
 		else if (mouse.ps2x <= -32769.0) mouse.ps2x += 65536.0;
 		if (mouse.ps2y >= 32768.0)       mouse.ps2y -= 65536.0;
 		else if (mouse.ps2y <= -32769.0) mouse.ps2y += 65536.0;
 
+		// printf("X: %d (%d) Y: %d (%d)\n", f->mouse.posX, f->mouse.dX, f->mouse.posY, f->mouse.dY);
 		// printf("%d %f %d %f\n", mouse.mickey_x, mouse.mickey_accum_x, mouse.mickey_y, mouse.mickey_accum_y);
 
 		Mouse_AddEvent(MOUSE_HAS_MOVED);
 	}
 
-	_prevMouse.posX = f->mouse.posX;
-	_prevMouse.posY = f->mouse.posY;
+ if (f->mouse.leftButtonPressed) Mouse_ButtonPressed(0); 
+	if (f->mouse.middleButtonPressed) Mouse_ButtonPressed(2);
+	if (f->mouse.rightButtonPressed) Mouse_ButtonPressed(1);
 
-	if (_prevMouse.leftButton == 0 && f->mouse.leftButton == 1)	{ Mouse_ButtonPressed(0); _prevMouse.leftButton = 1; }
-	if (_prevMouse.middleButton == 0 && f->mouse.middleButton == 1)	{ Mouse_ButtonPressed(2); _prevMouse.middleButton = 1; }
-	if (_prevMouse.rightButton == 0 && f->mouse.rightButton == 1)	{ Mouse_ButtonPressed(1);  _prevMouse.rightButton = 1; }
-
-	if (_prevMouse.leftButton == 1 && f->mouse.leftButton == 0)	{ Mouse_ButtonReleased(0); _prevMouse.leftButton = 0; }
-	if (_prevMouse.middleButton == 1 && f->mouse.middleButton == 0)	{ Mouse_ButtonReleased(2); _prevMouse.middleButton = 0; }
-	if (_prevMouse.rightButton == 1 && f->mouse.rightButton == 0)	{ Mouse_ButtonReleased(1); _prevMouse.rightButton = 0; }
+	if (f->mouse.leftButtonReleased) Mouse_ButtonReleased(0); 
+	if (f->mouse.middleButtonReleased) Mouse_ButtonReleased(2);
+	if (f->mouse.rightButtonReleased) Mouse_ButtonReleased(1);
 
  // Clearing audio sample buffer
 		_audioSamples.clear();
