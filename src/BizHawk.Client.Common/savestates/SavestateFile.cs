@@ -147,7 +147,14 @@ namespace BizHawk.Client.Common
 
 			using (new SimpleTime("Load Core"))
 			{
-				bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+				try
+				{
+					bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+				}
+				catch (Exception)
+				{
+					return false;
+				}
 			}
 
 			// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
