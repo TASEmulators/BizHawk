@@ -259,32 +259,54 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DriveLightOn = false;
 			var fi = new LibDOSBox.FrameInfo();
 
-			fi.driveActions.insertFloppyDisk = -1;
-			fi.driveActions.insertCDROM = -1;
-
 			// Setting joystick inputs
-			fi.joystick1.up      = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Up) ? 1 : 0;
-			fi.joystick1.down    = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Down) ? 1 : 0;
-			fi.joystick1.left    = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Left) ? 1 : 0;
-			fi.joystick1.right   = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Right) ? 1 : 0;
-			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
-			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
-
-			fi.joystick2.up      = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Up) ? 1 : 0;
-			fi.joystick2.down    = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Down) ? 1 : 0;
-			fi.joystick2.left    = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Left) ? 1 : 0;
-			fi.joystick2.right   = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Right) ? 1 : 0;
-			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
-			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
+			fi.joystick1.up      = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+			fi.joystick1.down    = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+			fi.joystick1.left    = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+			fi.joystick1.right   = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
+			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
+			fi.joystick2.up      = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+			fi.joystick2.down    = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+			fi.joystick2.left    = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+			fi.joystick2.right   = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
+			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 
 			// Setting mouse inputs
-			fi.mouse.posX = _syncSettings.EnableMouse ? controller.AxisValue(Inputs.Mouse + " " + MouseInputs.XAxis) : 0;
-			fi.mouse.posY = _syncSettings.EnableMouse ? controller.AxisValue(Inputs.Mouse + " " + MouseInputs.YAxis) : 0;
-			fi.mouse.leftButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.LeftButton) ? 1 : 0;
-			fi.mouse.middleButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.MiddleButton) ? 1 : 0;
-			fi.mouse.rightButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.RightButton) ? 1 : 0;
-			fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
+			if (_syncSettings.EnableMouse)
+			{
+				fi.mouse.posX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.XAxis}");
+				fi.mouse.posY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.YAxis}");
+				fi.mouse.dX = fi.mouse.posX - _mouseState.posX;
+				fi.mouse.dY = fi.mouse.posY - _mouseState.posY;
 
+				// Button pressed criteria:
+				// If the input is made in this frame and the button is not held from before
+				fi.mouse.leftButtonPressed    = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && !_mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonPressed  = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && !_mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonPressed   = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && !_mouseState.rightButtonHeld ? 1 : 0;
+
+				// Button released criteria:
+				// If the input is not pressed in this frame and the button is held from before
+				fi.mouse.leftButtonReleased   = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && _mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && _mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonReleased  = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && _mouseState.rightButtonHeld ? 1 : 0;
+				fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
+			}
+
+			// Updating mouse state
+			_mouseState.posX = fi.mouse.posX;
+			_mouseState.posY = fi.mouse.posY;
+			if (fi.mouse.leftButtonPressed    > 0) _mouseState.leftButtonHeld = true;
+			if (fi.mouse.middleButtonPressed  > 0) _mouseState.middleButtonHeld = true;
+			if (fi.mouse.rightButtonPressed   > 0) _mouseState.rightButtonHeld = true;
+			if (fi.mouse.leftButtonReleased   > 0) _mouseState.leftButtonHeld = false;
+			if (fi.mouse.middleButtonReleased > 0) _mouseState.middleButtonHeld = false;
+			if (fi.mouse.rightButtonReleased  > 0) _mouseState.rightButtonHeld = false;
+
+			// Processing floppy disks swaps
+			fi.driveActions.insertFloppyDisk = -1;
 			if (_floppyDiskCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextFloppyDisk))
@@ -297,7 +319,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					}
 				}
 			}
+			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 
+			// Processing CDROM swaps
+			fi.driveActions.insertCDROM = -1;
 			if (_CDROMCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextCDROM))
@@ -310,10 +335,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					}
 				}
 			}
-
-			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
 
+			// Processing keyboard inputs
 			foreach (var (name, key) in _keyboardMap)
 			{
 				if (controller.IsPressed(name))
@@ -339,6 +363,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_nextCDROMPressed);
 			writer.Write(_currentFloppyDisk);
 			writer.Write(_currentCDROM);
+
+			writer.Write(_mouseState.posX);
+			writer.Write(_mouseState.posY);
+			writer.Write(_mouseState.leftButtonHeld);
+			writer.Write(_mouseState.middleButtonHeld);
+			writer.Write(_mouseState.rightButtonHeld);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -347,6 +377,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_nextCDROMPressed = reader.ReadBoolean();
 			_currentFloppyDisk = reader.ReadInt32();
 			_currentCDROM = reader.ReadInt32();
+
+			_mouseState.posX = reader.ReadInt32();
+			_mouseState.posY = reader.ReadInt32();
+			_mouseState.leftButtonHeld = reader.ReadBoolean();
+			_mouseState.middleButtonHeld = reader.ReadBoolean();
+			_mouseState.rightButtonHeld = reader.ReadBoolean();
 		}
 
 		private static class FileNames

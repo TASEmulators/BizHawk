@@ -79,9 +79,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			public int posX;
 			public int posY;
-			public int leftButton;
-			public int middleButton;
-			public int rightButton;
+			public int dX; // Delta X
+			public int dY; // Delta Y
+			public int leftButtonPressed;
+			public int middleButtonPressed;
+			public int rightButtonPressed;
+			public int leftButtonReleased;
+			public int middleButtonReleased;
+			public int rightButtonReleased;
 			public float sensitivity;
 		}
 

@@ -6,7 +6,19 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox
-	{
+	{ 
+		// A class to store the current state of the mouse for delta and button activation calculation
+		private class MouseState
+		{
+			public int posX = 0;
+			public int posY = 0;
+			public bool leftButtonHeld = false;
+			public bool middleButtonHeld = false;
+			public bool rightButtonHeld = false;
+		}
+
+		private MouseState _mouseState = new MouseState();
+
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
 		private static (string Name, LibDOSBox.DOSBoxKeyboard Value)[] CreateKeyboardMap()
