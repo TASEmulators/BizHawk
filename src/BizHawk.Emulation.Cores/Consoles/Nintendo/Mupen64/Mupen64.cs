@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -78,7 +79,7 @@ public partial class Mupen64 : IEmulator
 		_debuggerUpdateCallback = DebuggerUpdateCallback;
 		Mupen64Api.DebugSetCallbacks(_debuggerInitCallback, _debuggerUpdateCallback, null);
 
-		ThrowIfError(Mupen64Api.CoreStartup(FRONTEND_API_VERSION, null, null, IntPtr.Zero, _debugCallback, IntPtr.Zero, _stateCallback), "CoreStartup failed");
+		ThrowIfError(Mupen64Api.CoreStartup(FRONTEND_API_VERSION, null, Path.Combine(AppContext.BaseDirectory, "dll"), IntPtr.Zero, _debugCallback, IntPtr.Zero, _stateCallback), "CoreStartup failed");
 
 		IntPtr coreConfigSection = IntPtr.Zero;
 		Mupen64Api.ConfigOpenSection("Core", ref coreConfigSection);
