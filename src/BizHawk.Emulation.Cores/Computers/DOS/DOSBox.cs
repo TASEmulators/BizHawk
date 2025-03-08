@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 				// Checking for supported CD-ROM extensions
 				else if (ext is ".dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
-					or ".dosbox-cue" // Must be accompanied by a bin file
-					or ".dosbox-bin"
+					or ".dosbox-cue" // Must be accompanied by a bin file immediately after in the rom list
+					or ".dosbox-bin" // Must be accompanied by a cue file immediately before in the rom list
 					or ".dosbox-mdf"
 					or ".dosbox-chf")
 				{
@@ -173,17 +173,24 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			foreach (var file in _CDROMDiskImageFiles)
 			{
 				string typeExtension = Path.GetExtension(file.RomPath);
+				string newTypeExtension = "";
 
 				// Hack to avoid these CD-ROM images from being considered IDiscAssets
-				if (typeExtension == ".dosbox-iso") typeExtension = ".iso";
-				if (typeExtension == ".dosbox-bin") typeExtension = ".bin";
-				if (typeExtension == ".dosbox-cue") typeExtension = ".cue";
-				if (typeExtension == ".dosbox-mdf") typeExtension = ".mdf";
-				if (typeExtension == ".dosbox-chf") typeExtension = ".chf";
-				string cdromNewName = FileNames.CD + _CDROMCount.ToString() + typeExtension;
-				_exe.AddReadonlyFile(file.FileData, cdromNewName);
-				cdromMountLine += cdromNewName + " ";
-				_CDROMCount++;
+				if (typeExtension == ".dosbox-iso") newTypeExtension = ".iso";
+				if (typeExtension == ".dosbox-bin") newTypeExtension = ".bin";
+				if (typeExtension == ".dosbox-cue") newTypeExtension = ".cue";
+				if (typeExtension == ".dosbox-mdf") newTypeExtension = ".mdf";
+				if (typeExtension == ".dosbox-chf") newTypeExtension = ".chf";
+
+				string cdromFileName = Path.GetFileName(file.RomPath);
+				string cdromNewFileName = cdromFileName.Replace(typeExtension, newTypeExtension);
+
+				Console.WriteLine($"Adding {cdromNewFileName} as read only file into the core");
+				_exe.AddReadonlyFile(file.FileData, cdromNewFileName);
+
+				// Important: .cue and .bin CDROM images must be placed together in the .xml. This saves us from developing a matching engine here
+				if (newTypeExtension != ".cue") _CDROMCount++; // .cue CDROM extensions only work with an accompanying .bin, so don't increment CDROM count until that happens
+				if (newTypeExtension != ".bin") cdromMountLine += cdromNewFileName + " "; // .bin CDROM extensions only work with an accompanying .cue, so don't add it to DOSBOX as a new CDROM to mount
 			}
 			if (_CDROMCount > 0) configString += cdromMountLine + "\n";
 
