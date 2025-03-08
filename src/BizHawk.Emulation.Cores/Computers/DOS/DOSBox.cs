@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 				// Checking for supported CD-ROM extensions
 				else if (ext is ".dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
-					or ".dosbox-cue" // Must be accompanied by a bin file
-					or ".dosbox-bin"
+					or ".dosbox-cue" // Must be accompanied by a bin file immediately after in the rom list
+					or ".dosbox-bin" // Must be accompanied by a cue file immediately before in the rom list
 					or ".dosbox-mdf"
 					or ".dosbox-chf")
 				{
@@ -173,17 +173,24 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			foreach (var file in _CDROMDiskImageFiles)
 			{
 				string typeExtension = Path.GetExtension(file.RomPath);
+				string newTypeExtension = "";
 
 				// Hack to avoid these CD-ROM images from being considered IDiscAssets
-				if (typeExtension == ".dosbox-iso") typeExtension = ".iso";
-				if (typeExtension == ".dosbox-bin") typeExtension = ".bin";
-				if (typeExtension == ".dosbox-cue") typeExtension = ".cue";
-				if (typeExtension == ".dosbox-mdf") typeExtension = ".mdf";
-				if (typeExtension == ".dosbox-chf") typeExtension = ".chf";
-				string cdromNewName = FileNames.CD + _CDROMCount.ToString() + typeExtension;
-				_exe.AddReadonlyFile(file.FileData, cdromNewName);
-				cdromMountLine += cdromNewName + " ";
-				_CDROMCount++;
+				if (typeExtension == ".dosbox-iso") newTypeExtension = ".iso";
+				if (typeExtension == ".dosbox-bin") newTypeExtension = ".bin";
+				if (typeExtension == ".dosbox-cue") newTypeExtension = ".cue";
+				if (typeExtension == ".dosbox-mdf") newTypeExtension = ".mdf";
+				if (typeExtension == ".dosbox-chf") newTypeExtension = ".chf";
+
+				string cdromFileName = Path.GetFileName(file.RomPath);
+				string cdromNewFileName = cdromFileName.Replace(typeExtension, newTypeExtension);
+
+				Console.WriteLine($"Adding {cdromNewFileName} as read only file into the core");
+				_exe.AddReadonlyFile(file.FileData, cdromNewFileName);
+
+				// Important: .cue and .bin CDROM images must be placed together in the .xml. This saves us from developing a matching engine here
+				if (newTypeExtension != ".cue") _CDROMCount++; // .cue CDROM extensions only work with an accompanying .bin, so don't increment CDROM count until that happens
+				if (newTypeExtension != ".bin") cdromMountLine += cdromNewFileName + " "; // .bin CDROM extensions only work with an accompanying .cue, so don't add it to DOSBOX as a new CDROM to mount
 			}
 			if (_CDROMCount > 0) configString += cdromMountLine + "\n";
 
@@ -259,32 +266,57 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DriveLightOn = false;
 			var fi = new LibDOSBox.FrameInfo();
 
-			fi.driveActions.insertFloppyDisk = -1;
-			fi.driveActions.insertCDROM = -1;
-
 			// Setting joystick inputs
-			fi.joystick1.up      = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Up) ? 1 : 0;
-			fi.joystick1.down    = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Down) ? 1 : 0;
-			fi.joystick1.left    = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Left) ? 1 : 0;
-			fi.joystick1.right   = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Right) ? 1 : 0;
-			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
-			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed("P1 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
-
-			fi.joystick2.up      = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Up) ? 1 : 0;
-			fi.joystick2.down    = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Down) ? 1 : 0;
-			fi.joystick2.left    = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Left) ? 1 : 0;
-			fi.joystick2.right   = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Right) ? 1 : 0;
-			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button1) ? 1 : 0;
-			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed("P2 " + Inputs.Joystick + " " + JoystickButtons.Button2) ? 1 : 0;
+			fi.joystick1.up      = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+			fi.joystick1.down    = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+			fi.joystick1.left    = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+			fi.joystick1.right   = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
+			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
+			fi.joystick2.up      = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+			fi.joystick2.down    = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+			fi.joystick2.left    = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+			fi.joystick2.right   = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
+			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 
 			// Setting mouse inputs
-			fi.mouse.posX = _syncSettings.EnableMouse ? controller.AxisValue(Inputs.Mouse + " " + MouseInputs.XAxis) : 0;
-			fi.mouse.posY = _syncSettings.EnableMouse ? controller.AxisValue(Inputs.Mouse + " " + MouseInputs.YAxis) : 0;
-			fi.mouse.leftButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.LeftButton) ? 1 : 0;
-			fi.mouse.middleButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.MiddleButton) ? 1 : 0;
-			fi.mouse.rightButton = _syncSettings.EnableMouse && controller.IsPressed(Inputs.Mouse + " " + MouseInputs.RightButton) ? 1 : 0;
-			fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
+			if (_syncSettings.EnableMouse)
+			{
+				// 272 is minimal delta for RMouse on my machine, this will be obsolete when global sensitivity for RMouse is added and when it's bindable from GUI
+				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.XDelta}") / 272;
+				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.YDelta}") / 272;
+				fi.mouse.posX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.XAxis}");
+				fi.mouse.posY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.YAxis}");
+				fi.mouse.dX = deltaX != 0 ? deltaX : fi.mouse.posX - _mouseState.posX;
+				fi.mouse.dY = deltaY != 0 ? deltaY : fi.mouse.posY - _mouseState.posY;
 
+				// Button pressed criteria:
+				// If the input is made in this frame and the button is not held from before
+				fi.mouse.leftButtonPressed    = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && !_mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonPressed  = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && !_mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonPressed   = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && !_mouseState.rightButtonHeld ? 1 : 0;
+
+				// Button released criteria:
+				// If the input is not pressed in this frame and the button is held from before
+				fi.mouse.leftButtonReleased   = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && _mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && _mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonReleased  = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && _mouseState.rightButtonHeld ? 1 : 0;
+				fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
+			}
+
+			// Updating mouse state
+			_mouseState.posX = fi.mouse.posX;
+			_mouseState.posY = fi.mouse.posY;
+			if (fi.mouse.leftButtonPressed    > 0) _mouseState.leftButtonHeld = true;
+			if (fi.mouse.middleButtonPressed  > 0) _mouseState.middleButtonHeld = true;
+			if (fi.mouse.rightButtonPressed   > 0) _mouseState.rightButtonHeld = true;
+			if (fi.mouse.leftButtonReleased   > 0) _mouseState.leftButtonHeld = false;
+			if (fi.mouse.middleButtonReleased > 0) _mouseState.middleButtonHeld = false;
+			if (fi.mouse.rightButtonReleased  > 0) _mouseState.rightButtonHeld = false;
+
+			// Processing floppy disks swaps
+			fi.driveActions.insertFloppyDisk = -1;
 			if (_floppyDiskCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextFloppyDisk))
@@ -297,7 +329,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					}
 				}
 			}
+			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 
+			// Processing CDROM swaps
+			fi.driveActions.insertCDROM = -1;
 			if (_CDROMCount > 1)
 			{
 				if (controller.IsPressed(Inputs.NextCDROM))
@@ -310,10 +345,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					}
 				}
 			}
-
-			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
 
+			// Processing keyboard inputs
 			foreach (var (name, key) in _keyboardMap)
 			{
 				if (controller.IsPressed(name))
@@ -339,6 +373,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_nextCDROMPressed);
 			writer.Write(_currentFloppyDisk);
 			writer.Write(_currentCDROM);
+
+			writer.Write(_mouseState.posX);
+			writer.Write(_mouseState.posY);
+			writer.Write(_mouseState.leftButtonHeld);
+			writer.Write(_mouseState.middleButtonHeld);
+			writer.Write(_mouseState.rightButtonHeld);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -347,6 +387,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_nextCDROMPressed = reader.ReadBoolean();
 			_currentFloppyDisk = reader.ReadInt32();
 			_currentCDROM = reader.ReadInt32();
+
+			_mouseState.posX = reader.ReadInt32();
+			_mouseState.posY = reader.ReadInt32();
+			_mouseState.leftButtonHeld = reader.ReadBoolean();
+			_mouseState.middleButtonHeld = reader.ReadBoolean();
+			_mouseState.rightButtonHeld = reader.ReadBoolean();
 		}
 
 		private static class FileNames

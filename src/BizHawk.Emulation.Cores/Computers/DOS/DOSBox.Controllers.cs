@@ -6,7 +6,19 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox
-	{
+	{ 
+		// A class to store the current state of the mouse for delta and button activation calculation
+		private class MouseState
+		{
+			public int posX = 0;
+			public int posY = 0;
+			public bool leftButtonHeld = false;
+			public bool middleButtonHeld = false;
+			public bool rightButtonHeld = false;
+		}
+
+		private MouseState _mouseState = new MouseState();
+
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
 		private static (string Name, LibDOSBox.DOSBoxKeyboard Value)[] CreateKeyboardMap()
@@ -43,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.RightButton);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.XAxis, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.YAxis, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.XDelta, (-32769).RangeTo(32768), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.YDelta, (-32769).RangeTo(32768), 0);
 			}
 
 			// Adding drive management buttons
@@ -87,6 +101,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string MiddleButton = "Middle Button";
 			public const string XAxis = "X Axis";
 			public const string YAxis = "Y Axis";
+			public const string XDelta = "X Delta";
+			public const string YDelta = "Y Delta";
 		}
 
 		private static class Inputs
