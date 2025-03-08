@@ -151,8 +151,9 @@ namespace BizHawk.Client.Common
 				{
 					bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Util.DebugWriteLine(e);
 					return false;
 				}
 			}
