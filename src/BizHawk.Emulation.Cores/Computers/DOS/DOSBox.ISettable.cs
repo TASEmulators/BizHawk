@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			[DisplayName("Mouse Sensitivity")]
 			[Description("Adjusts the mouse relative speed (mickey) multiplier.")]
-			[DefaultValue(4.0)]
+			[DefaultValue(1.0)]
 			public float MouseSensitivity { get; set; }
 
 			[DisplayName("Writeable Hard Disk Drive")]
