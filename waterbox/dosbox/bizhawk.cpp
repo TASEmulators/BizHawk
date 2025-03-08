@@ -219,17 +219,20 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		mouse.x = (double)mouse.min_x + ((double) f->mouse.posX / (double)MOUSE_MAX_X) * (double)mouse.max_x;
 		mouse.y = (double)mouse.min_y + ((double) f->mouse.posY / (double)MOUSE_MAX_Y) * (double)mouse.max_y;
 
-		float dx = f->mouse.dX * mouse.pixelPerMickey_x;
-		float dy = f->mouse.dY * mouse.pixelPerMickey_y;
+  float adjustedDeltaX = (float) f->mouse.dX * (float) f->mouse.sensitivity;
+		float adjustedDeltaY = (float) f->mouse.dY * (float) f->mouse.sensitivity;
 
-		mouse.mickey_x = f->mouse.dX * mouse.mickeysPerPixel_x * f->mouse.sensitivity;
-		mouse.mickey_y = f->mouse.dY * mouse.mickeysPerPixel_y * f->mouse.sensitivity;
+		float dx = adjustedDeltaX * mouse.pixelPerMickey_x;
+		float dy = adjustedDeltaY * mouse.pixelPerMickey_y;
+
+		mouse.mickey_x = adjustedDeltaX * mouse.mickeysPerPixel_x ;
+		mouse.mickey_y = adjustedDeltaY * mouse.mickeysPerPixel_y ;
 
 		mouse.mickey_accum_x += (dx * mouse.mickeysPerPixel_x);
 		mouse.mickey_accum_y += (dy * mouse.mickeysPerPixel_y);
 
-		mouse.ps2x += f->mouse.dX;
-		mouse.ps2y += f->mouse.dY;
+		mouse.ps2x += adjustedDeltaX;
+		mouse.ps2y += adjustedDeltaY;
 		if (mouse.ps2x >= 32768.0)       mouse.ps2x -= 65536.0;
 		else if (mouse.ps2x <= -32769.0) mouse.ps2x += 65536.0;
 		if (mouse.ps2y >= 32768.0)       mouse.ps2y -= 65536.0;
