@@ -5,6 +5,7 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Computers.Amiga;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -22,6 +23,12 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			SystemId = VSystemID.Raw._3DO,
 			MaxSamples = 8 * 1024,
+			DefaultWidth = LibOpera.NTSC_WIDTH,
+			DefaultHeight = LibOpera.NTSC_HEIGHT,
+			MaxWidth = LibOpera.PAL_WIDTH,
+			MaxHeight = LibOpera.PAL_HEIGHT,
+			DefaultFpsNumerator = LibOpera.VIDEO_NUMERATOR_NTSC,
+			DefaultFpsDenominator = LibOpera.VIDEO_DENOMINATOR_NTSC
 		};
 
 		private readonly List<IRomAsset> _roms;
