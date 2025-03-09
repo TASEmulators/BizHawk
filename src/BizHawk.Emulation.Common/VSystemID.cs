@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Common
 		{
 			public const string A26 = "A26";
 			public const string A78 = "A78";
+			public const string _3DO = "3DO";
 			public const string Amiga = "Amiga";
 			public const string AmstradCPC = "AmstradCPC";
 			public const string AppleII = "AppleII";
