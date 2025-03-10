@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.Consoles._3DO
 			// Adding joystick buttons
 			if (settings.Controller1Type == ControllerType.Gamepad)
 				foreach (var button in JoystickButtonCollection)
-					controller.BoolButtons.Add("P1 " + Inputs.Joystick + " " + button);
+					controller.BoolButtons.Add("P1 " + button);
 
 			if (settings.Controller2Type == ControllerType.Gamepad)
 				foreach (var button in JoystickButtonCollection)
-					controller.BoolButtons.Add("P2 " + Inputs.Joystick + " " + button);
+					controller.BoolButtons.Add("P2 " + button);
 
 			return controller.MakeImmutable();
 		}
