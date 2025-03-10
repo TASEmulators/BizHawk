@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -22,13 +23,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		public const int VIDEO_DENOMINATOR_PAL = 2048;
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(int port1Type, int port2Type);
+		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			public JoystickButtons joystick1;
-			public JoystickButtons joystick2;
+			public UInt16 port1;
+			public UInt16 port2;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

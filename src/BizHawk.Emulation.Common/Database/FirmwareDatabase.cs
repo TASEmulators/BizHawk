@@ -136,12 +136,6 @@ namespace BizHawk.Emulation.Common
 			Option("3DO", "Kanji_ROM_Panasonic_FZ10", File("2E857B957803D0331FD229328DF01F3FFAB69EEE", 1048576, "panafz10ja-anvil-kanji.bin", "Kanji ROM for: Panasonic FZ-10 (J) [ANVIL]"), FirmwareOptionStatus.Ideal);
 			Option("3DO", "Kanji_ROM_Panasonic_FZ10", File("884515605EE243577AB20767EF8C1A7368E4E407", 1048576, "panafz1j-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J) / Panasonic FZ-10 (J)"));
 
-			Firmware("3DO", "Panasonic_FZ21S", "Panasonic FZ-21S (M2)");
-			Option("3DO", "Panasonic_FZ21S", File("152FE582937A3073E9D6110660446A4939A36E6D", 2097152, "fz21s.bin", "Panasonic FZ-21S"), FirmwareOptionStatus.Ideal);
-
-			Firmware("3DO", "Panasonic_FZ35S", "Panasonic FZ-35S (M2)");
-			Option("3DO", "Panasonic_FZ35S", File("6CD90C3D7F6918E9AA0E0993C882CD161C40E369", 1048576, "fz35s.bin", "Panasonic FZ-35S"), FirmwareOptionStatus.Ideal);
-
 			// 3DS
 			// bleh, undefined hash AND size...
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");

@@ -83,6 +83,11 @@ namespace BizHawk.Emulation.Common
 			["Run"] = 'R',
 			["RUN"] = 'R',
 
+			["A"] = 'A',
+			["B"] = 'B',
+			["X"] = 'X',
+			["Y"] = 'Y',
+
 			["Left Shoulder"] = 'l',
 			["Right Shoulder"] = 'r',
 			["L"] = 'l',
