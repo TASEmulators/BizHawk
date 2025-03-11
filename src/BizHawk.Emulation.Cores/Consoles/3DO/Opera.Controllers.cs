@@ -1,4 +1,7 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Computers.Amiga;
 
 namespace BizHawk.Emulation.Consoles._3DO
 {
@@ -6,38 +9,33 @@ namespace BizHawk.Emulation.Consoles._3DO
 	{ 
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings)
 		{
-			var controller = new ControllerDefinition("DOSBox Controller");
-
-			// Adding joystick buttons
-			if (settings.Controller1Type == ControllerType.Gamepad)
-				foreach (var button in JoystickButtonCollection)
-					controller.BoolButtons.Add("P1 " + button);
-
-			if (settings.Controller2Type == ControllerType.Gamepad)
-				foreach (var button in JoystickButtonCollection)
-					controller.BoolButtons.Add("P2 " + button);
-
+			var controller = new ControllerDefinition("3DO Controller");
+			setPortControllers(1, settings.Controller1Type, controller);
+			setPortControllers(2, settings.Controller2Type, controller);
 			return controller.MakeImmutable();
 		}
-		private enum JoystickButtonCodes  
+
+		private static void setPortControllers(int port, ControllerType type, ControllerDefinition controller)
 		{
-			ButtonB  = 0b0000000000000001,
-			ButtonY  = 0b0000000000000010,
-			Select   = 0b0000000000000100,
-			Start    = 0b0000000000001000,
-			Up       = 0b0000000000010000,
-			Down     = 0b0000000000100000,
-			Left     = 0b0000000001000000,
-			Right    = 0b0000000010000000,
-			ButtonA  = 0b0000000100000000,
-			ButtonX  = 0b0000001000000000,
-			ButtonL  = 0b0000010000000000,
-			ButtonR  = 0b0000100000000000,
-			ButtonL2 = 0b0001000000000000,
-			ButtonR2 = 0b0010000000000000,
-			ButtonL3 = 0b0100000000000000,
-			ButtonR3 = 0b1000000000000000,
-		};
+			switch (type)
+			{
+				case ControllerType.Gamepad:
+					foreach (var button in JoystickButtonCollection)
+						controller.BoolButtons.Add($"P{port} ${button}");
+					break;
+				case ControllerType.Mouse:
+					controller.BoolButtons.AddRange(
+					[
+						$"P{port} {Inputs.MouseLeftButton}",
+						$"P{port} {Inputs.MouseMiddleButton}",
+						$"P{port} {Inputs.MouseRightButton}"
+					]);
+					controller
+						.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
+						.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
+					break;
+			}
+		}
 
 		private static string[] JoystickButtonCollection =
 		[
@@ -53,10 +51,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 			JoystickButtons.ButtonY,
 			JoystickButtons.ButtonL,
 			JoystickButtons.ButtonR,
-			JoystickButtons.ButtonL2,
-			JoystickButtons.ButtonR2,
-			JoystickButtons.ButtonL3,
-			JoystickButtons.ButtonR3,
 		];
 
 		private static class JoystickButtons
@@ -73,15 +67,17 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public const string ButtonY = "Y";
 			public const string ButtonL = "L";
 			public const string ButtonR = "R";
-			public const string ButtonL2 = "L2";
-			public const string ButtonR2 = "R2";
-			public const string ButtonL3 = "L3";
-			public const string ButtonR3 = "R3";
 		}
 
 		private static class Inputs
 		{
 			public const string Joystick = "Joystick";
+			public const string MouseLeftButton = "Mouse Left Button";
+			public const string MouseRightButton = "Mouse Right Button";
+			public const string MouseMiddleButton = "Mouse Middle Button";
+			public const string MouseFourthButton = "Mouse Fourth Button";
+			public const string MouseX = "Mouse X";
+			public const string MouseY = "Mouse Y";
 		}
 	}
 }

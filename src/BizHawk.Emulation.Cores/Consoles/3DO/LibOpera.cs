@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 {
 	public abstract class LibOpera : LibWaterboxCore
 	{
-
-
 		// NTSC Specifications
 		public const int NTSC_WIDTH = 320;
 		public const int NTSC_HEIGHT = 240;
@@ -26,22 +24,47 @@ namespace BizHawk.Emulation.Consoles._3DO
 		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type);
 
 		[StructLayout(LayoutKind.Sequential)]
-		public new class FrameInfo : LibWaterboxCore.FrameInfo
-		{
-			public UInt16 port1;
-			public UInt16 port2;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct JoystickButtons
+		public struct GamepadInputs
 		{
 			public int up;
 			public int down;
 			public int left;
 			public int right;
-			public int button1;
-			public int button2;
+			public int start;
+			public int select;
+			public int buttonA;
+			public int buttonB;
+			public int buttonX;
+			public int buttonY;
+			public int buttonL;
+			public int buttonR;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct MouseInputs
+		{
+			public int posX;
+			public int posY;
+			public int dX;
+			public int dY;
+			public int leftButton;
+			public int middleButton;
+			public int rightButton;
+			public int fourthButton;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct GameInput
+		{
+			public GamepadInputs gamepad;
+			public MouseInputs mouse;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public new class FrameInfo : LibWaterboxCore.FrameInfo
+		{
+			public GameInput port1;
+			public GameInput port2;
+		}
 	}
 }

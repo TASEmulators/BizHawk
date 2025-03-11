@@ -114,54 +114,56 @@ namespace BizHawk.Emulation.Consoles._3DO
 			PostInit();
 		}
 
+		private LibOpera.GameInput _port1PrevGameInput = new LibOpera.GameInput();
+		private LibOpera.GameInput _port2PrevGameInput = new LibOpera.GameInput();
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var fi = new LibOpera.FrameInfo();
 
-			// Setting joystick inputs
-			fi.port1 = 0;
-			if (_syncSettings.Controller1Type == ControllerType.Gamepad)
-			{
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}")       ? JoystickButtonCodes.Up      : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}")     ? JoystickButtonCodes.Down    : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}")     ? JoystickButtonCodes.Left    : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}")    ? JoystickButtonCodes.Right   : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Select}")   ? JoystickButtonCodes.Select  : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Start}")    ? JoystickButtonCodes.Start   : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonA}")  ? JoystickButtonCodes.ButtonA : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonB}")  ? JoystickButtonCodes.ButtonB : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonX}")  ? JoystickButtonCodes.ButtonX : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonY}")  ? JoystickButtonCodes.ButtonY : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonL}")  ? JoystickButtonCodes.ButtonL : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonR}")  ? JoystickButtonCodes.ButtonR : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonL2}") ? JoystickButtonCodes.ButtonL : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonR2}") ? JoystickButtonCodes.ButtonR : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonL3}") ? JoystickButtonCodes.ButtonL : 0);
-				fi.port1 += (UInt16)(controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.ButtonR3}") ? JoystickButtonCodes.ButtonR : 0);
-			}
+			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, _port1PrevGameInput, controller);
+			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, _port2PrevGameInput, controller);
 
-			fi.port2 = 0;
-			if (_syncSettings.Controller1Type == ControllerType.Gamepad)
-			{
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? (uint) JoystickButtonCodes.Up : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? (uint) JoystickButtonCodes.Down : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? (uint) JoystickButtonCodes.Left : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? (uint) JoystickButtonCodes.Right : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Select}") ? (uint) JoystickButtonCodes.Select : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Start}") ? (uint) JoystickButtonCodes.Start : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonA}") ? (uint) JoystickButtonCodes.ButtonA : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonB}") ? (uint) JoystickButtonCodes.ButtonB : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonX}") ? (uint) JoystickButtonCodes.ButtonX : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonY}") ? (uint) JoystickButtonCodes.ButtonY : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonL}") ? (uint) JoystickButtonCodes.ButtonL : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonR}") ? (uint) JoystickButtonCodes.ButtonR : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonL2}") ? (uint) JoystickButtonCodes.ButtonL : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonR2}") ? (uint) JoystickButtonCodes.ButtonR : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonL3}") ? (uint) JoystickButtonCodes.ButtonL : 0);
-				fi.port2 += (UInt16)(controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.ButtonR3}") ? (uint) JoystickButtonCodes.ButtonR : 0);
-			}
+			_port1PrevGameInput = fi.port1;
+			_port2PrevGameInput = fi.port2;
 
 			return fi;
+		}
+
+		private static LibOpera.GameInput ProcessController(int port, ControllerType type, LibOpera.GameInput prevInputs, IController controller)
+		{
+			LibOpera.GameInput gameInput = new LibOpera.GameInput();
+
+			switch (type)
+			{
+				case ControllerType.Gamepad:
+					gameInput.gamepad.up       = controller.IsPressed($"P{port} {JoystickButtons.Up}") ? 1 : 0;
+					gameInput.gamepad.down     = controller.IsPressed($"P{port} {JoystickButtons.Down}") ? 1 : 0;
+					gameInput.gamepad.left     = controller.IsPressed($"P{port} {JoystickButtons.Left}") ? 1 : 0;
+					gameInput.gamepad.right    = controller.IsPressed($"P{port} {JoystickButtons.Right}") ? 1 : 0;
+					gameInput.gamepad.select   = controller.IsPressed($"P{port} {JoystickButtons.Select}") ? 1 : 0;
+					gameInput.gamepad.start    = controller.IsPressed($"P{port} {JoystickButtons.Start}") ? 1 : 0;
+					gameInput.gamepad.buttonA  = controller.IsPressed($"P{port} {JoystickButtons.ButtonA}") ? 1 : 0;
+					gameInput.gamepad.buttonB  = controller.IsPressed($"P{port} {JoystickButtons.ButtonB}") ? 1 : 0;
+					gameInput.gamepad.buttonX  = controller.IsPressed($"P{port} {JoystickButtons.ButtonX}") ? 1 : 0;
+					gameInput.gamepad.buttonY  = controller.IsPressed($"P{port} {JoystickButtons.ButtonY}") ? 1 : 0;
+					gameInput.gamepad.buttonL  = controller.IsPressed($"P{port} {JoystickButtons.ButtonL}") ? 1 : 0;
+					gameInput.gamepad.buttonR  = controller.IsPressed($"P{port} {JoystickButtons.ButtonR}") ? 1 : 0;
+					break;
+
+				case ControllerType.Mouse:
+					gameInput.mouse.posX = controller.AxisValue($"P{port} {Inputs.MouseX}");
+					gameInput.mouse.posY = controller.AxisValue($"P{port} {Inputs.MouseY}");
+					gameInput.mouse.dX = gameInput.mouse.posX - prevInputs.mouse.posX;
+					gameInput.mouse.dY = gameInput.mouse.posY - prevInputs.mouse.posY;
+					gameInput.mouse.leftButton   = controller.IsPressed($"P{port} {Inputs.MouseLeftButton}") ? 1 : 0;
+					gameInput.mouse.middleButton = controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}") ? 1 : 0;
+					gameInput.mouse.rightButton  = controller.IsPressed($"P{port} {Inputs.MouseRightButton}") ? 1 : 0;
+					gameInput.mouse.fourthButton = controller.IsPressed($"P{port} {Inputs.MouseFourthButton}") ? 1 : 0;
+					break;
+			}
+
+			return gameInput;
 		}
 
 		protected override void FrameAdvancePost()
