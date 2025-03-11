@@ -10,7 +10,6 @@
 #include "emulibc.h"
 #include "waterboxcore.h"
 
-#pragma pack(push, 1)
 struct gamePad_t
 {
 	int up;
@@ -26,9 +25,7 @@ struct gamePad_t
 	int buttonL;
 	int buttonR;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 struct mouse_t
 {
 	int posX;
@@ -40,15 +37,32 @@ struct mouse_t
 	int rightButton;
 	int fourthButton;
 };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
+struct flightStick_t
+{
+	int up;
+	int down;
+	int left;
+	int right;
+	int fire;
+	int buttonA;
+	int buttonB;
+	int buttonC;
+	int buttonX;
+	int buttonP;
+	int leftTrigger;
+	int rightTrigger;
+	int horizontalAxis;
+	int verticalAxis;
+	int altitudeAxis;
+};
+
 struct controllerData_t
 {
 	gamePad_t gamePad;
 	mouse_t mouse;
+	flightStick_t flightStick;
 };
-#pragma pack(pop)
 
 typedef struct
 {
