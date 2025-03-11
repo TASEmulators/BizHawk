@@ -55,14 +55,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 			Gamepad = 1,
 			[Display(Name = "Mouse")]
 			Mouse = 2,
-			[Display(Name = "Keyboard")]
-			Keyboard = 3,
-			[Display(Name = "Light Gun")]
-			LightGun = 4,
-			[Display(Name = "Analog")]
-			Analog = 5,
-			[Display(Name = "Pointer")]
-			Pointer = 6
+			[Display(Name = "Flight Stick")]
+			FlightStick = 257,
 		}
 
 		public object GetSettings() => null;

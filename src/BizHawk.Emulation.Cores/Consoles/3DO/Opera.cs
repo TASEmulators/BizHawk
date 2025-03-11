@@ -161,6 +161,24 @@ namespace BizHawk.Emulation.Consoles._3DO
 					gameInput.mouse.rightButton  = controller.IsPressed($"P{port} {Inputs.MouseRightButton}") ? 1 : 0;
 					gameInput.mouse.fourthButton = controller.IsPressed($"P{port} {Inputs.MouseFourthButton}") ? 1 : 0;
 					break;
+
+				case ControllerType.FlightStick:
+					gameInput.flightStick.up      = controller.IsPressed($"P{port} {FlightStickButtons.Up}") ? 1 : 0;
+					gameInput.flightStick.down    = controller.IsPressed($"P{port} {FlightStickButtons.Down}") ? 1 : 0;
+					gameInput.flightStick.left    = controller.IsPressed($"P{port} {FlightStickButtons.Left}") ? 1 : 0;
+					gameInput.flightStick.right   = controller.IsPressed($"P{port} {FlightStickButtons.Right}") ? 1 : 0;
+					gameInput.flightStick.fire    = controller.IsPressed($"P{port} {FlightStickButtons.Fire}") ? 1 : 0;
+					gameInput.flightStick.buttonA = controller.IsPressed($"P{port} {FlightStickButtons.ButtonA}") ? 1 : 0;
+					gameInput.flightStick.buttonB = controller.IsPressed($"P{port} {FlightStickButtons.ButtonB}") ? 1 : 0;
+					gameInput.flightStick.buttonC = controller.IsPressed($"P{port} {FlightStickButtons.ButtonC}") ? 1 : 0;
+					gameInput.flightStick.buttonX = controller.IsPressed($"P{port} {FlightStickButtons.ButtonX}") ? 1 : 0;
+					gameInput.flightStick.buttonP = controller.IsPressed($"P{port} {FlightStickButtons.ButtonP}") ? 1 : 0;
+					gameInput.flightStick.leftTrigger = controller.IsPressed($"P{port} {FlightStickButtons.LeftTrigger}") ? 1 : 0;
+					gameInput.flightStick.rightTrigger = controller.IsPressed($"P{port} {FlightStickButtons.RightTrigger}") ? 1 : 0;
+					gameInput.flightStick.horizontalAxis = controller.AxisValue($"P{port} {Inputs.FlighStickHorizontalAxis}");
+					gameInput.flightStick.verticalAxis = controller.AxisValue($"P{port} {Inputs.FlighStickVerticalAxis}");
+					gameInput.flightStick.altitudeAxis = controller.AxisValue($"P{port} {Inputs.FlighStickAltitudeAxis}");
+					break;
 			}
 
 			return gameInput;

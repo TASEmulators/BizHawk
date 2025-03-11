@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				case ControllerType.Gamepad:
 					foreach (var button in JoystickButtonCollection)
-						controller.BoolButtons.Add($"P{port} ${button}");
+						controller.BoolButtons.Add($"P{port} {button}");
 					break;
 				case ControllerType.Mouse:
 					controller.BoolButtons.AddRange(
@@ -33,6 +33,14 @@ namespace BizHawk.Emulation.Consoles._3DO
 					controller
 						.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
 						.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
+					break;
+				case ControllerType.FlightStick:
+				   foreach (var button in FlightStickButtonCollection)
+					controller.BoolButtons.Add($"P{port} ${button}");
+					controller
+						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
+						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2)
+					    .AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
 					break;
 			}
 		}
@@ -52,6 +60,37 @@ namespace BizHawk.Emulation.Consoles._3DO
 			JoystickButtons.ButtonL,
 			JoystickButtons.ButtonR,
 		];
+
+		private static string[] FlightStickButtonCollection =
+		[
+			FlightStickButtons.Up,
+			FlightStickButtons.Down,
+			FlightStickButtons.Left,
+			FlightStickButtons.Right,
+			FlightStickButtons.Fire,
+			FlightStickButtons.ButtonA,
+			FlightStickButtons.ButtonB,
+			FlightStickButtons.ButtonX,
+			FlightStickButtons.ButtonP,
+			FlightStickButtons.LeftTrigger,
+			FlightStickButtons.RightTrigger,
+		];
+
+		private static class FlightStickButtons
+		{
+			public const string Up = "Up";
+			public const string Down = "Down";
+			public const string Left = "Left";
+			public const string Right = "Right";
+			public const string Fire = "Fire";
+			public const string ButtonA = "A";
+			public const string ButtonB = "B";
+			public const string ButtonC = "C";
+			public const string LeftTrigger = "LT";
+			public const string RightTrigger = "RT";
+			public const string ButtonP = "P";
+			public const string ButtonX = "X";
+		}
 
 		private static class JoystickButtons
 		{
@@ -78,6 +117,9 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public const string MouseFourthButton = "Mouse Fourth Button";
 			public const string MouseX = "Mouse X";
 			public const string MouseY = "Mouse Y";
+			public const string FlighStickHorizontalAxis = "Flight Stick Horizontal Axis";
+			public const string FlighStickVerticalAxis = "Flight Stick Vertical Axis";
+			public const string FlighStickAltitudeAxis = "Flight Stick Altitude Axis";
 		}
 	}
 }
