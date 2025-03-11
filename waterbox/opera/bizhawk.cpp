@@ -23,8 +23,8 @@ std::string _gameFilePath;
 std::string _fontFilePath;
 int _port1Type;
 int _port2Type;
-int16_t _port1Value;
-int16_t _port2Value;
+controllerData_t _port1Value;
+controllerData_t _port2Value;
 MemoryAreas _memoryAreas;
 MemorySizes _memorySizes;
 uint32_t* _videoBuffer;
@@ -79,11 +79,44 @@ void RETRO_CALLCONV retro_input_poll_callback()
 		// printf("Libretro Input Poll Callback Called:\n");
 }
 
+int16_t processController(controllerData_t& portValue, unsigned device, unsigned index, unsigned id)
+{
+	if (device == RETRO_DEVICE_JOYPAD)
+	{
+		 if (id == RETRO_DEVICE_ID_JOYPAD_UP) return portValue.gamePad.up;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_DOWN) return portValue.gamePad.down;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_LEFT) return portValue.gamePad.left;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_RIGHT) return portValue.gamePad.right;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_L) return portValue.gamePad.buttonL;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_R) return portValue.gamePad.buttonR;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.gamePad.select;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_START) return portValue.gamePad.start;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_X) return portValue.gamePad.buttonX;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_Y) return portValue.gamePad.buttonY;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_B) return portValue.gamePad.buttonB;
+		 if (id == RETRO_DEVICE_ID_JOYPAD_A) return portValue.gamePad.buttonA;
+	}
+
+	if (device == RETRO_DEVICE_MOUSE)
+	{
+		if (id == RETRO_DEVICE_ID_MOUSE_X) return portValue.mouse.dX;
+		if (id == RETRO_DEVICE_ID_MOUSE_Y) return portValue.mouse.dY;
+		if (id == RETRO_DEVICE_ID_MOUSE_LEFT) return portValue.mouse.leftButton;
+		if (id == RETRO_DEVICE_ID_MOUSE_MIDDLE) return portValue.mouse.middleButton;
+		if (id == RETRO_DEVICE_ID_MOUSE_RIGHT) return portValue.mouse.rightButton;
+		if (id == RETRO_DEVICE_ID_MOUSE_BUTTON_4) return portValue.mouse.fourthButton;
+	}
+
+	return 0;
+}
+
 int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device, unsigned index, unsigned id)
 {
-	// printf("Libretro Input State Callback Called. Port: %u, Device: %u, Index: %u, Id: %u / Port1: %d - Value: %d\n", port, device, index, id, _port1Value, (_port1Value >> id) & 0x01);
-	if (port == 0) return (_port1Value >> id) & 0x01;
-	if (port == 1) return (_port2Value >> id) & 0x01;
+	// printf("Libretro Input State Callback Called. Port: %u, Device: %u, Index: %u, Id: %u\n", port, device, index, id);
+	if (port == 0) return processController(_port1Value, device, index, id);
+	if (port == 1) return processController(_port2Value, device, index, id);
+
+	return 0;
 }
 
 void configHandler(struct retro_variable *var)
@@ -171,6 +204,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	 // Setting inputs
 		_port1Value = f->port1;
 		_port2Value = f->port2;
+
+  //printf("Mouse X%d(%d), Y%d(%d), L%d, M%d, B%d\n", _port1Value.mouse.posX, _port1Value.mouse.dX, _port1Value.mouse.posY, _port1Value.mouse.dY, _port1Value.mouse.leftButton, _port1Value.mouse.middleButton, _port1Value.mouse.rightButton);
+		//fflush(stdout);
 
 		// Running a single frame
 		retro_run();
