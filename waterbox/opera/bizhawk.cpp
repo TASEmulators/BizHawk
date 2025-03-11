@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string>
 #include <libretro.h>
+#include <lr_input.h>
 #include <opera_vdlp.h>
 
 struct MemoryAreas 
@@ -79,9 +80,9 @@ void RETRO_CALLCONV retro_input_poll_callback()
 		// printf("Libretro Input Poll Callback Called:\n");
 }
 
-int16_t processController(controllerData_t& portValue, unsigned device, unsigned index, unsigned id)
+int16_t processController(const int portType, controllerData_t& portValue, const unsigned device, const unsigned index, const unsigned id)
 {
-	if (device == RETRO_DEVICE_JOYPAD)
+	if (portType == RETRO_DEVICE_JOYPAD)
 	{
 		 if (id == RETRO_DEVICE_ID_JOYPAD_UP) return portValue.gamePad.up;
 		 if (id == RETRO_DEVICE_ID_JOYPAD_DOWN) return portValue.gamePad.down;
@@ -97,7 +98,7 @@ int16_t processController(controllerData_t& portValue, unsigned device, unsigned
 		 if (id == RETRO_DEVICE_ID_JOYPAD_A) return portValue.gamePad.buttonA;
 	}
 
-	if (device == RETRO_DEVICE_MOUSE)
+	if (portType == RETRO_DEVICE_MOUSE)
 	{
 		if (id == RETRO_DEVICE_ID_MOUSE_X) return portValue.mouse.dX;
 		if (id == RETRO_DEVICE_ID_MOUSE_Y) return portValue.mouse.dY;
@@ -107,14 +108,42 @@ int16_t processController(controllerData_t& portValue, unsigned device, unsigned
 		if (id == RETRO_DEVICE_ID_MOUSE_BUTTON_4) return portValue.mouse.fourthButton;
 	}
 
+	if (portType == RETRO_DEVICE_FLIGHTSTICK)
+	{ 
+		 if (RETRO_DEVICE_ID_ANALOG_X)
+			{
+				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.horizontalAxis; 
+				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
+			}
+
+			if (RETRO_DEVICE_ID_ANALOG_Y)
+			{
+				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.verticalAxis;
+				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
+			}
+
+		 if (RETRO_DEVICE_ID_JOYPAD_R2) return portValue.flightStick.fire;
+   if (RETRO_DEVICE_ID_JOYPAD_Y) return portValue.flightStick.buttonA;   
+   if (RETRO_DEVICE_ID_JOYPAD_B) return portValue.flightStick.buttonB;   
+   if (RETRO_DEVICE_ID_JOYPAD_A) return portValue.flightStick.buttonC;   
+   if (RETRO_DEVICE_ID_JOYPAD_UP) return portValue.flightStick.up;   
+   if (RETRO_DEVICE_ID_JOYPAD_DOWN) return portValue.flightStick.down;   
+   if (RETRO_DEVICE_ID_JOYPAD_LEFT) return portValue.flightStick.left;   
+   if (RETRO_DEVICE_ID_JOYPAD_RIGHT) return portValue.flightStick.right;
+   if (RETRO_DEVICE_ID_JOYPAD_START) return portValue.flightStick.buttonP;
+   if (RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.flightStick.buttonX; 
+   if (RETRO_DEVICE_ID_JOYPAD_L) return portValue.flightStick.leftTrigger;
+   if (RETRO_DEVICE_ID_JOYPAD_R) return portValue.flightStick.rightTrigger;
+	}
+
 	return 0;
 }
 
 int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device, unsigned index, unsigned id)
 {
 	// printf("Libretro Input State Callback Called. Port: %u, Device: %u, Index: %u, Id: %u\n", port, device, index, id);
-	if (port == 0) return processController(_port1Value, device, index, id);
-	if (port == 1) return processController(_port2Value, device, index, id);
+	if (port == 0) return processController(_port1Type, _port1Value, device, index, id);
+	if (port == 1) return processController(_port2Type, _port2Value, device, index, id);
 
 	return 0;
 }
