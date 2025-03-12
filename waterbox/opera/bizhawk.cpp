@@ -160,6 +160,28 @@ int16_t processController(const int portType, controllerData_t& portValue, const
 		if (id == RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN) return portValue.arcadeLightGun.isOffScreen;
 	}
 
+	if (portType == RETRO_DEVICE_ORBATAK_TRACKBALL)
+	{ 
+		 if (RETRO_DEVICE_ID_ANALOG_X)
+			{
+				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dX; 
+				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dX; 
+			}
+
+			if (RETRO_DEVICE_ID_ANALOG_Y)
+			{
+				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dY; 
+				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dY; 
+			}
+
+		 if (RETRO_DEVICE_ID_JOYPAD_R2) return portValue.flightStick.fire;
+			if (RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.orbatakTrackball.startP1;
+			if (RETRO_DEVICE_ID_JOYPAD_START) return portValue.orbatakTrackball.startP2;
+			if (RETRO_DEVICE_ID_JOYPAD_L) return portValue.orbatakTrackball.coinP1;
+			if (RETRO_DEVICE_ID_JOYPAD_R) return portValue.orbatakTrackball.coinP2;
+			if (RETRO_DEVICE_ID_JOYPAD_R2) return portValue.orbatakTrackball.service;
+	}
+
 	return 0;
 }
 

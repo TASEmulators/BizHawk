@@ -79,6 +79,19 @@ struct arcadeLightGun_t
  int screenY;
 };
 
+struct OrbatakTrackball_t
+{
+	int posX;
+	int posY;
+	int dX;
+	int dY;
+	int startP1;
+	int startP2;
+	int coinP1;
+	int coinP2;
+	int service;
+};
+
 struct controllerData_t
 {
 	gamePad_t gamePad;
@@ -86,6 +99,7 @@ struct controllerData_t
 	flightStick_t flightStick;
 	lightGun_t lightGun;
 	arcadeLightGun_t arcadeLightGun;
+	OrbatakTrackball_t orbatakTrackball;
 };
 
 typedef struct
