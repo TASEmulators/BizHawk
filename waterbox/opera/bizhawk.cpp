@@ -194,13 +194,22 @@ int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device
 	return 0;
 }
 
+char deviceCountOption[256];
 void configHandler(struct retro_variable *var)
 {
 		printf("Variable Name: %s / Value: %s\n", var->key, var->value);
 
 		std::string key(var->key);
-		if (key == "opera_bios") var->value = _biosFilePath.c_str();
-		if (key == "opera_active_devices") var->value = "1";
+		if (key == "opera_bios" && _biosFilePath != "None") var->value = _biosFilePath.c_str();
+		if (key == "opera_font" && _fontFilePath != "None") var->value = _fontFilePath.c_str();
+		if (key == "opera_active_devices") 
+		{
+			int deviceCount = 0;
+			if (_port1Type != RETRO_DEVICE_NONE) deviceCount++;
+			if (_port2Type != RETRO_DEVICE_NONE) deviceCount++;
+			sprintf(deviceCountOption, "%d", deviceCount);
+			var->value = deviceCountOption;
+		}
 }
 
 const char* systemPath = ".";
