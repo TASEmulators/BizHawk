@@ -42,6 +42,20 @@ namespace BizHawk.Emulation.Consoles._3DO
 						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2)
 					    .AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
 					break;
+				case ControllerType.LightGun:
+					foreach (var button in LightGunButtonCollection)
+						controller.BoolButtons.Add($"P{port} ${button}");
+					controller
+						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (-32767).RangeTo(32768), 0)
+						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (-32767).RangeTo(32768), 0);
+					break;
+				case ControllerType.ArcadeLightGun:
+					foreach (var button in ArcadeLightGunButtonCollection)
+						controller.BoolButtons.Add($"P{port} ${button}");
+					controller
+						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (-32767).RangeTo(32768), 0)
+						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (-32767).RangeTo(32768), 0);
+					break;
 			}
 		}
 
@@ -76,21 +90,23 @@ namespace BizHawk.Emulation.Consoles._3DO
 			FlightStickButtons.RightTrigger,
 		];
 
-		private static class FlightStickButtons
-		{
-			public const string Up = "Up";
-			public const string Down = "Down";
-			public const string Left = "Left";
-			public const string Right = "Right";
-			public const string Fire = "Fire";
-			public const string ButtonA = "A";
-			public const string ButtonB = "B";
-			public const string ButtonC = "C";
-			public const string LeftTrigger = "LT";
-			public const string RightTrigger = "RT";
-			public const string ButtonP = "P";
-			public const string ButtonX = "X";
-		}
+		private static string[] LightGunButtonCollection =
+		[
+			LightGunButtons.Trigger,
+			LightGunButtons.Select,
+			LightGunButtons.Reload,
+			LightGunButtons.IsOffScreen,
+		];
+
+		private static string[] ArcadeLightGunButtonCollection =
+		[
+			ArcadeLightGunButtons.Trigger,
+			ArcadeLightGunButtons.Select,
+			ArcadeLightGunButtons.Start,
+			ArcadeLightGunButtons.Reload,
+			ArcadeLightGunButtons.AuxA,
+			ArcadeLightGunButtons.IsOffScreen,
+		];
 
 		private static class JoystickButtons
 		{
@@ -107,6 +123,38 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public const string ButtonL = "L";
 			public const string ButtonR = "R";
 		}
+		private static class FlightStickButtons
+		{
+			public const string Up = "Up";
+			public const string Down = "Down";
+			public const string Left = "Left";
+			public const string Right = "Right";
+			public const string Fire = "Fire";
+			public const string ButtonA = "A";
+			public const string ButtonB = "B";
+			public const string ButtonC = "C";
+			public const string LeftTrigger = "LT";
+			public const string RightTrigger = "RT";
+			public const string ButtonP = "P";
+			public const string ButtonX = "X";
+		}
+
+		private static class LightGunButtons
+		{
+			public const string Trigger = "Trigger";
+			public const string Select = "Select";
+			public const string Reload = "Reload";
+			public const string IsOffScreen = "Is Off-Screen";
+		}
+		private static class ArcadeLightGunButtons
+		{
+			public const string Trigger = "Trigger";
+			public const string Select = "Select";
+			public const string Start = "Start";
+			public const string Reload = "Reload";
+			public const string AuxA = "Aux A";
+			public const string IsOffScreen = "Is Off-Screen";
+		}
 
 		private static class Inputs
 		{
@@ -120,6 +168,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public const string FlighStickHorizontalAxis = "Flight Stick Horizontal Axis";
 			public const string FlighStickVerticalAxis = "Flight Stick Vertical Axis";
 			public const string FlighStickAltitudeAxis = "Flight Stick Altitude Axis";
+			public const string LightGunScreenX = "Light Gun Screen X";
+			public const string LightGunScreenY = "Light Gun Screen Y";
 		}
 	}
 }

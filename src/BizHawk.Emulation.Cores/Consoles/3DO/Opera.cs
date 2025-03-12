@@ -179,6 +179,26 @@ namespace BizHawk.Emulation.Consoles._3DO
 					gameInput.flightStick.verticalAxis = controller.AxisValue($"P{port} {Inputs.FlighStickVerticalAxis}");
 					gameInput.flightStick.altitudeAxis = controller.AxisValue($"P{port} {Inputs.FlighStickAltitudeAxis}");
 					break;
+
+				case ControllerType.LightGun:
+			        gameInput.lightGun.trigger = controller.IsPressed($"P{port} {LightGunButtons.Trigger}") ? 1 : 0;
+					gameInput.lightGun.select = controller.IsPressed($"P{port} {LightGunButtons.Select}") ? 1 : 0;
+					gameInput.lightGun.reload = controller.IsPressed($"P{port} {LightGunButtons.Reload}") ? 1 : 0;
+					gameInput.lightGun.isOffScreen = controller.IsPressed($"P{port} {LightGunButtons.IsOffScreen}") ? 1 : 0;
+					gameInput.lightGun.screenX = controller.AxisValue($"P{port} {Inputs.LightGunScreenX}");
+					gameInput.lightGun.screenY = controller.AxisValue($"P{port} {Inputs.LightGunScreenY}");
+					break;
+
+				case ControllerType.ArcadeLightGun:
+					gameInput.arcadeLightGun.trigger = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Trigger}") ? 1 : 0;
+					gameInput.arcadeLightGun.select = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Select}") ? 1 : 0;
+					gameInput.arcadeLightGun.start = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Start}") ? 1 : 0;
+					gameInput.arcadeLightGun.reload = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Reload}") ? 1 : 0;
+					gameInput.arcadeLightGun.auxA = controller.IsPressed($"P{port} {ArcadeLightGunButtons.AuxA}") ? 1 : 0;
+					gameInput.arcadeLightGun.isOffScreen = controller.IsPressed($"P{port} {ArcadeLightGunButtons.IsOffScreen}") ? 1 : 0;
+					gameInput.arcadeLightGun.screenX = controller.AxisValue($"P{port} {Inputs.LightGunScreenX}");
+					gameInput.arcadeLightGun.screenY = controller.AxisValue($"P{port} {Inputs.LightGunScreenY}");
+					break;
 			}
 
 			return gameInput;
