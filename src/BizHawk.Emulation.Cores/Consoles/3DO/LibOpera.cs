@@ -54,10 +54,31 @@ namespace BizHawk.Emulation.Consoles._3DO
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct FlightStickInputs
+		{
+			public int up;
+			public int down;
+			public int left;
+			public int right;
+			public int fire;
+			public int buttonA;
+			public int buttonB;
+			public int buttonC;
+			public int buttonX;
+			public int buttonP;
+			public int leftTrigger;
+			public int rightTrigger;
+			public int horizontalAxis;
+			public int verticalAxis;
+			public int altitudeAxis;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct GameInput
 		{
 			public GamepadInputs gamepad;
 			public MouseInputs mouse;
+			public FlightStickInputs flightStick;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
