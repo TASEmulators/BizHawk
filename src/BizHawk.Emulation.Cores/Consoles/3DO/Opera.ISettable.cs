@@ -57,6 +57,10 @@ namespace BizHawk.Emulation.Consoles._3DO
 			Mouse = 2,
 			[Display(Name = "Flight Stick")]
 			FlightStick = 257,
+			[Display(Name = "Light Gun")]
+			LightGun = 4,
+			[Display(Name = "Arcade Light Gun")]
+			ArcadeLightGun = 260,
 		}
 
 		public object GetSettings() => null;

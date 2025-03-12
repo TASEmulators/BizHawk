@@ -74,11 +74,37 @@ namespace BizHawk.Emulation.Consoles._3DO
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct LightGunInputs
+		{
+			public int trigger;
+			public int select;
+			public int reload;
+			public int isOffScreen;
+			public int screenX;
+			public int screenY;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct ArcadeLightGunInputs
+		{
+			public int trigger;
+			public int select;
+			public int start;
+			public int reload;
+			public int auxA;
+			public int isOffScreen;
+			public int screenX;
+			public int screenY;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct GameInput
 		{
 			public GamepadInputs gamepad;
 			public MouseInputs mouse;
 			public FlightStickInputs flightStick;
+			public LightGunInputs lightGun;
+			public ArcadeLightGunInputs arcadeLightGun;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
