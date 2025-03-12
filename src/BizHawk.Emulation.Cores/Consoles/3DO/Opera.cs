@@ -199,6 +199,18 @@ namespace BizHawk.Emulation.Consoles._3DO
 					gameInput.arcadeLightGun.screenX = controller.AxisValue($"P{port} {Inputs.LightGunScreenX}");
 					gameInput.arcadeLightGun.screenY = controller.AxisValue($"P{port} {Inputs.LightGunScreenY}");
 					break;
+
+				case ControllerType.OrbatakTrackball:
+					gameInput.orbatakTrackball.startP1 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.StartP1}") ? 1 : 0;
+					gameInput.orbatakTrackball.startP2 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.StartP2}") ? 1 : 0;
+					gameInput.orbatakTrackball.coinP1  = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP1}") ? 1 : 0;
+					gameInput.orbatakTrackball.coinP2  = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP2}") ? 1 : 0;
+					gameInput.orbatakTrackball.service = controller.IsPressed($"P{port} {OrbatakTrackballButtons.Service}") ? 1 : 0;
+					gameInput.orbatakTrackball.posX = controller.AxisValue($"P{port} {Inputs.TrackballPosX}");
+					gameInput.orbatakTrackball.posY = controller.AxisValue($"P{port} {Inputs.TrackballPosY}");
+					gameInput.orbatakTrackball.dX = gameInput.orbatakTrackball.posX - prevInputs.orbatakTrackball.posX;
+					gameInput.orbatakTrackball.dY = gameInput.orbatakTrackball.posY - prevInputs.orbatakTrackball.posY;
+					break;
 			}
 
 			return gameInput;

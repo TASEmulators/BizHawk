@@ -61,6 +61,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 			LightGun = 4,
 			[Display(Name = "Arcade Light Gun")]
 			ArcadeLightGun = 260,
+			[Display(Name = "Orbatak Trackball")]
+			OrbatakTrackball = 513,
 		}
 
 		public object GetSettings() => null;

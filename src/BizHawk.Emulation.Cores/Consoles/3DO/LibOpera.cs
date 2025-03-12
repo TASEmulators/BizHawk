@@ -98,6 +98,20 @@ namespace BizHawk.Emulation.Consoles._3DO
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
+		public struct OrbatakTrackballInputs
+		{
+			public int posX;
+			public int posY;
+			public int dX;
+			public int dY;
+			public int startP1;
+			public int startP2;
+			public int coinP1;
+			public int coinP2;
+			public int service;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
 		public struct GameInput
 		{
 			public GamepadInputs gamepad;
@@ -105,6 +119,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public FlightStickInputs flightStick;
 			public LightGunInputs lightGun;
 			public ArcadeLightGunInputs arcadeLightGun;
+			public OrbatakTrackballInputs orbatakTrackball;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

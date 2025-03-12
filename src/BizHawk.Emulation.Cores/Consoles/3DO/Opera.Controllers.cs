@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 					break;
 				case ControllerType.FlightStick:
 				   foreach (var button in FlightStickButtonCollection)
-					controller.BoolButtons.Add($"P{port} ${button}");
+					controller.BoolButtons.Add($"P{port} {button}");
 					controller
 						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2)
@@ -44,17 +44,24 @@ namespace BizHawk.Emulation.Consoles._3DO
 					break;
 				case ControllerType.LightGun:
 					foreach (var button in LightGunButtonCollection)
-						controller.BoolButtons.Add($"P{port} ${button}");
+						controller.BoolButtons.Add($"P{port} {button}");
 					controller
 						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (-32767).RangeTo(32768), 0)
 						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (-32767).RangeTo(32768), 0);
 					break;
 				case ControllerType.ArcadeLightGun:
 					foreach (var button in ArcadeLightGunButtonCollection)
-						controller.BoolButtons.Add($"P{port} ${button}");
+						controller.BoolButtons.Add($"P{port} {button}");
 					controller
 						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (-32767).RangeTo(32768), 0)
 						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (-32767).RangeTo(32768), 0);
+					break;
+				case ControllerType.OrbatakTrackball:
+					foreach (var button in OrbatakTrackballCollection)
+						controller.BoolButtons.Add($"P{port} {button}");
+					controller
+						.AddAxis($"P{port} {Inputs.TrackballPosX}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
+						.AddAxis($"P{port} {Inputs.TrackballPosY}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
 					break;
 			}
 		}
@@ -108,6 +115,15 @@ namespace BizHawk.Emulation.Consoles._3DO
 			ArcadeLightGunButtons.IsOffScreen,
 		];
 
+		private static string[] OrbatakTrackballCollection =
+		[
+			OrbatakTrackballButtons.StartP1,
+			OrbatakTrackballButtons.StartP2,
+			OrbatakTrackballButtons.CoinP1,
+			OrbatakTrackballButtons.CoinP2,
+			OrbatakTrackballButtons.Service,
+		];
+
 		private static class JoystickButtons
 		{
 			public const string Up = "Up";
@@ -156,6 +172,15 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public const string IsOffScreen = "Is Off-Screen";
 		}
 
+		private static class OrbatakTrackballButtons
+		{
+			public const string StartP1 = "Start P1";
+			public const string StartP2 = "Start P2";
+			public const string CoinP1 = "Coin P1";
+			public const string CoinP2 = "Coin P2";
+			public const string Service = "Service";
+		}
+
 		private static class Inputs
 		{
 			public const string Joystick = "Joystick";
@@ -170,6 +195,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 			public const string FlighStickAltitudeAxis = "Flight Stick Altitude Axis";
 			public const string LightGunScreenX = "Light Gun Screen X";
 			public const string LightGunScreenY = "Light Gun Screen Y";
+			public const string TrackballPosX = "Trackball X";
+			public const string TrackballPosY = "Trackball Y";
 		}
 	}
 }
