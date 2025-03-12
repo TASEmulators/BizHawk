@@ -32,6 +32,7 @@ uint32_t* _videoBuffer;
 size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
+int _region;
 
 #define _MAX_SAMPLES 4096
 #define _CHANNEL_COUNT 2
@@ -194,7 +195,7 @@ int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device
 	return 0;
 }
 
-char deviceCountOption[256];
+char _deviceCountOption[256];
 void configHandler(struct retro_variable *var)
 {
 		printf("Variable Name: %s / Value: %s\n", var->key, var->value);
@@ -202,13 +203,19 @@ void configHandler(struct retro_variable *var)
 		std::string key(var->key);
 		if (key == "opera_bios" && _biosFilePath != "None") var->value = _biosFilePath.c_str();
 		if (key == "opera_font" && _fontFilePath != "None") var->value = _fontFilePath.c_str();
+		if (key == "opera_region")
+		{
+			if (_region == 0) var->value = "ntsc";
+			if (_region == 1) var->value = "pal1";
+			if (_region == 2) var->value = "pal2";
+		} 
 		if (key == "opera_active_devices") 
 		{
 			int deviceCount = 0;
 			if (_port1Type != RETRO_DEVICE_NONE) deviceCount++;
 			if (_port2Type != RETRO_DEVICE_NONE) deviceCount++;
-			sprintf(deviceCountOption, "%d", deviceCount);
-			var->value = deviceCountOption;
+			sprintf(_deviceCountOption, "%d", deviceCount);
+			var->value = _deviceCountOption;
 		}
 }
 
@@ -232,13 +239,14 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
 }
 
 
-ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const char* fontFilePath, int port1Type, int port2Type)
+ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const char* fontFilePath, int port1Type, int port2Type, int region)
 { 
 	_gameFilePath = gameFilePath;
 	_biosFilePath = biosFilePath;
 	_fontFilePath = fontFilePath;
 	_port1Type = port1Type;
 	_port2Type = port2Type;
+ _region = region;
 
 	opera_lr_callbacks_set_environment(retro_environment_callback);
 	opera_lr_callbacks_set_input_state(retro_input_state_callback);
