@@ -33,7 +33,9 @@ size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
 
-int16_t* _audioBuffer;
+#define _MAX_SAMPLES 4096
+#define _CHANNEL_COUNT 2
+int16_t _audioBuffer[_MAX_SAMPLES * _CHANNEL_COUNT];
 size_t _audioSamples;
 
 extern "C"
@@ -70,8 +72,8 @@ void RETRO_CALLCONV retro_log_printf_callback(enum retro_log_level level, const 
 
 size_t RETRO_CALLCONV retro_audio_sample_batch_callback(const int16_t *data, size_t frames)
 {
-	 _audioBuffer = (int16_t*)data;
- 	_audioSamples = frames >> 1;
+	 memcpy(_audioBuffer, data, sizeof(int16_t) * frames * _CHANNEL_COUNT);
+ 	_audioSamples = frames;
 	 return frames;
 }
 
@@ -134,6 +136,28 @@ int16_t processController(const int portType, controllerData_t& portValue, const
    if (RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.flightStick.buttonX; 
    if (RETRO_DEVICE_ID_JOYPAD_L) return portValue.flightStick.leftTrigger;
    if (RETRO_DEVICE_ID_JOYPAD_R) return portValue.flightStick.rightTrigger;
+	}
+
+	if (portType == RETRO_DEVICE_LIGHTGUN)
+	{
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) return portValue.lightGun.screenX;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) return portValue.lightGun.screenY;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) return portValue.lightGun.trigger;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_SELECT) return portValue.lightGun.select;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_RELOAD) return portValue.lightGun.reload;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN) return portValue.lightGun.isOffScreen;
+	}
+
+	if (portType == RETRO_DEVICE_ARCADE_LIGHTGUN)
+	{
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X)     return portValue.arcadeLightGun.screenX;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y)     return portValue.arcadeLightGun.screenY;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)      return portValue.arcadeLightGun.trigger;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_SELECT)       return portValue.arcadeLightGun.select;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_START)        return portValue.arcadeLightGun.start;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_RELOAD)       return portValue.arcadeLightGun.reload;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_AUX_A)        return portValue.arcadeLightGun.auxA;
+		if (id == RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN) return portValue.arcadeLightGun.isOffScreen;
 	}
 
 	return 0;
@@ -246,8 +270,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		memcpy(f->base.VideoBuffer, _videoBuffer, sizeof(uint32_t) * _videoWidth * _videoHeight);
 
 		// Setting audio buffer
-		f->base.Samples  = _audioSamples;
-		memcpy(f->base.SoundBuffer, _audioBuffer, _audioSamples * sizeof(int16_t));
+		f->base.Samples = _audioSamples;
+		memcpy(f->base.SoundBuffer, _audioBuffer, _audioSamples * sizeof(int16_t) * _CHANNEL_COUNT);
 }
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
