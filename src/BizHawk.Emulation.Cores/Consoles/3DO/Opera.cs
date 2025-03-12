@@ -21,16 +21,40 @@ namespace BizHawk.Emulation.Consoles._3DO
 		isReleased: false)]
 	public partial class Opera : WaterboxCore
 	{
-		private static readonly Configuration DefaultConfig = new Configuration
+		private static readonly Configuration ConfigNTSC = new Configuration
 		{
 			SystemId = VSystemID.Raw._3DO,
 			MaxSamples = 8 * 1024,
 			DefaultWidth = LibOpera.NTSC_WIDTH,
 			DefaultHeight = LibOpera.NTSC_HEIGHT,
-			MaxWidth = LibOpera.PAL_WIDTH,
-			MaxHeight = LibOpera.PAL_HEIGHT,
-			DefaultFpsNumerator = LibOpera.VIDEO_NUMERATOR_NTSC,
-			DefaultFpsDenominator = LibOpera.VIDEO_DENOMINATOR_NTSC
+			MaxWidth = LibOpera.PAL2_WIDTH,
+			MaxHeight = LibOpera.PAL2_HEIGHT,
+			DefaultFpsNumerator = LibOpera.NTSC_VIDEO_NUMERATOR,
+			DefaultFpsDenominator = LibOpera.NTSC_VIDEO_DENOMINATOR
+		};
+
+		private static readonly Configuration ConfigPAL1 = new Configuration
+		{
+			SystemId = VSystemID.Raw._3DO,
+			MaxSamples = 8 * 1024,
+			DefaultWidth = LibOpera.PAL1_WIDTH,
+			DefaultHeight = LibOpera.PAL1_HEIGHT,
+			MaxWidth = LibOpera.PAL1_WIDTH,
+			MaxHeight = LibOpera.PAL1_HEIGHT,
+			DefaultFpsNumerator = LibOpera.PAL1_VIDEO_NUMERATOR,
+			DefaultFpsDenominator = LibOpera.PAL1_VIDEO_DENOMINATOR
+		};
+
+		private static readonly Configuration ConfigPAL2 = new Configuration
+		{
+			SystemId = VSystemID.Raw._3DO,
+			MaxSamples = 8 * 1024,
+			DefaultWidth = LibOpera.PAL2_WIDTH,
+			DefaultHeight = LibOpera.PAL2_HEIGHT,
+			MaxWidth = LibOpera.PAL2_WIDTH,
+			MaxHeight = LibOpera.PAL2_HEIGHT,
+			DefaultFpsNumerator = LibOpera.PAL2_VIDEO_NUMERATOR,
+			DefaultFpsDenominator = LibOpera.PAL2_VIDEO_DENOMINATOR
 		};
 
 		private readonly List<IRomAsset> _roms;
@@ -45,11 +69,18 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		[CoreConstructor(VSystemID.Raw._3DO)]
 		public Opera(CoreLoadParameters<object, SyncSettings> lp)
-			: base(lp.Comm, DefaultConfig)
+			: base(lp.Comm, lp.SyncSettings.VideoStandard switch
+			{
+				VideoStandard.NTSC => ConfigNTSC,
+				VideoStandard.PAL1 => ConfigPAL1,
+				VideoStandard.PAL2 => ConfigPAL2,
+				_ => throw new NotImplementedException()
+			})
 		{
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
+
 
 			_libOpera = PreInit<LibOpera>(new WaterboxOptions
 			{
@@ -108,7 +139,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 			////////////// Initializing Core
 			Console.WriteLine($"Launching Core with Game ROM: '{gameFileName}', BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
-			if (!_libOpera.Init(gameFileName, biosFileName, fontROMFileName, (int)_syncSettings.Controller1Type, (int)_syncSettings.Controller2Type))
+			if (!_libOpera.Init(gameFileName, biosFileName, fontROMFileName, (int)_syncSettings.Controller1Type, (int)_syncSettings.Controller2Type, (int)_syncSettings.VideoStandard))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			PostInit();

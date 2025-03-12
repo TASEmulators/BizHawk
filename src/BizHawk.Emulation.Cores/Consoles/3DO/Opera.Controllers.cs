@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Computers.Amiga;
 
 namespace BizHawk.Emulation.Consoles._3DO
 {
@@ -31,16 +30,16 @@ namespace BizHawk.Emulation.Consoles._3DO
 						$"P{port} {Inputs.MouseRightButton}"
 					]);
 					controller
-						.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
-						.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
+						.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibOpera.PAL2_WIDTH), LibOpera.PAL2_WIDTH / 2)
+						.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2);
 					break;
 				case ControllerType.FlightStick:
 				   foreach (var button in FlightStickButtonCollection)
 					controller.BoolButtons.Add($"P{port} {button}");
 					controller
-						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
-						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2)
-					    .AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
+						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", 0.RangeTo(LibOpera.PAL2_WIDTH), LibOpera.PAL2_WIDTH / 2)
+						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2)
+					    .AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2);
 					break;
 				case ControllerType.LightGun:
 					foreach (var button in LightGunButtonCollection)
@@ -60,8 +59,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 					foreach (var button in OrbatakTrackballCollection)
 						controller.BoolButtons.Add($"P{port} {button}");
 					controller
-						.AddAxis($"P{port} {Inputs.TrackballPosX}", 0.RangeTo(LibOpera.PAL_WIDTH), LibOpera.PAL_WIDTH / 2)
-						.AddAxis($"P{port} {Inputs.TrackballPosY}", 0.RangeTo(LibOpera.PAL_HEIGHT), LibOpera.PAL_HEIGHT / 2);
+						.AddAxis($"P{port} {Inputs.TrackballPosX}", 0.RangeTo(LibOpera.PAL2_WIDTH), LibOpera.PAL2_WIDTH / 2)
+						.AddAxis($"P{port} {Inputs.TrackballPosY}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2);
 					break;
 			}
 		}

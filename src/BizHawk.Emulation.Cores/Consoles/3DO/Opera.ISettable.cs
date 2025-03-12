@@ -47,6 +47,16 @@ namespace BizHawk.Emulation.Consoles._3DO
 			Kanji_ROM_Panasonic_FZ10,
 		}
 
+		public enum VideoStandard
+		{
+			[Display(Name = "NTSC")]
+			NTSC = 0,
+			[Display(Name = "PAL1")]
+			PAL1 = 1,
+			[Display(Name = "PAL2")]
+			PAL2 = 2,
+		}
+
 		public enum ControllerType 
 		{
 			[Display(Name = "None")]
@@ -93,6 +103,12 @@ namespace BizHawk.Emulation.Consoles._3DO
 			[DefaultValue(FontROM.None)]
 			[TypeConverter(typeof(FontROM))]
 			public FontROM FontROM { get; set; }
+
+			[DisplayName("Video Standard")]
+			[Description("Determines the resolution and video timing. It should be selected according to the game and console's region.")]
+			[DefaultValue(VideoStandard.NTSC)]
+			[TypeConverter(typeof(VideoStandard))]
+			public VideoStandard VideoStandard { get; set; }
 
 			[DisplayName("Controller 1 Type")]
 			[Description("Sets the type of controller connected to the console's port 1.")]

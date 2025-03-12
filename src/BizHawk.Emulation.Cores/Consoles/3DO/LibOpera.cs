@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
+﻿using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -11,17 +9,23 @@ namespace BizHawk.Emulation.Consoles._3DO
 		// NTSC Specifications
 		public const int NTSC_WIDTH = 320;
 		public const int NTSC_HEIGHT = 240;
-		public const int VIDEO_NUMERATOR_NTSC = 299130497;
-		public const int VIDEO_DENOMINATOR_NTSC = 5000000;
+		public const int NTSC_VIDEO_NUMERATOR = 60;
+		public const int NTSC_VIDEO_DENOMINATOR = 1;
 
-		// PAL Specifications
-		public const int PAL_WIDTH = 384;
-		public const int PAL_HEIGHT = 288;
-		public const int VIDEO_NUMERATOR_PAL = 102237;
-		public const int VIDEO_DENOMINATOR_PAL = 2048;
+		// PAL1 Specifications
+		public const int PAL1_WIDTH = 320;
+		public const int PAL1_HEIGHT = 288;
+		public const int PAL1_VIDEO_NUMERATOR = 50;
+		public const int PAL1_VIDEO_DENOMINATOR = 1;
+
+		// PAL2 Specifications
+		public const int PAL2_WIDTH = 384;
+		public const int PAL2_HEIGHT = 288;
+		public const int PAL2_VIDEO_NUMERATOR = 50;
+		public const int PAL2_VIDEO_DENOMINATOR = 1;
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type);
+		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type, int videoStandard);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GamepadInputs
