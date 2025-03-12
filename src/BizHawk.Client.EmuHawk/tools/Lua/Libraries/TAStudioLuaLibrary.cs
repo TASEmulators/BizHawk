@@ -459,6 +459,23 @@ namespace BizHawk.Client.EmuHawk
 			return "";
 		}
 
+		[LuaMethodExample("local markers = tastudio.getmarkers()\r\nfor i = 0, #makers, 1 do\r\n\tconsole.log(v[i].Text)\r\nend")]
+		[LuaMethod("getmarkers", "returns a table of all markers with with fields Frame and Text")]
+		public LuaTable GetMarkers()
+		{
+			if (!Engaged()) return _th.CreateTable();
+
+			return _th.EnumerateToLuaTable(
+				Tastudio.CurrentTasMovie.Markers.Select(m =>
+				{
+					var table = _th.CreateTable();
+					table["Frame"] = m.Frame;
+					table["Text"] = m.Message;
+					return table;
+				}),
+				indexFrom: 0);
+		}
+
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
 		[LuaMethod("removemarker", "if there is a marker for the given frame, it will be removed")]
 		public void RemoveMarker(int frame)
