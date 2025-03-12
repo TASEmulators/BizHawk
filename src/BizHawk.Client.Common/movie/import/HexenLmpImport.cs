@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,
-				CompatibilityMode = DSDA.CompatibilityLevel.C0,
+				CompatibilityLevel = DSDA.CompatibilityLevel.C0,
 				SkillLevel = (DSDA.SkillLevel) (1 + input[i++]),
 				InitialEpisode = input[i++],
 				InitialMap = input[i++],

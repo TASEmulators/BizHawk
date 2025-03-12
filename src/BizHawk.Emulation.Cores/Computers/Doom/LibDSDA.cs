@@ -13,6 +13,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Sectors = 2
 		}
 
+		public enum GameMode : int
+		{
+			Fail         = 0,
+			Shareware    = 1 << 0, // DOOM 1 shareware, E1, M9
+			Registered   = 1 << 1, // DOOM 1 registered, E3, M27
+			Commercial   = 1 << 2, // DOOM 2 retail, E1 M34  (DOOM 2 german edition not handled)
+			Retail       = 1 << 3, // DOOM 1 retail, E4, M36
+			Indetermined = 1 << 4  // no IWAD found.
+		}
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
 
@@ -77,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract bool dsda_add_wad_file(
+		public abstract int dsda_add_wad_file(
 			string fileName,
 			int fileSize,
 			load_archive_cb feload_archive_cb);

@@ -189,11 +189,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool Player4Present { get; set; }
 
-			[DisplayName("Compatibility Mode")]
+			[DisplayName("Compatibility Level")]
 			[Description("The version of Doom or its ports that this movie is meant to emulate.")]
 			[DefaultValue(CompatibilityLevel.C2)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public CompatibilityLevel CompatibilityMode { get; set; }
+			public CompatibilityLevel CompatibilityLevel { get; set; }
 
 			[DisplayName("Skill Level")]
 			[Description("Establishes the general difficulty settings.")]
@@ -208,8 +208,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public MultiplayerMode MultiplayerMode { get; set; }
 
 			[DisplayName("Initial Episode")]
-			[Description("Selects the initial episode. Use '0' for non-episodic IWads (e.g., DOOM2)")]
-			[DefaultValue(0)]
+			[Description("Selects the initial episode. Ignored for non-episodic IWADs (e.g., DOOM2)")]
+			[DefaultValue(1)]
 			public int InitialEpisode { get; set; }
 
 			[DisplayName("Initial Map")]
