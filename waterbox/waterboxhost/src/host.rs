@@ -361,6 +361,7 @@ extern "sysv64" fn syscall(
 				old	
 			} else if a1 > old {
 				h.memory_block.mmap_fixed(AddressRange { start: old, size: a1 - old }, Protection::RW, true).unwrap();
+				#[cfg(debug_assertions)]
 				println!("Allocated {} bytes on sbrk heap, usage {}/{}", a1 - old, a1 - addr.start, addr.size);
 				a1
 			} else {
