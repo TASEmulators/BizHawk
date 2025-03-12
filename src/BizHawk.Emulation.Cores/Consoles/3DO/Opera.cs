@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 				SystemType.Sanyo_HC21 => "Sanyo_HC21",
 				SystemType.Shootout_At_Old_Tucson => "Shootout_At_Old_Tucson",
 				SystemType._3DO_NTSC_1fc2 => "3DO_NTSC_1fc2",
-				_ => ""
+				_ => "None"
 			};
 
 			var (biosData, biosInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw._3DO, biosType), "BIOS ROM files are required!");
