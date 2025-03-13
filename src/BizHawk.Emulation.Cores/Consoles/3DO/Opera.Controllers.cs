@@ -14,6 +14,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 			return controller.MakeImmutable();
 		}
 
+		public const int MOUSE_MIN_POS_X = 0;
+		public const int MOUSE_MAX_POS_X = LibOpera.PAL2_WIDTH * 2;
+		public const int MOUSE_MIN_POS_Y = 0;
+		public const int MOUSE_MAX_POS_Y = LibOpera.PAL2_HEIGHT * 2;
+
+		public const int POINTER_MIN_POS = -32768;
+		public const int POINTER_MAX_POS = 32767;
 		private static void setPortControllers(int port, ControllerType type, ControllerDefinition controller)
 		{
 			switch (type)
@@ -30,37 +37,37 @@ namespace BizHawk.Emulation.Consoles._3DO
 						$"P{port} {Inputs.MouseRightButton}"
 					]);
 					controller
-						.AddAxis($"P{port} {Inputs.MouseX}", 0.RangeTo(LibOpera.PAL2_WIDTH), LibOpera.PAL2_WIDTH / 2)
-						.AddAxis($"P{port} {Inputs.MouseY}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2);
+						.AddAxis($"P{port} {Inputs.MouseX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+						.AddAxis($"P{port} {Inputs.MouseY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 				case ControllerType.FlightStick:
 				   foreach (var button in FlightStickButtonCollection)
 					controller.BoolButtons.Add($"P{port} {button}");
 					controller
-						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", 0.RangeTo(LibOpera.PAL2_WIDTH), LibOpera.PAL2_WIDTH / 2)
-						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2)
-					    .AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2);
+						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2)
+						.AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 				case ControllerType.LightGun:
 					foreach (var button in LightGunButtonCollection)
 						controller.BoolButtons.Add($"P{port} {button}");
 					controller
-						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (-32767).RangeTo(32768), 0)
-						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (-32767).RangeTo(32768), 0);
+						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
+						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0);
 					break;
 				case ControllerType.ArcadeLightGun:
 					foreach (var button in ArcadeLightGunButtonCollection)
 						controller.BoolButtons.Add($"P{port} {button}");
 					controller
-						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (-32767).RangeTo(32768), 0)
-						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (-32767).RangeTo(32768), 0);
+						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
+						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0);
 					break;
 				case ControllerType.OrbatakTrackball:
 					foreach (var button in OrbatakTrackballCollection)
 						controller.BoolButtons.Add($"P{port} {button}");
 					controller
-						.AddAxis($"P{port} {Inputs.TrackballPosX}", 0.RangeTo(LibOpera.PAL2_WIDTH), LibOpera.PAL2_WIDTH / 2)
-						.AddAxis($"P{port} {Inputs.TrackballPosY}", 0.RangeTo(LibOpera.PAL2_HEIGHT), LibOpera.PAL2_HEIGHT / 2);
+						.AddAxis($"P{port} {Inputs.TrackballPosX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+						.AddAxis($"P{port} {Inputs.TrackballPosY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 			}
 		}
