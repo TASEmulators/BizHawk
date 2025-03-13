@@ -89,3 +89,6 @@
 	path = waterbox/dsda/core
 	url = https://github.com/TASEmulators/dsda-doom.git
 	branch = wbx
+[submodule "waterbox/opera/opera-libretro"]
+	path = waterbox/opera/opera-libretro
+	url = https://github.com/TASEmulators/opera-libretro.git
