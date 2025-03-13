@@ -47,8 +47,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 		[StructLayout(LayoutKind.Sequential)]
 		public struct MouseInputs
 		{
-			public int posX;
-			public int posY;
 			public int dX;
 			public int dY;
 			public int leftButton;
@@ -104,8 +102,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 		[StructLayout(LayoutKind.Sequential)]
 		public struct OrbatakTrackballInputs
 		{
-			public int posX;
-			public int posY;
 			public int dX;
 			public int dY;
 			public int startP1;

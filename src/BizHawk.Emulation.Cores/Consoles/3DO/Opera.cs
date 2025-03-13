@@ -145,23 +145,17 @@ namespace BizHawk.Emulation.Consoles._3DO
 			PostInit();
 		}
 
-		private LibOpera.GameInput _port1PrevGameInput = new LibOpera.GameInput();
-		private LibOpera.GameInput _port2PrevGameInput = new LibOpera.GameInput();
-
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var fi = new LibOpera.FrameInfo();
 
-			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, _port1PrevGameInput, controller);
-			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, _port2PrevGameInput, controller);
-
-			_port1PrevGameInput = fi.port1;
-			_port2PrevGameInput = fi.port2;
+			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
+			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, controller);
 
 			return fi;
 		}
 
-		private static LibOpera.GameInput ProcessController(int port, ControllerType type, LibOpera.GameInput prevInputs, IController controller)
+		private static LibOpera.GameInput ProcessController(int port, ControllerType type, IController controller)
 		{
 			LibOpera.GameInput gameInput = new LibOpera.GameInput();
 
@@ -183,10 +177,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 					break;
 
 				case ControllerType.Mouse:
-					gameInput.mouse.posX = controller.AxisValue($"P{port} {Inputs.MouseX}");
-					gameInput.mouse.posY = controller.AxisValue($"P{port} {Inputs.MouseY}");
-					gameInput.mouse.dX = gameInput.mouse.posX - prevInputs.mouse.posX;
-					gameInput.mouse.dY = gameInput.mouse.posY - prevInputs.mouse.posY;
+					gameInput.mouse.dX = controller.AxisValue($"P{port} {Inputs.MouseX}");
+					gameInput.mouse.dY = controller.AxisValue($"P{port} {Inputs.MouseY}");
 					gameInput.mouse.leftButton   = controller.IsPressed($"P{port} {Inputs.MouseLeftButton}") ? 1 : 0;
 					gameInput.mouse.middleButton = controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}") ? 1 : 0;
 					gameInput.mouse.rightButton  = controller.IsPressed($"P{port} {Inputs.MouseRightButton}") ? 1 : 0;
@@ -237,10 +229,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 					gameInput.orbatakTrackball.coinP1  = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP1}") ? 1 : 0;
 					gameInput.orbatakTrackball.coinP2  = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP2}") ? 1 : 0;
 					gameInput.orbatakTrackball.service = controller.IsPressed($"P{port} {OrbatakTrackballButtons.Service}") ? 1 : 0;
-					gameInput.orbatakTrackball.posX = controller.AxisValue($"P{port} {Inputs.TrackballPosX}");
-					gameInput.orbatakTrackball.posY = controller.AxisValue($"P{port} {Inputs.TrackballPosY}");
-					gameInput.orbatakTrackball.dX = gameInput.orbatakTrackball.posX - prevInputs.orbatakTrackball.posX;
-					gameInput.orbatakTrackball.dY = gameInput.orbatakTrackball.posY - prevInputs.orbatakTrackball.posY;
+					gameInput.orbatakTrackball.dX = controller.AxisValue($"P{port} {Inputs.TrackballPosX}");
+					gameInput.orbatakTrackball.dY = controller.AxisValue($"P{port} {Inputs.TrackballPosY}");
 					break;
 			}
 
