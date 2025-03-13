@@ -28,8 +28,6 @@ struct gamePad_t
 
 struct mouse_t
 {
-	int posX;
-	int posY;
 	int dX;
 	int dY;
 	int leftButton;
@@ -81,8 +79,6 @@ struct arcadeLightGun_t
 
 struct OrbatakTrackball_t
 {
-	int posX;
-	int posY;
 	int dX;
 	int dY;
 	int startP1;
