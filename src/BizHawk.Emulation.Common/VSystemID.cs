@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Common
 			public const string Coleco = "Coleco";
 			public const string DEBUG = "DEBUG";
 			public const string Doom = "Doom";
+			public const string DOS = "DOS";
 			public const string Dreamcast = "Dreamcast";
 			public const string GameCube = "GameCube";
 			public const string GB = "GB";
