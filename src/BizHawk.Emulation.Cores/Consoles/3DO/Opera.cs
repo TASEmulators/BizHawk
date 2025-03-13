@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		[CoreConstructor(VSystemID.Raw._3DO)]
 		public Opera(CoreLoadParameters<object, SyncSettings> lp)
-			: base(lp.Comm, lp.SyncSettings.VideoStandard switch
+			: base(lp.Comm, (lp.SyncSettings == null ? VideoStandard.NTSC : lp.SyncSettings.VideoStandard) switch
 			{
 				VideoStandard.NTSC => ConfigNTSC,
 				VideoStandard.PAL1 => ConfigPAL1,
