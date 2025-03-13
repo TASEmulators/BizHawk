@@ -14,10 +14,10 @@ namespace BizHawk.Emulation.Consoles._3DO
 			return controller.MakeImmutable();
 		}
 
-		public const int MOUSE_MIN_POS_X = 0;
-		public const int MOUSE_MAX_POS_X = LibOpera.PAL2_WIDTH * 2;
-		public const int MOUSE_MIN_POS_Y = 0;
-		public const int MOUSE_MAX_POS_Y = LibOpera.PAL2_HEIGHT * 2;
+		public const int MOUSE_MIN_POS_X = -64;
+		public const int MOUSE_MAX_POS_X = 64;
+		public const int MOUSE_MIN_POS_Y = -64;
+		public const int MOUSE_MAX_POS_Y = 64;
 
 		public const int POINTER_MIN_POS = -32768;
 		public const int POINTER_MAX_POS = 32767;
