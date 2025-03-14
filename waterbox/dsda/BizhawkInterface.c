@@ -1,9 +1,9 @@
-#include "BizhawkInterface.hxx"
+#include "BizhawkInterface.h"
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
 	int nSamples = 0;
-	void* audioBuffer = nullptr;
+	void* audioBuffer = NULL;
     audioBuffer = I_CaptureAudio(&nSamples);
 	// printf("audioBuffer: %p - nSamples: %d\n", audioBuffer, nSamples);
 
@@ -13,15 +13,15 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 		*buffer = audioBuffer;
 }
 
-ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int& paletteSize, uint32_t*& paletteBuffer)
+ECL_EXPORT void dsda_get_video(int* w, int* h, int* pitch, uint8_t** buffer, int* paletteSize, uint32_t** paletteBuffer)
 {
-	buffer = (uint8_t*)headlessGetVideoBuffer();
-	w = headlessGetVideoWidth();
-	h = headlessGetVideoHeight();
-	pitch = headlessGetVideoPitch();
-	paletteSize = PALETTE_SIZE;
+	*buffer = (uint8_t*)headlessGetVideoBuffer();
+	*w = headlessGetVideoWidth();
+	*h = headlessGetVideoHeight();
+	*pitch = headlessGetVideoPitch();
+	*paletteSize = PALETTE_SIZE;
 
-	auto palette = headlessGetPallette();
+	uint32_t* palette = headlessGetPallette();
 	for (size_t i = 0; i < PALETTE_SIZE; i++)
 	{
 		uint8_t* srcColor = (uint8_t*)&palette[i];
@@ -32,7 +32,7 @@ ECL_EXPORT void dsda_get_video(int& w, int& h, int& pitch, uint8_t*& buffer, int
 		dstColor[3] = srcColor[3];
 	} 
 
-	paletteBuffer = _convertedPaletteBuffer;
+	*paletteBuffer = _convertedPaletteBuffer;
 }
 
 ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
@@ -143,7 +143,7 @@ ECL_EXPORT void dsda_set_input_callback(ECL_ENTRY void (*fecb)(void))
 
 bool foundIWAD = false;
 
-ECL_EXPORT int dsda_init(InitSettings *settings, int argc, char **argv)
+ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 {
   printf("Passing arguments: \n");
   for (int i = 0; i < argc; i++) printf("%s ", argv[i]);
@@ -200,7 +200,7 @@ ECL_EXPORT int dsda_init(InitSettings *settings, int argc, char **argv)
 ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize))
 {
   printf("Loading WAD '%s' of size %d...\n", filename, size);
-  auto wadFileBuffer = (unsigned char*) alloc_invisible(size);
+  unsigned char* wadFileBuffer = (unsigned char*) alloc_invisible(size);
 
   if (wadFileBuffer == NULL) { fprintf(stderr, "Error creating buffer. Do we have enough memory in the waterbox?\n"); return 0; }
   else printf("Created buffer at address: %p\n", wadFileBuffer);
@@ -219,14 +219,11 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
   header[3] = wadFileBuffer[3];
   header[4] = '\0';
 
-  // Getting string
-  std::string headerString(header);
-
   // Safety checks
   bool recognizedFormat = false;
 
   // Loading PWAD
-  if (headerString == "PWAD")
+  if (!strcmp(header, "PWAD"))
   {
 	recognizedFormat = true;
 
@@ -236,7 +233,7 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
   } 
 
   // Loading IWAD
-  if (headerString == "IWAD")
+  if (!strcmp(header, "IWAD"))
   {
     recognizedFormat = true;
 

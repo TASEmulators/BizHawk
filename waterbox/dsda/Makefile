@@ -15,28 +15,12 @@ CCFLAGS := \
 	-Wno-unused-variable \
 	-Wno-deprecated-non-prototype
 
-CXXFLAGS := \
-    -I. \
-	-I./core/prboom2/src \
-	-Wfatal-errors \
-	-DHAVE_CONFIG_H \
-	-Dstricmp=strcasecmp \
-	-Dstrnicmp=strncasecmp \
-	-DNDEBUG \
-	-ffast-math \
-	-Wno-unused-function \
-	-Wno-switch \
-	-Wno-pointer-sign \
-	-Wno-sign-compare \
-	-Wno-unused-but-set-variable \
-	-Wno-unused-variable 
-
 LDFLAGS := 
 
 TARGET := dsda.wbx
 
 SRCS = \
-	BizhawkInterface.cxx \
+	BizhawkInterface.c \
 	core/prboom2/src/am_map.c \
 	core/prboom2/src/doomdef.c \
 	core/prboom2/src/doomstat.c \
