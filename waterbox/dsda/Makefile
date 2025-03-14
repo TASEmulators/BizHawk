@@ -1,5 +1,5 @@
 CCFLAGS := \
-    -I. \
+	-I. \
 	-I./core/prboom2/src \
 	-Wfatal-errors \
 	-DHAVE_CONFIG_H \
@@ -14,6 +14,22 @@ CCFLAGS := \
 	-Wno-unused-but-set-variable \
 	-Wno-unused-variable \
 	-Wno-deprecated-non-prototype
+
+CXXFLAGS := \
+	-I. \
+	-I./core/prboom2/src \
+	-Wfatal-errors \
+	-DHAVE_CONFIG_H \
+	-Dstricmp=strcasecmp \
+	-Dstrnicmp=strncasecmp \
+	-DNDEBUG \
+	-ffast-math \
+	-Wno-unused-function \
+	-Wno-switch \
+	-Wno-pointer-sign \
+	-Wno-sign-compare \
+	-Wno-unused-but-set-variable \
+	-Wno-unused-variable 
 
 LDFLAGS := 
 
