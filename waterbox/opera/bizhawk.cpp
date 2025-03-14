@@ -4,6 +4,7 @@
 #include <libretro.h>
 #include <lr_input.h>
 #include <opera_vdlp.h>
+#include <opera_mem.h>
 
 struct MemoryAreas 
 {
@@ -33,6 +34,8 @@ size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
 int _region;
+bool _isLagFrame;
+int _nvramChanged;
 
 #define _MAX_SAMPLES 4096
 #define _CHANNEL_COUNT 2
@@ -40,7 +43,8 @@ int16_t _audioBuffer[_MAX_SAMPLES * _CHANNEL_COUNT];
 size_t _audioSamples;
 
 extern "C"
-{
+{  
+	   void opera_nvram_init(void *buf, const int bufsize);
     void opera_lr_callbacks_set_audio_sample(retro_audio_sample_t cb);
     void opera_lr_callbacks_set_audio_sample_batch(retro_audio_sample_batch_t cb);
     void opera_lr_callbacks_set_environment(retro_environment_t cb);
@@ -80,6 +84,7 @@ size_t RETRO_CALLCONV retro_audio_sample_batch_callback(const int16_t *data, siz
 
 void RETRO_CALLCONV retro_input_poll_callback()
 {
+	_isLagFrame = false;
 		// printf("Libretro Input Poll Callback Called:\n");
 }
 
@@ -300,8 +305,17 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   //printf("Mouse X%d(%d), Y%d(%d), L%d, M%d, B%d\n", _port1Value.mouse.posX, _port1Value.mouse.dX, _port1Value.mouse.posY, _port1Value.mouse.dY, _port1Value.mouse.leftButton, _port1Value.mouse.middleButton, _port1Value.mouse.rightButton);
 		//fflush(stdout);
 
+  // Checking for changes in NVRAM
+		_nvramChanged = false;
+
+  // Checking for lag frames
+		_isLagFrame = true;
+
 		// Running a single frame
 		retro_run();
+
+		// Setting if lag frame
+		f->base.Lagged = _isLagFrame ? 1 : 0;
 
 		// Setting video buffer
 		f->base.Width = _videoWidth;
@@ -334,4 +348,20 @@ void (*InputCallback)();
 ECL_EXPORT void SetInputCallback(void (*callback)())
 {
 	InputCallback = callback;
+}
+
+bool _sram_changed = false;
+ECL_EXPORT bool sram_changed() { return _nvramChanged; }
+ECL_EXPORT int get_sram_size() { return NVRAM_SIZE; }
+ECL_EXPORT uint8_t* get_sram_buffer() { return (uint8_t*) NVRAM; }
+ECL_EXPORT void get_sram(uint8_t* sramBuffer)
+{
+	 if (NVRAM == NULL) return;
+		memcpy(sramBuffer, get_sram_buffer(), get_sram_size());
+}
+
+ECL_EXPORT void set_sram(uint8_t* sramBuffer)
+{
+	 if (NVRAM == NULL) opera_nvram_init(NVRAM,NVRAM_SIZE);
+		memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
 }
