@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 				_ => throw new NotImplementedException()
 			})
 		{
+			DriveLightEnabled = true;
 			_roms = lp.Roms;
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
@@ -149,6 +150,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			var fi = new LibOpera.FrameInfo();
 
+			DriveLightOn = false;
 			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
 			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, controller);
 
@@ -239,6 +241,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		protected override void FrameAdvancePost()
 		{
+			DriveLightOn = _libOpera.getDriveActivityFlag();
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)

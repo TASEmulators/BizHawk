@@ -39,6 +39,9 @@ namespace BizHawk.Emulation.Consoles._3DO
 		[BizImport(CC, Compatibility = true)]
 		public abstract void set_sram(IntPtr sramBuffer);
 
+		[BizImport(CC, Compatibility = true)]
+		public abstract bool getDriveActivityFlag();
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GamepadInputs
 		{
