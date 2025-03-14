@@ -88,6 +88,10 @@ void RETRO_CALLCONV retro_input_poll_callback()
 		// printf("Libretro Input Poll Callback Called:\n");
 }
 
+// Drive activity monitoring
+int _driveUsed = 0;
+ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed == 1; }
+
 int16_t processController(const int portType, controllerData_t& portValue, const unsigned device, const unsigned index, const unsigned id)
 {
 	if (portType == RETRO_DEVICE_JOYPAD)
@@ -304,6 +308,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
   //printf("Mouse X%d(%d), Y%d(%d), L%d, M%d, B%d\n", _port1Value.mouse.posX, _port1Value.mouse.dX, _port1Value.mouse.posY, _port1Value.mouse.dY, _port1Value.mouse.leftButton, _port1Value.mouse.middleButton, _port1Value.mouse.rightButton);
 		//fflush(stdout);
+
+		// Checking for drive use
+		_driveUsed = 0;
 
   // Checking for changes in NVRAM
 		_nvramChanged = false;
