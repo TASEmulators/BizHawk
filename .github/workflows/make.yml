@@ -61,6 +61,7 @@ jobs:
            git submodule update --init ../submodules/sameboy/libsameboy;
            git submodule update --init uae/libretro-uae;
            git submodule update --init stella/core;
+           git submodule update --init dsda/core;
     - name: Download compiled waterbox
       uses: actions/download-artifact@v4
       with:
@@ -85,6 +86,7 @@ jobs:
           Assets/dll/ares64_interpreter.wbx.zst
           Assets/dll/ares64_recompiler.wbx.zst
           Assets/dll/bsnes.wbx.zst
+          Assets/dll/dsda.wbx.zst
           Assets/dll/faust.wbx.zst
           Assets/dll/gpgx.wbx.zst
           Assets/dll/hyper.wbx.zst
@@ -93,15 +95,15 @@ jobs:
           Assets/dll/ngp.wbx.zst
           Assets/dll/pcfx.wbx.zst
           Assets/dll/picodrive.wbx.zst
-          Assets/dll/puae.wbx.zst
           Assets/dll/shock.wbx.zst
           Assets/dll/snes9x.wbx.zst
           Assets/dll/ss.wbx.zst
+          Assets/dll/stella.wbx.zst
           Assets/dll/tic80.wbx.zst
           Assets/dll/turbo.wbx.zst
+          Assets/dll/uae.wbx.zst
           Assets/dll/uzem.wbx.zst
           Assets/dll/vb.wbx.zst
-          Assets/dll/stella.wbx.zst
           Assets/dll/virtualjaguar.wbx.zst
 
   build-mame:
