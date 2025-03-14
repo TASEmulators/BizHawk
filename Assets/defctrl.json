@@ -1108,7 +1108,7 @@
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			}
-		}
+		},
 		"3DO Controller": {
 			"P1 Mouse X": {
 				"Value": "RMouse X",
