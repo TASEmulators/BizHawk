@@ -260,13 +260,13 @@ ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cds
 
 ECL_EXPORT void ejectCD()
 {
-	// xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_EJECT_DISC);
+	xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_EJECT_DISC);
 }
 
 ECL_EXPORT void insertCD()
 {
-	// xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_INJECT_DISC);
-	// xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_MODE_SET);
+	xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_INJECT_DISC);
+	xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_MODE_SET);
 	xbus_cdrom_plugin(XBP_INIT, NULL);
 }
 
