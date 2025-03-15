@@ -6,6 +6,7 @@
 #include <opera_vdlp.h>
 #include <opera_mem.h>
 #include <opera_cdrom.h>
+#include <opera_xbus.h>
 
 struct MemoryAreas 
 {
@@ -45,6 +46,7 @@ size_t _audioSamples;
 
 extern "C"
 {  
+	   void* xbus_cdrom_plugin(int   proc_, 	void* data_);
 	   void opera_cdrom_set_callbacks(opera_cdrom_get_size_cb_t get_size_,	opera_cdrom_set_sector_cb_t set_sector_,	opera_cdrom_read_sector_cb_t read_sector_);
 	   void opera_nvram_init(void *buf, const int bufsize);
     void opera_lr_callbacks_set_audio_sample(retro_audio_sample_t cb);
@@ -89,10 +91,6 @@ void RETRO_CALLCONV retro_input_poll_callback()
 	_isLagFrame = false;
 		// printf("Libretro Input Poll Callback Called:\n");
 }
-
-// Drive activity monitoring
-int _driveUsed = 0;
-ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed == 1; }
 
 int16_t processController(const int portType, controllerData_t& portValue, const unsigned device, const unsigned index, const unsigned id)
 {
@@ -260,6 +258,18 @@ ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cds
 	cd_sector_count_callback = cdscc;
 }
 
+ECL_EXPORT void ejectCD()
+{
+	// xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_EJECT_DISC);
+}
+
+ECL_EXPORT void insertCD()
+{
+	// xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_INJECT_DISC);
+	// xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_MODE_SET);
+	xbus_cdrom_plugin(XBP_INIT, NULL);
+}
+
 uint32_t cd_get_size(void) {	return cd_sector_count_callback(); }
 void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
 void cd_read_sector(void *buf_) {	cd_read_callback(_currentSector, buf_); }
@@ -329,9 +339,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   //printf("Mouse X%d(%d), Y%d(%d), L%d, M%d, B%d\n", _port1Value.mouse.posX, _port1Value.mouse.dX, _port1Value.mouse.posY, _port1Value.mouse.dY, _port1Value.mouse.leftButton, _port1Value.mouse.middleButton, _port1Value.mouse.rightButton);
 		//fflush(stdout);
 
-		// Checking for drive use
-		_driveUsed = 0;
-
   // Checking for changes in NVRAM
 		_nvramChanged = false;
 
@@ -370,7 +377,6 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 	memAreaIdx++;
 }
-
 
 void (*InputCallback)();
 ECL_EXPORT void SetInputCallback(void (*callback)())
