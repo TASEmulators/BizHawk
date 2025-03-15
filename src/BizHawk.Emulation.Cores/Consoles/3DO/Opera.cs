@@ -152,6 +152,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		// CD Handling logic
 		private bool _isMultidisc;
+		private bool _discInserted = true;
 		private readonly LibOpera.CDReadCallback _CDReadCallback;
 		private readonly LibOpera.CDSectorCountCallback _CDSectorCountCallback;
 		private int _discIndex;
@@ -173,7 +174,35 @@ namespace BizHawk.Emulation.Consoles._3DO
 			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
 		}
 
-		private void CDRead(int lba, IntPtr dest)
+        private void ejectDisc()
+        {
+			if (!_discInserted)
+			{
+               CoreComm.Notify($"Cannot eject: CDROM is already ejected.", _messageDuration);
+            }
+			else
+			{
+				_discInserted = false;
+                _libOpera.ejectCD();
+                CoreComm.Notify($"CDROM ejected.", _messageDuration);
+            }
+        }
+
+		private void insertDisc()
+		{
+            if (_discInserted)
+            {
+                CoreComm.Notify($"Cannot insert: CDROM is already insert.", _messageDuration);
+            }
+            else
+            {
+                _discInserted = true;
+                _libOpera.insertCD();
+                CoreComm.Notify($"CDROM inserted.", _messageDuration);
+            }
+        }
+
+        private void CDRead(int lba, IntPtr dest)
 		{
 			if ((uint) _discIndex < _discAssets.Count)
 			{
@@ -198,7 +227,9 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				if (controller.IsPressed("Next Disc")) SelectNextDisc();
 				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
-			}
+                if (controller.IsPressed("Eject Disc")) ejectDisc();
+                if (controller.IsPressed("Insert Disc")) insertDisc();
+            }
 
 			DriveLightOn = false;
 			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
@@ -291,16 +322,19 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		protected override void FrameAdvancePost()
 		{
-			DriveLightOn = _libOpera.getDriveActivityFlag();
 		}
 
-		protected override void SaveStateBinaryInternal(BinaryWriter writer)
-		{
-		}
+        protected override void SaveStateBinaryInternal(BinaryWriter writer)
+        {
+            writer.Write(_discIndex);
+            writer.Write(_discInserted);
+        }
 
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
-		{
-		}
+        protected override void LoadStateBinaryInternal(BinaryReader reader)
+        {
+            _discIndex = reader.ReadInt32();
+            _discInserted = reader.ReadBoolean();
+        }
 
-	}
+    }
 }
