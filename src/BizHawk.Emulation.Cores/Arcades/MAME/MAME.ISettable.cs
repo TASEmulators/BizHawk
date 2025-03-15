@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				GameName = _gameShortName,
 				LuaCode = LibMAME.VIEW_LUA_CODE,
 				Type = SettingType.VIEW,
-				DefaultValue = MameGetString(MAMELuaCommand.GetViewName("1"))
+				DefaultValue = "1"
 			};
 
 			foreach (var View in Views)
@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				if (View != string.Empty)
 				{
 					var substrings = View.Split('@');
-					setting.Options.Add(substrings[1], substrings[1]);
+					setting.Options.Add(substrings[0], substrings[1]);
 				}
 			}
 
