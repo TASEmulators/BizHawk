@@ -47,7 +47,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			public IntPtr VSPendingBuffer, PSPendingBuffer;
 			public int VSBufferSize, PSBufferSize;
-			public bool VSBufferDirty, PSBufferDirty; 
+			public bool VSBufferDirty, PSBufferDirty;
 		}
 
 		public readonly D3D11PendingBuffer[] PendingBuffers = new D3D11PendingBuffer[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];

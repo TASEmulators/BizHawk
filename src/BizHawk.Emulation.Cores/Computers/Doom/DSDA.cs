@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ "render_stretch_hud 0\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
-				+ "render_stretchsky 0\n"
+				+ "render_wipescreen 0\n"
 				+ "map_coordinates 0\n"
 				+ "map_totals 0\n"
 			);
@@ -120,7 +120,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					foreach (var wadFile in _wadFiles)
 					{
 						var loadWadResult = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
-						if (!loadWadResult) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
+						if (loadWadResult is 0) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
+						_gameMode = (CInterface.GameMode)loadWadResult;
 					}
 
 					_elf.AddReadonlyFile(_configFile, "dsda-doom.cfg");
@@ -159,9 +160,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				"dsda",
 			};
 
+			_args.Add("-warp");
+			ConditionalArg(_syncSettings.InitialEpisode is not 0 && _gameMode != CInterface.GameMode.Commercial, $"{_syncSettings.InitialEpisode}");
+			_args.Add($"{_syncSettings.InitialMap}");
+
 			_args.AddRange([ "-skill", $"{(int)_syncSettings.SkillLevel}" ]);
-			_args.AddRange([ "-warp", $"{_syncSettings.InitialEpisode}", $"{_syncSettings.InitialMap}" ]);
-			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityMode}" ]);
+			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityLevel}" ]);
 			_args.AddRange([ "-config", "dsda-doom.cfg" ]);
 
 			ConditionalArg(!_syncSettings.StrictMode, "-tas");
@@ -200,6 +204,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
 		private List<string> _args;
 		private List<IRomAsset> _wadFiles;
+		private CInterface.GameMode _gameMode;
 
 		/// <summary>
 		/// core callback for file loading

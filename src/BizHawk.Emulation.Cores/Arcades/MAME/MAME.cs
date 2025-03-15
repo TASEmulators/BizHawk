@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
@@ -268,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return string.Empty;
 			}
 
-			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			var ret = Mershul.PtrToStringUtf8(ptr);
 			_core.mame_lua_free_string(ptr);
 			return ret;
 		}
@@ -409,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetViewsInfo =
 				"local final = {} " +
 				"for index, name in pairs(manager.machine.video.snapshot_target.view_names) do " +
-					"table.insert(final, string.format(\"%s,%s;\", index, name)) " +
+					"table.insert(final, string.format(\"%04d@%s;\", index, name)) " +
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";

@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+cd "$(dirname "$0")"
 
 make -f turbo.mak $1 -j
 make -f hyper.mak $1 -j

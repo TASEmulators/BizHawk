@@ -119,8 +119,8 @@ namespace NLua.Native
 			{
 				return new[]
 				{
-					"liblua.so.5.4.6", "liblua.so.5.4", "liblua-5.4.so", "liblua5.4.so", "liblua5.4.so.0",
-					"liblua.so.5.3.6", "liblua.so.5.3", "liblua-5.3.so", "liblua5.3.so", "liblua5.3.so.0",
+					"liblua.so.5.4", "liblua-5.4.so", "liblua5.4.so", "liblua5.4.so.0", "liblua5.4.so.5.4",
+					"liblua.so.5.3", "liblua-5.3.so", "liblua5.3.so", "liblua5.3.so.0", "liblua5.3.so.5.3",
 				};
 			}
 
