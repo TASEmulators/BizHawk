@@ -978,8 +978,6 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> A78 = new[] { "a78" };
 
-			public static readonly IReadOnlyCollection<string> _3DO = new[] { "3do-iso" };
-
 			public static readonly IReadOnlyCollection<string> Amiga = new[] { "adf", "adz", "dms", "fdi", /*"hdf", "ipf", "lha"*/ };
 
 			public static readonly IReadOnlyCollection<string> AppleII = new[] { "dsk", "do", "po" };
