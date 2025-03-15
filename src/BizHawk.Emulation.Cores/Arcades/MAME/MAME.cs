@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return string.Empty;
 			}
 
-			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			var ret = Mershul.PtrToStringUtf8(ptr);
 			_core.mame_lua_free_string(ptr);
 			return ret;
 		}
