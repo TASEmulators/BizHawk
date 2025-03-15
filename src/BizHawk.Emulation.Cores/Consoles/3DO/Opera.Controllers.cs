@@ -1,16 +1,25 @@
 ﻿using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Consoles._3DO
 {
 	public partial class Opera
 	{ 
-		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings)
+		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings, bool isMultiDisc)
 		{
 			var controller = new ControllerDefinition("3DO Controller");
 			setPortControllers(1, settings.Controller1Type, controller);
 			setPortControllers(2, settings.Controller2Type, controller);
+
+			// If this is multi-disc, add a cd swap option
+			if (isMultiDisc)
+			{
+				controller.BoolButtons.Add("Next Disc");
+				controller.BoolButtons.Add("Prev Disc");
+			}
+
 			return controller.MakeImmutable();
 		}
 

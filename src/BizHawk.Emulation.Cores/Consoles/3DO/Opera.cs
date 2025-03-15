@@ -1,19 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Computers.Amiga;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using static BizHawk.Emulation.Consoles._3DO.LibOpera;
-using static BizHawk.Emulation.Cores.Computers.Amiga.UAE;
+using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Consoles._3DO
 {
@@ -61,7 +53,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 			DefaultFpsDenominator = LibOpera.PAL2_VIDEO_DENOMINATOR
 		};
 
-		private readonly List<IRomAsset> _roms;
 		private readonly List<IDiscAsset> _discAssets;
 		private const int _messageDuration = 4;
 
@@ -83,17 +74,20 @@ namespace BizHawk.Emulation.Consoles._3DO
 			})
 		{
 			DriveLightEnabled = true;
-			_roms = lp.Roms;
 			_discAssets = lp.Discs;
+
+			// If no discs loaded, then there's nothing to emulate
+			if (_discAssets.Count == 0) throw new InvalidOperationException("No CDs provided for emulation");
+			_isMultidisc = _discAssets.Count > 1;
+
 			_CDReadCallback = CDRead;
 			_CDSectorCountCallback = CDSectorCount;
 			_discIndex = 0;
-			_cdReaders.Add(new(_discAssets[0].DiscData));
+			foreach (var disc in _discAssets) _cdReaders.Add(new(disc.DiscData));
 
 			Console.WriteLine($"[CD] Sector count: {_discAssets[0].DiscData.Session1.LeadoutLBA}");
 			_syncSettings = lp.SyncSettings ?? new();
-			ControllerDefinition = CreateControllerDefinition(_syncSettings);
-
+			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
 
 			_libOpera = PreInit<LibOpera>(new WaterboxOptions
 			{
@@ -109,11 +103,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 			// Setting CD callbacks
 			_libOpera.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
-
-			// Adding Game file
-			var gameFile = _roms[0];
-			string gameFileName = Path.GetFileNameWithoutExtension(gameFile.RomPath) + ".iso";
-			_exe.AddReadonlyFile(gameFile.RomData, gameFileName);
 
 			// Adding BIOS file
 			string biosType = _syncSettings.SystemType switch
@@ -154,20 +143,37 @@ namespace BizHawk.Emulation.Consoles._3DO
 			}
 
 			////////////// Initializing Core
-			Console.WriteLine($"Launching Core with Game ROM: '{gameFileName}', BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
-			if (!_libOpera.Init(gameFileName, biosFileName, fontROMFileName, (int)_syncSettings.Controller1Type, (int)_syncSettings.Controller2Type, (int)_syncSettings.VideoStandard))
+			string cdName = _discAssets[0].DiscName;
+			Console.WriteLine($"Launching Core with Game: '{cdName}', BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
+			if (!_libOpera.Init(cdName, biosFileName, fontROMFileName, (int)_syncSettings.Controller1Type, (int)_syncSettings.Controller2Type, (int)_syncSettings.VideoStandard))
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			PostInit();
 		}
 
 		// CD Handling logic
+		private bool _isMultidisc;
 		private readonly LibOpera.CDReadCallback _CDReadCallback;
 		private readonly LibOpera.CDSectorCountCallback _CDSectorCountCallback;
 		private int _discIndex;
 		private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
 		private static int CD_SECTOR_SIZE = 2048;
 		private readonly byte[] _sectorBuffer = new byte[CD_SECTOR_SIZE];
+
+		private void SelectNextDisc()
+		{
+			_discIndex++;
+			if (_discIndex == _discAssets.Count) _discIndex = 0;
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+		}
+
+		private void SelectPrevDisc()
+		{
+			_discIndex--;
+			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+		}
+
 		private void CDRead(int lba, IntPtr dest)
 		{
 			if ((uint) _discIndex < _discAssets.Count)
@@ -187,6 +193,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var fi = new LibOpera.FrameInfo();
+
+			// Disc management
+			if (_isMultidisc)
+			{
+				if (controller.IsPressed("Next Disc")) SelectNextDisc();
+				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
+			}
 
 			DriveLightOn = false;
 			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
