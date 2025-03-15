@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
