@@ -34,7 +34,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 					[
 						$"P{port} {Inputs.MouseLeftButton}",
 						$"P{port} {Inputs.MouseMiddleButton}",
-						$"P{port} {Inputs.MouseRightButton}"
+						$"P{port} {Inputs.MouseRightButton}",
+						$"P{port} {Inputs.MouseFourthButton}",
 					]);
 					controller
 						.AddAxis($"P{port} {Inputs.MouseX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
@@ -190,10 +191,10 @@ namespace BizHawk.Emulation.Consoles._3DO
 		private static class Inputs
 		{
 			public const string Joystick = "Joystick";
-			public const string MouseLeftButton = "Mouse Left Button";
-			public const string MouseRightButton = "Mouse Right Button";
-			public const string MouseMiddleButton = "Mouse Middle Button";
-			public const string MouseFourthButton = "Mouse Fourth Button";
+			public const string MouseLeftButton = "Left Button";
+			public const string MouseRightButton = "Right Button";
+			public const string MouseMiddleButton = "Middle Button";
+			public const string MouseFourthButton = "Fourth Button";
 			public const string MouseX = "Mouse X";
 			public const string MouseY = "Mouse Y";
 			public const string FlighStickHorizontalAxis = "Flight Stick Horizontal Axis";

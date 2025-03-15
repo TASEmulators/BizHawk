@@ -198,6 +198,7 @@ namespace BizHawk.Emulation.Common
 				["Coin P1"] = 'C',
 				["Coin P2"] = 'c',
 				["Service"] = 'S',
+				["Fourth Button"] = '4'
 			},
 
 			[VSystemID.Raw.NES] = new()

@@ -24,6 +24,15 @@ namespace BizHawk.Emulation.Consoles._3DO
 		public const int PAL2_VIDEO_NUMERATOR = 50;
 		public const int PAL2_VIDEO_DENOMINATOR = 1;
 
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDReadCallback(int lba, IntPtr dst);
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate int CDSectorCountCallback();
+
+		[BizImport(CC)]
+		public abstract void SetCdCallbacks(CDReadCallback cdrc, CDSectorCountCallback cdscc);
+
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type, int videoStandard);
 
