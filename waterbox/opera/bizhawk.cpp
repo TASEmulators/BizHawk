@@ -5,6 +5,7 @@
 #include <lr_input.h>
 #include <opera_vdlp.h>
 #include <opera_mem.h>
+#include <opera_cdrom.h>
 
 struct MemoryAreas 
 {
@@ -44,6 +45,7 @@ size_t _audioSamples;
 
 extern "C"
 {  
+	   void opera_cdrom_set_callbacks(opera_cdrom_get_size_cb_t get_size_,	opera_cdrom_set_sector_cb_t set_sector_,	opera_cdrom_read_sector_cb_t read_sector_);
 	   void opera_nvram_init(void *buf, const int bufsize);
     void opera_lr_callbacks_set_audio_sample(retro_audio_sample_t cb);
     void opera_lr_callbacks_set_audio_sample_batch(retro_audio_sample_batch_t cb);
@@ -247,6 +249,21 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
 		return false;
 }
 
+/// CD Management Logic Start
+#define CDIMAGE_SECTOR_SIZE 2048
+uint32_t _currentSector = 0;
+void (*cd_read_callback)(int32_t lba, void * dest);
+int (*cd_sector_count_callback)();
+ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cdscc)())
+{
+	cd_read_callback = cdrc;
+	cd_sector_count_callback = cdscc;
+}
+
+uint32_t cd_get_size(void) {	return cd_sector_count_callback(); }
+void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
+void cd_read_sector(void *buf_) {	cd_read_callback(_currentSector, buf_); }
+/// CD Management Logic End
 
 ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const char* fontFilePath, int port1Type, int port2Type, int region)
 { 
@@ -266,6 +283,9 @@ ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const c
 	retro_set_controller_port_device(0, port1Type);
 	retro_set_controller_port_device(1, port2Type);
 	retro_init();
+
+ // Setting cd callbacks
+	opera_cdrom_set_callbacks(cd_get_size, cd_set_sector, cd_read_sector);
 
 	// Loading game file
 	struct retro_game_info game;
@@ -350,6 +370,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 	memAreaIdx++;
 }
+
 
 void (*InputCallback)();
 ECL_EXPORT void SetInputCallback(void (*callback)())
