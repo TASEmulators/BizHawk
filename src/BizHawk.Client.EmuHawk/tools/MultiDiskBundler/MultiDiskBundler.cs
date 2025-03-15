@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = ToolIcon;
 			SystemDropDown.Items.AddRange([
+				VSystemID.Raw._3DO,
 				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
@@ -338,6 +339,11 @@ namespace BizHawk.Client.EmuHawk
 		private void OnDragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void FileSelectorPanel_Paint(object sender, PaintEventArgs e)
+		{
+
 		}
 	}
 }

@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Computers.Amiga;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.DiscSystem;
+using static BizHawk.Emulation.Consoles._3DO.LibOpera;
 using static BizHawk.Emulation.Cores.Computers.Amiga.UAE;
 
 namespace BizHawk.Emulation.Consoles._3DO
@@ -58,6 +62,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 		};
 
 		private readonly List<IRomAsset> _roms;
+		private readonly List<IDiscAsset> _discAssets;
 		private const int _messageDuration = 4;
 
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
@@ -79,6 +84,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			DriveLightEnabled = true;
 			_roms = lp.Roms;
+			_discAssets = lp.Discs;
+			_CDReadCallback = CDRead;
+			_CDSectorCountCallback = CDSectorCount;
+			_discIndex = 0;
+			_cdReaders.Add(new(_discAssets[0].DiscData));
+
+			Console.WriteLine($"[CD] Sector count: {_discAssets[0].DiscData.Session1.LeadoutLBA}");
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
@@ -93,7 +105,10 @@ namespace BizHawk.Emulation.Consoles._3DO
 				MmapHeapSizeKB = 256 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { });
+			}, new Delegate[] { _CDReadCallback, _CDSectorCountCallback });
+
+			// Setting CD callbacks
+			_libOpera.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
 
 			// Adding Game file
 			var gameFile = _roms[0];
@@ -144,6 +159,29 @@ namespace BizHawk.Emulation.Consoles._3DO
 				throw new InvalidOperationException("Core rejected the rom!");
 
 			PostInit();
+		}
+
+		// CD Handling logic
+		private readonly LibOpera.CDReadCallback _CDReadCallback;
+		private readonly LibOpera.CDSectorCountCallback _CDSectorCountCallback;
+		private int _discIndex;
+		private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
+		private static int CD_SECTOR_SIZE = 2048;
+		private readonly byte[] _sectorBuffer = new byte[CD_SECTOR_SIZE];
+		private void CDRead(int lba, IntPtr dest)
+		{
+			if ((uint) _discIndex < _discAssets.Count)
+			{
+    			_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
+ 				Marshal.Copy(_sectorBuffer, 0, dest, CD_SECTOR_SIZE);
+			}
+			DriveLightOn = true;
+		}
+
+		private int CDSectorCount()
+		{
+			if ((uint) _discIndex < _discAssets.Count) return _discAssets[_discIndex].DiscData.Session1.LeadoutLBA;
+			return -1;
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
