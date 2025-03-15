@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetViewsInfo =
 				"local final = {} " +
 				"for index, name in pairs(manager.machine.video.snapshot_target.view_names) do " +
-					"table.insert(final, string.format(\"%s,%s;\", index, name)) " +
+					"table.insert(final, string.format(\"%s@%s;\", index, name)) " +
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";

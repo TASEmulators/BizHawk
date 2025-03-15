@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				if (View != string.Empty)
 				{
-					var substrings = View.Split(',');
+					var substrings = View.Split('@');
 					setting.Options.Add(substrings[1], substrings[1]);
 				}
 			}
