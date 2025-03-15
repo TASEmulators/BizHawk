@@ -17,7 +17,9 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				controller.BoolButtons.Add("Next Disc");
 				controller.BoolButtons.Add("Prev Disc");
-			}
+                controller.BoolButtons.Add("Eject Disc");
+                controller.BoolButtons.Add("Insert Disc");
+            }
 
 			return controller.MakeImmutable();
 		}
