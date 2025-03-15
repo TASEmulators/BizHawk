@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Consoles._3DO
 {

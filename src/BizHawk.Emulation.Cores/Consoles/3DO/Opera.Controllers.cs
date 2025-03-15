@@ -1,7 +1,6 @@
 ﻿using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Consoles._3DO
 {

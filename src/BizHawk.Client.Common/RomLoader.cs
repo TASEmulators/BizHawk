@@ -1043,7 +1043,6 @@ namespace BizHawk.Client.Common
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)
 				.Concat(A78)
-				.Concat(_3DO)
 				.Concat(Amiga)
 				.Concat(AppleII)
 				.Concat(C64)
@@ -1084,7 +1083,6 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter(/*VSystemID.Raw.N3DS*/"Nintendo 3DS", RomFileExtensions.N3DS),
 			new FilesystemFilter(/*VSystemID.Raw.A26*/"Atari 2600", RomFileExtensions.A26, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.A78*/"Atari 7800", RomFileExtensions.A78, devBuildExtraExts: new[] { "bin" }, addArchiveExts: true),
-			new FilesystemFilter(/*VSystemID.Raw._3DO*/"3DO", RomFileExtensions._3DO),
 			new FilesystemFilter(/*VSystemID.Raw.Amiga*/"Amiga", RomFileExtensions.Amiga),
 			new FilesystemFilter(/*VSystemID.Raw.AmstradCPC*/"Amstrad CPC", Array.Empty<string>(), devBuildExtraExts: new[] { "cdt", "dsk" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.AppleII*/"Apple II", RomFileExtensions.AppleII, addArchiveExts: true),
