@@ -36,6 +36,7 @@ namespace BizHawk.Client.Common
 				Player4Present = input[i++] is not 0,
 				Player4Class = (DSDA.HexenClass) input[i++],
 				TurningResolution = DSDA.TurningResolution.Shorttics,
+				RenderWipescreen = false,
 			};
 			_ = input[i++]; // player 5 isPresent
 			_ = input[i++]; // player 5 class
