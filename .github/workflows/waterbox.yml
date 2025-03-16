@@ -1,0 +1,61 @@
+name: Build Waterbox
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    paths: [ "waterbox/libcxx/**", "waterbox/musl/**" ]
+  push:
+    branches: [ "master" ]
+    paths: [ "waterbox/libcxx/**", "waterbox/musl/**" ]
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-waterbox
+  cancel-in-progress: true
+
+env:
+  CC: clang-18
+
+jobs:
+
+  build-waterbox:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install clang 18
+      run: wget https://apt.llvm.org/llvm.sh;
+          chmod u+x llvm.sh;
+          sudo ./llvm.sh 18;
+          clang-18 --version;
+    - name: Set up env variable
+      run: echo "CLANG_VERSION=$(clang-18 -dumpversion)" >> $GITHUB_ENV
+    - name: Cache waterbox
+      id: cache-waterbox
+      uses: actions/cache@v4
+      with:
+        path: waterbox/sysroot
+        key: waterbox-${{ hashFiles('waterbox/libcxx/configure-for-waterbox-phase-*', 'waterbox/libcxx/setup-llvm.sh', 'waterbox/libcxx/do-everything.sh') }}-${{ env.CLANG_VERSION }}
+
+    - if: ${{ steps.cache-waterbox.outputs.cache-hit != 'true' }}
+      name: Checkout submodule
+      working-directory: ./waterbox/
+      run: git submodule update --init musl
+    - if: ${{ steps.cache-waterbox.outputs.cache-hit != 'true' }}
+      name: Build musl
+      working-directory: ./waterbox/musl
+      run: ./wbox_configure.sh;
+           ./wbox_build.sh;
+    - if: ${{ steps.cache-waterbox.outputs.cache-hit != 'true' }}
+      name: Build libcxx
+      working-directory: ./waterbox/libcxx
+      run: ./do-everything.sh
+    - if: ${{ steps.cache-waterbox.outputs.cache-hit != 'true' }}
+      name: Build nyma zlib
+      working-directory: ./waterbox/nyma
+      run: ./build-and-install-zlib.sh
+    - name: Upload compiled waterbox
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-waterbox
+        path: waterbox/sysroot

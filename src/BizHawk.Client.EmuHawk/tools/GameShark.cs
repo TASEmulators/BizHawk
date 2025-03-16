@@ -62,7 +62,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					DialogController.ShowMessageBox($"An Error occured: {ex.GetType()}", "Error", EMsgBoxIcon.Error);
+					using ExceptionBox dialog = new(ex);
+					this.ShowDialogAsChild(dialog);
 				}
 			}
 

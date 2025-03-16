@@ -329,22 +329,6 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Convert C# exceptions into Lua errors
-		/// </summary>
-		/// <returns>num of things on stack</returns>
-		/// <param name = "e">null for no pending exception</param>
-		internal int SetPendingException(Exception e)
-		{
-			if (e == null)
-			{
-				return 0;
-			}
-
-			Translator.ThrowError(State, e);
-			return 1;
-		}
-
-		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name = "chunk"></param>

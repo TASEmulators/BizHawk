@@ -548,10 +548,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleSpriteViewMouseMove(Point e)
 		{
-			if (e.X < SpriteView.ClientRectangle.Left) return;
-			if (e.Y < SpriteView.ClientRectangle.Top) return;
-			if (e.X >= SpriteView.ClientRectangle.Right) return;
-			if (e.Y >= SpriteView.ClientRectangle.Bottom) return;
+			var p = UIHelper.Unscale(e);
 
 			byte[] oam = _ppu.GetOam();
 			byte[] ppuBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
@@ -559,8 +556,8 @@ namespace BizHawk.Client.EmuHawk
 			bool is8x16 = _ppu.SPTall;
 			
 			//figure out which sprite we're over
-			int spriteSlotY = e.Y / 8;
-			int spriteSlotX = e.X / 8;
+			int spriteSlotY = p.Y / 8;
+			int spriteSlotX = p.X / 8;
 
 			//exclude mouse over empty area (vertical). this depends on how big the sprites are
 			if (is8x16)
@@ -638,12 +635,12 @@ namespace BizHawk.Client.EmuHawk
 			if (is8x16)
 			{
 				ZoomBox.Image = Section(
-					SpriteView.Sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 24) * 24), new Size(8, 16)), true);
+					SpriteView.Sprites, new Rectangle(new Point((p.X / 8) * 8, (p.Y / 24) * 24), new Size(8, 16)), true);
 			}
 			else
 			{
 				ZoomBox.Image = Section(
-					SpriteView.Sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);
+					SpriteView.Sprites, new Rectangle(new Point((p.X / 8) * 8, (p.Y / 8) * 8), new Size(8, 8)), false);
 			}
 		}
 
@@ -666,19 +663,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePaletteViewMouseMove(Point e)
 		{
-			if (e.X < PaletteView.ClientRectangle.Left) return;
-			if (e.Y < PaletteView.ClientRectangle.Top) return;
-			if (e.X >= PaletteView.ClientRectangle.Right) return;
-			if (e.Y >= PaletteView.ClientRectangle.Bottom) return;
+			var p = UIHelper.Unscale(e);
+			if (p.X < 0 || p.X >= 256 || p.Y < 0 || p.Y >= 32) return;
 
 			int baseAddr = 0x3F00;
-			if (e.Y > 16)
+			if (p.Y > 16)
 			{
 				baseAddr += 16;
 			}
 
-			int column = e.X / 16;
-			int addr = column + baseAddr;
+			int column = p.X / 16;
+			int addr = baseAddr + column;
 			AddressLabel.Text = $"Address: 0x{addr:X4}";
 			int val;
 
@@ -748,27 +743,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PatternView_MouseMove(object sender, MouseEventArgs e)
 		{
+			var p = UIHelper.Unscale(e.Location);
 			int table = 0;
 			int address;
 			int tile;
-			if (e.X > PatternView.Width / 2)
+			if (p.X > PatternView.Width / 2)
 			{
 				table = 1;
 			}
 
 			if (table == 0)
 			{
-				tile = (e.X - 1) / 8;
+				tile = (p.X - 1) / 8;
 				address = tile * 16;
 			}
 			else
 			{
-				tile = (e.X - 128) / 8;
+				tile = (p.X - 128) / 8;
 				address = 0x1000 + (tile * 16);
 			}
 
-			address += (e.Y / 8) * 256;
-			tile += (e.Y / 8) * 16;
+			address += (p.Y / 8) * 256;
+			tile += (p.Y / 8) * 16;
 			var usage = "Usage: ";
 
 			if (_ppu.BGBaseHigh == address >= 0x1000) // bghigh
@@ -790,7 +786,7 @@ namespace BizHawk.Client.EmuHawk
 			Value3Label.Text = $"Tile {tile:X2}";
 			Value4Label.Text = usage;
 
-			ZoomBox.Image = Section(PatternView.Pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);
+			ZoomBox.Image = Section(PatternView.Pattern, new Rectangle(new Point((p.X / 8) * 8, (p.Y / 8) * 8), new Size(8, 8)), false);
 		}
 
 		private void ScanlineTextBox_TextChanged(object sender, EventArgs e)
@@ -812,7 +808,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateFormSize()
 		{
-			Width = ChrRomView ? 861 : 580;
+			ClientSize = ClientSize with { Width = UIHelper.ScaleX(ChrRomView ? 850 : 570) };
 		}
 
 		private void ChrRomViewReload()

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool Emphasis { get; set; }
 
 		/// <summary>
-		/// Column header text will be drawn rotated, if true
+		/// Column text will be drawn rotated if true
 		/// </summary>
 		public bool Rotatable { get; set; }
 

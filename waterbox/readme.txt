@@ -36,8 +36,9 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/nyma/mednafen (required for all Nyma cores)
 		* waterbox/snes9x (required for Snes9x)
 		* waterbox/gpgx/Genesis-Plus-GX (required for gpgx)
-		* waterbox/uae/libretro-uae (required for puae)
+		* waterbox/uae/libretro-uae (required for uae)
 		* waterbox/stella/core (required for stella)
+		* waterbox/dsda/core (required for dsda)
 	* none of these submodules need to be cloned recursively
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
@@ -64,6 +65,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 6. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
 	cd ares64 && ./make-both.sh
 	cd bsnescore && make install
+	cd dsda && make install
 	cd gpgx && make install
 	cd libsnes && make install
 	cd mame-arcade && make install

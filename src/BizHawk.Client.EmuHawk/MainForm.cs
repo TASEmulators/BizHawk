@@ -80,9 +80,7 @@ namespace BizHawk.Client.EmuHawk
 #if BIZHAWKBUILD_SUPERHAWK
 			ToolStripMenuItemEx superHawkThrottleMenuItem = new() { Text = "SUPER·HAWK" };
 			superHawkThrottleMenuItem.Click += (_, _) => Config.SuperHawkThrottle = !Config.SuperHawkThrottle;
-			SpeedSkipSubMenu.DropDownItems.Insert(
-				SpeedSkipSubMenu.DropDownItems.IndexOf(MinimizeSkippingMenuItem),
-				superHawkThrottleMenuItem);
+			_ = SpeedSkipSubMenu.DropDownItems.InsertBefore(MinimizeSkippingMenuItem, insert: superHawkThrottleMenuItem);
 			ConfigSubMenu.DropDownOpened += (_, _) => superHawkThrottleMenuItem.Checked = Config.SuperHawkThrottle;
 #endif
 
@@ -160,9 +158,9 @@ namespace BizHawk.Client.EmuHawk
 					submenu.Enabled = false;
 				}
 			}
-			ConfigSubMenu.DropDownItems.Insert(
-				ConfigSubMenu.DropDownItems.IndexOf(CoresSubMenu) + 1,
-				new ToolStripMenuItemEx
+			_ = ConfigSubMenu.DropDownItems.InsertAfter(
+				CoresSubMenu,
+				insert: new ToolStripMenuItemEx
 				{
 					DropDownItems =
 					{
@@ -176,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "Core Settings",
 				});
 
-			MainformMenu.Items.Insert(MainformMenu.Items.IndexOf(ToolsSubMenu) + 1, NullHawkVSysSubmenu);
+			_ = MainformMenu.Items.InsertAfter(ToolsSubMenu, insert: NullHawkVSysSubmenu);
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -4879,9 +4877,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (wantCapture)
 			{
+				var size = _presentationPanel.Control.Size;
 				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
 				fbLocation.Offset(_presentationPanel.Control.Location);
-				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
+				fbLocation.Offset(new Point(size.Width / 2, size.Height / 2));
+				Cursor.Clip = new(fbLocation, new(1, 1));
 				Cursor.Hide();
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;

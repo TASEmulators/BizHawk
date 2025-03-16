@@ -1246,11 +1246,13 @@ namespace NLua
 						e.GetBaseException().Data["Traceback"] = _translator.interpreter.GetDebugTraceback();
 					}
 
-					return  _translator.Interpreter.SetPendingException(e.GetBaseException());
+					_translator.ThrowError(luaState, e.GetBaseException());
+					return 1;
 				}
 				catch (Exception e)
 				{
-					return _translator.Interpreter.SetPendingException(e);
+					_translator.ThrowError(luaState, e);
+					return 1;
 				}
 			}
 

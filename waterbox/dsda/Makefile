@@ -1,5 +1,5 @@
 CCFLAGS := \
-    -I. \
+	-I. \
 	-I./core/prboom2/src \
 	-Wfatal-errors \
 	-DHAVE_CONFIG_H \
@@ -16,7 +16,7 @@ CCFLAGS := \
 	-Wno-deprecated-non-prototype
 
 CXXFLAGS := \
-    -I. \
+	-I. \
 	-I./core/prboom2/src \
 	-Wfatal-errors \
 	-DHAVE_CONFIG_H \
@@ -36,7 +36,7 @@ LDFLAGS :=
 TARGET := dsda.wbx
 
 SRCS = \
-	BizhawkInterface.cxx \
+	BizhawkInterface.c \
 	core/prboom2/src/am_map.c \
 	core/prboom2/src/doomdef.c \
 	core/prboom2/src/doomstat.c \

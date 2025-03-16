@@ -118,6 +118,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
+			[DisplayName("Internal Resolution Scale Factor")]
+			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.")]
+			[Range(1, 12)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int ScaleFactor { get; set; }
+			
+			[DisplayName("Gamma Correction Level")]
+			[Description("Increases brightness [0 - 4]. Default value in vanilla Doom is 0 (\"OFF\").")]
+			[Range(0, 4)]
+			[DefaultValue(0)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int Gamma { get; set; }
+
 			[JsonIgnore]
 			[DisplayName("Player Point of View")]
 			[Description("Which of the players' point of view to use during rendering")]
@@ -175,11 +189,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool Player4Present { get; set; }
 
-			[DisplayName("Compatibility Mode")]
+			[DisplayName("Compatibility Level")]
 			[Description("The version of Doom or its ports that this movie is meant to emulate.")]
 			[DefaultValue(CompatibilityLevel.C2)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public CompatibilityLevel CompatibilityMode { get; set; }
+			public CompatibilityLevel CompatibilityLevel { get; set; }
 
 			[DisplayName("Skill Level")]
 			[Description("Establishes the general difficulty settings.")]
@@ -194,8 +208,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public MultiplayerMode MultiplayerMode { get; set; }
 
 			[DisplayName("Initial Episode")]
-			[Description("Selects the initial episode. Use '0' for non-episodic IWads (e.g., DOOM2)")]
-			[DefaultValue(0)]
+			[Description("Selects the initial episode. Ignored for non-episodic IWADs (e.g., DOOM2)")]
+			[DefaultValue(1)]
 			public int InitialEpisode { get; set; }
 
 			[DisplayName("Initial Map")]
@@ -225,29 +239,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool NoMonsters { get; set; }
 
-			[DisplayName("Player 1 Hexen Class")]
-			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player1Class { get; set; }
-
-			[DisplayName("Player 2 Hexen Class")]
-			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player2Class { get; set; }
-
-			[DisplayName("Player 3 Hexen Class")]
-			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player3Class { get; set; }
-
-			[DisplayName("Player 4 Hexen Class")]
-			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
-			[DefaultValue(HexenClass.Fighter)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public HexenClass Player4Class { get; set; }
+			[DisplayName("Pistol Start")]
+			[Description("Starts every level with a clean slate, with nothing carried over from previus levels. Health is reset to 100% as well.")]
+			[DefaultValue(false)]
+			public bool PistolStart { get; set; }
 
 			[DisplayName("Chain Episodes")]
 			[Description("Completing one episode leads to the next without interruption.")]
@@ -289,6 +284,30 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("How fast the Doom player will run when using the mouse.")]
 			[DefaultValue(1)]
 			public int MouseRunSensitivity { get; set; }
+
+			[DisplayName("Player 1 Hexen Class")]
+			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player1Class { get; set; }
+
+			[DisplayName("Player 2 Hexen Class")]
+			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player2Class { get; set; }
+
+			[DisplayName("Player 3 Hexen Class")]
+			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player3Class { get; set; }
+
+			[DisplayName("Player 4 Hexen Class")]
+			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
+			[DefaultValue(HexenClass.Fighter)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public HexenClass Player4Class { get; set; }
 
 			public CInterface.InitSettings GetNativeSettings(GameInfo game)
 			{

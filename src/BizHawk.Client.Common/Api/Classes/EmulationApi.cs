@@ -15,6 +15,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
 {
@@ -192,35 +193,36 @@ namespace BizHawk.Client.Common
 				? new Dictionary<string, string?>()
 				: ((GameInfo) _game).GetOptions().ToDictionary(static kvp => kvp.Key, static kvp => (string?) kvp.Value);
 
-		public object? GetSettings() => Emulator switch
+		public object? GetSettings() => Emulator switch // (select) cores A-Z by value of `CoreAttribute.CoreName`
 		{
-			GPGX gpgx => gpgx.GetSettings(),
 			LibsnesCore snes => snes.GetSettings(),
-			NES nes => nes.GetSettings(),
+			WonderSwan ws => ws.GetSettings(),
+			GPGX gpgx => gpgx.GetSettings(),
 			NDS nds => nds.GetSettings(),
+			NES nes => nes.GetSettings(),
 			PCEngine pce => pce.GetSettings(),
 			QuickNES quickNes => quickNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
-			WonderSwan ws => ws.GetSettings(),
 			_ => null
 		};
 
-		public PutSettingsDirtyBits PutSettings(object settings) => Emulator switch
+		public PutSettingsDirtyBits PutSettings(object settings) => Emulator switch // (select) cores A-Z by value of `CoreAttribute.CoreName`
 		{
-			GPGX gpgx => gpgx.PutSettings((GPGX.GPGXSettings) settings),
 			LibsnesCore snes => snes.PutSettings((LibsnesCore.SnesSettings) settings),
-			NES nes => nes.PutSettings((NES.NESSettings) settings),
+			WonderSwan ws => ws.PutSettings((WonderSwan.Settings) settings),
+			GPGX gpgx => gpgx.PutSettings((GPGX.GPGXSettings) settings),
 			NDS nds => nds.PutSettings((NDS.NDSSettings) settings),
+			NES nes => nes.PutSettings((NES.NESSettings) settings),
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
 			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
-			WonderSwan ws => ws.PutSettings((WonderSwan.Settings) settings),
 			_ => PutSettingsDirtyBits.None
 		};
 
 		public void SetRenderPlanes(params bool[] args)
 		{
 			static bool GetSetting(bool[] settings, int index) => index >= settings.Length || settings[index];
+			// (select) cores A-Z by value of `CoreAttribute.CoreName`
 			void SetLibsnes(LibsnesCore core)
 			{
 				var s = core.GetSettings();
@@ -301,19 +303,33 @@ namespace BizHawk.Client.Common
 				s.DispBG = GetSetting(args, 1);
 				sms.PutSettings(s);
 			}
+			void SetSnes9x(Snes9x core)
+			{
+				var s = core.GetSettings();
+				s.ShowBg0 = GetSetting(args, 0);
+				s.ShowBg1 = GetSetting(args, 1);
+				s.ShowBg2 = GetSetting(args, 2);
+				s.ShowBg3 = GetSetting(args, 3);
+				s.ShowSprites0 = GetSetting(args, 4);
+				s.ShowSprites1 = GetSetting(args, 5);
+				s.ShowSprites2 = GetSetting(args, 6);
+				s.ShowSprites3 = GetSetting(args, 7);
+				core.PutSettings(s);
+			}
+			// (select) cores A-Z by value of `CoreAttribute.CoreName`
 			switch (Emulator)
 			{
-				case GPGX gpgx:
-					SetGPGX(gpgx);
-					break;
 				case LibsnesCore snes:
 					SetLibsnes(snes);
 					break;
 				case BsnesCore bsnes:
 					SetBsnes(bsnes);
 					break;
-				case SubBsnesCore subBsnes:
-					SetBsnes(subBsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>());
+				case WonderSwan ws:
+					SetCygne(ws);
+					break;
+				case GPGX gpgx:
+					SetGPGX(gpgx);
 					break;
 				case NES nes:
 					SetNesHawk(nes);
@@ -327,8 +343,11 @@ namespace BizHawk.Client.Common
 				case SMS sms:
 					SetSmsHawk(sms);
 					break;
-				case WonderSwan ws:
-					SetCygne(ws);
+				case Snes9x snes9x:
+					SetSnes9x(snes9x);
+					break;
+				case SubBsnesCore subBsnes:
+					SetBsnes(subBsnes.ServiceProvider.GetService<ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>>());
 					break;
 			}
 		}

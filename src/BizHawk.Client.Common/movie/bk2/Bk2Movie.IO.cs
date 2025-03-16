@@ -3,6 +3,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -21,8 +22,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var backupName = Filename;
-			backupName = backupName.Insert(Filename.LastIndexOf('.'), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
+			var backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
 			backupName = Path.Combine(Session.BackupDirectory, Path.GetFileName(backupName));
 
 			Write(backupName, isBackup: true);

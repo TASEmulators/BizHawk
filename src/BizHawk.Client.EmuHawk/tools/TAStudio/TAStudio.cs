@@ -135,9 +135,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
 			};
-			EditSubMenu.DropDownItems.Insert(
-				EditSubMenu.DropDownItems.IndexOf(ReselectClipboardMenuItem) + 1,
-				goToFrameMenuItem);
+			_ = EditSubMenu.DropDownItems.InsertAfter(ReselectClipboardMenuItem, insert: goToFrameMenuItem);
 
 			RecentSubMenu.Image = Resources.Recent;
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
@@ -360,7 +358,10 @@ namespace BizHawk.Client.EmuHawk
 					name: name,
 					widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
 					type: type,
-					text: mnemonic));
+					text: mnemonic)
+				{
+					Rotatable = type is ColumnType.Axis
+				});
 			}
 
 			var columnsToHide = TasView.AllColumns

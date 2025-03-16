@@ -2337,8 +2337,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 						PC += 6;
 						break;
 					case 0xF4: // SET
-						int a; // TODO remove these extra checks
-						string b = Disassemble(PC, out a);
+						//TODO remove these extra checks
+						string b = Disassemble(PC, out _);
 						if (!b.StartsWithOrdinal("ADC") && !b.StartsWithOrdinal("EOR") && !b.StartsWithOrdinal("AND") && !b.StartsWithOrdinal("ORA"))
 							Console.WriteLine("SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}", b);
 						FlagT = true;
