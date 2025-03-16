@@ -345,8 +345,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   // Checking for lag frames
 		_isLagFrame = true;
 
-		// Running a single frame
-		retro_run();
+		// If resetting, do it now. Otherwise, running a single frame
+		if (f->isReset == 1) retro_reset();
+		else retro_run();
 
 		// Setting if lag frame
 		f->base.Lagged = _isLagFrame ? 1 : 0;

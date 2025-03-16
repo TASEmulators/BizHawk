@@ -103,4 +103,5 @@ typedef struct
 	FrameInfo base;
 	controllerData_t port1;
 	controllerData_t port2;
+	int isReset;
 } MyFrameInfo;
