@@ -505,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 				indexFrom: 0);
 		}
 
-		[LuaMethodExample("local markers = tastudio.getbranchmarkers(tastudio.getbranches()[1]\r\nfor i = 0, #makers, 1 do\r\n\tconsole.log(v[i].Text)\r\nend")]
+		[LuaMethodExample("local markers = tastudio.getbranchmarkers(tastudio.getbranches()[1].Id)\r\nfor i = 0, #makers, 1 do\r\n\tconsole.log(v[i].Text)\r\nend")]
 		[LuaMethod("getbranchmarkers", "returns a table of all markers with fields Frame and Text")]
 		public LuaTable GetBranchMarkers(string branchId)
 		{
