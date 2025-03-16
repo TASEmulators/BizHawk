@@ -340,10 +340,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
-
-		private void FileSelectorPanel_Paint(object sender, PaintEventArgs e)
-		{
-
-		}
 	}
 }

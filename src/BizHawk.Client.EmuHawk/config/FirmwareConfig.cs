@@ -709,11 +709,6 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private void lvFirmware_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
-
 		private void LvFirmware_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Set(DragDropEffects.Copy);
