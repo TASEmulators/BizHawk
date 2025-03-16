@@ -1019,7 +1019,6 @@ namespace BizHawk.Client.EmuHawk
 		private void RotateMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.HorizontalOrientation = !TasView.HorizontalOrientation;
-			CurrentTasMovie.FlagChanges();
 		}
 
 		private void HideLagFramesX_Click(object sender, EventArgs e)

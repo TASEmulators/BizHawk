@@ -180,16 +180,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.Rotatable)
-			{
-				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
-					.ToArray());
-
-				RightClickMenu.Items
-					.OfType<ToolStripMenuItem>()
-					.First(t => t.Name == "RotateMenuItem")
-					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
-			}
+			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
 
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
@@ -1249,6 +1240,21 @@ namespace BizHawk.Client.EmuHawk
 						yield return (name, MovieSession.MovieController.Definition.MnemonicsCache[name].ToString(), 1);
 					}
 				}
+			}
+		}
+
+		private void HandleRotationChanged(object sender, EventArgs e)
+		{
+			CurrentTasMovie.FlagChanges();
+			if (TasView.HorizontalOrientation)
+			{
+				BranchesMarkersSplit.Orientation = Orientation.Vertical;
+				BranchesMarkersSplit.SplitterDistance = 200;
+			}
+			else
+			{
+				BranchesMarkersSplit.Orientation = Orientation.Horizontal;
+				BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
 			}
 		}
 	}

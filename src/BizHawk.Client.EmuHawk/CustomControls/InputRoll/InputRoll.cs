@@ -477,6 +477,10 @@ namespace BizHawk.Client.EmuHawk
 		[Description("Occurs when a cell is dragged and then dropped into a new cell, old cell is the cell that was being dragged, new cell is its new destination")]
 		public event CellDroppedEvent CellDropped;
 
+		[Category("Property Changed")]
+		[Description("Fires after rotation has been changed.")]
+		public event EventHandler RotationChanged;
+
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
@@ -1568,6 +1572,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OrientationChanged()
 		{
+			RotationChanged?.Invoke(this, EventArgs.Empty);
 			// TODO scroll to correct positions
 			ColumnChangedCallback();
 			Refresh();
