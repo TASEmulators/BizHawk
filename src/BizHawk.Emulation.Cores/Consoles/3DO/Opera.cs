@@ -246,35 +246,35 @@ namespace BizHawk.Emulation.Consoles._3DO
 			switch (type)
 			{
 				case ControllerType.Gamepad:
-					gameInput.gamepad.up       = controller.IsPressed($"P{port} {JoystickButtons.Up}") ? 1 : 0;
-					gameInput.gamepad.down     = controller.IsPressed($"P{port} {JoystickButtons.Down}") ? 1 : 0;
-					gameInput.gamepad.left     = controller.IsPressed($"P{port} {JoystickButtons.Left}") ? 1 : 0;
-					gameInput.gamepad.right    = controller.IsPressed($"P{port} {JoystickButtons.Right}") ? 1 : 0;
-					gameInput.gamepad.select   = controller.IsPressed($"P{port} {JoystickButtons.Select}") ? 1 : 0;
-					gameInput.gamepad.start    = controller.IsPressed($"P{port} {JoystickButtons.Start}") ? 1 : 0;
-					gameInput.gamepad.buttonA  = controller.IsPressed($"P{port} {JoystickButtons.ButtonA}") ? 1 : 0;
-					gameInput.gamepad.buttonB  = controller.IsPressed($"P{port} {JoystickButtons.ButtonB}") ? 1 : 0;
-					gameInput.gamepad.buttonX  = controller.IsPressed($"P{port} {JoystickButtons.ButtonX}") ? 1 : 0;
-					gameInput.gamepad.buttonY  = controller.IsPressed($"P{port} {JoystickButtons.ButtonY}") ? 1 : 0;
-					gameInput.gamepad.buttonL  = controller.IsPressed($"P{port} {JoystickButtons.ButtonL}") ? 1 : 0;
-					gameInput.gamepad.buttonR  = controller.IsPressed($"P{port} {JoystickButtons.ButtonR}") ? 1 : 0;
+					gameInput.gamepad.up = controller.IsPressed($"P{port} {JoystickButtons.Up}") ? 1 : 0;
+					gameInput.gamepad.down = controller.IsPressed($"P{port} {JoystickButtons.Down}") ? 1 : 0;
+					gameInput.gamepad.left = controller.IsPressed($"P{port} {JoystickButtons.Left}") ? 1 : 0;
+					gameInput.gamepad.right = controller.IsPressed($"P{port} {JoystickButtons.Right}") ? 1 : 0;
+					gameInput.gamepad.select = controller.IsPressed($"P{port} {JoystickButtons.Select}") ? 1 : 0;
+					gameInput.gamepad.start = controller.IsPressed($"P{port} {JoystickButtons.Start}") ? 1 : 0;
+					gameInput.gamepad.buttonA = controller.IsPressed($"P{port} {JoystickButtons.ButtonA}") ? 1 : 0;
+					gameInput.gamepad.buttonB = controller.IsPressed($"P{port} {JoystickButtons.ButtonB}") ? 1 : 0;
+					gameInput.gamepad.buttonX = controller.IsPressed($"P{port} {JoystickButtons.ButtonX}") ? 1 : 0;
+					gameInput.gamepad.buttonY = controller.IsPressed($"P{port} {JoystickButtons.ButtonY}") ? 1 : 0;
+					gameInput.gamepad.buttonL = controller.IsPressed($"P{port} {JoystickButtons.ButtonL}") ? 1 : 0;
+					gameInput.gamepad.buttonR = controller.IsPressed($"P{port} {JoystickButtons.ButtonR}") ? 1 : 0;
 					break;
 
 				case ControllerType.Mouse:
 					gameInput.mouse.dX = controller.AxisValue($"P{port} {Inputs.MouseX}");
 					gameInput.mouse.dY = controller.AxisValue($"P{port} {Inputs.MouseY}");
-					gameInput.mouse.leftButton   = controller.IsPressed($"P{port} {Inputs.MouseLeftButton}") ? 1 : 0;
+					gameInput.mouse.leftButton = controller.IsPressed($"P{port} {Inputs.MouseLeftButton}") ? 1 : 0;
 					gameInput.mouse.middleButton = controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}") ? 1 : 0;
-					gameInput.mouse.rightButton  = controller.IsPressed($"P{port} {Inputs.MouseRightButton}") ? 1 : 0;
+					gameInput.mouse.rightButton = controller.IsPressed($"P{port} {Inputs.MouseRightButton}") ? 1 : 0;
 					gameInput.mouse.fourthButton = controller.IsPressed($"P{port} {Inputs.MouseFourthButton}") ? 1 : 0;
 					break;
 
 				case ControllerType.FlightStick:
-					gameInput.flightStick.up      = controller.IsPressed($"P{port} {FlightStickButtons.Up}") ? 1 : 0;
-					gameInput.flightStick.down    = controller.IsPressed($"P{port} {FlightStickButtons.Down}") ? 1 : 0;
-					gameInput.flightStick.left    = controller.IsPressed($"P{port} {FlightStickButtons.Left}") ? 1 : 0;
-					gameInput.flightStick.right   = controller.IsPressed($"P{port} {FlightStickButtons.Right}") ? 1 : 0;
-					gameInput.flightStick.fire    = controller.IsPressed($"P{port} {FlightStickButtons.Fire}") ? 1 : 0;
+					gameInput.flightStick.up = controller.IsPressed($"P{port} {FlightStickButtons.Up}") ? 1 : 0;
+					gameInput.flightStick.down = controller.IsPressed($"P{port} {FlightStickButtons.Down}") ? 1 : 0;
+					gameInput.flightStick.left = controller.IsPressed($"P{port} {FlightStickButtons.Left}") ? 1 : 0;
+					gameInput.flightStick.right = controller.IsPressed($"P{port} {FlightStickButtons.Right}") ? 1 : 0;
+					gameInput.flightStick.fire = controller.IsPressed($"P{port} {FlightStickButtons.Fire}") ? 1 : 0;
 					gameInput.flightStick.buttonA = controller.IsPressed($"P{port} {FlightStickButtons.ButtonA}") ? 1 : 0;
 					gameInput.flightStick.buttonB = controller.IsPressed($"P{port} {FlightStickButtons.ButtonB}") ? 1 : 0;
 					gameInput.flightStick.buttonC = controller.IsPressed($"P{port} {FlightStickButtons.ButtonC}") ? 1 : 0;
@@ -310,8 +310,8 @@ namespace BizHawk.Emulation.Consoles._3DO
 				case ControllerType.OrbatakTrackball:
 					gameInput.orbatakTrackball.startP1 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.StartP1}") ? 1 : 0;
 					gameInput.orbatakTrackball.startP2 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.StartP2}") ? 1 : 0;
-					gameInput.orbatakTrackball.coinP1  = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP1}") ? 1 : 0;
-					gameInput.orbatakTrackball.coinP2  = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP2}") ? 1 : 0;
+					gameInput.orbatakTrackball.coinP1 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP1}") ? 1 : 0;
+					gameInput.orbatakTrackball.coinP2 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP2}") ? 1 : 0;
 					gameInput.orbatakTrackball.service = controller.IsPressed($"P{port} {OrbatakTrackballButtons.Service}") ? 1 : 0;
 					gameInput.orbatakTrackball.dX = controller.AxisValue($"P{port} {Inputs.TrackballPosX}");
 					gameInput.orbatakTrackball.dY = controller.AxisValue($"P{port} {Inputs.TrackballPosY}");
