@@ -916,7 +916,7 @@ namespace BizHawk.Client.EmuHawk
 			// MessageStatusLabel
 			// 
 			this.MessageStatusLabel.Name = "MessageStatusLabel";
-			this.MessageStatusLabel.Size = new System.Drawing.Size(110, 17);
+			this.MessageStatusLabel.Size = new System.Drawing.Size(103, 17);
 			this.MessageStatusLabel.Text = "TAStudio engaged";
 			// 
 			// ProgressBar
@@ -927,7 +927,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripStatusLabel2
 			// 
 			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(262, 17);
+			this.toolStripStatusLabel2.Size = new System.Drawing.Size(269, 17);
 			this.toolStripStatusLabel2.Spring = true;
 			// 
 			// SplicerStatusLabel
@@ -986,7 +986,7 @@ namespace BizHawk.Client.EmuHawk
             this.StartNewProjectFromNowMenuItem,
             this.StartANewProjectFromSaveRamMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(275, 502);
+			this.RightClickMenu.Size = new System.Drawing.Size(253, 502);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
