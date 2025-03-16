@@ -475,12 +475,14 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local marker = tastudio.getbranchmarkerabove(tastudio.getbranches()[1].Id, 100)")]
 		[LuaMethod("getbranchmarkerabove", "returns a table of the marker at or above the given frame for the given branchId with fields Frame and Text")]
-		public LuaTable GetBranchMarkerAbove(string branchId, int frame)
+		public LuaTable GetBranchMarkerAbove(int index, int frame)
 		{
 			var table = _th.CreateTable();
 			if (!Engaged()) return table;
 
-			var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
+			if (index >= Tastudio.CurrentTasMovie.Branches.Count) return table;
+
+			var branch = Tastudio.CurrentTasMovie.Branches[index];
 			var marker = branch.Markers.PreviousOrCurrent(frame);
 			table["Frame"] = marker.Frame;
 			table["Text"] = marker.Message;
@@ -507,11 +509,13 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local markers = tastudio.getbranchmarkers(tastudio.getbranches()[1].Id)\r\nfor i = 0, #makers, 1 do\r\n\tconsole.log(v[i].Text)\r\nend")]
 		[LuaMethod("getbranchmarkers", "returns a table of all markers with fields Frame and Text")]
-		public LuaTable GetBranchMarkers(string branchId)
+		public LuaTable GetBranchMarkers(int index)
 		{
 			if (!Engaged()) return _th.CreateTable();
 
-			var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
+			if (index >= Tastudio.CurrentTasMovie.Branches.Count) return _th.CreateTable();
+						
+			var branch = Tastudio.CurrentTasMovie.Branches[index];
 
 			return _th.EnumerateToLuaTable(
 				branch.Markers.Select(m =>
