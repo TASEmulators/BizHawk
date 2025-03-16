@@ -505,6 +505,25 @@ namespace BizHawk.Client.EmuHawk
 				indexFrom: 0);
 		}
 
+		[LuaMethodExample("local markers = tastudio.getbranchmarkers(tastudio.getbranches()[1]\r\nfor i = 0, #makers, 1 do\r\n\tconsole.log(v[i].Text)\r\nend")]
+		[LuaMethod("getbranchmarkers", "returns a table of all markers with fields Frame and Text")]
+		public LuaTable GetBranchMarkers(string branchId)
+		{
+			if (!Engaged()) return _th.CreateTable();
+
+			var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
+
+			return _th.EnumerateToLuaTable(
+				branch.Markers.Select(m =>
+				{
+					var table = _th.CreateTable();
+					table["Frame"] = m.Frame;
+					table["Text"] = m.Message;
+					return table;
+				}),
+				indexFrom: 0);
+		}
+
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
 		[LuaMethod("removemarker", "if there is a marker for the given frame, it will be removed")]
 		public void RemoveMarker(int frame)
