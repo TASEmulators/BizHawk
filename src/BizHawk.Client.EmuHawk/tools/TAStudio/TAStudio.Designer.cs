@@ -938,9 +938,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TasPlaybackBox
 			// 
-			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasPlaybackBox.Location = new System.Drawing.Point(4, 4);
+			this.TasPlaybackBox.Dock = System.Windows.Forms.DockStyle.Top;
+			this.TasPlaybackBox.Location = new System.Drawing.Point(0, 0);
+			this.TasPlaybackBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 44);
 			this.TasPlaybackBox.Name = "TasPlaybackBox";
 			this.TasPlaybackBox.Size = new System.Drawing.Size(200, 108);
 			this.TasPlaybackBox.TabIndex = 5;
@@ -951,7 +951,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.MarkerControl.Location = new System.Drawing.Point(0, 0);
 			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(200, 225);
+			this.MarkerControl.Size = new System.Drawing.Size(200, 227);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
 			// 
@@ -1101,9 +1101,9 @@ namespace BizHawk.Client.EmuHawk
 			// BookMarkControl
 			// 
 			this.BookMarkControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.BookMarkControl.Location = new System.Drawing.Point(0, 0);
+			this.BookMarkControl.Location = new System.Drawing.Point(0, 108);
 			this.BookMarkControl.Name = "BookMarkControl";
-			this.BookMarkControl.Size = new System.Drawing.Size(200, 183);
+			this.BookMarkControl.Size = new System.Drawing.Size(200, 185);
 			this.BookMarkControl.TabIndex = 8;
 			this.BookMarkControl.Tastudio = null;
 			// 
@@ -1112,19 +1112,21 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.BranchesMarkersSplit.Location = new System.Drawing.Point(4, 116);
+			this.BranchesMarkersSplit.Location = new System.Drawing.Point(4, 4);
 			this.BranchesMarkersSplit.Name = "BranchesMarkersSplit";
 			this.BranchesMarkersSplit.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
 			// BranchesMarkersSplit.Panel1
 			// 
 			this.BranchesMarkersSplit.Panel1.Controls.Add(this.BookMarkControl);
+			this.BranchesMarkersSplit.Panel1.Controls.Add(this.TasPlaybackBox);
+			this.BranchesMarkersSplit.Panel1MinSize = 200;
 			// 
 			// BranchesMarkersSplit.Panel2
 			// 
 			this.BranchesMarkersSplit.Panel2.Controls.Add(this.MarkerControl);
-			this.BranchesMarkersSplit.Size = new System.Drawing.Size(200, 412);
-			this.BranchesMarkersSplit.SplitterDistance = 183;
+			this.BranchesMarkersSplit.Size = new System.Drawing.Size(200, 524);
+			this.BranchesMarkersSplit.SplitterDistance = 293;
 			this.BranchesMarkersSplit.TabIndex = 9;
 			this.BranchesMarkersSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
 			// 
@@ -1143,7 +1145,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MainVertialSplit.Panel2
 			// 
-			this.MainVertialSplit.Panel2.Controls.Add(this.TasPlaybackBox);
 			this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
 			this.MainVertialSplit.Size = new System.Drawing.Size(507, 528);
 			this.MainVertialSplit.SplitterDistance = 295;
