@@ -77,16 +77,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_nativeResolution.X * _settings.ScaleFactor}x{
 				_nativeResolution.Y * _settings.ScaleFactor}\"\n"
 				+ $"usegamma {_settings.Gamma}\n"
-				+ "dsda_exhud 0\n"
-				+ "dsda_pistol_start 0\n"
-				+ "uncapped_framerate 0\n"
+				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio())
 				+ "render_stretch_hud 0\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
-				+ "render_wipescreen 1\n"
+				+ "dsda_exhud 0\n"
+				+ "uncapped_framerate 0\n"
 				+ "map_coordinates 0\n"
 				+ "map_totals 0\n"
+				+ "map_time 0\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Deathmatch, "-deathmatch");
 			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Altdeath, "-altdeath");
 			ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
-			ConditionalArg((initSettings._Player1Present + initSettings._Player2Present + initSettings._Player3Present + initSettings._Player4Present) > 1, "-solo-net");
+			ConditionalArg((initSettings.Player1Present + initSettings.Player2Present + initSettings.Player3Present + initSettings.Player4Present) > 1, "-solo-net");
 		}
 
 		private void ConditionalArg(bool condition, string setting)
