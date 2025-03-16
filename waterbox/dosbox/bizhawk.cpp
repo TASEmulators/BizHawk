@@ -286,8 +286,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 
 /// CD Management Logic Start
-void (*cd_read_callback)(int32_t lba, void * dest, int sectorSize);
-ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest, int sectorSize))
+void (*cd_read_callback)(char* cdRomFile, int32_t lba, void * dest, int sectorSize);
+ECL_EXPORT void SetCdCallbacks(void (*cdrc)(char* cdRomFile, int32_t lba, void * dest, int sectorSize))
 {
 	cd_read_callback = cdrc;
 }
@@ -299,8 +299,6 @@ ECL_EXPORT void ejectCD()
 ECL_EXPORT void insertCD()
 {
 }
-
-void cd_read_sector(int sector, void *buf_, int sectorSize) {	cd_read_callback(sector, buf_, sectorSize); }
 
 CDData_t _cdData[MAX_CD_COUNT];
 size_t _cdCount = 0;
