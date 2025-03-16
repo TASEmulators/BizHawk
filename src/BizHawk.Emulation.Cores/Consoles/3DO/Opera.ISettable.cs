@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			[Display(Name = "(3DO Arcade) Shootout At Old Tucson")]
 			Shootout_At_Old_Tucson,
 			[Display(Name = "3DO-NTSC-1.0fc2")]
-			_3DO_NTSC_1fc2
+			_3DO_NTSC_1fc2,
 		}
 
 		public enum FontROM
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 				=> SettingsUtil.SetDefaultValues(this);
 
 			public SyncSettings Clone()
-				=> (SyncSettings)MemberwiseClone();
+				=> (SyncSettings) MemberwiseClone();
 
 			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
 				=> !DeepEquality.DeepEquals(x, y);

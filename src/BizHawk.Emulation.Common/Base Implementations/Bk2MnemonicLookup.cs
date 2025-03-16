@@ -895,7 +895,7 @@ namespace BizHawk.Emulation.Common
 				["Light Gun Screen X"] = "lgX",
 				["Light Gun Screen Y"] = "lgY",
 				["Trackball X"] = "tX",
-				["Trackball Y"] = "tY"
+				["Trackball Y"] = "tY",
 			},
 			[VSystemID.Raw.A78] = new()
 			{

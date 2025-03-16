@@ -37,55 +37,44 @@ namespace BizHawk.Emulation.Consoles._3DO
 			switch (type)
 			{
 				case ControllerType.Gamepad:
-					foreach (var button in JoystickButtonCollection)
-						controller.BoolButtons.Add($"P{port} {button}");
+					foreach (var button in JoystickButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
 					break;
 				case ControllerType.Mouse:
-					controller.BoolButtons.AddRange(
-					[
+					controller.BoolButtons.AddRange([
 						$"P{port} {Inputs.MouseLeftButton}",
 						$"P{port} {Inputs.MouseMiddleButton}",
 						$"P{port} {Inputs.MouseRightButton}",
 						$"P{port} {Inputs.MouseFourthButton}",
 					]);
-					controller
-						.AddAxis($"P{port} {Inputs.MouseX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+					controller.AddAxis($"P{port} {Inputs.MouseX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.MouseY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 				case ControllerType.FlightStick:
 					foreach (var button in FlightStickButtonCollection)
 					controller.BoolButtons.Add($"P{port} {button}");
-					controller
-						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+					controller.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 				case ControllerType.LightGun:
-					foreach (var button in LightGunButtonCollection)
-						controller.BoolButtons.Add($"P{port} {button}");
-					controller
-						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
+					foreach (var button in LightGunButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
+					controller.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
 						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0);
 					break;
 				case ControllerType.ArcadeLightGun:
-					foreach (var button in ArcadeLightGunButtonCollection)
-						controller.BoolButtons.Add($"P{port} {button}");
-					controller
-						.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
+					foreach (var button in ArcadeLightGunButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
+					controller.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
 						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0);
 					break;
 				case ControllerType.OrbatakTrackball:
-					foreach (var button in OrbatakTrackballCollection)
-						controller.BoolButtons.Add($"P{port} {button}");
-					controller
-						.AddAxis($"P{port} {Inputs.TrackballPosX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+					foreach (var button in OrbatakTrackballCollection) controller.BoolButtons.Add($"P{port} {button}");
+					controller.AddAxis($"P{port} {Inputs.TrackballPosX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.TrackballPosY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 			}
 		}
 
-		private static string[] JoystickButtonCollection =
-		[
+		private static string[] JoystickButtonCollection = [
 			JoystickButtons.Up,
 			JoystickButtons.Down,
 			JoystickButtons.Left,
@@ -100,8 +89,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			JoystickButtons.ButtonR,
 		];
 
-		private static string[] FlightStickButtonCollection =
-		[
+		private static string[] FlightStickButtonCollection = [
 			FlightStickButtons.Up,
 			FlightStickButtons.Down,
 			FlightStickButtons.Left,
@@ -115,16 +103,14 @@ namespace BizHawk.Emulation.Consoles._3DO
 			FlightStickButtons.RightTrigger,
 		];
 
-		private static string[] LightGunButtonCollection =
-		[
+		private static string[] LightGunButtonCollection = [
 			LightGunButtons.Trigger,
 			LightGunButtons.Select,
 			LightGunButtons.Reload,
 			LightGunButtons.IsOffScreen,
 		];
 
-		private static string[] ArcadeLightGunButtonCollection =
-		[
+		private static string[] ArcadeLightGunButtonCollection = [
 			ArcadeLightGunButtons.Trigger,
 			ArcadeLightGunButtons.Select,
 			ArcadeLightGunButtons.Start,
@@ -133,8 +119,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			ArcadeLightGunButtons.IsOffScreen,
 		];
 
-		private static string[] OrbatakTrackballCollection =
-		[
+		private static string[] OrbatakTrackballCollection = [
 			OrbatakTrackballButtons.StartP1,
 			OrbatakTrackballButtons.StartP2,
 			OrbatakTrackballButtons.CoinP1,

@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			MaxWidth = LibOpera.PAL2_WIDTH,
 			MaxHeight = LibOpera.PAL2_HEIGHT,
 			DefaultFpsNumerator = LibOpera.NTSC_VIDEO_NUMERATOR,
-			DefaultFpsDenominator = LibOpera.NTSC_VIDEO_DENOMINATOR
+			DefaultFpsDenominator = LibOpera.NTSC_VIDEO_DENOMINATOR,
 		};
 
 		private static readonly Configuration ConfigPAL1 = new Configuration
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			MaxWidth = LibOpera.PAL1_WIDTH,
 			MaxHeight = LibOpera.PAL1_HEIGHT,
 			DefaultFpsNumerator = LibOpera.PAL1_VIDEO_NUMERATOR,
-			DefaultFpsDenominator = LibOpera.PAL1_VIDEO_DENOMINATOR
+			DefaultFpsDenominator = LibOpera.PAL1_VIDEO_DENOMINATOR,
 		};
 
 		private static readonly Configuration ConfigPAL2 = new Configuration
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			MaxWidth = LibOpera.PAL2_WIDTH,
 			MaxHeight = LibOpera.PAL2_HEIGHT,
 			DefaultFpsNumerator = LibOpera.PAL2_VIDEO_NUMERATOR,
-			DefaultFpsDenominator = LibOpera.PAL2_VIDEO_DENOMINATOR
+			DefaultFpsDenominator = LibOpera.PAL2_VIDEO_DENOMINATOR,
 		};
 
 		private readonly List<IDiscAsset> _discAssets;
@@ -64,13 +64,15 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		[CoreConstructor(VSystemID.Raw._3DO)]
 		public Opera(CoreLoadParameters<object, SyncSettings> lp)
-			: base(lp.Comm, (lp.SyncSettings == null ? VideoStandard.NTSC : lp.SyncSettings.VideoStandard) switch
-			{
-				VideoStandard.NTSC => ConfigNTSC,
-				VideoStandard.PAL1 => ConfigPAL1,
-				VideoStandard.PAL2 => ConfigPAL2,
-				_ => throw new NotImplementedException()
-			})
+			: base(
+				lp.Comm,
+				lp.SyncSettings?.VideoStandard switch
+				{
+					null or VideoStandard.NTSC => ConfigNTSC,
+					VideoStandard.PAL1 => ConfigPAL1,
+					VideoStandard.PAL2 => ConfigPAL2,
+					_ => throw new InvalidOperationException($"unexpected value for sync setting {nameof(SyncSettings.VideoStandard)}")
+				})
 		{
 			DriveLightEnabled = true;
 			_discAssets = lp.Discs;
@@ -88,17 +90,19 @@ namespace BizHawk.Emulation.Consoles._3DO
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
 
-			_libOpera = PreInit<LibOpera>(new WaterboxOptions
-			{
-				Filename = "opera.wbx",
-				SbrkHeapSizeKB = 256 * 1024,
-				SealedHeapSizeKB = 1024,
-				InvisibleHeapSizeKB = 1024,
-				PlainHeapSizeKB = 1024,
-				MmapHeapSizeKB = 256 * 1024,
-				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _CDReadCallback, _CDSectorCountCallback });
+			_libOpera = PreInit<LibOpera>(
+				new WaterboxOptions
+				{
+					Filename = "opera.wbx",
+					SbrkHeapSizeKB = 256 * 1024,
+					SealedHeapSizeKB = 1024,
+					InvisibleHeapSizeKB = 1024,
+					PlainHeapSizeKB = 1024,
+					MmapHeapSizeKB = 256 * 1024,
+					SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
+					SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
+				},
+				[ _CDReadCallback, _CDSectorCountCallback ]);
 
 			// Setting CD callbacks
 			_libOpera.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
@@ -144,8 +148,16 @@ namespace BizHawk.Emulation.Consoles._3DO
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;
 			Console.WriteLine($"Launching Core with Game: '{cdName}', BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
-			if (!_libOpera.Init(cdName, biosFileName, fontROMFileName, (int)_syncSettings.Controller1Type, (int)_syncSettings.Controller2Type, (int)_syncSettings.VideoStandard))
+			if (!_libOpera.Init(
+				gameFile: cdName,
+				biosFile: biosFileName,
+				fontFile: fontROMFileName,
+				port1Type: (int) _syncSettings.Controller1Type,
+				port2Type: (int) _syncSettings.Controller2Type,
+				videoStandard: (int) _syncSettings.VideoStandard))
+			{
 				throw new InvalidOperationException("Core rejected the rom!");
+			}
 
 			PostInit();
 		}
@@ -178,13 +190,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			if (!_discInserted)
 			{
-				CoreComm.Notify($"Cannot eject: CDROM is already ejected.", _messageDuration);
+				CoreComm.Notify("Cannot eject: CDROM is already ejected.", _messageDuration);
 			}
 			else
 			{
 				_discInserted = false;
 				_libOpera.ejectCD();
-				CoreComm.Notify($"CDROM ejected.", _messageDuration);
+				CoreComm.Notify("CDROM ejected.", _messageDuration);
 			}
 		}
 
@@ -192,13 +204,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			if (_discInserted)
 			{
-				CoreComm.Notify($"Cannot insert: CDROM is already insert.", _messageDuration);
+				CoreComm.Notify("Cannot insert: CDROM is already insert.", _messageDuration);
 			}
 			else
 			{
 				_discInserted = true;
 				_libOpera.insertCD();
-				CoreComm.Notify($"CDROM inserted.", _messageDuration);
+				CoreComm.Notify("CDROM inserted.", _messageDuration);
 			}
 		}
 
