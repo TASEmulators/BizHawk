@@ -129,13 +129,13 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 
     // Move positional sounds
     headlessUpdateSounds();
-  }
 
-  // Updating video
-  if (renderInfo->RenderVideo)
-  {
-    displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
-    headlessUpdateVideo();
+    // Updating video
+    if (renderInfo->RenderVideo)
+    {
+      displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
+      headlessUpdateVideo();
+    }
   }
 }
 
