@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		private void CDRead(int lba, IntPtr dest)
 		{
-			if ((uint) _discIndex < _discAssets.Count)
+			if (_discIndex < _discAssets.Count)
 			{
 				_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
 				Marshal.Copy(_sectorBuffer, 0, dest, CD_SECTOR_SIZE);
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 
 		private int CDSectorCount()
 		{
-			if ((uint) _discIndex < _discAssets.Count) return _discAssets[_discIndex].DiscData.Session1.LeadoutLBA;
+			if (_discIndex < _discAssets.Count) return _discAssets[_discIndex].DiscData.Session1.LeadoutLBA;
 			return -1;
 		}
 
