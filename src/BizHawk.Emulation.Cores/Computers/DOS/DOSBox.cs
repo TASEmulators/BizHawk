@@ -213,10 +213,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (typeExtension == ".dosbox-chf") newTypeExtension = ".chf";
 
 				string cdromFileName = Path.GetFileName(file.RomPath);
-				string cdromNewFileName = cdromFileName.Replace(typeExtension, newTypeExtension);
-
-				Console.WriteLine($"Adding {cdromNewFileName} as read only file into the core");
-				_exe.AddReadonlyFile(file.FileData, cdromNewFileName);
+				string cdromNewFileName = cdromFileName.Replace(typeExtension, ".cdrom");
 
 				// Important: .cue and .bin CDROM images must be placed together in the .xml. This saves us from developing a matching engine here
 				if (newTypeExtension != ".cue") _CDROMCount++; // .cue CDROM extensions only work with an accompanying .bin, so don't increment CDROM count until that happens
@@ -376,8 +373,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
             }
         }
 
-        private void CDRead(int lba, IntPtr dest, int sectorSize)
+        private void CDRead(string cdRomName, int lba, IntPtr dest, int sectorSize)
         {
+			Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
 			switch (sectorSize)
             {
 				case 2048:

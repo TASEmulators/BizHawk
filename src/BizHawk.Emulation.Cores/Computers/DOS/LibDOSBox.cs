@@ -25,9 +25,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		// CD Management Logic Start
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void cd_read_cb(int lba, IntPtr dest, [MarshalAs(UnmanagedType.Bool)] bool subcode);
-
         [StructLayout(LayoutKind.Sequential)]
         public class CDTrack
         {
@@ -50,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
         }
 
         [UnmanagedFunctionPointer(CC)]
-        public delegate void CDReadCallback(int lba, IntPtr dst, int sectorSize);
+        public delegate void CDReadCallback(string cdRomName, int lba, IntPtr dst, int sectorSize);
 
         [BizImport(CC)]
         public abstract void SetCdCallbacks(CDReadCallback cdrc);
