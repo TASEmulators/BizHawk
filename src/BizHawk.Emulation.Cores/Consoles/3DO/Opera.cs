@@ -174,40 +174,40 @@ namespace BizHawk.Emulation.Consoles._3DO
 			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
 		}
 
-        private void ejectDisc()
-        {
+		private void ejectDisc()
+		{
 			if (!_discInserted)
 			{
-               CoreComm.Notify($"Cannot eject: CDROM is already ejected.", _messageDuration);
-            }
+				CoreComm.Notify($"Cannot eject: CDROM is already ejected.", _messageDuration);
+			}
 			else
 			{
 				_discInserted = false;
-                _libOpera.ejectCD();
-                CoreComm.Notify($"CDROM ejected.", _messageDuration);
-            }
-        }
+				_libOpera.ejectCD();
+				CoreComm.Notify($"CDROM ejected.", _messageDuration);
+			}
+		}
 
 		private void insertDisc()
 		{
-            if (_discInserted)
-            {
-                CoreComm.Notify($"Cannot insert: CDROM is already insert.", _messageDuration);
-            }
-            else
-            {
-                _discInserted = true;
-                _libOpera.insertCD();
-                CoreComm.Notify($"CDROM inserted.", _messageDuration);
-            }
-        }
+			if (_discInserted)
+			{
+				CoreComm.Notify($"Cannot insert: CDROM is already insert.", _messageDuration);
+			}
+			else
+			{
+				_discInserted = true;
+				_libOpera.insertCD();
+				CoreComm.Notify($"CDROM inserted.", _messageDuration);
+			}
+		}
 
-        private void CDRead(int lba, IntPtr dest)
+		private void CDRead(int lba, IntPtr dest)
 		{
 			if ((uint) _discIndex < _discAssets.Count)
 			{
-    			_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
- 				Marshal.Copy(_sectorBuffer, 0, dest, CD_SECTOR_SIZE);
+				_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
+				Marshal.Copy(_sectorBuffer, 0, dest, CD_SECTOR_SIZE);
 			}
 			DriveLightOn = true;
 		}
@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				if (controller.IsPressed("Next Disc")) SelectNextDisc();
 				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
-            }
+			}
 
 			DriveLightOn = false;
 			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 			// Game reset
 			if (controller.IsPressed("Reset")) fi.isReset = 1;
 
-            return fi;
+			return fi;
 		}
 
 		private static LibOpera.GameInput ProcessController(int port, ControllerType type, IController controller)
@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 					break;
 
 				case ControllerType.LightGun:
-			        gameInput.lightGun.trigger = controller.IsPressed($"P{port} {LightGunButtons.Trigger}") ? 1 : 0;
+					gameInput.lightGun.trigger = controller.IsPressed($"P{port} {LightGunButtons.Trigger}") ? 1 : 0;
 					gameInput.lightGun.select = controller.IsPressed($"P{port} {LightGunButtons.Select}") ? 1 : 0;
 					gameInput.lightGun.reload = controller.IsPressed($"P{port} {LightGunButtons.Reload}") ? 1 : 0;
 					gameInput.lightGun.isOffScreen = controller.IsPressed($"P{port} {LightGunButtons.IsOffScreen}") ? 1 : 0;
@@ -325,17 +325,17 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 		}
 
-        protected override void SaveStateBinaryInternal(BinaryWriter writer)
-        {
-            writer.Write(_discIndex);
-            writer.Write(_discInserted);
-        }
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
+		{
+			writer.Write(_discIndex);
+			writer.Write(_discInserted);
+		}
 
-        protected override void LoadStateBinaryInternal(BinaryReader reader)
-        {
-            _discIndex = reader.ReadInt32();
-            _discInserted = reader.ReadBoolean();
-        }
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			_discIndex = reader.ReadInt32();
+			_discInserted = reader.ReadBoolean();
+		}
 
-    }
-}
+	}
+}

@@ -17,12 +17,12 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				controller.BoolButtons.Add("Next Disc");
 				controller.BoolButtons.Add("Prev Disc");
-            }
+			}
 
 			// Adding Reset button
-            controller.BoolButtons.Add("Reset");
+			controller.BoolButtons.Add("Reset");
 
-            return controller.MakeImmutable();
+			return controller.MakeImmutable();
 		}
 
 		public const int MOUSE_MIN_POS_X = -64;
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 						.AddAxis($"P{port} {Inputs.MouseY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 				case ControllerType.FlightStick:
-				   foreach (var button in FlightStickButtonCollection)
+					foreach (var button in FlightStickButtonCollection)
 					controller.BoolButtons.Add($"P{port} {button}");
 					controller
 						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)

@@ -33,13 +33,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		[BizImport(CC)]
 		public abstract void SetCdCallbacks(CDReadCallback cdrc, CDSectorCountCallback cdscc);
 
-        [BizImport(CC)]
-        public abstract void ejectCD();
+		[BizImport(CC)]
+		public abstract void ejectCD();
 
-        [BizImport(CC)]
-        public abstract void insertCD();
+		[BizImport(CC)]
+		public abstract void insertCD();
 
-        [BizImport(CC, Compatibility = true)]
+		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type, int videoStandard);
 
 		[BizImport(CC, Compatibility = true)]
