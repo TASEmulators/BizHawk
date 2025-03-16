@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
@@ -30,7 +32,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		};
 
 		private readonly List<IRomAsset> _roms;
-		private const int _messageDuration = 4;
+        private readonly List<IDiscAsset> _discAssets;
+        private const int _messageDuration = 4;
 
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
@@ -53,9 +56,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			: base(lp.Comm, DefaultConfig)
 		{
 			_roms = lp.Roms;
-			_syncSettings = lp.SyncSettings ?? new();
+            _discAssets = lp.Discs;
+            _syncSettings = lp.SyncSettings ?? new();
 
-			VsyncNumerator = (int) _syncSettings.FPSNumerator;
+            VsyncNumerator = (int) _syncSettings.FPSNumerator;
 			VsyncDenominator = (int) _syncSettings.FPSDenominator;
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
@@ -98,20 +102,46 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			var writableHDDImageFileSize = (ulong) _syncSettings.WriteableHardDisk;
 
-			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
+            _CDReadCallback = CDRead;
+            _libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
-				SbrkHeapSizeKB = 4 * 1024,
-				SealedHeapSizeKB = 1024,
+				SbrkHeapSizeKB = 32 * 1024,
+				SealedHeapSizeKB = 32 * 1024,
 				InvisibleHeapSizeKB = 1024,
-				PlainHeapSizeKB = 1024,
+				PlainHeapSizeKB = 32 * 1024,
 				MmapHeapSizeKB = 256 * 1024 + (uint) (writableHDDImageFileSize / 1024ul),
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { });
+			}, new Delegate[] { _CDReadCallback });
 
-			// Getting base config file
-			var configString = Encoding.UTF8.GetString(Resources.DOSBOX_CONF_BASE.Value);
+
+            ////// CD Loading Logic Start
+            _libDOSBox.SetCdCallbacks(_CDReadCallback);
+            _isMultidisc = _discAssets.Count > 1;
+            _discIndex = 0;
+
+			// Processing each disc
+			int curDiscIndex = 0;
+			for (var discIdx = 0; discIdx < _discAssets.Count; discIdx++)
+			{
+				// Getting disc data structure
+				var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
+				Console.WriteLine($"[CD] Adding Disc {discIdx}: '{_discAssets[discIdx].DiscName}' with sector count: {CDDataStruct.end}, track count: {CDDataStruct.last}.");
+
+				// Creating writers
+				_cdReaders.Add(new(_discAssets[discIdx].DiscData));
+
+				// Passing CD Data to the core
+				_libDOSBox.pushCDData(curDiscIndex, CDDataStruct.end, CDDataStruct.last);
+
+				// Passing track data to the core
+				for (var trackIdx = 0; trackIdx < CDDataStruct.last; trackIdx++) _libDOSBox.pushTrackData(curDiscIndex, trackIdx, CDDataStruct.tracks[trackIdx]);
+            }
+			////// CD Loading Logic End	 
+			
+            // Getting base config file
+            var configString = Encoding.UTF8.GetString(Resources.DOSBOX_CONF_BASE.Value);
 			configString += "\n";
 
 			// Getting selected machine preset config file
@@ -247,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			_exe.AddReadonlyFile(configData.ToArray(), FileNames.DOSBOX_CONF);
-			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
+			//Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
 			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize, _syncSettings.FPSNumerator, _syncSettings.FPSDenominator))
@@ -261,7 +291,107 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_CDROMCount > 0) DriveLightEnabled = true;
 		}
 
-		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+        // CD Handling logic
+        private bool _isMultidisc;
+        private bool _discInserted = true;
+        private readonly LibDOSBox.CDReadCallback _CDReadCallback;
+        private int _discIndex;
+        private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
+        private readonly byte[] _sectorBuffer = new byte[4096];
+
+        public static LibDOSBox.CDData GetCDDataStruct(Disc cd)
+        {
+            var ret = new LibDOSBox.CDData();
+            var ses = cd.Session1;
+            var ntrack = ses.InformationTrackCount;
+
+            for (var i = 0; i < LibDOSBox.CD_MAX_TRACKS; i++)
+            {
+				ret.tracks[i] = new();
+                ret.tracks[i].offset = 0;
+                ret.tracks[i].loopEnabled = 0;
+                ret.tracks[i].loopOffset = 0;
+
+                if (i < ntrack)
+                {
+                    ret.tracks[i].start = ses.Tracks[i + 1].LBA;
+                    ret.tracks[i].end = ses.Tracks[i + 2].LBA;
+                    ret.tracks[i].mode = ses.Tracks[i + 1].Mode;
+                    if (i == ntrack - 1)
+                    {
+                        ret.end = ret.tracks[i].end;
+                        ret.last = ntrack;
+                    }
+                }
+                else
+                {
+                    ret.tracks[i].start = 0;
+                    ret.tracks[i].end = 0;
+                    ret.tracks[i].mode = 0;
+                }
+            }
+
+            return ret;
+        }
+
+        private void SelectNextDisc()
+        {
+            _discIndex++;
+            if (_discIndex == _discAssets.Count) _discIndex = 0;
+            CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+        }
+
+        private void SelectPrevDisc()
+        {
+            _discIndex--;
+            if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
+            CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+        }
+
+        private void ejectDisc()
+        {
+            if (!_discInserted)
+            {
+                CoreComm.Notify($"Cannot eject: CDROM is already ejected.", _messageDuration);
+            }
+            else
+            {
+                _discInserted = false;
+                _libDOSBox.ejectCD();
+                CoreComm.Notify($"CDROM ejected.", _messageDuration);
+            }
+        }
+
+        private void insertDisc()
+        {
+            if (_discInserted)
+            {
+                CoreComm.Notify($"Cannot insert: CDROM is already insert.", _messageDuration);
+            }
+            else
+            {
+                _discInserted = true;
+                _libDOSBox.insertCD();
+                CoreComm.Notify($"CDROM inserted.", _messageDuration);
+            }
+        }
+
+        private void CDRead(int lba, IntPtr dest, int sectorSize)
+        {
+			switch (sectorSize)
+            {
+				case 2048:
+					_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
+					Marshal.Copy(_sectorBuffer, 0, dest, 2048);
+					break;
+				default:
+                    throw new InvalidOperationException($"Unsupported CD sector size: {sectorSize}");
+
+            }
+            DriveLightOn = true;
+        }
+
+        protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
 			var fi = new LibDOSBox.FrameInfo();
@@ -379,7 +509,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_mouseState.leftButtonHeld);
 			writer.Write(_mouseState.middleButtonHeld);
 			writer.Write(_mouseState.rightButtonHeld);
-		}
+
+            writer.Write(_discIndex);
+            writer.Write(_discInserted);
+        }
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
@@ -393,9 +526,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_mouseState.leftButtonHeld = reader.ReadBoolean();
 			_mouseState.middleButtonHeld = reader.ReadBoolean();
 			_mouseState.rightButtonHeld = reader.ReadBoolean();
-		}
 
-		private static class FileNames
+            _discIndex = reader.ReadInt32();
+            _discInserted = reader.ReadBoolean();
+        }
+
+        private static class FileNames
 		{
 			public const string DOSBOX_CONF = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";

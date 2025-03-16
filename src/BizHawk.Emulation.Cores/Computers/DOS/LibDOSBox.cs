@@ -23,7 +23,53 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int KEY_COUNT = 0x65;
 
 
-		[BizImport(CC, Compatibility = true)]
+		// CD Management Logic Start
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void cd_read_cb(int lba, IntPtr dest, [MarshalAs(UnmanagedType.Bool)] bool subcode);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public class CDTrack
+        {
+            public int offset;
+            public int start;
+            public int end;
+            public int mode;
+            public int loopEnabled;
+            public int loopOffset;
+        }
+
+        public const int CD_MAX_TRACKS = 100;
+        [StructLayout(LayoutKind.Sequential)]
+        public class CDData
+        {
+            public int end;
+            public int last;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
+            public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
+        }
+
+        [UnmanagedFunctionPointer(CC)]
+        public delegate void CDReadCallback(int lba, IntPtr dst, int sectorSize);
+
+        [BizImport(CC)]
+        public abstract void SetCdCallbacks(CDReadCallback cdrc);
+
+        [BizImport(CC)]
+        public abstract void ejectCD();
+
+        [BizImport(CC)]
+        public abstract void insertCD();
+
+        [BizImport(CC)]
+        public abstract void pushCDData(int cdIdx, int numSectors, int numTracks);
+
+        [BizImport(CC)]
+        public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
+
+        // CD Management Logic END
+
+        [BizImport(CC, Compatibility = true)]
 		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNominator, ulong fpsDenominator);
 
 		[BizImport(CC, Compatibility = true)]
