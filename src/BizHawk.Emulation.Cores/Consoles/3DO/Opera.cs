@@ -227,15 +227,16 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				if (controller.IsPressed("Next Disc")) SelectNextDisc();
 				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
-                if (controller.IsPressed("Eject Disc")) ejectDisc();
-                if (controller.IsPressed("Insert Disc")) insertDisc();
             }
 
 			DriveLightOn = false;
 			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
 			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, controller);
 
-			return fi;
+			// Game reset
+			if (controller.IsPressed("Reset")) fi.isReset = 1;
+
+            return fi;
 		}
 
 		private static LibOpera.GameInput ProcessController(int port, ControllerType type, IController controller)

@@ -17,11 +17,12 @@ namespace BizHawk.Emulation.Consoles._3DO
 			{
 				controller.BoolButtons.Add("Next Disc");
 				controller.BoolButtons.Add("Prev Disc");
-                controller.BoolButtons.Add("Eject Disc");
-                controller.BoolButtons.Add("Insert Disc");
             }
 
-			return controller.MakeImmutable();
+			// Adding Reset button
+            controller.BoolButtons.Add("Reset");
+
+            return controller.MakeImmutable();
 		}
 
 		public const int MOUSE_MIN_POS_X = -64;

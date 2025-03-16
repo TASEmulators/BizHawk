@@ -201,8 +201,6 @@ namespace BizHawk.Emulation.Common
 				["Fourth Button"] = '4',
 				["Next Disc"] = '>',
 				["Prev Disc"] = '<',
-				["Eject Disc"] = '^',
-				["Insert Disc"] = 'v',
 			},
 
 			[VSystemID.Raw.NES] = new()

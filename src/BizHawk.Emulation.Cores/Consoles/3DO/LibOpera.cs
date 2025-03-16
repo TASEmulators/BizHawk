@@ -154,6 +154,7 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			public GameInput port1;
 			public GameInput port2;
+			public int isReset = 0;
 		}
 	}
 }
