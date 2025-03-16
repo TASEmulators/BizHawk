@@ -820,6 +820,7 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.Doom] = new()
 			{
+				["Automap"] = "M",
 				["Backward"] = 'v',
 				["End Player"] = 'E',
 				["Fire"] = 'F',
@@ -891,14 +892,14 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.Doom] = new()
 			{
+				["Fly / Look"] = "L",
+				["Mouse Running"] = "mR",
+				["Mouse Turning"] = "mT",
 				["Run Speed"] = "R",
 				["Strafing Speed"] = "S",
 				["Turning Speed"] = "T",
-				["Weapon Select"] = "W",
-				["Fly / Look"] = "L",
 				["Use Artifact"] = "U",
-				["Mouse Running"] = "mR",
-				["Mouse Turning"] = "mT"
+				["Weapon Select"] = "W",
 			},
 		};
 	}

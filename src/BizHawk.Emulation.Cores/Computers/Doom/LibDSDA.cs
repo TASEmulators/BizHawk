@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init(ref InitSettings settings, int argc, string[] argv);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_frame_advance(
+		public abstract bool dsda_frame_advance(
 			ref PackedPlayerInput player1Inputs,
 			ref PackedPlayerInput player2Inputs,
 			ref PackedPlayerInput player3Inputs,

@@ -38,7 +38,7 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
   *paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
+ECL_EXPORT bool dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
   // Setting inputs
   headlessClearTickCommand();
@@ -137,6 +137,9 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
       headlessUpdateVideo();
     }
   }
+
+  // Assume wipe is lag
+  return !wipeDone;
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);

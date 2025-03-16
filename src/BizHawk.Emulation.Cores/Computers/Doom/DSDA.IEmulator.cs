@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			renderInfo._RenderAudio = renderAudio ? 1 : 0;
 			renderInfo._PlayerPointOfView = _settings.DisplayPlayer - 1;
 
-			_core.dsda_frame_advance(
+			IsLagFrame = _core.dsda_frame_advance(
 				ref players[0],
 				ref players[1],
 				ref players[2],
@@ -130,6 +130,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				UpdateAudio();
 
 			Frame++;
+
+			if (IsLagFrame)
+			{
+				LagCount++;
+			}
 
 			return true;
 		}
