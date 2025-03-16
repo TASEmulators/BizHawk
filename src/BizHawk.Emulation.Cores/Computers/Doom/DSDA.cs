@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ "render_stretch_hud 0\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
-				+ "render_wipescreen 0\n"
+				+ "render_wipescreen 1\n"
 				+ "map_coordinates 0\n"
 				+ "map_totals 0\n"
 			);

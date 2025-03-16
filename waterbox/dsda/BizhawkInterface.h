@@ -2,12 +2,16 @@
 #define __BIZHAWK_INTERFACE__
 
 #include "emulibc.h"
+#include "d_main.h"
 #include "d_player.h"
 #include "doomstat.h"
+#include "f_wipe.h"
 #include "g_game.h"
+#include "i_sound.h"
+#include "i_video.h"
 #include "p_mobj.h"
-#include "w_wad.h"
 #include "dsda/args.h"
+#include "dsda/settings.h"
 
 extern int headlessMain(int argc, char **argv);
 extern void headlessRunSingleTick();
@@ -16,10 +20,6 @@ extern void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingS
 extern void headlessGetMapName(char *outString);
 extern void headlessSetSaveStatePointer(void *savePtr, int saveStateSize);
 extern size_t headlessGetEffectiveSaveSize();
-extern void dsda_ArchiveAll(void);
-extern void dsda_UnArchiveAll(void);
-extern void D_AddFile (const char *file, wad_source_t source, void *const buffer, const size_t size);
-extern void AddIWAD(const char *iwad, void *const buffer, const size_t size);
 
 // Video
 extern void headlessUpdateVideo(void);
@@ -35,8 +35,6 @@ extern uint32_t* headlessGetPallette();
 extern void headlessUpdateSounds(void);
 extern void headlessEnableAudioRendering();
 extern void headlessDisableAudioRendering();
-extern void I_InitSound(void);
-extern void I_SetSoundCap (void);
 extern uint8_t *I_CaptureAudio (int *nsamples);
 
 // Players information
@@ -49,6 +47,9 @@ extern int numthings;
 extern mobj_t **mobj_ptrs;
 extern dsda_arg_t arg_value[dsda_arg_count];
 
+#ifdef PALETTE_SIZE
+#undef PALETTE_SIZE
+#endif
 #define PALETTE_SIZE 256
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
 

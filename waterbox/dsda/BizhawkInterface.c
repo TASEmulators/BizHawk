@@ -1,6 +1,7 @@
 #include "BizhawkInterface.h"
 
 bool foundIWAD = false;
+bool wipeDone = true;
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
@@ -116,11 +117,19 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
   if (!renderInfo->RenderAudio) headlessDisableAudioRendering();
   if (renderInfo->RenderAudio) headlessEnableAudioRendering();
 
-  // Running a single tick
-  headlessRunSingleTick();
+  if ((wipe_Pending() || !wipeDone) && dsda_RenderWipeScreen())
+  {
+    wipeDone = wipe_ScreenWipe(1);
+    I_FinishUpdate();
+  }
+  else
+  {
+    // Running a single tick
+    headlessRunSingleTick();
 
-  // Move positional sounds 
-  headlessUpdateSounds();
+    // Move positional sounds
+    headlessUpdateSounds();
+  }
 
   // Updating video
   if (renderInfo->RenderVideo)
