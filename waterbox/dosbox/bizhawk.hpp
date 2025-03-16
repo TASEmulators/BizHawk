@@ -9,6 +9,7 @@
 // waterbox
 #include "emulibc.h"
 #include "waterboxcore.h"
+#include <src/dos/cdrom.h>
 
 const int KEY_COUNT = 0x65;
 

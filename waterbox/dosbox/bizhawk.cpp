@@ -285,6 +285,47 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 #define DOS_LOWER_MEMORY_SIZE (DOS_CONVENTIONAL_MEMORY_SIZE + DOS_UPPER_MEMORY_SIZE)
 
 
+/// CD Management Logic Start
+void (*cd_read_callback)(int32_t lba, void * dest, int sectorSize);
+ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest, int sectorSize))
+{
+	cd_read_callback = cdrc;
+}
+
+ECL_EXPORT void ejectCD()
+{
+}
+
+ECL_EXPORT void insertCD()
+{
+}
+
+void cd_read_sector(int sector, void *buf_, int sectorSize) {	cd_read_callback(sector, buf_, sectorSize); }
+
+CDData_t _cdData[MAX_CD_COUNT];
+size_t _cdCount = 0;
+ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
+{
+	_cdCount++;
+	_cdData[cdIdx].numSectors = numSectors;
+	_cdData[cdIdx].numTracks = numTracks;
+	printf("Pushing CD %d. NumSectors: %d, NumTracks: %d\n", cdIdx, _cdData[cdIdx].numSectors, _cdData[cdIdx].numTracks);
+}
+
+ECL_EXPORT void pushTrackData(int cdIdx, int trackId, CDTrack_t* data)
+{
+	_cdData[cdIdx].tracks[trackId] = *data;
+		printf("  + CD: %d Track %d - Offset: %d - Start: %d - End: %d - Mode: %d - loopEnabled: %d - loopOffset: %d\n", cdIdx, trackId,
+			 _cdData[cdIdx].tracks[trackId].offset,
+				_cdData[cdIdx].tracks[trackId].start,
+				_cdData[cdIdx].tracks[trackId].end,
+				_cdData[cdIdx].tracks[trackId].mode,
+				_cdData[cdIdx].tracks[trackId].loopEnabled,
+			 _cdData[cdIdx].tracks[trackId].loopOffset);
+}
+
+/// CD Management Logic End
+
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	int memAreaIdx = 0;
