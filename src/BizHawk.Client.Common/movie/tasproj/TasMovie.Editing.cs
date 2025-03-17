@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 			LagLog.RemoveFrom(frame);
 			TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame);
+			GreenzoneInvalidated?.Invoke(frame);
 			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();
