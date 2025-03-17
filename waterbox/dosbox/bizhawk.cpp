@@ -151,6 +151,30 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 	return true;
 }
 
+// A callback function to update the output render, only when requested by the core
+// Doing it on demand avoids screen tearing
+uint32_t* _videoBuffer = nullptr;
+size_t _videoBufferSize = 0;
+int _videoWidth = 0;
+int _videoHeight = 0;
+void doRenderUpdateCallback()
+{
+		// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
+		bool allocateBuffer = false;
+		if (sdl.surface->w != _videoWidth) { allocateBuffer = true; _videoWidth = sdl.surface->w; }
+		if (sdl.surface->h != _videoHeight) { allocateBuffer = true; _videoHeight = sdl.surface->h; }
+  
+		_videoBufferSize = _videoWidth * _videoHeight * sizeof(uint32_t);
+		if (allocateBuffer == true)
+		{
+    if (_videoBuffer != nullptr) free(_videoBuffer);
+				_videoBuffer = (uint32_t*) malloc(_videoBufferSize);
+		}
+
+		// Updating buffer
+		memcpy(_videoBuffer, sdl.surface->pixels, _videoBufferSize);
+}
+
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
 	// Clearing drive use flag
@@ -261,11 +285,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	// Advancing until the required tick target is met
 	while (ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
 
-	// Checking audio sample count
-	// size_t checksum = 0;
-	// for (size_t i = 0; i < _audioSamples.size(); i++) checksum += _audioSamples[i];
-	// printf("Audio samples: %lu - Checksum: %lu\n", _audioSamples.size(), checksum);
-
+	// Updating video output
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
 	f->base.Width = sdl.surface->w;
 	f->base.Height = sdl.surface->h;
@@ -273,7 +293,12 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	// size_t checksum = 0;
 	// for (size_t i = 0; i < sdl.surface->w * sdl.surface->h * 4; i++) checksum += ((uint8_t*)sdl.surface->pixels)[i];
 	// printf("Video checksum: %lu\n", checksum);
-	memcpy(f->base.VideoBuffer, sdl.surface->pixels, f->base.Width * f->base.Height * 4);
+	if (_videoBuffer != nullptr) memcpy(f->base.VideoBuffer, _videoBuffer, _videoBufferSize);
+
+	// Checking audio sample count
+	// size_t checksum = 0;
+	// for (size_t i = 0; i < _audioSamples.size(); i++) checksum += _audioSamples[i];
+	// printf("Audio samples: %lu - Checksum: %lu\n", _audioSamples.size(), checksum);
 
 	// Setting audio buffer
 	memcpy(f->base.SoundBuffer, _audioSamples.data(), _audioSamples.size() * sizeof(int16_t));
