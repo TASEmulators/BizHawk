@@ -2,6 +2,8 @@
 #define __BIZHAWK_INTERFACE__
 
 #include "emulibc.h"
+
+#include "am_map.h"
 #include "d_main.h"
 #include "d_player.h"
 #include "doomstat.h"
@@ -10,6 +12,7 @@
 #include "i_sound.h"
 #include "i_video.h"
 #include "p_mobj.h"
+
 #include "dsda/args.h"
 #include "dsda/settings.h"
 
