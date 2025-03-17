@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		};
 
 		private readonly List<IRomAsset> _roms;
-        private readonly List<IDiscAsset> _discAssets;
-        private const int _messageDuration = 4;
+		private readonly List<IDiscAsset> _discAssets;
+		private const int _messageDuration = 4;
 
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
@@ -54,10 +54,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			: base(lp.Comm, DefaultConfig)
 		{
 			_roms = lp.Roms;
-            _discAssets = lp.Discs;
-            _syncSettings = lp.SyncSettings ?? new();
+			_discAssets = lp.Discs;
+			_syncSettings = lp.SyncSettings ?? new();
 
-            VsyncNumerator = (int) _syncSettings.FPSNumerator;
+			VsyncNumerator = (int) _syncSettings.FPSNumerator;
 			VsyncDenominator = (int) _syncSettings.FPSDenominator;
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
@@ -89,8 +89,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			var writableHDDImageFileSize = (ulong) _syncSettings.WriteableHardDisk;
 
-            _CDReadCallback = CDRead;
-            _libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
+			_CDReadCallback = CDRead;
+			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
 				SbrkHeapSizeKB = 32 * 1024,
@@ -103,9 +103,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}, new Delegate[] { _CDReadCallback });
 
 
-            ////// CD Loading Logic Start
-            _libDOSBox.SetCdCallbacks(_CDReadCallback);
-            _discIndex = 0;
+			////// CD Loading Logic Start
+			_libDOSBox.SetCdCallbacks(_CDReadCallback);
+			_discIndex = 0;
 
 			// Processing each disc
 			int curDiscIndex = 0;
@@ -114,8 +114,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				// Creating file name to pass to dosbox
 				var cdRomFileName = _discAssets[discIdx].DiscName + ".cdrom";
 
-                // Getting disc data structure
-                var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
+				// Getting disc data structure
+				var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
 				Console.WriteLine($"[CD] Adding Disc {discIdx}: '{_discAssets[discIdx].DiscName}' as '{cdRomFileName}' with sector count: {CDDataStruct.end}, track count: {CDDataStruct.last}.");
 
 				// Adding file name to list
@@ -123,20 +123,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				// Creating reader
 				var discSectorReader = new DiscSectorReader(_discAssets[discIdx].DiscData);
-                
-                // Adding reader to map
-                _cdRomFileToReaderMap[cdRomFileName] = discSectorReader;
+
+				// Adding reader to map
+				_cdRomFileToReaderMap[cdRomFileName] = discSectorReader;
 
 				// Passing CD Data to the core
 				_libDOSBox.pushCDData(curDiscIndex, CDDataStruct.end, CDDataStruct.last);
 
 				// Passing track data to the core
 				for (var trackIdx = 0; trackIdx < CDDataStruct.last; trackIdx++) _libDOSBox.pushTrackData(curDiscIndex, trackIdx, CDDataStruct.tracks[trackIdx]);
-            }
-            ////// CD Loading Logic End	 
+			}
+			////// CD Loading Logic End
 
-            // Getting base config file
-            var configString = Encoding.UTF8.GetString(Resources.DOSBOX_CONF_BASE.Value);
+			// Getting base config file
+			var configString = Encoding.UTF8.GetString(Resources.DOSBOX_CONF_BASE.Value);
 			configString += "\n";
 
 			// Getting selected machine preset config file
@@ -263,91 +263,91 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_cdRomFileNames.Count > 0) DriveLightEnabled = true;
 		}
 
-        // CD Handling logic
+		// CD Handling logic
 		private List<string> _cdRomFileNames = new List<string>();
 		private Dictionary<string, DiscSectorReader> _cdRomFileToReaderMap = new Dictionary<string, DiscSectorReader>();
-        private readonly LibDOSBox.CDReadCallback _CDReadCallback;
-        private int _discIndex;
+		private readonly LibDOSBox.CDReadCallback _CDReadCallback;
+		private int _discIndex;
 
-        public static LibDOSBox.CDData GetCDDataStruct(Disc cd)
-        {
-            var ret = new LibDOSBox.CDData();
-            var ses = cd.Session1;
-            var ntrack = ses.InformationTrackCount;
+		public static LibDOSBox.CDData GetCDDataStruct(Disc cd)
+		{
+			var ret = new LibDOSBox.CDData();
+			var ses = cd.Session1;
+			var ntrack = ses.InformationTrackCount;
 
-            for (var i = 0; i < LibDOSBox.CD_MAX_TRACKS; i++)
-            {
+			for (var i = 0; i < LibDOSBox.CD_MAX_TRACKS; i++)
+			{
 				ret.tracks[i] = new();
-                ret.tracks[i].offset = 0;
-                ret.tracks[i].loopEnabled = 0;
-                ret.tracks[i].loopOffset = 0;
+				ret.tracks[i].offset = 0;
+				ret.tracks[i].loopEnabled = 0;
+				ret.tracks[i].loopOffset = 0;
 
-                if (i < ntrack)
-                {
-                    ret.tracks[i].start = ses.Tracks[i + 1].LBA;
-                    ret.tracks[i].end = ses.Tracks[i + 2].LBA;
-                    ret.tracks[i].mode = ses.Tracks[i + 1].Mode;
-                    if (i == ntrack - 1)
-                    {
-                        ret.end = ret.tracks[i].end;
-                        ret.last = ntrack;
-                    }
-                }
-                else
-                {
-                    ret.tracks[i].start = 0;
-                    ret.tracks[i].end = 0;
-                    ret.tracks[i].mode = 0;
-                }
-            }
+				if (i < ntrack)
+				{
+					ret.tracks[i].start = ses.Tracks[i + 1].LBA;
+					ret.tracks[i].end = ses.Tracks[i + 2].LBA;
+					ret.tracks[i].mode = ses.Tracks[i + 1].Mode;
+					if (i == ntrack - 1)
+					{
+						ret.end = ret.tracks[i].end;
+						ret.last = ntrack;
+					}
+				}
+				else
+				{
+					ret.tracks[i].start = 0;
+					ret.tracks[i].end = 0;
+					ret.tracks[i].mode = 0;
+				}
+			}
 
-            return ret;
-        }
+			return ret;
+		}
 
-        private void SelectNextDisc()
-        {
-            _discIndex++;
-            if (_discIndex == _discAssets.Count) _discIndex = 0;
-            CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
-        }
+		private void SelectNextDisc()
+		{
+			_discIndex++;
+			if (_discIndex == _discAssets.Count) _discIndex = 0;
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+		}
 
-        private void SelectPrevDisc()
-        {
-            _discIndex--;
-            if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
-            CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
-        }
+		private void SelectPrevDisc()
+		{
+			_discIndex--;
+			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+		}
 
-        private void CDRead(string cdRomName, int lba, IntPtr dest, int sectorSize)
-        {
+		private void CDRead(string cdRomName, int lba, IntPtr dest, int sectorSize)
+		{
 			// Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
 
 			if (! _cdRomFileToReaderMap.ContainsKey( cdRomName ) ) throw new InvalidOperationException($"Unrecognized CD File with name: {cdRomName}");
 
-            byte[] sectorBuffer = new byte[4096];
-            var cdRomReader = _cdRomFileToReaderMap[cdRomName];
-            switch (sectorSize)
-            {
+			byte[] sectorBuffer = new byte[4096];
+			var cdRomReader = _cdRomFileToReaderMap[cdRomName];
+			switch (sectorSize)
+			{
 				case 2048:
-                    cdRomReader.ReadLBA_2048(lba, sectorBuffer, 0);
+					cdRomReader.ReadLBA_2048(lba, sectorBuffer, 0);
 					Marshal.Copy(sectorBuffer, 0, dest, 2048);
 					break;
-                case 2352:
-                    cdRomReader.ReadLBA_2352(lba, sectorBuffer, 0);
-                    Marshal.Copy(sectorBuffer, 0, dest, 2352);
-                    break;
-                case 2448:
-                    cdRomReader.ReadLBA_2448(lba, sectorBuffer, 0);
-                    Marshal.Copy(sectorBuffer, 0, dest, 2448);
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unsupported CD sector size: {sectorSize}");
+				case 2352:
+					cdRomReader.ReadLBA_2352(lba, sectorBuffer, 0);
+					Marshal.Copy(sectorBuffer, 0, dest, 2352);
+					break;
+				case 2448:
+					cdRomReader.ReadLBA_2448(lba, sectorBuffer, 0);
+					Marshal.Copy(sectorBuffer, 0, dest, 2448);
+					break;
+				default:
+					throw new InvalidOperationException($"Unsupported CD sector size: {sectorSize}");
 
-            }
-            DriveLightOn = true;
-        }
+			}
+			DriveLightOn = true;
+		}
 
-        protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
 			var fi = new LibDOSBox.FrameInfo();
@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_mouseState.leftButtonHeld);
 			writer.Write(_mouseState.middleButtonHeld);
 			writer.Write(_mouseState.rightButtonHeld);
-        }
+		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
@@ -479,9 +479,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_mouseState.leftButtonHeld = reader.ReadBoolean();
 			_mouseState.middleButtonHeld = reader.ReadBoolean();
 			_mouseState.rightButtonHeld = reader.ReadBoolean();
-        }
+		}
 
-        private static class FileNames
+		private static class FileNames
 		{
 			public const string DOSBOX_CONF = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";

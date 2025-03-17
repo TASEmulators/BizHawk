@@ -25,42 +25,42 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		// CD Management Logic Start
 
-        [StructLayout(LayoutKind.Sequential)]
-        public class CDTrack
-        {
-            public int offset;
-            public int start;
-            public int end;
-            public int mode;
-            public int loopEnabled;
-            public int loopOffset;
-        }
+		[StructLayout(LayoutKind.Sequential)]
+		public class CDTrack
+		{
+			public int offset;
+			public int start;
+			public int end;
+			public int mode;
+			public int loopEnabled;
+			public int loopOffset;
+		}
 
-        public const int CD_MAX_TRACKS = 100;
-        [StructLayout(LayoutKind.Sequential)]
-        public class CDData
-        {
-            public int end;
-            public int last;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
-            public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
-        }
+		public const int CD_MAX_TRACKS = 100;
+		[StructLayout(LayoutKind.Sequential)]
+		public class CDData
+		{
+			public int end;
+			public int last;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
+			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
+		}
 
-        [UnmanagedFunctionPointer(CC)]
-        public delegate void CDReadCallback(string cdRomName, int lba, IntPtr dst, int sectorSize);
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDReadCallback(string cdRomName, int lba, IntPtr dst, int sectorSize);
 
-        [BizImport(CC)]
-        public abstract void SetCdCallbacks(CDReadCallback cdrc);
+		[BizImport(CC)]
+		public abstract void SetCdCallbacks(CDReadCallback cdrc);
 
-        [BizImport(CC)]
-        public abstract void pushCDData(int cdIdx, int numSectors, int numTracks);
+		[BizImport(CC)]
+		public abstract void pushCDData(int cdIdx, int numSectors, int numTracks);
 
-        [BizImport(CC)]
-        public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
+		[BizImport(CC)]
+		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
 
-        // CD Management Logic END
+		// CD Management Logic END
 
-        [BizImport(CC, Compatibility = true)]
+		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNominator, ulong fpsDenominator);
 
 		[BizImport(CC, Compatibility = true)]
