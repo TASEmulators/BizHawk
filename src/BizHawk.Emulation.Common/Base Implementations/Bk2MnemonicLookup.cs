@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common

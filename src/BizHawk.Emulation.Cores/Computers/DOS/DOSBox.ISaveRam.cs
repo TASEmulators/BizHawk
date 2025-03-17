@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Don't do anything if no writable hard disk was chosen
 			if (_syncSettings.WriteableHardDisk == WriteableHardDiskOptions.None) return;
 
-				unsafe
+			unsafe
 			{
 				fixed (byte* p = data)
 				{

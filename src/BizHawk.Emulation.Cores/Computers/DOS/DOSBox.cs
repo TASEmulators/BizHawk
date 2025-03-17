@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			// Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
 
-			if (! _cdRomFileToReaderMap.ContainsKey( cdRomName ) ) throw new InvalidOperationException($"Unrecognized CD File with name: {cdRomName}");
+			if (!_cdRomFileToReaderMap.ContainsKey(cdRomName)) throw new InvalidOperationException($"Unrecognized CD File with name: {cdRomName}");
 
 			byte[] sectorBuffer = new byte[4096];
 			var cdRomReader = _cdRomFileToReaderMap[cdRomName];
