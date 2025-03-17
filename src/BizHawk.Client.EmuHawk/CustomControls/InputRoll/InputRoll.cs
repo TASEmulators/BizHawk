@@ -1645,7 +1645,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
 			}
 		}
 
@@ -1966,7 +1966,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
 			}
 		}
 
