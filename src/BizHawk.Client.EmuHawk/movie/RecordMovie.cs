@@ -183,20 +183,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
+				path = Path.IsPathRooted(path)
+					? Path.GetFullPath(path)
+					: Path.Combine(_config.PathEntries.MovieAbsolutePath(), path);
+
+				if (!MovieService.MovieExtensions.Select(static ext => $".{ext}").Contains(Path.GetExtension(path)))
 				{
-					if (path[0] != Path.DirectorySeparatorChar)
-					{
-						path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
-					}
-
-					path = _config.PathEntries.MovieAbsolutePath() + path;
-
-					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
-					{
-						// If no valid movie extension, add movie extension
-						path += $".{MovieService.StandardMovieExtension}";
-					}
+					// If no valid movie extension, add movie extension
+					path += $".{MovieService.StandardMovieExtension}";
 				}
 			}
 
