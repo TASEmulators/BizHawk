@@ -292,14 +292,6 @@ ECL_EXPORT void SetCdCallbacks(void (*cdrc)(char* cdRomFile, int32_t lba, void *
 	cd_read_callback = cdrc;
 }
 
-ECL_EXPORT void ejectCD()
-{
-}
-
-ECL_EXPORT void insertCD()
-{
-}
-
 CDData_t _cdData[MAX_CD_COUNT];
 size_t _cdCount = 0;
 ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
