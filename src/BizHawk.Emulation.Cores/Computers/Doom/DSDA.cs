@@ -73,20 +73,38 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
-			_configFile = Encoding.ASCII.GetBytes($"screen_resolution \"{
+			string hudMode = "";
+
+			switch (_settings.HeadsUpMode)
+			{
+				case HudMode.Vanilla:
+					hudMode = "screenblocks 10\nhud_displayed 1\n";
+					break;
+				case HudMode.DSDA:
+					hudMode = "screenblocks 11\nhud_displayed 1\n";
+					break;
+				case HudMode.None:
+					hudMode = "screenblocks 11\nhud_displayed 0\n";
+					break;
+			}
+
+			_configFile = Encoding.ASCII.GetBytes(
+				hudMode
+				+ $"screen_resolution \"{
 				_nativeResolution.X * _settings.ScaleFactor}x{
 				_nativeResolution.Y * _settings.ScaleFactor}\"\n"
 				+ $"usegamma {_settings.Gamma}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
-				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio())
-				+ "render_stretch_hud 0\n"
+				+ $"dsda_exhud {(_settings.DsdaExHud ? 1 : 0)}\n"
+				+ $"map_totals {(_settings.MapTotals ? 1 : 0)}\n"
+				+ $"map_time {(_settings.MapTime ? 1 : 0)}\n"
+				+ $"map_coordinates {(_settings.MapCoordinates ? 1 : 0)}\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
-				+ "dsda_exhud 0\n"
+				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio())
+				+ "render_stretch_hud 0\n"
 				+ "uncapped_framerate 0\n"
-				+ "map_coordinates 0\n"
-				+ "map_totals 0\n"
-				+ "map_time 0\n"
+				+ "dsda_show_level_splits 0\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions

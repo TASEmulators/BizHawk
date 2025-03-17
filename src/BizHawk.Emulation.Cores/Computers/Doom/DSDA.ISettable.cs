@@ -65,6 +65,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			NM = 5
 		}
 
+		public enum HudMode : int
+		{
+			Vanilla = 0,
+			DSDA = 1,
+			None = 2
+		}
+
 		public enum TurningResolution : int
 		{
 			[Display(Name = "16 bits (longtics)")]
@@ -139,15 +146,40 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int DisplayPlayer { get; set; }
+			
+			[DisplayName("HUD Mode")]
+			[Description("Sets heads-up display mode.")]
+			[DefaultValue(HudMode.Vanilla)]
+			public HudMode HeadsUpMode { get; set; }
+			
+			[DisplayName("Extended HUD")]
+			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
+			[DefaultValue(false)]
+			public bool DsdaExHud { get; set; }
+			
+			[DisplayName("Automap Totals")]
+			[Description("Shows counts for kills, items, and secrets on automap.")]
+			[DefaultValue(true)]
+			public bool MapTotals { get; set; }
+			
+			[DisplayName("Automap Time")]
+			[Description("Shows elapsed time on automap.")]
+			[DefaultValue(true)]
+			public bool MapTime { get; set; }
+			
+			[DisplayName("Automap Coordinates")]
+			[Description("Shows in-level coordinates on automap.")]
+			[DefaultValue(true)]
+			public bool MapCoordinates { get; set; }
 
 			public DoomSettings()
 				=> SettingsUtil.SetDefaultValues(this);
 
 			public DoomSettings Clone()
-				=> (DoomSettings) MemberwiseClone();
+				=> (DoomSettings)MemberwiseClone();
 
 			public static bool NeedsReboot(DoomSettings x, DoomSettings y)
-				=> false;
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
@@ -322,14 +354,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					Player2Present = Player2Present ? 1 : 0,
 					Player3Present = Player3Present ? 1 : 0,
 					Player4Present = Player4Present ? 1 : 0,
-					Player1Class = (int) Player1Class,
-					Player2Class = (int) Player2Class,
-					Player3Class = (int) Player3Class,
-					Player4Class = (int) Player4Class,
+					Player1Class = (int)Player1Class,
+					Player2Class = (int)Player2Class,
+					Player3Class = (int)Player3Class,
+					Player4Class = (int)Player4Class,
 					PreventLevelExit = PreventLevelExit ? 1 : 0,
 					PreventGameEnd = PreventGameEnd ? 1 : 0
-					// MouseRunSensitivity is handled at Bizhawk level
-					// MouseTurnSensitivity is handled at Bizhawk level
 				};
 			}
 

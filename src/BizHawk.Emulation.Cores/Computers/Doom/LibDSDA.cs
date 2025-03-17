@@ -23,9 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Indetermined = 1 << 4  // no IWAD found.
 		}
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
-
 		[StructLayout(LayoutKind.Sequential)]
 		public struct InitSettings
 		{
@@ -85,6 +82,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract int dsda_add_wad_file(
