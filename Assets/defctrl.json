@@ -1108,6 +1108,28 @@
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			}
+		},
+		"DOSBox Controller": {
+			"Mouse X Axis": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse Y Axis": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse X Delta": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse Y Delta": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
 		}
 	},
 	"AllTrollersFeedbacks": {
