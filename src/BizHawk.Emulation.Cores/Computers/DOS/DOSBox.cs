@@ -252,8 +252,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
-			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize, _syncSettings.FPSNumerator, _syncSettings.FPSDenominator))
+			if (!_libDOSBox.Init(
+				joystick1Enabled: _syncSettings.EnableJoystick1,
+				joystick2Enabled: _syncSettings.EnableJoystick2,
+				mouseEnabled: _syncSettings.EnableMouse,
+				hardDiskDriveSize: writableHDDImageFileSize,
+				fpsNominator: _syncSettings.FPSNumerator,
+				fpsDenominator: _syncSettings.FPSDenominator))
+			{
 				throw new InvalidOperationException("Core rejected the rom!");
+			}
 
 			PostInit();
 
@@ -322,10 +330,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			// Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
 
-			if (!_cdRomFileToReaderMap.ContainsKey(cdRomName)) throw new InvalidOperationException($"Unrecognized CD File with name: {cdRomName}");
+			if (!_cdRomFileToReaderMap.TryGetValue(cdRomName, out var cdRomReader)) throw new InvalidOperationException($"Unrecognized CD File with name: {cdRomName}");
 
 			byte[] sectorBuffer = new byte[4096];
-			var cdRomReader = _cdRomFileToReaderMap[cdRomName];
 			switch (sectorSize)
 			{
 				case 2048:

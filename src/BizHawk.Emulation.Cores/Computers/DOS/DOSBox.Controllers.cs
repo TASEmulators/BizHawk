@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
@@ -40,12 +39,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			// Adding joystick buttons
 			if (settings.EnableJoystick1)
+			{
 				foreach (var button in JoystickButtonCollection)
+				{
 					controller.BoolButtons.Add("P1 " + Inputs.Joystick + " " + button);
+				}
+			}
 
 			if (settings.EnableJoystick2)
+			{
 				foreach (var button in JoystickButtonCollection)
+				{
 					controller.BoolButtons.Add("P2 " + Inputs.Joystick + " " + button);
+				}
+			}
 
 			// Adding mouse inputs
 			if (settings.EnableMouse)
@@ -60,10 +67,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			// Adding drive management buttons
-			controller.BoolButtons.AddRange(
-			[
-				Inputs.NextFloppyDisk, Inputs.NextCDROM
-			]);
+			controller.BoolButtons.Add(Inputs.NextFloppyDisk);
+			controller.BoolButtons.Add(Inputs.NextCDROM);
 
 			foreach (var (name, _) in _keyboardMap)
 			{
@@ -74,8 +79,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return controller.MakeImmutable();
 		}
 
-		private static string[] JoystickButtonCollection =
-		[
+		private static string[] JoystickButtonCollection = [
 			JoystickButtons.Up,
 			JoystickButtons.Down,
 			JoystickButtons.Left,

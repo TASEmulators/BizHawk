@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			//Console.WriteLine("SRAM Size {0}", sramSize);
 
 			// Don't do anything if no writable hard disk was chosen
-			if (_syncSettings.WriteableHardDisk == WriteableHardDiskOptions.None) return new byte[0];
+			if (_syncSettings.WriteableHardDisk == WriteableHardDiskOptions.None) return Array.Empty<byte>();
 
 			byte[] sramArray = new byte[sramSize];
 			unsafe
