@@ -142,16 +142,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Getting selected machine preset config file
 			configString += Encoding.UTF8.GetString(_syncSettings.ConfigurationPreset switch
 			{
-				ConfigurationPreset._1981_IBM_5150                    => Resources.DOSBOX_CONF_1981_IBM_5150.Value,
-				ConfigurationPreset._1983_IBM_5160                    => Resources.DOSBOX_CONF_1983_IBM_5160.Value,
-				ConfigurationPreset._1986_IBM_5162                    => Resources.DOSBOX_CONF_1986_IBM_5162.Value,
-				ConfigurationPreset._1987_IBM_PS2_25                  => Resources.DOSBOX_CONF_1987_IBM_PS2_25.Value,
-				ConfigurationPreset._1990_IBM_PS2_25_286              => Resources.DOSBOX_CONF_1990_IBM_PS2_25_286.Value,
-				ConfigurationPreset._1991_IBM_PS2_25_386              => Resources.DOSBOX_CONF_1991_IBM_PS2_25_386.Value,
-				ConfigurationPreset._1993_IBM_PS2_53_SLC2_486         => Resources.DOSBOX_CONF_1993_IBM_PS2_53_SLC2_486.Value,
-				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486        => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
-				ConfigurationPreset._1997_IBM_APTIVA_2140             => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
-				ConfigurationPreset._1999_IBM_THINKPAD_240            => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
+				ConfigurationPreset._1981_IBM_5150 => Resources.DOSBOX_CONF_1981_IBM_5150.Value,
+				ConfigurationPreset._1983_IBM_5160 => Resources.DOSBOX_CONF_1983_IBM_5160.Value,
+				ConfigurationPreset._1986_IBM_5162 => Resources.DOSBOX_CONF_1986_IBM_5162.Value,
+				ConfigurationPreset._1987_IBM_PS2_25 => Resources.DOSBOX_CONF_1987_IBM_PS2_25.Value,
+				ConfigurationPreset._1990_IBM_PS2_25_286 => Resources.DOSBOX_CONF_1990_IBM_PS2_25_286.Value,
+				ConfigurationPreset._1991_IBM_PS2_25_386 => Resources.DOSBOX_CONF_1991_IBM_PS2_25_386.Value,
+				ConfigurationPreset._1993_IBM_PS2_53_SLC2_486 => Resources.DOSBOX_CONF_1993_IBM_PS2_53_SLC2_486.Value,
+				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486 => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
+				ConfigurationPreset._1997_IBM_APTIVA_2140 => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
+				ConfigurationPreset._1999_IBM_THINKPAD_240 => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
 				_ => [ ]
 			});
 			configString += "\n";
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			configString += "[autoexec]\n";
 			configString += "@echo off\n";
 
-			////// Floppy disks: Mounting and appending mounting lines 
+			////// Floppy disks: Mounting and appending mounting lines
 			string floppyMountLine = "imgmount a ";
 			foreach (var file in _floppyDiskImageFiles)
 			{
@@ -193,9 +193,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 			if (_floppyDiskCount > 0) configString += floppyMountLine + "\n";
 
-			////// CD-ROMs: Mounting and appending mounting lines 
+			////// CD-ROMs: Mounting and appending mounting lines
 			string cdromMountLine = "imgmount d ";
-			foreach (var file in _cdRomFileNames) cdromMountLine += file + " "; 
+			foreach (var file in _cdRomFileNames) cdromMountLine += file + " ";
 			if (_cdRomFileNames.Count > 0) configString += cdromMountLine + "\n";
 
 			//// Hard Disk mounting
@@ -353,16 +353,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			var fi = new LibDOSBox.FrameInfo();
 
 			// Setting joystick inputs
-			fi.joystick1.up      = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-			fi.joystick1.down    = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-			fi.joystick1.left    = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-			fi.joystick1.right   = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+			fi.joystick1.up = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+			fi.joystick1.down = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+			fi.joystick1.left = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+			fi.joystick1.right = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
 			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
 			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
-			fi.joystick2.up      = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-			fi.joystick2.down    = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-			fi.joystick2.left    = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-			fi.joystick2.right   = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+			fi.joystick2.up = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+			fi.joystick2.down = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+			fi.joystick2.left = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+			fi.joystick2.right = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
 			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
 			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 
@@ -379,27 +379,27 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				// Button pressed criteria:
 				// If the input is made in this frame and the button is not held from before
-				fi.mouse.leftButtonPressed    = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && !_mouseState.leftButtonHeld ? 1 : 0;
-				fi.mouse.middleButtonPressed  = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && !_mouseState.middleButtonHeld ? 1 : 0;
-				fi.mouse.rightButtonPressed   = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && !_mouseState.rightButtonHeld ? 1 : 0;
+				fi.mouse.leftButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && !_mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && !_mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && !_mouseState.rightButtonHeld ? 1 : 0;
 
 				// Button released criteria:
 				// If the input is not pressed in this frame and the button is held from before
-				fi.mouse.leftButtonReleased   = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && _mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.leftButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && _mouseState.leftButtonHeld ? 1 : 0;
 				fi.mouse.middleButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && _mouseState.middleButtonHeld ? 1 : 0;
-				fi.mouse.rightButtonReleased  = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && _mouseState.rightButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && _mouseState.rightButtonHeld ? 1 : 0;
 				fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
 			}
 
 			// Updating mouse state
 			_mouseState.posX = fi.mouse.posX;
 			_mouseState.posY = fi.mouse.posY;
-			if (fi.mouse.leftButtonPressed    > 0) _mouseState.leftButtonHeld = true;
-			if (fi.mouse.middleButtonPressed  > 0) _mouseState.middleButtonHeld = true;
-			if (fi.mouse.rightButtonPressed   > 0) _mouseState.rightButtonHeld = true;
-			if (fi.mouse.leftButtonReleased   > 0) _mouseState.leftButtonHeld = false;
+			if (fi.mouse.leftButtonPressed > 0) _mouseState.leftButtonHeld = true;
+			if (fi.mouse.middleButtonPressed > 0) _mouseState.middleButtonHeld = true;
+			if (fi.mouse.rightButtonPressed > 0) _mouseState.rightButtonHeld = true;
+			if (fi.mouse.leftButtonReleased > 0) _mouseState.leftButtonHeld = false;
 			if (fi.mouse.middleButtonReleased > 0) _mouseState.middleButtonHeld = false;
-			if (fi.mouse.rightButtonReleased  > 0) _mouseState.rightButtonHeld = false;
+			if (fi.mouse.rightButtonReleased > 0) _mouseState.rightButtonHeld = false;
 
 			// Processing floppy disks swaps
 			fi.driveActions.insertFloppyDisk = -1;
@@ -411,7 +411,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					{
 						_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
 						fi.driveActions.insertFloppyDisk = _currentFloppyDisk;
-						CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}  into drive A:", _messageDuration);
+						CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", _messageDuration);
 					}
 				}
 			}
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					{
 						_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
 						fi.driveActions.insertCDROM = _currentCDROM;
-						CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]}  into drive D:", _messageDuration);
+						CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", _messageDuration);
 					}
 				}
 			}
