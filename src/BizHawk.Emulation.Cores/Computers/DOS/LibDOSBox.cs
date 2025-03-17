@@ -53,12 +53,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
         public abstract void SetCdCallbacks(CDReadCallback cdrc);
 
         [BizImport(CC)]
-        public abstract void ejectCD();
-
-        [BizImport(CC)]
-        public abstract void insertCD();
-
-        [BizImport(CC)]
         public abstract void pushCDData(int cdIdx, int numSectors, int numTracks);
 
         [BizImport(CC)]

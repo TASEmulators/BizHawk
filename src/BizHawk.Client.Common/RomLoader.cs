@@ -990,7 +990,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> Doom = new[] { "wad" };
 
-			public static readonly IReadOnlyCollection<string> DOS = new[] { "ima", "img", "conf", "dosbox-iso", "dosbox-cue", "dosbox-bin", "dosbox-mdf", "dosbox-chf", "xdf", "dmf", "fdd", "fdi", "nfd", "d88" };
+			public static readonly IReadOnlyCollection<string> DOS = new[] { "ima", "img", "xdf", "dmf", "fdd", "fdi", "nfd", "d88" };
 
 			public static readonly IReadOnlyCollection<string> GB = new[] { "gb", "gbc", "sgb" };
 
