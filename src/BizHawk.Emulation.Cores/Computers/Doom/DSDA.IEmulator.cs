@@ -64,59 +64,59 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// initial axis read
-					players[i]._RunSpeed = potReaders[i](controller, 0);
-					players[i]._StrafingSpeed = potReaders[i](controller, 1);
-					players[i]._TurningSpeed = potReaders[i](controller, 2);
-					players[i]._WeaponSelect = potReaders[i](controller, 3);
+					players[i].RunSpeed = potReaders[i](controller, 0);
+					players[i].StrafingSpeed = potReaders[i](controller, 1);
+					players[i].TurningSpeed = potReaders[i](controller, 2);
+					players[i].WeaponSelect = potReaders[i](controller, 3);
 
 					// override axis based on movement buttons (turning is reversed upstream)
-					if (controller.IsPressed($"P{i+1} Forward")) players[i]._RunSpeed = _runSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i+1} Backward")) players[i]._RunSpeed = -_runSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i+1} Strafe Right")) players[i]._StrafingSpeed = _strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i+1} Strafe Left")) players[i]._StrafingSpeed = -_strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Turn Right")) players[i]._TurningSpeed = -turnSpeed;
-					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i]._TurningSpeed = turnSpeed;
+					if (controller.IsPressed($"P{i + 1} Forward")) players[i].RunSpeed = _runSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Backward")) players[i].RunSpeed = -_runSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Strafe Right")) players[i].StrafingSpeed = _strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Strafe Left")) players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed = -turnSpeed;
+					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i].TurningSpeed = turnSpeed;
 
 					// mouse-driven running
 					// divider matches the core
-					players[i]._RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 8.0);
-					players[i]._RunSpeed = players[i]._RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
+					players[i].RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 8.0);
+					players[i].RunSpeed = players[i].RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
 					// divider recalibrates minimal mouse movement to be 1 (requires global setting)
-					players[i]._TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 272.0);
+					players[i].TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 272.0);
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
 						// calc matches the core
-						players[i]._TurningSpeed = ((players[i]._TurningSpeed << 8) + 128) >> 8;
+						players[i].TurningSpeed = ((players[i].TurningSpeed << 8) + 128) >> 8;
 					}
 
 					// bool buttons
 					var actionsBitfield = portReaders[i](controller);
-					players[i]._Fire = actionsBitfield & 0b00001;
-					players[i]._Action = (actionsBitfield & 0b00010) >> 1;
-					players[i]._Automap = (actionsBitfield & 0b00100) >> 2;
+					players[i].Fire = actionsBitfield & 0b00001;
+					players[i].Action = (actionsBitfield & 0b00010) >> 1;
+					players[i].Automap = (actionsBitfield & 0b00100) >> 2;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 					{
-						players[i]._FlyLook = potReaders[i](controller, 6);
-						players[i]._ArtifactUse = potReaders[i](controller, 7);
+						players[i].FlyLook = potReaders[i](controller, 6);
+						players[i].ArtifactUse = potReaders[i](controller, 7);
 						if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
 						{
-							players[i]._Jump = (actionsBitfield & 0b01000) >> 3;
-							players[i]._EndPlayer = (actionsBitfield & 0b10000) >> 4;
+							players[i].Jump = (actionsBitfield & 0b01000) >> 3;
+							players[i].EndPlayer = (actionsBitfield & 0b10000) >> 4;
 						}
 					}
 				}
 			}
 
 			PackedRenderInfo renderInfo = new PackedRenderInfo();
-			renderInfo._RenderVideo = renderVideo ? 1 : 0;
-			renderInfo._RenderAudio = renderAudio ? 1 : 0;
-			renderInfo._PlayerPointOfView = _settings.DisplayPlayer - 1;
+			renderInfo.RenderVideo = renderVideo ? 1 : 0;
+			renderInfo.RenderAudio = renderAudio ? 1 : 0;
+			renderInfo.PlayerPointOfView = _settings.DisplayPlayer - 1;
 
-			_core.dsda_frame_advance(
+			IsLagFrame = _core.dsda_frame_advance(
 				ref players[0],
 				ref players[1],
 				ref players[2],
@@ -130,6 +130,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				UpdateAudio();
 
 			Frame++;
+
+			if (IsLagFrame)
+			{
+				LagCount++;
+			}
 
 			return true;
 		}

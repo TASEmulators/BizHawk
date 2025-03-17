@@ -65,6 +65,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			NM = 5
 		}
 
+		public enum HudMode : int
+		{
+			Vanilla = 0,
+			DSDA = 1,
+			None = 2
+		}
+
 		public enum TurningResolution : int
 		{
 			[Display(Name = "16 bits (longtics)")]
@@ -139,15 +146,40 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int DisplayPlayer { get; set; }
+			
+			[DisplayName("HUD Mode")]
+			[Description("Sets heads-up display mode.")]
+			[DefaultValue(HudMode.Vanilla)]
+			public HudMode HeadsUpMode { get; set; }
+			
+			[DisplayName("Extended HUD")]
+			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
+			[DefaultValue(false)]
+			public bool DsdaExHud { get; set; }
+			
+			[DisplayName("Automap Totals")]
+			[Description("Shows counts for kills, items, and secrets on automap.")]
+			[DefaultValue(true)]
+			public bool MapTotals { get; set; }
+			
+			[DisplayName("Automap Time")]
+			[Description("Shows elapsed time on automap.")]
+			[DefaultValue(true)]
+			public bool MapTime { get; set; }
+			
+			[DisplayName("Automap Coordinates")]
+			[Description("Shows in-level coordinates on automap.")]
+			[DefaultValue(true)]
+			public bool MapCoordinates { get; set; }
 
 			public DoomSettings()
 				=> SettingsUtil.SetDefaultValues(this);
 
 			public DoomSettings Clone()
-				=> (DoomSettings) MemberwiseClone();
+				=> (DoomSettings)MemberwiseClone();
 
 			public static bool NeedsReboot(DoomSettings x, DoomSettings y)
-				=> false;
+				=> !DeepEquality.DeepEquals(x, y);
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
@@ -259,6 +291,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(true)]
 			public bool AlwaysRun { get; set; }
 			
+			[DisplayName("Render Wipescreen")]
+			[Description("Enables screen melt - an effect seen when Doom changes scene, for example, when starting or exiting a level.")]
+			[DefaultValue(true)]
+			public bool RenderWipescreen { get; set; }
+			
 			[DisplayName("Turning Resolution")]
 			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
 			[DefaultValue(TurningResolution.Longtics)]
@@ -313,18 +350,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				return new CInterface.InitSettings
 				{
-					_Player1Present = Player1Present ? 1 : 0,
-					_Player2Present = Player2Present ? 1 : 0,
-					_Player3Present = Player3Present ? 1 : 0,
-					_Player4Present = Player4Present ? 1 : 0,
-					_Player1Class = (int) Player1Class,
-					_Player2Class = (int) Player2Class,
-					_Player3Class = (int) Player3Class,
-					_Player4Class = (int) Player4Class,
-					_PreventLevelExit = PreventLevelExit ? 1 : 0,
-					_PreventGameEnd = PreventGameEnd ? 1 : 0
-					// MouseRunSensitivity is handled at Bizhawk level
-					// MouseTurnSensitivity is handled at Bizhawk level
+					Player1Present = Player1Present ? 1 : 0,
+					Player2Present = Player2Present ? 1 : 0,
+					Player3Present = Player3Present ? 1 : 0,
+					Player4Present = Player4Present ? 1 : 0,
+					Player1Class = (int)Player1Class,
+					Player2Class = (int)Player2Class,
+					Player3Class = (int)Player3Class,
+					Player4Class = (int)Player4Class,
+					PreventLevelExit = PreventLevelExit ? 1 : 0,
+					PreventGameEnd = PreventGameEnd ? 1 : 0
 				};
 			}
 

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Components.W65816;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Waterbox;

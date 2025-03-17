@@ -180,16 +180,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.Rotatable)
-			{
-				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
-					.ToArray());
-
-				RightClickMenu.Items
-					.OfType<ToolStripMenuItem>()
-					.First(t => t.Name == "RotateMenuItem")
-					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
-			}
+			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
 
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
@@ -356,7 +347,8 @@ namespace BizHawk.Client.EmuHawk
 
 				TasView.AllColumns.Add(new(
 					name: name,
-					widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
+					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
+					horizontalHeight: (maxLength * 6) + 14,
 					type: type,
 					text: mnemonic)
 				{
@@ -1242,7 +1234,7 @@ namespace BizHawk.Client.EmuHawk
 					if (axisSpec.HasValue)
 					{
 						string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
-						yield return (name, mnemonic, Math.Max(mnemonic.Length, axisSpec.Value.MaxDigits));
+						yield return (name, mnemonic, axisSpec.Value.MaxDigits);
 					}
 					else
 					{
@@ -1250,6 +1242,31 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+		}
+
+		private void HandleRotationChanged(object sender, EventArgs e)
+		{
+			CurrentTasMovie.FlagChanges();
+			if (TasView.HorizontalOrientation)
+			{
+				BranchesMarkersSplit.Orientation = Orientation.Vertical;
+				BranchesMarkersSplit.SplitterDistance = 200;
+				foreach (var rollColumn in TasView.AllColumns)
+				{
+					rollColumn.Width = rollColumn.HorizontalHeight;
+				}
+			}
+			else
+			{
+				BranchesMarkersSplit.Orientation = Orientation.Horizontal;
+				BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
+				foreach (var rollColumn in TasView.AllColumns)
+				{
+					rollColumn.Width = rollColumn.VerticalWidth;
+				}
+			}
+
+			TasView.AllColumns.ColumnsChanged();
 		}
 	}
 }
