@@ -25,7 +25,6 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -802,6 +802,44 @@ namespace BizHawk.Emulation.Common
 				["Next Drive"] = '}',
 				["Next Slot"] = '>',
 			},
+			[VSystemID.Raw.ChannelF] = new()
+			{
+				["Right"] = 'R',
+				["Left"] = 'L',
+				["Back"] = 'D',
+				["Forward"] = 'U',
+				["CCW"] = 'c',
+				["CW"] = 'C',
+				["Pull"] = 'O',
+				["Push"] = 'P',
+				["TIME"] = 'T',
+				["MODE"] = 'M',
+				["HOLD"] = 'H',
+				["START"] = 'S',
+				["RESET"] = 'r',
+			},
+			[VSystemID.Raw.Doom] = new()
+			{
+				["Automap"] = 'M',
+				["Backward"] = 'v',
+				["End Player"] = 'E',
+				["Fire"] = 'F',
+				["Forward"] = '^',
+				["Jump"] = 'J',
+				["Run"] = 'R',
+				["Strafe Left"] = '<',
+				["Strafe Right"] = '>',
+				["Turn Left"] = 'l',
+				["Turn Right"] = 'r',
+				["Use"] = 'U',
+				["Weapon Select 1"] = '1',
+				["Weapon Select 2"] = '2',
+				["Weapon Select 3"] = '3',
+				["Weapon Select 4"] = '4',
+				["Weapon Select 5"] = '5',
+				["Weapon Select 6"] = '6',
+				["Weapon Select 7"] = '7',
+			},
 			[VSystemID.Raw.DOS] = new()
 			{
 				["Joystick Button 1"] = '1',
@@ -917,45 +955,7 @@ namespace BizHawk.Emulation.Common
 				["keyPadPlus"] = '+',
 				["KeyPadEnter"] = 'e',
 				["KeyPadPeriod"] = '.',
-			},
-			[VSystemID.Raw.ChannelF] = new()
-			{
-				["Right"] = 'R',
-				["Left"] = 'L',
-				["Back"] = 'D',
-				["Forward"] = 'U',
-				["CCW"] = 'c',
-				["CW"] = 'C',
-				["Pull"] = 'O',
-				["Push"] = 'P',
-				["TIME"] = 'T',
-				["MODE"] = 'M',
-				["HOLD"] = 'H',
-				["START"] = 'S',
-				["RESET"] = 'r',
-			},
-			[VSystemID.Raw.Doom] = new()
-			{
-				["Action"] = 'A',
-				["Fire"] = 'F',
-				["Alt Weapon"] = 'X',
-				["Jump"] = 'J',
-				["End Player"] = 'E',
-				["Forward"] = 'f',
-				["Backward"] = 'b',
-				["Turn Left"] = 'l',
-				["Turn Right"] = 'r',
-				["Strafe Left"] = 'L',
-				["Strafe Right"] = 'R',
-				["Shift Run"] = 's',
-				["Weapon Select 1"] = '1',
-				["Weapon Select 2"] = '2',
-				["Weapon Select 3"] = '3',
-				["Weapon Select 4"] = '4',
-				["Weapon Select 5"] = '5',
-				["Weapon Select 6"] = '6',
-				["Weapon Select 7"] = '7',
-			},
+			}
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
@@ -1008,14 +1008,14 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.Doom] = new()
 			{
+				["Fly / Look"] = "L",
+				["Mouse Running"] = "mR",
+				["Mouse Turning"] = "mT",
 				["Run Speed"] = "R",
 				["Strafing Speed"] = "S",
 				["Turning Speed"] = "T",
-				["Weapon Select"] = "W",
-				["Fly / Look"] = "L",
 				["Use Artifact"] = "U",
-				["Mouse Running"] = "mR",
-				["Mouse Turning"] = "mT"
+				["Weapon Select"] = "W",
 			},
 		};
 	}

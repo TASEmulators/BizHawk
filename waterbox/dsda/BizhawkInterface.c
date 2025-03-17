@@ -1,6 +1,41 @@
 #include "BizhawkInterface.h"
 
 bool foundIWAD = false;
+bool wipeDone = true;
+int last_automap_input[4] = { 0 };
+
+void send_input(struct PackedPlayerInput *inputs, int playerId)
+{
+  local_cmds[playerId].forwardmove = inputs->RunSpeed;
+  local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
+  local_cmds[playerId].angleturn   = (shorttics || !longtics) ? inputs->TurningSpeed << 8 : inputs->TurningSpeed;
+
+  if (inputs->Fire == 1)   local_cmds[playerId].buttons |= 0b00000001;
+  if (inputs->Action == 1) local_cmds[playerId].buttons |= 0b00000010;
+
+  if (inputs->WeaponSelect != 0)
+  {
+    local_cmds[playerId].buttons |= BT_CHANGE;
+    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1)<<BT_WEAPONSHIFT;
+  }
+
+  local_cmds[playerId].lookfly = inputs->FlyLook;
+  local_cmds[playerId].arti    = inputs->ArtifactUse;
+  
+  if (inputs->EndPlayer == 1) local_cmds[playerId].arti |= 0b01000000;
+  if (inputs->Jump      == 1) local_cmds[playerId].arti |= 0b10000000;
+
+  if (inputs->Automap && !last_automap_input[playerId])
+  {
+    if (automap_input)
+      AM_Stop(true);
+    else
+      AM_Start(true);
+  }
+  last_automap_input[playerId] = inputs->Automap;
+
+  // printf("ForwardSpeed: %d - sideMove:     %d - angleTurn:    %d - buttons: %u\n", forwardSpeed, strafingSpeed, turningSpeed, local_cmds[playerId].buttons);
+}
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
@@ -37,78 +72,16 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
   *paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
+ECL_EXPORT bool dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
   // Setting inputs
   headlessClearTickCommand();
 
-  // Setting Player 1 inputs
-  headlessSetTickCommand
-  (
-    0,
-    player1Inputs->RunSpeed,
-    player1Inputs->StrafingSpeed,
-    player1Inputs->TurningSpeed,
-    player1Inputs->Fire,
-    player1Inputs->Action,
-    player1Inputs->WeaponSelect,
-    player1Inputs->Automap,
-    player1Inputs->FlyLook,
-    player1Inputs->ArtifactUse,
-    player1Inputs->Jump,
-    player1Inputs->EndPlayer
-  );
-
-  // Setting Player 2 inputs
-  headlessSetTickCommand
-  (
-    1,
-    player2Inputs->RunSpeed,
-    player2Inputs->StrafingSpeed,
-    player2Inputs->TurningSpeed,
-    player2Inputs->Fire,
-    player2Inputs->Action,
-    player2Inputs->WeaponSelect,
-    player2Inputs->Automap,
-    player2Inputs->FlyLook,
-    player2Inputs->ArtifactUse,
-    player2Inputs->Jump,
-    player2Inputs->EndPlayer
-  );
-
-  // Setting Player 3 inputs
-  headlessSetTickCommand
-  (
-    2,
-    player3Inputs->RunSpeed,
-    player3Inputs->StrafingSpeed,
-    player3Inputs->TurningSpeed,
-    player3Inputs->Fire,
-    player3Inputs->Action,
-    player3Inputs->WeaponSelect,
-    player3Inputs->Automap,
-    player3Inputs->FlyLook,
-    player3Inputs->ArtifactUse,
-    player3Inputs->Jump,
-    player3Inputs->EndPlayer
-  );
-
-  // Setting Player 4 inputs
-  headlessSetTickCommand
-  (
-    3,
-    player4Inputs->RunSpeed,
-    player4Inputs->StrafingSpeed,
-    player4Inputs->TurningSpeed,
-    player4Inputs->Fire,
-    player4Inputs->Action,
-    player4Inputs->WeaponSelect,
-    player4Inputs->Automap,
-    player4Inputs->FlyLook,
-    player4Inputs->ArtifactUse,
-    player4Inputs->Jump,
-    player4Inputs->EndPlayer
-  );
+  // Setting Players inputs
+  send_input(player1Inputs, 0);
+  send_input(player2Inputs, 1);
+  send_input(player3Inputs, 2);
+  send_input(player4Inputs, 3);
 
   // Enabling/Disabling rendering, as required
   if (!renderInfo->RenderVideo) headlessDisableVideoRendering();
@@ -116,18 +89,29 @@ ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
   if (!renderInfo->RenderAudio) headlessDisableAudioRendering();
   if (renderInfo->RenderAudio) headlessEnableAudioRendering();
 
-  // Running a single tick
-  headlessRunSingleTick();
-
-  // Move positional sounds 
-  headlessUpdateSounds();
-
-  // Updating video
-  if (renderInfo->RenderVideo)
+  if ((wipe_Pending() || !wipeDone) && dsda_RenderWipeScreen())
   {
-    displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
-    headlessUpdateVideo();
+    wipeDone = wipe_ScreenWipe(1);
+    I_FinishUpdate();
   }
+  else
+  {
+    // Running a single tick
+    headlessRunSingleTick();
+
+    // Move positional sounds
+    headlessUpdateSounds();
+
+    // Updating video
+    if (renderInfo->RenderVideo)
+    {
+      displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
+      headlessUpdateVideo();
+    }
+  }
+
+  // Assume wipe is lag
+  return !wipeDone;
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);

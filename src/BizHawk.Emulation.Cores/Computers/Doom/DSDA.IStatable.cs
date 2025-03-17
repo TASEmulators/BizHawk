@@ -18,6 +18,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_turnHeld[3] = reader.ReadInt32();
 
 			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
+
 			// any managed pointers that we sent to the core need to be resent now!
 			UpdateVideo();
 		}
@@ -32,6 +35,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			writer.Write(_turnHeld[3]);
 
 			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
 		}
 	}
 }

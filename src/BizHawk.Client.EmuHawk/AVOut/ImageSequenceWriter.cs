@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			var (dir, fileNoExt, ext) = _baseName.SplitPathToDirFileAndExt();
 			var name = Path.Combine(dir!, $"{fileNoExt}_{_frame}{ext}");
 			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+			bb.DiscardAlpha();
 			using var bmp = bb.ToSysdrawingBitmap();
 			if (".PNG".EqualsIgnoreCase(ext))
 			{

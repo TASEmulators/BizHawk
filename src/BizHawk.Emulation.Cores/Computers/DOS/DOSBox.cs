@@ -39,9 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private bool _nextFloppyDiskPressed = false;
 		private bool _nextCDROMPressed = false;
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
-		private List<IRomAsset> _CDROMDiskImageFiles = new List<IRomAsset>();
 		private int _floppyDiskCount = 0;
-		private int _CDROMCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
@@ -79,17 +77,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					_floppyDiskImageFiles.Add(file);
 					recognized = true;
 				}
-				// Checking for supported CD-ROM extensions
-				else if (ext is ".dosbox-iso" // Temporary to circumvent BK's detection of isos as discs (not roms)
-					or ".dosbox-cue" // Must be accompanied by a bin file immediately after in the rom list
-					or ".dosbox-bin" // Must be accompanied by a cue file immediately before in the rom list
-					or ".dosbox-mdf"
-					or ".dosbox-chf")
-				{
-					Console.WriteLine("Added CDROM Image");
-					_CDROMDiskImageFiles.Add(file);
-					recognized = true;
-				}
 				// Checking for DOSBox-x config files
 				else if (ext is ".conf")
 				{
@@ -118,19 +105,27 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
             ////// CD Loading Logic Start
             _libDOSBox.SetCdCallbacks(_CDReadCallback);
-            _isMultidisc = _discAssets.Count > 1;
             _discIndex = 0;
 
 			// Processing each disc
 			int curDiscIndex = 0;
 			for (var discIdx = 0; discIdx < _discAssets.Count; discIdx++)
 			{
-				// Getting disc data structure
-				var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
-				Console.WriteLine($"[CD] Adding Disc {discIdx}: '{_discAssets[discIdx].DiscName}' with sector count: {CDDataStruct.end}, track count: {CDDataStruct.last}.");
+				// Creating file name to pass to dosbox
+				var cdRomFileName = _discAssets[discIdx].DiscName + ".cdrom";
 
-				// Creating writers
-				_cdReaders.Add(new(_discAssets[discIdx].DiscData));
+                // Getting disc data structure
+                var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
+				Console.WriteLine($"[CD] Adding Disc {discIdx}: '{_discAssets[discIdx].DiscName}' as '{cdRomFileName}' with sector count: {CDDataStruct.end}, track count: {CDDataStruct.last}.");
+
+				// Adding file name to list
+				_cdRomFileNames.Add(cdRomFileName);
+
+				// Creating reader
+				var discSectorReader = new DiscSectorReader(_discAssets[discIdx].DiscData);
+                
+                // Adding reader to map
+                _cdRomFileToReaderMap[cdRomFileName] = discSectorReader;
 
 				// Passing CD Data to the core
 				_libDOSBox.pushCDData(curDiscIndex, CDDataStruct.end, CDDataStruct.last);
@@ -138,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				// Passing track data to the core
 				for (var trackIdx = 0; trackIdx < CDDataStruct.last; trackIdx++) _libDOSBox.pushTrackData(curDiscIndex, trackIdx, CDDataStruct.tracks[trackIdx]);
             }
-			////// CD Loading Logic End	 
-			
+            ////// CD Loading Logic End	 
+
             // Getting base config file
             var configString = Encoding.UTF8.GetString(Resources.DOSBOX_CONF_BASE.Value);
 			configString += "\n";
@@ -200,30 +195,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			////// CD-ROMs: Mounting and appending mounting lines 
 			string cdromMountLine = "imgmount d ";
-			foreach (var file in _CDROMDiskImageFiles)
-			{
-				string typeExtension = Path.GetExtension(file.RomPath);
-				string newTypeExtension = "";
-
-				// Hack to avoid these CD-ROM images from being considered IDiscAssets
-				if (typeExtension == ".dosbox-iso") newTypeExtension = ".iso";
-				if (typeExtension == ".dosbox-bin") newTypeExtension = ".bin";
-				if (typeExtension == ".dosbox-cue") newTypeExtension = ".cue";
-				if (typeExtension == ".dosbox-mdf") newTypeExtension = ".mdf";
-				if (typeExtension == ".dosbox-chf") newTypeExtension = ".chf";
-
-				string cdromFileName = Path.GetFileName(file.RomPath);
-				string cdromNewFileName = cdromFileName.Replace(typeExtension, ".cdrom");
-
-				// Important: .cue and .bin CDROM images must be placed together in the .xml. This saves us from developing a matching engine here
-				if (newTypeExtension != ".cue") _CDROMCount++; // .cue CDROM extensions only work with an accompanying .bin, so don't increment CDROM count until that happens
-				if (newTypeExtension != ".bin") cdromMountLine += cdromNewFileName + " "; // .bin CDROM extensions only work with an accompanying .cue, so don't add it to DOSBOX as a new CDROM to mount
-			}
-			if (_CDROMCount > 0) configString += cdromMountLine + "\n";
+			foreach (var file in _cdRomFileNames) cdromMountLine += file + " "; 
+			if (_cdRomFileNames.Count > 0) configString += cdromMountLine + "\n";
 
 			//// Hard Disk mounting
-
-
 			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None)
 			{
 				var writableHDDImageFile = _syncSettings.WriteableHardDisk switch
@@ -274,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			_exe.AddReadonlyFile(configData.ToArray(), FileNames.DOSBOX_CONF);
-			//Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
+			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
 			if (!_libDOSBox.Init(_syncSettings.EnableJoystick1, _syncSettings.EnableJoystick2, _syncSettings.EnableMouse, writableHDDImageFileSize, _syncSettings.FPSNumerator, _syncSettings.FPSDenominator))
@@ -285,16 +260,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DriveLightEnabled = false;
 			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None) DriveLightEnabled = true;
 			if (_floppyDiskCount > 0) DriveLightEnabled = true;
-			if (_CDROMCount > 0) DriveLightEnabled = true;
+			if (_cdRomFileNames.Count > 0) DriveLightEnabled = true;
 		}
 
         // CD Handling logic
-        private bool _isMultidisc;
-        private bool _discInserted = true;
+		private List<string> _cdRomFileNames = new List<string>();
+		private Dictionary<string, DiscSectorReader> _cdRomFileToReaderMap = new Dictionary<string, DiscSectorReader>();
         private readonly LibDOSBox.CDReadCallback _CDReadCallback;
         private int _discIndex;
-        private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
-        private readonly byte[] _sectorBuffer = new byte[4096];
 
         public static LibDOSBox.CDData GetCDDataStruct(Disc cd)
         {
@@ -345,44 +318,29 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
             CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
         }
 
-        private void ejectDisc()
-        {
-            if (!_discInserted)
-            {
-                CoreComm.Notify($"Cannot eject: CDROM is already ejected.", _messageDuration);
-            }
-            else
-            {
-                _discInserted = false;
-                _libDOSBox.ejectCD();
-                CoreComm.Notify($"CDROM ejected.", _messageDuration);
-            }
-        }
-
-        private void insertDisc()
-        {
-            if (_discInserted)
-            {
-                CoreComm.Notify($"Cannot insert: CDROM is already insert.", _messageDuration);
-            }
-            else
-            {
-                _discInserted = true;
-                _libDOSBox.insertCD();
-                CoreComm.Notify($"CDROM inserted.", _messageDuration);
-            }
-        }
-
         private void CDRead(string cdRomName, int lba, IntPtr dest, int sectorSize)
         {
-			Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
-			switch (sectorSize)
+			// Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
+
+			if (! _cdRomFileToReaderMap.ContainsKey( cdRomName ) ) throw new InvalidOperationException($"Unrecognized CD File with name: {cdRomName}");
+
+            byte[] sectorBuffer = new byte[4096];
+            var cdRomReader = _cdRomFileToReaderMap[cdRomName];
+            switch (sectorSize)
             {
 				case 2048:
-					_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
-					Marshal.Copy(_sectorBuffer, 0, dest, 2048);
+                    cdRomReader.ReadLBA_2048(lba, sectorBuffer, 0);
+					Marshal.Copy(sectorBuffer, 0, dest, 2048);
 					break;
-				default:
+                case 2352:
+                    cdRomReader.ReadLBA_2352(lba, sectorBuffer, 0);
+                    Marshal.Copy(sectorBuffer, 0, dest, 2352);
+                    break;
+                case 2448:
+                    cdRomReader.ReadLBA_2448(lba, sectorBuffer, 0);
+                    Marshal.Copy(sectorBuffer, 0, dest, 2448);
+                    break;
+                default:
                     throw new InvalidOperationException($"Unsupported CD sector size: {sectorSize}");
 
             }
@@ -461,15 +419,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			// Processing CDROM swaps
 			fi.driveActions.insertCDROM = -1;
-			if (_CDROMCount > 1)
+			if (_cdRomFileNames.Count > 1)
 			{
 				if (controller.IsPressed(Inputs.NextCDROM))
 				{
 					if (!_nextCDROMPressed)
 					{
-						_currentCDROM = (_currentCDROM + 1) % _CDROMCount;
+						_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
 						fi.driveActions.insertCDROM = _currentCDROM;
-						CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {GetFullName(_CDROMDiskImageFiles[_currentCDROM])}  into drive D:", _messageDuration);
+						CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]}  into drive D:", _messageDuration);
 					}
 				}
 			}
@@ -507,9 +465,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_mouseState.leftButtonHeld);
 			writer.Write(_mouseState.middleButtonHeld);
 			writer.Write(_mouseState.rightButtonHeld);
-
-            writer.Write(_discIndex);
-            writer.Write(_discInserted);
         }
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -524,9 +479,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_mouseState.leftButtonHeld = reader.ReadBoolean();
 			_mouseState.middleButtonHeld = reader.ReadBoolean();
 			_mouseState.rightButtonHeld = reader.ReadBoolean();
-
-            _discIndex = reader.ReadInt32();
-            _discInserted = reader.ReadBoolean();
         }
 
         private static class FileNames
