@@ -426,7 +426,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
   m[memAreaIdx].Data  = _memoryAreas.nonVolatileRAM;
   m[memAreaIdx].Name  = "Non-volatile RAM";
   m[memAreaIdx].Size  = _memorySizes.nonVolatileRAM;
-  m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+  m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
   memAreaIdx++;
 }
 
