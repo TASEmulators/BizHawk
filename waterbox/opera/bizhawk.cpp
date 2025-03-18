@@ -10,14 +10,16 @@
 
 struct MemoryAreas 
 {
-  uint8_t* wram;
-  uint8_t* vram;
+  uint8_t* systemRAM;
+  uint8_t* videoRAM;
+  uint8_t* nonVolatileRAM;
 };
 
 struct MemorySizes
 {
-  size_t wram;
-  size_t vram;
+  size_t systemRAM;
+  size_t videoRAM;
+  size_t nonVolatileRAM;
 };
 
 #define _MAX_AUDIO_SAMPLE_COUNT 4096
@@ -297,6 +299,24 @@ void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
 void cd_read_sector(void *buf_) {  cd_read_callback(_currentSector, buf_); }
 /// CD Management Logic End
 
+// SRAM management start
+bool _sram_changed = false;
+ECL_EXPORT bool sram_changed() { return _nvramChanged; }
+ECL_EXPORT int get_sram_size() { return NVRAM_SIZE; }
+ECL_EXPORT uint8_t* get_sram_buffer() { return (uint8_t*) NVRAM; }
+ECL_EXPORT void get_sram(uint8_t* sramBuffer)
+{
+  if (NVRAM == NULL) return;
+  memcpy(sramBuffer, get_sram_buffer(), get_sram_size());
+}
+
+ECL_EXPORT void set_sram(uint8_t* sramBuffer)
+{
+  if (NVRAM == NULL) opera_nvram_init(NVRAM,NVRAM_SIZE);
+  memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
+}
+// SRAM Management end
+
 ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const char* fontFilePath, int port1Type, int port2Type, int region)
 { 
   _gameFilePath = gameFilePath;
@@ -326,16 +346,19 @@ ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const c
   if (loadResult == false) { fprintf(stderr, "Could not load game: '%s'\n", _gameFilePath.c_str()); return false; }
 
   //// Getting memory areas
-  /** 2 = wram, 3 = vram*/
 
-  // WRAM
-  _memoryAreas.wram = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
-  _memorySizes.wram = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
+  // System RAM
+  _memoryAreas.systemRAM = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
+  _memorySizes.systemRAM = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
 
-  // VRAM
-  _memoryAreas.vram = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
-  _memorySizes.vram = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
+  // Video RAM
+  _memoryAreas.videoRAM = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
+  _memorySizes.videoRAM = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
 
+  // Non Volatile RAM
+  _memoryAreas.nonVolatileRAM = (uint8_t*)get_sram_buffer();
+  _memorySizes.nonVolatileRAM = get_sram_size();
+  
   // Getting av info
   struct retro_system_av_info info;
   retro_get_system_av_info(&info);
@@ -388,15 +411,21 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
   int memAreaIdx = 0;
 
-  m[memAreaIdx].Data  = _memoryAreas.wram;
-  m[memAreaIdx].Name  = "Work RAM";
-  m[memAreaIdx].Size  = _memorySizes.wram;
+  m[memAreaIdx].Data  = _memoryAreas.systemRAM;
+  m[memAreaIdx].Name  = "System RAM";
+  m[memAreaIdx].Size  = _memorySizes.systemRAM;
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
   memAreaIdx++;
 
-  m[memAreaIdx].Data  = _memoryAreas.vram;
+  m[memAreaIdx].Data  = _memoryAreas.videoRAM;
   m[memAreaIdx].Name  = "Video RAM";
-  m[memAreaIdx].Size  = _memorySizes.vram;
+  m[memAreaIdx].Size  = _memorySizes.videoRAM;
+  m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+  memAreaIdx++;
+
+  m[memAreaIdx].Data  = _memoryAreas.nonVolatileRAM;
+  m[memAreaIdx].Name  = "Non-volatile RAM";
+  m[memAreaIdx].Size  = _memorySizes.nonVolatileRAM;
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
   memAreaIdx++;
 }
@@ -405,20 +434,4 @@ void (*InputCallback)();
 ECL_EXPORT void SetInputCallback(void (*callback)())
 {
   InputCallback = callback;
-}
-
-bool _sram_changed = false;
-ECL_EXPORT bool sram_changed() { return _nvramChanged; }
-ECL_EXPORT int get_sram_size() { return NVRAM_SIZE; }
-ECL_EXPORT uint8_t* get_sram_buffer() { return (uint8_t*) NVRAM; }
-ECL_EXPORT void get_sram(uint8_t* sramBuffer)
-{
-  if (NVRAM == NULL) return;
-  memcpy(sramBuffer, get_sram_buffer(), get_sram_size());
-}
-
-ECL_EXPORT void set_sram(uint8_t* sramBuffer)
-{
-  if (NVRAM == NULL) opera_nvram_init(NVRAM,NVRAM_SIZE);
-  memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
 }
