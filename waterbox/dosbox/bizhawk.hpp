@@ -33,8 +33,8 @@ typedef struct
 {
 	int posX;
 	int posY;
-	int dX;
-	int dY;
+	int speedX;
+	int speedY;
 	int leftButtonPressed;
 	int middleButtonPressed;
 	int rightButtonPressed;
