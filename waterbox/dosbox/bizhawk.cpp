@@ -92,8 +92,8 @@ ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
 // SRAM Management
 constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
 constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
-ECL_EXPORT int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
-ECL_EXPORT uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
+uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
 
 ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize, uint64_t fpsNumerator, uint64_t fpsDenominator)
 {
