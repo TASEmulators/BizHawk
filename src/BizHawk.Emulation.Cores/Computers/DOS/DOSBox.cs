@@ -311,20 +311,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return ret;
 		}
 
-		private void SelectNextDisc()
-		{
-			_discIndex++;
-			if (_discIndex == _discAssets.Count) _discIndex = 0;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
-		}
-
-		private void SelectPrevDisc()
-		{
-			_discIndex--;
-			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
-		}
-
 		private void CDRead(string cdRomName, int lba, IntPtr dest, int sectorSize)
 		{
 			// Console.WriteLine($"Reading from {cdRomName} : {lba} : {sectorSize}");
