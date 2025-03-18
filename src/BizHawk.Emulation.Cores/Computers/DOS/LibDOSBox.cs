@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// CD Management Logic END
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNominator, ulong fpsDenominator);
+		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNumerator, ulong fpsDenominator);
 
 		[BizImport(CC, Compatibility = true)]
 
