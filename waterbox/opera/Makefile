@@ -1,23 +1,23 @@
 TARGET := opera.wbx
 CCFLAGS := 	-I. \
-			-Iopera-libretro \
-			-Iopera-libretro/libopera \
-			-Iopera-libretro/libretro-common/include \
-			-Iopera-libretro/deps \
-			-Iopera-libretro/deps/lzma-19.00/include \
-			-Iopera-libretro/deps/libchdr/include \
-			-Iopera-libretro/deps/zlib-1.2.11 \
-			-DHAVE_CHD \
-			-D_7ZIP_ST \
-			-DDR_FLAC_NO_STDIO \
-			-D__LIBRETRO__ \
-			-DNDEBUG \
-			-DHAVE_CDROM \
-			-DHAVE_STDINT_H \
-			-DHAVE_STDLIB_H \
-			-DHAVE_SYS_PARAM_H \
-			-DINLINE=inline \
-			-DTHREADED_DSP
+		-Iopera-libretro \
+		-Iopera-libretro/libopera \
+		-Iopera-libretro/libretro-common/include \
+		-Iopera-libretro/deps \
+		-Iopera-libretro/deps/lzma-19.00/include \
+		-Iopera-libretro/deps/libchdr/include \
+		-Iopera-libretro/deps/zlib-1.2.11 \
+		-DHAVE_CHD \
+		-D_7ZIP_ST \
+		-DDR_FLAC_NO_STDIO \
+		-D__LIBRETRO__ \
+		-DNDEBUG \
+		-DHAVE_CDROM \
+		-DHAVE_STDINT_H \
+		-DHAVE_STDLIB_H \
+		-DHAVE_SYS_PARAM_H \
+		-DINLINE=inline \
+		-DTHREADED_DSP
 CXXFLAGS := $(CCFLAGS) 
 SRCS =  bizhawk.cpp \
 		opera-libretro/lr_input.c \
