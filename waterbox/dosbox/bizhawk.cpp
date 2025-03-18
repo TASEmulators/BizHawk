@@ -92,12 +92,8 @@ ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
 // SRAM Management
 constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
 constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
-bool _sram_changed = false;
-ECL_EXPORT bool sram_changed() { return _sram_changed; }
 ECL_EXPORT int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
 ECL_EXPORT uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
-ECL_EXPORT void get_sram(uint8_t* sramBuffer) {	memcpy(sramBuffer, get_sram_buffer(), get_sram_size()); }
-ECL_EXPORT void set_sram(uint8_t* sramBuffer) {	memcpy(get_sram_buffer(), sramBuffer, get_sram_size()); }
 
 ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize, uint64_t fpsNumerator, uint64_t fpsDenominator)
 {
@@ -385,7 +381,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 		m[memAreaIdx].Data  = get_sram_buffer();
 		m[memAreaIdx].Name  = "Writeable HDD (SaveRAM)";
 		m[memAreaIdx].Size  = sramSize;
-		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE;
 		memAreaIdx++;
 	}
 }
