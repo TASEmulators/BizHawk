@@ -104,7 +104,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			////// CD Loading Logic Start
 			_libDOSBox.SetCdCallbacks(_CDReadCallback);
-			_discIndex = 0;
 
 			// Processing each disc
 			int curDiscIndex = 0;
@@ -274,7 +273,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private List<string> _cdRomFileNames = new List<string>();
 		private Dictionary<string, DiscSectorReader> _cdRomFileToReaderMap = new Dictionary<string, DiscSectorReader>();
 		private readonly LibDOSBox.CDReadCallback _CDReadCallback;
-		private int _discIndex;
 
 		public static LibDOSBox.CDData GetCDDataStruct(Disc cd)
 		{
