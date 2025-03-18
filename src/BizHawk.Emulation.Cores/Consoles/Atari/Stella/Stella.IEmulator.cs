@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			
 			// select and reset switches default to an unpressed state
 			// unknown whether TV color switch matters for TASing, so default to Color for now
-			int switchPort = 0b00001011;
+			byte switchPort = 0b00001011;
 			if (_rightDifficultyToggled) switchPort |= 0b10000000;
 			if (_leftDifficultyToggled)  switchPort |= 0b01000000;
 			if (controller.IsPressed("Select")) switchPort &= 0b11111101; // 0 = Pressed
