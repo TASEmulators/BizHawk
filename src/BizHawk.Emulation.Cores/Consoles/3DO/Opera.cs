@@ -185,34 +185,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
 		}
 
-		private void ejectDisc()
-		{
-			if (!_discInserted)
-			{
-				CoreComm.Notify("Cannot eject: CDROM is already ejected.", null);
-			}
-			else
-			{
-				_discInserted = false;
-				_libOpera.ejectCD();
-				CoreComm.Notify("CDROM ejected.", null);
-			}
-		}
-
-		private void insertDisc()
-		{
-			if (_discInserted)
-			{
-				CoreComm.Notify("Cannot insert: CDROM is already insert.", null);
-			}
-			else
-			{
-				_discInserted = true;
-				_libOpera.insertCD();
-				CoreComm.Notify("CDROM inserted.", null);
-			}
-		}
-
 		private void CDRead(int lba, IntPtr dest)
 		{
 			if (_discIndex < _discAssets.Count)
