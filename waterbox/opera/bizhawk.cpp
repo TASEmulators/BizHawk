@@ -266,18 +266,6 @@ ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cds
   cd_sector_count_callback = cdscc;
 }
 
-ECL_EXPORT void ejectCD()
-{
-  xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_EJECT_DISC);
-}
-
-ECL_EXPORT void insertCD()
-{
-  xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_INJECT_DISC);
-  xbus_cdrom_plugin(XBP_SET_COMMAND, (void*) CDROM_CMD_MODE_SET);
-  xbus_cdrom_plugin(XBP_INIT, NULL);
-}
-
 uint32_t cd_get_size(void) {  return cd_sector_count_callback(); }
 void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
 void cd_read_sector(void *buf_) {  cd_read_callback(_currentSector, buf_); }
