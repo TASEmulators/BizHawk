@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
-			int port1 = _controllerDeck.ReadPort1(controller);
-			int port2 = _controllerDeck.ReadPort2(controller);
+			byte port1 = _controllerDeck.ReadPort1(controller);
+			byte port2 = _controllerDeck.ReadPort2(controller);
             
 			// Handle all the console controls here
 			bool powerPressed = false;
