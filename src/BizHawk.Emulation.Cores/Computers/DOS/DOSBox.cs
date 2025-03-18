@@ -394,9 +394,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (fi.mouse.leftButtonPressed > 0) nextState.leftButtonHeld = true;
 				if (fi.mouse.middleButtonPressed > 0) nextState.middleButtonHeld = true;
 				if (fi.mouse.rightButtonPressed > 0) nextState.rightButtonHeld = true;
-				if (fi.mouse.leftButtonReleased > 0) nextState.leftButtonHeld = false;
-				if (fi.mouse.middleButtonReleased > 0) nextState.middleButtonHeld = false;
-				if (fi.mouse.rightButtonReleased > 0) nextState.rightButtonHeld = false;
 
 				// Updating mouse state
 				_mouseState = nextState;
