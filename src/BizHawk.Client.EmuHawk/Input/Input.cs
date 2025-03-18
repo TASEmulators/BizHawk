@@ -20,8 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void ControlInputFocus(Control c, HostInputType types, bool wants)
 		{
-			if (types.HasFlag(HostInputType.Mouse) && wants) _wantingMouseFocus.Add(c);
-			if (types.HasFlag(HostInputType.Mouse) && !wants) _wantingMouseFocus.Remove(c);
+			if (types.HasFlag(HostInputType.Mouse)) _wantingMouseFocus.SetMembership(c, shouldBeMember: wants);
 		}
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();

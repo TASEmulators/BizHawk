@@ -992,14 +992,7 @@ namespace BizHawk.Client.EmuHawk
 						TasView.SelectRow(i, _selectionDragState);
 					if (AxisEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 					{
-						if (_selectionDragState)
-						{
-							_extraAxisRows.Add(i);
-						}
-						else
-						{
-							_extraAxisRows.Remove(i);
-						}
+						_extraAxisRows.SetMembership(i, shouldBeMember: _selectionDragState);
 					}
 				}
 

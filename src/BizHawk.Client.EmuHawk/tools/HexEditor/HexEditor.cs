@@ -2085,13 +2085,9 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ClearHighlighted();
 						}
-						else if (_secondaryHighlightedAddresses.Contains(pointedAddress))
-						{
-							_secondaryHighlightedAddresses.Remove(pointedAddress);
-						}
 						else
 						{
-							_secondaryHighlightedAddresses.Add(pointedAddress);
+							_ = _secondaryHighlightedAddresses.ToggleMembership(pointedAddress);
 						}
 					}
 					else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
