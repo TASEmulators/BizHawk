@@ -8,22 +8,6 @@
 #include <opera_cdrom.h>
 #include <opera_xbus.h>
 
-struct MemoryAreas 
-{
-  uint8_t* systemRAM;
-  uint8_t* videoRAM;
-  uint8_t* nonVolatileRAM;
-};
-
-struct MemorySizes
-{
-  size_t systemRAM;
-  size_t videoRAM;
-  size_t nonVolatileRAM;
-};
-
-#define _MAX_AUDIO_SAMPLE_COUNT 4096
-
 std::string _biosFilePath;
 std::string _gameFilePath;
 std::string _fontFilePath;
