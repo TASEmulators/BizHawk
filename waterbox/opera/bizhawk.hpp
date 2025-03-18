@@ -106,17 +106,3 @@ typedef struct
   int isReset;
 } MyFrameInfo;
 
-struct MemoryAreas 
-{
-  uint8_t* systemRAM;
-  uint8_t* videoRAM;
-  uint8_t* nonVolatileRAM;
-};
-
-struct MemorySizes
-{
-  size_t systemRAM;
-  size_t videoRAM;
-  size_t nonVolatileRAM;
-};
-

@@ -15,8 +15,6 @@ int _port1Type;
 int _port2Type;
 controllerData_t _port1Value;
 controllerData_t _port2Value;
-MemoryAreas _memoryAreas;
-MemorySizes _memorySizes;
 uint32_t* _videoBuffer;
 size_t _videoHeight;
 size_t _videoWidth;
@@ -317,20 +315,6 @@ ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const c
   auto loadResult = retro_load_game(&game);
   if (loadResult == false) { fprintf(stderr, "Could not load game: '%s'\n", _gameFilePath.c_str()); return false; }
 
-  //// Getting memory areas
-
-  // System RAM
-  _memoryAreas.systemRAM = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
-  _memorySizes.systemRAM = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
-
-  // Video RAM
-  _memoryAreas.videoRAM = (uint8_t*)retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
-  _memorySizes.videoRAM = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
-
-  // Non Volatile RAM
-  _memoryAreas.nonVolatileRAM = (uint8_t*)get_sram_buffer();
-  _memorySizes.nonVolatileRAM = get_sram_size();
-  
   // Getting av info
   struct retro_system_av_info info;
   retro_get_system_av_info(&info);
@@ -383,21 +367,21 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
   int memAreaIdx = 0;
 
-  m[memAreaIdx].Data  = _memoryAreas.systemRAM;
+  m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
   m[memAreaIdx].Name  = "System RAM";
-  m[memAreaIdx].Size  = _memorySizes.systemRAM;
+  m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
   memAreaIdx++;
 
-  m[memAreaIdx].Data  = _memoryAreas.videoRAM;
+  m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
   m[memAreaIdx].Name  = "Video RAM";
-  m[memAreaIdx].Size  = _memorySizes.videoRAM;
+  m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
   memAreaIdx++;
 
-  m[memAreaIdx].Data  = _memoryAreas.nonVolatileRAM;
+  m[memAreaIdx].Data  = get_sram_buffer();
   m[memAreaIdx].Name  = "Non-volatile RAM";
-  m[memAreaIdx].Size  = _memorySizes.nonVolatileRAM;
+  m[memAreaIdx].Size  = get_sram_size();
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
   memAreaIdx++;
 }
