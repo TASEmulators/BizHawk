@@ -53,7 +53,6 @@ namespace BizHawk.Emulation.Consoles._3DO
 		};
 
 		private readonly List<IDiscAsset> _discAssets;
-		private const int _messageDuration = 4;
 
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
@@ -176,27 +175,27 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			_discIndex++;
 			if (_discIndex == _discAssets.Count) _discIndex = 0;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
 		}
 
 		private void SelectPrevDisc()
 		{
 			_discIndex--;
 			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
 		}
 
 		private void ejectDisc()
 		{
 			if (!_discInserted)
 			{
-				CoreComm.Notify("Cannot eject: CDROM is already ejected.", _messageDuration);
+				CoreComm.Notify("Cannot eject: CDROM is already ejected.", null);
 			}
 			else
 			{
 				_discInserted = false;
 				_libOpera.ejectCD();
-				CoreComm.Notify("CDROM ejected.", _messageDuration);
+				CoreComm.Notify("CDROM ejected.", null);
 			}
 		}
 
@@ -204,13 +203,13 @@ namespace BizHawk.Emulation.Consoles._3DO
 		{
 			if (_discInserted)
 			{
-				CoreComm.Notify("Cannot insert: CDROM is already insert.", _messageDuration);
+				CoreComm.Notify("Cannot insert: CDROM is already insert.", null);
 			}
 			else
 			{
 				_discInserted = true;
 				_libOpera.insertCD();
-				CoreComm.Notify("CDROM inserted.", _messageDuration);
+				CoreComm.Notify("CDROM inserted.", null);
 			}
 		}
 

@@ -15,7 +15,8 @@ namespace BizHawk.Client.Common
 
 		private static readonly Dictionary<string, double> Rates = new Dictionary<string, double>
 		{
-			["3DS"] = 268111856.0 / 4481136.0, // 59.8312249394
+            ["3DO"] = 60.0, // The emulator (Opera-Libretro) reports exact 60.0 for NTSC https://github.com/libretro/opera-libretro/blob/67a29e60a4d194b675c9272b21b61eaa022f3ba3/libopera/opera_region.c#L10
+            ["3DS"] = 268111856.0 / 4481136.0, // 59.8312249394
 			// while the number of scanlines per frame is software controlled and variable, we
 			// enforce exactly 262 (NTSC) 312 (PAL) per reference time frame
 			["A26"] = 315000000.0 / 88.0 / 262.0 / 228.0, // 59.922751013550531429197560173856
