@@ -238,13 +238,13 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	}
 
 	// Processing mouse inputs
-	if (f->mouse.dX != 0 || f->mouse.dY != 0)
+	if (f->mouse.speedX != 0 || f->mouse.speedY != 0)
 	{
 		mouse.x = (double)mouse.min_x + ((double) f->mouse.posX / (double)MOUSE_MAX_X) * (double)mouse.max_x;
 		mouse.y = (double)mouse.min_y + ((double) f->mouse.posY / (double)MOUSE_MAX_Y) * (double)mouse.max_y;
 
-  float adjustedDeltaX = (float) f->mouse.dX * (float) f->mouse.sensitivity;
-		float adjustedDeltaY = (float) f->mouse.dY * (float) f->mouse.sensitivity;
+  float adjustedDeltaX = (float) f->mouse.speedX * (float) f->mouse.sensitivity;
+		float adjustedDeltaY = (float) f->mouse.speedY * (float) f->mouse.sensitivity;
 
 		float dx = adjustedDeltaX * mouse.pixelPerMickey_x;
 		float dy = adjustedDeltaY * mouse.pixelPerMickey_y;
@@ -262,7 +262,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		if (mouse.ps2y >= 32768.0)       mouse.ps2y -= 65536.0;
 		else if (mouse.ps2y <= -32769.0) mouse.ps2y += 65536.0;
 
-		// printf("X: %d (%d) Y: %d (%d)\n", f->mouse.posX, f->mouse.dX, f->mouse.posY, f->mouse.dY);
+		// printf("X: %d (%d) Y: %d (%d)\n", f->mouse.posX, f->mouse.speedX, f->mouse.posY, f->mouse.speedY);
 		// printf("%d %f %d %f\n", mouse.mickey_x, mouse.mickey_accum_x, mouse.mickey_y, mouse.mickey_accum_y);
 
 		Mouse_AddEvent(MOUSE_HAS_MOVED);
