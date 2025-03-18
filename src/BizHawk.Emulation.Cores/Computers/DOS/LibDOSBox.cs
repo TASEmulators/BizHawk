@@ -64,19 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNumerator, ulong fpsDenominator);
 
 		[BizImport(CC, Compatibility = true)]
-
-		public abstract bool sram_changed();
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract int get_sram_size();
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract void get_sram(IntPtr sramBuffer);
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract void set_sram(IntPtr sramBuffer);
-
-		[BizImport(CC, Compatibility = true)]
 		public abstract bool getDriveActivityFlag();
 
 		[StructLayout(LayoutKind.Sequential)]
