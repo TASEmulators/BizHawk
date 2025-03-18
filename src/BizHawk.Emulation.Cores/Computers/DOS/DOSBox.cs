@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		private readonly List<IRomAsset> _roms;
 		private readonly List<IDiscAsset> _discAssets;
-		private const int _messageDuration = 4;
 
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
@@ -257,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				joystick2Enabled: _syncSettings.EnableJoystick2,
 				mouseEnabled: _syncSettings.EnableMouse,
 				hardDiskDriveSize: writableHDDImageFileSize,
-				fpsNominator: _syncSettings.FPSNumerator,
+				fpsNumerator: _syncSettings.FPSNumerator,
 				fpsDenominator: _syncSettings.FPSDenominator))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -316,14 +315,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			_discIndex++;
 			if (_discIndex == _discAssets.Count) _discIndex = 0;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
 		}
 
 		private void SelectPrevDisc()
 		{
 			_discIndex--;
 			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", _messageDuration);
+			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
 		}
 
 		private void CDRead(string cdRomName, int lba, IntPtr dest, int sectorSize)
@@ -360,27 +359,34 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			var fi = new LibDOSBox.FrameInfo();
 
 			// Setting joystick inputs
-			fi.joystick1.up = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-			fi.joystick1.down = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-			fi.joystick1.left = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-			fi.joystick1.right = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
-			fi.joystick1.button1 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
-			fi.joystick1.button2 = _syncSettings.EnableJoystick1 && controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
-			fi.joystick2.up = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-			fi.joystick2.down = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-			fi.joystick2.left = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-			fi.joystick2.right = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
-			fi.joystick2.button1 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
-			fi.joystick2.button2 = _syncSettings.EnableJoystick2 && controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
+			if (_syncSettings.EnableJoystick1)
+			{
+				fi.joystick1.up      = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+				fi.joystick1.down    = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+				fi.joystick1.left    = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+				fi.joystick1.right   = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+				fi.joystick1.button1 = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
+				fi.joystick1.button2 = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
+			}
+
+			if (_syncSettings.EnableJoystick2)
+			{
+                fi.joystick2.up      = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+				fi.joystick2.down    = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+				fi.joystick2.left    = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+				fi.joystick2.right   = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+				fi.joystick2.button1 = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
+				fi.joystick2.button2 = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
+			}
 
 			// Setting mouse inputs
 			if (_syncSettings.EnableMouse)
 			{
 				// 272 is minimal delta for RMouse on my machine, this will be obsolete when global sensitivity for RMouse is added and when it's bindable from GUI
-				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.XDelta}") / 272;
-				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.YDelta}") / 272;
-				fi.mouse.posX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.XAxis}");
-				fi.mouse.posY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.YAxis}");
+				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}") / 272;
+				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}") / 272;
+				fi.mouse.posX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.PosX}");
+				fi.mouse.posY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.PosY}");
 				fi.mouse.dX = deltaX != 0 ? deltaX : fi.mouse.posX - _mouseState.posX;
 				fi.mouse.dY = deltaY != 0 ? deltaY : fi.mouse.posY - _mouseState.posY;
 
@@ -396,47 +402,39 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				fi.mouse.middleButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && _mouseState.middleButtonHeld ? 1 : 0;
 				fi.mouse.rightButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && _mouseState.rightButtonHeld ? 1 : 0;
 				fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
-			}
 
-			// Updating mouse state
-			_mouseState.posX = fi.mouse.posX;
-			_mouseState.posY = fi.mouse.posY;
-			if (fi.mouse.leftButtonPressed > 0) _mouseState.leftButtonHeld = true;
-			if (fi.mouse.middleButtonPressed > 0) _mouseState.middleButtonHeld = true;
-			if (fi.mouse.rightButtonPressed > 0) _mouseState.rightButtonHeld = true;
-			if (fi.mouse.leftButtonReleased > 0) _mouseState.leftButtonHeld = false;
-			if (fi.mouse.middleButtonReleased > 0) _mouseState.middleButtonHeld = false;
-			if (fi.mouse.rightButtonReleased > 0) _mouseState.rightButtonHeld = false;
+				// Getting new mouse state values
+				var nextState = new DOSBox.MouseState();
+				nextState.posX = fi.mouse.posX;
+				nextState.posY = fi.mouse.posY;
+				if (fi.mouse.leftButtonPressed > 0) nextState.leftButtonHeld = true;
+				if (fi.mouse.middleButtonPressed > 0) nextState.middleButtonHeld = true;
+				if (fi.mouse.rightButtonPressed > 0) nextState.rightButtonHeld = true;
+				if (fi.mouse.leftButtonReleased > 0) nextState.leftButtonHeld = false;
+				if (fi.mouse.middleButtonReleased > 0) nextState.middleButtonHeld = false;
+				if (fi.mouse.rightButtonReleased > 0) nextState.rightButtonHeld = false;
 
-			// Processing floppy disks swaps
-			fi.driveActions.insertFloppyDisk = -1;
-			if (_floppyDiskCount > 1)
+				// Updating mouse state
+				_mouseState = nextState;
+            }
+
+            // Processing floppy disks swaps
+            fi.driveActions.insertFloppyDisk = -1;
+			if (_floppyDiskCount > 1 && controller.IsPressed(Inputs.NextFloppyDisk) && !_nextFloppyDiskPressed)
 			{
-				if (controller.IsPressed(Inputs.NextFloppyDisk))
-				{
-					if (!_nextFloppyDiskPressed)
-					{
-						_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
-						fi.driveActions.insertFloppyDisk = _currentFloppyDisk;
-						CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", _messageDuration);
-					}
-				}
+				_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
+				fi.driveActions.insertFloppyDisk = _currentFloppyDisk;
+				CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", null);
 			}
 			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 
 			// Processing CDROM swaps
 			fi.driveActions.insertCDROM = -1;
-			if (_cdRomFileNames.Count > 1)
+			if (_cdRomFileNames.Count > 1 && controller.IsPressed(Inputs.NextCDROM) && !_nextCDROMPressed)
 			{
-				if (controller.IsPressed(Inputs.NextCDROM))
-				{
-					if (!_nextCDROMPressed)
-					{
-						_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
-						fi.driveActions.insertCDROM = _currentCDROM;
-						CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", _messageDuration);
-					}
-				}
+				_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
+				fi.driveActions.insertCDROM = _currentCDROM;
+				CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
 			}
 			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
 

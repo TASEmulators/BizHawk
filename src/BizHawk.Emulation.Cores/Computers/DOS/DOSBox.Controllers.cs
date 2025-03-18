@@ -60,10 +60,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.LeftButton);
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.MiddleButton);
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.RightButton);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.XAxis, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.YAxis, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.XDelta, (-32769).RangeTo(32768), 0);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.YDelta, (-32769).RangeTo(32768), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-LibDOSBox.SVGA_MAX_WIDTH / 2).RangeTo(LibDOSBox.SVGA_MAX_WIDTH / 2), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-LibDOSBox.SVGA_MAX_HEIGHT / 2).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT / 2), 0);
 			}
 
 			// Adding drive management buttons
@@ -103,10 +103,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string LeftButton = "Left Button";
 			public const string RightButton = "Right Button";
 			public const string MiddleButton = "Middle Button";
-			public const string XAxis = "X Axis";
-			public const string YAxis = "Y Axis";
-			public const string XDelta = "X Delta";
-			public const string YDelta = "Y Delta";
+			public const string PosX = "Position X";
+			public const string PosY = "Position Y";
+			public const string SpeedX = "Speed X"; // How many pixels has it changed in a single frame
+			public const string SpeedY = "Speed Y";
 		}
 
 		private static class Inputs

@@ -1110,22 +1110,22 @@
 			}
 		},
 		"DOSBox Controller": {
-			"Mouse X Axis": {
+			"Mouse Position X": {
 				"Value": "WMouse X",
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			},
-			"Mouse Y Axis": {
+			"Mouse Position Y": {
 				"Value": "WMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			},
-			"Mouse X Delta": {
+			"Mouse Speed X": {
 				"Value": "RMouse X",
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			},
-			"Mouse Y Delta": {
+			"Mouse Speed Y": {
 				"Value": "RMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
