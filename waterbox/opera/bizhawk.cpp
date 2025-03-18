@@ -94,102 +94,123 @@ void RETRO_CALLCONV retro_input_poll_callback()
 
 int16_t processController(const int portType, controllerData_t& portValue, const unsigned device, const unsigned index, const unsigned id)
 {
-	if (portType == RETRO_DEVICE_JOYPAD)
+	switch (portType)
 	{
-		 if (id == RETRO_DEVICE_ID_JOYPAD_UP) return portValue.gamePad.up;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_DOWN) return portValue.gamePad.down;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_LEFT) return portValue.gamePad.left;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_RIGHT) return portValue.gamePad.right;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_L) return portValue.gamePad.buttonL;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_R) return portValue.gamePad.buttonR;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.gamePad.select;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_START) return portValue.gamePad.start;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_X) return portValue.gamePad.buttonX;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_Y) return portValue.gamePad.buttonY;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_B) return portValue.gamePad.buttonB;
-		 if (id == RETRO_DEVICE_ID_JOYPAD_A) return portValue.gamePad.buttonA;
-	}
-
-	if (portType == RETRO_DEVICE_MOUSE)
-	{
-		if (id == RETRO_DEVICE_ID_MOUSE_X) return portValue.mouse.dX;
-		if (id == RETRO_DEVICE_ID_MOUSE_Y) return portValue.mouse.dY;
-		if (id == RETRO_DEVICE_ID_MOUSE_LEFT) return portValue.mouse.leftButton;
-		if (id == RETRO_DEVICE_ID_MOUSE_MIDDLE) return portValue.mouse.middleButton;
-		if (id == RETRO_DEVICE_ID_MOUSE_RIGHT) return portValue.mouse.rightButton;
-		if (id == RETRO_DEVICE_ID_MOUSE_BUTTON_4) return portValue.mouse.fourthButton;
-	}
-
-	if (portType == RETRO_DEVICE_FLIGHTSTICK)
-	{ 
-		 if (RETRO_DEVICE_ID_ANALOG_X)
+		case RETRO_DEVICE_JOYPAD:
+		 switch (id)
 			{
-				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.horizontalAxis; 
-				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
+					case RETRO_DEVICE_ID_JOYPAD_UP: return portValue.gamePad.up;
+					case RETRO_DEVICE_ID_JOYPAD_DOWN: return portValue.gamePad.down;
+					case RETRO_DEVICE_ID_JOYPAD_LEFT: return portValue.gamePad.left;
+					case RETRO_DEVICE_ID_JOYPAD_RIGHT: return portValue.gamePad.right;
+					case RETRO_DEVICE_ID_JOYPAD_L: return portValue.gamePad.buttonL;
+					case RETRO_DEVICE_ID_JOYPAD_R: return portValue.gamePad.buttonR;
+					case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.gamePad.select;
+					case RETRO_DEVICE_ID_JOYPAD_START: return portValue.gamePad.start;
+					case RETRO_DEVICE_ID_JOYPAD_X: return portValue.gamePad.buttonX;
+					case RETRO_DEVICE_ID_JOYPAD_Y: return portValue.gamePad.buttonY;
+					case RETRO_DEVICE_ID_JOYPAD_B: return portValue.gamePad.buttonB;
+					case RETRO_DEVICE_ID_JOYPAD_A: return portValue.gamePad.buttonA;
+					default: return 0;
 			}
 
-			if (RETRO_DEVICE_ID_ANALOG_Y)
-			{
-				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.verticalAxis;
-				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
-			}
+			case RETRO_DEVICE_MOUSE:
+				switch (id)
+				{
+					case RETRO_DEVICE_ID_MOUSE_X: return portValue.mouse.dX;
+					case RETRO_DEVICE_ID_MOUSE_Y: return portValue.mouse.dY;
+					case RETRO_DEVICE_ID_MOUSE_LEFT: return portValue.mouse.leftButton;
+					case RETRO_DEVICE_ID_MOUSE_MIDDLE: return portValue.mouse.middleButton;
+					case RETRO_DEVICE_ID_MOUSE_RIGHT: return portValue.mouse.rightButton;
+					case RETRO_DEVICE_ID_MOUSE_BUTTON_4: return portValue.mouse.fourthButton;
+					default: return 0;
+				}
 
-		 if (RETRO_DEVICE_ID_JOYPAD_R2) return portValue.flightStick.fire;
-   if (RETRO_DEVICE_ID_JOYPAD_Y) return portValue.flightStick.buttonA;   
-   if (RETRO_DEVICE_ID_JOYPAD_B) return portValue.flightStick.buttonB;   
-   if (RETRO_DEVICE_ID_JOYPAD_A) return portValue.flightStick.buttonC;   
-   if (RETRO_DEVICE_ID_JOYPAD_UP) return portValue.flightStick.up;   
-   if (RETRO_DEVICE_ID_JOYPAD_DOWN) return portValue.flightStick.down;   
-   if (RETRO_DEVICE_ID_JOYPAD_LEFT) return portValue.flightStick.left;   
-   if (RETRO_DEVICE_ID_JOYPAD_RIGHT) return portValue.flightStick.right;
-   if (RETRO_DEVICE_ID_JOYPAD_START) return portValue.flightStick.buttonP;
-   if (RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.flightStick.buttonX; 
-   if (RETRO_DEVICE_ID_JOYPAD_L) return portValue.flightStick.leftTrigger;
-   if (RETRO_DEVICE_ID_JOYPAD_R) return portValue.flightStick.rightTrigger;
-	}
+			case RETRO_DEVICE_FLIGHTSTICK:
+				if (index == RETRO_DEVICE_INDEX_ANALOG_BUTTON)
+				{
+					switch (id)
+					{
+						case RETRO_DEVICE_ID_JOYPAD_R2: return portValue.flightStick.fire;
+						case RETRO_DEVICE_ID_JOYPAD_Y: return portValue.flightStick.buttonA;
+						case RETRO_DEVICE_ID_JOYPAD_B: return portValue.flightStick.buttonB;
+						case RETRO_DEVICE_ID_JOYPAD_A: return portValue.flightStick.buttonC;   
+						case RETRO_DEVICE_ID_JOYPAD_UP: return portValue.flightStick.up;   
+						case RETRO_DEVICE_ID_JOYPAD_DOWN: return portValue.flightStick.down;   
+						case RETRO_DEVICE_ID_JOYPAD_LEFT: return portValue.flightStick.left;   
+						case RETRO_DEVICE_ID_JOYPAD_RIGHT: return portValue.flightStick.right;
+						case RETRO_DEVICE_ID_JOYPAD_START: return portValue.flightStick.buttonP;
+						case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.flightStick.buttonX; 
+						case RETRO_DEVICE_ID_JOYPAD_L: return portValue.flightStick.leftTrigger;
+						case RETRO_DEVICE_ID_JOYPAD_R: return portValue.flightStick.rightTrigger;
+						default: return 0;
+					}
+				}
+				else
+				{
+					switch (id)
+					{
+						case RETRO_DEVICE_ID_ANALOG_X:
+							if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.horizontalAxis; 
+							if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
+							return 0;
 
-	if (portType == RETRO_DEVICE_LIGHTGUN)
-	{
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X) return portValue.lightGun.screenX;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y) return portValue.lightGun.screenY;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_TRIGGER) return portValue.lightGun.trigger;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_SELECT) return portValue.lightGun.select;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_RELOAD) return portValue.lightGun.reload;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN) return portValue.lightGun.isOffScreen;
-	}
+						case RETRO_DEVICE_ID_ANALOG_Y:
+							if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.verticalAxis;
+							if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
+							return 0;
+						default: return 0;
+					}
+				}
+				
+				case RETRO_DEVICE_LIGHTGUN:
+					switch (id)
+					{
+						case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X: return portValue.lightGun.screenX;
+						case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y: return portValue.lightGun.screenY;
+						case RETRO_DEVICE_ID_LIGHTGUN_TRIGGER: return portValue.lightGun.trigger;
+						case RETRO_DEVICE_ID_LIGHTGUN_SELECT: return portValue.lightGun.select;
+						case RETRO_DEVICE_ID_LIGHTGUN_RELOAD: return portValue.lightGun.reload;
+						case RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN: return portValue.lightGun.isOffScreen;
+						default: return 0;
+					}
 
-	if (portType == RETRO_DEVICE_ARCADE_LIGHTGUN)
-	{
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X)     return portValue.arcadeLightGun.screenX;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y)     return portValue.arcadeLightGun.screenY;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)      return portValue.arcadeLightGun.trigger;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_SELECT)       return portValue.arcadeLightGun.select;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_START)        return portValue.arcadeLightGun.start;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_RELOAD)       return portValue.arcadeLightGun.reload;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_AUX_A)        return portValue.arcadeLightGun.auxA;
-		if (id == RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN) return portValue.arcadeLightGun.isOffScreen;
-	}
+				case RETRO_DEVICE_ARCADE_LIGHTGUN:
+					switch (id)
+					{
+						case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X:     return portValue.arcadeLightGun.screenX;
+						case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y:     return portValue.arcadeLightGun.screenY;
+						case RETRO_DEVICE_ID_LIGHTGUN_TRIGGER:      return portValue.arcadeLightGun.trigger;
+						case RETRO_DEVICE_ID_LIGHTGUN_SELECT:       return portValue.arcadeLightGun.select;
+						case RETRO_DEVICE_ID_LIGHTGUN_START:        return portValue.arcadeLightGun.start;
+						case RETRO_DEVICE_ID_LIGHTGUN_RELOAD:       return portValue.arcadeLightGun.reload;
+						case RETRO_DEVICE_ID_LIGHTGUN_AUX_A:        return portValue.arcadeLightGun.auxA;
+						case RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN: return portValue.arcadeLightGun.isOffScreen;
+						default: return 0;
+					}
 
-	if (portType == RETRO_DEVICE_ORBATAK_TRACKBALL)
-	{ 
-		 if (RETRO_DEVICE_ID_ANALOG_X)
-			{
-				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dX; 
-				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dX; 
-			}
+				case RETRO_DEVICE_ORBATAK_TRACKBALL:
+					switch (id)
+					{
+						case RETRO_DEVICE_ID_ANALOG_X:
+							if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dX; 
+							if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dX; 
+							return 0;
+	
+						case RETRO_DEVICE_ID_ANALOG_Y:
+							if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dY; 
+							if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dY; 
+							return 0;
 
-			if (RETRO_DEVICE_ID_ANALOG_Y)
-			{
-				if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dY; 
-				if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dY; 
-			}
+						case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.orbatakTrackball.startP1;
+						case RETRO_DEVICE_ID_JOYPAD_START: return portValue.orbatakTrackball.startP2;
+						case RETRO_DEVICE_ID_JOYPAD_L: return portValue.orbatakTrackball.coinP1;
+						case RETRO_DEVICE_ID_JOYPAD_R: return portValue.orbatakTrackball.coinP2;
+						case RETRO_DEVICE_ID_JOYPAD_R2: return portValue.orbatakTrackball.service;
+						default: return 0;
+					}
 
-		 if (RETRO_DEVICE_ID_JOYPAD_R2) return portValue.flightStick.fire;
-			if (RETRO_DEVICE_ID_JOYPAD_SELECT) return portValue.orbatakTrackball.startP1;
-			if (RETRO_DEVICE_ID_JOYPAD_START) return portValue.orbatakTrackball.startP2;
-			if (RETRO_DEVICE_ID_JOYPAD_L) return portValue.orbatakTrackball.coinP1;
-			if (RETRO_DEVICE_ID_JOYPAD_R) return portValue.orbatakTrackball.coinP2;
-			if (RETRO_DEVICE_ID_JOYPAD_R2) return portValue.orbatakTrackball.service;
+				default: return 0;
 	}
 
 	return 0;
