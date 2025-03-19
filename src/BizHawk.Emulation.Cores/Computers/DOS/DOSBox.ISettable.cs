@@ -234,6 +234,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
 
+			[DisplayName("Preserve Hard Disk Contents")]
+			[Description("Determines whether to store the contents of the writeable hard disk as SaveRAM to be reloaded on the next start. Enabling this option may cause the core to take some seconds to store and load the SRAM upon restart.")]
+			[DefaultValue(false)]
+			public bool PreserveHardDiskContents { get; set; }
+
 			[DisplayName("FPS Numerator")]
 			[Description("Numerator for FPS: how many Bizhawk frames to run per second of emulation. Default represents the numerator for the typical video frames per second in DOS (70.086303). We recommend leaving this value unmodified. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]
 			[DefaultValue(LibDOSBox.VIDEO_NUMERATOR_DOS)]
