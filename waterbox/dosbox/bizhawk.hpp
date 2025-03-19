@@ -13,20 +13,30 @@
 
 const int KEY_COUNT = 0x65;
 
+typedef struct 
+{
+	int joystick1Enabled;
+	int joystick2Enabled;
+	uint64_t writableHDDImageFileSize;
+	int preserveHardDiskContents;
+	uint64_t fpsNumerator;
+	uint64_t fpsDenominator;
+} InitSettings;
+
 typedef struct
 {
-		int insertFloppyDisk;
-		int insertCDROM;
+	int insertFloppyDisk;
+	int insertCDROM;
 } DriveActions;
 
 typedef struct
 {
-		int up;
-		int down;
-		int left;
-		int right;
-		int button1;
-		int button2;
+	int up;
+	int down;
+	int left;
+	int right;
+	int button1;
+	int button2;
 } JoystickButtons;
 
 typedef struct

@@ -49,40 +49,40 @@ extern bool user_cursor_locked;
 
 bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
-		// Loading entire source file
-		std::string srcFileData;
-		bool        status = jaffarCommon::file::loadStringFromFile(srcFileData, srcFile);
-		if (status == false) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
+	// Loading entire source file
+	std::string srcFileData;
+	bool        status = jaffarCommon::file::loadStringFromFile(srcFileData, srcFile);
+	if (status == false) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
 
-		// Uploading file into the mem file directory
-		auto f = _memFileDirectory.fopen(dstFile, "w");
-		if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str()); return false; }
+	// Uploading file into the mem file directory
+	auto f = _memFileDirectory.fopen(dstFile, "w");
+	if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str()); return false; }
 
-		// Copying data into mem file
-		auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(srcFileData.data(), 1, srcFileData.size(), f);
-		if (writtenBlocks != srcFileData.size()) 
-		{ 
-			fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
-			_memFileDirectory.fclose(f);
-		 return false; 
-		}
-
-		// If required, resize dst file
-		if (dstSize >= 0)
-		{
-			 auto ret = f->resize(dstSize);
-				if (ret < 0) 
-				{
-					fprintf(stderr, "Could not resize mem file: %s\n", dstFile.c_str());
-					_memFileDirectory.fclose(f);
-					return false; 
-				}
-		} 
-
-		// Closing mem file
+	// Copying data into mem file
+	auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(srcFileData.data(), 1, srcFileData.size(), f);
+	if (writtenBlocks != srcFileData.size()) 
+	{ 
+		fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
 		_memFileDirectory.fclose(f);
+		return false; 
+	}
 
-		return true;
+	// If required, resize dst file
+	if (dstSize >= 0)
+	{
+		auto ret = f->resize(dstSize);
+		if (ret < 0) 
+		{
+			fprintf(stderr, "Could not resize mem file: %s\n", dstFile.c_str());
+			_memFileDirectory.fclose(f);
+			return false; 
+		}
+	} 
+
+	// Closing mem file
+	_memFileDirectory.fclose(f);
+
+	return true;
 }
 
 // Drive activity monitoring
@@ -90,36 +90,39 @@ bool _driveUsed = false;
 ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
 
 // SRAM Management
+bool _preserveHardDiskContents;
 constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
 constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
 int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
 uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
 
-ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, uint64_t writableHDDImageFileSize, uint64_t fpsNumerator, uint64_t fpsDenominator)
+ECL_EXPORT bool Init(InitSettings* settings)
 {
-	 // If size is non-negative, we need to load the writable hard disk into memory
-		if (writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
-		else	{
-			// Loading HDD file into mem file directory
-			printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile, writableHDDDstFile, writableHDDImageFileSize);
-			auto result = loadFileIntoMemoryFileDirectory(writableHDDSrcFile, writableHDDDstFile, writableHDDImageFileSize);
-			if (result == false || _memFileDirectory.contains(writableHDDDstFile) == false) 
-			{
-				fprintf(stderr, "Could not create hard disk drive mem file\n");
-				return false; 
-			}
+	// If size is non-negative, we need to load the writable hard disk into memory
+	if (settings->writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
+	else	{
+		// Loading HDD file into mem file directory
+		printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
+		auto result = loadFileIntoMemoryFileDirectory(writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
+		if (result == false || _memFileDirectory.contains(writableHDDDstFile) == false) 
+		{
+			fprintf(stderr, "Could not create hard disk drive mem file\n");
+			return false; 
 		}
+	}
 
-		// Setting dummy drivers for env variables
-		setenv("SDL_VIDEODRIVER", "dummy", 1);
-		setenv("SDL_AUDIODRIVER", "dummy", 1);
+  	// Storing hard disk preservation option
+	_preserveHardDiskContents = settings->preserveHardDiskContents == 1;
 
-		// Setting timer
-		double fps = (double)fpsNumerator / (double)fpsDenominator;
-		ticksPerFrame = 1000.0 / fps;
-		ticksTarget = 0.0;
-		ticksElapsed = 0;
+	// Setting dummy drivers for env variables
+	setenv("SDL_VIDEODRIVER", "dummy", 1);
+	setenv("SDL_AUDIODRIVER", "dummy", 1);
 
+	// Setting timer
+	double fps = (double)settings->fpsNumerator / (double)settings->fpsDenominator;
+	ticksPerFrame = 1000.0 / fps;
+	ticksTarget = 0.0;
+	ticksElapsed = 0;
 
 	printf("Starting DOSBox-x Coroutine...\n");
 	_driverCoroutine = co_active();
@@ -127,9 +130,9 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 	_emuCoroutine = co_create(stackSize, runMain);
 	co_switch(_emuCoroutine);
 
- // Initializing joysticks
- stick[0].enabled = joystick1Enabled;
-	stick[1].enabled = joystick2Enabled;
+	// Initializing joysticks
+	stick[0].enabled = settings->joystick1Enabled == 1;
+	stick[1].enabled = settings->joystick2Enabled  == 1;
 
 	stick[0].xpos = 0.0;
 	stick[0].ypos = 0.0;
@@ -141,7 +144,7 @@ ECL_EXPORT bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEna
 	stick[1].button[0] = false;
 	stick[1].button[1] = false;
 
- // Initializing mouse
+ 	// Initializing mouse
 	user_cursor_locked = true;
 
 	return true;
@@ -155,20 +158,20 @@ int _videoWidth = 0;
 int _videoHeight = 0;
 void doRenderUpdateCallback()
 {
-		// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
-		bool allocateBuffer = false;
-		if (sdl.surface->w != _videoWidth) { allocateBuffer = true; _videoWidth = sdl.surface->w; }
-		if (sdl.surface->h != _videoHeight) { allocateBuffer = true; _videoHeight = sdl.surface->h; }
-  
-		_videoBufferSize = _videoWidth * _videoHeight * sizeof(uint32_t);
-		if (allocateBuffer == true)
-		{
-    if (_videoBuffer != nullptr) free(_videoBuffer);
-				_videoBuffer = (uint32_t*) malloc(_videoBufferSize);
-		}
+	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
+	bool allocateBuffer = false;
+	if (sdl.surface->w != _videoWidth) { allocateBuffer = true; _videoWidth = sdl.surface->w; }
+	if (sdl.surface->h != _videoHeight) { allocateBuffer = true; _videoHeight = sdl.surface->h; }
 
-		// Updating buffer
-		memcpy(_videoBuffer, sdl.surface->pixels, _videoBufferSize);
+	_videoBufferSize = _videoWidth * _videoHeight * sizeof(uint32_t);
+	if (allocateBuffer == true)
+	{
+		if (_videoBuffer != nullptr) free(_videoBuffer);
+		_videoBuffer = (uint32_t*) malloc(_videoBufferSize);
+	}
+
+	// Updating buffer
+	memcpy(_videoBuffer, sdl.surface->pixels, _videoBufferSize);
 }
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
@@ -176,22 +179,22 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	// Clearing drive use flag
 	_driveUsed = false;
 
- // Processing keyboard inputs
+ 	// Processing keyboard inputs
 	_releasedKeys.clear();
 	_pressedKeys.clear();
 
 	std::set<KBD_KEYS> newPressedKeys;
 	for (size_t i = 0; i < KEY_COUNT; i++)
 	{
-		 auto key = (KBD_KEYS)i;
-			bool wasPressed = _prevPressedKeys.find(key) != _prevPressedKeys.end();
+		auto key = (KBD_KEYS)i;
+		bool wasPressed = _prevPressedKeys.find(key) != _prevPressedKeys.end();
 
-		 if (f->Keys[i] > 0) 
-			{
-				if (wasPressed == false)  _pressedKeys.insert(key);
-				newPressedKeys.insert(key);
-			}  
-			if (f->Keys[i] == 0)  if (wasPressed == true)   _releasedKeys.insert(key);
+		if (f->Keys[i] > 0) 
+		{
+			if (wasPressed == false)  _pressedKeys.insert(key);
+			newPressedKeys.insert(key);
+		}  
+		if (f->Keys[i] == 0)  if (wasPressed == true)   _releasedKeys.insert(key);
 	}
 	_prevPressedKeys = newPressedKeys;
  
@@ -208,7 +211,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		swapInDrive(3, f->driveActions.insertFloppyDisk + 1); // 3 is D:
 	}
 
- // Processing joystick inputs
+ 	// Processing joystick inputs
 	if (stick[0].enabled)
 	{
 		stick[0].xpos = 0.0;
@@ -239,7 +242,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		mouse.x = (double)mouse.min_x + ((double) f->mouse.posX / (double)MOUSE_MAX_X) * (double)mouse.max_x;
 		mouse.y = (double)mouse.min_y + ((double) f->mouse.posY / (double)MOUSE_MAX_Y) * (double)mouse.max_y;
 
-  float adjustedDeltaX = (float) f->mouse.speedX * (float) f->mouse.sensitivity;
+ 		float adjustedDeltaX = (float) f->mouse.speedX * (float) f->mouse.sensitivity;
 		float adjustedDeltaY = (float) f->mouse.speedY * (float) f->mouse.sensitivity;
 
 		float dx = adjustedDeltaX * mouse.pixelPerMickey_x;
@@ -264,7 +267,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		Mouse_AddEvent(MOUSE_HAS_MOVED);
 	}
 
- if (f->mouse.leftButtonPressed) Mouse_ButtonPressed(0); 
+ 	if (f->mouse.leftButtonPressed) Mouse_ButtonPressed(0); 
 	if (f->mouse.middleButtonPressed) Mouse_ButtonPressed(2);
 	if (f->mouse.rightButtonPressed) Mouse_ButtonPressed(1);
 
@@ -272,10 +275,10 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	if (f->mouse.middleButtonReleased) Mouse_ButtonReleased(2);
 	if (f->mouse.rightButtonReleased) Mouse_ButtonReleased(1);
 
- // Clearing audio sample buffer
-		_audioSamples.clear();
+ 	// Clearing audio sample buffer
+	_audioSamples.clear();
 
- // Increasing ticks target
+ 	// Increasing ticks target
 	ticksTarget += ticksPerFrame;
 	
 	// Advancing until the required tick target is met
@@ -305,7 +308,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 #define DOS_UPPER_MEMORY_SIZE (384 * 1024)
 #define DOS_LOWER_MEMORY_SIZE (DOS_CONVENTIONAL_MEMORY_SIZE + DOS_UPPER_MEMORY_SIZE)
 
-
 /// CD Management Logic Start
 void (*cd_read_callback)(char* cdRomFile, int32_t lba, void * dest, int sectorSize);
 ECL_EXPORT void SetCdCallbacks(void (*cdrc)(char* cdRomFile, int32_t lba, void * dest, int sectorSize))
@@ -326,13 +328,13 @@ ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
 ECL_EXPORT void pushTrackData(int cdIdx, int trackId, CDTrack_t* data)
 {
 	_cdData[cdIdx].tracks[trackId] = *data;
-		printf("  + CD: %d Track %d - Offset: %d - Start: %d - End: %d - Mode: %d - loopEnabled: %d - loopOffset: %d\n", cdIdx, trackId,
-			 _cdData[cdIdx].tracks[trackId].offset,
-				_cdData[cdIdx].tracks[trackId].start,
-				_cdData[cdIdx].tracks[trackId].end,
-				_cdData[cdIdx].tracks[trackId].mode,
-				_cdData[cdIdx].tracks[trackId].loopEnabled,
-			 _cdData[cdIdx].tracks[trackId].loopOffset);
+	printf("  + CD: %d Track %d - Offset: %d - Start: %d - End: %d - Mode: %d - loopEnabled: %d - loopOffset: %d\n", cdIdx, trackId,
+	_cdData[cdIdx].tracks[trackId].offset,
+	_cdData[cdIdx].tracks[trackId].start,
+	_cdData[cdIdx].tracks[trackId].end,
+	_cdData[cdIdx].tracks[trackId].mode,
+	_cdData[cdIdx].tracks[trackId].loopEnabled,
+	_cdData[cdIdx].tracks[trackId].loopOffset);
 }
 
 /// CD Management Logic End
@@ -381,7 +383,8 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 		m[memAreaIdx].Data  = get_sram_buffer();
 		m[memAreaIdx].Name  = "Writeable HDD (SaveRAM)";
 		m[memAreaIdx].Size  = sramSize;
-		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE;
+		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+		m[memAreaIdx].Flags |= _preserveHardDiskContents ? MEMORYAREA_FLAGS_SAVERAMMABLE : 0;
 		memAreaIdx++;
 	}
 }
