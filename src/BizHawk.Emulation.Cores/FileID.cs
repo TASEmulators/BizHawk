@@ -395,13 +395,6 @@ namespace BizHawk.Emulation.Cores
 			{ "NDF", new(FileIDType.DOS_FLOPPY, null) },
 			{ "D88", new(FileIDType.DOS_FLOPPY, null) },
 
-			// DOS CD-ROMS (modified extensions to bypass BK's disc loader)
-			{ "DOSBOX-ISO", new(FileIDType.DOS_CDROM, null) },
-			{ "DOSBOX-CUE", new(FileIDType.DOS_CDROM, null) },
-			{ "DOSBOX-BIN", new(FileIDType.DOS_CDROM, null) },
-			{ "DOSBOX-MDF", new(FileIDType.DOS_CDROM, null) },
-			{ "DOSBOX-CHF", new(FileIDType.DOS_CDROM, null) },
-
 			// DOSBox-X Configuration File
 			{ "CONF", new(FileIDType.DOS_CONFIG_FILE, null) },
 
