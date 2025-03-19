@@ -155,6 +155,11 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			initContext.RegisterSyntaxNodeAction(
 				snac =>
 				{
+					void MaybeReportListExprSpacing(SyntaxNode listSyn, string? message)
+					{
+						if (message is null) return;
+						DiagListExprSpacing.ReportAt(listSyn, snac, message);
+					}
 					switch (snac.Node)
 					{
 						case AnonymousMethodExpressionSyntax:
@@ -169,15 +174,17 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 							DiagNoDiscardingLocals.ReportAt(snac.Node, snac);
 							break;
 						case CollectionExpressionSyntax ces:
-							var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString);
-							if (cesError is not null) DiagListExprSpacing.ReportAt(ces, snac, cesError);
+							MaybeReportListExprSpacing(
+								ces,
+								CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString));
 							break;
 						case InterpolatedStringExpressionSyntax ises:
 							if (ises.StringStartToken.Text[0] is '@') DiagInterpStringIsDollarAt.ReportAt(ises, snac);
 							break;
 						case ListPatternSyntax lps:
-							var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString);
-							if (lpsError is not null) DiagListExprSpacing.ReportAt(lps, snac, lpsError);
+							MaybeReportListExprSpacing(
+								lps,
+								CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString));
 							break;
 						case QueryExpressionSyntax:
 							DiagNoQueryExpression.ReportAt(snac.Node, snac);
