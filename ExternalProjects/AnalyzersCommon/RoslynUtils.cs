@@ -90,6 +90,19 @@ public static class RoslynUtils
 	public static bool IsEmpty(this SyntaxToken token)
 		=> token.ToString().Length is 0;
 
+	public static Location LocWithoutReceiver(this InvocationExpressionSyntax ies)
+	{
+		var location = ies.GetLocation();
+		if (ies.Expression is MemberAccessExpressionSyntax maes)
+		{
+			location = Location.Create(location.SourceTree!, location.SourceSpan.Slice(maes.Expression.Span.Length));
+		}
+		return location;
+	}
+
+	public static Location LocWithoutReceiver(this IInvocationOperation operation)
+		=> ((InvocationExpressionSyntax) operation.Syntax).LocWithoutReceiver();
+
 	public static bool Matches(this ISymbol expected, ISymbol? actual)
 		=> SymbolEqualityComparer.Default.Equals(expected, actual);
 
@@ -118,4 +131,10 @@ public static class RoslynUtils
 		INamedTypeSymbol targetAttrSym,
 		SyntaxNodeAnalysisContext snac)
 			=> list.Matching(targetAttrSym, snac.SemanticModel, snac.CancellationToken);
+
+	public static TextSpan Slice(this TextSpan span, int start)
+		=> TextSpan.FromBounds(start: span.Start + start, end: span.End);
+
+	public static TextSpan Slice(this TextSpan span, int start, int length)
+		=> new(start: span.Start + start, length: length);
 }

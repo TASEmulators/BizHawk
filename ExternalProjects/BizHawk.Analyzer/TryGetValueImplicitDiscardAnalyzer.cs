@@ -39,7 +39,10 @@ public sealed class TryGetValueImplicitDiscardAnalyzer : DiagnosticAnalyzer
 					var calledSym = operation.TargetMethod.ConstructedFrom;
 					if (calledSym.Name is STR_TGV)
 					{
-						DiagUncheckedTryGetValue.ReportAt(operation, isErrorSeverity: IsBCLTryGetValue(calledSym), oac);
+						DiagUncheckedTryGetValue.ReportAt(
+							operation.LocWithoutReceiver(),
+							isErrorSeverity: IsBCLTryGetValue(calledSym),
+							oac);
 					}
 				},
 				OperationKind.Invocation);

@@ -20,13 +20,13 @@ public sealed class FeatureNotImplementedAnalyzerTests
 				}
 				[FeatureNotImplemented] private static int Z()
 					=> throw new NotImplementedException();
-				{|BHI3300:[FeatureNotImplemented] private static int A => default;|}
+				[FeatureNotImplemented] private static int A {|BHI3300:=> default|};
 				private static int B {
-					{|BHI3300:[FeatureNotImplemented] get => default;|}
-					{|BHI3300:[FeatureNotImplemented] set => _ = value;|}
+					[FeatureNotImplemented] get {|BHI3300:=> default|};
+					[FeatureNotImplemented] set {|BHI3300:=> _ = value|};
 				}
-				{|BHI3300:[FeatureNotImplemented] private static int C()
-					=> default;|}
+				[FeatureNotImplemented] private static int C()
+					{|BHI3300:=> default|};
 				// wrong exception type, same code but different message:
 				[FeatureNotImplemented] private static int D => {|BHI3300:throw new InvalidOperationException()|};
 				private static int E {

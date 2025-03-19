@@ -48,7 +48,7 @@ public sealed class FirstOrDefaultOnStructAnalyzer : DiagnosticAnalyzer
 						IArrayTypeSymbol ats => ats.ElementType,
 						_ => throw HawkSourceAnalyzer.ReportWTF(receiverExpr, oac, message: $"[{nameof(FirstOrDefaultOnStructAnalyzer)}] receiver parameter's effective type was of an unexpected kind (neither class/struct nor array): {receiverExprType.GetType().FullName}")
 					};
-					if (collectionElemType.IsValueType) DiagUseFirstOrNull.ReportAt(operation, oac);
+					if (collectionElemType.IsValueType) DiagUseFirstOrNull.ReportAt(operation.LocWithoutReceiver(), oac);
 				},
 				OperationKind.Invocation);
 		});

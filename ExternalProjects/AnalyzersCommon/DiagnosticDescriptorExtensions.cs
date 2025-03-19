@@ -40,12 +40,64 @@ public static class DDExtensions
 				messageArgs: messageArgs));
 
 	[MI(AggressiveInlining)]
+	public static void ReportAt(
+		this DD diag,
+		Location location,
+		DiagnosticSeverity effectiveSeverity,
+		OAC ctx,
+		string message)
+			=> diag.ReportAt(location, effectiveSeverity, ctx, [ message ]);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(
+		this DD diag,
+		Location location,
+		DiagnosticSeverity effectiveSeverity,
+		SNAC ctx,
+		string message)
+			=> diag.ReportAt(location, effectiveSeverity, ctx, [ message ]);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(
+		this DD diag,
+		Location location,
+		bool isErrorSeverity,
+		OAC ctx,
+		object?[]? messageArgs = null)
+			=> diag.ReportAt(
+				location,
+				isErrorSeverity ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+				ctx,
+				messageArgs: messageArgs);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(
+		this DD diag,
+		Location location,
+		bool isErrorSeverity,
+		SNAC ctx,
+		object?[]? messageArgs = null)
+			=> diag.ReportAt(
+				location,
+				isErrorSeverity ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+				ctx,
+				messageArgs: messageArgs);
+
+	[MI(AggressiveInlining)]
 	public static void ReportAt(this DD diag, Location location, OAC ctx, object?[]? messageArgs = null)
 		=> ctx.ReportDiagnostic(Diagnostic.Create(diag, location, messageArgs: messageArgs));
 
 	[MI(AggressiveInlining)]
 	public static void ReportAt(this DD diag, Location location, SNAC ctx, object?[]? messageArgs = null)
 		=> ctx.ReportDiagnostic(Diagnostic.Create(diag, location, messageArgs: messageArgs));
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, Location location, OAC ctx, string message)
+		=> diag.ReportAt(location, ctx, [ message ]);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, Location location, SNAC ctx, string message)
+		=> diag.ReportAt(location, ctx, [ message ]);
 
 	[MI(AggressiveInlining)]
 	public static void ReportAt(
@@ -121,6 +173,40 @@ public static class DDExtensions
 
 	[MI(AggressiveInlining)]
 	public static void ReportAt(this DD diag, SyntaxNode location, SNAC ctx, string message)
+		=> diag.ReportAt(location, ctx, [ message ]);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(
+		this DD diag,
+		SyntaxToken location,
+		DiagnosticSeverity effectiveSeverity,
+		OAC ctx,
+		string message)
+			=> diag.ReportAt(location.GetLocation(), effectiveSeverity, ctx, message);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(
+		this DD diag,
+		SyntaxToken location,
+		DiagnosticSeverity effectiveSeverity,
+		SNAC ctx,
+		string message)
+			=> diag.ReportAt(location.GetLocation(), effectiveSeverity, ctx, message);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, SyntaxToken location, OAC ctx, object?[]? messageArgs = null)
+		=> diag.ReportAt(location.GetLocation(), ctx, messageArgs);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, SyntaxToken location, SNAC ctx, object?[]? messageArgs = null)
+		=> diag.ReportAt(location.GetLocation(), ctx, messageArgs);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, SyntaxToken location, OAC ctx, string message)
+		=> diag.ReportAt(location, ctx, [ message ]);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, SyntaxToken location, SNAC ctx, string message)
 		=> diag.ReportAt(location, ctx, [ message ]);
 
 	[MI(AggressiveInlining)]

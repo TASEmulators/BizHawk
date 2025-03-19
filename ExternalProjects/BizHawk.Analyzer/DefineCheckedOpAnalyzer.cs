@@ -45,6 +45,7 @@ public sealed class DefineCheckedOpAnalyzer : DiagnosticAnalyzer
 				obsoleteAttrSym ??= snac.Compilation.GetTypeByMetadataName("System.ObsoleteAttribute")!;
 				void FindCounterpartAndMaybeReport<T>(
 					T declSyn,
+					SyntaxToken operatorTkn,
 					SyntaxList<AttributeListSyntax> attrLists,
 					string checkedName,
 					Func<T, string> getMethodName)
@@ -54,11 +55,11 @@ public sealed class DefineCheckedOpAnalyzer : DiagnosticAnalyzer
 						.Any(syn => checkedName.Equals(getMethodName(syn), StringComparison.Ordinal));
 					if (!hasCheckedCounterpart)
 					{
-						DiagDefineCheckedOp.ReportAt(declSyn, snac, ERR_MSG_MAKE_CHECKED);
+						DiagDefineCheckedOp.ReportAt(operatorTkn, snac, ERR_MSG_MAKE_CHECKED);
 					}
 					else if (!attrLists.Matching(obsoleteAttrSym, snac).Any())
 					{
-						DiagDefineCheckedOp.ReportAt(declSyn, DiagnosticSeverity.Warning, snac, ERR_MSG_DEPRECATE);
+						DiagDefineCheckedOp.ReportAt(operatorTkn, DiagnosticSeverity.Warning, snac, ERR_MSG_DEPRECATE);
 					}
 					// else usage is correct
 				}
@@ -69,6 +70,7 @@ public sealed class DefineCheckedOpAnalyzer : DiagnosticAnalyzer
 						{
 							FindCounterpartAndMaybeReport(
 								cods,
+								cods.OperatorKeyword,
 								cods.AttributeLists,
 								checkedName,
 								RoslynUtils.GetMethodName);
@@ -79,6 +81,7 @@ public sealed class DefineCheckedOpAnalyzer : DiagnosticAnalyzer
 						{
 							FindCounterpartAndMaybeReport(
 								ods,
+								ods.OperatorKeyword,
 								ods.AttributeLists,
 								checkedName1,
 								RoslynUtils.GetMethodName);

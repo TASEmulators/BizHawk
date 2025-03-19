@@ -48,12 +48,12 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 					void CheckBlockBody(BlockSyntax bs)
 					{
 						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss);
-						else DiagShouldThrowNIE.ReportAt(bs.Parent!, snac, ERR_MSG_DOES_NOT_THROW);
+						else DiagShouldThrowNIE.ReportAt(bs, snac, ERR_MSG_DOES_NOT_THROW);
 					}
 					void CheckExprBody(ArrowExpressionClauseSyntax aecs)
 					{
 						if (aecs.Expression is ThrowExpressionSyntax tes) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes);
-						else DiagShouldThrowNIE.ReportAt(aecs.Parent!, snac, ERR_MSG_DOES_NOT_THROW);
+						else DiagShouldThrowNIE.ReportAt(aecs, snac, ERR_MSG_DOES_NOT_THROW);
 					}
 					void CheckAccessor(AccessorDeclarationSyntax ads)
 					{
