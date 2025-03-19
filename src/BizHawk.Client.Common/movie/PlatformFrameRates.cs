@@ -35,8 +35,8 @@ namespace BizHawk.Client.Common
 			["ChannelF_PAL"] = 15625.0 / 312.0, // 4000000 / (256 * 312)
 			["Coleco"] = 59.9227510135505,
 			["Doom"] = 35.0,
-			["DOS"] = 70.086302895322945, // 226575000 / 3232800 -- The default framerate used in JPC-rr encodes
-			["FDS"] = 60.098813897440515532,
+			["DOS"] = 70.086303, //  Video dump from DOSBox-X has 70086303/1000000 (70.086303) framerate when launching into DOS.
+            ["FDS"] = 60.098813897440515532,
 			["FDS_PAL"] = 50.006977968268290849,
 			["GEN"] = 53693175 / (3420.0 * 262),
 			["GEN_PAL"] = 53203424 / (3420.0 * 313),

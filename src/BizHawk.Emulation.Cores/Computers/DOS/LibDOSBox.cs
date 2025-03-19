@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int SVGA_MAX_WIDTH = 800;
 		public const int SVGA_MAX_HEIGHT = 600;
 
-		// Default FPS: 70.086302895322945
-		public const int VIDEO_NUMERATOR_DOS = 226575000;
-		public const int VIDEO_DENOMINATOR_DOS = 3232800;
+		// Default FPS: 70.086303
+		public const int VIDEO_NUMERATOR_DOS = 70086303;
+		public const int VIDEO_DENOMINATOR_DOS = 1000000;
 
 		public const int FASTMEM_AUTO = -1;
 		public const int MAX_FLOPPIES = 4;

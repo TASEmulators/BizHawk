@@ -235,12 +235,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
 
 			[DisplayName("FPS Numerator")]
-			[Description("Numerator for FPS: how many Bizhawk frames to run per second of emulation. Default represents the numerator for the typical video frames per second in DOS (70.086302895322945). We recommend leaving this value unmodified. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]
+			[Description("Numerator for FPS: how many Bizhawk frames to run per second of emulation. Default represents the numerator for the typical video frames per second in DOS (70.086303). We recommend leaving this value unmodified. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]
 			[DefaultValue(LibDOSBox.VIDEO_NUMERATOR_DOS)]
 			public ulong FPSNumerator { get; set; }
 
 			[DisplayName("FPS Denominator")]
-			[Description("Denominator for FPS: how many Bizhawk frames to run per second of emulation. Default represents the numerator for the typical video frames per second in DOS (70.086302895322945). We recommend leaving this value unmodified. You can set it lower if you need finer subframe inputs, and; higher, in case your game runs in lower FPS and it feels more natural.")]
+			[Description("Denominator for FPS: how many Bizhawk frames to run per second of emulation. Default represents the numerator for the typical video frames per second in DOS (70.086303). We recommend leaving this value unmodified. You can set it lower if you need finer subframe inputs, and; higher, in case your game runs in lower FPS and it feels more natural.")]
 			[DefaultValue(LibDOSBox.VIDEO_DENOMINATOR_DOS)]
 			public ulong FPSDenominator { get; set; }
 
