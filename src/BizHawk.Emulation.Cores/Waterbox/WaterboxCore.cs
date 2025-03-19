@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
         }
 
 		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound);
-		protected  void FrameAdvancePost()
+		protected virtual void FrameAdvancePost()
 		{ }
 
 		public unsafe bool FrameAdvance(IController controller, bool render, bool rendersound = true)
