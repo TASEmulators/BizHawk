@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckPing()
 		{
-			if (RichPresenceActive)
+			if (RichPresenceActive || HardcoreMode)
 			{
 				var len = _lib.rc_runtime_get_richpresence(_runtime, _richPresenceBuffer, (uint)_richPresenceBuffer.Length, _peekcb, IntPtr.Zero, IntPtr.Zero);
 				CurrentRichPresence = Encoding.UTF8.GetString(_richPresenceBuffer, 0, len);
