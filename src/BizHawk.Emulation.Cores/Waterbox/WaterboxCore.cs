@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public virtual byte[] CloneSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (_saveramSize == 0)
 				return null;
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public virtual void StoreSaveRam(byte[] data)
+		public void StoreSaveRam(byte[] data)
 		{
 			// Checking if the size of the SaveRAM provided coincides with that expected. This is important for cores whose SaveRAM size can vary depending on their configuration.
 			if (data.Length != _saveramSize)
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
         }
 
 		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound);
-		protected virtual void FrameAdvancePost()
+		protected  void FrameAdvancePost()
 		{ }
 
 		public unsafe bool FrameAdvance(IController controller, bool render, bool rendersound = true)
