@@ -2,7 +2,7 @@
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
 
-namespace BizHawk.Emulation.Consoles._3DO
+namespace BizHawk.Emulation.Consoles.ThreeDO
 {
 	public abstract class LibOpera : LibWaterboxCore
 	{

@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Consoles._3DO
+namespace BizHawk.Emulation.Consoles.ThreeDO
 {
 	[PortedCore(
 		name: CoreNames.Opera,
