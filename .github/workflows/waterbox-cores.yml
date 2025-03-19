@@ -37,7 +37,7 @@ jobs:
            git submodule update --init uae/libretro-uae;
            git submodule update --init stella/core;
            git submodule update --init dsda/core;
-           git submodule update --init dosbox/dosbox-x;
+           git submodule update --init --recursive dosbox/dosbox-x;
     - name: Install clang 18
       run: wget https://apt.llvm.org/llvm.sh;
             chmod u+x llvm.sh;
