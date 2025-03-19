@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private WaterboxMemoryDomain[] _saveramAreas;
 		private int _saveramSize;
 
-		public virtual unsafe bool SaveRamModified
+		public unsafe bool SaveRamModified
 		{
 			get
 			{
