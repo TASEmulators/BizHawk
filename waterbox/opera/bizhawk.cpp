@@ -20,8 +20,8 @@ size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
 int _region;
-bool _isLagFrame;
 int _nvramChanged;
+int _inputPortsRead;
 
 #define _MAX_SAMPLES 4096
 #define _CHANNEL_COUNT 2
@@ -72,7 +72,6 @@ size_t RETRO_CALLCONV retro_audio_sample_batch_callback(const int16_t *data, siz
 
 void RETRO_CALLCONV retro_input_poll_callback()
 {
-  _isLagFrame = false;
   // printf("Libretro Input Poll Callback Called:\n");
 }
 
@@ -343,15 +342,15 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   // Checking for changes in NVRAM
   _nvramChanged = false;
 
-  // Checking for lag frames
-  _isLagFrame = true;
+  // Checking if ports have been read
+  _inputPortsRead = 0;
 
   // If resetting, do it now. Otherwise, running a single frame
   if (f->isReset == 1) retro_reset();
   else retro_run();
 
-  // Setting if lag frame
-  f->base.Lagged = _isLagFrame ? 1 : 0;
+  // The frame is lagged if no inputs were read
+  f->base.Lagged = !_inputPortsRead;
 
   // Setting video buffer
   f->base.Width = _videoWidth;
