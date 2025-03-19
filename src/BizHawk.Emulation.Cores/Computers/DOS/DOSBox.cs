@@ -250,13 +250,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
-			if (!_libDOSBox.Init(
-				joystick1Enabled: _syncSettings.EnableJoystick1,
-				joystick2Enabled: _syncSettings.EnableJoystick2,
-				mouseEnabled: _syncSettings.EnableMouse,
-				hardDiskDriveSize: writableHDDImageFileSize,
-				fpsNumerator: _syncSettings.FPSNumerator,
-				fpsDenominator: _syncSettings.FPSDenominator))
+			if (!_libDOSBox.Init(new LibDOSBox.InitSettings() {
+				joystick1Enabled = _syncSettings.EnableJoystick1 ? 1 : 0,
+				joystick2Enabled = _syncSettings.EnableJoystick2 ? 1 : 0,
+				hardDiskDriveSize = writableHDDImageFileSize,
+				preserveHardDiskContents = _syncSettings.PreserveHardDiskContents ? 1 : 0,
+				fpsNumerator = _syncSettings.FPSNumerator,
+				fpsDenominator = _syncSettings.FPSDenominator }))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}

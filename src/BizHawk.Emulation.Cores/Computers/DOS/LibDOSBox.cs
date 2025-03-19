@@ -58,10 +58,21 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[BizImport(CC)]
 		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class InitSettings
+		{
+			public int joystick1Enabled;
+			public int joystick2Enabled;
+			public ulong hardDiskDriveSize;
+			public int preserveHardDiskContents;
+			public ulong fpsNumerator;
+			public ulong fpsDenominator;
+		}
+
 		// CD Management Logic END
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(bool joystick1Enabled, bool joystick2Enabled, bool mouseEnabled, ulong hardDiskDriveSize, ulong fpsNumerator, ulong fpsDenominator);
+		public abstract bool Init(InitSettings settings);
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool getDriveActivityFlag();
