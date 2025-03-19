@@ -29,29 +29,29 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Definition.MakeImmutable();
 		}
 
-		public byte ReadPort1(IController c)
-			=> Port1.Read(c);
+		public byte ReadButtons1(IController c)
+			=> Port1.ReadButtons(c);
 
-		public byte ReadPort2(IController c)
-			=> Port2.Read(c);
+		public byte ReadButtons2(IController c)
+			=> Port2.ReadButtons(c);
 
-		public byte ReadPort3(IController c)
-			=> Port3.Read(c);
+		public byte ReadButtons3(IController c)
+			=> Port3.ReadButtons(c);
 
-		public byte ReadPort4(IController c)
-			=> Port4.Read(c);
+		public byte ReadButtons4(IController c)
+			=> Port4.ReadButtons(c);
 
-		public int ReadPot1(IController c, int pot)
-			=> Port1.Read_Pot(c, pot);
+		public int ReadAxis1(IController c, int axis)
+			=> Port1.ReadAxis(c, axis);
 
-		public int ReadPot2(IController c, int pot)
-			=> Port2.Read_Pot(c, pot);
+		public int ReadAxis2(IController c, int axis)
+			=> Port2.ReadAxis(c, axis);
 
-		public int ReadPot3(IController c, int pot)
-			=> Port3.Read_Pot(c, pot);
+		public int ReadAxis3(IController c, int axis)
+			=> Port3.ReadAxis(c, axis);
 
-		public int ReadPot4(IController c, int pot)
-			=> Port4.Read_Pot(c, pot);
+		public int ReadAxis4(IController c, int axis)
+			=> Port4.ReadAxis(c, axis);
 
 		public ControllerDefinition Definition { get; }
 

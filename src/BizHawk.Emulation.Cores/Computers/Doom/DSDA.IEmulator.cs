@@ -23,20 +23,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				new PackedPlayerInput()
 			];
 
-			ReadPot[] potReaders =
+			ReadPot[] axisReaders =
 			[
-				_controllerDeck.ReadPot1,
-				_controllerDeck.ReadPot2,
-				_controllerDeck.ReadPot3,
-				_controllerDeck.ReadPot4,
+				_controllerDeck.ReadAxis1,
+				_controllerDeck.ReadAxis2,
+				_controllerDeck.ReadAxis3,
+				_controllerDeck.ReadAxis4,
 			];
 
-			ReadPort[] portReaders =
+			ReadPort[] buttonsReaders =
 			[
-				_controllerDeck.ReadPort1,
-				_controllerDeck.ReadPort2,
-				_controllerDeck.ReadPort3,
-				_controllerDeck.ReadPort4,
+				_controllerDeck.ReadButtons1,
+				_controllerDeck.ReadButtons2,
+				_controllerDeck.ReadButtons3,
+				_controllerDeck.ReadButtons4,
 			];
 
 			int playersPresent = Convert.ToInt32(_syncSettings.Player1Present)
@@ -64,10 +64,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// initial axis read
-					players[i].RunSpeed = potReaders[i](controller, 0);
-					players[i].StrafingSpeed = potReaders[i](controller, 1);
-					players[i].TurningSpeed = potReaders[i](controller, 2);
-					players[i].WeaponSelect = potReaders[i](controller, 3);
+					players[i].RunSpeed = axisReaders[i](controller, (int)AxisType.RunSpeed);
+					players[i].StrafingSpeed = axisReaders[i](controller, (int)AxisType.StrafingSpeed);
+					players[i].TurningSpeed = axisReaders[i](controller, (int)AxisType.TurningSpeed);
+					players[i].WeaponSelect = axisReaders[i](controller, (int)AxisType.WeaponSelect);
 
 					// override axis based on movement buttons (turning is reversed upstream)
 					if (controller.IsPressed($"P{i + 1} Forward")) players[i].RunSpeed = _runSpeeds[speedIndex];
@@ -79,12 +79,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// mouse-driven running
 					// divider matches the core
-					players[i].RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 8.0);
+					players[i].RunSpeed -= (int)(axisReaders[i](controller, (int)AxisType.MouseRunning) * _syncSettings.MouseRunSensitivity / 8.0);
 					players[i].RunSpeed = players[i].RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
 					// divider recalibrates minimal mouse movement to be 1 (requires global setting)
-					players[i].TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 272.0);
+					players[i].TurningSpeed -= (int)(axisReaders[i](controller, (int)AxisType.MouseTurning) * _syncSettings.MouseTurnSensitivity / 272.0);
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
 						// calc matches the core
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// bool buttons
-					var actionsBitfield = portReaders[i](controller);
+					var actionsBitfield = buttonsReaders[i](controller);
 					players[i].Fire = actionsBitfield & 0b00001;
 					players[i].Action = (actionsBitfield & 0b00010) >> 1;
 					players[i].Automap = (actionsBitfield & 0b00100) >> 2;
@@ -100,8 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 					{
-						players[i].FlyLook = potReaders[i](controller, 6);
-						players[i].ArtifactUse = potReaders[i](controller, 7);
+						players[i].FlyLook = axisReaders[i](controller, (int)AxisType.FlyLook);
+						players[i].ArtifactUse = axisReaders[i](controller, (int)AxisType.UseArtifact);
 						if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
 						{
 							players[i].Jump = (actionsBitfield & 0b01000) >> 3;
