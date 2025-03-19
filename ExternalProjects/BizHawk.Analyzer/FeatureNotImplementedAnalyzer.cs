@@ -45,21 +45,21 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 					}
 					bool IncludesFNIAttribute(SyntaxList<AttributeListSyntax> mds)
 						=> mds.Matching(featureNotImplementedAttrSym, snac).Any();
-					void CheckBlockBody(BlockSyntax bs, Location location)
+					void CheckBlockBody(BlockSyntax bs)
 					{
 						if (bs.Statements is [ ThrowStatementSyntax tss ]) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tss), tss);
-						else DiagShouldThrowNIE.ReportAt(location, snac, [ ERR_MSG_DOES_NOT_THROW ]);
+						else DiagShouldThrowNIE.ReportAt(bs.Parent!, snac, ERR_MSG_DOES_NOT_THROW);
 					}
-					void CheckExprBody(ArrowExpressionClauseSyntax aecs, Location location)
+					void CheckExprBody(ArrowExpressionClauseSyntax aecs)
 					{
 						if (aecs.Expression is ThrowExpressionSyntax tes) MaybeReportFor(snac.SemanticModel.GetThrownExceptionType(tes), tes);
-						else DiagShouldThrowNIE.ReportAt(location, snac, [ ERR_MSG_DOES_NOT_THROW ]);
+						else DiagShouldThrowNIE.ReportAt(aecs.Parent!, snac, ERR_MSG_DOES_NOT_THROW);
 					}
 					void CheckAccessor(AccessorDeclarationSyntax ads)
 					{
 						if (!IncludesFNIAttribute(ads.AttributeLists)) return;
-						if (ads.ExpressionBody is not null) CheckExprBody(ads.ExpressionBody, ads.GetLocation());
-						else if (ads.Body is not null) CheckBlockBody(ads.Body, ads.GetLocation());
+						if (ads.ExpressionBody is not null) CheckExprBody(ads.ExpressionBody);
+						else if (ads.Body is not null) CheckBlockBody(ads.Body);
 						else HawkSourceAnalyzer.ReportWTF(ads, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 					}
 					switch (snac.Node)
@@ -69,14 +69,14 @@ public sealed class FeatureNotImplementedAnalyzer : DiagnosticAnalyzer
 							break;
 						case MethodDeclarationSyntax mds:
 							if (!IncludesFNIAttribute(mds.AttributeLists)) return;
-							if (mds.ExpressionBody is not null) CheckExprBody(mds.ExpressionBody, mds.GetLocation());
-							else if (mds.Body is not null) CheckBlockBody(mds.Body, mds.GetLocation());
+							if (mds.ExpressionBody is not null) CheckExprBody(mds.ExpressionBody);
+							else if (mds.Body is not null) CheckBlockBody(mds.Body);
 							else HawkSourceAnalyzer.ReportWTF(mds, snac, message: ERR_MSG_UNEXPECTED_INCANTATION);
 							break;
 						case PropertyDeclarationSyntax pds:
 							if (pds.ExpressionBody is not null)
 							{
-								if (IncludesFNIAttribute(pds.AttributeLists)) CheckExprBody(pds.ExpressionBody, pds.GetLocation());
+								if (IncludesFNIAttribute(pds.AttributeLists)) CheckExprBody(pds.ExpressionBody);
 							}
 							else
 							{
