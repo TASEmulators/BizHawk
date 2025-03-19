@@ -43,35 +43,45 @@ public sealed class DefineCheckedOpAnalyzer : DiagnosticAnalyzer
 			snac =>
 			{
 				obsoleteAttrSym ??= snac.Compilation.GetTypeByMetadataName("System.ObsoleteAttribute")!;
-				bool HasCheckedCounterpart<T>(SyntaxNode node, string checkedName, Func<T, string> getMethodName)
-					=> ((TypeDeclarationSyntax) node.Parent!).Members.OfType<T>() //TODO don't think this accounts for `partial` types
+				void FindCounterpartAndMaybeReport<T>(
+					T declSyn,
+					SyntaxList<AttributeListSyntax> attrLists,
+					string checkedName,
+					Func<T, string> getMethodName)
+						where T : SyntaxNode
+				{
+					var hasCheckedCounterpart = ((TypeDeclarationSyntax) declSyn.Parent!).Members.OfType<T>() //TODO don't think this accounts for `partial` types
 						.Any(syn => checkedName.Equals(getMethodName(syn), StringComparison.Ordinal));
-				void SuggestDeprecation(SyntaxNode node)
-					=> DiagDefineCheckedOp.ReportAt(node, DiagnosticSeverity.Warning, snac, ERR_MSG_DEPRECATE);
+					if (!hasCheckedCounterpart)
+					{
+						DiagDefineCheckedOp.ReportAt(declSyn, snac, ERR_MSG_MAKE_CHECKED);
+					}
+					else if (!attrLists.Matching(obsoleteAttrSym, snac).Any())
+					{
+						DiagDefineCheckedOp.ReportAt(declSyn, DiagnosticSeverity.Warning, snac, ERR_MSG_DEPRECATE);
+					}
+					// else usage is correct
+				}
 				switch (snac.Node)
 				{
 					case ConversionOperatorDeclarationSyntax cods:
 						if (UncheckedOps.TryGetValue(cods.GetMethodName(), out var checkedName))
 						{
-							var hasCheckedCounterpart = HasCheckedCounterpart<ConversionOperatorDeclarationSyntax>(
+							FindCounterpartAndMaybeReport(
 								cods,
+								cods.AttributeLists,
 								checkedName,
 								RoslynUtils.GetMethodName);
-							if (!hasCheckedCounterpart) DiagDefineCheckedOp.ReportAt(cods, snac, ERR_MSG_MAKE_CHECKED);
-							else if (!cods.AttributeLists.Matching(obsoleteAttrSym, snac).Any()) SuggestDeprecation(cods);
-							// else you did it good job
 						}
 						break;
 					case OperatorDeclarationSyntax ods:
 						if (UncheckedOps.TryGetValue(ods.GetMethodName(), out var checkedName1))
 						{
-							var hasCheckedCounterpart = HasCheckedCounterpart<OperatorDeclarationSyntax>(
+							FindCounterpartAndMaybeReport(
 								ods,
+								ods.AttributeLists,
 								checkedName1,
 								RoslynUtils.GetMethodName);
-							if (!hasCheckedCounterpart) DiagDefineCheckedOp.ReportAt(ods, snac, ERR_MSG_MAKE_CHECKED);
-							else if (!ods.AttributeLists.Matching(obsoleteAttrSym, snac).Any()) SuggestDeprecation(ods);
-							// else you did it good job
 						}
 						break;
 					default:
