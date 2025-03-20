@@ -14,19 +14,17 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 
 		private static readonly (int X, string Y)[] SortedByYDescThenXDesc = { (2, "b"), (1, "b"), (2, "a"), (1, "a") };
 
-		private static void AssertSequenceEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual) => Assert.IsTrue(expected.SequenceEqual(actual));
-
 		[TestMethod]
 		public void SanityCheck()
 		{
-			AssertSequenceEqual(
+			CollectionAssert.AreEqual(
 				SortedByYDescThenXDesc,
-				Unsorted.OrderByDescending(t => t.Y).ThenByDescending(t => t.X)
+				Unsorted.OrderByDescending(t => t.Y).ThenByDescending(t => t.X).ToArray()
 			);
 #pragma warning disable MA0030
-			AssertSequenceEqual(
+			CollectionAssert.AreEqual(
 				SortedByYDescThenXDesc,
-				Unsorted.OrderByDescending(t => t.X).OrderByDescending(t => t.Y)
+				Unsorted.OrderByDescending(t => t.X).OrderByDescending(t => t.Y).ToArray()
 			);
 #pragma warning restore MA0030
 		}
@@ -39,7 +37,7 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 				["by_x"] = t => t.X,
 				["by_y"] = t => t.Y
 			});
-			AssertSequenceEqual(
+			CollectionAssert.AreEqual(
 				SortedByXThenYDesc,
 				sorts.AppliedTo(
 					Unsorted,
@@ -47,7 +45,7 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 					new Dictionary<string, bool> { ["by_x"] = false, ["by_y"] = true }
 				)
 			);
-			AssertSequenceEqual(
+			CollectionAssert.AreEqual(
 				SortedByYDescThenXDesc,
 				sorts.AppliedTo(
 					Unsorted,

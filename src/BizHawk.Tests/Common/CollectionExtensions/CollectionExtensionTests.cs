@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -66,22 +65,22 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		{
 			var a123 = new[] { 1, 2, 3 };
 			var a456 = new[] { 4, 5, 6 };
-			Assert.IsTrue(a123.ConcatArray(a456).SequenceEqual(new[] { 1, 2, 3, 4, 5, 6 }));
+			CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, a123.ConcatArray(a456));
 			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()));
 			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456));
-			Assert.AreEqual(0, Array.Empty<int>().ConcatArray(Array.Empty<int>()).Length);
+			CollectionAssert.That.IsEmpty(Array.Empty<int>().ConcatArray(Array.Empty<int>()));
 		}
 
 		[TestMethod]
 		public void TestConcatArrays()
 		{
-			Assert.IsTrue(
-				CE.ConcatArrays([ [ 1, 2 ], [ 3 ], [ ], [ 4, 5, 6 ] ])
-					.SequenceEqual([ 1, 2, 3, 4, 5, 6 ]),
+			CollectionAssert.AreEqual(
+				new[] { 1, 2, 3, 4, 5, 6 },
+				CE.ConcatArrays([ [ 1, 2 ], [ 3 ], [ ], [ 4, 5, 6 ] ]),
 				"array");
-			Assert.IsTrue(
-				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), [ ], new ArraySegment<int>([ 4, 5, 6 ]) ])
-					.SequenceEqual([ 1, 2, 3, 4, 5, 6 ]),
+			CollectionAssert.AreEqual(
+				new[] { 1, 2, 3, 4, 5, 6 },
+				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), [ ], new ArraySegment<int>([ 4, 5, 6 ]) ]),
 				"ArraySegment");
 		}
 
