@@ -1,14 +1,6 @@
 name: Build Waterbox
 
-on:
-  pull_request:
-    branches: [ "master" ]
-    paths: [ "waterbox/libcxx/**", "waterbox/musl/**" ]
-  push:
-    branches: [ "master" ]
-    paths: [ "waterbox/libcxx/**", "waterbox/musl/**" ]
-  workflow_dispatch:
-  workflow_call:
+on: [workflow_dispatch, workflow_call]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-waterbox
