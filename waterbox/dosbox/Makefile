@@ -382,42 +382,6 @@ SRCS = 	bizhawk.cpp \
 		dosbox-x/src/libs/decoders/internal/speexdsp/filterbank.c \
 		dosbox-x/src/libs/decoders/internal/ogg/framing.c \
 		dosbox-x/src/libs/decoders/internal/ogg/bitwise.c \
-		dosbox-x/src/libs/fluidsynth/fluid_mdriver.c \
-		dosbox-x/src/libs/fluidsynth/fluid_rvoice.c \
-		dosbox-x/src/libs/fluidsynth/fluid_conv.c \
-		dosbox-x/src/libs/fluidsynth/fluid_aufile.c \
-		dosbox-x/src/libs/fluidsynth/fluid_rvoice_event.c \
-		dosbox-x/src/libs/fluidsynth/fluid_synth.c \
-		dosbox-x/src/libs/fluidsynth/fluid_dll.c \
-		dosbox-x/src/libs/fluidsynth/fluid_midi_router.c \
-		dosbox-x/src/libs/fluidsynth/fluid_rvoice_dsp.c \
-		dosbox-x/src/libs/fluidsynth/fluid_chorus.c \
-		dosbox-x/src/libs/fluidsynth/fluid_mod.c \
-		dosbox-x/src/libs/fluidsynth/fluid_iir_filter.c \
-		dosbox-x/src/libs/fluidsynth/fluid_ringbuffer.c \
-		dosbox-x/src/libs/fluidsynth/fluid_gen.c \
-		dosbox-x/src/libs/fluidsynth/fluid_event.c \
-		dosbox-x/src/libs/fluidsynth/fluid_list.c \
-		dosbox-x/src/libs/fluidsynth/fluid_rvoice_mixer.c \
-		dosbox-x/src/libs/fluidsynth/fluid_chan.c \
-		dosbox-x/src/libs/fluidsynth/fluid_sys.c \
-		dosbox-x/src/libs/fluidsynth/fluid_rev.c \
-		dosbox-x/src/libs/fluidsynth/fluid_sdl2.c \
-		dosbox-x/src/libs/fluidsynth/fluid_tuning.c \
-		dosbox-x/src/libs/fluidsynth/fluid_ramsfont.c \
-		dosbox-x/src/libs/fluidsynth/fluid_seqbind.c \
-		dosbox-x/src/libs/fluidsynth/fluid_filerenderer.c \
-		dosbox-x/src/libs/fluidsynth/fluid_defsfont.c \
-		dosbox-x/src/libs/fluidsynth/fluid_lfo.c \
-		dosbox-x/src/libs/fluidsynth/fluid_hash.c \
-		dosbox-x/src/libs/fluidsynth/fluid_seq.c \
-		dosbox-x/src/libs/fluidsynth/fluid_voice.c \
-		dosbox-x/src/libs/fluidsynth/fluid_adriver.c \
-		dosbox-x/src/libs/fluidsynth/fluid_dsound.c \
-		dosbox-x/src/libs/fluidsynth/fluid_midi.c \
-		dosbox-x/src/libs/fluidsynth/fluid_settings.c \
-		dosbox-x/src/libs/fluidsynth/fluid_adsr_env.c \
-		dosbox-x/src/libs/fluidsynth/fluid_cmd.c \
 		dosbox-x/third_party/libco/amd64.c \
 		dosbox-x/third_party/SDL2/src/SDL.c \
 		dosbox-x/third_party/SDL2/src/SDL_assert.c \
