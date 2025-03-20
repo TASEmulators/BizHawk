@@ -1373,7 +1373,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_axisTypedValue.Length is 0)
 				{
-					if (prevTyped != "")
+					if (prevTyped.Length is not 0)
 					{
 						value = ControllerType.Axes[_axisEditColumn].Neutral;
 						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);

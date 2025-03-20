@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				StartMAME(lp.Roms);
 			}
 
-			if (_loadFailure != string.Empty)
+			if (_loadFailure.Length is not 0)
 			{
 				Dispose();
 				throw new Exception("\n\n" + _loadFailure);

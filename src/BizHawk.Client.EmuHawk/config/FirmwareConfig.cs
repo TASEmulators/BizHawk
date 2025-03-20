@@ -631,7 +631,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				if (errors != "")
+				if (errors.Length is not 0)
 				{
 					errors += "\n";
 				}

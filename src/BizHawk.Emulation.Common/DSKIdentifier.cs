@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// last chance. use the possible value
-			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent != "")
+			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent.Length is not 0) // wait but it's not being used for the assignment?
 			{
 				IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 			}

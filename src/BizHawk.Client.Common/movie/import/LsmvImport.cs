@@ -105,9 +105,9 @@ namespace BizHawk.Client.Common.movie.import
 						while (reader.ReadLine() is string line)
 						{
 							string author = line.Trim();
-							if (author != "")
+							if (author.Length is not 0)
 							{
-								if (authorLast != "")
+								if (authorLast.Length is not 0)
 								{
 									authorList += $"{authorLast}, ";
 								}
@@ -117,12 +117,12 @@ namespace BizHawk.Client.Common.movie.import
 						}
 					}
 
-					if (authorList != "")
+					if (authorList.Length is not 0)
 					{
 						authorList += "and ";
 					}
 
-					if (authorLast != "")
+					if (authorLast.Length is not 0)
 					{
 						authorList += authorLast;
 					}
