@@ -369,19 +369,6 @@ SRCS = 	bizhawk.cpp \
 		dosbox-x/src/hardware/snd_pc98/cbus/board26k.c \
 		dosbox-x/src/hardware/snd_pc98/generic/keydisp.c \
 		dosbox-x/src/hardware/snd_pc98/x11/dosio.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/kiss_fftr.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/scal.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/kiss_fft_speex.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/preprocess.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/resample.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/buffer.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/fftwrap.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/jitter.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/mdf.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/smallft.c \
-		dosbox-x/src/libs/decoders/internal/speexdsp/filterbank.c \
-		dosbox-x/src/libs/decoders/internal/ogg/framing.c \
-		dosbox-x/src/libs/decoders/internal/ogg/bitwise.c \
 		dosbox-x/third_party/libco/amd64.c \
 		dosbox-x/third_party/SDL2/src/SDL.c \
 		dosbox-x/third_party/SDL2/src/SDL_assert.c \
