@@ -12,9 +12,7 @@ CCFLAGS := 	-I. \
 			-Idosbox-x/src/aviwriter \
 			-Idosbox-x/src/libs/mt32 \
 			-Idosbox-x/src/hardware/snd_pc98/generic \
-			-Idosbox-x/src/hardware/snd_pc98/sound \
 			-Idosbox-x/src/gui \
-			-Idosbox-x/vs/freetype/include \
 			-Idosbox-x/src/hardware/snd_pc98/common \
 			-Idosbox-x/src/hardware/snd_pc98/x11 \
 			-Idosbox-x/src/hardware/snd_pc98/sound/getsnd \
@@ -22,19 +20,8 @@ CCFLAGS := 	-I. \
     		-DSDL_BUILD_MAJOR_VERSION=2 \
 			-DSDL_BUILD_MINOR_VERSION=32 \
 			-DSDL_BUILD_MICRO_VERSION=0 \
-			-DMESA_EGL_NO_X11_HEADERS \
-			-DEGL_NO_X11 \
 			-DHAVE_LINUX_VERSION_H \
 			-DUSING_GENERATED_CONFIG_H \
-			-DHAVE_CONFIG_H \
-			-Wfatal-errors \
-			-D_POSIX_C_SOURCE=200809L \
-			-DRESDIR="/usr/share/dosbox-x" \
-			-Wno-deprecated-enum-enum-conversion \
-			-Wno-deprecated-declarations \
-			-DNDEBUG=1 \
-			-Wno-error=incompatible-pointer-types \
-			-Wno-unused-result \
 			-D__LINUX__ \
 			-D__INLINE__=inline
 
