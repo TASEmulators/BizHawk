@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if ((playersPresent & (1 << i)) is not 0)
 				{
-					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i+1} Run")
+					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i + 1} Run")
 						|| _syncSettings.AlwaysRun);
 
 					int turnSpeed = 0;
@@ -83,12 +83,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					players[i].RunSpeed = players[i].RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					// divider recalibrates minimal mouse movement to be 1 (requires global setting)
-					players[i].TurningSpeed -= (int)(axisReaders[i](controller, (int)AxisType.MouseTurning) * _syncSettings.MouseTurnSensitivity / 272.0);
+					var mouseTurning = axisReaders[i](controller, (int)AxisType.MouseTurning) * _syncSettings.MouseTurnSensitivity;
+					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
+					{
+						// divider recalibrates minimal mouse movement to be 1 (requires global setting)
+						mouseTurning = (int)(mouseTurning / 272.0);
+					}
+					players[i].TurningSpeed -= mouseTurning;
+
+					// for shorttics we expose to player and parse from movies only 1 byte, but the core internally works with 2 bytes
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
-						// calc matches the core
-						players[i].TurningSpeed = ((players[i].TurningSpeed << 8) + 128) >> 8;
+						players[i].TurningSpeed = ((players[i].TurningSpeed + 128) >> 8) << 8;
 					}
 
 					// bool buttons

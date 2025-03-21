@@ -8,22 +8,20 @@ void send_input(struct PackedPlayerInput *inputs, int playerId)
 {
   local_cmds[playerId].forwardmove = inputs->RunSpeed;
   local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
-  local_cmds[playerId].angleturn   = (shorttics || !longtics) ? inputs->TurningSpeed << 8 : inputs->TurningSpeed;
+  local_cmds[playerId].lookfly     = inputs->FlyLook;
+  local_cmds[playerId].arti        = inputs->ArtifactUse;
+  local_cmds[playerId].angleturn   = inputs->TurningSpeed;
+  
+  if (inputs->Fire)      local_cmds[playerId].buttons |= 0b00000001;
+  if (inputs->Action)    local_cmds[playerId].buttons |= 0b00000010;
+  if (inputs->EndPlayer) local_cmds[playerId].arti    |= 0b01000000;
+  if (inputs->Jump)      local_cmds[playerId].arti    |= 0b10000000;
 
-  if (inputs->Fire == 1)   local_cmds[playerId].buttons |= 0b00000001;
-  if (inputs->Action == 1) local_cmds[playerId].buttons |= 0b00000010;
-
-  if (inputs->WeaponSelect != 0)
+  if (inputs->WeaponSelect)
   {
     local_cmds[playerId].buttons |= BT_CHANGE;
-    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1)<<BT_WEAPONSHIFT;
+    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1) << BT_WEAPONSHIFT;
   }
-
-  local_cmds[playerId].lookfly = inputs->FlyLook;
-  local_cmds[playerId].arti    = inputs->ArtifactUse;
-  
-  if (inputs->EndPlayer == 1) local_cmds[playerId].arti |= 0b01000000;
-  if (inputs->Jump      == 1) local_cmds[playerId].arti |= 0b10000000;
 
   if (inputs->Automap && !last_automap_input[playerId])
   {
@@ -33,8 +31,6 @@ void send_input(struct PackedPlayerInput *inputs, int playerId)
       AM_Start(true);
   }
   last_automap_input[playerId] = inputs->Automap;
-
-  // printf("ForwardSpeed: %d - sideMove:     %d - angleTurn:    %d - buttons: %u\n", forwardSpeed, strafingSpeed, turningSpeed, local_cmds[playerId].buttons);
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
@@ -84,10 +80,10 @@ ECL_EXPORT bool dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
   send_input(player4Inputs, 3);
 
   // Enabling/Disabling rendering, as required
+  if ( renderInfo->RenderVideo) headlessEnableVideoRendering();
+  if ( renderInfo->RenderAudio) headlessEnableAudioRendering();
   if (!renderInfo->RenderVideo) headlessDisableVideoRendering();
-  if (renderInfo->RenderVideo) headlessEnableVideoRendering();
   if (!renderInfo->RenderAudio) headlessDisableAudioRendering();
-  if (renderInfo->RenderAudio) headlessEnableAudioRendering();
 
   if ((wipe_Pending() || !wipeDone) && dsda_RenderWipeScreen())
   {

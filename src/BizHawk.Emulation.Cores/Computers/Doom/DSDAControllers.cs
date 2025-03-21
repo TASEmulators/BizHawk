@@ -41,9 +41,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public DoomController(int portNum, bool longtics)
 		{
 			PortNum = portNum;
+			_longtics = longtics;
 			Definition = new ControllerDefinition("Doom Input Format")
 			{
-				BoolButtons = BaseDefinition
+				BoolButtons = _baseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
@@ -59,7 +60,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public ControllerDefinition Definition { get; }
 
-		private static readonly string[] BaseDefinition =
+		private bool _longtics;
+
+		private static readonly string[] _baseDefinition =
 		[
 			"Fire",
 			"Use",
@@ -118,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Heretic Input Format")
 			{
-				BoolButtons = BaseDefinition
+				BoolButtons = _baseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
@@ -136,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public ControllerDefinition Definition { get; }
 
-		private static readonly string[] BaseDefinition =
+		private static readonly string[] _baseDefinition =
 		[
 			"Fire",
 			"Use",
@@ -235,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Hexen Input Format")
 			{
-				BoolButtons = BaseDefinition
+				BoolButtons = _baseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
@@ -253,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public ControllerDefinition Definition { get; }
 
-		private static readonly string[] BaseDefinition =
+		private static readonly string[] _baseDefinition =
 		[
 			"Fire",
 			"Use",
