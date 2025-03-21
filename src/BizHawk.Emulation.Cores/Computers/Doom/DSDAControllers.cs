@@ -28,11 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	public interface IPort
 	{
 		byte ReadButtons(IController c);
-
 		int ReadAxis(IController c, int axis);
-
 		ControllerDefinition Definition { get; }
-
 		int PortNum { get; }
 	}
 
@@ -57,9 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		public int PortNum { get; }
-
 		public ControllerDefinition Definition { get; }
-
 		private bool _longtics;
 
 		private static readonly string[] _baseDefinition =
@@ -136,7 +131,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		public int PortNum { get; }
-
 		public ControllerDefinition Definition { get; }
 
 		private static readonly string[] _baseDefinition =
@@ -253,7 +247,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		public int PortNum { get; }
-
 		public ControllerDefinition Definition { get; }
 
 		private static readonly string[] _baseDefinition =

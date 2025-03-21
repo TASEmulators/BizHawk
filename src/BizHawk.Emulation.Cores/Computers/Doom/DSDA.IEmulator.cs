@@ -7,10 +7,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	public partial class DSDA : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
-
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
-
-		private delegate int ReadPot(IController c, int pot);
+		public int Frame { get; private set; }
+		public string SystemId => VSystemID.Raw.Doom;
+		public bool DeterministicEmulation => true;
+		private delegate int ReadAxis(IController c, int axis);
 		private delegate byte ReadPort(IController c);
 
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
@@ -23,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				new PackedPlayerInput()
 			];
 
-			ReadPot[] axisReaders =
+			ReadAxis[] axisReaders =
 			[
 				_controllerDeck.ReadAxis1,
 				_controllerDeck.ReadAxis2,
@@ -144,12 +145,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			return true;
 		}
-
-		public int Frame { get; private set; }
-
-		public string SystemId => VSystemID.Raw.Doom;
-
-		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{

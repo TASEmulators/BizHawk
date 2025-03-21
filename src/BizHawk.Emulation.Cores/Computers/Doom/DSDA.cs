@@ -181,11 +181,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_args.Add("-warp");
 			ConditionalArg(_syncSettings.InitialEpisode is not 0 && _gameMode != CInterface.GameMode.Commercial, $"{_syncSettings.InitialEpisode}");
 			_args.Add($"{_syncSettings.InitialMap}");
-
 			_args.AddRange([ "-skill", $"{(int)_syncSettings.SkillLevel}" ]);
 			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityLevel}" ]);
 			_args.AddRange([ "-config", "dsda-doom.cfg" ]);
-
 			ConditionalArg(!_syncSettings.StrictMode, "-tas");
 			ConditionalArg(_syncSettings.FastMonsters, "-fast");
 			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
@@ -223,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<string> _args;
 		private List<IRomAsset> _wadFiles;
 		private CInterface.GameMode _gameMode;
+		public string RomDetails { get; } // IRomInfo
 
 		/// <summary>
 		/// core callback for file loading
@@ -284,11 +283,5 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				throw new InvalidOperationException($"Unknown error processing file '{filename}'");
 			}
 		}
-
-		// IRegionable
-		public DisplayType Region { get; }
-
-		// IRomInfo
-		public string RomDetails { get; }
 	}
 }
