@@ -84,10 +84,11 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayMovieMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StopMovieMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PlayFromBeginningMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ImportMoviesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveMovieMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveMovieAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StopMovieWithoutSavingMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
+			this.ImportMoviesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator14 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.AutomaticallyBackupMoviesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FullMovieLoadstatesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -261,12 +262,8 @@ namespace BizHawk.Client.EmuHawk
 			this.ColecoSkipBiosMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ColecoUseSGMMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.N64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.N64PluginSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.N64ControllerSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator23 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.N64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.MupenStyleLagMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.N64ExpansionSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.Mupen64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Mupen64CircularAnalogRangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Ares64SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.Ares64SettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.Ares64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -375,7 +372,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -771,11 +767,6 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayFromBeginningMenuItem.Text = "Play from Beginning";
 			this.PlayFromBeginningMenuItem.Click += new System.EventHandler(this.PlayFromBeginningMenuItem_Click);
 			// 
-			// ImportMoviesMenuItem
-			// 
-			this.ImportMoviesMenuItem.Text = "Import Movies...";
-			this.ImportMoviesMenuItem.Click += new System.EventHandler(this.ImportMovieMenuItem_Click);
-			// 
 			// SaveMovieMenuItem
 			// 
 			this.SaveMovieMenuItem.Text = "&Save Movie";
@@ -790,6 +781,16 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.StopMovieWithoutSavingMenuItem.Text = "Stop Movie without Saving";
 			this.StopMovieWithoutSavingMenuItem.Click += new System.EventHandler(this.StopMovieWithoutSavingMenuItem_Click);
+			// 
+			// toolStripSeparator25
+			// 
+			this.toolStripSeparator25.Name = "toolStripSeparator25";
+			this.toolStripSeparator25.Size = new System.Drawing.Size(228, 6);
+			// 
+			// ImportMoviesMenuItem
+			// 
+			this.ImportMoviesMenuItem.Text = "Import Movies...";
+			this.ImportMoviesMenuItem.Click += new System.EventHandler(this.ImportMovieMenuItem_Click);
 			// 
 			// AutomaticallyBackupMoviesMenuItem
 			// 
@@ -869,7 +870,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CaptureLuaMenuItem.CheckOnClick = true;
 			this.CaptureLuaMenuItem.Name = "CaptureLuaMenuItem";
-			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(232, 22);
+			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(205, 22);
 			this.CaptureLuaMenuItem.Text = "Capture Lua";
 			this.CaptureLuaMenuItem.Click += new System.EventHandler(this.CaptureLuaMenuItem_Click);
 			// 
@@ -986,7 +987,7 @@ namespace BizHawk.Client.EmuHawk
 			this.WindowSizeSubMenu.Text = "&Window Size";
 			this.WindowSizeSubMenu.DropDownOpened += new System.EventHandler(this.WindowSizeSubMenu_DropDownOpened);
 			// 
-			// ResizeWithFramebufferMenuItem
+			// DisableResizeWithFramebufferMenuItem
 			// 
 			this.DisableResizeWithFramebufferMenuItem.CheckOnClick = true;
 			this.DisableResizeWithFramebufferMenuItem.Text = "&Static Size";
@@ -1708,39 +1709,24 @@ namespace BizHawk.Client.EmuHawk
 			// N64SubMenu
 			// 
 			this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.N64PluginSettingsMenuItem,
-            this.N64ControllerSettingsMenuItem,
-            this.toolStripSeparator23,
-            this.N64CircularAnalogRangeMenuItem,
-            this.MupenStyleLagMenuItem,
-            this.N64ExpansionSlotMenuItem});
+            this.Mupen64SettingsMenuItem,
+            this.Mupen64CircularAnalogRangeMenuItem});
 			this.N64SubMenu.Text = "N64";
-			this.N64SubMenu.DropDownOpened += new System.EventHandler(this.N64SubMenu_DropDownOpened);
+			this.N64SubMenu.DropDownOpened += new System.EventHandler(this.Mupen64SubMenu_DropDownOpened);
 			// 
-			// N64PluginSettingsMenuItem
+			// Mupen64SettingsMenuItem
 			// 
-			this.N64PluginSettingsMenuItem.Text = "Plugins";
-			this.N64PluginSettingsMenuItem.Click += new System.EventHandler(this.N64PluginSettingsMenuItem_Click);
+			this.Mupen64SettingsMenuItem.Name = "Mupen64SettingsMenuItem";
+			this.Mupen64SettingsMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.Mupen64SettingsMenuItem.Text = "Settings";
+			this.Mupen64SettingsMenuItem.Click += new System.EventHandler(this.Mupen64SettingsMenuItem_Click);
 			// 
-			// N64ControllerSettingsMenuItem
+			// Mupen64CircularAnalogRangeMenuItem
 			// 
-			this.N64ControllerSettingsMenuItem.Text = "Controller Settings...";
-			this.N64ControllerSettingsMenuItem.Click += new System.EventHandler(this.N64ControllerSettingsMenuItem_Click);
-			// 
-			// N64CircularAnalogRangeMenuItem
-			// 
-			this.N64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
-			this.N64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
-			// 
-			// MupenStyleLagMenuItem
-			// 
-			this.MupenStyleLagMenuItem.Text = "&Mupen Style Lag Frames";
-			this.MupenStyleLagMenuItem.Click += new System.EventHandler(this.MupenStyleLagMenuItem_Click);
-			// 
-			// N64ExpansionSlotMenuItem
-			// 
-			this.N64ExpansionSlotMenuItem.Text = "&Use Expansion Slot";
-			this.N64ExpansionSlotMenuItem.Click += new System.EventHandler(this.N64ExpansionSlotMenuItem_Click);
+			this.Mupen64CircularAnalogRangeMenuItem.Name = "Mupen64CircularAnalogRangeMenuItem";
+			this.Mupen64CircularAnalogRangeMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.Mupen64CircularAnalogRangeMenuItem.Text = "Circular Analog Range";
+			this.Mupen64CircularAnalogRangeMenuItem.Click += new System.EventHandler(this.N64CircularAnalogRangeMenuItem_Click);
 			// 
 			// Ares64SubMenu
 			// 
@@ -2389,11 +2375,6 @@ namespace BizHawk.Client.EmuHawk
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
 			// 
-			// toolStripSeparator25
-			// 
-			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(228, 6);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2637,7 +2618,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopMovieWithoutSavingMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator29;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64SubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64PluginSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64SettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigContextMenuItem;
@@ -2674,13 +2654,10 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx toolStripMenuItem67;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClientOptionsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx customizeToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBcoreSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SameBoyColorChooserMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx NesControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator22;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator23;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64CircularAnalogRangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx Ares64CircularAnalogRangeMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx paletteToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ProfilesMenuItem;
@@ -2692,9 +2669,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MovieEndStopMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MovieEndPauseMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ScreenshotClientClipboardMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MupenStyleLagMenuItem;
 		private BizHawk.WinForms.Controls.StatusLabelEx LinkConnectStatusBarButton;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx N64ExpansionSlotMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx BarcodeReaderMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FeaturesMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DebuggerMenuItem;
@@ -2779,5 +2754,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 		private ToolStripMenuItemEx DisableResizeWithFramebufferMenuItem;
 		private ToolStripSeparatorEx toolStripSeparator26;
+		private System.Windows.Forms.ToolStripMenuItem Mupen64SettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem Mupen64CircularAnalogRangeMenuItem;
 	}
 }
