@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return keyboardMap.ToArray();
 		}
 
-		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings)
+		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings, int floppyDiskCount, int cdROMCount)
 		{
 			var controller = new ControllerDefinition("DOSBox Controller");
 
@@ -67,8 +67,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			// Adding drive management buttons
-			controller.BoolButtons.Add(Inputs.NextFloppyDisk);
-			controller.BoolButtons.Add(Inputs.NextCDROM);
+			if (floppyDiskCount > 1) controller.BoolButtons.Add(Inputs.NextFloppyDisk);
+			if (cdROMCount > 1) controller.BoolButtons.Add(Inputs.NextCDROM);
 
 			foreach (var (name, _) in _keyboardMap)
 			{

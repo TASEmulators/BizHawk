@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS
 		};
 
-		private readonly List<IRomAsset> _roms;
+		private readonly List<IRomAsset> _floppyDiskAssets;
 		private readonly List<IDiscAsset> _discAssets;
 
 		// Drive management variables
@@ -52,20 +52,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public DOSBox(CoreLoadParameters<object, SyncSettings> lp)
 			: base(lp.Comm, DefaultConfig)
 		{
-			_roms = lp.Roms;
+			_floppyDiskAssets = lp.Roms;
 			_discAssets = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 
 			VsyncNumerator = (int) _syncSettings.FPSNumerator;
 			VsyncDenominator = (int) _syncSettings.FPSDenominator;
 			DriveLightEnabled = false;
-			ControllerDefinition = CreateControllerDefinition(_syncSettings);
+			ControllerDefinition = CreateControllerDefinition(_syncSettings, _floppyDiskAssets.Count, _discAssets.Count);
 
 			// Parsing input files
 			var ConfigFiles = new List<IRomAsset>();
 
 			// Parsing rom files
-			foreach (var file in _roms)
+			foreach (var file in _floppyDiskAssets)
 			{
 				var ext = Path.GetExtension(file.RomPath);
 				bool recognized = false;
