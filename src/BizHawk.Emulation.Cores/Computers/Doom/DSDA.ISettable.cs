@@ -147,6 +147,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int DisplayPlayer { get; set; }
 			
+			[DisplayName("Report Revealed Secrets")]
+			[Description("Shows an on-screen notification when revealing a secret.")]
+			[DefaultValue(false)]
+			public bool ReportSecrets { get; set; }
+			
 			[DisplayName("HUD Mode")]
 			[Description("Sets heads-up display mode.")]
 			[DefaultValue(HudMode.Vanilla)]

@@ -99,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ $"map_totals {(_settings.MapTotals ? 1 : 0)}\n"
 				+ $"map_time {(_settings.MapTime ? 1 : 0)}\n"
 				+ $"map_coordinates {(_settings.MapCoordinates ? 1 : 0)}\n"
+				+ $"hudadd_secretarea {(_settings.ReportSecrets ? 1 : 0)}\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
 				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio())
