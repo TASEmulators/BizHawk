@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private WaterboxMemoryDomain[] _saveramAreas;
 		private int _saveramSize;
 
-		public virtual unsafe bool SaveRamModified
+		public unsafe bool SaveRamModified
 		{
 			get
 			{
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public virtual byte[] CloneSaveRam()
+		public byte[] CloneSaveRam()
 		{
 			if (_saveramSize == 0)
 				return null;
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public virtual void StoreSaveRam(byte[] data)
+		public void StoreSaveRam(byte[] data)
 		{
 			using (_exe.EnterExit())
 			{
