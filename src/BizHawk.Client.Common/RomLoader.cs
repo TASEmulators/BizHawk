@@ -297,6 +297,9 @@ namespace BizHawk.Client.Common
 				case DiscType.Wii:
 					NoCoreForSystem(VSystemID.Raw.Wii);
 					break;
+				case DiscType.DOS:
+					game.System = VSystemID.Raw.DOS;
+					break;
 
 				case DiscType.AudioDisc:
 				case DiscType.UnknownCDFS:
@@ -990,6 +993,8 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> Doom = new[] { "wad" };
 
+			public static readonly IReadOnlyCollection<string> DOS = new[] { "ima", "img", "xdf", "dmf", "fdd", "fdi", "nfd", "d88" };
+
 			public static readonly IReadOnlyCollection<string> GB = new[] { "gb", "gbc", "sgb" };
 
 			public static readonly IReadOnlyCollection<string> GBA = new[] { "gba" };
@@ -1048,6 +1053,7 @@ namespace BizHawk.Client.Common
 				.Concat(C64)
 				.Concat(Coleco)
 				.Concat(Doom)
+				.Concat(DOS)
 				.Concat(GB)
 				.Concat(GBA)
 				.Concat(GEN)
@@ -1091,6 +1097,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter(/*VSystemID.Raw.C64*/"SID Commodore 64 Music File", Array.Empty<string>(), devBuildExtraExts: new[] { "sid" }, devBuildAddArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.Coleco*/"ColecoVision", RomFileExtensions.Coleco, addArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.Doom*/"Doom / Hexen / Heretic WAD File", RomFileExtensions.Doom),
+			new FilesystemFilter(/*VSystemID.Raw.DOS*/"DOS", RomFileExtensions.DOS),
 			new FilesystemFilter(/*VSystemID.Raw.GB*/"Gameboy", RomFileExtensions.GB.Concat(new[] { "gbs" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.GBA*/"Gameboy Advance", RomFileExtensions.GBA, addArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.GEN*/"Genesis", RomFileExtensions.GEN.Concat(FilesystemFilter.DiscExtensions).ToList(), addArchiveExts: true),

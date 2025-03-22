@@ -463,6 +463,17 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.Amiga;
 					break;
 
+				case ".IMA":
+				case ".IMG":
+				case ".XDF":
+				case ".DMF":
+				case ".FDD":
+				//case ".FDI":
+				case ".NFD":
+				case ".D88":
+					game.System = VSystemID.Raw.DOS;
+					break;
+
 				case ".IPF":
 					var ipfId = new IpfIdentifier(romData);
 					game.System = ipfId.IdentifiedSystem;
