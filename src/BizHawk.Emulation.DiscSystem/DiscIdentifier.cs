@@ -190,6 +190,16 @@ namespace BizHawk.Emulation.DiscSystem
 			if (DetectWii())
 				return DiscType.Wii;
 
+			// Detects ISO9660 / Joliet CD formats (target for DOS / Windows)
+			// Source: https://en.wikipedia.org/wiki/ISO_9660
+			if (DetectISO9660())
+				return DiscType.DOS;
+
+			// Detects UDF
+			// Source: https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html
+			if (DetectUDF())
+				return DiscType.DOS;
+
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
 				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
@@ -247,10 +257,6 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					return DiscType.Amiga;
 				}
-
-				// Detects ISO9660 / Joliet CD formats (target for DOS / Windows)
-				if (DetectISO9660())
-					return DiscType.DOS;
 
 				// NeoGeoCD Check
 				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
@@ -405,7 +411,20 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private bool DetectISO9660()
 		{
-			return StringAt("CD001", 1, 16);
+			if (SectorContains("CD001", 16)) return true;
+			if (SectorContains("CDROM", 16)) return true;
+			return false;
+		}
+
+		private bool DetectUDF()
+		{
+			for (var i = 0; i < 256; i++)
+			{
+				if (SectorContains("BEA01", i)) return true;
+				if (SectorContains("NSR02", i)) return true;
+				if (SectorContains("TEA01", i)) return true;
+			}
+			return false;
 		}
 
 
