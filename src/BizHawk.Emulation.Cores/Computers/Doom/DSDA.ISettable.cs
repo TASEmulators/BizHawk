@@ -138,14 +138,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(0)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
-
-			[JsonIgnore]
-			[DisplayName("Player Point of View")]
-			[Description("Which of the players' point of view to use during rendering")]
-			[Range(1, 4)]
-			[DefaultValue(1)]
-			[TypeConverter(typeof(ConstrainedIntConverter))]
-			public int DisplayPlayer { get; set; }
 			
 			[DisplayName("Report Revealed Secrets")]
 			[Description("Shows an on-screen notification when revealing a secret.")]
@@ -176,6 +168,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Shows in-level coordinates on automap.")]
 			[DefaultValue(true)]
 			public bool MapCoordinates { get; set; }
+
+			[JsonIgnore]
+			[DisplayName("Player Point of View")]
+			[Description("Which of the players' point of view to use during rendering")]
+			[Range(1, 4)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int DisplayPlayer { get; set; }
 
 			public DoomSettings()
 				=> SettingsUtil.SetDefaultValues(this);
