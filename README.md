@@ -141,7 +141,7 @@ Install the listed package with your package manager (some buttons are links to 
 
 No package for your distro? Install via Nix (see below), or install manually by grabbing the latest release here on GitHub:
 
-[![Misc. Linux | binaries](https://img.shields.io/badge/Misc._Linux-binaries-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
+[![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
 The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.
