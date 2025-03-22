@@ -474,74 +474,41 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
+		private LuaTable CreateMarkerTuple(TasMovieMarker marker)
+		{
+			var table = _th.CreateTable();
+			table["Frame"] = marker.Frame;
+			table["Text"] = marker.Message;
+			return table;
+		}
+
 		[LuaMethodExample("local markerframe = tastudio.getmarkerabove(100).Frame")]
 		[LuaMethod("getmarkerabove", "returns a table of the marker at or above the given frame with fields Frame and Text")]
 		public LuaTable GetMarkerAbove(int frame)
-		{
-			var table = _th.CreateTable();
-			if (!Engaged()) return table;
-
-			var marker = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(frame);
-			table["Frame"] = marker.Frame;
-			table["Text"] = marker.Message;
-
-			return table;
-		}
+			=> Engaged()
+				? CreateMarkerTuple(Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(frame))
+				: _th.CreateTable();
 
 		[LuaMethodExample("local branchmarkertext = tastudio.getbranchmarkerabove(0, 100).Text")]
 		[LuaMethod("getbranchmarkerabove", "returns a table of the marker at or above the given frame for the given branch index, starting at 0, with fields Frame and Text")]
 		public LuaTable GetBranchMarkerAbove(int index, int frame)
-		{
-			var table = _th.CreateTable();
-			if (!Engaged()) return table;
+			=> Engaged()
+				? CreateMarkerTuple(Tastudio.CurrentTasMovie.Branches[index].Markers.PreviousOrCurrent(frame))
+				: _th.CreateTable();
 
-			if (index >= Tastudio.CurrentTasMovie.Branches.Count) return table;
-
-			var branch = Tastudio.CurrentTasMovie.Branches[index];
-			var marker = branch.Markers.PreviousOrCurrent(frame);
-			table["Frame"] = marker.Frame;
-			table["Text"] = marker.Message;
-
-			return table;
-		}
-
-		[LuaMethodExample("local markertext = tastudio.getmarkers()[0].Text")]
+		[LuaMethodExample("local markertext = tastudio.getmarkers()[1].Text")]
 		[LuaMethod("getmarkers", "returns a table of all markers with fields Frame and Text")]
 		public LuaTable GetMarkers()
-		{
-			if (!Engaged()) return _th.CreateTable();
+			=> Engaged()
+				? _th.EnumerateToLuaTable(Tastudio.CurrentTasMovie.Markers.Select(CreateMarkerTuple))
+				: _th.CreateTable();
 
-			return _th.EnumerateToLuaTable(
-				Tastudio.CurrentTasMovie.Markers.Select(m =>
-				{
-					var table = _th.CreateTable();
-					table["Frame"] = m.Frame;
-					table["Text"] = m.Message;
-					return table;
-				}),
-				indexFrom: 0);
-		}
-
-		[LuaMethodExample("local branchmarkerframe = tastudio.getmarkers(0)[0].Frame")]
+		[LuaMethodExample("local branchmarkerframe = tastudio.getmarkers(0)[1].Frame")]
 		[LuaMethod("getbranchmarkers", "returns a table of all markers for the given branch index, starting at 0, with fields Frame and Text")]
 		public LuaTable GetBranchMarkers(int index)
-		{
-			if (!Engaged()) return _th.CreateTable();
-
-			if (index >= Tastudio.CurrentTasMovie.Branches.Count) return _th.CreateTable();
-						
-			var branch = Tastudio.CurrentTasMovie.Branches[index];
-
-			return _th.EnumerateToLuaTable(
-				branch.Markers.Select(m =>
-				{
-					var table = _th.CreateTable();
-					table["Frame"] = m.Frame;
-					table["Text"] = m.Message;
-					return table;
-				}),
-				indexFrom: 0);
-		}
+			=> Engaged()
+				? _th.EnumerateToLuaTable(Tastudio.CurrentTasMovie.Branches[index].Markers.Select(CreateMarkerTuple))
+				: _th.CreateTable();
 
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
 		[LuaMethod("removemarker", "if there is a marker for the given frame, it will be removed")]
