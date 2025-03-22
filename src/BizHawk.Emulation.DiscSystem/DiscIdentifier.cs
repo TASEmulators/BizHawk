@@ -112,6 +112,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Atari Jaguar CD
 		/// </summary>
 		JaguarCD,
+
+		/// <summary>
+		/// DOS / Windows
+		/// </summary>
+		DOS,
 	}
 
 	public class DiscIdentifier
@@ -242,6 +247,10 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					return DiscType.Amiga;
 				}
+
+				// Detects ISO9660 / Joliet CD formats (target for DOS / Windows)
+				if (DetectISO9660())
+					return DiscType.DOS;
 
 				// NeoGeoCD Check
 				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
@@ -393,6 +402,12 @@ namespace BizHawk.Emulation.DiscSystem
 
 			return hexString == "5D1C9EA3";
 		}
+
+		private bool DetectISO9660()
+		{
+			return StringAt("CD001", 1, 16);
+		}
+
 
 		private bool DetectJaguarCD()
 		{

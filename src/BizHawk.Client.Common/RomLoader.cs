@@ -297,6 +297,9 @@ namespace BizHawk.Client.Common
 				case DiscType.Wii:
 					NoCoreForSystem(VSystemID.Raw.Wii);
 					break;
+				case DiscType.DOS:
+					game.System = VSystemID.Raw.DOS;
+					break;
 
 				case DiscType.AudioDisc:
 				case DiscType.UnknownCDFS:
