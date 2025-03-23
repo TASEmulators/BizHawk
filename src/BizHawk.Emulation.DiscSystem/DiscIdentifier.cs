@@ -190,13 +190,9 @@ namespace BizHawk.Emulation.DiscSystem
 			if (DetectWii())
 				return DiscType.Wii;
 
-			// Detects ISO9660 / Joliet CD formats (target for DOS / Windows)
-			// Source: https://en.wikipedia.org/wiki/ISO_9660
 			if (DetectISO9660())
 				return DiscType.DOS;
 
-			// Detects UDF
-			// Source: https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html
 			if (DetectUDF())
 				return DiscType.DOS;
 
@@ -409,6 +405,8 @@ namespace BizHawk.Emulation.DiscSystem
 			return hexString == "5D1C9EA3";
 		}
 
+		// Detects ISO9660 / Joliet CD formats (target for DOS / Windows)
+		// Source: https://en.wikipedia.org/wiki/ISO_9660
 		private bool DetectISO9660()
 		{
 			if (SectorContains("CD001", 16)) return true;
@@ -416,6 +414,8 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}
 
+		// Detects UDF
+		// Source: https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html
 		private bool DetectUDF()
 		{
 			for (var i = 0; i < 256; i++)
