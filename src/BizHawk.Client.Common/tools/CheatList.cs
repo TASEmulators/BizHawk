@@ -409,6 +409,8 @@ namespace BizHawk.Client.Common
 			for (int i = _cheatList.Count - 1; i >= 0; i--)
 			{
 				var cheat = _cheatList[i];
+				if (cheat.IsSeparator) continue;
+
 				var newDomain = domains[cheat.Domain.Name];
 				if (newDomain is not null)
 				{
