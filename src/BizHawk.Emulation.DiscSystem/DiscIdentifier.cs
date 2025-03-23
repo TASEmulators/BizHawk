@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		// Detects ISO9660 / Joliet CD formats (target for DOS / Windows)
-		// Source: https://en.wikipedia.org/wiki/ISO_9660
+		/// <remarks><see href="https://en.wikipedia.org/wiki/ISO_9660"/></remarks>
 		private bool DetectISO9660()
 		{
 			if (SectorContains("CD001", 16)) return true;
@@ -415,7 +415,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		// Detects UDF
-		// Source: https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html
+		/// <remarks><see href="https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html"/></remarks>
 		private bool DetectUDF()
 		{
 			for (var i = 0; i < 256; i++)
