@@ -2991,20 +2991,21 @@ namespace BizHawk.Client.EmuHawk
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Config.FrameProgressDelayMs;
 
-			if (Config.SkipLagFrame && Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && frameProgressTimeElapsed && Emulator.Frame > 0)
+			// TODO technically this should only force run frames if the frame advance key has been used
+			if (Config.SkipLagFrame && Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && Emulator.Frame > 0)
 			{
 				runFrame = true;
 			}
 
 			RA?.Update();
 
-			bool oldFrameAdvanceCondition = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
+			bool frameAdvance = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
 			if (FrameInch)
 			{
 				FrameInch = false;
-				if (EmulatorPaused || oldFrameAdvanceCondition)
+				if (EmulatorPaused)
 				{
-					oldFrameAdvanceCondition = true;
+					frameAdvance = true;
 				}
 				else
 				{
@@ -3012,41 +3013,33 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			bool frameAdvance = oldFrameAdvanceCondition || FrameInch;
-			if (!frameAdvance && _runloopFrameAdvance && _runloopFrameProgress)
-			{
-				// handle release of frame advance
-				_runloopFrameProgress = false;
-				PauseEmulator();
-			}
-
-			_runloopFrameAdvance = frameAdvance;
 			if (frameAdvance)
 			{
-				FrameInch = false;
-
-				// handle the initial trigger of a frame advance
-				if (_frameAdvanceTimestamp == 0)
+				if (!_runloopFrameAdvance)
 				{
-					PauseEmulator();
+					// handle the initial trigger of a frame advance
 					runFrame = true;
 					_frameAdvanceTimestamp = currentTimestamp;
+					PauseEmulator();
 				}
-				else
+				else if (frameProgressTimeElapsed)
 				{
-					// handle the timed transition from countdown to FrameProgress
-					if (frameProgressTimeElapsed)
-					{
-						runFrame = true;
-						_runloopFrameProgress = true;
-						UnpauseEmulator();
-					}
+					runFrame = true;
+					_runloopFrameProgress = true;
+					UnpauseEmulator();
 				}
 			}
 			else
 			{
-				_frameAdvanceTimestamp = 0;
+				if (_runloopFrameAdvance)
+				{
+					// handle release of frame advance
+					PauseEmulator();
+				}
+				_runloopFrameProgress = false;
 			}
+
+			_runloopFrameAdvance = frameAdvance;
 
 #if BIZHAWKBUILD_SUPERHAWK
 			if (!EmulatorPaused && (!Config.SuperHawkThrottle || InputManager.ClientControls.AnyInputHeld))
