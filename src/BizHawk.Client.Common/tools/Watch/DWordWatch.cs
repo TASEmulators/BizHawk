@@ -59,9 +59,7 @@ namespace BizHawk.Client.Common
 		/// Reset the previous value; set it to the current one
 		/// </summary>
 		public override void ResetPrevious()
-		{
-			_previous = GetWord();
-		}
+			=> _previous = GetDWord();
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
