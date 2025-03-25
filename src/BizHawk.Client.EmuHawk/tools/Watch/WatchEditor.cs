@@ -235,12 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_mode = mode;
-
-			DomainDropDown.Items.Clear();
-			DomainDropDown.Items.AddRange(MemoryDomains
-				.Select(d => d.ToString())
-				.Cast<object>()
-				.ToArray());
+			DomainDropDown.ReplaceItems(items: MemoryDomains.Select(static d => d.ToString()));
 			DomainDropDown.SelectedItem = domain.ToString();
 
 			SetTitle();
@@ -272,27 +267,17 @@ namespace BizHawk.Client.EmuHawk
 		private void SetDisplayTypes()
 		{
 			string oldType = DisplayTypeDropDown.Text;
-			DisplayTypeDropDown.Items.Clear();
 			switch (SizeDropDown.SelectedIndex)
 			{
 				default:
 				case 0:
-					foreach (WatchDisplayType t in ByteWatch.ValidTypes)
-					{
-						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
-					}
+					DisplayTypeDropDown.ReplaceItems(items: ByteWatch.ValidTypes.Select(Watch.DisplayTypeToString));
 					break;
 				case 1:
-					foreach (WatchDisplayType t in WordWatch.ValidTypes)
-					{
-						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
-					}
+					DisplayTypeDropDown.ReplaceItems(items: WordWatch.ValidTypes.Select(Watch.DisplayTypeToString));
 					break;
 				case 2:
-					foreach (WatchDisplayType t in DWordWatch.ValidTypes)
-					{
-						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
-					}
+					DisplayTypeDropDown.ReplaceItems(items: DWordWatch.ValidTypes.Select(Watch.DisplayTypeToString));
 					break;
 			}
 

@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -20,9 +19,9 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.GameControllerIcon;
 
 			// TODO: use combobox extension and add descriptions to enum values
-			comboBoxFamicom.Items.AddRange(NESControlSettings.GetFamicomExpansionValues().Cast<object>().ToArray());
-			comboBoxNESL.Items.AddRange(NESControlSettings.GetNesPortValues().Cast<object>().ToArray());
-			comboBoxNESR.Items.AddRange(NESControlSettings.GetNesPortValues().Cast<object>().ToArray());
+			comboBoxFamicom.ReplaceItems(items: NESControlSettings.GetFamicomExpansionValues());
+			comboBoxNESL.ReplaceItems(items: NESControlSettings.GetNesPortValues());
+			comboBoxNESR.ReplaceItems(items: NESControlSettings.GetNesPortValues());
 
 			comboBoxFamicom.SelectedItem = _syncSettings.Controls.FamicomExpPort;
 			comboBoxNESL.SelectedItem = _syncSettings.Controls.NesLeftPort;

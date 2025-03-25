@@ -27,8 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
 			where T : Enum
 		{
-			box.Items.Clear();
-			box.Items.AddRange(typeof(T).GetEnumDescriptions().Cast<object>().ToArray());
+			box.ReplaceItems(items: typeof(T).GetEnumDescriptions());
 			box.SelectedItem = enumVal.GetDescription();
 		}
 
@@ -179,6 +178,15 @@ namespace BizHawk.Client.EmuHawk
 			menu.DropDownItems.Clear();
 			menu.DropDownItems.AddRange(items);
 		}
+
+		public static void ReplaceItems(this ComboBox dropdown, params object[] items)
+		{
+			dropdown.Items.Clear();
+			dropdown.Items.AddRange(items);
+		}
+
+		public static void ReplaceItems(this ComboBox dropdown, IEnumerable<object> items)
+			=> dropdown.ReplaceItems(items: items.ToArray());
 	}
 
 	public static class ListViewExtensions
