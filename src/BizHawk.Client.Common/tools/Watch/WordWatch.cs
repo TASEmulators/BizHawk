@@ -43,26 +43,13 @@ namespace BizHawk.Client.Common
 			WatchDisplayType.FixedPoint_12_4,
 		];
 
-		/// <summary>
-		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="WordWatch"/>
-		/// </summary>
-		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
 		public override IEnumerable<WatchDisplayType> AvailableTypes() => ValidTypes;
 
-		/// <summary>
-		/// Reset the previous value; set it to the current one
-		/// </summary>
 		public override void ResetPrevious()
 		{
 			_previous = GetWord();
 		}
 
-		/// <summary>
-		/// Try to sets the value into the <see cref="MemoryDomain"/>
-		/// at the current <see cref="Watch"/> address
-		/// </summary>
-		/// <param name="value">Value to set</param>
-		/// <returns>True if value successfully sets; otherwise, false</returns>
 		public override bool Poke(string value)
 		{
 			try
@@ -86,9 +73,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Update the Watch (read it from <see cref="MemoryDomain"/>
-		/// </summary>
 		public override void Update(PreviousType previousType)
 		{
 			switch (previousType)
@@ -137,40 +121,18 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		/// <summary>
-		/// Get a string representation of difference
-		/// between current value and the previous one
-		/// </summary>
 		public override string Diff => $"{_value - _previous:+#;-#;0}";
 
-		/// <summary>
-		/// Returns true if the Watch is valid, false otherwise
-		/// </summary>
 		public override bool IsValid => Domain.Size == 0 || Address < (Domain.Size - 1);
 
-		/// <summary>
-		/// Get the maximum possible value
-		/// </summary>
 		public override uint MaxValue => ushort.MaxValue;
 
-		/// <summary>
-		/// Gets the current value
-		/// </summary>
 		public override int Value => GetWord();
 
-		/// <summary>
-		/// Get a string representation of the current value
-		/// </summary>
 		public override string ValueString => FormatValue(GetWord());
 
-		/// <summary>
-		/// Get the previous value
-		/// </summary>
 		public override uint Previous => _previous;
 
-		/// <summary>
-		/// Get a string representation of the previous value
-		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);
 	}
 }
