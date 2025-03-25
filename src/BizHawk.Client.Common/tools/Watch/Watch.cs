@@ -502,7 +502,15 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the maximum possible value
 		/// </summary>
-		public abstract uint MaxValue { get; }
+		public uint MaxValue
+			=> Size switch
+			{
+				WatchSize.Separator => 0,
+				WatchSize.Byte => byte.MaxValue,
+				WatchSize.Word => ushort.MaxValue,
+				WatchSize.DWord => uint.MaxValue,
+				_ => throw new InvalidOperationException(),
+			};
 
 		/// <summary>
 		/// Gets the current value
@@ -517,7 +525,8 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns true if the Watch is valid, false otherwise
 		/// </summary>
-		public abstract bool IsValid { get; }
+		public virtual bool IsValid
+			=> Domain.Size is 0 || Address <= Domain.Size - unchecked((long) Size);
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
