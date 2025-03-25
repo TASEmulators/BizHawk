@@ -1765,6 +1765,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _frameRewindTimestamp;
 		private bool _frameRewindWasPaused;
 		private bool _runloopFrameAdvance;
+		private bool _wasRewinding;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
 
@@ -3148,6 +3149,8 @@ namespace BizHawk.Client.EmuHawk
 				if (isRewinding && ToolControllingRewind is null && MovieSession.Movie.IsRecording())
 				{
 					MovieSession.Movie.Truncate(Emulator.Frame);
+					if (!_wasRewinding)
+						MovieSession.Movie.Rerecords++;
 				}
 
 				CheatList.Pulse();
@@ -3203,6 +3206,8 @@ namespace BizHawk.Client.EmuHawk
 						PauseEmulator();
 					}
 				}
+
+				_wasRewinding = isRewinding;
 			}
 			else if (isRewinding)
 			{
