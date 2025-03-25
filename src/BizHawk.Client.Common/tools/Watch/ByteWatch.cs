@@ -99,10 +99,6 @@ namespace BizHawk.Client.Common
 
 		public override string Diff => $"{_value - _previous:+#;-#;0}";
 
-		public override bool IsValid => Domain.Size == 0 || Address < Domain.Size;
-
-		public override uint MaxValue => byte.MaxValue;
-
 		public override int Value => GetByte();
 
 		public override string ValueString => FormatValue(GetByte());

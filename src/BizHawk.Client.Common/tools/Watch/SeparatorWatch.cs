@@ -93,11 +93,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override uint MaxValue => 0;
-
-		/// <summary>
-		/// Ignore that stuff
-		/// </summary>
 		public override void Update(PreviousType previousType)
 		{
 		}
