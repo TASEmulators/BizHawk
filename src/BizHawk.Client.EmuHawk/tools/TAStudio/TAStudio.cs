@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			public TAStudioSettings()
 			{
 				RecentTas = new RecentFiles(8);
-				AutoPause = true;
+				AutoPause = false;
 				FollowCursor = true;
 				ScrollSpeed = 6;
 				FollowCursorAlwaysScroll = false;
