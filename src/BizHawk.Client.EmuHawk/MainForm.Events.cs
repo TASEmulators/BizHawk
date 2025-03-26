@@ -183,6 +183,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieEndRecordMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Record;
 			MovieEndStopMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Stop;
 			MovieEndPauseMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Pause;
+			MovieEndPlaySoundMenuItem.Checked = Config.Movies.PlaySoundOnMovieEnd;
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1625,5 +1626,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+		private void MovieEndPlaySoundMenuItem_Click(object sender, EventArgs e)
+		{
+			MovieEndPlaySoundMenuItem.Checked = !MovieEndPlaySoundMenuItem.Checked;
+
+			Config.Movies.PlaySoundOnMovieEnd = MovieEndPlaySoundMenuItem.Checked;
+		}
 	}
 }

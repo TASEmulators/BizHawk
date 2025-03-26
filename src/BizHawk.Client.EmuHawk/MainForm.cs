@@ -444,7 +444,8 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
 				PauseEmulator,
-				SetMainformMovieInfo);
+				SetMainformMovieInfo,
+				() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), Config.SoundVolume / 100f));
 
 			void MainForm_MouseClick(object sender, MouseEventArgs e)
 			{

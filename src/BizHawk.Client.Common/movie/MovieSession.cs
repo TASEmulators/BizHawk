@@ -16,6 +16,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
+		private readonly Action _movieEndSound;
 
 		private IMovie _queuedMovie;
 
@@ -24,7 +25,8 @@ namespace BizHawk.Client.Common
 			string backDirectory,
 			IDialogParent dialogParent,
 			Action pauseCallback,
-			Action modeChangedCallback)
+			Action modeChangedCallback,
+			Action movieEndSound = null)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
@@ -33,6 +35,7 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
+			_movieEndSound = movieEndSound;
 		}
 
 		public IMovieConfig Settings { get; }
@@ -395,6 +398,9 @@ namespace BizHawk.Client.Common
 					Movie.FinishedMode();
 					break;
 			}
+
+			if (Settings.MovieEndAction is not MovieEndAction.Record && Settings.PlaySoundOnMovieEnd)
+				_movieEndSound?.Invoke();
 
 			_modeChangedCallback();
 		}
