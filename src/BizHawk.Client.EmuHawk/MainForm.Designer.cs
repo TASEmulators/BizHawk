@@ -827,7 +827,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MovieEndRecordMenuItem
 			// 
-			this.MovieEndRecordMenuItem.Text = "Switch To Record";
+			this.MovieEndRecordMenuItem.Text = "Switch to Record";
 			this.MovieEndRecordMenuItem.Click += new System.EventHandler(this.MovieEndRecordMenuItem_Click);
 			// 
 			// MovieEndStopMenuItem
@@ -849,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.MovieEndPlaySoundMenuItem.Name = "MovieEndPlaySoundMenuItem";
 			this.MovieEndPlaySoundMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.MovieEndPlaySoundMenuItem.Text = "Play sound";
+			this.MovieEndPlaySoundMenuItem.Text = "Play Sound";
 			this.MovieEndPlaySoundMenuItem.Click += new System.EventHandler(this.MovieEndPlaySoundMenuItem_Click);
 			// 
 			// AVSubMenu

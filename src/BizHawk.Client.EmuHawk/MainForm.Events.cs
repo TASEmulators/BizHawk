@@ -1628,10 +1628,6 @@ namespace BizHawk.Client.EmuHawk
 			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
 		private void MovieEndPlaySoundMenuItem_Click(object sender, EventArgs e)
-		{
-			MovieEndPlaySoundMenuItem.Checked = !MovieEndPlaySoundMenuItem.Checked;
-
-			Config.Movies.PlaySoundOnMovieEnd = MovieEndPlaySoundMenuItem.Checked;
-		}
+			=> Config.Movies.PlaySoundOnMovieEnd = !((ToolStripMenuItem) sender).Checked;
 	}
 }
