@@ -558,7 +558,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
 		/// </summary>
-		public string AddressString => Address.ToString(AddressFormatStr);
+		public virtual string AddressString => Address.ToString(AddressFormatStr);
 
 		/// <summary>
 		/// Gets or sets a value indicating the endianess of current <see cref="Watch"/>
