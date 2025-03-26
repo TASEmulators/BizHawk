@@ -48,7 +48,7 @@ namespace BizHawk.Tests.Client.Common.config
 			[typeof(CheatConfig)] = $@"{{""DisableOnLoad"":false,""LoadFileByGame"":true,""AutoSaveOnClose"":true,""Recent"":{RECENT_SER}}}",
 			[typeof(FeedbackBind)] = @"{""Channels"":""Left+Right"",""GamepadPrefix"":""X1 "",""Prescale"":1.0}",
 			[typeof(MessagePosition)] = @"{""X"":0,""Y"":0,""Anchor"":0}",
-			[typeof(MovieConfig)] = $@"{{""MovieEndAction"":3,""EnableBackupMovies"":true,""MoviesOnDisk"":false,""MovieCompressionLevel"":2,""VBAStyleMovieLoadState"":false,""DefaultTasStateManagerSettings"":{ZWINDER_SER}}}",
+			[typeof(MovieConfig)] = $@"{{""MovieEndAction"":3,""EnableBackupMovies"":true,""MoviesOnDisk"":false,""MovieCompressionLevel"":2,""VBAStyleMovieLoadState"":false,""PlaySoundOnMovieEnd"":false,""DefaultTasStateManagerSettings"":{ZWINDER_SER}}}",
 			[typeof(PathEntry)] = PATHENTRY_SER,
 			[typeof(PathEntryCollection)] = $@"{{""Paths"":[{PATHENTRY_SER}],""UseRecentForRoms"":false,""LastRomPath"":"".""}}",
 			[typeof(RecentFiles)] = RECENT_SER,
