@@ -463,14 +463,7 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.Amiga;
 					break;
 
-				case ".IMA":
-				case ".IMG":
-				case ".XDF":
-				case ".DMF":
-				case ".FDD":
-				//case ".FDI":
-				case ".NFD":
-				case ".D88":
+				case ".D88" or ".DMF" or ".FDD" /*or ".FDI"*/ or ".IMA" or ".IMG" or ".NFD" or ".XDF":
 					game.System = VSystemID.Raw.DOS;
 					break;
 

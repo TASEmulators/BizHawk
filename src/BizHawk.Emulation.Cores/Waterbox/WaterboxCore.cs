@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (data.Length != _saveramSize)
 			{
 				Console.WriteLine($"Could not push SaveRam into the core: the length of the data provided ({data.Length}) is different than expected ({_saveramSize})");
-				
+
 				// Here, the exception was too traumatic. The emulator shuts down when in debug mode, and is left in an unstable state on release.
 				// Using a softer landing here, although returning true/false plus a string explanation would be more adequate.
 				return;
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					MemoryBlockUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
 				}
 			}
-        }
+		}
 
 		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound);
 		protected virtual void FrameAdvancePost()

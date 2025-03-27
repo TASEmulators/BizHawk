@@ -345,20 +345,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Setting joystick inputs
 			if (_syncSettings.EnableJoystick1)
 			{
-				fi.joystick1.up      = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-				fi.joystick1.down    = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-				fi.joystick1.left    = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-				fi.joystick1.right   = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+				fi.joystick1.up = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+				fi.joystick1.down = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+				fi.joystick1.left = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+				fi.joystick1.right = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
 				fi.joystick1.button1 = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
 				fi.joystick1.button2 = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 			}
 
 			if (_syncSettings.EnableJoystick2)
 			{
-                fi.joystick2.up      = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-				fi.joystick2.down    = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-				fi.joystick2.left    = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-				fi.joystick2.right   = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+				fi.joystick2.up = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+				fi.joystick2.down = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+				fi.joystick2.left = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+				fi.joystick2.right = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
 				fi.joystick2.button1 = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
 				fi.joystick2.button2 = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 			}
@@ -397,10 +397,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				// Updating mouse state
 				_mouseState = nextState;
-            }
+			}
 
-            // Processing floppy disks swaps
-            fi.driveActions.insertFloppyDisk = -1;
+			// Processing floppy disks swaps
+			fi.driveActions.insertFloppyDisk = -1;
 			if (_floppyDiskCount > 1 && controller.IsPressed(Inputs.NextFloppyDisk) && !_nextFloppyDiskPressed)
 			{
 				_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
@@ -426,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				{
 					unsafe
 					{
-						fi.Keys.Buffer[(int)key] = 1;
+						fi.Keys.Buffer[(int) key] = 1;
 					}
 				}
 			}

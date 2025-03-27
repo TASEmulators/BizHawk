@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox
-	{ 
+	{
 		// A class to store the current state of the mouse for delta and button activation calculation
 		private class MouseState
 		{
@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.LeftButton);
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.MiddleButton);
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.RightButton);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, 0.RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, 0.RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-LibDOSBox.SVGA_MAX_WIDTH / 2).RangeTo(LibDOSBox.SVGA_MAX_WIDTH / 2), 0);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-LibDOSBox.SVGA_MAX_HEIGHT / 2).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT / 2), 0);
 			}

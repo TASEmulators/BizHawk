@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				=> SettingsUtil.SetDefaultValues(this);
 
 			public SyncSettings Clone()
-				=> (SyncSettings)MemberwiseClone();
+				=> (SyncSettings) MemberwiseClone();
 
 			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
 				=> !DeepEquality.DeepEquals(x, y);
