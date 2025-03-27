@@ -401,23 +401,25 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			// Processing floppy disks swaps
 			fi.driveActions.insertFloppyDisk = -1;
-			if (_floppyDiskCount > 1 && controller.IsPressed(Inputs.NextFloppyDisk) && !_nextFloppyDiskPressed)
+			var nextFloppyDiskWasPressed = _nextFloppyDiskPressed;
+			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
+			if (!nextFloppyDiskWasPressed && _nextFloppyDiskPressed && _floppyDiskCount >= 2)
 			{
 				_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
 				fi.driveActions.insertFloppyDisk = _currentFloppyDisk;
 				CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", null);
 			}
-			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 
 			// Processing CDROM swaps
 			fi.driveActions.insertCDROM = -1;
-			if (_cdRomFileNames.Count > 1 && controller.IsPressed(Inputs.NextCDROM) && !_nextCDROMPressed)
+			var nextCDROMWasPressed = _nextCDROMPressed;
+			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
+			if (!nextCDROMWasPressed && _nextCDROMPressed && _cdRomFileNames.Count >= 2)
 			{
 				_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
 				fi.driveActions.insertCDROM = _currentCDROM;
 				CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
 			}
-			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
 
 			// Processing keyboard inputs
 			foreach (var (name, key) in _keyboardMap)
