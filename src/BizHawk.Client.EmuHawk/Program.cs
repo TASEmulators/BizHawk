@@ -220,6 +220,7 @@ namespace BizHawk.Client.EmuHawk
 				initialConfig = ConfigService.Load<Config>(configPath);
 			}
 			initialConfig.ResolveDefaults();
+			if (cliFlags.GDIPlusRequested) initialConfig.DispMethod = EDispMethod.GdiPlus;
 			if (initialConfig.SaveSlot is 0) initialConfig.SaveSlot = 10; //TODO remove after a while
 			// initialConfig should really be globalConfig as it's mutable
 
@@ -305,12 +306,6 @@ namespace BizHawk.Client.EmuHawk
 						// if this fails, we're screwed
 						return new IGL_GDIPlus();
 				}
-			}
-
-			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
-			if (Array.Exists(args, static arg => arg.StartsWithIgnoreCase("--gdi")))
-			{
-				initialConfig.DispMethod = EDispMethod.GdiPlus;
 			}
 
 			var workingGL = TryInitIGL(initialConfig.DispMethod);
