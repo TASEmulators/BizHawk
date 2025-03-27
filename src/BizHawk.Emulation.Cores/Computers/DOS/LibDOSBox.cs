@@ -129,7 +129,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// DOSBox-x/source/base/core/include/keyboard.h
 		public enum DOSBoxKeyboard : int
 		{
-			Key_1 = 1,
+			Key_None = 0,
+
+			Key_1,
 			Key_2,
 			Key_3,
 			Key_4,
@@ -139,6 +141,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Key_8,
 			Key_9,
 			Key_0,
+
 			Key_Q,
 			Key_W,
 			Key_E,
@@ -149,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Key_I,
 			Key_O,
 			Key_P,
+
 			Key_A,
 			Key_S,
 			Key_D,
@@ -159,12 +163,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Key_K,
 			Key_L,
 			Key_Z,
+
 			Key_X,
 			Key_C,
 			Key_V,
 			Key_B,
 			Key_N,
 			Key_M,
+
 			Key_F1,
 			Key_F2,
 			Key_F3,
@@ -177,46 +183,55 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Key_F10,
 			Key_F11,
 			Key_F12,
+
 			Key_Escape,
 			Key_Tab,
 			Key_Backspace,
 			Key_Enter,
 			Key_Space,
+
 			Key_LeftAlt,
 			Key_RightAlt,
 			Key_LeftCtrl,
 			Key_RightCtrl,
 			Key_LeftShift,
 			Key_RightShift,
+
 			Key_CapsLock,
 			Key_ScrollLock,
 			Key_NumLock,
+
 			Key_Grave,
 			Key_Minus,
 			Key_Equals,
 			Key_Backslash,
 			Key_LeftBracket,
 			Key_RightBracket,
+
 			Key_Semicolon,
 			Key_Quote,
 			Key_Period,
 			Key_Comma,
 			Key_Slash,
 			Key_ExtraLtGt,
+
 			Key_PrintScreen,
 			Key_Pause,
+
 			Key_Insert,
 			Key_Home,
 			Key_Pageup,
 			Key_Delete,
 			Key_End,
 			Key_Pagedown,
+
 			Key_Left,
 			Key_Up,
 			Key_Down,
 			Key_Right,
-			Key_Keypad1,
-			Key_Keypad2,
+
+			Key_KeyPad1,
+			Key_KeyPad2,
 			Key_KeyPad3,
 			Key_KeyPad4,
 			Key_KeyPad5,
@@ -225,12 +240,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Key_KeyPad8,
 			Key_KeyPad9,
 			Key_KeyPad0,
+
 			Key_KeyPadDivide,
 			Key_KeyPadMultiply,
 			Key_KeyPadMinus,
-			Key_keyPadPlus,
+			Key_KeyPadPlus,
 			Key_KeyPadEnter,
-			Key_KeyPadPeriod
+			Key_KeyPadPeriod,
+
+			// 45 more, not including "count" member
 		}
 	}
 }

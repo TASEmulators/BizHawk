@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// ReSharper disable once LoopCanBeConvertedToQuery
 			foreach (var k in Enum.GetValues(typeof(LibDOSBox.DOSBoxKeyboard)))
 			{
+				if (k is LibDOSBox.DOSBoxKeyboard.Key_None) continue;
 				var name = Enum.GetName(typeof(LibDOSBox.DOSBoxKeyboard), k)!.Replace('_', ' ');
 				keyboardMap.Add((name, (LibDOSBox.DOSBoxKeyboard) k));
 			}
