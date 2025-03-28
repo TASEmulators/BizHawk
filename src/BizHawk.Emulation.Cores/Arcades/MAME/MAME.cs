@@ -183,29 +183,29 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			var args = new List<string>
 			{
-				 "mame"                                 // dummy, internally discarded by index, so has to go first
-				, _gameFileName                         // no dash for rom names
-				, "-noreadconfig"                       // forbid reading ini files
-				, "-nowriteconfig"                      // forbid writing ini files
-				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
-				, "-nothrottle"                         // forbid throttling to "real" speed of the device
-				, "-update_in_pause"                    // ^ including frame-advancing
-				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
-				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
-				, "-nvram_directory",               ""  // path to nvram
-				, "-artpath",                       ""  // path to artwork
-				, "-diff_directory",                ""  // path to hdd diffs
-				, "-cfg_directory",                 ""  // path to config
-				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
-				, "-output",                 "console"  // print everything to hawk console
-				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
-				, "-sound",                     "none"  // forbid osd sound driver
-				, "-video",                     "none"  // forbid mame window altogether
-				, "-keyboardprovider",          "none"
-				, "-mouseprovider",             "none"
-				, "-lightgunprovider",          "none"
-				, "-joystickprovider",          "none"
+				"mame",                                // dummy, internally discarded by index, so has to go first
+				_gameFileName,                         // no dash for rom names
+				"-noreadconfig",                       // forbid reading ini files
+				"-nowriteconfig",                      // forbid writing ini files
+				"-norewind",                           // forbid rewind savestates (captured upon frame advance)
+				"-skip_gameinfo",                      // forbid this blocking screen that requires user input
+				"-nothrottle",                         // forbid throttling to "real" speed of the device
+				"-update_in_pause",                    // ^ including frame-advancing
+				"-rompath",                        "", // mame doesn't load roms from full paths, only from dirs to scan
+				"-joystick_contradictory",             // allow L+R/U+D on digital joystick
+				"-nvram_directory",                "", // path to nvram
+				"-artpath",                        "", // path to artwork
+				"-diff_directory",                 "", // path to hdd diffs
+				"-cfg_directory",                  "", // path to config
+				"-volume",                      "-32", // lowest attenuation means mame osd remains silent
+				"-output",                  "console", // print everything to hawk console
+				"-samplerate", _sampleRate.ToString(), // match hawk samplerate
+				"-sound",                      "none", // forbid osd sound driver
+				"-video",                      "none", // forbid mame window altogether
+				"-keyboardprovider",           "none",
+				"-mouseprovider",              "none",
+				"-lightgunprovider",           "none",
+				"-joystickprovider",           "none",
 			};
 
 			if (_syncSettings.DriverSettings.TryGetValue(
