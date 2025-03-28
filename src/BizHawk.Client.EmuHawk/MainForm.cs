@@ -2140,10 +2140,8 @@ namespace BizHawk.Client.EmuHawk
 			var sysID = Emulator.SystemId;
 			for (var i = 0; i < sysID.Length; i++)
 			{
-				var upper = char.ToUpperInvariant(sysID[i]);
-				if (AvailableAccelerators.Contains(upper))
+				if (AvailableAccelerators.Remove(char.ToUpperInvariant(sysID[i])))
 				{
-					AvailableAccelerators.Remove(upper);
 					sysID = sysID.Insert(i, "&");
 					break;
 				}
