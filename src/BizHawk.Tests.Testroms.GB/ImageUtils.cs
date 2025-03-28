@@ -19,7 +19,9 @@ namespace BizHawk.Tests.Testroms.GB
 		/// <param name="fileExt">w/o leading '.'</param>
 		private static (string Expect, string Actual, string Glob) GenFilenames((string Suite, string Case) id, string fileExt = "png")
 		{
-			var prefix = $"{id.Suite}/{id.Case.GetHashCode():X8}"; // hashcode of string sadly not stable
+#pragma warning disable RS0030 // hashcode of string sadly not stable so it's generally banned, but it's fine here
+			var prefix = $"{id.Suite}/{id.Case.GetHashCode():X8}";
+#pragma warning restore RS0030
 			var suffix = $"{id.Case.RemoveInvalidFileSystemChars().Replace(' ', '_').Replace("(no BIOS)", "noBIOS")}.{fileExt}";
 			return ($"{prefix}_expect_{suffix}", $"{prefix}_actual_{suffix}", $"{prefix}_*_{suffix}");
 		}
