@@ -35,7 +35,7 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 			var sorts = new RigidMultiPredicateSort<(int X, string Y)>(new Dictionary<string, Func<(int X, string Y), IComparable>>
 			{
 				["by_x"] = t => t.X,
-				["by_y"] = t => t.Y
+				["by_y"] = t => t.Y,
 			});
 			CollectionAssert.AreEqual(
 				SortedByXThenYDesc,

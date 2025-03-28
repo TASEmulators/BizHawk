@@ -380,10 +380,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (empty)
 			{
-				CompareTypeDropDown.Items.AddRange(new object[]
-				{
-					""
-				});
+				CompareTypeDropDown.Items.Add(string.Empty);
 			}
 			else
 			{
@@ -394,7 +391,7 @@ namespace BizHawk.Client.EmuHawk
 					">=",
 					"<",
 					"<=",
-					"!="
+					"!=",
 				});
 			}
 

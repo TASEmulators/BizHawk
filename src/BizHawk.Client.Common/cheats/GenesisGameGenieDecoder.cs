@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common.cheats
 			['6'] = 28,
 			['7'] = 29,
 			['8'] = 30,
-			['9'] = 31
+			['9'] = 31,
 		};
 
 		public static IDecodeResult Decode(string code)

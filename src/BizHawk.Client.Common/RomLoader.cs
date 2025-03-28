@@ -343,7 +343,7 @@ namespace BizHawk.Client.Common
 							DiscData = disc,
 							DiscType = new DiscIdentifier(disc).DetectDiscType(),
 							DiscName = Path.GetFileNameWithoutExtension(path)
-						}
+						},
 					},
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
@@ -561,7 +561,7 @@ namespace BizHawk.Client.Common
 						Extension = rom.Extension,
 						RomPath = file.FullPathWithoutMember,
 						Game = game
-					}
+					},
 				},
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);

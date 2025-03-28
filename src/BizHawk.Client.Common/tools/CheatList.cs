@@ -436,7 +436,7 @@ namespace BizHawk.Client.Common
 				[SizeColumn] = c => (int) c.Size,
 				[EndianColumn] = c => c.BigEndian,
 				[TypeColumn] = c => c.Type,
-				[ComparisonType] = c => c.ComparisonType
+				[ComparisonType] = c => c.ComparisonType,
 			});
 
 		public void Sort(string column, bool reverse) => _cheatList = ColumnSorts.AppliedTo(_cheatList, column, firstIsDesc: reverse);

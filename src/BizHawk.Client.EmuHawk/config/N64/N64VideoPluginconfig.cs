@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			"1920 x 1440",
 			"2048 x 1536",
 			"2880 x 2160",
-			CustomResItemName
+			CustomResItemName,
 		};
 
 		private readonly bool _programmaticallyChangingPluginComboBox = false;

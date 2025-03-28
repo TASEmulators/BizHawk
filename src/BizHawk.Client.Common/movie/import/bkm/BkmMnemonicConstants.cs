@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 					"UP", "DOWN", "LEFT", "RIGHT", "PLUS", "MINUS", "MULTIPLY", "DIVIDE",
 					"CLEAR", "EXP", "DASH", "PARAOPEN", "PARACLOSE", "TAN", "VARS", "COS",
 					"PRGM", "STAT", "MATRIX", "X", "STO", "LN", "LOG", "SQUARED", "NEG1",
-					"MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE"
+					"MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE",
 				}.Select(b => $"P1 {b}")
 				.ToArray()
 			}.MakeImmutable(),
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 				BoolButtons = Enumerable.Range(1, 2)
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "L", "R",
 						"Key1", "Key2", "Key3", "Key4", "Key5", "Key6",
-						"Key7", "Key8", "Key9", "Star", "Key0", "Pound"
+						"Key7", "Key8", "Key9", "Star", "Key0", "Pound",
 					}.Select(b => $"P{i} {b}"))
 					.ToArray()
 			}.MakeImmutable(),
@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] {
 						"DPad U", "DPad D", "DPad L", "DPad R",
 						"B", "A", "Z", "Start", "L", "R",
-						"C Up", "C Down", "C Left", "C Right"
+						"C Up", "C Down", "C Left", "C Right",
 					}.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power" ])
 					.ToArray()
@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Power", "Rotate" ])
 					.ToArray()
-			}.MakeImmutable()
+			}.MakeImmutable(),
 		};
 	}
 }

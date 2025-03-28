@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			["Watches"] = _ramWatches,
 			["Messages"] = _messages,
 			["Rerecords"] = _reRecordCounter,
-			["Autohold"] = _autohold
+			["Autohold"] = _autohold,
 		};
 
 		private Dictionary<string, int> Colors => new Dictionary<string, int>
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			["Main Messages"] = _config.MessagesColor,
 			["Alert Messages"] = _config.AlertMessageColor,
 			["Previous Frame Input"] = _config.LastInputColor,
-			["Movie Input"] = _config.MovieInputColor
+			["Movie Input"] = _config.MovieInputColor,
 		};
 
 		private IEnumerable<ColorRow> ColorRows => ColorBox.Controls.OfType<ColorRow>();

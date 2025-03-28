@@ -1,5 +1,6 @@
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -114,11 +115,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsdd.Items.Add(tsmiExplore);
 
 							var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
-							var lame = new System.Collections.Specialized.StringCollection
-							{
-								hf.FullPathWithoutMember
-							};
-
+							StringCollection lame = [ hf.FullPathWithoutMember ];
 							tsmiCopyFile.Click += (o, ev) => { Clipboard.SetFileDropList(lame); };
 							tsdd.Items.Add(tsmiCopyFile);
 

@@ -26,7 +26,14 @@ namespace BizHawk.Client.Common
 		{
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Microphone", "Power"
+				"Up", "Down", "Left", "Right",
+				"Start", "Select",
+				"B", "A", "Y", "X",
+				"L", "R",
+				"LidOpen", "LidClose",
+				"Touch",
+				"Microphone",
+				"Power",
 			}
 		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
 			.AddAxis("Mic Volume", 0.RangeTo(100), 100)

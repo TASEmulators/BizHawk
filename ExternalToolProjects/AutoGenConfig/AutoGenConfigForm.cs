@@ -42,7 +42,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.Unchanged, Text = "custom, unchanged" },
 					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.ChangedUnset, Text = "default, was custom" },
 					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.ChangedInvalid, Text = "invalid" },
-					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.Changed, Text = "custom, changed" }
+					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.Changed, Text = "custom, changed" },
 				},
 				Location = new Point(4, 4),
 				Padding = new Padding(0, 4, 0, 0),
@@ -101,7 +101,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 							Close();
 						}
 					}),
-					discardButton
+					discardButton,
 				},
 				Location = new Point(ClientSize.Width - 201, ClientSize.Height - 31),
 				WrapContents = false
@@ -128,7 +128,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 								Dock = DockStyle.Fill,
 								FlowDirection = FlowDirection.TopDown,
 								WrapContents = false
-							}.Also(it => GroupUIs[$"{nesting}/{fi.Name}"] = it)
+							}.Also(it => GroupUIs[$"{nesting}/{fi.Name}"] = it),
 						},
 						Size = new Size(560, 300),
 						Text = fi.Name

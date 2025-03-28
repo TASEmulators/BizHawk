@@ -354,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 				["File"] = x => Path.GetFileName(x.Filename),
 				["SysID"] = x => x.SystemID,
 				["Game"] = x => x.GameName,
-				["Length (est.)"] = x => x.FrameCount
+				["Length (est.)"] = x => x.FrameCount,
 			});
 
 		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)

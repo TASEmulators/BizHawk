@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common.movie.import
 			*/
 			string[] buttons =
 			{
-				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A",
 			};
 
 			for (int frame = 0; frame <= frameCount; frame++)

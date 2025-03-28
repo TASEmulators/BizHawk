@@ -229,7 +229,7 @@ namespace BizHawk.Client.Common.movie.import
 			string[] other =
 			{
 				"Reset (old timing)", "Reset (new timing since version 1.1)", "Left motion sensor",
-				"Right motion sensor", "Down motion sensor", "Up motion sensor"
+				"Right motion sensor", "Down motion sensor", "Up motion sensor",
 			};
 
 			for (int frame = 1; frame <= frameCount; frame++)

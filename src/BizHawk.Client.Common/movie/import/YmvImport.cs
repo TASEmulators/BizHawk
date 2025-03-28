@@ -104,7 +104,12 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				BoolButtons = new List<string>
 				{
-					"Reset", "Power", "Previous Disk", "Next Disk", "P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R"
+					"Reset", "Power",
+					"Previous Disk", "Next Disk",
+					"P1 Left", "P1 Right", "P1 Up", "P1 Down",
+					"P1 Start",
+					"P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z",
+					"P1 L", "P1 R",
 				}
 			}.MakeImmutable());
 			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);

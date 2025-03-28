@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 				[Diff] = new WatchValueDifferenceComparer(),
 				[Type] = new WatchFullDisplayTypeComparer(),
 				[Domain] = new WatchDomainComparer(),
-				[Notes] = new WatchNoteComparer()
+				[Notes] = new WatchNoteComparer(),
 			};
 		}
 

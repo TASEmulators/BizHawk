@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				// must be in same order as enum
 				new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk),
 				new PaletteTypeItem("bsnes", SnesColors.ColorType.BSNES),
-				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x)
+				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x),
 			};
 			suppression = true;
 			comboPalette.DataSource = paletteTypeItems;
