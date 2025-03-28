@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common.FilterManager
 					ProgramStepType.Run => $"Run {(int) Args} ({Comment})",
 					ProgramStepType.NewTarget => $"NewTarget {(Size) Args}",
 					ProgramStepType.FinalTarget => "FinalTarget",
-					_ => null
+					_ => null,
 				};
 			}
 		}

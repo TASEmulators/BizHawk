@@ -39,7 +39,7 @@ public sealed class ReflectionCacheGenerator : ISourceGenerator
 			{
 				SimpleNameSyntax simple => simple.Identifier.ValueText,
 				QualifiedNameSyntax qual => $"{Ser(qual.Left)}.{Ser(qual.Right)}",
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 			if (_namespace != null || syntaxNode is not NamespaceDeclarationSyntax syn) return;
 			var newNS = Ser(syn.Name);

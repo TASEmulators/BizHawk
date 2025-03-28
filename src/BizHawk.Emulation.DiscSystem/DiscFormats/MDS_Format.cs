@@ -702,7 +702,7 @@ namespace BizHawk.Emulation.DiscSystem
 			ino.BCDValue = entry.Point switch
 			{
 				0xA0 or 0xA1 or 0xA2 => (byte)entry.Point,
-				_ => ino.BCDValue
+				_ => ino.BCDValue,
 			};
 
 			// get ADR & Control from ADR_Control byte
@@ -782,7 +782,7 @@ namespace BizHawk.Emulation.DiscSystem
 							SessionFormat.Type20_CDXA => CUE.CueTrackType.Mode2_2352,
 							SessionFormat.Type10_CDI => CUE.CueTrackType.CDI_2352,
 							SessionFormat.Type00_CDROM_CDDA => CUE.CueTrackType.Mode1_2352,
-							_ => pregapTrackType
+							_ => pregapTrackType,
 						};
 					}
 					disc._Sectors.Add(new CUE.SS_Gap()
@@ -840,7 +840,7 @@ namespace BizHawk.Emulation.DiscSystem
 								SessionFormat.Type20_CDXA => CUE.CueTrackType.Mode2_2352,
 								SessionFormat.Type10_CDI => CUE.CueTrackType.CDI_2352,
 								SessionFormat.Type00_CDROM_CDDA => CUE.CueTrackType.Mode1_2352,
-								_ => pregapTrackType
+								_ => pregapTrackType,
 							};
 						}
 						for (var pre = 0; pre < track.ExtraBlock.Pregap; pre++)
@@ -898,7 +898,7 @@ namespace BizHawk.Emulation.DiscSystem
 							2336 => new CUE.SS_Mode2_2336(),
 							2352 => new CUE.SS_2352(),
 							2448 => new CUE.SS_2448_Interleaved(),
-							_ => throw new InvalidOperationException($"Not supported: Sector Size {track.SectorSize}, Track Mode {track.TrackMode}")
+							_ => throw new InvalidOperationException($"Not supported: Sector Size {track.SectorSize}, Track Mode {track.TrackMode}"),
 						};
 
 						sBase.Policy = IN_DiscMountPolicy;
@@ -923,7 +923,7 @@ namespace BizHawk.Emulation.DiscSystem
 						ino.BCDValue = track.Point switch
 						{
 							0xA0 or 0xA1 or 0xA2 => (byte)track.Point,
-							_ => ino.BCDValue
+							_ => ino.BCDValue,
 						};
 
 						// get ADR & Control from ADR_Control byte

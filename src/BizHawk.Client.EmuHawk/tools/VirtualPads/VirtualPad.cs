@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = UIHelper.Scale(discManager.Location),
 						Size = UIHelper.Scale(discManager.TargetSize)
 					},
-					_ => throw new InvalidOperationException()
+					_ => throw new InvalidOperationException(),
 				});
 			}
 			if (OSTailoredCode.IsUnixHost)

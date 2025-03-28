@@ -329,7 +329,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					16 => 2,
 					8 => 1,
-					_ => throw new InvalidOperationException($"only 8/16 bits audio are supported by {nameof(AviWriter)} and you chose: {a_bits}")
+					_ => throw new InvalidOperationException($"only 8/16 bits audio are supported by {nameof(AviWriter)} and you chose: {a_bits}"),
 				};
 
 				if (a_channels is not (1 or 2))

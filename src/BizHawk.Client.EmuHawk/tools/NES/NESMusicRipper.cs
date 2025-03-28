@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							0 => rec.Pulse0,
 							1 => rec.Pulse1,
-							_ => default
+							_ => default,
 						};
 
 						// transform quieted notes to dead notes

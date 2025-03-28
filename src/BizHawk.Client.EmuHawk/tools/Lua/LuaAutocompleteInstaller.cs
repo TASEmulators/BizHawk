@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TextEditors.Sublime2 => IsSublimeInstalled(),
 				TextEditors.NotePad => IsNotepadInstalled(),
-				_ => false
+				_ => false,
 			};
 		}
 
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TextEditors.Sublime2 => IsBizLuaSublimeInstalled(),
 				TextEditors.NotePad => IsBizLuaNotepadInstalled(),
-				_ => false
+				_ => false,
 			};
 		}
 

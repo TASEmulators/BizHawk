@@ -423,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaFile.RunState.Running => Resources.ts_h_arrow_green,
 				LuaFile.RunState.Paused => Resources.Pause,
-				_ => Resources.Stop
+				_ => Resources.Stop,
 			};
 		}
 

@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 					VSystemCategory.Consoles => consolesCoreSettingsSubmenu,
 					VSystemCategory.Handhelds => handheldsCoreSettingsSubmenu,
 					VSystemCategory.PCs => pcsCoreSettingsSubmenu,
-					_ => otherCoreSettingsSubmenu
+					_ => otherCoreSettingsSubmenu,
 				};
 				parentMenu.DropDownItems.Add(submenu);
 			}
@@ -595,7 +595,7 @@ namespace BizHawk.Client.EmuHawk
 					ControllerConfig => AllowInput.All,
 					HotkeyConfig => AllowInput.All,
 					LuaWinform { BlocksInputWhenFocused: false } => AllowInput.All,
-					_ => AllowInput.None
+					_ => AllowInput.None,
 				}
 			);
 			InitControls();
@@ -750,7 +750,7 @@ namespace BizHawk.Client.EmuHawk
 					"false" => false,
 					_ when int.TryParse(v, out var i) => i,
 					_ when double.TryParse(v, out var d) => d,
-					_ => v
+					_ => v,
 				};
 			}
 
@@ -804,7 +804,7 @@ namespace BizHawk.Client.EmuHawk
 					OSTailoredCode.WindowsVersion._11 => null,
 					OSTailoredCode.WindowsVersion._10 when win10PlusVersion! < new Version(10, 0, 19045) => $"Quick reminder: Your copy of Windows 10 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to 22H2 for increased security.",
 					OSTailoredCode.WindowsVersion._10 => null,
-					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace('_', '.')} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro)."
+					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace('_', '.')} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro).",
 				};
 				if (message is not null)
 				{
@@ -4354,7 +4354,7 @@ namespace BizHawk.Client.EmuHawk
 				CoreNames.QuickNes => CoreNames.NesHawk,
 				CoreNames.Atari2600Hawk => CoreNames.Stella,
 				CoreNames.HyperNyma => CoreNames.TurboNyma,
-				_ => null
+				_ => null,
 			};
 			return recommendedCore is null
 				? true
@@ -4664,7 +4664,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DialogResult.OK => true,
 					DialogResult.Yes => true,
-					_ => false
+					_ => false,
 				};
 
 		public bool? ShowMessageBox3(
@@ -4681,7 +4681,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DialogResult.Yes => true,
 					DialogResult.No => false,
-					_ => null
+					_ => null,
 				};
 
 		public void StartSound() => Sound.StartSound();

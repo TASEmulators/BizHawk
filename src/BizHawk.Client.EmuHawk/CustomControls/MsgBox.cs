@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				MessageBoxIcon.Error => SystemIcons.Error,
 				MessageBoxIcon.Exclamation => SystemIcons.Exclamation,
 				MessageBoxIcon.Question => SystemIcons.Question,
-				_ => null
+				_ => null,
 			};
 		}
 

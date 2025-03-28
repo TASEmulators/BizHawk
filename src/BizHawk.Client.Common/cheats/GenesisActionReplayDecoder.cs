@@ -45,8 +45,7 @@ namespace BizHawk.Client.Common.cheats
 					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber),
 					Size = WatchSize.Word,
 				},
-				_ => new InvalidCheatCode(
-					"Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters.")
+				_ => new InvalidCheatCode("Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters."),
 			};
 		}
 	}

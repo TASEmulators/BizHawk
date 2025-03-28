@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 				// potentially applicable for future cores (Dolphin?)
 				"User" => 0x40,
 
-				_ => 0x50
+				_ => 0x50,
 			};
 			Path = path;
 			System = system;

@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Common
 				RomStatus.Hack => "H",
 				RomStatus.NotInDatabase => "U",
 				RomStatus.Unknown => "U",
-				_ => ""
+				_ => string.Empty,
 			});
 
 			sb
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Common
 				"D" => RomStatus.Homebrew,
 				"H" => RomStatus.Hack,
 				"U" => RomStatus.Unknown,
-				_ => RomStatus.GoodDump
+				_ => RomStatus.GoodDump,
 			};
 			_ = iter.MoveNext();
 			var knownName = lineStr.Substring(iter.Current);

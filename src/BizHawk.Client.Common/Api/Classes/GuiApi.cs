@@ -413,7 +413,7 @@ namespace BizHawk.Client.Common
 					"italic" => FontStyle.Italic,
 					"strikethrough" => FontStyle.Strikeout,
 					"underline" => FontStyle.Underline,
-					_ => FontStyle.Regular
+					_ => FontStyle.Regular,
 				};
 
 				using var g = Graphics.FromImage(_nullGraphicsBitmap);
@@ -540,7 +540,7 @@ namespace BizHawk.Client.Common
 					"bottomleft" => 2,
 					"3" => 3,
 					"bottomright" => 3,
-					_ => default
+					_ => default,
 				};
 			}
 			else

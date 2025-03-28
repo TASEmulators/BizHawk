@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common.cheats
 					'2' => WatchSize.DWord,
 					'3' => WatchSize.DWord,
 					'6' => WatchSize.Word,
-					_ => WatchSize.Byte
+					_ => WatchSize.Byte,
 				}
 			};
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				WatchSize.Byte => result.Value & 0xFF,
 				WatchSize.Word => result.Value & 0xFFFF,
-				_ => result.Value
+				_ => result.Value,
 			};
 #endif
 

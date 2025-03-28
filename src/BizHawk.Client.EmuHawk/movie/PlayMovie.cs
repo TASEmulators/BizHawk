@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 					.OrderBy(x => x.Values, _sortDetailsReverse)
 					.ThenBy(x => x.Keys)
 					.ToList(),
-				_ => detailsList
+				_ => detailsList,
 			};
 
 			DetailsView.Items.Clear();

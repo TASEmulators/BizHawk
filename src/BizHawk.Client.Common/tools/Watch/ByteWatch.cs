@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.Signed => (byte)sbyte.Parse(value),
 					WatchDisplayType.Hex => byte.Parse(value, NumberStyles.HexNumber),
 					WatchDisplayType.Binary => Convert.ToByte(value, 2),
-					_ => 0
+					_ => 0,
 				};
 
 				PokeByte(val);
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 				WatchDisplayType.Signed => ((sbyte) val).ToString(),
 				WatchDisplayType.Hex => $"{val:X2}",
 				WatchDisplayType.Binary => Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " "),
-				_ => val.ToString()
+				_ => val.ToString(),
 			};
 		}
 

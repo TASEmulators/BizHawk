@@ -326,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 					"<" => Cheat.CompareType.LessThan,
 					"<=" => Cheat.CompareType.LessThanOrEqual,
 					"!=" => Cheat.CompareType.NotEqual,
-					_ => Cheat.CompareType.None
+					_ => Cheat.CompareType.None,
 				};
 
 				var compare = CompareBox.ToRawInt();

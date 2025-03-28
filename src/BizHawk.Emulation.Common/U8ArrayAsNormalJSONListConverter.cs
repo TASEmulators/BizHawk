@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Common
 					{
 						byte b => b,
 						long l and >= byte.MinValue and <= byte.MaxValue => unchecked((byte) l),
-						var o => throw new Exception($"Integer literal outside u8 range: {o}")
+						var o => throw new Exception($"Integer literal outside u8 range: {o}"),
 					});
 					continue;
 				case JsonToken.EndArray:

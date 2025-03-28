@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 				Mode.New => "New Watch",
 				Mode.Edit => $"Edit {(Watches.Count == 1 ? "Watch" : "Watches")}",
 				Mode.Duplicate => "Duplicate Watch",
-				_ => "New Watch"
+				_ => "New Watch",
 			};
 		}
 
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					4 => DWordWatch.ValidTypes,
 					2 => WordWatch.ValidTypes,
-					_ => ByteWatch.ValidTypes
+					_ => ByteWatch.ValidTypes,
 				}).Select(Watch.DisplayTypeToString));
 			DisplayTypeDropDown.SelectedItem = oldType;
 			if (DisplayTypeDropDown.SelectedIndex is -1) DisplayTypeDropDown.SelectedIndex = 0;

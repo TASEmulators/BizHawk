@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					Compare.SpecificAddress => CompareSpecificAddress(_watchList).ToArray(),
 					Compare.Changes => CompareChanges(_watchList).ToArray(),
 					Compare.Difference => CompareDifference(_watchList).ToArray(),
-					_ => ComparePrevious(_watchList).ToArray()
+					_ => ComparePrevious(_watchList).ToArray(),
 				};
 
 				if (_settings.PreviousType == PreviousType.LastSearch)
@@ -158,7 +158,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				Compare.SpecificAddress => !CompareSpecificAddress(listOfOne).Any(),
 				Compare.Changes => !CompareChanges(listOfOne).Any(),
 				Compare.Difference => !CompareDifference(listOfOne).Any(),
-				_ => !ComparePrevious(listOfOne).Any()
+				_ => !ComparePrevious(listOfOne).Any(),
 			};
 		}
 
@@ -273,7 +273,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Byte => addresses.ToBytes(_settings),
 				WatchSize.Word => addresses.ToWords(_settings),
 				WatchSize.DWord => addresses.ToDWords(_settings),
-				_ => addresses.ToBytes(_settings)
+				_ => addresses.ToBytes(_settings),
 			};
 
 			_watchList = (append ? _watchList.Concat(list) : list).ToArray();
@@ -291,7 +291,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Word => addresses.Where(static address => address % 2 == 0).ToWords(_settings).ToArray(),
 				WatchSize.DWord when _settings.CheckMisAligned => addresses.ToDWords(_settings).ToArray(),
 				WatchSize.DWord => addresses.Where(static address => address % 4 == 0).ToDWords(_settings).ToArray(),
-				_ => _watchList
+				_ => _watchList,
 			};
 
 			_settings.Size = size;
@@ -639,7 +639,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Byte => (sbyte) val,
 				WatchSize.Word => (short) val,
 				WatchSize.DWord => (int) val,
-				_ => (sbyte) val
+				_ => (sbyte) val,
 			};
 		}
 
@@ -655,7 +655,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Byte => MiniByteWatch.GetByte(watch.Address, Domain),
 				WatchSize.Word => MiniWordWatch.GetUshort(watch.Address, Domain, _settings.BigEndian),
 				WatchSize.DWord => MiniDWordWatch.GetUint(watch.Address, Domain, _settings.BigEndian),
-				_ => MiniByteWatch.GetByte(watch.Address, Domain)
+				_ => MiniByteWatch.GetByte(watch.Address, Domain),
 			};
 		}
 
@@ -665,7 +665,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				SearchMode.Detailed => true,
 				SearchMode.Fast => (compareType != Compare.Changes),
-				_ => true
+				_ => true,
 			};
 		}
 	}

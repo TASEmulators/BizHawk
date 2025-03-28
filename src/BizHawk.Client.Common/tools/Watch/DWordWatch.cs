@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
 					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
 					WatchDisplayType.Binary => Convert.ToUInt32(value, 2),
-					_ => 0
+					_ => 0,
 				};
 
 				PokeDWord(val);
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 				WatchDisplayType.FixedPoint_16_16 => ((int)val / 65536.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.Float => FormatFloat(),
 				WatchDisplayType.Binary => FormatBinary(),
-				_ => val.ToString()
+				_ => val.ToString(),
 			};
 		}
 

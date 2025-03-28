@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DisasmColumnName => _instructions[index].Disassembly.TrimEnd(),
 					RegistersColumnName => _instructions[index].RegisterInfo,
-					_ => text
+					_ => text,
 				};
 			}
 		}

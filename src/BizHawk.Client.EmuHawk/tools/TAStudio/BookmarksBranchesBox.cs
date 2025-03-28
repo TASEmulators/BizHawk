@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 				BranchNumberColumnName => (index + 1).ToString(),
 				FrameColumnName => Branches[index].Frame.ToString(),
 				UserTextColumnName => Branches[index].UserText,
-				_ => text
+				_ => text,
 			};
 		}
 

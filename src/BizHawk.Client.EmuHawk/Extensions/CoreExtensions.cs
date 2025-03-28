@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				QuickNES => Properties.Resources.QuickNes,
 				Snes9x => Properties.Resources.Snes9X,
 				UAE => Properties.Resources.Amiga,
-				_ => null
+				_ => null,
 			};
 		}
 
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 #if false
 			IGameboyCommon gb when gb.IsCGBMode() => EmulatorExtensions.SystemIDToDisplayName(VSystemID.Raw.GBC),
 #endif
-			_ => EmulatorExtensions.SystemIDToDisplayName(emulator.SystemId)
+			_ => EmulatorExtensions.SystemIDToDisplayName(emulator.SystemId),
 		};
 	}
 }

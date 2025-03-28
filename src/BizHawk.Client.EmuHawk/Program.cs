@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 						1 or 2 when !OSTailoredCode.IsUnixHost => dispMethod == EDispMethod.D3D11
 							? (EDispMethod.OpenGL, "OpenGL")
 							: (EDispMethod.D3D11, "Direct3D11"),
-						_ => (EDispMethod.GdiPlus, "GDI+")
+						_ => (EDispMethod.GdiPlus, "GDI+"),
 					};
 
 				IGL CheckRenderer(IGL gl)

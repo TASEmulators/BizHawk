@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 				"Glide64mk2" => PluginType.GlideMk2,
 				"GLideN64" => PluginType.GLideN64,
 				"Angrylion" => PluginType.Angrylion,
-				_ => _ss.VideoPlugin
+				_ => _ss.VideoPlugin,
 			};
 
 			_ss.Core = CoreTypeDropdown.SelectedItem

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				-1 => "Auto",
 				0 => "Fastest",
-				_ => $"{(int) ((100 + numericUpDown2.Value / 2) / numericUpDown2.Value)} FPS"
+				_ => $"{(int) ((100 + numericUpDown2.Value / 2) / numericUpDown2.Value)} FPS",
 			};
 		}
 	}

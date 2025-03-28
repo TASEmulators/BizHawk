@@ -803,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
-				_ => Enumerable.Empty<string>()
+				_ => [ ],
 			};
 			var oldOutputMethod = Config.SoundOutputMethod;
 			var oldDevice = Config.SoundDevice;

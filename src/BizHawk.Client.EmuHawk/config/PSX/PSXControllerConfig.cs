@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 					2 => OctoshockDll.ePeripheralType.DualShock,
 					3 => OctoshockDll.ePeripheralType.DualAnalog,
 					4 => OctoshockDll.ePeripheralType.NegCon,
-					_ => uc.Devices8[i]
+					_ => uc.Devices8[i],
 				};
 			}
 

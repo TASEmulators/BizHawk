@@ -365,7 +365,7 @@ namespace BizHawk.Client.Common
 			{
 				1 => FinalPresentation.eFilterOption.Bilinear,
 				2 => FinalPresentation.eFilterOption.Bicubic,
-				_ => FinalPresentation.eFilterOption.None
+				_ => FinalPresentation.eFilterOption.None,
 			};
 
 			// if bicubic is selected and unavailable, don't use it. use bilinear instead I guess
@@ -488,7 +488,7 @@ namespace BizHawk.Client.Common
 			{
 				NDS nds => new ScreenControlNDS(nds),
 				Encore encore => new ScreenControl3DS(encore),
-				_ => null
+				_ => null,
 			};
 		}
 

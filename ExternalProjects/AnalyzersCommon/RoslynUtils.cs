@@ -67,7 +67,7 @@ public static class RoslynUtils
 			"||" => WellKnownMemberNames.LogicalOrOperatorName,
 			"~" => WellKnownMemberNames.OnesComplementOperatorName,
 			// ...and some operators only exist in VB.NET (dw, you're not missing anything)
-			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)")
+			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)"),
 		};
 
 	private static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ExpressionSyntax exprSyn)

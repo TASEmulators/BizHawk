@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 					WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_val),
 					WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_val),
 					WatchSize.Separator => "",
-					_ => ""
+					_ => string.Empty,
 				};
 
 		public string CompareStr
@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 						WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_compare.Value),
 						WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_compare.Value),
 						WatchSize.Separator => "",
-						_ => ""
+						_ => string.Empty,
 					};
 				}
 				

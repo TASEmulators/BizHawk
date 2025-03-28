@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					null => "nil",
 					LuaTable table => SerializeTable(table),
-					_ => output.ToString()
+					_ => output.ToString(),
 				});
 
 			if (outputs == null || outputs.Length == 0 || (outputs.Length == 1 && outputs[0] is null))

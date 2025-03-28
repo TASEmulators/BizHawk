@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 						DiscType.Dreamcast => ConsoleID.Dreamcast,
 						DiscType.SonyPS2 => ConsoleID.PlayStation2,
 						DiscType.JaguarCD => ConsoleID.JaguarCD,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 				}
 

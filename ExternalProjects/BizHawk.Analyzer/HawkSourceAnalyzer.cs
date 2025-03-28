@@ -163,7 +163,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 						{
 							ERR_MSG_LIST_EXPR_END => location.SourceSpan.Slice(start: location.SourceSpan.Length - 1),
 							ERR_MSG_LIST_EXPR_START => location.SourceSpan.Slice(start: 0, length: 1),
-							_ => null
+							_ => null,
 						};
 						if (slice is not null) location = Location.Create(location.SourceTree!, slice.Value);
 						DiagListExprSpacing.ReportAt(location, snac, message);

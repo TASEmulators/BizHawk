@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 			{
 				null => false,
 				TasMovieMarker marker => Frame == marker.Frame,
-				_ => false
+				_ => false,
 			};
 		}
 

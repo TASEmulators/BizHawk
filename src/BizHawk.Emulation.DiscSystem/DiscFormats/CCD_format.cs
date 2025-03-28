@@ -560,7 +560,7 @@ namespace BizHawk.Emulation.DiscSystem
 				ino.BCDValue = entry.Point switch
 				{
 					0xA0 or 0xA1 or 0xA2 => (byte)entry.Point,
-					_ => ino.BCDValue
+					_ => ino.BCDValue,
 				};
 
 				var q = new SubchannelQ
@@ -597,7 +597,7 @@ namespace BizHawk.Emulation.DiscSystem
 					SessionFormat.Type20_CDXA => CUE.CueTrackType.Mode2_2352,
 					SessionFormat.Type10_CDI => CUE.CueTrackType.CDI_2352,
 					SessionFormat.Type00_CDROM_CDDA => CUE.CueTrackType.Mode1_2352,
-					_ => pregapTrackType
+					_ => pregapTrackType,
 				};
 			}
 

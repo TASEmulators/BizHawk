@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.DiscSystem
 							0 => CueTrackType.Mode1_2352,
 							1 => CueTrackType.CDI_2352,
 							2 => CueTrackType.Mode2_2352,
-							_ => cueTrackType
+							_ => cueTrackType,
 						};
 					}
 					disc._Sectors.Add(new SS_Gap
@@ -511,7 +511,7 @@ namespace BizHawk.Emulation.DiscSystem
 						2 => 2352,
 						3 => 2368,
 						4 => 2448,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 					var curIndex = 0;
 					var relMSF = -track.IndexSectorCounts[0];
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.DiscSystem
 							2 => new SS_2352(),
 							3 => new SS_2364_DeinterleavedQ(),
 							4 => new SS_2448_Interleaved(),
-							_ => throw new InvalidOperationException()
+							_ => throw new InvalidOperationException(),
 						};
 						synth.Blob = cdiBlob;
 						synth.BlobOffset = blobOffset;
