@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Common
 			{
 				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
-				NotInDatabase = true
+				NotInDatabase = true,
 			};
 
 #if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS

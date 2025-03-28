@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			var menu = new ToolStripMenuItem
 			{
 				Name = "GeneratedColumnsSubMenu",
-				Text = "Columns"
+				Text = "Columns",
 			};
 
 			var columns = inputRoll.AllColumns;
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
-					Tag = column.Name
+					Tag = column.Name,
 				};
 
 				menuItem.CheckedChanged += (o, ev) =>

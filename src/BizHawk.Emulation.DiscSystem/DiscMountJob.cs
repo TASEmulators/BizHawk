@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var ss_leadout = new SS_Leadout
 					{
 						SessionNumber = OUT_Disc.Sessions.Count - 1,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					};
 					bool Condition(int lba) => lba >= OUT_Disc.Sessions[OUT_Disc.Sessions.Count - 1].LeadoutLBA;
 					new ConditionalSectorSynthProvider().Install(OUT_Disc, Condition, ss_leadout);

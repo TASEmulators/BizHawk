@@ -287,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 				var pictureBox2 = new PictureBox
 					{
 						Image = Properties.Resources.C64Keyboard.Value,
-						Size = Properties.Resources.C64Keyboard.Value.Size
+						Size = Properties.Resources.C64Keyboard.Value.Size,
 					};
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Value.Width;
 				pictureBox1.Height /= 2;

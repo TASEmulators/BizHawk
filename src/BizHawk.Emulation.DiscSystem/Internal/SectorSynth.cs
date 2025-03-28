@@ -264,7 +264,7 @@ namespace BizHawk.Emulation.DiscSystem
 				Policy = Policy,
 				sq = sq,
 				TrackType = TrackType,
-				Pause = true //?
+				Pause = true, // ?
 			};
 
 			ss_gap.Synth(job);

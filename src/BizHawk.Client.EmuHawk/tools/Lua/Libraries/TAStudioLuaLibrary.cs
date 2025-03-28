@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Type = LuaChangeTypes.InsertFrames,
 					Frame = frame,
-					Number = number
+					Number = number,
 				});
 			}
 		}
@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Type = LuaChangeTypes.DeleteFrames,
 					Frame = frame,
-					Number = number
+					Number = number,
 				});
 			}
 		}
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Type = LuaChangeTypes.ClearFrames,
 					Frame = frame,
-					Number = number
+					Number = number,
 				});
 			}
 		}

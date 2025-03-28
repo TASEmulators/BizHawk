@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var loginItem = new ToolStripMenuItem("Login")
 			{
-				Visible = !LoggedIn
+				Visible = !LoggedIn,
 			};
 			loginItem.Click += (_, _) =>
 			{
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var logoutItem = new ToolStripMenuItem("Logout")
 			{
-				Visible = LoggedIn
+				Visible = LoggedIn,
 			};
 			logoutItem.Click += (_, _) =>
 			{
@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableCheevosItem = new ToolStripMenuItem("Enable Achievements")
 			{
 				Checked = CheevosActive,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive = !CheevosActive;
 			raDropDownItems.Add(enableCheevosItem);
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Checked = LBoardNotifsActive,
 				CheckOnClick = true,
-				Enabled = HardcoreMode
+				Enabled = HardcoreMode,
 			};
 			enableLboardNotifsItem.CheckedChanged += (_, _) => LBoardNotifsActive = !LBoardNotifsActive;
 			raDropDownItems.Add(enableLboardNotifsItem);
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Checked = RichPresenceActive || HardcoreMode,
 				CheckOnClick = true,
-				Enabled = !HardcoreMode
+				Enabled = !HardcoreMode,
 			};
 			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive = !RichPresenceActive;
 			raDropDownItems.Add(enableRichPresenceItem);
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableHardcoreItem = new ToolStripMenuItem("Enable Hardcore Mode")
 			{
 				Checked = HardcoreMode,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableHardcoreItem.CheckedChanged += (_, _) =>
 			{
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableSoundEffectsItem = new ToolStripMenuItem("Enable Sound Effects")
 			{
 				Checked = EnableSoundEffects,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects = !EnableSoundEffects;
 			raDropDownItems.Add(enableSoundEffectsItem);
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
 			{
 				Checked = AllowUnofficialCheevos,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableUnofficialCheevosItem.CheckedChanged += (_, _) => ToggleUnofficialCheevos();
 			raDropDownItems.Add(enableUnofficialCheevosItem);

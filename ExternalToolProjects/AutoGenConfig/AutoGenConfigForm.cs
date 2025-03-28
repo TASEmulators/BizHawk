@@ -47,7 +47,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 				Location = new Point(4, 4),
 				Padding = new Padding(0, 4, 0, 0),
 				Size = new Size(ClientSize.Width - 8, 24),
-				WrapContents = false
+				WrapContents = false,
 			});
 			Controls.Add(GroupUIs[string.Empty] = new FlowLayoutPanel {
 				Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
@@ -55,11 +55,11 @@ namespace BizHawk.Experiment.AutoGenConfig
 				FlowDirection = FlowDirection.TopDown,
 				Location = new Point(4, 32),
 				Size = new Size(ClientSize.Width - 8, ClientSize.Height - 64),
-				WrapContents = false
+				WrapContents = false,
 			});
 			var discardButton = new Button {
 				Size = new Size(128, 24),
-				Text = "Discard Changes"
+				Text = "Discard Changes",
 			}.Also(it => it.Click += (clickEventSender, clickEventArgs) => Close());
 			Controls.Add(new FlowLayoutPanel {
 				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
@@ -68,7 +68,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 				Controls = {
 					new Button {
 						Size = new Size(128, 24),
-						Text = "Review and Save..."
+						Text = "Review and Save...",
 					}.Also(it => it.Click += (clickEventSender, clickEventArgs) =>
 					{
 						var state = GroupUIs.Values.SelectMany(group => group.Controls.Cast<Control>())
@@ -104,7 +104,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 					discardButton,
 				},
 				Location = new Point(ClientSize.Width - 201, ClientSize.Height - 31),
-				WrapContents = false
+				WrapContents = false,
 			});
 			KeyDown += (keyDownEventSender, keyDownEventArgs) =>
 			{
@@ -127,11 +127,11 @@ namespace BizHawk.Experiment.AutoGenConfig
 								AutoSize = true,
 								Dock = DockStyle.Fill,
 								FlowDirection = FlowDirection.TopDown,
-								WrapContents = false
+								WrapContents = false,
 							}.Also(it => GroupUIs[$"{nesting}/{fi.Name}"] = it),
 						},
 						Size = new Size(560, 300),
-						Text = fi.Name
+						Text = fi.Name,
 					});
 				}
 				var config = (APIs.Emulation as EmulationApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;

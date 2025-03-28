@@ -35,8 +35,8 @@ namespace BizHawk.Client.EmuHawk
 				Policy =
 				{
 					UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1,
-					DeterministicClearBuffer = false // let's make this a little faster
-				}
+					DeterministicClearBuffer = false, // let's make this a little faster
+				},
 			};
 
 			var buf2048 = new byte[2048];

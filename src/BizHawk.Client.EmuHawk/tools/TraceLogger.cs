@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 									_instructions.RemoveRange(0, _instructions.Count - MaxLines);
 								}
 								_instructions.Add(info);
-							}
+							},
 						};
 						_instructions.Clear();
 					}
@@ -184,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 								_currentSize += (ulong)data.Length;
 								if (_splitFile)
 									CheckSplitFile();
-							}
+							},
 						};
 					}
 				}
@@ -338,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Max lines to display in the window",
-				InitialValue = MaxLines.ToString()
+				InitialValue = MaxLines.ToString(),
 			};
 			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
 			var max = int.Parse(prompt.PromptText);
@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Log file segment size in megabytes\nSetting 0 disables segmentation",
-				InitialValue = FileSizeCap.ToString()
+				InitialValue = FileSizeCap.ToString(),
 			};
 			if (!this.ShowDialogWithTempMute(prompt).IsOk()) return;
 			FileSizeCap = int.Parse(prompt.PromptText);

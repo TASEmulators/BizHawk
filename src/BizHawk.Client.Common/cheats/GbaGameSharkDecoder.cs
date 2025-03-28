@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common.cheats
 					'3' => WatchSize.DWord,
 					'6' => WatchSize.Word,
 					_ => WatchSize.Byte,
-				}
+				},
 			};
 
 			result.Address = int.Parse(GetLast(code, (int)result.Size), NumberStyles.HexNumber);

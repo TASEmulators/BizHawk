@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(100, 50),
 				SizeMode = PictureBoxSizeMode.AutoSize,
 				TabIndex = 0,
-				TabStop = false
+				TabStop = false,
 			};
 			Controls.Add(luaPictureBox);
 

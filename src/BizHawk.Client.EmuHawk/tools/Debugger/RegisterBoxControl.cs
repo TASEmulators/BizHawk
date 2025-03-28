@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = name,
 					Location = new Point(UIHelper.ScaleX(5), y + UIHelper.ScaleY(2)),
-					Size = new Size(UIHelper.ScaleX(width + 5), UIHelper.ScaleY(15))
+					Size = new(UIHelper.ScaleX(width + 5), UIHelper.ScaleY(15)),
 				});
 
 				if (_canSetCpuRegisters)
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 						Width = UIHelper.ScaleX(6 + ((rv.BitSize / 4) * 9)),
 						Location = new Point(UIHelper.ScaleX(width + 10), y),
 						MaxLength = rv.BitSize / 4,
-						CharacterCasing = CharacterCasing.Upper
+						CharacterCasing = CharacterCasing.Upper,
 					};
 
 					t.TextChanged += (o, e) =>
@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = name,
 						Text = rv.Value.ToHexString(rv.BitSize / 4),
 						Size = new Size(UIHelper.ScaleX(6 + ((rv.BitSize / 4) * 9)), UIHelper.ScaleY(15)),
-						Location = new Point(UIHelper.ScaleX(width + 12), y + 2)
+						Location = new(UIHelper.ScaleX(width + 12), y + 2),
 					});
 				}
 
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 					Location = new Point(UIHelper.ScaleX(5), y),
 					BorderStyle = BorderStyle.None,
 					Size = new Size(UIHelper.ScaleX(240), UIHelper.ScaleY(23)),
-					AutoScroll = true
+					AutoScroll = true,
 				};
 
 				foreach (var (name, rv) in registers.Where(r => r.Value.BitSize == 1).OrderByDescending(x => x.Key))
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(UIHelper.ScaleX(40), y),
 						Dock = DockStyle.Left,
 						Size = new Size(UIHelper.ScaleX(23), UIHelper.ScaleY(23)),
-						Enabled = _canSetCpuRegisters
+						Enabled = _canSetCpuRegisters,
 					};
 
 					c.CheckedChanged += (o, e) =>

@@ -776,7 +776,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Number of Undo Levels to keep",
-				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString()
+				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString(),
 			};
 
 			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
@@ -808,7 +808,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Autosave Interval in seconds\nSet to 0 to disable",
-				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
+				InitialValue = (Settings.AutosaveInterval / 1000).ToString(),
 			};
 
 			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
@@ -910,7 +910,7 @@ namespace BizHawk.Client.EmuHawk
 			using MovieHeaderEditor form = new(CurrentTasMovie, Config)
 			{
 				Owner = this,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -924,7 +924,7 @@ namespace BizHawk.Client.EmuHawk
 				false)
 			{
 				Owner = this,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -935,7 +935,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Owner = this,
 				StartPosition = FormStartPosition.Manual,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -950,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Owner = this,
 				StartPosition = FormStartPosition.Manual,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -964,7 +964,7 @@ namespace BizHawk.Client.EmuHawk
 				true)
 			{
 				Owner = this,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -1086,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Owner = this,
 				StartPosition = FormStartPosition.Manual,
-				Location = this.ChildPointToScreen(TasView)
+				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -1097,7 +1097,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Frames per tick:",
-				InitialValue = TasView.ScrollSpeed.ToString()
+				InitialValue = TasView.ScrollSpeed.ToString(),
 			};
 			if (!this.ShowDialogWithTempMute(inputPrompt).IsOk()) return;
 			TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
@@ -1140,7 +1140,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
-					Tag = column.Name
+					Tag = column.Name,
 				};
 
 				menuItem.CheckedChanged += (o, ev) =>
@@ -1207,7 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 				var item = new ToolStripMenuItem("Show Keys")
 				{
 					CheckOnClick = true,
-					Checked = false
+					Checked = false,
 				};
 
 				foreach (var menu in keysMenus)
@@ -1236,7 +1236,7 @@ namespace BizHawk.Client.EmuHawk
 					var item = new ToolStripMenuItem($"Show Player {i}")
 					{
 						CheckOnClick = true,
-						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(mi => mi.Checked)
+						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(static mi => mi.Checked),
 					};
 
 					ToolStripMenuItem dummyObject = playerMenus[i];

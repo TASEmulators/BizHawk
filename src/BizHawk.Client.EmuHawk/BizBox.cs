@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core.CoreAttr)
 				{
-					Dock = DockStyle.Top
+					Dock = DockStyle.Top,
 				});
 			}
 			CoreInfoPanel.ResumeLayout();

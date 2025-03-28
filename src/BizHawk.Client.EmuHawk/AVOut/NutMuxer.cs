@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 				Width = width,
 				Height = height,
 				FpsNum = fpsNum,
-				FpsDen = fpsDen
+				FpsDen = fpsDen,
 			};
 
 			_avParams.Reduce(); // TimeBases in nut MUST be relatively prime

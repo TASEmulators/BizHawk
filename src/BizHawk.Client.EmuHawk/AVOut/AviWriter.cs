@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 				fps_scale = 1,
 				a_bits = 16,
 				a_samplerate = 44100,
-				a_channels = 2
+				a_channels = 2,
 			};
 
 			var tempSegment = new AviWriterSegment();
@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 					_comprOptions = opts,
 					codec = Decode_mmioFOURCC(opts.fccHandler),
 					Format = new byte[opts.cbFormat],
-					Parms = new byte[opts.cbParms]
+					Parms = new byte[opts.cbParms],
 				};
 
 				if (opts.lpFormat != IntPtr.Zero)
@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 					_comprOptions = comprOptions,
 					Format = format,
 					Parms = parms,
-					codec = Decode_mmioFOURCC(comprOptions.fccHandler)
+					codec = Decode_mmioFOURCC(comprOptions.fccHandler),
 				};
 			}
 

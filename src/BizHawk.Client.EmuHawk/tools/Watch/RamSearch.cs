@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(WatchListView),
-				Message = "Enter a hexadecimal value"
+				Message = "Enter a hexadecimal value",
 			};
 
 			while (this.ShowDialogWithTempMute(prompt).IsOk())
@@ -1083,7 +1083,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"{type}ToolStripMenuItem",
 						Text = Watch.DisplayTypeToString(type),
-						Checked = _settings.Type == type
+						Checked = _settings.Type == type,
 					};
 				var type1 = type;
 				item.Click += (o, ev) => DoDisplayTypeClick(type1);

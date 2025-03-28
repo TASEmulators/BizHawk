@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 				UseFixedRewindInterval = false,
 				TargetFrameLength = CurrentTargetFrameLength,
 				AllowOutOfOrderStates = false,
-				BackingStore = CurrentStoreType
+				BackingStore = CurrentStoreType,
 			};
 		}
 		public RewindConfig Recent()
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 				UseFixedRewindInterval = false,
 				TargetFrameLength = RecentTargetFrameLength,
 				AllowOutOfOrderStates = false,
-				BackingStore = RecentStoreType
+				BackingStore = RecentStoreType,
 			};
 		}
 		public RewindConfig GapFiller()
@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 				UseFixedRewindInterval = false,
 				TargetFrameLength = GapsTargetFrameLength,
 				AllowOutOfOrderStates = false,
-				BackingStore = GapsStoreType
+				BackingStore = GapsStoreType,
 			};
 		}
 	}

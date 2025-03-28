@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			var uc = new OctoshockFIOConfigUser
 			{
 				Memcards = { [0] = cbMemcard_1.Checked, [1] = cbMemcard_2.Checked },
-				Multitaps = { [0] = cbMultitap_1.Checked, [1] = cbMultitap_2.Checked }
+				Multitaps = [ cbMultitap_1.Checked, cbMultitap_2.Checked ],
 			};
 
 			var combos = new[] { combo_1_1, combo_1_2, combo_1_3, combo_1_4, combo_2_1, combo_2_2, combo_2_3, combo_2_4 };

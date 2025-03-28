@@ -597,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 				X = start % 16,
 				Y = start / 16,
 				Width = num,
-				Height = num / 16
+				Height = num / 16,
 			};
 
 			if (ret.Height == 0) ret.Height = 1;
@@ -1040,7 +1040,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Bpp = bpp,
 				Type = CurrDisplaySelection,
-				Tile = tileNum
+				Tile = tileNum,
 			};
 			currTileDataState.Address = (bpp == 7 ? 8 : bpp) * 8 * currTileDataState.Tile;
 			currTileDataState.Palette = currPaletteSelection.start;
@@ -1161,7 +1161,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								bgnum = (int) CurrDisplaySelection,
 								entry = map[tloc],
-								Location = new Point(tx, ty)
+								Location = new Point(tx, ty),
 							};
 
 							SetTab(tpMapEntry);
@@ -1226,7 +1226,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var cd = new ColorDialog
 			{
-				Color = pnBackdropColor.BackColor
+				Color = pnBackdropColor.BackColor,
 			};
 
 			if (cd.ShowDialog(this).IsOk())

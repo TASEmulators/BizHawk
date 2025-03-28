@@ -14,13 +14,13 @@ namespace BizHawk.Client.Common
 			{
 				BoolButtons = new[] { "Up", "Down", "Left", "Right", "Select", "Start", "B", "A" }.Select(b => $"P1 {b}")
 					.Append("Power")
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.GBA] = new BkmControllerDefinition("GBA Controller")
 			{
 				BoolButtons = new[] { "Up", "Down", "Left", "Right", "Select", "Start", "B", "A", "L", "R" }.Select(b => $"P1 {b}")
 					.Append("Power")
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.GEN] = new BkmControllerDefinition("GPGX Genesis Controller")
 			{
@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z", "Mode" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.NES] = new BkmControllerDefinition("NES Controller")
 			{
@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "Select", "Start", "B", "A" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power", "FDS Eject", "FDS Insert 0", "FDS Insert 1", "FDS Insert 2", "FDS Insert 3", "VS Coin 1", "VS Coin 2" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.SNES] = new BkmControllerDefinition("SNES Controller")
 			{
@@ -44,14 +44,14 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "Select", "Start", "B", "A", "X", "Y", "L", "R" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.PCE] = new BkmControllerDefinition("PC Engine Controller")
 			{
 				BoolButtons = Enumerable.Range(1, 5)
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "Select", "Run", "B2", "B1" }
 						.Select(b => $"P{i} {b}"))
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.SMS] = new BkmControllerDefinition("SMS Controller")
 			{
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "B1", "B2" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Pause", "Reset" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.TI83] = new BkmControllerDefinition("TI83 Controller")
 			{
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 					"PRGM", "STAT", "MATRIX", "X", "STO", "LN", "LOG", "SQUARED", "NEG1",
 					"MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE",
 				}.Select(b => $"P1 {b}")
-				.ToArray()
+				.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.A26] = new BkmControllerDefinition("Atari 2600 Basic Controller")
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "Button" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Select" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.A78] = new BkmControllerDefinition("Atari 7800 ProLine Joystick Controller")
 			{
@@ -86,7 +86,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "Trigger", "Trigger 2" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power", "Select", "Pause" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.C64] = new BkmControllerDefinition("Commodore 64 Controller")
 			{
@@ -102,7 +102,7 @@ namespace BizHawk.Client.Common
 						"Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period",
 						"Key Slash", "Key Right Shift", "Key Cursor Up/Down", "Key Cursor Left/Right", "Key Space"
 					])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.Coleco] = new BkmControllerDefinition("ColecoVision Basic Controller")
 			{
@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 						"Key1", "Key2", "Key3", "Key4", "Key5", "Key6",
 						"Key7", "Key8", "Key9", "Star", "Key0", "Pound",
 					}.Select(b => $"P{i} {b}"))
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.N64] = new BkmControllerDefinition("Nintento 64 Controller")
 			{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common
 						"C Up", "C Down", "C Left", "C Right",
 					}.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power" ])
-					.ToArray()
+					.ToArray(),
 			}.AddXYPair("P1 {0} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
 			.AddXYPair("P2 {0} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
 			.AddXYPair("P3 {0} Axis", AxisPairOrientation.RightAndUp, (-128).RangeTo(127), 0)
@@ -134,14 +134,14 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "Up", "Down", "Left", "Right", "Start", "X", "Y", "Z", "A", "B", "C", "L", "R" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Reset", "Power" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			["DGB"] = new BkmControllerDefinition("Dual Gameboy Controller")
 			{
 				BoolButtons = Enumerable.Range(1, 2)
 					.SelectMany(i => new[] { "Power", "Up", "Down", "Left", "Right", "Select", "Start", "B", "A" }
 						.Select(b => $"P{i} {b}"))
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 			[VSystemID.Raw.WSWAN] = new BkmControllerDefinition("WonderSwan Controller")
 			{
@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 					.SelectMany(i => new[] { "X1", "X3", "X4", "X2", "Y1", "Y3", "Y4", "Y2", "Start", "B", "A" }
 						.Select(b => $"P{i} {b}"))
 					.Concat([ "Power", "Rotate" ])
-					.ToArray()
+					.ToArray(),
 			}.MakeImmutable(),
 		};
 	}

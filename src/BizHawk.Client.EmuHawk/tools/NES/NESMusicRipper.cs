@@ -462,26 +462,26 @@ namespace BizHawk.Client.EmuHawk
 					En = !apu.pulse[0].Debug_IsSilenced,
 					Vol = (byte) apu.pulse[0].Debug_Volume,
 					Note = pulse0Note,
-					Type = (byte) apu.pulse[0].Debug_DutyType
+					Type = (byte) apu.pulse[0].Debug_DutyType,
 				},
 				Pulse1 =
 				{
 					En = !apu.pulse[1].Debug_IsSilenced,
 					Vol = (byte) apu.pulse[1].Debug_Volume,
 					Note = pulse1Note,
-					Type = (byte) apu.pulse[1].Debug_DutyType
+					Type = (byte) apu.pulse[1].Debug_DutyType,
 				},
 				Triangle =
 				{
 					En = !apu.triangle.Debug_IsSilenced,
-					Note = triNote
+					Note = triNote,
 				},
 				Noise =
 				{
 					En = !apu.noise.Debug_IsSilenced,
 					Vol = (byte) apu.noise.Debug_Volume,
-					Note = noiseNote
-				}
+					Note = noiseNote,
+				},
 			};
 
 			_log.Add(rec);

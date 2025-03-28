@@ -143,16 +143,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			int requiredHeight = messageLbl.Location.Y + messageLbl.Size.Height - btn2.Location.Y + ClientSize.Height + TextYMargin;
 
 			int minSetWidth = ClientSize.Width;
-			int minSetHeight = ClientSize.Height;
-
 			ClientSize = new Size
 			{
 				Width = requiredWidth > minSetWidth
 					? requiredWidth
 					: minSetWidth,
-				Height = requiredHeight > minSetHeight
-					? requiredHeight
-					: minSetHeight
+				Height = Math.Max(ClientSize.Height, requiredHeight),
 			};
 		}
 

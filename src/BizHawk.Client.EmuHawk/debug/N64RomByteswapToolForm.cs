@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 					new SingleRowFLP { Controls = { new LabelEx { Text = "to" }, comboFormats } },
 					new SingleRowFLP { Controls = { txtTargetFile, GenControl.Button("(browse)", width: 75, ChooseTargetFile) } },
 					GenControl.Button("--> convert", width: 75, DoConvert),
-				}
+				},
 			});
 			ResumeLayout();
 		}

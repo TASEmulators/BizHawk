@@ -193,7 +193,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					currSection = new()
 					{
-						Name = line.Trim('[', ']').ToUpperInvariant()
+						Name = line.Trim('[', ']').ToUpperInvariant(),
 					};
 					sections.Add(currSection);
 				}
@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				CcdPath = path,
 				ImgPath = Path.ChangeExtension(path, ".img"),
-				SubPath = Path.ChangeExtension(path, ".sub")
+				SubPath = Path.ChangeExtension(path, ".sub"),
 			};
 			try
 			{
@@ -606,7 +606,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var ss_gap = new CUE.SS_Gap()
 				{
 					Policy = IN_DiscMountPolicy,
-					TrackType = pregapTrackType
+					TrackType = pregapTrackType,
 				};
 				disc._Sectors.Add(ss_gap);
 

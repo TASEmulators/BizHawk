@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			_updateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true,
-				Priority = ThreadPriority.AboveNormal // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
+				Priority = ThreadPriority.AboveNormal, // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			_updateThread.Start();
 		}
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					EventType = newState ? InputEventType.Press : InputEventType.Release,
 					LogicalButton = new(button1, mods, () => _getConfigCallback().ModifierKeysEffective),
-					Source = source
+					Source = source,
 				};
 			_lastState[button1] = newState;
 

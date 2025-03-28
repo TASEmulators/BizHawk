@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 					Name = button.Name,
 					Text = icon != null ? null : button.DisplayName,
 					Location = UIHelper.Scale(button.Location),
-					Image = icon
+					Image = icon,
 				};
 				if (icon != null && UIHelper.AutoScaleFactorX > 1F && UIHelper.AutoScaleFactorY > 1F)
 				{
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 					)
 					{
 						Location = UIHelper.Scale(singleAxis.Location),
-						Size = UIHelper.Scale(singleAxis.TargetSize)
+						Size = UIHelper.Scale(singleAxis.TargetSize),
 					},
 					AnalogSchema analog => new VirtualPadAnalogStick(
 						_inputManager.StickyHoldController,
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 					)
 					{
 						Location = UIHelper.Scale(analog.Location),
-						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9))
+						Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
 					},
 					TargetedPairSchema targetedPair => new VirtualPadTargetScreen(
 						_inputManager.StickyHoldController,
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 					)
 					{
 						Location = UIHelper.Scale(discManager.Location),
-						Size = UIHelper.Scale(discManager.TargetSize)
+						Size = UIHelper.Scale(discManager.TargetSize),
 					},
 					_ => throw new InvalidOperationException(),
 				});

@@ -370,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							X = Config.RamWatches.X,
 							Y = Config.RamWatches.Y + (i * 14),
-							Anchor = Config.RamWatches.Anchor
+							Anchor = Config.RamWatches.Anchor,
 						},
 						Color.Black,
 						frozen ? Color.Cyan : Color.White);
@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
-					MemoryDomains = MemoryDomains
+					MemoryDomains = MemoryDomains,
 				};
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -486,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "Edit Separator",
 					StartLocation = this.ChildPointToScreen(WatchListView),
 					Message = "Separator Text:",
-					TextInputType = InputPrompt.InputType.Text
+					TextInputType = InputPrompt.InputType.Text,
 				};
 
 				if (this.ShowDialogWithTempMute(inputPrompt).IsOk())
@@ -784,7 +784,7 @@ namespace BizHawk.Client.EmuHawk
 			var we = new WatchEditor
 			{
 				InitialLocation = this.ChildPointToScreen(WatchListView),
-				MemoryDomains = MemoryDomains
+				MemoryDomains = MemoryDomains,
 			};
 			we.SetWatch(CurrentDomain);
 			if (!this.ShowDialogWithTempMute(we).IsOk()) return;
@@ -857,7 +857,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
 				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
+					InitialLocation = this.ChildPointToScreen(WatchListView),
 				};
 
 				if (this.ShowDialogWithTempMute(poke).IsOk())

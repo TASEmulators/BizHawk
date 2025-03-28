@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = b.DisplayName,
 						Location = new Point(x, y),
-						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15))
+						Size = new(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15)),
 					};
 
 					var w = new InputCompositeWidget(_config.ModifierKeysEffective)
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(x + iwOffsetX, y + iwOffsetY),
 						AutoTab = AutoTabCheckBox.Checked,
 						Width = iwWidth,
-						WidgetName = k
+						WidgetName = k,
 					};
 
 					w.SetupTooltip(toolTip1, b.ToolTip);
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = "Save States hotkeys operate with branches when TAStudio is engaged.",
 						Location = new Point(x, y),
-						Size = new Size(iwWidth + iwOffsetX, HotkeyTabControl.Height - y)
+						Size = new(iwWidth + iwOffsetX, HotkeyTabControl.Height - y),
 					});
 				}
 

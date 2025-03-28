@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = "CloseBtn",
 				Text = "&Close",
-				ShortcutKeyDisplayString = "Alt+F4"
+				ShortcutKeyDisplayString = "Alt+F4",
 			};
 
 			closeMenuItem.Click += (o, e) => { form.Close(); };

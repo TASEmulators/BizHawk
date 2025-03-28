@@ -139,7 +139,7 @@ namespace BizHawk.Client.Common.Filters
 			{
 				SurfaceDirection = direction,
 				Channel = channel,
-				SurfaceDisposition = disposition
+				SurfaceDisposition = disposition,
 			};
 
 			_ioSurfaceInfos.Add(iosi);

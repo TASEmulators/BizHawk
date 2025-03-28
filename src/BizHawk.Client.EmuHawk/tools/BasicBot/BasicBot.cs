@@ -798,7 +798,7 @@ namespace BizHawk.Client.EmuHawk
 					Probability = 0.0,
 					Location = new Point(marginLeft, startY + accumulatedY),
 					TabIndex = count + 1,
-					ProbabilityChangedCallback = AssessRunButtonStatus
+					ProbabilityChangedCallback = AssessRunButtonStatus,
 				};
 				control.Scale(UIHelper.AutoScaleFactor);
 

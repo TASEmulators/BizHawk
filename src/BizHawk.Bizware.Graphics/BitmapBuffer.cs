@@ -61,7 +61,7 @@ namespace BizHawk.Bizware.Graphics
 				Height = Height,
 				Width = Width,
 				Stride = Width * 4,
-				Scan0 = CurrLockHandle.AddrOfPinnedObject()
+				Scan0 = CurrLockHandle.AddrOfPinnedObject(),
 			};
 
 			return CurrLock;

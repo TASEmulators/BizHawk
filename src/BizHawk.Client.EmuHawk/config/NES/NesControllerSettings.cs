@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				Famicom = checkBoxFamicom.Checked,
 				FamicomExpPort = (string)comboBoxFamicom.SelectedItem,
 				NesLeftPort = (string)comboBoxNESL.SelectedItem,
-				NesRightPort = (string)comboBoxNESR.SelectedItem
+				NesRightPort = (string)comboBoxNESR.SelectedItem,
 			};
 
 			bool changed = NESControlSettings.NeedsReboot(controls, _syncSettings.Controls);

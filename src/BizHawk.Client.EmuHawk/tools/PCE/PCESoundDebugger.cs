@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 						WaveForm = waveform,
 						Active = true,
 						HitCount = 1,
-						Index = _psgEntries.Count
+						Index = _psgEntries.Count,
 					};
 					_psgEntries.Add(entry);
 					_psgEntryTable[md5] = entry;

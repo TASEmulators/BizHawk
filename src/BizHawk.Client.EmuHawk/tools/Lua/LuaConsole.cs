@@ -936,7 +936,7 @@ namespace BizHawk.Client.EmuHawk
 				Process.Start(new ProcessStartInfo
 				{
 					Verb = "Open",
-					FileName = file.Path
+					FileName = file.Path,
 				});
 			}
 		}
@@ -1086,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new LuaRegisteredFunctionsList((MainForm) MainForm, LuaImp.RegisteredFunctions)
 					{
-						StartLocation = this.ChildPointToScreen(LuaListView)
+						StartLocation = this.ChildPointToScreen(LuaListView),
 					}.Show();
 				}
 			}

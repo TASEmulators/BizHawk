@@ -354,7 +354,7 @@ namespace BizHawk.Emulation.DiscSystem
 					NonTrackBlocks = sessionHeader[11],
 					FirstTrack = bc.ToInt16(sessionHeader.Skip(12).Take(2).ToArray()),
 					LastTrack = bc.ToInt16(sessionHeader.Skip(14).Take(2).ToArray()),
-					TrackOffset = bc.ToInt32(sessionHeader.Skip(20).Take(4).ToArray())
+					TrackOffset = bc.ToInt32(sessionHeader.Skip(20).Take(4).ToArray()),
 				};
 
 				//mdsf.Sessions.Add(session);
@@ -437,7 +437,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var f = new AFooter
 						{
 							FilenameOffset = bc.ToInt32(foot.Take(4).ToArray()),
-							WideChar = bc.ToInt32(foot.Skip(4).Take(4).ToArray())
+							WideChar = bc.ToInt32(foot.Skip(4).Take(4).ToArray()),
 						};
 						track.FooterBlocks.Add(f);
 						track.FooterBlocks = track.FooterBlocks.Distinct().ToList();
@@ -570,7 +570,7 @@ namespace BizHawk.Emulation.DiscSystem
 						SectorSize = track.SectorSize,
 						Session = se.SessionSequence,
 						TrackOffset = Convert.ToInt64(track.StartOffset),
-						Zero = track.Zero
+						Zero = track.Zero,
 					};
 				}
 
@@ -788,7 +788,7 @@ namespace BizHawk.Emulation.DiscSystem
 					disc._Sectors.Add(new CUE.SS_Gap()
 					{
 						Policy = IN_DiscMountPolicy,
-						TrackType = pregapTrackType
+						TrackType = pregapTrackType,
 					});
 				}
 
@@ -850,7 +850,7 @@ namespace BizHawk.Emulation.DiscSystem
 							var ss_gap = new CUE.SS_Gap()
 							{
 								Policy = IN_DiscMountPolicy,
-								TrackType = pregapTrackType
+								TrackType = pregapTrackType,
 							};
 							disc._Sectors.Add(ss_gap);
 
@@ -937,7 +937,7 @@ namespace BizHawk.Emulation.DiscSystem
 							q_tno = BCD2.FromDecimal(track.Point),
 							q_index = ino,
 							AP_Timestamp = disc._Sectors.Count,
-							Timestamp = relMSF - Convert.ToInt32(track.ExtraBlock.Pregap)
+							Timestamp = relMSF - Convert.ToInt32(track.ExtraBlock.Pregap),
 						};
 
 						sBase.sq = q;
@@ -954,7 +954,7 @@ namespace BizHawk.Emulation.DiscSystem
 					disc._Sectors.Add(new SS_Leadout
 					{
 						SessionNumber = session.SessionSequence,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					});
 				}
 			}

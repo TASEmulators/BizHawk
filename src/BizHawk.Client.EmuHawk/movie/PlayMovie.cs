@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			string displayedPath = entry.Filename.RemovePrefix(_config.PathEntries.MovieAbsolutePath() + Path.DirectorySeparatorChar);
 			e.Item = new ListViewItem(displayedPath)
 			{
-				ToolTipText = entry.Filename
+				ToolTipText = entry.Filename,
 			};
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
@@ -476,7 +476,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Keys = DetailsView.Items[i].Text,
 					Values = DetailsView.Items[i].SubItems[1].Text,
-					BackgroundColor = DetailsView.Items[i].BackColor
+					BackgroundColor = DetailsView.Items[i].BackColor,
 				});
 			}
 

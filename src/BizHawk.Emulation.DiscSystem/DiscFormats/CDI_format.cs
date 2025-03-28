@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ret = new LoadResults
 			{
-				CdiPath = path
+				CdiPath = path,
 			};
 			try
 			{
@@ -570,7 +570,7 @@ namespace BizHawk.Emulation.DiscSystem
 					disc._Sectors.Add(new SS_Leadout
 					{
 						SessionNumber = session.Number,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					});
 				}
 

@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 				var row = new MessageRow
 				{
 					Name = name,
-					Location = new Point(10, y)
+					Location = new(10, y),
 				};
 				row.Size = new Size(MessageTypeBox.Width - 12, row.Size.Height);
 				row.Bind(name, pos, e => SetMessagePosition(row, e));
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 					Name = name,
 					Location = new Point(10, y),
 					DisplayName = name,
-					SelectedColor = argb
+					SelectedColor = argb,
 				};
 				row.Size = new Size(ColorBox.Width - 12, row.Size.Height);
 				y += row.Size.Height;

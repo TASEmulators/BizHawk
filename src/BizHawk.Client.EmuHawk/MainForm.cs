@@ -436,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 						(b & MouseButtons.XButton1) != 0,
 						(b & MouseButtons.XButton2) != 0
 					);
-				}
+				},
 			};
 			FirmwareManager = new FirmwareManager();
 			movieSession = MovieSession = new MovieSession(
@@ -3658,7 +3658,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var platformChooser = new PlatformChooser(Config)
 			{
-				RomGame = rom
+				RomGame = rom,
 			};
 			this.ShowDialogWithTempMute(platformChooser);
 			return platformChooser.PlatformChoice;
@@ -3727,7 +3727,7 @@ namespace BizHawk.Client.EmuHawk
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
 					MessageCallback = AddOnScreenMessage,
-					OpenAdvanced = args.OpenAdvanced
+					OpenAdvanced = args.OpenAdvanced,
 				};
 				FirmwareManager.RecentlyServed.Clear();
 

@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		{
 			return new SeparatorWatch
 			{
-				Notes = description
+				Notes = description,
 			};
 		}
 

@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					flpBindReadout,
 					new SingleRowFLP { Controls = { flpButtons, flpPrescale } },
-				}
+				},
 			});
 			ResumeLayout();
 		}

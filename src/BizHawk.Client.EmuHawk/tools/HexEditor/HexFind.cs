@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 					Nullable = HexRadio.Checked,
 					Text = text,
 					Size = size,
-					Location = location
+					Location = location,
 				};
 			}
 			else
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = text,
 					Size = size,
-					Location = location
+					Location = location,
 				};
 			}
 

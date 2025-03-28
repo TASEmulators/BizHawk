@@ -37,9 +37,9 @@ namespace BizHawk.Client.Common
 					{
 						System = y.Attributes!["System"].Value,
 						Name = y.Attributes["Name"].Value,
-						Status = RomStatus.Unknown
+						Status = RomStatus.Unknown,
 					},
-					Xml = x
+					Xml = x,
 				};
 				var fullPath = "";
 

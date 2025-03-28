@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 					HasState = TasStateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = lagged,
-					WasLagged = LagLog.History(lagIndex)
+					WasLagged = LagLog.History(lagIndex),
 				};
 			}
 		}

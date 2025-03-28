@@ -274,8 +274,8 @@ namespace BizHawk.Common
 					RedirectStandardError = checkStderr,
 					RedirectStandardInput = true,
 					RedirectStandardOutput = checkStdout,
-					UseShellExecute = false
-				}
+					UseShellExecute = false,
+				},
 			};
 
 		/// <param name="cmd">POSIX <c>$0</c></param>

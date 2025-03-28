@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 					type: type,
 					text: mnemonic)
 				{
-					Rotatable = type is ColumnType.Axis
+					Rotatable = type is ColumnType.Axis,
 				});
 			}
 
@@ -1197,7 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 			using var fontDialog = new FontDialog
 			{
 				ShowColor = false,
-				Font = TasView.Font
+				Font = TasView.Font,
 			};
 			if (fontDialog.ShowDialog() != DialogResult.Cancel)
 			{

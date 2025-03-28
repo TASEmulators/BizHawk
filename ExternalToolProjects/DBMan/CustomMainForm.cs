@@ -69,7 +69,7 @@ namespace BizHawk.DBManTool
 							btnDiscHash,
 							CreateArgsLabel("DBMan.exe --dischash"),
 							tbDiscHashArgs,
-						}
+						},
 					},
 					new FlowLayoutPanel {
 						AutoSize = true,
@@ -77,7 +77,7 @@ namespace BizHawk.DBManTool
 							btnPSXDB,
 							CreateArgsLabel("DBMan.exe --psxdb"),
 							tbPSXDBArgs,
-						}
+						},
 					},
 					new FlowLayoutPanel {
 						AutoSize = true,
@@ -85,7 +85,7 @@ namespace BizHawk.DBManTool
 							btnDBMan,
 							CreateArgsLabel("DBMan.exe --dbman"),
 						},
-						Enabled = !OSTailoredCode.IsUnixHost
+						Enabled = !OSTailoredCode.IsUnixHost,
 					},
 					new FlowLayoutPanel {
 						AutoSize = true,
@@ -94,11 +94,11 @@ namespace BizHawk.DBManTool
 							CreateArgsLabel("DBMan.exe --disccmp"),
 							tbDiscCMPArgs,
 						},
-						Enabled = false
+						Enabled = false,
 					},
 				},
 				Dock = DockStyle.Fill,
-				FlowDirection = FlowDirection.TopDown
+				FlowDirection = FlowDirection.TopDown,
 			});
 			ResumeLayout();
 		}

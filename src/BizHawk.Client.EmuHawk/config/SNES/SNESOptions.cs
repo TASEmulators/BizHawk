@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg1 = s.ShowBG1_0,
 				ShowBg2 = s.ShowBG2_0,
 				ShowBg3 = s.ShowBG3_0,
-				ShowBg4 = s.ShowBG4_0
+				ShowBg4 = s.ShowBG4_0,
 			};
 
 			var result = dialogParent.ShowDialogAsChild(dlg);

@@ -139,8 +139,8 @@ namespace BizHawk.Client.Common
 						OctoshockDll.ePeripheralType.None,
 						OctoshockDll.ePeripheralType.None,
 						OctoshockDll.ePeripheralType.None,
-					}
-				}
+					},
+				},
 			};
 
 			movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);

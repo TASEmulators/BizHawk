@@ -199,8 +199,8 @@ namespace BizHawk.Client.EmuHawk
 					Policy =
 					{
 						UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1,
-						ThrowExceptions2048 = false
-					}
+						ThrowExceptions2048 = false,
+					},
 				};
 
 				_buf2352 = new byte[2352];

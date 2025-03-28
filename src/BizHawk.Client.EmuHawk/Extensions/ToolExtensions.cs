@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			var freezeItem = new ToolStripMenuItem
 			{
 				Text = recent.Frozen ? "&Unfreeze" : "&Freeze",
-				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze
+				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze,
 			};
 			freezeItem.Click += (_, _) => recent.Frozen = !recent.Frozen;
 			items.Add(freezeItem);
@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				{
 					TextInputType = InputPrompt.InputType.Unsigned,
 					Message = "Number of recent files to track",
-					InitialValue = recent.MAX_RECENT_FILES.ToString()
+					InitialValue = recent.MAX_RECENT_FILES.ToString(),
 				};
 				if (!mainForm.ShowDialogWithTempMute(prompt).IsOk()) return;
 				var val = int.Parse(prompt.PromptText);
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				{
 					Text = name,
 					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value),
-					Checked = name == selected
+					Checked = name == selected,
 				};
 				item.Click += (o, ev) => setCallback(name);
 				return item;

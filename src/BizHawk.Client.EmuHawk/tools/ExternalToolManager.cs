@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					IncludeSubdirectories = false,
 					NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
-					Filter = "*.dll"
+					Filter = "*.dll",
 				};
 				DirectoryMonitor.Created += DirectoryMonitor_Created;
 				DirectoryMonitor.EnableRaisingEvents = true;

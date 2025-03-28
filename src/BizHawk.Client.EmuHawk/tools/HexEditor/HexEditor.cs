@@ -1447,7 +1447,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = PointToScreen(AddressesLabel.Location),
 					InitialValue = _findStr,
 					SearchTypeChangedCallback = SearchTypeChanged,
-					InitialText = _lastSearchWasText
+					InitialText = _lastSearchWasText,
 				};
 
 				_hexFind.Show();
@@ -1503,7 +1503,7 @@ namespace BizHawk.Client.EmuHawk
 				var romMenuItem = new ToolStripMenuItem
 				{
 					Text = _romDomain.Name,
-					Checked = _domain.Name == _romDomain.Name
+					Checked = _domain.Name == _romDomain.Name,
 				};
 
 				MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
@@ -1540,7 +1540,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(MemoryViewerBox),
-				Message = "Enter a hexadecimal value"
+				Message = "Enter a hexadecimal value",
 			};
 
 			if (this.ShowDialogWithTempMute(inputPrompt).IsOk() && inputPrompt.PromptText.IsHex())
@@ -1599,7 +1599,7 @@ namespace BizHawk.Client.EmuHawk
 			using var poke = new RamPoke(DialogController, watches, MainForm.CheatList)
 			{
 				InitialLocation = this.ChildPointToScreen(AddressLabel),
-				ParentTool = this
+				ParentTool = this,
 			};
 			this.ShowDialogWithTempMute(poke);
 			GeneralUpdate();

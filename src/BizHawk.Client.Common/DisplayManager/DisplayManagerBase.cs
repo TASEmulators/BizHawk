@@ -476,7 +476,7 @@ namespace BizHawk.Client.Common
 				Simulate = displayNothing,
 				ChainOutsize = GetGraphicsControlSize(),
 				IncludeOSD = true,
-				IncludeUserFilters = true
+				IncludeUserFilters = true,
 			};
 
 			UpdateSourceInternal(job);

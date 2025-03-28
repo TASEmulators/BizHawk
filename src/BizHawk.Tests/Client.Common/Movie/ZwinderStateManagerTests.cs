@@ -45,7 +45,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				RecentBufferSize = 1,
 				RecentTargetFrameLength = 100000,
 
-				AncientStateInterval = 50000
+				AncientStateInterval = 50000,
 			}, f => false);
 
 			var ms = new MemoryStream();
@@ -68,7 +68,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				RecentBufferSize = 16,
 				RecentTargetFrameLength = 100000,
 
-				AncientStateInterval = 50000
+				AncientStateInterval = 50000,
 			}, f => false);
 			zw.SaveStateHistory(new BinaryWriter(ms));
 			var buff = ms.ToArray();
@@ -88,11 +88,11 @@ namespace BizHawk.Tests.Client.Common.Movie
 			using var zb = new ZwinderBuffer(new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 1
+				TargetFrameLength = 1,
 			});
 			var ss = new StateSource
 			{
-				PaddingData = new byte[10]
+				PaddingData = new byte[10],
 			};
 			var stateCount = 0;
 			for (int i = 0; i < 1000000; i++)
@@ -109,7 +109,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			RewindConfig config = new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 10
+				TargetFrameLength = 10,
 			};
 			var buff = new ZwinderBuffer(config);
 			var ss = new StateSource { PaddingData = new byte[500] };
@@ -151,7 +151,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				RecentBufferSize = 1,
 				RecentTargetFrameLength = 100000,
 
-				AncientStateInterval = 50000
+				AncientStateInterval = 50000,
 			}, f => false);
 			{
 				var ms = new MemoryStream();
@@ -392,7 +392,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				CurrentTargetFrameLength = 1000,
 				RecentBufferSize = 2,
 				RecentTargetFrameLength = 1000,
-				AncientStateInterval = 100
+				AncientStateInterval = 100,
 			}, f => false);
 
 			for (int i = 0; i < 1000; i += 200)
@@ -450,12 +450,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		{
 			var ss = new StateSource
 			{
-				PaddingData = new byte[400 * 1000]
+				PaddingData = new byte[400 * 1000],
 			};
 			using var zw = new ZwinderBuffer(new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 1
+				TargetFrameLength = 1,
 			});
 
 			// Need to get data in the zwinderbuffer so that the last state, and the last state in particular, wraps around
@@ -475,7 +475,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			using var zw = new ZwinderBuffer(new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 1
+				TargetFrameLength = 1,
 			});
 			zw.Capture(0, s =>
 			{
@@ -497,7 +497,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			using var zw = new ZwinderBuffer(new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 1
+				TargetFrameLength = 1,
 			});
 			zw.Capture(0, s =>
 			{
@@ -522,7 +522,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			using var zw = new ZwinderBuffer(new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 1
+				TargetFrameLength = 1,
 			});
 			zw.Capture(0, s =>
 			{
@@ -560,7 +560,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			using var zw = new ZwinderBuffer(new RewindConfig
 			{
 				BufferSize = 1,
-				TargetFrameLength = 1
+				TargetFrameLength = 1,
 			});
 			var buff = new byte[40000];
 

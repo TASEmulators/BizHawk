@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				ChangeLog = new(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
-				UserText = Movie.Branches.NewBranchText
+				UserText = Movie.Branches.NewBranchText,
 			};
 		}
 
@@ -565,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Text for branch {index + 1}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue = branch.UserText
+				InitialValue = branch.UserText,
 			};
 
 			i.FollowMousePointer();

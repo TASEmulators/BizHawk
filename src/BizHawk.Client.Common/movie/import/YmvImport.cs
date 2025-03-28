@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common.movie.import
 					[9] = "none",
 					[10] = "none",
 					[11] = "none",
-				}
+				},
 			};
 
 			using var sr = SourceFile.OpenText();
@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common.movie.import
 					"P1 Start",
 					"P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z",
 					"P1 L", "P1 R",
-				}
+				},
 			}.MakeImmutable());
 			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 

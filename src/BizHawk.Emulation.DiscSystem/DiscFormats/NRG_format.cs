@@ -431,7 +431,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					Isrc = Encoding.ASCII.GetString(chunkData.Slice(i, 12)).TrimEnd('\0'),
 					SectorSize = BinaryPrimitives.ReadUInt16BigEndian(chunkData.Slice(i + 12, sizeof(ushort))),
-					Mode = chunkData[i + 14]
+					Mode = chunkData[i + 14],
 				};
 
 				if (v2)
@@ -889,7 +889,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ret = new LoadResults
 			{
-				NrgPath = path
+				NrgPath = path,
 			};
 			try
 			{
@@ -1080,7 +1080,7 @@ namespace BizHawk.Emulation.DiscSystem
 					disc._Sectors.Add(new SS_Leadout
 					{
 						SessionNumber = session.Number,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					});
 				}
 

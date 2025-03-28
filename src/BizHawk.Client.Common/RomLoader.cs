@@ -342,7 +342,7 @@ namespace BizHawk.Client.Common
 						{
 							DiscData = disc,
 							DiscType = new DiscIdentifier(disc).DetectDiscType(),
-							DiscName = Path.GetFileNameWithoutExtension(path)
+							DiscName = Path.GetFileNameWithoutExtension(path),
 						},
 					},
 			};
@@ -368,7 +368,7 @@ namespace BizHawk.Client.Common
 				{
 					DiscData = a.d,
 					DiscType = new DiscIdentifier(a.d).DetectDiscType(),
-					DiscName = Path.GetFileNameWithoutExtension(a.p)
+					DiscName = Path.GetFileNameWithoutExtension(a.p),
 				})
 				.ToList();
 			if (discs.Count == 0)
@@ -379,7 +379,7 @@ namespace BizHawk.Client.Common
 			{
 				Comm = nextComm,
 				Game = game,
-				Discs = discs
+				Discs = discs,
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
 		}
@@ -560,7 +560,7 @@ namespace BizHawk.Client.Common
 						FileData = rom.FileData,
 						Extension = rom.Extension,
 						RomPath = file.FullPathWithoutMember,
-						Game = game
+						Game = game,
 					},
 				},
 			};
@@ -689,7 +689,7 @@ namespace BizHawk.Client.Common
 							FileData = kvp.Value, // TODO: Hope no one needed anything special here
 							Extension = Path.GetExtension(kvp.Key),
 							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|'))!, kvp.Key!)),
-							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
+							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key)),
 						})
 						.ToList(),
 					Discs = xmlGame.AssetFullPaths
@@ -700,7 +700,7 @@ namespace BizHawk.Client.Common
 						{
 							DiscData = a.d,
 							DiscType = new DiscIdentifier(a.d).DetectDiscType(),
-							DiscName = Path.GetFileNameWithoutExtension(a.p)
+							DiscName = Path.GetFileNameWithoutExtension(a.p),
 						})
 						.ToList(),
 				};
