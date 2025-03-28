@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using System.Globalization;
-using BizHawk.Common.NumberExtensions;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -58,19 +57,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				uint val = Type switch
-				{
-					WatchDisplayType.Unsigned => uint.Parse(value),
-					WatchDisplayType.Signed => (uint)int.Parse(value),
-					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
-					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
-					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
-					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
-					WatchDisplayType.Binary => Convert.ToUInt32(value, 2),
-					_ => 0,
-				};
-
-				PokeDWord(val);
+				PokeDWord(Watch.ParseValue(value, Size, Type));
 				return true;
 			}
 			catch
@@ -109,36 +96,7 @@ namespace BizHawk.Client.Common
 
 		// TODO: Implements IFormattable
 		public string FormatValue(uint val)
-		{
-			string FormatFloat()
-			{
-				var _float = NumberExtensions.ReinterpretAsF32(val);
-				return _float.ToString(NumberFormatInfo.InvariantInfo);
-			}
-
-			string FormatBinary()
-			{
-				var str = Convert.ToString(val, 2).PadLeft(32, '0');
-				for (var i = 28; i > 0; i -= 4)
-				{
-					str = str.Insert(i, " ");
-				}
-				return str;
-			}
-
-			return Type switch
-			{
-				_ when !IsValid => "-",
-				WatchDisplayType.Unsigned => val.ToString(),
-				WatchDisplayType.Signed => ((int)val).ToString(),
-				WatchDisplayType.Hex => $"{val:X8}",
-				WatchDisplayType.FixedPoint_20_12 => ((int)val / 4096.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
-				WatchDisplayType.FixedPoint_16_16 => ((int)val / 65536.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
-				WatchDisplayType.Float => FormatFloat(),
-				WatchDisplayType.Binary => FormatBinary(),
-				_ => val.ToString(),
-			};
-		}
+			=> IsValid ? Watch.FormatValue(val, Size, Type) : "-";
 
 		public override string Diff => $"{_value - (long)_previous:+#;-#;0}";
 

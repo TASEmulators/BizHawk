@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Globalization;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -56,16 +56,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				byte val = Type switch
-				{
-					WatchDisplayType.Unsigned => byte.Parse(value),
-					WatchDisplayType.Signed => (byte)sbyte.Parse(value),
-					WatchDisplayType.Hex => byte.Parse(value, NumberStyles.HexNumber),
-					WatchDisplayType.Binary => Convert.ToByte(value, 2),
-					_ => 0,
-				};
-
-				PokeByte(val);
+				PokeByte(unchecked((byte) Watch.ParseValue(value, Size, Type)));
 				return true;
 			}
 			catch
@@ -104,17 +95,7 @@ namespace BizHawk.Client.Common
 
 		// TODO: Implements IFormattable
 		public string FormatValue(byte val)
-		{
-			return Type switch
-			{
-				_ when !IsValid => "-",
-				WatchDisplayType.Unsigned => val.ToString(),
-				WatchDisplayType.Signed => ((sbyte) val).ToString(),
-				WatchDisplayType.Hex => $"{val:X2}",
-				WatchDisplayType.Binary => Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " "),
-				_ => val.ToString(),
-			};
-		}
+			=> IsValid ? Watch.FormatValue(val, Size, Type) : "-";
 
 		public override string Diff => $"{_value - _previous:+#;-#;0}";
 
