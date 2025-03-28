@@ -167,17 +167,24 @@ namespace BizHawk.Client.Common
 			{
 				if (ShouldPoke())
 				{
-					switch (_watch.Size)
+					try
 					{
-						case WatchSize.Byte:
-							_watch.Poke(((ByteWatch)_watch).FormatValue((byte)_val));
-							break;
-						case WatchSize.Word:
-							_watch.Poke(((WordWatch)_watch).FormatValue((ushort)_val));
-							break;
-						case WatchSize.DWord:
-							_watch.Poke(((DWordWatch)_watch).FormatValue((uint)_val));
-							break;
+						switch (_watch.Size)
+						{
+							case WatchSize.Byte:
+								_watch.PokeByte(unchecked((byte) _val));
+								break;
+							case WatchSize.Word:
+								_watch.PokeWord(unchecked((ushort) _val));
+								break;
+							case WatchSize.DWord:
+								_watch.PokeDWord(unchecked((uint) _val));
+								break;
+						}
+					}
+					catch
+					{
+						// ignore (matches `*Watch.Poke` implementations)
 					}
 				}
 

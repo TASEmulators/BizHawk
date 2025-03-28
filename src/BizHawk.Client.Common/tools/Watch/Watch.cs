@@ -285,7 +285,7 @@ namespace BizHawk.Client.Common
 				: 0;
 		}
 
-		protected void PokeByte(byte val)
+		protected internal void PokeByte(byte val)
 		{
 			if (IsValid)
 			{
@@ -293,7 +293,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void PokeWord(ushort val)
+		protected internal void PokeWord(ushort val)
 		{
 			if (IsValid)
 			{
@@ -301,7 +301,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void PokeDWord(uint val)
+		protected internal void PokeDWord(uint val)
 		{
 			if (IsValid)
 			{
