@@ -77,7 +77,7 @@
 			/// <summary>
 			/// Audio track( TOC Q control 0x04 flag clear )
 			/// </summary>
-			Audio
+			Audio,
 		}
     }
 }

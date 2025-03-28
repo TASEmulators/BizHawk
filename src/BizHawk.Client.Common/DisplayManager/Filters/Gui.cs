@@ -273,7 +273,9 @@ namespace BizHawk.Client.Common.Filters
 	{
 		public enum eFilterOption
 		{
-			None, Bilinear, Bicubic
+			None,
+			Bilinear,
+			Bicubic,
 		}
 
 		public eFilterOption FilterOption = eFilterOption.None;

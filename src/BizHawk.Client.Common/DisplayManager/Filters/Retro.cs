@@ -204,7 +204,10 @@ namespace BizHawk.Client.Common.Filters
 
 		public enum ScaleType
 		{
-			NotSet, Source, Viewport, Absolute
+			NotSet,
+			Source,
+			Viewport,
+			Absolute,
 		}
 
 		public class ShaderPass

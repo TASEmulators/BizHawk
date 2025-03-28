@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		{
 			MIC   = 1,
 			RESET = 2,
-			LID   = 4
+			LID   = 4,
 		}
 
 		private bool _lidOpen = true;

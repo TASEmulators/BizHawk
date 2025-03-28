@@ -12,7 +12,9 @@ namespace BizHawk.Client.Common.FilterManager
 {
 	public enum SurfaceDisposition
 	{
-		Unspecified, Texture, RenderTarget
+		Unspecified,
+		Texture,
+		RenderTarget,
 	}
 
 	public class SurfaceFormat
@@ -60,7 +62,7 @@ namespace BizHawk.Client.Common.FilterManager
 		{
 			Run,
 			NewTarget,
-			FinalTarget
+			FinalTarget,
 		}
 
 		//services to filters:

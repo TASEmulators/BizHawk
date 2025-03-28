@@ -40,7 +40,7 @@ namespace BizHawk.Bizware.Graphics
 			Nvida,
 			Amd,
 			Intel,
-			Unknown
+			Unknown,
 		}
 
 		// Avoid old Intel gpus, these have been reported crashing with gl interop

@@ -139,7 +139,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public enum BreakpointOperation
 		{
-			Add, Edit, Duplicate
+			Add,
+			Edit,
+			Duplicate,
 		}
 	}
 }

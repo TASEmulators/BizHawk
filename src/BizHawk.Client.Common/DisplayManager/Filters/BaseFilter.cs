@@ -171,7 +171,8 @@ namespace BizHawk.Client.Common.Filters
 
 		public enum SurfaceDirection
 		{
-			Input, Output
+			Input,
+			Output,
 		}
 	}
 }

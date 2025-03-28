@@ -42,14 +42,14 @@ namespace BizHawk.Common
 			[Flags]
 			public enum Mask : uint
 			{
-				Format = 0x4
+				Format = 0x4,
 			}
 
 			[Flags]
 			public enum Format : int
 			{
 				SortDown = 0x200,
-				SortUp = 0x400
+				SortUp = 0x400,
 			}
 		}
 

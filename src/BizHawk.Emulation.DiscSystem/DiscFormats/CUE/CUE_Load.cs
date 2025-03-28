@@ -42,7 +42,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private enum BurnType
 		{
-			Normal, Pregap, Postgap
+			Normal,
+			Pregap,
+			Postgap,
 		}
 
 		private class BlobInfo

@@ -43,7 +43,7 @@ namespace BizHawk.Common
 			XI_GestureSwipeBegin = 30,
 			XI_GestureSwipeUpdate = 31,
 			XI_GestureSwipeEnd = 32,
-			XI_LASTEVENT = XI_GestureSwipeEnd
+			XI_LASTEVENT = XI_GestureSwipeEnd,
 		}
 
 		// these are normally macros in XI2.h

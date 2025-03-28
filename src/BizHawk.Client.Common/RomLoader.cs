@@ -65,7 +65,10 @@ namespace BizHawk.Client.Common
 
 		public enum LoadErrorType
 		{
-			Unknown, MissingFirmware, Xml, DiscError
+			Unknown,
+			MissingFirmware,
+			Xml,
+			DiscError,
 		}
 
 		// helper methods for the settings events

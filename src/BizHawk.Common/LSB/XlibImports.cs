@@ -66,7 +66,7 @@ namespace BizHawk.Common
 			BadIDChoice = 14,
 			BadName = 15,
 			BadLength = 16,
-			BadImplementation = 17
+			BadImplementation = 17,
 		}
 
 		[DllImport(XLIB)]
@@ -118,7 +118,7 @@ namespace BizHawk.Common
 			ClientMessage = 33,
 			MappingNotify = 34,
 			GenericEvent = 35,
-			LASTEvent = 36
+			LASTEvent = 36,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -191,7 +191,7 @@ namespace BizHawk.Common
 			FocusChangeMask = 1 << 21,
 			PropertyChangeMask = 1 << 22,
 			ColormapChangeMask = 1 << 23,
-			OwnerGrabButtonMask = 1 << 24
+			OwnerGrabButtonMask = 1 << 24,
 		}
 
 		public enum GrabMode : int

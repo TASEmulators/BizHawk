@@ -5,7 +5,7 @@
 		LegacyDirectSound, // kept here to handle old configs
 		XAudio2,
 		OpenAL,
-		Dummy
+		Dummy,
 	}
 
 	public enum EDispManagerAR
@@ -18,7 +18,8 @@
 
 	public enum SaveStateType
 	{
-		Binary, Text
+		Binary,
+		Text,
 	}
 
 	public enum ClientProfile
@@ -27,7 +28,7 @@
 		Casual = 1,
 		Longplay = 2,
 		Tas = 3,
-		N64Tas = 4
+		N64Tas = 4,
 	}
 
 	/// <summary>

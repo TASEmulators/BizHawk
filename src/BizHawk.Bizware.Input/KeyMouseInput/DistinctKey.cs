@@ -619,6 +619,6 @@ namespace BizHawk.Bizware.Input
 		NumPadEnter,
 
 		/// <summary>Indicates a key which is not present in this enum</summary>
-		Unknown = unchecked((int) 0xFFFFFFFF)
+		Unknown = unchecked((int) 0xFFFFFFFF),
 	}
 }

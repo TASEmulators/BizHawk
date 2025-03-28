@@ -182,6 +182,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	{
 		Button1,
 		Button2,
-		Button3
+		Button3,
 	}
 }

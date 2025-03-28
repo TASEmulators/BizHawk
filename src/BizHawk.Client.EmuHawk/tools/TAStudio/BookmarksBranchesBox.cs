@@ -28,7 +28,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private enum BranchUndo
 		{
-			Load, Update, Text, Remove, None
+			Load,
+			Update,
+			Text,
+			Remove,
+			None,
 		}
 
 		public TAStudio Tastudio { get; set; }

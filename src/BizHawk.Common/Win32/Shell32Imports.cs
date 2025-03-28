@@ -57,7 +57,7 @@ namespace BizHawk.Common
 				BrowseForPrinter = 0x2000,
 
 				/// <remarks>BIF_BROWSEINCLUDEFILES</remarks>
-				BrowseForEverything = 0x4000
+				BrowseForEverything = 0x4000,
 			}
 		}
 

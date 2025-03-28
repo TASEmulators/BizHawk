@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 			GreaterThanOrEqual,
 			LessThan,
 			LessThanOrEqual,
-			NotEqual
+			NotEqual,
 		}
 
 		private readonly Watch _watch;

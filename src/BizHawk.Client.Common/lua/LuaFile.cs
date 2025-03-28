@@ -43,7 +43,9 @@ namespace BizHawk.Client.Common
 
 		public enum RunState
 		{
-			Disabled, Running, Paused
+			Disabled,
+			Running,
+			Paused,
 		}
 
 		public RunState State { get; set; }
