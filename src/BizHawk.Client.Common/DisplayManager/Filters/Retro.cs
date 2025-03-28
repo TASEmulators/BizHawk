@@ -161,13 +161,7 @@ namespace BizHawk.Client.Common.Filters
 				else
 				{
 					// remove comments from end of value. exclusive from above condition, since comments after quoted strings would be snipped by the quoted string extraction
-					var hash = value.IndexOf('#');
-					if (hash != -1)
-					{
-						value = value.Substring(0, hash);
-					}
-
-					value = value.Trim();
+					value = value.SubstringBefore('#').Trim();
 				}
 				dict[key.ToLowerInvariant()] = value;
 			}
