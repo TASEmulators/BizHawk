@@ -144,14 +144,12 @@ namespace BizHawk.Client.EmuHawk
 						: "Console"; // anything that wants not console can set it in the categorylabels
 				}
 
-				if (!buckets.ContainsKey(categoryLabel))
+				buckets.GetValueOrPut(categoryLabel, categoryLabel1 =>
 				{
-					var l = new List<string>();
-					buckets.Add(categoryLabel, l);
-					orderedBuckets.Add(new KeyValuePair<string, List<string>>(categoryLabel, l));
-				}
-
-				buckets[categoryLabel].Add(button);
+					List<string> l = new();
+					orderedBuckets.Add(new(categoryLabel1, l));
+					return l;
+				}).Add(button);
 			}
 
 			if (orderedBuckets.Count == 1)

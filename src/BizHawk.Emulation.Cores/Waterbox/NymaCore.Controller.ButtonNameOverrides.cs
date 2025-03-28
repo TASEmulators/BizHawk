@@ -36,9 +36,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private string OverrideButtonName(string original)
 		{
 			// VB hack
-			if (ButtonNameOverrides.ContainsKey(original))
+			if (ButtonNameOverrides.TryGetValue(original, out string vbOverrideName))
 			{
-				original = ButtonNameOverrides[original];
+				original = vbOverrideName;
 			}
 
 			original = Regex.Replace(original, @"\s*(↑|↓|←|→)\s*", "");
@@ -48,9 +48,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				original = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(original.ToLowerInvariant());
 			}
 
-			if (ButtonNameOverrides.ContainsKey(original))
+			if (ButtonNameOverrides.TryGetValue(original, out string overrideName))
 			{
-				original = ButtonNameOverrides[original];
+				original = overrideName;
 			}
 
 			// TODO: Add dictionaries or whatever here as needed
