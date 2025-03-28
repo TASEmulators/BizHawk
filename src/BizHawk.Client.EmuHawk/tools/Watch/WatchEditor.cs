@@ -37,6 +37,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly TextBox NotesBox;
 
+		/// <value><c>1</c>, <c>2</c>, or <c>4</c></value>
+		/// <remarks>can also write <c>0</c>, which clears the dropdown, which will be read back as <c>1</c></remarks>
+		private int SelectedWidth
+		{
+			get => SizeDropDown.SelectedIndex is -1
+				? 1
+				: ((string) SizeDropDown.SelectedItem)[0] - '0'; // [ "1 Byte", "2 Byte", "4 Byte" ] --> [ 1, 2, 4 ]
+			set => SizeDropDown.SelectedIndex = value is 4 ? 2 : value - 1; // [ 0, 1, 2, 4 ] --> [ -1, 0, 1, 2 ]
+		}
+
 		private readonly ComboBox SizeDropDown;
 
 		public WatchEditor()
@@ -178,24 +188,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					SizeDropDown.SelectedItem = MemoryDomains.First().WordSize switch
-					{
-						1 => SizeDropDown.Items[0],
-						2 => SizeDropDown.Items[1],
-						4 => SizeDropDown.Items[2],
-						_ => SizeDropDown.Items[0]
-					};
+					SelectedWidth = MemoryDomains.First().WordSize;
 					break;
 				case Mode.Duplicate:
 				case Mode.Edit:
-					SizeDropDown.SelectedItem = Watches[0].Size switch
-					{
-						WatchSize.Byte => SizeDropDown.Items[0],
-						WatchSize.Word => SizeDropDown.Items[1],
-						WatchSize.DWord => SizeDropDown.Items[2],
-						_ => SizeDropDown.SelectedItem
-					};
-
+					SelectedWidth = (int) Watches[0].Size;
 					var index = DisplayTypeDropDown.Items.IndexOf(Watch.DisplayTypeToString(Watches[0].Type));
 					DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[index];
 
@@ -267,23 +264,15 @@ namespace BizHawk.Client.EmuHawk
 		private void SetDisplayTypes()
 		{
 			string oldType = DisplayTypeDropDown.Text;
-			switch (SizeDropDown.SelectedIndex)
-			{
-				default:
-				case 0:
-					DisplayTypeDropDown.ReplaceItems(items: ByteWatch.ValidTypes.Select(Watch.DisplayTypeToString));
-					break;
-				case 1:
-					DisplayTypeDropDown.ReplaceItems(items: WordWatch.ValidTypes.Select(Watch.DisplayTypeToString));
-					break;
-				case 2:
-					DisplayTypeDropDown.ReplaceItems(items: DWordWatch.ValidTypes.Select(Watch.DisplayTypeToString));
-					break;
-			}
-
-			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items.Contains(oldType)
-				? oldType
-				: DisplayTypeDropDown.Items[0];
+			DisplayTypeDropDown.ReplaceItems(
+				items: (SelectedWidth switch
+				{
+					4 => DWordWatch.ValidTypes,
+					2 => WordWatch.ValidTypes,
+					_ => ByteWatch.ValidTypes
+				}).Select(Watch.DisplayTypeToString));
+			DisplayTypeDropDown.SelectedItem = oldType;
+			if (DisplayTypeDropDown.SelectedIndex is -1) DisplayTypeDropDown.SelectedIndex = 0;
 		}
 
 		private void SetBigEndianCheckBox()
@@ -331,19 +320,13 @@ namespace BizHawk.Client.EmuHawk
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 					var bigEndian = BigEndianCheckBox.Checked;
-					switch (SizeDropDown.SelectedIndex)
-					{
-						case 0:
-							Watches.Add(Watch.GenerateWatch(domain, address, WatchSize.Byte, type, bigEndian, notes));
-							break;
-						case 1:
-							Watches.Add(Watch.GenerateWatch(domain, address, WatchSize.Word, type, bigEndian, notes));
-							break;
-						case 2:
-							Watches.Add(Watch.GenerateWatch(domain, address, WatchSize.DWord, type, bigEndian, notes));
-							break;
-					}
-
+					Watches.Add(Watch.GenerateWatch(
+						domain,
+						address,
+						(WatchSize) SelectedWidth,
+						type,
+						bigEndian: bigEndian,
+						note: notes));
 					break;
 				case Mode.Edit:
 					DoEdit();
@@ -381,19 +364,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = 0; i < Watches.Count; i++)
 				{
-					var size = SizeDropDown.SelectedIndex switch
-					{
-						1 => WatchSize.Word,
-						2 => WatchSize.DWord,
-						_ => WatchSize.Byte
-					};
-
 					var displayType = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 
 					Watches[i] = Watch.GenerateWatch(
 						Watches[i].Domain,
 						Watches.Count == 1 ? AddressBox.ToRawInt() ?? 0 : Watches[i].Address,
-						size,
+						(WatchSize) SelectedWidth,
 						_changedDisplayType ? displayType : Watches[i].Type,
 						Watches[i].BigEndian,
 						Watches[i].Notes);
