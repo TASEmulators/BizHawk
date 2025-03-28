@@ -56,11 +56,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public override string PreviousStr => "";
 
-		/// <summary>
-		/// TTransform the current instance into a displayable (short representation) string
-		/// It's used by the "Display on screen" option in the RamWatch window
-		/// </summary>
-		/// <returns>A well formatted string representation</returns>
 		public override string ToDisplayString()
 		{
 			return string.IsNullOrEmpty(Notes)
@@ -68,10 +63,6 @@ namespace BizHawk.Client.Common
 				: Notes;
 		}
 
-		/// <summary>
-		/// Transforms the current instance into a string
-		/// </summary>
-		/// <returns>A <see cref="string"/> representation of the current <see cref="Watch"/></returns>
 		public override string ToString()
 		{
 			return $"0\tS\t_\t1\t\t{Notes.Trim('\r', '\n')}";
@@ -98,11 +89,6 @@ namespace BizHawk.Client.Common
 		/// Ignore that stuff
 		/// </summary>
 		public override string Diff => "";
-
-		/// <summary>
-		/// Ignore that stuff
-		/// </summary>
-		public override uint MaxValue => 0;
 
 		/// <summary>
 		/// Ignore that stuff

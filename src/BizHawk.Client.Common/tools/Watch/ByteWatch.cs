@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Globalization;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -42,43 +42,21 @@ namespace BizHawk.Client.Common
 			WatchDisplayType.Binary,
 		];
 
-		/// <summary>
-		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="ByteWatch"/>
-		/// </summary>
-		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
 		public override IEnumerable<WatchDisplayType> AvailableTypes()
 		{
 			return ValidTypes;
 		}
 
-		/// <summary>
-		/// Reset the previous value; set it to the current one
-		/// </summary>
 		public override void ResetPrevious()
 		{
 			_previous = GetByte();
 		}
 
-		/// <summary>
-		/// Try to sets the value into the <see cref="MemoryDomain"/>
-		/// at the current <see cref="Watch"/> address
-		/// </summary>
-		/// <param name="value">Value to set</param>
-		/// <returns>True if value successfully sets; otherwise, false</returns>
 		public override bool Poke(string value)
 		{
 			try
 			{
-				byte val = Type switch
-				{
-					WatchDisplayType.Unsigned => byte.Parse(value),
-					WatchDisplayType.Signed => (byte)sbyte.Parse(value),
-					WatchDisplayType.Hex => byte.Parse(value, NumberStyles.HexNumber),
-					WatchDisplayType.Binary => Convert.ToByte(value, 2),
-					_ => 0,
-				};
-
-				PokeByte(val);
+				PokeByte(unchecked((byte) Watch.ParseValue(value, Size, Type)));
 				return true;
 			}
 			catch
@@ -87,9 +65,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Update the Watch (read it from <see cref="MemoryDomain"/>
-		/// </summary>
 		public override void Update(PreviousType previousType)
 		{
 			switch (previousType)
@@ -120,52 +95,16 @@ namespace BizHawk.Client.Common
 
 		// TODO: Implements IFormattable
 		public string FormatValue(byte val)
-		{
-			return Type switch
-			{
-				_ when !IsValid => "-",
-				WatchDisplayType.Unsigned => val.ToString(),
-				WatchDisplayType.Signed => ((sbyte) val).ToString(),
-				WatchDisplayType.Hex => $"{val:X2}",
-				WatchDisplayType.Binary => Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " "),
-				_ => val.ToString(),
-			};
-		}
+			=> IsValid ? Watch.FormatValue(val, Size, Type) : "-";
 
-		/// <summary>
-		/// Get a string representation of difference
-		/// between current value and the previous one
-		/// </summary>
 		public override string Diff => $"{_value - _previous:+#;-#;0}";
 
-		/// <summary>
-		/// Returns true if the Watch is valid, false otherwise
-		/// </summary>
-		public override bool IsValid => Domain.Size == 0 || Address < Domain.Size;
-
-		/// <summary>
-		/// Get the maximum possible value
-		/// </summary>
-		public override uint MaxValue => byte.MaxValue;
-
-		/// <summary>
-		/// Get the current value
-		/// </summary>
 		public override int Value => GetByte();
 
-		/// <summary>
-		/// Get a string representation of the current value
-		/// </summary>
 		public override string ValueString => FormatValue(GetByte());
 
-		/// <summary>
-		/// Get the previous value
-		/// </summary>
 		public override uint Previous => _previous;
 
-		/// <summary>
-		/// Get a string representation of the previous value
-		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);
 	}
 }
