@@ -248,6 +248,10 @@ namespace BizHawk.Client.Common
 			}
 			switch (discType)
 			{
+				case DiscType.DOS:
+					game.System = VSystemID.Raw.DOS;
+					break;
+
 				case DiscType.SegaSaturn:
 					game.System = VSystemID.Raw.SAT;
 					break;
@@ -296,9 +300,6 @@ namespace BizHawk.Client.Common
 					break;
 				case DiscType.Wii:
 					NoCoreForSystem(VSystemID.Raw.Wii);
-					break;
-				case DiscType.DOS:
-					game.System = VSystemID.Raw.DOS;
 					break;
 
 				case DiscType.AudioDisc:

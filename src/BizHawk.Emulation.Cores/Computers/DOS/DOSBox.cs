@@ -345,20 +345,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Setting joystick inputs
 			if (_syncSettings.EnableJoystick1)
 			{
-				fi.joystick1.up      = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-				fi.joystick1.down    = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-				fi.joystick1.left    = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-				fi.joystick1.right   = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+				fi.joystick1.up = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+				fi.joystick1.down = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+				fi.joystick1.left = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+				fi.joystick1.right = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
 				fi.joystick1.button1 = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
 				fi.joystick1.button2 = controller.IsPressed($"P1 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 			}
 
 			if (_syncSettings.EnableJoystick2)
 			{
-                fi.joystick2.up      = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
-				fi.joystick2.down    = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
-				fi.joystick2.left    = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
-				fi.joystick2.right   = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
+				fi.joystick2.up = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Up}") ? 1 : 0;
+				fi.joystick2.down = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Down}") ? 1 : 0;
+				fi.joystick2.left = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Left}") ? 1 : 0;
+				fi.joystick2.right = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Right}") ? 1 : 0;
 				fi.joystick2.button1 = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button1}") ? 1 : 0;
 				fi.joystick2.button2 = controller.IsPressed($"P2 {Inputs.Joystick} {JoystickButtons.Button2}") ? 1 : 0;
 			}
@@ -366,9 +366,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Setting mouse inputs
 			if (_syncSettings.EnableMouse)
 			{
-				// 272 is minimal delta for RMouse on my machine, this will be obsolete when global sensitivity for RMouse is added and when it's bindable from GUI
-				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}") / 272;
-				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}") / 272;
+				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}");
+				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}");
 				fi.mouse.posX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.PosX}");
 				fi.mouse.posY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.PosY}");
 				fi.mouse.dX = deltaX != 0 ? deltaX : fi.mouse.posX - _mouseState.posX;
@@ -401,27 +400,29 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				// Updating mouse state
 				_mouseState = nextState;
-            }
+			}
 
-            // Processing floppy disks swaps
-            fi.driveActions.insertFloppyDisk = -1;
-			if (_floppyDiskCount > 1 && controller.IsPressed(Inputs.NextFloppyDisk) && !_nextFloppyDiskPressed)
+			// Processing floppy disks swaps
+			fi.driveActions.insertFloppyDisk = -1;
+			var nextFloppyDiskWasPressed = _nextFloppyDiskPressed;
+			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
+			if (!nextFloppyDiskWasPressed && _nextFloppyDiskPressed && _floppyDiskCount >= 2)
 			{
 				_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
 				fi.driveActions.insertFloppyDisk = _currentFloppyDisk;
 				CoreComm.Notify($"Insterted FloppyDisk {_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", null);
 			}
-			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
 
 			// Processing CDROM swaps
 			fi.driveActions.insertCDROM = -1;
-			if (_cdRomFileNames.Count > 1 && controller.IsPressed(Inputs.NextCDROM) && !_nextCDROMPressed)
+			var nextCDROMWasPressed = _nextCDROMPressed;
+			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
+			if (!nextCDROMWasPressed && _nextCDROMPressed && _cdRomFileNames.Count >= 2)
 			{
 				_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
 				fi.driveActions.insertCDROM = _currentCDROM;
 				CoreComm.Notify($"Insterted CDROM {_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
 			}
-			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
 
 			// Processing keyboard inputs
 			foreach (var (name, key) in _keyboardMap)
@@ -430,7 +431,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				{
 					unsafe
 					{
-						fi.Keys.Buffer[(int)key] = 1;
+						fi.Keys.Buffer[(int) key] = 1;
 					}
 				}
 			}

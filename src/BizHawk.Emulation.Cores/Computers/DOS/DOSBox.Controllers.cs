@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox
-	{ 
+	{
 		// A class to store the current state of the mouse for delta and button activation calculation
 		private class MouseState
 		{
@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// ReSharper disable once LoopCanBeConvertedToQuery
 			foreach (var k in Enum.GetValues(typeof(LibDOSBox.DOSBoxKeyboard)))
 			{
+				if (k is LibDOSBox.DOSBoxKeyboard.Key_None) continue;
 				var name = Enum.GetName(typeof(LibDOSBox.DOSBoxKeyboard), k)!.Replace('_', ' ');
 				keyboardMap.Add((name, (LibDOSBox.DOSBoxKeyboard) k));
 			}
@@ -60,10 +61,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.LeftButton);
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.MiddleButton);
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.RightButton);
+
+				// Although most apps (including windows) use speed to compute the mouse position, some games (SimCity) use the absolute value
+				// The absolute values needs to be 1:1 with the video size, as this is translated 1:1 to the core.
+				// The effect is that the position on BK's window translates perfectly to the core
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-32769).RangeTo(32768), 0); // This is 
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-32769).RangeTo(32768), 0);
+
+				// Mouse speed needs to also be adjusted to bk's window size to capture the exact movement and not amplify/shrink it.
+				// To adjust sensitivity, use the corresponding sync setting; these values here is the basis value
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-LibDOSBox.SVGA_MAX_WIDTH / 2).RangeTo(LibDOSBox.SVGA_MAX_WIDTH / 2), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-LibDOSBox.SVGA_MAX_HEIGHT / 2).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT / 2), 0);
 			}
 
 			// Adding drive management buttons
