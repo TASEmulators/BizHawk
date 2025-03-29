@@ -62,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.BoolButtons.Add(Inputs.Mouse + " " + MouseInputs.RightButton);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-LibDOSBox.SVGA_MAX_WIDTH / 2).RangeTo(LibDOSBox.SVGA_MAX_WIDTH / 2), 0);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-LibDOSBox.SVGA_MAX_HEIGHT / 2).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT / 2), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-32769).RangeTo(32768), 0); // This is 
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-32769).RangeTo(32768), 0);
 			}
 
 			// Adding drive management buttons

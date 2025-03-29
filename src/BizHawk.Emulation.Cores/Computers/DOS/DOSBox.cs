@@ -375,25 +375,29 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				fi.mouse.dY = deltaY != 0 ? deltaY : fi.mouse.posY - _mouseState.posY;
 
 				// Button pressed criteria:
+				bool isMouseLeftButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}");
+				bool isMouseMiddleButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}");
+				bool isMouseRightButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}");
+
 				// If the input is made in this frame and the button is not held from before
-				fi.mouse.leftButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && !_mouseState.leftButtonHeld ? 1 : 0;
-				fi.mouse.middleButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && !_mouseState.middleButtonHeld ? 1 : 0;
-				fi.mouse.rightButtonPressed = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && !_mouseState.rightButtonHeld ? 1 : 0;
+				fi.mouse.leftButtonPressed = isMouseLeftButtonPressed && !_mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonPressed = isMouseMiddleButtonPressed && !_mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonPressed = isMouseRightButtonPressed && !_mouseState.rightButtonHeld ? 1 : 0;
 
 				// Button released criteria:
 				// If the input is not pressed in this frame and the button is held from before
-				fi.mouse.leftButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}") && _mouseState.leftButtonHeld ? 1 : 0;
-				fi.mouse.middleButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}") && _mouseState.middleButtonHeld ? 1 : 0;
-				fi.mouse.rightButtonReleased = !controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}") && _mouseState.rightButtonHeld ? 1 : 0;
+				fi.mouse.leftButtonReleased = !isMouseLeftButtonPressed && _mouseState.leftButtonHeld ? 1 : 0;
+				fi.mouse.middleButtonReleased = !isMouseMiddleButtonPressed && _mouseState.middleButtonHeld ? 1 : 0;
+				fi.mouse.rightButtonReleased = !isMouseRightButtonPressed && _mouseState.rightButtonHeld ? 1 : 0;
 				fi.mouse.sensitivity = _syncSettings.MouseSensitivity;
 
 				// Getting new mouse state values
 				var nextState = new DOSBox.MouseState();
 				nextState.posX = fi.mouse.posX;
 				nextState.posY = fi.mouse.posY;
-				if (fi.mouse.leftButtonPressed > 0) nextState.leftButtonHeld = true;
-				if (fi.mouse.middleButtonPressed > 0) nextState.middleButtonHeld = true;
-				if (fi.mouse.rightButtonPressed > 0) nextState.rightButtonHeld = true;
+				nextState.leftButtonHeld = isMouseLeftButtonPressed;
+				nextState.middleButtonHeld = isMouseMiddleButtonPressed;
+				nextState.rightButtonHeld = isMouseRightButtonPressed;
 
 				// Updating mouse state
 				_mouseState = nextState;
