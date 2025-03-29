@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Strafe Left",
 			"Strafe Right",
 			"Run",
-			"Automap",
+			"Strafe",
 			"Weapon Select 1",
 			"Weapon Select 2",
 			"Weapon Select 3",
@@ -76,6 +76,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Weapon Select 5",
 			"Weapon Select 6",
 			"Weapon Select 7",
+			"Automap Toggle",
+			"Automap +",
+			"Automap -",
+			"Automap Full/Zoom",
+			"Automap Follow",
+			"Automap Up",
+			"Automap Down",
+			"Automap Right",
+			"Automap Left",
+			"Automap Grid",
+			"Automap Mark",
+			"Automap Clear Marks",
 		];
 
 		public byte ReadButtons(IController c)
