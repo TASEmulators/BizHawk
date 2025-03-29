@@ -39,6 +39,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/uae/libretro-uae (required for uae)
 		* waterbox/stella/core (required for stella)
 		* waterbox/dsda/core (required for dsda)
+		* waterbox/dosbox/dosbox-x (required for DOSBox-x)
 	* none of these submodules need to be cloned recursively
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
@@ -65,6 +66,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 6. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
 	cd ares64 && ./make-both.sh
 	cd bsnescore && make install
+	cd dosbox && make install
 	cd dsda && make install
 	cd gpgx && make install
 	cd libsnes && make install
