@@ -366,9 +366,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Setting mouse inputs
 			if (_syncSettings.EnableMouse)
 			{
-				// 272 is minimal delta for RMouse on my machine, this will be obsolete when global sensitivity for RMouse is added and when it's bindable from GUI
-				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}") / 272;
-				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}") / 272;
+				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}");
+				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}");
 				fi.mouse.posX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.PosX}");
 				fi.mouse.posY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.PosY}");
 				fi.mouse.dX = deltaX != 0 ? deltaX : fi.mouse.posX - _mouseState.posX;
