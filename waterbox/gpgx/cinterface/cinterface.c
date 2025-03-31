@@ -62,7 +62,7 @@ static uint8_t brm_format[0x40] =
 };
 
 ECL_ENTRY void (*biz_execcb)(unsigned addr);
-ECL_ENTRY void (*biz_readcb)(unsigned addr);
+ECL_ENTRY void (*biz_readcb)(unsigned addr, unsigned int value);
 ECL_ENTRY void (*biz_writecb)(unsigned addr);
 CDCallback biz_cdcb = NULL;
 ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode);
