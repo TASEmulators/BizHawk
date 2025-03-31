@@ -63,9 +63,10 @@ static uint8_t brm_format[0x40] =
 
 ECL_ENTRY void (*biz_execcb)(unsigned addr);
 ECL_ENTRY void (*biz_readcb)(unsigned addr, unsigned int value);
-ECL_ENTRY void (*biz_writecb)(unsigned addr);
-CDCallback biz_cdcb = NULL;
-ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode);
+ECL_ENTRY void (*biz_writecb)(unsigned addr, unsigned int value);
+CDCallback biz_cdcallback = NULL;
+unsigned biz_lastpc = 0;
+ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
 uint8 *tempsram;
 
 static void update_viewport(void)

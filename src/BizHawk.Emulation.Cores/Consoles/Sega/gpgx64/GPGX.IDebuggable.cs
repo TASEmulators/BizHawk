@@ -92,8 +92,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				if (MemoryCallbacks.HasWrites)
 				{
-					const uint flags = (uint)MemoryCallbackFlags.AccessWrite;
-					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+					uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+					MemoryCallbacks.CallMemoryCallbacks(a, val, flags, "M68K BUS");
 				}
 			};
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
