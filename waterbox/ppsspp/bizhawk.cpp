@@ -2,24 +2,15 @@
 #include <stdlib.h>
 #include <string>
 #include <libretro.h>
-#include <lr_input.h>
-#include <opera_vdlp.h>
-#include <opera_mem.h>
-#include <opera_cdrom.h>
-#include <opera_xbus.h>
+#include <jaffarCommon/dethreader.hpp>
 
-std::string _biosFilePath;
 std::string _gameFilePath;
-std::string _fontFilePath;
-int _port1Type;
-int _port2Type;
 controllerData_t _port1Value;
 controllerData_t _port2Value;
 uint32_t* _videoBuffer;
 size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
-int _region;
 int _nvramChanged;
 int _inputPortsRead;
 
@@ -29,21 +20,22 @@ int16_t _audioBuffer[_MAX_SAMPLES * _CHANNEL_COUNT];
 size_t _audioSamples;
 
 extern "C"
-{  
-  void* xbus_cdrom_plugin(int   proc_,   void* data_);
-  void opera_cdrom_set_callbacks(opera_cdrom_get_size_cb_t get_size_,  opera_cdrom_set_sector_cb_t set_sector_,  opera_cdrom_read_sector_cb_t read_sector_);
-  void opera_nvram_init(void *buf, const int bufsize);
-  void opera_lr_callbacks_set_audio_sample(retro_audio_sample_t cb);
-  void opera_lr_callbacks_set_audio_sample_batch(retro_audio_sample_batch_t cb);
-  void opera_lr_callbacks_set_environment(retro_environment_t cb);
-  void opera_lr_callbacks_set_input_poll(retro_input_poll_t cb);
-  void opera_lr_callbacks_set_input_state(retro_input_state_t cb);
-  void opera_lr_callbacks_set_log_printf(retro_log_printf_t cb);
-  void opera_lr_callbacks_set_video_refresh(retro_video_refresh_t cb);
-  RETRO_API void *retro_get_memory_data(unsigned id);
-  RETRO_API size_t retro_get_memory_size(unsigned id);
-  void retro_set_controller_port_device(unsigned port_, unsigned device_);
-  void retro_get_system_av_info(struct retro_system_av_info *info_);
+{
+    void* xbus_cdrom_plugin(int   proc_,   void* data_);
+    void retro_cdrom_set_callbacks(opera_cdrom_get_size_cb_t get_size_,  opera_cdrom_set_sector_cb_t set_sector_,  opera_cdrom_read_sector_cb_t read_sector_);
+    void retro_set_audio_sample(retro_audio_sample_t cb);
+    void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb);
+    void retro_set_environment(retro_environment_t cb);
+    void retro_set_input_poll(retro_input_poll_t cb);
+    void retro_set_input_state(retro_input_state_t cb);
+    void retro_set_log_printf(retro_log_printf_t cb);
+    void retro_set_video_refresh(retro_video_refresh_t cb);
+    RETRO_API void *retro_get_memory_data(unsigned id);
+    RETRO_API size_t retro_get_memory_size(unsigned id);
+    void lr_input_device_set(const uint32_t port_, const uint32_t device_);
+    RETRO_API size_t retro_serialize_size(void);
+    RETRO_API bool retro_serialize(void *data, size_t size);
+    RETRO_API bool retro_unserialize(const void *data, size_t size);
 }
 
 void RETRO_CALLCONV retro_video_refresh_callback(const void *data, unsigned width, unsigned height, size_t pitch)
@@ -75,135 +67,39 @@ void RETRO_CALLCONV retro_input_poll_callback()
   // printf("Libretro Input Poll Callback Called:\n");
 }
 
-int16_t processController(const int portType, controllerData_t& portValue, const unsigned device, const unsigned index, const unsigned id)
+int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device, unsigned index, unsigned id)
 {
-  switch (portType)
+  if (device == RETRO_DEVICE_JOYPAD) switch (id)
   {
-   case RETRO_DEVICE_JOYPAD:
-    switch (id)
-    {
-      case RETRO_DEVICE_ID_JOYPAD_UP: return portValue.gamePad.up;
-      case RETRO_DEVICE_ID_JOYPAD_DOWN: return portValue.gamePad.down;
-      case RETRO_DEVICE_ID_JOYPAD_LEFT: return portValue.gamePad.left;
-      case RETRO_DEVICE_ID_JOYPAD_RIGHT: return portValue.gamePad.right;
-      case RETRO_DEVICE_ID_JOYPAD_L: return portValue.gamePad.buttonL;
-      case RETRO_DEVICE_ID_JOYPAD_R: return portValue.gamePad.buttonR;
-      case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.gamePad.select;
-      case RETRO_DEVICE_ID_JOYPAD_START: return portValue.gamePad.start;
-      case RETRO_DEVICE_ID_JOYPAD_X: return portValue.gamePad.buttonX;
-      case RETRO_DEVICE_ID_JOYPAD_Y: return portValue.gamePad.buttonY;
-      case RETRO_DEVICE_ID_JOYPAD_B: return portValue.gamePad.buttonB;
-      case RETRO_DEVICE_ID_JOYPAD_A: return portValue.gamePad.buttonA;
-      default: return 0;
-    }
-
-    case RETRO_DEVICE_MOUSE:
-    switch (id)
-    {
-      case RETRO_DEVICE_ID_MOUSE_X: return portValue.mouse.dX;
-      case RETRO_DEVICE_ID_MOUSE_Y: return portValue.mouse.dY;
-      case RETRO_DEVICE_ID_MOUSE_LEFT: return portValue.mouse.leftButton;
-      case RETRO_DEVICE_ID_MOUSE_MIDDLE: return portValue.mouse.middleButton;
-      case RETRO_DEVICE_ID_MOUSE_RIGHT: return portValue.mouse.rightButton;
-      case RETRO_DEVICE_ID_MOUSE_BUTTON_4: return portValue.mouse.fourthButton;
-      default: return 0;
-    }
-
-    case RETRO_DEVICE_FLIGHTSTICK:
-    if (index == RETRO_DEVICE_INDEX_ANALOG_BUTTON)
-    {
-      switch (id)
-      {
-        case RETRO_DEVICE_ID_JOYPAD_R2: return portValue.flightStick.fire;
-        case RETRO_DEVICE_ID_JOYPAD_Y: return portValue.flightStick.buttonA;
-        case RETRO_DEVICE_ID_JOYPAD_B: return portValue.flightStick.buttonB;
-        case RETRO_DEVICE_ID_JOYPAD_A: return portValue.flightStick.buttonC;   
-        case RETRO_DEVICE_ID_JOYPAD_UP: return portValue.flightStick.up;   
-        case RETRO_DEVICE_ID_JOYPAD_DOWN: return portValue.flightStick.down;   
-        case RETRO_DEVICE_ID_JOYPAD_LEFT: return portValue.flightStick.left;   
-        case RETRO_DEVICE_ID_JOYPAD_RIGHT: return portValue.flightStick.right;
-        case RETRO_DEVICE_ID_JOYPAD_START: return portValue.flightStick.buttonP;
-        case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.flightStick.buttonX; 
-        case RETRO_DEVICE_ID_JOYPAD_L: return portValue.flightStick.leftTrigger;
-        case RETRO_DEVICE_ID_JOYPAD_R: return portValue.flightStick.rightTrigger;
-        default: return 0;
-      }
-    }
-    else
-    {
-      switch (id)
-      {
-        case RETRO_DEVICE_ID_ANALOG_X:
-          if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.horizontalAxis; 
-          if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
-          return 0;
-  
-        case RETRO_DEVICE_ID_ANALOG_Y:
-          if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.flightStick.verticalAxis;
-          if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.flightStick.altitudeAxis;
-          return 0;
-        default: return 0;
-      }
-    }
-    
-    case RETRO_DEVICE_LIGHTGUN:
-      switch (id)
-      {
-        case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X: return portValue.lightGun.screenX;
-        case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y: return portValue.lightGun.screenY;
-        case RETRO_DEVICE_ID_LIGHTGUN_TRIGGER: return portValue.lightGun.trigger;
-        case RETRO_DEVICE_ID_LIGHTGUN_SELECT: return portValue.lightGun.select;
-        case RETRO_DEVICE_ID_LIGHTGUN_RELOAD: return portValue.lightGun.reload;
-        case RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN: return portValue.lightGun.isOffScreen;
-        default: return 0;
-      }
-
-    case RETRO_DEVICE_ARCADE_LIGHTGUN:
-      switch (id)
-      {
-        case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X:   return portValue.arcadeLightGun.screenX;
-        case RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y:   return portValue.arcadeLightGun.screenY;
-        case RETRO_DEVICE_ID_LIGHTGUN_TRIGGER:    return portValue.arcadeLightGun.trigger;
-        case RETRO_DEVICE_ID_LIGHTGUN_SELECT:     return portValue.arcadeLightGun.select;
-        case RETRO_DEVICE_ID_LIGHTGUN_START:    return portValue.arcadeLightGun.start;
-        case RETRO_DEVICE_ID_LIGHTGUN_RELOAD:     return portValue.arcadeLightGun.reload;
-        case RETRO_DEVICE_ID_LIGHTGUN_AUX_A:    return portValue.arcadeLightGun.auxA;
-        case RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN: return portValue.arcadeLightGun.isOffScreen;
-        default: return 0;
-      }
-
-    case RETRO_DEVICE_ORBATAK_TRACKBALL:
-      switch (id)
-      {
-        case RETRO_DEVICE_ID_ANALOG_X:
-          if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dX; 
-          if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dX; 
-          return 0;
-    
-        case RETRO_DEVICE_ID_ANALOG_Y:
-          if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return portValue.orbatakTrackball.dY; 
-          if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return portValue.orbatakTrackball.dY; 
-          return 0;
-  
-        case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.orbatakTrackball.startP1;
-        case RETRO_DEVICE_ID_JOYPAD_START: return portValue.orbatakTrackball.startP2;
-        case RETRO_DEVICE_ID_JOYPAD_L: return portValue.orbatakTrackball.coinP1;
-        case RETRO_DEVICE_ID_JOYPAD_R: return portValue.orbatakTrackball.coinP2;
-        case RETRO_DEVICE_ID_JOYPAD_R2: return portValue.orbatakTrackball.service;
-        default: return 0;
-      }
-
+    case RETRO_DEVICE_ID_JOYPAD_UP: return _instance->_currentInput.up ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_DOWN: return _instance->_currentInput.down ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_LEFT: return _instance->_currentInput.left ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_RIGHT: return _instance->_currentInput.right ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_L: return _instance->_currentInput.ltrigger ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_R: return _instance->_currentInput.rtrigger ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_SELECT: return _instance->_currentInput.select ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_START: return _instance->_currentInput.start ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_X: return _instance->_currentInput.triangle ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_Y: return _instance->_currentInput.square ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_B: return _instance->_currentInput.cross ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_A: return _instance->_currentInput.circle ? 1 : 0;
     default: return 0;
   }
 
-  return 0;
-}
+  if (device == RETRO_DEVICE_ANALOG) switch (id)
+  {
+      case RETRO_DEVICE_ID_ANALOG_X:
+        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _instance->_currentInput.leftAnalogX; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _instance->_currentInput.rightAnalogX; 
+        return 0;
 
-int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device, unsigned index, unsigned id)
-{
-  // printf("Libretro Input State Callback Called. Port: %u, Device: %u, Index: %u, Id: %u\n", port, device, index, id);
-  if (port == 0) return processController(_port1Type, _port1Value, device, index, id);
-  if (port == 1) return processController(_port2Type, _port2Value, device, index, id);
+      case RETRO_DEVICE_ID_ANALOG_Y:
+        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _instance->_currentInput.leftAnalogY; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _instance->_currentInput.rightAnalogY; 
+        return 0;
+
+      default: return 0;
+  }
 
   return 0;
 }
@@ -211,45 +107,38 @@ int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device
 char _deviceCountOption[256];
 void configHandler(struct retro_variable *var)
 {
+  var->value = nullptr;
   printf("Variable Name: %s / Value: %s\n", var->key, var->value);
-
   std::string key(var->key);
-
-  if (key == "opera_bios" && _biosFilePath != "None") var->value = _biosFilePath.c_str();
-  if (key == "opera_font" && _fontFilePath != "None") var->value = _fontFilePath.c_str();
-  if (key == "opera_region")
-  {
-   if (_region == 0) var->value = "ntsc";
-   if (_region == 1) var->value = "pal1";
-   if (_region == 2) var->value = "pal2";
-  } 
-  if (key == "opera_active_devices") 
-  {
-    int deviceCount = 0;
-    if (_port1Type != RETRO_DEVICE_NONE) deviceCount++;
-    if (_port2Type != RETRO_DEVICE_NONE) deviceCount++;
-    sprintf(_deviceCountOption, "%d", deviceCount);
-    var->value = _deviceCountOption;
-  }
 }
 
 const char* systemPath = ".";
 bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
 {
-  // printf("Libretro Environment Callback Called: %u\n", cmd);
+    // printf("Libretro Environment Callback Called: %u\n", cmd);
 
-  if (cmd == RETRO_ENVIRONMENT_GET_LOG_INTERFACE) { *((retro_log_printf_t*)data) = retro_log_printf_callback; return true; }
-  if (cmd == RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL) { return true; }
-  if (cmd == RETRO_ENVIRONMENT_SET_SERIALIZATION_QUIRKS) { return true; }
-  if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE) { configHandler((struct retro_variable *)data); return true; }
-  if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE) { return true; }
-  if (cmd == RETRO_ENVIRONMENT_SET_PIXEL_FORMAT) { *((vdlp_pixel_format_e*) data) = VDLP_PIXEL_FORMAT_XRGB8888; return true; }
-  if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY) { *((const char**)data) = systemPath; return true; }
-  if (cmd == RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY) { *((const char**)data) = systemPath; return true; }
-  
-  fprintf(stderr, "Unrecognized environment callback command: %u\n", cmd);
+    if (cmd == RETRO_ENVIRONMENT_GET_LOG_INTERFACE) { *((retro_log_printf_t*)data) = retro_log_printf_callback; return true; }
+    if (cmd == RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL) { return true; }
+    if (cmd == RETRO_ENVIRONMENT_SET_SERIALIZATION_QUIRKS) { return true; }
+    if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE) { _instance->configHandler((struct retro_variable *)data); return true; }
+    if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE) { return true; }
+    if (cmd == RETRO_ENVIRONMENT_SET_PIXEL_FORMAT) { *((retro_pixel_format*) data) = RETRO_PIXEL_FORMAT_XRGB8888; return true; }
+    if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY) { return true; }
+    if (cmd == RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY) { return true; } 
+    if (cmd == RETRO_ENVIRONMENT_GET_CORE_OPTIONS_VERSION) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_VARIABLES) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_CORE_OPTIONS_UPDATE_DISPLAY_CALLBACK) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_CONTROLLER_INFO) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_GET_INPUT_BITMASKS) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_GET_USERNAME) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_GET_LANGUAGE) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_CORE_OPTIONS_DISPLAY) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_GET_PREFERRED_HW_RENDER) { return false; }
+    
+    JAFFAR_THROW_LOGIC("Unrecognized environment callback command: %u\n", cmd);
 
-  return false;
+    return false;
 }
 
 /// CD Management Logic Start
@@ -276,37 +165,30 @@ ECL_EXPORT uint8_t* get_sram_buffer() { return (uint8_t*) NVRAM; }
 ECL_EXPORT void get_sram(uint8_t* sramBuffer)
 {
   if (NVRAM == NULL) return;
-  memcpy(sramBuffer, get_sram_buffer(), get_sram_size());
+  memcpy(sramBuffer, libretro_sram_buffer(), get_sram_size());
 }
 
 ECL_EXPORT void set_sram(uint8_t* sramBuffer)
 {
-  if (NVRAM == NULL) opera_nvram_init(NVRAM,NVRAM_SIZE);
+  if (NVRAM == NULL) libretro_nvram_init(NVRAM,NVRAM_SIZE);
   memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
 }
 // SRAM Management end
 
-ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const char* fontFilePath, int port1Type, int port2Type, int region)
+ECL_EXPORT bool Init(const char* gameFilePath, int region)
 { 
   _gameFilePath = gameFilePath;
-  _biosFilePath = biosFilePath;
-  _fontFilePath = fontFilePath;
-  _port1Type = port1Type;
-  _port2Type = port2Type;
-  _region = region;
 
-  opera_lr_callbacks_set_environment(retro_environment_callback);
-  opera_lr_callbacks_set_input_state(retro_input_state_callback);
-  opera_lr_callbacks_set_input_poll(retro_input_poll_callback);
-  opera_lr_callbacks_set_audio_sample_batch(retro_audio_sample_batch_callback);
-  opera_lr_callbacks_set_video_refresh(retro_video_refresh_callback);
+  retro_set_environment(retro_environment_callback);
+  retro_set_input_poll(retro_input_poll_callback);
+  retro_set_audio_sample_batch(retro_audio_sample_batch_callback);
+  retro_set_video_refresh(retro_video_refresh_callback);
+  retro_set_input_state(retro_input_state_callback);
 
-  retro_set_controller_port_device(0, port1Type);
-  retro_set_controller_port_device(1, port2Type);
   retro_init();
 
   // Setting cd callbacks
-  opera_cdrom_set_callbacks(cd_get_size, cd_set_sector, cd_read_sector);
+  libretro_cdrom_set_callbacks(cd_get_size, cd_set_sector, cd_read_sector);
 
   // Loading game file
   struct retro_game_info game;
@@ -317,7 +199,7 @@ ECL_EXPORT bool Init(const char* gameFilePath, const char* biosFilePath, const c
   // Getting av info
   struct retro_system_av_info info;
   retro_get_system_av_info(&info);
-  printf("3DO Framerate: %f\n", info.timing.fps);
+  printf("PSP Framerate: %f\n", info.timing.fps);
 
   return true;
 }
