@@ -295,7 +295,7 @@ namespace BizHawk.Client.Common
 					NoCoreForSystem(VSystemID.Raw.PS2);
 					break;
 				case DiscType.SonyPSP:
-					NoCoreForSystem(VSystemID.Raw.PSP);
+					game.System = VSystemID.Raw.PSP;
 					break;
 				case DiscType.Wii:
 					NoCoreForSystem(VSystemID.Raw.Wii);

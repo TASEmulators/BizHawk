@@ -5,51 +5,28 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
+using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
-namespace BizHawk.Emulation.Consoles.ThreeDO
+namespace BizHawk.Emulation.Consoles.Sony.PSP
 {
 	[PortedCore(
-		name: CoreNames.Opera,
-		author: "Libretro Team",
-		portedVersion: "2025.03.08 (67a29e6)",
-		portedUrl: "https://github.com/libretro/opera-libretro",
+		name: CoreNames.PPSSPP,
+		author: "Henrik Rydgård et al",
+		portedVersion: "2025.03.09 (ecbbadd)",
+		portedUrl: "https://github.com/hrydgard/ppsspp",
 		isReleased: false)]
-	public partial class Opera : WaterboxCore
+	public partial class PPSSPP : WaterboxCore
 	{
-		private static readonly Configuration ConfigNTSC = new Configuration
+		private static readonly Configuration DefaultConfig = new Configuration
 		{
-			SystemId = VSystemID.Raw._3DO,
+			SystemId = VSystemID.Raw.PSP,
 			MaxSamples = 8 * 1024,
-			DefaultWidth = LibOpera.NTSC_WIDTH,
-			DefaultHeight = LibOpera.NTSC_HEIGHT,
-			MaxWidth = LibOpera.PAL2_WIDTH,
-			MaxHeight = LibOpera.PAL2_HEIGHT,
-			DefaultFpsNumerator = LibOpera.NTSC_VIDEO_NUMERATOR,
-			DefaultFpsDenominator = LibOpera.NTSC_VIDEO_DENOMINATOR,
-		};
-
-		private static readonly Configuration ConfigPAL1 = new Configuration
-		{
-			SystemId = VSystemID.Raw._3DO,
-			MaxSamples = 8 * 1024,
-			DefaultWidth = LibOpera.PAL1_WIDTH,
-			DefaultHeight = LibOpera.PAL1_HEIGHT,
-			MaxWidth = LibOpera.PAL1_WIDTH,
-			MaxHeight = LibOpera.PAL1_HEIGHT,
-			DefaultFpsNumerator = LibOpera.PAL1_VIDEO_NUMERATOR,
-			DefaultFpsDenominator = LibOpera.PAL1_VIDEO_DENOMINATOR,
-		};
-
-		private static readonly Configuration ConfigPAL2 = new Configuration
-		{
-			SystemId = VSystemID.Raw._3DO,
-			MaxSamples = 8 * 1024,
-			DefaultWidth = LibOpera.PAL2_WIDTH,
-			DefaultHeight = LibOpera.PAL2_HEIGHT,
-			MaxWidth = LibOpera.PAL2_WIDTH,
-			MaxHeight = LibOpera.PAL2_HEIGHT,
-			DefaultFpsNumerator = LibOpera.PAL2_VIDEO_NUMERATOR,
-			DefaultFpsDenominator = LibOpera.PAL2_VIDEO_DENOMINATOR,
+			DefaultWidth = 480, // https://github.com/hrydgard/ppsspp/blob/963ccf22e1d9b0a5fdfbb5bb77ac48b0aed25507/libretro/libretro.cpp#L663
+			DefaultHeight = 272,
+			MaxWidth = 4800, // https://github.com/hrydgard/ppsspp/blob/963ccf22e1d9b0a5fdfbb5bb77ac48b0aed25507/libretro/libretro.cpp#L681
+			MaxHeight = 2720,
+			DefaultFpsNumerator = 60000, // https://github.com/hrydgard/ppsspp/blob/963ccf22e1d9b0a5fdfbb5bb77ac48b0aed25507/libretro/libretro.cpp#L207
+			DefaultFpsDenominator = 1001,
 		};
 
 		private readonly List<IDiscAsset> _discAssets;
@@ -57,21 +34,13 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
 		public override int VirtualWidth => BufferHeight * 4 / 3;
-		private LibOpera _libOpera;
+		private LibPPSSPP _libPPSSPP;
 
 		// Image selection / swapping variables
 
-		[CoreConstructor(VSystemID.Raw._3DO)]
-		public Opera(CoreLoadParameters<object, SyncSettings> lp)
-			: base(
-				lp.Comm,
-				lp.SyncSettings?.VideoStandard switch
-				{
-					null or VideoStandard.NTSC => ConfigNTSC,
-					VideoStandard.PAL1 => ConfigPAL1,
-					VideoStandard.PAL2 => ConfigPAL2,
-					_ => throw new InvalidOperationException($"unexpected value for sync setting {nameof(SyncSettings.VideoStandard)}")
-				})
+		[CoreConstructor(VSystemID.Raw.PSP)]
+		public PPSSPP(CoreLoadParameters<object, SyncSettings> lp)
+			: base(lp.Comm, DefaultConfig)
 		{
 			DriveLightEnabled = true;
 			_discAssets = lp.Discs;
@@ -89,10 +58,10 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
 
-			_libOpera = PreInit<LibOpera>(
+			_libPPSSPP = PreInit<LibPPSSPP>(
 				new WaterboxOptions
 				{
-					Filename = "opera.wbx",
+					Filename = "ppsspp.wbx",
 					SbrkHeapSizeKB = 256 * 1024,
 					SealedHeapSizeKB = 1024,
 					InvisibleHeapSizeKB = 1024,
@@ -104,56 +73,12 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 				[ _CDReadCallback, _CDSectorCountCallback ]);
 
 			// Setting CD callbacks
-			_libOpera.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
-
-			// Adding BIOS file
-			string biosType = _syncSettings.SystemType switch
-			{
-				SystemType.Panasonic_FZ1_U => "Panasonic_FZ1_U",
-				SystemType.Panasonic_FZ1_E => "Panasonic_FZ1_E",
-				SystemType.Panasonic_FZ1_J => "Panasonic_FZ1_J",
-				SystemType.Panasonic_FZ10_U => "Panasonic_FZ10_U",
-				SystemType.Panasonic_FZ10_E => "Panasonic_FZ10_E",
-				SystemType.Panasonic_FZ10_J => "Panasonic_FZ10_J",
-				SystemType.Goldstar_GDO101P => "Goldstar_GDO101P",
-				SystemType.Goldstar_FC1 => "Goldstar_FC1",
-				SystemType.Sanyo_IMP21J_Try => "Sanyo_IMP21J_Try",
-				SystemType.Sanyo_HC21 => "Sanyo_HC21",
-				SystemType.Shootout_At_Old_Tucson => "Shootout_At_Old_Tucson",
-				SystemType._3DO_NTSC_1fc2 => "3DO_NTSC_1fc2",
-				_ => "None"
-			};
-
-			var (biosData, biosInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw._3DO, biosType), "BIOS ROM files are required!");
-			string biosFileName = biosInfo.Name + ".bin";
-			_exe.AddReadonlyFile(biosData, biosFileName);
-
-			// Adding Font ROM file, if required
-			string fontROMType = _syncSettings.FontROM switch
-			{
-				FontROM.Kanji_ROM_Panasonic_FZ1 => "Kanji_ROM_Panasonic_FZ1",
-				FontROM.Kanji_ROM_Panasonic_FZ10 => "Kanji_ROM_Panasonic_FZ10",
-				_ => "None"
-			};
-
-			string fontROMFileName = "None";
-			if (fontROMType != "None")
-			{
-				var (fontROMData, fontROMInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw._3DO, fontROMType), "Font ROM files are required!");
-				_exe.AddReadonlyFile(fontROMData, fontROMInfo.Name);
-				fontROMFileName = fontROMInfo.Name;
-			}
+			_libPPSSPP.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
 
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;
-			Console.WriteLine($"Launching Core with Game: '{cdName}', BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
-			if (!_libOpera.Init(
-				gameFile: cdName,
-				biosFile: biosFileName,
-				fontFile: fontROMFileName,
-				port1Type: (int) _syncSettings.Controller1Type,
-				port2Type: (int) _syncSettings.Controller2Type,
-				videoStandard: (int) _syncSettings.VideoStandard))
+			Console.WriteLine($"Launching Core with Game: '{cdName}'");
+			if (!_libPPSSPP.Init(gameFile: cdName))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
@@ -164,8 +89,8 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 		// CD Handling logic
 		private bool _isMultidisc;
 		private bool _discInserted = true;
-		private readonly LibOpera.CDReadCallback _CDReadCallback;
-		private readonly LibOpera.CDSectorCountCallback _CDSectorCountCallback;
+		private readonly LibPPSSPP.CDReadCallback _CDReadCallback;
+		private readonly LibPPSSPP.CDSectorCountCallback _CDSectorCountCallback;
 		private int _discIndex;
 		private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
 		private static int CD_SECTOR_SIZE = 2048;
@@ -203,7 +128,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			var fi = new LibOpera.FrameInfo();
+			var fi = new LibPPSSPP.FrameInfo();
 
 			// Disc management
 			if (_isMultidisc)
@@ -212,96 +137,26 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
 			}
 
-			DriveLightOn = false;
-			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
-			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, controller);
+			fi.input.Down  = controller.IsPressed($"P1 {JoystickButtons.Down  }") ? 1 : 0;
+			fi.input.Left  = controller.IsPressed($"P1 {JoystickButtons.Left  }") ? 1 : 0;
+			fi.input.Right  = controller.IsPressed($"P1 {JoystickButtons.Right  }") ? 1 : 0;
+			fi.input.Start  = controller.IsPressed($"P1 {JoystickButtons.Start  }") ? 1 : 0;
+			fi.input.Select  = controller.IsPressed($"P1 {JoystickButtons.Select  }") ? 1 : 0;
+			fi.input.ButtonSquare  = controller.IsPressed($"P1 {JoystickButtons.ButtonSquare  }") ? 1 : 0;
+			fi.input.ButtonTriangle  = controller.IsPressed($"P1 {JoystickButtons.ButtonTriangle }") ? 1 : 0;
+			fi.input.ButtonCircle  = controller.IsPressed($"P1 {JoystickButtons.ButtonCircle  }") ? 1 : 0;
+			fi.input.ButtonCross  = controller.IsPressed($"P1 {JoystickButtons.ButtonCross  }") ? 1 : 0;
+			fi.input.ButtonLTrigger  = controller.IsPressed($"P1 {JoystickButtons.ButtonLTrigger }") ? 1 : 0;
+			fi.input.ButtonRTrigger  = controller.IsPressed($"P1 {JoystickButtons.ButtonRTrigger }") ? 1 : 0;
+			fi.input.RightAnalogX  = controller.AxisValue($"P1 {JoystickAxes.RightAnalogX  }");
+			fi.input.RightAnalogY  = controller.AxisValue($"P1 {JoystickAxes.RightAnalogY  }");
+			fi.input.LeftAnalogX  = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogX  }");
+			fi.input.LeftAnalogY = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogY}");
 
-			// Game reset
-			if (controller.IsPressed("Reset")) fi.isReset = 1;
+			DriveLightOn = false;
+			
 
 			return fi;
-		}
-
-		private static LibOpera.GameInput ProcessController(int port, ControllerType type, IController controller)
-		{
-			LibOpera.GameInput gameInput = new LibOpera.GameInput();
-
-			switch (type)
-			{
-				case ControllerType.Gamepad:
-					gameInput.gamepad.up = controller.IsPressed($"P{port} {JoystickButtons.Up}") ? 1 : 0;
-					gameInput.gamepad.down = controller.IsPressed($"P{port} {JoystickButtons.Down}") ? 1 : 0;
-					gameInput.gamepad.left = controller.IsPressed($"P{port} {JoystickButtons.Left}") ? 1 : 0;
-					gameInput.gamepad.right = controller.IsPressed($"P{port} {JoystickButtons.Right}") ? 1 : 0;
-					gameInput.gamepad.select = controller.IsPressed($"P{port} {JoystickButtons.Select}") ? 1 : 0;
-					gameInput.gamepad.start = controller.IsPressed($"P{port} {JoystickButtons.Start}") ? 1 : 0;
-					gameInput.gamepad.buttonA = controller.IsPressed($"P{port} {JoystickButtons.ButtonA}") ? 1 : 0;
-					gameInput.gamepad.buttonB = controller.IsPressed($"P{port} {JoystickButtons.ButtonB}") ? 1 : 0;
-					gameInput.gamepad.buttonX = controller.IsPressed($"P{port} {JoystickButtons.ButtonX}") ? 1 : 0;
-					gameInput.gamepad.buttonY = controller.IsPressed($"P{port} {JoystickButtons.ButtonY}") ? 1 : 0;
-					gameInput.gamepad.buttonL = controller.IsPressed($"P{port} {JoystickButtons.ButtonL}") ? 1 : 0;
-					gameInput.gamepad.buttonR = controller.IsPressed($"P{port} {JoystickButtons.ButtonR}") ? 1 : 0;
-					break;
-
-				case ControllerType.Mouse:
-					gameInput.mouse.dX = controller.AxisValue($"P{port} {Inputs.MouseX}");
-					gameInput.mouse.dY = controller.AxisValue($"P{port} {Inputs.MouseY}");
-					gameInput.mouse.leftButton = controller.IsPressed($"P{port} {Inputs.MouseLeftButton}") ? 1 : 0;
-					gameInput.mouse.middleButton = controller.IsPressed($"P{port} {Inputs.MouseMiddleButton}") ? 1 : 0;
-					gameInput.mouse.rightButton = controller.IsPressed($"P{port} {Inputs.MouseRightButton}") ? 1 : 0;
-					gameInput.mouse.fourthButton = controller.IsPressed($"P{port} {Inputs.MouseFourthButton}") ? 1 : 0;
-					break;
-
-				case ControllerType.FlightStick:
-					gameInput.flightStick.up = controller.IsPressed($"P{port} {FlightStickButtons.Up}") ? 1 : 0;
-					gameInput.flightStick.down = controller.IsPressed($"P{port} {FlightStickButtons.Down}") ? 1 : 0;
-					gameInput.flightStick.left = controller.IsPressed($"P{port} {FlightStickButtons.Left}") ? 1 : 0;
-					gameInput.flightStick.right = controller.IsPressed($"P{port} {FlightStickButtons.Right}") ? 1 : 0;
-					gameInput.flightStick.fire = controller.IsPressed($"P{port} {FlightStickButtons.Fire}") ? 1 : 0;
-					gameInput.flightStick.buttonA = controller.IsPressed($"P{port} {FlightStickButtons.ButtonA}") ? 1 : 0;
-					gameInput.flightStick.buttonB = controller.IsPressed($"P{port} {FlightStickButtons.ButtonB}") ? 1 : 0;
-					gameInput.flightStick.buttonC = controller.IsPressed($"P{port} {FlightStickButtons.ButtonC}") ? 1 : 0;
-					gameInput.flightStick.buttonX = controller.IsPressed($"P{port} {FlightStickButtons.ButtonX}") ? 1 : 0;
-					gameInput.flightStick.buttonP = controller.IsPressed($"P{port} {FlightStickButtons.ButtonP}") ? 1 : 0;
-					gameInput.flightStick.leftTrigger = controller.IsPressed($"P{port} {FlightStickButtons.LeftTrigger}") ? 1 : 0;
-					gameInput.flightStick.rightTrigger = controller.IsPressed($"P{port} {FlightStickButtons.RightTrigger}") ? 1 : 0;
-					gameInput.flightStick.horizontalAxis = controller.AxisValue($"P{port} {Inputs.FlighStickHorizontalAxis}");
-					gameInput.flightStick.verticalAxis = controller.AxisValue($"P{port} {Inputs.FlighStickVerticalAxis}");
-					gameInput.flightStick.altitudeAxis = controller.AxisValue($"P{port} {Inputs.FlighStickAltitudeAxis}");
-					break;
-
-				case ControllerType.LightGun:
-					gameInput.lightGun.trigger = controller.IsPressed($"P{port} {LightGunButtons.Trigger}") ? 1 : 0;
-					gameInput.lightGun.select = controller.IsPressed($"P{port} {LightGunButtons.Select}") ? 1 : 0;
-					gameInput.lightGun.reload = controller.IsPressed($"P{port} {LightGunButtons.Reload}") ? 1 : 0;
-					gameInput.lightGun.isOffScreen = controller.IsPressed($"P{port} {LightGunButtons.IsOffScreen}") ? 1 : 0;
-					gameInput.lightGun.screenX = controller.AxisValue($"P{port} {Inputs.LightGunScreenX}");
-					gameInput.lightGun.screenY = controller.AxisValue($"P{port} {Inputs.LightGunScreenY}");
-					break;
-
-				case ControllerType.ArcadeLightGun:
-					gameInput.arcadeLightGun.trigger = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Trigger}") ? 1 : 0;
-					gameInput.arcadeLightGun.select = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Select}") ? 1 : 0;
-					gameInput.arcadeLightGun.start = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Start}") ? 1 : 0;
-					gameInput.arcadeLightGun.reload = controller.IsPressed($"P{port} {ArcadeLightGunButtons.Reload}") ? 1 : 0;
-					gameInput.arcadeLightGun.auxA = controller.IsPressed($"P{port} {ArcadeLightGunButtons.AuxA}") ? 1 : 0;
-					gameInput.arcadeLightGun.isOffScreen = controller.IsPressed($"P{port} {ArcadeLightGunButtons.IsOffScreen}") ? 1 : 0;
-					gameInput.arcadeLightGun.screenX = controller.AxisValue($"P{port} {Inputs.LightGunScreenX}");
-					gameInput.arcadeLightGun.screenY = controller.AxisValue($"P{port} {Inputs.LightGunScreenY}");
-					break;
-
-				case ControllerType.OrbatakTrackball:
-					gameInput.orbatakTrackball.startP1 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.StartP1}") ? 1 : 0;
-					gameInput.orbatakTrackball.startP2 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.StartP2}") ? 1 : 0;
-					gameInput.orbatakTrackball.coinP1 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP1}") ? 1 : 0;
-					gameInput.orbatakTrackball.coinP2 = controller.IsPressed($"P{port} {OrbatakTrackballButtons.CoinP2}") ? 1 : 0;
-					gameInput.orbatakTrackball.service = controller.IsPressed($"P{port} {OrbatakTrackballButtons.Service}") ? 1 : 0;
-					gameInput.orbatakTrackball.dX = controller.AxisValue($"P{port} {Inputs.TrackballPosX}");
-					gameInput.orbatakTrackball.dY = controller.AxisValue($"P{port} {Inputs.TrackballPosY}");
-					break;
-			}
-
-			return gameInput;
 		}
 
 		protected override void FrameAdvancePost()
