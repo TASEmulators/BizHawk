@@ -2,40 +2,107 @@
 #include <stdlib.h>
 #include <string>
 #include <libretro.h>
+#include <functional>
 #include <jaffarCommon/dethreader.hpp>
 
-std::string _gameFilePath;
-controllerData_t _port1Value;
-controllerData_t _port2Value;
-uint32_t* _videoBuffer;
-size_t _videoHeight;
-size_t _videoWidth;
-size_t _videoPitch;
-int _nvramChanged;
-int _inputPortsRead;
+__JAFFAR_COMMON_DETHREADER_STATE
 
+
+// Flag to indicate whether the nvram changed
+int _nvramChanged;
+
+
+// Storing inputs for the game to read from
+gamePad_t _inputData;
+
+// flag to indicate whether the inputs were polled
+int _inputPortsRead; 
+
+// Coroutines: they allow us to jump in and out the emu driver
+cothread_t _emuDriverCoroutine;
+cothread_t _driverCoroutine;
+
+// This flag inficates whether us jumping into the emu driver corresponds to an advance state request
+bool _advanceState = true;
+
+// Where the rom is stored -- will be removed when using bk's CD interface
+std::string _romFilePath;
+
+// Audio state
 #define _MAX_SAMPLES 4096
 #define _CHANNEL_COUNT 2
 int16_t _audioBuffer[_MAX_SAMPLES * _CHANNEL_COUNT];
 size_t _audioSamples;
 
+// Video State
+uint32_t* _videoBuffer;
+size_t _videoHeight;
+size_t _videoWidth;
+size_t _videoPitch;
+
 extern "C"
 {
-    void* xbus_cdrom_plugin(int   proc_,   void* data_);
-    void retro_cdrom_set_callbacks(opera_cdrom_get_size_cb_t get_size_,  opera_cdrom_set_sector_cb_t set_sector_,  opera_cdrom_read_sector_cb_t read_sector_);
-    void retro_set_audio_sample(retro_audio_sample_t cb);
-    void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb);
-    void retro_set_environment(retro_environment_t cb);
-    void retro_set_input_poll(retro_input_poll_t cb);
-    void retro_set_input_state(retro_input_state_t cb);
-    void retro_set_log_printf(retro_log_printf_t cb);
-    void retro_set_video_refresh(retro_video_refresh_t cb);
-    RETRO_API void *retro_get_memory_data(unsigned id);
-    RETRO_API size_t retro_get_memory_size(unsigned id);
-    void lr_input_device_set(const uint32_t port_, const uint32_t device_);
-    RETRO_API size_t retro_serialize_size(void);
-    RETRO_API bool retro_serialize(void *data, size_t size);
-    RETRO_API bool retro_unserialize(const void *data, size_t size);
+  void retro_set_audio_sample(retro_audio_sample_t cb);
+  void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb);
+  void retro_set_environment(retro_environment_t cb);
+  void retro_set_input_poll(retro_input_poll_t cb);
+  void retro_set_input_state(retro_input_state_t cb);
+  void retro_set_log_printf(retro_log_printf_t cb);
+  void retro_set_video_refresh(retro_video_refresh_t cb);
+  RETRO_API void *retro_get_memory_data(unsigned id);
+  RETRO_API size_t retro_get_memory_size(unsigned id);
+  void lr_input_device_set(const uint32_t port_, const uint32_t device_);
+  RETRO_API size_t retro_serialize_size(void);
+  RETRO_API bool retro_serialize(void *data, size_t size);
+  RETRO_API bool retro_unserialize(const void *data, size_t size);
+}
+
+// Emulation driver - runs in its own coroutine and conducts execution through the dethreader runtime system
+void emuDriver()
+{
+  // Creating dethreader manager
+  jaffarCommon::dethreader::Runtime r;
+
+  // Creating init task
+  auto initTask = []()
+  {
+    retro_init();
+
+    struct retro_game_info game;
+    game.path = _romFilePath.c_str();
+    auto loadResult = retro_load_game(&game);
+    if (loadResult == false) JAFFAR_THROW_RUNTIME("Could not load game: '%s'\n", _romFilePath.c_str());
+
+    co_switch(_driverCoroutine);  
+  };
+
+  // Creating state advance task
+  auto advanceTask = []()
+  {
+    while(true)
+    {
+      // If it's time to do it, run state
+      if (_advanceState == true)
+      {
+        retro_run();
+        _advanceState = false;
+
+        // Come back to driver scope
+        co_switch(_driverCoroutine);
+      } 
+
+      // Yield execution
+      jaffarCommon::dethreader::yield();
+    }
+  };
+
+  // Addinng tasks
+  r.createThread(initTask);
+  r.createThread(advanceTask);
+
+  // Running dethreader runtime
+  r.initialize();
+  r.run();
 }
 
 void RETRO_CALLCONV retro_video_refresh_callback(const void *data, unsigned width, unsigned height, size_t pitch)
@@ -71,31 +138,31 @@ int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device
 {
   if (device == RETRO_DEVICE_JOYPAD) switch (id)
   {
-    case RETRO_DEVICE_ID_JOYPAD_UP: return _instance->_currentInput.up ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_DOWN: return _instance->_currentInput.down ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_LEFT: return _instance->_currentInput.left ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_RIGHT: return _instance->_currentInput.right ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_L: return _instance->_currentInput.ltrigger ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_R: return _instance->_currentInput.rtrigger ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_SELECT: return _instance->_currentInput.select ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_START: return _instance->_currentInput.start ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_X: return _instance->_currentInput.triangle ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_Y: return _instance->_currentInput.square ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_B: return _instance->_currentInput.cross ? 1 : 0;
-    case RETRO_DEVICE_ID_JOYPAD_A: return _instance->_currentInput.circle ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_UP: return _inputData.up ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_DOWN: return _inputData.down ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_LEFT: return _inputData.left ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_RIGHT: return _inputData.right ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_L: return _inputData.ltrigger ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_R: return _inputData.rtrigger ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_SELECT: return _inputData.select ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_START: return _inputData.start ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_X: return _inputData.triangle ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_Y: return _inputData.square ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_B: return _inputData.cross ? 1 : 0;
+    case RETRO_DEVICE_ID_JOYPAD_A: return _inputData.circle ? 1 : 0;
     default: return 0;
   }
 
   if (device == RETRO_DEVICE_ANALOG) switch (id)
   {
       case RETRO_DEVICE_ID_ANALOG_X:
-        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _instance->_currentInput.leftAnalogX; 
-        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _instance->_currentInput.rightAnalogX; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogX; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _inputData.rightAnalogX; 
         return 0;
 
       case RETRO_DEVICE_ID_ANALOG_Y:
-        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _instance->_currentInput.leftAnalogY; 
-        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _instance->_currentInput.rightAnalogY; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogY; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _inputData.rightAnalogY; 
         return 0;
 
       default: return 0;
@@ -120,7 +187,7 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
     if (cmd == RETRO_ENVIRONMENT_GET_LOG_INTERFACE) { *((retro_log_printf_t*)data) = retro_log_printf_callback; return true; }
     if (cmd == RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL) { return true; }
     if (cmd == RETRO_ENVIRONMENT_SET_SERIALIZATION_QUIRKS) { return true; }
-    if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE) { _instance->configHandler((struct retro_variable *)data); return true; }
+    if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE) { configHandler((struct retro_variable *)data); return true; }
     if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE) { return true; }
     if (cmd == RETRO_ENVIRONMENT_SET_PIXEL_FORMAT) { *((retro_pixel_format*) data) = RETRO_PIXEL_FORMAT_XRGB8888; return true; }
     if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY) { return true; }
@@ -160,24 +227,26 @@ void cd_read_sector(void *buf_) {  cd_read_callback(_currentSector, buf_); }
 // SRAM management start
 bool _sram_changed = false;
 ECL_EXPORT bool sram_changed() { return _nvramChanged; }
-ECL_EXPORT int get_sram_size() { return NVRAM_SIZE; }
-ECL_EXPORT uint8_t* get_sram_buffer() { return (uint8_t*) NVRAM; }
+ECL_EXPORT int get_sram_size() { return 0; } // NVRAM_SIZE; }
+ECL_EXPORT uint8_t* get_sram_buffer() { return nullptr; } //(uint8_t*) NVRAM; }
 ECL_EXPORT void get_sram(uint8_t* sramBuffer)
 {
-  if (NVRAM == NULL) return;
-  memcpy(sramBuffer, libretro_sram_buffer(), get_sram_size());
+  return;
+  // if (NVRAM == NULL) return;
+  // memcpy(sramBuffer, libretro_sram_buffer(), get_sram_size());
 }
 
 ECL_EXPORT void set_sram(uint8_t* sramBuffer)
 {
-  if (NVRAM == NULL) libretro_nvram_init(NVRAM,NVRAM_SIZE);
-  memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
+  return; 
+  // if (NVRAM == NULL) libretro_nvram_init(NVRAM,NVRAM_SIZE);
+  // memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
 }
 // SRAM Management end
 
 ECL_EXPORT bool Init(const char* gameFilePath, int region)
 { 
-  _gameFilePath = gameFilePath;
+  _romFilePath = gameFilePath;
 
   retro_set_environment(retro_environment_callback);
   retro_set_input_poll(retro_input_poll_callback);
@@ -185,16 +254,16 @@ ECL_EXPORT bool Init(const char* gameFilePath, int region)
   retro_set_video_refresh(retro_video_refresh_callback);
   retro_set_input_state(retro_input_state_callback);
 
-  retro_init();
+  printf("Starting Emu Driver Coroutine...\n");
+  _driverCoroutine = co_active();
+  constexpr size_t stackSize = 4 * 1024 * 1024;
+  _emuDriverCoroutine = co_create(stackSize, emuDriver);
+
+  // Initializing emu core
+  co_switch(_emuDriverCoroutine);
 
   // Setting cd callbacks
-  libretro_cdrom_set_callbacks(cd_get_size, cd_set_sector, cd_read_sector);
-
-  // Loading game file
-  struct retro_game_info game;
-  game.path = _gameFilePath.c_str();
-  auto loadResult = retro_load_game(&game);
-  if (loadResult == false) { fprintf(stderr, "Could not load game: '%s'\n", _gameFilePath.c_str()); return false; }
+  // libretro_cdrom_set_callbacks(cd_get_size, cd_set_sector, cd_read_sector);
 
   // Getting av info
   struct retro_system_av_info info;
@@ -215,11 +284,7 @@ ECL_EXPORT void opera_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
 ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 {
   // Setting inputs
-  _port1Value = f->port1;
-  _port2Value = f->port2;
-
-  //printf("Mouse X%d(%d), Y%d(%d), L%d, M%d, B%d\n", _port1Value.mouse.posX, _port1Value.mouse.dX, _port1Value.mouse.posY, _port1Value.mouse.dY, _port1Value.mouse.leftButton, _port1Value.mouse.middleButton, _port1Value.mouse.rightButton);
-  //fflush(stdout);
+  _inputData = f->gamePad;
 
   // Checking for changes in NVRAM
   _nvramChanged = false;
@@ -227,9 +292,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   // Checking if ports have been read
   _inputPortsRead = 0;
 
-  // If resetting, do it now. Otherwise, running a single frame
-  if (f->isReset == 1) retro_reset();
-  else retro_run();
+  // Jumping into the emu driver coroutine to run a single frame
+  _advanceState = true;
+  co_switch(_emuDriverCoroutine);
 
   // The frame is lagged if no inputs were read
   f->base.Lagged = !_inputPortsRead;
@@ -244,27 +309,34 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   memcpy(f->base.SoundBuffer, _audioBuffer, _audioSamples * sizeof(int16_t) * _CHANNEL_COUNT);
 }
 
+uint8_t tmpRam[1024];
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
   int memAreaIdx = 0;
 
-  m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
+  m[memAreaIdx].Data  = tmpRam;
   m[memAreaIdx].Name  = "System RAM";
-  m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
+  m[memAreaIdx].Size  = 1024;
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
   memAreaIdx++;
 
-  m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
-  m[memAreaIdx].Name  = "Video RAM";
-  m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
-  m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
-  memAreaIdx++;
+  // m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
+  // m[memAreaIdx].Name  = "System RAM";
+  // m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
+  // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+  // memAreaIdx++;
 
-  m[memAreaIdx].Data  = get_sram_buffer();
-  m[memAreaIdx].Name  = "Non-volatile RAM";
-  m[memAreaIdx].Size  = get_sram_size();
-  m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
-  memAreaIdx++;
+  // m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
+  // m[memAreaIdx].Name  = "Video RAM";
+  // m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
+  // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
+  // memAreaIdx++;
+
+  // m[memAreaIdx].Data  = get_sram_buffer();
+  // m[memAreaIdx].Name  = "Non-volatile RAM";
+  // m[memAreaIdx].Size  = get_sram_size();
+  // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
+  // memAreaIdx++;
 }
 
 void (*InputCallback)();

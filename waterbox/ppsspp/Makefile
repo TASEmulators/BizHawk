@@ -14,9 +14,37 @@ CCFLAGS := 	-I. \
 	-DDYNAREC \
 	-DHUF_DISABLE_FAST_DECODE \
 	-DPPSSPP_GIT_VERSION=gitVersion \
-	-DZSTD_DISABLE_ASM 
+	-DZSTD_DISABLE_ASM \
+	-DGLEW_NO_GLU \
+	-D__INLINE__=inline \
+	-Ippsspp/ext/glslang \
+	-Ippsspp \
+	-Ippsspp/libretro \
+	-Ippsspp/ext/OpenXR-SDK/include \
+	-Ippsspp/Common \
+	-Ippsspp/ext/armips \
+	-Ippsspp/ext/libzip \
+	-Ippsspp/ext/libpng17 \
+	-Ippsspp/ext/zstd/lib \
+	-Ippsspp/ext/libchdr/include \
+	-Ippsspp/ext/miniupnp/miniupnpc/src \
+	-Ippsspp/ext/miniupnp/miniupnpc/include \
+	-Ippsspp/ext/snappy/ \
+	-Ippsspp/ext/rcheevos/include/ \
+	-Ippsspp/ext/cmake/cpu_features/../../cpu_features/include \
+	-Ippsspp/ext/libchdr/deps/lzma-22.01/include/ \
+	-Ippsspp/ext/lua/ \
+	-Ippsspp/ext/zlib/ \
+	-Ippsspp/ext/glew \
+	-Ippsspp/ext/glslang-build \
+	-Ippsspp/ext/glslang \
+	-Ippsspp/ffmpeg/linux/x86_64/include/ \
+	-Ippsspp/ext/miniupnp-build/ \
+	-IjaffarCommon/include \
+	-IjaffarCommon/third_party
 
-CXXFLAGS := $(CCFLAGS) 
+CXXFLAGS := $(CCFLAGS) -std=c++20 
+
 SRCS =  bizhawk.cpp \
 	ppsspp/ext/minimp3/minimp3.cpp \
 	ppsspp/ext/at3_standalone/atrac.cpp \
@@ -669,7 +697,6 @@ SRCS =  bizhawk.cpp \
 	ppsspp/ext/libchdr/deps/lzma-22.01/src/Sort.c \
 	ppsspp/ext/libchdr/src/libchdr_bitstream.c \
 	ppsspp/ext/libchdr/src/libchdr_cdrom.c \
-	ppsspp/ext/libchdr_chd.c \
 	ppsspp/ext/libchdr/src/libchdr_flac.c \
 	ppsspp/ext/libchdr/src/libchdr_huffman.c \
 	ppsspp/ext/cpu_features/src/filesystem.c \
@@ -752,6 +779,8 @@ SRCS =  bizhawk.cpp \
 	ppsspp/ext/zlib/inftrees.c \
 	ppsspp/ext/zlib/trees.c \
 	ppsspp/ext/zlib/uncompr.c \
-	ppsspp/ext/zlib/zutil.c 
+	ppsspp/ext/zlib/zutil.c \
+	ppsspp/ext/libchdr/src/libchdr_chd.c \
+	jaffarCommon/third_party/libco/libco.c 
 
 include ../common.mak
