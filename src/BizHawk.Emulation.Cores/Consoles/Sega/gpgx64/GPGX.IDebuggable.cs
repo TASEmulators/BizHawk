@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					uint flags = (uint)MemoryCallbackFlags.AccessWrite;
 					MemoryCallbacks.CallMemoryCallbacks(a, val, flags, "M68K BUS");
 				}
-			};
+			});
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}
 

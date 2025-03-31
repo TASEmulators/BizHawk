@@ -64,7 +64,7 @@ static uint8_t brm_format[0x40] =
 ECL_ENTRY void (*biz_execcb)(unsigned addr, unsigned int value);
 ECL_ENTRY void (*biz_readcb)(unsigned addr, unsigned int value);
 ECL_ENTRY void (*biz_writecb)(unsigned addr, unsigned int value);
-CDCallback biz_cdcallback = NULL;
+CDCallback biz_cdcb = NULL;
 unsigned biz_lastpc = 0;
 ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
 uint8 *tempsram;
@@ -791,7 +791,7 @@ void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int
 		case HOOK_M68K_E:
 		{
 			if (biz_execcb)
-				biz_execcb(address);
+				biz_execcb(address, value);
 
 			if (biz_cdcb)
 			{
@@ -805,7 +805,7 @@ void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int
 		case HOOK_M68K_R:
 		{
 			if (biz_readcb)
-				biz_readcb(address);
+				biz_readcb(address, value);
 
 			break;
 		}
@@ -813,7 +813,7 @@ void bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int
 		case HOOK_M68K_W:
 		{
 			if (biz_writecb)
-				biz_writecb(address);
+				biz_writecb(address, value);
 
 			break;
 		}
@@ -1036,7 +1036,7 @@ GPGX_EX void gpgx_reset(int hard)
 		gen_reset(0);
 }
 
-GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned), ECL_ENTRY void (*write)(unsigned), ECL_ENTRY void (*exec)(unsigned))
+GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY void (*read)(unsigned, unsigned), ECL_ENTRY void (*write)(unsigned, unsigned), ECL_ENTRY void (*exec)(unsigned, unsigned))
 {
 	biz_readcb = read;
 	biz_writecb = write;
