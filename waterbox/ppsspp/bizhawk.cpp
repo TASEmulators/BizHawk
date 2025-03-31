@@ -309,28 +309,15 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   memcpy(f->base.SoundBuffer, _audioBuffer, _audioSamples * sizeof(int16_t) * _CHANNEL_COUNT);
 }
 
-uint8_t tmpRam[1024];
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
   int memAreaIdx = 0;
 
-  m[memAreaIdx].Data  = tmpRam;
+  m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
   m[memAreaIdx].Name  = "System RAM";
-  m[memAreaIdx].Size  = 1024;
+  m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
   memAreaIdx++;
-
-  // m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
-  // m[memAreaIdx].Name  = "System RAM";
-  // m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
-  // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
-  // memAreaIdx++;
-
-  // m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_VIDEO_RAM);
-  // m[memAreaIdx].Name  = "Video RAM";
-  // m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_VIDEO_RAM);
-  // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
-  // memAreaIdx++;
 
   // m[memAreaIdx].Data  = get_sram_buffer();
   // m[memAreaIdx].Name  = "Non-volatile RAM";
