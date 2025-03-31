@@ -65,8 +65,7 @@ ECL_ENTRY void (*biz_execcb)(unsigned addr, unsigned int value);
 ECL_ENTRY void (*biz_readcb)(unsigned addr, unsigned int value);
 ECL_ENTRY void (*biz_writecb)(unsigned addr, unsigned int value);
 CDCallback biz_cdcb = NULL;
-unsigned biz_lastpc = 0;
-ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
+ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode);
 uint8 *tempsram;
 
 static void update_viewport(void)
