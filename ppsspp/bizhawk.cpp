@@ -81,7 +81,6 @@ void emuDriver()
     printf("Exiting from init task\n"); fflush(stdout);
     _emuDriverCoroutine = co_active();
     co_switch(_driverCoroutine);  
-    retro_run();
     printf("back to init task\n"); fflush(stdout);
   };
 
@@ -225,7 +224,7 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
 uint32_t _currentSector = 0;
 void (*cd_read_callback)(int32_t lba, void * dest);
 int (*cd_sector_count_callback)();
-ECL_EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cdscc)())
+EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cdscc)())
 {
   cd_read_callback = cdrc;
   cd_sector_count_callback = cdscc;
@@ -236,7 +235,7 @@ void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
 void cd_read_sector(void *buf_) {  cd_read_callback(_currentSector, buf_); }
 /// CD Management Logic End
 
-ECL_EXPORT bool Init()
+EXPORT bool Init()
 { 
   retro_set_environment(retro_environment_callback);
   retro_set_input_poll(retro_input_poll_callback);
@@ -291,7 +290,7 @@ ECL_EXPORT bool Init()
   return true;
 }
 
-ECL_EXPORT void opera_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
+EXPORT void opera_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
 {
   buffer = (uint8_t*)_videoBuffer;
   w = _videoWidth;
@@ -299,7 +298,7 @@ ECL_EXPORT void opera_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
   pitch = _videoPitch;
 }
 
-ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
+EXPORT void FrameAdvance(MyFrameInfo* f)
 {
   // Setting inputs
   _inputData = f->gamePad;
@@ -316,37 +315,37 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
   co_switch(_emuDriverCoroutine);
 
   // The frame is lagged if no inputs were read
-  f->base.Lagged = !_inputPortsRead;
+  // f->base.Lagged = !_inputPortsRead;
 
   // Setting video buffer
-  f->base.Width = _videoWidth;
-  f->base.Height = _videoHeight;
-  memcpy(f->base.VideoBuffer, _videoBuffer, sizeof(uint32_t) * _videoWidth * _videoHeight);
+  // f->base.Width = _videoWidth;
+  // f->base.Height = _videoHeight;
+  // memcpy(f->base.VideoBuffer, _videoBuffer, sizeof(uint32_t) * _videoWidth * _videoHeight);
 
   // Setting audio buffer
-  f->base.Samples = _audioSamples;
-  memcpy(f->base.SoundBuffer, _audioBuffer, _audioSamples * sizeof(int16_t) * _CHANNEL_COUNT);
+  // f->base.Samples = _audioSamples;
+  // memcpy(f->base.SoundBuffer, _audioBuffer, _audioSamples * sizeof(int16_t) * _CHANNEL_COUNT);
 }
 
-ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
-{
-  int memAreaIdx = 0;
+// EXPORT void GetMemoryAreas(MemoryArea *m)
+// {
+//   int memAreaIdx = 0;
 
-  m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
-  m[memAreaIdx].Name  = "System RAM";
-  m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
-  m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
-  memAreaIdx++;
+//   m[memAreaIdx].Data  = retro_get_memory_data(RETRO_MEMORY_SYSTEM_RAM);
+//   m[memAreaIdx].Name  = "System RAM";
+//   m[memAreaIdx].Size  = retro_get_memory_size(RETRO_MEMORY_SYSTEM_RAM);
+//   m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY;
+//   memAreaIdx++;
 
-  // m[memAreaIdx].Data  = get_sram_buffer();
-  // m[memAreaIdx].Name  = "Non-volatile RAM";
-  // m[memAreaIdx].Size  = get_sram_size();
-  // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
-  // memAreaIdx++;
-}
+//   // m[memAreaIdx].Data  = get_sram_buffer();
+//   // m[memAreaIdx].Name  = "Non-volatile RAM";
+//   // m[memAreaIdx].Size  = get_sram_size();
+//   // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
+//   // memAreaIdx++;
+// }
 
 void (*InputCallback)();
-ECL_EXPORT void SetInputCallback(void (*callback)())
+EXPORT void SetInputCallback(void (*callback)())
 {
   InputCallback = callback;
 }

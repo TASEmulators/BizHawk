@@ -5,10 +5,13 @@
 #include <stddef.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <cstdint>
 
-// waterbox
-#include "emulibc.h"
-#include "waterboxcore.h"
+#ifdef _WIN32
+#define EXPORT extern "C" __declspec(dllexport)
+#else
+#define EXPORT extern "C" __attribute__((visibility("default")))
+#endif
 
 struct gamePad_t
 {
@@ -33,7 +36,6 @@ struct gamePad_t
 
 typedef struct
 {
-  FrameInfo base;
   gamePad_t gamePad;
 } MyFrameInfo;
 

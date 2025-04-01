@@ -1,5 +1,6 @@
-TARGET := ppsspp.wbx
+TARGET := ppsspp.so
 CCFLAGS := 	-I. \
+	-fPIC \
 	-DNDEBUG \
 	-DRC_DISABLE_LUA \
 	-DSTACK_LINE_READER_BUFFER_SIZE=1024 \
@@ -784,4 +785,36 @@ SRCS =  bizhawk.cpp \
 	ppsspp/ext/libchdr/src/libchdr_chd.c \
 	jaffarCommon/third_party/libco/libco.c 
 
-include ../common.mak
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+	TARGET = libppsspp.so
+else
+	TARGET = libppsspp.dll
+endif
+
+LDFLAGS = -shared -s $(CXXFLAGS)
+
+DEST = ../../Assets/dll
+DESTCOPY = ../../output/dll
+OBJS := $(addsuffix .o,$(basename $(SRCS)))
+
+all: $(TARGET)
+
+%.o: %.c
+	$(CC) -c -o $@ $< $(CCFLAGS)
+
+%.o: %.cpp
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
+
+$(TARGET) : $(OBJS)
+	$(CXX) -o $@ $(LDFLAGS) $(OBJS)
+
+clean:
+	$(RM) -f $(OBJS)
+	$(RM) -f $(TARGET)
+	
+install:
+	$(CP) $(TARGET) $(DEST)
+ifneq ("$(wildcard $(DESTCOPY))", "")
+	$(CP) $(TARGET) $(DESTCOPY)
+endif
