@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			private const string TRACE_HEADER = "M68K: PC, machine code, mnemonic, operands, registers (A0-A7, D0-D7, SR, USP), flags (XNZVC)";
 
-			protected override void TraceFromCallback(uint addr, uint value, uint flags)
+			protected override uint TraceFromCallback(uint addr, uint value, uint flags)
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
 				var pc = (uint)regs["M68K PC"].Value & 0xFFFFFF;
@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					(sr &  1) > 0 ? "C" : "c"));
 
 				this.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: sb.ToString().Trim()));
+				return 0;
 			}
 		}
 	}

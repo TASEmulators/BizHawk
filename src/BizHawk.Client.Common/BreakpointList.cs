@@ -166,7 +166,7 @@ namespace BizHawk.Client.Common
 			_core.MemoryCallbacks.Remove(DoCallback);
 		}
 
-		private void DoCallback(uint address, uint value, uint flags)
+		private uint DoCallback(uint address, uint value, uint flags)
 			=> Callback(address, value, flags);
 
 		public void ResetCallback()

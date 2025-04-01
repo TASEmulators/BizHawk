@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					const uint flags = (uint)MemoryCallbackFlags.AccessExecute;
 					MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
+				return val;
 			};
 			ReadCallback = (addr, val) =>
 			{
@@ -87,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					const uint flags = (uint)MemoryCallbackFlags.AccessRead;
 					MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
+				return val;
 			};
 			WriteCallback = (addr, val) =>
 			{
@@ -95,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					const uint flags = (uint)MemoryCallbackFlags.AccessWrite;
 					MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
+				return val;
 			};
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}

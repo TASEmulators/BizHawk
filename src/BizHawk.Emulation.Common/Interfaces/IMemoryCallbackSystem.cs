@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
-	public delegate void MemoryCallbackDelegate(uint address, uint value, uint flags);
+	public delegate uint MemoryCallbackDelegate(uint address, uint value, uint flags);
 
 	/// <summary>
 	/// This is a property of <see cref="IDebuggable"/>, and defines the means by which a client
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
 		/// <param name="flags">The callback flags relevant to this access</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
-		void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);
+		uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);
 
 		/// <summary>
 		/// Removes the given callback from the list

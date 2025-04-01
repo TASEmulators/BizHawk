@@ -166,8 +166,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		IEnumerator IEnumerable.GetEnumerator()
 			=> GetEnumerator();
 
-		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
+		public uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
+			return 0;
 			// Not a thing in this implementation
 		}
 
