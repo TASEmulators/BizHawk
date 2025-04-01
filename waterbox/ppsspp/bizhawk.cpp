@@ -4,13 +4,19 @@
 #include <libretro.h>
 #include <functional>
 #include <jaffarCommon/dethreader.hpp>
+#include <jaffarCommon/file.hpp>
 
+// State for the dethreader runtime
 __JAFFAR_COMMON_DETHREADER_STATE
 
+// Memory file directory
+jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
+
+// Flag to indicate the game was correctly loaded
+bool _loadResult;
 
 // Flag to indicate whether the nvram changed
 int _nvramChanged;
-
 
 // Storing inputs for the game to read from
 gamePad_t _inputData;
@@ -70,24 +76,30 @@ void emuDriver()
 
     struct retro_game_info game;
     game.path = _romFilePath.c_str();
-    auto loadResult = retro_load_game(&game);
-    if (loadResult == false) JAFFAR_THROW_RUNTIME("Could not load game: '%s'\n", _romFilePath.c_str());
+    _loadResult = retro_load_game(&game);
 
+    printf("Exiting from init task\n"); fflush(stdout);
+    _emuDriverCoroutine = co_active();
     co_switch(_driverCoroutine);  
+    retro_run();
+    printf("back to init task\n"); fflush(stdout);
   };
 
   // Creating state advance task
   auto advanceTask = []()
   {
+    printf("Advance Task before while true...\n"); fflush(stdout);
     while(true)
     {
       // If it's time to do it, run state
       if (_advanceState == true)
       {
+        printf("Before Retro Run...\n"); fflush(stdout);
         retro_run();
         _advanceState = false;
 
         // Come back to driver scope
+        _emuDriverCoroutine = co_active();
         co_switch(_driverCoroutine);
       } 
 
@@ -203,7 +215,7 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
     if (cmd == RETRO_ENVIRONMENT_SET_CORE_OPTIONS_DISPLAY) { return false; }
     if (cmd == RETRO_ENVIRONMENT_GET_PREFERRED_HW_RENDER) { return false; }
     
-    JAFFAR_THROW_LOGIC("Unrecognized environment callback command: %u\n", cmd);
+    fprintf(stderr, "Unrecognized environment callback command: %u\n", cmd);
 
     return false;
 }
@@ -224,30 +236,8 @@ void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
 void cd_read_sector(void *buf_) {  cd_read_callback(_currentSector, buf_); }
 /// CD Management Logic End
 
-// SRAM management start
-bool _sram_changed = false;
-ECL_EXPORT bool sram_changed() { return _nvramChanged; }
-ECL_EXPORT int get_sram_size() { return 0; } // NVRAM_SIZE; }
-ECL_EXPORT uint8_t* get_sram_buffer() { return nullptr; } //(uint8_t*) NVRAM; }
-ECL_EXPORT void get_sram(uint8_t* sramBuffer)
-{
-  return;
-  // if (NVRAM == NULL) return;
-  // memcpy(sramBuffer, libretro_sram_buffer(), get_sram_size());
-}
-
-ECL_EXPORT void set_sram(uint8_t* sramBuffer)
-{
-  return; 
-  // if (NVRAM == NULL) libretro_nvram_init(NVRAM,NVRAM_SIZE);
-  // memcpy(get_sram_buffer(), sramBuffer, get_sram_size());
-}
-// SRAM Management end
-
-ECL_EXPORT bool Init(const char* gameFilePath, int region)
+ECL_EXPORT bool Init()
 { 
-  _romFilePath = gameFilePath;
-
   retro_set_environment(retro_environment_callback);
   retro_set_input_poll(retro_input_poll_callback);
   retro_set_audio_sample_batch(retro_audio_sample_batch_callback);
@@ -259,8 +249,36 @@ ECL_EXPORT bool Init(const char* gameFilePath, int region)
   constexpr size_t stackSize = 4 * 1024 * 1024;
   _emuDriverCoroutine = co_create(stackSize, emuDriver);
 
+  // Loading CD into memfile
+  const auto cdSectorCount = cd_sector_count_callback();
+  printf("Loading CD %u with %u sectors...\n", 0, cdSectorCount);
+
+  // Uploading CD as a mem file
+  _romFilePath = "CDROM0.bin";
+	auto f = _memFileDirectory.fopen(_romFilePath, "w");
+	if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", _romFilePath.c_str()); return false; }
+
+  // Writing contents into mem file, one by one
+  for (size_t i = 0; i < cdSectorCount; i++)
+  {
+    uint8_t sector[CDIMAGE_SECTOR_SIZE];
+    cd_set_sector(i);
+    cd_read_sector(sector);
+    auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(sector, CDIMAGE_SECTOR_SIZE, 1, f);
+    if (writtenBlocks != 1) 
+    { 
+      fprintf(stderr, "Could not write data into mem file: %s\n", _romFilePath.c_str());
+      _memFileDirectory.fclose(f);
+      return false; 
+    }
+  }
+
+  // Closing file
+  _memFileDirectory.fclose(f);
+  
   // Initializing emu core
   co_switch(_emuDriverCoroutine);
+  if (_loadResult == false) { fprintf(stderr, "Could not load game: '%s'\n", _romFilePath.c_str()); return false; }
 
   // Setting cd callbacks
   // libretro_cdrom_set_callbacks(cd_get_size, cd_set_sector, cd_read_sector);
@@ -294,6 +312,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
   // Jumping into the emu driver coroutine to run a single frame
   _advanceState = true;
+  printf("Advancing Frame...\n"); fflush(stdout);
   co_switch(_emuDriverCoroutine);
 
   // The frame is lagged if no inputs were read

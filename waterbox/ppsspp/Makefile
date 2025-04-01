@@ -16,6 +16,7 @@ CCFLAGS := 	-I. \
 	-DPPSSPP_GIT_VERSION=gitVersion \
 	-DZSTD_DISABLE_ASM \
 	-DGLEW_NO_GLU \
+	-DNO_MMAP \
 	-D__INLINE__=inline \
 	-Ippsspp/ext/glslang \
 	-Ippsspp \
