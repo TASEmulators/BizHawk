@@ -5,9 +5,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP
+namespace BizHawk.Emulation.Consoles.Sony.PSP_WBX
 {
 	[PortedCore(
 		name: CoreNames.PPSSPP,
@@ -15,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		portedVersion: "2025.03.09 (ecbbadd)",
 		portedUrl: "https://github.com/hrydgard/ppsspp",
 		isReleased: false)]
-	public partial class PPSSPP : WaterboxCore
+	public partial class PPSSPP_WBX : WaterboxCore
 	{
 		private static readonly Configuration DefaultConfig = new Configuration
 		{
@@ -34,12 +33,12 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
 		public override int VirtualWidth => BufferHeight * 4 / 3;
-		private LibPPSSPP _libPPSSPP;
+		private LibPPSSPP_WBX _libPPSSPP;
 
 		// Image selection / swapping variables
 
 		[CoreConstructor(VSystemID.Raw.PSP)]
-		public PPSSPP(CoreLoadParameters<object, SyncSettings> lp)
+		public PPSSPP_WBX(CoreLoadParameters<object, SyncSettings> lp)
 			: base(lp.Comm, DefaultConfig)
 		{
 			DriveLightEnabled = true;
@@ -58,15 +57,15 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
 
-			_libPPSSPP = PreInit<LibPPSSPP>(
+			_libPPSSPP = PreInit<LibPPSSPP_WBX>(
 				new WaterboxOptions
 				{
 					Filename = "ppsspp.wbx",
-					SbrkHeapSizeKB = 256 * 1024,
+					SbrkHeapSizeKB = 1024 * 1024,
 					SealedHeapSizeKB = 1024,
 					InvisibleHeapSizeKB = 1024,
-					PlainHeapSizeKB = 1024,
-					MmapHeapSizeKB = 256 * 1024,
+					PlainHeapSizeKB = 1024 * 32,
+					MmapHeapSizeKB = 1024 * 1024,
 					SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 					SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 				},
@@ -78,7 +77,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;
 			Console.WriteLine($"Launching Core with Game: '{cdName}'");
-			if (!_libPPSSPP.Init(gameFile: cdName))
+			if (!_libPPSSPP.Init())
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
@@ -89,8 +88,8 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		// CD Handling logic
 		private bool _isMultidisc;
 		private bool _discInserted = true;
-		private readonly LibPPSSPP.CDReadCallback _CDReadCallback;
-		private readonly LibPPSSPP.CDSectorCountCallback _CDSectorCountCallback;
+		private readonly LibPPSSPP_WBX.CDReadCallback _CDReadCallback;
+		private readonly LibPPSSPP_WBX.CDSectorCountCallback _CDSectorCountCallback;
 		private int _discIndex;
 		private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
 		private static int CD_SECTOR_SIZE = 2048;
@@ -128,7 +127,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			var fi = new LibPPSSPP.FrameInfo();
+			var fi = new LibPPSSPP_WBX.FrameInfo();
 
 			// Disc management
 			if (_isMultidisc)
