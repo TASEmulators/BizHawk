@@ -60,12 +60,18 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					_function.Call(args);
+					object[] LuaFunctionReturn = _function.Call(args);
+					if(LuaFunctionReturn?.Length != 0) // If the value returned is not specified in the callback, the array will not have any elements.
+					{
+						return Convert.ToUInt32(LuaFunctionReturn[0]);
+					}
+					return null;
 				}
 				catch (Exception ex)
 				{
 					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
+				return null;
 			};
 			InputCallback = () =>
 			{
@@ -84,7 +90,12 @@ namespace BizHawk.Client.Common
 				LuaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback(new object[] { addr, val, flags });
+					uint? CallbackReturn = Callback(new object[] { addr, val, flags });
+					if (CallbackReturn is null)
+					{
+						return val;
+					}
+					return (uint) CallbackReturn;
 				}
 				finally
 				{
@@ -119,7 +130,7 @@ namespace BizHawk.Client.Common
 
 		public string Event { get; }
 
-		private Action<object[]> Callback { get; }
+		private Func<object[],uint?> Callback { get; }
 
 		public Action InputCallback { get; }
 
