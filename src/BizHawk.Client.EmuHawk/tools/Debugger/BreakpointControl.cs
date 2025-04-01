@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				: Color.White;
 		}
 
-		private uint BreakpointCallback(uint addr, uint value, uint flags)
+		private uint? BreakpointCallback(uint addr, uint value, uint flags)
 		{
 			MainForm.PauseEmulator();
 			ParentDebugger.UpdateForBreakpointHit();
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		private uint SeekCallback(uint addr, uint value, uint flags)
+		private uint? SeekCallback(uint addr, uint value, uint flags)
 		{
 			BreakpointCallback(addr, value, flags);
 

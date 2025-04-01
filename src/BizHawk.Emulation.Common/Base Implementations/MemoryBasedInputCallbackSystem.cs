@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private uint MemoryCallback(uint address, uint value, uint flags)
+		private uint? MemoryCallback(uint address, uint value, uint flags)
 		{
 			foreach (var action in _inputCallbacks)
 			{

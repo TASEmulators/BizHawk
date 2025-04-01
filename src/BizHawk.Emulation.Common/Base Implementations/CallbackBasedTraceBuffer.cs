@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Common
 
 		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
-		protected abstract uint TraceFromCallback(uint addr, uint value, uint flags);
+		protected abstract uint? TraceFromCallback(uint addr, uint value, uint flags);
 
 		private ITraceSink? _sink;
 
