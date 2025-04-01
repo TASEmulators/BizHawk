@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Common
 			{
 				if (!cb.Address.HasValue || (cb.Scope == scope && cb.Address == (addr & cb.AddressMask)))
 				{
-					cbReturn = cb.Callback(addr, value, flags); //If there are many callbacks registered to the same addr, only the last callback's return value will be sent to the core.
+					cbReturn = (uint) cb.Callback(addr, value, flags); //If there are many callbacks registered to the same addr, only the last callback's return value will be sent to the core.
 				}
 			}
 			return cbReturn;

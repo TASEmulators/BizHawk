@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
-	public delegate uint MemoryCallbackDelegate(uint address, uint value, uint flags);
+	public delegate uint? MemoryCallbackDelegate(uint address, uint value, uint flags);
 
 	/// <summary>
 	/// This is a property of <see cref="IDebuggable"/>, and defines the means by which a client

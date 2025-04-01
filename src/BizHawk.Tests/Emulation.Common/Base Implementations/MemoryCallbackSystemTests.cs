@@ -292,17 +292,17 @@ namespace BizHawk.Tests.Emulation.Common
 
 			public List<(uint Address, uint Value, uint Flags)> Callback3Invocations { get; } = new();
 
-			public uint Callback1(uint address, uint value, uint flags) {
+			public uint? Callback1(uint address, uint value, uint flags) {
 				Callback1Invocations.Add((address, value, flags));
 				return 0;
 			}
 
-			public uint Callback2(uint address, uint value, uint flags) {
+			public uint? Callback2(uint address, uint value, uint flags) {
 				Callback2Invocations.Add((address, value, flags));
 				return 0;
 			}
 
-			public uint Callback3(uint address, uint value, uint flags) {
+			public uint? Callback3(uint address, uint value, uint flags) {
 				Callback3Invocations.Add((address, value, flags));
 				return 0;
 			}
