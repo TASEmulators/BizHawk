@@ -1,0 +1,842 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\bizhawk.cpp" />
+    <ClCompile Include="..\ppsspp\ext\minimp3\minimp3.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\atrac.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\atrac3.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\atrac3plus.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\atrac3plusdec.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\atrac3plusdsp.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\get_bits.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\compat.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\fft.cpp" />
+    <ClCompile Include="..\ppsspp\ext\at3_standalone\mem.cpp" />
+    <ClCompile Include="..\ppsspp\ext\snappy\snappy-c.cpp" />
+    <ClCompile Include="..\ppsspp\ext\snappy\snappy-sinksource.cpp" />
+    <ClCompile Include="..\ppsspp\ext\snappy\snappy-stubs-internal.cpp" />
+    <ClCompile Include="..\ppsspp\ext\snappy\snappy.cpp" />
+    <ClCompile Include="..\ppsspp\ext\xbrz\xbrz.cpp" />
+    <ClCompile Include="..\ppsspp\ext\gason\gason.cpp" />
+    <ClCompile Include="..\ppsspp\ext\cityhash\city.cpp" />
+    <ClCompile Include="..\ppsspp\ext\basis_universal\basisu_transcoder.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui_impl_thin3d.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui_impl_platform.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\ppsspp\ext\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\ppsspp\ext\armips\Core\Types.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Crypto\md5.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Crypto\sha1.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Crypto\sha256.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Color\RGBAUtil.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Convert\SmallDataConvert.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Encoding\Base64.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Encoding\Compression.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Encoding\Utf8.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\RIFF.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\IniFile.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\JSONReader.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\JSONWriter.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\DDSLoad.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\PNGLoad.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\ZIMLoad.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Format\ZIMSave.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Hash\Hash.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Text\I18n.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Text\Parsers.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Text\WrapText.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\VFS\VFS.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\VFS\DirectoryReader.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\VFS\ZipFileReader.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\AndroidStorage.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\AndroidContentURI.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\DiskFree.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\Path.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\PathBrowser.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\FileUtil.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\FileDescriptor.cpp" />
+    <ClCompile Include="..\ppsspp\Common\File\DirListing.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GPU\thin3d.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GPU\Shader.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GPU\GPUBackendCommon.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GPU\ShaderWriter.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GPU\ShaderTranslation.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Input\GestureDetector.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Input\InputState.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Math\curves.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Math\expression_parser.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Math\math_util.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Math\Statistics.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Math\lin\vec3.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Math\lin\matrix4x4.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\HTTPClient.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\HTTPHeaders.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\HTTPServer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\HTTPRequest.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\HTTPNaettRequest.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\NetBuffer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\Resolve.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\Sinks.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\URL.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Net\WebsocketServer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Render\ManagedTexture.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Render\DrawBuffer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Render\TextureAtlas.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Serialize\Serializer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Thread\ThreadUtil.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Thread\ParallelLoop.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Thread\ThreadManager.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\AsyncImageFileView.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\Root.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\Screen.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\UI.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\Context.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\UIScreen.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\Tween.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\IconCache.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\View.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\ViewGroup.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\ScrollView.cpp" />
+    <ClCompile Include="..\ppsspp\Common\UI\PopupScreens.cpp" />
+    <ClCompile Include="..\ppsspp\Common\System\Display.cpp" />
+    <ClCompile Include="..\ppsspp\Common\System\Request.cpp" />
+    <ClCompile Include="..\ppsspp\Common\System\OSD.cpp" />
+    <ClCompile Include="..\ppsspp\Common\ArmCPUDetect.cpp" />
+    <ClCompile Include="..\ppsspp\Common\CPUDetect.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Buffer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Log\ConsoleListener.cpp" />
+    <ClCompile Include="..\ppsspp\Common\ExceptionHandlerSetup.cpp" />
+    <ClCompile Include="..\ppsspp\Common\FakeCPUDetect.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GhidraClient.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Log.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Log\LogManager.cpp" />
+    <ClCompile Include="..\ppsspp\Common\OSVersion.cpp" />
+    <ClCompile Include="..\ppsspp\Common\MemoryUtil.cpp" />
+    <ClCompile Include="..\ppsspp\Common\MipsCPUDetect.cpp" />
+    <ClCompile Include="..\ppsspp\Common\RiscVCPUDetect.cpp" />
+    <ClCompile Include="..\ppsspp\Common\LogReporting.cpp" />
+    <ClCompile Include="..\ppsspp\Common\SysError.cpp" />
+    <ClCompile Include="..\ppsspp\Common\StringUtils.cpp" />
+    <ClCompile Include="..\ppsspp\Common\TimeUtil.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\OpenXRLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\PPSSPPVR.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\VRBase.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\VRMath.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\VRFramebuffer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\VRInput.cpp" />
+    <ClCompile Include="..\ppsspp\Common\VR\VRRenderer.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\Draw2D.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderHandwritten.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\GPUStateUtils.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\DrawEngineCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\SplineCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\FramebufferManagerCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\PresentationCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\ReinterpretFramebuffer.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\ShaderId.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\ShaderCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\ShaderUniforms.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\GPUDebugInterface.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\TextureShaderCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\DepalettizeShaderCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\TransformCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\IndexGenerator.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\TextureDecoder.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\PostShader.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\TextureReplacer.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\ReplacedTexture.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Data\Convert\ColorConv.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\Breakpoints.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\Debugger.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\GECommandTable.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\Playback.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\Record.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\Stepping.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\FragmentShaderGenerator.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\VertexShaderGenerator.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\GeometryShaderGenerator.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\TextureCacheCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\TextureScalerCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\SoftwareTransformCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\DepthBufferCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\DepthRaster.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\StencilCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\TransformUnit.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\SoftGpu.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\Sampler.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\GeConstants.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\GeDisasm.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\GPUCommon.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\GPUCommonHW.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\GPU.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\GPUState.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Math3D.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\BinManager.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\Clipper.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\DrawPixel.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\FuncId.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\Lighting.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\Rasterizer.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\RasterizerRectangle.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\RasterizerRegCache.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\OGLCompilersDLL\InitializeDll.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\GenericCodeGen\CodeGen.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\GenericCodeGen\Link.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\Pp.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpAtom.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpContext.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpScanner.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpTokens.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\attribute.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Constant.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\InfoSink.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Initialize.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Intermediate.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\IntermTraverse.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\ParseContextBase.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\ParseHelper.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\PoolAlloc.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\RemoveTree.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Scan.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\ShaderLang.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\SymbolTable.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Versions.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\glslang_tab.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\intermOut.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\iomapper.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\limits.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\linkValidate.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\parseConst.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\propagateNoContraction.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\reflection.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\SpirvIntrinsics.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\SPIRV\InReadableOrder.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\SPIRV\GlslangToSpv.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\SPIRV\Logger.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\SPIRV\SpvBuilder.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\SPIRV\SpvPostProcess.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_cfg.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_cross.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_cross_util.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_glsl.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_hlsl.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_parser.cpp" />
+    <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_cross_parsed_ir.cpp" />
+    <ClCompile Include="..\ppsspp\Common\MemArenaPosix.cpp" />
+    <ClCompile Include="..\ppsspp\ext\glslang\glslang\OSDependent\Windows\ossource.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Render\Text\draw_text.cpp" />
+    <ClCompile Include="..\ppsspp\ext\jpge\jpgd.cpp" />
+    <ClCompile Include="..\ppsspp\ext\jpge\jpge.cpp" />
+    <ClCompile Include="..\ppsspp\Core\AVIDump.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Config.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ConfigSettings.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ControlMapper.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Core.cpp" />
+    <ClCompile Include="..\ppsspp\Core\WaveFile.cpp" />
+    <ClCompile Include="..\ppsspp\Core\KeyMap.cpp" />
+    <ClCompile Include="..\ppsspp\Core\KeyMapDefaults.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileLoaders\HTTPFileLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileLoaders\CachingFileLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileLoaders\DiskCachingFileLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileLoaders\RetryingFileLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileLoaders\RamCachingFileLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileLoaders\LocalFileLoader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\CoreTiming.cpp" />
+    <ClCompile Include="..\ppsspp\Core\CwCheat.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HDRemaster.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Instance.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Debugger\Breakpoints.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Debugger\SymbolMap.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Debugger\MemBlockInfo.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPGamedataInstallDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPMsgDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPNetconfDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPNpSigninDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPOskDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPOskConstants.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPSaveDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\PSPScreenshotDialog.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Dialog\SavedataParam.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ELF\ElfReader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ELF\PBPReader.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ELF\PrxDecrypter.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ELF\ParamSFO.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\tlzrc.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\BlockDevices.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\BlobFileSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\DirectoryFileSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\FileSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\ISOFileSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\MetaFileSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FileSystems\VirtualDiscFileSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Font\PGF.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\HLE.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\KUBridge.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\NetInetConstants.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\SocketManager.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\Plugins.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceSha256.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceSircs.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceG729.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceSfmt19937.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\ReplaceTables.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\HLEHelperThread.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\HLETables.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\AtracCtx.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\AtracCtx2.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceAdler.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceAtrac.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceAudio.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceAudiocodec.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceAudioRouting.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceCcc.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceChnnlsv.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceCtrl.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceDeflt.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceDisplay.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceDmac.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceGameUpdate.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceGe.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceFont.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceHeap.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceHprm.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceHttp.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceImpose.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceIo.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUsbMic.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceJpeg.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernel.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelAlarm.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelEventFlag.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelHeap.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelInterrupt.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelMbx.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelMemory.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelModule.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelMsgPipe.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelMutex.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelSemaphore.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelThread.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelTime.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceKernelVTimer.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceMpeg.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNet.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNet_lib.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNetAdhoc.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNetAdhocMatching.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNetApctl.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNetInet.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNetResolver.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\proAdhocServer.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\proAdhoc.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceOpenPSID.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceP3da.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceMt19937.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceMd5.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceAac.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceMp4.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceMp3.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceParseHttp.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceParseUri.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\scePower.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\scePsmf.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceRtc.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceSas.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceSsl.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUmd.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUsb.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUsbAcc.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUsbCam.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUtility.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceVaudio.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\scePspNpDrm_user.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNp.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceNp2.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\scePauth.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\sceUsbGps.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\BufferQueue.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\Camera.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\Display.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\SimpleAudioDec.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\Atrac3Standalone.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\AsyncIOManager.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\MediaEngine.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\MpegDemux.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\MemoryStick.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\SasAudio.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\SasReverb.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Compatibility.cpp" />
+    <ClCompile Include="..\ppsspp\Core\FrameTiming.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Loaders.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\JitCommon\JitCommon.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\JitCommon\JitState.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\JitCommon\JitBlockCache.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRAnalysis.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRCompALU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRCompBranch.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRCompFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRCompLoadStore.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRCompVFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRInst.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRInterpreter.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRJit.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRNativeCommon.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRPassSimplify.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRRegCache.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\IR\IRFrontend.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPS.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSAnalyst.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSCodeUtils.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSDebugInterface.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSDis.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSDisVFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSInt.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSIntVFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSTables.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSStackWalk.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSVFPUUtils.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSVFPUFallbacks.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\MIPSTracer.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MemFault.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MemMap.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MemMapFunctions.cpp" />
+    <ClCompile Include="..\ppsspp\Core\PSPLoaders.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Replay.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Reporting.cpp" />
+    <ClCompile Include="..\ppsspp\Core\RetroAchievements.cpp" />
+    <ClCompile Include="..\ppsspp\Core\SaveState.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Screenshot.cpp" />
+    <ClCompile Include="..\ppsspp\Core\System.cpp" />
+    <ClCompile Include="..\ppsspp\Core\ThreadPools.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Util\BlockAllocator.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Util\MemStick.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Util\PPGeDraw.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Util\AudioFormat.cpp" />
+    <ClCompile Include="..\ppsspp\Core\Util\PortManager.cpp" />
+    <ClCompile Include="..\ppsspp\UI\GameInfoCache.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HLE\__sceAudio.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\DrawPixelX86.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Software\SamplerX86.cpp" />
+    <ClCompile Include="..\ppsspp\Common\x64Emitter.cpp" />
+    <ClCompile Include="..\ppsspp\Common\x64Analyzer.cpp" />
+    <ClCompile Include="..\ppsspp\Common\ABI.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Thunk.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\CompReplace.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\CompBranch.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\Asm.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\CompALU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\CompVFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\CompLoadStore.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\CompFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\Jit.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\JitSafeMem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\RegCache.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\RegCacheFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRAsm.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRCompALU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRCompBranch.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRCompFPU.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRCompLoadStore.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRCompSystem.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRCompVec.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRJit.cpp" />
+    <ClCompile Include="..\ppsspp\Core\MIPS\x86\X64IRRegCache.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderX86.cpp" />
+    <ClCompile Include="..\ppsspp\libretro\libretro.cpp" />
+    <ClCompile Include="..\ppsspp\libretro\LibretroGraphicsContext.cpp" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_add.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_add_dir.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_add_entry.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_algorithm_deflate.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_buffer.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_close.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_delete.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_dir_add.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_dirent.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_discard.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_entry.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_error.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_error_clear.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_error_get.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_error_get_sys_type.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_error_strerror.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_error_to_str.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_extra_field.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_extra_field_api.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fclose.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fdopen.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_add.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_error_clear.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_error_get.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_get_comment.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_get_external_attributes.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_get_offset.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_rename.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_replace.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_set_comment.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_set_encryption.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_set_external_attributes.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_set_mtime.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_file_strerror.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fopen.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fopen_encrypted.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fopen_index.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fopen_index_encrypted.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fread.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_fseek.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_ftell.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_archive_comment.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_archive_flag.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_encryption_implementation.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_file_comment.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_name.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_num_entries.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_get_num_files.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_hash.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_io_util.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_libzip_version.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_memdup.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_name_locate.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_new.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_open.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_pkware.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_progress.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_rename.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_replace.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_set_archive_comment.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_set_archive_flag.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_set_default_password.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_set_file_comment.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_set_file_compression.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_set_name.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_accept_empty.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_begin_write.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_begin_write_cloning.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_buffer.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_call.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_close.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_commit_write.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_compress.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_crc.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_error.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_file_common.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_file_stdio.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_free.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_function.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_get_file_attributes.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_is_deleted.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_layered.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_open.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_pkware_decode.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_pkware_encode.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_read.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_remove.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_rollback_write.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_seek.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_seek_write.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_stat.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_supports.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_tell.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_tell_write.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_window.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_write.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_zip.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_zip_new.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_stat.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_stat_index.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_stat_init.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_strerror.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_string.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_unchange.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_unchange_all.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_unchange_archive.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_unchange_data.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_utf-8.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_err_str.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_mkstempm.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_source_file_stdio_named.c" />
+    <ClCompile Include="..\ppsspp\ext\libzip\zip_random_win32.c" />
+    <ClCompile Include="..\ppsspp\ext\libkirk\AES.c" />
+    <ClCompile Include="..\ppsspp\ext\libkirk\amctrl.c" />
+    <ClCompile Include="..\ppsspp\ext\libkirk\SHA1.c" />
+    <ClCompile Include="..\ppsspp\ext\libkirk\bn.c" />
+    <ClCompile Include="..\ppsspp\ext\libkirk\ec.c" />
+    <ClCompile Include="..\ppsspp\ext\libkirk\kirk_engine.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\png.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngerror.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngget.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngmem.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngread.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngrio.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngrtran.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngrutil.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngset.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngtrans.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngwio.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngwrite.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngwtran.c" />
+    <ClCompile Include="..\ppsspp\ext\libpng17\pngwutil.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lapi.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lauxlib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lbaselib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lcode.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lcorolib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lctype.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ldblib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ldebug.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ldo.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ldump.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lfunc.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lgc.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\linit.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\liolib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\llex.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lmathlib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lmem.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\loadlib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lobject.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lopcodes.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\loslib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lparser.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lstate.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lstring.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lstrlib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ltable.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ltablib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\ltm.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lundump.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lutf8lib.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lvm.c" />
+    <ClCompile Include="..\ppsspp\ext\lua\lzio.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_common.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_editor.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_info.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_runtime.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_user.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\alloc.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\condition.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\condset.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\consoleinfo.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\format.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\lboard.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\memref.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\operand.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_client.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_util.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_compat.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\rc_validate.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\richpresence.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\runtime.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\runtime_progress.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\trigger.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\value.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rhash\md5.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Alloc.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Bcj2.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Bcj2Enc.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Bra.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Bra86.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\CpuArch.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Delta.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\LzFind.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\LzFindOpt.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\LzmaDec.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\LzmaEnc.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Lzma86Dec.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Lzma86Enc.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\LzmaLib.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Sort.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_bitstream.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_cdrom.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_flac.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_huffman.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\filesystem.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_aarch64_linux_or_android.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_aarch64_windows.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_arm_linux_or_android.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_mips_linux_or_android.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_ppc_linux.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_riscv_linux.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_s390x_linux.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_freebsd.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_linux_or_android.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_macos.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_windows.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\stack_line_reader.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\string_view.c" />
+    <ClCompile Include="..\ppsspp\ext\cpu_features\src\hwcaps.c" />
+    <ClCompile Include="..\ppsspp\ext\sfmt19937\SFMT.c" />
+    <ClCompile Include="..\ppsspp\ext\xxhash.c" />
+    <ClCompile Include="..\ppsspp\Common\GPU\OpenGL\gl3stub.c" />
+    <ClCompile Include="..\ppsspp\Common\Math\fast\fast_matrix.c" />
+    <ClCompile Include="..\ppsspp\ext\udis86\decode.c" />
+    <ClCompile Include="..\ppsspp\ext\udis86\itab.c" />
+    <ClCompile Include="..\ppsspp\ext\udis86\syn-intel.c" />
+    <ClCompile Include="..\ppsspp\ext\udis86\syn.c" />
+    <ClCompile Include="..\ppsspp\ext\udis86\udis86.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\addr_is_reserved.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\connecthostport.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\igd_desc_parse.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\minisoap.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\minissdpc.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\miniupnpc.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\miniwget.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\minixml.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\portlistingparse.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\receivedata.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnpcommands.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnpdev.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnperrors.c" />
+    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnpreplyparse.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\debug.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\entropy_common.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\error_private.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\fse_decompress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\pool.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\threading.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\xxhash.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\zstd_common.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\fse_compress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\hist.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\huf_compress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_compress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_compress_literals.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_compress_sequences.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_compress_superblock.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_double_fast.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_fast.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_lazy.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_ldm.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_opt.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstdmt_compress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\decompress\huf_decompress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\decompress\zstd_ddict.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\decompress\zstd_decompress.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\decompress\zstd_decompress_block.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\dictBuilder\cover.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\dictBuilder\divsufsort.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\dictBuilder\fastcover.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\dictBuilder\zdict.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\adler32.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\compress.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\crc32.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\deflate.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\gzclose.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\gzlib.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\gzread.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\gzwrite.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\inffast.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\inflate.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\inftrees.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\trees.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\uncompr.c" />
+    <ClCompile Include="..\ppsspp\ext\zlib\zutil.c" />
+    <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_chd.c" />
+    <ClCompile Include="..\jaffarCommon\third_party\libco\libco.c " />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F07F76D3-08E6-4EBC-82F9-53FF90ABD9A9}</ProjectGuid>
+    <RootNamespace>libppsspp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;$(IncludePath)</IncludePath>
+    <OutDir>..\Assets\dll</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;$(IncludePath)</IncludePath>
+    <OutDir>..\Assets\dll</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="CopyToHawkAssets" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(OutDir)libppsspp.dll" DestinationFolder="$(ProjectDir)..\..\Assets\dll" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="CopyToHawkOutput" AfterTargets="PostBuildEvent" Condition=" Exists('$(ProjectDir)..\..\output\dll') ">
+    <Copy SourceFiles="$(OutDir)libppsspp.dll" DestinationFolder="$(ProjectDir)..\..\output\dll" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
