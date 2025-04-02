@@ -1,11 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
-using BizHawk.Emulation.Cores.Waterbox;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP
+namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
-	public abstract class LibPPSSPP : LibWaterboxCore
+	public abstract class LibPPSSPP
 	{
+		private const CallingConvention CC = CallingConvention.Cdecl;
+
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDReadCallback(int lba, IntPtr dst);
 
@@ -40,7 +41,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public new class FrameInfo : LibWaterboxCore.FrameInfo
+		public class FrameInfo
 		{
 			public GamepadInputs input;
 		}

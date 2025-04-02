@@ -1,6 +1,6 @@
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP
+namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
 	public partial class PPSSPP : IDriveLight
 	{

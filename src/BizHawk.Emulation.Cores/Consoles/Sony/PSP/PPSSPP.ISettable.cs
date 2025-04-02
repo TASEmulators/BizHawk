@@ -1,18 +1,43 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP
+namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
-	public partial class PPSSPP : ISettable<object, PPSSPP.SyncSettings>
+	public partial class PPSSPP : ISettable<PPSSPP.Settings, PPSSPP.SyncSettings>
 	{
-		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
-		private SyncSettings _syncSettings;
+		/// <summary>
+		/// Settings
+		/// </summary>
+		private Settings _settings;
+		public Settings GetSettings() => _settings.Clone();
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public PutSettingsDirtyBits PutSettings(Settings o)
+		{
+			var ret = Settings.NeedsReboot(_settings, o);
+			_settings = o;
+			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+		}
+
+		[CoreSettings]
+		public class Settings
+		{
+			public Settings()
+				=> SettingsUtil.SetDefaultValues(this);
+
+			public Settings Clone()
+				=> (Settings) MemberwiseClone();
+
+			public static bool NeedsReboot(Settings x, Settings y)
+				=> !DeepEquality.DeepEquals(x, y);
+
+		}
+
+		/// <summary>
+		/// Sync Settings
+		/// </summary>
+		private SyncSettings _syncSettings;
 
 		public SyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();

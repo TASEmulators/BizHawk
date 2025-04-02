@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP
+namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
 	[PortedCore(
 		name: CoreNames.PPSSPP,
@@ -14,19 +14,21 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		portedVersion: "2025.03.09 (ecbbadd)",
 		portedUrl: "https://github.com/hrydgard/ppsspp",
 		isReleased: false)]
-	public partial class PPSSPP
+	public partial class PPSSPP : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IStatable, ISettable<PPSSPP.Settings, PPSSPP.SyncSettings>
 	{
+		private static DynamicLibraryImportResolver _resolver;
+		private LibPPSSPP _libPPSSPP;
 		private readonly List<IDiscAsset> _discAssets;
 
-		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
-
-		private LibPPSSPP _libPPSSPP;
-
-		// Image selection / swapping variables
-
 		[CoreConstructor(VSystemID.Raw.PSP)]
-		public PPSSPP(CoreLoadParameters<object, SyncSettings> lp)
+		public PPSSPP(CoreLoadParameters<Settings, SyncSettings> lp) 
 		{
+			Console.WriteLine("In PPSSP Core");
+
+			// Assigning configuration
+			_settings = lp.Settings;
+			_syncSettings = lp.SyncSettings;
+
 			DriveLightEnabled = true;
 			_discAssets = lp.Discs;
 
@@ -43,6 +45,17 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
 
+			// Registering service provider
+			_serviceProvider = new(this);
+			_serviceProvider.Register<IVideoProvider>(this);
+			_serviceProvider.Register<ISoundProvider>(this);
+
+			/*
+			// Loading LibPPSSPP
+			_resolver?.Dispose();
+			_resolver = new(OSTailoredCode.IsUnixHost ? "libppsspp.so" : "ppsspp.dll", hasLimitedLifetime: true);
+			_libPPSSPP = BizInvoker.GetInvoker<LibPPSSPP>(_resolver, CallingConventionAdapters.Native);
+
 			// Setting CD callbacks
 			_libPPSSPP.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
 
@@ -53,6 +66,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
+			*/
 		}
 
 		// CD Handling logic
@@ -95,7 +109,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			return -1;
 		}
 
-		protected LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+		protected LibPPSSPP.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var fi = new LibPPSSPP.FrameInfo();
 
