@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
-using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
 
 namespace BizHawk.Emulation.Consoles.Sony.PSP
 {
@@ -15,32 +14,18 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		portedVersion: "2025.03.09 (ecbbadd)",
 		portedUrl: "https://github.com/hrydgard/ppsspp",
 		isReleased: false)]
-	public partial class PPSSPP : WaterboxCore
+	public partial class PPSSPP
 	{
-		private static readonly Configuration DefaultConfig = new Configuration
-		{
-			SystemId = VSystemID.Raw.PSP,
-			MaxSamples = 8 * 1024,
-			DefaultWidth = 480, // https://github.com/hrydgard/ppsspp/blob/963ccf22e1d9b0a5fdfbb5bb77ac48b0aed25507/libretro/libretro.cpp#L663
-			DefaultHeight = 272,
-			MaxWidth = 4800, // https://github.com/hrydgard/ppsspp/blob/963ccf22e1d9b0a5fdfbb5bb77ac48b0aed25507/libretro/libretro.cpp#L681
-			MaxHeight = 2720,
-			DefaultFpsNumerator = 60000, // https://github.com/hrydgard/ppsspp/blob/963ccf22e1d9b0a5fdfbb5bb77ac48b0aed25507/libretro/libretro.cpp#L207
-			DefaultFpsDenominator = 1001,
-		};
-
 		private readonly List<IDiscAsset> _discAssets;
 
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
-		public override int VirtualWidth => BufferHeight * 4 / 3;
 		private LibPPSSPP _libPPSSPP;
 
 		// Image selection / swapping variables
 
 		[CoreConstructor(VSystemID.Raw.PSP)]
 		public PPSSPP(CoreLoadParameters<object, SyncSettings> lp)
-			: base(lp.Comm, DefaultConfig)
 		{
 			DriveLightEnabled = true;
 			_discAssets = lp.Discs;
@@ -58,20 +43,6 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			_syncSettings = lp.SyncSettings ?? new();
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
 
-			_libPPSSPP = PreInit<LibPPSSPP>(
-				new WaterboxOptions
-				{
-					Filename = "ppsspp.wbx",
-					SbrkHeapSizeKB = 256 * 1024,
-					SealedHeapSizeKB = 1024,
-					InvisibleHeapSizeKB = 1024,
-					PlainHeapSizeKB = 1024,
-					MmapHeapSizeKB = 256 * 1024,
-					SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
-					SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-				},
-				[ _CDReadCallback, _CDSectorCountCallback ]);
-
 			// Setting CD callbacks
 			_libPPSSPP.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
 
@@ -82,8 +53,6 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
-
-			PostInit();
 		}
 
 		// CD Handling logic
@@ -100,14 +69,14 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		{
 			_discIndex++;
 			if (_discIndex == _discAssets.Count) _discIndex = 0;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
+			Console.WriteLine($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}");
 		}
 
 		private void SelectPrevDisc()
 		{
 			_discIndex--;
 			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
+			Console.WriteLine($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}");
 		}
 
 		private void CDRead(int lba, IntPtr dest)
@@ -126,7 +95,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			return -1;
 		}
 
-		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+		protected LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var fi = new LibPPSSPP.FrameInfo();
 
@@ -159,17 +128,13 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 			return fi;
 		}
 
-		protected override void FrameAdvancePost()
-		{
-		}
-
-		protected override void SaveStateBinaryInternal(BinaryWriter writer)
+		protected void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			writer.Write(_discIndex);
 			writer.Write(_discInserted);
 		}
 
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		protected void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_discIndex = reader.ReadInt32();
 			_discInserted = reader.ReadBoolean();

@@ -11,6 +11,9 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
 		private SyncSettings _syncSettings;
+
+		public ControllerDefinition ControllerDefinition { get; private set; }
+
 		public SyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
