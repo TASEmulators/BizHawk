@@ -1,9 +1,9 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP_WBX
+namespace BizHawk.Emulation.Consoles.Sony.PSP
 {
-	public partial class PPSSPP_WBX
+	public partial class PPSSPP
 	{ 
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings, bool isMultiDisc)
 		{

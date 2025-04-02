@@ -2,9 +2,9 @@
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP_WBX
+namespace BizHawk.Emulation.Consoles.Sony.PSP
 {
-	public abstract class LibPPSSPP_WBX : LibWaterboxCore
+	public abstract class LibPPSSPP : LibWaterboxCore
 	{
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDReadCallback(int lba, IntPtr dst);
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Sony.PSP_WBX
 		public abstract void SetCdCallbacks(CDReadCallback cdrc, CDSectorCountCallback cdscc);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init();
+		public abstract bool Init(string gameFile);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GamepadInputs

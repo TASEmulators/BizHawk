@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Sony.PSP_WBX
+namespace BizHawk.Emulation.Consoles.Sony.PSP
 {
-	public partial class PPSSPP_WBX : ISettable<object, PPSSPP_WBX.SyncSettings>
+	public partial class PPSSPP : ISettable<object, PPSSPP.SyncSettings>
 	{
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
