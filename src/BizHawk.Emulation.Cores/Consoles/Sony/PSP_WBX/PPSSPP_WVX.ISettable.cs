@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
