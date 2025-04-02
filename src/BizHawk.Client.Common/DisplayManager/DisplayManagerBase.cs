@@ -487,7 +487,7 @@ namespace BizHawk.Client.Common
 			return GlobalEmulator switch
 			{
 				NDS nds => new ScreenControlNDS(nds),
-				Encore encore => new ScreenControl3DS(encore),
+				PSP encore => new ScreenControl3DS(encore),
 				_ => null,
 			};
 		}

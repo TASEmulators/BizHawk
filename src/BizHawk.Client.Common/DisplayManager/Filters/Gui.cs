@@ -206,9 +206,9 @@ namespace BizHawk.Client.Common.Filters
 	/// </summary>
 	public class ScreenControl3DS : BaseFilter
 	{
-		private readonly Encore _encore;
+		private readonly PSP _encore;
 
-		public ScreenControl3DS(Encore encore)
+		public ScreenControl3DS(PSP encore)
 		{
 			_encore = encore;
 		}

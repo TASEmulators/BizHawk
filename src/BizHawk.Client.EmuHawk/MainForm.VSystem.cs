@@ -1185,7 +1185,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.Emu83, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<Emu83>()))));
 
 			// Encore
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<PSP>(CoreNames.Encore)));
 
 			// Faust
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Faust, CreateGenericNymaCoreConfigItem<Faust>(CoreNames.Faust, Faust.CachedSettingsInfo)));
