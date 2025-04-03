@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 			{
 				action.Invoke();
 			}
-			return 0;
+			return null;
 		}
 
 		public IEnumerator<Action> GetEnumerator() => _inputCallbacks.GetEnumerator();

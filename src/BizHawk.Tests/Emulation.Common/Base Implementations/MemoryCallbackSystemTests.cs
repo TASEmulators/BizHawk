@@ -206,7 +206,7 @@ namespace BizHawk.Tests.Emulation.Common
 				callback1invoked = true;
 				_memoryCallbackSystem.Add(callback2);
 				_memoryCallbackSystem.Add(callback3);
-				return 0;
+				return null;
 			};
 
 			MemoryCallback callback1 = new(ScopeA, MemoryCallbackType.Read, "Callback 1", callback, null, null);
@@ -231,7 +231,7 @@ namespace BizHawk.Tests.Emulation.Common
 			{
 				callback2invoked = true;
 				_memoryCallbackSystem.Remove(callback1.Callback);
-				return 0;
+				return null;
 			};
 
 			MemoryCallback callback2 = new(ScopeA, MemoryCallbackType.Read, "Callback 2", callback, null, null);
@@ -263,7 +263,7 @@ namespace BizHawk.Tests.Emulation.Common
 			{
 				callback2invoked = true;
 				_memoryCallbackSystem.Remove(callback2!.Callback);
-				return 0;
+				return null;
 			};
 
 			callback2 = new(ScopeA, MemoryCallbackType.Read, "Callback 2", callback, null, null);
@@ -294,17 +294,17 @@ namespace BizHawk.Tests.Emulation.Common
 
 			public uint? Callback1(uint address, uint value, uint flags) {
 				Callback1Invocations.Add((address, value, flags));
-				return 0;
+				return null;
 			}
 
 			public uint? Callback2(uint address, uint value, uint flags) {
 				Callback2Invocations.Add((address, value, flags));
-				return 0;
+				return null;
 			}
 
 			public uint? Callback3(uint address, uint value, uint flags) {
 				Callback3Invocations.Add((address, value, flags));
-				return 0;
+				return null;
 			}
 			public void Clear()
 			{

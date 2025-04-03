@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.PauseEmulator();
 			ParentDebugger.UpdateForBreakpointHit();
 			MainForm.AddOnScreenMessage("Breakpoint hit");
-			return 0;
+			return null;
 		}
 
 		private uint? SeekCallback(uint addr, uint value, uint flags)
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ParentDebugger.DisableCancelSeekBtn();
-			return 0;
+			return null;
 		}
 
 		public void UpdateValues()
