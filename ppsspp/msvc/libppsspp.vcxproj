@@ -42,8 +42,9 @@
     <ClCompile Include="..\ppsspp\ext\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\ppsspp\ext\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\ppsspp\ext\armips\Core\Types.cpp" />
+    <ClCompile Include="..\ppsspp\Common\MemArenaWin32.cpp" />
     <ClCompile Include="..\ppsspp\Common\Crypto\md5.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Crypto\sha1.cpp" />
+    <ClCompile Include="..\ppsspp\Common\Crypto\_sha1.cpp" />
     <ClCompile Include="..\ppsspp\Common\Crypto\sha256.cpp" />
     <ClCompile Include="..\ppsspp\Common\Data\Color\RGBAUtil.cpp" />
     <ClCompile Include="..\ppsspp\Common\Data\Convert\SmallDataConvert.cpp" />
@@ -66,7 +67,6 @@
     <ClCompile Include="..\ppsspp\Common\File\VFS\DirectoryReader.cpp" />
     <ClCompile Include="..\ppsspp\Common\File\VFS\ZipFileReader.cpp" />
     <ClCompile Include="..\ppsspp\Common\File\AndroidStorage.cpp" />
-    <ClCompile Include="..\ppsspp\Common\File\AndroidContentURI.cpp" />
     <ClCompile Include="..\ppsspp\Common\File\DiskFree.cpp" />
     <ClCompile Include="..\ppsspp\Common\File\Path.cpp" />
     <ClCompile Include="..\ppsspp\Common\File\PathBrowser.cpp" />
@@ -86,16 +86,6 @@
     <ClCompile Include="..\ppsspp\Common\Math\Statistics.cpp" />
     <ClCompile Include="..\ppsspp\Common\Math\lin\vec3.cpp" />
     <ClCompile Include="..\ppsspp\Common\Math\lin\matrix4x4.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\HTTPClient.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\HTTPHeaders.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\HTTPServer.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\HTTPRequest.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\HTTPNaettRequest.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\NetBuffer.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\Resolve.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\Sinks.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\URL.cpp" />
-    <ClCompile Include="..\ppsspp\Common\Net\WebsocketServer.cpp" />
     <ClCompile Include="..\ppsspp\Common\Render\ManagedTexture.cpp" />
     <ClCompile Include="..\ppsspp\Common\Render\DrawBuffer.cpp" />
     <ClCompile Include="..\ppsspp\Common\Render\TextureAtlas.cpp" />
@@ -115,7 +105,7 @@
     <ClCompile Include="..\ppsspp\Common\UI\ViewGroup.cpp" />
     <ClCompile Include="..\ppsspp\Common\UI\ScrollView.cpp" />
     <ClCompile Include="..\ppsspp\Common\UI\PopupScreens.cpp" />
-    <ClCompile Include="..\ppsspp\Common\System\Display.cpp" />
+    <ClCompile Include="..\ppsspp\Common\System\_Display.cpp" />
     <ClCompile Include="..\ppsspp\Common\System\Request.cpp" />
     <ClCompile Include="..\ppsspp\Common\System\OSD.cpp" />
     <ClCompile Include="..\ppsspp\Common\ArmCPUDetect.cpp" />
@@ -124,7 +114,6 @@
     <ClCompile Include="..\ppsspp\Common\Log\ConsoleListener.cpp" />
     <ClCompile Include="..\ppsspp\Common\ExceptionHandlerSetup.cpp" />
     <ClCompile Include="..\ppsspp\Common\FakeCPUDetect.cpp" />
-    <ClCompile Include="..\ppsspp\Common\GhidraClient.cpp" />
     <ClCompile Include="..\ppsspp\Common\Log.cpp" />
     <ClCompile Include="..\ppsspp\Common\Log\LogManager.cpp" />
     <ClCompile Include="..\ppsspp\Common\OSVersion.cpp" />
@@ -164,7 +153,7 @@
     <ClCompile Include="..\ppsspp\GPU\Common\TextureReplacer.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Common\ReplacedTexture.cpp" />
     <ClCompile Include="..\ppsspp\Common\Data\Convert\ColorConv.cpp" />
-    <ClCompile Include="..\ppsspp\GPU\Debugger\Breakpoints.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\_Breakpoints.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Debugger\Debugger.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Debugger\GECommandTable.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Debugger\Playback.cpp" />
@@ -240,7 +229,6 @@
     <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_hlsl.cpp" />
     <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_parser.cpp" />
     <ClCompile Include="..\ppsspp\ext\SPIRV-Cross\spirv_cross_parsed_ir.cpp" />
-    <ClCompile Include="..\ppsspp\Common\MemArenaPosix.cpp" />
     <ClCompile Include="..\ppsspp\ext\glslang\glslang\OSDependent\Windows\ossource.cpp" />
     <ClCompile Include="..\ppsspp\Common\Render\Text\draw_text.cpp" />
     <ClCompile Include="..\ppsspp\ext\jpge\jpgd.cpp" />
@@ -253,7 +241,6 @@
     <ClCompile Include="..\ppsspp\Core\WaveFile.cpp" />
     <ClCompile Include="..\ppsspp\Core\KeyMap.cpp" />
     <ClCompile Include="..\ppsspp\Core\KeyMapDefaults.cpp" />
-    <ClCompile Include="..\ppsspp\Core\FileLoaders\HTTPFileLoader.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileLoaders\CachingFileLoader.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileLoaders\DiskCachingFileLoader.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileLoaders\RetryingFileLoader.cpp" />
@@ -269,8 +256,6 @@
     <ClCompile Include="..\ppsspp\Core\Dialog\PSPDialog.cpp" />
     <ClCompile Include="..\ppsspp\Core\Dialog\PSPGamedataInstallDialog.cpp" />
     <ClCompile Include="..\ppsspp\Core\Dialog\PSPMsgDialog.cpp" />
-    <ClCompile Include="..\ppsspp\Core\Dialog\PSPNetconfDialog.cpp" />
-    <ClCompile Include="..\ppsspp\Core\Dialog\PSPNpSigninDialog.cpp" />
     <ClCompile Include="..\ppsspp\Core\Dialog\PSPOskDialog.cpp" />
     <ClCompile Include="..\ppsspp\Core\Dialog\PSPOskConstants.cpp" />
     <ClCompile Include="..\ppsspp\Core\Dialog\PSPSaveDialog.cpp" />
@@ -291,8 +276,6 @@
     <ClCompile Include="..\ppsspp\Core\Font\PGF.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\HLE.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\KUBridge.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\NetInetConstants.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\SocketManager.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\Plugins.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceSha256.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceSircs.cpp" />
@@ -319,7 +302,6 @@
     <ClCompile Include="..\ppsspp\Core\HLE\sceFont.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceHeap.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceHprm.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceHttp.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceImpose.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceIo.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceUsbMic.cpp" />
@@ -339,15 +321,6 @@
     <ClCompile Include="..\ppsspp\Core\HLE\sceKernelTime.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceKernelVTimer.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceMpeg.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNet.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNet_lib.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNetAdhoc.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNetAdhocMatching.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNetApctl.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNetInet.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNetResolver.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\proAdhocServer.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\proAdhoc.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceOpenPSID.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceP3da.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceMt19937.cpp" />
@@ -355,8 +328,6 @@
     <ClCompile Include="..\ppsspp\Core\HLE\sceAac.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceMp4.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceMp3.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceParseHttp.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceParseUri.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\scePower.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\scePsmf.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceRtc.cpp" />
@@ -369,8 +340,6 @@
     <ClCompile Include="..\ppsspp\Core\HLE\sceUtility.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceVaudio.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\scePspNpDrm_user.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNp.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\sceNp2.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\scePauth.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\sceUsbGps.cpp" />
     <ClCompile Include="..\ppsspp\Core\HW\BufferQueue.cpp" />
@@ -422,7 +391,6 @@
     <ClCompile Include="..\ppsspp\Core\PSPLoaders.cpp" />
     <ClCompile Include="..\ppsspp\Core\Replay.cpp" />
     <ClCompile Include="..\ppsspp\Core\Reporting.cpp" />
-    <ClCompile Include="..\ppsspp\Core\RetroAchievements.cpp" />
     <ClCompile Include="..\ppsspp\Core\SaveState.cpp" />
     <ClCompile Include="..\ppsspp\Core\Screenshot.cpp" />
     <ClCompile Include="..\ppsspp\Core\System.cpp" />
@@ -431,7 +399,6 @@
     <ClCompile Include="..\ppsspp\Core\Util\MemStick.cpp" />
     <ClCompile Include="..\ppsspp\Core\Util\PPGeDraw.cpp" />
     <ClCompile Include="..\ppsspp\Core\Util\AudioFormat.cpp" />
-    <ClCompile Include="..\ppsspp\Core\Util\PortManager.cpp" />
     <ClCompile Include="..\ppsspp\UI\GameInfoCache.cpp" />
     <ClCompile Include="..\ppsspp\Core\HLE\__sceAudio.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Software\DrawPixelX86.cpp" />
@@ -627,29 +594,6 @@
     <ClCompile Include="..\ppsspp\ext\lua\lutf8lib.c" />
     <ClCompile Include="..\ppsspp\ext\lua\lvm.c" />
     <ClCompile Include="..\ppsspp\ext\lua\lzio.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_common.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_editor.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_info.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_runtime.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_user.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\alloc.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\condition.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\condset.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\consoleinfo.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\format.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\lboard.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\memref.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\operand.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_client.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_util.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_compat.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\rc_validate.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\richpresence.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\runtime.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\runtime_progress.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\trigger.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\value.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rhash\md5.c" />
     <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Alloc.c" />
     <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Bcj2.c" />
     <ClCompile Include="..\ppsspp\ext\libchdr\deps\lzma-22.01\src\Bcj2Enc.c" />
@@ -670,22 +614,12 @@
     <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_flac.c" />
     <ClCompile Include="..\ppsspp\ext\libchdr\src\libchdr_huffman.c" />
     <ClCompile Include="..\ppsspp\ext\cpu_features\src\filesystem.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_aarch64_linux_or_android.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_aarch64_windows.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_arm_linux_or_android.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_mips_linux_or_android.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_ppc_linux.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_riscv_linux.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_s390x_linux.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_freebsd.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_linux_or_android.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_macos.c" />
     <ClCompile Include="..\ppsspp\ext\cpu_features\src\impl_x86_windows.c" />
     <ClCompile Include="..\ppsspp\ext\cpu_features\src\stack_line_reader.c" />
     <ClCompile Include="..\ppsspp\ext\cpu_features\src\string_view.c" />
-    <ClCompile Include="..\ppsspp\ext\cpu_features\src\hwcaps.c" />
     <ClCompile Include="..\ppsspp\ext\sfmt19937\SFMT.c" />
-    <ClCompile Include="..\ppsspp\ext\xxhash.c" />
+    <ClCompile Include="..\ppsspp\ext\_xxhash.c" />
+    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\xxhash.c" />
     <ClCompile Include="..\ppsspp\Common\GPU\OpenGL\gl3stub.c" />
     <ClCompile Include="..\ppsspp\Common\Math\fast\fast_matrix.c" />
     <ClCompile Include="..\ppsspp\ext\udis86\decode.c" />
@@ -693,27 +627,12 @@
     <ClCompile Include="..\ppsspp\ext\udis86\syn-intel.c" />
     <ClCompile Include="..\ppsspp\ext\udis86\syn.c" />
     <ClCompile Include="..\ppsspp\ext\udis86\udis86.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\addr_is_reserved.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\connecthostport.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\igd_desc_parse.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\minisoap.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\minissdpc.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\miniupnpc.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\miniwget.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\minixml.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\portlistingparse.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\receivedata.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnpcommands.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnpdev.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnperrors.c" />
-    <ClCompile Include="..\ppsspp\ext\miniupnp\miniupnpc\src\upnpreplyparse.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\debug.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\entropy_common.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\error_private.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\fse_decompress.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\pool.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\threading.c" />
-    <ClCompile Include="..\ppsspp\ext\zstd\lib\common\xxhash.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\common\zstd_common.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\fse_compress.c" />
     <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\hist.c" />
@@ -796,7 +715,7 @@
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;XXH_NO_XXH3;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
