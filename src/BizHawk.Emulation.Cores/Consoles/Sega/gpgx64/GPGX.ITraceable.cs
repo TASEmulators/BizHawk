@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					(sr &  1) > 0 ? "C" : "c"));
 
 				this.Put(new(disassembly: $"{pc:X6}:  {disasm}".PadRight(50), registerInfo: sb.ToString().Trim()));
-				return 0;
+				return null;
 			}
 		}
 	}
