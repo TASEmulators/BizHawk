@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
@@ -72,28 +72,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void InitMemCallbacks()
 		{
-			ExecCallback = (a, val) =>
+			ExecCallback = (addr, val) =>
 			{
 				if (MemoryCallbacks.HasExecutes)
 				{
 					const uint flags = (uint)MemoryCallbackFlags.AccessExecute;
-					MemoryCallbacks.CallMemoryCallbacks(a, val, flags, "M68K BUS");
+					MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
 			};
-			ReadCallback = (a, val) =>
+			ReadCallback = (addr, val) =>
 			{
 				if (MemoryCallbacks.HasReads)
 				{
 					const uint flags = (uint)MemoryCallbackFlags.AccessRead;
-					MemoryCallbacks.CallMemoryCallbacks(a, val, flags, "M68K BUS");
+					MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
 			};
-			WriteCallback = (a, val) =>
+			WriteCallback = (addr, val) =>
 			{
 				if (MemoryCallbacks.HasWrites)
 				{
 					const uint flags = (uint)MemoryCallbackFlags.AccessWrite;
-					MemoryCallbacks.CallMemoryCallbacks(a, val, flags, "M68K BUS");
+					MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
 			};
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
