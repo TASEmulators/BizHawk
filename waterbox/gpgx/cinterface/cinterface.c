@@ -61,9 +61,9 @@ static uint8_t brm_format[0x40] =
 	0x52,0x41,0x4d,0x5f,0x43,0x41,0x52,0x54,0x52,0x49,0x44,0x47,0x45,0x5f,0x5f,0x5f
 };
 
-ECL_ENTRY unsigned int (*biz_execcb)(unsigned addr, unsigned int value);
-ECL_ENTRY unsigned int (*biz_readcb)(unsigned addr, unsigned int value);
-ECL_ENTRY unsigned int (*biz_writecb)(unsigned addr, unsigned int value);
+ECL_ENTRY unsigned (*biz_execcb)(unsigned addr, unsigned value);
+ECL_ENTRY unsigned (*biz_readcb)(unsigned addr, unsigned value);
+ECL_ENTRY unsigned (*biz_writecb)(unsigned addr, unsigned value);
 CDCallback biz_cdcb = NULL;
 ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int subcode);
 uint8 *tempsram;
@@ -770,7 +770,7 @@ void CDLog68k(uint addr, uint flags)
 	}
 }
 
-unsigned int bk_cpu_hook(hook_type_t type, int width, unsigned int address, unsigned int value)
+unsigned bk_cpu_hook(hook_type_t type, int width, unsigned address, unsigned value)
 {
 	switch (type)
 	{
@@ -1023,7 +1023,7 @@ GPGX_EX void gpgx_reset(int hard)
 		gen_reset(0);
 }
 
-GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY unsigned int (*read)(unsigned, unsigned), ECL_ENTRY unsigned int (*write)(unsigned, unsigned), ECL_ENTRY unsigned int (*exec)(unsigned, unsigned))
+GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY unsigned (*read)(unsigned, unsigned), ECL_ENTRY unsigned (*write)(unsigned, unsigned), ECL_ENTRY unsigned (*exec)(unsigned, unsigned))
 {
 	biz_readcb = read;
 	biz_writecb = write;
