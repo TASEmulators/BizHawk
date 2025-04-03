@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public string SystemId => VSystemID.Raw.Doom;
 		public bool DeterministicEmulation => true;
 		private delegate int ReadAxis(IController c, int axis);
-		private delegate byte ReadPort(IController c);
+		private delegate int ReadPort(IController c);
 
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
 		{
@@ -100,9 +100,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// bool buttons
 					var actionsBitfield = buttonsReaders[i](controller);
-					players[i].Fire = actionsBitfield & 0b00001;
-					players[i].Action = (actionsBitfield & 0b00010) >> 1;
-					players[i].Automap = (actionsBitfield & 0b00100) >> 2;
+					players[i].Buttons = actionsBitfield;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)

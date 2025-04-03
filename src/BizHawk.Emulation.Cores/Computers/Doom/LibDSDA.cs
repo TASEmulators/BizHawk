@@ -45,9 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int StrafingSpeed;
 			public int TurningSpeed;
 			public int WeaponSelect;
-			public int Fire;
-			public int Action;
-			public int Automap;
+			public int Buttons;
 
 			// Hexen + Heretic (Raven Games)
 			public int FlyLook;

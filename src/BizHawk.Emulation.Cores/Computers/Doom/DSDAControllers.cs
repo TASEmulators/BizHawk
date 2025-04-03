@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 	public interface IPort
 	{
-		byte ReadButtons(IController c);
+		int ReadButtons(IController c);
 		int ReadAxis(IController c, int axis);
 		ControllerDefinition Definition { get; }
 		int PortNum { get; }
@@ -69,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Strafe Right",
 			"Run",
 			"Strafe",
+			"Change Gamma",
 			"Weapon Select 1",
 			"Weapon Select 2",
 			"Weapon Select 3",
@@ -90,13 +91,25 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Automap Clear Marks",
 		];
 
-		public byte ReadButtons(IController c)
+		public int ReadButtons(IController c)
 		{
-			byte result = 0;
+			int result = 0;
 
-			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
-			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
-			if (c.IsPressed($"P{PortNum} Automap")) { result |= 0b0100; }
+			if (c.IsPressed($"P{PortNum} Fire"))                result |= (1 << 0);
+			if (c.IsPressed($"P{PortNum} Use"))                 result |= (1 << 1);
+			if (c.IsPressed($"P{PortNum} Change Gamma"))        result |= (1 << 2);
+			if (c.IsPressed($"P{PortNum} Automap Toggle"))      result |= (1 << 3);
+			if (c.IsPressed($"P{PortNum} Automap +"))           result |= (1 << 4);
+			if (c.IsPressed($"P{PortNum} Automap -"))           result |= (1 << 5);
+			if (c.IsPressed($"P{PortNum} Automap Full/Zoom"))   result |= (1 << 6);
+			if (c.IsPressed($"P{PortNum} Automap Follow"))      result |= (1 << 7);
+			if (c.IsPressed($"P{PortNum} Automap Up"))          result |= (1 << 8);
+			if (c.IsPressed($"P{PortNum} Automap Down"))        result |= (1 << 9);
+			if (c.IsPressed($"P{PortNum} Automap Right"))       result |= (1 << 10);
+			if (c.IsPressed($"P{PortNum} Automap Left"))        result |= (1 << 11);
+			if (c.IsPressed($"P{PortNum} Automap Grid"))        result |= (1 << 12);
+			if (c.IsPressed($"P{PortNum} Automap Mark"))        result |= (1 << 13);
+			if (c.IsPressed($"P{PortNum} Automap Clear Marks")) result |= (1 << 14);
 
 			return result;
 		}
@@ -165,9 +178,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Weapon Select 7",
 		];
 
-		public byte ReadButtons(IController c)
+		public int ReadButtons(IController c)
 		{
-			byte result = 0;
+			int result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
@@ -281,9 +294,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Weapon Select 4"
 		];
 
-		public byte ReadButtons(IController c)
+		public int ReadButtons(IController c)
 		{
-			byte result = 0;
+			int result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b00001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b00010; }

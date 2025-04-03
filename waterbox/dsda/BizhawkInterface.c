@@ -2,7 +2,91 @@
 
 bool foundIWAD = false;
 bool wipeDone = true;
-int last_automap_input[4] = { 0 };
+AllButtons last_buttons[4] = { 0 };
+
+void handle_automap_input(AllButtons buttons, int playerId)
+{
+  static int bigstate = 0;
+
+  if (buttons.AutomapToggle && !last_buttons[playerId].AutomapToggle)
+  {
+    if (automap_active)
+    {
+      AM_Stop(true);
+      bigstate = 0;
+    }
+    else
+      AM_Start(true);
+  }
+
+  if (buttons.AutomapFollow && !last_buttons[playerId].AutomapFollow)
+  {
+    dsda_ToggleConfig(dsda_config_automap_follow, true);
+    dsda_AddMessage(automap_follow ? AMSTR_FOLLOWON : AMSTR_FOLLOWOFF);
+  }
+  
+  if (buttons.AutomapGrid && !last_buttons[playerId].AutomapGrid)
+  {
+    dsda_ToggleConfig(dsda_config_automap_grid, true);
+    dsda_AddMessage(automap_grid ? AMSTR_GRIDON : AMSTR_GRIDOFF);
+  }
+  
+  if (buttons.AutomapMark && !last_buttons[playerId].AutomapMark)
+  {
+    if (!raven)
+    {
+      AM_addMark();
+      doom_printf("%s %d", AMSTR_MARKEDSPOT, markpointnum - 1);
+    }
+  }
+  
+  if (buttons.AutomapClearMarks && !last_buttons[playerId].AutomapClearMarks)
+  {
+    AM_clearMarks();
+    dsda_AddMessage(AMSTR_MARKSCLEARED);
+  }
+
+  if (buttons.AutomapFullZoom && !last_buttons[playerId].AutomapFullZoom)
+  {
+    bigstate = !bigstate;
+    if (bigstate)
+    {
+      AM_saveScaleAndLoc();
+      AM_minOutWindowScale();
+    }
+    else
+      AM_restoreScaleAndLoc();
+  }
+
+  if (buttons.AutomapZoomOut)
+  {
+    mtof_zoommul = M_ZOOMOUT;
+    ftom_zoommul = M_ZOOMIN;
+    curr_mtof_zoommul = mtof_zoommul;
+    zoom_leveltime = leveltime;
+  }
+  else if (buttons.AutomapZoomIn)
+  {
+    mtof_zoommul = M_ZOOMIN;
+    ftom_zoommul = M_ZOOMOUT;
+    curr_mtof_zoommul = mtof_zoommul;
+    zoom_leveltime = leveltime;
+  }
+  else
+  {
+    stop_zooming = true;
+    if (leveltime != zoom_leveltime)
+      AM_StopZooming();
+  }
+
+  if (!automap_follow)
+  {
+    if (buttons.AutomapUp)    m_paninc.y += FTOM(map_pan_speed);
+    if (buttons.AutomapDown)  m_paninc.y -= FTOM(map_pan_speed);
+    if (buttons.AutomapRight) m_paninc.x += FTOM(map_pan_speed);
+    if (buttons.AutomapLeft)  m_paninc.x -= FTOM(map_pan_speed);
+  }
+}
 
 void send_input(struct PackedPlayerInput *inputs, int playerId)
 {
@@ -11,11 +95,11 @@ void send_input(struct PackedPlayerInput *inputs, int playerId)
   local_cmds[playerId].lookfly     = inputs->FlyLook;
   local_cmds[playerId].arti        = inputs->ArtifactUse;
   local_cmds[playerId].angleturn   = inputs->TurningSpeed;
-  
-  if (inputs->Fire)      local_cmds[playerId].buttons |= 0b00000001;
-  if (inputs->Action)    local_cmds[playerId].buttons |= 0b00000010;
-  if (inputs->EndPlayer) local_cmds[playerId].arti    |= 0b01000000;
-  if (inputs->Jump)      local_cmds[playerId].arti    |= 0b10000000;
+
+  if (inputs->Buttons.Fire) local_cmds[playerId].buttons |= 0b00000001;
+  if (inputs->Buttons.Use)  local_cmds[playerId].buttons |= 0b00000010;
+  if (inputs->EndPlayer)    local_cmds[playerId].arti    |= 0b01000000;
+  if (inputs->Jump)         local_cmds[playerId].arti    |= 0b10000000;
 
   if (inputs->WeaponSelect)
   {
@@ -23,14 +107,18 @@ void send_input(struct PackedPlayerInput *inputs, int playerId)
     local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1) << BT_WEAPONSHIFT;
   }
 
-  if (inputs->Automap && !last_automap_input[playerId])
+  if (inputs->Buttons.ChangeGamma && !last_buttons[playerId].ChangeGamma)
   {
-    if (automap_input)
-      AM_Stop(true);
-    else
-      AM_Start(true);
+    dsda_CycleConfig(dsda_config_usegamma, true);
+    dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
+                    usegamma == 1 ? GAMMALVL1 :
+                    usegamma == 2 ? GAMMALVL2 :
+                    usegamma == 3 ? GAMMALVL3 :
+                    GAMMALVL4);
   }
-  last_automap_input[playerId] = inputs->Automap;
+
+  handle_automap_input(inputs->Buttons, playerId);
+  last_buttons[playerId] = inputs->Buttons;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
@@ -72,6 +160,9 @@ ECL_EXPORT bool dsda_frame_advance(struct PackedPlayerInput *player1Inputs, stru
 {
   // Setting inputs
   headlessClearTickCommand();
+
+  m_paninc.y = 0;
+  m_paninc.x = 0;
 
   // Setting Players inputs
   send_input(player1Inputs, 0);

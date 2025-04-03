@@ -4,9 +4,11 @@
 #include "emulibc.h"
 
 #include "am_map.h"
+#include "d_englsh.h"
 #include "d_main.h"
 #include "d_player.h"
 #include "doomstat.h"
+#include "doomtype.h"
 #include "f_wipe.h"
 #include "g_game.h"
 #include "i_sound.h"
@@ -14,6 +16,7 @@
 #include "p_mobj.h"
 
 #include "dsda/args.h"
+#include "dsda/messenger.h"
 #include "dsda/settings.h"
 
 extern int headlessMain(int argc, char **argv);
@@ -25,7 +28,7 @@ extern void headlessSetSaveStatePointer(void *savePtr, int saveStateSize);
 extern size_t headlessGetEffectiveSaveSize();
 
 // Video
-extern void headlessUpdateVideo(void);
+extern void headlessUpdateVideo();
 extern void* headlessGetVideoBuffer();
 extern int headlessGetVideoPitch();
 extern int headlessGetVideoWidth();
@@ -35,7 +38,7 @@ extern void headlessDisableVideoRendering();
 extern uint32_t* headlessGetPallette();
 
 // Audio
-extern void headlessUpdateSounds(void);
+extern void headlessUpdateSounds();
 extern void headlessEnableAudioRendering();
 extern void headlessDisableAudioRendering();
 extern uint8_t *I_CaptureAudio (int *nsamples);
@@ -50,6 +53,30 @@ extern int numthings;
 extern mobj_t **mobj_ptrs;
 extern dsda_arg_t arg_value[dsda_arg_count];
 
+// Automap
+extern void AM_addMark();
+extern void AM_StopZooming();
+extern void AM_saveScaleAndLoc();
+extern int AM_minOutWindowScale();
+extern int AM_restoreScaleAndLoc();
+extern int automap_active;
+extern int automap_follow;
+extern int automap_grid;
+extern int markpointnum;
+extern int zoom_leveltime;
+extern dboolean stop_zooming;
+extern mpoint_t m_paninc;
+extern fixed_t mtof_zoommul;
+extern fixed_t ftom_zoommul;
+extern fixed_t curr_mtof_zoommul;
+extern int map_pan_speed;
+extern int map_scroll_speed;
+extern fixed_t scale_mtof;
+extern fixed_t scale_ftom;
+#define FTOM(x) FixedMul(((x)<<16),scale_ftom)
+#define M_ZOOMIN ((int) ((float)FRACUNIT * (1.00f + map_scroll_speed / 200.0f)))
+#define M_ZOOMOUT ((int) ((float)FRACUNIT / (1.00f + map_scroll_speed / 200.0f)))
+
 #ifdef PALETTE_SIZE
 #undef PALETTE_SIZE
 #endif
@@ -62,6 +89,29 @@ enum MemoryArrayType
   ARRAY_LINES = 1,
   ARRAY_SECTORS = 2
 };
+
+typedef union
+{
+    struct
+    {
+        bool Fire:1;
+        bool Use:1;
+        bool ChangeGamma:1;
+        bool AutomapToggle:1;
+        bool AutomapZoomIn:1;
+        bool AutomapZoomOut:1;
+        bool AutomapFullZoom:1;
+        bool AutomapFollow:1;
+        bool AutomapUp:1;
+        bool AutomapDown:1;
+        bool AutomapRight:1;
+        bool AutomapLeft:1;
+        bool AutomapGrid:1;
+        bool AutomapMark:1;
+        bool AutomapClearMarks:1;
+    };
+    uint32_t data;
+} AllButtons;
 
 struct InitSettings
 {
@@ -83,9 +133,7 @@ struct PackedPlayerInput
   int StrafingSpeed;
   int TurningSpeed;
   int WeaponSelect;
-  int Fire;
-  int Action;
-  int Automap;
+  AllButtons Buttons;
   int FlyLook;
   int ArtifactUse;
   int Jump;
