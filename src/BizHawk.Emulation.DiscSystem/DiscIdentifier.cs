@@ -112,6 +112,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Atari Jaguar CD
 		/// </summary>
 		JaguarCD,
+
+		/// <summary>
+		/// DOS / Windows
+		/// </summary>
+		DOS,
 	}
 
 	public class DiscIdentifier
@@ -184,6 +189,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (DetectWii())
 				return DiscType.Wii;
+
+			if (DetectISO9660()) return DiscType.DOS;
+			if (DetectUDF()) return DiscType.DOS;
 
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
@@ -393,6 +401,28 @@ namespace BizHawk.Emulation.DiscSystem
 
 			return hexString == "5D1C9EA3";
 		}
+
+		/// <summary>Detects ISO9660 / Joliet CD formats (target for DOS / Windows)</summary>
+		/// <remarks><see href="https://en.wikipedia.org/wiki/ISO_9660"/></remarks>
+		private bool DetectISO9660()
+		{
+			if (SectorContains("CD001", 16)) return true;
+			if (SectorContains("CDROM", 16)) return true;
+			return false;
+		}
+
+		/// <remarks><see href="https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html"/></remarks>
+		private bool DetectUDF()
+		{
+			for (var i = 0; i < 256; i++)
+			{
+				if (SectorContains("BEA01", i)) return true;
+				if (SectorContains("NSR02", i)) return true;
+				if (SectorContains("TEA01", i)) return true;
+			}
+			return false;
+		}
+
 
 		private bool DetectJaguarCD()
 		{
