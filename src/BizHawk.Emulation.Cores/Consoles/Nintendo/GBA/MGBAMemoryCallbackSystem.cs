@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
-			return 0;
+			throw new NotSupportedException("Memory callbacks not supported.");
 			// Not a thing in this implementation
 		}
 
