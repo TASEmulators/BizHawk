@@ -91,18 +91,19 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_configFile = Encoding.ASCII.GetBytes(
 				hudMode
 				+ $"screen_resolution \"{
-				_nativeResolution.X * _settings.ScaleFactor}x{
-				_nativeResolution.Y * _settings.ScaleFactor}\"\n"
-				+ $"usegamma {_settings.Gamma}\n"
-				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
-				+ $"dsda_exhud {(_settings.DsdaExHud ? 1 : 0)}\n"
-				+ $"map_totals {(_settings.MapTotals ? 1 : 0)}\n"
-				+ $"map_time {(_settings.MapTime ? 1 : 0)}\n"
-				+ $"map_coordinates {(_settings.MapCoordinates ? 1 : 0)}\n"
-				+ $"hudadd_secretarea {(_settings.ReportSecrets ? 1 : 0)}\n"
+					_nativeResolution.X * _settings.ScaleFactor}x{
+					_nativeResolution.Y * _settings.ScaleFactor}\"\n"
+				+ $"usegamma {            _settings.Gamma}\n"
+				+ $"dsda_exhud {         (_settings.DsdaExHud            ? 1 : 0)}\n"
+				+ $"map_totals {         (_settings.MapTotals            ? 1 : 0)}\n"
+				+ $"map_time {           (_settings.MapTime              ? 1 : 0)}\n"
+				+ $"map_coordinates {    (_settings.MapCoordinates       ? 1 : 0)}\n"
+				+ $"hudadd_secretarea {  (_settings.ReportSecrets        ? 1 : 0)}\n"
+				+ $"show_messages {      (_settings.ShowMessages         ? 1 : 0)}\n"
+				+ $"render_wipescreen {  (_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
-				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio())
+				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio() in the core)
 				+ "render_stretch_hud 0\n"
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
@@ -180,20 +181,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			};
 
 			_args.Add("-warp");
-			ConditionalArg(_syncSettings.InitialEpisode is not 0 && _gameMode != CInterface.GameMode.Commercial, $"{_syncSettings.InitialEpisode}");
+			ConditionalArg(_syncSettings.InitialEpisode is not 0
+				&& _gameMode != CInterface.GameMode.Commercial,
+				$"{_syncSettings.InitialEpisode}");
 			_args.Add($"{_syncSettings.InitialMap}");
-			_args.AddRange([ "-skill", $"{(int)_syncSettings.SkillLevel}" ]);
+			_args.AddRange([ "-skill",     $"{(int)_syncSettings.SkillLevel}" ]);
 			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityLevel}" ]);
 			_args.AddRange([ "-config", "dsda-doom.cfg" ]);
-			ConditionalArg(!_syncSettings.StrictMode, "-tas");
-			ConditionalArg(_syncSettings.FastMonsters, "-fast");
+			ConditionalArg(!_syncSettings.StrictMode,     "-tas");
+			ConditionalArg(_syncSettings.FastMonsters,    "-fast");
 			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
-			ConditionalArg(_syncSettings.NoMonsters, "-nomonsters");
-			ConditionalArg(_syncSettings.PistolStart, "-pistolstart");
-			ConditionalArg(_syncSettings.ChainEpisodes, "-chain_episodes");
+			ConditionalArg(_syncSettings.NoMonsters,      "-nomonsters");
+			ConditionalArg(_syncSettings.PistolStart,     "-pistolstart");
+			ConditionalArg(_syncSettings.ChainEpisodes,   "-chain_episodes");
 			ConditionalArg(_syncSettings.TurningResolution == TurningResolution.Longtics, "-longtics");
-			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Deathmatch, "-deathmatch");
-			ConditionalArg(_syncSettings.MultiplayerMode == MultiplayerMode.Altdeath, "-altdeath");
+			ConditionalArg(_syncSettings.MultiplayerMode   == MultiplayerMode.Deathmatch, "-deathmatch");
+			ConditionalArg(_syncSettings.MultiplayerMode   == MultiplayerMode.Altdeath,   "-altdeath");
 			ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
 			ConditionalArg((initSettings.Player1Present + initSettings.Player2Present + initSettings.Player3Present + initSettings.Player4Present) > 1, "-solo-net");
 		}

@@ -139,6 +139,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
 			
+			[DisplayName("Show Messages")]
+			[Description("Displays messages about items you pick up.")]
+			[DefaultValue(true)]
+			public bool ShowMessages { get; set; }
+			
 			[DisplayName("Report Revealed Secrets")]
 			[Description("Shows an on-screen notification when revealing a secret.")]
 			[DefaultValue(false)]
