@@ -19,6 +19,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(string gameFile);
 
+		[BizImport(CC, Compatibility = true)]
+		public abstract void FrameAdvance();
+
+		[BizImport(CC)]
+		public abstract void GetVideo(int[] buffer);
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GamepadInputs
 		{

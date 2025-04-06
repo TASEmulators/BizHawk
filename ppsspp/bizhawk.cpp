@@ -66,16 +66,23 @@ extern "C"
 // Emulation driver - runs in its own coroutine and conducts execution through the dethreader runtime system
 void emuDriver()
 {
+  printf("In emuDriver()\n");
+
+  // If this is windows, we need to return first
+  //co_switch(_driverCoroutine);
+
   // Creating dethreader manager
   jaffarCommon::dethreader::Runtime r;
 
   // Creating init task
   auto initTask = []()
   {
+	printf("Before Retro Init...\n"); fflush(stdout);
     retro_init();
 
     struct retro_game_info game;
     game.path = _romFilePath.c_str();
+	printf("Before Retro Load Game...\n"); fflush(stdout);
     _loadResult = retro_load_game(&game);
 
     printf("Exiting from init task\n"); fflush(stdout);
@@ -116,9 +123,15 @@ void emuDriver()
   r.run();
 }
 
-void RETRO_CALLCONV retro_video_refresh_callback(const void *data, unsigned width, unsigned height, size_t pitch)
+void RETRO_CALLCONV retro_video_refresh_callback(const void* data, unsigned width, unsigned height, size_t pitch)
 {
-  // printf("Video %p, w: %u, h: %u, p: %lu\n", data, width, height, pitch);
+	printf("Video %p, w: %u, h: %u, p: %lu\n", data, width, height, pitch);
+	size_t checksum = 0;
+	for (size_t i = 0; i < height; i++)
+	 for (size_t j = 0; i < width; i++)
+	  checksum += ((uint32_t*)data)[i * width + j];
+	printf("Video Checksum: 0x%lX\n", checksum);
+
   _videoBuffer = (uint32_t*)data;
   _videoWidth = width;
   _videoHeight = height;
@@ -271,6 +284,7 @@ EXPORT bool Init()
       return false; 
     }
   }
+  printf("Game successfully stored in mem file %s\n", _romFilePath.c_str());
 
   // Closing file
   _memFileDirectory.fclose(f);
@@ -290,18 +304,15 @@ EXPORT bool Init()
   return true;
 }
 
-EXPORT void opera_get_video(int& w, int& h, int& pitch, uint8_t*& buffer)
+EXPORT void GetVideo(uint32_t* videoBuffer)
 {
-  buffer = (uint8_t*)_videoBuffer;
-  w = _videoWidth;
-  h = _videoHeight;
-  pitch = _videoPitch;
+  memcpy(videoBuffer, _videoBuffer, sizeof(uint32_t) * _videoWidth * _videoHeight);
 }
 
-EXPORT void FrameAdvance(MyFrameInfo* f)
+EXPORT void FrameAdvance()
 {
   // Setting inputs
-  _inputData = f->gamePad;
+  //_inputData = f->gamePad;
 
   // Checking for changes in NVRAM
   _nvramChanged = false;

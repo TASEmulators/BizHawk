@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
@@ -50,10 +50,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_serviceProvider.Register<IVideoProvider>(this);
 			_serviceProvider.Register<ISoundProvider>(this);
 
-			/*
+			
 			// Loading LibPPSSPP
 			_resolver?.Dispose();
-			_resolver = new(OSTailoredCode.IsUnixHost ? "libppsspp.so" : "ppsspp.dll", hasLimitedLifetime: true);
+			_resolver = new(OSTailoredCode.IsUnixHost ? "libppsspp.so" : "libppsspp.dll", hasLimitedLifetime: true);
 			_libPPSSPP = BizInvoker.GetInvoker<LibPPSSPP>(_resolver, CallingConventionAdapters.Native);
 
 			// Setting CD callbacks
@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
-			*/
 		}
 
 		// CD Handling logic

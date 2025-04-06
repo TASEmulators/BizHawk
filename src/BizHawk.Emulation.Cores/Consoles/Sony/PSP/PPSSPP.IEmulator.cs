@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			}
 			*/
 
+			_libPPSSPP.FrameAdvance();
+
 			return true;
 		}
 

@@ -4,16 +4,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
 	public partial class PPSSPP : IVideoProvider
 	{
-		internal int BW = 400;
-		internal int BH = 480;
+		static int BW = 480;
+		static int BH = 270;
 		internal bool VideoDirty;
 
-		protected readonly LibPPSSPP _core;
 		protected readonly IntPtr _context;
 		
 		public PPSSPP(LibPPSSPP core, IntPtr context)
 		{
-			_core = core;
 			_context = context;
 		}
 
@@ -26,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		public int VsyncDenominator => 4481136;
 		public int BackgroundColor => 0;
 
-		private int[] _vbuf = new int[400 * 480];
+		private int[] _vbuf = new int[BW * BH];
 
 		public int[] GetVideoBuffer()
 		{
@@ -42,6 +40,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 				VideoDirty = false;
 			}
 			*/
+
+			_libPPSSPP.GetVideo(_vbuf);
 			return _vbuf;
 		}
 	}
