@@ -715,12 +715,14 @@
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE;USE_FFMPEG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\ppsspp\ffmpeg\Windows\x86_64\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -735,7 +737,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <DisableSpecificWarnings>4244;4800;4804;4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);NDEBUG;RC_DISABLE_LUA;STACK_LINE_READER_BUFFER_SIZE=1024;HTTPS_NOT_AVAILABLE;HAVE_STRONG_GETAUXVAL;__LIBRETRO__;PPSSPP;_7ZIP_ST;WITH_UPNP;MINIUPNP_STATICLIB;ARMIPS_USE_STD_FILESYSTEM;DYNAREC;HUF_DISABLE_FAST_DECODE;PPSSPP_GIT_VERSION=gitVersion;ZSTD_DISABLE_ASM;GLEW_NO_GLU;NO_MMAP;__INLINE__=inline;_WINDOWS;_UNICODE;UNICODE;USE_FFMPEG</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -743,6 +745,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\ppsspp\ffmpeg\Windows\x86_64\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>

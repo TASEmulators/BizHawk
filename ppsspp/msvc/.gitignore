@@ -1,4 +1,6 @@
 x64
+licenses
+FFmpeg
 *.aps
 *.rc
 *.h
