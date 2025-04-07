@@ -108,49 +108,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			return -1;
 		}
 
-		protected LibPPSSPP.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
-		{
-			var fi = new LibPPSSPP.FrameInfo();
-
-			// Disc management
-			if (_isMultidisc)
-			{
-				if (controller.IsPressed("Next Disc")) SelectNextDisc();
-				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
-			}
-
-			fi.input.Down  = controller.IsPressed($"P1 {JoystickButtons.Down  }") ? 1 : 0;
-			fi.input.Left  = controller.IsPressed($"P1 {JoystickButtons.Left  }") ? 1 : 0;
-			fi.input.Right  = controller.IsPressed($"P1 {JoystickButtons.Right  }") ? 1 : 0;
-			fi.input.Start  = controller.IsPressed($"P1 {JoystickButtons.Start  }") ? 1 : 0;
-			fi.input.Select  = controller.IsPressed($"P1 {JoystickButtons.Select  }") ? 1 : 0;
-			fi.input.ButtonSquare  = controller.IsPressed($"P1 {JoystickButtons.ButtonSquare  }") ? 1 : 0;
-			fi.input.ButtonTriangle  = controller.IsPressed($"P1 {JoystickButtons.ButtonTriangle }") ? 1 : 0;
-			fi.input.ButtonCircle  = controller.IsPressed($"P1 {JoystickButtons.ButtonCircle  }") ? 1 : 0;
-			fi.input.ButtonCross  = controller.IsPressed($"P1 {JoystickButtons.ButtonCross  }") ? 1 : 0;
-			fi.input.ButtonLTrigger  = controller.IsPressed($"P1 {JoystickButtons.ButtonLTrigger }") ? 1 : 0;
-			fi.input.ButtonRTrigger  = controller.IsPressed($"P1 {JoystickButtons.ButtonRTrigger }") ? 1 : 0;
-			fi.input.RightAnalogX  = controller.AxisValue($"P1 {JoystickAxes.RightAnalogX  }");
-			fi.input.RightAnalogY  = controller.AxisValue($"P1 {JoystickAxes.RightAnalogY  }");
-			fi.input.LeftAnalogX  = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogX  }");
-			fi.input.LeftAnalogY = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogY}");
-
-			DriveLightOn = false;
-			
-
-			return fi;
-		}
-
 		protected void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			writer.Write(_discIndex);
 			writer.Write(_discInserted);
+			writer.Write(DriveLightOn);
 		}
 
 		protected void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_discIndex = reader.ReadInt32();
 			_discInserted = reader.ReadBoolean();
+			DriveLightOn = reader.ReadBoolean();
 		}
 
 	}

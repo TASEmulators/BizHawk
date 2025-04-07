@@ -16,6 +16,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public bool DeterministicEmulation { get; }
 
+		protected LibPPSSPP.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
+		{
+			var fi = new LibPPSSPP.FrameInfo();
+
+			// Disc management
+			if (_isMultidisc)
+			{
+				if (controller.IsPressed("Next Disc")) SelectNextDisc();
+				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
+			}
+
+			fi.input.Down = controller.IsPressed($"P1 {JoystickButtons.Down}") ? 1 : 0;
+			fi.input.Left = controller.IsPressed($"P1 {JoystickButtons.Left}") ? 1 : 0;
+			fi.input.Right = controller.IsPressed($"P1 {JoystickButtons.Right}") ? 1 : 0;
+			fi.input.Start = controller.IsPressed($"P1 {JoystickButtons.Start}") ? 1 : 0;
+			fi.input.Select = controller.IsPressed($"P1 {JoystickButtons.Select}") ? 1 : 0;
+			fi.input.ButtonSquare = controller.IsPressed($"P1 {JoystickButtons.ButtonSquare}") ? 1 : 0;
+			fi.input.ButtonTriangle = controller.IsPressed($"P1 {JoystickButtons.ButtonTriangle}") ? 1 : 0;
+			fi.input.ButtonCircle = controller.IsPressed($"P1 {JoystickButtons.ButtonCircle}") ? 1 : 0;
+			fi.input.ButtonCross = controller.IsPressed($"P1 {JoystickButtons.ButtonCross}") ? 1 : 0;
+			fi.input.ButtonLTrigger = controller.IsPressed($"P1 {JoystickButtons.ButtonLTrigger}") ? 1 : 0;
+			fi.input.ButtonRTrigger = controller.IsPressed($"P1 {JoystickButtons.ButtonRTrigger}") ? 1 : 0;
+			fi.input.RightAnalogX = controller.AxisValue($"P1 {JoystickAxes.RightAnalogX}");
+			fi.input.RightAnalogY = controller.AxisValue($"P1 {JoystickAxes.RightAnalogY}");
+			fi.input.LeftAnalogX = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogX}");
+			fi.input.LeftAnalogY = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogY}");
+
+			DriveLightOn = false;
+
+			return fi;
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			/*
@@ -45,7 +77,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			}
 			*/
 
-			_libPPSSPP.FrameAdvance();
+			var f = FrameAdvancePrep(controller, render, renderSound);
+
+
+			_libPPSSPP.FrameAdvance(f);
 
 			return true;
 		}

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
+using static BizHawk.Emulation.Cores.Computers.Doom.CInterface;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
@@ -20,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		public abstract bool Init(string gameFile);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract void FrameAdvance();
+		public abstract void FrameAdvance(FrameInfo f);
 
 		[BizImport(CC)]
 		public abstract void GetVideo(int[] buffer);

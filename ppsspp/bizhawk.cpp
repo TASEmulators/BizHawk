@@ -46,6 +46,9 @@ size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
 
+// Current Frame information
+MyFrameInfo _f;
+
 extern "C"
 {
   void retro_set_audio_sample(retro_audio_sample_t cb);
@@ -246,6 +249,31 @@ EXPORT void SetCdCallbacks(void (*cdrc)(int32_t lba, void * dest), int (*cdscc)(
 uint32_t cd_get_size(void) {  return cd_sector_count_callback(); }
 void cd_set_sector(const uint32_t sector_) { _currentSector = sector_; }
 void cd_read_sector(void *buf_) {  cd_read_callback(_currentSector, buf_); }
+
+size_t readSegmentFromCD(void* buf_, const uint64_t address, const size_t size)
+{
+	uint64_t initialSector = address / CDIMAGE_SECTOR_SIZE;
+	uint64_t sectorCount = size / CDIMAGE_SECTOR_SIZE;
+	uint64_t lastSectorBytes = size % CDIMAGE_SECTOR_SIZE;
+
+	uint8_t tmpBuf[CDIMAGE_SECTOR_SIZE];
+	for (uint64_t i = 0; i < sectorCount; i++)
+	{
+		cd_set_sector(initialSector + i);
+		cd_read_sector(tmpBuf);
+		memcpy(&((uint8_t*)buf_)[CDIMAGE_SECTOR_SIZE * i], tmpBuf, CDIMAGE_SECTOR_SIZE);
+	}
+
+	if (lastSectorBytes > 0)
+	{
+		cd_set_sector(initialSector + sectorCount);
+		cd_read_sector(tmpBuf);
+		memcpy(&((uint8_t*)buf_)[CDIMAGE_SECTOR_SIZE * sectorCount], tmpBuf, lastSectorBytes);
+	}
+
+	return size;
+}
+
 /// CD Management Logic End
 
 EXPORT bool Init()
@@ -269,22 +297,7 @@ EXPORT bool Init()
   _romFilePath = "CDROM0.bin";
 	auto f = _memFileDirectory.fopen(_romFilePath, "w");
 	if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", _romFilePath.c_str()); return false; }
-
-  // Writing contents into mem file, one by one
-  for (size_t i = 0; i < cdSectorCount; i++)
-  {
-    uint8_t sector[CDIMAGE_SECTOR_SIZE];
-    cd_set_sector(i);
-    cd_read_sector(sector);
-    auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(sector, CDIMAGE_SECTOR_SIZE, 1, f);
-    if (writtenBlocks != 1) 
-    { 
-      fprintf(stderr, "Could not write data into mem file: %s\n", _romFilePath.c_str());
-      _memFileDirectory.fclose(f);
-      return false; 
-    }
-  }
-  printf("Game successfully stored in mem file %s\n", _romFilePath.c_str());
+  f->setSize(cdSectorCount * CDIMAGE_SECTOR_SIZE);
 
   // Closing file
   _memFileDirectory.fclose(f);
@@ -309,10 +322,30 @@ EXPORT void GetVideo(uint32_t* videoBuffer)
   memcpy(videoBuffer, _videoBuffer, sizeof(uint32_t) * _videoWidth * _videoHeight);
 }
 
-EXPORT void FrameAdvance()
+EXPORT void FrameAdvance(MyFrameInfo f)
 {
-  // Setting inputs
-  //_inputData = f->gamePad;
+  // Setting Frame information
+  _f = f;
+
+  // Setting input data
+  _inputData = _f.gamePad;
+
+  printf("up: %d\n", _inputData.up);
+  printf("down: %d\n", _inputData.down);
+  printf("left: %d\n", _inputData.left);
+  printf("right: %d\n", _inputData.right);
+  printf("ltrigger: %d\n", _inputData.ltrigger);
+  printf("rtrigger: %d\n", _inputData.rtrigger);
+  printf("select: %d\n", _inputData.select);
+  printf("start: %d\n", _inputData.start);
+  printf("triangle: %d\n", _inputData.triangle);
+  printf("square: %d\n", _inputData.square);
+  printf("cross: %d\n", _inputData.cross);
+  printf("circle: %d\n", _inputData.circle);
+  printf("leftAnalogX: %d\n", _inputData.leftAnalogX);
+  printf("rightAnalogX: %d\n", _inputData.rightAnalogX);
+  printf("leftAnalogY: %d\n", _inputData.leftAnalogY);
+  printf("rightAnalogY: %d\n", _inputData.rightAnalogY);
 
   // Checking for changes in NVRAM
   _nvramChanged = false;
