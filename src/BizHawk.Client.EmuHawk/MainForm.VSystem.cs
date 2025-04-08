@@ -52,7 +52,6 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SubGBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
@@ -736,12 +735,6 @@ namespace BizHawk.Client.EmuHawk
 
 
 
-		private DialogResult OpenOldBSNESGamepadSettingsDialog(ISettingsAdapter settable)
-		{
-			using SNESControllerSettings form = new(settable);
-			return this.ShowDialogWithTempMute(form);
-		}
-
 		private DialogResult OpenBSNESGamepadSettingsDialog(ISettingsAdapter settable)
 		{
 			using BSNESControllerSettings form = new(settable);
@@ -751,7 +744,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 			=> _ = Emulator switch
 			{
-				LibsnesCore => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
 				BsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				SubBsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
 				_ => DialogResult.None,
@@ -760,16 +752,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
 			=> Tools.Load<SNESGraphicsDebugger>();
 
-		private DialogResult OpenOldBSNESSettingsDialog(ISettingsAdapter settable)
-			=> SNESOptions.DoSettingsDialog(this, settable);
-
 		private DialogResult OpenBSNESSettingsDialog(ISettingsAdapter settable)
 			=> BSNESOptions.DoSettingsDialog(this, settable);
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 			=> _ = Emulator switch
 			{
-				LibsnesCore => OpenOldBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
 				BsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				SubBsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
 				_ => DialogResult.None,
@@ -805,27 +793,6 @@ namespace BizHawk.Client.EmuHawk
 							break;
 					}
 					settingsProvider.PutSettings(s);
-					break;
-				}
-				case LibsnesCore libsnes:
-				{
-					var s = libsnes.GetSettings();
-					switch (layer)
-					{
-						case 1:
-							result = s.ShowBG1_0 = s.ShowBG1_1 = !s.ShowBG1_1;
-							break;
-						case 2:
-							result = s.ShowBG2_0 = s.ShowBG2_1 = !s.ShowBG2_1;
-							break;
-						case 3:
-							result = s.ShowBG3_0 = s.ShowBG3_1 = !s.ShowBG3_1;
-							break;
-						case 4:
-							result = s.ShowBG4_0 = s.ShowBG4_1 = !s.ShowBG4_1;
-							break;
-					}
-					libsnes.PutSettings(s);
 					break;
 				}
 				case Snes9x snes9X:
@@ -871,20 +838,6 @@ namespace BizHawk.Client.EmuHawk
 					_ => result,
 				};
 				bsnes.PutSettings(s);
-				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
-			}
-			else if (Emulator is LibsnesCore bsnes1)
-			{
-				var s = bsnes1.GetSettings();
-				result = layer switch
-				{
-					1 => s.ShowOBJ_0 = !s.ShowOBJ_0,
-					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
-					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
-					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
-					_ => result,
-				};
-				bsnes1.PutSettings(s);
 				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
 			else if (Emulator is Snes9x snes9X)
@@ -1146,13 +1099,6 @@ namespace BizHawk.Client.EmuHawk
 
 			// Atari2600Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Atari2600Hawk, CreateGenericCoreConfigItem<Atari2600>(CoreNames.Atari2600Hawk)));
-
-			// BSNES
-			var oldBSNESGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterFor<LibsnesCore>()));
-			var oldBSNESSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenOldBSNESSettingsDialog(GetSettingsAdapterFor<LibsnesCore>()));
-			var oldBSNESSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Bsnes, oldBSNESGamepadSettingsItem, oldBSNESSettingsItem);
-			oldBSNESSubmenu.DropDownOpened += (_, _) => oldBSNESGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not LibsnesCore;
-			items.Add(oldBSNESSubmenu);
 
 			// BSNESv115+
 			var bsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<BsnesCore>()));
@@ -1524,10 +1470,6 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.SGB when Emulator is Gameboy:
 					GBSubMenu.Visible = true;
 					SameBoyColorChooserMenuItem.Visible = Emulator is Sameboy { IsCGBMode: false }; // palette config only works in DMG mode
-					break;
-				case VSystemID.Raw.SNES when Emulator is LibsnesCore oldBSNES: // doesn't use "SGB" sysID, always "SNES"
-					SNESSubMenu.Text = oldBSNES.IsSGB ? "&SGB" : "&SNES";
-					SNESSubMenu.Visible = true;
 					break;
 				case var _ when Emulator is BsnesCore or SubBsnesCore:
 					SNESSubMenu.Text = $"&{sysID}";
