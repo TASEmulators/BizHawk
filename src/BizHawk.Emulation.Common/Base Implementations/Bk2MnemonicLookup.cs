@@ -839,6 +839,7 @@ namespace BizHawk.Emulation.Common
 				["Forward"] = '^',
 				["Jump"] = 'J',
 				["Run"] = 'R',
+				["Strafe"] = 'S',
 				["Strafe Left"] = '<',
 				["Strafe Right"] = '>',
 				["Turn Left"] = '{',

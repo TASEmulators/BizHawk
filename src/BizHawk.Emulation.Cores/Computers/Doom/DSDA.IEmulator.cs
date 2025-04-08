@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if ((playersPresent & (1 << i)) is not 0)
 				{
+					bool strafe = controller.IsPressed($"P{i + 1} Strafe");
 					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i + 1} Run")
 						|| _syncSettings.AlwaysRun);
 
@@ -65,18 +66,29 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// initial axis read
-					players[i].RunSpeed = axisReaders[i](controller, (int)AxisType.RunSpeed);
+					players[i].RunSpeed      = axisReaders[i](controller, (int)AxisType.RunSpeed);
 					players[i].StrafingSpeed = axisReaders[i](controller, (int)AxisType.StrafingSpeed);
-					players[i].TurningSpeed = axisReaders[i](controller, (int)AxisType.TurningSpeed);
-					players[i].WeaponSelect = axisReaders[i](controller, (int)AxisType.WeaponSelect);
+					players[i].TurningSpeed  = axisReaders[i](controller, (int)AxisType.TurningSpeed);
+					players[i].WeaponSelect  = axisReaders[i](controller, (int)AxisType.WeaponSelect);
 
 					// override axis based on movement buttons (turning is reversed upstream)
-					if (controller.IsPressed($"P{i + 1} Forward")) players[i].RunSpeed = _runSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Backward")) players[i].RunSpeed = -_runSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Strafe Right")) players[i].StrafingSpeed = _strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Strafe Left")) players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed = -turnSpeed;
-					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i].TurningSpeed = turnSpeed;
+					if (controller.IsPressed($"P{i + 1} Forward"))      players[i].RunSpeed      =  _runSpeeds   [speedIndex];
+					if (controller.IsPressed($"P{i + 1} Backward"))     players[i].RunSpeed      = -_runSpeeds   [speedIndex];
+					if (controller.IsPressed($"P{i + 1} Strafe Right")) players[i].StrafingSpeed =  _strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Strafe Left"))  players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
+					if (strafe)
+					{
+						// strafe50 needs this speed to be ADDED to whatever we got from directional strafe buttons
+						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].StrafingSpeed += _strafeSpeeds[speedIndex];
+						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].StrafingSpeed -= _strafeSpeeds[speedIndex];
+					}
+					else
+					{
+						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed -= turnSpeed;
+						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].TurningSpeed += turnSpeed;
+					}
+					// ultimately strafe speed is limited to max run speed, NOT max strafe speed
+					players[i].StrafingSpeed = players[i].StrafingSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven running
 					// divider matches the core
@@ -109,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						players[i].ArtifactUse = axisReaders[i](controller, (int)AxisType.UseArtifact);
 						if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
 						{
-							players[i].Jump = (actionsBitfield & 0b01000) >> 3;
+							players[i].Jump      = (actionsBitfield & 0b01000) >> 3;
 							players[i].EndPlayer = (actionsBitfield & 0b10000) >> 4;
 						}
 					}
