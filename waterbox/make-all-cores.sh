@@ -8,7 +8,6 @@ make -C libco $1 -j
 make -C bsnescore $1 -j
 make -C dsda $1 -j
 make -C gpgx $1 -j
-make -C libsnes $1 -j
 make -C melon $1 -j
 make -C picodrive $1 -j
 make -C stella $1 -j

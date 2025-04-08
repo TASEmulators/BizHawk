@@ -3,7 +3,6 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.BSNES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -28,7 +27,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			// (select) cores A-Z by value of `CoreAttribute.CoreName`
 			return core switch
 			{
-				BsnesCore or LibsnesCore or SubBsnesCore => Properties.Resources.Bsnes,
+				BsnesCore or SubBsnesCore => Properties.Resources.Bsnes,
 				Gameboy => Properties.Resources.Gambatte,
 				GPGX => Properties.Resources.GenPlus,
 				MAME => Properties.Resources.Mame,
