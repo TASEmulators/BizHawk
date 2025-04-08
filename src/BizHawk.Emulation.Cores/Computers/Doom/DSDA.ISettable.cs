@@ -159,6 +159,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool DsdaExHud { get; set; }
 			
+			[DisplayName("Display Commands")]
+			[Description("Shows input history on the screen. History size is 20, empty commands are excluded.")]
+			[DefaultValue(false)]
+			public bool DisplayCommands { get; set; }
+			
 			[DisplayName("Automap Totals")]
 			[Description("Shows counts for kills, items, and secrets on automap.")]
 			[DefaultValue(true)]

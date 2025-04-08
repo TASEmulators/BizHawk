@@ -91,22 +91,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_configFile = Encoding.ASCII.GetBytes(
 				hudMode
 				+ $"screen_resolution \"{
-					_nativeResolution.X * _settings.ScaleFactor}x{
-					_nativeResolution.Y * _settings.ScaleFactor}\"\n"
-				+ $"usegamma {            _settings.Gamma}\n"
-				+ $"dsda_exhud {         (_settings.DsdaExHud            ? 1 : 0)}\n"
-				+ $"map_totals {         (_settings.MapTotals            ? 1 : 0)}\n"
-				+ $"map_time {           (_settings.MapTime              ? 1 : 0)}\n"
-				+ $"map_coordinates {    (_settings.MapCoordinates       ? 1 : 0)}\n"
-				+ $"hudadd_secretarea {  (_settings.ReportSecrets        ? 1 : 0)}\n"
-				+ $"show_messages {      (_settings.ShowMessages         ? 1 : 0)}\n"
-				+ $"render_wipescreen {  (_syncSettings.RenderWipescreen ? 1 : 0)}\n"
+					_nativeResolution.X *  _settings.ScaleFactor}x{
+					_nativeResolution.Y *  _settings.ScaleFactor}\"\n"
+				+ $"usegamma {             _settings.Gamma}\n"
+				+ $"dsda_exhud {          (_settings.DsdaExHud            ? 1 : 0)}\n"
+				+ $"map_totals {          (_settings.MapTotals            ? 1 : 0)}\n"
+				+ $"map_time {            (_settings.MapTime              ? 1 : 0)}\n"
+				+ $"map_coordinates {     (_settings.MapCoordinates       ? 1 : 0)}\n"
+				+ $"hudadd_secretarea {   (_settings.ReportSecrets        ? 1 : 0)}\n"
+				+ $"show_messages {       (_settings.ShowMessages         ? 1 : 0)}\n"
+				+ $"dsda_command_display {(_settings.DisplayCommands      ? 1 : 0)}\n"
+				+ $"render_wipescreen {   (_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "render_stretchsky 0\n"
 				+ "render_doom_lightmaps 1\n"
 				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio() in the core)
 				+ "render_stretch_hud 0\n"
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
+				+ "dsda_command_history_size 20\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
