@@ -96,6 +96,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER005":
 					Cart.WramSize = 64;
 					break;
+				case "MAPPER0005-00": // from NES 2.0 extension
+					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 				case "HVC-ELROM":
 					AssertPrg(128, 256); AssertChr(128);
@@ -184,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return null;
 					else
 						return bank & 3;
-				case 64:
+				case 64 or 128:
 					return bank;
 				default:
 					throw new Exception();
