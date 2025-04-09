@@ -23,6 +23,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		[BizImport(CC, Compatibility = true)]
 		public abstract void FrameAdvance(FrameInfo f);
 
+		[BizImport(CC, Compatibility = true)]
+		public abstract int GetStateSize();
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract void SaveState(byte[] buffer);
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract void LoadState(byte[] buffer, int stateLen);
+
+		[BizImport(CC, Compatibility = true)]
+
+		public abstract void Deinit();
+
 		[BizImport(CC)]
 		public abstract void GetVideo(int[] buffer);
 

@@ -1,4 +1,5 @@
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
@@ -50,18 +51,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			/*
+			
 			_controller = controller;
 			IsLagFrame = true;
 
-			if (_controller.IsPressed("Reset"))
+			/*if (_controller.IsPressed("Reset"))
 			{
 				_core.Encore_Reset(_context);
 				// memory domain pointers are no longer valid, reset them
 				WireMemoryDomains();
-			}
+			}*/
 
-			IsLagFrame = _core.Encore_RunFrame(_context);
+			var f = FrameAdvancePrep(controller, render, renderSound);
+			_libPPSSPP.FrameAdvance(f);
 
 			OnVideoRefresh();
 
@@ -75,18 +77,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			{
 				LagCount++;
 			}
-			*/
-
-			var f = FrameAdvancePrep(controller, render, renderSound);
-
-
-			_libPPSSPP.FrameAdvance(f);
+			
+			
 
 			return true;
 		}
 
 		private void OnVideoRefresh()
 		{
+			VideoDirty = true;
 			/*
 			_core.Encore_GetVideoBufferDimensions(_context, out _encoreVideoProvider.BW, out _encoreVideoProvider.BH);
 			_encoreVideoProvider.VideoDirty = true;
@@ -109,6 +108,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public void Dispose()
 		{
+			_libPPSSPP.Deinit();
+
 			if (_disposed)
 			{
 				return;

@@ -27,6 +27,8 @@ uint32_t* _videoBuffer;
 size_t _videoHeight;
 size_t _videoWidth;
 size_t _videoPitch;
+size_t _videoBufferSize = 0;
+
 
 // Current Frame information
 MyFrameInfo _f;
@@ -46,6 +48,8 @@ extern "C"
   RETRO_API size_t retro_serialize_size(void);
   RETRO_API bool retro_serialize(void *data, size_t size);
   RETRO_API bool retro_unserialize(const void *data, size_t size);
+  void retro_unload_game(void);
+  void retro_deinit(void);
 }
 
 void RETRO_CALLCONV retro_video_refresh_callback(const void* data, unsigned width, unsigned height, size_t pitch)
@@ -61,6 +65,7 @@ void RETRO_CALLCONV retro_video_refresh_callback(const void* data, unsigned widt
   _videoWidth = width;
   _videoHeight = height;
   _videoPitch = pitch;
+  _videoBufferSize = sizeof(uint32_t) * _videoWidth * _videoHeight;
 }
 
 void RETRO_CALLCONV retro_log_printf_callback(enum retro_log_level level, const char *format, ...)
@@ -229,7 +234,7 @@ EXPORT bool Init()
 
 EXPORT void GetVideo(uint32_t* videoBuffer)
 {
-  memcpy(videoBuffer, _videoBuffer, sizeof(uint32_t) * _videoWidth * _videoHeight);
+  memcpy(videoBuffer, _videoBuffer, _videoBufferSize);
 }
 
 EXPORT void FrameAdvance(MyFrameInfo f)
@@ -289,4 +294,29 @@ void (*InputCallback)();
 EXPORT void SetInputCallback(void (*callback)())
 {
   InputCallback = callback;
+}
+
+EXPORT int GetStateSize()
+{
+	return retro_serialize_size();
+}
+
+EXPORT void SaveState(uint8_t* buffer)
+{
+	printf("Saving State\n");
+	bool result = retro_serialize(buffer, retro_serialize_size());
+	if (result == false) printf("Save state failed\n");
+}
+
+EXPORT void LoadState(uint8_t* buffer, int size)
+{
+	printf("Loading State\n");
+	bool result = retro_unserialize(buffer, size);
+	if (result == false) printf("Load state failed\n");
+}
+
+EXPORT void Deinit()
+{
+	retro_unload_game();
+	retro_deinit();
 }

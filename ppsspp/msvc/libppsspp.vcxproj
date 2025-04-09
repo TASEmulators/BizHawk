@@ -58,8 +58,7 @@
 	<ClCompile Include="..\ppsspp\Common\GhidraClient.cpp" />
 	<ClCompile Include="..\ppsspp\Common\GPU\GPUBackendCommon.cpp" />
 	<ClCompile Include="..\ppsspp\Common\GPU\Shader.cpp" />
-	<ClCompile Include="..\ppsspp\Common\GPU\ShaderTranslation.cpp" />
-	<ClCompile Include="..\ppsspp\Common\GPU\ShaderWriter.cpp" />
+    <ClCompile Include="..\ppsspp\Common\GPU\ShaderWriter.cpp" />
 	<ClCompile Include="..\ppsspp\Common\GPU\thin3d.cpp" />
 	<ClCompile Include="..\ppsspp\Common\Input\GestureDetector.cpp" />
 	<ClCompile Include="..\ppsspp\Common\Input\InputState.cpp" />
@@ -395,62 +394,6 @@
 	<ClCompile Include="..\ppsspp\Core\Util\PPGeDraw.cpp" />
 	<ClCompile Include="..\ppsspp\Core\Util\RecentFiles.cpp" />
 	<ClCompile Include="..\ppsspp\Core\WaveFile.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\Architecture.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\Arm.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\ArmElfRelocator.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\ArmExpressionFunctions.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\ArmOpcodes.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\ArmParser.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\CArmInstruction.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\CThumbInstruction.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\Pool.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\ARM\ThumbOpcodes.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\CMipsInstruction.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\Mips.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\MipsElfFile.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\MipsElfRelocator.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\MipsExpressionFunctions.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\MipsMacros.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\MipsOpcodes.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\MipsParser.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\MIPS\PsxRelocator.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\SuperH\CShInstruction.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\SuperH\ShElfRelocator.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\SuperH\ShExpressionFunctions.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\SuperH\ShOpcodes.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\SuperH\ShParser.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Archs\SuperH\SuperH.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CAssemblerCommand.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CAssemblerLabel.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CDirectiveArea.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CDirectiveConditional.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CDirectiveData.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CDirectiveFile.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CDirectiveMessage.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Commands\CommandSequence.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\Allocations.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\Assembler.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\Common.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\ELF\ElfFile.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\ELF\ElfRelocator.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\Expression.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\ExpressionFunctionHandler.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\ExpressionFunctions.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\FileManager.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\Misc.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\SymbolData.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\_SymbolTable.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Core\Types.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Parser\DirectivesParser.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Parser\ExpressionParser.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Parser\Parser.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Parser\Tokenizer.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Util\ByteArray.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Util\CRC.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Util\EncodingTable.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Util\FileClasses.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Util\FileSystem.cpp" />
-	<ClCompile Include="..\ppsspp\ext\armips\Util\Util.cpp" />
 	<ClCompile Include="..\ppsspp\ext\at3_standalone\atrac.cpp" />
 	<ClCompile Include="..\ppsspp\ext\at3_standalone\atrac3.cpp" />
 	<ClCompile Include="..\ppsspp\ext\at3_standalone\atrac3plus.cpp" />
@@ -480,55 +423,6 @@
 	<ClCompile Include="..\ppsspp\ext\cpu_features\src\string_view.c" />
 	<ClCompile Include="..\ppsspp\ext\disarm.cpp" />
 	<ClCompile Include="..\ppsspp\ext\gason\gason.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\CInterface\glslang_c_interface.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\GenericCodeGen\CodeGen.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\GenericCodeGen\Link.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslAttributes.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslGrammar.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslOpMap.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslParseables.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslParseHelper.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslScanContext.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\HLSL\hlslTokenStream.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\attribute.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Constant.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\glslang_tab.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\InfoSink.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Initialize.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Intermediate.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\intermOut.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\IntermTraverse.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\iomapper.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\limits.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\linkValidate.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\parseConst.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\ParseContextBase.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\ParseHelper.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\PoolAlloc.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\Pp.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpAtom.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpContext.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpScanner.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\preprocessor\PpTokens.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\propagateNoContraction.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\reflection.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\RemoveTree.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Scan.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\ShaderLang.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\SpirvIntrinsics.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\SymbolTable.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\MachineIndependent\Versions.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\glslang\OSDependent\Windows\ossource.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\OGLCompilersDLL\InitializeDll.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\CInterface\spirv_c_interface.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\disassemble.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\doc.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\GlslangToSpv.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\InReadableOrder.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\Logger.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\SpvBuilder.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\SpvPostProcess.cpp" />
-	<ClCompile Include="..\ppsspp\ext\glslang\SPIRV\SpvTools.cpp" />
 	<ClCompile Include="..\ppsspp\ext\imgui\imgui.cpp" />
 	<ClCompile Include="..\ppsspp\ext\imgui\imgui_demo.cpp" />
 	<ClCompile Include="..\ppsspp\ext\imgui\imgui_draw.cpp" />
@@ -560,9 +454,7 @@
 	<ClCompile Include="..\ppsspp\GPU\Common\DepthRaster.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\Draw2D.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\DrawEngineCommon.cpp" />
-	<ClCompile Include="..\ppsspp\GPU\Common\FragmentShaderGenerator.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\FramebufferManagerCommon.cpp" />
-	<ClCompile Include="..\ppsspp\GPU\Common\GeometryShaderGenerator.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\GPUDebugInterface.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\GPUStateUtils.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\IndexGenerator.cpp" />
@@ -588,7 +480,6 @@
 	<ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderHandwritten.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderRiscV.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderX86.cpp" />
-	<ClCompile Include="..\ppsspp\GPU\Common\VertexShaderGenerator.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Debugger\_Breakpoints.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Debugger\Debugger.cpp" />
 	<ClCompile Include="..\ppsspp\GPU\Debugger\GECommandTable.cpp" />
@@ -664,11 +555,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\ppsspp\ext\armips\ext\tinyformat;..\ppsspp\ext;..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;$(IncludePath)</IncludePath>
+    <IncludePath>..\ppsspp\ext;..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;$(IncludePath)</IncludePath>
     <OutDir>..\Assets\dll</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\ppsspp\ext\armips\ext\tinyformat;..\ppsspp\ext;..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;$(IncludePath)</IncludePath>
+    <IncludePath>..\ppsspp\ext;..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;$(IncludePath)</IncludePath>
     <OutDir>..\Assets\dll</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -710,6 +601,7 @@
 	_UNICODE;
 	UNICODE;
 	USE_FFMPEG;
+	NO_ARMIPS;
 </PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -765,6 +657,7 @@
 	_UNICODE;
 	UNICODE;
 	USE_FFMPEG;
+	NO_ARMIPS;
 </PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
