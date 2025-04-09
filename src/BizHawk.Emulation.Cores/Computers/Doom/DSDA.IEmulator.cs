@@ -87,8 +87,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed -= turnSpeed;
 						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].TurningSpeed += turnSpeed;
 					}
-					// ultimately strafe speed is limited to max run speed, NOT max strafe speed
-					players[i].StrafingSpeed = players[i].StrafingSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven running
 					// divider matches the core
@@ -102,7 +100,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						// divider recalibrates minimal mouse movement to be 1 (requires global setting)
 						mouseTurning = (int)(mouseTurning / 272.0);
 					}
-					players[i].TurningSpeed -= mouseTurning;
+					if (strafe)
+					{
+						players[i].StrafingSpeed += mouseTurning / 5;
+					}
+					else
+					{
+						players[i].TurningSpeed -= mouseTurning;
+					}
+					// ultimately strafe speed is limited to max run speed, NOT max strafe speed
+					players[i].StrafingSpeed = players[i].StrafingSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// for shorttics we expose to player and parse from movies only 1 byte, but the core internally works with 2 bytes
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
