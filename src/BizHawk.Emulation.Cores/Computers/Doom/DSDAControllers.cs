@@ -42,14 +42,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Definition = new ControllerDefinition("Doom Input Format")
 			{
 				BoolButtons = _baseDefinition
-				.Select(b => $"P{PortNum} " + b)
-				.ToList()
+					.Select(b => $"P{PortNum} " + b)
+					.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
 				.AddAxis($"P{PortNum} Strafing Speed", (-50).RangeTo(50), 0)
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Mouse Turning", (longtics ? -32768 : -128).RangeTo(longtics ? 32767 : 127), 0)
+				// max raw mouse delta seems to be 180
+				// higher range results in higher minimal movement value (above 1)
+				// which then has to be divided to get a usable value
+				.AddAxis($"P{PortNum} Mouse Turning", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0)
 				.MakeImmutable();
 		}
 

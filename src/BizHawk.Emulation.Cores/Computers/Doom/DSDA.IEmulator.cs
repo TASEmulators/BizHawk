@@ -95,11 +95,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// mouse-driven turning
 					var mouseTurning = axisReaders[i](controller, (int)AxisType.MouseTurning) * _syncSettings.MouseTurnSensitivity;
-					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
-					{
-						// divider recalibrates minimal mouse movement to be 1 (requires global setting)
-						mouseTurning = (int)(mouseTurning / 272.0);
-					}
 					if (strafe)
 					{
 						players[i].StrafingSpeed += mouseTurning / 5;
