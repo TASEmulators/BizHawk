@@ -40,10 +40,26 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				_controllerDeck.ReadButtons4,
 			];
 
+			int commonButtons = 0;
+
 			int playersPresent = Convert.ToInt32(_syncSettings.Player1Present)
 				| Convert.ToInt32(_syncSettings.Player2Present) << 1
 				| Convert.ToInt32(_syncSettings.Player3Present) << 2
 				| Convert.ToInt32(_syncSettings.Player4Present) << 3;
+			
+			if (controller.IsPressed("Change Gamma"))        commonButtons |= (1 << 0);
+			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 1);
+			if (controller.IsPressed("Automap +"))           commonButtons |= (1 << 2);
+			if (controller.IsPressed("Automap -"))           commonButtons |= (1 << 3);
+			if (controller.IsPressed("Automap Full/Zoom"))   commonButtons |= (1 << 4);
+			if (controller.IsPressed("Automap Follow"))      commonButtons |= (1 << 5);
+			if (controller.IsPressed("Automap Up"))          commonButtons |= (1 << 6);
+			if (controller.IsPressed("Automap Down"))        commonButtons |= (1 << 7);
+			if (controller.IsPressed("Automap Right"))       commonButtons |= (1 << 8);
+			if (controller.IsPressed("Automap Left"))        commonButtons |= (1 << 9);
+			if (controller.IsPressed("Automap Grid"))        commonButtons |= (1 << 10);
+			if (controller.IsPressed("Automap Mark"))        commonButtons |= (1 << 11);
+			if (controller.IsPressed("Automap Clear Marks")) commonButtons |= (1 << 12);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -139,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			renderInfo.PlayerPointOfView = _settings.DisplayPlayer - 1;
 
 			IsLagFrame = _core.dsda_frame_advance(
+				commonButtons,
 				ref players[0],
 				ref players[1],
 				ref players[2],

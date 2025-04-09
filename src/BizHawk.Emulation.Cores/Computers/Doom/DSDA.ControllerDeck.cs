@@ -26,6 +26,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (player3Present) foreach (var kvp in _port3.Definition.Axes) Definition.Axes.Add(kvp);
 			if (player4Present) foreach (var kvp in _port4.Definition.Axes) Definition.Axes.Add(kvp);
 
+			Definition.BoolButtons.AddRange([
+				"Change Gamma",
+				"Automap Toggle",
+				"Automap +",
+				"Automap -",
+				"Automap Full/Zoom",
+				"Automap Follow",
+				"Automap Up",
+				"Automap Down",
+				"Automap Right",
+				"Automap Left",
+				"Automap Grid",
+				"Automap Mark",
+				"Automap Clear Marks"
+			]);
+
 			Definition.MakeImmutable();
 		}
 

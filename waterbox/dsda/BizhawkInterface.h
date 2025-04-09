@@ -96,6 +96,14 @@ typedef union
     {
         bool Fire:1;
         bool Use:1;
+    };
+    uint8_t data;
+} PlayerButtons;
+
+typedef union
+{
+    struct
+    {
         bool ChangeGamma:1;
         bool AutomapToggle:1;
         bool AutomapZoomIn:1;
@@ -111,7 +119,7 @@ typedef union
         bool AutomapClearMarks:1;
     };
     uint32_t data;
-} AllButtons;
+} CommonButtons;
 
 struct InitSettings
 {
@@ -133,7 +141,7 @@ struct PackedPlayerInput
   int StrafingSpeed;
   int TurningSpeed;
   int WeaponSelect;
-  AllButtons Buttons;
+  PlayerButtons Buttons;
   int FlyLook;
   int ArtifactUse;
   int Jump;

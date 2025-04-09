@@ -2,13 +2,25 @@
 
 bool foundIWAD = false;
 bool wipeDone = true;
-AllButtons last_buttons[4] = { 0 };
+CommonButtons last_buttons = { 0 };
 
-void handle_automap_input(AllButtons buttons, int playerId)
+void common_input(CommonButtons buttons)
 {
   static int bigstate = 0;
+  m_paninc.y = 0;
+  m_paninc.x = 0;
 
-  if (buttons.AutomapToggle && !last_buttons[playerId].AutomapToggle)
+  if (buttons.ChangeGamma && !last_buttons.ChangeGamma)
+  {
+    dsda_CycleConfig(dsda_config_usegamma, true);
+    dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
+                    usegamma == 1 ? GAMMALVL1 :
+                    usegamma == 2 ? GAMMALVL2 :
+                    usegamma == 3 ? GAMMALVL3 :
+                    GAMMALVL4);
+  }
+
+  if (buttons.AutomapToggle && !last_buttons.AutomapToggle)
   {
     if (automap_active)
     {
@@ -19,19 +31,19 @@ void handle_automap_input(AllButtons buttons, int playerId)
       AM_Start(true);
   }
 
-  if (buttons.AutomapFollow && !last_buttons[playerId].AutomapFollow)
+  if (buttons.AutomapFollow && !last_buttons.AutomapFollow)
   {
     dsda_ToggleConfig(dsda_config_automap_follow, true);
     dsda_AddMessage(automap_follow ? AMSTR_FOLLOWON : AMSTR_FOLLOWOFF);
   }
   
-  if (buttons.AutomapGrid && !last_buttons[playerId].AutomapGrid)
+  if (buttons.AutomapGrid && !last_buttons.AutomapGrid)
   {
     dsda_ToggleConfig(dsda_config_automap_grid, true);
     dsda_AddMessage(automap_grid ? AMSTR_GRIDON : AMSTR_GRIDOFF);
   }
   
-  if (buttons.AutomapMark && !last_buttons[playerId].AutomapMark)
+  if (buttons.AutomapMark && !last_buttons.AutomapMark)
   {
     if (!raven)
     {
@@ -40,13 +52,13 @@ void handle_automap_input(AllButtons buttons, int playerId)
     }
   }
   
-  if (buttons.AutomapClearMarks && !last_buttons[playerId].AutomapClearMarks)
+  if (buttons.AutomapClearMarks && !last_buttons.AutomapClearMarks)
   {
     AM_clearMarks();
     dsda_AddMessage(AMSTR_MARKSCLEARED);
   }
 
-  if (buttons.AutomapFullZoom && !last_buttons[playerId].AutomapFullZoom)
+  if (buttons.AutomapFullZoom && !last_buttons.AutomapFullZoom)
   {
     bigstate = !bigstate;
     if (bigstate)
@@ -86,9 +98,11 @@ void handle_automap_input(AllButtons buttons, int playerId)
     if (buttons.AutomapRight) m_paninc.x += FTOM(map_pan_speed);
     if (buttons.AutomapLeft)  m_paninc.x -= FTOM(map_pan_speed);
   }
+
+  last_buttons = buttons;
 }
 
-void send_input(struct PackedPlayerInput *inputs, int playerId)
+void player_input(struct PackedPlayerInput *inputs, int playerId)
 {
   local_cmds[playerId].forwardmove = inputs->RunSpeed;
   local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
@@ -106,19 +120,6 @@ void send_input(struct PackedPlayerInput *inputs, int playerId)
     local_cmds[playerId].buttons |= BT_CHANGE;
     local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1) << BT_WEAPONSHIFT;
   }
-
-  if (inputs->Buttons.ChangeGamma && !last_buttons[playerId].ChangeGamma)
-  {
-    dsda_CycleConfig(dsda_config_usegamma, true);
-    dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
-                    usegamma == 1 ? GAMMALVL1 :
-                    usegamma == 2 ? GAMMALVL2 :
-                    usegamma == 3 ? GAMMALVL3 :
-                    GAMMALVL4);
-  }
-
-  handle_automap_input(inputs->Buttons, playerId);
-  last_buttons[playerId] = inputs->Buttons;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
@@ -156,19 +157,17 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
   *paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT bool dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
+ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
   // Setting inputs
   headlessClearTickCommand();
-
-  m_paninc.y = 0;
-  m_paninc.x = 0;
+  common_input(commonButtons);
 
   // Setting Players inputs
-  send_input(player1Inputs, 0);
-  send_input(player2Inputs, 1);
-  send_input(player3Inputs, 2);
-  send_input(player4Inputs, 3);
+  player_input(player1Inputs, 0);
+  player_input(player2Inputs, 1);
+  player_input(player3Inputs, 2);
+  player_input(player4Inputs, 3);
 
   // Enabling/Disabling rendering, as required
   if ( renderInfo->RenderVideo) headlessEnableVideoRendering();
