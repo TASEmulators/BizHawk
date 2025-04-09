@@ -1,7 +1,3 @@
-#if DEBUG
-using System.Diagnostics;
-#endif
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
