@@ -165,6 +165,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Refresh = ReadEmbeddedBitmap("Refresh");
 		internal static readonly Bitmap Restart = ReadEmbeddedBitmap("restart");
 		internal static readonly Bitmap RetroQuestion = ReadEmbeddedBitmap("RetroQuestion");
+		internal static readonly Bitmap RewindRecord = ReadEmbeddedBitmap("RewindRecord");
 		internal static readonly Bitmap Save = ReadEmbeddedBitmap("Save");
 		internal static readonly Bitmap SaveAs = ReadEmbeddedBitmap("SaveAs");
 		internal static readonly Bitmap SaveConfig = ReadEmbeddedBitmap("SaveConfig");

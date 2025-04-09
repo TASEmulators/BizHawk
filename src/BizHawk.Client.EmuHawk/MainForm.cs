@@ -57,6 +57,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
+		private readonly StatusLabelEx StatusBarRewindIndicator = new()
+		{
+			Image = Properties.Resources.RewindRecord,
+			ToolTipText = "Rewinder is capturing states",
+		};
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();
@@ -177,6 +183,11 @@ namespace BizHawk.Client.EmuHawk
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
 			PlayRecordStatusButton.Visible = false;
+
+			StatusBarRewindIndicator.Click += RewindOptionsMenuItem_Click;
+			MainStatusBar.Items.InsertAfter(PlayRecordStatusButton, insert: StatusBarRewindIndicator);
+			UpdateStatusBarRewindIndicator();
+
 			AVStatusLabel.Visible = false;
 			SetPauseStatusBarIcon();
 			Tools.UpdateCheatRelatedTools(null, null);
@@ -1189,6 +1200,7 @@ namespace BizHawk.Client.EmuHawk
 					? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
 					: new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
+			UpdateStatusBarRewindIndicator();
 			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
 
@@ -2809,6 +2821,9 @@ namespace BizHawk.Client.EmuHawk
 				LinkConnectStatusBarButton.Visible = false;
 			}
 		}
+
+		private void UpdateStatusBarRewindIndicator()
+			=> StatusBarRewindIndicator.Visible = Rewinder?.Active is true;
 
 		private void UpdateKeyPriorityIcon()
 		{
