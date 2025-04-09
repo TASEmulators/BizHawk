@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		name: CoreNames.DSDA,
 		author: "The DSDA Team",
 		portedVersion: "0.28.2 (fe0dfa0)",
-		portedUrl: "https://github.com/kraflab/dsda-doom")]
+		portedUrl: "https://github.com/kraflab/dsda-doom",
+		isReleased: false)]
 	[ServiceNotApplicable(typeof(ISaveRam))]
 	public partial class DSDA : IRomInfo
 	{
