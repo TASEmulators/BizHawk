@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap ArrowBlackDown = ReadEmbeddedBitmap("arrow_black_down");
 		internal static readonly Lazy<Bitmap> AtariController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("atari_controller"));
 		internal static readonly Bitmap Audio = ReadEmbeddedBitmap("AudioHS");
+		internal static readonly Bitmap AudioMuted = ReadEmbeddedBitmap("AudioMuted");
 		internal static readonly Bitmap AutoSearch = ReadEmbeddedBitmap("AutoSearch");
 		internal static readonly Bitmap Avi = ReadEmbeddedBitmap("AVI");
 		internal static readonly Bitmap Back = ReadEmbeddedBitmap("Back");

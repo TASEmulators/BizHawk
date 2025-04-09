@@ -57,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
+		private readonly StatusLabelEx StatusBarMuteIndicator = new();
+
 		private readonly StatusLabelEx StatusBarRewindIndicator = new()
 		{
 			Image = Properties.Resources.RewindRecord,
@@ -219,6 +221,10 @@ namespace BizHawk.Client.EmuHawk
 				button.MouseEnter += SlotStatusButtons_MouseEnter;
 				button.MouseLeave += SlotStatusButtons_MouseLeave;
 			}
+
+			StatusBarMuteIndicator.Click += (_, _) => ToggleSound();
+			MainStatusBar.Items.InsertBefore(KeyPriorityStatusLabel, insert: StatusBarMuteIndicator);
+			UpdateStatusBarMuteIndicator();
 
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -2589,6 +2595,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.SoundEnabled = !Config.SoundEnabled;
 			Sound.StopSound();
 			Sound.StartSound();
+			UpdateStatusBarMuteIndicator();
 		}
 
 		private void VolumeUp()
@@ -2821,6 +2828,11 @@ namespace BizHawk.Client.EmuHawk
 				LinkConnectStatusBarButton.Visible = false;
 			}
 		}
+
+		private void UpdateStatusBarMuteIndicator()
+			=> (StatusBarMuteIndicator.Image, StatusBarMuteIndicator.ToolTipText) = Config.SoundEnabled
+				? (Properties.Resources.Audio, $"Core is producing audio, live playback at {(Config.SoundEnabledNormal ? Config.SoundVolume : 0)}% volume")
+				: (Properties.Resources.AudioMuted, "Core is not producing audio");
 
 		private void UpdateStatusBarRewindIndicator()
 			=> StatusBarRewindIndicator.Visible = Rewinder?.Active is true;

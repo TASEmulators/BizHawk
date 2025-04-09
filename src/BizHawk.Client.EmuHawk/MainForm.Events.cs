@@ -822,6 +822,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			Sound.StartSound();
 			RewireSound();
+			UpdateStatusBarMuteIndicator();
 		}
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
