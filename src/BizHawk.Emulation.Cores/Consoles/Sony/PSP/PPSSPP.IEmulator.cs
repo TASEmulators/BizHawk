@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
 			}
 
+			fi.input.Up = controller.IsPressed($"P1 {JoystickButtons.Up}") ? 1 : 0;
 			fi.input.Down = controller.IsPressed($"P1 {JoystickButtons.Down}") ? 1 : 0;
 			fi.input.Left = controller.IsPressed($"P1 {JoystickButtons.Left}") ? 1 : 0;
 			fi.input.Right = controller.IsPressed($"P1 {JoystickButtons.Right}") ? 1 : 0;
