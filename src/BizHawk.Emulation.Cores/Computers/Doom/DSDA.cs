@@ -109,7 +109,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ "render_stretch_hud 0\n"
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
-				+ "dsda_command_history_size 20\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -225,6 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly byte[] _dsdaWadFileData;
 		private readonly byte[] _configFile;
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
+		private int _turnCarry = 0; // Chocolate Doom mouse behaviour (enabled in upstream by default)
 		private List<string> _args;
 		private List<IRomAsset> _wadFiles;
 		private CInterface.GameMode _gameMode;

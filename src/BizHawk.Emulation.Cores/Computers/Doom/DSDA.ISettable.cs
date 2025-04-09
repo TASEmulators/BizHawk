@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DsdaExHud { get; set; }
 			
 			[DisplayName("Display Commands")]
-			[Description("Shows input history on the screen. History size is 20, empty commands are excluded.")]
+			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
 			[DefaultValue(false)]
 			public bool DisplayCommands { get; set; }
 			

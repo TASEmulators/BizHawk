@@ -109,6 +109,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// for shorttics we expose to player and parse from movies only 1 byte, but the core internally works with 2 bytes
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
+						int desiredAngleturn = players[i].TurningSpeed + _turnCarry;
+						players[i].TurningSpeed = (desiredAngleturn + 128) & 0xff00;
+						_turnCarry = desiredAngleturn - players[i].TurningSpeed;
 						players[i].TurningSpeed = ((players[i].TurningSpeed + 128) >> 8) << 8;
 					}
 
