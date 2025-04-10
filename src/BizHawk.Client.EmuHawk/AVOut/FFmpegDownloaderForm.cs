@@ -1,6 +1,7 @@
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -30,5 +31,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override bool PostChmodCheck()
 			=> FFmpegService.QueryServiceAvailable();
+
+		protected override bool PreChmodCheck(FileStream extracted)
+			=> SHA256Checksum.ComputeDigestHex(extracted.ReadAllBytes()) == FFmpegService.DownloadSHA256Checksum;
 	}
 }
