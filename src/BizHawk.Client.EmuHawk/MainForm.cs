@@ -4070,8 +4070,7 @@ namespace BizHawk.Client.EmuHawk
 			AutoSaveStateIfConfigured();
 
 			CommitCoreSettingsToConfig();
-			Rewinder?.Dispose();
-			Rewinder = null;
+			DisableRewind();
 
 			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
@@ -4165,12 +4164,14 @@ namespace BizHawk.Client.EmuHawk
 
 				AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 			}
+			UpdateStatusBarRewindIndicator();
 		}
 
 		public void DisableRewind()
 		{
 			Rewinder?.Dispose();
 			Rewinder = null;
+			UpdateStatusBarRewindIndicator();
 		}
 
 		private int SlotToInt(string slot)
