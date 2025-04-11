@@ -1,0 +1,22 @@
+<Solution>
+	<Project Path="src/BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
+	<Project Path="src/BizHawk.Bizware.Audio/BizHawk.Bizware.Audio.csproj" />
+	<Project Path="src/BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
+	<Project Path="src/BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+	<Project Path="src/BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
+	<Project Path="src/BizHawk.Common/BizHawk.Common.csproj" />
+	<Folder Name="/Client/">
+		<Project Path="src/BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<Project Path="src/BizHawk.Client.DiscoHawk/BizHawk.Client.DiscoHawk.csproj" />
+		<Project Path="src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj" />
+		<Project Path="src/BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
+	</Folder>
+	<Folder Name="/Emulation/">
+		<Project Path="src/BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
+		<Project Path="src/BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
+		<Project Path="src/BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+	</Folder>
+	<Folder Name="/Tests/">
+		<Project Path="src/BizHawk.Tests/BizHawk.Tests.csproj" />
+	</Folder>
+</Solution>
