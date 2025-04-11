@@ -728,7 +728,7 @@ namespace BizHawk.Client.Common
 				}
 				catch
 				{
-					DoLoadErrorCallback(ex.ToString(), VSystemID.Raw.GBL, LoadErrorType.Xml);
+					DoLoadErrorCallback(ex.ToString(), game?.System ?? VSystemID.Raw.SNES, LoadErrorType.Xml);
 					return false;
 				}
 			}
