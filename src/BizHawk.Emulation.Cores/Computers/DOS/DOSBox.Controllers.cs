@@ -68,10 +68,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
 
-				// Mouse speed needs to also be adjusted to bk's window size to capture the exact movement and not amplify/shrink it.
-				// To adjust sensitivity, use the corresponding sync setting; these values here is the basis value
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-LibDOSBox.SVGA_MAX_WIDTH / 2).RangeTo(LibDOSBox.SVGA_MAX_WIDTH / 2), 0);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-LibDOSBox.SVGA_MAX_HEIGHT / 2).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT / 2), 0);
+				// Range above 180 results in minimal mouse movement values bigger than 1, and we need 1 as a basis before sensitivity is applied
+				// To adjust sensitivity, use the corresponding sync setting (global sensitivity for raw deltas is a TODO)
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-180).RangeTo(180), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-180).RangeTo(180), 0);
 			}
 
 			// Adding drive management buttons
