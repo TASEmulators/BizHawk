@@ -33,6 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		public abstract void LoadState(byte[] buffer, int stateLen);
 
 		[BizImport(CC, Compatibility = true)]
+		public abstract bool loadResource(string resourceName, byte[] buffer, int resourceLen);
+
+		[BizImport(CC, Compatibility = true)]
 
 		public abstract void Deinit();
 

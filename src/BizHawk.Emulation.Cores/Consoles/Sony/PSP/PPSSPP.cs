@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
@@ -58,6 +59,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 			// Setting CD callbacks
 			_libPPSSPP.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
+
+			//// Pre-loading emulator resources
+
+			// Getting compat.ini -- required to set game-specific compatibility flags
+			string resourceName = "";
+
+			resourceName = "compat.ini";
+			var compatIniData = new MemoryStream(Resources.PPSSPP_COMPAT_INI.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, compatIniData, compatIniData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+
+			// Getting compat_vr.ini -- required to set more game-specific compatibility flags
+			resourceName = "compatvr.ini";
+			var compatvrIniData = new MemoryStream(Resources.PPSSPP_COMPATVR_INI.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, compatvrIniData, compatvrIniData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+
+			// Getting atlas font -- required to show console system text
+			resourceName = "font_atlas.zim";
+			var atlasFontZimData = new MemoryStream(Resources.PPSSPP_ATLAS_FONT_ZIM.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, atlasFontZimData, atlasFontZimData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+
+			// Getting atlas font metadata -- required to show console system text
+			resourceName = "font_atlas.meta";
+			var atlasFontMetadataData = new MemoryStream(Resources.PPSSPP_ATLAS_FONT_METADATA.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, atlasFontMetadataData, atlasFontMetadataData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;

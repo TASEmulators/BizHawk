@@ -1,4 +1,5 @@
 using BizHawk.Common.IOExtensions;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Properties {
 	internal static class Resources {
@@ -28,5 +29,9 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> JAGUAR_MSERIES_ROM = new(() => ReadEmbeddedByteArray("JAGUAR_MSERIES.ROM.zst"));
 		internal static readonly Lazy<byte[]> JAGUAR_MEMTRACK_ROM = new(() => ReadEmbeddedByteArray("JAGUAR_MEMTRACK.ROM.zst"));
 		internal static readonly Lazy<byte[]> DSDA_DOOM_WAD = new(() => ReadEmbeddedByteArray("dsda-doom.zst"));
+		internal static readonly Lazy<byte[]> PPSSPP_COMPAT_INI = new(() => ReadEmbeddedByteArray("ppsspp_compat.ini"));
+		internal static readonly Lazy<byte[]> PPSSPP_COMPATVR_INI = new(() => ReadEmbeddedByteArray("ppsspp_compatvr.ini"));
+		internal static readonly Lazy<byte[]> PPSSPP_ATLAS_FONT_ZIM = new(() => ReadEmbeddedByteArray("ppsspp_font_atlas.zim"));
+		internal static readonly Lazy<byte[]> PPSSPP_ATLAS_FONT_METADATA = new(() => ReadEmbeddedByteArray("ppsspp_font_atlas.meta"));
 	}
 }
