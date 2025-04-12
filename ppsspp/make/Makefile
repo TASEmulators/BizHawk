@@ -8,7 +8,6 @@ CCFLAGS := 	-I. \
 	-DHTTPS_NOT_AVAILABLE \
 	-DMASKED_PSP_MEMORY \
 	-DMINIUPNPC_SET_SOCKET_TIMEOUT \
-	-DMINIUPNP_STATICLIB \
 	-DNO_MMAP \
 	-DSHARED_ZLIB \
 	-DVK_USE_PLATFORM_WAYLAND_KHR \
@@ -838,7 +837,7 @@ else
 	TARGET = libppsspp.dll
 endif
 
-LDFLAGS = -shared -s $(CXXFLAGS)
+LDFLAGS = -shared $(CXXFLAGS)
 
 DEST = ../../Assets/dll
 DESTCOPY = ../../output/dll
