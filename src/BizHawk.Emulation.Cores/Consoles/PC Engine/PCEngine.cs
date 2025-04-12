@@ -9,7 +9,12 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
+	public enum NecSystemType
+	{
+		TurboGrafx,
+		TurboCD,
+		SuperGrafx,
+	}
 
 	[Core(CoreNames.PceHawk, "Vecna")]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,

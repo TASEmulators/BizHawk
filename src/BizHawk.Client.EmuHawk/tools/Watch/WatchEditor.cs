@@ -13,7 +13,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class WatchEditor : Form
 	{
-		public enum Mode { New, Duplicate, Edit }
+		public enum Mode
+		{
+			New,
+			Duplicate,
+			Edit,
+		}
 
 		public Emu.IMemoryDomains MemoryDomains { get; set; }
 

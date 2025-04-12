@@ -4,7 +4,11 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public enum VdpMode { SMS, GameGear }
+	public enum VdpMode
+	{
+		SMS,
+		GameGear,
+	}
 
 	// Emulates the Texas Instruments TMS9918 VDP.
 	public partial class VDP : IVideoProvider

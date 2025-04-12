@@ -8,7 +8,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public enum MovieEndAction { Stop, Pause, Record, Finish }
+	public enum MovieEndAction
+	{
+		Stop,
+		Pause,
+		Record,
+		Finish,
+	}
 
 	public class MovieSession : IMovieSession
 	{

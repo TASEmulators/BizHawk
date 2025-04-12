@@ -16,7 +16,13 @@ namespace BizHawk.Tests.Testroms.GB
 {
 	public static class GBHelper
 	{
-		public enum ConsoleVariant { CGB_C, CGB_D, DMG, DMG_B }
+		public enum ConsoleVariant
+		{
+			CGB_C,
+			CGB_D,
+			DMG,
+			DMG_B,
+		}
 
 		public readonly struct CoreSetup
 		{

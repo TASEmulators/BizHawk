@@ -5,7 +5,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class LuaAutocompleteInstaller
 	{
-		public enum TextEditors { Sublime2, NotePad }
+		public enum TextEditors
+		{
+			Sublime2,
+			NotePad,
+		}
 
 		public bool IsInstalled(TextEditors editor)
 		{
