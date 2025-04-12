@@ -51,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_serviceProvider.Register<IVideoProvider>(this);
 			_serviceProvider.Register<ISoundProvider>(this);
 
-			
 			// Loading LibPPSSPP
 			_resolver?.Dispose();
 			_resolver = new(OSTailoredCode.IsUnixHost ? "libppsspp.so" : "libppsspp.dll", hasLimitedLifetime: true);
@@ -75,14 +74,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			if (!_libPPSSPP.loadResource(resourceName, compatvrIniData, compatvrIniData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
 			// Getting atlas font -- required to show console system text
-			resourceName = "font_atlas.zim";
-			var atlasFontZimData = new MemoryStream(Resources.PPSSPP_ATLAS_FONT_ZIM.Value).ToArray();
-			if (!_libPPSSPP.loadResource(resourceName, atlasFontZimData, atlasFontZimData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+			resourceName = "ppge_atlas.zim";
+			var ppgeAtlasZimData = new MemoryStream(Resources.PPSSPP_PPGE_ATLAS_ZIM.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, ppgeAtlasZimData, ppgeAtlasZimData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
 			// Getting atlas font metadata -- required to show console system text
-			resourceName = "font_atlas.meta";
-			var atlasFontMetadataData = new MemoryStream(Resources.PPSSPP_ATLAS_FONT_METADATA.Value).ToArray();
-			if (!_libPPSSPP.loadResource(resourceName, atlasFontMetadataData, atlasFontMetadataData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+			resourceName = "ppge_atlas.meta";
+			var ppgeAtlasMetadataData = new MemoryStream(Resources.PPSSPP_PPGE_ATLAS_METADATA.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, ppgeAtlasMetadataData, ppgeAtlasMetadataData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+
+			// Getting PPGe font -- required to show console system text
+			resourceName = "PPGeFont.ttf";
+			var PPGeFontData = new MemoryStream(Resources.PPGE_FONT_ROBOTO_CONDENSED.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, PPGeFontData, PPGeFontData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;

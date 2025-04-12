@@ -4,6 +4,9 @@
 #include <libretro.h>
 #include <functional>
 #include <jaffarCommon/file.hpp>
+#include <SDL.h>
+#include <libretro.h>
+#include <GPU/GPU.h>
 
 std::string _cdImageFilePath = "__CDROM_PATH.iso";
 
@@ -32,8 +35,8 @@ size_t _videoBufferSize = 0;
 std::string _compatibilityFileData = "";
 std::string _compatibilityVRFileData = "";
 std::string _ppgeFontFileData = "";
-std::string _atlasFontZimFileData = "";
-std::string _atlasFontMetadataFileData = "";
+std::string _ppgeAtlasFontZimFileData = "";
+std::string _ppgeAtlasFontMetadataFileData = "";
 
 // Current Frame information
 MyFrameInfo _f;
@@ -161,6 +164,10 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
     if (cmd == RETRO_ENVIRONMENT_GET_LANGUAGE) { return false; }
     if (cmd == RETRO_ENVIRONMENT_SET_CORE_OPTIONS_DISPLAY) { return false; }
     if (cmd == RETRO_ENVIRONMENT_GET_PREFERRED_HW_RENDER) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_HW_RENDER) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SHUTDOWN) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO) { return false; }
+    if (cmd == RETRO_ENVIRONMENT_SET_GEOMETRY) { return false; }
     
     fprintf(stderr, "Unrecognized environment callback command: %u\n", cmd);
 
@@ -227,17 +234,17 @@ EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resource
 		return true;
 	}
 
-	if (name == "font_atlas.zim")
+	if (name == "ppge_atlas.zim")
 	{
 		printf("Loading resource: %s\n", name.c_str());
-		_atlasFontZimFileData = std::string((const char*)buffer, resourceLen);
+		_ppgeAtlasFontZimFileData = std::string((const char*)buffer, resourceLen);
 		return true;
 	}
 
-	if (name == "font_atlas.meta")
+	if (name == "ppge_atlas.meta")
 	{
 		printf("Loading resource: %s\n", name.c_str());
-		_atlasFontMetadataFileData = std::string((const char*)buffer, resourceLen);
+		_ppgeAtlasFontMetadataFileData = std::string((const char*)buffer, resourceLen);
 		return true;
 	}
 
@@ -272,6 +279,9 @@ EXPORT bool Init()
 	printf("InitE\n");
 	if (loadResult == false) { fprintf(stderr, "Could not load game"); return false; }
 	printf("InitF\n");
+
+	// Advancing until gpu is initialized -- this is necessary for proper savestates
+	while (!gpu) retro_run();
 
 	// Getting av info
 	//struct retro_system_av_info info;
