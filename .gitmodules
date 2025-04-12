@@ -95,3 +95,6 @@
 [submodule "waterbox/ppsspp/jaffarCommon"]
 	path = ppsspp/jaffarCommon
 	url = https://github.com/SergioMartin86/jaffarCommon.git
+[submodule "ppsspp/SDL"]
+	path = ppsspp/SDL
+	url = https://github.com/libsdl-org/SDL.git

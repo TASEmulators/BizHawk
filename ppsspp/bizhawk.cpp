@@ -14,7 +14,7 @@ int _nvramChanged;
 gamePad_t _inputData;
 
 // flag to indicate whether the inputs were polled
-int _inputPortsRead; 
+bool _readInputs;
 
 // Audio state
 #define _MAX_SAMPLES 4096
@@ -29,6 +29,11 @@ size_t _videoWidth;
 size_t _videoPitch;
 size_t _videoBufferSize = 0;
 
+std::string _compatibilityFileData = "";
+std::string _compatibilityVRFileData = "";
+std::string _ppgeFontFileData = "";
+std::string _atlasFontZimFileData = "";
+std::string _atlasFontMetadataFileData = "";
 
 // Current Frame information
 MyFrameInfo _f;
@@ -203,6 +208,50 @@ size_t readSegmentFromCD(void *buf_, const uint64_t address, const size_t size)
 
 /// CD Management Logic End
 
+/// Resource loader
+EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resourceLen)
+{
+	std::string name = std::string(resourceName);
+	printf("Trying to load resource: %s\n", name.c_str());
+
+	if (name == "compat.ini") {
+		printf("Loading resource: %s\n", name.c_str());
+		_compatibilityFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+	
+	if (name == "compatvr.ini")
+	{
+		printf("Loading resource: %s\n", name.c_str());
+		_compatibilityVRFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+
+	if (name == "font_atlas.zim")
+	{
+		printf("Loading resource: %s\n", name.c_str());
+		_atlasFontZimFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+
+	if (name == "font_atlas.meta")
+	{
+		printf("Loading resource: %s\n", name.c_str());
+		_atlasFontMetadataFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+
+  if (name == "PPGeFont.ttf")
+	{
+		printf("Loading resource: %s\n", name.c_str());
+		_ppgeFontFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+
+	return false;
+}
+
+
 EXPORT bool Init()
 { 
 	retro_set_environment(retro_environment_callback);
@@ -266,7 +315,7 @@ EXPORT void FrameAdvance(MyFrameInfo f)
   _nvramChanged = false;
 
   // Checking if ports have been read
-  _inputPortsRead = 0;
+  _readInputs = 0;
 
   // Jumping into the emu driver coroutine to run a single frame
   printf("Advancing Frame...\n"); fflush(stdout);
