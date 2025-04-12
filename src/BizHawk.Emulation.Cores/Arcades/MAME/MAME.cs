@@ -433,10 +433,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public static string GetDIPSwitchOptions(string tag, string fieldName) =>
 				"local final = { } " +
 				$"for value, description in pairs(manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"].settings) do " +
-					"table.insert(final, string.format(\"%d~%s@\", value, description)) " +
+					"table.insert(final, string.format(\"%d~%s\", value, description)) " +
 				"end " +
 				"table.sort(final) " +
-				"return table.concat(final)";
+				"return table.concat(final, '\\n')";
 			public static string GetViewName(string index) =>
 				$"return manager.machine.video.snapshot_target.view_names[{ index }]";
 		}

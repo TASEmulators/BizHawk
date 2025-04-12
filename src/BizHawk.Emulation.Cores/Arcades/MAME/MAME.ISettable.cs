@@ -93,11 +93,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					};
 
 					var DIPSwitchOptions = MameGetString(MAMELuaCommand.GetDIPSwitchOptions(tag, fieldName));
-					var options = DIPSwitchOptions.Split(new[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+					var options = DIPSwitchOptions.Split('\n');
 					if (options.Length is 0) continue;
 					foreach (var option in options)
 					{
-						var opt = option.Split(new[] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+						var opt = option.Split('~');
 						setting.Options.Add(opt[0], opt[1]);
 					}
 					CurrentDriverSettings.Add(setting);
