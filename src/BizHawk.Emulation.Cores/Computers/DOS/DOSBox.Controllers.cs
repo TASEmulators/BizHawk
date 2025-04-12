@@ -9,11 +9,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// A class to store the current state of the mouse for delta and button activation calculation
 		private class MouseState
 		{
-			public int posX = 0;
-			public int posY = 0;
-			public bool leftButtonHeld = false;
-			public bool middleButtonHeld = false;
-			public bool rightButtonHeld = false;
+			public int PosX = 0;
+			public int PosY = 0;
+			public bool LeftButtonHeld = false;
+			public bool MiddleButtonHeld = false;
+			public bool RightButtonHeld = false;
 		}
 
 		private MouseState _mouseState = new MouseState();
