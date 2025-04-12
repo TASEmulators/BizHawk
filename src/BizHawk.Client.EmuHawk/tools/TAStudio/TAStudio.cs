@@ -1167,11 +1167,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
 			{
-				var currentMarker = CurrentTasMovie.Markers.Single(m => m.Frame == e.OldCell.RowIndex.Value);
-				int newFrame = e.NewCell.RowIndex.Value;
-				var newMarker = new TasMovieMarker(newFrame, currentMarker.Message);
-				CurrentTasMovie.Markers.Remove(currentMarker);
-				CurrentTasMovie.Markers.Add(newMarker);
+				CurrentTasMovie.Markers.Move(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 				RefreshDialog();
 			}
 		}
