@@ -4910,6 +4910,11 @@ namespace BizHawk.Client.EmuHawk
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
 				BringToFront();
+
+				if (Config.MainFormMouseCaptureForcesTopmost)
+				{
+					TopMost = true;
+				}
 			}
 			else
 			{
@@ -4917,6 +4922,11 @@ namespace BizHawk.Client.EmuHawk
 				Cursor.Show();
 				_presentationPanel.Control.Cursor = Cursors.Default;
 				_cursorHidden = false;
+
+				if (Config.MainFormMouseCaptureForcesTopmost)
+				{
+					TopMost = Config.MainFormStayOnTop;
+				}
 			}
 
 			// Cursor.Clip is a no-op on Linux, so we need this too
