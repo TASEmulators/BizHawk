@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int SVGA_MAX_HEIGHT = 600;
 
 		// Default FPS: 70.086592427616921
-		public const int VIDEO_NUMERATOR_DOS = 3146888;
-		public const int VIDEO_DENOMINATOR_DOS = 44900;
+		public const int DEFAULT_FRAMERATE_NUMERATOR_DOS = 3146888;
+		public const int DEFAULT_FRAMERATE_DENOMINATOR_DOS = 44900;
 
 		public const int FASTMEM_AUTO = -1;
 		public const int MAX_FLOPPIES = 4;
@@ -59,10 +59,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
 
 		[BizImport(CC)]
-		public abstract ulong getVGARefreshRateNumerator();
+		public abstract int getRefreshRateNumerator();
 
 		[BizImport(CC)]
-		public abstract ulong getVGARefreshRateDenominator();
+		public abstract int getRefreshRateDenominator();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class InitSettings
@@ -71,8 +71,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int Joystick2Enabled;
 			public ulong HardDiskDriveSize;
 			public int PreserveHardDiskContents;
-			public ulong FpsNumerator;
-			public ulong FpsDenominator;
 		}
 
 		// CD Management Logic END
@@ -95,6 +93,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public JoystickButtons Joystick1;
 			public JoystickButtons Joystick2;
 			public MouseInput Mouse;
+			public int framerateNumerator;
+			public int framerateDenominator;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

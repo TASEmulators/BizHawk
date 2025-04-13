@@ -239,15 +239,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(false)]
 			public bool PreserveHardDiskContents { get; set; }
 
-			[DisplayName("FPS Numerator")]
-			[Description("Forces a numerator for FPS: how many Bizhawk frames to run per second of emulation. We recommend leaving this value unmodified. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]
+			[DisplayName("Force FPS Numerator")]
+			[Description("Forces a numerator for FPS: how many Bizhawk frames to run per second of emulation. We recommend leaving this value unmodified, to follow the core's own video refresh rate. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]
 			[DefaultValue(0)]
-			public ulong FPSNumerator { get; set; }
+			public int forceFPSNumerator { get; set; }
 
-			[DisplayName("FPS Denominator")]
-			[Description("Forces denominator for FPS: how many Bizhawk frames to run per second of emulation. We recommend leaving this value unmodified. You can set it lower if you need finer subframe inputs, and; higher, in case your game runs in lower FPS and it feels more natural.")]
+			[DisplayName("Force FPS Denominator")]
+			[Description("Forces denominator for FPS: how many Bizhawk frames to run per second of emulation. We recommend leaving this value unmodified, to follow the core's own video refresh rate. You can set it lower if you need finer subframe inputs, and; higher, in case your game runs in lower FPS and it feels more natural.")]
 			[DefaultValue(0)]
-			public ulong FPSDenominator { get; set; }
+			public int forceFPSDenominator { get; set; }
 
 			[DisplayName("CPU Cycles")]
 			[Description("How many CPU cycles to emulate per ms. Default: -1, to keep the one included in the configuration preset.")]

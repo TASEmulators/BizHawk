@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DefaultHeight = LibDOSBox.VGA_MAX_HEIGHT,
 			MaxWidth = LibDOSBox.SVGA_MAX_WIDTH,
 			MaxHeight = LibDOSBox.SVGA_MAX_HEIGHT,
-			DefaultFpsNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS,
-			DefaultFpsDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS
+			DefaultFpsNumerator = LibDOSBox.DEFAULT_FRAMERATE_NUMERATOR_DOS,
+			DefaultFpsDenominator = LibDOSBox.DEFAULT_FRAMERATE_DENOMINATOR_DOS
 		};
 
 		private LibDOSBox _libDOSBox;
@@ -44,10 +44,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
-
-		// VGA Refresh rate info
-		private ulong _VGARefreshRateNumerator = 0;
-		private ulong _VGARefreshRateDenominator = 0;
 
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
@@ -69,9 +65,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_discAssets = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 
-			VsyncNumerator = (int) _syncSettings.FPSNumerator;
-			VsyncDenominator = (int) _syncSettings.FPSDenominator;
-			VsyncAttoseconds = (long)(1000000000000000000 * _syncSettings.FPSDenominator / _syncSettings.FPSNumerator);
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _floppyDiskAssets.Count, _discAssets.Count);
 
@@ -264,16 +257,24 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
 
 			////////////// Initializing Core
-			if (!_libDOSBox.Init(new LibDOSBox.InitSettings() {
+			if (!_libDOSBox.Init(new LibDOSBox.InitSettings()
+			{
 				Joystick1Enabled = _syncSettings.EnableJoystick1 ? 1 : 0,
 				Joystick2Enabled = _syncSettings.EnableJoystick2 ? 1 : 0,
 				HardDiskDriveSize = writableHDDImageFileSize,
-				PreserveHardDiskContents = _syncSettings.PreserveHardDiskContents ? 1 : 0,
-				FpsNumerator = _syncSettings.FPSNumerator,
-				FpsDenominator = _syncSettings.FPSDenominator }))
+				PreserveHardDiskContents = _syncSettings.PreserveHardDiskContents ? 1 : 0
+			}))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
+
+			// Setting framerate, if forced; otherwise, use the default.
+			// The default is necessary because DOSBox does not populate framerate value on init. Only after the first frame run
+			if (_syncSettings.forceFPSNumerator > 0 && _syncSettings.forceFPSDenominator > 0)
+				updateFramerate(_syncSettings.forceFPSNumerator, _syncSettings.forceFPSDenominator);
+			else
+				updateFramerate(LibDOSBox.DEFAULT_FRAMERATE_NUMERATOR_DOS, LibDOSBox.DEFAULT_FRAMERATE_DENOMINATOR_DOS);
+				
 
 			PostInit();
 
@@ -443,35 +444,47 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
+			// Specifying frame rate
+			fi.framerateNumerator = VsyncNumerator;
+			fi.framerateDenominator = VsyncDenominator;
+
 			return fi;
+		}
+		
+		private void updateFramerate(int numerator, int denominator)
+		{
+			VsyncNumerator = numerator;
+			VsyncDenominator = denominator;
+			VsyncAttoseconds = (1000000000000000000L * numerator) / denominator;
+
+			var newRefreshRate = (float) VsyncNumerator / VsyncDenominator;
+			CoreComm.Notify("Refresh Rate set to: " +
+				$"{VsyncNumerator} / " +
+				$"{VsyncDenominator} = " +
+				$"{newRefreshRate.ToString(CultureInfo.InvariantCulture)} Hz",
+				_messageDuration);
+			Console.WriteLine($"[Frame {Frame}] Refresh Rate set to: " +
+				$"{VsyncNumerator} / " +
+				$"{VsyncDenominator} = " +
+				$"{newRefreshRate.ToString(CultureInfo.InvariantCulture)} Hz");
 		}
 
 		protected override void FrameAdvancePost()
 		{
 			DriveLightOn = _libDOSBox.getDriveActivityFlag();
 
-			// Checking on VGA refresh rate updates
-			var currentVGARefreshRateNumerator = _VGARefreshRateNumerator;
-			var currentVGARefreshRateDenominator = _VGARefreshRateDenominator;
+			// Checking refresh rate base on the reported refresh rate updates
+			var currentRefreshRateNumerator = VsyncNumerator;
+			var currentRefreshRateDenominator = VsyncDenominator;
 
-			_VGARefreshRateNumerator = _libDOSBox.getVGARefreshRateNumerator();
-			_VGARefreshRateDenominator = _libDOSBox.getVGARefreshRateDenominator();
+			var newRefreshRateNumerator = _libDOSBox.getRefreshRateNumerator();
+			var newRefreshRateDenominator = _libDOSBox.getRefreshRateDenominator();
 
-			// If it changed, notify now
-			if (currentVGARefreshRateNumerator != _VGARefreshRateNumerator
-				|| currentVGARefreshRateDenominator != _VGARefreshRateDenominator)
-			{
-				var newVGARefreshRate = (float)_VGARefreshRateNumerator / _VGARefreshRateDenominator;
-				CoreComm.Notify("VGA Refresh Rate changed to: " +
-					$"{_VGARefreshRateNumerator} / " +
-					$"{_VGARefreshRateDenominator} = " +
-					$"{newVGARefreshRate.ToString(CultureInfo.InvariantCulture)} Hz",
-					_messageDuration);
-				Console.WriteLine($"[Frame {Frame}] VGA Refresh Rate changed to: " +
-					$"{_VGARefreshRateNumerator} / " +
-					$"{_VGARefreshRateDenominator} = " +
-					$"{newVGARefreshRate.ToString(CultureInfo.InvariantCulture)} Hz");
-			}
+			// Change BK's own framerate if the values changed. Only if not forced. And only if the provided values are valid (they might be zero initially until the core sets it).
+			if (currentRefreshRateNumerator != newRefreshRateNumerator || currentRefreshRateDenominator != newRefreshRateDenominator)
+				if (_syncSettings.forceFPSNumerator == 0 || _syncSettings.forceFPSDenominator == 0)
+					if (newRefreshRateNumerator > 0 && newRefreshRateDenominator > 0)
+						updateFramerate(newRefreshRateNumerator, newRefreshRateDenominator);
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
