@@ -380,7 +380,7 @@ namespace BizHawk.Client.Common
 					TargetFrameLength = targetFrameLength,
 					TargetRewindInterval = 5,
 					AllowOutOfOrderStates = false,
-					UseCompression = useCompression
+					UseCompression = useCompression,
 				});
 				if (ret.Size != size || ret._sizeMask != sizeMask)
 				{

@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			TI83 = 79,
 			Uzebox = 80,
 
-			NumConsoleIDs
+			NumConsoleIDs,
 		}
 
 		protected ConsoleID SystemIdToConsoleId()

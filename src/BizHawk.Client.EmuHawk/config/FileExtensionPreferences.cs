@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -27,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					FileExtension = fileExt,
 					OriginalPreference = sysID,
-					Location = new Point(UIHelper.ScaleX(15), UIHelper.ScaleY(15) + (spacing * count))
+					Location = new(UIHelper.ScaleX(15), UIHelper.ScaleY(15) + (spacing * count)),
 				};
 
 				count++;

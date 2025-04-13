@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
@@ -33,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			"1920 x 1440",
 			"2048 x 1536",
 			"2880 x 2160",
-			CustomResItemName
+			CustomResItemName,
 		};
 
 		private readonly bool _programmaticallyChangingPluginComboBox = false;
@@ -91,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 				"Glide64mk2" => PluginType.GlideMk2,
 				"GLideN64" => PluginType.GLideN64,
 				"Angrylion" => PluginType.Angrylion,
-				_ => _ss.VideoPlugin
+				_ => _ss.VideoPlugin,
 			};
 
 			_ss.Core = CoreTypeDropdown.SelectedItem
@@ -183,8 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Change resolution list to the rest
-			VideoResolutionComboBox.Items.Clear();
-			VideoResolutionComboBox.Items.AddRange(ValidResolutions.Cast<object>().ToArray());
+			VideoResolutionComboBox.ReplaceItems(items: ValidResolutions);
 
 			// If the given resolution is in the table, pick it.
 			// Otherwise find a best fit

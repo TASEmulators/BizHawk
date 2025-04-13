@@ -2,6 +2,7 @@
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.BSNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -27,7 +28,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			// (select) cores A-Z by value of `CoreAttribute.CoreName`
 			return core switch
 			{
-				LibsnesCore => Properties.Resources.Bsnes,
+				BsnesCore or LibsnesCore or SubBsnesCore => Properties.Resources.Bsnes,
 				Gameboy => Properties.Resources.Gambatte,
 				GPGX => Properties.Resources.GenPlus,
 				MAME => Properties.Resources.Mame,
@@ -36,7 +37,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 				QuickNES => Properties.Resources.QuickNes,
 				Snes9x => Properties.Resources.Snes9X,
 				UAE => Properties.Resources.Amiga,
-				_ => null
+				_ => null,
 			};
 		}
 
@@ -46,7 +47,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 #if false
 			IGameboyCommon gb when gb.IsCGBMode() => EmulatorExtensions.SystemIDToDisplayName(VSystemID.Raw.GBC),
 #endif
-			_ => EmulatorExtensions.SystemIDToDisplayName(emulator.SystemId)
+			_ => EmulatorExtensions.SystemIDToDisplayName(emulator.SystemId),
 		};
 	}
 }

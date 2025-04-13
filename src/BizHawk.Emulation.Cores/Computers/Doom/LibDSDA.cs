@@ -45,9 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int StrafingSpeed;
 			public int TurningSpeed;
 			public int WeaponSelect;
-			public int Fire;
-			public int Action;
-			public int Automap;
+			public int Buttons;
 
 			// Hexen + Heretic (Raven Games)
 			public int FlyLook;
@@ -73,28 +71,23 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init(ref InitSettings settings, int argc, string[] argv);
 
 		[BizImport(CallingConvention.Cdecl)]
+		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int dsda_add_wad_file(string fileName, int fileSize, load_archive_cb feload_archive_cb);
+		
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte dsda_read_memory_array(MemoryArrayType type, uint addr);
+
+		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool dsda_frame_advance(
+			int commonInputs,
 			ref PackedPlayerInput player1Inputs,
 			ref PackedPlayerInput player2Inputs,
 			ref PackedPlayerInput player3Inputs,
 			ref PackedPlayerInput player4Inputs,
 			ref PackedRenderInfo renderInfo);
-
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
-
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract int dsda_add_wad_file(
-			string fileName,
-			int fileSize,
-			load_archive_cb feload_archive_cb);
-		
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract byte dsda_read_memory_array(
-			MemoryArrayType type,
-			uint addr);
 	}
 }

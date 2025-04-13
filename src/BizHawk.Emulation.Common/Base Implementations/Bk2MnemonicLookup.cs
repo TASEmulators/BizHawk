@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Common
 			["F7"] = '7',
 			["F8"] = '8',
 			["F9"] = '9',
-			["F10"] = '0'
+			["F10"] = '0',
 		};
 
 		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Common
 				["Extra3"] = '3',
 				["Extra4"] = '4',
 
-				["Subframe"] = 'F'
+				["Subframe"] = 'F',
 			},
 			[VSystemID.Raw.TI83] = new()
 			{
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Common
 				["Right Shift"] = 's',
 				["Cursor Up/Down"] = 'u',
 				["Cursor Left/Right"] = 'l',
-				["Space"] = '_'
+				["Space"] = '_',
 			},
 			[VSystemID.Raw.ZXSpectrum] = new()
 			{
@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.Common
 				["Up Cursor"] = 'u',
 				["Down Cursor"] = 'd',
 				["Left Cursor"] = 'l',
-				["Right Cursor"] = 'r'
+				["Right Cursor"] = 'r',
 			},
 			[VSystemID.Raw.N64] = new()
 			{
@@ -403,11 +403,11 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.Lynx] = new()
 			{
 				["Option 1"] = '1',
-				["Option 2"] = '2'
+				["Option 2"] = '2',
 			},
 			[VSystemID.Raw.NGP] = new()
 			{
-				["Option"] = 'O'
+				["Option"] = 'O',
 			},
 			[VSystemID.Raw.AppleII] = new()
 			{
@@ -422,7 +422,7 @@ namespace BizHawk.Emulation.Common
 				["White Apple"] = 'w' ,
 				["Black Apple"] = 'b' ,
 				["L"] = 'L' ,
-				["R"] = 'R'
+				["R"] = 'R',
 			},
 			[VSystemID.Raw.INTV] = new()
 			{
@@ -440,14 +440,14 @@ namespace BizHawk.Emulation.Common
 				["WSW"] = 'w' ,
 				["WNW"] = 'w' ,
 				["NW"] = '\\' ,
-				["NNW"] = 'n'
+				["NNW"] = 'n',
 			},
 			[VSystemID.Raw.Coleco] = new()
 			{
 				["Yellow"] = 'Y',
 				["Red"] = 'R',
 				["Blue"] = 'B',
-				["Purple"] = 'P'
+				["Purple"] = 'P',
 			},
 			[VSystemID.Raw.VB] = new()
 			{
@@ -473,7 +473,7 @@ namespace BizHawk.Emulation.Common
 				["Mode 1: Set A"] = 'a',
 				["Mode 1: Set B"] = 'b',
 				["Mode 2: Set A"] = 'A',
-				["Mode 2: Set B"] = 'B'
+				["Mode 2: Set B"] = 'B',
 			},
 			[VSystemID.Raw.PCE] = new()
 			{
@@ -484,7 +484,7 @@ namespace BizHawk.Emulation.Common
 				["V"] = '5',
 				["VI"] = '6',
 				["Mode: Set 2-button"] = 'm',
-				["Mode: Set 6-button"] = 'M'
+				["Mode: Set 6-button"] = 'M',
 			},
 			[VSystemID.Raw.PCECD] = new()
 			{
@@ -495,7 +495,7 @@ namespace BizHawk.Emulation.Common
 				["V"] = '5',
 				["VI"] = '6',
 				["Mode: Set 2-button"] = 'm',
-				["Mode: Set 6-button"] = 'M'
+				["Mode: Set 6-button"] = 'M',
 			},
 			[VSystemID.Raw.N3DS] = new()
 			{
@@ -504,14 +504,14 @@ namespace BizHawk.Emulation.Common
 				["ZL"] = 'z',
 				["ZR"] = 'z',
 				["Touch"] = 'T',
-				["Tilt"] = 't'
+				["Tilt"] = 't',
 			},
 			[VSystemID.Raw.NDS] = new()
 			{
 				["LidOpen"] = 'o',
 				["LidClose"] = 'c',
 				["Microphone"] = 'M',
-				["Touch"] = 'T'
+				["Touch"] = 'T',
 			},
 			[VSystemID.Raw.O2] = new()
 			{
@@ -520,7 +520,7 @@ namespace BizHawk.Emulation.Common
 				["YES"] = 'y',
 				["NO"] = 'n',
 				["CLR"] = 'c',
-				["ENT"] = 'e'
+				["ENT"] = 'e',
 			},
 			[VSystemID.Raw.Arcade] = new()
 			{
@@ -656,7 +656,7 @@ namespace BizHawk.Emulation.Common
 				["Mode: Set Analog(○)"] = 'o',
 				["L Gear Shift"] = 'L',
 				["R Gear Shift"] = 'R',
-				["Offscreen Shot"] = 'O'
+				["Offscreen Shot"] = 'O',
 			},
 			[VSystemID.Raw.PSX] = new()
 			{
@@ -820,17 +820,30 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.Doom] = new()
 			{
-				["Automap"] = 'M',
+				["Automap Toggle"] = 'a',
+				["Automap +"] = '+',
+				["Automap -"] = '-',
+				["Automap Full/Zoom"] = 'z',
+				["Automap Follow"] = 'f',
+				["Automap Up"] = 'u',
+				["Automap Down"] = 'd',
+				["Automap Right"] = 'r',
+				["Automap Left"] = 'l',
+				["Automap Grid"] = 'g',
+				["Automap Mark"] = 'm',
+				["Automap Clear Marks"] = 'c',
 				["Backward"] = 'v',
+				["Change Gamma"] = 'G',
 				["End Player"] = 'E',
 				["Fire"] = 'F',
 				["Forward"] = '^',
 				["Jump"] = 'J',
 				["Run"] = 'R',
+				["Strafe"] = 'S',
 				["Strafe Left"] = '<',
 				["Strafe Right"] = '>',
-				["Turn Left"] = 'l',
-				["Turn Right"] = 'r',
+				["Turn Left"] = '{',
+				["Turn Right"] = '}',
 				["Use"] = 'U',
 				["Weapon Select 1"] = '1',
 				["Weapon Select 2"] = '2',
@@ -947,7 +960,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.A78] = new()
 			{
 				["VPos"] = "X",
-				["HPos"] = "Y"
+				["HPos"] = "Y",
 			},
 			[VSystemID.Raw.PSX] = new()
 			{

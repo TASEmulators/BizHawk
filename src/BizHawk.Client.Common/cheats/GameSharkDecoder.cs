@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common.cheats
 				VSystemID.Raw.SAT => Saturn(code),
 				VSystemID.Raw.SMS => Sms(code),
 				VSystemID.Raw.SNES => Snes(code),
-				_ => new InvalidCheatCode("Cheat codes not currently supported on this system")
+				_ => new InvalidCheatCode("Cheat codes not currently supported on this system"),
 			};
 		}
 
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common.cheats
 #if false
 			VSystemID.Raw.SAT => "Work Ram High", // Work RAM High may be incorrect?
 #endif
-			_ => null
+			_ => null,
 
 		};
 

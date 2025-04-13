@@ -20,7 +20,8 @@ namespace BizHawk.Client.Common
 
 	public enum InputEventType
 	{
-		Press, Release
+		Press,
+		Release,
 	}
 
 	public struct LogicalButton

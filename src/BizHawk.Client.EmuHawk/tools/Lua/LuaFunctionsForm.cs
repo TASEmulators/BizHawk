@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				2 => _functionList.OrderBy(x => x.Name, _columnSort.Descending).ToList(),
 				3 => _functionList.OrderBy(x => x.ParameterList, _columnSort.Descending).ToList(),
 				4 => _functionList.OrderBy(x => x.Description, _columnSort.Descending).ToList(),
-				_ => _functionList
+				_ => _functionList,
 			};
 
 			UpdateList();

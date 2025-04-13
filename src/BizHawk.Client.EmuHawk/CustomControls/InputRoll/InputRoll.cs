@@ -567,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 					SelectCell(new Cell
 					{
 						RowIndex = index,
-						Column = _columns[0]
+						Column = _columns[0],
 					});
 					_lastSelectedRow = index;
 				}
@@ -672,7 +672,7 @@ namespace BizHawk.Client.EmuHawk
 			Columns = _columns,
 			HorizontalOrientation = HorizontalOrientation,
 			LagFramesToHide = LagFramesToHide,
-			HideWasLagFrames = HideWasLagFrames
+			HideWasLagFrames = HideWasLagFrames,
 		};
 
 		public class InputRollSettings
@@ -977,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = "RotateMenuItem",
 				Text = "Rotate",
-				ShortcutKeyDisplayString = RotateHotkeyStr
+				ShortcutKeyDisplayString = RotateHotkeyStr,
 			};
 			rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
 			return [ new ToolStripSeparator(), rotate ];
@@ -1087,7 +1087,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCell = new Cell
 			{
 				Column = null,
-				RowIndex = null
+				RowIndex = null,
 			};
 
 			base.OnMouseEnter(e);

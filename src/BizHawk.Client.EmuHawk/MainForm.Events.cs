@@ -183,6 +183,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieEndRecordMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Record;
 			MovieEndStopMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Stop;
 			MovieEndPauseMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Pause;
+			MovieEndPlaySoundMenuItem.Checked = Config.Movies.PlaySoundOnMovieEnd;
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -802,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
-				_ => Enumerable.Empty<string>()
+				_ => [ ],
 			};
 			var oldOutputMethod = Config.SoundOutputMethod;
 			var oldDevice = Config.SoundDevice;
@@ -821,6 +822,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			Sound.StartSound();
 			RewireSound();
+			UpdateStatusBarMuteIndicator();
 		}
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
@@ -1048,8 +1050,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExternalToolMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			ExternalToolMenuItem.DropDownItems.Clear();
-			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripItems.ToArray());
+			ExternalToolMenuItem.ReplaceDropDownItems(items: ExtToolManager.ToolStripItems.ToArray());
 			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
 				ExternalToolMenuItem.DropDownItems.Add(new ToolStripMenuItemEx { Enabled = false, Text = "(none)" });
@@ -1625,5 +1626,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+		private void MovieEndPlaySoundMenuItem_Click(object sender, EventArgs e)
+			=> Config.Movies.PlaySoundOnMovieEnd = !((ToolStripMenuItem) sender).Checked;
 	}
 }

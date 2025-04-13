@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 				DistinctKey.OemQuotes => "Apostrophe",
 				DistinctKey.OemBackslash => "OEM102",
 				DistinctKey.NumPadEnter => "KeypadEnter",
-				_ => k.ToString()
+				_ => k.ToString(),
 			};
 	}
 }

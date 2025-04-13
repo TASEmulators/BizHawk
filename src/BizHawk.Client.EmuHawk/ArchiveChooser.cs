@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new SimpleMatcher
 				{
-					Keys = searchKey.ToLowerInvariant().Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries) // splits on all whitespace chars
+					Keys = searchKey.ToLowerInvariant().Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries), // splits on all whitespace chars
 				};
 			}
 			else

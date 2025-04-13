@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 				
 				ContractResolver = new DefaultContractResolver
 				{
-					DefaultMembersSearchFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic
+					DefaultMembersSearchFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic,
 				},
 			};
 		}

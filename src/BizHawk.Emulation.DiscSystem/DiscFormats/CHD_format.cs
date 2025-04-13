@@ -303,7 +303,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var track = metadata[(4 + i * 24)..];
 				var cdMetadata = new CHDCdMetadata
 				{
-					Track = (uint)i + 1
+					Track = 1U + (uint) i,
 				};
 				if (bigEndian)
 				{
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ret = new LoadResults
 			{
-				ChdPath = path
+				ChdPath = path,
 			};
 			try
 			{
@@ -747,7 +747,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var synth = new SS_Gap
 						{
 							TrackType = ToCueTrackType(cdMetadata.TrackType, cdMetadata.IsCDI),
-							Policy = IN_DiscMountPolicy
+							Policy = IN_DiscMountPolicy,
 						};
 						const byte kADR = 1;
 						var control = cdMetadata.TrackType != LibChd.chd_track_type.CD_TRACK_AUDIO

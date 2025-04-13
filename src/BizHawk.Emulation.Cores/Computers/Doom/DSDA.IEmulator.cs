@@ -7,11 +7,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	public partial class DSDA : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
-
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
-
-		private delegate int ReadPot(IController c, int pot);
-		private delegate byte ReadPort(IController c);
+		public int Frame { get; private set; }
+		public string SystemId => VSystemID.Raw.Doom;
+		public bool DeterministicEmulation => true;
+		private delegate int ReadAxis(IController c, int axis);
+		private delegate int ReadPort(IController c);
 
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
 		{
@@ -23,32 +24,49 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				new PackedPlayerInput()
 			];
 
-			ReadPot[] potReaders =
+			ReadAxis[] axisReaders =
 			[
-				_controllerDeck.ReadPot1,
-				_controllerDeck.ReadPot2,
-				_controllerDeck.ReadPot3,
-				_controllerDeck.ReadPot4,
+				_controllerDeck.ReadAxis1,
+				_controllerDeck.ReadAxis2,
+				_controllerDeck.ReadAxis3,
+				_controllerDeck.ReadAxis4,
 			];
 
-			ReadPort[] portReaders =
+			ReadPort[] buttonsReaders =
 			[
-				_controllerDeck.ReadPort1,
-				_controllerDeck.ReadPort2,
-				_controllerDeck.ReadPort3,
-				_controllerDeck.ReadPort4,
+				_controllerDeck.ReadButtons1,
+				_controllerDeck.ReadButtons2,
+				_controllerDeck.ReadButtons3,
+				_controllerDeck.ReadButtons4,
 			];
+
+			int commonButtons = 0;
 
 			int playersPresent = Convert.ToInt32(_syncSettings.Player1Present)
 				| Convert.ToInt32(_syncSettings.Player2Present) << 1
 				| Convert.ToInt32(_syncSettings.Player3Present) << 2
 				| Convert.ToInt32(_syncSettings.Player4Present) << 3;
+			
+			if (controller.IsPressed("Change Gamma"))        commonButtons |= (1 << 0);
+			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 1);
+			if (controller.IsPressed("Automap +"))           commonButtons |= (1 << 2);
+			if (controller.IsPressed("Automap -"))           commonButtons |= (1 << 3);
+			if (controller.IsPressed("Automap Full/Zoom"))   commonButtons |= (1 << 4);
+			if (controller.IsPressed("Automap Follow"))      commonButtons |= (1 << 5);
+			if (controller.IsPressed("Automap Up"))          commonButtons |= (1 << 6);
+			if (controller.IsPressed("Automap Down"))        commonButtons |= (1 << 7);
+			if (controller.IsPressed("Automap Right"))       commonButtons |= (1 << 8);
+			if (controller.IsPressed("Automap Left"))        commonButtons |= (1 << 9);
+			if (controller.IsPressed("Automap Grid"))        commonButtons |= (1 << 10);
+			if (controller.IsPressed("Automap Mark"))        commonButtons |= (1 << 11);
+			if (controller.IsPressed("Automap Clear Marks")) commonButtons |= (1 << 12);
 
 			for (int i = 0; i < 4; i++)
 			{
 				if ((playersPresent & (1 << i)) is not 0)
 				{
-					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i+1} Run")
+					bool strafe = controller.IsPressed($"P{i + 1} Strafe");
+					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i + 1} Run")
 						|| _syncSettings.AlwaysRun);
 
 					int turnSpeed = 0;
@@ -64,47 +82,67 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// initial axis read
-					players[i].RunSpeed = potReaders[i](controller, 0);
-					players[i].StrafingSpeed = potReaders[i](controller, 1);
-					players[i].TurningSpeed = potReaders[i](controller, 2);
-					players[i].WeaponSelect = potReaders[i](controller, 3);
+					players[i].RunSpeed      = axisReaders[i](controller, (int)AxisType.RunSpeed);
+					players[i].StrafingSpeed = axisReaders[i](controller, (int)AxisType.StrafingSpeed);
+					players[i].TurningSpeed  = axisReaders[i](controller, (int)AxisType.TurningSpeed);
+					players[i].WeaponSelect  = axisReaders[i](controller, (int)AxisType.WeaponSelect);
 
 					// override axis based on movement buttons (turning is reversed upstream)
-					if (controller.IsPressed($"P{i + 1} Forward")) players[i].RunSpeed = _runSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Backward")) players[i].RunSpeed = -_runSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Strafe Right")) players[i].StrafingSpeed = _strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Strafe Left")) players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed = -turnSpeed;
-					if (controller.IsPressed($"P{i + 1} Turn Left")) players[i].TurningSpeed = turnSpeed;
+					if (controller.IsPressed($"P{i + 1} Forward"))      players[i].RunSpeed      =  _runSpeeds   [speedIndex];
+					if (controller.IsPressed($"P{i + 1} Backward"))     players[i].RunSpeed      = -_runSpeeds   [speedIndex];
+					if (controller.IsPressed($"P{i + 1} Strafe Right")) players[i].StrafingSpeed =  _strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{i + 1} Strafe Left"))  players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
+					if (strafe)
+					{
+						// strafe50 needs this speed to be ADDED to whatever we got from directional strafe buttons
+						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].StrafingSpeed += _strafeSpeeds[speedIndex];
+						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].StrafingSpeed -= _strafeSpeeds[speedIndex];
+					}
+					else
+					{
+						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed -= turnSpeed;
+						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].TurningSpeed += turnSpeed;
+					}
 
 					// mouse-driven running
 					// divider matches the core
-					players[i].RunSpeed -= (int)(potReaders[i](controller, 4) * _syncSettings.MouseRunSensitivity / 8.0);
+					players[i].RunSpeed -= (int)(axisReaders[i](controller, (int)AxisType.MouseRunning) * _syncSettings.MouseRunSensitivity / 8.0);
 					players[i].RunSpeed = players[i].RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					// divider recalibrates minimal mouse movement to be 1 (requires global setting)
-					players[i].TurningSpeed -= (int)(potReaders[i](controller, 5) * _syncSettings.MouseTurnSensitivity / 272.0);
+					var mouseTurning = axisReaders[i](controller, (int)AxisType.MouseTurning) * _syncSettings.MouseTurnSensitivity;
+					if (strafe)
+					{
+						players[i].StrafingSpeed += mouseTurning / 5;
+					}
+					else
+					{
+						players[i].TurningSpeed -= mouseTurning;
+					}
+					// ultimately strafe speed is limited to max run speed, NOT max strafe speed
+					players[i].StrafingSpeed = players[i].StrafingSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
+
+					// for shorttics we expose to player and parse from movies only 1 byte, but the core internally works with 2 bytes
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
-						// calc matches the core
-						players[i].TurningSpeed = ((players[i].TurningSpeed << 8) + 128) >> 8;
+						int desiredAngleturn = players[i].TurningSpeed + _turnCarry;
+						players[i].TurningSpeed = (desiredAngleturn + 128) & 0xff00;
+						_turnCarry = desiredAngleturn - players[i].TurningSpeed;
+						players[i].TurningSpeed = ((players[i].TurningSpeed + 128) >> 8) << 8;
 					}
 
 					// bool buttons
-					var actionsBitfield = portReaders[i](controller);
-					players[i].Fire = actionsBitfield & 0b00001;
-					players[i].Action = (actionsBitfield & 0b00010) >> 1;
-					players[i].Automap = (actionsBitfield & 0b00100) >> 2;
+					var actionsBitfield = buttonsReaders[i](controller);
+					players[i].Buttons = actionsBitfield;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 					{
-						players[i].FlyLook = potReaders[i](controller, 6);
-						players[i].ArtifactUse = potReaders[i](controller, 7);
+						players[i].FlyLook = axisReaders[i](controller, (int)AxisType.FlyLook);
+						players[i].ArtifactUse = axisReaders[i](controller, (int)AxisType.UseArtifact);
 						if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
 						{
-							players[i].Jump = (actionsBitfield & 0b01000) >> 3;
+							players[i].Jump      = (actionsBitfield & 0b01000) >> 3;
 							players[i].EndPlayer = (actionsBitfield & 0b10000) >> 4;
 						}
 					}
@@ -117,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			renderInfo.PlayerPointOfView = _settings.DisplayPlayer - 1;
 
 			IsLagFrame = _core.dsda_frame_advance(
+				commonButtons,
 				ref players[0],
 				ref players[1],
 				ref players[2],
@@ -138,12 +177,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			return true;
 		}
-
-		public int Frame { get; private set; }
-
-		public string SystemId => VSystemID.Raw.Doom;
-
-		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{

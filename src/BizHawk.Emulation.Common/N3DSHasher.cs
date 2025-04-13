@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Common
 						0x01 => 0x25,
 						0x0A => 0x18,
 						0x0B => 0x1B,
-						_ => throw new InvalidOperationException($"Invalid crypto method {cryptoMethod:X2}")
+						_ => throw new InvalidOperationException($"Invalid crypto method {cryptoMethod:X2}"),
 					};
 
 					// We only need the program id if we're doing seed crypto

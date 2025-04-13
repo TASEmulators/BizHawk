@@ -93,11 +93,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					};
 
 					var DIPSwitchOptions = MameGetString(MAMELuaCommand.GetDIPSwitchOptions(tag, fieldName));
-					var options = DIPSwitchOptions.Split(new[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+					var options = DIPSwitchOptions.Split('\n');
 					if (options.Length is 0) continue;
 					foreach (var option in options)
 					{
-						var opt = option.Split(new[] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+						var opt = option.Split('~');
 						setting.Options.Add(opt[0], opt[1]);
 					}
 					CurrentDriverSettings.Add(setting);
@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			foreach (var ROM in ROMs)
 			{
-				if (ROM != string.Empty)
+				if (ROM.Length is not 0)
 				{
 					var substrings = ROM.Split('~');
 					var name = substrings[0];
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			foreach (var View in Views)
 			{
-				if (View != string.Empty)
+				if (View.Length is not 0)
 				{
 					var substrings = View.Split('@');
 					setting.Options.Add(substrings[0], substrings[1]);

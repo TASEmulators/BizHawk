@@ -1,14 +1,6 @@
 name: Build Waterbox
 
-on:
-  pull_request:
-    branches: [ "master" ]
-    paths: [ "waterbox/libcxx/**", "waterbox/musl/**" ]
-  push:
-    branches: [ "master" ]
-    paths: [ "waterbox/libcxx/**", "waterbox/musl/**" ]
-  workflow_dispatch:
-  workflow_call:
+on: [workflow_dispatch, workflow_call]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-waterbox
@@ -28,14 +20,15 @@ jobs:
           chmod u+x llvm.sh;
           sudo ./llvm.sh 18;
           clang-18 --version;
-    - name: Set up env variable
-      run: echo "CLANG_VERSION=$(clang-18 -dumpversion)" >> $GITHUB_ENV
+    - name: Set up env variables
+      run: echo "CLANG_VERSION=$(clang-18 -dumpversion)" >> $GITHUB_ENV;
+          echo "MUSL_COMMIT=$(git rev-parse HEAD:waterbox/musl)" >> $GITHUB_ENV;
     - name: Cache waterbox
       id: cache-waterbox
       uses: actions/cache@v4
       with:
         path: waterbox/sysroot
-        key: waterbox-${{ hashFiles('waterbox/libcxx/configure-for-waterbox-phase-*', 'waterbox/libcxx/setup-llvm.sh', 'waterbox/libcxx/do-everything.sh') }}-${{ env.CLANG_VERSION }}
+        key: waterbox-${{ hashFiles('waterbox/libcxx/configure-for-waterbox-phase-*', 'waterbox/libcxx/setup-llvm.sh', 'waterbox/libcxx/do-everything.sh') }}-${{ env.MUSL_COMMIT }}-${{ env.CLANG_VERSION }}
 
     - if: ${{ steps.cache-waterbox.outputs.cache-hit != 'true' }}
       name: Checkout submodule

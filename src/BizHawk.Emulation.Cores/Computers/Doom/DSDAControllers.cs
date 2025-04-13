@@ -12,14 +12,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		Hexen
 	}
 
+	// must match the order of axes added
+	public enum AxisType : int
+	{
+		RunSpeed,
+		StrafingSpeed,
+		TurningSpeed,
+		WeaponSelect,
+		MouseRunning,
+		MouseTurning,
+		FlyLook,
+		UseArtifact
+	}
+
 	public interface IPort
 	{
-		byte Read(IController c);
-
-		int Read_Pot(IController c, int pot);
-
+		int ReadButtons(IController c);
+		int ReadAxis(IController c, int axis);
 		ControllerDefinition Definition { get; }
-
 		int PortNum { get; }
 	}
 
@@ -28,25 +38,29 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public DoomController(int portNum, bool longtics)
 		{
 			PortNum = portNum;
+			_longtics = longtics;
 			Definition = new ControllerDefinition("Doom Input Format")
 			{
-				BoolButtons = BaseDefinition
-				.Select(b => $"P{PortNum} " + b)
-				.ToList()
+				BoolButtons = _baseDefinition
+					.Select(b => $"P{PortNum} " + b)
+					.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
-				.AddAxis($"P{PortNum} Strafing Speed", (-128).RangeTo(127), 0)
+				.AddAxis($"P{PortNum} Strafing Speed", (-50).RangeTo(50), 0)
 				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(127), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(127), 0)
-				.AddAxis($"P{PortNum} Mouse Turning", (longtics ? -32768 : -128).RangeTo(longtics ? 32767 : 127), 0)
+				// max raw mouse delta seems to be 180
+				// higher range results in higher minimal movement value (above 1)
+				// which then has to be divided to get a usable value
+				.AddAxis($"P{PortNum} Mouse Turning", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0)
 				.MakeImmutable();
 		}
 
 		public int PortNum { get; }
-
 		public ControllerDefinition Definition { get; }
+		private bool _longtics;
 
-		private static readonly string[] BaseDefinition =
+		private static readonly string[] _baseDefinition =
 		[
 			"Fire",
 			"Use",
@@ -57,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Strafe Left",
 			"Strafe Right",
 			"Run",
-			"Automap",
+			"Strafe",
 			"Weapon Select 1",
 			"Weapon Select 2",
 			"Weapon Select 3",
@@ -67,23 +81,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Weapon Select 7",
 		];
 
-		public byte Read(IController c)
+		public int ReadButtons(IController c)
 		{
-			byte result = 0;
+			int result = 0;
 
-			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
-			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
-			if (c.IsPressed($"P{PortNum} Automap")) { result |= 0b0100; }
+			if (c.IsPressed($"P{PortNum} Fire")) result |= (1 << 0);
+			if (c.IsPressed($"P{PortNum} Use"))  result |= (1 << 1);
 
 			return result;
 		}
 
-		public int Read_Pot(IController c, int pot)
+		public int ReadAxis(IController c, int axis)
 		{
-			int x = c.AxisValue(Definition.Axes[pot]);
+			int x = c.AxisValue(Definition.Axes[axis]);
 
 			// Handling weapon select keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
+			if (Definition.Axes[axis] == $"P{PortNum} Weapon Select")
 			{
 				if (c.IsPressed($"P{PortNum} Weapon Select 1")) x = 1;
 				if (c.IsPressed($"P{PortNum} Weapon Select 2")) x = 2;
@@ -105,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Heretic Input Format")
 			{
-				BoolButtons = BaseDefinition
+				BoolButtons = _baseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
@@ -120,10 +133,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		public int PortNum { get; }
-
 		public ControllerDefinition Definition { get; }
 
-		private static readonly string[] BaseDefinition =
+		private static readonly string[] _baseDefinition =
 		[
 			"Fire",
 			"Use",
@@ -143,9 +155,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Weapon Select 7",
 		];
 
-		public byte Read(IController c)
+		public int ReadButtons(IController c)
 		{
-			byte result = 0;
+			int result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b0001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b0010; }
@@ -153,12 +165,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			return result;
 		}
 
-		public int Read_Pot(IController c, int pot)
+		public int ReadAxis(IController c, int axis)
 		{
-			int x = c.AxisValue(Definition.Axes[pot]);
+			int x = c.AxisValue(Definition.Axes[axis]);
 
 			// Handling running keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Run Speed")
+			if (Definition.Axes[axis] == $"P{PortNum} Run Speed")
 			{
 				if (c.IsPressed($"P{PortNum} Forward"))
 				{
@@ -172,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			// Handling strafing keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Strafing Speed")
+			if (Definition.Axes[axis] == $"P{PortNum} Strafing Speed")
 			{
 				if (c.IsPressed($"P{PortNum} Strafe Right"))
 				{
@@ -186,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			// Handling turning keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Turning Speed")
+			if (Definition.Axes[axis] == $"P{PortNum} Turning Speed")
 			{
 				if (c.IsPressed($"P{PortNum} Turn Left"))
 				{
@@ -200,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			// Handling weapon select keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
+			if (Definition.Axes[axis] == $"P{PortNum} Weapon Select")
 			{
 				if (c.IsPressed($"P{PortNum} Weapon Select 1")) x = 1;
 				if (c.IsPressed($"P{PortNum} Weapon Select 2")) x = 2;
@@ -222,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			PortNum = portNum;
 			Definition = new ControllerDefinition("Hexen Input Format")
 			{
-				BoolButtons = BaseDefinition
+				BoolButtons = _baseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
@@ -237,10 +249,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		public int PortNum { get; }
-
 		public ControllerDefinition Definition { get; }
 
-		private static readonly string[] BaseDefinition =
+		private static readonly string[] _baseDefinition =
 		[
 			"Fire",
 			"Use",
@@ -260,9 +271,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			"Weapon Select 4"
 		];
 
-		public byte Read(IController c)
+		public int ReadButtons(IController c)
 		{
-			byte result = 0;
+			int result = 0;
 
 			if (c.IsPressed($"P{PortNum} Fire")) { result |= 0b00001; }
 			if (c.IsPressed($"P{PortNum} Use")) { result |= 0b00010; }
@@ -272,12 +283,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			return result;
 		}
 
-		public int Read_Pot(IController c, int pot)
+		public int ReadAxis(IController c, int axis)
 		{
-			int x = c.AxisValue(Definition.Axes[pot]);
+			int x = c.AxisValue(Definition.Axes[axis]);
 
 			// Handling running keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Run Speed")
+			if (Definition.Axes[axis] == $"P{PortNum} Run Speed")
 			{
 				if (c.IsPressed($"P{PortNum} Forward"))
 				{
@@ -291,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			// Handling strafing keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Strafing Speed")
+			if (Definition.Axes[axis] == $"P{PortNum} Strafing Speed")
 			{
 				if (c.IsPressed($"P{PortNum} Strafe Right"))
 				{
@@ -305,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			// Handling turning keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Turning Speed")
+			if (Definition.Axes[axis] == $"P{PortNum} Turning Speed")
 			{
 				if (c.IsPressed($"P{PortNum} Turn Left"))
 				{
@@ -319,7 +330,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			// Handling weapon select keys overriding axes values
-			if (Definition.Axes[pot] == $"P{PortNum} Weapon Select")
+			if (Definition.Axes[axis] == $"P{PortNum} Weapon Select")
 			{
 				if (c.IsPressed($"P{PortNum} Weapon Select 1")) x = 1;
 				if (c.IsPressed($"P{PortNum} Weapon Select 2")) x = 2;

@@ -377,6 +377,30 @@ namespace BizHawk.Common.CollectionExtensions
 			=> source.OrderByDescending(ReturnSelf);
 #endif
 
+		/// <returns><see langword="true"/> iff any removed</returns>
+		public static bool RemoveAll<T>(this ICollection<T> collection, T item)
+		{
+			if (collection is ISet<T>) return collection.Remove(item);
+#if false // probably not worth it, would need to benchmark
+			if (collection is IList<T> list)
+			{
+				// remove from end
+				var i = list.LastIndexOf(item);
+				if (i < 0) return false;
+				do
+				{
+					list.RemoveAt(i);
+					i = list.LastIndexOf(item);
+				}
+				while (i < 0);
+				return true;
+			}
+#endif
+			if (!collection.Remove(item)) return false;
+			while (collection.Remove(item)) {/*noop*/}
+			return true;
+		}
+
 		/// <inheritdoc cref="List{T}.RemoveAll"/>
 		/// <remarks>
 		/// (This is an extension method which reimplements <see cref="List{T}.RemoveAll"/> for other <see cref="ICollection{T}">collections</see>.
@@ -423,6 +447,20 @@ namespace BizHawk.Common.CollectionExtensions
 			return true;
 		}
 
+		/// <summary>
+		/// if <paramref name="shouldBeMember"/> is <see langword="false"/>,
+		/// removes every copy of <paramref name="item"/> from <paramref name="collection"/>;
+		/// else if <paramref name="shouldBeMember"/> is <see langword="true"/>
+		/// and <paramref name="item"/> is not present in <paramref name="collection"/>, appends one copy;
+		/// else no-op (does not limit to one copy)
+		/// </summary>
+		public static void SetMembership<T>(this ICollection<T> collection, T item, bool shouldBeMember)
+		{
+			if (!shouldBeMember) _ = collection.RemoveAll(item);
+			else if (!collection.Contains(item)) collection.Add(item);
+			// else noop
+		}
+
 		public static ReadOnlySpan<T> Slice<T>(this ReadOnlySpan<T> span, Range range)
 		{
 			var (offset, length) = range.GetOffsetAndLength(span.Length);
@@ -446,6 +484,18 @@ namespace BizHawk.Common.CollectionExtensions
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list) where TKey : notnull
 			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
 #endif
+
+		/// <summary>
+		/// if <paramref name="collection"/> contains <paramref name="item"/>, removes every copy;
+		/// otherwise appends one copy
+		/// </summary>
+		/// <returns>new membership state (<see langword="true"/> iff added)</returns>
+		public static bool ToggleMembership<T>(this ICollection<T> collection, T item)
+		{
+			var removed = collection.RemoveAll(item);
+			if (!removed) collection.Add(item);
+			return removed;
+		}
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

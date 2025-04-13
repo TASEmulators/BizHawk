@@ -28,7 +28,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private enum BranchUndo
 		{
-			Load, Update, Text, Remove, None
+			Load,
+			Update,
+			Text,
+			Remove,
+			None,
 		}
 
 		public TAStudio Tastudio { get; set; }
@@ -80,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 				BranchNumberColumnName => (index + 1).ToString(),
 				FrameColumnName => Branches[index].Frame.ToString(),
 				UserTextColumnName => Branches[index].UserText,
-				_ => text
+				_ => text,
 			};
 		}
 
@@ -169,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				ChangeLog = new(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
-				UserText = Movie.Branches.NewBranchText
+				UserText = Movie.Branches.NewBranchText,
 			};
 		}
 
@@ -561,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Text for branch {index + 1}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue = branch.UserText
+				InitialValue = branch.UserText,
 			};
 
 			i.FollowMousePointer();

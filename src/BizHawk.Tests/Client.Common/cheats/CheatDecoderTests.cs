@@ -26,7 +26,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 					null => "null",
 					int i => $"0x{i:X}",
 					string s => $"\"{s}\"",
-					_ => o.ToString()!
+					_ => o.ToString()!,
 				};
 				return data is null ? null : $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
 			}
@@ -69,7 +69,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 				{
 					WatchSize.Byte => valid.Value & 0xFF,
 					WatchSize.Word => valid.Value & 0xFFFF,
-					_ => valid.Value
+					_ => valid.Value,
 				},
 				"wrong value");
 			Assert.AreEqual(compare, valid.Compare, "wrong compare");

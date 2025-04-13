@@ -391,20 +391,15 @@ namespace BizHawk.Emulation.Common
 
 		private static List<string> ToControlNameList(IEnumerable<string> buttonList, int? controllerNum = null)
 		{
-			var buttons = new List<string>();
-			foreach (var button in buttonList)
+			var buttons = buttonList;
+			if (controllerNum is int n)
 			{
-				if (controllerNum != null && button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
-				{
-					var sub = button.Substring(3);
-					buttons.Add(sub);
-				}
-				else if (controllerNum == null)
-				{
-					buttons.Add(button);
-				}
+				var pfx = $"P{n} ";
+				buttons = buttons.Select(buttonName => (ButtonName: buttonName, Tail: buttonName.RemovePrefix(pfx)))
+					.Where(static tuple => !object.ReferenceEquals(tuple.Tail, tuple.ButtonName))
+					.Select(static tuple => tuple.Tail);
 			}
-			return buttons;
+			return buttons.ToList();
 		}
 
 		public static IReadOnlyDictionary<string, object> ToDictionary(this IController controller, int? controllerNum = null)

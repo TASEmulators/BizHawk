@@ -44,7 +44,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 				using MemoryStream ms = new((int) items[0].Size);
 				af.ExtractFile(items[0].ArchiveIndex, ms);
 				ms.Seek(0L, SeekOrigin.Begin);
-				Assert.IsTrue(ms.ReadAllBytes().SequenceEqual(Rom), $"the file extracted from {filename} doesn't match the uncompressed file");
+				CollectionAssert.AreEqual(Rom, ms.ReadAllBytes(), $"the file extracted from {filename} doesn't match the uncompressed file");
 			}
 		}
 	}

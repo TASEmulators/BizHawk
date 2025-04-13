@@ -409,6 +409,8 @@ namespace BizHawk.Client.Common
 			for (int i = _cheatList.Count - 1; i >= 0; i--)
 			{
 				var cheat = _cheatList[i];
+				if (cheat.IsSeparator) continue;
+
 				var newDomain = domains[cheat.Domain.Name];
 				if (newDomain is not null)
 				{
@@ -434,7 +436,7 @@ namespace BizHawk.Client.Common
 				[SizeColumn] = c => (int) c.Size,
 				[EndianColumn] = c => c.BigEndian,
 				[TypeColumn] = c => c.Type,
-				[ComparisonType] = c => c.ComparisonType
+				[ComparisonType] = c => c.ComparisonType,
 			});
 
 		public void Sort(string column, bool reverse) => _cheatList = ColumnSorts.AppliedTo(_cheatList, column, firstIsDesc: reverse);

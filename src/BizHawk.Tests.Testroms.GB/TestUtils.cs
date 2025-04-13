@@ -11,7 +11,13 @@ namespace BizHawk.Tests.Testroms.GB
 {
 	public static class TestUtils
 	{
-		public enum TestSuccessState { ExpectedFailure, Failure, Success, UnexpectedSuccess }
+		public enum TestSuccessState
+		{
+			ExpectedFailure,
+			Failure,
+			Success,
+			UnexpectedSuccess,
+		}
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern uint SetDllDirectory(string lpPathName);

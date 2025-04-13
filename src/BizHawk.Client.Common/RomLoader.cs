@@ -65,7 +65,10 @@ namespace BizHawk.Client.Common
 
 		public enum LoadErrorType
 		{
-			Unknown, MissingFirmware, Xml, DiscError
+			Unknown,
+			MissingFirmware,
+			Xml,
+			DiscError,
 		}
 
 		// helper methods for the settings events
@@ -343,8 +346,8 @@ namespace BizHawk.Client.Common
 						{
 							DiscData = disc,
 							DiscType = new DiscIdentifier(disc).DetectDiscType(),
-							DiscName = Path.GetFileNameWithoutExtension(path)
-						}
+							DiscName = Path.GetFileNameWithoutExtension(path),
+						},
 					},
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
@@ -369,7 +372,7 @@ namespace BizHawk.Client.Common
 				{
 					DiscData = a.d,
 					DiscType = new DiscIdentifier(a.d).DetectDiscType(),
-					DiscName = Path.GetFileNameWithoutExtension(a.p)
+					DiscName = Path.GetFileNameWithoutExtension(a.p),
 				})
 				.ToList();
 			if (discs.Count == 0)
@@ -380,7 +383,7 @@ namespace BizHawk.Client.Common
 			{
 				Comm = nextComm,
 				Game = game,
-				Discs = discs
+				Discs = discs,
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
 		}
@@ -560,9 +563,9 @@ namespace BizHawk.Client.Common
 						RomData = rom.RomData,
 						FileData = rom.FileData,
 						Extension = rom.Extension,
-						RomPath = file.FullPathWithoutMember,
-						Game = game
-					}
+						RomPath = file.CanonicalFullPath,
+						Game = game,
+					},
 				},
 			};
 			nextEmulator = MakeCoreFromCoreInventory(cip, forcedCoreName);
@@ -658,6 +661,11 @@ namespace BizHawk.Client.Common
 		// (in general, this is kind of bad as CHD hard drives might be useful for other future cores?)
 		private static bool IsDiscForXML(string system, string path)
 		{
+			if (HawkFile.PathContainsPipe(path))
+			{
+				return false;
+			}
+
 			var ext = Path.GetExtension(path);
 			if (system is VSystemID.Raw.Arcade && ".chd".EqualsIgnoreCase(ext))
 			{
@@ -683,25 +691,25 @@ namespace BizHawk.Client.Common
 					Comm = nextComm,
 					Game = game,
 					Roms = xmlGame.Assets
-						.Where(kvp => !IsDiscForXML(system, kvp.Key))
-						.Select(kvp => (IRomAsset)new RomAsset
+						.Where(pfd => !IsDiscForXML(system, pfd.Filename))
+						.Select(IRomAsset (pfd) => new RomAsset
 						{
-							RomData = kvp.Value,
-							FileData = kvp.Value, // TODO: Hope no one needed anything special here
-							Extension = Path.GetExtension(kvp.Key),
-							RomPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path.SubstringBefore('|'))!, kvp.Key!)),
-							Game = Database.GetGameInfo(kvp.Value, Path.GetFileName(kvp.Key))
+							RomData = pfd.FileData, // TODO: Do RomGame RomData conversions here
+							FileData = pfd.FileData,
+							Extension = Path.GetExtension(pfd.Filename),
+							RomPath = pfd.Path,
+							Game = Database.GetGameInfo(pfd.FileData, Path.GetFileName(pfd.Filename)),
 						})
 						.ToList(),
-					Discs = xmlGame.AssetFullPaths
-						.Where(p => IsDiscForXML(system, p))
-						.Select(discPath => (p: discPath, d: DiscExtensions.CreateAnyType(discPath, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
+					Discs = xmlGame.Assets
+						.Where(pfd => IsDiscForXML(system, pfd.Path))
+						.Select(pfd => (p: pfd.Path, d: DiscExtensions.CreateAnyType(pfd.Path, str => DoLoadErrorCallback(str, system, LoadErrorType.DiscError))))
 						.Where(a => a.d != null)
-						.Select(a => (IDiscAsset)new DiscAsset
+						.Select(IDiscAsset (a) => new DiscAsset
 						{
 							DiscData = a.d,
 							DiscType = new DiscIdentifier(a.d).DetectDiscType(),
-							DiscName = Path.GetFileNameWithoutExtension(a.p)
+							DiscName = Path.GetFileNameWithoutExtension(a.p),
 						})
 						.ToList(),
 				};
@@ -729,7 +737,7 @@ namespace BizHawk.Client.Common
 				}
 				catch
 				{
-					DoLoadErrorCallback(ex.ToString(), VSystemID.Raw.GBL, LoadErrorType.Xml);
+					DoLoadErrorCallback(ex.ToString(), game?.System ?? VSystemID.Raw.SNES, LoadErrorType.Xml);
 					return false;
 				}
 			}

@@ -263,7 +263,7 @@ namespace BizHawk.Tests.Testroms.GB
 					GBHawk gbHawk => () => gbHawk.cpu.RegPC,
 					Sameboy when testCase.Setup is { UseBIOS: false, Variant: ConsoleVariant.DMG or ConsoleVariant.DMG_B }
 						=> () => (long) fe.CoreAsDebuggable!.GetCpuFlagsAndRegisters()["PC"].Value - 1, // something something pre- vs. post-increment
-					_ => () => (long) fe.CoreAsDebuggable!.GetCpuFlagsAndRegisters()["PC"].Value
+					_ => () => (long) fe.CoreAsDebuggable!.GetCpuFlagsAndRegisters()["PC"].Value,
 				};
 				var domain = fe.CoreAsMemDomains!.SystemBus;
 				var finished = false;

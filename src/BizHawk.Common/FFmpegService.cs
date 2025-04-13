@@ -78,7 +78,7 @@ namespace BizHawk.Common
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
-				RedirectStandardError = true
+				RedirectStandardError = true,
 			};
 
 			Process proc = new Process();
@@ -129,7 +129,7 @@ namespace BizHawk.Common
 			return new RunResults
 			{
 				ExitCode = proc.ExitCode,
-				Text = resultText
+				Text = resultText,
 			};
 		}
 

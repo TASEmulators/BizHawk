@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 				ClientProfile.Longplay => "Longplays",
 				ClientProfile.Tas => "Tool-assisted Speedruns",
 				ClientProfile.N64Tas => "N64 Tool-assisted Speedruns",
-				_ => "Casual Gaming"
+				_ => "Casual Gaming",
 			};
 
 			AutoCheckForUpdates.Checked = _config.UpdateAutoCheckEnabled;
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				"Longplays" => ClientProfile.Longplay,
 				"Tool-assisted Speedruns" => ClientProfile.Tas,
 				"N64 Tool-assisted Speedruns" => ClientProfile.N64Tas,
-				_ => ClientProfile.Casual
+				_ => ClientProfile.Casual,
 			};
 
 			SetCasual();

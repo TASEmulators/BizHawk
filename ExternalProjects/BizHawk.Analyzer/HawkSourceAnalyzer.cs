@@ -155,6 +155,19 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 			initContext.RegisterSyntaxNodeAction(
 				snac =>
 				{
+					void MaybeReportListExprSpacing(SyntaxNode listSyn, string? message)
+					{
+						if (message is null) return;
+						var location = listSyn.GetLocation();
+						TextSpan? slice = message switch
+						{
+							ERR_MSG_LIST_EXPR_END => location.SourceSpan.Slice(start: location.SourceSpan.Length - 1),
+							ERR_MSG_LIST_EXPR_START => location.SourceSpan.Slice(start: 0, length: 1),
+							_ => null,
+						};
+						if (slice is not null) location = Location.Create(location.SourceTree!, slice.Value);
+						DiagListExprSpacing.ReportAt(location, snac, message);
+					}
 					switch (snac.Node)
 					{
 						case AnonymousMethodExpressionSyntax:
@@ -169,21 +182,24 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 							DiagNoDiscardingLocals.ReportAt(snac.Node, snac);
 							break;
 						case CollectionExpressionSyntax ces:
-							var cesError = CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString);
-							if (cesError is not null) DiagListExprSpacing.ReportAt(ces, snac, cesError);
+							MaybeReportListExprSpacing(
+								ces,
+								CheckSpacingInList(ces.Elements, ces.OpenBracketToken, ces.ToString));
 							break;
 						case InterpolatedStringExpressionSyntax ises:
-							if (ises.StringStartToken.Text[0] is '@') DiagInterpStringIsDollarAt.ReportAt(ises, snac);
+							var interpTkn = ises.StringStartToken;
+							if (interpTkn.Text[0] is '@') DiagInterpStringIsDollarAt.ReportAt(interpTkn, snac);
 							break;
 						case ListPatternSyntax lps:
-							var lpsError = CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString);
-							if (lpsError is not null) DiagListExprSpacing.ReportAt(lps, snac, lpsError);
+							MaybeReportListExprSpacing(
+								lps,
+								CheckSpacingInList(lps.Patterns, lps.OpenBracketToken, lps.ToString));
 							break;
 						case QueryExpressionSyntax:
 							DiagNoQueryExpression.ReportAt(snac.Node, snac);
 							break;
 						case RecordDeclarationSyntax rds when rds.ClassOrStructKeyword.ToString() is not "class": // `record struct`s don't use this kind
-							DiagRecordImplicitlyRefType.ReportAt(rds, snac);
+							DiagRecordImplicitlyRefType.ReportAt(rds.Keyword, snac);
 							break;
 						case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
 							var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);

@@ -11,56 +11,54 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			Definition = new("Doom Demo LMP 1.9 Input Format") { };
 
-			if (player1Present) Port1 = ControllerCtors[controllerType](1, longtics);
-			if (player2Present) Port2 = ControllerCtors[controllerType](2, longtics);
-			if (player3Present) Port3 = ControllerCtors[controllerType](3, longtics);
-			if (player4Present) Port4 = ControllerCtors[controllerType](4, longtics);
+			if (player1Present) _port1 = ControllerCtors[controllerType](1, longtics);
+			if (player2Present) _port2 = ControllerCtors[controllerType](2, longtics);
+			if (player3Present) _port3 = ControllerCtors[controllerType](3, longtics);
+			if (player4Present) _port4 = ControllerCtors[controllerType](4, longtics);
 
-			if (player1Present) Definition.BoolButtons.AddRange(Port1.Definition.BoolButtons.ToList());
-			if (player2Present) Definition.BoolButtons.AddRange(Port2.Definition.BoolButtons.ToList());
-			if (player3Present) Definition.BoolButtons.AddRange(Port3.Definition.BoolButtons.ToList());
-			if (player4Present) Definition.BoolButtons.AddRange(Port4.Definition.BoolButtons.ToList());
+			if (player1Present) Definition.BoolButtons.AddRange(_port1.Definition.BoolButtons.ToList());
+			if (player2Present) Definition.BoolButtons.AddRange(_port2.Definition.BoolButtons.ToList());
+			if (player3Present) Definition.BoolButtons.AddRange(_port3.Definition.BoolButtons.ToList());
+			if (player4Present) Definition.BoolButtons.AddRange(_port4.Definition.BoolButtons.ToList());
 
-			if (player1Present) foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
-			if (player2Present) foreach (var kvp in Port2.Definition.Axes) Definition.Axes.Add(kvp);
-			if (player3Present) foreach (var kvp in Port3.Definition.Axes) Definition.Axes.Add(kvp);
-			if (player4Present) foreach (var kvp in Port4.Definition.Axes) Definition.Axes.Add(kvp);
+			if (player1Present) foreach (var kvp in _port1.Definition.Axes) Definition.Axes.Add(kvp);
+			if (player2Present) foreach (var kvp in _port2.Definition.Axes) Definition.Axes.Add(kvp);
+			if (player3Present) foreach (var kvp in _port3.Definition.Axes) Definition.Axes.Add(kvp);
+			if (player4Present) foreach (var kvp in _port4.Definition.Axes) Definition.Axes.Add(kvp);
+
+			Definition.BoolButtons.AddRange([
+				"Change Gamma",
+				"Automap Toggle",
+				"Automap +",
+				"Automap -",
+				"Automap Full/Zoom",
+				"Automap Follow",
+				"Automap Up",
+				"Automap Down",
+				"Automap Right",
+				"Automap Left",
+				"Automap Grid",
+				"Automap Mark",
+				"Automap Clear Marks"
+			]);
 
 			Definition.MakeImmutable();
 		}
 
-		public byte ReadPort1(IController c)
-			=> Port1.Read(c);
-
-		public byte ReadPort2(IController c)
-			=> Port2.Read(c);
-
-		public byte ReadPort3(IController c)
-			=> Port3.Read(c);
-
-		public byte ReadPort4(IController c)
-			=> Port4.Read(c);
-
-		public int ReadPot1(IController c, int pot)
-			=> Port1.Read_Pot(c, pot);
-
-		public int ReadPot2(IController c, int pot)
-			=> Port2.Read_Pot(c, pot);
-
-		public int ReadPot3(IController c, int pot)
-			=> Port3.Read_Pot(c, pot);
-
-		public int ReadPot4(IController c, int pot)
-			=> Port4.Read_Pot(c, pot);
-
-		public ControllerDefinition Definition { get; }
-
-		private readonly IPort Port1;
-		private readonly IPort Port2;
-		private readonly IPort Port3;
-		private readonly IPort Port4;
-
+		private readonly IPort _port1;
+		private readonly IPort _port2;
+		private readonly IPort _port3;
+		private readonly IPort _port4;
 		private static IReadOnlyDictionary<DoomControllerTypes, Func<int, bool, IPort>> _controllerCtors;
+		public ControllerDefinition Definition { get; }
+		public int ReadButtons1(IController c) => _port1.ReadButtons(c);
+		public int ReadButtons2(IController c) => _port2.ReadButtons(c);
+		public int ReadButtons3(IController c) => _port3.ReadButtons(c);
+		public int ReadButtons4(IController c) => _port4.ReadButtons(c);
+		public int ReadAxis1(IController c, int axis) => _port1.ReadAxis(c, axis);
+		public int ReadAxis2(IController c, int axis) => _port2.ReadAxis(c, axis);
+		public int ReadAxis3(IController c, int axis) => _port3.ReadAxis(c, axis);
+		public int ReadAxis4(IController c, int axis) => _port4.ReadAxis(c, axis);
 
 		public static IReadOnlyDictionary<DoomControllerTypes, Func<int, bool, IPort>> ControllerCtors => _controllerCtors
 			??= new Dictionary<DoomControllerTypes, Func<int, bool, IPort>>

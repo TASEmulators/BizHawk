@@ -23,14 +23,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if ((data[7] & 0x0c) == 0x08)
 			{
 				// process as iNES v2
+
+				static int ReadEMFormAreaSize(int msn, int lsb, int nonEMFormBlockSizeKiB)
+				{
+					if (msn is not 0xF) return ((msn << 8) | lsb) * nonEMFormBlockSizeKiB;
+					// else exponent-multiplier form: `2^E * (2*M + 1)` bytes, where M is the least significant 2 bits, and E is the next 6 bits
+					var prgSize = (2 * (lsb & 0xFC) + 1) << (1 + (lsb & 0x03));
+					// convert to KiB, rounding up
+					var frac = prgSize & 0x3FF;
+					prgSize >>= 10;
+					return frac is 0 ? prgSize : prgSize + 1;
+				}
 				CartV2 = new CartInfo
 				{
-					PrgSize = data[4] | data[9] << 8 & 0xf00,
-					ChrSize = data[5] | data[9] << 4 & 0xf00
+					PrgSize = ReadEMFormAreaSize(msn: data[9] & 0x0F, lsb: data[4], nonEMFormBlockSizeKiB: 16),
+					ChrSize = ReadEMFormAreaSize(msn: data[9] >> 4, lsb: data[5], nonEMFormBlockSizeKiB: 8),
 				};
-
-				CartV2.PrgSize *= 16;
-				CartV2.ChrSize *= 8;
 
 				CartV2.WramBattery = (data[6] & 2) != 0; // should this be respected in v2 mode??
 

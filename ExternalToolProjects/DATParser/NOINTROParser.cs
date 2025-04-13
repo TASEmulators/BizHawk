@@ -233,7 +233,7 @@ namespace BizHawk.DATTool
 		{
 			List<string> DS = new List<string>
 			{
-				"alpha", "beta", "preview", "pre-release", "proto"
+				"alpha", "beta", "preview", "pre-release", "proto",
 			};
 			return DS.Exists(s.Contains);
 		}
@@ -242,7 +242,7 @@ namespace BizHawk.DATTool
 		{
 			List<string> CS = new List<string>
 			{
-				"CW", "CW-R", "FW", "GW", "GW-R", "LW", "PD", "SW", "SW-R"
+				"CW", "CW-R", "FW", "GW", "GW-R", "LW", "PD", "SW", "SW-R",
 			};
 			return CS.Exists(s.Contains);
 		}
@@ -251,7 +251,7 @@ namespace BizHawk.DATTool
 		{
 			List<string> LC = new List<string>
 			{
-				"En", "Ja", "Fr", "De", "Es", "It", "Nl", "Pt", "Sv", "No", "Da", "Fi", "Zh", "Ko", "Pl"
+				"En", "Ja", "Fr", "De", "Es", "It", "Nl", "Pt", "Sv", "No", "Da", "Fi", "Zh", "Ko", "Pl",
 			};
 
 			bool b = false;
@@ -278,7 +278,7 @@ namespace BizHawk.DATTool
 			List<string> CC = new List<string>
 			{
 				"World", "Australia", "Brazil", "Canada", "China", "France", "Germany", "Hong Kong", "Italy",
-				"Japan", "Korea", "Netherlands", "Spain", "Sweden", "USA", "Europe", "Asia"
+				"Japan", "Korea", "Netherlands", "Spain", "Sweden", "USA", "Europe", "Asia",
 			};
 
 			bool b = false;

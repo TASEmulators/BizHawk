@@ -138,9 +138,9 @@ namespace BizHawk.Client.Common
 						info.Player2Type,
 						OctoshockDll.ePeripheralType.None,
 						OctoshockDll.ePeripheralType.None,
-						OctoshockDll.ePeripheralType.None
-					}
-				}
+						OctoshockDll.ePeripheralType.None,
+					},
+				},
 			};
 
 			movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
@@ -178,7 +178,7 @@ namespace BizHawk.Client.Common
 				info.Player1Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
 				info.Player2Type,
-				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
+				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
 			};
 			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
 			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
@@ -186,7 +186,7 @@ namespace BizHawk.Client.Common
 			string[] buttons =
 			{
 				"Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
-				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"
+				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square",
 			};
 
 			bool isCdTrayOpen = false;
@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 				info.Player1Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
 				info.Player2Type,
-				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
+				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
 			};
 			SimpleController controllers = new(Octoshock.CreateControllerDefinition(settings));
 			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
@@ -297,7 +297,7 @@ namespace BizHawk.Client.Common
 			string[] buttons =
 			{
 				"Start", "Up", "Right", "Down", "Left",
-				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"
+				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square",
 			};
 
 			bool isCdTrayOpen = false;

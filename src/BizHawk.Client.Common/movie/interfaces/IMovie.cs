@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// The movie has played past the end, but is still loaded in memory
 		/// </summary>
-		Finished
+		Finished,
 	}
 
 	// TODO: message callback / event handler

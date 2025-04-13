@@ -11,7 +11,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 	public enum DiscInterface
 	{
-		BizHawk, MednaDisc, LibMirage
+		BizHawk,
+		MednaDisc,
+		LibMirage,
 	}
 
 	public enum SessionFormat
@@ -19,7 +21,7 @@ namespace BizHawk.Emulation.DiscSystem
 		None = -1,
 		Type00_CDROM_CDDA = 0x00,
 		Type10_CDI = 0x10,
-		Type20_CDXA = 0x20
+		Type20_CDXA = 0x20,
 	}
 
 	/// <summary>

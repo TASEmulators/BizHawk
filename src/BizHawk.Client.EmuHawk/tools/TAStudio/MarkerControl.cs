@@ -169,10 +169,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
 					Message = "Enter a message",
-					InitialValue =
-						Markers.IsMarker(frame) ?
-						Markers.PreviousOrCurrent(frame).Message :
-						""
+					InitialValue = Markers.IsMarker(frame) ? Markers.PreviousOrCurrent(frame).Message : string.Empty,
 				};
 
 				i.FollowMousePointer();
@@ -214,10 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue =
-					Markers.IsMarker(markerFrame)
-					? Markers.PreviousOrCurrent(markerFrame).Message
-					: ""
+				InitialValue = Markers.IsMarker(markerFrame) ? Markers.PreviousOrCurrent(markerFrame).Message : string.Empty,
 			};
 
 			i.FollowMousePointer();

@@ -119,7 +119,7 @@ namespace BizHawk.Bizware.Audio
 				SeekOrigin.Begin => offset,
 				SeekOrigin.Current => _pos + offset,
 				SeekOrigin.End => _len + offset,
-				_ => offset
+				_ => offset,
 			};
 
 			Position = newpos;

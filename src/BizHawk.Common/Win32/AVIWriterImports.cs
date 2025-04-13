@@ -13,7 +13,7 @@ namespace BizHawk.Common
 		public enum OpenFileStyle : uint
 		{
 			OF_WRITE = 0x00000001,
-			OF_CREATE = 0x00001000
+			OF_CREATE = 0x00001000,
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]

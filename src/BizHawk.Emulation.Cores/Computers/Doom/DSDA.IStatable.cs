@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_turnHeld[1] = reader.ReadInt32();
 			_turnHeld[2] = reader.ReadInt32();
 			_turnHeld[3] = reader.ReadInt32();
+			_turnCarry = reader.ReadInt32();
 
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
@@ -33,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			writer.Write(_turnHeld[1]);
 			writer.Write(_turnHeld[2]);
 			writer.Write(_turnHeld[3]);
+			writer.Write(_turnCarry);
 
 			writer.Write(Frame);
 			writer.Write(LagCount);

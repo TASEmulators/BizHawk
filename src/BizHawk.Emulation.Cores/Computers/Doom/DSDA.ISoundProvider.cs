@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	{
 		private readonly short[] _samples = new short[6280];
 		private int _nsamp;
-
 		public bool CanProvideAsync => false;
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -29,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				throw new NotSupportedException("Async mode is not supported.");
 			}
 		}
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 			=> throw new InvalidOperationException("Async mode is not supported.");

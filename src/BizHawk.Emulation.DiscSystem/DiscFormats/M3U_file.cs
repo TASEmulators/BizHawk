@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					Path = line,
 					Runtime = runtime,
-					Title = title
+					Title = title,
 				};
 				Entries.Add(e);
 				runtime = -1;

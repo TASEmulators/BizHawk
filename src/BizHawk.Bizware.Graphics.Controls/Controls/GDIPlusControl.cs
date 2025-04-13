@@ -29,7 +29,7 @@ namespace BizHawk.Bizware.Graphics.Controls
 			return new(graphics, ClientRectangle with
 			{
 				Width = Math.Max(ClientRectangle.Width, 1),
-				Height = Math.Max(ClientRectangle.Height, 1)
+				Height = Math.Max(ClientRectangle.Height, 1),
 			});
 		}
 

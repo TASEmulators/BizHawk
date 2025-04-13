@@ -19,23 +19,23 @@ public sealed class DefineCheckedOpAnalyzerTests
 			public struct GF7 {
 				private static readonly int[] Inverses = [ -1, 1, 4, 5, 2, 3, 6 ];
 				public static GF7 operator checked -(GF7 x) => new(-x._value); // the most useless but here for completeness
-				{|BHI1300:public static GF7 operator /*unchecked*/ -(GF7 x) => new(-x._value % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ -(GF7 x) => new(-x._value % 7);
 				public static GF7 operator checked ++(GF7 x) => new(x._value + 1);
-				{|BHI1300:public static GF7 operator /*unchecked*/ ++(GF7 x) => new((x._value + 1) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ ++(GF7 x) => new((x._value + 1) % 7);
 				public static GF7 operator checked --(GF7 x) => new(x._value - 1);
-				{|BHI1300:public static GF7 operator /*unchecked*/ --(GF7 x) => new((x._value - 1) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ --(GF7 x) => new((x._value - 1) % 7);
 				public static GF7 operator checked +(GF7 x, GF7 y) => new(x._value + y._value);
-				{|BHI1300:public static GF7 operator /*unchecked*/ +(GF7 x, GF7 y) => new((x._value + y._value) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ +(GF7 x, GF7 y) => new((x._value + y._value) % 7);
 				public static GF7 operator checked +(GF7 x, int y) => new(x._value + y);
-				{|BHI1300:public static GF7 operator /*unchecked*/ +(GF7 x, int y) => new((x._value + y) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ +(GF7 x, int y) => new((x._value + y) % 7);
 				public static GF7 operator checked -(GF7 minuend, int subtrahend) => new(minuend._value - subtrahend);
-				{|BHI1300:public static GF7 operator /*unchecked*/ -(GF7 minuend, int subtrahend) => new((minuend._value - subtrahend) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ -(GF7 minuend, int subtrahend) => new((minuend._value - subtrahend) % 7);
 				public static GF7 operator checked *(GF7 x, int y) => new(x._value * y);
-				{|BHI1300:public static GF7 operator /*unchecked*/ *(GF7 x, int y) => new((x._value * y) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ *(GF7 x, int y) => new((x._value * y) % 7);
 				public static GF7 operator checked /(GF7 dividend, GF7 divisor) => new((dividend._value * Inverses[divisor._value]) % 7);
-				{|BHI1300:public static GF7 operator /*unchecked*/ /(GF7 dividend, GF7 divisor) => divisor._value is 0 ? default : new((dividend._value * Inverses[divisor._value]) % 7);|}
+				public static GF7 {|BHI1300:operator|} /*unchecked*/ /(GF7 dividend, GF7 divisor) => divisor._value is 0 ? default : new((dividend._value * Inverses[divisor._value]) % 7);
 				public static explicit operator checked GF7(int n) => new(n);
-				{|BHI1300:public static explicit operator /*unchecked*/ GF7(int n) => new(n % 7);|}
+				public static explicit {|BHI1300:operator|} /*unchecked*/ GF7(int n) => new(n % 7);
 				private byte _value;
 				public byte Value {
 					get => _value;
@@ -55,15 +55,15 @@ public sealed class DefineCheckedOpAnalyzerTests
 			using System;
 			public struct GF7 {
 				private static readonly int[] Inverses = [ -1, 1, 4, 5, 2, 3, 6 ];
-				{|BHI1300:public static GF7 operator -(GF7 x) => new(-x._value % 7);|}
-				{|BHI1300:public static GF7 operator ++(GF7 x) => new((x._value + 1) % 7);|}
-				{|BHI1300:public static GF7 operator --(GF7 x) => new((x._value - 1) % 7);|}
-				{|BHI1300:public static GF7 operator +(GF7 x, GF7 y) => new((x._value + y._value) % 7);|}
-				{|BHI1300:public static GF7 operator +(GF7 x, int y) => new((x._value + y) % 7);|}
-				{|BHI1300:public static GF7 operator -(GF7 minuend, int subtrahend) => new((minuend._value - subtrahend) % 7);|}
-				{|BHI1300:public static GF7 operator *(GF7 x, int y) => new((x._value * y) % 7);|}
-				{|BHI1300:public static GF7 operator /(GF7 dividend, GF7 divisor) => divisor._value is 0 ? default : new((dividend._value * Inverses[divisor._value]) % 7);|}
-				{|BHI1300:public static explicit operator GF7(int n) => new(n % 7);|}
+				public static GF7 {|BHI1300:operator|} -(GF7 x) => new(-x._value % 7);
+				public static GF7 {|BHI1300:operator|} ++(GF7 x) => new((x._value + 1) % 7);
+				public static GF7 {|BHI1300:operator|} --(GF7 x) => new((x._value - 1) % 7);
+				public static GF7 {|BHI1300:operator|} +(GF7 x, GF7 y) => new((x._value + y._value) % 7);
+				public static GF7 {|BHI1300:operator|} +(GF7 x, int y) => new((x._value + y) % 7);
+				public static GF7 {|BHI1300:operator|} -(GF7 minuend, int subtrahend) => new((minuend._value - subtrahend) % 7);
+				public static GF7 {|BHI1300:operator|} *(GF7 x, int y) => new((x._value * y) % 7);
+				public static GF7 {|BHI1300:operator|} /(GF7 dividend, GF7 divisor) => divisor._value is 0 ? default : new((dividend._value * Inverses[divisor._value]) % 7);
+				public static explicit {|BHI1300:operator|} GF7(int n) => new(n % 7);
 				private byte _value;
 				public byte Value {
 					get => _value;
