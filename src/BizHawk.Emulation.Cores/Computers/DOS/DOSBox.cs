@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -41,6 +42,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
+
+		// VGA Refresh rate info
+		private ulong _VGARefreshRateNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS;
+		private ulong _VGARefreshRateDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS;
+
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
 		public override int VirtualWidth => BufferHeight * 4 / 3;
@@ -442,6 +448,21 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		protected override void FrameAdvancePost()
 		{
 			DriveLightOn = _libDOSBox.getDriveActivityFlag();
+
+			// Checking on VGA refresh rate updates
+			var currentVGARefreshRateNumerator = _VGARefreshRateNumerator;
+			var currentVGARefreshRateDenominator = _VGARefreshRateDenominator;
+
+			_VGARefreshRateNumerator = _libDOSBox.getVGARefreshRateNumerator();
+			_VGARefreshRateDenominator = _libDOSBox.getVGARefreshRateDenominator();
+
+			// If it changed, notify now
+			if (currentVGARefreshRateNumerator != _VGARefreshRateNumerator || currentVGARefreshRateDenominator != _VGARefreshRateDenominator)
+			{
+				double newVGARefreshRate = (double) _VGARefreshRateNumerator / _VGARefreshRateDenominator;
+				CoreComm.Notify($"VGA Refresh Rate changed to: {_VGARefreshRateNumerator} / {_VGARefreshRateDenominator} = {newVGARefreshRate} Hz", null);
+				Console.WriteLine($"VGA Refresh Rate changed to: {_VGARefreshRateNumerator} / {_VGARefreshRateDenominator} = {newVGARefreshRate} Hz", null);
+			}
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
