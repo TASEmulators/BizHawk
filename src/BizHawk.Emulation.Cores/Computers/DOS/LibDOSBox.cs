@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public const int SVGA_MAX_WIDTH = 800;
 		public const int SVGA_MAX_HEIGHT = 600;
 
-		// Default FPS: 70.086592427616921
-		public const int VIDEO_NUMERATOR_DOS = 3146888;
-		public const int VIDEO_DENOMINATOR_DOS = 44900;
+		// Default FPS: 70.086303
+		public const int VIDEO_NUMERATOR_DOS = 70086303;
+		public const int VIDEO_DENOMINATOR_DOS = 1000000;
 
 		public const int FASTMEM_AUTO = -1;
 		public const int MAX_FLOPPIES = 4;
@@ -28,22 +28,22 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[StructLayout(LayoutKind.Sequential)]
 		public class CDTrack
 		{
-			public int Offset;
-			public int Start;
-			public int End;
-			public int Mode;
-			public int LoopEnabled;
-			public int LoopOffset;
+			public int offset;
+			public int start;
+			public int end;
+			public int mode;
+			public int loopEnabled;
+			public int loopOffset;
 		}
 
 		public const int CD_MAX_TRACKS = 100;
 		[StructLayout(LayoutKind.Sequential)]
 		public class CDData
 		{
-			public int End;
-			public int Last;
+			public int end;
+			public int last;
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
-			public readonly CDTrack[] Tracks = new CDTrack[CD_MAX_TRACKS];
+			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
 		}
 
 		[UnmanagedFunctionPointer(CC)]
@@ -67,12 +67,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[StructLayout(LayoutKind.Sequential)]
 		public class InitSettings
 		{
-			public int Joystick1Enabled;
-			public int Joystick2Enabled;
-			public ulong HardDiskDriveSize;
-			public int PreserveHardDiskContents;
-			public ulong FpsNumerator;
-			public ulong FpsDenominator;
+			public int joystick1Enabled;
+			public int joystick2Enabled;
+			public ulong hardDiskDriveSize;
+			public int preserveHardDiskContents;
+			public ulong fpsNumerator;
+			public ulong fpsDenominator;
 		}
 
 		// CD Management Logic END
@@ -91,44 +91,46 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				public unsafe fixed byte Buffer[KEY_COUNT];
 			}
-			public DriveActions DriveActions;
-			public JoystickButtons Joystick1;
-			public JoystickButtons Joystick2;
-			public MouseInput Mouse;
+			public DriveActions driveActions;
+			public JoystickButtons joystick1;
+			public JoystickButtons joystick2;
+			public MouseInput mouse;
+			public ulong vgaRefreshRateNumerator;
+			public ulong vgaRefreshRateDenominator;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct DriveActions
 		{
-			public int InsertFloppyDisk;
-			public int InsertCDROM;
+			public int insertFloppyDisk;
+			public int insertCDROM;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct JoystickButtons
 		{
-			public int Up;
-			public int Down;
-			public int Left;
-			public int Right;
-			public int Button1;
-			public int Button2;
+			public int up;
+			public int down;
+			public int left;
+			public int right;
+			public int button1;
+			public int button2;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct MouseInput
 		{
-			public int PosX;
-			public int PosY;
-			public int DeltaX;
-			public int DeltaY;
-			public int LeftButtonPressed;
-			public int MiddleButtonPressed;
-			public int RightButtonPressed;
-			public int LeftButtonReleased;
-			public int MiddleButtonReleased;
-			public int RightButtonReleased;
-			public float Sensitivity;
+			public int posX;
+			public int posY;
+			public int dX; // Delta X
+			public int dY; // Delta Y
+			public int leftButtonPressed;
+			public int middleButtonPressed;
+			public int rightButtonPressed;
+			public int leftButtonReleased;
+			public int middleButtonReleased;
+			public int rightButtonReleased;
+			public float sensitivity;
 		}
 
 		// Follows enumeration in DOSBox-x

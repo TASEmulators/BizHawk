@@ -225,17 +225,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			[DisplayName("Mouse Sensitivity")]
 			[Description("Adjusts the mouse relative speed (mickey) multiplier.")]
-			[DefaultValue(3.0)]
+			[DefaultValue(1.0)]
 			public float MouseSensitivity { get; set; }
 
-			[DisplayName("Mount Writeable Hard Disk Drive")]
-			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be saved and loaded as SaveRAM (can be slow).")]
+			[DisplayName("Writeable Hard Disk Drive")]
+			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be saved and loaded as SaveRAM.")]
 			[DefaultValue(WriteableHardDiskOptions.FAT16_241Mb)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
 
 			[DisplayName("Preserve Hard Disk Contents")]
-			[Description("Determines whether to store the contents of the writeable hard disk as SaveRAM to be reloaded on the next start. Enabling this option may cause the core to take some seconds to store and load the SRAM upon restart, depending on the size of the hard disk. If it is disabled, previous SaveRAM will not be loaded.")]
+			[Description("Determines whether to store the contents of the writeable hard disk as SaveRAM to be reloaded on the next start. Enabling this option may cause the core to take some seconds to store and load the SRAM upon restart.")]
 			[DefaultValue(false)]
 			public bool PreserveHardDiskContents { get; set; }
 
@@ -248,6 +248,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[Description("Denominator for FPS: how many Bizhawk frames to run per second of emulation. Default represents the numerator for the typical video frames per second in DOS (70.086303). We recommend leaving this value unmodified. You can set it lower if you need finer subframe inputs, and; higher, in case your game runs in lower FPS and it feels more natural.")]
 			[DefaultValue(LibDOSBox.VIDEO_DENOMINATOR_DOS)]
 			public ulong FPSDenominator { get; set; }
+
 
 			[DisplayName("CPU Cycles")]
 			[Description("How many CPU cycles to emulate per ms. Default: -1, to keep the one included in the configuration preset.")]
