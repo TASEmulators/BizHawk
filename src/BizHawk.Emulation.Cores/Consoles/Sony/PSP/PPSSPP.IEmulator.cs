@@ -1,5 +1,4 @@
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
@@ -13,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public int Frame { get; set; }
 
-		public string SystemId => VSystemID.Raw.N3DS;
+		public string SystemId => VSystemID.Raw.PSP;
 
 		public bool DeterministicEmulation { get; }
 
@@ -87,15 +86,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		private void OnVideoRefresh()
 		{
 			VideoDirty = true;
-			/*
-			_core.Encore_GetVideoBufferDimensions(_context, out _encoreVideoProvider.BW, out _encoreVideoProvider.BH);
-			_encoreVideoProvider.VideoDirty = true;
-
-			_core.Encore_GetTouchScreenLayout(_context, out var x, out var y, out var width, out var height, out var rotated, out var enabled);
-			TouchScreenRectangle = new(x, y, width, height);
-			TouchScreenRotated = rotated;
-			TouchScreenEnabled = enabled;
-			*/
 		}
 
 		public void ResetCounters()

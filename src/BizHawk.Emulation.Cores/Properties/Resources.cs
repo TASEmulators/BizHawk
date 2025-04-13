@@ -33,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> PPSSPP_COMPATVR_INI = new(() => ReadEmbeddedByteArray("ppsspp_compatvr.ini"));
 		internal static readonly Lazy<byte[]> PPSSPP_PPGE_ATLAS_ZIM = new(() => ReadEmbeddedByteArray("ppsspp_ppge_atlas.zim"));
 		internal static readonly Lazy<byte[]> PPSSPP_PPGE_ATLAS_METADATA = new(() => ReadEmbeddedByteArray("ppsspp_ppge_atlas.meta"));
+		internal static readonly Lazy<byte[]> PPSSPP_FONT_ATLAS_ZIM = new(() => ReadEmbeddedByteArray("ppsspp_font_atlas.zim"));
+		internal static readonly Lazy<byte[]> PPSSPP_FONT_ATLAS_METADATA = new(() => ReadEmbeddedByteArray("ppsspp_font_atlas.meta"));
 		internal static readonly Lazy<byte[]> PPGE_FONT_ROBOTO_CONDENSED = new(() => ReadEmbeddedByteArray("ppsspp_Roboto-Condensed.ttf"));
 		
 	}

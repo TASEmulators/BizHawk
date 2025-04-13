@@ -58,7 +58,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 			// Setting CD callbacks
 			_libPPSSPP.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
-
 			//// Pre-loading emulator resources
 
 			// Getting compat.ini -- required to set game-specific compatibility flags
@@ -73,12 +72,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			var compatvrIniData = new MemoryStream(Resources.PPSSPP_COMPATVR_INI.Value).ToArray();
 			if (!_libPPSSPP.loadResource(resourceName, compatvrIniData, compatvrIniData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
-			// Getting atlas font -- required to show console system text
+			// Getting UI atlas font -- required to show console system text
+			resourceName = "font_atlas.zim";
+			var atlasZimData = new MemoryStream(Resources.PPSSPP_FONT_ATLAS_ZIM.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, atlasZimData, atlasZimData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+
+			// Getting UI atlas font metadata -- required to show console system text
+			resourceName = "font_atlas.meta";
+			var atlasMetadataData = new MemoryStream(Resources.PPSSPP_FONT_ATLAS_METADATA.Value).ToArray();
+			if (!_libPPSSPP.loadResource(resourceName, atlasMetadataData, atlasMetadataData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
+
+			// Getting ppge atlas font -- required to show console system text
 			resourceName = "ppge_atlas.zim";
 			var ppgeAtlasZimData = new MemoryStream(Resources.PPSSPP_PPGE_ATLAS_ZIM.Value).ToArray();
 			if (!_libPPSSPP.loadResource(resourceName, ppgeAtlasZimData, ppgeAtlasZimData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
-			// Getting atlas font metadata -- required to show console system text
+			// Getting ppge atlas font metadata -- required to show console system text
 			resourceName = "ppge_atlas.meta";
 			var ppgeAtlasMetadataData = new MemoryStream(Resources.PPSSPP_PPGE_ATLAS_METADATA.Value).ToArray();
 			if (!_libPPSSPP.loadResource(resourceName, ppgeAtlasMetadataData, ppgeAtlasMetadataData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
@@ -88,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			var PPGeFontData = new MemoryStream(Resources.PPGE_FONT_ROBOTO_CONDENSED.Value).ToArray();
 			if (!_libPPSSPP.loadResource(resourceName, PPGeFontData, PPGeFontData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
+			Console.WriteLine($"BK INIT CORE E\n");
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;
 			Console.WriteLine($"Launching Core with Game: '{cdName}'");

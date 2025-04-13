@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using BizHawk.BizInvoke;
-using static BizHawk.Emulation.Cores.Computers.Doom.CInterface;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
