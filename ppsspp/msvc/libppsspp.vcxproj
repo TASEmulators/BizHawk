@@ -179,6 +179,7 @@
     <ClCompile Include="..\ppsspp\Core\FileLoaders\LocalFileLoader.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileLoaders\RamCachingFileLoader.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileLoaders\RetryingFileLoader.cpp" />
+	<ClCompile Include="..\ppsspp\Core\FileLoaders\ZipFileLoader.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileSystems\BlobFileSystem.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileSystems\BlockDevices.cpp" />
     <ClCompile Include="..\ppsspp\Core\FileSystems\DirectoryFileSystem.cpp" />

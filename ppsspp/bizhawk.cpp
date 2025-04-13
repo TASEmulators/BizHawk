@@ -64,12 +64,12 @@ extern "C"
 
 void RETRO_CALLCONV retro_video_refresh_callback(const void* data, unsigned width, unsigned height, size_t pitch)
 {
-	printf("Video %p, w: %u, h: %u, p: %lu\n", data, width, height, pitch);
-	size_t checksum = 0;
-	for (size_t i = 0; i < height; i++)
-	 for (size_t j = 0; i < width; i++)
-	  checksum += ((uint32_t*)data)[i * width + j];
-	printf("Video Checksum: 0x%lX\n", checksum);
+	//printf("Video %p, w: %u, h: %u, p: %lu\n", data, width, height, pitch);
+	//size_t checksum = 0;
+	//for (size_t i = 0; i < height; i++)
+	// for (size_t j = 0; i < width; i++)
+	//  checksum += ((uint32_t*)data)[i * width + j];
+	//printf("Video Checksum: 0x%lX\n", checksum);
 
   _videoBuffer = (uint32_t*)data;
   _videoWidth = width;
@@ -284,17 +284,11 @@ EXPORT bool Init()
 	retro_set_input_state(retro_input_state_callback);
 
 	// Normal way to initialize
-	printf("InitA\n");
 	retro_init();
-	printf("InitB\n");
 	struct retro_game_info game;
-	printf("InitC\n");
 	game.path = _cdImageFilePath.c_str();
-	printf("InitD\n");
 	auto loadResult = retro_load_game(&game);
-	printf("InitE\n");
 	if (loadResult == false) { fprintf(stderr, "Could not load game"); return false; }
-	printf("InitF\n");
 
 	// Advancing until gpu is initialized -- this is necessary for proper savestates
 	while (!gpu) retro_run();
@@ -320,22 +314,22 @@ EXPORT void FrameAdvance(MyFrameInfo f)
   // Setting input data
   _inputData = _f.gamePad;
 
-  printf("up: %d\n", _inputData.up);
-  printf("down: %d\n", _inputData.down);
-  printf("left: %d\n", _inputData.left);
-  printf("right: %d\n", _inputData.right);
-  printf("ltrigger: %d\n", _inputData.ltrigger);
-  printf("rtrigger: %d\n", _inputData.rtrigger);
-  printf("select: %d\n", _inputData.select);
-  printf("start: %d\n", _inputData.start);
-  printf("triangle: %d\n", _inputData.triangle);
-  printf("square: %d\n", _inputData.square);
-  printf("cross: %d\n", _inputData.cross);
-  printf("circle: %d\n", _inputData.circle);
-  printf("leftAnalogX: %d\n", _inputData.leftAnalogX);
-  printf("rightAnalogX: %d\n", _inputData.rightAnalogX);
-  printf("leftAnalogY: %d\n", _inputData.leftAnalogY);
-  printf("rightAnalogY: %d\n", _inputData.rightAnalogY);
+  //printf("up: %d\n", _inputData.up);
+  //printf("down: %d\n", _inputData.down);
+  //printf("left: %d\n", _inputData.left);
+  //printf("right: %d\n", _inputData.right);
+  //printf("ltrigger: %d\n", _inputData.ltrigger);
+  //printf("rtrigger: %d\n", _inputData.rtrigger);
+  //printf("select: %d\n", _inputData.select);
+  //printf("start: %d\n", _inputData.start);
+  //printf("triangle: %d\n", _inputData.triangle);
+  //printf("square: %d\n", _inputData.square);
+  //printf("cross: %d\n", _inputData.cross);
+  //printf("circle: %d\n", _inputData.circle);
+  //printf("leftAnalogX: %d\n", _inputData.leftAnalogX);
+  //printf("rightAnalogX: %d\n", _inputData.rightAnalogX);
+  //printf("leftAnalogY: %d\n", _inputData.leftAnalogY);
+  //printf("rightAnalogY: %d\n", _inputData.rightAnalogY);
 
   // Checking for changes in NVRAM
   _nvramChanged = false;
@@ -344,7 +338,6 @@ EXPORT void FrameAdvance(MyFrameInfo f)
   _readInputs = 0;
 
   // Jumping into the emu driver coroutine to run a single frame
-  printf("Advancing Frame...\n"); fflush(stdout);
   retro_run();
 }
 
