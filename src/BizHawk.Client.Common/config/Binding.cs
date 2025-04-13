@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 			Bind("General", "Toggle Messages");
 			Bind("General", "Toggle Display Nothing");
 			Bind("General", "Accept Background Input");
-			Bind("General", "Capture Mouse");
+			Bind("General", "Capture Mouse", "WMouse M");
 
 			Bind("Save States", "Save State 1", "Shift+F1");
 			Bind("Save States", "Save State 2", "Shift+F2");
