@@ -37,6 +37,8 @@ std::string _compatibilityVRFileData = "";
 std::string _ppgeFontFileData = "";
 std::string _ppgeAtlasFontZimFileData = "";
 std::string _ppgeAtlasFontMetadataFileData = "";
+std::string _atlasFontZimFileData = "";
+std::string _atlasFontMetadataFileData = "";
 
 // Current Frame information
 MyFrameInfo _f;
@@ -234,6 +236,13 @@ EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resource
 		return true;
 	}
 
+  if (name == "PPGeFont.ttf")
+	{
+		printf("Loading resource: %s\n", name.c_str());
+		_ppgeFontFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+
 	if (name == "ppge_atlas.zim")
 	{
 		printf("Loading resource: %s\n", name.c_str());
@@ -248,10 +257,17 @@ EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resource
 		return true;
 	}
 
-  if (name == "PPGeFont.ttf")
+	if (name == "font_atlas.zim")
 	{
 		printf("Loading resource: %s\n", name.c_str());
-		_ppgeFontFileData = std::string((const char*)buffer, resourceLen);
+		_atlasFontZimFileData = std::string((const char*)buffer, resourceLen);
+		return true;
+	}
+
+	if (name == "font_atlas.meta")
+	{
+		printf("Loading resource: %s\n", name.c_str());
+		_atlasFontMetadataFileData = std::string((const char*)buffer, resourceLen);
 		return true;
 	}
 

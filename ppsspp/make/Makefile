@@ -38,6 +38,7 @@ CCFLAGS := 	-I. \
 	-DFT_CONFIG_OPTIONS_H="<ftoption.h>" \
 	-DFT_CONFIG_CONFIG_H="<ftconfig.h>" \
 	-D__INLINE__=inline \
+	-Iprebuilt \
   	-I../ppsspp/ext/glslang \
   	-I../ppsspp/ext/glslang-build \
   	-I../ppsspp \
@@ -69,8 +70,8 @@ SRCS =  ../bizhawk.cpp \
 	../ppsspp/Common/ArmCPUDetect.cpp \
 	../ppsspp/Common/ArmEmitter.cpp \
 	../ppsspp/Common/Buffer.cpp \
-	../ppsspp/Common/Crypto/md5.cpp \
-	../ppsspp/Common/Crypto/sha1.cpp \
+	../ppsspp/Common/Crypto/_md5.cpp \
+	../ppsspp/Common/Crypto/_sha1.cpp \
 	../ppsspp/Common/Crypto/sha256.cpp \
 	../ppsspp/Common/Data/Color/RGBAUtil.cpp \
 	../ppsspp/Common/Data/Convert/ColorConv.cpp \
@@ -85,7 +86,7 @@ SRCS =  ../bizhawk.cpp \
 	../ppsspp/Common/Data/Format/RIFF.cpp \
 	../ppsspp/Common/Data/Format/ZIMLoad.cpp \
 	../ppsspp/Common/Data/Format/ZIMSave.cpp \
-	../ppsspp/Common/Data/Hash/Hash.cpp \
+	../ppsspp/Common/Data/Hash/_Hash.cpp \
 	../ppsspp/Common/Data/Text/I18n.cpp \
 	../ppsspp/Common/Data/Text/Parsers.cpp \
 	../ppsspp/Common/Data/Text/WrapText.cpp \
@@ -138,7 +139,7 @@ SRCS =  ../bizhawk.cpp \
 	../ppsspp/Common/Net/NetBuffer.cpp \
 	../ppsspp/Common/Net/Resolve.cpp \
 	../ppsspp/Common/Net/Sinks.cpp \
-	../ppsspp/Common/Net/URL.cpp \
+	../ppsspp/Common/Net/_URL.cpp \
 	../ppsspp/Common/Net/WebsocketServer.cpp \
 	../ppsspp/Common/OSVersion.cpp \
 	../ppsspp/Common/Profiler/Profiler.cpp \
@@ -485,7 +486,7 @@ SRCS =  ../bizhawk.cpp \
 	../ppsspp/ext/udis86/syn.c \
 	../ppsspp/ext/udis86/udis86.c \
 	../ppsspp/ext/xbrz/xbrz.cpp \
-	../ppsspp/ext/xxhash.c \
+	../ppsspp/ext/_xxhash.c \
 	../ppsspp/GPU/Common/DepalettizeShaderCommon.cpp \
 	../ppsspp/GPU/Common/DepthBufferCommon.cpp \
 	../ppsspp/GPU/Common/DepthRaster.cpp \
@@ -837,7 +838,7 @@ else
 	TARGET = libppsspp.dll
 endif
 
-LDFLAGS = -shared $(CXXFLAGS)
+LDFLAGS = -shared -s $(CXXFLAGS)
 
 DEST = ../../Assets/dll
 DESTCOPY = ../../output/dll
@@ -862,6 +863,7 @@ clean:
 	$(RM) -f $(OBJS)
 	$(RM) -f $(TARGET)
 	
+CP = cp
 install:
 	$(CP) $(TARGET) $(DEST)
 ifneq ("$(wildcard $(DESTCOPY))", "")
