@@ -30,9 +30,9 @@ uint32_t ticksElapsed;
 uint32_t _GetTicks() { return ticksElapsed; }
 void _Delay(uint32_t ticks) { ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
 
-// VGA refresh rate information
-uint64_t _vgaRefreshRateNumerator;
-uint64_t _vgaRefreshRateDenominator;
+// Dosbox internal refresh rate information
+int _refreshRateNumerator = 0;
+int _refreshRateDenominator = 0;
 
 // Memory file directory
 jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
@@ -122,16 +122,6 @@ ECL_EXPORT bool Init(InitSettings* settings)
 	setenv("SDL_VIDEODRIVER", "dummy", 1);
 	setenv("SDL_AUDIODRIVER", "dummy", 1);
 
-	// Setting timer
-	double fps = (double)settings->fpsNumerator / (double)settings->fpsDenominator;
-	ticksPerFrame = 1000.0 / fps;
-	ticksTarget = 0.0;
-	ticksElapsed = 0;
-
-	// Setting VGA refresh rate initial value, just in case
-	_vgaRefreshRateNumerator = settings->fpsNumerator;
-    _vgaRefreshRateDenominator = settings->fpsDenominator;
-
 	printf("Starting DOSBox-x Coroutine...\n");
 	_driverCoroutine = co_active();
 	constexpr size_t stackSize = 4 * 1024 * 1024;
@@ -154,6 +144,10 @@ ECL_EXPORT bool Init(InitSettings* settings)
 
  	// Initializing mouse
 	user_cursor_locked = true;
+
+	// Setting initial timing values
+	ticksTarget = 0.0;
+	ticksElapsed = 0;
 
 	return true;
 }
@@ -286,6 +280,11 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
  	// Clearing audio sample buffer
 	_audioSamples.clear();
 
+	// Calculating fps 
+	double fps = (double)f->framerateNumerator / (double)f->framerateDenominator;
+	ticksPerFrame = 1000.0 / fps;
+    //printf("Running Framerate: %d / %d = %f\n", f->framerateNumerator, f->framerateDenominator, fps);
+
  	// Increasing ticks target
 	ticksTarget += ticksPerFrame;
 	
@@ -312,8 +311,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->base.Samples  = _audioSamples.size() / 2;
 }
 
-ECL_EXPORT uint64_t getVGARefreshRateNumerator() { return _vgaRefreshRateNumerator; }
-ECL_EXPORT uint64_t getVGARefreshRateDenominator() { return _vgaRefreshRateDenominator; }
+ECL_EXPORT uint64_t getRefreshRateNumerator() { return _refreshRateNumerator; }
+ECL_EXPORT uint64_t getRefreshRateDenominator() { return _refreshRateDenominator; }
 
 #define DOS_CONVENTIONAL_MEMORY_SIZE (640 * 1024)
 #define DOS_UPPER_MEMORY_SIZE (384 * 1024)
