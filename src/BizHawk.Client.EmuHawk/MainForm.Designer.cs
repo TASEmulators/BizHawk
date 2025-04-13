@@ -236,7 +236,6 @@ namespace BizHawk.Client.EmuHawk
 			this.BarcodeReaderMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TI83SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.KeypadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.LoadTIFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator13 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.paletteToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.A7800SubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -1578,7 +1577,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TI83SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.KeypadMenuItem,
-            this.LoadTIFileMenuItem,
             this.toolStripSeparator13,
             this.paletteToolStripMenuItem});
 			this.TI83SubMenu.Text = "TI83";
@@ -1587,11 +1585,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.KeypadMenuItem.Text = "Keypad";
 			this.KeypadMenuItem.Click += new System.EventHandler(this.Ti83KeypadMenuItem_Click);
-			// 
-			// LoadTIFileMenuItem
-			// 
-			this.LoadTIFileMenuItem.Text = "Load TI-83 File...";
-			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.Ti83LoadTIFileMenuItem_Click);
 			// 
 			// paletteToolStripMenuItem
 			// 
@@ -2659,7 +2652,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ConfigContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RewindOptionsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FirmwareMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx LoadTIFileMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearSRAMContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx ShowMenuContextMenuSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StopAVContextMenuItem;

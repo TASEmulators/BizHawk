@@ -590,7 +590,6 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case ConsoleID.TI83:
 						TryAddDomain("RAM"); // Emu83
-						TryAddDomain("Main RAM"); // TI83Hawk
 						break;
 					case ConsoleID.DS:
 					case ConsoleID.DSi:
