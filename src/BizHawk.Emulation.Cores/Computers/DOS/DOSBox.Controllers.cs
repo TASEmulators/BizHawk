@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// A class to store the current state of the mouse for delta and button activation calculation
 		private class MouseState
 		{
-			public int posX = 0;
-			public int posY = 0;
-			public bool leftButtonHeld = false;
-			public bool middleButtonHeld = false;
-			public bool rightButtonHeld = false;
+			public int PosX = 0;
+			public int PosY = 0;
+			public bool LeftButtonHeld = false;
+			public bool MiddleButtonHeld = false;
+			public bool RightButtonHeld = false;
 		}
 
-		private MouseState _mouseState = new MouseState();
+		private MouseState _lastMouseState = new MouseState();
 
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
@@ -68,10 +68,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
 
-				// Mouse speed needs to also be adjusted to bk's window size to capture the exact movement and not amplify/shrink it.
-				// To adjust sensitivity, use the corresponding sync setting; these values here is the basis value
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-LibDOSBox.SVGA_MAX_WIDTH / 2).RangeTo(LibDOSBox.SVGA_MAX_WIDTH / 2), 0);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-LibDOSBox.SVGA_MAX_HEIGHT / 2).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT / 2), 0);
+				// Range above 180 results in minimal mouse movement values bigger than 1, and we need 1 as a basis before sensitivity is applied
+				// To adjust sensitivity, use the corresponding sync setting (global sensitivity for raw deltas is a TODO)
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-180).RangeTo(180), 0);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-180).RangeTo(180), 0);
 			}
 
 			// Adding drive management buttons
