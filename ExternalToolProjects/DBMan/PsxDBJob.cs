@@ -115,7 +115,7 @@ namespace BizHawk.DBManTool
 				Records.Add(new RedumpRecord()
 				{
 					name = name,
-					crc = spec_crc_calc.Current.ToString("X8")
+					crc = spec_crc_calc.Current.ToString("X8"),
 				});
 			}
 		}

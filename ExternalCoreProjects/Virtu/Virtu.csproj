@@ -6,7 +6,7 @@
 	<Import Project="$(ProjectDir)../../Common.props" />
 	<PropertyGroup>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<NoWarn>$(NoWarn);MEN018</NoWarn>
+		<NoWarn>$(NoWarn);MEN018;SA1413</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>

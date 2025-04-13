@@ -121,7 +121,7 @@ namespace BizHawk.Common
 			DistinctOS.Windows => new WindowsLLManager(),
 			DistinctOS.BSD => new PosixLLManager(),
 			DistinctOS.Unknown => throw new NotSupportedException("Cannot link libraries with Unknown OS"),
-			_ => throw new InvalidOperationException()
+			_ => throw new InvalidOperationException(),
 		});
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
@@ -274,8 +274,8 @@ namespace BizHawk.Common
 					RedirectStandardError = checkStderr,
 					RedirectStandardInput = true,
 					RedirectStandardOutput = checkStdout,
-					UseShellExecute = false
-				}
+					UseShellExecute = false,
+				},
 			};
 
 		/// <param name="cmd">POSIX <c>$0</c></param>

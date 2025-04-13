@@ -138,14 +138,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(0)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
-
-			[JsonIgnore]
-			[DisplayName("Player Point of View")]
-			[Description("Which of the players' point of view to use during rendering")]
-			[Range(1, 4)]
-			[DefaultValue(1)]
-			[TypeConverter(typeof(ConstrainedIntConverter))]
-			public int DisplayPlayer { get; set; }
+			
+			[DisplayName("Show Messages")]
+			[Description("Displays messages about items you pick up.")]
+			[DefaultValue(true)]
+			public bool ShowMessages { get; set; }
+			
+			[DisplayName("Report Revealed Secrets")]
+			[Description("Shows an on-screen notification when revealing a secret.")]
+			[DefaultValue(false)]
+			public bool ReportSecrets { get; set; }
 			
 			[DisplayName("HUD Mode")]
 			[Description("Sets heads-up display mode.")]
@@ -156,6 +158,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
 			[DefaultValue(false)]
 			public bool DsdaExHud { get; set; }
+			
+			[DisplayName("Display Commands")]
+			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
+			[DefaultValue(false)]
+			public bool DisplayCommands { get; set; }
 			
 			[DisplayName("Automap Totals")]
 			[Description("Shows counts for kills, items, and secrets on automap.")]
@@ -171,6 +178,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Shows in-level coordinates on automap.")]
 			[DefaultValue(true)]
 			public bool MapCoordinates { get; set; }
+
+			[JsonIgnore]
+			[DisplayName("Player Point of View")]
+			[Description("Which of the players' point of view to use during rendering")]
+			[Range(1, 4)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int DisplayPlayer { get; set; }
 
 			public DoomSettings()
 				=> SettingsUtil.SetDefaultValues(this);

@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			var ret = new TreeNode
 			{
 				Text = ci.CoreName + (ci.Released ? "" : " (UNRELEASED)"),
-				ForeColor = ci.Released ? Color.Black : Color.DarkGray
+				ForeColor = ci.Released ? Color.Black : Color.DarkGray,
 			};
 
 			foreach (var service in ci.Services.Values)
@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 					ForeColor = service.Complete ? Color.Black : Color.Red,
 					ImageKey = img,
 					SelectedImageKey = img,
-					StateImageKey = img
+					StateImageKey = img,
 				};
 
 				foreach (var function in service.Functions)
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 						ForeColor = function.Complete ? Color.Black : Color.Red,
 						ImageKey = img,
 						SelectedImageKey = img,
-						StateImageKey = img
+						StateImageKey = img,
 					});
 				}
 				ret.Nodes.Add(serviceNode);
@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 					ForeColor = Color.Red,
 					ImageKey = img,
 					SelectedImageKey = img,
-					StateImageKey = img
+					StateImageKey = img,
 				};
 				ret.Nodes.Add(serviceNode);
 			}
@@ -227,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 						ForeColor = core.CoreAttr.Released ? Color.Black : Color.DarkGray,
 						ImageKey = img,
 						SelectedImageKey = img,
-						StateImageKey = img
+						StateImageKey = img,
 					};
 					CoreTree.Nodes.Add(coreNode);
 				}

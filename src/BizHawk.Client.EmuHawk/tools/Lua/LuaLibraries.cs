@@ -376,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaStatus.OK => (WaitForFrame: false, Terminated: true),
 					LuaStatus.Yield => (WaitForFrame: FrameAdvanceRequested, Terminated: false),
-					_ => throw new InvalidOperationException($"{nameof(_currThread.Resume)}() returned {execResult}?")
+					_ => throw new InvalidOperationException($"{nameof(_currThread.Resume)}() returned {execResult}?"),
 				};
 
 				FrameAdvanceRequested = false;

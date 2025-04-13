@@ -36,49 +36,49 @@ public sealed class LINQOnStringsAnalyzerTests
 				private static bool ZZ(string str)
 					=> str.All(DummyPredicate);
 				private static bool AA(string str)
-					=> {|BHI3102:str.Any()|};
+					=> str{|BHI3102:.Any()|};
 				private static IEnumerable<char> AB(string str)
-					=> {|BHI3102:str.Append('.')|};
+					=> str{|BHI3102:.Append('.')|};
 				private static IEnumerable<char> AC(string str)
-					=> {|BHI3102:str.Concat("-_-")|};
+					=> str{|BHI3102:.Concat("-_-")|};
 				private static IEnumerable<char> AD(string str)
-					=> {|BHI3102:str.Concat(new[] { '-', '_', '-' })|};
+					=> str{|BHI3102:.Concat(new[] { '-', '_', '-' })|};
 				private static bool AE(string str)
-					=> {|BHI3102:Enumerable.Contains(str, '.')|};
+					=> Enumerable{|BHI3102:.Contains(str, '.')|};
 				private static int AF(string str)
-					=> {|BHI3102:str.Count()|};
+					=> str{|BHI3102:.Count()|};
 				private static IEnumerable<char> AG(string str)
-					=> {|BHI3102:str.DefaultIfEmpty()|};
+					=> str{|BHI3102:.DefaultIfEmpty()|};
 				private static IEnumerable<char> AH(string str)
-					=> {|BHI3102:str.DefaultIfEmpty('.')|};
+					=> str{|BHI3102:.DefaultIfEmpty('.')|};
 				private static char AI(string str)
-					=> {|BHI3102:str.ElementAt(2)|};
+					=> str{|BHI3102:.ElementAt(2)|};
 				private static char AJ(string str)
-					=> {|BHI3102:str.ElementAtOrDefault(2)|};
+					=> str{|BHI3102:.ElementAtOrDefault(2)|};
 				private static char AK(string str)
-					=> {|BHI3102:str.First()|};
+					=> str{|BHI3102:.First()|};
 				private static char AL(string str)
-					=> {|BHI3102:str.FirstOrDefault()|};
+					=> str{|BHI3102:.FirstOrDefault()|};
 				private static char AM(string str)
-					=> {|BHI3102:str.Last()|};
+					=> str{|BHI3102:.Last()|};
 				private static char AN(string str)
-					=> {|BHI3102:str.LastOrDefault()|};
+					=> str{|BHI3102:.LastOrDefault()|};
 				private static long AO(string str)
-					=> {|BHI3102:str.LongCount()|};
+					=> str{|BHI3102:.LongCount()|};
 				private static IEnumerable<char> AP(string str)
-					=> {|BHI3102:str.Prepend('.')|};
+					=> str{|BHI3102:.Prepend('.')|};
 				private static IEnumerable<char> AQ(string str)
-					=> {|BHI3102:str.Reverse()|};
+					=> str{|BHI3102:.Reverse()|};
 				private static char AR(string str)
-					=> {|BHI3102:str.Single()|};
+					=> str{|BHI3102:.Single()|};
 				private static char AS(string str)
-					=> {|BHI3102:str.SingleOrDefault()|};
+					=> str{|BHI3102:.SingleOrDefault()|};
 				private static IEnumerable<char> AT(string str)
-					=> {|BHI3102:str.Skip(2)|};
+					=> str{|BHI3102:.Skip(2)|};
 				private static IEnumerable<char> AU(string str)
-					=> {|BHI3102:str.Take(2)|};
+					=> str{|BHI3102:.Take(2)|};
 				private static char[] AV(string str)
-					=> {|BHI3102:str.ToArray()|};
+					=> str{|BHI3102:.ToArray()|};
 			}
 			namespace BizHawk.Common.StringExtensions {
 				public static class StringExtensions {} // Analyzer does more checks if this exists

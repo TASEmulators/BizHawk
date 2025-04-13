@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+
+using BizHawk.Common.CollectionExtensions;
+
 using NymaTypes;
 using static BizHawk.Emulation.Cores.Waterbox.NymaCore;
 using static BizHawk.Emulation.Cores.Waterbox.NymaCore.NymaSettingsInfo;
@@ -418,12 +421,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		public override void SetValue(object component, object value)
-		{
-			if ((bool)value)
-				((NymaSettings)component).DisabledLayers.Remove(LayerName);
-			else
-				((NymaSettings)component).DisabledLayers.Add(LayerName);
-		}
+			=> ((NymaSettings) component).DisabledLayers.SetMembership(LayerName, shouldBeMember: !((bool) value));
 
 		public override bool ShouldSerializeValue(object component)
 		{

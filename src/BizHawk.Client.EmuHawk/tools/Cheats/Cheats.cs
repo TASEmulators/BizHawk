@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 							Cheat.CompareType.LessThan => "<",
 							Cheat.CompareType.LessThanOrEqual => "<=",
 							Cheat.CompareType.NotEqual => "!=",
-							_ => ""
+							_ => string.Empty,
 						};
 
 					break;

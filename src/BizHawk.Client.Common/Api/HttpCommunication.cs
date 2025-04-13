@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 			{
 				MIME_FORM_URLENC => new FormUrlEncodedContent([ new("payload", payload) ]),
 #pragma warning disable BHI1005 // exception type
-				_ => throw new NotImplementedException()
+				_ => throw new NotImplementedException(),
 #pragma warning restore BHI1005
 			};
 

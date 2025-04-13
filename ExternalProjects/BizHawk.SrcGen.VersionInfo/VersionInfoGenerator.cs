@@ -17,7 +17,7 @@ public class VersionInfoGenerator : ISourceGenerator
 		{
 			RedirectStandardOutput = true,
 			CreateNoWindow = true,
-			UseShellExecute = false // this is just required for visual studio (:
+			UseShellExecute = false, // this is just required for visual studio (:
 		};
 		try
 		{

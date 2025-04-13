@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common
 			PCEngine pce => pce.GetSettings(),
 			QuickNES quickNes => quickNes.GetSettings(),
 			SMS sms => sms.GetSettings(),
-			_ => null
+			_ => null,
 		};
 
 		public PutSettingsDirtyBits PutSettings(object settings) => Emulator switch // (select) cores A-Z by value of `CoreAttribute.CoreName`
@@ -216,7 +216,7 @@ namespace BizHawk.Client.Common
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
 			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
 			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
-			_ => PutSettingsDirtyBits.None
+			_ => PutSettingsDirtyBits.None,
 		};
 
 		public void SetRenderPlanes(params bool[] args)

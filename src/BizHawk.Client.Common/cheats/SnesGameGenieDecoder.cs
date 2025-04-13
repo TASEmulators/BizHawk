@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common.cheats
 			['A'] = 12, // 1100
 			['2'] = 13, // 1101
 			['3'] = 14, // 1110
-			['E'] = 15  // 1111
+			['E'] = 15, // 1111
 		};
 
 		public static IDecodeResult Decode(string code)

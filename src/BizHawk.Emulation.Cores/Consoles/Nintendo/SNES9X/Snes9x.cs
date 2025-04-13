@@ -2,12 +2,17 @@ using System.ComponentModel;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	[PortedCore(CoreNames.Snes9X, "", "e49165c", "https://github.com/snes9xgit/snes9x")]
+	[PortedCore(
+		name: CoreNames.Snes9X,
+		author: "Snes9x contributors; port by Morilli",
+		portedVersion: "e49165c",
+		portedUrl: "https://github.com/snes9xgit/snes9x")]
 	public class Snes9x : WaterboxCore,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
@@ -25,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = VSystemID.Raw.SNES,
 			})
 		{
-			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringAfter('|'), null);
 			this._currentMsuTrack = new ProxiedFile();
 
 			LibSnes9x.OpenAudio openAudioCb = MsuOpenAudio;

@@ -20,8 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void ControlInputFocus(Control c, HostInputType types, bool wants)
 		{
-			if (types.HasFlag(HostInputType.Mouse) && wants) _wantingMouseFocus.Add(c);
-			if (types.HasFlag(HostInputType.Mouse) && !wants) _wantingMouseFocus.Remove(c);
+			if (types.HasFlag(HostInputType.Mouse)) _wantingMouseFocus.SetMembership(c, shouldBeMember: wants);
 		}
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
@@ -53,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			_updateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true,
-				Priority = ThreadPriority.AboveNormal // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
+				Priority = ThreadPriority.AboveNormal, // why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			_updateThread.Start();
 		}
@@ -123,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					EventType = newState ? InputEventType.Press : InputEventType.Release,
 					LogicalButton = new(button1, mods, () => _getConfigCallback().ModifierKeysEffective),
-					Source = source
+					Source = source,
 				};
 			_lastState[button1] = newState;
 

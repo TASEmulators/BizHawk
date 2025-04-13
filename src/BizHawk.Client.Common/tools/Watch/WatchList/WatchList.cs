@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -46,7 +47,7 @@ namespace BizHawk.Client.Common
 				[Diff] = new WatchValueDifferenceComparer(),
 				[Type] = new WatchFullDisplayTypeComparer(),
 				[Domain] = new WatchDomainComparer(),
-				[Notes] = new WatchNoteComparer()
+				[Notes] = new WatchNoteComparer(),
 			};
 		}
 
@@ -399,15 +400,9 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
-				{
-					isBizHawkWatch = true;
-				}
-
-				if (line.Length >= 8 && line.Substring(0, 8) == "SystemID")
-				{
-					continue;
-				}
+				if (line.StartsWithOrdinal("Domain")) isBizHawkWatch = true;
+				// is there a step missing here? --yoshi
+				if (line.StartsWithOrdinal("SystemID")) continue;
 
 				var numColumns = line.Count(c => c == '\t');
 				int startIndex;
@@ -421,7 +416,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						startIndex = line.IndexOf('\t') + 1;
-						line = line.Substring(startIndex, line.Length - startIndex);   // 5 digit value representing the watch position number
+						line = line.Substring(startIndex: startIndex); // 5 digit value representing the watch position number
 					}
 				}
 				else
@@ -433,7 +428,7 @@ namespace BizHawk.Client.Common
 				int addr;
 				var memDomain = _memoryDomains.MainMemory;
 
-				var temp = line.Substring(0, line.IndexOf('\t'));
+				var temp = line.SubstringBefore('\t');
 				try
 				{
 					addr = int.Parse(temp, NumberStyles.HexNumber);
@@ -444,15 +439,15 @@ namespace BizHawk.Client.Common
 				}
 
 				startIndex = line.IndexOf('\t') + 1;
-				line = line.Substring(startIndex, line.Length - startIndex);   // Type
+				line = line.Substring(startIndex: startIndex); // Type
 				var size = Watch.SizeFromChar(line[0]);
 
 				startIndex = line.IndexOf('\t') + 1;
-				line = line.Substring(startIndex, line.Length - startIndex);   // Signed
+				line = line.Substring(startIndex: startIndex); // Signed
 				var type = Watch.DisplayTypeFromChar(line[0]);
 
 				startIndex = line.IndexOf('\t') + 1;
-				line = line.Substring(startIndex, line.Length - startIndex);   // Endian
+				line = line.Substring(startIndex: startIndex); // Endian
 				try
 				{
 					startIndex = short.Parse(line[0].ToString());
@@ -467,13 +462,13 @@ namespace BizHawk.Client.Common
 				if (isBizHawkWatch)
 				{
 					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   // Domain
-					temp = line.Substring(0, line.IndexOf('\t'));
+					line = line.Substring(startIndex: startIndex); // Domain
+					temp = line.SubstringBefore('\t');
 					memDomain = size == WatchSize.Separator ? null : _memoryDomains[temp] ?? _memoryDomains.MainMemory;
 				}
 
 				startIndex = line.IndexOf('\t') + 1;
-				var notes = line.Substring(startIndex, line.Length - startIndex);
+				var notes = line.Substring(startIndex: startIndex);
 
 				_watchList.Add(
 					Watch.GenerateWatch(

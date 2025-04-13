@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				UseSixButton = useSixButtons,
 				ControlTypeLeft = GPGX.ControlType.Normal,
-				ControlTypeRight = GPGX.ControlType.Normal
+				ControlTypeRight = GPGX.ControlType.Normal,
 			};
 
 			input.dev[2] = input.dev[3] = input.dev[4] = input.dev[5] = input.dev[6] = input.dev[7] = LibGPGX.INPUT_DEVICE.DEVICE_NONE;

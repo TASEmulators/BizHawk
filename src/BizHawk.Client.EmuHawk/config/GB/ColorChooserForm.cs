@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
-			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
+			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 		};
 
 		// bsnes's default dmg colors with slight tweaking
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			10798341, 8956165, 1922333, 337157,
 			10798341, 8956165, 1922333, 337157,
-			10798341, 8956165, 1922333, 337157
+			10798341, 8956165, 1922333, 337157,
 		};
 
 		private void RefreshAllBackdrops()
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
-				Color = _colors[i]
+				Color = _colors[i],
 			};
 
 			// custom colors are ints, not Color structs?
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			"Sprite%2020",
 			"Sprite%2021",
 			"Sprite%2022",
-			"Sprite%2023"
+			"Sprite%2023",
 		};
 
 		/// <summary>

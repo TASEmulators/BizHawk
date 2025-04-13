@@ -18,7 +18,13 @@ namespace BizHawk.Client.EmuHawk
 			StartLocation = new Point(-1, -1);
 		}
 
-		public enum InputType { Hex, Unsigned, Signed, Text }
+		public enum InputType
+		{
+			Hex,
+			Unsigned,
+			Signed,
+			Text,
+		}
 
 		public Point StartLocation { get; set; }
 		public InputType TextInputType { get; set; }

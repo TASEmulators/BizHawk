@@ -431,7 +431,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					Isrc = Encoding.ASCII.GetString(chunkData.Slice(i, 12)).TrimEnd('\0'),
 					SectorSize = BinaryPrimitives.ReadUInt16BigEndian(chunkData.Slice(i + 12, sizeof(ushort))),
-					Mode = chunkData[i + 14]
+					Mode = chunkData[i + 14],
 				};
 
 				if (v2)
@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.DiscSystem
 				"TINF" => 12,
 				"ETNF" => 20,
 				"ETN2" => 32,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 			if (chunkSize % trackSize != 0)
@@ -889,7 +889,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ret = new LoadResults
 			{
-				NrgPath = path
+				NrgPath = path,
 			};
 			try
 			{
@@ -985,7 +985,7 @@ namespace BizHawk.Emulation.DiscSystem
 							SessionFormat.Type00_CDROM_CDDA => CueTrackType.Mode1_2352,
 							SessionFormat.Type10_CDI => CueTrackType.CDI_2352,
 							SessionFormat.Type20_CDXA => CueTrackType.Mode2_2352,
-							_ => cueTrackType
+							_ => cueTrackType,
 						};
 					}
 					disc._Sectors.Add(new SS_Gap
@@ -1004,7 +1004,7 @@ namespace BizHawk.Emulation.DiscSystem
 						0x03 => new SS_Mode2_2336(),
 						0x05 or 0x06 or 0x07 => new SS_2352(),
 						0x0F or 0x10 or 0x11 => new SS_2448_Interleaved(),
-						_ => throw new InvalidOperationException($"Invalid mode {mode}")
+						_ => throw new InvalidOperationException($"Invalid mode {mode}"),
 					};
 				}
 
@@ -1080,7 +1080,7 @@ namespace BizHawk.Emulation.DiscSystem
 					disc._Sectors.Add(new SS_Leadout
 					{
 						SessionNumber = session.Number,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					});
 				}
 

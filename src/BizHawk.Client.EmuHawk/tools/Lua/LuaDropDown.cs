@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -8,15 +7,14 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public LuaDropDown(ICollection<string> items)
 		{
-			Items.AddRange(items.Cast<object>().ToArray());
+			this.ReplaceItems(items: items);
 			SelectedIndex = 0;
 			DropDownStyle = ComboBoxStyle.DropDownList;
 		}
 
 		public void SetItems(ICollection<string> items)
 		{
-			Items.Clear();
-			Items.AddRange(items.Cast<object>().ToArray());
+			this.ReplaceItems(items: items);
 			SelectedIndex = 0;
 		}
 	}

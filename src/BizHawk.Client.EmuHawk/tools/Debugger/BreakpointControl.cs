@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var b = new AddBreakpointDialog(operation)
 			{
-				MaxAddressSize = MemoryDomains.SystemBus.Size - 1
+				MaxAddressSize = MemoryDomains.SystemBus.Size - 1,
 			};
 
 			if (type != null)
@@ -307,7 +307,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private enum BreakpointOperation
 		{
-			Add, Edit, Duplicate
+			Add,
+			Edit,
+			Duplicate,
 		}
 	}
 }

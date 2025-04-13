@@ -54,7 +54,7 @@ namespace BizHawk.Common
 				thread = new Thread(ThreadProc)
 				{
 					IsBackground = true,
-					Priority = ThreadPriority.Lowest
+					Priority = ThreadPriority.Lowest,
 				};
 				thread.Start();
 			}

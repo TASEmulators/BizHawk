@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = fullName,
 					Location = UIHelper.Scale(new Point(15, 15 + (count * spacing))),
-					Size = UIHelper.Scale(new Size(200, 23))
+					Size = UIHelper.Scale(new Size(200, 23)),
 				};
 
 				PlatformsGroupBox.Controls.Add(radio);

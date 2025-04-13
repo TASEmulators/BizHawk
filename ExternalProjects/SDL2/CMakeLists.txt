@@ -98,6 +98,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 # Silence a warning when specifying INTERPROCEDURAL_OPTIMIZATION
 set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
+set(SDL_CMAKE_DEBUG_POSTFIX "") # would be `libSDL2d.so` without this, but EmuHawk only knows the usual `libSDL.so` filename
 add_subdirectory(SDL)
 
 if(WIN32)

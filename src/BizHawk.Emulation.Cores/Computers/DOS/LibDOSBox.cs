@@ -58,6 +58,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[BizImport(CC)]
 		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
 
+		[BizImport(CC)]
+		public abstract ulong getVGARefreshRateNumerator();
+
+		[BizImport(CC)]
+		public abstract ulong getVGARefreshRateDenominator();
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class InitSettings
 		{

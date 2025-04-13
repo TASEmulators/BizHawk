@@ -12,7 +12,7 @@ namespace BizHawk.Tests.Testroms.GB
 	public sealed class BullyGB
 	{
 		[AttributeUsage(AttributeTargets.Method)]
-		private sealed class BullyTestData : Attribute, ITestDataSource
+		private sealed class BullyTestDataAttribute : Attribute, ITestDataSource
 		{
 			public IEnumerable<object?[]> GetData(MethodInfo methodInfo)
 			{

@@ -114,7 +114,9 @@ namespace BizHawk.Emulation.Common
 
 	public enum MemoryCallbackType
 	{
-		Read, Write, Execute
+		Read,
+		Write,
+		Execute,
 	}
 
 	[Flags]
@@ -130,6 +132,6 @@ namespace BizHawk.Emulation.Common
 		AccessExecute = 0x04 << 12,
 		CPUUnknown = 0x00 << 8,
 		CPUZero = 0x01 << 8,
-		DomainUnknown = 0x00
+		DomainUnknown = 0x00,
 	}
 }

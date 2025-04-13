@@ -58,6 +58,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
+		private readonly StatusLabelEx StatusBarMuteIndicator = new();
+
+		private readonly StatusLabelEx StatusBarRewindIndicator = new()
+		{
+			Image = Properties.Resources.RewindRecord,
+			ToolTipText = "Rewinder is capturing states",
+		};
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();
@@ -145,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 					VSystemCategory.Consoles => consolesCoreSettingsSubmenu,
 					VSystemCategory.Handhelds => handheldsCoreSettingsSubmenu,
 					VSystemCategory.PCs => pcsCoreSettingsSubmenu,
-					_ => otherCoreSettingsSubmenu
+					_ => otherCoreSettingsSubmenu,
 				};
 				parentMenu.DropDownItems.Add(submenu);
 			}
@@ -178,6 +186,11 @@ namespace BizHawk.Client.EmuHawk
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
 			PlayRecordStatusButton.Visible = false;
+
+			StatusBarRewindIndicator.Click += RewindOptionsMenuItem_Click;
+			MainStatusBar.Items.InsertAfter(PlayRecordStatusButton, insert: StatusBarRewindIndicator);
+			UpdateStatusBarRewindIndicator();
+
 			AVStatusLabel.Visible = false;
 			SetPauseStatusBarIcon();
 			Tools.UpdateCheatRelatedTools(null, null);
@@ -209,6 +222,10 @@ namespace BizHawk.Client.EmuHawk
 				button.MouseEnter += SlotStatusButtons_MouseEnter;
 				button.MouseLeave += SlotStatusButtons_MouseLeave;
 			}
+
+			StatusBarMuteIndicator.Click += (_, _) => ToggleSound();
+			MainStatusBar.Items.InsertBefore(KeyPriorityStatusLabel, insert: StatusBarMuteIndicator);
+			UpdateStatusBarMuteIndicator();
 
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -437,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 						(b & MouseButtons.XButton1) != 0,
 						(b & MouseButtons.XButton2) != 0
 					);
-				}
+				},
 			};
 			FirmwareManager = new FirmwareManager();
 			movieSession = MovieSession = new MovieSession(
@@ -445,7 +462,8 @@ namespace BizHawk.Client.EmuHawk
 				Config.PathEntries.MovieBackupsAbsolutePath(),
 				this,
 				PauseEmulator,
-				SetMainformMovieInfo);
+				SetMainformMovieInfo,
+				() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), Config.SoundVolume / 100f));
 
 			void MainForm_MouseClick(object sender, MouseEventArgs e)
 			{
@@ -595,7 +613,7 @@ namespace BizHawk.Client.EmuHawk
 					ControllerConfig => AllowInput.All,
 					HotkeyConfig => AllowInput.All,
 					LuaWinform { BlocksInputWhenFocused: false } => AllowInput.All,
-					_ => AllowInput.None
+					_ => AllowInput.None,
 				}
 			);
 			InitControls();
@@ -750,7 +768,7 @@ namespace BizHawk.Client.EmuHawk
 					"false" => false,
 					_ when int.TryParse(v, out var i) => i,
 					_ when double.TryParse(v, out var d) => d,
-					_ => v
+					_ => v,
 				};
 			}
 
@@ -804,7 +822,7 @@ namespace BizHawk.Client.EmuHawk
 					OSTailoredCode.WindowsVersion._11 => null,
 					OSTailoredCode.WindowsVersion._10 when win10PlusVersion! < new Version(10, 0, 19045) => $"Quick reminder: Your copy of Windows 10 (build {win10PlusVersion.Build}) is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please update to 22H2 for increased security.",
 					OSTailoredCode.WindowsVersion._10 => null,
-					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace('_', '.')} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro)."
+					_ => $"Quick reminder: Windows {winVersion.ToString().RemovePrefix('_').Replace('_', '.')} is no longer supported by Microsoft.\nEmuHawk will probably continue working, but please get a new operating system for increased security (either Windows 10+ or a GNU+Linux distro).",
 				};
 				if (message is not null)
 				{
@@ -1189,6 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 					? new ZeldaWinder(Emulator.AsStatable(), Config.Rewind)
 					: new Zwinder(Emulator.AsStatable(), Config.Rewind)
 				: null;
+			UpdateStatusBarRewindIndicator();
 			AddOnScreenMessage(Rewinder?.Active == true ? "Rewind started" : "Rewind disabled");
 		}
 
@@ -1766,6 +1785,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _frameRewindTimestamp;
 		private bool _frameRewindWasPaused;
 		private bool _runloopFrameAdvance;
+		private bool _wasRewinding;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
 
@@ -2139,10 +2159,8 @@ namespace BizHawk.Client.EmuHawk
 			var sysID = Emulator.SystemId;
 			for (var i = 0; i < sysID.Length; i++)
 			{
-				var upper = char.ToUpperInvariant(sysID[i]);
-				if (AvailableAccelerators.Contains(upper))
+				if (AvailableAccelerators.Remove(char.ToUpperInvariant(sysID[i])))
 				{
-					AvailableAccelerators.Remove(upper);
 					sysID = sysID.Insert(i, "&");
 					break;
 				}
@@ -2578,6 +2596,7 @@ namespace BizHawk.Client.EmuHawk
 			Config.SoundEnabled = !Config.SoundEnabled;
 			Sound.StopSound();
 			Sound.StartSound();
+			UpdateStatusBarMuteIndicator();
 		}
 
 		private void VolumeUp()
@@ -2811,6 +2830,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void UpdateStatusBarMuteIndicator()
+			=> (StatusBarMuteIndicator.Image, StatusBarMuteIndicator.ToolTipText) = Config.SoundEnabled
+				? (Properties.Resources.Audio, $"Core is producing audio, live playback at {(Config.SoundEnabledNormal ? Config.SoundVolume : 0)}% volume")
+				: (Properties.Resources.AudioMuted, "Core is not producing audio");
+
+		private void UpdateStatusBarRewindIndicator()
+			=> StatusBarRewindIndicator.Visible = Rewinder?.Active is true;
+
 		private void UpdateKeyPriorityIcon()
 		{
 			switch (Config.InputHotkeyOverrideOptions)
@@ -2992,20 +3019,21 @@ namespace BizHawk.Client.EmuHawk
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Config.FrameProgressDelayMs;
 
-			if (Config.SkipLagFrame && Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && frameProgressTimeElapsed && Emulator.Frame > 0)
+			// TODO technically this should only force run frames if the frame advance key has been used
+			if (Config.SkipLagFrame && Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && Emulator.Frame > 0)
 			{
 				runFrame = true;
 			}
 
 			RA?.Update();
 
-			bool oldFrameAdvanceCondition = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
+			bool frameAdvance = InputManager.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance;
 			if (FrameInch)
 			{
 				FrameInch = false;
-				if (EmulatorPaused || oldFrameAdvanceCondition)
+				if (EmulatorPaused)
 				{
-					oldFrameAdvanceCondition = true;
+					frameAdvance = true;
 				}
 				else
 				{
@@ -3013,41 +3041,33 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			bool frameAdvance = oldFrameAdvanceCondition || FrameInch;
-			if (!frameAdvance && _runloopFrameAdvance && _runloopFrameProgress)
-			{
-				// handle release of frame advance
-				_runloopFrameProgress = false;
-				PauseEmulator();
-			}
-
-			_runloopFrameAdvance = frameAdvance;
 			if (frameAdvance)
 			{
-				FrameInch = false;
-
-				// handle the initial trigger of a frame advance
-				if (_frameAdvanceTimestamp == 0)
+				if (!_runloopFrameAdvance)
 				{
-					PauseEmulator();
+					// handle the initial trigger of a frame advance
 					runFrame = true;
 					_frameAdvanceTimestamp = currentTimestamp;
+					PauseEmulator();
 				}
-				else
+				else if (frameProgressTimeElapsed)
 				{
-					// handle the timed transition from countdown to FrameProgress
-					if (frameProgressTimeElapsed)
-					{
-						runFrame = true;
-						_runloopFrameProgress = true;
-						UnpauseEmulator();
-					}
+					runFrame = true;
+					_runloopFrameProgress = true;
+					UnpauseEmulator();
 				}
 			}
 			else
 			{
-				_frameAdvanceTimestamp = 0;
+				if (_runloopFrameAdvance)
+				{
+					// handle release of frame advance
+					PauseEmulator();
+				}
+				_runloopFrameProgress = false;
 			}
+
+			_runloopFrameAdvance = frameAdvance;
 
 #if BIZHAWKBUILD_SUPERHAWK
 			if (!EmulatorPaused && (!Config.SuperHawkThrottle || InputManager.ClientControls.AnyInputHeld))
@@ -3156,6 +3176,8 @@ namespace BizHawk.Client.EmuHawk
 				if (isRewinding && ToolControllingRewind is null && MovieSession.Movie.IsRecording())
 				{
 					MovieSession.Movie.Truncate(Emulator.Frame);
+					if (!_wasRewinding)
+						MovieSession.Movie.Rerecords++;
 				}
 
 				CheatList.Pulse();
@@ -3211,6 +3233,8 @@ namespace BizHawk.Client.EmuHawk
 						PauseEmulator();
 					}
 				}
+
+				_wasRewinding = isRewinding;
 			}
 			else if (isRewinding)
 			{
@@ -3660,7 +3684,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var platformChooser = new PlatformChooser(Config)
 			{
-				RomGame = rom
+				RomGame = rom,
 			};
 			this.ShowDialogWithTempMute(platformChooser);
 			return platformChooser.PlatformChoice;
@@ -3729,7 +3753,7 @@ namespace BizHawk.Client.EmuHawk
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
 					MessageCallback = AddOnScreenMessage,
-					OpenAdvanced = args.OpenAdvanced
+					OpenAdvanced = args.OpenAdvanced,
 				};
 				FirmwareManager.RecentlyServed.Clear();
 
@@ -3818,10 +3842,9 @@ namespace BizHawk.Client.EmuHawk
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
-							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
-
-							var (filename, data) = xmlGame.Assets[xg];
-							if (Disc.IsValidExtension(ext))
+							var (_, filename, data) = xmlGame.Assets[xg];
+							// data length is 0 in the case of discs or 3DS roms
+							if (data.Length == 0)
 							{
 								xSw.WriteLine(Path.GetFileNameWithoutExtension(filename));
 								xSw.WriteLine("SHA1:N/A");
@@ -4047,8 +4070,7 @@ namespace BizHawk.Client.EmuHawk
 			AutoSaveStateIfConfigured();
 
 			CommitCoreSettingsToConfig();
-			Rewinder?.Dispose();
-			Rewinder = null;
+			DisableRewind();
 
 			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
@@ -4142,12 +4164,14 @@ namespace BizHawk.Client.EmuHawk
 
 				AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 			}
+			UpdateStatusBarRewindIndicator();
 		}
 
 		public void DisableRewind()
 		{
 			Rewinder?.Dispose();
 			Rewinder = null;
+			UpdateStatusBarRewindIndicator();
 		}
 
 		private int SlotToInt(string slot)
@@ -4356,7 +4380,7 @@ namespace BizHawk.Client.EmuHawk
 				CoreNames.QuickNes => CoreNames.NesHawk,
 				CoreNames.Atari2600Hawk => CoreNames.Stella,
 				CoreNames.HyperNyma => CoreNames.TurboNyma,
-				_ => null
+				_ => null,
 			};
 			return recommendedCore is null
 				? true
@@ -4666,7 +4690,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DialogResult.OK => true,
 					DialogResult.Yes => true,
-					_ => false
+					_ => false,
 				};
 
 		public bool? ShowMessageBox3(
@@ -4683,7 +4707,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					DialogResult.Yes => true,
 					DialogResult.No => false,
-					_ => null
+					_ => null,
 				};
 
 		public void StartSound() => Sound.StartSound();
@@ -4876,11 +4900,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (wantCapture)
 			{
-				var size = _presentationPanel.Control.Size;
 				var fbLocation = Point.Subtract(Bounds.Location, new(PointToClient(Location)));
 				fbLocation.Offset(_presentationPanel.Control.Location);
-				fbLocation.Offset(new Point(size.Width / 2, size.Height / 2));
-				Cursor.Clip = new(fbLocation, new(1, 1));
+				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
 				Cursor.Hide();
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;

@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 					System = VSystemID.Raw.N3DS,
 					Hash = "N/A",
 					Status = RomStatus.NotInDatabase,
-					NotInDatabase = true
+					NotInDatabase = true,
 				};
 
 #pragma warning disable CA1862 // testing whether it's all-caps

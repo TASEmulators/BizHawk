@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			new SpecialBindingInfo { BindingName = "WMouse M", TooltipText = "Binds the middle mouse button" },
 			new SpecialBindingInfo { BindingName = "WMouse R", TooltipText = "Binds the right mouse button" },
 			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText = "Binds the mouse auxiliary button 1" },
-			new SpecialBindingInfo { BindingName = "WMouse 2", TooltipText = "Binds the mouse auxiliary button 2" }
+			new SpecialBindingInfo { BindingName = "WMouse 2", TooltipText = "Binds the mouse auxiliary button 2" },
 		};
 
 		public InputWidget()

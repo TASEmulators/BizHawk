@@ -19,23 +19,13 @@ namespace BizHawk.Common
 		}
 
 		// -------------- Logging Domain Configuration --------------
-		private static readonly List<string> EnabledLogDomains = new List<string>();
+		private static readonly HashSet<string> EnabledLogDomains = new();
 
 		public static void EnableDomain(string domain)
-		{
-			if (!EnabledLogDomains.Contains(domain))
-			{
-				EnabledLogDomains.Add(domain);
-			}
-		}
+			=> EnabledLogDomains.Add(domain);
 
 		public static void DisableDomain(string domain)
-		{
-			if (EnabledLogDomains.Contains(domain))
-			{
-				EnabledLogDomains.Remove(domain);
-			}
-		}
+			=> EnabledLogDomains.Remove(domain);
 
 		// -------------- Logging Action Configuration --------------
 #pragma warning disable CA2211 // public field

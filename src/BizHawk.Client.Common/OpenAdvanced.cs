@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 				OpenAdvancedTypes.Libretro => new OpenAdvanced_Libretro(),
 				OpenAdvancedTypes.LibretroNoGame => new OpenAdvanced_LibretroNoGame(),
 				OpenAdvancedTypes.MAME => new OpenAdvanced_MAME(),
-				_ => null
+				_ => null,
 			};
 
 			if (ioa == null)

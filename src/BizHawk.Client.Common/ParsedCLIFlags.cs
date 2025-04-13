@@ -31,6 +31,8 @@ namespace BizHawk.Client.Common
 
 		public readonly bool startFullscreen;
 
+		public readonly bool GDIPlusRequested;
+
 		public readonly string? luaScript;
 
 		public readonly bool luaConsole;
@@ -64,6 +66,7 @@ namespace BizHawk.Client.Common
 			bool autoCloseOnDump,
 			bool chromeless,
 			bool startFullscreen,
+			bool gdiPlusRequested,
 			string? luaScript,
 			bool luaConsole,
 			(string IP, ushort Port)? socketAddress,
@@ -87,6 +90,7 @@ namespace BizHawk.Client.Common
 			_autoCloseOnDump = autoCloseOnDump;
 			_chromeless = chromeless;
 			this.startFullscreen = startFullscreen;
+			GDIPlusRequested = gdiPlusRequested;
 			this.luaScript = luaScript;
 			this.luaConsole = luaConsole;
 			SocketAddress = socketAddress;

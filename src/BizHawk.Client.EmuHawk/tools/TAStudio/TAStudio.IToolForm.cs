@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
 		private int _lastRefresh;
+		private bool _doPause;
 
 		private void UpdateProgressBar()
 		{
@@ -91,6 +92,12 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(_lastRefresh))
 			{
 				refreshNeeded = true;
+			}
+
+			if (Settings.AutoPause)
+			{
+				if (_doPause && CurrentTasMovie.IsAtEnd()) MainForm.PauseEmulator();
+				_doPause = !CurrentTasMovie.IsAtEnd();
 			}
 
 			RefreshDialog(refreshNeeded, refreshBranches: false);

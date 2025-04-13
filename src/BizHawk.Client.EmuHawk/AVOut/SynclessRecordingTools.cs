@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				_mFrameInfos.Add(new FrameInfo
 				{
 					PngPath = png,
-					WavPath = wav
+					WavPath = wav,
 				});
 				
 				frame++;

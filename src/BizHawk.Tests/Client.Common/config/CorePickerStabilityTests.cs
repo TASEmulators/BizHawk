@@ -3,7 +3,6 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Tests.Client.Common.config
@@ -21,13 +20,14 @@ namespace BizHawk.Tests.Client.Common.config
 				.ToHashSet();
 			foreach (var sysID in DefaultCorePrefDict.Keys)
 			{
-				Assert.IsTrue(multiCoreSystems.Contains(sysID), $"a default core preference exists for {sysID} but that system doesn't have alternate cores");
+				CollectionAssert.That.Contains(multiCoreSystems, sysID, $"a default core preference exists for {sysID} but that system doesn't have alternate cores");
 			}
 			foreach (var (appliesTo, _) in Config.CorePickerUIData)
 			{
-				Assert.IsTrue(
-					appliesTo.All(multiCoreSystems.Contains),
-					appliesTo.Length is 1
+				CollectionAssert.That.IsSubsetOf(
+					superset: multiCoreSystems,
+					subset: appliesTo,
+					message: appliesTo.Length is 1
 						? $"core picker has submenu for {appliesTo[0]}, but that system doesn't have alternate cores"
 #pragma warning disable MA0089 // CI build this for .NET Core where there's a `char` overload for `string.Join`
 						: $"core picker has submenu for {appliesTo[0]} ({string.Join("/", appliesTo)}), but none of those systems have alternate cores");
@@ -41,11 +41,11 @@ namespace BizHawk.Tests.Client.Common.config
 			var allCoreNames = CoreInventory.Instance.SystemsFlat.Select(coreInfo => coreInfo.Name).ToHashSet();
 			foreach (var (sysID, coreName) in DefaultCorePrefDict)
 			{
-				Assert.IsTrue(allCoreNames.Contains(coreName), $"default core preference for {sysID} is \"{coreName}\", which doesn't exist");
+				CollectionAssert.That.Contains(allCoreNames, coreName, $"default core preference for {sysID} is \"{coreName}\", which doesn't exist");
 			}
 			foreach (var (appliesTo, coreNames) in Config.CorePickerUIData) foreach (var coreName in coreNames)
 			{
-				Assert.IsTrue(allCoreNames.Contains(coreName), $"core picker includes nonexistant core \"{coreName}\" under {appliesTo[0]} group");
+				CollectionAssert.That.Contains(allCoreNames, coreName, $"core picker includes nonexistant core \"{coreName}\" under {appliesTo[0]} group");
 			}
 		}
 
@@ -55,8 +55,8 @@ namespace BizHawk.Tests.Client.Common.config
 			var multiCoreSystems = CoreInventory.Instance.AllCores.Where(kvp => kvp.Value.Count != 1).ToArray();
 			foreach (var (sysID, cores) in multiCoreSystems)
 			{
-				Assert.IsTrue(DefaultCorePrefDict.ContainsKey(sysID), $"missing default core preference for {sysID} with {cores.Count} core choices");
-				Assert.IsTrue(Config.CorePickerUIData.Any(item => item.AppliesTo.Contains(sysID)), $"missing core picker submenu for {sysID} with {cores.Count} core choices");
+				CollectionAssert.That.ContainsKey(DefaultCorePrefDict, sysID, $"missing default core preference for {sysID} with {cores.Count} core choices");
+				CollectionAssert.That.Contains(Config.CorePickerUIData.SelectMany(static item => item.AppliesTo), sysID, $"missing core picker submenu for {sysID} with {cores.Count} core choices");
 			}
 		}
 	}

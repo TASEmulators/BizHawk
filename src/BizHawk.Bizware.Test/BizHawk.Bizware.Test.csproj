@@ -13,6 +13,7 @@
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" PrivateAssets="all" />
 		<Reference Include="System.Windows.Forms" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<EmbeddedResource Include="TestImages/**/*" />

@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Common
 	{
 		public enum Endian
 		{
-			Big, Little, Unknown
+			Big,
+			Little,
+			Unknown,
 		}
 
 		public string Name { get; protected set; }

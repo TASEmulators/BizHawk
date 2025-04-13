@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				Matrix11 = (0xEB - 0x10) / 255F,
 				Matrix41 = 0x10 / 255F,
 				Matrix22 = (0xD7 - 0x18) / 255F,
-				Matrix42 = 0x18 / 255F
+				Matrix42 = 0x18 / 255F,
 			};
 
 			paperView.ChangeBitmapSize(PaperWidth, PaperWidth);

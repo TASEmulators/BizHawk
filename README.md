@@ -137,7 +137,7 @@ It has many bugs that will never be fixed (backports have ceased) and it doesn't
 
 Install the listed package with your package manager (some buttons are links to the relevant package). The changelog can be found [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
 
-[![Manjaro | bizhawk-monort (AUR)](https://img.shields.io/badge/Manjaro-bizhawk--monort_(AUR)-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk-monort)
+[![Arch Linux | bizhawk-bin (AUR)](https://img.shields.io/badge/Arch_Linux-bizhawk--bin_(AUR)-%231793D1.svg?logo=archlinux&style=popout)](https://aur.archlinux.org/packages/bizhawk-bin)
 
 No package for your distro? Install via Nix (see below), or install manually by grabbing the latest release here on GitHub:
 

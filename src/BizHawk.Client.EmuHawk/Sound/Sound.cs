@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
 					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
-					_ => new DummySoundOutput(this)
+					_ => new DummySoundOutput(this),
 				};
 			}
 		}

@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						tag = subchunkTag,
 						Source = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(s)),
-						Position = 0
+						Position = 0,
 					};
 					rs.Length = (uint)rs.Source.Length;
 					subchunks.Add(rs);
@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var rc = new RiffContainer
 				{
 					tag = tag,
-					type = ReadTag(br)
+					type = ReadTag(br),
 				};
 
 				readCounter += 4;
@@ -308,7 +308,7 @@ namespace BizHawk.Emulation.DiscSystem
 					tag = tag,
 					Source = br.BaseStream,
 					Position = br.BaseStream.Position,
-					Length = size
+					Length = size,
 				};
 				readCounter += size;
 				br.BaseStream.Position += size;

@@ -2,39 +2,124 @@
 
 bool foundIWAD = false;
 bool wipeDone = true;
-int last_automap_input[4] = { 0 };
+CommonButtons last_buttons = { 0 };
 
-void send_input(struct PackedPlayerInput *inputs, int playerId)
+void common_input(CommonButtons buttons)
 {
-  local_cmds[playerId].forwardmove = inputs->RunSpeed;
-  local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
-  local_cmds[playerId].angleturn   = (shorttics || !longtics) ? inputs->TurningSpeed << 8 : inputs->TurningSpeed;
+  static int bigstate = 0;
+  m_paninc.y = 0;
+  m_paninc.x = 0;
 
-  if (inputs->Fire == 1)   local_cmds[playerId].buttons |= 0b00000001;
-  if (inputs->Action == 1) local_cmds[playerId].buttons |= 0b00000010;
-
-  if (inputs->WeaponSelect != 0)
+  if (buttons.ChangeGamma && !last_buttons.ChangeGamma)
   {
-    local_cmds[playerId].buttons |= BT_CHANGE;
-    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1)<<BT_WEAPONSHIFT;
+    dsda_CycleConfig(dsda_config_usegamma, true);
+    dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
+                    usegamma == 1 ? GAMMALVL1 :
+                    usegamma == 2 ? GAMMALVL2 :
+                    usegamma == 3 ? GAMMALVL3 :
+                    GAMMALVL4);
   }
 
-  local_cmds[playerId].lookfly = inputs->FlyLook;
-  local_cmds[playerId].arti    = inputs->ArtifactUse;
-  
-  if (inputs->EndPlayer == 1) local_cmds[playerId].arti |= 0b01000000;
-  if (inputs->Jump      == 1) local_cmds[playerId].arti |= 0b10000000;
-
-  if (inputs->Automap && !last_automap_input[playerId])
+  if (buttons.AutomapToggle && !last_buttons.AutomapToggle)
   {
-    if (automap_input)
+    if (automap_active)
+    {
       AM_Stop(true);
+      bigstate = 0;
+    }
     else
       AM_Start(true);
   }
-  last_automap_input[playerId] = inputs->Automap;
 
-  // printf("ForwardSpeed: %d - sideMove:     %d - angleTurn:    %d - buttons: %u\n", forwardSpeed, strafingSpeed, turningSpeed, local_cmds[playerId].buttons);
+  if (buttons.AutomapFollow && !last_buttons.AutomapFollow)
+  {
+    dsda_ToggleConfig(dsda_config_automap_follow, true);
+    dsda_AddMessage(automap_follow ? AMSTR_FOLLOWON : AMSTR_FOLLOWOFF);
+  }
+  
+  if (buttons.AutomapGrid && !last_buttons.AutomapGrid)
+  {
+    dsda_ToggleConfig(dsda_config_automap_grid, true);
+    dsda_AddMessage(automap_grid ? AMSTR_GRIDON : AMSTR_GRIDOFF);
+  }
+  
+  if (buttons.AutomapMark && !last_buttons.AutomapMark)
+  {
+    if (!raven)
+    {
+      AM_addMark();
+      doom_printf("%s %d", AMSTR_MARKEDSPOT, markpointnum - 1);
+    }
+  }
+  
+  if (buttons.AutomapClearMarks && !last_buttons.AutomapClearMarks)
+  {
+    AM_clearMarks();
+    dsda_AddMessage(AMSTR_MARKSCLEARED);
+  }
+
+  if (buttons.AutomapFullZoom && !last_buttons.AutomapFullZoom)
+  {
+    bigstate = !bigstate;
+    if (bigstate)
+    {
+      AM_saveScaleAndLoc();
+      AM_minOutWindowScale();
+    }
+    else
+      AM_restoreScaleAndLoc();
+  }
+
+  if (buttons.AutomapZoomOut)
+  {
+    mtof_zoommul = M_ZOOMOUT;
+    ftom_zoommul = M_ZOOMIN;
+    curr_mtof_zoommul = mtof_zoommul;
+    zoom_leveltime = leveltime;
+  }
+  else if (buttons.AutomapZoomIn)
+  {
+    mtof_zoommul = M_ZOOMIN;
+    ftom_zoommul = M_ZOOMOUT;
+    curr_mtof_zoommul = mtof_zoommul;
+    zoom_leveltime = leveltime;
+  }
+  else
+  {
+    stop_zooming = true;
+    if (leveltime != zoom_leveltime)
+      AM_StopZooming();
+  }
+
+  if (!automap_follow)
+  {
+    if (buttons.AutomapUp)    m_paninc.y += FTOM(map_pan_speed);
+    if (buttons.AutomapDown)  m_paninc.y -= FTOM(map_pan_speed);
+    if (buttons.AutomapRight) m_paninc.x += FTOM(map_pan_speed);
+    if (buttons.AutomapLeft)  m_paninc.x -= FTOM(map_pan_speed);
+  }
+
+  last_buttons = buttons;
+}
+
+void player_input(struct PackedPlayerInput *inputs, int playerId)
+{
+  local_cmds[playerId].forwardmove = inputs->RunSpeed;
+  local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
+  local_cmds[playerId].lookfly     = inputs->FlyLook;
+  local_cmds[playerId].arti        = inputs->ArtifactUse;
+  local_cmds[playerId].angleturn   = inputs->TurningSpeed;
+
+  if (inputs->Buttons.Fire) local_cmds[playerId].buttons |= 0b00000001;
+  if (inputs->Buttons.Use)  local_cmds[playerId].buttons |= 0b00000010;
+  if (inputs->EndPlayer)    local_cmds[playerId].arti    |= 0b01000000;
+  if (inputs->Jump)         local_cmds[playerId].arti    |= 0b10000000;
+
+  if (inputs->WeaponSelect)
+  {
+    local_cmds[playerId].buttons |= BT_CHANGE;
+    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1) << BT_WEAPONSHIFT;
+  }
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
@@ -72,22 +157,23 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
   *paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT bool dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
+ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
   // Setting inputs
   headlessClearTickCommand();
+  common_input(commonButtons);
 
   // Setting Players inputs
-  send_input(player1Inputs, 0);
-  send_input(player2Inputs, 1);
-  send_input(player3Inputs, 2);
-  send_input(player4Inputs, 3);
+  player_input(player1Inputs, 0);
+  player_input(player2Inputs, 1);
+  player_input(player3Inputs, 2);
+  player_input(player4Inputs, 3);
 
   // Enabling/Disabling rendering, as required
+  if ( renderInfo->RenderVideo) headlessEnableVideoRendering();
+  if ( renderInfo->RenderAudio) headlessEnableAudioRendering();
   if (!renderInfo->RenderVideo) headlessDisableVideoRendering();
-  if (renderInfo->RenderVideo) headlessEnableVideoRendering();
   if (!renderInfo->RenderAudio) headlessDisableAudioRendering();
-  if (renderInfo->RenderAudio) headlessEnableAudioRendering();
 
   if ((wipe_Pending() || !wipeDone) && dsda_RenderWipeScreen())
   {

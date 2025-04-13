@@ -119,7 +119,11 @@ public sealed class LINQOnStringsAnalyzer : DiagnosticAnalyzer
 								: "Use `str.Contains(c.ToString())`";
 							break;
 					}
-					DiagLINQOnStrings.ReportAt(operation, level, oac, string.Format(msgFmtStr, receiverExpr.Syntax));
+					DiagLINQOnStrings.ReportAt(
+						operation.LocWithoutReceiver(),
+						level,
+						oac,
+						string.Format(msgFmtStr, receiverExpr.Syntax));
 				},
 				OperationKind.Invocation);
 		});

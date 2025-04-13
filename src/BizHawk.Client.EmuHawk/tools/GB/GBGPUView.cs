@@ -1035,7 +1035,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowFullOpen = true,
 				AnyColor = true,
 				FullOpen = true,
-				Color = Spriteback
+				Color = Spriteback,
 			};
 
 			if (this.ShowDialogWithTempMute(dlg).IsOk())

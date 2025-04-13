@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -66,10 +67,54 @@ namespace BizHawk.Bizware.Audio
 			_disposed = true;
 		}
 
-		public static IEnumerable<string> GetDeviceNames()
-			=> _enumAllExt?.GetStringList(GetEnumerateAllContextStringList.AllDevicesSpecifier)
-				?? _enumExt?.GetStringList(GetEnumerationContextStringList.DeviceSpecifiers)
-				?? Enumerable.Empty<string>();
+		private static unsafe IEnumerable<string> MarshalStringList(byte* stringList)
+		{
+			var ret = new List<string>();
+			var curStr = stringList;
+			while (true)
+			{
+				var nextStr = curStr;
+				var len = 0;
+				while (*nextStr++ != 0)
+				{
+					len++;
+				}
+
+				var str = Encoding.UTF8.GetString(curStr, len);
+				if (str.Length == 0)
+				{
+					break;
+				}
+
+				ret.Add(str);
+				curStr = nextStr;
+			}
+
+			return ret;
+		}
+
+		public static unsafe IEnumerable<string> GetDeviceNames()
+		{
+			if (_enumAllExt != null)
+			{
+				var stringList = _enumAllExt.GetStringList(null, GetEnumerateAllContextStringList.AllDevicesSpecifier);
+				if (stringList != null)
+				{
+					return MarshalStringList(stringList);
+				}
+			}
+
+			if (_enumExt != null)
+			{
+				var stringList = _enumExt.GetStringList(null, GetEnumerationContextStringList.DeviceSpecifiers);
+				if (stringList != null)
+				{
+					return MarshalStringList(stringList);
+				}
+			}
+
+			return [ ];
+		}
 
 		private int BufferSizeSamples { get; set; }
 

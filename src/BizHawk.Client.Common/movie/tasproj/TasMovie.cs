@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 					HasState = TasStateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = lagged,
-					WasLagged = LagLog.History(lagIndex)
+					WasLagged = LagLog.History(lagIndex),
 				};
 			}
 		}
@@ -340,7 +340,7 @@ namespace BizHawk.Client.Common
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;
 
-		private bool IsReserved(int frame)
+		public bool IsReserved(int frame)
 		{
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen

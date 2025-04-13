@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.H6280;
@@ -8,7 +9,12 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
+	public enum NecSystemType
+	{
+		TurboGrafx,
+		TurboCD,
+		SuperGrafx,
+	}
 
 	[Core(CoreNames.PceHawk, "Vecna")]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IInputPollable, IVideoLogicalOffsets, IRomInfo,
@@ -202,35 +208,29 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ThinkAction = cycles => { SCSI.Think(); ADPCM.Think(cycles); };
 			}
 
-			if (rom.Length == 0x60000)
-			{
-				// 384k roms require special loading code. Why ;_;
-				// In memory, 384k roms look like [1st 256k][Then full 384k]
-				RomData = new byte[0xA0000];
-				var origRom = rom;
-				for (int i = 0; i < 0x40000; i++)
-					RomData[i] = origRom[i];
-				for (int i = 0; i < 0x60000; i++)
-					RomData[i + 0x40000] = origRom[i];
-				RomLength = RomData.Length;
-			}
-			else if (rom.Length > 1024 * 1024)
+			if (rom.Length > 1024 * 1024)
 			{
 				// If the rom is bigger than 1 megabyte, switch to Street Fighter 2 mapper
 				Cpu.ReadMemory21 = ReadMemorySF2;
 				Cpu.WriteMemory21 = WriteMemorySF2;
 				RomData = rom;
-				RomLength = RomData.Length;
 
 				// user request: current value of the SF2MapperLatch on the tracelogger
 				Cpu.Logger = s => Tracer.Put(new(disassembly: $"{SF2MapperLatch:X1}:{s.Disassembly}", registerInfo: string.Empty));
+			}
+			else if (rom.Length is 0x60000)
+			{
+				// 384k roms require special loading code. Why ;_;
+				// In memory, 384k roms look like [1st 256k][Then full 384k]
+				RomData = new byte[0xA0000];
+				((ReadOnlySpan<byte>) rom.AsSpan(start: 0, length: 0x40000)).ConcatArray(rom, dest: RomData);
 			}
 			else
 			{
 				// normal rom.
 				RomData = rom;
-				RomLength = RomData.Length;
 			}
+			RomLength = RomData.Length;
 
 			if (game["BRAM"] || Type == NecSystemType.TurboCD)
 			{

@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
 		private string _chipsetCompatible = "";
-		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
 		public override int VirtualWidth => _correctedWidth;
 
@@ -219,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					}
 					else
 					{
-						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {Path.GetFileName(_roms[_driveSlots[_currentDrive]].RomPath)}", _messageDuration);
 						_driveSlots[_currentDrive] = _driveNullOrEmpty;
 					}
 				}
@@ -241,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						}
 					}
 					_driveSlots[_currentDrive] = _currentSlot;
-					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {Path.GetFileName(_roms[_driveSlots[_currentDrive]].RomPath)}", _messageDuration);
 				}
 			}
 
@@ -252,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_currentSlot++;
 					_currentSlot %= _roms.Count;
 					var selectedFile = _roms[_currentSlot];
-					CoreComm.Notify($"Selected slot {_currentSlot}: {GetFullName(selectedFile)}", _messageDuration);
+					CoreComm.Notify($"Selected slot {_currentSlot}: {Path.GetFileName(selectedFile.RomPath)}", _messageDuration);
 				}
 			}
 
@@ -269,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					}
 					else
 					{
-						name = GetFullName(_roms[_driveSlots[_currentDrive]]);
+						name = Path.GetFileName(_roms[_driveSlots[_currentDrive]].RomPath);
 					}
 					CoreComm.Notify($"Selected drive FD{_currentDrive}: {name}", _messageDuration);
 				}
