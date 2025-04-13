@@ -2868,6 +2868,12 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Capture Mouse {(Config.CaptureMouse ? "enabled" : "disabled")}");
 		}
 
+		private void ToggleStayOnTop()
+		{
+			TopMost = Config.MainFormStayOnTop = !Config.MainFormStayOnTop;
+			AddOnScreenMessage($"Stay on Top {(Config.MainFormStayOnTop ? "enabled" : "disabled")}");
+		}
+
 		private void VsyncMessage()
 		{
 			AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
