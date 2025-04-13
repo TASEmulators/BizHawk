@@ -3841,10 +3841,9 @@ namespace BizHawk.Client.EmuHawk
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
-							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
-
-							var (filename, data) = xmlGame.Assets[xg];
-							if (Disc.IsValidExtension(ext))
+							var (_, filename, data) = xmlGame.Assets[xg];
+							// data length is 0 in the case of discs or 3DS roms
+							if (data.Length == 0)
 							{
 								xSw.WriteLine(Path.GetFileNameWithoutExtension(filename));
 								xSw.WriteLine("SHA1:N/A");

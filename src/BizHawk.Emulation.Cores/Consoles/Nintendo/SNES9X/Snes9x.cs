@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -29,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = VSystemID.Raw.SNES,
 			})
 		{
-			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringAfter('|'), null);
 			this._currentMsuTrack = new ProxiedFile();
 
 			LibSnes9x.OpenAudio openAudioCb = MsuOpenAudio;

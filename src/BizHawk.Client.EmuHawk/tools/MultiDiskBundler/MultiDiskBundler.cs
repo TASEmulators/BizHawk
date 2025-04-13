@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
-				AddFiles(xmlGame.AssetFullPaths);
+				AddFiles(xmlGame.Assets.Select(static pfd => pfd.Path).ToList());
 			}
 			catch
 			{

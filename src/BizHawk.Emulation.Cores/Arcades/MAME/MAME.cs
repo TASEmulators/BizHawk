@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[CoreConstructor(VSystemID.Raw.Arcade)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
-			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath).ToLowerInvariant();
+			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath.SubstringAfter('|')).ToLowerInvariant();
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ServiceProvider = new BasicServiceProvider(this);
@@ -172,8 +172,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// mame expects chd files in a folder of the game name
 			string MakeFileName(IRomAsset rom)
 				=> rom.Extension.ToLowerInvariant() is ".chd"
-					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
-					: Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
+					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
+					: Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
 
 			foreach (var rom in roms)
 			{

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
@@ -304,9 +305,9 @@ namespace BizHawk.Client.EmuHawk
 				case ".xml":
 				{
 					var xml = XmlGame.Create(new(path));
-					foreach (var kvp in xml.Assets)
+					foreach (var pfd in xml.Assets)
 					{
-						InternalDebugHash(kvp.Key);
+						InternalDebugHash(pfd.Path);
 					}
 
 					break;

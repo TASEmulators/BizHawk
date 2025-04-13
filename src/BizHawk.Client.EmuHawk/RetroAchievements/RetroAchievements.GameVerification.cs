@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 		private uint HashArcade(string path)
 		{
 			// Arcade wants to just hash the filename (with no extension)
-			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path));
+			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path.SubstringAfter('|')));
 			var hash = MD5Checksum.ComputeDigestHex(name);
 			return IdentifyHash(hash);
 		}
@@ -451,23 +451,23 @@ namespace BizHawk.Client.EmuHawk
 						else if (ext == ".xml")
 						{
 							var xml = XmlGame.Create(new(ioa.SimplePath));
-							foreach (var kvp in xml.Assets)
+							foreach (var pfd in xml.Assets)
 							{
 								if (consoleID is ConsoleID.Arcade)
 								{
-									ret.Add(HashArcade(kvp.Key));
+									ret.Add(HashArcade(pfd.Path));
 									break;
 								}
 
 								if (consoleID is ConsoleID.Nintendo3DS)
 								{
-									ret.Add(Hash3DS(kvp.Key));
+									ret.Add(Hash3DS(pfd.Filename));
 									break;
 								}
 
-								ret.Add(Disc.IsValidExtension(Path.GetExtension(kvp.Key))
-									? HashDisc(kvp.Key, consoleID)
-									: IdentifyRom(kvp.Value));
+								ret.Add(pfd.FileData.Length == 0
+									? HashDisc(pfd.Path, consoleID)
+									: IdentifyRom(pfd.FileData));
 							}
 						}
 						else
