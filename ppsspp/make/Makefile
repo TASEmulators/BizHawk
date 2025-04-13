@@ -222,6 +222,7 @@ SRCS =  ../bizhawk.cpp \
 	../ppsspp/Core/FileLoaders/LocalFileLoader.cpp \
 	../ppsspp/Core/FileLoaders/RamCachingFileLoader.cpp \
 	../ppsspp/Core/FileLoaders/RetryingFileLoader.cpp \
+	../ppsspp/Core/FileLoaders/ZipFileLoader.cpp \
 	../ppsspp/Core/FileSystems/BlobFileSystem.cpp \
 	../ppsspp/Core/FileSystems/BlockDevices.cpp \
 	../ppsspp/Core/FileSystems/DirectoryFileSystem.cpp \
