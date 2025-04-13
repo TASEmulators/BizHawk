@@ -19,8 +19,6 @@ typedef struct
 	int joystick2Enabled;
 	uint64_t writableHDDImageFileSize;
 	int preserveHardDiskContents;
-	uint64_t fpsNumerator;
-	uint64_t fpsDenominator;
 } InitSettings;
 
 typedef struct
@@ -62,4 +60,6 @@ typedef struct
 	JoystickButtons joy1;
 	JoystickButtons joy2;
 	MouseInput mouse;
+	int framerateNumerator;
+	int framerateDenominator;
 } MyFrameInfo;
