@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _currentCDROM = 0;
 
 		// VGA Refresh rate info
-		private ulong _VGARefreshRateNumerator = LibDOSBox.VIDEO_NUMERATOR_DOS;
-		private ulong _VGARefreshRateDenominator = LibDOSBox.VIDEO_DENOMINATOR_DOS;
+		private ulong _VGARefreshRateNumerator = 0;
+		private ulong _VGARefreshRateDenominator = 0;
 
 		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
 
