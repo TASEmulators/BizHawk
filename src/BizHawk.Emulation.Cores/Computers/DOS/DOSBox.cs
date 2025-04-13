@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -457,11 +458,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_VGARefreshRateDenominator = _libDOSBox.getVGARefreshRateDenominator();
 
 			// If it changed, notify now
-			if (currentVGARefreshRateNumerator != _VGARefreshRateNumerator || currentVGARefreshRateDenominator != _VGARefreshRateDenominator)
+			if (currentVGARefreshRateNumerator != _VGARefreshRateNumerator
+				|| currentVGARefreshRateDenominator != _VGARefreshRateDenominator)
 			{
-				double newVGARefreshRate = (double) _VGARefreshRateNumerator / _VGARefreshRateDenominator;
-				CoreComm.Notify($"VGA Refresh Rate changed to: {_VGARefreshRateNumerator} / {_VGARefreshRateDenominator} = {newVGARefreshRate} Hz", null);
-				Console.WriteLine($"VGA Refresh Rate changed to: {_VGARefreshRateNumerator} / {_VGARefreshRateDenominator} = {newVGARefreshRate} Hz", null);
+				var newVGARefreshRate = (float)_VGARefreshRateNumerator / _VGARefreshRateDenominator;
+				CoreComm.Notify("VGA Refresh Rate changed to: " +
+					$"{_VGARefreshRateNumerator} / " +
+					$"{_VGARefreshRateDenominator} = " +
+					$"{newVGARefreshRate.ToString(CultureInfo.InvariantCulture)} Hz",
+					_messageDuration);
+				Console.WriteLine($"[Frame {Frame}] VGA Refresh Rate changed to: " +
+					$"{_VGARefreshRateNumerator} / " +
+					$"{_VGARefreshRateDenominator} = " +
+					$"{newVGARefreshRate.ToString(CultureInfo.InvariantCulture)} Hz");
 			}
 		}
 
