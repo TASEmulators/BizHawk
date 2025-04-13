@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -55,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
 		private string _chipsetCompatible = "";
+		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
 		public override int VirtualWidth => _correctedWidth;
 
@@ -218,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					}
 					else
 					{
-						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {Path.GetFileName(_roms[_driveSlots[_currentDrive]].RomPath)}", _messageDuration);
+						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
 						_driveSlots[_currentDrive] = _driveNullOrEmpty;
 					}
 				}
@@ -240,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						}
 					}
 					_driveSlots[_currentDrive] = _currentSlot;
-					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {Path.GetFileName(_roms[_driveSlots[_currentDrive]].RomPath)}", _messageDuration);
+					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
 				}
 			}
 
@@ -251,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_currentSlot++;
 					_currentSlot %= _roms.Count;
 					var selectedFile = _roms[_currentSlot];
-					CoreComm.Notify($"Selected slot {_currentSlot}: {Path.GetFileName(selectedFile.RomPath)}", _messageDuration);
+					CoreComm.Notify($"Selected slot {_currentSlot}: {GetFullName(selectedFile)}", _messageDuration);
 				}
 			}
 
@@ -268,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					}
 					else
 					{
-						name = Path.GetFileName(_roms[_driveSlots[_currentDrive]].RomPath);
+						name = GetFullName(_roms[_driveSlots[_currentDrive]]);
 					}
 					CoreComm.Notify($"Selected drive FD{_currentDrive}: {name}", _messageDuration);
 				}
