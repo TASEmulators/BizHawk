@@ -30,6 +30,10 @@ uint32_t ticksElapsed;
 uint32_t _GetTicks() { return ticksElapsed; }
 void _Delay(uint32_t ticks) { ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
 
+// VGA refresh rate information
+uint64_t _vgaRefreshRateNumerator;
+uint64_t _vgaRefreshRateDenominator;
+
 // Memory file directory
 jaffarCommon::file::MemoryFileDirectory _memFileDirectory;
 
@@ -123,6 +127,10 @@ ECL_EXPORT bool Init(InitSettings* settings)
 	ticksPerFrame = 1000.0 / fps;
 	ticksTarget = 0.0;
 	ticksElapsed = 0;
+
+	// Setting VGA refresh rate initial value, just in case
+	_vgaRefreshRateNumerator = settings->fpsNumerator;
+    _vgaRefreshRateDenominator = settings->fpsDenominator;
 
 	printf("Starting DOSBox-x Coroutine...\n");
 	_driverCoroutine = co_active();
@@ -303,6 +311,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	memcpy(f->base.SoundBuffer, _audioSamples.data(), _audioSamples.size() * sizeof(int16_t));
 	f->base.Samples  = _audioSamples.size() / 2;
 }
+
+ECL_EXPORT uint64_t getVGARefreshRateNumerator() { return _vgaRefreshRateNumerator; }
+ECL_EXPORT uint64_t getVGARefreshRateDenominator() { return _vgaRefreshRateDenominator; }
 
 #define DOS_CONVENTIONAL_MEMORY_SIZE (640 * 1024)
 #define DOS_UPPER_MEMORY_SIZE (384 * 1024)
