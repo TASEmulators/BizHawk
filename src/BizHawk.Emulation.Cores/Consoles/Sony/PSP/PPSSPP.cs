@@ -56,8 +56,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_resolver = new(OSTailoredCode.IsUnixHost ? "libppsspp.so" : "libppsspp.dll", hasLimitedLifetime: true);
 			_libPPSSPP = BizInvoker.GetInvoker<LibPPSSPP>(_resolver, CallingConventionAdapters.Native);
 
+			// Setting input callback
+			_inputCallback = InputCallback;
+			_libPPSSPP.SetInputCallback(_inputCallback);
+
 			// Setting CD callbacks
 			_libPPSSPP.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
+
 			//// Pre-loading emulator resources
 
 			// Getting compat.ini -- required to set game-specific compatibility flags
@@ -107,6 +112,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			}
 		}
 
+		// Input callback
+		private readonly LibPPSSPP.InputCallback _inputCallback;
+
 		// CD Handling logic
 		private bool _isMultidisc;
 		private bool _discInserted = true;
@@ -145,6 +153,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		{
 			if (_discIndex < _discAssets.Count) return _discAssets[_discIndex].DiscData.Session1.LeadoutLBA;
 			return -1;
+		}
+
+		private void InputCallback()
+		{
+			IsLagFrame = false;
 		}
 
 		protected void SaveStateBinaryInternal(BinaryWriter writer)

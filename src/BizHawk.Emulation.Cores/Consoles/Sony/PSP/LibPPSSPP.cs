@@ -13,8 +13,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		[UnmanagedFunctionPointer(CC)]
 		public delegate int CDSectorCountCallback();
 
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void InputCallback();
+
 		[BizImport(CC)]
 		public abstract void SetCdCallbacks(CDReadCallback cdrc, CDSectorCountCallback cdscc);
+
+		[BizImport(CC)]
+		public abstract void SetInputCallback(InputCallback ipc);
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract bool Init(string gameFile);

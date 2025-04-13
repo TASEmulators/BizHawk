@@ -139,7 +139,7 @@ char _deviceCountOption[256];
 void configHandler(struct retro_variable *var)
 {
   var->value = nullptr;
-  printf("Variable Name: %s / Value: %s\n", var->key, var->value);
+  //printf("Variable Name: %s / Value: %s\n", var->key, var->value);
   std::string key(var->key);
 }
 
@@ -306,6 +306,12 @@ EXPORT void GetVideo(uint32_t* videoBuffer)
   memcpy(videoBuffer, _videoBuffer, _videoBufferSize);
 }
 
+void (*InputCallback)();
+EXPORT void SetInputCallback(void (*callback)())
+{
+	InputCallback = callback;
+}
+
 EXPORT void FrameAdvance(MyFrameInfo f)
 {
   // Setting Frame information
@@ -339,6 +345,9 @@ EXPORT void FrameAdvance(MyFrameInfo f)
 
   // Jumping into the emu driver coroutine to run a single frame
   retro_run();
+
+  // Indicating whether the inputs were polled
+  if (_readInputs == 1) InputCallback();
 }
 
 // EXPORT void GetMemoryAreas(MemoryArea *m)
@@ -358,11 +367,6 @@ EXPORT void FrameAdvance(MyFrameInfo f)
 //   // memAreaIdx++;
 // }
 
-void (*InputCallback)();
-EXPORT void SetInputCallback(void (*callback)())
-{
-  InputCallback = callback;
-}
 
 EXPORT int GetStateSize()
 {
