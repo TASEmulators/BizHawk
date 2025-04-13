@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_syncSettings.EnableMouse)
 			{
 				// Getting new mouse state values
-				DOSBox.MouseState nextState = new()
+				DOSBox.MouseState mouseState = new()
 				{
 					PosX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.PosX}"),
 					PosY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.PosY}"),
@@ -380,26 +380,26 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}");
 				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}");
-				fi.Mouse.PosX = nextState.PosX;
-				fi.Mouse.PosY = nextState.PosY;
-				fi.Mouse.DeltaX = deltaX != 0 ? deltaX : fi.Mouse.PosX - _mouseState.PosX;
-				fi.Mouse.DeltaY = deltaY != 0 ? deltaY : fi.Mouse.PosY - _mouseState.PosY;
+				fi.Mouse.PosX = mouseState.PosX;
+				fi.Mouse.PosY = mouseState.PosY;
+				fi.Mouse.DeltaX = deltaX != 0 ? deltaX : fi.Mouse.PosX - _lastMouseState.PosX;
+				fi.Mouse.DeltaY = deltaY != 0 ? deltaY : fi.Mouse.PosY - _lastMouseState.PosY;
 
 				// Button pressed criteria:
 				// If the input is made in this frame and the button is not held from before
-				fi.Mouse.LeftButtonPressed = nextState.LeftButtonHeld && !_mouseState.LeftButtonHeld ? 1 : 0;
-				fi.Mouse.MiddleButtonPressed = nextState.MiddleButtonHeld && !_mouseState.MiddleButtonHeld ? 1 : 0;
-				fi.Mouse.RightButtonPressed = nextState.RightButtonHeld && !_mouseState.RightButtonHeld ? 1 : 0;
+				fi.Mouse.LeftButtonPressed = mouseState.LeftButtonHeld && !_lastMouseState.LeftButtonHeld ? 1 : 0;
+				fi.Mouse.MiddleButtonPressed = mouseState.MiddleButtonHeld && !_lastMouseState.MiddleButtonHeld ? 1 : 0;
+				fi.Mouse.RightButtonPressed = mouseState.RightButtonHeld && !_lastMouseState.RightButtonHeld ? 1 : 0;
 
 				// Button released criteria:
 				// If the input is not pressed in this frame and the button is held from before
-				fi.Mouse.LeftButtonReleased = !nextState.LeftButtonHeld && _mouseState.LeftButtonHeld ? 1 : 0;
-				fi.Mouse.MiddleButtonReleased = !nextState.MiddleButtonHeld && _mouseState.MiddleButtonHeld ? 1 : 0;
-				fi.Mouse.RightButtonReleased = !nextState.RightButtonHeld && _mouseState.RightButtonHeld ? 1 : 0;
+				fi.Mouse.LeftButtonReleased = !mouseState.LeftButtonHeld && _lastMouseState.LeftButtonHeld ? 1 : 0;
+				fi.Mouse.MiddleButtonReleased = !mouseState.MiddleButtonHeld && _lastMouseState.MiddleButtonHeld ? 1 : 0;
+				fi.Mouse.RightButtonReleased = !mouseState.RightButtonHeld && _lastMouseState.RightButtonHeld ? 1 : 0;
 				fi.Mouse.Sensitivity = _syncSettings.MouseSensitivity;
 
 				// Updating mouse state
-				_mouseState = nextState;
+				_lastMouseState = mouseState;
 			}
 
 			// Processing floppy disks swaps
@@ -451,11 +451,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_currentFloppyDisk);
 			writer.Write(_currentCDROM);
 
-			writer.Write(_mouseState.PosX);
-			writer.Write(_mouseState.PosY);
-			writer.Write(_mouseState.LeftButtonHeld);
-			writer.Write(_mouseState.MiddleButtonHeld);
-			writer.Write(_mouseState.RightButtonHeld);
+			writer.Write(_lastMouseState.PosX);
+			writer.Write(_lastMouseState.PosY);
+			writer.Write(_lastMouseState.LeftButtonHeld);
+			writer.Write(_lastMouseState.MiddleButtonHeld);
+			writer.Write(_lastMouseState.RightButtonHeld);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -465,11 +465,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_currentFloppyDisk = reader.ReadInt32();
 			_currentCDROM = reader.ReadInt32();
 
-			_mouseState.PosX = reader.ReadInt32();
-			_mouseState.PosY = reader.ReadInt32();
-			_mouseState.LeftButtonHeld = reader.ReadBoolean();
-			_mouseState.MiddleButtonHeld = reader.ReadBoolean();
-			_mouseState.RightButtonHeld = reader.ReadBoolean();
+			_lastMouseState.PosX = reader.ReadInt32();
+			_lastMouseState.PosY = reader.ReadInt32();
+			_lastMouseState.LeftButtonHeld = reader.ReadBoolean();
+			_lastMouseState.MiddleButtonHeld = reader.ReadBoolean();
+			_lastMouseState.RightButtonHeld = reader.ReadBoolean();
 		}
 
 		private static class FileNames

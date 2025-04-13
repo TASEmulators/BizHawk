@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public bool RightButtonHeld = false;
 		}
 
-		private MouseState _mouseState = new MouseState();
+		private MouseState _lastMouseState = new MouseState();
 
 		private static readonly (string Name, LibDOSBox.DOSBoxKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
 
