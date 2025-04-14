@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -44,8 +46,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
-
-		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
+		
+		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
 		// CD Handling logic
 		private List<string> _cdRomFileNames = new List<string>();
