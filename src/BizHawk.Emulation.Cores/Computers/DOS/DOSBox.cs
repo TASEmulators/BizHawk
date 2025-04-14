@@ -457,7 +457,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			VsyncDenominator = denominator;
 			VsyncAttoseconds = (1000000000000000000L * numerator) / denominator;
 
-			var newRefreshRate = (float) VsyncNumerator / VsyncDenominator;
+			var newRefreshRate = (double) VsyncNumerator / VsyncDenominator;
 			CoreComm.Notify("Refresh Rate set to: " +
 				$"{VsyncNumerator} / " +
 				$"{VsyncDenominator} = " +
