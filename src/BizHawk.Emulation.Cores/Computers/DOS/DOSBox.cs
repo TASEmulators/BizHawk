@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				DOSBox.MouseState mouseState = new()
 				{
 					PosX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.PosX}"),
-					PosY = controller.AxisValue($"{Inputs.Mouse} { MouseInputs.PosY}"),
+					PosY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.PosY}"),
 					LeftButtonHeld = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.LeftButton}"),
 					MiddleButtonHeld = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.MiddleButton}"),
 					RightButtonHeld = controller.IsPressed($"{Inputs.Mouse} {MouseInputs.RightButton}"),
@@ -499,6 +499,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_lastMouseState.LeftButtonHeld);
 			writer.Write(_lastMouseState.MiddleButtonHeld);
 			writer.Write(_lastMouseState.RightButtonHeld);
+
+			// Storing current refresh rate
+			writer.Write(VsyncNumerator);
+			writer.Write(VsyncDenominator);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -513,6 +517,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_lastMouseState.LeftButtonHeld = reader.ReadBoolean();
 			_lastMouseState.MiddleButtonHeld = reader.ReadBoolean();
 			_lastMouseState.RightButtonHeld = reader.ReadBoolean();
+
+			// Restoring refresh rate
+			var newVsyncNumerator = reader.ReadInt32();
+			var newVsyncDenominator = reader.ReadInt32();
+
+			// Updating it now, if different
+			if (newVsyncNumerator != VsyncNumerator || newVsyncDenominator != VsyncDenominator)
+				updateFramerate(newVsyncNumerator, newVsyncDenominator);
 		}
 
 		private static class FileNames
