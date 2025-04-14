@@ -190,8 +190,6 @@ namespace BizHawk.Emulation.DiscSystem
 			if (DetectWii())
 				return DiscType.Wii;
 
-			if (DetectISO9660()) return DiscType.DOS;
-			if (DetectUDF()) return DiscType.DOS;
 
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
@@ -254,6 +252,9 @@ namespace BizHawk.Emulation.DiscSystem
 				// NeoGeoCD Check
 				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
 				if (absTxt != null && SectorContains("abstracted by snk", Convert.ToInt32(absTxt.Offset))) return DiscType.NeoGeoCD;
+
+				if (DetectISO9660()) return DiscType.DOS;
+				if (DetectUDF()) return DiscType.DOS;
 
 				return DiscType.UnknownCDFS;
 			}
