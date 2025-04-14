@@ -29,6 +29,7 @@ double ticksPerFrame;
 uint32_t ticksElapsed;
 uint32_t _GetTicks() { return ticksElapsed; }
 void _Delay(uint32_t ticks) { ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
+uint32_t _frameTicksElapsed;
 
 // Dosbox internal refresh rate information
 int _refreshRateNumerator = 0;
@@ -289,7 +290,11 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	ticksTarget += ticksPerFrame;
 	
 	// Advancing until the required tick target is met
+	auto curTicksElapsed = ticksElapsed;
 	while (ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
+    
+	// Calculating how many ticks elapsed in this particular frame
+	_frameTicksElapsed = ticksElapsed - curTicksElapsed;
 
 	// Updating video output
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
@@ -313,6 +318,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 ECL_EXPORT uint64_t getRefreshRateNumerator() { return _refreshRateNumerator; }
 ECL_EXPORT uint64_t getRefreshRateDenominator() { return _refreshRateDenominator; }
+ECL_EXPORT uint32_t getTicksElapsed() { return _frameTicksElapsed; }
 
 #define DOS_CONVENTIONAL_MEMORY_SIZE (640 * 1024)
 #define DOS_UPPER_MEMORY_SIZE (384 * 1024)
