@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			for (var discIdx = 0; discIdx < _discAssets.Count; discIdx++)
 			{
 				// Creating file name to pass to dosbox
-				var cdRomFileName = _discAssets[discIdx].DiscName + ".cdrom";
+				var cdRomFileName = $"{FileNames.CD}{discIdx}.cdrom";
 
 				// Getting disc data structure
 				var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			string floppyMountLine = "imgmount a ";
 			foreach (var file in _floppyDiskImageFiles)
 			{
-				string floppyNewName = FileNames.FD + _floppyDiskCount.ToString() + Path.GetExtension(file.RomPath);
+				string floppyNewName = $"{FileNames.FD}{_floppyDiskCount}{Path.GetExtension(file.RomPath)}";
 				_exe.AddReadonlyFile(file.FileData, floppyNewName);
 				floppyMountLine += floppyNewName + " ";
 				_floppyDiskCount++;
@@ -254,8 +254,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				configData = configData.Concat(file.FileData);
 			}
 
-			_exe.AddReadonlyFile(configData.ToArray(), FileNames.DOSBOX_CONF);
-			Console.WriteLine("Configuration: {0}", System.Text.Encoding.Default.GetString(configData.ToArray()));
+			_exe.AddReadonlyFile(configData.ToArray(), FileNames.Config);
+			Console.WriteLine($"Configuration: {System.Text.Encoding.Default.GetString(configData.ToArray())}");
 
 			////////////// Initializing Core
 			if (!_libDOSBox.Init(new LibDOSBox.InitSettings()
@@ -272,9 +272,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Setting framerate, if forced; otherwise, use the default.
 			// The default is necessary because DOSBox does not populate framerate value on init. Only after the first frame run
 			if (_syncSettings.forceFPSNumerator > 0 && _syncSettings.forceFPSDenominator > 0)
-				updateFramerate(_syncSettings.forceFPSNumerator, _syncSettings.forceFPSDenominator);
+				UpdateFramerate(_syncSettings.forceFPSNumerator, _syncSettings.forceFPSDenominator);
 			else
-				updateFramerate(LibDOSBox.DEFAULT_FRAMERATE_NUMERATOR_DOS, LibDOSBox.DEFAULT_FRAMERATE_DENOMINATOR_DOS);
+				UpdateFramerate(LibDOSBox.DEFAULT_FRAMERATE_NUMERATOR_DOS, LibDOSBox.DEFAULT_FRAMERATE_DENOMINATOR_DOS);
 				
 
 			PostInit();
@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			return fi;
 		}
 		
-		private void updateFramerate(int numerator, int denominator)
+		private void UpdateFramerate(int numerator, int denominator)
 		{
 			VsyncNumerator = numerator;
 			VsyncDenominator = denominator;
@@ -484,7 +484,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (currentRefreshRateNumerator != newRefreshRateNumerator || currentRefreshRateDenominator != newRefreshRateDenominator)
 				if (_syncSettings.forceFPSNumerator == 0 || _syncSettings.forceFPSDenominator == 0)
 					if (newRefreshRateNumerator > 0 && newRefreshRateDenominator > 0)
-						updateFramerate(newRefreshRateNumerator, newRefreshRateDenominator);
+						UpdateFramerate(newRefreshRateNumerator, newRefreshRateDenominator);
 		}
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
@@ -524,12 +524,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			// Updating it now, if different
 			if (newVsyncNumerator != VsyncNumerator || newVsyncDenominator != VsyncDenominator)
-				updateFramerate(newVsyncNumerator, newVsyncDenominator);
+				UpdateFramerate(newVsyncNumerator, newVsyncDenominator);
 		}
 
 		private static class FileNames
 		{
-			public const string DOSBOX_CONF = "dosbox-x.conf";
+			public const string Config = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
 			public const string WHD = "__WritableHardDiskDrive";
