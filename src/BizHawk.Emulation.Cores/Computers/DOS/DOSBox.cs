@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private Dictionary<string, DiscSectorReader> _cdRomFileToReaderMap = new Dictionary<string, DiscSectorReader>();
 		private readonly LibDOSBox.CDReadCallback _CDReadCallback;
 
-		public long VsyncAttoseconds { get; private set; }
 		public override int VirtualWidth => BufferHeight * 4 / 3;
 
 		// Image selection / swapping variables
@@ -457,7 +456,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			VsyncNumerator = numerator;
 			VsyncDenominator = denominator;
-			VsyncAttoseconds = (1000000000000000000L * numerator) / denominator;
 
 			var newRefreshRate = (double) VsyncNumerator / VsyncDenominator;
 			CoreComm.Notify("Refresh Rate set to: " +
