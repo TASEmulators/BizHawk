@@ -47,6 +47,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		[BizImport(CC)]
 		public abstract void GetVideo(int[] buffer);
 
+		[BizImport(CC)]
+		public abstract int GetAudio(short[] buffer);
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GamepadInputs
 		{

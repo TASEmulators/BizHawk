@@ -291,7 +291,11 @@ EXPORT bool Init()
 	if (loadResult == false) { fprintf(stderr, "Could not load game"); return false; }
 
 	// Advancing until gpu is initialized -- this is necessary for proper savestates
-	while (!gpu) retro_run();
+	while (!gpu)
+	{
+		printf("Waiting for GPU\n");
+		retro_run();
+	}
 
 	// Getting av info
 	struct retro_system_av_info info;
@@ -305,6 +309,13 @@ EXPORT void GetVideo(uint32_t* videoBuffer)
 {
   memcpy(videoBuffer, _videoBuffer, _videoBufferSize);
 }
+
+EXPORT int GetAudio(int8_t* audioBuffer)
+{
+	memcpy(audioBuffer, _audioBuffer, sizeof(int16_t) * _audioSamples * _CHANNEL_COUNT);
+	return (int)_audioSamples * _CHANNEL_COUNT;
+}
+
 
 void (*InputCallback)();
 EXPORT void SetInputCallback(void (*callback)())
