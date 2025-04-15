@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private LibDOSBox _libDOSBox;
 		private readonly List<IRomAsset> _floppyDiskAssets;
 		private readonly List<IDiscAsset> _discAssets;
-		private const int _messageDuration = 4;
 
 		// Drive management variables
 		private bool _nextFloppyDiskPressed = false;
@@ -419,7 +418,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
 				fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
-				CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)} into drive A:", _messageDuration);
+				CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)} into drive A:", null);
 			}
 
 			// Processing CDROM swaps
@@ -430,7 +429,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
 				fi.DriveActions.InsertCDROM = _currentCDROM;
-				CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", _messageDuration);
+				CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
 			}
 
 			// Processing keyboard inputs
@@ -462,7 +461,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				$"{VsyncNumerator} / " +
 				$"{VsyncDenominator} = " +
 				$"{newRefreshRate.ToString(CultureInfo.InvariantCulture)} Hz",
-				_messageDuration);
+				null);
 			Console.WriteLine($"[Frame {Frame}] Refresh Rate set to: " +
 				$"{VsyncNumerator} / " +
 				$"{VsyncDenominator} = " +
