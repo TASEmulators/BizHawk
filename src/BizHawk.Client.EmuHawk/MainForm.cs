@@ -67,6 +67,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateWindowTitle();
 
+			Slot1StatusButton.Tag = SelectSlot1MenuItem.Tag = 1;
+			Slot2StatusButton.Tag = SelectSlot2MenuItem.Tag = 2;
+			Slot3StatusButton.Tag = SelectSlot3MenuItem.Tag = 3;
+			Slot4StatusButton.Tag = SelectSlot4MenuItem.Tag = 4;
+			Slot5StatusButton.Tag = SelectSlot5MenuItem.Tag = 5;
+			Slot6StatusButton.Tag = SelectSlot6MenuItem.Tag = 6;
+			Slot7StatusButton.Tag = SelectSlot7MenuItem.Tag = 7;
+			Slot8StatusButton.Tag = SelectSlot8MenuItem.Tag = 8;
+			Slot9StatusButton.Tag = SelectSlot9MenuItem.Tag = 9;
+			Slot0StatusButton.Tag = SelectSlot0MenuItem.Tag = 10;
+
 			{
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
 				{
