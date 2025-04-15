@@ -108,7 +108,10 @@
     <ClCompile Include="..\ppsspp\Common\Serialize\Serializer.cpp" />
     <ClCompile Include="..\ppsspp\Common\StringUtils.cpp" />
     <ClCompile Include="..\ppsspp\Common\SysError.cpp" />
-    <ClCompile Include="..\ppsspp\Common\System\Display.cpp" />
+    <ClCompile Include="..\ppsspp\Common\System\Display.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(RelativeDir)_Display</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(RelativeDir)_Display</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\ppsspp\Common\System\OSD.cpp" />
     <ClCompile Include="..\ppsspp\Common\System\Request.cpp" />
     <ClCompile Include="..\ppsspp\Common\Thread\ParallelLoop.cpp" />
@@ -275,7 +278,7 @@
     <ClCompile Include="..\ppsspp\Core\HW\Atrac3Standalone.cpp" />
     <ClCompile Include="..\ppsspp\Core\HW\BufferQueue.cpp" />
     <ClCompile Include="..\ppsspp\Core\HW\Camera.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HW\_Display.cpp" />
+    <ClCompile Include="..\ppsspp\Core\HW\Display.cpp" />
     <ClCompile Include="..\ppsspp\Core\HW\MediaEngine.cpp" />
     <ClCompile Include="..\ppsspp\Core\HW\MemoryStick.cpp" />
     <ClCompile Include="..\ppsspp\Core\HW\MpegDemux.cpp" />
@@ -469,7 +472,10 @@
     <ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderHandwritten.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderRiscV.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Common\VertexDecoderX86.cpp" />
-    <ClCompile Include="..\ppsspp\GPU\Debugger\_Breakpoints.cpp" />
+    <ClCompile Include="..\ppsspp\GPU\Debugger\Breakpoints.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(RelativeDir)_Breakpoints</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(RelativeDir)_Breakpoints</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\ppsspp\GPU\Debugger\Debugger.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Debugger\GECommandTable.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Debugger\Playback.cpp" />
