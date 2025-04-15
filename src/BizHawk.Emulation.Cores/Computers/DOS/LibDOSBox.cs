@@ -59,6 +59,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
 
 		[BizImport(CC)]
+		public abstract uint getTicksElapsed();
+
+
+		[BizImport(CC)]
 		public abstract int getRefreshRateNumerator();
 
 		[BizImport(CC)]
