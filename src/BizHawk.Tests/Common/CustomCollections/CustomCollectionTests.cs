@@ -54,9 +54,10 @@ namespace BizHawk.Tests.Common.CustomCollections
 		[DataRow(new[] {1, 5, 9, 10, 11, 12}, new[] {1, 5, 9}, 9)]
 		[DataRow(new[] { 2, 3 }, new[] { 2, 3 }, 5)]
 		[DataRow(new[] { 4, 7 }, new int[] { }, 0)]
-		public void TestSortedListRemoveAfter(int[] before, int[] after, int removeItem)
+		public void TestSortedListRemoveAfter<T>(T[] before, T[] after, T removeItem)
+			where T : IComparable<T>
 		{
-			var sortlist = new SortedList<int>(before);
+			SortedList<T> sortlist = new(before);
 			sortlist.RemoveAfter(removeItem);
 			CollectionAssert.AreEqual(after, sortlist);
 		}
