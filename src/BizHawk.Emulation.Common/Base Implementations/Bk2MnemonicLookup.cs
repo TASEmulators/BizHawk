@@ -904,7 +904,7 @@ namespace BizHawk.Emulation.Common
 				["RightBracket"] = ']',
 				["Semicolon"] = ';',
 				["Quote"] = '\'',
-				["Period"] = '.',
+				["Period"] = 'p', // because '.' represents no input
 				["Comma"] = ',',
 				["Slash"] = '/',
 				["ExtraLtGt"] = '>',
