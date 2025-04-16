@@ -1,3 +1,5 @@
+#pragma warning disable MSTEST0037 // wants `Assert.IsTrue` calls to be more specific
+
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -88,7 +90,9 @@ namespace BizHawk.Tests.Client.Common.Lua
 
 		[LuaMethod("pass_color", "")]
 		public static void PassColor(object? o)
+#pragma warning disable MSTEST0026 // "Prefer adding an additional assertion that checks for null" ??? maybe structure like the below method?
 			=> Assert.IsTrue(_th.SafeParseColor(o)?.ToArgb() == ((Color?)ExpectedValue)?.ToArgb());
+#pragma warning restore MSTEST0026
 
 		[LuaMethod("pass_table", "")]
 		public static void PassTable(NLua.LuaTable? o)

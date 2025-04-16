@@ -65,7 +65,9 @@ namespace BizHawk.Tests
 			this CollectionAssert assert,
 			IReadOnlyCollection<T> collection,
 			string? message = null)
+#pragma warning disable MSTEST0037 // intentionally not using `Assert.AreEqual` here as the "ex: 0, ac: 4" message might be confusing
 				=> Assert.IsTrue(collection.Count is 0, message);
+#pragma warning restore MSTEST0037
 
 		/// <remarks>dumb param order matches predefined method</remarks>
 		public static void IsSubsetOf<T>(

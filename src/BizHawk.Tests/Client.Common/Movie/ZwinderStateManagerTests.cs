@@ -283,7 +283,6 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var actual = zw.GetStateClosestToFrame(futureReservedFrame + 1);
 
 			// Assert
-			Assert.IsNotNull(actual);
 			Assert.AreEqual(futureReservedFrame, actual.Key);
 		}
 
