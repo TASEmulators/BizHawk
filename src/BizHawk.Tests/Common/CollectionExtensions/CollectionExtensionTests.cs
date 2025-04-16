@@ -103,12 +103,18 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		public void TestBinarySearchExtension()
 		{
 			List<string> testList = new(new[] { "a", "abc", "abcdef" });
-			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 4));
-			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 7));
+			_ = Assert.Throws<InvalidOperationException>(
+				() => testList.BinarySearch(static s => s.Length, 4),
+				"none of length 4");
+			_ = Assert.Throws<InvalidOperationException>(
+				() => testList.BinarySearch(static s => s.Length, 7),
+				"none of length 7");
 			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3));
 
 			List<int> emptyList = new List<int>();
-			Assert.ThrowsException<InvalidOperationException>(() => emptyList.BinarySearch(i => i, 15));
+			_ = Assert.Throws<InvalidOperationException>(
+				() => emptyList.BinarySearch(i => i, 15),
+				"empty receiver");
 		}
 
 		[TestMethod]

@@ -28,16 +28,24 @@ namespace BizHawk.Tests.Common.CustomCollections
 		public void TestSortedListInsert()
 		{
 			SortedList<int> list = new([ 1, 4, 7 ]);
-			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 3, item: 0), "setting [^0] (appending) out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list.Insert(index: 3, item: 0),
+				"setting [^0] (appending) out-of-order should throw");
 			list.Insert(index: 3, item: 10);
 			CollectionAssert.AreEqual(new[] { 1, 4, 7, 10 }, list, "expecting [ 1, 4, 7, 10 ]");
-			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 3, item: 0), "setting [^1] out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list.Insert(index: 3, item: 0),
+				"setting [^1] out-of-order should throw");
 			list.Insert(index: 3, item: 9);
 			CollectionAssert.AreEqual(new[] { 1, 4, 7, 9, 10 }, list, "expecting [ 1, 4, 7, 9, 10 ]");
-			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 1, item: 9), "setting [1] out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list.Insert(index: 1, item: 9),
+				"setting [1] out-of-order should throw");
 			list.Insert(index: 1, item: 3);
 			CollectionAssert.AreEqual(new[] { 1, 3, 4, 7, 9, 10 }, list, "expecting [ 1, 3, 4, 7, 9, 10 ]");
-			Assert.ThrowsException<NotSupportedException>(() => list.Insert(index: 0, item: 9), "setting [0] out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list.Insert(index: 0, item: 9),
+				"setting [0] out-of-order should throw");
 			list.Insert(index: 0, item: 0);
 			CollectionAssert.AreEqual(new[] { 0, 1, 3, 4, 7, 9, 10 }, list, "expecting [ 0, 1, 3, 4, 7, 9, 10 ]");
 		}
@@ -57,15 +65,25 @@ namespace BizHawk.Tests.Common.CustomCollections
 		public void TestSortedListSetIndexer()
 		{
 			SortedList<int> list = new([ 1, 3, 4 ]);
-			Assert.ThrowsException<NotSupportedException>(() => list[1] = 9, "setting [1] out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list[1] = 9,
+				"setting [1] out-of-order should throw");
 			list[1] = 2;
 			CollectionAssert.AreEqual(new[] { 1, 2, 4 }, list, "expecting [ 1, 2, 4 ]");
-			Assert.ThrowsException<NotSupportedException>(() => list[0] = 9, "setting [0] out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list[0] = 9,
+				"setting [0] out-of-order should throw");
 			list[0] = 0;
-			Assert.ThrowsException<NotSupportedException>(() => list[2] = 0, "setting [^1] out-of-order should throw");
+			_ = Assert.ThrowsExactly<NotSupportedException>(
+				() => list[2] = 0,
+				"setting [^1] out-of-order should throw");
 			list[2] = 9;
-			Assert.ThrowsException</*NotSupportedException*/ArgumentOutOfRangeException>(() => list[3] = 0, "setting [^0] (appending) out-of-order should throw");
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => list[3] = 10, "setting [^0] (appending) properly should throw"); // to match BCL `List<T>`
+			_ = Assert.Throws</*NotSupportedException*/ArgumentException>(
+				() => list[3] = 0,
+				"setting [^0] (appending) out-of-order should throw");
+			_ = Assert.Throws<ArgumentException>(
+				() => list[3] = 10,
+				"setting [^0] (appending) properly should throw"); // to match BCL `List<T>`
 			CollectionAssert.AreEqual(new[] { 0, 2, 9 }, list, "expecting [ 0, 2, 9 ]");
 		}
 	}
