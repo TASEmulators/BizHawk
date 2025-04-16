@@ -210,7 +210,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	if (f->driveActions.insertCDROM >= 0)
 	{
 		printf("Swapping to CDROM: %d\n", f->driveActions.insertCDROM);
-		swapInDrive(3, f->driveActions.insertFloppyDisk + 1); // 3 is D:
+		swapInDrive(3, f->driveActions.insertCDROM + 1); // 3 is D:
 	}
 
  	// Processing joystick inputs
