@@ -75,8 +75,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			// Adding drive management buttons
-			if (floppyDiskCount > 1) controller.BoolButtons.Add(Inputs.NextFloppyDisk);
-			if (cdROMCount > 1) controller.BoolButtons.Add(Inputs.NextCDROM);
+			if (floppyDiskCount > 1)
+			{
+				controller.BoolButtons.Add(Inputs.PrevFloppyDisk);
+				controller.BoolButtons.Add(Inputs.NextFloppyDisk);
+				controller.BoolButtons.Add(Inputs.SwapFloppyDisk);
+			}
+
+			if (cdROMCount > 1)
+			{
+				controller.BoolButtons.Add(Inputs.PrevCDROM);
+				controller.BoolButtons.Add(Inputs.NextCDROM);
+				controller.BoolButtons.Add(Inputs.SwapCDROM);
+			}
 
 			foreach (var (name, _) in _keyboardMap)
 			{
@@ -121,8 +132,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		{
 			public const string Joystick = "Joystick";
 			public const string Mouse = "Mouse";
+			public const string PrevFloppyDisk = "Previous Floppy Disk";
 			public const string NextFloppyDisk = "Next Floppy Disk";
+			public const string SwapFloppyDisk = "Swap Floppy Disk";
+			public const string PrevCDROM = "Previous CDROM";
 			public const string NextCDROM = "Next CDROM";
+			public const string SwapCDROM = "Swap CDROM";
 		}
 	}
 }

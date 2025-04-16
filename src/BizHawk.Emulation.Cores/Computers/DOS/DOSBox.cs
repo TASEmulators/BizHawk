@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private readonly List<IDiscAsset> _discAssets;
 
 		// Drive management variables
-		private bool _nextFloppyDiskPressed = false;
-		private bool _nextCDROMPressed = false;
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
@@ -410,26 +408,52 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_lastMouseState = mouseState;
 			}
 
-			// Processing floppy disks swaps
-			fi.DriveActions.InsertFloppyDisk = -1;
-			var nextFloppyDiskWasPressed = _nextFloppyDiskPressed;
-			_nextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
-			if (!nextFloppyDiskWasPressed && _nextFloppyDiskPressed && _floppyDiskCount >= 2)
+			// Only manage multiple floppy disks if more than 1 were provided
+			fi.DriveActions.InsertFloppyDisk = -1; // -1 indicates no disk change this frame
+			if (_floppyDiskCount >= 2)
 			{
-				_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
-				fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
-				CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)} into drive A:", null);
+				if (controller.IsPressed(Inputs.PrevFloppyDisk))
+				{
+					_currentFloppyDisk = _currentFloppyDisk == 0 ? _floppyDiskCount - 1 : _currentFloppyDisk - 1;
+					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)}", null);
+				}
+
+				if (controller.IsPressed(Inputs.NextFloppyDisk))
+				{
+					_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
+					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)}", null);
+				}
+
+				// Processing floppy disk swapping
+				if (controller.IsPressed(Inputs.SwapFloppyDisk))
+				{
+					fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
+					CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)} into drive A:", null);
+				}
 			}
 
-			// Processing CDROM swaps
-			fi.DriveActions.InsertCDROM = -1;
-			var nextCDROMWasPressed = _nextCDROMPressed;
-			_nextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
-			if (!nextCDROMWasPressed && _nextCDROMPressed && _cdRomFileNames.Count >= 2)
+			// Only manage multiple CDROMs if more than 1 were provided
+			fi.DriveActions.InsertCDROM = -1; // -1 indicates no disk change this frame
+			if (_cdRomFileNames.Count >= 2)
 			{
-				_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
-				fi.DriveActions.InsertCDROM = _currentCDROM;
-				CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
+				if (controller.IsPressed(Inputs.PrevCDROM))
+				{
+					_currentCDROM = _currentCDROM == 0 ? _cdRomFileNames.Count - 1 : _currentCDROM - 1;
+					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]}", null);
+				}
+
+				if (controller.IsPressed(Inputs.NextCDROM))
+				{
+					_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
+					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]}", null);
+				}
+
+				// Processing CDROM disk swapping
+				if (controller.IsPressed(Inputs.SwapCDROM))
+				{
+					fi.DriveActions.InsertCDROM = _currentCDROM;
+					CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
+				}
 			}
 
 			// Processing keyboard inputs
@@ -483,8 +507,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
-			writer.Write(_nextFloppyDiskPressed);
-			writer.Write(_nextCDROMPressed);
 			writer.Write(_currentFloppyDisk);
 			writer.Write(_currentCDROM);
 
@@ -501,8 +523,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			_nextFloppyDiskPressed = reader.ReadBoolean();
-			_nextCDROMPressed = reader.ReadBoolean();
 			_currentFloppyDisk = reader.ReadInt32();
 			_currentCDROM = reader.ReadInt32();
 
