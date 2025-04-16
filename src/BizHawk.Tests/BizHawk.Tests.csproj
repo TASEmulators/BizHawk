@@ -5,6 +5,7 @@
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
 		<DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SKIP_PLATFORM_TESTS</DefineConstants>
+		<MSTestAnalysisMode>All</MSTestAnalysisMode>
 		<RunSettingsFilePath>$(MSBuildProjectDirectory)/../MainSln.runsettings</RunSettingsFilePath>
 	</PropertyGroup>
 	<ItemGroup>
