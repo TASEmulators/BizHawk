@@ -345,6 +345,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			DriveLightOn = true;
 		}
 
+		// These variables prevent buttons from acting too fast on consecutive frames
+		private bool _isPrevFloppyDiskPressed = false;
+		private bool _isNextFloppyDiskPressed = false;
+		private bool _isSwapFloppyDiskPressed = false;
+
+		private bool _isPrevCDROMPressed = false;
+		private bool _isNextCDROMPressed = false;
+		private bool _isSwapCDROMPressed = false;
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
@@ -412,20 +421,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.DriveActions.InsertFloppyDisk = -1; // -1 indicates no disk change this frame
 			if (_floppyDiskCount >= 2)
 			{
-				if (controller.IsPressed(Inputs.PrevFloppyDisk))
+				if (!_isPrevFloppyDiskPressed && controller.IsPressed(Inputs.PrevFloppyDisk))
 				{
 					_currentFloppyDisk = _currentFloppyDisk == 0 ? _floppyDiskCount - 1 : _currentFloppyDisk - 1;
 					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)}", null);
 				}
 
-				if (controller.IsPressed(Inputs.NextFloppyDisk))
+				if (!_isNextFloppyDiskPressed && controller.IsPressed(Inputs.NextFloppyDisk))
 				{
 					_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
 					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)}", null);
 				}
 
 				// Processing floppy disk swapping
-				if (controller.IsPressed(Inputs.SwapFloppyDisk))
+				if (!_isSwapFloppyDiskPressed && controller.IsPressed(Inputs.SwapFloppyDisk))
 				{
 					fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
 					CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)} into drive A:", null);
@@ -436,25 +445,34 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			fi.DriveActions.InsertCDROM = -1; // -1 indicates no disk change this frame
 			if (_cdRomFileNames.Count >= 2)
 			{
-				if (controller.IsPressed(Inputs.PrevCDROM))
+				if (!_isPrevCDROMPressed && controller.IsPressed(Inputs.PrevCDROM))
 				{
 					_currentCDROM = _currentCDROM == 0 ? _cdRomFileNames.Count - 1 : _currentCDROM - 1;
 					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]}", null);
 				}
 
-				if (controller.IsPressed(Inputs.NextCDROM))
+				if (!_isNextCDROMPressed && controller.IsPressed(Inputs.NextCDROM))
 				{
 					_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
 					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]}", null);
 				}
 
 				// Processing CDROM disk swapping
-				if (controller.IsPressed(Inputs.SwapCDROM))
+				if (!_isSwapCDROMPressed && controller.IsPressed(Inputs.SwapCDROM))
 				{
 					fi.DriveActions.InsertCDROM = _currentCDROM;
 					CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
 				}
 			}
+
+			// These variables prevent buttons from acting too fast on consecutive frames
+			_isPrevFloppyDiskPressed = controller.IsPressed(Inputs.PrevFloppyDisk);
+			_isNextFloppyDiskPressed = controller.IsPressed(Inputs.NextFloppyDisk);
+			_isSwapFloppyDiskPressed = controller.IsPressed(Inputs.SwapFloppyDisk);
+
+			_isPrevCDROMPressed = controller.IsPressed(Inputs.PrevCDROM);
+			_isNextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
+			_isSwapCDROMPressed = controller.IsPressed(Inputs.SwapCDROM);
 
 			// Processing keyboard inputs
 			foreach (var (name, key) in _keyboardMap)
