@@ -82,6 +82,60 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
 
+			// 3DO
+			// Information obtained from https://3dodev.com/software/roms
+
+			Firmware("3DO", "Panasonic_FZ1_U", "Panasonic FZ-1 (U)");
+			Option("3DO", "Panasonic_FZ1_U", File("34BF189111295F74D7B7DFC1F304D98B8D36325A", 1048576, "panafz1.bin", "Panasonic FZ-1 (U)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ1_U", File("DE3C55490733E6C69724D87E149B52ED955638ED", 1048576, "panafz1_dev_0.9.bin", "Panasonic FZ-1 (U) v0.9 dev build"));
+			Option("3DO", "Panasonic_FZ1_U", File("4CB4EE36E0F5BC0995D34992B4F241C420D49B2E", 1048576, "panafz1_dev.bin", "Panasonic FZ-1 (U) dev build"));
+
+			Firmware("3DO", "Panasonic_FZ1_E", "Panasonic FZ-1 (E)");
+			Option("3DO", "Panasonic_FZ1_E", File("1D0DB81E171EBC1D07CEFC8CE8AB082306186E56", 1048576, "panafz1e.bin", "Panasonic FZ-1 (E)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ1_E", File("4696951E492E5526772A860EA2C0F35411A80927", 1048576, "panafz1e-unencrypted.bin", "Panasonic FZ-1 (E) (unencrypted)"));
+
+			Firmware("3DO", "Panasonic_FZ1_J", "Panasonic FZ-1 (J)");
+			Option("3DO", "Panasonic_FZ1_J", File("EC7EC62D60EC0459A14ED56EBC66761EF3C80EFC", 1048576, "panafz1j.bin", "Panasonic FZ-1 (J)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ1_J", File("A417587AE3B0B8EF00C830920C21AF8BEE88E419", 1048576, "panafz1j - norsa.bin", "Panasonic FZ-1(J)(RSA check disabled)"));
+
+			Firmware("3DO", "Panasonic_FZ10_U", "Panasonic FZ-10 (U)");
+			Option("3DO", "Panasonic_FZ10_U", File("3C912300775D1AD730DC35757E279C274C0ACAAD", 1048576, "panafz10.bin", "Panasonic FZ-10 (U)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ10_U", File("F05E642322C03694F06A809C0B90FC27AC73C002", 1048576, "panafz10-norsa.bin", "Panasonic FZ-10 (U) (RSA check disabled)"));
+
+			Firmware("3DO", "Panasonic_FZ10_E", "Panasonic FZ-10 (E)");
+			Option("3DO", "Panasonic_FZ10_E", File("A900371F0CDCDC03F79557F11D406FD71251A5FD", 1048576, "panafz10e-anvil.bin", "Panasonic FZ-10 (E) [ANVIL]"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ10_E", File("2765C7B4557CC838B32567D2428D088980295159", 1048576, "panafz10e-anvil-norsa.bin", "Panasonic FZ-10 (E) [ANVIL] (RSA check disabled)"));
+
+			Firmware("3DO", "Panasonic_FZ10_J", "Panasonic FZ-10 (J)");
+			Option("3DO", "Panasonic_FZ10_J", File("FE7F9C9C6A98910013BF13F2CF798DE9FEA52ACD", 1048576, "panafz10j.bin", "Panasonic FZ-10 (J)"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Goldstar_GDO101P", "Goldstar GDO-101P");
+			Option("3DO", "Goldstar_GDO101P", File("C4A2E5336F77FB5F743DE1EEA2CDA43675EE2DE7", 1048576, "goldstar.bin", "Goldstar GDO-101P"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Goldstar_FC1", "Goldstar FC-1");
+			Option("3DO", "Goldstar_FC1", File("8EF7503C948314D242DA47B7FDC272F68DAC2AEE", 1048576, "goldstar_fc1_enc.bin", "Goldstar FC-1 (encrypted)"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Sanyo_IMP21J_Try", "Sanyo IMP-21J Try");
+			Option("3DO", "Sanyo_IMP21J_Try", File("B01C53DA256DDE43FFEC4AD3FC3ADFA8D635E943", 1048576, "sanyotry.bin", "Sanyo IMP-21J Try"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Sanyo_HC21", "Sanyo HC-21");
+			Option("3DO", "Sanyo_HC21", File("C389AF32BCADF0D86826927DC3D20B7072F90069", 1048576, "sanyo_hc21_b3_unenc.bin", "Sanyo HC-21 B3 (unencrypted)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Sanyo_HC21", File("29C40515DC1174FF13975BAA59EB532083E4A3D3", 1048576, "sanyo_hc21_alpha.bin", "Sanyo HC-21 (alpha 3/21/94)"));
+
+			Firmware("3DO", "Shootout_At_Old_Tucson", "(3DO Arcade) Shootout At Old Tucson");
+			Option("3DO", "Shootout_At_Old_Tucson", File("520D3D1B5897800AF47F92EFD2444A26B7A7DEAD", 524288, "3do_arcade_saot.bin", "Shootout At Old Tucson"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "3DO_NTSC_1fc2", "3DO-NTSC-1.0fc2");
+			Option("3DO", "3DO_NTSC_1fc2", File("BD325C869E1DDE8A3872FC21565E0646A3D5B525", 1048576, "3do_devkit_1.0fc2.bin", "3DO-NTSC-1.0fc2 encrypted development kit"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Kanji_ROM_Panasonic_FZ1", "Kanji ROM for Panasonic FZ-1");
+			Option("3DO", "Kanji_ROM_Panasonic_FZ1", File("ACD39A8FEE1B9D2950D5AB447846C11FB31AF63E", 933636, "panafz1-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Kanji_ROM_Panasonic_FZ1", File("884515605EE243577AB20767EF8C1A7368E4E407", 1048576, "panafz1j-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J) / Panasonic FZ-10 (J)"));
+
+			Firmware("3DO", "Kanji_ROM_Panasonic_FZ10", "Kanji ROM for Panasonic FZ-10");
+			Option("3DO", "Kanji_ROM_Panasonic_FZ10", File("2E857B957803D0331FD229328DF01F3FFAB69EEE", 1048576, "panafz10ja-anvil-kanji.bin", "Kanji ROM for: Panasonic FZ-10 (J) [ANVIL]"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Kanji_ROM_Panasonic_FZ10", File("884515605EE243577AB20767EF8C1A7368E4E407", 1048576, "panafz1j-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J) / Panasonic FZ-10 (J)"));
+
 			// 3DS
 			// bleh, undefined hash AND size...
 			FirmwareAndOption(SHA1Checksum.Dummy, 0, "3DS", "aes_keys", "aes_keys.txt", "AES Keys");
