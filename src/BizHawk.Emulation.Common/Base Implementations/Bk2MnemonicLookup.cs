@@ -702,7 +702,7 @@ namespace BizHawk.Emulation.Common
 				["Apostrophe"] = '\'',
 				["Grave"] = '`',
 				["Comma"] = ',',
-				["Period"] = '.',
+				["Period"] = 'p',
 				["Slash"] = '/',
 				["Space"] = 's',
 				["Tab"] = 't',
