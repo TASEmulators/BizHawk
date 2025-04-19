@@ -176,17 +176,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void StoreSaveRam(byte[] data)
 		{
+			// Checking if the size of the SaveRAM provided coincides with that expected. This is important for cores whose SaveRAM size can vary depending on their configuration.
+			if (data.Length != _saveramSize)
+			{
+				Console.WriteLine($"Could not push SaveRam into the core: the length of the data provided ({data.Length}) is different than expected ({_saveramSize})");
+
+				// Here, the exception was too traumatic. The emulator shuts down when in debug mode, and is left in an unstable state on release.
+				// Using a softer landing here, although returning true/false plus a string explanation would be more adequate.
+				return;
+			}
+
 			using (_exe.EnterExit())
 			{
-				if (data.Length != _saveramSize)
-					throw new InvalidOperationException("Saveram size mismatch");
-				using (_exe.EnterExit())
+				var source = new MemoryStream(data, false);
+				foreach (var area in _saveramAreas)
 				{
-					var source = new MemoryStream(data, false);
-					foreach (var area in _saveramAreas)
-					{
-						MemoryBlockUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
-					}
+					MemoryBlockUtils.CopySome(source, new MemoryDomainStream(area), area.Size);
 				}
 			}
 		}

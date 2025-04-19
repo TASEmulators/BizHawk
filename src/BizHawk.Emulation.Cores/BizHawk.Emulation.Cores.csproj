@@ -26,6 +26,7 @@
 		<Compile Update="Computers/AppleII/AppleII.*.cs" DependentUpon="AppleII.cs" />
 		<Compile Update="Computers/Commodore64/C64.*.cs" DependentUpon="C64.cs" />
 		<Compile Update="Computers/Doom/DSDA.*.cs" DependentUpon="DSDA.cs" />
+		<Compile Update="Computers/DOS/DOSBox.*.cs" DependentUpon="DOSBox.cs" />
 		<Compile Update="Computers/SinclairSpectrum/Hardware/Disk/NECUPD765.*.cs" DependentUpon="NECUPD765.cs" />
 		<Compile Update="Computers/SinclairSpectrum/Hardware/Disk/NECUPS765.Static.cs" DependentUpon="NECUPD765.cs" />
 		<Compile Update="Computers/SinclairSpectrum/Machine/Pentagon128K/Pentagon128.*.cs" DependentUpon="Pentagon128.cs" />
