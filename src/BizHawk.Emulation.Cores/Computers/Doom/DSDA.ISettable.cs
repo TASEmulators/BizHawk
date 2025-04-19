@@ -195,19 +195,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			public DoomSettings Clone()
 				=> (DoomSettings)MemberwiseClone();
-
-			public static bool NeedsReboot(DoomSettings x, DoomSettings y) => false;
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
-			var ret = DoomSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			if (_settings.DisplayPlayer == 1 && !_syncSettings.Player1Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			_settings.DoUpdate = true;
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			return PutSettingsDirtyBits.None;
 		}
 
 		[CoreSettings]
