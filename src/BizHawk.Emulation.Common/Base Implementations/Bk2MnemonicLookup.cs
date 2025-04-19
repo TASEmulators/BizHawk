@@ -518,7 +518,7 @@ namespace BizHawk.Emulation.Common
 			},
 			[VSystemID.Raw.O2] = new()
 			{
-				["PERIOD"] = '.',
+				["PERIOD"] = 'p',
 				["SPC"] = 's',
 				["YES"] = 'y',
 				["NO"] = 'n',
