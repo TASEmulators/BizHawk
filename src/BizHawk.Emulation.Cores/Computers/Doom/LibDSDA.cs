@@ -59,8 +59,19 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[StructLayout(LayoutKind.Sequential)]
 		public struct PackedRenderInfo
 		{
+			public int DoUpdate;
 			public int RenderVideo;
 			public int RenderAudio;
+			public int ScaleFactor;
+			public int Gamma;
+			public int ShowMessages;
+			public int ReportSecrets;
+			public int HeadsUpMode;
+			public int DsdaExHud;
+			public int DisplayCommands;
+			public int MapTotals;
+			public int MapTime;
+			public int MapCoordinates;
 			public int PlayerPointOfView;
 		}
 

@@ -159,6 +159,26 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
 
 ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
+  if (renderInfo->DoUpdate)
+  {
+    char setting_buffer[512];
+    sprintf(setting_buffer, "%dx%d", NATIVE_X * renderInfo->ScaleFactor, NATIVE_Y * renderInfo->ScaleFactor);
+    dsda_UpdateStringConfig(dsda_config_screen_resolution, setting_buffer, true);
+    printf("dsda_config_screen_resolution = %s\n", setting_buffer);
+
+    dsda_UpdateIntConfig(dsda_config_screenblocks,  renderInfo->HeadsUpMode      ? 11 : 10, true);
+    dsda_UpdateIntConfig(dsda_config_hud_displayed, renderInfo->HeadsUpMode == 2 ?  0 :  1, true);
+
+    dsda_UpdateIntConfig(dsda_config_usegamma,          renderInfo->Gamma,           true);
+    dsda_UpdateIntConfig(dsda_config_show_messages,     renderInfo->ShowMessages,    true);
+    dsda_UpdateIntConfig(dsda_config_hudadd_secretarea, renderInfo->ReportSecrets,   true);
+    dsda_UpdateIntConfig(dsda_config_exhud,             renderInfo->DsdaExHud,       true);
+    dsda_UpdateIntConfig(dsda_config_command_display,   renderInfo->DisplayCommands, true);
+    dsda_UpdateIntConfig(dsda_config_map_totals,        renderInfo->MapTotals,       true);
+    dsda_UpdateIntConfig(dsda_config_map_time,          renderInfo->MapTime,         true);
+    dsda_UpdateIntConfig(dsda_config_map_coordinates,   renderInfo->MapCoordinates,  true);
+  }
+
   // Setting inputs
   headlessClearTickCommand();
   common_input(commonButtons);

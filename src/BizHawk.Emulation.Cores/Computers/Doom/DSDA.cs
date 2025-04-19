@@ -75,7 +75,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
 			string hudMode = "";
-
 			switch (_settings.HeadsUpMode)
 			{
 				case HudMode.Vanilla:
