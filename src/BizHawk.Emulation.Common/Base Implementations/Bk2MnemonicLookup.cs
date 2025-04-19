@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -915,5 +918,18 @@ namespace BizHawk.Emulation.Common
 				["Weapon Select"] = "W",
 			},
 		};
+
+		static Bk2MnemonicLookup()
+		{
+			const string ERR_FMT_STR = $"{nameof(Bk2MnemonicLookup)}.{{1}}[\"{{0}}\"] must not be '.' as that indicates unpressed buttons";
+			foreach (var (k, v) in BaseMnemonicLookupTable)
+			{
+				Debug.Assert(v is not '.', ERR_FMT_STR, k, nameof(BaseMnemonicLookupTable));
+			}
+			foreach (var (sysID, dict) in SystemOverrides) foreach (var (k, v) in dict)
+			{
+				Debug.Assert(v is not '.', ERR_FMT_STR, k, $"{nameof(SystemOverrides)}[{sysID}]");
+			}
+		}
 	}
 }
