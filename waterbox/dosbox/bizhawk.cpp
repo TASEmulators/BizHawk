@@ -13,6 +13,9 @@
 #include <vga.h>
 #include <mem.h>
 
+#define DOS_DRIVE_A 0
+#define DOS_DRIVE_D 3
+
 // DOSBox functions
 extern int _main(int argc, char* argv[]);
 void runMain() { _main(0, nullptr); }
@@ -204,13 +207,13 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	if (f->driveActions.insertFloppyDisk >= 0)
 	{
 		printf("Swapping to Floppy Disk: %d\n", f->driveActions.insertFloppyDisk);
-		swapInDrive(0, f->driveActions.insertFloppyDisk + 1); // 0 is A:
+		swapInDrive(DOS_DRIVE_A, f->driveActions.insertFloppyDisk + 1); // 0 is A:
 	}
 	
 	if (f->driveActions.insertCDROM >= 0)
 	{
 		printf("Swapping to CDROM: %d\n", f->driveActions.insertCDROM);
-		swapInDrive(3, f->driveActions.insertCDROM + 1); // 3 is D:
+		swapInDrive(DOS_DRIVE_D, f->driveActions.insertCDROM + 1); // 3 is D:
 	}
 
  	// Processing joystick inputs
