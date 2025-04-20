@@ -392,12 +392,12 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 	memAreaIdx++;
 	
-	size_t sramSize = get_sram_size();
-	if (sramSize > 0)
+	size_t hddSize = get_hdd_size();
+	if (hddSize > 0)
 	{
-		m[memAreaIdx].Data  = get_sram_buffer();
-		m[memAreaIdx].Name  = "Writeable HDD (SaveRAM)";
-		m[memAreaIdx].Size  = sramSize;
+		m[memAreaIdx].Data  = get_hdd_buffer();
+		m[memAreaIdx].Name  = "Hard Disk Drive";
+		m[memAreaIdx].Size  = hddSize;
 		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 		memAreaIdx++;
 	}
