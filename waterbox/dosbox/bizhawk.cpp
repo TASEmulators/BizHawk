@@ -97,11 +97,12 @@ bool _driveUsed = false;
 ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
 
 // SRAM Management
-bool _preserveHardDiskContents;
 constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
 constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
-int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
-uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+ECL_EXPORT int get_hdd_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
+ECL_EXPORT uint8_t* get_hdd_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+ECL_EXPORT void get_hdd(uint8_t* buffer) {	memcpy(buffer, get_sram_buffer(), get_sram_size()); }
+ECL_EXPORT void set_hdd(uint8_t* buffer) {	memcpy(get_sram_buffer(), buffer, get_sram_size()); }
 
 ECL_EXPORT bool Init(InitSettings* settings)
 {
@@ -117,9 +118,6 @@ ECL_EXPORT bool Init(InitSettings* settings)
 			return false; 
 		}
 	}
-
-  	// Storing hard disk preservation option
-	_preserveHardDiskContents = settings->preserveHardDiskContents == 1;
 
 	// Setting dummy drivers for env variables
 	setenv("SDL_VIDEODRIVER", "dummy", 1);
@@ -401,7 +399,6 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 		m[memAreaIdx].Name  = "Writeable HDD (SaveRAM)";
 		m[memAreaIdx].Size  = sramSize;
 		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
-		m[memAreaIdx].Flags |= _preserveHardDiskContents ? MEMORYAREA_FLAGS_SAVERAMMABLE : 0;
 		memAreaIdx++;
 	}
 }
