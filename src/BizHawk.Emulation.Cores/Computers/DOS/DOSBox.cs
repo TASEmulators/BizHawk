@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					_floppyDiskImageFiles.Add(file);
 					recognized = true;
 				}
+
 				// Checking for DOSBox-x config files
 				else if (ext is ".conf")
 				{
