@@ -32,6 +32,18 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_1999_IBM_THINKPAD_240,
 		}
 
+		public enum TargetOperatingSystem : ulong
+		{
+			[Display(Name = "DOS")]
+			DOS,
+			[Display(Name = "Windows 95")]
+			WINDOWS95,
+			[Display(Name = "Windows 98")]
+			WINDOWS98,
+			[Display(Name = "Windows XP")]
+			WINDOWSXP
+		}
+
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
 		public enum WriteableHardDiskOptions : ulong
 		{
@@ -207,6 +219,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(ConfigurationPreset._1993_IBM_PS2_53_SLC2_486)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ConfigurationPreset ConfigurationPreset { get; set; }
+
+			[DisplayName("Target Operating System")]
+			[Description("Specifies the operating system to run in this movie. This adds OS-specific settings for better compatibility.")]
+			[DefaultValue(TargetOperatingSystem.DOS)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public TargetOperatingSystem TargetOperatingSystem { get; set; }
 
 			[DisplayName("Enable Joystick 1")]
 			[Description("Determines whether a joystick will be plugged in the IBM PC Gameport 1")]

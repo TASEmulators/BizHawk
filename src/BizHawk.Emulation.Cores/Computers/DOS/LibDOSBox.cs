@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		public const int VGA_MAX_WIDTH = 640;
 		public const int VGA_MAX_HEIGHT = 480;
-		public const int SVGA_MAX_WIDTH = 800;
-		public const int SVGA_MAX_HEIGHT = 600;
+		public const int SVGA_MAX_WIDTH = 1024;
+		public const int SVGA_MAX_HEIGHT = 768;
 
 		// Default FPS: 70.086592427616921
 		public const int DEFAULT_FRAMERATE_NUMERATOR_DOS = 3146888;
@@ -60,6 +60,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		[BizImport(CC)]
 		public abstract uint getTicksElapsed();
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract int get_hdd_size();
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract void get_hdd(IntPtr buffer);
+
+		[BizImport(CC, Compatibility = true)]
+		public abstract void set_hdd(IntPtr buffer);
 
 
 		[BizImport(CC)]

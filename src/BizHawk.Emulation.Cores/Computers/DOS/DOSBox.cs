@@ -233,6 +233,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				configString += $"machine = {machineName}\n";
 			}
 
+			////// Adding OS-specific configuration
+			configString += Encoding.UTF8.GetString(_syncSettings.TargetOperatingSystem switch
+			{
+				TargetOperatingSystem.DOS => Resources.DOSBOX_CONF_OSCONFIG_DOS.Value,
+				TargetOperatingSystem.WINDOWS95 => Resources.DOSBOX_CONF_OSCONFIG_WINDOWS95.Value,
+				TargetOperatingSystem.WINDOWS98 => Resources.DOSBOX_CONF_OSCONFIG_WINDOWS98.Value,
+				TargetOperatingSystem.WINDOWSXP => Resources.DOSBOX_CONF_OSCONFIG_WINDOWSXP.Value,
+				_ => [ ]
+			});
+			configString += "\n";
+
 
 			/////////////// Configuration End: Adding single config file to the wbx
 
