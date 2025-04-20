@@ -88,6 +88,7 @@
 [submodule "waterbox/dosbox/dosbox-x"]
 	path = waterbox/dosbox/dosbox-x
 	url = https://github.com/TASEmulators/dosbox-x.git
+	branch = wbx
 [submodule "waterbox/dsda/core"]
 	path = waterbox/dsda/core
 	url = https://github.com/TASEmulators/dsda-doom.git
