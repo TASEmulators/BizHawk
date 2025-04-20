@@ -221,7 +221,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			initialConfig.ResolveDefaults();
 			if (cliFlags.GDIPlusRequested) initialConfig.DispMethod = EDispMethod.GdiPlus;
-			if (initialConfig.SaveSlot is 0) initialConfig.SaveSlot = 10; //TODO remove after a while
 			// initialConfig should really be globalConfig as it's mutable
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;

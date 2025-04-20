@@ -103,13 +103,13 @@ namespace BizHawk.Tests.Client.Common.Api
 		public void TestHash()
 		{
 			var memApi = CreateDummyApi(new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF });
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			_ = Assert.Throws<ArgumentException>(
 				() => memApi.HashRegion(addr: -5, count: 3),
 				"fully below lower boundary");
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			_ = Assert.Throws<ArgumentException>(
 				() => memApi.HashRegion(addr: -2, count: 4),
 				"crosses lower boundary");
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			_ = Assert.Throws<ArgumentException>(
 				() => memApi.HashRegion(addr: -1, count: 10),
 				"crosses both boundaries");
 			Assert.AreEqual(
@@ -124,10 +124,10 @@ namespace BizHawk.Tests.Client.Common.Api
 				SHA256Checksum.EmptyFile,
 				memApi.HashRegion(addr: 3, count: 0),
 				"empty");
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			_ = Assert.Throws<ArgumentException>(
 				() => memApi.HashRegion(addr: 6, count: 3),
 				"crosses upper boundary");
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			_ = Assert.Throws<ArgumentException>(
 				() => memApi.HashRegion(addr: 9, count: 4),
 				"fully above upper boundary");
 		}

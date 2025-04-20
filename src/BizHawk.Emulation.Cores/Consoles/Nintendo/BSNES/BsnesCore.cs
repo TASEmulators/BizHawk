@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringAfter('|'), null);
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringBefore('|'), null);
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;

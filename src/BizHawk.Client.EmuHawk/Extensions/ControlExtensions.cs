@@ -31,14 +31,6 @@ namespace BizHawk.Client.EmuHawk
 			box.SelectedItem = enumVal.GetDescription();
 		}
 
-		/// <summary>extension method to make <see cref="Control.Invoke(Delegate)"/> easier to use</summary>
-		public static void Invoke(this Control control, Action action)
-			=> control.Invoke(action);
-
-		/// <summary>extension method to make <see cref="Control.BeginInvoke(Delegate)"/> easier to use</summary>
-		public static void BeginInvoke(this Control control, Action action)
-			=> control.BeginInvoke(action);
-
 		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem

@@ -17,10 +17,10 @@ namespace BizHawk.Common.StringExtensions
 #if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
 		public static bool Contains(this string haystack, char needle)
 			=> haystack.IndexOf(needle) >= 0;
-#endif
 
 		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
 			=> haystack.IndexOf(needle, comparisonType) != -1;
+#endif
 
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -125,6 +125,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
+			[JsonIgnore]
+			public bool DoUpdate = false;
+
 			[DisplayName("Internal Resolution Scale Factor")]
 			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.")]
 			[Range(1, 12)]
@@ -166,17 +169,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			
 			[DisplayName("Automap Totals")]
 			[Description("Shows counts for kills, items, and secrets on automap.")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool MapTotals { get; set; }
 			
 			[DisplayName("Automap Time")]
 			[Description("Shows elapsed time on automap.")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool MapTime { get; set; }
 			
 			[DisplayName("Automap Coordinates")]
 			[Description("Shows in-level coordinates on automap.")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool MapCoordinates { get; set; }
 
 			[JsonIgnore]
@@ -192,19 +195,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			public DoomSettings Clone()
 				=> (DoomSettings)MemberwiseClone();
-
-			public static bool NeedsReboot(DoomSettings x, DoomSettings y)
-				=> !DeepEquality.DeepEquals(x, y);
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
-			var ret = DoomSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			if (_settings.DisplayPlayer == 1 && !_syncSettings.Player1Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			_settings.DoUpdate = true;
+			return PutSettingsDirtyBits.None;
 		}
 
 		[CoreSettings]
