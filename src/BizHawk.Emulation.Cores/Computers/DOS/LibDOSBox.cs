@@ -65,10 +65,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract int get_hdd_size();
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract void get_hdd(IntPtr buffer);
+		public abstract void get_hdd(byte[] buffer);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract void set_hdd(IntPtr buffer);
+		public abstract void set_hdd(byte[] buffer);
 
 
 		[BizImport(CC)]
@@ -83,7 +83,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int Joystick1Enabled;
 			public int Joystick2Enabled;
 			public ulong HardDiskDriveSize;
-			public int PreserveHardDiskContents;
 		}
 
 		// CD Management Logic END

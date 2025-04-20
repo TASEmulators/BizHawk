@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		}
 
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
-		public enum WriteableHardDiskOptions : ulong
+		public enum HardDiskOptions : ulong
 		{
 			None = 0UL,
 			[Display(Name = "21Mb (FAT16)")]
@@ -246,16 +246,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(3.0)]
 			public float MouseSensitivity { get; set; }
 
-			[DisplayName("Mount Writeable Hard Disk Drive")]
-			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be saved and loaded as SaveRAM (can be slow).")]
-			[DefaultValue(WriteableHardDiskOptions.FAT16_241Mb)]
+			[DisplayName("Mount Formatted Hard Disk Drive")]
+			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. Set this to 'None' if providing a hard disk image as ROM to this core. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.")]
+			[DefaultValue(HardDiskOptions.None)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public WriteableHardDiskOptions WriteableHardDisk { get; set; }
-
-			[DisplayName("Preserve Hard Disk Contents")]
-			[Description("Determines whether to store the contents of the writeable hard disk as SaveRAM to be reloaded on the next start. Enabling this option may cause the core to take some seconds to store and load the SRAM upon restart, depending on the size of the hard disk. If it is disabled, previous SaveRAM will not be loaded.")]
-			[DefaultValue(false)]
-			public bool PreserveHardDiskContents { get; set; }
+			public HardDiskOptions FormattedHardDisk { get; set; }
 
 			[DisplayName("Force FPS Numerator")]
 			[Description("Forces a numerator for FPS: how many Bizhawk frames to run per second of emulation. We recommend leaving this value unmodified, to follow the core's own video refresh rate. You can set it higher if you need finer subframe inputs, and; lower, in case your game runs in lower FPS and it feels more natural.")]

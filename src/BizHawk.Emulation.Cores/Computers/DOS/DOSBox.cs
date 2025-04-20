@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -35,11 +36,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		};
 
 		private LibDOSBox _libDOSBox;
-		private readonly List<IRomAsset> _floppyDiskAssets;
+		private readonly List<IRomAsset> _romAssets;
 		private readonly List<IDiscAsset> _discAssets;
 
 		// Drive management variables
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
+		private IRomAsset _hardDiskImageFile = null;
+		private ulong _hardDiskImageFileSize = 0;
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
@@ -59,40 +62,51 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public DOSBox(CoreLoadParameters<object, SyncSettings> lp)
 			: base(lp.Comm, DefaultConfig)
 		{
-			_floppyDiskAssets = lp.Roms;
+			_romAssets = lp.Roms;
 			_discAssets = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 
 			DriveLightEnabled = false;
-			ControllerDefinition = CreateControllerDefinition(_syncSettings, _floppyDiskAssets.Count, _discAssets.Count);
+			ControllerDefinition = CreateControllerDefinition(_syncSettings, _romAssets.Count, _discAssets.Count);
 
 			// Parsing input files
 			var ConfigFiles = new List<IRomAsset>();
 
 			// Parsing rom files
-			foreach (var file in _floppyDiskAssets)
+			foreach (var file in _romAssets)
 			{
-				var ext = Path.GetExtension(file.RomPath);
-				bool recognized = false;
-
-				// Checking for supported floppy disk extensions
-				if (ext is ".ima" or ".img" or ".xdf" or ".dmf" or ".fdd" or ".fdi" or ".nfd" or ".d88")
+				switch (Path.GetExtension(file.RomPath))
 				{
-					_floppyDiskImageFiles.Add(file);
-					recognized = true;
-				}
+					case ".ima":
+					case ".img":
+					case ".xdf":
+					case ".dmf":
+					case ".fdd":
+					case ".fdi":
+					case ".nfd":
+					case ".d88":
+						_floppyDiskImageFiles.Add(file);
+						break;
 
-				// Checking for DOSBox-x config files
-				else if (ext is ".conf")
-				{
-					ConfigFiles.Add(file);
-					recognized = true;
-				}
+					case ".bin":
+						_hardDiskImageFile = file;
+						break;
 
-				if (!recognized) throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
+					case ".conf":
+						ConfigFiles.Add(file);
+						break;
+
+					default:
+						throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
+				}
 			}
 
-			var writableHDDImageFileSize = (ulong) _syncSettings.WriteableHardDisk;
+			// Getting formatted hard disk drive size, as defined by the sync settings
+			_hardDiskImageFileSize = (ulong) _syncSettings.FormattedHardDisk;
+
+			// If no formatted hard disk size provided, check if provided as ROM
+			if (_hardDiskImageFileSize == 0 && _hardDiskImageFile != null)
+				_hardDiskImageFileSize = (ulong) _hardDiskImageFile.FileData.Length;
 
 			_CDReadCallback = CDRead;
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
@@ -102,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				SealedHeapSizeKB = 32 * 1024,
 				InvisibleHeapSizeKB = 1024,
 				PlainHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = 256 * 1024 + (uint) (writableHDDImageFileSize / 1024ul),
+				MmapHeapSizeKB = 256 * 1024 + (uint) ((_hardDiskImageFileSize + 1024) / 1024ul),
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _CDReadCallback });
@@ -156,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486 => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
 				ConfigurationPreset._1997_IBM_APTIVA_2140 => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
 				ConfigurationPreset._1999_IBM_THINKPAD_240 => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
-				_ => [ ]
+				_ => []
 			});
 			configString += "\n";
 
@@ -203,22 +217,33 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_cdRomFileNames.Count > 0) configString += cdromMountLine + "\n";
 
 			//// Hard Disk mounting
-			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None)
+			if (_hardDiskImageFileSize > 0)
 			{
-				var writableHDDImageFile = _syncSettings.WriteableHardDisk switch
-				{
-					WriteableHardDiskOptions.FAT16_21Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value,
-					WriteableHardDiskOptions.FAT16_41Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_41MB.Value,
-					WriteableHardDiskOptions.FAT16_241Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
-					WriteableHardDiskOptions.FAT16_504Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
-					WriteableHardDiskOptions.FAT16_2014Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
-					WriteableHardDiskOptions.FAT32_4091Mb => Resources.DOSBOX_HDD_IMAGE_FAT32_4091MB.Value,
-					_ => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value
-				};
+				byte[] HDDImageData = [];
 
-				var writableHDDImageData = Zstd.DecompressZstdStream(new MemoryStream(writableHDDImageFile)).ToArray();
-				_exe.AddReadonlyFile(writableHDDImageData, FileNames.WHD);
-				configString += "imgmount c " + FileNames.WHD + ".img\n";
+				// If formatted disk selected
+				if (_syncSettings.FormattedHardDisk != HardDiskOptions.None)
+				{
+					var HDDImageFile = _syncSettings.FormattedHardDisk switch
+					{
+						HardDiskOptions.FAT16_21Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value,
+						HardDiskOptions.FAT16_41Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_41MB.Value,
+						HardDiskOptions.FAT16_241Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
+						HardDiskOptions.FAT16_504Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
+						HardDiskOptions.FAT16_2014Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
+						HardDiskOptions.FAT32_4091Mb => Resources.DOSBOX_HDD_IMAGE_FAT32_4091MB.Value,
+						_ => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value
+					};
+
+					HDDImageData = Zstd.DecompressZstdStream(new MemoryStream(HDDImageFile)).ToArray();
+				}
+				
+				// If provided as ROM file
+				if (_hardDiskImageFile != null) HDDImageData = _hardDiskImageFile.FileData;
+
+				// Adding HDD to the core
+				_exe.AddReadonlyFile(HDDImageData, FileNames.HDD);
+				configString += "imgmount c " + FileNames.HDD + ".img\n";
 			}
 
 			//// CPU (core) configuration
@@ -271,8 +296,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				Joystick1Enabled = _syncSettings.EnableJoystick1 ? 1 : 0,
 				Joystick2Enabled = _syncSettings.EnableJoystick2 ? 1 : 0,
-				HardDiskDriveSize = writableHDDImageFileSize,
-				PreserveHardDiskContents = _syncSettings.PreserveHardDiskContents ? 1 : 0
+				HardDiskDriveSize = _hardDiskImageFileSize,
 			}))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -289,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			PostInit();
 
 			DriveLightEnabled = false;
-			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None) DriveLightEnabled = true;
+			if (_syncSettings.FormattedHardDisk != HardDiskOptions.None) DriveLightEnabled = true;
 			if (_floppyDiskCount > 0) DriveLightEnabled = true;
 			if (_cdRomFileNames.Count > 0) DriveLightEnabled = true;
 		}
@@ -576,7 +600,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string Config = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
-			public const string WHD = "__WritableHardDiskDrive";
+			public const string HDD = "HardDiskDrive";
+		}
+
+		public byte[] getHDDContents()
+		{
+			if (_hardDiskImageFileSize == 0) throw new Exception($"Trying to export HDD contents but no HDD was defined");
+
+			var hddSize = _libDOSBox.get_hdd_size();
+			byte[] hddArray = new byte[hddSize];
+			_libDOSBox.get_hdd(hddArray);
+			return hddArray;
 		}
 	}
 }
