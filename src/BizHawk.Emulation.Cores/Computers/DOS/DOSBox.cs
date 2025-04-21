@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing rom files
 			foreach (var file in _romAssets)
 			{
-				switch (file.Extension.ToLowerInvariant())
+				switch (Path.GetExtension(file.RomPath))
 				{
 					case ".ima":
 					case ".img":
@@ -107,10 +107,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// If no formatted hard disk size provided, check if provided as ROM
 			if (_hardDiskImageFileSize == 0 && _hardDiskImageFile != null)
 				_hardDiskImageFileSize = (ulong) _hardDiskImageFile.FileData.Length;
-
-
-			uint hddRequiredMemory = (uint) ((_hardDiskImageFileSize) / 1024ul);
-			Console.WriteLine($"Allocating {_hardDiskImageFileSize} bytes = {hddRequiredMemory}kb to host the HDD");
+		    
 
 			_CDReadCallback = CDRead;
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
@@ -305,9 +302,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
-
-			// Closing HDD read only file now, if opened
-			if (_hardDiskImageFileSize > 0) _exe.RemoveReadonlyFile(FileNames.HDD);
 
 			// Setting framerate, if forced; otherwise, use the default.
 			// The default is necessary because DOSBox does not populate framerate value on init. Only after the first frame run
@@ -610,5 +604,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string HDD = "HardDiskDrive";
 		}
 
+		public byte[] getHDDContents()
+		{
+			if (_hardDiskImageFileSize == 0) throw new Exception($"Trying to export HDD contents but no HDD was defined");
+
+			var hddSize = _libDOSBox.get_hdd_size();
+			byte[] hddArray = new byte[hddSize];
+			_libDOSBox.get_hdd(hddArray);
+			return hddArray;
+		}
 	}
 }
