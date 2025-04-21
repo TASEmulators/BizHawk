@@ -938,7 +938,7 @@ namespace BizHawk.Emulation.Common
 				["KeyPadMinus"] = '-',
 				["keyPadPlus"] = '+',
 				["KeyPadEnter"] = 'e',
-				["KeyPadPeriod"] = '.',
+				["KeyPadPeriod"] = 'p',
 			}
 		};
 
