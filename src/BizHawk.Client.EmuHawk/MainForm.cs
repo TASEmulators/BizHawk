@@ -35,12 +35,13 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
+using BizHawk.Emulation.DiscSystem;
+
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.WinForms.Controls;
-using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -68,17 +69,6 @@ namespace BizHawk.Client.EmuHawk
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();
-
-			Slot1StatusButton.Tag = SelectSlot1MenuItem.Tag = 1;
-			Slot2StatusButton.Tag = SelectSlot2MenuItem.Tag = 2;
-			Slot3StatusButton.Tag = SelectSlot3MenuItem.Tag = 3;
-			Slot4StatusButton.Tag = SelectSlot4MenuItem.Tag = 4;
-			Slot5StatusButton.Tag = SelectSlot5MenuItem.Tag = 5;
-			Slot6StatusButton.Tag = SelectSlot6MenuItem.Tag = 6;
-			Slot7StatusButton.Tag = SelectSlot7MenuItem.Tag = 7;
-			Slot8StatusButton.Tag = SelectSlot8MenuItem.Tag = 8;
-			Slot9StatusButton.Tag = SelectSlot9MenuItem.Tag = 9;
-			Slot0StatusButton.Tag = SelectSlot0MenuItem.Tag = 10;
 
 			{
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
@@ -2881,12 +2871,6 @@ namespace BizHawk.Client.EmuHawk
 			AddOnScreenMessage($"Capture Mouse {(Config.CaptureMouse ? "enabled" : "disabled")}");
 		}
 
-		private void ToggleStayOnTop()
-		{
-			TopMost = Config.MainFormStayOnTop = !Config.MainFormStayOnTop;
-			AddOnScreenMessage($"Stay on Top {(Config.MainFormStayOnTop ? "enabled" : "disabled")}");
-		}
-
 		private void VsyncMessage()
 		{
 			AddOnScreenMessage($"Display Vsync set to {(Config.VSync ? "on" : "off")}");
@@ -4798,11 +4782,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Create pipe and start the async connection wait
-#if NET5_0_OR_GREATER
-			_singleInstanceServer = NamedPipeServerStreamAcl.Create(
-#else
 			_singleInstanceServer = new NamedPipeServerStream(
-#endif
 					"pipe-{84125ACB-F570-4458-9748-321F887FE795}",
 					PipeDirection.In,
 					1,
@@ -4906,33 +4886,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _hasXFixes;
 		private readonly IntPtr[] _pointerBarriers = new IntPtr[4];
 
-		private void dOSToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void exportHDDImageToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				var result = this.ShowFileSaveDialog(
-					discardCWDChange: true,
-					fileExt: "bin",
-					filter: DOSBoxHDDImageFilterSet,
-					initDir: Config.PathEntries.ToolsAbsolutePath());
-				if (result is not null)
-				{
-					var speccy = (DOSBox) Emulator;
-					var snap = speccy.getHDDContents();
-					File.WriteAllBytes(result, snap);
-				}
-			}
-			catch (Exception)
-			{
-				// ignored
-			}
-		}
-
 #if false
 		private delegate void CaptureWithConfineDelegate(Control control, Control confineWindow);
 
@@ -4954,11 +4907,6 @@ namespace BizHawk.Client.EmuHawk
 				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
 				BringToFront();
-
-				if (Config.MainFormMouseCaptureForcesTopmost)
-				{
-					TopMost = true;
-				}
 			}
 			else
 			{
@@ -4966,11 +4914,6 @@ namespace BizHawk.Client.EmuHawk
 				Cursor.Show();
 				_presentationPanel.Control.Cursor = Cursors.Default;
 				_cursorHidden = false;
-
-				if (Config.MainFormMouseCaptureForcesTopmost)
-				{
-					TopMost = Config.MainFormStayOnTop;
-				}
 			}
 
 			// Cursor.Clip is a no-op on Linux, so we need this too

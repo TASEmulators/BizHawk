@@ -956,10 +956,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
-		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(new FilesystemFilter("DOSBox HDD Images", new[] { "bin" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+
 
 		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
 		{
@@ -1197,10 +1194,7 @@ namespace BizHawk.Client.EmuHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Cygne, CreateGenericCoreConfigItem<WonderSwan>(CoreNames.Cygne)));
 
 			// DOSBox
-			var dosboxExportHDDItem = CreateSettingsItem("Export Hard Disk Drive...", N64CircularAnalogRangeMenuItem_Click);
-			var dosboxSubmenu = CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.DOSBox, CreateGenericCoreConfigItem<DOSBox>(CoreNames.DOSBox));
-			dosboxSubmenu.DropDownOpened += (_, _) => dosboxExportHDDItem.Checked = true;
-			items.Add(dosboxSubmenu);
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.DOSBox, CreateGenericCoreConfigItem<DOSBox>(CoreNames.DOSBox)));
 
 			// DSDA-Doom
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.DSDA, CreateGenericCoreConfigItem<DSDA>(CoreNames.DSDA)));
