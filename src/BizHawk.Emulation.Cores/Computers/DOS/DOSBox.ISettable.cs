@@ -10,38 +10,28 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 	{
 		public enum ConfigurationPreset
 		{
-			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 256kb RAM, Monochrome, PC Speaker)")]
+			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 8086, 256kb RAM, Monochrome, PC Speaker)")]
 			_1981_IBM_5150,
-			[Display(Name = "[1983] IBM XT 5160 (4.77Mhz, 640kb RAM, CGA, PC Speaker)")]
+			[Display(Name = "[1983] IBM XT 5160 (4.77Mhz, 8086, 640kb RAM, CGA, PC Speaker)")]
 			_1983_IBM_5160,
-			[Display(Name = "[1986] IBM XT 286 5162-286 (6Mhz, 640kb RAM, EGA, PC Speaker)")]
+			[Display(Name = "[1986] IBM XT 286 5162-286 (6Mhz, 8086, 640kb RAM, EGA, PC Speaker)")]
 			_1986_IBM_5162,
-			[Display(Name = "[1987] IBM PS/2 25 (8Mhz, 640kb RAM, MCGA, Game Blaster)")]
+			[Display(Name = "[1987] IBM PS/2 25 (8Mhz, 186, 640kb RAM, MCGA, Game Blaster)")]
 			_1987_IBM_PS2_25,
-			[Display(Name = "[1990] IBM PS/2 25 286 (10Mhz, 4Mb RAM, VGA, Sound Blaster 1)")]
+			[Display(Name = "[1990] IBM PS/2 25 286 (10Mhz, 286, 4Mb RAM, VGA, Sound Blaster 1)")]
 			_1990_IBM_PS2_25_286,
-			[Display(Name = "[1991] IBM PS/2 25 386 (25Mhz, 6Mb RAM, VGA, Sound Blaster 2)")]
+			[Display(Name = "[1991] IBM PS/2 25 386 (25Mhz, 386, 6Mb RAM, VGA, Sound Blaster 2)")]
 			_1991_IBM_PS2_25_386,
-			[Display(Name = "[1993] IBM PS/2 53 SLC2 486 (50Mhz, 64Mb RAM, SVGA, Sound Blaster Pro 2)")]
+			[Display(Name = "[1993] IBM PS/2 53 SLC2 486 (50Mhz, 486, 64Mb RAM, SVGA, Sound Blaster Pro 2)")]
 			_1993_IBM_PS2_53_SLC2_486,
-			[Display(Name = "[1994] IBM PS/2 76i SLC2 486 (100Mhz, 64Mb RAM, SVGA, Sound Blaster 16)")]
+			[Display(Name = "[1994] IBM PS/2 76i SLC2 486 (100Mhz, 486, 64Mb RAM, SVGA, Sound Blaster 16)")]
 			_1994_IBM_PS2_76i_SLC2_486,
-			[Display(Name = "[1997] IBM Aptiva 2140 (233Mhz, 96Mb RAM, SVGA + 3D Support, Sound Blaster 16)")]
+			[Display(Name = "[1997] IBM Aptiva 2140 (233Mhz, Pentium MMX, 96Mb RAM, SVGA + 3D Support, Sound Blaster 16)")]
 			_1997_IBM_APTIVA_2140,
-			[Display(Name = "[1999] IBM Thinkpad 240 (300Mhz, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
+			[Display(Name = "[1999] IBM Thinkpad 240 (300Mhz, Pentium III, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
 			_1999_IBM_THINKPAD_240,
-		}
-
-		public enum TargetOperatingSystem : ulong
-		{
-			[Display(Name = "DOS")]
-			DOS,
-			[Display(Name = "Windows 95")]
-			WINDOWS95,
-			[Display(Name = "Windows 98")]
-			WINDOWS98,
-			[Display(Name = "Windows XP")]
-			WINDOWSXP
+			[Display(Name = "[2001] IBM A30 (933Mhz, Pentium III, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
+			_2001_IBM_A30
 		}
 
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
@@ -62,7 +52,46 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			FAT32_4091Mb = 4289725440UL,
 		}
 
-		public enum MachineType
+		public enum CPUType
+		{
+			Auto,
+			[Display(Name = "Intel 8086")]
+			C8086,
+			[Display(Name = "Intel 8086 + Prefetch")]
+			C8086_prefetch,
+			[Display(Name = "Intel 80186")]
+			C80186,
+			[Display(Name = "Intel 80186 + Prefetch")]
+			C80186_prefetch,
+			[Display(Name = "Intel 286")]
+			C286,
+			[Display(Name = "Intel 286 + Prefetch")]
+			C286_prefetch,
+			[Display(Name = "Intel 386")]
+			C386,
+			[Display(Name = "Intel 386 + Prefetch")]
+			C386_prefetch,
+			[Display(Name = "Intel 486 (Old)")]
+			C486old,
+			[Display(Name = "Intel 486 (Old) + Prefetch")]
+			C486old_prefetch,
+			[Display(Name = "Intel 486")]
+			C486,
+			[Display(Name = "Intel 486 + Prefetch")]
+			C486_prefetch,
+			[Display(Name = "Intel Pentium")]
+			pentium,
+			[Display(Name = "Intel Pentium MMX")]
+			pentium_mmx,
+			[Display(Name = "Intel Pentium Pro (Slow)")]
+			ppro_slow,
+			[Display(Name = "Intel Pentium II")]
+			pentium_ii,
+			[Display(Name = "Intel Pentium III")]
+			pentium_iii,
+		}
+
+		public enum VideoCardType
 		{
 			Auto,
 			[Display(Name = "MDA")]
@@ -220,12 +249,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ConfigurationPreset ConfigurationPreset { get; set; }
 
-			[DisplayName("Target Operating System")]
-			[Description("Specifies the operating system to run in this movie. This adds OS-specific settings for better compatibility.")]
-			[DefaultValue(TargetOperatingSystem.DOS)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public TargetOperatingSystem TargetOperatingSystem { get; set; }
-
 			[DisplayName("Enable Joystick 1")]
 			[Description("Determines whether a joystick will be plugged in the IBM PC Gameport 1")]
 			[DefaultValue(true)]
@@ -267,11 +290,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(-1)]
 			public int CPUCycles { get; set; }
 
-			[DisplayName("Machine Type")]
-			[Description("Chooses the machine type (CPU/GPU) to emulate. Auto uses the configuration preset's default.")]
+			[DisplayName("CPU Type")]
+			[Description("Chooses the CPU type to emulate. Auto uses the configuration preset's default.")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			[DefaultValue(MachineType.Auto)]
-			public MachineType MachineType { get; set; }
+			[DefaultValue(CPUType.Auto)]
+			public CPUType CPUType { get; set; }
+
+			[DisplayName("Video Card Type")]
+			[Description("Chooses the video card to emulate. Auto uses the configuration preset's default.")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			[DefaultValue(VideoCardType.Auto)]
+			public VideoCardType VideoCardType { get; set; }
 
 			[DisplayName("RAM Size (Mb)")]
 			[Description("The size of the memory capacity (RAM) to emulate. -1 to keep the value for the machine preset")]

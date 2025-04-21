@@ -171,6 +171,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486 => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
 				ConfigurationPreset._1997_IBM_APTIVA_2140 => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
 				ConfigurationPreset._1999_IBM_THINKPAD_240 => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
+				ConfigurationPreset._2001_IBM_A30 => Resources.DOSBOX_CONF_2001_IBM_A30.Value,
 				_ => []
 			});
 			configString += "\n";
@@ -190,7 +191,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_syncSettings.SoundBlasterModel != SoundBlasterModel.Auto) configString += $"sbtype = {_syncSettings.SoundBlasterModel}\n";
 			if (_syncSettings.SoundBlasterIRQ != -1) configString += $"irq = {_syncSettings.SoundBlasterIRQ}\n";
 			configString += "\n";
-
 
 			// Adding memory size configuration
 			configString += "[dosbox]\n";
@@ -250,27 +250,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			//// CPU (core) configuration
 			configString += "[cpu]\n";
 			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
-
+			if (_syncSettings.CPUType != CPUType.Auto)
+			{
+				var cputype = Enum.GetName(typeof(CPUType), _syncSettings.CPUType)!.Replace("C", "");
+				configString += $"cputype = {cputype}\n";
+			}
 
 			//// DOSBox-x configuration
 			configString += "[dosbox]\n";
-			if (_syncSettings.MachineType != MachineType.Auto)
+			if (_syncSettings.VideoCardType != VideoCardType.Auto)
 			{
-				var machineName = Enum.GetName(typeof(MachineType), _syncSettings.MachineType)!.Replace('P', '+');
-				configString += $"machine = {machineName}\n";
+				var vgatype = Enum.GetName(typeof(VideoCardType), _syncSettings.VideoCardType)!.Replace('P', '+');
+				configString += $"machine = {vgatype}\n";
 			}
-
-			////// Adding OS-specific configuration
-			configString += Encoding.UTF8.GetString(_syncSettings.TargetOperatingSystem switch
-			{
-				TargetOperatingSystem.DOS => Resources.DOSBOX_CONF_OSCONFIG_DOS.Value,
-				TargetOperatingSystem.WINDOWS95 => Resources.DOSBOX_CONF_OSCONFIG_WINDOWS95.Value,
-				TargetOperatingSystem.WINDOWS98 => Resources.DOSBOX_CONF_OSCONFIG_WINDOWS98.Value,
-				TargetOperatingSystem.WINDOWSXP => Resources.DOSBOX_CONF_OSCONFIG_WINDOWSXP.Value,
-				_ => [ ]
-			});
-			configString += "\n";
-
 
 			/////////////// Configuration End: Adding single config file to the wbx
 
