@@ -939,7 +939,7 @@ namespace BizHawk.Emulation.Common
 				["keyPadPlus"] = '+',
 				["KeyPadEnter"] = 'e',
 				["KeyPadPeriod"] = 'p',
-			}
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
