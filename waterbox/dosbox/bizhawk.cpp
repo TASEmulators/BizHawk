@@ -54,40 +54,89 @@ extern bool user_cursor_locked;
 #define MOUSE_MAX_X 800
 #define MOUSE_MAX_Y 600
 
-bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
+#define FAT_SECTOR_SIZE 512
+bool loadFileIntoMemoryFile(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
-	// Loading entire source file
-	std::string srcFileData;
-	bool        status = jaffarCommon::file::loadStringFromFile(srcFileData, srcFile);
-	if (status == false) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
+	// Opening source file
+	auto srcFilePtr = fopen(srcFile.c_str(), "r");
+	if (srcFilePtr == nullptr) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
 
-	// Uploading file into the mem file directory
-	auto f = _memFileDirectory.fopen(dstFile, "w");
-	if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str()); return false; }
+	// Getting source file size
+	fseek(srcFilePtr, 0L, SEEK_END);
+	int srcFileSize = ftell(srcFilePtr);
+	fseek(srcFilePtr, 0L, SEEK_SET);
 
-	// Copying data into mem file
-	auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(srcFileData.data(), 1, srcFileData.size(), f);
-	if (writtenBlocks != srcFileData.size()) 
-	{ 
-		fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
-		_memFileDirectory.fclose(f);
-		return false; 
+	// Getting destination file size
+	const auto dstFileSize = std::max(dstSize, (ssize_t)srcFileSize);
+
+    // If file size is not divisible by sector size, then it's a bad image
+	if (dstFileSize % FAT_SECTOR_SIZE > 0)
+	 { 
+		fprintf(stderr, "Destination file has a non-sector (%d) divisible size: %ld\n", FAT_SECTOR_SIZE, dstFileSize);
+		fclose(srcFilePtr);
+	    return false;
+	 }
+
+	// Opening destination memfile
+	auto dstFilePtr = _memFileDirectory.fopen(dstFile, "w");
+	if (dstFilePtr == NULL) 
+	{
+		 fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str());
+		 fclose(srcFilePtr);
+		 return false;
+    }
+
+    // Pre-resizing mem file
+	if (dstFilePtr->resize(dstFileSize) > 0)
+	{
+		fprintf(stderr, "Could not resize mem file: %s to %d bytes\n", dstFile.c_str(), srcFileSize);
+		_memFileDirectory.fclose(dstFilePtr);
+		fclose(srcFilePtr);
+		return false;
 	}
 
-	// If required, resize dst file
-	if (dstSize >= 0)
+	// Disabling buffering on source file
+	setbuf(srcFilePtr, NULL);
+
+	// Copying data into mem file, in chunks
+	uint8_t readBuffer[FAT_SECTOR_SIZE];
+	size_t totalChunks = srcFileSize / FAT_SECTOR_SIZE;
+	printf("Copying file size: %d with %lu chunks of size %d\n", srcFileSize, totalChunks, FAT_SECTOR_SIZE);
+	for (size_t chunkId = 0; chunkId < totalChunks; chunkId++)
 	{
-		auto ret = f->resize(dstSize);
-		if (ret < 0) 
+		auto readBytes = fread(readBuffer, 1, FAT_SECTOR_SIZE, srcFilePtr);
+		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, FAT_SECTOR_SIZE, dstFilePtr);
+
+		if (readBytes != writtenBytes)
 		{
-			fprintf(stderr, "Could not resize mem file: %s\n", dstFile.c_str());
-			_memFileDirectory.fclose(f);
+			fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
+			_memFileDirectory.fclose(dstFilePtr);
+			fclose(srcFilePtr);
 			return false; 
 		}
-	} 
+	}
 
-	// Closing mem file
-	_memFileDirectory.fclose(f);
+	// Copying reminder
+	auto reminder = srcFileSize % FAT_SECTOR_SIZE;
+	if (reminder > 0) 
+	{
+		printf("Copying reminder chunk, size: %d\n", reminder);
+
+		auto readBytes = fread(readBuffer, 1, reminder, srcFilePtr);
+		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, reminder, dstFilePtr);
+
+		if (readBytes != writtenBytes)
+		{
+			fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
+			_memFileDirectory.fclose(dstFilePtr);
+			fclose(srcFilePtr);
+			return false; 
+		}
+	}
+
+	// Closing files
+	_memFileDirectory.fclose(dstFilePtr);
+	fclose(srcFilePtr);
 
 	return true;
 }
@@ -97,21 +146,22 @@ bool _driveUsed = false;
 ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
 
 // SRAM Management
-constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
-constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
+constexpr char writableHDDSrcFile[] = "HardDiskDrive";
+constexpr char writableHDDDstFile[] = "HardDiskDrive.img";
 ECL_EXPORT int get_hdd_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
 ECL_EXPORT uint8_t* get_hdd_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
-ECL_EXPORT void get_hdd(uint8_t* buffer) {	memcpy(buffer, get_sram_buffer(), get_sram_size()); }
-ECL_EXPORT void set_hdd(uint8_t* buffer) {	memcpy(get_sram_buffer(), buffer, get_sram_size()); }
+ECL_EXPORT void get_hdd(uint8_t* buffer) {	memcpy(buffer, get_hdd_buffer(), get_hdd_size()); }
+ECL_EXPORT void set_hdd(uint8_t* buffer) {	memcpy(get_hdd_buffer(), buffer, get_hdd_size()); }
 
 ECL_EXPORT bool Init(InitSettings* settings)
 {
 	// If size is non-negative, we need to load the writable hard disk into memory
 	if (settings->writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
-	else	{
+	else
+	{
 		// Loading HDD file into mem file directory
 		printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
-		auto result = loadFileIntoMemoryFileDirectory(writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
+		auto result = loadFileIntoMemoryFile(writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
 		if (result == false || _memFileDirectory.contains(writableHDDDstFile) == false) 
 		{
 			fprintf(stderr, "Could not create hard disk drive mem file\n");
