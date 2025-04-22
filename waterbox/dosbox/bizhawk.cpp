@@ -87,7 +87,7 @@ bool loadFileIntoMemoryFile(const std::string& srcFile, const std::string& dstFi
     }
 
     // Pre-resizing mem file
-	if (dstFilePtr->resize(dstFileSize) > 0)
+	if (dstFilePtr->resize(dstFileSize) != 0)
 	{
 		fprintf(stderr, "Could not resize mem file: %s to %d bytes\n", dstFile.c_str(), srcFileSize);
 		_memFileDirectory.fclose(dstFilePtr);
