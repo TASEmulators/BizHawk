@@ -42,9 +42,6 @@ jobs:
         with:
           dotnet-version: "8"
 
-      - uses: ilammy/msvc-dev-cmd@v1 # required by leafo/gh-actions-lua on Windows, no-op on Linux
-      - uses: leafo/gh-actions-lua@v11
-
       - name: Test
         run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true
         shell: pwsh
