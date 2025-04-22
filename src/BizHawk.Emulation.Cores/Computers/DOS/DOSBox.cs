@@ -107,7 +107,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// If no formatted hard disk size provided, check if provided as ROM
 			if (_hardDiskImageFileSize == 0 && _hardDiskImageFile != null)
 				_hardDiskImageFileSize = (ulong) _hardDiskImageFile.FileData.Length;
-		    
+
+			// Calculating hard disk size in kb
+			uint hardDiskImageFileSizeKb = (uint) ((_hardDiskImageFileSize) / 1024ul);
+
+			if (_hardDiskImageFileSize == 0)
+				Console.WriteLine($"Running without a hard disk drive mounted.");
+			else
+				Console.WriteLine($"Using {hardDiskImageFileSizeKb} kb of memory to host the writable hard disk drive.");
+
 
 			_CDReadCallback = CDRead;
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
@@ -117,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				SealedHeapSizeKB = 32 * 1024,
 				InvisibleHeapSizeKB = 1024,
 				PlainHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = 256 * 1024 + (uint) ((_hardDiskImageFileSize) / 1024ul),
+				MmapHeapSizeKB = (256 * 1024) + hardDiskImageFileSizeKb,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _CDReadCallback });
