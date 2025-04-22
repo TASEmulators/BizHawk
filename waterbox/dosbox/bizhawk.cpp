@@ -143,15 +143,15 @@ bool loadFileIntoMemoryFile(const std::string& srcFile, const std::string& dstFi
 
 // Drive activity monitoring
 bool _driveUsed = false;
-ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
+ECL_EXPORT bool GetDriveActivityFlag() { return _driveUsed; }
 
 // SRAM Management
 constexpr char writableHDDSrcFile[] = "HardDiskDrive";
 constexpr char writableHDDDstFile[] = "HardDiskDrive.img";
-ECL_EXPORT int get_hdd_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
-ECL_EXPORT uint8_t* get_hdd_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
-ECL_EXPORT void get_hdd(uint8_t* buffer) {	memcpy(buffer, get_hdd_buffer(), get_hdd_size()); }
-ECL_EXPORT void set_hdd(uint8_t* buffer) {	memcpy(get_hdd_buffer(), buffer, get_hdd_size()); }
+ECL_EXPORT int GetHDDSize() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
+ECL_EXPORT uint8_t* GetHDDBuffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+ECL_EXPORT void GetHDDData(uint8_t* buffer) { memcpy(buffer, GetHDDBuffer(), GetHDDSize()); }
+ECL_EXPORT void SetHDDData(uint8_t* buffer) { memcpy(GetHDDBuffer(), buffer, GetHDDSize()); }
 
 ECL_EXPORT bool Init(InitSettings* settings)
 {
@@ -365,9 +365,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->base.Samples  = _audioSamples.size() / 2;
 }
 
-ECL_EXPORT uint64_t getRefreshRateNumerator() { return _refreshRateNumerator; }
-ECL_EXPORT uint64_t getRefreshRateDenominator() { return _refreshRateDenominator; }
-ECL_EXPORT uint32_t getTicksElapsed() { return _ticksElapsed; }
+ECL_EXPORT uint64_t GetRefreshRateNumerator() { return _refreshRateNumerator; }
+ECL_EXPORT uint64_t GetRefreshRateDenominator() { return _refreshRateDenominator; }
+ECL_EXPORT uint32_t GetTicksElapsed() { return _ticksElapsed; }
 
 #define DOS_CONVENTIONAL_MEMORY_SIZE (640 * 1024)
 #define DOS_UPPER_MEMORY_SIZE (384 * 1024)
@@ -382,7 +382,7 @@ ECL_EXPORT void SetCdCallbacks(void (*cdrc)(char* cdRomFile, int32_t lba, void *
 
 CDData_t _cdData[MAX_CD_COUNT];
 size_t _cdCount = 0;
-ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
+ECL_EXPORT void PushCDData(int cdIdx, int numSectors, int numTracks)
 {
 	_cdCount++;
 	_cdData[cdIdx].numSectors = numSectors;
@@ -390,7 +390,7 @@ ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
 	printf("Pushing CD %d. NumSectors: %d, NumTracks: %d\n", cdIdx, _cdData[cdIdx].numSectors, _cdData[cdIdx].numTracks);
 }
 
-ECL_EXPORT void pushTrackData(int cdIdx, int trackId, CDTrack_t* data)
+ECL_EXPORT void PushTrackData(int cdIdx, int trackId, CDTrack_t* data)
 {
 	_cdData[cdIdx].tracks[trackId] = *data;
 	printf("  + CD: %d Track %d - Offset: %d - Start: %d - End: %d - Mode: %d - loopEnabled: %d - loopOffset: %d\n", cdIdx, trackId,
@@ -442,10 +442,10 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 	memAreaIdx++;
 	
-	size_t hddSize = get_hdd_size();
+	size_t hddSize = GetHDDSize();
 	if (hddSize > 0)
 	{
-		m[memAreaIdx].Data  = get_hdd_buffer();
+		m[memAreaIdx].Data  = GetHDDBuffer();
 		m[memAreaIdx].Name  = "Hard Disk Drive";
 		m[memAreaIdx].Size  = hddSize;
 		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
