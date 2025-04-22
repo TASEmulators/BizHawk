@@ -147,10 +147,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_cdRomFileToReaderMap[cdRomFileName] = discSectorReader;
 
 				// Passing CD Data to the core
-				_libDOSBox.pushCDData(curDiscIndex, CDDataStruct.End, CDDataStruct.Last);
+				_libDOSBox.PushCDData(curDiscIndex, CDDataStruct.End, CDDataStruct.Last);
 
 				// Passing track data to the core
-				for (var trackIdx = 0; trackIdx < CDDataStruct.Last; trackIdx++) _libDOSBox.pushTrackData(curDiscIndex, trackIdx, CDDataStruct.Tracks[trackIdx]);
+				for (var trackIdx = 0; trackIdx < CDDataStruct.Last; trackIdx++) _libDOSBox.PushTrackData(curDiscIndex, trackIdx, CDDataStruct.Tracks[trackIdx]);
 			}
 			////// CD Loading Logic End
 
@@ -536,14 +536,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		protected override void FrameAdvancePost()
 		{
-			DriveLightOn = _libDOSBox.getDriveActivityFlag();
+			DriveLightOn = _libDOSBox.GetDriveActivityFlag();
 
 			// Checking refresh rate base on the reported refresh rate updates
 			var currentRefreshRateNumerator = VsyncNumerator;
 			var currentRefreshRateDenominator = VsyncDenominator;
 
-			var newRefreshRateNumerator = _libDOSBox.getRefreshRateNumerator();
-			var newRefreshRateDenominator = _libDOSBox.getRefreshRateDenominator();
+			var newRefreshRateNumerator = _libDOSBox.GetRefreshRateNumerator();
+			var newRefreshRateDenominator = _libDOSBox.GetRefreshRateDenominator();
 
 			// Change BK's own framerate if the values changed. Only if not forced. And only if the provided values are valid (they might be zero initially until the core sets it).
 			if (currentRefreshRateNumerator != newRefreshRateNumerator || currentRefreshRateDenominator != newRefreshRateDenominator)
@@ -596,18 +596,18 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string HDD = "HardDiskDrive";
 		}
 
-		public bool hasValidHDD()
+		public bool HasValidHDD()
 		{
 			return _hardDiskImageFileSize > 0;
 		}
 
-		public byte[] getHDDContents()
+		public byte[] GetHDDContents()
 		{
 			if (_hardDiskImageFileSize == 0) throw new Exception($"Trying to export HDD contents but no HDD was defined");
 
-			var hddSize = _libDOSBox.get_hdd_size();
+			var hddSize = _libDOSBox.GetHDDSize();
 			byte[] hddArray = new byte[hddSize];
-			_libDOSBox.get_hdd(hddArray);
+			_libDOSBox.GetHDDData(hddArray);
 			return hddArray;
 		}
 	}

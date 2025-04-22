@@ -53,29 +53,29 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract void SetCdCallbacks(CDReadCallback cdrc);
 
 		[BizImport(CC)]
-		public abstract void pushCDData(int cdIdx, int numSectors, int numTracks);
+		public abstract void PushCDData(int cdIdx, int numSectors, int numTracks);
 
 		[BizImport(CC)]
-		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
+		public abstract void PushTrackData(int cdIdx, int trackId, CDTrack data);
 
 		[BizImport(CC)]
-		public abstract uint getTicksElapsed();
+		public abstract uint GetTicksElapsed();
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract int get_hdd_size();
+		public abstract int GetHDDSize();
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract void get_hdd(byte[] buffer);
+		public abstract void GetHDDData(byte[] buffer);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract void set_hdd(byte[] buffer);
+		public abstract void SetHDDData(byte[] buffer);
 
 
 		[BizImport(CC)]
-		public abstract int getRefreshRateNumerator();
+		public abstract int GetRefreshRateNumerator();
 
 		[BizImport(CC)]
-		public abstract int getRefreshRateDenominator();
+		public abstract int GetRefreshRateDenominator();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class InitSettings
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract bool Init(InitSettings settings);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool getDriveActivityFlag();
+		public abstract bool GetDriveActivityFlag();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo

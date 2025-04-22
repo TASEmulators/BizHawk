@@ -398,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result is not null)
 				{
 					var speccy = (DOSBox) Emulator;
-					var snap = speccy.getHDDContents();
+					var snap = speccy.GetHDDContents();
 					File.WriteAllBytes(result, snap);
 				}
 			}
@@ -1531,7 +1531,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.DOS when Emulator is DOSBox dosbox:
 					DOSSubMenu.Visible = true;
-					DOSExportHDDImageToolStripMenuItem.Enabled = dosbox.hasValidHDD();
+					DOSExportHDDImageToolStripMenuItem.Enabled = dosbox.HasValidHDD();
 					break;
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;
