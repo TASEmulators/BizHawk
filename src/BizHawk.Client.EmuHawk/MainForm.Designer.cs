@@ -275,7 +275,10 @@ namespace BizHawk.Client.EmuHawk
             this.Ares64CircularAnalogRangeMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.GBLsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DOSSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DOSExportHDDImageToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.DOSSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.AppleDisksSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.toolStripSeparator31 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.settingsToolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -378,8 +381,6 @@ namespace BizHawk.Client.EmuHawk
             this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.dOSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportHDDImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -397,7 +398,6 @@ namespace BizHawk.Client.EmuHawk
             this.NESSubMenu,
             this.TI83SubMenu,
             this.A7800SubMenu,
-            this.dOSToolStripMenuItem,
             this.GBSubMenu,
             this.PSXSubMenu,
             this.SNESSubMenu,
@@ -405,7 +405,8 @@ namespace BizHawk.Client.EmuHawk
             this.N64SubMenu,
             this.Ares64SubMenu,
             this.GBLSubMenu,
-            this.AppleSubMenu,
+			this.DOSSubMenu,
+			this.AppleSubMenu,
             this.C64SubMenu,
             this.IntvSubMenu,
             this.zXSpectrumToolStripMenuItem,
@@ -1795,10 +1796,27 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.GBLsettingsToolStripMenuItem.Text = "Settings...";
             this.GBLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GblSettingsMenuItem_Click);
-            // 
-            // AppleSubMenu
-            // 
-            this.AppleSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			// 
+			// DOSSubMenu
+			// 
+			this.DOSSubMenu.DropDownItems.AddRange(
+				new System.Windows.Forms.ToolStripItem[] { this.DOSSettingsToolStripMenuItem, this.DOSExportHDDImageToolStripMenuItem }
+				);
+			this.DOSSubMenu.Text = "&DOS";
+			// 
+			// DOSsettingsToolStripMenuItem
+			// 
+			this.DOSSettingsToolStripMenuItem.Text = "Settings...";
+			this.DOSSettingsToolStripMenuItem.Click += new System.EventHandler(this.DOSSettingsMenuItem_Click);
+			// 
+			// DOSExportHDDImageToolStripMenuItem
+			// 
+			this.DOSExportHDDImageToolStripMenuItem.Text = "Export Hard Disk Drive...";
+			this.DOSExportHDDImageToolStripMenuItem.Click += new System.EventHandler(this.DOSSExportHddMenuItem_Click);
+			// 
+			// AppleSubMenu
+			// 
+			this.AppleSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AppleDisksSubMenu,
             this.settingsToolStripMenuItem1});
             this.AppleSubMenu.Text = "Apple";
@@ -2416,22 +2434,6 @@ namespace BizHawk.Client.EmuHawk
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // dOSToolStripMenuItem
-            // 
-            this.dOSToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportHDDImageToolStripMenuItem});
-            this.dOSToolStripMenuItem.Name = "dOSToolStripMenuItem";
-            this.dOSToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
-            this.dOSToolStripMenuItem.Text = "DOS";
-            this.dOSToolStripMenuItem.Click += new System.EventHandler(this.dOSToolStripMenuItem_Click);
-            // 
-            // exportHDDImageToolStripMenuItem
-            // 
-            this.exportHDDImageToolStripMenuItem.Name = "exportHDDImageToolStripMenuItem";
-            this.exportHDDImageToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.exportHDDImageToolStripMenuItem.Text = "Export HDD Image";
-            this.exportHDDImageToolStripMenuItem.Click += new System.EventHandler(this.exportHDDImageToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2688,6 +2690,9 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FdsEjectDiskMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBLSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GBLsettingsToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DOSSubMenu;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DOSExportHDDImageToolStripMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DOSSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GenericCoreSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800FilterSettingsMenuItem;
@@ -2819,7 +2824,5 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripSeparatorEx toolStripSeparator26;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator32;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPlaySoundMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem dOSToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem exportHDDImageToolStripMenuItem;
 	}
 }

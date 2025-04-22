@@ -378,6 +378,36 @@ namespace BizHawk.Client.EmuHawk
 				_ => DialogResult.None,
 			};
 
+		private DialogResult OpenDOSBoxSettingsDialog()
+			=> OpenGenericCoreConfigFor<DOSBox>(CoreNames.DOSBox + " Settings");
+
+		private void DOSSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenDOSBoxSettingsDialog();
+		}
+
+		private void DOSSExportHddMenuItem_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				var result = this.ShowFileSaveDialog(
+					discardCWDChange: true,
+					fileExt: "bin",
+					filter: DOSBoxHDDImageFilterSet,
+					initDir: Config.PathEntries.ToolsAbsolutePath());
+				if (result is not null)
+				{
+					var speccy = (DOSBox) Emulator;
+					var snap = speccy.getHDDContents();
+					File.WriteAllBytes(result, snap);
+				}
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ToggleGambatteSyncSetting(
 			string name,
@@ -1196,12 +1226,6 @@ namespace BizHawk.Client.EmuHawk
 			// Cygne
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Cygne, CreateGenericCoreConfigItem<WonderSwan>(CoreNames.Cygne)));
 
-			// DOSBox
-			var dosboxExportHDDItem = CreateSettingsItem("Export Hard Disk Drive...", N64CircularAnalogRangeMenuItem_Click);
-			var dosboxSubmenu = CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.DOSBox, CreateGenericCoreConfigItem<DOSBox>(CoreNames.DOSBox));
-			dosboxSubmenu.DropDownOpened += (_, _) => dosboxExportHDDItem.Checked = true;
-			items.Add(dosboxSubmenu);
-
 			// DSDA-Doom
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.DSDA, CreateGenericCoreConfigItem<DSDA>(CoreNames.DSDA)));
 
@@ -1470,6 +1494,7 @@ namespace BizHawk.Client.EmuHawk
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
+			DOSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
@@ -1503,6 +1528,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.Coleco:
 					ColecoSubMenu.Visible = true;
+					break;
+				case VSystemID.Raw.DOS when Emulator is DOSBox dosbox:
+					DOSSubMenu.Visible = true;
+					DOSExportHDDImageToolStripMenuItem.Enabled = dosbox.hasValidHDD();
 					break;
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;

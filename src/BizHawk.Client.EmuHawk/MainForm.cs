@@ -4906,33 +4906,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _hasXFixes;
 		private readonly IntPtr[] _pointerBarriers = new IntPtr[4];
 
-		private void dOSToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void exportHDDImageToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				var result = this.ShowFileSaveDialog(
-					discardCWDChange: true,
-					fileExt: "bin",
-					filter: DOSBoxHDDImageFilterSet,
-					initDir: Config.PathEntries.ToolsAbsolutePath());
-				if (result is not null)
-				{
-					var speccy = (DOSBox) Emulator;
-					var snap = speccy.getHDDContents();
-					File.WriteAllBytes(result, snap);
-				}
-			}
-			catch (Exception)
-			{
-				// ignored
-			}
-		}
-
 #if false
 		private delegate void CaptureWithConfineDelegate(Control control, Control confineWindow);
 

@@ -596,6 +596,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string HDD = "HardDiskDrive";
 		}
 
+		public bool hasValidHDD()
+		{
+			return _hardDiskImageFileSize > 0;
+		}
+
 		public byte[] getHDDContents()
 		{
 			if (_hardDiskImageFileSize == 0) throw new Exception($"Trying to export HDD contents but no HDD was defined");
