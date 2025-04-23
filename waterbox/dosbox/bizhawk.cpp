@@ -28,7 +28,6 @@ cothread_t _driverCoroutine;
 
 // Timing-related stuff
 double ticksTarget;
-double ticksPerFrame;
 uint32_t _ticksElapsed;
 uint32_t _GetTicks() { return _ticksElapsed; }
 void _Delay(uint32_t ticks) { _ticksElapsed += ticks; 	co_switch(_driverCoroutine); }
@@ -285,18 +284,19 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	// Calculating fps 
 	double fps = (double)f->framerateNumerator / (double)f->framerateDenominator;
-	ticksPerFrame = 1000.0 / fps;
+	double ticksPerFrame = 1000.0 / fps;
     //printf("Running Framerate: %d / %d = %f\n", f->framerateNumerator, f->framerateDenominator, fps);
 
  	// Increasing ticks target
 	ticksTarget += ticksPerFrame;
-	
+	uint32_t previousTicksElapsed = _ticksElapsed;
+
 	// Advancing until the required tick target is met
-	while (_ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
-    
+	while (_ticksElapsed < (uint32_t)ticksTarget)	co_switch(_emuCoroutine);
+
 	// Updating ticks elapsed
-	f->base.Cycles = _ticksElapsed;
-	
+	f->base.Cycles = _ticksElapsed - previousTicksElapsed;
+
 	// Updating video output
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
 	f->base.Width = sdl.surface->w;
