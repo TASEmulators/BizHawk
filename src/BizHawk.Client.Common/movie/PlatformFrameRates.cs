@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public static class PlatformFrameRates
@@ -97,6 +99,12 @@ namespace BizHawk.Client.Common
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)
-			=> Rates.TryGetValue(systemId + (pal ? "_PAL" : ""), out var d) ? d : 60.0;
+		{
+			var key = pal ? $"{systemId}_PAL" : systemId;
+			if (Rates.TryGetValue(key, out var d)) return d;
+			//TODO fallback PAL-->NTSC?
+			Util.DebugWriteLine($"missing framerate for system {key}");
+			return 60.0; //TODO 50 for PAL?
+		}
 	}
 }
