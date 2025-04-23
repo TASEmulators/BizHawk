@@ -73,8 +73,9 @@ namespace BizHawk.Client.Common
 
 			["Doom"] = 35.0,
 
-			["Amiga"] = 59.8260993957519531,
-			["Amiga_PAL"] = 49.92041015625,
+			// reverse-engineering of https://github.com/TASEmulators/libretro-uae/blob/ccecb1ead642c1bbe391308b88a7ffa9478b918d/libretro/libretro-core.h#L254-L255 which seems to be based on https://eab.abime.net/showthread.php?t=51883
+			["Amiga"] = 2250000.0 / 37609, // = NTSCCarrier / 227.5 / 263 ≈ 59.826105453481879
+			["Amiga_PAL"] = 3546895.0 / 71051, // = 28.37516*1000000 / 8 / 227 / 313 ≈ 49.920409283472435
 
 			["C64_PAL"] = PALCarrier * 2 / 9 / 312 / 63,
 			["C64_NTSC"] = NTSCCarrier * 2 / 7 / 263 / 65,
