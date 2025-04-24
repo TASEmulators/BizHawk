@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 {
 	public partial class DOSBox : ISettable<object, DOSBox.SyncSettings>
 	{
+		public const int MAX_MEMORY_SIZE_MB = 256;
+
 		public enum ConfigurationPreset
 		{
 			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 8086, 256kb RAM, Monochrome, PC Speaker)")]
@@ -29,9 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[Display(Name = "[1997] IBM Aptiva 2140 (233Mhz, Pentium MMX, 96Mb RAM, SVGA + 3D Support, Sound Blaster 16)")]
 			_1997_IBM_APTIVA_2140,
 			[Display(Name = "[1999] IBM Thinkpad 240 (300Mhz, Pentium III, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
-			_1999_IBM_THINKPAD_240,
-			[Display(Name = "[2001] IBM A30 (933Mhz, Pentium III, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
-			_2001_IBM_A30
+			_1999_IBM_THINKPAD_240
 		}
 
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
@@ -48,8 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			FAT16_504Mb = 527966208UL,
 			[Display(Name = "2014Mb (FAT16)")]
 			FAT16_2014Mb = 2111864832UL,
-			[Display(Name = "4091Mb (FAT32)")]
-			FAT32_4091Mb = 4289725440UL,
 		}
 
 		public enum CPUType
@@ -270,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public float MouseSensitivity { get; set; }
 
 			[DisplayName("Mount Formatted Hard Disk Drive")]
-			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. Set this to 'None' if providing a hard disk image as ROM to this core. This hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.")]
+			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This value will be ignored if a hard disk image (.bin) is provided. The hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.")]
 			[DefaultValue(HardDiskOptions.None)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HardDiskOptions FormattedHardDisk { get; set; }
@@ -303,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public VideoCardType VideoCardType { get; set; }
 
 			[DisplayName("RAM Size (Mb)")]
-			[Description("The size of the memory capacity (RAM) to emulate. -1 to keep the value for the machine preset")]
+			[Description("The size of the memory capacity (RAM) to emulate. -1 to keep the value for the machine preset. Maximum value: 256")]
 			[DefaultValue(-1)]
 			public int RAMSize { get; set; }
 

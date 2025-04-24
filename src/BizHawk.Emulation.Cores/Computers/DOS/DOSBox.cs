@@ -101,12 +101,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			// Getting formatted hard disk drive size, as defined by the sync settings
-			_hardDiskImageFileSize = (ulong) _syncSettings.FormattedHardDisk;
-
-			// If no formatted hard disk size provided, check if provided as ROM
-			if (_hardDiskImageFileSize == 0 && _hardDiskImageFile != null)
-				_hardDiskImageFileSize = (ulong) _hardDiskImageFile.FileData.Length;
+			// Getting size of hard disk to mount. Using the one provided or, if not, the one specified in the pre-formatted setting
+			_hardDiskImageFileSize = _hardDiskImageFile != null ? (ulong) _hardDiskImageFile.FileData.Length : (ulong) _syncSettings.FormattedHardDisk;
 
 			// Calculating hard disk size in kb
 			uint hardDiskImageFileSizeKb = (uint) ((_hardDiskImageFileSize) / 1024ul);
@@ -116,16 +112,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			else
 				Console.WriteLine($"Using {hardDiskImageFileSizeKb} kb of memory to host the writable hard disk drive.");
 
-
 			_CDReadCallback = CDRead;
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
-				SbrkHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 32 * 1024,
+				SbrkHeapSizeKB = 4 * 1024,
+				SealedHeapSizeKB = 1024,
 				InvisibleHeapSizeKB = 1024,
-				PlainHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = (256 * 1024) + hardDiskImageFileSizeKb,
+				PlainHeapSizeKB = 1024,
+				MmapHeapSizeKB = (384 * 1024) + hardDiskImageFileSizeKb,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _CDReadCallback });
@@ -179,7 +174,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486 => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
 				ConfigurationPreset._1997_IBM_APTIVA_2140 => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
 				ConfigurationPreset._1999_IBM_THINKPAD_240 => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
-				ConfigurationPreset._2001_IBM_A30 => Resources.DOSBOX_CONF_2001_IBM_A30.Value,
 				_ => []
 			});
 			configString += "\n";
@@ -202,7 +196,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 			// Adding memory size configuration
 			configString += "[dosbox]\n";
-			if (_syncSettings.RAMSize != -1) configString += $"memsize = {_syncSettings.RAMSize}\n";
+			if (_syncSettings.RAMSize != -1)
+			{
+				if (_syncSettings.RAMSize > MAX_MEMORY_SIZE_MB) throw new Exception($"Requested memory size ({_syncSettings.RAMSize}mb) exceeds maximum allowed ({MAX_MEMORY_SIZE_MB}mb) by this core.");
+				configString += $"memsize = {_syncSettings.RAMSize}\n";
+			}
 			configString += "\n";
 
 			// Adding autoexec line
@@ -228,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			//// Hard Disk mounting
 			if (_hardDiskImageFileSize > 0)
 			{
-				byte[] HDDImageData = [];
+				byte[] HDDImageData = [ ];
 
 				// If formatted disk selected
 				if (_syncSettings.FormattedHardDisk != HardDiskOptions.None)
@@ -240,7 +238,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 						HardDiskOptions.FAT16_241Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
 						HardDiskOptions.FAT16_504Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
 						HardDiskOptions.FAT16_2014Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
-						HardDiskOptions.FAT32_4091Mb => Resources.DOSBOX_HDD_IMAGE_FAT32_4091MB.Value,
 						_ => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value
 					};
 
