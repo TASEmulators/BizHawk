@@ -55,8 +55,6 @@ namespace BizHawk.Emulation.Consoles.Panasonic3DO
 
 		private readonly List<IDiscAsset> _discAssets;
 
-		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter("|"));
-
 		public override int VirtualWidth => BufferHeight * 4 / 3;
 		private LibOpera _libOpera;
 
