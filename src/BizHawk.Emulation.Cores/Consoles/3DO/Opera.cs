@@ -54,7 +54,8 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 
 		private readonly List<IDiscAsset> _discAssets;
 
-		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
+		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+
 
 		public override int VirtualWidth => BufferHeight * 4 / 3;
 		private LibOpera _libOpera;
@@ -321,4 +322,4 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 		}
 
 	}
-}
+}
