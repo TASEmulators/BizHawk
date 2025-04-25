@@ -88,12 +88,11 @@ int16_t processController(const int portType, controllerData_t& portValue, const
       case RETRO_DEVICE_ID_JOYPAD_RIGHT: return portValue.gamePad.right;
       case RETRO_DEVICE_ID_JOYPAD_L: return portValue.gamePad.buttonL;
       case RETRO_DEVICE_ID_JOYPAD_R: return portValue.gamePad.buttonR;
-      case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.gamePad.select;
-      case RETRO_DEVICE_ID_JOYPAD_START: return portValue.gamePad.start;
-      case RETRO_DEVICE_ID_JOYPAD_X: return portValue.gamePad.buttonX;
-      case RETRO_DEVICE_ID_JOYPAD_Y: return portValue.gamePad.buttonY;
+      case RETRO_DEVICE_ID_JOYPAD_SELECT: return portValue.gamePad.start;
+      case RETRO_DEVICE_ID_JOYPAD_START: return portValue.gamePad.select;
+      case RETRO_DEVICE_ID_JOYPAD_Y: return portValue.gamePad.buttonA;
       case RETRO_DEVICE_ID_JOYPAD_B: return portValue.gamePad.buttonB;
-      case RETRO_DEVICE_ID_JOYPAD_A: return portValue.gamePad.buttonA;
+      case RETRO_DEVICE_ID_JOYPAD_A: return portValue.gamePad.buttonC;
       default: return 0;
     }
 

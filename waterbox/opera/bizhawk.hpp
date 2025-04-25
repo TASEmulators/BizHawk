@@ -20,8 +20,7 @@ struct gamePad_t
   int select;
   int buttonA;
   int buttonB;
-  int buttonX;
-  int buttonY;
+  int buttonC;
   int buttonL;
   int buttonR;
 };
