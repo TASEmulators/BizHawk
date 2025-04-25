@@ -4391,7 +4391,6 @@ namespace BizHawk.Client.EmuHawk
 			var recommendedCore = currentCoreName switch
 			{
 				CoreNames.Snes9X => CoreNames.Bsnes115,
-				CoreNames.TI83Hawk => CoreNames.Emu83,
 				CoreNames.QuickNes => CoreNames.NesHawk,
 				CoreNames.Atari2600Hawk => CoreNames.Stella,
 				CoreNames.HyperNyma => CoreNames.TurboNyma,
