@@ -342,7 +342,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	ticksTarget += ticksPerFrame;
 
 	// Advancing until the required tick target is met
-	while (_ticksElapsed < (int)ticksTarget) co_switch(_emuCoroutine);
+	while (_ticksElapsed < (uint32_t)ticksTarget) co_switch(_emuCoroutine);
     
 	// Getting new ticks elapsed value
 	auto tf = _ticksElapsed;
