@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		// Drive management variables
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
 		private IRomAsset _hardDiskImageFile = null;
-		private ulong _hardDiskImageFileSize = 0;
+		private uint _hardDiskImageFileSize = 0;
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
@@ -101,10 +101,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			}
 
 			// Getting size of hard disk to mount. Using the one provided or, if not, the one specified in the pre-formatted setting
-			_hardDiskImageFileSize = _hardDiskImageFile != null ? (ulong) _hardDiskImageFile.FileData.Length : (ulong) _syncSettings.FormattedHardDisk;
+			_hardDiskImageFileSize = _hardDiskImageFile != null ? (uint) _hardDiskImageFile.FileData.Length : (uint) _syncSettings.FormattedHardDisk;
 
 			// Calculating hard disk size in kb
-			uint hardDiskImageFileSizeKb = (uint) ((_hardDiskImageFileSize) / 1024ul);
+			uint hardDiskImageFileSizeKb = _hardDiskImageFileSize / 1024u;
 
 			if (_hardDiskImageFileSize == 0)
 				Console.WriteLine($"Running without a hard disk drive mounted.");

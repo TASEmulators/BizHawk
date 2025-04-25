@@ -35,19 +35,19 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		}
 
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
-		public enum HardDiskOptions : ulong
+		public enum HardDiskOptions : uint
 		{
-			None = 0UL,
+			None = 0,
 			[Display(Name = "21Mb (FAT16)")]
-			FAT16_21Mb = 21411840UL,
+			FAT16_21Mb = 21411840,
 			[Display(Name = "41Mb (FAT16)")]
-			FAT16_41Mb = 42823680UL,
+			FAT16_41Mb = 42823680,
 			[Display(Name = "241Mb (FAT16)")]
-			FAT16_241Mb = 252370944UL,
+			FAT16_241Mb = 252370944,
 			[Display(Name = "504Mb (FAT16)")]
-			FAT16_504Mb = 527966208UL,
+			FAT16_504Mb = 527966208,
 			[Display(Name = "2014Mb (FAT16)")]
-			FAT16_2014Mb = 2111864832UL,
+			FAT16_2014Mb = 2111864832,
 		}
 
 		public enum CPUType
