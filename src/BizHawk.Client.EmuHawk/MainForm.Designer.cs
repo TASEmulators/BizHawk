@@ -406,7 +406,7 @@ namespace BizHawk.Client.EmuHawk
             this.GBLSubMenu,
             this.AppleSubMenu,
             this.C64SubMenu,
-			this.DOSSubMenu,
+            this.DOSSubMenu,
 			this.IntvSubMenu,
             this.zXSpectrumToolStripMenuItem,
             this.GenericCoreSubMenu,
