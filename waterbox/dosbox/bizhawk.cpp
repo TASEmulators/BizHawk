@@ -336,14 +336,20 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	ticksPerFrame = 1000.0 / fps;
     //printf("Running Framerate: %d / %d = %f\n", f->framerateNumerator, f->framerateDenominator, fps);
 
+	// Remembering current ticks elapsed value
+	auto t0 = _ticksElapsed;
+
  	// Increasing ticks target
 	ticksTarget += ticksPerFrame;
 	
 	// Advancing until the required tick target is met
-	while (_ticksElapsed < (int)ticksTarget)	co_switch(_emuCoroutine);
+	while (_ticksElapsed < (int)ticksTarget) co_switch(_emuCoroutine);
     
+	// Getting new ticks elapsed value
+	auto tf = _ticksElapsed;
+
 	// Updating ticks elapsed
-	f->base.Cycles = _ticksElapsed;
+	f->base.Cycles = tf - t0;
 	
 	// Updating video output
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
