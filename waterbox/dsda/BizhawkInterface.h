@@ -90,12 +90,6 @@ enum MemoryArrayType
   ARRAY_SECTORS = 2
 };
 
-enum NativeResolution
-{
-  NATIVE_X = 320,
-  NATIVE_Y = 200
-};
-
 typedef union
 {
     struct

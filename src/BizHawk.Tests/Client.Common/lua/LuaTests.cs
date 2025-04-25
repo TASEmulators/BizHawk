@@ -8,10 +8,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Tests.Client.Common.Lua
 {
-#if !SKIP_PLATFORM_TESTS
 	[DoNotParallelize]
 	[TestClass]
-#endif
 	public class LuaTests
 	{
 		private static readonly NLua.Lua LuaInstance = new();

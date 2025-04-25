@@ -1212,12 +1212,11 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var menu in keysMenus)
 				{
-					var dummyObject1 = menu;
 					item.CheckedChanged += (o, ev) =>
 					{
-						foreach (ToolStripMenuItem menuItem in dummyObject1.DropDownItems)
+						foreach (ToolStripMenuItem menuItem in menu.DropDownItems)
 						{
-							menuItem.Checked = !menuItem.Checked;
+							menuItem.Checked = item.Checked;
 						}
 
 						CurrentTasMovie.FlagChanges();

@@ -162,9 +162,10 @@ ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPla
   if (renderInfo->DoUpdate)
   {
     char setting_buffer[512];
-    sprintf(setting_buffer, "%dx%d", NATIVE_X * renderInfo->ScaleFactor, NATIVE_Y * renderInfo->ScaleFactor);
+    sprintf(setting_buffer, "%dx%d",
+      SCREENWIDTH  * renderInfo->ScaleFactor,
+      SCREENHEIGHT * renderInfo->ScaleFactor);
     dsda_UpdateStringConfig(dsda_config_screen_resolution, setting_buffer, true);
-    printf("dsda_config_screen_resolution = %s\n", setting_buffer);
 
     dsda_UpdateIntConfig(dsda_config_screenblocks,  renderInfo->HeadsUpMode      ? 11 : 10, true);
     dsda_UpdateIntConfig(dsda_config_hud_displayed, renderInfo->HeadsUpMode == 2 ?  0 :  1, true);
@@ -275,7 +276,7 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   // If required, prevent level exit and game end triggers
   preventLevelExit = settings->PreventLevelExit;
-  preventGameEnd = settings->PreventGameEnd;
+  preventGameEnd   = settings->PreventGameEnd;
 
   printf("Prevent Level Exit: %d\n", preventLevelExit);
   printf("Prevent Game End:   %d\n", preventGameEnd);

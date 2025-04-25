@@ -7,6 +7,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 
+using Silk.NET.Core.Loader;
 using Silk.NET.Core.Native;
 using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.Creative;
@@ -17,14 +18,31 @@ namespace BizHawk.Bizware.Audio
 {
 	public class OpenALSoundOutput : ISoundOutput
 	{
-		private static readonly AL _al = AL.GetApi();
-		private static readonly ALContext _alc = ALContext.GetApi();
+		static OpenALSoundOutput()
+		{
+			// kind of a hack
+			// DefaultPathResolver.MainModuleDirectoryResolver is potentially very very slow on Mono
+			// Due to it using Process.MainModule, which proceeds to use Process.Modules
+			// Process.Modules iterates through every single memory mapped file 100s of times over
+			// As such, it can be potentially very very slow
+			// DefaultPathResolver.MainModuleDirectoryResolver is unneeded anyways
+			var defaultPathResolver = (DefaultPathResolver)PathResolver.Default;
+			defaultPathResolver.Resolvers.Remove(DefaultPathResolver.MainModuleDirectoryResolver);
+			// these need to be done here, since static ctor runs after static field/prop setting
+			_al = AL.GetApi();
+			_alc = ALContext.GetApi();
+			_enumAllExt = GetExtensionOrNull<EnumerateAll>();
+			_enumExt = GetExtensionOrNull<Enumeration>();
+		}
+
+		private static readonly AL _al;
+		private static readonly ALContext _alc;
 
 		private static unsafe T GetExtensionOrNull<T>() where T : NativeExtension<ALContext>
 			=> _alc.TryGetExtension<T>(null, out var ext) ? ext : null;
 
-		private static readonly EnumerateAll _enumAllExt = GetExtensionOrNull<EnumerateAll>();
-		private static readonly Enumeration _enumExt = GetExtensionOrNull<Enumeration>();
+		private static readonly EnumerateAll _enumAllExt;
+		private static readonly Enumeration _enumExt;
 
 		private bool _disposed;
 		private readonly IHostAudioManager _sound;

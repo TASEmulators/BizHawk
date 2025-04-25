@@ -26,11 +26,6 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Sets a uniform value
 		/// </summary>
-		void SetUniformMatrix(string name, Matrix4x4 mat, bool transpose = false);
-
-		/// <summary>
-		/// Sets a uniform value
-		/// </summary>
 		void SetUniformMatrix(string name, ref Matrix4x4 mat, bool transpose = false);
 
 		/// <summary>

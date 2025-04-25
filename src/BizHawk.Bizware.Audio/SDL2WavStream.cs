@@ -135,7 +135,7 @@ namespace BizHawk.Bizware.Audio
 		public override void Write(byte[] buffer, int offset, int count)
 			=> throw new NotSupportedException();
 
-		private unsafe class SDLRwOpsStreamWrapper : IDisposable
+		private sealed class SDLRwOpsStreamWrapper : IDisposable
 		{
 			public IntPtr Rw { get; private set; }
 			private readonly Stream _s;
@@ -146,7 +146,7 @@ namespace BizHawk.Bizware.Audio
 			private readonly SDLRWopsWriteCallback _writeCallback;
 			private readonly SDLRWopsCloseCallback _closeCallback;
 
-			public SDLRwOpsStreamWrapper(Stream s)
+			public unsafe SDLRwOpsStreamWrapper(Stream s)
 			{
 				Rw = SDL_AllocRW();
 				if (Rw == IntPtr.Zero)

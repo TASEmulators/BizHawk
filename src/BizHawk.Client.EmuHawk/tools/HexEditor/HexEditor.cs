@@ -904,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Config.RecentRoms.MostRecent;
+				string path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -918,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Config.RecentRoms.MostRecent;
+				string path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -1312,7 +1312,7 @@ namespace BizHawk.Client.EmuHawk
 				discardCWDChange: false,
 				filter: TextTablesFSFilterSet,
 				initDir: Config!.PathEntries.ToolsAbsolutePath(),
-				initFileName: $"{Path.GetFileNameWithoutExtension(Config.RecentRoms.MostRecent.SubstringAfterLast('|'))}.tbl");
+				initFileName: $"{Path.GetFileNameWithoutExtension(MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath.SubstringAfterLast('|'))}.tbl");
 			if (result is null) return;
 			LoadTable(result);
 			RecentTables.Add(result);

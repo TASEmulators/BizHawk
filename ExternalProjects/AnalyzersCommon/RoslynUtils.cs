@@ -6,12 +6,8 @@ using System.Threading;
 
 public static class RoslynUtils
 {
-	public static SyntaxNode? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
-	{
-		var parent = node.Parent;
-		while (parent is not (null or TypeDeclarationSyntax)) parent = parent.Parent;
-		return parent;
-	}
+	public static TypeDeclarationSyntax? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
+		=> node.NearestAncestorOfType<TypeDeclarationSyntax>();
 
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
 		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"
@@ -132,9 +128,21 @@ public static class RoslynUtils
 		SyntaxNodeAnalysisContext snac)
 			=> list.Matching(targetAttrSym, snac.SemanticModel, snac.CancellationToken);
 
+	public static T? NearestAncestorOfType<T>(this CSharpSyntaxNode node)
+		where T : CSharpSyntaxNode
+		=> node.Parent?.FirstAncestorOrSelf<T>();
+
 	public static TextSpan Slice(this TextSpan span, int start)
 		=> TextSpan.FromBounds(start: span.Start + start, end: span.End);
 
 	public static TextSpan Slice(this TextSpan span, int start, int length)
 		=> new(start: span.Start + start, length: length);
+
+	public static string ToMetadataNameStr(this NameSyntax nameSyn)
+		=> nameSyn switch
+		{
+			QualifiedNameSyntax qual => $"{qual.Left.ToMetadataNameStr()}.{qual.Right.ToMetadataNameStr()}",
+			SimpleNameSyntax simple => simple.Identifier.ValueText,
+			_ => throw new InvalidOperationException(),
+		};
 }
