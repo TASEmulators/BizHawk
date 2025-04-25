@@ -61,13 +61,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[BizImport(CC)]
 		public abstract uint GetTicksElapsed();
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract int GetHDDSize();
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract void GetHDDData(byte[] buffer);
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract void SetHDDData(byte[] buffer);
 
 
@@ -87,10 +87,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		// CD Management Logic END
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract bool Init(InitSettings settings);
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract bool GetDriveActivityFlag();
 
 		[StructLayout(LayoutKind.Sequential)]
