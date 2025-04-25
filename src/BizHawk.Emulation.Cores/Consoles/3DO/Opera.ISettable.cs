@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.Panasonic3DO
+namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 {
 	public partial class Opera : ISettable<object, Opera.SyncSettings>
 	{

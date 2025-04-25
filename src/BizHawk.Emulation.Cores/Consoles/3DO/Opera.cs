@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Consoles.Panasonic3DO
+namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 {
 	[PortedCore(
 		name: CoreNames.Opera,

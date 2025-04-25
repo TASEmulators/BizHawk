@@ -25,6 +25,7 @@ using BizHawk.Emulation.Cores.Computers.Doom;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Computers.TIC80;
+using BizHawk.Emulation.Cores.Consoles.Panasonic3DO;
 using BizHawk.Emulation.Cores.Consoles.Belogic;
 using BizHawk.Emulation.Cores.Consoles.ChannelF;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCE;
@@ -64,7 +65,6 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.WinForms.Controls;
-using BizHawk.Emulation.Consoles.Panasonic3DO;
 
 namespace BizHawk.Client.EmuHawk
 {

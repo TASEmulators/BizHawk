@@ -1149,6 +1149,7 @@
 				"Value": "RMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
+			}
 		},
 		"DOSBox Controller": {
 			"Mouse Position X": {
@@ -1165,7 +1166,7 @@
 				"Value": "RMouse X",
 				"Mult": 1.0,
 				"Deadzone": 0.0
-			}
+			},
 			"Mouse Speed Y": {
 				"Value": "RMouse Y",
 				"Mult": 1.0,
