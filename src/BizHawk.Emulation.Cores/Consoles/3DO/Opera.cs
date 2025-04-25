@@ -234,8 +234,8 @@ namespace BizHawk.Emulation.Consoles.Panasonic3DO
 					gameInput.gamepad.down = controller.IsPressed($"P{port} {JoystickButtons.Down}") ? 1 : 0;
 					gameInput.gamepad.left = controller.IsPressed($"P{port} {JoystickButtons.Left}") ? 1 : 0;
 					gameInput.gamepad.right = controller.IsPressed($"P{port} {JoystickButtons.Right}") ? 1 : 0;
-					gameInput.gamepad.select = controller.IsPressed($"P{port} {JoystickButtons.Select}") ? 1 : 0;
-					gameInput.gamepad.start = controller.IsPressed($"P{port} {JoystickButtons.Start}") ? 1 : 0;
+					gameInput.gamepad.buttonX = controller.IsPressed($"P{port} {JoystickButtons.ButtonX}") ? 1 : 0;
+					gameInput.gamepad.buttonP = controller.IsPressed($"P{port} {JoystickButtons.ButtonP}") ? 1 : 0;
 					gameInput.gamepad.buttonA = controller.IsPressed($"P{port} {JoystickButtons.ButtonA}") ? 1 : 0;
 					gameInput.gamepad.buttonB = controller.IsPressed($"P{port} {JoystickButtons.ButtonB}") ? 1 : 0;
 					gameInput.gamepad.buttonC = controller.IsPressed($"P{port} {JoystickButtons.ButtonC}") ? 1 : 0;

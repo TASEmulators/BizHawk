@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Consoles.Panasonic3DO
 			public int down;
 			public int left;
 			public int right;
-			public int start;
-			public int select;
+			public int buttonX;
+			public int buttonP;
 			public int buttonA;
 			public int buttonB;
 			public int buttonC;

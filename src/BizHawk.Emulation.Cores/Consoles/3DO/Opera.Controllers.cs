@@ -79,8 +79,8 @@ namespace BizHawk.Emulation.Consoles.Panasonic3DO
 			JoystickButtons.Down,
 			JoystickButtons.Left,
 			JoystickButtons.Right,
-			JoystickButtons.Start,
-			JoystickButtons.Select,
+			JoystickButtons.ButtonX,
+			JoystickButtons.ButtonP,
 			JoystickButtons.ButtonA,
 			JoystickButtons.ButtonB,
 			JoystickButtons.ButtonC,
@@ -132,8 +132,8 @@ namespace BizHawk.Emulation.Consoles.Panasonic3DO
 			public const string Down = "Down";
 			public const string Left = "Left";
 			public const string Right = "Right";
-			public const string Start = "Start";
-			public const string Select = "Select";
+			public const string ButtonX = "X";
+			public const string ButtonP = "P";
 			public const string ButtonA = "A";
 			public const string ButtonB = "B";
 			public const string ButtonC = "C";
