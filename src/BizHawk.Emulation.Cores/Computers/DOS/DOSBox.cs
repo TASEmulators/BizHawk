@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -174,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				ConfigurationPreset._1994_IBM_PS2_76i_SLC2_486 => Resources.DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486.Value,
 				ConfigurationPreset._1997_IBM_APTIVA_2140 => Resources.DOSBOX_CONF_1997_IBM_APTIVA_2140.Value,
 				ConfigurationPreset._1999_IBM_THINKPAD_240 => Resources.DOSBOX_CONF_1999_IBM_THINKPAD_240.Value,
-				_ => []
+				_ => [ ]
 			});
 			configString += "\n";
 
