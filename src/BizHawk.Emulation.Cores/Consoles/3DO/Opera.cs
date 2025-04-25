@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Consoles.ThreeDO
+namespace BizHawk.Emulation.Consoles.Panasonic3DO
 {
 	[PortedCore(
 		name: CoreNames.Opera,
@@ -18,7 +19,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 	{
 		private static readonly Configuration ConfigNTSC = new Configuration
 		{
-			SystemId = VSystemID.Raw._3DO,
+			SystemId = VSystemID.Raw.Panasonic3DO,
 			MaxSamples = 8 * 1024,
 			DefaultWidth = LibOpera.NTSC_WIDTH,
 			DefaultHeight = LibOpera.NTSC_HEIGHT,
@@ -30,7 +31,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 
 		private static readonly Configuration ConfigPAL1 = new Configuration
 		{
-			SystemId = VSystemID.Raw._3DO,
+			SystemId = VSystemID.Raw.Panasonic3DO,
 			MaxSamples = 8 * 1024,
 			DefaultWidth = LibOpera.PAL1_WIDTH,
 			DefaultHeight = LibOpera.PAL1_HEIGHT,
@@ -42,7 +43,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 
 		private static readonly Configuration ConfigPAL2 = new Configuration
 		{
-			SystemId = VSystemID.Raw._3DO,
+			SystemId = VSystemID.Raw.Panasonic3DO,
 			MaxSamples = 8 * 1024,
 			DefaultWidth = LibOpera.PAL2_WIDTH,
 			DefaultHeight = LibOpera.PAL2_HEIGHT,
@@ -54,15 +55,14 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 
 		private readonly List<IDiscAsset> _discAssets;
 
-		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
-
+		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter("|"));
 
 		public override int VirtualWidth => BufferHeight * 4 / 3;
 		private LibOpera _libOpera;
 
 		// Image selection / swapping variables
 
-		[CoreConstructor(VSystemID.Raw._3DO)]
+		[CoreConstructor(VSystemID.Raw.Panasonic3DO)]
 		public Opera(CoreLoadParameters<object, SyncSettings> lp)
 			: base(
 				lp.Comm,
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 				_ => "None"
 			};
 
-			var (biosData, biosInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw._3DO, biosType), "BIOS ROM files are required!");
+			var (biosData, biosInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw.Panasonic3DO, biosType), "BIOS ROM files are required!");
 			string biosFileName = biosInfo.Name + ".bin";
 			_exe.AddReadonlyFile(biosData, biosFileName);
 
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 			string fontROMFileName = "None";
 			if (fontROMType != "None")
 			{
-				var (fontROMData, fontROMInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw._3DO, fontROMType), "Font ROM files are required!");
+				var (fontROMData, fontROMInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw.Panasonic3DO, fontROMType), "Font ROM files are required!");
 				_exe.AddReadonlyFile(fontROMData, fontROMInfo.Name);
 				fontROMFileName = fontROMInfo.Name;
 			}
@@ -238,8 +238,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 					gameInput.gamepad.start = controller.IsPressed($"P{port} {JoystickButtons.Start}") ? 1 : 0;
 					gameInput.gamepad.buttonA = controller.IsPressed($"P{port} {JoystickButtons.ButtonA}") ? 1 : 0;
 					gameInput.gamepad.buttonB = controller.IsPressed($"P{port} {JoystickButtons.ButtonB}") ? 1 : 0;
-					gameInput.gamepad.buttonX = controller.IsPressed($"P{port} {JoystickButtons.ButtonX}") ? 1 : 0;
-					gameInput.gamepad.buttonY = controller.IsPressed($"P{port} {JoystickButtons.ButtonY}") ? 1 : 0;
+					gameInput.gamepad.buttonC = controller.IsPressed($"P{port} {JoystickButtons.ButtonC}") ? 1 : 0;
 					gameInput.gamepad.buttonL = controller.IsPressed($"P{port} {JoystickButtons.ButtonL}") ? 1 : 0;
 					gameInput.gamepad.buttonR = controller.IsPressed($"P{port} {JoystickButtons.ButtonR}") ? 1 : 0;
 					break;

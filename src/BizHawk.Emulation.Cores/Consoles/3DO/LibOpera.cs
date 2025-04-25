@@ -2,7 +2,7 @@
 using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Waterbox;
 
-namespace BizHawk.Emulation.Consoles.ThreeDO
+namespace BizHawk.Emulation.Consoles.Panasonic3DO
 {
 	public abstract class LibOpera : LibWaterboxCore
 	{
@@ -59,8 +59,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 			public int select;
 			public int buttonA;
 			public int buttonB;
-			public int buttonX;
-			public int buttonY;
+			public int buttonC;
 			public int buttonL;
 			public int buttonR;
 		}

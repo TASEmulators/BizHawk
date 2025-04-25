@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.ThreeDO
+namespace BizHawk.Emulation.Consoles.Panasonic3DO
 {
 	public partial class Opera : IRegionable
 	{

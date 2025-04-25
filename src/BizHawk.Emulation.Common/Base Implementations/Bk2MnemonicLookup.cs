@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
 		{
-			[VSystemID.Raw._3DO] = new()
+			[VSystemID.Raw.Panasonic3DO] = new()
 			{
 				["LT"] = 'l',
 				["RT"] = 'r',
@@ -882,7 +882,7 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
 		{
-			[VSystemID.Raw._3DO] = new()
+			[VSystemID.Raw.Panasonic3DO] = new()
 			{
 				["Flight Stick Horizontal Axis"] = "fsX",
 				["Flight Stick Vertical Axis"] = "fsY",

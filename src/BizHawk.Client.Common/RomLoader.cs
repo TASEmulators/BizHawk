@@ -283,7 +283,7 @@ namespace BizHawk.Client.Common
 					NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
 					break;
 				case DiscType.Panasonic3DO:
-					NoCoreForSystem(VSystemID.Raw.Panasonic3DO);
+					game.System = VSystemID.Raw.Panasonic3DO;
 					break;
 				case DiscType.Playdia:
 					NoCoreForSystem(VSystemID.Raw.Playdia);

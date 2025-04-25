@@ -63,6 +63,7 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.WinForms.Controls;
+using BizHawk.Emulation.Consoles.Panasonic3DO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1324,6 +1325,9 @@ namespace BizHawk.Client.EmuHawk
 				octoshockNTSCSettingsItem.Visible = octoshockPALSettingsItem.Visible = !loadedCoreIsOctoshock;
 			};
 			items.Add(octoshockSubmenu);
+
+			// Opera
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Opera, CreateGenericCoreConfigItem<Opera>(CoreNames.Opera)));
 
 			// PCEHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PceHawk, CreateGenericCoreConfigItem<PCEngine>(CoreNames.PceHawk)));

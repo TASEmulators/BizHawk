@@ -2,7 +2,7 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Consoles.ThreeDO
+namespace BizHawk.Emulation.Consoles.Panasonic3DO
 {
 	public partial class Opera
 	{ 
@@ -83,8 +83,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 			JoystickButtons.Select,
 			JoystickButtons.ButtonA,
 			JoystickButtons.ButtonB,
-			JoystickButtons.ButtonX,
-			JoystickButtons.ButtonY,
+			JoystickButtons.ButtonC,
 			JoystickButtons.ButtonL,
 			JoystickButtons.ButtonR,
 		];
@@ -137,8 +136,7 @@ namespace BizHawk.Emulation.Consoles.ThreeDO
 			public const string Select = "Select";
 			public const string ButtonA = "A";
 			public const string ButtonB = "B";
-			public const string ButtonX = "X";
-			public const string ButtonY = "Y";
+			public const string ButtonC = "C";
 			public const string ButtonL = "L";
 			public const string ButtonR = "R";
 		}
