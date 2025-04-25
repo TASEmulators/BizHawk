@@ -16,8 +16,8 @@ struct gamePad_t
   int down;
   int left;
   int right;
-  int start;
-  int select;
+  int buttonX;
+  int buttonP;
   int buttonA;
   int buttonB;
   int buttonC;
