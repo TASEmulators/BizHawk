@@ -904,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Config.RecentRoms.MostRecent;
+				string path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -918,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Config.RecentRoms.MostRecent;
+				string path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -1312,7 +1312,7 @@ namespace BizHawk.Client.EmuHawk
 				discardCWDChange: false,
 				filter: TextTablesFSFilterSet,
 				initDir: Config!.PathEntries.ToolsAbsolutePath(),
-				initFileName: $"{Path.GetFileNameWithoutExtension(Config.RecentRoms.MostRecent.SubstringAfterLast('|'))}.tbl");
+				initFileName: $"{Path.GetFileNameWithoutExtension(MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath.SubstringAfterLast('|'))}.tbl");
 			if (result is null) return;
 			LoadTable(result);
 			RecentTables.Add(result);
@@ -1447,7 +1447,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = PointToScreen(AddressesLabel.Location),
 					InitialValue = _findStr,
 					SearchTypeChangedCallback = SearchTypeChanged,
-					InitialText = _lastSearchWasText
+					InitialText = _lastSearchWasText,
 				};
 
 				_hexFind.Show();
@@ -1503,7 +1503,7 @@ namespace BizHawk.Client.EmuHawk
 				var romMenuItem = new ToolStripMenuItem
 				{
 					Text = _romDomain.Name,
-					Checked = _domain.Name == _romDomain.Name
+					Checked = _domain.Name == _romDomain.Name,
 				};
 
 				MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
@@ -1540,7 +1540,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(MemoryViewerBox),
-				Message = "Enter a hexadecimal value"
+				Message = "Enter a hexadecimal value",
 			};
 
 			if (this.ShowDialogWithTempMute(inputPrompt).IsOk() && inputPrompt.PromptText.IsHex())
@@ -1599,7 +1599,7 @@ namespace BizHawk.Client.EmuHawk
 			using var poke = new RamPoke(DialogController, watches, MainForm.CheatList)
 			{
 				InitialLocation = this.ChildPointToScreen(AddressLabel),
-				ParentTool = this
+				ParentTool = this,
 			};
 			this.ShowDialogWithTempMute(poke);
 			GeneralUpdate();
@@ -2085,13 +2085,9 @@ namespace BizHawk.Client.EmuHawk
 						{
 							ClearHighlighted();
 						}
-						else if (_secondaryHighlightedAddresses.Contains(pointedAddress))
-						{
-							_secondaryHighlightedAddresses.Remove(pointedAddress);
-						}
 						else
 						{
-							_secondaryHighlightedAddresses.Add(pointedAddress);
+							_ = _secondaryHighlightedAddresses.ToggleMembership(pointedAddress);
 						}
 					}
 					else if ((ModifierKeys & Keys.Shift) == Keys.Shift)

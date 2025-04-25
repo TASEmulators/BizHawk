@@ -40,6 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.Arcade,
 				VSystemID.Raw.C64,
 				VSystemID.Raw.Doom,
+				VSystemID.Raw.DOS,
 				VSystemID.Raw.GBL,
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
@@ -102,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
-				AddFiles(xmlGame.AssetFullPaths);
+				AddFiles(xmlGame.Assets.Select(static pfd => pfd.Path).ToList());
 			}
 			catch
 			{
@@ -180,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = "",
 				Location = UIHelper.Scale(new Point(6, start)),
 				Size = new Size(FileSelectorPanel.ClientSize.Width - UIHelper.ScaleX(12), UIHelper.ScaleY(41)),
-				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
 			};
 
 			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
@@ -188,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
-				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;

@@ -7,6 +7,6 @@ namespace BizHawk.Emulation.Common
 		RightAndUp = 0,
 		RightAndDown = 1,
 		LeftAndUp = 2,
-		LeftAndDown = 3
+		LeftAndDown = 3,
 	}
 }

@@ -18,7 +18,7 @@ export LDFLAGS="-no-pie"
 # but this ends up breaking our standalone building of libunwind
 # there isn't a simple fix with a command line option, so...
 
-printf "%s\n%s\n" "enable_language(ASM)" "add_subdirectory($LLVMDIR/libunwind .)" > CMakeLists.txt
+printf "%s\n%s\n%s\n" "cmake_minimum_required(VERSION 3.20.0)" "project(libunwind C CXX ASM)" "add_subdirectory($LLVMDIR/libunwind libunwind)" > CMakeLists.txt
 
 cmake \
 	-DCMAKE_ASM_COMPILER="$CC" \

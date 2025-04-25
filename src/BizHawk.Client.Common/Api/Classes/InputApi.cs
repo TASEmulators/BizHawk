@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 				["Right"] = rmb,
 				["XButton1"] = x1mb,
 				["XButton2"] = x2mb,
-				["Wheel"] = scroll
+				["Wheel"] = scroll,
 			};
 		}
 

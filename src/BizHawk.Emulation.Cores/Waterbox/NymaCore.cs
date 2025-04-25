@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
@@ -56,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return DoInit<T>(
 				lp.Roms.Select(r => (r.RomData,
-					Path.GetFileName(r.RomPath[(r.RomPath.LastIndexOf('|') + 1)..])!.ToLowerInvariant())).ToArray(),
+					Path.GetFileName(r.RomPath.SubstringAfter('|')).ToLowerInvariant())).ToArray(),
 				lp.Discs.Select(d => d.DiscData).ToArray(),
 				wbxFilename,
 				lp.Roms.FirstOrDefault()?.Extension,

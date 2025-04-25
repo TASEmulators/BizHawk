@@ -48,6 +48,8 @@ namespace BizHawk.Client.Common
 
 		private static readonly BespokeOption<string?> OptionConfigFilePath = new(name: "--config", description: "path of config file to use");
 
+		private static readonly BespokeOption<bool> OptionGDIPlus = new(name: "--gdi", description: "pass to use the GDI+ display method rather than whatever preference is set in the config file");
+
 		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(aliases: [ "--url-get", "--url_get" ], description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
 
 		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(aliases: [ "--url-post", "--url_post" ], description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
@@ -105,6 +107,7 @@ namespace BizHawk.Client.Common
 			root.Add(/* --dump-name */ OptionAVDumpName);
 			root.Add(/* --dump-type */ OptionAVDumpType);
 			root.Add(/* --fullscreen */ OptionLaunchFullscreen);
+			root.Add(/* --gdi */ OptionGDIPlus);
 			root.Add(/* --load-slot */ OptionLoadQuicksaveSlot);
 			root.Add(/* --load-state */ OptionLoadSavestateFilePath);
 			root.Add(/* --lua */ OptionLuaFilePath);
@@ -219,6 +222,7 @@ namespace BizHawk.Client.Common
 				autoCloseOnDump: result.GetValueForOption(OptionAVDumpQuitWhenDone),
 				chromeless: result.GetValueForOption(OptionLaunchChromeless),
 				startFullscreen: result.GetValueForOption(OptionLaunchFullscreen),
+				gdiPlusRequested: result.GetValueForOption(OptionGDIPlus),
 				luaScript: luaScript,
 				luaConsole: luaConsole,
 				socketAddress: socketAddress,

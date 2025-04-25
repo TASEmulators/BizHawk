@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Common
 			Region = "",
 			Status = RomStatus.GoodDump,
 			ForcedCore = "",
-			NotInDatabase = false
+			NotInDatabase = false,
 		};
 
 		internal GameInfo(CompactGameInfo cgi)

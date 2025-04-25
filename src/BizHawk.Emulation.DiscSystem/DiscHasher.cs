@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			var dsr = new DiscSectorReader(disc)
 			{
-				Policy = { DeterministicClearBuffer = false } // live dangerously
+				Policy = { DeterministicClearBuffer = false }, // live dangerously
 			};
 
 			//hash the TOC
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			var dsr = new DiscSectorReader(disc)
 			{
-				Policy = { DeterministicClearBuffer = false } // live dangerously
+				Policy = { DeterministicClearBuffer = false }, // live dangerously
 			};
 
 
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			var dsr = new DiscSectorReader(disc)
 			{
-				Policy = { DeterministicClearBuffer = false } // let's make this a little faster
+				Policy = { DeterministicClearBuffer = false }, // let's make this a little faster
 			};
 
 			static string? HashJaguar(DiscTrack bootTrack, DiscSectorReader dsr, bool commonHomebrewHash)

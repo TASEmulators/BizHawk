@@ -61,7 +61,7 @@ namespace BizHawk.Bizware.Graphics
 		internal void SetProjection(int width, int height)
 		{
 			var projection = _igl.CreateGuiViewMatrix(width, height) * _igl.CreateGuiProjectionMatrix(width, height);
-			Pipeline.SetUniformMatrix("um44Projection", projection);
+			Pipeline.SetUniformMatrix("um44Projection", ref projection);
 		}
 
 		internal void SetTexture(ITexture2D texture2D)

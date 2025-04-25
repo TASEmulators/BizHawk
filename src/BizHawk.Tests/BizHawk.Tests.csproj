@@ -5,6 +5,7 @@
 	<Import Project="../TestProjects.props" />
 	<PropertyGroup>
 		<DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SKIP_PLATFORM_TESTS</DefineConstants>
+		<MSTestAnalysisMode>All</MSTestAnalysisMode>
 		<RunSettingsFilePath>$(MSBuildProjectDirectory)/../MainSln.runsettings</RunSettingsFilePath>
 	</PropertyGroup>
 	<ItemGroup>
@@ -14,6 +15,7 @@
 		<!-- CHECKME: Does liblua5.4.so from a Linux host get picked up correctly? -->
 		<None Include="$(ProjectDir)../../Assets/dll/libbizhash.*" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="$(ProjectDir)../../Assets/dll/libzstd.*" CopyToOutputDirectory="PreserveNewest" />
+		<Using Include="BizHawk.Tests" />
 	</ItemGroup>
 	<PropertyGroup>
 		<!-- Works around weird issue with IsExternalInit specifically, cause is likely related to https://github.com/Sergio0694/PolySharp/issues/48? -->

@@ -65,6 +65,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			NM = 5
 		}
 
+		public enum HudMode : int
+		{
+			Vanilla = 0,
+			DSDA = 1,
+			None = 2
+		}
+
 		public enum TurningResolution : int
 		{
 			[Display(Name = "16 bits (longtics)")]
@@ -118,6 +125,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
+			[JsonIgnore]
+			public bool DoUpdate = false;
+
 			[DisplayName("Internal Resolution Scale Factor")]
 			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.")]
 			[Range(1, 12)]
@@ -131,6 +141,46 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(0)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
+			
+			[DisplayName("Show Messages")]
+			[Description("Displays messages about items you pick up.")]
+			[DefaultValue(true)]
+			public bool ShowMessages { get; set; }
+			
+			[DisplayName("Report Revealed Secrets")]
+			[Description("Shows an on-screen notification when revealing a secret.")]
+			[DefaultValue(false)]
+			public bool ReportSecrets { get; set; }
+			
+			[DisplayName("HUD Mode")]
+			[Description("Sets heads-up display mode.")]
+			[DefaultValue(HudMode.Vanilla)]
+			public HudMode HeadsUpMode { get; set; }
+			
+			[DisplayName("Extended HUD")]
+			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
+			[DefaultValue(false)]
+			public bool DsdaExHud { get; set; }
+			
+			[DisplayName("Display Commands")]
+			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
+			[DefaultValue(false)]
+			public bool DisplayCommands { get; set; }
+			
+			[DisplayName("Automap Totals")]
+			[Description("Shows counts for kills, items, and secrets on automap.")]
+			[DefaultValue(false)]
+			public bool MapTotals { get; set; }
+			
+			[DisplayName("Automap Time")]
+			[Description("Shows elapsed time on automap.")]
+			[DefaultValue(false)]
+			public bool MapTime { get; set; }
+			
+			[DisplayName("Automap Coordinates")]
+			[Description("Shows in-level coordinates on automap.")]
+			[DefaultValue(false)]
+			public bool MapCoordinates { get; set; }
 
 			[JsonIgnore]
 			[DisplayName("Player Point of View")]
@@ -144,20 +194,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				=> SettingsUtil.SetDefaultValues(this);
 
 			public DoomSettings Clone()
-				=> (DoomSettings) MemberwiseClone();
-
-			public static bool NeedsReboot(DoomSettings x, DoomSettings y)
-				=> false;
+				=> (DoomSettings)MemberwiseClone();
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
-			var ret = DoomSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			if (_settings.DisplayPlayer == 1 && !_syncSettings.Player1Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
-			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
+			_settings.DoUpdate = true;
+			return PutSettingsDirtyBits.None;
 		}
 
 		[CoreSettings]
@@ -259,6 +306,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(true)]
 			public bool AlwaysRun { get; set; }
 			
+			[DisplayName("Render Wipescreen")]
+			[Description("Enables screen melt - an effect seen when Doom changes scene, for example, when starting or exiting a level.")]
+			[DefaultValue(true)]
+			public bool RenderWipescreen { get; set; }
+			
 			[DisplayName("Turning Resolution")]
 			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
 			[DefaultValue(TurningResolution.Longtics)]
@@ -313,18 +365,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				return new CInterface.InitSettings
 				{
-					_Player1Present = Player1Present ? 1 : 0,
-					_Player2Present = Player2Present ? 1 : 0,
-					_Player3Present = Player3Present ? 1 : 0,
-					_Player4Present = Player4Present ? 1 : 0,
-					_Player1Class = (int) Player1Class,
-					_Player2Class = (int) Player2Class,
-					_Player3Class = (int) Player3Class,
-					_Player4Class = (int) Player4Class,
-					_PreventLevelExit = PreventLevelExit ? 1 : 0,
-					_PreventGameEnd = PreventGameEnd ? 1 : 0
-					// MouseRunSensitivity is handled at Bizhawk level
-					// MouseTurnSensitivity is handled at Bizhawk level
+					Player1Present = Player1Present ? 1 : 0,
+					Player2Present = Player2Present ? 1 : 0,
+					Player3Present = Player3Present ? 1 : 0,
+					Player4Present = Player4Present ? 1 : 0,
+					Player1Class = (int)Player1Class,
+					Player2Class = (int)Player2Class,
+					Player3Class = (int)Player3Class,
+					Player4Class = (int)Player4Class,
+					PreventLevelExit = PreventLevelExit ? 1 : 0,
+					PreventGameEnd = PreventGameEnd ? 1 : 0
 				};
 			}
 

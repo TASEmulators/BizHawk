@@ -509,6 +509,7 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.SegaCD:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
 						mfs.Add(new(domains["CD PRG RAM"], 0, domains["CD PRG RAM"].Size, 1));
+						mfs.Add(new(domains["CD WORD RAM (2M)"], 0, domains["CD WORD RAM (2M)"].Size, 1));
 						break;
 					case ConsoleID.MagnavoxOdyssey:
 						mfs.Add(new(domains["CPU RAM"], 0, domains["CPU RAM"].Size));

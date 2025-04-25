@@ -42,7 +42,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private enum BurnType
 		{
-			Normal, Pregap, Postgap
+			Normal,
+			Pregap,
+			Postgap,
 		}
 
 		private class BlobInfo
@@ -224,7 +226,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					CloseSession();
 					CurrentSession = new()
 					{
-						Number = cct.Session
+						Number = cct.Session,
 					};
 				}
 
@@ -394,7 +396,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				{
 					var ss = new SS_Gap
 					{
-						TrackType = cct.TrackType // TODO - old track type in some < -150 cases?
+						TrackType = cct.TrackType, // TODO - old track type in some < -150 cases?
 					};
 
 					//-subq-

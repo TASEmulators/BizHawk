@@ -5,26 +5,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public partial class DSDA : IVideoProvider
 	{
-		public int[] GetVideoBuffer() => _vidBuff;
-
-		public int VirtualWidth => BufferHeight * 4 / 3;
-
-		public int VirtualHeight => BufferHeight;
-
-		public int PaletteSize { get; private set; }
-
-		public int BufferWidth { get; private set; }
-
-		public int BufferHeight { get; private set; }
-
-		public int BackgroundColor => unchecked((int)0xff000000);
-
-		public int VsyncNumerator { get; }
-
-		public int VsyncDenominator { get; }
-
 		private int[] _palBuffer = [ ];
 		private int[] _vidBuff = [ ];
+		public int VirtualWidth => BufferHeight * 4 / 3;
+		public int VirtualHeight => BufferHeight;
+		public int PaletteSize { get; private set; }
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
+		public int BackgroundColor => unchecked((int)0xff000000);
+		public int VsyncNumerator { get; }
+		public int VsyncDenominator { get; }
+		public int[] GetVideoBuffer() => _vidBuff;
 
 		private unsafe void UpdateVideo()
 		{

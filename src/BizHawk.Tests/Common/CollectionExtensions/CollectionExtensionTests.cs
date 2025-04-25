@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -66,22 +65,22 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		{
 			var a123 = new[] { 1, 2, 3 };
 			var a456 = new[] { 4, 5, 6 };
-			Assert.IsTrue(a123.ConcatArray(a456).SequenceEqual(new[] { 1, 2, 3, 4, 5, 6 }));
+			CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, a123.ConcatArray(a456));
 			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()));
 			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456));
-			Assert.AreEqual(0, Array.Empty<int>().ConcatArray(Array.Empty<int>()).Length);
+			CollectionAssert.That.IsEmpty(Array.Empty<int>().ConcatArray(Array.Empty<int>()));
 		}
 
 		[TestMethod]
 		public void TestConcatArrays()
 		{
-			Assert.IsTrue(
-				CE.ConcatArrays([ [ 1, 2 ], [ 3 ], [ ], [ 4, 5, 6 ] ])
-					.SequenceEqual([ 1, 2, 3, 4, 5, 6 ]),
+			CollectionAssert.AreEqual(
+				new[] { 1, 2, 3, 4, 5, 6 },
+				CE.ConcatArrays([ [ 1, 2 ], [ 3 ], [ ], [ 4, 5, 6 ] ]),
 				"array");
-			Assert.IsTrue(
-				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), [ ], new ArraySegment<int>([ 4, 5, 6 ]) ])
-					.SequenceEqual([ 1, 2, 3, 4, 5, 6 ]),
+			CollectionAssert.AreEqual(
+				new[] { 1, 2, 3, 4, 5, 6 },
+				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), [ ], new ArraySegment<int>([ 4, 5, 6 ]) ]),
 				"ArraySegment");
 		}
 
@@ -104,12 +103,18 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		public void TestBinarySearchExtension()
 		{
 			List<string> testList = new(new[] { "a", "abc", "abcdef" });
-			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 4));
-			Assert.ThrowsException<InvalidOperationException>(() => testList.BinarySearch(static s => s.Length, 7));
+			_ = Assert.Throws<InvalidOperationException>(
+				() => testList.BinarySearch(static s => s.Length, 4),
+				"none of length 4");
+			_ = Assert.Throws<InvalidOperationException>(
+				() => testList.BinarySearch(static s => s.Length, 7),
+				"none of length 7");
 			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3));
 
 			List<int> emptyList = new List<int>();
-			Assert.ThrowsException<InvalidOperationException>(() => emptyList.BinarySearch(i => i, 15));
+			_ = Assert.Throws<InvalidOperationException>(
+				() => emptyList.BinarySearch(i => i, 15),
+				"empty receiver");
 		}
 
 		[TestMethod]

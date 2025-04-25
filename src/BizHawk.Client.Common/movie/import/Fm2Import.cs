@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 			var controllerSettings = new NESControlSettings
 			{
 				NesLeftPort = nameof(UnpluggedNES),
-				NesRightPort = nameof(UnpluggedNES)
+				NesRightPort = nameof(UnpluggedNES),
 			};
 			bool isFourScore = false;
 

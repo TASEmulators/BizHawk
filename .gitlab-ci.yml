@@ -201,6 +201,7 @@ run_tests:
   - job: build_asms_release
     artifacts: false
   script:
+  - apt-get update && apt-get install liblua5.4-0
   - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net8.0
   stage: test
 

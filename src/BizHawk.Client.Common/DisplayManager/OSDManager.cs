@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 				Message = message,
 				Position = pos,
 				BackGround = backGround,
-				ForeColor = foreColor
+				ForeColor = foreColor,
 			});
 		}
 
@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 				Message = message,
 				Position = pos,
 				BackGround = backGround,
-				ForeColor = foreColor
+				ForeColor = foreColor,
 			});
 		}
 

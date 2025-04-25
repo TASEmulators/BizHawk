@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.Sega32X] = "Sega 32X",
 			[VSystemID.Raw.GGL] = "Dual Game Gear",
 			[VSystemID.Raw.Satellaview] = "Satellaview",
-			[VSystemID.Raw.N3DS] = "3DS"
+			[VSystemID.Raw.N3DS] = "3DS",
 		};
 
 		private static PathEntry BaseEntryFor(string sysID, string path)

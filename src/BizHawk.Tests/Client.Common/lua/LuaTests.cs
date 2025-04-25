@@ -1,3 +1,5 @@
+#pragma warning disable MSTEST0037 // wants `Assert.IsTrue` calls to be more specific
+
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -6,10 +8,8 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Tests.Client.Common.Lua
 {
-#if !SKIP_PLATFORM_TESTS
 	[DoNotParallelize]
 	[TestClass]
-#endif
 	public class LuaTests
 	{
 		private static readonly NLua.Lua LuaInstance = new();
@@ -88,7 +88,9 @@ namespace BizHawk.Tests.Client.Common.Lua
 
 		[LuaMethod("pass_color", "")]
 		public static void PassColor(object? o)
+#pragma warning disable MSTEST0026 // "Prefer adding an additional assertion that checks for null" ??? maybe structure like the below method?
 			=> Assert.IsTrue(_th.SafeParseColor(o)?.ToArgb() == ((Color?)ExpectedValue)?.ToArgb());
+#pragma warning restore MSTEST0026
 
 		[LuaMethod("pass_table", "")]
 		public static void PassTable(NLua.LuaTable? o)
@@ -426,7 +428,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			CallackArg = _th.ListToTable(new List<double>
 			{
 				0.123,
-				0.321
+				0.321,
 			});
 			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo[1] == 0.123) pass_bool(foo[2] == 0.321) end)");
 		}
@@ -438,7 +440,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			CallackArg = _th.DictToTable(new Dictionary<string, double>
 			{
 				["foo"] = 0.123,
-				["bar"] = 0.321
+				["bar"] = 0.321,
 			});
 			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo[\"foo\"] == 0.123) pass_bool(foo[\"bar\"] == 0.321) end)");
 		}
@@ -620,7 +622,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ReturnValue = _th.ListToTable(new List<double>
 			{
 				0.123,
-				0.321
+				0.321,
 			});
 			Assert.IsTrue((bool)LuaInstance.DoString("local t = return_table() return (t[1] == 0.123) and (t[2] == 0.321)")[0]);
 		}
@@ -631,7 +633,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ReturnValue = _th.DictToTable(new Dictionary<string, double>
 			{
 				["foo"] = 0.123,
-				["bar"] = 0.321
+				["bar"] = 0.321,
 			});
 			Assert.IsTrue((bool)LuaInstance.DoString("local t = return_table() return (t[\"foo\"] == 0.123) and (t[\"bar\"] == 0.321)")[0]);
 		}
@@ -843,7 +845,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ExpectedValue = _th.ListToTable(new List<double>
 			{
 				0.123,
-				0.321
+				0.321,
 			});
 			LuaInstance.DoString("pass_table({0.123,0.321})");
 		}
@@ -854,7 +856,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ExpectedValue = _th.DictToTable(new Dictionary<string, double>
 			{
 				["foo"] = 0.123,
-				["bar"] = 0.321
+				["bar"] = 0.321,
 			});
 			LuaInstance.DoString("pass_table({[\"foo\"]=0.123,[\"bar\"]=0.321})");
 		}

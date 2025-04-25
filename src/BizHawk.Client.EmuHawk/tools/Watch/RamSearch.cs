@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => 0,
 				WatchSize.Word => 1,
 				WatchSize.DWord => 2,
-				_ => SizeDropdown.SelectedIndex
+				_ => SizeDropdown.SelectedIndex,
 			};
 		}
 
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchList.Prev => _searches[index].PreviousStr,
 				WatchList.ChangesCol => _searches[index].ChangeCount.ToString(),
 				WatchList.Diff => _searches[index].Diff,
-				_ => text
+				_ => text,
 			};
 		}
 
@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => ByteWatch.ValidTypes,
 				WatchSize.Word => WordWatch.ValidTypes,
 				WatchSize.DWord => DWordWatch.ValidTypes,
-				_ => new List<Common.WatchDisplayType>()
+				_ => [ ],
 			};
 
 			foreach (var type in types)
@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(WatchListView),
-				Message = "Enter a hexadecimal value"
+				Message = "Enter a hexadecimal value",
 			};
 
 			while (this.ShowDialogWithTempMute(prompt).IsOk())
@@ -1074,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => ByteWatch.ValidTypes,
 				WatchSize.Word => WordWatch.ValidTypes,
 				WatchSize.DWord => DWordWatch.ValidTypes,
-				_ => new List<Common.WatchDisplayType>()
+				_ => [ ],
 			};
 
 			foreach (var type in types)
@@ -1083,7 +1083,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"{type}ToolStripMenuItem",
 						Text = Watch.DisplayTypeToString(type),
-						Checked = _settings.Type == type
+						Checked = _settings.Type == type,
 					};
 				var type1 = type;
 				item.Click += (o, ev) => DoDisplayTypeClick(type1);
@@ -1405,7 +1405,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				1 => WatchSize.Word,
 				2 => WatchSize.DWord,
-				_ => WatchSize.Byte
+				_ => WatchSize.Byte,
 			};
 
 		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)

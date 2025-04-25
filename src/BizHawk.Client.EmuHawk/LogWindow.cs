@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Console.SetOut(new StreamWriter(Console.OpenStandardOutput())
 			{
-				AutoFlush = true
+				AutoFlush = true,
 			});
 			_logWriter.Close();
 			_logWriter = null;

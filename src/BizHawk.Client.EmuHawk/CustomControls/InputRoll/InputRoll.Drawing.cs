@@ -142,33 +142,31 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_renderer.PrepDrawString(Font, _foreColor);
 
-			int h = ColumnHeight;
-			int yOffset = HorizontalOrientation ? -_vBar.Value : 0;
-
 			for (int j = 0; j < visibleColumns.Count; j++)
 			{
 				var column = visibleColumns[j];
-				var w = column.Width;
-				int x, y;
+				int x, y, w, h;
 
 				if (HorizontalOrientation)
 				{
-					var columnHeight = column.Width;
 					var textSize = _renderer.MeasureString(column.Text, Font);
 					x = MaxColumnWidth - CellWidthPadding - (int)textSize.Width;
-					y = yOffset + ((columnHeight - (int)textSize.Height) / 2);
-					yOffset += columnHeight;
+					y = column.Left + ((column.Width - (int)textSize.Height) / 2) - _vBar.Value;
+					w = MaxColumnWidth;
+					h = column.Width;
 				}
 				else
 				{
 					x = 1 + column.Left + CellWidthPadding - _hBar.Value;
 					y = CellHeightPadding;
+					w = column.Width;
+					h = ColumnHeight;
 				}
 
 				if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 				{
 					_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-					DrawString(column.Text, new Rectangle(x, y,  column.Width, h));
+					DrawString(column.Text, new Rectangle(x, y, w, h));
 					_renderer.PrepDrawString(Font, _foreColor);
 				}
 				else
@@ -301,20 +299,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_renderer.FillRectangle(new Rectangle(0, 0, MaxColumnWidth + 1, rect.Height));
 
-				int y = -_vBar.Value;
 				for (int j = 0; j < visibleColumns.Count; j++)
 				{
+					int y = visibleColumns[j].Left - _vBar.Value;
 					_renderer.Line(1, y, MaxColumnWidth, y);
-					y += visibleColumns[j].Width;
 				}
 
 				if (visibleColumns.Count is not 0)
 				{
-					_renderer.Line(1, y, MaxColumnWidth, y);
+					_renderer.Line(1, TotalColWidth, MaxColumnWidth, TotalColWidth);
 				}
 
-				_renderer.Line(0, 0, 0, y);
-				_renderer.Line(MaxColumnWidth, 0, MaxColumnWidth, y);
+				_renderer.Line(0, 0, 0, rect.Height);
+				_renderer.Line(MaxColumnWidth, 0, MaxColumnWidth, rect.Height);
 			}
 			else
 			{
@@ -480,7 +477,7 @@ namespace BizHawk.Client.EmuHawk
 				Cell relativeCell = new Cell
 				{
 					RowIndex = cell.RowIndex - visibleRows.Start,
-					Column = cell.Column
+					Column = cell.Column,
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 

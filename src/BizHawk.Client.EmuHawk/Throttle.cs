@@ -12,7 +12,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private int lastSkipRate;
 		private int framesToSkip;
-		private int framesSkipped;
 		public bool skipNextFrame;
 
 		//if the emulator is paused then we don't need to behave as if unthrottled
@@ -27,15 +26,12 @@ namespace BizHawk.Client.EmuHawk
 			//TODO - figure out what allowSleep is supposed to be used for
 			//TODO - figure out what forceFrameSkip is supposed to be used for
 
-			bool extraThrottle = false;
-
 			//if we're paused, none of this should happen. just clean out our state and don't skip
 			//notably, if we're frame-advancing, we should be paused.
 			if (signal_paused && !signal_continuousFrameAdvancing)
 			{
 				//Console.WriteLine($"THE THING: {signal_paused} {signal_continuousFrameAdvancing}");
 				skipNextFrame = false;
-				framesSkipped = 0;
 				framesToSkip = 0;
 
 				//keep from burning CPU
@@ -63,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 #endif
 
 			int skipRate = (forceFrameSkip < 0) ? config.FrameSkip : forceFrameSkip;
-			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;
+			if (signal_unthrottle) skipRate = 3;
 
 			if (lastSkipRate != skipRate)
 			{
@@ -71,48 +67,27 @@ namespace BizHawk.Client.EmuHawk
 				framesToSkip = 0; // otherwise switches to lower frameskip rates will lag behind
 			}
 
-			if (!skipNextFrame || forceFrameSkip == 0 || (signal_continuousFrameAdvancing && !signal_unthrottle))
+			//don't ever skip frames when continuous frame advancing. it's meant for precision work.
+			if (signal_continuousFrameAdvancing && !signal_unthrottle)
 			{
-				framesSkipped = 0;
-
-				if (signal_continuousFrameAdvancing)
-				{
-					//don't ever skip frames when continuous frame advancing. it's meant for precision work.
-					//but we DO need to throttle
-					if (config.ClockThrottle)
-						extraThrottle = true;
-				}
-				else
-				{
-					if (framesToSkip > 0)
-						skipNextFrame = true;
-				}
+				skipNextFrame = false;
 			}
 			else
 			{
-				framesToSkip--;
-
 				skipNextFrame = framesToSkip > 0;
-
-				framesSkipped++;
 			}
 
-			if (signal_unthrottle)
-			{
-				if (framesSkipped < ffSkipRate)
-				{
-					skipNextFrame = true;
-					framesToSkip = 1;
-				}
-				if (framesToSkip < 1)
-					framesToSkip += ffSkipRate;
-			}
-			else if ((extraThrottle || signal_paused || config.ClockThrottle || signal_overrideSecondaryThrottle) && allowSleep)
+			if ((signal_paused || config.ClockThrottle || signal_overrideSecondaryThrottle) && allowSleep)
 			{
 				SpeedThrottle(sound, signal_paused);
 			}
 
-			if (config.AutoMinimizeSkipping && config.FrameSkip != 0)
+			if (signal_unthrottle || !config.AutoMinimizeSkipping)
+			{
+				if (framesToSkip < 1)
+					framesToSkip += skipRate;
+			}
+			else
 			{
 				if (!signal_continuousFrameAdvancing)
 				{
@@ -121,11 +96,8 @@ namespace BizHawk.Client.EmuHawk
 						framesToSkip += AutoFrameSkip_GetSkipAmount(0, skipRate);
 				}
 			}
-			else
-			{
-				if (framesToSkip < 1)
-					framesToSkip += skipRate;
-			}
+
+			framesToSkip--;
 		}
 
 		private static ulong GetCurTime()

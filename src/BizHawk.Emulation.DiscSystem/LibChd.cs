@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CHDERR_INVALID_STATE,
 			CHDERR_OPERATION_PENDING,
 			CHDERR_NO_ASYNC_OPERATION,
-			CHDERR_UNSUPPORTED_FORMAT
+			CHDERR_UNSUPPORTED_FORMAT,
 		}
 
 		// extracted chd header (not the same as the one on disk, but rather an interpreted one by chd-rs)
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			CD_SUB_NORMAL = 0, // raw deinterleaved R-W subcode with generated P-Q subcode, 96 bytes per sector
 			CD_SUB_RAW,        // raw interleaved P-W subcode, 96 bytes per sector
-			CD_SUB_NONE        // no subcode data stored
+			CD_SUB_NONE,       // no subcode data stored
 		}
 
 		// hunks should be a multiple of this for cd chds

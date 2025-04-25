@@ -17,10 +17,10 @@ namespace BizHawk.Common.StringExtensions
 #if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
 		public static bool Contains(this string haystack, char needle)
 			=> haystack.IndexOf(needle) >= 0;
-#endif
 
 		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
 			=> haystack.IndexOf(needle, comparisonType) != -1;
+#endif
 
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -152,6 +152,23 @@ namespace BizHawk.Common.StringExtensions
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool StartsWithIgnoreCase(this string haystack, string needle)
 			=> haystack.StartsWith(needle, StringComparison.OrdinalIgnoreCase);
+
+		/// <returns>
+		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or
+		/// the original <paramref name="str"/> if not found
+		/// </returns>
+		public static string SubstringAfter(this string str, char delimiter)
+			=> str.SubstringAfter(delimiter, notFoundValue: str);
+
+		/// <returns>
+		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or
+		/// the original <paramref name="str"/> if not found
+		/// </returns>
+		public static string SubstringAfter(this string str, char delimiter, string notFoundValue)
+		{
+			var index = str.IndexOf(delimiter);
+			return index < 0 ? notFoundValue : str.Substring(index + 1, str.Length - index - 1);
+		}
 
 		/// <returns>
 		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or

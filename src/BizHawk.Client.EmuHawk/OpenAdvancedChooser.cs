@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		LibretroLaunchNoGame,
 		LibretroLaunchGame,
 		ClassicLaunchGame,
-		MameLaunchGame
+		MameLaunchGame,
 	}
 
 	public partial class OpenAdvancedChooser : Form, IDialogParent

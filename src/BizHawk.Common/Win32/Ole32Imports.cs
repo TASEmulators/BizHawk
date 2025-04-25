@@ -34,8 +34,8 @@ namespace BizHawk.Common
 			ACTIVATE_AAA_AS_IU = 0x800000,
 			RESERVED6 = 0x1000000,
 			ACTIVATE_ARM32_SERVER = 0x2000000,
-			ALLOW_LOWER_TRUST_REGISTRATION,
-			PS_DLL = 0x80000000
+			ALLOW_LOWER_TRUST_REGISTRATION = 0x4000000, // missing from official docs lmao, but confirmed by https://github.com/microsoft/windows-rs/blob/3fd93b0a8064e4c9c2fb6f43da798030124ee9c5/crates/libs/sys/src/Windows/Win32/System/Com/mod.rs#L315
+			PS_DLL = 0x80000000,
 		}
 
 		[DllImport("ole32.dll", ExactSpelling = true)]

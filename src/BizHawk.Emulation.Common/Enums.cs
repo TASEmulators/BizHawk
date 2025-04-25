@@ -8,7 +8,7 @@
 		NTSC,
 		PAL,
 		Dendy,
-		SECAM
+		SECAM,
 	}
 
 	/// <summary>
@@ -18,7 +18,7 @@
 	{
 		Into,
 		Out,
-		Over
+		Over,
 	}
 
 	/// <summary>
@@ -38,6 +38,6 @@
 		// MAME
 		Imperfect,
 		Unimplemented,
-		NotWorking
+		NotWorking,
 	}
 }

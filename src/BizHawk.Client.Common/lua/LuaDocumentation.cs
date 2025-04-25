@@ -141,7 +141,7 @@ namespace BizHawk.Client.Common
 			{
 				var completion = new SublimeCompletions.Completion
 				{
-					Trigger = $"{f.Library}.{f.Name}"
+					Trigger = $"{f.Library}.{f.Name}",
 				};
 
 				var sb = new StringBuilder();

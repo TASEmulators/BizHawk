@@ -477,6 +477,10 @@ namespace BizHawk.Client.EmuHawk
 		[Description("Occurs when a cell is dragged and then dropped into a new cell, old cell is the cell that was being dragged, new cell is its new destination")]
 		public event CellDroppedEvent CellDropped;
 
+		[Category("Property Changed")]
+		[Description("Fires after rotation has been changed.")]
+		public event EventHandler RotationChanged;
+
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
@@ -563,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 					SelectCell(new Cell
 					{
 						RowIndex = index,
-						Column = _columns[0]
+						Column = _columns[0],
 					});
 					_lastSelectedRow = index;
 				}
@@ -668,7 +672,7 @@ namespace BizHawk.Client.EmuHawk
 			Columns = _columns,
 			HorizontalOrientation = HorizontalOrientation,
 			LagFramesToHide = LagFramesToHide,
-			HideWasLagFrames = HideWasLagFrames
+			HideWasLagFrames = HideWasLagFrames,
 		};
 
 		public class InputRollSettings
@@ -973,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = "RotateMenuItem",
 				Text = "Rotate",
-				ShortcutKeyDisplayString = RotateHotkeyStr
+				ShortcutKeyDisplayString = RotateHotkeyStr,
 			};
 			rotate.Click += (_, _) => HorizontalOrientation = !HorizontalOrientation;
 			return [ new ToolStripSeparator(), rotate ];
@@ -1083,7 +1087,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCell = new Cell
 			{
 				Column = null,
-				RowIndex = null
+				RowIndex = null,
 			};
 
 			base.OnMouseEnter(e);
@@ -1568,6 +1572,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OrientationChanged()
 		{
+			RotationChanged?.Invoke(this, EventArgs.Empty);
 			// TODO scroll to correct positions
 			ColumnChangedCallback();
 			Refresh();
@@ -1640,7 +1645,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
 			}
 		}
 
@@ -1961,7 +1966,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width);
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
 			}
 		}
 

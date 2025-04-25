@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 					Stream = 0,
 					Subtype = 1,// zlib compressed, other possibility is 0 = uncompressed
 					Data = source,
-					Timestamp = TimestampCalc(_fpsNum, _fpsDen, _totalFrames)
+					Timestamp = TimestampCalc(_fpsNum, _fpsDen, _totalFrames),
 				};
 				
 				_totalFrames++;
@@ -420,7 +420,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Stream = 1,
 					Subtype = 1, // raw PCM audio
-					Data = new byte[4]
+					Data = new byte[4],
 				};
 				
 				j.Data[0] = (byte)(l >> 8);
@@ -781,7 +781,7 @@ namespace BizHawk.Client.EmuHawk
 				GameName = gameName,
 				Authors = authors,
 				LengthMs = lengthMs,
-				Rerecords = rerecords
+				Rerecords = rerecords,
 			};
 		}
 

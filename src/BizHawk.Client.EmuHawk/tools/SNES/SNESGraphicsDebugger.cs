@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				// must be in same order as enum
 				new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk),
 				new PaletteTypeItem("bsnes", SnesColors.ColorType.BSNES),
-				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x)
+				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x),
 			};
 			suppression = true;
 			comboPalette.DataSource = paletteTypeItems;
@@ -482,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 		private enum eDisplayType
 		{
 			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ,
-			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104
+			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104,
 		}
 
 		private static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
@@ -597,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 				X = start % 16,
 				Y = start / 16,
 				Width = num,
-				Height = num / 16
+				Height = num / 16,
 			};
 
 			if (ret.Height == 0) ret.Height = 1;
@@ -1040,7 +1040,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Bpp = bpp,
 				Type = CurrDisplaySelection,
-				Tile = tileNum
+				Tile = tileNum,
 			};
 			currTileDataState.Address = (bpp == 7 ? 8 : bpp) * 8 * currTileDataState.Tile;
 			currTileDataState.Palette = currPaletteSelection.start;
@@ -1161,7 +1161,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								bgnum = (int) CurrDisplaySelection,
 								entry = map[tloc],
-								Location = new Point(tx, ty)
+								Location = new Point(tx, ty),
 							};
 
 							SetTab(tpMapEntry);
@@ -1226,7 +1226,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var cd = new ColorDialog
 			{
-				Color = pnBackdropColor.BackColor
+				Color = pnBackdropColor.BackColor,
 			};
 
 			if (cd.ShowDialog(this).IsOk())

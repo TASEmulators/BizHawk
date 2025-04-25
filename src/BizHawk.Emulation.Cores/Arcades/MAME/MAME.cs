@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[CoreConstructor(VSystemID.Raw.Arcade)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
-			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath).ToLowerInvariant();
+			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath.SubstringAfter('|')).ToLowerInvariant();
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ServiceProvider = new BasicServiceProvider(this);
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				StartMAME(lp.Roms);
 			}
 
-			if (_loadFailure != string.Empty)
+			if (_loadFailure.Length is not 0)
 			{
 				Dispose();
 				throw new Exception("\n\n" + _loadFailure);
@@ -172,8 +172,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// mame expects chd files in a folder of the game name
 			string MakeFileName(IRomAsset rom)
 				=> rom.Extension.ToLowerInvariant() is ".chd"
-					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
-					: Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
+					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
+					: Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
 
 			foreach (var rom in roms)
 			{
@@ -183,29 +183,29 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			var args = new List<string>
 			{
-				 "mame"                                 // dummy, internally discarded by index, so has to go first
-				, _gameFileName                         // no dash for rom names
-				, "-noreadconfig"                       // forbid reading ini files
-				, "-nowriteconfig"                      // forbid writing ini files
-				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
-				, "-nothrottle"                         // forbid throttling to "real" speed of the device
-				, "-update_in_pause"                    // ^ including frame-advancing
-				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
-				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
-				, "-nvram_directory",               ""  // path to nvram
-				, "-artpath",                       ""  // path to artwork
-				, "-diff_directory",                ""  // path to hdd diffs
-				, "-cfg_directory",                 ""  // path to config
-				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
-				, "-output",                 "console"  // print everything to hawk console
-				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
-				, "-sound",                     "none"  // forbid osd sound driver
-				, "-video",                     "none"  // forbid mame window altogether
-				, "-keyboardprovider",          "none"
-				, "-mouseprovider",             "none"
-				, "-lightgunprovider",          "none"
-				, "-joystickprovider",          "none"
+				"mame",                                // dummy, internally discarded by index, so has to go first
+				_gameFileName,                         // no dash for rom names
+				"-noreadconfig",                       // forbid reading ini files
+				"-nowriteconfig",                      // forbid writing ini files
+				"-norewind",                           // forbid rewind savestates (captured upon frame advance)
+				"-skip_gameinfo",                      // forbid this blocking screen that requires user input
+				"-nothrottle",                         // forbid throttling to "real" speed of the device
+				"-update_in_pause",                    // ^ including frame-advancing
+				"-rompath",                        "", // mame doesn't load roms from full paths, only from dirs to scan
+				"-joystick_contradictory",             // allow L+R/U+D on digital joystick
+				"-nvram_directory",                "", // path to nvram
+				"-artpath",                        "", // path to artwork
+				"-diff_directory",                 "", // path to hdd diffs
+				"-cfg_directory",                  "", // path to config
+				"-volume",                      "-32", // lowest attenuation means mame osd remains silent
+				"-output",                  "console", // print everything to hawk console
+				"-samplerate", _sampleRate.ToString(), // match hawk samplerate
+				"-sound",                      "none", // forbid osd sound driver
+				"-video",                      "none", // forbid mame window altogether
+				"-keyboardprovider",           "none",
+				"-mouseprovider",              "none",
+				"-lightgunprovider",           "none",
+				"-joystickprovider",           "none",
 			};
 
 			if (_syncSettings.DriverSettings.TryGetValue(
@@ -433,10 +433,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public static string GetDIPSwitchOptions(string tag, string fieldName) =>
 				"local final = { } " +
 				$"for value, description in pairs(manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"].settings) do " +
-					"table.insert(final, string.format(\"%d~%s@\", value, description)) " +
+					"table.insert(final, string.format(\"%d~%s\", value, description)) " +
 				"end " +
 				"table.sort(final) " +
-				"return table.concat(final)";
+				"return table.concat(final, '\\n')";
 			public static string GetViewName(string index) =>
 				$"return manager.machine.video.snapshot_target.view_names[{ index }]";
 		}

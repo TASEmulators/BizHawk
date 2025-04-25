@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Common
 					LIMITED_2_PLAYS_LEFT => 2,
 					LIMITED_1_PLAYS_LEFT => 1,
 					LIMITED_0_PLAYS_LEFT => 0,
-					_ => -1
+					_ => -1,
 				};
 
 			public byte Revision

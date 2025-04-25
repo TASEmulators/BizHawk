@@ -23,50 +23,56 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Indetermined = 1 << 4  // no IWAD found.
 		}
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
-
 		[StructLayout(LayoutKind.Sequential)]
 		public struct InitSettings
 		{
-			public int _Player1Present;
-			public int _Player2Present;
-			public int _Player3Present;
-			public int _Player4Present;
-			public int _Player1Class;
-			public int _Player2Class;
-			public int _Player3Class;
-			public int _Player4Class;
-			public int _PreventLevelExit;
-			public int _PreventGameEnd;
+			public int Player1Present;
+			public int Player2Present;
+			public int Player3Present;
+			public int Player4Present;
+			public int Player1Class;
+			public int Player2Class;
+			public int Player3Class;
+			public int Player4Class;
+			public int PreventLevelExit;
+			public int PreventGameEnd;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct PackedPlayerInput
 		{
-			public int _RunSpeed;
-			public int _StrafingSpeed;
-			public int _TurningSpeed;
-			public int _WeaponSelect;
-			public int _Fire;
-			public int _Action;
-			public int _Automap;
+			public int RunSpeed;
+			public int StrafingSpeed;
+			public int TurningSpeed;
+			public int WeaponSelect;
+			public int Buttons;
 
 			// Hexen + Heretic (Raven Games)
-			public int _FlyLook;
-			public int _ArtifactUse;
+			public int FlyLook;
+			public int ArtifactUse;
 
 			// Hexen only
-			public int _Jump;
-			public int _EndPlayer;
+			public int Jump;
+			public int EndPlayer;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct PackedRenderInfo
 		{
-			public int _RenderVideo;
-			public int _RenderAudio;
-			public int _PlayerPointOfView;
+			public int DoUpdate;
+			public int RenderVideo;
+			public int RenderAudio;
+			public int ScaleFactor;
+			public int Gamma;
+			public int ShowMessages;
+			public int ReportSecrets;
+			public int HeadsUpMode;
+			public int DsdaExHud;
+			public int DisplayCommands;
+			public int MapTotals;
+			public int MapTime;
+			public int MapCoordinates;
+			public int PlayerPointOfView;
 		}
 
 		[BizImport(CallingConvention.Cdecl)]
@@ -76,25 +82,23 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init(ref InitSettings settings, int argc, string[] argv);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_frame_advance(
+		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract int dsda_add_wad_file(string fileName, int fileSize, load_archive_cb feload_archive_cb);
+		
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract byte dsda_read_memory_array(MemoryArrayType type, uint addr);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract bool dsda_frame_advance(
+			int commonInputs,
 			ref PackedPlayerInput player1Inputs,
 			ref PackedPlayerInput player2Inputs,
 			ref PackedPlayerInput player3Inputs,
 			ref PackedPlayerInput player4Inputs,
 			ref PackedRenderInfo renderInfo);
-
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
-
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract int dsda_add_wad_file(
-			string fileName,
-			int fileSize,
-			load_archive_cb feload_archive_cb);
-		
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract byte dsda_read_memory_array(
-			MemoryArrayType type,
-			uint addr);
 	}
 }

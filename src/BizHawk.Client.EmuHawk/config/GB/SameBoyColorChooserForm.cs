@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AllowFullOpen = true,
 				AnyColor = true,
-				Color = _colors[i]
+				Color = _colors[i],
 			};
 
 			// custom colors are ints, not Color structs?

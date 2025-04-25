@@ -7,7 +7,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	internal enum BoxType
 	{
-		All, Signed, Unsigned, Hex
+		All,
+		Signed,
+		Unsigned,
+		Hex,
 	}
 
 	internal class LuaTextBox : TextBox

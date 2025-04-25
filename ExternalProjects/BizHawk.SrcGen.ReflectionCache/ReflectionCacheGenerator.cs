@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Analyzers;
+
 [Generator]
 public sealed class ReflectionCacheGenerator : ISourceGenerator
 {
@@ -35,14 +37,8 @@ public sealed class ReflectionCacheGenerator : ISourceGenerator
 
 		public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
 		{
-			static string Ser(NameSyntax nameSyn) => nameSyn switch
-			{
-				SimpleNameSyntax simple => simple.Identifier.ValueText,
-				QualifiedNameSyntax qual => $"{Ser(qual.Left)}.{Ser(qual.Right)}",
-				_ => throw new InvalidOperationException()
-			};
 			if (_namespace != null || syntaxNode is not NamespaceDeclarationSyntax syn) return;
-			var newNS = Ser(syn.Name);
+			var newNS = syn.Name.ToMetadataNameStr();
 			if (!newNS.StartsWith("BizHawk.", StringComparison.Ordinal)) return;
 			_namespaces.Add(newNS);
 			if (_namespaces.Count == SAMPLE_SIZE) _namespace = CalcNamespace();

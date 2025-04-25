@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 						EMsgBoxIcon.Question => MessageBoxIcon.Question,
 						EMsgBoxIcon.Warning => MessageBoxIcon.Warning,
 						EMsgBoxIcon.Info => MessageBoxIcon.Information,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					});
 	}
 }

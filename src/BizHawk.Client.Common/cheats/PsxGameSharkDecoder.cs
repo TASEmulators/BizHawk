@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common.cheats
 				"E1" => WatchSize.Byte,
 				"E2" => WatchSize.Byte,
 				"E3" => WatchSize.Byte,
-				_ => WatchSize.Byte
+				_ => WatchSize.Byte,
 			};
 
 			var s = code.Remove(0, 2);

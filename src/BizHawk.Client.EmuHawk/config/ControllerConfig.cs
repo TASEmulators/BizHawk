@@ -144,14 +144,12 @@ namespace BizHawk.Client.EmuHawk
 						: "Console"; // anything that wants not console can set it in the categorylabels
 				}
 
-				if (!buckets.ContainsKey(categoryLabel))
+				buckets.GetValueOrPut(categoryLabel, categoryLabel1 =>
 				{
-					var l = new List<string>();
-					buckets.Add(categoryLabel, l);
-					orderedBuckets.Add(new KeyValuePair<string, List<string>>(categoryLabel, l));
-				}
-
-				buckets[categoryLabel].Add(button);
+					List<string> l = new();
+					orderedBuckets.Add(new(categoryLabel1, l));
+					return l;
+				}).Add(button);
 			}
 
 			if (orderedBuckets.Count == 1)
@@ -287,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 				var pictureBox2 = new PictureBox
 					{
 						Image = Properties.Resources.C64Keyboard.Value,
-						Size = Properties.Resources.C64Keyboard.Value.Size
+						Size = Properties.Resources.C64Keyboard.Value.Size,
 					};
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Value.Width;
 				pictureBox1.Height /= 2;

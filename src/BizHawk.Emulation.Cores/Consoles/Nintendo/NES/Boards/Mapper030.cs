@@ -4,7 +4,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	internal sealed class Mapper030 : NesBoardBase
 	{
-		private enum flashmode { fm_default, fm_erase, fm_write, fm_id }
+		private enum flashmode
+		{
+			fm_default,
+			fm_erase,
+			fm_write,
+			fm_id,
+		}
 
 		// config
 		private int prg_bank_mask_16k;

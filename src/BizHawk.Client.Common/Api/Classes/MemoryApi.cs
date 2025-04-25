@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 				2 => d.PeekUshort(addr, _isBigEndian),
 				3 => _isBigEndian ? ReadUnsignedBig(addr, 3, domain) : ReadUnsignedLittle(addr, 3, domain),
 				4 => d.PeekUint(addr, _isBigEndian),
-				_ => 0
+				_ => 0,
 			};
 		}
 

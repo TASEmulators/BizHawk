@@ -263,7 +263,11 @@ namespace BizHawk.Client.Common
 			// would drift by ~22 milliseconds per minute.
 			_resampleLengthRoundingError = newCountExact - count;
 
-			AddSamplesToBuffer(samples, count);
+			if (count > 0)
+			{
+				// in rare cases (with subframe core tiny sample spam) count can be negative, somehow
+				AddSamplesToBuffer(samples, count);
+			}
 		}
 
 		private static double CalculatePowerMean(IEnumerable<int> values, double power)

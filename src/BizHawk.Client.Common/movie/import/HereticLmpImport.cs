@@ -32,6 +32,7 @@ namespace BizHawk.Client.Common
 				Player3Present = input[i++] is not 0,
 				Player4Present = input[i++] is not 0,
 				TurningResolution = DSDA.TurningResolution.Shorttics,
+				RenderWipescreen = false,
 			};
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 

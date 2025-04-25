@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common.movie.import
 				1 => "1.43",
 				4 => "1.51",
 				5 => "1.52",
-				_ => "Unknown"
+				_ => "Unknown",
 			};
 
 			Result.Movie.Comments.Add($"{EmulationOrigin} Snes9x version {version}");
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common.movie.import
 			*/
 			string[] buttons =
 			{
-				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A",
 			};
 
 			for (int frame = 0; frame <= frameCount; frame++)

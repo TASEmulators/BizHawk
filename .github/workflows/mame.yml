@@ -3,10 +3,10 @@ name: Build mame (waterbox)
 on:
   pull_request:
     branches: [ "master" ]
-    paths: [ "waterbox/emulibc/**", "waterbox/libco/**", "waterbox/libcxx/**", "waterbox/musl/**", "waterbox/*", "waterbox/mame-arcade/**" ]
+    paths: [ "waterbox/emulibc/**", "waterbox/libco/**", "waterbox/libcxx/**", "waterbox/*", "waterbox/mame-arcade/**" ]
   push:
     branches: [ "master" ]
-    paths: [ "waterbox/emulibc/**", "waterbox/libco/**", "waterbox/libcxx/**", "waterbox/musl/**", "waterbox/*", "waterbox/mame-arcade/**" ]
+    paths: [ "waterbox/emulibc/**", "waterbox/libco/**", "waterbox/libcxx/**", "waterbox/*", "waterbox/mame-arcade/**" ]
   workflow_dispatch:
 
 concurrency:

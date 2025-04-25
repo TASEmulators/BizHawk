@@ -55,7 +55,16 @@ namespace BizHawk.Emulation.Cores
 		MP3, //can't be ID'd very readily..
 		
 		//misc disc-related files:
-		ECM
+		ECM,
+
+		// DOS Floppy Disk Images
+		DOS_FLOPPY,
+
+		// DOS CD-ROM
+		DOS_CDROM,
+
+		// DOSBox-x Configuration File (can be provided as complementary configuration)
+		DOS_CONFIG_FILE,
 	}
 
 	public class FileIDResult
@@ -375,6 +384,19 @@ namespace BizHawk.Emulation.Cores
 			
 			// Doom IWad / PWad
 			{ "WAD", new ExtensionInfo(FileIDType.WAD, null ) },
+
+			// DOS Floppy Disks
+			{ "IMA", new(FileIDType.DOS_FLOPPY, null) },
+			{ "IMG", new(FileIDType.DOS_FLOPPY, null) },
+			{ "XDF", new(FileIDType.DOS_FLOPPY, null) },
+			{ "DMF", new(FileIDType.DOS_FLOPPY, null) },
+			{ "FDD", new(FileIDType.DOS_FLOPPY, null) },
+			{ "FDI", new(FileIDType.DOS_FLOPPY, null) },
+			{ "NDF", new(FileIDType.DOS_FLOPPY, null) },
+			{ "D88", new(FileIDType.DOS_FLOPPY, null) },
+
+			// DOSBox-X Configuration File
+			{ "CONF", new(FileIDType.DOS_CONFIG_FILE, null) },
 
 			//for now
 			{ "ROM", new ExtensionInfo(FileIDType.Multiple, null ) }, //could be MSX too

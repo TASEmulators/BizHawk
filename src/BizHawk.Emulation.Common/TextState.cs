@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Common
 				Save = Save,
 				Load = null,
 				EnterSection = EnterSectionSave,
-				ExitSection = ExitSection
+				ExitSection = ExitSection,
 			};
 		}
 
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Common
 				Save = null,
 				Load = Load,
 				EnterSection = EnterSectionLoad,
-				ExitSection = ExitSection
+				ExitSection = ExitSection,
 			};
 		}
 	}

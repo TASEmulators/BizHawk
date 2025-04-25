@@ -798,7 +798,7 @@ namespace BizHawk.Client.EmuHawk
 					Probability = 0.0,
 					Location = new Point(marginLeft, startY + accumulatedY),
 					TabIndex = count + 1,
-					ProbabilityChangedCallback = AssessRunButtonStatus
+					ProbabilityChangedCallback = AssessRunButtonStatus,
 				};
 				control.Scale(UIHelper.AutoScaleFactor);
 
@@ -837,7 +837,7 @@ namespace BizHawk.Client.EmuHawk
 				1 => _currentDomain.PeekByte(addr),
 				2 => _currentDomain.PeekUshort(addr, _bigEndian),
 				4 => (int) _currentDomain.PeekUint(addr, _bigEndian),
-				_ => _currentDomain.PeekByte(addr)
+				_ => _currentDomain.PeekByte(addr),
 			};
 
 			return val;
@@ -937,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 					3 => (currentValue <= bestValue),
 					4 => (currentValue < bestValue),
 					5 => (currentValue != bestValue),
-					_ => false
+					_ => false,
 				};
 
 			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize)) return false;

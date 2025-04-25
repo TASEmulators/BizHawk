@@ -38,6 +38,7 @@ jobs:
            git submodule update --init stella/core;
            git submodule update --init dsda/core;
            git submodule update --init opera/opera-libretro;
+           git submodule update --init --recursive dosbox/dosbox-x;
     - name: Install clang 18
       run: wget https://apt.llvm.org/llvm.sh;
             chmod u+x llvm.sh;
@@ -62,6 +63,7 @@ jobs:
           Assets/dll/ares64_interpreter.wbx.zst
           Assets/dll/ares64_recompiler.wbx.zst
           Assets/dll/bsnes.wbx.zst
+          Assets/dll/dosbox.wbx.zst
           Assets/dll/dsda.wbx.zst
           Assets/dll/faust.wbx.zst
           Assets/dll/gpgx.wbx.zst

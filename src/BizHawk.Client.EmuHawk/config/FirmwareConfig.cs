@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 					Tag = fr,
 					UseItemStyleForSubItems = false,
 					ImageIndex = (int) FirmwareOptionStatus.Unknown,
-					ToolTipText = null
+					ToolTipText = null,
 				};
 				lvi.SubItems.Add(sysID);
 				lvi.SubItems.Add(fr.ID.Firmware);
@@ -547,10 +547,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var fciDialog = new FirmwareConfigInfo
 			{
-				lblFirmware =
-				{
-					Text = $"{fr.ID} ({fr.Description})"
-				}
+				lblFirmware = { Text = $"{fr.ID} ({fr.Description})" },
 			};
 
 			foreach (var o in options)
@@ -632,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				if (errors != "")
+				if (errors.Length is not 0)
 				{
 					errors += "\n";
 				}

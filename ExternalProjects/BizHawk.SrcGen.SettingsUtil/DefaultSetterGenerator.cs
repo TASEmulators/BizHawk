@@ -5,12 +5,14 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Analyzers;
+
 [Generator]
 public class DefaultSetterGenerator : ISourceGenerator
 {
 	public class SyntaxReceiver : ISyntaxContextReceiver
 	{
-		public readonly List<(ClassDeclarationSyntax, SemanticModel)> ClassDeclarations = new();
+		public readonly List<(ClassDeclarationSyntax CDS, SemanticModel SemanticModel)> ClassDeclarations = new();
 
 		public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
 		{
@@ -82,25 +84,25 @@ public class DefaultSetterGenerator : ISourceGenerator
 		{
 			return;
 		}
+		var consumerAttrSym = context.Compilation.GetTypeByMetadataName("BizHawk.Emulation.Common.CoreSettingsAttribute");
+		if (consumerAttrSym is null) return;
 
 		// Generated source code
 		var source = new StringBuilder(@"
-namespace BizHawk.Common
+namespace BizHawk.Emulation.Cores
 {
 	public static partial class SettingsUtil
 	{");
 
-		foreach (var (cds, semanticModel) in syntaxReceiver.ClassDeclarations)
+		foreach (var (cds, semanticModel) in syntaxReceiver.ClassDeclarations
+			.Where(tuple => tuple.CDS.AttributeLists.Matching(
+				consumerAttrSym,
+				tuple.SemanticModel,
+				context.CancellationToken).Any()))
 		{
-			if (cds.AttributeLists.SelectMany(e => e.Attributes)
-			    .Any(e => e.Name.NormalizeWhitespace().ToFullString() == "CoreSettings"))
-			{
-				var symbol = semanticModel.GetDeclaredSymbol(cds, context.CancellationToken);
-				if (symbol is not null) // probably never happens?
-				{
-					CreateDefaultSetter(source, symbol);
-				}
-			}
+			var symbol = semanticModel.GetDeclaredSymbol(cds, context.CancellationToken);
+			if (symbol is null) continue; // probably never happens?
+			CreateDefaultSetter(source, symbol);
 		}
 
 		source.Append(@"

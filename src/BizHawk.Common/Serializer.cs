@@ -9,7 +9,7 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common
 {
-	public unsafe class Serializer
+	public class Serializer
 	{
 		public Serializer() { }
 
@@ -821,6 +821,7 @@ namespace BizHawk.Common
 			return _currSection.Items.ContainsKey(key);
 		}
 
+#if false
 		private void SyncBuffer(string name, int elemsize, int len, void* ptr)
 		{
 			if (IsReader)
@@ -838,6 +839,7 @@ namespace BizHawk.Common
 				Sync(name, ref temp, false);
 			}
 		}
+#endif
 
 		private void SyncText(string name, ref byte val)
 		{

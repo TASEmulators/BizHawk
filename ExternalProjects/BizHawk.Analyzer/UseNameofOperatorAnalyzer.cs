@@ -50,7 +50,7 @@ public sealed class UseNameofOperatorAnalyzer : DiagnosticAnalyzer
 							break;
 						case MemberAccessExpressionSyntax maes1:
 							var accessed = snac.SemanticModel.GetSymbolInfo(maes1.Name, snac.CancellationToken).Symbol;
-							if (memberInfoDotNameSym.Matches(accessed)) DiagUseNameof.ReportAt(maes1, snac, [ toes.Type.GetText() ]);
+							if (memberInfoDotNameSym.Matches(accessed)) DiagUseNameof.ReportAt(maes1, snac, toes.Type.GetText().ToString());
 							else if (typeDotToStringSym.Matches(accessed)) DiagNoToStringOnType.ReportAt(maes1, snac, [ toes.Type.GetText(), ".ToString()" ]);
 							break;
 					}

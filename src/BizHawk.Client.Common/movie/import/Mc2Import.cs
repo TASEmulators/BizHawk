@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common.movie.import
 				Port2 = PceControllerType.Unplugged,
 				Port3 = PceControllerType.Unplugged,
 				Port4 = PceControllerType.Unplugged,
-				Port5 = PceControllerType.Unplugged
+				Port5 = PceControllerType.Unplugged,
 			};
 
 			_deck = new PceControllerDeck(

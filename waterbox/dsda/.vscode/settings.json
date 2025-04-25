@@ -1,0 +1,14 @@
+{
+  "editor.tabSize": 2,
+  "files.associations": {
+    "f_wipe.h": "c",
+    "bizhawkinterface.h": "c",
+    "emulibc.h": "c",
+    "d_main.h": "c",
+    "m_fixed.h": "c",
+    "d_event.h": "c",
+    "doomtype.h": "c",
+    "g_game.h": "c",
+    "d_player.h": "c"
+  }
+}

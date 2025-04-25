@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 			BI_RLE4 = 2,
 			BI_BITFIELDS = 3,
 			BI_JPEG = 4,
-			BI_PNG = 5
+			BI_PNG = 5,
 		}
 
 		private static unsafe byte[] GetBytes(object o)
@@ -197,13 +197,13 @@ namespace BizHawk.Client.Common
 					{
 						Data = srcp,
 						Width = src.BufferWidth,
-						Height = src.BufferHeight
+						Height = src.BufferHeight,
 					},
 					new BMP
 					{
 						Data = dstp,
 						Width = dst.BufferWidth,
-						Height = dst.BufferHeight
+						Height = dst.BufferHeight,
 					});
 				}
 			}
@@ -271,7 +271,7 @@ namespace BizHawk.Client.Common
 					{
 						Data = (int*)srcp,
 						Width = inW,
-						Height = inH
+						Height = inH,
 					},
 					new BMP
 					{
@@ -317,7 +317,7 @@ namespace BizHawk.Client.Common
 					{
 						Data = srcp,
 						Width = v.BufferWidth,
-						Height = v.BufferHeight
+						Height = v.BufferHeight,
 					},
 					new BMP
 					{

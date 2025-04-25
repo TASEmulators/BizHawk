@@ -16,7 +16,13 @@ namespace BizHawk.Tests.Testroms.GB
 {
 	public static class GBHelper
 	{
-		public enum ConsoleVariant { CGB_C, CGB_D, DMG, DMG_B }
+		public enum ConsoleVariant
+		{
+			CGB_C,
+			CGB_D,
+			DMG,
+			DMG_B,
+		}
 
 		public readonly struct CoreSetup
 		{
@@ -175,7 +181,7 @@ namespace BizHawk.Tests.Testroms.GB
 				ConsoleVariant.CGB_C => biosAvailable ? SameBoySyncSettings_GBC_C_USEBIOS : SameBoySyncSettings_GBC_C_NOBIOS,
 				ConsoleVariant.CGB_D => biosAvailable ? SameBoySyncSettings_GBC_D_USEBIOS : SameBoySyncSettings_GBC_D_NOBIOS,
 				ConsoleVariant.DMG or ConsoleVariant.DMG_B => biosAvailable ? SameBoySyncSettings_GB_USEBIOS : SameBoySyncSettings_GB_NOBIOS,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		public static DummyFrontend.ClassInitCallbackDelegate InitGBCore(CoreSetup setup, string romFilename, byte[] rom)
@@ -196,7 +202,7 @@ namespace BizHawk.Tests.Testroms.GB
 						Settings = SameBoySettings,
 						SyncSettings = GetSameBoySyncSettings(setup.Variant, setup.UseBIOS),
 					}),
-					_ => throw new InvalidOperationException("unknown GB core")
+					_ => throw new InvalidOperationException("unknown GB core"),
 				};
 				var biosWaitDuration = setup.UseBIOS || setup.CoreName is CoreNames.Sameboy
 					? setup.Variant.IsColour()
@@ -215,7 +221,7 @@ namespace BizHawk.Tests.Testroms.GB
 			{
 				CoreNames.Gambatte => ImageUtils.PaletteSwap(img, setup.Variant.IsColour() ? UnVividGBCPaletteMap : UnVividGBPaletteMap),
 				CoreNames.Sameboy => setup.Variant.IsColour() ? ImageUtils.PaletteSwap(img, UnVividGBCPaletteMap) : img,
-				_ => img
+				_ => img,
 			};
 	}
 }

@@ -112,6 +112,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Atari Jaguar CD
 		/// </summary>
 		JaguarCD,
+
+		/// <summary>
+		/// DOS / Windows
+		/// </summary>
+		DOS,
 	}
 
 	public class DiscIdentifier
@@ -124,7 +129,7 @@ namespace BizHawk.Emulation.DiscSystem
 				// the first check for mode 0 should be sufficient for blocking attempts to read audio sectors
 				// but github #928 had a data track with an audio sector
 				// so let's be careful here.. we're just trying to ID things, not be robust
-				Policy = {ThrowExceptions2048 = false}
+				Policy = { ThrowExceptions2048 = false },
 			};
 		}
 
@@ -184,6 +189,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (DetectWii())
 				return DiscType.Wii;
+
 
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
@@ -246,6 +252,9 @@ namespace BizHawk.Emulation.DiscSystem
 				// NeoGeoCD Check
 				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
 				if (absTxt != null && SectorContains("abstracted by snk", Convert.ToInt32(absTxt.Offset))) return DiscType.NeoGeoCD;
+
+				if (DetectISO9660()) return DiscType.DOS;
+				if (DetectUDF()) return DiscType.DOS;
 
 				return DiscType.UnknownCDFS;
 			}
@@ -393,6 +402,28 @@ namespace BizHawk.Emulation.DiscSystem
 
 			return hexString == "5D1C9EA3";
 		}
+
+		/// <summary>Detects ISO9660 / Joliet CD formats (target for DOS / Windows)</summary>
+		/// <remarks><see href="https://en.wikipedia.org/wiki/ISO_9660"/></remarks>
+		private bool DetectISO9660()
+		{
+			if (SectorContains("CD001", 16)) return true;
+			if (SectorContains("CDROM", 16)) return true;
+			return false;
+		}
+
+		/// <remarks><see href="https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html"/></remarks>
+		private bool DetectUDF()
+		{
+			for (var i = 0; i < 256; i++)
+			{
+				if (SectorContains("BEA01", i)) return true;
+				if (SectorContains("NSR02", i)) return true;
+				if (SectorContains("TEA01", i)) return true;
+			}
+			return false;
+		}
+
 
 		private bool DetectJaguarCD()
 		{

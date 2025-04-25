@@ -6,12 +6,8 @@ using System.Threading;
 
 public static class RoslynUtils
 {
-	public static SyntaxNode? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
-	{
-		var parent = node.Parent;
-		while (parent is not (null or TypeDeclarationSyntax)) parent = parent.Parent;
-		return parent;
-	}
+	public static TypeDeclarationSyntax? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
+		=> node.NearestAncestorOfType<TypeDeclarationSyntax>();
 
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
 		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"
@@ -67,7 +63,7 @@ public static class RoslynUtils
 			"||" => WellKnownMemberNames.LogicalOrOperatorName,
 			"~" => WellKnownMemberNames.OnesComplementOperatorName,
 			// ...and some operators only exist in VB.NET (dw, you're not missing anything)
-			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)")
+			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)"),
 		};
 
 	private static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ExpressionSyntax exprSyn)
@@ -89,6 +85,19 @@ public static class RoslynUtils
 
 	public static bool IsEmpty(this SyntaxToken token)
 		=> token.ToString().Length is 0;
+
+	public static Location LocWithoutReceiver(this InvocationExpressionSyntax ies)
+	{
+		var location = ies.GetLocation();
+		if (ies.Expression is MemberAccessExpressionSyntax maes)
+		{
+			location = Location.Create(location.SourceTree!, location.SourceSpan.Slice(maes.Expression.Span.Length));
+		}
+		return location;
+	}
+
+	public static Location LocWithoutReceiver(this IInvocationOperation operation)
+		=> ((InvocationExpressionSyntax) operation.Syntax).LocWithoutReceiver();
 
 	public static bool Matches(this ISymbol expected, ISymbol? actual)
 		=> SymbolEqualityComparer.Default.Equals(expected, actual);
@@ -118,4 +127,22 @@ public static class RoslynUtils
 		INamedTypeSymbol targetAttrSym,
 		SyntaxNodeAnalysisContext snac)
 			=> list.Matching(targetAttrSym, snac.SemanticModel, snac.CancellationToken);
+
+	public static T? NearestAncestorOfType<T>(this CSharpSyntaxNode node)
+		where T : CSharpSyntaxNode
+		=> node.Parent?.FirstAncestorOrSelf<T>();
+
+	public static TextSpan Slice(this TextSpan span, int start)
+		=> TextSpan.FromBounds(start: span.Start + start, end: span.End);
+
+	public static TextSpan Slice(this TextSpan span, int start, int length)
+		=> new(start: span.Start + start, length: length);
+
+	public static string ToMetadataNameStr(this NameSyntax nameSyn)
+		=> nameSyn switch
+		{
+			QualifiedNameSyntax qual => $"{qual.Left.ToMetadataNameStr()}.{qual.Right.ToMetadataNameStr()}",
+			SimpleNameSyntax simple => simple.Identifier.ValueText,
+			_ => throw new InvalidOperationException(),
+		};
 }

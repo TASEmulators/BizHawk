@@ -56,7 +56,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			private enum Mode
 			{
-				Normal, Quotable
+				Normal,
+				Quotable,
 			}
 
 			private string ReadToken(Mode mode)

@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// last chance. use the possible value
-			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent != "")
+			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent.Length is not 0) // wait but it's not being used for the assignment?
 			{
 				IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 			}
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Common
 				int p = pos;
 				Tracks[i] = new Track
 				{
-					TrackIdent = Encoding.ASCII.GetString(_data, p, 12)
+					TrackIdent = Encoding.ASCII.GetString(_data, p, 12),
 				};
 				p += 16;
 				Tracks[i].TrackNumber = _data[p++];
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Common
 						SectorSize = _data[p++],
 						Status1 = _data[p++],
 						Status2 = _data[p++],
-						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8)
+						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8),
 					};
 
 					p += 2;
@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.Common
 						SectorSize = _data[p++],
 						Status1 = _data[p++],
 						Status2 = _data[p++],
-						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8)
+						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8),
 					};
 
 					p += 2;

@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.Hex => ushort.Parse(value, NumberStyles.HexNumber),
 					WatchDisplayType.Binary => Convert.ToUInt16(value, 2),
 					WatchDisplayType.FixedPoint_12_4 => (ushort)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 16.0),
-					_ => 0
+					_ => 0,
 				};
 
 				PokeWord(val);
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 					.Insert(8, " ")
 					.Insert(4, " ")
 					.Insert(14, " "),
-				_ => val.ToString()
+				_ => val.ToString(),
 			};
 		}
 

@@ -27,25 +27,16 @@ namespace BizHawk.Client.EmuHawk
 		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
 			where T : Enum
 		{
-			box.Items.Clear();
-			box.Items.AddRange(typeof(T).GetEnumDescriptions().Cast<object>().ToArray());
+			box.ReplaceItems(items: typeof(T).GetEnumDescriptions());
 			box.SelectedItem = enumVal.GetDescription();
 		}
-
-		/// <summary>extension method to make <see cref="Control.Invoke(Delegate)"/> easier to use</summary>
-		public static void Invoke(this Control control, Action action)
-			=> control.Invoke(action);
-
-		/// <summary>extension method to make <see cref="Control.BeginInvoke(Delegate)"/> easier to use</summary>
-		public static void BeginInvoke(this Control control, Action action)
-			=> control.BeginInvoke(action);
 
 		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
 			{
 				Name = "GeneratedColumnsSubMenu",
-				Text = "Columns"
+				Text = "Columns",
 			};
 
 			var columns = inputRoll.AllColumns;
@@ -58,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
-					Tag = column.Name
+					Tag = column.Name,
 				};
 
 				menuItem.CheckedChanged += (o, ev) =>
@@ -179,6 +170,15 @@ namespace BizHawk.Client.EmuHawk
 			menu.DropDownItems.Clear();
 			menu.DropDownItems.AddRange(items);
 		}
+
+		public static void ReplaceItems(this ComboBox dropdown, params object[] items)
+		{
+			dropdown.Items.Clear();
+			dropdown.Items.AddRange(items);
+		}
+
+		public static void ReplaceItems(this ComboBox dropdown, IEnumerable<object> items)
+			=> dropdown.ReplaceItems(items: items.ToArray());
 	}
 
 	public static class ListViewExtensions

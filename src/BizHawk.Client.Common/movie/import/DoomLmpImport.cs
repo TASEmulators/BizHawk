@@ -47,6 +47,7 @@ namespace BizHawk.Client.Common
 				FastMonsters = input[i++] is not 0,
 				NoMonsters = input[i++] is not 0,
 				TurningResolution = DSDA.TurningResolution.Shorttics,
+				RenderWipescreen = false,
 			};
 			_ = input[i++]; // DisplayPlayer is a non-sync setting so importers can't* set it
 			syncSettings.Player1Present = input[i++] is not 0;

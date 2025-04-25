@@ -1,6 +1,126 @@
 #include "BizhawkInterface.h"
 
 bool foundIWAD = false;
+bool wipeDone = true;
+CommonButtons last_buttons = { 0 };
+
+void common_input(CommonButtons buttons)
+{
+  static int bigstate = 0;
+  m_paninc.y = 0;
+  m_paninc.x = 0;
+
+  if (buttons.ChangeGamma && !last_buttons.ChangeGamma)
+  {
+    dsda_CycleConfig(dsda_config_usegamma, true);
+    dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
+                    usegamma == 1 ? GAMMALVL1 :
+                    usegamma == 2 ? GAMMALVL2 :
+                    usegamma == 3 ? GAMMALVL3 :
+                    GAMMALVL4);
+  }
+
+  if (buttons.AutomapToggle && !last_buttons.AutomapToggle)
+  {
+    if (automap_active)
+    {
+      AM_Stop(true);
+      bigstate = 0;
+    }
+    else
+      AM_Start(true);
+  }
+
+  if (buttons.AutomapFollow && !last_buttons.AutomapFollow)
+  {
+    dsda_ToggleConfig(dsda_config_automap_follow, true);
+    dsda_AddMessage(automap_follow ? AMSTR_FOLLOWON : AMSTR_FOLLOWOFF);
+  }
+  
+  if (buttons.AutomapGrid && !last_buttons.AutomapGrid)
+  {
+    dsda_ToggleConfig(dsda_config_automap_grid, true);
+    dsda_AddMessage(automap_grid ? AMSTR_GRIDON : AMSTR_GRIDOFF);
+  }
+  
+  if (buttons.AutomapMark && !last_buttons.AutomapMark)
+  {
+    if (!raven)
+    {
+      AM_addMark();
+      doom_printf("%s %d", AMSTR_MARKEDSPOT, markpointnum - 1);
+    }
+  }
+  
+  if (buttons.AutomapClearMarks && !last_buttons.AutomapClearMarks)
+  {
+    AM_clearMarks();
+    dsda_AddMessage(AMSTR_MARKSCLEARED);
+  }
+
+  if (buttons.AutomapFullZoom && !last_buttons.AutomapFullZoom)
+  {
+    bigstate = !bigstate;
+    if (bigstate)
+    {
+      AM_saveScaleAndLoc();
+      AM_minOutWindowScale();
+    }
+    else
+      AM_restoreScaleAndLoc();
+  }
+
+  if (buttons.AutomapZoomOut)
+  {
+    mtof_zoommul = M_ZOOMOUT;
+    ftom_zoommul = M_ZOOMIN;
+    curr_mtof_zoommul = mtof_zoommul;
+    zoom_leveltime = leveltime;
+  }
+  else if (buttons.AutomapZoomIn)
+  {
+    mtof_zoommul = M_ZOOMIN;
+    ftom_zoommul = M_ZOOMOUT;
+    curr_mtof_zoommul = mtof_zoommul;
+    zoom_leveltime = leveltime;
+  }
+  else
+  {
+    stop_zooming = true;
+    if (leveltime != zoom_leveltime)
+      AM_StopZooming();
+  }
+
+  if (!automap_follow)
+  {
+    if (buttons.AutomapUp)    m_paninc.y += FTOM(map_pan_speed);
+    if (buttons.AutomapDown)  m_paninc.y -= FTOM(map_pan_speed);
+    if (buttons.AutomapRight) m_paninc.x += FTOM(map_pan_speed);
+    if (buttons.AutomapLeft)  m_paninc.x -= FTOM(map_pan_speed);
+  }
+
+  last_buttons = buttons;
+}
+
+void player_input(struct PackedPlayerInput *inputs, int playerId)
+{
+  local_cmds[playerId].forwardmove = inputs->RunSpeed;
+  local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
+  local_cmds[playerId].lookfly     = inputs->FlyLook;
+  local_cmds[playerId].arti        = inputs->ArtifactUse;
+  local_cmds[playerId].angleturn   = inputs->TurningSpeed;
+
+  if (inputs->Buttons.Fire) local_cmds[playerId].buttons |= 0b00000001;
+  if (inputs->Buttons.Use)  local_cmds[playerId].buttons |= 0b00000010;
+  if (inputs->EndPlayer)    local_cmds[playerId].arti    |= 0b01000000;
+  if (inputs->Jump)         local_cmds[playerId].arti    |= 0b10000000;
+
+  if (inputs->WeaponSelect)
+  {
+    local_cmds[playerId].buttons |= BT_CHANGE;
+    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1) << BT_WEAPONSHIFT;
+  }
+}
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
@@ -37,97 +157,68 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
   *paletteBuffer = _convertedPaletteBuffer;
 }
 
-ECL_EXPORT void dsda_frame_advance(struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
+ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
+  if (renderInfo->DoUpdate)
+  {
+    char setting_buffer[512];
+    sprintf(setting_buffer, "%dx%d",
+      SCREENWIDTH  * renderInfo->ScaleFactor,
+      SCREENHEIGHT * renderInfo->ScaleFactor);
+    dsda_UpdateStringConfig(dsda_config_screen_resolution, setting_buffer, true);
+
+    dsda_UpdateIntConfig(dsda_config_screenblocks,  renderInfo->HeadsUpMode      ? 11 : 10, true);
+    dsda_UpdateIntConfig(dsda_config_hud_displayed, renderInfo->HeadsUpMode == 2 ?  0 :  1, true);
+
+    dsda_UpdateIntConfig(dsda_config_usegamma,          renderInfo->Gamma,           true);
+    dsda_UpdateIntConfig(dsda_config_show_messages,     renderInfo->ShowMessages,    true);
+    dsda_UpdateIntConfig(dsda_config_hudadd_secretarea, renderInfo->ReportSecrets,   true);
+    dsda_UpdateIntConfig(dsda_config_exhud,             renderInfo->DsdaExHud,       true);
+    dsda_UpdateIntConfig(dsda_config_command_display,   renderInfo->DisplayCommands, true);
+    dsda_UpdateIntConfig(dsda_config_map_totals,        renderInfo->MapTotals,       true);
+    dsda_UpdateIntConfig(dsda_config_map_time,          renderInfo->MapTime,         true);
+    dsda_UpdateIntConfig(dsda_config_map_coordinates,   renderInfo->MapCoordinates,  true);
+  }
+
   // Setting inputs
   headlessClearTickCommand();
+  common_input(commonButtons);
 
-  // Setting Player 1 inputs
-  headlessSetTickCommand
-  (
-    0,
-    player1Inputs->RunSpeed,
-    player1Inputs->StrafingSpeed,
-    player1Inputs->TurningSpeed,
-    player1Inputs->Fire,
-    player1Inputs->Action,
-    player1Inputs->WeaponSelect,
-    player1Inputs->Automap,
-    player1Inputs->FlyLook,
-    player1Inputs->ArtifactUse,
-    player1Inputs->Jump,
-    player1Inputs->EndPlayer
-  );
-
-  // Setting Player 2 inputs
-  headlessSetTickCommand
-  (
-    1,
-    player2Inputs->RunSpeed,
-    player2Inputs->StrafingSpeed,
-    player2Inputs->TurningSpeed,
-    player2Inputs->Fire,
-    player2Inputs->Action,
-    player2Inputs->WeaponSelect,
-    player2Inputs->Automap,
-    player2Inputs->FlyLook,
-    player2Inputs->ArtifactUse,
-    player2Inputs->Jump,
-    player2Inputs->EndPlayer
-  );
-
-  // Setting Player 3 inputs
-  headlessSetTickCommand
-  (
-    2,
-    player3Inputs->RunSpeed,
-    player3Inputs->StrafingSpeed,
-    player3Inputs->TurningSpeed,
-    player3Inputs->Fire,
-    player3Inputs->Action,
-    player3Inputs->WeaponSelect,
-    player3Inputs->Automap,
-    player3Inputs->FlyLook,
-    player3Inputs->ArtifactUse,
-    player3Inputs->Jump,
-    player3Inputs->EndPlayer
-  );
-
-  // Setting Player 4 inputs
-  headlessSetTickCommand
-  (
-    3,
-    player4Inputs->RunSpeed,
-    player4Inputs->StrafingSpeed,
-    player4Inputs->TurningSpeed,
-    player4Inputs->Fire,
-    player4Inputs->Action,
-    player4Inputs->WeaponSelect,
-    player4Inputs->Automap,
-    player4Inputs->FlyLook,
-    player4Inputs->ArtifactUse,
-    player4Inputs->Jump,
-    player4Inputs->EndPlayer
-  );
+  // Setting Players inputs
+  player_input(player1Inputs, 0);
+  player_input(player2Inputs, 1);
+  player_input(player3Inputs, 2);
+  player_input(player4Inputs, 3);
 
   // Enabling/Disabling rendering, as required
+  if ( renderInfo->RenderVideo) headlessEnableVideoRendering();
+  if ( renderInfo->RenderAudio) headlessEnableAudioRendering();
   if (!renderInfo->RenderVideo) headlessDisableVideoRendering();
-  if (renderInfo->RenderVideo) headlessEnableVideoRendering();
   if (!renderInfo->RenderAudio) headlessDisableAudioRendering();
-  if (renderInfo->RenderAudio) headlessEnableAudioRendering();
 
-  // Running a single tick
-  headlessRunSingleTick();
-
-  // Move positional sounds 
-  headlessUpdateSounds();
-
-  // Updating video
-  if (renderInfo->RenderVideo)
+  if ((wipe_Pending() || !wipeDone) && dsda_RenderWipeScreen())
   {
-    displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
-    headlessUpdateVideo();
+    wipeDone = wipe_ScreenWipe(1);
+    I_FinishUpdate();
   }
+  else
+  {
+    // Running a single tick
+    headlessRunSingleTick();
+
+    // Move positional sounds
+    headlessUpdateSounds();
+
+    // Updating video
+    if (renderInfo->RenderVideo)
+    {
+      displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
+      headlessUpdateVideo();
+    }
+  }
+
+  // Assume wipe is lag
+  return !wipeDone;
 }
 
 ECL_ENTRY void (*input_callback_cb)(void);
@@ -185,7 +276,7 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   // If required, prevent level exit and game end triggers
   preventLevelExit = settings->PreventLevelExit;
-  preventGameEnd = settings->PreventGameEnd;
+  preventGameEnd   = settings->PreventGameEnd;
 
   printf("Prevent Level Exit: %d\n", preventLevelExit);
   printf("Prevent Game End:   %d\n", preventGameEnd);

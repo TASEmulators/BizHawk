@@ -14,7 +14,7 @@ namespace BizHawk.Tests.Testroms.GB
 	public sealed class RTC3Test
 	{
 		[AttributeUsage(AttributeTargets.Method)]
-		private sealed class RTC3TestData : Attribute, ITestDataSource
+		private sealed class RTC3TestDataAttribute : Attribute, ITestDataSource
 		{
 			public IEnumerable<object?[]> GetData(MethodInfo methodInfo)
 			{
