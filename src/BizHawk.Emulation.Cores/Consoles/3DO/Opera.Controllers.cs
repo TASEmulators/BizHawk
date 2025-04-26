@@ -50,8 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 						.AddAxis($"P{port} {Inputs.MouseY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
 				case ControllerType.FlightStick:
-					foreach (var button in FlightStickButtonCollection)
-					controller.BoolButtons.Add($"P{port} {button}");
+					foreach (var button in FlightStickButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
 					controller.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
