@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 					null or VideoStandard.NTSC => ConfigNTSC,
 					VideoStandard.PAL1 => ConfigPAL1,
 					VideoStandard.PAL2 => ConfigPAL2,
-					_ => throw new InvalidOperationException($"unexpected value for sync setting {nameof(SyncSettings.VideoStandard)}")
+					_ => throw new InvalidOperationException($"unexpected value for sync setting {nameof(SyncSettings.VideoStandard)}"),
 				})
 		{
 			DriveLightEnabled = true;
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 				SystemType.Sanyo_HC21 => "Sanyo_HC21",
 				SystemType.Shootout_At_Old_Tucson => "Shootout_At_Old_Tucson",
 				SystemType._3DO_NTSC_1fc2 => "3DO_NTSC_1fc2",
-				_ => "None"
+				_ => "None",
 			};
 
 			var (biosData, biosInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw.Panasonic3DO, biosType), "BIOS ROM files are required!");
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			{
 				FontROM.Kanji_ROM_Panasonic_FZ1 => "Kanji_ROM_Panasonic_FZ1",
 				FontROM.Kanji_ROM_Panasonic_FZ10 => "Kanji_ROM_Panasonic_FZ10",
-				_ => "None"
+				_ => "None",
 			};
 
 			string fontROMFileName = "None";

@@ -351,25 +351,19 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool Detect3DO()
 		{
 			var toc = _disc.TOC;
-			for (var t = toc.FirstRecordedTrackNumber;
-				t <= toc.LastRecordedTrackNumber;
-				t++)
+			for (var t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
 			{
 				var track = _disc.TOC.TOCItems[t];
 				// https://groups.google.com/g/rec.games.video.3do/c/1U3qrmLSYMQ?pli=1
 				// The iamaduck is not mandatory and not present in all games
-				if (track.IsData && SectorContains("iamaduckiamaduck", track.LBA))
-					return true;
-
-
+				if (track.IsData && SectorContains("iamaduckiamaduck", track.LBA)) return true;
 			}
 
 			for (var i = 0; i < 256; i++)
 			{
 				// The following sync pattern is present in 3DO games
 				// https://github.com/trapexit/3dt/blob/84f1aa5a5e778f14c2216fc0c891e78625266cad/src/tdo_disc_label.hpp#L65
-				if (SectorContains(Convert.ToChar(01) + "ZZZZZ" + Convert.ToChar(01), i))
-					return true;
+				if (SectorContains(Convert.ToChar(01) + "ZZZZZ" + Convert.ToChar(01), i)) return true;
 			}
 
 			return false;

@@ -261,6 +261,9 @@ namespace BizHawk.Client.Common
 				case DiscType.MegaCD:
 					game.System = VSystemID.Raw.GEN;
 					break;
+				case DiscType.Panasonic3DO:
+					game.System = VSystemID.Raw.Panasonic3DO;
+					break;
 				case DiscType.PCFX:
 					game.System = VSystemID.Raw.PCFX;
 					break;
@@ -288,9 +291,6 @@ namespace BizHawk.Client.Common
 					break;
 				case DiscType.NeoGeoCD:
 					NoCoreForSystem(VSystemID.Raw.NeoGeoCD);
-					break;
-				case DiscType.Panasonic3DO:
-					game.System = VSystemID.Raw.Panasonic3DO;
 					break;
 				case DiscType.Playdia:
 					NoCoreForSystem(VSystemID.Raw.Playdia);
