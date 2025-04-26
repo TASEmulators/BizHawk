@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("PC Engine Controller", Properties.Resources.PceController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
 			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83Controller);
+			ControllerImages.Add("3DO Controller", Properties.Resources.ThreeDOController);
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
