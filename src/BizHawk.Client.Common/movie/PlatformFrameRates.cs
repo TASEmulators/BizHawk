@@ -18,6 +18,7 @@ namespace BizHawk.Client.Common
 		private static readonly Dictionary<string, double> Rates = new Dictionary<string, double>
 		{
 			["Panasonic3DO"] = 60.0, // The emulator (Opera-Libretro) reports exact 60.0 for NTSC https://github.com/libretro/opera-libretro/blob/67a29e60a4d194b675c9272b21b61eaa022f3ba3/libopera/opera_region.c#L10
+			["Panasonic3DO_PAL"] = 50.0, // The emulator (Opera-Libretro) reports exact 50.0 for PAL https://github.com/libretro/opera-libretro/blob/67a29e60a4d194b675c9272b21b61eaa022f3ba3/libopera/opera_region.c#L17
 			["NES"] = 60.098813897440515, // per https://forums.nesdev.org/viewtopic.php?p=3783#p3783 the nominal value is (19687500/11) / ((341*262 - 0.5) / 3) = 39375000/655171 ≈ 60.09881389744051553 (so our chosen number, which is approximately 60.09881389744051461, is very close)
 			["FDS"] = 60.098813897440515, // ditto
 			["NES_PAL"] = 50.00697796826829, // per https://forums.nesdev.org/viewtopic.php?p=3783#p3783 the nominal value is 1662607 / (341*312/3.2) = 3325214/66495 ≈ 50.0069779682682908 (so our chosen number, which is approximately 50.0069779682682877, is very close)
