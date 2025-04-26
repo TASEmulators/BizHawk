@@ -63,7 +63,6 @@
 			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tpAR = new System.Windows.Forms.TabPage();
-			this.cbScaleOSD = new System.Windows.Forms.CheckBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.label15 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -115,6 +114,7 @@
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.cbScaleOSD = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -225,7 +225,7 @@
 			this.rbNone.AutoSize = true;
 			this.rbNone.Location = new System.Drawing.Point(6, 19);
 			this.rbNone.Name = "rbNone";
-			this.rbNone.Size = new System.Drawing.Size(50, 17);
+			this.rbNone.Size = new System.Drawing.Size(51, 17);
 			this.rbNone.TabIndex = 2;
 			this.rbNone.TabStop = true;
 			this.rbNone.Text = "None";
@@ -236,7 +236,7 @@
 			this.rbScanlines.AutoSize = true;
 			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
 			this.rbScanlines.Name = "rbScanlines";
-			this.rbScanlines.Size = new System.Drawing.Size(69, 17);
+			this.rbScanlines.Size = new System.Drawing.Size(71, 17);
 			this.rbScanlines.TabIndex = 1;
 			this.rbScanlines.TabStop = true;
 			this.rbScanlines.Text = "Scanlines";
@@ -258,7 +258,7 @@
 			this.checkLetterbox.AutoSize = true;
 			this.checkLetterbox.Location = new System.Drawing.Point(209, 12);
 			this.checkLetterbox.Name = "checkLetterbox";
-			this.checkLetterbox.Size = new System.Drawing.Size(181, 17);
+			this.checkLetterbox.Size = new System.Drawing.Size(173, 17);
 			this.checkLetterbox.TabIndex = 8;
 			this.checkLetterbox.Text = "Maintain aspect ratio (letterbox)";
 			this.checkLetterbox.UseVisualStyleBackColor = true;
@@ -269,7 +269,7 @@
 			this.checkPadInteger.AutoSize = true;
 			this.checkPadInteger.Location = new System.Drawing.Point(218, 171);
 			this.checkPadInteger.Name = "checkPadInteger";
-			this.checkPadInteger.Size = new System.Drawing.Size(261, 17);
+			this.checkPadInteger.Size = new System.Drawing.Size(250, 17);
 			this.checkPadInteger.TabIndex = 9;
 			this.checkPadInteger.Text = "Expand pixels by integers only (e.g. no 1.3333x)";
 			this.checkPadInteger.UseVisualStyleBackColor = true;
@@ -292,7 +292,7 @@
 			this.rbFinalFilterBicubic.AutoSize = true;
 			this.rbFinalFilterBicubic.Location = new System.Drawing.Point(6, 64);
 			this.rbFinalFilterBicubic.Name = "rbFinalFilterBicubic";
-			this.rbFinalFilterBicubic.Size = new System.Drawing.Size(143, 17);
+			this.rbFinalFilterBicubic.Size = new System.Drawing.Size(142, 17);
 			this.rbFinalFilterBicubic.TabIndex = 3;
 			this.rbFinalFilterBicubic.TabStop = true;
 			this.rbFinalFilterBicubic.Text = "Bicubic (shader. buggy?)";
@@ -303,7 +303,7 @@
 			this.rbFinalFilterNone.AutoSize = true;
 			this.rbFinalFilterNone.Location = new System.Drawing.Point(6, 18);
 			this.rbFinalFilterNone.Name = "rbFinalFilterNone";
-			this.rbFinalFilterNone.Size = new System.Drawing.Size(50, 17);
+			this.rbFinalFilterNone.Size = new System.Drawing.Size(51, 17);
 			this.rbFinalFilterNone.TabIndex = 2;
 			this.rbFinalFilterNone.TabStop = true;
 			this.rbFinalFilterNone.Text = "None";
@@ -325,7 +325,7 @@
 			this.rbUseRaw.AutoSize = true;
 			this.rbUseRaw.Location = new System.Drawing.Point(6, 19);
 			this.rbUseRaw.Name = "rbUseRaw";
-			this.rbUseRaw.Size = new System.Drawing.Size(246, 17);
+			this.rbUseRaw.Size = new System.Drawing.Size(240, 17);
 			this.rbUseRaw.TabIndex = 11;
 			this.rbUseRaw.TabStop = true;
 			this.rbUseRaw.Text = "Use 1:1 pixel size (for crispness or debugging)";
@@ -337,7 +337,7 @@
 			this.rbUseSystem.AutoSize = true;
 			this.rbUseSystem.Location = new System.Drawing.Point(16, 58);
 			this.rbUseSystem.Name = "rbUseSystem";
-			this.rbUseSystem.Size = new System.Drawing.Size(169, 17);
+			this.rbUseSystem.Size = new System.Drawing.Size(167, 17);
 			this.rbUseSystem.TabIndex = 12;
 			this.rbUseSystem.TabStop = true;
 			this.rbUseSystem.Text = "Use system\'s recommendation";
@@ -368,7 +368,7 @@
 			// 
 			this.txtCustomARY.Location = new System.Drawing.Point(220, 102);
 			this.txtCustomARY.Name = "txtCustomARY";
-			this.txtCustomARY.Size = new System.Drawing.Size(72, 21);
+			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARY.TabIndex = 19;
 			// 
 			// label12
@@ -381,7 +381,7 @@
 			// 
 			this.txtCustomARX.Location = new System.Drawing.Point(124, 102);
 			this.txtCustomARX.Name = "txtCustomARX";
-			this.txtCustomARX.Size = new System.Drawing.Size(72, 21);
+			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARX.TabIndex = 18;
 			// 
 			// rbUseCustomRatio
@@ -389,7 +389,7 @@
 			this.rbUseCustomRatio.AutoSize = true;
 			this.rbUseCustomRatio.Location = new System.Drawing.Point(16, 103);
 			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
-			this.rbUseCustomRatio.Size = new System.Drawing.Size(101, 17);
+			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
 			this.rbUseCustomRatio.TabIndex = 16;
 			this.rbUseCustomRatio.TabStop = true;
 			this.rbUseCustomRatio.Text = "Use custom AR:";
@@ -405,7 +405,7 @@
 			// 
 			this.txtCustomARHeight.Location = new System.Drawing.Point(220, 79);
 			this.txtCustomARHeight.Name = "txtCustomARHeight";
-			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 21);
+			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARHeight.TabIndex = 15;
 			// 
 			// label3
@@ -418,7 +418,7 @@
 			// 
 			this.txtCustomARWidth.Location = new System.Drawing.Point(124, 79);
 			this.txtCustomARWidth.Name = "txtCustomARWidth";
-			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 21);
+			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARWidth.TabIndex = 14;
 			// 
 			// rbUseCustom
@@ -438,7 +438,7 @@
 			this.rbOpenGL.Checked = true;
 			this.rbOpenGL.Location = new System.Drawing.Point(6, 103);
 			this.rbOpenGL.Name = "rbOpenGL";
-			this.rbOpenGL.Size = new System.Drawing.Size(63, 17);
+			this.rbOpenGL.Size = new System.Drawing.Size(65, 17);
 			this.rbOpenGL.TabIndex = 3;
 			this.rbOpenGL.TabStop = true;
 			this.rbOpenGL.Text = "OpenGL";
@@ -488,16 +488,6 @@
 			this.tpAR.Text = "Scaling & Filtering";
 			this.tpAR.UseVisualStyleBackColor = true;
 			// 
-			// cbScaleOSD
-			// 
-			this.cbScaleOSD.AutoSize = true;
-			this.cbScaleOSD.Location = new System.Drawing.Point(218, 262);
-			this.cbScaleOSD.Name = "cbScaleOSD";
-			this.cbScaleOSD.Size = new System.Drawing.Size(185, 17);
-			this.cbScaleOSD.TabIndex = 21;
-			this.cbScaleOSD.Text = "Scale OSD text with system scale";
-			this.cbScaleOSD.UseVisualStyleBackColor = true;
-			// 
 			// groupBox6
 			// 
 			this.groupBox6.Controls.Add(this.label16);
@@ -531,7 +521,7 @@
 			// 
 			this.txtCropBottom.Location = new System.Drawing.Point(261, 22);
 			this.txtCropBottom.Name = "txtCropBottom";
-			this.txtCropBottom.Size = new System.Drawing.Size(34, 21);
+			this.txtCropBottom.Size = new System.Drawing.Size(34, 20);
 			this.txtCropBottom.TabIndex = 28;
 			this.txtCropBottom.Text = "8000";
 			// 
@@ -545,7 +535,7 @@
 			// 
 			this.txtCropRight.Location = new System.Drawing.Point(180, 22);
 			this.txtCropRight.Name = "txtCropRight";
-			this.txtCropRight.Size = new System.Drawing.Size(34, 21);
+			this.txtCropRight.Size = new System.Drawing.Size(34, 20);
 			this.txtCropRight.TabIndex = 25;
 			this.txtCropRight.Text = "8000";
 			// 
@@ -553,7 +543,7 @@
 			// 
 			this.txtCropTop.Location = new System.Drawing.Point(104, 22);
 			this.txtCropTop.Name = "txtCropTop";
-			this.txtCropTop.Size = new System.Drawing.Size(34, 21);
+			this.txtCropTop.Size = new System.Drawing.Size(34, 20);
 			this.txtCropTop.TabIndex = 24;
 			this.txtCropTop.Text = "8000";
 			// 
@@ -567,7 +557,7 @@
 			// 
 			this.txtCropLeft.Location = new System.Drawing.Point(34, 22);
 			this.txtCropLeft.Name = "txtCropLeft";
-			this.txtCropLeft.Size = new System.Drawing.Size(34, 21);
+			this.txtCropLeft.Size = new System.Drawing.Size(34, 20);
 			this.txtCropLeft.TabIndex = 15;
 			this.txtCropLeft.Text = "8000";
 			// 
@@ -618,7 +608,7 @@
             0,
             0});
 			this.nudPrescale.Name = "nudPrescale";
-			this.nudPrescale.Size = new System.Drawing.Size(45, 21);
+			this.nudPrescale.Size = new System.Drawing.Size(45, 20);
 			this.nudPrescale.TabIndex = 14;
 			this.nudPrescale.Value = new decimal(new int[] {
             1,
@@ -691,7 +681,7 @@
 			this.rbD3D11.Checked = true;
 			this.rbD3D11.Location = new System.Drawing.Point(6, 10);
 			this.rbD3D11.Name = "rbD3D11";
-			this.rbD3D11.Size = new System.Drawing.Size(78, 17);
+			this.rbD3D11.Size = new System.Drawing.Size(79, 17);
 			this.rbD3D11.TabIndex = 19;
 			this.rbD3D11.TabStop = true;
 			this.rbD3D11.Text = "Direct3D11";
@@ -710,7 +700,7 @@
 			this.rbGDIPlus.Checked = true;
 			this.rbGDIPlus.Location = new System.Drawing.Point(6, 171);
 			this.rbGDIPlus.Name = "rbGDIPlus";
-			this.rbGDIPlus.Size = new System.Drawing.Size(51, 17);
+			this.rbGDIPlus.Size = new System.Drawing.Size(50, 17);
 			this.rbGDIPlus.TabIndex = 17;
 			this.rbGDIPlus.TabStop = true;
 			this.rbGDIPlus.Text = "GDI+";
@@ -765,7 +755,7 @@
 			this.rbDisplayAbsoluteZero.AutoSize = true;
 			this.rbDisplayAbsoluteZero.Location = new System.Drawing.Point(7, 66);
 			this.rbDisplayAbsoluteZero.Name = "rbDisplayAbsoluteZero";
-			this.rbDisplayAbsoluteZero.Size = new System.Drawing.Size(176, 17);
+			this.rbDisplayAbsoluteZero.Size = new System.Drawing.Size(174, 17);
 			this.rbDisplayAbsoluteZero.TabIndex = 2;
 			this.rbDisplayAbsoluteZero.TabStop = true;
 			this.rbDisplayAbsoluteZero.Text = "Absolute Zero - Display Nothing";
@@ -777,7 +767,7 @@
 			this.rbDisplayMinimal.Enabled = false;
 			this.rbDisplayMinimal.Location = new System.Drawing.Point(7, 43);
 			this.rbDisplayMinimal.Name = "rbDisplayMinimal";
-			this.rbDisplayMinimal.Size = new System.Drawing.Size(182, 17);
+			this.rbDisplayMinimal.Size = new System.Drawing.Size(185, 17);
 			this.rbDisplayMinimal.TabIndex = 1;
 			this.rbDisplayMinimal.TabStop = true;
 			this.rbDisplayMinimal.Text = "Minimal - Display HUD Only (TBD)";
@@ -788,7 +778,7 @@
 			this.rbDisplayFull.AutoSize = true;
 			this.rbDisplayFull.Location = new System.Drawing.Point(7, 20);
 			this.rbDisplayFull.Name = "rbDisplayFull";
-			this.rbDisplayFull.Size = new System.Drawing.Size(140, 17);
+			this.rbDisplayFull.Size = new System.Drawing.Size(137, 17);
 			this.rbDisplayFull.TabIndex = 0;
 			this.rbDisplayFull.TabStop = true;
 			this.rbDisplayFull.Text = "Full - Display Everything";
@@ -812,7 +802,7 @@
 			this.cbAllowDoubleclickFullscreen.AutoSize = true;
 			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 236);
 			this.cbAllowDoubleclickFullscreen.Name = "cbAllowDoubleclickFullscreen";
-			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(480, 17);
+			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(471, 17);
 			this.cbAllowDoubleclickFullscreen.TabIndex = 27;
 			this.cbAllowDoubleclickFullscreen.Text = "Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case u" +
     "sing zapper, etc.)";
@@ -827,7 +817,7 @@
 			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
 			this.groupBox4.Location = new System.Drawing.Point(226, 6);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(296, 224);
+			this.groupBox4.Size = new System.Drawing.Size(266, 224);
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fullscreen";
@@ -837,7 +827,7 @@
 			this.cbFSAutohideMouse.AutoSize = true;
 			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
 			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
-			this.cbFSAutohideMouse.Size = new System.Drawing.Size(143, 17);
+			this.cbFSAutohideMouse.Size = new System.Drawing.Size(141, 17);
 			this.cbFSAutohideMouse.TabIndex = 28;
 			this.cbFSAutohideMouse.Text = "Auto-Hide Mouse Cursor";
 			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
@@ -853,7 +843,7 @@
 			this.cbFullscreenHacks.AutoSize = true;
 			this.cbFullscreenHacks.Location = new System.Drawing.Point(6, 65);
 			this.cbFullscreenHacks.Name = "cbFullscreenHacks";
-			this.cbFullscreenHacks.Size = new System.Drawing.Size(186, 17);
+			this.cbFullscreenHacks.Size = new System.Drawing.Size(191, 17);
 			this.cbFullscreenHacks.TabIndex = 26;
 			this.cbFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
 			this.cbFullscreenHacks.UseVisualStyleBackColor = true;
@@ -863,7 +853,7 @@
 			this.cbStatusBarFullscreen.AutoSize = true;
 			this.cbStatusBarFullscreen.Location = new System.Drawing.Point(6, 19);
 			this.cbStatusBarFullscreen.Name = "cbStatusBarFullscreen";
-			this.cbStatusBarFullscreen.Size = new System.Drawing.Size(76, 17);
+			this.cbStatusBarFullscreen.Size = new System.Drawing.Size(75, 17);
 			this.cbStatusBarFullscreen.TabIndex = 23;
 			this.cbStatusBarFullscreen.Text = "Status Bar";
 			this.cbStatusBarFullscreen.UseVisualStyleBackColor = true;
@@ -873,7 +863,7 @@
 			this.cbMenuFullscreen.AutoSize = true;
 			this.cbMenuFullscreen.Location = new System.Drawing.Point(6, 42);
 			this.cbMenuFullscreen.Name = "cbMenuFullscreen";
-			this.cbMenuFullscreen.Size = new System.Drawing.Size(52, 17);
+			this.cbMenuFullscreen.Size = new System.Drawing.Size(53, 17);
 			this.cbMenuFullscreen.TabIndex = 25;
 			this.cbMenuFullscreen.Text = "Menu";
 			this.cbMenuFullscreen.UseVisualStyleBackColor = true;
@@ -921,7 +911,7 @@
 			this.cbMainFormSaveWindowPosition.AutoSize = true;
 			this.cbMainFormSaveWindowPosition.Location = new System.Drawing.Point(9, 150);
 			this.cbMainFormSaveWindowPosition.Name = "cbMainFormSaveWindowPosition";
-			this.cbMainFormSaveWindowPosition.Size = new System.Drawing.Size(131, 17);
+			this.cbMainFormSaveWindowPosition.Size = new System.Drawing.Size(133, 17);
 			this.cbMainFormSaveWindowPosition.TabIndex = 26;
 			this.cbMainFormSaveWindowPosition.Text = "Save Window Position";
 			this.cbMainFormSaveWindowPosition.UseVisualStyleBackColor = true;
@@ -937,7 +927,7 @@
 			this.cbStatusBarWindowed.AutoSize = true;
 			this.cbStatusBarWindowed.Location = new System.Drawing.Point(9, 81);
 			this.cbStatusBarWindowed.Name = "cbStatusBarWindowed";
-			this.cbStatusBarWindowed.Size = new System.Drawing.Size(76, 17);
+			this.cbStatusBarWindowed.Size = new System.Drawing.Size(75, 17);
 			this.cbStatusBarWindowed.TabIndex = 23;
 			this.cbStatusBarWindowed.Text = "Status Bar";
 			this.cbStatusBarWindowed.UseVisualStyleBackColor = true;
@@ -953,7 +943,7 @@
 			this.cbMenuWindowed.AutoSize = true;
 			this.cbMenuWindowed.Location = new System.Drawing.Point(9, 127);
 			this.cbMenuWindowed.Name = "cbMenuWindowed";
-			this.cbMenuWindowed.Size = new System.Drawing.Size(52, 17);
+			this.cbMenuWindowed.Size = new System.Drawing.Size(53, 17);
 			this.cbMenuWindowed.TabIndex = 25;
 			this.cbMenuWindowed.Text = "Menu";
 			this.cbMenuWindowed.UseVisualStyleBackColor = true;
@@ -974,7 +964,7 @@
 			this.cbCaptionWindowed.AutoSize = true;
 			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
 			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
-			this.cbCaptionWindowed.Size = new System.Drawing.Size(63, 17);
+			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
 			this.cbCaptionWindowed.TabIndex = 24;
 			this.cbCaptionWindowed.Text = "Caption";
 			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
@@ -989,6 +979,16 @@
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
+			// 
+			// cbScaleOSD
+			// 
+			this.cbScaleOSD.AutoSize = true;
+			this.cbScaleOSD.Location = new System.Drawing.Point(218, 262);
+			this.cbScaleOSD.Name = "cbScaleOSD";
+			this.cbScaleOSD.Size = new System.Drawing.Size(184, 17);
+			this.cbScaleOSD.TabIndex = 21;
+			this.cbScaleOSD.Text = "Scale OSD text with system scale";
+			this.cbScaleOSD.UseVisualStyleBackColor = true;
 			// 
 			// DisplayConfig
 			// 
