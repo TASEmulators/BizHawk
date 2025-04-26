@@ -54,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private const int WINDOW_SCALE_MAX = 10;
 
+		private readonly ToolStripMenuItemEx DOSSubMenu = new() { Text = "&DOS" };
+
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
 		private readonly StatusLabelEx StatusBarMuteIndicator = new();
@@ -191,6 +193,15 @@ namespace BizHawk.Client.EmuHawk
 				});
 
 			_ = MainformMenu.Items.InsertAfter(ToolsSubMenu, insert: NullHawkVSysSubmenu);
+
+			ToolStripMenuItemEx DOSSettingsToolStripMenuItem = new() { Text = "Settings..." };
+			DOSSettingsToolStripMenuItem.Click += (_, _) => _ = OpenDOSBoxSettingsDialog();
+			DOSSubMenu.DropDownItems.Add(DOSSettingsToolStripMenuItem);
+			ToolStripMenuItemEx DOSExportHDDImageToolStripMenuItem = new() { Text = "Export Hard Disk Drive..." };
+			DOSExportHDDImageToolStripMenuItem.Click += DOSSExportHddMenuItem_Click;
+			DOSSubMenu.DropDownItems.Add(DOSExportHDDImageToolStripMenuItem);
+			DOSSubMenu.DropDownOpened += (_, _) => DOSExportHDDImageToolStripMenuItem.Enabled = Emulator is DOSBox dosbox && dosbox.HasValidHDD();
+			_ = MainformMenu.Items.InsertAfter(NullHawkVSysSubmenu, insert: DOSSubMenu);
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right

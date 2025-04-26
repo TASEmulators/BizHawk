@@ -276,9 +276,6 @@ namespace BizHawk.Client.EmuHawk
 			this.GBLSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.GBLsettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DOSSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DOSExportHDDImageToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DOSSettingsToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.AppleDisksSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator31 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.settingsToolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -406,8 +403,7 @@ namespace BizHawk.Client.EmuHawk
             this.GBLSubMenu,
             this.AppleSubMenu,
             this.C64SubMenu,
-            this.DOSSubMenu,
-			this.IntvSubMenu,
+            this.IntvSubMenu,
             this.zXSpectrumToolStripMenuItem,
             this.GenericCoreSubMenu,
             this.amstradCPCToolStripMenuItem,
@@ -1848,23 +1844,6 @@ namespace BizHawk.Client.EmuHawk
 			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
 			// 
-			// DOSSubMenu
-			// 
-			this.DOSSubMenu.DropDownItems.AddRange(
-				new System.Windows.Forms.ToolStripItem[] { this.DOSSettingsToolStripMenuItem, this.DOSExportHDDImageToolStripMenuItem }
-				);
-			this.DOSSubMenu.Text = "&DOS";
-			// 
-			// DOSsettingsToolStripMenuItem
-			// 
-			this.DOSSettingsToolStripMenuItem.Text = "Settings...";
-			this.DOSSettingsToolStripMenuItem.Click += new System.EventHandler(this.DOSSettingsMenuItem_Click);
-			// 
-			// DOSExportHDDImageToolStripMenuItem
-			// 
-			this.DOSExportHDDImageToolStripMenuItem.Text = "Export Hard Disk Drive...";
-			this.DOSExportHDDImageToolStripMenuItem.Click += new System.EventHandler(this.DOSSExportHddMenuItem_Click);
-			// 
 			// zXSpectrumToolStripMenuItem
 			// 
 			this.zXSpectrumToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2690,9 +2669,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GenericCoreSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800ControllerSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx A7800FilterSettingsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DOSSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DOSExportHDDImageToolStripMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DOSSettingsToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx MovieSettingsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CoresSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx BatchRunnerMenuItem;

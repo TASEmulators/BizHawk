@@ -381,11 +381,6 @@ namespace BizHawk.Client.EmuHawk
 		private DialogResult OpenDOSBoxSettingsDialog()
 			=> OpenGenericCoreConfigFor<DOSBox>(CoreNames.DOSBox + " Settings");
 
-		private void DOSSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			OpenDOSBoxSettingsDialog();
-		}
-
 		private void DOSSExportHddMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is not DOSBox dosbox) return;
@@ -1531,9 +1526,8 @@ namespace BizHawk.Client.EmuHawk
 				case VSystemID.Raw.Coleco:
 					ColecoSubMenu.Visible = true;
 					break;
-				case VSystemID.Raw.DOS when Emulator is DOSBox dosbox:
+				case VSystemID.Raw.DOS when Emulator is DOSBox:
 					DOSSubMenu.Visible = true;
-					DOSExportHDDImageToolStripMenuItem.Enabled = dosbox.HasValidHDD();
 					break;
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;
