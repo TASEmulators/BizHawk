@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>need to think about e.g. Genesis / Mega Drive using one sysID but having a different display name depending on the BIOS region --yoshi</remarks>
 		public static readonly IReadOnlyDictionary<string, string> SystemIDDisplayNames = new Dictionary<string, string>
 		{
-			[VSystemID.Raw.Panasonic3DO] = "3DO",
 			[VSystemID.Raw.Amiga] = "Amiga",
 			[VSystemID.Raw.A26] = "Atari 2600",
 			[VSystemID.Raw.A78] = "Atari 7800",
@@ -49,6 +48,7 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.NGP] = "Neo-Geo Pocket",
 			// NULL
 			[VSystemID.Raw.O2] = "Odyssey2",
+			[VSystemID.Raw.Panasonic3DO] = "3DO",
 			[VSystemID.Raw.PCE] = "TurboGrafx-16",
 			[VSystemID.Raw.PCECD] = "TurboGrafx - 16(CD)",
 			[VSystemID.Raw.PCFX] = "PCFX",

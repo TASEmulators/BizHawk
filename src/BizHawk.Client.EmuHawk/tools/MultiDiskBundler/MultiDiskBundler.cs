@@ -33,7 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = ToolIcon;
 			SystemDropDown.Items.AddRange([
-				VSystemID.Raw.Panasonic3DO,
 				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
@@ -48,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.N3DS,
 				VSystemID.Raw.N64,
 				VSystemID.Raw.NDS,
+				VSystemID.Raw.Panasonic3DO,
 				VSystemID.Raw.PCFX,
 				VSystemID.Raw.PSX,
 				VSystemID.Raw.SAT,
