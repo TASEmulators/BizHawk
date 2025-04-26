@@ -938,8 +938,8 @@ namespace BizHawk.Emulation.Common
 				["KeyPadMinus"] = '-',
 				["keyPadPlus"] = '+',
 				["KeyPadEnter"] = 'e',
-				["KeyPadPeriod"] = 'p', // because '.' represents no input
-			}
+				["KeyPadPeriod"] = 'p',
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
