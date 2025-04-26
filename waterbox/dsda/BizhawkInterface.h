@@ -83,10 +83,17 @@ extern fixed_t scale_ftom;
 #define PALETTE_SIZE 256
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
 
+enum HudMode
+{
+  HUD_VANILLA = 0,
+  HUD_DSDA    = 1,
+  HUD_NONE    = 2
+};
+
 enum MemoryArrayType
 {
-  ARRAY_THINGS = 0,
-  ARRAY_LINES = 1,
+  ARRAY_THINGS  = 0,
+  ARRAY_LINES   = 1,
   ARRAY_SECTORS = 2
 };
 

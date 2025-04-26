@@ -161,15 +161,8 @@ ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPla
 {
   if (renderInfo->DoUpdate)
   {
-    char setting_buffer[512];
-    sprintf(setting_buffer, "%dx%d",
-      SCREENWIDTH  * renderInfo->ScaleFactor,
-      SCREENHEIGHT * renderInfo->ScaleFactor);
-    dsda_UpdateStringConfig(dsda_config_screen_resolution, setting_buffer, true);
-
-    dsda_UpdateIntConfig(dsda_config_screenblocks,  renderInfo->HeadsUpMode      ? 11 : 10, true);
-    dsda_UpdateIntConfig(dsda_config_hud_displayed, renderInfo->HeadsUpMode == 2 ?  0 :  1, true);
-
+    dsda_UpdateIntConfig(dsda_config_screenblocks,      renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
+    dsda_UpdateIntConfig(dsda_config_hud_displayed,     renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
     dsda_UpdateIntConfig(dsda_config_usegamma,          renderInfo->Gamma,           true);
     dsda_UpdateIntConfig(dsda_config_show_messages,     renderInfo->ShowMessages,    true);
     dsda_UpdateIntConfig(dsda_config_hudadd_secretarea, renderInfo->ReportSecrets,   true);

@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DoUpdate = false;
 
 			[DisplayName("Internal Resolution Scale Factor")]
-			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.")]
+			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.\n\nRequires restart.")]
 			[Range(1, 12)]
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
@@ -198,13 +198,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
+			var ret = _settings.ScaleFactor == o.ScaleFactor
+				? PutSettingsDirtyBits.None
+				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
 			if (_settings.DisplayPlayer == 1 && !_syncSettings.Player1Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			_settings.DoUpdate = true;
-			return PutSettingsDirtyBits.None;
+			return ret;
 		}
 
 		[CoreSettings]
