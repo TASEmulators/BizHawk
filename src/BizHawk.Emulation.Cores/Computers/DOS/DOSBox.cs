@@ -76,14 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				switch (Path.GetExtension(file.RomPath))
 				{
-					case ".ima":
-					case ".img":
-					case ".xdf":
-					case ".dmf":
-					case ".fdd":
-					case ".fdi":
-					case ".nfd":
-					case ".d88":
+					case ".ima" or ".img" or ".xdf" or ".dmf" or ".fdd" or ".fdi" or ".nfd" or ".d88":
 						_floppyDiskImageFiles.Add(file);
 						break;
 
@@ -106,10 +99,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Calculating hard disk size in kb
 			uint hardDiskImageFileSizeKb = _hardDiskImageFileSize / 1024u;
 
-			if (_hardDiskImageFileSize == 0)
-				Console.WriteLine($"Running without a hard disk drive mounted.");
-			else
-				Console.WriteLine($"Using {hardDiskImageFileSizeKb} kb of memory to host the writable hard disk drive.");
+			Console.WriteLine(_hardDiskImageFileSize is 0
+				? "Running without a hard disk drive mounted."
+				: $"Using {hardDiskImageFileSizeKb} kb of memory to host the writable hard disk drive.");
 
 			_CDReadCallback = CDRead;
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
