@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
-			["Panasonic3DO"] = "3DO / 3DO Arcade / 3DO M2",
+			["3DO"] = "3DO / 3DO Arcade / 3DO M2",
 			["Amiga"] = "Amiga",
 			["NES"] = "NES",
 			["SNES"] = "SNES",
