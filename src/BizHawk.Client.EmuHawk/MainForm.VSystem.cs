@@ -388,6 +388,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DOSSExportHddMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Emulator is not DOSBox dosbox) return;
 			try
 			{
 				var result = this.ShowFileSaveDialog(
@@ -397,9 +398,7 @@ namespace BizHawk.Client.EmuHawk
 					initDir: Config.PathEntries.ToolsAbsolutePath());
 				if (result is not null)
 				{
-					var speccy = (DOSBox) Emulator;
-					var snap = speccy.GetHDDContents();
-					File.WriteAllBytes(result, snap);
+					File.WriteAllBytes(result, dosbox.GetHDDContents());
 				}
 			}
 			catch (Exception)
