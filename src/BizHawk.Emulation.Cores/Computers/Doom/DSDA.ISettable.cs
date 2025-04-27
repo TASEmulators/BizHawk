@@ -144,21 +144,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DoUpdate = false;
 
 			[DisplayName("Internal Resolution Scale Factor")]
-			[Description("Which factor to increase internal resolution by [1 - 12]. Affects \"quality\" of rendered image at the cost of accuracy. Native resolution is 320x200 resized to 4:3 DAR on a CRT monitor.\n\nRequires restart.")]
+			[Description("Which factor to increase internal resolution by [1 - 12]. Improves \"quality\" of the rendered image at the cost of accuracy.\n\nVanilla resolution is 320x200 resized to 4:3 DAR on a CRT monitor.\n\nRequires restart.")]
 			[Range(1, 12)]
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ScaleFactor { get; set; }
 			
 			[DisplayName("Gamma Correction Level")]
-			[Description("Increases brightness [0 - 4]. Default value in vanilla Doom is 0 (\"OFF\").")]
+			[Description("Increases brightness [0 - 4].\n\nDefault value in vanilla is \"OFF\" (0).")]
 			[Range(0, 4)]
 			[DefaultValue(0)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
 			
 			[DisplayName("Show Messages")]
-			[Description("Displays messages about items you pick up.")]
+			[Description("Displays messages about items you pick up.\n\nDefault value in vanilla is \"ON\".")]
 			[DefaultValue(true)]
 			public bool ShowMessages { get; set; }
 			
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DsdaExHud { get; set; }
 			
 			[DisplayName("Display Coordinates")]
-			[Description("Shows player position (X, Y, Z, angle), velocity (combined, X, Y), and distance travelled (combined, X, Y) per frame. Color indicates velocity/distance tiers: green - SR40 (15.11+/16.67+), blue - SR50 (19.35+/21.35+), red - turbo/wallrun (21.37+/23.58+).")]
+			[Description("Shows player position (X, Y, Z, angle), velocity (combined, X, Y), and distance travelled (combined, X, Y) per frame. Color indicates velocity/distance tiers: green - SR40 (15.11+/16.67+), blue - SR50 (19.35+/21.35+), red - turbo/wallrun (21.37+/23.58+).\n\nAvailable in vanilla via the IDMYPOS cheat code, however vanilla only displays angle, X, and Y - all in hexadecimal format.")]
 			[DefaultValue(false)]
 			public bool DisplayCoordinates { get; set; }
 			
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public MapOverlays MapOverlay { get; set; }
 			
 			[DisplayName("Automap Details")]
-			[Description("Exposes all linedefs and things (IDDT cheat toggle).")]
+			[Description("Exposes all linedefs and things.\n\nAvailable in vanilla via the IDDT cheat code.")]
 			[DefaultValue(MapDetail.Normal)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public MapDetail MapDetails { get; set; }
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool RenderWipescreen { get; set; }
 			
 			[DisplayName("Turning Resolution")]
-			[Description("\"Shorttics\" refers to decreased turning resolution used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment.")]
+			[Description("\"Shorttics\" refers to decreased turning resolution normally used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment. Newer demo formats support both.")]
 			[DefaultValue(TurningResolution.Longtics)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public TurningResolution TurningResolution { get; set; }
