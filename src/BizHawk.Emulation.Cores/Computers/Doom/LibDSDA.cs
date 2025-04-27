@@ -62,6 +62,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int DoUpdate;
 			public int RenderVideo;
 			public int RenderAudio;
+			public int SfxVolume;
+			public int MusicVolume;
 			public int Gamma;
 			public int ShowMessages;
 			public int ReportSecrets;

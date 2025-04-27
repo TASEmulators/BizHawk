@@ -94,6 +94,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_nativeResolution.X *     _settings.ScaleFactor}x{
 					_nativeResolution.Y *     _settings.ScaleFactor}\"\n"
 				+ $"usegamma {                _settings.Gamma}\n"
+				+ $"sfx_volume {              _settings.SfxVolume}\n"
+				+ $"music_volume {            _settings.MusicVolume}\n"
 				+ $"automap_overlay {    (int)_settings.MapOverlay}\n"
 				+ $"dsda_exhud {             (_settings.DsdaExHud            ? 1 : 0)}\n"
 				+ $"map_totals {             (_settings.MapTotals            ? 1 : 0)}\n"

@@ -150,6 +150,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ScaleFactor { get; set; }
 			
+			[DisplayName("Sfx Volume")]
+			[Description("Sound effects volume [0 - 15].")]
+			[Range(0, 15)]
+			[DefaultValue(8)]
+			public int SfxVolume { get; set; }
+			
+			[DisplayName("Music Volume")]
+			[Description("[0 - 15]")]
+			[Range(0, 15)]
+			[DefaultValue(8)]
+			public int MusicVolume { get; set; }
+			
 			[DisplayName("Gamma Correction Level")]
 			[Description("Increases brightness [0 - 4].\n\nDefault value in vanilla is \"OFF\" (0).")]
 			[Range(0, 4)]

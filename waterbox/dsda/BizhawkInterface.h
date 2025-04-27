@@ -161,6 +161,8 @@ struct PackedRenderInfo
   int DoUpdate;
   int RenderVideo;
   int RenderAudio;
+  int SfxVolume;
+  int MusicVolume;
   int Gamma;
   int ShowMessages;
   int ReportSecrets;

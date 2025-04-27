@@ -151,6 +151,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			PackedRenderInfo renderInfo = new PackedRenderInfo()
 			{
+				SfxVolume          = _settings.SfxVolume,
+				MusicVolume        = _settings.MusicVolume,
 				Gamma              = _settings.Gamma,
 				HeadsUpMode        = (int)_settings.HeadsUpMode,
 				MapDetails         = (int)_settings.MapDetails,
