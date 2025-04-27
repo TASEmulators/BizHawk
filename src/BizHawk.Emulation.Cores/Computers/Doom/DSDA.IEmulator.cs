@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using static BizHawk.Emulation.Cores.Computers.Doom.CInterface;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -17,11 +16,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
 		{
 			// Declaring inputs
-			PackedPlayerInput[] players = [
-				new PackedPlayerInput(),
-				new PackedPlayerInput(),
-				new PackedPlayerInput(),
-				new PackedPlayerInput()
+			LibDSDA.PackedPlayerInput[] players = [
+				new LibDSDA.PackedPlayerInput(),
+				new LibDSDA.PackedPlayerInput(),
+				new LibDSDA.PackedPlayerInput(),
+				new LibDSDA.PackedPlayerInput()
 			];
 
 			ReadAxis[] axisReaders =
@@ -149,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			PackedRenderInfo renderInfo = new PackedRenderInfo()
+			LibDSDA.PackedRenderInfo renderInfo = new LibDSDA.PackedRenderInfo()
 			{
 				SfxVolume          = _settings.SfxVolume,
 				MusicVolume        = _settings.MusicVolume,

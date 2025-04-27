@@ -4,12 +4,12 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
-	public abstract class CInterface
+	public abstract class LibDSDA
 	{
 		public enum MemoryArrayType : int
 		{
-			Things = 0,
-			Lines = 1,
+			Things  = 0,
+			Lines   = 1,
 			Sectors = 2
 		}
 

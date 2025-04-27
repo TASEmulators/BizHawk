@@ -407,9 +407,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player4Class { get; set; }
 
-			public CInterface.InitSettings GetNativeSettings(GameInfo game)
+			public LibDSDA.InitSettings GetNativeSettings(GameInfo game)
 			{
-				return new CInterface.InitSettings
+				return new LibDSDA.InitSettings
 				{
 					Player1Present = Player1Present ? 1 : 0,
 					Player2Present = Player2Present ? 1 : 0,

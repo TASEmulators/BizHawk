@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 				using (_elf.EnterExit())
 				{
-					_core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
+					_core = BizInvoker.GetInvoker<LibDSDA>(_elf, _elf, callingConventionAdapter);
 
 					// Adding dsda-doom wad file
 					_core.dsda_add_wad_file(_dsdaWadFileName, _dsdaWadFileData.Length, _loadCallback);
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					{
 						var loadWadResult = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
 						if (loadWadResult is 0) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
-						_gameMode = (CInterface.GameMode)loadWadResult;
+						_gameMode = (LibDSDA.GameMode)loadWadResult;
 					}
 
 					_elf.AddReadonlyFile(_configFile, "dsda-doom.cfg");
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
-		private void CreateArguments(CInterface.InitSettings initSettings)
+		private void CreateArguments(LibDSDA.InitSettings initSettings)
 		{
 			_args = new List<string>
 			{
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			_args.Add("-warp");
 			ConditionalArg(_syncSettings.InitialEpisode is not 0
-				&& _gameMode != CInterface.GameMode.Commercial,
+				&& _gameMode != LibDSDA.GameMode.Commercial,
 				$"{_syncSettings.InitialEpisode}");
 			_args.Add($"{_syncSettings.InitialMap}");
 			_args.AddRange([ "-skill",     $"{(int)_syncSettings.SkillLevel}" ]);
@@ -216,8 +216,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly WaterboxHost _elf;
-		private readonly CInterface _core;
-		private readonly CInterface.load_archive_cb _loadCallback;
+		private readonly LibDSDA _core;
+		private readonly LibDSDA.load_archive_cb _loadCallback;
 		private readonly DoomControllerDeck _controllerDeck;
 		private readonly Point _nativeResolution = new(320, 200);
 		private readonly int[] _runSpeeds = [ 25, 50 ];
@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private int _turnCarry = 0; // Chocolate Doom mouse behaviour (enabled in upstream by default)
 		private List<string> _args;
 		private List<IRomAsset> _wadFiles;
-		private CInterface.GameMode _gameMode;
+		private LibDSDA.GameMode _gameMode;
 		public string RomDetails { get; } // IRomInfo
 
 		/// <summary>
