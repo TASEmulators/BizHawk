@@ -4,6 +4,45 @@ bool foundIWAD = false;
 bool wipeDone = true;
 CommonButtons last_buttons = { 0 };
 
+void render_updates(struct PackedRenderInfo *renderInfo)
+{
+  if (renderInfo->DoUpdate)
+  {
+    if (renderInfo->Gamma != dsda_IntConfig(dsda_config_usegamma))
+    {
+      dsda_UpdateIntConfig(dsda_config_usegamma, renderInfo->Gamma, true);
+      dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
+                      usegamma == 1 ? GAMMALVL1 :
+                      usegamma == 2 ? GAMMALVL2 :
+                      usegamma == 3 ? GAMMALVL3 :
+                      GAMMALVL4);
+    }
+
+    if (renderInfo->MapOverlay != dsda_IntConfig(dsda_config_automap_overlay))
+    {
+      dsda_UpdateIntConfig(dsda_config_automap_overlay, renderInfo->MapOverlay, true);
+      dsda_AddMessage(automap_overlay == 0 ? AMSTR_OVERLAYOFF :
+                      automap_overlay == 1 ? AMSTR_OVERLAYON :
+                      "Overlay Mode Dark");
+    }
+
+    if (renderInfo->ShowMessages != dsda_ShowMessages())
+      dsda_UpdateIntConfig(dsda_config_show_messages, renderInfo->ShowMessages, true);
+
+    dsda_UpdateIntConfig(dsda_config_screenblocks,       renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
+    dsda_UpdateIntConfig(dsda_config_hud_displayed,      renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
+    dsda_UpdateIntConfig(dsda_config_sfx_volume,         renderInfo->SfxVolume,          true);
+    dsda_UpdateIntConfig(dsda_config_music_volume,       renderInfo->MusicVolume,        true);
+    dsda_UpdateIntConfig(dsda_config_hudadd_secretarea,  renderInfo->ReportSecrets,      true);
+    dsda_UpdateIntConfig(dsda_config_exhud,              renderInfo->DsdaExHud,          true);
+    dsda_UpdateIntConfig(dsda_config_coordinate_display, renderInfo->DisplayCoordinates, true);
+    dsda_UpdateIntConfig(dsda_config_command_display,    renderInfo->DisplayCommands,    true);
+    dsda_UpdateIntConfig(dsda_config_map_totals,         renderInfo->MapTotals,          true);
+    dsda_UpdateIntConfig(dsda_config_map_time,           renderInfo->MapTime,            true);
+    dsda_UpdateIntConfig(dsda_config_map_coordinates,    renderInfo->MapCoordinates,     true);
+  }
+}
+
 void common_input(CommonButtons buttons)
 {
   static int bigstate = 0;
@@ -159,41 +198,8 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
 
 ECL_EXPORT bool dsda_frame_advance(CommonButtons commonButtons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
-  if (renderInfo->DoUpdate)
-  {
-    if (renderInfo->Gamma != dsda_IntConfig(dsda_config_usegamma))
-    {
-      dsda_UpdateIntConfig(dsda_config_usegamma, renderInfo->Gamma, true);
-      dsda_AddMessage(usegamma == 0 ? GAMMALVL0 :
-                      usegamma == 1 ? GAMMALVL1 :
-                      usegamma == 2 ? GAMMALVL2 :
-                      usegamma == 3 ? GAMMALVL3 :
-                      GAMMALVL4);
-    }
-
-    if (renderInfo->MapOverlay != dsda_IntConfig(dsda_config_automap_overlay))
-    {
-      dsda_UpdateIntConfig(dsda_config_automap_overlay, renderInfo->MapOverlay, true);
-      dsda_AddMessage(automap_overlay == 0 ? AMSTR_OVERLAYOFF :
-                      automap_overlay == 1 ? AMSTR_OVERLAYON :
-                      "Overlay Mode Dark");
-    }
-
-    if (renderInfo->ShowMessages != dsda_ShowMessages())
-      dsda_UpdateIntConfig(dsda_config_show_messages, renderInfo->ShowMessages, true);
-
-    dsda_UpdateIntConfig(dsda_config_screenblocks,       renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
-    dsda_UpdateIntConfig(dsda_config_hud_displayed,      renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
-    dsda_UpdateIntConfig(dsda_config_sfx_volume,         renderInfo->SfxVolume,          true);
-    dsda_UpdateIntConfig(dsda_config_music_volume,       renderInfo->MusicVolume,        true);
-    dsda_UpdateIntConfig(dsda_config_hudadd_secretarea,  renderInfo->ReportSecrets,      true);
-    dsda_UpdateIntConfig(dsda_config_exhud,              renderInfo->DsdaExHud,          true);
-    dsda_UpdateIntConfig(dsda_config_coordinate_display, renderInfo->DisplayCoordinates, true);
-    dsda_UpdateIntConfig(dsda_config_command_display,    renderInfo->DisplayCommands,    true);
-    dsda_UpdateIntConfig(dsda_config_map_totals,         renderInfo->MapTotals,          true);
-    dsda_UpdateIntConfig(dsda_config_map_time,           renderInfo->MapTime,            true);
-    dsda_UpdateIntConfig(dsda_config_map_coordinates,    renderInfo->MapCoordinates,     true);
-  }
+  // On-the-fly render changes
+  render_updates(renderInfo);
 
   // Setting inputs
   headlessClearTickCommand();
