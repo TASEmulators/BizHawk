@@ -72,6 +72,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			None = 2
 		}
 
+		public enum MapDetail : int
+		{
+			Normal = 0,
+			Linedefs = 1,
+			[Display(Name = "Linedefs and things")]
+			Everything = 2
+		}
+
+		public enum MapOverlays : int
+		{
+			Disabled = 0,
+			Enabled = 1,
+			Dark = 2
+		}
+
 		public enum TurningResolution : int
 		{
 			[Display(Name = "16 bits (longtics)")]
@@ -82,11 +97,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public enum MultiplayerMode : int
 		{
-			[Display(Name = "0 - Single Player / Coop")]
+			[Display(Name = "Single Player / Coop")]
 			Single_Coop = 0,
-			[Display(Name = "1 - Deathmatch")]
+			[Display(Name = "Deathmatch")]
 			Deathmatch = 1,
-			[Display(Name = "2 - Altdeath")]
+			[Display(Name = "Altdeath")]
 			Altdeath = 2
 		}
 
@@ -162,6 +177,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool DsdaExHud { get; set; }
 			
+			[DisplayName("Display Coordinates")]
+			[Description("Shows player position (X, Y, Z, angle), velocity (combined, X, Y), and distance travelled (combined, X, Y) per frame. Color indicates velocity/distance tiers: green - SR40 (15.11+/16.67+), blue - SR50 (19.35+/21.35+), red - turbo/wallrun (21.37+/23.58+).")]
+			[DefaultValue(false)]
+			public bool DisplayCoordinates { get; set; }
+			
 			[DisplayName("Display Commands")]
 			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
 			[DefaultValue(false)]
@@ -181,6 +201,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Shows in-level coordinates on automap.")]
 			[DefaultValue(false)]
 			public bool MapCoordinates { get; set; }
+			
+			[DisplayName("Automap Overlay")]
+			[Description("Shows automap on top of gameplay.")]
+			[DefaultValue(MapOverlays.Disabled)]
+			public MapOverlays MapOverlay { get; set; }
+			
+			[DisplayName("Automap Details")]
+			[Description("Exposes all linedefs and things (IDDT cheat toggle).")]
+			[DefaultValue(MapDetail.Normal)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public MapDetail MapDetails { get; set; }
 
 			[JsonIgnore]
 			[DisplayName("Player Point of View")]

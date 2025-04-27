@@ -151,20 +151,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			PackedRenderInfo renderInfo = new PackedRenderInfo()
 			{
-				ScaleFactor       = _settings.ScaleFactor,
-				Gamma             = _settings.Gamma,
-				HeadsUpMode       = (int)_settings.HeadsUpMode,
-				RenderVideo       = renderVideo               ? 1 : 0,
-				RenderAudio       = renderAudio               ? 1 : 0,
-				DoUpdate          = _settings.DoUpdate        ? 1 : 0,
-				ShowMessages      = _settings.ShowMessages    ? 1 : 0,
-				ReportSecrets     = _settings.ReportSecrets   ? 1 : 0,
-				DsdaExHud         = _settings.DsdaExHud       ? 1 : 0,
-				DisplayCommands   = _settings.DisplayCommands ? 1 : 0,
-				MapTotals         = _settings.MapTotals       ? 1 : 0,
-				MapTime           = _settings.MapTime         ? 1 : 0,
-				MapCoordinates    = _settings.MapCoordinates  ? 1 : 0,
-				PlayerPointOfView = _settings.DisplayPlayer - 1,
+				Gamma              = _settings.Gamma,
+				HeadsUpMode        = (int)_settings.HeadsUpMode,
+				MapDetails         = (int)_settings.MapDetails,
+				MapOverlay         = (int)_settings.MapOverlay,
+				RenderVideo        = renderVideo                  ? 1 : 0,
+				RenderAudio        = renderAudio                  ? 1 : 0,
+				DoUpdate           = _settings.DoUpdate           ? 1 : 0,
+				ShowMessages       = _settings.ShowMessages       ? 1 : 0,
+				ReportSecrets      = _settings.ReportSecrets      ? 1 : 0,
+				DsdaExHud          = _settings.DsdaExHud          ? 1 : 0,
+				DisplayCoordinates = _settings.DisplayCoordinates ? 1 : 0,
+				DisplayCommands    = _settings.DisplayCommands    ? 1 : 0,
+				MapTotals          = _settings.MapTotals          ? 1 : 0,
+				MapTime            = _settings.MapTime            ? 1 : 0,
+				MapCoordinates     = _settings.MapCoordinates     ? 1 : 0,
+				PlayerPointOfView  = _settings.DisplayPlayer - 1,
 			};
 
 			IsLagFrame = _core.dsda_frame_advance(

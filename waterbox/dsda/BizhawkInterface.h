@@ -59,6 +59,7 @@ extern void AM_StopZooming();
 extern void AM_saveScaleAndLoc();
 extern int AM_minOutWindowScale();
 extern int AM_restoreScaleAndLoc();
+extern int dsda_reveal_map;
 extern int automap_active;
 extern int automap_follow;
 extern int automap_grid;
@@ -160,16 +161,18 @@ struct PackedRenderInfo
   int DoUpdate;
   int RenderVideo;
   int RenderAudio;
-  int ScaleFactor;
   int Gamma;
   int ShowMessages;
   int ReportSecrets;
   int HeadsUpMode;
   int DsdaExHud;
+  int DisplayCoordinates;
   int DisplayCommands;
   int MapTotals;
   int MapTime;
   int MapCoordinates;
+  int MapDetails;
+  int MapOverlay;
   int PlayerPointOfView;
 } __attribute__((packed));
 
