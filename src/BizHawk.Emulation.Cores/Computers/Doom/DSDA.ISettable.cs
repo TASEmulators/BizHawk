@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DsdaExHud { get; set; }
 
 			[DisplayName("Display Coordinates")]
-			[Description("Shows player position (X, Y, Z, angle), velocity (combined, X, Y), and distance travelled (combined, X, Y) per frame. Color indicates velocity/distance tiers: green - SR40 (15.11+/16.67+), blue - SR50 (19.35+/21.35+), red - turbo/wallrun (21.37+/23.58+).\n\nAvailable in vanilla via the IDMYPOS cheat code, however vanilla only displays angle, X, and Y - all in hexadecimal format.")]
+			[Description("Shows player position, angle, velocity, and distance travelled per frame. Color indicates movement tiers: green - SR40, blue - SR50, red - turbo/wallrun.\n\nAvailable in vanilla via the IDMYPOS cheat code, however vanilla only shows angle, X, and Y.")]
 			[DefaultValue(false)]
 			public bool DisplayCoordinates { get; set; }
 
