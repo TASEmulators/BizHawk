@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int ReadLBA_2448(int lba, byte[] buffer, int offset)
 		{
 			var sector = disc.SynthProvider.Get(lba);
-			
+
 			if (sector == null) return 0;
 
 			PrepareBuffer(buffer, offset, 2352);

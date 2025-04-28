@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 				if (index == Emulator.Frame)
 				{
 					bitmap = index == MainForm.PauseOnFrame
-						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue 
+						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
 						: TasView.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
 				else if (index == LastPositionFrame)
@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 
 						_axisEditYPos = e.Y;
 						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
-						
+
 						_triggerAutoRestore = true;
 						TastudioPlayMode(true);
 						return;
@@ -856,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// If painting up, we have altered frames without loading states (for smoothness)
 						// So now we have to ensure that all the edited frames are invalidated
-						GoToLastEmulatedFrameIfNecessary(_paintingMinFrame); 
+						GoToLastEmulatedFrameIfNecessary(_paintingMinFrame);
 					}
 
 					ClearLeftMouseStates();

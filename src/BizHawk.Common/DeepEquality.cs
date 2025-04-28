@@ -105,7 +105,7 @@ namespace BizHawk.Common
 			{
 				return o1.Equals(o2);
 			}
-			
+
 			foreach (var field in GetAllFields(t1))
 			{
 				if (!DeepEquals(field.GetValue(o1), field.GetValue(o2)))

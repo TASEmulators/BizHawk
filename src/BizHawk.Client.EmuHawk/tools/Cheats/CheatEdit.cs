@@ -369,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			// Don't need to do anything in this case
 			if (!empty && CompareTypeDropDown.Items.Count == 6)
 			{

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
 	/// Based heavily on the YM-2149F / AY-3-8910 emulator used in Unreal Speccy
-	/// (Originally created under Public Domain license by SMT jan.2006)    /// 
+	/// (Originally created under Public Domain license by SMT jan.2006)    ///
 	/// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.cpp
 	/// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.h
 	/// </summary>
@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					break;
 
-				// write reg      
+				// write reg
 				case 2:
 
 					if (_activeRegister == 14)
@@ -385,15 +385,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             14	        I/O port A	                8-bit (0-255)
             15	        I/O port B	                8-bit (0-255) (Not present on the AY-3-8912)
 
-            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the 
+            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the
                 envelope defined by register 13 and ignores its volume setting.
             * The mixer (register 7) is made up of the following bits (low=enabled):
-            
+
             Bit:        7	    6	    5	    4	    3	    2	    1	    0
             Register:   I/O	    I/O	    Noise	Noise	Noise	Tone	Tone	Tone
             Channel:    B       A	    C	    B	    A	    C	    B	    A
 
-            The AY-3-8912 ignores bit 7 of this register.    
+            The AY-3-8912 ignores bit 7 of this register.
         */
 		private int[] _registers = new int[16];
 
@@ -583,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_tStatesPerFrame = frameTactCount;
 			_samplesPerFrame = sampleRate / 50; //882
 
-			_tStatesPerSample = frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
+			_tStatesPerSample = frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) /
 																				   //(16D * (double)_sampleRate),
 																				   //MidpointRounding.AwayFromZero);
 			_audioBuffer = new short[_samplesPerFrame * 2];

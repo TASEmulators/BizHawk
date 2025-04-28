@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public AHeader Parse(Stream stream)
 			{
 				var bc = EndianBitConverter.CreateForLittleEndian();
-				
+
 				var header = new byte[88];
 				_ = stream.Read(header, offset: 0, count: header.Length); // stream size checked at callsite
 
@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.DiscSystem
 								// looks like each filename string is 6 bytes with a trailing \0
 								fname = new byte[6];
 							}
-							
+
 
 							// read the filename
 							var bytesRead2 = stream.Read(fname, offset: 0, count: fname.Length);
@@ -520,7 +520,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 
-			
+
 			// build custom session object
 			aFile.ParsedSession = new();
 			foreach (var s in aSessions.Values)
@@ -619,7 +619,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public MDSParseException(string message) : base(message) { }
 		}
-		
+
 
 		public class LoadResults
 		{
@@ -667,7 +667,7 @@ namespace BizHawk.Emulation.DiscSystem
 					if (!File.Exists(file))
 						throw new MDSParseException($"Malformed MDS format: nonexistent image file: {file}");
 
-					//mount the file			
+					//mount the file
 					var mdfBlob = new Blob_RawFile { PhysicalPath = file };
 
 					var dupe = false;
@@ -741,7 +741,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var BlobIndex = MountBlobs(loadResults.ParsedMDSFile, disc);
 
 			var mdsf = loadResults.ParsedMDSFile;
-			
+
 			//generate DiscTOCRaw items from the ones specified in the MDS file
 			var curSession = 1;
 			disc.Sessions.Add(new() { Number = curSession });
@@ -754,7 +754,7 @@ namespace BizHawk.Emulation.DiscSystem
 					curSession = entry.Session;
 					disc.Sessions.Add(new() { Number = curSession });
 				}
-				
+
 				disc.Sessions[curSession].RawTOCEntries.Add(EmitRawTOCEntry(entry));
 			}
 
@@ -873,7 +873,7 @@ namespace BizHawk.Emulation.DiscSystem
 						}
 						// pregap processing completed
 					}
-					
+
 					// create track sectors
 					var currBlobOffset = track.TrackOffset;
 					for (var sector = session.StartSector; sector <= session.EndSector; sector++)
@@ -908,7 +908,7 @@ namespace BizHawk.Emulation.DiscSystem
 						sBase.BlobOffset = currBlobOffset;
 
 						currBlobOffset += track.SectorSize;
-						
+
 						// add subchannel data
 						relMSF++;
 #if false

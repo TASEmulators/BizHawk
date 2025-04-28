@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	// In better detail, from archive.org: http://web.archive.org/web/20070630072856/http://demospecs.planetquake.gamespy.com/lmp/lmp.html
 	[ImporterFor("Hexen", ".hexenlmp")]
 	internal class HexenLmpImport : MovieImporter
-	{ 
+	{
 		protected override void RunImport()
 		{
 			var input = SourceFile.OpenRead().ReadAllBytes();

@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (NES._isVS)
 			{
-				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values
 				addr &= 0x2FFF;
 
 

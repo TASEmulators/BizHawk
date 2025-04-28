@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						{
 							// high byte not 40-7f
 							// low bit set
-							// N:4                            
+							// N:4
 						}
 						else
 						{
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						{
 							// high byte not 40-7f
 							// low bit set
-							// N:4                            
+							// N:4
 						}
 						else
 						{

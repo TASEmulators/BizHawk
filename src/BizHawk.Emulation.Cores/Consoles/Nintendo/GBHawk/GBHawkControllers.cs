@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int PortNum { get; }
 
-		public float theta, phi, theta_prev, phi_prev, phi_prev_2; 
+		public float theta, phi, theta_prev, phi_prev, phi_prev_2;
 
 		public ControllerDefinition Definition { get; }
 

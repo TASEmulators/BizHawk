@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 			{
 				return 1; // shrug
 			}
-			
+
 			if (_fixedRewindInterval)
 			{
 				return _targetRewindInterval;

@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				t.DataPeriods.Add(length);
 
 				currLevel = !currLevel;
-				t.DataLevels.Add(currLevel);				
+				t.DataLevels.Add(currLevel);
 			}
 
 			// add closing period

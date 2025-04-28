@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
 		private readonly ITasMovie _movie;
-		
+
 		public TasMovieMarkerList(ITasMovie movie)
 		{
 			_movie = movie;
@@ -336,7 +336,7 @@ namespace BizHawk.Client.Common
 		{
 			return Find(m => m == frame);
 		}
-		
+
 		public void ShiftAt(int frame, int offset)
 		{
 			foreach (var marker in this.Where(m => m.Frame >= frame).ToList())

@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					_columns.ColumnsChanged();
 					Refresh();
 				}
-				
+
 			}
 
 			base.OnDoubleClick(e);
@@ -1043,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-			
+
 			// SuuperW: Hide lag frames
 			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 			{
@@ -1485,7 +1485,7 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							SelectRow(_lastSelectedRow.Value + 1, true);
-							
+
 						}
 
 						Refresh();
@@ -1547,7 +1547,7 @@ namespace BizHawk.Client.EmuHawk
 					//jump to above marker with selection courser
 					if (LetKeysModifySelection)
 					{
-						
+
 					}
 				}
 				else if (e.IsCtrl(Keys.PageDown))
@@ -1963,7 +1963,7 @@ namespace BizHawk.Client.EmuHawk
 				var size2 = _renderer.MeasureString("AA", Font);
 				_charSize = new SizeF(size2.Width - size1.Width, size1.Height);
 			}
-			
+
 			if (_columns.VisibleColumns.Any())
 			{
 				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);

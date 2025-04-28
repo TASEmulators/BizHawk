@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							// master didn't acknowledge.  what to do?
 						}
-						Console.WriteLine("{1:x2} <= rom[{0:x2}]", Addr, Data); 
+						Console.WriteLine("{1:x2} <= rom[{0:x2}]", Addr, Data);
 						Addr++;
 						Addr &= (byte)(rom.Length - 1);
 						Data = rom[Addr];
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PullDown = false;
 		}
 
-		
+
 		public void WriteByte(byte val)
 		{
 			OutEnable = val.Bit(7);

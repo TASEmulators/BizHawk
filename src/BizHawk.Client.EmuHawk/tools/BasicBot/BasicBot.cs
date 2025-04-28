@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _dataSize;
 
 		private Dictionary<string, double> _cachedControlProbabilities;
-		
+
 		private bool _previousDisplayMessage;
 		private bool _previousInvisibleEmulation;
 
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			ControlProbabilityPanel.Controls
 				.OfType<BotControlsRow>()
 				.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
-		
+
 		private int SelectedSlot
 			=> 1 + StartFromSlotBox.SelectedIndex;
 

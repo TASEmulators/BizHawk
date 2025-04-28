@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 			Markers.Clear();
 			ChangeLog.Clear();
 		}
-		
+
 		protected override void LoadFields(ZipStateLoader bl)
 		{
 			base.LoadFields(bl);
@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.Clear();
 			Changes = false;
 		}
-		
+
 		private void LoadTasprojExtras(ZipStateLoader bl)
 		{
 			bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => LagLog.Load(tr));

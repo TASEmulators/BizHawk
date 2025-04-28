@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// read from RTC registers
 								if (RAM_addr_low == 3)
 								{
-									Chip_return_high = RTC_regs[2];  
+									Chip_return_high = RTC_regs[2];
 									Chip_return_low = RTC_regs[1];
 								}
 								else if (RAM_addr_low == 6)
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 								else
 								{
-									
+
 								}
 								break;
 							case 4:

@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                     return null;
             }
-      
+
 
             /// <summary>
             /// Populates a result buffer
@@ -643,7 +643,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                         // seek emulation processed immediately
                         case SeekSubState.MoveImmediate:
-                            
+
                             if (CurrentTrack < SeekingTrack)
                             {
                                 // we are seeking forward
@@ -697,10 +697,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     {
                         SetBit(SR0_EC, ref IntStatus);
                     }
-                }                    
+                }
 
                 // set seek end
-                SetBit(SR0_SE, ref IntStatus);                
+                SetBit(SR0_SE, ref IntStatus);
                 /*
                 // head address
                 if (CurrentSide > 0)
@@ -791,7 +791,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			/// <summary>
 			/// Signs whether the current active drive has a disk inserted
-			/// </summary>        
+			/// </summary>
 			public bool FDD_IsDiskLoaded
 			{
 				get

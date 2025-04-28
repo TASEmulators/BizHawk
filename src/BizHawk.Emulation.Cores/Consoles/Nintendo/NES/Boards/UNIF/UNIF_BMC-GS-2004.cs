@@ -20,10 +20,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			
+
 			_prgMask32k = (Cart.PrgSize - 8) / 32 - 1;
 
-			// Last 8k of Prg goes into 6000-7FFF 
+			// Last 8k of Prg goes into 6000-7FFF
 			_wramOffset = ((Cart.PrgSize - 8) / 32) * 0x8000;
 
 			SetMirrorType(EMirrorType.Vertical);

@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 
 			["ChannelF"] = 234375.0 / 3872.0, // (NTSCCarrier * 8 / 7) / (256 * 264)
 			// note: ChannelF II PAL timings might be slightly different...
-			["ChannelF_PAL"] = 15625.0 / 312.0, // 4000000 / (256 * 312) 
+			["ChannelF_PAL"] = 15625.0 / 312.0, // 4000000 / (256 * 312)
 		};
 
 		public static double GetFrameRate(string systemId, bool pal)

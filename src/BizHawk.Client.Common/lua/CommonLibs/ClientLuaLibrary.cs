@@ -416,10 +416,10 @@ namespace BizHawk.Client.Common
 				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
 				return;
 			}
-			
+
 			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
 			var result = decoder.Decode(code);
-			
+
 			if (result.IsValid(out var valid))
 			{
 				var domain = decoder.CheatDomain();

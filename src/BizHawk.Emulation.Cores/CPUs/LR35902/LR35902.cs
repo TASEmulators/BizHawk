@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 	public sealed partial class LR35902
 	{
 		// operations that can take place in an instruction
-		public const ushort IDLE = 0; 
+		public const ushort IDLE = 0;
 		public const ushort OP = 1;
 		public const ushort RD = 2;
 		public const ushort WR = 3;
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			CB_prefix = false;
 		}
 
-		// Memory Access 
+		// Memory Access
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 						TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
-						// call interrupt processor 
+						// call interrupt processor
 						// lowest bit set is highest priority
 						instr_pntr = 256 * 60 * 2 + 60 * 6; // point to Interrupt
 					}
@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							{
 								instr_pntr = 256 * 60 * 2 + 60 * 4; // point to spec Halt loop
 							}
-						}					
+						}
 					}
 					I_use = false;
 					break;
@@ -466,7 +466,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					if (stop_time > 0)
 					{
 						// Timer interrupts can prematurely terminate a speedchange, not sure about other sources
-						// NOTE: some testing around the edge case of where the speed actually changes is needed						
+						// NOTE: some testing around the edge case of where the speed actually changes is needed
 						if (I_use && interrupts_enabled)
 						{
 							interrupts_enabled = false;
@@ -480,7 +480,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 							TraceCallback?.Invoke(new(disassembly: "====IRQ====", registerInfo: string.Empty));
 
-							// call interrupt processor 
+							// call interrupt processor
 							// lowest bit set is highest priority
 							instr_pntr = 256 * 60 * 2 + 60 * 6; // point to Interrupt
 							break;
@@ -517,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							break;
 						}
 					}
-					
+
 					// Button press will exit stop loop even if speed change in progress, even without interrupts enabled
 					if ((buttons_pressed & 0xF) != 0xF)
 					{
@@ -577,14 +577,14 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 					interrupt_enable_reg = GetIntRegs(1);
 
 					//if (interrupt_src_reg.Bit(bit_check) && interrupt_enable_reg.Bit(bit_check)) { int_src = bit_check; int_clear = (byte)(1 << bit_check); }
-					
+
 					if (interrupt_src_reg.Bit(0) && interrupt_enable_reg.Bit(0)) { int_src = 0; int_clear = 1; }
 					else if (interrupt_src_reg.Bit(1) && interrupt_enable_reg.Bit(1)) { int_src = 1; int_clear = 2; }
 					else if (interrupt_src_reg.Bit(2) && interrupt_enable_reg.Bit(2)) { int_src = 2; int_clear = 4; }
 					else if (interrupt_src_reg.Bit(3) && interrupt_enable_reg.Bit(3)) { int_src = 3; int_clear = 8; }
 					else if (interrupt_src_reg.Bit(4) && interrupt_enable_reg.Bit(4)) { int_src = 4; int_clear = 16; }
 					else { int_src = 5; int_clear = 0; }
-					
+
 					Regs[instr_table[instr_pntr++]] = INT_vectors[int_src];
 
 					break;
@@ -597,7 +597,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						//Console.WriteLine("Halt_bug_3");
 						//Console.WriteLine(TotalExecutedCycles);
 					}
-					
+
 					Halt_bug_2 = false;
 					break;
 				case HALT_CHK_2:
@@ -640,7 +640,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							break;
 					}
 
-					// true condition is what is represented in the instruction vectors	
+					// true condition is what is represented in the instruction vectors
 					// jump ahead if false
 					if (checker)
 					{
@@ -683,8 +683,8 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 						if (!is_GBC) { skip_once = true; }
 						// If the interrupt flag is not currently set, but it does get set in the first check
-						// then a bug is triggered 
-						// With interrupts enabled, this runs the halt command twice 
+						// then a bug is triggered
+						// With interrupts enabled, this runs the halt command twice
 						// when they are disabled, it reads the next byte twice
 						if (!was_FlagI || (was_FlagI && !interrupts_enabled)) { Halt_bug_2 = true; }
 
@@ -741,7 +741,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		private void FetchInstruction(int op)
 		{
 			instr_pntr = 0;
-			
+
 			if (CB_prefix) { instr_pntr += 256 * 60; }
 
 			instr_pntr += op * 60;

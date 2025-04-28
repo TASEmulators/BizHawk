@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	[Core(
 		name: CoreNames.VectrexHawk,
 		author: "alyosha")]
-	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, 
+	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable,
 	ISettable<object, VectrexHawk.VectrexSyncSettings>
 	{
 		internal static class RomChecksums
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public byte[] RAM = new byte[0x400];
 
 		public byte[] _bios, minestorm;
-		public readonly byte[] _rom;	
+		public readonly byte[] _rom;
 
 		private int _frame = 0;
 
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				mapper = new MapperDefault();
 			}
-			
+
 			mapper.Core = this;
 			mapper.Initialize();
 		}

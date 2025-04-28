@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPrg(int addr)
 		{
 			addr = ApplyMemoryMap(14, prg_banks_16k, addr);
-			return Rom[addr]; 
+			return Rom[addr];
 		}
 
 		public override byte ReadPpu(int addr)

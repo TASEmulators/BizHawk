@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public Func<bool> ReadFlag = () => true;
 		public Func<bool> ReadCnt = () => true;
-		public Func<bool> ReadSp = () => true; 
+		public Func<bool> ReadSp = () => true;
 		public bool DelayedInterrupts = true;
 
 		private int _pra;
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_taIrqNextCycle = false;
 				TriggerInterrupt(1);
 			}
-			
+
 			if (_tbIrqNextCycle)
 			{
 				_tbIrqNextCycle = false;
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_prbOut = (_prbOut & ~0x80) | _tbPrb7Out;
 				_ddrbOut |= 0x80;
 			}
-			
+
 			_lastCnt = _thisCnt;
 		}
 

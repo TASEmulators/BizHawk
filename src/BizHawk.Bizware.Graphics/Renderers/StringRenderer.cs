@@ -16,7 +16,7 @@ namespace BizHawk.Bizware.Graphics
 			Owner = owner;
 			FontInfo = new();
 			FontInfo.LoadBinary(fontInfo);
-			
+
 			// load textures
 			for (var i = 0; i < FontInfo.Pages.Length; i++)
 			{

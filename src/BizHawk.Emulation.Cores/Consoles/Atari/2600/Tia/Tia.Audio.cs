@@ -141,14 +141,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run5_L();
 							One4_L();
 							// fastest pace is too fast to produce sound (ex Ms pac Man)
-							if (AUDF_L != 1) { on_L = Run1_L(); }			
+							if (AUDF_L != 1) { on_L = Run1_L(); }
 							break;
 						case 0x05:
 							One5_L();
 							Run4_L();
 							// fastest pace is too fast to produce sound (ex Ms pac Man)
 							if (AUDF_L != 1) { on_L = Run1_L(); }
-							break;			
+							break;
 						case 0x06:
 						case 0x0a:
 							Run5_L();
@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						case 0x07:
 						case 0x09:
 							on_L = Run5_L();
-							break;					
+							break;
 						case 0x08:
 							on_L = Run9_L();
 							break;

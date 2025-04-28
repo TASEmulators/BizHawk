@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						s_mapper = "1";
 					}
-					
+
 					if (cart_2.Bit(2))
 					{
 						cart_RAM = 8;
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_rom = rom;
 
 			Reset_Mapper(s_mapper);
-			
+
 			_hsbios = highscoreBios;
 			_bios = _isPAL ? palBios : ntscBios;
 
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			maria.Reset();
 			m6532.Reset();
 			pokey.Reset();
-			
+
 			Maria_regs = new byte[0x20];
 			RAM = new byte[0x1000];
 
@@ -349,8 +349,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		 * PAL Table: Copyright © 2004 Mike Murphy
 		 *
 		 * NTSC Table Source: http://atariage.com/forums/topic/95498-7800-color-palette-in-mess/?p=1174461
-		 * 
-		 * 
+		 *
+		 *
 		 */
 
 		public static readonly int[] NTSCPalette =

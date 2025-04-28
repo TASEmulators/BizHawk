@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							break;
 					}
 					/*
-                    // ZXSTPLUS3                   
+                    // ZXSTPLUS3
                     if (s._machine.Spectrum.MachineType == MachineType.ZXSpectrum128Plus3)
                     {
                         var iStruct = s.GetZXSTPLUS3();
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             buff = MediaConverter.SerializeRaw(jStruct);
                             r.Write(buff);
                         }
-                    }                    
+                    }
 
                     // ZXSTTAPE
                     if (s._machine.tapeImages.Count() > 0)

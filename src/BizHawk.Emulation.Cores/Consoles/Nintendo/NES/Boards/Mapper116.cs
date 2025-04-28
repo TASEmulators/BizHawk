@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			
+
 			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			Cart.BoardType = "MAPPER116_HACKY";
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			mode = 0;
 			Sync();
-			
+
 			return true;
 		}
 
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if((addr & 0xF000) < 0xB000) addr &= 0xF000; //Garou Densetsu Special depends on this
 					addr -= 0x8000;
 
-					vrc2.WritePrg(addr, value); 
+					vrc2.WritePrg(addr, value);
 					break;
 				case 1: mmc3.WritePrg(addr, value); break;
 				case 2:

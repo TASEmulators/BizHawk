@@ -58,16 +58,16 @@ namespace BizHawk.Client.Common
 #pragma warning disable MA0091 // passing through `sender` is intentional
 		private void CallBeforeQuickLoad(object sender, BeforeQuickLoadEventArgs args)
 			=> BeforeQuickLoad?.Invoke(sender, args);
- 
+
 		private void CallBeforeQuickSave(object sender, BeforeQuickSaveEventArgs args)
 			=> BeforeQuickSave?.Invoke(sender, args);
- 
+
 		private void CallRomLoaded(object sender, EventArgs args)
 			=> RomLoaded?.Invoke(sender, args);
- 
+
 		private void CallStateLoaded(object sender, StateLoadedEventArgs args)
 			=> StateLoaded?.Invoke(sender, args);
- 
+
 		private void CallStateSaved(object sender, StateSavedEventArgs args)
 			=> StateSaved?.Invoke(sender, args);
 #pragma warning restore MA0091

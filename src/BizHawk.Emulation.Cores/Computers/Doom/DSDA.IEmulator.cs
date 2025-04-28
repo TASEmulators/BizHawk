@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				| Convert.ToInt32(_syncSettings.Player2Present) << 1
 				| Convert.ToInt32(_syncSettings.Player3Present) << 2
 				| Convert.ToInt32(_syncSettings.Player4Present) << 3;
-			
+
 			if (controller.IsPressed("Change Gamma"))        commonButtons |= (1 << 0);
 			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 1);
 			if (controller.IsPressed("Automap +"))           commonButtons |= (1 << 2);

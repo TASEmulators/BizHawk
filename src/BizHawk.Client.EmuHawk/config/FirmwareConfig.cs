@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// lazy substring extraction. really should do a better job
 					var basePath = _pathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
-					
+
 					var path = ri.FilePath.Replace(basePath, "");
 
 					// bolden the item if the user has specified a path for it

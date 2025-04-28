@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			_config.DispAutoPrescale = cbAutoPrescale.Checked;
 			_config.ScaleOSDWithSystemScale = cbScaleOSD.Checked;
-			
+
 			_config.DispAllowTearing = cbAllowTearing.Checked;
 
 			_config.DispChromeStatusBarWindowed = cbStatusBarWindowed.Checked;
@@ -283,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 
 			rbUser.Checked = true;
 			var choice = Path.GetFullPath(result);
-				
+
 			//test the preset
 			using (var stream = File.OpenRead(choice))
 			{

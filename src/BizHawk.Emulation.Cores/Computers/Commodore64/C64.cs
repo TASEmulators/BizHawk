@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				ser.Register<ISaveRam>(cartSaveRam);
 			}
-			
+
 			HardReset();
 
 			switch (SyncSettings.VicType)
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int _frame;
 		private readonly ITraceable _tracer;
-		
+
 		// Power stuff
 		private bool _powerPressed;
 		private bool _resetPressed;

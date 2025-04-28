@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		/// <summary>
 		/// Contention offset
-		/// </summary> 
+		/// </summary>
 		public int ContentionOffset;
 
 		/// <summary>

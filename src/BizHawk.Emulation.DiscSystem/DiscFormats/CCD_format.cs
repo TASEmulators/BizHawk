@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				EntryNum = entryNum;
 			}
-			
+
 			/// <summary>
 			/// these should be 0-indexed
 			/// </summary>
@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var entryNum = int.Parse(section.Name.Split(' ')[1]);
 					var entry = new CCDTocEntry(entryNum);
 					ccdf.TOCEntries.Add(entry);
-					
+
 					entry.Session = section.FetchOrFail("SESSION");
 					entry.Point = section.FetchOrFail("POINT");
 					entry.ADR = section.FetchOrFail("ADR");
@@ -379,12 +379,12 @@ namespace BizHawk.Emulation.DiscSystem
 				for (var i = 1; i < disc.Sessions.Count; i++)
 				{
 					var session = disc.Sessions[i];
-					
+
 					sw.WriteLine("[Session {0}]", i);
 					sw.WriteLine("PreGapMode=2");
 					sw.WriteLine("PreGapSubC=1");
 					sw.WriteLine();
-					
+
 					for (var j = 0; j < session.RawTOCEntries.Count; j++)
 					{
 						var entry = session.RawTOCEntries[j];
@@ -412,7 +412,7 @@ namespace BizHawk.Emulation.DiscSystem
 						sw.WriteLine("PLBA={0}", entry.QData.AP_Timestamp - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
 						sw.WriteLine();
 					}
-					
+
 					//this is nonsense, really. the whole CCD track list shouldn't be needed.
 					//but in order to make a high quality CCD which can be inspected by various other tools, we need it
 					//now, regarding the indexes.. theyre truly useless. having indexes written out with the tracks is bad news.
@@ -456,7 +456,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var imgBlob = (IBlob) job.Disc.DisposableResources[0];
 				var subBlob = (IBlob) job.Disc.DisposableResources[1];
 				//Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
-				
+
 				//read the IMG data if needed
 				if ((job.Parts & ESectorSynthPart.UserAny) != 0)
 				{
@@ -584,7 +584,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//analyze the RAWTocEntries to figure out what type of track track 1 is
 			var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job(disc.Session1.RawTOCEntries);
 			tocSynth.Run();
-			
+
 			//Add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
 			//We reuse some CUE code for this.
 			//If we load other formats later we might should abstract this even further (to a synthesizer job)

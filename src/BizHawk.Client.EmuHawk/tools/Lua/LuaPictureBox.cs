@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			LogOutputCallback = logOutputCallback;
 			TableHelper = tableHelper;
 		}
-		
+
 		public void LuaResize(int width, int height)
 		{
 			Width = width;
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillEllipse(brush, x, y, width, height);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawEllipse(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillPie(brush, x, y, width, height, startAngle, sweepAngle);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawPie(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startAngle, sweepAngle);
 		}
 
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillRectangle(GetBrush(bg.Value), x, y, width, height);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawRectangle(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
@@ -400,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			boxBackground.DrawString(message, font, GetBrush(TableHelper.SafeParseColor(foreColor) ?? Color.Black), x, y);
 		}
-		
+
 		public Point GetMouse()
 		{
 			var p = PointToClient(MousePosition);

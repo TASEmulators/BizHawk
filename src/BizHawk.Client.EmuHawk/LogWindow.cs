@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ShowReport(string title, string report)
 		{
 			var ss = report.Split('\n');
-			
+
 			lock (_lines)
 				foreach (var s in ss)
 				{

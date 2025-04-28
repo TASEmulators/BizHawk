@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	/*
 	 * Registers should be masked with $ff7f.
-	 * 
+	 *
 	 * $7e70: 2k chr @ PPU $0000 (lsb ignored)
 	 * $7e71: 2k chr @ PPU $0800 (lsb ignored)
 	 * $7e72: 1k chr @ PPU $1000
@@ -30,13 +30,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	 * $7e7a,$7e7b: 8k prg @ cpu $8000
 	 * $7e7c,$7e7d: 8k prg @ cpu $a000
 	 * $7e7e,$7e7f: 8k prg @ cpu $c000
-	 * 
+	 *
 	 * $7f00:$7f7f: 128 bytes internal prg ram, mirrored on CPU A7
-	 * 
+	 *
 	 * 8k prg @ cpu $e000 is fixed to last 8k of rom.
 	 * in TLSROM-like mode (mapper 207), mirroring reg is ignored,
 	 *   and top bit of CHR regs (normally CHRROM A17) is used as CIRAM A10
-	 * 
+	 *
 	 */
 
 	internal sealed class TAITO_X1_005 : NesBoardBase
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SetMirrorType(EMirrorType.Vertical);
 			chr_bank_mask = Cart.ChrSize / 1 - 1;
 			prg_bank_mask = Cart.PrgSize / 8 - 1;
-			
+
 			// the chip has 128 bytes of WRAM built into it, which we have to instantiate ourselves
 			Cart.WramSize = 0;
 

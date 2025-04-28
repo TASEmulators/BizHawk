@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Components
 					noise_bit = noise.Bit(0);
 					if (noise_type)
 					{
-						noise = (((noise & 1) ^ ((noise >> 3) & 1)) << 15) | (noise >> 1);						
+						noise = (((noise & 1) ^ ((noise >> 3) & 1)) << 15) | (noise >> 1);
 					}
 					else
 					{
@@ -215,9 +215,9 @@ namespace BizHawk.Emulation.Cores.Components
 						noise_clock = Chan_tone[2] + 1;
 					}
 
-					noise_clock *= 2;					
+					noise_clock *= 2;
 				}
-					
+
 				if (clock_A == 0)
 				{
 					A_up = !A_up;

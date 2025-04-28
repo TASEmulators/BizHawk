@@ -647,7 +647,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				Vram = _vram,
 				Oam = _oam,
 				Sppal = _sppal,
-				Bgpal = _bgpal,	
+				Bgpal = _bgpal,
 			};
 		}
 

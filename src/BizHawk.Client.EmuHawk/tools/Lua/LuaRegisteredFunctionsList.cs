@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateListView()
 		{
 			FunctionView.Items.Clear();
-			
+
 			var functions = _registeredFunctions
 				.OrderBy(f => f.Event)
 				.ThenBy(f => f.Name);

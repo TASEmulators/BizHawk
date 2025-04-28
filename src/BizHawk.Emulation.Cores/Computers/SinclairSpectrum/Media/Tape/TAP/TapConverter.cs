@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			MemoryStream stream = new MemoryStream(data);
 
 			// the first 2 bytes of the TAP file designate the length of the first data block
-			// this (I think) should always be 17 bytes (as this is the tape header)            
+			// this (I think) should always be 17 bytes (as this is the tape header)
 			byte[] blockLengthData = new byte[2];
 
 			// we are now going to stream through the entire file processing a block at a time
@@ -162,10 +162,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// process the type byte
-				/*  (The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file. 
-                    A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal. 
-                    If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given) 
-                    and parameter 2 holds the start of the variable area relative to the start of the program. If it's a Code file, parameter 1 holds 
+				/*  (The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file.
+                    A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal.
+                    If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given)
+                    and parameter 2 holds the start of the variable area relative to the start of the program. If it's a Code file, parameter 1 holds
                     the start of the code block when saved, and parameter 2 holds 32768. For data files finally, the byte at position 14 decimal holds the variable name.)
                 */
 
@@ -312,28 +312,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							currLevel = !currLevel;
 							dataLevels.Add(currLevel);
 						}
-							
+
 						else
 						{
 							dataPeriods.Add(BIT_0_PL);
 							currLevel = !currLevel;
 							dataLevels.Add(currLevel);
 						}
-							
+
 						if ((blockdata[i] & b) != 0)
 						{
 							dataPeriods.Add(BIT_1_PL);
 							currLevel = !currLevel;
 							dataLevels.Add(currLevel);
 						}
-							
+
 						else
 						{
 							dataPeriods.Add(BIT_0_PL);
 							currLevel = !currLevel;
 							dataLevels.Add(currLevel);
 						}
-							
+
 					}
 				}
 

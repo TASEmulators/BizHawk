@@ -40,12 +40,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (addr < 0x4000)
 				{
 					bank = ((_reg & 0x300) >> 3) | ((_reg & 0x1F) << 1) | ((_reg >> 12) & 1);
-					
+
 				}
 				else
 				{
 					bank = ((_reg & 0x300) >> 3) | ((_reg & 0x1F) << 1) | ((_reg >> 12) & 1);
-					
+
 				}
 
 				return Rom[((bank & _prg16BankMask) * 0x4000) + (addr & 0x3FFF)];

@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Components
 	///
 	/// Bizhawk expects ISoundProviders to output at 44100KHz, so this is what SyncSoundMixer does. Therefore, try to make
 	/// sure that your child ISoundProviders also do this I guess.
-	/// 
+	///
 	/// This is currently used in the ZX Spectrum and CPC cores but others may find it useful in future
 	/// </summary>
 	public sealed class SyncSoundMixer : ISoundProvider

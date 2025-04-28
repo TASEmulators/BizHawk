@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("Layout for the screen inside the render window.")]
 			[DefaultValue(ELayoutOption.TopBottomScreen)]
 			public ELayoutOption LayoutOption { get; set; }
-			
+
 			[DisplayName("Swap Screen")]
 			[Description("Swaps the prominent screen with the other screen.")]
 			[DefaultValue(false)]
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("Toggle upright orientation, for book style games.")]
 			[DefaultValue(false)]
 			public bool UprightScreen { get; set; }
-			
+
 			[DisplayName("Large Screen Proportion")]
 			[Description("The proportion between the large and small screens when playing in Large Screen Small Screen layout.")]
 			[DefaultValue(4.0f)]
@@ -298,12 +298,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("Whether to use hardware shaders to emulate 3DS shaders")]
 			[DefaultValue(true)]
 			public bool UseHwShader { get; set; }
-			
+
 			[DisplayName("Shaders Accurate Mul")]
 			[Description("Whether to use accurate multiplication in hardware shaders")]
 			[DefaultValue(true)]
 			public bool ShadersAccurateMul { get; set; }
-			
+
 			[DisplayName("Use Shader JIT")]
 			[Description("Whether to use the Just-In-Time (JIT) compiler for shader emulation")]
 			[DefaultValue(true)]
@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("Whether to create a virtual SD card.")]
 			[DefaultValue(true)]
 			public bool UseVirtualSd { get; set; }
-			
+
 			[DisplayName("Is New 3DS")]
 			[Description("The system model that Encore will try to emulate.")]
 			[DefaultValue(true)]
@@ -342,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				Korea,
 				Taiwan,
 			}
-			
+
 			[DisplayName("Region Value")]
 			[Description("The system region that Encore will use during emulation")]
 			[DefaultValue(ERegionValue.Autodetect)]
@@ -434,14 +434,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			[Description("The system language that Encore will use during emulation")]
 			[DefaultValue(ECFGSystemLanguage.English)]
 			public ECFGSystemLanguage CFGSystemLanguage { get; set; }
-			
+
 			public enum ECFGSoundOutputMode
 			{
 				Mono,
 				Stereo,
 				Surround
 			}
-			
+
 			[DisplayName("CFG Sound Output Mode")]
 			[Description("The system sound output mode that Encore will use during emulation")]
 			[DefaultValue(ECFGSoundOutputMode.Stereo)]

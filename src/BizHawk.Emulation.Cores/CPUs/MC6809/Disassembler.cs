@@ -1002,7 +1002,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 								break;
 						}
 					}
-				}				
+				}
 			}
 			// else noop
 

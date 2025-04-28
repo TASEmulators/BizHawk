@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 								int nread = stream.Read(buff, 0, 4096);
 								if (nread == 0)
 									break;
-								
+
 								int* p = (int*)bp;
 								int* pend = p + nread / sizeof(int);
 								while (p < pend)

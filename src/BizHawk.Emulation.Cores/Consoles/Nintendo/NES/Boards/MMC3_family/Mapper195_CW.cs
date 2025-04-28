@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			vram_bank_mask_1k = Cart.VramSize / 1 - 1;
-			
+
 			BaseSetup();
 
 			mmc3.MirrorMask = 3;
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// nothing to write to VROM
 				}
 			}
-			else 
+			else
 				base.WritePpu(addr, value);
 		}
 	}

@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Timer Emulation
-	// NOTES: 
+	// NOTES:
 	//
 	// Currently, a starting value of 0xFFFE passes all tests. GBA is not explicitly tested but for now is set to 0xFFFE as well.
 	//
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool state;
 		public bool reload_block;
 		public ulong next_free_cycle;
-		
+
 		public byte ReadReg(int addr)
 		{
 			byte ret = 0;
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				// DIV register
 				case 0xFF04:
-					// NOTE: even though there is an automatic increment directly after the CPU loop, 
+					// NOTE: even though there is an automatic increment directly after the CPU loop,
 					// it is still expected that 0 is written here
 					divider_reg = 0;
 					break;
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// Console.WriteLine("tac: " + timer_control + " " + value + " " + timer + " " + divider_reg);
 					timer_control = (byte)((timer_control & 0xf8) | (value & 0x7)); // only bottom 3 bits function
-					
+
 					if (!timer_control_old.Bit(2) && timer_control.Bit(2) && Core.is_GBC && Core._syncSettings.GBACGB)
 					{
 						bool temp_check_old = false;
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 						}
 					}
-					
+
 					break;
 			}
 		}
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void tick()
 		{
 			IRQ_block = false;
-			
+
 			// pick a bit to test based on the current value of timer control
 			switch (timer_control & 3)
 			{
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						pending_reload = 3;
 						reload_block = false;
-					}					
+					}
 				}
 			}
 

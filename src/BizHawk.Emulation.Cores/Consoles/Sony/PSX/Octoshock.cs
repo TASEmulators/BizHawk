@@ -5,8 +5,8 @@
 
 //TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. that's madness.
 //well, I could savestate the disc index and validate the disc collection when loading a state.
-//the big problem is, it's completely at odds with the slider-based disc changing model. 
-//but, maybe it can be reconciled with that model by using the disc ejection to our advantage. 
+//the big problem is, it's completely at odds with the slider-based disc changing model.
+//but, maybe it can be reconciled with that model by using the disc ejection to our advantage.
 //perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
 //not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
 
@@ -493,7 +493,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 					int portNum = (port + 1) + ((multiport + 1) << 4);
 					int slot = port * 4 + multiport;
-					
+
 					//no input to set
 					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
 						continue;
@@ -608,13 +608,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						//ok: here we have a framebuffer without overscan. 320x240 nominal. So the VirtualWidth of what we got is off by a factor of 109.375%
 						//so a beginning approach would be this:
 						//VirtualWidth = (int)(VirtualWidth * 320.0f / 350);
-						//but that will shrink things which are already annoyingly shrunken. 
+						//but that will shrink things which are already annoyingly shrunken.
 						//therefore, lets do that, but then scale the whole window by the same factor so the width becomes unscaled and now the height is scaled up!
 						//weird, huh?
 						VirtualHeight = (int)(VirtualHeight * 350.0f / 320);
 
 						//now unfortunately we may have lost vertical pixels. common in the case of PAL (rendering 256 on a field of 288)
-						//therefore we'll be stretching way too much vertically here. 
+						//therefore we'll be stretching way too much vertically here.
 						//lets add those pixels back with a new hack
 						if (standard == OctoshockDll.eVidStandard.PAL)
 						{
@@ -643,7 +643,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					}
 					else
 					{
-						//this is a bit tricky. we know we want 400 for the virtualwidth. 
+						//this is a bit tricky. we know we want 400 for the virtualwidth.
 						VirtualWidth = 400;
 						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
 							VirtualWidth = 378;

@@ -149,76 +149,76 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ScaleFactor { get; set; }
-			
+
 			[DisplayName("Sfx Volume")]
 			[Description("Sound effects volume [0 - 15].")]
 			[Range(0, 15)]
 			[DefaultValue(8)]
 			public int SfxVolume { get; set; }
-			
+
 			[DisplayName("Music Volume")]
 			[Description("[0 - 15]")]
 			[Range(0, 15)]
 			[DefaultValue(8)]
 			public int MusicVolume { get; set; }
-			
+
 			[DisplayName("Gamma Correction Level")]
 			[Description("Increases brightness [0 - 4].\n\nDefault value in vanilla is \"OFF\" (0).")]
 			[Range(0, 4)]
 			[DefaultValue(0)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
-			
+
 			[DisplayName("Show Messages")]
 			[Description("Displays messages about items you pick up.\n\nDefault value in vanilla is \"ON\".")]
 			[DefaultValue(true)]
 			public bool ShowMessages { get; set; }
-			
+
 			[DisplayName("Report Revealed Secrets")]
 			[Description("Shows an on-screen notification when revealing a secret.")]
 			[DefaultValue(false)]
 			public bool ReportSecrets { get; set; }
-			
+
 			[DisplayName("HUD Mode")]
 			[Description("Sets heads-up display mode.")]
 			[DefaultValue(HudMode.Vanilla)]
 			public HudMode HeadsUpMode { get; set; }
-			
+
 			[DisplayName("Extended HUD")]
 			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
 			[DefaultValue(false)]
 			public bool DsdaExHud { get; set; }
-			
+
 			[DisplayName("Display Coordinates")]
 			[Description("Shows player position (X, Y, Z, angle), velocity (combined, X, Y), and distance travelled (combined, X, Y) per frame. Color indicates velocity/distance tiers: green - SR40 (15.11+/16.67+), blue - SR50 (19.35+/21.35+), red - turbo/wallrun (21.37+/23.58+).\n\nAvailable in vanilla via the IDMYPOS cheat code, however vanilla only displays angle, X, and Y - all in hexadecimal format.")]
 			[DefaultValue(false)]
 			public bool DisplayCoordinates { get; set; }
-			
+
 			[DisplayName("Display Commands")]
 			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
 			[DefaultValue(false)]
 			public bool DisplayCommands { get; set; }
-			
+
 			[DisplayName("Automap Totals")]
 			[Description("Shows counts for kills, items, and secrets on automap.")]
 			[DefaultValue(false)]
 			public bool MapTotals { get; set; }
-			
+
 			[DisplayName("Automap Time")]
 			[Description("Shows elapsed time on automap.")]
 			[DefaultValue(false)]
 			public bool MapTime { get; set; }
-			
+
 			[DisplayName("Automap Coordinates")]
 			[Description("Shows in-level coordinates on automap.")]
 			[DefaultValue(false)]
 			public bool MapCoordinates { get; set; }
-			
+
 			[DisplayName("Automap Overlay")]
 			[Description("Shows automap on top of gameplay.")]
 			[DefaultValue(MapOverlays.Disabled)]
 			public MapOverlays MapOverlay { get; set; }
-			
+
 			[DisplayName("Automap Details")]
 			[Description("Exposes all linedefs and things.\n\nAvailable in vanilla via the IDDT cheat code.")]
 			[DefaultValue(MapDetail.Normal)]
@@ -346,17 +346,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
 			[DefaultValue(true)]
 			public bool StrictMode { get; set; }
-			
+
 			[DisplayName("Always Run")]
 			[Description("Toggles whether the player is permanently in the running state, without the slower walking speed available. This emulates a bug in vanilla Doom: setting the joystick run button to an invalid high number causes the game to always have it enabled.")]
 			[DefaultValue(true)]
 			public bool AlwaysRun { get; set; }
-			
+
 			[DisplayName("Render Wipescreen")]
 			[Description("Enables screen melt - an effect seen when Doom changes scene, for example, when starting or exiting a level.")]
 			[DefaultValue(true)]
 			public bool RenderWipescreen { get; set; }
-			
+
 			[DisplayName("Turning Resolution")]
 			[Description("\"Shorttics\" refers to decreased turning resolution normally used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment. Newer demo formats support both.")]
 			[DefaultValue(TurningResolution.Longtics)]

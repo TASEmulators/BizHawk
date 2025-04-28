@@ -6,9 +6,9 @@
 	public sealed partial class F3850<TLink>
 	{
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_KU()
 		{
@@ -21,9 +21,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_KL()
 		{
@@ -36,9 +36,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_QU()
 		{
@@ -51,9 +51,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_QL()
 		{
@@ -66,9 +66,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_KU_A()
 		{
@@ -81,9 +81,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_KL_A()
 		{
@@ -96,9 +96,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_QU_A()
 		{
@@ -111,9 +111,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_QL_A()
 		{
@@ -126,9 +126,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_K_P()
 		{
@@ -155,9 +155,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_P_K()
 		{
@@ -184,9 +184,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_IS()
 		{
@@ -199,9 +199,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_IS_A()
 		{
@@ -215,9 +215,9 @@
 
 		/// <summary>
 		/// PK - CALL TO SUBROUTINE DIRECT AND RETURN FROM SUBROUTINE DIRECT
-		/// The contents of the Program Counter Registers (PCO) are stored in the Stack Registers (PC1), 
+		/// The contents of the Program Counter Registers (PCO) are stored in the Stack Registers (PC1),
 		/// then the contents of the Scratchpad K Registers (Registers 12 and 13 of scratchpad memory) are transferred into the Program Counter Registers.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void PK()
 		{
@@ -244,9 +244,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_P0_Q()
 		{
@@ -274,9 +274,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_Q_DC()
 		{
@@ -303,9 +303,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_DC_Q()
 		{
@@ -332,9 +332,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_DC_H()
 		{
@@ -361,9 +361,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_H_DC()
 		{
@@ -392,8 +392,8 @@
 		/// <summary>
 		/// SR - SHIFT RIGHT
 		/// The contents of the accumulator are shifted right either one or four bit positions, depending on the value of the SR instruction operand.
-		/// Statuses modified: ZERO, SIGN 
-		/// Statuses reset: OVF, CARRY 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
 		private void SR(byte index)
@@ -408,7 +408,7 @@
 
 		/// <summary>
 		/// SL - SHIFT LEFT
-		/// The contents of the accumulator are shifted left either one or four bit positions, depending upon the value of the SL instruction operand. 
+		/// The contents of the accumulator are shifted left either one or four bit positions, depending upon the value of the SL instruction operand.
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
@@ -425,9 +425,9 @@
 
 		/// <summary>
 		/// LM - LOAD ACCUMULATOR FROM MEMORY
-		/// The contents of the memory byte addressed by the DCO registers are loaded into the accumulator. 
+		/// The contents of the memory byte addressed by the DCO registers are loaded into the accumulator.
 		/// The contents of the DCO registers are incremented as a resu It of the LM instruction execution.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LM()
 		{
@@ -450,7 +450,7 @@
 		/// ST - STORE TO MEMORY
 		/// The contents of the accumulator are stored in the memory location addressed by the Data Counter (DCO) registers.
 		/// The DC registers' contents are incremented as a result of the instruction execution.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void ST()
 		{
@@ -505,7 +505,7 @@
 		/// <summary>
 		/// DI - DISABLE INTERRUPT
 		/// The interrupt control bit, ICB, is reset; no interrupt requests will be acknowledged by the 3850 CPU
-		/// Statuses reset: ICB 
+		/// Statuses reset: ICB
 		/// Statuses unaffected: OVF, ZERO, CARRY, SIGN
 		/// </summary>
 		private void DI()
@@ -526,7 +526,7 @@
 		/// <summary>
 		/// EI - ENABLE INTERRUPT
 		/// The interrupt control bit is set. Interrupt requests will now be acknowledged by the CPU.
-		/// ICB is set to 1. All other status bits are unaffected. 
+		/// ICB is set to 1. All other status bits are unaffected.
 		/// </summary>
 		private void EI()
 		{
@@ -565,9 +565,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_W_J()
 		{
@@ -586,22 +586,22 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_J_W()
 		{
 			PopulateCURINSTR(
 				// S
-				OP_LR8, J, W,				// r9 <- (W)    
+				OP_LR8, J, W,				// r9 <- (W)
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
 
 		/// <summary>
-		/// INC - INCREMENT ACCUMULATOR 
+		/// INC - INCREMENT ACCUMULATOR
 		/// The content of the accumulator is increased by one binary count.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
@@ -610,16 +610,16 @@
 		{
 			PopulateCURINSTR(
 				// S
-				OP_INC8, A,	ONE,			// A <- A + 1 
+				OP_INC8, A,	ONE,			// A <- A + 1
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
 
 		/// <summary>
-		/// LI - LOAD IMMEDIATE 
-		/// The value provided by the operand of the LI instruction is !oaded into the accumuator. 
-		/// No status bits are affected. 
+		/// LI - LOAD IMMEDIATE
+		/// The value provided by the operand of the LI instruction is !oaded into the accumuator.
+		/// No status bits are affected.
 		/// </summary>
 		private void LI()
 		{
@@ -640,11 +640,11 @@
 
 		/// <summary>
 		/// NI - AND IMMEDIATE
-		/// An 8-bit value provided by the operand of the NI instruction is ANDed with the contents of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// An 8-bit value provided by the operand of the NI instruction is ANDed with the contents of the accumulator.
+		/// The results are stored in the accumulator.
 		/// Statuses reset to 0: OVF, CARRY
-		/// Statuses modified: ZERO, SIGN 
-		/// Statuses unaffected: ICB 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void NI()
 		{
@@ -665,10 +665,10 @@
 
 		/// <summary>
 		/// OI - OR IMMEDIATE
-		/// An 8-bit value provided by the operand of the 1/0 instruction is ORed with the contents of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// An 8-bit value provided by the operand of the 1/0 instruction is ORed with the contents of the accumulator.
+		/// The results are stored in the accumulator.
 		/// Statuses modified: ZERO, SIGN
-		/// Statuses reset: OVF, CARRY 
+		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
 		private void OI()
@@ -690,8 +690,8 @@
 
 		/// <summary>
 		/// XI - EXCLUSIVE-OR IMMEDIATE
-		/// The contents of the 8-bit value provided by the operand of the XI instruction are EXCLUSIVE-ORed with the contents of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// The contents of the 8-bit value provided by the operand of the XI instruction are EXCLUSIVE-ORed with the contents of the accumulator.
+		/// The results are stored in the accumulator.
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
@@ -715,7 +715,7 @@
 
 		/// <summary>
 		/// AI - ADD IMMEDIATE TO ACCUMULATOR
-		/// The 8-bit (two hexadecimal digit) value provided by the instruction operand is added to the current contents of the accumulator. 
+		/// The 8-bit (two hexadecimal digit) value provided by the instruction operand is added to the current contents of the accumulator.
 		/// Binary addition is performed.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
@@ -739,7 +739,7 @@
 
 		/// <summary>
 		/// Compare Immediate
-		/// The contents of the accumulator are subtracted from the operand of the CI instruction. 
+		/// The contents of the accumulator are subtracted from the operand of the CI instruction.
 		/// The result is not saved but the status bits are set or reset to reflect the results of the operation
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
@@ -772,9 +772,9 @@
 		/// <summary>
 		/// IN - INPUT LONG ADDRESS
 		/// The data input to the 1/0 port specified by the operand of the IN instruction is stored in the accumulator.
-		/// Statuses modified: ZERO, SIGN 
-		/// Statuses reset: OVF, CARRY 
-		/// Statuses unaffected: ICB 
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses reset: OVF, CARRY
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void IN()
 		{
@@ -787,7 +787,7 @@
 				IDLE,
 				IDLE,
 				// L
-				ROMC_1B,					// DB <- ((IO));   
+				ROMC_1B,					// DB <- ((IO));
 				IDLE,
 				IDLE,
 				OP_LR_A_DB_IO, A, DB,		// A <- (DB) - flags set as result of IN or INS operation
@@ -801,9 +801,9 @@
 		}
 
 		/// <summary>
-		/// OUT - OUTPUT LONG ADDRESS 
-		/// The I/O port addressed by the operand of the OUT instruction is loaded with the contents of the accumulator. 
-		/// No status bits are modified. 
+		/// OUT - OUTPUT LONG ADDRESS
+		/// The I/O port addressed by the operand of the OUT instruction is loaded with the contents of the accumulator.
+		/// No status bits are modified.
 		/// </summary>
 		private void OUT()
 		{
@@ -832,10 +832,10 @@
 
 		/// <summary>
 		/// PI - CALL TO SUBROUTINE IMMEDIATE
-		/// The contents of the Program Counters are stored in the Stack Registers, PC1, then the 16-bit address contained in the operand of the 
-		/// PI instruction is loaded into the Program Counters.· The accumulator is used as a temporary storage register during transfer of the most significant byte of the address. 
+		/// The contents of the Program Counters are stored in the Stack Registers, PC1, then the 16-bit address contained in the operand of the
+		/// PI instruction is loaded into the Program Counters.· The accumulator is used as a temporary storage register during transfer of the most significant byte of the address.
 		/// Previous accumulator results will be altered.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void PI()
 		{
@@ -876,10 +876,10 @@
 
 		/// <summary>
 		/// JMP - Branch Immediate
-		/// As the result of a JMP instruction execution, a branch to the memory location addressed by the second and third bytes of the instruction occurs. 
-		/// The second byte contains the high order eight bits of the memory address; 
+		/// As the result of a JMP instruction execution, a branch to the memory location addressed by the second and third bytes of the instruction occurs.
+		/// The second byte contains the high order eight bits of the memory address;
 		/// the third byte contains the low order eight bits of the memory address.
-		/// No status bits are affected. 
+		/// No status bits are affected.
 		/// </summary>
 		private void JMP()
 		{
@@ -915,9 +915,9 @@
 
 		/// <summary>
 		/// DCI - LOAD DC IMMEDIATE
-		/// The DCI instruction is a three-byte instruction. The contents of the second byte replace the high order byte of the DC0 registers; 
+		/// The DCI instruction is a three-byte instruction. The contents of the second byte replace the high order byte of the DC0 registers;
 		/// the contents of the third byte replace the low order byte of the DCO registers.
-		/// The status bits are not affected. 
+		/// The status bits are not affected.
 		/// </summary>
 		private void DCI()
 		{
@@ -937,7 +937,7 @@
 				// L
 				ROMC_0E,					// DB <- ((PC0)); DC0l <- (DB)
 				IDLE,
-				IDLE,  
+				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
@@ -955,7 +955,7 @@
 
 		/// <summary>
 		/// NOP - NO OPERATION
-		/// No function is performed. 
+		/// No function is performed.
 		/// No status bits are modified.
 		/// </summary>
 		private void NOP()
@@ -970,9 +970,9 @@
 
 		/// <summary>
 		/// XDC - EXCHANGE DATA COUNTERS
-		/// Execution of the instruction XDC causes the contents of the auxiliary data counter registers (DC1) to be exchanged with the contents of the data counter registers (DCO). 
+		/// Execution of the instruction XDC causes the contents of the auxiliary data counter registers (DC1) to be exchanged with the contents of the data counter registers (DCO).
 		/// This instruction is only significant when a 3852 or 3853 Memory Interface device is part of the system configuration.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void XDC()
 		{
@@ -991,7 +991,7 @@
 
 		/// <summary>
 		/// OS - DECREMENT SCRATCHPAD CONTENT
-		/// The content of the scratchpad register addressed by the operand (Sreg) is decremented by one binary count. 
+		/// The content of the scratchpad register addressed by the operand (Sreg) is decremented by one binary count.
 		/// The decrement is performed by adding H'FF' to the scratchpad register.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
@@ -1071,9 +1071,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_ISAR()
 		{
@@ -1086,10 +1086,10 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
 		/// ISAR incremented
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_ISAR_INC()
 		{
@@ -1102,10 +1102,10 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
 		/// ISAR deccremented
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_A_ISAR_DEC()
 		{
@@ -1118,9 +1118,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_R_A(byte rIndex)
 		{
@@ -1136,9 +1136,9 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_ISAR_A()
 		{
@@ -1151,10 +1151,10 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
 		/// ISAR incremented
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_ISAR_A_INC()
 		{
@@ -1167,10 +1167,10 @@
 		}
 
 		/// <summary>
-		/// LR - LOAD REGISTER 
+		/// LR - LOAD REGISTER
 		/// The LR group of instructions move one or two bytes of data between a source and destination register.
 		/// ISAR decremented
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LR_ISAR_A_DEC()
 		{
@@ -1184,8 +1184,8 @@
 
 		/// <summary>
 		/// LISU - LOAD UPPER OCTAL DIGIT OF ISAR
-		/// A 3-bit value provided by the LlSU instruction operand is loaded into the three most significant bits of the ISAR. The three least significant bits of the ISAR are not altered. 
-		/// No status bits are affected. 
+		/// A 3-bit value provided by the LlSU instruction operand is loaded into the three most significant bits of the ISAR. The three least significant bits of the ISAR are not altered.
+		/// No status bits are affected.
 		/// </summary>
 		private void LISU(byte octal)
 		{
@@ -1200,7 +1200,7 @@
 		/// <summary>
 		/// LlSL - LOAD LOWER OCTAL DIGIT OF ISAR
 		/// A 3-bit value provided by the USL instruction operand is loaded into the three least significant bits of the ISAR. The three most significant bits of the ISAR are not altered.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LISL(byte octal)
 		{
@@ -1213,10 +1213,10 @@
 		}
 
 		/// <summary>
-		/// LIS - LOAD IMMEDIATE SHORT 
-		/// A 4-bit value provided by the LIS instruction operand is loaded into the four least significant bits of the accumulator. 
+		/// LIS - LOAD IMMEDIATE SHORT
+		/// A 4-bit value provided by the LIS instruction operand is loaded into the four least significant bits of the accumulator.
 		/// The most significant four bits of the accumulator are set to "0".
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void LIS(byte index)
 		{
@@ -1252,14 +1252,14 @@
 				IDLE,
 				IDLE,
 				OP_BF, bit);
-		}		
+		}
 
 		/// <summary>
-		/// AM - ADD (BINARY) MEMORY TO ACCUMULATOR 
-		/// The content of the memory iocation addressed by the DC0 registers is added to the accumulator. The sum is returned in the accumulator. 
+		/// AM - ADD (BINARY) MEMORY TO ACCUMULATOR
+		/// The content of the memory iocation addressed by the DC0 registers is added to the accumulator. The sum is returned in the accumulator.
 		/// Memory is not altered. Binary addition is performed. The contents of the DCO registers are incremented by 1
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
-		/// Statuses unaffected: ICB 
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void AM()
 		{
@@ -1280,11 +1280,11 @@
 
 		/// <summary>
 		/// AMD - DECIMAL ADD. MEMORY TO ACCUMULATOR
-		/// The accumulator and the memory location addressed by the DCO registers are assumed to contain two BCD digits. 
+		/// The accumulator and the memory location addressed by the DCO registers are assumed to contain two BCD digits.
 		/// The content of the address memory byte is added to the contents of the accumulator to give a BCD result in the accumulator
 		/// Statuses modified: CARRY, ZERO
-		/// Statuses not significant: OVF, SIGN 
-		/// Statuses unaffected: ICB 
+		/// Statuses not significant: OVF, SIGN
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void AMD()
 		{
@@ -1305,11 +1305,11 @@
 
 		/// <summary>
 		/// NM - LOGICAL AND FROM MEMORY
-		/// The content of memory addressed by the data counter registers is ANDed with the content of the accumulator. 
-		/// The results are stored in the accumulator. The contents of the data counter registers are incremented. 
-		/// Statuses reset to 0: OVF, CARRY 
-		/// Statuses modified: ZERO, SIGN 
-		/// Statuses unaffected: ICB 
+		/// The content of memory addressed by the data counter registers is ANDed with the content of the accumulator.
+		/// The results are stored in the accumulator. The contents of the data counter registers are incremented.
+		/// Statuses reset to 0: OVF, CARRY
+		/// Statuses modified: ZERO, SIGN
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void NM()
 		{
@@ -1330,11 +1330,11 @@
 
 		/// <summary>
 		/// OM - LOGICAL IIOR" FROM MEMORY
-		/// The content of memory byte addressed by the data counter registers is ORed with the content of the accumulator. 
-		/// The results are stored in the accumulator. The data counter registers are incremented. 
+		/// The content of memory byte addressed by the data counter registers is ORed with the content of the accumulator.
+		/// The results are stored in the accumulator. The data counter registers are incremented.
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses reset: OVF, CARRY
-		/// Statuses unaffected: ICB 
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void OM()
 		{
@@ -1355,9 +1355,9 @@
 
 		/// <summary>
 		/// XM - EXCLUSIVE-OR FROM MEMORY
-		/// The content of the memory location addressed by the DCO registers is EXCLUSIVE-ORed with the contents of the accumulator. 
+		/// The content of the memory location addressed by the DCO registers is EXCLUSIVE-ORed with the contents of the accumulator.
 		/// The results are stored in the accumulator. The DCO registers are incremented.
-		/// Statuses modified: ZERO, SIGN 
+		/// Statuses modified: ZERO, SIGN
 		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
@@ -1379,8 +1379,8 @@
 		}
 
 		/// <summary>
-		/// CM - COMPARE MEMORY TO ACCUMULATOR 
-		/// The CM instruction is the same as the CI instruction except the memory contents addressed by the DCO registers, 
+		/// CM - COMPARE MEMORY TO ACCUMULATOR
+		/// The CM instruction is the same as the CI instruction except the memory contents addressed by the DCO registers,
 		/// instead of an immediate value, are compared to the contents of the accumu lator.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
@@ -1404,7 +1404,7 @@
 
 		/// <summary>
 		/// ADC - ADD ACCUMULATOR TO DATA COUNTER
-		/// The contents of the accumulator are treated as a signed binary number, and are added to the contents of every DCO register. 
+		/// The contents of the accumulator are treated as a signed binary number, and are added to the contents of every DCO register.
 		/// The result is stored in the DCO registers. The accumulator contents do not change.
 		/// </summary>
 		private void ADC()
@@ -1431,12 +1431,12 @@
 		private void BR7()
 		{
 			PopulateCURINSTR(
-				OP_BR7); 
+				OP_BR7);
 		}
-		
+
 		/// <summary>
 		/// INS - INPUT SHORT ADDRESS
-		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator. 
+		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator.
 		/// An I/O port with an address within the range 0 through 1 may be accessed by this instruction
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses reset: OVF, CARRY
@@ -1450,7 +1450,7 @@
 				// S
 				ROMC_1C_S,                  // Idle
 				OP_IN, ALU0, IO,            // A <- ((Port index - 0/1))
-				IDLE,				
+				IDLE,
 				OP_LR_A_DB_IO, A, ALU0,     // A <- (A) - flags set as result of IN or INS operation
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
@@ -1461,7 +1461,7 @@
 
 		/// <summary>
 		/// INS - INPUT SHORT ADDRESS
-		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator. 
+		/// Data input to the I/O port specified by the operand of the INS instruction is loaded into the accumulator.
 		/// An I/O port with an address within the range 4 through 15 may be accessed by this instruction
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses reset: OVF, CARRY
@@ -1495,9 +1495,9 @@
 
 		/// <summary>
 		/// OUTS - OUTPUT SHORT ADDRESS
-		/// The I/O port addressed by the operand of the OUTS instruction object code is loaded with the contents of the accumulator. 
+		/// The I/O port addressed by the operand of the OUTS instruction object code is loaded with the contents of the accumulator.
 		/// I/O ports with addresses from 0 to 1 may be accessed by this instruction. (Outs O or 1 is CPU port only.)
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void OUTS_0(byte index)
 		{
@@ -1518,9 +1518,9 @@
 
 		/// <summary>
 		/// OUTS - OUTPUT SHORT ADDRESS
-		/// The I/O port addressed by the operand of the OUTS instruction object code is loaded with the contents of the accumulator. 
+		/// The I/O port addressed by the operand of the OUTS instruction object code is loaded with the contents of the accumulator.
 		/// I/O ports with addresses from 3 to 15 may be accessed by this instruction.
-		/// No status bits are modified. 
+		/// No status bits are modified.
 		/// </summary>
 		private void OUTS_1(byte index)
 		{
@@ -1551,10 +1551,10 @@
 
 		/// <summary>
 		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
-		/// The content of the scratchpad register referenced by the instruction operand (Sreg) is added to the accumulator using binary addition. 
-		/// The result of the binary addition is stored in the accumulator. 
+		/// The content of the scratchpad register referenced by the instruction operand (Sreg) is added to the accumulator using binary addition.
+		/// The result of the binary addition is stored in the accumulator.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
-		/// Statuses unaffected: ICB 
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void AS(byte rIndex)
 		{
@@ -1571,10 +1571,10 @@
 
 		/// <summary>
 		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
-		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition. 
-		/// The result of the binary addition is stored in the accumulator. 
+		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition.
+		/// The result of the binary addition is stored in the accumulator.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
-		/// Statuses unaffected: ICB 
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void AS_IS()
 		{
@@ -1588,11 +1588,11 @@
 
 		/// <summary>
 		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
-		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition. 
-		/// The result of the binary addition is stored in the accumulator. 
+		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition.
+		/// The result of the binary addition is stored in the accumulator.
 		/// The low order three bits of ISAR are incremented after the scratchpad register is accessed.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
-		/// Statuses unaffected: ICB 
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void AS_IS_INC()
 		{
@@ -1606,11 +1606,11 @@
 
 		/// <summary>
 		/// AS - BINARY ADDITION, SCRATCHPAD MEMORY TO ACCUMULATOR
-		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition. 
-		/// The result of the binary addition is stored in the accumulator. 
+		/// The content of the scratchpad register referenced indirectly by ISAR is added to the accumulator using binary addition.
+		/// The result of the binary addition is stored in the accumulator.
 		/// The low order three bits of ISAR are decremented after the scratchpad register is accessed.
 		/// Statuses modified: OVF, ZERO, CARRY, SIGN
-		/// Statuses unaffected: ICB 
+		/// Statuses unaffected: ICB
 		/// </summary>
 		private void AS_IS_DEC()
 		{
@@ -1624,8 +1624,8 @@
 
 		/// <summary>
 		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
-		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
-		/// the content of the scratchpad byte addressed by operand (Sreg) is added to the accumulator. 
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers,
+		/// the content of the scratchpad byte addressed by operand (Sreg) is added to the accumulator.
 		/// Statuses modified: CARRY, ZERO
 		/// Statuses not significant: OVF, SIGN
 		/// Statuses unaffected: ICB
@@ -1637,7 +1637,7 @@
 
 			PopulateCURINSTR(
 				// S
-				OP_ADD8D, A, rIndex,				
+				OP_ADD8D, A, rIndex,
 				IDLE,
 				ROMC_1C_S,                  // Idle
 				IDLE,
@@ -1650,8 +1650,8 @@
 
 		/// <summary>
 		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
-		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
-		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator. 
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers,
+		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator.
 		/// Statuses modified: CARRY, ZERO
 		/// Statuses not significant: OVF, SIGN
 		/// Statuses unaffected: ICB
@@ -1660,7 +1660,7 @@
 		{
 			PopulateCURINSTR(
 				// S
-				OP_ADD8D, A, Regs[ISAR],				
+				OP_ADD8D, A, Regs[ISAR],
 				IDLE,
 				ROMC_1C_S,                  // Idle
 				IDLE,
@@ -1673,8 +1673,8 @@
 
 		/// <summary>
 		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
-		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
-		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator. 
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers,
+		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator.
 		/// The low order three bits of ISAR are incremented after the scratchpad register is accessed.
 		/// Statuses modified: CARRY, ZERO
 		/// Statuses not significant: OVF, SIGN
@@ -1687,7 +1687,7 @@
 				OP_ADD8D, A, Regs[ISAR],
 				OP_IS_INC,                  // Inc ISAR
 				ROMC_1C_S,                  // Idle
-				IDLE,				
+				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
@@ -1697,8 +1697,8 @@
 
 		/// <summary>
 		/// ASD - DECIMAL ADD, SCRATCHPAD TO ACCUMULATOR
-		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers, 
-		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator. 
+		/// The ASD instruction is similar to the AMD instruction, except that instead of adding the contents of the memory byte addressed by the DCO registers,
+		/// the content of the scratchpad byte referenced indirectly by ISAR is added to the accumulator.
 		/// The low order three bits of ISAR are decremented after the scratchpad register is accessed.
 		/// Statuses modified: CARRY, ZERO
 		/// Statuses not significant: OVF, SIGN
@@ -1711,7 +1711,7 @@
 				OP_ADD8D, A, Regs[ISAR],
 				OP_IS_DEC,                  // Dec ISAR
 				ROMC_1C_S,                  // Idle
-				IDLE,				
+				IDLE,
 				// S
 				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
@@ -1723,7 +1723,7 @@
 		/// XS - EXCLUSIVE-OR FROM SCRATCHPAD
 		/// The content of the scratchpad register referenced by the operand (Sreg) is EXCLUSIVE-ORed with the contents of the accumulator.
 		/// Statuses modified: ZERO, SIGN
-		/// Statuses reset: OVF, CARRY 
+		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
 		private void XS(byte rIndex)
@@ -1743,7 +1743,7 @@
 		/// XS - EXCLUSIVE-OR FROM SCRATCHPAD
 		/// The content of the register referenced by ISAR is EXCLUSIVE-ORed with the contents of the accumulator.
 		/// Statuses modified: ZERO, SIGN
-		/// Statuses reset: OVF, CARRY 
+		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
 		private void XS_IS()
@@ -1761,7 +1761,7 @@
 		/// The content of the register referenced by ISAR is EXCLUSIVE-ORed with the contents of the accumulator.
 		/// ISAR is incremented
 		/// Statuses modified: ZERO, SIGN
-		/// Statuses reset: OVF, CARRY 
+		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
 		private void XS_IS_INC()
@@ -1779,7 +1779,7 @@
 		/// The content of the register referenced by ISAR is EXCLUSIVE-ORed with the contents of the accumulator.
 		/// ISAR is deccremented
 		/// Statuses modified: ZERO, SIGN
-		/// Statuses reset: OVF, CARRY 
+		/// Statuses reset: OVF, CARRY
 		/// Statuses unaffected: ICB
 		/// </summary>
 		private void XS_IS_DEC()
@@ -1794,8 +1794,8 @@
 
 		/// <summary>
 		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
-		/// The content of the scratch pad register addressed by the operand (Sreg) is ANDed with the content of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// The content of the scratch pad register addressed by the operand (Sreg) is ANDed with the content of the accumulator.
+		/// The results are stored in the accumulator.
 		/// Statuses reset to 0: OVF, CARRY
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses unaffected: ICB
@@ -1815,8 +1815,8 @@
 
 		/// <summary>
 		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
-		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator.
+		/// The results are stored in the accumulator.
 		/// Statuses reset to 0: OVF, CARRY
 		/// Statuses modified: ZERO, SIGN
 		/// Statuses unaffected: ICB
@@ -1833,8 +1833,8 @@
 
 		/// <summary>
 		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
-		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator.
+		/// The results are stored in the accumulator.
 		/// ISAR is incremented
 		/// Statuses reset to 0: OVF, CARRY
 		/// Statuses modified: ZERO, SIGN
@@ -1852,8 +1852,8 @@
 
 		/// <summary>
 		/// NS - LOGICAL AND FROM SCRATCHPAD MEMORY
-		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator. 
-		/// The results are stored in the accumulator. 
+		/// The content of the scratch pad register addressed by the Register ISAR is pointing at is ANDed with the content of the accumulator.
+		/// The results are stored in the accumulator.
 		/// ISAR is decremented
 		/// Statuses reset to 0: OVF, CARRY
 		/// Statuses modified: ZERO, SIGN
@@ -1884,7 +1884,7 @@
 				IDLE,
 				IDLE,
 				// S
-				ROMC_00_S,					// DB <- ((PC0)); PC0++	
+				ROMC_00_S,					// DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -1903,7 +1903,7 @@
 				IDLE,
 				IDLE,
 				// S
-				ROMC_00_S,					// DB <- ((PC0)); PC0++	
+				ROMC_00_S,					// DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);

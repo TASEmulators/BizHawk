@@ -7,7 +7,7 @@
 	 * a second set of compatibility writes to a different set of registers to
 	 * make it run on "Mapper 93" (they were perhaps anticipating putting the
 	 * mask roms on a different board??
-	 * 
+	 *
 	 * In any event, here is how it's actually emulated.
 	 */
 

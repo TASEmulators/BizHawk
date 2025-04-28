@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	// similar in some ways to 8259ABC, but different
 	// fceumm combines the code to implement them; i think that's too messy
-	
+
 	// this mapper is stupid and was most certainly made for 1 game.  it has an awkward
 	// chr mapping that can only support up to 32KiB chr rom, and it uses it to show
 	// a few famous persons portraits while playing a stupid block game

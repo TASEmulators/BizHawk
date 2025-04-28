@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return CIRAM_VS[addr-0x800];
 				}
-				
+
 			}
 		}
 
@@ -115,13 +115,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Rom[(addr & 0x1FFF) + ((NES.VS_prg_reg*4) << 13)];
 				} else
-					return Rom[addr];	
+					return Rom[addr];
 			}
 			else
 			{
 				return Rom[addr];
 			}
-			
+
 		}
 	}
 }

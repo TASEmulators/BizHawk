@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[((_reg >> 1) * 0x8000) + (addr & 0x7FFF)];
 			}
-			
+
 			return Rom[(_reg * 0x4000) + (addr & 0x3FFF)];
 		}
 

@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 					_domain.PokeByte(FixAddr(addr) ^ _addressMangler, val);
 				}
 			}
-			
+
 			protected virtual uint ReadMemBlock(uint addr, IntPtr buffer, uint bytes)
 			{
 				addr = FixAddr(addr);
@@ -492,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 							TryAddDomain(cartRam, 0x2000);
 							mfs.Add(new(domains[wram], 0x0000, 0x2000));
 							mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
-							mfs.Add(domains[wram].Size == 0x8000 
+							mfs.Add(domains[wram].Size == 0x8000
 								? new MemFunctions(domains[wram], 0x2000, 0x6000)
 								: new NullMemFunctions(0x6000));
 							if (domains.Has(cartRam) && domains[cartRam].Size > 0x2000)

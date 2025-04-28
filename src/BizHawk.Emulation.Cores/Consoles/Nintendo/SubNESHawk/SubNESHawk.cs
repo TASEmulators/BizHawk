@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			_tracer = new TraceBuffer(TRACE_HEADER);
 			ser.Register(_tracer);
 
-			
+
 			var barCodeService = _nesCore.ServiceProvider.GetService<DatachBarcode>();
 			if (barCodeService != null)
 			{

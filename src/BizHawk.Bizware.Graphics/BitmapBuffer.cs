@@ -145,7 +145,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			UnlockBits(bmpdata);
-		
+
 			Pixels = newPixels;
 		}
 
@@ -266,7 +266,7 @@ namespace BizHawk.Bizware.Graphics
 			Width = widthRound;
 			Height = heightRound;
 		}
-		
+
 		/// <summary>
 		/// Creates a BitmapBuffer image from the specified filename
 		/// </summary>
@@ -376,7 +376,7 @@ namespace BizHawk.Bizware.Graphics
 								if (srcPixel != 0)
 								{
 									var color = palette[srcPixel].ToArgb();
-									
+
 									// make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels.
 									// (yes, we can have palette entries with transparency in them (PNGs support this, annoyingly))
 									if (cleanup)

@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AsyncExecuteEmulator();
 
 			// Hack: Saving a state on frame 0 has been shown to not be sync stable. Advance past that frame to avoid the problem.
-			// Advancing 2 frames was chosen to deal with a problem with the dynamic recompiler. The dynarec seems to take 2 frames to set 
+			// Advancing 2 frames was chosen to deal with a problem with the dynamic recompiler. The dynarec seems to take 2 frames to set
 			// things up correctly. If a state is loaded on frames 0 or 1 mupen tries to access null pointers and the emulator crashes, so instead
 			// advance past both to again avoid the problem.
 			api.frame_advance();

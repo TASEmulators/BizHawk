@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		}
 
 		public void do_frame()
-		{			
+		{
 			// advance one full frame
 			for (int i = 0; i < 70224; i++)
 			{

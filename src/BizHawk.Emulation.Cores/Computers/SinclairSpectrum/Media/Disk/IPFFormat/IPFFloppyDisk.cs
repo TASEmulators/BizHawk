@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override DiskType DiskFormatType => DiskType.IPF;
 
 		/// <summary>
-		/// Attempts to parse incoming disk data 
+		/// Attempts to parse incoming disk data
 		/// </summary>
 		/// <returns>
 		/// TRUE:   disk parsed

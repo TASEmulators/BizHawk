@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else
 				{
-					// just process what we have as-is 
+					// just process what we have as-is
 				}
 			}
 

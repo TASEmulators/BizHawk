@@ -40,13 +40,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int sprdma_countdown;
 
 		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
-		
+
 		/// <summary>
 		/// Clock speed of the main cpu in hz.  Used to time audio synthesis, which runs off the cpu clock.
 		/// </summary>
 		public int cpuclockrate { get; private set; }
 
-		//user configuration 
+		//user configuration
 		public int[] palette_compiled = new int[64 * 8];
 
 		//variable set when VS system games are running
@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				while (ppu.ppudead > 0)
 				{
 					ppu.NewDeadPPU();
-				}				
+				}
 			}
 			else
 			{
@@ -370,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ppu.TickPPU_preVBL();
 				}
 			}
-			
+
 			if (lagged)
 			{
 				_lagcount++;
@@ -396,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool current_strobe;
 		public bool new_strobe;
 
-		// this function will run one step of the ppu 
+		// this function will run one step of the ppu
 		// it will return whether the controller is read or not.
 		public void do_single_step(IController controller, out bool cont_read, out bool frame_done)
 		{
@@ -468,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						WriteMemory(0x2004, oam_dma_byte);
 					}
 					oam_dma_index++;
-					if (oam_dma_index == 512) 
+					if (oam_dma_index == 512)
 					{
 						oam_dma_exec = false;
 					}
@@ -478,7 +478,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_deadcounter--;
 				}
 			}
-			
+
 			dmc_realign = false;
 
 			/////////////////////////////
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					dmc_realign = true;
 				}
-				
+
 				// By this point the cpu should be frozen, if it is not, then we are in a multi-write opcode, add another cycle delay
 				if (!cpu.RDY && !cpu.rdy_freeze && (apu.dmc_dma_countdown == apu.DMC_RDY_check))
 				{
@@ -559,7 +559,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (apu.dmc.sample_length != 0)
 						{
 							apu.dmc.fill_glitch = true;
-						}					
+						}
 					}
 
 					if ((apu.dmc.timer == 4) && (apu.dmc.out_bits_remaining == 0) && (apu.dmc.sample_length == 1))
@@ -610,7 +610,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				reread_opp_4016 = 0;
 				reread_opp_4017 = 0;
 				reread_trigger = false;
-			}			
+			}
 
 			if (!cpu.RDY && !dmc_dma_exec && !oam_dma_exec)
 			{
@@ -839,7 +839,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private void write_joyport(byte value)
 		{
 			//Console.WriteLine("cont " + value + " frame " + Frame);
-			
+
 			var si = new StrobeInfo(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
@@ -1011,14 +1011,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (cheat_addresses[i] == addr)
 						{
-							if (cheat_compare_type[i] == 0) 
-							{ 
-								ret = cheat_value[i]; 
+							if (cheat_compare_type[i] == 0)
+							{
+								ret = cheat_value[i];
 							}
 							else if ((cheat_compare_type[i] == 1) && (ret == cheat_compare_val[i]))
 							{
 								ret = cheat_value[i];
-							}					
+							}
 						}
 					}
 				}

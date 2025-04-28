@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public int BlobIndex;
 		public int Number;
 		public int Session;
-			
+
 		/// <summary>
 		/// A track that's final in a file gets its length from the length of the file; other tracks lengths are determined from the succeeding track
 		/// </summary>
@@ -337,7 +337,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			if (curr_track == null)
 				return;
-				
+
 			//normalize: if an index 0 is missing, add it here
 			if (curr_track.Indexes[0].Number != 0)
 			{
@@ -368,7 +368,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			//spill cdtext data into this track
 			curr_cdtext = curr_track.CDTextData;
-		
+
 			curr_track.BlobIndex = curr_blobIndex;
 			curr_track.Session = curr_session;
 			curr_track.Number = trackCommand.Number;

@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 								if (t.Text.Length is not 0)
 								{
 									Core.SetCpuRegister(t.Name, int.Parse(t.Text, System.Globalization.NumberStyles.HexNumber));
-								}		
+								}
 							}
 							catch (InvalidOperationException)
 							{

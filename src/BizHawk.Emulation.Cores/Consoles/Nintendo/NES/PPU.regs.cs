@@ -1,4 +1,4 @@
-﻿//blargg: Reading from $2007 when the VRAM address is $3fxx will fill the internal read buffer with the contents at VRAM address $3fxx, in addition to reading the palette RAM. 
+﻿//blargg: Reading from $2007 when the VRAM address is $3fxx will fill the internal read buffer with the contents at VRAM address $3fxx, in addition to reading the palette RAM.
 
 //static const byte powerUpPalette[] =
 //{
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Console.WriteLine("reread 2002");
 			}
 			*/
-			
+
 			// reading from $2002 resets the destination for $2005 and $2006 writes
 			vtoggle = false;
 			Reg2002_vblank_active = 0;
@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1D));
 				}
-				
+
 			}
 			if (nes._isVS2c05 == 3)
 			{
@@ -433,8 +433,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				//some of the OAM bits are unwired so we mask them out here
 				//otherwise we just write this value and move on to the next oam byte
-				value &= 0xE3; 
-			}						
+				value &= 0xE3;
+			}
 			if (ppur.status.rendering)
 			{
 				// don't write to OAM if the screen is on and we are in the active display area
@@ -448,13 +448,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					OAM[reg_2003] = value;
 					reg_2003++;
-				}				
+				}
 			}
 			else
 			{
 				OAM[reg_2003] = value;
 				reg_2003++;
-			}	
+			}
 		}
 
 		private byte read_2004()
@@ -542,7 +542,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._ht = value & 31;
 
 				// testing indicates that this operation is delayed by 3 pixels
-				//ppur.install_latches();				
+				//ppur.install_latches();
 				install_2006 = 3;
 			}
 
@@ -593,13 +593,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//see comments in $2006
 			if (ppur.status.sl >= 241 || !PPUON)
-				nes.Board.AddressPpu(ppur.get_2007access()); 
+				nes.Board.AddressPpu(ppur.get_2007access());
 		}
 
 		private byte read_2007()
 		{
 			int addr = ppur.get_2007access() & 0x3FFF;
-			int bus_case = 0;	
+			int bus_case = 0;
 			//ordinarily we return the buffered values
 			byte ret = VRAMBuffer;
 
@@ -654,7 +654,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return ret;
 		}
-		
+
 		public byte ReadReg(int addr)
 		{
 			byte ret_spec;
@@ -683,14 +683,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (nes.cpu.TotalExecutedCycles == double_2007_read)
 						{
-							return ppu_open_bus;							
-						} 
+							return ppu_open_bus;
+						}
 						else
 						{
 							ret_spec = read_2007();
 							double_2007_read = nes.cpu.TotalExecutedCycles + 1;
 						}
-						
+
 						if (nes.do_the_reread_2007 > 0)
 						{
 							ret_spec = read_2007();
@@ -741,7 +741,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default: throw new InvalidOperationException();
 			}
 		}
-		
+
 		private enum DecayType
 		{
 			None = 0, // if there is no action, decrement the timer

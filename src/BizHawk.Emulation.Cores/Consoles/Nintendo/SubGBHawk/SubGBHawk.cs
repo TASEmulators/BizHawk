@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 		[CoreConstructor(VSystemID.Raw.GBC, Priority = CorePriority.SuperLow)]
 		public SubGBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBHawk.GBHawk.GBSettings settings, GBHawk.GBHawk.GBSyncSettings syncSettings)
 		{
-			
+
 			var subGBSettings = settings ?? new GBHawk.GBHawk.GBSettings();
 			var subGBSyncSettings = syncSettings ?? new GBHawk.GBHawk.GBSyncSettings();
 

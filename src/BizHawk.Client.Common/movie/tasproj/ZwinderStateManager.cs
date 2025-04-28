@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 			// init the reserved dictionary
 			RebuildReserved();
 		}
-		
+
 		public byte[] this[int frame]
 		{
 			get
@@ -174,7 +174,7 @@ namespace BizHawk.Client.Common
 						if (_reserveCallback(si.Frame))
 							AddToReserved(si);
 						else
-							buffer.Capture(si.Frame, s => 
+							buffer.Capture(si.Frame, s =>
 							{
 								using var rs = si.GetReadStream();
 								rs.CopyTo(s);

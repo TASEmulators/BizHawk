@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			{
 				do_frame_2x2();
 			}
-			
+
 			if (do_frame_fill)
 			{
 				FillVideoBuffer();
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				if (x4_clock == 0)
 				{
 					if (is_transmitting)
-					{ 
+					{
 						if (ready_to_transmit)
 						{
 							// fill the buffer on the second pass
@@ -595,7 +595,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 						}
 					}
 				}
-				
+
 				// if we hit a frame boundary, update video
 				if (A.vblank_rise)
 				{
@@ -1021,7 +1021,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 		public int[] GetVideoBuffer()
 		{
-			return _vidbuffer;		
+			return _vidbuffer;
 		}
 
 		public void FillVideoBuffer()

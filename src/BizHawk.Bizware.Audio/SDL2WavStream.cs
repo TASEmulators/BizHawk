@@ -38,7 +38,7 @@ namespace BizHawk.Bizware.Audio
 			AudioFormat.S32LSB or AudioFormat.F32LSB => 32,
 			_ => throw new InvalidOperationException(),
 		};
-		
+
 		[DllImport("SDL2", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr SDL_LoadWAV_RW(
 			IntPtr src,

@@ -52,15 +52,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					// Keyboard - row 1
 					"Key ESC", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Dash", "Key Hat", "Key CLR", "Key DEL",
 					// Keyboard - row 2
-					"Key TAB", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P", "Key @", "Key LeftBracket", "Key RETURN", 
+					"Key TAB", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P", "Key @", "Key LeftBracket", "Key RETURN",
 					// Keyboard - row 3
-					"Key CAPSLOCK", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Colon", "Key SemiColon", "Key RightBracket", 
+					"Key CAPSLOCK", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Colon", "Key SemiColon", "Key RightBracket",
 					// Keyboard - row 4
-					"Key SHIFT", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key ForwardSlash", "Key BackSlash", 
+					"Key SHIFT", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key ForwardSlash", "Key BackSlash",
 					// Keyboard - row 5
-					"Key SPACE", "Key CONTROL", 
+					"Key SPACE", "Key CONTROL",
 					// Keyboard - Cursor
-					"Key CURUP", "Key CURDOWN", "Key CURLEFT", "Key CURRIGHT", "Key COPY", 
+					"Key CURUP", "Key CURDOWN", "Key CURLEFT", "Key CURRIGHT", "Key COPY",
 					// Keyboard - Numpad
 					"Key NUM0", "Key NUM1", "Key NUM2", "Key NUM3", "Key NUM4", "Key NUM5", "Key NUM6", "Key NUM7", "Key NUM8", "Key NUM9", "Key NUMPERIOD", "KEY ENTER"
 				};

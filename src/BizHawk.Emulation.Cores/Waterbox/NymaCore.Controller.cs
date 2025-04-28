@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						continue;
 
 					var devices = portInfo.Devices;
-					
+
 					var device = devices.Find(a => a.ShortName == deviceName);
 					if (device == null)
 					{

@@ -30,14 +30,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Command,
 
             /// <summary>
-            /// During this phase, the actual data is transferred (if any). Usually that are the data bytes for the read/written sector(s), except for the Format Track Command, 
+            /// During this phase, the actual data is transferred (if any). Usually that are the data bytes for the read/written sector(s), except for the Format Track Command,
             /// in that case four bytes for each sector are transferred
             /// </summary>
             Execution,
 
             /// <summary>
-            /// Returns up to seven result bytes (depending on the command) that are containing status information. The Recalibrate and Seek Track commands do not return result bytes directly, 
-            /// instead the program must wait until the Main Status Register signalizes that the command has been completed, and then it must (!) send a 
+            /// Returns up to seven result bytes (depending on the command) that are containing status information. The Recalibrate and Seek Track commands do not return result bytes directly,
+            /// instead the program must wait until the Main Status Register signalizes that the command has been completed, and then it must (!) send a
             /// Sense Interrupt State command to 'terminate' the Seek/Recalibrate command.
             /// </summary>
             Result
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             PreExecution,
 
             /// <summary>
-            /// The start of instruction execution. This may end up with the FDC moving into result phase, 
+            /// The start of instruction execution. This may end up with the FDC moving into result phase,
             /// but also may also prepare the way for further processing to occur later in execution phase
             /// </summary>
             StartExecute,
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// Final cleanup tasks when the instruction has fully completed
             /// </summary>
             Completed
-            
+
         }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public const int MSR_DIO = 6;
         /// <summary>
         /// Request For Master (1=ready for next byte) (see b6 for direction)
-        /// ndicates data register IS ready to send or receive data to or from the processor Both bits DIO and RQM should be 
+        /// ndicates data register IS ready to send or receive data to or from the processor Both bits DIO and RQM should be
         /// used to perform the hand-shaking functions of “ready” and “directron” to the processor
         /// </summary>
         public const int MSR_RQM = 7;
@@ -493,12 +493,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// No Data
         /// No Data (Sector_ID not found, CRC fail in ID_field)
-        /// 
+        ///
         /// During execution of Read Data. Read Deleted Data Write Data.Write Deleted Data or Scan command, if the FDC cannot find
         /// the sector specified in the IDR(2)Register, this flag i s set.
-        /// 
+        ///
         /// During execution of the Read ID command. if the FDC cannot read the ID field without an error, then this flag IS set
-        /// 
+        ///
         /// During execution of the Read Diagnostic command. if the starting sector cannot be found, then this flag is set
         /// </summary>
         public const int SR1_ND = 2;
@@ -526,7 +526,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// Missing Address Mark in Data Field (DAM not found)
-        /// Missing address mark - When data IS read from the medium, i f the FDC cannot find a data address mark or deleted 
+        /// Missing address mark - When data IS read from the medium, i f the FDC cannot find a data address mark or deleted
         /// data address mark, then this flag is set
         /// </summary>
         public const int SR2_MD = 0;
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// Scan Not Satisfied (no fitting sector found)
-        /// Scan not satisfied - During execution of the Scan command, i f the F D cannot find a sector on the cylinder 
+        /// Scan not satisfied - During execution of the Scan command, i f the F D cannot find a sector on the cylinder
         /// which meets the condition.then this flag i s set
         /// </summary>
         public const int SR2_SN = 2;
@@ -553,7 +553,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// Wrong Cylinder (read/programmed track-ID different) (see b1)
-        /// Wrong cylinder - This bit IS related to the ND bit, and when  the contents of C(3) on the medium is different 
+        /// Wrong cylinder - This bit IS related to the ND bit, and when  the contents of C(3) on the medium is different
         /// from that stored i n the IDR.this flag is set
         /// </summary>
         public const int SR2_WC = 4;
@@ -729,7 +729,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// </summary>
             public Action CommandDelegate { get; set; }
         }
-       
+
         /// <summary>
         /// Storage for command parameters
         /// </summary>
@@ -768,7 +768,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// </summary>
             public byte Gap3Length;
             /// <summary>
-            /// Data length (DTL) - When N is defined as 00, DTL stands for the data length 
+            /// Data length (DTL) - When N is defined as 00, DTL stands for the data length
             /// which users are going to read out or write into the sector
             /// </summary>
             public byte DTL;

@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 			else
-				Vram[addr] = value;	
+				Vram[addr] = value;
 		}
 
 		protected override int Get_CHRBank_1K(int addr)

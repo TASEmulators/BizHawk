@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_data = null;
 			}
-			
+
 			public override long Length => throw new NotImplementedException();
 
 			public override long Position
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new NotImplementedException();
 			}
-			
+
 			public override void Write(byte[] buffer, int offset, int count)
 			{
 				_data.Write(buffer, offset, count);
@@ -324,13 +324,13 @@ namespace BizHawk.Client.EmuHawk
 
 		// has EOR been written on this stream?
 		private bool _videoDone;
-		
+
 		// has EOR been written on this stream?
 		private bool _audioDone;
 
 		// video packets waiting to be written
 		private readonly Queue<NutFrame> _videoQueue;
-		
+
 		// audio packets waiting to be written
 		private readonly Queue<NutFrame> _audioQueue;
 

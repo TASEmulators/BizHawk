@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				_outputBuffer[i * 2] = unchecked((short)_mixer);
 				_outputBuffer[i * 2 + 1] = unchecked((short)_mixer);
-				
+
 			}
 
 			samples = _outputBuffer;

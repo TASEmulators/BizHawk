@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			return crc;
 		}
-		
+
 		/// <summary>
 		/// returns the address from a sector. useful for saving it before zeroing it for ECC calculations
 		/// </summary>

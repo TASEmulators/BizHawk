@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					// Adding set of gamepad buttons (P1)
 					AddButtons(GamepadButtons[0]);
-					
+
 					break;
 
 				case Port1PeripheralOption.FourScore:
@@ -173,8 +173,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
 				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
 				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-			},					
-			new[] {				
+			},
+			new[] {
 				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
 				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
 				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
@@ -566,7 +566,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"7A7BCA9A30A9F1B8AD3B45FA7DD7C8C180F53640", // Jetsons, The - Cogswell's Caper! (U) [t1]	NES
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [o1]
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [!]
-			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!] 
+			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!]
 			"7E1C9F23BF9BECB7831459598339A4DC9A3CECFC", // Joe and Mac (E) [!]
 			"A654DE12A59D07BAFF30DD6CB5E1AD05EB20B2D7", // Jumpy Demo by Rwin (PD)
 			"DE42818873470458DF29F515A193F536A0642EA8", // Kamikaze Mario DX Plus V1

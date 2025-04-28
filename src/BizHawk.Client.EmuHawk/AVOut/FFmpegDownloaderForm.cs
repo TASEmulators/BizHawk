@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				
+
 				//throw new Exception("test of download failure");
 
 				//if we were ordered to exit, bail without wasting any more time

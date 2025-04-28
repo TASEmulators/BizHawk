@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 	{
 		private readonly List<MemoryDomainIntPtr> _saveramAreas = new();
 		private long _saveramSize = 0;
-		
+
 		public bool SaveRamModified => _saveramSize > 0;
 
 		public byte[] CloneSaveRam()

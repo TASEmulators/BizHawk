@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	public class MapperDefault : MapperBase
 	{
 		public int ROM_mask;
-		
+
 		public override void Initialize()
 		{
 			// roms come in 3 sizes, but the last size is a degenerate case

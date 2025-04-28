@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearDetails();
 		}
-		
+
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
 			HandleSpriteViewMouseMove(e.Location);
@@ -554,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 			byte[] ppuBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
 
 			bool is8x16 = _ppu.SPTall;
-			
+
 			//figure out which sprite we're over
 			int spriteSlotY = p.Y / 8;
 			int spriteSlotX = p.X / 8;

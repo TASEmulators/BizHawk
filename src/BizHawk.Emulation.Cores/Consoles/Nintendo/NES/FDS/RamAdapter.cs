@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				crc = CCITT_8(crc, data[i]);
 			}
 			dest.WriteByte((byte)(crc & 0xff));
-			dest.WriteByte((byte)(crc >> 8)); 
+			dest.WriteByte((byte)(crc >> 8));
 		}
 
 		private static byte[] FixFDSSide(byte[] inputdisk)
@@ -327,12 +327,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					/* "It's a spring which will pull the reading head next to the outer edge of
 					 * the disk (you can clearly hear a click when this happens), so it's hard to
 					 * know exactly, but it's almost instantaneous (compared to the 6-7 seconds
-					 * required for moving in the other direction)."*/				
+					 * required for moving in the other direction)."*/
 					cycleswaiting = 535000;
 					break;
 			}
 		}
-		
+
 		/// <summary>
 		/// data write reg
 		/// </summary>
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				transferreset = false;
 			}
-				
+
 			if ((cached4025 & 0x40) == 0 && (value & 0x40) != 0)
 			{
 				lookingforendofgap = true;
@@ -594,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if ((cached4025 & 0x10) != 0)
 					{
 						//Console.WriteLine("FDS: write clear CRC", readreg, diskpos);
-						
+
 						if (crc == 0)
 						{
 							cached4025 &= unchecked((byte)~0x10); // clear CRC reading

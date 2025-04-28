@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Port1 = ControllerCtors[controller1](1);
 				Port2 = ControllerCtors[controller2](2);
 
-				if (!use_keyboard) 
+				if (!use_keyboard)
 				{
 					Definition = new ControllerDefinition(Port1.Definition.Name)
 					{

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		 + ActiveLine is the current offset into the framebuffer. 0 is the first
 		   line of active display, and the last value will be BufferHeight-1.
 		 + BackgroundY is the current offset into the scroll plane. It is set with BYR
-		   register at certain sync points and incremented every scanline. 
+		   register at certain sync points and incremented every scanline.
 		   Its values range from 0 - $1FF.
 		 + RCRCounter is set to $40 at the first line of active display, and incremented each
 		   scanline thereafter.

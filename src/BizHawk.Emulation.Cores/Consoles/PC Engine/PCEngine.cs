@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			// 2) The games which have custom HBlankPeriods work without it, the override only
 			//    serves to clean up minor gfx anomalies.
 			// 3) There's no point in haxing the timing with incorrect values in an attempt to avoid this.
-			//    The proper fix is cycle-accurate/bus-accurate timing. That isn't coming to the C# 
+			//    The proper fix is cycle-accurate/bus-accurate timing. That isn't coming to the C#
 			//    version of this core. Let's just acknolwedge that the timing is imperfect and fix
 			//    it in the least intrusive and most honest way we can.
 			if (game["HBlankPeriod"])

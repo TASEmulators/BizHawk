@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (addr < 0x4000)
 				{
 					bank = basebank | (regs[0] & 6) | 0;
-					
+
 				}
 				else
 				{

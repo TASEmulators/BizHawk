@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 						? string.CompareOrdinal(c1.Column?.Name, c2.Column?.Name)
 						: row;
 				}
-					
+
 				return 1;
 			}
 

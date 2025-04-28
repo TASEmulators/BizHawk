@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		private readonly Am29F040B _chipA = new();
 		private readonly Am29F040B _chipB = new();
-		
+
 		private bool _saveRamDirty;
 
 		private bool _boardLed;
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			if (_chipA.CheckDataDirty() || _deltaA == null)
 				_deltaA = DeltaSerializer.GetDelta<byte>(_originalMediaA, _chipA.Data).ToArray();
-			
+
 			if (_chipB.CheckDataDirty() || _deltaB == null)
 				_deltaB = DeltaSerializer.GetDelta<byte>(_originalMediaB, _chipB.Data).ToArray();
 
@@ -133,21 +133,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			{
 				if (_deltaA != null)
 					DeltaSerializer.ApplyDelta(_originalMediaA, _chipA.Data, _deltaA);
-				
+
 				if (_deltaB != null)
 					DeltaSerializer.ApplyDelta(_originalMediaB, _chipB.Data, _deltaB);
 			}
-			
+
 			DriveLightOn = _boardLed;
 		}
 
-		private int CalculateBankOffset(int addr) => 
+		private int CalculateBankOffset(int addr) =>
 			(addr & 0x1FFF) | (_bankNumber << 13);
-		
-		public override int Peek8000(int addr) => 
+
+		public override int Peek8000(int addr) =>
 			_chipA.Peek(CalculateBankOffset(addr));
 
-		public override int PeekA000(int addr) => 
+		public override int PeekA000(int addr) =>
 			_chipB.Peek(CalculateBankOffset(addr));
 
 		public override int PeekDE00(int addr)
@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public override void Poke8000(int addr, int val) =>
 			_chipA.Poke(addr, val);
-		
+
 		public override void PokeA000(int addr, int val) =>
 			_chipB.Poke(addr, val);
 
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_ram[addr] = unchecked((byte)val);
 		}
 
-		public override int Read8000(int addr) => 
+		public override int Read8000(int addr) =>
 			_chipA.Read(CalculateBankOffset(addr));
 
 		public override int ReadA000(int addr) =>
@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			using var stream = new MemoryStream(data);
 			using var reader = new BinaryReader(stream);
-			
+
 			var deltaASize = reader.ReadInt32();
 			_deltaA = reader.ReadBytes(deltaASize);
 			var deltaBSize = reader.ReadInt32();

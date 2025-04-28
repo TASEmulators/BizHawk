@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte ReadControls1(bool peek)
 		{
 			InputCallbacks.Call();
-			
+
 			byte value = _controllerDeck.ReadPort1(_controller);
 
 			if (!peek)

@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public virtual void tick()
 		{
 			Pixel_Stat = 0;
-			// drawing cycles 
+			// drawing cycles
 			// note: clipping might need to be handled differently between PAL and NTSC
 			if (cycle < 182)
 			{
@@ -637,7 +637,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						{
 							right_shift_even = (Sprites[i * 4 + 2].Bit(1) && ((((LY - OBJ_OFST) - Sprites[i * 4]) % 2) == 0)) ? 1 : 0;
 						}
-						
+
 						x_base = Sprites[i * 4 + 1];
 
 						if ((right_shift + right_shift_even) == 0)
@@ -1017,7 +1017,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFFFFFFF, // white
 		};
 
-		// G7400 specific 
+		// G7400 specific
 		public static readonly byte[] VPP_Alpha_Numeric = { 0x00, 0x38, 0x44, 0x40, 0x20, 0x10, 0x00, 0x10, 0x00, 0x00, // (reverse ?)		0x00
 															0x00, 0x10, 0x28, 0x00, 0x38, 0x44, 0x7C, 0x44, 0x00, 0x00, // (A hat)			0x01
 															0x00, 0x08, 0x10, 0x3C, 0x20, 0x30, 0x20, 0x3C, 0x00, 0x00, // (E accent /)		0x02
@@ -1530,7 +1530,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public override void tick()
 		{
 			Pixel_Stat = 0;
-			// drawing cycles 
+			// drawing cycles
 			// note: clipping might need to be handled differently between PAL and NTSC
 			if (cycle < 182)
 			{
@@ -1613,7 +1613,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public override void tick()
 		{
 			Pixel_Stat = 0;
-			// drawing cycles 
+			// drawing cycles
 			// note: clipping might need to be handled differently between PAL and NTSC
 			if (cycle < 182)
 			{

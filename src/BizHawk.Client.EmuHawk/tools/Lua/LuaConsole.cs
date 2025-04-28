@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					Settings.Columns = LuaListView.AllColumns;
-					
+
 					DisplayManager.ClearApiHawkSurfaces();
 					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
@@ -502,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
-			
+
 		}
 
 		public void ClearOutputWindow()

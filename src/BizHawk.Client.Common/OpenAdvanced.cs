@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		/// returns a sole path to use for opening a rom (not sure if this is a good idea)
 		/// </summary>
 		string SimplePath { get; }
-		
+
 		void Deserialize(string str);
 		void Serialize(TextWriter tw);
 	}
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 		{
 			token = JsonConvert.DeserializeObject<Token>(str);
 		}
-		
+
 		public void Serialize(TextWriter tw)
 		{
 			tw.Write(JsonConvert.SerializeObject(token));

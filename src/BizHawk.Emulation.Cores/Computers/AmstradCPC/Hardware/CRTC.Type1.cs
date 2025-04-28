@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					}
 
 					if (VCC == R7_VerticalSyncPosition      // C4 == R7
-						&& !VSYNC)							// ACCC 16.3: It is not possible to trigger or inhibit VSYNC during a VSYNC     
+						&& !VSYNC)							// ACCC 16.3: It is not possible to trigger or inhibit VSYNC during a VSYNC
 					{
 						// VSYNC enabled
 						VSYNC = true;
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			if (HCC == R2_HorizontalSyncPosition        // C0 == R2
-				&& R3_HorizontalSyncWidth > 0)			// ACCC 14.6: When R3 == 0, CRTC 0 and 1 do not produce HSYNC     
+				&& R3_HorizontalSyncWidth > 0)			// ACCC 14.6: When R3 == 0, CRTC 0 and 1 do not produce HSYNC
 			{
 				// HSYNC is enabled
 				HSYNC = true;
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				HSC++;
 
 				if (HSC == R3_HorizontalSyncWidth       // C3l == R3l
-					|| HSC == 0)                        // HSC counter wrap-around                        
+					|| HSC == 0)                        // HSC counter wrap-around
 				{
 					// disable HSYNC
 					HSYNC = false;
@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 		}
 
-		
+
 		public void Clocko()
 		{
 			CheckReset();
@@ -512,7 +512,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 		/// <summary>
-		/// R3l: CRTC-type horizontal sync width independent helper function 
+		/// R3l: CRTC-type horizontal sync width independent helper function
 		/// </summary>
 		protected override int R3_HorizontalSyncWidth
 		{
@@ -525,7 +525,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// R3h: CRTC-type vertical sync width independent helper function 
+		/// R3h: CRTC-type vertical sync width independent helper function
 		/// </summary>
 		protected override int R3_VerticalSyncWidth
 		{
@@ -672,7 +672,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			// ACCC1.8 - 21.3.1
 			// Only CRTC 1 has a status register present on the specific port &BE00.
-			// This port is a mirror of the read port for CRTC’s 3 and 4, which handle status differently			
+			// This port is a mirror of the read port for CRTC’s 3 and 4, which handle status differently
 			data = StatusRegister;
 
 			return true;

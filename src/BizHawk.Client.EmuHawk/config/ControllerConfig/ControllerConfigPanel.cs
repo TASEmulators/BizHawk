@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_panelSize = Size;
 			}
-			
+
 			_realConfigObject = config;
 			_realConfigButtons = buttons;
 			SetButtonList();

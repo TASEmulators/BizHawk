@@ -120,19 +120,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public int[] GetVideoBuffer()
 		{
-			return _framebuffer;		
+			return _framebuffer;
 		}
 
 		public void get_video_frame()
 		{
 			ppu.draw_screen();
-			
+
 			for (int i = 0; i < _vidbuffer.Length; i++)
 			{
 				_framebuffer[i] = _vidbuffer[i];
 				_vidbuffer[i] = 0;
 			}
-			
+
 		}
 
 		public int VirtualWidth => (256 + 4) * 2;

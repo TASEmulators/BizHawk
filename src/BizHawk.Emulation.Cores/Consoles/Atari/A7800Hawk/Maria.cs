@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// Now proceed with the remaining scanlines
 			// the first one is a pre-render line, since we didn't actually put any data into the buffer yet
 			while (scanline < Core._screen_height)
-			{				
+			{
 				if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 					DMA_phase_counter = 0;
 				}
-				
+
 				Core.RunCPUCycle();
 
 				//////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						// there is a trick here to be aware of.
 						// the renderer has no concept of objects, as it only has information on each pixel
-						// but objects are specified in groups of 8 pixels. 
+						// but objects are specified in groups of 8 pixels.
 						// however, since objects can only be placed in 160 resolution
 						// we can pick bits based on whether the current pixel is even or odd
 						temp_palette = color & 0x10;
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						scanline_buffer[pixel] = _palette[BG_latch_1];
 					}
-					
+
 					// send buffer to the video buffer
 					Core._vidbuffer[(scanline - 21) * 320 + pixel] = scanline_buffer[pixel];
 
@@ -451,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 						if (graphics_read_time == 0)
 						{
-							// We have read the graphics data, for this header, now return to the header list 
+							// We have read the graphics data, for this header, now return to the header list
 							// This loop will continue until a header indicates its time to stop
 							DMA_phase = DMA_HEADER;
 							DMA_phase_counter = 0;
@@ -464,7 +464,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						bool skip = true;
 
 						while (skip)
-						{ 
+						{
 							if (GFX_Objects[header_counter].ind_mode)
 							{
 								addr_t = ReadMemory((ushort)(GFX_Objects[header_counter].addr + scan_index));
@@ -547,7 +547,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 					if (scan_index == GFX_Objects[header_counter].width)
 					{
-						// We have read the graphics data, for this header, now return to the header list 
+						// We have read the graphics data, for this header, now return to the header list
 						// This loop will continue until a header indicates its time to stop
 						DMA_phase = DMA_HEADER;
 						DMA_phase_counter = 0;
@@ -675,7 +675,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			for (int i = 0; i < 128; i++)
 			{
 				GFX_Objects[i].obj = new byte[128];
-			}		
+			}
 		}
 
 		// Most of the Maria state is captured in Maria Regs in the core

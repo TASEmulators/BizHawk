@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 			////ftriangle = fCPU/(32*(tval + 1))
 
 			var apu = Nes.apu;
-			
+
 			// evaluate the pitches
 			int pulse0Period = apu.pulse[0].timer_reload_value;
 			float pulse0Freq = 1789773.0f / (16.0f * (pulse0Period + 1));

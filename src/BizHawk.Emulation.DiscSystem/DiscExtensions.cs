@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//--- load the disc in a context which will let us abort if it's going to take too long
 			var discMountJob = new DiscMountJob(fromPath: path, slowLoadAbortThreshold: 8);
 			discMountJob.Run();
-			
+
 			if (discMountJob.OUT_SlowLoadAborted)
 			{
 				errorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk");

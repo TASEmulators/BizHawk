@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 				var buttonToSet = controller == null ? button : $"P{controller} {button}";
 				if (state == null) _inputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
 				else _inputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
-				
+
 				//"Overrides" is a gross line of code in that flushes overrides into the current controller.
 				//That's not really the way it was meant to work which was that it should pull all its values through the filters before ever using them.
 				//Of course the code that does that is in the main loop and the lua API wouldnt know how to do it.

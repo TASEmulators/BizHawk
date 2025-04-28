@@ -22,7 +22,7 @@ namespace BizHawk.Bizware.Input
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
 		public readonly IReadOnlyCollection<(string ButtonName, Func<bool> GetIsPressed)> ButtonGetters;
-		
+
 		/// <summary>For use in keybind boxes</summary>
 		public string InputNamePrefix { get; private set; }
 

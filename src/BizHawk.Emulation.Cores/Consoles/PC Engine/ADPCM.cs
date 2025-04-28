@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private bool nibble;
 		private int magnitude;
 
-		private static readonly int[] StepSize = 
+		private static readonly int[] StepSize =
 		{
 			0x0002, 0x0006, 0x000A, 0x000E, 0x0012, 0x0016, 0x001A, 0x001E,
 			0x0002, 0x0006, 0x000A, 0x000E, 0x0013, 0x0017, 0x001B, 0x001F,

@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -320,7 +320,7 @@ namespace BizHawk.Client.Common
 			}
 
 			using var sr = file.OpenText();
-			
+
 			if (!append)
 			{
 				Clear();
@@ -372,7 +372,7 @@ namespace BizHawk.Client.Common
 							type = Watch.DisplayTypeFromChar(vals[7][0]);
 							bigEndian = vals[8] == "1";
 						}
-						
+
 						// For backwards compatibility, don't assume these values exist
 						if (vals.Length > 9)
 						{

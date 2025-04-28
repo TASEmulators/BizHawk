@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public byte pt_0, pt_1;
 		}
 
-		private BGDataRecord[] bgdata = new BGDataRecord[34]; 
+		private BGDataRecord[] bgdata = new BGDataRecord[34];
 
 		public short[] xbuf = new short[256 * 240];
 
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//tack on the deemph bits. THESE MAY BE ORDERED WRONG. PLEASE CHECK IN THE PALETTE CODE
 				xbuf[target - 1] = (short)(pixelcolor_latch_1 | reg_2001.intensity_lsl_6);
 			}
-		
+
 			pixelcolor_latch_1 = pixelcolor;
 		}
 
@@ -231,8 +231,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					yp = ppur.status.sl - 1;
 					ppuphase = PPU_PHASE_BG;
 
-					// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from 
-					// the current location of PPUADDR"			
+					// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from
+					// the current location of PPUADDR"
 					if (ppur.status.sl == 0 && PPUON && reg_2003 >= 8 && region == Region.NTSC)
 					{
 						for (int i = 0; i < 8; i++)
@@ -266,10 +266,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					/////////////////////////////////////////////
 					// Sprite Evaluation Start
 					/////////////////////////////////////////////
-					
+
 					if (sprite_eval_cycle < 64)
 					{
-						// the first 64 cycles of each scanline are used to initialize sceondary OAM 
+						// the first 64 cycles of each scanline are used to initialize sceondary OAM
 						// the actual effect setting a flag that always returns 0xFF from a OAM read
 						// this is a bit of a shortcut to save some instructions
 						// data is read from OAM as normal but never used
@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					}
 					// otherwise, scan through OAM and test if sprites are in range
-					// if they are, they get copied to the secondary OAM 
+					// if they are, they get copied to the secondary OAM
 					else
 					{
 						if (sprite_eval_cycle == 64)
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						else if (sprite_eval_write)
 						{
-							//look for sprites 
+							//look for sprites
 							if (spr_true_count == 0 && soam_index < 8)
 							{
 								soam[soam_index * 4] = read_value;
@@ -316,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								{
 									//a flag gets set if sprite zero is in range
 									if (oam_index == reg_2003) { sprite_zero_in_range = true; }
-										
+
 									spr_true_count++;
 									soam_m_index++;
 								}
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										soam_index++;
 										if (soam_index == 8)
 										{
-											// oam_index could be pathologically misaligned at this point, so we have to find the next 
+											// oam_index could be pathologically misaligned at this point, so we have to find the next
 											// nearest actual sprite to work on >8 sprites per scanline option
 											oam_index_aux = (oam_index % 4) * 4;
 										}
@@ -383,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 								}
 
-								read_value = soam[0]; //writes change to reads 
+								read_value = soam[0]; //writes change to reads
 							}
 						}
 						else
@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							oam_index += 4;
 						}
 					}
-					
+
 					/////////////////////////////////////////////
 					// Sprite Evaluation End
 					/////////////////////////////////////////////
@@ -401,11 +401,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					int pixel = 0, pixelcolor = PALRAM[pixel];
 
 					//process the current clock's worth of bg data fetching
-					//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work 
+					//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work
 					// due to the cpu not running while the sprite renders below
 					if (PPUON) { Read_bgdata(xp, xt + 2); }
 					//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
-					//at one point I commented this out to fix bottom-left garbage in DW4. but it's needed for full_nes_palette. 
+					//at one point I commented this out to fix bottom-left garbage in DW4. but it's needed for full_nes_palette.
 					//solution is to only run when PPU is actually OFF (left-suppression doesnt count)
 					else
 					{
@@ -441,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						int s = sl_sprites[xt * 8 + xp];
 						int spixel = sl_sprites[256 + xt * 8 + xp];
 						int temp_attr = sl_sprites[512 + xt * 8 + xp];
-						
+
 						//TODO - make sure we don't trigger spritehit if the edges are masked for either BG or OBJ
 						//spritehit:
 						//1. is it sprite#0?
@@ -525,8 +525,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						//check all the conditions that can cause things to render in these 8px
 						renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
-					}	
-					
+					}
+
 					if (ppur.status.cycle > 63)
 					{
 						if (ppu_was_on_spr && !PPUON)
@@ -535,7 +535,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							reg_2003++;
 						}
 					}
-					
+
 					ppu_was_on_spr = PPUON;
 				}
 				else
@@ -549,7 +549,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						ppu_was_on = true;
 						if (ppur.status.cycle == 255) { race_2006 = true; }
-						
+
 					}
 
 					if (xp == 7 && PPUON)
@@ -609,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						while (oam_index_aux < 64 && soam_index_aux < 64)
 						{
-							//look for sprites 
+							//look for sprites
 							soam[soam_index_aux * 4] = OAM[oam_index_aux * 4];
 							if (yp >= OAM[oam_index_aux * 4] && yp < OAM[oam_index_aux * 4] + spriteHeight)
 							{
@@ -1029,7 +1029,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					ppu_init_frame();
 					nes.frame_is_done = true;
-				}				
+				}
 			}
 		}
 

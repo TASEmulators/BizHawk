@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// The track blocks
 			/// </summary>
 			public readonly List<CDITrack> Tracks = [ ];
-			
+
 			/// <summary>
 			/// The disc info block
 			/// </summary>
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// </summary>
 			public byte NumTracks;
 		}
-		
+
 		/// <summary>
 		/// Represents a track/disc info block header from a CDI track
 		/// </summary>
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// </summary>
 			public uint SessionType;
 		}
-		
+
 		/// <summary>
 		/// Represents a disc info block from a CDI file
 		/// </summary>
@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					throw new CDIParseException("Malformed CDI format: Total track number mismatch!");
 				}
-				
+
 				if (stream.Position != stream.Length - 4)
 				{
 					//throw new CDIParseException("Malformed CDI format: Did not reach end of footer after parsing!");

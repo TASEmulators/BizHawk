@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public MMC3(NesBoardBase board, int num_prg_banks)
 		{
 			just_cleared = just_cleared_pending = false;
-			
+
 			MirrorMask = 1;
 			this.board = board;
 			if (board.Cart.Chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4001: //$C001 - IRQ Clear
 					// does not take immediate effect (fixes Klax)
-					just_cleared_pending = true;				
+					just_cleared_pending = true;
 					break;
 				case 0x6000: //$E000 - IRQ Acknowledge / Disable
 					irq_enable = false;
@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					IRQ_EQ_Pass();
 			}
-			
+
 			irq_reload_flag = false;
 		}
 
@@ -272,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (oldIrqType)
 					irq_reload_flag = true;
 			}
-			
+
 			just_cleared = just_cleared_pending;
 			just_cleared_pending = false;
 		}
@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				a12_old = a12;
-			}		
+			}
 		}
 	}
 

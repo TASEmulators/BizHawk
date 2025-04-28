@@ -41,7 +41,7 @@ public class Am29F040B
 		Complete,
 		Command
 	}
-	
+
 	private enum Mode
 	{
 		Read,
@@ -90,12 +90,12 @@ public class Am29F040B
 
 	public void Clock()
 	{
-		if (_busyTimeRemaining <= 0) 
+		if (_busyTimeRemaining <= 0)
 			return;
 
 		_busyTimeRemaining--;
 
-		if (_busyTimeRemaining != 0) 
+		if (_busyTimeRemaining != 0)
 			return;
 
 		_status ^= PollingBit;
@@ -174,7 +174,7 @@ public class Am29F040B
 			_status ^= ToggleBit;
 			return _status;
 		}
-		
+
 		// Some commands allow one read of status before going back to read mode.
 		// Areas being written or erased will always return status during modification.
 		if (_returnStatus && addr >= _startAddress && addr <= _endAddress)
@@ -277,7 +277,7 @@ public class Am29F040B
 				if (_busyTimeRemaining > 0)
 					break;
 
-				_busyTimeRemaining = EraseSectorLatency; // ~1sec 
+				_busyTimeRemaining = EraseSectorLatency; // ~1sec
 				_data.AsSpan(addr & ~SectorMask, SectorSize).Fill(0xFF);
 				_dataDirty = true;
 				_returnStatus = true;

@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private IEnumerable<int> SelectedIndices => BreakpointView.SelectedIndices.Cast<int>();
-		
+
 		private IEnumerable<Breakpoint> SelectedItems => SelectedIndices.Select(index => _breakpoints[index]);
 
 		private IEnumerable<Breakpoint> EditableItems => SelectedItems.Where(item => !item.ReadOnly);

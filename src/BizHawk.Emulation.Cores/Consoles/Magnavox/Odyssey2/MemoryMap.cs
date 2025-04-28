@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				if (RAM_en)
 				{
-					if (addr_latch < 0x80) 
+					if (addr_latch < 0x80)
 					{
 						return RAM[addr_latch & 0x7F];
 					}
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				rom_bank = (ushort)(cart_b0 ? 1 : 0);
 				rom_bank |= (ushort)(cart_b1 ? 2 : 0);
 				//rom_bank = (ushort)(rom_bank << 12);
-				
+
 				// XROM uses cart_b1 for read enable, not bank switch
 				if (is_XROM) { rom_bank = 0; }
 

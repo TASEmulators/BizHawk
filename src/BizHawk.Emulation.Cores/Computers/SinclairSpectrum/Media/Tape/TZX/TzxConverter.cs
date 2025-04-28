@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			double res = 0.98385608 * (double)tStates;
 			return (int)res;
 		}
-		*/			
+		*/
 
 		/// <summary>
 		/// DeSerialization method
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position = 10;
 			while (_position < data.Length)
 			{
-				// block ID is the first byte in a new block                
+				// block ID is the first byte in a new block
 				blockId = data[_position++];
 
 				// process the data
@@ -387,15 +387,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID10()
 		{
 			/* length: [02,03]+04
-		        
+
 			Offset	    Value	Type	    Description
 			0x00	    -	    WORD	    Pause after this block (ms.) {1000}
 			0x02	    N	    WORD	    Length of data that follow
-			0x04	    -	    BYTE[N]	    Data as in .TAP files                   
+			0x04	    -	    BYTE[N]	    Data as in .TAP files
 
-			This block must be replayed with the standard Spectrum ROM timing values - see the values in 
-			curly brackets in block ID 11. The pilot tone consists in 8063 pulses if the first data byte 
-			(flag byte) is < 128, 3223 otherwise. This block can be used for the ROM loading routines AND 
+			This block must be replayed with the standard Spectrum ROM timing values - see the values in
+			curly brackets in block ID 11. The pilot tone consists in 8063 pulses if the first data byte
+			(flag byte) is < 128, 3223 otherwise. This block can be used for the ROM loading routines AND
 			for custom loading routines that use the same timings as ROM ones do. */
 
 			t = new TapeDataBlock
@@ -491,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.AddMetaData(BlockDescriptorTitle.Data_Length, blockLen + " Bytes");
 			t.AddMetaData(BlockDescriptorTitle.Bits_In_Last_Byte, bitsInLastByte + " Bits");
 			t.AddMetaData(BlockDescriptorTitle.Pause_After_Data, t.PauseInMS + " ms / " + t.PauseInTStates + "TStates");
-			
+
 			// add the raw data
 			t.BlockData = blockdata;
 
@@ -520,14 +520,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x08	-	    WORD	Length of ONE bit pulse {1710}
 			0x0A	-	    WORD	Length of PILOT tone (number of pulses) {8063 header (flag<128), 3223 data (flag>=128)}
 			0x0C	-	    BYTE	Used bits in the last byte (other bits should be 0) {8}
-									(e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, 
+									(e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00,
 									where MSb is the leftmost bit, LSb is the rightmost bit)
 			0x0D	-	    WORD	Pause after this block (ms.) {1000}
 			0x0F	N	    BYTE[3]	Length of data that follow
-			0x12	-	    BYTE[N]	Data as in .TAP files                  
+			0x12	-	    BYTE[N]	Data as in .TAP files
 
-			This block is very similar to the normal TAP block but with some additional info on the timings and other important 
-			differences. The same tape encoding is used as for the standard speed data block. If a block should use some non-standard 
+			This block is very similar to the normal TAP block but with some additional info on the timings and other important
+			differences. The same tape encoding is used as for the standard speed data block. If a block should use some non-standard
 			sync or pilot tones (i.e. all sorts of protection schemes) then use the next three blocks to describe it.*/
 
 			t = new TapeDataBlock
@@ -614,7 +614,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.AddMetaData(BlockDescriptorTitle.One_Bit_Length, bit1PulseLength + " T-States");
 			t.AddMetaData(BlockDescriptorTitle.Data_Length, blockLen + " Bytes");
 			t.AddMetaData(BlockDescriptorTitle.Bits_In_Last_Byte, bitsInLastByte + " Bits");
-			t.AddMetaData(BlockDescriptorTitle.Pause_After_Data, t.PauseInMS + " ms / " + t.PauseInTStates + "TStates");			
+			t.AddMetaData(BlockDescriptorTitle.Pause_After_Data, t.PauseInMS + " ms / " + t.PauseInTStates + "TStates");
 
 			// add the raw data
 			t.BlockData = blockdata;
@@ -638,9 +638,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			Offset	Value	Type	Description
 			0x00	-	    WORD	Length of one pulse in T-states
-			0x02	-	    WORD	Number of pulses                                
+			0x02	-	    WORD	Number of pulses
 
-			This will produce a tone which is basically the same as the pilot tone in the ID 10, ID 11 blocks. You can define how 
+			This will produce a tone which is basically the same as the pilot tone in the ID 10, ID 11 blocks. You can define how
 			long the pulse is and how many pulses are in the tone. */
 
 			int blockLen = 4;
@@ -664,14 +664,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			while (pilotCount > 0)
 			{
 				ToggleSignal();
-				t.DataPeriods.Add(pilotToneLength);				
+				t.DataPeriods.Add(pilotToneLength);
 				t.DataLevels.Add(signal);
 				t.PulseDescription.Add("Pilot " + pilotCount);
 				pilotCount--;
 			}
 
 			// add the block to the datacorder
-			_datacorder.DataBlocks.Add(t);			
+			_datacorder.DataBlocks.Add(t);
 
 			// advance the position to the next block
 			_position += blockLen;
@@ -686,12 +686,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID13()
 		{
 			/* length: [00]*02+01
-			 * 
+			 *
 			Offset	Value	Type	Description
 			0x00	N	    BYTE	Number of pulses
 			0x01	-	    WORD[N]	Pulses' lengths
 
-			This will produce N pulses, each having its own timing. Up to 255 pulses can be stored in this block; this is useful for non-standard 
+			This will produce N pulses, each having its own timing. Up to 255 pulses can be stored in this block; this is useful for non-standard
 			sync tones used by some protection schemes. */
 
 			t = new TapeDataBlock
@@ -739,11 +739,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x00	-	    WORD	Length of ZERO bit pulse
 			0x02	-	    WORD	Length of ONE bit pulse
 			0x04	-	    BYTE	Used bits in last byte (other bits should be 0)
-									(e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00, 
+									(e.g. if this is 6, then the bits used (x) in the last byte are: xxxxxx00,
 									where MSb is the leftmost bit, LSb is the rightmost bit)
 			0x05	-	    WORD	Pause after this block (ms.)
 			0x07	N	    BYTE[3]	Length of data that follow
-			0x0A	-	    BYTE[N]	Data as in .TAP files                             
+			0x0A	-	    BYTE[N]	Data as in .TAP files
 
 			This is the same as in the turbo loading data block, except that it has no pilot or sync pulses. */
 
@@ -759,7 +759,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			pilotCount = 0;
 
 			bit0PulseLength = GetWordValue(data, _position + 0);
-			bit1PulseLength = GetWordValue(data, _position + 2);			
+			bit1PulseLength = GetWordValue(data, _position + 2);
 			bitsInLastByte = data[_position + 4];
 			pauseLen = GetWordValue(data, _position + 5);
 			blockLen = 0xFFFFFF & GetInt32(data, _position + 0x07);
@@ -780,7 +780,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.AddMetaData(BlockDescriptorTitle.One_Bit_Length, bit1PulseLength + " T-States");
 			t.AddMetaData(BlockDescriptorTitle.Data_Length, blockLen + " Bytes");
 			t.AddMetaData(BlockDescriptorTitle.Bits_In_Last_Byte, bitsInLastByte + " Bits");
-			t.AddMetaData(BlockDescriptorTitle.Pause_After_Data, t.PauseInMS + " ms / " + t.PauseInTStates + "TStates");			
+			t.AddMetaData(BlockDescriptorTitle.Pause_After_Data, t.PauseInMS + " ms / " + t.PauseInTStates + "TStates");
 
 			// add the raw data
 			t.BlockData = blockdata;
@@ -809,12 +809,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									(e.g. if this is 2, only first two samples of the last byte will be played)
 			0x05	N	    BYTE[3]	Length of samples' data
 			0x08	-	    BYTE[N]	Samples data. Each bit represents a state on the EAR port (i.e. one sample).
-									MSb is played first.                            
+									MSb is played first.
 
-			This block is used for tapes which have some parts in a format such that the turbo loader block cannot be used. 
-			This is not like a VOC file, since the information is much more compact. Each sample value is represented by one bit only 
+			This block is used for tapes which have some parts in a format such that the turbo loader block cannot be used.
+			This is not like a VOC file, since the information is much more compact. Each sample value is represented by one bit only
 			(0 for low, 1 for high) which means that the block will be at most 1/8 the size of the equivalent VOC.
-			The preferred sampling frequencies are 22050 or 44100 Hz (158 or 79 T-states/sample). 
+			The preferred sampling frequencies are 22050 or 44100 Hz (158 or 79 T-states/sample).
 			Please, if you can, don't use other sampling frequencies.
 			Please use this block only if you cannot use any other block. */
 
@@ -822,12 +822,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				BlockID = 0x15,
 				BlockDescription = BlockType.Direct_Recording
-			};			
+			};
 
 			int tStatesPerSample = GetWordValue(data, _position);
 			pauseLen = GetWordValue(data, _position + 2);
 			bitsInLastByte = data[_position + 4];
-			blockLen = 0xFFFFFF & GetInt32(data, _position + 0x05);		
+			blockLen = 0xFFFFFF & GetInt32(data, _position + 0x05);
 
 			t.PauseInMS = pauseLen;
 			t.PauseInTStates = TranslatePause(pauseLen);
@@ -891,7 +891,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ZeroVars();
 		}
 
-		
+
 		/// <summary>
 		/// 0x18 - CSW Recording Block
 		/// </summary>
@@ -907,7 +907,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									0x01: RLE
 									0x02: Z-RLE
 			0x0A	-	    DWORD	Number of stored pulses (after decompression, for validation purposes)
-			0x0E	-	    BYTE[N]	CSW data, encoded according to the CSW file format specification.                          
+			0x0E	-	    BYTE[N]	CSW data, encoded according to the CSW file format specification.
 
 			This block contains a sequence of raw pulses encoded in CSW format v2 (Compressed Square Wave). */
 
@@ -969,18 +969,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// Pause Block
 		/// </summary>
 		private void ProcessBlockID20()
 		{
 			/* length: 02
-			 * 
+			 *
 			Offset	Value	Type	Description
-			0x00	-	    WORD	Pause duration (ms.)                 
+			0x00	-	    WORD	Pause duration (ms.)
 
-			This will make a silence (low amplitude level (0)) for a given time in milliseconds. If the value is 0 then the 
+			This will make a silence (low amplitude level (0)) for a given time in milliseconds. If the value is 0 then the
 			emulator or utility should (in effect) STOP THE TAPE, i.e. should not continue loading until the user or emulator requests it.     */
 			t = new TapeDataBlock();
 			t.BlockID = 0x20;
@@ -1011,20 +1011,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x21 - Group Start
 		/// </summary>
 		private void ProcessBlockID21()
 		{
 			/* length: [00]+01
-			 * 
+			 *
 			Offset	Value	Type	Description
 			0x00	L	BYTE	Length of the group name string
-			0x01	-	CHAR[L]	Group name in ASCII format (please keep it under 30 characters long)                
+			0x01	-	CHAR[L]	Group name in ASCII format (please keep it under 30 characters long)
 
-			This block marks the start of a group of blocks which are to be treated as one single (composite) block. 
-			This is very handy for tapes that use lots of subblocks like Bleepload (which may well have over 160 custom loading blocks). 
+			This block marks the start of a group of blocks which are to be treated as one single (composite) block.
+			This is very handy for tapes that use lots of subblocks like Bleepload (which may well have over 160 custom loading blocks).
 			You can also give the group a name (example 'Bleepload Block 1').
 			For each group start block, there must be a group end block. Nesting of groups is not allowed.           */
 
@@ -1046,19 +1046,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += nameLength;
 
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x22 - Group End
 		/// </summary>
 		private void ProcessBlockID22()
 		{
-			/* length: 00              
+			/* length: 00
 
 			This indicates the end of a group. This block has no body.           */
 
@@ -1077,7 +1077,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x24 - Loop Start
 		/// </summary>
@@ -1086,9 +1086,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/* length: 02
 
 			Offset	Value	Type	Description
-			0x00	-	    WORD	Number of repetitions (greater than 1)           
+			0x00	-	    WORD	Number of repetitions (greater than 1)
 
-			If you have a sequence of identical blocks, or of identical groups of blocks, you can use this block to tell how many times they should 
+			If you have a sequence of identical blocks, or of identical groups of blocks, you can use this block to tell how many times they should
 			be repeated. This block is the same as the FOR statement in BASIC.
 			For simplicity reasons don't nest loop blocks!           */
 
@@ -1116,21 +1116,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += 2;
 
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x25 - Loop End
 		/// </summary>
 		private void ProcessBlockID25()
 		{
-			/* length: 00    
+			/* length: 00
 
-			This is the same as BASIC's NEXT statement. It means that the utility should jump back to the start of the loop if it hasn't 
+			This is the same as BASIC's NEXT statement. It means that the utility should jump back to the start of the loop if it hasn't
 			been run for the specified number of times.
 			This block has no body.          */
 
@@ -1181,11 +1181,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID2A()
 		{
 			/* length: 04
-			 * 
+			 *
 			Offset	Value	Type	Description
 			0x00	0	    DWORD	Length of the block without these four bytes (0)
 
-			When this block is encountered, the tape will stop ONLY if the machine is an 48K Spectrum. This block is to be used for 
+			When this block is encountered, the tape will stop ONLY if the machine is an 48K Spectrum. This block is to be used for
 			multiloading games that load one level at a time in 48K mode, but load the entire tape at once if in 128K mode.
 			This block has no body of its own, but follows the extension rule.          */
 
@@ -1203,13 +1203,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += blockSize;
 
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x2B - Set Signal Level
 		/// </summary>
@@ -1221,7 +1221,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x00	1	    DWORD	Block length (without these four bytes)
 			0x04	-	    BYTE	Signal level (0=low, 1=high)
 
-			This block sets the current signal level to the specified value (high or low). It should be used whenever it is necessary to avoid any 
+			This block sets the current signal level to the specified value (high or low). It should be used whenever it is necessary to avoid any
 			ambiguities, e.g. with custom loaders which are level-sensitive.         */
 
 			t = new TapeDataBlock();
@@ -1243,13 +1243,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += 5;
 
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// Text Description
 		/// </summary>
@@ -1261,10 +1261,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x00	N	    BYTE	Length of the text description
 			0x01	-	    CHAR[N]	Text description in ASCII format
 
-			This is meant to identify parts of the tape, so you know where level 1 starts, where to rewind to when the game ends, etc. 
-			This description is not guaranteed to be shown while the tape is playing, but can be read while browsing the tape or changing 
+			This is meant to identify parts of the tape, so you know where level 1 starts, where to rewind to when the game ends, etc.
+			This description is not guaranteed to be shown while the tape is playing, but can be read while browsing the tape or changing
 			the tape pointer.
-			The description can be up to 255 characters long but please keep it down to about 30 so the programs can show it in one line 
+			The description can be up to 255 characters long but please keep it down to about 30 so the programs can show it in one line
 			(where this is appropriate).
 			Please use 'Archive Info' block for title, authors, publisher, etc.        */
 
@@ -1286,13 +1286,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += textLen;
 
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x32 - Archive Info
 		/// </summary>
@@ -1323,10 +1323,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x02	-	    CHAR[L]	Text string in ASCII format
 			----
 
-			Use this block at the beginning of the tape to identify the title of the game, author, publisher, year of publication, price (including 
-			the currency), type of software (arcade adventure, puzzle, word processor, ...), protection scheme it uses (Speedlock 1, Alkatraz, ...) 
-			and its origin (Original, Budget re-release, ...), etc. This block is built in a way that allows easy future expansion. 
-			The block consists of a series of text strings. Each text has its identification number (which tells us what the text means) and then 
+			Use this block at the beginning of the tape to identify the title of the game, author, publisher, year of publication, price (including
+			the currency), type of software (arcade adventure, puzzle, word processor, ...), protection scheme it uses (Speedlock 1, Alkatraz, ...)
+			and its origin (Original, Budget re-release, ...), etc. This block is built in a way that allows easy future expansion.
+			The block consists of a series of text strings. Each text has its identification number (which tells us what the text means) and then
 			the ASCII text. To make it possible to skip this block, if needed, the length of the whole block is at the beginning of it.
 			If all texts on the tape are in English language then you don't have to supply the 'Language' field
 			The information about what hardware the tape uses is in the 'Hardware Type' block, so no need for it here.              */
@@ -1395,7 +1395,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				t.PauseInTStates = 0;
 
 				// advance to next string block
-				_position += strLen;				
+				_position += strLen;
 			}
 
 			// add to tape
@@ -1404,7 +1404,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// ready for next block
 			ZeroVars();
 		}
-		
+
 		/// <summary>
 		/// 0x35 - Custom Info Block
 		/// </summary>
@@ -1415,9 +1415,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Offset	Value	Type	Description
 			0x00	-	    CHAR[10]	Identification string (in ASCII)
 			0x10	L	    DWORD	Length of the custom info
-			0x14	-	    BYTE[L]	Custom info                                
+			0x14	-	    BYTE[L]	Custom info
 
-			This block can be used to save any information you want. For example, it might contain some information written by a utility, 
+			This block can be used to save any information you want. For example, it might contain some information written by a utility,
 			extra settings required by a particular emulator, or even poke data.               */
 
 			t = new TapeDataBlock();
@@ -1437,7 +1437,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += blockLen;
 
 			// ready for next block
@@ -1452,14 +1452,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			/* length: 09
 
 			Offset	Value	Type	Description
-			0x00	-	    BYTE[9]	Value: { "XTape!",0x1A,MajR,MinR } 
-									Just skip these 9 bytes and you will end up on the next ID.                                
+			0x00	-	    BYTE[9]	Value: { "XTape!",0x1A,MajR,MinR }
+									Just skip these 9 bytes and you will end up on the next ID.
 
-			This block is generated when you merge two ZX Tape files together. It is here so that you can easily copy the files together and use 
-			them. Of course, this means that resulting file would be 10 bytes longer than if this block was not used. All you have to do 
+			This block is generated when you merge two ZX Tape files together. It is here so that you can easily copy the files together and use
+			them. Of course, this means that resulting file would be 10 bytes longer than if this block was not used. All you have to do
 			if you encounter this block ID is to skip next 9 bytes.
-			If you can avoid using this block for this purpose, then do so; it is preferable to use a utility to join the two files and 
-			ensure that they are both of the higher version number.               */			
+			If you can avoid using this block for this purpose, then do so; it is preferable to use a utility to join the two files and
+			ensure that they are both of the higher version number.               */
 
 			t = new TapeDataBlock();
 			t.BlockID = 0x5A;
@@ -1471,7 +1471,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += 9;
 
 			// ready for next block
@@ -1494,7 +1494,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += 4;
 		}
 
@@ -1526,10 +1526,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 										03 - The tape DOESN'T RUN on this machine or with this hardware.
 			----
 
-			This blocks contains information about the hardware that the programs on this tape use. Please include only machines and hardware for 
-			which you are 100% sure that it either runs (or doesn't run) on or with, or you know it uses (or doesn't use) the hardware or special 
+			This blocks contains information about the hardware that the programs on this tape use. Please include only machines and hardware for
+			which you are 100% sure that it either runs (or doesn't run) on or with, or you know it uses (or doesn't use) the hardware or special
 			features of that machine.
-			If the tape runs only on the ZX81 (and TS1000, etc.) then it clearly won't work on any Spectrum or Spectrum variant, so there's no 
+			If the tape runs only on the ZX81 (and TS1000, etc.) then it clearly won't work on any Spectrum or Spectrum variant, so there's no
 			need to list this information.
 			If you are not sure or you haven't tested a tape on some particular machine/hardware combination then do not include it in the list.
 			The list of hardware types and IDs is somewhat large, and may be found at the end of the format description.              */
@@ -1574,7 +1574,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x01	N	    BYTE	Length of the text message
 			0x02	-	    CHAR[N]	Message that should be displayed in ASCII format
 
-			This will enable the emulators to display a message for a given time. This should not stop the tape and it should not make silence. 
+			This will enable the emulators to display a message for a given time. This should not stop the tape and it should not make silence.
 			If the time is 0 then the emulator should wait for the user to press a key.
 			The text message should:
 				stick to a maximum of 30 chars per line;
@@ -1603,7 +1603,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += msgLen;
 
 			// ready for next block
@@ -1619,12 +1619,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			Offset	Value	Type	Description
 			0x00	N	    WORD	Number of calls to be made
-			0x02	-	    WORD[N]	Array of call block numbers (relative-signed offsets)    
+			0x02	-	    WORD[N]	Array of call block numbers (relative-signed offsets)
 
-			This block is an analogue of the CALL Subroutine statement. It basically executes a sequence of blocks that are somewhere else and 
-			then goes back to the next block. Because more than one call can be normally used you can include a list of sequences to be called. 
-			The 'nesting' of call blocks is also not allowed for the simplicity reasons. You can, of course, use the CALL blocks in the LOOP 
-			sequences and vice versa. The value is relative for the obvious reasons - so that you can add some blocks in the beginning of the 
+			This block is an analogue of the CALL Subroutine statement. It basically executes a sequence of blocks that are somewhere else and
+			then goes back to the next block. Because more than one call can be normally used you can include a list of sequences to be called.
+			The 'nesting' of call blocks is also not allowed for the simplicity reasons. You can, of course, use the CALL blocks in the LOOP
+			sequences and vice versa. The value is relative for the obvious reasons - so that you can add some blocks in the beginning of the
 			file without disturbing the call values. Please take a look at 'Jump To Block' for reference on the values.          */
 
 			// block processing not implemented for this - just gets added for informational purposes only
@@ -1641,7 +1641,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += blockSize;
 
 			// ready for next block
@@ -1653,9 +1653,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private void ProcessBlockID27()
 		{
-			/* length: 00  
+			/* length: 00
 
-			This block indicates the end of the Called Sequence. The next block played will be the block after the last CALL block (or the next Call, 
+			This block indicates the end of the Called Sequence. The next block played will be the block after the last CALL block (or the next Call,
 			if the Call block had multiple calls).
 			Again, this block has no body.          */
 
@@ -1683,7 +1683,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Offset	Value	Type	Description
 			0x00	-	    WORD	Length of the whole block (without these two bytes)
 			0x02	N	    BYTE	Number of selections
-			0x03	-	    SELECT[N]	List of selections  
+			0x03	-	    SELECT[N]	List of selections
 
 			----
 			SELECT structure format
@@ -1693,9 +1693,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x03	-	    CHAR[L]	Description text (please use single line and max. 30 chars)
 			----
 
-			This block is useful when the tape consists of two or more separately-loadable parts. With this block, you are able to select 
-			one of the parts and the utility/emulator will start loading from that block. For example you can use it when the game has a 
-			separate Trainer or when it is a multiload. Of course, to make some use of it the emulator/utility has to show a menu with the 
+			This block is useful when the tape consists of two or more separately-loadable parts. With this block, you are able to select
+			one of the parts and the utility/emulator will start loading from that block. For example you can use it when the game has a
+			separate Trainer or when it is a multiload. Of course, to make some use of it the emulator/utility has to show a menu with the
 			selections when it encounters such a block. All offsets are relative signed words.          */
 
 			// block processing not implemented for this - just gets added for informational purposes only
@@ -1712,7 +1712,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += blockSize;
 
 			// ready for next block
@@ -1725,11 +1725,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID23()
 		{
 			/* length: 02
-			 * 
+			 *
 			Offset	Value	Type	Description
-			0x00	-	    WORD	Relative jump value              
+			0x00	-	    WORD	Relative jump value
 
-			This block will enable you to jump from one block to another within the file. The value is a signed short word 
+			This block will enable you to jump from one block to another within the file. The value is a signed short word
 			(usually 'signed short' in C); Some examples:
 				Jump 0 = 'Loop Forever' - this should never happen
 				Jump 1 = 'Go to the next block' - it is like NOP in assembler ;)
@@ -1772,7 +1772,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += 2;
 
 			// ready for next block
@@ -1785,7 +1785,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ProcessBlockID19()
 		{
 			/*  length: [00,01,02,03]+04
-			 *  
+			 *
 			Offset	                    Value	Type	    Description
 			0x00	                    -	    DWORD	    Block length (without these four bytes)
 			0x04	                    -	    WORD	    Pause after this block (ms)
@@ -1808,12 +1808,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			(TOTP>0)*((2*NPP+1)*ASP)+
 			TOTP*3+
 			(2*NPD+1)*ASD	            -	    BYTE[DS]	Data stream
-															This field is present only if TOTD>0                 
+															This field is present only if TOTD>0
 
 			This block has been specifically developed to represent an extremely wide range of data encoding techniques.
-			The basic idea is that each loading component (pilot tone, sync pulses, data) is associated to a specific sequence 
-			of pulses, where each sequence (wave) can contain a different number of pulses from the others. 
-			In this way we can have a situation where bit 0 is represented with 4 pulses and bit 1 with 8 pulses.    
+			The basic idea is that each loading component (pilot tone, sync pulses, data) is associated to a specific sequence
+			of pulses, where each sequence (wave) can contain a different number of pulses from the others.
+			In this way we can have a situation where bit 0 is represented with 4 pulses and bit 1 with 8 pulses.
 
 			----
 			SYMDEF structure format
@@ -1826,11 +1826,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 										11: force high level
 			0x01	-	    WORD[MAXP]	Array of pulse lengths.
 
-			The alphabet is stored using a table where each symbol is a row of pulses. The number of columns (i.e. pulses) of the table is the 
-			length of the longest sequence amongst all (MAXP=NPP or NPD, for pilot/sync or data blocks respectively); shorter waves are terminated by a 
+			The alphabet is stored using a table where each symbol is a row of pulses. The number of columns (i.e. pulses) of the table is the
+			length of the longest sequence amongst all (MAXP=NPP or NPD, for pilot/sync or data blocks respectively); shorter waves are terminated by a
 			zero-length pulse in the sequence.
-			Any number of data symbols is allowed, so we can have more than two distinct waves; for example, imagine a loader which writes two bits at a 
-			time by encoding them with four distinct pulse lengths: this loader would have an alphabet of four symbols, each associated to a specific 
+			Any number of data symbols is allowed, so we can have more than two distinct waves; for example, imagine a loader which writes two bits at a
+			time by encoding them with four distinct pulse lengths: this loader would have an alphabet of four symbols, each associated to a specific
 			sequence of pulses (wave).
 			----
 			----
@@ -1839,10 +1839,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			0x00	-	    BYTE	Symbol to be represented
 			0x01	-	    WORD	Number of repetitions
 
-			Most commonly, pilot and sync are repetitions of the same pulse, thus they are represented using a very simple RLE encoding structure which stores 
+			Most commonly, pilot and sync are repetitions of the same pulse, thus they are represented using a very simple RLE encoding structure which stores
 			the symbol and the number of times it must be repeated.
-			Each symbol in the data stream is represented by a string of NB bits of the block data, where NB = ceiling(Log2(ASD)). 
-			Thus the length of the whole data stream in bits is NB*TOTD, or in bytes DS=ceil(NB*TOTD/8). 
+			Each symbol in the data stream is represented by a string of NB bits of the block data, where NB = ceiling(Log2(ASD)).
+			Thus the length of the whole data stream in bits is NB*TOTD, or in bytes DS=ceil(NB*TOTD/8).
 			----                                                    */
 
 			// not currently implemented properly
@@ -1898,7 +1898,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			int blockLen = GetInt32(data, _position);
 			_position += blockLen;
 		}
@@ -1916,7 +1916,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			int blockLen = GetInt32(data, _position);
 			_position += blockLen;
 		}
@@ -1933,7 +1933,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += 8;
 		}
 
@@ -1943,11 +1943,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                             00: .Z80 format
                                             01: .SNA format
                 0x01	L	    BYTE[3]	Snapshot length
-                0x04	-	    BYTE[L]	Snapshot itself                               
+                0x04	-	    BYTE[L]	Snapshot itself
 
-                This would enable one to snapshot the game at the start and still have all the tape blocks (level data, etc.) in the same file. 
+                This would enable one to snapshot the game at the start and still have all the tape blocks (level data, etc.) in the same file.
                 Only .Z80 and .SNA snapshots are supported for compatibility reasons!
-                The emulator should take care of that the snapshot is not taken while the actual Tape loading is taking place (which doesn't do much sense). 
+                The emulator should take care of that the snapshot is not taken while the actual Tape loading is taking place (which doesn't do much sense).
                 And when an emulator encounters the snapshot block it should load it and then continue with the next block.               */
 		private void ProcessBlockID40()
 		{
@@ -1968,7 +1968,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
 
-			// advance to next block 
+			// advance to next block
 			_position += blockLen;
 		}
 

@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 				Console.WriteLine($"{nameof(descr.NeedsRomAsPath)}: {descr.NeedsRomAsPath}");
 				Console.WriteLine($"{nameof(descr.NeedsArchives)}: {descr.NeedsArchives}");
 				Console.WriteLine($"{nameof(descr.SupportsNoGame)}: {descr.SupportsNoGame}");
-					
+
 				foreach (var v in descr.Variables.Values)
 					Console.WriteLine(v);
 			}

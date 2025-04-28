@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Reg16_d += (Regs[src] & 0xF);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagN = false;			
+			FlagN = false;
 			Flag3 = (ans & 0x08) != 0;
 			Flag5 = (ans & 0x20) != 0;
 			FlagP = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public void CCF_Func(ushort src)
 		{
 			FlagH = FlagC;
-			FlagC = !FlagC;		
+			FlagC = !FlagC;
 			FlagN = false;
 			Flag3 = (Regs[src] & 0x08) != 0;
 			Flag5 = (Regs[src] & 0x20) != 0;
@@ -714,13 +714,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			FlagZ = (Reg16_d & 0xFF) == 0;
 			FlagP = Regs[src] == 0x80;
 			FlagS = (Reg16_d & 0xFF) > 127;
-			
+
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 			// redo for half carry flag
 			Reg16_d = 0;
 			Reg16_d -= (Regs[src] & 0xF);
 			FlagH = Reg16_d.Bit(4);
-			Regs[src] = ans;			
+			Regs[src] = ans;
 			FlagN = true;
 			Flag3 = (ans & 0x08) != 0;
 			Flag5 = (ans & 0x20) != 0;
@@ -760,7 +760,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Flag5 = (temp1 & 0x20) != 0;
 		}
 
-		// sets flags for LD/R 
+		// sets flags for LD/R
 		public void SET_FL_LD_Func()
 		{
 			FlagP = (Regs[C] | (Regs[B] << 8)) != 0;

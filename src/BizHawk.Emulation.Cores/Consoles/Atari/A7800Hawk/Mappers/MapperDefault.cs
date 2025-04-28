@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				Core.pokey.WriteReg(addr & 0xF, value);
 			}
 			else
-			{ 
+			{
 				// cartridge and other OPSYS
 			}
 		}

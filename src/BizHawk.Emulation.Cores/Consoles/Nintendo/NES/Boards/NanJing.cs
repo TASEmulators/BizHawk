@@ -5,12 +5,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_163
 	internal sealed class NanJing : NesBoardBase
 	{
-		/* 
+		/*
 		 * China Pirate Stuff.  Not very tested.
-		 * 
+		 *
 		 * switches prg in 32K blocks, uses exp space for io ports
 		 * 8k wram, 8k vram, supports swapping 4k blocks of vram at scanline 128
-		 * 
+		 *
 		 * TODO: The mapper telepathically switches VRAM based on scanline.
 		 * For more accurate emulation, the actual method used to count scanlines
 		 * (MMC3?) must be implemented.
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			return Rom[(prg << 15) | addr];
 		}
-		
+
 		/*
 		public override void WritePRG(int addr, byte value)
 		{
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				
+
 				if ((reg1 & 0x80) != 0 && NES.ppu.ppur.status.rendering && NES.ppu.PPUON)
 				{
 					if (NES.ppu.ppur.status.sl <= 128)

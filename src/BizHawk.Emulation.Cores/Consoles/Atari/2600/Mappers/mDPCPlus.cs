@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			var bit = _randomInputBits[((_currentRandomVal >> 3) & 0x07) |
 				(((_currentRandomVal & 0x80) > 0) ? 0x08 : 0x00)];
 
-			// Update the shift register 
+			// Update the shift register
 			_currentRandomVal = (byte)((_currentRandomVal << 1) | bit);
 		}
 

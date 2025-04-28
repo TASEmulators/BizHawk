@@ -429,8 +429,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			ser.Sync(nameof(_pins), ref _pins);
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
-			
+
 			ser.EndSection();
 		}
-	}	
+	}
 }

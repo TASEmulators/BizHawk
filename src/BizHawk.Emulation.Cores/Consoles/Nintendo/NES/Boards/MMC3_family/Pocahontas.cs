@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_mask_8k, chr_mask_1k;
 
-		private readonly byte[] regs_sec = { 0, 2, 6, 1, 7, 3, 4, 5 }; 
+		private readonly byte[] regs_sec = { 0, 2, 6, 1, 7, 3, 4, 5 };
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_regs_8k[2] = (byte)(0xFE & prg_mask_8k);
 			prg_regs_8k[3] = (byte)(0xFF & prg_mask_8k);
 
-			
+
 			return true;
 		}
 
@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= prg_mask_8k;
 				return Rom[(bank << 13) + (addr & 0x1FFF)];
 			}
-			
+
 		}
 	}
 }

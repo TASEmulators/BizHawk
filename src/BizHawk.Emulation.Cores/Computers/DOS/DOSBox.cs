@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
-		
+
 		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
 		// CD Handling logic
@@ -272,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				UpdateFramerate(_syncSettings.forceFPSNumerator, _syncSettings.forceFPSDenominator);
 			else
 				UpdateFramerate(LibDOSBox.DEFAULT_FRAMERATE_NUMERATOR_DOS, LibDOSBox.DEFAULT_FRAMERATE_DENOMINATOR_DOS);
-				
+
 
 			PostInit();
 

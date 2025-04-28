@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		// make sure you have bank-masked the map 
+		// make sure you have bank-masked the map
 		protected int ApplyMemoryMap(int blockSizeBits, byte[] map, int addr)
 		{
 			int bank = addr >> blockSizeBits;
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public virtual byte ReadExp(int addr)
-		{ 
+		{
 			return NES.DB;
 		}
 

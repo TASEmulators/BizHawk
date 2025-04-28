@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		
+
 
 		/// <summary>
 		/// Returns an int32 from a byte array based on offset (in BIG ENDIAN format)

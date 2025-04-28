@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Takes a PauseInMilliseconds value and returns the value in T-States
 		/// </summary>
 		public static int TranslatePause(int pauseInMS)
-		{			
+		{
 			const double tspms = 69888.0 * 50.0 / 1000.0;
 			int res = (int)(pauseInMS * tspms);
 

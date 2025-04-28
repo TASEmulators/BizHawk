@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	To select a particular 2K ROM bank, its number is poked into address 3F.  Because there's
 	8 bits, there's enough for 256 2K banks, or a maximum of 512K of ROM.
 
-	Writing to 3E, however, is what's new.  Writing here selects a 1K RAM bank into 
+	Writing to 3E, however, is what's new.  Writing here selects a 1K RAM bank into
 	1000-17FF.  The example (BoulderDash) uses 16K of RAM, however there's theoretically
 	enough space for 256K of RAM.  When RAM is selected, 1000-13FF is the read port while
 	1400-17FF is the write port.

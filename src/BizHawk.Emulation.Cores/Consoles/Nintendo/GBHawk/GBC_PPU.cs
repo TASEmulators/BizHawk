@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF43: ret = scroll_x;						break; // SCX
 				case 0xFF44: ret = LY_read;							break; // LY
 				case 0xFF45: ret = LYC;								break; // LYC
-				case 0xFF46: ret = DMA_addr;						break; // DMA 
+				case 0xFF46: ret = DMA_addr;						break; // DMA
 				case 0xFF47: ret = BGP;								break; // BGP
 				case 0xFF48: ret = obj_pal_0;						break; // OBP0
 				case 0xFF49: ret = obj_pal_1;						break; // OBP1
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					LCDC = value;
-					break; 
+					break;
 				case 0xFF41: // STAT
 					// note that their is no stat interrupt bug in GBC
 					//Console.WriteLine("stat " + " " + STAT + " " + value + " " + LY + " " + cycle + " " + Core.REG_FF0F);
@@ -165,13 +165,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else { LYC_INT = false; }
 					}
 					if (!STAT.Bit(6)) { LYC_INT = false; }
-					break; 
+					break;
 				case 0xFF42: // SCY
 					scroll_y = value;
-					break; 
+					break;
 				case 0xFF43: // SCX
 					scroll_x = value;
-					break; 
+					break;
 				case 0xFF44: // LY
 					// writing to LY has no effect, confirmed by gambatte test roms
 					break;
@@ -181,19 +181,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LYC_t = value;
 					LYC_cd = 4;
 					break;
-				case 0xFF46: // DMA 
+				case 0xFF46: // DMA
 					DMA_addr = value;
 					DMA_start = true;
 					if (!DMA_bus_control) { DMA_OAM_access = true; }
 					DMA_clock = 0;
 					DMA_inc = 0;
-					break; 
+					break;
 				case 0xFF47: // BGP
 					BGP = value;
-					break; 
+					break;
 				case 0xFF48: // OBP0
 					obj_pal_0 = value;
-					break; 
+					break;
 				case 0xFF49: // OBP1
 					obj_pal_1 = value;
 					break;
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							else
 							{
 								HDMA_active = false;
-							}						
+							}
 						}
 
 						// always update length
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if (OBJ_bytes_inc) { OBJ_bytes_index++; OBJ_bytes_index &= 0x3F; }
 					break;
-			}			
+			}
 		}
 
 		public override void tick()
@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 						}
 						else
-						{ 
+						{
 							// immediately transfer bytes, 2 bytes per cycles
 							if ((HDMA_tick % 2) == 0)
 							{
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								HDMA_tick++;
-							}							
+							}
 						}
 						else
 						{
@@ -506,7 +506,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							VRAM_access_write_HDMA = true;
 							VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 						}
-					}					
+					}
 				}
 				else
 				{
@@ -517,8 +517,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					VRAM_access_write_HDMA = true;
 					VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 				}
-			}		
-			
+			}
+
 			// the ppu only does anything if it is turned on via bit 7 of LCDC
 			if (LCDC.Bit(7))
 			{
@@ -531,7 +531,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (Core._scanlineCallback != null)
 						{
 							Core._scanlineCallback(LCDC);
-						}						
+						}
 					}
 
 					cycle = 0;
@@ -555,7 +555,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						window_y_latch = window_y;
 						window_y_tile_inc = 0;
 						window_started = false;
-						if (!LCDC.Bit(5)) { window_is_reset = true; }						
+						if (!LCDC.Bit(5)) { window_is_reset = true; }
 					}
 
 					// Automatically restore access to VRAM at this time (force end drawing)
@@ -581,7 +581,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					Core.in_vblank = false;
 					LCD_was_off = false;
 
-					// we exit vblank into mode 0 for 4 cycles 
+					// we exit vblank into mode 0 for 4 cycles
 					// but no hblank interrupt, presumably this only happens transitioning from mode 3 to 0
 					STAT &= 0xFC;
 					glitch_state = true;
@@ -621,8 +621,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (STAT.Bit(5)) { VBL_INT = true; }
 						}
 
-						if (cycle >= 4) 
-						{ 
+						if (cycle >= 4)
+						{
 							if (STAT.Bit(4)) { VBL_INT = true; }
 							else { VBL_INT = false; }
 						}
@@ -683,14 +683,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									if (STAT.Bit(6)) { LYC_INT = true; }
 								}
 							}
-							
+
 							if (cycle == 84)
 							{
 								OAM_access_read = false;
 
 								rendering_complete = false;
 							}
-								 
+
 						}
 						else if (!rendering_complete)
 						{
@@ -721,14 +721,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if ((cycle == 2) && (LY != 0))
 								{
 									HBL_INT = false;
-									
+
 									if (STAT.Bit(5)) { OAM_INT = true; }
 								}
 
 								// the last few cycles of mode 1 still trigger mode 1 int
 								if (cycle < 4)
 								{
-									if (STAT.Bit(4) && ((STAT & 3) == 1)) { VBL_INT = true; } 
+									if (STAT.Bit(4) && ((STAT & 3) == 1)) { VBL_INT = true; }
 									else { VBL_INT = false; }
 								}
 								else
@@ -749,14 +749,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								OAM_access_read = false;
 								OAM_access_write = true;
-								
+
 								rendering_complete = false;
 							}
 							else if (cycle < 80)
 							{
 								// here OAM scanning is performed
 								OAM_scan(cycle);
-							}						
+							}
 						}
 						else if (!rendering_complete)
 						{
@@ -852,7 +852,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (stat_line && !stat_line_old)
 			{
 				if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
-				Core.REG_FF0F |= 0x02;			
+				Core.REG_FF0F |= 0x02;
 			}
 
 			stat_line_old = stat_line;
@@ -885,7 +885,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		public override void render(int render_cycle)
-		{	
+		{
 			// we are now in STAT mode 3
 			// NOTE: presumably the first necessary sprite is fetched at sprite evaulation
 			// i.e. just keeping track of the lowest x-value sprite
@@ -920,7 +920,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// before anything else, we have to check if windowing is in effect
 			if (window_latch && !window_started && (LY >= window_y_latch) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
-			{			
+			{
 				/*
 					Console.Write(LY);
 					Console.Write(" ");
@@ -934,7 +934,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					Console.Write(" ");
 					Console.WriteLine(pixel_counter);
 				*/
-			
+
 				if (window_x_latch == 0)
 				{
 					// if the window starts at zero, we still do the first access to the BG
@@ -959,7 +959,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				render_counter = 0;
 
 				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x_latch - 7)) / 8);
-				
+
 				window_tile_inc = 0;
 				window_started = true;
 				window_is_reset = false;
@@ -991,7 +991,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((internal_cycle % 2) == 1)
 						{
 							read_case_prev = 0;
-							
+
 							// calculate the row number of the tiles to be fetched
 							y_tile = ((scroll_y + LY) >> 3) % 32;
 							x_tile = scroll_x >> 3;
@@ -1040,7 +1040,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
-								
+
 								if (!LCDC_Bit_4_glitch) { tile_data[0] = Core.VRAM[bus_address]; }
 								else { tile_data[0] = (byte)tile_byte; }
 							}
@@ -1081,7 +1081,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1;
-								
+
 								if (!LCDC_Bit_4_glitch) { tile_data[1] = Core.VRAM[bus_address]; }
 								else { tile_data[1] = (byte)tile_byte; }
 							}
@@ -1170,7 +1170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								bus_address = (VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2;
-								
+
 								if (!LCDC_Bit_4_glitch) { tile_data[0] = Core.VRAM[bus_address]; }
 								else { tile_data[0] = (byte)tile_byte; }
 							}
@@ -1286,7 +1286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write = VRAM_access_write_PPU & VRAM_access_write_HDMA;
 
 						if (Core.double_speed) { HDMA_can_start = true; }
-						
+
 						read_case = 18;
 
 						break;
@@ -1341,7 +1341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// now we have the BG pixel, we next need the sprite pixel
 						if (!no_sprites)
 						{
-							bool have_sprite = false;					
+							bool have_sprite = false;
 							int sprite_attr = 0;
 
 							if (sprite_present_list[pixel_counter] == 1)
@@ -1378,11 +1378,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								if (use_sprite)
 								{
-									pal_num = sprite_attr & 7;					
-								}						
-							}						
+									pal_num = sprite_attr & 7;
+								}
+							}
 						}
-					
+
 						// based on sprite priority and pixel values, pick a final pixel color
 						if (use_sprite)
 						{
@@ -1392,7 +1392,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							Core.vid_buffer[LY * 160 + pixel_counter] = BG_palette[pal_num * 4 + pixel];
 						}
-					
+
 						pixel_counter++;
 
 						if (pixel_counter == 160)
@@ -1422,9 +1422,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					render_counter++;
 				}
-			
+
 				internal_cycle++;
-				
+
 				if (latch_new_data)
 				{
 					latch_new_data = false;
@@ -1435,7 +1435,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				was_pre_render = pre_render;
 			}
-			
+
 			// every in range sprite takes 6 cycles to process
 			// sprites located at x=0 still take 6 cycles to process even though they don't appear on screen
 			// sprites above x=168 do not take any cycles to process however
@@ -1500,8 +1500,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						fetch_sprite = false;
 					}
-				}				
-			}		
+				}
+			}
 		}
 
 		public override void DMA_tick()
@@ -1517,7 +1517,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
 					// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
 					byte DMA_actual = DMA_addr;
-					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }					
+					if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
 					DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
 					DMA_bus_control = true;
 				}

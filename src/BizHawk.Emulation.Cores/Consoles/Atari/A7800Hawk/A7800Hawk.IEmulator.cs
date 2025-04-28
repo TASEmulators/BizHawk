@@ -124,11 +124,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((maria.scanline - 20) == (p1_lightgun_y - 4))
 				{
 					if (maria.cycle == (132 + p1_lightgun_x))
-					{ 
+					{
 						// return true 64 cycles into the future
 						lg_1_counting_down = 64;
 						lg_1_counting_down_2 = 9;
-					}			
+					}
 				}
 			}
 
@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						// return true 64 cycles into the future
 						lg_2_counting_down = 64;
 						lg_2_counting_down_2 = 9;
-					}					
+					}
 				}
 			}
 
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				master_audio_clock++;
 				temp = 0;
 			}
-			
+
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
 			{
@@ -388,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			_blip.EndFrame(master_audio_clock);
-			
+
 			nsamp = _blip.SamplesAvailable();
 
 			samples = new short[nsamp * 2];

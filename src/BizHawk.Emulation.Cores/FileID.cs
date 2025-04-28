@@ -4,7 +4,7 @@ using System.Collections.Generic;
 //HOW TO USE
 //we don't expect anyone to use this fully yet. It's just over-engineered for future use.
 //for now, just use it when you truly don't know what to do with a file.
-//This system depends heavily on the provided extension. We're not going to exhaustively try every format all the time. If someone loads a cue which is named .sfc, we cant cope with that. 
+//This system depends heavily on the provided extension. We're not going to exhaustively try every format all the time. If someone loads a cue which is named .sfc, we cant cope with that.
 //However, common mistakes will be handled, on an as-needed basis.
 
 //TODO - check for archives too? further, check archive contents (probably just based on filename)?
@@ -20,12 +20,12 @@ namespace BizHawk.Emulation.Cores
 	/// </summary>
 	public enum FileIDType
 	{
-		None, 
+		None,
 		Multiple, //don't think this makes sense. shouldn't the multiple options be returned?
 
 		Disc, //an unknown disc
 		PSX, PSX_EXE, PSF,
-		PSP, 
+		PSP,
 		Saturn, MegaCD,
 
 		PCE, SGX, TurboCD,
@@ -35,10 +35,10 @@ namespace BizHawk.Emulation.Cores
 		COL,
 		SG, SMS, GG, S32X,
 		SMD, //http://en.wikibooks.org/wiki/Genesis_Programming#ROM_header
-		
+
 		WS, WSC, NGC,
 
-		C64, 
+		C64,
 		ZXSpectrum,
 		AmstradCPC,
 		INT,
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores
 		//audio codec formats
 		WAV, APE, MPC, FLAC,
 		MP3, //can't be ID'd very readily..
-		
+
 		//misc disc-related files:
 		ECM,
 
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public FileIDResults Identify(IdentifyParams p)
 		{
-			IdentifyJob job = new IdentifyJob() { 
+			IdentifyJob job = new IdentifyJob() {
 				Stream = p.SeekableStream,
 				Disc = p.Disc
 			};
@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			public static readonly SimpleMagicRecord INES = new SimpleMagicRecord { Offset = 0, Key = "NES" };
 			public static readonly SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" };
-			public static SimpleMagicRecord NSF = new SimpleMagicRecord { Offset = 0, Key = "NESM\x1A" }; 
+			public static SimpleMagicRecord NSF = new SimpleMagicRecord { Offset = 0, Key = "NESM\x1A" };
 
 			public static readonly SimpleMagicRecord FDS_HEADERLESS = new SimpleMagicRecord { Offset = 0, Key = "\x01*NINTENDO-HVC*" };
 			public static readonly SimpleMagicRecord FDS_HEADER = new SimpleMagicRecord { Offset = 0, Key = "FDS\x1A" };
@@ -381,7 +381,7 @@ namespace BizHawk.Emulation.Cores
 			{ "G64", new ExtensionInfo(FileIDType.C64, null ) },
 			{ "CRT", new ExtensionInfo(FileIDType.C64, null ) },
 			{ "NIB", new ExtensionInfo(FileIDType.C64, null ) }, //not supported yet
-			
+
 			// Doom IWad / PWad
 			{ "WAD", new ExtensionInfo(FileIDType.WAD, null ) },
 
@@ -569,7 +569,7 @@ namespace BizHawk.Emulation.Cores
 		private static FileIDResult Test_A78(IdentifyJob job)
 		{
 			int len = (int)job.Stream.Length;
-			
+
 			//we may have a header to analyze
 			if (len % 1024 == 128)
 			{
@@ -609,7 +609,7 @@ namespace BizHawk.Emulation.Cores
 
 			//for PSX, we have a magic word to look for.
 			//it's at 0x24E0 with a mode2 (2352 byte) track 1.
-			//what if its 2048 byte? 
+			//what if its 2048 byte?
 			//i found a ".iso" which was actually 2352 byte sectors..
 			//found a hilarious ".bin.iso" which was actually 2352 byte sectors
 			//so, I think it's possible that every valid PSX disc is mode2 in the track 1

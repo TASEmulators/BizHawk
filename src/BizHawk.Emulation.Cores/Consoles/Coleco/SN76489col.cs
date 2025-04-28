@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 							int bit = (noise & 1) ^ ((noise >> 1) & 1);
 							noise >>= 1;
 							noise |= bit << 14;
-							
+
 						}
 						else
 						{
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 						noise_clock *= 2;
 					}
-					
+
 					if (clock_A == 0)
 					{
 						A_up = !A_up;
@@ -212,9 +212,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					// now calculate the volume of each channel and add them together
 					// the magic number 42 is to make the volume comparable to the MSG volume
 					int v;
-	
+
 					v = (short)(A_up ? LogScale[Chan_vol[0]] * 42 : 0);
-					 
+
 					v += (short)(B_up ? LogScale[Chan_vol[1]] * 42 : 0);
 
 					v += (short)(C_up ? LogScale[Chan_vol[2]] * 42 : 0);

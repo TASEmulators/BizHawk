@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WritePrg(addr, value);
 			SetMirrorType(mmc3.MirrorType);  //often redundant, but gets the job done
 		}
-	
+
 		public override byte[] SaveRam
 		{
 			get
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "KONAMI-TLROM": //Super C
 				case "HVC-TLROM": //8 eyes (J)
 				case "ACCLAIM-TLROM":
-				
+
 					AssertPrg(128, 256, 512); AssertChr(64, 128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;

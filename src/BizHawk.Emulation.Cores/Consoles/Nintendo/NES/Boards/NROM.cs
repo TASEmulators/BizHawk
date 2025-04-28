@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TENGEN-800003": // ms pac man, others
 				case "UNIF_NES-NROM-128": // various
 				case "UNIF_NES-NROM-256": // Locksmith
-					AssertPrg(8, 16, 32); 
+					AssertPrg(8, 16, 32);
 					AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 				case "AVE-NINA-03":
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// and emulates as simple NROM
 					if (Cart.Chips.Count != 0)
 						return false;
-					AssertPrg(8, 16, 32); 
+					AssertPrg(8, 16, 32);
 					AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_byte_mask = (Cart.PrgSize*1024) - 1;
 			SetMirrorType(Cart.PadH, Cart.PadV);
-			
+
 			return true;
 		}
 

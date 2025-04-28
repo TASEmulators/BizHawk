@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!deviceAddressed)
             {
                 // If this is an unused port the floating memory bus should be returned
-                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);                
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);
             }
 
             return (byte)result;

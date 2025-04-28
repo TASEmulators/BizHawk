@@ -138,7 +138,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				return SnesActionReplayDecoder.Decode(code);
 			}
-			
+
 			return new InvalidCheatCode($"Unknown code type: {code}");
 		}
 	}

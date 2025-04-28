@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			Regs[dest] = ReadMemory(addr);
 		}
 
-		// special read for POP AF that always clears the lower 4 bits of F 
+		// special read for POP AF that always clears the lower 4 bits of F
 		public void Read_Func_F(ushort dest, ushort src_l, ushort src_h)
 		{
 			Regs[dest] = (byte)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 			Regs[src] = a_d;
 
-			FlagZ = a_d == 0; 
+			FlagZ = a_d == 0;
 			FlagH = false;
 		}
 
@@ -468,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 				FlagH = Reg16_d.Bit(4);
 				FlagN = false;
-				FlagZ = false; 			
+				FlagZ = false;
 			}
 
 			Regs[dest_l] = ans_l;

@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	// RockMan 8, just some simple bankswitching 
+	// RockMan 8, just some simple bankswitching
 	public class MapperRM8 : MapperBase
 	{
 		public int ROM_bank;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				// lowest bank is fixed
 				return Core._rom[addr];
-			
+
 			}
 			else
 			{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				// lowest bank is fixed
 				SetCDLROM(flags, addr);
-			
+
 			}
 			else if (addr < 0x8000)
 			{

@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string movieFolderPath = _config.PathEntries.MovieAbsolutePath();
-			
+
 			// Create movie folder if it doesn't already exist
 			try
 			{
@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else throw;
 			}
-			
+
 			var filterset = _movieSession.Movie.GetFSFilterSet();
 			var result = this.ShowFileSaveDialog(
 				fileExt: $".{filterset.Filters[0].Extensions.First()}",

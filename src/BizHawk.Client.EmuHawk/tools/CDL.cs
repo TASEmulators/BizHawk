@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private bool CDLAutoStart { get; set; } = true;
-		
+
 		[ConfigPersist]
 		private bool CDLAutoResume { get; set; } = true;
 
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int[] totals = new int[8];
 				int total = 0;
-				
+
 				for (int i = 0; i < 256; i++)
 					map[i] = 0;
 
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 					ShutdownCDL();
 					return true;
 				}
-				
+
 				ShutdownCDL();
 				return false;
 			}
@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file == null)
 				return false;
-				
+
 			SetCurrentFilename(file.FullName);
 			RunSave();
 			return true;

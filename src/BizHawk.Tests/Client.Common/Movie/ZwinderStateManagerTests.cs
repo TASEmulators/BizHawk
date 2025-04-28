@@ -188,7 +188,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			const int futureReservedFrame = 1000;
 			var ss = CreateStateSource();
 			using var zw = CreateSmallZwinder(ss);
-			
+
 			zw.CaptureReserved(futureReservedFrame, ss);
 			for (int i = 1; i < 20; i++)
 			{

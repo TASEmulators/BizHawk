@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ticker = 0;
 
-			// some of these get overwritten, but 
+			// some of these get overwritten, but
 			addr_latch = 0;
 			kb_state_row = kb_state_col = 0;
 

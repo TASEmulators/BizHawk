@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Yes, that one
 		/// </summary>
 		SonyPS2,
-		
+
 		/// <summary>
 		/// Atari Jaguar CD
 		/// </summary>
@@ -311,7 +311,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var toc = _disc.TOC;
 			if (toc.FirstRecordedTrackNumber != 1) return false;
 			if (!toc.TOCItems[1].IsData) return false;
-			
+
 			//some have a signature
 			if (StringAt("HACKER CD ROM SYSTEM", 0x8, 0x10))
 				return true;
@@ -443,7 +443,7 @@ namespace BizHawk.Emulation.DiscSystem
 						return true;
 					}
 				}
-				
+
 				// special case, Caves of Fear has the header 27 sectors in
 				_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + 27, data, 0);
 				var ss = Encoding.ASCII.GetString(data);

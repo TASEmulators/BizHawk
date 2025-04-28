@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				if (Vram != null)
-				{ 
+				{
 					int x = (addr >> 10) & 7;
 					var chr = chrlo[x] | (chrhi[x] << 8);
 					int bank = (chr & _chrBankMask1k) << 10;

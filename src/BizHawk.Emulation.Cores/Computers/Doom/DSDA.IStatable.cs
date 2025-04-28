@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			_elf.LoadStateBinary(reader);
-			
+
 			_turnHeld[0] = reader.ReadInt32();
 			_turnHeld[1] = reader.ReadInt32();
 			_turnHeld[2] = reader.ReadInt32();

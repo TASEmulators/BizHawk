@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// This implementation aims to emulate all the various CRTC chips that appear within
 	/// the CPC, CPC+ and GX4000 ranges. The CPC community have assigned them type numbers.
 	/// If different implementations share the same type number it indicates that they are functionally identical
-	/// 
+	///
 	/// Part No.      Manufacturer    Type No.    Info.
 	/// ------------------------------------------------------------------------------------------------------
 	/// HD6845S       Hitachi         0
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public byte[] RegDefaults = { 63, 40, 46, 142, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
 
 		/// <summary>
-		/// The ClK isaTTUMOS-compatible input used to synchronize all CRT' functions except for the processor interface. 
+		/// The ClK isaTTUMOS-compatible input used to synchronize all CRT' functions except for the processor interface.
 		/// An external dot counter is used to derive this signal which is usually the character rate in an alphanumeric CRT.
 		/// The active transition is high-to-low
 		/// </summary>
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/// <summary>
 		/// This TTL compatible  output is an active high signal which drives the monitor directly or is fed to Video Processing Logic for composite generation.
-		/// This signal determines the horizontal position of the displayed text. 
+		/// This signal determines the horizontal position of the displayed text.
 		/// </summary>
 		public virtual bool HSYNC
 		{
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/// <summary>
 		/// This TTL compatible output is an active high signal which indicates the CRTC is providing addressing in the active Display Area.
-		/// </summary>      
+		/// </summary>
 		public virtual bool DISPTMG
 		{
 			get => _DISPTMG;
@@ -123,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private bool _DISPTMG;
 
 		/// <summary>
-		/// This TTL compatible output indicates Cursor Display to external Video Processing Logic.Active high signal. 
-		/// </summary>       
+		/// This TTL compatible output indicates Cursor Display to external Video Processing Logic.Active high signal.
+		/// </summary>
 		public virtual bool CUDISP
 		{
 			get => _CUDISP;
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is wired up to the CRTC
 		/// Built from LA, RA and CLK
-		/// 
+		///
 		/// Memory Address Signal    Signal source    Signal name
 		/// A15                      6845             MA13
 		/// A14                      6845             MA12
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// A2                       6845             MA1
 		/// A1                       6845             MA0
 		/// A0                       Gate-Array       CLK
-		/// </summary>		
+		/// </summary>
 		public ushort MA_Address
 		{
 			get
@@ -246,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _addressRegister;
 
 		/// <summary>
-		/// This 8 bit write-only register determines the horizontal frequency of HS. 
+		/// This 8 bit write-only register determines the horizontal frequency of HS.
 		/// It is the total of displayed plus non-displayed character time units minus one.
 		/// </summary>
 		protected const int R0_H_TOTAL = 0;
@@ -259,8 +259,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected const int R2_H_SYNC_POS = 2;
 		/// <summary>
-		/// This 4 bit  write-only register determines the width of the HS pulse. It may not be apparent why this width needs to be programmed.However, 
-		/// consider that all timing widths must be programmed as multiples of the character clock period which varies.If HS width were fixed as an integral 
+		/// This 4 bit  write-only register determines the width of the HS pulse. It may not be apparent why this width needs to be programmed.However,
+		/// consider that all timing widths must be programmed as multiples of the character clock period which varies.If HS width were fixed as an integral
 		/// number of character times, it would vary with character rate and be out of tolerance for certain monitors.
 		/// The rate programmable feature allows compensating HS width.
 		/// NOTE: Dependent on chiptype this also may include VSYNC width - check the UpdateWidths() method
@@ -269,8 +269,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/* Vertical Timing Register Constants */
 		/// <summary>
-		/// The vertical frequency of VS is determined by both R4 and R5.The calculated number of character I ine times is usual I y an integer plus a fraction to 
-		/// get exactly a 50 or 60Hz vertical refresh rate. The integer number of character line times minus one is programmed in the 7 bit write-only Vertical Total Register; 
+		/// The vertical frequency of VS is determined by both R4 and R5.The calculated number of character I ine times is usual I y an integer plus a fraction to
+		/// get exactly a 50 or 60Hz vertical refresh rate. The integer number of character line times minus one is programmed in the 7 bit write-only Vertical Total Register;
 		/// the fraction is programmed in the 5 bit write-only Vertical Scan Adjust Register as a number of scan line times.
 		/// </summary>
 		protected const int R4_V_TOTAL = 4;
@@ -284,8 +284,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected const int R7_V_SYNC_POS = 7;
 		/// <summary>
-		/// This 2 bit write-only  register controls the raster scan mode(see Figure 11 ). When bit 0 and bit 1 are reset, or bit 0 is reset and bit 1 set, 
-		/// the non· interlace raster scan mode is selected.Two interlace modes are available.Both are interlaced 2 fields per frame.When bit 0 is set and bit 1 is reset, 
+		/// This 2 bit write-only  register controls the raster scan mode(see Figure 11 ). When bit 0 and bit 1 are reset, or bit 0 is reset and bit 1 set,
+		/// the non· interlace raster scan mode is selected.Two interlace modes are available.Both are interlaced 2 fields per frame.When bit 0 is set and bit 1 is reset,
 		/// the interlace sync raster scan mode is selected.Also when bit 0 and bit 1 are set, the interlace sync and video raster scan mode is selected.
 		/// </summary>
 		protected const int R8_INTERLACE_MODE = 8;
@@ -295,9 +295,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected const int R9_MAX_SL_ADDRESS = 9;
 		/// <summary>
-		/// This 7 bit write-only register controls the cursor format(see Figure 10). Bit 5 is the blink timing control.When bit 5 is low, the blink frequency is 1/16 of the 
+		/// This 7 bit write-only register controls the cursor format(see Figure 10). Bit 5 is the blink timing control.When bit 5 is low, the blink frequency is 1/16 of the
 		/// vertical field rate, and when bit 5 is high, the blink frequency is 1/32 of the vertical field rate.Bit 6 is used to enable a blink.
-		/// The cursor start scan line is set by the lower 5 bits. 
+		/// The cursor start scan line is set by the lower 5 bits.
 		/// </summary>
 		protected const int R10_CURSOR_START = 10;
 		/// <summary>
@@ -323,8 +323,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		protected const int R17_LIGHT_PEN_L = 17;
 
 		/// <summary>
-		/// Storage for main MPU registers 
-		/// 
+		/// Storage for main MPU registers
+		///
 		/// RegIdx    Register Name                 Type
 		///                                         0             1             2             3                      4
 		/// 0         Horizontal Total              Write Only    Write Only    Write Only    (note 2)               (note 3)
@@ -344,9 +344,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// 14        Cursor Address (High)         Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
 		/// 15        Cursor Address (Low)          Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
 		/// 16        Light Pen Address (High)      Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
-		/// 
+		///
 		/// 18-31	  Not Used
-		/// 
+		///
 		/// 1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
 		/// 2. See the document "Extra CPC Plus Hardware Information" for more details.
 		/// 3. CRTC type 4 is the same as CRTC type 3. The registers also repeat as they do on the type 3.
@@ -395,12 +395,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// R3l: CRTC-type horizontal sync width independent helper function 
+		/// R3l: CRTC-type horizontal sync width independent helper function
 		/// </summary>
 		protected virtual int R3_HorizontalSyncWidth { get; }
 
 		/// <summary>
-		/// R3h: CRTC-type vertical sync width independent helper function 
+		/// R3h: CRTC-type vertical sync width independent helper function
 		/// </summary>
 		protected virtual int R3_VerticalSyncWidth { get; }
 
@@ -491,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// C0: Horizontal Character Counter
 		/// 8-bit
-		/// </summary>		
+		/// </summary>
 		protected virtual int HCC
 		{
 			get => _hcCTR & 0xFF;
@@ -502,7 +502,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// C3l: Horizontal Sync Width Counter (HSYNC)
 		/// 4-bit
-		/// </summary>		
+		/// </summary>
 		protected virtual int HSC
 		{
 			get => _hswCTR & 0x0F;
@@ -628,7 +628,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public virtual void Clock() { }
 
-		
+
 		public virtual void CheckReset()
 		{
 			if (_inReset > 0)
@@ -791,7 +791,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(latch_skew), ref latch_skew);
 			ser.Sync(nameof(_field), ref _field);
 			ser.Sync(nameof(adjusting), ref adjusting);
-			ser.Sync(nameof(_inReset), ref _inReset);	
+			ser.Sync(nameof(_inReset), ref _inReset);
 			ser.Sync(nameof(hend), ref hend);
 			ser.Sync(nameof(hsend), ref hsend);
 			ser.Sync(nameof(hclock), ref hclock);

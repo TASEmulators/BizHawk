@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//      TrackID is consistent between the sectors although is usually high (233, 237 etc)
 			//      SideID is fairly random looking but with all IDs being even
 			//      SectorID is also fairly random looking but contains both odd and even numbers
-			//            
+			//
 			// There doesnt appear to be any CRC errors in this track, but the sector size is always 1 (256 bytes)
 			// Each sector contains different filler byte
 			// Once track 0 is loaded the CPU completely reads all the sectors in this track one-by-one.
@@ -394,7 +394,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// Hexagon Copy Protection Notes (-asni 2018-05-01)
 			// ---------------------------------------------------
 			//
-			// 
+			//
 
 			return false;
 		}

@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (addr < 0x460)
 					{
 						Core.pokey.WriteReg(addr & 0xF, value);
-					}					
+					}
 				}
 				else
 				{
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						RAM[addr - 0x6000] = value;
 					}
-					else if (Core.cart_RAM==16) 
+					else if (Core.cart_RAM==16)
 					{
 						RAM[addr - 0x4000] = value;
 					}

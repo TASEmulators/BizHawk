@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 							DEA,
 							WR_P, 0, A,
 							IDLE,
-							IDLE,						
+							IDLE,
 							IDLE,
 							IDLE,
 							IDLE);
@@ -345,13 +345,13 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 								IDLE,
 								IDLE);
 			}
-			
+
 			IRQS = 9;
 		}
 
 		public void OP_EXP_A(ushort oper, ushort reg)
 		{
-			// Lower 4 bits only		
+			// Lower 4 bits only
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public void CALL(ushort dest_h)
 		{
-			// Lower 4 bits only		
+			// Lower 4 bits only
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public void DJNZ(ushort reg)
 		{
 			if ((Regs[reg + RB] - 1) == 0)
-			{		
+			{
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								DEC8, (ushort)(reg + RB),
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 								IDLE,
 								SET_ADDR_8, PC, ALU);
 			}
-			
+
 			IRQS = 9;
 		}
 

@@ -53,6 +53,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				mapper.MapCDL(addr, flags);
 				return;
 			}
-		}	
+		}
 	}
 }

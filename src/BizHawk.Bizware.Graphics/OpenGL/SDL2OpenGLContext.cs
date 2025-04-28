@@ -128,7 +128,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not set GL Major Version! SDL Error: {SDL_GetError()}");
 			}
-			
+
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, minorVersion) != 0)
 			{
 				throw new($"Could not set GL Minor Version! SDL Error: {SDL_GetError()}");

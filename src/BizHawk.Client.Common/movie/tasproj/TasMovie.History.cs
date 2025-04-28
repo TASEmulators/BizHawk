@@ -782,7 +782,7 @@ namespace BizHawk.Client.Common
 			_onlyEmpty = false;
 			_newInputs = newInputs;
 		}
-		
+
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -826,7 +826,7 @@ namespace BizHawk.Client.Common
 			_oldInputs = oldInputs;
 			_removedMarkers = removedMarkers;
 		}
-		
+
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;

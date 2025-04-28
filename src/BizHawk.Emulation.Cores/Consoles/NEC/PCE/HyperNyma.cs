@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 					v.PaletteCache = p;
 					callback(v);
 				}
-				
+
 			}
 		}
 	}

@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		//WARNING - RETURNS A STATIC BUFFER
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate IntPtr biz_r4300_decode_op(uint instr, uint counter);
-		public biz_r4300_decode_op m64p_decode_op; 
+		public biz_r4300_decode_op m64p_decode_op;
 
 		/// <summary>
 		/// Reads from the "system bus"

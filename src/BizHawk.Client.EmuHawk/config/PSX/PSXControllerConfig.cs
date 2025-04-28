@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_syncSettings.FIOConfig = UserConfigFromGui();
 			_settable.PutCoreSyncSettings(_syncSettings);
-			
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}

@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			GetControllerState(controller);
 
 			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
-			int delayCycles = 700; 
+			int delayCycles = 700;
 			int delayTimer = -1;
 
 			_cpu.PendingCycles = 14934 - 3791 + _cpu.GetPendingCycles();

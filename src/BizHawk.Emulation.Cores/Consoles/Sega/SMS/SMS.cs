@@ -3,11 +3,11 @@ using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
 /*****************************************************
-  TODO: 
+  TODO:
   + HCounter (Manually set for light phaser emulation... should be only case it's polled)
-  + Try to clean up the organization of the source code. 
+  + Try to clean up the organization of the source code.
   + Mode 1 not implemented in VDP TMS modes. (I don't have a test case in SG1000 or Coleco)
- 
+
 **********************************************************/
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					throw new MissingFirmwareException("No BIOS found");
 				}
-				
+
 				if (!game["RequireBios"] && !SyncSettings.UseBios)
 				{
 					// we are skipping the BIOS
@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			port &= 0xFF;
 			if (port < 0x40) // General IO ports
 			{
-				
+
 				switch (port)
 				{
 					case 0x00: if (stand_alone) { return ReadPort0(); } else { _lagged = false; return cntr_rd_0; }
@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				else
 					return Vdp.ReadVdpStatus();
 			}
-			switch (port) 
+			switch (port)
 			{
 				case 0xC0:
 				case 0xDC: if (stand_alone) { return ReadControls1(); } else { _lagged = false; return cntr_rd_1; }

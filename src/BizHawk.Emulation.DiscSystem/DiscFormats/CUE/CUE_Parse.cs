@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				var clp = new CueLineParser(line);
 
 				var key = clp.ReadToken().ToUpperInvariant();
-				
+
 				//remove nonsense at beginning
 				if (!IN_Strict)
 				{
@@ -319,7 +319,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
 								break;
 							}
-							
+
 							OUT_CueFile.Commands.Add(new CUE_File.Command.REM(comment));
 							break;
 						}

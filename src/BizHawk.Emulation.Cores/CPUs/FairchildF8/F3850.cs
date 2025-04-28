@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Fairchild F3850 (F8) CPU
 	/// Author: Asnivor
-	/// 
+	///
 	/// The F8 microprocessor is made up of separate interchangeable devices
 	/// The Channel F has:
 	///		* x1 F3850 CPU (central processing unit)
@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// e.g. SPs and PCs should always be identical
 	/// Each device has a factory ROM mask applied and with every ROMC change observed is able to know whether it should respond (via the shared data bus)
 	/// or not based on the value within its counters.
-	/// 
+	///
 	/// For this reason we will hold the PCs and SPs within the F3850 implementation.
-	/// 
+	///
 	/// We are currently also *not* using a separate F3851 implementation. In reality the F3851 chip has/does:
 	///		* 1024 byte masked ROM
 	///		* x2 16-bit program counters
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public const byte OP_LISL = 116;
 		public const byte OP_BT = 117;
 		public const byte OP_ADD8D = 118;
-		public const byte OP_BR7 = 119;		
+		public const byte OP_BR7 = 119;
 		public const byte OP_BF = 141;
 
 		public const byte OP_IN = 151;
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			}
 			if (Regs[W] > 0x1F)
-			{ 
+			{
 			}
 
 			switch (cur_instr[instr_pntr++])
@@ -290,12 +290,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 				// Branch on ISARL - if any of the low 3 bits of ISAR are reset
 				case OP_BR7:
-				
+
 				if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
 					DO_BRANCH(1);
 				else
 					DONT_BRANCH(1);
-					break;				
+					break;
 
 				// Branch on FALSE
 				case OP_BF:
@@ -304,8 +304,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					else
 						DO_BRANCH(0);
 					break;
-					
-				// A <- (I/O Port 0 or 1) 
+
+				// A <- (I/O Port 0 or 1)
 				case OP_IN:
 					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -586,8 +586,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					byte_code.PadRight(12),
 					disasm.PadRight(26)),
 				registerInfo: string.Format(
-					"Flags:{75}{76}{77}{78}{79} " + 
-					"PC1:{0:X4} DC0:{1:X4} A:{2:X2} ISAR:{3:X2} DB:{4:X2} IO:{5:X2} J:{6:X2} H:{7:X4} K:{8:X4} Q:{9:X4} " + 
+					"Flags:{75}{76}{77}{78}{79} " +
+					"PC1:{0:X4} DC0:{1:X4} A:{2:X2} ISAR:{3:X2} DB:{4:X2} IO:{5:X2} J:{6:X2} H:{7:X4} K:{8:X4} Q:{9:X4} " +
 					"R0:{10:X2} R1:{11:X2} R2:{12:X2} R3:{13:X2} R4:{14:X2} R5:{15:X2} R6:{16:X2} R7:{17:X2} R8:{18:X2} R9:{19:X2} " +
 					"R10:{20:X2} R11:{21:X2} R12:{22:X2} R13:{23:X2} R14:{24:X2} R15:{25:X2} R16:{26:X2} R17:{27:X2} R18:{28:X2} R19:{29:X2} " +
 					"R20:{30:X2} R21:{31:X2} R22:{32:X2} R23:{33:X2} R24:{34:X2} R25:{35:X2} R26:{36:X2} R27:{37:X2} R28:{38:X2} R29:{39:X2} " +
@@ -623,7 +623,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		/// <summary>
 		/// Optimization method to set cur_instr
-		/// </summary>	
+		/// </summary>
 		private void PopulateCURINSTR(byte d0 = 0, byte d1 = 0, byte d2 = 0, byte d3 = 0, byte d4 = 0, byte d5 = 0, byte d6 = 0, byte d7 = 0, byte d8 = 0,
 			byte d9 = 0, byte d10 = 0, byte d11 = 0, byte d12 = 0, byte d13 = 0, byte d14 = 0, byte d15 = 0, byte d16 = 0, byte d17 = 0, byte d18 = 0,
 			byte d19 = 0, byte d20 = 0, byte d21 = 0, byte d22 = 0, byte d23 = 0, byte d24 = 0, byte d25 = 0, byte d26 = 0, byte d27 = 0, byte d28 = 0,

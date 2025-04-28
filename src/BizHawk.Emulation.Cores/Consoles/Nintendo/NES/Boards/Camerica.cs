@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER071":
 					break;
 				case "CAMERICA-ALGN": //Linus Spacehead's Cosmic Crusade (U)
-					AssertPrg(128,256); AssertChr(0); AssertWram(0); 
+					AssertPrg(128,256); AssertChr(0); AssertWram(0);
 					AssertVram(8,16); //zero 22-mar-2012 - added 16 here as a hack to make micro machines (aladdin) load. should remove this after it is fixed in the DB
 					break;
 				case "CAMERICA-BF9093": //Big Nose Freaks Out (U)
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if(mirror_control_enabled)
 						SetMirrorType(value.Bit(4) ? EMirrorType.OneScreenB : EMirrorType.OneScreenA);
 					break;
-				
+
 				//$C000-FFFF:  PRG Select (16k @ $8000)
 				case 0x4000: case 0x5000:
 				case 0x6000: case 0x7000:
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_bank_mask_16k = Cart.PrgSize / 16 - 1;
-			
+
 			SetMirrorType(Cart.PadH, Cart.PadV);
 			SyncPRG();
 

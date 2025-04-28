@@ -186,7 +186,7 @@ namespace BizHawk.Client.Common
 
 			Changes = true;
 			InvalidateAfter(frame);
-			
+
 			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
-			
+
 			var states = inputStates.ToList();
 
 			if (Log.Count < states.Count + frame)

@@ -1356,7 +1356,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xA1: I_BIT_OP(RES, 4, C);						break; // RES 4, (I* + n) -> C
 					case 0xA2: I_BIT_OP(RES, 4, D);						break; // RES 4, (I* + n) -> D
 					case 0xA3: I_BIT_OP(RES, 4, E);						break; // RES 4, (I* + n) -> E
-					case 0xA4: I_BIT_OP(RES, 4, H);						break; // RES 4, (I* + n) -> H 
+					case 0xA4: I_BIT_OP(RES, 4, H);						break; // RES 4, (I* + n) -> H
 					case 0xA5: I_BIT_OP(RES, 4, L);						break; // RES 4, (I* + n) -> L
 					case 0xA6: I_BIT_OP(RES, 4, ALU);					break; // RES 4, (I* + n)
 					case 0xA7: I_BIT_OP(RES, 4, A);						break; // RES 4, (I* + n) -> A

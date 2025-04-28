@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		private readonly LibVirtualJaguar.CDTOCCallback _cdTocCallback;
 		private readonly LibVirtualJaguar.CDReadCallback _cdReadCallback;
-		
+
 		private readonly Disc _cd;
 		private readonly DiscSectorReader _cdReader;
 		private readonly byte[] _buf2352 = new byte[2352];

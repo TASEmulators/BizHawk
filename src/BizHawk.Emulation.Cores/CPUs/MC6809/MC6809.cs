@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 	public sealed partial class MC6809
 	{
 		// operations that can take place in an instruction
-		public const ushort IDLE = 0; 
+		public const ushort IDLE = 0;
 		public const ushort OP = 1;
 		public const ushort RD = 2;
 		public const ushort WR = 3;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		public const ushort CLR = 35;
 		public const ushort OP_PG_2 = 36;
 		public const ushort OP_PG_3 = 37;
-		public const ushort SEX = 38;	
+		public const ushort SEX = 38;
 		public const ushort EXG = 39;
 		public const ushort TFR = 40;
 		public const ushort ADD8BR = 41;
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			instr_pntr = irq_pntr = 0;
 		}
 
-		// Memory Access 
+		// Memory Access
 
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
@@ -580,7 +580,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						instr_pntr = irq_pntr = 0;
 						PopulateCURINSTR(SYNC);
 					}
-					
+
 					break;
 			}
 
@@ -661,7 +661,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		/// <summary>
 		/// Optimization method to set cur_instr
-		/// </summary>	
+		/// </summary>
 		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
 			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,

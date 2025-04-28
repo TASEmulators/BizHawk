@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ms.Close();
 				diskimage = ms.ToArray();
 			}
-			
+
 			this.diskimage = diskimage;
 			diskdiffs = new byte[NumSides][];
 		}
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							timer_irq_active = false;
 						}
 					}
-					
+
 					break;
 				case 0x0023:
 					diskenable = (value & 1) != 0;

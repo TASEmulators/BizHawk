@@ -37,8 +37,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public enum CDLType
 		{
 			None,
-			BIOS1, 
-			BIOS2, 
+			BIOS1,
+			BIOS2,
 			CARTROM
 		}
 

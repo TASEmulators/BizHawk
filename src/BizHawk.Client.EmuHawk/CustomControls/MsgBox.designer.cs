@@ -34,9 +34,9 @@
 			this.messageLbl = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btn3 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
-			// 
+			//
 			// chkBx
-			// 
+			//
 			this.chkBx.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.chkBx.AutoSize = true;
 			this.chkBx.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -47,9 +47,9 @@
 			this.chkBx.Text = "Don\'t show this again";
 			this.chkBx.UseVisualStyleBackColor = true;
 			this.chkBx.Visible = false;
-			// 
+			//
 			// btn1
-			// 
+			//
 			this.btn1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn1.AutoSize = true;
 			this.btn1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -61,9 +61,9 @@
 			this.btn1.UseVisualStyleBackColor = true;
 			this.btn1.Visible = false;
 			this.btn1.Click += new System.EventHandler(this.ButtonClick);
-			// 
+			//
 			// btn2
-			// 
+			//
 			this.btn2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn2.AutoSize = true;
 			this.btn2.Location = new System.Drawing.Point(317, 114);
@@ -74,16 +74,16 @@
 			this.btn2.UseVisualStyleBackColor = true;
 			this.btn2.Visible = false;
 			this.btn2.Click += new System.EventHandler(this.ButtonClick);
-			// 
+			//
 			// messageLbl
-			// 
+			//
 			this.messageLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.messageLbl.Location = new System.Drawing.Point(58, 10);
 			this.messageLbl.Name = "messageLbl";
 			this.messageLbl.Text = "[Message]";
-			// 
+			//
 			// btn3
-			// 
+			//
 			this.btn3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btn3.AutoSize = true;
 			this.btn3.Location = new System.Drawing.Point(398, 114);
@@ -94,9 +94,9 @@
 			this.btn3.UseVisualStyleBackColor = true;
 			this.btn3.Visible = false;
 			this.btn3.Click += new System.EventHandler(this.ButtonClick);
-			// 
+			//
 			// DialogBox
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btn1;

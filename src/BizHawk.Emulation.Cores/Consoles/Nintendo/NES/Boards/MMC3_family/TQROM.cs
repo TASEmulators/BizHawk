@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				//else
 					// if this address is mapped to chrrom and not chrram, the write just does nothing
-					//base.WritePPU(addr, value);					
+					//base.WritePPU(addr, value);
 			}
 			else
 				base.WritePpu(addr, value);

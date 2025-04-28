@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			byte ret = 0;
 
 			switch (addr)
-			{		
+			{
 				case 0xFF40: ret = LCDC;					break; // LCDC
 				case 0xFF41: ret = STAT;					break; // STAT
 				case 0xFF42: ret = scroll_y;				break; // SCY
 				case 0xFF43: ret = scroll_x;				break; // SCX
 				case 0xFF44: ret = LY;						break; // LY
 				case 0xFF45: ret = LYC;						break; // LYC
-				case 0xFF46: ret = DMA_addr;				break; // DMA 
+				case 0xFF46: ret = DMA_addr;				break; // DMA
 				case 0xFF47: ret = BGP;						break; // BGP
 				case 0xFF48: ret = obj_pal_0;				break; // OBP0
 				case 0xFF49: ret = obj_pal_1;				break; // OBP1
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void WriteReg(int addr, byte value)
 		{
-			//Console.WriteLine((addr - 0xFF40) + " " + value + " " + LY + " " + cycle + " " + LCDC.Bit(7));			
+			//Console.WriteLine((addr - 0xFF40) + " " + value + " " + LY + " " + cycle + " " + LCDC.Bit(7));
 			switch (addr)
 			{
 				case 0xFF40: // LCDC
@@ -47,10 +47,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						// don't draw for one frame after turning on
 						blank_frame = true;
-					}				
+					}
 					LCDC = value;
 					//Console.WriteLine(LY + " " + cycle);
-					break; 
+					break;
 				case 0xFF41: // STAT
 					// writing to STAT during mode 0 or 1 causes a STAT IRQ
 					// this appears to be a glitchy LYC compare
@@ -104,28 +104,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (153 != LYC) { STAT &= 0xFB; LYC_INT = false; }
 							else { STAT |= 0x4; LYC_INT = true; }
 						}
-					}				
+					}
 					break;
-				case 0xFF46: // DMA 
+				case 0xFF46: // DMA
 					DMA_addr = value;
 					DMA_start = true;
 					if (!DMA_bus_control) {DMA_OAM_access = true; }
 					DMA_clock = 0;
 					DMA_inc = 0;
-					break; 
+					break;
 				case 0xFF47: // BGP
 					BGP = value;
-					break; 
+					break;
 				case 0xFF48: // OBP0
 					obj_pal_0 = value;
-					break; 
+					break;
 				case 0xFF49: // OBP1
 					obj_pal_1 = value;
 					break;
 				case 0xFF4A: // WY
 					window_y = value;
 					window_y_read = window_y;
-					if (!window_started && (!LCDC.Bit(7) || (value > LY))) 
+					if (!window_started && (!LCDC.Bit(7) || (value > LY)))
 					{
 						window_y_latch = window_y;
 						window_y_tile = 0;
@@ -136,14 +136,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					window_x = value;
 					window_x_read = window_x;
 					break;
-			}			
+			}
 		}
 
 		public override void tick()
 		{
 			// the ppu only does anything if it is turned on via bit 7 of LCDC
 			if (LCDC.Bit(7))
-			{				
+			{
 				// start the next scanline
 				if (cycle == 456)
 				{
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (Core._scanlineCallback != null)
 						{
 							Core._scanlineCallback(LCDC);
-						}						
+						}
 					}
 
 					cycle = 0;
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					Core.in_vblank = false;
 					LCD_was_off = false;
 
-					// we exit vblank into mode 0 for 4 cycles 
+					// we exit vblank into mode 0 for 4 cycles
 					// but no hblank interrupt, presumably this only happens transitioning from mode 3 to 0
 					STAT &= 0xFC;
 					glitch_state = true;
@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					cycle = 8;
 				}
 
-				// Timing note: LYC=143 does not by itself block mode1 stat int. But, the glitchy mode 2 stat check combined with 
+				// Timing note: LYC=143 does not by itself block mode1 stat int. But, the glitchy mode 2 stat check combined with
 				// LYC=143 does block it
 
 				// the VBL stat is continuously asserted
@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if ((cycle == 4) && (LY == 144))
 					{
-						HBL_INT = false;						
+						HBL_INT = false;
 
 						// set STAT mode to 1 (VBlank) and interrupt flag if it is enabled
 						STAT &= 0xFC;
@@ -370,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								// here OAM scanning is performed
 								OAM_scan(cycle);
-							} 						
+							}
 						}
 						else if (!rendering_complete)
 						{
@@ -384,9 +384,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 
 							// render the screen and handle hblank
-							render(cycle - 83);											
+							render(cycle - 83);
 						}
-					}			
+					}
 				}
 
 				if (LY_inc == 0)
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				VBL_INT = LYC_INT = HBL_INT = OAM_INT = false;
 
 				in_vbl = true;
-				Core.in_vblank = true;			
+				Core.in_vblank = true;
 
 				LCD_was_off = true;
 
@@ -464,7 +464,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// might be needed, not sure yet
 		public override void latch_delay()
 		{
-			
+
 		}
 
 		public override void render(int render_cycle)
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				render_counter = 0;
 
 				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x_latch - 7)) / 8);
-				
+
 				window_tile_inc = 0;
 				window_started = true;
 				window_is_reset = false;
@@ -1028,7 +1028,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						fetch_sprite = false;
 					}
-				}	
+				}
 			}
 		}
 
@@ -1150,7 +1150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			int low_bound = 0;
 			int high_bound = 0;
 			int t_index = 0;
-			
+
 			for (int i = 0; i < 160; i++)
 			{
 				sprite_present_list[i] = 0;

@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return prg_page*4 + 3;
 			}
-			
+
 		}
 
 		protected override int Get_CHRBank_1K(int addr)

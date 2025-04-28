@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController finalHostController)
 		{
 			_buttons.Clear();
-			
+
 			foreach (var (k, v) in _bindings)
 			{
 				_buttons[k] = false;

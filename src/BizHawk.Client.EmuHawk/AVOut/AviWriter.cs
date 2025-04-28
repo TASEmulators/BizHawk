@@ -485,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 
 				opts = _comprOptions;
 			}
-		
+
 			private byte[] SerializeToByteArray()
 			{
 				var m = new MemoryStream();

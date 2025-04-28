@@ -5,10 +5,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	/*
 	I'm breaking FCG boards into 7 main types:
-	
+
 	[1] FCG-1, FCG-2: regs at 6000:7fff.
 	    FCG-3: regs at 8000:ffff.  one of the following at 6000:7fff:
-	[2]   nothing 
+	[2]   nothing
 	[3]   seeprom (1kbit)
 	[4]   seeprom (2kbit)
 	[5]   sram (8kbyte) (SEE SIZE NOTES BELOW)
@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	iNES #153 refers to [5], theoretically.
 	iNES #157 refers to [6], theoretically.
 	iNES #159 refers to [3], theoretically.
-	
+
 	We try to emulate everything but [6] here.
-	
+
 	Size notes:
 	chr regs are 8 bit wide and swap 1K at a time, for a max size of 256K chr, always rom.
 	prg reg is 4 bit wide and swaps 16K at a time, for a max size of 256K prg.
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	Every real instance of [1], [2], [3], [4] had 128K or 256K of each of chr and prg.
 	*/
 
-	internal sealed class BANDAI_FCG_1 : NesBoardBase 
+	internal sealed class BANDAI_FCG_1 : NesBoardBase
 	{
 		//configuration
 		private int prg_bank_mask_16k, chr_bank_mask_1k;
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_bank_mask_16k = 256 / 16 - 1;
 
 			chr_bank_mask_1k = Cart.ChrSize - 1;
-			
+
 			SetMirrorType(EMirrorType.Vertical);
 
 			prg_reg_16k = 0;
@@ -193,8 +193,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_banks_16k[0] &= 0x0f;
 					prg_banks_16k[1] &= 0x0f;
 				}
-			}	
-			*/		
+			}
+			*/
 		}
 
 		private void WriteReg(int reg, byte value)
@@ -246,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						irq_counter &= 0xFF00;
 						irq_counter |= value;
 					}
-					
+
 					break;
 				case 0xC:
 					if (jump2)
@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						irq_counter &= 0x00FF;
 						irq_counter |= (ushort)(value << 8);
 					}
-					
+
 					break;
 				case 0xD:
 					eprom?.WriteByte(value);
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						WriteReg(addr, value);
 					}
 				}
-				
+
 			}
 		}
 
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (irq_enabled)
 			{
-				
+
 				if (irq_counter == 0x0000)
 				{
 					IrqSignal = true;

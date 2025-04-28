@@ -174,7 +174,7 @@ namespace BizHawk.Bizware.Input
 					const float SCALE_FACTOR = (float) (WIDTH / (double) int.MaxValue);
 					Console.WriteLine($"rumble: [{PACKED_BAR_GRAPHICS.Substring(startIndex: (leftStrength * SCALE_FACTOR).RoundToInt(), length: WIDTH)}] L / R [{PACKED_BAR_GRAPHICS.Substring(startIndex: 2 * WIDTH - (rightStrength * SCALE_FACTOR).RoundToInt(), length: WIDTH)}]");
 #endif
-					pad.SetVibration(leftStrength, rightStrength);	
+					pad.SetVibration(leftStrength, rightStrength);
 				}
 			}
 		}

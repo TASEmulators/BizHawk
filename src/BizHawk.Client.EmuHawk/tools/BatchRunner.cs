@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 					try
 					{
 						emu.FrameAdvance(controller, true);
-						
+
 						// some cores really really really like it if you drain their audio every frame
 						if (emu.HasSoundProvider())
 						{

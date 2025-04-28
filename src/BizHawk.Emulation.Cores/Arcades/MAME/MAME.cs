@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAME is { mameVersion }\n" +
 				$"MAMEHawk is { version }");
 		}
-		
+
 		private void MAMELogCallback(LibMAME.OutputChannel channel, int size, string data)
 		{
 			if (data.Contains("NOT FOUND") && channel == LibMAME.OutputChannel.ERROR)

@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				public override string ToString() => $"TRACK {Number,2} ({Type})";
 			}
-			
+
 			// This doesn't exist officially, rather it is derived from special REM comments
 			// Consider this an "extension" perhaps?
 			public readonly struct SESSION : Command

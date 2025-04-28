@@ -386,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			while (cycles >= _waitEdge)
 			{
 				// decrement cycles
-				cycles -= _waitEdge;				
+				cycles -= _waitEdge;
 
 				if (_position == 0 && tapeMotor)
 				{
@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                                     }
 
                                     _monitorTimeOut = 2000;
-                                }                                
+                                }
                                 break;
                                 */
 							default:
@@ -628,7 +628,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             if (_tapeIsPlaying && _autoPlay)
             {
-                if (DataBlocks.Count > 1 || 
+                if (DataBlocks.Count > 1 ||
                     (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.CSW_Recording &&
                     _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.WAV_Recording))
                 {
@@ -644,7 +644,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     {
                         AutoStopTape();
                     }
-                    
+
                     return;
                 }
 
@@ -679,7 +679,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     )
                 {
                     return;
-                }                    
+                }
 
                 if (diff >= timeout * 2)
                 {

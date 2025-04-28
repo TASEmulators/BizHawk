@@ -151,7 +151,7 @@
 					}
 					else if (addr == 0x18)
 					{
-						
+
 						// note: we only want to flush the filter here if the filter components are changing
 						bool temp1 = (val & 0x10) != 0;
 						bool temp2 = (val & 0x20) != 0;

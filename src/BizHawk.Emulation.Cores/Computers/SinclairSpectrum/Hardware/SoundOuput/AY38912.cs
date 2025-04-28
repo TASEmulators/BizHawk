@@ -8,10 +8,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
 	/// AY-3-8912 Emulated Device
-	/// 
+	///
 	/// Based heavily on the YM-2149F / AY-3-8910 emulator used in Unreal Speccy
 	/// (Originally created under Public Domain license by SMT jan.2006)
-	/// 
+	///
 	/// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.cpp
 	/// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.h
 	/// </summary>
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// |11-- ---- ---- --0-|	-	IN	-	Read value of currently selected register	
+		/// |11-- ---- ---- --0-|	-	IN	-	Read value of currently selected register
 		/// </summary>
 		public bool ReadPort(ushort port, ref int value)
 		{
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// port read is not addressing this device
-			return false;			
+			return false;
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				else if ((port >> 14) == 2)
 				{
 					// Update the audiobuffer based on the current CPU cycle
-					// (this process the previous data BEFORE writing to the currently selected register)                
+					// (this process the previous data BEFORE writing to the currently selected register)
 					int d = (int)(_machine.CurrentFrameCycle);
 					BufferUpdate(d);
 
@@ -379,15 +379,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             14	        I/O port A	                8-bit (0-255)
             15	        I/O port B	                8-bit (0-255) (Not present on the AY-3-8912)
 
-            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the 
+            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the
                 envelope defined by register 13 and ignores its volume setting.
             * The mixer (register 7) is made up of the following bits (low=enabled):
-            
+
             Bit:        7	    6	    5	    4	    3	    2	    1	    0
             Register:   I/O	    I/O	    Noise	Noise	Noise	Tone	Tone	Tone
             Channel:    B       A	    C	    B	    A	    C	    B	    A
 
-            The AY-3-8912 ignores bit 7 of this register.    
+            The AY-3-8912 ignores bit 7 of this register.
         */
 		private int[] _registers = new int[16];
 
@@ -575,7 +575,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_tStatesPerFrame = frameTactCount;
 			_samplesPerFrame = 882;
 
-			_tStatesPerSample = 79; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
+			_tStatesPerSample = 79; //(int)Math.Round(((double)_tStatesPerFrame * 50D) /
 									//(16D * (double)_sampleRate),
 									//MidpointRounding.AwayFromZero);
 

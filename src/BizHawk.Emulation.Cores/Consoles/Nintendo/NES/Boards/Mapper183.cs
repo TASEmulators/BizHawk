@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000) // 0x8000
 			{
 				bank_8k = prg[0] & prg_bank_mask_8k;
-				
+
 			}
 			else if (addr < 0x4000) // 0xA000
 			{

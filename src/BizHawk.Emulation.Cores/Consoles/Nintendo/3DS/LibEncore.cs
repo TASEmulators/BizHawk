@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		[UnmanagedFunctionPointer(cc)]
 		public delegate bool GetBooleanSettingCallback(string label);
-		
+
 		[UnmanagedFunctionPointer(cc)]
 		public delegate ulong GetIntegerSettingCallback(string label);
-		
+
 		[UnmanagedFunctionPointer(cc)]
 		public delegate double GetFloatSettingCallback(string label);
-		
+
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void GetStringSettingCallback(string label, IntPtr buffer, int bufferSize);
 
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			public GetFloatSettingCallback GetFloat;
 			public GetStringSettingCallback GetString;
 		}
-		
+
 		[UnmanagedFunctionPointer(cc)]
 		public delegate IntPtr RequestGLContextCallback();
 

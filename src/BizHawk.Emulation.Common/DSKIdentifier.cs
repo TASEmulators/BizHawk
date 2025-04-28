@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// at this point the disk is not standard bootable
-			// try format analysis			
+			// try format analysis
 			if (trk.Sectors.Length == 9 && trk.Sectors[0].SectorSize == 2)
 			{
 				switch (trk.GetLowestSectorID())

@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _isDragging;
 		private bool _readonly;
 		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if an axis is being autoheld or just held
-		
+
 		private int? _overrideX;
 		private int? _overrideY;
 
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 				if (value < 0)
 				{
 					XNumeric.Value = 0;
-					
+
 				}
 				else if (value <= XNumeric.Maximum)
 				{

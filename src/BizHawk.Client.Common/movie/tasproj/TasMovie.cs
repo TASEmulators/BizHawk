@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 				_displayCache.Controller.SetFromMnemonic(Log[frame]);
 				_displayCache.Frame = frame;
 			}
-			
+
 			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
 		}
 
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
 		}
 
-		
+
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
 			foreach (string entry in log)

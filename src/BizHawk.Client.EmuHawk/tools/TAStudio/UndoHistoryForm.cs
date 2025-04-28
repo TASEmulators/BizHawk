@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string IdColumnName = "ID";
 		private const string UndoColumnName = "Undo Step";
-		
+
 		private readonly TAStudio _tastudio;
 		private string _lastUndoAction;
 		private IMovieChangeLog Log => _tastudio.CurrentTasMovie.ChangeLog;

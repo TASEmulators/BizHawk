@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			var wLength = length / 2;
 			if (_w.Length < wLength)
 				Array.Resize(ref _w, wLength);
-			
+
 			_ip.AsSpan().Clear();
 			_w.AsSpan().Clear();
 		}

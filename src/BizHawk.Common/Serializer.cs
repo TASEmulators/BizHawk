@@ -134,7 +134,7 @@ namespace BizHawk.Common
 			{
 				throw new InvalidOperationException();
 			}
-			
+
 			if (_isText)
 			{
 				SyncEnumText(name, ref val);
@@ -776,7 +776,7 @@ namespace BizHawk.Common
 					}
 
 					curs = ss.Pop();
-					
+
 					// consume no data past the end of the last proper section
 					if (curs == _readerSection)
 					{

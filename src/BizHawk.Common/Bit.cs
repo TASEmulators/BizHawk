@@ -11,7 +11,7 @@ namespace BizHawk.Common
 		{
 			_val = val;
 		}
-		
+
 		public static implicit operator Bit(int rhs)
 		{
 			Debug.Assert((rhs & ~1) is 0, "higher bits can't be used");

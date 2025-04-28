@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_config = config;
 			DialogController = dialogController;
-			
+
 			InitializeComponent();
 
 			SuspendLayout();

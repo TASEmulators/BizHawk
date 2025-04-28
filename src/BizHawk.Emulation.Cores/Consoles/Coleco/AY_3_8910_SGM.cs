@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					{
 						v = (short)(sound_out_A ? VolumeTable[env_E] : 0);
 					}
-					
+
 					if (env_vol_B == 0)
 					{
 						v += (short)(sound_out_B ? VolumeTable[vol_B] : 0);
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					{
 						v += (short)(sound_out_C ? VolumeTable[env_E] : 0);
 					}
-					
+
 					current_sample = (short)v;
 				}
 			}

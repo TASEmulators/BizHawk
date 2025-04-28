@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
         /// <summary>
         /// ROM Banks
-        /// </summary>        
+        /// </summary>
         public byte[] ROM0 = new byte[0x4000];
         public byte[] ROM1 = new byte[0x4000];
         public byte[] ROM2 = new byte[0x4000];
@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             set => ROMPaged = value;
         }
 
-        /* 
-         *  +3/+2A only 
+        /*
+         *  +3/+2A only
          */
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // THE 'MASKABLE INTERRUPT' ROUTINE
                 // This is sometimes used when the tape is to be stopped
-                // 
+                //
                 if (addr == 56)
                 {
                     //TapeDevice.MaskableInterruptCount++;

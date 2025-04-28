@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract int dsda_add_wad_file(string fileName, int fileSize, load_archive_cb feload_archive_cb);
-		
+
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte dsda_read_memory_array(MemoryArrayType type, uint addr);
 

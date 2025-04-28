@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ppu.tick();
 			ppu.Audio_tick();
 			cpu.ExecuteOne();
-			
+
 		}
 
 		public void GetControllerState(IController controller)
@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void SendVideoBuffer()
 		{
-			for (int j = 0; j < pic_height; j++) 
+			for (int j = 0; j < pic_height; j++)
 			{
 				for (int i = 0; i < 320; i++)
 				{

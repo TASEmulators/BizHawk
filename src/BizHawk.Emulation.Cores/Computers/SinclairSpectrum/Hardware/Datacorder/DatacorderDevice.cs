@@ -440,7 +440,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				cycles -= _waitEdge;
 
 				if (_position == 0 && _tapeIsPlaying)
-				{				
+				{
 					// notify about the current block
 					var bl = _dataBlocks[_currentDataBlockIndex];
 

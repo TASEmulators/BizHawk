@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			if (_controller.IsPressed("P2 B1")) ctrl2_byte -= 0x10;
 			if (_controller.IsPressed("P2 B2")) ctrl2_byte -= 0x20;
 
-			if (current_controller == MSXControllerKB) { kb_rows_check(controller); }		
-			
+			if (current_controller == MSXControllerKB) { kb_rows_check(controller); }
+
 			if (Tracer.IsEnabled())
 			{
 				tracecb = MakeTrace;
@@ -38,9 +38,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			{
 				tracecb = null;
 			}
-			
+
 			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
-			
+
 			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, ctrl2_byte, kb_rows, true, true);
 
 			LibMSX.MSX_get_video(MSX_Pntr, _vidbuffer);
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public void kb_rows_check(IController controller)
 		{
 			for(int i = 0; i < 9; i++) { kb_rows[i] = 0; }
-			
+
 			if (controller.IsPressed("7")) { kb_rows[0] |= 0x80; }
 			if (controller.IsPressed("6")) { kb_rows[0] |= 0x40; }
 			if (controller.IsPressed("5")) { kb_rows[0] |= 0x20; }

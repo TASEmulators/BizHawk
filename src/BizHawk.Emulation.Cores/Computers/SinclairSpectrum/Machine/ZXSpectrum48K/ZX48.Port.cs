@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
             byte lowByte = (byte)(port & 0xff);
-            
+
             // Kempston joystick input takes priority over keyboard input
             // if this is detected just return the kempston byte
             if (lowByte == 0x1f)
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 KeyboardDevice.ReadPort(port, ref result);
 
                 // not a lagframe
-                InputRead = true;           
+                InputRead = true;
 
                 // process tape INs
                 TapeDevice.ReadPort(port, ref result);
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
                 // If this is an unused port the floating memory bus should be returned
-                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);                
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);
             }
 
             return (byte)result;

@@ -1017,7 +1017,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var relMSF = -(track.TrackStartFileOffset - track.PregapFileOffset) / track.SectorSize;
 						var trackNumBcd = BCD2.FromDecimal(startTrack + j);
 						var cueIndexes = nrgf.Cues[i].TrackIndices.Where(t => t.Track == trackNumBcd).ToArray();
-	
+
 						// do the pregap
 						var pregapCueIndex = cueIndexes[0];
 						for (var k = track.PregapFileOffset; k < track.TrackStartFileOffset; k += track.SectorSize)

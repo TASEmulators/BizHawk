@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/* 48K Spectrum has NO memory paging
-         * 
-         *  
+         *
+         *
                    | Bank 0 |
                    |        |
                    |        |

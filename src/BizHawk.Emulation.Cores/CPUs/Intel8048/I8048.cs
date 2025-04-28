@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 	{
 		public int LY;
 		// operations that can take place in an instruction
-		public const ushort IDLE = 0; 
+		public const ushort IDLE = 0;
 		public const ushort OP = 1;
 		public const ushort RD = 2;
 		public const ushort WR = 3;
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public const ushort RD_P = 61;
 		public const ushort WR_P = 62;
 		public const ushort EM = 63;
-		public const ushort DM = 64;	
+		public const ushort DM = 64;
 		public const ushort TEST_COND = 65;
 
 		public I8048()
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			Regs[PX + 2] = 0xFF;
 		}
 
-		// Memory Access 
+		// Memory Access
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					Regs[reg_d_ad] = (ushort)((Regs[reg_d_ad] + 1) & 0xFF);
 					break;
 				case RES_TF:
-					if (test_pass) { TF = false; }				
+					if (test_pass) { TF = false; }
 					break;
 				case SET_ADDR_M3:
 					Regs[ALU] &= 0xFF;
@@ -391,7 +391,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					Regs[PSW] = (ushort)((((Regs[PSW] & 0x7) - 1) & 0x7) | (Regs[PSW] & 0xF8));
 					Regs[PC] = (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8] & 0xFF);
 					Regs[PC] |= (ushort)((Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF) << 8);
-					break;	
+					break;
 				case EEA:
 					EA = true;
 					break;
@@ -417,7 +417,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 					break;
 				case DM:
 					INT_MSTR = false;
-					break;		
+					break;
 				case TEST_COND:
 					reg_d_ad = cur_instr[instr_pntr++];
 
@@ -551,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		/// <summary>
 		/// Optimization method to set cur_instr
-		/// </summary>	
+		/// </summary>
 		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
 			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0)
@@ -595,7 +595,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			ser.Sync(nameof(RB), ref RB);
 			ser.Sync(nameof(MB), ref MB);
 			ser.Sync(nameof(Regs), ref Regs, false);
-			
+
 			ser.Sync(nameof(F1), ref F1);
 			ser.Sync(nameof(T0), ref T0);
 			ser.Sync(nameof(T1), ref T1);

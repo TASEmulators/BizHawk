@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/// <summary>
 		/// Signs whether the current active drive has a disk inserted
-		/// </summary>        
+		/// </summary>
 		public bool FDD_IsDiskLoaded => DriveStates[DiskDriveIndex].FDD_IsDiskLoaded;
 
 		/// <summary>
@@ -404,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 else
                     return null;
             }
-      
+
 
             /// <summary>
             /// Populates a result buffer
@@ -650,7 +650,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
                         // seek emulation processed immediately
                         case SeekSubState.MoveImmediate:
-                            
+
                             if (CurrentTrack < SeekingTrack)
                             {
                                 // we are seeking forward
@@ -704,10 +704,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     {
                         SetBit(SR0_EC, ref IntStatus);
                     }
-                }                    
+                }
 
                 // set seek end
-                SetBit(SR0_SE, ref IntStatus);                
+                SetBit(SR0_SE, ref IntStatus);
                 /*
                 // head address
                 if (CurrentSide > 0)
@@ -790,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			/// <summary>
 			/// Signs whether the current active drive has a disk inserted
-			/// </summary>        
+			/// </summary>
 			public bool FDD_IsDiskLoaded
 			{
 				get

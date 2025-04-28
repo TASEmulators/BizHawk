@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 								R_NMI_CD = 256;
 								//R.Cpu.NonMaskableInterrupt = true;
 							}
-						}					
+						}
 					}
 
 					if (L.p4_read)
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public int[] GetVideoBuffer()
 		{
-			return _vidbuffer;		
+			return _vidbuffer;
 		}
 
 		public void FillVideoBuffer()

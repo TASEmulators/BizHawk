@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 			/*
-			if (addr >= 0x3000 && addr < 0x7000)	
+			if (addr >= 0x3000 && addr < 0x7000)
 			{
 				int b = (addr >> 11) - 6;
 				b |= addr >> 1 & 1;

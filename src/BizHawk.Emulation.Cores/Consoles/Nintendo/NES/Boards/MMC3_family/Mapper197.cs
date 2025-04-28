@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public Mapper197_MMC3(NesBoardBase board, int num_prg_banks) : base(board, num_prg_banks)
 		{
-			
+
 		}
 
 		public override void Sync()

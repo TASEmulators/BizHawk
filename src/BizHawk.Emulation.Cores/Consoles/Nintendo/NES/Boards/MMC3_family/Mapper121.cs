@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bank_8k = exRegs[0] & prg_mask;
 			}
-			else if (bank_8k == 3 && exRegs[1] > 0) 
+			else if (bank_8k == 3 && exRegs[1] > 0)
 			{
 				bank_8k = exRegs[1] & prg_mask;
 			}

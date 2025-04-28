@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				"-s", setting
 			});
 		}
-		
+
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 

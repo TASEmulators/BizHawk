@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				uint flags = (uint)Common.MemoryCallbackFlags.AccessRead;
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 			}
-			
+
 
 			if ((addr & 0xFCE0) == 0)
 			{
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				slow_access = true;
 				return tia.ReadMemory((ushort)(addr & 0x1F), false);
 			}
-			
+
 			if ((addr & 0xFCE0) == 0x20)
 			{
 				if ((A7800_control_register & 0x2) > 0)
@@ -48,30 +48,30 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return 0x80; // TODO: What if Maria is off?
 				}
 			}
-			
+
 			if ((addr & 0xFF80) == 0x280)
 			{
 				slow_access = true;
 				return m6532.ReadMemory(addr, false);
 			}
-			
+
 			if ((addr & 0xFE80) == 0x480)
 			{
 				slow_access = true;
 				return RAM_6532[addr & 0x7F];
 			}
-			
+
 			if ((addr >= 0x1800) && (addr < 0x2800))
 			{
 				return RAM[addr -0x1800];
 			}
-			
+
 			if ((addr >= 0x40) && (addr < 0x100))
 			{
 				// RAM block 0
 				return RAM[addr - 0x40 + 0x840];
 			}
-			
+
 			if ((addr >= 0x140) && (addr < 0x200))
 			{
 				// RAM block 1
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (temp == 4) // WSYNC
 						cpu.RDY = false;
 					/*
-					for (int i = 0; i < 0x20; i++) 
+					for (int i = 0; i < 0x20; i++)
 					{
 						Console.Write(Maria_regs[i]);
 						Console.Write(" ");

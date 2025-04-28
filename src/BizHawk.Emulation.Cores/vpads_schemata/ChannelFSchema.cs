@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(60, 35, controller, "Forward", "U"),
 					new ButtonSchema(60, 57, controller, "Back", "D"),
 					new ButtonSchema(38, 57, controller, "Left", "L"),
-					new ButtonSchema(85, 57, controller, "Right", "R"),			
-					
+					new ButtonSchema(85, 57, controller, "Right", "R"),
+
 
 					new ButtonSchema(10, 80, controller, "Pull", "PULL"),
 					new ButtonSchema(92, 80, controller, "Push", "PUSH")

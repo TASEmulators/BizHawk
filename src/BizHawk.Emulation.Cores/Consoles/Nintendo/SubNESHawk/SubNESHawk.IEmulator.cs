@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				current_cycle = 0;
 				_nesCore.cpu.ext_ppu_cycle = current_cycle;
 			}
-			
+
 			_isLag = _nesCore.lagged;
 
 			if (_isLag)

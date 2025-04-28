@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		 * The GBC uses a RGB555 color space, but it most definately does not resemble sRGB at all.
 		 * To make matters worse, because of the reflective screen, the visible colors depend greatly
 		 * on the viewing environment.
-		 * 
+		 *
 		 * All of these algorithms convert from GBC RGB555 to sRGB RGB888
 		 */
 		public struct Triple
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				this.g = g;
 				this.b = b;
 			}
-			
+
 			public Triple Bit5to8Bad()
 			{
 				Triple ret;

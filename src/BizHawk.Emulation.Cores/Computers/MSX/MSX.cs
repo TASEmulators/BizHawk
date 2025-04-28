@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 						mapper_1 = 2;
 						Console.WriteLine("Using Konami Mapper with SCC");
 					}
-				}					
+				}
 			}
 
 			// if the original was not 64 or 48 k, move it (may need to do this case by case)
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				}
 				for (int i = 0; i < 0x4000; i++)
 				{
-					RomData[i] = 0; 
+					RomData[i] = 0;
 				}
 			}
 
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			{
 				loc_bios = lp.Comm.CoreFileProvider.GetFirmwareOrThrow(new("MSX", "bios_basic_jpn"));
 			}
-			
+
 			// look for individual files (not implemented yet)
 			if (loc_bios == null)
 			{
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			RomData2 = new byte[0x10000];
 
 			for (int i = 0; i < 0x10000; i++) { RomData2[i] = 0; }
-			
+
 			MSX_Pntr = LibMSX.MSX_create();
 
 			LibMSX.MSX_load_bios(MSX_Pntr, Bios, Basic);

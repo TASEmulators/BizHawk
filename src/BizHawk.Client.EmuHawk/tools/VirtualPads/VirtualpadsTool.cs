@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public bool ClearAlsoClearsAnalog { get; set; }
-		
+
 		private bool _readOnly;
 
 		private Control _lastFocusedNUD = null;

@@ -3,7 +3,7 @@
 	internal sealed class Mapper192 : MMC3Board_Base
 	{
 		//http://wiki.nesdev.com/w/index.php/INES_Mapper_192
-		
+
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type

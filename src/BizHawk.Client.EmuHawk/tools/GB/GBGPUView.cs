@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Color _spriteback;
-		
+
 		[ConfigPersist]
 		public Color Spriteback
 		{

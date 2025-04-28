@@ -1030,17 +1030,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HideWasLagFramesMenuItem_Click(object sender, EventArgs e)
 			=> TasView.HideWasLagFrames = !TasView.HideWasLagFrames;
-		
+
 		private void AlwaysScrollMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
 		}
-		
+
 		private void ScrollToViewMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "near";
 		}
-		
+
 		private void ScrollToTopMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "top";

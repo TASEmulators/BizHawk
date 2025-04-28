@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DefaultFpsNumerator = LibUAE.VIDEO_NUMERATOR_NTSC,
 			DefaultFpsDenominator = LibUAE.VIDEO_DENOMINATOR_NTSC
 		};
-		
+
 		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
 		private readonly List<IRomAsset> _roms;
 		private const int _messageDuration = 4;
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_ejectPressed = controller.IsPressed(Inputs.EjectDisk);
 			_insertPressed = controller.IsPressed(Inputs.InsertDisk);
 			_nextSlotPressed = controller.IsPressed(Inputs.NextSlot);
-			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
+			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);
 			fi.CurrentDrive = _currentDrive;
 
 			foreach (var (name, key) in _keyboardMap)

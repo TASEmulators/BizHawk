@@ -33,18 +33,18 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			switch (opcode)
 			{
-				case 0x00: LR_A_KU(); break;					// LR A, (KU) 
-				case 0x01: LR_A_KL(); break;					// LR A, (KL) 
-				case 0x02: LR_A_QU(); break;					// LR A, (QU) 
-				case 0x03: LR_A_QL(); break;					// LR A, (QL) 
-				case 0x04: LR_KU_A(); break;					// LR KU, (A) 
-				case 0x05: LR_KL_A(); break;					// LR KL, (A) 
-				case 0x06: LR_QU_A(); break;					// LR QU, (A) 
-				case 0x07: LR_QL_A(); break;					// LR QL, (A) 
-				case 0x08: LR_K_P(); break;						// LR K, (P) 
-				case 0x09: LR_P_K(); break;						// LR P, (K) 
-				case 0x0A: LR_A_IS(); break;					// LR A, (ISAR) 
-				case 0x0B: LR_IS_A(); break;					// LR ISAR, (A) 
+				case 0x00: LR_A_KU(); break;					// LR A, (KU)
+				case 0x01: LR_A_KL(); break;					// LR A, (KL)
+				case 0x02: LR_A_QU(); break;					// LR A, (QU)
+				case 0x03: LR_A_QL(); break;					// LR A, (QL)
+				case 0x04: LR_KU_A(); break;					// LR KU, (A)
+				case 0x05: LR_KL_A(); break;					// LR KL, (A)
+				case 0x06: LR_QU_A(); break;					// LR QU, (A)
+				case 0x07: LR_QL_A(); break;					// LR QL, (A)
+				case 0x08: LR_K_P(); break;						// LR K, (P)
+				case 0x09: LR_P_K(); break;						// LR P, (K)
+				case 0x0A: LR_A_IS(); break;					// LR A, (ISAR)
+				case 0x0B: LR_IS_A(); break;					// LR ISAR, (A)
 				case 0x0C: PK(); break;							// LR PC1, (PC0); LR PC0l <- (r13); LR PC0h, (r12)
 				case 0x0D: LR_P0_Q(); break;					// LR PC0l, (r15); LR PC0h <- (r14)
 				case 0x0E: LR_Q_DC(); break;					// LR r14, (DC0h); r15 <- (DC0l)
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				case 0x3D: DS_ISAR_INC(); break;				// SR <- (SR) + H'FF' (SR pointed to by the ISAR); ISAR incremented
 				case 0x3E: DS_ISAR_DEC(); break;                // SR <- (SR) + H'FF' (SR pointed to by the ISAR); ISAR decremented
 				case 0x3F: ILLEGAL(); break;					// No instruction - do a NOP
-				
+
 				case 0x40: LR_A_R(0); break;					// A <- (SR)
 				case 0x41: LR_A_R(1); break;					// A <- (SR)
 				case 0x42: LR_A_R(2); break;					// A <- (SR)
@@ -185,23 +185,23 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				case 0x8D: CM(); break;							// Set status flags on basis of: ((DC)) + (A) + 1; DC0 <- (DC0) + 1; DC <- (DC) + (A)
 				case 0x8E: ADC(); break;						// DC <- (DC) + (A)
 
-				case 0x8F: BR7(); break;						// Branch on ISAR (any of the low 3 bits of ISAR are reset)			
-																// 	
-				case 0x90: BF(0); break;						// BR		-	Unconditional branch relative (always)				
-				case 0x91: BF(1); break;                        // BM		-	Branch on negative (sign bit is reset)				
-				case 0x92: BF(2); break;                        // BNC		-	Branch if no carry (carry bit is reset)	
-				case 0x93: BF(3); break;						// BF_CS	-	Branch on false - negative and no carry				
-				case 0x94: BF(4); break;                        // BNZ		-	Branch on not zero (zero bit is reset)				
-				case 0x95: BF(5); break;						// BF_ZS	-	Branch on false - negative and not zero				
-				case 0x96: BF(6); break;						// BF_ZC	-	Branch on false - no carry and not zero				
-				case 0x97: BF(7); break;						// BF_ZCS	-	Branch on false - no carry and not zero and negative				
-				case 0x98: BF(8); break;                        // BNO		-	Branch if no overflow (OVF bit is reset)				
-				case 0x99: BF(9); break;						// BF_OS	-	Branch on false - no overflow and negative				
-				case 0x9A: BF(10); break;						// BF_OC	-	Branch on false - no overflow and no carry				
-				case 0x9B: BF(11); break;						// BF_OCS	-	Branch on false - no overflow and no carry and negative				
-				case 0x9C: BF(12); break;						// BF_OZ	-	Branch on false - no overflow and not zero				
-				case 0x9D: BF(13); break;						// BF_OZS	-	Branch on false - no overflow and not zero and negative				
-				case 0x9E: BF(14); break;						// BF_OZC	-	Branch on false - no overflow and not zero and no carry				
+				case 0x8F: BR7(); break;						// Branch on ISAR (any of the low 3 bits of ISAR are reset)
+																//
+				case 0x90: BF(0); break;						// BR		-	Unconditional branch relative (always)
+				case 0x91: BF(1); break;                        // BM		-	Branch on negative (sign bit is reset)
+				case 0x92: BF(2); break;                        // BNC		-	Branch if no carry (carry bit is reset)
+				case 0x93: BF(3); break;						// BF_CS	-	Branch on false - negative and no carry
+				case 0x94: BF(4); break;                        // BNZ		-	Branch on not zero (zero bit is reset)
+				case 0x95: BF(5); break;						// BF_ZS	-	Branch on false - negative and not zero
+				case 0x96: BF(6); break;						// BF_ZC	-	Branch on false - no carry and not zero
+				case 0x97: BF(7); break;						// BF_ZCS	-	Branch on false - no carry and not zero and negative
+				case 0x98: BF(8); break;                        // BNO		-	Branch if no overflow (OVF bit is reset)
+				case 0x99: BF(9); break;						// BF_OS	-	Branch on false - no overflow and negative
+				case 0x9A: BF(10); break;						// BF_OC	-	Branch on false - no overflow and no carry
+				case 0x9B: BF(11); break;						// BF_OCS	-	Branch on false - no overflow and no carry and negative
+				case 0x9C: BF(12); break;						// BF_OZ	-	Branch on false - no overflow and not zero
+				case 0x9D: BF(13); break;						// BF_OZS	-	Branch on false - no overflow and not zero and negative
+				case 0x9E: BF(14); break;						// BF_OZC	-	Branch on false - no overflow and not zero and no carry
 				case 0x9F: BF(15); break;						// BF_OZCS	-	Branch on false - no overflow and not zero and no carry and negative
 
 				case 0xA0: INS_0(0); break;						// A <- (I/O Port 0 or 1)

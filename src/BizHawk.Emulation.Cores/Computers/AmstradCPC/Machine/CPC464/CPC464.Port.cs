@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			return (byte)finalResult;	
+			return (byte)finalResult;
 		}
 
 		/// <summary>

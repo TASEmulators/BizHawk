@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										currCart.WramBattery = true;
 									break;
 							}
-						} else 
+						} else
 						if (xmlReader.NodeType == XmlNodeType.EndElement && xmlReader.Name == "board")
 						{
 							state = 4;

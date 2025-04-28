@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (s == "Unsupported mapper"
 				|| s == "Not an iNES file" // Not worth making a new exception for the iNES error, they ultimately are the same problem
 				|| s == " truncated file" // This is a garbage rom not worth anyone's time but at least NesHawk handles these better, and these occur before the core has a chance to assess an unsupported mapper
-				) 
+				)
 			{
 				throw new Common.UnsupportedGameException(CoreNames.QuickNes + " unsupported mapper");
 			}

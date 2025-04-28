@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			/// total length of the movie: ms
 			/// </summary>
 			public ulong LengthMs { get; set; }
-			
+
 			/// <summary>
 			/// number of rerecords
 			/// </summary>
@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 					Data = source,
 					Timestamp = TimestampCalc(_fpsNum, _fpsDen, _totalFrames),
 				};
-				
+
 				_totalFrames++;
 				WriteVideo(j);
 			}
@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 					Subtype = 1, // raw PCM audio
 					Data = new byte[4],
 				};
-				
+
 				j.Data[0] = (byte)(l >> 8);
 				j.Data[1] = (byte)(l & 255);
 				j.Data[2] = (byte)(r >> 8);
@@ -628,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 		/// blocking thread safe queue, used for communication between main program and file writing thread
 		/// </summary>
 		private BlockingCollection<object> _threadQ;
-		
+
 		/// <summary>
 		/// file writing thread; most of the work happens here
 		/// </summary>
@@ -738,7 +738,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="v">VideoCopy to compress</param>
 		/// <returns>gzipped stream with width and height prepended</returns>
 		private delegate byte[] GzipFrameD(VideoCopy v);
-		
+
 		// delegate for GzipFrame
 		private GzipFrameD _gzipFrameDelegate;
 

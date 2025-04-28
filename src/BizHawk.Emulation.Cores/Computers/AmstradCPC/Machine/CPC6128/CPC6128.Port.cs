@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					if (!deviceResponse)
 						finalResult |= result;
 					*/
-				}				
+				}
 
 				if (d == PortDevice.ROMSelect && !deviceResponse)
 				{
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (d == PortDevice.PAL)
 				{
-					PAL.WritePort(port, value);					
+					PAL.WritePort(port, value);
 				}
 				else if (d == PortDevice.CRCT)
 				{

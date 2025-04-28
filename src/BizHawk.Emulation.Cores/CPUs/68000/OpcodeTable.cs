@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			"011111", // (d8, PC, Xn)  PC with Index
 			"000111", // (xxx).W       Absolute Short
 			"001111", // (xxx).L       Absolute Long
-			"100111", // #imm          Immediate            
+			"100111", // #imm          Immediate
 		};
 
 		private static readonly string[] Am3Xn3 = {
@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			"111011", // (d8, PC, Xn)  PC with Index
 			"111000", // (xxx).W       Absolute Short
 			"111001", // (xxx).L       Absolute Long
-			"111100", // #imm          Immediate            
+			"111100", // #imm          Immediate
 		};
 
 		private static readonly string[] ConditionMain = {
@@ -327,8 +327,8 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		};
 
 		private static readonly string[] ConditionAll = {
-			"0000", // T   True 
-			"0001", // F   False            
+			"0000", // T   True
+			"0001", // F   False
 			"0010", // HI  Higher (unsigned)
 			"0011", // LS  Lower or Same (unsigned)
 			"0100", // CC  Carry Clear (aka Higher or Same, unsigned)

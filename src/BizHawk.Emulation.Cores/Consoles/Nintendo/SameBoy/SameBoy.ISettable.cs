@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			public SameboySettings Clone()
 				=> (SameboySettings)MemberwiseClone();
 
-			public int[] GetCustomPalette() 
+			public int[] GetCustomPalette()
 				=> (int[])_customPal.Clone();
 
 			public void SetCustomPalette(int[] pal)
