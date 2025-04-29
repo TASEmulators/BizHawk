@@ -12,13 +12,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		public enum ConfigurationPreset
 		{
-			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 8086, 256kb RAM, Monochrome, PC Speaker)")]
+			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 8086, 256KB RAM, Monochrome, PC Speaker)")]
 			_1981_IBM_5150,
-			[Display(Name = "[1983] IBM XT 5160 (4.77Mhz, 8086, 640kb RAM, CGA, PC Speaker)")]
+			[Display(Name = "[1983] IBM XT 5160 (4.77Mhz, 8086, 640KB RAM, CGA, PC Speaker)")]
 			_1983_IBM_5160,
-			[Display(Name = "[1986] IBM XT 286 5162-286 (6Mhz, 8086, 640kb RAM, EGA, PC Speaker)")]
+			[Display(Name = "[1986] IBM XT 286 5162-286 (6Mhz, 8086, 640KB RAM, EGA, PC Speaker)")]
 			_1986_IBM_5162,
-			[Display(Name = "[1987] IBM PS/2 25 (8Mhz, 186, 640kb RAM, MCGA, Game Blaster)")]
+			[Display(Name = "[1987] IBM PS/2 25 (8Mhz, 186, 640KB RAM, MCGA, Game Blaster)")]
 			_1987_IBM_PS2_25,
 			[Display(Name = "[1990] IBM PS/2 25 286 (10Mhz, 286, 4MB RAM, VGA, Sound Blaster 1)")]
 			_1990_IBM_PS2_25_286,
