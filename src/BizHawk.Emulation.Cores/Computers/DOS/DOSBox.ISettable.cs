@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public float MouseSensitivity { get; set; }
 
 			[DisplayName("Mount Formatted Hard Disk Drive")]
-			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. This value will be ignored if a hard disk image (.bin) is provided. The hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.")]
+			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. The hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.\n\nThis value will be ignored if a hard disk image (.bin) is provided.")]
 			[DefaultValue(HardDiskOptions.None)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HardDiskOptions FormattedHardDisk { get; set; }
