@@ -304,7 +304,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[Description("The size of the memory capacity (RAM) to emulate. -1 to keep the value for the machine preset. Maximum value: 256")]
 			[Range(-1, 256)]
 			[DefaultValue(-1)]
-
 			public int RAMSize { get; set; }
 
 			[DisplayName("PC Speaker")]
