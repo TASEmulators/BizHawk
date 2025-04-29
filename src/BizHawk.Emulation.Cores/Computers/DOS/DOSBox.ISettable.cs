@@ -20,17 +20,17 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_1986_IBM_5162,
 			[Display(Name = "[1987] IBM PS/2 25 (8Mhz, 186, 640kb RAM, MCGA, Game Blaster)")]
 			_1987_IBM_PS2_25,
-			[Display(Name = "[1990] IBM PS/2 25 286 (10Mhz, 286, 4Mb RAM, VGA, Sound Blaster 1)")]
+			[Display(Name = "[1990] IBM PS/2 25 286 (10Mhz, 286, 4MB RAM, VGA, Sound Blaster 1)")]
 			_1990_IBM_PS2_25_286,
-			[Display(Name = "[1991] IBM PS/2 25 386 (25Mhz, 386, 6Mb RAM, VGA, Sound Blaster 2)")]
+			[Display(Name = "[1991] IBM PS/2 25 386 (25Mhz, 386, 6MB RAM, VGA, Sound Blaster 2)")]
 			_1991_IBM_PS2_25_386,
-			[Display(Name = "[1993] IBM PS/2 53 SLC2 486 (50Mhz, 486, 64Mb RAM, SVGA, Sound Blaster Pro 2)")]
+			[Display(Name = "[1993] IBM PS/2 53 SLC2 486 (50Mhz, 486, 64MB RAM, SVGA, Sound Blaster Pro 2)")]
 			_1993_IBM_PS2_53_SLC2_486,
-			[Display(Name = "[1994] IBM PS/2 76i SLC2 486 (100Mhz, 486, 64Mb RAM, SVGA, Sound Blaster 16)")]
+			[Display(Name = "[1994] IBM PS/2 76i SLC2 486 (100Mhz, 486, 64MB RAM, SVGA, Sound Blaster 16)")]
 			_1994_IBM_PS2_76i_SLC2_486,
-			[Display(Name = "[1997] IBM Aptiva 2140 (233Mhz, Pentium MMX, 96Mb RAM, SVGA + 3D Support, Sound Blaster 16)")]
+			[Display(Name = "[1997] IBM Aptiva 2140 (233Mhz, Pentium MMX, 96MB RAM, SVGA + 3D Support, Sound Blaster 16)")]
 			_1997_IBM_APTIVA_2140,
-			[Display(Name = "[1999] IBM Thinkpad 240 (300Mhz, Pentium III, 128Mb, SVGA + 3D Support , Sound Blaster 16) ")]
+			[Display(Name = "[1999] IBM Thinkpad 240 (300Mhz, Pentium III, 128MB, SVGA + 3D Support , Sound Blaster 16) ")]
 			_1999_IBM_THINKPAD_240
 		}
 
@@ -38,16 +38,16 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public enum HardDiskOptions : uint
 		{
 			None = 0,
-			[Display(Name = "21Mb (FAT16)")]
-			FAT16_21Mb = 21411840,
-			[Display(Name = "41Mb (FAT16)")]
-			FAT16_41Mb = 42823680,
-			[Display(Name = "241Mb (FAT16)")]
-			FAT16_241Mb = 252370944,
-			[Display(Name = "504Mb (FAT16)")]
-			FAT16_504Mb = 527966208,
-			[Display(Name = "2014Mb (FAT16)")]
-			FAT16_2014Mb = 2111864832,
+			[Display(Name = "21MB (FAT16)")]
+			FAT16_21MB = 21411840,
+			[Display(Name = "41MB (FAT16)")]
+			FAT16_41MB = 42823680,
+			[Display(Name = "241MB (FAT16)")]
+			FAT16_241MB = 252370944,
+			[Display(Name = "504MB (FAT16)")]
+			FAT16_504MB = 527966208,
+			[Display(Name = "2014MB (FAT16)")]
+			FAT16_2014MB = 2111864832,
 		}
 
 		public enum CPUType
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(VideoCardType.Auto)]
 			public VideoCardType VideoCardType { get; set; }
 
-			[DisplayName("RAM Size (Mb)")]
+			[DisplayName("RAM Size (MB)")]
 			[Description("The size of the memory capacity (RAM) to emulate. -1 to keep the value for the machine preset. Maximum value: 256")]
 			[Range(-1, 256)]
 			[DefaultValue(-1)]

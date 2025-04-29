@@ -224,11 +224,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				{
 					var HDDImageFile = _syncSettings.FormattedHardDisk switch
 					{
-						HardDiskOptions.FAT16_21Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value,
-						HardDiskOptions.FAT16_41Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_41MB.Value,
-						HardDiskOptions.FAT16_241Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
-						HardDiskOptions.FAT16_504Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
-						HardDiskOptions.FAT16_2014Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
+						HardDiskOptions.FAT16_21MB => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value,
+						HardDiskOptions.FAT16_41MB => Resources.DOSBOX_HDD_IMAGE_FAT16_41MB.Value,
+						HardDiskOptions.FAT16_241MB => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
+						HardDiskOptions.FAT16_504MB => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
+						HardDiskOptions.FAT16_2014MB => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
 						_ => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value
 					};
 
