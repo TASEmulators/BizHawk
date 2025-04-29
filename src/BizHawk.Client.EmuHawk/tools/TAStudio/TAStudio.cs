@@ -375,7 +375,9 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name.EndsWithOrdinal("Tape")
 					|| c.Name.EndsWithOrdinal("Disk")
 					|| c.Name.EndsWithOrdinal("Block")
-					|| c.Name.EndsWithOrdinal("Status"));
+					|| c.Name.EndsWithOrdinal("Status")
+					|| c.Name.Contains("Automap")
+					|| c.Name.Contains("Gamma"));
 
 			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{

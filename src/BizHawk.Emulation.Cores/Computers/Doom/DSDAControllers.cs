@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
 				.AddAxis($"P{PortNum} Strafing Speed", (-50).RangeTo(50), 0)
-				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(127), 0)
+				.AddAxis($"P{PortNum} Turning Speed", (longtics ? -32768 : -128).RangeTo(longtics ? 32767 : 127), 0)
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(127), 0)
 				// max raw mouse delta seems to be 180
