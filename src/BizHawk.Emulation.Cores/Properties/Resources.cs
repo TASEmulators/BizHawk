@@ -20,13 +20,11 @@ namespace BizHawk.Emulation.Cores.Properties {
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_1994_IBM_PS2_76i_SLC2_486 = new(() => ReadEmbeddedByteArray("dosbox-x.1994.ibm_ps2_76i_slc2_486.conf"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_1997_IBM_APTIVA_2140 = new(() => ReadEmbeddedByteArray("dosbox-x.1997.ibm_aptiva_2140.conf"));
 		internal static readonly Lazy<byte[]> DOSBOX_CONF_1999_IBM_THINKPAD_240 = new(() => ReadEmbeddedByteArray("dosbox-x.1999.ibm_thinkpad_240.conf"));
-
 		internal static readonly Lazy<byte[]> DOSBOX_HDD_IMAGE_FAT16_21MB = new(() => ReadEmbeddedByteArray("dosbox-x.hdd.fat16.21mb.img.zst"));
 		internal static readonly Lazy<byte[]> DOSBOX_HDD_IMAGE_FAT16_41MB = new(() => ReadEmbeddedByteArray("dosbox-x.hdd.fat16.41mb.img.zst"));
 		internal static readonly Lazy<byte[]> DOSBOX_HDD_IMAGE_FAT16_241MB = new(() => ReadEmbeddedByteArray("dosbox-x.hdd.fat16.241mb.img.zst"));
 		internal static readonly Lazy<byte[]> DOSBOX_HDD_IMAGE_FAT16_504MB = new(() => ReadEmbeddedByteArray("dosbox-x.hdd.fat16.504mb.img.zst"));
 		internal static readonly Lazy<byte[]> DOSBOX_HDD_IMAGE_FAT16_2014MB = new(() => ReadEmbeddedByteArray("dosbox-x.hdd.fat16.2014mb.img.zst"));
-		internal static readonly Lazy<byte[]> DOSBOX_HDD_IMAGE_FAT32_4091MB = new(() => ReadEmbeddedByteArray("dosbox-x.hdd.fat32.4091mb.img.zst"));
 		internal static readonly Lazy<byte[]> OS_464_ROM = new(() => ReadEmbeddedByteArray("OS_464.ROM.zst"));
 		internal static readonly Lazy<byte[]> FastCgbBoot = new(() => ReadEmbeddedByteArray("cgb_boot.rom.zst"));
 		internal static readonly Lazy<byte[]> FastAgbBoot = new(() => ReadEmbeddedByteArray("agb_boot.rom.zst"));

@@ -181,16 +181,6 @@ namespace BizHawk.Emulation.DiscSystem
 			if (Detect3DO())
 				return DiscType.Panasonic3DO;
 
-			if (DetectCDi())
-				return DiscType.CDi;
-
-			if (DetectGameCube())
-				return DiscType.GameCube;
-
-			if (DetectWii())
-				return DiscType.Wii;
-
-
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
 				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
@@ -253,8 +243,19 @@ namespace BizHawk.Emulation.DiscSystem
 				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
 				if (absTxt != null && SectorContains("abstracted by snk", Convert.ToInt32(absTxt.Offset))) return DiscType.NeoGeoCD;
 
+				// DOS-compatible formats
 				if (DetectISO9660()) return DiscType.DOS;
 				if (DetectUDF()) return DiscType.DOS;
+
+				// CD Formats with unimplemented cores go last
+				if (DetectCDi())
+					return DiscType.CDi;
+
+				if (DetectGameCube())
+					return DiscType.GameCube;
+
+				if (DetectWii())
+					return DiscType.Wii;
 
 				return DiscType.UnknownCDFS;
 			}
@@ -423,7 +424,6 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			return false;
 		}
-
 
 		private bool DetectJaguarCD()
 		{

@@ -378,6 +378,30 @@ namespace BizHawk.Client.EmuHawk
 				_ => DialogResult.None,
 			};
 
+		private DialogResult OpenDOSBoxSettingsDialog()
+			=> OpenGenericCoreConfigFor<DOSBox>(CoreNames.DOSBox + " Settings");
+
+		private void DOSSExportHddMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Emulator is not DOSBox dosbox) return;
+			try
+			{
+				var result = this.ShowFileSaveDialog(
+					discardCWDChange: true,
+					fileExt: "bin",
+					filter: DOSBoxHDDImageFilterSet,
+					initDir: Config.PathEntries.ToolsAbsolutePath());
+				if (result is not null)
+				{
+					File.WriteAllBytes(result, dosbox.GetHDDContents());
+				}
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ToggleGambatteSyncSetting(
 			string name,
@@ -956,7 +980,10 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
-
+		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(new FilesystemFilter("DOSBox HDD Images", new[] { "bin" }))
+		{
+			AppendAllFilesEntry = false,
+		};
 
 		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
 		{
@@ -1464,6 +1491,7 @@ namespace BizHawk.Client.EmuHawk
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
+			DOSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
@@ -1497,6 +1525,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.Coleco:
 					ColecoSubMenu.Visible = true;
+					break;
+				case VSystemID.Raw.DOS when Emulator is DOSBox:
+					DOSSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;

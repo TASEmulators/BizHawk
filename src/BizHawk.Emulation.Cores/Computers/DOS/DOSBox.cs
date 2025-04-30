@@ -35,11 +35,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		};
 
 		private LibDOSBox _libDOSBox;
-		private readonly List<IRomAsset> _floppyDiskAssets;
+		private readonly List<IRomAsset> _romAssets;
 		private readonly List<IDiscAsset> _discAssets;
 
 		// Drive management variables
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
+		private IRomAsset _hardDiskImageFile = null;
+		private uint _hardDiskImageFileSize = 0;
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
@@ -59,49 +61,57 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public DOSBox(CoreLoadParameters<object, SyncSettings> lp)
 			: base(lp.Comm, DefaultConfig)
 		{
-			_floppyDiskAssets = lp.Roms;
+			_romAssets = lp.Roms;
 			_discAssets = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
 
 			DriveLightEnabled = false;
-			ControllerDefinition = CreateControllerDefinition(_syncSettings, _floppyDiskAssets.Count, _discAssets.Count);
+			ControllerDefinition = CreateControllerDefinition(_syncSettings, _romAssets.Count, _discAssets.Count);
 
 			// Parsing input files
 			var ConfigFiles = new List<IRomAsset>();
 
 			// Parsing rom files
-			foreach (var file in _floppyDiskAssets)
+			foreach (var file in _romAssets)
 			{
-				var ext = Path.GetExtension(file.RomPath);
-				bool recognized = false;
-
-				// Checking for supported floppy disk extensions
-				if (ext is ".ima" or ".img" or ".xdf" or ".dmf" or ".fdd" or ".fdi" or ".nfd" or ".d88")
+				switch (Path.GetExtension(file.RomPath))
 				{
-					_floppyDiskImageFiles.Add(file);
-					recognized = true;
-				}
-				// Checking for DOSBox-x config files
-				else if (ext is ".conf")
-				{
-					ConfigFiles.Add(file);
-					recognized = true;
-				}
+					case ".ima" or ".img" or ".xdf" or ".dmf" or ".fdd" or ".fdi" or ".nfd" or ".d88":
+						_floppyDiskImageFiles.Add(file);
+						break;
 
-				if (!recognized) throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
+					case ".bin":
+						_hardDiskImageFile = file;
+						break;
+
+					case ".conf":
+						ConfigFiles.Add(file);
+						break;
+
+					default:
+						throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
+				}
 			}
 
-			var writableHDDImageFileSize = (ulong) _syncSettings.WriteableHardDisk;
+			// Getting size of hard disk to mount. Using the one provided or, if not, the one specified in the pre-formatted setting
+			_hardDiskImageFileSize = _hardDiskImageFile != null ? (uint) _hardDiskImageFile.FileData.Length : (uint) _syncSettings.FormattedHardDisk;
+
+			// Calculating hard disk size in kb
+			uint hardDiskImageFileSizeKb = _hardDiskImageFileSize / 1024u;
+
+			Console.WriteLine(_hardDiskImageFileSize is 0
+				? "Running without a hard disk drive mounted."
+				: $"Using {hardDiskImageFileSizeKb} kb of memory to host the writable hard disk drive.");
 
 			_CDReadCallback = CDRead;
 			_libDOSBox = PreInit<LibDOSBox>(new WaterboxOptions
 			{
 				Filename = "dosbox.wbx",
-				SbrkHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 32 * 1024,
+				SbrkHeapSizeKB = 4 * 1024,
+				SealedHeapSizeKB = 1024,
 				InvisibleHeapSizeKB = 1024,
-				PlainHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = 256 * 1024 + (uint) (writableHDDImageFileSize / 1024ul),
+				PlainHeapSizeKB = 1024,
+				MmapHeapSizeKB = (384 * 1024) + hardDiskImageFileSizeKb,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, new Delegate[] { _CDReadCallback });
@@ -131,10 +141,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_cdRomFileToReaderMap[cdRomFileName] = discSectorReader;
 
 				// Passing CD Data to the core
-				_libDOSBox.pushCDData(curDiscIndex, CDDataStruct.End, CDDataStruct.Last);
+				_libDOSBox.PushCDData(curDiscIndex, CDDataStruct.End, CDDataStruct.Last);
 
 				// Passing track data to the core
-				for (var trackIdx = 0; trackIdx < CDDataStruct.Last; trackIdx++) _libDOSBox.pushTrackData(curDiscIndex, trackIdx, CDDataStruct.Tracks[trackIdx]);
+				for (var trackIdx = 0; trackIdx < CDDataStruct.Last; trackIdx++) _libDOSBox.PushTrackData(curDiscIndex, trackIdx, CDDataStruct.Tracks[trackIdx]);
 			}
 			////// CD Loading Logic End
 
@@ -175,10 +185,13 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_syncSettings.SoundBlasterIRQ != -1) configString += $"irq = {_syncSettings.SoundBlasterIRQ}\n";
 			configString += "\n";
 
-
 			// Adding memory size configuration
 			configString += "[dosbox]\n";
-			if (_syncSettings.RAMSize != -1) configString += $"memsize = {_syncSettings.RAMSize}\n";
+			if (_syncSettings.RAMSize != -1)
+			{
+				if (_syncSettings.RAMSize > MAX_MEMORY_SIZE_MB) throw new Exception($"Requested memory size ({_syncSettings.RAMSize}mb) exceeds maximum allowed ({MAX_MEMORY_SIZE_MB}mb) by this core.");
+				configString += $"memsize = {_syncSettings.RAMSize}\n";
+			}
 			configString += "\n";
 
 			// Adding autoexec line
@@ -202,37 +215,50 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_cdRomFileNames.Count > 0) configString += cdromMountLine + "\n";
 
 			//// Hard Disk mounting
-			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None)
+			if (_hardDiskImageFileSize > 0)
 			{
-				var writableHDDImageFile = _syncSettings.WriteableHardDisk switch
-				{
-					WriteableHardDiskOptions.FAT16_21Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value,
-					WriteableHardDiskOptions.FAT16_41Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_41MB.Value,
-					WriteableHardDiskOptions.FAT16_241Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
-					WriteableHardDiskOptions.FAT16_504Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
-					WriteableHardDiskOptions.FAT16_2014Mb => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
-					WriteableHardDiskOptions.FAT32_4091Mb => Resources.DOSBOX_HDD_IMAGE_FAT32_4091MB.Value,
-					_ => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value
-				};
+				byte[] HDDImageData = [ ];
 
-				var writableHDDImageData = Zstd.DecompressZstdStream(new MemoryStream(writableHDDImageFile)).ToArray();
-				_exe.AddReadonlyFile(writableHDDImageData, FileNames.WHD);
-				configString += "imgmount c " + FileNames.WHD + ".img\n";
+				// If formatted disk selected
+				if (_syncSettings.FormattedHardDisk != HardDiskOptions.None)
+				{
+					var HDDImageFile = _syncSettings.FormattedHardDisk switch
+					{
+						HardDiskOptions.FAT16_21MB => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value,
+						HardDiskOptions.FAT16_41MB => Resources.DOSBOX_HDD_IMAGE_FAT16_41MB.Value,
+						HardDiskOptions.FAT16_241MB => Resources.DOSBOX_HDD_IMAGE_FAT16_241MB.Value,
+						HardDiskOptions.FAT16_504MB => Resources.DOSBOX_HDD_IMAGE_FAT16_504MB.Value,
+						HardDiskOptions.FAT16_2014MB => Resources.DOSBOX_HDD_IMAGE_FAT16_2014MB.Value,
+						_ => Resources.DOSBOX_HDD_IMAGE_FAT16_21MB.Value
+					};
+
+					HDDImageData = Zstd.DecompressZstdStream(new MemoryStream(HDDImageFile)).ToArray();
+				}
+
+				// If provided as ROM file
+				if (_hardDiskImageFile != null) HDDImageData = _hardDiskImageFile.FileData;
+
+				// Adding HDD to the core
+				_exe.AddReadonlyFile(HDDImageData, FileNames.HDD);
+				configString += "imgmount c " + FileNames.HDD + ".img\n";
 			}
 
 			//// CPU (core) configuration
 			configString += "[cpu]\n";
 			if (_syncSettings.CPUCycles != -1) configString += $"cycles = {_syncSettings.CPUCycles}";
-
+			if (_syncSettings.CPUType != CPUType.Auto)
+			{
+				var cputype = Enum.GetName(typeof(CPUType), _syncSettings.CPUType)!.Replace("C", "");
+				configString += $"cputype = {cputype}\n";
+			}
 
 			//// DOSBox-x configuration
 			configString += "[dosbox]\n";
-			if (_syncSettings.MachineType != MachineType.Auto)
+			if (_syncSettings.VideoCardType != VideoCardType.Auto)
 			{
-				var machineName = Enum.GetName(typeof(MachineType), _syncSettings.MachineType)!.Replace('P', '+');
-				configString += $"machine = {machineName}\n";
+				var vgatype = Enum.GetName(typeof(VideoCardType), _syncSettings.VideoCardType)!.Replace('P', '+');
+				configString += $"machine = {vgatype}\n";
 			}
-
 
 			/////////////// Configuration End: Adding single config file to the wbx
 
@@ -259,8 +285,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			{
 				Joystick1Enabled = _syncSettings.EnableJoystick1 ? 1 : 0,
 				Joystick2Enabled = _syncSettings.EnableJoystick2 ? 1 : 0,
-				HardDiskDriveSize = writableHDDImageFileSize,
-				PreserveHardDiskContents = _syncSettings.PreserveHardDiskContents ? 1 : 0
+				HardDiskDriveSize = _hardDiskImageFileSize,
 			}))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -277,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			PostInit();
 
 			DriveLightEnabled = false;
-			if (_syncSettings.WriteableHardDisk != WriteableHardDiskOptions.None) DriveLightEnabled = true;
+			if (_syncSettings.FormattedHardDisk != HardDiskOptions.None) DriveLightEnabled = true;
 			if (_floppyDiskCount > 0) DriveLightEnabled = true;
 			if (_cdRomFileNames.Count > 0) DriveLightEnabled = true;
 		}
@@ -507,14 +532,14 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		protected override void FrameAdvancePost()
 		{
-			DriveLightOn = _libDOSBox.getDriveActivityFlag();
+			DriveLightOn = _libDOSBox.GetDriveActivityFlag();
 
 			// Checking refresh rate base on the reported refresh rate updates
 			var currentRefreshRateNumerator = VsyncNumerator;
 			var currentRefreshRateDenominator = VsyncDenominator;
 
-			var newRefreshRateNumerator = _libDOSBox.getRefreshRateNumerator();
-			var newRefreshRateDenominator = _libDOSBox.getRefreshRateDenominator();
+			var newRefreshRateNumerator = _libDOSBox.GetRefreshRateNumerator();
+			var newRefreshRateDenominator = _libDOSBox.GetRefreshRateDenominator();
 
 			// Change BK's own framerate if the values changed. Only if not forced. And only if the provided values are valid (they might be zero initially until the core sets it).
 			if (currentRefreshRateNumerator != newRefreshRateNumerator || currentRefreshRateDenominator != newRefreshRateDenominator)
@@ -564,7 +589,22 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string Config = "dosbox-x.conf";
 			public const string FD = "FloppyDisk";
 			public const string CD = "CompactDisk";
-			public const string WHD = "__WritableHardDiskDrive";
+			public const string HDD = "HardDiskDrive";
+		}
+
+		public bool HasValidHDD()
+		{
+			return _hardDiskImageFileSize > 0;
+		}
+
+		public byte[] GetHDDContents()
+		{
+			if (_hardDiskImageFileSize == 0) throw new Exception($"Trying to export HDD contents but no HDD was defined");
+
+			var hddSize = _libDOSBox.GetHDDSize();
+			byte[] hddArray = new byte[hddSize];
+			_libDOSBox.GetHDDData(hddArray);
+			return hddArray;
 		}
 	}
 }

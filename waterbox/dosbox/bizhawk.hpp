@@ -18,7 +18,6 @@ typedef struct
 	int joystick1Enabled;
 	int joystick2Enabled;
 	uint64_t writableHDDImageFileSize;
-	int preserveHardDiskContents;
 } InitSettings;
 
 typedef struct

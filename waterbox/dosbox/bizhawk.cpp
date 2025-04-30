@@ -53,72 +53,120 @@ extern bool user_cursor_locked;
 #define MOUSE_MAX_X 800
 #define MOUSE_MAX_Y 600
 
-bool loadFileIntoMemoryFileDirectory(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
+#define FAT_SECTOR_SIZE 512
+bool loadFileIntoMemoryFile(const std::string& srcFile, const std::string& dstFile, const ssize_t dstSize = -1)
 {
-	// Loading entire source file
-	std::string srcFileData;
-	bool        status = jaffarCommon::file::loadStringFromFile(srcFileData, srcFile);
-	if (status == false) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
+	// Opening source file
+	auto srcFilePtr = fopen(srcFile.c_str(), "r");
+	if (srcFilePtr == nullptr) { fprintf(stderr, "Could not find/read from file: %s\n", srcFile.c_str()); return false; }
 
-	// Uploading file into the mem file directory
-	auto f = _memFileDirectory.fopen(dstFile, "w");
-	if (f == NULL) { fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str()); return false; }
+	// Getting source file size
+	fseek(srcFilePtr, 0L, SEEK_END);
+	int srcFileSize = ftell(srcFilePtr);
+	fseek(srcFilePtr, 0L, SEEK_SET);
 
-	// Copying data into mem file
-	auto writtenBlocks = jaffarCommon::file::MemoryFile::fwrite(srcFileData.data(), 1, srcFileData.size(), f);
-	if (writtenBlocks != srcFileData.size()) 
-	{ 
-		fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
-		_memFileDirectory.fclose(f);
-		return false; 
+	// Getting destination file size
+	const auto dstFileSize = std::max(dstSize, (ssize_t)srcFileSize);
+
+    // If file size is not divisible by sector size, then it's a bad image
+	if (dstFileSize % FAT_SECTOR_SIZE > 0)
+	 { 
+		fprintf(stderr, "Destination file has a non-sector (%d) divisible size: %ld\n", FAT_SECTOR_SIZE, dstFileSize);
+		fclose(srcFilePtr);
+	    return false;
+	 }
+
+	// Opening destination memfile
+	auto dstFilePtr = _memFileDirectory.fopen(dstFile, "w");
+	if (dstFilePtr == NULL) 
+	{
+		 fprintf(stderr, "Could not open mem file for write: %s\n", dstFile.c_str());
+		 fclose(srcFilePtr);
+		 return false;
+    }
+
+    // Pre-resizing mem file
+	if (dstFilePtr->resize(dstFileSize) != 0)
+	{
+		fprintf(stderr, "Could not resize mem file: %s to %d bytes\n", dstFile.c_str(), srcFileSize);
+		_memFileDirectory.fclose(dstFilePtr);
+		fclose(srcFilePtr);
+		return false;
 	}
 
-	// If required, resize dst file
-	if (dstSize >= 0)
+	// Disabling buffering on source file
+	setbuf(srcFilePtr, NULL);
+
+	// Copying data into mem file, in chunks
+	uint8_t readBuffer[FAT_SECTOR_SIZE];
+	size_t totalChunks = srcFileSize / FAT_SECTOR_SIZE;
+	printf("Copying file size: %d with %lu chunks of size %d\n", srcFileSize, totalChunks, FAT_SECTOR_SIZE);
+	for (size_t chunkId = 0; chunkId < totalChunks; chunkId++)
 	{
-		auto ret = f->resize(dstSize);
-		if (ret < 0) 
+		auto readBytes = fread(readBuffer, 1, FAT_SECTOR_SIZE, srcFilePtr);
+		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, FAT_SECTOR_SIZE, dstFilePtr);
+
+		if (readBytes != writtenBytes)
 		{
-			fprintf(stderr, "Could not resize mem file: %s\n", dstFile.c_str());
-			_memFileDirectory.fclose(f);
+			fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
+			_memFileDirectory.fclose(dstFilePtr);
+			fclose(srcFilePtr);
 			return false; 
 		}
-	} 
+	}
 
-	// Closing mem file
-	_memFileDirectory.fclose(f);
+	// Copying reminder
+	auto reminder = srcFileSize % FAT_SECTOR_SIZE;
+	if (reminder > 0) 
+	{
+		printf("Copying reminder chunk, size: %d\n", reminder);
+
+		auto readBytes = fread(readBuffer, 1, reminder, srcFilePtr);
+		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, reminder, dstFilePtr);
+
+		if (readBytes != writtenBytes)
+		{
+			fprintf(stderr, "Could not write data into mem file: %s\n", dstFile.c_str());
+			_memFileDirectory.fclose(dstFilePtr);
+			fclose(srcFilePtr);
+			return false; 
+		}
+	}
+
+	// Closing files
+	_memFileDirectory.fclose(dstFilePtr);
+	fclose(srcFilePtr);
 
 	return true;
 }
 
 // Drive activity monitoring
 bool _driveUsed = false;
-ECL_EXPORT bool getDriveActivityFlag() { return _driveUsed; }
+ECL_EXPORT bool GetDriveActivityFlag() { return _driveUsed; }
 
 // SRAM Management
-bool _preserveHardDiskContents;
-constexpr char writableHDDSrcFile[] = "__WritableHardDiskDrive";
-constexpr char writableHDDDstFile[] = "__WritableHardDiskDrive.img";
-int get_sram_size() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
-uint8_t* get_sram_buffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+constexpr char writableHDDSrcFile[] = "HardDiskDrive";
+constexpr char writableHDDDstFile[] = "HardDiskDrive.img";
+ECL_EXPORT int GetHDDSize() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
+ECL_EXPORT uint8_t* GetHDDBuffer() { return _memFileDirectory.getFileBuffer(writableHDDDstFile); }
+ECL_EXPORT void GetHDDData(uint8_t* buffer) { memcpy(buffer, GetHDDBuffer(), GetHDDSize()); }
+ECL_EXPORT void SetHDDData(uint8_t* buffer) { memcpy(GetHDDBuffer(), buffer, GetHDDSize()); }
 
 ECL_EXPORT bool Init(InitSettings* settings)
 {
 	// If size is non-negative, we need to load the writable hard disk into memory
 	if (settings->writableHDDImageFileSize == 0) printf("No writable hard disk drive selected.");
-	else	{
+	else
+	{
 		// Loading HDD file into mem file directory
 		printf("Creating hard disk drive mem file '%s' -> '%s' (%lu bytes)\n", writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
-		auto result = loadFileIntoMemoryFileDirectory(writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
+		auto result = loadFileIntoMemoryFile(writableHDDSrcFile, writableHDDDstFile, settings->writableHDDImageFileSize);
 		if (result == false || _memFileDirectory.contains(writableHDDDstFile) == false) 
 		{
 			fprintf(stderr, "Could not create hard disk drive mem file\n");
 			return false; 
 		}
 	}
-
-  	// Storing hard disk preservation option
-	_preserveHardDiskContents = settings->preserveHardDiskContents == 1;
 
 	// Setting dummy drivers for env variables
 	setenv("SDL_VIDEODRIVER", "dummy", 1);
@@ -287,15 +335,20 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	double ticksPerFrame = 1000.0 / fps;
     //printf("Running Framerate: %d / %d = %f\n", f->framerateNumerator, f->framerateDenominator, fps);
 
+	// Remembering current ticks elapsed value
+	auto t0 = _ticksElapsed;
+
  	// Increasing ticks target
 	ticksTarget += ticksPerFrame;
-	uint32_t previousTicksElapsed = _ticksElapsed;
 
 	// Advancing until the required tick target is met
-	while (_ticksElapsed < (uint32_t)ticksTarget)	co_switch(_emuCoroutine);
+	while (_ticksElapsed < (uint32_t)ticksTarget) co_switch(_emuCoroutine);
+    
+	// Getting new ticks elapsed value
+	auto tf = _ticksElapsed;
 
 	// Updating ticks elapsed
-	f->base.Cycles = _ticksElapsed - previousTicksElapsed;
+	f->base.Cycles = tf - t0;
 
 	// Updating video output
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
@@ -317,9 +370,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	f->base.Samples  = _audioSamples.size() / 2;
 }
 
-ECL_EXPORT uint64_t getRefreshRateNumerator() { return _refreshRateNumerator; }
-ECL_EXPORT uint64_t getRefreshRateDenominator() { return _refreshRateDenominator; }
-ECL_EXPORT uint32_t getTicksElapsed() { return _ticksElapsed; }
+ECL_EXPORT uint64_t GetRefreshRateNumerator() { return _refreshRateNumerator; }
+ECL_EXPORT uint64_t GetRefreshRateDenominator() { return _refreshRateDenominator; }
+ECL_EXPORT uint32_t GetTicksElapsed() { return _ticksElapsed; }
 
 #define DOS_CONVENTIONAL_MEMORY_SIZE (640 * 1024)
 #define DOS_UPPER_MEMORY_SIZE (384 * 1024)
@@ -334,7 +387,7 @@ ECL_EXPORT void SetCdCallbacks(void (*cdrc)(char* cdRomFile, int32_t lba, void *
 
 CDData_t _cdData[MAX_CD_COUNT];
 size_t _cdCount = 0;
-ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
+ECL_EXPORT void PushCDData(int cdIdx, int numSectors, int numTracks)
 {
 	_cdCount++;
 	_cdData[cdIdx].numSectors = numSectors;
@@ -342,7 +395,7 @@ ECL_EXPORT void pushCDData(int cdIdx, int numSectors, int numTracks)
 	printf("Pushing CD %d. NumSectors: %d, NumTracks: %d\n", cdIdx, _cdData[cdIdx].numSectors, _cdData[cdIdx].numTracks);
 }
 
-ECL_EXPORT void pushTrackData(int cdIdx, int trackId, CDTrack_t* data)
+ECL_EXPORT void PushTrackData(int cdIdx, int trackId, CDTrack_t* data)
 {
 	_cdData[cdIdx].tracks[trackId] = *data;
 	printf("  + CD: %d Track %d - Offset: %d - Start: %d - End: %d - Mode: %d - loopEnabled: %d - loopOffset: %d\n", cdIdx, trackId,
@@ -394,14 +447,13 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
 	memAreaIdx++;
 	
-	size_t sramSize = get_sram_size();
-	if (sramSize > 0)
+	size_t hddSize = GetHDDSize();
+	if (hddSize > 0)
 	{
-		m[memAreaIdx].Data  = get_sram_buffer();
-		m[memAreaIdx].Name  = "Writeable HDD (SaveRAM)";
-		m[memAreaIdx].Size  = sramSize;
+		m[memAreaIdx].Data  = GetHDDBuffer();
+		m[memAreaIdx].Name  = "Hard Disk Drive";
+		m[memAreaIdx].Size  = hddSize;
 		m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE;
-		m[memAreaIdx].Flags |= _preserveHardDiskContents ? MEMORYAREA_FLAGS_SAVERAMMABLE : 0;
 		memAreaIdx++;
 	}
 }

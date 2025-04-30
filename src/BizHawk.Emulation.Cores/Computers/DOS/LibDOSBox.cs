@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		public const int VGA_MAX_WIDTH = 640;
 		public const int VGA_MAX_HEIGHT = 480;
-		public const int SVGA_MAX_WIDTH = 800;
-		public const int SVGA_MAX_HEIGHT = 600;
+		public const int SVGA_MAX_WIDTH = 1024;
+		public const int SVGA_MAX_HEIGHT = 768;
 
 		// Default FPS: 70.086592427616921
 		public const int DEFAULT_FRAMERATE_NUMERATOR_DOS = 3146888;
@@ -53,20 +53,29 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract void SetCdCallbacks(CDReadCallback cdrc);
 
 		[BizImport(CC)]
-		public abstract void pushCDData(int cdIdx, int numSectors, int numTracks);
+		public abstract void PushCDData(int cdIdx, int numSectors, int numTracks);
 
 		[BizImport(CC)]
-		public abstract void pushTrackData(int cdIdx, int trackId, CDTrack data);
+		public abstract void PushTrackData(int cdIdx, int trackId, CDTrack data);
 
 		[BizImport(CC)]
-		public abstract uint getTicksElapsed();
+		public abstract uint GetTicksElapsed();
+
+		[BizImport(CC)]
+		public abstract int GetHDDSize();
+
+		[BizImport(CC)]
+		public abstract void GetHDDData(byte[] buffer);
+
+		[BizImport(CC)]
+		public abstract void SetHDDData(byte[] buffer);
 
 
 		[BizImport(CC)]
-		public abstract int getRefreshRateNumerator();
+		public abstract int GetRefreshRateNumerator();
 
 		[BizImport(CC)]
-		public abstract int getRefreshRateDenominator();
+		public abstract int GetRefreshRateDenominator();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class InitSettings
@@ -74,16 +83,15 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public int Joystick1Enabled;
 			public int Joystick2Enabled;
 			public ulong HardDiskDriveSize;
-			public int PreserveHardDiskContents;
 		}
 
 		// CD Management Logic END
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract bool Init(InitSettings settings);
 
-		[BizImport(CC, Compatibility = true)]
-		public abstract bool getDriveActivityFlag();
+		[BizImport(CC)]
+		public abstract bool GetDriveActivityFlag();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
