@@ -95,6 +95,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Shorttics = 2,
 		}
 
+		public enum Strafe50Turning : int
+		{
+			Ignore = 0,
+			Allow = 1,
+		}
+
 		public enum MultiplayerMode : int
 		{
 			[Display(Name = "Single Player / Coop")]
@@ -362,6 +368,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(TurningResolution.Longtics)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public TurningResolution TurningResolution { get; set; }
+
+			[DisplayName("Turning During Strafe50")]
+			[Description("\"Strafe\" key is required to convert angular movement into strafe50, without it maximum strafe value is 40. So using keyboard and mouse, it's impossible to turn during strafe50. But if strafe50+turning appears in a demo, the game will process it fine, which makes it a TAS-only feature. This setting allows disabling it for maximum authenticity.")]
+			[DefaultValue(Strafe50Turning.Allow)]
+			public Strafe50Turning Strafe50Turns { get; set; }
 
 			[DisplayName("Prevent Level Exit")]
 			[Description("Level exit triggers won't have an effect. This is useful for debugging / optimizing / botting purposes.")]

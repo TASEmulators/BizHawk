@@ -136,6 +136,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						players[i].TurningSpeed = ((players[i].TurningSpeed + 128) >> 8) << 8;
 					}
 
+					if (_syncSettings.Strafe50Turns == Strafe50Turning.Ignore
+						&& Math.Abs(players[i].StrafingSpeed) > _strafeSpeeds[1])
+					{
+						players[i].TurningSpeed = 0;
+					}
+
 					// bool buttons
 					var actionsBitfield = buttonsReaders[i](controller);
 					players[i].Buttons = actionsBitfield;
