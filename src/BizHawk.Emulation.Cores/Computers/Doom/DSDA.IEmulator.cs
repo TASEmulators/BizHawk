@@ -89,14 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
 					{
-						if (players[i].TurningSpeed < 0)
-						{
-							players[i].TurningSpeed -= axisReaders[i](controller, (int) AxisType.TurningSpeedFrac);
-						}
-						else
-						{
-							players[i].TurningSpeed += axisReaders[i](controller, (int) AxisType.TurningSpeedFrac);
-						}
+						players[i].TurningSpeed += axisReaders[i](controller, (int) AxisType.TurningSpeedFrac);
 					}
 
 					// override axis based on movement buttons (turning is reversed upstream)

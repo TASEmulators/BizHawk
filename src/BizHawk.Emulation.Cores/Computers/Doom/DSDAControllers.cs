@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// low byte is fractional part only available with longtics
 			if (longtics)
 			{
-				Definition.AddAxis($"P{PortNum} Turning Speed Frac.", (0).RangeTo(255), 0);
+				Definition.AddAxis($"P{PortNum} Turning Speed Frac.", (-255).RangeTo(255), 0);
 			}
 
 			Definition
