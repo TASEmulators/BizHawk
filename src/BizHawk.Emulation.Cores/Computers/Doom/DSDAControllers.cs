@@ -18,11 +18,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		RunSpeed,
 		StrafingSpeed,
 		TurningSpeed,
+		TurningSpeedFrac,
 		WeaponSelect,
 		MouseRunning,
 		MouseTurning,
 		FlyLook,
-		UseArtifact
+		UseArtifact,
 	}
 
 	public interface IPort
@@ -46,12 +47,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					.ToList()
 			}.AddAxis($"P{PortNum} Run Speed", (-50).RangeTo(50), 0)
 				.AddAxis($"P{PortNum} Strafing Speed", (-50).RangeTo(50), 0)
-				.AddAxis($"P{PortNum} Turning Speed", (longtics ? -32768 : -128).RangeTo(longtics ? 32767 : 127), 0)
+				.AddAxis($"P{PortNum} Turning Speed", (-128).RangeTo(127), 0);
+
+			// editing a short in tastudio would be a nightmare, so we split it:
+			// high byte represents shorttics mode and whole angle values
+			// low byte is fractional part only available with longtics
+			if (longtics)
+			{
+				Definition.AddAxis($"P{PortNum} Turning Speed Frac.", (0).RangeTo(255), 0);
+			}
+
+			Definition
 				.AddAxis($"P{PortNum} Weapon Select", (0).RangeTo(7), 0)
 				.AddAxis($"P{PortNum} Mouse Running", (-128).RangeTo(127), 0)
-				// max raw mouse delta seems to be 180
-				// higher range results in higher minimal movement value (above 1)
-				// which then has to be divided to get a usable value
+				// current max raw mouse delta is 180
 				.AddAxis($"P{PortNum} Mouse Turning", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0)
 				.MakeImmutable();
 		}

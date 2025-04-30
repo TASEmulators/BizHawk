@@ -81,14 +81,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// initial axis read
-					players[i].RunSpeed      =  axisReaders[i](controller, (int)AxisType.RunSpeed);
-					players[i].StrafingSpeed =  axisReaders[i](controller, (int)AxisType.StrafingSpeed);
-					players[i].TurningSpeed  = -axisReaders[i](controller, (int)AxisType.TurningSpeed);
-					players[i].WeaponSelect  =  axisReaders[i](controller, (int)AxisType.WeaponSelect);
+					players[i].RunSpeed      = axisReaders[i](controller, (int)AxisType.RunSpeed);
+					players[i].StrafingSpeed = axisReaders[i](controller, (int)AxisType.StrafingSpeed);
+					players[i].WeaponSelect  = axisReaders[i](controller, (int)AxisType.WeaponSelect);
+					// core counts left angle as positive, so turning direction is "reversed"
+					players[i].TurningSpeed  = axisReaders[i](controller, (int)AxisType.TurningSpeed) << 8;
 
-					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
+					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
 					{
-						players[i].TurningSpeed <<= 8;
+						if (players[i].TurningSpeed < 0)
+						{
+							players[i].TurningSpeed -= axisReaders[i](controller, (int) AxisType.TurningSpeedFrac);
+						}
+						else
+						{
+							players[i].TurningSpeed += axisReaders[i](controller, (int) AxisType.TurningSpeedFrac);
+						}
 					}
 
 					// override axis based on movement buttons (turning is reversed upstream)

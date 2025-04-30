@@ -998,6 +998,7 @@ namespace BizHawk.Emulation.Common
 				["Run Speed"] = "R",
 				["Strafing Speed"] = "S",
 				["Turning Speed"] = "T",
+				["Turning Speed Frac."] = "t",
 				["Use Artifact"] = "U",
 				["Weapon Select"] = "W",
 			},
