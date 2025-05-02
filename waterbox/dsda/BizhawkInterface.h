@@ -112,7 +112,6 @@ typedef union
 {
     struct
     {
-        bool ChangeGamma:1;
         bool AutomapToggle:1;
         bool AutomapZoomIn:1;
         bool AutomapZoomOut:1;
@@ -127,7 +126,7 @@ typedef union
         bool AutomapClearMarks:1;
     };
     uint32_t data;
-} CommonButtons;
+} AutomapButtons;
 
 struct InitSettings
 {
@@ -158,7 +157,6 @@ struct PackedPlayerInput
 
 struct PackedRenderInfo
 {
-  int DoUpdate;
   int RenderVideo;
   int RenderAudio;
   int SfxVolume;

@@ -107,6 +107,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ $"dsda_command_display {   (_settings.DisplayCommands      ? 1 : 0)}\n"
 				+ $"render_wipescreen {      (_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "render_stretchsky 0\n"
+				+ "boom_translucent_sprites 0\n"
 				+ "render_doom_lightmaps 1\n"
 				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio() in the core)
 				+ "render_stretch_hud 0\n"
@@ -228,6 +229,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly byte[] _configFile;
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
 		private int _turnCarry = 0; // Chocolate Doom mouse behaviour (enabled in upstream by default)
+		private bool _lastGammaInput = false;
 		private List<string> _args;
 		private List<IRomAsset> _wadFiles;
 		private LibDSDA.GameMode _gameMode;

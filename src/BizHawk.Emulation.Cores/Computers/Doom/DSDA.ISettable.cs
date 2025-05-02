@@ -146,9 +146,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
-			[JsonIgnore]
-			public bool DoUpdate = false;
-
 			[DisplayName("Internal Resolution Scale Factor")]
 			[Description("Which factor to increase internal resolution by [1 - 12]. Improves \"quality\" of the rendered image at the cost of accuracy.\n\nVanilla resolution is 320x200 resized to 4:3 DAR on a CRT monitor.\n\nRequires restart.")]
 			[Range(1, 12)]
@@ -156,18 +153,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ScaleFactor { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Sfx Volume")]
 			[Description("Sound effects volume [0 - 15].")]
 			[Range(0, 15)]
 			[DefaultValue(8)]
 			public int SfxVolume { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Music Volume")]
 			[Description("[0 - 15]")]
 			[Range(0, 15)]
 			[DefaultValue(8)]
 			public int MusicVolume { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Gamma Correction Level")]
 			[Description("Increases brightness [0 - 4].\n\nDefault value in vanilla is \"OFF\" (0).")]
 			[Range(0, 4)]
@@ -175,56 +175,67 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Gamma { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Show Messages")]
 			[Description("Displays messages about items you pick up.\n\nDefault value in vanilla is \"ON\".")]
 			[DefaultValue(true)]
 			public bool ShowMessages { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Report Revealed Secrets")]
 			[Description("Shows an on-screen notification when revealing a secret.")]
 			[DefaultValue(false)]
 			public bool ReportSecrets { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("HUD Mode")]
 			[Description("Sets heads-up display mode.")]
 			[DefaultValue(HudMode.Vanilla)]
 			public HudMode HeadsUpMode { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Extended HUD")]
 			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
 			[DefaultValue(false)]
 			public bool DsdaExHud { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Display Coordinates")]
 			[Description("Shows player position, angle, velocity, and distance travelled per frame. Color indicates movement tiers: green - SR40, blue - SR50, red - turbo/wallrun.\n\nAvailable in vanilla via the IDMYPOS cheat code, however vanilla only shows angle, X, and Y.")]
 			[DefaultValue(false)]
 			public bool DisplayCoordinates { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Display Commands")]
 			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
 			[DefaultValue(false)]
 			public bool DisplayCommands { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Automap Totals")]
 			[Description("Shows counts for kills, items, and secrets on automap.")]
 			[DefaultValue(false)]
 			public bool MapTotals { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Automap Time")]
 			[Description("Shows elapsed time on automap.")]
 			[DefaultValue(false)]
 			public bool MapTime { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Automap Coordinates")]
 			[Description("Shows in-level coordinates on automap.")]
 			[DefaultValue(false)]
 			public bool MapCoordinates { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Automap Overlay")]
 			[Description("Shows automap on top of gameplay.")]
 			[DefaultValue(MapOverlays.Disabled)]
 			public MapOverlays MapOverlay { get; set; }
 
+			[JsonIgnore]
 			[DisplayName("Automap Details")]
 			[Description("Exposes all linedefs and things.\n\nAvailable in vanilla via the IDDT cheat code.")]
 			[DefaultValue(MapDetail.Normal)]
@@ -255,7 +266,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
 			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
-			_settings.DoUpdate = true;
 			return ret;
 		}
 

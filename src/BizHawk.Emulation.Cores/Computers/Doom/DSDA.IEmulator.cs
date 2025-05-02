@@ -46,19 +46,25 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				| Convert.ToInt32(_syncSettings.Player3Present) << 2
 				| Convert.ToInt32(_syncSettings.Player4Present) << 3;
 
-			if (controller.IsPressed("Change Gamma"))        commonButtons |= (1 << 0);
-			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 1);
-			if (controller.IsPressed("Automap +"))           commonButtons |= (1 << 2);
-			if (controller.IsPressed("Automap -"))           commonButtons |= (1 << 3);
-			if (controller.IsPressed("Automap Full/Zoom"))   commonButtons |= (1 << 4);
-			if (controller.IsPressed("Automap Follow"))      commonButtons |= (1 << 5);
-			if (controller.IsPressed("Automap Up"))          commonButtons |= (1 << 6);
-			if (controller.IsPressed("Automap Down"))        commonButtons |= (1 << 7);
-			if (controller.IsPressed("Automap Right"))       commonButtons |= (1 << 8);
-			if (controller.IsPressed("Automap Left"))        commonButtons |= (1 << 9);
-			if (controller.IsPressed("Automap Grid"))        commonButtons |= (1 << 10);
-			if (controller.IsPressed("Automap Mark"))        commonButtons |= (1 << 11);
-			if (controller.IsPressed("Automap Clear Marks")) commonButtons |= (1 << 12);
+			if (controller.IsPressed("Change Gamma") && !_lastGammaInput)
+			{
+				// cycle through [0 - 4]
+				_settings.Gamma++;
+				_settings.Gamma %= 5;
+			}
+
+			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 0);
+			if (controller.IsPressed("Automap +"))           commonButtons |= (1 << 1);
+			if (controller.IsPressed("Automap -"))           commonButtons |= (1 << 2);
+			if (controller.IsPressed("Automap Full/Zoom"))   commonButtons |= (1 << 3);
+			if (controller.IsPressed("Automap Follow"))      commonButtons |= (1 << 4);
+			if (controller.IsPressed("Automap Up"))          commonButtons |= (1 << 5);
+			if (controller.IsPressed("Automap Down"))        commonButtons |= (1 << 6);
+			if (controller.IsPressed("Automap Right"))       commonButtons |= (1 << 7);
+			if (controller.IsPressed("Automap Left"))        commonButtons |= (1 << 8);
+			if (controller.IsPressed("Automap Grid"))        commonButtons |= (1 << 9);
+			if (controller.IsPressed("Automap Mark"))        commonButtons |= (1 << 10);
+			if (controller.IsPressed("Automap Clear Marks")) commonButtons |= (1 << 11);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -170,7 +176,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				MapOverlay         = (int)_settings.MapOverlay,
 				RenderVideo        = renderVideo                  ? 1 : 0,
 				RenderAudio        = renderAudio                  ? 1 : 0,
-				DoUpdate           = _settings.DoUpdate           ? 1 : 0,
 				ShowMessages       = _settings.ShowMessages       ? 1 : 0,
 				ReportSecrets      = _settings.ReportSecrets      ? 1 : 0,
 				DsdaExHud          = _settings.DsdaExHud          ? 1 : 0,
@@ -190,11 +195,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				ref players[3],
 				ref renderInfo);
 
-			if (_settings.DoUpdate)
-			{
-				_settings.DoUpdate = false;
-			}
-
 			if (renderVideo)
 				UpdateVideo();
 
@@ -207,6 +207,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				LagCount++;
 			}
+
+			_lastGammaInput = controller.IsPressed("Change Gamma");
 
 			return true;
 		}
