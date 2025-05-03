@@ -127,7 +127,7 @@ namespace BizHawk.Common
 			}
 			catch (ReflectionTypeLoadException e)
 			{
-				return e.Types.Where(t => t != null);
+				return e.Types.Where(t => t != null)!;
 			}
 		}
 
