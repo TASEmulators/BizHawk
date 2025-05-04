@@ -68,6 +68,8 @@ namespace BizHawk.Client.EmuHawk
 			TargetRewindIntervalRadioButton.Checked = _config.Rewind.UseFixedRewindInterval;
 			TargetFrameLengthNumeric.Value = Math.Max(_config.Rewind.TargetFrameLength, TargetFrameLengthNumeric.Minimum);
 			TargetRewindIntervalNumeric.Value = Math.Max(_config.Rewind.TargetRewindInterval, TargetRewindIntervalNumeric.Minimum);
+			RewindSpeedMultiplierNumeric.Value = Math.Max(_config.Rewind.SpeedMultiplier, RewindSpeedMultiplierNumeric.Minimum);
+			FastRewindSpeedMultiplierNumeric.Value = Math.Max(_config.Rewind.FastSpeedMultiplier, FastRewindSpeedMultiplierNumeric.Minimum); 
 			StateSizeLabel.Text = FormatKB(_avgStateSize);
 			CalculateEstimates();
 
@@ -132,6 +134,8 @@ namespace BizHawk.Client.EmuHawk
 			_config.Rewind.UseFixedRewindInterval = PutRewindSetting(_config.Rewind.UseFixedRewindInterval, TargetRewindIntervalRadioButton.Checked);
 			_config.Rewind.TargetFrameLength = PutRewindSetting(_config.Rewind.TargetFrameLength, (int)TargetFrameLengthNumeric.Value);
 			_config.Rewind.TargetRewindInterval = PutRewindSetting(_config.Rewind.TargetRewindInterval, (int)TargetRewindIntervalNumeric.Value);
+			_config.Rewind.SpeedMultiplier = PutRewindSetting(_config.Rewind.SpeedMultiplier, (int) RewindSpeedMultiplierNumeric.Value);
+			_config.Rewind.FastSpeedMultiplier = PutRewindSetting(_config.Rewind.FastSpeedMultiplier, (int) FastRewindSpeedMultiplierNumeric.Value); 
 			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, cbDeltaCompression.Checked);
 
 			// These settings are not used by DoRewindSettings
