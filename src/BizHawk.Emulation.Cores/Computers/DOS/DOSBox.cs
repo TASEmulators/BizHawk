@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _floppyDiskCount = 0;
 		private int _currentFloppyDisk = 0;
 		private int _currentCDROM = 0;
+		private bool _disposed;
 
 		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
@@ -605,6 +606,22 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			byte[] hddArray = new byte[hddSize];
 			_libDOSBox.GetHDDData(hddArray);
 			return hddArray;
+		}
+
+		public override void Dispose()
+		{
+			if (_disposed) return;
+			_disposed = true;
+
+			if (_discAssets is not null)
+			{
+				foreach (var discAsset in _discAssets)
+				{
+					discAsset.DiscData.Dispose();
+				}
+			}
+
+			base.Dispose();
 		}
 	}
 }
