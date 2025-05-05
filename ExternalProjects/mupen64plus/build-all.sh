@@ -5,14 +5,15 @@ cd "$(dirname "$0")"
 install_to_bizhawk () {
 	if [ "$OS" = "Windows_NT" ]; then
 		path=$1$2.dll
+		target=$2.dll
 	else
-		path="$1"lib$2.so
-		mv "$1$2.so" "$path"
+		path=$1$2.so
+		target=lib$2.so
 	fi
 	strip -p "$path"
-	cp "$path" ../../Assets/dll/
+	cp "$path" ../../Assets/dll/$target
 	if [ -d ../../output/dll ]; then
-		cp "$path" ../../output/dll/
+		cp "$path" ../../output/dll/$target
 	fi
 }
 
@@ -20,10 +21,10 @@ rm -rf mupen64plus-core/projects/unix/_obj
 # do we want ACCURATE_FPU=1 here?
 make -C mupen64plus-core/projects/unix VULKAN=0 NEW_DYNAREC=1 OSD=0 ACCURATE_FPU=0 KEYBINDINGS=0 DEBUGGER=1 all -j4
 if [ "$OS" != "Windows_NT" ]; then
-	mv mupen64plus-core/projects/unix/libmupen64plus.so.2.0.0 mupen64plus-core/projects/unix/mupen64plus.so
-	patchelf --replace-needed libSDL2-2.0.so.0 libSDL2.so mupen64plus-core/projects/unix/mupen64plus.so
+	mv mupen64plus-core/projects/unix/libmupen64plus.so.2.0.0 build/mupen64plus.so
+	patchelf --replace-needed libSDL2-2.0.so.0 libSDL2.so build/mupen64plus.so
 fi
-install_to_bizhawk mupen64plus-core/projects/unix/ mupen64plus
+install_to_bizhawk build/ mupen64plus
 
 make -C mupen64plus-audio-bkm install
 
