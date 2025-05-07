@@ -690,7 +690,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTas(bool saveAsBk2 = false, bool saveBackup = false)
 		{
-			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName()) return;
+			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName())
+			{
+				SaveAsTas();
+				return;
+			}
 
 			_autosaveTimer.Stop();
 			MessageStatusLabel.Text = saveBackup

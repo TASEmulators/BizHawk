@@ -115,14 +115,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName())
-			{
-				SaveAsTas();
-			}
-			else
-			{
-				SaveTas();
-			}
+			SaveTas();
 			if (Settings.BackupPerFileSave)
 			{
 				SaveTas(saveBackup: true);
