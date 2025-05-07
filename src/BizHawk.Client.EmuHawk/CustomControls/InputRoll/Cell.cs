@@ -92,6 +92,9 @@ namespace BizHawk.Client.EmuHawk
 
 	public sealed class CellList : SortedList<Cell>
 	{
+		private CellList(List<Cell> wrapped)
+			: base(wrapped) {}
+
 		public CellList() {}
 
 		public CellList(IEnumerable<Cell> collection)
