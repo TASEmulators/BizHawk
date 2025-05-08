@@ -1078,7 +1078,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				MemoryCallbacks.CallMemoryCallbacks(addr, ret, flags, "System Bus");
 			}
 
-			DB = ret;
+			if (addr != 0x4015)
+			{
+				// This register is internal to the CPU and so the external CPU data bus is disconnected when reading it.
+				// Therefore the returned value cannot be seen by external devices and the value does not affect open bus.
+				DB = ret;
+			}
+
 			return ret;
 		}
 
