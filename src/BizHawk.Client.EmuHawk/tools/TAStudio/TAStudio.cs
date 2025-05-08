@@ -379,18 +379,6 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name.Contains("Automap")
 					|| c.Name.Contains("Gamma"));
 
-			if (Emulator.SystemId is VSystemID.Raw.N64)
-			{
-				var fakeAnalogControls = TasView.AllColumns
-					.Where(c =>
-						c.Name.EndsWithOrdinal("A Up")
-						|| c.Name.EndsWithOrdinal("A Down")
-						|| c.Name.EndsWithOrdinal("A Left")
-						|| c.Name.EndsWithOrdinal("A Right"));
-
-				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
-			}
-
 			foreach (var column in columnsToHide)
 			{
 				column.Visible = false;

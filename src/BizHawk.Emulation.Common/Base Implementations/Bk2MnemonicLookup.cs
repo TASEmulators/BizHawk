@@ -372,11 +372,6 @@ namespace BizHawk.Emulation.Common
 				["C Left"] = 'l',
 				["C Right"] = 'r',
 
-				["A Up"] = 'U',
-				["A Down"] = 'D',
-				["A Left"] = 'L',
-				["A Right"] = 'R',
-
 				["DPad U"] = 'U',
 				["DPad D"] = 'D',
 				["DPad L"] = 'L',
