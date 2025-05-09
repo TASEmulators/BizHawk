@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 	{
 		// System type determines the version of the console to run
 		// The selection of the proper BIOS derives from this decision
-		public enum SystemType 
+		public enum SystemType
 		{
 			[Display(Name = "Panasonic FZ-1 (U)")]
 			Panasonic_FZ1_U,
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			PAL2 = 2,
 		}
 
-		public enum ControllerType 
+		public enum ControllerType
 		{
 			[Display(Name = "None")]
 			None = 0,

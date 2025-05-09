@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 {
 	public partial class Opera
-	{ 
+	{
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings, bool isMultiDisc)
 		{
 			var controller = new ControllerDefinition("3DO Controller");
