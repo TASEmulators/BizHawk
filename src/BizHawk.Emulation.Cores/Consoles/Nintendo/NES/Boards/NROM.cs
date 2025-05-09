@@ -22,6 +22,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// No VS game used mapper zero but some were changed to use noraml CHR mapping I think
 					NES._isVS = true;
 					break;
+				case "MAPPER0000-00":
+					AssertPrg(8, 16, 32);
+					AssertChr(8); AssertVram(0); AssertWram(0, 2, 4, 8);
+					break;
 				case "BANDAI-NROM-128":
 				case "BANDAI-NROM-256":
 				case "HVC-HROM": //Donkey Kong Jr. (J)
