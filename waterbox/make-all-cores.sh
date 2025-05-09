@@ -11,6 +11,7 @@ make -C dsda $1 -j
 make -C gpgx $1 -j
 make -C libsnes $1 -j
 make -C melon $1 -j
+make -C opera $1 -j
 make -C picodrive $1 -j
 make -C stella $1 -j
 make -C snes9x $1 -j

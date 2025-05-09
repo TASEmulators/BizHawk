@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.N3DS,
 				VSystemID.Raw.N64,
 				VSystemID.Raw.NDS,
+				VSystemID.Raw.Panasonic3DO,
 				VSystemID.Raw.PCFX,
 				VSystemID.Raw.PSX,
 				VSystemID.Raw.SAT,

@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores
 		public const string Nymashock = "Nymashock";
 		public const string O2Hawk = "O2Hawk";
 		public const string Octoshock = "Octoshock";
+		public const string Opera = "Opera";
 		public const string PceHawk = "PCEHawk";
 		public const string PicoDrive = "PicoDrive";
 		public const string QuickNes = "quickerNES";

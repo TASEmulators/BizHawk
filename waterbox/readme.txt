@@ -39,6 +39,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/uae/libretro-uae (required for uae)
 		* waterbox/stella/core (required for stella)
 		* waterbox/dsda/core (required for dsda)
+		* waterbox/opera/opera-libretro (required for opera)
 		* waterbox/dosbox/dosbox-x (required for DOSBox-x)
 	* none of these submodules need to be cloned recursively
 
@@ -80,6 +81,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && make -f ss.mak install
 	cd nyma && make -f shock.mak install
 	cd nyma && make -f vb.mak install
+	cd opera && make install
 	cd picodrive && make install
 	cd stella && make install
 	cd snes9x && make install

@@ -1109,6 +1109,48 @@
 				"Deadzone": 0.0
 			}
 		},
+		"3DO Controller": {
+			"P1 Mouse X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Mouse Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Flight Stick Horizontal Axis": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Flight Stick Vertical Axis": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Light Gun Screen X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Light Gun Screen Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Trackball X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Trackball Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
 		"DOSBox Controller": {
 			"Mouse Position X": {
 				"Value": "WMouse X",

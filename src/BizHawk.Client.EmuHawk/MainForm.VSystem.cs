@@ -36,6 +36,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
+using BizHawk.Emulation.Cores.Consoles.Panasonic3DO;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
@@ -1369,6 +1370,9 @@ namespace BizHawk.Client.EmuHawk
 				octoshockNTSCSettingsItem.Visible = octoshockPALSettingsItem.Visible = !loadedCoreIsOctoshock;
 			};
 			items.Add(octoshockSubmenu);
+
+			// Opera
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Opera, CreateGenericCoreConfigItem<Opera>(CoreNames.Opera)));
 
 			// PCEHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PceHawk, CreateGenericCoreConfigItem<PCEngine>(CoreNames.PceHawk)));

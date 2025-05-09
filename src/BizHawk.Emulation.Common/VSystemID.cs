@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Common
 			public const string NGP = "NGP";
 			public const string NULL = "NULL";
 			public const string O2 = "O2";
-			public const string Panasonic3DO = "Panasonic3DO";
+			public const string Panasonic3DO = "3DO";
 			public const string PCE = "PCE";
 			public const string PCECD = "PCECD";
 			public const string PCFX = "PCFX";

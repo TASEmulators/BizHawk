@@ -182,6 +182,25 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
 		{
+			[VSystemID.Raw.Panasonic3DO] = new()
+			{
+				["LT"] = 'l',
+				["RT"] = 'r',
+				["P"] = 'P',
+				["Trigger"] = 'T',
+				["Reload"] = 'R',
+				["Is Off-Screen"] = 'O',
+				["Aux A"] = 'A',
+				["Start P1"] = '1',
+				["Start P2"] = '2',
+				["Coin P1"] = 'C',
+				["Coin P2"] = 'c',
+				["Service"] = 'S',
+				["Fourth Button"] = '4',
+				["Next Disc"] = '>',
+				["Prev Disc"] = '<',
+			},
+
 			[VSystemID.Raw.NES] = new()
 			{
 				["FDS Eject"] = 'E',
@@ -964,6 +983,16 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
 		{
+			[VSystemID.Raw.Panasonic3DO] = new()
+			{
+				["Flight Stick Horizontal Axis"] = "fsX",
+				["Flight Stick Vertical Axis"] = "fsY",
+				["Flight Stick Altitude Axis"] = "fsZ",
+				["Light Gun Screen X"] = "lgX",
+				["Light Gun Screen Y"] = "lgY",
+				["Trackball X"] = "tX",
+				["Trackball Y"] = "tY",
+			},
 			[VSystemID.Raw.A78] = new()
 			{
 				["VPos"] = "X",
