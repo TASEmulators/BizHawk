@@ -184,6 +184,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync(nameof(branch_irq_hack), ref branch_irq_hack);
 			ser.Sync(nameof(rdy_freeze), ref rdy_freeze);
 			ser.Sync(nameof(ext_ppu_cycle), ref ext_ppu_cycle);
+			ser.Sync(nameof(H), ref H);
 			ser.EndSection();
 		}
 
