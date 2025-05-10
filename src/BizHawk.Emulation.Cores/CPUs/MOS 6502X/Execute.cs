@@ -525,7 +525,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public int mi; //microcode index
 		private bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
 		public bool rdy_freeze; //true if the CPU must be frozen
-		private byte H; //internal temp varaible used in the "unstable high byte group" of unofficial instructions
+		private byte H; //internal temp variable used in the "unstable high byte group" of unofficial instructions
 
 		//tracks whether an interrupt condition has popped up recently.
 		//not sure if this is real or not but it helps with the branch_irq_hack
