@@ -16,6 +16,8 @@ namespace BizHawk.Common
 
 		public const string PREFIX = "MD5";
 
+		public /*static readonly*/const string Dummy = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
+
 		public /*static readonly*/const string EmptyFile = "D41D8CD98F00B204E9800998ECF8427E";
 
 #if NET5_0_OR_GREATER

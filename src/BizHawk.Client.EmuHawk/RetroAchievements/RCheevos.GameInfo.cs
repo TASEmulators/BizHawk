@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 				return IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32));
 			}
 
-			_gameHash ??= "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
+			_gameHash ??= MD5Checksum.Dummy;
 			return 0;
 		}
 
