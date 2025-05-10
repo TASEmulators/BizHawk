@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
