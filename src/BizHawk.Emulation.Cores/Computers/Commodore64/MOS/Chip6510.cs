@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				// Required to pass the Lorenz test suite.
 				AneConstant = 0xEF,
-				LxaConstant = 0xFE
+				LxaConstant = 0xEE
 			};
 
 			// perform hard reset
