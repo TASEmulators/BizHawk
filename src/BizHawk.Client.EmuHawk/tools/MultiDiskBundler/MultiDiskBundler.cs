@@ -32,6 +32,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = ToolIcon;
+			SystemDropDown.Format += (_, formatArgs) =>
+			{
+				var sysID = (string) formatArgs.ListItem;
+				var dispName = EmulatorExtensions.SystemIDToDisplayName(sysID);
+				formatArgs.Value = string.IsNullOrEmpty(dispName) ? sysID : dispName;
+			};
 			SystemDropDown.Items.AddRange([
 				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
