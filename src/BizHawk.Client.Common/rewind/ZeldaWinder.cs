@@ -224,7 +224,7 @@ namespace BizHawk.Client.Common
 			_masterFrame = state.Frame;
 		}
 
-		public bool Rewind(int frameToAvoid)
+		public bool Rewind(ref int frameToAvoid, bool maySkipLoadstate)
 		{
 			Sync();
 			if (!_active || _count == 0)
@@ -237,7 +237,14 @@ namespace BizHawk.Client.Common
 					var index = _buffer.Count - 1;
 					RefillMaster(_buffer.GetState(index));
 					_buffer.InvalidateLast();
-					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+					if (maySkipLoadstate)
+					{
+						frameToAvoid = _masterFrame;
+					}
+					else
+					{
+						_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+					}
 				}
 				else
 				{
@@ -248,9 +255,16 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				// The emulator will frame advance without giving us a chance to
-				// re-capture this frame, so we shouldn't invalidate this state just yet.
-				_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+				if (maySkipLoadstate)
+				{
+					frameToAvoid = _masterFrame;
+				}
+				else
+				{
+					// The emulator will frame advance without giving us a chance to
+					// re-capture this frame, so we shouldn't invalidate this state just yet.
+					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
+				}
 			}
 			return true;
 		}
