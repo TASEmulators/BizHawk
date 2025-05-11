@@ -957,8 +957,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				var hunkOffset = bw.BaseStream.Position;
 
-				// TODO: adjust compression level?
-				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, Zstd.MaxCompressionLevel))
+				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, 0))
 				{
 					cstream.Write(curHunk, 0, curHunk.Length);
 				}
