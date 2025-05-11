@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_romAssets = lp.Roms;
 			_discAssets = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
-			_serviceProvider.Unregister<IStatable>();
+			_serviceProvider.Unregister<ISaveRam>();
 
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _romAssets.Count, _discAssets.Count);

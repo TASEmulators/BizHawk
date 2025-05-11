@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					{
 						players[i].TurningSpeed += controller.AxisValue($"P{port} Turning Speed Frac.");
 					}
-					
+
 					// override weapon axis based on buttons
 					var weaponRange = controller.Definition.Axes[$"P{port} Weapon Select"].Range;
 					for (var unit = weaponRange.Start; unit <= weaponRange.EndInclusive; unit++)
