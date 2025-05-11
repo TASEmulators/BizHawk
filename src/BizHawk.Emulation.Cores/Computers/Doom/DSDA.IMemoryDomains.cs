@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					1),
 			};
 
+			domains.Add(_elf.GetPagesDomain());
 			MemoryDomains = new MemoryDomainList(domains) { };
 			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
 		}
