@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		portedVersion: "2025.02.01 (324193b)",
 		portedUrl: "https://github.com/joncampbell123/dosbox-x",
 		isReleased: false)]
-	public partial class DOSBox : WaterboxCore
+	public sealed partial class DOSBox : WaterboxCore
 	{
 		private static readonly Configuration DefaultConfig = new Configuration
 		{
@@ -65,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_romAssets = lp.Roms;
 			_discAssets = lp.Discs;
 			_syncSettings = lp.SyncSettings ?? new();
+			_serviceProvider.Unregister<IStatable>();
 
 			DriveLightEnabled = false;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings, _romAssets.Count, _discAssets.Count);
