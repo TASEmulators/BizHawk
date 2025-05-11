@@ -185,12 +185,15 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
 
 ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
-  // On-the-fly render changes
-  render_updates(renderInfo);
+  // Live render changes
+  if (renderInfo->RenderVideo)
+    render_updates(renderInfo);
 
   // Setting inputs
   headlessClearTickCommand();
-  automap_inputs(buttons);
+
+  if (renderInfo->RenderVideo)
+    automap_inputs(buttons);
 
   dsda_reveal_map = renderInfo->MapDetails;
 
@@ -217,7 +220,8 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
     headlessRunSingleTick();
 
     // Move positional sounds
-    headlessUpdateSounds();
+    if (renderInfo->RenderAudio)
+      headlessUpdateSounds();
 
     // Updating video
     if (renderInfo->RenderVideo)
