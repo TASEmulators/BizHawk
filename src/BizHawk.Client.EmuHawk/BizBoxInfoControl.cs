@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (attributes is PortedCoreAttribute ported)
 			{
-				CorePortedLabel.Text = " (Ported)";
+				CorePortedLabel.Text = "(Ported)";
 				_url = ported.PortedUrl;
 				CoreUrlLink.Text = ported.PortedVersion;
 				CoreUrlLink.Visible = true;

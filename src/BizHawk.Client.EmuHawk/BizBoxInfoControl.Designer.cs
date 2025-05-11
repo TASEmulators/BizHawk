@@ -58,19 +58,19 @@
 			this.CorePortedLabel.Location = new System.Drawing.Point(140, 0);
 			this.CorePortedLabel.Name = "CorePortedLabel";
 			this.CorePortedLabel.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
-			this.CorePortedLabel.Text = "";
 			// 
 			// CoreUrlLink
 			// 
 			this.CoreUrlLink.AutoSize = true;
 			this.CoreUrlLink.Dock = System.Windows.Forms.DockStyle.Left;
-			this.CoreUrlLink.Location = new System.Drawing.Point(180, 0);
+			this.CoreUrlLink.Location = new System.Drawing.Point(145, 0);
+			this.CoreUrlLink.MinimumSize = new System.Drawing.Size(0, 23);
 			this.CoreUrlLink.Name = "CoreUrlLink";
-			this.CoreUrlLink.Padding = new System.Windows.Forms.Padding(5, 5, 0, 0);
-			this.CoreUrlLink.Size = new System.Drawing.Size(60, 18);
+			this.CoreUrlLink.Size = new System.Drawing.Size(55, 23);
 			this.CoreUrlLink.TabIndex = 3;
 			this.CoreUrlLink.TabStop = true;
 			this.CoreUrlLink.Text = "linkLabel1";
+			this.CoreUrlLink.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.CoreUrlLink.Visible = false;
 			this.CoreUrlLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.CoreUrlLink_LinkClicked);
 			// 
