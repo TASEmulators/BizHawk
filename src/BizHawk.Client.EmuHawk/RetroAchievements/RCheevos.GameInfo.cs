@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _gameHash;
 		private readonly Dictionary<string, uint> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a simple RebootCore
 
-		private GameData _gameData;
+		private GameData _gameData = new();
 		private readonly Dictionary<uint, GameData> _cachedGameDatas = new(); // keep game data around to avoid unneeded API calls for a simple RebootCore
 
 		public sealed class UserUnlocksRequest : RCheevoHttpRequest

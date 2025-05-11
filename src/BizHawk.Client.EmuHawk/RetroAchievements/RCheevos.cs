@@ -425,7 +425,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_gameData = _cachedGameDatas.TryGetValue(gameId, out var cachedGameData)
 						? new(cachedGameData, () => AllowUnofficialCheevos)
-						: GetGameData(gameId);
+						: GetGameData(gameId) ?? new();
 				}
 
 				// this check seems redundant, but it covers the case where GetGameData failed somehow
