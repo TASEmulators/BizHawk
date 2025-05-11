@@ -49,6 +49,7 @@ namespace BizHawk.Client.Common
 				TurningResolution = DSDA.TurningResolution.Shorttics,
 				RenderWipescreen = false,
 			};
+
 			_ = input[i++]; // DisplayPlayer is a non-sync setting so importers can't* set it
 			syncSettings.Player1Present = input[i++] is not 0;
 			syncSettings.Player2Present = input[i++] is not 0;
@@ -56,9 +57,18 @@ namespace BizHawk.Client.Common
 			syncSettings.Player4Present = input[i++] is not 0;
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var doomController1 = new DoomController(1, false);
-			var controller = new SimpleController(doomController1.Definition);
+			var doomController = new DoomControllerDeck(
+				DoomControllerTypes.Doom,
+				syncSettings.Player1Present,
+				syncSettings.Player2Present,
+				syncSettings.Player3Present,
+				syncSettings.Player4Present,
+				syncSettings.TurningResolution == DSDA.TurningResolution.Longtics);
+
+			var controller = new SimpleController(doomController.Definition);
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
+			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(controller.Definition);
+
 			void ParsePlayer(string playerPfx)
 			{
 				controller.AcceptNewAxis(playerPfx + "Run Speed", unchecked((sbyte) input[i++]));
@@ -72,6 +82,7 @@ namespace BizHawk.Client.Common
 				int weapon = changeWeapon ? (((specialValue & 0b00111000) >> 3) + 1) : 0;
 				controller.AcceptNewAxis(playerPfx + "Weapon Select", weapon);
 			}
+
 			do
 			{
 				if (syncSettings.Player1Present) ParsePlayer("P1 ");

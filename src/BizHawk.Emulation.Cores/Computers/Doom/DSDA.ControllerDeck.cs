@@ -55,10 +55,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public int ReadButtons2(IController c) => _port2.ReadButtons(c);
 		public int ReadButtons3(IController c) => _port3.ReadButtons(c);
 		public int ReadButtons4(IController c) => _port4.ReadButtons(c);
-		public int ReadAxis1(IController c, int axis) => _port1.ReadAxis(c, axis);
-		public int ReadAxis2(IController c, int axis) => _port2.ReadAxis(c, axis);
-		public int ReadAxis3(IController c, int axis) => _port3.ReadAxis(c, axis);
-		public int ReadAxis4(IController c, int axis) => _port4.ReadAxis(c, axis);
+		public int ReadAxis1(IController c, string axis) => _port1.ReadAxis(c, axis);
+		public int ReadAxis2(IController c, string axis) => _port2.ReadAxis(c, axis);
+		public int ReadAxis3(IController c, string axis) => _port3.ReadAxis(c, axis);
+		public int ReadAxis4(IController c, string axis) => _port4.ReadAxis(c, axis);
 
 		public static IReadOnlyDictionary<DoomControllerTypes, Func<int, bool, IPort>> ControllerCtors => _controllerCtors
 			??= new Dictionary<DoomControllerTypes, Func<int, bool, IPort>>

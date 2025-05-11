@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public int Frame { get; private set; }
 		public string SystemId => VSystemID.Raw.Doom;
 		public bool DeterministicEmulation => true;
-		private delegate int ReadAxis(IController c, int axis);
 		private delegate int ReadPort(IController c);
 
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
@@ -21,14 +20,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				new LibDSDA.PackedPlayerInput(),
 				new LibDSDA.PackedPlayerInput(),
 				new LibDSDA.PackedPlayerInput()
-			];
-
-			ReadAxis[] axisReaders =
-			[
-				_controllerDeck.ReadAxis1,
-				_controllerDeck.ReadAxis2,
-				_controllerDeck.ReadAxis3,
-				_controllerDeck.ReadAxis4,
 			];
 
 			ReadPort[] buttonsReaders =
@@ -70,13 +61,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				if ((playersPresent & (1 << i)) is not 0)
 				{
-					bool strafe = controller.IsPressed($"P{i + 1} Strafe");
-					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{i + 1} Run")
+					int port = i + 1;
+					bool strafe = controller.IsPressed($"P{port} Strafe");
+					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{port} Run")
 						|| _syncSettings.AlwaysRun);
 
 					int turnSpeed = 0;
 					// lower speed for tapping turn buttons
-					if (controller.IsPressed($"P{i + 1} Turn Right") || controller.IsPressed($"P{i + 1} Turn Left"))
+					if (controller.IsPressed($"P{port} Turn Right") || controller.IsPressed($"P{port} Turn Left"))
 					{
 						_turnHeld[i]++;
 						turnSpeed = _turnHeld[i] < 6 ? _turnSpeeds[2] : _turnSpeeds[speedIndex];
@@ -87,41 +79,49 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// initial axis read
-					players[i].RunSpeed      = axisReaders[i](controller, (int)AxisType.RunSpeed);
-					players[i].StrafingSpeed = axisReaders[i](controller, (int)AxisType.StrafingSpeed);
-					players[i].WeaponSelect  = axisReaders[i](controller, (int)AxisType.WeaponSelect);
-					// core counts left angle as positive, so turning direction is "reversed"
-					players[i].TurningSpeed  = axisReaders[i](controller, (int)AxisType.TurningSpeed) << 8;
+					players[i].RunSpeed      = controller.AxisValue($"P{port} Run Speed");
+					players[i].StrafingSpeed = controller.AxisValue($"P{port} Strafing Speed");
+					players[i].WeaponSelect  = controller.AxisValue($"P{port} Weapon Select");
+					// core counts angle counterclockwise
+					players[i].TurningSpeed  = controller.AxisValue($"P{port} Turning Speed") << 8;
 
 					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
 					{
-						players[i].TurningSpeed += axisReaders[i](controller, (int) AxisType.TurningSpeedFrac);
+						players[i].TurningSpeed += controller.AxisValue($"P{port} Turning Speed Frac.");
+					}
+					
+					// override weapon axis based on buttons
+					var weaponRange = controller.Definition.Axes[$"P{port} Weapon Select"].Range;
+					for (var unit = weaponRange.Start; unit <= weaponRange.EndInclusive; unit++)
+					{
+						// if several weapon buttons are pressed, highest one overrides lower
+						if (controller.IsPressed($"P{port} Weapon Select {unit}")) players[i].WeaponSelect = unit;
 					}
 
-					// override axis based on movement buttons (turning is reversed upstream)
-					if (controller.IsPressed($"P{i + 1} Forward"))      players[i].RunSpeed      =  _runSpeeds   [speedIndex];
-					if (controller.IsPressed($"P{i + 1} Backward"))     players[i].RunSpeed      = -_runSpeeds   [speedIndex];
-					if (controller.IsPressed($"P{i + 1} Strafe Right")) players[i].StrafingSpeed =  _strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{i + 1} Strafe Left"))  players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
+					// override movement axis based on buttons (turning is reversed upstream)
+					if (controller.IsPressed($"P{port} Forward"))      players[i].RunSpeed      =  _runSpeeds   [speedIndex];
+					if (controller.IsPressed($"P{port} Backward"))     players[i].RunSpeed      = -_runSpeeds   [speedIndex];
+					// turning with strafe button held will later be ADDED to these values (which is what makes strafe50 possible)
+					if (controller.IsPressed($"P{port} Strafe Right")) players[i].StrafingSpeed =  _strafeSpeeds[speedIndex];
+					if (controller.IsPressed($"P{port} Strafe Left"))  players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
 					if (strafe)
 					{
-						// strafe50 needs this speed to be ADDED to whatever we got from directional strafe buttons
-						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].StrafingSpeed += _strafeSpeeds[speedIndex];
-						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].StrafingSpeed -= _strafeSpeeds[speedIndex];
+						if (controller.IsPressed($"P{port} Turn Right")) players[i].StrafingSpeed += _strafeSpeeds[speedIndex];
+						if (controller.IsPressed($"P{port} Turn Left"))  players[i].StrafingSpeed -= _strafeSpeeds[speedIndex];
 					}
 					else
 					{
-						if (controller.IsPressed($"P{i + 1} Turn Right")) players[i].TurningSpeed -= turnSpeed;
-						if (controller.IsPressed($"P{i + 1} Turn Left"))  players[i].TurningSpeed += turnSpeed;
+						if (controller.IsPressed($"P{port} Turn Right")) players[i].TurningSpeed -= turnSpeed;
+						if (controller.IsPressed($"P{port} Turn Left"))  players[i].TurningSpeed += turnSpeed;
 					}
 
 					// mouse-driven running
 					// divider matches the core
-					players[i].RunSpeed -= (int)(axisReaders[i](controller, (int)AxisType.MouseRunning) * _syncSettings.MouseRunSensitivity / 8.0);
+					players[i].RunSpeed -= (int)(controller.AxisValue($"P{port} Mouse Running") * _syncSettings.MouseRunSensitivity / 8.0);
 					players[i].RunSpeed = players[i].RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					var mouseTurning = axisReaders[i](controller, (int)AxisType.MouseTurning) * _syncSettings.MouseTurnSensitivity;
+					var mouseTurning = controller.AxisValue($"P{port} Mouse Turning") * _syncSettings.MouseTurnSensitivity;
 					if (strafe)
 					{
 						players[i].StrafingSpeed += mouseTurning / 5;
@@ -155,8 +155,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Raven Games
 					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
 					{
-						players[i].FlyLook = axisReaders[i](controller, (int)AxisType.FlyLook);
-						players[i].ArtifactUse = axisReaders[i](controller, (int)AxisType.UseArtifact);
+						players[i].FlyLook     = controller.AxisValue($"P{port} Fly / Look");
+						players[i].ArtifactUse = controller.AxisValue($"P{port} Use Artifact");
+
 						if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
 						{
 							players[i].Jump      = (actionsBitfield & 0b01000) >> 3;
