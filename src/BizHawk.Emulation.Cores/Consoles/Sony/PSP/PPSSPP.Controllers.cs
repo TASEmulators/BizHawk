@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
 	public partial class PPSSPP
-	{ 
+	{
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings, bool isMultiDisc)
 		{
 			var controller = new ControllerDefinition("PSP Controller");

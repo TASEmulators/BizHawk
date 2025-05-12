@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		private readonly List<IDiscAsset> _discAssets;
 
 		[CoreConstructor(VSystemID.Raw.PSP)]
-		public PPSSPP(CoreLoadParameters<Settings, SyncSettings> lp) 
+		public PPSSPP(CoreLoadParameters<Settings, SyncSettings> lp)
 		{
 			Console.WriteLine("In PPSSP Core");
 
@@ -175,4 +175,4 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		}
 
 	}
-}
+}

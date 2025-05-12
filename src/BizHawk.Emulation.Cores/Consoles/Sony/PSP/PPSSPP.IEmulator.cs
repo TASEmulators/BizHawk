@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
-			
+
 			_controller = controller;
 			IsLagFrame = true;
 
@@ -77,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			{
 				LagCount++;
 			}
-			
-			
+
+
 
 			return true;
 		}

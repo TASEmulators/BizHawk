@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		internal bool VideoDirty;
 
 		protected readonly IntPtr _context;
-		
+
 		public PPSSPP(LibPPSSPP core, IntPtr context)
 		{
 			_context = context;
