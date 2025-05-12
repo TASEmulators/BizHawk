@@ -1,5 +1,4 @@
 using BizHawk.Common.IOExtensions;
-using System.IO;
 
 namespace BizHawk.Emulation.Cores.Properties {
 	internal static class Resources {

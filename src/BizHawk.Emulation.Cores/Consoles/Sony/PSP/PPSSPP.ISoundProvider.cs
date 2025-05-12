@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
