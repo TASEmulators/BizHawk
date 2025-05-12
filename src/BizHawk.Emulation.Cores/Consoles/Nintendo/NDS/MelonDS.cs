@@ -12,6 +12,7 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -28,8 +29,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private readonly LibMelonDS.LogCallback _logCallback;
 
-		private static void LogCallback(LibMelonDS.LogLevel level, string message)
-			=> Console.Write($"[{level}] {message}");
+		private bool loggingShouldInsertLevelNextCall = true;
+
+		private void LogCallback(LibMelonDS.LogLevel level, string message)
+		{
+			if (loggingShouldInsertLevelNextCall)
+			{
+				Console.Write($"[{level}] ");
+				loggingShouldInsertLevelNextCall = false;
+			}
+			Console.Write(message);
+			if (message.EndsWith('\n')) loggingShouldInsertLevelNextCall = true;
+		}
 
 		private readonly MelonDSGLTextureProvider _glTextureProvider;
 		private readonly IOpenGLProvider _openGLProvider;
