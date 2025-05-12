@@ -147,6 +147,7 @@ namespace BizHawk.Client.Common
 		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
 		{
 			parsed = default;
+			if (args.Length is not 0) Console.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
 			var result = Parser.Parse(args);
 			if (result.Errors.Count is not 0)
 			{
