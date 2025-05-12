@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public int[] GetVideoBuffer()
 		{
-			/*
+#if false
 			if (VideoDirty)
 			{
 				if (_vbuf.Length < BW * BH)
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 				_core.PPSSPP_ReadFrameBuffer(_context, _vbuf);
 				VideoDirty = false;
 			}
-			*/
+#endif
 
 			_libPPSSPP.GetVideo(_vbuf);
 			return _vbuf;

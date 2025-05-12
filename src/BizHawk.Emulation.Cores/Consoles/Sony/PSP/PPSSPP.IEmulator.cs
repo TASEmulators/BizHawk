@@ -55,12 +55,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_controller = controller;
 			IsLagFrame = true;
 
-			/*if (_controller.IsPressed("Reset"))
+#if false
+			if (_controller.IsPressed("Reset"))
 			{
 				_core.Encore_Reset(_context);
 				// memory domain pointers are no longer valid, reset them
 				WireMemoryDomains();
-			}*/
+			}
+#endif
 
 			var f = FrameAdvancePrep(controller, render, renderSound);
 			_libPPSSPP.FrameAdvance(f);
@@ -86,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		private void OnVideoRefresh()
 		{
 			VideoDirty = true;
-			/*
+#if false
 			_core.Encore_GetVideoBufferDimensions(_context, out _encoreVideoProvider.BW, out _encoreVideoProvider.BH);
 			_encoreVideoProvider.VideoDirty = true;
 
@@ -94,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			TouchScreenRectangle = new(x, y, width, height);
 			TouchScreenRotated = rotated;
 			TouchScreenEnabled = enabled;
-			*/
+#endif
 		}
 
 		public void ResetCounters()
