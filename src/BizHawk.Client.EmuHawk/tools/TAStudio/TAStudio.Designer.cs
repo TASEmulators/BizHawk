@@ -81,6 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StateHistoryIntegrityCheckMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SetMaxUndoLevelsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.setFastFramesPerRewindMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyIncludesFrameNoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator26 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.autosaveToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -190,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.setFramesPerRewindMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -476,6 +478,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMaxUndoLevelsMenuItem,
+			this.setFramesPerRewindMenuItem,
+			this.setFastFramesPerRewindMenuItem,
             this.CopyIncludesFrameNoMenuItem,
             this.toolStripSeparator26,
             this.autosaveToolStripMenuItem,
@@ -502,6 +506,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
+			// 
+			// setFastFramesPerRewindMenuItem
+			// 
+			this.setFastFramesPerRewindMenuItem.Text = "Set Frames per Fast-Forward Rewind";
+			this.setFastFramesPerRewindMenuItem.Click += new System.EventHandler(this.SetFastFramesPerRewindMenuItem_Click);
 			// 
 			// CopyIncludesFrameNoMenuItem
 			// 
@@ -917,7 +926,7 @@ namespace BizHawk.Client.EmuHawk
 			// MessageStatusLabel
 			// 
 			this.MessageStatusLabel.Name = "MessageStatusLabel";
-			this.MessageStatusLabel.Size = new System.Drawing.Size(103, 17);
+			this.MessageStatusLabel.Size = new System.Drawing.Size(104, 17);
 			this.MessageStatusLabel.Text = "TAStudio engaged";
 			// 
 			// ProgressBar
@@ -928,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripStatusLabel2
 			// 
 			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(269, 17);
+			this.toolStripStatusLabel2.Size = new System.Drawing.Size(268, 17);
 			this.toolStripStatusLabel2.Spring = true;
 			// 
 			// SplicerStatusLabel
@@ -1152,6 +1161,11 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.TabIndex = 10;
 			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
 			// 
+			// setFramesPerRewindMenuItem
+			// 
+			this.setFramesPerRewindMenuItem.Text = "Set Frames per Rewind";
+			this.setFramesPerRewindMenuItem.Click += new System.EventHandler(this.SetFramesPerRewindMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1349,5 +1363,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetFontMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyIncludesFrameNoMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx setFastFramesPerRewindMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx setFramesPerRewindMenuItem;
 	}
 }

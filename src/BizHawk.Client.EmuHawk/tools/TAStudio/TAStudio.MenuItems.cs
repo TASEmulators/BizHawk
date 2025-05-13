@@ -798,6 +798,63 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+		private void SetFastFramesPerRewindMenuItem_Click(object sender, EventArgs e)
+		{
+			using var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Number of frames to go back\nwhen pressing the rewind key\nwhile fast-forwarding:",
+				InitialValue = Settings.FastFramesPerRewind.ToString(),
+			};
+
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
+			if (result.IsOk())
+			{
+				int val = 0;
+				try
+				{
+					val = int.Parse(prompt.PromptText);
+				}
+				catch
+				{
+					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
+				}
+
+				if (val > 0)
+				{
+					Settings.FastFramesPerRewind = val;
+				}
+			}
+		}
+
+		private void SetFramesPerRewindMenuItem_Click(object sender, EventArgs e)
+		{
+			using var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Number of frames to go back\nwhen pressing the rewind key:",
+				InitialValue = Settings.FramesPerRewind.ToString(),
+			};
+
+			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
+			if (result.IsOk())
+			{
+				int val = 0;
+				try
+				{
+					val = int.Parse(prompt.PromptText);
+				}
+				catch
+				{
+					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
+				}
+
+				if (val > 0)
+				{
+					Settings.FramesPerRewind = val;
+				}
+			}
+		}
 
 		private void CopyIncludesFrameNoMenuItem_Click(object sender, EventArgs e)
 			=> Settings.CopyIncludesFrameNo = !Settings.CopyIncludesFrameNo;

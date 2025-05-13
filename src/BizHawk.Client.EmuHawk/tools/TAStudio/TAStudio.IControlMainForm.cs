@@ -77,17 +77,18 @@
 
 		public bool Rewind()
 		{
+			int framesPerRewind = MainForm.IsFastForwarding ? Settings.FastFramesPerRewind : Settings.FramesPerRewind;
 			// copy pasted from TasView_MouseWheel(), just without notch logic
 			if (MainForm.IsSeeking && !MainForm.EmulatorPaused)
 			{
-				MainForm.PauseOnFrame--;
+				MainForm.PauseOnFrame -= framesPerRewind;
 
 				// that's a weird condition here, but for whatever reason it works best
 				if (Emulator.Frame >= MainForm.PauseOnFrame)
 				{
 					MainForm.PauseEmulator();
 					StopSeeking();
-					GoToPreviousFrame();
+					GoToFrame(Math.Max(0, Emulator.Frame - framesPerRewind));
 				}
 
 				RefreshDialog();
@@ -95,7 +96,7 @@
 			else
 			{
 				StopSeeking(); // late breaking memo: don't know whether this is needed
-				GoToPreviousFrame();
+				GoToFrame(Math.Max(0, Emulator.Frame - framesPerRewind));
 			}
 
 			return true;

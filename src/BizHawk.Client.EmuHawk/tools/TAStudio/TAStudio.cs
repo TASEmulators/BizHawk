@@ -114,6 +114,8 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutoadjustInput { get; set; }
 			public TAStudioPalette Palette { get; set; }
 			public int MaxUndoSteps { get; set; } = 1000;
+			public int FramesPerRewind { get; set; } = 1;
+			public int FastFramesPerRewind { get; set; } = 4;
 		}
 
 		public TAStudio()
