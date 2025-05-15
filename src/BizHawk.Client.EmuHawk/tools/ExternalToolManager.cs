@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 #if DEBUG
 					asmChecksum: string.Empty,
 #else
-					asmChecksum: SHA1Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
+					asmChecksum: SHA512Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
 #endif
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName);
