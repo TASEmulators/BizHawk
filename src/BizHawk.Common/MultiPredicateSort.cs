@@ -6,7 +6,7 @@ namespace BizHawk.Common
 #if false
 	/// <summary>Sorts using a reorderable list of predicates.</summary>
 	/// <seealso cref="RigidMultiPredicateSort{T}"/>
-	public sealed class MultiPredicateSort<T>
+	public sealed partial class MultiPredicateSort<T>
 	{
 		private readonly int _count;
 
@@ -43,7 +43,7 @@ namespace BizHawk.Common
 #if false
 	/// <seealso cref="MultiPredicateSort{T}"/>
 #endif
-	public sealed class RigidMultiPredicateSort<T>
+	public sealed partial class RigidMultiPredicateSort<T>
 	{
 		private readonly IReadOnlyDictionary<string, Func<T, IComparable>> _predicates;
 

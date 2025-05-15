@@ -2,7 +2,7 @@
 
 namespace BizHawk.Common
 {
-	public class UndoHistory<T>
+	public partial class UndoHistory<T>
 	{
 		private readonly T _blankState;
 

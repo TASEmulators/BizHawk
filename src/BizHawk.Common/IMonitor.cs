@@ -1,13 +1,13 @@
 ﻿namespace BizHawk.Common
 {
-	public interface IMonitor
+	public partial interface IMonitor
 	{
 		void Enter();
 
 		void Exit();
 	}
 
-	public static class MonitorExtensions
+	public static partial class MonitorExtensions
 	{
 		public static EnterExitWrapper EnterExit(this IMonitor m)
 			=> new(m);

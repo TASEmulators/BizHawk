@@ -12,7 +12,7 @@ namespace BizHawk.Common
 	/// <seealso cref="MD5Checksum"/>
 	/// <seealso cref="SHA256Checksum"/>
 	/// <seealso cref="SHA512Checksum"/>
-	public static class SHA1Checksum
+	public static partial class SHA1Checksum
 	{
 		/// <remarks>in bits</remarks>
 		internal const int EXPECTED_LENGTH = 160;

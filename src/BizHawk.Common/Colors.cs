@@ -3,7 +3,7 @@
 namespace BizHawk.Common
 {
 #pragma warning disable MA0104 // unlikely to conflict with System.Windows.Media.Colors
-	public static class Colors
+	public static partial class Colors
 #pragma warning restore MA0104
 	{
 		/// <remarks>This is just <c>Color.FromArgb(alpha, red, green, blue).ToArgb()</c> with extra steps.</remarks>

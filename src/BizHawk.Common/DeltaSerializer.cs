@@ -18,7 +18,7 @@ namespace BizHawk.Common
 	/// Subsequently, it may not mind putting some identical bytes within the negative header's block.
 	/// XORing the same values result in 0, so doing this will not leave trace of the original data.
 	/// </summary>
-	public static class DeltaSerializer
+	public static partial class DeltaSerializer
 	{
 		public static ReadOnlySpan<byte> GetDelta<T>(ReadOnlySpan<T> original, ReadOnlySpan<T> current)
 			where T : unmanaged

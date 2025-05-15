@@ -9,5 +9,5 @@ namespace BizHawk.Common
 	/// TODO how are local (<c>\\?\C:\file.txt</c>) and remote (<c>\\?\UNC\Server\Share\file.txt</c>) UNCs treated by WinForms, and are we able to handle at least the valid ones? --yoshi
 	/// </remarks>
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-	public sealed class HawkFilePathAttribute : Attribute {}
+	public sealed partial class HawkFilePathAttribute : Attribute {}
 }

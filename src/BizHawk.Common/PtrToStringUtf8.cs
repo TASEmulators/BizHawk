@@ -2,7 +2,7 @@ using System.Text;
 
 namespace BizHawk.Common
 {
-	public static class Mershul
+	public static partial class Mershul
 	{
 		/// <remarks>
 		/// TODO: Update to a version of .nyet that includes this

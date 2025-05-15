@@ -6,7 +6,7 @@ namespace BizHawk.Common
 	/// Create a stream that allows read/write over a set of unmanaged memory pointers
 	/// The validity and lifetime of those pointers is YOUR responsibility
 	/// </summary>
-	public unsafe class MemoryViewStream : Stream, ISpanStream
+	public unsafe partial class MemoryViewStream : Stream, ISpanStream
 	{
 		public MemoryViewStream(bool readable, bool writable, long ptr, long length)
 		{

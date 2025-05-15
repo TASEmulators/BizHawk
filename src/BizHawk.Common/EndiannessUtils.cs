@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace BizHawk.Common
 {
-	public static unsafe class EndiannessUtils
+	public static unsafe partial class EndiannessUtils
 	{
 		/// <summary>reverses pairs of octets in-place: <c>0xAABBIIJJPPQQYYZZ</c> &lt;=> <c>0xBBAAJJIIQQPPZZYY</c></summary>
 		public static void MutatingByteSwap16(Span<byte> a)

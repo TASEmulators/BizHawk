@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	public sealed class Zstd : IDisposable
+	public sealed partial class Zstd : IDisposable
 	{
 		private sealed class ZstdCompressionStreamContext : IDisposable
 		{

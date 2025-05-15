@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace BizHawk.Common.CollectionExtensions
 {
 #pragma warning disable MA0104 // unlikely to conflict with System.Collections.Generic.CollectionExtensions
-	public static class CollectionExtensions
+	public static partial class CollectionExtensions
 #pragma warning restore MA0104
 	{
 		private struct EnumeratorAsEnumerable<T> : IEnumerable<T>

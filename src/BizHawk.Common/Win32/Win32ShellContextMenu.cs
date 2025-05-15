@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	public unsafe class Win32ShellContextMenu : IDisposable
+	public unsafe partial class Win32ShellContextMenu : IDisposable
 	{
 		[StructLayout(LayoutKind.Sequential)]
 		private struct IShellItem

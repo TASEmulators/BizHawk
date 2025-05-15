@@ -20,7 +20,7 @@ namespace BizHawk.Common
 	/// TODO split into "bind" and "open &lt;the bound thing>"<br/>
 	/// TODO scan archive to flatten interior directories down to a path (maintain our own archive item list)
 	/// </remarks>
-	public sealed class HawkFile : IDisposable
+	public sealed partial class HawkFile : IDisposable
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool PathContainsPipe(string s)

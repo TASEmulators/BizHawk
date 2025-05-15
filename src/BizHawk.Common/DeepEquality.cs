@@ -7,11 +7,9 @@ namespace BizHawk.Common
 {
 	/// <summary>Annotated fields will not be used by <see cref="DeepEquality"/> for comparison.</summary>
 	[AttributeUsage(AttributeTargets.Field)]
-	public sealed class DeepEqualsIgnoreAttribute : Attribute
-	{
-	}
+	public sealed partial class DeepEqualsIgnoreAttribute : Attribute {}
 
-	public static class DeepEquality
+	public static partial class DeepEquality
 	{
 		/// <summary>
 		/// return true if an array type is not 0-based

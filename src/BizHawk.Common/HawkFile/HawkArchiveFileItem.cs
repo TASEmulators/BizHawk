@@ -1,7 +1,7 @@
 namespace BizHawk.Common
 {
 	/// <summary>Used by <see cref="IHawkArchiveFile"/> to represent archive members.</summary>
-	public readonly struct HawkArchiveFileItem
+	public readonly partial struct HawkArchiveFileItem
 	{
 		/// <value>the index of the member within the archive, not to be confused with <see cref="Index"/></value>
 		/// <remarks>this is for <see cref="IFileDearchivalMethod{T}"/> implementations to use internally</remarks>

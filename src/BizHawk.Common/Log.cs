@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BizHawk.Common
 {
-	public static class Log
+	public static partial class Log
 	{
 		static Log()
 		{
