@@ -5,43 +5,39 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common
 {
-	/// <summary>uses <see cref="MD5"/> implementation from BCL</summary>
+	/// <summary>uses <see cref="SHA512"/> implementation from BCL</summary>
 	/// <seealso cref="CRC32Checksum"/>
+	/// <seealso cref="MD5Checksum"/>
 	/// <seealso cref="SHA1Checksum"/>
 	/// <seealso cref="SHA256Checksum"/>
-	/// <seealso cref="SHA512Checksum"/>
-	public static class MD5Checksum
+	public static class SHA512Checksum
 	{
 		/// <remarks>in bits</remarks>
-		internal const int EXPECTED_LENGTH = 128;
+		internal const int EXPECTED_LENGTH = 512;
 
-		public const string PREFIX = "MD5";
+		internal const string PREFIX = "SHA512";
 
-		public /*static readonly*/const string Dummy = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
-
-		public /*static readonly*/const string EmptyFile = "D41D8CD98F00B204E9800998ECF8427E";
-
-#if NET5_0_OR_GREATER
+#if NET7_0_OR_GREATER
 		public static byte[] Compute(ReadOnlySpan<byte> data)
-			=> MD5.HashData(data);
+			=> SHA512.HashData(data);
 #else
-		private static MD5? _md5Impl;
+		private static SHA512? _sha512Impl;
 
-		private static MD5 MD5Impl
+		private static SHA512 SHA512Impl
 		{
 			get
 			{
-				if (_md5Impl == null)
+				if (_sha512Impl == null)
 				{
-					_md5Impl = MD5.Create();
-					Debug.Assert(_md5Impl.CanReuseTransform && _md5Impl.HashSize is EXPECTED_LENGTH, "nonstandard implementation?");
+					_sha512Impl = SHA512.Create();
+					Debug.Assert(_sha512Impl.CanReuseTransform && _sha512Impl.HashSize is EXPECTED_LENGTH, "nonstandard implementation?");
 				}
-				return _md5Impl;
+				return _sha512Impl;
 			}
 		}
 
 		public static byte[] Compute(byte[] data)
-			=> MD5Impl.ComputeHash(data);
+			=> SHA512Impl.ComputeHash(data);
 
 		public static string ComputeDigestHex(byte[] data)
 			=> Compute(data).BytesToHexString();
