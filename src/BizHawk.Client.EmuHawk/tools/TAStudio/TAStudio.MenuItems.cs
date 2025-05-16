@@ -798,13 +798,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		private void SetFastFramesPerRewindMenuItem_Click(object sender, EventArgs e)
+		private void SetRewindStepFastMenuItem_Click(object sender, EventArgs e)
 		{
 			using var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Number of frames to go back\nwhen pressing the rewind key\nwhile fast-forwarding:",
-				InitialValue = Settings.FastFramesPerRewind.ToString(),
+				InitialValue = Settings.RewindStepFast.ToString(),
 			};
 
 			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
@@ -822,18 +822,18 @@ namespace BizHawk.Client.EmuHawk
 
 				if (val > 0)
 				{
-					Settings.FastFramesPerRewind = val;
+					Settings.RewindStepFast = val;
 				}
 			}
 		}
 
-		private void SetFramesPerRewindMenuItem_Click(object sender, EventArgs e)
+		private void SetRewindStepMenuItem_Click(object sender, EventArgs e)
 		{
 			using var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Number of frames to go back\nwhen pressing the rewind key:",
-				InitialValue = Settings.FramesPerRewind.ToString(),
+				InitialValue = Settings.RewindStep.ToString(),
 			};
 
 			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
@@ -851,7 +851,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (val > 0)
 				{
-					Settings.FramesPerRewind = val;
+					Settings.RewindStep = val;
 				}
 			}
 		}
