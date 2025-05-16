@@ -5,11 +5,10 @@ using System.IO;
 using System.Linq;
 
 [Generator]
-public class VersionInfoGenerator : ISourceGenerator
+public class VersionInfoGenerator : IIncrementalGenerator
 {
-	public void Initialize(GeneratorInitializationContext context)
-	{
-	}
+	public void Initialize(IncrementalGeneratorInitializationContext context)
+		=> context.RegisterSourceOutput(context.CompilationProvider, Execute);
 
 	private static string? ExecuteGitWithArguments(string arguments)
 	{
@@ -38,12 +37,14 @@ public class VersionInfoGenerator : ISourceGenerator
 #endif
 	}
 
-	public void Execute(GeneratorExecutionContext context)
+	public void Execute(SourceProductionContext context, Compilation compilation)
 	{
 		// Finds the current project directory in order to pass to git commands.
 		// This is written in a way to (hopefully) work both for build and IDE analyzers
 		// FIXME: This should probably be done in a better way, but I haven't found any
-		string projectDir = Path.GetDirectoryName(context.Compilation.SyntaxTrees.First(x => x.HasCompilationUnitRoot && x.FilePath.Contains("BizHawk.Common")).FilePath)!;
+		var projectDir = Path.GetDirectoryName(compilation.SyntaxTrees
+			.First(static x => x.HasCompilationUnitRoot && x.FilePath.Contains("BizHawk.Common"))
+			.FilePath)!;
 
 		var rev = ExecuteGitWithArguments($"-C {projectDir} rev-list HEAD --count") ?? string.Empty;
 		var branch = ExecuteGitWithArguments($"-C {projectDir} rev-parse --abbrev-ref HEAD") ?? "master";

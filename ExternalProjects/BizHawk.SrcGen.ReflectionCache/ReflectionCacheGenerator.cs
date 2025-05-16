@@ -7,9 +7,9 @@ using System.Text;
 using BizHawk.Analyzers;
 
 [Generator]
-public sealed class ReflectionCacheGenerator : ISourceGenerator
+public sealed class ReflectionCacheGenerator : IIncrementalGenerator
 {
-	private sealed class ReflectionCacheGenSyntaxReceiver : ISyntaxReceiver
+	private sealed class NamespaceInferrer
 	{
 		/// <remarks>
 		/// I may have just added RNG to the build process...
@@ -35,9 +35,9 @@ public sealed class ReflectionCacheGenerator : ISourceGenerator
 			return ns[ns.Length - 1] == '.' ? ns.Substring(0, ns.Length - 1) : ns; // trim trailing '.' (can't use BizHawk.Common from Source Generators)
 		}
 
-		public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+		public void AddSample(NamespaceDeclarationSyntax syn)
 		{
-			if (_namespace != null || syntaxNode is not NamespaceDeclarationSyntax syn) return;
+			if (_namespace is not null) return;
 			var newNS = syn.Name.ToMetadataNameStr();
 			if (!newNS.StartsWith("BizHawk.", StringComparison.Ordinal)) return;
 			_namespaces.Add(newNS);
@@ -45,13 +45,24 @@ public sealed class ReflectionCacheGenerator : ISourceGenerator
 		}
 	}
 
-	public void Initialize(GeneratorInitializationContext context)
-		=> context.RegisterForSyntaxNotifications(() => new ReflectionCacheGenSyntaxReceiver());
-
-	public void Execute(GeneratorExecutionContext context)
+	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		if (context.SyntaxReceiver is not ReflectionCacheGenSyntaxReceiver receiver) return;
-		var nSpace = receiver.Namespace;
+		var nSpace = context.SyntaxProvider
+			.CreateSyntaxProvider(
+				predicate: static (syntaxNode, _) => syntaxNode is NamespaceDeclarationSyntax,
+				transform: static (ctx, _) => (NamespaceDeclarationSyntax) ctx.Node)
+			.Collect()
+			.Select((nsSyns, _) =>
+			{
+				NamespaceInferrer shim = new();
+				foreach (var syn in nsSyns) shim.AddSample(syn);
+				return shim.Namespace;
+			});
+		context.RegisterSourceOutput(nSpace, Execute);
+	}
+
+	public void Execute(SourceProductionContext context, string nSpace)
+	{
 		var src = $@"#nullable enable
 
 using System;
