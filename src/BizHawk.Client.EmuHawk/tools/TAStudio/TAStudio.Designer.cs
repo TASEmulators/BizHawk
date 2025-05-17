@@ -926,7 +926,7 @@ namespace BizHawk.Client.EmuHawk
 			// MessageStatusLabel
 			// 
 			this.MessageStatusLabel.Name = "MessageStatusLabel";
-			this.MessageStatusLabel.Size = new System.Drawing.Size(104, 17);
+			this.MessageStatusLabel.Size = new System.Drawing.Size(103, 17);
 			this.MessageStatusLabel.Text = "TAStudio engaged";
 			// 
 			// ProgressBar
@@ -937,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripStatusLabel2
 			// 
 			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(268, 17);
+			this.toolStripStatusLabel2.Size = new System.Drawing.Size(269, 17);
 			this.toolStripStatusLabel2.Spring = true;
 			// 
 			// SplicerStatusLabel
