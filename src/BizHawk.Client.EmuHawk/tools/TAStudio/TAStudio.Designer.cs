@@ -478,8 +478,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMaxUndoLevelsMenuItem,
-			this.SetRewindStepMenuItem,
-			this.SetRewindStepFastMenuItem,
+            this.SetRewindStepMenuItem,
+            this.SetRewindStepFastMenuItem,
             this.CopyIncludesFrameNoMenuItem,
             this.toolStripSeparator26,
             this.autosaveToolStripMenuItem,
