@@ -37,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private LibDOSBox _libDOSBox;
 		private readonly List<IRomAsset> _romAssets;
 		private readonly List<IDiscAsset> _discAssets;
+		private const int _messageDuration = 4;
 
 		// Drive management variables
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private bool _disposed;
 
 		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+		private string GetFullName(IDiscAsset disk) => Path.GetFileName(disk.DiscData.Name.SubstringAfter('|'));
 
 		// CD Handling logic
 		private List<string> _cdRomFileNames = new List<string>();
@@ -82,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 						_floppyDiskImageFiles.Add(file);
 						break;
 
-					case ".bin":
+					case ".hdd":
 						_hardDiskImageFile = file;
 						break;
 
@@ -131,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				// Getting disc data structure
 				var CDDataStruct = GetCDDataStruct(_discAssets[discIdx].DiscData);
-				Console.WriteLine($"[CD] Adding Disc {discIdx}: '{_discAssets[discIdx].DiscName}' as '{cdRomFileName}' with sector count: {CDDataStruct.End}, track count: {CDDataStruct.Last}.");
+				Console.WriteLine($"[CD] Adding Disc {discIdx}: '{GetFullName(_discAssets[discIdx])}' as '{cdRomFileName}' with sector count: {CDDataStruct.End}, track count: {CDDataStruct.Last}.");
 
 				// Adding file name to list
 				_cdRomFileNames.Add(cdRomFileName);
@@ -451,20 +453,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!_isPrevFloppyDiskPressed && controller.IsPressed(Inputs.PrevFloppyDisk))
 				{
 					_currentFloppyDisk = _currentFloppyDisk == 0 ? _floppyDiskCount - 1 : _currentFloppyDisk - 1;
-					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)}", null);
+					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}", _messageDuration);
 				}
 
 				if (!_isNextFloppyDiskPressed && controller.IsPressed(Inputs.NextFloppyDisk))
 				{
 					_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
-					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)}", null);
+					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}", _messageDuration);
 				}
 
 				// Processing floppy disk swapping
 				if (!_isSwapFloppyDiskPressed && controller.IsPressed(Inputs.SwapFloppyDisk))
 				{
 					fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
-					CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {Path.GetFileName(_floppyDiskImageFiles[_currentFloppyDisk].RomPath)} into drive A:", null);
+					CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", _messageDuration);
 				}
 			}
 
@@ -475,20 +477,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!_isPrevCDROMPressed && controller.IsPressed(Inputs.PrevCDROM))
 				{
 					_currentCDROM = _currentCDROM == 0 ? _cdRomFileNames.Count - 1 : _currentCDROM - 1;
-					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]}", null);
+					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])}", _messageDuration);
 				}
 
 				if (!_isNextCDROMPressed && controller.IsPressed(Inputs.NextCDROM))
 				{
 					_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
-					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]}", null);
+					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])}", _messageDuration);
 				}
 
 				// Processing CDROM disk swapping
 				if (!_isSwapCDROMPressed && controller.IsPressed(Inputs.SwapCDROM))
 				{
 					fi.DriveActions.InsertCDROM = _currentCDROM;
-					CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {_cdRomFileNames[_currentCDROM]} into drive D:", null);
+					CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])} into drive D:", _messageDuration);
 				}
 			}
 

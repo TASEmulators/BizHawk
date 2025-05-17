@@ -454,6 +454,7 @@ namespace BizHawk.Client.Common
 				".exe" => VSystemID.Raw.PSX,
 				".nsf" => VSystemID.Raw.NES,
 				".gbs" => VSystemID.Raw.GB,
+				".hdd" => VSystemID.Raw.DOS,
 				_ => rom.GameInfo.System,
 			};
 
@@ -1002,7 +1003,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> Doom = new[] { "wad" };
 
-			public static readonly IReadOnlyCollection<string> DOS = new[] { "ima", "img", "xdf", "dmf", "fdd", "fdi", "nfd", "d88" };
+			public static readonly IReadOnlyCollection<string> DOS = new[] { "ima", "img", "xdf", "dmf", "fdd", "fdi", "nfd", "d88", "hdd" };
 
 			public static readonly IReadOnlyCollection<string> GB = new[] { "gb", "gbc", "sgb" };
 

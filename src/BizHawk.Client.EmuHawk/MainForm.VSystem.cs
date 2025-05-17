@@ -389,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var result = this.ShowFileSaveDialog(
 					discardCWDChange: true,
-					fileExt: "bin",
+					fileExt: "hdd",
 					filter: DOSBoxHDDImageFilterSet,
 					initDir: Config.PathEntries.ToolsAbsolutePath());
 				if (result is not null)
