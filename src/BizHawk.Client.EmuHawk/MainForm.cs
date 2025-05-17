@@ -3102,8 +3102,7 @@ namespace BizHawk.Client.EmuHawk
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
-				var isFastForwarding = InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
-				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
+				var isFastForwardingOrRewinding = IsFastForwarding || isRewinding || Config.Unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
 				{
@@ -3229,7 +3228,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_framesSinceLastFpsUpdate++;
 
-					CalcFramerateAndUpdateDisplay(currentTimestamp, isRewinding, isFastForwarding);
+					CalcFramerateAndUpdateDisplay(currentTimestamp, isRewinding);
 				}
 
 				if (IsSeeking && PauseOnFrame.Value <= Emulator.Frame)
@@ -3261,7 +3260,7 @@ namespace BizHawk.Client.EmuHawk
 			Sound.UpdateSound(atten, DisableSecondaryThrottling);
 		}
 
-		private void CalcFramerateAndUpdateDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)
+		private void CalcFramerateAndUpdateDisplay(long currentTimestamp, bool isRewinding)
 		{
 			double elapsedSeconds = (currentTimestamp - _timestampLastFpsUpdate) / (double)Stopwatch.Frequency;
 
@@ -3286,11 +3285,11 @@ namespace BizHawk.Client.EmuHawk
 			var fpsString = $"{_lastFpsRounded} fps";
 			if (isRewinding)
 			{
-				fpsString += IsTurboing || isFastForwarding ?
+				fpsString += IsTurboing || IsFastForwarding ?
 					" <<<<" :
 					" <<";
 			}
-			else if (isFastForwarding)
+			else if (IsFastForwarding)
 			{
 				fpsString += IsTurboing ?
 					" >>>>" :
