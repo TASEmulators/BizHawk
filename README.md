@@ -127,6 +127,7 @@ For older versions we have an all-in-one installer which you can get [here](http
 
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems
 unless you've updated to at least Win11 21H2 (initial release) or Win10 22H2. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
+> You may find that the upgrade from Win10 to Win11 is not available for your PC. Rather than throwing it out and getting a new one, onsider switching to Linux. See [endof10.org](https://endof10.org) for more info.
 
 A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit.
 It has many bugs that will never be fixed (backports have ceased) and it doesn't have all the features of the later versions—you should probably get a new operating system instead.
