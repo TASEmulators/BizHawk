@@ -981,7 +981,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
-		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(new FilesystemFilter("DOSBox HDD Images", new[] { "bin" }))
+		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(new FilesystemFilter("DOSBox HDD Images", new[] { "hdd" }))
 		{
 			AppendAllFilesEntry = false,
 		};
