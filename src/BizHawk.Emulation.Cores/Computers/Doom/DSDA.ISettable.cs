@@ -12,43 +12,43 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public enum CompatibilityLevel : int
 		{
 			[Display(Name = "0 - Doom v1.2")]
-			C0 = 0,
+			Doom_12 = 0,
 			[Display(Name = "1 - Doom v1.666")]
-			C1 = 1,
-			[Display(Name = "2 - Doom v1.9")]
-			C2 = 2,
+			Doom_1666 = 1,
+			[Display(Name = "2 - Doom & Doom 2 v1.9")]
+			Doom2_19 = 2,
 			[Display(Name = "3 - Ultimate Doom & Doom95")]
-			C3 = 3,
+			UltimateDoom95 = 3,
 			[Display(Name = "4 - Final Doom")]
-			C4 = 4,
+			FinalDoom = 4,
 			[Display(Name = "5 - DOSDoom")]
-			C5 = 5,
+			DosDoom = 5,
 			[Display(Name = "6 - TASDoom")]
-			C6 = 6,
+			TasDoom = 6,
 			[Display(Name = "7 - Boom's Inaccurate Vanilla Compatibility Mode")]
-			C7 = 7,
+			Boom_Compatibility = 7,
 			[Display(Name = "8 - Boom v2.01")]
-			C8 = 8,
+			Boom_201 = 8,
 			[Display(Name = "9 - Boom v2.02")]
-			C9 = 9,
+			Boom_202 = 9,
 			[Display(Name = "10 - LxDoom")]
-			C10 = 10,
+			LxDoom = 10,
 			[Display(Name = "11 - MBF")]
-			C11 = 11,
+			MBF = 11,
 			[Display(Name = "12 - PrBoom v2.03beta")]
-			C12 = 12,
+			PrBoom_1 = 12,
 			[Display(Name = "13 - PrBoom v2.1.0")]
-			C13 = 13,
+			PrBoom_2 = 13,
 			[Display(Name = "14 - PrBoom v2.1.1 - 2.2.6")]
-			C14 = 14,
+			PrBoom_3 = 14,
 			[Display(Name = "15 - PrBoom v2.3.x")]
-			C15 = 15,
+			PrBoom_4 = 15,
 			[Display(Name = "16 - PrBoom v2.4.0")]
-			C16 = 16,
-			[Display(Name = "17 - PrBoom Latest Default")]
-			C17 = 17,
+			PrBoom_5 = 16,
+			[Display(Name = "17 - PrBoom Latest")]
+			PrBoom_6 = 17,
 			[Display(Name = "21 - MBF21")]
-			C21 = 21
+			MBF21 = 21
 		}
 
 		public enum SkillLevel : int
@@ -300,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			[DisplayName("Compatibility Level")]
 			[Description("The version of Doom or its ports that this movie is meant to emulate.")]
-			[DefaultValue(CompatibilityLevel.C2)]
+			[DefaultValue(CompatibilityLevel.Doom2_19)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public CompatibilityLevel CompatibilityLevel { get; set; }
 

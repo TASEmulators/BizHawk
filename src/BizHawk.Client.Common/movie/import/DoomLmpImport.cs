@@ -24,15 +24,15 @@ namespace BizHawk.Client.Common
 			{
 				// there is no signature, the first byte is the skill level, so don't advance
 				Console.WriteLine("Reading DOOM LMP demo version: <=1.12");
-				presumedCompatibilityLevel = DSDA.CompatibilityLevel.C0;
+				presumedCompatibilityLevel = DSDA.CompatibilityLevel.Doom_12;
 			}
 			else
 			{
 				i++;
 				Console.WriteLine("Reading DOOM LMP demo version: {0}", signature);
 				presumedCompatibilityLevel = signature < 109
-					? DSDA.CompatibilityLevel.C1 // 1.666
-					: DSDA.CompatibilityLevel.C2; // 1.9
+					? DSDA.CompatibilityLevel.Doom_1666
+					: DSDA.CompatibilityLevel.Doom2_19;
 			}
 
 			DSDA.DoomSyncSettings syncSettings = new()
