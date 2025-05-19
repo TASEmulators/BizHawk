@@ -268,7 +268,7 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   // Initializing DSDA core
   headlessMain(argc, argv);
-  printf("DSDA Initialized\n");  
+  printf("DSDA Initialized\n");
 
   switch(compatibility_level) {
   case prboom_6_compatibility:
@@ -292,8 +292,9 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   preventLevelExit = settings->PreventLevelExit;
   preventGameEnd   = settings->PreventGameEnd;
 
-  printf("Prevent Level Exit: %d\n", preventLevelExit);
-  printf("Prevent Game End:   %d\n", preventGameEnd);
+  printf("Prevent Level Exit:  %d\n", preventLevelExit);
+  printf("Prevent Game End:    %d\n", preventGameEnd);
+  printf("Compatibility Level: %d\n", compatibility_level);
 
   // Enabling DSDA output, for debugging
   enableOutput = 1;
