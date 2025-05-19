@@ -960,7 +960,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void IndIdx_WRITE_Stage5_SHA()
 		{
 			rdy_freeze = !RDY;
-			
+
 			if (RDY)
 			{
 				H |= (byte) ((ea >> 8) + 1);
@@ -2550,7 +2550,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void AbsIdx_Stage4_SHA()
 		{
 			rdy_freeze = !RDY;
-			
+
 			if (RDY)
 			{
 				H |= (byte) ((ea >> 8) + 1);
