@@ -941,8 +941,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				alu_temp = ea + Y;
-				ea = (_link.ReadMemory((byte)(opcode2 + 1)) << 8)
+				ea = (_link.ReadMemory((byte) (opcode2 + 1)) << 8)
 					| ((alu_temp & 0xFF));
+				H = 0; // In preparation for SHA (indirect, X), set H to 0.
 			}
 		}
 
@@ -959,15 +960,20 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void IndIdx_WRITE_Stage5_SHA()
 		{
 			rdy_freeze = !RDY;
-			H = (byte) ((ea >> 8) + 1);
+			
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				_link.ReadMemory((ushort) ea);
 
 				if (alu_temp.Bit(8))
 				{
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
 				}
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHA instruction omits the bitwise AND with H
 			}
 		}
 
@@ -2448,7 +2454,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode3 = _link.ReadMemory(PC++);
 				alu_temp = opcode2 + Y;
 				ea = (opcode3 << 8) + (alu_temp & 0xFF);
-
+				H = 0; // In preparation for SHA, SHS, and SHX, set H to 0.
 				//new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			}
 		}
@@ -2461,6 +2467,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode3 = _link.ReadMemory(PC++);
 				alu_temp = opcode2 + X;
 				ea = (opcode3 << 8) + (alu_temp & 0xFF);
+				H = 0; // In preparation for SHY, set H to 0.
 			}
 		}
 
@@ -2485,7 +2492,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void AbsIdx_Stage4()
 		{
 			rdy_freeze = !RDY;
-			H = (byte) ((ea >> 8) + 1);
 
 			if (RDY)
 			{
@@ -2502,10 +2508,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void AbsIdx_Stage4_SHX()
 		{
 			rdy_freeze = !RDY;
-			H = (byte) ((ea >> 8) + 1);
 
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2514,15 +2520,19 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & (X << 8)));
 				}
 			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHX instruction omits the bitwise AND with H
+			}
 		}
 
 		private void AbsIdx_Stage4_SHY()
 		{
 			rdy_freeze = !RDY;
-			H = (byte) ((ea >> 8) + 1);
 
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2531,15 +2541,19 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & (Y << 8)));
 				}
 			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHY instruction omits the bitwise AND with H
+			}
 		}
 
 		private void AbsIdx_Stage4_SHA()
 		{
 			rdy_freeze = !RDY;
-			H = (byte)((ea >> 8) + 1);
-
+			
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2548,15 +2562,19 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
 				}
 			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHA instruction omits the bitwise AND with H
+			}
 		}
 
 		private void AbsIdx_Stage4_SHS()
 		{
 			rdy_freeze = !RDY;
-			H = (byte) ((ea >> 8) + 1);
 
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2564,6 +2582,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				{
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
 				}
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHS instruction omits the bitwise AND with H
 			}
 		}
 
