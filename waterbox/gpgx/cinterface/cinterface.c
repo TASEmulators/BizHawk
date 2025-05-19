@@ -294,7 +294,7 @@ GPGX_EX void gpgx_clear_sram(void)
 	if (sram.on)
 		memset(sram.sram, 0xff, 0x10000);
 
-	if (cdd.loaded)
+	if (system_hw == SYSTEM_MCD)
 	{
 		// clear and format bram
 		memset(scd.bram, 0, 0x2000);
@@ -331,7 +331,7 @@ GPGX_EX void* gpgx_get_sram(int *size)
 		*size = saveramsize();
 		return sram.sram;
 	}
-	else if (cdd.loaded && scd.cartridge.id)
+	else if (system_hw == SYSTEM_MCD && scd.cartridge.id)
 	{
 		int sz = scd.cartridge.mask + 1;
 		memcpy(tempsram, scd.cartridge.area, sz);
@@ -339,15 +339,10 @@ GPGX_EX void* gpgx_get_sram(int *size)
 		*size = sz + 0x2000;
 		return tempsram;
 	}
-	else if (cdd.loaded)
+	else if (system_hw == SYSTEM_MCD)
 	{
 		*size = 0x2000;
 		return scd.bram;
-	}
-	else if (scd.cartridge.id)
-	{
-		*size = scd.cartridge.mask + 1;
-		return scd.cartridge.area;
 	}
 	else
 	{
@@ -365,7 +360,7 @@ GPGX_EX int gpgx_put_sram(const uint8 *data, int size)
 		memcpy(sram.sram, data, size);
 		return 1;
 	}
-	else if (cdd.loaded && scd.cartridge.id)
+	else if (system_hw == SYSTEM_MCD && scd.cartridge.id)
 	{
 		int sz = scd.cartridge.mask + 1;
 		if (size != sz + 0x2000)
@@ -374,19 +369,11 @@ GPGX_EX int gpgx_put_sram(const uint8 *data, int size)
 		memcpy(scd.bram, data + sz, 0x2000);
 		return 1;
 	}
-	else if (cdd.loaded)
+	else if (system_hw == SYSTEM_MCD)
 	{
 		if (size != 0x2000)
 			return 0;
 		memcpy(scd.bram, data, size);
-		return 1;
-	}
-	else if (scd.cartridge.id)
-	{
-		int sz = scd.cartridge.mask + 1;
-		if (size != sz)
-			return 0;
-		memcpy(scd.cartridge.area, data, size);
 		return 1;
 	}
 	else
@@ -512,10 +499,10 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 2:
-		if (!cdd.loaded)
+		if (system_hw != SYSTEM_MCD)
 		{
-			*area = ext.md_cart.rom;
-			*size = ext.md_cart.romsize;
+			*area = cart.rom;
+			*size = cart.romsize;
 			if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
 			{
 				return "MD CART";
@@ -533,7 +520,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 3:
-		if (cdd.loaded)
+		if (system_hw == SYSTEM_MCD)
 		{
 			*area = scd.bootrom;
 			*size = 0x20000;
@@ -541,7 +528,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 4:
-		if (cdd.loaded)
+		if (system_hw == SYSTEM_MCD)
 		{
 			*area = scd.prg_ram;
 			*size = 0x80000;
@@ -549,7 +536,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 5:
-		if (cdd.loaded)
+		if (system_hw == SYSTEM_MCD)
 		{
 			*area = scd.word_ram[0];
 			*size = 0x20000;
@@ -557,7 +544,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 6:
-		if (cdd.loaded)
+		if (system_hw == SYSTEM_MCD)
 		{
 			*area = scd.word_ram[1];
 			*size = 0x20000;
@@ -565,7 +552,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 7:
-		if (cdd.loaded)
+		if (system_hw == SYSTEM_MCD)
 		{
 			*area = scd.word_ram_2M;
 			*size = 0x40000;
@@ -573,7 +560,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else return NULL;
 	case 8:
-		if (cdd.loaded)
+		if (system_hw == SYSTEM_MCD)
 		{
 			*area = scd.bram;
 			*size = 0x2000;
@@ -589,7 +576,7 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 		}
 		else if (system_bios & (SYSTEM_SMS | SYSTEM_GG))
 		{
-			*area = &ext.md_cart.rom[0x400000];
+			*area = &cart.rom[0x400000];
 			*size = sms_cart_bootrom_size();
 			return "BOOT ROM";
 		}
@@ -759,7 +746,7 @@ void CDLog68k(uint addr, uint flags)
 
 		//apply memory map to process rom address
 		unsigned char* block64k = m68k.memory_map[((addr)>>16)&0xff].base;
-		
+
 		//outside the ROM range. complex mapping logic/accessories; not sure how to handle any of this
 		if(block64k < cart.rom || block64k >= cart.rom + cart.romsize)
 			return;
