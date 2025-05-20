@@ -11,7 +11,7 @@ using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Common.HeapApiImports;
+using Windows.Win32;
 
 // some helpful p/invoke from http://www.codeproject.com/KB/audio-video/Motion_Detection.aspx?msg=1142967
 namespace BizHawk.Client.EmuHawk
@@ -456,12 +456,12 @@ namespace BizHawk.Client.EmuHawk
 #if false // test: increase stability by never freeing anything, ever
 				if (opts.lpParms != IntPtr.Zero)
 				{
-					HeapFree(GetProcessHeap(), 0, opts.lpParms);
+					HeapFree(GetProcessHeap_SafeHandle(), 0, opts.lpParms);
 				}
 
 				if (opts.lpFormat != IntPtr.Zero)
 				{
-					HeapFree(GetProcessHeap(), 0, opts.lpFormat);
+					HeapFree(GetProcessHeap_SafeHandle(), 0, opts.lpFormat);
 				}
 #endif
 #if AVI_SUPPORT
@@ -473,13 +473,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_comprOptions.cbParms != 0)
 				{
-					_comprOptions.lpParms = HeapAlloc(GetProcessHeap(), 0, _comprOptions.cbParms);
+					_comprOptions.lpParms = Win32Imports.HeapAlloc(_comprOptions.cbParms);
 					Marshal.Copy(Parms, 0, _comprOptions.lpParms, _comprOptions.cbParms);
 				}
 
 				if (_comprOptions.cbFormat != 0)
 				{
-					_comprOptions.lpFormat = HeapAlloc(GetProcessHeap(), 0, _comprOptions.cbFormat);
+					_comprOptions.lpFormat = Win32Imports.HeapAlloc(_comprOptions.cbFormat);
 					Marshal.Copy(Format, 0, _comprOptions.lpFormat, _comprOptions.cbFormat);
 				}
 
