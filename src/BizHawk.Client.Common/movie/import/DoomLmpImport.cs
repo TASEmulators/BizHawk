@@ -179,7 +179,17 @@ namespace BizHawk.Client.Common
 				episode         = input[i++];
 				map             = input[i++];
 				multiplayerMode = (DSDA.MultiplayerMode) input[i++];
-				i++; // DisplayPlayer is a non-sync setting so importers can't set it
+				i++;    // DisplayPlayer is a non-sync setting so importers can't set it
+				i += 6; // skip settings we can't parse yet
+				monstersRespawn = input[i++] is not 0;
+				fastMonsters    = input[i++] is not 0;
+				noMonsters      = input[i++] is not 0;
+
+				var optionsSize = compLevel == DSDA.CompatibilityLevel.MBF21 ? 21 + 25 : 64;
+				i += optionsSize - 9; // subtract the options we already parsed
+
+				if (version == DemoVersion.Boom_2_00)
+					i += 256 - optionsSize;
 			}
 
 			DSDA.DoomSyncSettings syncSettings = new()
@@ -196,14 +206,6 @@ namespace BizHawk.Client.Common
 				TurningResolution = turningResolution,
 				RenderWipescreen = false,
 			};
-
-			if (version >= DemoVersion.Boom_2_00)
-			{
-				var optionsSize = compLevel == DSDA.CompatibilityLevel.MBF21 ? 21 + 25 : 64;
-				i += optionsSize;
-				if (version == DemoVersion.Boom_2_00)
-					i += 256 - optionsSize;
-			}
 
 			syncSettings.Player1Present = input[i++] is not 0;
 			syncSettings.Player2Present = input[i++] is not 0;
