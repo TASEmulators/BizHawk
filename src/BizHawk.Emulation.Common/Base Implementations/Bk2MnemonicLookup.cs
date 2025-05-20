@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using BizHawk.Common;
@@ -1037,7 +1037,7 @@ namespace BizHawk.Emulation.Common
 				["Mouse Position Y"] = "mpY",
 				["Mouse Speed X"] = "msX",
 				["Mouse Speed Y"] = "msY",
-			}
+			},
 		};
 
 		static Bk2MnemonicLookup()
