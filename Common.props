@@ -6,7 +6,7 @@
 		<AnalysisModeReliability>Recommended</AnalysisModeReliability>
 		<AnalysisModePerformance>Recommended</AnalysisModePerformance>
 		<AnalysisModeUsage>Recommended</AnalysisModeUsage>
-		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles> <!-- enable to copy Roslyn Source Gemerators' outputs to $(ProjectDir)/obj/.../generated -->
+		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles> <!-- enable to copy Roslyn Source Generators' outputs to $(ProjectDir)/obj/.../generated -->
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>

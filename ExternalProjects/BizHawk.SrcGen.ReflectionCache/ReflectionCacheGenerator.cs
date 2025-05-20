@@ -27,6 +27,7 @@ public sealed class ReflectionCacheGenerator : IIncrementalGenerator
 
 		private string CalcNamespace()
 		{
+			if (_namespaces.Count is 0) return string.Empty; // this can happen if the Analyzer is applied to a project with no source files
 			// black magic wizardry to find common prefix https://stackoverflow.com/a/35081977
 			var ns = new string(_namespaces[0]
 				.Substring(0, _namespaces.Min(s => s.Length))
@@ -63,6 +64,7 @@ public sealed class ReflectionCacheGenerator : IIncrementalGenerator
 
 	public void Execute(SourceProductionContext context, string nSpace)
 	{
+		if (string.IsNullOrWhiteSpace(nSpace)) return; // see note in `CalcNamespace`
 		var src = $@"#nullable enable
 
 using System;
