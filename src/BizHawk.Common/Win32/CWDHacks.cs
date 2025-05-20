@@ -23,7 +23,7 @@ namespace BizHawk.Common
 				return new InvalidOperationException("GetCurrentDirectoryW returned 0!", ex);
 			}
 
-			const int STARTING_BUF_SIZE = Win32Imports.MAX_PATH + 1;
+			const int STARTING_BUF_SIZE = (int) Win32Imports.MAX_PATH + 1;
 			var startingBuffer = stackalloc char[STARTING_BUF_SIZE];
 			var ret = GetCurrentDirectoryW(STARTING_BUF_SIZE, startingBuffer);
 			switch (ret)

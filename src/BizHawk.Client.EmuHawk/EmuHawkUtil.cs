@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				((ShellLinkImports.IShellLinkW*)link)->Resolve(hwnd, 0);
 #endif
 
-				((ShellLinkImports.IShellLinkW*)link)->GetPath(out var path, Win32Imports.MAX_PATH + 1, 0);
+				((ShellLinkImports.IShellLinkW*) link)->GetPath(out var path, (int) Win32Imports.MAX_PATH + 1, 0);
 				return path;
 			}
 		}

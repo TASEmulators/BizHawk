@@ -67,7 +67,8 @@ namespace BizHawk.Client.EmuHawk
 					browseOptions &= ~BROWSEINFOW.FLAGS.NewDialogStyle;
 				}
 
-				pszDisplayName = Marshal.AllocCoTaskMem(Win32Imports.MAX_PATH * sizeof(char));
+				const int BUF_SIZE_BYTES = (int) Win32Imports.MAX_PATH * sizeof(char);
+				pszDisplayName = Marshal.AllocCoTaskMem(BUF_SIZE_BYTES);
 				var bi = new BROWSEINFOW
 				{
 					hwndOwner = hWndOwner,
