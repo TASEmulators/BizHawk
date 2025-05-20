@@ -91,35 +91,20 @@ namespace BizHawk.Client.Common
 
 		public string AddressStr => _watch.AddressString;
 
-		public string ValueStr =>
-			_watch.Size switch
-				{
-					WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_val),
-					WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_val),
-					WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_val),
-					WatchSize.Separator => "",
-					_ => string.Empty,
-				};
+		public string ValueStr
+			=> _watch.Size is WatchSize.Byte or WatchSize.Word or WatchSize.DWord
+				? _watch.IsValid
+					? Watch.FormatValue(unchecked((uint) _val), _watch.Size, _watch.Type)
+					: "-"
+				: string.Empty;
 
 		public string CompareStr
-		{
-			get
-			{
-				if (_compare.HasValue)
-				{
-					return _watch.Size switch
-					{
-						WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_compare.Value),
-						WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_compare.Value),
-						WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_compare.Value),
-						WatchSize.Separator => "",
-						_ => string.Empty,
-					};
-				}
-
-				return "";
-			}
-		}
+			=> _compare.Value is int compareValue
+				&& _watch.Size is WatchSize.Byte or WatchSize.Word or WatchSize.DWord
+					? _watch.IsValid
+						? Watch.FormatValue(unchecked((uint) compareValue), _watch.Size, _watch.Type)
+						: "-"
+					: string.Empty;
 
 		public CompareType ComparisonType { get; }
 

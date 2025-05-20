@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Globalization;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -54,17 +54,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				ushort val = Type switch
-				{
-					WatchDisplayType.Unsigned => ushort.Parse(value),
-					WatchDisplayType.Signed => (ushort)short.Parse(value),
-					WatchDisplayType.Hex => ushort.Parse(value, NumberStyles.HexNumber),
-					WatchDisplayType.Binary => Convert.ToUInt16(value, 2),
-					WatchDisplayType.FixedPoint_12_4 => (ushort)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 16.0),
-					_ => 0,
-				};
-
-				PokeWord(val);
+				PokeWord(unchecked((ushort) Watch.ParseValue(value, Size, Type)));
 				return true;
 			}
 			catch
@@ -104,22 +94,7 @@ namespace BizHawk.Client.Common
 
 		// TODO: Implements IFormattable
 		public string FormatValue(ushort val)
-		{
-			return Type switch
-			{
-				_ when !IsValid => "-",
-				WatchDisplayType.Unsigned => val.ToString(),
-				WatchDisplayType.Signed => ((short) val).ToString(), WatchDisplayType.Hex => $"{val:X4}",
-				WatchDisplayType.FixedPoint_12_4 => ((short)val / 16.0).ToString("F4", NumberFormatInfo.InvariantInfo),
-				WatchDisplayType.Binary => Convert
-					.ToString(val, 2)
-					.PadLeft(16, '0')
-					.Insert(8, " ")
-					.Insert(4, " ")
-					.Insert(14, " "),
-				_ => val.ToString(),
-			};
-		}
+			=> IsValid ? Watch.FormatValue(val, Size, Type) : "-";
 
 		public override string Diff => $"{_value - _previous:+#;-#;0}";
 
