@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 				if (turningResolution == DSDA.TurningResolution.Longtics)
 				{
 					// low byte comes first and is stored as an unsigned value
-					controller.AcceptNewAxis($"P{port} Turning Speed Frac.", unchecked((byte) input[i++]));
+					controller.AcceptNewAxis($"P{port} Turning Speed Frac.", input[i++]);
 				}
 				controller.AcceptNewAxis($"P{port} Turning Speed", unchecked((sbyte) input[i++]));
 
