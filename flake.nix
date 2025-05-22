@@ -41,5 +41,29 @@
           default = self.devShells.${system}.emuhawk-latest;
         }
       ) nixpkgsFor;
+      apps =
+        let
+          # because for some reason the standard library doesn't include this (i think?)
+          startsWith = prefix: st: (substring 0 (stringLength prefix) st) == prefix;
+          toApps =
+            app: pkgs:
+            # filter packages to only include ones whose name starts with `app`, then map them to app definitions
+            mapAttrs (name: pkg: {
+              type = "app";
+              # this seems to be correct, but I'm not entirely sure
+              program = "${pkg}/bin/${pkg.name}";
+            }) (std.filterAttrs (name: val: startsWith app name) pkgs);
+        in
+        mapAttrs (
+          system: pkgs:
+          (
+            (toApps "emuhawk" pkgs)
+            // (toApps "discohawk" pkgs)
+            # TODO :: should `bizhawkAssemblies` be included here?
+            // {
+              default = self.apps.${system}.emuhawk-latest-bin;
+            }
+          )
+        ) self.packages;
     };
 }
