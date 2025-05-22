@@ -59,7 +59,6 @@
           (
             (toApps "emuhawk" pkgs)
             // (toApps "discohawk" pkgs)
-            # TODO :: should `bizhawkAssemblies` be included here?
             // {
               default = self.apps.${system}.emuhawk-latest-bin;
             }
