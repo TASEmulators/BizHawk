@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	public partial class DSDA : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public int Frame { get; private set; }
 		public string SystemId => VSystemID.Raw.Doom;
 		public bool DeterministicEmulation => true;
@@ -20,14 +20,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				new LibDSDA.PackedPlayerInput(),
 				new LibDSDA.PackedPlayerInput(),
 				new LibDSDA.PackedPlayerInput()
-			];
-
-			ReadPort[] buttonsReaders =
-			[
-				_controllerDeck.ReadButtons1,
-				_controllerDeck.ReadButtons2,
-				_controllerDeck.ReadButtons3,
-				_controllerDeck.ReadButtons4,
 			];
 
 			int commonButtons = 0;
@@ -149,19 +141,19 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// bool buttons
-					var actionsBitfield = buttonsReaders[i](controller);
-					players[i].Buttons = actionsBitfield;
+					if (controller.IsPressed($"P{port} Fire")) players[i].Buttons |= (1 << 0);
+					if (controller.IsPressed($"P{port} Use"))  players[i].Buttons |= (1 << 1);
 
 					// Raven Games
-					if (_syncSettings.InputFormat is DoomControllerTypes.Heretic or DoomControllerTypes.Hexen)
+					if (_syncSettings.InputFormat is not ControllerTypes.Doom)
 					{
 						players[i].FlyLook     = controller.AxisValue($"P{port} Fly / Look");
 						players[i].ArtifactUse = controller.AxisValue($"P{port} Use Artifact");
 
-						if (_syncSettings.InputFormat is DoomControllerTypes.Hexen)
+						if (_syncSettings.InputFormat is ControllerTypes.Hexen)
 						{
-							players[i].Jump      = (actionsBitfield & 0b01000) >> 3;
-							players[i].EndPlayer = (actionsBitfield & 0b10000) >> 4;
+							players[i].Jump      = Convert.ToInt32(controller.IsPressed($"P{port} Jump"));
+							players[i].EndPlayer = Convert.ToInt32(controller.IsPressed($"P{port} End Player"));
 						}
 					}
 				}
@@ -175,16 +167,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				HeadsUpMode        = (int)_settings.HeadsUpMode,
 				MapDetails         = (int)_settings.MapDetails,
 				MapOverlay         = (int)_settings.MapOverlay,
-				RenderVideo        = renderVideo                  ? 1 : 0,
-				RenderAudio        = renderAudio                  ? 1 : 0,
-				ShowMessages       = _settings.ShowMessages       ? 1 : 0,
-				ReportSecrets      = _settings.ReportSecrets      ? 1 : 0,
-				DsdaExHud          = _settings.DsdaExHud          ? 1 : 0,
-				DisplayCoordinates = _settings.DisplayCoordinates ? 1 : 0,
-				DisplayCommands    = _settings.DisplayCommands    ? 1 : 0,
-				MapTotals          = _settings.MapTotals          ? 1 : 0,
-				MapTime            = _settings.MapTime            ? 1 : 0,
-				MapCoordinates     = _settings.MapCoordinates     ? 1 : 0,
+				RenderVideo        = Convert.ToInt32(renderVideo),
+				RenderAudio        = Convert.ToInt32(renderAudio),
+				ShowMessages       = Convert.ToInt32(_settings.ShowMessages),
+				ReportSecrets      = Convert.ToInt32(_settings.ReportSecrets),
+				DsdaExHud          = Convert.ToInt32(_settings.DsdaExHud),
+				DisplayCoordinates = Convert.ToInt32(_settings.DisplayCoordinates),
+				DisplayCommands    = Convert.ToInt32(_settings.DisplayCommands),
+				MapTotals          = Convert.ToInt32(_settings.MapTotals),
+				MapTime            = Convert.ToInt32(_settings.MapTime),
+				MapCoordinates     = Convert.ToInt32(_settings.MapCoordinates),
 				PlayerPointOfView  = _settings.DisplayPlayer - 1,
 			};
 

@@ -9,6 +9,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public partial class DSDA : ISettable<DSDA.DoomSettings, DSDA.DoomSyncSettings>
 	{
+		public enum ControllerTypes
+		{
+			Doom,
+			Heretic,
+			Hexen
+		}
+
 		public enum CompatibilityLevel : int
 		{
 			[Display(Name = "0 - Doom v1.2")]
@@ -272,11 +279,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSyncSettings
 		{
-			[DefaultValue(DoomControllerTypes.Doom)]
+			[DefaultValue(ControllerTypes.Doom)]
 			[DisplayName("Input Format")]
 			[Description("The format provided for the players' input.")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public DoomControllerTypes InputFormat { get; set; }
+			public ControllerTypes InputFormat { get; set; }
 
 			[DisplayName("Player 1 Present")]
 			[Description("Specifies if player 1 is present")]

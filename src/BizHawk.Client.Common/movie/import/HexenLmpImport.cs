@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 			Result.Movie.SystemID = VSystemID.Raw.Doom;
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DoomControllerTypes.Hexen,
+				InputFormat = DSDA.ControllerTypes.Hexen,
 				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
 				MonstersRespawn = false,
 				FastMonsters = false,
@@ -47,9 +47,8 @@ namespace BizHawk.Client.Common
 			_ = input[i++]; // player 8 isPresent
 			_ = input[i++]; // player 8 class
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
-
-			var hexenController = new HexenController(1, false);
-			var controller = new SimpleController(hexenController.Definition);
+			
+			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)
 			{

@@ -29,14 +29,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ServiceProvider = ser;
 			_finalSyncSettings = _syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_settings = lp.Settings ?? new DoomSettings();
-			_controllerDeck = new DoomControllerDeck(
-				_syncSettings.InputFormat,
-				_syncSettings.Player1Present,
-				_syncSettings.Player2Present,
-				_syncSettings.Player3Present,
-				_syncSettings.Player4Present,
-				_syncSettings.TurningResolution == TurningResolution.Longtics);
 			_loadCallback = LoadCallback;
+			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
 			// Gathering information for the rest of the wads
 			_wadFiles = lp.Roms;
@@ -219,7 +213,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly WaterboxHost _elf;
 		private readonly LibDSDA _core;
 		private readonly LibDSDA.load_archive_cb _loadCallback;
-		private readonly DoomControllerDeck _controllerDeck;
 		private readonly Point _nativeResolution = new(320, 200);
 		private readonly int[] _runSpeeds = [ 25, 50 ];
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];

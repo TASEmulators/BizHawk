@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common
 
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DoomControllerTypes.Doom,
+				InputFormat = DSDA.ControllerTypes.Doom,
 				CompatibilityLevel = compLevel,
 				SkillLevel = skill,
 				InitialEpisode = episode,
@@ -226,15 +226,7 @@ namespace BizHawk.Client.Common
 			*/
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var doomController = new DoomControllerDeck(
-				DoomControllerTypes.Doom,
-				syncSettings.Player1Present,
-				syncSettings.Player2Present,
-				syncSettings.Player3Present,
-				syncSettings.Player4Present,
-				turningResolution == DSDA.TurningResolution.Longtics);
-
-			var controller = new SimpleController(doomController.Definition);
+			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(controller.Definition);
 
