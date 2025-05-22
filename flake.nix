@@ -20,13 +20,19 @@
           overlays = [ ];
         }
       );
+      # because for some reason the standard library doesn't include this (i think?)
+      startsWith = prefix: st: (substring 0 (stringLength prefix) st) == prefix;
+      # import the derivations from default.nix for the given system & package set
+      importDefaultDerivationsWith =
+        system: pkgs:
+        # ./default.nix outputs some non-derivation attributes, so we have to filter those out
+        (std.filterAttrs (name: val: std.isDerivation val) (import ./default.nix { inherit system pkgs; }));
     in
     {
       formatter = mapAttrs (system: pkgs: pkgs.nixfmt-rfc-style) nixpkgsFor;
       packages = mapAttrs (
         system: pkgs:
-        # ./default.nix outputs some non-derivation attributes, so we have to filter those out
-        (std.filterAttrs (name: val: std.isDerivation val) (import ./default.nix { inherit system pkgs; }))
+        (importDefaultDerivationsWith system pkgs)
         // {
           default = self.packages.${system}.emuhawk-latest-bin;
         }
@@ -41,10 +47,16 @@
           default = self.devShells.${system}.emuhawk-latest;
         }
       ) nixpkgsFor;
+      overlays.default =
+        final: prev:
+        # filter derivations to only include `emuhawk` and `discohawk` ones (i.e. excluding `bizhawkAssemblies`)
+        std.filterAttrs (name: pkg: (startsWith "emuhawk" name) || (startsWith "discohawk" name)) (
+          # import `default.nix` with the overlayed package set
+          # (i don't know the circumstances under which `prev` wouldn't have a `system` attribute, but we may as well account for it)
+          importDefaultDerivationsWith (prev.system or "") prev
+        );
       apps =
         let
-          # because for some reason the standard library doesn't include this (i think?)
-          startsWith = prefix: st: (substring 0 (stringLength prefix) st) == prefix;
           toApps =
             app: pkgs:
             # filter packages to only include ones whose name starts with `app`, then map them to app definitions
