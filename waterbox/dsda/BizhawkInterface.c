@@ -283,6 +283,9 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
     break;
   }
 
+  //if (compatibility_level >= boom_202_compatibility)
+  //  rngseed = settings->RNGSeed;
+
   // Initializing audio
   I_SetSoundCap();
   I_InitSound();

@@ -403,7 +403,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("How fast the Doom player will run when using the mouse.")]
 			[DefaultValue(1)]
 			public int MouseRunSensitivity { get; set; }
-
+			/*
+			[DisplayName("Initial RNG Seed")]
+			[Description("Boom demos.")]
+			[DefaultValue(1993)]
+			public uint RNGSeed { get; set; }
+			*/
 			[DisplayName("Player 1 Hexen Class")]
 			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
 			[DefaultValue(HexenClass.Fighter)]
@@ -441,7 +446,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					Player3Class = (int)Player3Class,
 					Player4Class = (int)Player4Class,
 					PreventLevelExit = PreventLevelExit ? 1 : 0,
-					PreventGameEnd = PreventGameEnd ? 1 : 0
+					PreventGameEnd = PreventGameEnd ? 1 : 0,
+					//RNGSeed = RNGSeed,
 				};
 			}
 

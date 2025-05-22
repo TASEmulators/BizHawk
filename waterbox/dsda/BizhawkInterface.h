@@ -26,6 +26,7 @@ extern void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingS
 extern void headlessGetMapName(char *outString);
 extern void headlessSetSaveStatePointer(void *savePtr, int saveStateSize);
 extern size_t headlessGetEffectiveSaveSize();
+extern unsigned int rngseed;
 
 // Video
 extern void headlessUpdateVideo();
@@ -140,6 +141,7 @@ struct InitSettings
   int Player4Class;
   int PreventLevelExit;
   int PreventGameEnd;
+  //unsigned int RNGSeed;
 } __attribute__((packed));
 
 struct PackedPlayerInput
