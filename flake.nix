@@ -9,7 +9,7 @@
     let
       std = nixpkgs.lib;
       systems = [
-        # TODO :: can we build for aarch64-linux?
+        # this is currently the only supported system, according to https://github.com/TASEmulators/BizHawk/issues/1430#issue-396452488
         "x86_64-linux"
       ];
       nixpkgsFor = std.genAttrs systems (
