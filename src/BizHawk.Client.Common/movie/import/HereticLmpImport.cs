@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 				RenderWipescreen = false,
 			};
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
-			
+
 			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)

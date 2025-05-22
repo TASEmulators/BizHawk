@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 			_ = input[i++]; // player 8 isPresent
 			_ = input[i++]; // player 8 class
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
-			
+
 			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)
