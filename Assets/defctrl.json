@@ -684,6 +684,36 @@
 			"P2 Joystick Button 1": "Z",
 			"P2 Joystick Button 2": "X",
 			"P2 Joystick Button 3": "C"
+		},
+		"Doom Input Format": {
+			"P1 Fire": "Ctrl,WMouse L",
+			"P1 Use": "Space",
+			"P1 Forward": "W",
+			"P1 Backward": "S",
+			"P1 Turn Left": "E",
+			"P1 Turn Right": "Q",
+			"P1 Strafe Left": "A",
+			"P1 Strafe Right": "D",
+			"P1 Weapon Select 1": "Number1",
+			"P1 Weapon Select 2": "Number2",
+			"P1 Weapon Select 3": "Number3",
+			"P1 Weapon Select 4": "Number4",
+			"P1 Weapon Select 5": "Number5",
+			"P1 Weapon Select 6": "Number6",
+			"P1 Weapon Select 7": "Number7",
+			"Change Gamma": "F11",
+			"Automap Toggle": "Tab",
+			"Automap +": "KeypadAdd",
+			"Automap -": "KeypadSubtract",
+			"Automap Full/Zoom": "Keypad0",
+			"Automap Follow": "F",
+			"Automap Up": "Up",
+			"Automap Down": "Down",
+			"Automap Right": "Right",
+			"Automap Left": "Left",
+			"Automap Grid": "G",
+			"Automap Mark": "M",
+			"Automap Clear Marks": "C"
 		}
 	},
 	"AllTrollersAutoFire": {
@@ -1169,6 +1199,18 @@
 			},
 			"Mouse Speed Y": {
 				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"Doom Input Format": {
+			"P1 Mouse Running": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Mouse Turning": {
+				"Value": "RMouse X",
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			}
