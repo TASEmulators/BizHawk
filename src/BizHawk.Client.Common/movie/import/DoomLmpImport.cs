@@ -1,5 +1,3 @@
-using System.Buffers.Binary;
-
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
