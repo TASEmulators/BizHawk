@@ -20,8 +20,6 @@
           overlays = [ ];
         }
       );
-      # because for some reason the standard library doesn't include this (i think?)
-      startsWith = prefix: st: (substring 0 (stringLength prefix) st) == prefix;
       # import the derivations from default.nix for the given system & package set
       importDefaultDerivationsWith =
         system: pkgs:
@@ -50,7 +48,7 @@
       overlays.default =
         final: prev:
         # filter derivations to only include `emuhawk` and `discohawk` ones (i.e. excluding `bizhawkAssemblies`)
-        std.filterAttrs (name: pkg: (startsWith "emuhawk" name) || (startsWith "discohawk" name)) (
+        std.filterAttrs (name: pkg: (std.hasPrefix "emuhawk" name) || (std.hasPrefix "discohawk" name)) (
           # import `default.nix` with the overlayed package set
           # (i don't know the circumstances under which `prev` wouldn't have a `system` attribute, but we may as well account for it)
           importDefaultDerivationsWith (prev.system or "") prev
@@ -64,7 +62,7 @@
               type = "app";
               # this seems to be correct, but I'm not entirely sure
               program = "${pkg}/bin/${pkg.name}";
-            }) (std.filterAttrs (name: val: startsWith app name) pkgs);
+            }) (std.filterAttrs (name: val: std.hasPrefix app name) pkgs);
         in
         mapAttrs (
           system: pkgs:
