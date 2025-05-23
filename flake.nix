@@ -48,26 +48,16 @@
               inputsFrom = [ drv ];
               shellHook = avail.shellHook drv;
             };
-          shells = lib.pipe avail [
-            (lib.mapAttrs (
-              name: drv: if lib.hasPrefix "bizhawkAssemblies-" name then drv else drv.assemblies or null
-            ))
-            (lib.filterAttrs (_: drv: drv != null))
-            (lib.mapAttrs (
-              _: asms:
-              lib.traceIf (lib.hasSuffix "-bin" asms.name)
-                "the attr specified packages BizHawk from release artifacts; some builddeps may be missing from this shell"
-                mkShellCustom
-                asms
-            ))
-          ];
         in
-        (
-          shells
-          // {
-            default = self.devShells.${system}.emuhawk-latest;
-          }
-        )
+        {
+          bizhawkAssemblies-latest = mkShellCustom avail.bizhawkAssemblies-latest;
+          discohawk-latest = self.devShells.${system}.bizhawkAssemblies-latest;
+          emuhawk-latest = self.devShells.${system}.bizhawkAssemblies-latest;
+          default = pkgs.mkShell {
+            packages = [ avail.emuhawk.hawkSourceInfo.dotnet-sdk ];
+            inputsFrom = [ self.devShells.${system}.emuhawk-latest ];
+          };
+        }
       ) nixpkgsFor;
     };
 }
