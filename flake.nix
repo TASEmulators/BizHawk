@@ -36,13 +36,38 @@
       ) nixpkgsFor;
       devShells = mapAttrs (
         system: pkgs:
-        # ./shell.nix outputs some non-derivation attributes and some extraneous derivations, so we have to filter those out
-        (lib.filterAttrs (
-          name: val: lib.isDerivation val && name != "stdenv" && name != "out" && name != "inputDerivation"
-        ) (import ./shell.nix { inherit system pkgs; }))
-        // {
-          default = self.devShells.${system}.emuhawk-latest;
-        }
+        let
+          avail = import ./default.nix { inherit system pkgs; };
+          mkShellCustom =
+            drv:
+            pkgs.mkShell {
+              packages = with pkgs; [
+                git
+                powershell
+              ];
+              inputsFrom = [ drv ];
+              shellHook = avail.shellHook drv;
+            };
+          shells = lib.pipe avail [
+            (lib.mapAttrs (
+              name: drv: if lib.hasPrefix "bizhawkAssemblies-" name then drv else drv.assemblies or null
+            ))
+            (lib.filterAttrs (_: drv: drv != null))
+            (lib.mapAttrs (
+              _: asms:
+              lib.traceIf (lib.hasSuffix "-bin" asms.name)
+                "the attr specified packages BizHawk from release artifacts; some builddeps may be missing from this shell"
+                mkShellCustom
+                asms
+            ))
+          ];
+        in
+        (
+          shells
+          // {
+            default = self.devShells.${system}.emuhawk-latest;
+          }
+        )
       ) nixpkgsFor;
     };
 }
