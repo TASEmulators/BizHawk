@@ -44,13 +44,5 @@
           default = self.devShells.${system}.emuhawk-latest;
         }
       ) nixpkgsFor;
-      overlays.default =
-        final: prev:
-        # filter derivations to only include `emuhawk` and `discohawk` ones (i.e. excluding `bizhawkAssemblies`)
-        std.filterAttrs (name: pkg: (std.hasPrefix "emuhawk" name) || (std.hasPrefix "discohawk" name)) (
-          # import `default.nix` with the overlayed package set
-          # (i don't know the circumstances under which `final` wouldn't have a `system` attribute, but we may as well account for it)
-          importDefaultDerivationsWith (final.system or "") final
-        );
     };
 }
