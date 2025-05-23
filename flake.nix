@@ -27,7 +27,6 @@
         (std.filterAttrs (name: val: std.isDerivation val) (import ./default.nix { inherit system pkgs; }));
     in
     {
-      formatter = mapAttrs (system: pkgs: pkgs.nixfmt-rfc-style) nixpkgsFor;
       packages = mapAttrs (
         system: pkgs:
         (importDefaultDerivationsWith system pkgs)
