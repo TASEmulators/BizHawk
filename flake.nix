@@ -52,26 +52,5 @@
           # (i don't know the circumstances under which `final` wouldn't have a `system` attribute, but we may as well account for it)
           importDefaultDerivationsWith (final.system or "") final
         );
-      apps =
-        let
-          toApps =
-            app: pkgs:
-            # filter packages to only include ones whose name starts with `app`, then map them to app definitions
-            mapAttrs (name: pkg: {
-              type = "app";
-              # this seems to be correct, but I'm not entirely sure
-              program = "${pkg}/bin/${pkg.name}";
-            }) (std.filterAttrs (name: val: std.hasPrefix app name) pkgs);
-        in
-        mapAttrs (
-          system: pkgs:
-          (
-            (toApps "emuhawk" pkgs)
-            // (toApps "discohawk" pkgs)
-            // {
-              default = self.apps.${system}.emuhawk-latest-bin;
-            }
-          )
-        ) self.packages;
     };
 }
