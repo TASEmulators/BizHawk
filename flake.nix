@@ -7,12 +7,12 @@
     inputs@{ self, nixpkgs, ... }:
     with builtins;
     let
-      std = nixpkgs.lib;
+      inherit (nixpkgs) lib;
       systems = [
         # this is currently the only supported system, according to https://github.com/TASEmulators/BizHawk/issues/1430#issue-396452488
         "x86_64-linux"
       ];
-      nixpkgsFor = std.genAttrs systems (
+      nixpkgsFor = lib.genAttrs systems (
         system:
         import nixpkgs {
           localSystem = builtins.currentSystem or system;
@@ -24,7 +24,7 @@
       importDefaultDerivationsWith =
         system: pkgs:
         # ./default.nix outputs some non-derivation attributes, so we have to filter those out
-        (std.filterAttrs (name: val: std.isDerivation val) (import ./default.nix { inherit system pkgs; }));
+        (lib.filterAttrs (name: val: lib.isDerivation val) (import ./default.nix { inherit system pkgs; }));
     in
     {
       packages = mapAttrs (
@@ -37,8 +37,8 @@
       devShells = mapAttrs (
         system: pkgs:
         # ./shell.nix outputs some non-derivation attributes and some extraneous derivations, so we have to filter those out
-        (std.filterAttrs (
-          name: val: std.isDerivation val && name != "stdenv" && name != "out" && name != "inputDerivation"
+        (lib.filterAttrs (
+          name: val: lib.isDerivation val && name != "stdenv" && name != "out" && name != "inputDerivation"
         ) (import ./shell.nix { inherit system pkgs; }))
         // {
           default = self.devShells.${system}.emuhawk-latest;
