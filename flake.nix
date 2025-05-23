@@ -1,7 +1,7 @@
 {
   description = "EmuHawk is a multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=24.05";
   };
   outputs =
     inputs@{ self, nixpkgs, ... }:
