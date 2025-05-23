@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VS_coin_inserted &= 1;
 			}
 
-			cpu.ext_ppu_cycle=0; // Reset this value at the beginning of each frame
+			cpu.ext_ppu_cycle = 0; // Reset this value at the beginning of each frame
 
 			if (ppu.ppudead > 0)
 			{
