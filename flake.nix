@@ -1,5 +1,5 @@
 {
-  description = "BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as full screen, and joypad support in addition to full rerecording and debugging tools for all system cores.";
+  description = "EmuHawk is a multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
   };
