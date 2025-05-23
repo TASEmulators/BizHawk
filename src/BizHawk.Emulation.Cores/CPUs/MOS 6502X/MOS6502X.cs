@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public bool NMI;
 		public bool RDY;
 
-		// ppu cycle (used with SubNESHawk)
+		// ppu cycle
 		public int ext_ppu_cycle = 0;
 
 		public void SyncState(Serializer ser)
