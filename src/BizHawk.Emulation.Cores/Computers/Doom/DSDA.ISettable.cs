@@ -140,9 +140,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public DoomSyncSettings GetSyncSettings()
 			=> _finalSyncSettings.Clone();
 
-		public PutSettingsDirtyBits PutSettings(object o)
-			=> PutSettingsDirtyBits.None;
-
 		public PutSettingsDirtyBits PutSyncSettings(DoomSyncSettings o)
 		{
 			var ret = DoomSyncSettings.NeedsReboot(_finalSyncSettings, o);
