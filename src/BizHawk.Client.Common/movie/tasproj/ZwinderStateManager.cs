@@ -536,22 +536,33 @@ namespace BizHawk.Client.Common
 			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
 			int version = br.ReadByte();
 
-			var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
-			var recent = ZwinderBuffer.Create(br, settings.Recent());
-			var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
+			ZwinderStateManager ret;
+			ZwinderStateManagerSettings.States statesSaved = version < 2 ?
+				ZwinderStateManagerSettings.States.All :
+				(ZwinderStateManagerSettings.States)br.ReadByte();
+			if (statesSaved == ZwinderStateManagerSettings.States.All)
+			{
+				var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
+				var recent = ZwinderBuffer.Create(br, settings.Recent());
+				var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
+				ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
+			}
+			else
+				ret = new ZwinderStateManager(settings, reserveCallback);
 
 			if (version == 0)
 				settings.AncientStateInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
-
-			var ancientCount = br.ReadInt32();
-			for (var i = 0; i < ancientCount; i++)
+			if (statesSaved != ZwinderStateManagerSettings.States.None)
 			{
-				var key = br.ReadInt32();
-				var length = br.ReadInt32();
-				var data = br.ReadBytes(length);
-				ret._reserved.Add(key, data);
+				var ancientCount = br.ReadInt32();
+				for (var i = 0; i < ancientCount; i++)
+				{
+					var key = br.ReadInt32();
+					var length = br.ReadInt32();
+					var data = br.ReadBytes(length);
+					ret._reserved.Add(key, data);
+				}
 			}
 
 			ret.RebuildStateCache();
@@ -562,18 +573,26 @@ namespace BizHawk.Client.Common
 		public void SaveStateHistory(BinaryWriter bw)
 		{
 			// version
-			bw.Write((byte)1);
+			bw.Write((byte)2);
 
-			_current.SaveStateBinary(bw);
-			_recent.SaveStateBinary(bw);
-			_gapFiller.SaveStateBinary(bw);
+			bw.Write((byte)Settings.StatesToSave);
 
-			bw.Write(_reserved.Count);
-			foreach (var (f, data) in _reserved)
+			if (Settings.StatesToSave == ZwinderStateManagerSettings.States.All)
 			{
-				bw.Write(f);
-				bw.Write(data.Length);
-				bw.Write(data);
+				_current.SaveStateBinary(bw);
+				_recent.SaveStateBinary(bw);
+				_gapFiller.SaveStateBinary(bw);
+			}
+
+			if (Settings.StatesToSave != ZwinderStateManagerSettings.States.None)
+			{
+				bw.Write(_reserved.Count);
+				foreach (var (f, data) in _reserved)
+				{
+					bw.Write(f);
+					bw.Write(data.Length);
+					bw.Write(data);
+				}
 			}
 		}
 

@@ -28,6 +28,8 @@ namespace BizHawk.Client.Common
 
 			AncientStateInterval = settings.AncientStateInterval;
 			AncientStoreType = settings.AncientStoreType;
+
+			StatesToSave = settings.StatesToSave;
 		}
 
 		/// <summary>
@@ -108,6 +110,19 @@ namespace BizHawk.Client.Common
 		[DisplayName("Ancient - Storage Type")]
 		[Description("Where to keep the reserved states.")]
 		public IRewindSettings.BackingStoreType AncientStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
+
+		public enum States : byte
+		{
+			All,
+			[Display(Name = "Reserved Only")]
+			ReservedOnly,
+			None,
+		}
+
+		[DisplayName("States To Save")]
+		[Description("Which states should be included in the .tasproj file when saved. 'Reserved' states include ancient states and states for markers.")]
+		[TypeConverter(typeof(DescribableEnumConverter))]
+		public States StatesToSave { get; set; } = States.ReservedOnly;
 
 		// Just to simplify some other code.
 		public RewindConfig Current()
