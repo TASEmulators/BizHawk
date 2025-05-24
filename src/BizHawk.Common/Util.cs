@@ -293,17 +293,19 @@ namespace BizHawk.Common
 			return new(pointer: ptr.ToPointer(), length: length);
 		}
 
+#if false // unused
 		/// <summary>
 		/// creates span over <paramref name="count"/><c> * sizeof(</c><typeparamref name="T"/><c>)</c> octets
 		/// starting at <paramref name="ptr"/>
 		/// </summary>
-		/// <remarks>uses native endianness</remarks>
+		/// <remarks>uses native endianness and <paramref name="ptr"/> must be aligned (else UB)</remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static unsafe Span<T> UnsafeSpanFromPointer<T>(IntPtr ptr, int count)
+		public static unsafe Span<T> UnsafeSpanFromPointerAligned<T>(IntPtr ptr, int count)
 			where T : unmanaged
 		{
 			return new(pointer: ptr.ToPointer(), length: count * sizeof(T));
 		}
+#endif
 
 		public static void WriteByteBuffer(this BinaryWriter bw, byte[]? data)
 		{

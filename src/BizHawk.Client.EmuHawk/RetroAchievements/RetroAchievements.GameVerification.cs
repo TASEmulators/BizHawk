@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var programId = BinaryPrimitives.ReadUInt64LittleEndian(
-					Util.UnsafeSpanFromPointer<byte>(ptr: optional_program_id, count: 8));
+					Util.UnsafeSpanFromPointer(ptr: optional_program_id, length: 8));
 
 				FirmwareID seeddbFWID = new("3DS", "seeddb");
 				using BinaryReader seeddb = new(GetFirmware(seeddbFWID));
