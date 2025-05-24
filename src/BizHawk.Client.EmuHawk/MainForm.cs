@@ -3856,13 +3856,10 @@ namespace BizHawk.Client.EmuHawk
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
-					if (oaOpenrom is not null && ".xml".EqualsIgnoreCase(Path.GetExtension(oaOpenrom.Path.Replace("|", "")))
-						&& Emulator is not LibsnesCore)
+					if (loader.XMLGameInfo is XmlGame xmlGame && Emulator is not LibsnesCore)
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
-						var xmlGame = XmlGame.Create(new HawkFile(oaOpenrom.Path));
-
 						using var xSw = new StringWriter();
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)

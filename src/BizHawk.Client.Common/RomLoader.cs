@@ -120,6 +120,7 @@ namespace BizHawk.Client.Common
 		public GameInfo Game { get; private set; }
 		public RomGame Rom { get; private set; }
 		public string CanonicalFullPath { get; private set; }
+		public XmlGame XMLGameInfo = null;
 
 		public bool Deterministic { get; set; }
 
@@ -682,14 +683,22 @@ namespace BizHawk.Client.Common
 			return Disc.IsValidExtension(ext);
 		}
 
-		private bool LoadXML(string path, CoreComm nextComm, HawkFile file, string forcedCoreName, out IEmulator nextEmulator, out RomGame rom, out GameInfo game)
+		private bool LoadXML(
+			string path,
+			CoreComm nextComm,
+			HawkFile file,
+			string forcedCoreName,
+			out IEmulator nextEmulator,
+			out RomGame rom,
+			out GameInfo game,
+			out XmlGame xmlGame)
 		{
 			nextEmulator = null;
 			rom = null;
 			game = null;
 			try
 			{
-				var xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
+				xmlGame = XmlGame.Create(file); // if load fails, are we supposed to retry as a bsnes XML????????
 				game = xmlGame.GI;
 
 				var system = game.System;
@@ -725,6 +734,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception ex)
 			{
+				xmlGame = null;
 				try
 				{
 					// need to get rid of this hack at some point
@@ -886,8 +896,18 @@ namespace BizHawk.Client.Common
 							LoadM3U(path, nextComm, file, forcedCoreName, out nextEmulator, out game);
 							break;
 						case ".xml":
-							if (!LoadXML(path, nextComm, file, forcedCoreName, out nextEmulator, out rom, out game))
+							if (!LoadXML(
+								path,
+								nextComm,
+								file,
+								forcedCoreName,
+								out nextEmulator,
+								out rom,
+								out game,
+								out XMLGameInfo))
+							{
 								return false;
+							}
 							break;
 						case ".psf":
 						case ".minipsf":
