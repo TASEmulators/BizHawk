@@ -19,6 +19,78 @@ namespace BizHawk.Client.Common
 		IEquatable<Cheat>,
 		IComparable<Watch>
 	{
+		private const string ERR_MSG_INVALID_WIDTH = "can only parse numeric strings for 1-, 2-, or 4-octet watches";
+
+		public static string FormatValue(uint value, WatchSize width, WatchDisplayType dispType)
+			=> width switch
+			{
+				WatchSize.Byte => dispType switch
+				{
+					WatchDisplayType.Signed => unchecked((sbyte) value).ToString(),
+					WatchDisplayType.Unsigned => value.ToString(),
+					WatchDisplayType.Hex => $"{value:X2}",
+					WatchDisplayType.Binary => Convert.ToString(unchecked((byte) value), toBase: 2).PadLeft(8, '0').Insert(4, " "),
+					_ => value.ToString(), //TODO throw instead?
+				},
+				WatchSize.Word => dispType switch
+				{
+					WatchDisplayType.Signed => unchecked((short) value).ToString(),
+					WatchDisplayType.Unsigned => value.ToString(),
+					WatchDisplayType.Hex => $"{value:X4}",
+					WatchDisplayType.Binary => Convert.ToString(unchecked((ushort) value), toBase: 2).PadLeft(16, '0')
+						.Insert(8, " ").Insert(4, " ").Insert(14, " "),
+					WatchDisplayType.FixedPoint_12_4 => $"{unchecked((short) value) / 16.0:F4}",
+					_ => value.ToString(), //TODO throw instead?
+				},
+				WatchSize.DWord => dispType switch
+				{
+					WatchDisplayType.Signed => unchecked((int) value).ToString(),
+					WatchDisplayType.Unsigned => value.ToString(),
+					WatchDisplayType.Hex => $"{value:X8}",
+					WatchDisplayType.Binary => Convert.ToString(value, toBase: 2).PadLeft(32, '0')
+						.Insert(28, " ").Insert(24, " ").Insert(20, " ").Insert(16, " ").Insert(12, " ").Insert(8, " ").Insert(4, " "),
+					WatchDisplayType.FixedPoint_20_12 => $"{unchecked((int) value) / 4096.0:0.######}",
+					WatchDisplayType.FixedPoint_16_16 => $"{unchecked((int) value) / 65536.0:0.######}",
+					WatchDisplayType.Float => NumberExtensions.ReinterpretAsF32(value).ToString(NumberFormatInfo.InvariantInfo),
+					_ => value.ToString(), //TODO throw instead?
+				},
+				_ => throw new ArgumentOutOfRangeException(paramName: nameof(width), width, message: ERR_MSG_INVALID_WIDTH),
+			};
+
+		public static uint ParseValue(string value, WatchSize width, WatchDisplayType dispType)
+			=> width switch
+			{
+				WatchSize.Byte => dispType switch
+				{
+					WatchDisplayType.Signed => unchecked((byte) sbyte.Parse(value)),
+					WatchDisplayType.Unsigned => byte.Parse(value),
+					WatchDisplayType.Hex => byte.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.Binary => Convert.ToByte(value, fromBase: 2),
+					_ => 0, //TODO throw instead?
+				},
+				WatchSize.Word => dispType switch
+				{
+					WatchDisplayType.Signed => unchecked((ushort) short.Parse(value)),
+					WatchDisplayType.Unsigned => ushort.Parse(value),
+					WatchDisplayType.Hex => ushort.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.Binary => Convert.ToUInt16(value, fromBase: 2),
+					WatchDisplayType.FixedPoint_12_4 => unchecked((ushort) (16.0 * double.Parse(value, NumberFormatInfo.InvariantInfo))),
+					_ => 0, //TODO throw instead?
+				},
+				WatchSize.DWord => dispType switch
+				{
+					WatchDisplayType.Signed => unchecked((uint) int.Parse(value)),
+					WatchDisplayType.Unsigned => uint.Parse(value),
+					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
+					WatchDisplayType.Binary => Convert.ToUInt32(value, fromBase: 2),
+					WatchDisplayType.FixedPoint_20_12 => unchecked((uint) (4096.0 * double.Parse(value, NumberFormatInfo.InvariantInfo))),
+					WatchDisplayType.FixedPoint_16_16 => unchecked((uint) (65536.0 * double.Parse(value, NumberFormatInfo.InvariantInfo))),
+					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
+					_ => 0, //TODO throw instead?
+				},
+				_ => throw new ArgumentOutOfRangeException(paramName: nameof(width), width, message: ERR_MSG_INVALID_WIDTH),
+			};
+
 		private MemoryDomain _domain;
 		private WatchDisplayType _type;
 
@@ -285,7 +357,7 @@ namespace BizHawk.Client.Common
 				: 0;
 		}
 
-		protected void PokeByte(byte val)
+		protected internal void PokeByte(byte val)
 		{
 			if (IsValid)
 			{
@@ -293,7 +365,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void PokeWord(ushort val)
+		protected internal void PokeWord(ushort val)
 		{
 			if (IsValid)
 			{
@@ -301,7 +373,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void PokeDWord(uint val)
+		protected internal void PokeDWord(uint val)
 		{
 			if (IsValid)
 			{
@@ -430,7 +502,15 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the maximum possible value
 		/// </summary>
-		public abstract uint MaxValue { get; }
+		public uint MaxValue
+			=> Size switch
+			{
+				WatchSize.Separator => 0,
+				WatchSize.Byte => byte.MaxValue,
+				WatchSize.Word => ushort.MaxValue,
+				WatchSize.DWord => uint.MaxValue,
+				_ => throw new InvalidOperationException(),
+			};
 
 		/// <summary>
 		/// Gets the current value
@@ -445,7 +525,8 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns true if the Watch is valid, false otherwise
 		/// </summary>
-		public abstract bool IsValid { get; }
+		public virtual bool IsValid
+			=> Domain.Size is 0 || Address <= Domain.Size - unchecked((long) Size);
 
 		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
@@ -477,7 +558,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
 		/// </summary>
-		public string AddressString => Address.ToString(AddressFormatStr);
+		public virtual string AddressString => Address.ToString(AddressFormatStr);
 
 		/// <summary>
 		/// Gets or sets a value indicating the endianess of current <see cref="Watch"/>
