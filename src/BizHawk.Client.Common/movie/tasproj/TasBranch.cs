@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 			if (newBranch.UserText.Length is 0) newBranch.UserText = old.UserText;
 			this[index] = newBranch;
 			if (!_movie.IsReserved(old.Frame))
-				_movie.TasStateManager.EvictReserved(old.Frame);
+				_movie.TasStateManager.Unreserve(old.Frame);
 
 			_movie.FlagChanges();
 		}
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 			if (result)
 			{
 				if (!_movie.IsReserved(item!.Frame))
-					_movie.TasStateManager.EvictReserved(item.Frame);
+					_movie.TasStateManager.Unreserve(item.Frame);
 
 				_movie.FlagChanges();
 			}
