@@ -3,7 +3,6 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
