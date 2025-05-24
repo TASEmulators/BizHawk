@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			_movie.TasStateManager.EvictReserved(item.Frame - 1);
+			_movie.TasStateManager.Unreserve(item.Frame - 1);
 			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 
 			base.Remove(item);
@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 				if (match.Invoke(m))
 				{
 					_movie.ChangeLog.AddMarkerChange(null, m.Frame, m.Message);
-					_movie.TasStateManager.EvictReserved(m.Frame - 1);
+					_movie.TasStateManager.Unreserve(m.Frame - 1);
 				}
 			}
 

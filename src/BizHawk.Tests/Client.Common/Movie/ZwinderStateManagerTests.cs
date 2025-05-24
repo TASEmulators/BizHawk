@@ -410,7 +410,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 			for (int i = 400; i < 1000; i += 400)
 			{
-				zw.EvictReserved(i);
+				zw.Unreserve(i);
 			}
 
 			for (int i = 0; i < 10000; i++)
