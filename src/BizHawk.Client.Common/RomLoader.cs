@@ -58,10 +58,16 @@ namespace BizHawk.Client.Common
 		}
 		private readonly Config _config;
 
-		public RomLoader(Config config)
+		private readonly IDialogParent _dialogParent;
+
+		public RomLoader(Config config, IDialogParent dialogParent)
 		{
 			_config = config;
+			_dialogParent = dialogParent;
 		}
+
+		private bool? Question(string text)
+			=> _dialogParent.ModalMessageBox3(icon: EMsgBoxIcon.Question, caption: "ROM loader", text: text);
 
 		public enum LoadErrorType
 		{
@@ -591,7 +597,7 @@ namespace BizHawk.Client.Common
 			HawkFile hfMatching = new(binFilePath.RemoveSuffix(".bin") + ".cue");
 			if (hfMatching.Exists)
 			{
-				var result = nextComm.Question(string.Format(FMT_STR_ASK, hfMatching.Name));
+				var result = Question(string.Format(FMT_STR_ASK, hfMatching.Name));
 				if (result is null)
 				{
 					cancel = true;
@@ -612,7 +618,7 @@ namespace BizHawk.Client.Common
 				HawkFile hfSoleSibling = soleCueSiblingPath is null ? null : new(soleCueSiblingPath);
 				if (hfSoleSibling is { Exists: true })
 				{
-					var result = nextComm.Question(string.Format(FMT_STR_ASK, hfSoleSibling.Name));
+					var result = Question(string.Format(FMT_STR_ASK, hfSoleSibling.Name));
 					if (result is null)
 					{
 						cancel = true;

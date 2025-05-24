@@ -306,7 +306,6 @@ namespace BizHawk.Client.EmuHawk
 			return new CoreComm(
 				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
 				AddOnScreenMessage,
-				text => this.ModalMessageBox3(icon: EMsgBoxIcon.Question, caption: "ROM loader", text: text),
 				cfp,
 				prefs,
 				new OpenGLProvider());
@@ -3773,7 +3772,7 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				var loader = new RomLoader(Config)
+				var loader = new RomLoader(Config, this)
 				{
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
