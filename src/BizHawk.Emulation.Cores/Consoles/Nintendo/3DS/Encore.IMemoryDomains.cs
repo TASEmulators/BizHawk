@@ -72,10 +72,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			}
 
 			private Span<byte> GetPage(uint addr)
-			{
-				var pagePointer = _core.Encore_GetPagePointer(_context, addr);
-				return pagePointer == IntPtr.Zero ? [ ] : Util.UnsafeSpanFromPointer(pagePointer, (int)(ENCORE_PAGE_SIZE - (addr & ENCORE_PAGE_MASK)));
-			}
+				=> Util.UnsafeSpanFromPointer(
+					ptr: _core.Encore_GetPagePointer(_context, addr: addr),
+					length: (int) (ENCORE_PAGE_SIZE - (addr & ENCORE_PAGE_MASK)));
 
 			public override byte PeekByte(long addr)
 			{
