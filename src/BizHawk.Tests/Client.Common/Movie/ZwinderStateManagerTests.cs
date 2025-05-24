@@ -603,6 +603,83 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}
 		}
 
+		[TestMethod]
+		public void TestKeepsAtLeastAncientInterval()
+		{
+			IStatable ss = CreateStateSource();
+			// For this test to work, AncientStateInterval must be greater than CurrentTargetFrameLength + RecentTargetFrameLength
+			// We also require the current and recent buffers fill up, so that states are evicted by the time we reach the ancient interval.
+			ZwinderStateManager manager = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				CurrentBufferSize = 1,
+				CurrentTargetFrameLength = 2000,
+
+				RecentBufferSize = 1,
+				RecentTargetFrameLength = 2000,
+
+				AncientStateInterval = 10000,
+			}, f => false);
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Have only state on frame 0.
+			manager.CaptureReserved(0, ss);
+			// Load branch with frame number almost at two ancient intervals
+			int branchFrame = manager.Settings.AncientStateInterval * 2 - 1;
+			manager.CaptureReserved(branchFrame, ss);
+			// Rewind to frame 0, play to state frame.
+			for (int i = 0; i <= branchFrame; i++)
+				manager.Capture(i, ss);
+			// ASSERT: There are no gaps larger than the ancient interval
+			int lastState = 0;
+			while (lastState < branchFrame)
+			{
+				int nextState = manager.GetStateClosestToFrame(lastState + manager.Settings.AncientStateInterval).Key;
+				Assert.AreNotEqual(lastState, nextState, "AncientStateInterval was not respected.");
+				lastState = nextState;
+			}
+		}
+
+		[TestMethod]
+		public void TestKeepsAncientFromGaps()
+		{
+			IStatable ss = CreateStateSource();
+			// For this test to work, AncientStateInterval must be greater than GapsTargetFrameLength
+			// We also require the gap buffer to fill up, so that states are evicted by the time we reach the ancient interval.
+			ZwinderStateManager manager = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				GapsBufferSize = 1,
+				GapsTargetFrameLength = 2000,
+
+				AncientStateInterval = 5000,
+			}, f => false);
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Have only state on frame 0.
+			manager.Capture(0, ss);
+			// Load branch with frame number almost at two ancient intervals
+			int branchFrame = manager.Settings.AncientStateInterval * 2 - 1;
+			manager.CaptureReserved(branchFrame, ss);
+			// Put something in the "current" buffer so gap buffer will get used later.
+			manager.Capture(branchFrame + 1, ss);
+			// Rewind to frame 0, play to state frame.
+			for (int i = 0; i <= branchFrame; i++)
+				manager.Capture(i, ss);
+			// ASSERT: There are no gaps larger than the ancient interval
+			int lastState = 0;
+			while (lastState < branchFrame)
+			{
+				int nextState = manager.GetStateClosestToFrame(lastState + manager.Settings.AncientStateInterval).Key;
+				Assert.AreNotEqual(lastState, nextState, "AncientStateInterval was not respected.");
+				lastState = nextState;
+			}
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
