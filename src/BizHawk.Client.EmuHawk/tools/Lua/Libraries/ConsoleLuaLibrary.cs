@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -66,23 +67,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string SerializeTable(LuaTable lti)
 			{
-				var keyObjs = lti.Keys;
-				var valueObjs = lti.Values;
-				if (keyObjs.Count != valueObjs.Count)
-				{
-					throw new ArgumentException(message: "each value must be paired with one key, they differ in number", paramName: nameof(lti));
-				}
-
-				var values = new object[keyObjs.Count];
-				var kvpIndex = 0;
-				foreach (var valueObj in valueObjs)
-				{
-					values[kvpIndex++] = valueObj;
-				}
-
-				return string.Concat(keyObjs.Cast<object>()
-					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
-					.Order());
+				var entries = ((IEnumerator<KeyValuePair<object, object/*?*/>>) lti.GetEnumerator()).AsEnumerable()
+					.ToArray();
+				return string.Concat(entries.Select(static kvp => $"\"{kvp.Key}\": \"{kvp.Value}\"\n").Order());
 			}
 
 			if (!Tools.Has<LuaConsole>())

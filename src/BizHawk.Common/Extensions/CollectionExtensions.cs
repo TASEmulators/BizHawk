@@ -10,6 +10,30 @@ namespace BizHawk.Common.CollectionExtensions
 	public static class CollectionExtensions
 #pragma warning restore MA0104
 	{
+		private struct EnumeratorAsEnumerable<T> : IEnumerable<T>
+		{
+			private IEnumerator<T>? _wrapped;
+
+			public EnumeratorAsEnumerable(IEnumerator<T> wrapped)
+				=> _wrapped = wrapped;
+
+			public override bool Equals(object? other)
+				=> other is EnumeratorAsEnumerable<T> wrapper && object.Equals(_wrapped, wrapper._wrapped);
+
+			public IEnumerator<T> GetEnumerator()
+			{
+				var temp = _wrapped ?? throw new InvalidOperationException("double enumeration (or `default`/zeroed struct)");
+				_wrapped = null;
+				return temp;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+				=> GetEnumerator();
+
+			public override int GetHashCode()
+				=> _wrapped?.GetHashCode() ?? default;
+		}
+
 		private const string ERR_MSG_IMMUTABLE_LIST = "immutable list passed to mutating method";
 
 		private const string WARN_NONGENERIC = "use generic overload";
@@ -118,6 +142,9 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			foreach (var item in collection) list.Add(item);
 		}
+
+		public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> enumerator)
+			=> new EnumeratorAsEnumerable<T>(enumerator);
 
 		/// <remarks>
 		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
