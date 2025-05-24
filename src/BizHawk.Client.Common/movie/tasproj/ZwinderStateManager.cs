@@ -93,22 +93,22 @@ namespace BizHawk.Client.Common
 
 			if (keepOldStates)
 			{
-				// For ancients ... lets just make sure we aren't keeping states with a gap below the new interval
+				// For ancients, let's throw out states if doing so still satisfies the ancient state interval.
 				if (settings.AncientStateInterval > _ancientInterval)
 				{
-					int lastReserved = 0;
-					List<int> framesToRemove = new List<int>();
-					foreach (int f in _reserved.Keys)
+					List<int> reservedFrames = _reserved.Keys.ToList();
+					reservedFrames.Sort();
+					for (int i = 1; i < reservedFrames.Count - 1; i++)
 					{
-						if (!_reserveCallback(f) && f - lastReserved < settings.AncientStateInterval)
-							framesToRemove.Add(f);
-						else
-							lastReserved = f;
-					}
-					foreach (int f in framesToRemove)
-					{
-						if (f != 0)
-							EvictReserved(f);
+						if (_reserveCallback(reservedFrames[i]))
+							continue;
+
+						if (reservedFrames[i + 1] - reservedFrames[i - 1] <= settings.AncientStateInterval)
+						{
+							EvictReserved(reservedFrames[i]);
+							reservedFrames.RemoveAt(i);
+							i--;
+						}
 					}
 				}
 			}
@@ -297,7 +297,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void EvictReserved(int frame)
+		private void EvictReserved(int frame)
 		{
 			if (frame == 0)
 			{
@@ -309,6 +309,16 @@ namespace BizHawk.Client.Common
 				_reserved.Remove(frame);
 				StateCache.Remove(frame);
 			}
+		}
+
+		public void Unreserve(int frame)
+		{
+			// Before removing the state, check if it should be still be reserved.
+			// For now, this just means checking if we need to keep this state to satisfy the ancient interval.
+			if (ShouldKeepForAncient(frame))
+				return;
+
+			EvictReserved(frame);
 		}
 
 		public void Capture(int frame, IStatable source, bool force = false)
@@ -366,41 +376,39 @@ namespace BizHawk.Client.Common
 						index2 =>
 						{
 							var state2 = _recent.GetState(index2);
-							StateCache.Remove(state2.Frame);
-
 							var isReserved = _reserveCallback(state2.Frame);
 
 							// Add to reserved if reserved, or if it matches an "ancient" state consideration
-							if (isReserved || !HasNearByReserved(state2.Frame))
+							if (isReserved || ShouldKeepForAncient(state2.Frame))
 							{
 								AddToReserved(state2);
 							}
+							else
+								StateCache.Remove(state2.Frame);
 						});
 				});
 		}
 
-		// Returns whether or not a frame has a reserved state within the frame interval on either side of it
-		private bool HasNearByReserved(int frame)
+		/// <summary>
+		/// Will removing the state on this leave us with a gap larger than the ancient interval?
+		/// </summary>
+		private bool ShouldKeepForAncient(int frame)
 		{
-			// An easy optimization, we know frame 0 always exists
-			if (frame < _ancientInterval)
+			int index = StateCache.BinarySearch(frame + 1);
+			if (index < 0)
+				index = ~index;
+			if (index == StateCache.Count)
 			{
-				return true;
+				// There is no future state... so why are we wanting to evict this state?
+				// We aren't decaying from _recent, that's for sure. So,
+				return false;
 			}
+			if (index <= 1)
+				return true; // This should never happen.
 
-			// Has nearby before
-			if (_reserved.Any(kvp => kvp.Key < frame && kvp.Key > frame - _ancientInterval))
-			{
-				return true;
-			}
-
-			// Has nearby after
-			if (_reserved.Any(kvp => kvp.Key > frame && kvp.Key < frame + _ancientInterval))
-			{
-				return true;
-			}
-
-			return false;
+			int nextState = StateCache[index];
+			int previousState = StateCache[index - 2]; // assume StateCache[index - 1] == frame
+			return nextState - previousState > _ancientInterval;
 		}
 
 		private bool NeedsGap(int frame)
