@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void Enqueue(T item)
 		{
 			if (size >= buffer.Length)
-				throw new Exception($"{nameof(QuickQueue<T>)} capacity breached!");
+				throw new Exception($"{nameof(QuickQueue<>)} capacity breached!");
 
 			buffer[tail] = item;
 			tail = (tail + 1) % buffer.Length;
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public T Dequeue()
 		{
 			if (size == 0)
-				throw new Exception($"{nameof(QuickQueue<T>)} is empty!");
+				throw new Exception($"{nameof(QuickQueue<>)} is empty!");
 
 			T item = buffer[head];
 			head = (head + 1) % buffer.Length;

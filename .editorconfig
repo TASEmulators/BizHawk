@@ -15,6 +15,7 @@ csharp_space_after_cast = true
 csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
+dotnet_style_require_accessibility_modifiers = for_non_interface_members
 
 # Style rules
 # Can't be in .globalconfig because dotnet format doesn't respect that https://github.com/dotnet/format/issues/1643
