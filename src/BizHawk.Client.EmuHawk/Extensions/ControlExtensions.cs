@@ -17,7 +17,10 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Common.CommctrlImports;
+using Windows.Win32;
+using Windows.Win32.UI.Controls;
+
+using static Windows.Win32.Win32Imports;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -228,34 +231,38 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnHeader = WmImports.SendMessageW(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+			var columnHeader = WmImports.SendMessageW(
+				new(listViewControl.Handle),
+				Win32Imports.LVM_GETHEADER,
+				default,
+				IntPtr.Zero);
 			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
 				var columnPtr = new IntPtr(columnNumber);
-				var item = new HDITEMW { mask = HDITEMW.Mask.Format };
-				if (SendMessageW(columnHeader, HDM_GETITEMW, columnPtr, ref item) == IntPtr.Zero)
+				var item = new HDITEMW { mask = HDI_MASK.HDI_FORMAT };
+				if (SendMessageW(new(columnHeader.Value), Win32Imports.HDM_GETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}
 
 				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
-					item.fmt &= ~HDITEMW.Format.SortDown & ~HDITEMW.Format.SortUp;
+					item.fmt &= ~(HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTDOWN | HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTUP);
 				}
 				// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
 				else switch (order)
 				{
 					case SortOrder.Ascending:
-						item.fmt &= ~HDITEMW.Format.SortDown;
-						item.fmt |= HDITEMW.Format.SortUp;
+						item.fmt &= ~HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTDOWN;
+						item.fmt |= HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTUP;
 						break;
 					case SortOrder.Descending:
-						item.fmt &= ~HDITEMW.Format.SortUp;
-						item.fmt |= HDITEMW.Format.SortDown;
+						item.fmt &= ~HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTUP;
+						item.fmt |= HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTDOWN;
 						break;
 				}
 
-				if (SendMessageW(columnHeader, HDM_SETITEMW, columnPtr, ref item) == IntPtr.Zero)
+				if (SendMessageW(new(columnHeader.Value), Win32Imports.HDM_SETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}

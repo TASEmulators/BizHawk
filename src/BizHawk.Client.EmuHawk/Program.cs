@@ -14,6 +14,8 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Emulation.Cores;
 
+using Windows.Win32;
+
 namespace BizHawk.Client.EmuHawk
 {
 	internal static class Program
@@ -132,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (dllDir.ContainsOrdinal(';'))
 				{
-					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
+					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir);
 					if (dllShortPathLen == 0)
 					{
 						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
@@ -140,14 +142,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var dllShortPathBuffer = new char[dllShortPathLen];
-					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer);
 					if (dllShortPathLen == 0)
 					{
 						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
 						return -1;
 					}
 
-					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen);
+					dllDir = dllShortPathBuffer.AsSpan(start: 0, length: (int) dllShortPathLen).ToString();
 					if (dllDir.ContainsOrdinal(';'))
 					{
 						MessageBox.Show(SEMICOLON_IN_DIR_MSG);

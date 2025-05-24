@@ -34,6 +34,9 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
+using Windows.Win32;
+using Windows.Win32.Foundation;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
@@ -872,8 +875,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				// WM_SETREDRAW false
-				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero);
+				WPARAM falseVal = new(0);
+				WmImports.SendMessageW(new(groupFreeze.Handle), Win32Imports.WM_SETREDRAW, falseVal, default);
 			}
 
 			var tp = tabctrlDetails.SelectedTab;
@@ -894,8 +897,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				// WM_SETREDRAW true
-				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero);
+				WPARAM trueVal = new(1);
+				WmImports.SendMessageW(new(groupFreeze.Handle), Win32Imports.WM_SETREDRAW, trueVal, default);
 			}
 
 			groupFreeze.Refresh();

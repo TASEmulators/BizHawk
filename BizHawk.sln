@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{74391239
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests", "src\BizHawk.Tests\BizHawk.Tests.csproj", "{284E19E2-661D-4A7D-864A-AC2FC91E7C25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.Externs", "src\BizHawk.Bizware.Externs\BizHawk.Bizware.Externs.csproj", "{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

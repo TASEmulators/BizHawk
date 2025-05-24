@@ -9,6 +9,8 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.NumberExtensions;
 #endif
 
+using Windows.Win32.UI.WindowsAndMessaging;
+
 using static SDL2.SDL;
 
 #pragma warning disable BHI1007 // target-typed Exception TODO don't
@@ -49,10 +51,15 @@ namespace BizHawk.Bizware.Input
 				// similar code shouldn't be needed on other platforms (which have global message queues and not thread local message queues)
 				if (!OSTailoredCode.IsUnixHost)
 				{
-					while (WmImports.PeekMessageW(out var msg, IntPtr.Zero, 0, 0, WmImports.PM_REMOVE))
+					while (WmImports.PeekMessageW(
+						out var msg,
+						hWnd: default,
+						wMsgFilterMin: 0,
+						wMsgFilterMax: 0,
+						PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE))
 					{
-						WmImports.TranslateMessage(ref msg);
-						WmImports.DispatchMessageW(ref msg);
+						WmImports.TranslateMessage(in msg);
+						WmImports.DispatchMessageW(in msg);
 					}
 				}
 
