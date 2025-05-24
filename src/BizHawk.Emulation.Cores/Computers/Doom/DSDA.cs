@@ -71,37 +71,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
-			string hudMode = "";
-			switch (_settings.HeadsUpMode)
-			{
-				case HudMode.Vanilla:
-					hudMode = "screenblocks 10\nhud_displayed 1\n";
-					break;
-				case HudMode.DSDA:
-					hudMode = "screenblocks 11\nhud_displayed 1\n";
-					break;
-				case HudMode.None:
-					hudMode = "screenblocks 11\nhud_displayed 0\n";
-					break;
-			}
-
 			_configFile = Encoding.ASCII.GetBytes(
-				hudMode
-				+ $"screen_resolution \"{
+				$"screen_resolution \"{
 					_nativeResolution.X *     _settings.ScaleFactor}x{
 					_nativeResolution.Y *     _settings.ScaleFactor}\"\n"
-				+ $"usegamma {                _settings.Gamma}\n"
-				+ $"sfx_volume {              _settings.SfxVolume}\n"
-				+ $"music_volume {            _settings.MusicVolume}\n"
-				+ $"automap_overlay {    (int)_settings.MapOverlay}\n"
-				+ $"dsda_exhud {             (_settings.DsdaExHud            ? 1 : 0)}\n"
-				+ $"map_totals {             (_settings.MapTotals            ? 1 : 0)}\n"
-				+ $"map_time {               (_settings.MapTime              ? 1 : 0)}\n"
-				+ $"map_coordinates {        (_settings.MapCoordinates       ? 1 : 0)}\n"
-				+ $"hudadd_secretarea {      (_settings.ReportSecrets        ? 1 : 0)}\n"
-				+ $"show_messages {          (_settings.ShowMessages         ? 1 : 0)}\n"
-				+ $"dsda_coordinate_display {(_settings.DisplayCoordinates   ? 1 : 0)}\n"
-				+ $"dsda_command_display {   (_settings.DisplayCommands      ? 1 : 0)}\n"
 				+ $"render_wipescreen {      (_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "boom_translucent_sprites 0\n"
 				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio() in the core)
