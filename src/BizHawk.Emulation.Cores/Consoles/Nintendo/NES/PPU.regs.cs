@@ -8,6 +8,7 @@
 
 using System.Runtime.CompilerServices;
 using BizHawk.Common;
+using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -344,24 +345,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte read_2002()
 		{
 			byte ret = peek_2002();
-			/*
-			if (nes.do_the_reread_2002 > 0)
-			{
-				if (Reg2002_vblank_active || Reg2002_vblank_active_pending)
-					Console.WriteLine("reread 2002");
-			}
-			*/
 
 			// reading from $2002 resets the destination for $2005 and $2006 writes
 			vtoggle = false;
 			Reg2002_vblank_active = 0;
 			Reg2002_vblank_active_pending = false;
-
-			if (nes.do_the_reread_2002 > 0)
-			{
-				ret = peek_2002();
-				// could be another reread, but no other side effects, so don't bother
-			}
 
 			// update the open bus here
 			ppu_open_bus = ret;
@@ -681,7 +669,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 6: return read_2006();
 				case 7:
 					{
-						if (nes.cpu.TotalExecutedCycles == double_2007_read)
+						if (nes.cpu.TotalExecutedCycles == double_2007_read && !nes.dmc_dma_exec)
 						{
 							return ppu_open_bus;
 						}
@@ -689,13 +677,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							ret_spec = read_2007();
 							double_2007_read = nes.cpu.TotalExecutedCycles + 1;
-						}
-
-						if (nes.do_the_reread_2007 > 0)
-						{
-							ret_spec = read_2007();
-							ret_spec = read_2007();
-							// always 2?
 						}
 						return ret_spec;
 					}

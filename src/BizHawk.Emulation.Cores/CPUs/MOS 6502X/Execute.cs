@@ -526,6 +526,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
 		public bool rdy_freeze; //true if the CPU must be frozen
 		private byte H; //internal temp variable used in the "unstable high byte group" of unofficial instructions
+		public ushort address_bus; // The 16 bit address bus.
 
 		//tracks whether an interrupt condition has popped up recently.
 		//not sure if this is real or not but it helps with the branch_irq_hack
@@ -607,6 +608,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode = _link.ReadMemory(PC++);
 				mi = -1;
 			}
+			address_bus = PC;
 		}
 
 		private void Fetch2()
@@ -624,6 +626,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				opcode3 = _link.ReadMemory(PC++);
+				address_bus = (ushort)((opcode3 << 8) | opcode2);
 			}
 		}
 
@@ -943,6 +946,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				alu_temp = ea + Y;
 				ea = (_link.ReadMemory((byte) (opcode2 + 1)) << 8)
 					| ((alu_temp & 0xFF));
+				address_bus = (ushort) ea;
 				H = 0; // In preparation for SHA (indirect, X), set H to 0.
 			}
 		}
@@ -2046,6 +2050,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				ea = _link.ReadMemory((ushort)alu_temp);
+				address_bus = (ushort)ea;
 			}
 		}
 
@@ -2454,6 +2459,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode3 = _link.ReadMemory(PC++);
 				alu_temp = opcode2 + Y;
 				ea = (opcode3 << 8) + (alu_temp & 0xFF);
+				address_bus = (ushort) ea;
 				H = 0; // In preparation for SHA, SHS, and SHX, set H to 0.
 				//new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			}
@@ -2467,6 +2473,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode3 = _link.ReadMemory(PC++);
 				alu_temp = opcode2 + X;
 				ea = (opcode3 << 8) + (alu_temp & 0xFF);
+				address_bus = (ushort) ea;
 				H = 0; // In preparation for SHY, set H to 0.
 			}
 		}
@@ -3313,6 +3320,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			if (!rdy_freeze)
 				mi++;
+
+			if(Microcode[opcode][mi] == Uop.End)
+			{
+				address_bus = PC; // If the next cycle is the start of a new instruction, the address bus needs to be set to the PC now, so a DMC DMA's halt cycles don't use the wrong address bus value.
+			}
 		}
 
 		public bool AtInstructionStart()

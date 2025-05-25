@@ -13,6 +13,7 @@
 using System.Runtime.CompilerServices;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -1030,6 +1031,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void RunDMCFetch()
 		{
 			dmc.Fetch();
+		}
+
+		public void RunDMCHaltFetch()
+		{
+			nes.ReadMemory(nes.cpu.address_bus);
 		}
 
 		private readonly int[][] sequencer_lut = new int[2][];
