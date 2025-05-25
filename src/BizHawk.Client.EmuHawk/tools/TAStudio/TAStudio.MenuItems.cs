@@ -213,11 +213,8 @@ namespace BizHawk.Client.EmuHawk
 				filename = SuggestedTasProjName();
 			}
 
-			var fileInfo = new FileInfo(Path.ChangeExtension(filename, Bk2Movie.Extension));
-			if (fileInfo.Exists)
-			{
-				fileInfo = SaveFileDialog(currentFile: fileInfo.Name, path: Config!.PathEntries.MovieAbsolutePath(), new FilesystemFilterSet(FilesystemFilter.BizHawkMovies), this);
-			}
+			filename = Path.ChangeExtension(filename, Bk2Movie.Extension);
+			var fileInfo = SaveFileDialog(currentFile: filename, path: Config!.PathEntries.MovieAbsolutePath(), new FilesystemFilterSet(FilesystemFilter.BizHawkMovies), this);
 
 			if (fileInfo is not null)
 			{
