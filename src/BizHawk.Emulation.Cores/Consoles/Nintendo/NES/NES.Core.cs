@@ -83,6 +83,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int old_s = 0;
 
+		public long double_controller_read = 0;
+		public byte previous_controller1_read = 0;
+		public byte previous_controller2_read = 0;
+		public bool joypadStrobed;
+		public byte joypadStrobeValue;
+
 		public bool CanProvideAsync => false;
 
 		internal void ResetControllerDefinition(bool subframe)
@@ -765,12 +771,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void write_joyport(byte value)
 		{
-			//Console.WriteLine("cont " + value + " frame " + Frame);
+			joypadStrobeValue = value;
+			joypadStrobed = true;
+		}
 
-			var si = new StrobeInfo(latched4016, value);
+		public void strobe_joyport()
+		{
+			// The controllers only get strobed when transitioning from a get cyclte to a put cycle.
+
+			//Console.WriteLine("cont " + value + " frame " + Frame);
+			var si = new StrobeInfo(latched4016, joypadStrobeValue);
 			ControllerDeck.Strobe(si, _controller);
-			latched4016 = value;
-			new_strobe = (value & 1) > 0;
+			latched4016 = joypadStrobeValue;
+			new_strobe = (joypadStrobeValue & 1) > 0;
 			if (current_strobe && !new_strobe)
 			{
 				controller_was_latched = true;
@@ -790,7 +803,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
+				if (TotalExecutedCycles == double_controller_read)
+				{
+					if (addr == 0x4016)
+					{
+						ret = previous_controller1_read;
+					}
+					else
+					{
+						ret = previous_controller2_read;
+					}
+				}
+				else
+				{
+					ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
+					if (addr == 0x4016)
+					{
+						previous_controller1_read = ret;
+					}
+					else
+					{
+						previous_controller2_read = ret;
+					}
+				}
+				double_controller_read = TotalExecutedCycles + 1; // The shift register in the controller is only updated if the previous CPU cycle did not read from the controller port.
 			}
 
 			ret &= 0x1f;
