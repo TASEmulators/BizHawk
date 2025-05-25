@@ -13,7 +13,6 @@
 using System.Runtime.CompilerServices;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
