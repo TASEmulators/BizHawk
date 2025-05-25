@@ -1,0 +1,67 @@
+3b37188f6337f15718b617c16e6e7a9c		Doom (Doom + Doom II)	Doom			
+4461d4511386518e784c647e3128e7bc		Doom (Doom + Doom II)	Doom			
+740901119ba2953e3c7f3764eca6e128		Doom (v0.2 Alpha)	Doom			
+dae9b1eea1a8e090fdfa5707187f4a43		Doom (v0.3 Alpha)	Doom			
+b6afa12a8b22e2726a8ff5bd249223de		Doom (v0.4 Alpha)	Doom			
+9c877480b8ef33b7074f1f0c07ed6487		Doom (v0.5 Alpha)	Doom			
+049e32f18d9c9529630366cfc72726ea		Doom (Beta)	Doom			
+90facab21eede7981be10790e3f82da2		Doom (v1.0 Shareware)	Doom			
+cea4989df52b65f4d481b706234a3dca		Doom (v1.1 Shareware)	Doom			
+52cbc8882f445573ce421fa5453513c1		Doom (v1.1 Shareware)	Doom			
+981b03e6d1dc033301aa3095acc437ce		Doom (v1.1 Registered)	Doom			
+2a380f28e813fb0989cae5e4762ebb4c		Doom (v1.2 Shareware)	Doom			
+30aa5beb9e5ebfbbe1e1765561c08f38		Doom (v1.2 Shareware)	Doom			
+792fd1fea023d61210857089a7c1e351		Doom (v1.2 Registered)	Doom			
+17aebd6b5f2ed8ce07aa526a32af8d99		Doom (v1.25 Shareware)	Doom			
+a21ae40c388cb6f2c3cc1b95589ee693		Doom (v1.4 Shareware Beta)	Doom			
+e280233d533dcc28c1acd6ccdc7742d4		Doom (v1.5 Shareware Beta)	Doom			
+762fd6d4b960d4b759730f01387a50a1		Doom (v1.6 Shareware Beta)	Doom			
+464e3723a7e7f97039ac9fd057096adb		Doom (v1.6b)	Doom			
+c428ea394dc52835f2580d5bfd50d76f		Doom (v1.666 Shareware)	Doom			
+54978d12de87f162b9bcc011676cb3c0		Doom (v1.666 Registered)	Doom			
+5f4eb849b1af12887dec04a2a12e5e62		Doom (v1.8 Shareware)	Doom			
+11e1cd216801ea2657723abc86ecb01f		Doom (v1.8 Registered)	Doom			
+f0cefca49926d00903cf57551d901abe		Doom (v1.9 Shareware)	Doom			
+1cd63c5ddff1bf8ce844237f580e9cf3		Doom (v1.9 Registered)	Doom			
+8517c4e8f0eef90b82852667d345eb86		Doom I Enhanced 	Doom			
+c4fe9fd920207691a9f493668e0a2083		The Ultimate Doom (v1.9)	Doom			
+fb35c4a5a9fd49ec29ab6e900572c524		The Ultimate Doom (BFG Edition)	Doom			
+30e3c2d0350b67bfbf47271970b74b2f		Doom II: Hell on Earth (v1.666)	Doom			
+d9153ced9fd5b898b36cc5844e35b520		Doom II: Hell on Earth (v1.666g)	Doom			
+ea74a47a791fdef2e9f2ea8b8a9da13b		Doom II: Hell on Earth (v1.7)	Doom			
+d7a07e5d3f4625074312bc299d7ed33f		Doom II: Hell on Earth (v1.7a)	Doom			
+c236745bb01d89bbb866c8fed81b6f8c		Doom II: Hell on Earth (v1.8)	Doom			
+3cb02349b3df649c86290907eed64e7b		Doom II: Hell on Earth (v1.8f)	Doom			
+25e1459ca71d321525f84628f45ca8cd		Doom II: Hell on Earth (v1.9)	Doom			
+b96683d113c4f4e9a916e1c7d1d71ffd		Doom II: Hell on Earth (PC-98)	Doom			
+c3bea40570c23e511a7ed3ebcd9865f7		Doom II: Hell on Earth (BFG Edition)	Doom			
+9aa3cbf65b961d0bdac98ec403b832e1		Doom II: Hell on Earth (Doom + Doom II)	Doom			
+64a4c88a871da67492aaa2020a068cd8		Doom II: Hell on Earth (Doom + Doom II)	Doom			
+8ab6d0527a29efdc1ef200e5687b5cae		Doom II Enhanced 	Doom			
+75c8cf89566741fa9d22447604053bd7		Final Doom - The Plutonia Experiment (v1.9)	Doom			
+3493be7e1e2588bc9c8b31eab2587a04		Final Doom - The Plutonia Experiment (id Anthology)	Doom			
+b77ca6a809c4fae086162dad8e7a1335		Final Doom - The Plutonia Experiment (Doom Classic Complete)	Doom			
+0b381ff7bae93bde6496f9547463619d		Final Doom - The Plutonia Experiment (Doom Classic Unity port)	Doom			
+ae76c20366ff685d3bb9fab11b148b84		Final Doom - The Plutonia Experiment (Doom Classic Unity port)	Doom			
+24037397056e919961005e08611623f4		Final Doom - The Plutonia Experiment (Doom + Doom II)	Doom			
+e47cf6d82a0ccedf8c1c16a284bb5937		Final Doom - The Plutonia Experiment (Doom + Doom II)	Doom			
+4e158d9953c79ccf97bd0663244cc6b6		Final Doom - TNT: Evilution (v1.9)	Doom			
+1d39e405bf6ee3df69a8d2646c8d5c49		Final Doom - TNT: Evilution (id Anthology)	Doom			
+be626c12b7c9d94b1dfb9c327566b4ff		Final Doom - TNT: Evilution (Doom Classic Complete)	Doom			
+a6685de59ddf2c07f45deeec95296d98		Final Doom - TNT: Evilution (Doom Classic Unity port)	Doom			
+f5528f6fd55cf9629141d79eda169630		Final Doom - TNT: Evilution (Doom Classic Unity port)	Doom			
+8974e3117ed4a1839c752d5e11ab1b7b		Final Doom - TNT: Evilution (Doom + Doom II)	Doom			
+ad7885c17a6b9b79b09d7a7634dd7e2c		Final Doom - TNT: Evilution (Doom + Doom II)	Doom			
+fc7eab659f6ee522bb57acc1a946912f		Heretic (Beta)	Doom			
+023b52175d2f260c3bdc5528df5d0a8c		Heretic (v1.0 Shareware)	Doom			
+3117e399cdb4298eaa3941625f4b2923		Heretic (v1.0 Registered)	Doom			
+ae779722390ec32fa37b0d361f7d82f8		Heretic (v1.2 Shareware)	Doom			
+1e4cb4ef075ad344dd63971637307e04		Heretic (v1.2 Registered)	Doom			
+66d686b1ed6d35ff103f15dbd30e0341		Heretic (v1.3)	Doom			
+925f9f5000e17dc84b0a6a3bed3a6f31		Hexen (Mac Demo)	Doom			
+b68140a796f6fd7f3a5d3226a32b93be		Hexen (Mac)	Doom			
+9178a32a496ff5befebfe6c47dac106c		Hexen (Beta)	Doom			
+c88a2bb3d783e2ad7b599a8e301e099e		Hexen (Beta)	Doom			
+876a5a44c7b68f04b3bb9bc7a5bd69d6		Hexen (v1.0 Demo)	Doom			
+b2543a03521365261d0a0f74d5dd90f0		Hexen (v1.0)	Doom			
+abb033caf81e26f12a2103e1fa25453f		Hexen (v1.1)	Doom			

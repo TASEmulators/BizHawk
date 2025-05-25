@@ -133,7 +133,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					VsyncNumerator = 35;
 					VsyncDenominator = 1;
 
-					RomDetails += $"IWAD: {GetFullName(_iwadFile)}" +
+					// db stores md5 for detection but it's nice to show both to user
+					RomDetails = lp.Game.Name +
+						$"\r\n\r\nIWAD: {GetFullName(_iwadFile)}" +
 						$"\r\n{SHA1Checksum.ComputePrefixedHex(_iwadFile.RomData)}" +
 						$"\r\n{MD5Checksum.ComputePrefixedHex(_iwadFile.RomData)}";
 
