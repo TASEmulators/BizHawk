@@ -270,8 +270,7 @@ namespace BizHawk.Client.EmuHawk
 
 								return new XElement(
 									"Asset",
-									new XAttribute("FileName", fileName)
-								);
+									new XAttribute("FileName", fileName.Replace('\\', '/'))); // should still work on Windows, and makes (at least relative paths) cross-platform
 							})
 						)
 					);
