@@ -250,27 +250,9 @@ namespace BizHawk.Client.Common
 
 		private static void PopulateFramebuffer(BinaryReader br, IVideoProvider videoProvider)
 		{
-			try
+			using (new SimpleTime("Load Framebuffer"))
 			{
-				using (new SimpleTime("Load Framebuffer"))
-				{
-					QuickBmpFile.Load(videoProvider, br.BaseStream);
-				}
-			}
-			catch
-			{
-				var vb = videoProvider.GetVideoBuffer();
-				var vbLen = videoProvider.BufferWidth * videoProvider.BufferHeight;
-				try
-				{
-					for (var i = 0; i < vbLen; i++)
-					{
-						vb[i] = br.ReadInt32();
-					}
-				}
-				catch (EndOfStreamException)
-				{
-				}
+				QuickBmpFile.Load(videoProvider, br.BaseStream);
 			}
 		}
 	}
