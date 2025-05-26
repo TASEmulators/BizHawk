@@ -3821,11 +3821,35 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
+				var forcedCoreName = MovieSession.QueuedCoreName ?? string.Empty;
+				if (!CoreInventory.Instance.SystemsFlat.Any(core => core.Name == forcedCoreName))
+				{
+					const string FMT_STR_NO_SUCH_CORE = "This movie is for the \"{0}\" core,"
+						+ " but that's not a valid {1} core. (Was the movie made in this version of EmuHawk?)"
+						+ "\nContinue with your preferred core instead?";
+#if false //TODO let the user pick?
+					var availCores = CoreInventory.Instance.AllCores.GetValueOrDefault(MovieSession.QueuedSysID, [ ]);
+#endif
+					if (!this.ModalMessageBox2(
+						caption: "No such core",
+						icon: EMsgBoxIcon.Error,
+						text: string.Format(
+							FMT_STR_NO_SUCH_CORE,
+							forcedCoreName,
+							EmulatorExtensions.SystemIDToDisplayName(MovieSession.QueuedSysID))))
+					{
+						return false;
+					}
+					forcedCoreName = null;
+				}
+
 				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
 
-				bool result = string.IsNullOrEmpty(MovieSession.QueuedCoreName)
-					? loader.LoadRom(path, nextComm, ioaRetro?.CorePath)
-					: loader.LoadRom(path, nextComm, ioaRetro?.CorePath, forcedCoreName: MovieSession.QueuedCoreName);
+				var result = loader.LoadRom(
+					path: path,
+					nextComm,
+					launchLibretroCore: ioaRetro?.CorePath,
+					forcedCoreName: forcedCoreName);
 
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)

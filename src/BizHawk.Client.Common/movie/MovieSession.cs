@@ -55,6 +55,9 @@ namespace BizHawk.Client.Common
 
 		public string QueuedCoreName => _queuedMovie?.Core;
 
+		public string/*?*/ QueuedSysID
+			=> _queuedMovie?.SystemID;
+
 		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
 		public IController MovieIn { get; set; }

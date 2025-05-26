@@ -23,6 +23,9 @@ namespace BizHawk.Client.Common
 		/// <value>The Core header of the queued movie iff one is queued, else <see langword="null"/></value>
 		string QueuedCoreName { get; }
 
+		/// <value>The <see cref="IBasicMovieInfo.SystemID"/> header of the queued movie iff one is queued, else <see langword="null"/></value>
+		string/*?*/ QueuedSysID { get; }
+
 		IDictionary<string, object> UserBag { get; set; }
 
 		IMovieController MovieController { get; }
