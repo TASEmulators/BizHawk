@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
@@ -25,6 +24,7 @@ namespace BizHawk.Client.Common
 		private readonly IEmulator _emulator;
 		private readonly IStatable _statable;
 		private readonly IVideoProvider _videoProvider;
+		public IVideoProvider LoadedVideoProvider = null;
 		private readonly IMovieSession _movieSession;
 
 		private readonly SettingsAdapter _settable;
@@ -215,10 +215,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (_videoProvider != null)
-			{
-				bl.GetLump(BinaryStateLump.Framebuffer, false, br => PopulateFramebuffer(br, _videoProvider));
-			}
+
+			bl.GetLump(BinaryStateLump.Framebuffer, false, br => QuickBmpFile.LoadAuto(br.BaseStream, out LoadedVideoProvider));
 
 			string userData = "";
 			bl.GetLump(BinaryStateLump.UserData, abort: false, tr =>
@@ -246,14 +244,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
-		}
-
-		private static void PopulateFramebuffer(BinaryReader br, IVideoProvider videoProvider)
-		{
-			using (new SimpleTime("Load Framebuffer"))
-			{
-				QuickBmpFile.Load(videoProvider, br.BaseStream);
-			}
 		}
 	}
 }

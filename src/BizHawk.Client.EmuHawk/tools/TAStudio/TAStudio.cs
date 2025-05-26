@@ -860,22 +860,6 @@ namespace BizHawk.Client.EmuHawk
 			return CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame > 0 ? frame - 1 : 0);
 		}
 
-		public void LoadState(KeyValuePair<int, Stream> state, bool discardApiHawkSurfaces = false)
-		{
-			StatableEmulator.LoadStateBinary(new BinaryReader(state.Value));
-
-			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
-			{
-				Emulator.ResetCounters();
-			}
-
-			UpdateTools();
-			if (discardApiHawkSurfaces)
-			{
-				DisplayManager.DiscardApiHawkSurfaces();
-			}
-		}
-
 		public void AddBranchExternal() => BookMarkControl.AddBranchExternal();
 		public void RemoveBranchExternal() => BookMarkControl.RemoveBranchExternal();
 
@@ -1146,10 +1130,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CurrentTasMovie.LoadBranch(branch);
-			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
-
+			MainForm.LoadState(
+				new BinaryReader(new MemoryStream(branch.CoreData)),
+				new BitmapBufferVideoProvider(branch.CoreFrameBuffer),
+				$"branch {branch.UserText}"
+			);
 			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
-			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
 
 			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)
 			{

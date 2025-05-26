@@ -1163,7 +1163,7 @@ namespace BizHawk.Client.EmuHawk
 			private set
 			{
 				_emulator = value;
-				_currentVideoProvider = value.AsVideoProviderOrDefault();
+				_currentVideoProvider = _coreVideoProvider = value.AsVideoProviderOrDefault();
 				_currentSoundProvider = value.AsSoundProviderOrDefault();
 			}
 		}
@@ -1180,6 +1180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly InputManager InputManager;
 
+		private IVideoProvider _coreVideoProvider = NullVideo.Instance;
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
@@ -3002,6 +3003,9 @@ namespace BizHawk.Client.EmuHawk
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
+				// Reset the video provider. (It may have changed due to loading a save state.)
+				_currentVideoProvider = _coreVideoProvider;
+
 				var isFastForwarding = IsFastForwarding;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
 
@@ -4102,24 +4106,64 @@ namespace BizHawk.Client.EmuHawk
 			return File.Exists(path) ? SavestateFile.GetFrameBufferFrom(path) : null;
 		}
 
+		public void LoadState(BinaryReader coreData, IVideoProvider stateScreenshotProvider, string userFriendlyStateName)
+		{
+			IStatable emulator = Emulator.ServiceProvider.GetService<IStatable>();
+			if (emulator == null) return;
+
+			emulator.LoadStateBinary(coreData);
+			if (stateScreenshotProvider != null)
+			{
+				_currentVideoProvider = stateScreenshotProvider;
+			}
+			else
+			{
+				DisplayManager.DiscardApiHawkSurfaces();
+			}
+			// Apparently, we don't reset the counters BEFORE capturing the movie start state. So...
+			if (Emulator.Frame == 0 && MovieSession.Movie.StartsFromSavestate)
+			{
+				Emulator.ResetCounters();
+			}
+
+			LoadStateCommon(userFriendlyStateName);
+		}
+
 		public bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false) // Move to client.common
 		{
 			if (!Emulator.HasSavestates()) return false;
 			if (ToolControllingSavestates is { } tool) return tool.LoadState();
 
-			if (!new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Load(path, this))
+			SavestateFile stateFile = new SavestateFile(Emulator, MovieSession, MovieSession.UserBag);
+			if (!stateFile.Load(path, this))
 			{
 				AddOnScreenMessage("Loadstate error!");
 				return false;
 			}
+			else
+			{
+				_currentVideoProvider = stateFile.LoadedVideoProvider;
+			}
 
+			RA?.OnLoadState(path);
+			LoadStateCommon(userFriendlyStateName);
+
+			if (!suppressOSD)
+			{
+				AddOnScreenMessage($"Loaded state: {userFriendlyStateName}");
+			}
+
+			return true;
+		}
+
+		private void LoadStateCommon(string userFriendlyStateName)
+		{
 			OSD.ClearGuiText();
 			if (SavestateLoaded is not null)
 			{
 				StateLoadedEventArgs args = new(userFriendlyStateName);
 				SavestateLoaded(this, args);
 			}
-			RA?.OnLoadState(path);
 
 			if (Tools.Has<LuaConsole>())
 			{
@@ -4138,12 +4182,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Rewinder?.Clear();
 			}
-
-			if (!suppressOSD)
-			{
-				AddOnScreenMessage($"Loaded state: {userFriendlyStateName}");
-			}
-			return true;
 		}
 
 		public bool LoadQuickSave(int slot, bool suppressOSD = false)
