@@ -868,7 +868,7 @@ namespace BizHawk.Client.EmuHawk
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
-				LoadState(closestState, true);
+				MainForm.LoadState(new BinaryReader(closestState.Value), null);
 			}
 			closestState.Value.Dispose();
 
@@ -913,22 +913,6 @@ namespace BizHawk.Client.EmuHawk
 					// well, users who are rewinding aren't. (that gets done through the seeking system in the call above)
 					// users who are clicking around.. I don't know.
 				}
-			}
-		}
-
-		public void LoadState(KeyValuePair<int, Stream> state, bool discardApiHawkSurfaces = false)
-		{
-			StatableEmulator.LoadStateBinary(new BinaryReader(state.Value));
-
-			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
-			{
-				Emulator.ResetCounters();
-			}
-
-			UpdateTools();
-			if (discardApiHawkSurfaces)
-			{
-				DisplayManager.DiscardApiHawkSurfaces();
 			}
 		}
 
