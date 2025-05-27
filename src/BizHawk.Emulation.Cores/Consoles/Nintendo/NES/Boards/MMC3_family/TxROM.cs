@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TXROM-HOMEBREW": // should this even exist?
 					break;
 				case "MAPPER004":
+				case "MAPPER0004-00":
 					if (Cart.InesMirroring == 2) // send these to TVROM
 						return false;
 					break;
