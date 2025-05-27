@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		private ZwinderBuffer _gapFiller;
 
 		// These never decay, but can be invalidated, they are for reserved states
-		// such as markers and branches, but also we naturally evict states from recent to reserved, based
+		// such as markers, but also we naturally evict states from recent to reserved, based
 		// on _ancientInterval
 		private IDictionary<int, byte[]> _reserved;
 
