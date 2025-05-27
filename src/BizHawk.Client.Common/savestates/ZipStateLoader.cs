@@ -145,8 +145,8 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader> callback)
-			=> GetLump(lump, abort, (s, _) => callback(new(s)));
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<BinaryReader> callback, bool isZstdCompressed = true)
+			=> GetLump(lump, abort, (s, _) => callback(new(s)), isZstdCompressed);
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
 			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)), false);
