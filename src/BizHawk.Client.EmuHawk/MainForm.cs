@@ -3821,8 +3821,9 @@ namespace BizHawk.Client.EmuHawk
 					//path = ioa_openrom.Path;
 				}
 
-				var forcedCoreName = MovieSession.QueuedCoreName ?? string.Empty;
-				if (!CoreInventory.Instance.SystemsFlat.Any(core => core.Name == forcedCoreName))
+				var forcedCoreName = MovieSession.QueuedCoreName;
+				if (forcedCoreName is not null
+					&& !CoreInventory.Instance.SystemsFlat.Any(core => core.Name == forcedCoreName))
 				{
 					const string FMT_STR_NO_SUCH_CORE = "This movie is for the \"{0}\" core,"
 						+ " but that's not a valid {1} core. (Was the movie made in this version of EmuHawk?)"
