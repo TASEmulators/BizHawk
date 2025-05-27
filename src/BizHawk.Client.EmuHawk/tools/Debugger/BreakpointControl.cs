@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BreakpointCallback(uint addr, uint value, uint flags)
 		{
 			MainForm.PauseEmulator();
-			UpdateValues();
+			ParentDebugger.UpdateForBreakpointHit();
 			MainForm.AddOnScreenMessage("Breakpoint hit");
 		}
 

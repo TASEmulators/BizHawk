@@ -66,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				_disassemblyLines.Add(new DisasmOp(currentAddress, advance, line));
 				currentAddress += (uint)advance;
 			}
+			DisassemblerView.Refresh();
 		}
 
 		private void DisassemblerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
@@ -149,14 +150,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			IncrementCurrentAddress();
 			Disassemble();
-			DisassemblerView.Refresh();
 		}
 
 		private void SmallDecrement()
 		{
 			DecrementCurrentAddress();
 			Disassemble();
-			DisassemblerView.Refresh();
 		}
 
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
