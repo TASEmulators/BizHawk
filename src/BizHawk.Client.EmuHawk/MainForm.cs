@@ -3822,26 +3822,28 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var forcedCoreName = MovieSession.QueuedCoreName;
-				if (forcedCoreName is not null
-					&& !CoreInventory.Instance.SystemsFlat.Any(core => core.Name == forcedCoreName))
+				if (forcedCoreName is not null)
 				{
-					const string FMT_STR_NO_SUCH_CORE = "This movie is for the \"{0}\" core,"
-						+ " but that's not a valid {1} core. (Was the movie made in this version of EmuHawk?)"
-						+ "\nContinue with your preferred core instead?";
-#if false //TODO let the user pick?
 					var availCores = CoreInventory.Instance.AllCores.GetValueOrDefault(MovieSession.QueuedSysID, [ ]);
-#endif
-					if (!this.ModalMessageBox2(
-						caption: "No such core",
-						icon: EMsgBoxIcon.Error,
-						text: string.Format(
-							FMT_STR_NO_SUCH_CORE,
-							forcedCoreName,
-							EmulatorExtensions.SystemIDToDisplayName(MovieSession.QueuedSysID))))
+					if (!availCores.Exists(core => core.Name == forcedCoreName))
 					{
-						return false;
+						const string FMT_STR_NO_SUCH_CORE = "This movie is for the \"{0}\" core,"
+							+ " but that's not a valid {1} core. (Was the movie made in this version of EmuHawk?)"
+							+ "\nContinue with your preferred core instead?";
+						//TODO let the user pick from `availCores`?
+						// also use a different message when `availCores` is empty (which might happen if someone makes a movie on a new core and tries to load it in a version without the core)
+						if (!this.ModalMessageBox2(
+							caption: "No such core",
+							icon: EMsgBoxIcon.Error,
+							text: string.Format(
+								FMT_STR_NO_SUCH_CORE,
+								forcedCoreName,
+								EmulatorExtensions.SystemIDToDisplayName(MovieSession.QueuedSysID))))
+						{
+							return false;
+						}
+						forcedCoreName = null;
 					}
-					forcedCoreName = null;
 				}
 
 				DisplayManager.ActivateOpenGLContext(); // required in case the core wants to create a shared OpenGL context
