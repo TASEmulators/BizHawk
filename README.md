@@ -423,8 +423,11 @@ Emulators for other systems can be found on the [EmulatorResources page](https:/
 ### EmuHawk or core development
 
 Do you want your name next to [these fine people](https://github.com/TASEmulators/BizHawk/graphs/contributors)?
-We have [many open issues](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted") with no-one to work on them.
-Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
+We have many open issues with no-one to work on them, including [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted")
+and [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Open%20to%20PRs%20for%20existing%20design%22).
+- ['Tasks'](https://github.com/TASEmulators/BizHawk/issues?q=type%3ATask%20is%3Aopen) are issues with narrow scope and/or clear requirements.
+- Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
+- For issues in need of ~~bikeshedding~~ constructive discussion, look at [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Open%20to%20design%20proposals%20only%22) and [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Waiting%20on%20dev%20consensus%22).
 
 [The contribution guidelines](https://github.com/TASEmulators/BizHawk/blob/master/contributing.md) have more details on how to get set up, work with the code, and submit changes to us.
 
@@ -438,7 +441,9 @@ With regards to core development, we're not particularly interested in PRs addin
 
 ### Testing/QA
 
-Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs, i.e. checking if they've been fixed or not.
+Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs (checking if they're still broken or if they've been fixed).
+- [This label](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Repro%3A%20Patch%20pending%22) tracks bugs which are likely fixed, but we're not sure.
+- Otherwise just filter by core and look for issues without a recent `Repro:` label.
 
 Those with hardware or other domain knowledge may be able to help triage [issues like these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"Needs+domain+knowledge+for+triage").
 
