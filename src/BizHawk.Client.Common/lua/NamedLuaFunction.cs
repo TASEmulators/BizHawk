@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 
 		public string Event { get; }
 
-		private Func<object[],object[]> Callback { get; }
+		private Func<object[], object[]> Callback { get; }
 
 		public Action InputCallback { get; }
 
