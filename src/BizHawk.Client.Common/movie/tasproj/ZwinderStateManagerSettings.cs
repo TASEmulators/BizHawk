@@ -116,6 +116,8 @@ namespace BizHawk.Client.Common
 			All,
 			[Display(Name = "Reserved Only")]
 			ReservedOnly,
+			[Display(Name = "Markers Only")]
+			MarkersOnly,
 			None,
 		}
 

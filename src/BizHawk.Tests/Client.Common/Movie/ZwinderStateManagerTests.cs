@@ -685,6 +685,33 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}
 		}
 
+
+		[TestMethod]
+		public void TestKeepsMarkersOnSave()
+		{
+			const int markerFrame = 15;
+			IStatable ss = CreateStateSource();
+			ZwinderStateManager manager = new ZwinderStateManager(new(), f => f == markerFrame);
+			manager.Settings.StatesToSave = ZwinderStateManagerSettings.States.MarkersOnly;
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Simulate playing movie.
+			int endFrame = markerFrame;
+			for (int i = 0; i <= endFrame; i++)
+				manager.Capture(i, ss);
+			// Simulate save and load
+			MemoryStream stream = new();
+			manager.SaveStateHistory(new(stream));
+			stream.Seek(0, SeekOrigin.Begin);
+			ZwinderStateManager loadedManager = ZwinderStateManager.Create(new(stream), manager.Settings, (f) => false);
+			// ASSERT: The only state saved is the maker frame.
+			Assert.AreEqual(1, loadedManager.AllStates().Count(), "Expected only two states in saved tasproj.");
+			Assert.IsTrue(loadedManager.HasState(markerFrame));
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }

@@ -630,6 +630,25 @@ namespace BizHawk.Client.Common
 					toSave[i].Read().CopyTo(bw.BaseStream);
 				}
 			}
+			else if (Settings.StatesToSave == ZwinderStateManagerSettings.States.MarkersOnly)
+			{
+				// Some states that should be reserved via marker might be in a ring buffer but not yet in _reserved.
+				List<StateInfo> allStates = AllStates().ToList();
+				List<StateInfo> toSave = new();
+				for (int i = 0; i < allStates.Count; i++)
+				{
+					if (_reserveCallback(allStates[i].Frame))
+						toSave.Add(allStates[i]);
+				}
+
+				bw.Write(toSave.Count);
+				for (int i = 0; i < toSave.Count; i++)
+				{
+					bw.Write(toSave[i].Frame);
+					bw.Write(toSave[i].Size);
+					toSave[i].Read().CopyTo(bw.BaseStream);
+				}
+			}
 		}
 
 		public void Dispose()
