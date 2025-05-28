@@ -139,11 +139,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						$"\r\n{SHA1Checksum.ComputePrefixedHex(_iwadFile.RomData)}" +
 						$"\r\n{MD5Checksum.ComputePrefixedHex(_iwadFile.RomData)}";
 
-					foreach (var file in _pwadFiles)
+					if (_pwadFiles.Count > 0)
 					{
-						RomDetails += $"\r\n\r\nPWAD: {GetFullName(file)}" +
-							$"\r\n{SHA1Checksum.ComputePrefixedHex(file.RomData)}" +
-							$"\r\n{MD5Checksum.ComputePrefixedHex(file.RomData)}";
+						SortedList<string> hashes = new();
+
+						foreach (var file in _pwadFiles)
+						{
+							var md5Hash = MD5Checksum.ComputePrefixedHex(file.RomData);
+							hashes.Add(md5Hash);
+							RomDetails += $"\r\n\r\nPWAD: {GetFullName(file)}" +
+								$"\r\n{SHA1Checksum.ComputePrefixedHex(file.RomData)}" +
+								$"\r\n{md5Hash}";
+						}
+
+						lp.Game.Hash = MD5Checksum.ComputeDigestHex(Encoding.ASCII.GetBytes(string.Concat(hashes)));
 					}
 
 					_elf.Seal();
