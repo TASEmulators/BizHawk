@@ -1,3 +1,5 @@
+using System.IO;
+
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -60,6 +62,8 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		bool LoadQuickSave(int slot, bool suppressOSD = false);
+
+		void LoadState(BinaryReader coreData, IVideoProvider stateScreenshotProvider, string userFriendlyStateName = null);
 
 		/// <remarks>only referenced from <see cref="MultiDiskBundler"/></remarks>
 		bool LoadRom(string path, LoadRomArgs args);
