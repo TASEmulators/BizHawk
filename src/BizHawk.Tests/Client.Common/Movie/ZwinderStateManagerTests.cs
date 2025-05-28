@@ -413,7 +413,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 			for (int i = 400; i < 1000; i += 400)
 			{
-				zw.EvictReserved(i);
+				zw.Unreserve(i);
 			}
 
 			for (int i = 0; i < 10000; i++)
@@ -604,6 +604,112 @@ namespace BizHawk.Tests.Client.Common.Movie
 						throw new Exception("Data or CRC field corrupted");
 				}
 			}
+		}
+
+		[TestMethod]
+		public void TestKeepsAtLeastAncientInterval()
+		{
+			IStatable ss = CreateStateSource();
+			// For this test to work, AncientStateInterval must be greater than CurrentTargetFrameLength + RecentTargetFrameLength
+			// We also require the current and recent buffers fill up, so that states are evicted by the time we reach the ancient interval.
+			ZwinderStateManager manager = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				CurrentBufferSize = 1,
+				CurrentTargetFrameLength = 2000,
+
+				RecentBufferSize = 1,
+				RecentTargetFrameLength = 2000,
+
+				AncientStateInterval = 10000,
+			}, f => false);
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Have only state on frame 0.
+			manager.CaptureReserved(0, ss);
+			// Load branch with frame number almost at two ancient intervals
+			int branchFrame = manager.Settings.AncientStateInterval * 2 - 1;
+			manager.CaptureReserved(branchFrame, ss);
+			// Rewind to frame 0, play to state frame.
+			for (int i = 0; i <= branchFrame; i++)
+				manager.Capture(i, ss);
+			// ASSERT: There are no gaps larger than the ancient interval
+			int lastState = 0;
+			while (lastState < branchFrame)
+			{
+				int nextState = manager.GetStateClosestToFrame(lastState + manager.Settings.AncientStateInterval).Key;
+				Assert.AreNotEqual(lastState, nextState, "AncientStateInterval was not respected.");
+				lastState = nextState;
+			}
+		}
+
+		[TestMethod]
+		public void TestKeepsAtLeastAncientIntervalOnSave()
+		{
+			IStatable ss = CreateStateSource();
+			// For this test to work, CurrentTargetFrameLength + RecentTargetFrameLength should be larger than AncientInterval.
+			ZwinderStateManager manager = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				CurrentBufferSize = 1,
+				CurrentTargetFrameLength = 40,
+
+				RecentBufferSize = 1,
+				RecentTargetFrameLength = 40,
+
+				AncientStateInterval = 10,
+			}, f => false);
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Simulate playing movie.
+			int endFrame = manager.Settings.AncientStateInterval * 10;
+			for (int i = 0; i <= endFrame; i++)
+				manager.Capture(i, ss);
+			// Simulate save and load
+			MemoryStream stream = new();
+			manager.SaveStateHistory(new(stream));
+			stream.Seek(0, SeekOrigin.Begin);
+			ZwinderStateManager loadedManager = ZwinderStateManager.Create(new(stream), manager.Settings, (f) => false);
+			// ASSERT: There are no gaps larger than the ancient interval
+			int lastState = 0;
+			// minus AncientStateInterval: It will not save the last state due to lack of information regarding future states. So don't test that it is kept.
+			while (lastState < endFrame - manager.Settings.AncientStateInterval)
+			{
+				int nextState = loadedManager.GetStateClosestToFrame(lastState + manager.Settings.AncientStateInterval).Key;
+				Assert.AreNotEqual(lastState, nextState, "AncientStateInterval was not respected on save.");
+				lastState = nextState;
+			}
+		}
+
+
+		[TestMethod]
+		public void TestKeepsMarkersOnSave()
+		{
+			const int markerFrame = 15;
+			IStatable ss = CreateStateSource();
+			ZwinderStateManager manager = new ZwinderStateManager(new(), f => f == markerFrame);
+			manager.Settings.StatesToSave = ZwinderStateManagerSettings.States.MarkersOnly;
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Simulate playing movie.
+			int endFrame = markerFrame;
+			for (int i = 0; i <= endFrame; i++)
+				manager.Capture(i, ss);
+			// Simulate save and load
+			MemoryStream stream = new();
+			manager.SaveStateHistory(new(stream));
+			stream.Seek(0, SeekOrigin.Begin);
+			ZwinderStateManager loadedManager = ZwinderStateManager.Create(new(stream), manager.Settings, (f) => false);
+			// ASSERT: The only state saved is the maker frame.
+			Assert.AreEqual(1, loadedManager.AllStates().Count(), "Expected only two states in saved tasproj.");
+			Assert.IsTrue(loadedManager.HasState(markerFrame));
 		}
 
 		private class StateSource : IStatable
