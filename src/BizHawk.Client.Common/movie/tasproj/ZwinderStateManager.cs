@@ -205,16 +205,19 @@ namespace BizHawk.Client.Common
 		internal class StateInfo
 		{
 			public int Frame { get; }
+			public int Size { get; }
 			public Func<Stream> Read { get; }
 			public StateInfo(ZwinderBuffer.StateInformation si)
 			{
 				Frame = si.Frame;
+				Size = si.Size;
 				Read = si.GetReadStream;
 			}
 
 			public StateInfo(int frame, byte[] data)
 			{
 				Frame = frame;
+				Size = data.Length;
 				Read = () => new MemoryStream(data, false);
 			}
 		}
@@ -392,12 +395,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Will removing the state on this leave us with a gap larger than the ancient interval?
 		/// </summary>
-		private bool ShouldKeepForAncient(int frame)
+		private bool ShouldKeepForAncient(int frame, SortedList<int> framesList = null)
 		{
-			int index = StateCache.BinarySearch(frame + 1);
+			framesList ??= StateCache;
+
+			int index = framesList.BinarySearch(frame + 1);
 			if (index < 0)
 				index = ~index;
-			if (index == StateCache.Count)
+			if (index == framesList.Count)
 			{
 				// There is no future state... so why are we wanting to evict this state?
 				// We aren't decaying from _recent, that's for sure. So,
@@ -406,8 +411,8 @@ namespace BizHawk.Client.Common
 			if (index <= 1)
 				return true; // This should never happen.
 
-			int nextState = StateCache[index];
-			int previousState = StateCache[index - 2]; // assume StateCache[index - 1] == frame
+			int nextState = framesList[index];
+			int previousState = framesList[index - 2]; // assume framesList[index - 1] == frame
 			return nextState - previousState > _ancientInterval;
 		}
 
@@ -582,16 +587,47 @@ namespace BizHawk.Client.Common
 				_current.SaveStateBinary(bw);
 				_recent.SaveStateBinary(bw);
 				_gapFiller.SaveStateBinary(bw);
-			}
 
-			if (Settings.StatesToSave != ZwinderStateManagerSettings.States.None)
-			{
 				bw.Write(_reserved.Count);
 				foreach (var (f, data) in _reserved)
 				{
 					bw.Write(f);
 					bw.Write(data.Length);
 					bw.Write(data);
+				}
+			}
+			else if (Settings.StatesToSave == ZwinderStateManagerSettings.States.ReservedOnly)
+			{
+				// When we save with "reserve only", we will want at least 1 state per "ancient interval" number of frames.
+				// This means we may have to pull some from the ring buffers.
+				List<StateInfo> allStates = AllStates().ToList();
+				SortedList<int> stateFrames = new(allStates.Select((si) => si.Frame));
+				for (int i = 0; i < stateFrames.Count - 1; i++)
+				{
+					if (!_reserveCallback(stateFrames[i]) && !ShouldKeepForAncient(stateFrames[i], stateFrames))
+					{
+						stateFrames.RemoveAt(i);
+						i--;
+					}
+				}
+				// If the last state is not already reserved, it's probably safe to not keep it.
+				// And we can't really know if it would be kept anyway.
+				if (stateFrames.Count != 0 && !_reserveCallback(stateFrames[stateFrames.Count - 1]))
+					stateFrames.RemoveAt(stateFrames.Count - 1);
+
+				List<StateInfo> toSave = new();
+				foreach (StateInfo si in allStates)
+				{
+					if (stateFrames.Contains(si.Frame))
+						toSave.Add(si);
+				}
+
+				bw.Write(toSave.Count);
+				for (int i = 0; i < toSave.Count; i++)
+				{
+					bw.Write(toSave[i].Frame);
+					bw.Write(toSave[i].Size);
+					toSave[i].Read().CopyTo(bw.BaseStream);
 				}
 			}
 		}
