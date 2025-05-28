@@ -645,6 +645,46 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}
 		}
 
+		[TestMethod]
+		public void TestKeepsAtLeastAncientIntervalOnSave()
+		{
+			IStatable ss = CreateStateSource();
+			// For this test to work, CurrentTargetFrameLength + RecentTargetFrameLength should be larger than AncientInterval.
+			ZwinderStateManager manager = new ZwinderStateManager(new ZwinderStateManagerSettings
+			{
+				CurrentBufferSize = 1,
+				CurrentTargetFrameLength = 40,
+
+				RecentBufferSize = 1,
+				RecentTargetFrameLength = 40,
+
+				AncientStateInterval = 10,
+			}, f => false);
+
+			var ms = new MemoryStream();
+			ss.SaveStateBinary(new BinaryWriter(ms));
+			manager.Engage(ms.ToArray());
+
+			// Simulate playing movie.
+			int endFrame = manager.Settings.AncientStateInterval * 10;
+			for (int i = 0; i <= endFrame; i++)
+				manager.Capture(i, ss);
+			// Simulate save and load
+			MemoryStream stream = new();
+			manager.SaveStateHistory(new(stream));
+			stream.Seek(0, SeekOrigin.Begin);
+			ZwinderStateManager loadedManager = ZwinderStateManager.Create(new(stream), manager.Settings, (f) => false);
+			// ASSERT: There are no gaps larger than the ancient interval
+			int lastState = 0;
+			// minus AncientStateInterval: It will not save the last state due to lack of information regarding future states. So don't test that it is kept.
+			while (lastState < endFrame - manager.Settings.AncientStateInterval)
+			{
+				int nextState = loadedManager.GetStateClosestToFrame(lastState + manager.Settings.AncientStateInterval).Key;
+				Assert.AreNotEqual(lastState, nextState, "AncientStateInterval was not respected on save.");
+				lastState = nextState;
+			}
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
