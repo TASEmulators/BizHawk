@@ -1,0 +1,25 @@
+# This file can be used for git blame using --ignore-revs-file
+# or by setting blame.ignoreRevsFile in the git config.
+
+# Fix mixed line endings
+ed3bf0e62b5f8b3046b8717dcef54c6b98cb7e77
+
+# Spaces -> tabs, fix mixed newlines
+fec63fb66afe70a22cf328eecdaf09e37c21ada5
+
+# Move projects to /src
+3a3b22c03b422eda8fcd62c8cbbff3e838ba4f18
+
+# Delete `/Assets`...
+d8d42b9f81fa3f84467276a4c6122efd6dc72a95
+# ...and revert
+7c1b40df1f48a07fc01d63fbfdf410c7980c4aba
+
+# EXTERMINATE SPACES (in main solution)
+3ea71a2dda118b0cadd43c75ee6a577d01f5c6a9
+
+# Fix indentation in `SpectrumBase.Media.cs`
+5f29b5094034c4540a1c2a6a962ec4b22c72cb0e
+
+# Remove line-end whitespace across main solution
+605deb682dacec3342c650e76fb77972e5ffbe04
