@@ -21,8 +21,6 @@ namespace BizHawk.Client.Common
 
 		public readonly int _autoDumpLength;
 
-		public readonly bool printVersion;
-
 		public readonly string? cmdDumpName;
 
 		public readonly bool _autoCloseOnDump;
@@ -61,7 +59,6 @@ namespace BizHawk.Client.Common
 			string? cmdDumpType,
 			HashSet<int>? currAviWriterFrameList,
 			int autoDumpLength,
-			bool printVersion,
 			string? cmdDumpName,
 			bool autoCloseOnDump,
 			bool chromeless,
@@ -85,7 +82,6 @@ namespace BizHawk.Client.Common
 			this.cmdDumpType = cmdDumpType;
 			_currAviWriterFrameList = currAviWriterFrameList;
 			_autoDumpLength = autoDumpLength;
-			this.printVersion = printVersion;
 			this.cmdDumpName = cmdDumpName;
 			_autoCloseOnDump = autoCloseOnDump;
 			_chromeless = chromeless;

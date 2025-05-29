@@ -896,15 +896,6 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			// Simply exit the program if the version is asked for
-			if (_argParser.printVersion)
-			{
-				// Print the version
-				Console.WriteLine(VersionInfo.GetEmuVersion());
-				// Return and leave
-				return _exitCode;
-			}
-
 			CaptureMouse(Config.CaptureMouse);
 
 			// incantation required to get the program reliably on top of the console window
