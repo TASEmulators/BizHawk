@@ -80,15 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[STAThread]
 		private static int Main(string[] args)
-		{
-			var exitCode = SubMain(args);
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
-				Process.GetCurrentProcess().Kill();
-			}
-			return exitCode;
-		}
+			=> SubMain(args);
 
 		// NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
