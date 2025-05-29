@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			return new ConsoleSchema
 			{
-				Size = new Size(185, 75),
+				Size = new(185, 90),
 				Buttons = new[]
 				{
 					new ButtonSchema(10, 15, "Select"),
@@ -214,8 +214,9 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(92, 40, "Toggle Right Difficulty")
 					{
 						DisplayName = "Right Difficulty"
-					}
-				}
+					},
+					new ButtonSchema(10, 65, "Toggle TV Type") { DisplayName = "B&W / Color" },
+				},
 			};
 		}
 	}

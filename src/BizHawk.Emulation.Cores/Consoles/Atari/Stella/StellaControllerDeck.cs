@@ -16,11 +16,15 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
-					.Concat(
-					[
-						"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
+					.Concat([
+						"Reset",
+						"Select",
+						"Power",
+						"Toggle Left Difficulty",
+						"Toggle Right Difficulty",
+						"Toggle TV Type",
 					])
-					.ToList()
+					.ToList(),
 			};
 
 			foreach (var kvp in Port1.Definition.Axes) Definition.Axes.Add(kvp);
