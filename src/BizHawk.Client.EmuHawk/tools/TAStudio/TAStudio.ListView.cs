@@ -370,6 +370,45 @@ namespace BizHawk.Client.EmuHawk
 			return (lag.Lagged.HasValue && lag.Lagged.Value) || (hideWasLag && lag.WasLagged.HasValue && lag.WasLagged.Value);
 		}
 
+		/// <param name="selection">
+		/// list of row indices sorted ascending, as returned by <c>TasView.SelectedRows</c>,
+		/// and must not be empty (so there must be a selection)
+		/// </param>
+		/// <remarks>fills with <see langword="false"/> (unheld) if held on all selected frames, <see langword="true"/> (held) otherwise</remarks>
+		private void ToggleButtonStateOnFrames(int[] selection, string buttonName)
+		{
+			// nifty taseditor logic
+			// your TAS Editor logic failed us (it didn't account for non-contiguous `SelectedRows`) --yoshi
+			var allPressed = selection.All(index => CurrentTasMovie.BoolIsPressed(index, buttonName))
+				&& selection[selection.Length - 1] != CurrentTasMovie.FrameCount; // last movie frame can't have input, but can be selected
+			var iSelection = 0;
+			var lastFrameIndexSeen = selection[iSelection] - 1;
+			while (iSelection < selection.Length)
+			{
+				var index = selection[iSelection];
+				if (index - lastFrameIndexSeen is not 1) break;
+				lastFrameIndexSeen = index;
+				iSelection++;
+			}
+			// `iSelection` now points to the element after the last of the first contiguous block--if the whole selection is contiguous, it's pointing after the end of the array...
+			CurrentTasMovie.SetBoolStates(frame: selection[0], count: iSelection, buttonName, val: !allPressed);
+			var blockStart = iSelection;
+			lastFrameIndexSeen = selection[iSelection] - 1;
+			while (iSelection < selection.Length) // ...and these will be equal, so the loop will end immediately
+			{
+				var index = selection[iSelection];
+				if (index - lastFrameIndexSeen is not 1)
+				{
+					// discontinuity; split off another block, and this is now the start of the next block
+					CurrentTasMovie.SetBoolStates(frame: selection[blockStart], count: iSelection - blockStart, buttonName, val: !allPressed);
+					blockStart = iSelection;
+				}
+				lastFrameIndexSeen = index;
+				iSelection++;
+			}
+			CurrentTasMovie.SetBoolStates(frame: selection[blockStart], count: iSelection - blockStart, buttonName, val: !allPressed); // `count` arg will be 0 if the whole selection is contiguous
+		}
+
 		private void TasView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			if (TasView.AnyRowsSelected)
@@ -388,37 +427,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (ModifierKeys != Keys.Alt)
 						{
-							// nifty taseditor logic
-							// your TAS Editor logic failed us (it didn't account for non-contiguous `SelectedRows`) --yoshi
-							var selection = TasView.SelectedRows.ToArray(); // sorted asc, length >= 1
-							var allPressed = selection.All(index => CurrentTasMovie.BoolIsPressed(index, buttonName))
-								&& selection[selection.Length - 1] != CurrentTasMovie.FrameCount; // last movie frame can't have input, but can be selected
-							var iSelection = 0;
-							var lastFrameIndexSeen = selection[iSelection] - 1;
-							while (iSelection < selection.Length)
-							{
-								var index = selection[iSelection];
-								if (index - lastFrameIndexSeen is not 1) break;
-								lastFrameIndexSeen = index;
-								iSelection++;
-							}
-							// `iSelection` now points to the element after the last of the first contiguous block--if the whole selection is contiguous, it's pointing after the end of the array...
-							CurrentTasMovie.SetBoolStates(frame: selection[0], count: iSelection, buttonName, val: !allPressed);
-							var blockStart = iSelection;
-							lastFrameIndexSeen = selection[iSelection] - 1;
-							while (iSelection < selection.Length) // ...and these will be equal, so the loop will end immediately
-							{
-								var index = selection[iSelection];
-								if (index - lastFrameIndexSeen is not 1)
-								{
-									// discontinuity; split off another block, and this is now the start of the next block
-									CurrentTasMovie.SetBoolStates(frame: selection[blockStart], count: iSelection - blockStart, buttonName, val: !allPressed);
-									blockStart = iSelection;
-								}
-								lastFrameIndexSeen = index;
-								iSelection++;
-							}
-							CurrentTasMovie.SetBoolStates(frame: selection[blockStart], count: iSelection - blockStart, buttonName, val: !allPressed); // `count` arg will be 0 if the whole selection is contiguous
+							ToggleButtonStateOnFrames(TasView.SelectedRows.ToArray(), buttonName);
 						}
 						else
 						{
