@@ -28,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressContextMenu;
 		private int _startRow;
 		private int _paintingMinFrame = -1;
-		private bool _playbackInterrupted; // Occurs when the emulator is unpaused and the user click and holds mouse down to begin delivering input
 
 		// Editing analog input
 		private string _axisEditColumn = "";
@@ -603,9 +602,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (targetCol.Type is not ColumnType.Text) // User changed input
 				{
-					_playbackInterrupted = !MainForm.EmulatorPaused;
-					MainForm.PauseEmulator();
-
 					// Pausing the emulator is insufficient to actually stop frame advancing as the frame advance hotkey can
 					// still take effect. This can lead to desyncs by simultaneously changing input and frame advancing.
 					// So we want to block all frame advance operations while the user is changing input in the piano roll

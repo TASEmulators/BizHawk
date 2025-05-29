@@ -958,13 +958,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoTriggeredAutoRestoreIfNeeded()
 		{
-			// Disable the seek that could have been initiated when painting.
-			// This must done before DoAutoRestore, otherwise it would disable the auto-restore seek.
-			if (_playbackInterrupted)
-			{
-				MainForm.PauseOnFrame = null;
-			}
-
 			if (_triggerAutoRestore)
 			{
 				TastudioPlayMode(true); // once user started editing, rec mode is unsafe
@@ -972,12 +965,6 @@ namespace BizHawk.Client.EmuHawk
 
 				_triggerAutoRestore = false;
 				_autoRestorePaused = null;
-			}
-
-			if (_playbackInterrupted)
-			{
-				MainForm.UnpauseEmulator();
-				_playbackInterrupted = false;
 			}
 		}
 
