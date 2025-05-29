@@ -69,7 +69,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var entries = ((IEnumerator<KeyValuePair<object, object/*?*/>>) lti.GetEnumerator()).AsEnumerable()
 					.ToArray();
-				Console.WriteLine(entries[0].Key.GetType().FullName);
 				return string.Concat(entries.All(static kvp => kvp.Key is long)
 					? entries.OrderBy(static kvp => (long) kvp.Key, Comparer<long>.Default)
 						.Select(static kvp => $"{kvp.Key}: \"{kvp.Value}\"\n")
