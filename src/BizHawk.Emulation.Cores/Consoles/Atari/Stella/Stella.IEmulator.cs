@@ -18,15 +18,15 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 
 			// Handle all the console switches here
 			if (controller.IsPressed("Toggle Right Difficulty")) _rightDifficultyToggled = !_rightDifficultyToggled;
-			if (controller.IsPressed("Toggle Left Difficulty"))	_leftDifficultyToggled = !_leftDifficultyToggled;
+			if (controller.IsPressed("Toggle Left Difficulty")) _leftDifficultyToggled = !_leftDifficultyToggled;
 
 			// select and reset switches default to an unpressed state
 			// unknown whether TV color switch matters for TASing, so default to Color for now
 			byte switchPort = 0b00001011;
 			if (_rightDifficultyToggled) switchPort |= 0b10000000;
-			if (_leftDifficultyToggled)  switchPort |= 0b01000000;
+			if (_leftDifficultyToggled) switchPort |= 0b01000000;
 			if (controller.IsPressed("Select")) switchPort &= 0b11111101; // 0 = Pressed
-			if (controller.IsPressed("Reset"))  switchPort &= 0b11111110; // 0 = Pressed
+			if (controller.IsPressed("Reset")) switchPort &= 0b11111110; // 0 = Pressed
 
 			bool powerPressed = false;
 			if (controller.IsPressed("Power")) powerPressed = true;
