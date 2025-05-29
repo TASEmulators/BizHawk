@@ -37,6 +37,7 @@ extern int headlessGetVideoHeight();
 extern void headlessEnableVideoRendering();
 extern void headlessDisableVideoRendering();
 extern uint32_t* headlessGetPallette();
+extern int currentPaletteIndex;
 
 // Audio
 extern void headlessUpdateSounds();

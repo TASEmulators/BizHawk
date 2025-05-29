@@ -151,7 +151,7 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
   *pitch = headlessGetVideoPitch();
   *paletteSize = PALETTE_SIZE;
 
-  uint32_t *palette = headlessGetPallette();
+  uint32_t *palette = headlessGetPallette() + PALETTE_SIZE * currentPaletteIndex;
   for (size_t i = 0; i < PALETTE_SIZE; i++)
   {
     uint8_t *srcColor = (uint8_t *)&palette[i];
