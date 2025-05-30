@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -86,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			else
 			{
 				multiplier = _settings.ScaleFactor - resolutions.Length + 1;
-				resolution = resolutions.Last();
+				resolution = resolutions[resolutions.Length - 1];
 			}
 
 			_configFile = Encoding.ASCII.GetBytes(
