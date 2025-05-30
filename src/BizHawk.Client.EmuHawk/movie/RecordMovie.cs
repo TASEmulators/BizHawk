@@ -202,8 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = MakePath();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				var test = new FileInfo(path);
-				if (test.Exists)
+				if (File.Exists(path))
 				{
 					var result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
 					if (!result)
@@ -214,12 +213,6 @@ namespace BizHawk.Client.EmuHawk
 
 				var movieToRecord = _movieSession.Get(path);
 				movieToRecord.Author = AuthorBox.Text ?? _config.DefaultAuthor;
-
-				var fileInfo = new FileInfo(path);
-				if (!fileInfo.Exists)
-				{
-					Directory.CreateDirectory(fileInfo.DirectoryName);
-				}
 
 				var selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
 				if (selectedStartFromValue is START_FROM_SAVESTATE && _emulator.HasSavestates())
