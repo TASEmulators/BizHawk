@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 			Result.Movie.SystemID = VSystemID.Raw.Doom;
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DSDA.ControllerTypes.Hexen,
+				InputFormat = DSDA.ControllerType.Hexen,
 				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
 				MonstersRespawn = false,
 				FastMonsters = false,

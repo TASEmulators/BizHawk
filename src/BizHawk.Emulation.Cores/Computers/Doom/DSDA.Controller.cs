@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						// current max raw mouse delta is 180
 						.AddAxis($"P{port} Mouse Turning", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0);
 
-					if (settings.InputFormat is not ControllerTypes.Doom)
+					if (settings.InputFormat is not ControllerType.Doom)
 					{
 						controller
 							.AddAxis($"P{port} Fly / Look", (-7).RangeTo(7), 0)
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						$"P{port} Weapon Select 4",
 					]);
 
-					if (settings.InputFormat is ControllerTypes.Hexen)
+					if (settings.InputFormat is ControllerType.Hexen)
 					{
 						controller.BoolButtons.AddRange([
 							$"P{port} Jump",

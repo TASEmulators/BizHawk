@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common
 
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DSDA.ControllerTypes.Doom,
+				InputFormat = DSDA.ControllerType.Doom,
 				CompatibilityLevel = compLevel,
 				SkillLevel = skill,
 				InitialEpisode = episode,

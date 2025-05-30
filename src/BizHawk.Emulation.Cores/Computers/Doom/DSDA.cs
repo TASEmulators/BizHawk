@@ -71,16 +71,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
+			var divider = (_settings.InternalAspect == AspectRatio._16by9
+				|| _settings.InternalAspect == AspectRatio._16by10)
+				? 3
+				: 1;
+			// when passing render_aspect to the core, we need it to treat native as 4:3
+			// that ensures FOV is correct on higher resolutions
+			// but when picking resolution we use original AspectRatio value as index
+			var renderAspect = (int)(_settings.InternalAspect == AspectRatio.Native ? AspectRatio._4by3
+				: _settings.InternalAspect == AspectRatio._16by9 ? AspectRatio._16by10
+				: _settings.InternalAspect);
+
 			_configFile = Encoding.ASCII.GetBytes(
 				$"screen_resolution \"{
-					_nativeResolution.X *     _settings.ScaleFactor}x{
-					_nativeResolution.Y *     _settings.ScaleFactor}\"\n"
-				+ $"render_wipescreen {      (_syncSettings.RenderWipescreen ? 1 : 0)}\n"
+					_resolutions[(int)_settings.InternalAspect].X * _settings.ScaleFactor / divider}x{
+					_resolutions[(int)_settings.InternalAspect].Y * _settings.ScaleFactor / divider}\"\n"
+				+ $"render_aspect {renderAspect}\n"
+				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "boom_translucent_sprites 0\n"
-				+ "render_aspect 3\n" // 4:3, controls FOV on higher resolutions (see SetRatio() in the core)
 				+ "render_stretch_hud 0\n"
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
+				+ "render_stretch_hud 1\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -213,7 +225,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly WaterboxHost _elf;
 		private readonly LibDSDA _core;
 		private readonly LibDSDA.load_archive_cb _loadCallback;
-		private readonly Point _nativeResolution = new(320, 200);
+		private readonly Point[] _resolutions =
+		[
+			// order must match AspectRatio values since they're used as indices
+			new(320,  200),
+			new(1280, 720),
+			new(1280, 768),
+			new(320,  240),
+		];
 		private readonly int[] _runSpeeds = [ 25, 50 ];
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
 		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];

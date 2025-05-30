@@ -145,12 +145,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (controller.IsPressed($"P{port} Use"))  players[i].Buttons |= (1 << 1);
 
 					// Raven Games
-					if (_syncSettings.InputFormat is not ControllerTypes.Doom)
+					if (_syncSettings.InputFormat is not ControllerType.Doom)
 					{
 						players[i].FlyLook     = controller.AxisValue($"P{port} Fly / Look");
 						players[i].ArtifactUse = controller.AxisValue($"P{port} Use Artifact");
 
-						if (_syncSettings.InputFormat is ControllerTypes.Hexen)
+						if (_syncSettings.InputFormat is ControllerType.Hexen)
 						{
 							players[i].Jump      = Convert.ToInt32(controller.IsPressed($"P{port} Jump"));
 							players[i].EndPlayer = Convert.ToInt32(controller.IsPressed($"P{port} End Player"));

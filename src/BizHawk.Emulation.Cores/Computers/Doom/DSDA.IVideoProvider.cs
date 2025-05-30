@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	{
 		private int[] _palBuffer = [ ];
 		private int[] _vidBuff = [ ];
-		public int VirtualWidth => BufferHeight * 4 / 3;
-		public int VirtualHeight => BufferHeight;
+		public int VirtualWidth => BufferWidth;
+		public int VirtualHeight { get; private set; }
 		public int PaletteSize { get; private set; }
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
@@ -37,6 +37,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				if (_vidBuff.Length < BufferWidth * BufferHeight) _vidBuff = new int[BufferWidth * BufferHeight];
 				var videoBuffer = (byte*) videoBufferSrc.ToPointer();
 				for (var i = 0; i < _vidBuff.Length; i++) _vidBuff[i] = _palBuffer[videoBuffer[i]];
+
+				VirtualHeight = _settings.InternalAspect == AspectRatio.Native
+					? BufferWidth * 3 / 4
+					: BufferHeight;
 			}
 		}
 	}

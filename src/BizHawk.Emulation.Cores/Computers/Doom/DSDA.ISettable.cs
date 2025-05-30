@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	public partial class DSDA : ISettable<DSDA.DoomSettings, DSDA.DoomSyncSettings>
 	{
-		public enum ControllerTypes
+		public enum ControllerType
 		{
 			Doom,
 			Heretic,
@@ -93,6 +93,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Dark = 2
 		}
 
+		public enum AspectRatio
+		{
+			Native = 0,
+			[Display(Name = "16:9")]
+			_16by9 = 1,
+			[Display(Name = "16:10")]
+			_16by10 = 2,
+			[Display(Name = "4:3")]
+			_4by3 = 3,
+		}
+
 		public enum TurningResolution : int
 		{
 			[Display(Name = "16 bits (longtics)")]
@@ -156,6 +167,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ScaleFactor { get; set; }
 
+			[DisplayName("Internal Aspect Ratio")]
+			[Description("Sets aspect ratio of the rendered screen. 'Native' is multiples of 320x200 with aspect correction (to 4:3) applied by the frontend. Other modes produce pre-corrected image, useful for viewing Automap on higher resolutions (to avoid pixel distortion caused by external aspect correcton).\n\nRequires restart.")]
+			[DefaultValue(AspectRatio.Native)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public AspectRatio InternalAspect { get; set; }
+
 			[DisplayName("Sfx Volume")]
 			[Description("Sound effects volume [0 - 15].")]
 			[Range(0, 15)]
@@ -206,22 +223,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DisplayCommands { get; set; }
 
 			[DisplayName("Automap Totals")]
-			[Description("Shows counts for kills, items, and secrets on automap.")]
+			[Description("Shows counts for kills, items, and secrets on Automap.")]
 			[DefaultValue(false)]
 			public bool MapTotals { get; set; }
 
 			[DisplayName("Automap Time")]
-			[Description("Shows elapsed time on automap.")]
+			[Description("Shows elapsed time on Automap.")]
 			[DefaultValue(false)]
 			public bool MapTime { get; set; }
 
 			[DisplayName("Automap Coordinates")]
-			[Description("Shows in-level coordinates on automap.")]
+			[Description("Shows in-level coordinates on Automap.")]
 			[DefaultValue(false)]
 			public bool MapCoordinates { get; set; }
 
 			[DisplayName("Automap Overlay")]
-			[Description("Shows automap on top of gameplay.")]
+			[Description("Shows Automap on top of gameplay.")]
 			[DefaultValue(MapOverlays.Disabled)]
 			public MapOverlays MapOverlay { get; set; }
 
@@ -246,7 +263,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
-			var ret = _settings.ScaleFactor == o.ScaleFactor
+			var ret = (_settings.ScaleFactor == o.ScaleFactor
+				&& _settings.InternalAspect == o.InternalAspect)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
@@ -260,11 +278,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSyncSettings
 		{
-			[DefaultValue(ControllerTypes.Doom)]
+			[DefaultValue(ControllerType.Doom)]
 			[DisplayName("Input Format")]
 			[Description("The format provided for the players' input.")]
 			[TypeConverter(typeof(DescribableEnumConverter))]
-			public ControllerTypes InputFormat { get; set; }
+			public ControllerType InputFormat { get; set; }
 
 			[DisplayName("Player 1 Present")]
 			[Description("Specifies if player 1 is present")]
