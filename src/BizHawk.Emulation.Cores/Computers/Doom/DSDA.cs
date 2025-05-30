@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			foreach (var wadFile in _wadFiles) totalWadSize += (uint) wadFile.FileData.Length;
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
-			
+
 			// resolutions are divided by 3 because lowest 16:9 resolution whose width
 			// is a multiple of native (corrected or not) is 1280x720.
 			// to still support 1x as a basis for every aspect (including widescreen)
