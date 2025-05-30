@@ -2097,7 +2097,7 @@ namespace BizHawk.Client.EmuHawk
 					return true;
 
 				FileStream fs = new(newPath, FileMode.Create, FileAccess.Write);
-				using (BinaryWriter writer = new(fs)) writer.Write(saveram);
+				using (BinaryWriter writer = new(fs, Encoding.UTF8, leaveOpen: true)) writer.Write(saveram);
 				fs.Flush(flushToDisk: true);
 				fs.Dispose();
 
