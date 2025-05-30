@@ -3956,7 +3956,8 @@ namespace BizHawk.Client.EmuHawk
 						{
 							LoadSaveRam();
 						}
-						else if (Config.AutosaveSaveRAM && File.Exists(Config.PathEntries.SaveRamAbsolutePath(loader.Game, MovieSession.Movie)))
+						else if (Config.AutosaveSaveRAM
+							&& File.Exists(Config.PathEntries.AutoSaveRamAbsolutePath(loader.Game, MovieSession.Movie)))
 						{
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
