@@ -1411,7 +1411,9 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				if (CurrentlyOpenRomArgs == null) return true;
-				return LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
+				return LoadRom(
+					CurrentlyOpenRomArgs.OpenAdvanced.SimplePath,
+					CurrentlyOpenRomArgs with { ForcedSysID = Emulator.SystemId });
 			}
 		}
 
@@ -3766,7 +3768,7 @@ namespace BizHawk.Client.EmuHawk
 				var loader = new RomLoader(Config, this)
 				{
 					ChooseArchive = LoadArchiveChooser,
-					ChoosePlatform = ChoosePlatformForRom,
+					ChoosePlatform = romGame => args.ForcedSysID ?? ChoosePlatformForRom(romGame),
 					Deterministic = deterministic,
 					MessageCallback = AddOnScreenMessage,
 					OpenAdvanced = args.OpenAdvanced,
