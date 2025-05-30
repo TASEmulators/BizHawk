@@ -8,14 +8,17 @@ namespace BizHawk.Client.Common
 	public class FrameworkZipWriter : IZipWriter
 	{
 		private ZipArchive _archive;
+
+		private FileStream _fs;
+
 		private Zstd _zstd;
 		private readonly CompressionLevel _level;
 		private readonly int _zstdCompressionLevel;
 
 		public FrameworkZipWriter(string path, int compressionLevel)
 		{
-			_archive = new ZipArchive(new FileStream(path, FileMode.Create, FileAccess.Write),
-				ZipArchiveMode.Create, false);
+			_fs = new(path, FileMode.Create, FileAccess.Write);
+			_archive = new(_fs, ZipArchiveMode.Create, leaveOpen: true);
 			if (compressionLevel == 0)
 				_level = CompressionLevel.NoCompression;
 			else if (compressionLevel < 5)
@@ -53,7 +56,9 @@ namespace BizHawk.Client.Common
 				_archive.Dispose();
 				_archive = null;
 			}
-
+			_fs?.Flush(flushToDisk: true);
+			_fs?.Dispose();
+			_fs = null;
 			if (_zstd != null)
 			{
 				_zstd.Dispose();

@@ -2096,8 +2096,10 @@ namespace BizHawk.Client.EmuHawk
 				if (saveram == null)
 					return true;
 
-				using (var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
-					writer.Write(saveram, 0, saveram.Length);
+				FileStream fs = new(newPath, FileMode.Create, FileAccess.Write);
+				using (BinaryWriter writer = new(fs)) writer.Write(saveram);
+				fs.Flush(flushToDisk: true);
+				fs.Dispose();
 
 				if (file.Exists)
 				{
