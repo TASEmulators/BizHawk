@@ -772,6 +772,8 @@ void CDLog68k(uint addr, uint flags)
 
 unsigned bk_cpu_hook(hook_type_t type, int width, unsigned address, unsigned value)
 {
+	address &= 0xFFFFFF;
+
 	switch (type)
 	{
 		case HOOK_M68K_E:
