@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -71,25 +73,26 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
-			// resolutions are divided by 3 because lowest 16:9 resolution whose width
-			// is a multiple of native (corrected or not) is 1280x720.
-			// to still support 1x as a basis for every aspect (including widescreen)
-			// we use roughly 1/3 of that for 16:9 and 16:10. it looks bad on low resolutions
-			// but it's not meant for them anyway - 3x is where it shines.
-			// so whoever wants vanilla feel will use 320x200 and upscale in frontend,
-			// and modern people will use widescreen at high resolutions
-			var width  = _resolutions[(int)_settings.InternalAspect].X / 3 * _settings.ScaleFactor;
-			var height = _resolutions[(int)_settings.InternalAspect].Y / 3 * _settings.ScaleFactor;
+			Point resolution;
+			int multiplier = 1;
+			var aspectIndex = (int)_settings.InternalAspect;
+			var resolutionIndex = _settings.ScaleFactor - 1;
+			var resolutions = _resolutions[aspectIndex];
 
-			// when instead using lowres 16:9, internal heuristics result in stretched status bar
-			// so we slightly increase the res to just above the threshold (while keeping it even)
-			if (_settings.InternalAspect == AspectRatio._16by9 && _settings.ScaleFactor == 1)
+			if (resolutionIndex < resolutions.Length)
 			{
-				width += 2;
+				resolution = resolutions[resolutionIndex];
+			}
+			else
+			{
+				multiplier = _settings.ScaleFactor - resolutions.Length + 1;
+				resolution = resolutions.Last();
 			}
 
 			_configFile = Encoding.ASCII.GetBytes(
-				$"screen_resolution \"{width}x{height}\"\n"
+				$"screen_resolution \"{
+					resolution.X * multiplier}x{
+					resolution.Y * multiplier}\"\n"
 				// we need the core to treat native resolution as 4:3 aspect,
 				// that ensures FOV is correct on higher resolutions
 				+ $"render_aspect {(int)(_settings.InternalAspect == AspectRatio.Native
@@ -233,13 +236,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly WaterboxHost _elf;
 		private readonly LibDSDA _core;
 		private readonly LibDSDA.load_archive_cb _loadCallback;
-		private readonly Point[] _resolutions =
+		// order must match AspectRatio values since they're used as index
+		private readonly Point[][] _resolutions =
 		[
-			// order must match AspectRatio values since they're used as indices
-			new(960,  600),
-			new(1280, 720),
-			new(1280, 768),
-			new(960,  720),
+			// we want to support 1x widescreen so internal scale is universal,
+			// but lowest widescreen multiple of native height (corrected or not) is 1280x720.
+			// it doesn't divide nicely so we have to use
+			// artificial lowres replacements that aren't exactly 16:9 or 16:10.
+			// but for 426x240 the core will also stretch the status bar
+			// because it's just below some threshold in its aspect heuristics.
+			// so we add 2 pixels to it (to keep it even), while 426x256 already works fine
+			[ new(320, 200) ],
+			[ new(428, 240), new(854, 480), new(1280, 720) ],
+			[ new(426, 256), new(854, 512), new(1280, 768) ],
+			[ new(320, 240) ],
 		];
 		private readonly int[] _runSpeeds = [ 25, 50 ];
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
