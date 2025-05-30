@@ -71,21 +71,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
-			var divider = (_settings.InternalAspect == AspectRatio._16by9
-				|| _settings.InternalAspect == AspectRatio._16by10)
-				? 3
-				: 1;
-			// when passing render_aspect to the core, we need it to treat native as 4:3
-			// that ensures FOV is correct on higher resolutions
-			// but when picking resolution we use original AspectRatio value as index
-			var renderAspect = (int)(_settings.InternalAspect == AspectRatio.Native ? AspectRatio._4by3
-				: _settings.InternalAspect == AspectRatio._16by9 ? AspectRatio._16by10
-				: _settings.InternalAspect);
+			// we already send exact resolution, but we also have to send aspect
+			// to control the automatic side effects:
+			// - we need it to treat native resolution as 4:3 aspect,
+			// that ensures FOV is correct on higher resolutions.
+			// - but when we send a 16:9 resolution that's too low,
+			// the core won't extend the statusbar, so we send 16:10 aspect to work around that.
+			// and when picking resolution we use original AspectRatio value as index
+			var renderAspect = (int)(   _settings.InternalAspect == AspectRatio.Native
+				? AspectRatio._4by3   : _settings.InternalAspect == AspectRatio._16by9
+				? AspectRatio._16by10 : _settings.InternalAspect);
 
+			// resolutions are divided by 3 because lowest 16:9 resolution whose width
+			// is a multiple of native (corrected or not) is 1280x720.
+			// to still support 1x as a basis for every aspect we use
+			// roughly 1/3 of that for 16:9 and 16:10. it looks bad on low resolutions
+			// but it's not meant for them anyway, so 3x is where it shines.
+			// so whoever wants vanilla feel will use 320x200 and upscale in frontend,
+			// and modern people will use widescreen on some high resolution
 			_configFile = Encoding.ASCII.GetBytes(
 				$"screen_resolution \"{
-					_resolutions[(int)_settings.InternalAspect].X * _settings.ScaleFactor / divider}x{
-					_resolutions[(int)_settings.InternalAspect].Y * _settings.ScaleFactor / divider}\"\n"
+					_resolutions[(int)_settings.InternalAspect].X * _settings.ScaleFactor / 3}x{
+					_resolutions[(int)_settings.InternalAspect].Y * _settings.ScaleFactor / 3}\"\n"
 				+ $"render_aspect {renderAspect}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "boom_translucent_sprites 0\n"
@@ -228,10 +235,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly Point[] _resolutions =
 		[
 			// order must match AspectRatio values since they're used as indices
-			new(320,  200),
+			new(960,  600),
 			new(1280, 720),
 			new(1280, 768),
-			new(320,  240),
+			new(960,  720),
 		];
 		private readonly int[] _runSpeeds = [ 25, 50 ];
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
