@@ -4,6 +4,8 @@ using System.Threading;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
+using Windows.Win32;
+
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
 namespace BizHawk.Client.EmuHawk
