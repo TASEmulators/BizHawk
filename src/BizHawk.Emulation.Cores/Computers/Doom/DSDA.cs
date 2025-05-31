@@ -98,7 +98,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					: _settings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "boom_translucent_sprites 0\n"
-				+ "render_stretch_hud 0\n"
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
 				+ "render_stretch_hud 1\n"
