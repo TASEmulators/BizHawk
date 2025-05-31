@@ -96,6 +96,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public virtual byte[] BulkPeekByte(Range<long> addresses)
+		{
+			var buf = new byte[addresses.Count()];
+			BulkPeekByte(addresses, buf);
+			return buf;
+		}
+
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
