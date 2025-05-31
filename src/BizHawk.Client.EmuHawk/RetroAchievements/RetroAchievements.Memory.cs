@@ -151,8 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_addressMangler == 0)
 					{
-						var ret = _domain.BulkPeekByte(((long) addr).RangeToExclusive(end));
-						Marshal.Copy(ret, 0, buffer, (int) length); //TODO create a Span over buffer and pass that to BulkPeekByte
+						_domain.BulkPeekByte(addr, Util.UnsafeSpanFromPointer(ptr: buffer, length: (int) length));
 					}
 					else
 					{
