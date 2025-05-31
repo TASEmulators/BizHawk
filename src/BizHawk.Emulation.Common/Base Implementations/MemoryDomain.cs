@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Common
 
 		private const string ERR_MSG_NOT_ALIGNED = "The API contract doesn't define what to do for unaligned reads and writes!";
 
+		protected const string ERR_MSG_TOO_MANY_BYTES_REQ = "too many bytes requested, would read beyond bounds of domain";
+
 		public enum Endian
 		{
 			Big,
@@ -99,8 +101,17 @@ namespace BizHawk.Emulation.Common
 		public virtual byte[] BulkPeekByte(Range<long> addresses)
 		{
 			var buf = new byte[addresses.Count()];
-			BulkPeekByte(addresses, buf);
+			BulkPeekByte((ulong) addresses.Start, buf);
 			return buf;
+		}
+
+		public virtual void BulkPeekByte(ulong srcStartOffset, Span<byte> dstBuffer)
+		{
+			using var handle = this.EnterExit();
+			var iSrc = (long) srcStartOffset;
+			var endExcl = (long) srcStartOffset + dstBuffer.Length;
+			var iDst = 0;
+			while (iSrc != endExcl) dstBuffer[iDst++] = PeekByte(iSrc++);
 		}
 
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
