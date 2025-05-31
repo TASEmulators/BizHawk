@@ -11,6 +11,10 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IMemoryDomains" />
 	public abstract class MemoryDomain : IMonitor
 	{
+		private const string ERR_MSG_DEST_WRONG_LEN = "Invalid length of values array";
+
+		private const string ERR_MSG_NOT_ALIGNED = "The API contract doesn't define what to do for unaligned reads and writes!";
+
 		public enum Endian
 		{
 			Big,
@@ -97,9 +101,9 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			if ((long)addresses.Count() != values.Length)
+			if ((ulong) values.Length != addresses.Count())
 			{
-				throw new InvalidOperationException("Invalid length of values array");
+				throw new InvalidOperationException(ERR_MSG_DEST_WRONG_LEN);
 			}
 
 			using (this.EnterExit())
@@ -119,13 +123,12 @@ namespace BizHawk.Emulation.Common
 			var start = addresses.Start;
 			var end = addresses.EndInclusive + 1;
 
-			if ((start & 1) != 0 || (end & 1) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
+			if (start % 2 is not 0 || end % 2 is not 0) throw new InvalidOperationException(ERR_MSG_NOT_ALIGNED);
 
-			if (values.LongLength * 2 != end - start)
+			if (checked((ulong) values.Length * 2UL) != addresses.Count())
 			{
 				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
+				throw new InvalidOperationException(ERR_MSG_DEST_WRONG_LEN);
 			}
 
 			using (this.EnterExit())
@@ -143,13 +146,12 @@ namespace BizHawk.Emulation.Common
 			var start = addresses.Start;
 			var end = addresses.EndInclusive + 1;
 
-			if ((start & 3) != 0 || (end & 3) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
+			if (start % 4 is not 0 || end % 4 is not 0) throw new InvalidOperationException(ERR_MSG_NOT_ALIGNED);
 
-			if (values.LongLength * 4 != end - start)
+			if (checked((ulong) values.Length * 4UL) != addresses.Count())
 			{
 				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
+				throw new InvalidOperationException(ERR_MSG_DEST_WRONG_LEN);
 			}
 
 			using (this.EnterExit())
