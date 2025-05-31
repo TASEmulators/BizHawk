@@ -26,14 +26,14 @@
 			bool saved = false;
 			if (saveChanges)
 			{
-				if (Mode == MovieMode.Record || (this.IsActive() && Changes))
+				// How would a movie ever have changes while inactive?
+				if (this.IsActive() && Changes)
 				{
 					Save();
 					saved = true;
 				}
 			}
 
-			Changes = false;
 			Mode = MovieMode.Inactive;
 
 			return saved;
