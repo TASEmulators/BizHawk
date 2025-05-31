@@ -1032,6 +1032,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			dmc.Fetch();
 		}
 
+		public void RunDMCHaltFetch()
+		{
+			nes.ReadMemory(nes.cpu.address_bus);
+		}
+
 		private readonly int[][] sequencer_lut = new int[2][];
 
 		private int sequencer_check_1, sequencer_check_2;
@@ -1329,6 +1334,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void RunOneLast()
 		{
+			// The controllers only get strobed when transitioning from a get cyclte to a put cycle.
+			if(dmc.timer % 2 == 1)
+			{
+				if(nes.joypadStrobed)
+				{
+					nes.joypadStrobed = false;
+					nes.strobe_joyport();
+				}
+			}
+
 			// we need to predict if there will be a length clock here, because the sequencer ticks last, but the
 			// timer reload shouldn't happen if length clock and write happen simultaneously
 			// I'm not sure if we can avoid this by simply processing the sequencer first
