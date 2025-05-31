@@ -65,18 +65,40 @@ c88a2bb3d783e2ad7b599a8e301e099e		Hexen (Beta)	Doom
 876a5a44c7b68f04b3bb9bc7a5bd69d6		Hexen (v1.0 Demo)	Doom			
 b2543a03521365261d0a0f74d5dd90f0		Hexen (v1.0)	Doom			
 abb033caf81e26f12a2103e1fa25453f		Hexen (v1.1)	Doom			
+b4b555208a03f632559f1bf64e582797		FreeDM (v0.5)	Doom		
+336aac41d87222ec9641fbd28ae8ce97		FreeDM (v0.6)	Doom		
+7b743b67d963b8600da5f05079c8f1b0		FreeDM (v0.6.1)	Doom		
+4194f0dc982506cfd896cee382314eeb		FreeDM (v0.6.2)	Doom		
+6f49b8557b39c3a863341cadfc3a420f		FreeDM (v0.6.4)	Doom		
+da6ca1bab43edf9fe6a4f14ad060a8d8		FreeDM (v0.7)	Doom		
+ee1090f12aa2b4a06e33f640a039f00e		FreeDM (v0.7-rc1)	Doom		
 05859098bf191899903ef343afba369d		FreeDM (v0.8)	Doom		
+5142cbf6a3f862b293d649225737381b		FreeDM (v0.8-beta1)	Doom		
 cbb27c5f3c2c44d34843cf63daa627f6		FreeDM (v0.9)	Doom		
 f37b8b70e1394289a7ec404f67cdec1a		FreeDM (v0.10)	Doom		
 bd4f359f1963e388beda014c5548b420		FreeDM (v0.10.1)	Doom		
-d76d3973c075b069ecb4e16dc9eacbb4		FreeDM (v0.11)	Doom			
+d76d3973c075b069ecb4e16dc9eacbb4		FreeDM (v0.11)	Doom		
 77ba9c0f75c32e4a729490688bb99241		FreeDM (v0.11.1)	Doom		
 9352b09ae878dc52c6c18aa38acda6eb		FreeDM (v0.11.2)	Doom		
 87ee2494d921633420ce9bdb418127c4		FreeDM (v0.11.3)	Doom		
 3250aad8b1d40fb7b25b7df6573eb29f		FreeDM (v0.12.0)	Doom		
 d40c932a9183ded919afa89f4a729668		FreeDM (v0.12.1)	Doom		
 908dfd77a14cc490c4cea94b62d13449		FreeDM (v0.13.0)	Doom		
-e3668912fc37c479b2840516c887018b		Freedoom (v0.8)	Doom		
+a8f57c58fc09c61bcb653d2e577207d1		Freedoom (v0.1 Demo)	Doom		
+76f313a02afd03fdb4a647e352585846		Freedoom (v0.2 Demo)	Doom		
+8bf4fd43fc37dd5452fe083c3fc9bfe2		Freedoom (v0.3 Demo)	Doom		
+65456a723a2b08318b394cd78e425834		Freedoom (v0.4 Demo)	Doom		
+d1eafd23cea5e253251f65f0edb13f08		Freedoom (v0.4.1 Demo)	Doom		
+bd4b0a0e31fee4f9378946b6854811c0		Freedoom (v0.5 Demo)	Doom		
+8155ccf1b27901a792efdd3d0d6d85d3		Freedoom (v0.6 Demo)	Doom		
+40ac9a1f4b35b8493e2a29846609ec36		Freedoom (v0.6.1 Demo)	Doom		
+ddd89285cff329da3b70e00603262980		Freedoom (v0.6.2 Demo)	Doom		
+104aa68b59098eed45ca6b328fc4a235		Freedoom (v0.6.4 Demo)	Doom		
+1bc775628ab912cced19007a565cde54		Freedoom (v0.7 Demo)	Doom		
+2e1af223cad142e3487c4327cf0ac8bd		Ultimate Freedoom (v0.6.4)	Doom		
+10a5ea771980c135be1e9585f2a05e53		Ultimate Freedoom (v0.7-rc1)	Doom		
+7b7720fc9c1a20fb8ebb3e9532c089af		Ultimate Freedoom (v0.7)	Doom		
+2a24722c068d3a74cd16f770797ff198		Ultimate Freedoom (v0.8-beta1)	Doom		
 30095b256dd3a1566bbc30286f72bc47		Ultimate Freedoom (v0.8)	Doom		
 aca90cf5ac36e996edc58bd0329b979a		Freedoom: Phase 1 (v0.9)	Doom		
 9b8d72b59fd93b2b3e116149baa1b142		Freedoom: Phase 1 (v0.10)	Doom		
@@ -88,6 +110,20 @@ ea471a3d38fcee0fb3a69bcd3221e335		Freedoom: Phase 1 (v0.11.3)	Doom
 0c5f8ff45cc3538d368a0f8d8fc11ce3		Freedoom: Phase 1 (v0.12.0)	Doom		
 b36aa44a23045e503c19af4b4c438a78		Freedoom: Phase 1 (v0.12.1)	Doom		
 b93be13d05148dd01614bc205a03648e		Freedoom: Phase 1 (v0.13.0)	Doom		
+a02e527fad603e021bd5f6da66fa70af		Freedoom 2 (v0.1)	Doom		
+274b9b4d743d739ca41a0860074a9ab7		Freedoom 2 (v0.2)	Doom		
+70f95b675f74c57d1e4a670dff112967		Freedoom 2 (v0.3)	Doom		
+2ceb85eb5734428e120521ba151a34a2		Freedoom 2 (v0.4)	Doom		
+07cdeb209921df5e0e88a7988ff98afe		Freedoom 2 (v0.5)	Doom		
+b3f43837c64176e5ddc514432bffc385		Freedoom 2 (v0.6)	Doom		
+2e77bc9340c0fa694af75720456ba5fa		Freedoom 2 (v0.6.1)	Doom		
+2362675d5522d09880426b95c3845fe2		Freedoom 2 (v0.6.2)	Doom		
+69a5506753cc801a1bd9d8e1bb289de3		Freedoom 2 (v0.6.3)	Doom		
+5292a1275340798acf9cee07081718e8		Freedoom 2 (v0.6.4)	Doom		
+e2db4f21fbcfd0d69e39ae16b0594168		Freedoom 2 (v0.7-rc1)	Doom			
+21ea277fa5612267eb7985493b33150e		Freedoom 2 (v0.7)	Doom		
+0597b0937e9615a9667b98077332597d		Freedoom 2 (v0.8-beta1)	Doom		
+e3668912fc37c479b2840516c887018b		Freedoom 2 (v0.8)	Doom		
 8fa57dbc7687f84528eba39dde3a20e0		Freedoom: Phase 2 (v0.9)	Doom		
 c5a4f2d38d78b251d8557cb2d93e40ee		Freedoom: Phase 2 (v0.10)	Doom		
 dd9c9e73f5f50d3778c85573cd08d9a4		Freedoom: Phase 2 (v0.10.1)	Doom		
