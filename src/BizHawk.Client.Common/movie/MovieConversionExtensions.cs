@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
@@ -16,21 +15,19 @@ namespace BizHawk.Client.Common
 			tas.CopyLog(old.GetLogEntries());
 			tas.LogKey = old.LogKey;
 
-			tas.HeaderEntries.Clear();
-			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
-
-			// TODO: we have this version number string generated in multiple places
-			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion.ToString(NumberFormatInfo.InvariantInfo)}";
+			foreach (var (k, v) in old.HeaderEntries)
+			{
+				if (k is HeaderKeys.MovieVersion) continue;
+				tas.HeaderEntries[k] = v;
+			}
 
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
-			tas.Comments.Clear();
 			foreach (var comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
-			tas.Subtitles.Clear();
 			foreach (var sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
@@ -50,21 +47,19 @@ namespace BizHawk.Client.Common
 			bk2.CopyLog(old.GetLogEntries());
 			bk2.LogKey = old.LogKey;
 
-			bk2.HeaderEntries.Clear();
-			foreach (var (k, v) in old.HeaderEntries) bk2.HeaderEntries[k] = v;
-
-			// TODO: we have this version number string generated in multiple places
-			bk2.HeaderEntries[HeaderKeys.MovieVersion] = "BizHawk v2.0";
+			foreach (var (k, v) in old.HeaderEntries)
+			{
+				if (k is HeaderKeys.MovieVersion) continue;
+				bk2.HeaderEntries[k] = v;
+			}
 
 			bk2.SyncSettingsJson = old.SyncSettingsJson;
 
-			bk2.Comments.Clear();
 			foreach (var comment in old.Comments)
 			{
 				bk2.Comments.Add(comment);
 			}
 
-			bk2.Subtitles.Clear();
 			foreach (var sub in old.Subtitles)
 			{
 				bk2.Subtitles.Add(sub);
@@ -83,7 +78,6 @@ namespace BizHawk.Client.Common
 
 			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.BinarySavestate = savestate;
-			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
 
@@ -99,19 +93,16 @@ namespace BizHawk.Client.Common
 			tas.LagLog.FromLagLog(old.LagLog);
 			tas.LagLog.StartFromFrame(frame);
 
-			tas.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSavestate = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
-			tas.Comments.Clear();
 			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
-			tas.Subtitles.Clear();
 			foreach (Subtitle sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
@@ -135,26 +126,22 @@ namespace BizHawk.Client.Common
 
 			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.SaveRam = saveRam;
-			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
 
 			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries);
 
-			tas.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSaveRam = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
-			tas.Comments.Clear();
 			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
-			tas.Subtitles.Clear();
 			foreach (Subtitle sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
