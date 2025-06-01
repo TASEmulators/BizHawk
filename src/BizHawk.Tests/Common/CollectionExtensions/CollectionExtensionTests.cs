@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -133,6 +135,22 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			SortedSet<int> c = new(new[] { 1, 2, 3, 4 });
 			c.RemoveAll(Predicate);
 			Assert.AreEqual(2, c.Count, nameof(CE.RemoveAll) + " failed on (ICollection<int> not IList<int>)");
+		}
+
+		[DataRow(new bool[0], null)]
+		[DataRow(new bool[] { true }, true)]
+		[DataRow(new bool[] { false }, false)]
+		[DataRow(new bool[] { true, true }, true)]
+		[DataRow(new bool[] { false, false }, false)]
+		[DataRow(new bool[] { true, false }, null)]
+		[DataRow(new bool[] { false, true }, null)]
+		[TestMethod]
+		public void TestUnanimity(bool[] array, bool? expected)
+		{
+			Assert.AreEqual(expected, ((ISet<bool>) array.ToHashSet()).Unanimity(), "ISet");
+			Assert.AreEqual(expected, array.Unanimity(), "Span");
+			Assert.AreEqual(expected, array.ToList().Unanimity(), "List");
+			Assert.AreEqual(expected, ImmutableArray.Create(array).Unanimity(), "IROColl not List");
 		}
 	}
 }

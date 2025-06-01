@@ -490,6 +490,42 @@ namespace BizHawk.Common.CollectionExtensions
 			return removed;
 		}
 
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool? Unanimity(this IEnumerable<bool> lazy)
+			=> lazy is IReadOnlyCollection<bool> collection
+				? Unanimity(collection)
+				: Unanimity(lazy as ISet<bool> ?? lazy.ToHashSet());
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		public static bool? Unanimity(this IReadOnlyCollection<bool> collection)
+		{
+			if (collection is bool[] arr) return Unanimity(arr.AsSpan());
+			if (collection is List<bool> list)
+			{
+				return list is [ var first, .. ] && list.IndexOf(!first, index: 1) < 0 ? first : null;
+			}
+			var iter = collection.GetEnumerator();
+			if (!iter.MoveNext()) return null;
+			var first1 = iter.Current;
+			while (iter.MoveNext()) if (iter.Current != first1) return null;
+			return first1;
+		}
+
+		/// <returns>
+		/// <see langword="true"/> if all <see langword="true"/>,
+		/// <see langword="false"/> if all <see langword="false"/>,
+		/// <see langword="true"/> if mixed (or empty)
+		/// </returns>
+		public static bool? Unanimity(this ISet<bool> set)
+			=> set.Contains(false)
+				? set.Contains(true) ? null : false
+				: set.Contains(true) ? true : null;
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		public static bool? Unanimity(this ReadOnlySpan<bool> span)
+			=> span is [ var first, .. ] && !span.Slice(start: 1).Contains(!first) ? first : null;
+
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>
 		{
