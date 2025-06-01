@@ -270,11 +270,12 @@ namespace BizHawk.Client.Common
 
 				message += "stopped.";
 
-				var result = Movie.Stop(saveChanges);
-				if (result)
+				if (saveChanges && Movie.Changes)
 				{
+					Movie.Save();
 					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
 				}
+				Movie.Stop();
 
 				Output(message);
 				ReadOnly = true;
@@ -390,7 +391,7 @@ namespace BizHawk.Client.Common
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
-					Movie.Stop();
+					StopMovie();
 					break;
 				case MovieEndAction.Record:
 					Movie.SwitchToRecord();
