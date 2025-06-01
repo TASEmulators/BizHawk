@@ -294,13 +294,6 @@ namespace BizHawk.Client.Common
 			Movie = null;
 		}
 
-		public void ConvertToTasProj()
-		{
-			Movie = Movie.ToTasMovie();
-			Movie.Save();
-			Movie.SwitchToPlay();
-		}
-
 		public IMovie Get(string path, bool loadMovie)
 		{
 			// TODO: change IMovies to take HawkFiles only and not path

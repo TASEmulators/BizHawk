@@ -16,8 +16,6 @@ namespace BizHawk.Client.Common
 			tas.CopyLog(old.GetLogEntries());
 			tas.LogKey = old.LogKey;
 
-			old.Truncate(0); // Trying to minimize ram usage
-
 			tas.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 

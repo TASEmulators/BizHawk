@@ -247,8 +247,8 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				ConvertCurrentMovieToTasproj();
-				success = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
+				var tasMovie = ConvertCurrentMovieToTasproj();
+				success = LoadMovie(tasMovie);
 			}
 
 			// Start Scenario 2: A tasproj is already active
@@ -473,10 +473,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ConvertCurrentMovieToTasproj()
+		private ITasMovie ConvertCurrentMovieToTasproj()
 		{
-			MovieSession.ConvertToTasProj();
-			Settings.RecentTas.Add(MovieSession.Movie.Filename);
+			var tasMovie = MovieSession.Movie.ToTasMovie();
+			tasMovie.Save(); // should this be done?
+			return tasMovie;
 		}
 
 		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)

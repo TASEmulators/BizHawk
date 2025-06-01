@@ -86,11 +86,6 @@ namespace BizHawk.Client.Common
 		void StopMovie(bool saveChanges = true);
 
 		/// <summary>
-		/// If a movie is active, it will be converted to a <see cref="ITasMovie" />
-		/// </summary>
-		void ConvertToTasProj();
-
-		/// <summary>
 		/// Create a new (Tas)Movie with the given path as filename. If <paramref name="loadMovie"/> is true,
 		/// will also attempt to load an existing movie from <paramref name="path"/>.
 		/// </summary>
