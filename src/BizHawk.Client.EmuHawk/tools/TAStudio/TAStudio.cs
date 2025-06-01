@@ -281,7 +281,6 @@ namespace BizHawk.Client.EmuHawk
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
 			MainForm.DisableRewind();
-			MainForm.SetMainformMovieInfo();
 			MovieSession.ReadOnly = true;
 			SetSplicer();
 
@@ -478,7 +477,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MovieSession.ConvertToTasProj();
 			Settings.RecentTas.Add(MovieSession.Movie.Filename);
-			MainForm.SetMainformMovieInfo();
 		}
 
 		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)
@@ -667,7 +665,6 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
 			WantsToControlRewind = false;
 			MainForm.EnableRewind(true);
-			MainForm.SetMainformMovieInfo();
 		}
 
 		private const string DefaultTasProjectName = "default";
