@@ -1199,10 +1199,9 @@ namespace BizHawk.Client.EmuHawk
 					CheckOnClick = true,
 					Checked = false,
 				};
-
-				foreach (var menu in keysMenus)
+				item.CheckedChanged += (o, ev) =>
 				{
-					item.CheckedChanged += (o, ev) =>
+					foreach (var menu in keysMenus)
 					{
 						foreach (ToolStripMenuItem menuItem in menu.DropDownItems)
 						{
@@ -1212,39 +1211,35 @@ namespace BizHawk.Client.EmuHawk
 						CurrentTasMovie.FlagChanges();
 						TasView.AllColumns.ColumnsChanged();
 						TasView.Refresh();
-					};
-
-					ColumnsSubMenu.DropDownItems.Add(item);
-				}
+					}
+				};
+				ColumnsSubMenu.DropDownItems.Add(item);
 			}
 
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
-				if (playerMenus[i].HasDropDownItems)
+				ToolStripMenuItem dummyObject = playerMenus[i];
+				if (!dummyObject.HasDropDownItems) continue;
+				var item = new ToolStripMenuItem($"Show Player {i}")
 				{
-					var item = new ToolStripMenuItem($"Show Player {i}")
+					CheckOnClick = true,
+					Checked = dummyObject.DropDownItems.OfType<ToolStripMenuItem>().Any(static mi => mi.Checked),
+				};
+				item.CheckedChanged += (o, ev) =>
+				{
+					// TODO: preserve underlying button checked state and make this a master visibility control
+					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 					{
-						CheckOnClick = true,
-						Checked = playerMenus[i].DropDownItems.OfType<ToolStripMenuItem>().Any(static mi => mi.Checked),
-					};
+						menuItem.Checked = item.Checked;
+					}
+					dummyObject.Visible = item.Checked;
 
-					ToolStripMenuItem dummyObject = playerMenus[i];
-					item.CheckedChanged += (o, ev) =>
-					{
-						// TODO: preserve underlying button checked state and make this a master visibility control
-						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
-						{
-							menuItem.Checked = item.Checked;
-						}
-						dummyObject.Visible = item.Checked;
+					CurrentTasMovie.FlagChanges();
+					TasView.AllColumns.ColumnsChanged();
+					TasView.Refresh();
+				};
 
-						CurrentTasMovie.FlagChanges();
-						TasView.AllColumns.ColumnsChanged();
-						TasView.Refresh();
-					};
-
-					ColumnsSubMenu.DropDownItems.Add(item);
-				}
+				ColumnsSubMenu.DropDownItems.Add(item);
 			}
 		}
 
