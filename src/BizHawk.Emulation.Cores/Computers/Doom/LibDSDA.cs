@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int MapOverlay;
 			public int PlayerPointOfView;
 		}
-		
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VideoInfo
 		{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int PaletteSize;
 			public IntPtr PaletteBuffer;
 			public IntPtr VideoBuffer;
-		};
+		}
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_audio(ref int n, ref IntPtr buffer);
