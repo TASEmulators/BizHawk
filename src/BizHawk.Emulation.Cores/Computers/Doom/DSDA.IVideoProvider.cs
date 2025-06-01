@@ -23,24 +23,34 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var videoBufferSrc = IntPtr.Zero;
 				var palletteBufferSrc = IntPtr.Zero;
+
 				_core.dsda_get_video(out var width, out var height, out var pitch, ref videoBufferSrc, out var paletteSize, ref palletteBufferSrc);
 
-				// Handling pallette buffer
-				PaletteSize = paletteSize;
-				if (_palBuffer.Length < PaletteSize) _palBuffer = new int[PaletteSize];
+				var videoBuffer = (byte*) videoBufferSrc.ToPointer();
 				var paletteBuffer = (int*) palletteBufferSrc.ToPointer();
-				for (var i = 0; i < _palBuffer.Length; i++) _palBuffer[i] = paletteBuffer[i];
-
-				// Handling video buffer
+				PaletteSize = paletteSize;
 				BufferWidth = width;
 				BufferHeight = height;
-				if (_vidBuff.Length < BufferWidth * BufferHeight) _vidBuff = new int[BufferWidth * BufferHeight];
-				var videoBuffer = (byte*) videoBufferSrc.ToPointer();
-				for (var i = 0; i < _vidBuff.Length; i++) _vidBuff[i] = _palBuffer[videoBuffer[i]];
 
-				VirtualHeight = _settings.InternalAspect == AspectRatio.Native
-					? BufferWidth * 3 / 4
-					: BufferHeight;
+				// Handling pallette buffer
+				if (_palBuffer.Length < PaletteSize)
+				{
+					_palBuffer = new int[PaletteSize];
+				}
+				for (var i = 0; i < _palBuffer.Length; i++)
+				{
+					_palBuffer[i] = paletteBuffer[i];
+				}
+
+				// Handling video buffer
+				if (_vidBuff.Length < BufferWidth * BufferHeight)
+				{
+					_vidBuff = new int[BufferWidth * BufferHeight];
+				}
+				for (var i = 0; i < _vidBuff.Length; i++)
+				{
+					_vidBuff[i] = _palBuffer[videoBuffer[i]];
+				}
 			}
 		}
 	}

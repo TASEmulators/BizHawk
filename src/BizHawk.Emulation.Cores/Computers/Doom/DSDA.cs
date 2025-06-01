@@ -87,20 +87,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				resolution = resolutions[resolutions.Length - 1];
 			}
 
+			BufferWidth = resolution.X * multiplier;
+			BufferHeight = resolution.Y * multiplier;
+			VirtualHeight = _settings.InternalAspect == AspectRatio.Native
+				? BufferWidth * 3 / 4
+				: BufferHeight;
+
 			_configFile = Encoding.ASCII.GetBytes(
-				$"screen_resolution \"{
-					resolution.X * multiplier}x{
-					resolution.Y * multiplier}\"\n"
+				$"screen_resolution \"{BufferWidth}x{BufferHeight}\"\n"
 				// we need the core to treat native resolution as 4:3 aspect,
 				// that ensures FOV is correct on higher resolutions
 				+ $"render_aspect {(int)(_settings.InternalAspect == AspectRatio.Native
 					? AspectRatio._4by3
 					: _settings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
-				+ "boom_translucent_sprites 0\n"
+				+ "render_stretch_hud 1\n"       // patch_stretch_doom_format
+				+ "boom_translucent_sprites 0\n" // may become a setting at some point
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
-				+ "render_stretch_hud 1\n"
 			);
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -178,7 +182,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_elf.Seal();
 				}
 
-				// pull the default video size from the core
 				UpdateVideo();
 
 				// Registering memory domains
