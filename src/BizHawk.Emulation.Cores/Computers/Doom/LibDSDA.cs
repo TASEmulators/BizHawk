@@ -78,6 +78,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int MapOverlay;
 			public int PlayerPointOfView;
 		}
+		
+		[StructLayout(LayoutKind.Sequential)]
+		public struct VideoInfo
+		{
+			public int Width;
+			public int Height;
+			public int Pitch;
+			public int PaletteSize;
+			public IntPtr PaletteBuffer;
+			public IntPtr VideoBuffer;
+		};
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_get_audio(ref int n, ref IntPtr buffer);
@@ -86,12 +97,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init(ref InitSettings settings, int argc, string[] argv);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_get_video(out int w, out int h, out int pitch, ref IntPtr buffer, out int palSize, ref IntPtr palBuffer);
+		public abstract void dsda_get_video(int gamma, out VideoInfo info);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract int dsda_add_wad_file(string fileName, int fileSize, load_archive_cb feload_archive_cb);
+		public abstract GameMode dsda_add_wad_file(string fileName, int fileSize, load_archive_cb feload_archive_cb);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte dsda_read_memory_array(MemoryArrayType type, uint addr);

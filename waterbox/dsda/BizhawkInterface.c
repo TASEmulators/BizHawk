@@ -143,13 +143,19 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
     *buffer = audioBuffer;
 }
 
-ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int *paletteSize, uint32_t **paletteBuffer)
+ECL_EXPORT void dsda_get_video(int gamma, struct VideoInfo* vi)
 {
-  *buffer = (uint8_t *)headlessGetVideoBuffer();
-  *w = headlessGetVideoWidth();
-  *h = headlessGetVideoHeight();
-  *pitch = headlessGetVideoPitch();
-  *paletteSize = PALETTE_SIZE;
+  if (gamma != -1)
+  {
+    dsda_UpdateIntConfig(dsda_config_usegamma, gamma, true);
+    headlessUpdateVideo();
+  }
+
+  vi->buffer = (uint8_t *)headlessGetVideoBuffer();
+  vi->width = headlessGetVideoWidth();
+  vi->height = headlessGetVideoHeight();
+  vi->pitch = headlessGetVideoPitch();
+  vi->paletteSize = PALETTE_SIZE;
 
   uint32_t *palette = headlessGetPallette() + PALETTE_SIZE * currentPaletteIndex;
   for (size_t i = 0; i < PALETTE_SIZE; i++)
@@ -162,7 +168,7 @@ ECL_EXPORT void dsda_get_video(int *w, int *h, int *pitch, uint8_t **buffer, int
     dstColor[3] = srcColor[3];
   }
 
-  *paletteBuffer = _convertedPaletteBuffer;
+  vi->paletteBuffer = _convertedPaletteBuffer;
 }
 
 ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)

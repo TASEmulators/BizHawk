@@ -17,20 +17,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public int VsyncDenominator { get; }
 		public int[] GetVideoBuffer() => _vidBuff;
 
-		private unsafe void UpdateVideo()
+		private unsafe void UpdateVideo(int gamma = -1)
 		{
 			using (_elf.EnterExit())
 			{
-				var videoBufferSrc = IntPtr.Zero;
-				var palletteBufferSrc = IntPtr.Zero;
+				_core.dsda_get_video(gamma, out LibDSDA.VideoInfo vi);
 
-				_core.dsda_get_video(out var width, out var height, out var pitch, ref videoBufferSrc, out var paletteSize, ref palletteBufferSrc);
-
-				var videoBuffer = (byte*) videoBufferSrc.ToPointer();
-				var paletteBuffer = (int*) palletteBufferSrc.ToPointer();
-				PaletteSize = paletteSize;
-				BufferWidth = width;
-				BufferHeight = height;
+				var videoBuffer = (byte*)vi.VideoBuffer.ToPointer();
+				var paletteBuffer = (int*)vi.PaletteBuffer.ToPointer();
+				PaletteSize = vi.PaletteSize;
+				BufferWidth = vi.Width;
+				BufferHeight = vi.Height;
 
 				// Handling pallette buffer
 				if (_palBuffer.Length < PaletteSize)

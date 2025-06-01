@@ -179,4 +179,13 @@ struct PackedRenderInfo
   int PlayerPointOfView;
 } __attribute__((packed));
 
+struct VideoInfo {
+  int width;
+	int height;
+	int pitch;
+	int paletteSize;
+	uint32_t* paletteBuffer;
+	uint8_t* buffer;
+};
+
 #endif

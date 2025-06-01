@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public MultiplayerMode MultiplayerMode { get; set; }
 
 			[DisplayName("Initial Episode")]
-			[Description("Selects the initial episode. Ignored for non-episodic IWADs (e.g., DOOM2)")]
+			[Description("Selects the initial episode. Ignored for non-episodic IWADs (e.g., DOOM2) and Shareware.")]
 			[DefaultValue(1)]
 			public int InitialEpisode { get; set; }
 

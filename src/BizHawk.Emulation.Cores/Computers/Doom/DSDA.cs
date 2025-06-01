@@ -39,9 +39,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_pwadFiles = new();
 			bool foundIWAD = false;
 			string IWADName = "";
+
 			foreach (var wadFile in _wadFiles)
 			{
 				bool recognized = false;
+
 				if (wadFile.RomData is [ (byte) 'I', (byte) 'W', (byte) 'A', (byte) 'D', .. ])
 				{
 					// Check not more than one IWAD is provided
@@ -56,18 +58,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_pwadFiles.Add(wadFile);
 					recognized = true;
 				}
-				if (!recognized) throw new Exception($"Unrecognized WAD provided: '{wadFile.RomPath}' has non-standard header.");
+
+				if (!recognized)
+				{
+					throw new Exception($"Unrecognized WAD provided: '{wadFile.RomPath}' has non-standard header.");
+				}
 			}
 
 			// Check at least one IWAD was provided
-			if (!foundIWAD) throw new Exception($"No IWAD was provided");
+			if (!foundIWAD)
+			{
+				throw new Exception($"No IWAD was provided");
+			}
 
 			// Getting dsda-doom.wad -- required by DSDA
 			_dsdaWadFileData = Zstd.DecompressZstdStream(new MemoryStream(Resources.DSDA_DOOM_WAD.Value)).ToArray();
 
 			// Getting sum of wad sizes for the accurate calculation of the invisible heap
 			uint totalWadSize = (uint)_dsdaWadFileData.Length;
-			foreach (var wadFile in _wadFiles) totalWadSize += (uint) wadFile.FileData.Length;
+			foreach (var wadFile in _wadFiles)
+			{
+				totalWadSize += (uint) wadFile.FileData.Length;
+			}
 			uint totalWadSizeKb = (totalWadSize / 1024) + 1;
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
@@ -135,16 +147,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_core.dsda_add_wad_file(_dsdaWadFileName, _dsdaWadFileData.Length, _loadCallback);
 
 					// Adding IWAD file
-					var loadWadResult = _core.dsda_add_wad_file(_iwadFile.RomPath, _iwadFile.RomData.Length, _loadCallback);
-					if (loadWadResult is 0) throw new Exception($"Could not load WAD file: '{_iwadFile.RomPath}'");
-					_gameMode = (LibDSDA.GameMode)loadWadResult;
+					_gameMode = _core.dsda_add_wad_file(_iwadFile.RomPath, _iwadFile.RomData.Length, _loadCallback);
+					if (_gameMode is LibDSDA.GameMode.Fail)
+					{
+						throw new Exception($"Could not load WAD file: '{_iwadFile.RomPath}'");
+					}
 
 					// Adding PWAD file(s)
 					foreach (var wadFile in _pwadFiles)
 					{
-						loadWadResult = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
-						if (loadWadResult is 0) throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
-						_gameMode = (LibDSDA.GameMode)loadWadResult;
+						_gameMode = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+						if (_gameMode is LibDSDA.GameMode.Fail)
+						{
+							throw new Exception($"Could not load WAD file: '{wadFile.RomPath}'");
+						}
 					}
 
 					_elf.AddReadonlyFile(_configFile, "dsda-doom.cfg");
@@ -152,7 +168,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					var initSettings = _syncSettings.GetNativeSettings(lp.Game);
 					CreateArguments(initSettings);
 					var initResult = _core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
-					if (!initResult) throw new Exception($"{nameof(_core.dsda_init)}() failed");
+					if (!initResult)
+					{
+						throw new Exception($"{nameof(_core.dsda_init)}() failed");
+					}
 
 					VsyncNumerator = 35;
 					VsyncDenominator = 1;
@@ -182,7 +201,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_elf.Seal();
 				}
 
-				UpdateVideo();
+				// we have to set gamma after the core is sealed to ensure states don't depend on its initial value
+				// but if we set it during frame advance, first frame won't have it set
+				// so we set gamma here and force a video update, and other UpdateVideo() calls are blank
+				UpdateVideo(_settings.Gamma);
 
 				// Registering memory domains
 				SetupMemoryDomains();
