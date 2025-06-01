@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ServiceProvider = ser;
 			_finalSyncSettings = _syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_settings = lp.Settings ?? new DoomSettings();
+			_comm = lp.Comm;
 			_loadCallback = LoadCallback;
 			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
@@ -255,6 +256,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+		internal CoreComm _comm { get; }
 		private readonly WaterboxHost _elf;
 		private readonly LibDSDA _core;
 		private readonly LibDSDA.load_archive_cb _loadCallback;

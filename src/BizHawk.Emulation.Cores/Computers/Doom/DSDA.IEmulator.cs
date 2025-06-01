@@ -29,11 +29,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				| Convert.ToInt32(_syncSettings.Player3Present) << 2
 				| Convert.ToInt32(_syncSettings.Player4Present) << 3;
 
+			// this is the only change that we're announcing on the front end.
+			// not announcing it at all feels weird given how vanilla and ports do it.
+			// but announcing it via internal messages can show wrong values,
+			// because gamma is detached from savestates, yet the internal on-screen message isn't.
+			// so you can be at gamma 3, switch to 4, get the message, then load a state that
+			// was saved when the gamma 2 message was visible, and it'd now be saying 2,
+			// even tho it'd actually stay at 4 after state load.
+			// announcing live settings changes only makes sense if they happen on hotkey
+			// and not from the dialog where you're deliberately changing them.
+			// so if keys for other settings are added, they can be announced too.
 			if (controller.IsPressed("Change Gamma") && !_lastGammaInput)
 			{
 				// cycle through [0 - 4]
 				_settings.Gamma++;
 				_settings.Gamma %= 5;
+				_comm.Notify("Gamma correction " +
+					(_settings.Gamma == 0 ? "OFF" : "level " + _settings.Gamma),
+					4); // internal messages last 4 seconds
 			}
 
 			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 0);
