@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = -63, [ \"Tilt Y\" ] = 127 } );")]
-		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame.")]
+		[LuaMethod("setanalog", "Sets the given analog controls to their provided values as autoholds. Set axes to the empty string to clear individual holds.")]
 		public void SetAnalog(LuaTable controls, int? controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
