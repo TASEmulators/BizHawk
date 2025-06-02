@@ -1183,17 +1183,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			for (int i = 1; i < playerMenus.Length; i++)
-			{
-				if (playerMenus[i].HasDropDownItems)
-				{
-					ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
-					break;
-				}
-			}
-
 			if (keysMenus.Length > 0)
 			{
+				ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
 				ToolStripMenuItem item = new("Show Keys") { CheckOnClick = true };
 				void UpdateAggregateCheckState()
 					=> item.CheckState = keysMenus
@@ -1238,7 +1230,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!dummyObject.HasDropDownItems) continue;
 				ToolStripMenuItem item = new($"Show Player {i}") { CheckOnClick = true };
 				void UpdateAggregateCheckState()
-					=> item.CheckState = dummyObject.DropDownItems.OfType<ToolStripMenuItem>()
+					=> item.CheckState = dummyObject.DropDownItems.OfType<ToolStripMenuItem>().Skip(1)
 						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
 				UpdateAggregateCheckState();
 				var programmaticallyHidingColumns = false;
@@ -1257,7 +1249,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (programmaticallyHidingColumns) return;
 					programmaticallyHidingColumns = true;
-					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+					// TODO: preserve underlying button checked state and make this a master visibility control
+					foreach (var menuItem in dummyObject.DropDownItems.OfType<ToolStripMenuItem>().Skip(1))
 					{
 						menuItem.Checked = item.Checked;
 					}
@@ -1268,7 +1261,8 @@ namespace BizHawk.Client.EmuHawk
 					TasView.Refresh();
 				};
 
-				ColumnsSubMenu.DropDownItems.Add(item);
+				dummyObject.DropDownItems.Insert(0, item);
+				dummyObject.DropDownItems.Insert(1, new ToolStripSeparator());
 			}
 		}
 
