@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				LightTemperature = o.LightTemperature,
 				HighPassFilter = o.HighPassFilter,
 				InterferenceVolume = o.InterferenceVolume,
+				RumbleMode = o.RumbleMode,
 				ChannelMask = o.GetChannelMask(),
 				BackgroundEnabled = o.EnableBGWIN,
 				ObjectsEnabled = o.EnableOBJ,
@@ -137,6 +138,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				get => _interferencevolume;
 				set => _interferencevolume = Math.Max(0, Math.Min(100, value));
 			}
+
+			public enum RumbleModeType : uint
+			{
+				[Display(Name = "Disabled")]
+				RUMBLE_DISABLED,
+				[Display(Name = "Rumble Game Paks Only")]
+				RUMBLE_CARTRIDGE_ONLY,
+				[Display(Name = "All Games")]
+				RUMBLE_ALL_GAMES
+			}
+
+			[DisplayName("Rumble Mode")]
+			[Description("Sets which games should trigger rumble.")]
+			[DefaultValue(RumbleModeType.RUMBLE_CARTRIDGE_ONLY)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public RumbleModeType RumbleMode { get; set; }
 
 			[DisplayName("Enable Channel 1")]
 			[Description("")]
