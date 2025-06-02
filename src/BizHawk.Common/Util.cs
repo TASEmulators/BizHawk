@@ -84,19 +84,11 @@ namespace BizHawk.Common
 			return a.All(kvp => b.TryGetValue(kvp.Key, out var bVal) && comparer.Equals(kvp.Value, bVal));
 		}
 
-#if NETCOREAPP3_0_OR_GREATER
 		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? expr = default)
-#else
-		public static string DescribeIsNull<T>(T? obj, string expr)
-#endif
 			where T : class
 			=> $"{expr} is {(obj is null ? "null" : "not null")}";
 
-#if NETCOREAPP3_0_OR_GREATER
 		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression(nameof(boxed))] string? expr = default)
-#else
-		public static string DescribeIsNullValT<T>(T? boxed, string expr)
-#endif
 			where T : struct
 			=> $"{expr} is {(boxed is null ? "null" : "not null")}";
 
