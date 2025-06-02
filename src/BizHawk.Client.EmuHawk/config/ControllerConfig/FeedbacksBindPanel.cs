@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 			var saveTo = saveConfigObject ?? _realConfigObject;
 			foreach (var c in _flpMain.Controls.OfType<FeedbackBindControl>())
 			{
-				if (string.IsNullOrEmpty(c.BoundGamepadPrefix)) continue;
 				saveTo[c.VChannelName] = new(c.BoundGamepadPrefix, c.BoundChannels, c.Prescale);
 			}
 		}
