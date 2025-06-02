@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common

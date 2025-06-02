@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 
-using BizHawk.Common;
-
 using NLua;
 
 namespace BizHawk.Client.Common

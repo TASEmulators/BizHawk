@@ -12,7 +12,6 @@ using BizHawk.BizInvoke;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;

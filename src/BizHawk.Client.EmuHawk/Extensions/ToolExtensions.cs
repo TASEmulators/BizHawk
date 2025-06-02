@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 

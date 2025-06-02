@@ -1,7 +1,5 @@
 ﻿using System.IO;
 
-using BizHawk.Common.StringExtensions;
-
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common

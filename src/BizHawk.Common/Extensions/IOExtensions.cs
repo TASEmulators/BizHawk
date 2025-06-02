@@ -13,11 +13,6 @@ namespace BizHawk.Common.IOExtensions
 		public static Span<byte> GetBufferAsSpan(this MemoryStream ms)
 			=> ms.GetBuffer().AsSpan().Slice(start: 0, length: (int) ms.Length);
 
-		public static unsafe string GetString(this Encoding encoding, ReadOnlySpan<byte> bytes)
-		{
-			fixed (byte* p = bytes) return encoding.GetString(p, bytes.Length);
-		}
-
 		/// <remarks>does NOT seek to beginning</remarks>
 		public static byte[] ReadAllBytes(this Stream stream)
 		{

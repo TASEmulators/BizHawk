@@ -1,7 +1,5 @@
 using System.IO;
 
-using BizHawk.Common.StringExtensions;
-
 using Newtonsoft.Json;
 
 //this file contains some cumbersome self-"serialization" in order to gain a modicum of control over what the serialized output looks like

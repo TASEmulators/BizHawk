@@ -8,7 +8,6 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {

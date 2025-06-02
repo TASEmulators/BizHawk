@@ -8,7 +8,6 @@ using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 

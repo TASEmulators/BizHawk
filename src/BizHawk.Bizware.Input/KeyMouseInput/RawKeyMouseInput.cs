@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 using static BizHawk.Common.RawInputImports;
 using static BizHawk.Common.WmImports;

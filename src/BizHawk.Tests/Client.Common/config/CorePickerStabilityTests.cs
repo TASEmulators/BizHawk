@@ -2,7 +2,6 @@
 using System.Linq;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Tests.Client.Common.config

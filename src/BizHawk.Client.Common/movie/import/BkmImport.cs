@@ -1,5 +1,4 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.Common.movie.import

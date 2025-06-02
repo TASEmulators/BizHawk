@@ -26,9 +26,6 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 		public static void Write(this BinaryWriter bw, ReadOnlySpan<byte> buf)
 			=> bw.Write(buf.ToArray());
-
-		public static void Write(this Stream stream, ReadOnlySpan<byte> buf)
-			=> stream.Write(buf.ToArray(), offset: 0, count: buf.Length);
 	}
 #endif
 

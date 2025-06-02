@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.Common

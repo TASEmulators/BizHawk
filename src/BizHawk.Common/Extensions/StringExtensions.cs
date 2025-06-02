@@ -14,14 +14,6 @@ namespace BizHawk.Common.StringExtensions
 			return new(a);
 		}
 
-#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
-		public static bool Contains(this string haystack, char needle)
-			=> haystack.IndexOf(needle) >= 0;
-
-		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
-			=> haystack.IndexOf(needle, comparisonType) != -1;
-#endif
-
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsIgnoreCase(this string haystack, string needle)
@@ -34,11 +26,6 @@ namespace BizHawk.Common.StringExtensions
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsOrdinal(this string haystack, string needle)
 			=> haystack.Contains(needle); // already ordinal
-
-#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
-		public static bool EndsWith(this string haystack, char needle)
-			=> haystack.Length >= 1 && haystack[^1] == needle;
-#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool EndsWithOrdinal(this string haystack, char needle)
@@ -139,14 +126,6 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not end with <paramref name="suffix"/>
 		/// </returns>
 		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix, StringComparison.Ordinal) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool StartsWith(this ReadOnlySpan<char> str, char c)
-			=> str.Length >= 1 && str[0] == c;
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool StartsWith(this string str, char c)
-			=> str.Length >= 1 && str[0] == c;
 
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

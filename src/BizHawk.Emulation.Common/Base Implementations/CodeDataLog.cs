@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
