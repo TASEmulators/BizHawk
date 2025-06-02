@@ -1194,13 +1194,28 @@ namespace BizHawk.Client.EmuHawk
 
 			if (keysMenus.Length > 0)
 			{
-				var item = new ToolStripMenuItem("Show Keys")
+				ToolStripMenuItem item = new("Show Keys") { CheckOnClick = true };
+				void UpdateAggregateCheckState()
+					=> item.CheckState = keysMenus
+						.SelectMany(static submenu => submenu.DropDownItems.OfType<ToolStripMenuItem>())
+						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
+				UpdateAggregateCheckState();
+				var programmaticallyHidingColumns = false;
+				EventHandler columnHandler = (_, _) =>
 				{
-					CheckOnClick = true,
-					Checked = false,
+					if (programmaticallyHidingColumns) return;
+					programmaticallyHidingColumns = true;
+					UpdateAggregateCheckState();
+					programmaticallyHidingColumns = false;
 				};
+				foreach (var submenu in keysMenus) foreach (ToolStripMenuItem button in submenu.DropDownItems)
+				{
+					button.CheckedChanged += columnHandler;
+				}
 				item.CheckedChanged += (o, ev) =>
 				{
+					if (programmaticallyHidingColumns) return;
+					programmaticallyHidingColumns = true;
 					foreach (var menu in keysMenus)
 					{
 						foreach (ToolStripMenuItem menuItem in menu.DropDownItems)
@@ -1212,6 +1227,7 @@ namespace BizHawk.Client.EmuHawk
 						TasView.AllColumns.ColumnsChanged();
 						TasView.Refresh();
 					}
+					programmaticallyHidingColumns = false;
 				};
 				ColumnsSubMenu.DropDownItems.Add(item);
 			}
@@ -1220,19 +1236,32 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ToolStripMenuItem dummyObject = playerMenus[i];
 				if (!dummyObject.HasDropDownItems) continue;
-				var item = new ToolStripMenuItem($"Show Player {i}")
+				ToolStripMenuItem item = new($"Show Player {i}") { CheckOnClick = true };
+				void UpdateAggregateCheckState()
+					=> item.CheckState = dummyObject.DropDownItems.OfType<ToolStripMenuItem>()
+						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
+				UpdateAggregateCheckState();
+				var programmaticallyHidingColumns = false;
+				EventHandler columnHandler = (_, _) =>
 				{
-					CheckOnClick = true,
-					Checked = dummyObject.DropDownItems.OfType<ToolStripMenuItem>().Any(static mi => mi.Checked),
+					if (programmaticallyHidingColumns) return;
+					programmaticallyHidingColumns = true;
+					UpdateAggregateCheckState();
+					programmaticallyHidingColumns = false;
 				};
+				foreach (ToolStripMenuItem button in dummyObject.DropDownItems)
+				{
+					button.CheckedChanged += columnHandler;
+				}
 				item.CheckedChanged += (o, ev) =>
 				{
-					// TODO: preserve underlying button checked state and make this a master visibility control
+					if (programmaticallyHidingColumns) return;
+					programmaticallyHidingColumns = true;
 					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 					{
 						menuItem.Checked = item.Checked;
 					}
-					dummyObject.Visible = item.Checked;
+					programmaticallyHidingColumns = false;
 
 					CurrentTasMovie.FlagChanges();
 					TasView.AllColumns.ColumnsChanged();

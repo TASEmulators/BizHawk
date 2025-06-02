@@ -179,6 +179,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void ReplaceItems(this ComboBox dropdown, IEnumerable<object> items)
 			=> dropdown.ReplaceItems(items: items.ToArray());
+
+		public static CheckState ToCheckState(this bool? tristate)
+			=> tristate switch
+			{
+				true => CheckState.Checked,
+				false => CheckState.Unchecked,
+				null => CheckState.Indeterminate,
+			};
 	}
 
 	public static class ListViewExtensions
