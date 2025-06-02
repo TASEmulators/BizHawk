@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			void UpdateDropdownAndLabel(string newPrefix)
 			{
 				txtBoundPrefix.Text = newPrefix;
-				var wasSelected = (string) cbBoundChannel.SelectedItem;
+				var wasSelected = BoundChannels;
 				cbBoundChannel.Enabled = false;
 				cbBoundChannel.SelectedIndex = -1;
 				cbBoundChannel.Items.Clear();
