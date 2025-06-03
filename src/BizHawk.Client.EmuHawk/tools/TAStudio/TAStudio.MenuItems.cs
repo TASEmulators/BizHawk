@@ -1183,9 +1183,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+
 			if (keysMenus.Length > 0)
 			{
-				ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
 				ToolStripMenuItem item = new("Show Keys") { CheckOnClick = true };
 				void UpdateAggregateCheckState()
 					=> item.CheckState = keysMenus
@@ -1264,6 +1265,14 @@ namespace BizHawk.Client.EmuHawk
 				dummyObject.DropDownItems.Insert(0, item);
 				dummyObject.DropDownItems.Insert(1, new ToolStripSeparator());
 			}
+
+			ColumnsSubMenu.DropDownItems.Add(new ToolStripMenuItem
+			{
+				Enabled = false,
+				Text = "Change Peripherals...",
+				ToolTipText = "Changing peripherals/players is done in the core's sync settings (if the core supports different peripherals)."
+					+ "\nAs these can't be changed in the middle of a movie, you'll have to close TAStudio, change the settings, and create a new TAStudio project.",
+			});
 		}
 
 		// ReSharper disable once UnusedMember.Local
