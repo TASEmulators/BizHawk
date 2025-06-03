@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		private ZwinderBuffer _gapFiller;
 
 		// These never decay, but can be invalidated, they are for reserved states
-		// such as markers and branches, but also we naturally evict states from recent to reserved, based
+		// such as markers, but also we naturally evict states from recent to reserved, based
 		// on _ancientInterval
 		private IDictionary<int, byte[]> _reserved;
 
@@ -93,22 +93,22 @@ namespace BizHawk.Client.Common
 
 			if (keepOldStates)
 			{
-				// For ancients ... lets just make sure we aren't keeping states with a gap below the new interval
+				// For ancients, let's throw out states if doing so still satisfies the ancient state interval.
 				if (settings.AncientStateInterval > _ancientInterval)
 				{
-					int lastReserved = 0;
-					List<int> framesToRemove = new List<int>();
-					foreach (int f in _reserved.Keys)
+					List<int> reservedFrames = _reserved.Keys.ToList();
+					reservedFrames.Sort();
+					for (int i = 1; i < reservedFrames.Count - 1; i++)
 					{
-						if (!_reserveCallback(f) && f - lastReserved < settings.AncientStateInterval)
-							framesToRemove.Add(f);
-						else
-							lastReserved = f;
-					}
-					foreach (int f in framesToRemove)
-					{
-						if (f != 0)
-							EvictReserved(f);
+						if (_reserveCallback(reservedFrames[i]))
+							continue;
+
+						if (reservedFrames[i + 1] - reservedFrames[i - 1] <= settings.AncientStateInterval)
+						{
+							EvictReserved(reservedFrames[i]);
+							reservedFrames.RemoveAt(i);
+							i--;
+						}
 					}
 				}
 			}
@@ -205,16 +205,19 @@ namespace BizHawk.Client.Common
 		internal class StateInfo
 		{
 			public int Frame { get; }
+			public int Size { get; }
 			public Func<Stream> Read { get; }
 			public StateInfo(ZwinderBuffer.StateInformation si)
 			{
 				Frame = si.Frame;
+				Size = si.Size;
 				Read = si.GetReadStream;
 			}
 
 			public StateInfo(int frame, byte[] data)
 			{
 				Frame = frame;
+				Size = data.Length;
 				Read = () => new MemoryStream(data, false);
 			}
 		}
@@ -297,7 +300,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void EvictReserved(int frame)
+		private void EvictReserved(int frame)
 		{
 			if (frame == 0)
 			{
@@ -309,6 +312,16 @@ namespace BizHawk.Client.Common
 				_reserved.Remove(frame);
 				StateCache.Remove(frame);
 			}
+		}
+
+		public void Unreserve(int frame)
+		{
+			// Before removing the state, check if it should be still be reserved.
+			// For now, this just means checking if we need to keep this state to satisfy the ancient interval.
+			if (ShouldKeepForAncient(frame))
+				return;
+
+			EvictReserved(frame);
 		}
 
 		public void Capture(int frame, IStatable source, bool force = false)
@@ -366,41 +379,41 @@ namespace BizHawk.Client.Common
 						index2 =>
 						{
 							var state2 = _recent.GetState(index2);
-							StateCache.Remove(state2.Frame);
-
 							var isReserved = _reserveCallback(state2.Frame);
 
 							// Add to reserved if reserved, or if it matches an "ancient" state consideration
-							if (isReserved || !HasNearByReserved(state2.Frame))
+							if (isReserved || ShouldKeepForAncient(state2.Frame))
 							{
 								AddToReserved(state2);
 							}
+							else
+								StateCache.Remove(state2.Frame);
 						});
 				});
 		}
 
-		// Returns whether or not a frame has a reserved state within the frame interval on either side of it
-		private bool HasNearByReserved(int frame)
+		/// <summary>
+		/// Will removing the state on this leave us with a gap larger than the ancient interval?
+		/// </summary>
+		private bool ShouldKeepForAncient(int frame, SortedList<int> framesList = null)
 		{
-			// An easy optimization, we know frame 0 always exists
-			if (frame < _ancientInterval)
-			{
-				return true;
-			}
+			framesList ??= StateCache;
 
-			// Has nearby before
-			if (_reserved.Any(kvp => kvp.Key < frame && kvp.Key > frame - _ancientInterval))
+			int index = framesList.BinarySearch(frame + 1);
+			if (index < 0)
+				index = ~index;
+			if (index == framesList.Count)
 			{
-				return true;
+				// There is no future state... so why are we wanting to evict this state?
+				// We aren't decaying from _recent, that's for sure. So,
+				return false;
 			}
+			if (index <= 1)
+				return true; // This should never happen.
 
-			// Has nearby after
-			if (_reserved.Any(kvp => kvp.Key > frame && kvp.Key < frame + _ancientInterval))
-			{
-				return true;
-			}
-
-			return false;
+			int nextState = framesList[index];
+			int previousState = framesList[index - 2]; // assume framesList[index - 1] == frame
+			return nextState - previousState > _ancientInterval;
 		}
 
 		private bool NeedsGap(int frame)
@@ -528,22 +541,33 @@ namespace BizHawk.Client.Common
 			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
 			int version = br.ReadByte();
 
-			var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
-			var recent = ZwinderBuffer.Create(br, settings.Recent());
-			var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
+			ZwinderStateManager ret;
+			ZwinderStateManagerSettings.States statesSaved = version < 2 ?
+				ZwinderStateManagerSettings.States.All :
+				(ZwinderStateManagerSettings.States)br.ReadByte();
+			if (statesSaved == ZwinderStateManagerSettings.States.All)
+			{
+				var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
+				var recent = ZwinderBuffer.Create(br, settings.Recent());
+				var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
+				ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
+			}
+			else
+				ret = new ZwinderStateManager(settings, reserveCallback);
 
 			if (version == 0)
 				settings.AncientStateInterval = br.ReadInt32();
 
-			var ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
-
-			var ancientCount = br.ReadInt32();
-			for (var i = 0; i < ancientCount; i++)
+			if (statesSaved != ZwinderStateManagerSettings.States.None)
 			{
-				var key = br.ReadInt32();
-				var length = br.ReadInt32();
-				var data = br.ReadBytes(length);
-				ret._reserved.Add(key, data);
+				var ancientCount = br.ReadInt32();
+				for (var i = 0; i < ancientCount; i++)
+				{
+					var key = br.ReadInt32();
+					var length = br.ReadInt32();
+					var data = br.ReadBytes(length);
+					ret._reserved.Add(key, data);
+				}
 			}
 
 			ret.RebuildStateCache();
@@ -554,18 +578,76 @@ namespace BizHawk.Client.Common
 		public void SaveStateHistory(BinaryWriter bw)
 		{
 			// version
-			bw.Write((byte)1);
+			bw.Write((byte)2);
 
-			_current.SaveStateBinary(bw);
-			_recent.SaveStateBinary(bw);
-			_gapFiller.SaveStateBinary(bw);
+			bw.Write((byte)Settings.StatesToSave);
 
-			bw.Write(_reserved.Count);
-			foreach (var (f, data) in _reserved)
+			if (Settings.StatesToSave == ZwinderStateManagerSettings.States.All)
 			{
-				bw.Write(f);
-				bw.Write(data.Length);
-				bw.Write(data);
+				_current.SaveStateBinary(bw);
+				_recent.SaveStateBinary(bw);
+				_gapFiller.SaveStateBinary(bw);
+
+				bw.Write(_reserved.Count);
+				foreach (var (f, data) in _reserved)
+				{
+					bw.Write(f);
+					bw.Write(data.Length);
+					bw.Write(data);
+				}
+			}
+			else if (Settings.StatesToSave == ZwinderStateManagerSettings.States.ReservedOnly)
+			{
+				// When we save with "reserve only", we will want at least 1 state per "ancient interval" number of frames.
+				// This means we may have to pull some from the ring buffers.
+				List<StateInfo> allStates = AllStates().ToList();
+				SortedList<int> stateFrames = new(allStates.Select((si) => si.Frame));
+				for (int i = 0; i < stateFrames.Count - 1; i++)
+				{
+					if (!_reserveCallback(stateFrames[i]) && !ShouldKeepForAncient(stateFrames[i], stateFrames))
+					{
+						stateFrames.RemoveAt(i);
+						i--;
+					}
+				}
+				// If the last state is not already reserved, it's probably safe to not keep it.
+				// And we can't really know if it would be kept anyway.
+				if (stateFrames.Count != 0 && !_reserveCallback(stateFrames[stateFrames.Count - 1]))
+					stateFrames.RemoveAt(stateFrames.Count - 1);
+
+				List<StateInfo> toSave = new();
+				foreach (StateInfo si in allStates)
+				{
+					if (stateFrames.Contains(si.Frame))
+						toSave.Add(si);
+				}
+
+				bw.Write(toSave.Count);
+				for (int i = 0; i < toSave.Count; i++)
+				{
+					bw.Write(toSave[i].Frame);
+					bw.Write(toSave[i].Size);
+					toSave[i].Read().CopyTo(bw.BaseStream);
+				}
+			}
+			else if (Settings.StatesToSave == ZwinderStateManagerSettings.States.MarkersOnly)
+			{
+				// Some states that should be reserved via marker might be in a ring buffer but not yet in _reserved.
+				List<StateInfo> allStates = AllStates().ToList();
+				List<StateInfo> toSave = new();
+				for (int i = 0; i < allStates.Count; i++)
+				{
+					if (_reserveCallback(allStates[i].Frame))
+						toSave.Add(allStates[i]);
+				}
+
+				bw.Write(toSave.Count);
+				for (int i = 0; i < toSave.Count; i++)
+				{
+					bw.Write(toSave[i].Frame);
+					bw.Write(toSave[i].Size);
+					toSave[i].Read().CopyTo(bw.BaseStream);
+				}
 			}
 		}
 
