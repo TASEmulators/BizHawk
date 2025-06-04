@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartSeeking(int? frame, bool fromMiddleClick = false)
 		{
-			if (!frame.HasValue)
+			if (!frame.HasValue || frame <= Emulator.Frame)
 			{
 				return;
 			}
@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				if (MainForm.EmulatorPaused)
 				{
 					var record = CurrentTasMovie[RestorePositionFrame];
-					if (!record.Lagged.HasValue && RestorePositionFrame > Emulator.Frame)
+					if (record.Lagged is null)
 					{
 						StartSeeking(RestorePositionFrame, true);
 						return;

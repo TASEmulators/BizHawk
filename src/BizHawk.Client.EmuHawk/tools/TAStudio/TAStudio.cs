@@ -830,10 +830,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Settings.AutoRestoreLastPosition && RestorePositionFrame != -1)
 			{
-				if (RestorePositionFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
-				{
-					StartSeeking(RestorePositionFrame);
-				}
+				StartSeeking(RestorePositionFrame);
 			}
 			else
 			{
@@ -899,20 +896,16 @@ namespace BizHawk.Client.EmuHawk
 				// now the next section won't happen since we're at the right spot
 			}
 
-			// frame == Emulator.Frame when frame == 0
-			if (frame > Emulator.Frame)
+			// make seek frame keep up with emulation on fast scrolls
+			if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
 			{
-				// make seek frame keep up with emulation on fast scrolls
-				if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
-				{
-					StartSeeking(frame);
-				}
-				else
-				{
-					// GUI users may want to be protected from clobbering their video when skipping around...
-					// well, users who are rewinding aren't. (that gets done through the seeking system in the call above)
-					// users who are clicking around.. I don't know.
-				}
+				StartSeeking(frame);
+			}
+			else
+			{
+				// GUI users may want to be protected from clobbering their video when skipping around...
+				// well, users who are rewinding aren't. (that gets done through the seeking system in the call above)
+				// users who are clicking around.. I don't know.
 			}
 		}
 
