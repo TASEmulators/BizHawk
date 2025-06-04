@@ -2091,46 +2091,45 @@ namespace BizHawk.Client.EmuHawk
 				var newFile = new FileInfo(newPath);
 				var backupPath = $"{path}.bak";
 				var backupFile = new FileInfo(backupPath);
-				if (file.Directory != null && !file.Directory.Exists)
-				{
-					try
-					{
-						file.Directory.Create();
-					}
-					catch
-					{
-						AddOnScreenMessage($"Unable to flush SaveRAM to: {newFile.Directory}");
-						return false;
-					}
-				}
 
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 				if (saveram == null)
 					return true;
 
-				FileStream fs = new(newPath, FileMode.Create, FileAccess.Write);
-				using (BinaryWriter writer = new(fs, Encoding.UTF8, leaveOpen: true)) writer.Write(saveram);
-				fs.Flush(flushToDisk: true);
-				fs.Dispose();
-
-				if (file.Exists)
+				try
 				{
-					if (Config.BackupSaveram)
+					Directory.CreateDirectory(file.DirectoryName!);
+					using (var fs = File.Create(newPath))
 					{
-						if (backupFile.Exists)
+						fs.Write(saveram, 0, saveram.Length);
+						fs.Flush(flushToDisk: true);
+					}
+
+					if (file.Exists)
+					{
+						if (Config.BackupSaveram)
 						{
-							backupFile.Delete();
+							if (backupFile.Exists)
+							{
+								backupFile.Delete();
+							}
+
+							file.MoveTo(backupPath);
 						}
+						else
+						{
+							file.Delete();
+						}
+					}
 
-						file.MoveTo(backupPath);
-					}
-					else
-					{
-						file.Delete();
-					}
+					newFile.MoveTo(path);
 				}
-
-				newFile.MoveTo(path);
+				catch (IOException e)
+				{
+					AddOnScreenMessage("Failed to flush saveram!");
+					Console.Error.WriteLine(e);
+					return false;
+				}
 			}
 
 			return true;
