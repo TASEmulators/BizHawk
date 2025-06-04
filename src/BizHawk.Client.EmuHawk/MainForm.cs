@@ -4102,18 +4102,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.HasSaveRam())
 			{
-				if (!FlushSaveRAM())
+				while (true)
 				{
-					var msgRes = ShowMessageBox2(
-						owner: null,
-						"Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
-						"Directory IO Error",
+					if (FlushSaveRAM()) break;
+
+					var result = ShowMessageBox3(
+						owner: this,
+						"Failed flushing the game's Save RAM to your disk.\n" +
+						"Do you want to try again?",
+						"IOError while writing SaveRAM",
 						EMsgBoxIcon.Error);
 
-					if (!msgRes)
-					{
-						return;
-					}
+					if (result is false) break;
+					if (result is null) return;
 				}
 			}
 
