@@ -1,6 +1,7 @@
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -54,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				AutosaveSRAMtextBox.Value = value;
+				AutosaveSRAMtextBox.Value = ((decimal) value).Clamp(AutosaveSRAMtextBox.Minimum, AutosaveSRAMtextBox.Maximum);
 			}
 		}
 
