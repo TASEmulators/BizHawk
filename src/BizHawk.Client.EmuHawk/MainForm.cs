@@ -4094,7 +4094,7 @@ namespace BizHawk.Client.EmuHawk
 					AddOnScreenMessage("SRAM cleared.");
 				}
 			}
-			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
+			else if (Emulator.HasSaveRam())
 			{
 				if (!FlushSaveRAM())
 				{
