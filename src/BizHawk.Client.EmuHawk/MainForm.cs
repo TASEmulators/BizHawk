@@ -2050,7 +2050,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Emulator.AsSaveRam().StoreSaveRam(sram);
-					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				catch (IOException)
 				{
@@ -2067,11 +2066,10 @@ namespace BizHawk.Client.EmuHawk
 				if (autosave)
 				{
 					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
-					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
 				{
-					path =  Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
+					path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				}
 
 				var file = new FileInfo(path);
@@ -3169,9 +3167,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Config.AutosaveSaveRAM)
 				{
-					if (AutoFlushSaveRamIn-- <= 0)
+					AutoFlushSaveRamIn--;
+					if (AutoFlushSaveRamIn <= 0)
 					{
 						FlushSaveRAM(true);
+						AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 					}
 				}
 				// why not skip audio if the user doesn't want sound
@@ -3961,6 +3961,8 @@ namespace BizHawk.Client.EmuHawk
 						{
 							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
+
+						AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 					}
 
 					var previousRom = CurrentlyOpenRom;
