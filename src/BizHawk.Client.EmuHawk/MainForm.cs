@@ -2059,7 +2059,8 @@ namespace BizHawk.Client.EmuHawk
 
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
-						_ = saveramToLoad.OpenRead().Read(sram, 0, sram.Length);
+						using var fs = saveramToLoad.OpenRead();
+						_ = fs.Read(sram, 0, sram.Length);
 					}
 
 					Emulator.AsSaveRam().StoreSaveRam(sram);
