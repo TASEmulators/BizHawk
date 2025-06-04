@@ -370,13 +370,23 @@
 			// 
 			this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(151, 33);
 			this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] {
-            100000,
+            86400,
+            0,
+            0,
+            0});
+			this.AutosaveSRAMtextBox.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
 			this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
 			this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
 			this.AutosaveSRAMtextBox.TabIndex = 5;
+			this.AutosaveSRAMtextBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// AutosaveSRAMradioButton1
 			// 
