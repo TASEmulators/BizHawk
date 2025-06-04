@@ -180,7 +180,7 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
   // Setting inputs
   headlessClearTickCommand();
 
-  if (renderInfo->RenderVideo)
+  if (renderInfo->RenderVideo && gamestate == GS_LEVEL)
     automap_inputs(buttons);
 
   dsda_reveal_map = renderInfo->MapDetails;

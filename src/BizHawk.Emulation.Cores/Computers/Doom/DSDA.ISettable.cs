@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			DosDoom = 5,
 			[Display(Name = "6 - TASDoom")]
 			TasDoom = 6,
-			[Display(Name = "7 - Boom's Inaccurate Vanilla Compatibility Mode")]
+			[Display(Name = "7 - Boom's Vanilla Compatibility Mode")]
 			Boom_Compatibility = 7,
 			[Display(Name = "8 - Boom v2.01")]
 			Boom_201 = 8,
@@ -120,11 +120,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public enum MultiplayerMode : int
 		{
-			[Display(Name = "Single Player / Coop")]
+			[Display(Name = "Single Player / Cooperative")]
 			Single_Coop = 0,
 			[Display(Name = "Deathmatch")]
 			Deathmatch = 1,
-			[Display(Name = "Altdeath")]
+			[Display(Name = "Alternate Deathmatch (v2.0)")]
 			Altdeath = 2
 		}
 
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int ScaleFactor { get; set; }
 
 			[DisplayName("Internal Aspect Ratio")]
-			[Description("Sets aspect ratio of the rendered screen. 'Native' is multiples of 320x200 with aspect correction (to 4:3) applied by the frontend. Other modes produce pre-corrected image, useful for viewing Automap on higher resolutions (to avoid pixel distortion caused by external aspect correcton).\n\nRequires restart.")]
+			[Description("Sets aspect ratio of the rendered screen. 'Native' is multiples of 320x200 with aspect correction (to 4:3) applied by the frontend, similar to vanilla. Other modes produce pre-corrected image, useful for viewing Automap on higher resolutions (to avoid pixel distortion caused by external aspect correcton).\n\nRequires restart.")]
 			[DefaultValue(AspectRatio.Native)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public AspectRatio InternalAspect { get; set; }
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool ShowMessages { get; set; }
 
 			[DisplayName("Report Revealed Secrets")]
-			[Description("Shows an on-screen notification when revealing a secret.")]
+			[Description("Shows an on-screen notification when revealing a secret. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool ReportSecrets { get; set; }
 
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public HudMode HeadsUpMode { get; set; }
 
 			[DisplayName("Extended HUD")]
-			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display.")]
+			[Description("Shows DSDA-Doom-specific information above vanilla heads-up-display. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool DsdaExHud { get; set; }
 
@@ -218,27 +218,27 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool DisplayCoordinates { get; set; }
 
 			[DisplayName("Display Commands")]
-			[Description("Shows input history on the screen. History size is 10, empty commands are excluded.")]
+			[Description("Shows input history on the screen. History size is 10, empty commands are excluded. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool DisplayCommands { get; set; }
 
 			[DisplayName("Automap Totals")]
-			[Description("Shows counts for kills, items, and secrets on Automap.")]
+			[Description("Shows counts for kills, items, and secrets on Automap. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool MapTotals { get; set; }
 
 			[DisplayName("Automap Time")]
-			[Description("Shows elapsed time on Automap.")]
+			[Description("Shows elapsed time on Automap. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool MapTime { get; set; }
 
 			[DisplayName("Automap Coordinates")]
-			[Description("Shows in-level coordinates on Automap.")]
+			[Description("Shows in-level coordinates on Automap. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool MapCoordinates { get; set; }
 
 			[DisplayName("Automap Overlay")]
-			[Description("Shows Automap on top of gameplay.")]
+			[Description("Shows Automap on top of gameplay. Not available in vanilla.")]
 			[DefaultValue(MapOverlays.Disabled)]
 			public MapOverlays MapOverlay { get; set; }
 
@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public MapDetail MapDetails { get; set; }
 
 			[DisplayName("Player Point of View")]
-			[Description("Which of the players' point of view to use during rendering")]
+			[Description("Which of the players' point of view to use during rendering.")]
 			[Range(1, 4)]
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
@@ -284,6 +284,117 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ControllerType InputFormat { get; set; }
 
+			[DisplayName("Compatibility Level")]
+			[Description("The version of Doom or its ports that this movie is meant to emulate. Highest vanilla-compatible level is 'Final Doom'. Newer WADs may require higher levels. Standalone DSDA-Doom defaults to MBF21, which supports features of all of the lower levels, but is the farthest from vanilla.")]
+			[DefaultValue(CompatibilityLevel.Doom2_19)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public CompatibilityLevel CompatibilityLevel { get; set; }
+
+			[DisplayName("Skill Level")]
+			[Description("Difficulty setting. Vanilla defaults to 'Hurt me plenty', but the de-facto current stanadard is 'Ultra-Violence'.")]
+			[DefaultValue(SkillLevel.UV)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public SkillLevel SkillLevel { get; set; }
+
+			[DisplayName("Multiplayer Mode")]
+			[Description("Indicates the multiplayer mode.")]
+			[DefaultValue(MultiplayerMode.Single_Coop)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public MultiplayerMode MultiplayerMode { get; set; }
+
+			[DisplayName("Initial Episode")]
+			[Description("Selects the initial episode. Ignored for non-episodic IWADs (e.g., DOOM2) and Shareware.")]
+			[DefaultValue(1)]
+			public int InitialEpisode { get; set; }
+
+			[DisplayName("Initial Map")]
+			[Description("Selects the initial map.")]
+			[DefaultValue(1)]
+			public int InitialMap { get; set; }
+
+			[DisplayName("Turbo")]
+			[Description("Modifies the player running / strafing speed [0-255]. '-1' means Disabled.")]
+			[Range(TURBO_AUTO, 255)]
+			[DefaultValue(TURBO_AUTO)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int Turbo { get; set; }
+
+			[DisplayName("Fast Monsters")]
+			[Description("Makes monsters move and attack much faster. Forced to 'true' when playing Nightmare! difficulty.")]
+			[DefaultValue(false)]
+			public bool FastMonsters { get; set; }
+
+			[DisplayName("Monsters Respawn")]
+			[Description("Makes monsters respawn shortly after dying. Forced to 'true' when playing Nightmare! difficulty.")]
+			[DefaultValue(false)]
+			public bool MonstersRespawn { get; set; }
+
+			[DisplayName("No Monsters")]
+			[Description("Removes all monsters from the level.")]
+			[DefaultValue(false)]
+			public bool NoMonsters { get; set; }
+
+			[DisplayName("Pistol Start")]
+			[Description("Starts every level with a clean slate, with nothing carried over from previus levels. Health is reset to 100% as well.")]
+			[DefaultValue(false)]
+			public bool PistolStart { get; set; }
+
+			[DisplayName("Chain Episodes")]
+			[Description("Completing one episode leads to the next without interruption. Not available in vanilla.")]
+			[DefaultValue(false)]
+			public bool ChainEpisodes { get; set; }
+
+			[DisplayName("Strict Mode")]
+			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
+			[DefaultValue(true)]
+			public bool StrictMode { get; set; }
+
+			[DisplayName("Always Run")]
+			[Description("Toggles whether the player is permanently in the running state, without the slower walking speed available. This emulates a bug in vanilla Doom: setting the joystick run button to an invalid high number causes the game to always have it enabled.")]
+			[DefaultValue(true)]
+			public bool AlwaysRun { get; set; }
+
+			[DisplayName("Render Wipescreen")]
+			[Description("Enables screen melt - an effect seen when Doom changes scene, for example, when starting or exiting a level. Can't be disabled in vanilla.")]
+			[DefaultValue(true)]
+			public bool RenderWipescreen { get; set; }
+
+			[DisplayName("Turning Resolution")]
+			[Description("'Shorttics' refers to decreased turning resolution normally used for demos. 'Longtics' refers to the regular turning resolution outside of a demo-recording environment. Newer demo formats support both.")]
+			[DefaultValue(TurningResolution.Longtics)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public TurningResolution TurningResolution { get; set; }
+
+			[DisplayName("Turning During Strafe50")]
+			[Description("\"Strafe\" key is required to convert angular movement into strafe50, without it maximum strafe value is 40. So using keyboard and mouse, it's impossible to turn during strafe50. But if strafe50+turning appears in a demo, the game will process it fine, which makes it a TAS-only feature. This setting allows disabling it for maximum authenticity.")]
+			[DefaultValue(Strafe50Turning.Allow)]
+			public Strafe50Turning Strafe50Turns { get; set; }
+
+			[DisplayName("Prevent Level Exit")]
+			[Description("Level exit triggers won't have an effect. This is useful for debugging / optimizing / botting purposes. Not available in vanilla.")]
+			[DefaultValue(false)]
+			public bool PreventLevelExit { get; set; }
+
+			[DisplayName("Prevent Game End")]
+			[Description("Game end triggers won't have an effect. This is useful for debugging / optimizing / botting purposes. Not available in vanilla.")]
+			[DefaultValue(false)]
+			public bool PreventGameEnd { get; set; }
+
+			[DisplayName("Mouse Horizontal Sensitivity")]
+			[Description("How fast the Doom player will turn when using the mouse.")]
+			[DefaultValue(10)]
+			public int MouseTurnSensitivity { get; set; }
+
+			[DisplayName("Mouse Vertical Sensitivity")]
+			[Description("How fast the Doom player will run when using the mouse.")]
+			[DefaultValue(1)]
+			public int MouseRunSensitivity { get; set; }
+			/*
+			[DisplayName("Initial RNG Seed")]
+			[Description("Boom demos.")]
+			[DefaultValue(1993)]
+			public uint RNGSeed { get; set; }
+			*/
 			[DisplayName("Player 1 Present")]
 			[Description("Specifies if player 1 is present")]
 			[DefaultValue(true)]
@@ -304,136 +415,25 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool Player4Present { get; set; }
 
-			[DisplayName("Compatibility Level")]
-			[Description("The version of Doom or its ports that this movie is meant to emulate.")]
-			[DefaultValue(CompatibilityLevel.Doom2_19)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public CompatibilityLevel CompatibilityLevel { get; set; }
-
-			[DisplayName("Skill Level")]
-			[Description("Establishes the general difficulty settings.")]
-			[DefaultValue(SkillLevel.UV)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public SkillLevel SkillLevel { get; set; }
-
-			[DisplayName("Multiplayer Mode")]
-			[Description("Indicates the multiplayer mode")]
-			[DefaultValue(MultiplayerMode.Single_Coop)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public MultiplayerMode MultiplayerMode { get; set; }
-
-			[DisplayName("Initial Episode")]
-			[Description("Selects the initial episode. Ignored for non-episodic IWADs (e.g., DOOM2) and Shareware.")]
-			[DefaultValue(1)]
-			public int InitialEpisode { get; set; }
-
-			[DisplayName("Initial Map")]
-			[Description("Selects the initial map.")]
-			[DefaultValue(1)]
-			public int InitialMap { get; set; }
-
-			[DisplayName("Turbo")]
-			[Description("Modifies the player running / strafing speed [0-255]. -1 means Disabled.")]
-			[Range(TURBO_AUTO, 255)]
-			[DefaultValue(TURBO_AUTO)]
-			[TypeConverter(typeof(ConstrainedIntConverter))]
-			public int Turbo { get; set; }
-
-			[DisplayName("Fast Monsters")]
-			[Description("Makes monsters move and attack much faster (forced to true when playing Nightmare! difficulty)")]
-			[DefaultValue(false)]
-			public bool FastMonsters { get; set; }
-
-			[DisplayName("Monsters Respawn")]
-			[Description("Makes monsters respawn shortly after dying (forced to true when playing Nightmare! difficulty)")]
-			[DefaultValue(false)]
-			public bool MonstersRespawn { get; set; }
-
-			[DisplayName("No Monsters")]
-			[Description("Removes all monsters from the level.")]
-			[DefaultValue(false)]
-			public bool NoMonsters { get; set; }
-
-			[DisplayName("Pistol Start")]
-			[Description("Starts every level with a clean slate, with nothing carried over from previus levels. Health is reset to 100% as well.")]
-			[DefaultValue(false)]
-			public bool PistolStart { get; set; }
-
-			[DisplayName("Chain Episodes")]
-			[Description("Completing one episode leads to the next without interruption.")]
-			[DefaultValue(false)]
-			public bool ChainEpisodes { get; set; }
-
-			[DisplayName("Strict Mode")]
-			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
-			[DefaultValue(true)]
-			public bool StrictMode { get; set; }
-
-			[DisplayName("Always Run")]
-			[Description("Toggles whether the player is permanently in the running state, without the slower walking speed available. This emulates a bug in vanilla Doom: setting the joystick run button to an invalid high number causes the game to always have it enabled.")]
-			[DefaultValue(true)]
-			public bool AlwaysRun { get; set; }
-
-			[DisplayName("Render Wipescreen")]
-			[Description("Enables screen melt - an effect seen when Doom changes scene, for example, when starting or exiting a level.")]
-			[DefaultValue(true)]
-			public bool RenderWipescreen { get; set; }
-
-			[DisplayName("Turning Resolution")]
-			[Description("\"Shorttics\" refers to decreased turning resolution normally used for demos. \"Longtics\" refers to the regular turning resolution outside of a demo-recording environment. Newer demo formats support both.")]
-			[DefaultValue(TurningResolution.Longtics)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public TurningResolution TurningResolution { get; set; }
-
-			[DisplayName("Turning During Strafe50")]
-			[Description("\"Strafe\" key is required to convert angular movement into strafe50, without it maximum strafe value is 40. So using keyboard and mouse, it's impossible to turn during strafe50. But if strafe50+turning appears in a demo, the game will process it fine, which makes it a TAS-only feature. This setting allows disabling it for maximum authenticity.")]
-			[DefaultValue(Strafe50Turning.Allow)]
-			public Strafe50Turning Strafe50Turns { get; set; }
-
-			[DisplayName("Prevent Level Exit")]
-			[Description("Level exit triggers won't have an effect. This is useful for debugging / optimizing / botting purposes.")]
-			[DefaultValue(false)]
-			public bool PreventLevelExit { get; set; }
-
-			[DisplayName("Prevent Game End")]
-			[Description("Game end triggers won't have an effect. This is useful for debugging / optimizing / botting purposes.")]
-			[DefaultValue(false)]
-			public bool PreventGameEnd { get; set; }
-
-			[DisplayName("Mouse Horizontal Sensitivity")]
-			[Description("How fast the Doom player will turn when using the mouse.")]
-			[DefaultValue(10)]
-			public int MouseTurnSensitivity { get; set; }
-
-			[DisplayName("Mouse Vertical Sensitivity")]
-			[Description("How fast the Doom player will run when using the mouse.")]
-			[DefaultValue(1)]
-			public int MouseRunSensitivity { get; set; }
-			/*
-			[DisplayName("Initial RNG Seed")]
-			[Description("Boom demos.")]
-			[DefaultValue(1993)]
-			public uint RNGSeed { get; set; }
-			*/
-			[DisplayName("Player 1 Hexen Class")]
+			[DisplayName("[Hexen] Player 1 Class")]
 			[Description("The Hexen class to use for player 1. Has no effect for Doom / Heretic")]
 			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player1Class { get; set; }
 
-			[DisplayName("Player 2 Hexen Class")]
+			[DisplayName("[Hexen] Player 2 Class")]
 			[Description("The Hexen class to use for player 2. Has no effect for Doom / Heretic")]
 			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player2Class { get; set; }
 
-			[DisplayName("Player 3 Hexen Class")]
+			[DisplayName("[Hexen] Player 3 Class")]
 			[Description("The Hexen class to use for player 3. Has no effect for Doom / Heretic")]
 			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player3Class { get; set; }
 
-			[DisplayName("Player 4 Hexen Class")]
+			[DisplayName("[Hexen] Player 4 Class")]
 			[Description("The Hexen class to use for player 4. Has no effect for Doom / Heretic")]
 			[DefaultValue(HexenClass.Fighter)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
