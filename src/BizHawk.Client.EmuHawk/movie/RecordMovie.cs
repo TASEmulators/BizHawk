@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				MaxDropDownItems = 32,
 				Size = new(152, 21),
 			};
-			if (_emulator.HasSaveRam() && _emulator.AsSaveRam().CloneSaveRam() is not null) StartFromCombo.Items.Add(START_FROM_SAVERAM);
+			if (_emulator.HasSaveRam() && _emulator.AsSaveRam().CloneSaveRam(clearDirty: false) is not null) StartFromCombo.Items.Add(START_FROM_SAVERAM);
 			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
 
 			DefaultAuthorCheckBox = new()
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var core = _emulator.AsSaveRam();
 					movieToRecord.StartsFromSaveRam = true;
-					movieToRecord.SaveRam = core.CloneSaveRam();
+					movieToRecord.SaveRam = core.CloneSaveRam(clearDirty: false);
 				}
 
 				_mainForm.StartNewMovie(movieToRecord, true);

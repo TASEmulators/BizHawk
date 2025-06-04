@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (Board is FDS fds)
 			{

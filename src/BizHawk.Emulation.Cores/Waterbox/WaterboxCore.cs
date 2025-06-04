@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveramSize == 0)
 				return null;

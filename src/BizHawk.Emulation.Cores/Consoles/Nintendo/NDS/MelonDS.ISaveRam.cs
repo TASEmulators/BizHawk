@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public new bool SaveRamModified => IsDSiWare ? DSiWareSaveLength != 0 : _core.SaveRamIsDirty();
 
-		public new byte[] CloneSaveRam()
+		public new byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (IsDSiWare)
 			{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (length > 0)
 			{
 				var ret = new byte[length];
-				_core.GetSaveRam(_console, ret);
+				_core.GetSaveRam(_console, ret, clearDirty);
 				return ret;
 			}
 

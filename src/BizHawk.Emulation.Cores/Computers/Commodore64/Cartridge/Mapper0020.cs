@@ -104,8 +104,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			if (_chipB.CheckDataDirty() || _deltaB == null)
 				_deltaB = DeltaSerializer.GetDelta<byte>(_originalMediaB, _chipB.Data).ToArray();
-
-			_saveRamDirty = false;
 		}
 
 		protected override void SyncStateInternal(Serializer ser)
@@ -274,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			);
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			FlushSaveRam();
 
@@ -287,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			writer.Write(_deltaB);
 			writer.Flush();
 
-			_saveRamDirty = false;
+			if (clearDirty) _saveRamDirty = false;
 			return result.ToArray();
 		}
 

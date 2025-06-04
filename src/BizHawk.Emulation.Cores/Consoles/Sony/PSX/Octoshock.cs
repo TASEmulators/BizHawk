@@ -922,7 +922,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			var cfg = _SyncSettings.FIOConfig.ToLogical();
 			int nMemcards = cfg.NumMemcards;

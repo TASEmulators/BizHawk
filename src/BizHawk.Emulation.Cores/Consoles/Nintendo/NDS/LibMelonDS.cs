@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract void PutSaveRam(IntPtr console, byte[] data, uint len);
 
 		[BizImport(CC)]
-		public abstract void GetSaveRam(IntPtr console, byte[] data);
+		public abstract void GetSaveRam(IntPtr console, byte[] data, bool clearDirty);
 
 		[BizImport(CC)]
 		public abstract int GetSaveRamLength(IntPtr console);

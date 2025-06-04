@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			_saveramBuff = new byte[BizSwan.bizswan_saveramsize(Core)];
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (!BizSwan.bizswan_saveramsave(Core, _saveramBuff, _saveramBuff.Length))
 			{

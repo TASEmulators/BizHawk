@@ -33,7 +33,7 @@ ECL_EXPORT void PutSaveRam(melonDS::NDS* nds, u8* data, u32 len)
 	}
 }
 
-ECL_EXPORT void GetSaveRam(melonDS::NDS* nds, u8* data)
+ECL_EXPORT void GetSaveRam(melonDS::NDS* nds, u8* data, bool clearDirty)
 {
 	const u32 ndsSaveLen = nds->GetNDSSaveLength();
 	const u32 gbaSaveLen = nds->GetGBASaveLength();
@@ -41,13 +41,13 @@ ECL_EXPORT void GetSaveRam(melonDS::NDS* nds, u8* data)
 	if (ndsSaveLen)
 	{
 		memcpy(data, nds->GetNDSSave(), ndsSaveLen);
-		NdsSaveRamIsDirty = false;
+		if (clearDirty) NdsSaveRamIsDirty = false;
 	}
 
 	if (gbaSaveLen)
 	{
 		memcpy(data + ndsSaveLen, nds->GetGBASave(), gbaSaveLen);
-		GbaSaveRamIsDirty = false;
+		if (clearDirty) GbaSaveRamIsDirty = false;
 	}
 }
 
@@ -108,7 +108,7 @@ ECL_EXPORT void DSiWareSavsLength(melonDS::DSi* dsi, u32 titleId, u32* publicSav
 
 // TODO - I don't like this approach with NAND
 // Perhaps instead it would be better to use FileFlush to write to disk
-// (guarded by frontend determinism switch, of course) 
+// (guarded by frontend determinism switch, of course)
 
 ECL_EXPORT u32 GetNANDSize(melonDS::DSi* dsi)
 {

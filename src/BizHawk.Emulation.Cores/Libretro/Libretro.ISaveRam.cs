@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public bool SaveRamModified => _saveramSize > 0;
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveramSize > 0)
 			{
