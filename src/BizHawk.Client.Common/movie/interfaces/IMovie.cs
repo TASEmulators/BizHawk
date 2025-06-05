@@ -121,11 +121,8 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Sets the movie to inactive (note that it will still be in memory)
-		/// The saveChanges flag will tell the movie to save its contents to disk
 		/// </summary>
-		/// <param name="saveChanges">if true, will save to disk</param>
-		/// <returns>Whether or not the movie was saved</returns>
-		bool Stop(bool saveChanges = true);
+		void Stop();
 
 		/// <summary>
 		/// Switches to record mode
