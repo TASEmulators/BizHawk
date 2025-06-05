@@ -52,6 +52,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public int RestorePositionFrame { get; private set; }
 
+		private int _seekingTo = -1;
+
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
 
@@ -858,8 +860,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// Unpausing after a seek may seem like we aren't really seeking at all:
+			// what is the significance of a seek to frame if we don't pause?
+			// Answer: We use this in order to temporarily disable recording mode when the user navigates to a frame. (to avoid recording between whatever is the most recent state and the user-specified frame)
+			// as well as ... to enable turbo-seek when navigating while unpaused? not sure (because this doesn't work)
+			//   ... actually, fromRewinding is never set to true in any call AND NEVER WAS. TODO: Fix that.
 			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
 			TastudioPlayMode();
+
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
@@ -894,8 +902,11 @@ namespace BizHawk.Client.EmuHawk
 				// now the next section won't happen since we're at the right spot
 			}
 
-			// make seek frame keep up with emulation on fast scrolls
-			if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
+			// Seek needs to happen if any of:
+			// 1) We should pause once reaching the target frame (that's what a seek is): currently paused OR currently seeking
+			// 2) We are using _unpauseAfterSeeking (e.g. to manage recording state)
+			// Otherwise, just don't seek and emulation will happily continue.
+			if (MainForm.EmulatorPaused || _seekingTo != -1 || _unpauseAfterSeeking)
 			{
 				StartSeeking(frame);
 			}
@@ -1266,7 +1277,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)
 				CurrentTasMovie.Truncate(branch.Frame);
 
-			MainForm.PauseOnFrame = null;
+			CancelSeek();
 			RefreshDialog();
 		}
 	}
