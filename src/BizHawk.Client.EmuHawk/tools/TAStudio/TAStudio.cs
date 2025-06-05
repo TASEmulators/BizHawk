@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
 		/// </summary>
-		public int LastPositionFrame { get; private set; }
+		public int RestorePositionFrame { get; private set; }
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
-			LastPositionFrame = -1;
+			RestorePositionFrame = -1;
 
 			TasView.MouseLeave += TAStudio_MouseLeave;
 			TasView.CellHovered += (_, e) =>
@@ -828,11 +828,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoAutoRestore()
 		{
-			if (Settings.AutoRestoreLastPosition && LastPositionFrame != -1)
+			if (Settings.AutoRestoreLastPosition && RestorePositionFrame != -1)
 			{
-				if (LastPositionFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
+				if (RestorePositionFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
-					StartSeeking(LastPositionFrame);
+					StartSeeking(RestorePositionFrame);
 				}
 			}
 			else
