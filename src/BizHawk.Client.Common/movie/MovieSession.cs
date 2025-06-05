@@ -164,6 +164,8 @@ namespace BizHawk.Client.Common
 				LatchInputToUser();
 			}
 
+			HandleFrameAfter(false);
+
 			return true;
 		}
 
