@@ -10,14 +10,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			var controller = new ControllerDefinition($"{settings.InputFormat} Input Format");
 			var longtics = settings.TurningResolution == TurningResolution.Longtics;
-			int playersPresent = Convert.ToInt32(settings.Player1Present)
-				| Convert.ToInt32(settings.Player2Present) << 1
-				| Convert.ToInt32(settings.Player3Present) << 2
-				| Convert.ToInt32(settings.Player4Present) << 3;
 
 			for (int i = 0; i < 4; i++)
 			{
-				if ((playersPresent & (1 << i)) is not 0)
+				if ((PlayersPresent(settings) & (1 << i)) is not 0)
 				{
 					var port = i + 1;
 

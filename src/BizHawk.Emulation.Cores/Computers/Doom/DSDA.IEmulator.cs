@@ -24,11 +24,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			int commonButtons = 0;
 
-			int playersPresent = Convert.ToInt32(_syncSettings.Player1Present)
-				| Convert.ToInt32(_syncSettings.Player2Present) << 1
-				| Convert.ToInt32(_syncSettings.Player3Present) << 2
-				| Convert.ToInt32(_syncSettings.Player4Present) << 3;
-
 			// this is the only change that we're announcing on the front end.
 			// not announcing it at all feels weird given how vanilla and ports do it.
 			// but announcing it via internal messages can show wrong values,
@@ -64,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			for (int i = 0; i < 4; i++)
 			{
-				if ((playersPresent & (1 << i)) is not 0)
+				if ((PlayersPresent(_syncSettings) & (1 << i)) is not 0)
 				{
 					int port = i + 1;
 					players[i].Buttons = LibDSDA.Buttons.None;
@@ -152,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// mouse-driven turning
 					var mouseTurning = controller.AxisValue($"P{port} Mouse Turning") * _syncSettings.MouseTurnSensitivity;
+
 					if (strafe)
 					{
 						players[i].StrafingSpeed += mouseTurning / 5;
@@ -160,6 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					{
 						players[i].TurningSpeed -= mouseTurning;
 					}
+
 					// ultimately strafe speed is limited to max run speed, NOT max strafe speed
 					players[i].StrafingSpeed = players[i].StrafingSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
@@ -179,8 +176,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// bool buttons
-					if (controller.IsPressed($"P{port} Fire")) players[i].Buttons |= LibDSDA.Buttons.Fire;
-					if (controller.IsPressed($"P{port} Use"))  players[i].Buttons |= LibDSDA.Buttons.Use;
+					if (controller.IsPressed($"P{port} Fire"))
+						players[i].Buttons |= LibDSDA.Buttons.Fire;
+
+					if (controller.IsPressed($"P{port} Use"))
+						players[i].Buttons |= LibDSDA.Buttons.Use;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is not ControllerType.Doom)

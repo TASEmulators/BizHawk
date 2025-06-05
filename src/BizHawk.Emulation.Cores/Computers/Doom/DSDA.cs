@@ -255,6 +255,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
+		private static int PlayersPresent(DoomSyncSettings syncSettings) => Convert.ToInt32(syncSettings.Player1Present)
+			| Convert.ToInt32(syncSettings.Player2Present) << 1
+			| Convert.ToInt32(syncSettings.Player3Present) << 2
+			| Convert.ToInt32(syncSettings.Player4Present) << 3;
+
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		internal CoreComm _comm { get; }
 		private readonly WaterboxHost _elf;
