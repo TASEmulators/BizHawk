@@ -177,32 +177,11 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private void LoadBranch(TasBranch branch)
-		{
-			if (Tastudio.Settings.OldControlSchemeForBranches && !Tastudio.TasPlaybackBox.RecordingMode)
-			{
-				JumpToBranchToolStripMenuItem_Click(null, null);
-				return;
-			}
-
-			Movie.LoadBranch(branch);
-			Tastudio.LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
-
-			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, Tastudio.Emulator.AsStatable());
-			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
-
-			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
-				Movie.Truncate(branch.Frame);
-
-			MainForm.PauseOnFrame = null;
-			Tastudio.RefreshDialog();
-		}
-
 		private bool LoadSelectedBranch()
 		{
 			if (SelectedBranch == null) return false;
 			Branches.Current = BranchView.FirstSelectedRowIndex;
-			LoadBranch(SelectedBranch);
+			Tastudio.LoadBranch(SelectedBranch);
 			BranchView.Refresh();
 			Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Branches.Current + 1}");
 			return true;
@@ -352,7 +331,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_branchUndo == BranchUndo.Load)
 			{
-				LoadBranch(_backupBranch);
+				Tastudio.LoadBranch(_backupBranch);
 				Tastudio.BranchLoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}

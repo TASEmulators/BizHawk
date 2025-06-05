@@ -1250,5 +1250,28 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.AllColumns.ColumnsChanged();
 		}
+
+		public void LoadBranch(TasBranch branch)
+		{
+			if (Settings.OldControlSchemeForBranches && !TasPlaybackBox.RecordingMode)
+			{
+				GoToFrame(branch.Frame);
+				return;
+			}
+
+			CurrentTasMovie.LoadBranch(branch);
+			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+
+			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
+
+			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)
+			{
+				CurrentTasMovie.Truncate(branch.Frame);
+			}
+
+			MainForm.PauseOnFrame = null;
+			RefreshDialog();
+		}
 	}
 }
