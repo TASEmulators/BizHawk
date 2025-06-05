@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame <= Emulator.Frame)
 				{
-					if ((MainForm.EmulatorPaused || !MainForm.IsSeeking)
+					if ((MainForm.EmulatorPaused || _seekingTo == -1)
 						&& !CurrentTasMovie.LastPositionStable)
 					{
 						RestorePositionFrame = Emulator.Frame;
@@ -64,14 +64,6 @@ namespace BizHawk.Client.EmuHawk
 
 					StartSeeking(frame);
 				}
-			}
-		}
-
-		public void GoToPreviousFrame()
-		{
-			if (Emulator.Frame > 0)
-			{
-				GoToFrame(Emulator.Frame - 1);
 			}
 		}
 

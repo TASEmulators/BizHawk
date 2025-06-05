@@ -3256,16 +3256,7 @@ namespace BizHawk.Client.EmuHawk
 					if (PauseOnFrame.Value == Emulator.Frame)
 					{
 						PauseEmulator();
-						if (Tools.IsLoaded<TAStudio>()) Tools.TAStudio.StopSeeking();
-						else PauseOnFrame = null;
-					}
-					else if (Tools.IsLoaded<TAStudio>()
-						&& Tools.TAStudio.RestorePositionFrame == Emulator.Frame
-						&& ((ITasMovie) MovieSession.Movie)[Emulator.Frame].Lagged is null)
-					{
-						// haven't yet greenzoned the frame, hence it's after editing
-						// then we want to pause here. taseditor fashion
-						PauseEmulator();
+						PauseOnFrame = null;
 					}
 				}
 
