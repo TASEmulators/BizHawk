@@ -37,6 +37,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private readonly List<IRomAsset> _romAssets;
 		private readonly List<IDiscAsset> _discAssets;
 		private const int _messageDuration = 4;
+		private const double _wAspect = 4.0;
+		private const double _hAspect = 3.0;
+		private int _correctedWidth = LibDOSBox.VGA_MAX_WIDTH;
+		private int _correctedHeight = LibDOSBox.VGA_MAX_HEIGHT;
 
 		// Drive management variables
 		private List<IRomAsset> _floppyDiskImageFiles = new List<IRomAsset>();
@@ -54,8 +58,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private List<string> _cdRomFileNames = new List<string>();
 		private Dictionary<string, DiscSectorReader> _cdRomFileToReaderMap = new Dictionary<string, DiscSectorReader>();
 		private readonly LibDOSBox.CDReadCallback _CDReadCallback;
-
-		public override int VirtualWidth => BufferHeight * 4 / 3;
+		
+		public override int VirtualWidth => _correctedWidth;
+		public override int VirtualHeight => _correctedHeight;
 
 		// Image selection / swapping variables
 
@@ -536,6 +541,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		protected override void FrameAdvancePost()
 		{
 			DriveLightOn = _libDOSBox.GetDriveActivityFlag();
+
+			// never shrink the virtual buffer
+			_correctedHeight = BufferWidth > BufferHeight * _wAspect / _hAspect
+				? (int)Math.Round(BufferWidth * _hAspect / _wAspect)
+				: BufferHeight;
+			_correctedWidth = (int)Math.Round(VirtualHeight * _wAspect / _hAspect);
 
 			// Checking refresh rate base on the reported refresh rate updates
 			var currentRefreshRateNumerator = VsyncNumerator;
