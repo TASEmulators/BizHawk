@@ -24,10 +24,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateProgressBar()
 		{
-			if (MainForm.PauseOnFrame.HasValue)
+			if (_seekingTo != -1)
 			{
 				int diff = Emulator.Frame - _seekStartFrame.Value;
-				int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
+				int unit = _seekingTo - _seekStartFrame.Value;
 				double progress = 0;
 
 				if (diff != 0 && unit != 0)
@@ -100,12 +100,16 @@ namespace BizHawk.Client.EmuHawk
 				_doPause = !CurrentTasMovie.IsAtEnd();
 			}
 
+			FastUpdateAfter();
 			RefreshDialog(refreshNeeded, refreshBranches: false);
-			UpdateProgressBar();
 		}
 
 		protected override void FastUpdateAfter()
 		{
+			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
+			{
+				StopSeeking();
+			}
 			UpdateProgressBar();
 		}
 
