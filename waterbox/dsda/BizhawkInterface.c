@@ -117,16 +117,30 @@ void player_input(struct PackedPlayerInput *inputs, int playerId)
   local_cmds[playerId].lookfly     = inputs->FlyLook;
   local_cmds[playerId].arti        = inputs->ArtifactUse;
   local_cmds[playerId].angleturn   = inputs->TurningSpeed;
+  local_cmds[playerId].buttons     = inputs->Buttons;
 
-  if (inputs->Buttons.Fire) local_cmds[playerId].buttons |= 0b00000001;
-  if (inputs->Buttons.Use)  local_cmds[playerId].buttons |= 0b00000010;
   if (inputs->EndPlayer)    local_cmds[playerId].arti    |= 0b01000000;
   if (inputs->Jump)         local_cmds[playerId].arti    |= 0b10000000;
 
-  if (inputs->WeaponSelect)
+  if (local_cmds[playerId].buttons & BT_CHANGE)
   {
-    local_cmds[playerId].buttons |= BT_CHANGE;
-    local_cmds[playerId].buttons |= (inputs->WeaponSelect - 1) << BT_WEAPONSHIFT;
+    int newweapon = inputs->WeaponSelect - 1;
+
+    if (!demo_compatibility)
+    {
+      player_t *player = &players[consoleplayer];
+      // only select chainsaw from '1' if it's owned, it's
+      // not already in use, and the player prefers it or
+      // the fist is already in use, or the player does not
+      // have the berserker strength.
+      if (newweapon==wp_fist
+        && player->weaponowned[wp_chainsaw]
+        && player->readyweapon!=wp_chainsaw
+        && (player->readyweapon==wp_fist || !player->powers[pw_strength] || P_WeaponPreferred(wp_chainsaw, wp_fist)))
+        newweapon = wp_chainsaw;
+    }
+
+    local_cmds[playerId].buttons |= (newweapon) << BT_WEAPONSHIFT;
   }
 }
 

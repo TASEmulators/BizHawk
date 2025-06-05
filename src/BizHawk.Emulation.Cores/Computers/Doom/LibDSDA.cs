@@ -15,12 +15,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public enum GameMode : int
 		{
-			Fail         = 0,
-			Shareware    = 1 << 0, // DOOM 1 shareware, E1, M9
-			Registered   = 1 << 1, // DOOM 1 registered, E3, M27
-			Commercial   = 1 << 2, // DOOM 2 retail, E1 M34  (DOOM 2 german edition not handled)
-			Retail       = 1 << 3, // DOOM 1 retail, E4, M36
-			Indetermined = 1 << 4  // no IWAD found.
+			Fail         = 0b00000000,
+			Shareware    = 0b00000001, // DOOM 1 shareware, E1, M9
+			Registered   = 0b00000010, // DOOM 1 registered, E3, M27
+			Commercial   = 0b00000100, // DOOM 2 retail, E1 M34  (DOOM 2 german edition not handled)
+			Retail       = 0b00001000, // DOOM 1 retail, E4, M36
+			Indetermined = 0b00010000,  // no IWAD found.
+		}
+
+		public enum Buttons : byte
+		{
+			None         = 0b00000000,
+			Fire         = 0b00000001,
+			Use          = 0b00000010,
+			ChangeWeapon = 0b00000100,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -46,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int StrafingSpeed;
 			public int TurningSpeed;
 			public int WeaponSelect;
-			public int Buttons;
+			public Buttons Buttons;
 
 			// Hexen + Heretic (Raven Games)
 			public int FlyLook;

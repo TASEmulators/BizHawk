@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				if ((playersPresent & (1 << i)) is not 0)
 				{
 					int port = i + 1;
+					players[i].Buttons = LibDSDA.Buttons.None;
+
 					bool strafe = controller.IsPressed($"P{port} Strafe");
 					int speedIndex = Convert.ToInt32(controller.IsPressed($"P{port} Run")
 						|| _syncSettings.AlwaysRun);
@@ -99,8 +101,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					var weaponRange = controller.Definition.Axes[$"P{port} Weapon Select"].Range;
 					for (var unit = weaponRange.Start; unit <= weaponRange.EndInclusive; unit++)
 					{
-						// if several weapon buttons are pressed, highest one overrides lower
-						if (controller.IsPressed($"P{port} Weapon Select {unit}")) players[i].WeaponSelect = unit;
+						// if several weapon buttons are pressed, higher overrides lower
+						if (controller.IsPressed($"P{port} Weapon Select {unit}"))
+						{
+							players[i].WeaponSelect = unit;
+							players[i].Buttons |= LibDSDA.Buttons.ChangeWeapon;
+						}
 					}
 
 					// override movement axis based on buttons (turning is reversed upstream)
@@ -154,8 +160,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// bool buttons
-					if (controller.IsPressed($"P{port} Fire")) players[i].Buttons |= (1 << 0);
-					if (controller.IsPressed($"P{port} Use"))  players[i].Buttons |= (1 << 1);
+					if (controller.IsPressed($"P{port} Fire")) players[i].Buttons |= LibDSDA.Buttons.Fire;
+					if (controller.IsPressed($"P{port} Use"))  players[i].Buttons |= LibDSDA.Buttons.Use;
 
 					// Raven Games
 					if (_syncSettings.InputFormat is not ControllerType.Doom)
