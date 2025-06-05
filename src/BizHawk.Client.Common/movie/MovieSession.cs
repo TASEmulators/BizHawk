@@ -147,27 +147,12 @@ namespace BizHawk.Client.Common
 
 			if (ReadOnly)
 			{
-				if (Movie.IsRecording())
-				{
-					Movie.SwitchToPlay();
-				}
-				else if (Movie.IsPlayingOrFinished())
-				{
-					// set the controller state to the previous frame for input display purposes
-					int previousFrame = Movie.Emulator.Frame - 1;
-					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
-				}
+				Movie.SwitchToPlay();
+				LatchInputToLog();
 			}
 			else
 			{
-				if (Movie.IsFinished())
-				{
-					Movie.StartNewRecording();
-				}
-				else if (Movie.IsPlayingOrFinished())
-				{
-					Movie.SwitchToRecord();
-				}
+				Movie.SwitchToRecord();
 
 				var result = Movie.ExtractInputLog(reader, out var errorMsg);
 				if (!result)
