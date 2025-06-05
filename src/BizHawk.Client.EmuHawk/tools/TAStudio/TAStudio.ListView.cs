@@ -57,7 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private bool? _autoRestorePaused;
 		private int? _seekStartFrame;
 		private bool _unpauseAfterSeeking;
 
@@ -86,15 +85,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!fromMiddleClick)
 			{
-				if (MainForm.PauseOnFrame != null)
-				{
-					StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
-				}
 				_seekStartFrame = Emulator.Frame;
 			}
 
-			MainForm.PauseOnFrame = frame.Value;
-			int? diff = MainForm.PauseOnFrame - _seekStartFrame;
+			_seekingTo = frame.Value;
+			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
+			int? diff = _seekingTo - _seekStartFrame;
 
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
@@ -115,11 +111,17 @@ namespace BizHawk.Client.EmuHawk
 				WasRecording = false;
 			}
 
-			MainForm.PauseOnFrame = null;
+			_seekingTo = -1;
+			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
 			if (_unpauseAfterSeeking)
 			{
-				MainForm.UnpauseEmulator();
+				// We don't actually need to unpause, because the fact that we are seeking means we already unpaused to start it.
+				// It is possible that the user has paused during the seek. But if the user has pasuesd, we should respect that.
 				_unpauseAfterSeeking = false;
+			}
+			else
+			{
+				MainForm.PauseEmulator();
 			}
 
 			if (CurrentTasMovie != null)
@@ -127,6 +129,21 @@ namespace BizHawk.Client.EmuHawk
 				RefreshDialog();
 				UpdateProgressBar();
 			}
+		}
+
+		private void CancelSeek()
+		{
+			_seekingTo = -1;
+			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
+			_unpauseAfterSeeking = false;
+			if (WasRecording)
+			{
+				TastudioRecordMode();
+				WasRecording = false;
+			}
+
+			RefreshDialog();
+			UpdateProgressBar();
 		}
 
 		private Bitmap ts_v_arrow_green_blue => Properties.Resources.ts_v_arrow_green_blue;
@@ -167,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (index == Emulator.Frame)
 				{
-					bitmap = index == MainForm.PauseOnFrame
+					bitmap = index == _seekingTo
 						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
 						: TasView.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
@@ -255,11 +272,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var record = CurrentTasMovie[index];
 
-			if (MainForm.IsSeeking && MainForm.PauseOnFrame == index)
+			if (_seekingTo == index)
 			{
 				color = Palette.CurrentFrame_InputLog;
 			}
-			else if (!MainForm.IsSeeking && Emulator.Frame == index)
+			else if (_seekingTo == -1 && Emulator.Frame == index)
 			{
 				color = Palette.CurrentFrame_InputLog;
 			}
@@ -874,6 +891,26 @@ namespace BizHawk.Client.EmuHawk
 			_suppressContextMenu = false;
 		}
 
+		private void WheelSeek(int count)
+		{
+			if (_seekingTo != -1)
+			{
+				_seekingTo -= count;
+
+				// that's a weird condition here, but for whatever reason it works best
+				if (count > 0 && Emulator.Frame >= _seekingTo)
+				{
+					GoToFrame(Emulator.Frame - count);
+				}
+
+				RefreshDialog();
+			}
+			else
+			{
+				GoToFrame(Emulator.Frame - count);
+			}
+		}
+
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
 			if (TasView.RightButtonHeld && TasView?.CurrentCell.RowIndex.HasValue == true)
@@ -885,25 +922,7 @@ namespace BizHawk.Client.EmuHawk
 					notch *= 2;
 				}
 
-				// warning: tastudio rewind hotkey/button logic is copy pasted from here!
-				if (MainForm.IsSeeking && !MainForm.EmulatorPaused)
-				{
-					MainForm.PauseOnFrame -= notch;
-
-					// that's a weird condition here, but for whatever reason it works best
-					if (notch > 0 && Emulator.Frame >= MainForm.PauseOnFrame)
-					{
-						MainForm.PauseEmulator();
-						StopSeeking();
-						GoToFrame(Emulator.Frame - notch);
-					}
-
-					RefreshDialog();
-				}
-				else
-				{
-					GoToFrame(Emulator.Frame - notch);
-				}
+				WheelSeek(notch);
 			}
 		}
 
@@ -975,7 +994,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_startCursorDrag && !MainForm.IsSeeking)
+			if (_startCursorDrag && _seekingTo == -1)
 			{
 				GoToFrame(e.NewCell.RowIndex.Value);
 			}
