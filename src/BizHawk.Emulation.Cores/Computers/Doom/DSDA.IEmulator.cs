@@ -75,10 +75,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					int turnSpeed = 0;
 					// lower speed for tapping turn buttons
-					if (controller.IsPressed($"P{port} Turn Right") || controller.IsPressed($"P{port} Turn Left"))
+					if (controller.IsPressed($"P{port} Turn Right")
+						|| controller.IsPressed($"P{port} Turn Left"))
 					{
 						_turnHeld[i]++;
-						turnSpeed = _turnHeld[i] < 6 ? _turnSpeeds[2] : _turnSpeeds[speedIndex];
+						turnSpeed = _turnHeld[i] < 6
+							? _turnSpeeds[2]
+							: _turnSpeeds[speedIndex];
 					}
 					else
 					{
@@ -109,21 +112,37 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						}
 					}
 
-					// override movement axis based on buttons (turning is reversed upstream)
-					if (controller.IsPressed($"P{port} Forward"))      players[i].RunSpeed      =  _runSpeeds   [speedIndex];
-					if (controller.IsPressed($"P{port} Backward"))     players[i].RunSpeed      = -_runSpeeds   [speedIndex];
-					// turning with strafe button held will later be ADDED to these values (which is what makes strafe50 possible)
-					if (controller.IsPressed($"P{port} Strafe Right")) players[i].StrafingSpeed =  _strafeSpeeds[speedIndex];
-					if (controller.IsPressed($"P{port} Strafe Left"))  players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
+					// override movement axis based on buttons
+					// turning is reversed upstream
+					if (controller.IsPressed($"P{port} Forward"))
+						players[i].RunSpeed = _runSpeeds[speedIndex];
+
+					if (controller.IsPressed($"P{port} Backward"))
+						players[i].RunSpeed = -_runSpeeds[speedIndex];
+
+					// turning with strafe button held will later be ADDED to these values
+					// which is what makes strafe50 possible
+					if (controller.IsPressed($"P{port} Strafe Right"))
+						players[i].StrafingSpeed = _strafeSpeeds[speedIndex];
+
+					if (controller.IsPressed($"P{port} Strafe Left"))
+						players[i].StrafingSpeed = -_strafeSpeeds[speedIndex];
+
 					if (strafe)
 					{
-						if (controller.IsPressed($"P{port} Turn Right")) players[i].StrafingSpeed += _strafeSpeeds[speedIndex];
-						if (controller.IsPressed($"P{port} Turn Left"))  players[i].StrafingSpeed -= _strafeSpeeds[speedIndex];
+						if (controller.IsPressed($"P{port} Turn Right"))
+							players[i].StrafingSpeed += _strafeSpeeds[speedIndex];
+
+						if (controller.IsPressed($"P{port} Turn Left"))
+							players[i].StrafingSpeed -= _strafeSpeeds[speedIndex];
 					}
 					else
 					{
-						if (controller.IsPressed($"P{port} Turn Right")) players[i].TurningSpeed -= turnSpeed;
-						if (controller.IsPressed($"P{port} Turn Left"))  players[i].TurningSpeed += turnSpeed;
+						if (controller.IsPressed($"P{port} Turn Right"))
+							players[i].TurningSpeed -= turnSpeed;
+
+						if (controller.IsPressed($"P{port} Turn Left"))
+							players[i].TurningSpeed += turnSpeed;
 					}
 
 					// mouse-driven running
