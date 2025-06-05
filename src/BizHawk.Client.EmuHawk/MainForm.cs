@@ -3259,7 +3259,7 @@ namespace BizHawk.Client.EmuHawk
 						else PauseOnFrame = null;
 					}
 					else if (Tools.IsLoaded<TAStudio>()
-						&& Tools.TAStudio.LastPositionFrame == Emulator.Frame
+						&& Tools.TAStudio.RestorePositionFrame == Emulator.Frame
 						&& ((ITasMovie) MovieSession.Movie)[Emulator.Frame].Lagged is null)
 					{
 						// haven't yet greenzoned the frame, hence it's after editing

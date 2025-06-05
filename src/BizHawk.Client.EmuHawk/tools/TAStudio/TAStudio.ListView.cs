@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
 						: TasView.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
-				else if (index == LastPositionFrame)
+				else if (index == RestorePositionFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
 						ts_v_arrow_green :
@@ -523,10 +523,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MainForm.EmulatorPaused)
 				{
-					var record = CurrentTasMovie[LastPositionFrame];
-					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
+					var record = CurrentTasMovie[RestorePositionFrame];
+					if (!record.Lagged.HasValue && RestorePositionFrame > Emulator.Frame)
 					{
-						StartSeeking(LastPositionFrame, true);
+						StartSeeking(RestorePositionFrame, true);
 						return;
 					}
 				}

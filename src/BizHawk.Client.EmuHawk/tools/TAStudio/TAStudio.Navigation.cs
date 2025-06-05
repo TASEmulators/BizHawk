@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 					if ((MainForm.EmulatorPaused || !MainForm.IsSeeking)
 						&& !CurrentTasMovie.LastPositionStable)
 					{
-						LastPositionFrame = Emulator.Frame;
+						RestorePositionFrame = Emulator.Frame;
 						CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
 					}
 
