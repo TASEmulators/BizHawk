@@ -438,6 +438,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nes.Board.ClockPpu();
 			}
 			_totalCycles += 1;
+			nes.cpu.ext_ppu_cycle += 1;
 		}
 	}
 }

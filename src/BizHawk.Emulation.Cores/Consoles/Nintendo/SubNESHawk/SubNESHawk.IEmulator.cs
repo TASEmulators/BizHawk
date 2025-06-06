@@ -111,6 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		private void DoFrame(IController controller)
 		{
+			_nesCore.cpu.ext_ppu_cycle = 0; // Reset this value at the beginning of each frame
 			stop_cur_frame = false;
 			while (!stop_cur_frame)
 			{
@@ -121,7 +122,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				}
 				_nesCore.do_single_step(controller, out pass_new_input, out pass_a_frame);
 				current_cycle++;
-				_nesCore.cpu.ext_ppu_cycle = current_cycle;
 				stop_cur_frame |= pass_a_frame;
 				stop_cur_frame |= pass_new_input;
 			}
