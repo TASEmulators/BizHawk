@@ -75,6 +75,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 							$"P{port} Weapon Select 7",
 						]);
 					}
+
+					if (settings.InputFormat is not ControllerType.Doom)
+					{
+						if (settings.InputFormat is ControllerType.Heretic)
+						{
+							// TODO
+							//controller.BoolButtons.Add($"P{port} Inventory Skip");
+						}
+
+						controller.BoolButtons.AddRange([
+							$"P{port} Inventory Left",
+							$"P{port} Inventory Right",
+							$"P{port} Use Artifact",
+						]);
+					}
 				}
 			}
 

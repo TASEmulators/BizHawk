@@ -40,16 +40,18 @@ namespace BizHawk.Client.Common
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)
 			{
-				controller.AcceptNewAxis(playerPfx + "Run Speed", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(playerPfx + "Run Speed"     , unchecked((sbyte) input[i++]));
 				controller.AcceptNewAxis(playerPfx + "Strafing Speed", unchecked((sbyte) input[i++]));
-				controller.AcceptNewAxis(playerPfx + "Turning Speed", unchecked((sbyte) input[i++]));
-				var specialValue = input[i++];
-				controller[playerPfx + "Fire"] = (specialValue & 0b00000001) is not 0;
-				controller[playerPfx + "Use"] = (specialValue & 0b00000010) is not 0;
-				bool changeWeapon = (specialValue & 0b00000100) is not 0;
-				int weapon = changeWeapon ? (((specialValue & 0b00111000) >> 3) + 1) : 0;
+				controller.AcceptNewAxis(playerPfx + "Turning Speed" , unchecked((sbyte) input[i++]));
+
+				var specialValue = (LibDSDA.Buttons)input[i++];
+				controller[playerPfx + "Fire"] = (specialValue & LibDSDA.Buttons.Fire) is not 0;
+				controller[playerPfx + "Use" ] = (specialValue & LibDSDA.Buttons.Use ) is not 0;
+				bool changeWeapon = (specialValue & LibDSDA.Buttons.ChangeWeapon) is not 0;
+				int weapon = changeWeapon ? (((int)(specialValue & LibDSDA.Buttons.WeaponMask) >> 3) + 1) : 0;
+
 				controller.AcceptNewAxis(playerPfx + "Weapon Select", weapon);
-				controller.AcceptNewAxis(playerPfx + "Fly / Look", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(playerPfx + "Fly / Look"  , unchecked((sbyte) input[i++]));
 				controller.AcceptNewAxis(playerPfx + "Use Artifact", unchecked((sbyte) input[i++]));
 			}
 			do

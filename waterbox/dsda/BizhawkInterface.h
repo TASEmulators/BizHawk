@@ -28,6 +28,9 @@ extern void headlessSetSaveStatePointer(void *savePtr, int saveStateSize);
 extern size_t headlessGetEffectiveSaveSize();
 extern unsigned int rngseed;
 
+extern dboolean InventoryMoveLeft();
+extern dboolean InventoryMoveRight();
+
 // Video
 extern void headlessUpdateVideo();
 extern void* headlessGetVideoBuffer();
@@ -54,6 +57,8 @@ extern int reachedGameEnd;
 extern int numthings;
 extern mobj_t **mobj_ptrs;
 extern dsda_arg_t arg_value[dsda_arg_count];
+extern int inv_ptr;
+extern dboolean inventory;
 
 // Automap
 extern void AM_addMark();
@@ -85,6 +90,22 @@ extern fixed_t scale_ftom;
 #endif
 #define PALETTE_SIZE 256
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
+
+enum ExtraButtons
+{
+  REGULAR_BUTTON_MASK = 0b0000000000000111,
+  INVENTORY_LEFT      = 0b0000000000001000,
+  INVENTORY_RIGHT     = 0b0000000000010000,
+  INVENTORY_SKIP      = 0b0000000000100000,
+  ARTIFACT_USE        = 0b0000000001000000,
+  LOOK_UP             = 0b0000000010000000,
+  LOOK_DOWN           = 0b0000000100000000,
+  LOOK_CENTER         = 0b0000001000000000,
+  FLY_UP              = 0b0000010000000000,
+  FLY_DOWN            = 0b0000100000000000,
+  FLY_CENTER          = 0b0001000000000000,
+  EXTRA_BUTTON_MASK   = 0b0001111111111000,
+};
 
 enum HudMode
 {

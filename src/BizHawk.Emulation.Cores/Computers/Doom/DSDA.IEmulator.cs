@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				new LibDSDA.PackedPlayerInput()
 			];
 
-			int commonButtons = 0;
+			int automapButtons = 0;
 
 			// this is the only change that we're announcing on the front end.
 			// not announcing it at all feels weird given how vanilla and ports do it.
@@ -44,18 +44,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					4); // internal messages last 4 seconds
 			}
 
-			if (controller.IsPressed("Automap Toggle"))      commonButtons |= (1 << 0);
-			if (controller.IsPressed("Automap +"))           commonButtons |= (1 << 1);
-			if (controller.IsPressed("Automap -"))           commonButtons |= (1 << 2);
-			if (controller.IsPressed("Automap Full/Zoom"))   commonButtons |= (1 << 3);
-			if (controller.IsPressed("Automap Follow"))      commonButtons |= (1 << 4);
-			if (controller.IsPressed("Automap Up"))          commonButtons |= (1 << 5);
-			if (controller.IsPressed("Automap Down"))        commonButtons |= (1 << 6);
-			if (controller.IsPressed("Automap Right"))       commonButtons |= (1 << 7);
-			if (controller.IsPressed("Automap Left"))        commonButtons |= (1 << 8);
-			if (controller.IsPressed("Automap Grid"))        commonButtons |= (1 << 9);
-			if (controller.IsPressed("Automap Mark"))        commonButtons |= (1 << 10);
-			if (controller.IsPressed("Automap Clear Marks")) commonButtons |= (1 << 11);
+			if (controller.IsPressed("Automap Toggle"))      automapButtons |= (1 << 0);
+			if (controller.IsPressed("Automap +"))           automapButtons |= (1 << 1);
+			if (controller.IsPressed("Automap -"))           automapButtons |= (1 << 2);
+			if (controller.IsPressed("Automap Full/Zoom"))   automapButtons |= (1 << 3);
+			if (controller.IsPressed("Automap Follow"))      automapButtons |= (1 << 4);
+			if (controller.IsPressed("Automap Up"))          automapButtons |= (1 << 5);
+			if (controller.IsPressed("Automap Down"))        automapButtons |= (1 << 6);
+			if (controller.IsPressed("Automap Right"))       automapButtons |= (1 << 7);
+			if (controller.IsPressed("Automap Left"))        automapButtons |= (1 << 8);
+			if (controller.IsPressed("Automap Grid"))        automapButtons |= (1 << 9);
+			if (controller.IsPressed("Automap Mark"))        automapButtons |= (1 << 10);
+			if (controller.IsPressed("Automap Clear Marks")) automapButtons |= (1 << 11);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -158,9 +158,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					// ultimately strafe speed is limited to max run speed, NOT max strafe speed
-					players[i].StrafingSpeed = players[i].StrafingSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
+					players[i].StrafingSpeed = players[i].StrafingSpeed
+						.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
-					// for shorttics we expose to player and parse from movies only 1 byte, but the core internally works with 2 bytes
+					// for shorttics we expose to player and parse from movies only 1 byte
+					// but the core internally works with 2 bytes
 					if (_syncSettings.TurningResolution == TurningResolution.Shorttics)
 					{
 						int desiredAngleturn = players[i].TurningSpeed + _turnCarry;
@@ -188,10 +190,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						players[i].FlyLook     = controller.AxisValue($"P{port} Fly / Look");
 						players[i].ArtifactUse = controller.AxisValue($"P{port} Use Artifact");
 
+						// these "buttons" are not part of ticcmd_t::buttons
+						// we just use their free bits
+						if (controller.IsPressed($"P{port} Inventory Left"))
+							players[i].Buttons |= LibDSDA.Buttons.InventoryLeft;
+
+						if (controller.IsPressed($"P{port} Inventory Right"))
+							players[i].Buttons |= LibDSDA.Buttons.InventoryRight;
+
+						if (controller.IsPressed($"P{port} Use Artifact"))
+							players[i].Buttons |= LibDSDA.Buttons.ArtifactUse;
+
 						if (_syncSettings.InputFormat is ControllerType.Hexen)
 						{
-							players[i].Jump      = Convert.ToInt32(controller.IsPressed($"P{port} Jump"));
-							players[i].EndPlayer = Convert.ToInt32(controller.IsPressed($"P{port} End Player"));
+							if (controller.IsPressed($"P{port} Jump"))
+								players[i].ArtifactUse |= (int)LibDSDA.Buttons.Jump;
+
+							if (controller.IsPressed($"P{port} End Player"))
+								players[i].ArtifactUse |= (int)LibDSDA.Buttons.EndPlayer;
 						}
 					}
 				}
@@ -219,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			};
 
 			IsLagFrame = _core.dsda_frame_advance(
-				commonButtons,
+				automapButtons,
 				ref players[0],
 				ref players[1],
 				ref players[2],

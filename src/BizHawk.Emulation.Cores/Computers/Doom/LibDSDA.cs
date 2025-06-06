@@ -20,15 +20,23 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Registered   = 0b00000010, // DOOM 1 registered, E3, M27
 			Commercial   = 0b00000100, // DOOM 2 retail, E1 M34  (DOOM 2 german edition not handled)
 			Retail       = 0b00001000, // DOOM 1 retail, E4, M36
-			Indetermined = 0b00010000,  // no IWAD found.
+			Indetermined = 0b00010000, // no IWAD found.
 		}
 
 		public enum Buttons : byte
 		{
-			None         = 0b00000000,
-			Fire         = 0b00000001,
-			Use          = 0b00000010,
-			ChangeWeapon = 0b00000100,
+			None           = 0b00000000,
+			Fire           = 0b00000001,
+			Use            = 0b00000010,
+			ChangeWeapon   = 0b00000100,
+			WeaponMask     = 0b00111000,
+			InventoryLeft  = 0b00001000,
+			InventoryRight = 0b00010000,
+			InventorySkip  = 0b00100000,
+			ArtifactUse    = 0b01000000,
+			EndPlayer      = 0b01000000,
+			Jump           = 0b10000000,
+			ArtifactMask   = 0b00111111,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

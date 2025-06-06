@@ -241,11 +241,11 @@ namespace BizHawk.Client.Common
 				}
 				controller.AcceptNewAxis($"P{port} Turning Speed", unchecked((sbyte) input[i++]));
 
-				var buttons = input[i++];
-				controller[$"P{port} Fire"] = (buttons & 0b00000001) is not 0;
-				controller[$"P{port} Use"]  = (buttons & 0b00000010) is not 0;
-				var changeWeapon            = (buttons & 0b00000100) is not 0;
-				var weapon = changeWeapon ? (((buttons & 0b00111000) >> 3) + 1) : 0;
+				var buttons = (LibDSDA.Buttons)input[i++];
+				controller[$"P{port} Fire"] = (buttons & LibDSDA.Buttons.Fire)         is not 0;
+				controller[$"P{port} Use" ] = (buttons & LibDSDA.Buttons.Use)          is not 0;
+				var changeWeapon            = (buttons & LibDSDA.Buttons.ChangeWeapon) is not 0;
+				var weapon = changeWeapon ? (((int)(buttons & LibDSDA.Buttons.WeaponMask) >> 3) + 1) : 0;
 				controller.AcceptNewAxis($"P{port} Weapon Select", weapon);
 			}
 

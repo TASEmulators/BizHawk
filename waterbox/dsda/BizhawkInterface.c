@@ -2,6 +2,7 @@
 
 bool foundIWAD = false;
 bool wipeDone = true;
+int lastButtons[4] = { 0 };
 AutomapButtons last_buttons = { 0 };
 
 void render_updates(struct PackedRenderInfo *renderInfo)
@@ -115,12 +116,37 @@ void player_input(struct PackedPlayerInput *inputs, int playerId)
   local_cmds[playerId].forwardmove = inputs->RunSpeed;
   local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
   local_cmds[playerId].lookfly     = inputs->FlyLook;
-  local_cmds[playerId].arti        = inputs->ArtifactUse;
+  local_cmds[playerId].arti        = inputs->ArtifactUse; // use specific artifact (also jump/die)
   local_cmds[playerId].angleturn   = inputs->TurningSpeed;
-  local_cmds[playerId].buttons     = inputs->Buttons;
+  local_cmds[playerId].buttons     = inputs->Buttons & REGULAR_BUTTON_MASK;
 
-  if (inputs->EndPlayer)    local_cmds[playerId].arti    |= 0b01000000;
-  if (inputs->Jump)         local_cmds[playerId].arti    |= 0b10000000;
+  player_t *player = &players[consoleplayer];
+  char extraButtons = inputs->Buttons & EXTRA_BUTTON_MASK;
+
+  // explicitly select artifact through in-game GUI
+  if (extraButtons & INVENTORY_LEFT && !(lastButtons[playerId] & INVENTORY_LEFT))
+    InventoryMoveLeft ();
+
+  if (extraButtons & INVENTORY_RIGHT && !(lastButtons[playerId] & INVENTORY_RIGHT))
+    InventoryMoveRight();
+
+  if (extraButtons & INVENTORY_SKIP && !(lastButtons[playerId] & INVENTORY_SKIP))
+  { /* TODO */ }
+
+  if (extraButtons & ARTIFACT_USE && !(lastButtons[playerId] & ARTIFACT_USE))
+  {
+    // use currently selected artifact
+    if (inventory)
+    {
+      player->readyArtifact = player->inventory[inv_ptr].type;
+      inventory = false;
+      local_cmds[playerId].arti &= ~AFLAG_MASK; // leave jump/die intact, zero out the rest
+    }
+    else
+    {
+      local_cmds[playerId].arti |= player->inventory[inv_ptr].type & AFLAG_MASK;
+    }
+  }
 
   if (local_cmds[playerId].buttons & BT_CHANGE)
   {
@@ -128,7 +154,6 @@ void player_input(struct PackedPlayerInput *inputs, int playerId)
 
     if (!demo_compatibility)
     {
-      player_t *player = &players[consoleplayer];
       // only select chainsaw from '1' if it's owned, it's
       // not already in use, and the player prefers it or
       // the fist is already in use, or the player does not
@@ -142,6 +167,8 @@ void player_input(struct PackedPlayerInput *inputs, int playerId)
 
     local_cmds[playerId].buttons |= (newweapon) << BT_WEAPONSHIFT;
   }
+
+  lastButtons[playerId] = extraButtons;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
