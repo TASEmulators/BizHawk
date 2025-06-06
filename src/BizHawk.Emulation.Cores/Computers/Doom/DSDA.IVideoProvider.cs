@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
