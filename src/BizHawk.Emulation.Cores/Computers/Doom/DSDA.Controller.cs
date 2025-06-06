@@ -88,6 +88,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 							$"P{port} Inventory Left",
 							$"P{port} Inventory Right",
 							$"P{port} Use Artifact",
+							$"P{port} Look Up",
+							$"P{port} Look Down",
+							$"P{port} Look Center",
+							$"P{port} Fly Up",
+							$"P{port} Fly Down",
+							$"P{port} Fly Center",
 						]);
 					}
 				}

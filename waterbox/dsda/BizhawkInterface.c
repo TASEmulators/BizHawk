@@ -2,6 +2,7 @@
 
 bool foundIWAD = false;
 bool wipeDone = true;
+int lookHeld[4] = { 0 };
 int lastButtons[4] = { 0 };
 AutomapButtons last_buttons = { 0 };
 
@@ -111,46 +112,83 @@ void automap_inputs(AutomapButtons buttons)
   last_buttons = buttons;
 }
 
-void player_input(struct PackedPlayerInput *inputs, int playerId)
+void player_input(struct PackedPlayerInput *src, int id)
 {
-  local_cmds[playerId].forwardmove = inputs->RunSpeed;
-  local_cmds[playerId].sidemove    = inputs->StrafingSpeed;
-  local_cmds[playerId].lookfly     = inputs->FlyLook;
-  local_cmds[playerId].arti        = inputs->ArtifactUse; // use specific artifact (also jump/die)
-  local_cmds[playerId].angleturn   = inputs->TurningSpeed;
-  local_cmds[playerId].buttons     = inputs->Buttons & REGULAR_BUTTON_MASK;
-
+  int lspeed = 0;
+  int look = 0;
+  int flyheight = 0;
+  int buttons = src->Buttons & EXTRA_BUTTON_MASK;
   player_t *player = &players[consoleplayer];
-  char extraButtons = inputs->Buttons & EXTRA_BUTTON_MASK;
+  ticcmd_t *dest = &local_cmds[id];
+
+  dest->forwardmove = src->RunSpeed;
+  dest->sidemove    = src->StrafingSpeed;
+  dest->lookfly     = src->FlyLook;
+  dest->arti        = src->ArtifactUse; // use specific artifact (also jump/die)
+  dest->angleturn   = src->TurningSpeed;
+  dest->buttons     = src->Buttons & REGULAR_BUTTON_MASK;
 
   // explicitly select artifact through in-game GUI
-  if (extraButtons & INVENTORY_LEFT && !(lastButtons[playerId] & INVENTORY_LEFT))
+  if (buttons & INVENTORY_LEFT && !(lastButtons[id] & INVENTORY_LEFT))
     InventoryMoveLeft ();
 
-  if (extraButtons & INVENTORY_RIGHT && !(lastButtons[playerId] & INVENTORY_RIGHT))
+  if (buttons & INVENTORY_RIGHT && !(lastButtons[id] & INVENTORY_RIGHT))
     InventoryMoveRight();
 
-  if (extraButtons & INVENTORY_SKIP && !(lastButtons[playerId] & INVENTORY_SKIP))
+  if (buttons & INVENTORY_SKIP && !(lastButtons[id] & INVENTORY_SKIP))
   { /* TODO */ }
 
-  if (extraButtons & ARTIFACT_USE && !(lastButtons[playerId] & ARTIFACT_USE))
+  /* THE REST IS COPYPASTE FROM G_BuildTiccmd()!!! */
+
+  if (buttons & ARTIFACT_USE && !(lastButtons[id] & ARTIFACT_USE))
   {
     // use currently selected artifact
     if (inventory)
     {
       player->readyArtifact = player->inventory[inv_ptr].type;
       inventory = false;
-      local_cmds[playerId].arti &= ~AFLAG_MASK; // leave jump/die intact, zero out the rest
+      dest->arti &= ~AFLAG_MASK; // leave jump/die intact, zero out the rest
     }
     else
     {
-      local_cmds[playerId].arti |= player->inventory[inv_ptr].type & AFLAG_MASK;
+      dest->arti |= player->inventory[inv_ptr].type & AFLAG_MASK;
     }
   }
 
-  if (local_cmds[playerId].buttons & BT_CHANGE)
+  // look/fly up/down/center keys override analog value
+  if (buttons & LOOK_DOWN || buttons & LOOK_UP)
+    ++lookHeld[id];
+  else
+    lookHeld[id] = 0;
+
+  if (lookHeld[id] < SLOWTURNTICS)
+    lspeed = 1;
+  else
+    lspeed = 2;
+
+  if (buttons & LOOK_UP)     look      =  lspeed;
+  if (buttons & LOOK_DOWN)   look      = -lspeed;
+  if (buttons & LOOK_CENTER) look      = TOCENTER;
+  if (buttons & FLY_UP)      flyheight =  5; // note that the actual flyheight will be twice this
+  if (buttons & FLY_DOWN)    flyheight = -5;
+  if (buttons & FLY_CENTER)
   {
-    int newweapon = inputs->WeaponSelect - 1;
+    flyheight = TOCENTER;
+    look      = TOCENTER;
+  }
+
+  if (player->playerstate == PST_LIVE /*&& !dsda_FreeAim()*/)
+  {
+      if (look < 0) look += 16;
+      dest->lookfly = look;
+  }
+  if (flyheight < 0) flyheight += 16;
+  dest->lookfly |= flyheight << 4;
+
+  // weapon selection
+  if (dest->buttons & BT_CHANGE)
+  {
+    int newweapon = src->WeaponSelect - 1;
 
     if (!demo_compatibility)
     {
@@ -165,10 +203,10 @@ void player_input(struct PackedPlayerInput *inputs, int playerId)
         newweapon = wp_chainsaw;
     }
 
-    local_cmds[playerId].buttons |= (newweapon) << BT_WEAPONSHIFT;
+    dest->buttons |= (newweapon) << BT_WEAPONSHIFT;
   }
 
-  lastButtons[playerId] = extraButtons;
+  lastButtons[id] = buttons;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)

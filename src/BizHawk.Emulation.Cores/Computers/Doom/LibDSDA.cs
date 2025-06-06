@@ -23,20 +23,26 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Indetermined = 0b00010000, // no IWAD found.
 		}
 
-		public enum Buttons : byte
+		public enum Buttons : int
 		{
-			None           = 0b00000000,
-			Fire           = 0b00000001,
-			Use            = 0b00000010,
-			ChangeWeapon   = 0b00000100,
-			WeaponMask     = 0b00111000,
-			InventoryLeft  = 0b00001000,
-			InventoryRight = 0b00010000,
-			InventorySkip  = 0b00100000,
-			ArtifactUse    = 0b01000000,
-			EndPlayer      = 0b01000000,
-			Jump           = 0b10000000,
-			ArtifactMask   = 0b00111111,
+			None           = 0b0000000000000000,
+			Fire           = 0b0000000000000001,
+			Use            = 0b0000000000000010,
+			ChangeWeapon   = 0b0000000000000100,
+			WeaponMask     = 0b0000000000111000,
+			InventoryLeft  = 0b0000000000001000,
+			InventoryRight = 0b0000000000010000,
+			InventorySkip  = 0b0000000000100000,
+			ArtifactUse    = 0b0000000001000000,
+			LookUp         = 0b0000000010000000,
+			LookDown       = 0b0000000100000000,
+			LookCenter     = 0b0000001000000000,
+			FlyUp          = 0b0000010000000000,
+			FlyDown        = 0b0000100000000000,
+			FlyCenter      = 0b0001000000000000,
+			EndPlayer      = 0b0000000001000000,
+			Jump           = 0b0000000010000000,
+			ArtifactMask   = 0b0000000000111111,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

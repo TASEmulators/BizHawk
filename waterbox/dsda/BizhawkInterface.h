@@ -91,6 +91,8 @@ extern fixed_t scale_ftom;
 #define PALETTE_SIZE 256
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
 
+#define SLOWTURNTICS 6
+
 enum ExtraButtons
 {
   REGULAR_BUTTON_MASK = 0b0000000000000111,

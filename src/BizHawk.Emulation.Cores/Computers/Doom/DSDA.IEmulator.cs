@@ -201,6 +201,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						if (controller.IsPressed($"P{port} Use Artifact"))
 							players[i].Buttons |= LibDSDA.Buttons.ArtifactUse;
 
+						if (controller.IsPressed($"P{port} Look Up"))
+							players[i].Buttons |= LibDSDA.Buttons.LookUp;
+
+						if (controller.IsPressed($"P{port} Look Down"))
+							players[i].Buttons |= LibDSDA.Buttons.LookDown;
+
+						if (controller.IsPressed($"P{port} Look Center"))
+							players[i].Buttons |= LibDSDA.Buttons.LookCenter;
+
+						if (controller.IsPressed($"P{port} Fly Up"))
+							players[i].Buttons |= LibDSDA.Buttons.FlyUp;
+
+						if (controller.IsPressed($"P{port} Fly Down"))
+							players[i].Buttons |= LibDSDA.Buttons.FlyDown;
+
+						if (controller.IsPressed($"P{port} Fly Center"))
+							players[i].Buttons |= LibDSDA.Buttons.FlyCenter;
+
 						if (_syncSettings.InputFormat is ControllerType.Hexen)
 						{
 							if (controller.IsPressed($"P{port} Jump"))
