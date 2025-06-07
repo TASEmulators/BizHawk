@@ -760,8 +760,6 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_rightClickAlt || _rightClickControl || _rightClickShift)
 					{
-						JumpToGreenzone();
-
 						// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
 						string undoStepName = "Right-Click Edit:";
 						if (_rightClickShift)
