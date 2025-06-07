@@ -885,17 +885,6 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text = temp;
 		}
 
-		private void DoTriggeredAutoRestoreIfNeeded()
-		{
-			if (_triggerAutoRestore)
-			{
-				TastudioPlayMode(true); // once user started editing, rec mode is unsafe
-				DoAutoRestore();
-
-				_triggerAutoRestore = false;
-			}
-		}
-
 		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
 		{
 			if (insertionFrame <= CurrentTasMovie.InputLogLength)
