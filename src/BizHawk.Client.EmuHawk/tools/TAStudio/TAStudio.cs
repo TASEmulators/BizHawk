@@ -1004,7 +1004,19 @@ namespace BizHawk.Client.EmuHawk
 		private void TAStudio_MouseLeave(object sender, EventArgs e)
 		{
 			toolTip1.SetToolTip(TasView, null);
-			DoTriggeredAutoRestoreIfNeeded();
+		}
+
+		private void TAStudio_Deactivate(object sender, EventArgs e)
+		{
+			if (_leftButtonHeld)
+			{
+				TasView_MouseUp(this, new(MouseButtons.Left, 0, 0, 0, 0));
+			}
+			if (_rightClickFrame != -1)
+			{
+				_suppressContextMenu = true;
+				TasView_MouseUp(this, new(MouseButtons.Right, 0, 0, 0, 0));
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
