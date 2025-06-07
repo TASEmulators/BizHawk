@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	{
 		public static ControllerDefinition CreateControllerDefinition(DoomSyncSettings settings)
 		{
-			var controller = new ControllerDefinition($"{settings.InputFormat} Input Format");
+			var controller = new ControllerDefinition($"Doom Controller");
 			var longtics = settings.TurningResolution == TurningResolution.Longtics;
 
 			for (int i = 0; i < 4; i++)

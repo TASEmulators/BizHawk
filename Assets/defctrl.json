@@ -685,8 +685,8 @@
 			"P2 Joystick Button 2": "X",
 			"P2 Joystick Button 3": "C"
 		},
-		"Doom Input Format": {
-			"P1 Fire": "Ctrl,WMouse L",
+		"Doom Controller": {
+			"P1 Fire": "WMouse L",
 			"P1 Use": "Space",
 			"P1 Forward": "W",
 			"P1 Backward": "S",
@@ -701,6 +701,16 @@
 			"P1 Weapon Select 5": "Number5",
 			"P1 Weapon Select 6": "Number6",
 			"P1 Weapon Select 7": "Number7",
+			"P1 Inventory Left": "LeftBracket",
+			"P1 Inventory Right": "RightBracket",
+			"P1 Use Artifact": "Enter",
+			"P1 Look Up": "PageDown",
+			"P1 Look Down": "Delete",
+			"P1 Look Center": "End",
+			"P1 Fly Up": "PageUp",
+			"P1 Fly Down": "Insert",
+			"P1 Fly Center": "Home",
+			"P1 Jump": "Slash",
 			"Change Gamma": "F11",
 			"Automap Toggle": "Tab",
 			"Automap +": "KeypadAdd",
