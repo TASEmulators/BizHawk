@@ -31,7 +31,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_settings = lp.Settings ?? new DoomSettings();
 			_comm = lp.Comm;
 			_loadCallback = LoadCallback;
-			ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
 			// Gathering information for the rest of the wads
 			_wadFiles = lp.Roms;
@@ -209,6 +208,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 				// Registering memory domains
 				SetupMemoryDomains();
+
+				if (lp.Game[$"{ControllerType.Doom}"])
+				{
+					_syncSettings.InputFormat = ControllerType.Doom;
+				}
+				else if (lp.Game[$"{ControllerType.Heretic}"])
+				{
+					_syncSettings.InputFormat = ControllerType.Heretic;
+				}
+				else if (lp.Game[$"{ControllerType.Hexen}"])
+				{
+					_syncSettings.InputFormat = ControllerType.Hexen;
+				}
+				
+				ControllerDefinition = CreateControllerDefinition(_syncSettings);
 			}
 			catch
 			{
