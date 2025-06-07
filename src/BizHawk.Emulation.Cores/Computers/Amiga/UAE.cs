@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		isReleased: true)]
 	public partial class UAE : WaterboxCore
 	{
-		private static readonly Configuration ConfigPAL = new Configuration
+		private static readonly Configuration ConfigPAL = new()
 		{
 			SystemId = VSystemID.Raw.Amiga,
 			MaxSamples = 8 * 1024,
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DefaultFpsDenominator = LibUAE.VIDEO_DENOMINATOR_PAL
 		};
 
-		private static readonly Configuration ConfigNTSC = new Configuration
+		private static readonly Configuration ConfigNTSC = new()
 		{
 			SystemId = VSystemID.Raw.Amiga,
 			MaxSamples = 8 * 1024,
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
 			var filesToRemove = new List<string>();
 
-			_ports = [
+			Ports = [
 				_syncSettings.ControllerPort1,
 				_syncSettings.ControllerPort2
 			];
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				MmapHeapSizeKB = 20 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _ledCallback });
+			}, [ _ledCallback ]);
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
@@ -146,13 +146,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				Port1 = new LibUAE.ControllerState
 				{
-					Type = _ports[0],
-					Buttons = 0
+					Type = Ports[0],
+					Buttons = LibUAE.AllButtons.None
 				},
 				Port2 = new LibUAE.ControllerState
 				{
-					Type = _ports[1],
-					Buttons = 0
+					Type = Ports[1],
+					Buttons = LibUAE.AllButtons.None
 				},
 				Action = LibUAE.DriveAction.None
 			};
@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				ref var currentPort = ref (port is 1 ? ref fi.Port1 : ref fi.Port2);
 
-				switch (_ports[port - 1])
+				switch (Ports[port - 1])
 				{
 					case LibUAE.ControllerType.DJoy:
 						{

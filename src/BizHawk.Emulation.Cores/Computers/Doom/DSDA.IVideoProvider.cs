@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		{
 			using (_elf.EnterExit())
 			{
-				_core.dsda_get_video(gamma, out LibDSDA.VideoInfo vi);
+				_core.dsda_get_video(gamma, out var vi);
 
 				var videoBuffer = (byte*)vi.VideoBuffer.ToPointer();
 				var paletteBuffer = (int*)vi.PaletteBuffer.ToPointer();

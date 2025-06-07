@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 					Core = BizInvoker.GetInvoker<CInterface>(_elf, _elf, callingConventionAdapter);
 
 					_romfile = lp.Roms[0].RomData;
-					var initResult = Core.stella_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings(lp.Game));
+					var initResult = Core.stella_init("rom.a26", _loadCallback, _syncSettings.GetNativeSettings());
 
 					if (!initResult) throw new Exception($"{nameof(Core.stella_init)}() failed");
 

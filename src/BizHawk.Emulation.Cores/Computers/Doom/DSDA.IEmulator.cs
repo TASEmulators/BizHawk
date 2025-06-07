@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				// cycle through [0 - 4]
 				_settings.Gamma++;
 				_settings.Gamma %= 5;
-				_comm.Notify("Gamma correction " +
+				Comm.Notify("Gamma correction " +
 					(_settings.Gamma == 0 ? "OFF" : "level " + _settings.Gamma),
 					4); // internal messages last 4 seconds
 			}
@@ -59,9 +59,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			for (int i = 0; i < 4; i++)
 			{
-				if ((PlayersPresent(_syncSettings) & (1 << i)) is not 0)
+				var port = i + 1;
+				if (PlayerPresent(_syncSettings, port))
 				{
-					int port = i + 1;
 					players[i].Buttons = LibDSDA.Buttons.None;
 
 					bool strafe = controller.IsPressed($"P{port} Strafe");
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			LibDSDA.PackedRenderInfo renderInfo = new LibDSDA.PackedRenderInfo()
+			var renderInfo = new LibDSDA.PackedRenderInfo()
 			{
 				SfxVolume          = _settings.SfxVolume,
 				MusicVolume        = _settings.MusicVolume,

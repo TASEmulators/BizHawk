@@ -125,6 +125,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[Flags]
 		public enum AllButtons : short
 		{
+			None     = 0b0000000000000000,
 			Up       = 0b0000000000000001,
 			Down     = 0b0000000000000010,
 			Left     = 0b0000000000000100,

@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public Atari2600ControllerTypes Port2 { get; set; }
 
-			public CInterface.InitSettings GetNativeSettings(GameInfo game)
+			public CInterface.InitSettings GetNativeSettings()
 			{
 				return new CInterface.InitSettings
 				{
