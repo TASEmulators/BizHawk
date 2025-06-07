@@ -3,6 +3,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -141,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public const int TURBO_AUTO = -1;
 
 		private DoomSettings _settings;
-		private DoomSyncSettings _syncSettings;
+		private readonly DoomSyncSettings _syncSettings;
 		private DoomSyncSettings _finalSyncSettings;
 
 		public DoomSettings GetSettings()
@@ -268,10 +269,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
-			if (_settings.DisplayPlayer == 1 && !_syncSettings.Player1Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
-			if (_settings.DisplayPlayer == 2 && !_syncSettings.Player2Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
-			if (_settings.DisplayPlayer == 3 && !_syncSettings.Player3Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
-			if (_settings.DisplayPlayer == 4 && !_syncSettings.Player4Present) throw new Exception($"Trying to set display player '{_settings.DisplayPlayer}' but it is not active in this movie.");
+
+			for (int port = 1; port <= 4; port++)
+			{
+				if (_settings.DisplayPlayer == port && !PlayerPresent(_syncSettings, port))
+				{
+					throw new ArgumentException(
+						$"Trying to set '{typeof(DoomSettings)
+							.GetProperty(nameof(_settings.DisplayPlayer))
+							.GetCustomAttribute<DisplayNameAttribute>()
+							.DisplayName
+						}' to '{_settings.DisplayPlayer}' but that player is not active.",
+						paramName: nameof(o));
+				}
+			}
+
 			return ret;
 		}
 
@@ -439,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player4Class { get; set; }
 
-			public LibDSDA.InitSettings GetNativeSettings(GameInfo game)
+			public LibDSDA.InitSettings GetNativeSettings()
 			{
 				return new LibDSDA.InitSettings
 				{
