@@ -1343,13 +1343,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_axisEditYPos = -1;
 
-				if (_axisBackupState != _axisPaintState)
+				if (_axisBackupState != _axisPaintState && Emulator.Frame > _axisEditRow)
 				{
 					CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, _axisBackupState);
-					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
 					TastudioPlayMode(true);
 					JumpToGreenzone();
-					DoTriggeredAutoRestoreIfNeeded();
+					DoAutoRestore();
 				}
 
 				AxisEditRow = -1;
@@ -1407,12 +1406,11 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
 				}
 
-				if (value != prev) // Auto-restore
+				if (value != prev && Emulator.Frame > _axisEditRow)
 				{
-					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
 					TastudioPlayMode(true);
 					JumpToGreenzone();
-					DoTriggeredAutoRestoreIfNeeded();
+					DoAutoRestore();
 				}
 			}
 
