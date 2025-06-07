@@ -25,8 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreConstructor(VSystemID.Raw.Doom)]
 		public DSDA(CoreLoadParameters<DoomSettings, DoomSyncSettings> lp)
 		{
-			var ser = new BasicServiceProvider(this);
-			ServiceProvider = ser;
+			ServiceProvider = new BasicServiceProvider(this);
 			_finalSyncSettings = _syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_settings = lp.Settings ?? new DoomSettings();
 			_comm = lp.Comm;
@@ -36,9 +35,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_wadFiles = lp.Roms;
 
 			// Checking for correct IWAD configuration
-			_pwadFiles = new();
-			bool foundIWAD = false;
-			string IWADName = "";
+			_pwadFiles = [ ];
+			var foundIWAD = false;
+			var IWADName = "";
 
 			foreach (var wadFile in _wadFiles)
 			{
@@ -68,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Check at least one IWAD was provided
 			if (!foundIWAD)
 			{
-				throw new Exception($"No IWAD was provided");
+				throw new Exception("No IWAD was provided");
 			}
 
 			// Getting dsda-doom.wad -- required by DSDA
@@ -96,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			else
 			{
 				multiplier = _settings.ScaleFactor - resolutions.Length + 1;
-				resolution = resolutions[resolutions.Length - 1];
+				resolution = resolutions[^1];
 			}
 
 			BufferWidth = resolution.X * multiplier;
@@ -221,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					_syncSettings.InputFormat = ControllerType.Hexen;
 				}
-				
+
 				ControllerDefinition = CreateControllerDefinition(_syncSettings);
 			}
 			catch
@@ -233,12 +232,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private void CreateArguments(LibDSDA.InitSettings initSettings)
 		{
-			_args = new List<string>
-			{
-				"dsda",
-			};
-
-			_args.Add("-warp");
+			_args =
+			[
+				"dsda", "-warp",
+			];
 			ConditionalArg(_syncSettings.InitialEpisode is not 0
 				&& _gameMode != LibDSDA.GameMode.Commercial,
 				$"{_syncSettings.InitialEpisode}");
@@ -301,8 +298,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly byte[] _dsdaWadFileData;
 		private readonly byte[] _configFile;
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
-		private int _turnCarry = 0; // Chocolate Doom mouse behaviour (enabled in upstream by default)
-		private bool _lastGammaInput = false;
+		private int _turnCarry; // Chocolate Doom mouse behaviour (enabled in upstream by default)
+		private bool _lastGammaInput;
 		private List<string> _args;
 		private IRomAsset _iwadFile;
 		private List<IRomAsset> _wadFiles;
