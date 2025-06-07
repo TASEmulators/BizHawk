@@ -68,18 +68,18 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 ## For any: .NET project
 
 - Linux
-	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
+	- Install the .NET 10 SDK (package name is usually `dotnet-sdk-10.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
 	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
 	- Note that EmuHawk does not currently support macOS.
-	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/dotnet/core/install/macos) or with Homebrew.
+	- Install the .NET 10 SDK [manually](https://learn.microsoft.com/dotnet/core/install/macos) or with Homebrew.
 	- VS Community isn't available for macOS, but Rider and VS Code are.
 - Windows
-	- The .NET 8 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/dotnet/core/install/windows)).
+	- The .NET 10 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/dotnet/core/install/windows)).
 	- You can also use Rider, VS Code, or something else instead of VS Community.
 
-For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.  
+For EmuHawk and libraries in the main solution, which do not target .NET 10, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.
 We also have [supplemental docs](https://github.com/TASEmulators/BizHawk/wiki/C%23-and-.NET-docs-supplement) on some of the language's footguns.
 
 
