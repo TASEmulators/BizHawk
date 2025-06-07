@@ -372,7 +372,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   return 1;
 }
 
-
 ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY int (*feload_archive_cb)(const char *filename, uint8_t *buffer, int maxsize))
 {
   printf("Loading WAD '%s' of size %d...\n", filename, size);
@@ -457,19 +456,18 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 // TODO: expose sectors and linedefs like xdre does (but better)
 ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
 {
-  char out_of_bounts = 0xFF;
-  char null_thing = 0x88;
-  int padded_size = 512; // sizeof(mobj_t) is 464 but we pad for nice representation
+  if (type != ARRAY_THINGS)
+    return MEMORY_OUT_OF_BOUNDS;
 
-  if (addr >= numthings * padded_size)
-    return out_of_bounts;
+  if (addr >= numthings * MEMORY_PADDED_THING)
+    return MEMORY_OUT_OF_BOUNDS;
 
-  int index = addr / padded_size;
-  int offset = addr % padded_size;
+  int index = addr / MEMORY_PADDED_THING;
+  int offset = addr % MEMORY_PADDED_THING;
   mobj_t *mobj = mobj_ptrs[index];
 
-  if (mobj == NULL)
-    return null_thing;
+  if (mobj == NULL || offset >= sizeof(mobj_t))
+    return MEMORY_NULL;
 
   char *data = (char *)mobj + offset;  
   return *data;

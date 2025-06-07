@@ -19,19 +19,27 @@
 #include "dsda/messenger.h"
 #include "dsda/settings.h"
 
+#define SLOWTURNTICS 6
+#define MEMORY_PADDED_THING  0x200 // sizeof(mobj_t) is 464 but we pad for nice representation
+#define MEMORY_OUT_OF_BOUNDS 0xFF
+#define MEMORY_NULL          0x88
+
+#ifdef PALETTE_SIZE
+#undef PALETTE_SIZE
+#endif
+#define PALETTE_SIZE 256
+
 extern int headlessMain(int argc, char **argv);
 extern void headlessRunSingleTick();
 extern void headlessClearTickCommand();
 extern void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int automap, int lookfly, int artifact, int jump, int endPlayer);
-extern void headlessGetMapName(char *outString);
-extern void headlessSetSaveStatePointer(void *savePtr, int saveStateSize);
-extern size_t headlessGetEffectiveSaveSize();
-extern unsigned int rngseed;
-
-extern dboolean InventoryMoveLeft();
-extern dboolean InventoryMoveRight();
+extern int numthings;
+extern mobj_t **mobj_ptrs;
+extern dsda_arg_t arg_value[dsda_arg_count];
+//extern unsigned int rngseed;
 
 // Video
+uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
 extern void headlessUpdateVideo();
 extern void* headlessGetVideoBuffer();
 extern int headlessGetVideoPitch();
@@ -48,17 +56,16 @@ extern void headlessEnableAudioRendering();
 extern void headlessDisableAudioRendering();
 extern uint8_t *I_CaptureAudio (int *nsamples);
 
-// Players information
+// Player information
 extern int enableOutput;
 extern int preventLevelExit;
 extern int preventGameEnd;
 extern int reachedLevelExit;
 extern int reachedGameEnd;
-extern int numthings;
-extern mobj_t **mobj_ptrs;
-extern dsda_arg_t arg_value[dsda_arg_count];
 extern int inv_ptr;
 extern dboolean inventory;
+extern dboolean InventoryMoveLeft();
+extern dboolean InventoryMoveRight();
 
 // Automap
 extern void AM_addMark();
@@ -72,26 +79,17 @@ extern int automap_follow;
 extern int automap_grid;
 extern int markpointnum;
 extern int zoom_leveltime;
+extern int map_pan_speed;
+extern int map_scroll_speed;
 extern dboolean stop_zooming;
 extern mpoint_t m_paninc;
 extern fixed_t mtof_zoommul;
 extern fixed_t ftom_zoommul;
 extern fixed_t curr_mtof_zoommul;
-extern int map_pan_speed;
-extern int map_scroll_speed;
-extern fixed_t scale_mtof;
 extern fixed_t scale_ftom;
 #define FTOM(x) FixedMul(((x)<<16),scale_ftom)
 #define M_ZOOMIN ((int) ((float)FRACUNIT * (1.00f + map_scroll_speed / 200.0f)))
 #define M_ZOOMOUT ((int) ((float)FRACUNIT / (1.00f + map_scroll_speed / 200.0f)))
-
-#ifdef PALETTE_SIZE
-#undef PALETTE_SIZE
-#endif
-#define PALETTE_SIZE 256
-uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
-
-#define SLOWTURNTICS 6
 
 enum ExtraButtons
 {
