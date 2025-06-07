@@ -57,7 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private bool? _autoRestorePaused;
 		private int? _seekStartFrame;
 		private bool _unpauseAfterSeeking;
 

@@ -832,16 +832,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StartSeeking(RestorePositionFrame);
 			}
-			else
-			{
-				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
-				{
-					// this happens when we're holding the left button while unpaused - view scrolls down, new input gets drawn, seek pauses
-					MainForm.UnpauseEmulator();
-				}
-
-				_autoRestorePaused = null;
-			}
 		}
 
 		/// <summary>
@@ -901,7 +891,6 @@ namespace BizHawk.Client.EmuHawk
 				DoAutoRestore();
 
 				_triggerAutoRestore = false;
-				_autoRestorePaused = null;
 			}
 		}
 
