@@ -132,8 +132,10 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 		public DoCDLCallbackType CDLCallback;
 
+		[Flags]
 		public enum eCDLogMemFlags
 		{
+			None = 0,
 			FetchFirst = 1,
 			FetchOperand = 2,
 			Data = 4,

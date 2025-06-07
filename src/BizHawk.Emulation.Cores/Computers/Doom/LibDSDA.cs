@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Indetermined = 0b00010000, // no IWAD found.
 		}
 
+#pragma warning disable RCS1191
+		[Flags]
 		public enum Buttons : int
 		{
 			None           = 0b0000000000000000,
@@ -44,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Jump           = 0b0000000010000000,
 			ArtifactMask   = 0b0000000000111111,
 		}
+#pragma warning restore RCS1191
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct InitSettings

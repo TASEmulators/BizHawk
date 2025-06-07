@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			InitializeComponent();
-			Dock = DockStyle.Top | DockStyle.Left;
+			Dock = DockStyle.Left;
 			_schema = schema;
 			_inputManager = inputManager;
 			_setLastFocusedNUD = setLastFocusedNUD;
