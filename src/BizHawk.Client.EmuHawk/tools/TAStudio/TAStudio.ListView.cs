@@ -788,6 +788,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Disables recording mode, ensures we are in the greenzone, and does autorestore if needed.
+		/// </summary>
+		private void FrameEdited(int frame)
+		{
+			TastudioPlayMode(true);
+			if (Emulator.Frame > frame)
+			{
+				JumpToGreenzone();
+				DoAutoRestore();
+			}
+		}
+
 		private void ClearLeftMouseStates()
 		{
 			_startCursorDrag = false;
@@ -802,10 +815,7 @@ namespace BizHawk.Client.EmuHawk
 			if (AxisEditingMode && _axisPaintState != CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn))
 			{
 				AxisEditRow = -1;
-				_triggerAutoRestore = true;
-				TastudioPlayMode(true);
-				JumpToGreenzone();
-				DoTriggeredAutoRestoreIfNeeded();
+				FrameEdited(_axisEditRow);
 				RefreshDialog();
 			}
 			_axisPaintState = 0;
@@ -940,7 +950,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						ClearLeftMouseStates();
 						MarkerControl.AddMarker(TasView.CurrentCell.RowIndex.Value);
 					}
 				}
@@ -1345,10 +1354,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_axisBackupState != _axisPaintState)
 				{
 					CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, _axisBackupState);
-					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
-					TastudioPlayMode(true);
-					JumpToGreenzone();
-					DoTriggeredAutoRestoreIfNeeded();
+					FrameEdited(_axisEditRow);
 				}
 
 				AxisEditRow = -1;
@@ -1406,12 +1412,9 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
 				}
 
-				if (value != prev) // Auto-restore
+				if (value != prev)
 				{
-					_triggerAutoRestore = Emulator.Frame > _axisEditRow;
-					TastudioPlayMode(true);
-					JumpToGreenzone();
-					DoTriggeredAutoRestoreIfNeeded();
+					FrameEdited(_axisEditRow);
 				}
 			}
 
