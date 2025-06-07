@@ -592,8 +592,6 @@ namespace BizHawk.Client.EmuHawk
 						_axisEditYPos = e.Y;
 						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
 
-						_triggerAutoRestore = true;
-						TastudioPlayMode(true);
 						return;
 					}
 				}
