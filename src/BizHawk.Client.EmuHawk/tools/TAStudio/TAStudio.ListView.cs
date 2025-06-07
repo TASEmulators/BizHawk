@@ -994,7 +994,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_startCursorDrag && _seekingTo == -1)
+			if (_startCursorDrag)
 			{
 				GoToFrame(e.NewCell.RowIndex.Value);
 			}
