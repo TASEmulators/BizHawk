@@ -270,8 +270,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (!PlayerPresent(_syncSettings, o.DisplayPlayer))
 			{
 				throw new ArgumentException(
-					paramName: nameof(o),
-					message: string.Format(FMT_STR_PLAYER_NOT_ACTIVE, o.DisplayPlayer));
+					message: string.Format(FMT_STR_PLAYER_NOT_ACTIVE, o.DisplayPlayer),
+					paramName: nameof(o));
 			}
 			var ret = (_settings.ScaleFactor == o.ScaleFactor
 				&& _settings.InternalAspect == o.InternalAspect)

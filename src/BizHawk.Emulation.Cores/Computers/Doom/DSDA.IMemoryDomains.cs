@@ -19,7 +19,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					addr =>
 					{
 						if (addr > 0xFFFFFF)
-							throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+						{
+							throw new ArgumentOutOfRangeException(
+								paramName: nameof(addr),
+								addr, message: "address out of range");
+						}
 						return _core.dsda_read_memory_array(LibDSDA.MemoryArrayType.Things, (uint) addr);
 					},
 					null,
