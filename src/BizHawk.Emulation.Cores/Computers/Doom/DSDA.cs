@@ -209,15 +209,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				// Registering memory domains
 				SetupMemoryDomains();
 
-				if (lp.Game[$"{ControllerType.Doom}"])
+				if (lp.Game[nameof(ControllerType.Doom)])
 				{
 					_syncSettings.InputFormat = ControllerType.Doom;
 				}
-				else if (lp.Game[$"{ControllerType.Heretic}"])
+				else if (lp.Game[nameof(ControllerType.Heretic)])
 				{
 					_syncSettings.InputFormat = ControllerType.Heretic;
 				}
-				else if (lp.Game[$"{ControllerType.Hexen}"])
+				else if (lp.Game[nameof(ControllerType.Hexen)])
 				{
 					_syncSettings.InputFormat = ControllerType.Hexen;
 				}
