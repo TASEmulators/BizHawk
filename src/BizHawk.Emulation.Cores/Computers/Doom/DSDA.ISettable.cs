@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
-
-using BizHawk.Emulation.Common;
-using BizHawk.Common;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+
+using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
@@ -262,28 +262,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public DoomSettings Clone()
 				=> (DoomSettings)MemberwiseClone();
 		}
+
+		private readonly string FMT_STR_PLAYER_NOT_ACTIVE = $"Trying to set '{typeof(DoomSettings).GetProperty(nameof(DoomSettings.DisplayPlayer)).DisplayName()}' to '{{0}}' but that player is not active.";
+
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{
+			if (!PlayerPresent(_syncSettings, o.DisplayPlayer))
+			{
+				throw new ArgumentException(
+					paramName: nameof(o),
+					message: string.Format(FMT_STR_PLAYER_NOT_ACTIVE, o.DisplayPlayer));
+			}
 			var ret = (_settings.ScaleFactor == o.ScaleFactor
 				&& _settings.InternalAspect == o.InternalAspect)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
-
-			for (int port = 1; port <= 4; port++)
-			{
-				if (_settings.DisplayPlayer == port && !PlayerPresent(_syncSettings, port))
-				{
-					throw new ArgumentException(
-						$"Trying to set '{typeof(DoomSettings)
-							.GetProperty(nameof(_settings.DisplayPlayer))
-							.GetCustomAttribute<DisplayNameAttribute>()
-							.DisplayName
-						}' to '{_settings.DisplayPlayer}' but that player is not active.",
-						paramName: nameof(o));
-				}
-			}
-
 			return ret;
 		}
 
