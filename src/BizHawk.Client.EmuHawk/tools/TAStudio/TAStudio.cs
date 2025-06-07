@@ -861,7 +861,7 @@ namespace BizHawk.Client.EmuHawk
 			TastudioPlayMode();
 
 			var closestState = GetPriorStateForFramebuffer(frame);
-			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
+			if (frame < Emulator.Frame || closestState.Key > Emulator.Frame)
 			{
 				LoadState(closestState, true);
 			}
