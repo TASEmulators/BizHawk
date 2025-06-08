@@ -425,11 +425,8 @@ namespace BizHawk.Client.EmuHawk
 							var rollbackFrame = CurrentTasMovie.CopyOverInput(TasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
 							if (rollbackFrame > 0)
 							{
-								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
-								DoAutoRestore();
+								FrameEdited(rollbackFrame);
 							}
-
-							RefreshDialog();
 						}
 					}
 				}
@@ -465,15 +462,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							var selectionStart = TasView.SelectionStartIndex;
-							var needsToRollback = selectionStart < Emulator.Frame;
 							CurrentTasMovie.InsertInput(selectionStart ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							if (needsToRollback)
-							{
-								GoToLastEmulatedFrameIfNecessary(selectionStart!.Value);
-								DoAutoRestore();
-							}
-
-							RefreshDialog();
+							FrameEdited(selectionStart!.Value);
 						}
 					}
 				}
@@ -485,7 +475,6 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
 				var selectionStart = TasView.SelectionStartIndex;
-				var needsToRollback = selectionStart < Emulator.Frame;
 				var rollBackFrame = selectionStart ?? 0;
 
 				_tasClipboard.Clear();
@@ -508,13 +497,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.RemoveFrames(list);
 				SetSplicer();
 
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				RefreshDialog();
+				FrameEdited(rollBackFrame);
 			}
 		}
 
@@ -536,8 +519,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (needsToRollback)
 				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
+					FrameEdited(rollBackFrame);
 				}
 
 				RefreshDialog();
@@ -549,7 +531,6 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
 				var selectionStart = TasView.SelectionStartIndex;
-				var needsToRollback = selectionStart < Emulator.Frame;
 				var rollBackFrame = selectionStart ?? 0;
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{
@@ -562,13 +543,7 @@ namespace BizHawk.Client.EmuHawk
 				SetTasViewRowCount();
 				SetSplicer();
 
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				RefreshDialog();
+				FrameEdited(rollBackFrame);
 			}
 		}
 
@@ -594,7 +569,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var framesToInsert = TasView.SelectedRows;
 					var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-					var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
 
 					var inputLog = framesToInsert
 						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
@@ -602,13 +576,7 @@ namespace BizHawk.Client.EmuHawk
 
 					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
 
-					if (needsToRollback)
-					{
-						GoToLastEmulatedFrameIfNecessary(insertionFrame);
-						DoAutoRestore();
-					}
-
-					RefreshDialog();
+					FrameEdited(insertionFrame);
 				}
 			}
 		}
@@ -619,17 +587,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var selectionStart = TasView.SelectionStartIndex;
 				var insertionFrame = selectionStart ?? 0;
-				var needsToRollback = selectionStart < Emulator.Frame;
 
 				CurrentTasMovie.InsertEmptyFrame(insertionFrame);
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
-
-				RefreshDialog();
+				FrameEdited(insertionFrame);
 			}
 		}
 
@@ -651,17 +611,11 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
 				var rollbackFrame = TasView.SelectionEndIndex ?? 0;
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
 
 				CurrentTasMovie.Truncate(rollbackFrame);
 				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
 
-				if (needsToRollback)
-				{
-					GoToFrame(rollbackFrame);
-				}
-
-				RefreshDialog();
+				FrameEdited(rollbackFrame);
 			}
 		}
 
