@@ -25,7 +25,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _selectionDragState;
 		private bool _suppressContextMenu;
 		private int _startRow;
-		private int _mouseEditMinFrame = -1;
+		private int _batchEditMinFrame = -1;
+		private bool _batchEditing = false;
 
 		// Editing analog input
 		private string _axisEditColumn = "";
@@ -65,14 +66,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternAxis[] AxisPatterns;
-
-		public void JumpToGreenzone(bool OnLeftMouseDown = false)
-		{
-			if (Emulator.Frame > CurrentTasMovie.LastEditedFrame)
-			{
-				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame, OnLeftMouseDown);
-			}
-		}
 
 		private void StartSeeking(int? frame, bool fromMiddleClick = false)
 		{
@@ -431,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 						// autohold is ignored for axes too for the same reasons: lack of demand + ambiguity
 					}
 
-					FrameEdited(CurrentTasMovie.LastEditedFrame);
+					FrameEdited(CurrentTasMovie.LastEditedFrame, false);
 				}
 
 				RefreshDialog();
@@ -653,7 +646,6 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetBoolStates(firstSel, lastSel - firstSel + 1, buttonName, !allPressed);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(lastSel, buttonName);
 							FrameEdited(CurrentTasMovie.LastEditedFrame);
-							RefreshDialog();
 						}
 #if false // to match previous behaviour
 						else if (altOrShift4State is not 0)
@@ -668,7 +660,6 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.ToggleBoolState(frame, buttonName);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 							FrameEdited(CurrentTasMovie.LastEditedFrame);
-							RefreshDialog();
 						}
 					}
 					else
@@ -685,6 +676,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].Reset();
 							CurrentTasMovie.SetAxisState(frame, buttonName, AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].GetNextValue());
+							FrameEdited(frame);
 							_patternPaint = true;
 						}
 						else
@@ -780,27 +772,60 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// Begins a batch of edits, for auto-restore purposes. Auto-restore will be delayed until EndBatchEdit is called.
+		/// </summary>
+		public void BeginBatchEdit()
+		{
+			_batchEditing = true;
+		}
+		public void EndBatchEdit()
+		{
+			_batchEditing = false;
+			if (_batchEditMinFrame != -1)
+				FrameEdited(_batchEditMinFrame);
+		}
+
+		/// <summary>
 		/// Disables recording mode, ensures we are in the greenzone, and does autorestore if needed.
 		/// If a mouse button is down, only tracks the edit so we can do this stuff on mouse up.
 		/// </summary>
-		private void FrameEdited(int frame)
+		/// <param name="frame">The frame that was just edited, or the earliest one if multiple were edited.</param>
+		/// <param name="refresh">Set to false if the caller will be responsible for refresh.</param>
+		public void FrameEdited(int frame, bool refresh = true)
 		{
-			if (MouseButtonHeld)
+			if (MouseButtonHeld || _batchEditing)
 			{
-				if (_mouseEditMinFrame == -1)
-					_mouseEditMinFrame = frame;
+				if (_batchEditMinFrame == -1)
+					_batchEditMinFrame = frame;
 				else
-					_mouseEditMinFrame = Math.Min(_mouseEditMinFrame, frame);
+					_batchEditMinFrame = Math.Min(_batchEditMinFrame, frame);
 			}
 			else
 			{
 				TastudioPlayMode(true);
 				if (Emulator.Frame > frame)
-				{ 
+				{
 					GoToLastEmulatedFrameIfNecessary(frame);
-					DoAutoRestore();
+					if (Settings.AutoRestoreLastPosition && RestorePositionFrame != -1)
+					{
+						StartSeeking(RestorePositionFrame);
+					}
 				}
-				_mouseEditMinFrame = -1;
+				_batchEditMinFrame = -1;
+			}
+
+			if (refresh)
+			{
+				if (TasView.IsPartiallyVisible(frame) || frame < TasView.FirstVisibleRow)
+				{
+					// frame < FirstVisibleRow: Greenzone in visible rows has been invalidated
+					RefreshDialog();
+				}
+				else if (TasView.RowCount != CurrentTasMovie.FrameCount + 1)
+				{
+					// Row count must always be kept up to date even if last row is not directly visible.
+					TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
+				}
 			}
 		}
 
@@ -818,7 +843,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AxisEditRow = -1;
 				FrameEdited(_axisEditRow);
-				RefreshDialog();
 			}
 			_axisPaintState = 0;
 			_axisEditYPos = -1;
@@ -888,8 +912,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_mouseEditMinFrame != -1)
-				FrameEdited(_mouseEditMinFrame);
+			if (_batchEditMinFrame != -1)
+				FrameEdited(_batchEditMinFrame);
 
 			_suppressContextMenu = false;
 		}
@@ -1165,7 +1189,6 @@ namespace BizHawk.Client.EmuHawk
 
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 					FrameEdited(CurrentTasMovie.LastEditedFrame);
-					RefreshDialog();
 				}
 			}
 
@@ -1175,8 +1198,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
 			}
-
-			SetTasViewRowCount();
 		}
 
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
@@ -1335,7 +1356,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_axisBackupState != _axisPaintState)
 				{
 					CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, _axisBackupState);
-					FrameEdited(_axisEditRow);
+					FrameEdited(_axisEditRow, false);
 				}
 
 				AxisEditRow = -1;
@@ -1395,7 +1416,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value != prev)
 				{
-					FrameEdited(_axisEditRow);
+					FrameEdited(_axisEditRow, false);
 				}
 			}
 

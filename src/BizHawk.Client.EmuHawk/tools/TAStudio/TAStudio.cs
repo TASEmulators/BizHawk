@@ -800,26 +800,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void RefreshForInputChange(int firstChangedFrame)
-		{
-			if (TasView.IsPartiallyVisible(firstChangedFrame) || firstChangedFrame < TasView.FirstVisibleRow)
-			{
-				RefreshDialog();
-			}
-		}
-
 		private void SetTasViewRowCount()
 		{
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			_lastRefresh = Emulator.Frame;
-		}
-
-		public void DoAutoRestore()
-		{
-			if (Settings.AutoRestoreLastPosition && RestorePositionFrame != -1)
-			{
-				StartSeeking(RestorePositionFrame);
-			}
 		}
 
 		/// <summary>
@@ -875,19 +859,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (insertionFrame <= CurrentTasMovie.InputLogLength)
 			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
-
 				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(insertionFrame);
-				}
+				FrameEdited(insertionFrame);
 			}
 		}
 
@@ -899,16 +872,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.RemoveFrames(framesToRemove);
 				SetSplicer();
 
-				var needsToRollback = beginningFrame < Emulator.Frame;
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(beginningFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(beginningFrame);
-				}
+				FrameEdited(beginningFrame);
 			}
 		}
 
@@ -916,22 +880,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
 				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
 				for (int i = beginningFrame; i < last; i++)
 				{
 					CurrentTasMovie.ClearFrame(i);
 				}
 
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(beginningFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(beginningFrame);
-				}
+				FrameEdited(beginningFrame);
 			}
 		}
 
@@ -1038,8 +993,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
-					GoToLastEmulatedFrameIfNecessary(Emulator.Frame - 1);
-					DoAutoRestore();
+					FrameEdited(Emulator.Frame - 1);
 					return true;
 				}
 
