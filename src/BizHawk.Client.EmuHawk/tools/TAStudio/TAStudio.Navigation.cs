@@ -79,27 +79,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// Only goes to go to the frame if it is an event before current emulation, otherwise it is just a future event that can freely be edited
-		/// </summary>
-		private void GoToLastEmulatedFrameIfNecessary(int frame, bool OnLeftMouseDown = false)
-		{
-			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
-			{
-				if (frame <= Emulator.Frame)
-				{
-					if ((MainForm.EmulatorPaused || _seekingTo == -1)
-						&& !CurrentTasMovie.LastPositionStable)
-					{
-						RestorePositionFrame = Emulator.Frame;
-						CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
-					}
-
-					GoToFrame(frame, false, false, OnLeftMouseDown);
-				}
-			}
-		}
-
 		public void GoToPreviousMarker()
 		{
 			if (Emulator.Frame > 0)
