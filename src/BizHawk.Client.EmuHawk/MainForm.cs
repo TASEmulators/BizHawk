@@ -801,7 +801,7 @@ namespace BizHawk.Client.EmuHawk
 				//load Lua Script if requested in the command line arguments
 				if (_argParser.luaScript != null)
 				{
-					_ = Tools.LuaConsole.LoadByFileExtension(_argParser.luaScript.MakeAbsolute(), out _);
+					Tools.LuaConsole.LoadFromCommandLine(_argParser.luaScript.MakeAbsolute());
 				}
 			};
 

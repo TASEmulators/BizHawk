@@ -1267,6 +1267,17 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
+		public void LoadFromCommandLine(string path)
+		{
+			if (path.EndsWith(".luases", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = LoadLuaSession(path);
+				return;
+			}
+			LoadLuaFile(path);
+			UpdateDialog();
+		}
+
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
