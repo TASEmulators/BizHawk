@@ -4,11 +4,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
-		/// <summary> 
+		/// <summary>
 		/// Seek to the given frame, past or future, and load a state first if doing so gets us there faster.
 		/// Does nothing if we are already on the given frame.
 		/// </summary>
-		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false, bool OnLeftMouseDown = false)
+		public void GoToFrame(int frame, bool fromLua = false, bool OnLeftMouseDown = false)
 		{
 			if (frame == Emulator.Frame)
 			{
@@ -18,10 +18,9 @@ namespace BizHawk.Client.EmuHawk
 			// Unpausing after a seek may seem like we aren't really seeking at all:
 			// what is the significance of a seek to frame if we don't pause?
 			// Answer: We use this in order to temporarily disable recording mode when the user navigates to a frame. (to avoid recording between whatever is the most recent state and the user-specified frame)
-			// as well as ... to enable turbo-seek when navigating while unpaused? not sure (because this doesn't work)
-			//   ... actually, fromRewinding is never set to true in any call AND NEVER WAS. TODO: Fix that.
+			// Other answer: turbo seek, navigating while unpaused
+			_pauseAfterSeeking = MainForm.EmulatorPaused || (_seekingTo != -1 && _pauseAfterSeeking);
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
-			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
 			TastudioPlayMode();
 
 			var closestState = GetPriorStateForFramebuffer(frame);
@@ -58,20 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				// now the next section won't happen since we're at the right spot
 			}
 
-			// Seek needs to happen if any of:
-			// 1) We should pause once reaching the target frame (that's what a seek is): currently paused OR currently seeking
-			// 2) We are using _unpauseAfterSeeking (e.g. to manage recording state)
-			// Otherwise, just don't seek and emulation will happily continue.
-			if (MainForm.EmulatorPaused || _seekingTo != -1 || _unpauseAfterSeeking)
-			{
-				StartSeeking(frame);
-			}
-			else
-			{
-				// GUI users may want to be protected from clobbering their video when skipping around...
-				// well, users who are rewinding aren't. (that gets done through the seeking system in the call above)
-				// users who are clicking around.. I don't know.
-			}
+			StartSeeking(frame);
 
 			if (!OnLeftMouseDown)
 			{

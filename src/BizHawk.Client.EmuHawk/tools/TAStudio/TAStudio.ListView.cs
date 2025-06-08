@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
 		private int? _seekStartFrame;
-		private bool _unpauseAfterSeeking;
+		private bool _pauseAfterSeeking;
 
 		private readonly Dictionary<string, bool> _alternateRowColor = new();
 
@@ -105,13 +105,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekingTo = -1;
 			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
-			if (_unpauseAfterSeeking)
-			{
-				// We don't actually need to unpause, because the fact that we are seeking means we already unpaused to start it.
-				// It is possible that the user has paused during the seek. But if the user has pasuesd, we should respect that.
-				_unpauseAfterSeeking = false;
-			}
-			else
+			if (_pauseAfterSeeking)
 			{
 				MainForm.PauseEmulator();
 			}
@@ -127,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_seekingTo = -1;
 			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
-			_unpauseAfterSeeking = false;
+			_pauseAfterSeeking = false;
 			if (WasRecording)
 			{
 				TastudioRecordMode();
@@ -532,6 +526,7 @@ namespace BizHawk.Client.EmuHawk
 					var record = CurrentTasMovie[RestorePositionFrame];
 					if (record.Lagged is null)
 					{
+						_pauseAfterSeeking = true;
 						StartSeeking(RestorePositionFrame, true);
 						return;
 					}
@@ -587,7 +582,7 @@ namespace BizHawk.Client.EmuHawk
 				if (targetCol.Name is CursorColumnName)
 				{
 					_startCursorDrag = true;
-					GoToFrame(frame, fromLua: false, fromRewinding: false, OnLeftMouseDown: true);
+					GoToFrame(frame, fromLua: false, OnLeftMouseDown: true);
 				}
 				else if (targetCol.Name is FrameColumnName)
 				{
@@ -840,6 +835,7 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(frame);
 					if (Settings.AutoRestoreLastPosition && RestorePositionFrame != -1)
 					{
+						_pauseAfterSeeking = true; // auto-restore makes no sense without auto-pause
 						StartSeeking(RestorePositionFrame);
 					}
 
