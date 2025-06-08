@@ -300,6 +300,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("applyinputchanges", "")]
 		public void ApplyInputChanges()
 		{
+			if (_changeList.Count == 0)
+			{
+				return;
+			}
+
 			if (Engaged())
 			{
 				if (_luaLibsImpl.IsInInputOrMemoryCallback)
@@ -309,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_luaLibsImpl.IsUpdateSupressed = true;
 
-				if (_changeList.Count > 0)
+				Tastudio.ApiHawkBatchEdit(() =>
 				{
 					int size = _changeList.Count;
 
@@ -327,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}
-								Tastudio.RefreshForInputChange(_changeList[i].Frame);
+								Tastudio.FrameEdited(_changeList[i].Frame);
 								break;
 							case LuaChangeTypes.InsertFrames:
 								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
@@ -341,9 +346,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
-					Tastudio.JumpToGreenzone();
-					Tastudio.DoAutoRestore();
-				}
+				});
 
 				_luaLibsImpl.IsUpdateSupressed = false;
 			}
