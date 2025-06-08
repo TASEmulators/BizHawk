@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 								DoAutoRestore();
 							}
 
-							FullRefresh();
+							RefreshDialog();
 						}
 					}
 				}
@@ -473,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 								DoAutoRestore();
 							}
 
-							FullRefresh();
+							RefreshDialog();
 						}
 					}
 				}
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 					DoAutoRestore();
 				}
 
-				FullRefresh();
+				RefreshDialog();
 			}
 		}
 
@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 					DoAutoRestore();
 				}
 
-				FullRefresh();
+				RefreshDialog();
 			}
 		}
 
@@ -554,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{
 					// Cannot delete non-existent frames
-					FullRefresh();
+					RefreshDialog();
 					return;
 				}
 
@@ -568,7 +568,7 @@ namespace BizHawk.Client.EmuHawk
 					DoAutoRestore();
 				}
 
-				FullRefresh();
+				RefreshDialog();
 			}
 		}
 
@@ -608,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 						DoAutoRestore();
 					}
 
-					FullRefresh();
+					RefreshDialog();
 				}
 			}
 		}
@@ -629,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 					DoAutoRestore();
 				}
 
-				FullRefresh();
+				RefreshDialog();
 			}
 		}
 
@@ -661,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(rollbackFrame);
 				}
 
-				FullRefresh();
+				RefreshDialog();
 			}
 		}
 
