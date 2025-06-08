@@ -456,19 +456,36 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 // TODO: expose sectors and linedefs like xdre does (but better)
 ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
 {
-  if (type != ARRAY_THINGS)
+  if (type == ARRAY_THINGS)
+  {
+    if (addr >= numthings * MEMORY_PADDED_THING)
+      return MEMORY_OUT_OF_BOUNDS;
+
+    int index    = addr / MEMORY_PADDED_THING;
+    int offset   = addr % MEMORY_PADDED_THING;
+    mobj_t *mobj = mobj_ptrs[index];
+
+    if (mobj == NULL || offset >= sizeof(mobj_t))
+      return MEMORY_NULL;
+
+    char *data = (char *)mobj + offset;  
+    return *data;
+  }
+  else if (type == ARRAY_LINES)
+  {
+    if (addr >= numlines * MEMORY_PADDED_LINE)
+      return MEMORY_OUT_OF_BOUNDS;
+
+    int index    = addr / MEMORY_PADDED_LINE;
+    int offset   = addr % MEMORY_PADDED_LINE;
+    line_t *line = &lines[index];
+
+    if (line == NULL || offset >= sizeof(line_t))
+      return MEMORY_NULL;
+
+    char *data = (char *)line + offset;  
+    return *data;
+  }
+  else
     return MEMORY_OUT_OF_BOUNDS;
-
-  if (addr >= numthings * MEMORY_PADDED_THING)
-    return MEMORY_OUT_OF_BOUNDS;
-
-  int index = addr / MEMORY_PADDED_THING;
-  int offset = addr % MEMORY_PADDED_THING;
-  mobj_t *mobj = mobj_ptrs[index];
-
-  if (mobj == NULL || offset >= sizeof(mobj_t))
-    return MEMORY_NULL;
-
-  char *data = (char *)mobj + offset;  
-  return *data;
 }

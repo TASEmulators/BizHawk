@@ -21,6 +21,7 @@
 
 #define SLOWTURNTICS 6
 #define MEMORY_PADDED_THING  0x200 // sizeof(mobj_t) is 464 but we pad for nice representation
+#define MEMORY_PADDED_LINE   0x100 // sizeof(line_t) is 232 but we pad for nice representation
 #define MEMORY_OUT_OF_BOUNDS 0xFF
 #define MEMORY_NULL          0x88
 

@@ -28,6 +28,22 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					},
 					null,
 					1),
+				new MemoryDomainDelegate(
+					"Lines",
+					0x1000000,
+					MemoryDomain.Endian.Little,
+					addr =>
+					{
+						if (addr > 0xFFFFFF)
+						{
+							throw new ArgumentOutOfRangeException(
+								paramName: nameof(addr),
+								addr, message: "address out of range");
+						}
+						return _core.dsda_read_memory_array(LibDSDA.MemoryArrayType.Lines, (uint) addr);
+					},
+					null,
+					1),
 				_elf.GetPagesDomain()
 			};
 			MemoryDomains = new MemoryDomainList(domains);
