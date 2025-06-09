@@ -13,8 +13,9 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Rewind 1 or 2 saved frames, avoiding frameToAvoid if possible.
+		/// If maySkipLoadstate is set, the rewinder may update frameToAvoid instead of loading a state.
 		/// </summary>
-		bool Rewind(int frameToAvoid);
+		bool Rewind(ref int frameToAvoid, bool maySkipLoadstate);
 
 		void Suspend();
 		void Resume();

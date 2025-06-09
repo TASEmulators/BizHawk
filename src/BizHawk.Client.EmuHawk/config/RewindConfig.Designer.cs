@@ -41,6 +41,8 @@
 			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.FullnessLabel = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.TargetRewindIntervalRadioButton = new System.Windows.Forms.RadioButton();
+			this.TargetFrameLengthRadioButton = new System.Windows.Forms.RadioButton();
 			this.locSingleRowFLP1 = new BizHawk.WinForms.Controls.LocSingleRowFLP();
 			this.labelEx3 = new BizHawk.WinForms.Controls.LabelEx();
 			this.labelEx2 = new BizHawk.WinForms.Controls.LabelEx();
@@ -73,8 +75,10 @@
 			this.label16 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.TargetFrameLengthRadioButton = new System.Windows.Forms.RadioButton();
-			this.TargetRewindIntervalRadioButton = new System.Windows.Forms.RadioButton();
+			this.label21 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.RewindSpeedMultiplierNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label22 = new BizHawk.WinForms.Controls.LocLabelEx();
+			this.FastRewindSpeedMultiplierNumeric = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
 			this.locSingleRowFLP1.SuspendLayout();
@@ -85,6 +89,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedMultiplierNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.FastRewindSpeedMultiplierNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -123,9 +129,9 @@
 			// UseCompression
 			// 
 			this.UseCompression.AutoSize = true;
-			this.UseCompression.Location = new System.Drawing.Point(15, 194);
+			this.UseCompression.Location = new System.Drawing.Point(15, 248);
 			this.UseCompression.Name = "UseCompression";
-			this.UseCompression.Size = new System.Drawing.Size(324, 17);
+			this.UseCompression.Size = new System.Drawing.Size(328, 17);
 			this.UseCompression.TabIndex = 5;
 			this.UseCompression.Text = "Use zstd compression (economizes buffer usage at cost of CPU)";
 			this.UseCompression.UseVisualStyleBackColor = true;
@@ -192,13 +198,17 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.FastRewindSpeedMultiplierNumeric);
+			this.groupBox4.Controls.Add(this.label22);
+			this.groupBox4.Controls.Add(this.RewindSpeedMultiplierNumeric);
+			this.groupBox4.Controls.Add(this.UseCompression);
+			this.groupBox4.Controls.Add(this.cbDeltaCompression);
+			this.groupBox4.Controls.Add(this.label21);
 			this.groupBox4.Controls.Add(this.TargetRewindIntervalRadioButton);
 			this.groupBox4.Controls.Add(this.TargetFrameLengthRadioButton);
 			this.groupBox4.Controls.Add(this.locSingleRowFLP1);
-			this.groupBox4.Controls.Add(this.cbDeltaCompression);
 			this.groupBox4.Controls.Add(this.TargetFrameLengthNumeric);
 			this.groupBox4.Controls.Add(this.TargetRewindIntervalNumeric);
-			this.groupBox4.Controls.Add(this.UseCompression);
 			this.groupBox4.Controls.Add(this.RewindEnabledBox);
 			this.groupBox4.Controls.Add(this.label3);
 			this.groupBox4.Controls.Add(this.EstTimeLabel);
@@ -213,10 +223,33 @@
 			this.groupBox4.Controls.Add(this.StateSizeLabel);
 			this.groupBox4.Location = new System.Drawing.Point(12, 12);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(371, 248);
+			this.groupBox4.Size = new System.Drawing.Size(371, 304);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RewindSettings";
+			// 
+			// TargetRewindIntervalRadioButton
+			// 
+			this.TargetRewindIntervalRadioButton.AutoSize = true;
+			this.TargetRewindIntervalRadioButton.Location = new System.Drawing.Point(15, 162);
+			this.TargetRewindIntervalRadioButton.Name = "TargetRewindIntervalRadioButton";
+			this.TargetRewindIntervalRadioButton.Size = new System.Drawing.Size(210, 17);
+			this.TargetRewindIntervalRadioButton.TabIndex = 49;
+			this.TargetRewindIntervalRadioButton.TabStop = true;
+			this.TargetRewindIntervalRadioButton.Text = "Rewinds every fixed number of frames: ";
+			this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
+			this.TargetRewindIntervalRadioButton.CheckedChanged += new System.EventHandler(this.RewindInterval_CheckedChanged);
+			// 
+			// TargetFrameLengthRadioButton
+			// 
+			this.TargetFrameLengthRadioButton.AutoSize = true;
+			this.TargetFrameLengthRadioButton.Location = new System.Drawing.Point(15, 138);
+			this.TargetFrameLengthRadioButton.Name = "TargetFrameLengthRadioButton";
+			this.TargetFrameLengthRadioButton.Size = new System.Drawing.Size(216, 17);
+			this.TargetFrameLengthRadioButton.TabIndex = 48;
+			this.TargetFrameLengthRadioButton.TabStop = true;
+			this.TargetFrameLengthRadioButton.Text = "Desired minimum rewind range in frames:";
+			this.TargetFrameLengthRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// locSingleRowFLP1
 			// 
@@ -249,7 +282,7 @@
 			// cbDeltaCompression
 			// 
 			this.cbDeltaCompression.AutoSize = true;
-			this.cbDeltaCompression.Location = new System.Drawing.Point(15, 217);
+			this.cbDeltaCompression.Location = new System.Drawing.Point(15, 271);
 			this.cbDeltaCompression.Name = "cbDeltaCompression";
 			this.cbDeltaCompression.Size = new System.Drawing.Size(332, 17);
 			this.cbDeltaCompression.TabIndex = 35;
@@ -281,7 +314,7 @@
 			// 
 			// TargetRewindIntervalNumeric
 			// 
-			this.TargetRewindIntervalNumeric.Location = new System.Drawing.Point(231, 162);
+			this.TargetRewindIntervalNumeric.Location = new System.Drawing.Point(236, 162);
 			this.TargetRewindIntervalNumeric.Maximum = new decimal(new int[] {
 			500000,
 			0,
@@ -531,28 +564,61 @@
 			this.label12.Name = "label12";
 			this.label12.Text = "Compression Level";
 			// 
-			// TargetFrameLengthRadioButton
+			// label21
 			// 
-			this.TargetFrameLengthRadioButton.AutoSize = true;
-			this.TargetFrameLengthRadioButton.Location = new System.Drawing.Point(15, 138);
-			this.TargetFrameLengthRadioButton.Name = "TargetFrameLengthRadioButton";
-			this.TargetFrameLengthRadioButton.Size = new System.Drawing.Size(125, 17);
-			this.TargetFrameLengthRadioButton.TabIndex = 48;
-			this.TargetFrameLengthRadioButton.TabStop = true;
-			this.TargetFrameLengthRadioButton.Text = "Desired minimum rewind range in frames:";
-			this.TargetFrameLengthRadioButton.UseVisualStyleBackColor = true;
+			this.label21.Location = new System.Drawing.Point(12, 193);
+			this.label21.Name = "label21";
+			this.label21.Text = "Rewind speed multiplier (without fast forward)";
 			// 
-			// TargetRewindIntervalRadioButton
+			// RewindSpeedMultiplierNumeric
 			// 
-			this.TargetRewindIntervalRadioButton.AutoSize = true;
-			this.TargetRewindIntervalRadioButton.Location = new System.Drawing.Point(15, 162);
-			this.TargetRewindIntervalRadioButton.Name = "TargetRewindIntervalRadioButton";
-			this.TargetRewindIntervalRadioButton.Size = new System.Drawing.Size(210, 17);
-			this.TargetRewindIntervalRadioButton.TabIndex = 49;
-			this.TargetRewindIntervalRadioButton.TabStop = true;
-			this.TargetRewindIntervalRadioButton.Text = "Rewinds every fixed number of frames: ";
-			this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
-			this.TargetRewindIntervalRadioButton.CheckedChanged += new System.EventHandler(this.RewindInterval_CheckedChanged);
+			this.RewindSpeedMultiplierNumeric.Location = new System.Drawing.Point(236, 191);
+			this.RewindSpeedMultiplierNumeric.Maximum = new decimal(new int[] {
+			500000,
+			0,
+			0,
+			0});
+			this.RewindSpeedMultiplierNumeric.Minimum = new decimal(new int[] {
+			1,
+			0,
+			0,
+			0});
+			this.RewindSpeedMultiplierNumeric.Name = "RewindSpeedMultiplierNumeric";
+			this.RewindSpeedMultiplierNumeric.Size = new System.Drawing.Size(52, 20);
+			this.RewindSpeedMultiplierNumeric.TabIndex = 63;
+			this.RewindSpeedMultiplierNumeric.Value = new decimal(new int[] {
+			1,
+			0,
+			0,
+			0});
+			// 
+			// label22
+			// 
+			this.label22.Location = new System.Drawing.Point(12, 221);
+			this.label22.Name = "label22";
+			this.label22.Text = "Rewind speed multiplier (with fast forward)";
+			// 
+			// FastRewindSpeedMultiplierNumeric
+			// 
+			this.FastRewindSpeedMultiplierNumeric.Location = new System.Drawing.Point(236, 219);
+			this.FastRewindSpeedMultiplierNumeric.Maximum = new decimal(new int[] {
+			500000,
+			0,
+			0,
+			0});
+			this.FastRewindSpeedMultiplierNumeric.Minimum = new decimal(new int[] {
+			1,
+			0,
+			0,
+			0});
+			this.FastRewindSpeedMultiplierNumeric.Name = "FastRewindSpeedMultiplierNumeric";
+			this.FastRewindSpeedMultiplierNumeric.Size = new System.Drawing.Size(52, 20);
+			this.FastRewindSpeedMultiplierNumeric.TabIndex = 66;
+			this.FastRewindSpeedMultiplierNumeric.Value = new decimal(new int[] {
+			4,
+			0,
+			0,
+			0});
 			// 
 			// RewindConfig
 			// 
@@ -562,9 +628,9 @@
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(741, 505);
 			this.Controls.Add(this.groupBox7);
-			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
+			this.Controls.Add(this.groupBox4);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -586,6 +652,8 @@
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedMultiplierNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.FastRewindSpeedMultiplierNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -638,5 +706,9 @@
 		private WinForms.Controls.LabelEx labelEx1;
 		private System.Windows.Forms.RadioButton TargetFrameLengthRadioButton;
 		private System.Windows.Forms.RadioButton TargetRewindIntervalRadioButton;
+		private WinForms.Controls.LocLabelEx label21;
+		private WinForms.Controls.LocLabelEx label22;
+		private System.Windows.Forms.NumericUpDown RewindSpeedMultiplierNumeric;
+		private System.Windows.Forms.NumericUpDown FastRewindSpeedMultiplierNumeric;
 	}
 }
