@@ -808,22 +808,24 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
-			if (result.IsOk())
+			if (!result.IsOk())
 			{
-				int val = 0;
-				try
-				{
-					val = int.Parse(prompt.PromptText);
-				}
-				catch
-				{
-					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
-				}
+				return;
+			}
 
-				if (val > 0)
-				{
-					Settings.RewindStepFast = val;
-				}
+			int val = 0;
+			try
+			{
+				val = int.Parse(prompt.PromptText);
+			}
+			catch
+			{
+				DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
+			}
+
+			if (val > 0)
+			{
+				Settings.RewindStepFast = val;
 			}
 		}
 
@@ -837,22 +839,24 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
-			if (result.IsOk())
+			if (!result.IsOk())
 			{
-				int val = 0;
-				try
-				{
-					val = int.Parse(prompt.PromptText);
-				}
-				catch
-				{
-					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
-				}
+				return;
+			}
 
-				if (val > 0)
-				{
-					Settings.RewindStep = val;
-				}
+			int val = 0;
+			try
+			{
+				val = int.Parse(prompt.PromptText);
+			}
+			catch
+			{
+				DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
+			}
+
+			if (val > 0)
+			{
+				Settings.RewindStep = val;
 			}
 		}
 
