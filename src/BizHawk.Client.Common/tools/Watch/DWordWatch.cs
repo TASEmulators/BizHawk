@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using System.Globalization;
-using BizHawk.Common.NumberExtensions;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -46,44 +45,19 @@ namespace BizHawk.Client.Common
 			WatchDisplayType.Float,
 		];
 
-		/// <summary>
-		/// Get a list of <see cref="WatchDisplayType"/> that can be used for a <see cref="DWordWatch"/>
-		/// </summary>
-		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
 		public override IEnumerable<WatchDisplayType> AvailableTypes()
 		{
 			return ValidTypes;
 		}
 
-		/// <summary>
-		/// Reset the previous value; set it to the current one
-		/// </summary>
 		public override void ResetPrevious()
 			=> _previous = GetDWord();
 
-		/// <summary>
-		/// Try to sets the value into the <see cref="MemoryDomain"/>
-		/// at the current <see cref="Watch"/> address
-		/// </summary>
-		/// <param name="value">Value to set</param>
-		/// <returns>True if value successfully sets; otherwise, false</returns>
 		public override bool Poke(string value)
 		{
 			try
 			{
-				uint val = Type switch
-				{
-					WatchDisplayType.Unsigned => uint.Parse(value),
-					WatchDisplayType.Signed => (uint)int.Parse(value),
-					WatchDisplayType.Hex => uint.Parse(value, NumberStyles.HexNumber),
-					WatchDisplayType.FixedPoint_20_12 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 4096.0),
-					WatchDisplayType.FixedPoint_16_16 => (uint)(double.Parse(value, NumberFormatInfo.InvariantInfo) * 65536.0),
-					WatchDisplayType.Float => NumberExtensions.ReinterpretAsUInt32(float.Parse(value, NumberFormatInfo.InvariantInfo)),
-					WatchDisplayType.Binary => Convert.ToUInt32(value, 2),
-					_ => 0,
-				};
-
-				PokeDWord(val);
+				PokeDWord(Watch.ParseValue(value, Size, Type));
 				return true;
 			}
 			catch
@@ -92,9 +66,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Update the Watch (read it from <see cref="MemoryDomain"/>
-		/// </summary>
 		public override void Update(PreviousType previousType)
 		{
 			switch (previousType)
@@ -125,71 +96,16 @@ namespace BizHawk.Client.Common
 
 		// TODO: Implements IFormattable
 		public string FormatValue(uint val)
-		{
-			string FormatFloat()
-			{
-				var _float = NumberExtensions.ReinterpretAsF32(val);
-				return _float.ToString(NumberFormatInfo.InvariantInfo);
-			}
+			=> IsValid ? Watch.FormatValue(val, Size, Type) : "-";
 
-			string FormatBinary()
-			{
-				var str = Convert.ToString(val, 2).PadLeft(32, '0');
-				for (var i = 28; i > 0; i -= 4)
-				{
-					str = str.Insert(i, " ");
-				}
-				return str;
-			}
-
-			return Type switch
-			{
-				_ when !IsValid => "-",
-				WatchDisplayType.Unsigned => val.ToString(),
-				WatchDisplayType.Signed => ((int)val).ToString(),
-				WatchDisplayType.Hex => $"{val:X8}",
-				WatchDisplayType.FixedPoint_20_12 => ((int)val / 4096.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
-				WatchDisplayType.FixedPoint_16_16 => ((int)val / 65536.0).ToString("0.######", NumberFormatInfo.InvariantInfo),
-				WatchDisplayType.Float => FormatFloat(),
-				WatchDisplayType.Binary => FormatBinary(),
-				_ => val.ToString(),
-			};
-		}
-
-		/// <summary>
-		/// Get a string representation of difference
-		/// between current value and the previous one
-		/// </summary>
 		public override string Diff => $"{_value - (long)_previous:+#;-#;0}";
 
-		/// <summary>
-		/// Returns true if the Watch is valid, false otherwise
-		/// </summary>
-		public override bool IsValid => Domain.Size == 0 || Address < (Domain.Size - 3);
-
-		/// <summary>
-		/// Get the maximum possible value
-		/// </summary>
-		public override uint MaxValue => uint.MaxValue;
-
-		/// <summary>
-		/// Get the current value
-		/// </summary>
 		public override int Value => (int)GetDWord();
 
-		/// <summary>
-		/// Get a string representation of the current value
-		/// </summary>
 		public override string ValueString => FormatValue(GetDWord());
 
-		/// <summary>
-		/// Get the previous value
-		/// </summary>
 		public override uint Previous => _previous;
 
-		/// <summary>
-		/// Get a string representation of the previous value
-		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);
 	}
 }

@@ -25,6 +25,8 @@ namespace BizHawk.Client.EmuHawk
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
 
+		private string _sysBusDomainName = null!;
+
 		private bool _changedSize;
 		private bool _changedDisplayType;
 
@@ -33,6 +35,8 @@ namespace BizHawk.Client.EmuHawk
 		public Point InitialLocation { get; set;  } = new Point(0, 0);
 
 		private readonly HexTextBox AddressBox;
+
+		private readonly TextBox AddressWithPointersBox;
 
 		private readonly CheckBox BigEndianCheckBox;
 
@@ -53,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly ComboBox SizeDropDown;
+
+		private readonly CheckBoxEx UsePointerSyntaxCheckbox;
 
 		public WatchEditor()
 		{
@@ -94,8 +100,40 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Controls = { new LabelEx { Text = "0x" }, AddressBox },
 			};
+			AddressWithPointersBox = new() { Size = new(100, 20), Visible = false };
+			SingleColumnFLP flpAddrOptions = new()
+			{
+				Controls = { flpAddr, AddressWithPointersBox },
+			};
 			tlpMain.Controls.Add(label1, row: row, column: 0);
-			tlpMain.Controls.Add(flpAddr, row: row, column: 1);
+			tlpMain.Controls.Add(flpAddrOptions, row: row, column: 1);
+			row++;
+
+			UsePointerSyntaxCheckbox = new() { Enabled = MemoryDomains.HasSystemBus, Text = "Use pointer syntax" };
+			UsePointerSyntaxCheckbox.CheckedChanged += (checkedChangedSender, _) =>
+			{
+				var isChecked = ((CheckBox) checkedChangedSender).Checked;
+				flpAddr.Visible = !(AddressWithPointersBox.Visible = isChecked);
+				if (isChecked)
+				{
+					if ((string) DomainDropDown.SelectedItem == _sysBusDomainName!)
+					{
+						AddressWithPointersBox.Text = $"0x{AddressBox.Text}";
+					}
+					else
+					{
+						DomainDropDown.SelectedItem = _sysBusDomainName;
+						AddressWithPointersBox.Text = string.Empty;
+					}
+					AddressBox.Text = string.Empty;
+				}
+				else
+				{
+					//TODO eval and copy back
+					AddressWithPointersBox.Text = string.Empty;
+				}
+			};
+			tlpMain.Controls.Add(UsePointerSyntaxCheckbox, row: row, column: 1);
 			row++;
 
 			LocLabelEx label3 = new() { Anchor = AnchorStyles.Right, Text = "Size:" };
@@ -187,6 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_loading = false;
+			_sysBusDomainName = MemoryDomains.SystemBus.ToString();
 			SetAddressBoxProperties();
 
 			switch (_mode)
@@ -206,7 +245,9 @@ namespace BizHawk.Client.EmuHawk
 						NotesBox.Enabled = false;
 						NotesBox.Text = "";
 
-						AddressBox.Enabled = false;
+						AddressBox.Enabled = AddressWithPointersBox.Enabled
+							= UsePointerSyntaxCheckbox.Enabled
+							= false;
 						AddressBox.Text = Watches.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => $"{addrStr},{nextStr}");
 
 						BigEndianCheckBox.ThreeState = true;
@@ -220,7 +261,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						NotesBox.Text = Watches[0].Notes;
 						NotesBox.Select();
-						AddressBox.SetFromLong(Watches[0].Address);
+						if (Watches[0] is NeoWatch neo)
+						{
+							UsePointerSyntaxCheckbox.Checked = true;
+							AddressWithPointersBox.Text = neo.AddressString;
+						}
+						else
+						{
+							AddressBox.SetFromLong(Watches[0].Address);
+						}
 					}
 
 					SetBigEndianCheckBox();
@@ -321,17 +370,25 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case Mode.New:
 					var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-					var address = AddressBox.ToLong() ?? 0;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 					var bigEndian = BigEndianCheckBox.Checked;
-					Watches.Add(Watch.GenerateWatch(
-						domain,
-						address,
-						(WatchSize) SelectedWidth,
-						type,
-						bigEndian: bigEndian,
-						note: notes));
+					var addrWithPointers = AddressWithPointersBox.Text;
+					if (addrWithPointers.Length is not 0)
+					{
+						//TODO
+					}
+					else
+					{
+						var address = AddressBox.ToLong() ?? 0;
+						Watches.Add(Watch.GenerateWatch(
+							domain,
+							address,
+							(WatchSize) SelectedWidth,
+							type,
+							bigEndian: bigEndian,
+							note: notes));
+					}
 					break;
 				case Mode.Edit:
 					DoEdit();
