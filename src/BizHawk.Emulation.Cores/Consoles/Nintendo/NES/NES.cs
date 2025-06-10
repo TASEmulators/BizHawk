@@ -102,22 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public bool HasMapperProperties
-		{
-			get
-			{
-				var fields = Board.GetType().GetFields();
-				foreach (var field in fields)
-				{
-					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
-					if (attrib != null)
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
+			=> Board.MapperProps().Any();
 
 		public bool IsVS => _isVS;
 
