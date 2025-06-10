@@ -170,15 +170,11 @@ namespace BizHawk.Client.Common
 					for (int i = 0; i < old.Count; i++)
 					{
 						ZwinderBuffer.StateInformation si = old.GetState(i);
-						// don't allow states that should be reserved to decay here, where we don't attempt re-capture
-						if (_reserveCallback(si.Frame))
-							AddToReserved(si);
-						else
-							buffer.Capture(si.Frame, s =>
-							{
-								using var rs = si.GetReadStream();
-								rs.CopyTo(s);
-							}, null, true);
+						buffer.Capture(si.Frame, s =>
+						{
+							using var rs = si.GetReadStream();
+							rs.CopyTo(s);
+						}, index => HandleStateDecay(buffer, index), true);
 					}
 					old.Dispose();
 				}
@@ -313,7 +309,7 @@ namespace BizHawk.Client.Common
 
 		public void Unreserve(int frame)
 		{
-			// Before removing the state, check if it should be still be reserved.
+			// Before removing the state, check if it should still be reserved.
 			// For now, this just means checking if we need to keep this state to satisfy the ancient interval.
 			if (ShouldKeepForAncient(frame))
 				return;
@@ -321,7 +317,10 @@ namespace BizHawk.Client.Common
 			EvictReserved(frame);
 		}
 
-		private void PossiblyMoveToReserved(ZwinderBuffer buffer, int stateIndex)
+		/// <summary>
+		/// This method is only to be used as the capture callback for a ZwinderBuffer, since it assumes the state is about to be removed from the buffer.
+		/// </summary>
+		private void HandleStateDecay(ZwinderBuffer buffer, int stateIndex)
 		{
 			var state = buffer.GetState(stateIndex);
 
@@ -329,6 +328,7 @@ namespace BizHawk.Client.Common
 			if (_reserveCallback(state.Frame) || ShouldKeepForAncient(state.Frame))
 				AddToReserved(state);
 			else
+				// We remove from the state cache because this state is about to be removed, by the buffer.
 				StateCache.Remove(state.Frame);
 		}
 
@@ -342,12 +342,15 @@ namespace BizHawk.Client.Common
 				index = ~index;
 			if (index == StateCache.Count)
 			{
-				// There is no future state... so why are we wanting to evict this state?
-				// We aren't decaying from _recent, that's for sure. So,
-				return false;
+				// There is no future state, so there is no gap between states for us to measure.
+				// We're probably unreserving for a marker removal. Allow it to be removed, so we don't pollute _reserved.
+				return true;
 			}
 			if (index <= 1)
-				return true; // This should never happen.
+				// index == 0 should not be possible. (It's the index of the state after the given frame.)
+				// index == 1 would mean we are considering removing the state on frame 0.
+				// We must always have a state on frame 0.
+				return true;
 
 			int nextState = StateCache[index];
 			int previousState = StateCache[index - 2]; // assume StateCache[index - 1] == frame
@@ -406,7 +409,7 @@ namespace BizHawk.Client.Common
 							rs.CopyTo(s);
 							AddStateCache(state.Frame);
 						},
-						index2 => PossiblyMoveToReserved(_recent, index2));
+						index2 => HandleStateDecay(_recent, index2));
 				});
 		}
 
@@ -452,7 +455,7 @@ namespace BizHawk.Client.Common
 					AddStateCache(frame);
 					source.SaveStateBinary(new BinaryWriter(s));
 				},
-				index => PossiblyMoveToReserved(_gapFiller, index));
+				index => HandleStateDecay(_gapFiller, index));
 		}
 
 		public void Clear()
