@@ -94,7 +94,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (StartsFromSaveRam)
 			{
-				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
+				// don't zstd compress sram, as its annoying for users
+				bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam), false);
 			}
 		}
 
@@ -154,8 +155,9 @@ namespace BizHawk.Client.Common
 			}
 			else if (StartsFromSaveRam)
 			{
-				bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-					br => SaveRam = br.ReadAllBytes());
+				// MovieSaveRam used to be compressed, but is isn't anymore. We need to check which exists.
+				if (!bl.GetLump(BinaryStateLump.MovieSaveRam, false, br => SaveRam = br.ReadAllBytes(), false))
+					bl.GetLump(BinaryStateLump.OldMovieSaveRam, false, br => SaveRam = br.ReadAllBytes());
 			}
 		}
 	}
