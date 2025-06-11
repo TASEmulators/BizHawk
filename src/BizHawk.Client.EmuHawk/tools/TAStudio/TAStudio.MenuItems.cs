@@ -422,11 +422,7 @@ namespace BizHawk.Client.EmuHawk
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
-							var rollbackFrame = CurrentTasMovie.CopyOverInput(TasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							if (rollbackFrame > 0)
-							{
-								FrameEdited(rollbackFrame);
-							}
+							CurrentTasMovie.CopyOverInput(TasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
 						}
 					}
 				}
@@ -463,7 +459,6 @@ namespace BizHawk.Client.EmuHawk
 
 							var selectionStart = TasView.SelectionStartIndex;
 							CurrentTasMovie.InsertInput(selectionStart ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							FrameEdited(selectionStart!.Value);
 						}
 					}
 				}
@@ -474,8 +469,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var selectionStart = TasView.SelectionStartIndex;
-				var rollBackFrame = selectionStart ?? 0;
 
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
@@ -494,10 +487,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
+				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(list);
+				EndBatchEdit();
 				SetSplicer();
 
-				FrameEdited(rollBackFrame);
 			}
 		}
 
@@ -505,10 +499,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var firstWithInput = FirstNonEmptySelectedFrame;
-				bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
-				var rollBackFrame = TasView.SelectionStartIndex ?? 0;
-
+				BeginBatchEdit();
 				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectionStartIndex}-{TasView.SelectionEndIndex}");
 				foreach (int frame in TasView.SelectedRows)
 				{
@@ -516,13 +507,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CurrentTasMovie.ChangeLog.EndBatch();
-
-				if (needsToRollback)
-				{
-					FrameEdited(rollBackFrame);
-				}
-
-				RefreshDialog();
+				EndBatchEdit();
 			}
 		}
 
@@ -539,11 +524,11 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
+				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
+				EndBatchEdit();
 				SetTasViewRowCount();
 				SetSplicer();
-
-				FrameEdited(rollBackFrame);
 			}
 		}
 
@@ -563,6 +548,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
+			BeginBatchEdit();
 			for (int i = 0; i < timesToClone; i++)
 			{
 				if (TasView.Focused && TasView.AnyRowsSelected)
@@ -575,21 +561,16 @@ namespace BizHawk.Client.EmuHawk
 						.ToList();
 
 					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
-
-					FrameEdited(insertionFrame);
 				}
 			}
+			EndBatchEdit();
 		}
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var selectionStart = TasView.SelectionStartIndex;
-				var insertionFrame = selectionStart ?? 0;
-
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame);
-				FrameEdited(insertionFrame);
+				CurrentTasMovie.InsertEmptyFrame(TasView.SelectionStartIndex ?? 0);
 			}
 		}
 
@@ -610,12 +591,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var rollbackFrame = TasView.SelectionEndIndex ?? 0;
-
-				CurrentTasMovie.Truncate(rollbackFrame);
+				CurrentTasMovie.Truncate(TasView.SelectionEndIndex ?? 0);
 				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
-
-				FrameEdited(rollbackFrame);
 			}
 		}
 

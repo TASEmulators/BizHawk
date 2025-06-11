@@ -73,6 +73,7 @@ namespace BizHawk.Client.Common
 		public ITasSession TasSession { get; private set; } = new TasSession();
 
 		public int LastEditedFrame { get; private set; } = -1;
+		public bool LastEditWasRecording { get; private set; }
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
@@ -129,6 +130,7 @@ namespace BizHawk.Client.Common
 			}
 
 			LastEditedFrame = frame;
+			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
 
 			if (anyStateInvalidated && IsCountingRerecords)
 			{

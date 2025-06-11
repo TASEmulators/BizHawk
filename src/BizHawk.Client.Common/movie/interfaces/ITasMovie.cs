@@ -20,6 +20,7 @@ namespace BizHawk.Client.Common
 		TasLagLog LagLog { get; }
 		IStringLog VerificationLog { get; }
 		int LastEditedFrame { get; }
+		bool LastEditWasRecording { get; }
 
 		Action<int> GreenzoneInvalidated { get; set; }
 

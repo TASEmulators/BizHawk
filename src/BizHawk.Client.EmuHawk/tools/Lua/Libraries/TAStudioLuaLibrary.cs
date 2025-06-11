@@ -332,7 +332,6 @@ namespace BizHawk.Client.EmuHawk
 										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}
-								Tastudio.FrameEdited(_changeList[i].Frame);
 								break;
 							case LuaChangeTypes.InsertFrames:
 								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
