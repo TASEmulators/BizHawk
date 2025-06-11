@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 
 			movie.InputRollSettingsForSave = () => TasView.UserSettingsSerialized();
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
-			movie.GreenzoneInvalidated = GreenzoneInvalidated;
+			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
 			movie.PropertyChanged += TasMovie_OnPropertyChanged;
 
@@ -860,7 +860,6 @@ namespace BizHawk.Client.EmuHawk
 			if (insertionFrame <= CurrentTasMovie.InputLogLength)
 			{
 				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-				FrameEdited(insertionFrame);
 			}
 		}
 
@@ -868,11 +867,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
+				// movie's RemoveFrames might do multiple separate invalidations
+				BeginBatchEdit();
+
 				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
 				CurrentTasMovie.RemoveFrames(framesToRemove);
 				SetSplicer();
 
-				FrameEdited(beginningFrame);
+				EndBatchEdit();
 			}
 		}
 
@@ -880,13 +882,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
+				BeginBatchEdit();
+
 				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
 				for (int i = beginningFrame; i < last; i++)
 				{
 					CurrentTasMovie.ClearFrame(i);
 				}
 
-				FrameEdited(beginningFrame);
+				EndBatchEdit();
 			}
 		}
 
@@ -993,7 +997,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
-					FrameEdited(Emulator.Frame - 1);
 					return true;
 				}
 

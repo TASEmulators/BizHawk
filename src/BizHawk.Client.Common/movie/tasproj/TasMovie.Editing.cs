@@ -27,6 +27,7 @@ namespace BizHawk.Client.Common
 
 			if (this.IsRecording())
 			{
+				LastEditWasRecording = true;
 				InvalidateAfter(frame);
 			}
 
