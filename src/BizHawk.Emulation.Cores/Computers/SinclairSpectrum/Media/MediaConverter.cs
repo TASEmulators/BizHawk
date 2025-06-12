@@ -83,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public static int GetBEInt32FromByteArray(byte[] buf)
 		{
+			if (buf.Length > 4) throw new ArgumentException(paramName: nameof(buf), message: "cannot decode integers wider than 4 octets (s32)");
 			byte[] b = buf.Reverse().ToArray();
 			if (b.Length == 0)
 				return 0;
@@ -99,12 +100,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
 				case 4:
 					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 5:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 6:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 7:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
 			}
 		}
 
