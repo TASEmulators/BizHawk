@@ -83,9 +83,12 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame(int frame)
 		{
+			string empty = Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
+			if (GetInputLogEntry(frame) == empty) return;
+
 			ChangeLog.AddGeneralUndo(frame, frame, $"Clear Frame: {frame}");
 
-			SetFrameAt(frame, Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+			SetFrameAt(frame, empty);
 			Changes = true;
 
 			InvalidateAfter(frame);
@@ -212,6 +215,7 @@ namespace BizHawk.Client.Common
 
 			if (Log.Count < states.Count + frame)
 			{
+				firstChangedFrame = Log.Count;
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 
@@ -225,7 +229,7 @@ namespace BizHawk.Client.Common
 				}
 
 				var entry = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
-				if (firstChangedFrame == -1 && Log[frame + i] != entry)
+				if ((firstChangedFrame == -1 || firstChangedFrame > frame + i) && Log[frame + i] != entry)
 				{
 					firstChangedFrame = frame + i;
 				}
@@ -235,7 +239,11 @@ namespace BizHawk.Client.Common
 
 			ChangeLog.EndBatch();
 			Changes = true;
-			InvalidateAfter(frame);
+			if (firstChangedFrame != -1)
+			{
+				// TODO: Throw out the undo action if there are no changes.
+				InvalidateAfter(firstChangedFrame);
+			}
 
 			ChangeLog.SetGeneralRedo();
 			return firstChangedFrame;
