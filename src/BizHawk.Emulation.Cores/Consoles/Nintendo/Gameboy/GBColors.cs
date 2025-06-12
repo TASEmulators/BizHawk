@@ -1,3 +1,5 @@
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public static class GBColors
@@ -69,9 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			public int ToARGB32()
-			{
-				return b | g << 8 | r << 16 | 255 << 24;
-			}
+				=> unchecked(Colors.ARGB(red: (byte) r, green: (byte) g, blue: (byte) b));
 		}
 
 		// sameboy's "emulate hardware" color conversion

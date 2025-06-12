@@ -640,13 +640,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <exception cref="InvalidOperationException">unmanaged call failed</exception>
 			public void OpenFile(string destPath, Parameters parameters, CodecToken videoCodecToken)
 			{
-				static int mmioFOURCC(string str) => (
-					(byte)str[0] |
-					((byte)str[1] << 8) |
-					((byte)str[2] << 16) |
-					((byte)str[3] << 24)
-				);
-
 				this._parameters = parameters;
 				this._currVideoCodecToken = videoCodecToken;
 
@@ -670,7 +663,7 @@ namespace BizHawk.Client.EmuHawk
 				var vidstream_header = default(AVIWriterImports.AVISTREAMINFOW);
 				var bmih = default(AVIWriterImports.BITMAPINFOHEADER);
 				parameters.PopulateBITMAPINFOHEADER24(ref bmih);
-				vidstream_header.fccType = mmioFOURCC("vids");
+				vidstream_header.fccType = /*BinaryPrimitives.ReadInt32LittleEndian("vids"u8)*/0x73646976;
 				vidstream_header.dwRate = parameters.fps;
 				vidstream_header.dwScale = parameters.fps_scale;
 				vidstream_header.dwSuggestedBufferSize = (int)bmih.biSizeImage;
@@ -687,7 +680,7 @@ namespace BizHawk.Client.EmuHawk
 				var audstream_header = default(AVIWriterImports.AVISTREAMINFOW);
 				var wfex = default(AVIWriterImports.WAVEFORMATEX);
 				parameters.PopulateWAVEFORMATEX(ref wfex);
-				audstream_header.fccType = mmioFOURCC("auds");
+				audstream_header.fccType = /*BinaryPrimitives.ReadInt32LittleEndian("auds"u8)*/0x73647561;
 				audstream_header.dwQuality = -1;
 				audstream_header.dwScale = wfex.nBlockAlign;
 				audstream_header.dwRate = (int)wfex.nAvgBytesPerSec;

@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Text;
 using BizHawk.Common;
@@ -158,8 +159,7 @@ namespace BizHawk.Emulation.DiscSystem
 						{
 							if (_jaguarHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 1))
 							{
-								bootLen = (buf2352[j + bootLenOffset + 0] << 24) | (buf2352[j + bootLenOffset + 1] << 16) |
-									(buf2352[j + bootLenOffset + 2] << 8) | buf2352[j + bootLenOffset + 3];
+								bootLen = BinaryPrimitives.ReadInt32BigEndian(buf2352.AsSpan(start: bootLenOffset + j));
 								bootLba = startLba + i;
 								bootOff = j + bootLenOffset + 4;
 								// byteswapped = false;
@@ -171,8 +171,9 @@ namespace BizHawk.Emulation.DiscSystem
 						{
 							if (_jaguarBSHeader == Encoding.ASCII.GetString(buf2352, j, 32 - 2))
 							{
-								bootLen = (buf2352[j + bootLenOffset + 1] << 24) | (buf2352[j + bootLenOffset + 0] << 16) |
-									(buf2352[j + bootLenOffset + 3] << 8) | buf2352[j + bootLenOffset + 2];
+								var slice = buf2352.AsSpan(start: bootLenOffset + j, length: sizeof(int)).ToArray();
+								EndiannessUtils.MutatingByteSwap16(slice);
+								bootLen = BinaryPrimitives.ReadInt32BigEndian(slice);
 								bootLba = startLba + i;
 								bootOff = j + bootLenOffset + 4;
 								byteswapped = true;

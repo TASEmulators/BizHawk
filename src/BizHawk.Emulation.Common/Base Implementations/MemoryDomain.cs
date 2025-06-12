@@ -1,5 +1,7 @@
 ﻿#nullable disable
 
+using System.Buffers.Binary;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
@@ -46,18 +48,16 @@ namespace BizHawk.Emulation.Common
 
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
-			if (bigEndian)
+			ReadOnlySpan<byte> scratch = stackalloc byte[]
 			{
-				return (uint)((PeekByte(addr) << 24)
-					| (PeekByte(addr + 1) << 16)
-					| (PeekByte(addr + 2) << 8)
-					| (PeekByte(addr + 3) << 0));
-			}
-
-			return (uint)((PeekByte(addr) << 0)
-				| (PeekByte(addr + 1) << 8)
-				| (PeekByte(addr + 2) << 16)
-				| (PeekByte(addr + 3) << 24));
+				PeekByte(addr),
+				PeekByte(addr + 1),
+				PeekByte(addr + 2),
+				PeekByte(addr + 3),
+			};
+			return bigEndian
+				? BinaryPrimitives.ReadUInt32BigEndian(scratch)
+				: BinaryPrimitives.ReadUInt32LittleEndian(scratch);
 		}
 
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)

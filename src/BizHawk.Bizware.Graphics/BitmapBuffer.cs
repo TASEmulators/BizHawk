@@ -1,6 +1,7 @@
 ﻿// TODO - introduce Trim for ArtManager
 // TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
 
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -468,8 +469,13 @@ namespace BizHawk.Bizware.Graphics
 			r = (r * a) >> 8;
 			g = (g * a) >> 8;
 			b = (b * a) >> 8;
-			srcVal = b | (g << 8) | (r << 16) | (a << 24);
-			return srcVal;
+			return BinaryPrimitives.ReadInt32BigEndian(unchecked(stackalloc byte[]
+			{
+				(byte) a,
+				(byte) r,
+				(byte) g,
+				(byte) b,
+			}));
 		}
 
 		/// <summary>

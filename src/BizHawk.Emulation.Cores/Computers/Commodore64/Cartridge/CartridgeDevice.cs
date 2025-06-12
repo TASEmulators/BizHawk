@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -136,12 +137,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		}
 
 		private static int ReadCRTInt(BinaryReader reader)
-		{
-			return (reader.ReadByte() << 24) |
-				(reader.ReadByte() << 16) |
-				(reader.ReadByte() << 8) |
-				reader.ReadByte();
-		}
+			=> BinaryPrimitives.ReadInt32BigEndian(stackalloc byte[]
+			{
+				reader.ReadByte(),
+				reader.ReadByte(),
+				reader.ReadByte(),
+				reader.ReadByte(),
+			});
 
 		protected bool pinExRom;
 
