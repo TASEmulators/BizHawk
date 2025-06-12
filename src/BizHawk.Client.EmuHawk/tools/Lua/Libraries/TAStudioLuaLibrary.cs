@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(f))
 				{
-					Tastudio.GoToFrame(f, true);
+					Tastudio.GoToFrame(f);
 				}
 
 				_luaLibsImpl.IsUpdateSupressed = false;
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_changeList.Count > 0)
 				{
-					Tastudio.BeginBatchEdit();
+					Tastudio.BeginBatchEdit(true);
 					int size = _changeList.Count;
 
 					for (int i = 0; i < size; i++)

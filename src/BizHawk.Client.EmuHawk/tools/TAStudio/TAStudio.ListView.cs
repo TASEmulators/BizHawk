@@ -27,6 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _startRow;
 		private int _batchEditMinFrame = -1;
 		private bool _batchEditing = false;
+		private bool _editIsFromLua;
 
 		// Editing analog input
 		private string _axisEditColumn = "";
@@ -580,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 				if (targetCol.Name is CursorColumnName)
 				{
 					_startCursorDrag = true;
-					GoToFrame(frame, fromLua: false, OnLeftMouseDown: true);
+					GoToFrame(frame, OnLeftMouseDown: true);
 				}
 				else if (targetCol.Name is FrameColumnName)
 				{
@@ -764,18 +765,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Begins a batch of edits, for auto-restore purposes. Auto-restore will be delayed until EndBatchEdit is called.
 		/// </summary>
-		public void BeginBatchEdit()
+		public void BeginBatchEdit(bool fromLua = false)
 		{
 			_batchEditing = true;
+			_editIsFromLua = fromLua;
 		}
 		/// <returns>Returns true if the input list was redrawn.</returns>
 		public bool EndBatchEdit()
 		{
 			_batchEditing = false;
+
+			bool ret = false;
 			if (_batchEditMinFrame != -1)
-				return FrameEdited(_batchEditMinFrame);
-			else
-				return false;
+				ret = FrameEdited(_batchEditMinFrame);
+
+			_editIsFromLua = false;
+			return ret;
 		}
 
 		/// <summary>
@@ -799,7 +804,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				TastudioPlayMode(true);
+				if (!_editIsFromLua)
+					// Lua users will want to preserve recording mode.
+					TastudioPlayMode(true);
+				
 				if (Emulator.Frame > frame)
 				{
 					if ((MainForm.EmulatorPaused || _seekingTo == -1)
