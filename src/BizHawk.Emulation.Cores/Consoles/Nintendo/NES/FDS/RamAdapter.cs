@@ -445,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0xff;
 			if (disk != null && state != RamAdapterState.INSERTING)
 				ret &= unchecked((byte)~0x01);
-			if (!transferreset && (state == RamAdapterState.RUNNING || state == RamAdapterState.IDLE))
+			if (!transferreset && state is RamAdapterState.RUNNING or RamAdapterState.IDLE)
 				ret &= unchecked((byte)~0x02);
 			if (disk != null && state != RamAdapterState.INSERTING && !writeprotect)
 				ret &= unchecked((byte)~0x04);

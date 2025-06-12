@@ -1345,7 +1345,7 @@ namespace BizHawk.Client.EmuHawk
 		// This allows arrow keys to be detected by KeyDown.
 		protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
 		{
-			if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			if (e.KeyCode is Keys.Left or Keys.Right or Keys.Up or Keys.Down)
 			{
 				e.IsInputKey = true;
 			}

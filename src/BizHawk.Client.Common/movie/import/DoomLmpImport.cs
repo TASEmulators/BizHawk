@@ -61,10 +61,10 @@ namespace BizHawk.Client.Common
 			// Versions up to 1.2 use a 7-byte header - first byte is a skill level.
 			// Versions after 1.2 use a 13-byte header - first byte is a demoversion.
 			// BOOM's demoversion starts from 200
-			if (!((version >= DemoVersion.Skill_1   && version <= DemoVersion.Skill_5    ) ||
-			      (version >= DemoVersion.Doom_1_4  && version <= DemoVersion.DoomClassic) ||
-			      (version >= DemoVersion.Boom_2_00 && version <= DemoVersion.PrBoomPlus ) ||
-			      (version == DemoVersion.MBF21)))
+			if (version is not ((>= DemoVersion.Skill_1 and <= DemoVersion.Skill_5)
+				or (>= DemoVersion.Doom_1_4 and <= DemoVersion.DoomClassic)
+				or (>= DemoVersion.Boom_2_00 and <= DemoVersion.PrBoomPlus)
+				or DemoVersion.MBF21))
 			{
 				Result.Errors.Add($"Unknown demo format: {version}");
 				return;

@@ -548,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 				// SuuperW: Exit axis editing mode, or re-enter mouse editing
 				if (AxisEditingMode)
 				{
-					if (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift)
+					if (ModifierKeys is Keys.Control or Keys.Shift)
 					{
 						_extraAxisRows.Clear();
 						_extraAxisRows.AddRange(TasView.SelectedRows);
@@ -840,7 +840,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				if (AxisEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
+				if (AxisEditingMode && ModifierKeys is Keys.Control or Keys.Shift)
 				{
 					_leftButtonHeld = false;
 					_startSelectionDrag = false;
@@ -985,7 +985,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (!TasView.IsRowSelected(i))
 						TasView.SelectRow(i, _selectionDragState);
-					if (AxisEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
+					if (AxisEditingMode && ModifierKeys is Keys.Control or Keys.Shift)
 					{
 						_extraAxisRows.SetMembership(i, shouldBeMember: _selectionDragState);
 					}
@@ -1282,7 +1282,7 @@ namespace BizHawk.Client.EmuHawk
 				value = range.Min;
 				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
 			}
-			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
+			else if (e.KeyCode is >= Keys.D0 and <= Keys.D9)
 			{
 				if (curDigits >= maxDigits)
 				{
@@ -1291,7 +1291,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_axisTypedValue += e.KeyCode - Keys.D0;
 			}
-			else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+			else if (e.KeyCode is >= Keys.NumPad0 and <= Keys.NumPad9)
 			{
 				if (curDigits >= maxDigits)
 				{
@@ -1300,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_axisTypedValue += e.KeyCode - Keys.NumPad0;
 			}
-			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+			else if (e.KeyCode is Keys.OemMinus or Keys.Subtract)
 			{
 				_axisTypedValue = _axisTypedValue.StartsWith('-')
 					? _axisTypedValue.Substring(startIndex: 1)

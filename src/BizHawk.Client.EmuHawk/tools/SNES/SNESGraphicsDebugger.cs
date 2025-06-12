@@ -379,7 +379,7 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderSpriteToScreen(pixelptr, stride / 4, oam.X, oam.Y, si, i, oam, 256, 224, spriteMap);
 				}
 			}
-			if (selection == eDisplayType.OBJTiles0 || selection == eDisplayType.OBJTiles1)
+			if (selection is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 			{
 				allocate(128, 256);
 				int startTile;
@@ -485,8 +485,12 @@ namespace BizHawk.Client.EmuHawk
 			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104,
 		}
 
-		private static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
-		private static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
+		private static bool IsDisplayTypeBG(eDisplayType type)
+			=> type is eDisplayType.BG1 or eDisplayType.BG2 or eDisplayType.BG3 or eDisplayType.BG4;
+
+		private static bool IsDisplayTypeOBJ(eDisplayType type)
+			=> type is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1;
+
 		private static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
 
 		private static SNESGraphicsDecoder.BGMode BGModeForDisplayType(eDisplayType type)
@@ -997,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, true, false, 1, currTileDataState.Tile, 1);
 				else if (currTileDataState.Type == eDisplayType.TilesMode7DC)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currTileDataState.Tile, 1);
-				else if (currTileDataState.Type == eDisplayType.OBJTiles0 || currTileDataState.Type == eDisplayType.OBJTiles1)
+				else if (currTileDataState.Type is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 				{
 					//render an obj tile
 					int tile = currTileDataState.Address / 32;
@@ -1044,7 +1048,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			currTileDataState.Address = (bpp == 7 ? 8 : bpp) * 8 * currTileDataState.Tile;
 			currTileDataState.Palette = currPaletteSelection.start;
-			if (CurrDisplaySelection == eDisplayType.OBJTiles0 || CurrDisplaySelection == eDisplayType.OBJTiles1)
+			if (CurrDisplaySelection is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 			{
 				if (tileNum < 256)
 					currTileDataState.Address += si.OBJTable0Addr;

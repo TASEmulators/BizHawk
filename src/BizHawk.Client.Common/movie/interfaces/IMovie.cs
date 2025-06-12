@@ -205,8 +205,12 @@ namespace BizHawk.Client.Common
 		public static bool IsPlaying(this IMovie movie) => movie?.Mode == MovieMode.Play;
 		public static bool IsRecording(this IMovie movie) => movie?.Mode == MovieMode.Record;
 		public static bool IsFinished(this IMovie movie) => movie?.Mode == MovieMode.Finished;
-		public static bool IsPlayingOrFinished(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Finished;
-		public static bool IsPlayingOrRecording(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Record;
+
+		public static bool IsPlayingOrFinished(this IMovie movie)
+			=> movie?.Mode is MovieMode.Play or MovieMode.Finished;
+
+		public static bool IsPlayingOrRecording(this IMovie movie)
+			=> movie?.Mode is MovieMode.Play or MovieMode.Record;
 
 		/// <summary>
 		/// Emulation is currently right after the movie's last input frame,

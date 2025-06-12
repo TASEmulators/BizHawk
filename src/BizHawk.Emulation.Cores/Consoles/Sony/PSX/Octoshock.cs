@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						});
 
 
-					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
+					if (type is OctoshockDll.ePeripheralType.DualShock or OctoshockDll.ePeripheralType.DualAnalog)
 					{
 						definition.BoolButtons.Add("P" + pnum + " L3");
 						definition.BoolButtons.Add("P" + pnum + " R3");
@@ -543,7 +543,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						if (_controller.IsPressed(pstring + "Square")) buttons |= 32768;
 
 						byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
-						if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+						if (fioCfg.Devices8[slot] is OctoshockDll.ePeripheralType.DualShock or OctoshockDll.ePeripheralType.DualAnalog)
 						{
 							if (_controller.IsPressed(pstring + "L3")) buttons |= 2;
 							if (_controller.IsPressed(pstring + "R3")) buttons |= 4;

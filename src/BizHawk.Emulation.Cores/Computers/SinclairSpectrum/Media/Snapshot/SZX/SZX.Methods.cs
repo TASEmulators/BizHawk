@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
 					// ZXSTAYBLOCK
-					if (s._machine.Spectrum.MachineType != MachineType.ZXSpectrum16 && s._machine.Spectrum.MachineType != MachineType.ZXSpectrum48)
+					if (s._machine.Spectrum.MachineType is not (MachineType.ZXSpectrum16 or MachineType.ZXSpectrum48))
 					{
 						var gStruct = s.GetZXSTAYBLOCK();
 						block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("AY\0\0"), 0);

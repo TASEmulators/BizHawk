@@ -793,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings.Mode = SearchMode.Fast;
 
-			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
+			if (_settings.PreviousType is PreviousType.LastFrame or PreviousType.LastChange)
 			{
 				SetPreviousType(PreviousType.LastSearch);
 			}

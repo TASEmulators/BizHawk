@@ -20,16 +20,10 @@
 	public static class MessagePositionExtensions
 	{
 		public static bool IsTop(this MessagePosition.AnchorType type)
-		{
-			return type == MessagePosition.AnchorType.TopLeft
-				|| type == MessagePosition.AnchorType.TopRight;
-		}
+			=> type is MessagePosition.AnchorType.TopLeft or MessagePosition.AnchorType.TopRight;
 
 		public static bool IsLeft(this MessagePosition.AnchorType type)
-		{
-			return type == MessagePosition.AnchorType.TopLeft
-				|| type == MessagePosition.AnchorType.BottomLeft;
-		}
+			=> type is MessagePosition.AnchorType.TopLeft or MessagePosition.AnchorType.BottomLeft;
 
 		public static string ToCoordinateStr(this MessagePosition position) => $"{position.X}, {position.Y}";
 	}

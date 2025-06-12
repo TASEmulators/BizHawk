@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			set
 			{
 				_mmc3type = value;
-				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp || _mmc3type == EMMC3Type.MMC6);
+				oldIrqType = value is EMMC3Type.MMC3A or EMMC3Type.MMC3BNonSharp or EMMC3Type.MMC6;
 			}
 		}
 

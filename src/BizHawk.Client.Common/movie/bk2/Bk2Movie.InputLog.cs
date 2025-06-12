@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
-				if (Mode == MovieMode.Play || Mode == MovieMode.Finished)
+				if (Mode is MovieMode.Play or MovieMode.Finished)
 				{
 					Mode = MovieMode.Finished;
 					return true;

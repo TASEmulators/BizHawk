@@ -797,7 +797,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				var block = DataBlocks[_currentDataBlockIndex];
 
 				// is this a pause block?
-				if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
+				if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
 				{
 					// don't autostop the tape here
 					return;

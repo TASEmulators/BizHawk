@@ -182,8 +182,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public static bool IsRomStatusBad(this IGameInfo game)
-		{
-			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
-		}
+			=> game.Status is RomStatus.BadDump or RomStatus.Overdump;
 	}
 }

@@ -1081,13 +1081,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			if (keyData == Keys.Tab
-				|| keyData == (Keys.Shift | Keys.Tab)
-				|| keyData == Keys.Space)
-			{
-				return true;
-			}
-
+			if (keyData is Keys.Tab or (Keys.Shift | Keys.Tab) or Keys.Space) return true;
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 

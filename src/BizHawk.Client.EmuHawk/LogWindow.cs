@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HideShowGameDbButton()
 		{
 			AddToGameDbBtn.Visible = Emulator.CanGenerateGameDBEntries()
-				&& (Game.Status == RomStatus.Unknown || Game.Status == RomStatus.NotInDatabase);
+				&& Game.Status is RomStatus.Unknown or RomStatus.NotInDatabase;
 		}
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)

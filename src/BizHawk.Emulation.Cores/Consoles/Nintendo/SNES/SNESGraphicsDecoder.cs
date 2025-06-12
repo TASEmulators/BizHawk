@@ -170,7 +170,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <summary>
 		/// is a BGMode a mode7 type (mode7, mode7ext, mode7DC)
 		/// </summary>
-		public static bool BGModeIsMode7Type(BGMode bgMode) => bgMode == BGMode.Mode7 || bgMode == BGMode.Mode7DC || bgMode == BGMode.Mode7Ext;
+		public static bool BGModeIsMode7Type(BGMode bgMode)
+			=> bgMode is BGMode.Mode7 or BGMode.Mode7Ext or BGMode.Mode7DC;
 
 		/// <summary>
 		/// this class is not 'smart' - it wont recompute values for you. it's meant to be read only (we should find some way to protect write access to make that clear)

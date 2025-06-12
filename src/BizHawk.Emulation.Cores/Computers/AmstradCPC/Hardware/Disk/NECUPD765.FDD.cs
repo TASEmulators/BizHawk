@@ -500,8 +500,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// </summary>
             public void DoSeek()
             {
-                if (CurrentState != DriveMainState.Recalibrate &&
-                    CurrentState != DriveMainState.Seek)
+                if (CurrentState is not (DriveMainState.Recalibrate or DriveMainState.Seek))
                 {
                     // no seek/recalibrate has been asked for
                     return;
