@@ -1488,11 +1488,7 @@ namespace BizHawk.Client.EmuHawk
 		public void TakeScreenshot(string path)
 		{
 			var fi = new FileInfo(path);
-			if (fi.Directory != null && !fi.Directory.Exists)
-			{
-				fi.Directory.Create();
-			}
-
+			fi.Directory?.Create();
 			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
@@ -4383,12 +4379,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
-
-			var file = new FileInfo(path);
-			if (file.Directory != null && !file.Directory.Exists)
-			{
-				file.Directory.Create();
-			}
+			new FileInfo(path).Directory?.Create();
 
 			// Make backup first
 			if (Config.Savestates.MakeBackups)
@@ -4462,12 +4453,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
-
-			var file = new FileInfo(path);
-			if (file.Directory != null && !file.Directory.Exists)
-			{
-				file.Directory.Create();
-			}
+			new FileInfo(path).Directory?.Create();
 
 			var result = this.ShowFileSaveDialog(
 				fileExt: "State",

@@ -426,10 +426,7 @@ namespace BizHawk.Client.EmuHawk
 				var name = Game.FilesystemSafeName();
 				var filename = Path.Combine(Config.PathEntries.LogAbsolutePath(), name) + _extension;
 				LogFile = new FileInfo(filename);
-				if (LogFile.Directory != null && !LogFile.Directory.Exists)
-				{
-					LogFile.Directory.Create();
-				}
+				LogFile.Directory?.Create();
 
 				// never delete, especially from ticking checkboxes
 				// append = false is enough, and even that only happens when actually enabling logging

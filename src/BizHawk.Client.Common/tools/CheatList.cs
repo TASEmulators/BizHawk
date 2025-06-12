@@ -255,12 +255,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var file = new FileInfo(path);
-				if (file.Directory != null && !file.Directory.Exists)
-				{
-					file.Directory.Create();
-				}
-
+				new FileInfo(path).Directory?.Create();
 				var sb = new StringBuilder();
 
 				foreach (var cheat in _cheatList)
