@@ -580,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 				if (targetCol.Name is CursorColumnName)
 				{
 					_startCursorDrag = true;
-					GoToFrame(frame, fromLua: false, OnLeftMouseDown: true);
+					GoToFrame(frame, OnLeftMouseDown: true);
 				}
 				else if (targetCol.Name is FrameColumnName)
 				{

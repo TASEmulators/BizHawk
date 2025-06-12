@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Seek to the given frame, past or future, and load a state first if doing so gets us there faster.
 		/// Does nothing if we are already on the given frame.
 		/// </summary>
-		public void GoToFrame(int frame, bool fromLua = false, bool OnLeftMouseDown = false)
+		public void GoToFrame(int frame, bool OnLeftMouseDown = false)
 		{
 			if (frame == Emulator.Frame)
 			{
@@ -29,33 +29,6 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState, true);
 			}
 			closestState.Value.Dispose();
-
-			if (fromLua)
-			{
-				bool wasPaused = MainForm.EmulatorPaused;
-
-				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
-				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
-				// PauseOnFrame = frame;
-
-				while (Emulator.Frame != frame)
-				{
-					MainForm.SeekFrameAdvance();
-				}
-
-				if (!wasPaused)
-				{
-					MainForm.UnpauseEmulator();
-				}
-
-				// lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
-				if (WasRecording)
-				{
-					TastudioRecordMode();
-				}
-
-				// now the next section won't happen since we're at the right spot
-			}
 
 			StartSeeking(frame);
 
