@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -137,6 +139,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private class JmdFile
 		{
+			[ThreadStatic]
+			private static readonly byte[] ScratchSpace;
+
+			static JmdFile()
+				=> ScratchSpace = new byte[10];
+
 			// current timestamp position
 			private ulong _timestampOff;
 
@@ -252,10 +260,8 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteBe16(ushort v)
 			{
-				byte[] b = new byte[2];
-				b[0] = (byte)(v >> 8);
-				b[1] = (byte)(v & 255);
-				_f.Write(b, 0, 2);
+				BinaryPrimitives.WriteUInt16BigEndian(ScratchSpace, v);
+				_f.Write(ScratchSpace, offset: 0, count: sizeof(ushort));
 			}
 
 			/// <summary>
@@ -263,12 +269,8 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteBe32(uint v)
 			{
-				byte[] b = new byte[4];
-				b[0] = (byte)(v >> 24);
-				b[1] = (byte)(v >> 16);
-				b[2] = (byte)(v >> 8);
-				b[3] = (byte)(v & 255);
-				_f.Write(b, 0, 4);
+				BinaryPrimitives.WriteUInt32BigEndian(ScratchSpace, v);
+				_f.Write(ScratchSpace, offset: 0, count: sizeof(uint));
 			}
 
 			/// <summary>
@@ -276,13 +278,8 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteBe64(ulong v)
 			{
-				byte[] b = new byte[8];
-				for (int i = 7; i >= 0; i--)
-				{
-					b[i] = (byte)(v & 255);
-					v >>= 8;
-				}
-				_f.Write(b, 0, 8);
+				BinaryPrimitives.WriteUInt64BigEndian(ScratchSpace, v);
+				_f.Write(ScratchSpace, offset: 0, count: sizeof(ulong));
 			}
 
 			/// <summary>
@@ -291,15 +288,14 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteVar(ulong v)
 			{
-				byte[] b = new byte[10];
+				ScratchSpace.Fill<byte>(0);
 				int i = 0;
 				while (v > 0)
 				{
-					if (i > 0)
-						b[i++] = (byte)((v & 127) | 128);
-					else
-						b[i++] = (byte)(v & 127);
-					v /= 128;
+					ScratchSpace[i] = unchecked((byte) (v & 0x7F));
+					if (i is 0) ScratchSpace[i] |= 0x80;
+					i++;
+					v >>= 7;
 				}
 
 				if (i == 0)
@@ -310,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (; i > 0; i--)
 					{
-						_f.WriteByte(b[i - 1]);
+						_f.WriteByte(ScratchSpace[i - 1]);
 					}
 				}
 			}

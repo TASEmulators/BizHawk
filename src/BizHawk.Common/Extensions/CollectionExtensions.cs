@@ -220,6 +220,10 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Fill<T>(this T[] array, T value)
+			=> array.AsSpan().Fill(value);
+
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
 		/// If the key is not present, stores the result of <c>defaultValue(key)</c> in the dict, and then returns that.

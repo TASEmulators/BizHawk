@@ -1,7 +1,7 @@
+using System.Buffers.Binary;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
-using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -46,87 +46,42 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			=> throw new NotImplementedException($"Check type operation is not implemented for {SelfTypeName}");
 
 		/// <summary>
-		/// Converts an int32 value into a byte array
-		/// </summary>
-		public static byte[] GetBytes(int value)
-		{
-			byte[] buf = new byte[4];
-			buf[0] = (byte)value;
-			buf[1] = (byte)(value >> 8);
-			buf[2] = (byte)(value >> 16);
-			buf[3] = (byte)(value >> 24);
-			return buf;
-		}
-
-		/// <summary>
 		/// Returns an int32 from a byte array based on offset
 		/// </summary>
-		public static int GetInt32(byte[] buf, int offsetIndex)
-		{
-			return buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
-		}
+		public static int GetInt32(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadInt32LittleEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Returns an int32 from a byte array based on offset (in BIG ENDIAN format)
 		/// </summary>
-		public static int GetBEInt32(byte[] buf, int offsetIndex)
-		{
-			byte[] b = new byte[4];
-			Array.Copy(buf, offsetIndex, b, 0, 4);
-			byte[] buffer = b.Reverse().ToArray();
-			int pos = 0;
-			return buffer[pos++] | buffer[pos++] << 8 | buffer[pos++] << 16 | buffer[pos++] << 24;
-		}
+		public static int GetBEInt32(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadInt32BigEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Returns an int32 from a byte array based on the length of the byte array (in BIG ENDIAN format)
 		/// </summary>
-		public static int GetBEInt32FromByteArray(byte[] buf)
-		{
-			if (buf.Length > 4) throw new ArgumentException(paramName: nameof(buf), message: "cannot decode integers wider than 4 octets (s32)");
-			byte[] b = buf.Reverse().ToArray();
-			if (b.Length == 0)
-				return 0;
-			int res = b[0];
-			int pos = 1;
-			switch (b.Length)
+		public static int GetBEInt32FromByteArray(ReadOnlySpan<byte> buf)
+			=> buf.Length switch
 			{
-				case 1:
-				default:
-					return res;
-				case 2:
-					return res | b[pos] << (8 * pos++);
-				case 3:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-				case 4:
-					return res | b[pos] << (8 * pos++) | b[pos] << (8 * pos++) | b[pos] << (8 * pos++);
-			}
-		}
+				0 => 0,
+				1 => buf[0],
+				2 => BinaryPrimitives.ReadUInt16BigEndian(buf),
+				3 => buf[2] | (buf[1] << 8) | (buf[0] << 16),
+				4 => BinaryPrimitives.ReadInt32BigEndian(buf),
+				_ => throw new ArgumentException(paramName: nameof(buf), message: "cannot decode integers wider than 4 octets (s32)"),
+			};
 
 		/// <summary>
 		/// Returns an int32 from a byte array based on offset
 		/// </summary>
-		public static uint GetUInt32(byte[] buf, int offsetIndex)
-		{
-			return (uint)(buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24);
-		}
+		public static uint GetUInt32(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadUInt32LittleEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Returns an uint16 from a byte array based on offset
 		/// </summary>
-		public static ushort GetWordValue(byte[] buf, int offsetIndex)
-		{
-			return (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
-		}
-
-		/// <summary>
-		/// Updates a byte array with a uint16 value based on offset
-		/// </summary>
-		public static void SetWordValue(byte[] buf, int offsetIndex, ushort value)
-		{
-			buf[offsetIndex] = (byte)value;
-			buf[offsetIndex + 1] = (byte)(value >> 8);
-		}
+		public static ushort GetWordValue(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadUInt16LittleEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Takes a PauseInMilliseconds value and returns the value in T-States

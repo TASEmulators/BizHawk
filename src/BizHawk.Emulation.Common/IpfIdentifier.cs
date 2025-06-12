@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Buffers.Binary;
+using System.Collections.Generic;
 using System.Text;
 using BizHawk.Common.StringExtensions;
 
@@ -215,14 +215,8 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Returns an int32 from a byte array based on offset (in BIG ENDIAN format)
 		/// </summary>
-		public static int GetBEInt32(byte[] buf, int offsetIndex)
-		{
-			byte[] b = new byte[4];
-			Array.Copy(buf, offsetIndex, b, 0, 4);
-			byte[] buffer = b.Reverse().ToArray();
-			int pos = 0;
-			return buffer[pos++] | buffer[pos++] << 8 | buffer[pos++] << 16 | buffer[pos++] << 24;
-		}
+		public static int GetBEInt32(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadInt32BigEndian(buf.Slice(start: offsetIndex));
 
 		public class IPFBlock
 		{
