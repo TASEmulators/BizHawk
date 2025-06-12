@@ -197,8 +197,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// IRA is loaded when:
 			// - PA latch is disabled
 			// - a handshake is triggered by transition on CA1
-			if ((_acr & ACR_LATCH_PA) == 0 ||
-				(_ca2Handshake && (thisIrq & IRQ_CA1) != 0))
+			if ((_acr & ACR_LATCH_PA) is 0
+				|| (_ca2Handshake && (thisIrq & IRQ_CA1) is not 0))
 			{
 				_ira = _port.ReadExternalPra();
 			}
@@ -206,8 +206,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// IRB is loaded when:
 			// - PB latch is disabled
 			// - a handshake is triggered by transition on CB1
-			if ((_acr & ACR_LATCH_PB) == 0 ||
-				(_cb2Handshake && (thisIrq & IRQ_CB1) != 0))
+			if ((_acr & ACR_LATCH_PB) is 0
+				|| (_cb2Handshake && (thisIrq & IRQ_CB1) is not 0))
 			{
 				_irb = pbIn;
 			}

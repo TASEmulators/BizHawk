@@ -2554,9 +2554,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				/*
-                if ((CMD_FLAG_MF && !ActiveCommand.MF) ||
-                    (CMD_FLAG_MT && !ActiveCommand.MT) ||
-                    (CMD_FLAG_SK && !ActiveCommand.SK))
+                if ((CMD_FLAG_MF && !ActiveCommand.MF)
+                    || (CMD_FLAG_MT && !ActiveCommand.MT)
+                    || (CMD_FLAG_SK && !ActiveCommand.SK))
                 {
                     // command byte included spurious bit 5,6 or 7 flags
                     CMDIndex = CommandList.Count - 1;

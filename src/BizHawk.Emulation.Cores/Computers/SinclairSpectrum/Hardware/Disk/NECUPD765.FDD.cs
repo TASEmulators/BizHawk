@@ -539,8 +539,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             if (CurrentTrack == SeekingTrack)
                             {
                                 // we are already at the required track
-                                if (CurrentState == DriveMainState.Recalibrate &&
-                                    !FLAG_TRACK0)
+                                if (CurrentState is DriveMainState.Recalibrate && !FLAG_TRACK0)
                                 {
                                     // recalibration fail
                                     SeekIntState = SeekIntStatus.Abnormal;
@@ -558,8 +557,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     break;
                                 }
 
-                                if (CurrentState == DriveMainState.Recalibrate &&
-                                    FLAG_TRACK0)
+                                if (CurrentState is DriveMainState.Recalibrate && FLAG_TRACK0)
                                 {
                                     // recalibration success
                                     SeekIntState = SeekIntStatus.Normal;
