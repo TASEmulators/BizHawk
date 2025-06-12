@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(f))
 				{
-					Tastudio.GoToFrame(f, true);
+					Tastudio.GoToFrame(f);
 				}
 
 				_luaLibsImpl.IsUpdateSupressed = false;
