@@ -789,6 +789,7 @@ namespace BizHawk.Client.EmuHawk
 			if (CurrentTasMovie.LastEditWasRecording)
 				return false;
 
+			bool needsRefresh = !_batchEditing;
 			if (MouseButtonHeld || _batchEditing)
 			{
 				if (_batchEditMinFrame == -1)
@@ -814,13 +815,15 @@ namespace BizHawk.Client.EmuHawk
 						_pauseAfterSeeking = true; // auto-restore makes no sense without auto-pause
 						StartSeeking(RestorePositionFrame);
 					}
+
+					needsRefresh = false; // Refresh will happen via GoToFrame.
 				}
 				_batchEditMinFrame = -1;
 
 				GreenzoneInvalidatedCallback?.Invoke(frame); // lua callback
 			}
 
-			if (!_batchEditing)
+			if (needsRefresh)
 			{
 				if (TasView.IsPartiallyVisible(frame) || frame < TasView.FirstVisibleRow)
 				{
@@ -1420,7 +1423,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!EndBatchEdit())
+			if (!EndBatchEdit() && (prevTyped != _axisTypedValue || !AxisEditingMode))
 				RefreshDialog();
 		}
 
@@ -1452,8 +1455,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				EditAnalogProgrammatically(e);
 			}
-
-			RefreshDialog();
 		}
 	}
 }
