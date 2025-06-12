@@ -480,18 +480,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				var m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				}
-				while (found != null && found.HasChildren);
-
-				if (found != null)
+				if (this.InnermostControlAt(Cursor.Position) is Control found)
 				{
 					var method = found.GetType().GetMethod("ScreenshotToClipboard", Type.EmptyTypes);
 					if (method != null)

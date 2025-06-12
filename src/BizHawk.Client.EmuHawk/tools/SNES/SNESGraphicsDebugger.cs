@@ -1241,17 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == (Keys.C | Keys.Control))
 			{
-				// find the control under the mouse
-				Point m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m), GetChildAtPointSkip.Invisible);
-					top = found;
-				} while (found != null && found.HasChildren);
-
-				if (found is SNESGraphicsViewer v)
+				if (this.InnermostControlAt(Cursor.Position, GetChildAtPointSkip.Invisible) is SNESGraphicsViewer v)
 				{
 					lock (v)
 					{

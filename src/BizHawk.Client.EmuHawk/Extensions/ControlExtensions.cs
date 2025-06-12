@@ -151,6 +151,18 @@ namespace BizHawk.Client.EmuHawk
 			return tabControl.TabPages.Cast<TabPage>();
 		}
 
+		public static Control? InnermostControlAt(this Form form, Point pos, GetChildAtPointSkip flags = GetChildAtPointSkip.None)
+		{
+			Control? top = form;
+			Control? found;
+			do
+			{
+				found = top!.GetChildAtPoint(top.PointToClient(pos), flags);
+				top = found;
+			} while (found is { HasChildren: true });
+			return found;
+		}
+
 #pragma warning disable CS0618 // WinForms doesn't use generics ofc
 		public static bool InsertAfter(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
 			=> ((IList) items).InsertAfter(needle, insert: insert);
