@@ -1303,7 +1303,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						byte ret = PeekReg(0x4015);
 						// Console.WriteLine("{0} {1,5} $4015 clear irq, was at {2}", nes.Frame, sequencer_counter, sequencer_irq);
-						sequencer_irq_flag = false;
+						sequencer_irq_clear_pending = true;
 						SyncIRQ();
 						return ret;
 					}
@@ -1334,13 +1334,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void RunOneLast()
 		{
-			// The controllers only get strobed when transitioning from a get cyclte to a put cycle.
 			if(dmc.timer % 2 == 1)
 			{
-				if(nes.joypadStrobed)
+				// The controllers only get strobed when transitioning from a get cycle to a put cycle.
+				if (nes.joypadStrobed)
 				{
 					nes.joypadStrobed = false;
 					nes.strobe_joyport();
+				}
+			}
+			else
+			{
+				// The frame counter interrupt flag is only cleared when transitioning from a put cycle to a get cycle.
+				if (sequencer_irq_clear_pending)
+				{
+					sequencer_irq_clear_pending = false;
+					sequencer_irq_flag = false;
 				}
 			}
 
