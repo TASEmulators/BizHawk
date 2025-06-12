@@ -647,35 +647,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				// flip mobs accordingly
 				if (x_flip)
 				{
-					for (int j = 0; j < 8; j++)
-					{
-						byte temp_0 = (byte)((mobs[j] & 1) << 7);
-						byte temp_1 = (byte)((mobs[j] & 2) << 5);
-						byte temp_2 = (byte)((mobs[j] & 4) << 3);
-						byte temp_3 = (byte)((mobs[j] & 8) << 1);
-						byte temp_4 = (byte)((mobs[j] & 16) >> 1);
-						byte temp_5 = (byte)((mobs[j] & 32) >> 3);
-						byte temp_6 = (byte)((mobs[j] & 64) >> 5);
-						byte temp_7 = (byte)((mobs[j] & 128) >> 7);
-
-						mobs[j] = (byte)(temp_0 + temp_1 + temp_2 + temp_3 + temp_4 + temp_5 + temp_6 + temp_7);
-					}
-
+					for (var j = 0; j < mobs.Length; j++) mobs[j] = BitReverse.Byte8[mobs[j]];
 					if (yres > 1)
 					{
-						for (int j = 0; j < 8; j++)
-						{
-							byte temp_0 = (byte)((y_mobs[j] & 1) << 7);
-							byte temp_1 = (byte)((y_mobs[j] & 2) << 5);
-							byte temp_2 = (byte)((y_mobs[j] & 4) << 3);
-							byte temp_3 = (byte)((y_mobs[j] & 8) << 1);
-							byte temp_4 = (byte)((y_mobs[j] & 16) >> 1);
-							byte temp_5 = (byte)((y_mobs[j] & 32) >> 3);
-							byte temp_6 = (byte)((y_mobs[j] & 64) >> 5);
-							byte temp_7 = (byte)((y_mobs[j] & 128) >> 7);
-
-							y_mobs[j] = (byte)(temp_0 + temp_1 + temp_2 + temp_3 + temp_4 + temp_5 + temp_6 + temp_7);
-						}
+						for (var j = 0; j < y_mobs.Length; j++) y_mobs[j] = BitReverse.Byte8[y_mobs[j]];
 					}
 				}
 

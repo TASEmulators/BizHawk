@@ -1591,17 +1591,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (SL_sprites[sl_use_index * 4 + 3].Bit(5))
 			{
-				for (int i = 0; i < 2; i++)
-				{
-					sprite_sel[i] = (byte)(((sprite_sel[i] & 0x01) << 7) |
-										   ((sprite_sel[i] & 0x02) << 5) |
-										   ((sprite_sel[i] & 0x04) << 3) |
-										   ((sprite_sel[i] & 0x08) << 1) |
-										   ((sprite_sel[i] & 0x10) >> 1) |
-										   ((sprite_sel[i] & 0x20) >> 3) |
-										   ((sprite_sel[i] & 0x40) >> 5) |
-										   ((sprite_sel[i] & 0x80) >> 7));
-				}
+				sprite_sel[1] = BitReverse.Byte8[sprite_sel[1]];
+				sprite_sel[0] = BitReverse.Byte8[sprite_sel[0]];
 			}
 		}
 
