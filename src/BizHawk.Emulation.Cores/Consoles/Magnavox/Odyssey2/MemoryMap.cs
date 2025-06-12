@@ -113,14 +113,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (port == 1)
 			{
 				// various control pins
-				return (byte)((ppu.lum_en ? 0x80 : 0) |
-				(copy_en ? 0x40 : 0) |
-				(!vpp_en ? 0x20 : 0) |
-				(!RAM_en ? 0x10 : 0) |
-				(!ppu_en ? 0x08 : 0) |
-				(!kybrd_en ? 0x04 : 0) |
-				(cart_b1 ? 0x02 : 0) |
-				(cart_b0 ? 0x01 : 0));
+				return unchecked((byte) ((ppu.lum_en ? 0x80 : 0)
+					| (copy_en ? 0x40 : 0)
+					| (!vpp_en ? 0x20 : 0)
+					| (!RAM_en ? 0x10 : 0)
+					| (!ppu_en ? 0x08 : 0)
+					| (!kybrd_en ? 0x04 : 0)
+					| (cart_b1 ? 0x02 : 0)
+					| (cart_b0 ? 0x01 : 0)));
 			}
 
 			// keyboard

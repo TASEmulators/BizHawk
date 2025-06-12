@@ -1960,9 +1960,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_position++;
 
-			int blockLen = data[_position] |
-				data[_position + 1] << 8 |
-				data[_position + 2] << 16;
+			var blockLen = data[_position]
+				| (data[_position + 1] << 8)
+				| (data[_position + 2] << 16);
 			_position += 3;
 
 			// add to tape
