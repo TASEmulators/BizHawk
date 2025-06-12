@@ -478,12 +478,24 @@ ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
 
     int index    = addr / MEMORY_PADDED_LINE;
     int offset   = addr % MEMORY_PADDED_LINE;
+    int size     = sizeof(line_t);
     line_t *line = &lines[index];
 
-    if (line == NULL || offset >= sizeof(line_t))
+    if (line == NULL || offset >= size + MEMORY_LINE_EXTRA)
       return MEMORY_NULL;
 
-    char *data = (char *)line + offset;  
+    if (offset >= size)
+    {
+      int extra_size   = sizeof(int) * 2;
+      int extra_index  = (offset - size) / extra_size;
+      int extra_offset = (offset - size) % extra_size;
+      char *data       = extra_index == 0
+        ? (char *)line->v1 + extra_offset
+        : (char *)line->v2 + extra_offset;
+      return *data;
+    }
+
+    char *data = (char *)line + offset;
     return *data;
   }
   else
