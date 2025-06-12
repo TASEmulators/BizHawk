@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_disableExpansionSlot = _syncSettings.DisableExpansionSlot;
 
 			// Override the user's expansion slot setting if it is mentioned in the gamedb (it is mentioned but the game MUST have this setting or else not work
-			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
+			if (game.OptionValue("expansionpak") is "1")
 			{
 				_disableExpansionSlot = false;
 				IsOverridingUserExpansionSlotSetting = true;

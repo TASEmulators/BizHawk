@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (display == SmsSyncSettings.DisplayTypes.Ntsc) return DisplayType.NTSC;
 			if (display == SmsSyncSettings.DisplayTypes.Pal) return DisplayType.PAL;
-			if (region != null && region == "Europe") return DisplayType.PAL;
+			if (region is "Europe") return DisplayType.PAL;
 			return DisplayType.NTSC;
 		}
 
