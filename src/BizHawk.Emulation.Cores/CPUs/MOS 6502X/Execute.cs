@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			AbsIdx_Stage4_SHX,
 			AbsIdx_Stage4_SHY,
 			AbsIdx_Stage4_SHA,
-			AbsIdx_Stage4_SHS
+			AbsIdx_Stage4_SHS,
 		}
 
 		private void InitOpcodeHandlers()
