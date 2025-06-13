@@ -3321,7 +3321,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (!rdy_freeze)
 				mi++;
 
-			if(Microcode[opcode][mi] == Uop.End)
+			if (Microcode[opcode][mi] is Uop.End)
 			{
 				address_bus = PC; // If the next cycle is the start of a new instruction, the address bus needs to be set to the PC now, so a DMC DMA's halt cycles don't use the wrong address bus value.
 			}
