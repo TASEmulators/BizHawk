@@ -518,6 +518,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MainForm.EmulatorPaused)
 				{
+					if (_seekingTo != -1)
+					{
+						MainForm.UnpauseEmulator(); // resume seek
+						return;
+					}
+
 					var record = CurrentTasMovie[RestorePositionFrame];
 					if (record.Lagged is null)
 					{
