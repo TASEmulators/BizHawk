@@ -783,7 +783,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var si = new StrobeInfo(latched4016, joypadStrobeValue);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = joypadStrobeValue;
-			new_strobe = (joypadStrobeValue & 1) > 0;
+			new_strobe = (joypadStrobeValue & 1) is not 0;
 			if (current_strobe && !new_strobe)
 			{
 				controller_was_latched = true;
