@@ -777,7 +777,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void strobe_joyport()
 		{
-			// The controllers only get strobed when transitioning from a get cyclte to a put cycle.
+			// The controllers only get strobed when transitioning from a get cycle to a put cycle.
 
 			//Console.WriteLine("cont " + value + " frame " + Frame);
 			var si = new StrobeInfo(latched4016, joypadStrobeValue);
