@@ -55,6 +55,17 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(next);
 		}
 
+		public void RestorePosition()
+		{
+			if (RestorePositionFrame != -1)
+			{
+				// restore makes no sense without pausing
+				// Pausing here ensures any seek done by GoToFrame pauses after completing.
+				MainForm.PauseEmulator();
+				GoToFrame(RestorePositionFrame);
+			}
+		}
+
 		/// <summary>
 		/// Makes the given frame visible. If no frame is given, makes the current frame visible.
 		/// </summary>
