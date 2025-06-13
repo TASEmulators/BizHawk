@@ -2050,7 +2050,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				ea = _link.ReadMemory((ushort)alu_temp);
-				address_bus = (ushort)ea;
+				address_bus = (ushort) ea;
 			}
 		}
 
