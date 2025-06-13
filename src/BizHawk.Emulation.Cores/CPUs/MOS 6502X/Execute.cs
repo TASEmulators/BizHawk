@@ -2566,7 +2566,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 				if (adjust)
 				{
-					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
+					ea = (ushort) ((ea & 0xFF) | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
 				}
 			}
 			else
