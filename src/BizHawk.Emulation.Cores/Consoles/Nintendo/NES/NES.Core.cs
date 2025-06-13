@@ -84,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int old_s = 0;
 
 		public long double_controller_read = 0;
+		public ushort double_controller_read_address = 0;
 		public byte previous_controller1_read = 0;
 		public byte previous_controller2_read = 0;
 		public bool joypadStrobed;
@@ -803,7 +804,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				if (TotalExecutedCycles == double_controller_read)
+				if (TotalExecutedCycles == double_controller_read && addr == double_controller_read_address)
 				{
 					if (addr == 0x4016)
 					{
@@ -816,16 +817,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 					if (addr == 0x4016)
 					{
-						previous_controller1_read = ret;
+						ret = ControllerDeck.ReadA(_controller);
+						previous_controller1_read = ret; // If the following CPU cycle is also reading from this controller port, read the same value without clocking the controller.
 					}
 					else
 					{
+						ret = ControllerDeck.ReadB(_controller);
 						previous_controller2_read = ret;
 					}
 				}
+				double_controller_read_address = (ushort) addr;
 				double_controller_read = TotalExecutedCycles + 1; // The shift register in the controller is only updated if the previous CPU cycle did not read from the controller port.
 			}
 
