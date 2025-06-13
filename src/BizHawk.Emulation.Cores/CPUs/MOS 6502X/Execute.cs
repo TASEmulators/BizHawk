@@ -626,7 +626,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				opcode3 = _link.ReadMemory(PC++);
-				address_bus = (ushort)((opcode3 << 8) | opcode2);
+				address_bus = (ushort) ((opcode3 << 8) | opcode2);
 			}
 		}
 
