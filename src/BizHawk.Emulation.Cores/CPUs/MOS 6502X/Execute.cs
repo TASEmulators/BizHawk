@@ -2622,7 +2622,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void AbsIdx_WRITE_Stage5_SHS()
 		{
 			S = (byte)(X & A);
-			_link.WriteMemory((ushort)ea, (byte)(S & H));
+			_link.WriteMemory((ushort) ea, (byte) (S & H));
 		}
 
 		private void AbsIdx_RMW_Stage5()
