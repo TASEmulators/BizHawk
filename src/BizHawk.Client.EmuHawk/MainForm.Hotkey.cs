@@ -378,6 +378,10 @@ namespace BizHawk.Client.EmuHawk
 					var playbackBox1 = Tools.TAStudio.TasPlaybackBox;
 					playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
 					break;
+				case "Seek To Green Arrow":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RestorePosition();
+					break;
 				case "Toggle Turbo Seek":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					var playbackBox2 = Tools.TAStudio.TasPlaybackBox;

@@ -68,19 +68,16 @@ namespace BizHawk.Client.EmuHawk
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternAxis[] AxisPatterns;
 
-		private void StartSeeking(int? frame, bool fromMiddleClick = false)
+		private void StartSeeking(int frame)
 		{
-			if (!frame.HasValue || frame <= Emulator.Frame)
+			if (frame <= Emulator.Frame)
 			{
 				return;
 			}
 
-			if (!fromMiddleClick)
-			{
-				_seekStartFrame = Emulator.Frame;
-			}
+			_seekStartFrame = Emulator.Frame;
 
-			_seekingTo = frame.Value;
+			_seekingTo = frame;
 			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
 			int? diff = _seekingTo - _seekStartFrame;
 
@@ -524,8 +521,7 @@ namespace BizHawk.Client.EmuHawk
 					var record = CurrentTasMovie[RestorePositionFrame];
 					if (record.Lagged is null)
 					{
-						_pauseAfterSeeking = true;
-						StartSeeking(RestorePositionFrame, true);
+						RestorePosition();
 						return;
 					}
 				}
@@ -835,10 +831,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GoToFrame(frame);
-					if (Settings.AutoRestoreLastPosition && RestorePositionFrame != -1)
+					if (Settings.AutoRestoreLastPosition)
 					{
-						_pauseAfterSeeking = true; // auto-restore makes no sense without auto-pause
-						StartSeeking(RestorePositionFrame);
+						RestorePosition();
 					}
 
 					needsRefresh = false; // Refresh will happen via GoToFrame.
