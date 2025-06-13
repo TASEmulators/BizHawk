@@ -1334,7 +1334,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void RunOneLast()
 		{
-			if(dmc.timer % 2 == 1)
+			if (dmc.timer % 2 is 1)
 			{
 				// The controllers only get strobed when transitioning from a get cycle to a put cycle.
 				if (nes.joypadStrobed)
