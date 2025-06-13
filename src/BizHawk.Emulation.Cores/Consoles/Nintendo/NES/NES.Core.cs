@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 					{
 						// special hardware glitch case
-						if (dmc_dma_exec && ppu.region != PPU.Region.NTSC)
+						if (dmc_dma_exec && ppu.region is not PPU.Region.NTSC)
 						{
 							return DB;
 						}
