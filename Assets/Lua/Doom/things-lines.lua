@@ -3,7 +3,7 @@
 -- CONSTANTS
 local NULL_OBJECT      = 0x88888888 -- no object at that index
 local OUT_OF_BOUNDS    = 0xFFFFFFFF -- no such index
-local MINIMAL_ZOOM     = 0.0001 -- ???
+local MINIMAL_ZOOM     = 0.0001     -- ???
 local ZOOM_FACTOR      = 0.02
 local PAN_FACTOR       = 10
 local CHAR_WIDTH       = 10
@@ -33,10 +33,6 @@ local Zoom     = 1
 local LastSize = 0
 local Init     = true
 -- tables
-local Offsets      = {} -- mobj member offsets in bytes
-local MobjType     = {}
-local SpriteNumber = {}
-local Objects      = {}
 -- view offset
 local Pan = {
 	x = 0,
@@ -53,8 +49,13 @@ local LastScreenSize = {
 	w = client.screenwidth(),
 	h = client.screenheight()
 }
+-- forward declarations
+local Offsets      = {} -- mobj member offsets in bytes
+local MobjType     = {}
+local SpriteNumber = {}
+local Objects      = {}
 
-gui.defaultPixelFont("fceux")
+--gui.defaultPixelFont("fceux")
 gui.use_surface("client")
 
 local function mapify_x(coord)
@@ -182,8 +183,7 @@ local function iterate()
 				mapify_y(v1.y),
 				mapify_x(v2.x),
 				mapify_y(v2.y),
-				0xffcccccc
-			)
+				0xffcccccc)
 		end
 	end
 end
@@ -234,7 +234,7 @@ function update_zoom()
 	then
 		maybe_swap(OB.right, OB.left)
 		maybe_swap(OB.top,   OB.bottom)
-		local span        = { x = OB.right-OB.left+200, y = OB.bottom-OB.top+200 }
+		local span        = { x = OB.right-OB.left+200,        y = OB.bottom-OB.top+200         }
 		local scale       = { x = client.screenwidth()/span.x, y = client.screenheight()/span.y }
 		local spanCenter  = { x = OB.left+span.x/2, y = OB.top+span.y/2 }
 		      Zoom        = math.min(scale.x, scale.y)
@@ -262,8 +262,8 @@ local function make_button(x, y, name, func)
 	local mouse    = input.getmouse()
 	local mousePos = client.transformPoint(mouse.X, mouse.Y)
 	
-	if  in_range(mousePos.x, x, x+boxWidth)
-	and in_range(mousePos.y, y-boxHeight, y) then
+	if  in_range(mousePos.x, x,           x+boxWidth)
+	and in_range(mousePos.y, y-boxHeight, y         ) then
 		if mouse.Left then
 			colorIndex = 3
 			func()
@@ -686,12 +686,12 @@ while true do
 	if Init then init_objects() end
 	iterate()	
 	update_zoom()
-	make_button( 10, client.screenheight()-70, "Zoom\nIn"   , zoom_in   )
-	make_button( 10, client.screenheight()-10, "Zoom\nOut"  , zoom_out  )
-	make_button( 80, client.screenheight()-40, "Pan\nLeft"  , pan_left  )
-	make_button(150, client.screenheight()-70, "Pan \nUp"   , pan_up    )
-	make_button(150, client.screenheight()-10, "Pan\nDown"  , pan_down  )
-	make_button(220, client.screenheight()-40, "Pan\nRight" , pan_right )
+	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
+	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
+	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
+	make_button(150, client.screenheight()-70, "Pan \nUp",    pan_up    )
+	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
+	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
 	text(10, client.screenheight()-170, string.format(
 		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
