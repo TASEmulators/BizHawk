@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 				refreshNeeded = true;
 			}
 
-			if (Settings.AutoPause)
+			if (Settings.AutoPause && _seekingTo == -1)
 			{
 				if (_doPause && CurrentTasMovie.IsAtEnd()) MainForm.PauseEmulator();
 				_doPause = !CurrentTasMovie.IsAtEnd();
