@@ -100,6 +100,11 @@ namespace BizHawk.Client.EmuHawk
 				_doPause = !CurrentTasMovie.IsAtEnd();
 			}
 
+			if (!_seekingByEdit)
+			{
+				_shouldMoveGreenArrow = true;
+			}
+
 			FastUpdateAfter();
 			RefreshDialog(refreshNeeded, refreshBranches: false);
 		}

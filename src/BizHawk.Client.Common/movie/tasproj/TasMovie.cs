@@ -180,14 +180,6 @@ namespace BizHawk.Client.Common
 
 		public void GreenzoneCurrentFrame()
 		{
-			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
-			// but accounting for that requires access to Mainform.IsSeeking
-			if (Emulator.Frame != LastEditedFrame)
-			{
-				// emulated a new frame, current editing segment may change now. taseditor logic
-				LastPositionStable = false;
-			}
-
 			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
 			// We will forbibly capture a state for the last edited frame (requested by #916 for case of "platforms with analog stick")

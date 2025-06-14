@@ -76,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_seekStartFrame = Emulator.Frame;
+			_seekingByEdit = false;
 
 			_seekingTo = frame;
 			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
@@ -100,6 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				WasRecording = false;
 			}
 
+			_seekingByEdit = false;
 			_seekingTo = -1;
 			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
 			if (_pauseAfterSeeking)
@@ -116,6 +118,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelSeek()
 		{
+			_shouldMoveGreenArrow = true;
+			_seekingByEdit = false;
 			_seekingTo = -1;
 			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
 			_pauseAfterSeeking = false;
@@ -829,18 +833,22 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Emulator.Frame > frame)
 				{
-					if ((MainForm.EmulatorPaused || _seekingTo == -1)
-						&& !CurrentTasMovie.LastPositionStable)
+					if (_shouldMoveGreenArrow)
 					{
-						RestorePositionFrame = Emulator.Frame;
-						CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
+						RestorePositionFrame = _seekingTo != -1 ? _seekingTo : Emulator.Frame;
+						// Green arrow should not move again until the user changes frame.
+						// This means any state load or unpause/frame advance/seek, that is not caused by an input edit.
+						// This is so that the user can make multiple edits with auto restore off, in any order, before a manual restore.
+						_shouldMoveGreenArrow = false;
 					}
 
+					_seekingByEdit = true; // must be before GoToFrame (it will load a state, and state loading checks _seekingByEdit)
 					GoToFrame(frame);
 					if (Settings.AutoRestoreLastPosition)
 					{
 						RestorePosition();
 					}
+					_seekingByEdit = true; // must be after GoToFrame & RestorePosition too (they'll set _seekingByEdit to false)
 
 					needsRefresh = false; // Refresh will happen via GoToFrame.
 				}
