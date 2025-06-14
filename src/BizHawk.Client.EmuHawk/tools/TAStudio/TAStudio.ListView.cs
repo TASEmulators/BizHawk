@@ -80,9 +80,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekingTo = frame;
 			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
-
-			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
-			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			MainForm.UnpauseEmulator();
 
 			if (_seekingTo - _seekStartFrame > 1)
