@@ -430,6 +430,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					// glitchy increment of OAM index
 					oam_index += 4;
+					oam_index &= 0x1FC;
+					reg_2003 += 4;
+					reg_2003 &= 0xFC;
 				}
 				else
 				{
