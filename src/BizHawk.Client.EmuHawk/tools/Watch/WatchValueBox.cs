@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -31,18 +32,16 @@ namespace BizHawk.Client.EmuHawk
 				if (changed)
 				{
 					SetMaxLength();
-
-					var isTypeCompatible = value switch
+					var validTypes = value switch
 					{
-						WatchSize.Byte => ByteWatch.ValidTypes.Any(t => t == _type),
-						WatchSize.Word => WordWatch.ValidTypes.Any(t => t == _type),
-						WatchSize.DWord => DWordWatch.ValidTypes.Any(t => t == _type),
-						_ => false,
+						WatchSize.Byte => ByteWatch.ValidTypes,
+						WatchSize.Word => WordWatch.ValidTypes,
+						WatchSize.DWord => DWordWatch.ValidTypes,
+						_ => [ ],
 					};
-
-					if (!isTypeCompatible)
+					if (!validTypes.Contains(_type))
 					{
-						_type = WatchDisplayType.Unsigned;
+						_type = validTypes is [ var first, .. ] ? first : WatchDisplayType.Unsigned;
 					}
 
 					ResetText();
