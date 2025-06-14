@@ -12,6 +12,12 @@ namespace BizHawk.Client.Common.RamSearchEngine
 {
 	public class RamSearchEngine
 	{
+		private static bool DifferByExactly(uint difference, int a, int b)
+			=> Math.Abs(a - b) == difference;
+
+		private static bool DifferByExactly(uint difference, float a, float b)
+			=> Math.Abs(a - b).HawkFloatEquality(ReinterpretAsF32(difference));
+
 		private Compare _compareTo = Compare.Previous;
 
 		private IMiniWatch[] _watchList = Array.Empty<IMiniWatch>();
@@ -301,28 +307,19 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		{
 			foreach (var watch in _watchList)
 			{
-				if (_settings.CheckMisAligned)
+				var addr = watch.Address;
+				yield return addr;
+				if (_settings.CheckMisAligned) continue; // I guess we're assuming the other parts of the address are also in `_watchList`? --yoshi
+				switch (_settings.Size)
 				{
-					yield return watch.Address;
-				}
-				else
-				{
-					switch (_settings.Size)
-					{
-						case WatchSize.Word:
-							yield return watch.Address;
-							yield return watch.Address + 1;
-							break;
-						case WatchSize.DWord:
-							yield return watch.Address;
-							yield return watch.Address + 1;
-							yield return watch.Address + 2;
-							yield return watch.Address + 3;
-							break;
-						default:
-							yield return watch.Address;
-							break;
-					}
+					case WatchSize.Word:
+						yield return addr + 1;
+						break;
+					case WatchSize.DWord:
+						yield return addr + 1;
+						yield return addr + 2;
+						yield return addr + 3;
+						break;
 				}
 			}
 		}
@@ -411,8 +408,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) <= SignExtendAsNeeded(w.Previous));
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-						return watchList.Where(w =>
-							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous)));
+						return watchList.Where(w => DifferByExactly(
+							difference: differentBy,
+							SignExtendAsNeeded(GetValue(w)),
+							SignExtendAsNeeded(w.Previous)));
 				}
 			}
 			switch (Operator)
@@ -442,9 +441,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-					var differentByF = ReinterpretAsF32(differentBy);
-					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous))
-						.HawkFloatEquality(differentByF));
+					return watchList.Where(w => DifferByExactly(
+						difference: differentBy,
+						ReinterpretAsF32(GetValue(w)),
+						ReinterpretAsF32(w.Previous)));
 			}
 		}
 
@@ -470,8 +470,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) <= SignExtendAsNeeded(compareValue));
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-						return watchList.Where(w =>
-							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(compareValue)));
+						return watchList.Where(w => DifferByExactly(
+							difference: differentBy,
+							SignExtendAsNeeded(GetValue(w)),
+							SignExtendAsNeeded(compareValue)));
 				}
 			}
 			var compareValueF = ReinterpretAsF32(compareValue);
@@ -500,9 +502,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-					var differentByF = ReinterpretAsF32(differentBy);
-					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w)) - compareValueF)
-						.HawkFloatEquality(differentByF));
+					return watchList.Where(w => DifferByExactly(
+						difference: differentBy,
+						ReinterpretAsF32(GetValue(w)),
+						compareValueF));
 			}
 		}
 
@@ -526,7 +529,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					return watchList.Where(w => w.Address <= compareValue);
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-					return watchList.Where(w => Math.Abs(w.Address - compareValue) == differentBy);
+					return watchList.Where(w => DifferByExactly(difference: differentBy, w.Address, compareValue));
 			}
 		}
 
@@ -565,7 +568,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
 					return watchList
 						.Cast<IMiniWatchDetails>()
-						.Where(w => Math.Abs(w.ChangeCount - compareValue) == differentBy);
+						.Where(w => DifferByExactly(difference: differentBy, w.ChangeCount, compareValue));
 			}
 		}
 
@@ -591,8 +594,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						return watchList.Where(w => SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) <= compareValue);
 					case ComparisonOperator.DifferentBy:
 						if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-						return watchList.Where(w =>
-							differentBy == Math.Abs(SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous) - compareValue));
+						return watchList.Where(w => DifferByExactly(
+							difference: differentBy,
+							SignExtendAsNeeded(GetValue(w)) - SignExtendAsNeeded(w.Previous),
+							compareValue));
 				}
 			}
 			var compareValueF = ReinterpretAsF32(compareValue);
@@ -621,9 +626,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 					});
 				case ComparisonOperator.DifferentBy:
 					if (DifferentBy is not uint differentBy) throw new InvalidOperationException();
-					var differentByF = ReinterpretAsF32(differentBy);
-					return watchList.Where(w => Math.Abs(ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous) - compareValueF)
-						.HawkFloatEquality(differentByF));
+					return watchList.Where(w => DifferByExactly(
+						difference: differentBy,
+						ReinterpretAsF32(GetValue(w)) - ReinterpretAsF32(w.Previous),
+						compareValueF));
 			}
 		}
 
