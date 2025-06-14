@@ -76,20 +76,13 @@ namespace BizHawk.Emulation.Common
 
 		public virtual void PokeUint(long addr, uint val, bool bigEndian)
 		{
-			if (bigEndian)
-			{
-				PokeByte(addr + 0, (byte)(val >> 24));
-				PokeByte(addr + 1, (byte)(val >> 16));
-				PokeByte(addr + 2, (byte)(val >> 8));
-				PokeByte(addr + 3, (byte)val);
-			}
-			else
-			{
-				PokeByte(addr + 0, (byte)val);
-				PokeByte(addr + 1, (byte)(val >> 8));
-				PokeByte(addr + 2, (byte)(val >> 16));
-				PokeByte(addr + 3, (byte)(val >> 24));
-			}
+			Span<byte> scratch = stackalloc byte[4];
+			if (bigEndian) BinaryPrimitives.WriteUInt32BigEndian(scratch, val);
+			else BinaryPrimitives.WriteUInt32LittleEndian(scratch, val);
+			PokeByte(addr, scratch[0]);
+			PokeByte(addr + 1, scratch[1]);
+			PokeByte(addr + 2, scratch[2]);
+			PokeByte(addr + 3, scratch[3]);
 		}
 
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
