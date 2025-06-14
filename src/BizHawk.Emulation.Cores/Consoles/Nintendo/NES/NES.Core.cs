@@ -1011,7 +1011,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// this means that OAM DMA can actually access memory that the cpu cannot
 				if (oam_dma_exec)
 				{
-					if ((cpu.address_bus >= 0x4000) && (cpu.address_bus < 0x4020))
+					if (cpu.address_bus is >= 0x4000 and < 0x4020)
 					{
 						ret = ReadReg(addr);
 					}
