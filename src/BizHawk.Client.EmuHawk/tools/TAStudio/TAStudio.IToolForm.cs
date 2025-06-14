@@ -26,8 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_seekingTo != -1)
 			{
-				int diff = Emulator.Frame - _seekStartFrame.Value;
-				int unit = _seekingTo - _seekStartFrame.Value;
+				int diff = Emulator.Frame - _seekStartFrame;
+				int unit = _seekingTo - _seekStartFrame;
 				double progress = 0;
 
 				if (diff != 0 && unit != 0)
