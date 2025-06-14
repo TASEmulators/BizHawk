@@ -83,6 +83,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int old_s = 0;
 
+		public long double_controller_read = 0;
+		public ushort double_controller_read_address = 0;
+		public byte previous_controller1_read = 0;
+		public byte previous_controller2_read = 0;
+		public bool joypadStrobed;
+		public byte joypadStrobeValue;
+
 		public bool CanProvideAsync => false;
 
 		internal void ResetControllerDefinition(bool subframe)
@@ -343,6 +350,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VS_coin_inserted &= 1;
 			}
 
+			cpu.ext_ppu_cycle = 0; // Reset this value at the beginning of each frame
+
 			if (ppu.ppudead > 0)
 			{
 				while (ppu.ppudead > 0)
@@ -443,9 +452,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte oam_dma_byte;
 		public bool dmc_dma_exec = false;
 		public bool dmc_realign;
-		public bool reread_trigger;
-		public int do_the_reread_2002, do_the_reread_2007, do_the_reread_cont_1, do_the_reread_cont_2;
-		public int reread_opp_4016, reread_opp_4017;
 		public byte DB; //old data bus values from previous reads
 
 		internal void RunCpuOne()
@@ -509,45 +515,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				apu.dmc_dma_countdown--;
 				if (apu.dmc_dma_countdown == 0)
 				{
-					reread_trigger = true;
-
-					do_the_reread_2002++;
-
-					do_the_reread_2007++;
-
-					// if the DMA address has the same bits set as the re-read address, they don't occur
-					// TODO: need to check if also true for ppu regs
-					/*
-					if ((apu.dmc.sample_address & 0x2007) != 0x2002)
-					{
-						do_the_reread_2002++;
-					}
-
-					if ((apu.dmc.sample_address & 0x2007) != 0x2007)
-					{
-						do_the_reread_2007++;
-					}
-					*/
-					if ((apu.dmc.sample_address & 0x1F) != 0x16)
-					{
-						do_the_reread_cont_1++;
-					}
-
-					if ((apu.dmc.sample_address & 0x1F) == 0x16)
-					{
-						reread_opp_4016++;
-					}
-
-					if ((apu.dmc.sample_address & 0x1F) != 0x17)
-					{
-						do_the_reread_cont_2++;
-					}
-
-					if ((apu.dmc.sample_address & 0x1F) == 0x17)
-					{
-						reread_opp_4017++;
-					}
-
 					apu.RunDMCFetch();
 
 					dmc_dma_exec = false;
@@ -567,6 +534,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//Console.WriteLine("close 2 " + cpu.TotalExecutedCycles + " " + apu.dmc.timer + " " + apu.dmc.sample_length + " " + cpu.opcode + " " + cpu.mi);
 						apu.dmc.fill_glitch_2 = true;
 					}
+				}
+				else
+				{
+					// the DMC DMA Halt, Put cycles
+					apu.RunDMCHaltFetch();
+
 				}
 			}
 
@@ -600,17 +573,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			apu.sampleclock++;
 
 			apu.RunOneLast();
-
-			if (reread_trigger && cpu.RDY)
-			{
-				do_the_reread_2002 = 0;
-				do_the_reread_2007 = 0;
-				do_the_reread_cont_1 = 0;
-				do_the_reread_cont_2 = 0;
-				reread_opp_4016 = 0;
-				reread_opp_4017 = 0;
-				reread_trigger = false;
-			}
 
 			if (!cpu.RDY && !dmc_dma_exec && !oam_dma_exec)
 			{
@@ -660,23 +622,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 					{
 						// special hardware glitch case
+						if (dmc_dma_exec && ppu.region is not PPU.Region.NTSC)
+						{
+							return DB;
+						}
 						ret_spec = read_joyport(addr);
-
-						//if (reread_trigger && (do_the_reread_cont_1 == 0)) { Console.WriteLine("same 1 " + (apu.dmc.sample_address - 1)); }
-
-						if ((reread_opp_4017 > 0) && ppu.region == PPU.Region.NTSC)
-						{
-							read_joyport(0x4017);
-							//Console.WriteLine("DMC glitch player 2 opposite " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
-						}
-
-						if ((do_the_reread_cont_1 > 0) && ppu.region==PPU.Region.NTSC)
-						{
-							ret_spec = read_joyport(addr);
-							do_the_reread_cont_1--;
-							if (do_the_reread_cont_1 > 0) { ret_spec = read_joyport(addr); }
-							//Console.WriteLine("DMC glitch player 1 " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
-						}
 
 						return ret_spec;
 					}
@@ -695,22 +645,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
-
-						//if (reread_trigger && (do_the_reread_cont_2 == 0)) { Console.WriteLine("same 2 " + (apu.dmc.sample_address - 1)); }
-
-						if ((reread_opp_4016 > 0) && ppu.region == PPU.Region.NTSC)
-						{
-							read_joyport(0x4016);
-							//Console.WriteLine("DMC glitch player 1 opposite " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
-						}
-
-						if ((do_the_reread_cont_2 > 0) && ppu.region == PPU.Region.NTSC)
-						{
-							ret_spec = read_joyport(addr);
-							do_the_reread_cont_2--;
-							if (do_the_reread_cont_2 > 0) { ret_spec = read_joyport(addr); }
-							//Console.WriteLine("DMC glitch player 2 " + cpu.TotalExecutedCycles + " addr " + (apu.dmc.sample_address - 1));
-						}
 
 						return ret_spec;
 					}
@@ -838,12 +772,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void write_joyport(byte value)
 		{
-			//Console.WriteLine("cont " + value + " frame " + Frame);
+			joypadStrobeValue = value;
+			joypadStrobed = true;
+		}
 
-			var si = new StrobeInfo(latched4016, value);
+		public void strobe_joyport()
+		{
+			// The controllers only get strobed when transitioning from a get cycle to a put cycle.
+
+			//Console.WriteLine("cont " + value + " frame " + Frame);
+			var si = new StrobeInfo(latched4016, joypadStrobeValue);
 			ControllerDeck.Strobe(si, _controller);
-			latched4016 = value;
-			new_strobe = (value & 1) > 0;
+			latched4016 = joypadStrobeValue;
+			new_strobe = (joypadStrobeValue & 1) is not 0;
 			if (current_strobe && !new_strobe)
 			{
 				controller_was_latched = true;
@@ -863,7 +804,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
+				if (TotalExecutedCycles == double_controller_read && addr == double_controller_read_address)
+				{
+					if (addr == 0x4016)
+					{
+						ret = previous_controller1_read;
+					}
+					else
+					{
+						ret = previous_controller2_read;
+					}
+				}
+				else
+				{
+					if (addr == 0x4016)
+					{
+						ret = ControllerDeck.ReadA(_controller);
+						previous_controller1_read = ret; // If the following CPU cycle is also reading from this controller port, read the same value without clocking the controller.
+					}
+					else
+					{
+						ret = ControllerDeck.ReadB(_controller);
+						previous_controller2_read = ret;
+					}
+				}
+				double_controller_read_address = (ushort) addr;
+				double_controller_read = TotalExecutedCycles + 1; // The shift register in the controller is only updated if the previous CPU cycle did not read from the controller port.
 			}
 
 			ret &= 0x1f;
@@ -997,6 +963,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte ReadMemory(ushort addr)
 		{
+			if (!oam_dma_exec && !dmc_dma_exec)
+			{
+				cpu.address_bus = addr;
+			}
 			byte ret;
 
 			if (addr >= 0x8000)
@@ -1041,7 +1011,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// this means that OAM DMA can actually access memory that the cpu cannot
 				if (oam_dma_exec)
 				{
-					if ((cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
+					if (cpu.address_bus is >= 0x4000 and < 0x4020)
 					{
 						ret = ReadReg(addr);
 					}
@@ -1119,6 +1089,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void WriteMemory(ushort addr, byte value)
 		{
+			if (!oam_dma_exec)
+			{
+				cpu.address_bus = addr;
+			}
 			if (addr < 0x0800)
 			{
 				ram[addr] = value;

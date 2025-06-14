@@ -258,7 +258,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
 			ser.Sync(nameof(is_even_cycle), ref is_even_cycle);
 			ser.Sync(nameof(soam_index), ref soam_index);
-			ser.Sync(nameof(soam_m_index), ref soam_m_index);
 			ser.Sync(nameof(oam_index), ref oam_index);
 			ser.Sync(nameof(oam_index_aux), ref oam_index_aux);
 			ser.Sync(nameof(soam_index_aux), ref soam_index_aux);
@@ -438,6 +437,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nes.Board.ClockPpu();
 			}
 			_totalCycles += 1;
+			nes.cpu.ext_ppu_cycle += 1;
 		}
 	}
 }

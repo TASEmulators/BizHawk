@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*TYA [implied]*/ new Uop[] { Uop.Imp_TYA, Uop.End },
 			/*STA addr,Y [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*TXS [implied]*/ new Uop[] { Uop.Imp_TXS, Uop.End },
-			/*SHS* addr,Y [absolute indexed WRITE Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
+			/*SHS* addr,Y [absolute indexed WRITE Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4_SHS, Uop.AbsIdx_WRITE_Stage5_SHS, Uop.End },
 			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4_SHY, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			/*STA addr,X [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4_SHX, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
@@ -416,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//[absolute indexed WRITE]
 			AbsIdx_WRITE_Stage5_STA,
 			AbsIdx_WRITE_Stage5_SHY, AbsIdx_WRITE_Stage5_SHX, //unofficials
-			AbsIdx_WRITE_Stage5_ERROR,
+			AbsIdx_WRITE_Stage5_SHS,
 			//[absolute indexed READ]
 			AbsIdx_READ_Stage4,
 			AbsIdx_READ_Stage5_LDA, AbsIdx_READ_Stage5_CMP, AbsIdx_READ_Stage5_SBC, AbsIdx_READ_Stage5_ADC, AbsIdx_READ_Stage5_EOR, AbsIdx_READ_Stage5_LDX, AbsIdx_READ_Stage5_AND, AbsIdx_READ_Stage5_ORA, AbsIdx_READ_Stage5_LDY, AbsIdx_READ_Stage5_NOP,
@@ -474,7 +474,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			IndIdx_WRITE_Stage5_SHA,
 			AbsIdx_Stage4_SHX,
 			AbsIdx_Stage4_SHY,
-			AbsIdx_Stage4_SHA
+			AbsIdx_Stage4_SHA,
+			AbsIdx_Stage4_SHS,
 		}
 
 		private void InitOpcodeHandlers()
@@ -524,6 +525,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public int mi; //microcode index
 		private bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
 		public bool rdy_freeze; //true if the CPU must be frozen
+		private byte H; //internal temp variable used in the "unstable high byte group" of unofficial instructions
+		public ushort address_bus; // The 16 bit address bus.
 
 		//tracks whether an interrupt condition has popped up recently.
 		//not sure if this is real or not but it helps with the branch_irq_hack
@@ -605,6 +608,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode = _link.ReadMemory(PC++);
 				mi = -1;
 			}
+			address_bus = PC;
 		}
 
 		private void Fetch2()
@@ -622,6 +626,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				opcode3 = _link.ReadMemory(PC++);
+				address_bus = (ushort) ((opcode3 << 8) | opcode2);
 			}
 		}
 
@@ -939,8 +944,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				alu_temp = ea + Y;
-				ea = (_link.ReadMemory((byte)(opcode2 + 1)) << 8)
+				ea = (_link.ReadMemory((byte) (opcode2 + 1)) << 8)
 					| ((alu_temp & 0xFF));
+				address_bus = (ushort) ea;
+				H = 0; // In preparation for SHA (indirect, X), set H to 0.
 			}
 		}
 
@@ -957,16 +964,20 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void IndIdx_WRITE_Stage5_SHA()
 		{
 			rdy_freeze = !RDY;
+
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				_link.ReadMemory((ushort) ea);
 
 				if (alu_temp.Bit(8))
 				{
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
 				}
-
-				ea += unchecked((ushort) (alu_temp & 0xFF00));
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHA instruction omits the bitwise AND with H
 			}
 		}
 
@@ -1008,13 +1019,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void IndIdx_WRITE_Stage6_SHA()
 		{
-			alu_temp = A & X;
-
-			if (RDY)
-			{
-				alu_temp &= unchecked((byte) ((ea >> 8) + 1));
-			}
-
+			alu_temp = A & X & H;
 			_link.WriteMemory((ushort) ea, unchecked((byte) alu_temp));
 		}
 
@@ -2045,6 +2050,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				ea = _link.ReadMemory((ushort)alu_temp);
+				address_bus = (ushort) ea;
 			}
 		}
 
@@ -2453,7 +2459,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode3 = _link.ReadMemory(PC++);
 				alu_temp = opcode2 + Y;
 				ea = (opcode3 << 8) + (alu_temp & 0xFF);
-
+				address_bus = (ushort) ea;
+				H = 0; // In preparation for SHA, SHS, and SHX, set H to 0.
 				//new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			}
 		}
@@ -2466,6 +2473,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				opcode3 = _link.ReadMemory(PC++);
 				alu_temp = opcode2 + X;
 				ea = (opcode3 << 8) + (alu_temp & 0xFF);
+				address_bus = (ushort) ea;
+				H = 0; // In preparation for SHY, set H to 0.
 			}
 		}
 
@@ -2509,6 +2518,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2516,6 +2526,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				{
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & (X << 8)));
 				}
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHX instruction omits the bitwise AND with H
 			}
 		}
 
@@ -2525,6 +2539,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2532,6 +2547,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				{
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & (Y << 8)));
 				}
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHY instruction omits the bitwise AND with H
 			}
 		}
 
@@ -2541,6 +2560,28 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			if (RDY)
 			{
+				H |= (byte) ((ea >> 8) + 1);
+				var adjust = alu_temp.Bit(8);
+				alu_temp = _link.ReadMemory((ushort) ea);
+
+				if (adjust)
+				{
+					ea = (ushort) ((ea & 0xFF) | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
+				}
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHA instruction omits the bitwise AND with H
+			}
+		}
+
+		private void AbsIdx_Stage4_SHS()
+		{
+			rdy_freeze = !RDY;
+
+			if (RDY)
+			{
+				H |= (byte) ((ea >> 8) + 1);
 				var adjust = alu_temp.Bit(8);
 				alu_temp = _link.ReadMemory((ushort) ea);
 
@@ -2548,6 +2589,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				{
 					ea = (ushort) (ea & 0xFF | ((ea + 0x100) & 0xFF00 & ((A & X) << 8)));
 				}
+			}
+			else
+			{
+				H = 0xFF; //If the RDY line is low here, the SHS instruction omits the bitwise AND with H
 			}
 		}
 
@@ -2558,44 +2603,26 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		private void AbsIdx_WRITE_Stage5_SHY()
 		{
-			alu_temp = Y;
-
-			if (RDY)
-			{
-				alu_temp &= unchecked((byte)((ea >> 8) + 1));
-			}
-
+			alu_temp = Y & H;
 			_link.WriteMemory((ushort) ea, (byte) alu_temp);
 		}
 
 		private void AbsIdx_WRITE_Stage5_SHX()
 		{
-			alu_temp = X;
-
-			if (RDY)
-			{
-				alu_temp &= unchecked((byte)((ea >> 8) + 1));
-			}
-
+			alu_temp = X & H;
 			_link.WriteMemory((ushort) ea, (byte) alu_temp);
 		}
 
 		private void AbsIdx_WRITE_Stage5_SHA()
 		{
-			alu_temp = A & X;
-
-			if (RDY)
-			{
-				alu_temp &= unchecked((byte)((ea >> 8) + 1));
-			}
-
+			alu_temp = A & X & H;
 			_link.WriteMemory((ushort) ea, (byte) alu_temp);
 		}
 
-		private void AbsIdx_WRITE_Stage5_ERROR()
+		private void AbsIdx_WRITE_Stage5_SHS()
 		{
 			S = (byte)(X & A);
-			_link.WriteMemory((ushort)ea, (byte)(S & (opcode3+1)));
+			_link.WriteMemory((ushort) ea, (byte) (S & H));
 		}
 
 		private void AbsIdx_RMW_Stage5()
@@ -3225,11 +3252,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case Uop.AbsIdx_Stage4_SHX: AbsIdx_Stage4_SHX(); break;
 				case Uop.AbsIdx_Stage4_SHY: AbsIdx_Stage4_SHY(); break;
 				case Uop.AbsIdx_Stage4_SHA: AbsIdx_Stage4_SHA(); break;
+				case Uop.AbsIdx_Stage4_SHS: AbsIdx_Stage4_SHS(); break;
 				case Uop.AbsIdx_WRITE_Stage5_STA: AbsIdx_WRITE_Stage5_STA(); break;
 				case Uop.AbsIdx_WRITE_Stage5_SHY: AbsIdx_WRITE_Stage5_SHY(); break;
 				case Uop.AbsIdx_WRITE_Stage5_SHX: AbsIdx_WRITE_Stage5_SHX(); break;
 				case Uop.AbsIdx_WRITE_Stage5_SHA: AbsIdx_WRITE_Stage5_SHA(); break;
-				case Uop.AbsIdx_WRITE_Stage5_ERROR: AbsIdx_WRITE_Stage5_ERROR(); break;
+				case Uop.AbsIdx_WRITE_Stage5_SHS: AbsIdx_WRITE_Stage5_SHS(); break;
 				case Uop.AbsIdx_RMW_Stage5: AbsIdx_RMW_Stage5(); break;
 				case Uop.AbsIdx_RMW_Stage7: AbsIdx_RMW_Stage7(); break;
 				case Uop.AbsIdx_RMW_Stage6_DEC: AbsIdx_RMW_Stage6_DEC(); break;
@@ -3292,6 +3320,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			if (!rdy_freeze)
 				mi++;
+
+			if (Microcode[opcode][mi] is Uop.End)
+			{
+				address_bus = PC; // If the next cycle is the start of a new instruction, the address bus needs to be set to the PC now, so a DMC DMA's halt cycles don't use the wrong address bus value.
+			}
 		}
 
 		public bool AtInstructionStart()

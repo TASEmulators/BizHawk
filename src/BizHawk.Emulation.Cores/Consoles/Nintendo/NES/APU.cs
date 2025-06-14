@@ -1032,6 +1032,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			dmc.Fetch();
 		}
 
+		public void RunDMCHaltFetch()
+		{
+			nes.ReadMemory(nes.cpu.address_bus);
+		}
+
 		private readonly int[][] sequencer_lut = new int[2][];
 
 		private int sequencer_check_1, sequencer_check_2;
@@ -1298,7 +1303,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						byte ret = PeekReg(0x4015);
 						// Console.WriteLine("{0} {1,5} $4015 clear irq, was at {2}", nes.Frame, sequencer_counter, sequencer_irq);
-						sequencer_irq_flag = false;
+						sequencer_irq_clear_pending = true;
 						SyncIRQ();
 						return ret;
 					}
@@ -1329,6 +1334,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void RunOneLast()
 		{
+			if (dmc.timer % 2 is 1)
+			{
+				// The controllers only get strobed when transitioning from a get cycle to a put cycle.
+				if (nes.joypadStrobed)
+				{
+					nes.joypadStrobed = false;
+					nes.strobe_joyport();
+				}
+			}
+			else
+			{
+				// The frame counter interrupt flag is only cleared when transitioning from a put cycle to a get cycle.
+				if (sequencer_irq_clear_pending)
+				{
+					sequencer_irq_clear_pending = false;
+					sequencer_irq_flag = false;
+				}
+			}
+
 			// we need to predict if there will be a length clock here, because the sequencer ticks last, but the
 			// timer reload shouldn't happen if length clock and write happen simultaneously
 			// I'm not sure if we can avoid this by simply processing the sequencer first
