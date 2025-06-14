@@ -79,4 +79,16 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		protected override bool IsValid(long address, MemoryDomain domain)
 			=> 0L <= address && address <= domain.Size - sizeof(uint);
 	}
+
+	internal class MiniQWordWatch : MiniWatchBase
+	{
+		public MiniQWordWatch(MemoryDomain domain, long addr, bool bigEndian)
+			: base(addr: addr, prevValue: domain.PeekUint(addr, bigEndian: bigEndian)) {}
+
+		protected override ulong GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+			=> domain.PeekUlong(address, bigEndian);
+
+		protected override bool IsValid(long address, MemoryDomain domain)
+			=> 0L <= address && address <= domain.Size - sizeof(ulong);
+	}
 }

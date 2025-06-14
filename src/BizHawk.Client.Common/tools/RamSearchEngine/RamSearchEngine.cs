@@ -109,6 +109,22 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						}
 					}
 					break;
+				case WatchSize.QWord:
+					if (_settings.IsDetailed())
+					{
+						for (var i = 0; i < _watchList.Length; i++)
+						{
+							_watchList[i] = new MiniQWordWatchDetailed(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
+					else
+					{
+						for (var i = 0; i < _watchList.Length; i++)
+						{
+							_watchList[i] = new MiniQWordWatch(domain, i * stepSize, _settings.BigEndian);
+						}
+					}
+					break;
 			}
 		}
 
@@ -284,6 +300,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Byte => addresses.ToBytes(_settings),
 				WatchSize.Word => addresses.ToWords(_settings),
 				WatchSize.DWord => addresses.ToDWords(_settings),
+				WatchSize.QWord => addresses.ToQWords(_settings),
 				_ => addresses.ToBytes(_settings),
 			};
 
@@ -302,6 +319,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Word => addresses.Where(static address => address % 2 == 0).ToWords(_settings).ToArray(),
 				WatchSize.DWord when _settings.CheckMisAligned => addresses.ToDWords(_settings).ToArray(),
 				WatchSize.DWord => addresses.Where(static address => address % 4 == 0).ToDWords(_settings).ToArray(),
+				WatchSize.QWord when _settings.CheckMisAligned => addresses.ToQWords(_settings).ToArray(),
+				WatchSize.QWord => addresses.Where(static address => address % sizeof(ulong) is 0).ToQWords(_settings).ToArray(),
 				_ => _watchList,
 			};
 
@@ -324,6 +343,15 @@ namespace BizHawk.Client.Common.RamSearchEngine
 						yield return addr + 1;
 						yield return addr + 2;
 						yield return addr + 3;
+						break;
+					case WatchSize.QWord:
+						yield return addr + 1;
+						yield return addr + 2;
+						yield return addr + 3;
+						yield return addr + 4;
+						yield return addr + 5;
+						yield return addr + 6;
+						yield return addr + 7;
 						break;
 				}
 			}
@@ -649,6 +677,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				WatchSize.Byte => (sbyte) val,
 				WatchSize.Word => (short) val,
 				WatchSize.DWord => (int) val,
+				WatchSize.QWord => (long) val,
 				_ => (sbyte) val,
 			};
 		}

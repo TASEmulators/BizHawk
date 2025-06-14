@@ -126,4 +126,41 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		public void ClearChangeCount() => ChangeCount = 0;
 	}
+
+	internal sealed class MiniQWordWatchDetailed : MiniQWordWatch, IMiniWatchDetails
+	{
+		private ulong _current;
+
+		public MiniQWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian) : base(domain, addr, bigEndian)
+			=> Previous = _current = GetValueInner(Address, domain, bigEndian: bigEndian);
+
+		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+			=> Previous = _current;
+
+		public ulong Current => _current;
+
+		public int ChangeCount { get; private set; }
+
+		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
+		{
+			var newValue = GetValueInner(Address, domain, bigEndian: bigEndian);
+			if (newValue != _current)
+			{
+				ChangeCount++;
+				if (type is PreviousType.LastChange)
+				{
+					Previous = _current;
+				}
+			}
+
+			if (type is PreviousType.LastFrame)
+			{
+				Previous = _current;
+			}
+
+			_current = newValue;
+		}
+
+		public void ClearChangeCount() => ChangeCount = 0;
+	}
 }
