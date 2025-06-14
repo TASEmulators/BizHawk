@@ -37,6 +37,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => ByteWatch.ValidTypes,
 						WatchSize.Word => WordWatch.ValidTypes,
 						WatchSize.DWord => DWordWatch.ValidTypes,
+						WatchSize.QWord => QWordWatch.ValidTypes,
 						_ => [ ],
 					};
 					if (!validTypes.Contains(_type))
@@ -66,6 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.Word => ushort.MaxValue,
 				WatchSize.DWord => uint.MaxValue,
+//				WatchSize.QWord => ulong.MaxValue,
 				_ => byte.MaxValue,
 			};
 
@@ -74,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.Word => short.MaxValue,
 				WatchSize.DWord => int.MaxValue,
+//				WatchSize.QWord => long.MaxValue,
 				_ => sbyte.MaxValue,
 			};
 
@@ -82,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.Word => short.MinValue,
 				WatchSize.DWord => int.MinValue,
+//				WatchSize.QWord => long.MinValue,
 				_ => sbyte.MinValue,
 			};
 
@@ -144,6 +148,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 8,
 						WatchSize.Word => 16,
 						WatchSize.DWord => 32,
+						WatchSize.QWord => 8 * sizeof(ulong),
 						_ => 8,
 					};
 					break;
@@ -153,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 2,
 						WatchSize.Word => 4,
 						WatchSize.DWord => 8,
+						WatchSize.QWord => 2 * sizeof(ulong),
 						_ => 2,
 					};
 					break;
@@ -162,6 +168,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 4,
 						WatchSize.Word => 6,
 						WatchSize.DWord => 11,
+						WatchSize.QWord => long.MinValue.ToString(CultureInfo.InvariantCulture).Length, //TODO hardcode
 						_ => 4,
 					};
 					break;
@@ -171,6 +178,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 3,
 						WatchSize.Word => 5,
 						WatchSize.DWord => 10,
+						WatchSize.QWord => ulong.MaxValue.ToString(CultureInfo.InvariantCulture).Length, //TODO hardcode
 						_ => 3,
 					};
 					break;

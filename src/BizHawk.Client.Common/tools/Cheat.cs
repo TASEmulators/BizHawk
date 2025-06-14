@@ -105,6 +105,7 @@ namespace BizHawk.Client.Common
 					WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_val),
 					WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_val),
 					WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_val),
+					WatchSize.QWord => ((QWordWatch) _watch).FormatValue(unchecked((ulong) _val)),
 					WatchSize.Separator => "",
 					_ => string.Empty,
 				};
@@ -120,6 +121,7 @@ namespace BizHawk.Client.Common
 						WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_compare.Value),
 						WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_compare.Value),
 						WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_compare.Value),
+						WatchSize.QWord => ((QWordWatch) _watch).FormatValue(unchecked((ulong) _compare.Value)),
 						WatchSize.Separator => "",
 						_ => string.Empty,
 					};
@@ -186,6 +188,9 @@ namespace BizHawk.Client.Common
 						case WatchSize.DWord:
 							_watch.Poke(((DWordWatch)_watch).FormatValue((uint)_val));
 							break;
+						case WatchSize.QWord:
+							_watch.Poke(((QWordWatch) _watch).FormatValue(unchecked((ulong) _val)));
+							break;
 					}
 				}
 
@@ -237,6 +242,8 @@ namespace BizHawk.Client.Common
 					return addr == _watch.Address || addr == _watch.Address + 1;
 				case WatchSize.DWord:
 					return addr >= _watch.Address && addr <= _watch.Address + 3;
+				case WatchSize.QWord:
+					return _watch.Address <= addr && addr <= _watch.Address + (sizeof(ulong) - 1);
 			}
 		}
 
