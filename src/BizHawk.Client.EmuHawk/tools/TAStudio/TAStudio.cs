@@ -51,6 +51,8 @@ namespace BizHawk.Client.EmuHawk
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
 		/// </summary>
 		public int RestorePositionFrame { get; private set; }
+		private bool _shouldMoveGreenArrow;
+		private bool _seekingByEdit;
 
 		private int _seekingTo = -1;
 
