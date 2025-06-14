@@ -252,7 +252,7 @@ namespace BizHawk.Client.Common
 		/// Gets a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="Watch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
-		public abstract IEnumerable<WatchDisplayType> AvailableTypes();
+		public abstract IReadOnlyList<WatchDisplayType> AvailableTypes();
 
 		/// <summary>
 		/// Resets the previous value; set it to the current one

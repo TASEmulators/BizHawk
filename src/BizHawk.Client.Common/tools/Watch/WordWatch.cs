@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets an Enumeration of <see cref="WatchDisplayType"/>s that are valid for a <see cref="WordWatch"/>
 		/// </summary>
-		public static IEnumerable<WatchDisplayType> ValidTypes { get; } = [
+		public static readonly IReadOnlyList<WatchDisplayType> ValidTypes = [
 			WatchDisplayType.Unsigned,
 			WatchDisplayType.Signed,
 			WatchDisplayType.Hex,
@@ -47,7 +47,8 @@ namespace BizHawk.Client.Common
 		/// Get a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="WordWatch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
-		public override IEnumerable<WatchDisplayType> AvailableTypes() => ValidTypes;
+		public override IReadOnlyList<WatchDisplayType> AvailableTypes()
+			=> ValidTypes;
 
 		/// <summary>
 		/// Reset the previous value; set it to the current one
