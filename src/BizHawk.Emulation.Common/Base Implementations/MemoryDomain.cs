@@ -60,6 +60,24 @@ namespace BizHawk.Emulation.Common
 				: BinaryPrimitives.ReadUInt32LittleEndian(scratch);
 		}
 
+		public virtual ulong PeekUlong(long addr, bool bigEndian)
+		{
+			ReadOnlySpan<byte> scratch = stackalloc byte[]
+			{
+				PeekByte(addr),
+				PeekByte(addr + 1),
+				PeekByte(addr + 2),
+				PeekByte(addr + 3),
+				PeekByte(addr + 4),
+				PeekByte(addr + 5),
+				PeekByte(addr + 6),
+				PeekByte(addr + 7),
+			};
+			return bigEndian
+				? BinaryPrimitives.ReadUInt64BigEndian(scratch)
+				: BinaryPrimitives.ReadUInt64LittleEndian(scratch);
+		}
+
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
 			if (bigEndian)
@@ -83,6 +101,14 @@ namespace BizHawk.Emulation.Common
 			PokeByte(addr + 1, scratch[1]);
 			PokeByte(addr + 2, scratch[2]);
 			PokeByte(addr + 3, scratch[3]);
+		}
+
+		public virtual void PokeUlong(long addr, ulong val, bool bigEndian)
+		{
+			Span<byte> scratch = stackalloc byte[8];
+			if (bigEndian) BinaryPrimitives.WriteUInt64BigEndian(scratch, val);
+			else BinaryPrimitives.WriteUInt64LittleEndian(scratch, val);
+			for (var i = 0; i < scratch.Length; i++) PokeByte(addr + i, scratch[i]);
 		}
 
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
@@ -151,6 +177,8 @@ namespace BizHawk.Emulation.Common
 					values[i] = PeekUint(start, bigEndian);
 			}
 		}
+
+		//TODO BulkPeekUlong?
 
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
 
