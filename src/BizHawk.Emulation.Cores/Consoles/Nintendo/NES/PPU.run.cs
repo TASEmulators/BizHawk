@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte read_value;
 		public int soam_index;
 		public int soam_index_prev;
-		public int soam_m_index;
 		public int oam_index;
 		public int oam_index_aux;
 		public int soam_index_aux;
@@ -219,7 +218,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					spr_true_count = 0;
 					soam_index = 0;
-					soam_m_index = 0;
 					oam_index_aux = 0;
 					oam_index = 0;
 					is_even_cycle = true;
@@ -297,10 +295,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						if (is_even_cycle)
 						{
-							if ((oam_index + soam_m_index) < 256)
-								read_value = OAM[oam_index + soam_m_index];
-							else
-								read_value = OAM[oam_index + soam_m_index - 256];
+							read_value = OAM[oam_index & 0xFF];
 						}
 						else if (sprite_eval_write)
 						{
@@ -316,21 +311,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								{
 									//a flag gets set if sprite zero is in range
 									if (oam_index == reg_2003) { sprite_zero_in_range = true; }
-
+									oam_index++;
 									spr_true_count++;
-									soam_m_index++;
 								}
 								else if (spr_true_count > 0 && spr_true_count < 4)
 								{
-									soam[soam_index * 4 + soam_m_index] = read_value;
+									soam[soam_index * 4 + spr_true_count] = read_value;
 
-									soam_m_index++;
-
+									oam_index++;
 									spr_true_count++;
 									if (spr_true_count == 4)
 									{
-										oam_index += 4;
 										soam_index++;
+										// The X coordinate makes the same checks as the Y position to see if "read_value" is in range of the scanline.
+										if (!(yp >= read_value && yp < read_value + spriteHeight) && spr_true_count == 4)
+										{
+											// and if it isn't, clear the lower 2 bits of the OAM index.
+											oam_index &= 0x1FC; // This is an integer instead of a byte. Bit 8 is used to check if the OAM address overflows.
+										}
 										if (soam_index == 8)
 										{
 											// oam_index could be pathologically misaligned at this point, so we have to find the next
@@ -338,13 +336,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 											oam_index_aux = (oam_index % 4) * 4;
 										}
 
-										soam_m_index = 0;
 										spr_true_count = 0;
 									}
 								}
 								else
 								{
+									// This object is out of the range of the scanline
 									oam_index += 4;
+									oam_index &= 0x1FC;
 								}
 							}
 							else
@@ -357,30 +356,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
 								{
 									spr_true_count++;
-									soam_m_index++;
 								}
 								else if (spr_true_count > 0 && spr_true_count < 4)
 								{
-									soam_m_index++;
-
+									oam_index++;
 									spr_true_count++;
 									if (spr_true_count == 4)
 									{
-										oam_index += 4;
+										if (!(yp >= read_value && yp < read_value + spriteHeight) && spr_true_count == 4)
+										{
+											oam_index &= 0x1FC;
+										}
 										soam_index++;
-										soam_m_index = 0;
 										spr_true_count = 0;
 									}
 								}
 								else
 								{
-									oam_index += 4;
-									if (soam_index == 8)
-									{
-										soam_m_index++; // glitchy increment
-										soam_m_index &= 3;
-									}
-
+									oam_index += 5; // glitchy increment
 								}
 
 								read_value = soam[0]; //writes change to reads
