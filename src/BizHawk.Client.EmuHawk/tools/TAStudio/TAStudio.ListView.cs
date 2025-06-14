@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
-		private int? _seekStartFrame;
+		private int _seekStartFrame;
 		private bool _pauseAfterSeeking;
 
 		private readonly Dictionary<string, bool> _alternateRowColor = new();
@@ -80,13 +80,12 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekingTo = frame;
 			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
-			int? diff = _seekingTo - _seekStartFrame;
 
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			MainForm.UnpauseEmulator();
 
-			if (diff > TasView.VisibleRows)
+			if (_seekingTo - _seekStartFrame > 1)
 			{
 				MessageStatusLabel.Text = "Seeking...";
 				ProgressBar.Visible = true;
