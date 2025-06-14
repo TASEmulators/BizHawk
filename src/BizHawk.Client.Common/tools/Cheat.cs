@@ -17,10 +17,17 @@ namespace BizHawk.Client.Common
 
 		private readonly Watch _watch;
 		private int? _compare;
-		private int _val;
+
+		private long _val;
+
 		private bool _enabled;
 
-		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, CompareType comparisonType = CompareType.None)
+		public Cheat(
+			Watch watch,
+			long value,
+			int? compare = null,
+			bool enabled = true,
+			CompareType comparisonType = CompareType.None)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -67,7 +74,8 @@ namespace BizHawk.Client.Common
 
 		public long? Address => _watch.Address;
 
-		public int? Value => IsSeparator ? null : _val;
+		public long? Value
+			=> IsSeparator ? null : _val;
 
 		public bool? BigEndian => IsSeparator ? null : _watch.BigEndian;
 
@@ -232,7 +240,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void PokeValue(int val)
+		public void PokeValue(long val)
 		{
 			if (!IsSeparator)
 			{
@@ -245,7 +253,7 @@ namespace BizHawk.Client.Common
 			if (!IsSeparator)
 			{
 				_val++;
-				if (_val > _watch.MaxValue)
+				if (unchecked((ulong) _val) > _watch.MaxValue)
 				{
 					_val = 0;
 				}
@@ -260,10 +268,7 @@ namespace BizHawk.Client.Common
 			if (!IsSeparator)
 			{
 				_val--;
-				if ((uint)_val > _watch.MaxValue)
-				{
-					_val = (int)_watch.MaxValue;
-				}
+				if (unchecked((ulong) _val) > _watch.MaxValue) _val = unchecked((long) _watch.MaxValue);
 
 				Pulse();
 				Changes();

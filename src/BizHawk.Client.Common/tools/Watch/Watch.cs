@@ -129,7 +129,16 @@ namespace BizHawk.Client.Common
 		/// <param name="prev">Previous value</param>
 		/// <param name="changeCount">Number of changes occurs in current <see cref="Watch"/></param>
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, WatchDisplayType type, bool bigEndian, string note = "", long value = 0, long prev = 0, int changeCount = 0)
+		public static Watch GenerateWatch(
+			MemoryDomain domain,
+			long address,
+			WatchSize size,
+			WatchDisplayType type,
+			bool bigEndian,
+			string note = "",
+			long value = 0,
+			long prev = 0,
+			int changeCount = 0)
 		{
 			return size switch
 			{
@@ -430,12 +439,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the maximum possible value
 		/// </summary>
-		public abstract uint MaxValue { get; }
+		public abstract ulong MaxValue { get; }
 
 		/// <summary>
 		/// Gets the current value
 		/// </summary>
-		public abstract int Value { get; }
+		public abstract long Value { get; }
 
 		/// <summary>
 		/// Gets a string representation of the current value
@@ -458,7 +467,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the previous value
 		/// </summary>
-		public abstract uint Previous { get; }
+		public abstract ulong Previous { get; }
 
 		/// <summary>
 		/// Gets a string representation of the previous value

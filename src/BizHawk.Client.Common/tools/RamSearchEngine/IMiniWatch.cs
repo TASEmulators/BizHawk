@@ -9,9 +9,10 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	internal interface IMiniWatch
 	{
 		long Address { get; }
-		uint Previous { get; }
 
-		uint GetValue(MemoryDomain domain, bool bigEndian);
+		ulong Previous { get; }
+
+		ulong GetValue(MemoryDomain domain, bool bigEndian);
 
 		void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian);
 		bool IsValid(MemoryDomain domain);
@@ -21,18 +22,18 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	{
 		public long Address { get; }
 
-		public uint Previous { get; protected set; }
+		public ulong Previous { get; protected set; }
 
-		protected MiniWatchBase(long addr, uint prevValue)
+		protected MiniWatchBase(long addr, ulong prevValue)
 		{
 			Address = addr;
 			Previous = prevValue;
 		}
 
-		public uint GetValue(MemoryDomain domain, bool bigEndian)
+		public ulong GetValue(MemoryDomain domain, bool bigEndian)
 			=> IsValid(domain) ? GetValueInner(Address, domain, bigEndian: bigEndian) : default;
 
-		protected abstract uint GetValueInner(long address, MemoryDomain domain, bool bigEndian);
+		protected abstract ulong GetValueInner(long address, MemoryDomain domain, bool bigEndian);
 
 		public bool IsValid(MemoryDomain domain)
 			=> IsValid(Address, domain);
@@ -48,7 +49,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public MiniByteWatch(MemoryDomain domain, long addr)
 			: base(addr: addr, prevValue: domain.PeekByte(addr)) {}
 
-		protected override uint GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+		protected override ulong GetValueInner(long address, MemoryDomain domain, bool bigEndian)
 			=> domain.PeekByte(address);
 
 		protected override bool IsValid(long address, MemoryDomain domain)
@@ -60,7 +61,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public MiniWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 			: base(addr: addr, prevValue: domain.PeekUshort(addr, bigEndian: bigEndian)) {}
 
-		protected override uint GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+		protected override ulong GetValueInner(long address, MemoryDomain domain, bool bigEndian)
 			=> domain.PeekUshort(address, bigEndian);
 
 		protected override bool IsValid(long address, MemoryDomain domain)
@@ -72,7 +73,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
 			: base(addr: addr, prevValue: domain.PeekUint(addr, bigEndian: bigEndian)) {}
 
-		protected override uint GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+		protected override ulong GetValueInner(long address, MemoryDomain domain, bool bigEndian)
 			=> domain.PeekUint(address, bigEndian);
 
 		protected override bool IsValid(long address, MemoryDomain domain)

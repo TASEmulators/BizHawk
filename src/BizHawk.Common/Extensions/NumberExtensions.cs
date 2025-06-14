@@ -247,7 +247,15 @@ namespace BizHawk.Common.NumberExtensions
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a float</summary>
 		public static float ReinterpretAsF32(uint value) => Unsafe.As<uint, float>(ref value);
 
+		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a double</summary>
+		public static double ReinterpretAsF64(ulong value)
+			=> Unsafe.As<ulong, double>(ref value);
+
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a uint</summary>
 		public static uint ReinterpretAsUInt32(float value) => Unsafe.As<float, uint>(ref value);
+
+		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a ulong</summary>
+		public static ulong ReinterpretAsUInt64(double value)
+			=> Unsafe.As<double, ulong>(ref value);
 	}
 }
