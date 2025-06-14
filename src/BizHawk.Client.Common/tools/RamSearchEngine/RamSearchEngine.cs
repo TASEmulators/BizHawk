@@ -655,14 +655,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			{
 				return detailedWatch.Current;
 			}
-
-			return _settings.Size switch
-			{
-				WatchSize.Byte => MiniByteWatch.GetByte(watch.Address, Domain),
-				WatchSize.Word => MiniWordWatch.GetUshort(watch.Address, Domain, _settings.BigEndian),
-				WatchSize.DWord => MiniDWordWatch.GetUint(watch.Address, Domain, _settings.BigEndian),
-				_ => MiniByteWatch.GetByte(watch.Address, Domain),
-			};
+			return watch.GetValue(Domain, bigEndian: _settings.BigEndian);
 		}
 
 		private bool CanDoCompareType(Compare compareType)

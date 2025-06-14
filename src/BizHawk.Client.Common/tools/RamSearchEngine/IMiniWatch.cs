@@ -10,124 +10,72 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	{
 		long Address { get; }
 		uint Previous { get; }
+
+		uint GetValue(MemoryDomain domain, bool bigEndian);
+
 		void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian);
 		bool IsValid(MemoryDomain domain);
 	}
 
-	internal class MiniByteWatch : IMiniWatch
+	internal abstract class MiniWatchBase : IMiniWatch
 	{
 		public long Address { get; }
-		private protected byte _previous;
 
+		public uint Previous { get; protected set; }
+
+		protected MiniWatchBase(long addr, uint prevValue)
+		{
+			Address = addr;
+			Previous = prevValue;
+		}
+
+		public uint GetValue(MemoryDomain domain, bool bigEndian)
+			=> IsValid(domain) ? GetValueInner(Address, domain, bigEndian: bigEndian) : default;
+
+		protected abstract uint GetValueInner(long address, MemoryDomain domain, bool bigEndian);
+
+		public bool IsValid(MemoryDomain domain)
+			=> IsValid(Address, domain);
+
+		protected abstract bool IsValid(long address, MemoryDomain domain);
+
+		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
+			=> Previous = GetValueInner(Address, domain, bigEndian: bigEndian);
+	}
+
+	internal class MiniByteWatch : MiniWatchBase
+	{
 		public MiniByteWatch(MemoryDomain domain, long addr)
-		{
-			Address = addr;
-			_previous = GetByte(Address, domain);
-		}
+			: base(addr: addr, prevValue: domain.PeekByte(addr)) {}
 
-		public uint Previous => _previous;
+		protected override uint GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+			=> domain.PeekByte(address);
 
-		public bool IsValid(MemoryDomain domain)
-		{
-			return IsValid(Address, domain);
-		}
-
-		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
-		{
-			_previous = GetByte(Address, domain);
-		}
-
-		public static bool IsValid(long address, MemoryDomain domain)
-		{
-			return address < domain.Size;
-		}
-
-		public static byte GetByte(long address, MemoryDomain domain)
-		{
-			if (!IsValid(address, domain))
-			{
-				return 0;
-			}
-
-			return domain.PeekByte(address);
-		}
+		protected override bool IsValid(long address, MemoryDomain domain)
+			=> 0L <= address && address < domain.Size;
 	}
 
-	internal class MiniWordWatch : IMiniWatch
+	internal class MiniWordWatch : MiniWatchBase
 	{
-		public long Address { get; }
-		private protected ushort _previous;
-
 		public MiniWordWatch(MemoryDomain domain, long addr, bool bigEndian)
-		{
-			Address = addr;
-			_previous = GetUshort(Address, domain, bigEndian);
-		}
+			: base(addr: addr, prevValue: domain.PeekUshort(addr, bigEndian: bigEndian)) {}
 
-		public uint Previous => _previous;
+		protected override uint GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+			=> domain.PeekUshort(address, bigEndian);
 
-		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
-		{
-			_previous = GetUshort(Address, domain, bigEndian);
-		}
-
-		public bool IsValid(MemoryDomain domain)
-		{
-			return IsValid(Address, domain);
-		}
-
-		public static bool IsValid(long address, MemoryDomain domain)
-		{
-			return address < (domain.Size - 1);
-		}
-
-		public static ushort GetUshort(long address, MemoryDomain domain, bool bigEndian)
-		{
-			if (!IsValid(address, domain))
-			{
-				return 0;
-			}
-
-			return domain.PeekUshort(address, bigEndian);
-		}
+		protected override bool IsValid(long address, MemoryDomain domain)
+			=> 0L <= address && address <= domain.Size - sizeof(ushort);
 	}
 
-	internal class MiniDWordWatch : IMiniWatch
+	internal class MiniDWordWatch : MiniWatchBase
 	{
-		public long Address { get; }
-		private protected uint _previous;
-
 		public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
-		{
-			Address = addr;
-			_previous = GetUint(Address, domain, bigEndian);
-		}
+			: base(addr: addr, prevValue: domain.PeekUint(addr, bigEndian: bigEndian)) {}
 
-		public uint Previous => _previous;
+		protected override uint GetValueInner(long address, MemoryDomain domain, bool bigEndian)
+			=> domain.PeekUint(address, bigEndian);
 
-		public virtual void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
-		{
-			_previous = GetUint(Address, domain, bigEndian);
-		}
-
-		public bool IsValid(MemoryDomain domain)
-		{
-			return IsValid(Address, domain);
-		}
-
-		public static bool IsValid(long address, MemoryDomain domain)
-		{
-			return address < (domain.Size - 3);
-		}
-
-		public static uint GetUint(long address, MemoryDomain domain, bool bigEndian)
-		{
-			if (!IsValid(address, domain))
-			{
-				return 0;
-			}
-
-			return domain.PeekUint(address, bigEndian);
-		}
+		protected override bool IsValid(long address, MemoryDomain domain)
+			=> 0L <= address && address <= domain.Size - sizeof(uint);
 	}
 }
