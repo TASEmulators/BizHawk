@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: what about 64 bit registers?
-		[LuaMethodExample("local inemuget = emu.getregister( emu.getregisters( )[ 0 ] );")]
+		[LuaMethodExample("local regname = next( emu.getregisters( ) ); -- an arbitrary register name\r\nlocal value = emu.getregister( regname );")]
 		[LuaMethod("getregister", "returns the value of a cpu register or flag specified by name. For a complete list of possible registers or flags for a given core, use getregisters")]
 		public int GetRegister(string name)
 			=> (int?) APIs.Emulation.GetRegister(name) ?? 0;
@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 		public LuaTable GetRegisters()
 			=> _th.DictToTable(APIs.Emulation.GetRegisters());
 
-		[LuaMethodExample("emu.setregister( emu.getregisters( )[ 0 ], -1000 );")]
+		[LuaMethodExample("local regname = next( emu.getregisters( ) ); -- an arbitrary register name\r\nemu.setregister( regname, -1000 );")]
 		[LuaMethod("setregister", "sets the given register name to the given value")]
 		public void SetRegister(string register, int value)
 			=> APIs.Emulation.SetRegister(register, value);
