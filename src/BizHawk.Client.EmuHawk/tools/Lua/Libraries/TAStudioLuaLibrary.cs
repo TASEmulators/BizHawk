@@ -143,30 +143,30 @@ namespace BizHawk.Client.EmuHawk
 					throw new InvalidOperationException("tastudio.setplayback() is not allowed during input/memory callbacks");
 				}
 
-				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
 				if (frame is long frameNumber)
 				{
 					f = (int)frameNumber;
 				}
+				else if (frame is double frameNumber2)
+				{
+					f = (int)frameNumber2;
+				}
 				else
 				{
-					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
-					if (f == -1)
-					{
-						return;
-					}
+					int markerIndex = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
+					if (markerIndex == -1) return;
 
-					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
+					f = Tastudio.CurrentTasMovie.Markers[markerIndex].Frame;
 				}
 
 				if (f >= 0)
 				{
+					_luaLibsImpl.IsUpdateSupressed = true;
 					Tastudio.GoToFrame(f);
+					_luaLibsImpl.IsUpdateSupressed = false;
 				}
-
-				_luaLibsImpl.IsUpdateSupressed = false;
 			}
 		}
 
