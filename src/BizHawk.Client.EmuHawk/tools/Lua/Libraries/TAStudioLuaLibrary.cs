@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
 				}
 
-				if (0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(f))
+				if (f >= 0)
 				{
 					Tastudio.GoToFrame(f);
 				}
