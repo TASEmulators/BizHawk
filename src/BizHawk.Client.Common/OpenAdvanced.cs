@@ -37,6 +37,22 @@ namespace BizHawk.Client.Common
 
 	public static class OpenAdvancedSerializer
 	{
+		/// <summary>Strips a <see cref="OpenAdvancedTypes">kind</see> prefix from <paramref name="filePath"/></summary>
+		/// <remarks><see langword="true"/> iff was able to parse a regular filename</remarks>
+		public static bool ParseRecentFile(ref string filePath, out string caption)
+		{
+			caption = filePath;
+			if (!filePath.StartsWith('*')) return true;
+			var oa = ParseWithLegacy(filePath);
+			caption = oa.DisplayName;
+			if (oa is OpenAdvanced_OpenRom openRom)
+			{
+				filePath = openRom.Path;
+				return true;
+			}
+			return false;
+		}
+
 		public static IOpenAdvanced ParseWithLegacy(string text)
 		{
 			return text.StartsWith('*')

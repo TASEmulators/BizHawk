@@ -42,18 +42,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					//sentinel for newer format OpenAdvanced type code
 					if (romLoading)
 					{
-						if (filename.StartsWith('*'))
-						{
-							var oa = OpenAdvancedSerializer.ParseWithLegacy(filename);
-							caption = oa.DisplayName;
-
-							crazyStuff = false;
-							if (oa is OpenAdvanced_OpenRom openRom)
-							{
-								crazyStuff = true;
-								physicalPath = openRom.Path;
-							}
-						}
+						crazyStuff = OpenAdvancedSerializer.ParseRecentFile(filePath: ref physicalPath, caption: out caption);
 					}
 
 					// TODO - do TSMI and TSDD need disposing? yuck
@@ -180,6 +169,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			var clearItem = new ToolStripMenuItem { Text = "&Clear", Enabled = !recent.Frozen };
 			clearItem.Click += (o, ev) => recent.Clear();
 			items.Add(clearItem);
+			var clearMovedItem = new ToolStripMenuItem { Text = "&Clear Moved/Deleted", Enabled = !recent.Frozen };
+			clearMovedItem.Click += (_, _) => recent.ClearMoved();
+			items.Add(clearMovedItem);
 
 			var freezeItem = new ToolStripMenuItem
 			{
