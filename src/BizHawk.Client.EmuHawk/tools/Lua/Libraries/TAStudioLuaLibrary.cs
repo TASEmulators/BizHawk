@@ -143,30 +143,32 @@ namespace BizHawk.Client.EmuHawk
 					throw new InvalidOperationException("tastudio.setplayback() is not allowed during input/memory callbacks");
 				}
 
-				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
 				if (frame is long frameNumber)
 				{
 					f = (int)frameNumber;
 				}
+				else if (frame is double frameNumber2)
+				{
+					f = (int)frameNumber2;
+				}
 				else
 				{
-					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
-					if (f == -1)
+					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string) frame);
+					if (f != -1)
 					{
-						return;
+						f = Tastudio.CurrentTasMovie.Markers[f].Frame;
 					}
-
-					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
 				}
 
-				if (0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(f))
+				if (f >= 0)
 				{
-					Tastudio.GoToFrame(f, true);
+					_luaLibsImpl.IsUpdateSupressed = true;
+					Tastudio.GoToFrame(f);
+					_luaLibsImpl.IsUpdateSupressed = false;
 				}
 
-				_luaLibsImpl.IsUpdateSupressed = false;
 			}
 		}
 
@@ -300,6 +302,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("applyinputchanges", "")]
 		public void ApplyInputChanges()
 		{
+			if (_changeList.Count == 0)
+			{
+				return;
+			}
+
 			if (Engaged())
 			{
 				if (_luaLibsImpl.IsInInputOrMemoryCallback)
@@ -309,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_luaLibsImpl.IsUpdateSupressed = true;
 
-				if (_changeList.Count > 0)
+				Tastudio.BatchEdit(() =>
 				{
 					int size = _changeList.Count;
 
@@ -327,7 +334,6 @@ namespace BizHawk.Client.EmuHawk
 										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}
-								Tastudio.RefreshForInputChange(_changeList[i].Frame);
 								break;
 							case LuaChangeTypes.InsertFrames:
 								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
@@ -341,9 +347,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
-					Tastudio.JumpToGreenzone();
-					Tastudio.DoAutoRestore();
-				}
+				});
 
 				_luaLibsImpl.IsUpdateSupressed = false;
 			}
