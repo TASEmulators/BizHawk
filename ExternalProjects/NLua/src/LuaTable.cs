@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using NLua.Extensions;
 using NLua.Native;
@@ -8,6 +9,15 @@ namespace NLua
 {
 	public class LuaTable : LuaBase
 	{
+		public ICollection/*?*/ Keys
+			=> Wrapped?.Keys;
+
+		public ICollection Values
+			=> Wrapped?.Values as ICollection ?? Array.Empty<object/*?*/>();
+
+		private Dictionary<object, object/*?*/>/*?*/ Wrapped
+			=> TryGet(out var lua) ? lua.GetTableDict(this) : null;
+
 		public LuaTable(int reference, Lua interpreter): base(reference, interpreter)
 		{
 		}
@@ -46,30 +56,8 @@ namespace NLua
 			}
 		}
 
-		public IDictionaryEnumerator GetEnumerator()
-		{
-			if (!TryGet(out var lua))
-			{
-				return null;
-			}
-
-			return lua.GetTableDict(this).GetEnumerator();
-		}
-
-		public ICollection Keys => !TryGet(out var lua) ? null : lua.GetTableDict(this).Keys;
-
-		public ICollection Values
-		{
-			get
-			{
-				if (!TryGet(out var lua))
-				{
-					return Array.Empty<object>();
-				}
-
-				return lua.GetTableDict(this).Values;
-			}
-		}
+		public IDictionaryEnumerator/*?*/ GetEnumerator()
+			=> Wrapped?.GetEnumerator();
 
 		/// <summary>
 		/// Gets an string fields of a table ignoring its metatable,
