@@ -7,13 +7,16 @@ using NLua.Native;
 
 namespace NLua
 {
-	public class LuaTable : LuaBase
+	public class LuaTable : LuaBase, IReadOnlyDictionary<object, object>
 	{
-		public ICollection/*?*/ Keys
+		public int Count
+			=> Wrapped?.Count ?? default;
+
+		public IEnumerable<object>/*?*/ Keys
 			=> Wrapped?.Keys;
 
-		public ICollection Values
-			=> Wrapped?.Values as ICollection ?? Array.Empty<object/*?*/>();
+		public IEnumerable<object/*?*/> Values
+			=> Wrapped?.Values as IReadOnlyCollection<object/*?*/> ?? Array.Empty<object/*?*/>();
 
 		private Dictionary<object, object/*?*/>/*?*/ Wrapped
 			=> TryGet(out var lua) ? lua.GetTableDict(this) : null;
@@ -56,8 +59,17 @@ namespace NLua
 			}
 		}
 
-		public IDictionaryEnumerator/*?*/ GetEnumerator()
-			=> Wrapped?.GetEnumerator();
+		public bool ContainsKey(object key)
+			=> Wrapped?.ContainsKey(key) ?? false;
+
+		public Dictionary<object, object/*?*/>.Enumerator GetEnumerator()
+			=> Wrapped?.GetEnumerator() ?? default;
+
+		IEnumerator<KeyValuePair<object, object>> IEnumerable<KeyValuePair<object, object>>.GetEnumerator()
+			=> GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator()
+			=> GetEnumerator();
 
 		/// <summary>
 		/// Gets an string fields of a table ignoring its metatable,
@@ -74,5 +86,12 @@ namespace NLua
 
 		public override string ToString()
 			=> "table";
+
+		public bool TryGetValue(object key, out object/*?*/ value)
+		{
+			if (Wrapped is Dictionary<object, object/*?*/> dict) return dict.TryGetValue(key, out value);
+			value = default;
+			return default;
+		}
 	}
 }
