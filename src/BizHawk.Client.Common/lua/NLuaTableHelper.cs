@@ -1,7 +1,7 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 
 using NLua;
 
@@ -28,7 +28,35 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
-		public IEnumerable<T> EnumerateValues<T>(LuaTable table) => table.Values.Cast<T>();
+		public ArraySegment<T> EnumerateValues<T>(LuaTable table)
+		{
+			var n = table.Count;
+			if (n is 0) return [ ];
+			var values = new T[n];
+			var seen = ArrayPool<bool>.Shared.Rent(n);
+			seen.AsSpan(start: 0, length: n).Fill(false);
+			int cutoff;
+			try
+			{
+				foreach (var (k, v) in table) if (k is long i && 1 <= i && i <= n)
+				{
+					values[i - 1] = (T) v;
+					seen[i - 1] = true;
+				}
+				cutoff = Array.IndexOf(seen, value: false);
+			}
+			finally
+			{
+				ArrayPool<bool>.Shared.Return(seen);
+			}
+			if (cutoff < 0)
+			{
+				_logCallback("no numeric keys");
+				return [ ];
+			}
+			if (cutoff < n) _logCallback($"ignoring {n - cutoff} entries");
+			return new(values, offset: 0, count: cutoff);
+		}
 
 		public LuaTable ListToTable<T>(IReadOnlyList<T> list, int indexFrom = 1)
 		{
