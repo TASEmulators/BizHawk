@@ -632,7 +632,8 @@ namespace BizHawk.Client.EmuHawk
 					ControllerConfig => AllowInput.All,
 					HotkeyConfig => AllowInput.All,
 					LuaWinform { BlocksInputWhenFocused: false } => AllowInput.All,
-					_ => AllowInput.None,
+					IExternalToolForm => AllowInput.None,
+					_ => Config.AcceptBackgroundInput ? AllowInput.OnlyController : AllowInput.None,
 				}
 			);
 			InitControls();
