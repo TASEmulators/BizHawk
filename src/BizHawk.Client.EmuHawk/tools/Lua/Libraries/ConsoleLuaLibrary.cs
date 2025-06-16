@@ -67,8 +67,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string SerializeTable(LuaTable lti)
 			{
-				var entries = ((IEnumerator<KeyValuePair<object, object/*?*/>>) lti.GetEnumerator()).AsEnumerable()
-					.ToArray();
+				var entries = lti.ToArray();
 				return string.Concat(entries.All(static kvp => kvp.Key is long)
 					? entries.OrderBy(static kvp => (long) kvp.Key, Comparer<long>.Default)
 						.Select(static kvp => $"{kvp.Key}: \"{kvp.Value}\"\n")
