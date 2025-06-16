@@ -101,8 +101,8 @@ namespace BizHawk.Tests.Client.Common.Lua
 			}
 			else
 			{
-				var t = _th.EnumerateEntries<object, object>(o!);
-				var expected = _th.EnumerateEntries<object, object>((NLua.LuaTable)ExpectedValue);
+				var t = o!;
+				var expected = (NLua.LuaTable) ExpectedValue;
 				Assert.IsTrue(!t.Except(expected).Any() && !expected.Except(t).Any());
 			}
 		}

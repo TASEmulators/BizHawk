@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		public void Set(LuaTable buttons, int? controller = null)
 		{
 			var dict = new Dictionary<string, bool>();
-			foreach (var (k, v) in _th.EnumerateEntries<object, object>(buttons))
+			foreach (var (k, v) in buttons)
 			{
 				dict[k.ToString()] = Convert.ToBoolean(v); // Accepts 1/0 or true/false
 			}
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 		public void SetAnalog(LuaTable controls, int? controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
-			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
+			foreach (var (k, v) in controls)
 			{
 				dict[k.ToString()] = long.TryParse(v.ToString(), out var d) ? (int) d : null;
 			}

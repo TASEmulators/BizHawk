@@ -28,9 +28,6 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
-		public IEnumerable<(TKey Key, TValue Value)> EnumerateEntries<TKey, TValue>(LuaTable table)
-			=> table.Keys.Cast<TKey>().Select(k => (k, (TValue) table[k]));
-
 		public IEnumerable<T> EnumerateValues<T>(LuaTable table) => table.Values.Cast<T>();
 
 		public LuaTable ListToTable<T>(IReadOnlyList<T> list, int indexFrom = 1)

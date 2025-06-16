@@ -77,8 +77,9 @@ namespace BizHawk.Client.Common
 			var d = Domain;
 			if (d.CanPoke())
 			{
-				foreach (var (addr, v) in _th.EnumerateEntries<long, long>(memoryblock))
+				foreach (var (addr0, v) in memoryblock)
 				{
+					var addr = (long) addr0;
 					if (addr < d.Size)
 					{
 						d.PokeByte(addr, (byte) v);
@@ -105,9 +106,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the main memory).")]
 		public void WriteBytesAsDict(LuaTable addrMap)
 		{
-			foreach (var (addr, v) in _th.EnumerateEntries<long, long>(addrMap))
+			foreach (var (addr, v) in addrMap)
 			{
-				APIs.Memory.WriteByte(addr, (uint) v, MainMemName);
+				APIs.Memory.WriteByte((long) addr, (uint) v, MainMemName);
 			}
 		}
 
