@@ -2053,7 +2053,12 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						var oldRam = Emulator.AsSaveRam().CloneSaveRam();
-						Debug.Assert(oldRam is not null, $"Tried loading existing saveram, but {nameof(ISaveRam.CloneSaveRam)} returned null!");
+						if (oldRam is null)
+						{
+							// we have a SaveRAM file, but the current core does not have save ram.
+							// just skip loading the saveram file in that case
+							return;
+						}
 
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
