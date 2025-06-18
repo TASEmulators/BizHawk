@@ -82,8 +82,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string ReadName => Name;
-		public string WriteName => Ext != null ? Name + '.' + Ext : Name;
+		public string FileName => Ext != null ? Name + '.' + Ext : Name;
 
 		public string Name { get; protected set; }
 		public string Ext { get; protected set; }
