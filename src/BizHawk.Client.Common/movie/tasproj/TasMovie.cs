@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 		public TasLagLog LagLog { get; } = new TasLagLog();
 
 		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager { get; private set; }
+		public IStateManager<ZwinderStateManagerSettings> TasStateManager { get; set; }
 
 		public Action<int> GreenzoneInvalidated { get; set; }
 
