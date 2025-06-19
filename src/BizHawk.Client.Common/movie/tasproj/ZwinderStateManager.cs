@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderStateManager : IStateManager, IDisposable
+	public class ZwinderStateManager : IStateManager<ZwinderStateManagerSettings>, IDisposable
 	{
 		private static readonly byte[] NonState = Array.Empty<byte>();
 
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 
 		public ZwinderStateManagerSettings Settings { get; private set; }
 
-		public void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
+		public ZwinderStateManager UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
 		{
 			bool makeNewReserved = Settings?.AncientStoreType != settings.AncientStoreType;
 			Settings = settings;
@@ -114,7 +114,10 @@ namespace BizHawk.Client.Common
 
 			_ancientInterval = settings.AncientStateInterval;
 			RebuildStateCache();
+
+			return this;
 		}
+		IStateManager<ZwinderStateManagerSettings> IStateManager<ZwinderStateManagerSettings>.UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates) => UpdateSettings(settings, keepOldStates);
 
 		private void RebuildReserved()
 		{
