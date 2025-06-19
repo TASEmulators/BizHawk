@@ -890,7 +890,7 @@ namespace BizHawk.Client.EmuHawk
 			using GreenzoneSettings form = new(
 				DialogController,
 				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
-				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
+				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
 				Owner = this,

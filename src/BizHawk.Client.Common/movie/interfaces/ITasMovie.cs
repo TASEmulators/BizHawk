@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 		bool BindMarkersToInput { get; set; }
 
 		IMovieChangeLog ChangeLog { get; }
-		IStateManager TasStateManager { get; }
+		IStateManager<ZwinderStateManagerSettings> TasStateManager { get; set; }
 		Func<string> InputRollSettingsForSave { get; set; }
 		string InputRollSettings { get; }
 		ITasMovieRecord this[int index] { get; }
