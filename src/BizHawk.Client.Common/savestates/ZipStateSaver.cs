@@ -55,13 +55,12 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
-			// don't zstd compress text, as it's annoying for users
 			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);
 				callback(tw);
 				tw.Flush();
-			}, false);
+			});
 		}
 
 		public void Dispose()
