@@ -329,13 +329,14 @@ namespace BizHawk.Client.EmuHawk
 		[
 			ConsoleID.Amiga, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
 			ConsoleID.JaguarCD, ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80,
-			ConsoleID.PCEngine, ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
+			ConsoleID.PCEngine, ConsoleID.Uzebox,
 		];
 
 		// these consoles will use part of the system bus at an offset
 		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
 			[ConsoleID.SG1000] = [ (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) ],
+			[ConsoleID.Nintendo3DS] = [ (0x00000000u, 0x40000000u) ],
 		};
 
 		// anything more complicated will be handled accordingly
