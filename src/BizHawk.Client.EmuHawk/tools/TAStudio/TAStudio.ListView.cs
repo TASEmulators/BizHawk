@@ -787,9 +787,15 @@ namespace BizHawk.Client.EmuHawk
 			// This is only caled from Lua.
 			_editIsFromLua = true;
 			BeginBatchEdit();
-			action();
-			EndBatchEdit();
-			_editIsFromLua = false;
+			try
+			{
+				action();
+			}
+			finally
+			{
+				EndBatchEdit();
+				_editIsFromLua = false;
+			}
 		}
 
 		/// <summary>
