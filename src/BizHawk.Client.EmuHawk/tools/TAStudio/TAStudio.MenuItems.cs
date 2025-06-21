@@ -422,14 +422,7 @@ namespace BizHawk.Client.EmuHawk
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
-							var rollbackFrame = CurrentTasMovie.CopyOverInput(TasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							if (rollbackFrame > 0)
-							{
-								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
-								DoAutoRestore();
-							}
-
-							FullRefresh();
+							CurrentTasMovie.CopyOverInput(TasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
 						}
 					}
 				}
@@ -465,15 +458,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							var selectionStart = TasView.SelectionStartIndex;
-							var needsToRollback = selectionStart < Emulator.Frame;
 							CurrentTasMovie.InsertInput(selectionStart ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-							if (needsToRollback)
-							{
-								GoToLastEmulatedFrameIfNecessary(selectionStart!.Value);
-								DoAutoRestore();
-							}
-
-							FullRefresh();
 						}
 					}
 				}
@@ -484,9 +469,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var selectionStart = TasView.SelectionStartIndex;
-				var needsToRollback = selectionStart < Emulator.Frame;
-				var rollBackFrame = selectionStart ?? 0;
 
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
@@ -505,16 +487,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
+				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(list);
+				EndBatchEdit();
 				SetSplicer();
 
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
 			}
 		}
 
@@ -522,10 +499,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var firstWithInput = FirstNonEmptySelectedFrame;
-				bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
-				var rollBackFrame = TasView.SelectionStartIndex ?? 0;
-
+				BeginBatchEdit();
 				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectionStartIndex}-{TasView.SelectionEndIndex}");
 				foreach (int frame in TasView.SelectedRows)
 				{
@@ -533,14 +507,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CurrentTasMovie.ChangeLog.EndBatch();
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
+				EndBatchEdit();
 			}
 		}
 
@@ -549,26 +516,19 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
 				var selectionStart = TasView.SelectionStartIndex;
-				var needsToRollback = selectionStart < Emulator.Frame;
 				var rollBackFrame = selectionStart ?? 0;
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{
 					// Cannot delete non-existent frames
-					FullRefresh();
+					RefreshDialog();
 					return;
 				}
 
+				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
+				EndBatchEdit();
 				SetTasViewRowCount();
 				SetSplicer();
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
 			}
 		}
 
@@ -588,48 +548,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
+			BeginBatchEdit();
 			for (int i = 0; i < timesToClone; i++)
 			{
 				if (TasView.Focused && TasView.AnyRowsSelected)
 				{
 					var framesToInsert = TasView.SelectedRows;
 					var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-					var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
 
 					var inputLog = framesToInsert
 						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
 						.ToList();
 
 					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
-
-					if (needsToRollback)
-					{
-						GoToLastEmulatedFrameIfNecessary(insertionFrame);
-						DoAutoRestore();
-					}
-
-					FullRefresh();
 				}
 			}
+			EndBatchEdit();
 		}
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var selectionStart = TasView.SelectionStartIndex;
-				var insertionFrame = selectionStart ?? 0;
-				var needsToRollback = selectionStart < Emulator.Frame;
-
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame);
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
-
-				FullRefresh();
+				CurrentTasMovie.InsertEmptyFrame(TasView.SelectionStartIndex ?? 0);
 			}
 		}
 
@@ -650,18 +591,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.Focused && TasView.AnyRowsSelected)
 			{
-				var rollbackFrame = TasView.SelectionEndIndex ?? 0;
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
-
-				CurrentTasMovie.Truncate(rollbackFrame);
+				CurrentTasMovie.Truncate(TasView.SelectionEndIndex ?? 0);
 				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
-
-				if (needsToRollback)
-				{
-					GoToFrame(rollbackFrame);
-				}
-
-				FullRefresh();
 			}
 		}
 
@@ -1382,7 +1313,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromNowSeparator.Visible = StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.IsRowSelected(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-			CancelSeekContextMenuItem.Enabled = MainForm.PauseOnFrame.HasValue;
+			CancelSeekContextMenuItem.Enabled = _seekingTo != -1;
 			BranchContextMenuItem.Visible = TasView.CurrentCell?.RowIndex == Emulator.Frame;
 
 			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
@@ -1396,8 +1327,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
-			MainForm.PauseOnFrame = null;
-			TasView.Refresh();
+			CancelSeek();
 		}
 
 		private void BranchContextMenuItem_Click(object sender, EventArgs e)

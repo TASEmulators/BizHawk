@@ -102,37 +102,11 @@ namespace BizHawk.Client.Common
 		public void InvisibleEmulation(bool invisible)
 			=> APIs.EmuClient.InvisibleEmulation(invisible);
 
-		[LuaMethodExample("client.seekframe( 100 );")]
-		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
+		[LuaDeprecatedMethod]
+		[LuaMethod("seekframe", "Does nothing. Use the pause/unpause functions instead and a loop that waits for the desired frame.")]
 		public void SeekFrame(int frame)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
-			{
-				throw new InvalidOperationException("client.seekframe() is not allowed during input/memory callbacks");
-			}
-
-			if (frame < Emulator.Frame)
-			{
-				Log("client.seekframe: cannot seek backwards");
-				return;
-			}
-			if (frame == Emulator.Frame) return;
-
-			bool wasPaused = MainForm.EmulatorPaused;
-
-			// can't re-enter lua while doing this
-			_luaLibsImpl.IsUpdateSupressed = true;
-			while (Emulator.Frame != frame)
-			{
-				MainForm.SeekFrameAdvance();
-			}
-
-			_luaLibsImpl.IsUpdateSupressed = false;
-
-			if (!wasPaused)
-			{
-				MainForm.UnpauseEmulator();
-			}
+			Log("Deprecated function client.seekframe() used. Replace the call with pause/unpause functions and a loop that waits for the desired frame.");
 		}
 
 		[LuaMethodExample("local sounds_terrible = client.get_approx_framerate() < 55;")]

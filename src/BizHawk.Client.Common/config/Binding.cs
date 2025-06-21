@@ -133,6 +133,7 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Show Cursor");
 			Bind("TAStudio", "Toggle Follow Cursor", "Shift+F");
 			Bind("TAStudio", "Toggle Auto-Restore", "Shift+R");
+			Bind("TAStudio", "Seek To Green Arrow", "R");
 			Bind("TAStudio", "Toggle Turbo Seek", "Shift+S");
 			Bind("TAStudio", "Undo", "Ctrl+Z"); // TODO: these are getting not unique enough
 			Bind("TAStudio", "Redo", "Ctrl+Y");
