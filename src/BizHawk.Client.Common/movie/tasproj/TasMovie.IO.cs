@@ -154,7 +154,8 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
+					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+					TasStateManager.LoadStateHistory(br);
 				}
 				catch
 				{
