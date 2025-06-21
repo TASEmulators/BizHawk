@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected CPUMonitor CPUMon;
 
-		public ULA(SpectrumBase machine)
+		protected ULA(SpectrumBase machine)
 		{
 			_machine = machine;
 			CPUMon = _machine.CPUMon;

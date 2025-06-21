@@ -99,7 +99,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		public SettingT Setting { get; private set; }
 		private readonly bool _isSyncSetting;
-		public MednaPropertyDescriptor(SettingT setting, bool isSyncSetting)
+
+		protected MednaPropertyDescriptor(SettingT setting, bool isSyncSetting)
 			: base(setting.SettingsKey, new Attribute[0])
 		{
 			Setting = setting;

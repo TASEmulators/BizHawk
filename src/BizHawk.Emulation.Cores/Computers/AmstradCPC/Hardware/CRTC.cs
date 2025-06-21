@@ -592,14 +592,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 		private int _fieldCTR;
 
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public CRTC()
-		{
-			//Reset();
-		}
+#if false
+		protected CRTC()
+			=> Reset();
+#endif
 
 		// persistent control signals
 		protected bool latch_hsync;
