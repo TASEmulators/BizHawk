@@ -125,6 +125,7 @@ namespace BizHawk.Emulation.Common
 		Execute,
 	}
 
+#pragma warning disable RCS1191 //TODO this is genuinely broken but needs some dedicated thinking to fix
 	[Flags]
 	public enum MemoryCallbackFlags : uint
 	{
@@ -140,4 +141,5 @@ namespace BizHawk.Emulation.Common
 		CPUZero = 0x01 << 8,
 		DomainUnknown = 0x00,
 	}
+#pragma warning restore RCS1191
 }

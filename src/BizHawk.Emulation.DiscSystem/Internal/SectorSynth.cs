@@ -71,10 +71,22 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		SubchannelQ = 32,
 
+		SubchannelR = 0x40,
+
+		SubchannelS = 0x80,
+
+		SubchannelT = 0x100,
+
+		SubchannelU = 0x200,
+
+		SubchannelV = 0x400,
+
+		SubchannelW = 0x800,
+
 		/// <summary>
 		/// Subchannels R-W (all except for P and Q)
 		/// </summary>
-		Subchannel_RSTUVW = (64|128|256|512|1024|2048),
+		Subchannel_RSTUVW = SubchannelR | SubchannelS | SubchannelT | SubchannelU | SubchannelV | SubchannelW,
 
 		/// <summary>
 		/// Complete subcode is required

@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// AY mixer panning configuration
 		/// </summary>
-		[Flags]
 		public enum AYPanConfig
 		{
 			MONO = 0,

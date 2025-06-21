@@ -100,7 +100,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// AY mixer panning configuration
 		/// </summary>
-		[Flags]
 		public enum AYPanConfig
 		{
 			MONO = 0,
