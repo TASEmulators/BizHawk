@@ -1,4 +1,6 @@
-﻿using BizHawk.Client.Common;
+﻿using System.IO;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -59,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 					var lastState = GetPriorStateForFramebuffer(frame);
 					if (lastState.Key > Emulator.Frame)
 					{
-						LoadState(lastState, true);
+						MainForm.LoadState(new BinaryReader(lastState.Value), null, $"frame {lastState.Key}");
 					}
 
 					StartSeeking(frame);
