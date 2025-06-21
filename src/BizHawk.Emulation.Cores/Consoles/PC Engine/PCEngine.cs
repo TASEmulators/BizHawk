@@ -321,6 +321,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
 			ser.Register<ISoundProvider>(_soundProvider);
+			ser.Register<IPCEngineSoundDebuggable>(PSG);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
