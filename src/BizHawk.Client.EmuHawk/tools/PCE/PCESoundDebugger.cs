@@ -244,11 +244,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void lvChEn_ItemChecked(object sender, ItemCheckedEventArgs e)
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				PCE.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
-			}
-		}
+			=> PCE.PSG.UserMute[e.Item.Index] = !e.Item.Checked;
 	}
 }
