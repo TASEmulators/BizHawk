@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
@@ -343,8 +342,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void LoadStateBodyBinary(BinaryReader reader)
+		public void Load(BinaryReader reader)
 		{
+			int version = reader.ReadByte();
+			if (version != 1)
+				throw new InvalidOperationException("Bad format");
+
 			_firstStateIndex = 0;
 			_nextStateIndex = reader.ReadInt32();
 			long nextByte = 0;
@@ -357,43 +360,6 @@ namespace BizHawk.Client.Common
 			}
 			_backingStore.Position = 0;
 			MemoryBlockUtils.CopySome(reader.BaseStream, _backingStore, nextByte);
-		}
-
-		public static ZwinderBuffer Create(BinaryReader reader, RewindConfig rewindConfig, bool hackyV0 = false)
-		{
-			ZwinderBuffer ret;
-
-			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
-			int version = hackyV0 ? 0 : reader.ReadByte();
-			if (version == 0)
-			{
-				byte[] sizeArr = new byte[8];
-				reader.Read(sizeArr, 1, 7);
-				var size = MemoryMarshal.Read<long>(sizeArr);
-				var sizeMask = reader.ReadInt64();
-				var targetFrameLength = reader.ReadInt32();
-				var useCompression = reader.ReadBoolean();
-				ret = new ZwinderBuffer(new RewindConfig
-				{
-					BufferSize = (int)(size >> 20),
-					UseFixedRewindInterval = false,
-					TargetFrameLength = targetFrameLength,
-					TargetRewindInterval = 5,
-					AllowOutOfOrderStates = false,
-					UseCompression = useCompression,
-				});
-				if (ret.Size != size || ret._sizeMask != sizeMask)
-				{
-					throw new InvalidOperationException("Bad format");
-				}
-			}
-			else if (version == 1)
-				ret = new ZwinderBuffer(rewindConfig);
-			else
-				throw new InvalidOperationException("Bad format");
-
-			ret.LoadStateBodyBinary(reader);
-			return ret;
 		}
 
 		private sealed class SaveStateStream : Stream, ISpanStream

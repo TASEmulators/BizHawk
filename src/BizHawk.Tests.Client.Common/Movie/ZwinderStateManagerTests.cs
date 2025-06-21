@@ -72,7 +72,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var buff = ms.ToArray();
 			var rms = new MemoryStream(buff, false);
 
-			var zw2 = ZwinderStateManager.Create(new BinaryReader(rms), zw.Settings, f => false);
+			var zw2 = new ZwinderStateManager(zw.Settings, f => false);
+			zw2.LoadStateHistory(new BinaryReader(rms));
 
 			// TODO: we could assert more things here to be thorough
 			Assert.IsNotNull(zw2);
@@ -132,7 +133,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var ms = new MemoryStream();
 			buff.SaveStateBinary(new BinaryWriter(ms));
 			ms.Position = 0;
-			var buff2 = ZwinderBuffer.Create(new BinaryReader(ms), config);
+			var buff2 = new ZwinderBuffer(config);
+			buff2.Load(new BinaryReader(ms));
 
 			Assert.AreEqual(buff.Size, buff2.Size);
 			Assert.AreEqual(buff.Used, buff2.Used);

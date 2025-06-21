@@ -6,14 +6,6 @@ namespace BizHawk.Client.Common
 {
 	public interface IStateManager : IDisposable
 	{
-		/// <summary>
-		/// Retrieves the savestate for the given frame,
-		/// If this frame does not have a state currently, will return an empty array.false
-		/// Try not to use this as it is not fast.
-		/// </summary>
-		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
-		byte[] this[int frame] { get; }
-
 		ZwinderStateManagerSettings Settings { get; }
 
 		/// <summary>
@@ -59,6 +51,11 @@ namespace BizHawk.Client.Common
 		/// Serializes the current state of the instance for persisting to disk
 		/// </summary>
 		void SaveStateHistory(BinaryWriter bw);
+
+		/// <summary>
+		/// Deserializes the state of the instance that was persisted to disk
+		/// </summary>
+		void LoadStateHistory(BinaryReader br);
 
 		/// <summary>
 		/// Enables the instance to be used. An instance of <see cref="IStateManager"/> should not
