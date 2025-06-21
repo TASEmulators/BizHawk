@@ -163,8 +163,10 @@ in {
 			|| isVersionAtLeast "2.6" value.hawkSourceInfo.version))
 	];
 	latestVersionFrag = lib.head releaseFrags;
-	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
-		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos;
+	combined = let
+		launchScriptsForLocalBuild = launchScriptsFor emuhawk-local.assemblies true;
+	in (pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
+		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos launchScriptsForLocalBuild;
 		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
 		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
 			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");
@@ -184,8 +186,27 @@ in {
 		IDEs = {
 			kate = [ kate omnisharp-roslyn ];
 		};
-		launchScriptsForLocalBuild = launchScriptsFor emuhawk-local.assemblies true;
-	};
+		shellHook = drv: ''
+			export BIZHAWKBUILD_HOME='${builtins.toString ./.}'
+			export BIZHAWK_HOME="$BIZHAWKBUILD_HOME/output/"
+			ldLibPath='${lib.makeLibraryPath drv.buildInputs}' # for running tests
+			if [ -z "$LD_LIBRARY_PATH" ]; then
+				export LD_LIBRARY_PATH="$ldLibPath"
+			else
+				export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$ldLibPath"
+			fi
+			alias discohawk-monort-local='${launchScriptsForLocalBuild.discohawk}'
+			alias emuhawk-monort-local='${launchScriptsForLocalBuild.emuhawk}'
+			case "$-" in *i*)
+				pfx="$(realpath --relative-to="$PWD" "$BIZHAWKBUILD_HOME")/"
+				if [ "$pfx" = "./" ]; then pfx=""; fi
+				printf "%s\n%s\n" \
+					"Run ''${pfx}Dist/Build{Debug,Release}.sh to build the solution. You may need to clean up with ''${pfx}Dist/CleanupBuildOutputDirs.sh." \
+					"Once built, running {discohawk,emuhawk}-monort-local will pull from ''${pfx}output/* and use Mono from Nixpkgs."
+				;;
+			esac
+		'';
+	});
 in combined // lib.listToAttrs (lib.concatLists (builtins.map
 	(f: [
 		{ name = f "latest-bin"; value = combined.${f "${latestVersionFrag}-bin"}; }
