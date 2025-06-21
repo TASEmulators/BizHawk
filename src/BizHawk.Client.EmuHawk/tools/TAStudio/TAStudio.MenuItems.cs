@@ -635,9 +635,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MainForm.FrameAdvance();
 
-				byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
-				if (greenZone.Length > 0)
+				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
+					Stream greenStream = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(Emulator.Frame).Value;
+					byte[] greenZone = new byte[greenStream.Length];
+					greenStream.Read(greenZone);
 					byte[] state = StatableEmulator.CloneSavestate();
 
 					if (!state.SequenceEqual(greenZone))

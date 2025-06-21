@@ -62,23 +62,6 @@ namespace BizHawk.Client.Common
 			RebuildReserved();
 		}
 
-		public byte[] this[int frame]
-		{
-			get
-			{
-				var (f, dataStream) = GetStateClosestToFrame(frame);
-				if (f != frame)
-				{
-					dataStream.Dispose();
-					return NonState;
-				}
-
-				var data = dataStream.ReadAllBytes();
-				dataStream.Dispose();
-				return data;
-			}
-		}
-
 		public ZwinderStateManagerSettings Settings { get; private set; }
 
 		public void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
@@ -524,19 +507,14 @@ namespace BizHawk.Client.Common
 			return b1 || b2 || b3;
 		}
 
-		public static ZwinderStateManager Create(BinaryReader br, ZwinderStateManagerSettings settings, Func<int, bool> reserveCallback)
+		public void LoadStateHistory(BinaryReader br)
 		{
-			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
 			int version = br.ReadByte();
+			if (version == 0) throw new Exception("Unsupported GreenZone version.");
 
-			var current = ZwinderBuffer.Create(br, settings.Current(), version == 0);
-			var recent = ZwinderBuffer.Create(br, settings.Recent());
-			var gaps = ZwinderBuffer.Create(br, settings.GapFiller());
-
-			if (version == 0)
-				settings.AncientStateInterval = br.ReadInt32();
-
-			var ret = new ZwinderStateManager(current, recent, gaps, reserveCallback, settings);
+			_current.Load(br);
+			_recent.Load(br);
+			_gapFiller.Load(br);
 
 			var ancientCount = br.ReadInt32();
 			for (var i = 0; i < ancientCount; i++)
@@ -544,12 +522,10 @@ namespace BizHawk.Client.Common
 				var key = br.ReadInt32();
 				var length = br.ReadInt32();
 				var data = br.ReadBytes(length);
-				ret._reserved.Add(key, data);
+				_reserved.Add(key, data);
 			}
 
-			ret.RebuildStateCache();
-
-			return ret;
+			RebuildStateCache();
 		}
 
 		public void SaveStateHistory(BinaryWriter bw)
