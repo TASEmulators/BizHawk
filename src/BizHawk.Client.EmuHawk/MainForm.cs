@@ -1073,7 +1073,6 @@ namespace BizHawk.Client.EmuHawk
 		/// Accessing this from Lua allows to keep internal code hacks to minimum.
 		/// <list type="bullet">
 		/// <item><description><see cref="ClientLuaLibrary.InvisibleEmulation(bool)"/></description></item>
-		/// <item><description><see cref="ClientLuaLibrary.SeekFrame(int)"/></description></item>
 		/// </list>
 		/// </summary>
 		public bool InvisibleEmulation { get; set; }
@@ -3258,16 +3257,7 @@ namespace BizHawk.Client.EmuHawk
 					if (PauseOnFrame.Value == Emulator.Frame)
 					{
 						PauseEmulator();
-						if (Tools.IsLoaded<TAStudio>()) Tools.TAStudio.StopSeeking();
-						else PauseOnFrame = null;
-					}
-					else if (Tools.IsLoaded<TAStudio>()
-						&& Tools.TAStudio.LastPositionFrame == Emulator.Frame
-						&& ((ITasMovie) MovieSession.Movie)[Emulator.Frame].Lagged is null)
-					{
-						// haven't yet greenzoned the frame, hence it's after editing
-						// then we want to pause here. taseditor fashion
-						PauseEmulator();
+						PauseOnFrame = null;
 					}
 				}
 
