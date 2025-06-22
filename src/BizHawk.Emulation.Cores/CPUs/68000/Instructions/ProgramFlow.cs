@@ -18,10 +18,10 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 0x09: return V;        // Overflow Set
 				case 0x0A: return !N;       // Plus (Positive)
 				case 0x0B: return N;        // Minus (Negative)
-				case 0x0C: return N && V || !N && !V;             // Greater or Equal
-				case 0x0D: return N && !V || !N && V;             // Less Than
-				case 0x0E: return N && V && !Z || !N && !V && !Z; // Greater Than
-				case 0x0F: return Z || N && !V || !N && V;        // Less or Equal
+				case 0x0C: return /*N && V || !N && !V*/N == V;         // Greater or Equal
+				case 0x0D: return /*N && !V || !N && V*/N ^ V;          // Less Than
+				case 0x0E: return (/*N && V || !N && !V*/N == V) && !Z; // Greater Than
+				case 0x0F: return Z || (/*N && !V || !N && V*/N ^ V);   // Less or Equal
 				default:
 					throw new Exception("Invalid condition " + condition);
 			}
