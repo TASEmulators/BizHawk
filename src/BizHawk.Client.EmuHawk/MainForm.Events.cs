@@ -1002,7 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = _getConfigPath().SplitPathToDirAndFile();
-			var result = this.ShowFileOpenDialog(filter: ConfigFileFSFilterSet, initDir: dir!, initFileName: file!);
+			var result = this.ShowFileOpenDialog(filter: ConfigFileFSFilterSet, initDir: dir!, initFileName: file);
 			if (result is not null) LoadConfigFile(result);
 		}
 
