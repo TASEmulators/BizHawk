@@ -1380,12 +1380,12 @@ namespace BizHawk.Client.EmuHawk
 						FirstVisibleRow = newSelectedRow;
 						DeselectAll();
 						SelectRow(newSelectedRow, true);
-						Refresh();
 					}
 					else if (FirstVisibleRow > 0)
 					{
 						LastVisibleRow = FirstVisibleRow;
 					}
+					Refresh();
 				}
 				else if (e.IsPressed(Keys.PageDown))
 				{
@@ -1402,12 +1402,12 @@ namespace BizHawk.Client.EmuHawk
 						LastVisibleRow = newSelectedRow;
 						DeselectAll();
 						SelectRow(newSelectedRow, true);
-						Refresh();
 					}
 					else if (LastVisibleRow < RowCount)
 					{
 						FirstVisibleRow = LastVisibleRow;
 					}
+					Refresh();
 				}
 				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.Home))
 				{
@@ -1502,6 +1502,8 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(row - 1, true);
 							SelectRow(row, false);
 						}
+
+						Refresh();
 					}
 				}
 				else if (e.IsCtrl(Keys.Down))
@@ -1513,6 +1515,8 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(row + 1, true);
 							SelectRow(row, false);
 						}
+
+						Refresh();
 					}
 				}
 				else if (e.IsCtrl(Keys.Left))
@@ -1520,6 +1524,7 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(SelectedRows.Last(), false);
+						Refresh();
 					}
 				}
 				else if (e.IsCtrl(Keys.Right))
@@ -1527,6 +1532,7 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
+						Refresh();
 					}
 				}
 				else if (e.IsCtrlShift(Keys.Left))
@@ -1534,6 +1540,7 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection && FirstSelectedRowIndex > 0)
 					{
 						SelectRow(FirstSelectedRowIndex - 1, true);
+						Refresh();
 					}
 				}
 				else if (e.IsCtrlShift(Keys.Right))
@@ -1541,6 +1548,7 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(FirstSelectedRowIndex, false);
+						Refresh();
 					}
 				}
 				else if (e.IsCtrl(Keys.PageUp))
