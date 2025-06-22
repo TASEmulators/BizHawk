@@ -371,20 +371,19 @@ namespace BizHawk.Emulation.Common
 		/// Gets a list of boolean button names. If a controller number is specified, only returns button names
 		/// (without the "P" prefix) that match that controller number. If a controller number is NOT specified,
 		/// then all button names are returned.
-		///
-		/// For example, consider example "P1 A", "P1 B", "P2 A", "P2 B". See below for sample outputs:
-		///   - ToBoolButtonNameList(controller, 1) -> [A, B]
-		///   - ToBoolButtonNameList(controller, 2) -> [A, B]
-		///   - ToBoolButtonNameList(controller, null) -> [P1 A, P1 B, P2 A, P2 B]
+		/// <br/>For example, consider <c>controller.Definition is { BoolButtons = [ "P1 A", "P1 B", "P2 B", "P2 C" ] }</c>.
+		/// Then:<list type="bullet">
+		/// <item><description><c>controller.ToBoolButtonNameList(1)</c> --> <c>[ "A", "B" ]</c></description></item>
+		/// <item><description><c>controller.ToBoolButtonNameList(2)</c> --> <c>[ "B", "C" ]</c></description></item>
+		/// <item><description><c>controller.ToBoolButtonNameList(null)</c> --> <c>[ "P1 A", "P1 B", "P2 B", "P2 C" ]</c></description></item>
+		/// </list>
 		/// </summary>
 		public static List<string> ToBoolButtonNameList(this IController controller, int? controllerNum = null)
 		{
 			return ToControlNameList(controller.Definition.BoolButtons, controllerNum);
 		}
 
-		/// <summary>
-		/// See ToBoolButtonNameList(). Works the same except with axes
-		/// </summary>
+		/// <summary>as <see cref="ToBoolButtonNameList"/>, but with axis names</summary>
 		public static List<string> ToAxisControlNameList(this IController controller, int? controllerNum = null)
 		{
 			return ToControlNameList(controller.Definition.Axes.Keys, controllerNum);
