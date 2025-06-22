@@ -155,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		protected int _RA;
 
+#pragma warning disable RCS1243 // Analyzer doesn't understand tables
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is wired up to the CRTC
 		/// Built from LA, RA and CLK
@@ -178,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// A0                       Gate-Array       CLK
 		/// </summary>
 		public ushort MA_Address
+#pragma warning restore RCS1243
 		{
 			get
 			{

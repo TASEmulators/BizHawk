@@ -23,39 +23,18 @@ namespace BizHawk.Emulation.Common
 		 * These functions must return very quickly if the list is empty.  Very very quickly.
 		 */
 
-		/// <summary>
-		/// Gets a value indicating whether or not Execute callbacks are available for this this implementation
-		/// </summary>
 		bool ExecuteCallbacksAvailable { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any read hooks
-		/// </summary>
 		bool HasReads { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any write hooks
-		/// </summary>
 		bool HasWrites { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any execute hooks
-		/// </summary>
 		bool HasExecutes { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any read hooks
-		/// </summary>
 		bool HasReadsForScope(string scope);
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any write hooks
-		/// </summary>
 		bool HasWritesForScope(string scope);
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any execute hooks
-		/// </summary>
 		bool HasExecutesForScope(string scope);
 
 		/// <summary>

@@ -169,9 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		// Core Specifc functions
 
-		/// <summary>
-		/// Initializes the the core DLL
-		/// </summary>
+		/// <summary>Initializes the core DLL</summary>
 		/// <param name="APIVersion">Specifies what API version our app is using. Just set this to 0x20001</param>
 		/// <param name="ConfigPath">Directory to have the DLL look for config data. "" seems to disable this</param>
 		/// <param name="DataPath">Directory to have the DLL look for user data. "" seems to disable this</param>

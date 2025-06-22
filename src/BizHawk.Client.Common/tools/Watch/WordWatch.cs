@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
-		/// <param name="type">How you you want to display the value See <see cref="WatchDisplayType"/></param>
+		/// <param name="type">selected format for displaying the value</param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
 		/// <param name="value">Current value</param>

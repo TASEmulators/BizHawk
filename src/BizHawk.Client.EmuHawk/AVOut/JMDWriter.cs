@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 
 			/// <summary>
 			/// assemble JMDPacket and send to PacketQueue
-			/// one audio packet is split up into many many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
+			/// one audio packet is split up into many, many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
 			/// </summary>
 			public void AddSamples(short[] samples)
 			{
