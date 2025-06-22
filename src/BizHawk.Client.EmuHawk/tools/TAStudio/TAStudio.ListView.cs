@@ -1239,6 +1239,7 @@ namespace BizHawk.Client.EmuHawk
 			if (MouseButtonHeld)
 			{
 				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+				SetTasViewRowCount(); // refreshes
 			}
 		}
 
