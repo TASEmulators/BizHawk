@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.DiscSystem
 		DiscStreamView_Mode2_Form2_2324,
 	}
 
+#pragma warning disable RCS1226 // bad formatting
 	/// <summary>
 	/// Allows you to stream data off a disc.
 	/// For future work: depending on the View you select, it may not be seekable (in other words, it would need to read sequentially)
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// TODO - Receive some information about the track that this stream is modeling, and have the stream return EOF at the end of the track?
 	/// </summary>
 	public class DiscStream : System.IO.Stream
+#pragma warning restore RCS1226
 	{
 		private readonly int SectorSize;
 		private readonly int NumSectors;
