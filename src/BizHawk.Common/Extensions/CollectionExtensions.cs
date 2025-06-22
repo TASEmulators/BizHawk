@@ -509,7 +509,7 @@ namespace BizHawk.Common.CollectionExtensions
 			{
 				return list is [ var first, .. ] && list.IndexOf(!first, index: 1) < 0 ? first : null;
 			}
-			var iter = collection.GetEnumerator();
+			using var iter = collection.GetEnumerator();
 			if (!iter.MoveNext()) return null;
 			var first1 = iter.Current;
 			while (iter.MoveNext()) if (iter.Current != first1) return null;
