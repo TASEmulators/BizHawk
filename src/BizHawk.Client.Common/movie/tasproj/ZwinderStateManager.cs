@@ -344,7 +344,7 @@ namespace BizHawk.Client.Common
 			{
 				// There is no future state, so there is no gap between states for us to measure.
 				// We're probably unreserving for a marker removal. Allow it to be removed, so we don't pollute _reserved.
-				return true;
+				return false;
 			}
 			if (index <= 1)
 				// index == 0 should not be possible. (It's the index of the state after the given frame.)
