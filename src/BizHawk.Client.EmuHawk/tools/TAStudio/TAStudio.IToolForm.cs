@@ -80,19 +80,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var refreshNeeded = false;
-			if (Settings.AutoadjustInput)
-			{
-				//refreshNeeded = AutoAdjustInput();
-			}
-
 			CurrentTasMovie.TasSession.UpdateValues(Emulator.Frame, CurrentTasMovie.Branches.Current);
 			MaybeFollowCursor();
-
-			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(_lastRefresh))
-			{
-				refreshNeeded = true;
-			}
 
 			if (Settings.AutoPause && _seekingTo == -1)
 			{
@@ -106,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			FastUpdateAfter();
-			RefreshDialog(refreshNeeded, refreshBranches: false);
+			RefreshDialog(refreshBranches: false);
 		}
 
 		protected override void FastUpdateAfter()
