@@ -770,6 +770,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_batchEditing = true;
 		}
+
 		/// <returns>Returns true if the input list was redrawn.</returns>
 		private bool EndBatchEdit()
 		{
