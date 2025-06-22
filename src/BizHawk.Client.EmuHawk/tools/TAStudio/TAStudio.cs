@@ -777,17 +777,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
 
-		public void RefreshDialog(bool refreshBranches = true)
+		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
 			if (_exiting)
 			{
 				return;
 			}
 
-			bool needsRefresh = TasView.IsPartiallyVisible(Emulator.Frame) ||
-				TasView.IsPartiallyVisible(_lastRefresh) ||
-				TasView.RowCount != CurrentTasMovie.InputLogLength + 1;
-			if (needsRefresh)
+			if (refreshTasView)
 			{
 				SetTasViewRowCount();
 			}
