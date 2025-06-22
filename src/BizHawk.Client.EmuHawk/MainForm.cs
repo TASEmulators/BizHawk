@@ -4178,7 +4178,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result.Warnings.Count is not 0)
 			{
-				AddOnScreenMessage(result.Warnings.First()); // For now, just show the first warning
+				AddOnScreenMessage(result.Warnings[0]); // For now, just show the first warning
 			}
 
 			AddOnScreenMessage($"{Path.GetFileName(fn)} imported as {result.Movie.Filename}");
