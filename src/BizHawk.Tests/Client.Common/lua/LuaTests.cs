@@ -887,6 +887,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[DataRow(new[] { 0x22L, 0x33L, 0x44L }, "pass_table_ipairs({ [0] = 0x11, 0x22, 0x33, 0x44 })")] // "oh, so it fills empty slots from [1]?"...
 		[DataRow(new[] { 0x11L, 0x22 }, "pass_table_ipairs({ [2] = 0x22, [1] = 0x11, [5] = 0x55 })")]
 		[DataRow(new[] { 0x33L, 0x22 }, "pass_table_ipairs({ [2] = 0x22, [1] = 0x11, [5] = 0x55, 0x33 })")] // ...nope
+		[DataRow(new[] { 0L }, "pass_table_ipairs({ [1] = 0 })")]
 		[TestMethod]
 		public void TableHelper_EnumerateValues_Contents(long[] expected, string script)
 		{
