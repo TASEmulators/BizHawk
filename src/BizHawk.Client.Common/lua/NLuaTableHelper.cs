@@ -49,7 +49,8 @@ namespace BizHawk.Client.Common
 			{
 				ArrayPool<bool>.Shared.Return(seen);
 			}
-			if (cutoff < 0)
+			if (cutoff < 0) return new(values); // all present
+			if (cutoff is 0)
 			{
 				_logCallback("no numeric keys");
 				return [ ];
