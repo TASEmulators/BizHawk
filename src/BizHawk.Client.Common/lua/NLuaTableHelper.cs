@@ -48,14 +48,18 @@ namespace BizHawk.Client.Common
 			finally
 			{
 				ArrayPool<bool>.Shared.Return(seen);
+				seen = null!;
 			}
-			if (cutoff < 0) return new(values); // all present
-			if (cutoff is 0)
+			if (cutoff < n)
 			{
-				_logCallback("no numeric keys");
-				return [ ];
+				if (cutoff < 0) return new(values); // all present
+				if (cutoff is 0)
+				{
+					_logCallback("no numeric keys");
+					return [ ];
+				}
+				_logCallback($"ignoring {n - cutoff} entries");
 			}
-			if (cutoff < n) _logCallback($"ignoring {n - cutoff} entries");
 			return new(values, offset: 0, count: cutoff);
 		}
 
