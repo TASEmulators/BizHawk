@@ -65,10 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				}
 			}
 
-			if (chipData.Count <= 0)
-			{
-				return null;
-			}
+			if (chipData.Count is 0) return null;
 
 			CartridgeDevice result;
 			switch (mapper)
