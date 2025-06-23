@@ -107,6 +107,19 @@ namespace BizHawk.Tests.Client.Common.Lua
 			}
 		}
 
+		[LuaMethod("pass_table_ipairs", "")]
+		public static void PassTableIPairs(NLua.LuaTable? o)
+		{
+			if (ExpectedValue is IReadOnlyList<long> expected) // can't widen to `object?` since that would use `Comparer<object?>.Default` i.e. reference equality
+			{
+				CollectionAssert.That.AreEqual(expected, _th.EnumerateValues<long>(o!).ToArray());
+			}
+			else
+			{
+				Assert.IsNull(o);
+			}
+		}
+
 		private static object? CallackArg { get; set; }
 
 		[LuaMethod("pass_callback", "")]
@@ -866,6 +879,31 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			ExpectedValue = 123.0;
 			LuaInstance.DoString("pass_callback(function() pass_f64(123.0) end)");
+		}
+
+		[DataRow(new long[0], "pass_table_ipairs({})")]
+		[DataRow(new[] { 0x11L, 0x22L, 0x33L, 0x44L }, "pass_table_ipairs({ 0x11, 0x22, 0x33, 0x44 })")]
+		[DataRow(new[] { 0x11L, 0x22L, 0x33L }, "pass_table_ipairs({ 0x11, 0x22, 0x33, [true] = 0x44 })")]
+		[DataRow(new[] { 0x22L, 0x33L, 0x44L }, "pass_table_ipairs({ [0] = 0x11, 0x22, 0x33, 0x44 })")] // "oh, so it fills empty slots from [1]?"...
+		[DataRow(new[] { 0x11L, 0x22 }, "pass_table_ipairs({ [2] = 0x22, [1] = 0x11, [5] = 0x55 })")]
+		[DataRow(new[] { 0x33L, 0x22 }, "pass_table_ipairs({ [2] = 0x22, [1] = 0x11, [5] = 0x55, 0x33 })")] // ...nope
+		[TestMethod]
+		public void TableHelper_EnumerateValues_Contents(long[] expected, string script)
+		{
+			ExpectedValue = expected;
+			_ = LuaInstance.DoString(script);
+		}
+
+		[DataRow(new[] { 0x11L, 0x22L, 0x33L, 0x44L }, "pass_table_ipairs({ 0x11, 0x22, 0x33, 0x44 })")]
+		[DataRow(new[] { 0x11L, 0x22L, 0x33L, 0x44L }, "pass_table_ipairs({ [1] = 0x11, [2] = 0x22, [3] = 0x33, [4] = 0x44 })")] // foil Lua's array optimization
+		[DataRow(new[] { 0x11L, 0x22L, 0x33L, 0x44L }, "pass_table_ipairs(table.pack(0x11, 0x22, 0x33, 0x44))")] // `table.pack` includes an `"n"` key
+		[DataRow(new long[0], "pass_table_ipairs({ a = 0xAA, b = 0xBB, c = 0xCC, d = 0xDD })")] // no sequential keys
+		[DataRow(new[] { 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL, 0xFFL }, "local l = {}; for i = 1, 16 do l[i] = 0xFF; end; pass_table_ipairs(l)")]
+		[TestMethod]
+		public void TableHelper_EnumerateValues_Sources(long[] expected, string script)
+		{
+			ExpectedValue = expected;
+			_ = LuaInstance.DoString(script);
 		}
 	}
 }
