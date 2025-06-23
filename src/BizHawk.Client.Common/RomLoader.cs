@@ -432,10 +432,9 @@ namespace BizHawk.Client.Common
 				{
 					return core.Create(cip);
 				}
-				catch (Exception e)
+				catch (Exception e) when (!_config.DontTryOtherCores
+					&& e is not (MissingFirmwareException or { InnerException: MissingFirmwareException }))
 				{
-					if (_config.DontTryOtherCores || e is MissingFirmwareException || e.InnerException is MissingFirmwareException)
-						throw;
 					exceptions.Add(e);
 				}
 			}

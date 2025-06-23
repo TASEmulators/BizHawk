@@ -276,14 +276,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Directory.CreateDirectory(movieFolderPath);
 			}
-			catch (Exception movieDirException)
+			catch (IOException)
 			{
-				if (movieDirException is IOException
-					|| movieDirException is UnauthorizedAccessException)
-				{
-					//TO DO : Pass error to user?
-				}
-				else throw;
+				// ignored
+				//TODO present to user?
+			}
+			catch (UnauthorizedAccessException)
+			{
+				// ignored
+				//TODO present to user?
 			}
 
 			var filterset = _movieSession.Movie.GetFSFilterSet();
