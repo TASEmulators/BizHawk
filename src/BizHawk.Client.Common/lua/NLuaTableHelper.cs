@@ -34,19 +34,22 @@ namespace BizHawk.Client.Common
 			if (n is 0) return [ ];
 			var values = new T[n];
 			var seen = ArrayPool<bool>.Shared.Rent(n);
-			seen.AsSpan(start: 0, length: n).Fill(false);
+			var seenSpan = seen.AsSpan(start: 0, length: n);
+			seenSpan.Fill(false);
 			int cutoff;
 			try
 			{
 				foreach (var (k, v) in table) if (k is long i && 1 <= i && i <= n)
 				{
-					values[i - 1] = (T) v;
-					seen[i - 1] = true;
+					var ii = unchecked((int) (i - 1L));
+					values[ii] = (T) v;
+					seenSpan[ii] = true;
 				}
-				cutoff = Array.IndexOf(seen, value: false);
+				cutoff = seenSpan.IndexOf(value: false);
 			}
 			finally
 			{
+				seenSpan = Span<bool>.Empty;
 				ArrayPool<bool>.Shared.Return(seen);
 				seen = null!;
 			}
