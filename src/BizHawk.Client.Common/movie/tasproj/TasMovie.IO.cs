@@ -135,13 +135,13 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			var settings = new ZwinderStateManagerSettings();
+			PagedStateManager.PagedSettings settings = new();
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
 				{
-					settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					settings = JsonConvert.DeserializeObject<PagedStateManager.PagedSettings>(json);
 				}
 				catch
 				{
@@ -150,11 +150,12 @@ namespace BizHawk.Client.Common
 			});
 
 			TasStateManager?.Dispose();
+			bool badHistory = false;
 			var hasHistory = bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{
-					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+					TasStateManager = new PagedStateManager(settings, IsReserved);
 					TasStateManager.LoadStateHistory(br);
 				}
 				catch
@@ -162,22 +163,20 @@ namespace BizHawk.Client.Common
 					// Continue with a fresh manager. If state history got corrupted, the file is still very much useable
 					// and we would want the user to be able to load, and regenerate their state history
 					// however, we still have an issue of how state history got corrupted
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					badHistory = true;
 					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
 
-			if (!hasHistory)
+			if (!hasHistory || badHistory)
 			{
 				try
 				{
-					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+					TasStateManager = new PagedStateManager(settings, IsReserved);
 				}
 				catch
 				{
-					TasStateManager = new ZwinderStateManager(
+					TasStateManager = new PagedStateManager(
 						Session.Settings.DefaultTasStateManagerSettings,
 						IsReserved);
 				}
