@@ -4,9 +4,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface IStateManager<SettingsT> : IDisposable
+	public interface IStateManager<TSettings> : IDisposable
 	{
-		SettingsT Settings { get; }
+		TSettings Settings { get; }
 
 		/// <summary>
 		/// Requests that the current emulator state be captured
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Updates the internal state saving logic settings
 		/// </summary>
-		IStateManager<SettingsT> UpdateSettings(SettingsT settings, bool keepOldStates = false);
+		IStateManager<TSettings> UpdateSettings(TSettings settings, bool keepOldStates = false);
 
 		/// <summary>
 		/// Serializes the current state of the instance for persisting to disk
