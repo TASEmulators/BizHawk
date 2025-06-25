@@ -915,7 +915,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using GreenzoneSettings form = new(
 				DialogController,
-				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
+				new PagedStateManager.PagedSettings(CurrentTasMovie.TasStateManager.Settings),
 				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
@@ -955,7 +955,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using GreenzoneSettings form = new(
 				DialogController,
-				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				new PagedStateManager.PagedSettings(Config.Movies.DefaultTasStateManagerSettings),
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)
 			{
