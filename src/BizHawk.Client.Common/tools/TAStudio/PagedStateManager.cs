@@ -17,11 +17,11 @@ namespace BizHawk.Client.Common
 	/// Allowing states to be added out of order has two primary benefits:
 	/// 1) Users who load a branch, emulate forward a little, then rewind can still use the full buffer space.
 	/// 2) It becomes much easier to "thin out" states (keeping only a subset of them) for saving and to then use them again on load.
-	/// 
+	///
 	/// Out of order states also means we do not need separately allocated buffers for "current", "recent", etc.
 	/// This gives us some more flexibility, but still there won't be any one-size-fits-all strategy for state managment.
 	/// For the initial implementation I will be using similar settings as Zwinder has but this may change in the future.
-	/// 
+	///
 	/// Additionally, this approach allows us to take the main goals of ZwinderBuffer into a state manager:
 	/// 1. No copies, ever.  States are deposited directly to, and read directly from, one giant buffer. (assuming no TempFile storage which is not currently implemented)
 	/// 2. Support for arbitrary and changeable state sizes.
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 		 * 3) Finding the state on a given frame.
 		 * 4) Finding the closest state after a given frame.
 		 * 5) Finding the closest state before a given frame.
-		 * 
+		 *
 		 * A note on the implementation: SortedSet provides a method GetViewBetween and this is how we do (4) and (5).
 		 * One would expect this to be fast, but it is actually O(n) where n is the number of elements in the view.
 		 * To avoid this ludicrous performance shortcoming, calls to GetViewBetween should provide as narrow a range as possible.
@@ -401,7 +401,7 @@ namespace BizHawk.Client.Common
 			StateInfo newState = new StateInfo()
 			{
 				Frame = frame,
-				FirstPage = _firstFree
+				FirstPage = _firstFree,
 			};
 
 			using PagedStream stream = new(newState, this, false);
@@ -487,9 +487,9 @@ namespace BizHawk.Client.Common
 		}
 
 		public void Clear() => InvalidateAfter(0);
-		
+
 		public void Dispose() => _buffer.Dispose();
-		
+
 		public void Engage(byte[] frameZeroState) => InternalCapture(0, new StatableArray(frameZeroState), StateGroup.Old);
 
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame)
