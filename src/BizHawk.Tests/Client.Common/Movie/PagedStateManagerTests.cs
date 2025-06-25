@@ -9,8 +9,8 @@ namespace BizHawk.Tests.Client.Common.Movie
 	public class PagedStateManagerTests
 	{
 		// Current PagedStateManager uses 4KB pages (4092 bytes of state data per page)
-		const int PAGE_COUNT = 256;
-		const int STATE_BYTES_PER_PAGE = 4092;
+		private const int PAGE_COUNT = 256;
+		private const int STATE_BYTES_PER_PAGE = 4092;
 
 		private void WithRatioVariety(Action<PagedStateManager> action, IStatable source, List<int>? reserved = null)
 		{
