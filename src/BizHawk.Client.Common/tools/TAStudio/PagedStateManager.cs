@@ -363,6 +363,10 @@ namespace BizHawk.Client.Common
 						_midPagesUsed += pages;
 						_midStates.Add(stateToKick);
 					}
+					else if (_reserveCallback(stateToKick.Frame))
+					{
+						// Recategorize as old. Nothing to do here.
+					}
 					else
 					{
 						_states.Remove(stateToKick);
@@ -382,7 +386,7 @@ namespace BizHawk.Client.Common
 					StateInfo stateToKick = oldestNewerState.Frame != 0 ? oldestNewerState : _midStates.Min;
 
 					// Kicking a state means checking if it belongs in old.
-					bool recategorizeAsOld = ShouldKeepForOld(stateToKick.Frame);
+					bool recategorizeAsOld = ShouldKeepForOld(stateToKick.Frame) || _reserveCallback(stateToKick.Frame);
 					int pages = (stateToKick.Size + PAGE_DATA_SIZE - 1) / PAGE_DATA_SIZE;
 					_midPagesUsed -= pages;
 					_midStates.Remove(stateToKick);

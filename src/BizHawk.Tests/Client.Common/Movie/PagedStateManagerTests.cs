@@ -473,6 +473,28 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(expectedStates, manager.Count);
 		}
 
+		[TestMethod]
+		public void KeepsReservedFrames()
+		{
+			const int reservedFrame1 = 7;
+			int reservedFrame2 = 0;
+
+			IStatable ss = CreateStateSource();
+			PagedStateManager manager = new(MakeDefaultSettings(), (f) => f == reservedFrame1 || f == reservedFrame2);
+			manager.Engage(ss.CloneSavestate());
+
+			for (int i = 0; i < PAGE_COUNT; i++)
+				manager.Capture(i, ss);
+
+			// Reserve a frame after capture
+			reservedFrame2 = 13;
+			for (int i = PAGE_COUNT; i < PAGE_COUNT * 2; i++)
+				manager.Capture(i, ss);
+
+			Assert.IsTrue(manager.HasState(reservedFrame1));
+			Assert.IsTrue(manager.HasState(reservedFrame2));
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
