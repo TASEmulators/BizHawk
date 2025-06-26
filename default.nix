@@ -1,7 +1,7 @@
 { system ? builtins.currentSystem
 , pkgs ? import (builtins.fetchTarball {
-	url = "https://github.com/NixOS/nixpkgs/archive/25.05.tar.gz";
-	sha256 = "1915r28xc4znrh2vf4rrjnxldw2imysz819gzhk9qlrkqanmfsxd";
+	url = "https://github.com/NixOS/nixpkgs/archive/24.05.tar.gz";
+	sha256 = "1lr1h35prqkd1mkmzriwlpvxcb34kmhc9dnr48gkm8hh089hifmx";
 }) { inherit system; }
 , lib ? pkgs.lib
 , stdenv ? pkgs.stdenvNoCC
@@ -38,7 +38,7 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
-, gnome-themes-extra ? pkgs.gnome-themes-extra
+, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
 , gtk2-x11 ? pkgs.gtk2-x11
 , kate ? pkgs.kate.overrideAttrs (oldAttrs: {
 	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
