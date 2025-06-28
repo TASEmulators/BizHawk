@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.WinForms.Controls
 {
 	/// <inheritdoc cref="Docs.SingleRowOrColFLP"/>
@@ -31,7 +33,8 @@ namespace BizHawk.WinForms.Controls
 		{
 			base.AutoSize = true;
 			base.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-			base.MinimumSize = TinySize;
+			// for some reason this breaks stuff on mono, see #4376
+			if (!OSTailoredCode.IsUnixHost) base.MinimumSize = TinySize;
 			base.WrapContents = false;
 		}
 	}
