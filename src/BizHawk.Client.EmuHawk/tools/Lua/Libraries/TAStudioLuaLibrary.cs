@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 			name: "getmarker",
 			description: "Returns the label of the marker on the given frame."
 				+ " If that frame doesn't have a marker (or TAStudio isn't running), returns nil."
-				+ " If branchIndex is specified, searches the markers in that branch instead.")]
+				+ " If branchIndex is specified, searches the markers in that branch instead (0-indexed, as with tastudio.getbranches).")]
 		public string/*?*/ GetMarker(int frame, int? branchIndex = null)
 		{
 			if (Engaged())
