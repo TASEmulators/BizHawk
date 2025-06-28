@@ -311,7 +311,7 @@ namespace BizHawk.Common
 		{
 			if (OSTailoredCode.IsUnixHost)
 			{
-				string[] apps = OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS
+				string[] apps = (OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS)
 					? [ "open" ]
 					: [ "xdg-open", "gnome-open", "kfmclient" ];
 
