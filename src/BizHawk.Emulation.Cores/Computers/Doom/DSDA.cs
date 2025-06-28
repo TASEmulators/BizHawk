@@ -258,7 +258,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_args.AddRange([ "-skill",     $"{(int)_syncSettings.SkillLevel}" ]);
 			_args.AddRange([ "-complevel", $"{(int)_syncSettings.CompatibilityLevel}" ]);
 			_args.AddRange([ "-config", "dsda-doom.cfg" ]);
-			ConditionalArg(!_syncSettings.StrictMode,     "-tas");
 			ConditionalArg(_syncSettings.FastMonsters,    "-fast");
 			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
 			ConditionalArg(_syncSettings.NoMonsters,      "-nomonsters");

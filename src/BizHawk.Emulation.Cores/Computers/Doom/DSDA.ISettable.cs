@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Hexen
 		}
 
-		public enum CompatibilityLevel : int
+		public enum CompatibilityLevel
 		{
 			[Display(Name = "0 - Doom v1.2")]
 			Doom_12 = 0,
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			MBF21 = 21
 		}
 
-		public enum SkillLevel : int
+		public enum SkillLevel
 		{
 			[Display(Name = "1 - I'm too young to die")]
 			ITYTD = 1,
@@ -72,14 +72,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			NM = 5
 		}
 
-		public enum HudMode : int
+		public enum HudMode
 		{
 			Vanilla = 0,
 			DSDA = 1,
 			None = 2
 		}
 
-		public enum MapDetail : int
+		public enum MapDetail
 		{
 			Normal = 0,
 			Linedefs = 1,
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Everything = 2
 		}
 
-		public enum MapOverlays : int
+		public enum MapOverlays
 		{
 			Disabled = 0,
 			Enabled = 1,
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			_4by3 = 3,
 		}
 
-		public enum TurningResolution : int
+		public enum TurningResolution
 		{
 			[Display(Name = "16 bits (longtics)")]
 			Longtics = 1,
@@ -113,13 +113,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Shorttics = 2,
 		}
 
-		public enum Strafe50Turning : int
+		public enum Strafe50Turning
 		{
 			Ignore = 0,
 			Allow = 1,
 		}
 
-		public enum MultiplayerMode : int
+		public enum MultiplayerMode
 		{
 			[Display(Name = "Single Player / Cooperative")]
 			Single_Coop = 0,
@@ -129,13 +129,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Altdeath = 2
 		}
 
-		public enum HexenClass : int
+		public enum HexenClass
 		{
-			[Display(Name = "FighterFighter")]
 			Fighter = 1,
-			[Display(Name = "Cleric")]
 			Cleric = 2,
-			[Display(Name = "Mage")]
 			Mage = 3
 		}
 
@@ -318,13 +315,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(1)]
 			public int InitialMap { get; set; }
 
-			[DisplayName("Turbo")]
-			[Description("Modifies the player running / strafing speed [0-255]. '-1' means Disabled.")]
-			[Range(TURBO_AUTO, 255)]
-			[DefaultValue(TURBO_AUTO)]
-			[TypeConverter(typeof(ConstrainedIntConverter))]
-			public int Turbo { get; set; }
-
 			[DisplayName("Fast Monsters")]
 			[Description("Makes monsters move and attack much faster. Forced to 'true' when playing Nightmare! difficulty.")]
 			[DefaultValue(false)]
@@ -345,8 +335,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PistolStart { get; set; }
 
-			[DisplayName("Co-op Mode Spawns")]
-			[Description("Play single-player mode with co-op thing spawns.")]
+			[DisplayName("Coop Mode Spawns")]
+			[Description("Play single-player mode with cooperative mode thing spawns.")]
 			[DefaultValue(false)]
 			public bool CoopSpawns { get; set; }
 
@@ -354,11 +344,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[Description("Completing one episode leads to the next without interruption. Not available in vanilla.")]
 			[DefaultValue(false)]
 			public bool ChainEpisodes { get; set; }
-
-			[DisplayName("Strict Mode")]
-			[Description("Sets strict mode restrictions, preventing TAS-only inputs.")]
-			[DefaultValue(true)]
-			public bool StrictMode { get; set; }
 
 			[DisplayName("Always Run")]
 			[Description("Toggles whether the player is permanently in the running state, without the slower walking speed available. This emulates a bug in vanilla Doom: setting the joystick run button to an invalid high number causes the game to always have it enabled.")]
@@ -376,6 +361,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public TurningResolution TurningResolution { get; set; }
 
+			[DisplayName("Horizontal Mouse Sensitivity")]
+			[Description("How fast the Doom player will turn when using the mouse.")]
+			[DefaultValue(10)]
+			public int MouseTurnSensitivity { get; set; }
+
+			[DisplayName("Vertical Mouse Sensitivity")]
+			[Description("How fast the Doom player will run when using the mouse.")]
+			[DefaultValue(1)]
+			public int MouseRunSensitivity { get; set; }
+
 			[DisplayName("Turning During Strafe50")]
 			[Description("\"Strafe\" key is required to convert angular movement into strafe50, without it maximum strafe value is 40. So using keyboard and mouse, it's impossible to turn during strafe50. But if strafe50+turning appears in a demo, the game will process it fine, which makes it a TAS-only feature. This setting allows disabling it for maximum authenticity.")]
 			[DefaultValue(Strafe50Turning.Allow)]
@@ -391,15 +386,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PreventGameEnd { get; set; }
 
-			[DisplayName("Mouse Horizontal Sensitivity")]
-			[Description("How fast the Doom player will turn when using the mouse.")]
-			[DefaultValue(10)]
-			public int MouseTurnSensitivity { get; set; }
-
-			[DisplayName("Mouse Vertical Sensitivity")]
-			[Description("How fast the Doom player will run when using the mouse.")]
-			[DefaultValue(1)]
-			public int MouseRunSensitivity { get; set; }
+			[DisplayName("Turbo")]
+			[Description("Modifies the player running / strafing speed [0-255]. '-1' means Disabled.")]
+			[Range(TURBO_AUTO, 255)]
+			[DefaultValue(TURBO_AUTO)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int Turbo { get; set; }
 			/*
 			[DisplayName("Initial RNG Seed")]
 			[Description("Boom demos.")]
