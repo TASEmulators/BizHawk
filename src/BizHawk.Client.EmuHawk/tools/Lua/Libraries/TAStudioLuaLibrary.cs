@@ -446,20 +446,55 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
-		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
-		public string GetMarker(int frame)
+		[LuaMethod(
+			name: "getmarker",
+			description: "Returns the label of the marker on the given frame."
+				+ " If that frame doesn't have a marker (or TAStudio isn't running), returns nil."
+				+ " If branchIndex is specified, searches the markers in that branch instead (0-indexed, as with tastudio.getbranches).")]
+		public string/*?*/ GetMarker(int frame, int? branchIndex = null)
 		{
 			if (Engaged())
 			{
-				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
+				var marker = MarkerListForBranch(branchIndex).Get(frame);
 				if (marker != null)
 				{
 					return marker.Message;
 				}
 			}
 
-			return "";
+			return null;
 		}
+
+		/// <remarks>assumes a TAStudio project is loaded</remarks>
+		private TasMovieMarkerList MarkerListForBranch(int? branchIndex)
+			=> branchIndex is int i
+				? Tastudio.CurrentTasMovie.Branches[i].Markers
+				: Tastudio.CurrentTasMovie.Markers;
+
+		[LuaMethodExample("""
+			local marker_label = tastudio.getmarker(tastudio.find_marker_on_or_before(100));
+		""")]
+		[LuaMethod(
+			name: "find_marker_on_or_before",
+			description: "Returns the frame number of the marker closest to the given frame (including that frame, but not after it)."
+				+ " This may be the power-on marker at 0."
+				+ " If branchIndex is specified, searches the markers in that branch instead.")]
+		public int FindMarkerOnOrBefore(int frame, int? branchIndex = null)
+			=> Engaged()
+				? MarkerListForBranch(branchIndex).PreviousOrCurrent(frame).Frame
+				: default;
+
+		[LuaMethodExample("""
+			local marker_label = tastudio.getmarker(tastudio.get_frames_with_markers()[2]);
+		""")]
+		[LuaMethod(
+			name: "get_frames_with_markers",
+			description: "Returns a list of all the frames which have markers on them."
+				+ " If branchIndex is specified, instead returns the frames which have markers in that branch.")]
+		public LuaTable GetFramesWithMarkers(int? branchIndex = null)
+			=> Engaged()
+				? _th.EnumerateToLuaTable(MarkerListForBranch(branchIndex).Select(static m => m.Frame))
+				: _th.CreateTable();
 
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
 		[LuaMethod("removemarker", "if there is a marker for the given frame, it will be removed")]
