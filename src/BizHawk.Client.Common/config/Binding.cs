@@ -137,6 +137,10 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Toggle Turbo Seek", "Shift+S");
 			Bind("TAStudio", "Undo", "Ctrl+Z"); // TODO: these are getting not unique enough
 			Bind("TAStudio", "Redo", "Ctrl+Y");
+			Bind("TAStudio", "Seek To Prev Marker", "Shift+PageUp");
+			Bind("TAStudio", "Seek To Next Marker", "Shift+PageDown");
+			Bind("TAStudio", "Set Marker", "M");
+			Bind("TAStudio", "Delete Marker", "Ctrl+M");
 			Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A");
 			Bind("TAStudio", "Select All", "Ctrl+Shift+A");
 			Bind("TAStudio", "Reselect Clip.", "Ctrl+B");
