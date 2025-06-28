@@ -179,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_elf.AddReadonlyFile(_configFile, "dsda-doom.cfg");
 
 					var initSettings = _syncSettings.GetNativeSettings();
+					initSettings.FullVision = _settings.FullVision ? 1 : 0;
 					CreateArguments(initSettings);
 					var initResult = _core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
 					if (!initResult)

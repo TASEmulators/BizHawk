@@ -368,6 +368,18 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   // Enabling DSDA output, for debugging
   enableOutput = 1;
 
+  if (settings->FullVision)
+  {
+    for (int i = 0; i < 4; i++)
+    {
+      if (playeringame[i])
+      {
+        players[i].fixedcolormap = 1;
+        players[i].powers[pw_infrared] = -1;
+      }
+    }
+  }
+
   return 1;
 }
 

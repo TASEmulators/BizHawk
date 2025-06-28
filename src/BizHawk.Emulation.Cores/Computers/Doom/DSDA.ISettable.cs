@@ -246,6 +246,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public MapDetail MapDetails { get; set; }
 
+			[DisplayName("Full Vision")]
+			[Description("Disables all darkness.\n\nAvailable in vanilla via the IDBEHOLDL cheat code.\n\nRequires restart.")]
+			[DefaultValue(false)]
+			public bool FullVision { get; set; }
+
 			[DisplayName("Player Point of View")]
 			[Description("Which of the players' point of view to use during rendering.")]
 			[Range(1, 4)]
@@ -271,7 +276,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					paramName: nameof(o));
 			}
 			var ret = (_settings.ScaleFactor == o.ScaleFactor
-				&& _settings.InternalAspect == o.InternalAspect)
+				&& _settings.InternalAspect == o.InternalAspect
+				&& _settings.FullVision == o.FullVision)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
