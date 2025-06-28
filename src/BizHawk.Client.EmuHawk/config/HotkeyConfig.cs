@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
 			foreach (var w in InputWidgets) _config.HotkeyBindings[w.WidgetName] = w.Bindings;
+			_config.TriggerHotkeysUpdated();
 		}
 
 		private IEnumerable<InputCompositeWidget> InputWidgets =>

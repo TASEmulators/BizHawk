@@ -394,6 +394,9 @@ namespace BizHawk.Client.Common
 
 		public Dictionary<string, string> HotkeyBindings { get; set; } = new();
 
+		public event Action HotkeysUpdated;
+		public void TriggerHotkeysUpdated() => HotkeysUpdated?.Invoke();
+
 		// Analog Hotkey values
 		public int AnalogLargeChange { get; set; } = 10;
 		public int AnalogSmallChange { get; set; } = 1;
