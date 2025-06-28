@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -1302,7 +1301,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("https://tasvideos.org/Bizhawk/BasicBot");
+			Util.OpenUrlExternal("https://tasvideos.org/Bizhawk/BasicBot");
 		}
 
 		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)

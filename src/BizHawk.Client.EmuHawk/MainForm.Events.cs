@@ -1174,12 +1174,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/BizHawk");
+			Util.OpenUrlExternal("https://tasvideos.org/BizHawk");
 		}
 
 		private void ForumsMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/Forum/Subforum/64");
+			Util.OpenUrlExternal("https://tasvideos.org/Forum/Subforum/64");
 		}
 
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)
@@ -1502,12 +1502,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == true)
 			{
-				System.Threading.ThreadPool.QueueUserWorkItem(s =>
-				{
-					using (System.Diagnostics.Process.Start(VersionInfo.HomePage))
-					{
-					}
-				});
+				Util.OpenUrlExternal(VersionInfo.HomePage);
 			}
 			else if (result == false)
 			{

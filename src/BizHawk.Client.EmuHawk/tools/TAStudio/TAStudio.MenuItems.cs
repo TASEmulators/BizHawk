@@ -1337,12 +1337,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TASEditorManualOnlineMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://www.fceux.com/web/help/taseditor/");
+			Util.OpenUrlExternal("http://www.fceux.com/web/help/taseditor/");
 		}
 
 		private void ForumThreadMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/Forum/Topics/13505");
+			Util.OpenUrlExternal("https://tasvideos.org/Forum/Topics/13505");
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -301,6 +302,34 @@ namespace BizHawk.Common
 			{
 				bw.Write(data.Length);
 				bw.Write(data);
+			}
+		}
+
+		// Process.Start does not correctly handle urls in mono version pre-6.12.0.122,
+		// so we use an explicit function handling it instead
+		public static void OpenUrlExternal(string url)
+		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				string[] apps = OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS
+					? [ "open" ]
+					: [ "xdg-open", "gnome-open", "kfmclient" ];
+
+				foreach (string app in apps)
+				{
+					try
+					{
+						Process.Start(app, url);
+					}
+					catch (Win32Exception)
+					{
+						continue;
+					}
+				}
+			}
+			else
+			{
+				Process.Start(url);
 			}
 		}
 	}

@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start(FFmpegService.Url);
+			Util.OpenUrlExternal(FFmpegService.Url);
 		}
 	}
 }

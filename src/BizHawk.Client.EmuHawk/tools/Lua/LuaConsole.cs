@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
@@ -1185,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("https://tasvideos.org/BizHawk/LuaFunctions");
+			Util.OpenUrlExternal("https://tasvideos.org/BizHawk/LuaFunctions");
 		}
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)

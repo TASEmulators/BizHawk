@@ -1,4 +1,6 @@
 ﻿using System.Windows.Forms;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -33,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CoreUrlLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			CoreUrlLink.LinkVisited = true;
-			System.Diagnostics.Process.Start(_url);
+			Util.OpenUrlExternal(_url);
 		}
 	}
 }
