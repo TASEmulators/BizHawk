@@ -39,6 +39,12 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			toolTip1.SetToolTip(AddMarkerButton, $"Add Marker to Emulated Frame ({config.HotkeyBindings["Set Marker"]})");
+			toolTip1.SetToolTip(AddMarkerWithTextButton, $"Add Marker with Text to Emulated Frame ({config.HotkeyBindings["Set Marker"]} {config.HotkeyBindings["Set Marker"]})");
+		}
+
 		private void SetupColumns()
 		{
 			MarkerView.AllColumns.Clear();

@@ -395,6 +395,22 @@ namespace BizHawk.Client.EmuHawk
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.RedoExternal();
 					break;
+				case "Seek To Prev Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToPreviousMarker();
+					break;
+				case "Seek To Next Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToNextMarker();
+					break;
+				case "Set Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SetMarker();
+					break;
+				case "Delete Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RemoveMarker();
+					break;
 				case "Sel. bet. Markers":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.SelectBetweenMarkersExternal();

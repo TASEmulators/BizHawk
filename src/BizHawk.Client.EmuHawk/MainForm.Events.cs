@@ -755,6 +755,8 @@ namespace BizHawk.Client.EmuHawk
 
 			InitControls();
 			InputManager.SyncControls(Emulator, MovieSession, Config);
+
+			Tools.HandleHotkeyUpdate();
 		}
 
 		private void OpenFWConfigRomLoadFailed(RomLoader.RomErrorArgs args)
