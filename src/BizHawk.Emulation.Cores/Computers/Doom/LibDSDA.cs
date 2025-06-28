@@ -119,7 +119,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract bool dsda_init(ref InitSettings settings, int argc, string[] argv);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_get_video(int gamma, out VideoInfo info);
+		public abstract void dsda_init_video(ref PackedRenderInfo renderInfo);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void dsda_get_video(out VideoInfo videoInfo);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int load_archive_cb(string filename, IntPtr buffer, int maxsize);

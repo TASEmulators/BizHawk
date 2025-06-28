@@ -15,11 +15,38 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public int VsyncDenominator { get; }
 		public int[] GetVideoBuffer() => _vidBuff;
 
-		private unsafe void UpdateVideo(int gamma = -1)
+		private void InitVideo()
+		{
+			var renderInfo = new LibDSDA.PackedRenderInfo()
+			{
+				SfxVolume = _settings.SfxVolume,
+				MusicVolume = _settings.MusicVolume,
+				Gamma = _settings.Gamma,
+				HeadsUpMode = (int) _settings.HeadsUpMode,
+				MapDetails = (int) _settings.MapDetails,
+				MapOverlay = (int) _settings.MapOverlay,
+				RenderVideo = 1,
+				RenderAudio = 1,
+				ShowMessages = Convert.ToInt32(_settings.ShowMessages),
+				ReportSecrets = Convert.ToInt32(_settings.ReportSecrets),
+				DsdaExHud = Convert.ToInt32(_settings.DsdaExHud),
+				DisplayCoordinates = Convert.ToInt32(_settings.DisplayCoordinates),
+				DisplayCommands = Convert.ToInt32(_settings.DisplayCommands),
+				MapTotals = Convert.ToInt32(_settings.MapTotals),
+				MapTime = Convert.ToInt32(_settings.MapTime),
+				MapCoordinates = Convert.ToInt32(_settings.MapCoordinates),
+				PlayerPointOfView = _settings.DisplayPlayer - 1,
+			};
+
+			_core.dsda_init_video(ref renderInfo);
+			_vidBuff = new int[BufferWidth * BufferHeight];
+		}
+
+		private unsafe void UpdateVideo(bool init = false)
 		{
 			using (_elf.EnterExit())
 			{
-				_core.dsda_get_video(gamma, out var vi);
+				_core.dsda_get_video(out var vi);
 
 				int[] _palBuffer = [ ];
 				var videoBuffer = (byte*)vi.VideoBuffer.ToPointer();

@@ -216,10 +216,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_elf.Seal();
 				}
 
-				// we have to set gamma after the core is sealed to ensure states don't depend on its initial value
-				// but if we set it during frame advance, first frame won't have it set
-				// so we set gamma here and force a video update, and other UpdateVideo() calls are blank
-				UpdateVideo(_settings.Gamma);
+				// we have to set render info after the core is sealed to ensure
+				// states don't depend on its initial value
+				InitVideo();
 
 				// Registering memory domains
 				SetupMemoryDomains();

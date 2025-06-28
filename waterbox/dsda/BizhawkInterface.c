@@ -222,14 +222,8 @@ ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
     *buffer = audioBuffer;
 }
 
-ECL_EXPORT void dsda_get_video(int gamma, struct VideoInfo* vi)
+ECL_EXPORT void dsda_get_video(struct VideoInfo* vi)
 {
-  if (gamma != -1)
-  {
-    dsda_UpdateIntConfig(dsda_config_usegamma, gamma, true);
-    headlessUpdateVideo();
-  }
-
   vi->buffer = (uint8_t *)headlessGetVideoBuffer();
   vi->width = headlessGetVideoWidth();
   vi->height = headlessGetVideoHeight();
@@ -250,9 +244,14 @@ ECL_EXPORT void dsda_get_video(int gamma, struct VideoInfo* vi)
   vi->paletteBuffer = _convertedPaletteBuffer;
 }
 
+ECL_EXPORT void dsda_init_video(struct PackedRenderInfo *renderInfo)
+{
+  render_updates(renderInfo);
+  headlessUpdateVideo();
+}
+
 ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
 {
-  // Live render changes
   if (renderInfo->RenderVideo)
     render_updates(renderInfo);
 
