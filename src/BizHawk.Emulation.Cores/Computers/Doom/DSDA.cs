@@ -263,6 +263,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ConditionalArg(_syncSettings.MonstersRespawn, "-respawn");
 			ConditionalArg(_syncSettings.NoMonsters,      "-nomonsters");
 			ConditionalArg(_syncSettings.PistolStart,     "-pistolstart");
+			ConditionalArg(_syncSettings.CoopSpawns,      "-coop_spawns");
 			ConditionalArg(_syncSettings.ChainEpisodes,   "-chain_episodes");
 			ConditionalArg(_syncSettings.TurningResolution == TurningResolution.Longtics, "-longtics");
 			ConditionalArg(_syncSettings.MultiplayerMode   == MultiplayerMode.Deathmatch, "-deathmatch");

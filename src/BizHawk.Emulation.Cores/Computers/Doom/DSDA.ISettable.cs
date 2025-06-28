@@ -345,6 +345,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(false)]
 			public bool PistolStart { get; set; }
 
+			[DisplayName("Co-op Mode Spawns")]
+			[Description("Play single-player mode with co-op thing spawns.")]
+			[DefaultValue(false)]
+			public bool CoopSpawns { get; set; }
+
 			[DisplayName("Chain Episodes")]
 			[Description("Completing one episode leads to the next without interruption. Not available in vanilla.")]
 			[DefaultValue(false)]
