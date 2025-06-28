@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class DisplayConfig : Form, IDialogParent
 	{
-		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(new FilesystemFilter(".CGP Files", new[] { "cgp" }))
+		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(new FilesystemFilter(".CGP Files", [ "cgp", "glslp" ]))
 		{
 			AppendAllFilesEntry = false,
 		};
