@@ -999,24 +999,40 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void SetMarker() => SetMarker(Emulator.Frame);
+
+		private void SetMarker(int frame)
+		{
+			TasMovieMarker/*?*/ existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == frame);
+
+			if (existingMarker != null)
+			{
+				MarkerControl.EditMarkerPopUp(existingMarker);
+			}
+			else
+			{
+				MarkerControl.AddMarker(frame);
+			}
+		}
+
+		public void RemoveMarker()
+		{
+			TasMovieMarker/*?*/ existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == Emulator.Frame);
+			if (existingMarker == null) return;
+
+			CurrentTasMovie. Markers.Remove(existingMarker);
+			MarkerControl.UpdateMarkerCount();
+		}
+
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (TasView.CurrentCell?.Column is not { Name: var columnName }) return;
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (!AxisEditingMode && TasView.CurrentCell.RowIndex is not null && columnName is FrameColumnName)
+				if (!AxisEditingMode && columnName is FrameColumnName)
 				{
-					var existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == TasView.CurrentCell.RowIndex.Value);
-
-					if (existingMarker != null)
-					{
-						MarkerControl.EditMarkerPopUp(existingMarker);
-					}
-					else
-					{
-						MarkerControl.AddMarker(TasView.CurrentCell.RowIndex.Value);
-					}
+					SetMarker(TasView.CurrentCell.RowIndex.Value);
 				}
 			}
 		}
@@ -1469,15 +1485,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
 			// taseditor uses Ctrl for selection and Shift for frame cursor
-			if (e.IsShift(Keys.PageUp))
-			{
-				GoToPreviousMarker();
-			}
-			else if (e.IsShift(Keys.PageDown))
-			{
-				GoToNextMarker();
-			}
-			else if (e.IsShift(Keys.Home))
+			if (e.IsShift(Keys.Home))
 			{
 				GoToFrame(0);
 			}

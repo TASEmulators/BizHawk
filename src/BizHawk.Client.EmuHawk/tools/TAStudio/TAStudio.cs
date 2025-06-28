@@ -208,9 +208,37 @@ namespace BizHawk.Client.EmuHawk
 				Settings.BranchMarkerSplitDistance,
 				_defaultBranchMarkerSplitDistance);
 
+			HandleHotkeyUpdate();
+
 			TasView.Font = TasViewFont;
 			RefreshDialog();
 			_initialized = true;
+		}
+
+		public override void HandleHotkeyUpdate()
+		{
+			UndoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Undo"];
+			RedoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Redo"];
+			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
+			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
+			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
+			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
+			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
+			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
+			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
+			CloneFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
+			CloneFramesXTimesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+
+			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
+			ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
+			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
+			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
+			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
+			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
+			CloneXTimesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+
+			TasPlaybackBox.UpdateHotkeyTooltips(Config);
+			MarkerControl.UpdateHotkeyTooltips(Config);
 		}
 
 		private bool LoadMostRecentOrStartNew()
