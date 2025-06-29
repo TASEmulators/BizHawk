@@ -37,6 +37,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			if (newLog.Count != currentLog.Count)
+				return Math.Min(newLog.Count, currentLog.Count);
+
 			return null;
 		}
 
