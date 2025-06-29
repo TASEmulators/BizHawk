@@ -152,7 +152,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (_displayCache.Frame != frame)
+			if (_displayCache.Frame != frame || Log.Count == 1)
 			{
 				_displayCache.Controller ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
 				_displayCache.Controller.SetFromMnemonic(Log[frame]);
