@@ -27,6 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _startRow;
 		private int _batchEditMinFrame = -1;
 		private bool _batchEditing;
+		private bool _batchEditControlsUndoBatch;
 		private bool _editIsFromLua;
 
 		// Editing analog input
@@ -766,15 +767,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Begins a batch of edits, for auto-restore purposes. Auto-restore will be delayed until EndBatchEdit is called.
 		/// </summary>
-		private void BeginBatchEdit()
+		/// <param name="undoHistoryBatchName">The name to give to the item in the undo history. Pass null to not make an undo history batch.</param>
+		private void BeginBatchEdit(string undoHistoryBatchName)
 		{
 			_batchEditing = true;
+			if (undoHistoryBatchName != null)
+				_batchEditControlsUndoBatch = CurrentTasMovie.ChangeLog.BeginNewBatch(undoHistoryBatchName, true);
+			else
+				_batchEditControlsUndoBatch = false;
 		}
 
 		/// <returns>Returns true if the input list was redrawn.</returns>
 		private bool EndBatchEdit()
 		{
 			_batchEditing = false;
+			if (_batchEditControlsUndoBatch) CurrentTasMovie.ChangeLog.EndBatch();
+
 			if (_batchEditMinFrame != -1)
 			{
 				return FrameEdited(_batchEditMinFrame);
@@ -783,11 +791,11 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		public void ApiHawkBatchEdit(Action action)
+		public void ApiHawkBatchEdit(Action action, string undoHistoryBatchName)
 		{
 			// This is only caled from Lua.
 			_editIsFromLua = true;
-			BeginBatchEdit();
+			BeginBatchEdit(undoHistoryBatchName);
 			try
 			{
 				action();
@@ -1322,7 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			BeginBatchEdit();
+			BeginBatchEdit(null);
 
 			int value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
 			string prevTyped = _axisTypedValue;
