@@ -164,8 +164,6 @@ namespace BizHawk.Client.Common
 			ShiftBindedMarkers(removeUpTo, removeStart - removeUpTo);
 
 			Changes = true;
-			InvalidateAfter(removeStart);
-
 			ChangeLog.AddRemoveFrames(
 				removeStart,
 				removeUpTo,
@@ -173,6 +171,8 @@ namespace BizHawk.Client.Common
 				removedMarkers,
 				$"Remove frames {removeStart}-{removeUpTo - 1}"
 			);
+
+			InvalidateAfter(removeStart);
 		}
 
 		public void InsertInput(int frame, string inputState)
@@ -188,9 +188,9 @@ namespace BizHawk.Client.Common
 			ShiftBindedMarkers(frame, inputLog.Count());
 
 			Changes = true;
-			InvalidateAfter(frame);
-
 			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
+
+			InvalidateAfter(frame);
 		}
 
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
@@ -258,9 +258,9 @@ namespace BizHawk.Client.Common
 			ShiftBindedMarkers(frame, count);
 
 			Changes = true;
-			InvalidateAfter(frame);
-
 			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
+
+			InvalidateAfter(frame);
 		}
 
 		private void ExtendMovieForEdit(int numFrames)
@@ -295,12 +295,12 @@ namespace BizHawk.Client.Common
 
 			var adapter = GetInputState(frame);
 			adapter.SetBool(buttonName, !adapter.IsPressed(buttonName));
-
 			Log[frame] = Bk2LogEntryGenerator.GenerateLogEntry(adapter);
-			Changes = true;
-			InvalidateAfter(frame);
 
+			Changes = true;
 			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName), $"Toggle {buttonName}: {frame}");
+
+			InvalidateAfter(frame);
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
@@ -318,9 +318,9 @@ namespace BizHawk.Client.Common
 
 			if (old != val)
 			{
-				InvalidateAfter(frame);
 				Changes = true;
 				ChangeLog.AddBoolToggle(frame, buttonName, old, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}");
+				InvalidateAfter(frame);
 			}
 		}
 
@@ -372,9 +372,9 @@ namespace BizHawk.Client.Common
 
 			if (old != val)
 			{
-				InvalidateAfter(frame);
 				Changes = true;
 				ChangeLog.AddAxisChange(frame, buttonName, old, val, $"Set {buttonName}({val}): {frame}");
+				InvalidateAfter(frame);
 			}
 		}
 
