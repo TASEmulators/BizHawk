@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore()
 		{
-			if (CurrentTasMovie.IsAtEnd())
+			if (CurrentTasMovie.IsAtEnd() && !CurrentTasMovie.IsRecording())
 			{
 				CurrentTasMovie.RecordFrame(CurrentTasMovie.Emulator.Frame, MovieSession.StickySource);
 			}
