@@ -237,15 +237,20 @@ namespace BizHawk.Client.Common
 				Log[frame + i] = entry;
 			}
 
-			ChangeLog.EndBatch();
-			Changes = true;
 			if (firstChangedFrame != -1)
 			{
-				// TODO: Throw out the undo action if there are no changes.
+				ChangeLog.EndBatch();
+				Changes = true;
+
 				InvalidateAfter(firstChangedFrame);
+
+				ChangeLog.SetGeneralRedo();
+			}
+			else
+			{
+				ChangeLog.AbortBatch();
 			}
 
-			ChangeLog.SetGeneralRedo();
 			return firstChangedFrame;
 		}
 
