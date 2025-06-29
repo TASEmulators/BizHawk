@@ -66,7 +66,7 @@
   (fetchNuGet { pname = "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl"; version = "4.3.0"; sha256 = "1p4dgxax6p7rlgj4q73k73rslcnz4wdcv8q2flg1s8ygwcm58ld5"; })
   (fetchNuGet { pname = "runtime.unix.System.Private.Uri"; version = "4.3.0"; sha256 = "1jx02q6kiwlvfksq1q9qr17fj78y5v6mwsszav4qcz9z25d5g6vk"; })
   (fetchNuGet { pname = "runtime.unix.System.Runtime.Extensions"; version = "4.3.0"; sha256 = "0pnxxmm8whx38dp6yvwgmh22smknxmqs5n513fc7m4wxvs1bvi4p"; })
-  (fetchNuGet { pname = "SharpCompress"; version = "0.39.0"; sha256 = "14c1lcg16ysgz94mc80afi4wa68miah1985vwnq4hdgrr4q3rvri"; })
+  (fetchNuGet { pname = "SharpCompress"; version = "0.40.0"; sha256 = "0lbkz5wd17w0xzm0fws5id81zc3qni9pxchbjw1fbi7zzxwzj757"; })
   (fetchNuGet { pname = "SharpGen.Runtime"; version = "2.0.0-beta.13"; sha256 = "1250z6sa9ghf84czlkzvaysb29c0n229z1f0vh5qls89akrkl7h8"; })
   (fetchNuGet { pname = "SharpGen.Runtime.COM"; version = "2.0.0-beta.13"; sha256 = "1lmv3jp2g7mgy9j23pd3j0wr3p89qiq8v6c6qxqf688izyni1166"; })
   (fetchNuGet { pname = "Silk.NET.Core"; version = "2.21.0"; sha256 = "0z24vczhivzszs28sw92kr9zlx3mxcic3lka8lig2zs6dl5591hg"; })
@@ -130,5 +130,5 @@
   (fetchNuGet { pname = "Vortice.Mathematics"; version = "1.4.25"; sha256 = "0vl6g087disxyzskvkbnwym74s47lkza0ly3nk4y0y88zibcggrj"; })
   (fetchNuGet { pname = "Vortice.MediaFoundation"; version = "2.4.2"; sha256 = "0nk8r564w8x791nqn5457jcq0gj7v6k5v1mziisqy4945byjxcdl"; })
   (fetchNuGet { pname = "Vortice.XAudio2"; version = "2.4.2"; sha256 = "0iwnaa0jdl3782k9i9j2c0s7lyxjky1ph6i8dv12w3ym2p19h3qc"; })
-  (fetchNuGet { pname = "ZstdSharp.Port"; version = "0.8.4"; sha256 = "1fjr9wdjrl26i644n7r38hjm4abcl846bnwfkl72bsxymws59cg1"; })
+  (fetchNuGet { pname = "ZstdSharp.Port"; version = "0.8.5"; sha256 = "1wj26rdd27968yb6yah4ysflga3zwb2rrz97jl5xv6dq9rwhai7r"; })
 ]
