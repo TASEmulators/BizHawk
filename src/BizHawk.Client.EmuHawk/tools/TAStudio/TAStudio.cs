@@ -942,6 +942,13 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(TasView, null);
 		}
 
+		private void TAStudio_Activated(object sender, EventArgs e)
+		{
+			// The copy/paste shortcut keys are handled by the right-click context menu, not EmuHawk hotkeys.
+			// So they will only work if TasView is focused.
+			TasView.Select();
+		}
+
 		private void TAStudio_Deactivate(object sender, EventArgs e)
 		{
 			if (_leftButtonHeld)
