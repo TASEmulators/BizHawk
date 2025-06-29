@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
-				});
+				}, "Lua: tastudio.applyinputchanges");
 
 				_luaLibsImpl.IsUpdateSupressed = false;
 			}
