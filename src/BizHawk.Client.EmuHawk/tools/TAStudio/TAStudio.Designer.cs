@@ -351,6 +351,7 @@ namespace BizHawk.Client.EmuHawk
             this.GreenzoneICheckSeparator,
             this.StateHistoryIntegrityCheckMenuItem});
 			this.EditSubMenu.Text = "&Edit";
+			this.EditSubMenu.DropDownClosed += new System.EventHandler(this.EditSubMenu_DropDownClosed);
 			this.EditSubMenu.DropDownOpened += new System.EventHandler(this.EditSubMenu_DropDownOpened);
 			// 
 			// UndoMenuItem

@@ -239,6 +239,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void EditSubMenu_DropDownClosed(object sender, EventArgs e)
+		{
+			// These specific menu items have their ShortcutKeys property set.
+			// These are not user-configurable hotkeys handled by EmuHawk's hotkey system.
+			// They are andled by .NET. So they must be enabled in order to work!
+			// (We disable them in EditSubMenu_DropDownOpened if there is no selection.)
+			CopyMenuItem.Enabled = true;
+			CutMenuItem.Enabled = true;
+			PasteMenuItem.Enabled = true;
+			PasteInsertMenuItem.Enabled = true;
+		}
+
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =
