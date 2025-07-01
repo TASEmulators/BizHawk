@@ -106,8 +106,9 @@ namespace BizHawk.Client.EmuHawk
 					fs.Dispose();
 					if (OSTailoredCode.IsUnixHost)
 					{
-						OSTailoredCode.ConstructSubshell("chmod", $"+x {DownloadTo}", checkStdout: false).Start();
-						Thread.Sleep(50); // Linux I/O flush idk
+						var proc = OSTailoredCode.ConstructSubshell("chmod", $"+x {DownloadTo}", checkStdout: false);
+						proc.Start();
+						proc.WaitForExit();
 					}
 				}
 
