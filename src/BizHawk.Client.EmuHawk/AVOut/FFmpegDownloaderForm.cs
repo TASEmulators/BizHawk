@@ -15,18 +15,24 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public FFmpegDownloaderForm()
 		{
+			_path = FFmpegService.FFmpegPath;
+			_url = FFmpegService.Url;
+
 			InitializeComponent();
 
-			txtLocation.Text = FFmpegService.FFmpegPath;
-			txtUrl.Text = FFmpegService.Url;
+			txtLocation.Text = _path;
+			txtUrl.Text = _url;
 
 			if (OSTailoredCode.IsUnixHost) textBox1.Text = string.Join("\n", textBox1.Text.Split('\n').Take(3)) + "\n\n(Linux user: If installing manually, you can use a symlink.)";
 		}
 
-		private int pct = 0;
-		private bool exiting = false;
-		private bool succeeded = false;
-		private bool failed = false;
+		private readonly string _path;
+		private readonly string _url;
+
+		private int _pct = 0;
+		private bool _exiting = false;
+		private bool _succeeded = false;
+		private bool _failed = false;
 
 		private void ThreadProc()
 		{
@@ -40,29 +46,29 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				DirectoryInfo parentDir = new(Path.GetDirectoryName(FFmpegService.FFmpegPath)!);
+				DirectoryInfo parentDir = new(Path.GetDirectoryName(_path)!);
 				if (!parentDir.Exists) parentDir.Create();
-				using var fs = File.Create(FFmpegService.FFmpegPath); // check writable before bothering with the download
+				// check writable before bothering with the download
+				if (File.Exists(_path)) File.Delete(_path);
+				using var fs = File.Create(_path);
 				using (var evt = new ManualResetEvent(false))
 				{
-					using (var client = new WebClient())
+					using var client = new WebClient();
+					ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+					client.DownloadFileAsync(new Uri(_url), fn);
+					client.DownloadProgressChanged += (_, progressArgs) => _pct = progressArgs.ProgressPercentage;
+					client.DownloadFileCompleted += (_, _) => evt.Set(); // we don't really need a status, we'll just try to unzip it when it's done
+
+					while (true)
 					{
-						ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-						client.DownloadFileAsync(new Uri(FFmpegService.Url), fn);
-						client.DownloadProgressChanged += (_, progressArgs) => pct = progressArgs.ProgressPercentage;
-						client.DownloadFileCompleted += (_, _) => evt.Set(); // we don't really need a status, we'll just try to unzip it when it's done
+						if (evt.WaitOne(10)) break;
 
-						while (true)
+						//if the gui thread ordered an exit, cancel the download and wait for it to acknowledge
+						if (_exiting)
 						{
-							if (evt.WaitOne(10)) break;
-
-							//if the gui thread ordered an exit, cancel the download and wait for it to acknowledge
-							if (exiting)
-							{
-								client.CancelAsync();
-								evt.WaitOne();
-								break;
-							}
+							client.CancelAsync();
+							evt.WaitOne();
+							break;
 						}
 					}
 				}
@@ -70,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 //				throw new Exception("test of download failure");
 
 				//if we were ordered to exit, bail without wasting any more time
-				if (exiting) return;
+				if (_exiting) return;
 
 				//try acquiring file
 				using (var hf = new HawkFile(fn))
@@ -78,12 +84,12 @@ namespace BizHawk.Client.EmuHawk
 					using (var exe = OSTailoredCode.IsUnixHost ? hf.BindArchiveMember("ffmpeg") : hf.BindFirstOf(".exe"))
 					{
 						//last chance. exiting, don't dump the new ffmpeg file
-						if (exiting) return;
+						if (_exiting) return;
 						exe!.GetStream().CopyTo(fs);
 						fs.Dispose();
 						if (OSTailoredCode.IsUnixHost)
 						{
-							OSTailoredCode.ConstructSubshell("chmod", $"+x {FFmpegService.FFmpegPath}", checkStdout: false).Start();
+							OSTailoredCode.ConstructSubshell("chmod", $"+x {_path}", checkStdout: false).Start();
 							Thread.Sleep(50); // Linux I/O flush idk
 						}
 					}
@@ -92,11 +98,11 @@ namespace BizHawk.Client.EmuHawk
 				//make sure it worked
 				if (!FFmpegService.QueryServiceAvailable()) throw new Exception("download failed");
 
-				succeeded = true;
+				_succeeded = true;
 			}
 			catch (Exception e)
 			{
-				failed = true;
+				_failed = true;
 				Util.DebugWriteLine($"FFmpeg download failed with:\n{e}");
 			}
 			finally
@@ -116,9 +122,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			btnDownload.Text = "Downloading...";
 			btnDownload.Enabled = false;
-			failed = false;
-			succeeded = false;
-			pct = 0;
+			_failed = false;
+			_succeeded = false;
+			_pct = 0;
 			var t = new Thread(ThreadProc);
 			t.Start();
 		}
@@ -132,26 +138,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//inform the worker thread that it needs to try terminating without doing anything else
 			//(it will linger on in background for a bit til it can service this)
-			exiting = true;
+			_exiting = true;
 		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			//if it's done, close the window. the user will be smart enough to reopen it
-			if (succeeded) Close();
-			if (failed)
+			if (_succeeded) Close();
+			if (_failed)
 			{
-				failed = false;
-				pct = 0;
+				_failed = false;
+				_pct = 0;
 				btnDownload.Text = "FAILED - Download Again";
 				btnDownload.Enabled = true;
 			}
-			progressBar1.Value = pct;
+			progressBar1.Value = _pct;
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Util.OpenUrlExternal(FFmpegService.Url);
+			Util.OpenUrlExternal(_url);
 		}
 	}
 }
