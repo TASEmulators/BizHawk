@@ -57,6 +57,11 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				DirectoryInfo parentDir = new(Path.GetDirectoryName(_path)!);
+				if (!parentDir.Exists) parentDir.Create();
+				// check writable before bothering with the download
+				if (File.Exists(_path)) File.Delete(_path);
+				using var fs = File.Create(_path);
 				using (var evt = new ManualResetEvent(false))
 				{
 					using var client = new WebClient();
@@ -87,22 +92,18 @@ namespace BizHawk.Client.EmuHawk
 				//try acquiring file
 				using (var dll = new HawkFile(fn))
 				{
-					var data = dll!.ReadAllBytes();
-
 					//last chance. exiting, don't dump the new RAIntegration file
 					if (_exiting) return;
 
-					DirectoryInfo parentDir = new(Path.GetDirectoryName(_path)!);
-					if (!parentDir.Exists) parentDir.Create();
-					if (File.Exists(_path)) File.Delete(_path);
-					File.WriteAllBytes(_path, data);
+					dll.GetStream().CopyTo(fs);
 				}
 
 				_succeeded = true;
 			}
-			catch
+			catch (Exception e)
 			{
 				_failed = true;
+				Util.DebugWriteLine($"RAIntegration download failed with:\n{e}");
 			}
 			finally
 			{
