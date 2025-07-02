@@ -382,7 +382,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame + count >= Log.Count) // Insert blank frames up to this point
 			{
-				ExtendMovieForEdit(frame - Log.Count + 1);
+				ExtendMovieForEdit(frame + count - Log.Count);
 			}
 
 			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({val}): {frame}-{frame + count - 1}");
