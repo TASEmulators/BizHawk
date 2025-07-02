@@ -294,6 +294,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ShowUndoHistoryMenuItem_Click(object sender, EventArgs e)
 		{
+			if (_undoForm != null && !_undoForm.IsDisposed)
+			{
+				// We could just BringToFront, but closing is probably better since the new one will appear in the expected screen location.
+				_undoForm.Close();
+			}
+
 			_undoForm = new UndoHistoryForm(this) { Owner = this };
 			_undoForm.Show();
 			_undoForm.UpdateValues();
