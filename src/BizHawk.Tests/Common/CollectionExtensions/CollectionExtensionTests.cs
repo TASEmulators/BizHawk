@@ -82,7 +82,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 				"array");
 			CollectionAssert.AreEqual(
 				new[] { 1, 2, 3, 4, 5, 6 },
-				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), [ ], new ArraySegment<int>([ 4, 5, 6 ]) ]),
+				CE.ConcatArrays([ new ArraySegment<int>([ 1, 2 ]), new ArraySegment<int>([ 3 ]), new([ ]), new ArraySegment<int>([ 4, 5, 6 ]) ]),
 				"ArraySegment");
 		}
 

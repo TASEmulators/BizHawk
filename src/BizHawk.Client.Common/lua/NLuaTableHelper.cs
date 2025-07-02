@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		public ArraySegment<T> EnumerateValues<T>(LuaTable table)
 		{
 			var n = table.Count;
-			if (n is 0) return [ ];
+			if (n is 0) return new([ ]);
 			var values = new T[n];
 			var seen = ArrayPool<bool>.Shared.Rent(n);
 			var seenSpan = seen.AsSpan(start: 0, length: n);
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 				if (cutoff is 0)
 				{
 					_logCallback("no numeric keys");
-					return [ ];
+					return new([ ]);
 				}
 				_logCallback($"ignoring {n - cutoff} entries");
 			}
