@@ -462,10 +462,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <remarks>assumes a TAStudio project is loaded</remarks>
-		private TasMovieMarkerList MarkerListForBranch(int? branchIndex)
-			=> branchIndex is int i
-				? Tastudio.CurrentTasMovie.Branches[i].Markers
-				: Tastudio.CurrentTasMovie.Markers;
+		private TasMovieMarkerList MarkerListForBranch(string/*?*/ branchID)
+		{
+			var found = Guid.TryParseExact(branchID, format: "D", out var parsed)
+				? Tastudio.CurrentTasMovie.Branches.FirstOrDefault(branch => branch.Uuid == parsed)
+				: null;
+			return found?.Markers ?? Tastudio.CurrentTasMovie.Markers;
+		}
 
 		[LuaMethodExample("""
 			local marker_label = tastudio.getmarker(tastudio.find_marker_on_or_before(100));
@@ -474,10 +477,10 @@ namespace BizHawk.Client.EmuHawk
 			name: "find_marker_on_or_before",
 			description: "Returns the frame number of the marker closest to the given frame (including that frame, but not after it)."
 				+ " This may be the power-on marker at 0."
-				+ " If branchIndex is specified, searches the markers in that branch instead.")]
-		public int FindMarkerOnOrBefore(int frame, int? branchIndex = null)
+				+ " If branchID is specified, searches the markers in that branch instead.")]
+		public int FindMarkerOnOrBefore(int frame, string/*?*/ branchID = null)
 			=> Engaged()
-				? MarkerListForBranch(branchIndex).PreviousOrCurrent(frame).Frame
+				? MarkerListForBranch(branchID).PreviousOrCurrent(frame).Frame
 				: default;
 
 		[LuaMethodExample("""
@@ -486,10 +489,10 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			name: "get_frames_with_markers",
 			description: "Returns a list of all the frames which have markers on them."
-				+ " If branchIndex is specified, instead returns the frames which have markers in that branch.")]
-		public LuaTable GetFramesWithMarkers(int? branchIndex = null)
+				+ " If branchID is specified, instead returns the frames which have markers in that branch.")]
+		public LuaTable GetFramesWithMarkers(string/*?*/ branchID = null)
 			=> Engaged()
-				? _th.EnumerateToLuaTable(MarkerListForBranch(branchIndex).Select(static m => m.Frame))
+				? _th.EnumerateToLuaTable(MarkerListForBranch(branchID).Select(static m => m.Frame))
 				: _th.CreateTable();
 
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
