@@ -451,7 +451,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{
-			var branch = CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
+			var branch = Guid.TryParseExact(branchId, format: "D", out var parsed)
+				? CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid == parsed)
+				: null;
 			if (branch == null || frame >= branch.InputLog.Count)
 			{
 				return null;
