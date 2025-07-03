@@ -416,6 +416,23 @@ namespace BizHawk.Client.EmuHawk
 				indexFrom: 0);
 		}
 
+		[LuaMethodExample("""
+			tastudio.setbranchtext("New label", tastudio.get_branch_index_by_id(branch_id));
+		""")]
+		[LuaMethod(
+			name: "get_branch_index_by_id",
+			description: "Finds the branch with the given UUID (0-indexed). Returns nil if not found.")]
+		public int? GetBranchIndexByID(string id)
+		{
+			if (!Guid.TryParseExact(id, format: "D", out var parsed))
+			{
+				Log($"not a valid UUID: {id}");
+				return null;
+			}
+			return Tastudio.CurrentTasMovie.Branches.Index()
+				.FirstOrNull(tuple => tuple.Item.Uuid == parsed)?.Index;
+		}
+
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
 		public LuaTable GetBranchInput(string branchId, int frame)
