@@ -19,11 +19,8 @@ namespace BizHawk.Client.Common
 
 			LagLog[frame] = _inputPollable.IsLagFrame;
 
-			if (this.IsRecording())
-			{
-				LastEditWasRecording = true;
-				InvalidateAfter(frame);
-			}
+			LastEditWasRecording = true;
+			InvalidateAfter(frame);
 
 			ChangeLog.SetGeneralRedo();
 		}
