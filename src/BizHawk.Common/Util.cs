@@ -96,6 +96,9 @@ namespace BizHawk.Common
 			return $"{filesize / 1099511627776.0:.##} TiB";
 		}
 
+		public static string GetRandomUUIDStr()
+			=> Guid.NewGuid().ToString("D");
+
 		/// <returns>all <see cref="Type">Types</see> with the name <paramref name="className"/></returns>
 		/// <remarks>adapted from https://stackoverflow.com/a/13727044/7467292</remarks>
 		public static IList<Type> GetTypeByName(string className) => AppDomain.CurrentDomain.GetAssemblies()
