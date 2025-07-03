@@ -462,9 +462,9 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			name: "getmarker",
 			description: "Returns the label of the marker on the given frame."
-				+ " If that frame doesn't have a marker (or TAStudio isn't running), returns an empty string."
+				+ " If that frame doesn't have a marker (or TAStudio isn't running), returns nil."
 				+ " If branchID is specified, searches the markers in that branch instead.")]
-		public string GetMarker(int frame, string/*?*/ branchID = null)
+		public string/*?*/ GetMarker(int frame, string/*?*/ branchID = null)
 		{
 			if (Engaged())
 			{
@@ -475,7 +475,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			return "";
+			return null;
 		}
 
 		/// <remarks>assumes a TAStudio project is loaded</remarks>
