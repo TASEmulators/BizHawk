@@ -459,8 +459,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
-		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
-		public string GetMarker(int frame)
+		[LuaMethod("getmarker", "returns the marker text at the given frame, or nil if there is no marker for the given frame")]
+		public string/*?*/ GetMarker(int frame)
 		{
 			if (Engaged())
 			{
@@ -471,7 +471,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			return "";
+			return null;
 		}
 
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
