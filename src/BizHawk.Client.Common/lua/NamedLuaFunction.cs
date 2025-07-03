@@ -107,6 +107,9 @@ namespace BizHawk.Client.Common
 
 		public Guid Guid { get; }
 
+		public string GuidStr
+			=> Guid.ToString("D");
+
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }

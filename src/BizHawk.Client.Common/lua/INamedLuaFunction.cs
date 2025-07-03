@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 
 		Guid Guid { get; }
 
+		string GuidStr { get; }
+
 		MemoryCallbackDelegate MemCallback { get; }
 
 		string Name { get; }

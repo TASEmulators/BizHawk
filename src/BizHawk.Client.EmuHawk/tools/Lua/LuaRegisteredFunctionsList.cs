@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
-				item.SubItems.Add(nlf.Guid.ToString());
+				item.SubItems.Add(nlf.GuidStr);
 				FunctionView.Items.Add(item);
 			}
 

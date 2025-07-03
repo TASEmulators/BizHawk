@@ -395,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 				Tastudio.CurrentTasMovie.Branches.Select(b =>
 				{
 					var table = _th.CreateTable();
-					table["Id"] = b.Uuid.ToString();
+					table["Id"] = b.Uuid.ToString("D");
 					table["Frame"] = b.Frame;
 					table["Text"] = b.UserText;
 					return table;

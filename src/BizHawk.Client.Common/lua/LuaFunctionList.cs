@@ -17,8 +17,10 @@ namespace BizHawk.Client.Common
 
 		public LuaFunctionList(Action onChanged) => Changed = onChanged;
 
-		public NamedLuaFunction this[string guid]
-			=> _functions.Find(nlf => nlf.Guid.ToString() == guid);
+		public NamedLuaFunction/*?*/ this[string guid]
+			=> Guid.TryParseExact(guid, format: "D", out var parsed)
+				? _functions.Find(nlf => nlf.Guid == parsed)
+				: null;
 
 		public void Add(NamedLuaFunction nlf)
 		{
