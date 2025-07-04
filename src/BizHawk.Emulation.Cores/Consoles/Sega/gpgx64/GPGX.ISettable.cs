@@ -4,7 +4,6 @@ using System.Globalization;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -109,7 +108,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public class GPGXSettings
 		{
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _DrawBGA;
 
 			[DisplayName("Background Layer A")]
@@ -122,7 +120,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _DrawBGB;
 
 			[DisplayName("Background Layer B")]
@@ -135,7 +132,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _DrawBGW;
 
 			[DisplayName("Background Layer W")]
@@ -148,7 +144,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _DrawObj;
 
 			[DisplayName("Sprite Layer")]
@@ -161,7 +156,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _PadScreen320;
 
 			[DisplayName("Pad screen to 320")]
@@ -174,7 +168,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _Backdrop;
 
 			[DisplayName("Use custom backdrop color")]
@@ -187,7 +180,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			[DeepEqualsIgnore]
-			[JsonIgnore]
 			private bool _noSpriteLimit;
 
 			[DisplayName("Remove Per-Line Sprite Limit")]
