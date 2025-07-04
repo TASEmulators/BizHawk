@@ -258,19 +258,16 @@ namespace BizHawk.Client.Common
 		private void ExtendMovieForEdit(int numFrames)
 		{
 			int oldLength = InputLogLength;
-			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
-			Session.MovieController.SetFrom(Session.StickySource);
-
-			// account for autohold. needs autohold pattern to be already recorded in the current frame
+			// account for autohold TODO: What about auto-fire?
+			string inputs = Bk2LogEntryGenerator.GenerateLogEntry(Session.StickySource);
 			for (int i = 0; i < numFrames; i++)
 			{
-				Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(Session.MovieController));
+				Log.Add(inputs);
 			}
 
 			Changes = true;
-
-			ChangeLog.SetGeneralRedo();
+			ChangeLog.AddExtend(oldLength, numFrames, inputs);
 		}
 
 		public void ToggleBoolState(int frame, string buttonName)

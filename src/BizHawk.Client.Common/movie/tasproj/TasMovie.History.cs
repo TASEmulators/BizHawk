@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 		void AddInsertFrames(int frame, int count, string name = "", bool force = false);
 		void AddInsertInput(int frame, List<string> newInputs, string name = "", bool force = false);
 		void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, List<TasMovieMarker> removedMarkers, string name = "", bool force = false);
+		void AddExtend(int originalLength, int count, string inputs);
 	}
 
 	public class TasMovieChangeLog : IMovieChangeLog
@@ -378,6 +379,15 @@ namespace BizHawk.Client.Common
 			{
 				AddMovieAction(name);
 				LatestBatch.Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, removedMarkers));
+			}
+		}
+
+		public void AddExtend(int originalLength, int count, string inputs)
+		{
+			if (IsRecording)
+			{
+				AddMovieAction("extend movie");
+				LatestBatch.Add(new MovieActionExtend(originalLength, count, inputs));
 			}
 		}
 	}
@@ -842,6 +852,49 @@ namespace BizHawk.Client.Common
 			movie.RemoveFrames(FirstFrame, LastFrame);
 
 			movie.ChangeLog.IsRecording = wasRecording;
+		}
+	}
+
+
+	public class MovieActionExtend : IMovieAction
+	{
+		public int FirstFrame { get; }
+		public int LastFrame => FirstFrame + _count - 1;
+
+		private int _count;
+		private string _inputs;
+
+		public MovieActionExtend(int currentEndOfMovie, int count, string inputs)
+		{
+			FirstFrame = currentEndOfMovie;
+			_count = count;
+			_inputs = inputs;
+		}
+
+		public void Undo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+			bool wasMarkerBound = movie.BindMarkersToInput;
+			movie.BindMarkersToInput = false;
+
+			movie.RemoveFrames(FirstFrame, LastFrame + 1);
+
+			movie.ChangeLog.IsRecording = wasRecording;
+			movie.BindMarkersToInput = wasMarkerBound;
+		}
+
+		public void Redo(ITasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
+			bool wasMarkerBound = movie.BindMarkersToInput;
+			movie.BindMarkersToInput = false;
+
+			movie.InsertInput(FirstFrame, Enumerable.Repeat(_inputs, _count));
+
+			movie.ChangeLog.IsRecording = wasRecording;
+			movie.BindMarkersToInput = wasMarkerBound;
 		}
 	}
 }
