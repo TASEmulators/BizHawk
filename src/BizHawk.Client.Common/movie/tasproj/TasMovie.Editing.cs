@@ -265,7 +265,6 @@ namespace BizHawk.Client.Common
 
 		private void ExtendMovieForEdit(int numFrames)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Auto-Extend Movie", true);
 			int oldLength = InputLogLength;
 			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
@@ -280,14 +279,12 @@ namespace BizHawk.Client.Common
 			Changes = true;
 
 			ChangeLog.SetGeneralRedo();
-			if (endBatch)
-			{
-				ChangeLog.EndBatch();
-			}
 		}
 
 		public void ToggleBoolState(int frame, string buttonName)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch($"Toggle {buttonName}: {frame}", true);
+
 			if (frame >= Log.Count) // Insert blank frames up to this point
 			{
 				ExtendMovieForEdit(frame - Log.Count + 1);
@@ -300,11 +297,14 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName), $"Toggle {buttonName}: {frame}");
+			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName));
+			if (endBatch) ChangeLog.EndBatch();
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch($"Set {buttonName}({(val ? "On" : "Off")}): {frame}", true);
+
 			if (frame >= Log.Count) // Insert blank frames up to this point
 			{
 				ExtendMovieForEdit(frame - Log.Count + 1);
@@ -320,18 +320,21 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddBoolToggle(frame, buttonName, old, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}");
+				ChangeLog.AddBoolToggle(frame, buttonName, old);
+				if (endBatch) ChangeLog.EndBatch();
 			}
 		}
 
 		public void SetBoolStates(int frame, int count, string buttonName, bool val)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch($"Set {buttonName}({(val ? "On" : "Off")}): {frame}-{frame + count - 1}", true);
+
 			if (Log.Count < frame + count)
 			{
 				ExtendMovieForEdit(frame + count - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}-{frame + count - 1}");
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)
@@ -355,10 +358,13 @@ namespace BizHawk.Client.Common
 			}
 
 			ChangeLog.SetGeneralRedo();
+			if (endBatch) ChangeLog.EndBatch();
 		}
 
 		public void SetAxisState(int frame, string buttonName, int val)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch($"Set {buttonName}({val}): {frame}", true);
+
 			if (frame >= Log.Count) // Insert blank frames up to this point
 			{
 				ExtendMovieForEdit(frame - Log.Count + 1);
@@ -374,18 +380,21 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddAxisChange(frame, buttonName, old, val, $"Set {buttonName}({val}): {frame}");
+				ChangeLog.AddAxisChange(frame, buttonName, old, val);
+				if (endBatch) ChangeLog.EndBatch();
 			}
 		}
 
 		public void SetAxisStates(int frame, int count, string buttonName, int val)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch($"Set {buttonName}({val}): {frame}-{frame + count - 1}", true);
+
 			if (frame + count >= Log.Count) // Insert blank frames up to this point
 			{
 				ExtendMovieForEdit(frame + count - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({val}): {frame}-{frame + count - 1}");
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)
@@ -409,6 +418,7 @@ namespace BizHawk.Client.Common
 			}
 
 			ChangeLog.SetGeneralRedo();
+			if (endBatch) ChangeLog.EndBatch();
 		}
 	}
 }
