@@ -104,6 +104,8 @@ namespace BizHawk.Client.Common
 
 			if (_recordingBatch)
 			{
+				// This means we are adding new actions to a batch that was undone while still in progress.
+				// So start a new one.
 				_recordingBatch = false;
 				BeginNewBatch();
 			}
@@ -190,7 +192,6 @@ namespace BizHawk.Client.Common
 
 			UndoIndex--;
 
-			_recordingBatch = false;
 			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousUndoFrame;
 		}
 
@@ -212,7 +213,6 @@ namespace BizHawk.Client.Common
 				b.Redo(_movie);
 			}
 
-			_recordingBatch = false;
 			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousRedoFrame;
 		}
 
