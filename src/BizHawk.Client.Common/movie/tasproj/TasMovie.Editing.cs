@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 		public int CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
 			int firstChangedFrame = -1;
-			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
+			bool endBatch = ChangeLog.BeginNewBatch($"Copy Over Input: {frame}", true);
 
 			var states = inputStates.ToList();
 
@@ -237,7 +237,7 @@ namespace BizHawk.Client.Common
 				Log[frame + i] = entry;
 			}
 
-			ChangeLog.EndBatch();
+			if (endBatch) ChangeLog.EndBatch();
 			Changes = true;
 			if (firstChangedFrame != -1)
 			{
