@@ -140,7 +140,7 @@ namespace BizHawk.Client.Common
 
 			if (ret)
 			{
-				ret = AddMovieAction(name);
+				AddMovieAction(name);
 			}
 
 			_recordingBatch = true;
@@ -268,17 +268,15 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private bool AddMovieAction(string name)
+		private void AddMovieAction(string name)
 		{
 			if (UndoIndex + 1 != _history.Count)
 			{
 				TruncateLog(UndoIndex + 1);
 			}
 			if (name.Length is 0) name = $"Undo step {_totalSteps}";
-			bool ret = false;
 			if (!_recordingBatch)
 			{
-				ret = true;
 				_history.Add(new List<IMovieAction>(1));
 				Names.Add(name);
 				_totalSteps += 1;
@@ -291,11 +289,8 @@ namespace BizHawk.Client.Common
 				{
 					_history.RemoveAt(0);
 					Names.RemoveAt(0);
-					ret = false;
 				}
 			}
-
-			return ret;
 		}
 
 		// TODO: These probably aren't the best way to handle undo/redo.
