@@ -899,14 +899,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
-				// movie's RemoveFrames might do multiple separate invalidations
-				BeginBatchEdit();
-
 				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
 				CurrentTasMovie.RemoveFrames(framesToRemove);
 				SetSplicer();
-
-				EndBatchEdit();
 			}
 		}
 

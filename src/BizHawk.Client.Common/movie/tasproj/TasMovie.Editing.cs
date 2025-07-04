@@ -110,15 +110,16 @@ namespace BizHawk.Client.Common
 					.Order().ToList();
 
 				int alreadyDeleted = 0;
+				bool endBatch = ChangeLog.BeginNewBatch($"Delete {framesToDelete.Count} frames from {framesToDelete[0]}-{framesToDelete[framesToDelete.Count - 1]}", true);
 				for (int i = 1; i <= framesToDelete.Count; i++)
 				{
 					if (i == framesToDelete.Count || framesToDelete[i] - framesToDelete[i - 1] != 1)
 					{
-						// Each block is logged as an individual ChangeLog entry
 						RemoveFrames(framesToDelete[alreadyDeleted] - alreadyDeleted, framesToDelete[i - 1] + 1 - alreadyDeleted);
 						alreadyDeleted = i;
 					}
 				}
+				if (endBatch) ChangeLog.EndBatch();
 			}
 		}
 
