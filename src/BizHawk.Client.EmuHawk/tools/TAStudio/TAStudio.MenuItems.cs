@@ -499,9 +499,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
-				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(list);
-				EndBatchEdit();
 				SetSplicer();
 
 			}
@@ -536,9 +534,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
-				EndBatchEdit();
 				SetTasViewRowCount();
 				SetSplicer();
 			}
