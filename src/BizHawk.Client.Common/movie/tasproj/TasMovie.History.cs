@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace BizHawk.Client.Common
@@ -311,6 +312,7 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
+				Debug.Assert(_lastGeneral == LatestBatch.Count - 1, "GeneralRedo should not see changes from other undo actions.");
 				((MovieAction) LatestBatch[_lastGeneral]).SetRedoLog(_movie);
 			}
 		}
