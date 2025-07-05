@@ -21,6 +21,11 @@ namespace BizHawk.Client.Common
 		int LastEditedFrame { get; }
 		bool LastEditWasRecording { get; }
 
+		/// <summary>
+		/// Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history.
+		/// Called regardless of whether any states were actually invalidated.
+		/// The parameter is the last frame number who's savestate (if it exists) is still valid. That is, the first of the modified frames.
+		/// </summary>
 		Action<int> GreenzoneInvalidated { get; set; }
 
 		string DisplayValue(int frame, string buttonName);
