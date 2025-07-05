@@ -544,7 +544,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
-		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the last row before the invalidated ones.")]
+		[LuaMethod("ongreenzoneinvalidated", "Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history. Called regardless of whether any states were actually invalidated. Your callback can have 1 parameter, which will be the last frame before the invalidated ones. That is, the first of the modified frames.")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())
