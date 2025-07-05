@@ -27,7 +27,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _startRow;
 		private int _batchEditMinFrame = -1;
 		private bool _batchEditing;
-		private bool _editIsFromLua;
 
 		// Editing analog input
 		private string _axisEditColumn = "";
@@ -405,10 +404,13 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
-							foreach (var index in TasView.SelectedRows)
+							CurrentTasMovie.SingleInvalidation(() =>
 							{
-								CurrentTasMovie.SetBoolState(index, buttonName, BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
-							}
+								foreach (var index in TasView.SelectedRows)
+								{
+									CurrentTasMovie.SetBoolState(index, buttonName, BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
+								}
+							});
 						}
 					}
 					else
@@ -784,22 +786,6 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		public void ApiHawkBatchEdit(Action action)
-		{
-			// This is only caled from Lua.
-			_editIsFromLua = true;
-			BeginBatchEdit();
-			try
-			{
-				action();
-			}
-			finally
-			{
-				EndBatchEdit();
-				_editIsFromLua = false;
-			}
-		}
-
 		/// <summary>
 		/// Disables recording mode, ensures we are in the greenzone, and does autorestore if needed.
 		/// If a mouse button is down, only tracks the edit so we can do this stuff on mouse up.
@@ -829,11 +815,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (!_editIsFromLua)
+				if (StopRecordingOnNextEdit)
 				{
 					// Lua users will want to preserve recording mode.
 					TastudioPlayMode(true);
 				}
+				StopRecordingOnNextEdit = true;
 
 				if (Emulator.Frame > frame)
 				{
@@ -1099,6 +1086,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_rightClickFrame != -1)
 			{
+				FramePaint(frame, startVal, endVal);
+			}
+			// Left-click
+			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startBoolDrawColumn))
+			{
+				BoolPaint(frame, startVal, endVal);
+			}
+			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startAxisDrawColumn))
+			{
+				AxisPaint(frame, startVal, endVal);
+			}
+
+			CurrentTasMovie.IsCountingRerecords = wasCountingRerecords;
+
+			if (MouseButtonHeld)
+			{
+				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+				SetTasViewRowCount(); // refreshes
+			}
+		}
+
+		private void FramePaint(int frame, int startVal, int endVal)
+		{
+			CurrentTasMovie.SingleInvalidation(() => {
 				if (frame > CurrentTasMovie.InputLogLength - _rightClickInput.Length)
 				{
 					frame = CurrentTasMovie.InputLogLength - _rightClickInput.Length;
@@ -1202,11 +1213,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_suppressContextMenu = true;
 				}
-			}
+			});
+		}
 
-			// Left-click
-			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startBoolDrawColumn))
-			{
+		private void BoolPaint(int frame, int startVal, int endVal)
+		{
+			CurrentTasMovie.SingleInvalidation(() => {
 				CurrentTasMovie.IsCountingRerecords = false;
 
 				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
@@ -1227,9 +1239,12 @@ namespace BizHawk.Client.EmuHawk
 
 					CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 				}
-			}
+			});
+		}
 
-			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startAxisDrawColumn))
+		private void AxisPaint(int frame, int startVal, int endVal)
+		{
+			CurrentTasMovie.SingleInvalidation(() =>
 			{
 				CurrentTasMovie.IsCountingRerecords = false;
 
@@ -1250,15 +1265,7 @@ namespace BizHawk.Client.EmuHawk
 
 					CurrentTasMovie.SetAxisState(i, _startAxisDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 				}
-			}
-
-			CurrentTasMovie.IsCountingRerecords = wasCountingRerecords;
-
-			if (MouseButtonHeld)
-			{
-				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
-				SetTasViewRowCount(); // refreshes
-			}
+			});
 		}
 
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
@@ -1339,6 +1346,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// TODO: properly handle axis editing batches
 			BeginBatchEdit();
 
 			int value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
