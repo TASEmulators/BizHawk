@@ -208,8 +208,24 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
-			_bundledRoot = bundledRoot;
-			_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			if (Directory.Exists(bundledRoot))
+			{
+				_bundledRoot = bundledRoot;
+				_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			}
+#if false //TODO synthesise `#includeuser gamedb_user.txt` and load
+			else if (Directory.Exists(userRoot))
+			{
+				_bundledRoot = userRoot;
+				_userRoot = userRoot;
+			}
+#endif
+			else
+			{
+				// nothing to do
+				DB = FrozenDictionary<string, CompactGameInfo>.Empty;
+				return;
+			}
 
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
