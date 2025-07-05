@@ -377,7 +377,6 @@ namespace BizHawk.Client.EmuHawk
 				if (columnName == FrameColumnName)
 				{
 					CurrentTasMovie.Markers.Add(TasView.SelectionEndIndex!.Value, "");
-					RefreshDialog();
 				}
 				else if (columnName != CursorColumnName)
 				{

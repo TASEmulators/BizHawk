@@ -297,13 +297,11 @@ namespace BizHawk.Client.EmuHawk
 		private void UndoMenuItem_Click(object sender, EventArgs e)
 		{
 			CurrentTasMovie.ChangeLog.Undo();
-			RefreshDialog(); // ?? redundant, except if undoing markers
 		}
 
 		private void RedoMenuItem_Click(object sender, EventArgs e)
 		{
 			CurrentTasMovie.ChangeLog.Redo();
-			RefreshDialog(); // ?? redundant, except if undoing markers
 		}
 
 		private void ShowUndoHistoryMenuItem_Click(object sender, EventArgs e)
@@ -620,7 +618,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CurrentTasMovie.Markers.RemoveAll(m => TasView.IsRowSelected(m.Frame));
 			MarkerControl.UpdateMarkerCount();
-			RefreshDialog();
 		}
 
 		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
