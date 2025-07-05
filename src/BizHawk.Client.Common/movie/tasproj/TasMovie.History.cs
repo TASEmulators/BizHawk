@@ -11,6 +11,7 @@ namespace BizHawk.Client.Common
 		bool IsRecording { get; set; }
 		void Clear(int upTo = -1);
 		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
+		void AbortBatch();
 		void EndBatch();
 		int Undo();
 		int Redo();
@@ -147,6 +148,16 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// Ends the current undo batch and deletes any undo actions it contains.
+		/// </summary>
+		public void AbortBatch()
+		{
+			_history.RemoveAt(_history.Count - 1);
+			Names.RemoveAt(Names.Count - 1);
+			UndoIndex--;
+		}
+
+		/// <summary>
 		/// Ends the current undo batch. Future changes will be one undo each.
 		/// If not already recording a batch, does nothing.
 		/// </summary>
@@ -161,9 +172,7 @@ namespace BizHawk.Client.Common
 			var last = LatestBatch;
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
-				_history.RemoveAt(_history.Count - 1);
-				Names.RemoveAt(Names.Count - 1);
-				UndoIndex--;
+				AbortBatch();
 			}
 			else
 			{
