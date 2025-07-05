@@ -8,11 +8,35 @@ namespace BizHawk.Client.Common
 		List<string> Names { get; }
 		int UndoIndex { get; }
 		string NextUndoStepName { get; }
+		/// <summary>
+		/// Gets or sets a value indicating whether the movie is recording action history.
+		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
+		/// Use this to manually control the ChangeLog. (Useful for disabling the ChangeLog during undo/redo).
+		/// </summary>
 		bool IsRecording { get; set; }
 		void Clear(int upTo = -1);
+		/// <summary>
+		/// All changes made between calling Begin and End will be one Undo.
+		/// If already recording in a batch, calls EndBatch.
+		/// </summary>
+		/// <param name="name">The name of the batch</param>
+		/// <param name="keepOldBatch">If set and a batch is in progress, a new batch will not be created.</param>
+		/// <returns>Returns true if a new batch was started; otherwise false.</returns>
 		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
+		/// <summary>
+		/// Ends the current undo batch. Future changes will be one undo each.
+		/// If not already recording a batch, does nothing.
+		/// </summary>
 		void EndBatch();
+		/// <summary>
+		/// Undoes the most recent action batch, if any exist.
+		/// </summary>
+		/// <returns>Returns the frame which the movie needs to rewind to.</returns>
 		int Undo();
+		/// <summary>
+		/// Redoes the most recent undo, if any exist.
+		/// </summary>
+		/// <returns>Returns the frame which the movie needs to rewind to.</returns>
 		int Redo();
 		bool CanUndo { get; }
 		bool CanRedo { get; }
@@ -65,11 +89,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets a value indicating whether the movie is recording action history.
-		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
-		/// Use this to manually control the ChangeLog. (Useful for disabling the ChangeLog during undo/redo).
-		/// </summary>
 		public bool IsRecording { get; set; } = true;
 
 		public void Clear(int upTo = -1)
@@ -112,13 +131,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// All changes made between calling Begin and End will be one Undo.
-		/// If already recording in a batch, calls EndBatch.
-		/// </summary>
-		/// <param name="name">The name of the batch</param>
-		/// <param name="keepOldBatch">If set and a batch is in progress, a new batch will not be created.</param>
-		/// <returns>Returns true if a new batch was started; otherwise false.</returns>
 		public bool BeginNewBatch(string name = "", bool keepOldBatch = false)
 		{
 			if (!IsRecording)
@@ -149,10 +161,6 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		/// <summary>
-		/// Ends the current undo batch. Future changes will be one undo each.
-		/// If not already recording a batch, does nothing.
-		/// </summary>
 		public void EndBatch()
 		{
 			if (!IsRecording || !_recordingBatch)
@@ -174,10 +182,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Undoes the most recent action batch, if any exist.
-		/// </summary>
-		/// <returns>Returns the frame which the movie needs to rewind to.</returns>
 		public int Undo()
 		{
 			if (UndoIndex == -1)
@@ -196,10 +200,6 @@ namespace BizHawk.Client.Common
 			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousUndoFrame;
 		}
 
-		/// <summary>
-		/// Redoes the most recent undo, if any exist.
-		/// </summary>
-		/// <returns>Returns the frame which the movie needs to rewind to.</returns>
 		public int Redo()
 		{
 			if (UndoIndex == _history.Count - 1)
