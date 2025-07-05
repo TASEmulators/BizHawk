@@ -64,6 +64,11 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
+		/// <summary>
+		/// This is meant to be used by Lua.
+		/// </summary>
+		public bool StopRecordingOnNextEdit = true;
+
 		public class TAStudioSettings
 		{
 			public TAStudioSettings()
