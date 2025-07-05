@@ -62,6 +62,12 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			toolTip1.SetToolTip(NextMarkerButton, config.HotkeyBindings["Seek To Next Marker"]);
+			toolTip1.SetToolTip(PreviousMarkerButton, config.HotkeyBindings["Seek To Prev Marker"]);
+		}
+
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);

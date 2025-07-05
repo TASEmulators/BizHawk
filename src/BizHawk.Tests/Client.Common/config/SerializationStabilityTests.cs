@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 
 using BizHawk.Client.Common;
@@ -76,8 +77,13 @@ namespace BizHawk.Tests.Client.Common.config
 				foreach (var mi in t.GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
 				{
 					if (mi.GetCustomAttribute<JsonIgnoreAttribute>() is not null) continue;
+					if (mi.MemberType == MemberTypes.Event) continue;
 					if (mi is PropertyInfo pi) CheckMemberAndTypeParams(pi.PropertyType, groupDesc);
-					else if (mi is FieldInfo fi) CheckMemberAndTypeParams(fi.FieldType, groupDesc);
+					else if (mi is FieldInfo fi)
+					{
+						if (t.GetMember(mi.Name).Any(m => m.MemberType == MemberTypes.Event)) continue; // events are weird
+						CheckMemberAndTypeParams(fi.FieldType, groupDesc);
+					}
 				}
 			}
 			CheckAll<Config>();
