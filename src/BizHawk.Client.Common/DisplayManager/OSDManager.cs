@@ -87,6 +87,7 @@ namespace BizHawk.Client.Common
 		public void ClearRegularMessages()
 			=> _messages.Clear();
 
+		[Obsolete("use via IDialogParent.AddOnScreenMessage")]
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {
 				Message = message,

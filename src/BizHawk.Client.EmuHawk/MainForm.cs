@@ -1108,7 +1108,10 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static bool DisableSecondaryThrottling { get; set; }
 
-		public void AddOnScreenMessage(string message, int? duration = null) => OSD.AddMessage(message, duration);
+		public void AddOnScreenMessage(string message, int? duration = null)
+#pragma warning disable CS0618 // this is the sanctioned call-site
+			=> OSD.AddMessage(message, duration);
+#pragma warning restore CS0618
 
 		public void ClearHolds()
 		{
@@ -4317,7 +4320,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MovieSession.Movie.IsActive() && Emulator.Frame > MovieSession.Movie.FrameCount)
 			{
-				OSD.AddMessage("Cannot savestate after movie end!");
+				AddOnScreenMessage("Cannot savestate after movie end!");
 				return;
 			}
 

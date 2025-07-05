@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Config _config;
 
+		private readonly IDialogController _dialogController;
+
 		private readonly DisplayManagerBase _displayManager;
 
 		private readonly IMainFormForApi _mainForm;
@@ -30,9 +32,17 @@ namespace BizHawk.Client.Common
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManagerBase displayManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmuClientApi(
+			Config config,
+			IDialogController dialogController,
+			DisplayManagerBase displayManager,
+			IEmulator emulator,
+			IGameInfo game,
+			IMainFormForApi mainForm,
+			Action<string> logCallback)
 		{
 			_config = config;
+			_dialogController = dialogController;
 			_displayManager = displayManager;
 			Emulator = emulator;
 			Game = game;
@@ -198,7 +208,7 @@ namespace BizHawk.Client.Common
 			{
 				_config.SetWindowScaleFor(Emulator.SystemId, size);
 				_mainForm.FrameBufferResized(forceWindowResize: true);
-				_displayManager.OSD.AddMessage($"Window size set to {size}x");
+				_dialogController.AddOnScreenMessage($"Window size set to {size}x");
 			}
 			else
 			{
