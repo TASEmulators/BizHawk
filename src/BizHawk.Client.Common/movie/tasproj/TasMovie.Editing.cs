@@ -123,11 +123,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
-		/// </summary>
-		/// <param name="removeStart">The first frame to remove.</param>
-		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
 		public void RemoveFrames(int removeStart, int removeUpTo)
 		{
 			// Log.GetRange() might be preferrable, but Log's type complicates that.

@@ -47,6 +47,11 @@ namespace BizHawk.Client.Common
 
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);
+		/// <summary>
+		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// </summary>
+		/// <param name="removeStart">The first frame to remove.</param>
+		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
 		void RemoveFrames(int removeStart, int removeUpTo);
 		void SetFrame(int frame, string source);
 
