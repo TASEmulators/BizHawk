@@ -71,13 +71,11 @@ namespace BizHawk.Client.EmuHawk
 		private void UndoButton_Click(object sender, EventArgs e)
 		{
 			_tastudio.UndoExternal();
-			_tastudio.RefreshDialog();
 		}
 
 		private void RedoButton_Click(object sender, EventArgs e)
 		{
 			_tastudio.RedoExternal();
-			_tastudio.RefreshDialog();
 		}
 
 		private int SelectedItem
@@ -94,9 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 
 			UpdateValues();
-
-			// potentially redundant refresh
-			_tastudio.RefreshDialog();
 		}
 
 		private void HistoryView_DoubleClick(object sender, EventArgs e)
@@ -143,9 +138,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 
 			UpdateValues();
-
-			// potentially redundant refresh
-			_tastudio.RefreshDialog();
 		}
 
 		private void ClearHistoryToHereMenuItem_Click(object sender, EventArgs e)

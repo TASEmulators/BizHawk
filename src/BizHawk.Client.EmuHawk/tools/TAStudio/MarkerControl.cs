@@ -157,7 +157,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!MarkerView.AnyRowsSelected) return;
 			foreach (var i in MarkerView.SelectedRows.Select(index => Markers[index]).ToList()) Markers.Remove(i);
 			MarkerView.RowCount = Markers.Count;
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateMarkerCount()
@@ -193,7 +192,6 @@ namespace BizHawk.Client.EmuHawk
 			Markers.Add(marker);
 			var index = Markers.IndexOf(marker);
 			MarkerView.MakeIndexVisible(index);
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateTextColumnWidth()
@@ -251,7 +249,6 @@ namespace BizHawk.Client.EmuHawk
 			Markers.Move(marker.Frame, promptValue);
 			UpdateTextColumnWidth();
 			UpdateValues();
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateValues()
