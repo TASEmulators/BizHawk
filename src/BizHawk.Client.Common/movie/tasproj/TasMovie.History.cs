@@ -191,12 +191,15 @@ namespace BizHawk.Client.Common
 			}
 
 			List<IMovieAction> batch = _history[UndoIndex];
-			for (int i = batch.Count - 1; i >= 0; i--)
-			{
-				batch[i].Undo(_movie);
-			}
-
 			UndoIndex--;
+
+			_movie.SingleInvalidation(() =>
+			{
+				for (int i = batch.Count - 1; i >= 0; i--)
+				{
+					batch[i].Undo(_movie);
+				}
+			});
 
 			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousUndoFrame;
 		}
@@ -210,10 +213,14 @@ namespace BizHawk.Client.Common
 
 			UndoIndex++;
 			List<IMovieAction> batch = _history[UndoIndex];
-			foreach (IMovieAction b in batch)
+
+			_movie.SingleInvalidation(() =>
 			{
-				b.Redo(_movie);
-			}
+				foreach (IMovieAction b in batch)
+				{
+					b.Redo(_movie);
+				}
+			});
 
 			return batch.TrueForAll(static a => a is MovieActionMarker) ? _movie.InputLogLength : PreviousRedoFrame;
 		}
