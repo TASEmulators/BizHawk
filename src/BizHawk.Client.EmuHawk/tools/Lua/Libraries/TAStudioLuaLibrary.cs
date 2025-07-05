@@ -314,8 +314,10 @@ namespace BizHawk.Client.EmuHawk
 
 				_luaLibsImpl.IsUpdateSupressed = true;
 
-				Tastudio.ApiHawkBatchEdit(() =>
+				Tastudio.StopRecordingOnNextEdit = false;
+				Tastudio.CurrentTasMovie.SingleInvalidation(() =>
 				{
+					Tastudio.CurrentTasMovie.ChangeLog.BeginNewBatch("tastudio.applyinputchanges");
 					int size = _changeList.Count;
 
 					for (int i = 0; i < size; i++)
@@ -345,6 +347,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
+					Tastudio.CurrentTasMovie.ChangeLog.EndBatch();
 				});
 
 				_luaLibsImpl.IsUpdateSupressed = false;
