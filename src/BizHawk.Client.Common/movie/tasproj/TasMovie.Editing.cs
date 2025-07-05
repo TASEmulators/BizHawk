@@ -129,21 +129,15 @@ namespace BizHawk.Client.Common
 			string[] removedInputs = new string[removeUpTo - removeStart];
 			Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
 
-			// Pre-process removed markers for the ChangeLog.
-			List<TasMovieMarker> removedMarkers = new List<TasMovieMarker>();
+			bool endBatch = ChangeLog.BeginNewBatch($"Remove frames {removeStart}-{removeUpTo - 1}", true);
 			if (BindMarkersToInput)
 			{
-				bool wasRecording = ChangeLog.IsRecording;
-				ChangeLog.IsRecording = false;
-
 				// O(n^2) removal time, but removing many binded markers in a deleted section is probably rare.
-				removedMarkers = Markers.Where(m => m.Frame >= removeStart && m.Frame < removeUpTo).ToList();
-				foreach (var marker in removedMarkers)
+				List<TasMovieMarker> markersToRemove = Markers.Where(m => m.Frame >= removeStart && m.Frame < removeUpTo).ToList();
+				foreach (var marker in markersToRemove)
 				{
 					Markers.Remove(marker);
 				}
-
-				ChangeLog.IsRecording = wasRecording;
 			}
 
 			Log.RemoveRange(removeStart, removeUpTo - removeStart);
@@ -157,9 +151,9 @@ namespace BizHawk.Client.Common
 				removeStart,
 				removeUpTo,
 				removedInputs.ToList(),
-				removedMarkers,
-				$"Remove frames {removeStart}-{removeUpTo - 1}"
+				BindMarkersToInput
 			);
+			if (endBatch) ChangeLog.EndBatch();
 		}
 
 		public void InsertInput(int frame, string inputState)
@@ -177,7 +171,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
+			ChangeLog.AddInsertInput(frame, inputLog.ToList(), BindMarkersToInput, $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
@@ -247,7 +241,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddInsertFrames(frame, count, $"Insert {count} empty frame(s) at {frame}");
+			ChangeLog.AddInsertFrames(frame, count, BindMarkersToInput, $"Insert {count} empty frame(s) at {frame}");
 		}
 
 		private void ExtendMovieForEdit(int numFrames)
