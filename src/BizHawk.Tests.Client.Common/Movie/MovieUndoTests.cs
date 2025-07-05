@@ -21,19 +21,28 @@ namespace BizHawk.Tests.Client.Common.Movie
 			if (!skipUndoIndexCheck)
 				Assert.AreEqual(originalUndoLength + expectedUndoItems, changedUndoLength);
 
+			Action<int>? oldInvalidated = movie.GreenzoneInvalidated;
+			int invalidateFrame = int.MaxValue;
+			movie.GreenzoneInvalidated = (f) =>
+			{
+				oldInvalidated?.Invoke(f);
+				invalidateFrame = Math.Min(invalidateFrame, f);
+			};
+
 			// undo
-			int undoFrame = int.MaxValue;
 			for (int i = 0; i < expectedUndoItems; i++)
-				undoFrame = Math.Min(undoFrame, movie.ChangeLog.Undo());
-			Assert.AreEqual(firstEditedFrame, undoFrame);
+				movie.ChangeLog.Undo();
+			Assert.AreEqual(firstEditedFrame, invalidateFrame);
 			Assert.IsNull(originalLog.DivergentPoint(movie.GetLogEntries()));
 
 			// redo
-			int redoFrame = int.MaxValue;
+			invalidateFrame = int.MaxValue;
 			for (int i = 0; i < expectedUndoItems; i++)
-				redoFrame = Math.Min(redoFrame, movie.ChangeLog.Redo());
-			Assert.AreEqual(firstEditedFrame, redoFrame);
+				movie.ChangeLog.Redo();
+			Assert.AreEqual(firstEditedFrame, invalidateFrame);
 			Assert.IsNull(changedLog.DivergentPoint(movie.GetLogEntries()));
+
+			movie.GreenzoneInvalidated = oldInvalidated;
 		}
 
 		[TestMethod]
