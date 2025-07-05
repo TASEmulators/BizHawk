@@ -65,5 +65,14 @@ namespace BizHawk.Client.Common
 		void CopyVerificationLog(IEnumerable<string> log);
 
 		bool IsReserved(int frame);
+
+		/// <summary>
+		/// Sometimes we will be doing a whole bunch of small operations together. (e.g. large painting undo, large Lua edit)
+		/// This avoids using the greenzone invalidated callback for each one, making things run smoother.
+		/// Note that is is different from undo batching.
+		/// For one, we don't undo batch an undo itself.
+		/// For two, undo batches might span a significant amount of time during which users want to atually see edits or auto-restore in TAStudio.
+		/// </summary>
+		void SingleInvalidation(Action action);
 	}
 }

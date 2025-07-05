@@ -92,14 +92,16 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrames(ICollection<int> frames)
 		{
-			if (frames.Count is not 0)
-			{
-				// Separate the given frames into contiguous blocks
-				// and process each block independently
-				List<int> framesToDelete = frames
-					.Where(fr => fr >= 0 && fr < InputLogLength)
-					.Order().ToList();
+			if (frames.Count is 0) return;
 
+			// Separate the given frames into contiguous blocks
+			// and process each block independently
+			List<int> framesToDelete = frames
+				.Where(fr => fr >= 0 && fr < InputLogLength)
+				.Order().ToList();
+
+			SingleInvalidation(() =>
+			{
 				int alreadyDeleted = 0;
 				bool endBatch = ChangeLog.BeginNewBatch($"Delete {framesToDelete.Count} frames from {framesToDelete[0]}-{framesToDelete[framesToDelete.Count - 1]}", true);
 				for (int i = 1; i <= framesToDelete.Count; i++)
@@ -111,7 +113,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				if (endBatch) ChangeLog.EndBatch();
-			}
+			});
 		}
 
 		public void RemoveFrames(int removeStart, int removeUpTo)
@@ -365,6 +367,22 @@ namespace BizHawk.Client.Common
 			if (endBatch) ChangeLog.EndBatch();
 
 			if (firstChangedFrame != -1) InvalidateAfter(firstChangedFrame);
+		}
+
+		private bool _suspendInvalidation;
+		private int _minInvalidationFrame;
+		public void SingleInvalidation(Action action)
+		{
+			bool wasSuspending = _suspendInvalidation;
+			if (!wasSuspending) _minInvalidationFrame = int.MaxValue;
+			_suspendInvalidation = true;
+			try { action(); }
+			finally { _suspendInvalidation = wasSuspending; }
+
+			if (!wasSuspending && _minInvalidationFrame != int.MaxValue)
+			{
+				InvalidateAfter(_minInvalidationFrame);
+			}
 		}
 	}
 }
