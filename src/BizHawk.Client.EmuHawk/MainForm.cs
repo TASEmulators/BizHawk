@@ -1109,9 +1109,12 @@ namespace BizHawk.Client.EmuHawk
 		public static bool DisableSecondaryThrottling { get; set; }
 
 		public void AddOnScreenMessage(string message, int? duration = null)
+		{
 #pragma warning disable CS0618 // this is the sanctioned call-site
-			=> OSD.AddMessage(message, duration);
+			OSD.AddMessage(message, duration);
 #pragma warning restore CS0618
+			if (!this.SafeScreenReaderAnnounce(message)) Util.DebugWriteLine($"{nameof(AddOnScreenMessage)}: {nameof(AccessibleObject.RaiseAutomationNotification)} failed");
+		}
 
 		public void ClearHolds()
 		{
