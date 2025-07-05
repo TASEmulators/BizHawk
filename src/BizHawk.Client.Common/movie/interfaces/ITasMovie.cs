@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 		void InsertInput(int frame, IEnumerable<IController> inputStates);
 
 		void InsertEmptyFrame(int frame, int count = 1);
-		int CopyOverInput(int frame, IEnumerable<IController> inputStates);
+		void CopyOverInput(int frame, IEnumerable<IController> inputStates);
 
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);

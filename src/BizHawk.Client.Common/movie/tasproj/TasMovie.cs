@@ -121,21 +121,18 @@ namespace BizHawk.Client.Common
 		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
-			var anyLagInvalidated = LagLog.RemoveFrom(frame);
+			LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated?.Invoke(frame);
-			if (anyLagInvalidated || anyStateInvalidated)
-			{
-				Changes = true;
-			}
 
+			Changes = true;
 			LastEditedFrame = frame;
-			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
-
 			if (anyStateInvalidated && IsCountingRerecords)
 			{
 				Rerecords++;
 			}
+
+			GreenzoneInvalidated?.Invoke(frame);
+			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
 		}
 
 		public void InvalidateEntireGreenzone()
@@ -293,14 +290,12 @@ namespace BizHawk.Client.Common
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
 
-			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
-
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers.DeepClone();
 			}
 
-			Changes = true;
+			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
