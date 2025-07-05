@@ -85,19 +85,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoToHere(int index)
 		{
-			int earliestFrame = int.MaxValue;
-			while (Log.UndoIndex > index)
+			_tastudio.CurrentTasMovie.SingleInvalidation(() =>
 			{
-				int frame = Log.Undo();
-				if (frame < earliestFrame)
-					earliestFrame = frame;
-			}
+				while (Log.UndoIndex > index)
+				{
+					Log.Undo();
+				}
+			});
 
 			UpdateValues();
 
-			// potentially rewind, then update display for TAStudio
-			if (_tastudio.Emulator.Frame > earliestFrame)
-				_tastudio.GoToFrame(earliestFrame);
+			// potentially redundant refresh
 			_tastudio.RefreshDialog();
 		}
 
@@ -136,19 +134,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RedoHereMenuItem_Click(object sender, EventArgs e)
 		{
-			int earliestFrame = int.MaxValue;
-			while (Log.UndoIndex < SelectedItem)
+			_tastudio.CurrentTasMovie.SingleInvalidation(() =>
 			{
-				int frame = Log.Redo();
-				if (earliestFrame < frame)
-					earliestFrame = frame;
-			}
+				while (Log.UndoIndex < SelectedItem)
+				{
+					Log.Redo();
+				}
+			});
 
 			UpdateValues();
 
-			// potentially rewind, then update display for TAStudio
-			if (_tastudio.Emulator.Frame > earliestFrame)
-				_tastudio.GoToFrame(earliestFrame);
+			// potentially redundant refresh
 			_tastudio.RefreshDialog();
 		}
 
