@@ -121,6 +121,12 @@ namespace BizHawk.Client.Common
 		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
+			if (_suspendInvalidation)
+			{
+				_minInvalidationFrame = Math.Min(_minInvalidationFrame, frame);
+				return;
+			}
+
 			LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
 
