@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string UndoColumnName = "Undo Step";
 
 		private readonly TAStudio _tastudio;
-		private string _lastUndoAction;
+		private int _lastUndoAction;
 		private IMovieChangeLog Log => _tastudio.CurrentTasMovie.ChangeLog;
 
 		public UndoHistoryForm(TAStudio owner)
@@ -50,14 +50,14 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			HistoryView.RowCount = Log.Names.Count;
-			if (AutoScrollCheck.Checked && _lastUndoAction != Log.NextUndoStepName)
+			if (AutoScrollCheck.Checked && _lastUndoAction != Log.UndoIndex)
 			{
-				HistoryView.ScrollToIndex(Log.UndoIndex);
+				HistoryView.ScrollToIndex(Math.Max(Log.UndoIndex, 0));
 				HistoryView.DeselectAll();
 				HistoryView.SelectRow(Log.UndoIndex - 1, true);
 			}
 
-			_lastUndoAction = Log.NextUndoStepName;
+			_lastUndoAction = Log.UndoIndex;
 
 			HistoryView.Refresh();
 		}

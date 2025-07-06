@@ -8,7 +8,6 @@ namespace BizHawk.Client.Common
 	{
 		List<string> Names { get; }
 		int UndoIndex { get; }
-		string NextUndoStepName { get; }
 		/// <summary>
 		/// Gets or sets a value indicating whether the movie is recording action history.
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
@@ -225,19 +224,6 @@ namespace BizHawk.Client.Common
 
 		public bool CanUndo => UndoIndex > -1;
 		public bool CanRedo => UndoIndex < _history.Count - 1;
-
-		public string NextUndoStepName
-		{
-			get
-			{
-				if (Names.Count == 0 || UndoIndex < 0)
-				{
-					return null;
-				}
-
-				return Names[UndoIndex];
-			}
-		}
 
 		private void AddMovieAction(string name)
 		{
