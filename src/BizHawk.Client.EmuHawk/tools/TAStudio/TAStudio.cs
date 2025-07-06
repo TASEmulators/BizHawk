@@ -900,40 +900,6 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text = temp;
 		}
 
-		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
-		{
-			if (insertionFrame <= CurrentTasMovie.InputLogLength)
-			{
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-			}
-		}
-
-		public void DeleteFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
-			{
-				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
-				CurrentTasMovie.RemoveFrames(framesToRemove);
-				SetSplicer();
-			}
-		}
-
-		public void ClearFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
-			{
-				BeginBatchEdit();
-
-				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
-				for (int i = beginningFrame; i < last; i++)
-				{
-					CurrentTasMovie.ClearFrame(i);
-				}
-
-				EndBatchEdit();
-			}
-		}
-
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
 			if (!_initialized)
