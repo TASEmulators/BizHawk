@@ -853,11 +853,18 @@ namespace BizHawk.Client.EmuHawk
 					RefreshDialog();
 					return true;
 				}
-				else if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1)
+				else
 				{
-					// Row count must always be kept up to date even if last row is not directly visible.
-					TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-					return true;
+					if (_undoForm != null && !_undoForm.IsDisposed)
+					{
+						_undoForm.UpdateValues();
+					}
+					if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1)
+					{
+						// Row count must always be kept up to date even if last row is not directly visible.
+						TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
+						return true;
+					}
 				}
 			}
 
