@@ -336,13 +336,23 @@ namespace BizHawk.Client.EmuHawk
 								}
 								break;
 							case LuaChangeTypes.InsertFrames:
-								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
+								Tastudio.CurrentTasMovie.InsertEmptyFrame(_changeList[i].Frame, _changeList[i].Number);
 								break;
 							case LuaChangeTypes.DeleteFrames:
-								Tastudio.DeleteFrames(_changeList[i].Frame, _changeList[i].Number);
+								int endExclusive = _changeList[i].Frame + _changeList[i].Number;
+								endExclusive = Math.Min(Tastudio.CurrentTasMovie.InputLogLength, endExclusive);
+								if (_changeList[i].Frame < endExclusive)
+								{
+									Tastudio.CurrentTasMovie.RemoveFrames(_changeList[i].Frame, endExclusive);
+								}
 								break;
 							case LuaChangeTypes.ClearFrames:
-								Tastudio.ClearFrames(_changeList[i].Frame, _changeList[i].Number);
+								endExclusive = _changeList[i].Frame + _changeList[i].Number;
+								endExclusive = Math.Min(Tastudio.CurrentTasMovie.InputLogLength, endExclusive);
+								for (int j = _changeList[i].Frame; j < endExclusive; j++)
+								{
+									Tastudio.CurrentTasMovie.ClearFrame(j);
+								}
 								break;
 						}
 					}

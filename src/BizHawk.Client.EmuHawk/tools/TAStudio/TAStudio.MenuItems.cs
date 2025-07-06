@@ -570,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 				using var framesPrompt = new FramesPrompt();
 				if (framesPrompt.ShowDialogOnScreen().IsOk())
 				{
-					InsertNumFrames(insertionFrame, framesPrompt.Frames);
+					CurrentTasMovie.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
 				}
 			}
 		}
