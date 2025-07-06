@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		int MaxSteps { get; set; }
 
 		void AddGeneralUndo(int first, int last, string name = "");
-		void SetGeneralRedo();
+		int SetGeneralRedo();
 		void AddBoolToggle(int frame, string button, bool oldState, string name = "");
 		void AddAxisChange(int frame, string button, int oldState, int newState, string name = "");
 		void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "");
@@ -263,13 +263,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetGeneralRedo()
+		public int SetGeneralRedo()
 		{
 			if (IsRecording)
 			{
 				Debug.Assert(_lastGeneral == LatestBatch.Count - 1, "GeneralRedo should not see changes from other undo actions.");
-				((MovieAction) LatestBatch[_lastGeneral]).SetRedoLog(_movie);
+				int changed = ((MovieAction) LatestBatch[_lastGeneral]).SetRedoLog(_movie);
+				if (changed == -1)
+				{
+					LatestBatch.RemoveAt(_lastGeneral);
+					if (LatestBatch.Count == 0 && !_recordingBatch)
+					{
+						// Remove this undo item
+						_recordingBatch = true;
+						EndBatch();
+					}
+				}
+				return changed;
 			}
+			return -1;
 		}
 
 		public void AddBoolToggle(int frame, string button, bool oldState, string name = "")
@@ -387,14 +399,21 @@ namespace BizHawk.Client.Common
 			_bindMarkers = movie.BindMarkersToInput;
 		}
 
-		public void SetRedoLog(ITasMovie movie)
+		/// <returns>Returns the first frame that has changed, or -1 if no changes.</returns>
+		public int SetRedoLog(ITasMovie movie)
 		{
 			_redoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
 			_newLog = new List<string>(_redoLength);
+			int changed = Math.Min(_redoLength, _undoLength);
 			for (int i = 0; i < _redoLength; i++)
 			{
-				_newLog.Add(movie.GetInputLogEntry(FirstFrame + i));
+				string newEntry = movie.GetInputLogEntry(FirstFrame + i);
+				_newLog.Add(newEntry);
+				if (i < changed && newEntry != _oldLog[i]) changed = i;
 			}
+
+			if (changed == _redoLength && changed == _undoLength) return -1;
+			else return changed + FirstFrame;
 		}
 
 		public void Undo(ITasMovie movie)
