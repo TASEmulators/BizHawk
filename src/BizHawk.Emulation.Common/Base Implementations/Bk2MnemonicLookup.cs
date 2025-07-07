@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Common
 
 			if (key.Length == 1)
 			{
-				return key[0];
+				return key.StartsWith('.') ? 'p' : key[0];
 			}
 
 			return '!';
