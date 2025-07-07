@@ -145,6 +145,9 @@ namespace BizHawk.Client.Common
 		public bool AcceptBackgroundInput { get; set; }
 		public bool AcceptBackgroundInputControllerOnly { get; set; }
 		public bool HandleAlternateKeyboardLayouts { get; set; }
+
+		public bool SetInvariantCulture { get; set; } = false;
+
 		public bool SingleInstanceMode { get; set; }
 		public OpposingDirPolicy OpposingDirPolicy { get; set; }
 		public bool ShowContextMenu { get; set; } = true;
