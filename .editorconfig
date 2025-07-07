@@ -127,10 +127,6 @@ dotnet_diagnostic.IDE0260.severity = suggestion
 dotnet_diagnostic.IDE0280.severity = error
 # Collection initialization can be simplified
 dotnet_diagnostic.IDE0305.severity = silent
-# Add parentheses when necessary
-dotnet_diagnostic.RCS1123.severity = silent
-# Remove suffix 'Async' from non-asynchronous method name
-dotnet_diagnostic.RCS1047.severity = silent # see #2888
 
 csharp_style_var_when_type_is_apparent = true
 csharp_style_var_elsewhere = true
