@@ -890,6 +890,7 @@ namespace NLua
 			return obj;
 		}
 
+#if false
 		/// <summary>
 		/// Gets a field of the table or userdata corresponding to the provided reference
 		/// </summary>
@@ -901,9 +902,10 @@ namespace NLua
 			State.SetTop(oldTop);
 			return returnValue;
 		}
+#endif
 
 		/// <summary>
-		/// Gets a numeric field of the table or userdata corresponding to the provided reference
+		/// Gets a field of the table or userdata corresponding to the provided reference
 		/// </summary>
 		internal object GetObject(int reference, object field)
 		{
@@ -916,6 +918,7 @@ namespace NLua
 			return returnValue;
 		}
 
+#if false
 		/// <summary>
 		/// Sets a field of the table or userdata corresponding to the provided reference
 		/// to the provided value
@@ -927,9 +930,10 @@ namespace NLua
 			SetObject(FullPathToArray(field), val);
 			State.SetTop(oldTop);
 		}
+#endif
 
 		/// <summary>
-		/// Sets a numeric field of the table or userdata corresponding to the provided reference
+		/// Sets a field of the table or userdata corresponding to the provided reference
 		/// to the provided value
 		/// </summary>
 		internal void SetObject(int reference, object field, object val)
