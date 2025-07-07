@@ -150,7 +150,9 @@ namespace BizHawk.Client.Common
 			return tas;
 		}
 
+#pragma warning disable RCS1224 // private but for unit test
 		internal static string ConvertFileNameToTasMovie(string oldFileName)
+#pragma warning restore RCS1224
 		{
 			if (oldFileName is null) return null;
 			var (dir, fileNoExt, _) = oldFileName.SplitPathToDirFileAndExt();

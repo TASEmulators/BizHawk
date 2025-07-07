@@ -484,7 +484,9 @@ namespace BizHawk.Emulation.Common
 
 		public static AxisSpec With(this in AxisSpec spec, Range<int> range, int neutral) => new AxisSpec(range, neutral, spec.IsReversed, spec.Constraint);
 
+#pragma warning disable RCS1224 // don't want extension on nonspecific `string`
 		public static string SystemIDToDisplayName(string sysID)
+#pragma warning restore RCS1224
 			=> SystemIDDisplayNames.TryGetValue(sysID, out var dispName) ? dispName : string.Empty;
 
 		public static bool IsEnabled(this ITraceable core) => core.Sink is not null;

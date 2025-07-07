@@ -81,7 +81,9 @@ namespace BizHawk.Common.NumberExtensions
 		/// (infinite values are rounded to <see cref="decimal.MinValue"/>/<see cref="decimal.MaxValue"/>)
 		/// </exception>
 		/// <remarks>like an <c>unchecked</c> conversion</remarks>
+#pragma warning disable RCS1224 // don't want extension on nonspecific `float`
 		public static decimal ConvertToMoneyTruncated(float f, bool throwIfNaN = false)
+#pragma warning restore RCS1224
 		{
 			try
 			{
@@ -107,7 +109,9 @@ namespace BizHawk.Common.NumberExtensions
 		/// (infinite values are rounded to <see cref="decimal.MinValue"/>/<see cref="decimal.MaxValue"/>)
 		/// </exception>
 		/// <remarks>like an <c>unchecked</c> conversion</remarks>
+#pragma warning disable RCS1224 // don't want extension on nonspecific `double`
 		public static decimal ConvertToMoneyTruncated(double d, bool throwIfNaN = false)
+#pragma warning restore RCS1224
 		{
 			try
 			{
@@ -131,7 +135,9 @@ namespace BizHawk.Common.NumberExtensions
 		/// <c>-1</c> when <paramref name="i"/> when is negative or <c>0</c>,
 		/// otherwise the (floor of the) base-10 logarithm of that value i.e. 1 less than the number of decimal digits
 		/// </returns>
+#pragma warning disable RCS1224 // don't want extension on nonspecific `int`
 		public static int Log10(int i)
+#pragma warning restore RCS1224
 		{
 			if (i <= 0) return -1;
 			var toReturn = 0;
@@ -220,7 +226,9 @@ namespace BizHawk.Common.NumberExtensions
 			return p + half + unchecked((int) (offset - half));
 		}
 
+#pragma warning disable RCS1224 // not sure we want a `this ref byte`
 		public static void RotateRightU8(ref byte b, int shift)
+#pragma warning restore RCS1224
 		{
 			byte temp = b;
 			temp <<= 8 - shift;
@@ -244,10 +252,12 @@ namespace BizHawk.Common.NumberExtensions
 		/// <remarks>don't use this in cores without picking a suitable ε</remarks>
 		public static bool HawkFloatEquality(this float f, float other, float ε = ReallySmallNumber) => Math.Abs(other - f) < ε;
 
+#pragma warning disable RCS1224 // don't want extension on nonspecific `float`/`uint`
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a float</summary>
 		public static float ReinterpretAsF32(uint value) => Unsafe.As<uint, float>(ref value);
 
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a uint</summary>
 		public static uint ReinterpretAsUInt32(float value) => Unsafe.As<float, uint>(ref value);
+#pragma warning restore RCS1224
 	}
 }

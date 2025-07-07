@@ -181,7 +181,9 @@ namespace BizHawk.Common.CollectionExtensions
 		}
 
 		/// <returns>freshly-allocated array</returns>
+#pragma warning disable RCS1224 // will be `params` when we bump `$(LangVersion)`; `this params` is nonsensical
 		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<T[]> arrays)
+#pragma warning restore RCS1224
 		{
 			var combinedLength = arrays.Sum(static a => a.Length); //TODO detect overflow
 			if (combinedLength is 0) return Array.Empty<T>();
@@ -196,7 +198,9 @@ namespace BizHawk.Common.CollectionExtensions
 		}
 
 		/// <returns>freshly-allocated array</returns>
+#pragma warning disable RCS1224 // will be `params` when we bump `$(LangVersion)`; `this params` is nonsensical
 		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<ArraySegment<T>> arrays)
+#pragma warning restore RCS1224
 		{
 			var combinedLength = arrays.Sum(static a => a.Count); //TODO detect overflow
 			if (combinedLength is 0) return Array.Empty<T>();

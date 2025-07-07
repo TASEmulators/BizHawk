@@ -75,7 +75,9 @@ namespace BizHawk.Common.PathExtensions
 		/// algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292<br/>
 		/// the parameter names seem backwards, but those are the names used in the Win32 API we're calling
 		/// </remarks>
+#pragma warning disable RCS1224 // don't want extension on nonspecific `string`
 		public static string? GetRelativePath(string? fromPath, string? toPath)
+#pragma warning restore RCS1224
 		{
 			if (fromPath == null || toPath == null) return null;
 			if (OSTailoredCode.IsUnixHost)

@@ -2,7 +2,9 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscExtensions
 	{
+#pragma warning disable RCS1224 // don't want extension on nonspecific `string`
 		public static Disc CreateAnyType(string path, Action<string> errorCallback)
+#pragma warning restore RCS1224
 		{
 			return CreateImpl(null, path, errorCallback);
 		}
