@@ -7,13 +7,6 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
-		public static string CharCodepointsToString(byte[] array)
-		{
-			var a = new char[array.Length];
-			for (var i = 0; i < array.Length; i++) a[i] = char.ConvertFromUtf32(array[i])[0];
-			return new(a);
-		}
-
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsIgnoreCase(this string haystack, string needle)
