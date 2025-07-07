@@ -329,7 +329,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name = "chunk"></param>
 		/// <param name = "name"></param>
@@ -357,7 +357,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name = "chunk"></param>
 		/// <param name = "name"></param>
@@ -903,7 +903,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Gets a numeric field of the table or userdata corresponding the the provided reference
+		/// Gets a numeric field of the table or userdata corresponding to the provided reference
 		/// </summary>
 		internal object GetObject(int reference, object field)
 		{
@@ -917,7 +917,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Sets a field of the table or userdata corresponding the the provided reference
+		/// Sets a field of the table or userdata corresponding to the provided reference
 		/// to the provided value
 		/// </summary>
 		internal void SetObject(int reference, string field, object val)
@@ -929,7 +929,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Sets a numeric field of the table or userdata corresponding the the provided reference
+		/// Sets a numeric field of the table or userdata corresponding to the provided reference
 		/// to the provided value
 		/// </summary>
 		internal void SetObject(int reference, object field, object val)
