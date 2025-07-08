@@ -15,19 +15,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			: base(spectrum, cpu, borderType, files, joysticks) {}
 
 		/* 48K Spectrum has NO memory paging
-         *
-         *
-                   | Bank 0 |
-                   |        |
-                   |        |
-                   | screen |
-            0x4000 +--------+
-                   | ROM 0  |
-                   |        |
-                   |        |
-                   |        |
-            0x0000 +--------+
-        */
+		 *
+		 *
+		           | Bank 0 |
+		           |        |
+		           |        |
+		           | screen |
+		    0x4000 +--------+
+		           | ROM 0  |
+		           |        |
+		           |        |
+		           |        |
+		    0x0000 +--------+
+		*/
 
 		/// <summary>
 		/// Simulates reading from the bus (no contention)

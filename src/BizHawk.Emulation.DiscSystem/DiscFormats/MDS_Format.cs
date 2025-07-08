@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public byte NonTrackBlocks;     /* Number of lead-in data blocks */
 			public int FirstTrack;          /* First track in session */
 			public int LastTrack;           /* Last track in session */
-			public long TrackOffset;       /* Offset of lead-in+regular track data blocks. */
+			public long TrackOffset;        /* Offset of lead-in+regular track data blocks. */
 		}
 
 		/// <summary>
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public byte SubMode;            /* Subchannel mode */
 
 			/* These are the fields from Sub-channel Q information, which are
-                also returned in full TOC by READ TOC/PMA/ATIP command */
+			   also returned in full TOC by READ TOC/PMA/ATIP command */
 			public int ADR_Control;         /* Adr/Ctl */
 			public int TrackNo;             /* Track number field */
 			public int Point;               /* Point field (= track number for track entries) */

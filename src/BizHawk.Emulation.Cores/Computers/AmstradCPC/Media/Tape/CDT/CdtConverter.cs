@@ -105,14 +105,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override bool CheckType(byte[] data)
 		{
 			/*
-            // TZX Header
-            length: 10 bytes
-            Offset  Value       Type        Description
-            0x00    "ZXTape!"   ASCII[7]    TZX signature
-            0x07    0x1A        BYTE        End of text file marker
-            0x08    1           BYTE        TZX major revision number
-            0x09    20          BYTE        TZX minor revision number
-            */
+			// TZX Header
+			length: 10 bytes
+			Offset  Value       Type        Description
+			0x00    "ZXTape!"   ASCII[7]    TZX signature
+			0x07    0x1A        BYTE        End of text file marker
+			0x08    1           BYTE        TZX major revision number
+			0x09    20          BYTE        TZX minor revision number
+			*/
 
 			// check whether this is a valid tzx format file by looking at the identifier in the header
 			// (first 7 bytes of the file)
@@ -181,16 +181,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			/*
-            // convert for Amstrad CPC
-            List<TapeDataBlock> newBlocks = new List<TapeDataBlock>();
-            for (int i = 0; i < _datacorder.DataBlocks.Count; i++)
-            {
-                newBlocks.Add(ConvertClock(_datacorder.DataBlocks[i]));
-            }
+			// convert for Amstrad CPC
+			List<TapeDataBlock> newBlocks = new List<TapeDataBlock>();
+			for (int i = 0; i < _datacorder.DataBlocks.Count; i++)
+			{
+				newBlocks.Add(ConvertClock(_datacorder.DataBlocks[i]));
+			}
 
-            _datacorder.DataBlocks.Clear();
-            _datacorder.DataBlocks.AddRange(newBlocks);
-            */
+			_datacorder.DataBlocks.Clear();
+			_datacorder.DataBlocks.AddRange(newBlocks);
+			*/
 		}
 
 		/// <summary>
@@ -1587,18 +1587,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_position += 8;
 		}
 
-		/*              length: [01,02,03]+04
-                Offset	Value	Type	Description
-                0x00	-	    BYTE	Snapshot type:
-                                            00: .Z80 format
-                                            01: .SNA format
-                0x01	L	    BYTE[3]	Snapshot length
-                0x04	-	    BYTE[L]	Snapshot itself
+		/*          length: [01,02,03]+04
+			Offset  Value   Type    Description
+			0x00    -       BYTE    Snapshot type:
+			                                00: .Z80 format
+			                                01: .SNA format
+			0x01    L       BYTE[3] Snapshot length
+			0x04    -       BYTE[L] Snapshot itself
 
-                This would enable one to snapshot the game at the start and still have all the tape blocks (level data, etc.) in the same file.
-                Only .Z80 and .SNA snapshots are supported for compatibility reasons!
-                The emulator should take care of that the snapshot is not taken while the actual Tape loading is taking place (which doesn't do much sense).
-                And when an emulator encounters the snapshot block it should load it and then continue with the next block.               */
+			This would enable one to snapshot the game at the start and still have all the tape blocks (level data, etc.) in the same file.
+			Only .Z80 and .SNA snapshots are supported for compatibility reasons!
+			The emulator should take care of that the snapshot is not taken while the actual Tape loading is taking place (which doesn't do much sense).
+			And when an emulator encounters the snapshot block it should load it and then continue with the next block.
+		*/
 		private void ProcessBlockID40(byte[] data)
 		{
 			// currently not implemented properly in CPCHawk
@@ -1647,12 +1648,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			string description = string.Empty;
 
 			// process the type byte
-			/*  (The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file.
-                A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal.
-                If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given)
-                and parameter 2 holds the start of the variable area relative to the start of the program. If it's a Code file, parameter 1 holds
-                the start of the code block when saved, and parameter 2 holds 32768. For data files finally, the byte at position 14 decimal holds the variable name.)
-            */
+			/*
+				(The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file.
+				A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal.
+				If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given)
+				and parameter 2 holds the start of the variable area relative to the start of the program. If it's a Code file, parameter 1 holds
+				the start of the code block when saved, and parameter 2 holds 32768. For data files finally, the byte at position 14 decimal holds the variable name.)
+			*/
 
 			int blockSize = blockdata.Length;
 
@@ -1708,49 +1710,49 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					block.AddMetaData(BlockDescriptorTitle.Undefined, description);
 				}
 				/*
-                if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || (blockdata[1] == 3 && blockdata.Length > 3))
-                {
-                    if (dataBlockType != DataBlockType.Turbo)
-                    {
-                        // This is the program header
-                        string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
+				if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || (blockdata[1] == 3 && blockdata.Length > 3))
+				{
+					if (dataBlockType != DataBlockType.Turbo)
+					{
+						// This is the program header
+						string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
 
-                        string type = "";
-                        if (blockdata[0] == 0x00)
-                        {
-                            type = "Program";
-                            block.AddMetaData(BlockDescriptorTitle.Program, fileName);
-                        }
-                        else
-                        {
-                            type = "Bytes";
-                            block.AddMetaData(BlockDescriptorTitle.Bytes, fileName);
-                        }
+						string type = "";
+						if (blockdata[0] == 0x00)
+						{
+							type = "Program";
+							block.AddMetaData(BlockDescriptorTitle.Program, fileName);
+						}
+						else
+						{
+							type = "Bytes";
+							block.AddMetaData(BlockDescriptorTitle.Bytes, fileName);
+						}
 
-                        // now build the description string
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append(type + ": ");
-                        sb.Append(fileName + " ");
-                        sb.Append(GetWordValue(blockdata, 14));
-                        sb.Append(':');
-                        sb.Append(GetWordValue(blockdata, 12));
-                        description = sb.ToString();
-                    }
-                }
-                else if (blockdata[0] == 0xFF)
-                {
-                    // this is a data block
-                    description = "Data Block " + (blockSize - 2) + "bytes";
-                    block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
-                }
-                else
-                {
-                    // other type
-                    description = $"#{blockdata[0]:X2} block, {blockSize} bytes";
-                    //description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
-                    block.AddMetaData(BlockDescriptorTitle.Undefined, description);
-                }
-                */
+						// now build the description string
+						StringBuilder sb = new StringBuilder();
+						sb.Append(type + ": ");
+						sb.Append(fileName + " ");
+						sb.Append(GetWordValue(blockdata, 14));
+						sb.Append(':');
+						sb.Append(GetWordValue(blockdata, 12));
+						description = sb.ToString();
+					}
+				}
+				else if (blockdata[0] == 0xFF)
+				{
+					// this is a data block
+					description = "Data Block " + (blockSize - 2) + "bytes";
+					block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
+				}
+				else
+				{
+					// other type
+					description = $"#{blockdata[0]:X2} block, {blockSize} bytes";
+					//description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
+					block.AddMetaData(BlockDescriptorTitle.Undefined, description);
+				}
+				*/
 			}
 
 			// update metadata
@@ -1867,13 +1869,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			int pilotCount = 3220;
 			/*
-            // pilot count needs to be ascertained from flag byte
-            int pilotCount;
-            if (blockData[0] < 128)
-                pilotCount = 8063;
-            else
-                pilotCount = 3223;
-                */
+			// pilot count needs to be ascertained from flag byte
+			int pilotCount;
+			if (blockData[0] < 128)
+				pilotCount = 8063;
+			else
+				pilotCount = 3223;
+				*/
 
 			// now we can decode
 			var nBlock = DecodeDataBlock
