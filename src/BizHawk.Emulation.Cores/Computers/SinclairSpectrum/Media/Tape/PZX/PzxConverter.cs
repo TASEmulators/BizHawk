@@ -87,13 +87,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_datacorder.DataBlocks.Clear();
 
 			/*
-                // PZX uniform block layout
-                offset type     name   meaning
-                ------ ----     ----   -------
-                0      u32      tag    unique identifier for the block type.
-                4      u32      size   size of the block in bytes, excluding the tag and size fields themselves.
-                8      u8[size] data   arbitrary amount of block data.
-            */
+				// PZX uniform block layout
+				offset type     name   meaning
+				------ ----     ----   -------
+				0      u32      tag    unique identifier for the block type.
+				4      u32      size   size of the block in bytes, excluding the tag and size fields themselves.
+				8      u8[size] data   arbitrary amount of block data.
+			*/
 
 			// check whether this is a valid pzx format file by looking at the identifier in the header block
 			string ident = Encoding.ASCII.GetString(data, 0, 4);
@@ -139,25 +139,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					// PZXT - PZX header block
 					/*
-                        offset type     name   meaning
-                        0      u8       major  major version number (currently 1).
-                        1      u8       minor  minor version number (currently 0).
-                        2      u8[?]    info   tape info, see below.
-                    */
+						offset type     name   meaning
+						0      u8       major  major version number (currently 1).
+						1      u8       minor  minor version number (currently 0).
+						2      u8[?]    info   tape info, see below.
+					*/
 					case "PZXT":
 
 						break;
 
 					// PULS - Pulse sequence
 					/*
-                        offset type   name      meaning
-                        0      u16    count     bits 0-14 optional repeat count (see bit 15), always greater than zero
-                                                bit 15 repeat count present: 0 not present 1 present
-                        2      u16    duration1 bits 0-14 low/high (see bit 15) pulse duration bits
-                                                bit 15 duration encoding: 0 duration1 1 ((duration1<<16)+duration2)
-                        4      u16    duration2 optional low bits of pulse duration (see bit 15 of duration1)
-                        6      ...    ...       ditto repeated until the end of the block
-                    */
+						offset type   name      meaning
+						0      u16    count     bits 0-14 optional repeat count (see bit 15), always greater than zero
+						                        bit 15 repeat count present: 0 not present 1 present
+						2      u16    duration1 bits 0-14 low/high (see bit 15) pulse duration bits
+						                        bit 15 duration encoding: 0 duration1 1 ((duration1<<16)+duration2)
+						4      u16    duration2 optional low bits of pulse duration (see bit 15 of duration1)
+						6      ...    ...       ditto repeated until the end of the block
+					*/
 					case "PULS":
 
 						t.BlockID = GetInt32(b, 0);
@@ -214,16 +214,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					// DATA - Data block
 					/*
-                        offset      type             name  meaning
-                        0           u32              count bits 0-30 number of bits in the data stream
-                                                           bit 31 initial pulse level: 0 low 1 high
-                        4           u16              tail  duration of extra pulse after last bit of the block
-                        6           u8               p0    number of pulses encoding bit equal to 0.
-                        7           u8               p1    number of pulses encoding bit equal to 1.
-                        8           u16[p0]          s0    sequence of pulse durations encoding bit equal to 0.
-                        8+2*p0      u16[p1]          s1    sequence of pulse durations encoding bit equal to 1.
-                        8+2*(p0+p1) u8[ceil(bits/8)] data  data stream, see below.
-                    */
+						offset      type             name  meaning
+						0           u32              count bits 0-30 number of bits in the data stream
+						                                   bit 31 initial pulse level: 0 low 1 high
+						4           u16              tail  duration of extra pulse after last bit of the block
+						6           u8               p0    number of pulses encoding bit equal to 0.
+						7           u8               p1    number of pulses encoding bit equal to 1.
+						8           u16[p0]          s0    sequence of pulse durations encoding bit equal to 0.
+						8+2*p0      u16[p1]          s1    sequence of pulse durations encoding bit equal to 1.
+						8+2*(p0+p1) u8[ceil(bits/8)] data  data stream, see below.
+					*/
 					case "DATA":
 
 						t.BlockID = GetInt32(b, 0);
@@ -315,10 +315,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					// PAUS - Pause
 					/*
-                        offset type   name      meaning
-                        0      u32    duration  bits 0-30 duration of the pause
-                                                bit 31 initial pulse level: 0 low 1 high
-                    */
+						offset type   name      meaning
+						0      u32    duration  bits 0-30 duration of the pause
+						                        bit 31 initial pulse level: 0 low 1 high
+					*/
 					case "PAUS":
 
 						t.BlockID = GetInt32(b, 0);
@@ -353,9 +353,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					// BRWS - Browse point
 					/*
-                        offset type   name   meaning
-                        0      u8[?]  text   text describing this browse point
-                    */
+						offset type   name   meaning
+						0      u8[?]  text   text describing this browse point
+					*/
 					case "BRWS":
 
 						t.BlockID = GetInt32(b, 0);
@@ -374,9 +374,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					// STOP - Stop tape command
 					/*
-                        offset type   name   meaning
-                        0      u16    flags  when exactly to stop the tape (1 48k only, other always).
-                    */
+						offset type   name   meaning
+						0      u16    flags  when exactly to stop the tape (1 48k only, other always).
+					*/
 					case "STOP":
 
 

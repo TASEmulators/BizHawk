@@ -30,11 +30,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private readonly List<string> btnLookups = new List<string>
 		{
 			"Key 5",    // left
-            "Key 8",    // right
-            "Key 6",    // down
-            "Key 7",    // up
-            "Key 0",    // fire
-        };
+			"Key 8",    // right
+			"Key 6",    // down
+			"Key 7",    // up
+			"Key 0",    // fire
+		};
 
 		public JoystickType JoyType => JoystickType.Cursor;
 
