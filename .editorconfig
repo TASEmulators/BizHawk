@@ -97,6 +97,8 @@ dotnet_diagnostic.IDE0071.severity = suggestion
 dotnet_diagnostic.IDE0074.severity = suggestion
 # Use pattern matching
 dotnet_diagnostic.IDE0078.severity = suggestion
+# Suppression operator has no effect and can be misinterpreted
+dotnet_diagnostic.IDE0080.severity = warning
 # Convert typeof to nameof
 dotnet_diagnostic.IDE0082.severity = warning
 # Use pattern matching (not operator)
