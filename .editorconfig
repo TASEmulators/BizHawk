@@ -63,7 +63,7 @@ dotnet_diagnostic.IDE0032.severity = suggestion
 # Simplify default expression
 dotnet_diagnostic.IDE0034.severity = suggestion
 # Use pattern matching to avoid is check followed by a cast (without variable)
-dotnet_diagnostic.IDE0038.severity = warning
+dotnet_diagnostic.IDE0038.severity = warning # Note that this doesn't work with `dotnet build` but does work inside Visual Studio.
 # Use is null check
 dotnet_diagnostic.IDE0041.severity = warning
 # Deconstruct variable declaration
