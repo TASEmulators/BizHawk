@@ -378,8 +378,17 @@ namespace BizHawk.Client.EmuHawk
 				RefreshSettings(form, dest, settings, idx);
 				form.Size = oldSize;
 
-				form.GetType().GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
-					.FirstOrDefault()?.Invoke(form, Array.Empty<object>());
+				if (form is IRestoreDefaults restorable)
+				{
+					restorable.RestoreDefaults();
+				}
+				else if (form is IExternalToolForm)
+				{
+#pragma warning disable CS0618 // We temporarily keep this use of obsolete attribute so external tools don't immediately break.
+					form.GetType().GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
+						.FirstOrDefault()?.Invoke(form, Array.Empty<object>());
+#pragma warning restore CS0618
+				}
 			};
 		}
 
