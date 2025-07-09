@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig
+	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		public static Icon ToolIcon
 			=> Properties.Resources.PencilIcon;
@@ -26,13 +26,10 @@ namespace BizHawk.Client.EmuHawk
 		private ITraceable Tracer
 			=> _tracerCore!;
 
-		[ConfigPersist]
-		private int MaxLines { get; set; }
+		private int MaxLines;
 
-		[ConfigPersist]
-		private int FileSizeCap { get; set; }
+		private int FileSizeCap;
 
-		[ConfigPersist]
 		private List<RollColumn> Columns
 		{
 			get => TraceView.AllColumns;
@@ -46,6 +43,24 @@ namespace BizHawk.Client.EmuHawk
 
 				TraceView.AllColumns.ColumnsChanged();
 			}
+		}
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(MaxLines), ref MaxLines);
+			provider.Get(nameof(FileSizeCap), ref FileSizeCap);
+
+			List<RollColumn> outValue = default;
+			if (provider.Get(nameof(Columns), ref outValue)) Columns = outValue;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(MaxLines)] = MaxLines,
+				[nameof(FileSizeCap)] = FileSizeCap,
+				[nameof(Columns)] = Columns,
+			};
 		}
 
 		private FileInfo _logFile;

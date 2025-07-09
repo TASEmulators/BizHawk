@@ -4,16 +4,15 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class Cheats : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults
+	public partial class Cheats : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults, IConfigPersist
 	{
 		private const string NameColumn = "NamesColumn";
 		private const string AddressColumn = "AddressColumn";
@@ -78,8 +77,19 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains Core { get; set; }
 
-		[ConfigPersist]
-		public CheatsSettings Settings { get; set; }
+		public CheatsSettings Settings;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(Settings), ref Settings);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Settings)] = Settings,
+			};
+		}
 
 		public override void Restart()
 		{
