@@ -14,8 +14,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public byte opcode;
 
 		public long[] dLog = new long[0xFF];
+#pragma warning disable IDE0052 // Remove unread private members
 		private string debug = "";
+#pragma warning restore IDE0052 // Remove unread private members
+#pragma warning disable IDE0051 // Remove unused private members
 		private void UpdateDebug()
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < 255; i++)

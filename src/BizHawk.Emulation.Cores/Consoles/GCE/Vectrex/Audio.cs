@@ -370,7 +370,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			master_audio_clock = 0;
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		private void GetSamples(short[] samples)
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 
 		}

@@ -47,10 +47,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		private readonly List<IndexEntry> Index = new();
 
-		/// <summary>
-		/// the ECMfile-provided EDC integrity checksum. not being used right now
-		/// </summary>
-		private int EDC;
+		///// <summary>
+		///// the ECMfile-provided EDC integrity checksum. not being used right now
+		///// </summary>
+		//private int EDC;
 
 		public long Length;
 
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license)
 			//extension methods on binary reader wont suffice, we need something that lets you control the endianness used for reading. a complete replacement.
 			var br = new BinaryReader(stream);
-			EDC = br.ReadInt32();
+			/*EDC =*/ br.ReadInt32();
 
 			Length = logOffset;
 		}

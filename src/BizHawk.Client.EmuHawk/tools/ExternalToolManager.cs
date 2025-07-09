@@ -17,7 +17,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public struct MenuItemInfo
 		{
+#pragma warning disable IDE0052 // Remove unread private members (This is only not used in debug mode.)
 			private readonly string _asmChecksum;
+#pragma warning restore IDE0052
 
 			private readonly string _entryPointTypeName;
 

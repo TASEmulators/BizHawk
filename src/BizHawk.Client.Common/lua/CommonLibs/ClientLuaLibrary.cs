@@ -17,9 +17,6 @@ namespace BizHawk.Client.Common
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 

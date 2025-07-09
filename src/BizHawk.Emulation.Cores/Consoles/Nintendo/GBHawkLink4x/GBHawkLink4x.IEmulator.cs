@@ -1111,7 +1111,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			D.audio.DiscardSamples();
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		private void GetSamples(short[] samples)
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 
 		}

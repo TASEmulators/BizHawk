@@ -53,7 +53,6 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		private readonly int SectorSize;
 		private readonly int NumSectors;
-		private Disc Disc;
 
 		private long currPosition;
 		private readonly byte[] cachedSectorBuffer;
@@ -64,7 +63,6 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscStream(Disc disc, EDiscStreamView view, int from_lba)
 		{
 			SectorSize = 2048;
-			Disc = disc;
 			NumSectors = disc.Session1.LeadoutLBA;
 			dsr = new(disc);
 

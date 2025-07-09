@@ -1,5 +1,4 @@
 using System.IO;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Text;
 
@@ -112,33 +111,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public string DesiredExtension() => "syncless.txt";
-
-		/// <summary>
-		/// splits the string into chunks of length s
-		/// </summary>
-		private static List<string> StringChunkSplit(string s, int len)
-		{
-			if (len == 0)
-			{
-				throw new ArgumentException("Invalid len", nameof(len));
-			}
-
-			int numChunks = (s.Length + len - 1) / len;
-			var output = new List<string>(numChunks);
-			for (int i = 0, j = 0; i < numChunks; i++, j += len)
-			{
-				int todo = len;
-				int remain = s.Length - j;
-				if (remain < todo)
-				{
-					todo = remain;
-				}
-
-				output.Add(s.Substring(j, todo));
-			}
-
-			return output;
-		}
 
 		private string GetAndCreatePathForFrameNum(int index)
 		{
