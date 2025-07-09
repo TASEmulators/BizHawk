@@ -3,6 +3,12 @@
 # Do not ignore method results
 dotnet_diagnostic.CA1806.severity = suggestion
 
+# Remove unused private member
+dotnet_diagnostic.IDE0051.severity = suggestion
+
+# Remove unread private member
+dotnet_diagnostic.IDE0052.severity = suggestion
+
 # Both if and else branch have identical code
 dotnet_diagnostic.MA0140.severity = suggestion
 

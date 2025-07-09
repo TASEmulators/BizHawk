@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshWidgets()
 		{
-			if (!_isSet)
+			if (!IsSet)
 			{
 				_programmaticallyChangingValue = true;
 				AnalogTrackBar.Value = _stickyHoldController.AxisValue(Name);

@@ -166,7 +166,9 @@ namespace BizHawk.Emulation.Cores
 			return ps;
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		private static PadSchema TapeDevice()
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 			return new PadSchema
 			{

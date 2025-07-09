@@ -26,11 +26,13 @@ namespace BizHawk.Emulation.Common
 
 			private const byte LIMITED_5_PLAYS_LEFT = 0b11111100;
 
+#pragma warning disable IDE0051 // Remove unused private members
 			private const int OFFSET_BROADCAST_DATE = 0x26; // 2 octets
 
 			private const int OFFSET_CHECKSUM = 0x2C; // 2 octets
 
 			private const int OFFSET_CHECKSUM_COMPLEMENT = 0x2E; // 2 octets
+#pragma warning restore IDE0051 // Remove unused private members
 
 			private const int OFFSET_CONTENT_TYPE = 0x29; // 1 octet
 

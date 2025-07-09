@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		public ushort indexed_reg;
 		public ushort indexed_op_reg;
 
+#pragma warning disable IDE0051 // Remove unused private members
+
 		private void INDEX_OP(ushort oper)
 		{
 			indexed_op = oper;
