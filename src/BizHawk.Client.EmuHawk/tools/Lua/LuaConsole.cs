@@ -18,7 +18,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig
+	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults
 	{
 		private const string IconColumnName = "Icon";
 		private const string ScriptColumnName = "Script";
@@ -1532,8 +1532,7 @@ namespace BizHawk.Client.EmuHawk
 			ToggleLuaScript(file);
 		}
 
-		[RestoreDefaults]
-		private void RestoreDefaults()
+		void IRestoreDefaults.RestoreDefaults()
 		{
 			Settings = new LuaConsoleSettings();
 			LuaListView.AllColumns.Clear();

@@ -17,7 +17,7 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig
+	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults
 	{
 		public static Icon ToolIcon
 			=> Resources.WatchIcon;
@@ -1062,8 +1062,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.DoubleClickToPoke = true;
 		}
 
-		[RestoreDefaults]
-		private void RestoreDefaultsMenuItem()
+		void IRestoreDefaults.RestoreDefaults()
 		{
 			Settings = new RamWatchSettings();
 

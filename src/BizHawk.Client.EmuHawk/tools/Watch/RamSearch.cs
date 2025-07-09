@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A form designed to search through ram values
 	/// </summary>
-	public partial class RamSearch : ToolFormBase, IToolFormAutoConfig
+	public partial class RamSearch : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults
 	{
 		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
 		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbitrary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
@@ -1325,8 +1325,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.UseUndoHistory = _searches.UndoEnabled;
 		}
 
-		[RestoreDefaults]
-		private void RestoreDefaultsMenuItem()
+		void IRestoreDefaults.RestoreDefaults()
 		{
 			var recentFiles = Settings.RecentSearches; // We don't want to wipe recent files when restoring
 
