@@ -514,7 +514,6 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
-
 		}
 
 		public void ClearOutputWindow()

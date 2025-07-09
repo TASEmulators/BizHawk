@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			FindBox.Select();
-
 		}
 
 		private string GetFindBoxChars()

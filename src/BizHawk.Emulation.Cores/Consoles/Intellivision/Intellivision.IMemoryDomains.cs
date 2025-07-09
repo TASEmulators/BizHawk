@@ -102,7 +102,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				long index = addr / 2;
 				return (byte)(array[index] >> 8);
-
 			}
 			else
 			{
@@ -118,7 +117,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				long index = (addr - 1) / 2;
 				ushort val = (ushort)((value << 8) + (array[index] & 0xFF));
 				array[index] = val;
-
 			}
 			else
 			{

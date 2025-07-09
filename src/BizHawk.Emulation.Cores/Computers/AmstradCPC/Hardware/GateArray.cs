@@ -419,8 +419,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					FrameEnd = true;
 					LastGAFrameClocks = GAClockCounter;
 				}
-
-
 			}
 		}
 		private int _v26;
@@ -875,7 +873,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 								case 7:
 									pen = ((dataByte & 0x10) >> 4) | ((dataByte & 0x01) << 1);
 									break;
-
 							}
 							break;
 

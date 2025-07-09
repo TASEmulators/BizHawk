@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("reg", ref _reg);
-
 		}
 
 		public override void WritePrg(int addr, byte value)

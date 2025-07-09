@@ -374,6 +374,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
-
 	}
 }

@@ -68,5 +68,4 @@ namespace BizHawk.Client.EmuHawk
 			//glyphLoc.Size = new System.Drawing.Size(SystemInformation.MenuCheckSize.Width-1,SystemInformation.MenuCheckSize.Height-1);
 		}
 	}
-
 }

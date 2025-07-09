@@ -324,7 +324,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					attenuation = 6 * attenuation;
 					_fftBuffer[i] = _fftBuffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
 				}
-
 			}
 
 			// now transform back into time space and reassemble the attenuated frequency components

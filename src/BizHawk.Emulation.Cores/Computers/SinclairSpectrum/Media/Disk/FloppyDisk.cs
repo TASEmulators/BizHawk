@@ -494,7 +494,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			sec.SectorData = data.ToArray();
 			sec.ContainsMultipleWeakSectors = true;
 			sec.ActualDataByteLength = data.Count;
-
 		}
 		*/
 
@@ -709,5 +708,4 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		PaulOwens,
 		ShadowOfTheBeast
 	}
-
 }

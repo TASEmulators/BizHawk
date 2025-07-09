@@ -611,7 +611,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// loaded the first CRC byte to write, so stop computing CRC on data
 						writecomputecrc = false;
 					}
-
 				}
 			}
 
@@ -629,7 +628,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Whoever told me that was mistaken...
 			diskpos += 5000;
 		}
-
-
 	}
 }

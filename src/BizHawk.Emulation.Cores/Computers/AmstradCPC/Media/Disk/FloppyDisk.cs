@@ -494,7 +494,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			sec.SectorData = data.ToArray();
 			sec.ContainsMultipleWeakSectors = true;
 			sec.ActualDataByteLength = data.Count;
-
 		}
 		*/
 
@@ -708,5 +707,4 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		PaulOwens,
 		ShadowOfTheBeast
 	}
-
 }

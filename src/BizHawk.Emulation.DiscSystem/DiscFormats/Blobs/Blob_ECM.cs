@@ -221,7 +221,6 @@ namespace BizHawk.Emulation.DiscSystem
 				case 1: ECM.ECC_Populate(secbuf, 0, secbuf, 0, false); break;
 				case 2: ECM.ECC_Populate(secbuf, 0, secbuf, 0, true); break;
 			}
-
 		}
 
 		//we don't want to keep churning through this many big byte arrays while reading stuff, so we save a sector cache.
@@ -340,7 +339,6 @@ namespace BizHawk.Emulation.DiscSystem
 					completed += done;
 					remain -= done;
 					byte_pos += done;
-
 				}
 			}
 

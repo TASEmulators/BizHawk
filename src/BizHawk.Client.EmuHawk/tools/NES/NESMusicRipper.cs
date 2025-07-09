@@ -250,7 +250,6 @@ namespace BizHawk.Client.EmuHawk
 						pulse1LastNote = lastNote;
 						pulse1LastType = lastType;
 					}
-
 				} // pulse tracks loop
 
 				// triangle track generation
@@ -391,7 +390,6 @@ namespace BizHawk.Client.EmuHawk
 				writer.WriteLine("</Pattern>");
 
 				time += configuredPatternLength;
-
 			} // main pattern loop
 
 			writer.WriteLine("</Patterns>");

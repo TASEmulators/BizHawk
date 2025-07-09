@@ -321,7 +321,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					sb.Append("\n" + m.OtherMisc);
 
 				return sb.ToString();
-
 			}
 		}
 

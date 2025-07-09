@@ -65,7 +65,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return Rom[(((_reg0 & 0x6) >> 1) * 0x8000) + (addr & 0x7FFF)];
 			}
-
 		}
 
 		public override byte ReadPpu(int addr)

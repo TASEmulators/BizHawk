@@ -334,7 +334,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							currLevel = !currLevel;
 							dataLevels.Add(currLevel);
 						}
-
 					}
 				}
 

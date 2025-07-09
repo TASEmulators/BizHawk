@@ -503,7 +503,6 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.RemoveFrames(list);
 				EndBatchEdit();
 				SetSplicer();
-
 			}
 		}
 

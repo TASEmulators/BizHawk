@@ -34,7 +34,6 @@ namespace BizHawk.Client.EmuHawk
 					: WindowTitleStatic;
 				UpdateWindowTitle();
 			}
-
 		}
 
 		private bool _isBotting;
