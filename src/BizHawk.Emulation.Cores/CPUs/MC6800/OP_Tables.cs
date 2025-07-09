@@ -36,7 +36,9 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			IRQS = 3;
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		private void DIRECT_MEM(ushort oper)
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							SET_ADDR, ADDR, DP, ALU,

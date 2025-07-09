@@ -78,7 +78,9 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		private CDLog_MapResults MapMemoryMSX(ushort address, bool write)
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 			if (address < 0x4000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = address & 0x3FFF };
 			if (address < 0x6000) return new CDLog_MapResults { Type = CDLog_AddrType.ROM, Address = (RomBank0 * 0x2000) + (address & 0x1FFF) };

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace BizHawk.Emulation.Cores.Components.FairchildF8
+﻿namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	public sealed partial class F3850<TLink>
 	{
@@ -14,10 +12,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public byte opcode;
 
 		public long[] dLog = new long[0xFF];
+#if false
 		private string debug = "";
 		private void UpdateDebug()
 		{
-			StringBuilder sb = new StringBuilder();
+			System.Text.StringBuilder sb = new();
 			for (int i = 0; i < 255; i++)
 			{
 				if (dLog[i] > 0)
@@ -28,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			debug = sb.ToString();
 		}
+#endif
 
 		public void FetchInstruction()
 		{

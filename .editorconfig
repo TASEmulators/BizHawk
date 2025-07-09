@@ -70,9 +70,9 @@ dotnet_diagnostic.IDE0041.severity = warning
 dotnet_diagnostic.IDE0042.severity = suggestion
 # dotnet_diagnostic.IDE0049.severity = error # see SA1121
 # Remove unused private member
-dotnet_diagnostic.IDE0051.severity = suggestion
+dotnet_diagnostic.IDE0051.severity = warning
 # Remove unread private member
-dotnet_diagnostic.IDE0052.severity = silent # TODO: should be warning imo, but there's too much violation currently
+dotnet_diagnostic.IDE0052.severity = warning
 # Use compound assignment
 dotnet_diagnostic.IDE0054.severity = warning
 # Use index operator

@@ -1,4 +1,6 @@
+#if ENABLE_WEBSOCKETS
 using System.Collections.Generic;
+#endif
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -10,7 +12,9 @@ namespace BizHawk.Client.Common
 	[Description("A library for communicating with other programs")]
 	public sealed class CommLuaLibrary : LuaLibraryBase
 	{
+#if ENABLE_WEBSOCKETS
 		private readonly IDictionary<Guid, ClientWebSocketWrapper> _websockets = new Dictionary<Guid, ClientWebSocketWrapper>();
+#endif
 
 		public CommLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

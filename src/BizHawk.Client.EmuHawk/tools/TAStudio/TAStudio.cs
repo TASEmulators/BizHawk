@@ -497,23 +497,6 @@ namespace BizHawk.Client.EmuHawk
 			return controller;
 		}
 
-		private int? FirstNonEmptySelectedFrame
-		{
-			get
-			{
-				var empty = Bk2LogEntryGenerator.EmptyEntry(MovieSession.MovieController);
-				foreach (var row in TasView.SelectedRows)
-				{
-					if (CurrentTasMovie[row].LogEntry != empty)
-					{
-						return row;
-					}
-				}
-
-				return null;
-			}
-		}
-
 		private ITasMovie ConvertCurrentMovieToTasproj()
 		{
 			var tasMovie = MovieSession.Movie.ToTasMovie();
@@ -972,6 +955,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
+#if false
 		private bool AutoAdjustInput()
 		{
 			var lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
@@ -1024,6 +1008,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return false;
 		}
+#endif
 
 		private void MainVerticalSplit_SplitterMoved(object sender, SplitterEventArgs e)
 		{

@@ -7,7 +7,6 @@ namespace BizHawk.Client.Common.cheats
 	public static class GbaGameSharkDecoder
 	{
 		private static readonly uint[] GameSharkSeeds = { 0x09F4FBBDU, 0x9681884AU, 0x352027E9U, 0xF3DEE5A7U };
-		private static readonly uint[] ProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
 
 		private static string Decrypt(string code)
 		{
@@ -28,6 +27,8 @@ namespace BizHawk.Client.Common.cheats
 		}
 
 		// TODO: When to use this?
+#if false
+		private static readonly uint[] ProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
 		private static string DecryptPro(string code)
 		{
 			var sum = 0xC6EF3720;
@@ -43,6 +44,7 @@ namespace BizHawk.Client.Common.cheats
 
 			return $"{op1:X8} {op2:X8}";
 		}
+#endif
 
 		public static IDecodeResult Decode(string code)
 		{

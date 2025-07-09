@@ -224,15 +224,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LogToWindow()
-		{
-			if (_instructions.Count >= MaxLines)
-			{
-				_instructions.RemoveRange(0, _instructions.Count - MaxLines);
-			}
-			TraceView.RowCount = _instructions.Count;
-		}
-
 		private void SetTracerBoxTitle()
 		{
 			if (LoggingEnabled.Checked)

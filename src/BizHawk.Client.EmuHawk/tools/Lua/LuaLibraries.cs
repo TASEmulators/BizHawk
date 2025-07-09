@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 using NLua;
 using NLua.Native;
@@ -60,7 +59,6 @@ namespace BizHawk.Client.EmuHawk
 			_displayManager = displayManager;
 			_inputManager = inputManager;
 			_mainForm = mainForm;
-			LuaWait = new AutoResetEvent(false);
 			PathEntries = config.PathEntries;
 			RegisteredFunctions = registeredFuncList;
 			ScriptList = scriptList;
@@ -153,8 +151,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly DisplayManagerBase _displayManager;
 
-		private GuiApi GuiAPI => (GuiApi)_apiContainer.Gui;
-
 		private readonly InputManager _inputManager;
 
 		private readonly MainForm _mainForm;
@@ -181,8 +177,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsInInputOrMemoryCallback { get; set; }
 
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-
-		private EventWaitHandle LuaWait;
 
 		public PathEntryCollection PathEntries { get; private set; }
 
