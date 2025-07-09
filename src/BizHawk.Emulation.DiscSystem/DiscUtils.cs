@@ -2,22 +2,6 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscUtils
 	{
-		private static byte IntToBCD(int n)
-		{
-			var tens = Math.DivRem(n, 10, out var ones);
-			return (byte)((tens << 4) | ones);
-		}
-
-		/// <summary>
-		/// converts the given int to a BCD value
-		/// </summary>
-		public static int BCD_Byte(this int val)
-		{
-			var ret = (byte)(val % 10);
-			ret += (byte)(16 * (val / 10));
-			return ret;
-		}
-
 		/// <summary>
 		/// converts an LBA to AMSF absolute minute:second:frame format.
 		/// </summary>

@@ -385,13 +385,13 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (!MainForm.Emulator.HasMemoryDomains())
+			if (!Emulator.HasMemoryDomains())
 			{
-				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
+				Log($"cheat codes not supported by the current system: {Emulator.SystemId}");
 				return;
 			}
 
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
+			var decoder = new GameSharkDecoder(Emulator.AsMemoryDomains(), Emulator.SystemId);
 			var result = decoder.Decode(code);
 
 			if (result.IsValid(out var valid))
@@ -414,13 +414,13 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (!MainForm.Emulator.HasMemoryDomains())
+			if (!Emulator.HasMemoryDomains())
 			{
-				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
+				Log($"cheat codes not supported by the current system: {Emulator.SystemId}");
 				return;
 			}
 
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
+			var decoder = new GameSharkDecoder(Emulator.AsMemoryDomains(), Emulator.SystemId);
 			var result = decoder.Decode(code);
 
 			if (result.IsValid(out var valid))
