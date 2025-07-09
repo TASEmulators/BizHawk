@@ -84,3 +84,4 @@ jobs:
           Assets/dll/uzem.wbx.zst
           Assets/dll/vb.wbx.zst
           Assets/dll/virtualjaguar.wbx.zst
+        retention-days: 90

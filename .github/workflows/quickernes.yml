@@ -31,3 +31,4 @@ jobs:
         name: quicknes-core
         path: |
           Assets/dll/libquicknes.so
+        retention-days: 90

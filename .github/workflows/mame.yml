@@ -57,3 +57,4 @@ jobs:
         name: mame-core
         path: |
           Assets/dll/libmamearcade.wbx.zst
+        retention-days: 90
