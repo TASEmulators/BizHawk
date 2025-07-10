@@ -476,8 +476,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_videoDone)
 				throw new InvalidOperationException("Can't write data after end of relevance!");
-			if (_audioQueue.Count > 5)
-				throw new Exception("A/V Desync?");
+
 			var dataLen = video.Length * sizeof(int);
 			var data = ArrayPool<byte>.Shared.Rent(dataLen);
 			MemoryMarshal.AsBytes(video).CopyTo(data);
@@ -505,11 +504,6 @@ namespace BizHawk.Client.EmuHawk
 			if (_audioDone)
 			{
 				throw new Exception("Can't write audio after end of relevance!");
-			}
-
-			if (_videoQueue.Count > 5)
-			{
-				throw new Exception("A/V Desync?");
 			}
 
 			int dataLen = samples.Length * sizeof(short);
