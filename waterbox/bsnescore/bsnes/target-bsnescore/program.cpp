@@ -26,8 +26,8 @@ struct Program : Emulator::Platform
 	auto notify(string text) -> void override;
 	auto getBackdropColor() -> uint16 override;
 	auto cpuTrace(vector<string>) -> void override;
-	auto readHook(uint address) -> void override;
-	auto writeHook(uint address, uint8 value) -> void override;
+	auto readHook(uint address, uint8& value) -> void override;
+	auto writeHook(uint address, uint8& value) -> void override;
 	auto execHook(uint address) -> void override;
 	auto time() -> int64 override;
 
@@ -482,12 +482,12 @@ auto Program::cpuTrace(vector<string> parts) -> void
 	snesCallbacks.snes_trace(parts[0], parts[1]);
 }
 
-auto Program::readHook(uint address) -> void
+auto Program::readHook(uint address, uint8& value) -> void
 {
-	snesCallbacks.snes_read_hook(address);
+	snesCallbacks.snes_read_hook(address, value);
 }
 
-auto Program::writeHook(uint address, uint8 value) -> void
+auto Program::writeHook(uint address, uint8& value) -> void
 {
 	snesCallbacks.snes_write_hook(address, value);
 }
