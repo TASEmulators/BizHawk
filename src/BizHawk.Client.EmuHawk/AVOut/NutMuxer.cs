@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -13,69 +14,6 @@ namespace BizHawk.Client.EmuHawk
 	public class NutMuxer
 	{
 		// this code isn't really any good for general purpose nut creation
-
-		public class ReusableBufferPool<T>
-		{
-			private readonly List<T[]> _available = new List<T[]>();
-			private readonly ICollection<T[]> _inUse = new HashSet<T[]>();
-
-			private readonly int _capacity;
-
-			/// <param name="capacity">total number of buffers to keep around</param>
-			public ReusableBufferPool(int capacity)
-			{
-				_capacity = capacity;
-			}
-
-			private T[] GetBufferInternal(int length, bool zerofill, Predicate<T[]> criteria)
-			{
-				if (_inUse.Count == _capacity)
-				{
-					throw new InvalidOperationException();
-				}
-
-				var candidate = _available.Find(criteria);
-				if (candidate == null)
-				{
-					if (_available.Count + _inUse.Count == _capacity)
-					{
-						// out of space! should not happen often
-						Console.WriteLine("Purging");
-						_available.Clear();
-					}
-					candidate = new T[length];
-				}
-				else
-				{
-					if (zerofill)
-					{
-						Array.Clear(candidate, 0, candidate.Length);
-					}
-
-					_available.Remove(candidate);
-				}
-
-				_inUse.Add(candidate);
-				return candidate;
-			}
-
-			public T[] GetBuffer(int length, bool zerofill = false)
-			{
-				return GetBufferInternal(length, zerofill, a => a.Length == length);
-			}
-
-			public T[] GetBufferAtLeast(int length, bool zerofill = false)
-			{
-				return GetBufferInternal(length, zerofill, a => a.Length >= length && a.Length / (float)length <= 2.0f);
-			}
-
-			/// <exception cref="ArgumentException"><paramref name="buffer"/> is not in use</exception>
-			public void ReleaseBuffer(T[] buffer)
-			{
-				if (!_inUse.Remove(buffer)) throw new ArgumentException(message: "already released?", paramName: nameof(buffer));
-				_available.Add(buffer);
-			}
-		}
 
 		/// <summary>
 		/// variable length value, unsigned
@@ -184,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 		/// seems to be different than standard CRC32?????
 		/// </summary>
 		/// <returns>crc32, nut variant</returns>
-		private static uint NutCRC32(byte[] buf)
+		private static uint NutCRC32(ReadOnlySpan<byte> buf)
 		{
 			uint crc = 0;
 			foreach (var b in buf)
@@ -334,15 +272,13 @@ namespace BizHawk.Client.EmuHawk
 		// audio packets waiting to be written
 		private readonly Queue<NutFrame> _audioQueue;
 
-		private readonly ReusableBufferPool<byte> _bufferPool = new ReusableBufferPool<byte>(12);
-
 		/// <summary>
 		/// write out the main header
 		/// </summary>
 		private void WriteMainHeader()
 		{
 			// note: this file starttag not actually part of main headers
-			var tmp = Encoding.ASCII.GetBytes("nut/multimedia container\0");
+			var tmp = "nut/multimedia container\0"u8.ToArray();
 			_output.Write(tmp, 0, tmp.Length);
 
 			var header = new NutPacket(NutPacket.StartCode.Main, _output);
@@ -451,22 +387,19 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private readonly ulong _ptsDen;
 
-			private readonly ReusableBufferPool<byte> _pool;
-
 			/// <param name="payload">frame data</param>
 			/// <param name="payLoadLen">actual length of frame data</param>
 			/// <param name="pts">presentation timestamp</param>
 			/// <param name="ptsNum">numerator of timebase</param>
 			/// <param name="ptsDen">denominator of timebase</param>
 			/// <param name="ptsIndex">which timestamp base is used, assumed to be also stream number</param>
-			public NutFrame(byte[] payload, int payLoadLen, ulong pts, ulong ptsNum, ulong ptsDen, int ptsIndex, ReusableBufferPool<byte> pool)
+			public NutFrame(byte[] payload, int payLoadLen, ulong pts, ulong ptsNum, ulong ptsDen, int ptsIndex)
 			{
 				_pts = pts;
 				_ptsNum = ptsNum;
 				_ptsDen = ptsDen;
 
-				_pool = pool;
-				_data = pool.GetBufferAtLeast(payLoadLen + 2048);
+				_data = ArrayPool<byte>.Shared.Rent(payLoadLen + 2048);
 				var frame = new MemoryStream(_data);
 
 				// create syncpoint
@@ -474,7 +407,6 @@ namespace BizHawk.Client.EmuHawk
 				WriteVarU(pts * 2 + (ulong)ptsIndex, sync); // global_key_pts
 				WriteVarU(1, sync); // back_ptr_div_16, this is wrong
 				sync.Flush();
-
 
 				var frameHeader = new MemoryStream();
 				frameHeader.WriteByte(0); // frame_code
@@ -532,7 +464,7 @@ namespace BizHawk.Client.EmuHawk
 			public void WriteData(Stream dest)
 			{
 				dest.Write(_data, 0, _actualLength);
-				_pool.ReleaseBuffer(_data);
+				ArrayPool<byte>.Shared.Return(_data);
 			}
 		}
 
@@ -547,15 +479,15 @@ namespace BizHawk.Client.EmuHawk
 			if (_audioQueue.Count > 5)
 				throw new Exception("A/V Desync?");
 			var dataLen = video.Length * sizeof(int);
-			var data = _bufferPool.GetBufferAtLeast(dataLen);
-			MemoryMarshal.AsBytes(video).CopyTo(data.AsSpan(0, dataLen));
+			var data = ArrayPool<byte>.Shared.Rent(dataLen);
+			MemoryMarshal.AsBytes(video).CopyTo(data);
 			if (dataLen == 0)
 			{
 				_videoDone = true;
 			}
 
-			var f = new NutFrame(data, dataLen, _videoOpts, (ulong) _avParams.FpsDen, (ulong) _avParams.FpsNum, 0, _bufferPool);
-			_bufferPool.ReleaseBuffer(data);
+			var f = new NutFrame(data, dataLen, _videoOpts, (ulong) _avParams.FpsDen, (ulong) _avParams.FpsNum, 0);
+			ArrayPool<byte>.Shared.Return(data);
 			_videoOpts++;
 			_videoQueue.Enqueue(f);
 			while (_audioQueue.Count > 0 && f >= _audioQueue.Peek())
@@ -581,15 +513,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int dataLen = samples.Length * sizeof(short);
-			byte[] data = _bufferPool.GetBufferAtLeast(dataLen);
-			Buffer.BlockCopy(samples, 0, data, 0, dataLen);
+			byte[] data = ArrayPool<byte>.Shared.Rent(dataLen);
+			MemoryMarshal.AsBytes(samples.AsSpan()).CopyTo(data);
 			if (dataLen == 0)
 			{
 				_audioDone = true;
 			}
 
-			var f = new NutFrame(data, dataLen, _audioPts, 1, (ulong)_avParams.Samplerate, 1, _bufferPool);
-			_bufferPool.ReleaseBuffer(data);
+			var f = new NutFrame(data, dataLen, _audioPts, 1, (ulong)_avParams.Samplerate, 1);
+			ArrayPool<byte>.Shared.Return(data);
 			_audioPts += (ulong)samples.Length / (ulong)_avParams.Channels;
 			_audioQueue.Enqueue(f);
 			while (_videoQueue.Count > 0 && f >= _videoQueue.Peek())
