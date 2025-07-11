@@ -40,7 +40,7 @@ namespace BizHawk.Common
 				using var subKey = RegistryKey
 					.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64)
 					.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography");
-				return subKey!.GetValue("MachineGuid")!.ToString();
+				return subKey!.GetValue("MachineGuid")!.ToString()!;
 			}
 			catch
 			{
