@@ -171,6 +171,7 @@ public partial class Mupen64 : IEmulator
 				break;
 			case N64VideoPlugin.GlideN64:
 				Mupen64Api.ConfigOpenSection("Video-GLideN64", ref configSectionHandle);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableCustomSettings", false);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "ThreadedVideo", _syncSettings.ThreadedVideo);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "UseNativeResolutionFactor", _syncSettings.UseNativeResolutionFactor);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableHWLighting", _syncSettings.EnableHWLighting);
