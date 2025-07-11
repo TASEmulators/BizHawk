@@ -23,6 +23,8 @@ make -C mupen64plus-core/projects/unix VULKAN=0 NEW_DYNAREC=1 OSD=0 ACCURATE_FPU
 if [ "$OS" != "Windows_NT" ]; then
 	mv mupen64plus-core/projects/unix/libmupen64plus.so.2.0.0 build/mupen64plus.so
 	patchelf --replace-needed libSDL2-2.0.so.0 libSDL2.so build/mupen64plus.so
+else
+	mv mupen64plus-core/projects/unix/mupen64plus.dll build/
 fi
 install_to_bizhawk build/ mupen64plus
 
@@ -49,7 +51,7 @@ cmake --build build/video-angrylion-plus
 install_to_bizhawk build/video-angrylion-plus/ mupen64plus-video-angrylion-plus
 
 rm -rf build/video-GLideN64 && mkdir -p build/video-GLideN64
-cmake -S mupen64plus-video-GLideN64/src -B build/video-GLideN64 -G Ninja -DCMAKE_BUILD_TYPE=Release -DVEC4_OPT=On -DCRC_OPT=On -DNOHQ=On -DMUPENPLUSAPI=On -DNO_OSD=On
+cmake -S mupen64plus-video-GLideN64/src -B build/video-GLideN64 -G Ninja -DCMAKE_BUILD_TYPE=Release -DVEC4_OPT=On -DCRC_OPT=On -DMUPENPLUSAPI=On -DNO_OSD=On
 cmake --build build/video-GLideN64
 install_to_bizhawk build/video-GLideN64/plugin/Release/ mupen64plus-video-GLideN64
 
