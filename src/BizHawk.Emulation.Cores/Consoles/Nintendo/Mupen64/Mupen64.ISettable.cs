@@ -206,6 +206,11 @@ public partial class Mupen64 : ISettable<object, Mupen64.SyncSettings>
 		[Category("Video Plugin: GLideN64")]
 		public bool EnableCoverage { get; set; }
 
+		[Description("Use high resolution texture packs if available.")]
+		[DefaultValue(false)]
+		[Category("Video Plugin: GLideN64")]
+		public bool EnableHiResTextures { get; set; }
+
 		public SyncSettings() => SettingsUtil.SetDefaultValues(this);
 	}
 

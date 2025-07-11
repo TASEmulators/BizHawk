@@ -176,6 +176,8 @@ public partial class Mupen64 : IEmulator
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "UseNativeResolutionFactor", _syncSettings.UseNativeResolutionFactor);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableHWLighting", _syncSettings.EnableHWLighting);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableCoverage", _syncSettings.EnableCoverage);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "txHiresEnable", _syncSettings.EnableHiResTextures);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "txHiresTextureFileStorage", true);
 				break;
 		}
 
