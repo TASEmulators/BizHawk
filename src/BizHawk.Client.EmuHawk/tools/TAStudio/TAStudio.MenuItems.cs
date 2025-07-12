@@ -661,9 +661,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MainForm.FrameAdvance();
 
-				byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
-				if (greenZone.Length > 0)
+				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
+					Stream greenStream = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(Emulator.Frame).Value;
+					byte[] greenZone = new byte[greenStream.Length];
+					greenStream.Read(greenZone);
 					byte[] state = StatableEmulator.CloneSavestate();
 
 					if (!state.SequenceEqual(greenZone))
@@ -913,8 +915,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using GreenzoneSettings form = new(
 				DialogController,
-				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
-				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
+				new PagedStateManager.PagedSettings(CurrentTasMovie.TasStateManager.Settings),
+				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
 				Owner = this,
@@ -953,7 +955,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using GreenzoneSettings form = new(
 				DialogController,
-				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				new PagedStateManager.PagedSettings(Config.Movies.DefaultTasStateManagerSettings),
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)
 			{
