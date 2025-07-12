@@ -459,12 +459,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
-		[LuaMethod("getmarker", "returns the marker text at the given frame, or nil if there is no marker for the given frame")]
-		public string/*?*/ GetMarker(int frame)
+		[LuaMethod(
+			name: "getmarker",
+			description: "Returns the label of the marker on the given frame. This may be an empty string."
+				+ " If that frame doesn't have a marker (or TAStudio isn't running), returns nil."
+				+ " If branchID is specified, searches the markers in that branch instead.")]
+		public string/*?*/ GetMarker(int frame, string/*?*/ branchID = null)
 		{
 			if (Engaged())
 			{
-				var marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
+				var marker = MarkerListForBranch(branchID)?.Get(frame);
 				if (marker != null)
 				{
 					return marker.Message;
