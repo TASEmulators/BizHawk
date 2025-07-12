@@ -475,9 +475,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <remarks>assumes a TAStudio project is loaded</remarks>
-		private TasMovieMarkerList MarkerListForBranch(int? branchIndex)
+		private TasMovieMarkerList/*?*/ MarkerListForBranch(int? branchIndex)
 			=> branchIndex is int i
-				? Tastudio.CurrentTasMovie.Branches[i].Markers
+				? Tastudio.CurrentTasMovie.Branches.ElementAtOrDefault(i)?.Markers
 				: Tastudio.CurrentTasMovie.Markers;
 
 		[LuaMethodExample("""
@@ -489,8 +489,8 @@ namespace BizHawk.Client.EmuHawk
 				+ " This may be the power-on marker at 0. Returns nil if the arguments are invalid or TAStudio isn't active."
 				+ " If branchIndex is specified, searches the markers in that branch instead.")]
 		public int? FindMarkerOnOrBefore(int frame, int? branchIndex = null)
-			=> Engaged()
-				? MarkerListForBranch(branchIndex).PreviousOrCurrent(frame)?.Frame
+			=> Engaged() && MarkerListForBranch(branchIndex) is TasMovieMarkerList markers
+				? markers.PreviousOrCurrent(frame)?.Frame
 				: null;
 
 		[LuaMethodExample("""
@@ -501,8 +501,8 @@ namespace BizHawk.Client.EmuHawk
 			description: "Returns a list of all the frames which have markers on them."
 				+ " If branchIndex is specified, instead returns the frames which have markers in that branch.")]
 		public LuaTable GetFramesWithMarkers(int? branchIndex = null)
-			=> Engaged()
-				? _th.EnumerateToLuaTable(MarkerListForBranch(branchIndex).Select(static m => m.Frame))
+			=> Engaged() && MarkerListForBranch(branchIndex) is TasMovieMarkerList markers
+				? _th.EnumerateToLuaTable(markers.Select(static m => m.Frame))
 				: _th.CreateTable();
 
 		[LuaMethodExample("tastudio.removemarker( 500 );")]
