@@ -793,6 +793,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void HandleHotkeyUpdate()
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive && tool is ToolFormBase toolForm)
+				{
+					toolForm.HandleHotkeyUpdate();
+				}
+			}
+		}
+
 		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
 
 		public bool IsAvailable(Type tool)
