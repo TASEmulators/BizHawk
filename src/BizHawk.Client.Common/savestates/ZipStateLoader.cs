@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -59,14 +60,13 @@ namespace BizHawk.Client.Common
 			_entriesByName = new Dictionary<string, ZipArchiveEntry>();
 			foreach (var z in _zip.Entries)
 			{
-				string name = z.FullName;
-				int i;
-				if ((i = name.LastIndexOf('.')) != -1)
-				{
-					name = name.Substring(0, i);
-				}
+				string name = z.FullName.SubstringBefore('.').Replace('\\', '/');
 
-				_entriesByName.Add(name.Replace('\\', '/'), z);
+				// .zst compression is optional, but loader needs to know if it was used
+				if (z.FullName.EndsWith(".zst")) name += ".zst";
+
+				if (_entriesByName.ContainsKey(name)) throw new Exception($"Duplicate file found in zip archive: {name}. Please delete one.");
+				_entriesByName.Add(name, z);
 			}
 		}
 
@@ -91,14 +91,14 @@ namespace BizHawk.Client.Common
 				ret.PopulateEntries();
 				if (isMovieLoad)
 				{
-					if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
+					if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion))
 					{
 						// movies before 1.0.2 did not include the BizState 1.0 file, don't strictly error in this case
 						ret._ver = new Version(1, 0, 0);
 						Console.WriteLine("Read a zipstate of version {0}", ret._ver);
 					}
 				}
-				else if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion, false))
+				else if (!ret.GetLump(BinaryStateLump.ZipVersion, false, ret.ReadZipVersion))
 				{
 					ret._zip.Dispose();
 					return null;
@@ -115,16 +115,30 @@ namespace BizHawk.Client.Common
 		/// <param name="lump">lump to retrieve</param>
 		/// <param name="abort">pass true to throw exception instead of returning false</param>
 		/// <param name="callback">function to call with the desired stream</param>
-		/// <param name="isZstdCompressed">lump is zstd compressed</param>
 		/// <returns>true iff stream was loaded</returns>
 		/// <exception cref="Exception">stream not found and <paramref name="abort"/> is <see langword="true"/></exception>
-		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback, bool isZstdCompressed = true)
+		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
-			if (_entriesByName.TryGetValue(lump.ReadName, out var e))
+			bool fileFound = _entriesByName.TryGetValue(lump.Name, out var e);
+			bool isZstdCompressed = false;
+			if (!fileFound)
 			{
+				isZstdCompressed = fileFound = _entriesByName.TryGetValue(lump.Name + ".zst", out e);
+			}
+
+			if (fileFound)
+			{
+				// In version 1.0.2, we did not use .zst to mark zstd compression (earlier versions had no zstd)
+				// These particular files/exensions were zstd compressed:
+				if (_ver == new Version(1, 0, 2)
+					&& (lump.Ext is "bin" or "bmp" || lump.Name is "Greenzone"))
+				{
+					isZstdCompressed = true;
+				}
+
 				using var zs = e.Open();
 
-				if (isZstdCompressed && _ver.Build > 1)
+				if (isZstdCompressed)
 				{
 					using var z = _zstd.CreateZstdDecompressionStream(zs);
 					callback(z, e.Length);
@@ -139,7 +153,7 @@ namespace BizHawk.Client.Common
 
 			if (abort)
 			{
-				throw new Exception($"Essential zip section not found: {lump.ReadName}");
+				throw new Exception($"Essential zip section not found: {lump.FileName}");
 			}
 
 			return false;
@@ -149,7 +163,7 @@ namespace BizHawk.Client.Common
 			=> GetLump(lump, abort, (s, _) => callback(new(s)));
 
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<TextReader> callback)
-			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)), false);
+			=> GetLump(lump, abort, (s, _) => callback(new StreamReader(s)));
 
 		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
 		public void GetCoreState(Action<BinaryReader> callbackBinary, Action<TextReader> callbackText)
