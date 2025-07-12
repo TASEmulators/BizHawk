@@ -23,12 +23,8 @@ namespace BizHawk.Client.EmuHawk
 			BreakType = type;
 		}
 
-		private BreakpointOperation _operation;
-
 		private BreakpointOperation Operation
 		{
-			get => _operation;
-
 			set
 			{
 				switch (value)
@@ -43,8 +39,6 @@ namespace BizHawk.Client.EmuHawk
 						Text = "Edit Breakpoint";
 						break;
 				}
-
-				_operation = value;
 			}
 		}
 

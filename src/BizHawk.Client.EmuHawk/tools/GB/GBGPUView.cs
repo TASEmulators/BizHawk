@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
@@ -10,7 +11,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GbGpuView : ToolFormBase, IToolFormAutoConfig
+	public partial class GbGpuView : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		public static Icon ToolIcon
 			=> Properties.Resources.GambatteIcon;
@@ -58,7 +59,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color _spriteback;
 
-		[ConfigPersist]
 		public Color Spriteback
 		{
 			get => _spriteback;
@@ -68,6 +68,19 @@ namespace BizHawk.Client.EmuHawk
 				panelSpriteBackColor.BackColor = _spriteback;
 				labelSpriteBackColor.Text = $"({_spriteback.R},{_spriteback.G},{_spriteback.B})";
 			}
+		}
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			Color outValue = default;
+			if (provider.Get(nameof(Spriteback), ref outValue)) Spriteback = outValue;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Spriteback)] = Spriteback,
+			};
 		}
 
 		protected override string WindowTitleStatic => "GPU Viewer";

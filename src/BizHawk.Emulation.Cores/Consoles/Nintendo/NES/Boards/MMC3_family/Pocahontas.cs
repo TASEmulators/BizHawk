@@ -134,7 +134,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= prg_mask_8k;
 				return Rom[(bank << 13) + (addr & 0x1FFF)];
 			}
-
 		}
 	}
 }

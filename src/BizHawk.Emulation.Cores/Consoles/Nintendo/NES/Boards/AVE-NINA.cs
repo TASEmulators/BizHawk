@@ -82,7 +82,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 		}
-
 	}
 
 	// according to the latest on nesdev:
@@ -196,5 +195,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return base.ReadPpu(addr);
 		}
 	}
-
 }

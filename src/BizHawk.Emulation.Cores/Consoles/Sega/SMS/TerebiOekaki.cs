@@ -4,6 +4,7 @@
 	{
 		//This doesn't look functional. Illogical and nothing like http://www.smspower.org/Articles/TerebiOekaki
 
+#pragma warning disable IDE0052 // Remove unread private members
 		private byte xCoord = 128;
 		private byte yCoord = 100;
 
@@ -14,6 +15,7 @@
 		}
 
 		private Axis axis = Axis.XAxis;
+#pragma warning restore IDE0052 // Remove unread private members
 
 
 		private byte ReadMemoryTO(ushort address)

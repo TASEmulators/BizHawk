@@ -85,7 +85,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					SetCDL(flags, "HRAM", addr - 0xFF80);
 				}
-
 			}
 
 			if (addr < 0x900)
@@ -172,9 +171,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return;
 			}
-
 		}
-
-
 	}
 }

@@ -78,7 +78,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					i += phases[tint_color] * sat;
 					q += phases[tint_color + 3] * sat;
 				}
-
 			}
 
 			YIQ_TO_RGB(y, i, q, out r, out g, out b);

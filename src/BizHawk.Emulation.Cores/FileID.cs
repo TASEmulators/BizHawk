@@ -649,6 +649,5 @@ namespace BizHawk.Emulation.Cores
 			//just mount it as a disc and send it through the disc checker?
 			return null;
 		}
-
 	}
 }

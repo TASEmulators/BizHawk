@@ -202,7 +202,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.SingleOrDefault(d => d.Name == (string)value)
 					?.Value
 					?? Setting.DefaultValue;
-
 			}
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
@@ -370,7 +369,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.SingleOrDefault(d => d.Name == (string)value)
 					?.SettingValue
 					?? Port.DefaultSettingsValue;
-
 			}
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{

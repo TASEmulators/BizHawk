@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									}
 									_switchPreviousFrame[si] = val;
 									_switchPreviousFrame[si + 1] = allNewPressed;
-								 	b[byteStart] |= (byte)(val << bitOffset);
+									b[byteStart] |= (byte)(val << bitOffset);
 								});
 								break;
 							}

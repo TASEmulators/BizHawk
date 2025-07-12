@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common.cheats
 	public static class GbaGameSharkDecoder
 	{
 		private static readonly uint[] GameSharkSeeds = { 0x09F4FBBDU, 0x9681884AU, 0x352027E9U, 0xF3DEE5A7U };
-		private static readonly uint[] ProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
+		//private static readonly uint[] ProActionReplaySeeds = { 0x7AA9648FU, 0x7FAE6994U, 0xC0EFAAD5U, 0x42712C57U };
 
 		private static string Decrypt(string code)
 		{
@@ -28,21 +28,21 @@ namespace BizHawk.Client.Common.cheats
 		}
 
 		// TODO: When to use this?
-		private static string DecryptPro(string code)
-		{
-			var sum = 0xC6EF3720;
-			var op1 = uint.Parse(code.Remove(8, 9), NumberStyles.HexNumber);
-			var op2 = uint.Parse(code.Remove(0, 9), NumberStyles.HexNumber);
+		//private static string DecryptPro(string code)
+		//{
+		//	var sum = 0xC6EF3720;
+		//	var op1 = uint.Parse(code.Remove(8, 9), NumberStyles.HexNumber);
+		//	var op2 = uint.Parse(code.Remove(0, 9), NumberStyles.HexNumber);
 
-			for (int j = 0; j < 32; ++j)
-			{
-				op2 -= ((op1 << 4) + ProActionReplaySeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + ProActionReplaySeeds[3]);
-				op1 -= ((op2 << 4) + ProActionReplaySeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + ProActionReplaySeeds[1]);
-				sum -= 0x9E3779B9;
-			}
+		//	for (int j = 0; j < 32; ++j)
+		//	{
+		//		op2 -= ((op1 << 4) + ProActionReplaySeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + ProActionReplaySeeds[3]);
+		//		op1 -= ((op2 << 4) + ProActionReplaySeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + ProActionReplaySeeds[1]);
+		//		sum -= 0x9E3779B9;
+		//	}
 
-			return $"{op1:X8} {op2:X8}";
-		}
+		//	return $"{op1:X8} {op2:X8}";
+		//}
 
 		public static IDecodeResult Decode(string code)
 		{
