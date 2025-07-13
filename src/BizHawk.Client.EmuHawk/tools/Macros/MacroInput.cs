@@ -112,6 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
+			// Intentionally not updating this to use FileWriter because this tool is going to be removed later.
 			foreach (var zone in _unsavedZones)
 			{
 				SaveMacroAs(_zones[zone]);
@@ -288,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			macro.Save(result);
+			macro.Save(result); // ignore errors: This tool is going to be removed.
 			Config!.RecentMacros.Add(result);
 
 			return true;

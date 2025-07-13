@@ -214,18 +214,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_currentFilename != null)
 				{
-					RunSave();
+					bool saveResult2 = RunSave();
 					ShutdownCDL();
-					return true;
+					return saveResult2;
 				}
 			}
 
-			// TODO - I don't like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-			var result = DialogController.ShowMessageBox2("Save changes to CDL session?", "CDL Auto Save", EMsgBoxIcon.Question);
-			if (!result)
+			var result = DialogController.ShowMessageBox3("Save changes to CDL session?", "CDL Save", EMsgBoxIcon.Question);
+			if (result == false)
 			{
 				ShutdownCDL();
 				return true;
+			}
+			else if (result == null)
+			{
+				ShutdownCDL();
+				return false;
 			}
 
 			if (string.IsNullOrWhiteSpace(_currentFilename))
@@ -240,9 +244,9 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			RunSave();
+			bool saveResult = RunSave();
 			ShutdownCDL();
-			return true;
+			return saveResult;
 		}
 
 		private bool _autoloading;
@@ -341,11 +345,20 @@ namespace BizHawk.Client.EmuHawk
 			LoadFile(file.FullName);
 		}
 
-		private void RunSave()
+		/// <summary>
+		/// returns false if the operation was canceled
+		/// </summary>
+		private bool RunSave()
 		{
-			_recent.Add(_currentFilename);
-			using var fs = new FileStream(_currentFilename, FileMode.Create, FileAccess.Write);
-			_cdl.Save(fs);
+			TryAgainResult result = this.DoWithTryAgainBox(
+				() => FileWriter.Write(_currentFilename, _cdl.Save),
+				"Failed to save CDL session.");
+			if (result == TryAgainResult.Saved)
+			{
+				_recent.Add(_currentFilename);
+				return true;
+			}
+			return result != TryAgainResult.Canceled;
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -386,8 +399,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 
 			SetCurrentFilename(file.FullName);
-			RunSave();
-			return true;
+			return RunSave();
 		}
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
