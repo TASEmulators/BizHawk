@@ -244,8 +244,9 @@ namespace BizHawk.Client.Common
 		public void AbortQueuedMovie()
 			=> _queuedMovie = null;
 
-		public void StopMovie(bool saveChanges = true)
+		public FileWriteResult StopMovie(bool saveChanges = true)
 		{
+			FileWriteResult/*?*/ result = null;
 			if (Movie.IsActive())
 			{
 				var message = "Movie ";
@@ -262,8 +263,17 @@ namespace BizHawk.Client.Common
 
 				if (saveChanges && Movie.Changes)
 				{
-					Movie.Save();
-					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+					result = Movie.Save();
+					if (result.IsError)
+					{
+						Output($"Failed to write {Path.GetFileName(Movie.Filename)} to disk.");
+						Output(result.UserFriendlyErrorMessage());
+						return result;
+					}
+					else
+					{
+						Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+					}
 				}
 				Movie.Stop();
 
@@ -279,6 +289,8 @@ namespace BizHawk.Client.Common
 			}
 
 			Movie = null;
+
+			return result ?? new(FileWriteEnum.Success, "", null);
 		}
 
 		public IMovie Get(string path, bool loadMovie)
