@@ -14,7 +14,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public bool IsLagFrame { get; set; }
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		private readonly short[] _joypad0States = new short[(int)RETRO_DEVICE_ID_JOYPAD.LAST];
 		private readonly short[] _joypad1States = new short[(int)RETRO_DEVICE_ID_JOYPAD.LAST];

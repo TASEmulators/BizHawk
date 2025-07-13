@@ -48,7 +48,9 @@ namespace BizHawk.Client.Common
 				{
 					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					LogCallback(error);
+#pragma warning disable CA1065 // yes, really throw
 					throw new NotImplementedException(error);
+#pragma warning restore CA1065
 				}
 				return MemoryDomainCore;
 			}
@@ -62,7 +64,9 @@ namespace BizHawk.Client.Common
 				{
 					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					LogCallback(error);
+#pragma warning disable CA1065 // yes, really throw
 					throw new NotImplementedException(error);
+#pragma warning restore CA1065
 				}
 				return MemoryDomainCore.MainMemory.Name;
 			}

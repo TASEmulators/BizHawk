@@ -96,7 +96,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		public void Step(StepType type)
 		{

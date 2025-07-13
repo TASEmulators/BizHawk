@@ -222,7 +222,9 @@ namespace BizHawk.Common.PathExtensions
 			{
 				var dirPath = AppContext.BaseDirectory;
 				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath)
+#pragma warning disable CA1065 // yes, really throw
 					? throw new Exception("failed to get location of executable, very bad things must have happened")
+#pragma warning restore CA1065
 					: dirPath.RemoveSuffix('\\');
 				DllDirectoryPath = Path.Combine(ExeDirectoryPath, "dll");
 			}

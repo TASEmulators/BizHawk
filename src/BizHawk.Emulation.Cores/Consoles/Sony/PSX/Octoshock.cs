@@ -874,7 +874,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 			get => throw new NotImplementedException();
+#pragma warning restore CA1065
 		}
 
 		public bool DeterministicEmulation => true;

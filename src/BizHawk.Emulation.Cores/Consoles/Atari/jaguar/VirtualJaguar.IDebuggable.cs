@@ -88,7 +88,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		[FeatureNotImplemented]
 		public long TotalExecutedCycles
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 			=> throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 

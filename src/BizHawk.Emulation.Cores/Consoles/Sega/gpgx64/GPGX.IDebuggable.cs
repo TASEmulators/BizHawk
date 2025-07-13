@@ -51,7 +51,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					return _memoryCallbacks;
 				}
 
+#pragma warning disable CA1065 // I guess this is like a conditional [FeatureNotImplemented], for which the convention is to throw NIE
 				throw new NotImplementedException();
+#pragma warning restore CA1065
 			}
 		}
 
@@ -61,7 +63,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new([ "M68K BUS" ]);
 

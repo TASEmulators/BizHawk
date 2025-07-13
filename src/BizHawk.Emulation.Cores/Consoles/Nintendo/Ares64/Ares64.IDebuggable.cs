@@ -46,12 +46,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 		public void SetCpuRegister(string register, int value) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
