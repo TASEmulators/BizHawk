@@ -19,7 +19,7 @@ public sealed class UseSimplerBoolFlipAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagUseSimplerBoolFlip);
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagUseSimplerBoolFlip);
 
 	public override void Initialize(AnalysisContext context)
 	{
