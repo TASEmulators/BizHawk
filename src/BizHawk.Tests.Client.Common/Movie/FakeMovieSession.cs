@@ -70,6 +70,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void PopupMessage(string message) => throw new NotImplementedException();
 		public void QueueNewMovie(IMovie movie, string systemId, string loadedRomHash, PathEntryCollection pathEntries, IDictionary<string, string> preferredCores) => throw new NotImplementedException();
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator) => throw new NotImplementedException();
-		public void StopMovie(bool saveChanges = true) => Movie?.Stop();
+		public FileWriteResult StopMovie(bool saveChanges = true)
+		{
+			Movie?.Stop();
+			return new(FileWriteEnum.Success, "", null);
+		}
 	}
 }

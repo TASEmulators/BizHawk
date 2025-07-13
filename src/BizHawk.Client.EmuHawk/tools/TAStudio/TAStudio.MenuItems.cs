@@ -43,11 +43,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+				var result = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 					Emulator.Frame, StatableEmulator.CloneSavestate());
+				DisplayMessageIfFailed(() => result, "Failed to create movie.");
 
-				MainForm.PauseEmulator();
-				LoadMovie(newProject, true);
+				if (result.Value is ITasMovie newProject)
+				{
+					MainForm.PauseEmulator();
+					LoadMovie(newProject, true);
+				}
 			}
 		}
 
@@ -57,9 +61,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var saveRam = SaveRamEmulator?.CloneSaveRam(clearDirty: false) ?? throw new Exception("No SaveRam");
 				GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
-				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
-				MainForm.PauseEmulator();
-				LoadMovie(newProject, true);
+				var result = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
+				DisplayMessageIfFailed(() => result, "Failed to create movie.");
+
+				if (result.Value is ITasMovie newProject)
+				{
+					MainForm.PauseEmulator();
+					LoadMovie(newProject, true);
+				}
 			}
 		}
 
@@ -115,30 +124,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveTas();
+			DisplayMessageIfFailed(() => SaveTas(), "Failed to save movie.");
 			if (Settings.BackupPerFileSave)
 			{
-				SaveTas(saveBackup: true);
+				DisplayMessageIfFailed(() => SaveTas(saveBackup: true), "Failed to save backup.");
 			}
 		}
 
 		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAsTas();
+			DisplayMessageIfFailed(() => SaveAsTas(), "Failed to save movie.");
 			if (Settings.BackupPerFileSave)
 			{
-				SaveTas(saveBackup: true);
+				DisplayMessageIfFailed(() => SaveTas(saveBackup: true), "Failed to save backup.");
 			}
 		}
 
 		private void SaveBackupMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveTas(saveBackup: true);
+			DisplayMessageIfFailed(() => SaveTas(saveBackup: true), "Failed to save backup.");
 		}
 
 		private void SaveBk2BackupMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveTas(saveAsBk2: true, saveBackup: true);
+			DisplayMessageIfFailed(() => SaveTas(saveAsBk2: true, saveBackup: true), "Failed to save backup.");
 		}
 
 		private void SaveSelectionToMacroMenuItem_Click(object sender, EventArgs e)
@@ -220,13 +229,24 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageStatusLabel.Text = "Exporting to .bk2...";
 				MessageStatusLabel.Owner.Update();
+
 				Cursor = Cursors.WaitCursor;
 				var bk2 = CurrentTasMovie.ToBk2();
 				bk2.Filename = fileInfo.FullName;
 				bk2.Attach(Emulator); // required to be able to save the cycle count for ICycleTiming emulators
-				bk2.Save();
-				MessageStatusLabel.Text = $"{bk2.Name} exported.";
+				FileWriteResult saveResult = bk2.Save();
 				Cursor = Cursors.Default;
+
+				while (saveResult.IsError)
+				{
+					DialogResult d = MessageBox.Show(
+						$"Failed to save .bk2. {saveResult.UserFriendlyErrorMessage()}\nTry again?",
+						"Error",
+						MessageBoxButtons.YesNo);
+					if (d == DialogResult.Yes) saveResult = bk2.Save();
+					else break;
+				}
+				if (!saveResult.IsError) MessageStatusLabel.Text = $"{bk2.Name} exported.";
 			}
 			else
 			{

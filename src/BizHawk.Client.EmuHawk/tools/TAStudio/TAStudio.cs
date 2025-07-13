@@ -34,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string FrameColumnName = "FrameColumn";
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer;
+		private bool _lastAutoSaveSuccess = true;
 
 		private readonly int _defaultMainSplitDistance;
 		private readonly int _defaultBranchMarkerSplitDistance;
@@ -234,11 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_autosaveTimer = new Timer(components);
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
-			if (Settings.AutosaveInterval > 0)
-			{
-				_autosaveTimer.Interval = (int)Settings.AutosaveInterval;
-				_autosaveTimer.Start();
-			}
+			ScheduleAutoSave(Settings.AutosaveInterval);
 
 			MainVertialSplit.SetDistanceOrDefault(
 				Settings.MainVerticalSplitDistance,
@@ -308,20 +305,27 @@ namespace BizHawk.Client.EmuHawk
 				{
 					changesString = "The current movie has unsaved changes. Would you like to save before closing it?";
 				}
-				var result = DialogController.ShowMessageBox3(
+				var shouldSaveResult = DialogController.ShowMessageBox3(
 					"TAStudio will create a new project file from the current movie.\n\n" + changesString,
 					"Convert movie",
 					EMsgBoxIcon.Question);
-				if (result == true)
+				if (shouldSaveResult == true)
 				{
-					MovieSession.Movie.Save();
+					FileWriteResult saveResult = MovieSession.Movie.Save();
+					if (saveResult.IsError)
+					{
+						DisplayMessageIfFailed(() => saveResult, "Failed to save movie.");
+						return false;
+					}
 				}
-				else if (result == null)
+				else if (shouldSaveResult == null)
 				{
 					return false;
 				}
 
-				var tasMovie = ConvertCurrentMovieToTasproj();
+				var tasMovie = MovieSession.Movie.ToTasMovie();
+				// No need to save new movie, as there are no changes.
+				// User will save future changes if they want (potentially via auto-save).
 				success = LoadMovie(tasMovie);
 			}
 
@@ -362,6 +366,16 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
+		private void ScheduleAutoSave(uint secondsUntil)
+		{
+			_autosaveTimer.Stop();
+			if (secondsUntil != 0)
+			{
+				_autosaveTimer.Interval = (int)secondsUntil;
+				_autosaveTimer.Start();
+			}
+		}
+
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
 		{
 			if (CurrentTasMovie == null)
@@ -375,28 +389,55 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			FileWriteResult saveResult;
 			if (Settings.AutosaveAsBackupFile)
 			{
 				if (Settings.AutosaveAsBk2)
 				{
-					SaveTas(saveAsBk2: true, saveBackup: true);
+					saveResult = SaveTas(saveAsBk2: true, saveBackup: true);
 				}
 				else
 				{
-					SaveTas(saveBackup: true);
+					saveResult = SaveTas(saveBackup: true);
 				}
 			}
 			else
 			{
 				if (Settings.AutosaveAsBk2)
 				{
-					SaveTas(saveAsBk2: true);
+					saveResult = SaveTas(saveAsBk2: true);
 				}
 				else
 				{
-					SaveTas();
+					saveResult = SaveTas();
 				}
 			}
+
+			if (saveResult.IsError && _lastAutoSaveSuccess)
+			{
+				// Should we alert the user?
+				// Let's try again once after a bit, then alert if it fails again.
+				ScheduleAutoSave(60);
+			}
+			else if (saveResult.IsError)
+			{
+				_autosaveTimer.Stop();
+				bool tryAgain = DialogController.ShowMessageBox2(
+					$"Failed to auto-save. {saveResult.UserFriendlyErrorMessage()}\n{saveResult.Exception.Message}\n\nTry again?",
+					"Error");
+				if (tryAgain)
+				{
+					AutosaveTimerEventProcessor(null, EventArgs.Empty);
+					return;
+				}
+				ScheduleAutoSave(Settings.AutosaveInterval);
+			}
+			else
+			{
+				ScheduleAutoSave(Settings.AutosaveInterval);
+			}
+
+			_lastAutoSaveSuccess = !saveResult.IsError;
 		}
 
 		private static readonly string[] N64CButtonSuffixes = { " C Up", " C Down", " C Left", " C Right" };
@@ -594,13 +635,6 @@ namespace BizHawk.Client.EmuHawk
 
 				return null;
 			}
-		}
-
-		private ITasMovie ConvertCurrentMovieToTasproj()
-		{
-			var tasMovie = MovieSession.Movie.ToTasMovie();
-			tasMovie.Save(); // should this be done?
-			return tasMovie;
 		}
 
 		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)
@@ -843,12 +877,23 @@ namespace BizHawk.Client.EmuHawk
 				$"{Game.FilesystemSafeName()}.{MovieService.TasMovieExtension}");
 		}
 
-		private void SaveTas(bool saveAsBk2 = false, bool saveBackup = false)
+		private void DisplayMessageIfFailed(Func<FileWriteResult> action, string message)
+		{
+			FileWriteResult result = action();
+			if (result.IsError)
+			{
+				DialogController.ShowMessageBox(
+					$"{message}\n{result.UserFriendlyErrorMessage()}\n{result.Exception.Message}",
+					"Error",
+					EMsgBoxIcon.Error);
+			}
+		}
+
+		private FileWriteResult SaveTas(bool saveAsBk2 = false, bool saveBackup = false)
 		{
 			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName())
 			{
-				SaveAsTas();
-				return;
+				return SaveAsTas();
 			}
 
 			_autosaveTimer.Stop();
@@ -865,22 +910,29 @@ namespace BizHawk.Client.EmuHawk
 				movieToSave.Attach(Emulator);
 			}
 
+			FileWriteResult result;
 			if (saveBackup)
-				movieToSave.SaveBackup();
+				result = movieToSave.SaveBackup();
 			else
-				movieToSave.Save();
+				result = movieToSave.Save();
 
-			MessageStatusLabel.Text = saveBackup
-				? $"Backup .{(saveAsBk2 ? MovieService.StandardMovieExtension : MovieService.TasMovieExtension)} saved to \"Movie backups\" path."
-				: "File saved.";
-			Cursor = Cursors.Default;
-			if (Settings.AutosaveInterval > 0)
+			if (!result.IsError)
 			{
-				_autosaveTimer.Start();
+				MessageStatusLabel.Text = saveBackup
+					? $"Backup .{(saveAsBk2 ? MovieService.StandardMovieExtension : MovieService.TasMovieExtension)} saved to \"Movie backups\" path."
+					: "File saved.";
 			}
+			else
+			{
+				MessageStatusLabel.Text = "Failed to save movie.";
+			}
+
+			Cursor = Cursors.Default;
+			ScheduleAutoSave(Settings.AutosaveInterval);
+			return result;
 		}
 
-		private void SaveAsTas()
+		private FileWriteResult SaveAsTas()
 		{
 			_autosaveTimer.Stop();
 
@@ -896,25 +948,33 @@ namespace BizHawk.Client.EmuHawk
 				TAStudioProjectsFSFilterSet,
 				this);
 
+			FileWriteResult saveResult = null;
 			if (fileInfo != null)
 			{
 				MessageStatusLabel.Text = "Saving...";
 				MessageStatusLabel.Owner.Update();
 				Cursor = Cursors.WaitCursor;
 				CurrentTasMovie.Filename = fileInfo.FullName;
-				CurrentTasMovie.Save();
+				saveResult = CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				MessageStatusLabel.Text = "File saved.";
 				Cursor = Cursors.Default;
-			}
 
-			if (Settings.AutosaveInterval > 0)
-			{
-				_autosaveTimer.Start();
+				if (!saveResult.IsError)
+				{
+					MessageStatusLabel.Text = "File saved.";
+					ScheduleAutoSave(Settings.AutosaveInterval);
+				}
+				else
+				{
+					MessageStatusLabel.Text = "Failed to save.";
+				}
 			}
 
 			UpdateWindowTitle(); // changing the movie's filename does not flag changes, so we need to ensure the window title is always updated
 			MainForm.UpdateWindowTitle();
+
+			if (fileInfo != null) return saveResult;
+			else return new(FileWriteEnum.Success, "", null); // user cancelled, so we were successful in not saving
 		}
 
 		protected override string WindowTitle
