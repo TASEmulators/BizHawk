@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Func<Config> _getConfigCallback;
 
-		internal Input(IntPtr mainFormHandle, Func<Config> getConfigCallback, Func<bool, AllowInput> mainFormInputAllowedCallback)
+		internal Input(IntPtr mainFormHandle, Func<Config> getConfigCallback, Func<AllowInput> mainFormInputAllowedCallback)
 		{
 			_getConfigCallback = getConfigCallback;
 			_currentConfig = _getConfigCallback();
@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleAxis(string axis, int newValue)
 		{
-			if (ShouldSwallow(MainFormInputAllowedCallback(false), HostInputType.Pad))
+			if (ShouldSwallow(MainFormInputAllowedCallback(), HostInputType.Pad))
 				return;
 
 			if (_trackDeltas)
@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Controls whether MainForm generates input events. should be turned off for most modal dialogs
 		/// </summary>
-		public readonly Func<bool, AllowInput> MainFormInputAllowedCallback;
+		public readonly Func<AllowInput> MainFormInputAllowedCallback;
 
 		private void UpdateThreadProc()
 		{
@@ -262,13 +262,11 @@ namespace BizHawk.Client.EmuHawk
 					if (_newEvents.Count != 0)
 					{
 						//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
-						AllowInput allowInput = MainFormInputAllowedCallback(false);
+						AllowInput allowInput = MainFormInputAllowedCallback();
 
 						foreach (var ie in _newEvents)
 						{
 							//events are swallowed in some cases:
-							if ((ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U && ShouldSwallow(MainFormInputAllowedCallback(true), ie.Source))
-								continue;
 							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie.Source))
 								continue;
 
@@ -332,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 			lock (this)
 			{
 				if (_inputEvents.Count == 0) return null;
-				AllowInput allowInput = MainFormInputAllowedCallback(false);
+				AllowInput allowInput = MainFormInputAllowedCallback();
 
 				//wait for the first release after a press to complete input binding, because we need to distinguish pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
