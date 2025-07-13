@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System.Diagnostics;
-using System.IO;
 
 namespace BizHawk.Client.Common
 {
@@ -10,6 +9,8 @@ namespace BizHawk.Client.Common
 		Success,
 		FailedToOpen,
 		FailedDuringWrite,
+		FailedToDeleteOldBackup,
+		FailedToMakeBackup,
 		FailedToDeleteOldFile,
 		FailedToRename,
 	}
@@ -21,16 +22,18 @@ namespace BizHawk.Client.Common
 	{
 		public readonly FileWriteEnum Error = FileWriteEnum.Success;
 		public readonly Exception? Exception;
-		public readonly string WritePath;
+		internal readonly FileWritePaths Paths;
 
 		public bool IsError => Error != FileWriteEnum.Success;
 
-		public FileWriteResult(FileWriteEnum error, string path, Exception? exception)
+		internal FileWriteResult(FileWriteEnum error, FileWritePaths writer, Exception? exception)
 		{
 			Error = error;
 			Exception = exception;
-			WritePath = path;
+			Paths = writer;
 		}
+
+		public FileWriteResult() : this(FileWriteEnum.Success, new("", ""), null) { }
 
 		/// <summary>
 		/// Converts this instance to a different generic type.
@@ -39,32 +42,42 @@ namespace BizHawk.Client.Common
 		/// <param name="value">The value of the new instance. Ignored if this instance has an error.</param>
 		public FileWriteResult<T> Convert<T>(T value) where T : class
 		{
-			if (Error == FileWriteEnum.Success) return new(value, WritePath);
+			if (Error == FileWriteEnum.Success) return new(value, Paths);
 			else return new(this);
 		}
 
-		public FileWriteResult(FileWriteResult other) : this(other.Error, other.WritePath, other.Exception) { }
+		public FileWriteResult(FileWriteResult other) : this(other.Error, other.Paths, other.Exception) { }
 
 		public string UserFriendlyErrorMessage()
 		{
+			Debug.Assert(!IsError || (Exception != null), "FileWriteResult with an error should have an exception.");
+
 			switch (Error)
 			{
+				// We include the full path since the user may not have explicitly given a directory and may not know what it is.
 				case FileWriteEnum.Success:
-					return $"The file {WritePath} was written successfully.";
+					return $"The file \"{Paths.Final}\" was written successfully.";
 				case FileWriteEnum.FailedToOpen:
-					if (WritePath.Contains(".saving"))
+					if (Paths.Final != Paths.Temp)
 					{
-						return $"The temporary file {WritePath} already exists and could not be deleted.";
+						return $"The temporary file \"{Paths.Temp}\" could not be opened.";
 					}
-					return $"The file {WritePath} could not be created.";
+					return $"The file \"{Paths.Final}\" could not be created.";
 				case FileWriteEnum.FailedDuringWrite:
 					return $"An error occurred while writing the file."; // No file name here; it should be deleted.
+			}
+
+			string success = $"The file was created successfully at \"{Paths.Temp}\" but could not be moved";
+			switch (Error)
+			{
+				case FileWriteEnum.FailedToDeleteOldBackup:
+					return $"{success}. Unable to remove old backup file \"{Paths.Backup}\".";
+				case FileWriteEnum.FailedToMakeBackup:
+					return $"{success}. Unable to create backup. Failed to move \"{Paths.Final}\" to \"{Paths.Backup}\".";
 				case FileWriteEnum.FailedToDeleteOldFile:
-					string fileWithoutPath = Path.GetFileName(WritePath);
-					return $"The file {WritePath} was created successfully, but the old file could not be deleted. You may manually rename the temporary file {fileWithoutPath}.";
+					return $"{success}. Unable to remove the old file \"{Paths.Final}\".";
 				case FileWriteEnum.FailedToRename:
-					fileWithoutPath = Path.GetFileName(WritePath);
-					return $"The file {WritePath} was created successfully, but could not be renamed. You may manually rename the temporary file {fileWithoutPath}.";
+					return $"{success} to \"{Paths.Final}\".";
 				default:
 					return "unreachable";
 			}
@@ -83,14 +96,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public readonly T? Value = default;
 
-		public FileWriteResult(FileWriteEnum error, string path, Exception? exception) : base(error, path, exception) { }
+		internal FileWriteResult(FileWriteEnum error, FileWritePaths paths, Exception? exception) : base(error, paths, exception) { }
 
-		public FileWriteResult(T value, string path) : base(FileWriteEnum.Success, path, null)
+		internal FileWriteResult(T value, FileWritePaths paths) : base(FileWriteEnum.Success, paths, null)
 		{
 			Debug.Assert(value != null, "Should not give a null value on success. Use the non-generic type if there is no value.");
 			Value = value;
 		}
 
-		public FileWriteResult(FileWriteResult other) : base(other.Error, other.WritePath, other.Exception) { }
+		public FileWriteResult(FileWriteResult other) : base(other.Error, other.Paths, other.Exception) { }
 	}
 }

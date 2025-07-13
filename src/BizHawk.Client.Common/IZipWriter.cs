@@ -12,7 +12,8 @@ namespace BizHawk.Client.Common
 		/// This method must be called after writing has finished and must not be called twice.
 		/// Dispose will be called regardless of the result.
 		/// </summary>
-		FileWriteResult CloseAndDispose();
+		/// <param name="backupPath">If not null, renames the original file to this path.</param>
+		FileWriteResult CloseAndDispose(string? backupPath = null);
 
 		/// <summary>
 		/// Closes and deletes the file. Use if there was an error while writing.

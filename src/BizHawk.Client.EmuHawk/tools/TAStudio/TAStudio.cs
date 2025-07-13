@@ -974,7 +974,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.UpdateWindowTitle();
 
 			if (fileInfo != null) return saveResult;
-			else return new(FileWriteEnum.Success, "", null); // user cancelled, so we were successful in not saving
+			else return new(); // user cancelled, so we were successful in not saving
 		}
 
 		protected override string WindowTitle
