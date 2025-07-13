@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		{
 			if (string.IsNullOrWhiteSpace(Filename))
 			{
-				return new(FileWriteEnum.Success, "", null);
+				return new();
 			}
 
 			string backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 			catch (Exception ex)
 			{
 				saver.Abort();
-				return new(FileWriteEnum.FailedDuringWrite, createResult.WritePath, ex);
+				return new(FileWriteEnum.FailedDuringWrite, createResult.Paths, ex);
 			}
 
 			FileWriteResult result = saver.CloseAndDispose();
