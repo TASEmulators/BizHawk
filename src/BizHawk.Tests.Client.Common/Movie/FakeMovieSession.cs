@@ -70,7 +70,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public FileWriteResult StopMovie(bool saveChanges = true)
 		{
 			Movie?.Stop();
-			return new(FileWriteEnum.Success, "", null);
+			return new();
 		}
 	}
 }
