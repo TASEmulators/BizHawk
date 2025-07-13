@@ -277,7 +277,8 @@ namespace BizHawk.Client.EmuHawk
 			var result = this.ShowFileOpenDialog(
 				filter: CgShaderPresetsFSFilterSet,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
-				? string.Empty : Path.GetDirectoryName(_pathSelection)!,
+					? _config.PathEntries.GlobalBaseAbsolutePath()
+					: Path.GetDirectoryName(_pathSelection)!,
 				initFileName: _pathSelection);
 			if (result is null) return;
 
