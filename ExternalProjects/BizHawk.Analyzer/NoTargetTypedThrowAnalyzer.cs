@@ -30,6 +30,7 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 					case OperationKind.ObjectCreation:
 					case OperationKind.Invocation:
 					case OperationKind.PropertyReference:
+					case OperationKind.FieldReference:
 					case OperationKind.LocalReference:
 						return;
 					case OperationKind.Conversion:
