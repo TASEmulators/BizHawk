@@ -881,7 +881,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Tools.Close();
-			MovieSession.StopMovie();
+			FileWriteResult saveResult = MovieSession.StopMovie();
+			if (saveResult.IsError)
+			{
+				if (!this.ModalMessageBox2(
+					caption: "Quit anyway?",
+					icon: EMsgBoxIcon.Question,
+					text: "The currently playing movie could not be saved. Continue and quit anyway? All unsaved changes will be lost."))
+				{
+					closingArgs.Cancel = true;
+					return;
+				}
+			}
 			// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
 			CloseGame();
 			SaveConfig();
@@ -2705,8 +2716,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.IsActive())
 			{
-				MovieSession.Movie.Save();
-				AddOnScreenMessage($"{MovieSession.Movie.Filename} saved.");
+				FileWriteResult result = MovieSession.Movie.Save();
+				if (result.IsError)
+				{
+					AddOnScreenMessage($"Failed to save {MovieSession.Movie.Filename}.");
+					AddOnScreenMessage(result.UserFriendlyErrorMessage());
+				}
+				else
+				{
+					AddOnScreenMessage($"{MovieSession.Movie.Filename} saved.");
+				}
 			}
 		}
 
@@ -4191,10 +4210,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			try
+			FileWriteResult result = new SavestateFile(Emulator, MovieSession, MovieSession.UserBag)
+				.Create(path, Config.Savestates);
+			if (result.IsError)
 			{
-				new SavestateFile(Emulator, MovieSession, MovieSession.UserBag).Create(path, Config.Savestates);
-
+				AddOnScreenMessage($"Unable to save state {path}");
+			}
+			else
+			{
 				if (SavestateSaved is not null)
 				{
 					StateSavedEventArgs args = new(userFriendlyStateName);
@@ -4206,10 +4229,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					AddOnScreenMessage($"Saved state: {userFriendlyStateName}");
 				}
-			}
-			catch (IOException)
-			{
-				AddOnScreenMessage($"Unable to save state {path}");
 			}
 
 			if (!fromLua)
