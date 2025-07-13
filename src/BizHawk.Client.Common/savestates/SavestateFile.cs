@@ -50,14 +50,16 @@ namespace BizHawk.Client.Common
 			_userBag = userBag;
 		}
 
-		public void Create(string filename, SaveStateConfig config)
+		public FileWriteResult Create(string filename, SaveStateConfig config)
 		{
-			// the old method of text savestate save is now gone.
-			// a text savestate is just like a binary savestate, but with a different core lump
-			using var bs = new ZipStateSaver(filename, config.CompressionLevelNormal);
+			FileWriteResult<ZipStateSaver> createResult = ZipStateSaver.Create(filename, config.CompressionLevelNormal);
+			if (createResult.IsError) return createResult;
+			var bs = createResult.Value!;
 
 			using (new SimpleTime("Save Core"))
 			{
+				// the old method of text savestate save is now gone.
+				// a text savestate is just like a binary savestate, but with a different core lump
 				if (config.Type == SaveStateType.Text)
 				{
 					bs.PutLump(BinaryStateLump.CorestateText, tw => _statable.SaveStateText(tw));
@@ -112,6 +114,8 @@ namespace BizHawk.Client.Common
 			{
 				bs.PutLump(BinaryStateLump.LagLog, tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw));
 			}
+
+			return bs.CloseAndDispose();
 		}
 
 		public bool Load(string path, IDialogParent dialogParent)
