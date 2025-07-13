@@ -55,7 +55,8 @@ namespace BizHawk.Client.EmuHawk
 				_movie.Comments.Add(c.Value.ToString());
 			}
 
-			_movie.Save();
+			FileWriteResult result = _movie.Save();
+			if (result.IsError) throw result.Exception!;
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
