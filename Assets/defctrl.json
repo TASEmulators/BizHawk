@@ -1213,7 +1213,7 @@
 				"Deadzone": 0.0
 			}
 		},
-		"Doom Input Format": {
+		"Doom Controller": {
 			"P1 Mouse Running": {
 				"Value": "RMouse Y",
 				"Mult": 1.0,
