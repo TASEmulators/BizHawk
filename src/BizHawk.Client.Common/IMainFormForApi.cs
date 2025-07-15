@@ -93,10 +93,16 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
 		bool RestartMovie();
 
-		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
-		void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false);
+		FileWriteResult SaveQuickSave(int slot, bool suppressOSD = false);
 
-		void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false);
+		/// <summary>
+		/// Creates a savestate and writes it to a file.
+		/// </summary>
+		/// <param name="path">The path of the file to write.</param>
+		/// <param name="userFriendlyStateName">The name to use for the state on the client's HUD.</param>
+		/// <param name="suppressOSD">If true, the client HUD will not show a success message.</param>
+		/// <returns>Returns a value indicating if there was an error and (if there was) why.</returns>
+		FileWriteResult SaveState(string path, string userFriendlyStateName, bool suppressOSD = false);
 
 		void SeekFrameAdvance();
 
