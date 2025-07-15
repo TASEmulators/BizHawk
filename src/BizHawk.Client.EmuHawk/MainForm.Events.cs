@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void QuickSavestateMenuItem_Click(object sender, EventArgs e)
-			=> SaveQuickSave(int.Parse(((ToolStripMenuItem) sender).Text));
+			=> SaveQuickSaveAndShowError(int.Parse(((ToolStripMenuItem) sender).Text));
 
 		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e) => SaveStateAs();
 
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			=> SavestateCurrentSlot();
 
 		private void SavestateCurrentSlot()
-			=> SaveQuickSave(Config.SaveSlot);
+			=> SaveQuickSaveAndShowError(Config.SaveSlot);
 
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 			=> LoadstateCurrentSlot();
@@ -1383,8 +1383,15 @@ namespace BizHawk.Client.EmuHawk
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var slot = Config.SaveSlot;
-			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{slot % 10}.State", slot);
-			AddOnScreenMessage($"Save slot {slot} restored.");
+			FileWriteResult swapResult = _stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{slot % 10}.State", slot);
+			if (swapResult.IsError)
+			{
+				this.ErrorMessageBox(swapResult, "Failed to swap state files.");
+			}
+			else
+			{
+				AddOnScreenMessage($"Save slot {slot} restored.");
+			}
 		}
 
 		private void ClearSramContextMenuItem_Click(object sender, EventArgs e)
@@ -1454,7 +1461,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == Slot9StatusButton) slot = 9;
 			if (sender == Slot0StatusButton) slot = 10;
 
-			if (e.Button is MouseButtons.Right) SaveQuickSave(slot);
+			if (e.Button is MouseButtons.Right) SaveQuickSaveAndShowError(slot);
 			else if (e.Button is MouseButtons.Left && HasSlot(slot)) _ = LoadQuickSave(slot);
 		}
 

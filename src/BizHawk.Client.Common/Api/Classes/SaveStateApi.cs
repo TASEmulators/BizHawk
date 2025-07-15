@@ -39,8 +39,17 @@ namespace BizHawk.Client.Common
 			return _mainForm.LoadQuickSave(slotNum, suppressOSD: suppressOSD);
 		}
 
-		public void Save(string path, bool suppressOSD) => _mainForm.SaveState(path, path, true, suppressOSD);
+		// TODO: Change return type FileWriteResult.
+		public void Save(string path, bool suppressOSD)
+		{
+			FileWriteResult result = _mainForm.SaveState(path, path, suppressOSD);
+			if (result.Exception != null && result.Exception is not UnlessUsingApiException)
+			{
+				throw result.Exception;
+			}
+		}
 
+		// TODO: Change return type to FileWriteResult.
 		public void SaveSlot(int slotNum, bool suppressOSD)
 		{
 			if (slotNum is < 0 or > 10) throw new ArgumentOutOfRangeException(paramName: nameof(slotNum), message: ERR_MSG_NOT_A_SLOT);
@@ -49,7 +58,11 @@ namespace BizHawk.Client.Common
 				LogCallback(ERR_MSG_USE_SLOT_10);
 				slotNum = 10;
 			}
-			_mainForm.SaveQuickSave(slotNum, suppressOSD: suppressOSD, fromLua: true);
+			FileWriteResult result = _mainForm.SaveQuickSave(slotNum, suppressOSD: suppressOSD);
+			if (result.Exception != null && result.Exception is not UnlessUsingApiException)
+			{
+				throw result.Exception;
+			}
 		}
 	}
 }
