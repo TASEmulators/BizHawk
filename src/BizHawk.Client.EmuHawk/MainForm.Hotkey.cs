@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			void SelectAndSaveToSlot(int slot)
 			{
-				SaveQuickSave(slot);
+				SaveQuickSaveAndShowError(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}

@@ -7,12 +7,17 @@ namespace BizHawk.Client.Common
 	public enum FileWriteEnum
 	{
 		Success,
+		// Failures during a FileWriter write.
 		FailedToOpen,
 		FailedDuringWrite,
 		FailedToDeleteOldBackup,
 		FailedToMakeBackup,
 		FailedToDeleteOldFile,
 		FailedToRename,
+		Aborted,
+		// Failures from other sources
+		FailedToDeleteGeneric,
+		FailedToMoveForSwap,
 	}
 
 	/// <summary>
@@ -26,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsError => Error != FileWriteEnum.Success;
 
-		internal FileWriteResult(FileWriteEnum error, FileWritePaths writer, Exception? exception)
+		public FileWriteResult(FileWriteEnum error, FileWritePaths writer, Exception? exception)
 		{
 			Error = error;
 			Exception = exception;
@@ -65,6 +70,15 @@ namespace BizHawk.Client.Common
 					return $"The file \"{Paths.Final}\" could not be created.";
 				case FileWriteEnum.FailedDuringWrite:
 					return $"An error occurred while writing the file."; // No file name here; it should be deleted.
+				case FileWriteEnum.Aborted:
+					return "The operation was aborted.";
+
+				case FileWriteEnum.FailedToDeleteGeneric:
+					return $"The file \"{Paths.Final}\" could not be deleted.";
+				//case FileWriteEnum.FailedToDeleteForSwap:
+				//	return $"Failed to swap files. Unable to write to \"{Paths.Final}\"";
+				case FileWriteEnum.FailedToMoveForSwap:
+					return $"Failed to swap files. Unable to rename \"{Paths.Temp}\" to \"{Paths.Final}\"";
 			}
 
 			string success = $"The file was created successfully at \"{Paths.Temp}\" but could not be moved";
@@ -105,5 +119,13 @@ namespace BizHawk.Client.Common
 		}
 
 		public FileWriteResult(FileWriteResult other) : base(other.Error, other.Paths, other.Exception) { }
+	}
+
+	/// <summary>
+	/// This only exists as a way to avoid changing the API behavior.
+	/// </summary>
+	public class UnlessUsingApiException : Exception
+	{
+		public UnlessUsingApiException(string message) : base(message) { }
 	}
 }

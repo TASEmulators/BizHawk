@@ -69,31 +69,65 @@ namespace BizHawk.Client.Common
 		public bool IsRedo(IMovie movie, int slot)
 			=> slot is >= 1 and <= 10 && movie is not ITasMovie && _redo[slot - 1];
 
-		public void SwapBackupSavestate(IMovie movie, string path, int currentSlot)
+		/// <summary>
+		/// Takes the .state and .bak files and swaps them
+		/// </summary>
+		public FileWriteResult SwapBackupSavestate(IMovie movie, string path, int currentSlot)
 		{
-			// Takes the .state and .bak files and swaps them
+			string backupPath = $"{path}.bak";
+			string tempPath = $"{path}.bak.tmp";
+
 			var state = new FileInfo(path);
-			var backup = new FileInfo($"{path}.bak");
-			var temp = new FileInfo($"{path}.bak.tmp");
+			var backup = new FileInfo(backupPath);
 
 			if (!state.Exists || !backup.Exists)
 			{
-				return;
+				return new();
 			}
 
-			if (temp.Exists)
+			// Delete old temp file if it exists.
+			try
 			{
-				temp.Delete();
+				if (File.Exists(tempPath)) File.Delete(tempPath);
+			}
+			catch (Exception ex)
+			{
+				return new(FileWriteEnum.FailedToDeleteGeneric, new(tempPath, ""), ex);
 			}
 
-			backup.CopyTo($"{path}.bak.tmp");
-			backup.Delete();
-			state.CopyTo($"{path}.bak");
-			state.Delete();
-			temp.CopyTo(path);
-			temp.Delete();
+			// Move backup to temp.
+			try
+			{
+				backup.MoveTo(tempPath);
+			}
+			catch (Exception ex)
+			{
+				return new(FileWriteEnum.FailedToMoveForSwap, new(tempPath, backupPath), ex);
+			}
+			// Move current to backup.
+			try
+			{
+				state.MoveTo(backupPath);
+			}
+			catch (Exception ex)
+			{
+				// Attempt to restore the backup
+				try { backup.MoveTo(backupPath); } catch { /* eat? unlikely to fail here */ }
+				return new(FileWriteEnum.FailedToMoveForSwap, new(backupPath, path), ex);
+			}
+			// Move backup to current.
+			try
+			{
+				backup.MoveTo(path);
+			}
+			catch (Exception ex)
+			{
+				// Should we attempt to restore? Unlikely to fail here since we've already touched all files.
+				return new(FileWriteEnum.FailedToMoveForSwap, new(path, tempPath), ex);
+			}
 
 			ToggleRedo(movie, currentSlot);
+			return new();
 		}
 	}
 }
