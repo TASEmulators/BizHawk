@@ -397,8 +397,8 @@ static const char* const PhotoNandDirs[] =
 	"0:/photo",
 	"0:/photo/private",
 	"0:/photo/private/ds",
-	"0:/photo/private/app",
-	"0:/photo/private/app/484E494A",
+	"0:/photo/private/ds/app",
+	"0:/photo/private/ds/app/484E494A",
 };
 
 static u8 GetRegionIdChar(melonDS::DSi_NAND::ConsoleRegion region)
@@ -906,7 +906,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			}
 		}
 
-		// create 0:/photo/private/app/484E494A/pit.bin
+		// create 0:/photo/private/ds/app/484E494A/pit.bin
 		{
 			constexpr u32 PIT_SIZE = 0x1F60;
 			auto pit = std::make_unique<u8[]>(PIT_SIZE);
@@ -924,7 +924,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			pitHeader->HeaderSize = sizeof(PitHeader);
 
 			FF_FIL file;
-			res = f_open(&file, "0:/photo/private/app/484E494A/pit.bin", FA_CREATE_NEW | FA_WRITE);
+			res = f_open(&file, "0:/photo/private/ds/app/484E494A/pit.bin", FA_CREATE_NEW | FA_WRITE);
 			if (res != FR_OK)
 			{
 				f_unmount("0:");
