@@ -3,11 +3,15 @@
 #include "DSi.h"
 #include "DSi_NAND.h"
 #include "DSi_TMD.h"
+#include "FATIO.h"
 #include "GPU3D_OpenGL.h"
 #include "GPU3D_Compute.h"
 #include "CRC32.h"
 #include "FreeBIOS.h"
 #include "SPI.h"
+
+#include "fatfs/diskio.h"
+#include "fatfs/ff.h"
 
 #include "BizPlatform/BizFile.h"
 #include "BizTypes.h"
@@ -276,23 +280,140 @@ static void SanitizeNandSettings(melonDS::DSi_NAND::DSiFirmwareSystemSettings& s
 	memset(settings.ParentalControlsSecretAnswer, 0, sizeof(settings.ParentalControlsSecretAnswer));
 }
 
-static void ClearNandSavs(melonDS::DSi_NAND::NANDMount& mount, u32 category)
-{
-	std::vector<u32> titlelist;
-	mount.ListTitles(category, titlelist);
+#pragma pack(push, 1)
 
-	char fname[128];
-	for (auto& title : titlelist)
+struct VolumeBootRecord
+{
+	u8 JumpOpcode[3];
+	u8 OemName[8];
+	u16 BytesPerSector;
+	u8 SectorsPerCluster;
+	u16 NumReservedSectors;
+	u8 NumFATs;
+	u16 MaxRootDirectoryEntries;
+	u16 NumSectorsU16;
+	u8 MediaDescriptor;
+	u16 SectorsPerFAT;
+	u16 SectorsPerTrack;
+	u16 NumHeads;
+	u32 NumHiddenSectors;
+	u32 NumSectorsU32;
+	u8 DriveNumber;
+	u8 Reserved;
+	u8 ExBootSignature;
+	u32 VolumeID;
+	u8 VolumeLabel[11];
+	u8 FileSystemType[8];
+	u8 BootCode[448];
+	u16 BootSignature;
+};
+
+#pragma pack(pop)
+
+static_assert(sizeof(VolumeBootRecord) == 0x200, "VolumeBootRecord wrong size");
+
+#pragma pack(push, 1)
+
+struct PitHeader
+{
+	u8 ID[8];
+	u16 NumEntries;
+	u16 Unknown; // reported on gbatek as 0x0001, freshly formatted dump has 0x0000
+	u16 NextPhotoFolderNum;
+	u16 NextPhotoFileNum;
+	u16 NextFrameFolderNum;
+	u16 NextFrameFileNum;
+	u16 CRC16;
+	u16 HeaderSize;
+};
+
+#pragma pack(pop)
+
+static_assert(sizeof(PitHeader) == 0x18, "PitHeader wrong size");
+
+static const char* const BaseNandDirs[] =
+{
+	"0:/import", "0:/progress", "0:/shared1", "0:/shared2", "0:/sys", "0:/ticket", "0:/title", "0:/tmp",
+	"0:/shared2/launcher",
+	"0:/sys/log",
+	"0:/ticket/0003000f", "0:/ticket/00030004", "0:/ticket/00030005", "0:/ticket/00030015", "0:/ticket/00030017",
+	"0:/title/0003000f", "0:/title/00030004", "0:/title/00030005", "0:/title/00030015", "0:/title/00030017",
+	"0:/title/0003000f/484e4341", "0:/title/0003000f/484e4841", "0:/title/00030005/484e4441", "0:/title/00030005/484e4541",
+	"0:/title/0003000f/484e4341/content", "0:/title/0003000f/484e4341/data",
+	"0:/title/0003000f/484e4841/content", "0:/title/0003000f/484e4841/data",
+	"0:/title/00030005/484e4441/content", "0:/title/00030005/484e4441/data",
+	"0:/title/00030005/484e4541/content", "0:/title/00030005/484e4541/data",
+	"0:/tmp/es",
+	"0:/tmp/es/write",
+};
+
+static const char* const RegionalNandDirs[] =
+{
+	"0:/title/0003000f/484e4c%x", "0:/title/00030005/484e49%x", "0:/title/00030005/484e4b%x",
+	"0:/title/00030015/484e42%x", "0:/title/00030015/484e46%x", "0:/title/00030017/484e41%x",
+	"0:/title/0003000f/484e4c%x/content", "0:/title/0003000f/484e4c%x/data",
+	"0:/title/00030005/484e49%x/content", "0:/title/00030005/484e49%x/data",
+	"0:/title/00030005/484e4b%x/content", "0:/title/00030005/484e4b%x/data",
+	"0:/title/00030015/484e42%x/content", "0:/title/00030015/484e42%x/data",
+	"0:/title/00030015/484e46%x/content", "0:/title/00030015/484e46%x/data",
+	"0:/title/00030017/484e41%x/content", "0:/title/00030017/484e41%x/data",
+};
+
+static const char* const BaseNandFiles[] =
+{
+	"0:/shared1/TWLCFG0.dat", "0:/shared1/TWLCFG1.dat",
+	"0:/sys/cert.sys", "0:/sys/dev.kp", "0:/sys/HWID.sgn",
+	"0:/sys/HWINFO_N.dat", "0:/sys/HWINFO_S.dat", "0:/sys/TWLFontTable.dat",
+	"0:/ticket/0003000f/484e4341.tik", "0:/ticket/0003000f/484e4841.tik",
+	"0:/ticket/00030005/484e4441.tik", "0:/ticket/00030005/484e4541.tik",
+};
+
+static const char* const RegionalNandFiles[] =
+{
+	"0:/ticket/0003000f/484e4c%x.tik", "0:/ticket/00030005/484e49%x.tik", "0:/ticket/00030005/484e4b%x.tik",
+	"0:/ticket/00030015/484e42%x.tik", "0:/ticket/00030015/484e46%x.tik", "0:/ticket/00030017/484e41%x.tik",
+};
+
+static const std::pair<const char*, const char*> BaseNandTitlePaths[] =
+{
+	std::make_pair("0:/title/0003000f/484e4341/content/title.tmd", "0:/title/0003000f/484e4341/content/%08x.app"),
+	std::make_pair("0:/title/0003000f/484e4841/content/title.tmd", "0:/title/0003000f/484e4841/content/%08x.app"),
+	std::make_pair("0:/title/00030005/484e4441/content/title.tmd", "0:/title/00030005/484e4441/content/%08x.app"),
+	std::make_pair("0:/title/00030005/484e4541/content/title.tmd", "0:/title/00030005/484e4541/content/%08x.app"),
+};
+
+static const std::pair<const char*, const char*> RegionalNandTitlePaths[] =
+{
+	std::make_pair("0:/title/0003000f/484e4c%x/content/title.tmd", "0:/title/0003000f/484e4c%x/content/%08x.app"),
+	std::make_pair("0:/title/00030005/484e49%x/content/title.tmd", "0:/title/00030005/484e49%x/content/%08x.app"),
+	std::make_pair("0:/title/00030005/484e4b%x/content/title.tmd", "0:/title/00030005/484e4b%x/content/%08x.app"),
+	std::make_pair("0:/title/00030015/484e42%x/content/title.tmd", "0:/title/00030015/484e42%x/content/%08x.app"),
+	std::make_pair("0:/title/00030015/484e46%x/content/title.tmd", "0:/title/00030015/484e46%x/content/%08x.app"),
+	std::make_pair("0:/title/00030017/484e41%x/content/title.tmd", "0:/title/00030017/484e41%x/content/%08x.app"),
+};
+
+static const char* const PhotoNandDirs[] =
+{
+	"0:/photo",
+	"0:/photo/private",
+	"0:/photo/private/ds",
+	"0:/photo/private/app",
+	"0:/photo/private/app/484E494A",
+};
+
+static u8 GetRegionIdChar(melonDS::DSi_NAND::ConsoleRegion region)
+{
+	switch (region)
 	{
-		snprintf(fname, sizeof(fname), "0:/title/%08x/%08x/data/public.sav", category, title);
-		mount.RemoveFile(fname);
-		snprintf(fname, sizeof(fname), "0:/title/%08x/%08x/data/private.sav", category, title);
-		mount.RemoveFile(fname);
-		snprintf(fname, sizeof(fname), "0:/title/%08x/%08x/data/banner.sav", category, title);
-		mount.RemoveFile(fname);
+		case melonDS::DSi_NAND::ConsoleRegion::Japan: return 'J';
+		case melonDS::DSi_NAND::ConsoleRegion::USA: return 'E';
+		case melonDS::DSi_NAND::ConsoleRegion::Europe: return 'P';
+		case melonDS::DSi_NAND::ConsoleRegion::Australia: return 'U';
+		case melonDS::DSi_NAND::ConsoleRegion::China: return 'C';
+		case melonDS::DSi_NAND::ConsoleRegion::Korea: return 'K';
+		default: return 0;
 	}
 }
-
 
 static melonDS::DSi_NAND::NANDImage CreateNandImage(
 	u8* nandData, u32 nandLength, std::unique_ptr<melonDS::DSiBIOSImage>& arm7Bios,
@@ -303,6 +424,532 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 	if (!nand)
 	{
 		throw std::runtime_error("Failed to parse DSi NAND!");
+	}
+
+	// To properly "clear" the NAND, we'll want to just recreate the NAND entirely
+	// Even tiny differences within the NAND structure can cause potential sync issues
+	// This can happen even if the entire directory structure and every file is identical!
+	if (clearNand)
+	{
+		// first required files need to be obtained (only one file system can be mounted at a time with fatfs)
+		std::vector<std::pair<std::vector<u8>, std::string>> nandFiles;
+		char nandPath[128];
+		u8 regionIdChar;
+		{
+			auto mount = melonDS::DSi_NAND::NANDMount(nand);
+			if (!mount)
+			{
+				throw std::runtime_error("Failed to mount DSi NAND!");
+			}
+
+			// serial data will contain the NAND's region
+			melonDS::DSi_NAND::DSiSerialData serialData{};
+			if (!mount.ReadSerialData(serialData))
+			{
+				throw std::runtime_error("Failed to obtain serial data!");
+			}
+
+			regionIdChar = GetRegionIdChar(serialData.Region);
+			if (!regionIdChar)
+			{
+				throw std::runtime_error("Unknown NAND region");
+			}
+
+			for (auto baseNandFile : BaseNandFiles)
+			{
+				std::vector<u8> nandFile;
+				if (!mount.ExportFile(baseNandFile, nandFile))
+				{
+					throw std::runtime_error("Failed to export base NAND file");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string(baseNandFile)));
+			}
+
+			for (auto regionalNandFile : RegionalNandFiles)
+			{
+				snprintf(nandPath, sizeof(nandPath), regionalNandFile, regionIdChar);
+				std::vector<u8> nandFile;
+				if (!mount.ExportFile(nandPath, nandFile))
+				{
+					throw std::runtime_error("Failed to export regional NAND file");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string(nandPath)));
+			}
+
+			for (auto baseNandTitlePath : BaseNandTitlePaths)
+			{
+				std::vector<u8> tmdFile;
+				if (!mount.ExportFile(baseNandTitlePath.first, tmdFile)
+					|| tmdFile.size() != sizeof(melonDS::DSi_TMD::TitleMetadata))
+				{
+					throw std::runtime_error("Failed to export base NAND TMD");
+				}
+
+				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
+				u32 version = tmd->Contents.GetVersion();
+
+				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(baseNandTitlePath.first)));
+
+				snprintf(nandPath, sizeof(nandPath), baseNandTitlePath.second, version);
+				std::vector<u8> appFile;
+				if (!mount.ExportFile(nandPath, appFile))
+				{
+					throw std::runtime_error("Failed to export base NAND app file");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
+			}
+
+			for (auto regionalNandTitlePath : RegionalNandTitlePaths)
+			{
+				snprintf(nandPath, sizeof(nandPath), regionalNandTitlePath.first, regionIdChar);
+				std::vector<u8> tmdFile;
+				if (!mount.ExportFile(nandPath, tmdFile)
+					|| tmdFile.size() != sizeof(melonDS::DSi_TMD::TitleMetadata))
+				{
+					throw std::runtime_error("Failed to export regional NAND TMD");
+				}
+
+				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
+				u32 version = tmd->Contents.GetVersion();
+
+				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(nandPath)));
+
+				snprintf(nandPath, sizeof(nandPath), regionalNandTitlePath.second, regionIdChar, version);
+				std::vector<u8> appFile;
+				if (!mount.ExportFile(nandPath, appFile))
+				{
+					throw std::runtime_error("Failed to export regional NAND app file");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
+			}
+		}
+
+		constexpr u32 MAIN_PARTITION_SIZE = 0xCDF1200;
+		auto mainPartition = std::make_unique<u8[]>(MAIN_PARTITION_SIZE);
+		// unused data within a partition is just unencrypted 0s
+		memset(mainPartition.get(), 0, MAIN_PARTITION_SIZE);
+		melonDS::ff_disk_open(
+			[&](BYTE* buf, LBA_t sector, UINT num) -> UINT
+			{
+				u32 addr = sector * 0x200U;
+				if (addr >= MAIN_PARTITION_SIZE)
+				{
+					return 0;
+				}
+
+				u32 len = num * 0x200U;
+				if ((addr + len) > MAIN_PARTITION_SIZE)
+				{
+					len = MAIN_PARTITION_SIZE - addr;
+				}
+
+				u32 ctr = (0x10EE00U + addr) >> 4;
+				AES_ctx ctx;
+				nand.SetupFATCrypto(&ctx, ctr);
+
+				for (u32 i = 0; i < len; i += 16)
+				{
+					u8 tmp[16];
+					melonDS::Bswap128(tmp, &mainPartition[addr + i]);
+					AES_CTR_xcrypt_buffer(&ctx, tmp, sizeof(tmp));
+					melonDS::Bswap128(&buf[i], tmp);
+				}
+
+				return len / 0x200U;
+			},
+			[&](const BYTE* buf, LBA_t sector, UINT num) -> UINT
+			{
+				u32 addr = sector * 0x200U;
+				if (addr >= MAIN_PARTITION_SIZE)
+				{
+					return 0;
+				}
+
+				u32 len = num * 0x200U;
+				if ((addr + len) > MAIN_PARTITION_SIZE)
+				{
+					len = MAIN_PARTITION_SIZE - addr;
+				}
+
+				u32 ctr = (0x10EE00U + addr) >> 4;
+				AES_ctx ctx;
+				nand.SetupFATCrypto(&ctx, ctr);
+
+				for (u32 i = 0; i < len; i += 16)
+				{
+					u8 tmp[16];
+					melonDS::Bswap128(tmp, &buf[i]);
+					AES_CTR_xcrypt_buffer(&ctx, tmp, sizeof(tmp));
+					melonDS::Bswap128(&mainPartition[addr + i], tmp);
+				}
+
+				return len / 0x200U;
+			},
+			(LBA_t)(MAIN_PARTITION_SIZE / 0x200)
+		);
+
+		constexpr u32 INIT_FAT16 = 0xFFFFFFF8;
+		constexpr u32 INIT_FAT12 = 0x00FFFFF8;
+		u8 sectorBuffer[0x200];
+		disk_initialize(0);
+
+		// create and write VBR
+		auto* vbr = reinterpret_cast<VolumeBootRecord*>(&sectorBuffer[0]);
+		vbr->JumpOpcode[0] = 0xE9;
+		vbr->JumpOpcode[1] = 0x00;
+		vbr->JumpOpcode[2] = 0x00;
+		memcpy(vbr->OemName, "TWL     ", sizeof(vbr->OemName));
+		vbr->BytesPerSector = 0x200;
+		vbr->SectorsPerCluster = 32;
+		vbr->NumReservedSectors = 1;
+		vbr->NumFATs = 2;
+		vbr->MaxRootDirectoryEntries = 512;
+		vbr->NumSectorsU16 = 0;
+		vbr->MediaDescriptor = 0xF8;
+		vbr->SectorsPerFAT = 52;
+		vbr->SectorsPerTrack = 32;
+		vbr->NumHeads = 16;
+		vbr->NumHiddenSectors = 0x10EE00 / 0x200;
+		vbr->NumSectorsU32 = MAIN_PARTITION_SIZE / 0x200;
+		vbr->DriveNumber = 0;
+		vbr->Reserved = 0;
+		vbr->ExBootSignature = 0x29;
+		vbr->VolumeID = 0x12345678;
+		memset(vbr->VolumeLabel, 0x20, sizeof(vbr->VolumeLabel));
+		memset(vbr->FileSystemType, 0x00, sizeof(vbr->FileSystemType));
+		memset(vbr->BootCode, 0x00, sizeof(vbr->BootCode));
+		vbr->BootSignature = 0xAA55;
+
+		disk_write(0, sectorBuffer, 0, 1);
+
+		// init both FATs
+		memset(sectorBuffer, 0, sizeof(sectorBuffer));
+		memcpy(sectorBuffer, &INIT_FAT16, sizeof(INIT_FAT16));
+		disk_write(0, sectorBuffer, 1, 1);
+		disk_write(0, sectorBuffer, 1 + 52, 1);
+
+		memset(sectorBuffer, 0, sizeof(INIT_FAT16));
+		for (u32 i = 1; i < 52; i++)
+		{
+			disk_write(0, sectorBuffer, 1 + i, 1);
+			disk_write(0, sectorBuffer, 1 + 52 + i, 1);
+		}
+
+		// init root directory entries
+		for (u32 i = 0; i < 32; i++)
+		{
+			disk_write(0, sectorBuffer, 1 + 52 + 52 + i, 1);
+		}
+
+		auto fs = std::make_unique<FATFS>();
+		FRESULT res = f_mount(fs.get(), "0:", 0);
+		if (res != FR_OK)
+		{
+			f_unmount("0:");
+			melonDS::ff_disk_close();
+			throw std::runtime_error("Failed to mount temporary main partition");
+		}
+
+		// create base directory structure
+		for (auto baseNandDir : BaseNandDirs)
+		{
+			res = f_mkdir(baseNandDir);
+			if (res != FR_OK)
+			{
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed to create base NAND directory");
+			}
+		}
+
+		// add regional folders
+		for (auto regionalNandDir : RegionalNandDirs)
+		{
+			snprintf(nandPath, sizeof(nandPath), regionalNandDir, regionIdChar);
+			res = f_mkdir(nandPath);
+			if (res != FR_OK)
+			{
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed to create regional NAND directory");
+			}
+		}
+
+		// a few more files need to be added to complete the main partition
+		{
+			std::vector<u8> shopLog;
+			shopLog.resize(0x20);
+			memset(shopLog.data(), 0, shopLog.size());
+			nandFiles.push_back(std::make_pair(std::move(shopLog), std::string("0:/sys/log/shop.log")));
+
+			std::vector<u8> sysMenuLog;
+			sysMenuLog.resize(0x4000);
+			memset(sysMenuLog.data(), 0, sysMenuLog.size());
+			nandFiles.push_back(std::make_pair(std::move(sysMenuLog), std::string("0:/sys/log/sysmenu.log")));
+
+			// sys/log/product.log is written at the factory, and variable length
+			// nothing seems to need it, so best not bother writing it in
+
+			// sys/shared2/launcher/wrap.bin gets recreated if missing automatically by the system menu on startup
+			// it's rather complex, so don't bother trying to create a prepared one
+			// (not much point other than maybe a slightly shorter boot time)
+
+			// sys/shared2/0000 is a 2MiB FAT12 blob, and doesn't appear to be recreated automatically?
+			// It just contains sound recordings and is empty on first bootup
+			// Therefore an empty FAT12 blob can replace it
+
+			std::vector<u8> shared2Sound;
+			shared2Sound.resize(0x200000);
+			memset(shared2Sound.data(), 0, shared2Sound.size());
+
+			// write VBR
+			vbr = reinterpret_cast<VolumeBootRecord*>(&shared2Sound[0]);
+			vbr->JumpOpcode[0] = 0xE9;
+			vbr->JumpOpcode[1] = 0x00;
+			vbr->JumpOpcode[2] = 0x00;
+			memcpy(vbr->OemName, "E       ", sizeof(vbr->OemName));
+			vbr->BytesPerSector = 0x200;
+			vbr->SectorsPerCluster = 4;
+			vbr->NumReservedSectors = 1;
+			vbr->NumFATs = 2;
+			vbr->MaxRootDirectoryEntries = 512;
+			vbr->NumSectorsU16 = 0x200000 / 0x200;
+			vbr->MediaDescriptor = 0xF8;
+			vbr->SectorsPerFAT = 3;
+			vbr->SectorsPerTrack = 16;
+			vbr->NumHeads = 16;
+			vbr->NumHiddenSectors = 0;
+			vbr->NumSectorsU32 = 0;
+			vbr->DriveNumber = 2;
+			vbr->Reserved = 0;
+			vbr->ExBootSignature = 0x29;
+			vbr->VolumeID = 0x12345678;
+			memcpy(vbr->VolumeLabel, "V          ", sizeof(vbr->VolumeLabel));
+			memset(vbr->FileSystemType, 0x00, sizeof(vbr->FileSystemType));
+			memset(vbr->BootCode, 0x00, sizeof(vbr->BootCode));
+			vbr->BootSignature = 0xAA55;
+
+			// init both FATs
+			memcpy(&shared2Sound[(1 + 0) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
+			memcpy(&shared2Sound[(1 + 3) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
+
+			nandFiles.push_back(std::make_pair(std::move(shared2Sound), std::string("0:/shared2/0000")));
+		}
+
+		// import in all the old files
+		for (auto& nandFile : nandFiles)
+		{
+			FF_FIL file;
+			res = f_open(&file, nandFile.second.c_str(), FA_CREATE_NEW | FA_WRITE);
+			if (res != FR_OK)
+			{
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed to open NAND file");
+			}
+
+			u32 nwrite;
+			res = f_write(&file, nandFile.first.data(), nandFile.first.size(), &nwrite);
+			if (res != FR_OK || nwrite != nandFile.first.size())
+			{
+				f_close(&file);
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed to write NAND file");
+			}
+
+			f_close(&file);
+		}
+
+		f_unmount("0:");
+		melonDS::ff_disk_close();
+
+		auto* nandFileHandle = nand.GetFile();
+		melonDS::Platform::FileSeek(nandFileHandle, 0x10EE00, melonDS::Platform::FileSeekOrigin::Start);
+		melonDS::Platform::FileWrite(mainPartition.get(), 1, MAIN_PARTITION_SIZE, nandFileHandle);
+
+		// the photo partition also needs to be recreated
+		constexpr u32 PHOTO_PARTITION_SIZE = 0x20B6600;
+		auto photoPartition = std::make_unique<u8[]>(PHOTO_PARTITION_SIZE);
+		memset(photoPartition.get(), 0, PHOTO_PARTITION_SIZE);
+		melonDS::ff_disk_open(
+			[&](BYTE* buf, LBA_t sector, UINT num) -> UINT
+			{
+				u32 addr = sector * 0x200U;
+				if (addr >= PHOTO_PARTITION_SIZE)
+				{
+					return 0;
+				}
+
+				u32 len = num * 0x200U;
+				if ((addr + len) > PHOTO_PARTITION_SIZE)
+				{
+					len = PHOTO_PARTITION_SIZE - addr;
+				}
+
+				u32 ctr = (0xCF09A00U + addr) >> 4;
+				AES_ctx ctx;
+				nand.SetupFATCrypto(&ctx, ctr);
+
+				for (u32 i = 0; i < len; i += 16)
+				{
+					u8 tmp[16];
+					melonDS::Bswap128(tmp, &photoPartition[addr + i]);
+					AES_CTR_xcrypt_buffer(&ctx, tmp, sizeof(tmp));
+					melonDS::Bswap128(&buf[i], tmp);
+				}
+
+				return len / 0x200U;
+			},
+			[&](const BYTE* buf, LBA_t sector, UINT num) -> UINT
+			{
+				u32 addr = sector * 0x200U;
+				if (addr >= PHOTO_PARTITION_SIZE)
+				{
+					return 0;
+				}
+
+				u32 len = num * 0x200U;
+				if ((addr + len) > PHOTO_PARTITION_SIZE)
+				{
+					len = PHOTO_PARTITION_SIZE - addr;
+				}
+
+				u32 ctr = (0xCF09A00U + addr) >> 4;
+				AES_ctx ctx;
+				nand.SetupFATCrypto(&ctx, ctr);
+
+				for (u32 i = 0; i < len; i += 16)
+				{
+					u8 tmp[16];
+					melonDS::Bswap128(tmp, &buf[i]);
+					AES_CTR_xcrypt_buffer(&ctx, tmp, sizeof(tmp));
+					melonDS::Bswap128(&photoPartition[addr + i], tmp);
+				}
+
+				return len / 0x200U;
+			},
+			(LBA_t)(PHOTO_PARTITION_SIZE / 0x200)
+		);
+
+		disk_initialize(0);
+
+		// create and write VBR
+		vbr = reinterpret_cast<VolumeBootRecord*>(&sectorBuffer[0]);
+		vbr->JumpOpcode[0] = 0xE9;
+		vbr->JumpOpcode[1] = 0x00;
+		vbr->JumpOpcode[2] = 0x00;
+		memcpy(vbr->OemName, "TWL     ", sizeof(vbr->OemName));
+		vbr->BytesPerSector = 0x200;
+		vbr->SectorsPerCluster = 32;
+		vbr->NumReservedSectors = 1;
+		vbr->NumFATs = 2;
+		vbr->MaxRootDirectoryEntries = 512;
+		vbr->NumSectorsU16 = 0;
+		vbr->MediaDescriptor = 0xF8;
+		vbr->SectorsPerFAT = 9;
+		vbr->SectorsPerTrack = 32;
+		vbr->NumHeads = 16;
+		vbr->NumHiddenSectors = 0xCF09A00 / 0x200;
+		vbr->NumSectorsU32 = PHOTO_PARTITION_SIZE / 0x200;
+		vbr->DriveNumber = 1;
+		vbr->Reserved = 0;
+		vbr->ExBootSignature = 0x29;
+		vbr->VolumeID = 0x12345678;
+		memset(vbr->VolumeLabel, 0x20, sizeof(vbr->VolumeLabel));
+		memset(vbr->FileSystemType, 0x00, sizeof(vbr->FileSystemType));
+		memset(vbr->BootCode, 0x00, sizeof(vbr->BootCode));
+		vbr->BootSignature = 0xAA55;
+
+		disk_write(0, sectorBuffer, 0, 1);
+
+		// init both FATs
+		memset(sectorBuffer, 0, sizeof(sectorBuffer));
+		memcpy(sectorBuffer, &INIT_FAT12, sizeof(INIT_FAT12));
+		disk_write(0, sectorBuffer, 1, 1);
+		disk_write(0, sectorBuffer, 1 + 9, 1);
+
+		memset(sectorBuffer, 0, sizeof(INIT_FAT12));
+		for (u32 i = 1; i < 9; i++)
+		{
+			disk_write(0, sectorBuffer, 1 + i, 1);
+			disk_write(0, sectorBuffer, 1 + 9 + i, 1);
+		}
+
+		// init root directory entries
+		for (u32 i = 0; i < 32; i++)
+		{
+			disk_write(0, sectorBuffer, 1 + 9 + 9 + i, 1);
+		}
+
+		res = f_mount(fs.get(), "0:", 0);
+		if (res != FR_OK)
+		{
+			f_unmount("0:");
+			melonDS::ff_disk_close();
+			throw std::runtime_error("Failed to mount temporary photo partition");
+		}
+
+		// create photo directory structure
+		for (auto photoNandDir : PhotoNandDirs)
+		{
+			res = f_mkdir(photoNandDir);
+			if (res != FR_OK)
+			{
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed to create photo NAND directory");
+			}
+		}
+
+		// create 0:/photo/private/app/484E494A/pit.bin
+		{
+			constexpr u32 PIT_SIZE = 0x1F60;
+			auto pit = std::make_unique<u8[]>(PIT_SIZE);
+			memset(pit.get(), 0, PIT_SIZE);
+
+			auto* pitHeader = reinterpret_cast<PitHeader*>(&pit[0]);
+			memcpy(pitHeader->ID, "0TIP00_1", sizeof(pitHeader->ID));
+			pitHeader->NumEntries = 500;
+			pitHeader->Unknown = 0;
+			pitHeader->NextPhotoFolderNum = 0;
+			pitHeader->NextPhotoFileNum = 2;
+			pitHeader->NextFrameFolderNum = 0;
+			pitHeader->NextFrameFileNum = 0;
+			pitHeader->CRC16 = 0x68D9;
+			pitHeader->HeaderSize = sizeof(PitHeader);
+
+			FF_FIL file;
+			res = f_open(&file, "0:/photo/private/app/484E494A/pit.bin", FA_CREATE_NEW | FA_WRITE);
+			if (res != FR_OK)
+			{
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed to open NAND pit.bin");
+			}
+
+			u32 nwrite;
+			res = f_write(&file, pit.get(), PIT_SIZE, &nwrite);
+			if (res != FR_OK || nwrite != PIT_SIZE)
+			{
+				f_close(&file);
+				f_unmount("0:");
+				melonDS::ff_disk_close();
+				throw std::runtime_error("Failed write NAND pit.bin");
+			}
+
+			f_close(&file);
+		}
+
+		f_unmount("0:");
+		melonDS::ff_disk_close();
+
+		melonDS::Platform::FileSeek(nandFileHandle, 0xCF09A00, melonDS::Platform::FileSeekOrigin::Start);
+		melonDS::Platform::FileWrite(photoPartition.get(), 1, PHOTO_PARTITION_SIZE, nandFileHandle);
 	}
 
 	{
@@ -319,7 +966,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 		}
 
 		// serial data will contain the NAND's region
-		melonDS::DSi_NAND::DSiSerialData serialData;
+		melonDS::DSi_NAND::DSiSerialData serialData{};
 		if (!mount.ReadSerialData(serialData))
 		{
 			throw std::runtime_error("Failed to obtain serial data!");
@@ -365,35 +1012,6 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 		if (!mount.ApplyUserData(settings))
 		{
 			throw std::runtime_error("Failed to write DSi NAND user data");
-		}
-
-		if (clearNand)
-		{
-			// clear out DSiWare
-			constexpr u32 DSIWARE_CATEGORY = 0x00030004;
-
-			std::vector<u32> titlelist;
-			mount.ListTitles(DSIWARE_CATEGORY, titlelist);
-
-			for (auto& title : titlelist)
-			{
-				mount.DeleteTitle(DSIWARE_CATEGORY, title);
-			}
-
-			// clear out .sav files of builtin apps / title management / system menu
-			constexpr u32 BUILTIN_APP_CATEGORY = 0x00030005;
-			constexpr u32 TITLE_MANAGEMENT_CATEGORY = 0x00030015;
-			constexpr u32 SYSTEM_MENU_CATEGORY = 0x00030017;
-
-			ClearNandSavs(mount, BUILTIN_APP_CATEGORY);
-			ClearNandSavs(mount, TITLE_MANAGEMENT_CATEGORY);
-			ClearNandSavs(mount, SYSTEM_MENU_CATEGORY);
-
-			// clear out some other misc files
-			mount.RemoveFile("0:/shared2/launcher/wrap.bin");
-			mount.RemoveFile("0:/shared2/0000");
-			mount.RemoveFile("0:/sys/log/product.log");
-			mount.RemoveFile("0:/sys/log/sysmenu.log");
 		}
 
 		if (dsiWareData)
