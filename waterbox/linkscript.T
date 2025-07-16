@@ -196,7 +196,7 @@ SECTIONS
       .bss section disappears because there are no input sections.
       FIXME: Why do we need it? When there is no .bss section, we do not
       pad the .data section.  */
-   . = ALIGN(. != 0 ? 64 / 4 : 1);
+   . = ALIGN(. != 0 ? 64 * 2 : 1);
   }
   .lbss   :
   {
@@ -204,19 +204,19 @@ SECTIONS
     *(.lbss .lbss.* .gnu.linkonce.lb.*)
     *(LARGE_COMMON)
   }
-  . = ALIGN(64);
+  . = ALIGN(64 * 2);
   . = SEGMENT_START("ldata-segment", .);
   .lrodata   ALIGN(CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 1)) :
   {
     *(.lrodata .lrodata.* .gnu.linkonce.lr.*)
   }
-  . = ALIGN(64 / 4);
+  . = ALIGN(64 * 2);
   .ldata   ALIGN(CONSTANT (MAXPAGESIZE)) + (. & (CONSTANT (MAXPAGESIZE) - 1)) :
   {
     *(.ldata .ldata.* .gnu.linkonce.l.*)
-    . = ALIGN(. != 0 ? 64 / 4 : 1);
+    . = ALIGN(. != 0 ? 64 * 2 : 1);
   }
-  . = ALIGN(64 / 4);
+  . = ALIGN(64 * 2);
   _end = .; PROVIDE (end = .);
   . = DATA_SEGMENT_END (.);
   /* Stabs debugging sections.  */
