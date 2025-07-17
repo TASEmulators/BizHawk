@@ -361,8 +361,7 @@ static const char* const RegionalNandDirs[] =
 
 static const char* const BaseNandFiles[] =
 {
-	"0:/shared1/TWLCFG0.dat", "0:/shared1/TWLCFG1.dat",
-	"0:/sys/cert.sys", "0:/sys/dev.kp", "0:/sys/HWID.sgn",
+	"0:/shared1/TWLCFG0.dat", "0:/shared1/TWLCFG1.dat", "0:/sys/HWID.sgn",
 	"0:/sys/HWINFO_N.dat", "0:/sys/HWINFO_S.dat", "0:/sys/TWLFontTable.dat",
 	"0:/ticket/0003000f/484e4341.tik", "0:/ticket/0003000f/484e4841.tik",
 	"0:/ticket/00030005/484e4441.tik", "0:/ticket/00030005/484e4541.tik",
@@ -534,6 +533,31 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 
 				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
 			}
+
+			// sys/cert.sys also needs to be transferred over, but its size varies depending on if the DSi ever connected to the DSi Shop
+			// sys/dev.kp doesn't need to be present, as it isn't present DSis that have never connected to the DSi Shop
+			// This does make the shop unusable (well, it already is in multiple different ways) and Title Management won't be available
+			// But not like there's any need to use Title Management with NAND cleared
+			{
+				std::vector<u8> nandFile;
+				if (!mount.ExportFile("0:/sys/cert.sys", nandFile))
+				{
+					throw std::runtime_error("Failed to export cert.sys");
+				}
+
+				// DSi connected to the DSi Shop, remove those latter certificates
+				if (nandFile.size() == 3904)
+				{
+					nandFile.resize(2560);
+				}
+
+				if (nandFile.size() != 2560)
+				{
+					throw std::runtime_error("Wrong cert.sys size");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string("0:/sys/cert.sys")));
+			}
 		}
 
 		constexpr u32 MAIN_PARTITION_SIZE = 0xCDF1200;
@@ -689,15 +713,12 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 
 		// a few more files need to be added to complete the main partition
 		{
-			std::vector<u8> shopLog;
-			shopLog.resize(0x20);
-			memset(shopLog.data(), 0, shopLog.size());
-			nandFiles.push_back(std::make_pair(std::move(shopLog), std::string("0:/sys/log/shop.log")));
-
 			std::vector<u8> sysMenuLog;
 			sysMenuLog.resize(0x4000);
 			memset(sysMenuLog.data(), 0, sysMenuLog.size());
 			nandFiles.push_back(std::make_pair(std::move(sysMenuLog), std::string("0:/sys/log/sysmenu.log")));
+
+			// sys/log/shop.log won't be present on DSis that have never connected to the DSi Shop (this is what we target)
 
 			// sys/log/product.log is written at the factory, and variable length
 			// nothing seems to need it, so best not bother writing it in
@@ -957,7 +978,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			}
 		}
 
-		// create 0:/photo/private/ds/app/484E494A/pit.bin
+		// create pit.bin
 		{
 			constexpr u32 PIT_SIZE = 0x1F60;
 			auto pit = std::make_unique<u8[]>(PIT_SIZE);
