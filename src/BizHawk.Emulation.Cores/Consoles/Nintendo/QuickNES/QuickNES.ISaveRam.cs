@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public bool SaveRamModified => QN.qn_has_battery_ram(Context);
 
+		public bool SupportsSaveRam => QN.qn_has_battery_ram(Context);
+
 		private byte[] _saveRamBuff;
 
 		private void InitSaveRamBuff()

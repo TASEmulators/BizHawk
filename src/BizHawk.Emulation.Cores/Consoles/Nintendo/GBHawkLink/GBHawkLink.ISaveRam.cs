@@ -54,14 +54,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			{
 				if (L.cart_RAM != null && R.cart_RAM == null)
 				{
+					if (data.Length != L.cart_RAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 					Buffer.BlockCopy(data, 0, L.cart_RAM, 0, L.cart_RAM.Length);
 				}
 				else if (R.cart_RAM != null && L.cart_RAM == null)
 				{
+					if (data.Length != R.cart_RAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 					Buffer.BlockCopy(data, 0, R.cart_RAM, 0, R.cart_RAM.Length);
 				}
 				else if (R.cart_RAM != null && L.cart_RAM != null)
 				{
+					if (data.Length != L.cart_RAM.Length + R.cart_RAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 					Buffer.BlockCopy(data, 0, L.cart_RAM, 0, L.cart_RAM.Length);
 					Buffer.BlockCopy(data, L.cart_RAM.Length, R.cart_RAM, 0, R.cart_RAM.Length);
 				}
@@ -71,5 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		}
 
 		public bool SaveRamModified => (L.has_bat || R.has_bat) & linkSyncSettings.Use_SRAM;
+
+		public bool SupportsSaveRam => L.cart_RAM != null || R.cart_RAM != null; // The Use_SRAM setting implements behavior not officially supported by BizHawk.
 	}
 }

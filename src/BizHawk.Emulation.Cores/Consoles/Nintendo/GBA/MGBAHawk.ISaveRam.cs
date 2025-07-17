@@ -33,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (!SupportsSaveRam) return;
+
 			if (data.AsSpan().Slice(0, 8).SequenceEqual(_legacyHeader))
 			{
 				data = LegacyFix(data);
@@ -42,6 +44,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public bool SaveRamModified => LibmGBA.BizGetSaveRam(Core, _saveScratch, _saveScratch.Length) > 0;
+
+		public bool SupportsSaveRam
+		{
+			get
+			{
+				// Is all of this necessary? Someone who knows how the core works might know.
+				int len = LibmGBA.BizGetSaveRam(Core, _saveScratch, _saveScratch.Length);
+				len = TruncateRTCIfUsingDeterministicTime(len);
+				return len != 0;
+			}
+		}
 
 		private static byte[] LegacyFix(byte[] saveram)
 		{

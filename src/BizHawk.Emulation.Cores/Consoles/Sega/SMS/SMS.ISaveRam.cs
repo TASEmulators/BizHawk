@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (SaveRAM != null)
 			{
+				if (data.Length != SaveRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Array.Copy(data, SaveRAM, data.Length);
 			}
 
@@ -21,6 +22,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		public bool SaveRamModified { get; private set; }
+
+		public bool SupportsSaveRam => SaveRAM != null;
 
 		public byte[] SaveRAM;
 		private byte SaveRamBank;

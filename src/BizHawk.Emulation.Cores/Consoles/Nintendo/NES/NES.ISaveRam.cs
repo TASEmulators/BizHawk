@@ -15,6 +15,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public bool SupportsSaveRam
+		{
+			get
+			{
+				if (Board == null) return false;
+				if (Board is FDS) return true;
+				if (Board.SaveRam == null) return false;
+				return true;
+			}
+		}
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (Board is FDS fds)
@@ -38,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return;
 			}
 
+			if (data.Length != Board.SaveRam.Length) throw new InvalidOperationException("Incorrect sram size.");
 			Array.Copy(data, Board.SaveRam, data.Length);
 		}
 	}

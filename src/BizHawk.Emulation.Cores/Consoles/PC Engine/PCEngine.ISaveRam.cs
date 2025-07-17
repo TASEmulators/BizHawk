@@ -6,6 +6,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		public bool SaveRamModified { get; private set; }
 
+		public bool SupportsSaveRam => BRAM != null;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (clearDirty) SaveRamModified = false;
@@ -16,6 +18,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			if (BRAM != null)
 			{
+				if (data.Length != BRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Array.Copy(data, BRAM, data.Length);
 			}
 

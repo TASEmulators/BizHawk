@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		}
 
 		public bool SaveRamModified => true;
+		public bool SupportsSaveRam => true;
 
 		public byte[] CloneSaveRam(bool clearDirty)
 		{

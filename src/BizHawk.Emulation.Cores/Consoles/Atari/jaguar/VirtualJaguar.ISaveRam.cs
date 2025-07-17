@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public new bool SaveRamModified => _saveRamSize > 0 && _core.SaveRamIsDirty();
 
+		public new bool SupportsSaveRam => _saveRamSize != 0;
+
 		public new byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveRamSize == 0)
