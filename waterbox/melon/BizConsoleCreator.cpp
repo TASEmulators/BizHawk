@@ -392,6 +392,14 @@ static const std::pair<const char*, const char*> RegionalNandTitlePaths[] =
 	std::make_pair("0:/title/00030017/484e41%x/content/title.tmd", "0:/title/00030017/484e41%x/content/%08x.app"),
 };
 
+static const std::pair<const char*, const u32> NandSavPaths[] =
+{
+	std::make_pair("0:/title/00030005/484e49%x/data/private.sav", 0x80000),
+	std::make_pair("0:/title/00030005/484e4b%x/data/private.sav", 0x80000),
+	std::make_pair("0:/title/00030015/484e46%x/data/private.sav", 0x4000),
+	std::make_pair("0:/title/00030017/484e41%x/data/private.sav", 0x4000),
+};
+
 static const char* const PhotoNandDirs[] =
 {
 	"0:/photo",
@@ -738,6 +746,49 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			memcpy(&shared2Sound[(1 + 3) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
 
 			nandFiles.push_back(std::make_pair(std::move(shared2Sound), std::string("0:/shared2/0000")));
+		}
+
+		// add in a few blank sav files (these aren't created automatically)
+		// there are just 512KiB and 16KiB saves here as a note (so just hardcode things for such)
+		for (auto nandSavPath : NandSavPaths)
+		{
+			std::vector<u8> nandSav;
+			nandSav.resize(nandSavPath.second);
+			memset(nandSav.data(), 0, nandSav.size());
+
+			// write VBR
+			vbr = reinterpret_cast<VolumeBootRecord*>(&nandSav[0]);
+			vbr->JumpOpcode[0] = 0xE9;
+			vbr->JumpOpcode[1] = 0x00;
+			vbr->JumpOpcode[2] = 0x00;
+			memcpy(vbr->OemName, "E       ", sizeof(vbr->OemName));
+			vbr->BytesPerSector = 0x200;
+			vbr->SectorsPerCluster = 1;
+			vbr->NumReservedSectors = 1;
+			vbr->NumFATs = 2;
+			vbr->MaxRootDirectoryEntries = 32;
+			vbr->NumSectorsU16 = nandSav.size() == 0x80000 ? 0x3E8 : 0x1B;
+			vbr->MediaDescriptor = 0xF8;
+			vbr->SectorsPerFAT = nandSav.size() == 0x80000 ? 3 : 1;
+			vbr->SectorsPerTrack = nandSav.size() == 0x80000 ? 10 : 3;
+			vbr->NumHeads = nandSav.size() == 0x80000 ? 10 : 3;
+			vbr->NumHiddenSectors = 0;
+			vbr->NumSectorsU32 = 0;
+			vbr->DriveNumber = 2;
+			vbr->Reserved = 0;
+			vbr->ExBootSignature = 0x29;
+			vbr->VolumeID = 0x12345678;
+			memcpy(vbr->VolumeLabel, "V          ", sizeof(vbr->VolumeLabel));
+			memset(vbr->FileSystemType, 0x00, sizeof(vbr->FileSystemType));
+			memset(vbr->BootCode, 0x00, sizeof(vbr->BootCode));
+			vbr->BootSignature = 0xAA55;
+
+			// init both FATs
+			memcpy(&nandSav[(1 + 0) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
+			memcpy(&nandSav[(1 + vbr->SectorsPerFAT) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
+
+			snprintf(nandPath, sizeof(nandPath), nandSavPath.first, regionIdChar);
+			nandFiles.push_back(std::make_pair(std::move(nandSav), std::string(nandPath)));
 		}
 
 		// import in all the old files
