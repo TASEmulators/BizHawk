@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void ConnectTracer()
 		{
 			Tracer = new TraceBuffer(TraceHeader);
-			((BasicServiceProvider) ServiceProvider).Register<ITraceable>(Tracer);
+			_serviceProvider.Register<ITraceable>(Tracer);
 			_traceCb = MakeTrace;
 		}
 	}

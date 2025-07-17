@@ -32,7 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register(_nesCore.ServiceProvider.GetService<IMemoryDomains>());
 			ser.Register(_nesCore.ServiceProvider.GetService<INESPPUViewable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IBoardInfo>());
-			ser.Register(_nesCore.ServiceProvider.GetService<ISaveRam>());
+			if (_nesCore.ServiceProvider.HasService<ISaveRam>())
+				ser.Register(_nesCore.ServiceProvider.GetService<ISaveRam>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_nesCore.ServiceProvider.GetService<ICodeDataLogger>());

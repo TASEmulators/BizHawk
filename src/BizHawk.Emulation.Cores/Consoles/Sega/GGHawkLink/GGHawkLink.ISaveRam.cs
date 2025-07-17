@@ -45,23 +45,30 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 				return temp;
 			}
 
-			return null;
+			throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
 			if (L.SaveRAM != null && R.SaveRAM == null)
 			{
+				if (data.Length != L.SaveRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Buffer.BlockCopy(data, 0, L.SaveRAM, 0, L.SaveRAM.Length);
 			}
 			else if (R.SaveRAM != null && L.SaveRAM == null)
 			{
+				if (data.Length != R.SaveRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Buffer.BlockCopy(data, 0, R.SaveRAM, 0, R.SaveRAM.Length);
 			}
 			else if (R.SaveRAM != null && L.SaveRAM != null)
 			{
+				if (data.Length != L.SaveRAM.Length + R.SaveRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Buffer.BlockCopy(data, 0, L.SaveRAM, 0, L.SaveRAM.Length);
 				Buffer.BlockCopy(data, L.SaveRAM.Length, R.SaveRAM, 0, R.SaveRAM.Length);
+			}
+			else
+			{
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			Console.WriteLine("loading SRAM here");

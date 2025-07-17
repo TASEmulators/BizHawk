@@ -38,6 +38,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				}
 			}
 
+			if (_saveramSize == 0)
+				_serviceProvider.Unregister<ISaveRam>();
+
 			// no domains to register...
 			if (md.Count == 0)
 			{

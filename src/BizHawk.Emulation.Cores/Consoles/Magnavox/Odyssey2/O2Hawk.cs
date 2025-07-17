@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public readonly byte[] _rom;
 		public readonly byte[] header = new byte[0x50];
 
-		public byte[] cart_RAM;
+		private byte[] cart_RAM;
 		public bool has_bat;
 
 		public int _frame = 0;
@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public O2Hawk(CoreComm comm, GameInfo game, byte[] rom, O2Settings settings, O2SyncSettings syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
+			ser.Unregister<ISaveRam>();
 
 			cpu = new I8048
 			{
@@ -76,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_frameHz = 60;
 
 			ser.Register<IVideoProvider>(this);
-			ServiceProvider = ser;
+			_serviceProvider = ser;
 
 			_tracer = new TraceBuffer(cpu.TraceHeader);
 			ser.Register(_tracer);

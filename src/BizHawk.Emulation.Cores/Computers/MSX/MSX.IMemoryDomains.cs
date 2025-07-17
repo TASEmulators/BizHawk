@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			SyncAllByteArrayDomains();
 
 			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(MemoryDomains);
 
 			_memoryDomainsInit = true;
 		}

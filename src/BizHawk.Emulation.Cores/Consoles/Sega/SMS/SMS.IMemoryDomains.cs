@@ -35,11 +35,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; }, 1);
 				domains.Add(saveRamDomain);
 			}
+			else
+			{
+				_serviceProvider.Unregister<ISaveRam>();
+			}
 
 			SyncAllByteArrayDomains();
 
 			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(MemoryDomains);
 
 			_memoryDomainsInit = true;
 		}

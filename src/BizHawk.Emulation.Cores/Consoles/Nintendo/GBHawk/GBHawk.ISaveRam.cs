@@ -6,13 +6,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
-			return (byte[])cart_RAM?.Clone();
+			if (cart_RAM == null)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			return (byte[])cart_RAM.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (_syncSettings.Use_SRAM)
+			if (cart_RAM == null)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else if (_syncSettings.Use_SRAM)
 			{
+				if (data.Length != cart_RAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Buffer.BlockCopy(data, 0, cart_RAM, 0, data.Length);
 				Console.WriteLine("loading SRAM here");
 			}

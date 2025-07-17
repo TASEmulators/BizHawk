@@ -14,7 +14,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
-			if (_saveramSize > 0)
+			if (_saveramSize == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else
 			{
 				var buf = new byte[_saveramSize];
 				int index = 0;
@@ -25,13 +27,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 				}
 				return buf;
 			}
-
-			return null;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (_saveramSize > 0)
+			if (_saveramSize == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else
 			{
 				int index = 0;
 				foreach (var m in _saveramAreas)
@@ -39,6 +41,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 					Marshal.Copy(data, index, m.Data, (int)m.Size);
 					index += (int)m.Size;
 				}
+
+				if (data.Length != index) throw new InvalidOperationException("Incorrect sram size.");
 			}
 		}
 	}

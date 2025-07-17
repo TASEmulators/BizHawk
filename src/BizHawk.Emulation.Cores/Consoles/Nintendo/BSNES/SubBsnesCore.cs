@@ -25,7 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			BasicServiceProvider ser = new(this);
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IDebuggable>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IVideoProvider>());
-			ser.Register(_bsnesCore.ServiceProvider.GetService<ISaveRam>());
+			if (_bsnesCore.ServiceProvider.HasService<ISaveRam>())
+				ser.Register(_bsnesCore.ServiceProvider.GetService<ISaveRam>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IStatable>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IInputPollable>());
 			ser.Register(_bsnesCore.ServiceProvider.GetService<IRegionable>());

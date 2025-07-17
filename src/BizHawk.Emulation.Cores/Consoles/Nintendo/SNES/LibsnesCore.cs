@@ -193,6 +193,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api.QUERY_set_audio_sample(_soundcb);
 			Api.Seal();
 			RefreshPalette();
+
+			bool hasSaveRam = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != null
+				|| Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM) != null;
+			if (!hasSaveRam)
+			{
+				ser.Unregister<ISaveRam>();
+			}
 		}
 
 		private readonly LibsnesApi.snes_video_refresh_t _videocb;

@@ -33,7 +33,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 			ser.Register(_GBCore.ServiceProvider.GetService<ISoundProvider>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ITraceable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IMemoryDomains>());
-			ser.Register(_GBCore.ServiceProvider.GetService<ISaveRam>());
+			if (_GBCore.ServiceProvider.HasService<ISaveRam>())
+				ser.Register(_GBCore.ServiceProvider.GetService<ISaveRam>());
 			ser.Register(_GBCore.ServiceProvider.GetService<IRegionable>());
 			ser.Register(_GBCore.ServiceProvider.GetService<ICodeDataLogger>());
 

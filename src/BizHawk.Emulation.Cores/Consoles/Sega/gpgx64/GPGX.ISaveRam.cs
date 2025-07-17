@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			var area = Core.gpgx_get_sram(ref size);
 			if (size == 0 || area == IntPtr.Zero)
 			{
-				return null;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			var ret = new byte[size];
@@ -31,6 +31,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				// not sure how this is happening, but reject them
 				return;
+			}
+
+			var size = 0;
+			var area = Core.gpgx_get_sram(ref size);
+			if (size == 0 || area == IntPtr.Zero)
+			{
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			if (!Core.gpgx_put_sram(data, data.Length))

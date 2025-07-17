@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				if (DSiWareSaveLength == 0)
 				{
-					return null;
+					throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 				}
 
 				_exe.AddTransientFile([ ], "public.sav");
@@ -47,13 +47,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				return ret;
 			}
 
-			return null;
+			throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 		}
 
 		public new void StoreSaveRam(byte[] data)
 		{
 			if (IsDSiWare)
 			{
+				if (DSiWareSaveLength == 0) throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 				if (data.Length == DSiWareSaveLength)
 				{
 					if (PublicSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(0, PublicSavSize).ToArray(), "public.sav");
@@ -65,6 +66,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					if (PublicSavSize > 0) _exe.RemoveReadonlyFile("public.sav");
 					if (PrivateSavSize > 0) _exe.RemoveReadonlyFile("private.sav");
 					if (BannerSavSize > 0) _exe.RemoveReadonlyFile("banner.sav");
+				}
+				else
+				{
+					throw new InvalidOperationException("Incorrect sram size.");
 				}
 			}
 			else if (data.Length > 0)

@@ -21,8 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		[CoreConstructor(VSystemID.Raw.GG)]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, SmsSettings settings, SmsSyncSettings syncSettings)
 		{
-			var ser = new BasicServiceProvider(this);
-			ServiceProvider = ser;
+			_serviceProvider = new BasicServiceProvider(this);
 			Settings = settings ?? new SmsSettings();
 			SyncSettings = syncSettings ?? new SmsSyncSettings();
 
@@ -94,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			SystemId = game.System;
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region, sms_reg_compat);
-			ser.Register<IVideoProvider>(Vdp);
+			_serviceProvider.Register<IVideoProvider>(Vdp);
 			PSG = new SN76489sms();
 			YM2413 = new YM2413();
 			//SoundMixer = new SoundMixer(YM2413, PSG);
@@ -106,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			BlipL.SetRates(3579545, 44100);
 			BlipR.SetRates(3579545, 44100);
 
-			ser.Register<ISoundProvider>(this);
+			_serviceProvider.Register<ISoundProvider>(this);
 
 			SystemRam = new byte[0x2000];
 
@@ -194,9 +193,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			Tracer = new TraceBuffer(Cpu.TraceHeader);
 
-			ser.Register(Tracer);
-			ser.Register<IDisassemblable>(Cpu);
-			ser.Register<IStatable>(new StateSerializer(SyncState));
+			_serviceProvider.Register(Tracer);
+			_serviceProvider.Register<IDisassemblable>(Cpu);
+			_serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
 			Vdp.ProcessOverscan();
 
 			// Z80 SP initialization
@@ -206,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (!IsSG1000)
 			{
-				ser.Register<ISmsGpuView>(new SmsGpuView(Vdp));
+				_serviceProvider.Register<ISmsGpuView>(new SmsGpuView(Vdp));
 			}
 
 			_controllerDeck = new SMSControllerDeck(SyncSettings.Port1, SyncSettings.Port2, IsGameGear_C, SyncSettings.UseKeyboard);
