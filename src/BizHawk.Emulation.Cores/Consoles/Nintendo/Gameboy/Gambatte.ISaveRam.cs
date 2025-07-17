@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// need to wire more stuff into the core to actually know this
 		public bool SaveRamModified => LibGambatte.gambatte_getsavedatalength(GambatteState) != 0;
 
+		public bool SupportsSaveRam => LibGambatte.gambatte_getsavedatalength(GambatteState) != 0;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			var length = LibGambatte.gambatte_getsavedatalength(GambatteState);
@@ -24,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void StoreSaveRam(byte[] data)
 		{
 			var expected = LibGambatte.gambatte_getsavedatalength(GambatteState);
+			if (expected == 0) return;
 			if (data.Length != expected) throw new ArgumentException(message: "Size of saveram data does not match expected!", paramName: nameof(data));
 
 			LibGambatte.gambatte_loadsavedata(GambatteState, data);

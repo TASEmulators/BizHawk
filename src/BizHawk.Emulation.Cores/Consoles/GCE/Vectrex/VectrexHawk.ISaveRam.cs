@@ -12,5 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public void StoreSaveRam(byte[] data) {}
 
 		public bool SaveRamModified => false;
+
+		public bool SupportsSaveRam => false;
 	}
 }

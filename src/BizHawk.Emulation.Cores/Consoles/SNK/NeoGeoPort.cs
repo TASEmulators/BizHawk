@@ -51,6 +51,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			}
 		}
 
+		public new bool SupportsSaveRam => true;
+
 		public new byte[] CloneSaveRam(bool clearDirty)
 		{
 			_exe.AddTransientFile(Array.Empty<byte>(), "SAV:flash");

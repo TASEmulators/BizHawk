@@ -133,7 +133,6 @@ namespace BizHawk.Client.Common
 
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
-			tas.StartsFromSaveRam = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
 			foreach (string comment in old.Comments)

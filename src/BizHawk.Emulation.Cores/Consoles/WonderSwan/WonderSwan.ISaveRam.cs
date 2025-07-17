@@ -30,5 +30,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		public bool SaveRamModified => BizSwan.bizswan_saveramsize(Core) > 0;
+
+		public bool SupportsSaveRam => true;
 	}
 }

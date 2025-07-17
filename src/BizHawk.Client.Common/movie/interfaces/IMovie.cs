@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 		byte[] SaveRam { get; set; }
 
 		bool StartsFromSavestate { get; set; }
-		bool StartsFromSaveRam { get; set; }
+		bool StartsFromSaveRam { get; }
 
 		string LogKey { get; set; }
 

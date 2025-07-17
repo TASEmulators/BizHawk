@@ -15,5 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		public bool SaveRamModified => true;
+
+		public bool SupportsSaveRam => true;
 	}
 }

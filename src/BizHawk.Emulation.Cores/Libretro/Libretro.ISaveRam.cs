@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public bool SaveRamModified => _saveramSize > 0;
 
+		public bool SupportsSaveRam => _saveramSize > 0;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveramSize > 0)
@@ -39,6 +41,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 					Marshal.Copy(data, index, m.Data, (int)m.Size);
 					index += (int)m.Size;
 				}
+
+				if (data.Length != index) throw new InvalidOperationException("Incorrect sram size.");
 			}
 		}
 	}

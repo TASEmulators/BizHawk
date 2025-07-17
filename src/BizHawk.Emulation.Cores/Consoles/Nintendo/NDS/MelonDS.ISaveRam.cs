@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public new bool SaveRamModified => IsDSiWare ? DSiWareSaveLength != 0 : _core.SaveRamIsDirty(_console);
 
+		public new bool SupportsSaveRam => IsDSiWare ? DSiWareSaveLength != 0 : _core.GetSaveRamLength(_console) != 0;
+
 		public new byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (IsDSiWare)
@@ -54,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			if (IsDSiWare)
 			{
+				if (DSiWareSaveLength == 0) return;
 				if (data.Length == DSiWareSaveLength)
 				{
 					if (PublicSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(0, PublicSavSize).ToArray(), "public.sav");
@@ -65,6 +68,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					if (PublicSavSize > 0) _exe.RemoveReadonlyFile("public.sav");
 					if (PrivateSavSize > 0) _exe.RemoveReadonlyFile("private.sav");
 					if (BannerSavSize > 0) _exe.RemoveReadonlyFile("banner.sav");
+				}
+				else
+				{
+					throw new InvalidOperationException("Incorrect sram size.");
 				}
 			}
 			else if (data.Length > 0)
