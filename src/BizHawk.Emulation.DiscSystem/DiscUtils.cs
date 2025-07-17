@@ -2,11 +2,11 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscUtils
 	{
-		private static byte IntToBCD(int n)
-		{
-			var tens = Math.DivRem(n, 10, out var ones);
-			return (byte)((tens << 4) | ones);
-		}
+		//private static byte IntToBCD(int n)
+		//{
+		//	var tens = Math.DivRem(n, 10, out var ones);
+		//	return (byte)((tens << 4) | ones);
+		//}
 
 		/// <summary>
 		/// converts the given int to a BCD value

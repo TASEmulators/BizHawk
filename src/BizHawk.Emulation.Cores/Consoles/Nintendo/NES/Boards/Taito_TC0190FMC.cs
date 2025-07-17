@@ -61,7 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					delay--;
 					if(delay==0 && irq_pending)
 						board.IrqSignal = true;
-
 				}
 			}
 		}

@@ -87,7 +87,6 @@ namespace BizHawk.Client.Common
 			catch (Exception e)
 			{
 				return e.ToString();
-
 			}
 			if (!response.IsSuccessStatusCode)
 			{

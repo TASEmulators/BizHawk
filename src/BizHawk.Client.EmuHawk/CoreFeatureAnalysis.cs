@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class CoreFeatureAnalysis : ToolFormBase, IToolFormAutoConfig
+	public partial class CoreFeatureAnalysis : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		private class CoreInfo
 		{
@@ -93,8 +93,20 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Properties.Resources.Logo;
 
-		[ConfigPersist]
-		private Dictionary<string, CoreInfo> KnownCores { get; set; }
+		private Dictionary<string, CoreInfo> KnownCores;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(KnownCores), ref KnownCores);
+		}
+
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(KnownCores)] = KnownCores,
+			};
+		}
 
 		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		[RequiredService]

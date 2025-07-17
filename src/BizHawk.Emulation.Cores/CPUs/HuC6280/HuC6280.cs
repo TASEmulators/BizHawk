@@ -197,7 +197,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		// ==== Interrupts ====
 
 		private const ushort ResetVector = 0xFFFE;
+#pragma warning disable IDE0051 // Remove unused private members
 		private const ushort NMIVector = 0xFFFC;
+#pragma warning restore IDE0051 // Remove unused private members
 		private const ushort TimerVector = 0xFFFA;
 		private const ushort IRQ1Vector = 0xFFF8;
 		private const ushort IRQ2Vector = 0xFFF6;
@@ -363,7 +365,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			return (ushort)((h << 8) | l);
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		private void WriteWord(ushort address, ushort value)
+#pragma warning restore IDE0051 // Remove unused private members
 		{
 			byte l = (byte)(value & 0xFF);
 			byte h = (byte)(value >> 8);

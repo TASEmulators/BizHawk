@@ -128,7 +128,6 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsdd.Items.Add(tsmiMissingFile);
 							tsdd.Items.Add(new ToolStripSeparator());
 						}
-
 					} //crazystuff
 
 					//in any case, make a menuitem to let you remove the item

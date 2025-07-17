@@ -57,6 +57,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else base.WritePpu(addr, value);
 		}
-
 	}
 }

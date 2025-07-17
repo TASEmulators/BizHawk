@@ -892,7 +892,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						sample_length = 0;
 					}
-
 				}
 				else
 				{
@@ -902,7 +901,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						sample_address = user_address;
 						sample_length = user_length;
-
 					}
 					if (!sample_buffer_filled)
 					{
@@ -1254,14 +1252,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						triangle.set_lenctr_en((val >> 2) & 1);
 						noise.set_lenctr_en((val >> 3) & 1);
 						dmc.set_lenctr_en(val.Bit(4));
-
 					}
 					else if (addr == 0x4017)
 					{
 						if (dmc.timer % 2 == 0)
 						{
 							seq_tick = 3;
-
 						} else
 						{
 							seq_tick = 4;
@@ -1442,7 +1438,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					DebugCallbackTimer = DebugCallbackDivider;
 				}
 				else DebugCallbackTimer--;
-
 			}
 		}
 

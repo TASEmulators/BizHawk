@@ -2,14 +2,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class VirtualpadTool : ToolFormBase, IToolFormAutoConfig
+	public partial class VirtualpadTool : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		public static Icon ToolIcon
 			=> Properties.Resources.GameControllerIcon;
@@ -17,11 +16,24 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		[ConfigPersist]
-		public bool StickyPads { get; set; }
+		public bool StickyPads;
 
-		[ConfigPersist]
-		public bool ClearAlsoClearsAnalog { get; set; }
+		public bool ClearAlsoClearsAnalog;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(StickyPads), ref StickyPads);
+			provider.Get(nameof(ClearAlsoClearsAnalog), ref ClearAlsoClearsAnalog);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(StickyPads)] = StickyPads,
+				[nameof(ClearAlsoClearsAnalog)] = ClearAlsoClearsAnalog,
+			};
+		}
+
 
 		private bool _readOnly;
 

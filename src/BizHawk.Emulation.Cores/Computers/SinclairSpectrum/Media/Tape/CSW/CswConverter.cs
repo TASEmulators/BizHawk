@@ -111,27 +111,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (majorVer == 2)
 			{
 				/*
-                    CSW-2 Header
-                    CSW global file header - status: required
-                    Offset	    Value	Type	Description
-                    0x00	    (note)	ASCII[22]	"Compressed Square Wave" signature
-                    0x16	    0x1A	BYTE	    Terminator code
-                    0x17	    0x02	BYTE	    CSW major revision number
-                    0x18	    0x00	BYTE	    CSW minor revision number
-                    0x19	    -	    DWORD	    Sample rate
-                    0x1D	    -	    DWORD	    Total number of pulses (after decompression)
-                    0x21	    -	    BYTE	    Compression type (see notes below)
-                                                        0x01: RLE
-                                                        0x02: Z-RLE
-                    0x22	    -	    BYTE	    Flags
-                                                        b0: initial polarity; if set, the signal starts at logical high
-                    0x23	    HDR	    BYTE	    Header extension length in bytes (0x00)
-                                                        For future expansions only, see note below.
-                    0x24	    -	    ASCIIZ[16]	Encoding application description
-                                                        Information about the tool which created the file (e.g. name and version)
-                    0x34	    -	    BYTE[HDR]	Header extension data (if present)
-                    0x34+HDR	-	    -	        CSW data.
-                */
+					CSW-2 Header
+					CSW global file header - status: required
+					Offset      Value   Type        Description
+					0x00        (note)  ASCII[22]   "Compressed Square Wave" signature
+					0x16        0x1A    BYTE        Terminator code
+					0x17        0x02    BYTE        CSW major revision number
+					0x18        0x00    BYTE        CSW minor revision number
+					0x19        -       DWORD       Sample rate
+					0x1D        -       DWORD       Total number of pulses (after decompression)
+					0x21        -       BYTE        Compression type (see notes below)
+					                                    0x01: RLE
+					                                    0x02: Z-RLE
+					0x22        -       BYTE        Flags
+					                                    b0: initial polarity; if set, the signal starts at logical high
+					0x23        HDR     BYTE        Header extension length in bytes (0x00)
+					                                    For future expansions only, see note below.
+					0x24        -       ASCIIZ[16]  Encoding application description
+					                                    Information about the tool which created the file (e.g. name and version)
+					0x34        -       BYTE[HDR]   Header extension data (if present)
+					0x34+HDR    -       -           CSW data.
+				*/
 
 				_position = 0x19;
 				sampleRate = GetInt32(data, _position);
@@ -155,21 +155,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			else if (majorVer == 1)
 			{
 				/*
-                    CSW-1 Header
-                    CSW global file header - status: required
-                    Offset	Value	Type	    Description
-                    0x00	(note)	ASCII[22]	"Compressed Square Wave" signature
-                    0x16	0x1A	BYTE	    Terminator code
-                    0x17	0x01	BYTE	    CSW major revision number
-                    0x18	0x01	BYTE	    CSW minor revision number
-                    0x19	-	    WORD	    Sample rate
-                    0x1B	0x01	BYTE	    Compression type
-                                                    0x01: RLE
-                    0x1C	-	    BYTE	    Flags
-                                                    b0: initial polarity; if set, the signal starts at logical high
-                    0x1D	0x00	BYTE[3]	    Reserved.
-                    0x20	-	    -	        CSW data.
-                */
+					CSW-1 Header
+					CSW global file header - status: required
+					Offset  Value   Type        Description
+					0x00    (note)  ASCII[22]   "Compressed Square Wave" signature
+					0x16    0x1A    BYTE        Terminator code
+					0x17    0x01    BYTE        CSW major revision number
+					0x18    0x01    BYTE        CSW minor revision number
+					0x19    -       WORD        Sample rate
+					0x1B    0x01    BYTE        Compression type
+					                                0x01: RLE
+					0x1C    -       BYTE        Flags
+					                                b0: initial polarity; if set, the signal starts at logical high
+					0x1D    0x00    BYTE[3]     Reserved.
+					0x20    -       -            CSW data.
+				*/
 
 				_position = 0x19;
 				sampleRate = GetWordValue(data, _position);

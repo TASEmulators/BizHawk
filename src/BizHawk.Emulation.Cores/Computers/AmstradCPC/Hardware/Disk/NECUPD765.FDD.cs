@@ -7,11 +7,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// Floppy drive related stuff
 	/// </summary>
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	public partial class NECUPD765 : IFDDHost
 	{
 		/// <summary>
@@ -298,424 +298,422 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			/*
-            /// <summary>
-            /// Moves the head across the disk cylinders
-            /// </summary>
-            public void MoveHead(SkipDirection direction, int cylinderCount)
-            {
-                // get total tracks
-                int trackCount = Disk.DiskTracks.Length;
+			/// <summary>
+			/// Moves the head across the disk cylinders
+			/// </summary>
+			public void MoveHead(SkipDirection direction, int cylinderCount)
+			{
+				// get total tracks
+				int trackCount = Disk.DiskTracks.Length;
 
-                int trk = 0;
+				int trk = 0;
 
-                switch (direction)
-                {
-                    case SkipDirection.Increment:
-                        trk = (int)CurrentTrack + cylinderCount;
-                        if (trk >= trackCount)
-                        {
-                            // past the last track
-                            trk = trackCount - 1;
-                        }
-                        else if (trk < 0)
-                            trk = 0;
-                        break;
-                    case SkipDirection.Decrement:
-                        trk = (int)CurrentTrack - cylinderCount;
-                        if (trk < 0)
-                        {
-                            // before the first track
-                            trk = 0;
-                        }
-                        else if (trk >= trackCount)
-                            trk = trackCount - 1;
-                        break;
-                }
+				switch (direction)
+				{
+					case SkipDirection.Increment:
+						trk = (int)CurrentTrack + cylinderCount;
+						if (trk >= trackCount)
+						{
+							// past the last track
+							trk = trackCount - 1;
+						}
+						else if (trk < 0)
+							trk = 0;
+						break;
+					case SkipDirection.Decrement:
+						trk = (int)CurrentTrack - cylinderCount;
+						if (trk < 0)
+						{
+							// before the first track
+							trk = 0;
+						}
+						else if (trk >= trackCount)
+							trk = trackCount - 1;
+						break;
+				}
 
-                // move the head
-                CurrentTrack = (byte)trk;
-            }
-            */
-
-			/*
-
-            /// <summary>
-            /// Finds a supplied sector
-            /// </summary>
-            public FloppyDisk.Sector FindSector(ref byte[] resBuffer, CommandParameters prms)
-            {
-                int index =CurrentSector;
-                int lc = 0;
-                FloppyDisk.Sector sector = null;
-
-                bool found = false;
-
-                do
-                {
-                    sector = Disk.DiskTracks[CurrentTrack].Sectors[index];
-                    if (sector != null && sector.SectorID == prms.Sector)
-                    {
-                        // sector found
-                        // check for data errors
-                        if ((sector.Status1 & 0x20) != 0 || (sector.Status2 & 0x20) != 0)
-                        {
-                            // data errors found
-                        }
-                        found = true;
-                        break;
-                    }
-
-                    // sector doesnt match
-                    var c = Disk.DiskTracks[CurrentTrack].Sectors[index].TrackNumber;
-                    if (c == 255)
-                    {
-                        // bad cylinder
-                        resBuffer[RS_ST2] |= 0x02;
-                    }
-                    else if (prms.Cylinder != c)
-                    {
-                        // cylinder mismatch
-                        resBuffer[RS_ST2] |= 0x10;
-                    }
-
-                    // increment index
-                    index++;
-
-                    if (index >= Disk.DiskTracks[CurrentTrack].NumberOfSectors)
-                    {
-                        // out of bounds
-                        index = 0;
-                        lc++;
-                    }
-
-                } while (lc < 2);
-
-                if ((resBuffer[RS_ST2] & 0x02) != 0)
-                {
-                    // bad cylinder set - remove no cylinder
-                    UnSetBit(SR2_WC, ref resBuffer[RS_ST2]);
-                }
-
-                // update current sector
-                CurrentSector = index;
-
-                if (found)
-                    return sector;
-                else
-                    return null;
-            }
-
-
-            /// <summary>
-            /// Populates a result buffer
-            /// </summary>
-            public void FillResult(ref byte[] resBuffer, CHRN chrn)
-            {
-                // clear results
-                resBuffer[RS_ST0] = 0;
-                resBuffer[RS_ST1] = 0;
-                resBuffer[RS_ST2] = 0;
-                resBuffer[RS_C] = 0;
-                resBuffer[RS_H] = 0;
-                resBuffer[RS_R] = 0;
-                resBuffer[RS_N] = 0;
-
-                if (chrn == null)
-                {
-                    // no chrn supplied
-                    resBuffer[RS_ST0] = ST0;
-                    resBuffer[RS_ST1] = 0;
-                    resBuffer[RS_ST2] = 0;
-                    resBuffer[RS_C] = 0;
-                    resBuffer[RS_H] = 0;
-                    resBuffer[RS_R] = 0;
-                    resBuffer[RS_N] = 0;
-                }
-            }
-
-
-
-            /// <summary>
-            /// Populates the result buffer with ReadID data
-            /// </summary>
-            public void ReadID(ref byte[] resBuffer)
-            {
-                if (CheckDriveStatus() == false)
-                {
-                    // drive not ready
-                    resBuffer[RS_ST0] = ST0;
-                    return;
-                }
-
-                var track = Disk.DiskTracks.Where(a => a.TrackNumber == CurrentTrack).FirstOrDefault();
-
-                if (track != null && track.NumberOfSectors > 0)
-                {
-                    // formatted track
-
-                    // get the current sector
-                    int index = CurrentSector;
-
-                    // is the index out of bounds?
-                    if (index >= track.NumberOfSectors)
-                    {
-                        // reset the index
-                        index = 0;
-                    }
-
-                    // read the sector data
-                    var data = track.Sectors[index];
-                    resBuffer[RS_C] = data.TrackNumber;
-                    resBuffer[RS_H] = data.SideNumber;
-                    resBuffer[RS_R] = data.SectorID;
-                    resBuffer[RS_N] = data.SectorSize;
-
-                    resBuffer[RS_ST0] = ST0;
-
-                    // increment the current sector
-                    CurrentSector = index + 1;
-                    return;
-                }
-                else
-                {
-                    // unformatted track?
-                    resBuffer[RS_C] = FDC.CommBuffer[CM_C];
-                    resBuffer[RS_H] = FDC.CommBuffer[CM_H];
-                    resBuffer[RS_R] = FDC.CommBuffer[CM_R];
-                    resBuffer[RS_N] = FDC.CommBuffer[CM_N];
-
-                    SetBit(SR0_IC0, ref ST0);
-                    resBuffer[RS_ST0] = ST0;
-                    resBuffer[RS_ST1] = 0x01;
-                    return;
-                }
-            }
-            */
+				// move the head
+				CurrentTrack = (byte)trk;
+			}
+			*/
 
 			/*
 
-            /// <summary>
-            /// The drive performs a seek operation if necessary
-            /// Return value TRUE indicates seek complete
-            /// </summary>
-            public void DoSeek()
-            {
-                if (CurrentState is not (DriveMainState.Recalibrate or DriveMainState.Seek))
-                {
-                    // no seek/recalibrate has been asked for
-                    return;
-                }
+			/// <summary>
+			/// Finds a supplied sector
+			/// </summary>
+			public FloppyDisk.Sector FindSector(ref byte[] resBuffer, CommandParameters prms)
+			{
+				int index =CurrentSector;
+				int lc = 0;
+				FloppyDisk.Sector sector = null;
 
-                if (GetBit(ID, FDC.StatusMain))
-                {
-                    // drive is already seeking
-                    return;
-                }
+				bool found = false;
 
-                RunSeekCycle();
-            }
+				do
+				{
+					sector = Disk.DiskTracks[CurrentTrack].Sectors[index];
+					if (sector != null && sector.SectorID == prms.Sector)
+					{
+						// sector found
+						// check for data errors
+						if ((sector.Status1 & 0x20) != 0 || (sector.Status2 & 0x20) != 0)
+						{
+							// data errors found
+						}
+						found = true;
+						break;
+					}
 
-            /// <summary>
-            /// Runs a seek cycle
-            /// </summary>
-            public void RunSeekCycle()
-            {
-                for (;;)
-                {
-                    switch (SeekState)
-                    {
-                        // seek or recalibrate has been requested
-                        case SeekSubState.Idle:
+					// sector doesnt match
+					var c = Disk.DiskTracks[CurrentTrack].Sectors[index].TrackNumber;
+					if (c == 255)
+					{
+						// bad cylinder
+						resBuffer[RS_ST2] |= 0x02;
+					}
+					else if (prms.Cylinder != c)
+					{
+						// cylinder mismatch
+						resBuffer[RS_ST2] |= 0x10;
+					}
 
-                            if (CurrentState == DriveMainState.Recalibrate)
-                            {
-                                // recalibrate always seeks to track 0
-                                SeekingTrack = 0;
-                            }
-                            SeekState = SeekSubState.MoveInit;
+					// increment index
+					index++;
 
-                            // mark drive as busy
-                            // this should be cleared by SIS command
-                            SetBit(ID, ref FDC.StatusMain);
+					if (index >= Disk.DiskTracks[CurrentTrack].NumberOfSectors)
+					{
+						// out of bounds
+						index = 0;
+						lc++;
+					}
+				} while (lc < 2);
 
-                            break;
+				if ((resBuffer[RS_ST2] & 0x02) != 0)
+				{
+					// bad cylinder set - remove no cylinder
+					UnSetBit(SR2_WC, ref resBuffer[RS_ST2]);
+				}
 
-                        // setup for the head move
-                        case SeekSubState.MoveInit:
+				// update current sector
+				CurrentSector = index;
 
-                            if (CurrentTrack == SeekingTrack)
-                            {
-                                // we are already at the required track
-                                if (CurrentState is DriveMainState.Recalibrate && !FLAG_TRACK0)
-                                {
-                                    // recalibration fail
-                                    SeekIntState = SeekIntStatus.Abnormal;
+				if (found)
+					return sector;
+				else
+					return null;
+			}
 
-                                    // raise seek interrupt
-                                    FDC.ActiveInterrupt = InterruptState.Seek;
 
-                                    // unset DB bit
-                                    UnSetBit(ID, ref FDC.StatusMain);
+			/// <summary>
+			/// Populates a result buffer
+			/// </summary>
+			public void FillResult(ref byte[] resBuffer, CHRN chrn)
+			{
+				// clear results
+				resBuffer[RS_ST0] = 0;
+				resBuffer[RS_ST1] = 0;
+				resBuffer[RS_ST2] = 0;
+				resBuffer[RS_C] = 0;
+				resBuffer[RS_H] = 0;
+				resBuffer[RS_R] = 0;
+				resBuffer[RS_N] = 0;
 
-                                    // equipment check
-                                    SetBit(SR0_EC, ref FDC.Status0);
+				if (chrn == null)
+				{
+					// no chrn supplied
+					resBuffer[RS_ST0] = ST0;
+					resBuffer[RS_ST1] = 0;
+					resBuffer[RS_ST2] = 0;
+					resBuffer[RS_C] = 0;
+					resBuffer[RS_H] = 0;
+					resBuffer[RS_R] = 0;
+					resBuffer[RS_N] = 0;
+				}
+			}
 
-                                    SeekState = SeekSubState.PerformCompletion;
-                                    break;
-                                }
 
-                                if (CurrentState is DriveMainState.Recalibrate && FLAG_TRACK0)
-                                {
-                                    // recalibration success
-                                    SeekIntState = SeekIntStatus.Normal;
 
-                                    // raise seek interrupt
-                                    FDC.ActiveInterrupt = InterruptState.Seek;
+			/// <summary>
+			/// Populates the result buffer with ReadID data
+			/// </summary>
+			public void ReadID(ref byte[] resBuffer)
+			{
+				if (CheckDriveStatus() == false)
+				{
+					// drive not ready
+					resBuffer[RS_ST0] = ST0;
+					return;
+				}
 
-                                    // unset DB bit
-                                    UnSetBit(ID, ref FDC.StatusMain);
+				var track = Disk.DiskTracks.Where(a => a.TrackNumber == CurrentTrack).FirstOrDefault();
 
-                                    SeekState = SeekSubState.PerformCompletion;
-                                    break;
-                                }
-                            }
+				if (track != null && track.NumberOfSectors > 0)
+				{
+					// formatted track
 
-                            // check for error
-                            if (IntStatus >= IC_ABORTED_DISCREMOVED || Disk == null)
-                            {
-                                // drive not ready
-                                FLAG_READY = false;
+					// get the current sector
+					int index = CurrentSector;
 
-                                // drive not ready
-                                SeekIntState = SeekIntStatus.DriveNotReady;
+					// is the index out of bounds?
+					if (index >= track.NumberOfSectors)
+					{
+						// reset the index
+						index = 0;
+					}
 
-                                // cancel any interrupt
-                                FDC.ActiveInterrupt = InterruptState.None;
+					// read the sector data
+					var data = track.Sectors[index];
+					resBuffer[RS_C] = data.TrackNumber;
+					resBuffer[RS_H] = data.SideNumber;
+					resBuffer[RS_R] = data.SectorID;
+					resBuffer[RS_N] = data.SectorSize;
 
-                                // unset DB bit
-                                UnSetBit(ID, ref FDC.StatusMain);
+					resBuffer[RS_ST0] = ST0;
 
-                                SeekState = SeekSubState.PerformCompletion;
-                                break;
-                            }
+					// increment the current sector
+					CurrentSector = index + 1;
+					return;
+				}
+				else
+				{
+					// unformatted track?
+					resBuffer[RS_C] = FDC.CommBuffer[CM_C];
+					resBuffer[RS_H] = FDC.CommBuffer[CM_H];
+					resBuffer[RS_R] = FDC.CommBuffer[CM_R];
+					resBuffer[RS_N] = FDC.CommBuffer[CM_N];
 
-                            if (SeekCounter > 1)
-                            {
-                                // not ready to seek yet
-                                SeekCounter--;
-                                return;
-                            }
+					SetBit(SR0_IC0, ref ST0);
+					resBuffer[RS_ST0] = ST0;
+					resBuffer[RS_ST1] = 0x01;
+					return;
+				}
+			}
+			*/
 
-                            if (FDC.SRT < 1 && CurrentTrack != SeekingTrack)
-                            {
-                                SeekState = SeekSubState.MoveImmediate;
-                                break;
-                            }
+			/*
 
-                            // head move
-                            SeekState = SeekSubState.HeadMove;
+			/// <summary>
+			/// The drive performs a seek operation if necessary
+			/// Return value TRUE indicates seek complete
+			/// </summary>
+			public void DoSeek()
+			{
+				if (CurrentState is not (DriveMainState.Recalibrate or DriveMainState.Seek))
+				{
+					// no seek/recalibrate has been asked for
+					return;
+				}
 
-                            break;
+				if (GetBit(ID, FDC.StatusMain))
+				{
+					// drive is already seeking
+					return;
+				}
 
-                        case SeekSubState.HeadMove:
+				RunSeekCycle();
+			}
 
-                            // do the seek
-                            SeekCounter = FDC.SRT;
+			/// <summary>
+			/// Runs a seek cycle
+			/// </summary>
+			public void RunSeekCycle()
+			{
+				for (;;)
+				{
+					switch (SeekState)
+					{
+						// seek or recalibrate has been requested
+						case SeekSubState.Idle:
 
-                            if (CurrentTrack < SeekingTrack)
-                            {
-                                // we are seeking forward
-                                var delta = SeekingTrack - CurrentTrack;
-                                MoveHead(SkipDirection.Increment, 1);
-                            }
-                            else if (CurrentTrack > SeekingTrack)
-                            {
-                                // we are seeking backward
-                                var delta = CurrentTrack - SeekingTrack;
-                                MoveHead(SkipDirection.Decrement, 1);
-                            }
+							if (CurrentState == DriveMainState.Recalibrate)
+							{
+								// recalibrate always seeks to track 0
+								SeekingTrack = 0;
+							}
+							SeekState = SeekSubState.MoveInit;
 
-                            // should the seek be completed now?
-                            if (CurrentTrack == SeekingTrack)
-                            {
-                                SeekState = SeekSubState.PerformCompletion;
-                                break;
-                            }
+							// mark drive as busy
+							// this should be cleared by SIS command
+							SetBit(ID, ref FDC.StatusMain);
 
-                            // seek not finished yet
-                            return;
+							break;
 
-                        // seek emulation processed immediately
-                        case SeekSubState.MoveImmediate:
+						// setup for the head move
+						case SeekSubState.MoveInit:
 
-                            if (CurrentTrack < SeekingTrack)
-                            {
-                                // we are seeking forward
-                                var delta = SeekingTrack - CurrentTrack;
-                                MoveHead(SkipDirection.Increment, delta);
+							if (CurrentTrack == SeekingTrack)
+							{
+								// we are already at the required track
+								if (CurrentState is DriveMainState.Recalibrate && !FLAG_TRACK0)
+								{
+									// recalibration fail
+									SeekIntState = SeekIntStatus.Abnormal;
 
-                            }
-                            else if (CurrentTrack > SeekingTrack)
-                            {
-                                // we are seeking backward
-                                var delta = CurrentTrack - SeekingTrack;
-                                MoveHead(SkipDirection.Decrement, delta);
-                            }
+									// raise seek interrupt
+									FDC.ActiveInterrupt = InterruptState.Seek;
 
-                            SeekState = SeekSubState.PerformCompletion;
-                            break;
+									// unset DB bit
+									UnSetBit(ID, ref FDC.StatusMain);
 
-                        case SeekSubState.PerformCompletion:
-                            SeekDone();
-                            SeekState = SeekSubState.SeekCompleted;
-                            break;
+									// equipment check
+									SetBit(SR0_EC, ref FDC.Status0);
 
-                        case SeekSubState.SeekCompleted:
-                            // seek has already completed
-                            return;
-                    }
-                }
-            }
+									SeekState = SeekSubState.PerformCompletion;
+									break;
+								}
 
-            /// <summary>
-            /// Called when a seek operation has completed
-            /// </summary>
-            public void SeekDone()
-            {
-                SeekCounter = 0;
-                SeekingTrack = CurrentTrack;
+								if (CurrentState is DriveMainState.Recalibrate && FLAG_TRACK0)
+								{
+									// recalibration success
+									SeekIntState = SeekIntStatus.Normal;
 
-                // generate ST0 register data
+									// raise seek interrupt
+									FDC.ActiveInterrupt = InterruptState.Seek;
 
-                // get only the IC bits
-                IntStatus &= IC_ABORTED_DISCREMOVED;
+									// unset DB bit
+									UnSetBit(ID, ref FDC.StatusMain);
 
-                // drive ready?
-                if (!FLAG_READY)
-                {
-                    SetBit(SR0_NR, ref IntStatus);
-                    SetBit(SR0_EC, ref IntStatus);
+									SeekState = SeekSubState.PerformCompletion;
+									break;
+								}
+							}
 
-                    // are we recalibrating?
-                    if (CurrentState == DriveMainState.Recalibrate)
-                    {
-                        SetBit(SR0_EC, ref IntStatus);
-                    }
-                }
+							// check for error
+							if (IntStatus >= IC_ABORTED_DISCREMOVED || Disk == null)
+							{
+								// drive not ready
+								FLAG_READY = false;
 
-                // set seek end
-                SetBit(SR0_SE, ref IntStatus);
-                /*
-                // head address
-                if (CurrentSide > 0)
-                {
-                    SetBit(SR0_HD, ref IntStatus);
+								// drive not ready
+								SeekIntState = SeekIntStatus.DriveNotReady;
 
-                    // drive only supports 1 head
-                    // set the EC bit
-                    SetBit(SR0_EC, ref IntStatus);
-                }
-                */
+								// cancel any interrupt
+								FDC.ActiveInterrupt = InterruptState.None;
+
+								// unset DB bit
+								UnSetBit(ID, ref FDC.StatusMain);
+
+								SeekState = SeekSubState.PerformCompletion;
+								break;
+							}
+
+							if (SeekCounter > 1)
+							{
+								// not ready to seek yet
+								SeekCounter--;
+								return;
+							}
+
+							if (FDC.SRT < 1 && CurrentTrack != SeekingTrack)
+							{
+								SeekState = SeekSubState.MoveImmediate;
+								break;
+							}
+
+							// head move
+							SeekState = SeekSubState.HeadMove;
+
+							break;
+
+						case SeekSubState.HeadMove:
+
+							// do the seek
+							SeekCounter = FDC.SRT;
+
+							if (CurrentTrack < SeekingTrack)
+							{
+								// we are seeking forward
+								var delta = SeekingTrack - CurrentTrack;
+								MoveHead(SkipDirection.Increment, 1);
+							}
+							else if (CurrentTrack > SeekingTrack)
+							{
+								// we are seeking backward
+								var delta = CurrentTrack - SeekingTrack;
+								MoveHead(SkipDirection.Decrement, 1);
+							}
+
+							// should the seek be completed now?
+							if (CurrentTrack == SeekingTrack)
+							{
+								SeekState = SeekSubState.PerformCompletion;
+								break;
+							}
+
+							// seek not finished yet
+							return;
+
+						// seek emulation processed immediately
+						case SeekSubState.MoveImmediate:
+
+							if (CurrentTrack < SeekingTrack)
+							{
+								// we are seeking forward
+								var delta = SeekingTrack - CurrentTrack;
+								MoveHead(SkipDirection.Increment, delta);
+							}
+							else if (CurrentTrack > SeekingTrack)
+							{
+								// we are seeking backward
+								var delta = CurrentTrack - SeekingTrack;
+								MoveHead(SkipDirection.Decrement, delta);
+							}
+
+							SeekState = SeekSubState.PerformCompletion;
+							break;
+
+						case SeekSubState.PerformCompletion:
+							SeekDone();
+							SeekState = SeekSubState.SeekCompleted;
+							break;
+
+						case SeekSubState.SeekCompleted:
+							// seek has already completed
+							return;
+					}
+				}
+			}
+
+			/// <summary>
+			/// Called when a seek operation has completed
+			/// </summary>
+			public void SeekDone()
+			{
+				SeekCounter = 0;
+				SeekingTrack = CurrentTrack;
+
+				// generate ST0 register data
+
+				// get only the IC bits
+				IntStatus &= IC_ABORTED_DISCREMOVED;
+
+				// drive ready?
+				if (!FLAG_READY)
+				{
+					SetBit(SR0_NR, ref IntStatus);
+					SetBit(SR0_EC, ref IntStatus);
+
+					// are we recalibrating?
+					if (CurrentState == DriveMainState.Recalibrate)
+					{
+						SetBit(SR0_EC, ref IntStatus);
+					}
+				}
+
+				// set seek end
+				SetBit(SR0_SE, ref IntStatus);
+				/*
+				// head address
+				if (CurrentSide > 0)
+				{
+					SetBit(SR0_HD, ref IntStatus);
+
+					// drive only supports 1 head
+					// set the EC bit
+					SetBit(SR0_EC, ref IntStatus);
+				}
+				*/
 			/*
 			// UnitSelect
 			SetUnitSelect(ID, ref IntStatus);
@@ -730,7 +728,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			FLAG_SEEK_INTERRUPT = true;
 
 			//CurrentState = DriveMainState.None;
-
 		}
 	*/
 

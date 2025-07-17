@@ -202,52 +202,52 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public virtual void HardReset()
 		{
 			/*
-            //ULADevice.ResetInterrupt();
-            ROMPaged = 0;
-            SpecialPagingMode = false;
-            RAMPaged = 0;
-            CPU.RegPC = 0;
+			//ULADevice.ResetInterrupt();
+			ROMPaged = 0;
+			SpecialPagingMode = false;
+			RAMPaged = 0;
+			CPU.RegPC = 0;
 
-            Spectrum.SetCpuRegister("SP", 0xFFFF);
-            Spectrum.SetCpuRegister("IY", 0xFFFF);
-            Spectrum.SetCpuRegister("IX", 0xFFFF);
-            Spectrum.SetCpuRegister("AF", 0xFFFF);
-            Spectrum.SetCpuRegister("BC", 0xFFFF);
-            Spectrum.SetCpuRegister("DE", 0xFFFF);
-            Spectrum.SetCpuRegister("HL", 0xFFFF);
-            Spectrum.SetCpuRegister("SP", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
+			Spectrum.SetCpuRegister("SP", 0xFFFF);
+			Spectrum.SetCpuRegister("IY", 0xFFFF);
+			Spectrum.SetCpuRegister("IX", 0xFFFF);
+			Spectrum.SetCpuRegister("AF", 0xFFFF);
+			Spectrum.SetCpuRegister("BC", 0xFFFF);
+			Spectrum.SetCpuRegister("DE", 0xFFFF);
+			Spectrum.SetCpuRegister("HL", 0xFFFF);
+			Spectrum.SetCpuRegister("SP", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
 
-            CPU.Regs[CPU.I] = 0;
-            CPU.Regs[CPU.R] = 0;
+			CPU.Regs[CPU.I] = 0;
+			CPU.Regs[CPU.R] = 0;
 
-            TapeDevice.Reset();
-            if (AYDevice != null)
-                AYDevice.Reset();
+			TapeDevice.Reset();
+			if (AYDevice != null)
+				AYDevice.Reset();
 
-            byte[][] rams = new byte[][]
-            {
-                RAM0,
-                RAM1,
-                RAM2,
-                RAM3,
-                RAM4,
-                RAM5,
-                RAM6,
-                RAM7
-            };
+			byte[][] rams = new byte[][]
+			{
+				RAM0,
+				RAM1,
+				RAM2,
+				RAM3,
+				RAM4,
+				RAM5,
+				RAM6,
+				RAM7
+			};
 
-            foreach (var r in rams)
-            {
-                for (int i = 0; i < r.Length; i++)
-                {
-                    r[i] = 0x00;
-                }
-            }
-            */
+			foreach (var r in rams)
+			{
+				for (int i = 0; i < r.Length; i++)
+				{
+					r[i] = 0x00;
+				}
+			}
+			*/
 		}
 
 		/// <summary>
@@ -256,52 +256,52 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public virtual void SoftReset()
 		{
 			/*
-            //ULADevice.ResetInterrupt();
-            ROMPaged = 0;
-            SpecialPagingMode = false;
-            RAMPaged = 0;
-            CPU.RegPC = 0;
+			//ULADevice.ResetInterrupt();
+			ROMPaged = 0;
+			SpecialPagingMode = false;
+			RAMPaged = 0;
+			CPU.RegPC = 0;
 
-            Spectrum.SetCpuRegister("SP", 0xFFFF);
-            Spectrum.SetCpuRegister("IY", 0xFFFF);
-            Spectrum.SetCpuRegister("IX", 0xFFFF);
-            Spectrum.SetCpuRegister("AF", 0xFFFF);
-            Spectrum.SetCpuRegister("BC", 0xFFFF);
-            Spectrum.SetCpuRegister("DE", 0xFFFF);
-            Spectrum.SetCpuRegister("HL", 0xFFFF);
-            Spectrum.SetCpuRegister("SP", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
-            Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
+			Spectrum.SetCpuRegister("SP", 0xFFFF);
+			Spectrum.SetCpuRegister("IY", 0xFFFF);
+			Spectrum.SetCpuRegister("IX", 0xFFFF);
+			Spectrum.SetCpuRegister("AF", 0xFFFF);
+			Spectrum.SetCpuRegister("BC", 0xFFFF);
+			Spectrum.SetCpuRegister("DE", 0xFFFF);
+			Spectrum.SetCpuRegister("HL", 0xFFFF);
+			Spectrum.SetCpuRegister("SP", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
+			Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
 
-            CPU.Regs[CPU.I] = 0;
-            CPU.Regs[CPU.R] = 0;
+			CPU.Regs[CPU.I] = 0;
+			CPU.Regs[CPU.R] = 0;
 
-            TapeDevice.Reset();
-            if (AYDevice != null)
-                AYDevice.Reset();
+			TapeDevice.Reset();
+			if (AYDevice != null)
+				AYDevice.Reset();
 
-            byte[][] rams = new byte[][]
-            {
-                RAM0,
-                RAM1,
-                RAM2,
-                RAM3,
-                RAM4,
-                RAM5,
-                RAM6,
-                RAM7
-            };
+			byte[][] rams = new byte[][]
+			{
+				RAM0,
+				RAM1,
+				RAM2,
+				RAM3,
+				RAM4,
+				RAM5,
+				RAM6,
+				RAM7
+			};
 
-            foreach (var r in rams)
-            {
-                for (int i = 0; i < r.Length; i++)
-                {
-                    r[i] = 0x00;
-                }
-            }
-            */
+			foreach (var r in rams)
+			{
+				for (int i = 0; i < r.Length; i++)
+				{
+					r[i] = 0x00;
+				}
+			}
+			*/
 		}
 
 		public void SyncState(Serializer ser)

@@ -291,6 +291,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!NES._isVS)
 				SetMirrorType(EMirrorType.Vertical);
 		}
-
 	}
 }
