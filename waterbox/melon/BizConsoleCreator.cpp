@@ -359,18 +359,27 @@ static const char* const RegionalNandDirs[] =
 	"0:/title/00030017/484e41%x/content", "0:/title/00030017/484e41%x/data",
 };
 
-static const char* const BaseNandFiles[] =
+static const std::pair<const char*, const u32> BaseNandFiles[] =
 {
-	"0:/shared1/TWLCFG0.dat", "0:/shared1/TWLCFG1.dat", "0:/sys/HWID.sgn",
-	"0:/sys/HWINFO_N.dat", "0:/sys/HWINFO_S.dat", "0:/sys/TWLFontTable.dat",
-	"0:/ticket/0003000f/484e4341.tik", "0:/ticket/0003000f/484e4841.tik",
-	"0:/ticket/00030005/484e4441.tik", "0:/ticket/00030005/484e4541.tik",
+	std::make_pair("0:/shared1/TWLCFG0.dat", 0x4000),
+	std::make_pair("0:/shared1/TWLCFG1.dat", 0x4000),
+	std::make_pair("0:/sys/HWID.sgn", 0x100),
+	std::make_pair("0:/sys/HWINFO_N.dat", 0x4000),
+	std::make_pair("0:/sys/HWINFO_S.dat", 0x4000),
+	std::make_pair("0:/ticket/0003000f/484e4341.tik", 0x2C4),
+	std::make_pair("0:/ticket/0003000f/484e4841.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030005/484e4441.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030005/484e4541.tik", 0x2C4),
 };
 
-static const char* const RegionalNandFiles[] =
+static const std::pair<const char*, const u32> RegionalNandFiles[] =
 {
-	"0:/ticket/0003000f/484e4c%x.tik", "0:/ticket/00030005/484e49%x.tik", "0:/ticket/00030005/484e4b%x.tik",
-	"0:/ticket/00030015/484e42%x.tik", "0:/ticket/00030015/484e46%x.tik", "0:/ticket/00030017/484e41%x.tik",
+	std::make_pair("0:/ticket/0003000f/484e4c%x.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030005/484e49%x.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030005/484e4b%x.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030015/484e42%x.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030015/484e46%x.tik", 0x2C4),
+	std::make_pair("0:/ticket/00030017/484e41%x.tik", 0x2C4),
 };
 
 static const std::pair<const char*, const char*> BaseNandTitlePaths[] =
@@ -465,21 +474,23 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			for (auto baseNandFile : BaseNandFiles)
 			{
 				std::vector<u8> nandFile;
-				if (!mount.ExportFile(baseNandFile, nandFile))
+				if (!mount.ExportFile(baseNandFile.first, nandFile)
+					|| nandFile.size() != baseNandFile.second)
 				{
-					throw std::runtime_error("Failed to export base NAND file");
+					throw std::runtime_error("Failed to export NAND file");
 				}
 
-				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string(baseNandFile)));
+				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string(baseNandFile.first)));
 			}
 
 			for (auto regionalNandFile : RegionalNandFiles)
 			{
-				snprintf(nandPath, sizeof(nandPath), regionalNandFile, regionIdChar);
+				snprintf(nandPath, sizeof(nandPath), regionalNandFile.first, regionIdChar);
 				std::vector<u8> nandFile;
-				if (!mount.ExportFile(nandPath, nandFile))
+				if (!mount.ExportFile(nandPath, nandFile)
+					|| nandFile.size() != regionalNandFile.second)
 				{
-					throw std::runtime_error("Failed to export regional NAND file");
+					throw std::runtime_error("Failed to export NAND file");
 				}
 
 				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string(nandPath)));
@@ -491,19 +502,22 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				if (!mount.ExportFile(baseNandTitlePath.first, tmdFile)
 					|| tmdFile.size() != sizeof(melonDS::DSi_TMD::TitleMetadata))
 				{
-					throw std::runtime_error("Failed to export base NAND TMD");
+					throw std::runtime_error("Failed to export NAND TMD");
 				}
 
 				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
 				u32 version = tmd->Contents.GetVersion();
+				u64 contentSize;
+				memcpy(&contentSize, tmd->Contents.ContentSize, sizeof(contentSize));
 
 				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(baseNandTitlePath.first)));
 
 				snprintf(nandPath, sizeof(nandPath), baseNandTitlePath.second, version);
 				std::vector<u8> appFile;
-				if (!mount.ExportFile(nandPath, appFile))
+				if (!mount.ExportFile(nandPath, appFile)
+					|| appFile.size() != contentSize)
 				{
-					throw std::runtime_error("Failed to export base NAND app file");
+					throw std::runtime_error("Failed to export NAND app file");
 				}
 
 				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
@@ -516,19 +530,22 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				if (!mount.ExportFile(nandPath, tmdFile)
 					|| tmdFile.size() != sizeof(melonDS::DSi_TMD::TitleMetadata))
 				{
-					throw std::runtime_error("Failed to export regional NAND TMD");
+					throw std::runtime_error("Failed to export NAND TMD");
 				}
 
 				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
 				u32 version = tmd->Contents.GetVersion();
+				u64 contentSize;
+				memcpy(&contentSize, tmd->Contents.ContentSize, sizeof(contentSize));
 
 				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(nandPath)));
 
 				snprintf(nandPath, sizeof(nandPath), regionalNandTitlePath.second, regionIdChar, version);
 				std::vector<u8> appFile;
-				if (!mount.ExportFile(nandPath, appFile))
+				if (!mount.ExportFile(nandPath, appFile)
+					|| appFile.size() != contentSize)
 				{
-					throw std::runtime_error("Failed to export regional NAND app file");
+					throw std::runtime_error("Failed to export NAND app file");
 				}
 
 				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
@@ -546,17 +563,47 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				}
 
 				// DSi connected to the DSi Shop, remove those latter certificates
-				if (nandFile.size() == 3904)
+				if (nandFile.size() == 0xF40)
 				{
-					nandFile.resize(2560);
+					nandFile.resize(0xA00);
 				}
 
-				if (nandFile.size() != 2560)
+				if (nandFile.size() != 0xA00)
 				{
 					throw std::runtime_error("Wrong cert.sys size");
 				}
 
 				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string("0:/sys/cert.sys")));
+			}
+
+			// sys/TWLFontTable.dat also needs to be transferred over, although its size will vary depending on region
+			{
+				std::vector<u8> nandFile;
+				if (!mount.ExportFile("0:/sys/TWLFontTable.dat", nandFile))
+				{
+					throw std::runtime_error("Failed to export TWLFontTable.dat");
+				}
+
+				u32 twlFontTableSize;
+				switch (serialData.Region)
+				{
+					case melonDS::DSi_NAND::ConsoleRegion::China:
+						twlFontTableSize = 0x8E020;
+						break;
+					case melonDS::DSi_NAND::ConsoleRegion::Korea:
+						twlFontTableSize = 0x27B80;
+						break;
+					default:
+						twlFontTableSize = 0xD2C40;
+						break;
+				}
+
+				if (nandFile.size() != twlFontTableSize)
+				{
+					throw std::runtime_error("Wrong TWLFontTable.dat size");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(nandFile), std::string("0:/sys/TWLFontTable.dat")));
 			}
 		}
 
@@ -694,7 +741,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			{
 				f_unmount("0:");
 				melonDS::ff_disk_close();
-				throw std::runtime_error("Failed to create base NAND directory");
+				throw std::runtime_error("Failed to create NAND directory");
 			}
 		}
 
@@ -707,7 +754,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			{
 				f_unmount("0:");
 				melonDS::ff_disk_close();
-				throw std::runtime_error("Failed to create regional NAND directory");
+				throw std::runtime_error("Failed to create NAND directory");
 			}
 		}
 
@@ -974,7 +1021,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			{
 				f_unmount("0:");
 				melonDS::ff_disk_close();
-				throw std::runtime_error("Failed to create photo NAND directory");
+				throw std::runtime_error("Failed to create NAND directory");
 			}
 		}
 
@@ -1001,7 +1048,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			{
 				f_unmount("0:");
 				melonDS::ff_disk_close();
-				throw std::runtime_error("Failed to open NAND pit.bin");
+				throw std::runtime_error("Failed to open pit.bin");
 			}
 
 			u32 nwrite;
@@ -1011,7 +1058,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				f_close(&file);
 				f_unmount("0:");
 				melonDS::ff_disk_close();
-				throw std::runtime_error("Failed write NAND pit.bin");
+				throw std::runtime_error("Failed write pit.bin");
 			}
 
 			f_close(&file);
