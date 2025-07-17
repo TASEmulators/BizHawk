@@ -507,8 +507,9 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 
 				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
 				u32 version = tmd->Contents.GetVersion();
-				u64 contentSize;
-				memcpy(&contentSize, tmd->Contents.ContentSize, sizeof(contentSize));
+				u64 contentSize = (u64)tmd->Contents.ContentSize[0] << 56 | (u64)tmd->Contents.ContentSize[1] << 48
+					| (u64)tmd->Contents.ContentSize[2] << 40 | (u64)tmd->Contents.ContentSize[3] << 32 | (u64)tmd->Contents.ContentSize[4] << 24
+					| (u64)tmd->Contents.ContentSize[5] << 16 | (u64)tmd->Contents.ContentSize[6] << 8 | (u64)tmd->Contents.ContentSize[7] << 0;
 
 				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(baseNandTitlePath.first)));
 
@@ -535,8 +536,9 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 
 				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
 				u32 version = tmd->Contents.GetVersion();
-				u64 contentSize;
-				memcpy(&contentSize, tmd->Contents.ContentSize, sizeof(contentSize));
+				u64 contentSize = (u64)tmd->Contents.ContentSize[0] << 56 | (u64)tmd->Contents.ContentSize[1] << 48
+					| (u64)tmd->Contents.ContentSize[2] << 40 | (u64)tmd->Contents.ContentSize[3] << 32 | (u64)tmd->Contents.ContentSize[4] << 24
+					| (u64)tmd->Contents.ContentSize[5] << 16 | (u64)tmd->Contents.ContentSize[6] << 8 | (u64)tmd->Contents.ContentSize[7] << 0;
 
 				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(nandPath)));
 
