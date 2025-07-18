@@ -1753,6 +1753,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// countdown for saveram autoflushing
 		public int AutoFlushSaveRamIn { get; set; }
+		private bool AutoFlushSaveRamFailed;
 
 		private void SetStatusBar()
 		{
@@ -1955,7 +1956,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool FlushSaveRAM(bool autosave = false)
+		public FileWriteResult FlushSaveRAM(bool autosave = false)
 		{
 			if (Emulator.HasSaveRam())
 			{
@@ -1969,53 +1970,13 @@ namespace BizHawk.Client.EmuHawk
 					path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				}
 
-				var file = new FileInfo(path);
-				var newPath = $"{path}.new";
-				var newFile = new FileInfo(newPath);
-				var backupPath = $"{path}.bak";
-				var backupFile = new FileInfo(backupPath);
-
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 				if (saveram == null)
-					return true;
-
-				try
-				{
-					Directory.CreateDirectory(file.DirectoryName!);
-					using (var fs = File.Create(newPath))
-					{
-						fs.Write(saveram, 0, saveram.Length);
-						fs.Flush(flushToDisk: true);
-					}
-
-					if (file.Exists)
-					{
-						if (Config.BackupSaveram)
-						{
-							if (backupFile.Exists)
-							{
-								backupFile.Delete();
-							}
-
-							file.MoveTo(backupPath);
-						}
-						else
-						{
-							file.Delete();
-						}
-					}
-
-					newFile.MoveTo(path);
-				}
-				catch (IOException e)
-				{
-					AddOnScreenMessage("Failed to flush saveram!");
-					Console.Error.WriteLine(e);
-					return false;
-				}
+					return new();
+				return FileWriter.Write(path, saveram, $"{path}.bak");
 			}
 
-			return true;
+			return new();
 		}
 
 		private void RewireSound()
@@ -3050,8 +3011,22 @@ namespace BizHawk.Client.EmuHawk
 					AutoFlushSaveRamIn--;
 					if (AutoFlushSaveRamIn <= 0)
 					{
-						FlushSaveRAM(true);
-						AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
+						FileWriteResult result = FlushSaveRAM(true);
+						if (result.IsError)
+						{
+							// For autosave, allow one failure before bothering the user.
+							if (AutoFlushSaveRamFailed)
+							{
+								this.ErrorMessageBox(result, "Failed to flush saveram!");
+							}
+							AutoFlushSaveRamFailed = true;
+							AutoFlushSaveRamIn = Math.Min(600, Config.FlushSaveRamFrames);
+						}
+						else
+						{
+							AutoFlushSaveRamFailed = false;
+							AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
+						}
 					}
 				}
 				// why not skip audio if the user doesn't want sound
@@ -3971,41 +3946,34 @@ namespace BizHawk.Client.EmuHawk
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				if (File.Exists(path))
 				{
-					File.Delete(path);
-					AddOnScreenMessage("SRAM cleared.");
+					bool clearResult = this.DoWithTryAgainBox(() => {
+						try
+						{
+							File.Delete(path);
+							AddOnScreenMessage("SRAM cleared.");
+							return new();
+						}
+						catch (Exception ex)
+						{
+							return new(FileWriteEnum.FailedToDeleteGeneric, new(path, ""), ex);
+						}
+					}, "Failed to clear SRAM.");
+					if (!clearResult)
+					{
+						return false;
+					}
 				}
 			}
 			else if (Emulator.HasSaveRam())
 			{
-				while (true)
-				{
-					if (FlushSaveRAM()) break;
-
-					var result = ShowMessageBox3(
-						owner: this,
-						"Failed flushing the game's Save RAM to your disk.\n" +
-						"Do you want to try again?",
-						"IOError while writing SaveRAM",
-						EMsgBoxIcon.Error);
-
-					if (result is false) break;
-					if (result is null) return false;
-				}
+				bool flushResult = this.DoWithTryAgainBox(
+					() => FlushSaveRAM(),
+					"Failed flushing the game's Save RAM to your disk.");
+				if (!flushResult) return false;
 			}
 
-			bool? tryAgain = null;
-			do
-			{
-				FileWriteResult stateSaveResult = AutoSaveStateIfConfigured();
-				if (stateSaveResult.IsError)
-				{
-					tryAgain = this.ShowMessageBox3(
-						$"Failed to auto-save state. Do you want to try again?\n\nError details:\n{stateSaveResult.UserFriendlyErrorMessage()}\n{stateSaveResult.Exception.Message}",
-						"IOError while writing savestate",
-						EMsgBoxIcon.Error);
-					if (tryAgain == null) return false;
-				}
-			} while (tryAgain == true);
+			bool stateSaveResult = this.DoWithTryAgainBox(AutoSaveStateIfConfigured, "Failed to auto-save state.");
+			if (!stateSaveResult) return false;
 
 			StopAv();
 
@@ -4285,11 +4253,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void SaveQuickSaveAndShowError(int slot)
 		{
-			FileWriteResult result = SaveQuickSave(slot);
-			if (result.IsError)
-			{
-				this.ErrorMessageBox(result, "Quick save failed.");
-			}
+			ShowMessageIfError(() => SaveQuickSave(slot), "Quick save failed.");
 		}
 
 		public bool EnsureCoreIsAccurate()
@@ -4359,11 +4323,9 @@ namespace BizHawk.Client.EmuHawk
 				initFileName: $"{SaveStatePrefix()}.QuickSave0.State");
 			if (shouldSaveResult is not null)
 			{
-				FileWriteResult saveResult = SaveState(path: shouldSaveResult, userFriendlyStateName: shouldSaveResult);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult, "Unable to save.");
-				}
+				ShowMessageIfError(
+					() => SaveState(path: shouldSaveResult, userFriendlyStateName: shouldSaveResult),
+					"Unable to save state.");
 			}
 
 			if (Tools.IsLoaded<TAStudio>())
@@ -4652,6 +4614,15 @@ namespace BizHawk.Client.EmuHawk
 					DialogResult.No => false,
 					_ => null,
 				};
+
+		public void ShowMessageIfError(Func<FileWriteResult> action, string message)
+		{
+			FileWriteResult result = action();
+			if (result.IsError)
+			{
+				this.ErrorMessageBox(result, message);
+			}
+		}
 
 		public void StartSound() => Sound.StartSound();
 		public void StopSound() => Sound.StopSound();

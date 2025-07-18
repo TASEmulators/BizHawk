@@ -160,6 +160,7 @@ namespace BizHawk.Client.Common
 
 		public void RebootCore() => _mainForm.RebootCore();
 
+		// TODO: Change return type to FileWriteResult.
 		public void SaveRam() => _mainForm.FlushSaveRAM();
 
 		// TODO: Change return type to FileWriteResult.
