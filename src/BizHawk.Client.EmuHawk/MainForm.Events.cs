@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
-			FlushSaveRAM();
+			ShowMessageIfError(() => FlushSaveRAM(), "Failed to flush saveram!");
 		}
 
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)

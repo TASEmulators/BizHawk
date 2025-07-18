@@ -72,11 +72,38 @@ namespace BizHawk.Client.Common
 		{
 			Debug.Assert(fileResult.IsError && fileResult.Exception != null, "Error box must have an error.");
 
-			string prefix = prefixMessage == null ? "" : prefixMessage + "\n";
+			string prefix = prefixMessage ?? "";
 			dialogParent.ModalMessageBox(
-				text: $"{prefix}{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
+				text: $"{prefix}\n{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
 				caption: "Error",
 				icon: EMsgBoxIcon.Error);
+		}
+
+		/// <summary>
+		/// If the action fails, asks the user if they want to try again.
+		/// The user will be repeatedly asked if they want to try again until either success or the user says no.
+		/// </summary>
+		/// <returns>Returns true on success or if the user said no. Returns false if the user said cancel.</returns>
+		public static bool DoWithTryAgainBox(
+			this IDialogParent dialogParent,
+			Func<FileWriteResult> action,
+			string message)
+		{
+			FileWriteResult fileResult = action();
+			while (fileResult.IsError)
+			{
+				string prefix = message ?? "";
+				bool? askResult = dialogParent.ModalMessageBox3(
+						text: $"{prefix} Do you want to try again?\n\nError details:" +
+							$"{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
+						caption: "Error",
+						icon: EMsgBoxIcon.Error);
+				if (askResult == null) return false;
+				if (askResult == false) return true;
+				if (askResult == true) fileResult = action();
+			}
+
+			return true;
 		}
 
 		/// <summary>Creates and shows a <c>System.Windows.Forms.OpenFileDialog</c> or equivalent with the receiver (<paramref name="dialogParent"/>) as its parent</summary>
