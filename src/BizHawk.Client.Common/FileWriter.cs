@@ -39,6 +39,23 @@ namespace BizHawk.Client.Common
 			_stream = stream;
 		}
 
+		public static FileWriteResult Write(string path, byte[] bytes, string? backupPath = null)
+		{
+			FileWriteResult<FileWriter> createResult = Create(path);
+			if (createResult.IsError) return createResult;
+
+			try
+			{
+				createResult.Value!.Stream.Write(bytes);
+			}
+			catch (Exception ex)
+			{
+				return new(FileWriteEnum.FailedDuringWrite, createResult.Value!.Paths, ex);
+			}
+
+			return createResult.Value.CloseAndDispose(backupPath);
+		}
+
 
 		/// <summary>
 		/// Create a FileWriter instance, or return an error if unable to access the file.
