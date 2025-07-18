@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 		void EnableRewind(bool enabled);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		bool FlushSaveRAM(bool autosave = false);
+		FileWriteResult FlushSaveRAM(bool autosave = false);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
