@@ -863,31 +863,18 @@ namespace BizHawk.Client.EmuHawk
 					closingArgs.Cancel = true;
 					return;
 				}
+				// StopAv would be handled in CloseGame, but since we've asked the user about it, best to handle it now.
 				StopAv();
 			}
 
-			if (!Tools.AskSave())
+			SaveConfig(); // TODO: Handle failure.
+
+			if (!CloseGame())
 			{
 				closingArgs.Cancel = true;
 				return;
 			}
-
 			Tools.Close();
-			FileWriteResult saveResult = MovieSession.StopMovie();
-			if (saveResult.IsError)
-			{
-				if (!this.ModalMessageBox2(
-					caption: "Quit anyway?",
-					icon: EMsgBoxIcon.Question,
-					text: "The currently playing movie could not be saved. Continue and quit anyway? All unsaved changes will be lost."))
-				{
-					closingArgs.Cancel = true;
-					return;
-				}
-			}
-
-			CloseGame();
-			SaveConfig();
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;
@@ -2248,7 +2235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!LoadRom(romPath, new LoadRomArgs(ioa), out var failureIsFromAskSave))
 			{
-				if (failureIsFromAskSave) AddOnScreenMessage("ROM loading cancelled; a tool had unsaved changes");
+				if (failureIsFromAskSave) AddOnScreenMessage("ROM loading cancelled due to unsaved changes");
 				else if (ioa is OpenAdvanced_LibretroNoGame || File.Exists(romPath)) AddOnScreenMessage("ROM loading failed");
 				else Config.RecentRoms.HandleLoadError(this, romPath, rom);
 			}
@@ -3748,6 +3735,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool LoadRomInternal(string path, LoadRomArgs args, out bool failureIsFromAskSave)
 		{
 			failureIsFromAskSave = false;
+			if (!CloseGame())
+			{
+				failureIsFromAskSave = true;
+				return false;
+			}
+
 			if (path == null)
 				throw new ArgumentNullException(nameof(path));
 			if (args == null)
@@ -3775,12 +3768,6 @@ namespace BizHawk.Client.EmuHawk
 				// it is then up to the core itself to override its own local DeterministicEmulation setting
 				bool deterministic = args.Deterministic ?? MovieSession.NewMovieQueued;
 
-				if (!Tools.AskSave())
-				{
-					failureIsFromAskSave = true;
-					return false;
-				}
-
 				var loader = new RomLoader(Config, this)
 				{
 					ChooseArchive = LoadArchiveChooser,
@@ -3794,8 +3781,6 @@ namespace BizHawk.Client.EmuHawk
 				loader.OnLoadError += ShowLoadError;
 				loader.OnLoadSettings += CoreSettings;
 				loader.OnLoadSyncSettings += CoreSyncSettings;
-
-				CloseGame();
 
 				var nextComm = CreateCoreComm();
 
@@ -4085,8 +4070,32 @@ namespace BizHawk.Client.EmuHawk
 		/// This closes the game but does not set things up for using the client with the new null emulator.
 		/// This method should only be called (outside of <see cref="CloseRom(bool)"/>) if the caller is about to load a new game with no user interaction between close and load.
 		/// </summary>
-		private void CloseGame(bool clearSram = false)
+		/// <returns>True if the game was closed. False if the user cancelled due to unsaved changes.</returns>
+		private bool CloseGame(bool clearSram = false)
 		{
+			CommitCoreSettingsToConfig(); // Must happen before stopping the movie, since it checks for active movie.
+
+			if (!Tools.AskSave())
+			{
+				return false;
+			}
+			// There is a cheats tool, but cheats can be active while the "cheats tool" is not. And have auto-save option.
+			CheatList.SaveOnClose();
+
+			GameIsClosing = true;
+			FileWriteResult saveResult = MovieSession.StopMovie();
+			GameIsClosing = false;
+			if (saveResult.IsError)
+			{
+				if (!this.ModalMessageBox2(
+					caption: "Quit anyway?",
+					icon: EMsgBoxIcon.Question,
+					text: "The currently playing movie could not be saved. Continue and quit anyway? All unsaved changes will be lost."))
+				{
+					return false;
+				}
+			}
+
 			if (clearSram)
 			{
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
@@ -4110,7 +4119,7 @@ namespace BizHawk.Client.EmuHawk
 						EMsgBoxIcon.Error);
 
 					if (result is false) break;
-					if (result is null) return;
+					if (result is null) return false;
 				}
 			}
 
@@ -4124,29 +4133,24 @@ namespace BizHawk.Client.EmuHawk
 						$"Failed to auto-save state. Do you want to try again?\n\nError details:\n{stateSaveResult.UserFriendlyErrorMessage()}\n{stateSaveResult.Exception.Message}",
 						"IOError while writing savestate",
 						EMsgBoxIcon.Error);
-					if (tryAgain == null) return;
+					if (tryAgain == null) return false;
 				}
 			} while (tryAgain == true);
 
 			StopAv();
 
-			CommitCoreSettingsToConfig();
 			DisableRewind();
-
-			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig() because it checks if we have an active movie.
-			{
-				StopMovie();
-			}
 
 			RA?.Stop();
 
-			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			Emulator = new NullEmulator();
 			Game = GameInfo.NullInstance;
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
+
+			return true;
 		}
 
 		private FileWriteResult AutoSaveStateIfConfigured()
