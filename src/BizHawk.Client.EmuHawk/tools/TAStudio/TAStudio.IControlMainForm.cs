@@ -59,13 +59,10 @@
 
 		public void StopMovie(bool suppressSave)
 		{
-			if (!MainForm.GameIsClosing)
-			{
-				Activate();
-				_suppressAskSave = suppressSave;
-				StartNewTasMovie();
-				_suppressAskSave = false;
-			}
+			Activate();
+			_suppressAskSave = suppressSave;
+			StartNewTasMovie();
+			_suppressAskSave = false;
 		}
 
 		public bool WantsToControlRewind { get; private set; } = true;

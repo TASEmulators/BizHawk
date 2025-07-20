@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 		void CloseEmulator(int? exitCode = null);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
-		void CloseRom(bool clearSram = false);
+		void LoadNullRom(bool clearSram = false);
 
 		/// <remarks>only referenced from <c>ClientLuaLibrary</c></remarks>
 		IDecodeResult DecodeCheatForAPI(string code, out MemoryDomain/*?*/ domain);
