@@ -167,8 +167,7 @@ namespace BizHawk.Client.Common
 			if (_dispoed) return;
 			_dispoed = true;
 
-			_stream!.Flush(flushToDisk: true);
-			_stream.Dispose();
+			_stream!.Dispose();
 			_stream = null;
 
 			// The caller should call CloseAndDispose and handle potential failure.
