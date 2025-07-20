@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 					OpenRom();
 					break;
 				case "Close ROM":
-					CloseRom();
+					LoadNullRom();
 					break;
 				case "Load Last ROM":
 					LoadMostRecentROM();
