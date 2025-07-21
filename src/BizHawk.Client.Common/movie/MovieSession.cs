@@ -385,6 +385,8 @@ namespace BizHawk.Client.Common
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
+					// Technically this can save the movie, but it'd be weird to be in that situation.
+					// Do we want that?
 					StopMovie();
 					break;
 				case MovieEndAction.Record:

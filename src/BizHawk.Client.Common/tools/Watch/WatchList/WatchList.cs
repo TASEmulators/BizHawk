@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -338,39 +339,37 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Save()
+		public FileWriteResult Save()
 		{
 			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				return false;
+				return new();
 			}
 
-			using (var sw = new StreamWriter(CurrentFileName))
+			var sb = new StringBuilder();
+			sb.Append("SystemID ").AppendLine(_systemId);
+
+			foreach (var watch in _watchList)
 			{
-				var sb = new StringBuilder();
-				sb.Append("SystemID ").AppendLine(_systemId);
-
-				foreach (var watch in _watchList)
-				{
-					sb.AppendLine(watch.ToString());
-				}
-
-				sw.WriteLine(sb.ToString());
+				sb.AppendLine(watch.ToString());
 			}
 
-			Changes = false;
-			return true;
+			FileWriteResult result = FileWriter.Write(CurrentFileName, (fs) =>
+			{
+				using var sw = new StreamWriter(fs);
+				sw.WriteLine(sb.ToString());
+			});
+
+			if (!result.IsError) Changes = false;
+			return result;
 		}
 
-		public bool SaveAs(FileInfo file)
+		public FileWriteResult SaveAs(FileInfo file)
 		{
-			if (file != null)
-			{
-				CurrentFileName = file.FullName;
-				return Save();
-			}
+			Debug.Assert(file != null, "Cannot save as without a file name.");
 
-			return false;
+			CurrentFileName = file.FullName;
+			return Save();
 		}
 
 		private bool LoadFile(string path, bool append)

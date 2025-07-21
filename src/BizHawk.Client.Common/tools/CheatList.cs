@@ -210,7 +210,7 @@ namespace BizHawk.Client.Common
 		public bool IsActive(MemoryDomain domain, long address)
 			=> _cheatList.Exists(cheat => !cheat.IsSeparator && cheat.Enabled && cheat.Domain == domain && cheat.Contains(address));
 
-		public void SaveOnClose()
+		public FileWriteResult SaveOnClose()
 		{
 			if (_config.AutoSaveOnClose)
 			{
@@ -221,17 +221,27 @@ namespace BizHawk.Client.Common
 						CurrentFileName = _defaultFileName;
 					}
 
-					SaveFile(CurrentFileName);
+					return SaveFile(CurrentFileName);
 				}
 				else if (_cheatList.Count is 0 && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					File.Delete(CurrentFileName);
+					try
+					{
+						File.Delete(CurrentFileName);
+					}
+					catch (Exception ex)
+					{
+						return new(FileWriteEnum.FailedToDeleteGeneric, new(CurrentFileName, ""), ex);
+					}
 					_config.Recent.Remove(CurrentFileName);
+					return new();
 				}
 			}
+
+			return new();
 		}
 
-		public bool Save()
+		public FileWriteResult Save()
 		{
 			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
@@ -241,54 +251,51 @@ namespace BizHawk.Client.Common
 			return SaveFile(CurrentFileName);
 		}
 
-		public bool SaveFile(string path)
+		public FileWriteResult SaveFile(string path)
 		{
-			try
+			var sb = new StringBuilder();
+
+			foreach (var cheat in _cheatList)
 			{
-				new FileInfo(path).Directory?.Create();
-				var sb = new StringBuilder();
-
-				foreach (var cheat in _cheatList)
+				if (cheat.IsSeparator)
 				{
-					if (cheat.IsSeparator)
-					{
-						sb.AppendLine("----");
-					}
-					else
-					{
-						// Set to hex for saving
-						var tempCheatType = cheat.Type;
-
-						cheat.SetType(WatchDisplayType.Hex);
-
-						sb
-							.Append(cheat.AddressStr).Append('\t')
-							.Append(cheat.ValueStr).Append('\t')
-							.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
-							.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
-							.Append(cheat.Enabled ? '1' : '0').Append('\t')
-							.Append(cheat.Name).Append('\t')
-							.Append(cheat.SizeAsChar).Append('\t')
-							.Append(cheat.TypeAsChar).Append('\t')
-							.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
-							.Append(cheat.ComparisonType).Append('\t')
-							.AppendLine();
-
-						cheat.SetType(tempCheatType);
-					}
+					sb.AppendLine("----");
 				}
+				else
+				{
+					// Set to hex for saving
+					var tempCheatType = cheat.Type;
 
-				File.WriteAllText(path, sb.ToString());
+					cheat.SetType(WatchDisplayType.Hex);
 
+					sb
+						.Append(cheat.AddressStr).Append('\t')
+						.Append(cheat.ValueStr).Append('\t')
+						.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
+						.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
+						.Append(cheat.Enabled ? '1' : '0').Append('\t')
+						.Append(cheat.Name).Append('\t')
+						.Append(cheat.SizeAsChar).Append('\t')
+						.Append(cheat.TypeAsChar).Append('\t')
+						.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
+						.Append(cheat.ComparisonType).Append('\t')
+						.AppendLine();
+
+					cheat.SetType(tempCheatType);
+				}
+			}
+			FileWriteResult result = FileWriter.Write(path, (fs) =>
+			{
+				StreamWriter sw = new(fs);
+				sw.Write(sb.ToString());
+			});
+			if (!result.IsError)
+			{
 				CurrentFileName = path;
 				_config.Recent.Add(CurrentFileName);
 				Changes = false;
-				return true;
 			}
-			catch
-			{
-				return false;
-			}
+			return result;
 		}
 
 		public bool Load(IMemoryDomains domains, string path, bool append)

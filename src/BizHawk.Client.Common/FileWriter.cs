@@ -56,6 +56,22 @@ namespace BizHawk.Client.Common
 			return createResult.Value.CloseAndDispose(backupPath);
 		}
 
+		public static FileWriteResult Write(string path, Action<Stream> writeCallback, string? backupPath = null)
+		{
+			FileWriteResult<FileWriter> createResult = Create(path);
+			if (createResult.IsError) return createResult;
+
+			try
+			{
+				writeCallback(createResult.Value!.Stream);
+			}
+			catch (Exception ex)
+			{
+				return new(FileWriteEnum.FailedDuringWrite, createResult.Value!.Paths, ex);
+			}
+
+			return createResult.Value.CloseAndDispose(backupPath);
+		}
 
 		/// <summary>
 		/// Create a FileWriter instance, or return an error if unable to access the file.
@@ -76,6 +92,7 @@ namespace BizHawk.Client.Common
 			FileWritePaths paths = new(path, writePath);
 			try
 			{
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
 				FileStream fs = new(writePath, FileMode.Create, FileAccess.Write);
 				return new(new FileWriter(paths, fs), paths);
 			}
