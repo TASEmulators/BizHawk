@@ -6,6 +6,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace BizHawk.Client.Common
 {
+	public enum TryAgainResult
+	{
+		Saved,
+		IgnoredFailure,
+		Canceled,
+	}
+
 	public static class DialogControllerExtensions
 	{
 		public static void AddOnScreenMessage(
@@ -84,7 +91,7 @@ namespace BizHawk.Client.Common
 		/// The user will be repeatedly asked if they want to try again until either success or the user says no.
 		/// </summary>
 		/// <returns>Returns true on success or if the user said no. Returns false if the user said cancel.</returns>
-		public static bool DoWithTryAgainBox(
+		public static TryAgainResult DoWithTryAgainBox(
 			this IDialogParent dialogParent,
 			Func<FileWriteResult> action,
 			string message)
@@ -98,12 +105,12 @@ namespace BizHawk.Client.Common
 							$"{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
 						caption: "Error",
 						icon: EMsgBoxIcon.Error);
-				if (askResult == null) return false;
-				if (askResult == false) return true;
+				if (askResult == null) return TryAgainResult.Canceled;
+				if (askResult == false) return TryAgainResult.IgnoredFailure;
 				if (askResult == true) fileResult = action();
 			}
 
-			return true;
+			return TryAgainResult.Saved;
 		}
 
 		/// <summary>Creates and shows a <c>System.Windows.Forms.OpenFileDialog</c> or equivalent with the receiver (<paramref name="dialogParent"/>) as its parent</summary>
