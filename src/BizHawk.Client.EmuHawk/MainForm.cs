@@ -3934,7 +3934,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (previousRom != CurrentlyOpenRom)
 					{
-						CheatList.NewList(Tools.GenerateDefaultCheatFilename(), autosave: true);
+						CheatList.NewList(Tools.GenerateDefaultCheatFilename());
 						if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
 						{
 							if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
@@ -3951,7 +3951,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							CheatList.NewList(Tools.GenerateDefaultCheatFilename(), autosave: true);
+							CheatList.NewList(Tools.GenerateDefaultCheatFilename());
 						}
 					}
 
@@ -3988,7 +3988,7 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
 					ExtToolManager.BuildToolStrip();
-					CheatList.NewList("", autosave: true);
+					CheatList.NewList("");
 					OnRomChanged();
 					return false;
 				}
@@ -4050,25 +4050,30 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CommitCoreSettingsToConfig(); // Must happen before stopping the movie, since it checks for active movie.
 
+			GameIsClosing = true;
 			if (!Tools.AskSave())
 			{
+				GameIsClosing = false;
 				return false;
 			}
 			// There is a cheats tool, but cheats can be active while the "cheats tool" is not. And have auto-save option.
-			CheatList.SaveOnClose();
-
-			GameIsClosing = true;
-			FileWriteResult saveResult = MovieSession.StopMovie();
-			GameIsClosing = false;
-			if (saveResult.IsError)
+			TryAgainResult cheatSaveResult = this.DoWithTryAgainBox(CheatList.SaveOnClose, "Failed to save cheats.");
+			if (cheatSaveResult == TryAgainResult.Canceled)
 			{
-				if (!this.ModalMessageBox2(
-					caption: "Quit anyway?",
-					icon: EMsgBoxIcon.Question,
-					text: "The currently playing movie could not be saved. Continue and quit anyway? All unsaved changes will be lost."))
-				{
-					return false;
-				}
+				GameIsClosing = false;
+				return false;
+			}
+
+			// If TAStudio is open, we already asked about saving the movie.
+			if (Tools.IsLoaded<TAStudio>())
+			{
+				GameIsClosing = false;
+			}
+			else
+			{
+				TryAgainResult saveMovieResult = this.DoWithTryAgainBox(() => MovieSession.StopMovie(), "Failed to save movie.");
+				GameIsClosing = false;
+				if (saveMovieResult == TryAgainResult.Canceled) return false;
 			}
 
 			if (clearSram)
@@ -4076,7 +4081,7 @@ namespace BizHawk.Client.EmuHawk
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				if (File.Exists(path))
 				{
-					bool clearResult = this.DoWithTryAgainBox(() => {
+					TryAgainResult clearResult = this.DoWithTryAgainBox(() => {
 						try
 						{
 							File.Delete(path);
@@ -4088,7 +4093,7 @@ namespace BizHawk.Client.EmuHawk
 							return new(FileWriteEnum.FailedToDeleteGeneric, new(path, ""), ex);
 						}
 					}, "Failed to clear SRAM.");
-					if (!clearResult)
+					if (clearResult == TryAgainResult.Canceled)
 					{
 						return false;
 					}
@@ -4096,14 +4101,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.HasSaveRam())
 			{
-				bool flushResult = this.DoWithTryAgainBox(
+				TryAgainResult flushResult = this.DoWithTryAgainBox(
 					() => FlushSaveRAM(),
 					"Failed flushing the game's Save RAM to your disk.");
-				if (!flushResult) return false;
+				if (flushResult == TryAgainResult.Canceled) return false;
 			}
 
-			bool stateSaveResult = this.DoWithTryAgainBox(AutoSaveStateIfConfigured, "Failed to auto-save state.");
-			if (!stateSaveResult) return false;
+			TryAgainResult stateSaveResult = this.DoWithTryAgainBox(AutoSaveStateIfConfigured, "Failed to auto-save state.");
+			if (stateSaveResult == TryAgainResult.Canceled) return false;
 
 			StopAv();
 
@@ -4146,7 +4151,7 @@ namespace BizHawk.Client.EmuHawk
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
-				CheatList.NewList("", autosave: true);
+				CheatList.NewList("");
 				OnRomChanged();
 			}
 		}
