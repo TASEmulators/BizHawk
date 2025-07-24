@@ -84,12 +84,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				if (R.cart_RAM != null)
 				{
 					Buffer.BlockCopy(data, temp, R.cart_RAM, 0, R.cart_RAM.Length);
+					temp += R.cart_RAM.Length;
 				}
+
+				if (data.Length != temp) throw new InvalidOperationException("Incorrect sram size.");
 
 				Console.WriteLine("loading SRAM here");
 			}
 		}
 
 		public bool SaveRamModified => (L.has_bat || C.has_bat || R.has_bat) & Link3xSyncSettings.Use_SRAM;
+
+		public bool SupportsSaveRam => L.cart_RAM != null || C.cart_RAM != null || R.cart_RAM != null; // The Use_SRAM setting implements behavior not officially supported by BizHawk.
 	}
 }

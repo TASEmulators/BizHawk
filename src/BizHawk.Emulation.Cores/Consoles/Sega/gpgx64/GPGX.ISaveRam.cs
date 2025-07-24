@@ -33,6 +33,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				return;
 			}
 
+			if (!SupportsSaveRam)
+			{
+				return;
+			}
+
 			if (!Core.gpgx_put_sram(data, data.Length))
 			{
 				throw new Exception("Core rejected saveram");
@@ -46,6 +51,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				var size = 0;
 				var area = Core.gpgx_get_sram(ref size);
 				return size > 0 && area != IntPtr.Zero;
+			}
+		}
+
+		public bool SupportsSaveRam
+		{
+			get
+			{
+				var size = 0;
+				var area = Core.gpgx_get_sram(ref size);
+				return size == 0 || area == IntPtr.Zero;
 			}
 		}
 	}

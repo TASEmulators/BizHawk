@@ -118,6 +118,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public new bool SaveRamModified => true;
 
+		public new bool SupportsSaveRam => true;
+
 		public new byte[] CloneSaveRam(bool clearDirty)
 		{
 			var data = new byte[_saturnus.GetSaveRamLength()];
@@ -126,7 +128,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		}
 
 		public new void StoreSaveRam(byte[] data)
-			=> _saturnus.PutSaveRam(data, data.Length);
+		{
+			_saturnus.PutSaveRam(data, data.Length);
+		}
 
 		public bool IsSTV => _isArcade;
 	}

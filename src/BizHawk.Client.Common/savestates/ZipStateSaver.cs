@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.IO;
 
 using BizHawk.Common;
@@ -21,14 +23,43 @@ namespace BizHawk.Client.Common
 			sw.WriteLine(VersionInfo.GetEmuVersion());
 		}
 
-		public ZipStateSaver(string path, int compressionLevel)
+		private ZipStateSaver(FrameworkZipWriter zip)
 		{
-			_zip = new FrameworkZipWriter(path, compressionLevel);
+			_zip = zip;
 
 			// we put these in every zip, so we know where they came from
 			// a bit redundant for movie files given their headers, but w/e
 			PutLump(BinaryStateLump.ZipVersion, WriteZipVersion, false);
 			PutLump(BinaryStateLump.BizVersion, WriteEmuVersion, false);
+		}
+
+		public static FileWriteResult<ZipStateSaver> Create(string path, int compressionLevel)
+		{
+			FileWriteResult<FrameworkZipWriter> result = FrameworkZipWriter.Create(path, compressionLevel);
+			if (result.IsError) return new(result);
+			else return result.Convert(new ZipStateSaver(result.Value!));
+		}
+
+		/// <summary>
+		/// This method must be called after writing has finished and must not be called twice.
+		/// Dispose will be called regardless of the result.
+		/// </summary>
+		/// <param name="backupPath">If not null, renames the original file to this path.</param>
+		public FileWriteResult CloseAndDispose(string? backupPath = null)
+		{
+			FileWriteResult result = _zip.CloseAndDispose(backupPath);
+			Dispose();
+			return result;
+		}
+
+		/// <summary>
+		/// Closes and deletes the file. Use if there was an error while writing.
+		/// Do not call <see cref="CloseAndDispose"/> after this.
+		/// </summary>
+		public void Abort()
+		{
+			_zip.Abort();
+			Dispose();
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback, bool zstdCompress = true)

@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			void SelectAndSaveToSlot(int slot)
 			{
-				SaveQuickSave(slot);
+				SaveQuickSaveAndShowError(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 					LoadMostRecentROM();
 					break;
 				case "Flush SaveRAM":
-					FlushSaveRAM();
+					FlushSaveRAMMenuItem_Click(null, null);
 					break;
 				case "Display FPS":
 					ToggleFps();

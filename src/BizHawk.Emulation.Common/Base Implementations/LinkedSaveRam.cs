@@ -55,13 +55,17 @@ namespace BizHawk.Emulation.Common
 			int pos = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				var toCopy = _linkedCores[i].AsSaveRam().CloneSaveRam(); // wait CloneSaveRam is already a copy, why are we copying it again
-				if (toCopy is null) continue;
-				var b = new byte[toCopy.Length];
+				var numberBytesToCopy = _linkedCores[i].AsSaveRam().CloneSaveRam()?.Length;
+				if (numberBytesToCopy is null) continue;
+				var b = new byte[numberBytesToCopy.Value];
 				Buffer.BlockCopy(data, pos, b, 0, b.Length);
 				pos += b.Length;
 				_linkedCores[i].AsSaveRam().StoreSaveRam(b);
 			}
+
+			if (data.Length != pos) throw new InvalidOperationException("Incorrect sram size.");
 		}
+
+		public bool SupportsSaveRam => true;
 	}
 }
