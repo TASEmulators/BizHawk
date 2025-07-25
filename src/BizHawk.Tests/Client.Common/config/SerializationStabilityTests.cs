@@ -78,6 +78,7 @@ namespace BizHawk.Tests.Client.Common.config
 					if (mi.GetCustomAttribute<JsonIgnoreAttribute>() is not null) continue;
 					if (mi is PropertyInfo pi) CheckMemberAndTypeParams(pi.PropertyType, groupDesc);
 					else if (mi is FieldInfo fi) CheckMemberAndTypeParams(fi.FieldType, groupDesc);
+					else if (mi.MemberType is MemberTypes.Event) Assert.Fail($"cannot serialise event {t.FullName}.{mi.Name} in {groupDesc}");
 				}
 			}
 			CheckAll<Config>();
