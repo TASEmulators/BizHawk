@@ -51,7 +51,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 		public FakeMovieSession(IEmulator emulator)
 		{
-			Settings = new MovieConfig();
+			Settings = new MovieConfig()
+			{
+				DefaultTasStateManagerSettings = new FakeStateManagerSettings(),
+			};
 			StickySource = new Bk2Controller(emulator.ControllerDefinition);
 			MovieController = new Bk2Controller(emulator.ControllerDefinition);
 		}
