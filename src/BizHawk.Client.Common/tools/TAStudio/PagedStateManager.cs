@@ -26,10 +26,11 @@ namespace BizHawk.Client.Common
 	/// 1. No copies, ever.  States are deposited directly to, and read directly from, one giant buffer. (assuming no TempFile storage which is not currently implemented)
 	/// 2. Support for arbitrary and changeable state sizes.
 	/// </summary>
-	public class PagedStateManager : IStateManager<PagedStateManager.PagedSettings>, IDisposable
+	public class PagedStateManager : IStateManager, IDisposable
 	{
 		public PagedSettings Settings { get; private set; }
-		public class PagedSettings
+		IStateManagerSettings IStateManager.Settings => Settings;
+		public class PagedSettings : IStateManagerSettings
 		{
 			// Instead of the user giving a set of memory limits, the user will give just one.
 			// That will be the limit for ALL managed states combined.
@@ -95,6 +96,13 @@ namespace BizHawk.Client.Common
 
 				ForceSaveMarkerStates = other.ForceSaveMarkerStates;
 			}
+
+			public IStateManager CreateManager(Func<int, bool> reserveCallback)
+			{
+				return new PagedStateManager(this, reserveCallback);
+			}
+
+			public IStateManagerSettings Clone() => new PagedSettings(this);
 		}
 
 		public int Count => _states.Count;
@@ -553,25 +561,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public PagedStateManager UpdateSettings(PagedSettings settings, bool keepOldStates = false)
+		public IStateManager UpdateSettings(IStateManagerSettings settings, bool keepOldStates = false)
 		{
-			if (settings.TotalMemoryLimitMB != this.Settings.TotalMemoryLimitMB)
+			if (settings is not PagedSettings pSettings || pSettings.TotalMemoryLimitMB != this.Settings.TotalMemoryLimitMB)
 			{
-				PagedStateManager newManager = new(settings, _reserveCallback);
+				IStateManager newManager = settings.CreateManager(_reserveCallback);
 				newManager.Engage(GetStateClosestToFrame(0).Value.ReadAllBytes());
 				if (keepOldStates) foreach (StateInfo state in _states)
-					{
-						Stream s = GetStateClosestToFrame(state.Frame).Value;
-						newManager.Capture(state.Frame, new StatableStream(s, (int) s.Length));
-					}
+				{
+					Stream s = GetStateClosestToFrame(state.Frame).Value;
+					newManager.Capture(state.Frame, new StatableStream(s, (int)s.Length));
+				}
 
 				Dispose();
 				return newManager;
 			}
 			else
 			{
-				bool recaptureOld = settings.FramesBetweenOldStates > this.Settings.FramesBetweenOldStates;
-				this.Settings = settings;
+				bool recaptureOld = pSettings.FramesBetweenOldStates > this.Settings.FramesBetweenOldStates;
+				this.Settings = pSettings;
 				if (recaptureOld)
 				{
 					foreach (StateInfo state in _states)
@@ -586,7 +594,6 @@ namespace BizHawk.Client.Common
 				return this;
 			}
 		}
-		IStateManager<PagedSettings> IStateManager<PagedSettings>.UpdateSettings(PagedSettings settings, bool keepOldStates) => UpdateSettings(settings, keepOldStates);
 		public void SaveStateHistory(BinaryWriter bw)
 		{
 			bw.Write((byte)2); // version
@@ -653,37 +660,6 @@ namespace BizHawk.Client.Common
 			private byte[] _array;
 			public StatableArray(byte[] array) => _array = array;
 			public void SaveStateBinary(BinaryWriter writer) => writer.Write(_array);
-		}
-
-		private class StatableStream: IStatable
-		{
-			public bool AvoidRewind => false;
-			public void LoadStateBinary(BinaryReader reader) => throw new NotImplementedException();
-
-			private Stream _stream;
-			private int _length;
-			public StatableStream(Stream stream, int length)
-			{
-				_stream = stream;
-				_length = length;
-			}
-			public void SaveStateBinary(BinaryWriter writer)
-			{
-				int copied = 0;
-				const int bufferSize = 81920; // It's the default of CopyTo's buffer size
-				byte[] buffer = new byte[bufferSize];
-				while (copied < _length - bufferSize)
-				{
-					if (_stream.Read(buffer, 0, bufferSize) != bufferSize)
-						throw new Exception("Unexpected end of stream.");
-					writer.Write(buffer);
-					copied += bufferSize;
-				}
-				int remaining = _length - copied;
-				if (_stream.Read(buffer, 0, remaining) != remaining)
-					throw new Exception("Unexpected end of stream.");
-				writer.Write(buffer, 0, remaining);
-			}
 		}
 	}
 }
