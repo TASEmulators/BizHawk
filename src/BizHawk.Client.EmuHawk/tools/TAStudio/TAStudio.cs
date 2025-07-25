@@ -59,9 +59,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudioPalette Palette => Settings.Palette;
 
-		[ConfigPersist]
-		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-
 		/// <summary>
 		/// This is meant to be used by Lua.
 		/// </summary>
@@ -69,6 +66,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public class TAStudioSettings
 		{
+			public enum PatternPaintModeEnum
+			{
+				Never, AutoFireOnly, Always,
+			}
+
+			public enum PatternSelectionEnum
+			{
+				Hold, AutoFire, Custom,
+			}
+
 			public TAStudioSettings()
 			{
 				RecentTas = new RecentFiles(8);
@@ -81,7 +88,6 @@ namespace BizHawk.Client.EmuHawk
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
-				SingleClickAxisEdit = false;
 				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
 				CopyIncludesFrameNo = false;
@@ -107,8 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
-			public bool SingleClickAxisEdit { get; set; }
-			public bool OldControlSchemeForBranches { get; set; } // branch loading will behave differently depending on the recording mode
+			public bool OldControlSchemeForBranches { get; set; } // Deprecated due to other features existing.
 			public bool LoadBranchOnDoubleClick { get; set; }
 			public bool DenoteStatesWithIcons { get; set; }
 			public bool DenoteStatesWithBGColor { get; set; }
@@ -118,19 +123,43 @@ namespace BizHawk.Client.EmuHawk
 			public int BranchMarkerSplitDistance { get; set; }
 			public bool BindMarkersToInput { get; set; }
 			public bool CopyIncludesFrameNo { get; set; }
-			public bool AutoadjustInput { get; set; }
+			public bool AutoadjustInput { get; set; } // Currently unsupported due to being broken
 			public TAStudioPalette Palette { get; set; }
 			public int MaxUndoSteps { get; set; } = 1000;
 			public int RewindStep { get; set; } = 1;
 			public int RewindStepFast { get; set; } = 4;
+			public PatternPaintModeEnum PatternPaintMode { get; set; } = TAStudioSettings.PatternPaintModeEnum.Never;
+			public PatternSelectionEnum PatternSelection { get; set; } = TAStudioSettings.PatternSelectionEnum.Hold;
+			public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 		}
 
-		private class MovieClientSettings
+		public class MovieClientSettings
 		{
 			public InputRoll.InputRollSettings InputRollSettings { get; set; }
 
 			public AutoPatternBool[] BoolPatterns { get; set; }
 			public AutoPatternAxis[] AxisPatterns { get; set; }
+		}
+
+		public class AllSettings
+		{
+			public TAStudioSettings GeneralClientSettings;
+
+			public MovieClientSettings MovieSettings;
+
+			public IStateManagerSettings CurrentStateManagerSettings;
+
+			public IStateManagerSettings DefaultStateManagerSettings;
+		}
+
+		private MovieClientSettings GetMovieSettings()
+		{
+			return new MovieClientSettings()
+			{
+				InputRollSettings = TasView.GetUserSettings(),
+				AxisPatterns = AxisPatterns,
+				BoolPatterns = BoolPatterns,
+			};
 		}
 
 		public TAStudio()
@@ -220,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 
 			HandleHotkeyUpdate();
 
-			TasView.Font = TasViewFont;
+			TasView.Font = Settings.TasViewFont;
 			RefreshDialog();
 			_initialized = true;
 		}
@@ -639,15 +668,7 @@ namespace BizHawk.Client.EmuHawk
 			_initializing = true;
 
 			movie.ClientSettingsForSave = () =>
-			{
-				MovieClientSettings clientSettings = new()
-				{
-					InputRollSettings = TasView.GetUserSettings(),
-					AxisPatterns = AxisPatterns,
-					BoolPatterns = BoolPatterns,
-				};
-				return ConfigService.SaveWithType(clientSettings);
-			};
+				ConfigService.SaveWithType(GetMovieSettings());
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
@@ -1143,7 +1164,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			if (fontDialog.ShowDialog() != DialogResult.Cancel)
 			{
-				TasView.Font = TasViewFont = fontDialog.Font;
+				TasView.Font = Settings.TasViewFont = fontDialog.Font;
 				TasView.Refresh();
 			}
 		}

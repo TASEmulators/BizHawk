@@ -30,6 +30,8 @@
 			Loop = loop;
 		}
 
+		public AutoPatternBool Clone() => new(Pattern, SkipsLag, _index, Loop);
+
 		private int _index;
 
 		public bool SkipsLag { get; private set; } = true;
@@ -106,6 +108,8 @@
 			_index = offset;
 			Loop = loop;
 		}
+
+		public AutoPatternAxis Clone() => new(Pattern, SkipsLag, _index, Loop);
 
 		private int _index;
 

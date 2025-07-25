@@ -410,9 +410,9 @@ namespace BizHawk.Client.EmuHawk
 			isOn ??= TasView.AllColumns.Find(c => c.Name == button).Emphasis;
 
 			// use custom pattern if set
-			bool useCustom = customPatternToolStripMenuItem.Checked;
+			bool useCustom = Settings.PatternSelection == TAStudioSettings.PatternSelectionEnum.Custom;
 			// else, set autohold or fire based on setting
-			bool autoHold = autoHoldToolStripMenuItem.Checked; // !autoFireToolStripMenuItem.Checked
+			bool autoHold = Settings.PatternSelection == TAStudioSettings.PatternSelectionEnum.Hold;
 
 			if (ControllerType.BoolButtons.Contains(button))
 			{
@@ -579,8 +579,8 @@ namespace BizHawk.Client.EmuHawk
 
 						var altOrShift4State = ModifierKeys & (Keys.Alt | Keys.Shift);
 						if (altOrShift4State is Keys.Alt
-							|| (applyPatternToPaintedInputToolStripMenuItem.Checked
-								&& (!onlyOnAutoFireColumnsToolStripMenuItem.Checked || targetCol.Emphasis)))
+							|| Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.Always
+							|| (targetCol.Emphasis && Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.AutoFireOnly))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							_patternPaint = true;
@@ -632,8 +632,8 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
-						if (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
-							|| targetCol.Emphasis))
+						if (Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.Always
+							|| (targetCol.Emphasis && Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.AutoFireOnly))
 						{
 							AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].Reset();
 							CurrentTasMovie.SetAxisState(frame, buttonName, AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].GetNextValue());
@@ -645,7 +645,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 
-						if (e.Clicks != 2 && !Settings.SingleClickAxisEdit)
+						if (e.Clicks != 2)
 						{
 							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Axis {buttonName} from frame {frame}");
 							_startAxisDrawColumn = buttonName;
