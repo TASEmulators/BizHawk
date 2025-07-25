@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 
-			TasStateManager ??= new PagedStateManager(Session.Settings.DefaultTasStateManagerSettings, IsReserved);
+			TasStateManager ??= Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 			if (StartsFromSavestate)
 			{
 				TasStateManager.Engage(BinarySavestate);
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 		public TasLagLog LagLog { get; } = new TasLagLog();
 
 		public override string PreferredExtension => Extension;
-		public IStateManager<PagedStateManager.PagedSettings> TasStateManager { get; set; }
+		public IStateManager TasStateManager { get; set; }
 
 		public Action<int> GreenzoneInvalidated { get; set; }
 

@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderStateManager : IStateManager<ZwinderStateManagerSettings>, IDisposable
+	public class ZwinderStateManager : IStateManager, IDisposable
 	{
 		private static readonly byte[] NonState = Array.Empty<byte>();
 
@@ -35,12 +36,6 @@ namespace BizHawk.Client.Common
 			_reserveCallback = reserveCallback;
 		}
 
-		/// <param name="reserveCallback">Called when deciding to evict a state for the given frame, if true is returned, the state will be reserved</param>
-		public ZwinderStateManager(Func<int, bool> reserveCallback)
-			: this(new ZwinderStateManagerSettings(), reserveCallback)
-		{
-		}
-
 		public void Engage(byte[] frameZeroState)
 		{
 			if (!_reserved.ContainsKey(0))
@@ -63,20 +58,37 @@ namespace BizHawk.Client.Common
 		}
 
 		public ZwinderStateManagerSettings Settings { get; private set; }
+		IStateManagerSettings IStateManager.Settings => Settings;
 
-		public ZwinderStateManager UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false)
+		public IStateManager UpdateSettings(IStateManagerSettings settings, bool keepOldStates = false)
 		{
-			bool makeNewReserved = Settings?.AncientStoreType != settings.AncientStoreType;
-			Settings = settings;
+			if (settings is not ZwinderStateManagerSettings zSettings)
+			{
+				IStateManager newManager = settings.CreateManager(_reserveCallback);
+				newManager.Engage(GetStateClosestToFrame(0).Value.ReadAllBytes());
+				if (keepOldStates)
+				{
+					foreach (int frame in StateCache)
+					{
+						Stream ss = GetStateClosestToFrame(frame).Value;
+						newManager.Capture(frame, new StatableStream(ss, (int)ss.Length));
+					}
+				}
+				Dispose();
+				return newManager;
+			}
 
-			_current = UpdateBuffer(_current, settings.Current(), keepOldStates);
-			_recent = UpdateBuffer(_recent, settings.Recent(), keepOldStates);
-			_gapFiller = UpdateBuffer(_gapFiller, settings.GapFiller(), keepOldStates);
+			bool makeNewReserved = Settings?.AncientStoreType != zSettings.AncientStoreType;
+			Settings = zSettings;
+
+			_current = UpdateBuffer(_current, zSettings.Current(), keepOldStates);
+			_recent = UpdateBuffer(_recent, zSettings.Recent(), keepOldStates);
+			_gapFiller = UpdateBuffer(_gapFiller, zSettings.GapFiller(), keepOldStates);
 
 			if (keepOldStates)
 			{
 				// For ancients, let's throw out states if doing so still satisfies the ancient state interval.
-				if (settings.AncientStateInterval > _ancientInterval)
+				if (zSettings.AncientStateInterval > _ancientInterval)
 				{
 					List<int> reservedFrames = _reserved.Keys.ToList();
 					reservedFrames.Sort();
@@ -85,7 +97,7 @@ namespace BizHawk.Client.Common
 						if (_reserveCallback(reservedFrames[i]))
 							continue;
 
-						if (reservedFrames[i + 1] - reservedFrames[i - 1] <= settings.AncientStateInterval)
+						if (reservedFrames[i + 1] - reservedFrames[i - 1] <= zSettings.AncientStateInterval)
 						{
 							EvictReserved(reservedFrames[i]);
 							reservedFrames.RemoveAt(i);
@@ -112,12 +124,11 @@ namespace BizHawk.Client.Common
 			if (makeNewReserved)
 				RebuildReserved();
 
-			_ancientInterval = settings.AncientStateInterval;
+			_ancientInterval = zSettings.AncientStateInterval;
 			RebuildStateCache();
 
 			return this;
 		}
-		IStateManager<ZwinderStateManagerSettings> IStateManager<ZwinderStateManagerSettings>.UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates) => UpdateSettings(settings, keepOldStates);
 
 		private void RebuildReserved()
 		{

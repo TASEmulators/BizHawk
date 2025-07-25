@@ -8,7 +8,7 @@
 		int MovieCompressionLevel { get; }
 		bool VBAStyleMovieLoadState { get; }
 		bool PlaySoundOnMovieEnd { get; set; }
-		PagedStateManager.PagedSettings DefaultTasStateManagerSettings { get; }
+		IStateManagerSettings DefaultTasStateManagerSettings { get; }
 	}
 
 	public class MovieConfig : IMovieConfig
@@ -20,6 +20,6 @@
 		public bool VBAStyleMovieLoadState { get; set; }
 		public bool PlaySoundOnMovieEnd { get; set; }
 
-		public PagedStateManager.PagedSettings DefaultTasStateManagerSettings { get; set; } = new();
+		public IStateManagerSettings DefaultTasStateManagerSettings { get; set; } = new PagedStateManager.PagedSettings();
 	}
 }
