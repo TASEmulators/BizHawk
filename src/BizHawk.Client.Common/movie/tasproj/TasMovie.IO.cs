@@ -19,7 +19,10 @@ namespace BizHawk.Client.Common
 		{
 			// at this point, TasStateManager may be null if we're currently importing a .bk2
 
-			var settings = JsonConvert.SerializeObject(TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings);
+			var settings = JsonConvert.SerializeObject(
+				TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings,
+				new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Objects }
+			);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw), zstdCompress: true);
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
@@ -135,13 +138,13 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			PagedStateManager.PagedSettings settings = new();
+			IStateManagerSettings settings = Session.Settings.DefaultTasStateManagerSettings;
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
 				{
-					settings = JsonConvert.DeserializeObject<PagedStateManager.PagedSettings>(json);
+					settings = JsonConvert.DeserializeObject<IStateManagerSettings>(json);
 				}
 				catch
 				{
@@ -155,7 +158,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					TasStateManager = new PagedStateManager(settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
 					TasStateManager.LoadStateHistory(br);
 				}
 				catch
@@ -172,13 +175,11 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					TasStateManager = new PagedStateManager(settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
 				}
 				catch
 				{
-					TasStateManager = new PagedStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					TasStateManager = Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 				}
 			}
 		}
