@@ -24,12 +24,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 			manager.InvalidateAfter(0);
 
 			settings.NewToMidRatio = 10;
-			manager = manager.UpdateSettings(settings);
+			manager = (PagedStateManager)manager.UpdateSettings(settings);
 			action(manager);
 			manager.InvalidateAfter(0);
 
 			settings.NewToMidRatio = 0;
-			manager = manager.UpdateSettings(settings);
+			manager = (PagedStateManager)manager.UpdateSettings(settings);
 			action(manager);
 		}
 
