@@ -114,10 +114,12 @@ namespace BizHawk.Client.EmuHawk
 			this.MetaSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.HeaderMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StateHistorySettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.UseOldSavestateManagerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CommentsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SubtitlesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator21 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.DefaultStateSettingsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.UseOldManagerAsDefaultMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RotateMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.HideLagFramesSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -654,11 +656,14 @@ namespace BizHawk.Client.EmuHawk
 			this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.HeaderMenuItem,
             this.StateHistorySettingsMenuItem,
+            this.UseOldSavestateManagerMenuItem,
             this.CommentsMenuItem,
             this.SubtitlesMenuItem,
             this.toolStripSeparator21,
-            this.DefaultStateSettingsMenuItem});
+            this.DefaultStateSettingsMenuItem,
+            this.UseOldManagerAsDefaultMenuItem});
 			this.MetaSubMenu.Text = "&Metadata";
+			this.MetaSubMenu.DropDownOpened += new System.EventHandler(this.MetaSubMenu_DropDownOpened);
 			// 
 			// HeaderMenuItem
 			// 
@@ -669,6 +674,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.StateHistorySettingsMenuItem.Text = "&Savestate History Settings...";
 			this.StateHistorySettingsMenuItem.Click += new System.EventHandler(this.StateHistorySettingsMenuItem_Click);
+			// 
+			// UseOldSavestateManagerMenuItem
+			// 
+			this.UseOldSavestateManagerMenuItem.Name = "UseOldSavestateManagerMenuItem";
+			this.UseOldSavestateManagerMenuItem.Size = new System.Drawing.Size(236, 22);
+			this.UseOldSavestateManagerMenuItem.Text = "Use old savestate manager";
+			this.UseOldSavestateManagerMenuItem.Click += new System.EventHandler(this.UseOldSavestateManagerMenuItem_Click);
 			// 
 			// CommentsMenuItem
 			// 
@@ -684,6 +696,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DefaultStateSettingsMenuItem.Text = "&Default State History Settings...";
 			this.DefaultStateSettingsMenuItem.Click += new System.EventHandler(this.DefaultStateSettingsMenuItem_Click);
+			// 
+			// UseOldManagerAsDefaultMenuItem
+			// 
+			this.UseOldManagerAsDefaultMenuItem.Name = "UseOldManagerAsDefaultMenuItem";
+			this.UseOldManagerAsDefaultMenuItem.Size = new System.Drawing.Size(236, 22);
+			this.UseOldManagerAsDefaultMenuItem.Text = "Use old manager as default";
+			this.UseOldManagerAsDefaultMenuItem.Click += new System.EventHandler(this.UseOldManagerAsDefaultMenuItem_Click);
 			// 
 			// SettingsSubMenu
 			// 
@@ -1367,5 +1386,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolTip toolTip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetRewindStepFastMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetRewindStepMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem UseOldSavestateManagerMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem UseOldManagerAsDefaultMenuItem;
 	}
 }

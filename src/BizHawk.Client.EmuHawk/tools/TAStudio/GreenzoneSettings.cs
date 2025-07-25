@@ -6,13 +6,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GreenzoneSettings : Form, IDialogParent
 	{
-		private readonly Action<PagedStateManager.PagedSettings, bool> _saveSettings;
-		private PagedStateManager.PagedSettings _settings;
+		private readonly Action<IStateManagerSettings, bool> _saveSettings;
+		private IStateManagerSettings _settings;
 		private readonly bool _isDefault;
 
 		public IDialogController DialogController { get; }
 
-		public GreenzoneSettings(IDialogController dialogController, PagedStateManager.PagedSettings settings, Action<PagedStateManager.PagedSettings, bool> saveSettings, bool isDefault)
+		public GreenzoneSettings(IDialogController dialogController, IStateManagerSettings settings, Action<IStateManagerSettings, bool> saveSettings, bool isDefault)
 		{
 			DialogController = dialogController;
 			InitializeComponent();
