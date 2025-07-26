@@ -1020,7 +1020,7 @@ namespace BizHawk.Client.EmuHawk
 			TasMovieMarker/*?*/ existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == Emulator.Frame);
 			if (existingMarker == null) return;
 
-			CurrentTasMovie. Markers.Remove(existingMarker);
+			CurrentTasMovie.Markers.Remove(existingMarker);
 			MarkerControl.UpdateMarkerCount();
 		}
 
