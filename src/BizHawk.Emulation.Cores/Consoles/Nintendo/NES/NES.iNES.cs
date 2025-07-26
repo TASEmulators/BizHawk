@@ -64,15 +64,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0: CartV2.PadV = 1; break;
 					case 1: CartV2.PadH = 1; break;
 				}
-				switch (data[12] & 1)
+
+				CartV2.System = (data[12] & 3) switch
 				{
-					case 0:
-						CartV2.System = "NES-NTSC";
-						break;
-					case 1:
-						CartV2.System = "NES-PAL";
-						break;
-				}
+					// 2 indicates dual NTSC/PAL compatibility, might as well use NTSC
+					0 or 2 => "NES-NTSC",
+					1 => "NES-PAL",
+					3 => "Dendy",
+					_ => CartV2.System
+				};
 
 				if ((data[6] & 4) != 0)
 					CartV2.TrainerSize = 512;
@@ -95,7 +95,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Cart.PrgSize *= 16;
 			Cart.ChrSize *= 8;
 
-
 			Cart.WramBattery = (data[6] & 2) != 0;
 			Cart.WramSize = 8; // should be data[8], but that never worked
 
@@ -115,6 +114,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (data[6].Bit(2))
 				Cart.TrainerSize = 512;
+
+			// iNES v1 does not have a reliable way to indicate the game's region
+			// Officially, data[9] bit 0 indicates region, but practically no ROM uses it
+			// Unofficially, data[10] bit 1-0 indicates region, but practically no ROM uses it
+			// However, iNES v2 will reliably indicate the game's region, so we can use that if present
+			Cart.System = CartV2?.System;
 
 			return true;
 		}
