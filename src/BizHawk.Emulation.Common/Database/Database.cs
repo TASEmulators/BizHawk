@@ -222,8 +222,10 @@ namespace BizHawk.Emulation.Common
 #endif
 			else
 			{
+				Console.WriteLine("gamedb root not found");
 				// nothing to do
 				DB = FrozenDictionary<string, CompactGameInfo>.Empty;
+				_acquire.Set();
 				return;
 			}
 
