@@ -322,7 +322,7 @@ namespace BizHawk.Common
 				{
 					try
 					{
-						Process.Start(app, url);
+						Process.Start(new ProcessStartInfo(app, url) { UseShellExecute = true });
 					}
 					catch (Win32Exception)
 					{
@@ -332,7 +332,7 @@ namespace BizHawk.Common
 			}
 			else
 			{
-				Process.Start(url);
+				Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 			}
 		}
 	}

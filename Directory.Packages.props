@@ -8,7 +8,7 @@
 		<PackageVersion Include="JunitXml.TestLogger" Version="3.1.12" />
 		<PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="13.9.0" />
 		<PackageVersion Include="Menees.Analyzers" Version="3.2.2" />
-		<PackageVersion Include="Meziantou.Analyzer" Version="2.0.163" />
+		<PackageVersion Include="Meziantou.Analyzer" Version="2.0.206" />
 		<PackageVersion Include="Meziantou.Polyfill" Version="1.0.49" />
 		<PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
@@ -24,7 +24,7 @@
 		<PackageVersion Include="Nullable" Version="1.3.1" />
 		<PackageVersion Include="PolySharp" Version="1.15.0" />
 		<PackageVersion Include="ppy.SDL2-CS" Version="1.0.630-alpha" /> <!-- last version with .NET Standard 2.0 support -->
-		<PackageVersion Include="Roslynator.Analyzers" Version="4.12.11" />
+		<PackageVersion Include="Roslynator.Analyzers" Version="4.13.1" />
 		<PackageVersion Include="SharpCompress" Version="0.40.0" />
 		<PackageVersion Include="Silk.NET.OpenAL" Version="2.21.0" />
 		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.21.0" />
