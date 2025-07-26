@@ -27,13 +27,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				static int ReadEMFormAreaSize(int msn, int lsb, int nonEMFormBlockSizeKiB)
 				{
 					if (msn is not 0xF) return ((msn << 8) | lsb) * nonEMFormBlockSizeKiB;
-					// else exponent-multiplier form: `2^E * (2*M + 1)` bytes, where M is the least significant 2 bits, and E is the next 6 bits
-					var prgSize = (2 * (lsb & 0xFC) + 1) << (1 + (lsb & 0x03));
-					// convert to KiB, rounding up
-					var frac = prgSize & 0x3FF;
-					prgSize >>= 10;
-					return frac is 0 ? prgSize : prgSize + 1;
+					// else exponent-multiplier form: 2^E * (M * 2 + 1) bytes, where M is the least significant 2 bits, and E is the next 6 bits
+
+					// exponent needs to be at least 10 in order to have KiB granularity
+					// we also can't handle >= 2GiB files, so any exponent too large can't be handled
+					var exponent = (lsb >> 2) & 0x3F;
+					if (exponent is < 10 or > 30) throw new InvalidOperationException();
+
+					var multiplier = (lsb & 0x03) * 2 + 1;
+					var prgSize = (1UL << exponent) * (ulong)multiplier;
+					if (prgSize > int.MaxValue) throw new InvalidOperationException();
+
+					// convert to KiB
+					return (int)(prgSize >> 10);
 				}
+
 				CartV2 = new CartInfo
 				{
 					PrgSize = ReadEMFormAreaSize(msn: data[9] & 0x0F, lsb: data[4], nonEMFormBlockSizeKiB: 16),
