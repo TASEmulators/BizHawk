@@ -103,7 +103,7 @@ check_style:
     when: always
     allow_failure: false
   script:
-  - Dist/BuildRelease.sh -v normal -p:RunAnalyzersDuringBuild=true
+  - Dist/BuildRelease.sh -v normal
   stage: test
 
 .disabled_job_infersharp:
