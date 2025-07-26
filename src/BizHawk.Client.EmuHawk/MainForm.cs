@@ -1328,8 +1328,7 @@ namespace BizHawk.Client.EmuHawk
 					case 1: // Input overrides Hotkeys
 					{
 						finalHostController.Receive(ie);
-						// don't check hotkeys when any of the pressed keys are input
-						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
+						if (!activeControllerHasBinding(ie.LogicalButton.ToString()))
 						{
 							var handled = false;
 							if (ie.EventType is InputEventType.Press)
@@ -1360,7 +1359,10 @@ namespace BizHawk.Client.EmuHawk
 							hotkeyCoalescer.Receive(ie);
 
 							// Check for hotkeys that may not be handled through CheckHotkey() method, reject controller input mapped to these
-							if (!triggers.Exists(IsInternalHotkey)) finalHostController.Receive(ie);
+							if (ie.EventType is not InputEventType.Press || !triggers.Exists(IsInternalHotkey))
+							{
+								finalHostController.Receive(ie);
+							}
 						}
 
 						break;
