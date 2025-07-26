@@ -19,10 +19,10 @@ jobs:
           dotnet-version: "8"
 
       - name: Debug build with analyzers
-        run: Dist/BuildDebug.sh -warnaserror
+        run: Dist/BuildDebug.sh -warnaserror -p:RunStyleCop=true
 
       - name: Release build with analyzers
-        run: Dist/BuildRelease.sh -warnaserror
+        run: Dist/BuildRelease.sh -warnaserror -p:RunStyleCop=true
 
   test:
     name: Test
