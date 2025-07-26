@@ -18,41 +18,14 @@ namespace BizHawk.Common
 			return new Bit((uint)rhs);
 		}
 
-		public static implicit operator Bit(uint rhs)
-		{
-			Debug.Assert((rhs & ~1) is 0, "higher bits can't be used");
-			return new Bit(rhs);
-		}
-
-		public static implicit operator Bit(byte rhs)
-		{
-			Debug.Assert((rhs & ~1) is 0, "higher bits can't be used");
-			return new Bit(rhs);
-		}
-
 		public static implicit operator Bit(bool rhs)
 		{
 			return new Bit(rhs ? (byte)1 : (byte)0);
 		}
 
-		public static implicit operator long(Bit rhs)
-		{
-			return rhs._val;
-		}
-
 		public static implicit operator int(Bit rhs)
 		{
 			return (int)rhs._val;
-		}
-
-		public static implicit operator uint(Bit rhs)
-		{
-			return rhs._val;
-		}
-
-		public static implicit operator byte(Bit rhs)
-		{
-			return (byte)rhs._val;
 		}
 
 		public static implicit operator bool(Bit rhs)

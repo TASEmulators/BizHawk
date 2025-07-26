@@ -99,12 +99,12 @@ namespace BizHawk.Common.IOExtensions
 			}
 		}
 
-		public static void WriteBit(this BinaryWriter bw, Bit bit)
+		internal static void WriteBit(this BinaryWriter bw, Bit bit)
 		{
 			bw.Write((bool)bit);
 		}
 
-		public static Bit ReadBit(this BinaryReader br)
+		internal static Bit ReadBit(this BinaryReader br)
 		{
 			return br.ReadBoolean();
 		}
