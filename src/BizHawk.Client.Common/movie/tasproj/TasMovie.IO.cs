@@ -135,50 +135,51 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			var settings = new ZwinderStateManagerSettings();
+			IStateManagerSettings settings = Session.Settings.DefaultTasStateManagerSettings;
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
 				{
-					settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					settings = JsonConvert.DeserializeObject<IStateManagerSettings>(json, new JsonSerializerSettings()
+					{
+						TypeNameHandling = TypeNameHandling.Objects,
+					});
 				}
 				catch
 				{
-					// Do nothing, and use default settings instead
+					settings = Session.Settings.DefaultTasStateManagerSettings;
 				}
 			});
 
 			TasStateManager?.Dispose();
+			bool badHistory = false;
 			var hasHistory = bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{
-					TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
+					TasStateManager.LoadStateHistory(br);
 				}
 				catch
 				{
 					// Continue with a fresh manager. If state history got corrupted, the file is still very much useable
 					// and we would want the user to be able to load, and regenerate their state history
 					// however, we still have an issue of how state history got corrupted
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					badHistory = true;
 					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
 
-			if (!hasHistory)
+			if (!hasHistory || badHistory)
 			{
 				try
 				{
-					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
 				}
 				catch
 				{
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					TasStateManager = Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 				}
 			}
 		}

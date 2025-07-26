@@ -5,7 +5,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class ZwinderStateManagerSettings
+	public class ZwinderStateManagerSettings : IStateManagerSettings
 	{
 		public ZwinderStateManagerSettings() { }
 
@@ -108,6 +108,13 @@ namespace BizHawk.Client.Common
 		[DisplayName("Ancient - Storage Type")]
 		[Description("Where to keep the reserved states.")]
 		public IRewindSettings.BackingStoreType AncientStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
+
+		public IStateManager CreateManager(Func<int, bool> reserveCallback)
+		{
+			return new ZwinderStateManager(this, reserveCallback);
+		}
+
+		public IStateManagerSettings Clone() => new ZwinderStateManagerSettings(this);
 
 		// Just to simplify some other code.
 		public RewindConfig Current()
