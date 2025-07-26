@@ -5,27 +5,13 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public class ComparisonResults : Form
 	{
-		private readonly TabControl tabControl1;
-
-		private readonly TabPage tabPage1;
-
-		private readonly TabPage tabPage2;
-
-		private readonly TabPage tabPage3;
-
 		public readonly RichTextBox textBox1;
 
 		public ComparisonResults()
 		{
-			textBox1 = new();
-			tabControl1 = new();
-			tabPage1 = new();
-			tabPage2 = new();
-			tabPage3 = new();
-			tabControl1.SuspendLayout();
-			tabPage1.SuspendLayout();
 			SuspendLayout();
 
+			textBox1 = new();
 			textBox1.Dock = DockStyle.Fill;
 			textBox1.Font = new("Courier New", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
 			textBox1.Location = new(3, 3);
@@ -35,6 +21,11 @@ namespace BizHawk.Client.DiscoHawk
 			textBox1.TabIndex = 1;
 			textBox1.Text = "";
 
+			TabControl tabControl1 = new();
+			tabControl1.SuspendLayout();
+			TabPage tabPage1 = new();
+			TabPage tabPage2 = new();
+			TabPage tabPage3 = new();
 			tabControl1.Controls.Add(tabPage1);
 			tabControl1.Controls.Add(tabPage2);
 			tabControl1.Controls.Add(tabPage3);
@@ -45,6 +36,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabControl1.Size = new(771, 426);
 			tabControl1.TabIndex = 2;
 
+			tabPage1.SuspendLayout();
 			tabPage1.Controls.Add(textBox1);
 			tabPage1.Location = new(4, 22);
 			tabPage1.Name = "tabPage1";

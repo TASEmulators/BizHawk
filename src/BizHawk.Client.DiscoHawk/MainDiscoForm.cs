@@ -11,41 +11,15 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public class MainDiscoForm : Form
 	{
-		private readonly Button btnAbout;
-
 		private readonly RadioButton ccdOutputButton;
 
 		private readonly RadioButton chdOutputButton;
-
-		private readonly ColumnHeader columnHeader1;
-
-		private readonly Button ExitButton;
-
-		private readonly GroupBox groupBox1;
-
-		private readonly GroupBox groupBox2;
-
-		private readonly Label label1;
-
-		private readonly Label label2;
-
-		private readonly Label label3;
-
-		private readonly Label label4;
-
-		private readonly Label label6;
-
-		private readonly Label label7;
 
 		private readonly Panel lblMagicDragArea;
 
 		private readonly Panel lblMp3ExtractMagicArea;
 
 		private readonly ListView lvCompareTargets;
-
-		private readonly RadioButton radioButton1;
-
-		private readonly RadioButton radioButton2;
 
 		// Release TODO:
 		// An input (queue) list
@@ -54,40 +28,20 @@ namespace BizHawk.Client.DiscoHawk
 		// Add disc button, which puts it on the progress cue (converts it)
 		public MainDiscoForm()
 		{
-			ListViewItem listViewItem1 = new("BizHawk");
-			ListViewItem listViewItem2 = new("Mednafen");
-			ExitButton = new();
-			lblMagicDragArea = new();
-			label1 = new();
-			lblMp3ExtractMagicArea = new();
-			label2 = new();
-			btnAbout = new();
-			radioButton1 = new();
-			groupBox1 = new();
-			label4 = new();
-			label3 = new();
-			radioButton2 = new();
-			groupBox2 = new();
-			ccdOutputButton = new();
-			chdOutputButton = new();
-			label6 = new();
-			label7 = new();
-			lvCompareTargets = new();
-			columnHeader1 = new();
-			lblMagicDragArea.SuspendLayout();
-			lblMp3ExtractMagicArea.SuspendLayout();
-			groupBox1.SuspendLayout();
-			groupBox2.SuspendLayout();
 			SuspendLayout();
 
+			Button ExitButton = new();
 			ExitButton.Location = new(434, 414);
 			ExitButton.Name = "ExitButton";
 			ExitButton.Size = new(75, 23);
 			ExitButton.TabIndex = 0;
 			ExitButton.Text = "E&xit";
 			ExitButton.UseVisualStyleBackColor = true;
-			ExitButton.Click += ExitButton_Click;
+			ExitButton.Click += (_, _) => Close();
 
+			lblMagicDragArea = new();
+			lblMagicDragArea.SuspendLayout();
+			Label label1 = new();
 			lblMagicDragArea.AllowDrop = true;
 			lblMagicDragArea.BorderStyle = BorderStyle.Fixed3D;
 			lblMagicDragArea.Controls.Add(label1);
@@ -104,6 +58,9 @@ namespace BizHawk.Client.DiscoHawk
 			label1.TabIndex = 0;
 			label1.Text = "Drag here to HAWK your disc - dump it out as a clean CCD/CHD";
 
+			lblMp3ExtractMagicArea = new();
+			lblMp3ExtractMagicArea.SuspendLayout();
+			Label label2 = new();
 			lblMp3ExtractMagicArea.AllowDrop = true;
 			lblMp3ExtractMagicArea.BorderStyle = BorderStyle.Fixed3D;
 			lblMp3ExtractMagicArea.Controls.Add(label2);
@@ -120,14 +77,16 @@ namespace BizHawk.Client.DiscoHawk
 			label2.TabIndex = 0;
 			label2.Text = "Drag a disc here to extract the audio tracks to MP3";
 
+			Button btnAbout = new();
 			btnAbout.Location = new(353, 414);
 			btnAbout.Name = "btnAbout";
 			btnAbout.Size = new(75, 23);
 			btnAbout.TabIndex = 3;
 			btnAbout.Text = "&About";
 			btnAbout.UseVisualStyleBackColor = true;
-			btnAbout.Click += BtnAbout_Click;
+			btnAbout.Click += (_, _) => new About().ShowDialog();
 
+			RadioButton radioButton1 = new();
 			radioButton1.AutoSize = true;
 			radioButton1.Checked = true;
 			radioButton1.Location = new(6, 19);
@@ -138,6 +97,11 @@ namespace BizHawk.Client.DiscoHawk
 			radioButton1.Text = "BizHawk";
 			radioButton1.UseVisualStyleBackColor = true;
 
+			GroupBox groupBox1 = new();
+			groupBox1.SuspendLayout();
+			Label label4 = new();
+			Label label3 = new();
+			RadioButton radioButton2 = new();
 			groupBox1.Controls.Add(label4);
 			groupBox1.Controls.Add(label3);
 			groupBox1.Controls.Add(radioButton2);
@@ -171,6 +135,10 @@ namespace BizHawk.Client.DiscoHawk
 			radioButton2.Text = "Mednafen";
 			radioButton2.UseVisualStyleBackColor = true;
 
+			GroupBox groupBox2 = new();
+			groupBox2.SuspendLayout();
+			ccdOutputButton = new();
+			chdOutputButton = new();
 			groupBox2.Controls.Add(ccdOutputButton);
 			groupBox2.Controls.Add(chdOutputButton);
 			groupBox2.Enabled = true;
@@ -201,6 +169,7 @@ namespace BizHawk.Client.DiscoHawk
 			chdOutputButton.Text = "CHD";
 			chdOutputButton.UseVisualStyleBackColor = true;
 
+			Label label6 = new();
 			label6.AutoSize = true;
 			label6.Enabled = false;
 			label6.Location = new(9, 324);
@@ -209,6 +178,7 @@ namespace BizHawk.Client.DiscoHawk
 			label6.TabIndex = 2;
 			label6.Text = "Compare Reading To:";
 
+			Label label7 = new();
 			label7.AutoSize = true;
 			label7.Location = new(358, 12);
 			label7.Name = "label7";
@@ -216,14 +186,15 @@ namespace BizHawk.Client.DiscoHawk
 			label7.TabIndex = 10;
 			label7.Text = "- Operations -";
 
-			lvCompareTargets.Columns.Add(columnHeader1);
+			lvCompareTargets = new();
+			lvCompareTargets.Columns.Add(new ColumnHeader());
 			lvCompareTargets.Enabled = false;
 			lvCompareTargets.FullRowSelect = true;
 			lvCompareTargets.GridLines = true;
 			lvCompareTargets.HeaderStyle = ColumnHeaderStyle.None;
 			lvCompareTargets.HideSelection = false;
-			lvCompareTargets.Items.Add(listViewItem1);
-			lvCompareTargets.Items.Add(listViewItem2);
+			lvCompareTargets.Items.Add("BizHawk");
+			lvCompareTargets.Items.Add("Mednafen");
 			lvCompareTargets.Location = new(9, 340);
 			lvCompareTargets.Name = "lvCompareTargets";
 			lvCompareTargets.Size = new(121, 97);
@@ -251,7 +222,7 @@ namespace BizHawk.Client.DiscoHawk
 			MinimizeBox = false;
 			Name = "MainDiscoForm";
 			Text = "DiscoHawk";
-			Load += MainDiscoForm_Load;
+			Load += (_, _) => lvCompareTargets.Columns[0].Width = lvCompareTargets.ClientSize.Width;
 			lblMagicDragArea.ResumeLayout(performLayout: false);
 			lblMp3ExtractMagicArea.ResumeLayout(performLayout: false);
 			groupBox1.ResumeLayout(performLayout: false);
@@ -260,16 +231,6 @@ namespace BizHawk.Client.DiscoHawk
 			groupBox2.PerformLayout();
 			ResumeLayout(performLayout: false);
 			PerformLayout();
-		}
-
-		private void MainDiscoForm_Load(object sender, EventArgs e)
-		{
-			lvCompareTargets.Columns[0].Width = lvCompareTargets.ClientSize.Width;
-		}
-
-		private void ExitButton_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		private void lblMagicDragArea_DragDrop(object sender, DragEventArgs e)
@@ -405,11 +366,6 @@ namespace BizHawk.Client.DiscoHawk
 				lblMp3ExtractMagicArea.AllowDrop = true;
 				Cursor = Cursors.Default;
 			}
-		}
-
-		private void BtnAbout_Click(object sender, EventArgs e)
-		{
-			new About().ShowDialog();
 		}
 	}
 }

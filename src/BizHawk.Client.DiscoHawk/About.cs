@@ -7,19 +7,11 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public class About : Form
 	{
-		private readonly Button button1;
-
-		private readonly Label lblVersion;
-
-		private readonly RichTextBox richTextBox1;
-
 		public About()
 		{
-			richTextBox1 = new();
-			button1 = new();
-			lblVersion = new();
 			SuspendLayout();
 
+			RichTextBox richTextBox1 = new();
 			richTextBox1.Location = new(12, 12);
 			richTextBox1.Name = "richTextBox1";
 			richTextBox1.ReadOnly = true;
@@ -31,8 +23,9 @@ namespace BizHawk.Client.DiscoHawk
 				+ "\n\nTo use, drag a disc (.cue, .iso, .ccd, .cdi, .mds, .nrg) into the top area. DiscoHawk will dump a newly cleaned up CCD file set to the same directory as the original disc image, and call it _hawked."
 				+ "\n\nThis is beta software. You are invited to report problems to our bug tracker or IRC. Problems consist of: crusty disc images that crash DiscoHawk or that cause DiscoHawk to produce a _hawked.ccd which fails to serve your particular purposes (which we will need to be informed of, in case we are outputting wrongly.)")
 					.Replace("\n", Environment.NewLine);
-			richTextBox1.LinkClicked += richTextBox1_LinkClicked;
+			richTextBox1.LinkClicked += (_, clickedArgs) => Util.OpenUrlExternal(clickedArgs.LinkText);
 
+			Button button1 = new();
 			button1.DialogResult = DialogResult.Cancel;
 			button1.Location = new(436, 254);
 			button1.Name = "button1";
@@ -40,8 +33,9 @@ namespace BizHawk.Client.DiscoHawk
 			button1.TabIndex = 2;
 			button1.Text = "OK";
 			button1.UseVisualStyleBackColor = true;
-			button1.Click += button1_Click;
+			button1.Click += (_, _) => Close();
 
+			Label lblVersion = new();
 			lblVersion.AutoSize = true;
 			lblVersion.Location = new(12, 259);
 			lblVersion.Name = "lblVersion";
@@ -64,16 +58,6 @@ namespace BizHawk.Client.DiscoHawk
 			Text = "About DiscoHawk";
 			ResumeLayout(performLayout: false);
 			PerformLayout();
-		}
-
-		private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
-		{
-			Util.OpenUrlExternal(e.LinkText);
-		}
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 	}
 }
