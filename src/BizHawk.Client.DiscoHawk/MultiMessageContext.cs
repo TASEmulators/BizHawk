@@ -25,11 +25,17 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		public static MultiMessageContext ForCurrentCulture()
 		{
-			MultiMessageContext mmc = new(CultureInfo.CurrentUICulture.IetfLanguageTag);
-			return mmc.Culture is null ? new("en") : mmc;
+			MultiMessageContext mmc = new(CultureInfo.CurrentUICulture.IetfLanguageTag, out var streamException);
+			if (streamException is null && mmc.Culture is not null) return mmc;
+			MultiMessageContext mmc1 = new("en", out var streamException1);
+			if (streamException1 is not null) Console.WriteLine(streamException1);
+			return mmc1;
 		}
 
-		private static IReadOnlyList<MessageContext> ReadEmbeddedAndConcat(string lang, MessageContext[] overlays)
+		private static IReadOnlyList<MessageContext> ReadEmbeddedAndConcat(
+			string lang,
+			MessageContext[] overlays,
+			out Exception? streamException)
 		{
 			MessageContext mc = new(lang, new() { UseIsolating = false });
 			Stream embeddedStream;
@@ -39,12 +45,13 @@ namespace BizHawk.Client.DiscoHawk
 			}
 			catch (ArgumentException e)
 			{
-				Console.WriteLine(e);
+				streamException = e;
 				return overlays;
 			}
 			using StreamReader sr = new(embeddedStream);
 			var errors = mc.AddMessages(sr);
 			foreach (var error in errors) Console.WriteLine(error);
+			streamException = null;
 			return [ ..overlays, mc ];
 		}
 
@@ -74,8 +81,8 @@ namespace BizHawk.Client.DiscoHawk
 			}
 		}
 
-		public MultiMessageContext(string lang, params MessageContext[] overlays)
-			: this(ReadEmbeddedAndConcat(lang, overlays)) {}
+		public MultiMessageContext(string lang, out Exception? streamException, params MessageContext[] overlays)
+			: this(ReadEmbeddedAndConcat(lang, overlays, out streamException)) {}
 
 		public string? this[string id]
 			=> GetString(id);
