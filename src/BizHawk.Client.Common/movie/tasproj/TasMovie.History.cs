@@ -8,6 +8,7 @@ namespace BizHawk.Client.Common
 	{
 		List<string> Names { get; }
 		int UndoIndex { get; }
+
 		/// <summary>
 		/// Gets or sets a value indicating whether the movie is recording action history.
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
@@ -15,6 +16,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		bool IsRecording { get; set; }
 		void Clear(int upTo = -1);
+
 		/// <summary>
 		/// All changes made between calling Begin and End will be one Undo.
 		/// If already recording in a batch, calls EndBatch.
@@ -23,6 +25,7 @@ namespace BizHawk.Client.Common
 		/// <param name="keepOldBatch">If set and a batch is in progress, a new batch will not be created.</param>
 		/// <returns>Returns true if a new batch was started; otherwise false.</returns>
 		bool BeginNewBatch(string name = "", bool keepOldBatch = false);
+
 		/// <summary>
 		/// Ends the current undo batch. Future changes will be one undo each.
 		/// If not already recording a batch, does nothing.
@@ -38,6 +41,7 @@ namespace BizHawk.Client.Common
 		/// Undoes the most recent action batch, if any exist.
 		/// </summary>
 		void Undo();
+
 		/// <summary>
 		/// Redoes the most recent undo, if any exist.
 		/// </summary>
