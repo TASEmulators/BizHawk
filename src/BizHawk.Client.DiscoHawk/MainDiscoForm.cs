@@ -39,7 +39,7 @@ namespace BizHawk.Client.DiscoHawk
 			ExitButton.Name = "ExitButton";
 			ExitButton.Size = new(75, 23);
 			ExitButton.TabIndex = 0;
-			ExitButton.Text = i18n["maindiscoform-4723-btn-exit-textstr"];
+			ExitButton.Text = i18n.GetWithMnemonic("maindiscoform-4723-btn-exit");
 			ExitButton.UseVisualStyleBackColor = true;
 			ExitButton.Click += (_, _) => Close();
 
@@ -60,7 +60,7 @@ namespace BizHawk.Client.DiscoHawk
 			label1.Name = "label1";
 			label1.Size = new(166, 47);
 			label1.TabIndex = 0;
-			label1.Text = i18n["maindiscoform-1872-area-hawkdisc-label"];
+			label1.Text = i18n["maindiscoform-1872-area-hawkdisc"];
 
 			lblMp3ExtractMagicArea = new();
 			lblMp3ExtractMagicArea.SuspendLayout();
@@ -79,14 +79,14 @@ namespace BizHawk.Client.DiscoHawk
 			label2.Name = "label2";
 			label2.Size = new(163, 39);
 			label2.TabIndex = 0;
-			label2.Text = i18n["maindiscoform-6011-area-mp3extract-label"];
+			label2.Text = i18n["maindiscoform-6011-area-mp3extract"];
 
 			Button btnAbout = new();
 			btnAbout.Location = new(353, 414);
 			btnAbout.Name = "btnAbout";
 			btnAbout.Size = new(75, 23);
 			btnAbout.TabIndex = 3;
-			btnAbout.Text = i18n["maindiscoform-5766-btn-about-textstr"];
+			btnAbout.Text = i18n.GetWithMnemonic("maindiscoform-5766-btn-about");
 			btnAbout.UseVisualStyleBackColor = true;
 			btnAbout.Click += (_, _) => new About(_i18n).ShowDialog();
 
@@ -98,7 +98,7 @@ namespace BizHawk.Client.DiscoHawk
 			radioButton1.Size = new(67, 17);
 			radioButton1.TabIndex = 4;
 			radioButton1.TabStop = true;
-			radioButton1.Text = i18n["maindiscoform-4559-radio-engine-hawk-textstr"];
+			radioButton1.Text = i18n.GetWithMnemonic("maindiscoform-4559-radio-engine-hawk");
 			radioButton1.UseVisualStyleBackColor = true;
 
 			GroupBox groupBox1 = new();
@@ -116,19 +116,19 @@ namespace BizHawk.Client.DiscoHawk
 			groupBox1.Size = new(276, 234);
 			groupBox1.TabIndex = 5;
 			groupBox1.TabStop = false;
-			groupBox1.Text = i18n["maindiscoform-7187-group-engine-label"];
+			groupBox1.Text = i18n["maindiscoform-7187-group-engine"];
 
 			label4.Location = new(20, 95);
 			label4.Name = "label4";
 			label4.Size = new(216, 43);
 			label4.TabIndex = 8;
-			label4.Text = i18n["maindiscoform-7205-radio-engine-mednafen-longdesc-label"];
+			label4.Text = i18n["maindiscoform-7205-radio-engine-mednafen-longdesc"];
 
 			label3.Location = new(20, 39);
 			label3.Name = "label3";
 			label3.Size = new(253, 33);
 			label3.TabIndex = 7;
-			label3.Text = i18n["maindiscoform-4559-radio-engine-hawk-longdesc-label"];
+			label3.Text = i18n["maindiscoform-4559-radio-engine-hawk-longdesc"];
 
 			radioButton2.AutoSize = true;
 			radioButton2.Enabled = false;
@@ -136,7 +136,7 @@ namespace BizHawk.Client.DiscoHawk
 			radioButton2.Name = "radioButton2";
 			radioButton2.Size = new(73, 17);
 			radioButton2.TabIndex = 5;
-			radioButton2.Text = i18n["maindiscoform-7205-radio-engine-mednafen-textstr"];
+			radioButton2.Text = i18n.GetWithMnemonic("maindiscoform-7205-radio-engine-mednafen");
 			radioButton2.UseVisualStyleBackColor = true;
 
 			GroupBox groupBox2 = new();
@@ -151,7 +151,7 @@ namespace BizHawk.Client.DiscoHawk
 			groupBox2.Size = new(271, 69);
 			groupBox2.TabIndex = 6;
 			groupBox2.TabStop = false;
-			groupBox2.Text = i18n["maindiscoform-5561-group-hawkoutput-label"];
+			groupBox2.Text = i18n["maindiscoform-5561-group-hawkoutput"];
 
 			ccdOutputButton.AutoSize = true;
 			ccdOutputButton.Checked = true;
@@ -160,7 +160,7 @@ namespace BizHawk.Client.DiscoHawk
 			ccdOutputButton.Size = new(47, 17);
 			ccdOutputButton.TabIndex = 5;
 			ccdOutputButton.TabStop = true;
-			ccdOutputButton.Text = i18n["maindiscoform-7576-radio-hawkoutput-ccd-textstr"];
+			ccdOutputButton.Text = i18n.GetWithMnemonic("maindiscoform-7576-radio-hawkoutput-ccd");
 			ccdOutputButton.UseVisualStyleBackColor = true;
 
 			chdOutputButton.AutoSize = true;
@@ -170,7 +170,7 @@ namespace BizHawk.Client.DiscoHawk
 			chdOutputButton.Size = new(47, 17);
 			chdOutputButton.TabIndex = 6;
 			chdOutputButton.TabStop = true;
-			chdOutputButton.Text = i18n["maindiscoform-2884-radio-hawkoutput-chd-textstr"];
+			chdOutputButton.Text = i18n.GetWithMnemonic("maindiscoform-2884-radio-hawkoutput-chd");
 			chdOutputButton.UseVisualStyleBackColor = true;
 
 			Label label6 = new();
@@ -180,7 +180,7 @@ namespace BizHawk.Client.DiscoHawk
 			label6.Name = "label6";
 			label6.Size = new(111, 13);
 			label6.TabIndex = 2;
-			label6.Text = i18n["maindiscoform-4639-group-compare-list-label"];
+			label6.Text = i18n["maindiscoform-4639-group-compare-list"];
 
 			Label label7 = new();
 			label7.AutoSize = true;
@@ -188,7 +188,7 @@ namespace BizHawk.Client.DiscoHawk
 			label7.Name = "label7";
 			label7.Size = new(70, 13);
 			label7.TabIndex = 10;
-			label7.Text = i18n["maindiscoform-7426-pane-operations-label"];
+			label7.Text = i18n["maindiscoform-7426-pane-operations"];
 
 			lvCompareTargets = new();
 			lvCompareTargets.Columns.Add(new ColumnHeader());
@@ -197,8 +197,8 @@ namespace BizHawk.Client.DiscoHawk
 			lvCompareTargets.GridLines = true;
 			lvCompareTargets.HeaderStyle = ColumnHeaderStyle.None;
 			lvCompareTargets.HideSelection = false;
-			lvCompareTargets.Items.Add(i18n["maindiscoform-5267-compare-hawk-label"]);
-			lvCompareTargets.Items.Add(i18n["maindiscoform-5267-compare-mednafen-label"]);
+			lvCompareTargets.Items.Add(i18n["maindiscoform-5267-compare-hawk"]);
+			lvCompareTargets.Items.Add(i18n["maindiscoform-5267-compare-mednafen"]);
 			lvCompareTargets.Location = new(9, 340);
 			lvCompareTargets.Name = "lvCompareTargets";
 			lvCompareTargets.Size = new(121, 97);
@@ -250,14 +250,18 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					var success = DiscoHawkLogic.HawkAndWriteFile(
 						inputPath: file,
-						errorCallback: err => MessageBox.Show(err, _i18n["discodischawking-6945-errbox-hawk-windowtitlestatic"]),
+						errorCallback: err => MessageBox.Show(
+							caption: _i18n.GetDialogText("discodischawking-6945-errbox-hawk").Caption,
+							text: err),
 						hawkedFormat: outputFormat);
 					if (!success) break;
 				}
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), _i18n["discodischawking-3654-errbox-misc-windowtitlestatic"]);
+				MessageBox.Show(
+					caption: _i18n.GetDialogText("discodischawking-3654-errbox-misc").Caption,
+					text: ex.ToString());
 				throw;
 			}
 			finally
@@ -326,9 +330,8 @@ namespace BizHawk.Client.DiscoHawk
 			if (!FFmpegService.QueryServiceAvailable())
 			{
 #if true
-				MessageBox.Show(
-					caption: _i18n["discomp3extract-5715-errbox-noffmpeg-windowtitlestatic"],
-					text: _i18n["discomp3extract-5715-errbox-noffmpeg-label"]);
+				var (caption, text) = _i18n.GetDialogText("discomp3extract-5715-errbox-noffmpeg");
+				MessageBox.Show(caption: caption, text: text);
 				return;
 #else
 				using EmuHawk.FFmpegDownloaderForm dialog = new(); // builds fine when <Compile Include/>'d, but the .resx won't load even if it's also included
@@ -347,21 +350,25 @@ namespace BizHawk.Client.DiscoHawk
 					using var disc = Disc.LoadAutomagic(file);
 					var (path, filename, _) = file.SplitPathToDirFileAndExt();
 					bool? PromptForOverwrite(string mp3Path)
-						=> MessageBox.Show(
-							string.Format(_i18n["discomp3extract-3418-prompt-overwrite-fmtstr"], mp3Path),
-							_i18n["discomp3extract-3418-prompt-overwrite-windowtitlestatic"],
-							MessageBoxButtons.YesNoCancel) switch
+					{
+						var (caption, text) = _i18n.GetDialogText(
+							"discomp3extract-3418-prompt-overwrite",
+							new ArgsDict(filePath: mp3Path));
+						return MessageBox.Show(caption: caption, text: text, buttons: MessageBoxButtons.YesNoCancel) switch
 						{
 							DialogResult.Yes => true,
 							DialogResult.No => false,
 							_ => null,
 						};
+					}
 					AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
 				}
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), _i18n["discomp3extract-7691-errbox-misc-windowtitlestatic"]);
+				MessageBox.Show(
+					caption: _i18n.GetDialogText("discomp3extract-7691-errbox-misc").Caption,
+					text: ex.ToString());
 				throw;
 			}
 			finally

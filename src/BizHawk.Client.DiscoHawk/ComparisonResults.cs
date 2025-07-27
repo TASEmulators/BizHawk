@@ -43,7 +43,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabPage1.Padding = new(all: 3);
 			tabPage1.Size = new(763, 400);
 			tabPage1.TabIndex = 0;
-			tabPage1.Text = i18n["discohawkcomparereadout-6110-tab-log-textstr"];
+			tabPage1.Text = i18n.GetWithMnemonic("discohawkcomparereadout-6110-tab-log");
 			tabPage1.UseVisualStyleBackColor = true;
 
 			tabPage2.Location = new(4, 22);
@@ -51,7 +51,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabPage2.Padding = new(all: 3);
 			tabPage2.Size = new(763, 400);
 			tabPage2.TabIndex = 1;
-			tabPage2.Text = i18n["discohawkcomparereadout-6110-tab-src-textstr"];
+			tabPage2.Text = i18n.GetWithMnemonic("discohawkcomparereadout-6110-tab-src");
 			tabPage2.UseVisualStyleBackColor = true;
 
 			tabPage3.Location = new(4, 22);
@@ -59,7 +59,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabPage3.Padding = new(all: 3);
 			tabPage3.Size = new(763, 400);
 			tabPage3.TabIndex = 2;
-			tabPage3.Text = i18n["discohawkcomparereadout-6110-tab-dest-textstr"];
+			tabPage3.Text = i18n.GetWithMnemonic("discohawkcomparereadout-6110-tab-dest");
 			tabPage3.UseVisualStyleBackColor = true;
 
 			AutoScaleDimensions = new(6.0f, 13.0f);

@@ -17,7 +17,7 @@ namespace BizHawk.Client.DiscoHawk
 			richTextBox1.ReadOnly = true;
 			richTextBox1.Size = new(499, 236);
 			richTextBox1.TabIndex = 1;
-			richTextBox1.Text = i18n["discohawkabout-4584-lbl-explainer-label"]!.Replace("\n", Environment.NewLine);
+			richTextBox1.Text = i18n["discohawkabout-4584-lbl-explainer"]!.Replace("\n", Environment.NewLine);
 			richTextBox1.LinkClicked += (_, clickedArgs) => Util.OpenUrlExternal(clickedArgs.LinkText);
 
 			Button button1 = new();
@@ -26,7 +26,7 @@ namespace BizHawk.Client.DiscoHawk
 			button1.Name = "button1";
 			button1.Size = new(75, 23);
 			button1.TabIndex = 2;
-			button1.Text = i18n["discohawkabout-9804-btn-dismiss-textstr"];
+			button1.Text = i18n.GetWithMnemonic("discohawkabout-9804-btn-dismiss");
 			button1.UseVisualStyleBackColor = true;
 			button1.Click += (_, _) => Close();
 
