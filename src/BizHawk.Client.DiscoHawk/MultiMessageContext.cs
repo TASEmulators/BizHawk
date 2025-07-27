@@ -15,10 +15,9 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public sealed class ArgsDict : Dictionary<string, object?>
 	{
-		public ArgsDict(string? filePath = null, int? tabCount = null)
+		public ArgsDict(string? filePath = null)
 		{
 			Add(nameof(filePath), filePath);
-			Add(nameof(tabCount), tabCount);
 		}
 	}
 
@@ -125,37 +124,6 @@ namespace BizHawk.Client.DiscoHawk
 				return found ? strWithMn : Fail(ERR_FMT_STR_MNEMONIC_CHAR_ABSENT);
 			}
 			return strWithoutMn;
-		}
-	}
-
-	public static class Sample
-	{
-		public static void RunAll()
-		{
-			static void RunTest(string lang)
-			{
-				MultiMessageContext translator = new(lang);
-				Console.WriteLine($"\n{lang}:");
-				Console.WriteLine($"tabs-close-button = {translator.GetString("tabs-close-button")}");
-				Console.WriteLine(
-					"tabs-close-tooltip ($tabCount = 1) = "
-						+ translator.GetString("tabs-close-tooltip", new ArgsDict(tabCount: 1)));
-				Console.WriteLine(
-					"tabs-close-tooltip ($tabCount = 2) = "
-						+ translator.GetString("tabs-close-tooltip", new ArgsDict(tabCount: 2)));
-				Console.WriteLine(
-					"tabs-close-warning ($tabCount = 1) = "
-						+ translator.GetString("tabs-close-warning", new ArgsDict(tabCount: 1)));
-				Console.WriteLine(
-					"tabs-close-warning ($tabCount = 2) = "
-						+ translator.GetString("tabs-close-warning", new ArgsDict(tabCount: 2)));
-				Console.WriteLine($"sync-dialog-title = {translator.GetString("sync-dialog-title")}");
-				Console.WriteLine($"sync-headline-title = {translator.GetString("sync-headline-title")}");
-				Console.WriteLine($"sync-signedout-title = {translator.GetString("sync-signedout-title")}");
-			}
-			RunTest("en");
-			RunTest("it");
-			RunTest("pl");
 		}
 	}
 }

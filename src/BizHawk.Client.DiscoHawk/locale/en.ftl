@@ -107,34 +107,3 @@ discohawkabout-4584-lbl-explainer =
     This is beta software. You are invited to report problems to our bug tracker or IRC. Problems consist of: crusty disc images that crash {-tm-discohawk} or that cause {-tm-discohawk} to produce a _hawked.ccd which fails to serve your particular purposes (which we will need to be informed of, in case we are outputting wrongly.)
 
 discohawkabout-2822-windowtitlestatic = About {-tm-discohawk}
-
-
-
-### strings for the Fluent sample
-
-
-
-## Closing tabs
-
-tabs-close-button = Close
-tabs-close-tooltip = {$tabCount ->
-    [one] Close {$tabCount} tab
-   *[other] Close {$tabCount} tabs
-}
-tabs-close-warning =
-    You are about to close {$tabCount} tabs.
-    Are you sure you want to continue?
-
-## Syncing
-
--sync-brand-name = Firefox Account
-
-sync-dialog-title = {-sync-brand-name}
-sync-headline-title =
-    {-sync-brand-name}: The best way to bring
-    your data always with you
-sync-signedout-title =
-    Connect with your {-sync-brand-name}
-
-## Datetime
-date-is = The date is 'DATETIME($dt, weekday: "short", month: "short", year: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric")'.

@@ -114,8 +114,6 @@ namespace BizHawk.Client.DiscoHawk
 				}
 			}
 
-			Sample.RunAll(); // testing Fluent.Net
-
 			// Do something for visuals, I guess
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
