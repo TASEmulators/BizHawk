@@ -28,6 +28,12 @@ namespace BizHawk.Client.Common
 		/// If not already recording a batch, does nothing.
 		/// </summary>
 		void EndBatch();
+
+		/// <summary>
+		/// Combine the last two undo actions, making them part of one batch action.
+		/// </summary>
+		void MergeLastActions();
+
 		/// <summary>
 		/// Undoes the most recent action batch, if any exist.
 		/// </summary>
@@ -176,6 +182,17 @@ namespace BizHawk.Client.Common
 			{
 				last.Capacity = last.Count;
 			}
+		}
+
+		public void MergeLastActions()
+		{
+			Debug.Assert(UndoIndex + 1 == _history.Count, "Don't merge the last actions if they aren't the last actions.");
+			Debug.Assert(_history.Count > 1, "Don't merge when there aren't actions to merge.");
+
+			_history[_history.Count - 2].AddRange(_history[_history.Count - 1]);
+			_history.RemoveAt(_history.Count - 1);
+			Names.RemoveAt(Names.Count - 1);
+			UndoIndex--;
 		}
 
 		public void Undo()
