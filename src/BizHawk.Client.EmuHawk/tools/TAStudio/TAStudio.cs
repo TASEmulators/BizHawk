@@ -890,6 +890,13 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.TogglePause();
 		}
 
+		public override void OnPauseToggle(bool newPauseState)
+		{
+			// Consecutively recorded frames are merged into one undo action, until we pause.
+			// Then a new undo action should be used.
+			if (newPauseState) _extendNeedsMerge = false;
+		}
+
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
