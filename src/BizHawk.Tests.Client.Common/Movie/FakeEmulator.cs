@@ -10,7 +10,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		private readonly static ControllerDefinition _cd = new ControllerDefinition("fake controller")
+		private static readonly ControllerDefinition _cd = new ControllerDefinition("fake controller")
 		{
 			BoolButtons = { "A", "B" },
 		}
