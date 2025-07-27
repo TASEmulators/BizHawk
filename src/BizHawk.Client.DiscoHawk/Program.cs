@@ -120,7 +120,7 @@ namespace BizHawk.Client.DiscoHawk
 
 			if (args.Length == 0)
 			{
-				MultiMessageContext i18n = new("en");
+				var i18n = MultiMessageContext.ForCurrentCulture();
 				using MainDiscoForm dialog = new(i18n);
 				dialog.ShowDialog();
 			}
@@ -130,7 +130,7 @@ namespace BizHawk.Client.DiscoHawk
 					args,
 					results => // invoked 0..1 times
 					{
-						MultiMessageContext i18n = new("en");
+						var i18n = MultiMessageContext.ForCurrentCulture();
 						using ComparisonResults cr = new(i18n) { textBox1 = { Text = results } };
 						cr.ShowDialog();
 					});

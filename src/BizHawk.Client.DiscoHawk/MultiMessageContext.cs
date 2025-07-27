@@ -23,6 +23,12 @@ namespace BizHawk.Client.DiscoHawk
 
 	public readonly struct MultiMessageContext
 	{
+		public static MultiMessageContext ForCurrentCulture()
+		{
+			MultiMessageContext mmc = new(CultureInfo.CurrentUICulture.IetfLanguageTag);
+			return mmc.Culture is null ? new("en") : mmc;
+		}
+
 		private static IReadOnlyList<MessageContext> ReadEmbeddedAndConcat(string lang, MessageContext[] overlays)
 		{
 			MessageContext mc = new(lang, new() { UseIsolating = false });
@@ -44,12 +50,28 @@ namespace BizHawk.Client.DiscoHawk
 
 		private readonly IReadOnlyList<MessageContext> _contexts;
 
-		public readonly CultureInfo Culture;
+		public readonly CultureInfo? Culture;
 
 		public MultiMessageContext(IReadOnlyList<MessageContext> contexts)
 		{
 			_contexts = contexts;
-			Culture = new(_contexts.FirstOrDefault()?.Locales?.First());
+			var langcode = _contexts.FirstOrDefault()?.Locales?.First();
+			if (langcode is null) return;
+			try
+			{
+				Culture = new(langcode);
+			}
+			catch (Exception)
+			{
+				try
+				{
+					Culture = new(langcode.SubstringBefore('-'));
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
+			}
 		}
 
 		public MultiMessageContext(string lang, params MessageContext[] overlays)
