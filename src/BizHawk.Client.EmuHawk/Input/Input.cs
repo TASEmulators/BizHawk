@@ -9,7 +9,7 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class Input
+	public class Input : IPhysicalInputSource
 	{
 		/// <summary>
 		/// If your form needs this kind of input focus, be sure to say so.
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Thread _updateThread;
 
-		public readonly IHostInputAdapter Adapter;
+		public IHostInputAdapter Adapter { get; }
 
 		private Config _currentConfig;
 

@@ -919,34 +919,45 @@ namespace BizHawk.Client.EmuHawk
 				// ...but prepare haptics first, those get read in ProcessInput
 				var finalHostController = InputManager.ControllerInputCoalescer;
 				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
-				ProcessInput(
-					_hotkeyCoalescer,
-					finalHostController,
-					InputManager.ClientControls.SearchBindings,
-					InputManager.ActiveController.HasBinding);
-				InputManager.ClientControls.LatchFromPhysical(_hotkeyCoalescer);
+				Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
 
-				InputManager.ActiveController.LatchFromPhysical(finalHostController);
-
-				if (Config.N64UseCircularAnalogConstraint)
+				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie) =>
 				{
-					InputManager.ActiveController.ApplyAxisConstraints("Natural Circle");
-				}
+					// Alt key for menu items.
+					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
+					{
+						if (ie.LogicalButton.Button.Length == 1)
+						{
+							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
+							if ((c >= 'a' && c <= 'z') || c == ' ')
+							{
+								SendAltKeyChar(c);
+							}
+						}
+						else if (ie.LogicalButton.Button == "Space")
+						{
+							SendPlainAltKey(32);
+						}
+					}
 
-				InputManager.ActiveController.OR_FromLogical(InputManager.ClickyVirtualPadController);
-				InputManager.AutoFireController.LatchFromPhysical(finalHostController);
+					// same as right-click
+					if (ie.ToString() == "Press:Apps" && Config.ShowContextMenu && ContainsFocus)
+					{
+						MainFormContextMenu.Show(PointToScreen(new(0, MainformMenu.Height)));
+					}
+				}, IsInternalHotkey);
 
-				if (InputManager.ClientControls["Autohold"])
+				// translate mouse coordinates
+				// NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
 				{
-					InputManager.ToggleStickies();
+					var p = DisplayManager.UntransformPoint(new Point(
+						finalHostController.AxisValue("WMouse X"),
+						finalHostController.AxisValue("WMouse Y")));
+					var x = p.X / (float)_currentVideoProvider.BufferWidth;
+					var y = p.Y / (float)_currentVideoProvider.BufferHeight;
+					finalHostController.AcceptNewAxis("WMouse X", (int)((x * 20000) - 10000));
+					finalHostController.AcceptNewAxis("WMouse Y", (int)((y * 20000) - 10000));
 				}
-				else if (InputManager.ClientControls["Autofire"])
-				{
-					InputManager.ToggleAutoStickies();
-				}
-
-				// autohold/autofire must not be affected by the following inputs
-				InputManager.ActiveController.Overrides(InputManager.ButtonOverrideAdapter);
 
 				// emu.yield()'ing scripts
 				if (Tools.Has<LuaConsole>())
@@ -1273,160 +1284,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.OnDeactivate(e);
-		}
-
-		private void ProcessInput(
-			InputCoalescer hotkeyCoalescer,
-			ControllerInputCoalescer finalHostController,
-			Func<string, List<string>> searchHotkeyBindings,
-			Func<string, bool> activeControllerHasBinding)
-		{
-			Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
-
-			// loop through all available events
-			InputEvent ie;
-			while ((ie = Input.Instance.DequeueEvent()) != null)
-			{
-				// useful debugging:
-				// Console.WriteLine(ie);
-
-				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
-
-				// look for hotkey bindings for this key
-				var triggers = searchHotkeyBindings(ie.LogicalButton.ToString());
-				if (triggers.Count == 0)
-				{
-					// Maybe it is a system alt-key which hasn't been overridden
-					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
-					{
-						if (ie.LogicalButton.Button.Length == 1)
-						{
-							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
-							if ((c >= 'a' && c <= 'z') || c == ' ')
-							{
-								SendAltKeyChar(c);
-							}
-						}
-						else if (ie.LogicalButton.Button == "Space")
-						{
-							SendPlainAltKey(32);
-						}
-					}
-
-					// ordinarily, an alt release with nothing else would move focus to the MenuBar. but that is sort of useless, and hard to implement exactly right.
-
-					if (Config.ShowContextMenu && ie.ToString() == "Press:Apps" && ContainsFocus)
-					{
-						// same as right-click
-						MainFormContextMenu.Show(PointToScreen(new(0, MainformMenu.Height)));
-					}
-				}
-
-				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
-				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
-
-				switch (Config.InputHotkeyOverrideOptions)
-				{
-					default:
-					case 0: // Both allowed
-					{
-						finalHostController.Receive(ie);
-
-						var handled = false;
-						if (ie.EventType is InputEventType.Press)
-						{
-							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
-						}
-
-						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-						if (!handled)
-						{
-							hotkeyCoalescer.Receive(ie);
-						}
-
-						break;
-					}
-					case 1: // Input overrides Hotkeys
-					{
-						finalHostController.Receive(ie);
-						// don't check hotkeys when any of the pressed keys are input
-						if (!ie.LogicalButton.ToString().Split('+').Any(activeControllerHasBinding))
-						{
-							var handled = false;
-							if (ie.EventType is InputEventType.Press)
-							{
-								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
-							}
-
-							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-							if (!handled)
-							{
-								hotkeyCoalescer.Receive(ie);
-							}
-						}
-
-						break;
-					}
-					case 2: // Hotkeys override Input
-					{
-						var handled = false;
-						if (ie.EventType is InputEventType.Press)
-						{
-							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
-						}
-
-						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-						if (!handled)
-						{
-							hotkeyCoalescer.Receive(ie);
-
-							// Check for hotkeys that may not be handled through CheckHotkey() method, reject controller input mapped to these
-							if (!triggers.Exists(IsInternalHotkey)) finalHostController.Receive(ie);
-						}
-
-						break;
-					}
-				}
-			} // foreach event
-
-			// also handle axes
-			// we'll need to isolate the mouse coordinates so we can translate them
-			int? mouseX = null, mouseY = null, mouseDeltaX = null, mouseDeltaY = null;
-			foreach (var f in Input.Instance.GetAxisValues())
-			{
-				if (f.Key == "WMouse X")
-					mouseX = f.Value;
-				else if (f.Key == "WMouse Y")
-					mouseY = f.Value;
-				else if (f.Key == "RMouse X")
-					mouseDeltaX = f.Value;
-				else if (f.Key == "RMouse Y")
-					mouseDeltaY = f.Value;
-				else finalHostController.AcceptNewAxis(f.Key, f.Value);
-			}
-
-			// if we found mouse coordinates (and why wouldn't we?) then translate them now
-			// NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
-			if (mouseX != null && mouseY != null)
-			{
-				var p = DisplayManager.UntransformPoint(new Point(mouseX.Value, mouseY.Value));
-				var x = p.X / (float)_currentVideoProvider.BufferWidth;
-				var y = p.Y / (float)_currentVideoProvider.BufferHeight;
-				finalHostController.AcceptNewAxis("WMouse X", (int) ((x * 20000) - 10000));
-				finalHostController.AcceptNewAxis("WMouse Y", (int) ((y * 20000) - 10000));
-			}
-
-			if (mouseDeltaX != null && mouseDeltaY != null)
-			{
-				var mouseSensitivity = Config.RelativeMouseSensitivity / 100.0f;
-				var x = mouseDeltaX.Value * mouseSensitivity;
-				var y = mouseDeltaY.Value * mouseSensitivity;
-				const int MAX_REL_MOUSE_RANGE = 120; // arbitrary
-				x = Math.Min(Math.Max(x, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
-				y = Math.Min(Math.Max(y, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
-				finalHostController.AcceptNewAxis("RMouse X", (int)(x * 10000));
-				finalHostController.AcceptNewAxis("RMouse Y", (int)(y * 10000));
-			}
 		}
 
 		public bool RebootCore()
@@ -1857,11 +1714,6 @@ namespace BizHawk.Client.EmuHawk
 		private Bitmap _statusBarDiskLightOffImage;
 		private Bitmap _linkCableOn;
 		private Bitmap _linkCableOff;
-
-		// input state which has been destined for game controller inputs are coalesced here
-		// public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
-		// input state which has been destined for client hotkey consumption are colesced here
-		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
 
 		private readonly PresentationPanel _presentationPanel;
 

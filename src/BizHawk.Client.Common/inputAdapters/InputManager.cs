@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -146,6 +147,143 @@ namespace BizHawk.Client.Common
 			}
 
 			return ret;
+		}
+
+		// input state which has been destined for client hotkey consumption are colesced here
+		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
+
+		/// <param name="processUnboundInput">Events that did not do anything are forwarded out here.
+		/// This allows things like Windows' standard alt hotkeys (for menu items) to be handled by the
+		/// caller if the input didn't alrady do something else.</param>
+		public void ProcessInput(IPhysicalInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent> processUnboundInput, Func<string, bool> isInternalHotkey)
+		{
+			// loop through all available events
+			InputEvent ie;
+			while ((ie = source.DequeueEvent()) != null)
+			{
+				// useful debugging:
+				// Console.WriteLine(ie);
+
+				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
+
+				// look for hotkey bindings for this key
+				var triggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				if (triggers.Count == 0)
+				{
+					processUnboundInput(ie);
+				}
+
+				switch (config.InputHotkeyOverrideOptions)
+				{
+					default:
+					case 0: // Both allowed
+						{
+							ControllerInputCoalescer.Receive(ie);
+
+							var handled = false;
+							if (ie.EventType is InputEventType.Press)
+							{
+								handled = triggers.Aggregate(handled, (current, trigger) => current | processHotkey(trigger));
+							}
+
+							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
+							if (!handled)
+							{
+								_hotkeyCoalescer.Receive(ie);
+							}
+
+							break;
+						}
+					case 1: // Input overrides Hotkeys
+						{
+							ControllerInputCoalescer.Receive(ie);
+							if (!ie.LogicalButton.ToString().Split('+').Any(ActiveController.HasBinding))
+							{
+								var handled = false;
+								if (ie.EventType is InputEventType.Press)
+								{
+									handled = triggers.Aggregate(false, (current, trigger) => current | processHotkey(trigger));
+								}
+
+								// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
+								if (!handled)
+								{
+									_hotkeyCoalescer.Receive(ie);
+								}
+							}
+
+							break;
+						}
+					case 2: // Hotkeys override Input
+						{
+							var handled = false;
+							if (ie.EventType is InputEventType.Press)
+							{
+								handled = triggers.Aggregate(false, (current, trigger) => current | processHotkey(trigger));
+							}
+
+							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
+							if (!handled)
+							{
+								_hotkeyCoalescer.Receive(ie);
+
+								// Check for hotkeys that may not be handled through processHotkey() method, reject controller input mapped to these
+								if (!triggers.Exists((t) => isInternalHotkey(t)))
+								{
+									ControllerInputCoalescer.Receive(ie);
+								}
+							}
+
+							break;
+						}
+				}
+			} // foreach event
+
+			// also handle axes
+			// we'll need to isolate the mouse coordinates so we can translate them
+			int? mouseDeltaX = null, mouseDeltaY = null;
+			foreach (var f in source.GetAxisValues())
+			{
+				if (f.Key == "RMouse X")
+					mouseDeltaX = f.Value;
+				else if (f.Key == "RMouse Y")
+					mouseDeltaY = f.Value;
+				else ControllerInputCoalescer.AcceptNewAxis(f.Key, f.Value);
+			}
+
+			if (mouseDeltaX != null && mouseDeltaY != null)
+			{
+				var mouseSensitivity = config.RelativeMouseSensitivity / 100.0f;
+				var x = mouseDeltaX.Value * mouseSensitivity;
+				var y = mouseDeltaY.Value * mouseSensitivity;
+				const int MAX_REL_MOUSE_RANGE = 120; // arbitrary
+				x = Math.Min(Math.Max(x, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				y = Math.Min(Math.Max(y, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				ControllerInputCoalescer.AcceptNewAxis("RMouse X", (int)(x * 10000));
+				ControllerInputCoalescer.AcceptNewAxis("RMouse Y", (int)(y * 10000));
+			}
+
+			ClientControls.LatchFromPhysical(_hotkeyCoalescer);
+			ActiveController.LatchFromPhysical(ControllerInputCoalescer);
+			ActiveController.OR_FromLogical(ClickyVirtualPadController);
+			AutoFireController.LatchFromPhysical(ControllerInputCoalescer);
+
+			if (config.N64UseCircularAnalogConstraint)
+			{
+				ActiveController.ApplyAxisConstraints("Natural Circle");
+			}
+
+			if (ClientControls["Autohold"])
+			{
+				ToggleStickies();
+			}
+			else if (ClientControls["Autofire"])
+			{
+				ToggleAutoStickies();
+			}
+
+			// autohold/autofire must not be affected by the following inputs
+			ActiveController.Overrides(ButtonOverrideAdapter);
 		}
 	}
 }
