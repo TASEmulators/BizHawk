@@ -482,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!TasView.Focused || !TasView.AnyRowsSelected) return;
-			
+
 			CurrentTasMovie.SingleInvalidation(() =>
 			{
 				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectionStartIndex}-{TasView.SelectionEndIndex}");
