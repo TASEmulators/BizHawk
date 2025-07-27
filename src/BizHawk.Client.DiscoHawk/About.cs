@@ -7,7 +7,7 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public class About : Form
 	{
-		public About()
+		public About(MultiMessageContext i18n)
 		{
 			SuspendLayout();
 
@@ -17,12 +17,7 @@ namespace BizHawk.Client.DiscoHawk
 			richTextBox1.ReadOnly = true;
 			richTextBox1.Size = new(499, 236);
 			richTextBox1.TabIndex = 1;
-			richTextBox1.Text = ("DiscoHawk converts bolloxed-up crusty disc images to totally tidy CCD."
-				+ "\n\nDiscoHawk is part of the BizHawk project ( https://github.com/TASEmulators/BizHawk )."
-				+ "\n\nBizHawk is a .net-based multi-system emulator brought to you by some of the rerecording emulator principals. We wrote our own cue parsing/generating code to be able to handle any kind of junk we threw at it. Instead of trapping it in the emulator, we liberated it in the form of this tool, to be useful in other environments."
-				+ "\n\nTo use, drag a disc (.cue, .iso, .ccd, .cdi, .mds, .nrg) into the top area. DiscoHawk will dump a newly cleaned up CCD file set to the same directory as the original disc image, and call it _hawked."
-				+ "\n\nThis is beta software. You are invited to report problems to our bug tracker or IRC. Problems consist of: crusty disc images that crash DiscoHawk or that cause DiscoHawk to produce a _hawked.ccd which fails to serve your particular purposes (which we will need to be informed of, in case we are outputting wrongly.)")
-					.Replace("\n", Environment.NewLine);
+			richTextBox1.Text = i18n["discohawkabout-4584-lbl-explainer-label"]!.Replace("\n", Environment.NewLine);
 			richTextBox1.LinkClicked += (_, clickedArgs) => Util.OpenUrlExternal(clickedArgs.LinkText);
 
 			Button button1 = new();
@@ -31,7 +26,7 @@ namespace BizHawk.Client.DiscoHawk
 			button1.Name = "button1";
 			button1.Size = new(75, 23);
 			button1.TabIndex = 2;
-			button1.Text = "OK";
+			button1.Text = i18n["discohawkabout-9804-btn-dismiss-textstr"];
 			button1.UseVisualStyleBackColor = true;
 			button1.Click += (_, _) => Close();
 
@@ -55,7 +50,7 @@ namespace BizHawk.Client.DiscoHawk
 			FormBorderStyle = FormBorderStyle.FixedDialog;
 			MinimizeBox = false;
 			Name = "About";
-			Text = "About DiscoHawk";
+			Text = i18n["discohawkabout-2822-windowtitlestatic"];
 			ResumeLayout(performLayout: false);
 			PerformLayout();
 		}

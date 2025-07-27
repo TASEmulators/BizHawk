@@ -11,6 +11,8 @@ namespace BizHawk.Client.DiscoHawk
 {
 	public class MainDiscoForm : Form
 	{
+		private readonly MultiMessageContext _i18n;
+
 		private readonly RadioButton ccdOutputButton;
 
 		private readonly RadioButton chdOutputButton;
@@ -26,8 +28,10 @@ namespace BizHawk.Client.DiscoHawk
 		// An outputted list showing new file name
 		// Progress bar should show file being converted
 		// Add disc button, which puts it on the progress cue (converts it)
-		public MainDiscoForm()
+		public MainDiscoForm(MultiMessageContext i18n)
 		{
+			_i18n = i18n;
+
 			SuspendLayout();
 
 			Button ExitButton = new();
@@ -35,7 +39,7 @@ namespace BizHawk.Client.DiscoHawk
 			ExitButton.Name = "ExitButton";
 			ExitButton.Size = new(75, 23);
 			ExitButton.TabIndex = 0;
-			ExitButton.Text = "E&xit";
+			ExitButton.Text = i18n["maindiscoform-4723-btn-exit-textstr"];
 			ExitButton.UseVisualStyleBackColor = true;
 			ExitButton.Click += (_, _) => Close();
 
@@ -56,7 +60,7 @@ namespace BizHawk.Client.DiscoHawk
 			label1.Name = "label1";
 			label1.Size = new(166, 47);
 			label1.TabIndex = 0;
-			label1.Text = "Drag here to HAWK your disc - dump it out as a clean CCD/CHD";
+			label1.Text = i18n["maindiscoform-1872-area-hawkdisc-label"];
 
 			lblMp3ExtractMagicArea = new();
 			lblMp3ExtractMagicArea.SuspendLayout();
@@ -75,16 +79,16 @@ namespace BizHawk.Client.DiscoHawk
 			label2.Name = "label2";
 			label2.Size = new(163, 39);
 			label2.TabIndex = 0;
-			label2.Text = "Drag a disc here to extract the audio tracks to MP3";
+			label2.Text = i18n["maindiscoform-6011-area-mp3extract-label"];
 
 			Button btnAbout = new();
 			btnAbout.Location = new(353, 414);
 			btnAbout.Name = "btnAbout";
 			btnAbout.Size = new(75, 23);
 			btnAbout.TabIndex = 3;
-			btnAbout.Text = "&About";
+			btnAbout.Text = i18n["maindiscoform-5766-btn-about-textstr"];
 			btnAbout.UseVisualStyleBackColor = true;
-			btnAbout.Click += (_, _) => new About().ShowDialog();
+			btnAbout.Click += (_, _) => new About(_i18n).ShowDialog();
 
 			RadioButton radioButton1 = new();
 			radioButton1.AutoSize = true;
@@ -94,7 +98,7 @@ namespace BizHawk.Client.DiscoHawk
 			radioButton1.Size = new(67, 17);
 			radioButton1.TabIndex = 4;
 			radioButton1.TabStop = true;
-			radioButton1.Text = "BizHawk";
+			radioButton1.Text = i18n["maindiscoform-4559-radio-engine-hawk-textstr"];
 			radioButton1.UseVisualStyleBackColor = true;
 
 			GroupBox groupBox1 = new();
@@ -112,19 +116,19 @@ namespace BizHawk.Client.DiscoHawk
 			groupBox1.Size = new(276, 234);
 			groupBox1.TabIndex = 5;
 			groupBox1.TabStop = false;
-			groupBox1.Text = "Disc Reading Engine";
+			groupBox1.Text = i18n["maindiscoform-7187-group-engine-label"];
 
 			label4.Location = new(20, 95);
 			label4.Name = "label4";
 			label4.Size = new(216, 43);
 			label4.TabIndex = 8;
-			label4.Text = "- Doesn\'t support audio decoding yet\r\n(even though Mednafen proper can do it)\r\n- Loads ISO, CUE, and CCD";
+			label4.Text = i18n["maindiscoform-7205-radio-engine-mednafen-longdesc-label"];
 
 			label3.Location = new(20, 39);
 			label3.Name = "label3";
 			label3.Size = new(253, 33);
 			label3.TabIndex = 7;
-			label3.Text = "- Uses FFMPEG for audio decoding\r\n- Loads ISO, CUE, CCD, CDI, CHD, MDS, and NRG";
+			label3.Text = i18n["maindiscoform-4559-radio-engine-hawk-longdesc-label"];
 
 			radioButton2.AutoSize = true;
 			radioButton2.Enabled = false;
@@ -132,7 +136,7 @@ namespace BizHawk.Client.DiscoHawk
 			radioButton2.Name = "radioButton2";
 			radioButton2.Size = new(73, 17);
 			radioButton2.TabIndex = 5;
-			radioButton2.Text = "Mednafen";
+			radioButton2.Text = i18n["maindiscoform-7205-radio-engine-mednafen-textstr"];
 			radioButton2.UseVisualStyleBackColor = true;
 
 			GroupBox groupBox2 = new();
@@ -147,7 +151,7 @@ namespace BizHawk.Client.DiscoHawk
 			groupBox2.Size = new(271, 69);
 			groupBox2.TabIndex = 6;
 			groupBox2.TabStop = false;
-			groupBox2.Text = "Output Format";
+			groupBox2.Text = i18n["maindiscoform-5561-group-hawkoutput-label"];
 
 			ccdOutputButton.AutoSize = true;
 			ccdOutputButton.Checked = true;
@@ -156,7 +160,7 @@ namespace BizHawk.Client.DiscoHawk
 			ccdOutputButton.Size = new(47, 17);
 			ccdOutputButton.TabIndex = 5;
 			ccdOutputButton.TabStop = true;
-			ccdOutputButton.Text = "CCD";
+			ccdOutputButton.Text = i18n["maindiscoform-7576-radio-hawkoutput-ccd-textstr"];
 			ccdOutputButton.UseVisualStyleBackColor = true;
 
 			chdOutputButton.AutoSize = true;
@@ -166,7 +170,7 @@ namespace BizHawk.Client.DiscoHawk
 			chdOutputButton.Size = new(47, 17);
 			chdOutputButton.TabIndex = 6;
 			chdOutputButton.TabStop = true;
-			chdOutputButton.Text = "CHD";
+			chdOutputButton.Text = i18n["maindiscoform-2884-radio-hawkoutput-chd-textstr"];
 			chdOutputButton.UseVisualStyleBackColor = true;
 
 			Label label6 = new();
@@ -176,7 +180,7 @@ namespace BizHawk.Client.DiscoHawk
 			label6.Name = "label6";
 			label6.Size = new(111, 13);
 			label6.TabIndex = 2;
-			label6.Text = "Compare Reading To:";
+			label6.Text = i18n["maindiscoform-4639-group-compare-list-label"];
 
 			Label label7 = new();
 			label7.AutoSize = true;
@@ -184,7 +188,7 @@ namespace BizHawk.Client.DiscoHawk
 			label7.Name = "label7";
 			label7.Size = new(70, 13);
 			label7.TabIndex = 10;
-			label7.Text = "- Operations -";
+			label7.Text = i18n["maindiscoform-7426-pane-operations-label"];
 
 			lvCompareTargets = new();
 			lvCompareTargets.Columns.Add(new ColumnHeader());
@@ -193,8 +197,8 @@ namespace BizHawk.Client.DiscoHawk
 			lvCompareTargets.GridLines = true;
 			lvCompareTargets.HeaderStyle = ColumnHeaderStyle.None;
 			lvCompareTargets.HideSelection = false;
-			lvCompareTargets.Items.Add("BizHawk");
-			lvCompareTargets.Items.Add("Mednafen");
+			lvCompareTargets.Items.Add(i18n["maindiscoform-5267-compare-hawk-label"]);
+			lvCompareTargets.Items.Add(i18n["maindiscoform-5267-compare-mednafen-label"]);
 			lvCompareTargets.Location = new(9, 340);
 			lvCompareTargets.Name = "lvCompareTargets";
 			lvCompareTargets.Size = new(121, 97);
@@ -221,7 +225,7 @@ namespace BizHawk.Client.DiscoHawk
 			MaximizeBox = false;
 			MinimizeBox = false;
 			Name = "MainDiscoForm";
-			Text = "DiscoHawk";
+			Text = i18n["maindiscoform-3997-windowtitlestatic"];
 			Load += (_, _) => lvCompareTargets.Columns[0].Width = lvCompareTargets.ClientSize.Width;
 			lblMagicDragArea.ResumeLayout(performLayout: false);
 			lblMp3ExtractMagicArea.ResumeLayout(performLayout: false);
@@ -246,14 +250,14 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					var success = DiscoHawkLogic.HawkAndWriteFile(
 						inputPath: file,
-						errorCallback: err => MessageBox.Show(err, "Error loading disc"),
+						errorCallback: err => MessageBox.Show(err, _i18n["discodischawking-6945-errbox-hawk-windowtitlestatic"]),
 						hawkedFormat: outputFormat);
 					if (!success) break;
 				}
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Error loading disc");
+				MessageBox.Show(ex.ToString(), _i18n["discodischawking-3654-errbox-misc-windowtitlestatic"]);
 				throw;
 			}
 			finally
@@ -323,9 +327,8 @@ namespace BizHawk.Client.DiscoHawk
 			{
 #if true
 				MessageBox.Show(
-					caption: "FFmpeg missing",
-					text: "This function requires FFmpeg, but it doesn't appear to have been downloaded.\n"
-						+ "EmuHawk can automatically download it: you just need to set up A/V recording with the FFmpeg writer.");
+					caption: _i18n["discomp3extract-5715-errbox-noffmpeg-windowtitlestatic"],
+					text: _i18n["discomp3extract-5715-errbox-noffmpeg-label"]);
 				return;
 #else
 				using EmuHawk.FFmpegDownloaderForm dialog = new(); // builds fine when <Compile Include/>'d, but the .resx won't load even if it's also included
@@ -343,10 +346,10 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					using var disc = Disc.LoadAutomagic(file);
 					var (path, filename, _) = file.SplitPathToDirFileAndExt();
-					static bool? PromptForOverwrite(string mp3Path)
+					bool? PromptForOverwrite(string mp3Path)
 						=> MessageBox.Show(
-							$"Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {mp3Path}",
-							"File to extract already exists",
+							string.Format(_i18n["discomp3extract-3418-prompt-overwrite-fmtstr"], mp3Path),
+							_i18n["discomp3extract-3418-prompt-overwrite-windowtitlestatic"],
 							MessageBoxButtons.YesNoCancel) switch
 						{
 							DialogResult.Yes => true,
@@ -358,7 +361,7 @@ namespace BizHawk.Client.DiscoHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Error loading disc");
+				MessageBox.Show(ex.ToString(), _i18n["discomp3extract-7691-errbox-misc-windowtitlestatic"]);
 				throw;
 			}
 			finally

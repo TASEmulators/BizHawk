@@ -7,7 +7,7 @@ namespace BizHawk.Client.DiscoHawk
 	{
 		public readonly RichTextBox textBox1;
 
-		public ComparisonResults()
+		public ComparisonResults(MultiMessageContext i18n)
 		{
 			SuspendLayout();
 
@@ -19,7 +19,7 @@ namespace BizHawk.Client.DiscoHawk
 			textBox1.ReadOnly = true;
 			textBox1.Size = new(757, 394);
 			textBox1.TabIndex = 1;
-			textBox1.Text = "";
+			textBox1.Text = string.Empty; // overwritten by caller as part of object initialisation
 
 			TabControl tabControl1 = new();
 			tabControl1.SuspendLayout();
@@ -43,7 +43,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabPage1.Padding = new(all: 3);
 			tabPage1.Size = new(763, 400);
 			tabPage1.TabIndex = 0;
-			tabPage1.Text = "Log";
+			tabPage1.Text = i18n["discohawkcomparereadout-6110-tab-log-textstr"];
 			tabPage1.UseVisualStyleBackColor = true;
 
 			tabPage2.Location = new(4, 22);
@@ -51,7 +51,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabPage2.Padding = new(all: 3);
 			tabPage2.Size = new(763, 400);
 			tabPage2.TabIndex = 1;
-			tabPage2.Text = "SRC Context";
+			tabPage2.Text = i18n["discohawkcomparereadout-6110-tab-src-textstr"];
 			tabPage2.UseVisualStyleBackColor = true;
 
 			tabPage3.Location = new(4, 22);
@@ -59,7 +59,7 @@ namespace BizHawk.Client.DiscoHawk
 			tabPage3.Padding = new(all: 3);
 			tabPage3.Size = new(763, 400);
 			tabPage3.TabIndex = 2;
-			tabPage3.Text = "DST Context";
+			tabPage3.Text = i18n["discohawkcomparereadout-6110-tab-dest-textstr"];
 			tabPage3.UseVisualStyleBackColor = true;
 
 			AutoScaleDimensions = new(6.0f, 13.0f);
@@ -67,7 +67,7 @@ namespace BizHawk.Client.DiscoHawk
 			ClientSize = new(771, 426);
 			Controls.Add(tabControl1);
 			Name = "ComparisonResults";
-			Text = "ComparisonResults";
+			Text = i18n["discohawkcomparereadout-2005-windowtitlestatic"];
 			tabControl1.ResumeLayout(performLayout: false);
 			tabPage1.ResumeLayout(performLayout: false);
 			ResumeLayout(performLayout: false);
