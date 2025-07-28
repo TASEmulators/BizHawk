@@ -9,6 +9,7 @@
 #include "d_player.h"
 #include "doomstat.h"
 #include "doomtype.h"
+#include "f_finale.h"
 #include "f_wipe.h"
 #include "g_game.h"
 #include "i_sound.h"

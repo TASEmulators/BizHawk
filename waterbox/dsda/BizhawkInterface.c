@@ -24,6 +24,20 @@ void render_updates(struct PackedRenderInfo *renderInfo)
   dsda_UpdateIntConfig(dsda_config_hud_displayed,      renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
 }
 
+// normally this is caused by keyboard inputs, while mouse buttons reset the cast.
+// we don't expose actual keyboard to user, so we have to trigger this
+// based on what's usually a "random" keyboard input
+void finale_inputs()
+{
+  if (gamestate != GS_FINALE)
+    return;
+
+  // pass fake event because finale only checks if it's keydown
+  event_t event;
+  event.type = ev_keydown;
+  F_Responder(&event);
+}
+
 void automap_inputs(AutomapButtons buttons)
 {
   static int bigstate = 0;
@@ -206,6 +220,14 @@ void player_input(struct PackedPlayerInput *src, int id)
     dest->buttons |= (newweapon) << BT_WEAPONSHIFT;
   }
 
+  if (dest->forwardmove
+    || dest->sidemove
+    || dest->lookfly
+    || dest->arti)
+  {
+    finale_inputs();
+  }
+
   lastButtons[id] = buttons;
 }
 
@@ -260,6 +282,9 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
 
   if (renderInfo->RenderVideo && gamestate == GS_LEVEL)
     automap_inputs(buttons);
+
+  if (buttons.data)
+    finale_inputs();
 
   dsda_reveal_map = renderInfo->MapDetails;
 
