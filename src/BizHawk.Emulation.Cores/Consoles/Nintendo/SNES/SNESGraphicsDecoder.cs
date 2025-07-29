@@ -350,45 +350,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public BGInfos BG = new BGInfos();
 
-			public int Mode { get; init; }
-			public bool Mode1_BG3_Priority { get; init; }
+			public int Mode { get; internal set; }
+			public bool Mode1_BG3_Priority { get; internal set; }
 
-			public bool SETINI_Mode7ExtBG { get; init; }
-			public bool SETINI_HiRes { get; init; }
-			public bool SETINI_Overscan { get; init; }
-			public bool SETINI_ObjInterlace { get; init; }
-			public bool SETINI_ScreenInterlace { get; init; }
+			public bool SETINI_Mode7ExtBG { get; internal set; }
+			public bool SETINI_HiRes { get; internal set; }
+			public bool SETINI_Overscan { get; internal set; }
+			public bool SETINI_ObjInterlace { get; internal set; }
+			public bool SETINI_ScreenInterlace { get; internal set; }
 
-			public int CGWSEL_ColorMask { get; init; }
-			public int CGWSEL_ColorSubMask { get; init; }
-			public int CGWSEL_AddSubMode { get; init; }
-			public bool CGWSEL_DirectColor { get; init; }
-			public int CGADSUB_AddSub { get; init; }
-			public bool CGADSUB_Half { get; init; }
+			public int CGWSEL_ColorMask { get; internal set; }
+			public int CGWSEL_ColorSubMask { get; internal set; }
+			public int CGWSEL_AddSubMode { get; internal set; }
+			public bool CGWSEL_DirectColor { get; internal set; }
+			public int CGADSUB_AddSub { get; internal set; }
+			public bool CGADSUB_Half { get; internal set; }
 
-			public int OBSEL_Size { get; init; }
-			public int OBSEL_NameSel { get; init; }
-			public int OBSEL_NameBase { get; init; }
+			public int OBSEL_Size { get; internal set; }
+			public int OBSEL_NameSel { get; internal set; }
+			public int OBSEL_NameBase { get; internal set; }
 
-			public int OBJTable0Addr { get; init; }
-			public int OBJTable1Addr { get; init; }
+			public int OBJTable0Addr { get; internal set; }
+			public int OBJTable1Addr { get; internal set; }
 
-			public bool OBJ_MainEnabled { get; init; }
-			public bool OBJ_SubEnabled { get; init; }
-			public bool OBJ_MathEnabled { get; init; }
-			public bool BK_MathEnabled { get; init; }
+			public bool OBJ_MainEnabled { get; internal set; }
+			public bool OBJ_SubEnabled { get; internal set; }
+			public bool OBJ_MathEnabled { get; internal set; }
+			public bool BK_MathEnabled { get; internal set; }
 
-			public int M7HOFS { get; init; }
-			public int M7VOFS { get; init; }
-			public int M7A { get; init; }
-			public int M7B { get; init; }
-			public int M7C { get; init; }
-			public int M7D { get; init; }
-			public int M7X { get; init; }
-			public int M7Y { get; init; }
-			public int M7SEL_REPEAT { get; init; }
-			public bool M7SEL_HFLIP { get; init; }
-			public bool M7SEL_VFLIP { get; init; }
+			public int M7HOFS { get; internal set; }
+			public int M7VOFS { get; internal set; }
+			public int M7A { get; internal set; }
+			public int M7B { get; internal set; }
+			public int M7C { get; internal set; }
+			public int M7D { get; internal set; }
+			public int M7X { get; internal set; }
+			public int M7Y { get; internal set; }
+			public int M7SEL_REPEAT { get; internal set; }
+			public bool M7SEL_HFLIP { get; internal set; }
+			public bool M7SEL_VFLIP { get; internal set; }
 		}
 
 		public static readonly int[,] ModeBpps = {

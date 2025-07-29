@@ -9,9 +9,9 @@ namespace BizHawk.Client.Common
 	{
 		private string? _ser = null;
 
-		public bool AppendAllFilesEntry { get; init; } = true;
+		public bool AppendAllFilesEntry { get; set; } = true;
 
-		public string? CombinedEntryDesc { get; init; } = null;
+		public string? CombinedEntryDesc { get; set; } = null;
 
 		private IReadOnlyCollection<string> CombinedExts
 			=> Filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList();

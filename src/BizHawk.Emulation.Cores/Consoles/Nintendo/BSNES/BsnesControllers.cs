@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				BSNES_INPUT_DEVICE.None => new BsnesUnpluggedController(),
 				BSNES_INPUT_DEVICE.Gamepad => new BsnesController(),
 				BSNES_INPUT_DEVICE.ExtendedGamepad => new BsnesExtendedController(),
-				BSNES_INPUT_DEVICE.Mouse => new BsnesMouseController
-				{
-					LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
-				},
+				BSNES_INPUT_DEVICE.Mouse => new BsnesMouseController(LimitAnalogChangeSensitivity: ss.LimitAnalogChangeSensitivity),
 				BSNES_INPUT_DEVICE.SuperMultitap => new BsnesMultitapController(),
 				BSNES_INPUT_DEVICE.Payload => new BsnesPayloadController(),
 				BSNES_INPUT_DEVICE.SuperScope => new BsnesSuperScopeController(),
@@ -171,14 +168,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		}
 	}
 
-	internal class BsnesMouseController : IBsnesController
+	internal class BsnesMouseController(bool LimitAnalogChangeSensitivity = true) : IBsnesController
 	{
 		private static readonly ControllerDefinition _definition = new ControllerDefinition("(SNES Controller fragment)")
 				{ BoolButtons = { "0Mouse Left", "0Mouse Right" } }
 			.AddXYPair("0Mouse {0}", AxisPairOrientation.RightAndDown, (-127).RangeTo(127), 0);
 
 		public ControllerDefinition Definition => _definition;
-		public bool LimitAnalogChangeSensitivity { get; init; } = true;
 
 		public short GetState(IController controller, int index, int id)
 		{

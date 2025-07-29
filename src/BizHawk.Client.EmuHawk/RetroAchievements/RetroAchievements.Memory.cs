@@ -107,9 +107,11 @@ namespace BizHawk.Client.EmuHawk
 			private readonly uint _domainAddrStart; // addr of _domain where bank begins
 			private readonly uint _addressMangler; // of course, let's *not* correct internal core byteswapping!
 
-			public ReadMemoryFunc ReadFunc { get; protected init; }
-			public WriteMemoryFunc WriteFunc { get; protected init; }
-			public ReadMemoryBlockFunc ReadBlockFunc { get; protected init; }
+			public virtual ReadMemoryFunc ReadFunc { get; }
+
+			public virtual WriteMemoryFunc WriteFunc { get; }
+
+			public virtual ReadMemoryBlockFunc ReadBlockFunc { get; }
 
 			public uint StartAddress; // this is set for our rcheevos impl
 			public readonly uint BankSize;
@@ -192,13 +194,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private class NullMemFunctions : MemFunctions
 		{
+			public override ReadMemoryFunc ReadFunc
+				=> null;
+
+			public override WriteMemoryFunc WriteFunc
+				=> null;
+
+			public override ReadMemoryBlockFunc ReadBlockFunc
+				=> null;
+
 			public NullMemFunctions(long bankSize)
-				: base(null, 0, bankSize)
-			{
-				ReadFunc = null;
-				WriteFunc = null;
-				ReadBlockFunc = null;
-			}
+				: base(null, 0, bankSize) {}
 		}
 
 		// this is a complete hack because the libretro Intelli core sucks and so achievements are made expecting this format
