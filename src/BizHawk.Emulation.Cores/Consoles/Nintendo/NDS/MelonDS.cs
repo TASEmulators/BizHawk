@@ -438,8 +438,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		// This check is a bit inaccurate, "true" DSiWare have an upper title ID of 0x00030004
 		// However, non-DSiWare NAND apps will have a different upper title ID (usually 0x00030005)
-		// Cartridge titles always have 0x00030017 as their upper title ID
-		public bool IsDSiWare => (DSiTitleId.Upper & ~0xFF) == 0x00030000 && DSiTitleId.Upper != 0x00030017;
+		// Cartridge titles always have 0x00030000 as their upper title ID
+		public bool IsDSiWare => (DSiTitleId.Upper & ~0xFF) == 0x00030000 && DSiTitleId.Upper != 0x00030000;
 
 		private (ulong Full, uint Upper, uint Lower) DSiTitleId { get; }
 
