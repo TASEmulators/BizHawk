@@ -8,8 +8,6 @@
 namespace melonDS::Platform
 {
 
-constexpr u32 DSIWARE_CATEGORY = 0x00030004;
-
 static bool NdsSaveRamIsDirty = false;
 static bool GbaSaveRamIsDirty = false;
 
@@ -61,33 +59,33 @@ ECL_EXPORT bool SaveRamIsDirty()
 	return NdsSaveRamIsDirty || GbaSaveRamIsDirty;
 }
 
-ECL_EXPORT void ImportDSiWareSavs(melonDS::DSi* dsi, u32 titleId)
+ECL_EXPORT void ImportDSiWareSavs(melonDS::DSi* dsi, u64 titleId)
 {
 	if (auto& nand = dsi->GetNAND())
 	{
 		if (auto mount = melonDS::DSi_NAND::NANDMount(nand))
 		{
-			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PublicSav, "public.sav");
-			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PrivateSav, "private.sav");
-			mount.ImportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_BannerSav, "banner.sav");
+			mount.ImportTitleData(titleId >> 32, titleId & 0xFFFFFFFF, melonDS::DSi_NAND::TitleData_PublicSav, "public.sav");
+			mount.ImportTitleData(titleId >> 32, titleId & 0xFFFFFFFF, melonDS::DSi_NAND::TitleData_PrivateSav, "private.sav");
+			mount.ImportTitleData(titleId >> 32, titleId & 0xFFFFFFFF, melonDS::DSi_NAND::TitleData_BannerSav, "banner.sav");
 		}
 	}
 }
 
-ECL_EXPORT void ExportDSiWareSavs(melonDS::DSi* dsi, u32 titleId)
+ECL_EXPORT void ExportDSiWareSavs(melonDS::DSi* dsi, u64 titleId)
 {
 	if (auto& nand = dsi->GetNAND())
 	{
 		if (auto mount = melonDS::DSi_NAND::NANDMount(nand))
 		{
-			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PublicSav, "public.sav");
-			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_PrivateSav, "private.sav");
-			mount.ExportTitleData(DSIWARE_CATEGORY, titleId, melonDS::DSi_NAND::TitleData_BannerSav, "banner.sav");
+			mount.ExportTitleData(titleId >> 32, titleId & 0xFFFFFFFF, melonDS::DSi_NAND::TitleData_PublicSav, "public.sav");
+			mount.ExportTitleData(titleId >> 32, titleId & 0xFFFFFFFF, melonDS::DSi_NAND::TitleData_PrivateSav, "private.sav");
+			mount.ExportTitleData(titleId >> 32, titleId & 0xFFFFFFFF, melonDS::DSi_NAND::TitleData_BannerSav, "banner.sav");
 		}
 	}
 }
 
-ECL_EXPORT void DSiWareSavsLength(melonDS::DSi* dsi, u32 titleId, u32* publicSavSize, u32* privateSavSize, u32* bannerSavSize)
+ECL_EXPORT void DSiWareSavsLength(melonDS::DSi* dsi, u64 titleId, u32* publicSavSize, u32* privateSavSize, u32* bannerSavSize)
 {
 	*publicSavSize = *privateSavSize = *bannerSavSize = 0;
 
@@ -98,7 +96,7 @@ ECL_EXPORT void DSiWareSavsLength(melonDS::DSi* dsi, u32 titleId, u32* publicSav
 			u32 version;
 			melonDS::NDSHeader header{};
 
-			mount.GetTitleInfo(DSIWARE_CATEGORY, titleId, version, &header, nullptr);
+			mount.GetTitleInfo(titleId >> 32, titleId & 0xFFFFFFFF, version, &header, nullptr);
 			*publicSavSize = header.DSiPublicSavSize;
 			*privateSavSize = header.DSiPrivateSavSize;
 			*bannerSavSize = (header.AppFlags & 0x04) ? 0x4000 : 0;
