@@ -151,13 +151,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract bool SaveRamIsDirty();
 
 		[BizImport(CC)]
-		public abstract void ImportDSiWareSavs(IntPtr console, uint titleId);
+		public abstract void ImportDSiWareSavs(IntPtr console, ulong titleId);
 
 		[BizImport(CC)]
-		public abstract void ExportDSiWareSavs(IntPtr console, uint titleId);
+		public abstract void ExportDSiWareSavs(IntPtr console, ulong titleId);
 
 		[BizImport(CC)]
-		public abstract void DSiWareSavsLength(IntPtr console, uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
+		public abstract void DSiWareSavsLength(IntPtr console, ulong titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
 
 		[BizImport(CC)]
 		public abstract void GetRegs(IntPtr console, uint[] regs);

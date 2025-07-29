@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_exe.AddTransientFile([ ], "public.sav");
 				_exe.AddTransientFile([ ], "private.sav");
 				_exe.AddTransientFile([ ], "banner.sav");
-				_core.ExportDSiWareSavs(_console, DSiTitleId.Lower);
+				_core.ExportDSiWareSavs(_console, DSiTitleId.Full);
 
 				var publicSav = _exe.RemoveTransientFile("public.sav");
 				var privateSav = _exe.RemoveTransientFile("private.sav");
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					if (PrivateSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(PublicSavSize, PrivateSavSize).ToArray(), "private.sav");
 					if (BannerSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(PublicSavSize + PrivateSavSize, BannerSavSize).ToArray(), "banner.sav");
 
-					_core.ImportDSiWareSavs(_console, DSiTitleId.Lower);
+					_core.ImportDSiWareSavs(_console, DSiTitleId.Full);
 
 					if (PublicSavSize > 0) _exe.RemoveReadonlyFile("public.sav");
 					if (PrivateSavSize > 0) _exe.RemoveReadonlyFile("private.sav");
