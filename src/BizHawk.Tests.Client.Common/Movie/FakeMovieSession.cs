@@ -10,7 +10,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 	{
 		public IMovieConfig Settings { get; set; }
 
-		public required IMovie Movie { get; set; }
+		public IMovie? Movie { get; set; }
 
 		public bool ReadOnly { get => false; set { } }
 
@@ -28,9 +28,24 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public IMovieController MovieController { get; }
 
 		public IController StickySource { get; set; }
-		public IController MovieIn { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public IController MovieIn { get; set; } = NullController.Instance;
 
-		public IInputAdapter MovieOut => throw new NotImplementedException();
+		private IInputAdapter _out = new CopyControllerAdapter();
+		public IInputAdapter MovieOut
+		{
+			get
+			{
+				if (Movie?.IsActive() == true && !Movie.IsRecording())
+				{
+					_out.Source = MovieController;
+				}
+				else
+				{
+					_out.Source = MovieIn;
+				}
+				return _out;
+			}
+		}
 
 		public string BackupDirectory { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -52,6 +67,6 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void PopupMessage(string message) => throw new NotImplementedException();
 		public void QueueNewMovie(IMovie movie, string systemId, string loadedRomHash, PathEntryCollection pathEntries, IDictionary<string, string> preferredCores) => throw new NotImplementedException();
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator) => throw new NotImplementedException();
-		public void StopMovie(bool saveChanges = true) => Movie.Stop();
+		public void StopMovie(bool saveChanges = true) => Movie?.Stop();
 	}
 }
