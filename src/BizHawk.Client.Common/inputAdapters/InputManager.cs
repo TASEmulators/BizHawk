@@ -170,7 +170,7 @@ namespace BizHawk.Client.Common
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				var hotkeyTriggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
-				bool isEmuInput = ie.LogicalButton.ToString().Split('+').Any(ActiveController.HasBinding);
+				bool isEmuInput = ActiveController.HasBinding(ie.LogicalButton.ToString());
 
 				bool shouldDoHotkey = config.InputHotkeyOverrideOptions != 1;
 				bool shouldDoEmuInput = config.InputHotkeyOverrideOptions != 2;
