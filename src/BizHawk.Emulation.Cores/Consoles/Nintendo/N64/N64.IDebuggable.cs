@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
@@ -9,48 +10,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			// note: the approach this code takes is highly bug-prone
+			// note: the approach this code takes is somewhat bug-prone
+			const int STRUCT_SIZE_OCTETS = 32 * sizeof(long)
+				+ sizeof(uint)
+				+ sizeof(int)
+				+ sizeof(long)
+				+ sizeof(long)
+				+ sizeof(int)
+				+ sizeof(int)
+				+ 32 * sizeof(uint)
+				+ 32 * sizeof(long);
+			var data0 = new byte[STRUCT_SIZE_OCTETS];
+			api.getRegisters(data0);
+			var data = data0.AsSpan();
+			unsafe T ReadAndAdvance<T>(ref Span<byte> span)
+				where T : unmanaged
+			{
+				var value = MemoryMarshal.Read<T>(span);
+				span = span.Slice(sizeof(T));
+				return value;
+			}
+
 			// warning: tracer magically relies on these register names!
 			var ret = new Dictionary<string, RegisterValue>();
-			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
-			api.getRegisters(data);
-
-			for (int i = 0; i < 32; i++)
+			void AddS64AsHalves(string name, long value)
 			{
-				var reg = BitConverter.ToInt64(data, i * 8);
-				ret.Add(GPRnames[i] + "_lo", (int)(reg));
-				ret.Add(GPRnames[i] + "_hi", (int)(reg >> 32));
+				ret.Add($"{name}_lo", unchecked((int) (value)));
+				ret.Add($"{name}_hi", unchecked((int) (value >> 32)));
 			}
-
-			var PC = BitConverter.ToUInt32(data, 32 * 8);
-			ret.Add("PC", (int)PC);
-
-			ret.Add("LL", BitConverter.ToInt32(data, 32 * 8 + 4));
-
-			var Lo = BitConverter.ToInt64(data, 32 * 8 + 4 + 4);
-			ret.Add("LO_lo", (int)Lo);
-			ret.Add("LO_hi", (int)(Lo >> 32));
-
-			var Hi = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8);
-			ret.Add("HI_lo", (int)Hi);
-			ret.Add("HI_hi", (int)(Hi >> 32));
-
-			ret.Add("FCR0", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8));
-			ret.Add("FCR31", BitConverter.ToInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4));
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg_cop0 = BitConverter.ToUInt32(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + i * 4);
-				ret.Add("CP0 REG" + i, (int)reg_cop0);
-			}
-
-			for (int i = 0; i < 32; i++)
-			{
-				var reg_cop1_fgr_64 = BitConverter.ToInt64(data, 32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + i * 8);
-				ret.Add("CP1 FGR REG" + i + "_lo", (int)reg_cop1_fgr_64);
-				ret.Add("CP1 FGR REG" + i + "_hi", (int)(reg_cop1_fgr_64 >> 32));
-			}
-
+			foreach (var name in GPRnames) AddS64AsHalves(name, ReadAndAdvance<long>(ref data));
+			ret.Add("PC", ReadAndAdvance<int>(ref data));
+			ret.Add("LL", ReadAndAdvance<int>(ref data));
+			AddS64AsHalves("LO", ReadAndAdvance<long>(ref data));
+			AddS64AsHalves("HI", ReadAndAdvance<long>(ref data));
+			ret.Add("FCR0", ReadAndAdvance<int>(ref data));
+			ret.Add("FCR31", ReadAndAdvance<int>(ref data));
+			for (var i = 0; i < 32; i++) ret.Add($"CP0 REG{i}", ReadAndAdvance<uint>(ref data));
+			for (var i = 0; i < 32; i++) AddS64AsHalves($"CP1 FGR REG{i}", ReadAndAdvance<long>(ref data));
 			return ret;
 		}
 
