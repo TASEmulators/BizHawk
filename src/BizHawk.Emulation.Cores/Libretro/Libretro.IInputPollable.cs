@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		// todo
 		// implement more input types
 		// limit inputs according to user selection / core limitations (something with RETRO_ENVIRONMENT_SET_CONTROLLER_INFO?)
-		void UpdateInput(IController controller)
+		private void UpdateInput(IController controller)
 		{
 			SetInputs(controller, RETRO_DEVICE.JOYPAD, 0, _joypad0States);
 			SetInputs(controller, RETRO_DEVICE.JOYPAD, 1, _joypad1States);

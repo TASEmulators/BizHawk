@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public int current_sample_L;
 		public int current_sample_R;
 
-		int aud_scale = 21;
+		private const int aud_scale = 21;
 
 		public SN76489sms()
 		{
