@@ -158,7 +158,7 @@ namespace BizHawk.Client.Common
 		/// <param name="processUnboundInput">Events that did not do anything are forwarded out here.
 		/// This allows things like Windows' standard alt hotkeys (for menu items) to be handled by the
 		/// caller if the input didn't alrady do something else.</param>
-		public void ProcessInput(IPhysicalInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent> processUnboundInput, Func<string, bool> isInternalHotkey)
+		public void ProcessInput(IPhysicalInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent> processUnboundInput)
 		{
 			// loop through all available events
 			InputEvent ie;
@@ -169,76 +169,33 @@ namespace BizHawk.Client.Common
 
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
-				// look for hotkey bindings for this key
-				var triggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
-				if (triggers.Count == 0)
+				var hotkeyTriggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				bool isEmuInput = ie.LogicalButton.ToString().Split('+').Any(ActiveController.HasBinding);
+
+				bool shouldDoHotkey = config.InputHotkeyOverrideOptions != 1;
+				bool shouldDoEmuInput = config.InputHotkeyOverrideOptions != 2;
+				if (shouldDoEmuInput && !isEmuInput) shouldDoHotkey = true;
+
+				bool didHotkey = false;
+				if (shouldDoHotkey)
 				{
-					processUnboundInput(ie);
+					if (ie.EventType is InputEventType.Press)
+					{
+						didHotkey = hotkeyTriggers.Aggregate(false, (current, trigger) => current | processHotkey(trigger));
+					}
+					_hotkeyCoalescer.Receive(ie);
 				}
 
-				switch (config.InputHotkeyOverrideOptions)
+				if (!didHotkey) shouldDoEmuInput = true;
+				if (shouldDoEmuInput)
 				{
-					default:
-					case 0: // Both allowed
-						{
-							ControllerInputCoalescer.Receive(ie);
+					ControllerInputCoalescer.Receive(ie);
+				}
+				bool didEmuInput = shouldDoEmuInput;
 
-							var handled = false;
-							if (ie.EventType is InputEventType.Press)
-							{
-								handled = triggers.Aggregate(handled, (current, trigger) => current | processHotkey(trigger));
-							}
-
-							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-							if (!handled)
-							{
-								_hotkeyCoalescer.Receive(ie);
-							}
-
-							break;
-						}
-					case 1: // Input overrides Hotkeys
-						{
-							ControllerInputCoalescer.Receive(ie);
-							if (!ie.LogicalButton.ToString().Split('+').Any(ActiveController.HasBinding))
-							{
-								var handled = false;
-								if (ie.EventType is InputEventType.Press)
-								{
-									handled = triggers.Aggregate(false, (current, trigger) => current | processHotkey(trigger));
-								}
-
-								// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-								if (!handled)
-								{
-									_hotkeyCoalescer.Receive(ie);
-								}
-							}
-
-							break;
-						}
-					case 2: // Hotkeys override Input
-						{
-							var handled = false;
-							if (ie.EventType is InputEventType.Press)
-							{
-								handled = triggers.Aggregate(false, (current, trigger) => current | processHotkey(trigger));
-							}
-
-							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
-							if (!handled)
-							{
-								_hotkeyCoalescer.Receive(ie);
-
-								// Check for hotkeys that may not be handled through processHotkey() method, reject controller input mapped to these
-								if (!triggers.Exists((t) => isInternalHotkey(t)))
-								{
-									ControllerInputCoalescer.Receive(ie);
-								}
-							}
-
-							break;
-						}
+				if (!didHotkey && !didEmuInput)
+				{
+					processUnboundInput(ie);
 				}
 			} // foreach event
 
@@ -268,7 +225,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Update output controllers. Call <see cref="ProcessInput(IPhysicalInputSource, Func{string, bool}, Config, Action{InputEvent}, Func{string, bool})"/> shortly before this.
+		/// Update output controllers. Call <see cref="ProcessInput(IPhysicalInputSource, Func{string, bool}, Config, Action{InputEvent})"/> shortly before this.
 		/// </summary>
 		public void RunControllerChain(Config config)
 		{

@@ -31,13 +31,12 @@ namespace BizHawk.Tests.Client.Common
 
 			public void BasicInputProcessing()
 			{
-				manager.ProcessInput(source, processHotkey, config, (_) => { }, (_) => false);
+				manager.ProcessInput(source, processHotkey, config, (_) => { });
 				manager.RunControllerChain(config);
-
 			}
 		}
 
-		private static readonly string[] _hotkeys = [ "Hotkey 1" ];
+		private static readonly string[] _hotkeys = [ "Hotkey 1", "Autofire", "Autohold" ];
 
 		private static readonly IReadOnlyList<string> _modifierKeys = new[] { "Super", "Ctrl", "Alt", "Shift" };
 
@@ -393,8 +392,7 @@ namespace BizHawk.Tests.Client.Common
 			Assert.AreEqual(0, context.triggeredHotkeys.Count);
 
 			source.AddInputEvent(MakeReleaseEvent("Z"));
-			manager.ProcessInput(source, context.processHotkey, context.config, (_) => { }, (_) => true); // true: releasing internal hotkey
-			manager.RunControllerChain(context.config);
+			context.BasicInputProcessing();
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -492,7 +490,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."), (_) => false);
+			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
 
 		[TestMethod]
@@ -504,7 +502,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."), (_) => false);
+			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
 	}
 }
