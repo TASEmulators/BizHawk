@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickNES : IVideoProvider
+	public sealed partial class QuickNES : IVideoProvider
 	{
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }

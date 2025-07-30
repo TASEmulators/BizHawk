@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Components.M68000
 {
-	partial class MC68000
+	public sealed partial class MC68000
 	{
 		private void ADD0()
 		{

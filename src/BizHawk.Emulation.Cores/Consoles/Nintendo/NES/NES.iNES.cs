@@ -2,7 +2,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	partial class NES
+	public sealed partial class NES
 	{
 		private static int iNES2Wram(int i)
 		{

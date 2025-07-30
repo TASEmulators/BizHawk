@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	unsafe partial class LibsnesApi
+	public unsafe partial class LibsnesApi
 	{
 		private bool Handle_BRK(eMessage msg)
 		{

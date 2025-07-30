@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickNES : ISaveRam
+	public sealed partial class QuickNES : ISaveRam
 	{
 		public byte[] CloneSaveRam(bool clearDirty)
 		{

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		public override string ToString() => $"{PC:X6}:  {RawBytes,-20}  {Mnemonic,-8}  {Args}";
 	}
 
-	partial class MC68000
+	public sealed partial class MC68000
 	{
 		public DisassemblyInfo Disassemble(int pc)
 		{

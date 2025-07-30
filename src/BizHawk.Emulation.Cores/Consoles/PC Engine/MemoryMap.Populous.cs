@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		// The Populous HuCard is the only traditional HuCard to have battery-backed saveRAM
 		// built into it. There is 32k of save-RAM mapped at pages $40 - $44.

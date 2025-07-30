@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
-	partial class VirtualJaguar : IDebuggable
+	public partial class VirtualJaguar : IDebuggable
 	{
 		public unsafe IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

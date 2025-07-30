@@ -2,7 +2,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : ISaveRam
+	public sealed partial class NES : ISaveRam
 	{
 		public bool SaveRamModified
 		{

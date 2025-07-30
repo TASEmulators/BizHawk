@@ -2,7 +2,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	partial class WonderSwan : ISaveRam
+	public partial class WonderSwan : ISaveRam
 	{
 		private byte[] _saveramBuff;
 

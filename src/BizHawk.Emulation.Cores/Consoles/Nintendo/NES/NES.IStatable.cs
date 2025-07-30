@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES
+	public sealed partial class NES
 	{
 		private void SyncState(Serializer ser)
 		{

@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 //TODO - could stringpool the BootGod DB for a pedantic optimization
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	partial class NES
+	public sealed partial class NES
 	{
 		private static readonly List<Type> INESBoardImplementors = new List<Type>();
 
