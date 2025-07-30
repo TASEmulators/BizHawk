@@ -189,7 +189,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // THE 'MASKABLE INTERRUPT' ROUTINE
                 // This is sometimes used when the tape is to be stopped
-                //
                 if (addr == 56)
                 {
                     //TapeDevice.MaskableInterruptCount++;

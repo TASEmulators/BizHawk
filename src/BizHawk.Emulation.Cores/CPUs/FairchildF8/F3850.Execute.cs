@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 				case 0x8E: ADC(); break;						// DC <- (DC) + (A)
 
 				case 0x8F: BR7(); break;						// Branch on ISAR (any of the low 3 bits of ISAR are reset)
-																//
+
 				case 0x90: BF(0); break;						// BR		-	Unconditional branch relative (always)
 				case 0x91: BF(1); break;                        // BM		-	Branch on negative (sign bit is reset)
 				case 0x92: BF(2); break;                        // BNC		-	Branch if no carry (carry bit is reset)

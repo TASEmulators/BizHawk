@@ -393,8 +393,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// Hexagon Copy Protection Notes (-asni 2018-05-01)
 			// ---------------------------------------------------
-			//
-			//
+			// none
 
 			return false;
 		}
