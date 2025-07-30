@@ -8,7 +8,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		internal static TasMovie MakeMovie(int numberOfFrames)
 		{
 			FakeEmulator emu = new FakeEmulator();
-			FakeMovieSession session = new(emu) { Movie = null! };
+			FakeMovieSession session = new(emu);
 			TasMovie movie = new(session, "/fake/path");
 			session.Movie = movie;
 
