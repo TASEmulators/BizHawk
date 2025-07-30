@@ -373,6 +373,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public CompositingMode CompositingMode
 		{
+			get => throw new NotSupportedException();
 			set
 			{
 				switch (_pendingBlendEnable)
