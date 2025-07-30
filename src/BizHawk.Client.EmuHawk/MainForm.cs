@@ -945,7 +945,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						MainFormContextMenu.Show(PointToScreen(new(0, MainformMenu.Height)));
 					}
-				}, IsInternalHotkey);
+				});
 
 				// translate mouse coordinates
 				// NOTE: these must go together, because in the case of screen rotation, X and Y are transformed together
@@ -2104,7 +2104,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var (k, v) in Config.HotkeyBindings) controls.BindMulti(k, v);
 
 			InputManager.ClientControls = controls;
-			InputManager.ControllerInputCoalescer = new(); // ctor initialises values for host haptics
+			InputManager.ControllerInputCoalescer = new();
 		}
 
 		private void LoadMoviesFromRecent(string path)
