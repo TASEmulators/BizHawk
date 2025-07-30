@@ -59,11 +59,20 @@ namespace BizHawk.Client.Common
 		public List<string> SearchBindings(string button)
 			=> _bindings.Where(b => b.Value.Contains(button)).Select(static b => b.Key).ToList();
 
-		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
-		public bool HasBinding(string button) =>
-			_bindings
+		/// <summary>
+		/// Checks if the given button combination would be a controller input.
+		/// This means Shift+A will return true if an input is bound to either A or Shift+A.
+		/// </summary>
+		public bool HasBinding(string button)
+		{
+			string[] buttons = button.Split('+');
+			return _bindings
 				.SelectMany(kvp => kvp.Value)
-				.Any(boundButton => boundButton == button);
+				.Any((boundCombination) => {
+					string[] boundButtons = boundCombination.Split('+');
+					return boundButtons.All((b) => buttons.Contains(b));
+				});
+		}
 
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
