@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		// Input state for game controller inputs are coalesced here
 		// This relies on a client specific implementation!
-		public ControllerInputCoalescer ControllerInputCoalescer { get; set; }
+		public ControllerInputCoalescer ControllerInputCoalescer { get; set; } = new();
 
 		public Controller ClientControls { get; set; }
 
