@@ -1124,6 +1124,7 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>TODO add and handle <see cref="FilesystemFilter.LuaScripts"/> (you can drag-and-drop scripts and there are already non-rom things in this list, so why not?)</remarks>
 		public static readonly FilesystemFilterSet RomFilter = new(
+			combinedEntryDesc: "Everything",
 			FilesystemFilter.Archives,
 			new FilesystemFilter("Disc Images", FilesystemFilter.DiscExtensions),
 			new FilesystemFilter("Rom Bundles", new[] { "xml" }),
@@ -1165,10 +1166,7 @@ namespace BizHawk.Client.Common
 			new FilesystemFilter(/*VSystemID.Raw.WSWAN*/"WonderSwan", RomFileExtensions.WSWAN, addArchiveExts: true),
 			new FilesystemFilter(/*VSystemID.Raw.ZXSpectrum*/"Sinclair ZX Spectrum", RomFileExtensions.ZXSpectrum.Concat(new[] { "csw", "wav" }).ToList(), addArchiveExts: true),
 			new FilesystemFilter("Music Files", Array.Empty<string>(), devBuildExtraExts: new[] { "psf", "minipsf", "sid", "nsf", "gbs" }),
-			FilesystemFilter.EmuHawkSaveStates)
-		{
-			CombinedEntryDesc = "Everything",
-		};
+			FilesystemFilter.EmuHawkSaveStates);
 
 		public static readonly IReadOnlyCollection<string> KnownRomExtensions = RomFilter.Filters
 			.SelectMany(f => f.Extensions)

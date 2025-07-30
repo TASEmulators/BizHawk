@@ -18,15 +18,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
-		private static readonly FilesystemFilterSet MAMERomsFSFilterSet = new(new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet MAMERomsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("MAME Arcade ROMs", extensions: [ "zip" ]));
 
-		private static readonly FilesystemFilterSet ScreenshotsFSFilterSet = new(FilesystemFilter.PNGs)
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet ScreenshotsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			FilesystemFilter.PNGs);
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{

@@ -16,10 +16,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESMusicRipper : ToolFormBase, IToolFormAutoConfig
 	{
-		private static readonly FilesystemFilterSet RenoiseFilesFSFilterSet = new(new FilesystemFilter("Renoise Song Files", new[] { "xrns" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet RenoiseFilesFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("Renoise Song Files", extensions: [ "xrns" ]));
 
 		public static Icon ToolIcon
 			=> Properties.Resources.NesControllerIcon;

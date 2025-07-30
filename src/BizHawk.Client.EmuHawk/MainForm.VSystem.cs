@@ -981,15 +981,13 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
-		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(new FilesystemFilter("DOSBox HDD Images", new[] { "hdd" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("DOSBox HDD Images", extensions: [ "hdd" ]));
 
-		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("ZX-State files", extensions: [ "szx" ]));
 
 		private DialogResult OpenZXHawkSyncSettingsDialog(ISettingsAdapter settable)
 		{

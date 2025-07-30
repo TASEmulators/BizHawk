@@ -47,10 +47,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly FilesystemFilterSet EmuHawkSaveStatesFSFilterSet = new(FilesystemFilter.EmuHawkSaveStates);
 
-		private static readonly FilesystemFilterSet LibretroCoresFSFilterSet = new(new FilesystemFilter("Libretro Cores", new[] { OSTailoredCode.IsUnixHost ? "so" : "dll" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet LibretroCoresFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("Libretro Cores", extensions: [ (OSTailoredCode.IsUnixHost ? "so" : "dll") ]));
 
 		private const int WINDOW_SCALE_MAX = 10;
 
@@ -2497,10 +2496,9 @@ namespace BizHawk.Client.EmuHawk
 				new object/*?*/[] { c },
 				CultureInfo.InvariantCulture);
 
-		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(new FilesystemFilter("Config File", new[] { "ini" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("Config File", extensions: [ "ini" ]));
 
 		private void OpenRom()
 		{
