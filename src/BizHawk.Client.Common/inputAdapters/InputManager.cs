@@ -77,17 +77,6 @@ namespace BizHawk.Client.Common
 			ControllerOutput.Source = session.MovieOut;
 		}
 
-		public void ToggleStickies()
-		{
-			StickyHoldController.MassToggleStickyState(ActiveController.PressedButtons);
-			StickyAutofireController.MassToggleStickyState(AutoFireController.PressedButtons); // does this even make sense?
-		}
-
-		public void ToggleAutoStickies()
-		{
-			StickyAutofireController.MassToggleStickyState(ActiveController.PressedButtons);
-		}
-
 		private static Controller BindToDefinition(
 			ControllerDefinition def,
 			IDictionary<string, Dictionary<string, string>> allBinds,
@@ -157,6 +146,8 @@ namespace BizHawk.Client.Common
 		/// caller if the input didn't alrady do something else.</param>
 		public void ProcessInput(IInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent> processUnboundInput)
 		{
+			List<string> oldPressedButtons = ActiveController.PressedButtons;
+
 			// loop through all available events
 			InputEvent ie;
 			while ((ie = source.DequeueEvent()) != null)
@@ -230,13 +221,25 @@ namespace BizHawk.Client.Common
 				ActiveController.ApplyAxisConstraints("Natural Circle");
 			}
 
-			if (ClientControls["Autohold"])
+			if (ClientControls["Autohold"] || ClientControls["Autofire"])
 			{
-				ToggleStickies();
-			}
-			else if (ClientControls["Autofire"])
-			{
-				ToggleAutoStickies();
+				List<string> newPressedButtons = ActiveController.PressedButtons;
+				List<string> justPressedButtons = new();
+				foreach (string button in newPressedButtons)
+				{
+					if (!oldPressedButtons.Contains(button)) justPressedButtons.Add(button);
+				}
+				if (justPressedButtons.Count != 0)
+				{
+					if (ClientControls["Autohold"])
+					{
+						StickyHoldController.MassToggleStickyState(justPressedButtons);
+					}
+					else
+					{
+						StickyAutofireController.MassToggleStickyState(justPressedButtons);
+					}
+				}
 			}
 
 			// autohold/autofire must not be affected by the following inputs
