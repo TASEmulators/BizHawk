@@ -23,14 +23,14 @@ namespace BizHawk.Tests.Client.Common
 			public void EmulateFrameAdvance(bool lag = false)
 			{
 				emulator.FrameAdvance(manager.ControllerOutput, false);
-				manager.ProcessInput(new FakeInputSource(), processHotkey, config, (_) => { }, (_) => false);
+				manager.ProcessInput(new FakeInputSource(), processHotkey, config, (_) => { });
 
 				if (lag) manager.AutoFireController.IncrementStarts();
 				manager.StickyAutofireController.IncrementLoops(lag);
 			}
 		}
 
-		private string[] _hotkeys = [ "Hotkey 1" ];
+		private string[] _hotkeys = [ "Hotkey 1", "Autofire", "Autohold" ];
 
 		private static readonly IReadOnlyList<string> _modifierKeys = new[] { "Super", "Ctrl", "Alt", "Shift" };
 
@@ -98,14 +98,14 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("B"));
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("C"));
 
 			source.AddInputEvent(MakeReleaseEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
 
@@ -120,12 +120,12 @@ namespace BizHawk.Tests.Client.Common
 			source.AddInputEvent(MakePressEvent("Shift"));
 			source.AddInputEvent(MakePressEvent("Shift+Q"));
 
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
 			source.AddInputEvent(MakeReleaseEvent("Shift"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
 
@@ -141,12 +141,12 @@ namespace BizHawk.Tests.Client.Common
 			source.AddInputEvent(MakePressEvent("Ctrl+Shift"));
 			source.AddInputEvent(MakePressEvent("Ctrl+Shift+Q"));
 
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
 			source.AddInputEvent(MakeReleaseEvent("Shift"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
 
@@ -159,11 +159,11 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Shift+Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 
 			source.AddInputEvent(MakePressEvent("Shift"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 		}
 
@@ -179,17 +179,17 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("Shift"));
 			source.AddInputEvent(MakePressEvent("Shift+Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
 			source.AddInputEvent(MakeReleaseEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 
 			source.AddInputEvent(MakePressEvent("Shift+Ctrl")); // "Shift+Ctrl" not "Ctrl+Shift"
 			source.AddInputEvent(MakePressEvent("Ctrl+Shift+Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("B"));
 		}
@@ -203,7 +203,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.AreEqual(1, c.triggeredHotkeys.Count);
 			Assert.AreEqual(_hotkeys[0], c.triggeredHotkeys[0]);
@@ -218,7 +218,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Q");
 
 			source.AddInputEvent(MakePressEvent("Shift+Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.AreEqual(1, c.triggeredHotkeys.Count);
 			Assert.AreEqual(_hotkeys[0], c.triggeredHotkeys[0]);
@@ -233,7 +233,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Ctrl+Shift+Q");
 
 			source.AddInputEvent(MakePressEvent("Ctrl+Shift+Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.AreEqual(1, c.triggeredHotkeys.Count);
 			Assert.AreEqual(_hotkeys[0], c.triggeredHotkeys[0]);
@@ -248,11 +248,11 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.AreEqual(0, c.triggeredHotkeys.Count);
 
 			source.AddInputEvent(MakePressEvent("Shift"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			Assert.AreEqual(0, c.triggeredHotkeys.Count);
 		}
 
@@ -266,7 +266,7 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("Shift"));
 			source.AddInputEvent(MakePressEvent("Shift+Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.AreEqual(0, c.triggeredHotkeys.Count);
 		}
@@ -283,7 +283,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Z");
 
 			source.AddInputEvent(MakePressEvent("Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(1, c.triggeredHotkeys.Count);
@@ -302,7 +302,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Z");
 
 			source.AddInputEvent(MakePressEvent("Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(1, c.triggeredHotkeys.Count);
@@ -321,7 +321,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Z");
 
 			source.AddInputEvent(MakePressEvent("Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(0, c.triggeredHotkeys.Count);
@@ -340,7 +340,7 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("Shift"));
 			source.AddInputEvent(MakePressEvent("Shift+Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(1, c.triggeredHotkeys.Count);
@@ -360,7 +360,7 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("Shift"));
 			source.AddInputEvent(MakePressEvent("Shift+Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(0, c.triggeredHotkeys.Count);
@@ -379,13 +379,13 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("Shift"));
 			source.AddInputEvent(MakePressEvent("Shift+Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(0, c.triggeredHotkeys.Count);
 
 			source.AddInputEvent(MakeReleaseEvent("Z"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => true); // true: releasing internal hotkey
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -399,7 +399,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.AutoFireController.BindMulti("A", "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
@@ -419,10 +419,10 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("W"));
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			source.AddInputEvent(MakeReleaseEvent("Q"));
 			source.AddInputEvent(MakeReleaseEvent("W"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
@@ -442,10 +442,10 @@ namespace BizHawk.Tests.Client.Common
 
 			source.AddInputEvent(MakePressEvent("W"));
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			source.AddInputEvent(MakeReleaseEvent("Q"));
 			source.AddInputEvent(MakeReleaseEvent("W"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
@@ -464,12 +464,12 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti("Autofire", "W");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			source.AddInputEvent(MakePressEvent("W"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 			source.AddInputEvent(MakeReleaseEvent("Q"));
 			source.AddInputEvent(MakeReleaseEvent("W"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { }, (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => { });
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -483,7 +483,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => Assert.Fail("Bound key was seen as unbound."), (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
 
 		[TestMethod]
@@ -495,8 +495,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Q");
 
 			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, c.processHotkey, c.config, (_) => Assert.Fail("Bound key was seen as unbound."), (_) => false);
+			manager.ProcessInput(source, c.processHotkey, c.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
-
 	}
 }

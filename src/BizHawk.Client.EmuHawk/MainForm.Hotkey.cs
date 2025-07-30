@@ -26,6 +26,25 @@ namespace BizHawk.Client.EmuHawk
 				default:
 					return false;
 
+				// Hotkeys handled elsewhere, via the hotkey controller
+				case "Autohold":
+				case "Autofire":
+				case "Frame Advance":
+				case "Turbo":
+				case "Rewind":
+				case "Fast Forward":
+				case "Open RA Overlay":
+					break;
+				case "RA Up":
+				case "RA Down":
+				case "RA Left":
+				case "RA Right":
+				case "RA Confirm":
+				case "RA Cancel":
+				case "RA Quit":
+					// don't consider these keys outside of RAIntegration overlay being active
+					return RA is RAIntegration { OverlayActive: true };
+
 				// General
 				case "Pause":
 					TogglePause();
@@ -33,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Frame Inch":
 					//special! allow this key to get handled as Frame Advance, too
 					FrameInch = true;
-					return false;
+					break;
 				case "Toggle Throttle":
 					ToggleUnthrottled();
 					break;
@@ -548,33 +567,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
-		}
-
-		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
-		private bool IsInternalHotkey(string trigger)
-		{
-			switch (trigger)
-			{
-				default:
-					return false;
-				case "Autohold":
-				case "Autofire":
-				case "Frame Advance":
-				case "Turbo":
-				case "Rewind":
-				case "Fast Forward":
-				case "Open RA Overlay":
-					return true;
-				case "RA Up":
-				case "RA Down":
-				case "RA Left":
-				case "RA Right":
-				case "RA Confirm":
-				case "RA Cancel":
-				case "RA Quit":
-					// don't consider these keys outside of RAIntegration overlay being active
-					return RA is RAIntegration { OverlayActive: true };
-			}
 		}
 	}
 }
