@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -17,7 +18,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 // TODO - context menu should have copy option too
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class CDL : ToolFormBase, IToolFormAutoConfig
+	public partial class CDL : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		private static readonly FilesystemFilterSet CDLFilesFSFilterSet = new(new FilesystemFilter("Code Data Logger Files", new[] { "cdl" }));
 
@@ -26,21 +27,35 @@ namespace BizHawk.Client.EmuHawk
 
 		private RecentFiles _recentFld = new RecentFiles();
 
-		[ConfigPersist]
 		private RecentFiles _recent
 		{
 			get => _recentFld;
 			set => _recentFld = value;
 		}
 
-		[ConfigPersist]
-		private bool CDLAutoSave { get; set; } = true;
+		private bool CDLAutoSave = true;
 
-		[ConfigPersist]
-		private bool CDLAutoStart { get; set; } = true;
+		private bool CDLAutoStart = true;
 
-		[ConfigPersist]
-		private bool CDLAutoResume { get; set; } = true;
+		private bool CDLAutoResume = true;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(_recentFld), ref _recentFld);
+			provider.Get(nameof(CDLAutoSave), ref CDLAutoSave);
+			provider.Get(nameof(CDLAutoStart), ref CDLAutoStart);
+			provider.Get(nameof(CDLAutoResume), ref CDLAutoResume);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(_recent)] = _recent,
+				[nameof(CDLAutoSave)] = CDLAutoSave,
+				[nameof(CDLAutoStart)] = CDLAutoStart,
+				[nameof(CDLAutoResume)] = CDLAutoResume,
+			};
+		}
 
 		private void SetCurrentFilename(string fname)
 		{

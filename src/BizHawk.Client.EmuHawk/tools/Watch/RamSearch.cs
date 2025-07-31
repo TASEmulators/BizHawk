@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A form designed to search through ram values
 	/// </summary>
-	public partial class RamSearch : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults
+	public partial class RamSearch : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults, IConfigPersist
 	{
 		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
 		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbitrary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
@@ -106,8 +106,19 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		public IInputPollable InputPollableCore { get; set; }
 
-		[ConfigPersist]
-		public RamSearchSettings Settings { get; set; }
+		public RamSearchSettings Settings;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(Settings), ref Settings);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Settings)] = Settings,
+			};
+		}
 
 		private void HardSetDisplayTypeDropDown(Common.WatchDisplayType type)
 		{
