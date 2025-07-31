@@ -1,5 +1,6 @@
-﻿using BizHawk.Emulation.Common;
 using System.IO;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {

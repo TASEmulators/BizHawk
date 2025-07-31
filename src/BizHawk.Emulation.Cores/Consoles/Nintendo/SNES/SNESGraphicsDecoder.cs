@@ -8,9 +8,9 @@
 //TODO
 //when a BG is not available, the last rendered BG still shows up. should clear it
 
-using BizHawk.Common;
-
 using System.Drawing;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {

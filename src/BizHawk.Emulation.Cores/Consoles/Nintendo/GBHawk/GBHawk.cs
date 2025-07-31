@@ -1,12 +1,11 @@
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
-
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
-
-using BizHawk.Common.ReflectionExtensions;
 
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
 // TODO: Window Position A6 behaves differently

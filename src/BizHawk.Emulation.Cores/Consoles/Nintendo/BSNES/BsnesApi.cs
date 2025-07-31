@@ -1,13 +1,14 @@
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using BizHawk.Common;
-using BizHawk.Emulation.Cores.Waterbox;
+
 using BizHawk.BizInvoke;
-using BizHawk.Emulation.Common;
-using System.Linq;
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {

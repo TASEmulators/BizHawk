@@ -1,8 +1,9 @@
 ﻿//TODO - correctly emulate PPU OFF state
 
+using System.Runtime.CompilerServices;
+
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {

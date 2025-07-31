@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {

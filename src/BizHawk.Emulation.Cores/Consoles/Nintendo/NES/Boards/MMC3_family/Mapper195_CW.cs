@@ -1,4 +1,3 @@
-﻿
 // This is a modified 195 board specifically for Chaos World (CH)
 // It is a Work in Progress
 // Save Ram is broken and the game will not load with save ram written through this mapper
