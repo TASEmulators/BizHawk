@@ -1040,6 +1040,7 @@ namespace BizHawk.Client.EmuHawk
 					InitializeFpsData();
 				}
 
+				if (value != _emulatorPaused) Tools.OnPauseToggle(value);
 				_emulatorPaused = value;
 			}
 		}
