@@ -387,7 +387,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						index = 0;
 						lc++;
 					}
-
 				} while (lc < 2);
 
 				if ((resBuffer[RS_ST2] & 0x02) != 0)
@@ -653,7 +652,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 								// we are seeking forward
 								var delta = SeekingTrack - CurrentTrack;
 								MoveHead(SkipDirection.Increment, delta);
-
 							}
 							else if (CurrentTrack > SeekingTrack)
 							{
@@ -730,7 +728,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			FLAG_SEEK_INTERRUPT = true;
 
 			//CurrentState = DriveMainState.None;
-
 		}
 	*/
 
