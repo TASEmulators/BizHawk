@@ -222,8 +222,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						}
 					}
 				}
-
-
 			}
 
 			if (HCC == 0)

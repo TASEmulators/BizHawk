@@ -2725,7 +2725,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ResBuffer[RS_ST0] = Status0;
 			ResBuffer[RS_ST1] = Status1;
 			ResBuffer[RS_ST2] = Status2;
-
 		}
 
 		/// <summary>

@@ -382,7 +382,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								if ((priority || PriorityBuffer[xs] == 0) && show)
 									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.TopLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
-
 						}
 					}
 				}

@@ -368,4 +368,3 @@ namespace BizHawk.Bizware.Input
 		}
 	}
 }
-

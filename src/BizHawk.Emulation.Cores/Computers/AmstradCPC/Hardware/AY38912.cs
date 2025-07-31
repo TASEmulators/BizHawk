@@ -306,8 +306,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					break;
 			}
-
-
 		}
 
 		/// <summary>

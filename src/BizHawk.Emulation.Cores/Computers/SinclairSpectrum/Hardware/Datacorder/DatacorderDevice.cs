@@ -478,7 +478,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
 						}
 						_machine.Spectrum.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
-
 					}
 
 					// skip any empty blocks (and process any command blocks)
@@ -661,7 +660,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_currentDataBlockIndex++;
 
 			return true;
-
 		}
 
 		private long _lastINCycle = 0;

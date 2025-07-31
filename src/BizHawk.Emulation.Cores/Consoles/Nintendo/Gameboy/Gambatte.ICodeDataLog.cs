@@ -57,6 +57,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			_cdl[_which + key][addr] |= (byte)flags;
 		}
-
 	}
 }

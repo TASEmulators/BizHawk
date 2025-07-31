@@ -102,6 +102,5 @@ namespace BizHawk.Emulation.Cores.Components.ARM
 			return ret[0].PadRight(8) + (ret.Length > 1 ? ret[1] : "");
 		}
 	}
-
 }
 

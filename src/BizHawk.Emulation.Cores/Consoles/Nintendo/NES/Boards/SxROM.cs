@@ -340,7 +340,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 					return base.ReadPpu(addr);
-
 			}
 		}
 

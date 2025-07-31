@@ -1095,7 +1095,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			for (int i = 0; i < numPixels; i++)
 				screen[i] = directColorTable[screen[i]];
-
 		}
 
 		public void Enter()

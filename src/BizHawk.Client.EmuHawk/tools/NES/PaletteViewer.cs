@@ -46,7 +46,6 @@ namespace BizHawk.Client.EmuHawk
 				BgPalettesPrev[x] = new Palette(x);
 				SpritePalettesPrev[x] = new Palette(x + 16);
 			}
-
 		}
 
 		private void PaletteViewer_Paint(object sender, PaintEventArgs e)

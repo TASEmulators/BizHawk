@@ -860,7 +860,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// add 1ms period
 				//t.DataPeriods.Add(3500);
 				//pauseDuration = -1;
-
 			}
 			else
 			{
@@ -880,7 +879,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// generate PAUSE block
 			CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
-
 		}
 
 		/*              length: [00]+01

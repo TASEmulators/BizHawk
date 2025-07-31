@@ -301,7 +301,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						WriteReg(addr, value);
 					}
 				}
-
 			}
 		}
 

@@ -315,6 +315,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			_discIndex = reader.ReadInt32();
 			_discInserted = reader.ReadBoolean();
 		}
-
 	}
 }

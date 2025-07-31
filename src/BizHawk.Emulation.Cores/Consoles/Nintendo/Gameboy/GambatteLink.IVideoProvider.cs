@@ -30,6 +30,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 			return b;
 		}
-
 	}
 }

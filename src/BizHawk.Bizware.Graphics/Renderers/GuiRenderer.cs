@@ -350,6 +350,5 @@ void main()
 	if(uSamplerEnable) temp *= texture(uSampler0,vTexcoord0);
 	FragColor = temp;
 }";
-
 	}
 }

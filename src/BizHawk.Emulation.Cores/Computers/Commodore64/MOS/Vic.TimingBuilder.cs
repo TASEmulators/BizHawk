@@ -65,7 +65,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					result[i] |= PipelineSpriteDma;
 				if (timing[i] == sprDisp)
 					result[i] |= PipelineSpriteDisplay;
-
 			}
 
 			return result.ToArray();
