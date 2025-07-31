@@ -97,17 +97,14 @@ namespace BizHawk.Emulation.Cores
 		public readonly IDictionary<string, object> ExtraInfo = new Dictionary<string, object>();
 	}
 
-	public class FileIDResults : List<FileIDResult>
+	public sealed class FileIDResults : List<FileIDResult>
 	{
 		public FileIDResults() { }
 		public FileIDResults(FileIDResult item)
-		{
-			base.Add(item);
-		}
+			=> Add(item);
+
 		public new void Sort()
-		{
-			base.Sort((x, y) => x.Confidence.CompareTo(y.Confidence));
-		}
+			=> Sort(static (x, y) => x.Confidence.CompareTo(y.Confidence));
 
 		/// <summary>
 		/// indicates whether the client should try again after mounting the disc image for further inspection
@@ -151,10 +148,7 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public FileIDResults Identify(IdentifyParams p)
 		{
-			IdentifyJob job = new IdentifyJob() {
-				Stream = p.SeekableStream,
-				Disc = p.Disc
-			};
+			IdentifyJob job = new() { Disc = p.Disc, Stream = p.SeekableStream };
 
 			//if we have a disc, that's a separate codepath
 			if (job.Disc != null)
@@ -304,7 +298,7 @@ namespace BizHawk.Emulation.Cores
 			public static readonly SimpleMagicRecord APE = new SimpleMagicRecord { Key = "MAC " };
 			public static readonly SimpleMagicRecord[] WAV = {
 				new SimpleMagicRecord { Offset = 0, Key = "RIFF" },
-				new SimpleMagicRecord { Offset = 8, Key = "WAVEfmt " }
+				new SimpleMagicRecord { Offset = 8, Key = "WAVEfmt " },
 			};
 		}
 
@@ -326,7 +320,7 @@ namespace BizHawk.Emulation.Cores
 		/// testers to try for each extension, along with a default for the extension
 		/// </summary>
 		private static readonly Dictionary<string, ExtensionInfo> ExtensionHandlers = new Dictionary<string, ExtensionInfo> {
-		  { "NES", new ExtensionInfo(FileIDType.INES, Test_INES ) },
+			{ "NES", new ExtensionInfo(FileIDType.INES, Test_INES ) },
 			{ "FDS", new ExtensionInfo(FileIDType.FDS, Test_FDS ) },
 			{ "GBA", new ExtensionInfo(FileIDType.GBA, (j)=>Test_Simple(j,FileIDType.GBA,SimpleMagics.GBA) ) },
 			{ "NDS", new ExtensionInfo(FileIDType.NDS, (j)=>Test_Simple(j,FileIDType.NDS,SimpleMagics.NDS) ) },
@@ -574,12 +568,10 @@ namespace BizHawk.Emulation.Cores
 			if (len % 1024 == 128)
 			{
 				if (CheckMagic(job.Stream, SimpleMagics.A78))
-					new FileIDResult(FileIDType.A78, 100);
+				{
+					return new(FileIDType.A78, confidence: 100);
+				}
 			}
-			else if (len % 1024 == 0)
-			{
-			}
-			else { }
 
 			return new FileIDResult(0);
 		}
