@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			for (int i = 0; i < pregap - 1; i++)
 				dest.WriteByte(0);
+#pragma warning disable MA0084 // shadows `ushort this.crc`
 			ushort crc = 0;
+#pragma warning restore MA0084
 			dest.WriteByte(0x80); // end of gap marker
 			crc = CCITT_8(crc, 0x80);
 			for (int i = 0; i < data.Length; i++)

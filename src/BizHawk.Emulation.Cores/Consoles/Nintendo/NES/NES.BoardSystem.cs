@@ -157,7 +157,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;
 
+#pragma warning disable MA0084 // shadows `CartInfo this.cart`
 			CartInfo cart = new CartInfo();
+#pragma warning restore MA0084
 
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptions();

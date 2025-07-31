@@ -587,7 +587,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//int scanline_num = h; // I wanted to do this, but our logic for mednafen modes here is based on un-doubled resolution. i could do a hack to divide it by 2 though
 			int real_scanline_num = standard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
 
-			int VirtualWidth=-1, VirtualHeight=-1;
+#pragma warning disable MA0084 // these shadow the IVideoProvider props
+			int VirtualWidth = -1;
+			int VirtualHeight = -1;
+#pragma warning restore MA0084
 			switch (settings.ResolutionMode)
 			{
 				case eResolutionMode.Mednafen:

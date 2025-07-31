@@ -629,6 +629,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ZeroVars();
 		}
 
+#pragma warning disable MA0084 // `int this.blockLen` and `TapeDataBlock this.t` shadowed by several locals each
+
 		/// <summary>
 		/// 0x12 - Pure Tone
 		/// </summary>
@@ -1972,6 +1974,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position += blockLen;
 		}
 
+#pragma warning restore MA0084
 
 #endif
 

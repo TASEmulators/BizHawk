@@ -948,7 +948,9 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private OPLL OPLL_new(uint clk, uint rate, int type)
 		{
+#pragma warning disable MA0084 // shadows `OPLL this.opll`
 			OPLL opll = new OPLL();
+#pragma warning restore MA0084
 			int i;
 
 			maketables(clk, rate);

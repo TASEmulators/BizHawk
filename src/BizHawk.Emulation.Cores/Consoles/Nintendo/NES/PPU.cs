@@ -133,7 +133,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int j = ymin;
 			int i = xmin;
+#pragma warning disable MA0084 // shadows `int this.s`
 			short s = 0;
+#pragma warning restore MA0084
 			short palcolor = 0;
 			short intensity = 0;
 

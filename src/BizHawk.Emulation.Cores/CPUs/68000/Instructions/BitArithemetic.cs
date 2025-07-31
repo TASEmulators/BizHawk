@@ -659,6 +659,8 @@
 			info.Length = pc - info.PC;
 		}
 
+#pragma warning disable MA0084 // `bool this.m` shadowed by many locals
+
 		private void LSLd()
 		{
 			int rot = (op >> 9) & 7;
@@ -1236,6 +1238,8 @@
 
 			info.Length = pc - info.PC;
 		}
+
+#pragma warning restore MA0084
 
 		private void SWAP()
 		{

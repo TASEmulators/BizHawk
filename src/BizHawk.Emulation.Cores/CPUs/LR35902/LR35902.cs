@@ -301,8 +301,9 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 				case HALT:
 					halted = true;
 
+#pragma warning disable MA0084 // shadows `ushort this.temp`
 					bool temp = false;
-
+#pragma warning restore MA0084
 					if (instr_table[instr_pntr++] == 1)
 					{
 						temp = FlagI;

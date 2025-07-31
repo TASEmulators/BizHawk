@@ -132,7 +132,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((A7800_control_register & 0x2) > 0)
 				{
 					// register 8 is read only and controlled by Maria
+#pragma warning disable MA0084 // shadows `int this.temp`
 					var temp = addr & 0x1F;
+#pragma warning restore MA0084
 
 					if (temp != 8)
 						Maria_regs[temp] = value;

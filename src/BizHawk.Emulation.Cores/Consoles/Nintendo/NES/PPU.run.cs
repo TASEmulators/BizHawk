@@ -209,6 +209,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+#pragma warning disable MA0084 // `int this.s`, `int this.line`, `int this.patternNumber`, and `int this.patternAddress` shadowed by locals
+
 		public void TickPPU_active()
 		{
 			if (ppur.status.cycle < 256)
@@ -995,6 +997,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
+
+#pragma warning restore MA0084
 
 		public void TickPPU_preVBL()
 		{

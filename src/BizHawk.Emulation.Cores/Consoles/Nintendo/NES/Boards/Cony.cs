@@ -107,6 +107,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Mirroring();
 		}
 
+#pragma warning disable MA0084 // `byte this.bank` shadowed by several locals
+
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
@@ -350,6 +352,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 		}
+
+#pragma warning restore MA0084
 
 		public override void ClockCpu()
 		{
