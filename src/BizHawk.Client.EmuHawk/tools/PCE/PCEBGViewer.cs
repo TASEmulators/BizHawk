@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -9,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[SpecializedTool("BG Viewer")]
-	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig
+	public partial class PceBgViewer : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		public static Icon ToolIcon
 			=> Properties.Resources.PceIcon;
@@ -19,12 +20,23 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IEmulator Emulator { get; private set; }
 
-		[ConfigPersist]
-		// ReSharper disable once UnusedMember.Local
 		private int RefreshRateConfig
 		{
 			get => RefreshRate.Value;
 			set => RefreshRate.Value = Math.Max(Math.Min(value, RefreshRate.Maximum), RefreshRate.Minimum);
+		}
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			int outValue = default;
+			if (provider.Get(nameof(RefreshRateConfig), ref outValue)) RefreshRateConfig = outValue;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(RefreshRateConfig)] = RefreshRateConfig,
+			};
 		}
 
 		private int _vdcType;
