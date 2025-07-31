@@ -86,7 +86,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			regs[6] = 0;
 			regs[7] = 1;
 
+#pragma warning disable CA2214 // calling override before subclass ctor executes
 			Sync();
+#pragma warning restore CA2214
 		}
 
 		public virtual void Sync()
