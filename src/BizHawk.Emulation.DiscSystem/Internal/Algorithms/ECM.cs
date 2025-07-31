@@ -302,7 +302,6 @@ namespace BizHawk.Emulation.DiscSystem
 				for (int i = 255; i < 512; i++)
 					gf_exp[i] = gf_exp[(byte)(i - 255)];
 			}
-
 		} //static class FFUtil
 #endif
 	}
