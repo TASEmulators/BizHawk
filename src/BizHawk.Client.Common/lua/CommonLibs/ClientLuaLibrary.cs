@@ -17,9 +17,6 @@ namespace BizHawk.Client.Common
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
@@ -385,18 +382,9 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (!MainForm.Emulator.HasMemoryDomains())
-			{
-				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
-				return;
-			}
-
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
-			var result = decoder.Decode(code);
-
+			var result = MainForm.DecodeCheatForAPI(code, out var domain);
 			if (result.IsValid(out var valid))
 			{
-				var domain = decoder.CheatDomain();
 				MainForm.CheatList.Add(valid.ToCheat(domain, code));
 			}
 			else
@@ -414,15 +402,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (!MainForm.Emulator.HasMemoryDomains())
-			{
-				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
-				return;
-			}
-
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
-			var result = decoder.Decode(code);
-
+			var result = MainForm.DecodeCheatForAPI(code, out var domain);
 			if (result.IsValid(out var valid))
 			{
 				MainForm.CheatList.RemoveRange(

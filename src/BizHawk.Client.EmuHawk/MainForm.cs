@@ -23,6 +23,7 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.cheats;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -1208,6 +1209,22 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public CheatCollection CheatList { get; }
+
+		public IDecodeResult DecodeCheatForAPI(string code, out MemoryDomain/*?*/ domain)
+		{
+			domain = null;
+			if (!Emulator.HasMemoryDomains()) return new InvalidCheatCode($"cheat codes not supported by the current system: {Emulator.SystemId}");
+			try
+			{
+				GameSharkDecoder decoder = new(Emulator.AsMemoryDomains(), Emulator.SystemId);
+				domain = decoder.CheatDomain();
+				return decoder.Decode(code);
+			}
+			catch (Exception e)
+			{
+				return new InvalidCheatCode(e.ToString());
+			}
+		}
 
 		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
 
