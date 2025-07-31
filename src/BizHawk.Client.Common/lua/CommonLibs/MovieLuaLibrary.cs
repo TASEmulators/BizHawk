@@ -31,8 +31,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
 		public LuaTable GetInput(int frame, int? controller = null)
 			=> APIs.Movie.GetInput(frame, controller) is IReadOnlyDictionary<string, object> dict
-   				? _th.DictToTable(dict)
-	   			: null;
+				? _th.DictToTable(dict)
+				: null;
 
 		[LuaMethodExample("local stmovget = movie.getinputasmnemonic( 500 );")]
 		[LuaMethod("getinputasmnemonic", "Returns the input of a given frame of the loaded movie in a raw inputlog string")]

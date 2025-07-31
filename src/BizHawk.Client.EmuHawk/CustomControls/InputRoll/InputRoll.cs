@@ -196,7 +196,6 @@ namespace BizHawk.Client.EmuHawk
 					_columns.ColumnsChanged();
 					Refresh();
 				}
-
 			}
 
 			base.OnDoubleClick(e);
@@ -1151,7 +1150,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// do marker drag here
 					}
-					else if (ModifierKeys is Keys.Shift && CurrentCell.Column! is { Type: ColumnType.Text } col)
+					else if (ModifierKeys is Keys.Shift && CurrentCell.Column is { Type: ColumnType.Text } col)
 					{
 						if (_selectedItems.Count is not 0)
 						{
@@ -1493,7 +1492,6 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							SelectRow(_lastSelectedRow.Value + 1, true);
-
 						}
 
 						Refresh();
@@ -1570,7 +1568,7 @@ namespace BizHawk.Client.EmuHawk
 					//jump to above marker with selection courser
 					if (LetKeysModifySelection)
 					{
-
+						// TODO
 					}
 				}
 				else if (e.IsCtrl(Keys.PageDown))
@@ -1578,7 +1576,7 @@ namespace BizHawk.Client.EmuHawk
 					//jump to below marker with selection courser
 					if (LetKeysModifySelection)
 					{
-
+						// TODO
 					}
 				}
 			}

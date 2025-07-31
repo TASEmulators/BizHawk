@@ -474,7 +474,6 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			Regs[dest_l] = ans_l;
 			Regs[dest_h] += temp;
 			Regs[dest_h] &= 0xFF;
-
 		}
 	}
 }

@@ -13,7 +13,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed class FirmwareManager
 	{
-		private static readonly FirmwareID NDS_FIRMWARE = new("NDS", "firmware");
 		private const int DSI_NAND_LENGTH = 251658240 + 64;
 
 		public static (byte[] Patched, string ActualHash) PerformPatchInMemory(byte[] @base, in FirmwarePatchOption patchOption)

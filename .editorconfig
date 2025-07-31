@@ -63,16 +63,16 @@ dotnet_diagnostic.IDE0032.severity = suggestion
 # Simplify default expression
 dotnet_diagnostic.IDE0034.severity = suggestion
 # Use pattern matching to avoid is check followed by a cast (without variable)
-dotnet_diagnostic.IDE0038.severity = warning
+dotnet_diagnostic.IDE0038.severity = warning # Note that this doesn't work with `dotnet build` but does work inside Visual Studio.
 # Use is null check
 dotnet_diagnostic.IDE0041.severity = warning
 # Deconstruct variable declaration
 dotnet_diagnostic.IDE0042.severity = suggestion
 # dotnet_diagnostic.IDE0049.severity = error # see SA1121
 # Remove unused private member
-dotnet_diagnostic.IDE0051.severity = suggestion
+dotnet_diagnostic.IDE0051.severity = warning
 # Remove unread private member
-dotnet_diagnostic.IDE0052.severity = silent # TODO: should be warning imo, but there's too much violation currently
+dotnet_diagnostic.IDE0052.severity = warning
 # Use compound assignment
 dotnet_diagnostic.IDE0054.severity = warning
 # Use index operator
@@ -97,6 +97,8 @@ dotnet_diagnostic.IDE0071.severity = suggestion
 dotnet_diagnostic.IDE0074.severity = suggestion
 # Use pattern matching
 dotnet_diagnostic.IDE0078.severity = suggestion
+# Suppression operator has no effect and can be misinterpreted
+dotnet_diagnostic.IDE0080.severity = warning
 # Convert typeof to nameof
 dotnet_diagnostic.IDE0082.severity = warning
 # Use pattern matching (not operator)

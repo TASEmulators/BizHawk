@@ -185,7 +185,6 @@ namespace BizHawk.Client.EmuHawk
 				if (value < 0)
 				{
 					XNumeric.Value = 0;
-
 				}
 				else if (value <= XNumeric.Maximum)
 				{

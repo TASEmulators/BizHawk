@@ -7,6 +7,8 @@
 
 using BizHawk.Common;
 
+#pragma warning disable IDE0051 // Remove unused private members (Lots of private methods here with logic. Are they needed?)
+
 namespace BizHawk.Emulation.Cores.Components
 {
 	public sealed class YM2413
@@ -1006,7 +1008,6 @@ namespace BizHawk.Emulation.Cores.Components
 				opll.pan[i] = 3;
 			opll.sprev[0] = opll.sprev[1] = 0;
 			opll.snext[0] = opll.snext[1] = 0;
-
 		}
 
 		/* Force Refresh (When external program changes some parameters). */
@@ -1674,7 +1675,6 @@ namespace BizHawk.Emulation.Cores.Components
 
 				default:
 					break;
-
 			}
 		}
 
@@ -1868,7 +1868,6 @@ namespace BizHawk.Emulation.Cores.Components
 				for (int i = 0; i < this.slot.Length; ++i) this.slot[i] = new OPLL_SLOT();
 				for (int i = 0; i < this.patch.Length; i++) this.patch[i] = new OPLL_PATCH();
 			}
-
 		}
 	}
 }

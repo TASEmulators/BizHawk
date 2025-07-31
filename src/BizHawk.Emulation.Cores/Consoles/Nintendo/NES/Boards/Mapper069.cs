@@ -290,6 +290,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Wram[addr] = value;
 			}
 		}
-
 	}
 }

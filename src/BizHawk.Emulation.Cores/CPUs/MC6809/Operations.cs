@@ -258,7 +258,6 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagZ = Regs[src] == 0;
 			FlagH = false;
 			FlagN = (Regs[src] & 0xFF) > 127;
-
 		}
 
 		public void ASR_Func(ushort src)

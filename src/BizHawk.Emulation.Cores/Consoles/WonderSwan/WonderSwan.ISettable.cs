@@ -176,6 +176,5 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
-
 	}
 }

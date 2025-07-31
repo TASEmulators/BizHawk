@@ -9,9 +9,21 @@ namespace BizHawk.Client.EmuHawk
 		public AddBreakpointDialog(BreakpointOperation op)
 		{
 			InitializeComponent();
-			Operation = op;
 			AddressMaskBox.SetHexProperties(0xFFFFFFFF);
 			AddressMask = 0xFFFFFFFF;
+
+			switch (op)
+			{
+				case BreakpointOperation.Add:
+					Text = "Add Breakpoint";
+					break;
+				case BreakpointOperation.Duplicate:
+					Text = "Duplicate Breakpoint";
+					break;
+				case BreakpointOperation.Edit:
+					Text = "Edit Breakpoint";
+					break;
+			}
 		}
 
 		public AddBreakpointDialog(BreakpointOperation op, uint address, uint mask, MemoryCallbackType type)
@@ -21,31 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			Address = address;
 			AddressMask = mask;
 			BreakType = type;
-		}
-
-		private BreakpointOperation _operation;
-
-		private BreakpointOperation Operation
-		{
-			get => _operation;
-
-			set
-			{
-				switch (value)
-				{
-					case BreakpointOperation.Add:
-						Text = "Add Breakpoint";
-						break;
-					case BreakpointOperation.Duplicate:
-						Text = "Duplicate Breakpoint";
-						break;
-					case BreakpointOperation.Edit:
-						Text = "Edit Breakpoint";
-						break;
-				}
-
-				_operation = value;
-			}
 		}
 
 		public void DisableExecuteOption()
