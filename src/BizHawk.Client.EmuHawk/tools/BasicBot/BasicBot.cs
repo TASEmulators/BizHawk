@@ -13,7 +13,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig
+	public sealed partial class BasicBot : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		private static readonly FilesystemFilterSet BotFilesFSFilterSet = new(new FilesystemFilter("Bot files", new[] { "bot" }));
 
@@ -69,8 +69,19 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		[ConfigPersist]
-		public BasicBotSettings Settings { get; set; }
+		private BasicBotSettings Settings;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(Settings), ref Settings);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Settings)] = Settings,
+			};
+		}
 
 		public class BasicBotSettings
 		{

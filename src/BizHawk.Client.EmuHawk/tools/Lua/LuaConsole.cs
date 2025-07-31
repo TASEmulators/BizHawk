@@ -18,7 +18,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults
+	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults, IConfigPersist
 	{
 		private const string IconColumnName = "Icon";
 		private const string ScriptColumnName = "Script";
@@ -74,8 +74,19 @@ namespace BizHawk.Client.EmuHawk
 			public bool WarnedOnceOnOverwrite { get; set; }
 		}
 
-		[ConfigPersist]
-		public LuaConsoleSettings Settings { get; set; }
+		public LuaConsoleSettings Settings;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(Settings), ref Settings);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Settings)] = Settings,
+			};
+		}
 
 		protected override string WindowTitleStatic => "Lua Console";
 

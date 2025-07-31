@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -8,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NesPPU : ToolFormBase, IToolFormAutoConfig
+	public partial class NesPPU : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		// TODO:
 		// If 8/16 sprite mode, mouse over should put 32x64 version of sprite
@@ -39,7 +40,6 @@ namespace BizHawk.Client.EmuHawk
 		private IEmulator _emu
 			=> _core!;
 
-		[ConfigPersist]
 		private int RefreshRateConfig
 		{
 			get => RefreshRate.Value;
@@ -47,11 +47,26 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _chrRomView;
-		[ConfigPersist]
 		private bool ChrRomView
 		{
 			get => _chrRomView;
 			set { _chrRomView = value; CalculateFormSize(); }
+		}
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			int outValue = default;
+			if (provider.Get(nameof(RefreshRateConfig), ref outValue)) RefreshRateConfig = outValue;
+			bool outValue2 = default;
+			if (provider.Get(nameof(ChrRomView), ref outValue2)) ChrRomView = outValue2;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(RefreshRateConfig)] = RefreshRateConfig,
+				[nameof(ChrRomView)] = ChrRomView,
+			};
 		}
 
 		protected override string WindowTitleStatic => "PPU Viewer";
