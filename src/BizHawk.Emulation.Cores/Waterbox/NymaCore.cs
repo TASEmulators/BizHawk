@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
-				ClockRate = info.MasterClock / (double)0x100000000;
+				ClockRate = info.MasterClock / /*0x1_0000_0000*/4294967296.0;
 				_soundBuffer = new short[22050 * 2];
 				_isArcade = info.GameType == LibNymaCore.GameMediumTypes.GMT_ARCADE;
 

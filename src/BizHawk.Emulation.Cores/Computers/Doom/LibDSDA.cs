@@ -15,36 +15,36 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		public enum GameMode : int
 		{
-			Fail         = 0b00000000,
-			Shareware    = 0b00000001, // DOOM 1 shareware, E1, M9
-			Registered   = 0b00000010, // DOOM 1 registered, E3, M27
-			Commercial   = 0b00000100, // DOOM 2 retail, E1 M34  (DOOM 2 german edition not handled)
-			Retail       = 0b00001000, // DOOM 1 retail, E4, M36
-			Indetermined = 0b00010000, // no IWAD found.
+			Fail         = 0b0000_0000,
+			Shareware    = 0b0000_0001, // DOOM 1 shareware, E1, M9
+			Registered   = 0b0000_0010, // DOOM 1 registered, E3, M27
+			Commercial   = 0b0000_0100, // DOOM 2 retail, E1 M34  (DOOM 2 german edition not handled)
+			Retail       = 0b0000_1000, // DOOM 1 retail, E4, M36
+			Indetermined = 0b0001_0000, // no IWAD found.
 		}
 
 #pragma warning disable RCS1191
 		[Flags]
 		public enum Buttons : int
 		{
-			None           = 0b0000000000000000,
-			Fire           = 0b0000000000000001,
-			Use            = 0b0000000000000010,
-			ChangeWeapon   = 0b0000000000000100,
-			WeaponMask     = 0b0000000000111000,
-			InventoryLeft  = 0b0000000000001000,
-			InventoryRight = 0b0000000000010000,
-			InventorySkip  = 0b0000000000100000,
-			ArtifactUse    = 0b0000000001000000,
-			LookUp         = 0b0000000010000000,
-			LookDown       = 0b0000000100000000,
-			LookCenter     = 0b0000001000000000,
-			FlyUp          = 0b0000010000000000,
-			FlyDown        = 0b0000100000000000,
-			FlyCenter      = 0b0001000000000000,
-			EndPlayer      = 0b0000000001000000,
-			Jump           = 0b0000000010000000,
-			ArtifactMask   = 0b0000000000111111,
+			None           = 0b0000_0000_0000_0000,
+			Fire           = 0b0000_0000_0000_0001,
+			Use            = 0b0000_0000_0000_0010,
+			ChangeWeapon   = 0b0000_0000_0000_0100,
+			WeaponMask     = 0b0000_0000_0011_1000,
+			InventoryLeft  = 0b0000_0000_0000_1000,
+			InventoryRight = 0b0000_0000_0001_0000,
+			InventorySkip  = 0b0000_0000_0010_0000,
+			ArtifactUse    = 0b0000_0000_0100_0000,
+			LookUp         = 0b0000_0000_1000_0000,
+			LookDown       = 0b0000_0001_0000_0000,
+			LookCenter     = 0b0000_0010_0000_0000,
+			FlyUp          = 0b0000_0100_0000_0000,
+			FlyDown        = 0b0000_1000_0000_0000,
+			FlyCenter      = 0b0001_0000_0000_0000,
+			EndPlayer      = 0b0000_0000_0100_0000,
+			Jump           = 0b0000_0000_1000_0000,
+			ArtifactMask   = 0b0000_0000_0011_1111,
 		}
 #pragma warning restore RCS1191
 
