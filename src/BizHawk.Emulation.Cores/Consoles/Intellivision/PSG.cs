@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	public sealed class PSG : ISoundProvider
 	{
 		private readonly BlipBuffer _blip = new BlipBuffer(4096);
-		private short[] _sampleBuffer = new short[0];
+		private short[] _sampleBuffer = [ ];
 
 
 		public PSG()

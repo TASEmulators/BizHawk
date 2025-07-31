@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private List<SettingT> GetSettingsData()
 		{
-			_exe.AddTransientFile(new byte[0], "settings");
+			_exe.AddTransientFile(Array.Empty<byte>(), "settings");
 			_nyma.DumpSettings();
 			var settingsBuff = _exe.RemoveTransientFile("settings");
 			return NymaTypes.Settings.GetRootAsSettings(new ByteBuffer(settingsBuff)).UnPack().Values;
@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private List<NPortInfoT> GetInputPortsData()
 		{
-			_exe.AddTransientFile(new byte[0], "inputs");
+			_exe.AddTransientFile(Array.Empty<byte>(), "inputs");
 			_nyma.DumpInputs();
 			var settingsBuff = _exe.RemoveTransientFile("inputs");
 			return NymaTypes.NPorts.GetRootAsNPorts(new ByteBuffer(settingsBuff)).UnPack().Values;

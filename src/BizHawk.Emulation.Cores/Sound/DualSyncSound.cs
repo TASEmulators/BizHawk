@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		private readonly ISoundProvider _left;
 		private readonly ISoundProvider _right;
 		private int _nsamp;
-		private short[] _samp = new short[0];
+		private short[] _samp = [ ];
 
 		private readonly short[] _leftOverflow = new short[32];
 		private int _leftOverflowCount = 0;

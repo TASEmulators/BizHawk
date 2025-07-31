@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			}
 			else
 			{
-				samples = new short[0];
+				samples = Array.Empty<short>();
 				nsamp = 0;
 			}
 		}

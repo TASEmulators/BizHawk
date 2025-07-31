@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							var dataSize = MediaConverter.GetBEInt32FromByteArray(dSize);
 							dsLocation += dSize.Length;
 							int dataLen;
-							byte[] dataStream = new byte[0];
+							var dataStream = Array.Empty<byte>();
 
 							if (blockFlags != null && blockFlags.Value.Bit(2))
 							{
@@ -379,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						ipf.DATAlength = MediaConverter.GetBEInt32(data, startPos);
 						if (ipf.DATAlength == 0)
 						{
-							ipf.DATAextraDataRaw = new byte[0];
+							ipf.DATAextraDataRaw = Array.Empty<byte>();
 							ipf.DATAlength = 0;
 						}
 						else

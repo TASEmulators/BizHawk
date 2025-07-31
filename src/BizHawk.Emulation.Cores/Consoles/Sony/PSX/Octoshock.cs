@@ -332,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
-		private int[] frameBuffer = new int[0];
+		private int[] frameBuffer = [ ];
 		private Random rand = new Random();
 
 		//we can only have one active core at a time, due to the lib being so static.

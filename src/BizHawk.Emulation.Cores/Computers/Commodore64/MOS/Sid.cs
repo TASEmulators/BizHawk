@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int> ReadPotY;
 
 		private RealFFT _fft;
-		private double[] _fftBuffer = new double[0];
+		private double[] _fftBuffer = [ ];
 
 		private readonly int _cpuCyclesNum;
 		private int _sampleCyclesNum;

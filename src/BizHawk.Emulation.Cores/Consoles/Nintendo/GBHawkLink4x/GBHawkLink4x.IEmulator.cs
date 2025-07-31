@@ -1093,7 +1093,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}
 			else
 			{
-				samples = new short[0];
+				samples = Array.Empty<short>();
 				nsamp = 0;
 			}
 		}
