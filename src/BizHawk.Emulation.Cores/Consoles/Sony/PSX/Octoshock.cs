@@ -333,7 +333,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		private int[] frameBuffer = [ ];
-		private Random rand = new Random();
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
