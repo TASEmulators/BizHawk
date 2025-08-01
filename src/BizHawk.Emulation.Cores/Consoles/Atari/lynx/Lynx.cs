@@ -8,7 +8,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-		[PortedCore(CoreNames.Handy, "K. Wilkins, Mednafen Team", "0.9.34.1", "https://mednafen.github.io/releases/")]
+	[PortedCore(
+		name: CoreNames.Handy,
+		author: "K. Wilkins, Mednafen Team",
+		portedVersion: "0.9.34.1",
+		portedUrl: "https://mednafen.github.io/releases/")]
 	[ServiceNotApplicable(typeof(IRegionable), typeof(ISettable<,>))]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
