@@ -304,11 +304,6 @@ namespace BizHawk.Client.EmuHawk
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
 			}
 
-			if (controlName == "ChannelF Controller")
-			{
-
-			}
-
 			if (controlName == "AmstradCPC Controller")
 			{
 #if false

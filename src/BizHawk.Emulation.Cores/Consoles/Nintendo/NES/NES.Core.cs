@@ -539,7 +539,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					// the DMC DMA Halt, Put cycles
 					apu.RunDMCHaltFetch();
-
 				}
 			}
 
@@ -651,7 +650,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
 					break;
-
 			}
 			return DB;
 		}
@@ -689,7 +687,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
 					break;
-
 			}
 			return 0xFF;
 		}
@@ -756,7 +753,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						//this is actually different then assignment
 						VS_prg_reg = (byte)((val & 0x4)>>2);
-
 					}
 					else
 					{
@@ -1148,6 +1144,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//values 16,32,48 are for Namco games and dealt with in mapper 206
 			_isVS2c05 = (byte)(cart.VsSecurity & 15);
 		}
-
 	}
 }

@@ -1232,11 +1232,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			master_audio_clock = 0;
 		}
 
-		private void GetSamples(short[] samples)
-		{
-
-		}
-
 		public void DisposeSound()
 		{
 			_blip_L.Clear();

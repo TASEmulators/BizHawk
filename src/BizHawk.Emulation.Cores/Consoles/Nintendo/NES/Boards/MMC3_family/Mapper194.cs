@@ -56,7 +56,6 @@
 					addr = MapCHR(addr);
 					return Vrom[addr + extra_vrom];
 				}
-
 			}
 			else return base.ReadPpu(addr);
 		}

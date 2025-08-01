@@ -96,7 +96,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0xF000: IrqSignal = false; _irqLatch &= 0xF0; _irqLatch |= value & 0xF; break;
 					case 0xF004: IrqSignal = false; _irqLatch &= 0x0F; _irqLatch |= value << 4; break;
 					case 0xF008: IrqSignal = false; _irqClock = 0; _irqCount = _irqLatch; _irqA = value.Bit(1); break;
-
 				}
 			}
 		}
@@ -143,7 +142,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = (creg[x] & _chrBankMask1K) << 10;
 					return Vrom[bank + (addr & 0x3FF)];
 				}
-
 			}
 
 			return base.ReadPpu(addr);

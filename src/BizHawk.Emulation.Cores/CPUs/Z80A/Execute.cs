@@ -648,7 +648,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xBA: IN_OP_R(DEC16, 1);						break; // INDR
 					case 0xBB: OUT_OP_R(DEC16, 1);						break; // OTDR
 					default: NOP_();									break; // NOP
-
 				}
 			}
 			else if (IX_prefix)

@@ -961,7 +961,6 @@ namespace BizHawk.Client.EmuHawk
 				PreviewMode = true;
 				RecentSearches = new RecentFiles(8);
 				AutoSearchTakeLagFramesIntoAccount = true;
-
 			}
 
 			public List<RollColumn> Columns { get; set; }

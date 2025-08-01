@@ -96,6 +96,5 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			return ret;
 		}
-
 	}
 }

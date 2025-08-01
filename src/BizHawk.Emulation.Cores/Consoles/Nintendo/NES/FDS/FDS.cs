@@ -380,7 +380,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						timer_irq_active = true;
 						timerirq_cd = 3;
 					}
-
 				}
 			}
 

@@ -126,7 +126,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			return value;
-
 		}
 
 		public override byte ReadPpu(int addr)

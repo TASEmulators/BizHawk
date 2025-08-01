@@ -226,7 +226,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						irq_countdown_2 = 9;
 					}
 				}
-
 			}
 
 			irq_counter--;
@@ -290,7 +289,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ClockIRQ();
 				}
 			}
-
 		}
 
 		public override void ClockPpu()
@@ -323,7 +321,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					separator_counter = 15;
 					clock_scanline_irq = true;
-
 				}
 			}
 

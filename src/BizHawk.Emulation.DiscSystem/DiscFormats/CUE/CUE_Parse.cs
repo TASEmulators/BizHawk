@@ -383,7 +383,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					}
 					else Warn($"Unknown text at end of line after processing command: {key}");
 				}
-
 			} //end cue parsing loop
 
 			FinishLog();

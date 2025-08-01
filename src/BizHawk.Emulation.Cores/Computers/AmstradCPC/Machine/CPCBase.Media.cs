@@ -183,10 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 									CPC._diskInfo.Add(work);
 								}
 							}
-							else
-							{
-
-							}
 						}
 						break;
 				}

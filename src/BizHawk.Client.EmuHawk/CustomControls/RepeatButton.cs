@@ -31,7 +31,6 @@ namespace BizHawk.Client.EmuHawk
 				_once = true;
 				PerformClick();
 			}
-
 		}
 
 		protected override void OnClick(EventArgs e)
@@ -80,6 +79,5 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
 	}
 }

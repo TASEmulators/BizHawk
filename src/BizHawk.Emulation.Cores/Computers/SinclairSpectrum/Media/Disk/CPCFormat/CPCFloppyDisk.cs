@@ -199,10 +199,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					Array.Copy(data, mPos, S1, s1Pos, trkSize);
 					s1Pos += trkSize;
 				}
-				else
-				{
-
-				}
 
 				mPos += trkSize;
 			}
@@ -234,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			ser.EndSection();

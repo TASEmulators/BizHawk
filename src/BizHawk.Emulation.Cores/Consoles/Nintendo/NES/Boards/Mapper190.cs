@@ -70,7 +70,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4000: prg_reg = 8 | (value & 0x7); break;
 			}
 		}
-
-
 	}
 }

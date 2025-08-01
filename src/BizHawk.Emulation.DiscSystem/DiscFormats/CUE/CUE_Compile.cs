@@ -482,6 +482,5 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			FinishLog();
 		}
-
 	}
 }

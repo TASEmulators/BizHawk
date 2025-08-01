@@ -134,5 +134,4 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public EControlQ CONTROL => (EControlQ)((q_status >> 4) & 0xF);
 	}
-
 }

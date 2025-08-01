@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						? (byte) 0xFF
 						: Core.bus_value;
 				}
-
 			}
 			else
 			{
@@ -102,7 +101,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						return;
 					}
-
 				}
 				else
 				{

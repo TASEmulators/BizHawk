@@ -144,7 +144,6 @@
 						SaveRamBank = (byte)((value & 4) == 0 ? 1 : 2); // SaveRAM selected
 					else
 						SaveRamBank = 0; // ROM bank selected
-
 				}
 				else if (address == 0xFFFD) RomBank0 = (byte)(value % RomBanks);
 				else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);

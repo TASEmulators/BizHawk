@@ -372,10 +372,5 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			L.DiscardSamples();
 			R.DiscardSamples();
 		}
-
-		public void DisposeSound()
-		{
-
-		}
 	}
 }

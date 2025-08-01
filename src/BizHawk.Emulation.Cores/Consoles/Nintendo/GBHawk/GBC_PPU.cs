@@ -690,7 +690,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								rendering_complete = false;
 							}
-
 						}
 						else if (!rendering_complete)
 						{

@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			// sync deterministic track and sector counters

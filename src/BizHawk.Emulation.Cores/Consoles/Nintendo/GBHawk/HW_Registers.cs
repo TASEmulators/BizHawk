@@ -241,7 +241,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				default:
 					ret = 0xFF;
 					break;
-
 			}
 			return ret;
 		}

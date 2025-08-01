@@ -371,7 +371,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1D));
 				}
-
 			}
 			if (nes._isVS2c05 == 3)
 			{
@@ -576,7 +575,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr &= 0x3FFF;
 
 				ppubus_write(addr, value);
-
 			}
 
 			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);

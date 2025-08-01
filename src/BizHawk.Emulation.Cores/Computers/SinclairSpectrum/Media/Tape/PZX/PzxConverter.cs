@@ -282,7 +282,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
-
 									}
 									else
 									{
@@ -292,7 +291,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
-
 									}
 								}
 							}

@@ -120,7 +120,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return (byte[,])Palettes.QuickNESPalette.Clone();
-
 			}
 
 			// checkbox unchecked: we're reusing whatever palette was set

@@ -614,7 +614,5 @@ namespace BizHawk.Bizware.Graphics
 
 			bmp.UnlockBits(bmpdata);
 		}
-
 	}
-
 }

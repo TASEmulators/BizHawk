@@ -282,5 +282,4 @@ namespace BizHawk.Emulation.DiscSystem
 			ss_gap.Synth(job);
 		}
 	}
-
 }

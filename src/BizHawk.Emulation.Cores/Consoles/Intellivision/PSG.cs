@@ -369,7 +369,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					if (env_vol_B == 0)
 					{
 						v += (short)(sound_out_B ? VolumeTable[vol_B] : 0);
-
 					}
 					else
 					{

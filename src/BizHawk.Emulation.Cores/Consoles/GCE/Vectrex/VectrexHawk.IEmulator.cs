@@ -132,7 +132,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				_framebuffer[i] = _vidbuffer[i];
 				_vidbuffer[i] = 0;
 			}
-
 		}
 
 		public int VirtualWidth => (256 + 4) * 2;

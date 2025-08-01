@@ -145,7 +145,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Vrom[bank + (addr & 0x3FF)];
 				}
-
 			}
 
 			return base.ReadPpu(addr);

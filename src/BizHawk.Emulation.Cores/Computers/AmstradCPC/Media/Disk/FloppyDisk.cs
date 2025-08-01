@@ -707,5 +707,4 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		PaulOwens,
 		ShadowOfTheBeast
 	}
-
 }

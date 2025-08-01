@@ -220,7 +220,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         r.Write(terminator);
                     }
                     */
-
 				}
 
 				result = ms.ToArray();

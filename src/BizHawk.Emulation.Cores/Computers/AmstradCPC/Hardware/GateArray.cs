@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				_INKR = value;
 				if (_currentPen == 16)
 				{
-
+					//TODO border
 				}
 				_colourRegisters[_currentPen] = _INKR & 0b0001_1111;
 			}
@@ -419,8 +419,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					FrameEnd = true;
 					LastGAFrameClocks = GAClockCounter;
 				}
-
-
 			}
 		}
 		private int _v26;
@@ -875,7 +873,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 								case 7:
 									pen = ((dataByte & 0x10) >> 4) | ((dataByte & 0x01) << 1);
 									break;
-
 							}
 							break;
 
@@ -1051,7 +1048,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public void Reset()
 		{
-
+			//TODO
 		}
 
 		/// <summary>

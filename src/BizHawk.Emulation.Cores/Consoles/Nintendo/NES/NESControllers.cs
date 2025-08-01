@@ -816,7 +816,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			"0DEL",
 			"0SPACE",
 			"0DOWN",
-
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }

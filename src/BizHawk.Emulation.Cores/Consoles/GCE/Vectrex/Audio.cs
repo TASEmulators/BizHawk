@@ -286,7 +286,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				if (env_vol_B == 0)
 				{
 					v += (short)(sound_out_B ? VolumeTable[vol_B] : 0);
-
 				}
 				else
 				{
@@ -368,11 +367,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 			_blip.Clear();
 			master_audio_clock = 0;
-		}
-
-		private void GetSamples(short[] samples)
-		{
-
 		}
 
 		public void DisposeSound()

@@ -803,6 +803,4 @@ namespace BizHawk.Client.EmuHawk
 		public bool UsesAudio => true;
 		public bool UsesVideo => true;
 	}
-
-
 }

@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (addr < 0x400)
 			{
-
+				// no-op (BIOS)
 			}
 			else
 			{

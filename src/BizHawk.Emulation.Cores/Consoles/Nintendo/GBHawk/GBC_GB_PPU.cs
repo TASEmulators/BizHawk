@@ -1533,7 +1533,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}
 			}
-
 		}
 
 		public override void DMA_tick()

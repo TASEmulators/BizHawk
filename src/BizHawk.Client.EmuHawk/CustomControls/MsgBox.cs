@@ -83,7 +83,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			{
 				_minButtonRowWidth += SetButtonParams(btn3, names[2], def == 3 ? 1 : 4, results[2]) + ButtonSpace;
 			}
-
 		}
 
 		/// <summary>

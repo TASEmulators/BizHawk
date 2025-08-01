@@ -708,5 +708,4 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		PaulOwens,
 		ShadowOfTheBeast
 	}
-
 }

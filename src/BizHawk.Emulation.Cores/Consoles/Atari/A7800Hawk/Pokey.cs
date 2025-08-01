@@ -282,7 +282,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						{
 							if (i == 0) { ch_vol[0] = (ch_out[0] ^ high_pass_1) ? (Regs[1] & 0xF) : 0; }
 							if (i == 1) { ch_vol[1] = (ch_out[1] ^ high_pass_2) ? (Regs[3] & 0xF) : 0; }
-
 						}
 						else
 						{

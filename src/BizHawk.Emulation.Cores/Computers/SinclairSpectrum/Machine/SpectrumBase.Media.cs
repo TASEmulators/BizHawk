@@ -196,10 +196,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 									Spectrum._diskInfo.Add(work);
 								}
 							}
-							else
-							{
-
-							}
 						}
 						break;
 				}

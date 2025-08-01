@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						Stop();
 					}
 				}
-
 			}
 		}
 
@@ -498,7 +497,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
 						}
 						_machine.CPC.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
-
 					}
 
 					// skip any empty blocks (and process any command blocks)
@@ -579,7 +577,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				// flip the current state
 				FlipTapeState();
-
 			}
 
 			// update lastCycle and return currentstate

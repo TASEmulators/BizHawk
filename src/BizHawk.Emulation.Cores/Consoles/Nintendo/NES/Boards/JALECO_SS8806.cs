@@ -212,8 +212,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// sound chip µPD7756C
 					break;
 			}
-
-
 		}
 
 		public override void ClockCpu()

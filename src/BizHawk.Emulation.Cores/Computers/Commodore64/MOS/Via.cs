@@ -317,7 +317,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_nextIrq |= IRQ_T2;
 						_t2IrqAllowed = false;
 					}
-
 				}
 
 				if ((_t2C & 0xFF) == 0 && (_acr & ACR_SR_USE_T2) != 0)

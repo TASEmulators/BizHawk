@@ -111,7 +111,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					return base.ReadPpu(addr);
 			}
-
 		}
 
 		public override void WritePpu(int addr, byte value)
@@ -180,10 +179,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					chr_regs_4k[1] = (chr_regs_4k[1] & 0xF0) | (value & 0x0F);
 					SyncCHR();
 					break;
-
 			}
 		}
-
-
 	}
 }

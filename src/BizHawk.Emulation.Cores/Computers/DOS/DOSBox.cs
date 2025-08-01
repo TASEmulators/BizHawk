@@ -373,7 +373,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					break;
 				default:
 					throw new InvalidOperationException($"Unsupported CD sector size: {sectorSize}");
-
 			}
 			DriveLightOn = true;
 		}

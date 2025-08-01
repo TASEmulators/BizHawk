@@ -248,6 +248,5 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_disk = null;
 			_diskBits = 0;
 		}
-
 	}
 }

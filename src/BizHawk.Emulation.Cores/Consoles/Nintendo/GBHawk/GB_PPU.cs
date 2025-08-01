@@ -463,10 +463,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		// might be needed, not sure yet
-		public override void latch_delay()
-		{
-
-		}
+		public override void latch_delay() {}
 
 		public override void render(int render_cycle)
 		{

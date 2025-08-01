@@ -330,7 +330,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
 					break;
 			}
-
 		}
 
 		private static readonly byte[] pow2 = { 1, 2, 4, 8, 16, 32, 64, 128 };
@@ -362,7 +361,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Cpu.FlagI = true;
 			}
-
 		}
 
 		public void ProcessLineInterrupt()

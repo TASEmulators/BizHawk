@@ -722,11 +722,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				)
 			{
 				//don't replace default disc with the leave-default placeholder!
-				if (requestedDisc == -1)
-				{
-
-				}
-				else
+				if (requestedDisc is not -1)
 				{
 					CurrentDiscIndexMounted = requestedDisc;
 				}

@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr <= 0x103 && addr >= 0x100)
 				reg[addr & 0x03] = value;
 					//reg[addr&0x03] = (byte)(value & 0x0f);
-
 		}
 
 		public override byte ReadExp(int addr)

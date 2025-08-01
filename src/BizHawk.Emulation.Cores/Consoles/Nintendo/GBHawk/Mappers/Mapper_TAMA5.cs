@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-
+				return;
 			}
 		}
 
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 								else
 								{
-
+									// no-op (unmapped)
 								}
 								break;
 							case 4:

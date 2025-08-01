@@ -149,7 +149,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			if (Regs[ISAR] > 0x3F)
 			{
-
 			}
 			if (Regs[W] > 0x1F)
 			{

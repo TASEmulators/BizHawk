@@ -76,6 +76,5 @@ namespace BizHawk.Client.EmuHawk
 				e.Graphics.DrawString(this.Text, this.Font, br, rc, fmt);
 			}
 		}
-
 	}
 }

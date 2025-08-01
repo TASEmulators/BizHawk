@@ -525,7 +525,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						origin = EDetectionOrigin.BootGodDB;
 					}
 				}
-
 			}
 
 			//if choice is still null, try UNIF and iNES

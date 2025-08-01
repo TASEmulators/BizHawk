@@ -92,8 +92,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // Tape mic processing (not implemented yet)
             //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
-
         }
-
     }
 }

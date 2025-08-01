@@ -1361,7 +1361,6 @@ namespace BizHawk.Client.EmuHawk
 			bool all = checkEN0_OBJ.Checked && checkEN0_BG1.Checked && checkEN0_BG2.Checked && checkEN0_BG3.Checked && checkEN0_BG4.Checked;
 			var newVal = !all;
 			checkEN0_OBJ.Checked = checkEN0_BG1.Checked = checkEN0_BG2.Checked = checkEN0_BG3.Checked = checkEN0_BG4.Checked = newVal;
-
 		}
 
 		private void lblEnPrio1_Click(object sender, EventArgs e)
@@ -1369,7 +1368,6 @@ namespace BizHawk.Client.EmuHawk
 			bool all = checkEN1_OBJ.Checked && checkEN1_BG1.Checked && checkEN1_BG2.Checked && checkEN1_BG3.Checked && checkEN1_BG4.Checked;
 			var newVal = !all;
 			checkEN1_OBJ.Checked = checkEN1_BG1.Checked = checkEN1_BG2.Checked = checkEN1_BG3.Checked = checkEN1_BG4.Checked = newVal;
-
 		}
 
 		private void lblEnPrio2_Click(object sender, EventArgs e)
@@ -1377,6 +1375,5 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lblEnPrio3_Click(object sender, EventArgs e)
 			=> checkEN3_OBJ.Checked = !checkEN3_OBJ.Checked;
-
 	} //class SNESGraphicsDebugger
 } //namespace BizHawk.Client.EmuHawk

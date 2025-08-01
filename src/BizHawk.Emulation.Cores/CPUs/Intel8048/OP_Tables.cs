@@ -164,7 +164,6 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 							IDLE);
 
 			IRQS = 9;
-
 		}
 
 		public void RET()

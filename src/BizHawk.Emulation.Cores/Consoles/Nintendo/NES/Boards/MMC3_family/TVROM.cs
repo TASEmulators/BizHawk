@@ -55,6 +55,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Vram[addr & 0xFFF] = value;
 			}
 		}
-
 	}
 }

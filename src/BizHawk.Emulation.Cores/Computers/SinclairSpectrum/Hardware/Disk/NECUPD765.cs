@@ -73,9 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				//d.IntStatus = 0;
 				//d.SeekState = SeekSubState.Idle;
 				//d.SeekIntState = SeekIntStatus.Normal;
-
 			}
-
 		}
 
 		/// <summary>

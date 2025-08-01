@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			private readonly Mapper116 master;
-
 		}
 
 		//configuration
@@ -190,7 +189,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 1: return mmc3.ReadPpu(addr);
 				case 2:
 				case 3: return mmc1.ReadPpu(addr);
-
 			}
 			return 0;
 		}
@@ -238,7 +236,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 1: mmc3.ClockPpu(); break;
 				case 2:
 				case 3: mmc1.ClockPpu(); break;
-
 			}
 		}
 	}

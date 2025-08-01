@@ -409,7 +409,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							header_read_time = 8;
 						}
-
 					}
 					else if (DMA_phase_counter == header_read_time)
 					{

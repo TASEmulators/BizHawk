@@ -998,7 +998,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				// issue stop the tape command
 				t.Command = TapeCommand.STOP_THE_TAPE;
-
 			}
 
 			// add to tape

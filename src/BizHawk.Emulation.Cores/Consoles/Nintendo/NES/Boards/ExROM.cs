@@ -704,7 +704,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SyncIRQ();
 				}
 			}
-
 		}
 
 		public override void ClockCpu()

@@ -74,5 +74,4 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public static string DefaultControllerName => typeof(FakeAnalogController).DisplayName();
 	}
-
 }

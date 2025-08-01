@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (d == PortDevice.Printer)
 				{
-
+					//TODO
 				}
 				else if (d == PortDevice.PPI)
 				{

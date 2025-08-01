@@ -9,10 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return null;
 		}
 
-		public void StoreSaveRam(byte[] data)
-		{
-
-		}
+		public void StoreSaveRam(byte[] data) {}
 
 		public bool SaveRamModified => false;
 	}

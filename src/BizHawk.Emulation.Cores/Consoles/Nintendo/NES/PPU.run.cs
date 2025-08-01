@@ -545,7 +545,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						ppu_was_on = true;
 						if (ppur.status.cycle == 255) { race_2006 = true; }
-
 					}
 
 					if (xp == 7 && PPUON)
@@ -679,7 +678,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							read_value = t_oam[s].oam_ind;
 							runppu();
-
 						}
 						else if ((ppur.status.sl != 0) && ppur.status.cycle == 257 && PPUON)
 						{
@@ -792,7 +790,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								t_oam[s].patterns_0 = 0;
 								t_oam[s].patterns_1 = 0;
 							}
-
 						}
 						break;
 				}

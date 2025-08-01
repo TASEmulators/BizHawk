@@ -100,7 +100,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// Final cleanup tasks when the instruction has fully completed
 			/// </summary>
 			Completed
-
 		}
 
 		/// <summary>

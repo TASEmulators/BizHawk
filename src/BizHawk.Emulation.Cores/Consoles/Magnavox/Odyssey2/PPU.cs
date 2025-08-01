@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void WriteRegVPP(int addr, byte value)
 		{
-
+			//TODO
 		}
 
 		public virtual void tick()
@@ -1510,11 +1510,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			_blip_C.Clear();
 			master_audio_clock = 0;
-		}
-
-		private void GetSamples(short[] samples)
-		{
-
 		}
 
 		public void DisposeSound()

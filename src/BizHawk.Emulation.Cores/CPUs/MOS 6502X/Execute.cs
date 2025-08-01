@@ -762,7 +762,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void NZ_Y()
 		{
 			P = (byte)((P & 0x7D) | TableNZ[Y]);
-
 		}
 
 		private void Imp_TSX()
@@ -906,7 +905,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		private void Abs_WRITE_SAX()
 		{
 			_link.WriteMemory((ushort)((opcode3 << 8) + opcode2), (byte)(X & A));
-
 		}
 
 		private void ZP_WRITE_STA()
@@ -1008,7 +1006,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				_link.ReadMemory((ushort)ea);
 				if (alu_temp.Bit(8))
 					ea = (ushort)(ea + 0x100);
-
 			}
 		}
 
@@ -1219,7 +1216,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		{
 			branch_taken = !FlagZ;
 			RelBranch_Stage2();
-
 		}
 
 		private void RelBranch_Stage2()
@@ -1849,11 +1845,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			}
 		}
 
-		private void Unsupported()
-		{
-
-
-		}
+		private void Unsupported() {}
 
 		private void Imm_EOR()
 		{
@@ -2402,7 +2394,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagC = (value8 & 1) != 0;
 			alu_temp = value8 = (byte)(value8 >> 1);
 			P = (byte)((P & 0x7D) | TableNZ[value8]);
-
 		}
 
 		private void ZP_RMW_ROR()
@@ -2665,7 +2656,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			_link.WriteMemory((ushort)ea, (byte)alu_temp);
 			alu_temp = value8 = (byte)(alu_temp + 1);
 			P = (byte)((P & 0x7D) | TableNZ[value8]);
-
 		}
 
 		private void AbsIdx_RMW_Stage6_ROL()

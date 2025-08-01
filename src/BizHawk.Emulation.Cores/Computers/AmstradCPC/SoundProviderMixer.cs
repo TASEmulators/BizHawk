@@ -193,7 +193,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						else
 							sectorVal += sp.Buffer[i];
 					}
-
 				}
 
 				samples[i] = sectorVal;

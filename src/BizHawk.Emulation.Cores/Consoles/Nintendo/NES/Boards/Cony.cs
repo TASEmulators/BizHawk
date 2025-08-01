@@ -135,7 +135,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank &= 0xFF;
 					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
-
 			}
 
 			return base.ReadPpu(addr);
@@ -193,7 +192,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
-
 		}
 	}
 
@@ -321,7 +319,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank |= ((bank & 0x30) << 4);
 					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
-
 			}
 
 			return base.ReadPpu(addr);
@@ -347,10 +344,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = prg_bank_mask_8k;
 
 				return Rom[(bank << 13) + (addr & 0x1FFF)];
-
-
 			}
-
 		}
 
 #pragma warning restore MA0084
@@ -385,7 +379,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
-
 		}
 	}
 

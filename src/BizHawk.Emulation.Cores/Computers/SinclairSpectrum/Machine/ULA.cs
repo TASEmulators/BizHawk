@@ -521,12 +521,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					fetchBorder = BorderColor;
 				}
-				else
-				{
-
-				}
-
-				//fetchBorder = BorderColor;
 
 				// get the table entry
 				var item = RenderingTable.Renderer[t];

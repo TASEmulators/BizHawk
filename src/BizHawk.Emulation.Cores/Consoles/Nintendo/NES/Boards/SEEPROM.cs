@@ -213,7 +213,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ClockStart();
 					}
 				}
-
 			}
 			SCK = newSCK;
 			SDA = newSDA;

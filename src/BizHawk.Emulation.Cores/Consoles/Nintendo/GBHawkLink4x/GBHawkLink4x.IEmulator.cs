@@ -1111,11 +1111,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			D.audio.DiscardSamples();
 		}
 
-		private void GetSamples(short[] samples)
-		{
-
-		}
-
 		public void DisposeSound()
 		{
 			A.audio.DisposeSound();

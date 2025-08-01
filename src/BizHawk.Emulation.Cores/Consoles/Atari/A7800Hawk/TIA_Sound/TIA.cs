@@ -202,6 +202,7 @@
 				BusState = value;
 			}
 
+#pragma warning disable SA1508 // blank lines
 			if (maskedAddr == 0x00) // VSYNC
 			{
 
@@ -378,6 +379,7 @@
 			{
 
 			}
+#pragma warning restore SA1508
 		}
 
 		private enum AudioRegister : byte

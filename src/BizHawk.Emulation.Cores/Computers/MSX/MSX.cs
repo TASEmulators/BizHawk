@@ -163,11 +163,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			current_controller = SyncSettings.Contr_Setting == MSXSyncSettings.ContrType.Keyboard ? MSXControllerKB : MSXControllerJS;
 		}
 
-		public void HardReset()
-		{
-
-		}
-
 		private IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
 		private byte[] MSX_core = new byte[0x28000];
 		private static byte[] Bios = null;

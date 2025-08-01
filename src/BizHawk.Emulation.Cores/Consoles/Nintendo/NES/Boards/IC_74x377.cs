@@ -95,6 +95,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(prg_bank_32k), ref prg_bank_32k);
 			ser.Sync(nameof(chr_bank_8k), ref chr_bank_8k);
 		}
-
 	}
 }

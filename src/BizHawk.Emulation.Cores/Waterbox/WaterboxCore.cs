@@ -320,20 +320,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// variables that it needs to.
 		/// the default implementation does nothing
 		/// </summary>
-		protected virtual void SaveStateBinaryInternal(BinaryWriter writer)
-		{
-
-		}
+		protected virtual void SaveStateBinaryInternal(BinaryWriter writer) {}
 
 		/// <summary>
 		/// called after the base core loads state.  the core must load any other variables
 		/// that were in SaveStateBinaryInternal and reset any native pointers.
 		/// the default implementation does nothing
 		/// </summary>
-		protected virtual void LoadStateBinaryInternal(BinaryReader reader)
-		{
-
-		}
+		protected virtual void LoadStateBinaryInternal(BinaryReader reader) {}
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{

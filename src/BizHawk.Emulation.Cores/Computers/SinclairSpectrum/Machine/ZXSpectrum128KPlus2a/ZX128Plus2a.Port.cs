@@ -173,12 +173,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // calculate the ROMpage from the high and low bits
                 var rp = ZXSpectrum.GetIntFromBitArray(new BitArray(new bool[] { ROMlow, ROMhigh }));
-
-                if (rp != 0)
-                {
-
-                }
-
                 return rp;
             }
             set => ROMPaged = value;

@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				if (line > 0)
 				{
-
 				}
 
 				_currentLine = line;
@@ -81,7 +80,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 "Key 1", "Key 2", "Key ESC", "Key Q", "Key TAB", "Key A", "Key CAPSLOCK", "Key Z",
                 // 0x49
                 "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Fire1", "P1 Fire2", "P1 Fire3", "Key DEL",
-
 			};
 
 			// keystatus array to match the matrix

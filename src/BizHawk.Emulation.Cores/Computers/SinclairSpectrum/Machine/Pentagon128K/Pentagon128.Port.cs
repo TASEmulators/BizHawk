@@ -125,11 +125,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
 
-			if (port == 0x1ffd)
-			{
-
-			}
-
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;

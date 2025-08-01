@@ -723,7 +723,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Use_MT = true;
 
 				// currently no date / time input for TAMA5
-
 			}
 
 			return mppr;

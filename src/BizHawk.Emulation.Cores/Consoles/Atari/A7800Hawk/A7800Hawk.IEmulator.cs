@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void apply_filter()
 		{
-
+			//TODO
 		}
 
 		public static readonly Dictionary<string, string> ValidFilterTypes = new Dictionary<string, string>
