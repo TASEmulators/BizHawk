@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public class PPU
+	public abstract class PPU
 	{
 		public GBHawk Core { get; set; }
 
@@ -127,60 +127,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int total_counter;
 		public uint[] color_palette = new uint[4];
 
-		public virtual byte ReadReg(int addr)
-		{
-			return 0;
-		}
+		public abstract byte ReadReg(int addr);
 
-		public virtual void WriteReg(int addr, byte value)
-		{
+		public abstract void WriteReg(int addr, byte value);
 
-		}
-
-		public virtual void tick()
-		{
-
-		}
+		public abstract void tick();
 
 		// might be needed, not sure yet
-		public virtual void latch_delay()
-		{
+		public abstract void latch_delay();
 
-		}
+		public abstract void render(int render_cycle);
 
-		public virtual void render(int render_cycle)
-		{
-
-		}
-
-		public virtual void process_sprite()
-		{
-
-		}
+		public abstract void process_sprite();
 
 		// normal DMA moves twice as fast in double speed mode on GBC
 		// So give it it's own function so we can seperate it from PPU tick
-		public virtual void DMA_tick()
-		{
+		public abstract void DMA_tick();
 
-		}
+		public abstract void OAM_scan(int OAM_cycle);
 
-		public virtual void OAM_scan(int OAM_cycle)
-		{
-
-		}
-
-		public virtual void Reset()
-		{
-
-		}
+		public abstract void Reset();
 
 		// order sprites according to x coordinate
 		// note that for sprites of equal x coordinate, priority goes to first on the list
-		public virtual void reorder_and_assemble_sprites()
-		{
-
-		}
+		public abstract void reorder_and_assemble_sprites();
 
 		public virtual void SyncState(Serializer ser)
 		{
