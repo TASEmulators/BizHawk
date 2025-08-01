@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			bool cableDiscoSignalNew = controller.IsPressed("Toggle Cable");
 			if (cableDiscoSignalNew && !_cablediscosignal)
 			{
-				_cableconnected ^= true;
+				_cableconnected = !_cableconnected;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
 			}
 

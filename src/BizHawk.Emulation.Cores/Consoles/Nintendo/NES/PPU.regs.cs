@@ -505,7 +505,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._fv = value & 7;
 				//nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
 			}
-			vtoggle ^= true;
+			vtoggle = !vtoggle;
 		}
 
 		private byte read_2005() { return ppu_open_bus; }
@@ -536,7 +536,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				install_2006 = 3;
 			}
 
-			vtoggle ^= true;
+			vtoggle = !vtoggle;
 		}
 
 		private byte read_2006() { return ppu_open_bus; }

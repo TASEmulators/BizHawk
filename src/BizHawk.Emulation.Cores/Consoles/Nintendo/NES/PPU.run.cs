@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (ppur.status.sl == 241 + preNMIlines + postNMIlines - 1)
 				{
 					Reg2002_vblank_clear_pending = true;
-					idleSynch ^= true;
+					idleSynch = !idleSynch;
 					Reg2002_objhit = Reg2002_objoverflow = 0;
 				}
 			}

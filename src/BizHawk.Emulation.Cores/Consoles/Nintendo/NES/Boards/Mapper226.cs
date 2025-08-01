@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void NesSoftReset()
 		{
-			resetFlag ^= true;
+			resetFlag = !resetFlag;
 			prg_page = 0;
 			prg_mode = false;
 			base.NesSoftReset();

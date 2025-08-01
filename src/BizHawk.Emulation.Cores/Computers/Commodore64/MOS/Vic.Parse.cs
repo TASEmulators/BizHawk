@@ -284,7 +284,7 @@
 				{
 					if (spr.Dma && spr.YExpand)
 					{
-						spr.YCrunch ^= true;
+						spr.YCrunch = !spr.YCrunch;
 					}
 				}
 			}

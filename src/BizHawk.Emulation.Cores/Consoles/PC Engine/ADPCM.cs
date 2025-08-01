@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ReadAddress++;
 			}
 
-			nibble ^= true;
+			nibble = !nibble;
 			return value;
 		}
 

@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (!toggle)
 						irq_counter = (irq_counter & 0xFF) | (value << 8);
 					else irq_counter = (irq_counter & 0xFF00) | (value);
-					toggle ^= true;
+					toggle = !toggle;
 					break;
 				case 0x5800: //0xD800
 					irq_enable = value.Bit(4);

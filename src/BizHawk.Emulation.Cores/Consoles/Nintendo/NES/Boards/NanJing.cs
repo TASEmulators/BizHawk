@@ -79,8 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr == 0x1101)
 			{
-				if (strobe && value == 0)
-					trigger ^= true;
+				if (strobe && value is 0) trigger = !trigger;
 				strobe = (value != 0);
 			}
 			else if (addr == 0x1100)
