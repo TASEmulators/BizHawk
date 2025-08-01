@@ -1,0 +1,7 @@
+[*.cs]
+
+# Both if and else branch have identical code
+dotnet_diagnostic.MA0140.severity = suggestion
+
+# Do not prefix calls with base unless local implementation exists
+dotnet_diagnostic.SA1100.severity = suggestion

@@ -1,0 +1,4 @@
+[*.cs]
+
+# Do not use default value type constructor
+dotnet_diagnostic.SA1129.severity = suggestion

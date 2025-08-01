@@ -5,7 +5,6 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<NoWarn>$(NoWarn);CA1806;MA0060;MA0090;MA0140;RCS1215;RCS1226;RS0030;SA1100;SA1129;SA1137;SA1208;SA1413;SA1514;SA1517</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
