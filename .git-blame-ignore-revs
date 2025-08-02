@@ -7,13 +7,11 @@ ed3bf0e62b5f8b3046b8717dcef54c6b98cb7e77
 # Spaces -> tabs, fix mixed newlines
 fec63fb66afe70a22cf328eecdaf09e37c21ada5
 
+# Convert spaces to tabs in ZX Spectrum and AmstradCPC cores
+85be6af3d33be53d1c70cfbb11d0ebfde8cd417f
+
 # Move projects to /src
 3a3b22c03b422eda8fcd62c8cbbff3e838ba4f18
-
-# Delete `/Assets`...
-d8d42b9f81fa3f84467276a4c6122efd6dc72a95
-# ...and revert
-7c1b40df1f48a07fc01d63fbfdf410c7980c4aba
 
 # EXTERMINATE SPACES (in main solution)
 3ea71a2dda118b0cadd43c75ee6a577d01f5c6a9
