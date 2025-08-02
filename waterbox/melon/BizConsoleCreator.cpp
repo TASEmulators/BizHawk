@@ -338,24 +338,18 @@ static const char* const BaseNandDirs[] =
 	"0:/sys/log",
 	"0:/ticket/0003000f", "0:/ticket/00030004", "0:/ticket/00030005", "0:/ticket/00030015", "0:/ticket/00030017",
 	"0:/title/0003000f", "0:/title/00030004", "0:/title/00030005", "0:/title/00030015", "0:/title/00030017",
-	"0:/title/0003000f/484e4341", "0:/title/0003000f/484e4841", "0:/title/00030005/484e4441", "0:/title/00030005/484e4541",
+	"0:/title/0003000f/484e4341", "0:/title/0003000f/484e4841",
 	"0:/title/0003000f/484e4341/content", "0:/title/0003000f/484e4341/data",
 	"0:/title/0003000f/484e4841/content", "0:/title/0003000f/484e4841/data",
-	"0:/title/00030005/484e4441/content", "0:/title/00030005/484e4441/data",
-	"0:/title/00030005/484e4541/content", "0:/title/00030005/484e4541/data",
 	"0:/tmp/es",
 	"0:/tmp/es/write",
 };
 
 static const char* const RegionalNandDirs[] =
 {
-	"0:/title/0003000f/484e4c%x", "0:/title/00030005/484e49%x", "0:/title/00030005/484e4b%x",
-	"0:/title/00030015/484e42%x", "0:/title/00030015/484e46%x", "0:/title/00030017/484e41%x",
+	"0:/title/0003000f/484e4c%x", "0:/title/00030015/484e42%x", "0:/title/00030017/484e41%x",
 	"0:/title/0003000f/484e4c%x/content", "0:/title/0003000f/484e4c%x/data",
-	"0:/title/00030005/484e49%x/content", "0:/title/00030005/484e49%x/data",
-	"0:/title/00030005/484e4b%x/content", "0:/title/00030005/484e4b%x/data",
 	"0:/title/00030015/484e42%x/content", "0:/title/00030015/484e42%x/data",
-	"0:/title/00030015/484e46%x/content", "0:/title/00030015/484e46%x/data",
 	"0:/title/00030017/484e41%x/content", "0:/title/00030017/484e41%x/data",
 };
 
@@ -368,17 +362,12 @@ static const std::pair<const char*, const u32> BaseNandFiles[] =
 	std::make_pair("0:/sys/HWINFO_S.dat", 0x4000),
 	std::make_pair("0:/ticket/0003000f/484e4341.tik", 0x2C4),
 	std::make_pair("0:/ticket/0003000f/484e4841.tik", 0x2C4),
-	std::make_pair("0:/ticket/00030005/484e4441.tik", 0x2C4),
-	std::make_pair("0:/ticket/00030005/484e4541.tik", 0x2C4),
 };
 
 static const std::pair<const char*, const u32> RegionalNandFiles[] =
 {
 	std::make_pair("0:/ticket/0003000f/484e4c%x.tik", 0x2C4),
-	std::make_pair("0:/ticket/00030005/484e49%x.tik", 0x2C4),
-	std::make_pair("0:/ticket/00030005/484e4b%x.tik", 0x2C4),
 	std::make_pair("0:/ticket/00030015/484e42%x.tik", 0x2C4),
-	std::make_pair("0:/ticket/00030015/484e46%x.tik", 0x2C4),
 	std::make_pair("0:/ticket/00030017/484e41%x.tik", 0x2C4),
 };
 
@@ -386,26 +375,13 @@ static const std::pair<const char*, const char*> BaseNandTitlePaths[] =
 {
 	std::make_pair("0:/title/0003000f/484e4341/content/title.tmd", "0:/title/0003000f/484e4341/content/%08x.app"),
 	std::make_pair("0:/title/0003000f/484e4841/content/title.tmd", "0:/title/0003000f/484e4841/content/%08x.app"),
-	std::make_pair("0:/title/00030005/484e4441/content/title.tmd", "0:/title/00030005/484e4441/content/%08x.app"),
-	std::make_pair("0:/title/00030005/484e4541/content/title.tmd", "0:/title/00030005/484e4541/content/%08x.app"),
 };
 
 static const std::pair<const char*, const char*> RegionalNandTitlePaths[] =
 {
 	std::make_pair("0:/title/0003000f/484e4c%x/content/title.tmd", "0:/title/0003000f/484e4c%x/content/%08x.app"),
-	std::make_pair("0:/title/00030005/484e49%x/content/title.tmd", "0:/title/00030005/484e49%x/content/%08x.app"),
-	std::make_pair("0:/title/00030005/484e4b%x/content/title.tmd", "0:/title/00030005/484e4b%x/content/%08x.app"),
 	std::make_pair("0:/title/00030015/484e42%x/content/title.tmd", "0:/title/00030015/484e42%x/content/%08x.app"),
-	std::make_pair("0:/title/00030015/484e46%x/content/title.tmd", "0:/title/00030015/484e46%x/content/%08x.app"),
 	std::make_pair("0:/title/00030017/484e41%x/content/title.tmd", "0:/title/00030017/484e41%x/content/%08x.app"),
-};
-
-static const std::pair<const char*, const u32> NandSavPaths[] =
-{
-	std::make_pair("0:/title/00030005/484e49%x/data/private.sav", 0x80000),
-	std::make_pair("0:/title/00030005/484e4b%x/data/private.sav", 0x80000),
-	std::make_pair("0:/title/00030015/484e46%x/data/private.sav", 0x4000),
-	std::make_pair("0:/title/00030017/484e41%x/data/private.sav", 0x4000),
 };
 
 static const char* const PhotoNandDirs[] =
@@ -818,12 +794,10 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			nandFiles.push_back(std::make_pair(std::move(shared2Sound), std::string("0:/shared2/0000")));
 		}
 
-		// add in a few blank sav files (these aren't created automatically)
-		// there are just 512KiB and 16KiB saves here as a note (so just hardcode things for such)
-		for (auto nandSavPath : NandSavPaths)
+		// add in a blank sav file for the System Menu (this isn't created automatically)
 		{
 			std::vector<u8> nandSav;
-			nandSav.resize(nandSavPath.second);
+			nandSav.resize(0x4000);
 			memset(nandSav.data(), 0, nandSav.size());
 
 			// write VBR
@@ -837,11 +811,11 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 			vbr->NumReservedSectors = 1;
 			vbr->NumFATs = 2;
 			vbr->MaxRootDirectoryEntries = 32;
-			vbr->NumSectorsU16 = nandSav.size() == 0x80000 ? 0x3E8 : 0x1B;
+			vbr->NumSectorsU16 = 0x1B;
 			vbr->MediaDescriptor = 0xF8;
-			vbr->SectorsPerFAT = nandSav.size() == 0x80000 ? 3 : 1;
-			vbr->SectorsPerTrack = nandSav.size() == 0x80000 ? 10 : 3;
-			vbr->NumHeads = nandSav.size() == 0x80000 ? 10 : 3;
+			vbr->SectorsPerFAT = 1;
+			vbr->SectorsPerTrack = 3;
+			vbr->NumHeads = 3;
 			vbr->NumHiddenSectors = 0;
 			vbr->NumSectorsU32 = 0;
 			vbr->DriveNumber = 2;
@@ -855,9 +829,9 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 
 			// init both FATs
 			memcpy(&nandSav[(1 + 0) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
-			memcpy(&nandSav[(1 + vbr->SectorsPerFAT) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
+			memcpy(&nandSav[(1 + 1) * 0x200], &INIT_FAT12, sizeof(INIT_FAT12));
 
-			snprintf(nandPath, sizeof(nandPath), nandSavPath.first, regionIdChar);
+			snprintf(nandPath, sizeof(nandPath), "0:/title/00030017/484e41%x/data/private.sav", regionIdChar);
 			nandFiles.push_back(std::make_pair(std::move(nandSav), std::string(nandPath)));
 		}
 
