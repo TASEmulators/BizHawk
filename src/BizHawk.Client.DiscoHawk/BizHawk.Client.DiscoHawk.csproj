@@ -10,9 +10,11 @@
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Fluent.Net" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 		<Content Include="discohawk.ico" />
 		<EmbeddedResource Include="discohawk.ico" />
+		<EmbeddedResource Include="locale/*.ftl" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="About.cs" SubType="Form" />
