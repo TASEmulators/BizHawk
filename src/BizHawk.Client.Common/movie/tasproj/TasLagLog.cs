@@ -3,10 +3,9 @@ using System.IO;
 #if NET8_0_OR_GREATER
 using System.Linq;
 #endif
+using System.Text.Json;
 
 using BizHawk.Common.CollectionExtensions;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -71,14 +70,14 @@ namespace BizHawk.Client.Common
 
 		public void Save(TextWriter tw)
 		{
-			tw.WriteLine(JsonConvert.SerializeObject(_lagLog));
-			tw.WriteLine(JsonConvert.SerializeObject(_wasLag));
+			tw.WriteLine(JsonSerializer.Serialize(_lagLog));
+			tw.WriteLine(JsonSerializer.Serialize(_wasLag));
 		}
 
 		public void Load(TextReader tr)
 		{
-			_lagLog = JsonConvert.DeserializeObject<SortedList<int, bool>>(tr.ReadLine());
-			_wasLag = JsonConvert.DeserializeObject<Dictionary<int, bool>>(tr.ReadLine());
+			_lagLog = JsonSerializer.Deserialize<SortedList<int, bool>>(tr.ReadLine());
+			_wasLag = JsonSerializer.Deserialize<Dictionary<int, bool>>(tr.ReadLine());
 		}
 
 		public bool? History(int frame)

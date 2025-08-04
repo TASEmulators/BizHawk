@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -1064,16 +1064,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return new List<string>(NesPortDevices.Keys).AsReadOnly();
 		}
 
-		[JsonIgnore]
 		private bool _Famicom;
 		public bool Famicom
 		{
 			get => _Famicom;
 			set => _Famicom = value;
 		}
-		[JsonIgnore]
 		private string _NesLeftPort;
-		[JsonIgnore]
 		private string _NesRightPort;
 		public string NesLeftPort
 		{
@@ -1097,7 +1094,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					throw new InvalidOperationException();
 			}
 		}
-		[JsonIgnore]
 		private string _FamicomExpPort;
 		public string FamicomExpPort
 		{

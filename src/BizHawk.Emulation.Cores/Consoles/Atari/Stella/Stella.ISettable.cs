@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {

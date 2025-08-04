@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 			BotData botData;
 			try
 			{
-				botData = (BotData) ConfigService.LoadWithType(File.ReadAllText(path));
+				botData = ConfigService.LoadWithType<BotData>(File.ReadAllText(path));
 			}
 			catch (Exception e)
 			{
