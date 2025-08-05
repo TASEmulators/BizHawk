@@ -12,7 +12,6 @@
 		<ContinuousIntegrationBuild Condition=" '$(GITLAB_CI)' != '' Or '$(APPVEYOR)' != '' ">true</ContinuousIntegrationBuild>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
-		<DefineConstants>$(DefineConstants);TRACE</DefineConstants>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
@@ -20,12 +19,13 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename these to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
 		<LangVersion>12.0</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-		<NoWarn>$(NoWarn);CS1591;SA0001</NoWarn>
+		<NoWarn>$(NoWarn);CS1591</NoWarn> <!-- CS1591 wants doc comments on every type/member, which is a recipe for useless generated or blank comments -->
 		<Nullable>enable</Nullable>
 		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ReportAnalyzer>true</ReportAnalyzer>
+		<WarningLevel>$(AnalysisLevel)</WarningLevel>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 		<Optimize>false</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
