@@ -24,6 +24,7 @@
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/BannedSymbols.BannedApiAnalyzers.txt" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/Menees.Analyzers.Settings.xml" />
+		<InternalsVisibleTo Include="$(MSBuildProjectName.Replace('BizHawk.', 'BizHawk.Tests.'))" />
 		<Using Include="System" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
