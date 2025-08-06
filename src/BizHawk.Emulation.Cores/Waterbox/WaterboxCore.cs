@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!_disposed)
 			{
-				_exe.Dispose();
+				_exe?.Dispose();
 				_disposed = true;
 			}
 		}
