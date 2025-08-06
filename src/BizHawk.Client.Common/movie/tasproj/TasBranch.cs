@@ -156,13 +156,13 @@ namespace BizHawk.Client.Common
 				{
 					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
 					QuickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
-				});
+				}, zstdCompress: false);
 
 				bs.PutLump(ncoreframebuffer, s =>
 				{
 					var vp = new BitmapBufferVideoProvider(b.CoreFrameBuffer);
 					QuickBmpFile.Save(vp, s, b.CoreFrameBuffer.Width, b.CoreFrameBuffer.Height);
-				});
+				}, zstdCompress: false);
 
 				bs.PutLump(nmarkers, tw => tw.WriteLine(b.Markers.ToString()));
 

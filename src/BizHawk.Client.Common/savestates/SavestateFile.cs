@@ -82,7 +82,10 @@ namespace BizHawk.Client.Common
 
 				using (new SimpleTime("Save Framebuffer"))
 				{
-					bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
+					bs.PutLump(
+						BinaryStateLump.Framebuffer,
+						s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight),
+						zstdCompress: false);
 				}
 			}
 
