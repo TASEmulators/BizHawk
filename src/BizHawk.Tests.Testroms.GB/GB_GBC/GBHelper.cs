@@ -57,6 +57,7 @@ namespace BizHawk.Tests.Testroms.GB
 		{
 			private readonly byte[] _fileData;
 
+#pragma warning disable CA1065 // yes, really throw
 			public string? Extension
 				=> throw new NotImplementedException();
 
@@ -71,6 +72,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 			public string? RomPath
 				=> throw new NotImplementedException();
+#pragma warning restore CA1065
 
 			public DummyRomAsset(byte[] fileData)
 				=> _fileData = fileData;
