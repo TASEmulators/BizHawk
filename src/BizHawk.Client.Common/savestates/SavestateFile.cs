@@ -27,6 +27,8 @@ namespace BizHawk.Client.Common
 		private readonly IVideoProvider _videoProvider;
 		private readonly IMovieSession _movieSession;
 
+		private readonly SettingsAdapter _settable;
+
 		private readonly IDictionary<string, object> _userBag;
 
 		public SavestateFile(
@@ -40,6 +42,12 @@ namespace BizHawk.Client.Common
 			}
 
 			_emulator = emulator;
+			_settable = new(
+				_emulator,
+				mayPutCoreSettings: static () => false,
+				handlePutCoreSettings: static _ => {},
+				mayPutCoreSyncSettings: static () => false,
+				handlePutCoreSyncSettings: static _ => {});
 			_statable = emulator.AsStatable();
 			if (emulator.HasVideoProvider())
 			{
@@ -89,6 +97,12 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			if (_settable.HasSyncSettings)
+			{
+				var syncSettingsJson = ConfigService.SaveWithType(_settable.GetSyncSettings());
+				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(syncSettingsJson));
+			}
+
 			if (_movieSession.Movie.IsActive())
 			{
 				bs.PutLump(BinaryStateLump.Input,
@@ -136,6 +150,33 @@ namespace BizHawk.Client.Common
 						useOKCancel: true);
 					if (!result) return false;
 				}
+			}
+
+			// next, check sync settings match
+			string/*?*/ loadedSyncSettings = null;
+			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
+			{
+				string line;
+				while ((line = tr.ReadLine()) != null)
+				{
+					if (!string.IsNullOrWhiteSpace(line))
+					{
+						loadedSyncSettings = line;
+						break;
+					}
+				}
+			});
+			if (loadedSyncSettings is null
+				|| !ConfigService.SaveWithType(_settable.GetSyncSettings())
+					.Equals(loadedSyncSettings, StringComparison.Ordinal))
+			{
+				dialogParent.ModalMessageBox(
+					loadedSyncSettings is null
+						? "This savestate doesn't contain sync settings, so it must be from an older version.\nLoadstate cancelled."
+						: "This savestate was made with a different core or different sync settings.\nLoadstate cancelled.",
+					"Savestate sync settings mismatch",
+					EMsgBoxIcon.Info);
+				return false;
 			}
 
 			// Movie timeline check must happen before the core state is loaded

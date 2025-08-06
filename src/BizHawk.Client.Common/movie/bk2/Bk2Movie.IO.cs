@@ -135,6 +135,7 @@ namespace BizHawk.Client.Common
 					if (!string.IsNullOrWhiteSpace(line))
 					{
 						_syncSettingsJson = line;
+						break;
 					}
 				}
 			});
