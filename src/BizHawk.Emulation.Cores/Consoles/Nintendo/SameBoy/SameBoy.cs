@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
-	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.16.3", "https://github.com/LIJI32/SameBoy")]
+	[PortedCore(CoreNames.Sameboy, "LIJI32", "1.0.2", "https://github.com/LIJI32/SameBoy")]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
 		private static readonly LibSameboy LibSameboy;
