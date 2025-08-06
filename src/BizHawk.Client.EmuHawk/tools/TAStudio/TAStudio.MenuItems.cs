@@ -277,42 +277,29 @@ namespace BizHawk.Client.EmuHawk
 			GreenzoneICheckSeparator.Visible =
 				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
+
+			UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
+			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
 		}
 
 		private void UndoMenuItem_Click(object sender, EventArgs e)
 		{
-			if (CurrentTasMovie.ChangeLog.Undo() < Emulator.Frame)
-			{
-				GoToFrame(CurrentTasMovie.ChangeLog.PreviousUndoFrame);
-			}
-			else
-			{
-				RefreshDialog();
-			}
-
-			// Currently I don't have a way to easily detect when CanUndo changes, so this button should be enabled always.
-			// UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
-			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
+			CurrentTasMovie.ChangeLog.Undo();
 		}
 
 		private void RedoMenuItem_Click(object sender, EventArgs e)
 		{
-			if (CurrentTasMovie.ChangeLog.Redo() < Emulator.Frame)
-			{
-				GoToFrame(CurrentTasMovie.ChangeLog.PreviousRedoFrame);
-			}
-			else
-			{
-				RefreshDialog();
-			}
-
-			// Currently I don't have a way to easily detect when CanUndo changes, so this button should be enabled always.
-			// UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
-			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
+			CurrentTasMovie.ChangeLog.Redo();
 		}
 
 		private void ShowUndoHistoryMenuItem_Click(object sender, EventArgs e)
 		{
+			if (_undoForm != null && !_undoForm.IsDisposed)
+			{
+				// We could just BringToFront, but closing is probably better since the new one will appear in the expected screen location.
+				_undoForm.Close();
+			}
+
 			_undoForm = new UndoHistoryForm(this) { Owner = this };
 			_undoForm.Show();
 			_undoForm.UpdateValues();
@@ -487,18 +474,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
-				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(list);
-				EndBatchEdit();
 				SetSplicer();
 			}
 		}
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.Focused || !TasView.AnyRowsSelected) return;
+
+			CurrentTasMovie.SingleInvalidation(() =>
 			{
-				BeginBatchEdit();
 				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectionStartIndex}-{TasView.SelectionEndIndex}");
 				foreach (int frame in TasView.SelectedRows)
 				{
@@ -506,8 +492,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CurrentTasMovie.ChangeLog.EndBatch();
-				EndBatchEdit();
-			}
+			});
 		}
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
@@ -523,9 +508,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
-				EndBatchEdit();
 				SetTasViewRowCount();
 				SetSplicer();
 			}
@@ -547,22 +530,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
-			BeginBatchEdit();
-			for (int i = 0; i < timesToClone; i++)
+			if (!TasView.Focused || !TasView.AnyRowsSelected) return;
+
+			var framesToInsert = TasView.SelectedRows;
+			var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+
+			var inputLog = framesToInsert
+				.Select(CurrentTasMovie.GetInputLogEntry)
+				.ToList();
+
+			CurrentTasMovie.SingleInvalidation(() =>
 			{
-				if (TasView.Focused && TasView.AnyRowsSelected)
+				string batchName = $"Clone {inputLog.Count} frames starting at {TasView.FirstSelectedRowIndex}";
+				if (timesToClone != 1) batchName += $" {timesToClone} times";
+				CurrentTasMovie.ChangeLog.BeginNewBatch(batchName);
+
+				for (int i = 0; i < timesToClone; i++)
 				{
-					var framesToInsert = TasView.SelectedRows;
-					var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-
-					var inputLog = framesToInsert
-						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-						.ToList();
-
 					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
 				}
-			}
-			EndBatchEdit();
+
+				CurrentTasMovie.ChangeLog.EndBatch();
+			});
 		}
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
@@ -581,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 				using var framesPrompt = new FramesPrompt();
 				if (framesPrompt.ShowDialogOnScreen().IsOk())
 				{
-					InsertNumFrames(insertionFrame, framesPrompt.Frames);
+					CurrentTasMovie.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
 				}
 			}
 		}
@@ -622,7 +611,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CurrentTasMovie.Markers.RemoveAll(m => TasView.IsRowSelected(m.Frame));
 			MarkerControl.UpdateMarkerCount();
-			RefreshDialog();
 		}
 
 		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)
