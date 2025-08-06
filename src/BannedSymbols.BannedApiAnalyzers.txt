@@ -23,7 +23,7 @@ M:System.Diagnostics.Debug.WriteLine(System.String);use Util.DebugWriteLine (fir
 M:System.Diagnostics.Trace.Assert(System.Boolean);include a unique message
 M:System.Diagnostics.Trace.Assert(System.Boolean,System.String);just do the check and throw a specific exception
 M:System.Random.#ctor;this is a source of nondeterminism
-M:System.String.GetHashCode;strings' hashcodes aren't stable
+M:System.String.GetHashCode;use StableStringHash extension
 P:System.StringComparer.InvariantCultureIgnoreCase;use OrdinalIgnoreCase
 F:System.StringComparison.InvariantCultureIgnoreCase;use OrdinalIgnoreCase
 M:System.Windows.Forms.Control.Focus;use Activate for Forms, or Select otherwise

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using CommunityToolkit.HighPerformance.Buffers;
 
@@ -119,6 +120,45 @@ namespace BizHawk.Common.StringExtensions
 		/// <paramref name="notFoundValue"/> if <paramref name="str"/> does not end with <paramref name="suffix"/>
 		/// </returns>
 		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix, StringComparison.Ordinal) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
+
+		/// <summary>a simple checksum of string contents, using MSBuild's "legacy" algorithm</summary>
+		public static int StableStringHash(this string str)
+		{
+			if (str is null) return 0;
+
+			// taken from .NET 9 source, MIT-licensed, specifically https://github.com/dotnet/msbuild/blob/v17.12.6/src/Shared/CommunicationsUtilities.cs#L861-L888
+			// (and then cleaned up a LOT)
+			static int RotateLeft(int n, int shift)
+				=> (n << shift) + (n >> ((sizeof(int) * 8) - shift));
+			int hash1 = 0x15051505;
+			int hash2 = 0x15051505;
+			var span = MemoryMarshal.AsBytes(str.AsSpan());
+			while (true)
+			{
+				if (span.Length < sizeof(int))
+				{
+					if (span.Length < sizeof(ushort)) break;
+					hash1 += RotateLeft(hash1, 5);
+					hash1 ^= MemoryMarshal.Read<ushort>(span);
+					break;
+				}
+				hash1 += RotateLeft(hash1, 5);
+				hash1 ^= MemoryMarshal.Read<int>(span);
+				span = span.Slice(sizeof(int));
+
+				if (span.Length < sizeof(int))
+				{
+					if (span.Length < sizeof(ushort)) break;
+					hash2 += RotateLeft(hash2, 5);
+					hash2 ^= MemoryMarshal.Read<ushort>(span);
+					break;
+				}
+				hash2 += RotateLeft(hash2, 5);
+				hash2 ^= MemoryMarshal.Read<int>(span);
+				span = span.Slice(sizeof(int));
+			}
+			return hash2 * (37 * 42326593) + hash1;
+		}
 
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

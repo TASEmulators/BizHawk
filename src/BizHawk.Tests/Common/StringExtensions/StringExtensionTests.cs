@@ -1,4 +1,8 @@
+using System.Linq;
+
 using BizHawk.Common.StringExtensions;
+
+using SE = BizHawk.Common.StringExtensions.StringExtensions;
 
 namespace BizHawk.Tests.Common.StringExtensions
 {
@@ -47,6 +51,35 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual(qrs, abcdef.RemoveSuffix("d", qrs));
 			Assert.AreEqual(qrs, abcdef.RemoveSuffix("x", qrs));
 			Assert.AreEqual(qrs, string.Empty.RemoveSuffix("def", qrs));
+		}
+
+		[DataRow(0, null)]
+		[DataRow(0x2D2816FE, /*string.Empty*/"")]
+		[DataRow(0x35EA16C9, "Hello, world!")]
+		[DataRow(0x35EA16B9, "Hello, world1")]
+		[DataRow(0x360B16C9, "Hello, world!!")]
+		[DataRow(unchecked((int) 0xC74DE200), "Hello, world!!!")]
+		[TestMethod]
+		public void TestStableStringHashCases(int expected, string? str)
+			=> Assert.AreEqual(expected, str!.StableStringHash());
+
+		[TestMethod]
+		public void TestStableStringHashInjective()
+		{
+			// it's rather bad as a hash as you can see above, but fine as a checksum
+			// taken from .NET 9 source, MIT-licensed, specifically https://github.com/dotnet/msbuild/blob/v17.12.6/src/Build.UnitTests/Evaluation/Expander_Tests.cs#L3907-L3940
+			string[] stringsToHash = [ "cat1s", "cat1z", "bat1s", "cut1s", "cat1so", "cats1", "acat1s", "cat12s", "cat1s" ];
+			var hashes = stringsToHash.Select(SE.StableStringHash).ToArray();
+			for (var i = 0; i < hashes.Length; i++)
+			{
+				var a = hashes[i];
+				for (var j = i; j < hashes.Length; j++)
+				{
+					var b = hashes[j];
+					if (stringsToHash[i] == stringsToHash[j]) Assert.AreEqual(a, b, "Identical strings should hash to the same value.");
+					else Assert.AreNotEqual(a, b, "Different strings should not hash to the same value.");
+				}
+			}
 		}
 
 		[TestMethod]
