@@ -3821,6 +3821,8 @@ namespace BizHawk.Client.EmuHawk
 				var oaOpenrom = ioa as OpenAdvanced_OpenRom;
 				var ioaRetro = ioa as IOpenAdvancedLibretro;
 
+				var forcedCoreName = MovieSession.QueuedCoreName;
+
 				// we need to inform LoadRom which Libretro core to use...
 				if (ioaRetro != null)
 				{
@@ -3836,16 +3838,7 @@ namespace BizHawk.Client.EmuHawk
 						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
 					}
 				}
-
-				if (oaOpenrom != null)
-				{
-					// path already has the right value, while ioa.Path is null (interestingly, these are swapped below)
-					// I doubt null is meant to be assigned here, and it just prevents game load
-					//path = ioa_openrom.Path;
-				}
-
-				var forcedCoreName = MovieSession.QueuedCoreName;
-				if (forcedCoreName is not null)
+				else if (forcedCoreName is not null)
 				{
 					var availCores = CoreInventory.Instance.AllCores.GetValueOrDefault(MovieSession.QueuedSysID, [ ]);
 					if (!availCores.Exists(core => core.Name == forcedCoreName))
