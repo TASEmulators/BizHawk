@@ -439,24 +439,24 @@ public:
 				return 0;
 			case RETRO_DEVICE::JOYPAD:
 				if (port < 2) {
-					assert(id < sizeof (joypads[port]));
+					assert(id < static_cast<u32>(RETRO_DEVICE_ID_JOYPAD::LAST));
 					return joypads[port][id];
 				}
 				return 0; // todo: is this valid?
 			case RETRO_DEVICE::MOUSE:
-				assert(id < sizeof (mouse));
+				assert(id < static_cast<u32>(RETRO_DEVICE_ID_MOUSE::LAST));
 				return mouse[id];
 			case RETRO_DEVICE::KEYBOARD:
-				assert(id < sizeof (keyboard));
+				assert(id < static_cast<u32>(RETRO_KEY::LAST));
 				return keyboard[id];
 			case RETRO_DEVICE::LIGHTGUN:
-				assert(id < sizeof (lightGun));
+				assert(id < static_cast<u32>(RETRO_DEVICE_ID_LIGHTGUN::LAST));
 				return lightGun[id];
 			case RETRO_DEVICE::ANALOG:
-				assert(id < sizeof (analog));
+				assert(id < static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST));
 				return analog[id];
 			case RETRO_DEVICE::POINTER:
-				assert(id < sizeof (pointer));
+				assert(id < static_cast<u32>(RETRO_DEVICE_ID_POINTER::LAST));
 				return pointer[id];
 			default:
 				__builtin_unreachable();
