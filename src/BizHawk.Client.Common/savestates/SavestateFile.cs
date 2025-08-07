@@ -153,30 +153,33 @@ namespace BizHawk.Client.Common
 			}
 
 			// next, check sync settings match
-			string/*?*/ loadedSyncSettings = null;
-			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
+			if (_settable.HasSyncSettings)
 			{
-				string line;
-				while ((line = tr.ReadLine()) != null)
+				string/*?*/ loadedSyncSettings = null;
+				bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
 				{
-					if (!string.IsNullOrWhiteSpace(line))
+					string line;
+					while ((line = tr.ReadLine()) != null)
 					{
-						loadedSyncSettings = line;
-						break;
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							loadedSyncSettings = line;
+							break;
+						}
 					}
+				});
+				if (loadedSyncSettings is null
+					|| !ConfigService.SaveWithType(_settable.GetSyncSettings())
+						.Equals(loadedSyncSettings, StringComparison.Ordinal))
+				{
+					dialogParent.ModalMessageBox(
+						loadedSyncSettings is null
+							? "This savestate doesn't contain sync settings, so it must be from an older version.\nLoadstate cancelled."
+							: "This savestate was made with a different core or different sync settings.\nLoadstate cancelled.",
+						"Savestate sync settings mismatch",
+						EMsgBoxIcon.Info);
+					return false;
 				}
-			});
-			if (loadedSyncSettings is null
-				|| !ConfigService.SaveWithType(_settable.GetSyncSettings())
-					.Equals(loadedSyncSettings, StringComparison.Ordinal))
-			{
-				dialogParent.ModalMessageBox(
-					loadedSyncSettings is null
-						? "This savestate doesn't contain sync settings, so it must be from an older version.\nLoadstate cancelled."
-						: "This savestate was made with a different core or different sync settings.\nLoadstate cancelled.",
-					"Savestate sync settings mismatch",
-					EMsgBoxIcon.Info);
-				return false;
 			}
 
 			// Movie timeline check must happen before the core state is loaded
