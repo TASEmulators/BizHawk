@@ -396,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					{
 						// check if the user is using an encrypted rom
 						// if they are, they need to be using real bios files
-						var secureAreaId = BinaryPrimitives.ReadUInt64LittleEndian(romHeader.Slice(arm9RomOffset, 8));
+						var secureAreaId = BinaryPrimitives.ReadUInt64LittleEndian(roms[0].AsSpan(arm9RomOffset, 8));
 						_activeSyncSettings.UseRealBIOS = secureAreaId != 0xE7FFDEFF_E7FFDEFF;
 					}
 				}
