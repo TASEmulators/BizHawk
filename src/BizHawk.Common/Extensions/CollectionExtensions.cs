@@ -160,8 +160,8 @@ namespace BizHawk.Common.CollectionExtensions
 		/// </returns>
 		public static ReadOnlySpan<T> ConcatArray<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b, Span<T> dest)
 		{
-			if (b.Length is 0) return a;
-			if (a.Length is 0) return b;
+			if (b.IsEmpty) return a;
+			if (a.IsEmpty) return b;
 			var combinedLen = a.Length + b.Length;
 			if (combinedLen < dest.Length) return Span<T>.Empty;
 			a.CopyTo(dest);
