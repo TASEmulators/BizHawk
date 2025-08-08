@@ -478,7 +478,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		[BizImport(cc)]
 		public abstract void LibretroBridge_GetAudio(IntPtr cbHandler, out int numSamples, short[] sampleBuf);
 
-		[BizImport(cc, Compatibility = true)]
+		[BizImport(cc)]
 		public abstract unsafe void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short* input);
 
 		public unsafe void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short[] input)
