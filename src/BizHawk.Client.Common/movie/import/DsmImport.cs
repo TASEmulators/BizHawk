@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 				"Microphone",
 				"Power",
 			},
-		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
+		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
 			.AddAxis("Mic Volume", 0.RangeTo(100), 100)
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			.MakeImmutable();

@@ -672,7 +672,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Microphone", "Power"
 			}
-		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
+		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
 			.AddAxis("Mic Volume", 0.RangeTo(100), 100)
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			.MakeImmutable();
