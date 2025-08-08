@@ -4,7 +4,9 @@ namespace BizHawk.Emulation.Cores.Components
 {
 	public interface IPCEngineSoundDebuggable : ISpecializedEmulatorService
 	{
+#pragma warning disable CA1715 // breaks IInterface convention
 		public interface ChannelData
+#pragma warning restore CA1715
 		{
 			bool DDA { get; }
 

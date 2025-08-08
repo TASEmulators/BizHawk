@@ -16,7 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public unsafe interface ISNESGraphicsDecoder : IMonitor
 	{
+#pragma warning disable CA1715 // breaks IInterface convention
 		public interface OAMInfo
+#pragma warning restore CA1715
 		{
 			ushort X { get; }
 
