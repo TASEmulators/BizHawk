@@ -44,7 +44,8 @@ public:
 		std::memset(mouse, 0, sizeof (mouse));
 		std::memset(keyboard, 0, sizeof (keyboard));
 		std::memset(lightGun, 0, sizeof (lightGun));
-		std::memset(analog, 0, sizeof (analog));
+		std::memset(analogAxes, 0, sizeof (analogAxes));
+		std::memset(analogButtons, 0, sizeof (analogButtons));
 		std::memset(pointer, 0, sizeof (pointer));
 	}
 
@@ -432,7 +433,7 @@ public:
 		// this is useless
 	}
 
-	s16 RetroInputState(u32 port, u32 device, __attribute__((unused)) u32 index, u32 id) {
+	s16 RetroInputState(u32 port, u32 device, u32 index, u32 id) {
 		assert(device < static_cast<u32>(RETRO_DEVICE::LAST));
 		switch (static_cast<RETRO_DEVICE>(device)) {
 			case RETRO_DEVICE::NONE:
@@ -453,8 +454,13 @@ public:
 				assert(id < static_cast<u32>(RETRO_DEVICE_ID_LIGHTGUN::LAST));
 				return lightGun[id];
 			case RETRO_DEVICE::ANALOG:
-				assert(id < static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST));
-				return analog[id];
+				if (index == static_cast<u32>(RETRO_DEVICE_INDEX_ANALOG::BUTTON)) {
+					assert(id < static_cast<u32>(RETRO_DEVICE_ID_JOYPAD::LAST));
+					return analogButtons[id];
+				} else {
+					assert(id < static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST));
+					return analogAxes[index][id];
+				}
 			case RETRO_DEVICE::POINTER:
 				assert(id < static_cast<u32>(RETRO_DEVICE_ID_POINTER::LAST));
 				return pointer[id];
@@ -534,6 +540,7 @@ public:
 				break;
 			case RETRO_DEVICE::JOYPAD:
 				assert(port < 2);
+				fflush(stdout);
 				std::memcpy(joypads[port], input, sizeof (joypads[port]));
 				break;
 			case RETRO_DEVICE::MOUSE:
@@ -546,7 +553,8 @@ public:
 				std::memcpy(lightGun, input, sizeof (lightGun));
 				break;
 			case RETRO_DEVICE::ANALOG:
-				std::memcpy(analog, input, sizeof (analog));
+				std::memcpy(analogAxes, input, sizeof (analogAxes));
+				// TODO analogButtons?
 				break;
 			case RETRO_DEVICE::POINTER:
 				std::memcpy(pointer, input, sizeof (pointer));
@@ -598,7 +606,8 @@ private:
 	s16 mouse[static_cast<u32>(RETRO_DEVICE_ID_MOUSE::LAST)];
 	s16 keyboard[static_cast<u32>(RETRO_KEY::LAST)];
 	s16 lightGun[static_cast<u32>(RETRO_DEVICE_ID_LIGHTGUN::LAST)];
-	s16 analog[static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST)];
+	s16 analogAxes[2][static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST)];
+	s16 analogButtons[static_cast<u32>(RETRO_DEVICE_ID_JOYPAD::LAST)];
 	s16 pointer[static_cast<u32>(RETRO_DEVICE_ID_POINTER::LAST)];
 };
 

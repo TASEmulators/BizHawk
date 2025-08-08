@@ -21,12 +21,19 @@ namespace BizHawk.Emulation.Cores.Libretro
 			LAST,
 		}
 
+		public enum RETRO_DEVICE_INDEX_ANALOG
+		{
+			LEFT = 0,
+			RIGHT = 1,
+			BUTTON = 2,
+
+			LAST,
+		}
+
 		public enum RETRO_DEVICE_ID_ANALOG
 		{
-			// LEFT / RIGHT?
 			X = 0,
 			Y = 1,
-			BUTTON = 2,
 
 			LAST,
 		}
@@ -471,8 +478,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 		[BizImport(cc)]
 		public abstract void LibretroBridge_GetAudio(IntPtr cbHandler, out int numSamples, short[] sampleBuf);
 
-		[BizImport(cc)]
-		public abstract void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short[] input);
+		[BizImport(cc, Compatibility = true)]
+		public abstract unsafe void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short* input);
+
+		public unsafe void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short[] input)
+		{
+			fixed (short* inputPointer = input) LibretroBridge_SetInput(cbHandler, device, port, inputPointer);
+		}
+
+		public unsafe void LibretroBridge_SetInput(IntPtr cbHandler, LibretroApi.RETRO_DEVICE device, int port, short[,] input)
+		{
+			fixed (short* inputPointer = input) LibretroBridge_SetInput(cbHandler, device, port, inputPointer);
+		}
 
 		public struct retro_procs
 		{

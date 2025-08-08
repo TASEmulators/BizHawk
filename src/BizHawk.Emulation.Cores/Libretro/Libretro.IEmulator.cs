@@ -82,7 +82,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				}
 
 				BoolButtons.Add("Pointer Pressed");
-				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, (-32767).RangeTo(32767), 0);
+				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndDown, (-32767).RangeTo(32767), 0);
+				this.AddXYPair("Analog Left {0}", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
+				this.AddXYPair("Analog Right {0}", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
 
 				foreach (var s in new[] {
 					"Backspace", "Tab", "Clear", "Return", "Pause", "Escape",

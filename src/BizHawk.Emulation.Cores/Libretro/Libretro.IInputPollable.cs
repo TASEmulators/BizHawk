@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private readonly short[] _joypad0States = new short[(int)RETRO_DEVICE_ID_JOYPAD.LAST];
 		private readonly short[] _joypad1States = new short[(int)RETRO_DEVICE_ID_JOYPAD.LAST];
+		private readonly short[,] _analogAxes = new short[2, (int)RETRO_DEVICE_ID_ANALOG.LAST];
+		// private readonly short[] _analogButtons = new short[(int)RETRO_DEVICE_ID_JOYPAD.LAST]; // TODO? does any core use this?
 		private readonly short[] _pointerStates = new short[(int)RETRO_DEVICE_ID_POINTER.LAST];
 		private readonly short[] _keyStates = new short[(int)RETRO_KEY.LAST];
 
@@ -30,6 +32,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			SetInputs(controller, RETRO_DEVICE.JOYPAD, 0, _joypad0States);
 			SetInputs(controller, RETRO_DEVICE.JOYPAD, 1, _joypad1States);
+			SetInputs(controller, RETRO_DEVICE.ANALOG, 0, _analogAxes);
+			// SetInputs(controller, RETRO_DEVICE.ANALOG, ???, _analogButtons); // TODO
 			SetInputs(controller, RETRO_DEVICE.POINTER, 0, _pointerStates);
 			SetInputs(controller, RETRO_DEVICE.KEYBOARD, 0, _keyStates);
 		}
@@ -40,6 +44,16 @@ namespace BizHawk.Emulation.Cores.Libretro
 			for (int i = 0; i < inputBuffer.Length; i++)
 			{
 				inputBuffer[i] = InputState(controller, port, device, 0, i);
+			}
+			bridge.LibretroBridge_SetInput(cbHandler, device, port, inputBuffer);
+		}
+
+		private void SetInputs(IController controller, RETRO_DEVICE device, int port, short[,] inputBuffer)
+		{
+			for (int index = 0; index < inputBuffer.GetLength(0); index++)
+			for (int id = 0; id < inputBuffer.GetLength(1); id++)
+			{
+				inputBuffer[index, id] = InputState(controller, port, device, index, id);
 			}
 			bridge.LibretroBridge_SetInput(cbHandler, device, port, inputBuffer);
 		}
@@ -235,6 +249,27 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 						return (short)(GetButton(controller, port + 1, "RetroPad", button) ? 1 : 0);
 					}
+				case RETRO_DEVICE.ANALOG:
+					if (index == (int) RETRO_DEVICE_INDEX_ANALOG.BUTTON)
+					{
+						// TODO axis value for EVERY joypad button xd
+						return 0;
+					}
+
+					var axisName = (RETRO_DEVICE_INDEX_ANALOG)index switch
+					{
+						RETRO_DEVICE_INDEX_ANALOG.LEFT => "Left",
+						RETRO_DEVICE_INDEX_ANALOG.RIGHT => "Right",
+						_ => throw new InvalidOperationException($"Invalid {nameof(RETRO_DEVICE_INDEX_ANALOG)}: {index}"),
+					};
+
+					return (RETRO_DEVICE_ID_ANALOG)id switch
+					{
+						RETRO_DEVICE_ID_ANALOG.X => (short)controller.AxisValue($"Analog {axisName} X"),
+						RETRO_DEVICE_ID_ANALOG.Y => (short)controller.AxisValue($"Analog {axisName} Y"),
+						_ => throw new InvalidOperationException($"Invalid {nameof(RETRO_DEVICE_ID_ANALOG)}: {id}"),
+					};
+
 				default:
 					throw new InvalidOperationException($"Invalid or unimplemented {nameof(RETRO_DEVICE)}");
 			}
