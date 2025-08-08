@@ -32,7 +32,9 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 		public string GetName()
+#pragma warning restore CA1721
 			=> MainMemName;
 
 		[LuaMethodExample("local uimaiget = mainmemory.getcurrentmemorydomainsize( );")]

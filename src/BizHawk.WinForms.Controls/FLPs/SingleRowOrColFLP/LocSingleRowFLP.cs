@@ -13,7 +13,9 @@ namespace BizHawk.WinForms.Controls
 		public new bool AutoSize => base.AutoSize;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 		public new AutoSizeMode AutoSizeMode => base.AutoSizeMode;
+#pragma warning restore CA1721
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

@@ -31,7 +31,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		private bool[] _keyStatus;
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 		public bool[] KeyStatus
+#pragma warning restore CA1721
 		{
 			get => _keyStatus;
 			set => _keyStatus = value;
