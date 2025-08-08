@@ -103,6 +103,7 @@ namespace BizHawk.Client.Common
 
 				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
 				var range = _axisRanges[k]; // this was `GetValueOrPutNew`, but I really hope it was always found, since `new AxisSpec()` isn't valid --yoshi
+				if (range.IsReversed) value = -value;
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
 
 				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)
