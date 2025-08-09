@@ -871,6 +871,16 @@ clean:
 CP = cp
 install:
 	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DEST)
+	ln -snf $(DEST)/libavcodec.so    $(DEST)/libavcodec.so.57
+	ln -snf $(DEST)/libavformat.so   $(DEST)/libavformat.so.57
+	ln -snf $(DEST)/libavutil.so     $(DEST)/libavutil.so.55
+	ln -snf $(DEST)/libswresample.so $(DEST)/libswresample.so.2
+	ln -snf $(DEST)/libswscale.so    $(DEST)/libswscale.so.4
 ifneq ("$(wildcard $(DESTCOPY))", "")
 	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DESTCOPY)
+	ln -snf $(DESTCOPY)/libavcodec.so    $(DESTCOPY)/libavcodec.so.57
+	ln -snf $(DESTCOPY)/libavformat.so   $(DESTCOPY)/libavformat.so.57
+	ln -snf $(DESTCOPY)/libavutil.so     $(DESTCOPY)/libavutil.so.55
+	ln -snf $(DESTCOPY)/libswresample.so $(DESTCOPY)/libswresample.so.2
+	ln -snf $(DESTCOPY)/libswscale.so    $(DESTCOPY)/libswscale.so.4
 endif
