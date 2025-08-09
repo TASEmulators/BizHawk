@@ -36,21 +36,35 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig
+	public unsafe partial class SNESGraphicsDebugger : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		private readonly List<DisplayTypeItem> displayTypeItems = new List<DisplayTypeItem>();
 
 		[RequiredService]
 		private IBSNESForGfxDebugger Emulator { get; set; }
 
-		[ConfigPersist]
 		public bool UseUserBackdropColor
 		{
 			get => checkBackdropColor.Checked;
 			set => checkBackdropColor.Checked = value;
 		}
-		[ConfigPersist]
 		public int UserBackdropColor { get; set; }
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			bool outValue = default;
+			if (provider.Get(nameof(UseUserBackdropColor), ref outValue)) UseUserBackdropColor = outValue;
+			int outValue2 = default;
+			if (provider.Get(nameof(UserBackdropColor), ref outValue2)) UserBackdropColor = outValue2;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(UseUserBackdropColor)] = UseUserBackdropColor,
+				[nameof(UserBackdropColor)] = UserBackdropColor,
+			};
+		}
 
 		protected override string WindowTitleStatic => "Graphics Debugger";
 

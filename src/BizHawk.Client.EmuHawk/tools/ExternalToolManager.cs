@@ -17,7 +17,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public struct MenuItemInfo
 		{
+#if !DEBUG
 			private readonly string _asmChecksum;
+#endif
 
 			private readonly string _entryPointTypeName;
 
@@ -33,12 +35,12 @@ namespace BizHawk.Client.EmuHawk
 				string asmFilename,
 				string entryPointTypeName)
 			{
-				_asmChecksum = asmChecksum;
 				_entryPointTypeName = entryPointTypeName;
 				_extToolMan = extToolMan;
 #if DEBUG
 				_skipExtToolWarning = true;
 #else
+				_asmChecksum = asmChecksum;
 				_skipExtToolWarning = _extToolMan._config.TrustedExtTools.TryGetValue(asmFilename, out var s) && s == _asmChecksum;
 #endif
 				AsmFilename = asmFilename;

@@ -7,6 +7,8 @@
 
 using BizHawk.Common;
 
+#pragma warning disable IDE0051 // Remove unused private members (Lots of private methods here with logic. Are they needed?)
+
 namespace BizHawk.Emulation.Cores.Components
 {
 	public sealed class YM2413

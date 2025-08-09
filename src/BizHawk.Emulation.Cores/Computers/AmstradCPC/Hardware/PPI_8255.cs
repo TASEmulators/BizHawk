@@ -290,11 +290,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/*
-            #F4XX	%xxxx0x00 xxxxxxxx	8255 PIO Port A (PSG Data)	                Read	Write
-            #F5XX	%xxxx0x01 xxxxxxxx	8255 PIO Port B (Vsync,PrnBusy,Tape,etc.)	Read	-
-            #F6XX	%xxxx0x10 xxxxxxxx	8255 PIO Port C (KeybRow,Tape,PSG Control)	-	    Write
-            #F7XX	%xxxx0x11 xxxxxxxx	8255 PIO Control-Register	                -	    Write
-         */
+			#F4XX   %xxxx0x00 xxxxxxxx  8255 PIO Port A (PSG Data)                  Read    Write
+			#F5XX   %xxxx0x01 xxxxxxxx  8255 PIO Port B (Vsync,PrnBusy,Tape,etc.)   Read    -
+			#F6XX   %xxxx0x10 xxxxxxxx  8255 PIO Port C (KeybRow,Tape,PSG Control)  -       Write
+			#F7XX   %xxxx0x11 xxxxxxxx  8255 PIO Control-Register                   -       Write
+			*/
 
 		/// <summary>
 		/// Device responds to an IN instruction

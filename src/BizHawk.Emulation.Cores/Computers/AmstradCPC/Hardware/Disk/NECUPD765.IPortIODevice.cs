@@ -9,11 +9,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// IPortIODevice
 	/// </summary>
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	public partial class NECUPD765 : IPortIODevice
 	{
 		public string outputfile = @"D:\Dropbox\Dropbox\_Programming\TASVideos\BizHawk\output\zxhawkio-" + DateTime.Now.ToString("yyyyMMdd_HHmmss", DateTimeFormatInfo.InvariantInfo) + ".csv";
@@ -27,15 +27,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 
 		/*
-         * Status read
-         * Data write
-         * Data read
-         * CMD code
-         * CMD string
-         * MT flag
-         * MK flag
-         * SK flag
-         * */
+		 * Status read
+		 * Data write
+		 * Data read
+		 * CMD code
+		 * CMD string
+		 * MT flag
+		 * MK flag
+		 * SK flag
+		 * */
 		private readonly string[] workingArr = new string[3];
 
 		private void BuildCSVLine()

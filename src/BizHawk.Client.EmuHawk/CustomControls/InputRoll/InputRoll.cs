@@ -1150,7 +1150,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// do marker drag here
 					}
-					else if (ModifierKeys is Keys.Shift && CurrentCell.Column! is { Type: ColumnType.Text } col)
+					else if (ModifierKeys is Keys.Shift && CurrentCell.Column is { Type: ColumnType.Text } col)
 					{
 						if (_selectedItems.Count is not 0)
 						{

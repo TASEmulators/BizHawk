@@ -20,7 +20,7 @@ using BizHawk.WinForms.Controls;
 namespace BizHawk.Client.EmuHawk
 {
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
-	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
+	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		private sealed class N64MatrixDisplayDialog : Form
 		{
@@ -121,17 +121,13 @@ namespace BizHawk.Client.EmuHawk
 		private HexFind _hexFind;
 		private string _lastRom = "";
 
-		[ConfigPersist]
-		private string LastDomain { get; set; }
+		private string LastDomain;
 
-		[ConfigPersist]
-		private bool BigEndian { get; set; }
+		private bool BigEndian;
 
-		[ConfigPersist]
-		private int DataSize { get; set; }
+		private int DataSize;
 
-		[ConfigPersist]
-		private RecentFiles RecentTables { get; set; }
+		private RecentFiles RecentTables;
 
 		internal class ColorConfig
 		{
@@ -143,8 +139,27 @@ namespace BizHawk.Client.EmuHawk
 			public Color HighlightFreeze { get; set; } = Color.Violet;
 		}
 
-		[ConfigPersist]
-		internal ColorConfig Colors { get; set; } = new ColorConfig();
+		internal ColorConfig Colors = new ColorConfig();
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(LastDomain), ref LastDomain);
+			provider.Get(nameof(BigEndian), ref BigEndian);
+			provider.Get(nameof(DataSize), ref DataSize);
+			provider.Get(nameof(RecentTables), ref RecentTables);
+			provider.Get(nameof(Colors), ref Colors);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(LastDomain)] = LastDomain,
+				[nameof(BigEndian)] = BigEndian,
+				[nameof(DataSize)] = DataSize,
+				[nameof(RecentTables)] = RecentTables,
+				[nameof(Colors)] = Colors,
+			};
+		}
 
 		private WatchSize WatchSize => (WatchSize)DataSize;
 

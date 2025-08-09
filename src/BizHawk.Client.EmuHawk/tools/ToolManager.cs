@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -139,9 +137,10 @@ namespace BizHawk.Client.EmuHawk
 				AttachSettingHooks(autoConfigTool, _config.CommonToolSettings.GetValueOrPutNew(toolTypeName));
 			}
 			// custom settings
-			if (HasCustomConfig(newTool))
+			if (newTool is IConfigPersist persister)
 			{
-				InstallCustomConfig(newTool, _config.CustomToolSettings.GetValueOrPutNew(toolTypeName));
+				persister.LoadConfig(new(_config.CustomToolSettings.GetValueOrPutNew(toolTypeName)));
+				((Form)(IToolForm)newTool).FormClosing += (o, e) => _config.CustomToolSettings[toolTypeName] = persister.SaveConfig();
 			}
 
 			newTool.Restart();
@@ -183,9 +182,10 @@ namespace BizHawk.Client.EmuHawk
 				AttachSettingHooks(autoConfigTool, _config.CommonToolSettings.GetValueOrPutNew(customFormTypeName));
 			}
 			// custom settings
-			if (HasCustomConfig(newTool))
+			if (newTool is IConfigPersist persister)
 			{
-				InstallCustomConfig(newTool, _config.CustomToolSettings.GetValueOrPutNew(customFormTypeName));
+				persister.LoadConfig(new(_config.CustomToolSettings.GetValueOrPutNew(customFormTypeName)));
+				((Form)(IToolForm)newTool).FormClosing += (o, e) => _config.CustomToolSettings[customFormTypeName] = persister.SaveConfig();
 			}
 
 			newTool.Restart();
@@ -378,60 +378,18 @@ namespace BizHawk.Client.EmuHawk
 				RefreshSettings(form, dest, settings, idx);
 				form.Size = oldSize;
 
-				form.GetType().GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
-					.FirstOrDefault()?.Invoke(form, Array.Empty<object>());
-			};
-		}
-
-		private static bool HasCustomConfig(IToolForm tool)
-		{
-			return tool.GetType().GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).Any();
-		}
-
-		private static void InstallCustomConfig(IToolForm tool, Dictionary<string, object> data)
-		{
-			Type type = tool.GetType();
-			var props = type.GetPropertiesWithAttrib(typeof(ConfigPersistAttribute)).ToList();
-			if (props.Count == 0)
-			{
-				return;
-			}
-
-			foreach (var prop in props)
-			{
-				if (data.TryGetValue(prop.Name, out var val))
+				if (form is IRestoreDefaults restorable)
 				{
-					if (val is string str && prop.PropertyType != typeof(string))
-					{
-						// if a type has a TypeConverter, and that converter can convert to string,
-						// that will be used in place of object markup by JSON.NET
-
-						// but that doesn't work with $type metadata, and JSON.NET fails to fall
-						// back on regular object serialization when needed.  so try to undo a TypeConverter
-						// operation here
-						var converter = TypeDescriptor.GetConverter(prop.PropertyType);
-						val = converter.ConvertFromString(null, CultureInfo.InvariantCulture, str);
-					}
-					else if (val is not bool && prop.PropertyType.IsPrimitive)
-					{
-						// numeric constants are similarly hosed
-						val = Convert.ChangeType(val, prop.PropertyType, CultureInfo.InvariantCulture);
-					}
-
-					prop.SetValue(tool, val, null);
+					restorable.RestoreDefaults();
 				}
-			}
-
-			((Form)tool).FormClosing += (o, e) => SaveCustomConfig(tool, data, props);
-		}
-
-		private static void SaveCustomConfig(IToolForm tool, Dictionary<string, object> data, List<PropertyInfo> props)
-		{
-			data.Clear();
-			foreach (var prop in props)
-			{
-				data.Add(prop.Name, prop.GetValue(tool, BindingFlags.GetProperty, Type.DefaultBinder, null, CultureInfo.InvariantCulture));
-			}
+				else if (form is IExternalToolForm)
+				{
+#pragma warning disable CS0618 // We temporarily keep this use of obsolete attribute so external tools don't immediately break.
+					form.GetType().GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
+						.FirstOrDefault()?.Invoke(form, Array.Empty<object>());
+#pragma warning restore CS0618
+				}
+			};
 		}
 
 		/// <summary>

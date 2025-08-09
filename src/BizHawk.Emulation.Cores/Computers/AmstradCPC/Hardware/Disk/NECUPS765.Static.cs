@@ -6,11 +6,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// Static helper methods
 	/// </summary>
 	/*
-        Implementation based on the information contained here:
-        http://www.cpcwiki.eu/index.php/765_FDC
-        and here:
-        http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
-    */
+		Implementation based on the information contained here:
+		http://www.cpcwiki.eu/index.php/765_FDC
+		and here:
+		http://www.cpcwiki.eu/imgs/f/f3/UPD765_Datasheet_OCRed.pdf
+	*/
 	public partial class NECUPD765
 	{
 		/// <summary>

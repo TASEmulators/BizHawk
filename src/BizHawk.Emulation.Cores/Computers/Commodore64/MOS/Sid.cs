@@ -5,18 +5,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	public sealed partial class Sid
 	{
 		/*
-            Commodore SID 6581/8580 core.
+			Commodore SID 6581/8580 core.
 
-            Many thanks to:
-            - Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
-              http://mail.lipsia.de/~enigma/neu/6581.html
-            - Kevtris for figuring out ADSR tables
-              http://blog.kevtris.org/?p=13
-            - Mixer for a lot of useful SID info
-              http://www.sid.fi/sidwiki/doku.php?id=sid-knowledge
-            - Documentation collected by the libsidplayfp team
-              https://sourceforge.net/projects/sidplay-residfp/
-        */
+			Many thanks to:
+			- Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
+			  http://mail.lipsia.de/~enigma/neu/6581.html
+			- Kevtris for figuring out ADSR tables
+			  http://blog.kevtris.org/?p=13
+			- Mixer for a lot of useful SID info
+			  http://www.sid.fi/sidwiki/doku.php?id=sid-knowledge
+			- Documentation collected by the libsidplayfp team
+			  https://sourceforge.net/projects/sidplay-residfp/
+		*/
 
 		// ------------------------------------
 		public int _databus;

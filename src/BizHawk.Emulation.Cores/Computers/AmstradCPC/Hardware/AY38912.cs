@@ -117,30 +117,30 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void Reset()
 		{
 			/*
-            _noiseVal = 0x0FFFF;
-            _outABC = 0;
-            _outNoiseABC = 0;
-            _counterNoise = 0;
-            _counterA = 0;
-            _counterB = 0;
-            _counterC = 0;
-            _EnvelopeCounterBend = 0;
+			_noiseVal = 0x0FFFF;
+			_outABC = 0;
+			_outNoiseABC = 0;
+			_counterNoise = 0;
+			_counterA = 0;
+			_counterB = 0;
+			_counterC = 0;
+			_EnvelopeCounterBend = 0;
 
-            // clear all the registers
-            for (int i = 0; i < 14; i++)
-            {
-                SelectedRegister = i;
-                PortWrite(0);
-            }
+			// clear all the registers
+			for (int i = 0; i < 14; i++)
+			{
+				SelectedRegister = i;
+				PortWrite(0);
+			}
 
-            randomSeed = 1;
+			randomSeed = 1;
 
-            // number of frames to update
-            var fr = (_audioBufferIndex * _tStatesPerFrame) / _audioBuffer.Length;
+			// number of frames to update
+			var fr = (_audioBufferIndex * _tStatesPerFrame) / _audioBuffer.Length;
 
-            // update the audio buffer
-            BufferUpdate(fr);
-            */
+			// update the audio buffer
+			BufferUpdate(fr);
+			*/
 		}
 
 		/// <summary>
@@ -357,36 +357,36 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// The register array
 		/// </summary>
 		/*
-            The AY-3-8910/8912 contains 16 internal registers as follows:
+			The AY-3-8910/8912 contains 16 internal registers as follows:
 
-            Register    Function	                Range
-            0	        Channel A fine pitch	    8-bit (0-255)
-            1	        Channel A course pitch	    4-bit (0-15)
-            2	        Channel B fine pitch	    8-bit (0-255)
-            3	        Channel B course pitch	    4-bit (0-15)
-            4	        Channel C fine pitch	    8-bit (0-255)
-            5	        Channel C course pitch	    4-bit (0-15)
-            6	        Noise pitch	                5-bit (0-31)
-            7	        Mixer	                    8-bit (see below)
-            8	        Channel A volume	        4-bit (0-15, see below)
-            9	        Channel B volume	        4-bit (0-15, see below)
-            10	        Channel C volume	        4-bit (0-15, see below)
-            11	        Envelope fine duration	    8-bit (0-255)
-            12	        Envelope course duration	8-bit (0-255)
-            13	        Envelope shape	            4-bit (0-15)
-            14	        I/O port A	                8-bit (0-255)
-            15	        I/O port B	                8-bit (0-255) (Not present on the AY-3-8912)
+			Register    Function                    Range
+			0           Channel A fine pitch        8-bit (0-255)
+			1           Channel A course pitch      4-bit (0-15)
+			2           Channel B fine pitch        8-bit (0-255)
+			3           Channel B course pitch      4-bit (0-15)
+			4           Channel C fine pitch        8-bit (0-255)
+			5           Channel C course pitch      4-bit (0-15)
+			6           Noise pitch                 5-bit (0-31)
+			7           Mixer                       8-bit (see below)
+			8           Channel A volume            4-bit (0-15, see below)
+			9           Channel B volume            4-bit (0-15, see below)
+			10          Channel C volume            4-bit (0-15, see below)
+			11          Envelope fine duration      8-bit (0-255)
+			12          Envelope course duration    8-bit (0-255)
+			13          Envelope shape              4-bit (0-15)
+			14          I/O port A                  8-bit (0-255)
+			15          I/O port B                  8-bit (0-255) (Not present on the AY-3-8912)
 
-            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the
-                envelope defined by register 13 and ignores its volume setting.
-            * The mixer (register 7) is made up of the following bits (low=enabled):
+			* The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the
+				envelope defined by register 13 and ignores its volume setting.
+			* The mixer (register 7) is made up of the following bits (low=enabled):
 
-            Bit:        7	    6	    5	    4	    3	    2	    1	    0
-            Register:   I/O	    I/O	    Noise	Noise	Noise	Tone	Tone	Tone
-            Channel:    B       A	    C	    B	    A	    C	    B	    A
+			Bit:        7       6       5       4       3       2       1       0
+			Register:   I/O     I/O     Noise   Noise   Noise   Tone    Tone    Tone
+			Channel:    B       A       C       B       A       C       B       A
 
-            The AY-3-8912 ignores bit 7 of this register.
-        */
+			The AY-3-8912 ignores bit 7 of this register.
+		*/
 		private int[] _registers = new int[16];
 
 		/// <summary>
@@ -498,20 +498,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private static readonly List<uint[]> PanTabs = new List<uint[]>
 		{
-            // MONO
-            new uint[] { 50,50, 50,50, 50,50 },
-            // ABC
-            new uint[] { 100,10,  66,66,   10,100 },
-            // ACB
-            new uint[] { 100,10,  10,100,  66,66 },
-            // BAC
-            new uint[] { 66,66,   100,10,  10,100 },
-            // BCA
-            new uint[] { 10,100,  100,10,  66,66 },
-            // CAB
-            new uint[] { 66,66,   10,100,  100,10 },
-            // CBA
-            new uint[] { 10,100,  66,66,   100,10 }
+			// MONO
+			new uint[] { 50,50, 50,50, 50,50 },
+			// ABC
+			new uint[] { 100,10,  66,66,   10,100 },
+			// ACB
+			new uint[] { 100,10,  10,100,  66,66 },
+			// BAC
+			new uint[] { 66,66,   100,10,  10,100 },
+			// BCA
+			new uint[] { 10,100,  100,10,  66,66 },
+			// CAB
+			new uint[] { 66,66,   10,100,  100,10 },
+			// CBA
+			new uint[] { 10,100,  66,66,   100,10 }
 		};
 
 		/// <summary>
@@ -720,40 +720,40 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			tickCounter = 0;
 			return;
 			/*
-            _blipL.EndFrame((uint)SampleClock);
-            _blipR.EndFrame((uint)SampleClock);
-            SampleClock = 0;
+			_blipL.EndFrame((uint)SampleClock);
+			_blipR.EndFrame((uint)SampleClock);
+			SampleClock = 0;
 
-            int sampL = _blipL.SamplesAvailable();
-            int sampR = _blipR.SamplesAvailable();
+			int sampL = _blipL.SamplesAvailable();
+			int sampR = _blipR.SamplesAvailable();
 
-            if (sampL > sampR)
-                nsamp = sampL;
-            else
-                nsamp = sampR;
+			if (sampL > sampR)
+				nsamp = sampL;
+			else
+				nsamp = sampR;
 
-            short[] buffL = new short[sampL];
-            short[] buffR = new short[sampR];
+			short[] buffL = new short[sampL];
+			short[] buffR = new short[sampR];
 
-            _blipL.ReadSamples(buffL, sampL - 1, false);
-            _blipR.ReadSamples(buffR, sampR - 1, false);
+			_blipL.ReadSamples(buffL, sampL - 1, false);
+			_blipR.ReadSamples(buffR, sampR - 1, false);
 
-            if (_audioBuffer.Length != nsamp * 2)
-                _audioBuffer = new short[nsamp * 2];
+			if (_audioBuffer.Length != nsamp * 2)
+				_audioBuffer = new short[nsamp * 2];
 
-            int p = 0;
-            for (int i = 0; i < nsamp; i++)
-            {
-                if (i < sampL)
-                    _audioBuffer[p++] = buffL[i];
-                if (i < sampR)
-                    _audioBuffer[p++] = buffR[i];
-            }
+			int p = 0;
+			for (int i = 0; i < nsamp; i++)
+			{
+				if (i < sampL)
+					_audioBuffer[p++] = buffL[i];
+				if (i < sampR)
+					_audioBuffer[p++] = buffR[i];
+			}
 
-            //nsamp = _samplesPerFrame;
-            samples = _audioBuffer;
-            DiscardSamples();
-            */
+			//nsamp = _samplesPerFrame;
+			samples = _audioBuffer;
+			DiscardSamples();
+			*/
 		}
 
 		public int nullDump = 0;

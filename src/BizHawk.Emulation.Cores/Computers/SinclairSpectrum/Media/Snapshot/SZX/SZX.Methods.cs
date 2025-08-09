@@ -179,47 +179,47 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							break;
 					}
 					/*
-                    // ZXSTPLUS3
-                    if (s._machine.Spectrum.MachineType == MachineType.ZXSpectrum128Plus3)
-                    {
-                        var iStruct = s.GetZXSTPLUS3();
-                        block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("+3\0\0"), 0);
-                        block.dwSize = (uint)Marshal.SizeOf(iStruct);
-                        buff = MediaConverter.SerializeRaw(block);
-                        r.Write(buff);
-                        buff = MediaConverter.SerializeRaw(iStruct);
-                        r.Write(buff);
+					// ZXSTPLUS3
+					if (s._machine.Spectrum.MachineType == MachineType.ZXSpectrum128Plus3)
+					{
+						var iStruct = s.GetZXSTPLUS3();
+						block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("+3\0\0"), 0);
+						block.dwSize = (uint)Marshal.SizeOf(iStruct);
+						buff = MediaConverter.SerializeRaw(block);
+						r.Write(buff);
+						buff = MediaConverter.SerializeRaw(iStruct);
+						r.Write(buff);
 
-                        // ZXSTDSKFILE
-                        if (s._machine.diskImages.Count() > 0)
-                        {
-                            var jStruct = s.GetZXSTDSKFILE();
-                            block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("DSK\0"), 0);
-                            block.dwSize = (uint)Marshal.SizeOf(jStruct);
-                            buff = MediaConverter.SerializeRaw(block);
-                            r.Write(buff);
-                            buff = MediaConverter.SerializeRaw(jStruct);
-                            r.Write(buff);
-                        }
-                    }
+						// ZXSTDSKFILE
+						if (s._machine.diskImages.Count() > 0)
+						{
+							var jStruct = s.GetZXSTDSKFILE();
+							block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("DSK\0"), 0);
+							block.dwSize = (uint)Marshal.SizeOf(jStruct);
+							buff = MediaConverter.SerializeRaw(block);
+							r.Write(buff);
+							buff = MediaConverter.SerializeRaw(jStruct);
+							r.Write(buff);
+						}
+					}
 
-                    // ZXSTTAPE
-                    if (s._machine.tapeImages.Count() > 0)
-                    {
-                        var hStruct = s.GetZXSTTAPE();
-                        var tapeData = s._machine.tapeImages[s._machine.TapeMediaIndex];
-                        block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("TAPE"), 0);
-                        block.dwSize = (uint)Marshal.SizeOf(hStruct) + (uint)tapeData.Length;
-                        buff = MediaConverter.SerializeRaw(block);
-                        r.Write(buff);
-                        buff = MediaConverter.SerializeRaw(hStruct);
-                        r.Write(buff);
-                        buff = MediaConverter.SerializeRaw(tapeData);
-                        r.Write(buff);
-                        char[] terminator = "\0".ToCharArray();
-                        r.Write(terminator);
-                    }
-                    */
+					// ZXSTTAPE
+					if (s._machine.tapeImages.Count() > 0)
+					{
+						var hStruct = s.GetZXSTTAPE();
+						var tapeData = s._machine.tapeImages[s._machine.TapeMediaIndex];
+						block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("TAPE"), 0);
+						block.dwSize = (uint)Marshal.SizeOf(hStruct) + (uint)tapeData.Length;
+						buff = MediaConverter.SerializeRaw(block);
+						r.Write(buff);
+						buff = MediaConverter.SerializeRaw(hStruct);
+						r.Write(buff);
+						buff = MediaConverter.SerializeRaw(tapeData);
+						r.Write(buff);
+						char[] terminator = "\0".ToCharArray();
+						r.Write(terminator);
+					}
+					*/
 				}
 
 				result = ms.ToArray();

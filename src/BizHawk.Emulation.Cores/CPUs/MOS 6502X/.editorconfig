@@ -1,10 +1,7 @@
+# This core has existing violations, but let's assume they are in the middle of a refactor and let them be.
 [*.cs]
 
 # Remove unused private member
 dotnet_diagnostic.IDE0051.severity = suggestion
-
 # Remove unread private member
 dotnet_diagnostic.IDE0052.severity = suggestion
-
-# Use trailing comma in multi-line initializers
-dotnet_diagnostic.SA1413.severity = suggestion

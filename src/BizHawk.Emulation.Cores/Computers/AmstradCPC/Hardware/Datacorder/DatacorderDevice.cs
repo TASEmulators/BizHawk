@@ -513,40 +513,40 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 								throw new Exception("spectrum tape command found in CPC tape");
 
 							/*
-                            // Stop the tape command found - if this is the end of the tape RTZ
-                            // otherwise just STOP and move to the next block
-                            case TapeCommand.STOP_THE_TAPE:
+							// Stop the tape command found - if this is the end of the tape RTZ
+							// otherwise just STOP and move to the next block
+							case TapeCommand.STOP_THE_TAPE:
 
-                                _machine.CPC.OSD_TapeStoppedAuto();
-                                shouldStop = true;
+								_machine.CPC.OSD_TapeStoppedAuto();
+								shouldStop = true;
 
-                                if (_currentDataBlockIndex >= _dataBlocks.Count)
-                                    RTZ();
-                                else
-                                {
-                                    Stop();
-                                }
+								if (_currentDataBlockIndex >= _dataBlocks.Count)
+									RTZ();
+								else
+								{
+									Stop();
+								}
 
-                                _monitorTimeOut = 2000;
+								_monitorTimeOut = 2000;
 
-                                break;
-                            case TapeCommand.STOP_THE_TAPE_48K:
-                                if (is48k)
-                                {
-                                    _machine.CPC.OSD_TapeStoppedAuto();
-                                    shouldStop = true;
+								break;
+							case TapeCommand.STOP_THE_TAPE_48K:
+								if (is48k)
+								{
+									_machine.CPC.OSD_TapeStoppedAuto();
+									shouldStop = true;
 
-                                    if (_currentDataBlockIndex >= _dataBlocks.Count)
-                                        RTZ();
-                                    else
-                                    {
-                                        Stop();
-                                    }
+									if (_currentDataBlockIndex >= _dataBlocks.Count)
+										RTZ();
+									else
+									{
+										Stop();
+									}
 
-                                    _monitorTimeOut = 2000;
-                                }
-                                break;
-                                */
+									_monitorTimeOut = 2000;
+								}
+								break;
+								*/
 							default:
 								break;
 						}
@@ -619,72 +619,72 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/*
-        public int MaskableInterruptCount = 0;
+		public int MaskableInterruptCount = 0;
 
-        private void MonitorFrame()
-        {
-            if (_tapeIsPlaying && _autoPlay)
-            {
-                if (DataBlocks.Count > 1
-                    || _dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.CSW_Recording or BlockType.WAV_Recording))
-                {
-                    // we should only stop the tape when there are multiple blocks
-                    // if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
-                    _monitorTimeOut--;
-                }
+		private void MonitorFrame()
+		{
+			if (_tapeIsPlaying && _autoPlay)
+			{
+				if (DataBlocks.Count > 1
+					|| _dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.CSW_Recording or BlockType.WAV_Recording))
+				{
+					// we should only stop the tape when there are multiple blocks
+					// if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
+					_monitorTimeOut--;
+				}
 
-                if (_monitorTimeOut < 0)
-                {
-                    if (_dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.PAUSE_BLOCK or BlockType.PAUS))
-                    {
-                        AutoStopTape();
-                    }
+				if (_monitorTimeOut < 0)
+				{
+					if (_dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.PAUSE_BLOCK or BlockType.PAUS))
+					{
+						AutoStopTape();
+					}
 
-                    return;
-                }
+					return;
+				}
 
-                // fallback in case usual monitor detection methods do not work
+				// fallback in case usual monitor detection methods do not work
 
-                // number of t-states since last IN operation
-                long diff = _machine.CPU.TotalExecutedCycles - _lastINCycle;
+				// number of t-states since last IN operation
+				long diff = _machine.CPU.TotalExecutedCycles - _lastINCycle;
 
-                // get current datablock
-                var block = DataBlocks[_currentDataBlockIndex];
+				// get current datablock
+				var block = DataBlocks[_currentDataBlockIndex];
 
-                // is this a pause block?
-                if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
-                {
-                    // don't autostop the tape here
-                    return;
-                }
+				// is this a pause block?
+				if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
+				{
+					// don't autostop the tape here
+					return;
+				}
 
-                // pause in ms at the end of the current block
-                int blockPause = block.PauseInMS;
+				// pause in ms at the end of the current block
+				int blockPause = block.PauseInMS;
 
-                // timeout in t-states (equiv. to blockpause)
-                int timeout = ((_machine.GateArray.FrameLength * 50) / 1000) * blockPause;
+				// timeout in t-states (equiv. to blockpause)
+				int timeout = ((_machine.GateArray.FrameLength * 50) / 1000) * blockPause;
 
-                // don't use autostop detection if block has no pause at the end
-                if (timeout == 0)
-                    return;
+				// don't use autostop detection if block has no pause at the end
+				if (timeout == 0)
+					return;
 
-                // don't autostop if there is only 1 block
-                if (DataBlocks.Count is 1
-                    || _dataBlocks[_currentDataBlockIndex].BlockDescription is BlockType.CSW_Recording or BlockType.WAV_Recording)
-                {
-                    return;
-                }
+				// don't autostop if there is only 1 block
+				if (DataBlocks.Count is 1
+					|| _dataBlocks[_currentDataBlockIndex].BlockDescription is BlockType.CSW_Recording or BlockType.WAV_Recording)
+				{
+					return;
+				}
 
-                if (diff >= timeout * 2)
-                {
-                    // There have been no attempted tape reads by the CPU within the double timeout period
-                    // Autostop the tape
-                    AutoStopTape();
-                    _lastCycle = _cpu.TotalExecutedCycles;
-                }
-            }
-        }
-        */
+				if (diff >= timeout * 2)
+				{
+					// There have been no attempted tape reads by the CPU within the double timeout period
+					// Autostop the tape
+					AutoStopTape();
+					_lastCycle = _cpu.TotalExecutedCycles;
+				}
+			}
+		}
+		*/
 
 		/// <summary>
 		/// Mask constants
@@ -703,15 +703,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				GetEarBit(CPU.TotalExecutedCycles);
 			}
 			/*
-            if (currentState)
-            {
-                result |= TAPE_BIT;
-            }
-            else
-            {
-                result &= ~TAPE_BIT;
-            }
-            */
+			if (currentState)
+			{
+				result |= TAPE_BIT;
+			}
+			else
+			{
+				result &= ~TAPE_BIT;
+			}
+			*/
 
 			if (!TapeIsPlaying)
 			{
@@ -732,11 +732,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// not implemented
 
 			/*
-            if (!TapeIsPlaying)
-            {
-                currentState = ((byte)result & 0x10) != 0;
-            }
-            */
+			if (!TapeIsPlaying)
+			{
+				currentState = ((byte)result & 0x10) != 0;
+			}
+			*/
 		}
 
 		/// <summary>

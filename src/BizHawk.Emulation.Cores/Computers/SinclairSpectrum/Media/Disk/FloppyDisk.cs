@@ -399,102 +399,101 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/*
-        /// <summary>
-        /// Should be run at the end of the ParseDisk process
-        /// If speedlock is detected the flag is set in the disk image
-        /// </summary>
-        protected virtual void SpeedlockDetection()
-        {
+		/// <summary>
+		/// Should be run at the end of the ParseDisk process
+		/// If speedlock is detected the flag is set in the disk image
+		/// </summary>
+		protected virtual void SpeedlockDetection()
+		{
 
-            if (DiskTracks.Length == 0)
-                return;
+			if (DiskTracks.Length == 0)
+				return;
 
-            // check for speedlock copyright notice
-            string ident = Encoding.ASCII.GetString(DiskData, 0x100, 0x1400);
-            if (!ident.ContainsIgnoreCase("SPEEDLOCK"))
-            {
-                // speedlock not found
-                return;
-            }
+			// check for speedlock copyright notice
+			string ident = Encoding.ASCII.GetString(DiskData, 0x100, 0x1400);
+			if (!ident.ContainsIgnoreCase("SPEEDLOCK"))
+			{
+				// speedlock not found
+				return;
+			}
 
-            // get cylinder 0
-            var cyl = DiskTracks[0];
+			// get cylinder 0
+			var cyl = DiskTracks[0];
 
-            // get sector with ID=2
-            var sec = cyl.Sectors.Where(a => a.SectorID == 2).FirstOrDefault();
+			// get sector with ID=2
+			var sec = cyl.Sectors.Where(a => a.SectorID == 2).FirstOrDefault();
 
-            if (sec == null)
-                return;
+			if (sec == null)
+				return;
 
-            // check for already multiple weak copies
-            if (sec.ContainsMultipleWeakSectors || sec.SectorData.Length != 0x80 << sec.SectorSize)
-                return;
+			// check for already multiple weak copies
+			if (sec.ContainsMultipleWeakSectors || sec.SectorData.Length != 0x80 << sec.SectorSize)
+				return;
 
-            // check for invalid crcs in sector 2
-            if (sec.Status1.Bit(5) || sec.Status2.Bit(5))
-            {
-                Protection = ProtectionType.Speedlock;
-            }
-            else
-            {
-                return;
-            }
+			// check for invalid crcs in sector 2
+			if (sec.Status1.Bit(5) || sec.Status2.Bit(5))
+			{
+				Protection = ProtectionType.Speedlock;
+			}
+			else
+			{
+				return;
+			}
 
-            // we are going to create a total of 5 weak sector copies
-            // keeping the original copy
-            byte[] origData = sec.SectorData.ToArray();
-            List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
+			// we are going to create a total of 5 weak sector copies
+			// keeping the original copy
+			byte[] origData = sec.SectorData.ToArray();
+			List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
 
-            for (int i = 0; i < 6; i++)
-            {
-                for (int s = 0; s < origData.Length; s++)
-                {
-                    if (i == 0)
-                    {
-                        data.Add(origData[s]);
-                        continue;
-                    }
+			for (int i = 0; i < 6; i++)
+			{
+				for (int s = 0; s < origData.Length; s++)
+				{
+					if (i == 0)
+					{
+						data.Add(origData[s]);
+						continue;
+					}
 
-                    // deterministic 'random' implementation
-                    int n = origData[s] + i + 1;
-                    if (n > 0xff)
-                        n = n - 0xff;
-                    else if (n < 0)
-                        n = 0xff + n;
+					// deterministic 'random' implementation
+					int n = origData[s] + i + 1;
+					if (n > 0xff)
+						n = n - 0xff;
+					else if (n < 0)
+						n = 0xff + n;
 
-                    byte nByte = (byte)n;
+					byte nByte = (byte)n;
 
-                    if (s < 336)
-                    {
-                        // non weak data
-                        data.Add(origData[s]);
-                    }
-                    else if (s < 511)
-                    {
-                        // weak data
-                        data.Add(nByte);
-                    }
-                    else if (s == 511)
-                    {
-                        // final sector byte
-                        data.Add(nByte);
-                    }
-                    else
-                    {
-                        // speedlock sector should not be more than 512 bytes
-                        // but in case it is just do non weak
-                        data.Add(origData[i]);
-                    }
-                }
-            }
+					if (s < 336)
+					{
+						// non weak data
+						data.Add(origData[s]);
+					}
+					else if (s < 511)
+					{
+						// weak data
+						data.Add(nByte);
+					}
+					else if (s == 511)
+					{
+						// final sector byte
+						data.Add(nByte);
+					}
+					else
+					{
+						// speedlock sector should not be more than 512 bytes
+						// but in case it is just do non weak
+						data.Add(origData[i]);
+					}
+				}
+			}
 
-            // commit the sector data
-            sec.SectorData = data.ToArray();
-            sec.ContainsMultipleWeakSectors = true;
-            sec.ActualDataByteLength = data.Count;
-
-        }
-        */
+			// commit the sector data
+			sec.SectorData = data.ToArray();
+			sec.ContainsMultipleWeakSectors = true;
+			sec.ActualDataByteLength = data.Count;
+		}
+		*/
 
 		/// <summary>
 		/// Returns the track count for the disk
@@ -669,14 +668,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						return res;
 
 						/*
-                        int copies = ActualDataByteLength / (0x80 << SectorSize);
-                        var r = new Random(Seed: 4) // chosen by fair dice roll. guaranteed to be random.
-                            .Next(0, copies - 1);
-                        int step = r * (0x80 << SectorSize);
-                        byte[] res = new byte[(0x80 << SectorSize)];
-                        Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
-                        return res;
-                        */
+						int copies = ActualDataByteLength / (0x80 << SectorSize);
+						var r = new Random(Seed: 4) // chosen by fair dice roll. guaranteed to be random.
+							.Next(0, copies - 1);
+						int step = r * (0x80 << SectorSize);
+						byte[] res = new byte[(0x80 << SectorSize)];
+						Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
+						return res;
+						*/
 					}
 				}
 			}
