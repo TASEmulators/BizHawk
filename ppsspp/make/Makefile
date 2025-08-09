@@ -860,7 +860,7 @@ PREBUILT_LIBS := \
 	prebuilt/libSDL2-2.0.so
 
 $(TARGET) : $(OBJS)
-	$(CXX) -o $@ $(LDFLAGS) $(OBJS) -Wl,--no-undefined $(PREBUILT_LIBS) -Wl,-rpath,$(PREBUILT_LIBS) -L$(PREBUILT_LIBS)
+	$(CXX) -o $@ $(LDFLAGS) $(OBJS) -Wl,--no-undefined -Lprebuilt -lavcodec -lavformat -lavutil -lswresample -lswscale -lSDL2-2.0
 
 clean:
 	$(RM) -f $(OBJS)
