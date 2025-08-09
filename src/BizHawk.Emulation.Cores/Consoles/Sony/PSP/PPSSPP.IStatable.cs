@@ -12,7 +12,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-
 			var stateLen = _libPPSSPP.GetStateSize();
 			writer.Write(stateLen);
 
@@ -24,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_libPPSSPP.SaveState(_stateBuf);
 			writer.Write(_stateBuf, 0, stateLen);
 
-
 			// other variables
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
@@ -33,7 +31,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-
 			var stateLen = reader.ReadInt32();
 
 			if (stateLen != _stateBuf.Length)

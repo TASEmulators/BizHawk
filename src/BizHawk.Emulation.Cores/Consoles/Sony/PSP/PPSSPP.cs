@@ -15,20 +15,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		portedVersion: "2025.03.09 (ecbbadd)",
 		portedUrl: "https://github.com/hrydgard/ppsspp",
 		isReleased: false)]
-	public partial class PPSSPP : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IStatable, ISettable<PPSSPP.Settings, PPSSPP.SyncSettings>
+	public partial class PPSSPP : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IStatable, ISettable<object, object>
 	{
 		private static DynamicLibraryImportResolver _resolver;
 		private LibPPSSPP _libPPSSPP;
 		private readonly List<IDiscAsset> _discAssets;
 
 		[CoreConstructor(VSystemID.Raw.PSP)]
-		public PPSSPP(CoreLoadParameters<Settings, SyncSettings> lp)
+		public PPSSPP(CoreLoadParameters<object, object> lp)
 		{
 			Console.WriteLine("In PPSSP Core");
-
-			// Assigning configuration
-			_settings = lp.Settings;
-			_syncSettings = lp.SyncSettings;
 
 			DriveLightEnabled = true;
 			_discAssets = lp.Discs;
@@ -43,8 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			foreach (var disc in _discAssets) _cdReaders.Add(new(disc.DiscData));
 
 			Console.WriteLine($"[CD] Sector count: {_discAssets[0].DiscData.Session1.LeadoutLBA}");
-			_syncSettings = lp.SyncSettings ?? new();
-			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
+			ControllerDefinition = CreateControllerDefinition(_isMultidisc);
 
 			// Registering service provider
 			_serviceProvider = new(this);
