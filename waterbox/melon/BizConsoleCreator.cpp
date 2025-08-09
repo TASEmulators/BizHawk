@@ -381,7 +381,6 @@ static const std::pair<const char*, const char*> RegionalNandTitlePaths[] =
 {
 	std::make_pair("0:/title/0003000f/484e4c%x/content/title.tmd", "0:/title/0003000f/484e4c%x/content/%08x.app"),
 	std::make_pair("0:/title/00030015/484e42%x/content/title.tmd", "0:/title/00030015/484e42%x/content/%08x.app"),
-	std::make_pair("0:/title/00030017/484e41%x/content/title.tmd", "0:/title/00030017/484e41%x/content/%08x.app"),
 };
 
 static const char* const PhotoNandDirs[] =
@@ -519,6 +518,41 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(nandPath)));
 
 				snprintf(nandPath, sizeof(nandPath), regionalNandTitlePath.second, regionIdChar, version);
+				std::vector<u8> appFile;
+				if (!mount.ExportFile(nandPath, appFile)
+					|| appFile.size() != contentSize)
+				{
+					throw std::runtime_error("Failed to export NAND app file");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
+			}
+
+			// Special logic for the System Menu app
+			// Under most circumstances, this is just a standard regional nand title
+			// However, Unlaunch's exploit will make the title.tmd much larger than normal
+			{
+				snprintf(nandPath, sizeof(nandPath), "0:/title/00030017/484e41%x/content/title.tmd", regionIdChar);
+				std::vector<u8> tmdFile;
+				if (!mount.ExportFile(nandPath, tmdFile)
+					|| tmdFile.size() < sizeof(melonDS::DSi_TMD::TitleMetadata))
+				{
+					throw std::runtime_error("Failed to export NAND TMD");
+				}
+
+				// shrink tmd down to its normal size if this happens to be an unlaunch exploit tmd
+				// (this also happens to undo an unlaunch exploited NAND back to its original state)
+				tmdFile.resize(sizeof(melonDS::DSi_TMD::TitleMetadata));
+
+				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
+				u32 version = tmd->Contents.GetVersion();
+				u64 contentSize = (u64)tmd->Contents.ContentSize[0] << 56 | (u64)tmd->Contents.ContentSize[1] << 48
+					| (u64)tmd->Contents.ContentSize[2] << 40 | (u64)tmd->Contents.ContentSize[3] << 32 | (u64)tmd->Contents.ContentSize[4] << 24
+					| (u64)tmd->Contents.ContentSize[5] << 16 | (u64)tmd->Contents.ContentSize[6] << 8 | (u64)tmd->Contents.ContentSize[7] << 0;
+
+				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(nandPath)));
+
+				snprintf(nandPath, sizeof(nandPath), "0:/title/00030017/484e41%x/content/%08x.app", regionIdChar, version);
 				std::vector<u8> appFile;
 				if (!mount.ExportFile(nandPath, appFile)
 					|| appFile.size() != contentSize)
