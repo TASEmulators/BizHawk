@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
 	public partial class PPSSPP : IVideoProvider
 	{
-		const int BW = 480;
-		const int BH = 270;
+		private const int BW = 480;
+		private const int BH = 270;
 		internal bool VideoDirty;
 
 		protected readonly IntPtr _context;
