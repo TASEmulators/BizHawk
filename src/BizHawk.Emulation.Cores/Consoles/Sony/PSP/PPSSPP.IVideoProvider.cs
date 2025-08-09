@@ -10,11 +10,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		protected readonly IntPtr _context;
 
-		public PPSSPP(LibPPSSPP core, IntPtr context)
-		{
-			_context = context;
-		}
-
 		// ReSharper disable ConvertToAutoPropertyWhenPossible
 		public int VirtualWidth => BW;
 		public int VirtualHeight => BH;

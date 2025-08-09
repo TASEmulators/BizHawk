@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 {
 	public partial class PPSSPP : IStatable
 	{
-		private byte[] _stateBuf = Array.Empty<byte>();
+		private byte[] _stateBuf = [ ];
 
 		public bool AvoidRewind => true;
 
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			var stateLen = _libPPSSPP.GetStateSize();
 			writer.Write(stateLen);
 
-			if (stateLen > _stateBuf.Length)
+			if (stateLen != _stateBuf.Length)
 			{
 				_stateBuf = new byte[stateLen];
 			}
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 			var stateLen = reader.ReadInt32();
 
-			if (stateLen > _stateBuf.Length)
+			if (stateLen != _stateBuf.Length)
 			{
 				_stateBuf = new byte[stateLen];
 			}

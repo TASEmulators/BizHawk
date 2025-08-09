@@ -52,7 +52,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_serviceProvider.Register<ISoundProvider>(this);
 
 			// Loading LibPPSSPP
-			_resolver?.Dispose();
 			_resolver = new(OSTailoredCode.IsUnixHost ? "libppsspp.so" : "libppsspp.dll", hasLimitedLifetime: true);
 			_libPPSSPP = BizInvoker.GetInvoker<LibPPSSPP>(_resolver, CallingConventionAdapters.Native);
 
@@ -102,7 +101,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			var PPGeFontData = new MemoryStream(Resources.PPGE_FONT_ROBOTO_CONDENSED.Value).ToArray();
 			if (!_libPPSSPP.loadResource(resourceName, PPGeFontData, PPGeFontData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
-			Console.WriteLine($"BK INIT CORE E\n");
 			////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;
 			Console.WriteLine($"Launching Core with Game: '{cdName}'");
@@ -121,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		private readonly LibPPSSPP.CDReadCallback _CDReadCallback;
 		private readonly LibPPSSPP.CDSectorCountCallback _CDSectorCountCallback;
 		private int _discIndex;
-		private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
+		private readonly List<DiscSectorReader> _cdReaders = [ ];
 		private static int CD_SECTOR_SIZE = 2048;
 		private readonly byte[] _sectorBuffer = new byte[CD_SECTOR_SIZE];
 
@@ -173,6 +171,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			_discInserted = reader.ReadBoolean();
 			DriveLightOn = reader.ReadBoolean();
 		}
-
 	}
 }
