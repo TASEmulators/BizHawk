@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	partial class NymaCore
+	public abstract partial class NymaCore
 	{
 		private static bool IsRomanNumeral(string str)
 			=> new[] {"I", "II", "III", "IV", "V", "VI"}.Contains(str);

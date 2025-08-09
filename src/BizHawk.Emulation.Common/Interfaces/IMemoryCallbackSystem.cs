@@ -5,7 +5,10 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
-	public delegate void MemoryCallbackDelegate(uint address, uint value, uint flags);
+	/// <returns>
+	/// NULL if we should leave the value sent by the core as it is; the value to override with otherwise.
+	/// </returns>
+	public delegate uint? MemoryCallbackDelegate(uint address, uint value, uint flags);
 
 	/// <summary>
 	/// This is a property of <see cref="IDebuggable"/>, and defines the means by which a client
@@ -20,39 +23,18 @@ namespace BizHawk.Emulation.Common
 		 * These functions must return very quickly if the list is empty.  Very very quickly.
 		 */
 
-		/// <summary>
-		/// Gets a value indicating whether or not Execute callbacks are available for this this implementation
-		/// </summary>
 		bool ExecuteCallbacksAvailable { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any read hooks
-		/// </summary>
 		bool HasReads { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any write hooks
-		/// </summary>
 		bool HasWrites { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any execute hooks
-		/// </summary>
 		bool HasExecutes { get; }
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any read hooks
-		/// </summary>
 		bool HasReadsForScope(string scope);
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any write hooks
-		/// </summary>
 		bool HasWritesForScope(string scope);
 
-		/// <summary>
-		/// Gets a value indicating whether or not there are currently any execute hooks
-		/// </summary>
 		bool HasExecutesForScope(string scope);
 
 		/// <summary>
@@ -70,7 +52,10 @@ namespace BizHawk.Emulation.Common
 		/// <param name="value">For reads/execs, the value read/executed; for writes, the value to be written. Cores may pass the default <c>0</c> if write/exec is partially implemented.</param>
 		/// <param name="flags">The callback flags relevant to this access</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
-		void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);
+		/// <returns>
+		/// The value to send back to the core. Will be the original untouched if MemoryCallbackDelegate returned NULL, the new value to override with otherwise.
+		/// </returns>
+		uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);
 
 		/// <summary>
 		/// Removes the given callback from the list
@@ -119,6 +104,7 @@ namespace BizHawk.Emulation.Common
 		Execute,
 	}
 
+#pragma warning disable RCS1191 //TODO this is genuinely broken but needs some dedicated thinking to fix
 	[Flags]
 	public enum MemoryCallbackFlags : uint
 	{
@@ -134,4 +120,5 @@ namespace BizHawk.Emulation.Common
 		CPUZero = 0x01 << 8,
 		DomainUnknown = 0x00,
 	}
+#pragma warning restore RCS1191
 }

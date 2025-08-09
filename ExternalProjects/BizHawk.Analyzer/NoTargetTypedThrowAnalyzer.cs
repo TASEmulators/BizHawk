@@ -14,7 +14,7 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagNoTargetTypedThrow);
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagNoTargetTypedThrow);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -30,6 +30,7 @@ public sealed class NoTargetTypedThrowAnalyzer : DiagnosticAnalyzer
 					case OperationKind.ObjectCreation:
 					case OperationKind.Invocation:
 					case OperationKind.PropertyReference:
+					case OperationKind.FieldReference:
 					case OperationKind.LocalReference:
 						return;
 					case OperationKind.Conversion:

@@ -7,7 +7,6 @@ using Vortice.Direct3D11;
 using Vortice.DXGI;
 
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.StringExtensions;
 
 using static SDL2.SDL;
 

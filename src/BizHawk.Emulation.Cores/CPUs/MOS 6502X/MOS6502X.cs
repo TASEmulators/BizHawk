@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public bool NMI;
 		public bool RDY;
 
-		// ppu cycle (used with SubNESHawk)
+		// ppu cycle
 		public int ext_ppu_cycle = 0;
 
 		public void SyncState(Serializer ser)
@@ -184,6 +184,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync(nameof(branch_irq_hack), ref branch_irq_hack);
 			ser.Sync(nameof(rdy_freeze), ref rdy_freeze);
 			ser.Sync(nameof(ext_ppu_cycle), ref ext_ppu_cycle);
+			ser.Sync(nameof(H), ref H);
+			ser.Sync(nameof(address_bus), ref address_bus);
 			ser.EndSection();
 		}
 
@@ -265,8 +267,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagV = true;
 		}
 
-		private static readonly byte[] TableNZ = 
-		{ 
+		private static readonly byte[] TableNZ =
+		{
 			0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

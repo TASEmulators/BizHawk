@@ -43,7 +43,7 @@ namespace BizHawk.Common
 			[In, MarshalAs(UnmanagedType.LPStruct)] Guid rclsid,
 			IntPtr pUnkOuter,
 			CLSCTX dwClsContext,
-			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid, 
+			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
 			out IntPtr ppv);
 	}
 }

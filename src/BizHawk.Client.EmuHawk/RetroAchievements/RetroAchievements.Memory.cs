@@ -107,9 +107,11 @@ namespace BizHawk.Client.EmuHawk
 			private readonly uint _domainAddrStart; // addr of _domain where bank begins
 			private readonly uint _addressMangler; // of course, let's *not* correct internal core byteswapping!
 
-			public ReadMemoryFunc ReadFunc { get; protected init; }
-			public WriteMemoryFunc WriteFunc { get; protected init; }
-			public ReadMemoryBlockFunc ReadBlockFunc { get; protected init; }
+			public virtual ReadMemoryFunc ReadFunc { get; }
+
+			public virtual WriteMemoryFunc WriteFunc { get; }
+
+			public virtual ReadMemoryBlockFunc ReadBlockFunc { get; }
 
 			public uint StartAddress; // this is set for our rcheevos impl
 			public readonly uint BankSize;
@@ -134,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 					_domain.PokeByte(FixAddr(addr) ^ _addressMangler, val);
 				}
 			}
-			
+
 			protected virtual uint ReadMemBlock(uint addr, IntPtr buffer, uint bytes)
 			{
 				addr = FixAddr(addr);
@@ -192,13 +194,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private class NullMemFunctions : MemFunctions
 		{
+			public override ReadMemoryFunc ReadFunc
+				=> null;
+
+			public override WriteMemoryFunc WriteFunc
+				=> null;
+
+			public override ReadMemoryBlockFunc ReadBlockFunc
+				=> null;
+
 			public NullMemFunctions(long bankSize)
-				: base(null, 0, bankSize)
-			{
-				ReadFunc = null;
-				WriteFunc = null;
-				ReadBlockFunc = null;
-			}
+				: base(null, 0, bankSize) {}
 		}
 
 		// this is a complete hack because the libretro Intelli core sucks and so achievements are made expecting this format
@@ -329,13 +335,14 @@ namespace BizHawk.Client.EmuHawk
 		[
 			ConsoleID.Amiga, ConsoleID.Lynx, ConsoleID.NeoGeoPocket, ConsoleID.Jaguar,
 			ConsoleID.JaguarCD, ConsoleID.AppleII, ConsoleID.Vectrex, ConsoleID.Tic80,
-			ConsoleID.PCEngine, ConsoleID.Uzebox, ConsoleID.Nintendo3DS,
+			ConsoleID.PCEngine, ConsoleID.Uzebox,
 		];
 
 		// these consoles will use part of the system bus at an offset
 		private static readonly Dictionary<ConsoleID, (uint Start, uint Size)[]> UsePartialSysBus = new()
 		{
 			[ConsoleID.SG1000] = [ (0xC000u, 0x2000u), (0x2000u, 0x2000u), (0x8000u, 0x2000u) ],
+			[ConsoleID.Nintendo3DS] = [ (0x00000000u, 0x40000000u) ],
 		};
 
 		// anything more complicated will be handled accordingly
@@ -492,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 							TryAddDomain(cartRam, 0x2000);
 							mfs.Add(new(domains[wram], 0x0000, 0x2000));
 							mfs.Add(new(domains[sysBus], 0xE000, 0x2000));
-							mfs.Add(domains[wram].Size == 0x8000 
+							mfs.Add(domains[wram].Size == 0x8000
 								? new MemFunctions(domains[wram], 0x2000, 0x6000)
 								: new NullMemFunctions(0x6000));
 							if (domains.Has(cartRam) && domains[cartRam].Size > 0x2000)
@@ -509,6 +516,7 @@ namespace BizHawk.Client.EmuHawk
 					case ConsoleID.SegaCD:
 						mfs.Add(new(domains["68K RAM"], 0, domains["68K RAM"].Size, 1));
 						mfs.Add(new(domains["CD PRG RAM"], 0, domains["CD PRG RAM"].Size, 1));
+						mfs.Add(new(domains["CD WORD RAM (2M)"], 0, domains["CD WORD RAM (2M)"].Size, 1));
 						break;
 					case ConsoleID.MagnavoxOdyssey:
 						mfs.Add(new(domains["CPU RAM"], 0, domains["CPU RAM"].Size));

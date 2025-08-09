@@ -20,6 +20,7 @@ using BizHawk.Emulation.Cores.Computers.Amiga;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Computers.DOS;
 using BizHawk.Emulation.Cores.Computers.Doom;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
@@ -35,6 +36,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
+using BizHawk.Emulation.Cores.Consoles.Panasonic3DO;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
@@ -376,6 +378,30 @@ namespace BizHawk.Client.EmuHawk
 				GambatteLink => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>()),
 				_ => DialogResult.None,
 			};
+
+		private DialogResult OpenDOSBoxSettingsDialog()
+			=> OpenGenericCoreConfigFor<DOSBox>(CoreNames.DOSBox + " Settings");
+
+		private void DOSSExportHddMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Emulator is not DOSBox dosbox) return;
+			try
+			{
+				var result = this.ShowFileSaveDialog(
+					discardCWDChange: true,
+					fileExt: "hdd",
+					filter: DOSBoxHDDImageFilterSet,
+					initDir: Config.PathEntries.ToolsAbsolutePath());
+				if (result is not null)
+				{
+					File.WriteAllBytes(result, dosbox.GetHDDContents());
+				}
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ToggleGambatteSyncSetting(
@@ -859,7 +885,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (layer is < 1 or > 4) return; // should this throw?
 			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
+			if (Emulator is BsnesCore bsnes)
 			{
 				var s = bsnes.GetSettings();
 				result = layer switch
@@ -871,6 +897,20 @@ namespace BizHawk.Client.EmuHawk
 					_ => result,
 				};
 				bsnes.PutSettings(s);
+				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
+			}
+			else if (Emulator is LibsnesCore bsnes1)
+			{
+				var s = bsnes1.GetSettings();
+				result = layer switch
+				{
+					1 => s.ShowOBJ_0 = !s.ShowOBJ_0,
+					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
+					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
+					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
+					_ => result,
+				};
+				bsnes1.PutSettings(s);
 				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
 			else if (Emulator is Snes9x snes9X)
@@ -941,12 +981,13 @@ namespace BizHawk.Client.EmuHawk
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
+		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("DOSBox HDD Images", extensions: [ "hdd" ]));
 
-
-		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("ZX-State files", extensions: [ "szx" ]));
 
 		private DialogResult OpenZXHawkSyncSettingsDialog(ISettingsAdapter settable)
 		{
@@ -1178,6 +1219,9 @@ namespace BizHawk.Client.EmuHawk
 			// Cygne
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Cygne, CreateGenericCoreConfigItem<WonderSwan>(CoreNames.Cygne)));
 
+			// DOSBox
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.DOSBox, CreateGenericCoreConfigItem<DOSBox>(CoreNames.DOSBox)));
+
 			// DSDA-Doom
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.DSDA, CreateGenericCoreConfigItem<DSDA>(CoreNames.DSDA)));
 
@@ -1325,6 +1369,9 @@ namespace BizHawk.Client.EmuHawk
 			};
 			items.Add(octoshockSubmenu);
 
+			// Opera
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Opera, CreateGenericCoreConfigItem<Opera>(CoreNames.Opera)));
+
 			// PCEHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PceHawk, CreateGenericCoreConfigItem<PCEngine>(CoreNames.PceHawk)));
 
@@ -1446,6 +1493,7 @@ namespace BizHawk.Client.EmuHawk
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
+			DOSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
@@ -1479,6 +1527,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.Coleco:
 					ColecoSubMenu.Visible = true;
+					break;
+				case VSystemID.Raw.DOS when Emulator is DOSBox:
+					DOSSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;

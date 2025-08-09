@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 		public int Read_Pot(IController c, int pot)
 		{
 			int x = c.AxisValue(Definition.Axes[pot]);
-			
+
 			x = -x;
 			x += 127;
 
@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			{
 				is_pressed = c.IsPressed($"P{PortNum} Button 2");
 			}
-			
+
 			if (is_pressed)
 			{
 				return 10;

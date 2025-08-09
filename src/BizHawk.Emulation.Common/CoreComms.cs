@@ -8,12 +8,9 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class CoreComm
 	{
-		public readonly Func<string, bool?> Question;
-
 		public CoreComm(
 			Action<string> showMessage,
 			Action<string, int?> notifyMessage,
-			Func<string, bool?> question,
 			ICoreFileProvider coreFileProvider,
 			CorePreferencesFlags prefs,
 			IOpenGLProvider oglProvider
@@ -21,7 +18,6 @@ namespace BizHawk.Emulation.Common
 		{
 			ShowMessage = showMessage;
 			Notify = notifyMessage;
-			Question = question;
 			CoreFileProvider = coreFileProvider;
 			CorePreferences = prefs;
 			OpenGLProvider = oglProvider;

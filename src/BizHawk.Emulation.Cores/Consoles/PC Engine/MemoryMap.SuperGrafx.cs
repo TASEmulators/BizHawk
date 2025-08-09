@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		// The SuperGrafx has 32K of RAM and a different port configuration to allow
 		// I/O access to VDC1, VDC2, and the VPC.

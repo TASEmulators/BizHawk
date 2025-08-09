@@ -85,6 +85,10 @@
 [submodule "ExternalProjects/FlooohChips/chips"]
 	path = ExternalProjects/FlooohChips/chips
 	url = https://github.com/floooh/chips.git
+[submodule "waterbox/dosbox/dosbox-x"]
+	path = waterbox/dosbox/dosbox-x
+	url = https://github.com/TASEmulators/dosbox-x.git
+	branch = wbx
 [submodule "waterbox/dsda/core"]
 	path = waterbox/dsda/core
 	url = https://github.com/TASEmulators/dsda-doom.git
@@ -98,3 +102,7 @@
 [submodule "ppsspp/SDL"]
 	path = ppsspp/SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "waterbox/opera/opera-libretro"]
+	path = waterbox/opera/opera-libretro
+	url = https://github.com/TASEmulators/opera-libretro.git
+	branch = wbx

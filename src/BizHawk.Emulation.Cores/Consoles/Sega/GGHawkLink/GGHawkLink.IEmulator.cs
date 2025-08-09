@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			bool cableDiscoSignalNew = controller.IsPressed("Toggle Cable");
 			if (cableDiscoSignalNew && !_cablediscosignal)
 			{
-				_cableconnected ^= true;
+				_cableconnected = !_cableconnected;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
 			}
 
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 								R_NMI_CD = 256;
 								//R.Cpu.NonMaskableInterrupt = true;
 							}
-						}					
+						}
 					}
 
 					if (L.p4_read)
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public int[] GetVideoBuffer()
 		{
-			return _vidbuffer;		
+			return _vidbuffer;
 		}
 
 		public void FillVideoBuffer()
@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			}
 			else
 			{
-				samples = new short[0];
+				samples = Array.Empty<short>();
 				nsamp = 0;
 			}
 		}
@@ -371,11 +371,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		{
 			L.DiscardSamples();
 			R.DiscardSamples();
-		}
-
-		public void DisposeSound()
-		{
-
 		}
 	}
 }

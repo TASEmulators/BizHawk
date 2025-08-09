@@ -2,7 +2,10 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Components.x86
 {
+#pragma warning disable CA1715 // breaks IInterface convention
 	public interface x86CpuType { }
+#pragma warning restore CA1715
+
 	public struct Intel8086 : x86CpuType { }
 
 	public sealed partial class x86<TCpu> where TCpu : struct, x86CpuType

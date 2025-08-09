@@ -81,6 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StateHistoryIntegrityCheckMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SetMaxUndoLevelsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SetRewindStepFastMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.CopyIncludesFrameNoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator26 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.autosaveToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -190,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.SetRewindStepMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -349,6 +351,7 @@ namespace BizHawk.Client.EmuHawk
             this.GreenzoneICheckSeparator,
             this.StateHistoryIntegrityCheckMenuItem});
 			this.EditSubMenu.Text = "&Edit";
+			this.EditSubMenu.DropDownClosed += new System.EventHandler(this.EditSubMenu_DropDownClosed);
 			this.EditSubMenu.DropDownOpened += new System.EventHandler(this.EditSubMenu_DropDownOpened);
 			// 
 			// UndoMenuItem
@@ -476,6 +479,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMaxUndoLevelsMenuItem,
+            this.SetRewindStepMenuItem,
+            this.SetRewindStepFastMenuItem,
             this.CopyIncludesFrameNoMenuItem,
             this.toolStripSeparator26,
             this.autosaveToolStripMenuItem,
@@ -502,6 +507,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
+			// 
+			// SetRewindStepFastMenuItem
+			// 
+			this.SetRewindStepFastMenuItem.Text = "Set Fast-Forward Rewind Step";
+			this.SetRewindStepFastMenuItem.Click += new System.EventHandler(this.SetRewindStepFastMenuItem_Click);
 			// 
 			// CopyIncludesFrameNoMenuItem
 			// 
@@ -1152,6 +1162,11 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.TabIndex = 10;
 			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
 			// 
+			// SetRewindStepMenuItem
+			// 
+			this.SetRewindStepMenuItem.Text = "Set Rewind Step";
+			this.SetRewindStepMenuItem.Click += new System.EventHandler(this.SetRewindStepMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1166,6 +1181,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(200, 148);
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Deactivate += new System.EventHandler(this.TAStudio_Deactivate);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
@@ -1349,5 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetFontMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyIncludesFrameNoMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetRewindStepFastMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SetRewindStepMenuItem;
 	}
 }

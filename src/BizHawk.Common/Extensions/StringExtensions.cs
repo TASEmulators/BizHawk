@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using CommunityToolkit.HighPerformance.Buffers;
 
@@ -7,21 +8,6 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
-		public static string CharCodepointsToString(byte[] array)
-		{
-			var a = new char[array.Length];
-			for (var i = 0; i < array.Length; i++) a[i] = char.ConvertFromUtf32(array[i])[0];
-			return new(a);
-		}
-
-#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
-		public static bool Contains(this string haystack, char needle)
-			=> haystack.IndexOf(needle) >= 0;
-#endif
-
-		public static bool Contains(this string haystack, string needle, StringComparison comparisonType)
-			=> haystack.IndexOf(needle, comparisonType) != -1;
-
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsIgnoreCase(this string haystack, string needle)
@@ -34,11 +20,6 @@ namespace BizHawk.Common.StringExtensions
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsOrdinal(this string haystack, string needle)
 			=> haystack.Contains(needle); // already ordinal
-
-#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
-		public static bool EndsWith(this string haystack, char needle)
-			=> haystack.Length >= 1 && haystack[^1] == needle;
-#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool EndsWithOrdinal(this string haystack, char needle)
@@ -140,18 +121,66 @@ namespace BizHawk.Common.StringExtensions
 		/// </returns>
 		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix, StringComparison.Ordinal) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool StartsWith(this ReadOnlySpan<char> str, char c)
-			=> str.Length >= 1 && str[0] == c;
+		/// <summary>a simple checksum of string contents, using MSBuild's "legacy" algorithm</summary>
+		public static int StableStringHash(this string str)
+		{
+			if (str is null) return 0;
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static bool StartsWith(this string str, char c)
-			=> str.Length >= 1 && str[0] == c;
+			// taken from .NET 9 source, MIT-licensed, specifically https://github.com/dotnet/msbuild/blob/v17.12.6/src/Shared/CommunicationsUtilities.cs#L861-L888
+			// (and then cleaned up a LOT)
+			static int RotateLeft(int n, int shift)
+				=> (n << shift) + (n >> ((sizeof(int) * 8) - shift));
+			int hash1 = 0x15051505;
+			int hash2 = 0x15051505;
+			var span = MemoryMarshal.AsBytes(str.AsSpan());
+			while (true)
+			{
+				if (span.Length < sizeof(int))
+				{
+					if (span.Length < sizeof(ushort)) break;
+					hash1 += RotateLeft(hash1, 5);
+					hash1 ^= MemoryMarshal.Read<ushort>(span);
+					break;
+				}
+				hash1 += RotateLeft(hash1, 5);
+				hash1 ^= MemoryMarshal.Read<int>(span);
+				span = span.Slice(sizeof(int));
+
+				if (span.Length < sizeof(int))
+				{
+					if (span.Length < sizeof(ushort)) break;
+					hash2 += RotateLeft(hash2, 5);
+					hash2 ^= MemoryMarshal.Read<ushort>(span);
+					break;
+				}
+				hash2 += RotateLeft(hash2, 5);
+				hash2 ^= MemoryMarshal.Read<int>(span);
+				span = span.Slice(sizeof(int));
+			}
+			return hash2 * (37 * 42326593) + hash1;
+		}
 
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool StartsWithIgnoreCase(this string haystack, string needle)
 			=> haystack.StartsWith(needle, StringComparison.OrdinalIgnoreCase);
+
+		/// <returns>
+		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or
+		/// the original <paramref name="str"/> if not found
+		/// </returns>
+		public static string SubstringAfter(this string str, char delimiter)
+			=> str.SubstringAfter(delimiter, notFoundValue: str);
+
+		/// <returns>
+		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or
+		/// the original <paramref name="str"/> if not found
+		/// </returns>
+		public static string SubstringAfter(this string str, char delimiter, string notFoundValue)
+		{
+			var index = str.IndexOf(delimiter);
+			return index < 0 ? notFoundValue : str.Substring(index + 1, str.Length - index - 1);
+		}
 
 		/// <returns>
 		/// the substring of <paramref name="str"/> after the first occurrence of <paramref name="delimiter"/>, or

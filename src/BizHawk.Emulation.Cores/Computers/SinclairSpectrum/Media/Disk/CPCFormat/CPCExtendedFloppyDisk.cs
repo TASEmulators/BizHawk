@@ -69,8 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// check for unformatted track
 				if (DiskHeader.TrackSizes[i] == 0)
 				{
-					DiskTracks[i] = new Track();
-					DiskTracks[i].Sectors = new Sector[0];
+					DiskTracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 
@@ -241,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			// sync deterministic track and sector counters

@@ -428,7 +428,7 @@ namespace BizHawk.Client.Common
 		public void SetRedoLog(ITasMovie movie)
 		{
 			_redoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
-			_newLog = new List<string>();
+			_newLog = new List<string>(_redoLength);
 			for (int i = 0; i < _redoLength; i++)
 			{
 				_newLog.Add(movie.GetInputLogEntry(FirstFrame + i));
@@ -782,7 +782,7 @@ namespace BizHawk.Client.Common
 			_onlyEmpty = false;
 			_newInputs = newInputs;
 		}
-		
+
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -826,7 +826,7 @@ namespace BizHawk.Client.Common
 			_oldInputs = oldInputs;
 			_removedMarkers = removedMarkers;
 		}
-		
+
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;

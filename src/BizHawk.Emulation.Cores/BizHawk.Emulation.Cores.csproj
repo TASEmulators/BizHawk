@@ -5,7 +5,6 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<NoWarn>$(NoWarn);BHI1104;CA1806;CA1825;CA2214;MA0060;MA0084;MA0090;MA0140;MEN018;RCS1215;RS0030;SA1100;SA1120;SA1129;SA1137;SA1205;SA1208;SA1400;SA1413;SA1514;SA1517</NoWarn>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
@@ -26,6 +25,7 @@
 		<Compile Update="Computers/AppleII/AppleII.*.cs" DependentUpon="AppleII.cs" />
 		<Compile Update="Computers/Commodore64/C64.*.cs" DependentUpon="C64.cs" />
 		<Compile Update="Computers/Doom/DSDA.*.cs" DependentUpon="DSDA.cs" />
+		<Compile Update="Computers/DOS/DOSBox.*.cs" DependentUpon="DOSBox.cs" />
 		<Compile Update="Computers/SinclairSpectrum/Hardware/Disk/NECUPD765.*.cs" DependentUpon="NECUPD765.cs" />
 		<Compile Update="Computers/SinclairSpectrum/Hardware/Disk/NECUPS765.Static.cs" DependentUpon="NECUPD765.cs" />
 		<Compile Update="Computers/SinclairSpectrum/Machine/Pentagon128K/Pentagon128.*.cs" DependentUpon="Pentagon128.cs" />

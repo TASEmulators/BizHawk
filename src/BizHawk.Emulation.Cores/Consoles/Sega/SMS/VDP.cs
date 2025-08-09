@@ -4,7 +4,11 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public enum VdpMode { SMS, GameGear }
+	public enum VdpMode
+	{
+		SMS,
+		GameGear,
+	}
 
 	// Emulates the Texas Instruments TMS9918 VDP.
 	public partial class VDP : IVideoProvider
@@ -196,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else
 			{
-				// Write VRAM and update pre-computed pattern buffer. 
+				// Write VRAM and update pre-computed pattern buffer.
 				UpdatePatternBuffer((ushort)(VdpAddress & 0x3FFF), value);
 				VRAM[VdpAddress & 0x3FFF] = value;
 			}
@@ -322,11 +326,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					// ??? should I move from my property to precalculated?
 					TmsSpriteAttributeBase = (Registers[5] << 7) & 0x3F80;
 					break;
-				case 6: // Sprite Pattern Generator Base Adderss 
+				case 6: // Sprite Pattern Generator Base Adderss
 					SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
 					break;
 			}
-
 		}
 
 		private static readonly byte[] pow2 = { 1, 2, 4, 8, 16, 32, 64, 128 };
@@ -358,7 +361,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Cpu.FlagI = true;
 			}
-				
 		}
 
 		public void ProcessLineInterrupt()
@@ -386,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Backdrop_SL[ScanLine] = Palette[(byte)(16 + (Registers[7] & 15))];
 			}
-			
+
 			// only mode 4 supports frameskip. deal with it
 			if (TmsMode == 4)
 			{
@@ -455,7 +457,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		public int VirtualWidth
-		{ 
+		{
 			get
 			{
 				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)

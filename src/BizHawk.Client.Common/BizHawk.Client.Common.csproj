@@ -18,6 +18,7 @@
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />
+		<InternalsVisibleTo Include="BizHawk.Tests" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />

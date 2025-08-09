@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			ServiceProvider = new BasicServiceProvider(this);
 			_settings = settings ?? new Settings();
 			_syncSettings = syncSettings ?? new SyncSettings();
-			
+
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)
@@ -129,7 +129,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		private BizSwan.MemoryCallback ReadCallbackD;
 		private BizSwan.MemoryCallback WriteCallbackD;

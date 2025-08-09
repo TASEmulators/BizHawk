@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                                 bit 15 repeat count present: 0 not present 1 present
                         2      u16    duration1 bits 0-14 low/high (see bit 15) pulse duration bits
                                                 bit 15 duration encoding: 0 duration1 1 ((duration1<<16)+duration2)
-                        4      u16    duration2 optional low bits of pulse duration (see bit 15 of duration1) 
+                        4      u16    duration2 optional low bits of pulse duration (see bit 15 of duration1)
                         6      ...    ...       ditto repeated until the end of the block
                     */
 					case "PULS":
@@ -282,7 +282,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
-
 									}
 									else
 									{
@@ -292,7 +291,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
-
 									}
 								}
 							}

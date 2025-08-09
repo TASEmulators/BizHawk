@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<bool> ReadCa2 = () => true;
 		public Func<bool> ReadCb1 = () => true;
 		public Func<bool> ReadCb2 = () => true;
-		
+
 		public Via()
 		{
 			_port = new DisconnectedPort();
@@ -123,16 +123,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// can reflect the input level on the pin, in order to avoid
 		// an endless loop, the most recently buffered pin values are used
 		// instead of calling the Read functions.
-		
+
 		public bool Ca2 => Ca2IsOutput
-			? _ca2Out 
+			? _ca2Out
 			: (_ca2Hist & 1) != 0;
 
 		public bool Cb1 => Cb1IsOutput
 			? _cb1Out
 			: (_cb1Hist & 1) != 0;
 
-		public bool Cb2 => Cb2IsOutput 
+		public bool Cb2 => Cb2IsOutput
 			? _cb2Out
 			: (_cb2Hist & 1) != 0;
 
@@ -197,8 +197,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// IRA is loaded when:
 			// - PA latch is disabled
 			// - a handshake is triggered by transition on CA1
-			if ((_acr & ACR_LATCH_PA) == 0 ||
-				(_ca2Handshake && (thisIrq & IRQ_CA1) != 0))
+			if ((_acr & ACR_LATCH_PA) is 0
+				|| (_ca2Handshake && (thisIrq & IRQ_CA1) is not 0))
 			{
 				_ira = _port.ReadExternalPra();
 			}
@@ -206,12 +206,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// IRB is loaded when:
 			// - PB latch is disabled
 			// - a handshake is triggered by transition on CB1
-			if ((_acr & ACR_LATCH_PB) == 0 ||
-				(_cb2Handshake && (thisIrq & IRQ_CB1) != 0))
+			if ((_acr & ACR_LATCH_PB) is 0
+				|| (_cb2Handshake && (thisIrq & IRQ_CB1) is not 0))
 			{
 				_irb = pbIn;
 			}
-			
+
 			// CA1, CA2, CB1, and CB2 are all buffered for edge detection each clock.
 			// The state of each pin is shifted in at bit 0 each clock.
 			_ca1Hist = (_ca1Hist << 1) | (ReadCa1() ? 1 : 0);
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				_cb2Handshake = false;
 			}
-			
+
 			// CB2 has one of four level sources.
 			_cb2Out = (_pcr & PCR_CB2_MODE) switch
 			{
@@ -317,7 +317,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_nextIrq |= IRQ_T2;
 						_t2IrqAllowed = false;
 					}
-
 				}
 
 				if ((_t2C & 0xFF) == 0 && (_acr & ACR_SR_USE_T2) != 0)
@@ -366,13 +365,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				case 0:
 				{
-					srPulse = !_shiftEnable 
+					srPulse = !_shiftEnable
 						? (_acr & ACR_SR_OUT) == 0 && (_shiftHist & EDGE_MASK) == EDGE_POSITIVE
 						: srT2;
 					srClock = !_shiftEnable
 						? (_cb1Hist & EDGE_MASK) == EDGE_POSITIVE
 						: (_shiftHist & EDGE_MASK) == EDGE_POSITIVE;
-					break; 
+					break;
 				}
 				case ACR_SR_CLOCK_T2:
 				{

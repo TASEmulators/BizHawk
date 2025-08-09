@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 				byte d = reader(addr++);
 				ret.AppendFormat("{0:X2} ", d);
 				result = result.Replace("ix16", "X + " + "ea");
-				result = result.Replace("ea", string.Format("{0:N}h", d));			
+				result = result.Replace("ea", string.Format("{0:N}h", d));
 			}
 			// else noop
 			while (ret.Length < 22)

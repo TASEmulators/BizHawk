@@ -3,9 +3,6 @@
 using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
-
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>

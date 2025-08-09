@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
@@ -129,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					Settings.Columns = LuaListView.AllColumns;
-					
+
 					DisplayManager.ClearApiHawkSurfaces();
 					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
@@ -502,7 +503,6 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
-			
 		}
 
 		public void ClearOutputWindow()
@@ -1185,7 +1185,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("https://tasvideos.org/BizHawk/LuaFunctions");
+			Util.OpenUrlExternal("https://tasvideos.org/BizHawk/LuaFunctions");
 		}
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)
@@ -1265,6 +1265,17 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 			return false;
+		}
+
+		public void LoadFromCommandLine(string path)
+		{
+			if (path.EndsWith(".luases", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = LoadLuaSession(path);
+				return;
+			}
+			LoadLuaFile(path);
+			UpdateDialog();
 		}
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)

@@ -5,7 +5,6 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -96,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 					.OrderBy(static kvp => kvp.Value.Ordinal).ThenBy(static kvp => kvp.Value.DisplayName);
 				int x = UIHelper.ScaleX(6);
 				int y = UIHelper.ScaleY(14);
-				int iwOffsetX = UIHelper.ScaleX(110);
+				int iwOffsetX = UIHelper.ScaleX(120);
 				int iwOffsetY = UIHelper.ScaleY(-4);
 				int iwWidth = UIHelper.ScaleX(120);
 

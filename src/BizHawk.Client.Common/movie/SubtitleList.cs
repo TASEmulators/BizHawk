@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 			}
-			
+
 			return false;
 		}
 

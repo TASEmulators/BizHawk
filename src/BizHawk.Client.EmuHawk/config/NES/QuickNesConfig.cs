@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			
+
 			if (pictureBox1.Image != null)
 			{
 				pictureBox1.Image.Dispose();

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.Common
 {
 	public class HotkeyInfo
@@ -66,7 +64,8 @@ namespace BizHawk.Client.Common
 			Bind("General", "Toggle Messages");
 			Bind("General", "Toggle Display Nothing");
 			Bind("General", "Accept Background Input");
-			Bind("General", "Capture Mouse");
+			Bind("General", "Capture Mouse", "WMouse M");
+			Bind("General", "Toggle Stay on Top");
 
 			Bind("Save States", "Save State 1", "Shift+F1");
 			Bind("Save States", "Save State 2", "Shift+F2");
@@ -134,9 +133,14 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Show Cursor");
 			Bind("TAStudio", "Toggle Follow Cursor", "Shift+F");
 			Bind("TAStudio", "Toggle Auto-Restore", "Shift+R");
+			Bind("TAStudio", "Seek To Green Arrow", "R");
 			Bind("TAStudio", "Toggle Turbo Seek", "Shift+S");
 			Bind("TAStudio", "Undo", "Ctrl+Z"); // TODO: these are getting not unique enough
 			Bind("TAStudio", "Redo", "Ctrl+Y");
+			Bind("TAStudio", "Seek To Prev Marker", "Shift+PageUp");
+			Bind("TAStudio", "Seek To Next Marker", "Shift+PageDown");
+			Bind("TAStudio", "Set Marker", "M");
+			Bind("TAStudio", "Delete Marker", "Ctrl+M");
 			Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A");
 			Bind("TAStudio", "Select All", "Ctrl+Shift+A");
 			Bind("TAStudio", "Reselect Clip.", "Ctrl+B");

@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.WinForms.Controls
 {
 	/// <summary>
@@ -19,7 +21,8 @@ namespace BizHawk.WinForms.Controls
 		public new string Text => "";
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new string Name => Guid.NewGuid().ToString();
+		public new string Name
+			=> Util.GetRandomUUIDStr();
 
 		protected override void WndProc(ref Message m)
 		{

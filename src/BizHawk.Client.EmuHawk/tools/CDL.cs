@@ -7,7 +7,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it?
 // perhaps missing domains shouldn't fail a check
@@ -39,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private bool CDLAutoStart { get; set; } = true;
-		
+
 		[ConfigPersist]
 		private bool CDLAutoResume { get; set; } = true;
 
@@ -145,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int[] totals = new int[8];
 				int total = 0;
-				
+
 				for (int i = 0; i < 256; i++)
 					map[i] = 0;
 
@@ -236,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 					ShutdownCDL();
 					return true;
 				}
-				
+
 				ShutdownCDL();
 				return false;
 			}
@@ -385,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file == null)
 				return false;
-				
+
 			SetCurrentFilename(file.FullName);
 			RunSave();
 			return true;

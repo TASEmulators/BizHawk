@@ -38,9 +38,9 @@ BizHawk's source is hosted with Git.
 - Linux
 	- If it's not already installed, the package name is probably `git`.
 - macOS
-	- Git comes with Xcode, or it can be installed manually or with Homebrew ([full instructions](https://git-scm.com/download/mac)).
+	- Git comes with Xcode, or it can be installed manually or with Homebrew ([full instructions](https://git-scm.com/downloads/mac)).
 - Windows
-	- Your IDE probably has Git support, or you could install the Git CLI, or a GUI such as [GitHub Desktop](https://desktop.github.com) or [GitKraken](https://gitkraken.com).
+	- Your IDE probably has Git support, or you could install the Git CLI, or a GUI such as [GitHub Desktop](https://github.com/apps/desktop) or [GitKraken](https://gitkraken.com).
 	- You can also use Git from within WSL2.
 
 To download the repo, first make sure you have a fork on GitHub (check the dropdown beside the "Fork" button at the top of the page).
@@ -68,15 +68,15 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 ## For any: .NET project
 
 - Linux
-	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/linux)).
+	- Install the .NET 8 SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
 	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
 	- Note that EmuHawk does not currently support macOS.
-	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/en-gb/dotnet/core/install/macos) or with Homebrew.
-	- VS Community isn't available for macOS, but Rider and VS Code are, and [for now](https://learn.microsoft.com/en-us/visualstudio/mac/what-happened-to-vs-for-mac) so is VS for Mac.
+	- Install the .NET 8 SDK [manually](https://learn.microsoft.com/dotnet/core/install/macos) or with Homebrew.
+	- VS Community isn't available for macOS, but Rider and VS Code are.
 - Windows
-	- The .NET 8 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/en-gb/dotnet/core/install/windows)).
+	- The .NET 8 SDK comes with [VS Community 2022](https://visualstudio.microsoft.com/vs/community) (see [full instructions](https://learn.microsoft.com/dotnet/core/install/windows)).
 	- You can also use Rider, VS Code, or something else instead of VS Community.
 
 For EmuHawk and libraries in the main solution, which do not target .NET 8, we have [this page](https://github.com/TASEmulators/BizHawk/wiki/Available-C%23-and-.NET-features) documenting which features are actually available to use.  
@@ -121,10 +121,10 @@ To build from the command-line on Unix, run `Dist/BuildRelease.sh`, and then `ou
 There are 2 build configurations. Besides `Release` there is `Debug`, which *does not run* bytecode optimisations, *does not remove* debugging symbols, *enables* additional logging and assertions, and *enables* some features. On Windows, a `Debug` executable will spawn a console window for stdout. Note there is also a "stronger" release build in the form of `VersionInfo.DeveloperBuild == false`, which is only used by GitLab CI for preparing a release (during `Dist/UpdateVersionInfoForRelease.sh`).
 
 We have an automated test suite in the solution which runs in CI, though you can and should run it before pushing.
-There are also [various Analyzers](https://github.com/TASEmulators/BizHawk/wiki/Roslyn-Analyzers-(third-party)) (static code analysis plugins) for detecting common mistakes and checking code style. These are disabled by default for the main solution; pass `-p:RunAnalyzersDuringBuild=true` to the build script, or set the env. var `MachineRunAnalyzersDuringBuild=1`.
-In addition, not every style rule is currently enabled, so please make sure you use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) (but don't try to fix code you're not working on).
+There are also [various Analyzers](https://github.com/TASEmulators/BizHawk/wiki/Roslyn-Analyzers-%28third-party%29) (static code analysis plugins) for detecting common mistakes and checking code style. Most of these are enabled by default for the main solution, but you can add `-p:RunStyleCop=true` when building.
+In addition, not every style rule is currently enabled, so please make sure you use tabs for indentation and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style), and match the line endings of the file you're editing (but don't try to fix code you're not working on).
 
-There are additional test suites specifically for regression-testing cores—these are not included in the solution and need to be run manually. See [the base project's readme](https://github.com/TASEmulators/BizHawk/blob/master/src/BizHawk.Tests.Testroms.GB/readme.md) for details.
+There are additional test suites specifically for regression-testing cores—these are not included in the solution and need to be run manually. See [the base project's readme](src/BizHawk.Tests.Testroms.GB/readme.md) for details.
 
 
 
@@ -305,7 +305,7 @@ Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET s
 
 Uses Rust.
 
-See [waterboxhost readme](https://github.com/TASEmulators/BizHawk/tree/master/waterbox/waterboxhost#readme).
+See [waterboxhost readme](waterbox/waterboxhost/README.md).
 
 
 
@@ -314,7 +314,7 @@ See [waterboxhost readme](https://github.com/TASEmulators/BizHawk/tree/master/wa
 
 Uses C/C++ targeting Linux w/ a custom libc based on musl.
 
-See [Waterbox readme](https://github.com/TASEmulators/BizHawk/tree/master/waterbox#readme).
+See [Waterbox readme](waterbox/readme.txt).
 
 
 
@@ -322,7 +322,7 @@ See [Waterbox readme](https://github.com/TASEmulators/BizHawk/tree/master/waterb
 [//]: # "Changing this section? Don't forget to update the modification date in the PR template!"
 
 By contributing, you declare that any additions or changes either:
-- were authored by you and you are willing to license your contributions to us under the [project's license](https://github.com/TASEmulators/BizHawk/tree/master/LICENSE); or
+- were authored by you and you are willing to license your contributions to us under the [project's license](LICENSE); or
 - were copied from a compatibly open-source, publicly-licensed source and are properly attributed, including licensing info.
 > [!IMPORTANT]
 > We will **not** accept any contributions "authored" by GitHub Copilot or similar ML tools.

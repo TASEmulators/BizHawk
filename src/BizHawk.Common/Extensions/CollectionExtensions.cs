@@ -10,6 +10,30 @@ namespace BizHawk.Common.CollectionExtensions
 	public static class CollectionExtensions
 #pragma warning restore MA0104
 	{
+		private struct EnumeratorAsEnumerable<T> : IEnumerable<T>
+		{
+			private IEnumerator<T>? _wrapped;
+
+			public EnumeratorAsEnumerable(IEnumerator<T> wrapped)
+				=> _wrapped = wrapped;
+
+			public override bool Equals(object? other)
+				=> other is EnumeratorAsEnumerable<T> wrapper && object.Equals(_wrapped, wrapper._wrapped);
+
+			public IEnumerator<T> GetEnumerator()
+			{
+				var temp = _wrapped ?? throw new InvalidOperationException("double enumeration (or `default`/zeroed struct)");
+				_wrapped = null;
+				return temp;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+				=> GetEnumerator();
+
+			public override int GetHashCode()
+				=> _wrapped?.GetHashCode() ?? default;
+		}
+
 		private const string ERR_MSG_IMMUTABLE_LIST = "immutable list passed to mutating method";
 
 		private const string WARN_NONGENERIC = "use generic overload";
@@ -119,6 +143,9 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
+		public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> enumerator)
+			=> new EnumeratorAsEnumerable<T>(enumerator);
+
 		/// <remarks>
 		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
 		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
@@ -133,8 +160,8 @@ namespace BizHawk.Common.CollectionExtensions
 		/// </returns>
 		public static ReadOnlySpan<T> ConcatArray<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b, Span<T> dest)
 		{
-			if (b.Length is 0) return a;
-			if (a.Length is 0) return b;
+			if (b.IsEmpty) return a;
+			if (a.IsEmpty) return b;
 			var combinedLen = a.Length + b.Length;
 			if (combinedLen < dest.Length) return Span<T>.Empty;
 			a.CopyTo(dest);
@@ -154,7 +181,9 @@ namespace BizHawk.Common.CollectionExtensions
 		}
 
 		/// <returns>freshly-allocated array</returns>
+#pragma warning disable RCS1224 // will be `params` when we bump `$(LangVersion)`; `this params` is nonsensical
 		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<T[]> arrays)
+#pragma warning restore RCS1224
 		{
 			var combinedLength = arrays.Sum(static a => a.Length); //TODO detect overflow
 			if (combinedLength is 0) return Array.Empty<T>();
@@ -169,7 +198,9 @@ namespace BizHawk.Common.CollectionExtensions
 		}
 
 		/// <returns>freshly-allocated array</returns>
+#pragma warning disable RCS1224 // will be `params` when we bump `$(LangVersion)`; `this params` is nonsensical
 		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<ArraySegment<T>> arrays)
+#pragma warning restore RCS1224
 		{
 			var combinedLength = arrays.Sum(static a => a.Count); //TODO detect overflow
 			if (combinedLength is 0) return Array.Empty<T>();
@@ -193,23 +224,9 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
-#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
-		/// <summary>
-		/// Returns the value at <paramref name="key"/>.
-		/// If the key is not present, returns default(TValue).
-		/// backported from .NET Core 2.0
-		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
-			=> dictionary.TryGetValue(key, out var found) ? found : default;
-
-		/// <summary>
-		/// Returns the value at <paramref name="key"/>.
-		/// If the key is not present, returns <paramref name="defaultValue"/>.
-		/// backported from .NET Core 2.0
-		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
-			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
-#endif
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Fill<T>(this T[] array, T value)
+			=> array.AsSpan().Fill(value);
 
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
@@ -365,18 +382,6 @@ namespace BizHawk.Common.CollectionExtensions
 			return null;
 		}
 
-#if !NET7_0_OR_GREATER
-		/// <remarks>shorthand for <c>this.OrderBy(static e => e)</c>, backported from .NET 7</remarks>
-		public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source)
-			where T : IComparable<T>
-			=> source.OrderBy(ReturnSelf);
-
-		/// <remarks>shorthand for <c>this.OrderByDescending(static e => e)</c>, backported from .NET 7</remarks>
-		public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> source)
-			where T : IComparable<T>
-			=> source.OrderByDescending(ReturnSelf);
-#endif
-
 		/// <returns><see langword="true"/> iff any removed</returns>
 		public static bool RemoveAll<T>(this ICollection<T> collection, T item)
 		{
@@ -427,10 +432,6 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 			return c - list.Count;
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static T ReturnSelf<T>(this T self)
-			=> self;
 
 		public static bool ReversedSequenceEqual<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b)
 			where T : IEquatable<T>
@@ -496,6 +497,42 @@ namespace BizHawk.Common.CollectionExtensions
 			if (!removed) collection.Add(item);
 			return removed;
 		}
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool? Unanimity(this IEnumerable<bool> lazy)
+			=> lazy is IReadOnlyCollection<bool> collection
+				? Unanimity(collection)
+				: Unanimity(lazy as ISet<bool> ?? lazy.ToHashSet());
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		public static bool? Unanimity(this IReadOnlyCollection<bool> collection)
+		{
+			if (collection is bool[] arr) return Unanimity(arr.AsSpan());
+			if (collection is List<bool> list)
+			{
+				return list is [ var first, .. ] && list.IndexOf(!first, index: 1) < 0 ? first : null;
+			}
+			using var iter = collection.GetEnumerator();
+			if (!iter.MoveNext()) return null;
+			var first1 = iter.Current;
+			while (iter.MoveNext()) if (iter.Current != first1) return null;
+			return first1;
+		}
+
+		/// <returns>
+		/// <see langword="true"/> if all <see langword="true"/>,
+		/// <see langword="false"/> if all <see langword="false"/>,
+		/// <see langword="true"/> if mixed (or empty)
+		/// </returns>
+		public static bool? Unanimity(this ISet<bool> set)
+			=> set.Contains(false)
+				? set.Contains(true) ? null : false
+				: set.Contains(true) ? true : null;
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		public static bool? Unanimity(this ReadOnlySpan<bool> span)
+			=> span is [ var first, .. ] && !span.Slice(start: 1).Contains(!first) ? first : null;
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

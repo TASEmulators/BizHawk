@@ -127,6 +127,7 @@ For older versions we have an all-in-one installer which you can get [here](http
 
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems
 unless you've updated to at least Win11 21H2 (initial release) or Win10 22H2. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
+> You may find that the upgrade from Win10 to Win11 is not available for your PC. Rather than throwing it out and getting a new one, consider switching to Linux. See [endof10.org](https://endof10.org) for more info.
 
 A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit.
 It has many bugs that will never be fixed (backports have ceased) and it doesn't have all the features of the later versions—you should probably get a new operating system instead.
@@ -139,13 +140,13 @@ Install the listed package with your package manager (some buttons are links to 
 
 [![Arch Linux | bizhawk-bin (AUR)](https://img.shields.io/badge/Arch_Linux-bizhawk--bin_(AUR)-%231793D1.svg?logo=archlinux&style=popout)](https://aur.archlinux.org/packages/bizhawk-bin)
 
-No package for your distro? Install via Nix (see below), or install manually by grabbing the latest release here on GitHub:
+No package for your distro? Install via Nix ([see below](#nixnixos)), or install manually by grabbing the latest release here on GitHub:
 
 [![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
-The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.
-The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency. If you try to use WINE anyway then you're on your own.  
+The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.  
+The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. Wine is also **not** a runtime dependency. If you try to use Wine anyway then you're on your own.  
 If it's not clear from the downloads here or in your package manager, EmuHawk is for x86_64 CPUs only.
 You may be able to run on AArch64 with missing features: see [#4052](https://github.com/TASEmulators/BizHawk/issues/4052).
 
@@ -171,7 +172,7 @@ If you were looking to emulate iOS apps, see [#3956](https://github.com/TASEmula
 #### macOS (legacy BizHawk)
 
 EmuHawk depends on certain libraries for graphics, and these don't work on macOS. Users on macOS have three options:
-* Use another machine with Windows or Linux, or install either in an x86_64 VM (WINE is not a VM).
+* Use another machine with Windows or Linux, or install either in an x86_64 VM (Wine is not a VM).
 * Use an older 1.x release, which was ported to macOS by @Sappharad (with replacements for the missing libraries), via Rosetta. Links and more details are in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659) (jump to last page for latest binaries). See [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) for details.
 * For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
 	* ...or use the Nix expression as a starting point instead.
@@ -422,8 +423,11 @@ Emulators for other systems can be found on the [EmulatorResources page](https:/
 ### EmuHawk or core development
 
 Do you want your name next to [these fine people](https://github.com/TASEmulators/BizHawk/graphs/contributors)?
-We have [many open issues](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted") with no-one to work on them.
-Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
+We have many open issues with no-one to work on them, including [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted")
+and [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Open%20to%20PRs%20for%20existing%20design%22).
+- ['Tasks'](https://github.com/TASEmulators/BizHawk/issues?q=type%3ATask%20is%3Aopen) are issues with narrow scope and/or clear requirements.
+- Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
+- For issues in need of ~~bikeshedding~~ constructive discussion, look at [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Open%20to%20design%20proposals%20only%22) and [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Waiting%20on%20dev%20consensus%22).
 
 [The contribution guidelines](https://github.com/TASEmulators/BizHawk/blob/master/contributing.md) have more details on how to get set up, work with the code, and submit changes to us.
 
@@ -431,12 +435,15 @@ Don't shy away from asking about an Issue on IRC/Discord (see above)! You might 
 For adding new features it's especially important, because details are often left out of the issue tracker, and we may want to make sure the new addition is future-proofed.
 
 With regards to core development, we're not particularly interested in PRs adding cores out-of-the-blue, but if you have experience in emulator development please get in touch. We have a wishlist of cores to port, and on top of that, many of our in-house cores are without a maintainer.
+- Open issues by programming language: [C](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Needs%20unmanaged%20changes%20%28C-lang%29%22), [C++](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Needs%20unmanaged%20changes%20%28C%2B%2B%29%22), ~~C#~~ (will have no lang label), [Rust](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Needs%20unmanaged%20changes%20%28Rust%29%22)
 
 [to top](#bizhawk)
 
 ### Testing/QA
 
-Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs, i.e. checking if they've been fixed or not.
+Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs (checking if they're still broken or if they've been fixed).
+- [This label](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Repro%3A%20Patch%20pending%22) tracks bugs which are likely fixed, but we're not sure.
+- Otherwise just filter by core and look for issues without a recent `Repro:` label.
 
 Those with hardware or other domain knowledge may be able to help triage [issues like these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"Needs+domain+knowledge+for+triage").
 
@@ -457,6 +464,6 @@ Any developers looking to re-use code from BizHawk in their own work should unde
 Disclaimer time! Can't have emulation software without a disclaimer...
 > Following the terms of our license does not make you immune from other contracts or laws.
 > Some or all of the following may be illegal where you live: creating a copy of non-free software for backup purposes ("dumping" or "ripping"); distributing copies of non-free software; soliciting pirated copies of software; knowingly possessing pirated copies of software; importing software from the USA (GitHub and TASVideos are American entities); using a backup copy of non-free software without the original.
-> For obvious reasons, **we cannot and will not distribute dumped games or firmware that is under copyright**.
+> For obvious reasons, **we cannot and will not distribute dumped games or firmware that are under copyright**.
 
 [to top](#bizhawk)

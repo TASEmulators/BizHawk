@@ -32,7 +32,7 @@ public sealed class DefineCheckedOpAnalyzer : DiagnosticAnalyzer
 	};
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagDefineCheckedOp);
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagDefineCheckedOp);
 
 	public override void Initialize(AnalysisContext context)
 	{

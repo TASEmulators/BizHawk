@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						Stop();
 					}
 				}
-
 			}
 		}
 
@@ -386,7 +385,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			while (cycles >= _waitEdge)
 			{
 				// decrement cycles
-				cycles -= _waitEdge;				
+				cycles -= _waitEdge;
 
 				if (_position == 0 && tapeMotor)
 				{
@@ -498,7 +497,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 							sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
 						}
 						_machine.CPC.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
-
 					}
 
 					// skip any empty blocks (and process any command blocks)
@@ -546,7 +544,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                                     }
 
                                     _monitorTimeOut = 2000;
-                                }                                
+                                }
                                 break;
                                 */
 							default:
@@ -579,7 +577,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 				// flip the current state
 				FlipTapeState();
-
 			}
 
 			// update lastCycle and return currentstate
@@ -628,9 +625,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             if (_tapeIsPlaying && _autoPlay)
             {
-                if (DataBlocks.Count > 1 || 
-                    (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.CSW_Recording &&
-                    _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.WAV_Recording))
+                if (DataBlocks.Count > 1
+                    || _dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.CSW_Recording or BlockType.WAV_Recording))
                 {
                     // we should only stop the tape when there are multiple blocks
                     // if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
@@ -639,12 +635,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
                 if (_monitorTimeOut < 0)
                 {
-                    if (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUSE_BLOCK &&
-                        _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUS)
+                    if (_dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.PAUSE_BLOCK or BlockType.PAUS))
                     {
                         AutoStopTape();
                     }
-                    
+
                     return;
                 }
 
@@ -657,7 +652,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 var block = DataBlocks[_currentDataBlockIndex];
 
                 // is this a pause block?
-                if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
+                if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
                 {
                     // don't autostop the tape here
                     return;
@@ -674,12 +669,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     return;
 
                 // don't autostop if there is only 1 block
-                if (DataBlocks.Count == 1 || _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.CSW_Recording ||
-                    _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.WAV_Recording
-                    )
+                if (DataBlocks.Count is 1
+                    || _dataBlocks[_currentDataBlockIndex].BlockDescription is BlockType.CSW_Recording or BlockType.WAV_Recording)
                 {
                     return;
-                }                    
+                }
 
                 if (diff >= timeout * 2)
                 {

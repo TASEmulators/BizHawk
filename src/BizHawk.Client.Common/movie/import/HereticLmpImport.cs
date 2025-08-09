@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	// In better detail, from archive.org: http://web.archive.org/web/20070630072856/http://demospecs.planetquake.gamespy.com/lmp/lmp.html
 	[ImporterFor("Heretic", ".hereticlmp")]
 	internal class HereticLmpImport : MovieImporter
-	{ 
+	{
 		protected override void RunImport()
 		{
 			var input = SourceFile.OpenRead().ReadAllBytes();
@@ -18,12 +18,12 @@ namespace BizHawk.Client.Common
 			Result.Movie.SystemID = VSystemID.Raw.Doom;
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DoomControllerTypes.Heretic,
+				InputFormat = DSDA.ControllerType.Heretic,
 				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
 				MonstersRespawn = false,
 				FastMonsters = false,
 				NoMonsters = false,
-				CompatibilityLevel = DSDA.CompatibilityLevel.C0,
+				CompatibilityLevel = DSDA.CompatibilityLevel.Doom_12,
 				SkillLevel = (DSDA.SkillLevel) (1 + input[i++]),
 				InitialEpisode = input[i++],
 				InitialMap = input[i++],
@@ -36,21 +36,22 @@ namespace BizHawk.Client.Common
 			};
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
-			var hereticController = new HereticController(1, false);
-			var controller = new SimpleController(hereticController.Definition);
+			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			void ParsePlayer(string playerPfx)
 			{
-				controller.AcceptNewAxis(playerPfx + "Run Speed", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(playerPfx + "Run Speed"     , unchecked((sbyte) input[i++]));
 				controller.AcceptNewAxis(playerPfx + "Strafing Speed", unchecked((sbyte) input[i++]));
-				controller.AcceptNewAxis(playerPfx + "Turning Speed", unchecked((sbyte) input[i++]));
-				var specialValue = input[i++];
-				controller[playerPfx + "Fire"] = (specialValue & 0b00000001) is not 0;
-				controller[playerPfx + "Use"] = (specialValue & 0b00000010) is not 0;
-				bool changeWeapon = (specialValue & 0b00000100) is not 0;
-				int weapon = changeWeapon ? (((specialValue & 0b00111000) >> 3) + 1) : 0;
+				controller.AcceptNewAxis(playerPfx + "Turning Speed" , unchecked((sbyte) input[i++]));
+
+				var specialValue = (LibDSDA.Buttons)input[i++];
+				controller[playerPfx + "Fire"] = (specialValue & LibDSDA.Buttons.Fire) is not 0;
+				controller[playerPfx + "Use" ] = (specialValue & LibDSDA.Buttons.Use ) is not 0;
+				bool changeWeapon = (specialValue & LibDSDA.Buttons.ChangeWeapon) is not 0;
+				int weapon = changeWeapon ? (((int)(specialValue & LibDSDA.Buttons.WeaponMask) >> 3) + 1) : 0;
+
 				controller.AcceptNewAxis(playerPfx + "Weapon Select", weapon);
-				controller.AcceptNewAxis(playerPfx + "Fly / Look", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(playerPfx + "Fly / Look"  , unchecked((sbyte) input[i++]));
 				controller.AcceptNewAxis(playerPfx + "Use Artifact", unchecked((sbyte) input[i++]));
 			}
 			do

@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (Spectrum._controller.IsPressed(Record))
 			{
-
+				//TODO
 			}
 			if (Spectrum._controller.IsPressed(NextTape))
 			{

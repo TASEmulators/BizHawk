@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// If set, the emulated Spectrum uses alternate timings (one cycle later than normal timings). If reset, the emulated Spectrum uses standard timings. 
+		/// If set, the emulated Spectrum uses alternate timings (one cycle later than normal timings). If reset, the emulated Spectrum uses standard timings.
 		/// This flag is only applicable for the ZXSTMID_16K, ZXSTMID_48K and ZXSTMID_128K models.
 		/// </summary>
 		public const int ZXSTMF_ALTERNATETIMINGS = 1;
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public const int ZXSTZF_EILAST = 1;
 		/// <summary>
-		/// The last instruction executed was a HALT instruction. The CPU is currently executing NOPs and will continue to do so until the next interrupt occurs. 
+		/// The last instruction executed was a HALT instruction. The CPU is currently executing NOPs and will continue to do so until the next interrupt occurs.
 		/// This flag is mutually exclusive with ZXSTZF_EILAST.
 		/// </summary>
 		public const int ZXSTZF_HALTED = 2;
@@ -116,13 +116,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public const int ZXSTAYF_FULLERBOX = 1;
 		/// <summary>
-		/// Melodik Soundbox emulation. 
+		/// Melodik Soundbox emulation.
 		/// This is essentially an AY chip for older Spectrums that uses the same ports as that found in 128k Spectrums
 		/// </summary>
 		public const int ZXSTAYF_128AY = 2;
 
 		/// <summary>
-		/// The state of the AY chip found in all 128k Spectrums, Pentagons, Scorpions and Timex machines. 
+		/// The state of the AY chip found in all 128k Spectrums, Pentagons, Scorpions and Timex machines.
 		/// This block may also be present for 16k/48k Spectrums if Fuller Box or Melodik emulation is enabled.
 		/// </summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// The number of drives connected to the Spectrum +3 and whether their motors are turned on. 
+		/// The number of drives connected to the Spectrum +3 and whether their motors are turned on.
 		/// Any blocks specifying which disk files are in which drive will follow this one.
 		/// </summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -233,13 +233,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public const int ZXSTDSKF_EMBEDDED = 2;
 		/// <summary>
-		/// When a double-sided disk is inserted into a single-sided drive, specifies the side being read from/written to. 
+		/// When a double-sided disk is inserted into a single-sided drive, specifies the side being read from/written to.
 		/// If set, Side B is the active side, otherwise it is Side A.
 		/// </summary>
 		public const int ZXSTDSKF_SIDEB = 3;
 
 		/// <summary>
-		/// Each +3 disk drive that has a disk inserted in it will have one of these blocks. 
+		/// Each +3 disk drive that has a disk inserted in it will have one of these blocks.
 		/// They follow the ZXSTPLUS3 block which identifies the number of drives.
 		/// </summary>
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]

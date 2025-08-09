@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores
 		public const string ColecoHawk = "ColecoHawk";
 		public const string CPCHawk = "CPCHawk";
 		public const string Cygne = "Cygne/Mednafen";
+		public const string DOSBox = "DOSBox-X";
 		public const string DSDA = "DSDA-Doom";
 		public const string Emu83 = "Emu83";
 		public const string Encore = "Encore";
@@ -46,6 +47,7 @@ namespace BizHawk.Emulation.Cores
 		public const string Nymashock = "Nymashock";
 		public const string O2Hawk = "O2Hawk";
 		public const string Octoshock = "Octoshock";
+		public const string Opera = "Opera";
 		public const string PceHawk = "PCEHawk";
 		public const string PicoDrive = "PicoDrive";
 		public const string PPSSPP = "PPSSPP";

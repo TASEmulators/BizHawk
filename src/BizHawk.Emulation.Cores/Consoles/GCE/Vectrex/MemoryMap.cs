@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 			}
 
+#pragma warning disable SA1508 // blank lines
 			if (addr < 0x8000)
 			{
 
@@ -88,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 
 			}
+#pragma warning restore SA1508
 		}
 
 		public byte PeekMemory(ushort addr)

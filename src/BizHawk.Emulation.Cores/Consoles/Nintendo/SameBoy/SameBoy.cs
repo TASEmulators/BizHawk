@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C libsameboy
 	/// </summary>
-	[PortedCore(CoreNames.Sameboy, "LIJI32", "0.16.3", "https://github.com/LIJI32/SameBoy")]
+	[PortedCore(CoreNames.Sameboy, "LIJI32", "1.0.2", "https://github.com/LIJI32/SameBoy")]
 	public partial class Sameboy : ICycleTiming, IInputPollable, ILinkable, IRomInfo, IBoardInfo, IGameboyCommon
 	{
 		private static readonly LibSameboy LibSameboy;
@@ -270,25 +270,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			{
 				throw new InvalidOperationException("Unexpected error in sameboy_getmemoryarea");
 			}
-
-			return new GPUMemoryAreas()
-			{
-				Vram = _vram,
-				Oam = _oam,
-				Sppal = _sppal,
-				Bgpal = _bgpal
-			};
+			return new GPUMemoryAreas(vram: _vram, oam: _oam, sppal: _sppal, bgpal: _bgpal);
 		}
 
-		private class GPUMemoryAreas : IGPUMemoryAreas
+		private sealed class GPUMemoryAreas(IntPtr vram, IntPtr oam, IntPtr sppal, IntPtr bgpal) : IGPUMemoryAreas
 		{
-			public IntPtr Vram { get; init; }
+			public IntPtr Vram
+				=> vram;
 
-			public IntPtr Oam { get; init; }
+			public IntPtr Oam
+				=> oam;
 
-			public IntPtr Sppal { get; init; }
+			public IntPtr Sppal
+				=> sppal;
 
-			public IntPtr Bgpal { get; init; }
+			public IntPtr Bgpal
+				=> bgpal;
 
 			public void Dispose() {}
 		}

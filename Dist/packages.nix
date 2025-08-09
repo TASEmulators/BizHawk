@@ -34,6 +34,14 @@
 , extraDotnetBuildFlags
 }: let
 	getMainOutput = lib.getOutput "out";
+	commonMeta = {
+		description = "Build artifacts for the \"managed\" (.NET) components of EmuHawk and DiscoHawk";
+		homepage = "https://github.com/TASEmulators/BizHawk";
+		downloadPage = "https://github.com/TASEmulators/BizHawk/releases";
+		changelog = "https://tasvideos.org/BizHawk/ReleaseHistory";
+		license = lib.licenses.mit; # doesn't include third-party code, which should bring it up to GPLv3, see https://gitlab.com/YoshiRulz/yoshis-hawk-thoughts/-/issues/61
+		maintainers = [ lib.maintainers.YoshiRulz ];
+	};
 	/** to override just one, you'll probably want to manually import packages-managed.nix, and combine that with the output of this */
 	buildExtraManagedDepsFor = hawkSourceInfo: let
 		pm = import ./packages-managed.nix {
@@ -181,7 +189,9 @@
 			# can similarly override `assets` output, only used by launch script to populate `BIZHAWK_DATA_HOME` if the dir doesn't exist at runtime,
 			# and `waterboxCores` output, which holds just the Waterbox cores, as the name suggests
 		};
-		meta.sourceProvenance = [ lib.sourceTypes.binaryNativeCode ]; # `extraUnmanagedDeps` and `waterboxCores` outputs; will work on from-source later
+		meta = commonMeta // {
+			sourceProvenance = [ lib.sourceTypes.binaryNativeCode ]; # `extraUnmanagedDeps` and `waterboxCores` outputs; will work on from-source later
+		};
 	}));
 	buildInstallable =
 		{ bizhawkAssemblies
@@ -216,7 +226,11 @@
 			};
 			meta = let
 				p = lib.systems.inspect.patterns;
-			in {
+			in bizhawkAssemblies.meta // {
+				description = {
+					discohawk-monort = "Simple frontend for disc image conversion using BizHawk's .NET libraries";
+					emuhawk-monort = "Multi-system emulator front-end, featuring QoL features for casual players, as well as recording/playback and debugging tools, making it the first choice for Tool-Assisted Speedrunners";
+				}.${pname};
 				platforms = [
 					(p.isLinux // p.isAarch64)
 					(p.isLinux // p.isx86_32)
@@ -281,7 +295,9 @@ in {
 				inherit gnome-themes-extra mono;
 				hawkSourceInfo = hawkSourceInfo';
 			};
-			meta.sourceProvenance = [ lib.sourceTypes.binaryNativeCode lib.sourceTypes.binaryBytecode ];
+			meta = commonMeta // {
+				sourceProvenance = [ lib.sourceTypes.binaryNativeCode lib.sourceTypes.binaryBytecode ];
+			};
 		} ''
 			${if zippedTarball then ''mkdir -p $assets; tar -xf '${artifact}'/*.tar -C $assets'' else ''cp -aT '${artifact}' $assets''}
 			cd $assets

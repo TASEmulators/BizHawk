@@ -19,10 +19,10 @@ jobs:
           dotnet-version: "8"
 
       - name: Debug build with analyzers
-        run: Dist/BuildDebug.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+        run: Dist/BuildDebug.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
       - name: Release build with analyzers
-        run: Dist/BuildRelease.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+        run: Dist/BuildRelease.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
   test:
     name: Test

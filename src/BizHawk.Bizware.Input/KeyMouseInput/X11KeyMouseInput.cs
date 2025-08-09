@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 
 using static BizHawk.Common.XInput2Imports;
 using static BizHawk.Common.XlibImports;

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[CoreConstructor(VSystemID.Raw.Arcade)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
-			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath).ToLowerInvariant();
+			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath.SubstringAfter('|')).ToLowerInvariant();
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ServiceProvider = new BasicServiceProvider(this);
@@ -172,8 +172,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// mame expects chd files in a folder of the game name
 			string MakeFileName(IRomAsset rom)
 				=> rom.Extension.ToLowerInvariant() is ".chd"
-					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
-					: Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
+					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
+					: Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
 
 			foreach (var rom in roms)
 			{
@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAME is { mameVersion }\n" +
 				$"MAMEHawk is { version }");
 		}
-		
+
 		private void MAMELogCallback(LibMAME.OutputChannel channel, int size, string data)
 		{
 			if (data.Contains("NOT FOUND") && channel == LibMAME.OutputChannel.ERROR)
@@ -433,10 +433,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public static string GetDIPSwitchOptions(string tag, string fieldName) =>
 				"local final = { } " +
 				$"for value, description in pairs(manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"].settings) do " +
-					"table.insert(final, string.format(\"%d~%s@\", value, description)) " +
+					"table.insert(final, string.format(\"%d~%s\", value, description)) " +
 				"end " +
 				"table.sort(final) " +
-				"return table.concat(final)";
+				"return table.concat(final, '\\n')";
 			public static string GetViewName(string index) =>
 				$"return manager.machine.video.snapshot_target.view_names[{ index }]";
 		}

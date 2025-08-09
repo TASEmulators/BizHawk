@@ -55,6 +55,14 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	private static readonly DiagnosticDescriptor DiagNoInitAccessor = new(
+		id: "BHI1008",
+		title: "Do not use init setter",
+		messageFormat: "Use a regular `set`ter (or add a constructor parameter)",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: false);
+
 	private static readonly DiagnosticDescriptor DiagNoQueryExpression = new(
 		id: "BHI1003",
 		title: "Do not use query expression syntax",
@@ -119,6 +127,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 		DiagNoAnonClasses,
 		DiagNoAnonDelegates,
 		DiagNoDiscardingLocals,
+		DiagNoInitAccessor,
 		DiagNoQueryExpression,
 		DiagRecordImplicitlyRefType,
 		DiagSwitchShouldThrowIOE,
@@ -170,6 +179,9 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 					}
 					switch (snac.Node)
 					{
+						case AccessorDeclarationSyntax ads:
+							if (ads.Keyword.ToString() is "init") DiagNoInitAccessor.ReportAt(ads, snac);
+							break;
 						case AnonymousMethodExpressionSyntax:
 							DiagNoAnonDelegates.ReportAt(snac.Node, snac);
 							break;
@@ -218,6 +230,7 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 				SyntaxKind.AnonymousObjectCreationExpression,
 				SyntaxKind.AnonymousMethodExpression,
 				SyntaxKind.CollectionExpression,
+				SyntaxKind.InitAccessorDeclaration,
 				SyntaxKind.InterpolatedStringExpression,
 				SyntaxKind.ListPattern,
 				SyntaxKind.QueryExpression,

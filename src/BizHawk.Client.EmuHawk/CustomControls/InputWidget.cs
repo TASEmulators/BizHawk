@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Input.Instance.Update();
 			var bindingStr = Input.Instance.GetNextBindEvent(ref _lastPress);
-			
+
 			if (bindingStr != null)
 			{
 				// has special meaning for the binding UI system (clear it).
@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 
 					_bindings.Add(bindingStr);
 				}
-				
+
 				UpdateLabel();
 				Increment();
 			}

@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private (byte[] FW, string Path) GetFirmwareWithPathOrThrow(FirmwareID id, string? msg)
-			=> GetFirmwareWithPath(id) ?? throw new MissingFirmwareException($"Couldn't find required firmware {id}.  This is fatal{(msg is null ? "." : $": {msg}")}");
+			=> GetFirmwareWithPath(id) ?? throw new MissingFirmwareException($"Couldn't find required firmware {id}.  This prevents the core from loading{(msg is null ? "." : $": {msg}")}");
 
 		public byte[]? GetFirmware(FirmwareID id, string? msg = null)
 		{

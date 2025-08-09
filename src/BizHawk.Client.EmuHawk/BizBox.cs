@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -22,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			linkLabel1.LinkVisited = true;
-			Process.Start(VersionInfo.HomePage);
+			Util.OpenUrlExternal(VersionInfo.HomePage);
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -51,12 +50,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-			=> Process.Start((string) ((Control) sender).Tag);
+			=> Util.OpenUrlExternal((string) ((Control) sender).Tag);
 
 		private void btnCopyHash_Click(object sender, EventArgs e)
 			=> Clipboard.SetText(VersionInfo.GIT_HASH);
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-			=> Process.Start(VersionInfo.BizHawkContributorsListURI);
+			=> Util.OpenUrlExternal(VersionInfo.BizHawkContributorsListURI);
 	}
 }

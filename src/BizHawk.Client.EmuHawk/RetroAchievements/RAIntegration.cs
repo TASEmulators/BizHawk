@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_memGuard = new(_memLock, _memSema, _memSync);
 			_memAccess = new(_memLock, _memSema, _memSync);
-			
+
 			RA = BizInvoker.GetInvoker<RAInterface>(_resolver, _memAccess, CallingConventionAdapters.Native);
 
 			// make sure clientName and clientVer match our user agent, as these get put into RAIntegration's user agent
@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RA.OnLoadState(path);
 		}
-		
+
 		private void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
 		{
 			if (RA.HardcoreModeIsActive())

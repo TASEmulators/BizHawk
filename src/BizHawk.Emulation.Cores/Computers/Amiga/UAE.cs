@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 
@@ -16,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		isReleased: true)]
 	public partial class UAE : WaterboxCore
 	{
-		private static readonly Configuration ConfigPAL = new Configuration
+		private static readonly Configuration ConfigPAL = new()
 		{
 			SystemId = VSystemID.Raw.Amiga,
 			MaxSamples = 8 * 1024,
@@ -28,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DefaultFpsDenominator = LibUAE.VIDEO_DENOMINATOR_PAL
 		};
 
-		private static readonly Configuration ConfigNTSC = new Configuration
+		private static readonly Configuration ConfigNTSC = new()
 		{
 			SystemId = VSystemID.Raw.Amiga,
 			MaxSamples = 8 * 1024,
@@ -40,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DefaultFpsNumerator = LibUAE.VIDEO_NUMERATOR_NTSC,
 			DefaultFpsDenominator = LibUAE.VIDEO_DENOMINATOR_NTSC
 		};
-		
+
 		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
 		private readonly List<IRomAsset> _roms;
 		private const int _messageDuration = 4;
@@ -55,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
 		private string _chipsetCompatible = "";
-		private string GetFullName(IRomAsset rom) => rom.Game.Name + rom.Extension;
+		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 
 		public override int VirtualWidth => _correctedWidth;
 
@@ -74,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			DeterministicEmulation = lp.DeterministicEmulationRequested || _syncSettings.FloppySpeed is FloppySpeed._100;
 			var filesToRemove = new List<string>();
 
-			_ports = [
+			Ports = [
 				_syncSettings.ControllerPort1,
 				_syncSettings.ControllerPort2
 			];
@@ -96,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				MmapHeapSizeKB = 20 * 1024,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-			}, new Delegate[] { _ledCallback });
+			}, [ _ledCallback ]);
 
 			for (var index = 0; index < lp.Roms.Count; index++)
 			{
@@ -145,13 +146,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				Port1 = new LibUAE.ControllerState
 				{
-					Type = _ports[0],
-					Buttons = 0
+					Type = Ports[0],
+					Buttons = LibUAE.AllButtons.None
 				},
 				Port2 = new LibUAE.ControllerState
 				{
-					Type = _ports[1],
-					Buttons = 0
+					Type = Ports[1],
+					Buttons = LibUAE.AllButtons.None
 				},
 				Action = LibUAE.DriveAction.None
 			};
@@ -160,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			{
 				ref var currentPort = ref (port is 1 ? ref fi.Port1 : ref fi.Port2);
 
-				switch (_ports[port - 1])
+				switch (Ports[port - 1])
 				{
 					case LibUAE.ControllerType.DJoy:
 						{
@@ -278,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			_ejectPressed = controller.IsPressed(Inputs.EjectDisk);
 			_insertPressed = controller.IsPressed(Inputs.InsertDisk);
 			_nextSlotPressed = controller.IsPressed(Inputs.NextSlot);
-			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);			
+			_nextDrivePressed = controller.IsPressed(Inputs.NextDrive);
 			fi.CurrentDrive = _currentDrive;
 
 			foreach (var (name, key) in _keyboardMap)

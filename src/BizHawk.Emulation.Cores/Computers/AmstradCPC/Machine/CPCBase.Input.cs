@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			if (CPC._controller.IsPressed(Record))
 			{
-
+				//TODO
 			}
 			if (CPC._controller.IsPressed(NextTape))
 			{

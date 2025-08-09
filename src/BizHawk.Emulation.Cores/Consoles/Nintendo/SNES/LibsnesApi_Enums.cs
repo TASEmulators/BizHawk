@@ -5,7 +5,7 @@
 		public enum eMessage : int
 		{
 			eMessage_NotSet,
-			
+
 			eMessage_Resume,
 
 			eMessage_QUERY_FIRST,

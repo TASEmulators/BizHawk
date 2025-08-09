@@ -6,7 +6,12 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	[PortedCore(CoreNames.Mupen64Plus, "", "2.0", "https://code.google.com/p/mupen64plus/", singleInstance: true)]
+	[PortedCore(
+		name: CoreNames.Mupen64Plus,
+		author: "Mupen64 contributors and Mupen64Plus contributors; port by micro500 and BizHawk contributors",
+		portedVersion: "2.0",
+		portedUrl: "https://github.com/mupen64plus/mupen64plus-core",
+		singleInstance: true)]
 	public partial class N64 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IDisassemblable, IRegionable,
 		ISettable<N64Settings, N64SyncSettings>
 	{
@@ -40,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_disableExpansionSlot = _syncSettings.DisableExpansionSlot;
 
 			// Override the user's expansion slot setting if it is mentioned in the gamedb (it is mentioned but the game MUST have this setting or else not work
-			if (game.OptionValue("expansionpak") != null && game.OptionValue("expansionpak") == "1")
+			if (game.OptionValue("expansionpak") is "1")
 			{
 				_disableExpansionSlot = false;
 				IsOverridingUserExpansionSlotSetting = true;
@@ -132,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AsyncExecuteEmulator();
 
 			// Hack: Saving a state on frame 0 has been shown to not be sync stable. Advance past that frame to avoid the problem.
-			// Advancing 2 frames was chosen to deal with a problem with the dynamic recompiler. The dynarec seems to take 2 frames to set 
+			// Advancing 2 frames was chosen to deal with a problem with the dynamic recompiler. The dynarec seems to take 2 frames to set
 			// things up correctly. If a state is loaded on frames 0 or 1 mupen tries to access null pointers and the emulator crashes, so instead
 			// advance past both to again avoid the problem.
 			api.frame_advance();

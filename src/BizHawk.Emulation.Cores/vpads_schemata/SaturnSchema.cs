@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Cores
 						MinValue = AxisRange.Min,
 						MaxValue = AxisRange.Max
 					},
-					
+
 					new ButtonSchema(400, 15, controller, "Start"),
 					new ButtonSchema(360, 58, controller, "L"),
 					new ButtonSchema(460, 58, controller, "R"),

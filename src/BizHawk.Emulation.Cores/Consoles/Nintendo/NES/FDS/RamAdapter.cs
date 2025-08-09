@@ -13,7 +13,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			for (int i = 0; i < pregap - 1; i++)
 				dest.WriteByte(0);
+#pragma warning disable MA0084 // shadows `ushort this.crc`
 			ushort crc = 0;
+#pragma warning restore MA0084
 			dest.WriteByte(0x80); // end of gap marker
 			crc = CCITT_8(crc, 0x80);
 			for (int i = 0; i < data.Length; i++)
@@ -22,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				crc = CCITT_8(crc, data[i]);
 			}
 			dest.WriteByte((byte)(crc & 0xff));
-			dest.WriteByte((byte)(crc >> 8)); 
+			dest.WriteByte((byte)(crc >> 8));
 		}
 
 		private static byte[] FixFDSSide(byte[] inputdisk)
@@ -327,12 +329,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					/* "It's a spring which will pull the reading head next to the outer edge of
 					 * the disk (you can clearly hear a click when this happens), so it's hard to
 					 * know exactly, but it's almost instantaneous (compared to the 6-7 seconds
-					 * required for moving in the other direction)."*/				
+					 * required for moving in the other direction)."*/
 					cycleswaiting = 535000;
 					break;
 			}
 		}
-		
+
 		/// <summary>
 		/// data write reg
 		/// </summary>
@@ -372,7 +374,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				transferreset = false;
 			}
-				
+
 			if ((cached4025 & 0x40) == 0 && (value & 0x40) != 0)
 			{
 				lookingforendofgap = true;
@@ -445,7 +447,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0xff;
 			if (disk != null && state != RamAdapterState.INSERTING)
 				ret &= unchecked((byte)~0x01);
-			if (!transferreset && (state == RamAdapterState.RUNNING || state == RamAdapterState.IDLE))
+			if (!transferreset && state is RamAdapterState.RUNNING or RamAdapterState.IDLE)
 				ret &= unchecked((byte)~0x02);
 			if (disk != null && state != RamAdapterState.INSERTING && !writeprotect)
 				ret &= unchecked((byte)~0x04);
@@ -594,7 +596,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if ((cached4025 & 0x10) != 0)
 					{
 						//Console.WriteLine("FDS: write clear CRC", readreg, diskpos);
-						
+
 						if (crc == 0)
 						{
 							cached4025 &= unchecked((byte)~0x10); // clear CRC reading
@@ -611,7 +613,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// loaded the first CRC byte to write, so stop computing CRC on data
 						writecomputecrc = false;
 					}
-
 				}
 			}
 
@@ -629,7 +630,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Whoever told me that was mistaken...
 			diskpos += 5000;
 		}
-
-
 	}
 }

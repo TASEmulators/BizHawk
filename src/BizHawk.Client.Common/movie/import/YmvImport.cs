@@ -142,6 +142,5 @@ namespace BizHawk.Client.Common.movie.import
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
 			Result.Movie.AppendFrame(controllers);
 		}
-
 	}
 }

@@ -3,7 +3,7 @@
 	// sachen
 	// NROM plus random copy protection circuit
 
-	// dancing blocks refuses to run; see comments below	
+	// dancing blocks refuses to run; see comments below
 	internal sealed class Mapper143 : NesBoardBase
 	{
 		public override bool Configure(EDetectionOrigin origin)

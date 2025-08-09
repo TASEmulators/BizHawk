@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			_reRecordCounter = _config.ReRecordCounter.Clone();
 			_messages = _config.Messages.Clone();
 			_autohold = _config.Autohold.Clone();
-			_ramWatches = _config.RamWatches.Clone();	
+			_ramWatches = _config.RamWatches.Clone();
 
 			InitializeComponent();
 
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 				ColorBox.Controls.Add(row);
 			}
 		}
-		
+
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			_config.Fps = _fps;

@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);
-		
+
 		[BizImport(CC)]
 		public abstract void PostLoadState();
 

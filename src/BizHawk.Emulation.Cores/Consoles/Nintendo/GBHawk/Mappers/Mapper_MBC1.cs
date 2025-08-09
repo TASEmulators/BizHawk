@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// some games have sizes that result in a degenerate ROM, account for it here
 			if (ROM_mask > 4) { ROM_mask |= 3; }
-			
+
 			RAM_mask = 0;
 			if (Core.cart_RAM != null)
 			{

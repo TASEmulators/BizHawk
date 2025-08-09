@@ -7,6 +7,7 @@ using System.CommandLine.Parsing;
 using System.Linq;
 using System.Net.Sockets;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -147,12 +148,13 @@ namespace BizHawk.Client.Common
 		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
 		{
 			parsed = default;
+			if (args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
 			var result = Parser.Parse(args);
 			if (result.Errors.Count is not 0)
 			{
 				// write all to stdout and show first in modal dialog (done in `catch` block in `Program`)
-				Console.WriteLine("failed to parse command-line arguments:");
-				foreach (var error in result.Errors) Console.WriteLine(error.Message);
+				Console.Error.WriteLine("failed to parse command-line arguments:");
+				foreach (var error in result.Errors) Console.Error.WriteLine(error.Message);
 				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
 			}
 			var triggeredGeneratedOption = GeneratedOptions.FirstOrDefault(o => result.FindResultFor(o) is not null);
@@ -166,6 +168,12 @@ namespace BizHawk.Client.Common
 				{
 					return exitCode;
 				}
+			}
+			if (result.GetValueForOption(OptionQueryAppVersion))
+			{
+				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
+				Console.WriteLine(VersionInfo.GetEmuVersion());
+				return 0;
 			}
 
 			var autoDumpLength = result.GetValueForOption(OptionAVDumpEndAtFrame);
@@ -217,7 +225,6 @@ namespace BizHawk.Client.Common
 				cmdDumpType: result.GetValueForOption(OptionAVDumpType),
 				currAviWriterFrameList: currAviWriterFrameList,
 				autoDumpLength: autoDumpLength ?? 0,
-				printVersion: result.GetValueForOption(OptionQueryAppVersion),
 				cmdDumpName: result.GetValueForOption(OptionAVDumpName),
 				autoCloseOnDump: result.GetValueForOption(OptionAVDumpQuitWhenDone),
 				chromeless: result.GetValueForOption(OptionLaunchChromeless),

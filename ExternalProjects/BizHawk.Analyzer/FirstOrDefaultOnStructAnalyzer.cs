@@ -15,7 +15,7 @@ public sealed class FirstOrDefaultOnStructAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagUseFirstOrNull);
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagUseFirstOrNull);
 
 	public override void Initialize(AnalysisContext context)
 	{

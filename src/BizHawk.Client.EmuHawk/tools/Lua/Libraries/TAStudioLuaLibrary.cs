@@ -143,30 +143,30 @@ namespace BizHawk.Client.EmuHawk
 					throw new InvalidOperationException("tastudio.setplayback() is not allowed during input/memory callbacks");
 				}
 
-				_luaLibsImpl.IsUpdateSupressed = true;
 
 				int f;
 				if (frame is long frameNumber)
 				{
 					f = (int)frameNumber;
 				}
+				else if (frame is double frameNumber2)
+				{
+					f = (int)frameNumber2;
+				}
 				else
 				{
-					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
-					if (f == -1)
-					{
-						return;
-					}
+					int markerIndex = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
+					if (markerIndex == -1) return;
 
-					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
+					f = Tastudio.CurrentTasMovie.Markers[markerIndex].Frame;
 				}
 
-				if (0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(f))
+				if (f >= 0)
 				{
-					Tastudio.GoToFrame(f, true);
+					_luaLibsImpl.IsUpdateSupressed = true;
+					Tastudio.GoToFrame(f);
+					_luaLibsImpl.IsUpdateSupressed = false;
 				}
-
-				_luaLibsImpl.IsUpdateSupressed = false;
 			}
 		}
 
@@ -300,6 +300,11 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("applyinputchanges", "")]
 		public void ApplyInputChanges()
 		{
+			if (_changeList.Count == 0)
+			{
+				return;
+			}
+
 			if (Engaged())
 			{
 				if (_luaLibsImpl.IsInInputOrMemoryCallback)
@@ -309,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_luaLibsImpl.IsUpdateSupressed = true;
 
-				if (_changeList.Count > 0)
+				Tastudio.ApiHawkBatchEdit(() =>
 				{
 					int size = _changeList.Count;
 
@@ -327,7 +332,6 @@ namespace BizHawk.Client.EmuHawk
 										Tastudio.CurrentTasMovie.SetAxisState(_changeList[i].Frame, _changeList[i].Button, _changeList[i].ValueAxis);
 										break;
 								}
-								Tastudio.RefreshForInputChange(_changeList[i].Frame);
 								break;
 							case LuaChangeTypes.InsertFrames:
 								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
@@ -341,9 +345,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
-					Tastudio.JumpToGreenzone();
-					Tastudio.DoAutoRestore();
-				}
+				});
 
 				_luaLibsImpl.IsUpdateSupressed = false;
 			}
@@ -393,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 				Tastudio.CurrentTasMovie.Branches.Select(b =>
 				{
 					var table = _th.CreateTable();
-					table["Id"] = b.Uuid.ToString();
+					table["Id"] = b.Uuid.ToString("D");
 					table["Frame"] = b.Frame;
 					table["Text"] = b.UserText;
 					return table;

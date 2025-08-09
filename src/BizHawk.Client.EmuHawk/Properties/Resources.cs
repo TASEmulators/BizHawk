@@ -36,6 +36,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Lazy<Bitmap> SaturnController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SaturnController"));
 		internal static readonly Lazy<Bitmap> SmsController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SMSController"));
 		internal static readonly Lazy<Bitmap> SnesController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SNES_Controller"));
+		internal static readonly Lazy<Bitmap> ThreeDOController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.3DOController"));
 		internal static readonly Lazy<Bitmap> TI83Controller = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.TI83_Controller"));
 		internal static readonly Lazy<Bitmap> VBoyController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.VBoyController"));
 		internal static readonly Lazy<Bitmap> WonderSwanColor = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.WonderSwanColor"));
@@ -48,6 +49,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap ArrowBlackDown = ReadEmbeddedBitmap("arrow_black_down");
 		internal static readonly Lazy<Bitmap> AtariController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("atari_controller"));
 		internal static readonly Bitmap Audio = ReadEmbeddedBitmap("AudioHS");
+		internal static readonly Bitmap AudioMuted = ReadEmbeddedBitmap("AudioMuted");
 		internal static readonly Bitmap AutoSearch = ReadEmbeddedBitmap("AutoSearch");
 		internal static readonly Bitmap Avi = ReadEmbeddedBitmap("AVI");
 		internal static readonly Bitmap Back = ReadEmbeddedBitmap("Back");
@@ -165,6 +167,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Refresh = ReadEmbeddedBitmap("Refresh");
 		internal static readonly Bitmap Restart = ReadEmbeddedBitmap("restart");
 		internal static readonly Bitmap RetroQuestion = ReadEmbeddedBitmap("RetroQuestion");
+		internal static readonly Bitmap RewindRecord = ReadEmbeddedBitmap("RewindRecord");
 		internal static readonly Bitmap Save = ReadEmbeddedBitmap("Save");
 		internal static readonly Bitmap SaveAs = ReadEmbeddedBitmap("SaveAs");
 		internal static readonly Bitmap SaveConfig = ReadEmbeddedBitmap("SaveConfig");

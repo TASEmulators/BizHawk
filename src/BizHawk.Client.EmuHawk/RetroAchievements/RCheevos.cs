@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -425,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_gameData = _cachedGameDatas.TryGetValue(gameId, out var cachedGameData)
 						? new(cachedGameData, () => AllowUnofficialCheevos)
-						: GetGameData(gameId);
+						: GetGameData(gameId) ?? new();
 				}
 
 				// this check seems redundant, but it covers the case where GetGameData failed somehow
@@ -660,7 +661,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			1 => Peek(address),
 			2 => Peek(address) | (Peek(address + 1) << 8),
-			4 => Peek(address) | (Peek(address + 1) << 8) | (Peek(address + 2) << 16) | (Peek(address + 3) << 24),
+			4 => BinaryPrimitives.ReadUInt32LittleEndian(unchecked(stackalloc byte[]
+			{
+				(byte) Peek(address),
+				(byte) Peek(address + 1),
+				(byte) Peek(address + 2),
+				(byte) Peek(address + 3),
+			})),
 			_ => throw new InvalidOperationException($"Requested {num_bytes} in {nameof(PeekCallback)}"),
 		};
 

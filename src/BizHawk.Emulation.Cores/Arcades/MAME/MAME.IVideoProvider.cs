@@ -13,7 +13,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int VsyncNumerator { get; private set; } = 60;
 		public int VsyncDenominator { get; private set; } = 1;
 
-		private int[] _frameBuffer = new int[0];
+		private int[] _frameBuffer = [ ];
+
 		private double _wAspect = 1;
 		private double _hAspect = 1;
 

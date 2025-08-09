@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (addr < 0x400)
 			{
-
+				// no-op (BIOS)
 			}
 			else
 			{
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				if (RAM_en)
 				{
-					if (addr_latch < 0x80) 
+					if (addr_latch < 0x80)
 					{
 						return RAM[addr_latch & 0x7F];
 					}
@@ -113,14 +113,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (port == 1)
 			{
 				// various control pins
-				return (byte)((ppu.lum_en ? 0x80 : 0) |
-				(copy_en ? 0x40 : 0) |
-				(!vpp_en ? 0x20 : 0) |
-				(!RAM_en ? 0x10 : 0) |
-				(!ppu_en ? 0x08 : 0) |
-				(!kybrd_en ? 0x04 : 0) |
-				(cart_b1 ? 0x02 : 0) |
-				(cart_b0 ? 0x01 : 0));
+				return unchecked((byte) ((ppu.lum_en ? 0x80 : 0)
+					| (copy_en ? 0x40 : 0)
+					| (!vpp_en ? 0x20 : 0)
+					| (!RAM_en ? 0x10 : 0)
+					| (!ppu_en ? 0x08 : 0)
+					| (!kybrd_en ? 0x04 : 0)
+					| (cart_b1 ? 0x02 : 0)
+					| (cart_b0 ? 0x01 : 0)));
 			}
 
 			// keyboard
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				rom_bank = (ushort)(cart_b0 ? 1 : 0);
 				rom_bank |= (ushort)(cart_b1 ? 2 : 0);
 				//rom_bank = (ushort)(rom_bank << 12);
-				
+
 				// XROM uses cart_b1 for read enable, not bank switch
 				if (is_XROM) { rom_bank = 0; }
 

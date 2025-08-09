@@ -4,6 +4,7 @@
 #include gamedb_appleII.txt
 #include gamedb_channelf.txt
 #include gamedb_coleco.txt
+#include gamedb_doom.txt
 #include gamedb_e_cards.txt
 #include gamedb_intv.txt
 #include gamedb_gb.txt

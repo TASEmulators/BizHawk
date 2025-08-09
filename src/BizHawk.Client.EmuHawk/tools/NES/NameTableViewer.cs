@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		
+
 
 		public void ScreenshotToClipboard()
 		{

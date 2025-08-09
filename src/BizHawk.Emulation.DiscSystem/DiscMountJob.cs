@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var tracksSynth = new Synthesize_DiscTracks_From_DiscTOC_Job(OUT_Disc, session);
 					tracksSynth.Run();
 				}
-				
+
 				//insert a synth provider to take care of the leadout track
 				//currently, we let mednafen take care of its own leadout track (we'll make that controllable later)
 				//TODO: This currently doesn't work well with multisessions (only the last session can have a leadout read with the current model)

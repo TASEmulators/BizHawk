@@ -99,8 +99,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		public SettingT Setting { get; private set; }
 		private readonly bool _isSyncSetting;
-		public MednaPropertyDescriptor(SettingT setting, bool isSyncSetting)
-			: base(setting.SettingsKey, new Attribute[0])
+
+		protected MednaPropertyDescriptor(SettingT setting, bool isSyncSetting)
+			: base(setting.SettingsKey, [ ])
 		{
 			Setting = setting;
 			_isSyncSetting = isSyncSetting;
@@ -201,7 +202,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.SingleOrDefault(d => d.Name == (string)value)
 					?.Value
 					?? Setting.DefaultValue;
-
 			}
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public Port Port { get; private set; }
 		public int PortIndex { get; private set; }
 		public PortPropertyDescriptor(Port port, int index)
-			: base(port.Name, new Attribute[0])
+			: base(port.Name, [ ])
 		{
 			Port = port;
 			PortIndex = index;
@@ -369,7 +369,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.SingleOrDefault(d => d.Name == (string)value)
 					?.SettingValue
 					?? Port.DefaultSettingsValue;
-
 			}
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
@@ -395,7 +394,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		public string LayerName { get; private set; }
 		public LayerPropertyDescriptor(string layerName)
-			: base(layerName, new Attribute[0])
+			: base(layerName, [ ])
 		{
 			LayerName = layerName;
 		}

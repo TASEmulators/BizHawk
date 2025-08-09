@@ -488,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{	
+		{
 			MainForm.CheatList.DisableAll();
 		}
 

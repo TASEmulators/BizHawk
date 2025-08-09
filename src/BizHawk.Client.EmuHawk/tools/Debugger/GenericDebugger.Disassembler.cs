@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				Disassemble();
 			}
 		}
-		
+
 		private void Disassemble()
 		{
 			_disassemblyLines.Clear();
@@ -66,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				_disassemblyLines.Add(new DisasmOp(currentAddress, advance, line));
 				currentAddress += (uint)advance;
 			}
+			DisassemblerView.Refresh();
 		}
 
 		private void DisassemblerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
@@ -136,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 			if (DisassemblerView.VisibleRows > 0)
 			{
 				DisassemblerView.RowCount = DisassemblerView.VisibleRows * 6 + 2;
-			}		
+			}
 		}
 
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
@@ -149,14 +150,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			IncrementCurrentAddress();
 			Disassemble();
-			DisassemblerView.Refresh();
 		}
 
 		private void SmallDecrement()
 		{
 			DecrementCurrentAddress();
 			Disassemble();
-			DisassemblerView.Refresh();
 		}
 
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)

@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 
 				// because of the peculiar setup of Binding.cs and PathEntry.cs
 				ObjectCreationHandling = ObjectCreationHandling.Replace,
-				
+
 				ContractResolver = new DefaultContractResolver
 				{
 					DefaultMembersSearchFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic,

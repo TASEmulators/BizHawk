@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 	public class MAMEPropertyDescriptor : PropertyDescriptor
 	{
 		public MAMEPropertyDescriptor(DriverSetting setting)
-			: base(setting.LookupKey, new Attribute[0])
+			: base(setting.LookupKey, [ ])
 		{
 			Setting = setting;
 			Converter = new MyTypeConverter(Setting);

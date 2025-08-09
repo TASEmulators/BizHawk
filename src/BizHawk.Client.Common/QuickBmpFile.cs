@@ -214,9 +214,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public class LoadedBMP : IVideoProvider
 		{
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 			public int[] VideoBuffer { get; set; }
 
 			public int[] GetVideoBuffer() => VideoBuffer!;
+#pragma warning restore CA1721
 
 			public int VirtualWidth => BufferWidth;
 

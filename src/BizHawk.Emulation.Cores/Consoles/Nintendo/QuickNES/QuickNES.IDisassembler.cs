@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickNES : IDisassemblable
+	public sealed partial class QuickNES : IDisassemblable
 	{
 		public string Cpu
 		{

@@ -1,0 +1,25 @@
+name: Update nix dependencies
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: [ "Directory.Packages.props" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  update-nix-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: nixbuild/nix-quick-install-action@v32
+    - run: nix-build --pure -A emuhawk.fetch-deps && ./result
+    - name: Commit Dist/deps.nix
+      uses: stefanzweifel/git-auto-commit-action@v6
+      with:
+        commit_message: "Nix expr: Regen NuGet lockfile"
+        file_pattern: Dist/deps.nix

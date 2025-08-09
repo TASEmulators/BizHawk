@@ -58,8 +58,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			// these three require core reboot to use
 			public bool SpriteLimit { get; set; }
-			public bool EqualizeVolume { get; set; } 
-			public bool ArcadeCardRewindHack{ get; set; } 
+			public bool EqualizeVolume { get; set; }
+			public bool ArcadeCardRewindHack{ get; set; }
 
 			public PCESettings Clone() => (PCESettings)MemberwiseClone();
 		}

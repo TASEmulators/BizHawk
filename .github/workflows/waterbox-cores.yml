@@ -37,6 +37,8 @@ jobs:
            git submodule update --init uae/libretro-uae;
            git submodule update --init stella/core;
            git submodule update --init dsda/core;
+           git submodule update --init opera/opera-libretro;
+           git submodule update --init --recursive dosbox/dosbox-x;
     - name: Install clang 18
       run: wget https://apt.llvm.org/llvm.sh;
             chmod u+x llvm.sh;
@@ -61,6 +63,7 @@ jobs:
           Assets/dll/ares64_interpreter.wbx.zst
           Assets/dll/ares64_recompiler.wbx.zst
           Assets/dll/bsnes.wbx.zst
+          Assets/dll/dosbox.wbx.zst
           Assets/dll/dsda.wbx.zst
           Assets/dll/faust.wbx.zst
           Assets/dll/gpgx.wbx.zst
@@ -68,6 +71,7 @@ jobs:
           Assets/dll/libsnes.wbx.zst
           Assets/dll/melonDS.wbx.zst
           Assets/dll/ngp.wbx.zst
+          Assets/dll/opera.wbx.zst
           Assets/dll/pcfx.wbx.zst
           Assets/dll/picodrive.wbx.zst
           Assets/dll/shock.wbx.zst
@@ -80,3 +84,4 @@ jobs:
           Assets/dll/uzem.wbx.zst
           Assets/dll/vb.wbx.zst
           Assets/dll/virtualjaguar.wbx.zst
+        retention-days: 90

@@ -70,11 +70,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x5002: chr[5] = value & chr_bank_mask_1k; break;
 				case 0x6000: chr[6] = value & chr_bank_mask_1k; break;
 				case 0x6002: chr[7] = value & chr_bank_mask_1k; break;
-
-
 			}
 			/*
-			if (addr >= 0x3000 && addr < 0x7000)	
+			if (addr >= 0x3000 && addr < 0x7000)
 			{
 				int b = (addr >> 11) - 6;
 				b |= addr >> 1 & 1;

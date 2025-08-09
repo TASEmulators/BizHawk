@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 #if NET5_0_OR_GREATER
 using KeyCollectionType = System.Collections.Generic.IReadOnlySet<string>;
@@ -18,11 +17,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				ICollection<string> keys = _movieSession.UserBag.Keys;
-#if NET5_0_OR_GREATER
 				return (keys as KeyCollectionType) ?? keys.ToHashSet();
-#else
-				return (keys as KeyCollectionType) ?? keys.ToList();
-#endif
 			}
 		}
 

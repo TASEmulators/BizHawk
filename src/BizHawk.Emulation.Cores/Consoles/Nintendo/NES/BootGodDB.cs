@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// we aren't tracking the individual hashes yet.
 
 			using HawkFile nesCartFile = new(Path.Combine(basePath, "NesCarts.xml"));
+			if (!nesCartFile.Exists) return;
 
 			var stream = nesCartFile.GetStream();
 
@@ -116,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										currCart.WramBattery = true;
 									break;
 							}
-						} else 
+						} else
 						if (xmlReader.NodeType == XmlNodeType.EndElement && xmlReader.Name == "board")
 						{
 							state = 4;

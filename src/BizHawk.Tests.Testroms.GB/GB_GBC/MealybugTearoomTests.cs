@@ -274,6 +274,7 @@ namespace BizHawk.Tests.Testroms.GB
 					(_, _, _) =>
 					{
 						if (!finished && domain.PeekByte(getPC()) is 0x40) finished = true;
+						return null;
 					},
 					address: null, // all addresses
 					mask: null));

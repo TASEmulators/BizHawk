@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.Input;
-using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
 

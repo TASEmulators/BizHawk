@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
 	public partial class GGHawkLink : ISaveRam
 	{
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if ((L.SaveRAM != null) || (R.SaveRAM != null))
 			{

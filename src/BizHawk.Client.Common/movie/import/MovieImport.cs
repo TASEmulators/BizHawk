@@ -22,12 +22,10 @@ namespace BizHawk.Client.Common
 			=> Importers.Any(kvp => kvp.Value.Extension.EqualsIgnoreCase(extension));
 
 		public static readonly FilesystemFilterSet AvailableImporters = new FilesystemFilterSet(
-			Importers.Values.OrderBy(attr => attr.Emulator)
+			combinedEntryDesc: "Movie Files",
+			filters: Importers.Values.OrderBy(static attr => attr.Emulator)
 				.Select(attr => new FilesystemFilter(attr.Emulator, new[] { attr.Extension.Substring(1) })) // substring removes initial '.'
-				.ToArray())
-			{
-				CombinedEntryDesc = "Movie Files",
-			};
+				.ToArray());
 
 		// Attempt to import another type of movie file into a movie object.
 		public static ImportResult ImportFile(

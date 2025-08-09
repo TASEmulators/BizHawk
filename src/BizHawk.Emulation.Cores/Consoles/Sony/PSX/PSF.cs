@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				int reserved_size = br.ReadInt32();
 				int compressed_size = br.ReadInt32();
 				int compressed_crc32 = br.ReadInt32();
-				
+
 				//load tags
 				//tags run until the end of the file
 				fs.Position = 16 + reserved_size + compressed_size;

@@ -15,7 +15,7 @@ public sealed class ExprBodiedMemberFlowAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
-		= ImmutableArray.Create(/*HawkSourceAnalyzer.DiagWTF,*/ DiagExprBodiedMemberFlow);
+		= ImmutableArray.Create(HawkSourceAnalyzer.DiagWTF, DiagExprBodiedMemberFlow);
 
 	public override void Initialize(AnalysisContext context)
 	{

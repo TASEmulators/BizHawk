@@ -304,9 +304,9 @@ namespace BizHawk.Client.EmuHawk
 				case ".xml":
 				{
 					var xml = XmlGame.Create(new(path));
-					foreach (var kvp in xml.Assets)
+					foreach (var pfd in xml.Assets)
 					{
-						InternalDebugHash(kvp.Key);
+						InternalDebugHash(pfd.Path);
 					}
 
 					break;

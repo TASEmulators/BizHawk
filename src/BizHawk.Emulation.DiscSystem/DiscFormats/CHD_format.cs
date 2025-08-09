@@ -957,8 +957,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				var hunkOffset = bw.BaseStream.Position;
 
-				// TODO: adjust compression level?
-				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, Zstd.MaxCompressionLevel))
+				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, 0))
 				{
 					cstream.Write(curHunk, 0, curHunk.Length);
 				}
@@ -1196,10 +1195,7 @@ namespace BizHawk.Emulation.DiscSystem
 			// tag is hashed alongside the hash
 			// we use the same tag every time, so we can just reuse this array
 			var metadataTag = new byte[4];
-			metadataTag[0] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 24) & 0xFF);
-			metadataTag[1] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 16) & 0xFF);
-			metadataTag[2] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 8) & 0xFF);
-			metadataTag[3] = (byte)(LibChd.CDROM_TRACK_METADATA2_TAG & 0xFF);
+			BinaryPrimitives.WriteUInt32BigEndian(metadataTag, LibChd.CDROM_TRACK_METADATA2_TAG);
 			foreach (var metadataHash in metadataHashes)
 			{
 				sha1Inc.AppendData(metadataTag);

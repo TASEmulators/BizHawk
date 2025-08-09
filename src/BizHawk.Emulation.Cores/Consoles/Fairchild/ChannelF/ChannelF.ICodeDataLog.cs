@@ -1,5 +1,6 @@
-﻿using BizHawk.Emulation.Common;
 using System.IO;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
@@ -37,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public enum CDLType
 		{
 			None,
-			BIOS1, 
-			BIOS2, 
+			BIOS1,
+			BIOS2,
 			CARTROM
 		}
 

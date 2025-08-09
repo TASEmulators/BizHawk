@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
-		/// <param name="type">How you you want to display the value See <see cref="WatchDisplayType"/></param>
+		/// <param name="type">selected format for displaying the value</param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
 		/// <param name="value">Current value</param>
@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets a list of <see cref="WatchDisplayType"/> for a <see cref="DWordWatch"/>
 		/// </summary>
-		public static IEnumerable<WatchDisplayType> ValidTypes { get; } = [
+		public static readonly IReadOnlyList<WatchDisplayType> ValidTypes = [
 			WatchDisplayType.Unsigned,
 			WatchDisplayType.Signed,
 			WatchDisplayType.Hex,
@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 		/// Get a list of <see cref="WatchDisplayType"/> that can be used for a <see cref="DWordWatch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
-		public override IEnumerable<WatchDisplayType> AvailableTypes()
+		public override IReadOnlyList<WatchDisplayType> AvailableTypes()
 		{
 			return ValidTypes;
 		}

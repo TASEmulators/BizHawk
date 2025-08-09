@@ -11,7 +11,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		protected readonly Atari2600 Core;
 
-		public virtual byte[] CartRam => new byte[0];
+		public virtual byte[] CartRam
+			=> [ ];
 
 		public virtual byte ReadMemory(ushort addr)
 			=> Core.BaseReadMemory(addr);

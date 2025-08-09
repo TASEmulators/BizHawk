@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores
 					}
 
 					int pNum = i + 1;
-					if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
+					if (fioConfig.DevicesPlayer[i] is OctoshockDll.ePeripheralType.DualAnalog or OctoshockDll.ePeripheralType.DualShock)
 					{
 						yield return DualShockController(pNum);
 					}

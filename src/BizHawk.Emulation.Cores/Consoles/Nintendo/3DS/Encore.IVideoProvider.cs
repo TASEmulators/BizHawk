@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		protected readonly LibEncore _core;
 		protected readonly IntPtr _context;
-		
+
 		public EncoreVideoProvider(LibEncore core, IntPtr context)
 		{
 			_core = core;
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			return _vbuf;
 		}
 	}
-	
+
 	public class EncoreGLTextureProvider : EncoreVideoProvider, IGLTextureProvider
 	{
 		public EncoreGLTextureProvider(LibEncore core, IntPtr context)

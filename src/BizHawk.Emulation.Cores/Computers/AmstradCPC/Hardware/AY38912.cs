@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
 	/// Based heavily on the YM-2149F / AY-3-8910 emulator used in Unreal Speccy
-	/// (Originally created under Public Domain license by SMT jan.2006)    /// 
+	/// (Originally created under Public Domain license by SMT jan.2006)    ///
 	/// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.cpp
 	/// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.h
 	/// </summary>
@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// AY mixer panning configuration
 		/// </summary>
-		[Flags]
 		public enum AYPanConfig
 		{
 			MONO = 0,
@@ -203,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					break;
 
-				// write reg      
+				// write reg
 				case 2:
 
 					if (_activeRegister == 14)
@@ -216,13 +215,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						return;
 
 					byte val = (byte)value;
-
-					if (((1 << _activeRegister) & ((1 << 1) | (1 << 3) | (1 << 5) | (1 << 13))) != 0)
-						val &= 0x0F;
-
-					if (((1 << _activeRegister) & ((1 << 6) | (1 << 8) | (1 << 9) | (1 << 10))) != 0)
-						val &= 0x1F;
-
+					if (_activeRegister is 1 or 3 or 5 or 13) val &= 0x0F;
+					else if (_activeRegister is 6 or 8 or 9 or 10) val &= 0x1F;
 					if (_activeRegister != 13 && _registers[_activeRegister] == val)
 						return;
 
@@ -312,8 +306,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					break;
 			}
-
-
 		}
 
 		/// <summary>
@@ -385,15 +377,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             14	        I/O port A	                8-bit (0-255)
             15	        I/O port B	                8-bit (0-255) (Not present on the AY-3-8912)
 
-            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the 
+            * The volume registers (8, 9 and 10) contain a 4-bit setting but if bit 5 is set then that channel uses the
                 envelope defined by register 13 and ignores its volume setting.
             * The mixer (register 7) is made up of the following bits (low=enabled):
-            
+
             Bit:        7	    6	    5	    4	    3	    2	    1	    0
             Register:   I/O	    I/O	    Noise	Noise	Noise	Tone	Tone	Tone
             Channel:    B       A	    C	    B	    A	    C	    B	    A
 
-            The AY-3-8912 ignores bit 7 of this register.    
+            The AY-3-8912 ignores bit 7 of this register.
         */
 		private int[] _registers = new int[16];
 
@@ -583,7 +575,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			_tStatesPerFrame = frameTactCount;
 			_samplesPerFrame = sampleRate / 50; //882
 
-			_tStatesPerSample = frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
+			_tStatesPerSample = frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) /
 																				   //(16D * (double)_sampleRate),
 																				   //MidpointRounding.AwayFromZero);
 			_audioBuffer = new short[_samplesPerFrame * 2];
@@ -653,26 +645,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 						if ((_eState & ~31) != 0)
 						{
-							var mask = (1 << _registers[AY_E_SHAPE]);
-
-							if ((mask & ((1 << 0) | (1 << 1) | (1 << 2) |
-								(1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) |
-								(1 << 7) | (1 << 9) | (1 << 15))) != 0)
+							var val = _registers[AY_E_SHAPE];
+							if (val is <= 7 or 9 or 15)
 							{
 								_eState = _eDirection = 0;
 							}
-							else if ((mask & ((1 << 8) | (1 << 12))) != 0)
+							else if (val is 8 or 12)
 							{
 								_eState &= 31;
 							}
-							else if ((mask & ((1 << 10) | (1 << 14))) != 0)
+							else if (val is 10 or 14)
 							{
 								_eDirection = -_eDirection;
 								_eState += _eDirection;
 							}
-							else
+							else /*if (val is 11 or 13)*/
 							{
-								// 11,13
 								_eState = 31;
 								_eDirection = 0;
 							}

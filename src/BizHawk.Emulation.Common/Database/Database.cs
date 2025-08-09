@@ -208,8 +208,26 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
-			_bundledRoot = bundledRoot;
-			_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			if (Directory.Exists(bundledRoot))
+			{
+				_bundledRoot = bundledRoot;
+				_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			}
+#if false //TODO synthesise `#includeuser gamedb_user.txt` and load
+			else if (Directory.Exists(userRoot))
+			{
+				_bundledRoot = userRoot;
+				_userRoot = userRoot;
+			}
+#endif
+			else
+			{
+				Console.WriteLine("gamedb root not found");
+				// nothing to do
+				DB = FrozenDictionary<string, CompactGameInfo>.Empty;
+				_acquire.Set();
+				return;
+			}
 
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
@@ -461,6 +479,10 @@ namespace BizHawk.Emulation.Common
 			//	case ".HDF":
 			//	case ".LHA":
 					game.System = VSystemID.Raw.Amiga;
+					break;
+
+				case ".D88" or ".DMF" or ".FDD" /*or ".FDI"*/ or ".IMA" or ".IMG" or ".NFD" or ".XDF":
+					game.System = VSystemID.Raw.DOS;
 					break;
 
 				case ".IPF":

@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			switch (borderType)
 			{
-				
+
 				case C64.BorderType.Full:
 					newHblankStart = -1;
 					newHblankEnd = -1;
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					newVblankStart = -1;
 					newVblankEnd = -1;
 					_vblank = false;
-					break;                    
+					break;
 				case C64.BorderType.Normal:
 					newHblankStart = hblankStart;
 					newHblankEnd = hblankEnd;
@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				_spriteSpriteCollisionClearPending = false;
 			}
-			
+
 			// start of rasterline
 			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			UpdatePins();
 			Render();
 		}
-		
+
 		private void UpdateBa()
 		{
 			if (_ba)

@@ -93,11 +93,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					};
 
 					var DIPSwitchOptions = MameGetString(MAMELuaCommand.GetDIPSwitchOptions(tag, fieldName));
-					var options = DIPSwitchOptions.Split(new[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+					var options = DIPSwitchOptions.Split('\n');
 					if (options.Length is 0) continue;
 					foreach (var option in options)
 					{
-						var opt = option.Split(new[] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+						var opt = option.Split('~');
 						setting.Options.Add(opt[0], opt[1]);
 					}
 					CurrentDriverSettings.Add(setting);
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				var s = CurrentDriverSettings.SingleOrDefault(s => s.LookupKey == setting.Key);
 
-				if (s != null && s.Type == SettingType.DIPSWITCH)
+				if (s?.Type is SettingType.DIPSWITCH)
 				{
 					_core.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
@@ -140,9 +140,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					var name = substrings[0];
 					var hashdata = substrings[1];
 					var flags = long.Parse(substrings[2]);
-
-					if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
-						|| (flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
+					if ((flags & LibMAME.ROMENTRY_TYPEMASK) is LibMAME.ROMENTRYTYPE_SYSTEM_BIOS or LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
 					{
 						setting.Options.Add(name, hashdata);
 

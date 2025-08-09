@@ -16,11 +16,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		 * Mirroring varies by type:
 		 *   175: Hardwired mirroring (H/V)
 		 *   340: Simple mirroring control through $E000.
-		 * 
+		 *
 		 * Nesdev mentions that the 340 has no WRAM, but that's because no games
 		 * on the 340 ever used it.  (In fact, only 1 (?) 175 game has wram).
 		 * In any event, WRAM write protect is different than on 129/163.
-		 * 
+		 *
 		 * This should be mapper 210, with mapper 19 being 129/163, but you know how
 		 * mapper numbers are.  To complicate things, some 175/340 games run correctly
 		 * on a 163 because they make compatibility writes to both sets of mirroring regs.

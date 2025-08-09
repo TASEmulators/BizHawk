@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	partial class GambatteLink : ICodeDataLogger
+	public partial class GambatteLink : ICodeDataLogger
 	{
 		void ICodeDataLogger.SetCDL(ICodeDataLog cdl)
 		{

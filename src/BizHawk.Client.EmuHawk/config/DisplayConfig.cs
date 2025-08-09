@@ -11,10 +11,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class DisplayConfig : Form, IDialogParent
 	{
-		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(new FilesystemFilter(".CGP Files", new[] { "cgp" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter(".CGP Files", extensions: [ "cgp", "glslp" ]));
 
 		private readonly Config _config;
 
@@ -70,10 +69,13 @@ namespace BizHawk.Client.EmuHawk
 			cbMenuWindowed.Checked = _config.DispChromeMenuWindowed;
 			cbMainFormSaveWindowPosition.Checked = _config.SaveWindowPosition;
 			cbMainFormStayOnTop.Checked = _config.MainFormStayOnTop;
+			cbMainFormMouseCaptureForcesTopmost.Checked = _config.MainFormMouseCaptureForcesTopmost;
 			if (OSTailoredCode.IsUnixHost)
 			{
 				cbMainFormStayOnTop.Enabled = false;
 				cbMainFormStayOnTop.Visible = false;
+				cbMainFormMouseCaptureForcesTopmost.Enabled = false;
+				cbMainFormMouseCaptureForcesTopmost.Visible = false;
 			}
 			cbStatusBarFullscreen.Checked = _config.DispChromeStatusBarFullscreen;
 			cbMenuFullscreen.Checked = _config.DispChromeMenuFullscreen;
@@ -146,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			_config.DispAutoPrescale = cbAutoPrescale.Checked;
 			_config.ScaleOSDWithSystemScale = cbScaleOSD.Checked;
-			
+
 			_config.DispAllowTearing = cbAllowTearing.Checked;
 
 			_config.DispChromeStatusBarWindowed = cbStatusBarWindowed.Checked;
@@ -155,6 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SaveWindowPosition = cbMainFormSaveWindowPosition.Checked;
 			_config.MainFormStayOnTop = cbMainFormStayOnTop.Checked;
 			Owner.TopMost = _config.MainFormStayOnTop;
+			_config.MainFormMouseCaptureForcesTopmost = cbMainFormMouseCaptureForcesTopmost.Checked;
 			_config.DispChromeStatusBarFullscreen = cbStatusBarFullscreen.Checked;
 			_config.DispChromeMenuFullscreen = cbMenuFullscreen.Checked;
 			_config.DispChromeFrameWindowed = trackbarFrameSizeWindowed.Value;
@@ -273,13 +276,14 @@ namespace BizHawk.Client.EmuHawk
 			var result = this.ShowFileOpenDialog(
 				filter: CgShaderPresetsFSFilterSet,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
-				? string.Empty : Path.GetDirectoryName(_pathSelection)!,
+					? _config.PathEntries.GlobalBaseAbsolutePath()
+					: Path.GetDirectoryName(_pathSelection)!,
 				initFileName: _pathSelection);
 			if (result is null) return;
 
 			rbUser.Checked = true;
 			var choice = Path.GetFullPath(result);
-				
+
 			//test the preset
 			using (var stream = File.OpenRead(choice))
 			{
@@ -364,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/Bizhawk/DisplayConfig");
+			Util.OpenUrlExternal("https://tasvideos.org/Bizhawk/DisplayConfig");
 		}
 
 		private void Label13_Click(object sender, EventArgs e)

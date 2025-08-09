@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -24,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringBefore('|'), null);
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;
@@ -322,19 +323,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private void snes_trace(string disassembly, string registerInfo)
 			=> _tracer.Put(new(disassembly: disassembly, registerInfo: registerInfo));
 
-		private void ReadHook(uint addr)
+		private void ReadHook(uint addr, ref byte value)
 		{
 			if (MemoryCallbacks.HasReads)
 			{
-				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessRead, "System Bus");
+				value = (byte) MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessRead, "System Bus");
 			}
 		}
 
-		private void WriteHook(uint addr, byte value)
+		private void WriteHook(uint addr, ref byte value)
 		{
 			if (MemoryCallbacks.HasWrites)
 			{
-				MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessWrite, "System Bus");
+				value = (byte) MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessWrite, "System Bus");
 			}
 		}
 

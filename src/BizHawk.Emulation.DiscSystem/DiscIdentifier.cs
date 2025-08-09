@@ -107,11 +107,16 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Yes, that one
 		/// </summary>
 		SonyPS2,
-		
+
 		/// <summary>
 		/// Atari Jaguar CD
 		/// </summary>
 		JaguarCD,
+
+		/// <summary>
+		/// DOS / Windows
+		/// </summary>
+		DOS,
 	}
 
 	public class DiscIdentifier
@@ -176,15 +181,6 @@ namespace BizHawk.Emulation.DiscSystem
 			if (Detect3DO())
 				return DiscType.Panasonic3DO;
 
-			if (DetectCDi())
-				return DiscType.CDi;
-
-			if (DetectGameCube())
-				return DiscType.GameCube;
-
-			if (DetectWii())
-				return DiscType.Wii;
-
 			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
 			if (_disc.TOC.SessionFormat == SessionFormat.Type20_CDXA)
 				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
@@ -247,6 +243,20 @@ namespace BizHawk.Emulation.DiscSystem
 				var absTxt = iso.Root.Children.Where(kvp => kvp.Key.Contains("ABS.TXT")).Select(kvp => kvp.Value).FirstOrDefault();
 				if (absTxt != null && SectorContains("abstracted by snk", Convert.ToInt32(absTxt.Offset))) return DiscType.NeoGeoCD;
 
+				// DOS-compatible formats
+				if (DetectISO9660()) return DiscType.DOS;
+				if (DetectUDF()) return DiscType.DOS;
+
+				// CD Formats with unimplemented cores go last
+				if (DetectCDi())
+					return DiscType.CDi;
+
+				if (DetectGameCube())
+					return DiscType.GameCube;
+
+				if (DetectWii())
+					return DiscType.Wii;
+
 				return DiscType.UnknownCDFS;
 			}
 
@@ -302,7 +312,7 @@ namespace BizHawk.Emulation.DiscSystem
 			var toc = _disc.TOC;
 			if (toc.FirstRecordedTrackNumber != 1) return false;
 			if (!toc.TOCItems[1].IsData) return false;
-			
+
 			//some have a signature
 			if (StringAt("HACKER CD ROM SYSTEM", 0x8, 0x10))
 				return true;
@@ -342,14 +352,21 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool Detect3DO()
 		{
 			var toc = _disc.TOC;
-			for (var t = toc.FirstRecordedTrackNumber;
-				t <= toc.LastRecordedTrackNumber;
-				t++)
+			for (var t = toc.FirstRecordedTrackNumber; t <= toc.LastRecordedTrackNumber; t++)
 			{
 				var track = _disc.TOC.TOCItems[t];
-				if (track.IsData && SectorContains("iamaduckiamaduck", track.LBA))
-					return true;
+				// https://groups.google.com/g/rec.games.video.3do/c/1U3qrmLSYMQ?pli=1
+				// The iamaduck is not mandatory and not present in all games
+				if (track.IsData && SectorContains("iamaduckiamaduck", track.LBA)) return true;
 			}
+
+			for (var i = 0; i < 256; i++)
+			{
+				// The following sync pattern is present in 3DO games
+				// https://github.com/trapexit/3dt/blob/84f1aa5a5e778f14c2216fc0c891e78625266cad/src/tdo_disc_label.hpp#L65
+				if (SectorContains(Convert.ToChar(01) + "ZZZZZ" + Convert.ToChar(01), i)) return true;
+			}
+
 			return false;
 		}
 
@@ -394,6 +411,27 @@ namespace BizHawk.Emulation.DiscSystem
 			return hexString == "5D1C9EA3";
 		}
 
+		/// <summary>Detects ISO9660 / Joliet CD formats (target for DOS / Windows)</summary>
+		/// <remarks><see href="https://en.wikipedia.org/wiki/ISO_9660"/></remarks>
+		private bool DetectISO9660()
+		{
+			if (SectorContains("CD001", 16)) return true;
+			if (SectorContains("CDROM", 16)) return true;
+			return false;
+		}
+
+		/// <remarks><see href="https://www.cnwrecovery.com/manual/HowToRecogniseTypeOfCDDVD.html"/></remarks>
+		private bool DetectUDF()
+		{
+			for (var i = 0; i < 256; i++)
+			{
+				if (SectorContains("BEA01", i)) return true;
+				if (SectorContains("NSR02", i)) return true;
+				if (SectorContains("TEA01", i)) return true;
+			}
+			return false;
+		}
+
 		private bool DetectJaguarCD()
 		{
 			// Atari Jaguar CDs are multisession discs which are encoded like audio CDs
@@ -412,7 +450,7 @@ namespace BizHawk.Emulation.DiscSystem
 						return true;
 					}
 				}
-				
+
 				// special case, Caves of Fear has the header 27 sectors in
 				_dsr.ReadLBA_2352(_disc.Sessions[2].Tracks[1].LBA + 27, data, 0);
 				var ss = Encoding.ASCII.GetString(data);

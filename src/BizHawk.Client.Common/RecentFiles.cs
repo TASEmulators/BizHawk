@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 
 using BizHawk.Common.StringExtensions;
 
@@ -52,6 +53,17 @@ namespace BizHawk.Client.Common
 			{
 				recentlist.Clear();
 			}
+		}
+
+		public void ClearMoved()
+		{
+			if (Frozen) return;
+			recentlist.RemoveAll(entry =>
+			{
+				if (!OpenAdvancedSerializer.ParseRecentFile(filePath: ref entry, out _)) return false; // weird thing, don't touch
+				// else `entry` is a regular file path
+				return !File.Exists(entry);
+			});
 		}
 
 		public void Add(string newFile)

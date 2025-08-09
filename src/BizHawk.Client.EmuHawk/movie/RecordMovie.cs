@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				MaxDropDownItems = 32,
 				Size = new(152, 21),
 			};
-			if (_emulator.HasSaveRam()) StartFromCombo.Items.Add(START_FROM_SAVERAM);
+			if (_emulator.HasSaveRam() && _emulator.AsSaveRam().CloneSaveRam(clearDirty: false) is not null) StartFromCombo.Items.Add(START_FROM_SAVERAM);
 			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
 
 			DefaultAuthorCheckBox = new()
@@ -202,8 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = MakePath();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				var test = new FileInfo(path);
-				if (test.Exists)
+				if (File.Exists(path))
 				{
 					var result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
 					if (!result)
@@ -214,12 +213,6 @@ namespace BizHawk.Client.EmuHawk
 
 				var movieToRecord = _movieSession.Get(path);
 				movieToRecord.Author = AuthorBox.Text ?? _config.DefaultAuthor;
-
-				var fileInfo = new FileInfo(path);
-				if (!fileInfo.Exists)
-				{
-					Directory.CreateDirectory(fileInfo.DirectoryName);
-				}
 
 				var selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
 				if (selectedStartFromValue is START_FROM_SAVESTATE && _emulator.HasSavestates())
@@ -250,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var core = _emulator.AsSaveRam();
 					movieToRecord.StartsFromSaveRam = true;
-					movieToRecord.SaveRam = core.CloneSaveRam();
+					movieToRecord.SaveRam = core.CloneSaveRam(clearDirty: false);
 				}
 
 				_mainForm.StartNewMovie(movieToRecord, true);
@@ -277,22 +270,23 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string movieFolderPath = _config.PathEntries.MovieAbsolutePath();
-			
+
 			// Create movie folder if it doesn't already exist
 			try
 			{
 				Directory.CreateDirectory(movieFolderPath);
 			}
-			catch (Exception movieDirException)
+			catch (IOException)
 			{
-				if (movieDirException is IOException
-					|| movieDirException is UnauthorizedAccessException)
-				{
-					//TO DO : Pass error to user?
-				}
-				else throw;
+				// ignored
+				//TODO present to user?
 			}
-			
+			catch (UnauthorizedAccessException)
+			{
+				// ignored
+				//TODO present to user?
+			}
+
 			var filterset = _movieSession.Movie.GetFSFilterSet();
 			var result = this.ShowFileSaveDialog(
 				fileExt: $".{filterset.Filters[0].Extensions.First()}",

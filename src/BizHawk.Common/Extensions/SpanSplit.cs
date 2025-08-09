@@ -6,6 +6,7 @@
  */
 
 #if !NET9_0_OR_GREATER
+#pragma warning disable BHI3103 // `_span.Length != 0` instead of `!_span.IsEmpty`
 #pragma warning disable RS0030 // `Debug.Assert` w/o message, breaks BizHawk convention
 #pragma warning disable SA1514 // "Element documentation header should be preceded by blank line"
 

@@ -1,6 +1,7 @@
 ﻿// TODO - introduce Trim for ArtManager
 // TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
 
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -145,7 +146,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			UnlockBits(bmpdata);
-		
+
 			Pixels = newPixels;
 		}
 
@@ -266,7 +267,7 @@ namespace BizHawk.Bizware.Graphics
 			Width = widthRound;
 			Height = heightRound;
 		}
-		
+
 		/// <summary>
 		/// Creates a BitmapBuffer image from the specified filename
 		/// </summary>
@@ -376,7 +377,7 @@ namespace BizHawk.Bizware.Graphics
 								if (srcPixel != 0)
 								{
 									var color = palette[srcPixel].ToArgb();
-									
+
 									// make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels.
 									// (yes, we can have palette entries with transparency in them (PNGs support this, annoyingly))
 									if (cleanup)
@@ -468,8 +469,13 @@ namespace BizHawk.Bizware.Graphics
 			r = (r * a) >> 8;
 			g = (g * a) >> 8;
 			b = (b * a) >> 8;
-			srcVal = b | (g << 8) | (r << 16) | (a << 24);
-			return srcVal;
+			return BinaryPrimitives.ReadInt32BigEndian(unchecked(stackalloc byte[]
+			{
+				(byte) a,
+				(byte) r,
+				(byte) g,
+				(byte) b,
+			}));
 		}
 
 		/// <summary>
@@ -608,7 +614,5 @@ namespace BizHawk.Bizware.Graphics
 
 			bmp.UnlockBits(bmpdata);
 		}
-
 	}
-
 }

@@ -3,7 +3,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 

@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -44,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("PC Engine Controller", Properties.Resources.PceController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
 			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83Controller);
+			ControllerImages.Add("3DO Controller", Properties.Resources.ThreeDOController);
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_config = config;
 			DialogController = dialogController;
-			
+
 			InitializeComponent();
 
 			SuspendLayout();
@@ -302,11 +302,6 @@ namespace BizHawk.Client.EmuHawk
 				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards.Value;
 				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Value.Size;
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
-			}
-
-			if (controlName == "ChannelF Controller")
-			{
-
 			}
 
 			if (controlName == "AmstradCPC Controller")

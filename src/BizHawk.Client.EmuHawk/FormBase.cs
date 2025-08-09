@@ -67,7 +67,9 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				if (DesignMode) return PLACEHOLDER_TITLE;
+#pragma warning disable CA1065 // yes, really throw
 				throw new NotImplementedException("you have to implement this; the Designer prevents this from being an abstract method");
+#pragma warning restore CA1065
 			}
 		}
 

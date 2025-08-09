@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 								bestFit = 0;
 								break;
 							}
-							
+
 							bestFit = i - 1;
 							break;
 						}

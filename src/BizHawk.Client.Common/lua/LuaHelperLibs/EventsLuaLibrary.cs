@@ -11,6 +11,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
 	public sealed class EventsLuaLibrary : LuaLibraryBase
 	{
+		private static readonly string EMPTY_UUID_STR = Guid.Empty.ToString("D");
+
 		[OptionalService]
 		private IInputPollable InputPollableCore { get; set; }
 
@@ -48,13 +50,13 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
 		public string OnFrameEnd(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_POSTFRAME, LogOutputCallback, CurrentFile, name)
-				.Guid.ToString();
+				.GuidStr;
 
 		[LuaMethodExample("local steveonf = event.onframestart(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the beginning of each frame before any emulation and drawing occurs\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
 		public string OnFrameStart(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_PREFRAME, LogOutputCallback, CurrentFile, name)
-				.Guid.ToString();
+				.GuidStr;
 
 		[LuaMethodExample("local steveoni = event.oninputpoll(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each time the emulator core polls for input\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
@@ -68,17 +70,17 @@ namespace BizHawk.Client.Common
 				try
 				{
 					InputPollableCore.InputCallbacks.Add(nlf.InputCallback);
-					return nlf.Guid.ToString();
+					return nlf.GuidStr;
 				}
 				catch (NotImplementedException)
 				{
 					LogNotImplemented();
-					return Guid.Empty.ToString();
+					return EMPTY_UUID_STR;
 				}
 			}
 
 			LogNotImplemented();
-			return Guid.Empty.ToString();
+			return EMPTY_UUID_STR;
 		}
 
 		private void LogNotImplemented()
@@ -90,7 +92,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Your callback can have 1 parameter, which will be the name of the loaded state.")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_LOADSTATE, LogOutputCallback, CurrentFile, name)
-				.Guid.ToString();
+				.GuidStr;
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("onmemoryexecute", "Fires immediately before the given address is executed by the core. Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
@@ -121,23 +123,23 @@ namespace BizHawk.Client.Common
 					if (!HasScope(scope))
 					{
 						LogScopeNotAvailable(scope);
-						return Guid.Empty.ToString();
+						return EMPTY_UUID_STR;
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
-					return nlf.Guid.ToString();
+					return nlf.GuidStr;
 				}
 			}
 			catch (NotImplementedException)
 			{
 				LogMemoryExecuteCallbacksNotImplemented(isWildcard: false);
-				return Guid.Empty.ToString();
+				return EMPTY_UUID_STR;
 			}
 
 			LogMemoryExecuteCallbacksNotImplemented(isWildcard: false);
-			return Guid.Empty.ToString();
+			return EMPTY_UUID_STR;
 		}
 
 		[LuaDeprecatedMethod]
@@ -166,7 +168,7 @@ namespace BizHawk.Client.Common
 					if (!HasScope(scope))
 					{
 						LogScopeNotAvailable(scope);
-						return Guid.Empty.ToString();
+						return EMPTY_UUID_STR;
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, LogOutputCallback, CurrentFile, name);
@@ -178,7 +180,7 @@ namespace BizHawk.Client.Common
 						null,
 						null
 					));
-					return nlf.Guid.ToString();
+					return nlf.GuidStr;
 				}
 				// fall through
 			}
@@ -187,7 +189,7 @@ namespace BizHawk.Client.Common
 				// fall through
 			}
 			LogMemoryExecuteCallbacksNotImplemented(isWildcard: true);
-			return Guid.Empty.ToString();
+			return EMPTY_UUID_STR;
 		}
 
 		[LuaDeprecatedMethod]
@@ -217,23 +219,23 @@ namespace BizHawk.Client.Common
 					if (!HasScope(scope))
 					{
 						LogScopeNotAvailable(scope);
-						return Guid.Empty.ToString();
+						return EMPTY_UUID_STR;
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
-					return nlf.Guid.ToString();
+					return nlf.GuidStr;
 				}
 			}
 			catch (NotImplementedException)
 			{
 				LogMemoryCallbacksNotImplemented(isWildcard: address is null);
-				return Guid.Empty.ToString();
+				return EMPTY_UUID_STR;
 			}
 
 			LogMemoryCallbacksNotImplemented(isWildcard: address is null);
-			return Guid.Empty.ToString();
+			return EMPTY_UUID_STR;
 		}
 
 		[LuaDeprecatedMethod]
@@ -263,47 +265,50 @@ namespace BizHawk.Client.Common
 					if (!HasScope(scope))
 					{
 						LogScopeNotAvailable(scope);
-						return Guid.Empty.ToString();
+						return EMPTY_UUID_STR;
 					}
 
 					var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, LogOutputCallback, CurrentFile, name);
 					DebuggableCore.MemoryCallbacks.Add(
 						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
-					return nlf.Guid.ToString();
+					return nlf.GuidStr;
 				}
 			}
 			catch (NotImplementedException)
 			{
 				LogMemoryCallbacksNotImplemented(isWildcard: address is null);
-				return Guid.Empty.ToString();
+				return EMPTY_UUID_STR;
 			}
 
 			LogMemoryCallbacksNotImplemented(isWildcard: address is null);
-			return Guid.Empty.ToString();
+			return EMPTY_UUID_STR;
 		}
 
 		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onsavestate", "Fires after a state is saved. Your callback can have 1 parameter, which will be the name of the saved state.")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_SAVESTATE, LogOutputCallback, CurrentFile, name)
-				.Guid.ToString();
+				.GuidStr;
 
 		[LuaMethodExample("local steveone = event.onexit(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the calling script has stopped\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
 		public string OnExit(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_ENGINESTOP, LogOutputCallback, CurrentFile, name)
-				.Guid.ToString();
+				.GuidStr;
 
 		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onconsoleclose", "Fires when the emulator console closes")]
 		public string OnConsoleClose(LuaFunction luaf, string name = null)
 			=> _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE, LogOutputCallback, CurrentFile, name)
-				.Guid.ToString();
+				.GuidStr;
 
 		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterById(string guid)
-			=> _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Guid.ToString() == guid);
+		{
+			Guid parsed = new(guid);
+			return _luaLibsImpl.RemoveNamedFunctionMatching(nlf => nlf.Guid == parsed);
+		}
 
 		[LuaMethodExample("if ( event.unregisterbyname( \"Function name\" ) ) then\r\n\tconsole.log( \"Removes the first registered function that matches Name.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]

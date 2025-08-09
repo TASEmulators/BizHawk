@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -17,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _gameHash;
 		private readonly Dictionary<string, uint> _cachedGameIds = new(); // keep around IDs per hash to avoid unneeded API calls for a simple RebootCore
 
-		private GameData _gameData;
+		private GameData _gameData = new();
 		private readonly Dictionary<uint, GameData> _cachedGameDatas = new(); // keep game data around to avoid unneeded API calls for a simple RebootCore
 
 		public sealed class UserUnlocksRequest : RCheevoHttpRequest
@@ -289,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 				return IdentifyHash(Encoding.ASCII.GetString(hash, 0, 32));
 			}
 
-			_gameHash ??= "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
+			_gameHash ??= MD5Checksum.Dummy;
 			return 0;
 		}
 

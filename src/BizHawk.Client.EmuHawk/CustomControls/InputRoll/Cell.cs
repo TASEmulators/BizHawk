@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 						? string.CompareOrdinal(c1.Column?.Name, c2.Column?.Name)
 						: row;
 				}
-					
+
 				return 1;
 			}
 
@@ -92,6 +92,9 @@ namespace BizHawk.Client.EmuHawk
 
 	public sealed class CellList : SortedList<Cell>
 	{
+		private CellList(List<Cell> wrapped)
+			: base(wrapped) {}
+
 		public CellList() {}
 
 		public CellList(IEnumerable<Cell> collection)

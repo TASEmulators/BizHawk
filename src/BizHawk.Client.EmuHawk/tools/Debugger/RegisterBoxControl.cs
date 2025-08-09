@@ -2,7 +2,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
@@ -162,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 								if (t.Text.Length is not 0)
 								{
 									Core.SetCpuRegister(t.Name, int.Parse(t.Text, System.Globalization.NumberStyles.HexNumber));
-								}		
+								}
 							}
 							catch (InvalidOperationException)
 							{

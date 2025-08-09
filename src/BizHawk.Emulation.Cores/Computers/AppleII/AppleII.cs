@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					_ => (romAssert.FileData, ".DSK") // no idea, let's assume it's just a .DSK?
 				};
 			}
-					
+
 			_romSet = lp.Roms.Select(GetRomAndExt).ToList();
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -233,12 +233,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private long _clockTime;
 		private int _clockRemainder;
 		private const int TicksInSecond = 10000000; // DateTime.Ticks uses 100-nanosecond intervals
-		
+
 		private DateTime GetFrontendTime()
 		{
 			if (_useRealTime && DeterministicEmulation)
 				throw new InvalidOperationException();
-			
+
 			return _useRealTime
 				? DateTime.Now
 				: new DateTime(_clockTime * TicksInSecond + (_clockRemainder * TicksInSecond / VsyncNumerator));

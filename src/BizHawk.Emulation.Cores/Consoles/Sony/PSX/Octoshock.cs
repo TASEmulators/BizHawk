@@ -5,8 +5,8 @@
 
 //TODO - ok, think about this. we MUST load a state with the CDC completely intact. no quickly changing discs. that's madness.
 //well, I could savestate the disc index and validate the disc collection when loading a state.
-//the big problem is, it's completely at odds with the slider-based disc changing model. 
-//but, maybe it can be reconciled with that model by using the disc ejection to our advantage. 
+//the big problem is, it's completely at odds with the slider-based disc changing model.
+//but, maybe it can be reconciled with that model by using the disc ejection to our advantage.
 //perhaps moving the slider is meaningless if the disc is ejected--it only affects what disc is inserted when the disc gets inserted!! yeah! this might could save us!
 //not exactly user friendly but maybe we can build it from there with a custom UI.. a disk-changer? dunno if that would help
 
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						});
 
 
-					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
+					if (type is OctoshockDll.ePeripheralType.DualShock or OctoshockDll.ePeripheralType.DualAnalog)
 					{
 						definition.BoolButtons.Add("P" + pnum + " L3");
 						definition.BoolButtons.Add("P" + pnum + " R3");
@@ -332,8 +332,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
-		private int[] frameBuffer = new int[0];
-		private Random rand = new Random();
+		private int[] frameBuffer = [ ];
 
 		//we can only have one active core at a time, due to the lib being so static.
 		//so we'll track the current one here and detach the previous one whenever a new one is booted up.
@@ -493,7 +492,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 					int portNum = (port + 1) + ((multiport + 1) << 4);
 					int slot = port * 4 + multiport;
-					
+
 					//no input to set
 					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
 						continue;
@@ -543,7 +542,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						if (_controller.IsPressed(pstring + "Square")) buttons |= 32768;
 
 						byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
-						if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+						if (fioCfg.Devices8[slot] is OctoshockDll.ePeripheralType.DualShock or OctoshockDll.ePeripheralType.DualAnalog)
 						{
 							if (_controller.IsPressed(pstring + "L3")) buttons |= 2;
 							if (_controller.IsPressed(pstring + "R3")) buttons |= 4;
@@ -587,7 +586,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//int scanline_num = h; // I wanted to do this, but our logic for mednafen modes here is based on un-doubled resolution. i could do a hack to divide it by 2 though
 			int real_scanline_num = standard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
 
-			int VirtualWidth=-1, VirtualHeight=-1;
+#pragma warning disable MA0084 // these shadow the IVideoProvider props
+			int VirtualWidth = -1;
+			int VirtualHeight = -1;
+#pragma warning restore MA0084
 			switch (settings.ResolutionMode)
 			{
 				case eResolutionMode.Mednafen:
@@ -608,13 +610,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						//ok: here we have a framebuffer without overscan. 320x240 nominal. So the VirtualWidth of what we got is off by a factor of 109.375%
 						//so a beginning approach would be this:
 						//VirtualWidth = (int)(VirtualWidth * 320.0f / 350);
-						//but that will shrink things which are already annoyingly shrunken. 
+						//but that will shrink things which are already annoyingly shrunken.
 						//therefore, lets do that, but then scale the whole window by the same factor so the width becomes unscaled and now the height is scaled up!
 						//weird, huh?
 						VirtualHeight = (int)(VirtualHeight * 350.0f / 320);
 
 						//now unfortunately we may have lost vertical pixels. common in the case of PAL (rendering 256 on a field of 288)
-						//therefore we'll be stretching way too much vertically here. 
+						//therefore we'll be stretching way too much vertically here.
 						//lets add those pixels back with a new hack
 						if (standard == OctoshockDll.eVidStandard.PAL)
 						{
@@ -643,7 +645,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					}
 					else
 					{
-						//this is a bit tricky. we know we want 400 for the virtualwidth. 
+						//this is a bit tricky. we know we want 400 for the virtualwidth.
 						VirtualWidth = 400;
 						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
 							VirtualWidth = 378;
@@ -719,11 +721,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				)
 			{
 				//don't replace default disc with the leave-default placeholder!
-				if (requestedDisc == -1)
-				{
-
-				}
-				else
+				if (requestedDisc is not -1)
 				{
 					CurrentDiscIndexMounted = requestedDisc;
 				}
@@ -874,7 +872,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public IInputCallbackSystem InputCallbacks
 		{
 			[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 			get => throw new NotImplementedException();
+#pragma warning restore CA1065
 		}
 
 		public bool DeterministicEmulation => true;
@@ -922,7 +922,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			var cfg = _SyncSettings.FIOConfig.ToLogical();
 			int nMemcards = cfg.NumMemcards;

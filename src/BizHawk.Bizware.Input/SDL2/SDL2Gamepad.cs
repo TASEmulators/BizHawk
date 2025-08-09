@@ -22,7 +22,7 @@ namespace BizHawk.Bizware.Input
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
 		public readonly IReadOnlyCollection<(string ButtonName, Func<bool> GetIsPressed)> ButtonGetters;
-		
+
 		/// <summary>For use in keybind boxes</summary>
 		public string InputNamePrefix { get; private set; }
 
@@ -287,15 +287,14 @@ namespace BizHawk.Bizware.Input
 				values =
 				[
 					("LeftThumbX", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX))),
-					("LeftThumbY", -Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY))),
+					("LeftThumbY", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY))),
 					("RightThumbX", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX))),
-					("RightThumbY", -Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY))),
+					("RightThumbY", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY))),
 					("LeftTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT))),
 					("RightTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)))
 				];
 
 				// note: this mimics the mouse conversion in MainForm
-				// also, don't try to "correct" the Y axis here, -/+ for u/d is how mouse does it, so that should be used here
 				static int TouchConv(float num) => (int)((num * 20000) - 10000);
 				var numTouchpads = SDL_GameControllerGetNumTouchpads(Opaque);
 				if (numTouchpads == 1)

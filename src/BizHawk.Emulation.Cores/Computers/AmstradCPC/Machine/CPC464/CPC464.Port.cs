@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 
-			return (byte)finalResult;	
+			return (byte)finalResult;
 		}
 
 		/// <summary>
@@ -123,11 +123,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (d == PortDevice.ROMSelect)
 				{
-
+					//TODO
 				}
 				else if (d == PortDevice.Printer)
 				{
-
+					//TODO
 				}
 				else if (d == PortDevice.PPI)
 				{
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else if (d == PortDevice.Expansion)
 				{
-
+					//TODO
 				}
 			}
 

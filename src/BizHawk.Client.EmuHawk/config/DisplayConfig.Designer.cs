@@ -103,6 +103,7 @@
 			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
 			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.cbMainFormMouseCaptureForcesTopmost = new System.Windows.Forms.CheckBox();
 			this.cbMainFormStayOnTop = new System.Windows.Forms.CheckBox();
 			this.cbMainFormSaveWindowPosition = new System.Windows.Forms.CheckBox();
 			this.lblFrameTypeWindowed = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -799,7 +800,7 @@
 			// cbAllowDoubleclickFullscreen
 			// 
 			this.cbAllowDoubleclickFullscreen.AutoSize = true;
-			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 223);
+			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 236);
 			this.cbAllowDoubleclickFullscreen.Name = "cbAllowDoubleclickFullscreen";
 			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(471, 17);
 			this.cbAllowDoubleclickFullscreen.TabIndex = 27;
@@ -814,9 +815,9 @@
 			this.groupBox4.Controls.Add(this.cbFullscreenHacks);
 			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
 			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
-			this.groupBox4.Location = new System.Drawing.Point(153, 6);
+			this.groupBox4.Location = new System.Drawing.Point(226, 6);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(266, 211);
+			this.groupBox4.Size = new System.Drawing.Size(266, 224);
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fullscreen";
@@ -869,6 +870,7 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.cbMainFormMouseCaptureForcesTopmost);
 			this.groupBox2.Controls.Add(this.cbMainFormStayOnTop);
 			this.groupBox2.Controls.Add(this.cbMainFormSaveWindowPosition);
 			this.groupBox2.Controls.Add(this.lblFrameTypeWindowed);
@@ -879,10 +881,20 @@
 			this.groupBox2.Controls.Add(this.cbCaptionWindowed);
 			this.groupBox2.Location = new System.Drawing.Point(6, 6);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(141, 211);
+			this.groupBox2.Size = new System.Drawing.Size(214, 224);
 			this.groupBox2.TabIndex = 26;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Windowed";
+			// 
+			// cbMainFormMouseCaptureForcesTopmost
+			// 
+			this.cbMainFormMouseCaptureForcesTopmost.AutoSize = true;
+			this.cbMainFormMouseCaptureForcesTopmost.Location = new System.Drawing.Point(9, 198);
+			this.cbMainFormMouseCaptureForcesTopmost.Name = "cbMainFormMouseCaptureForcesTopmost";
+			this.cbMainFormMouseCaptureForcesTopmost.Size = new System.Drawing.Size(195, 17);
+			this.cbMainFormMouseCaptureForcesTopmost.TabIndex = 27;
+			this.cbMainFormMouseCaptureForcesTopmost.Text = "Mouse Capture Forces Stay on Top";
+			this.cbMainFormMouseCaptureForcesTopmost.UseVisualStyleBackColor = true;
 			// 
 			// cbMainFormStayOnTop
 			// 
@@ -1113,5 +1125,6 @@
 		private System.Windows.Forms.CheckBox cbMainFormStayOnTop;
 		private System.Windows.Forms.CheckBox cbMainFormSaveWindowPosition;
 		private System.Windows.Forms.CheckBox cbScaleOSD;
+		private System.Windows.Forms.CheckBox cbMainFormMouseCaptureForcesTopmost;
 	}
 }

@@ -359,7 +359,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			get => _settings.UseUndoHistory;
 			set => _settings.UseUndoHistory = value;
 		}
-		
+
 		public bool CanUndo => UndoEnabled && _history.CanUndo;
 
 		public bool CanRedo => UndoEnabled && _history.CanRedo;

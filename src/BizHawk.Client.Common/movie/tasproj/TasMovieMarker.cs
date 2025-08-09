@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
 		private readonly ITasMovie _movie;
-		
+
 		public TasMovieMarkerList(ITasMovie movie)
 		{
 			_movie = movie;
@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			_movie.TasStateManager.EvictReserved(item.Frame);
+			_movie.TasStateManager.Unreserve(item.Frame - 1);
 			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 
 			base.Remove(item);
@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 				if (match.Invoke(m))
 				{
 					_movie.ChangeLog.AddMarkerChange(null, m.Frame, m.Message);
-					_movie.TasStateManager.EvictReserved(m.Frame);
+					_movie.TasStateManager.Unreserve(m.Frame - 1);
 				}
 			}
 
@@ -336,7 +336,7 @@ namespace BizHawk.Client.Common
 		{
 			return Find(m => m == frame);
 		}
-		
+
 		public void ShiftAt(int frame, int offset)
 		{
 			foreach (var marker in this.Where(m => m.Frame >= frame).ToList())

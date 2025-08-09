@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,10 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				}
 			}
 
-			if (chipData.Count <= 0)
-			{
-				return null;
-			}
+			if (chipData.Count is 0) return null;
 
 			CartridgeDevice result;
 			switch (mapper)
@@ -136,12 +134,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		}
 
 		private static int ReadCRTInt(BinaryReader reader)
-		{
-			return (reader.ReadByte() << 24) |
-				(reader.ReadByte() << 16) |
-				(reader.ReadByte() << 8) |
-				reader.ReadByte();
-		}
+			=> BinaryPrimitives.ReadInt32BigEndian(stackalloc byte[]
+			{
+				reader.ReadByte(),
+				reader.ReadByte(),
+				reader.ReadByte(),
+				reader.ReadByte(),
+			});
 
 		protected bool pinExRom;
 
@@ -266,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public virtual IEnumerable<MemoryDomain> CreateMemoryDomains() => 
+		public virtual IEnumerable<MemoryDomain> CreateMemoryDomains() =>
 			Array.Empty<MemoryDomain>();
 
 		private bool _driveLightEnabled;

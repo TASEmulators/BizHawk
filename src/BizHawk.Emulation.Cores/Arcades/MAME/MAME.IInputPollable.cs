@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 					if (MAMEController.BoolButtons.Contains(field))
 					{
-						dupName = $" [{ tag }]"; 
+						dupName = $" [{ tag }]";
 					}
 
 					MAMEController.BoolButtons.Add(field + dupName);

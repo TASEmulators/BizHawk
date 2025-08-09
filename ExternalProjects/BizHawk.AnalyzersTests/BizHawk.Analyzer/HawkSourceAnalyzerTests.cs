@@ -102,6 +102,17 @@ public sealed class HawkSourceAnalyzerTests
 		""");
 
 	[TestMethod]
+	public Task CheckMisuseOfInitAccessor()
+		=> Verify.VerifyAnalyzerAsync("""
+			public sealed class Cases {
+				public int A { get; {|BHI1008:init;|} }
+			}
+			namespace System.Runtime.CompilerServices {
+				public static class IsExternalInit {} // this sample is compiled for lowest-common-denominator of `netstandard2.0`, so `init` accessor gives an error without this
+			}
+		""");
+
+	[TestMethod]
 	public Task CheckMisuseOfInterpolatedString()
 		=> Verify.VerifyAnalyzerAsync("""
 			public static class Cases {

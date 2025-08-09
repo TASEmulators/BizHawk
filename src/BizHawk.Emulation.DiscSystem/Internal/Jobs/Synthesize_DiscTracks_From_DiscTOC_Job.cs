@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private readonly Disc IN_Disc;
 
 		private readonly DiscSession IN_Session;
-		
+
 		private DiscTOC TOCRaw => IN_Session.TOC;
 		private IList<DiscTrack> Tracks => IN_Session.Tracks;
 

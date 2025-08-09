@@ -54,8 +54,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
 			{
 				// Required to pass the Lorenz test suite.
-				AneConstant = 0xEF, 
-				LxaConstant = 0xFE
+				AneConstant = 0xEE,
+				LxaConstant = 0xEE,
 			};
 
 			// perform hard reset
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public int Read(int addr)
 		{
 			int ret = 0;
-			
+
 			switch (addr)
 			{
 				case 0x0000:
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.BeginSection(nameof(_port));
 			_port.SyncState(ser);
 			ser.EndSection();
-			
+
 			ser.Sync(nameof(_irqDelay), ref _irqDelay);
 			ser.Sync(nameof(_nmiDelay), ref _nmiDelay);
 		}

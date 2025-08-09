@@ -8,7 +8,7 @@
 			{
 				//mednafen is always synthesizing everything, no need to worry about flags.. mostly./
 				job.Params.MednaDisc.Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
-				
+
 				//we may still need to deinterleave it if subcode was requested and it needs deinterleaving
 				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave | ESectorSynthPart.SubcodeAny)) != 0)
 				{

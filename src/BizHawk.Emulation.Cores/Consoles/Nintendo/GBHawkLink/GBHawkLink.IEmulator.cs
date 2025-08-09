@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");
 			if (cablediscosignalNew && !_cablediscosignal)
 			{
-				_cableconnected ^= true;
+				_cableconnected = !_cableconnected;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
 			}
 
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		}
 
 		public void do_frame()
-		{			
+		{
 			// advance one full frame
 			for (int i = 0; i < 70224; i++)
 			{
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			}
 			else
 			{
-				samples = new short[0];
+				samples = Array.Empty<short>();
 				nsamp = 0;
 			}
 		}

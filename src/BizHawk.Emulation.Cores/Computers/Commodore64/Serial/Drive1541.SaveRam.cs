@@ -39,7 +39,7 @@ public sealed partial class Drive1541 : ISaveRam
 
 	public bool SaveRamModified { get; private set; } = false;
 
-	public byte[] CloneSaveRam()
+	public byte[] CloneSaveRam(bool clearDirty)
 	{
 		SaveDeltas();
 
@@ -56,7 +56,7 @@ public sealed partial class Drive1541 : ISaveRam
 			}
 		}
 
-		SaveRamModified = false;
+		if (clearDirty) SaveRamModified = false;
 		return ms.ToArray();
 	}
 

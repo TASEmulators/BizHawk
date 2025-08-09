@@ -6,10 +6,12 @@ make -C emulibc $1 -j
 make -C libco $1 -j
 ./ares64/make-both.sh $1
 make -C bsnescore $1 -j
+make -C dosbox $1 -j8
 make -C dsda $1 -j
 make -C gpgx $1 -j
 make -C libsnes $1 -j
 make -C melon $1 -j
+make -C opera $1 -j
 make -C picodrive $1 -j
 make -C stella $1 -j
 make -C snes9x $1 -j

@@ -10,7 +10,6 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 
 using BizHawk.Bizware.Graphics;
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 
 using BizHawk.Client.Common.FilterManager;

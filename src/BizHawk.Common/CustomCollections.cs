@@ -84,7 +84,7 @@ namespace BizHawk.Common
 
 		public virtual void Clear() => _list.Clear();
 
-		public virtual bool Contains(T item) => !(_list.BinarySearch(item) < 0); // can't use `!= -1`, BinarySearch can return multiple negative values
+		public virtual bool Contains(T item) => _list.BinarySearch(item) >= 0;
 
 		bool IList.Contains(object? item)
 			=> item is T item1 && Contains(item1);

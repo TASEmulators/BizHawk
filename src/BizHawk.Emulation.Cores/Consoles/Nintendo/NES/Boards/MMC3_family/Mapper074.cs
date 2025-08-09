@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			Vram = new byte[2048];
 
-			if (Cart.ChrSize == 0 && Cart.BoardType == "MAPPER074") 
+			if (Cart.ChrSize == 0 && Cart.BoardType == "MAPPER074")
 				throw new Exception("Mapper074 carts MUST have chr rom!");
 			BaseSetup();
 			return true;
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					return Vram[addr & 0x03FF];
 				}
-				
+
 				if (bank == 0x09)
 				{
 					return Vram[(addr & 0x03FF) + 0x400];

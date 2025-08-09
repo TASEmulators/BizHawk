@@ -14,12 +14,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return "AR";
 			}
-			
+
 			if (rom.Length < 2048) // Less than 2k, then no bank switching needed
 			{
 				return "2K";
 			}
-			
+
 			if (rom.Length is 2048
 				|| (rom.Length is 4096
 					&& rom.AsSpan(start: 0, length: 2048).SequenceEqual(rom.AsSpan(start: 2048, length: 2048))))
@@ -27,12 +27,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// If 2k or the same 2k twice...Why would a rom be that way? Overdump?
 				return IsProablyCV(rom) ? "CV" : "2K";
 			}
-			
+
 			if (rom.Length == 4096)
 			{
 				return IsProablyCV(rom) ? "CV" : "4K";
 			}
-			
+
 			if (rom.Length == 8192) // Several 8K Options
 			{
 				if (IsProbablySC(rom))

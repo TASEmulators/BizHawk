@@ -129,17 +129,17 @@ namespace BizHawk.Emulation.DiscSystem
 			MIN = SEC = FRAC = 0;
 			Negative = false;
 
-			Valid = false;
-			if (str.Length != 8) return;
-			if (str[0] < '0' || str[0] > '9') return;
-			if (str[1] < '0' || str[1] > '9') return;
-			if (str[2] != ':') return;
-			if (str[3] < '0' || str[3] > '9') return;
-			if (str[4] < '0' || str[4] > '9') return;
-			if (str[5] != ':') return;
-			if (str[6] < '0' || str[6] > '9') return;
-			if (str[7] < '0' || str[7] > '9') return;
-			Valid = true;
+			Valid = str is [
+				>= '0' and <= '9',
+				>= '0' and <= '9',
+				':',
+				>= '0' and <= '9',
+				>= '0' and <= '9',
+				':',
+				>= '0' and <= '9',
+				>= '0' and <= '9',
+			];
+			if (!Valid) return;
 
 			MIN = (byte)((str[0] - '0') * 10 + (str[1] - '0'));
 			SEC = (byte)((str[3] - '0') * 10 + (str[4] - '0'));

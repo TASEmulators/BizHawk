@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//      TrackID is consistent between the sectors although is usually high (233, 237 etc)
 			//      SideID is fairly random looking but with all IDs being even
 			//      SectorID is also fairly random looking but contains both odd and even numbers
-			//            
+			//
 			// There doesnt appear to be any CRC errors in this track, but the sector size is always 1 (256 bytes)
 			// Each sector contains different filler byte
 			// Once track 0 is loaded the CPU completely reads all the sectors in this track one-by-one.
@@ -393,8 +393,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// Hexagon Copy Protection Notes (-asni 2018-05-01)
 			// ---------------------------------------------------
-			//
-			// 
+			// none
 
 			return false;
 		}
@@ -445,7 +444,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // keeping the original copy
             byte[] origData = sec.SectorData.ToArray();
             List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
-            //Random rnd = new Random();
 
             for (int i = 0; i < 6; i++)
             {
@@ -671,8 +669,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 						/*
                         int copies = ActualDataByteLength / (0x80 << SectorSize);
-                        Random rnd = new Random();
-                        int r = rnd.Next(0, copies - 1);
+                        var r = new Random(Seed: 4) // chosen by fair dice roll. guaranteed to be random.
+                            .Next(0, copies - 1);
                         int step = r * (0x80 << SectorSize);
                         byte[] res = new byte[(0x80 << SectorSize)];
                         Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
@@ -708,5 +706,4 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		PaulOwens,
 		ShadowOfTheBeast
 	}
-
 }

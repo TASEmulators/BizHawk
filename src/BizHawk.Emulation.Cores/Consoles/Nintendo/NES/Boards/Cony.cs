@@ -107,6 +107,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Mirroring();
 		}
 
+#pragma warning disable MA0084 // `byte this.bank` shadowed by several locals
+
 		public override byte ReadPpu(int addr)
 		{
 			if (addr < 0x2000)
@@ -133,7 +135,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank &= 0xFF;
 					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
-
 			}
 
 			return base.ReadPpu(addr);
@@ -191,7 +192,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
-
 		}
 	}
 
@@ -257,8 +257,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr)
 			{
 				case 0x0000: is_2k_bank = true; bank = value; mode |= 0x40; break;
-				case 0x3000:  
-				case 0x30FF: 
+				case 0x3000:
+				case 0x30FF:
 				case 0x31FF:
 					bank = value;
 					mode |= 0x40;
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0317: chr_regs[7] = value; break;
 
 				case 0x0200:
-					IRQCount &= 0xFF00; IRQCount |= value; 
+					IRQCount &= 0xFF00; IRQCount |= value;
 					IrqSignal = false;
 					break;
 				case 0x0201:
@@ -319,7 +319,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank |= ((bank & 0x30) << 4);
 					return Vrom[(bank << 10) + (addr & 0x3FF)];
 				}
-				
 			}
 
 			return base.ReadPpu(addr);
@@ -345,11 +344,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = prg_bank_mask_8k;
 
 				return Rom[(bank << 13) + (addr & 0x1FFF)];
-
-
 			}
-			
 		}
+
+#pragma warning restore MA0084
 
 		public override void ClockCpu()
 		{
@@ -381,7 +379,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return _low[addr & 0x3];
 			else
 				return base.ReadExp(addr);
-
 		}
 	}
 

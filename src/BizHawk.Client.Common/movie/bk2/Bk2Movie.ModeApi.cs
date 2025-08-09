@@ -20,23 +20,6 @@
 		public void SwitchToRecord() => Mode = MovieMode.Record;
 		public void SwitchToPlay() => Mode = MovieMode.Play;
 		public void FinishedMode() => Mode = MovieMode.Finished;
-
-		public virtual bool Stop(bool saveChanges = true)
-		{
-			bool saved = false;
-			if (saveChanges)
-			{
-				if (Mode == MovieMode.Record || (this.IsActive() && Changes))
-				{
-					Save();
-					saved = true;
-				}
-			}
-
-			Changes = false;
-			Mode = MovieMode.Inactive;
-
-			return saved;
-		}
+		public void Stop() =>  Mode = MovieMode.Inactive;
 	}
 }

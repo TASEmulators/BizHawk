@@ -31,11 +31,7 @@ namespace BizHawk.Client.Common
 				else
 				{
 					var file = new FileInfo($"{saveStatePrefix}.QuickSave{i % 10}.State");
-					if (file.Directory != null && !file.Directory.Exists)
-					{
-						file.Directory.Create();
-					}
-
+					file.Directory?.Create();
 					_slots[i - 1] = file.Exists;
 				}
 			}

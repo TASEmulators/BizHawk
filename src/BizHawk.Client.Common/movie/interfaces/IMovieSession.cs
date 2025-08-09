@@ -23,6 +23,9 @@ namespace BizHawk.Client.Common
 		/// <value>The Core header of the queued movie iff one is queued, else <see langword="null"/></value>
 		string QueuedCoreName { get; }
 
+		/// <value>The <see cref="IBasicMovieInfo.SystemID"/> header of the queued movie iff one is queued, else <see langword="null"/></value>
+		string/*?*/ QueuedSysID { get; }
+
 		IDictionary<string, object> UserBag { get; set; }
 
 		IMovieController MovieController { get; }
@@ -81,11 +84,6 @@ namespace BizHawk.Client.Common
 		void AbortQueuedMovie();
 
 		void StopMovie(bool saveChanges = true);
-
-		/// <summary>
-		/// If a movie is active, it will be converted to a <see cref="ITasMovie" />
-		/// </summary>
-		void ConvertToTasProj();
 
 		/// <summary>
 		/// Create a new (Tas)Movie with the given path as filename. If <paramref name="loadMovie"/> is true,

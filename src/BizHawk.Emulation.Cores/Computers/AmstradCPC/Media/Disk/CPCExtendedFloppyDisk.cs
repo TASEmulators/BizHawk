@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// check for unformatted track
 				if (DiskHeader.TrackSizes[i] == 0)
 				{
-					DiskTracks[i] = new Track { Sectors = new Sector[0] };
+					DiskTracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			// sync deterministic track and sector counters

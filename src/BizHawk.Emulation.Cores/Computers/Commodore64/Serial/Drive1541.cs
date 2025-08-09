@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
 			{
 				NMI = false,
-				AneConstant = 0xEF, 
+				AneConstant = 0xEF,
 				LxaConstant = 0xFE
 			};
 
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.BeginSection("Disk6502");
 			_cpu.SyncState(ser);
 			ser.EndSection();
-			
+
 			ser.Sync("RAM", ref _ram, useNull: false);
 
 			ser.BeginSection("VIA0");
@@ -248,6 +248,5 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_disk = null;
 			_diskBits = 0;
 		}
-
 	}
 }

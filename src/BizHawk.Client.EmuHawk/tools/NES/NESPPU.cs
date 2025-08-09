@@ -480,18 +480,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				var m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				}
-				while (found != null && found.HasChildren);
-
-				if (found != null)
+				if (this.InnermostControlAt(Cursor.Position) is Control found)
 				{
 					var method = found.GetType().GetMethod("ScreenshotToClipboard", Type.EmptyTypes);
 					if (method != null)
@@ -540,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearDetails();
 		}
-		
+
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
 			HandleSpriteViewMouseMove(e.Location);
@@ -554,7 +543,7 @@ namespace BizHawk.Client.EmuHawk
 			byte[] ppuBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
 
 			bool is8x16 = _ppu.SPTall;
-			
+
 			//figure out which sprite we're over
 			int spriteSlotY = p.Y / 8;
 			int spriteSlotX = p.X / 8;

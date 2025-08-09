@@ -9,6 +9,7 @@ namespace BizHawk.Common
 	/// <seealso cref="CRC32Checksum"/>
 	/// <seealso cref="MD5Checksum"/>
 	/// <seealso cref="SHA1Checksum"/>
+	/// <seealso cref="SHA512Checksum"/>
 	public static class SHA256Checksum
 	{
 		/// <remarks>in bits</remarks>

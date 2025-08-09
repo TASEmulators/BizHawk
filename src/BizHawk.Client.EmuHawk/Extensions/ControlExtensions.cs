@@ -31,14 +31,6 @@ namespace BizHawk.Client.EmuHawk
 			box.SelectedItem = enumVal.GetDescription();
 		}
 
-		/// <summary>extension method to make <see cref="Control.Invoke(Delegate)"/> easier to use</summary>
-		public static void Invoke(this Control control, Action action)
-			=> control.Invoke(action);
-
-		/// <summary>extension method to make <see cref="Control.BeginInvoke(Delegate)"/> easier to use</summary>
-		public static void BeginInvoke(this Control control, Action action)
-			=> control.BeginInvoke(action);
-
 		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
@@ -159,6 +151,18 @@ namespace BizHawk.Client.EmuHawk
 			return tabControl.TabPages.Cast<TabPage>();
 		}
 
+		public static Control? InnermostControlAt(this Form form, Point pos, GetChildAtPointSkip flags = GetChildAtPointSkip.None)
+		{
+			Control? top = form;
+			Control? found;
+			do
+			{
+				found = top!.GetChildAtPoint(top.PointToClient(pos), flags);
+				top = found;
+			} while (found is { HasChildren: true });
+			return found;
+		}
+
 #pragma warning disable CS0618 // WinForms doesn't use generics ofc
 		public static bool InsertAfter(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
 			=> ((IList) items).InsertAfter(needle, insert: insert);
@@ -187,6 +191,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void ReplaceItems(this ComboBox dropdown, IEnumerable<object> items)
 			=> dropdown.ReplaceItems(items: items.ToArray());
+
+		public static CheckState ToCheckState(this bool? tristate)
+			=> tristate switch
+			{
+				true => CheckState.Checked,
+				false => CheckState.Unchecked,
+				null => CheckState.Indeterminate,
+			};
 	}
 
 	public static class ListViewExtensions

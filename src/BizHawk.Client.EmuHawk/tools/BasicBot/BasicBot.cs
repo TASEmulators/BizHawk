@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -35,7 +34,6 @@ namespace BizHawk.Client.EmuHawk
 					: WindowTitleStatic;
 				UpdateWindowTitle();
 			}
-
 		}
 
 		private bool _isBotting;
@@ -58,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _dataSize;
 
 		private Dictionary<string, double> _cachedControlProbabilities;
-		
+
 		private bool _previousDisplayMessage;
 		private bool _previousInvisibleEmulation;
 
@@ -153,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 			ControlProbabilityPanel.Controls
 				.OfType<BotControlsRow>()
 				.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
-		
+
 		private int SelectedSlot
 			=> 1 + StartFromSlotBox.SelectedIndex;
 
@@ -1302,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("https://tasvideos.org/Bizhawk/BasicBot");
+			Util.OpenUrlExternal("https://tasvideos.org/Bizhawk/BasicBot");
 		}
 
 		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)

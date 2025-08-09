@@ -26,7 +26,7 @@
 			{
 				Wram[addr + 0x4000 - (0x5000 - 0x2000)] = value;
 			}
-			else 
+			else
 				base.WriteExp(addr, value);
 		}
 

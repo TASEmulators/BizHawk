@@ -64,14 +64,7 @@ namespace BizHawk.Emulation.Common
 			var trk = Tracks[0];
 
 			// look for standard speccy bootstart
-			if (trk.Sectors[0].SectorData != null && trk.Sectors[0].SectorData.Length > 0)
-			{
-				if (trk.Sectors[0].SectorData[0] == 0 && trk.Sectors[0].SectorData[1] == 0
-					&& trk.Sectors[0].SectorData[2] == 40)
-				{
-					_possibleIdent = VSystemID.Raw.ZXSpectrum;
-				}
-			}
+			if (trk.Sectors[0].SectorData is [ 0, 0, 40, .. ]) _possibleIdent = VSystemID.Raw.ZXSpectrum;
 
 			// search for PLUS3DOS string
 			foreach (var t in Tracks)
@@ -91,7 +84,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// check for bootable status
-			if (trk.Sectors[0].SectorData != null && trk.Sectors[0].SectorData.Length > 0)
+			if (trk.Sectors[0].SectorData?.Length is not 0)
 			{
 				switch (trk.Sectors[0].GetModChecksum256())
 				{
@@ -116,7 +109,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// at this point the disk is not standard bootable
-			// try format analysis			
+			// try format analysis
 			if (trk.Sectors.Length == 9 && trk.Sectors[0].SectorSize == 2)
 			{
 				switch (trk.GetLowestSectorID())

@@ -332,6 +332,7 @@ namespace Jellyfish.Virtu
 			ser.Sync("Strobe", ref _strobe);
 			ser.Sync("CapsActive", ref _capsActive);
 			ser.Sync(nameof(_currentCapsLockState), ref _currentCapsLockState);
+			ser.Sync(nameof(_currentKeyPressed), ref _currentKeyPressed);
 			ser.Sync(nameof(_framesToRepeat), ref _framesToRepeat);
 		}
 

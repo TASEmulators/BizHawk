@@ -152,6 +152,9 @@ namespace BizHawk.Client.EmuHawk
 				case "Capture Mouse":
 					ToggleCaptureMouse();
 					break;
+				case "Toggle Stay on Top":
+					ToggleStayOnTop();
+					break;
 
 				// Save States
 				case "Save State 1":
@@ -375,6 +378,10 @@ namespace BizHawk.Client.EmuHawk
 					var playbackBox1 = Tools.TAStudio.TasPlaybackBox;
 					playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
 					break;
+				case "Seek To Green Arrow":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RestorePosition();
+					break;
 				case "Toggle Turbo Seek":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					var playbackBox2 = Tools.TAStudio.TasPlaybackBox;
@@ -387,6 +394,22 @@ namespace BizHawk.Client.EmuHawk
 				case "Redo":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.RedoExternal();
+					break;
+				case "Seek To Prev Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToPreviousMarker();
+					break;
+				case "Seek To Next Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToNextMarker();
+					break;
+				case "Set Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SetMarker();
+					break;
+				case "Delete Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RemoveMarker();
 					break;
 				case "Sel. bet. Markers":
 					if (!Tools.IsLoaded<TAStudio>()) return false;

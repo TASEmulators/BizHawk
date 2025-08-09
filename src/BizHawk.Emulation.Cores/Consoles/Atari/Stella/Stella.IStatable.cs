@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			// other variables
 			_leftDifficultyToggled = reader.ReadBoolean();
 			_rightDifficultyToggled = reader.ReadBoolean();
+			_colorVideoToggled = reader.ReadBoolean();
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
@@ -27,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Atari.Stella
 			// other variables
 			writer.Write(_leftDifficultyToggled);
 			writer.Write(_rightDifficultyToggled);
+			writer.Write(_colorVideoToggled);
 			writer.Write(Frame);
 			writer.Write(LagCount);
 			writer.Write(IsLagFrame);

@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return false;
 			}
-			
+
 			return defaultVal;
 		}
 
@@ -182,8 +182,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public static bool IsRomStatusBad(this IGameInfo game)
-		{
-			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
-		}
+			=> game.Status is RomStatus.BadDump or RomStatus.Overdump;
 	}
 }

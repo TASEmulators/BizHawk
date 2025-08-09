@@ -229,7 +229,6 @@
 					for (int i = 0; i < 0x4000; i++)
 					{
 						ROMLower[i] = r.RomBytes[i];
-
 					}
 				}
 				else

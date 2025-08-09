@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ShowReport(string title, string report)
 		{
 			var ss = report.Split('\n');
-			
+
 			lock (_lines)
 				foreach (var s in ss)
 				{
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HideShowGameDbButton()
 		{
 			AddToGameDbBtn.Visible = Emulator.CanGenerateGameDBEntries()
-				&& (Game.Status == RomStatus.Unknown || Game.Status == RomStatus.NotInDatabase);
+				&& Game.Status is RomStatus.Unknown or RomStatus.NotInDatabase;
 		}
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)

@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//if (cct.IsFinalInFile)
 				//{
 				//  //length is determined from length of file
-						
+
 				//}
 			}
 		}

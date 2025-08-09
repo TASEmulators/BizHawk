@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 				Header[HeaderKeys.OriginalEmulatorVersion] = Header[HeaderKeys.EmulatorVersion];
 			}
 			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
-			CreateDirectoryIfNotExists(fn);
+			Directory.CreateDirectory(Path.GetDirectoryName(fn)!);
 
 			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
 			AddLumps(bs, isBackup);
@@ -60,15 +60,6 @@ namespace BizHawk.Client.Common
 			else
 			{
 				Header.Remove(HeaderKeys.CycleCount); // don't allow invalid cycle count fields to stay set
-			}
-		}
-
-		private static void CreateDirectoryIfNotExists(string fn)
-		{
-			var file = new FileInfo(fn);
-			if (file.Directory != null && !file.Directory.Exists)
-			{
-				Directory.CreateDirectory(file.Directory.ToString());
 			}
 		}
 
@@ -144,6 +135,7 @@ namespace BizHawk.Client.Common
 					if (!string.IsNullOrWhiteSpace(line))
 					{
 						_syncSettingsJson = line;
+						break;
 					}
 				}
 			});

@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public class ScreenshotForm : Form
 	{
 		private const int WS_EX_TOPMOST = 0x00000008;
-		
+
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 

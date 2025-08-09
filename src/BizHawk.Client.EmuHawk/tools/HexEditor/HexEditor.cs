@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _numDigitsStr = "{0:X4}";
 		private string _digitFormatString = "{0:X2}";
 		private long _addressOver = -1;
-		
+
 		private long _maxRow;
 
 		private MemoryDomain _domain = new NullMemoryDomain();
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 				_domain = _romDomain;
 			}
 			else
-			{ 
+			{
 				_domain = MemoryDomains.Any(x => x.Name == _domain.Name)
 					? MemoryDomains[_domain.Name]
 					: MemoryDomains.MainMemory;
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 				_lastRom = MainForm.CurrentlyOpenRom;
 				ResetScrollBar();
 			}
-			
+
 			SetDataSize(DataSize);
 			SetHeader();
 
@@ -427,12 +427,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			byte[] bytes = new byte[str.Length / 2];
-			
+
 			for (int i = 0; i < str.Length; i += 2)
 			{
 				bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
 			}
-			
+
 			return bytes;
 		}
 
@@ -502,17 +502,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return true;
 			}
-			
+
 			if (key >= 'a' && key <= 'f') // A-F
 			{
 				return true;
 			}
-			
+
 			if (key >= 'A' && key <= 'F') // A-F
 			{
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -603,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (addr + k < _domain.Size)
 					{
-						
+
 						byte b = (byte)charValues[addr + k];
 						char c = Remap(b);
 						rowStr.Append(c);
@@ -904,7 +904,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Config.RecentRoms.MostRecent;
+				string path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -918,7 +918,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Config.RecentRoms.MostRecent;
+				string path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -1164,7 +1164,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return string.Format(_digitFormatString, MakeValue(DataSize, address)).Trim();
 			}
-			
+
 			return "";
 		}
 
@@ -1175,7 +1175,7 @@ namespace BizHawk.Client.EmuHawk
 				var values = ValueString(_highlightedAddress.Value);
 				return _secondaryHighlightedAddresses.Aggregate(values, (current, x) => current + ValueString(x));
 			}
-			
+
 			return "";
 		}
 
@@ -1243,7 +1243,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CloseTableFileMenuItem.Enabled = _textTable.Count is not 0;
 		}
-		
+
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!CurrentRomIsArchive())
@@ -1312,7 +1312,7 @@ namespace BizHawk.Client.EmuHawk
 				discardCWDChange: false,
 				filter: TextTablesFSFilterSet,
 				initDir: Config!.PathEntries.ToolsAbsolutePath(),
-				initFileName: $"{Path.GetFileNameWithoutExtension(Config.RecentRoms.MostRecent.SubstringAfterLast('|'))}.tbl");
+				initFileName: $"{Path.GetFileNameWithoutExtension(MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath.SubstringAfterLast('|'))}.tbl");
 			if (result is null) return;
 			LoadTable(result);
 			RecentTables.Add(result);
@@ -1412,7 +1412,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			var clipboardRaw = (string)data.GetData(DataFormats.Text);
 			var hex = clipboardRaw.OnlyHex();
 
@@ -1956,7 +1956,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				newValue = HexScrollBar.Maximum - HexScrollBar.LargeChange + 1;
 			}
-			
+
 			if (newValue != HexScrollBar.Value)
 			{
 				HexScrollBar.Value = newValue;
@@ -1981,7 +1981,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						if (gaps < 0) { gaps = 0; }
-						
+
 						var width = (_fontWidth * 2 * (int)cheat.Size) + (gaps * _fontWidth);
 
 						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, _fontHeight));

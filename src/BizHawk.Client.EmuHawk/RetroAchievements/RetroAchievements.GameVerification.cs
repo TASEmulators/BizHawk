@@ -75,8 +75,8 @@ namespace BizHawk.Client.EmuHawk
 						var slba = FirstDataTrackLBA();
 						dsr.ReadLBA_2048(slba + 1, buf2048, 0);
 						bitsToHash.Add(new(buf2048, offset: 0, count: 128));
-						var bootSector = (buf2048[35] << 24) | (buf2048[34] << 16) | (buf2048[33] << 8) | buf2048[32];
-						var numSectors = (buf2048[39] << 24) | (buf2048[38] << 16) | (buf2048[37] << 8) | buf2048[36];
+						var bootSector = BinaryPrimitives.ReadInt32LittleEndian(buf2048.AsSpan(start: 32));
+						var numSectors = BinaryPrimitives.ReadInt32LittleEndian(buf2048.AsSpan(start: 36));
 						for (var i = 0; i < numSectors; i++)
 						{
 							dsr.ReadLBA_2048(slba + bootSector + i, buf2048, 0);
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 								}
 								else
 								{
-									var directoryRecordLength = (uint)((buf2048[169] << 24) | (buf2048[168] << 16) | (buf2048[167] << 8) | buf2048[166]);
+									var directoryRecordLength = BinaryPrimitives.ReadUInt32LittleEndian(buf2048.AsSpan(start: 166));
 									numSectors = (int)(directoryRecordLength / logicalBlockSize);
 								}
 							}
@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 										var fn = Encoding.ASCII.GetString(buf2048, index + 33, filename.Length);
 										if (filename.EqualsIgnoreCase(fn))
 										{
-											filesize = (buf2048[index + 13] << 24) | (buf2048[index + 12] << 16) | (buf2048[index + 11] << 8) | buf2048[index + 10];
+											filesize = BinaryPrimitives.ReadInt32LittleEndian(buf2048.AsSpan(start: index + 10));
 											return (buf2048[index + 4] << 16) | (buf2048[index + 3] << 8) | buf2048[index + 2];
 										}
 									}
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if ("PS-X EXE" == Encoding.ASCII.GetString(buf2048, 0, 8))
 						{
-							exeSize = ((buf2048[31] << 24) | (buf2048[30] << 16) | (buf2048[29] << 8) | buf2048[28]) + 2048;
+							exeSize = BinaryPrimitives.ReadInt32LittleEndian(buf2048.AsSpan(start: 28)) + 2048;
 						}
 
 						bitsToHash.Add(new(buf2048, offset: 0, count: Math.Min(2048, exeSize)));
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 		private uint HashArcade(string path)
 		{
 			// Arcade wants to just hash the filename (with no extension)
-			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path));
+			var name = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(path.SubstringAfter('|')));
 			var hash = MD5Checksum.ComputeDigestHex(name);
 			return IdentifyHash(hash);
 		}
@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var programId = BinaryPrimitives.ReadUInt64LittleEndian(
-					Util.UnsafeSpanFromPointer<byte>(ptr: optional_program_id, count: 8));
+					Util.UnsafeSpanFromPointer(ptr: optional_program_id, length: 8));
 
 				FirmwareID seeddbFWID = new("3DS", "seeddb");
 				using BinaryReader seeddb = new(GetFirmware(seeddbFWID));
@@ -451,23 +451,23 @@ namespace BizHawk.Client.EmuHawk
 						else if (ext == ".xml")
 						{
 							var xml = XmlGame.Create(new(ioa.SimplePath));
-							foreach (var kvp in xml.Assets)
+							foreach (var pfd in xml.Assets)
 							{
 								if (consoleID is ConsoleID.Arcade)
 								{
-									ret.Add(HashArcade(kvp.Key));
+									ret.Add(HashArcade(pfd.Path));
 									break;
 								}
 
 								if (consoleID is ConsoleID.Nintendo3DS)
 								{
-									ret.Add(Hash3DS(kvp.Key));
+									ret.Add(Hash3DS(pfd.Filename));
 									break;
 								}
 
-								ret.Add(Disc.IsValidExtension(Path.GetExtension(kvp.Key))
-									? HashDisc(kvp.Key, consoleID)
-									: IdentifyRom(kvp.Value));
+								ret.Add(pfd.FileData.Length == 0
+									? HashDisc(pfd.Path, consoleID)
+									: IdentifyRom(pfd.FileData));
 							}
 						}
 						else

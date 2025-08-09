@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (addr < 0x8000)
 			{
 				if (addr < 0x2000)
-				{					
+				{
 					RAM_enable = ((value & 0xF) == 0xA);
 				}
 				else if (addr < 0x4000)
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (index < 5)
 			{
 				RTC_regs[index] = (byte)value;
-			}		
+			}
 			else
 			{
 				RTC_offset = value;

@@ -196,7 +196,6 @@ namespace BizHawk.Client.EmuHawk
 					_columns.ColumnsChanged();
 					Refresh();
 				}
-				
 			}
 
 			base.OnDoubleClick(e);
@@ -270,6 +269,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_selectedItems.LastOrDefault()?.RowIndex >= _rowCount)
 					{
 						var iLastToKeep = _selectedItems.LowerBoundBinarySearch(static c => c.RowIndex ?? -1, _rowCount);
+						while (iLastToKeep > -1 && (_selectedItems[iLastToKeep + 1].RowIndex ?? -1) >= _rowCount) iLastToKeep--;
 						_selectedItems = _selectedItems.Slice(start: 0, length: iLastToKeep + 1);
 					}
 
@@ -1043,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-			
+
 			// SuuperW: Hide lag frames
 			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 			{
@@ -1344,7 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 		// This allows arrow keys to be detected by KeyDown.
 		protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
 		{
-			if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			if (e.KeyCode is Keys.Left or Keys.Right or Keys.Up or Keys.Down)
 			{
 				e.IsInputKey = true;
 			}
@@ -1379,12 +1379,13 @@ namespace BizHawk.Client.EmuHawk
 						FirstVisibleRow = newSelectedRow;
 						DeselectAll();
 						SelectRow(newSelectedRow, true);
-						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 					else if (FirstVisibleRow > 0)
 					{
 						LastVisibleRow = FirstVisibleRow;
 					}
+					Refresh();
 				}
 				else if (e.IsPressed(Keys.PageDown))
 				{
@@ -1401,12 +1402,13 @@ namespace BizHawk.Client.EmuHawk
 						LastVisibleRow = newSelectedRow;
 						DeselectAll();
 						SelectRow(newSelectedRow, true);
-						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 					else if (LastVisibleRow < RowCount)
 					{
 						FirstVisibleRow = LastVisibleRow;
 					}
+					Refresh();
 				}
 				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.Home))
 				{
@@ -1414,6 +1416,7 @@ namespace BizHawk.Client.EmuHawk
 					SelectRow(0, true);
 					FirstVisibleRow = 0;
 					Refresh();
+					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.End))
 				{
@@ -1421,6 +1424,7 @@ namespace BizHawk.Client.EmuHawk
 					SelectRow(RowCount - 1, true);
 					LastVisibleRow = RowCount;
 					Refresh();
+					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else if (e.IsPressed(Keys.Up))
 				{
@@ -1434,6 +1438,7 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(targetSelectedRow, true);
 							ScrollToIndex(targetSelectedRow);
 							Refresh();
+							SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 						}
 					}
 				}
@@ -1449,6 +1454,7 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(targetSelectedRow, true);
 							ScrollToIndex(targetSelectedRow);
 							Refresh();
+							SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 						}
 					}
 				}
@@ -1467,6 +1473,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsShift(Keys.Down))
@@ -1485,10 +1492,10 @@ namespace BizHawk.Client.EmuHawk
 						else
 						{
 							SelectRow(_lastSelectedRow.Value + 1, true);
-							
 						}
 
 						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				// Selection cursor
@@ -1501,6 +1508,9 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(row - 1, true);
 							SelectRow(row, false);
 						}
+
+						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsCtrl(Keys.Down))
@@ -1512,6 +1522,9 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(row + 1, true);
 							SelectRow(row, false);
 						}
+
+						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsCtrl(Keys.Left))
@@ -1519,6 +1532,8 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(SelectedRows.Last(), false);
+						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsCtrl(Keys.Right))
@@ -1526,6 +1541,8 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
+						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsCtrlShift(Keys.Left))
@@ -1533,6 +1550,8 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection && FirstSelectedRowIndex > 0)
 					{
 						SelectRow(FirstSelectedRowIndex - 1, true);
+						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsCtrlShift(Keys.Right))
@@ -1540,6 +1559,8 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(FirstSelectedRowIndex, false);
+						Refresh();
+						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
 				else if (e.IsCtrl(Keys.PageUp))
@@ -1547,7 +1568,7 @@ namespace BizHawk.Client.EmuHawk
 					//jump to above marker with selection courser
 					if (LetKeysModifySelection)
 					{
-						
+						//TODO
 					}
 				}
 				else if (e.IsCtrl(Keys.PageDown))
@@ -1555,7 +1576,7 @@ namespace BizHawk.Client.EmuHawk
 					//jump to below marker with selection courser
 					if (LetKeysModifySelection)
 					{
-
+						//TODO
 					}
 				}
 			}
@@ -1963,7 +1984,7 @@ namespace BizHawk.Client.EmuHawk
 				var size2 = _renderer.MeasureString("AA", Font);
 				_charSize = new SizeF(size2.Width - size1.Width, size1.Height);
 			}
-			
+
 			if (_columns.VisibleColumns.Any())
 			{
 				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);

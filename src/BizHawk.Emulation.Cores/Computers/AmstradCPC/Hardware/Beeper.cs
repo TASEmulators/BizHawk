@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	public class Beeper : ISoundProvider, IBeeperDevice
 	{
 		/// <summary>
-		/// Sample Rate 
+		/// Sample Rate
 		/// This usually has to be 44100 for ISoundProvider
 		/// </summary>
 		private int _sampleRate;

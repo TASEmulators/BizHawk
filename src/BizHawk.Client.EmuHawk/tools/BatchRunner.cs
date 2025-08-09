@@ -63,12 +63,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public BatchRunner(Config config, CoreComm comm, IEnumerable<string> files, int numFrames)
+		public BatchRunner(
+			CoreComm comm,
+			Config config,
+			IDialogParent dialogParent,
+			IEnumerable<string> files,
+			int numFrames)
 		{
 			_files = new List<string>(files);
 			_numFrames = numFrames;
 
-			_ldr = new RomLoader(config);
+			_ldr = new RomLoader(config, dialogParent);
 			_ldr.OnLoadError += OnLoadError;
 			_ldr.ChooseArchive = ChooseArchive;
 			_comm = comm;
@@ -167,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 					try
 					{
 						emu.FrameAdvance(controller, true);
-						
+
 						// some cores really really really like it if you drain their audio every frame
 						if (emu.HasSoundProvider())
 						{

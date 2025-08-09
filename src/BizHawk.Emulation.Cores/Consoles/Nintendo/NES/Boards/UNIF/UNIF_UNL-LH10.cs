@@ -50,8 +50,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x8000: cmd = value & 7; break;
 				case 0x8001: reg[cmd] = value; break;
 			}
-
-
 		}
 
 		public override byte ReadWram(int addr)

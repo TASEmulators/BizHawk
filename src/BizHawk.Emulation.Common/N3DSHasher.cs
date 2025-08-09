@@ -8,7 +8,6 @@ using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -243,13 +242,13 @@ namespace BizHawk.Emulation.Common
 					iv.AsSpan(9).Clear();
 					break;
 				case 1:
-					// First 8 bytes is the partition id in normal byte order 
+					// First 8 bytes is the partition id in normal byte order
 					header.AsSpan(0x108, 8).CopyTo(iv);
 
 					// Next 4 bytes are 0
 					iv.AsSpan(8, 4).Clear();
 
-					// Last 4 bytes is the ExeFS byte offset in big endian 
+					// Last 4 bytes is the ExeFS byte offset in big endian
 					BinaryPrimitives.WriteUInt32BigEndian(iv.AsSpan(12, 4), (uint)exeFsOffset);
 					break;
 				default:

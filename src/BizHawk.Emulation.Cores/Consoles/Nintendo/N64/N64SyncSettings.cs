@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {

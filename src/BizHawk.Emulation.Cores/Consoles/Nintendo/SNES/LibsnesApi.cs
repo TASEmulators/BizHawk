@@ -29,7 +29,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			if (sizeof(CommStruct) != 368)
 			{
+#pragma warning disable CA1065 // yes, really throw
 				throw new InvalidOperationException("sizeof(comm)");
+#pragma warning restore CA1065
 			}
 		}
 

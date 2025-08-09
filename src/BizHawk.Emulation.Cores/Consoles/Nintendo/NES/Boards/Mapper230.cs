@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void NesSoftReset()
 		{
-			contra_mode ^= true;
+			contra_mode = !contra_mode;
 			prg_page = 0;
 			prg_mode = false;
 			SetMirrorType(EMirrorType.Vertical);

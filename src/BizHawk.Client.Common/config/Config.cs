@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 
 		private Dictionary<string, int> TargetZoomFactors { get; set; } = new()
 		{
-			[VSystemID.Raw.Doom] = 1,
+			[VSystemID.Raw.Doom] = 2,
 			[VSystemID.Raw.GB] = 3,
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
@@ -169,6 +169,7 @@ namespace BizHawk.Client.Common
 		public string UpdateIgnoreVersion { get; set; } = "";
 		public bool SkipOutdatedOsCheck { get; set; }
 		public bool CaptureMouse { get; set; } = false;
+		public bool MainFormMouseCaptureForcesTopmost { get; set; } = false;
 
 		public bool SkipSuperuserPrivsCheck { get; set; }
 

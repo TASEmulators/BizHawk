@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common
 						_ => string.Empty,
 					};
 				}
-				
+
 				return "";
 			}
 		}

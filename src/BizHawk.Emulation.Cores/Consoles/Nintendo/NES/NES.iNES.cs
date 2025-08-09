@@ -2,7 +2,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	partial class NES
+	public sealed partial class NES
 	{
 		private static int iNES2Wram(int i)
 		{
@@ -23,14 +23,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if ((data[7] & 0x0c) == 0x08)
 			{
 				// process as iNES v2
+
+				static int ReadEMFormAreaSize(int msn, int lsb, int nonEMFormBlockSizeKiB)
+				{
+					if (msn is not 0xF) return ((msn << 8) | lsb) * nonEMFormBlockSizeKiB;
+					// else exponent-multiplier form: 2^E * (M * 2 + 1) bytes, where M is the least significant 2 bits, and E is the next 6 bits
+
+					// exponent needs to be at least 10 in order to have KiB granularity
+					// we also can't handle >= 2GiB files, so any exponent too large can't be handled
+					var exponent = (lsb >> 2) & 0x3F;
+					if (exponent is < 10 or > 30) throw new InvalidOperationException();
+
+					var multiplier = (lsb & 0x03) * 2 + 1;
+					var prgSize = (1UL << exponent) * (ulong)multiplier;
+					if (prgSize > int.MaxValue) throw new InvalidOperationException();
+
+					// convert to KiB
+					return (int)(prgSize >> 10);
+				}
+
 				CartV2 = new CartInfo
 				{
-					PrgSize = data[4] | data[9] << 8 & 0xf00,
-					ChrSize = data[5] | data[9] << 4 & 0xf00
+					PrgSize = ReadEMFormAreaSize(msn: data[9] & 0x0F, lsb: data[4], nonEMFormBlockSizeKiB: 16),
+					ChrSize = ReadEMFormAreaSize(msn: data[9] >> 4, lsb: data[5], nonEMFormBlockSizeKiB: 8),
 				};
-
-				CartV2.PrgSize *= 16;
-				CartV2.ChrSize *= 8;
 
 				CartV2.WramBattery = (data[6] & 2) != 0; // should this be respected in v2 mode??
 
@@ -56,15 +72,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0: CartV2.PadV = 1; break;
 					case 1: CartV2.PadH = 1; break;
 				}
-				switch (data[12] & 1)
+
+				CartV2.System = (data[12] & 3) switch
 				{
-					case 0:
-						CartV2.System = "NES-NTSC";
-						break;
-					case 1:
-						CartV2.System = "NES-PAL";
-						break;
-				}
+					// 2 indicates dual NTSC/PAL compatibility, might as well use NTSC
+					0 or 2 => "NES-NTSC",
+					1 => "NES-PAL",
+					3 => "Dendy",
+					_ => CartV2.System
+				};
 
 				if ((data[6] & 4) != 0)
 					CartV2.TrainerSize = 512;
@@ -87,7 +103,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Cart.PrgSize *= 16;
 			Cart.ChrSize *= 8;
 
-
 			Cart.WramBattery = (data[6] & 2) != 0;
 			Cart.WramSize = 8; // should be data[8], but that never worked
 
@@ -107,6 +122,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (data[6].Bit(2))
 				Cart.TrainerSize = 512;
+
+			// iNES v1 does not have a reliable way to indicate the game's region
+			// Officially, data[9] bit 0 indicates region, but practically no ROM uses it
+			// Unofficially, data[10] bit 1-0 indicates region, but practically no ROM uses it
+			// However, iNES v2 will reliably indicate the game's region, so we can use that if present
+			Cart.System = CartV2?.System;
 
 			return true;
 		}

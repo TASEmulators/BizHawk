@@ -16,10 +16,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESMusicRipper : ToolFormBase, IToolFormAutoConfig
 	{
-		private static readonly FilesystemFilterSet RenoiseFilesFSFilterSet = new(new FilesystemFilter("Renoise Song Files", new[] { "xrns" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet RenoiseFilesFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("Renoise Song Files", extensions: [ "xrns" ]));
 
 		public static Icon ToolIcon
 			=> Properties.Resources.NesControllerIcon;
@@ -250,7 +249,6 @@ namespace BizHawk.Client.EmuHawk
 						pulse1LastNote = lastNote;
 						pulse1LastType = lastType;
 					}
-
 				} // pulse tracks loop
 
 				// triangle track generation
@@ -391,7 +389,6 @@ namespace BizHawk.Client.EmuHawk
 				writer.WriteLine("</Pattern>");
 
 				time += configuredPatternLength;
-
 			} // main pattern loop
 
 			writer.WriteLine("</Patterns>");
@@ -435,7 +432,7 @@ namespace BizHawk.Client.EmuHawk
 			////ftriangle = fCPU/(32*(tval + 1))
 
 			var apu = Nes.apu;
-			
+
 			// evaluate the pitches
 			int pulse0Period = apu.pulse[0].timer_reload_value;
 			float pulse0Freq = 1789773.0f / (16.0f * (pulse0Period + 1));
