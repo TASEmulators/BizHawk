@@ -56,7 +56,7 @@ CCFLAGS := 	-I. \
   	-I../ppsspp/ext/miniupnp-build \
 	-I../jaffarCommon/include \
 	-I../jaffarCommon/third_party \
-	-I../ppsspp/ffmpeg \
+	-I../ppsspp/ffmpeg/linux/x86_64/include/ \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/freetype \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/freetype/include \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/harfbuzz/src \
@@ -851,8 +851,7 @@ OBJS := $(addsuffix .o,$(basename $(SRCS)))
 %.o: %.cpp
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
-$(TARGET) : $(OBJS)
-	$(CXX) -o $@ $(LDFLAGS) $(OBJS) -Wl,--no-undefined \
+PREBUILT_LIBS := \
 	prebuilt/libavcodec.so \
 	prebuilt/libavformat.so \
 	prebuilt/libavutil.so \
@@ -860,13 +859,16 @@ $(TARGET) : $(OBJS)
 	prebuilt/libswscale.so \
 	prebuilt/libSDL2-2.0.so
 
+$(TARGET) : $(OBJS)
+	$(CXX) -o $@ $(LDFLAGS) $(OBJS) -Wl,--no-undefined $(PREBUILT_LIBS) -Wl,-rpath,$(PREBUILT_LIBS) -L$(PREBUILT_LIBS)
+
 clean:
 	$(RM) -f $(OBJS)
 	$(RM) -f $(TARGET)
 	
 CP = cp
 install:
-	$(CP) $(TARGET) $(DEST)
+	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DEST)
 ifneq ("$(wildcard $(DESTCOPY))", "")
-	$(CP) $(TARGET) $(DESTCOPY)
+	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DESTCOPY)
 endif
