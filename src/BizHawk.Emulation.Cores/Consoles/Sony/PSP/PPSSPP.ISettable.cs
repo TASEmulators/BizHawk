@@ -31,7 +31,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 			public static bool NeedsReboot(Settings x, Settings y)
 				=> !DeepEquality.DeepEquals(x, y);
-
 		}
 
 		/// <summary>
