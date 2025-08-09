@@ -1,5 +1,7 @@
 TARGET := libppsspp.so
 CCFLAGS := 	-I. \
+	-g \
+	-O0 \
 	-fPIC \
 	-DUSE_FFMPEG=1 \
 	-DNDEBUG \
@@ -62,7 +64,7 @@ CCFLAGS := 	-I. \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/harfbuzz/src \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/SDL2/include 
 
-CXXFLAGS := $(CCFLAGS) -std=c++20 
+CXXFLAGS := $(CCFLAGS) -std=c++20 -g -O0
 
 SRCS =  ../bizhawk.cpp \
 	../ppsspp/Common/ABI.cpp \

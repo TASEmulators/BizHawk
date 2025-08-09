@@ -3,5 +3,13 @@
 	"editor.tabSize": 4,
 	"search.exclude": {
 		"waterbox/**": true
+	},
+	"files.associations": {
+		"*.jaffar": "json",
+		"array": "cpp",
+		"bitset": "cpp",
+		"string_view": "cpp",
+		"initializer_list": "cpp",
+		"span": "cpp"
 	}
 }
