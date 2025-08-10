@@ -1355,6 +1355,9 @@ struct ConsoleCreationArgs
 	bool DSi;
 	bool ClearNAND;
 	bool SkipFW;
+	bool FullDSiBIOSBoot;
+	bool EnableDLDI;
+	bool EnableDSiSDCard;
 
 	int BitDepth;
 	int Interpolation;
@@ -1379,10 +1382,25 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 {
 	try
 	{
+		// SD Cards are set to be 256MiB always
+		constexpr u32 SD_CARD_SIZE = 256 * 1024 * 1024;
+
 		std::unique_ptr<melonDS::NDSCart::CartCommon> ndsRom = nullptr;
 		if (args->NdsRomData)
 		{
-			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, std::nullopt);
+			melonDS::NDSCart::NDSCartArgs cartArgs{};
+			if (args->EnableDLDI)
+			{
+				cartArgs.SDCard =
+				{
+					"dldi.bin",
+					SD_CARD_SIZE,
+					false,
+					std::nullopt,
+				};
+			}
+
+			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, std::move(cartArgs));
 
 			if (!ndsRom)
 			{
@@ -1452,14 +1470,23 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 			auto arm7iBios = CreateBiosImage<melonDS::DSiBIOSImage>(args->Arm7iBiosData, args->Arm7iBiosLength);
 
 			// upstream applies this patch to overwrite the reset vector for non-full boots
-			static const u8 dsiBiosPatch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
-			memcpy(arm9iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
-			memcpy(arm7iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
+			if (!args->FullDSiBIOSBoot)
+			{
+				static const u8 dsiBiosPatch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
+				memcpy(arm9iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
+				memcpy(arm7iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
+			}
 
 			auto nandImage = CreateNandImage(
 				args->NandData, args->NandLength, arm7iBios,
 				args->FwSettings, args->ClearNAND,
 				args->DsiWareData, args->DsiWareLength, args->TmdData, args->TmdLength);
+
+			std::optional<melonDS::FATStorage> dsiSdCard = std::nullopt;
+			if (args->EnableDSiSDCard)
+			{
+				dsiSdCard = melonDS::FATStorage("dsisd.bin", SD_CARD_SIZE, false, std::nullopt);
+			}
 
 			melonDS::DSiArgs dsiArgs
 			{
@@ -1477,8 +1504,8 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(arm9iBios),
 				std::move(arm7iBios),
 				std::move(nandImage),
-				std::nullopt,
-				false,
+				std::move(dsiSdCard),
+				args->FullDSiBIOSBoot,
 			};
 
 			nds = std::make_unique<melonDS::DSi>(std::move(dsiArgs));

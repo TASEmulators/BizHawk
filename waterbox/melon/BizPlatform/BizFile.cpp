@@ -18,6 +18,7 @@ public:
 	virtual size_t Read(void* data, u64 count) = 0;
 	virtual bool Flush() = 0;
 	virtual size_t Write(const void* data, u64 count) = 0;
+	virtual int WriteFormatted(const char* fmt, va_list args) = 0;
 	virtual size_t Length() = 0;
 };
 
@@ -107,6 +108,38 @@ public:
 		return count;
 	}
 
+	int WriteFormatted(const char* fmt, va_list args)
+	{
+		if (pos == size)
+		{
+			return -1;
+		}
+
+		// vsnprintf writes a null terminator, while vfprintf does not
+		// save the old character and restore it after writing characters
+
+		va_list argsCopy;
+		va_copy(argsCopy, args);
+		int numBytes = vsnprintf(nullptr, 0, fmt, argsCopy);
+		va_end(argsCopy);
+
+		if (numBytes <= 0)
+		{
+			return numBytes;
+		}
+
+		numBytes = (int)std::min((u64)numBytes, (u64)(size - pos - 1));
+		u8 oldChar = data[pos + numBytes];
+		int ret = vsnprintf((char*)&data[pos], size - pos, fmt, args);
+		data[pos + numBytes] = oldChar;
+		if (ret >= 0)
+		{
+			pos += ret;
+		}
+
+		return ret;
+	}
+
 	size_t Length()
 	{
 		return size;
@@ -189,6 +222,11 @@ public:
 		return fwrite(data, 1, count, file);
 	}
 
+	int WriteFormatted(const char* fmt, va_list args)
+	{
+		return vfprintf(file, fmt, args);
+	}
+
 	size_t Length()
 	{
 		long pos = ftell(file);
@@ -205,6 +243,15 @@ private:
 // public APIs open C files
 FileHandle* OpenFile(const std::string& path, FileMode mode)
 {
+	if (path == "dldi.bin" || path == "dsisd.bin")
+	{
+		// SD card files opened will be new memory files (always 256MiBs currently)
+		constexpr u32 SD_CARD_SIZE = 256 * 1024 * 1024;
+		std::unique_ptr<u8[]> data(new u8[SD_CARD_SIZE]);
+		memset(data.get(), 0xFF, SD_CARD_SIZE);
+		return new MemoryFile(std::move(data), SD_CARD_SIZE);
+	}
+
 	const char* fmode;
 	if (mode & FileMode::Write)
 	{
@@ -231,6 +278,12 @@ FileHandle* OpenLocalFile(const std::string& path, FileMode mode)
 
 bool FileExists(const std::string& name)
 {
+	if (name == "dldi.bin" || name == "dsisd.bin")
+	{
+		// these always return false (always consider opening these a "new" file)
+		return false;
+	}
+
 	FILE* f = fopen(name.c_str(), "rb");
 	bool exists = f != nullptr;
 	fclose(f);
@@ -283,10 +336,13 @@ u64 FileWrite(const void* data, u64 size, u64 count, FileHandle* file)
 	return file->Write(data, size * count);
 }
 
-// only used for FATStorage (i.e. SD cards), not supported
 u64 FileWriteFormatted(FileHandle* file, const char* fmt, ...)
 {
-	return 0;
+	va_list args;
+	va_start(args, fmt);
+	int ret = file->WriteFormatted(fmt, args);
+	va_end(args);
+	return ret;
 }
 
 u64 FileLength(FileHandle* file)
