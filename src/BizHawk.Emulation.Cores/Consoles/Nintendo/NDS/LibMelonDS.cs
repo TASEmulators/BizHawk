@@ -76,6 +76,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool DSi;
 			public bool ClearNAND;
 			public bool SkipFW;
+			public bool FullDSiBIOSBoot;
+			public bool EnableDLDI;
+			public bool EnableDSiSDCard;
 
 			public NDS.NDSSettings.AudioBitDepthType BitDepth;
 			public NDS.NDSSettings.AudioInterpolationType Interpolation;

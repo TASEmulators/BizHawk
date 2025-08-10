@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly IntPtr _console;
 		private readonly NDSDisassembler _disassembler;
 
+		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly LibMelonDS.LogCallback _logCallback;
 
 		private bool loggingShouldInsertLevelNextCall = true;
@@ -45,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private readonly MelonDSGLTextureProvider _glTextureProvider;
 		private readonly IOpenGLProvider _openGLProvider;
+		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly LibMelonDS.GetGLProcAddressCallback _getGLProcAddressCallback;
 		private object _glContext;
 
@@ -357,6 +359,46 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					}
 				}
 
+				// start off with baseline 128MiBs
+				uint mmapMiBSize = 128;
+				if (!IsDSiWare)
+				{
+					uint romSize = 1;
+					while (romSize < roms[0].Length)
+					{
+						romSize <<= 1;
+					}
+
+					mmapMiBSize += romSize / (1024 * 1024);
+
+					if (_activeSyncSettings.EnableDLDI)
+					{
+						mmapMiBSize += 256;
+					}
+				}
+
+				if (IsDSi)
+				{
+					// NAND is 240MiB, round off to 256MiBs here (extra 16MiB for other misc allocations)
+					mmapMiBSize += 256;
+
+					if (_activeSyncSettings.EnableDSiSDCard)
+					{
+						mmapMiBSize += 256;
+					}
+				}
+
+				if (roms.Count > 1)
+				{
+					uint romSize = 1;
+					while (romSize < roms[1].Length)
+					{
+						romSize <<= 1;
+					}
+
+					mmapMiBSize += romSize / (1024 * 1024);
+				}
+
 				_core = PreInit<LibMelonDS>(new()
 				{
 					Filename = "melonDS.wbx",
@@ -364,14 +406,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					SealedHeapSizeKB = 4,
 					InvisibleHeapSizeKB = 48 * 1024,
 					PlainHeapSizeKB = 4,
-					MmapHeapSizeKB = 1024 * 1024,
+					MmapHeapSizeKB = 1024 * mmapMiBSize,
 					SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 					SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-				}, new Delegate[]
-				{
+				},
+				[
 					_readCallback, _writeCallback, _execCallback, _traceCallback,
 					_threadStartCallback, _logCallback, _getGLProcAddressCallback
-				});
+				]);
 
 				_core.SetLogCallback(_logCallback);
 
@@ -466,6 +508,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				consoleCreationArgs.DSi = IsDSi;
 				consoleCreationArgs.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;
 				consoleCreationArgs.SkipFW = _activeSyncSettings.SkipFirmware;
+				consoleCreationArgs.FullDSiBIOSBoot = _activeSyncSettings.FullDSiBIOSBoot;
+				consoleCreationArgs.EnableDLDI = _activeSyncSettings.EnableDLDI;
+				consoleCreationArgs.EnableDSiSDCard = _activeSyncSettings.EnableDSiSDCard;
 
 				consoleCreationArgs.BitDepth = _settings.AudioBitDepth;
 				consoleCreationArgs.Interpolation = _settings.AudioInterpolation;

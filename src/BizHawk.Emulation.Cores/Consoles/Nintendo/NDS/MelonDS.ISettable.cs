@@ -240,6 +240,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool UseRealBIOS { get; set; }
 
+			[DisplayName("Full DSi BIOS Boot")]
+			[Description("If true, the full DSi BIOS boot sequence will be done, instead of the first part HLE'd. Requires full (good) BIOS dumps. Ignored outside of DSi mode.")]
+			[DefaultValue(false)]
+			public bool FullDSiBIOSBoot { get; set; }
+
 			[DisplayName("Skip Firmware")]
 			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted (no real bios or missing firmware).")]
 			[DefaultValue(true)]
@@ -254,6 +259,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[Description("If true, the DSi NAND will have all its titles cleared. Forced true when recording a movie.")]
 			[DefaultValue(true)]
 			public bool ClearNAND { get; set; }
+
+			[DisplayName("Enable DLDI")]
+			[Description("If true, homebrew ROMs will have DLDI enabled, giving them a blank SD Card to use. Ignored for retail ROMs.")]
+			[DefaultValue(false)]
+			public bool EnableDLDI { get; set; }
+
+			[DisplayName("Enable DSi SD Card")]
+			[Description("If true, a blank SD card will be inserted into the DSi SD card slot. Ignored outside of DSi mode.")]
+			[DefaultValue(false)]
+			public bool EnableDSiSDCard { get; set; }
 
 			public enum StartUp : int
 			{
