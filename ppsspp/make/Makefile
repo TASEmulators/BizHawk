@@ -876,6 +876,7 @@ install:
 	ln -snf $(DEST)/libavutil.so     $(DEST)/libavutil.so.55
 	ln -snf $(DEST)/libswresample.so $(DEST)/libswresample.so.2
 	ln -snf $(DEST)/libswscale.so    $(DEST)/libswscale.so.4
+	ln -snf $(DEST)/libSDL2-2.0.so    $(DEST)/libSDL2-2.0.so.0
 ifneq ("$(wildcard $(DESTCOPY))", "")
 	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DESTCOPY)
 	ln -snf $(DESTCOPY)/libavcodec.so    $(DESTCOPY)/libavcodec.so.57
@@ -883,4 +884,5 @@ ifneq ("$(wildcard $(DESTCOPY))", "")
 	ln -snf $(DESTCOPY)/libavutil.so     $(DESTCOPY)/libavutil.so.55
 	ln -snf $(DESTCOPY)/libswresample.so $(DESTCOPY)/libswresample.so.2
 	ln -snf $(DESTCOPY)/libswscale.so    $(DESTCOPY)/libswscale.so.4
+	ln -snf $(DESTCOPY)/libSDL2-2.0.so   $(DESTCOPY)/libSDL2-2.0.so.0
 endif
