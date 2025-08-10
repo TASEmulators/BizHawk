@@ -575,7 +575,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				}
 
 				// DSi connected to the DSi Shop, remove those latter certificates
-				if (nandFile.size() == 0xF40)
+				if (nandFile.size() == 0xF40 || nandFile.size() == 0xC40)
 				{
 					nandFile.resize(0xA00);
 				}
