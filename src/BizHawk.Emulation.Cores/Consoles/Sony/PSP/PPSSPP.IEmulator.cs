@@ -103,18 +103,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			IsLagFrame = false;
 		}
 
-		private bool _disposed;
+		private bool _disposed = false;
 
 		public void Dispose()
 		{
-			_libPPSSPP.Deinit();
-
+			// Just in case, do not try to dispose once it has been disposed once
 			if (_disposed)
 			{
 				return;
 			}
 
 			_disposed = true;
+
+			// Shutting down ppsspp core
+			_libPPSSPP.Deinit();
+
+			// Freeing up disc assets
+			foreach (var disc in _discAssets) disc.DiscData.Dispose();
 		}
 	}
 }
