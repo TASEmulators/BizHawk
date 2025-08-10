@@ -204,3 +204,4 @@
     <Copy SourceFiles="$(OutDir)libquicknes.dll" DestinationFolder="$(ProjectDir)../../output/dll" SkipUnchangedFiles="true" />
   </Target>
 </Project>
+
