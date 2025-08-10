@@ -382,6 +382,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					// NAND is 240MiB, round off to 256MiBs here (extra 16MiB for other misc allocations)
 					mmapMiBSize += 256;
 
+					// clear NAND code allocates quite a bit of memory (enough for another copy of NAND itself)
+					if (_activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested)
+					{
+						mmapMiBSize += 256;
+					}
+
 					if (_activeSyncSettings.EnableDSiSDCard)
 					{
 						mmapMiBSize += 256;
