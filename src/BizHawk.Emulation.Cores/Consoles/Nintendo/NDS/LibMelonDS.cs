@@ -80,6 +80,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool EnableDLDI;
 			public bool EnableDSiSDCard;
 
+			public bool EnableJIT;
+			public int MaxBranchSize;
+			public bool LiteralOptimizations;
+			public bool BranchOptimizations;
+
 			public NDS.NDSSettings.AudioBitDepthType BitDepth;
 			public NDS.NDSSettings.AudioInterpolationType Interpolation;
 

@@ -207,6 +207,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool GLHiResCoordinates { get; set; }
 
+			[DisplayName("Enable JIT Recompiler")]
+			[Description("Enables JIT recompilation, offering a speed boost at the cost of accuracy. Debugging tools cannot be used with the JIT. Savestate size will be much larger with the JIT.")]
+			[DefaultValue(false)]
+			public bool EnableJIT { get; set; }
+
+			[JsonIgnore]
+			private int _jitmaxbranchsize;
+
+			[DisplayName("JIT Max Branch Size")]
+			[Description("Sets the maximum size of a JIT block. Higher values gain more speed but have a higher risk of timing problems.")]
+			[DefaultValue(32)]
+			public int JITMaxBranchSize
+			{
+				get => _jitmaxbranchsize;
+				set => _jitmaxbranchsize = Math.Max(1, Math.Min(value, 32));
+			}
+
+			[DisplayName("JIT Literal Optimizations")]
+			[Description("Performs literal optimizations in the JIT recompiler.")]
+			[DefaultValue(true)]
+			public bool JITLiteralOptimizations { get; set; }
+
+			[DisplayName("JIT Branch Optimizations")]
+			[Description("Performs branch optimizations in the JIT recompiler.")]
+			[DefaultValue(true)]
+			public bool JITBranchOptimizations { get; set; }
+
 			[JsonIgnore]
 			private DateTime _initaltime;
 

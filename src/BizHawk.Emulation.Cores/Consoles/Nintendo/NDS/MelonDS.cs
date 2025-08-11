@@ -518,6 +518,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				consoleCreationArgs.EnableDLDI = _activeSyncSettings.EnableDLDI;
 				consoleCreationArgs.EnableDSiSDCard = _activeSyncSettings.EnableDSiSDCard;
 
+				consoleCreationArgs.EnableJIT = _activeSyncSettings.EnableJIT;
+				consoleCreationArgs.MaxBranchSize = _activeSyncSettings.JITMaxBranchSize;
+				consoleCreationArgs.LiteralOptimizations = _activeSyncSettings.JITLiteralOptimizations;
+				consoleCreationArgs.BranchOptimizations = _activeSyncSettings.JITBranchOptimizations;
+
 				consoleCreationArgs.BitDepth = _settings.AudioBitDepth;
 				consoleCreationArgs.Interpolation = _settings.AudioInterpolation;
 
@@ -598,9 +603,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_disassembler = new(_core);
 				_serviceProvider.Register<IDisassemblable>(_disassembler);
 
-				const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
-				Tracer = new TraceBuffer(TRACE_HEADER);
-				_serviceProvider.Register(Tracer);
+				// tracelogger cannot be used with the JIT
+				if (!_activeSyncSettings.EnableJIT)
+				{
+					const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
+					Tracer = new TraceBuffer(TRACE_HEADER);
+					_serviceProvider.Register(Tracer);
+				}
 
 				if (_glContext != null)
 				{
