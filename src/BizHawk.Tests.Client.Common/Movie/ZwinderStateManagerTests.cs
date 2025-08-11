@@ -680,6 +680,16 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}
 		}
 
+		[TestMethod]
+		public void TestUnreserveZeroDoesNotThrow()
+		{
+			var ss = CreateStateSource();
+			var manager = new ZwinderStateManager(_ => false);
+			manager.Engage(ss.CloneSavestate());
+
+			manager.Unreserve(0);
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
