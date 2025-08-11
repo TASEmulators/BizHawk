@@ -117,6 +117,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		}
 	}
 
+	melonDS::NDS::Current = f->NDS;
 	f->NDS->RunFrame();
 
 	if (f->Keys & 0x1000)

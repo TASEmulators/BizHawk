@@ -1359,6 +1359,11 @@ struct ConsoleCreationArgs
 	bool EnableDLDI;
 	bool EnableDSiSDCard;
 
+	bool EnableJIT;
+	u32 MaxBlockSize;
+	bool LiteralOptimizations;
+	bool BranchOptimizations;
+
 	int BitDepth;
 	int Interpolation;
 
@@ -1391,7 +1396,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 			melonDS::NDSCart::NDSCartArgs cartArgs{};
 			if (args->EnableDLDI)
 			{
-				cartArgs.SDCard =
+				cartArgs.SDCard = melonDS::FATStorageArgs
 				{
 					"dldi.bin",
 					SD_CARD_SIZE,
@@ -1423,6 +1428,18 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		auto arm9Bios = CreateBiosImage<melonDS::ARM9BIOSImage>(args->Arm9BiosData, args->Arm9BiosLength, melonDS::bios_arm9_bin);
 		auto arm7Bios = CreateBiosImage<melonDS::ARM7BIOSImage>(args->Arm7BiosData, args->Arm7BiosLength, melonDS::bios_arm7_bin);
 		auto firmware = CreateFirmware(args->FirmwareData, args->FirmwareLength, args->DSi, args->FwSettings);
+
+		std::optional<melonDS::JITArgs> jitArgs = std::nullopt;
+		if (args->EnableJIT)
+		{
+			jitArgs = melonDS::JITArgs
+			{
+				args->MaxBlockSize,
+				args->LiteralOptimizations,
+				args->BranchOptimizations,
+				false,
+			};
+		}
 
 		auto bitDepth = static_cast<melonDS::AudioBitDepth>(args->BitDepth);
 		auto interpolation = static_cast<melonDS::AudioInterpolation>(args->Interpolation);
@@ -1495,7 +1512,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(arm9Bios),
 				std::move(arm7Bios),
 				std::move(firmware),
-				std::nullopt,
+				std::move(jitArgs),
 				bitDepth,
 				interpolation,
 				std::nullopt,
@@ -1519,7 +1536,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(arm9Bios),
 				std::move(arm7Bios),
 				std::move(firmware),
-				std::nullopt,
+				std::move(jitArgs),
 				bitDepth,
 				interpolation,
 				std::nullopt,

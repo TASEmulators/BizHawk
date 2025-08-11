@@ -1,6 +1,6 @@
 CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
 
-CXXFLAGS := -DOGLRENDERER_ENABLED \
+CXXFLAGS := -DOGLRENDERER_ENABLED -DJIT_ENABLED -DWATERBOX \
 	-I. -I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
@@ -8,7 +8,8 @@ CXXFLAGS := -DOGLRENDERER_ENABLED \
 	-Wno-sign-compare -Wno-deprecated-declarations \
 	-Wno-missing-braces -Wno-bitwise-instead-of-logical \
 	-Wno-unused-private-field -Wno-logical-op-parentheses \
-	-Wno-mismatched-tags -Wno-reorder-ctor \
+	-Wno-mismatched-tags -Wno-reorder-ctor -Wno-invalid-offsetof \
+	-Wno-bitwise-op-parentheses -Wno-vla-cxx-extension \
 	-fno-strict-aliasing -fwrapv -std=c++17
 
 TARGET = melonDS.wbx
@@ -66,6 +67,22 @@ CORE_GL_SRCS = \
 	OpenGLSupport.cpp \
 	frontend/Util_Video.cpp
 
+CORE_JIT_SRCS = \
+	ARM_InstrInfo.cpp \
+	ARMJIT.cpp \
+	ARMJIT_Memory.cpp \
+	dolphin/CommonFuncs.cpp
+
+CORE_JIT_X64_SRCS = \
+	dolphin/x64ABI.cpp \
+	dolphin/x64CPUDetect.cpp \
+	dolphin/x64Emitter.cpp \
+	ARMJIT_x64/ARMJIT_Compiler.cpp \
+	ARMJIT_x64/ARMJIT_ALU.cpp \
+	ARMJIT_x64/ARMJIT_LoadStore.cpp \
+	ARMJIT_x64/ARMJIT_Branch.cpp \
+	ARMJIT_x64/ARMJIT_Linkage.S
+
 TEAKRA_SRCS = \
 	ahbm.cpp \
 	apbp.cpp \
@@ -100,6 +117,8 @@ BIZPLATFORM_SRCS = \
 SRCS = \
 	$(addprefix melonDS/src/,$(CORE_SRCS)) \
 	$(addprefix melonDS/src/,$(CORE_GL_SRCS)) \
+	$(addprefix melonDS/src/,$(CORE_JIT_SRCS)) \
+	$(addprefix melonDS/src/,$(CORE_JIT_X64_SRCS)) \
 	$(addprefix melonDS/src/teakra/src/,$(TEAKRA_SRCS)) \
 	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
