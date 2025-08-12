@@ -781,7 +781,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_openGLProvider.ActivateGLContext(_glContext);
 			}
 
-			_core.SetTraceCallback(Tracer.IsEnabled() ? _traceCallback : null, _settings.GetTraceMask());
+			var isTracing = Tracer?.IsEnabled() ?? false;
+			_core.SetTraceCallback(isTracing ? _traceCallback : null, _settings.GetTraceMask());
 
 			if (controller.IsPressed("Power"))
 			{
