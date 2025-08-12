@@ -1,7 +1,7 @@
 TARGET := libppsspp.so
 CCFLAGS := 	-I. \
 	-g \
-	-O0 \
+	-Os \
 	-fPIC \
 	-DUSE_FFMPEG=1 \
 	-DNDEBUG \
@@ -40,7 +40,6 @@ CCFLAGS := 	-I. \
 	-DFT_CONFIG_OPTIONS_H="<ftoption.h>" \
 	-DFT_CONFIG_CONFIG_H="<ftconfig.h>" \
 	-D__INLINE__=inline \
-	-Iprebuilt \
   	-I../ppsspp/ext/glslang \
   	-I../ppsspp/ext/glslang-build \
   	-I../ppsspp \
@@ -62,9 +61,9 @@ CCFLAGS := 	-I. \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/freetype \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/freetype/include \
 	-I../jaffarCommon/subprojects/SDL2_TTF/external/harfbuzz/src \
-	-I../jaffarCommon/subprojects/SDL2_TTF/external/SDL2/include 
+	-I../jaffarCommon/subprojects/SDL2_TTF/external/SDL2/include
 
-CXXFLAGS := $(CCFLAGS) -std=c++20 -g -O0
+CXXFLAGS := $(CCFLAGS) -std=c++20
 
 SRCS =  ../bizhawk.cpp \
 	../ppsspp/Common/ABI.cpp \
@@ -832,14 +831,14 @@ SRCS =  ../bizhawk.cpp \
 	../jaffarCommon/subprojects/SDL2_TTF/external/freetype/src/base/ftwinfnt.c \
 	../jaffarCommon/subprojects/SDL2_TTF/external/freetype/builds/unix/ftsystem.c \
 	../jaffarCommon/subprojects/SDL2_TTF/external/freetype/src/base/ftdebug.c \
-	../jaffarCommon/subprojects/SDL2_TTF/SDL_ttf.c 
+	../jaffarCommon/subprojects/SDL2_TTF/SDL_ttf.c
 
-UNAME := $(shell uname)
-ifeq ($(UNAME), Linux)
-	TARGET = libppsspp.so
-else
-	TARGET = libppsspp.dll
-endif
+# UNAME := $(shell uname)
+# ifeq ($(UNAME), Linux)
+# 	TARGET = libppsspp.so
+# else
+# 	TARGET = libppsspp.dll
+# endif
 
 LDFLAGS = -shared -s $(CXXFLAGS)
 
@@ -853,36 +852,17 @@ OBJS := $(addsuffix .o,$(basename $(SRCS)))
 %.o: %.cpp
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
-PREBUILT_LIBS := \
-	prebuilt/libavcodec.so \
-	prebuilt/libavformat.so \
-	prebuilt/libavutil.so \
-	prebuilt/libswresample.so \
-	prebuilt/libswscale.so \
-	prebuilt/libSDL2-2.0.so
-
 $(TARGET) : $(OBJS)
-	$(CXX) -o $@ $(LDFLAGS) $(OBJS) -Wl,--no-undefined -Lprebuilt -lavcodec -lavformat -lavutil -lswresample -lswscale -lSDL2-2.0
+	$(CXX) -o $@ $(LDFLAGS) $(OBJS) -Wl,--no-undefined -L../ppsspp/ffmpeg/linux/x86_64/lib -lavformat -lavcodec -lavutil -lswresample -lswscale -lSDL2 -Wl,-Bsymbolic
+	patchelf --replace-needed libSDL2-2.0.so.0 libSDL2.so $(TARGET)
 
 clean:
 	$(RM) -f $(OBJS)
 	$(RM) -f $(TARGET)
-	
+
 CP = cp
 install:
-	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DEST)
-	ln -snf $(DEST)/libavcodec.so    $(DEST)/libavcodec.so.57
-	ln -snf $(DEST)/libavformat.so   $(DEST)/libavformat.so.57
-	ln -snf $(DEST)/libavutil.so     $(DEST)/libavutil.so.55
-	ln -snf $(DEST)/libswresample.so $(DEST)/libswresample.so.2
-	ln -snf $(DEST)/libswscale.so    $(DEST)/libswscale.so.4
-	ln -snf $(DEST)/libSDL2-2.0.so    $(DEST)/libSDL2-2.0.so.0
+	$(CP) $(TARGET) $(DEST)
 ifneq ("$(wildcard $(DESTCOPY))", "")
-	$(CP) $(TARGET) $(PREBUILT_LIBS) $(DESTCOPY)
-	ln -snf $(DESTCOPY)/libavcodec.so    $(DESTCOPY)/libavcodec.so.57
-	ln -snf $(DESTCOPY)/libavformat.so   $(DESTCOPY)/libavformat.so.57
-	ln -snf $(DESTCOPY)/libavutil.so     $(DESTCOPY)/libavutil.so.55
-	ln -snf $(DESTCOPY)/libswresample.so $(DESTCOPY)/libswresample.so.2
-	ln -snf $(DESTCOPY)/libswscale.so    $(DESTCOPY)/libswscale.so.4
-	ln -snf $(DESTCOPY)/libSDL2-2.0.so   $(DESTCOPY)/libSDL2-2.0.so.0
+	$(CP) $(TARGET) $(DESTCOPY)
 endif
