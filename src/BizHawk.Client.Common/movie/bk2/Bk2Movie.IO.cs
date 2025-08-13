@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 
 				if (SavestateFramebuffer != null)
 				{
-					bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer));
+					bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer), zstdCompress: false);
 				}
 			}
 			else if (StartsFromSaveRam)
