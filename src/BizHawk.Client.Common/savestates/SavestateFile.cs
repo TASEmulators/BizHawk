@@ -68,6 +68,7 @@ namespace BizHawk.Client.Common
 			{
 				if (config.Type == SaveStateType.Text)
 				{
+					//TODO disable Zstd compression? are these meant to be editable?
 					bs.PutLump(BinaryStateLump.CorestateText, tw => _statable.SaveStateText(tw));
 				}
 				else
@@ -112,7 +113,8 @@ namespace BizHawk.Client.Common
 						// this never should have been a core's responsibility
 						tw.WriteLine("Frame {0}", _emulator.Frame);
 						_movieSession.HandleSaveState(tw);
-					});
+					},
+					zstdCompress: true);
 			}
 
 			if (_userBag.Count is not 0)
@@ -127,7 +129,10 @@ namespace BizHawk.Client.Common
 
 			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
 			{
-				bs.PutLump(BinaryStateLump.LagLog, tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw));
+				bs.PutLump(
+					BinaryStateLump.LagLog,
+					tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw),
+					zstdCompress: true);
 			}
 		}
 

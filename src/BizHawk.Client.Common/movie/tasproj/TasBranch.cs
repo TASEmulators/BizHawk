@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 					{
 						tw.WriteLine(b.InputLog[i]);
 					}
-				});
+				}, zstdCompress: true);
 
 				bs.PutLump(nframebuffer, s =>
 				{

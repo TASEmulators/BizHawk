@@ -74,12 +74,13 @@ namespace BizHawk.Client.Common
 			bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
 			bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
 			bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-			bs.PutLump(BinaryStateLump.Input, WriteInputLog);
+			bs.PutLump(BinaryStateLump.Input, WriteInputLog, zstdCompress: true);
 
 			if (StartsFromSavestate)
 			{
 				if (TextSavestate != null)
 				{
+					//TODO disable Zstd compression? are these meant to be editable?
 					bs.PutLump(BinaryStateLump.CorestateText, (TextWriter tw) => tw.Write(TextSavestate));
 				}
 				else
