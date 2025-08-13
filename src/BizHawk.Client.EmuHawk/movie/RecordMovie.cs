@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Linq;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -232,11 +233,10 @@ namespace BizHawk.Client.EmuHawk
 						movieToRecord.TextSavestate = sw.ToString();
 					}
 
-					// TODO: do we want to support optionally not saving this?
-					movieToRecord.SavestateFramebuffer = Array.Empty<int>();
 					if (_emulator.HasVideoProvider())
 					{
-						movieToRecord.SavestateFramebuffer = _emulator.AsVideoProvider().GetVideoBufferCopy();
+						var v = _emulator.AsVideoProvider();
+						movieToRecord.SavestateFramebuffer = new BitmapBuffer(v.BufferWidth, v.BufferHeight, v.GetVideoBuffer());
 					}
 				}
 				else if (selectedStartFromValue is START_FROM_SAVERAM && _emulator.HasSaveRam())

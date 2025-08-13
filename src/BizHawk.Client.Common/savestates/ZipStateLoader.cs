@@ -16,6 +16,8 @@ namespace BizHawk.Client.Common
 		private Dictionary<string, ZipArchiveEntry> _entriesByName;
 		private readonly Zstd _zstd;
 
+		public int Version => _ver.Build;
+
 		private ZipStateLoader()
 		{
 			_zstd = new();
