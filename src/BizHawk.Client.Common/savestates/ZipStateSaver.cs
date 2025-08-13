@@ -53,14 +53,14 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback, bool zstdCompress = false)
+		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
 			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);
 				callback(tw);
 				tw.Flush();
-			}, zstdCompress: zstdCompress);
+			});
 		}
 
 		public void Dispose()

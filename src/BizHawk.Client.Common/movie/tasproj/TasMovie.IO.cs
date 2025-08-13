@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 
 			var settings = JsonConvert.SerializeObject(TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
-			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw), zstdCompress: true);
+			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 			if (InputRollSettingsForSave != null)
@@ -32,10 +32,7 @@ namespace BizHawk.Client.Common
 
 			if (VerificationLog.Count is not 0)
 			{
-				bs.PutLump(
-					BinaryStateLump.VerificationLog,
-					tw => tw.WriteLine(VerificationLog.ToInputLog()),
-					zstdCompress: true);
+				bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(VerificationLog.ToInputLog()));
 			}
 
 			if (Branches.Count is not 0) Branches.Save(bs);
