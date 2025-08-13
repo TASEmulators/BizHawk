@@ -93,10 +93,10 @@
 	path = waterbox/dsda/core
 	url = https://github.com/TASEmulators/dsda-doom.git
 	branch = wbx
-[submodule "waterbox/ppsspp/ppsspp"]
+[submodule "ppsspp/ppsspp"]
 	path = ppsspp/ppsspp
 	url = https://github.com/TASEmulators/ppsspp.git
-[submodule "waterbox/ppsspp/jaffarCommon"]
+[submodule "ppsspp/jaffarCommon"]
 	path = ppsspp/jaffarCommon
 	url = https://github.com/SergioMartin86/jaffarCommon.git
 [submodule "ppsspp/SDL"]
