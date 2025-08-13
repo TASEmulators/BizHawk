@@ -55,12 +55,26 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<TextWriter> callback)
 		{
+			// For small text files, skip compression to avoid overhead that makes them larger
+			const int SMALL_TEXT_THRESHOLD = 256; // bytes
+			
+			// First, capture the text content to determine its size
+			string textContent;
+			using (var tempStream = new StringWriter())
+			{
+				callback(tempStream);
+				textContent = tempStream.ToString();
+			}
+			
+			var textBytes = System.Text.Encoding.UTF8.GetByteCount(textContent);
+			bool shouldCompress = textBytes > SMALL_TEXT_THRESHOLD;
+			
 			PutLump(lump, s =>
 			{
 				TextWriter tw = new StreamWriter(s);
-				callback(tw);
+				tw.Write(textContent);
 				tw.Flush();
-			});
+			}, shouldCompress);
 		}
 
 		public void Dispose()
