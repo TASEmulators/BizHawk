@@ -125,9 +125,9 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie tasMovie)
 			{
-				bs.PutLump(BinaryStateLump.LagLog, tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw));
+				bs.PutLump(BinaryStateLump.LagLog, tw => tasMovie.LagLog.Save(tw), zstdCompress: true);
 			}
 		}
 
@@ -240,9 +240,9 @@ namespace BizHawk.Client.Common
 				foreach (var (k, v) in bag) _userBag.Add(k, v);
 			}
 
-			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie tasMovie)
 			{
-				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => ((ITasMovie) _movieSession.Movie).LagLog.Load(tr));
+				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => tasMovie.LagLog.Load(tr));
 			}
 
 			return true;
