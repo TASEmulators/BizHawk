@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,6 +9,18 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
+		/// <remarks>based on <see href="https://stackoverflow.com/a/35081977"/></remarks>
+		public static char[] CommonPrefix(params string[] strings)
+		{
+			var shortest = strings.MinBy(static s => s.Length);
+			return string.IsNullOrEmpty(shortest)
+				? [ ]
+				: shortest.TakeWhile((c, i) => Array.TrueForAll(strings, s => s[i] == c)).ToArray();
+		}
+
+		public static char[] CommonPrefix(this IEnumerable<string> strings)
+			=> CommonPrefix(strings: strings as string[] ?? strings.ToArray());
+
 		/// <inheritdoc cref="EqualsIgnoreCase"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool ContainsIgnoreCase(this string haystack, string needle)

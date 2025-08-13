@@ -6,8 +6,12 @@ namespace BizHawk.Client.Common
 {
 	public class ZipStateSaver : IDisposable
 	{
+		internal const string TOP_LEVEL_DIR_NAME = "BizState"; // savestates and movies all have the same structure, including the `BizState 1.0` file, so this seemed a fitting name
+
 		private readonly IZipWriter _zip;
 		private bool _isDisposed;
+
+		public bool AsTarbomb = !OSTailoredCode.IsUnixHost;
 
 		private static void WriteZipVersion(Stream s)
 		{
@@ -33,13 +37,14 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback, bool zstdCompress = true)
 		{
+			var filePath = AsTarbomb ? lump.FileName : $"{TOP_LEVEL_DIR_NAME}/{lump.FileName}";
 			if (zstdCompress)
 			{
-				_zip.WriteItem(lump.FileName + ".zst", callback, true);
+				_zip.WriteItem(filePath + ".zst", callback, zstdCompress: true);
 			}
 			else
 			{
-				_zip.WriteItem(lump.FileName, callback, false);
+				_zip.WriteItem(filePath, callback, zstdCompress: false);
 			}
 		}
 
