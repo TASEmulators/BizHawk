@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -32,7 +33,7 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump SyncSettings { get; private set; }
 
 		// TasMovie
-		[Name("LagLog", ".json")]
+		[Name("LagLog", "json")]
 		public static BinaryStateLump LagLog { get; private set; }
 		[Name("GreenZone")]
 		public static BinaryStateLump StateHistory { get; private set; }
@@ -91,6 +92,7 @@ namespace BizHawk.Client.Common
 		{
 			Name = name;
 			Ext = ext;
+			Debug.Assert(!ext.StartsWith('.'), "omit period of file extension");
 		}
 
 		protected BinaryStateLump()
