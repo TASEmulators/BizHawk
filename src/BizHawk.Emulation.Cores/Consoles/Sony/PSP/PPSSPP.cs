@@ -24,8 +24,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		[CoreConstructor(VSystemID.Raw.PSP)]
 		public PPSSPP(CoreLoadParameters<object, object> lp)
 		{
-			Console.WriteLine("In PPSSP Core");
-
 			DriveLightEnabled = true;
 			_discAssets = lp.Discs;
 
