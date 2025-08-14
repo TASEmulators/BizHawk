@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores
 		public string DiscName { get; set; }
 	}
 
-	public class CoreLoadParameters<TSettiing, TSync>
+	public class CoreLoadParameters<TSettings, TSyncS>
 	{
 		public CoreComm Comm { get; set; }
 
@@ -40,12 +40,12 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// Settings previously returned from the core.  May be null.
 		/// </summary>
-		public TSettiing Settings { get; set; }
+		public TSettings Settings { get; set; }
 
 		/// <summary>
 		/// Sync Settings previously returned from the core.  May be null.
 		/// </summary>
-		public TSync SyncSettings { get; set; }
+		public TSyncS SyncSettings { get; set; }
 
 		/// <summary>
 		/// All roms that should be loaded as part of this core load.
