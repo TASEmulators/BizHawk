@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		portedVersion: "2025.03.09 (ecbbadd)",
 		portedUrl: "https://github.com/hrydgard/ppsspp",
 		isReleased: false)]
-	public partial class PPSSPP : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IStatable, ISettable<object, object>
+	public partial class PPSSPP : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IStatable
 	{
 		private static DynamicLibraryImportResolver _resolver;
 		private LibPPSSPP _libPPSSPP;
