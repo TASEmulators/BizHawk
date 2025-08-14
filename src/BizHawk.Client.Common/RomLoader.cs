@@ -280,6 +280,10 @@ namespace BizHawk.Client.Common
 					game.System = VSystemID.Raw.PCE;
 					break;
 
+				case DiscType.SonyPSP:
+					game.System = VSystemID.Raw.PSP;
+					break;
+
 				case DiscType.JaguarCD:
 					game.System = VSystemID.Raw.Jaguar;
 					break;
@@ -304,9 +308,6 @@ namespace BizHawk.Client.Common
 					break;
 				case DiscType.SonyPS2:
 					NoCoreForSystem(VSystemID.Raw.PS2);
-					break;
-				case DiscType.SonyPSP:
-					game.System = VSystemID.Raw.PSP;
 					break;
 				case DiscType.Wii:
 					NoCoreForSystem(VSystemID.Raw.Wii);
