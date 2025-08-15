@@ -75,5 +75,4 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			public GamepadInputs input;
 		}
 	}
-
 }

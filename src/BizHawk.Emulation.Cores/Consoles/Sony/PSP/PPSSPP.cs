@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			var PPGeFontData = Resources.PPGE_FONT_ROBOTO_CONDENSED.Value;
 			if (!_libPPSSPP.loadResource(resourceName, PPGeFontData, PPGeFontData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
-			/// Getting user data folder for savestates / misc files
+			// Getting user data folder for savestates / misc files
 			DeterministicEmulation = lp.DeterministicEmulationRequested;
 			string userPath = lp.Comm.CoreFileProvider.GetUserPath(SystemId, temp: true) + Path.DirectorySeparatorChar;
 			userPath = userPath.Replace('\\', '/'); // LibPPSSPP uses /
