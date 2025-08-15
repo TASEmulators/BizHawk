@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		];
 
 		private static string[] JoystickAxisCollection = [
-			JoystickAxes.RightAnalogX,
-			JoystickAxes.RightAnalogY,
 			JoystickAxes.LeftAnalogX,
 			JoystickAxes.LeftAnalogY,
 		];
@@ -63,10 +61,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 
 		private static class JoystickAxes
 		{
-			public const string RightAnalogX = "Right Analog X";
-			public const string RightAnalogY = "Right Analog Y";
 			public const string LeftAnalogX = "Left Analog X";
 			public const string LeftAnalogY = "Left Analog Y";
 		}
 	}
 }
+
