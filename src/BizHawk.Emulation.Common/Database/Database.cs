@@ -492,7 +492,6 @@ namespace BizHawk.Emulation.Common
 
 				case ".32X":
 					game.System = VSystemID.Raw.Sega32X;
-					game.AddOption("32X", "true");
 					break;
 
 				case ".VEC":
