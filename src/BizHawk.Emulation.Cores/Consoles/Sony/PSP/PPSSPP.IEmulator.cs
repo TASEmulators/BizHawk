@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			fi.input.ButtonCross = controller.IsPressed($"P1 {JoystickButtons.ButtonCross}") ? 1 : 0;
 			fi.input.ButtonLTrigger = controller.IsPressed($"P1 {JoystickButtons.ButtonLTrigger}") ? 1 : 0;
 			fi.input.ButtonRTrigger = controller.IsPressed($"P1 {JoystickButtons.ButtonRTrigger}") ? 1 : 0;
-			fi.input.RightAnalogX = controller.AxisValue($"P1 {JoystickAxes.RightAnalogX}");
-			fi.input.RightAnalogY = controller.AxisValue($"P1 {JoystickAxes.RightAnalogY}");
 			fi.input.LeftAnalogX = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogX}");
 			fi.input.LeftAnalogY = controller.AxisValue($"P1 {JoystickAxes.LeftAnalogY}");
 
@@ -123,3 +121,4 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		}
 	}
 }
+

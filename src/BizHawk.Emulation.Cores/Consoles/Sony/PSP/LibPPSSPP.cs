@@ -65,8 +65,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			public int ButtonCross;
 			public int ButtonLTrigger;
 			public int ButtonRTrigger;
-			public int RightAnalogX;
-			public int RightAnalogY;
 			public int LeftAnalogX;
 			public int LeftAnalogY;
 		}
@@ -77,4 +75,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			public GamepadInputs input;
 		}
 	}
+
 }
