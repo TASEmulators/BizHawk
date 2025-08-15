@@ -3,26 +3,8 @@
 namespace melonDS::Platform
 {
 
-void Init(int argc, char** argv)
+void SignalStop(StopReason reason, void* userdata)
 {
-}
-
-void DeInit()
-{
-}
-
-void SignalStop(StopReason reason)
-{
-}
-
-int InstanceID()
-{
-	return 0;
-}
-
-std::string InstanceFileSuffix()
-{
-	return "";
 }
 
 Semaphore* Semaphore_Create()
@@ -40,6 +22,11 @@ void Semaphore_Reset(Semaphore* sema)
 
 void Semaphore_Wait(Semaphore* sema)
 {
+}
+
+bool Semaphore_TryWait(Semaphore* sema, int timeout_ms)
+{
+	return false;
 }
 
 void Semaphore_Post(Semaphore* sema, int count)
@@ -68,92 +55,102 @@ bool Mutex_TryLock(Mutex* mutex)
 	return false;
 }
 
-bool MP_Init()
-{
-	return false;
-}
-
-void MP_DeInit()
-{
-}
-
-void MP_Begin()
-{
-}
-
-void MP_End()
-{
-}
-
-int MP_SendPacket(u8* data, int len, u64 timestamp)
-{
-	return 0;
-}
-
-int MP_RecvPacket(u8* data, u64* timestamp)
-{
-	return 0;
-}
-
-int MP_SendCmd(u8* data, int len, u64 timestamp)
-{
-	return 0;
-}
-
-int MP_SendReply(u8* data, int len, u64 timestamp, u16 aid)
-{
-	return 0;
-}
-
-int MP_SendAck(u8* data, int len, u64 timestamp)
-{
-	return 0;
-}
-
-int MP_RecvHostPacket(u8* data, u64* timestamp)
-{
-	return 0;
-}
-
-u16 MP_RecvReplies(u8* data, u64 timestamp, u16 aidmask)
-{
-	return 0;
-}
-
-bool LAN_Init()
-{
-	return false;
-}
-
-void LAN_DeInit()
-{
-}
-
-int LAN_SendPacket(u8* data, int len)
-{
-	return 0;
-}
-
-int LAN_RecvPacket(u8* data)
-{
-	return 0;
-}
-
 void Sleep(u64 usecs)
 {
 }
 
-void Camera_Start(int num)
+u64 GetMSCount()
+{
+	return 0;
+}
+
+u64 GetUSCount()
+{
+	return 0;
+}
+
+void MP_Begin(void* userdata)
 {
 }
 
-void Camera_Stop(int num)
+void MP_End(void* userdata)
 {
 }
 
-void Camera_CaptureFrame(int num, u32* frame, int width, int height, bool yuv)
+int MP_SendPacket(u8* data, int len, u64 timestamp, void* userdata)
+{
+	return 0;
+}
+
+int MP_RecvPacket(u8* data, u64* timestamp, void* userdata)
+{
+	return 0;
+}
+
+int MP_SendCmd(u8* data, int len, u64 timestamp, void* userdata)
+{
+	return 0;
+}
+
+int MP_SendReply(u8* data, int len, u64 timestamp, u16 aid, void* userdata)
+{
+	return 0;
+}
+
+int MP_SendAck(u8* data, int len, u64 timestamp, void* userdata)
+{
+	return 0;
+}
+
+int MP_RecvHostPacket(u8* data, u64* timestamp, void* userdata)
+{
+	return 0;
+}
+
+u16 MP_RecvReplies(u8* data, u64 timestamp, u16 aidmask, void* userdata)
+{
+	return 0;
+}
+
+int Net_SendPacket(u8* data, int len, void* userdata)
+{
+	return 0;
+}
+
+int Net_RecvPacket(u8* data, void* userdata)
+{
+	return 0;
+}
+
+void Camera_Start(int num, void* userdata)
+{
+}
+
+void Camera_Stop(int num, void* userdata)
+{
+}
+
+void Camera_CaptureFrame(int num, u32* frame, int width, int height, bool yuv, void* userdata)
 {
 	// TODO
+}
+
+bool Addon_KeyDown(KeyType type, void* userdata)
+{
+	return false;
+}
+
+void Addon_RumbleStart(u32 len, void* userdata)
+{
+}
+
+void Addon_RumbleStop(void* userdata)
+{
+}
+
+float Addon_MotionQuery(MotionQueryType type, void* userdata)
+{
+	return 0;
 }
 
 DynamicLibrary* DynamicLibrary_Load(const char* lib)

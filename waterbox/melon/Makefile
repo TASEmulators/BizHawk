@@ -1,6 +1,7 @@
 CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
 
 CXXFLAGS := -DOGLRENDERER_ENABLED -DJIT_ENABLED -DWATERBOX \
+	-DMELONDS_GL_HEADER=\"BizPlatform/BizOGL.h\" \
 	-I. -I./melonDS/src -I./melonDS/src/teakra/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
@@ -31,6 +32,7 @@ CORE_SRCS = \
 	DSi_Camera.cpp \
 	DSi_DSP.cpp \
 	DSi_I2C.cpp \
+	DSi_I2S.cpp \
 	DSi_NAND.cpp \
 	DSi_NDMA.cpp \
 	DSi_NWifi.cpp \
@@ -46,6 +48,7 @@ CORE_SRCS = \
 	GPU3D.cpp \
 	GPU3D_Soft.cpp \
 	GPU3D_Texcache.cpp \
+	Mic.cpp \
 	NDS.cpp \
 	NDSCart.cpp \
 	NDSCartR4.cpp \
@@ -65,12 +68,13 @@ CORE_GL_SRCS = \
 	GPU3D_Compute.cpp \
 	GPU3D_TexcacheOpenGL.cpp \
 	OpenGLSupport.cpp \
-	frontend/Util_Video.cpp
+	frontend/ScreenLayout.cpp
 
 CORE_JIT_SRCS = \
 	ARM_InstrInfo.cpp \
 	ARMJIT.cpp \
 	ARMJIT_Memory.cpp \
+	ARMJIT_Global.cpp \
 	dolphin/CommonFuncs.cpp
 
 CORE_JIT_X64_SRCS = \
@@ -82,6 +86,12 @@ CORE_JIT_X64_SRCS = \
 	ARMJIT_x64/ARMJIT_LoadStore.cpp \
 	ARMJIT_x64/ARMJIT_Branch.cpp \
 	ARMJIT_x64/ARMJIT_Linkage.S
+
+CORE_DSP_HLE_SRCS = \
+	AACUcode.cpp \
+	G711Ucode.cpp \
+	GraphicsUcode.cpp \
+	UcodeBase.cpp
 
 TEAKRA_SRCS = \
 	ahbm.cpp \
@@ -107,8 +117,10 @@ MISC_SRCS = \
 	blip_buf/blip_buf.c \
 
 BIZPLATFORM_SRCS = \
+	BizPlatform/BizAAC.cpp \
 	BizPlatform/BizFile.cpp \
 	BizPlatform/BizLog.cpp \
+	BizPlatform/BizMic.cpp \
 	BizPlatform/BizOGL.cpp \
 	BizPlatform/BizPlatformStubs.cpp \
 	BizPlatform/BizSaveManager.cpp \
@@ -119,6 +131,7 @@ SRCS = \
 	$(addprefix melonDS/src/,$(CORE_GL_SRCS)) \
 	$(addprefix melonDS/src/,$(CORE_JIT_SRCS)) \
 	$(addprefix melonDS/src/,$(CORE_JIT_X64_SRCS)) \
+	$(addprefix melonDS/src/DSP_HLE/,$(CORE_DSP_HLE_SRCS)) \
 	$(addprefix melonDS/src/teakra/src/,$(TEAKRA_SRCS)) \
 	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \

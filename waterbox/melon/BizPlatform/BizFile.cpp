@@ -240,6 +240,11 @@ private:
 	FILE* file;
 };
 
+std::string GetLocalFilePath(const std::string& filename)
+{
+	return filename;
+}
+
 // public APIs open C files
 FileHandle* OpenFile(const std::string& path, FileMode mode)
 {
@@ -293,6 +298,24 @@ bool FileExists(const std::string& name)
 bool LocalFileExists(const std::string& name)
 {
 	return FileExists(name);
+}
+
+bool CheckFileWritable(const std::string& filepath)
+{
+	if (filepath == "dldi.bin" || filepath == "dsisd.bin")
+	{
+		return true;
+	}
+
+	FILE* f = fopen(filepath.c_str(), "rb+");
+	bool exists = f != nullptr;
+	fclose(f);
+	return exists;
+}
+
+bool CheckLocalFileWritable(const std::string& filepath)
+{
+	return CheckFileWritable(filepath);
 }
 
 bool CloseFile(FileHandle* file)

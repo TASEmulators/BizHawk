@@ -14,6 +14,7 @@
 #include "fatfs/ff.h"
 
 #include "BizPlatform/BizFile.h"
+#include "BizPlatform/BizUserData.h"
 #include "BizTypes.h"
 
 extern melonDS::NDS* CurrentNDS;
@@ -1358,6 +1359,7 @@ struct ConsoleCreationArgs
 	bool FullDSiBIOSBoot;
 	bool EnableDLDI;
 	bool EnableDSiSDCard;
+	bool DSiDSPHLE;
 
 	bool EnableJIT;
 	u32 MaxBlockSize;
@@ -1405,7 +1407,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				};
 			}
 
-			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, std::move(cartArgs));
+			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, nullptr, std::move(cartArgs));
 
 			if (!ndsRom)
 			{
@@ -1479,6 +1481,9 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 			renderer3d->ShaderCompileStep(currentShader, shadersCount);
 		}
 
+		auto bizUserData = std::make_unique<melonDS::Platform::BizUserData>();
+		memset(bizUserData.get(), 0, sizeof(melonDS::Platform::BizUserData));
+
 		std::unique_ptr<melonDS::NDS> nds;
 
 		if (args->DSi)
@@ -1507,8 +1512,6 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 
 			melonDS::DSiArgs dsiArgs
 			{
-				std::move(ndsRom),
-				std::move(gbaRom),
 				std::move(arm9Bios),
 				std::move(arm7Bios),
 				std::move(firmware),
@@ -1523,16 +1526,15 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(nandImage),
 				std::move(dsiSdCard),
 				args->FullDSiBIOSBoot,
+				args->DSiDSPHLE,
 			};
 
-			nds = std::make_unique<melonDS::DSi>(std::move(dsiArgs));
+			nds = std::make_unique<melonDS::DSi>(std::move(dsiArgs), bizUserData.get());
 		}
 		else
 		{
 			melonDS::NDSArgs ndsArgs
 			{
-				std::move(ndsRom),
-				std::move(gbaRom),
 				std::move(arm9Bios),
 				std::move(arm7Bios),
 				std::move(firmware),
@@ -1543,8 +1545,11 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(renderer3d)
 			};
 
-			nds = std::make_unique<melonDS::NDS>(std::move(ndsArgs));
+			nds = std::make_unique<melonDS::NDS>(std::move(ndsArgs), bizUserData.get());
 		}
+
+		nds->SetNDSCart(std::move(ndsRom));
+		nds->SetGBACart(std::move(gbaRom));
 
 		if (args->ThreeDeeRenderer == 0)
 		{
@@ -1566,6 +1571,8 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		}
 
 		ResetConsole(nds.get(), args->SkipFW, dsiWareId);
+
+		nds->UserData = bizUserData.release();
 
 		CurrentNDS = nds.release();
 		return CurrentNDS;
