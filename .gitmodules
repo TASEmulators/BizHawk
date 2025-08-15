@@ -99,9 +99,6 @@
 [submodule "ppsspp/jaffarCommon"]
 	path = ppsspp/jaffarCommon
 	url = https://github.com/SergioMartin86/jaffarCommon.git
-[submodule "ppsspp/SDL"]
-	path = ppsspp/SDL
-	url = https://github.com/libsdl-org/SDL.git
 [submodule "waterbox/opera/opera-libretro"]
 	path = waterbox/opera/opera-libretro
 	url = https://github.com/TASEmulators/opera-libretro.git
