@@ -517,6 +517,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				consoleCreationArgs.FullDSiBIOSBoot = _activeSyncSettings.FullDSiBIOSBoot;
 				consoleCreationArgs.EnableDLDI = _activeSyncSettings.EnableDLDI;
 				consoleCreationArgs.EnableDSiSDCard = _activeSyncSettings.EnableDSiSDCard;
+				consoleCreationArgs.DSiDSPHLE = _activeSyncSettings.DSiDSPHLE;
 
 				consoleCreationArgs.EnableJIT = _activeSyncSettings.EnableJIT;
 				consoleCreationArgs.MaxBranchSize = _activeSyncSettings.JITMaxBranchSize;

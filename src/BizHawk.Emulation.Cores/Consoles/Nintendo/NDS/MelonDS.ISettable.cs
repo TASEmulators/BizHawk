@@ -297,6 +297,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool EnableDSiSDCard { get; set; }
 
+			[DisplayName("DSi DSP HLE")]
+			[Description("If true, the DSi DSP will use HLE (High Level Emulation) if possible. Ignored outside of DSi mode.")]
+			[DefaultValue(true)]
+			public bool DSiDSPHLE { get; set; }
+
 			public enum StartUp : int
 			{
 				[Display(Name = "Auto Boot")]

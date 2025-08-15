@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool FullDSiBIOSBoot;
 			public bool EnableDLDI;
 			public bool EnableDSiSDCard;
+			public bool DSiDSPHLE;
 
 			public bool EnableJIT;
 			public int MaxBranchSize;
@@ -156,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract int GetSaveRamLength(IntPtr console);
 
 		[BizImport(CC)]
-		public abstract bool SaveRamIsDirty();
+		public abstract bool SaveRamIsDirty(IntPtr console);
 
 		[BizImport(CC)]
 		public abstract void ImportDSiWareSavs(IntPtr console, ulong titleId);

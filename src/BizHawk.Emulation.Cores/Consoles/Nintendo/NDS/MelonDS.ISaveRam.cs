@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly int PublicSavSize, PrivateSavSize, BannerSavSize;
 		private readonly int DSiWareSaveLength;
 
-		public new bool SaveRamModified => IsDSiWare ? DSiWareSaveLength != 0 : _core.SaveRamIsDirty();
+		public new bool SaveRamModified => IsDSiWare ? DSiWareSaveLength != 0 : _core.SaveRamIsDirty(_console);
 
 		public new byte[] CloneSaveRam(bool clearDirty)
 		{
