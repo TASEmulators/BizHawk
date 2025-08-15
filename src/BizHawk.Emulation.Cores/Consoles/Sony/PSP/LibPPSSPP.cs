@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 		public abstract void SetInputCallback(InputCallback ipc);
 
 		[BizImport(CC, Compatibility = true)]
-		public abstract bool Init(string gameFile);
+		public abstract bool Init(string gameFile, string userDataPath);
 
 		[BizImport(CC, Compatibility = true)]
 		public abstract void FrameAdvance(FrameInfo f);

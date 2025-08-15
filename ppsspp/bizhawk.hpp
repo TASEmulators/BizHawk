@@ -27,8 +27,6 @@ struct gamePad_t
 	int32_t cross;
 	int32_t ltrigger;
 	int32_t rtrigger;
-	int32_t rightAnalogX;
-	int32_t rightAnalogY;
 	int32_t leftAnalogX;
 	int32_t leftAnalogY;
 };

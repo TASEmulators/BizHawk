@@ -9,6 +9,7 @@
 #include <GPU/GPU.h>
 
 std::string _cdImageFilePath = "__CDROM_PATH.iso";
+std::string _userDataPath;
 
 // Flag to indicate whether the nvram changed
 int _nvramChanged;
@@ -121,12 +122,10 @@ int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device
   {
       case RETRO_DEVICE_ID_ANALOG_X:
         if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogX; 
-        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _inputData.rightAnalogX; 
         return 0;
 
       case RETRO_DEVICE_ID_ANALOG_Y:
         if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogY; 
-        if (index == RETRO_DEVICE_INDEX_ANALOG_RIGHT) return _inputData.rightAnalogY; 
         return 0;
 
       default: return 0;
@@ -154,7 +153,7 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
     if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE) { configHandler((struct retro_variable *)data); return true; }
     if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE) { return true; }
     if (cmd == RETRO_ENVIRONMENT_SET_PIXEL_FORMAT) { *((retro_pixel_format*) data) = RETRO_PIXEL_FORMAT_XRGB8888; return true; }
-    if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY) { return true; }
+	if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY) { *((const char**)data) = _userDataPath.c_str(); return true; }
     if (cmd == RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY) { return true; } 
     if (cmd == RETRO_ENVIRONMENT_GET_CORE_OPTIONS_VERSION) { return false; }
     if (cmd == RETRO_ENVIRONMENT_SET_VARIABLES) { return false; }
@@ -275,8 +274,13 @@ EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resource
 }
 
 
-EXPORT bool Init()
+EXPORT bool Init(const char* gameFile, const char* userDataPath)
 { 
+
+	printf("Game File: %s\n", gameFile);
+	printf("User Data Path: %s\n", userDataPath);
+	_userDataPath = userDataPath;
+
 	retro_set_environment(retro_environment_callback);
 	retro_set_input_poll(retro_input_poll_callback);
 	retro_set_audio_sample_batch(retro_audio_sample_batch_callback);
@@ -344,9 +348,7 @@ EXPORT void FrameAdvance(MyFrameInfo f)
   //printf("cross: %d\n", _inputData.cross);
   //printf("circle: %d\n", _inputData.circle);
   //printf("leftAnalogX: %d\n", _inputData.leftAnalogX);
-  //printf("rightAnalogX: %d\n", _inputData.rightAnalogX);
   //printf("leftAnalogY: %d\n", _inputData.leftAnalogY);
-  //printf("rightAnalogY: %d\n", _inputData.rightAnalogY);
 
   // Checking for changes in NVRAM
   _nvramChanged = false;

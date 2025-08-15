@@ -94,10 +94,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 			var PPGeFontData = Resources.PPGE_FONT_ROBOTO_CONDENSED.Value;
 			if (!_libPPSSPP.loadResource(resourceName, PPGeFontData, PPGeFontData.Length)) throw new InvalidOperationException($"Could not load resource: {resourceName}");
 
-			////////////// Initializing Core
+			/// Getting user data folder for savestates / misc files
+			DeterministicEmulation = lp.DeterministicEmulationRequested;
+			string userPath = lp.Comm.CoreFileProvider.GetUserPath(SystemId, temp: true) + Path.DirectorySeparatorChar;
+			userPath = userPath.Replace('\\', '/'); // LibPPSSPP uses /
+
+	        ////////////// Initializing Core
 			string cdName = _discAssets[0].DiscName;
 			Console.WriteLine($"Launching Core with Game: '{cdName}'");
-			if (!_libPPSSPP.Init(gameFile: cdName))
+			if (!_libPPSSPP.Init(gameFile: cdName, userPath))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
