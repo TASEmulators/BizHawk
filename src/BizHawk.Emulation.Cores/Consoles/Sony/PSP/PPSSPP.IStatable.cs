@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sony.PSP
 	{
 		private byte[] _stateBuf = [ ];
 
-		public bool AvoidRewind => true;
+		public bool AvoidRewind => false;
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
