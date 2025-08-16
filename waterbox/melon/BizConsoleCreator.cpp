@@ -1392,6 +1392,9 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		// SD Cards are set to be 256MiB always
 		constexpr u32 SD_CARD_SIZE = 256 * 1024 * 1024;
 
+		auto bizUserData = std::make_unique<melonDS::Platform::BizUserData>();
+		memset(bizUserData.get(), 0, sizeof(melonDS::Platform::BizUserData));
+
 		std::unique_ptr<melonDS::NDSCart::CartCommon> ndsRom = nullptr;
 		if (args->NdsRomData)
 		{
@@ -1407,7 +1410,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				};
 			}
 
-			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, nullptr, std::move(cartArgs));
+			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, bizUserData.get(), std::move(cartArgs));
 
 			if (!ndsRom)
 			{
@@ -1419,7 +1422,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		if (args->GbaRomData)
 		{
 			auto gbaSram = CreateBlankGbaSram(args->GbaRomData, args->GbaRomLength);
-			gbaRom = melonDS::GBACart::ParseROM(args->GbaRomData, args->GbaRomLength, gbaSram.first.get(), gbaSram.second);
+			gbaRom = melonDS::GBACart::ParseROM(args->GbaRomData, args->GbaRomLength, gbaSram.first.get(), gbaSram.second, bizUserData.get());
 
 			if (!gbaRom)
 			{
@@ -1480,9 +1483,6 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		{
 			renderer3d->ShaderCompileStep(currentShader, shadersCount);
 		}
-
-		auto bizUserData = std::make_unique<melonDS::Platform::BizUserData>();
-		memset(bizUserData.get(), 0, sizeof(melonDS::Platform::BizUserData));
 
 		std::unique_ptr<melonDS::NDS> nds;
 
@@ -1572,8 +1572,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 
 		ResetConsole(nds.get(), args->SkipFW, dsiWareId);
 
-		nds->UserData = bizUserData.release();
-
+		bizUserData.release();
 		CurrentNDS = nds.release();
 		return CurrentNDS;
 	}
