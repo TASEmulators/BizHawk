@@ -1,8 +1,10 @@
-CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers -Wno-pointer-sign
+CCFLAGS := -Wno-incompatible-pointer-types-discards-qualifiers \
+	-Wno-pointer-sign -Wno-unused-function -Wno-unused-variable
 
 CXXFLAGS := -DOGLRENDERER_ENABLED -DJIT_ENABLED -DWATERBOX \
 	-DMELONDS_GL_HEADER=\"BizPlatform/BizOGL.h\" \
 	-I. -I./melonDS/src -I./melonDS/src/teakra/include \
+	-I./BizPlatform/faad2/include \
 	-Wall -Wextra -Werror=int-to-pointer-cast \
 	-Wfatal-errors -Wno-unused-parameter -Wno-unused-variable \
 	-Wno-unused-but-set-variable -Wno-unused-function \
@@ -114,17 +116,53 @@ MISC_SRCS = \
 	sha1/sha1.c \
 	tiny-AES-c/aes.c \
 	xxhash/xxhash.c \
-	blip_buf/blip_buf.c \
+	blip_buf/blip_buf.c
 
 BIZPLATFORM_SRCS = \
-	BizPlatform/BizAAC.cpp \
-	BizPlatform/BizFile.cpp \
-	BizPlatform/BizLog.cpp \
-	BizPlatform/BizMic.cpp \
-	BizPlatform/BizOGL.cpp \
-	BizPlatform/BizPlatformStubs.cpp \
-	BizPlatform/BizSaveManager.cpp \
-	BizPlatform/BizThread.cpp \
+	BizAAC.cpp \
+	BizFile.cpp \
+	BizLog.cpp \
+	BizMic.cpp \
+	BizOGL.cpp \
+	BizPlatformStubs.cpp \
+	BizSaveManager.cpp \
+	BizThread.cpp
+
+LIBFAAD_SRCS = \
+	bits.c \
+	cfft.c \
+	common.c \
+	decoder.c \
+	drc.c \
+	error.c \
+	filtbank.c \
+	huffman.c \
+	is.c \
+	mdct.c \
+	mp4.c \
+	ms.c \
+	output.c \
+	pns.c \
+	pulse.c \
+	specrec.c \
+	syntax.c \
+	tns.c
+
+CCFLAGS += \
+	-I./BizPlatform/faad2/include \
+	-I./BizPlatform/faad2/libfaad \
+	-DFAAD2_VERSION=2.11.2 \
+	-DPACKAGE_VERSION=\"2.11.2\" \
+	-DHAVE_INTTYPES_H=1 \
+	-DHAVE_LRINTF=1 \
+	-DHAVE_STDINT_H=1 \
+	-DHAVE_STRING_H=1 \
+	-DHAVE_STRINGS_H=1 \
+	-DHAVE_SYS_STAT_H=1 \
+	-DHAVE_SYS_TIME_H=1 \
+	-DHAVE_SYS_TYPES_H=1 \
+	-DHAVE_UNISTD_H=1 \
+	-DLC_ONLY_DECODER -DDISABLE_SBR
 
 SRCS = \
 	$(addprefix melonDS/src/,$(CORE_SRCS)) \
@@ -135,7 +173,8 @@ SRCS = \
 	$(addprefix melonDS/src/teakra/src/,$(TEAKRA_SRCS)) \
 	$(addprefix melonDS/src/fatfs/,$(FATFS_SRCS)) \
 	$(addprefix melonDS/src/,$(MISC_SRCS)) \
-	$(BIZPLATFORM_SRCS) \
+	$(addprefix BizPlatform/,$(BIZPLATFORM_SRCS)) \
+	$(addprefix BizPlatform/faad2/libfaad/,$(LIBFAAD_SRCS)) \
 	BizConsoleCreator.cpp \
 	BizDebugging.cpp \
 	BizGLPresenter.cpp \
