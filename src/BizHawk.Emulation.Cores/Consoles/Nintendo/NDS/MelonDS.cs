@@ -408,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_core = PreInit<LibMelonDS>(new()
 				{
 					Filename = "melonDS.wbx",
-					SbrkHeapSizeKB = 2 * 1024,
+					SbrkHeapSizeKB = 32 * 1024,
 					SealedHeapSizeKB = 4,
 					InvisibleHeapSizeKB = 176 * 1024,
 					PlainHeapSizeKB = 4,
