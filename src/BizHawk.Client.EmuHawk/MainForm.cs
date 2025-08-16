@@ -58,6 +58,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
+		private readonly ToolStripMenuItemEx RealTimeCounterMenuItem = new() { Enabled = false, Text = "00:00.0" };
+
 		private readonly StatusLabelEx StatusBarMuteIndicator = new();
 
 		private readonly StatusLabelEx StatusBarRewindIndicator = new()
@@ -80,6 +82,8 @@ namespace BizHawk.Client.EmuHawk
 			Slot8StatusButton.Tag = SelectSlot8MenuItem.Tag = 8;
 			Slot9StatusButton.Tag = SelectSlot9MenuItem.Tag = 9;
 			Slot0StatusButton.Tag = SelectSlot0MenuItem.Tag = 10;
+
+			EmulationSubMenu.DropDownItems.InsertBefore(LoadedCoreNameMenuItem, insert: RealTimeCounterMenuItem);
 
 			{
 				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)

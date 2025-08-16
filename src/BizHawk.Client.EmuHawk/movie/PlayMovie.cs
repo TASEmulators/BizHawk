@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			TurboCheckbox.Checked = _config.TurboSeek;
 		}
 
-		private static string MovieTimeLengthStr(TimeSpan movieLength)
+		internal static string MovieTimeLengthStr(TimeSpan movieLength)
 			=> movieLength.ToString(movieLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\:hh\:mm\:ss\.fff", DateTimeFormatInfo.InvariantInfo);
 
 		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)

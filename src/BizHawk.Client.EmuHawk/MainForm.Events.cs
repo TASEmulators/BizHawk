@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.Audio;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
@@ -537,6 +538,8 @@ namespace BizHawk.Client.EmuHawk
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"];
 			SoftResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Soft Reset"];
 			HardResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hard Reset"];
+
+			RealTimeCounterMenuItem.Text = $"Est. {PlayMovie.MovieTimeLengthStr(Emulator.EstimatedRealTimeSincePowerOn())} since power-on";
 		}
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
