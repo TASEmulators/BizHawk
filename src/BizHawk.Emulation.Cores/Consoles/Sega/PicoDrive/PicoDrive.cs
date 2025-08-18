@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private readonly DiscSectorReader _cdReader;
 		private readonly bool _isPal;
 
-		[CoreConstructor(VSystemID.Raw.GEN, Priority = CorePriority.Low)]
 		[CoreConstructor(VSystemID.Raw.Sega32X)]
 		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
 			: this(comm, game, rom, null, deterministic, syncSettings)
@@ -118,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			VsyncNumerator = _isPal ? 53203424 : 53693175;
 			VsyncDenominator = _isPal ? 3420 * 313 : 3420 * 262;
 
-			Is32XActive = game["32X"];
+			Is32XActive = game.System == VSystemID.Raw.Sega32X;
 		}
 
 		public bool Is32XActive { get; }

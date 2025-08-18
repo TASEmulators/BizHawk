@@ -19,6 +19,9 @@
 	path = waterbox/melon/melonDS
 	url = https://github.com/TASEmulators/melonDS.git
 	branch = melonbiz
+[submodule "waterbox/melon/BizPlatform/faad2"]
+	path = waterbox/melon/BizPlatform/faad2
+	url = https://github.com/knik0/faad2.git
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git
@@ -85,3 +88,15 @@
 [submodule "ExternalProjects/FlooohChips/chips"]
 	path = ExternalProjects/FlooohChips/chips
 	url = https://github.com/floooh/chips.git
+[submodule "waterbox/dosbox/dosbox-x"]
+	path = waterbox/dosbox/dosbox-x
+	url = https://github.com/TASEmulators/dosbox-x.git
+	branch = wbx
+[submodule "waterbox/dsda/core"]
+	path = waterbox/dsda/core
+	url = https://github.com/TASEmulators/dsda-doom.git
+	branch = wbx
+[submodule "waterbox/opera/opera-libretro"]
+	path = waterbox/opera/opera-libretro
+	url = https://github.com/TASEmulators/opera-libretro.git
+	branch = wbx

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
@@ -169,9 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		// Core Specifc functions
 
-		/// <summary>
-		/// Initializes the the core DLL
-		/// </summary>
+		/// <summary>Initializes the core DLL</summary>
 		/// <param name="APIVersion">Specifies what API version our app is using. Just set this to 0x20001</param>
 		/// <param name="ConfigPath">Directory to have the DLL look for config data. "" seems to disable this</param>
 		/// <param name="DataPath">Directory to have the DLL look for user data. "" seems to disable this</param>
@@ -338,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		//WARNING - RETURNS A STATIC BUFFER
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate IntPtr biz_r4300_decode_op(uint instr, uint counter);
-		public biz_r4300_decode_op m64p_decode_op; 
+		public biz_r4300_decode_op m64p_decode_op;
 
 		/// <summary>
 		/// Reads from the "system bus"

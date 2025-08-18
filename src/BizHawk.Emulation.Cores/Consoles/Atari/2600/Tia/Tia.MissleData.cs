@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Increment the counter
 				HPosCnt++;
 
-				// Counter loops at 160 
+				// Counter loops at 160
 				HPosCnt %= 160;
 
 				// our goal here is to send a start signal 4 clocks before drawing begins. The properly emulates

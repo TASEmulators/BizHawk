@@ -6,7 +6,7 @@
     public partial class ZX48 : SpectrumBase
     {
         /* 48K Spectrum has NO memory paging
-         * 
+         *
          *  0xffff +--------+
                    | Bank 2 |
                    |        |
@@ -51,7 +51,7 @@
                 case 3: return RAM2[index];
                 default: return 0;
             }
-        }        
+        }
 
         /// <summary>
         /// Simulates writing to the bus (no contention)
@@ -74,7 +74,7 @@
                     RAM0[index] = value;
                     break;
                 case 2:
-                    RAM1[index] = value;                    
+                    RAM1[index] = value;
                     break;
                 case 3:
                     RAM2[index] = value;
@@ -119,7 +119,7 @@
         /// (with memory contention if appropriate)
         /// </summary>
         public override void WriteMemory(ushort addr, byte value)
-        {                     
+        {
             WriteBus(addr, value);
         }
 

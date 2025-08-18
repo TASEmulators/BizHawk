@@ -29,9 +29,9 @@ namespace BizHawk.Client.Common.cheats
 				// Value: 64
 				new DecodeResult
 				{
-					Address = int.Parse(parseString.Remove(4, 3), NumberStyles.HexNumber)
-					, Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber)
-					, Size = WatchSize.Byte
+					Address = int.Parse(parseString.Remove(4, 3), NumberStyles.HexNumber),
+					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber),
+					Size = WatchSize.Byte,
 				},
 				11 =>
 				// Sample Code of 2-Byte:
@@ -41,12 +41,11 @@ namespace BizHawk.Client.Common.cheats
 				// Value: 6411
 				new DecodeResult
 				{
-					Address = int.Parse(parseString.Remove(4, 5), NumberStyles.HexNumber)
-					, Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber)
-					, Size = WatchSize.Word
+					Address = int.Parse(parseString.Remove(4, 5), NumberStyles.HexNumber),
+					Value = int.Parse(parseString.Remove(0, 5), NumberStyles.HexNumber),
+					Size = WatchSize.Word,
 				},
-				_ => new InvalidCheatCode(
-					"Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters.")
+				_ => new InvalidCheatCode("Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters."),
 			};
 		}
 	}

@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 	public sealed partial class Z80A<TLink> where TLink : IZ80ALink
 	{
 		// operations that can take place in an instruction
-		public const ushort IDLE = 0; 
+		public const ushort IDLE = 0;
 		public const ushort OP = 1;
 		public const ushort OP_F = 2; // used for repeating operations
 		public const ushort HALT = 3;
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort RLC = 22;
 		public const ushort RL = 23;
 		public const ushort RRC = 24;
-		public const ushort RR = 25;	
+		public const ushort RR = 25;
 		public const ushort CPL = 26;
 		public const ushort DA = 27;
 		public const ushort SCF = 28;
@@ -55,9 +55,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort SLL = 37;
 		public const ushort BIT = 38;
 		public const ushort RES = 39;
-		public const ushort SET = 40;		
+		public const ushort SET = 40;
 		public const ushort EI = 41;
-		public const ushort DI = 42;	
+		public const ushort DI = 42;
 		public const ushort EXCH = 43;
 		public const ushort EXX = 44;
 		public const ushort EXCH_16 = 45;
@@ -70,9 +70,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort EI_RETI = 52; // reti has no delay in interrupt enable
 		public const ushort OUT = 53;
 		public const ushort IN = 54;
-		public const ushort NEG = 55;		
+		public const ushort NEG = 55;
 		public const ushort RRD = 56;
-		public const ushort RLD = 57;		
+		public const ushort RLD = 57;
 		public const ushort SET_FL_LD_R = 58;
 		public const ushort SET_FL_CP_R = 59;
 		public const ushort SET_FL_IR = 60;
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort IORQ = 75;
 
 		// non-state variables
-		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
+		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;
 		public byte temp_R;
 
 		private TLink _link;
@@ -261,15 +261,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case OP:
 					// should never reach here
-				
+
 					break;
 				case OP_F:
-					// Read the opcode of the next instruction	
+					// Read the opcode of the next instruction
 					_link.OnExecFetch(RegPC);
 					TraceCallback?.Invoke(State());
 					opcode = _link.FetchMemory(RegPC++);
 					FetchInstruction();
-					
+
 					temp_R = (byte)(Regs[R] & 0x7F);
 					temp_R++;
 					temp_R &= 0x7F;
@@ -488,7 +488,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					FetchInstruction();
 					instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
 					I_skip = true;
-					
+
 					// for prefetched case, the PC stays on the BUS one cycle longer
 					if ((src_t == IXCBpre) || (src_t == IYCBpre)) { BUSRQ[0] = PCh; }
 
@@ -562,7 +562,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					{
 						if (Ztemp2 == INC16) { INC16_Func(E, D); }
 						else { DEC16_Func(E, D); }
-					}				
+					}
 					break;
 				case SET_FL_CP_R:
 					SET_FL_CP_Func();
@@ -613,7 +613,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					Regs[Z] = cur_instr[instr_pntr++];
 					Regs[W] = 0;
 					break;
-				case REP_OP_I:			
+				case REP_OP_I:
 					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 
 					Ztemp4 = cur_instr[instr_pntr++];
@@ -630,7 +630,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						FlagP = TableParity[((Regs[ALU] + Regs[C] - 1) & 7) ^ Regs[B]];
 					}
 					else
-					{				
+					{
 						TR16_Func(Z, W, C, B);
 						INC16_Func(Z, W);
 						DEC8_Func(B);
@@ -677,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						DEC16_Func(L, H);
 						DEC8_Func(B);
 						TR16_Func(Z, W, C, B);
-						DEC16_Func(Z, W);			
+						DEC16_Func(Z, W);
 					}
 					else
 					{
@@ -884,7 +884,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		/// <summary>
 		/// Optimization method to set cur_instr
-		/// </summary>	
+		/// </summary>
 		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
 			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,

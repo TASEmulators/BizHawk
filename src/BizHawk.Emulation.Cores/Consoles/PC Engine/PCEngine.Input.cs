@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		private int _selectedController;
 		private byte _inputByte;

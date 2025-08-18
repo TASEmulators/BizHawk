@@ -60,12 +60,13 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					_function.Call(args);
+					return _function.Call(args);
 				}
 				catch (Exception ex)
 				{
 					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
+				return null;
 			};
 			InputCallback = () =>
 			{
@@ -84,7 +85,7 @@ namespace BizHawk.Client.Common
 				LuaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback(new object[] { addr, val, flags });
+					return Callback([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
 				}
 				finally
 				{
@@ -106,6 +107,9 @@ namespace BizHawk.Client.Common
 
 		public Guid Guid { get; }
 
+		public string GuidStr
+			=> Guid.ToString("D");
+
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }
@@ -119,7 +123,7 @@ namespace BizHawk.Client.Common
 
 		public string Event { get; }
 
-		private Action<object[]> Callback { get; }
+		private Func<object[], object[]> Callback { get; }
 
 		public Action InputCallback { get; }
 

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Components.I8048
@@ -267,23 +266,18 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size)
 		{
+			StringBuilder ret = new();
 			ushort origaddr = addr;
-			List<byte> bytes = new List<byte>();
-			bytes.Add(reader(addr++));
-
-			string result = table[bytes[0]];
-
+			ret.AppendFormat("{0:X4}:  ", origaddr);
+			var opcode = reader(addr++);
+			ret.AppendFormat("{0:X2} ", opcode);
+			var result = table[opcode];
 			if (result.Contains("i8"))
 			{
 				byte d = reader(addr++);
-				bytes.Add(d);
+				ret.AppendFormat("{0:X2} ", d);
 				result = result.Replace("i8", string.Format("#{0:X2}h", d));
 			}
-
-			StringBuilder ret = new StringBuilder();
-			ret.Append(string.Format("{0:X4}:  ", origaddr));
-			foreach (var b in bytes)
-				ret.Append(string.Format("{0:X2} ", b));
 			while (ret.Length < 22)
 				ret.Append(' ');
 			ret.Append(result);

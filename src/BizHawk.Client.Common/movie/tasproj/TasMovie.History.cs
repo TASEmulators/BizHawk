@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
 		private readonly ITasMovie _movie;
 
-		private int _maxSteps = 100;
+		private int _maxSteps = 1000;
 		private int _totalSteps;
 		private bool _recordingBatch;
 
@@ -274,12 +274,7 @@ namespace BizHawk.Client.Common
 			{
 				TruncateLog(UndoIndex + 1);
 			}
-
-			if (name == "")
-			{
-				name = $"Undo step {_totalSteps}";
-			}
-
+			if (name.Length is 0) name = $"Undo step {_totalSteps}";
 			bool ret = false;
 			if (!_recordingBatch)
 			{
@@ -433,7 +428,7 @@ namespace BizHawk.Client.Common
 		public void SetRedoLog(ITasMovie movie)
 		{
 			_redoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
-			_newLog = new List<string>();
+			_newLog = new List<string>(_redoLength);
 			for (int i = 0; i < _redoLength; i++)
 			{
 				_newLog.Add(movie.GetInputLogEntry(FirstFrame + i));
@@ -510,7 +505,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				LastFrame = marker.Frame;
-				_oldMessage = oldMessage == "" ? marker.Message : oldMessage;
+				_oldMessage = oldMessage.Length is 0 ? marker.Message : oldMessage;
 				_newMessage = marker.Message;
 			}
 		}
@@ -787,7 +782,7 @@ namespace BizHawk.Client.Common
 			_onlyEmpty = false;
 			_newInputs = newInputs;
 		}
-		
+
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -831,7 +826,7 @@ namespace BizHawk.Client.Common
 			_oldInputs = oldInputs;
 			_removedMarkers = removedMarkers;
 		}
-		
+
 		public void Undo(ITasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;

@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public bool NMI;
 		public bool RDY;
 
-		// ppu cycle (used with SubNESHawk)
+		// ppu cycle
 		public int ext_ppu_cycle = 0;
 
 		public void SyncState(Serializer ser)
@@ -184,6 +184,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync(nameof(branch_irq_hack), ref branch_irq_hack);
 			ser.Sync(nameof(rdy_freeze), ref rdy_freeze);
 			ser.Sync(nameof(ext_ppu_cycle), ref ext_ppu_cycle);
+			ser.Sync(nameof(H), ref H);
+			ser.Sync(nameof(address_bus), ref address_bus);
 			ser.EndSection();
 		}
 
@@ -245,6 +247,18 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			private set => P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
+		/// <summary>
+		/// For the unsupported opcode, ANE.
+		/// If your core requires a specific constant for this opcode, set it here.
+		/// </summary>
+		public byte AneConstant = 0xFF;
+
+		/// <summary>
+		/// For the unsupported opcode, LXA.
+		/// If your core requires a specific constant for this opcode, set it here.
+		/// </summary>
+		public byte LxaConstant = 0xFF;
+
 		public long TotalExecutedCycles;
 
 		// SO pin
@@ -253,8 +267,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagV = true;
 		}
 
-		private static readonly byte[] TableNZ = 
-		{ 
+		private static readonly byte[] TableNZ =
+		{
 			0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

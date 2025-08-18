@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			Result.Movie = session.Get(newFileName);
 			RunImport();
 
-			if (!Result.Errors.Any())
+			if (Result.Errors.Count is 0)
 			{
 				if (string.IsNullOrEmpty(Result.Movie.Hash))
 				{
@@ -52,15 +52,15 @@ namespace BizHawk.Client.Common
 					// try to generate a matching hash from the original ROM
 					if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Crc32, out string crcHash))
 					{
-						hash = PromptForRom(data => string.Equals(CRC32Checksum.ComputeDigestHex(data), crcHash, StringComparison.OrdinalIgnoreCase));
+						hash = PromptForRom(data => CRC32Checksum.ComputeDigestHex(data).EqualsIgnoreCase(crcHash));
 					}
 					else if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Md5, out string md5Hash))
 					{
-						hash = PromptForRom(data => string.Equals(MD5Checksum.ComputeDigestHex(data), md5Hash, StringComparison.OrdinalIgnoreCase));
+						hash = PromptForRom(data => MD5Checksum.ComputeDigestHex(data).EqualsIgnoreCase(md5Hash));
 					}
 					else if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Sha256, out string sha256Hash))
 					{
-						hash = PromptForRom(data => string.Equals(SHA256Checksum.ComputeDigestHex(data), sha256Hash, StringComparison.OrdinalIgnoreCase));
+						hash = PromptForRom(data => SHA256Checksum.ComputeDigestHex(data).EqualsIgnoreCase(sha256Hash));
 					}
 
 					if (hash is not null)
@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 
 				using var rom = new HawkFile(result);
 				if (rom.IsArchive) rom.BindFirst();
-				var romData = (ReadOnlySpan<byte>) rom.ReadAllBytes();
+				var romData = new ReadOnlySpan<byte>(rom.ReadAllBytes());
 				int headerBytes = romData.Length % 1024; // assume that all roms have sizes divisible by 1024, and any rest is header
 				romData = romData[headerBytes..];
 				if (matchesMovieHash(romData))

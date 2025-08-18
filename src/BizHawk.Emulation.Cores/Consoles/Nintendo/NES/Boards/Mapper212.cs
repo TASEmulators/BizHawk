@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank &= prg_bank_mask_16k;
 				ret = Rom[(bank * 0x4000) + (addr & 0x3FFF)];
 			}
-			
+
 			if ((addr & 0xE010) == 0x6000)
 			{
 				ret |= 0x80;

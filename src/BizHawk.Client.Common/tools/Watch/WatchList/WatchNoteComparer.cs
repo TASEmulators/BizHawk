@@ -30,18 +30,10 @@ namespace BizHawk.Client.Common
 				{
 					return 0;
 				}
-
-				if (string.Equals(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase))
-				{
-					if (x.Address.Equals(y.Address))
-					{
-						return x.Size.CompareTo(y.Size);
-					}
-
-					return x.Address.CompareTo(y.Address);
-				}
-
-				return string.Compare(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase);
+				var cmpNotes = string.Compare(x.Notes, y.Notes, StringComparison.OrdinalIgnoreCase);
+				if (cmpNotes is not 0) return cmpNotes;
+				var cmpAddr = x.Address.CompareTo(y.Address);
+				return cmpAddr is not 0 ? cmpAddr : x.Size.CompareTo(y.Size);
 			}
 		}
 	}

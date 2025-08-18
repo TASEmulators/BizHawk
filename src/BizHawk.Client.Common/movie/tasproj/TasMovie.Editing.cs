@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -28,6 +27,7 @@ namespace BizHawk.Client.Common
 
 			if (this.IsRecording())
 			{
+				LastEditWasRecording = true;
 				InvalidateAfter(frame);
 			}
 
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 			LagLog.RemoveFrom(frame);
 			TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame);
+			GreenzoneInvalidated?.Invoke(frame);
 			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();
@@ -83,9 +83,12 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame(int frame)
 		{
+			string empty = Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
+			if (GetInputLogEntry(frame) == empty) return;
+
 			ChangeLog.AddGeneralUndo(frame, frame, $"Clear Frame: {frame}");
 
-			SetFrameAt(frame, Bk2LogEntryGenerator.EmptyEntry(Session.MovieController));
+			SetFrameAt(frame, empty);
 			Changes = true;
 
 			InvalidateAfter(frame);
@@ -107,34 +110,23 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrames(ICollection<int> frames)
 		{
-			if (frames.Any())
+			if (frames.Count is not 0)
 			{
 				// Separate the given frames into contiguous blocks
 				// and process each block independently
 				List<int> framesToDelete = frames
 					.Where(fr => fr >= 0 && fr < InputLogLength)
 					.Order().ToList();
-				// f is the current index for framesToDelete
-				int f = 0;
-				int numDeleted = 0;
-				while (numDeleted != framesToDelete.Count)
+
+				int alreadyDeleted = 0;
+				for (int i = 1; i <= framesToDelete.Count; i++)
 				{
-					int startFrame;
-					var prevFrame = startFrame = framesToDelete[f];
-					f++;
-					for (; f < framesToDelete.Count; f++)
+					if (i == framesToDelete.Count || framesToDelete[i] - framesToDelete[i - 1] != 1)
 					{
-						var frame = framesToDelete[f];
-						if (frame - 1 != prevFrame)
-						{
-							f--;
-							break;
-						}
-						prevFrame = frame;
+						// Each block is logged as an individual ChangeLog entry
+						RemoveFrames(framesToDelete[alreadyDeleted] - alreadyDeleted, framesToDelete[i - 1] + 1 - alreadyDeleted);
+						alreadyDeleted = i;
 					}
-					// Each block is logged as an individual ChangeLog entry
-					RemoveFrames(startFrame - numDeleted, prevFrame + 1 - numDeleted);
-					numDeleted += prevFrame + 1 - startFrame;
 				}
 			}
 		}
@@ -197,7 +189,7 @@ namespace BizHawk.Client.Common
 
 			Changes = true;
 			InvalidateAfter(frame);
-			
+
 			ChangeLog.AddInsertInput(frame, inputLog.ToList(), $"Insert {inputLog.Count()} frame(s) at {frame}");
 		}
 
@@ -218,11 +210,12 @@ namespace BizHawk.Client.Common
 		{
 			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
-			
+
 			var states = inputStates.ToList();
 
 			if (Log.Count < states.Count + frame)
 			{
+				firstChangedFrame = Log.Count;
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 
@@ -236,7 +229,7 @@ namespace BizHawk.Client.Common
 				}
 
 				var entry = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
-				if (firstChangedFrame == -1 && Log[frame + i] != entry)
+				if ((firstChangedFrame == -1 || firstChangedFrame > frame + i) && Log[frame + i] != entry)
 				{
 					firstChangedFrame = frame + i;
 				}
@@ -246,7 +239,11 @@ namespace BizHawk.Client.Common
 
 			ChangeLog.EndBatch();
 			Changes = true;
-			InvalidateAfter(frame);
+			if (firstChangedFrame != -1)
+			{
+				// TODO: Throw out the undo action if there are no changes.
+				InvalidateAfter(firstChangedFrame);
+			}
 
 			ChangeLog.SetGeneralRedo();
 			return firstChangedFrame;

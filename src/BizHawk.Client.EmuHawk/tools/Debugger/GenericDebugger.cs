@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -60,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 							Location = new(UIHelper.ScaleX(35), UIHelper.ScaleY(17)),
 							Width = UIHelper.ScaleX(121),
 						};
-						c.Items.AddRange(Disassembler.AvailableCpus.Cast<object>().ToArray());
+						c.ReplaceItems(items: Disassembler.AvailableCpus);
 						c.SelectedItem = Disassembler.Cpu;
 						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
 						return c;
@@ -74,7 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_disassemblyLines.Clear();
-			MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
@@ -149,7 +147,6 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
-			MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()

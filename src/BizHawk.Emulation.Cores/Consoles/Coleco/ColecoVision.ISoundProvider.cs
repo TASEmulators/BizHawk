@@ -52,6 +52,5 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			throw new Exception();
 		}
-
 	}
 }

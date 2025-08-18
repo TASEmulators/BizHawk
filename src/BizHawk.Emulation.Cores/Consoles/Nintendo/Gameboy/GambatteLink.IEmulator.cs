@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			bool linkDiscoSignalNew = controller.IsPressed("Toggle Link Connection");
 			if (linkDiscoSignalNew && !_linkDiscoSignal)
 			{
-				LinkConnected ^= true;
+				LinkConnected = !LinkConnected;
 				Console.WriteLine("Link connect status to {0}", LinkConnected);
 			}
 
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				bool linkShiftSignalNew = controller.IsPressed("Toggle Link Shift");
 				if (linkShiftSignalNew && !_linkShiftSignal)
 				{
-					_linkShifted ^= true;
+					_linkShifted = !_linkShifted;
 					Console.WriteLine("Link shift status to {0}", _linkShifted);
 				}
 
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				bool linkSpaceSignalNew = controller.IsPressed("Toggle Link Spacing");
 				if (linkSpaceSignalNew && !_linkSpaceSignal)
 				{
-					_linkSpaced ^= true;
+					_linkSpaced = !_linkSpaced;
 					Console.WriteLine("Link spacing status to {0}", _linkSpaceSignal);
 				}
 

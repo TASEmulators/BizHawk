@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 				if (TIM_count >= TIM_hit)
 				{
 					TIM_count = 0;
-				
+
 					if (TIM_1_int_EN)
 					{
 						TIM_1_int = true;

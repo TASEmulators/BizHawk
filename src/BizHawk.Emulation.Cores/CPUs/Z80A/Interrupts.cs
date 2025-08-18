@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Otherwise operation just continues as normal
 		// For now assume a NOP is on the data bus, in which case no stack operations occur
 
-		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly 
+		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly
 		private void INTERRUPT_0(ushort src)
 		{
 			PopulateCURINSTR

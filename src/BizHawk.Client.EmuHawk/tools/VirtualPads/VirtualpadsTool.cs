@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public bool ClearAlsoClearsAnalog { get; set; }
-		
+
 		private bool _readOnly;
 
 		private Control _lastFocusedNUD = null;
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						ButtonSchema => buttonControls.Contains,
 						DiscManagerSchema => s => buttonControls.Contains(s) || axisControls.ContainsKey(s),
-						_ => axisControls.ContainsKey
+						_ => axisControls.ContainsKey,
 					};
 					if (!searchSetContains(controlSchema.Name))
 					{

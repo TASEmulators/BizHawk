@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[Core(CoreNames.NesHawk, "zeromus, natt, alyosha, adelikat")]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
+	public sealed partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor(VSystemID.Raw.NES)]
@@ -102,22 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public bool HasMapperProperties
-		{
-			get
-			{
-				var fields = Board.GetType().GetFields();
-				foreach (var field in fields)
-				{
-					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
-					if (attrib != null)
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
+			=> Board.MapperProps().Any();
 
 		public bool IsVS => _isVS;
 
@@ -355,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				LoadWriteLine("Loading as NSF");
 				var nsf = new NSFFormat();
 				nsf.WrapByteArray(file);
-				
+
 				cart = new CartInfo();
 				var nsfboard = new NSFBoard();
 				nsfboard.Create(this);
@@ -526,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (choice.WramSize == -1) choice.WramSize = 0;
 					}
 				}
-				
+
 				//if this is still null, we have to try it some other way. nescartdb perhaps?
 				if (choice == null)
 				{
@@ -540,7 +525,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						origin = EDetectionOrigin.BootGodDB;
 					}
 				}
-				
 			}
 
 			//if choice is still null, try UNIF and iNES
@@ -787,4 +771,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 //http://wiki.nesdev.com/w/index.php/Cartridge_connector
 
 //a mappers list
-//http://tuxnes.sourceforge.net/nesmapper.txt 
+//http://tuxnes.sourceforge.net/nesmapper.txt

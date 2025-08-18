@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -18,8 +19,7 @@ namespace BizHawk.Common
 
 		public static string GetTempFilename(string friendlyName, string? dotAndExtension = null, bool delete = true)
 		{
-			string guidPart = Guid.NewGuid().ToString();
-			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyName}-{guidPart}{dotAndExtension ?? ""}";
+			var fname = $"biz-{Process.GetCurrentProcess().Id}-{friendlyName}-{Util.GetRandomUUIDStr()}{dotAndExtension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);
@@ -54,7 +54,7 @@ namespace BizHawk.Common
 				thread = new Thread(ThreadProc)
 				{
 					IsBackground = true,
-					Priority = ThreadPriority.Lowest
+					Priority = ThreadPriority.Lowest,
 				};
 				thread.Start();
 			}

@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			var globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
-			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
+			if (globalBase.StartsWithIgnoreCase("%exe%"))
 			{
 				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
 			}
@@ -244,13 +244,8 @@ namespace BizHawk.Client.Common
 		{
 			var name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
-			if (name == "")
-			{
-				name = game.FilesystemSafeName();
-			}
-
-			name ??= "";
-
+			if (name is null) name = string.Empty;
+			else if (name.Length is 0) name = game.FilesystemSafeName();
 			var pathEntry = collection[game.System, "Save RAM"]
 				?? collection[game.System, "Base"];
 

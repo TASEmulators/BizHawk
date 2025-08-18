@@ -1,13 +1,14 @@
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using BizHawk.Common;
-using BizHawk.Emulation.Cores.Waterbox;
+
 using BizHawk.BizInvoke;
-using BizHawk.Emulation.Common;
-using System.Linq;
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
@@ -199,8 +200,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public delegate void snes_no_lag_t(bool sgb_poll);
 		public delegate string snes_path_request_t(int slot, string hint, bool required);
 		public delegate void snes_trace_t(string disassembly, string register_info);
-		public delegate void snes_read_hook_t(uint address);
-		public delegate void snes_write_hook_t(uint address, byte value);
+		public delegate void snes_read_hook_t(uint address, ref byte value);
+		public delegate void snes_write_hook_t(uint address, ref byte value);
 		public delegate void snes_exec_hook_t(uint address);
 		public delegate long snes_time_t();
 		public delegate bool snes_msu_open_t(ushort track_id);

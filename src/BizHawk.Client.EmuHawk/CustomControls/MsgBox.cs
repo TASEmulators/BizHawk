@@ -83,7 +83,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			{
 				_minButtonRowWidth += SetButtonParams(btn3, names[2], def == 3 ? 1 : 4, results[2]) + ButtonSpace;
 			}
-
 		}
 
 		/// <summary>
@@ -108,7 +107,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				MessageBoxIcon.Error => SystemIcons.Error,
 				MessageBoxIcon.Exclamation => SystemIcons.Exclamation,
 				MessageBoxIcon.Question => SystemIcons.Question,
-				_ => null
+				_ => null,
 			};
 		}
 
@@ -143,16 +142,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			int requiredHeight = messageLbl.Location.Y + messageLbl.Size.Height - btn2.Location.Y + ClientSize.Height + TextYMargin;
 
 			int minSetWidth = ClientSize.Width;
-			int minSetHeight = ClientSize.Height;
-
 			ClientSize = new Size
 			{
 				Width = requiredWidth > minSetWidth
 					? requiredWidth
 					: minSetWidth,
-				Height = requiredHeight > minSetHeight
-					? requiredHeight
-					: minSetHeight
+				Height = Math.Max(ClientSize.Height, requiredHeight),
 			};
 		}
 
@@ -182,6 +177,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	{
 		Button1,
 		Button2,
-		Button3
+		Button3,
 	}
 }

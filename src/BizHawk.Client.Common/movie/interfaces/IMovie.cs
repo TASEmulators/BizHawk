@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
+using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -24,7 +26,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// The movie has played past the end, but is still loaded in memory
 		/// </summary>
-		Finished
+		Finished,
 	}
 
 	// TODO: message callback / event handler
@@ -59,7 +61,7 @@ namespace BizHawk.Client.Common
 		// savestate anchor.
 		string TextSavestate { get; set; }
 		byte[] BinarySavestate { get; set; }
-		int[] SavestateFramebuffer { get; set; }
+		BitmapBuffer SavestateFramebuffer { get; set; }
 
 		// saveram anchor
 		byte[] SaveRam { get; set; }
@@ -101,7 +103,7 @@ namespace BizHawk.Client.Common
 		/// <param name="errorMessage">Returns an error message, if any</param>
 		/// <returns>Returns whether or not the input log in reader is in the same timeline as the movie</returns>
 		bool CheckTimeLines(TextReader reader, out string errorMessage);
-		
+
 		/// <summary>
 		/// Takes reader and extracts the input log, then replaces the movies input log with it
 		/// </summary>
@@ -121,11 +123,8 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Sets the movie to inactive (note that it will still be in memory)
-		/// The saveChanges flag will tell the movie to save its contents to disk
 		/// </summary>
-		/// <param name="saveChanges">if true, will save to disk</param>
-		/// <returns>Whether or not the movie was saved</returns>
-		bool Stop(bool saveChanges = true);
+		void Stop();
 
 		/// <summary>
 		/// Switches to record mode
@@ -208,8 +207,12 @@ namespace BizHawk.Client.Common
 		public static bool IsPlaying(this IMovie movie) => movie?.Mode == MovieMode.Play;
 		public static bool IsRecording(this IMovie movie) => movie?.Mode == MovieMode.Record;
 		public static bool IsFinished(this IMovie movie) => movie?.Mode == MovieMode.Finished;
-		public static bool IsPlayingOrFinished(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Finished;
-		public static bool IsPlayingOrRecording(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Record;
+
+		public static bool IsPlayingOrFinished(this IMovie movie)
+			=> movie?.Mode is MovieMode.Play or MovieMode.Finished;
+
+		public static bool IsPlayingOrRecording(this IMovie movie)
+			=> movie?.Mode is MovieMode.Play or MovieMode.Record;
 
 		/// <summary>
 		/// Emulation is currently right after the movie's last input frame,
@@ -238,7 +241,7 @@ namespace BizHawk.Client.Common
 
 				if (movie.SavestateFramebuffer != null && emulator.HasVideoProvider())
 				{
-					emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer);
+					emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer.Pixels);
 				}
 
 				emulator.ResetCounters();

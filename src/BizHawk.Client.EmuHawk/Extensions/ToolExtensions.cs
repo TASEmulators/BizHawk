@@ -1,11 +1,11 @@
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common;
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
@@ -42,18 +42,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					//sentinel for newer format OpenAdvanced type code
 					if (romLoading)
 					{
-						if (filename.StartsWith('*'))
-						{
-							var oa = OpenAdvancedSerializer.ParseWithLegacy(filename);
-							caption = oa.DisplayName;
-
-							crazyStuff = false;
-							if (oa is OpenAdvanced_OpenRom openRom)
-							{
-								crazyStuff = true;
-								physicalPath = openRom.Path;
-							}
-						}
+						crazyStuff = OpenAdvancedSerializer.ParseRecentFile(filePath: ref physicalPath, caption: out caption);
 					}
 
 					// TODO - do TSMI and TSDD need disposing? yuck
@@ -114,11 +103,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsdd.Items.Add(tsmiExplore);
 
 							var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
-							var lame = new System.Collections.Specialized.StringCollection
-							{
-								hf.FullPathWithoutMember
-							};
-
+							StringCollection lame = [ hf.FullPathWithoutMember ];
 							tsmiCopyFile.Click += (o, ev) => { Clipboard.SetFileDropList(lame); };
 							tsdd.Items.Add(tsmiCopyFile);
 
@@ -143,7 +128,6 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsdd.Items.Add(tsmiMissingFile);
 							tsdd.Items.Add(new ToolStripSeparator());
 						}
-
 					} //crazystuff
 
 					//in any case, make a menuitem to let you remove the item
@@ -184,11 +168,14 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			var clearItem = new ToolStripMenuItem { Text = "&Clear", Enabled = !recent.Frozen };
 			clearItem.Click += (o, ev) => recent.Clear();
 			items.Add(clearItem);
+			var clearMovedItem = new ToolStripMenuItem { Text = "&Clear Moved/Deleted", Enabled = !recent.Frozen };
+			clearMovedItem.Click += (_, _) => recent.ClearMoved();
+			items.Add(clearMovedItem);
 
 			var freezeItem = new ToolStripMenuItem
 			{
 				Text = recent.Frozen ? "&Unfreeze" : "&Freeze",
-				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze
+				Image = recent.Frozen ? Properties.Resources.Unfreeze : Properties.Resources.Freeze,
 			};
 			freezeItem.Click += (_, _) => recent.Frozen = !recent.Frozen;
 			items.Add(freezeItem);
@@ -207,7 +194,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				{
 					TextInputType = InputPrompt.InputType.Unsigned,
 					Message = "Number of recent files to track",
-					InitialValue = recent.MAX_RECENT_FILES.ToString()
+					InitialValue = recent.MAX_RECENT_FILES.ToString(),
 				};
 				if (!mainForm.ShowDialogWithTempMute(prompt).IsOk()) return;
 				var val = int.Parse(prompt.PromptText);
@@ -246,7 +233,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				{
 					Text = name,
 					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value),
-					Checked = name == selected
+					Checked = name == selected,
 				};
 				item.Click += (o, ev) => setCallback(name);
 				return item;

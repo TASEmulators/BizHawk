@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -36,13 +37,16 @@ namespace BizHawk.Emulation.Common
 		/// <param name="hash">The hash to format, this is typically prefixed with a type (e.g. sha1:)</param>
 		/// <returns>formatted hash</returns>
 		private static string FormatHash(string hash)
-			=> hash.Substring(hash.IndexOf(':') + 1).ToUpperInvariant();
+		{
+			var i = hash.IndexOf(':');
+			return (i < 0 ? hash : hash.Substring(startIndex: i + 1)).ToUpperASCIIFast();
+		}
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
-			if (!line.StartsWith("#include", StringComparison.InvariantCultureIgnoreCase)) return;
+			var isUserInclude = line.StartsWithIgnoreCase("#includeuser");
+			if (!isUserInclude && !line.StartsWithIgnoreCase("#include")) return;
 
-			var isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
 			var searchUser = inUser || isUserInclude;
 			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();
 			var filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
@@ -80,7 +84,7 @@ namespace BizHawk.Emulation.Common
 				RomStatus.Hack => "H",
 				RomStatus.NotInDatabase => "U",
 				RomStatus.Unknown => "U",
-				_ => ""
+				_ => string.Empty,
 			});
 
 			sb
@@ -99,21 +103,15 @@ namespace BizHawk.Emulation.Common
 
 		private static bool initialized = false;
 
-		public static CompactGameInfo ParseCGIRecord(string line)
+		public static CompactGameInfo ParseCGIRecord(string lineStr)
 		{
+			var line = lineStr.AsSpan();
 			const char FIELD_SEPARATOR = '\t';
-			var iFieldStart = -1;
-			var iFieldEnd = -1; // offset of the tab char, or line.Length if at end
-			string AdvanceAndReadField(out bool isLastField)
-			{
-				iFieldStart = iFieldEnd + 1;
-				iFieldEnd = line.IndexOf(FIELD_SEPARATOR, iFieldStart);
-				isLastField = iFieldEnd < 0;
-				if (isLastField) iFieldEnd = line.Length;
-				return line.Substring(startIndex: iFieldStart, length: iFieldEnd - iFieldStart);
-			}
-			var hashDigest = FormatHash(AdvanceAndReadField(out _));
-			var dumpStatus = AdvanceAndReadField(out _).Trim() switch
+			var iter = line.Split(FIELD_SEPARATOR);
+			_ = iter.MoveNext();
+			var hashDigest = FormatHash(lineStr.Substring(iter.Current));
+			_ = iter.MoveNext();
+			var dumpStatus = line.Slice(iter.Current).Trim() switch
 			{
 				"B" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
 				"V" => RomStatus.BadDump, // see /Assets/gamedb/gamedb.txt
@@ -123,23 +121,25 @@ namespace BizHawk.Emulation.Common
 				"D" => RomStatus.Homebrew,
 				"H" => RomStatus.Hack,
 				"U" => RomStatus.Unknown,
-				_ => RomStatus.GoodDump
+				_ => RomStatus.GoodDump,
 			};
-			var knownName = AdvanceAndReadField(out _);
-			var sysID = AdvanceAndReadField(out var isLastField);
+			_ = iter.MoveNext();
+			var knownName = lineStr.Substring(iter.Current);
+			_ = iter.MoveNext();
+			var sysID = lineStr.Substring(iter.Current);
 			string/*?*/ metadata = null;
 			string region = string.Empty;
 			string forcedCore = string.Empty;
-			if (!isLastField)
+			if (iter.MoveNext())
 			{
-				_ = AdvanceAndReadField(out isLastField); // rarely present; possibly genre or just a remark
-				if (!isLastField)
+				//_ = line.Slice(iter.Current); // rarely populated; possibly genre or just a remark
+				if (iter.MoveNext())
 				{
-					metadata = AdvanceAndReadField(out isLastField);
-					if (!isLastField)
+					metadata = lineStr.Substring(iter.Current);
+					if (iter.MoveNext())
 					{
-						region = AdvanceAndReadField(out isLastField);
-						if (!isLastField) forcedCore = AdvanceAndReadField(out isLastField);
+						region = lineStr.Substring(iter.Current);
+						if (iter.MoveNext()) forcedCore = lineStr.Substring(iter.Current);
 					}
 				}
 			}
@@ -208,8 +208,26 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
-			_bundledRoot = bundledRoot;
-			_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			if (Directory.Exists(bundledRoot))
+			{
+				_bundledRoot = bundledRoot;
+				_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			}
+#if false //TODO synthesise `#includeuser gamedb_user.txt` and load
+			else if (Directory.Exists(userRoot))
+			{
+				_bundledRoot = userRoot;
+				_userRoot = userRoot;
+			}
+#endif
+			else
+			{
+				Console.WriteLine("gamedb root not found");
+				// nothing to do
+				DB = FrozenDictionary<string, CompactGameInfo>.Empty;
+				_acquire.Set();
+				return;
+			}
 
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
@@ -219,7 +237,12 @@ namespace BizHawk.Emulation.Common
 				DB = _builder.ToFrozenDictionary();
 				_builder.Clear();
 				if (_expected.Count is not 0) Util.DebugWriteLine($"extra bundled gamedb files were not #included: {string.Join(", ", _expected)}");
-				Util.DebugWriteLine("GameDB load: " + stopwatch.Elapsed + " sec");
+#if BIZHAWKBUILD_RUN_ONLY_GAMEDB_INIT
+				Console.WriteLine( // should be optimising for measurement so want to print then
+#else
+				Util.DebugWriteLine( // ...but for most users it's just noise
+#endif
+					$"GameDB load: {stopwatch.Elapsed} sec");
 				_acquire.Set();
 			});
 		}
@@ -274,7 +297,7 @@ namespace BizHawk.Emulation.Common
 			{
 				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
-				NotInDatabase = true
+				NotInDatabase = true,
 			};
 
 #if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
@@ -458,6 +481,10 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.Amiga;
 					break;
 
+				case ".D88" or ".DMF" or ".FDD" /*or ".FDI"*/ or ".IMA" or ".IMG" or ".NFD" or ".XDF":
+					game.System = VSystemID.Raw.DOS;
+					break;
+
 				case ".IPF":
 					var ipfId = new IpfIdentifier(romData);
 					game.System = ipfId.IdentifiedSystem;
@@ -465,12 +492,15 @@ namespace BizHawk.Emulation.Common
 
 				case ".32X":
 					game.System = VSystemID.Raw.Sega32X;
-					game.AddOption("32X", "true");
 					break;
 
 				case ".VEC":
 					game.System = VSystemID.Raw.VEC;
 					game.AddOption("VEC", "true");
+					break;
+
+				case ".WAD":
+					game.System = VSystemID.Raw.Doom;
 					break;
 
 				case ".ZIP":
@@ -482,7 +512,9 @@ namespace BizHawk.Emulation.Common
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
+#pragma warning disable CA1862 // testing whether it's all-caps
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}

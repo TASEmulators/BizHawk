@@ -75,7 +75,9 @@ namespace BizHawk.Common.PathExtensions
 		/// algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292<br/>
 		/// the parameter names seem backwards, but those are the names used in the Win32 API we're calling
 		/// </remarks>
+#pragma warning disable RCS1224 // don't want extension on nonspecific `string`
 		public static string? GetRelativePath(string? fromPath, string? toPath)
+#pragma warning restore RCS1224
 		{
 			if (fromPath == null || toPath == null) return null;
 			if (OSTailoredCode.IsUnixHost)
@@ -148,7 +150,7 @@ namespace BizHawk.Common.PathExtensions
 			if (fromUri.Scheme != toUri.Scheme) return basePath;
 
 			var relativePath = Uri.UnescapeDataString(fromUri.MakeRelativeUri(toUri).ToString());
-			return (toUri.Scheme.Equals(Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase)
+			return (Uri.UriSchemeFile.EqualsIgnoreCase(toUri.Scheme)
 				? relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
 				: relativePath
 			).TrimEnd(dirSepChar);
@@ -212,7 +214,7 @@ namespace BizHawk.Common.PathExtensions
 			{
 				var dirPath = ReadPathFromEnvVar("BIZHAWK_HOME") ?? AppContext.BaseDirectory;
 				ExeDirectoryPath = string.IsNullOrEmpty(dirPath) || dirPath == "/" ? string.Empty : dirPath;
-				DllDirectoryPath = Path.Combine(ExeDirectoryPath == string.Empty ? "/" : ExeDirectoryPath, "dll");
+				DllDirectoryPath = Path.Combine(ExeDirectoryPath.Length is 0 ? "/" : ExeDirectoryPath, "dll");
 				// yes, this is a lot of extra code to make sure BizHawk can run in `/` on Unix, but I've made up for it by caching these for the program lifecycle --yoshi
 				DataDirectoryPath = ReadPathFromEnvVar("BIZHAWK_DATA_HOME") ?? ExeDirectoryPath;
 			}
@@ -220,7 +222,9 @@ namespace BizHawk.Common.PathExtensions
 			{
 				var dirPath = AppContext.BaseDirectory;
 				DataDirectoryPath = ExeDirectoryPath = string.IsNullOrEmpty(dirPath)
+#pragma warning disable CA1065 // yes, really throw
 					? throw new Exception("failed to get location of executable, very bad things must have happened")
+#pragma warning restore CA1065
 					: dirPath.RemoveSuffix('\\');
 				DllDirectoryPath = Path.Combine(ExeDirectoryPath, "dll");
 			}

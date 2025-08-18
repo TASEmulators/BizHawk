@@ -1,5 +1,5 @@
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 #include <emu.hpp>
 #include <jaffarCommon/file.hpp>
 #include <jaffarCommon/serializers/contiguous.hpp>
@@ -21,10 +21,18 @@ QN_EXPORT quickerNES::Emu *qn_new()
 {
 	// Zero intialized emulator to make super sure no side effects from previous data remains
 	auto ptr = calloc(1, sizeof(quickerNES::Emu));
+	if (!ptr) return NULL;
 	auto e = new (ptr) quickerNES::Emu();
 
 	// Creating video buffer
 	auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
+	if (!videoBuffer)
+	{
+		e->~Emu();
+		free(e);
+		return NULL;
+	}
+
 	e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
 
 	return e;
@@ -37,10 +45,9 @@ QN_EXPORT void qn_delete(quickerNES::Emu *e)
 	free(e);
 }
 
-QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const void *data, int length)
+QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const uint8_t *data, int length)
 {
-	e->load_ines((const uint8_t*)data);
-	return 0;
+	return e->load_ines(data, length);
 }
 
 QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
@@ -193,7 +200,7 @@ QN_EXPORT const char *qn_battery_ram_clear(quickerNES::Emu *e)
 {
 	int size = 0;
 	qn_battery_ram_size(e, &size);
-	std::memset(e->high_mem(), 0xff, size);
+	memset(e->high_mem(), 0xff, size);
 	return 0;
 }
 

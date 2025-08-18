@@ -29,24 +29,24 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string STATUS_DESC_UNUSED = "";
 
-		private static readonly IReadOnlyDictionary<FirmwareOptionStatus, string> StatusDescs = new Dictionary<FirmwareOptionStatus, string>
+		private static readonly IReadOnlyDictionary<FirmwareOptionStatus, string> StatusDescs = new SortedDictionary<FirmwareOptionStatus, string>
 		{
 			[FirmwareOptionStatus.Unset] = STATUS_DESC_UNUSED,
 			[FirmwareOptionStatus.Bad] = "BAD! Why are you using this file",
 			[FirmwareOptionStatus.Unknown] = STATUS_DESC_UNUSED,
 			[FirmwareOptionStatus.Unacceptable] = "NO: This doesn't work on the core",
 			[FirmwareOptionStatus.Acceptable] = "OK: This works on the core",
-			[FirmwareOptionStatus.Ideal] = "PERFECT: Ideal for TASing and anything.",
+			[FirmwareOptionStatus.Ideal] = "PERFECT: Ideal for TASing and anything",
 		};
 
-		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new Dictionary<FirmwareOptionStatus, Image>
+		internal static readonly IReadOnlyDictionary<FirmwareOptionStatus, Image> StatusIcons = new SortedDictionary<FirmwareOptionStatus, Image>
 		{
-			[FirmwareOptionStatus.Unset] = Properties.Resources.ExclamationRed,
-			[FirmwareOptionStatus.Bad] = Properties.Resources.ThumbsDown, // in this main view, bad dumps use this thumbs down (to differentiate from unset); in a record's info view, they use unset's red '!' (to differentiate from unacceptable)
-			[FirmwareOptionStatus.Unknown] = Properties.Resources.RetroQuestion,
-			[FirmwareOptionStatus.Unacceptable] = Properties.Resources.ThumbsDown,
-			[FirmwareOptionStatus.Acceptable] = Properties.Resources.GreenCheck,
-			[FirmwareOptionStatus.Ideal] = Properties.Resources.Freeze,
+			[FirmwareOptionStatus.Unset] = Properties.Resources.FFhelp,
+			[FirmwareOptionStatus.Bad] = Properties.Resources.FFdelete,
+			[FirmwareOptionStatus.Unknown] = Properties.Resources.FFexclamation,
+			[FirmwareOptionStatus.Unacceptable] = Properties.Resources.FFcancel,
+			[FirmwareOptionStatus.Acceptable] = Properties.Resources.FFaccept,
+			[FirmwareOptionStatus.Ideal] = Properties.Resources.FFstar,
 		};
 
 		private readonly IDictionary<string, string> _firmwareUserSpecifications;
@@ -61,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
+			["3DO"] = "3DO / 3DO Arcade / 3DO M2",
 			["Amiga"] = "Amiga",
 			["NES"] = "NES",
 			["SNES"] = "SNES",
@@ -145,7 +146,13 @@ namespace BizHawk.Client.EmuHawk
 				= tbbOpenFolder.Image = Properties.Resources.Placeholder;
 
 			// prep ImageList for ListView
-			foreach (var kvp in StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
+			var iconList = StatusIcons.Values;
+			if (OSTailoredCode.IsUnixHost) // remove crusty artifacts
+			{
+				var bg = lvFirmware.BackColor;
+				iconList = iconList.Select(img => FormBase.FillImageBackground(img, bg));
+			}
+			foreach (var img in iconList) imageList1.Images.Add(img);
 
 			_listViewSorter = new ListViewSorter(-1);
 
@@ -204,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 					Tag = fr,
 					UseItemStyleForSubItems = false,
 					ImageIndex = (int) FirmwareOptionStatus.Unknown,
-					ToolTipText = null
+					ToolTipText = null,
 				};
 				lvi.SubItems.Add(sysID);
 				lvi.SubItems.Add(fr.ID.Firmware);
@@ -311,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// lazy substring extraction. really should do a better job
 					var basePath = _pathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
-					
+
 					var path = ri.FilePath.Replace(basePath, "");
 
 					// bolden the item if the user has specified a path for it
@@ -328,10 +335,19 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						var fo = FirmwareDatabase.FirmwareOptions.FirstOrNull(fo => fo.Hash == hash);
-						lvi.ImageIndex = (int) (fo?.Status ?? FirmwareOptionStatus.Unset); // null here means it's an option for a different record, so use the red '!' like unset
-						lvi.ToolTipText = fo?.IsAcceptableOrIdeal == true
-							? "Good! This file has been bound to some kind of a decent choice"
-							: "Bad! This file has been bound to a choice which is known to be bad (details in right-click > Info)";
+						lvi.ImageIndex = (int) (fo?.Status ?? FirmwareOptionStatus.Unset);
+						if (fo?.Status == FirmwareOptionStatus.Ideal)
+						{
+							lvi.ToolTipText = "Perfect! This file has been bound to an ideal choice";
+						}
+						else if (fo?.Status == FirmwareOptionStatus.Acceptable)
+						{
+							lvi.ToolTipText = "Good! This file has been bound to some kind of a decent choice";
+						}
+						else
+						{
+							lvi.ToolTipText = "Bad! This file has been bound to a choice which is known to be bad (details in right-click -> Info)";
+						}
 						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Value.Description;
 					}
 
@@ -463,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 					// to always be copied to the global firmware directory
 					if (hf.IsArchive)
 					{
-						var ac = new ArchiveChooser(new HawkFile(filePath));
+						using var ac = new ArchiveChooser(hf);
 						if (!ac.ShowDialog(this).IsOk()) return;
 
 						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);
@@ -531,10 +547,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var fciDialog = new FirmwareConfigInfo
 			{
-				lblFirmware =
-				{
-					Text = $"{fr.ID} ({fr.Description})"
-				}
+				lblFirmware = { Text = $"{fr.ID} ({fr.Description})" },
 			};
 
 			foreach (var o in options)
@@ -545,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByOption[o];
-				olvi.ImageIndex = (int) (o.Status is FirmwareOptionStatus.Bad ? FirmwareOptionStatus.Unset : o.Status); // if bad, use unset's red '!' to differentiate from unacceptable
+				olvi.ImageIndex = (int) o.Status;
 				olvi.ToolTipText = StatusDescs[o.Status];
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = Font; // why doesn't this work?
@@ -616,7 +629,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				if (errors != "")
+				if (errors.Length is not 0)
 				{
 					errors += "\n";
 				}

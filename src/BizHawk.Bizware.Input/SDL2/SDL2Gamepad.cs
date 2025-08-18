@@ -22,7 +22,7 @@ namespace BizHawk.Bizware.Input
 
 		/// <summary>Contains name and delegate function for all buttons, hats and axis</summary>
 		public readonly IReadOnlyCollection<(string ButtonName, Func<bool> GetIsPressed)> ButtonGetters;
-		
+
 		/// <summary>For use in keybind boxes</summary>
 		public string InputNamePrefix { get; private set; }
 
@@ -135,7 +135,33 @@ namespace BizHawk.Bizware.Input
 			buttonGetters.Add(("Paddle2", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE2) == 1));
 			buttonGetters.Add(("Paddle3", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE3) == 1));
 			buttonGetters.Add(("Paddle4", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_PADDLE4) == 1));
-			buttonGetters.Add(("Touchpad", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) == 1));
+
+			var numTouchpads = SDL_GameControllerGetNumTouchpads(Opaque);
+			if (numTouchpads == 1)
+			{
+				// not sure which one should be used
+				//buttonGetters.Add(("Touchpad", () => SDL_GameControllerGetButton(Opaque, SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_TOUCHPAD) == 1));
+
+				// note: in practice there's always 1 touchpad if anything for any supported controller (ps4/ps5/shield)
+				// we only support 1 finger (TODO: how should multiple fingers be handled?)
+				buttonGetters.Add(("Touchpad", () =>
+				{
+					_ = SDL_GameControllerGetTouchpadFinger(Opaque, 0, 0, out var state, out _, out _, out _);
+					return state != 0;
+				}));
+			}
+			else
+			{
+				for (var i = 0; i < numTouchpads; i++)
+				{
+					var j = i;
+					buttonGetters.Add(($"Touchpad{i}", () =>
+					{
+						_ = SDL_GameControllerGetTouchpadFinger(Opaque, j, 0, out var state, out _, out _, out _);
+						return state != 0;
+					}));
+				}
+			}
 
 			// note: SDL has flipped meaning for the Y axis compared to DirectInput/XInput (-/+ for u/d instead of +/- for u/d)
 
@@ -254,22 +280,63 @@ namespace BizHawk.Bizware.Input
 			static int Conv(short num) => (int)(num / f);
 
 			// note: SDL has flipped meaning for the Y axis compared to DirectInput/XInput (-/+ for u/d instead of +/- for u/d)
+			List<(string AxisID, int Value)> values;
 
 			if (IsGameController)
 			{
-				return new[]
-				{
+				values =
+				[
 					("LeftThumbX", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX))),
-					("LeftThumbY", -Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY))),
+					("LeftThumbY", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY))),
 					("RightThumbX", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTX))),
-					("RightThumbY", -Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY))),
+					("RightThumbY", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_RIGHTY))),
 					("LeftTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERLEFT))),
-					("RightTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT))),
-				};
+					("RightTrigger", Conv(SDL_GameControllerGetAxis(Opaque, SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)))
+				];
+
+				// note: this mimics the mouse conversion in MainForm
+				static int TouchConv(float num) => (int)((num * 20000) - 10000);
+				var numTouchpads = SDL_GameControllerGetNumTouchpads(Opaque);
+				if (numTouchpads == 1)
+				{
+					// note: in practice there's always 1 touchpad if anything for any supported controller (ps4/ps5/shield)
+					// we only support 1 finger (TODO: how should multiple fingers be handled? average them out? note ps4/ps5 support 2 fingers)
+					// TODO: how should we handle pressure? for any supported controller in practice (ps4/ps5/shield) this is going to be 1.0f or 0.0f anyways
+					_ = SDL_GameControllerGetTouchpadFinger(Opaque, 0, 0, out var state, out var x, out var y, out _);
+					if (state != 0)
+					{
+						values.Add(("TouchpadX", TouchConv(x)));
+						values.Add(("TouchpadY", TouchConv(y)));
+					}
+					else
+					{
+						values.Add(("TouchpadX", 0));
+						values.Add(("TouchpadY", 0));
+					}
+				}
+				else
+				{
+					for (var i = 0; i < numTouchpads; i++)
+					{
+						_ = SDL_GameControllerGetTouchpadFinger(Opaque, i, 0, out var state, out var x, out var y, out _);
+						if (state != 0)
+						{
+							values.Add(($"Touchpad{i}X", TouchConv(x)));
+							values.Add(($"Touchpad{i}Y", TouchConv(y)));
+						}
+						else
+						{
+							values.Add(($"Touchpad{i}X", 0));
+							values.Add(($"Touchpad{i}Y", 0));
+						}
+					}
+				}
+
+				return values;
 			}
 
-			List<(string AxisID, int Value)> values = new()
-			{
+			values =
+			[
 				("X", Conv(SDL_JoystickGetAxis(Opaque, 0))),
 				("Y", Conv(SDL_JoystickGetAxis(Opaque, 1))),
 				("Z", Conv(SDL_JoystickGetAxis(Opaque, 2))),
@@ -279,13 +346,12 @@ namespace BizHawk.Bizware.Input
 				("Q", Conv(SDL_JoystickGetAxis(Opaque, 6))),
 				("P", Conv(SDL_JoystickGetAxis(Opaque, 7))),
 				("N", Conv(SDL_JoystickGetAxis(Opaque, 8))),
-			};
+			];
 
 			var naxes = SDL_JoystickNumAxes(Opaque);
 			for (var i = 9; i < naxes; i++)
 			{
-				var j = i;
-				values.Add(($"Axis{j}", Conv(SDL_JoystickGetAxis(Opaque, j))));
+				values.Add(($"Axis{i}", Conv(SDL_JoystickGetAxis(Opaque, i))));
 			}
 
 			return values;

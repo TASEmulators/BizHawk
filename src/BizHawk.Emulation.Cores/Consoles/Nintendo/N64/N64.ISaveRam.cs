@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : ISaveRam
 	{
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			return api.SaveSaveram();
 		}

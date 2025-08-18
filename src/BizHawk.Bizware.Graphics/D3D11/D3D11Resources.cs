@@ -114,6 +114,11 @@ namespace BizHawk.Bizware.Graphics
 
 				RasterizerState = Device.CreateRasterizerState(rd);
 
+				foreach (var pipeline in Pipelines)
+				{
+					pipeline.CreatePipeline();
+				}
+
 				foreach (var tex2d in Textures)
 				{
 					tex2d.CreateTexture();

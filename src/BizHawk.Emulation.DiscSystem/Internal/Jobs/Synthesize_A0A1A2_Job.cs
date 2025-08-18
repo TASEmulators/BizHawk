@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.DiscSystem
 				SessionFormat.Type00_CDROM_CDDA => 0x00,
 				SessionFormat.Type10_CDI => 0x10,
 				SessionFormat.Type20_CDXA => 0x20,
-				_ => throw new InvalidOperationException("Invalid SessionFormat")
+				_ => throw new InvalidOperationException("Invalid SessionFormat"),
 			};
 			sq.ap_frame.DecimalValue = 0;
 

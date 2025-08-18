@@ -16,8 +16,9 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Can't generate input display string with empty mnemonics cache");
 
 			var sb = new StringBuilder();
-
-			foreach ((string buttonName, AxisSpec? axisSpec) in source.Definition.ControlsOrdered.SelectMany(x => x))
+			var players = source.Definition.ControlsOrdered;
+			var playersNewOrder = players.Skip(1).Concat(players.Take(1)); // move first ("player 0") to end
+			foreach ((string buttonName, AxisSpec? axisSpec) in playersNewOrder.SelectMany(static x => x))
 			{
 				if (axisSpec.HasValue)
 				{

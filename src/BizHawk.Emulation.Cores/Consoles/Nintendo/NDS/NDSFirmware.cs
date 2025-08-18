@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	// TODO: a lot of this has been removed as it's not really needed anymore (our c++ code forces correctness everywhere)
 	internal static class NDSFirmware
 	{
-		public static void MaybeWarnIfBadFw(byte[] fw, Action<string> warningCallback)
+		public static void MaybeWarnIfBadFw(ReadOnlySpan<byte> fw, Action<string> warningCallback)
 		{
 			if (fw[0x17C] != 0xFF)
 			{
@@ -25,7 +25,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[DllImport("libfwunpack", CallingConvention = CallingConvention.Cdecl)]
-		private static extern bool GetDecryptedFirmware(byte[] fw, int fwlen, out IntPtr decryptedFw, out int decryptedlen);
+		[return: MarshalAs(UnmanagedType.U1)]
+		private static extern bool GetDecryptedFirmware(IntPtr fw, int fwLen, out IntPtr decryptedFw, out int decryptedLen);
 
 		[DllImport("libfwunpack", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void FreeDecryptedFirmware(IntPtr decryptedFw);
@@ -46,21 +47,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			"BFBC33D996AA73A050F1951529327D5844461A00", // MACi DS Lite (Korean v5, 2006-11-09)
 		};
 
-		private static void CheckDecryptedCodeChecksum(byte[] fw, Action<string> warningCallback)
+		private static unsafe void CheckDecryptedCodeChecksum(ReadOnlySpan<byte> fw, Action<string> warningCallback)
 		{
-			if (!GetDecryptedFirmware(fw, fw.Length, out var decryptedfw, out var decrypedfwlen))
+			IntPtr decryptedFw;
+			int decrypedFwLen;
+			fixed (byte* fwPtr = fw)
 			{
-				warningCallback("Firmware could not be decryped for verification! This firmware might be not work!");
-				return;
+				if (!GetDecryptedFirmware((IntPtr)fwPtr, fw.Length, out decryptedFw, out decrypedFwLen))
+				{
+					warningCallback("Firmware could not be decryped for verification! This firmware might be not work!");
+					return;
+				}
 			}
 
-			var decryptedFirmware = new byte[decrypedfwlen];
-			Marshal.Copy(decryptedfw, decryptedFirmware, 0, decrypedfwlen);
-			FreeDecryptedFirmware(decryptedfw);
-			var hash = SHA1Checksum.ComputeDigestHex(decryptedFirmware);
-			if (!_goodHashes.Contains(hash))
+			try
 			{
-				warningCallback("Potentially bad firmware dump! Decrypted hash " + hash + " does not match known good dumps.");
+				var hash = SHA1Checksum.ComputeDigestHex(Util.UnsafeSpanFromPointer(decryptedFw, decrypedFwLen));
+				if (!_goodHashes.Contains(hash))
+				{
+					warningCallback($"Potentially bad firmware dump! Decrypted hash {hash} does not match known good dumps.");
+				}
+			}
+			finally
+			{
+				FreeDecryptedFirmware(decryptedFw);
 			}
 		}
 	}

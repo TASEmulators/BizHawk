@@ -34,12 +34,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private void MemoryCallback(uint address, uint value, uint flags)
+		private uint? MemoryCallback(uint address, uint value, uint flags)
 		{
 			foreach (var action in _inputCallbacks)
 			{
 				action.Invoke();
 			}
+			return null;
 		}
 
 		public IEnumerator<Action> GetEnumerator() => _inputCallbacks.GetEnumerator();

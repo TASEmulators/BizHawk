@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			var j = new JmdForm
 			{
 				threadsBar = { Minimum = tMin, Maximum = tMax },
-				compressionBar = { Minimum = cMin, Maximum = cMax }
+				compressionBar = { Minimum = cMin, Maximum = cMax },
 			};
 
 			j.threadsBar.Value = threads;

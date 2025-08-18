@@ -137,7 +137,7 @@ namespace BizHawk.BizInvoke
 			private class ReferenceEqualityComparer : IEqualityComparer<Delegate>
 			{
 				public bool Equals(Delegate x, Delegate y)
-					=> x == y;
+					=> object.ReferenceEquals(x, y);
 
 				public int GetHashCode(Delegate obj)
 					=> RuntimeHelpers.GetHashCode(obj);

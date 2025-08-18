@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void NesSoftReset()
 		{
-			resetFlag ^= true;
+			resetFlag = !resetFlag;
 			prg_page = 0;
 			prg_mode = false;
 			base.NesSoftReset();
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_page |= ((value & 0x1) << 6);
 			}
 		}
-		
+
 		public override byte ReadPrg(int addr)
 		{
 			int baseAddr = resetSwitchMode && resetFlag ? 0x80000 : 0;

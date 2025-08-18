@@ -73,6 +73,7 @@ namespace BizHawk.Client.Common
 		public ITasSession TasSession { get; private set; } = new TasSession();
 
 		public int LastEditedFrame { get; private set; } = -1;
+		public bool LastEditWasRecording { get; private set; }
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
@@ -103,7 +104,7 @@ namespace BizHawk.Client.Common
 					HasState = TasStateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = lagged,
-					WasLagged = LagLog.History(lagIndex)
+					WasLagged = LagLog.History(lagIndex),
 				};
 			}
 		}
@@ -122,13 +123,14 @@ namespace BizHawk.Client.Common
 		{
 			var anyLagInvalidated = LagLog.RemoveFrom(frame);
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame);
+			GreenzoneInvalidated?.Invoke(frame);
 			if (anyLagInvalidated || anyStateInvalidated)
 			{
 				Changes = true;
 			}
 
 			LastEditedFrame = frame;
+			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
 
 			if (anyStateInvalidated && IsCountingRerecords)
 			{
@@ -147,15 +149,13 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			// TODO: there are display issues in TAStudio when less than 3 frames are visible
-			// this is because the Bk2Controller returned from GetInputState is a shared object and mutated elsewhere (like the OSDManager),
-			// but it's getting cached here. this "works" in the >= 2 frames case because the _displayCache.Frame != frame condition
-			// will invalidate the cache. Can we do this properly somehow?
-			if (_displayCache.Frame != frame || FrameCount < 3)
+			if (_displayCache.Frame != frame)
 			{
-				_displayCache = (frame, GetInputState(frame));
+				_displayCache.Controller ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
+				_displayCache.Controller.SetFromMnemonic(Log[frame]);
+				_displayCache.Frame = frame;
 			}
-			
+
 			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
 		}
 
@@ -180,21 +180,13 @@ namespace BizHawk.Client.Common
 
 		public void GreenzoneCurrentFrame()
 		{
-			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
-			// but accounting for that requires access to Mainform.IsSeeking
-			if (Emulator.Frame != LastEditedFrame)
-			{
-				// emulated a new frame, current editing segment may change now. taseditor logic
-				LastPositionStable = false;
-			}
-
 			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
 			// We will forbibly capture a state for the last edited frame (requested by #916 for case of "platforms with analog stick")
 			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
 		}
 
-		
+
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
 			foreach (string entry in log)
@@ -288,7 +280,7 @@ namespace BizHawk.Client.Common
 			{
 				LagLog.RemoveFrom(timelineBranchFrame.Value);
 				TasStateManager.InvalidateAfter(timelineBranchFrame.Value);
-				GreenzoneInvalidated(timelineBranchFrame.Value);
+				GreenzoneInvalidated?.Invoke(timelineBranchFrame.Value);
 			}
 
 			return true;
@@ -342,7 +334,7 @@ namespace BizHawk.Client.Common
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;
 
-		private bool IsReserved(int frame)
+		public bool IsReserved(int frame)
 		{
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen

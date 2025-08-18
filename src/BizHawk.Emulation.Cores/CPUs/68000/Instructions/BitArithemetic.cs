@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Components.M68000
 {
-	partial class MC68000
+	public sealed partial class MC68000
 	{
 		// TODO, the timing on AND variants is wrong. IE, and.w w/ immediate should be 8 cycles, but I cant figure out how that should work.
 		private void AND0() // AND <ea>, Dn
@@ -659,6 +659,8 @@
 			info.Length = pc - info.PC;
 		}
 
+#pragma warning disable MA0084 // `bool this.m` shadowed by many locals
+
 		private void LSLd()
 		{
 			int rot = (op >> 9) & 7;
@@ -1236,6 +1238,8 @@
 
 			info.Length = pc - info.PC;
 		}
+
+#pragma warning restore MA0084
 
 		private void SWAP()
 		{

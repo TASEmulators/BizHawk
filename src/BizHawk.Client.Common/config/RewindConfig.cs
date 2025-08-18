@@ -25,7 +25,7 @@
 		bool UseFixedRewindInterval { get; }
 
 		/// <summary>
-		/// Desired frame length (number of emulated frames you can go back before running out of buffer)
+		/// Desired minimum rewind range (number of emulated frames you can go back before running out of buffer)
 		/// </summary>
 		int TargetFrameLength { get; }
 

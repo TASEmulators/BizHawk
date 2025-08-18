@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public new bool SaveRamModified => true;
 
-		public new byte[] CloneSaveRam()
+		public new byte[] CloneSaveRam(bool clearDirty)
 		{
 			var data = new byte[_saturnus.GetSaveRamLength()];
 			_saturnus.GetSaveRam(data);

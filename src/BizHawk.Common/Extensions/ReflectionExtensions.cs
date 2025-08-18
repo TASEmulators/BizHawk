@@ -47,10 +47,8 @@ namespace BizHawk.Common.ReflectionExtensions
 			return obj.ToString();
 		}
 
-		/// <summary>
-		/// Returns the DisplayName attribute value if it exists, else the name of the class
-		/// </summary>
-		public static string DisplayName(this Type type)
+		/// <returns><see cref="DisplayNameAttribute">[DisplayName]</see>, falling back to <see cref="MemberInfo.Name"/></returns>
+		public static string DisplayName(this MemberInfo type)
 		{
 			var attr = type.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault();
 			return attr is DisplayNameAttribute displayName ? displayName.DisplayName : type.Name;

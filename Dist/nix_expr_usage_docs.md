@@ -5,10 +5,12 @@ Installables:
 
 Version | Attr for asms | Attr for EmuHawk | Attr for DiscoHawk
 --:|:--|:--|:--
-2.9.2 dev (CWD) | `bizhawkAssemblies` | `emuhawk` | `discohawk`
-2.9.1 | (`bizhawkAssemblies-latest-bin`&nbsp;=&nbsp;) `bizhawkAssemblies-2_9_1-bin` | (`emuhawk-latest-bin`&nbsp;=&nbsp;) `emuhawk-2_9_1-bin` | (`discohawk-latest-bin`&nbsp;=&nbsp;) `discohawk-2_9_1-bin`
-2.9.1 from source | (`bizhawkAssemblies-latest`&nbsp;=&nbsp;) `bizhawkAssemblies-2_9_1` | (`emuhawk-latest`&nbsp;=&nbsp;) `emuhawk-2_9_1` | (`discohawk-latest`&nbsp;=&nbsp;) `discohawk-2_9_1`
+2.10.1 dev (CWD) | `bizhawkAssemblies` | `emuhawk` | `discohawk`
+2.10 | (`bizhawkAssemblies-latest-bin`&nbsp;=&nbsp;) `bizhawkAssemblies-2_10-bin` | (`emuhawk-latest-bin`&nbsp;=&nbsp;) `emuhawk-2_10-bin` | (`discohawk-latest-bin`&nbsp;=&nbsp;) `discohawk-2_10-bin`
+2.10 from source | (`bizhawkAssemblies-latest`&nbsp;=&nbsp;) `bizhawkAssemblies-2_10` | (`emuhawk-latest`&nbsp;=&nbsp;) `emuhawk-2_10` | (`discohawk-latest`&nbsp;=&nbsp;) `discohawk-2_10`
 |||
+2.9.1 | `bizhawkAssemblies-2_9_1-bin` | `emuhawk-2_9_1-bin` | DIY
+2.9.1 from source | DIY | `emuhawk-2_9_1` | DIY
 2.9 | `bizhawkAssemblies-2_9-bin` | `emuhawk-2_9-bin` | DIY
 2.9 from source | DIY | `emuhawk-2_9` | DIY
 2.8 | `bizhawkAssemblies-2_8-bin` | `emuhawk-2_8-bin` | DIY
@@ -104,6 +106,10 @@ Some of our source files are long and our projects are large, so the LSP client 
 The scroll position for the syntax highlighting can become desynced from that of the text, leading to syntax getting multiple and/or incorrect colours.
 
 Kate is not a .NET IDE and doesn't understand the Solution/Project structure or any MSBuild metadata; it sees only C# source files, and shows every file in the Git repo.
+
+### JetBrains Rider
+
+Not yet implemented.
 
 ### VS Code / Codium
 

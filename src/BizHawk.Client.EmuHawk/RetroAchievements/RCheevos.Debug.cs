@@ -199,8 +199,8 @@ namespace BizHawk.Client.EmuHawk
 					Policy =
 					{
 						UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1,
-						ThrowExceptions2048 = false
-					}
+						ThrowExceptions2048 = false,
+					},
 				};
 
 				_buf2352 = new byte[2352];
@@ -304,9 +304,9 @@ namespace BizHawk.Client.EmuHawk
 				case ".xml":
 				{
 					var xml = XmlGame.Create(new(path));
-					foreach (var kvp in xml.Assets)
+					foreach (var pfd in xml.Assets)
 					{
-						InternalDebugHash(kvp.Key);
+						InternalDebugHash(pfd.Path);
 					}
 
 					break;
@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 						DiscType.Dreamcast => ConsoleID.Dreamcast,
 						DiscType.SonyPS2 => ConsoleID.PlayStation2,
 						DiscType.JaguarCD => ConsoleID.JaguarCD,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 				}
 
@@ -412,7 +412,6 @@ namespace BizHawk.Client.EmuHawk
 					VSystemID.Raw.GBA => ConsoleID.GBA,
 					VSystemID.Raw.GBC => ConsoleID.GBC,
 					VSystemID.Raw.GBL => ConsoleID.GB,
-					VSystemID.Raw.GEN when rom.GameInfo.GetBool("32X", false) => ConsoleID.Sega32X,
 					VSystemID.Raw.GEN => ConsoleID.MegaDrive,
 					VSystemID.Raw.GG => ConsoleID.GameGear,
 					VSystemID.Raw.GGL => ConsoleID.GameGear,

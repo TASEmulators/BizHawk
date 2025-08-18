@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if ((addr & 0x0200) == 0) // If not register select, read Ram
 			{
 				//return _core.Ram[(ushort)(addr & 0x007f)];
-				return 0; 
+				return 0;
 			}
 
 			var registerAddr = (ushort)(addr & 0x0007);
@@ -43,13 +43,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				temp = (byte)(temp + (_outputA & _ddRa));
 				return temp;
 			}
-			
+
 			if (registerAddr == 0x01)
 			{
 				// Read DDRA
 				return _ddRa;
 			}
-			
+
 			if (registerAddr == 0x02)
 			{
 				Core._isLag = false;
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				return _ddRb;
 			}
-			
+
 			if ((registerAddr & 0x5) == 0x4)
 			{
 				// Bit 0x0080 contains interrupt enable/disable

@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.movie.import
 		{
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs, Encoding.ASCII);
-			
+
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
 			byte[] signature = r.ReadBytes(15);
 			if (!signature.SequenceEqual("Gens Movie TEST"u8))
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common.movie.import
 			uint rerecordCount = r.ReadUInt32();
 			Result.Movie.Rerecords = rerecordCount;
 
-			
+
 			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
 			char player1Config = r.ReadChar();
 
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				UseSixButton = useSixButtons,
 				ControlTypeLeft = GPGX.ControlType.Normal,
-				ControlTypeRight = GPGX.ControlType.Normal
+				ControlTypeRight = GPGX.ControlType.Normal,
 			};
 
 			input.dev[2] = input.dev[3] = input.dev[4] = input.dev[5] = input.dev[6] = input.dev[7] = LibGPGX.INPUT_DEVICE.DEVICE_NONE;

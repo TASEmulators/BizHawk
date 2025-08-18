@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 
+using Silk.NET.Core.Loader;
 using Silk.NET.Core.Native;
 using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.Creative;
@@ -16,14 +18,31 @@ namespace BizHawk.Bizware.Audio
 {
 	public class OpenALSoundOutput : ISoundOutput
 	{
-		private static readonly AL _al = AL.GetApi();
-		private static readonly ALContext _alc = ALContext.GetApi();
+		static OpenALSoundOutput()
+		{
+			// kind of a hack
+			// DefaultPathResolver.MainModuleDirectoryResolver is potentially very very slow on Mono
+			// Due to it using Process.MainModule, which proceeds to use Process.Modules
+			// Process.Modules iterates through every single memory mapped file 100s of times over
+			// As such, it can be potentially very very slow
+			// DefaultPathResolver.MainModuleDirectoryResolver is unneeded anyways
+			var defaultPathResolver = (DefaultPathResolver)PathResolver.Default;
+			defaultPathResolver.Resolvers.Remove(DefaultPathResolver.MainModuleDirectoryResolver);
+			// these need to be done here, since static ctor runs after static field/prop setting
+			_al = AL.GetApi();
+			_alc = ALContext.GetApi();
+			_enumAllExt = GetExtensionOrNull<EnumerateAll>();
+			_enumExt = GetExtensionOrNull<Enumeration>();
+		}
+
+		private static readonly AL _al;
+		private static readonly ALContext _alc;
 
 		private static unsafe T GetExtensionOrNull<T>() where T : NativeExtension<ALContext>
 			=> _alc.TryGetExtension<T>(null, out var ext) ? ext : null;
 
-		private static readonly EnumerateAll _enumAllExt = GetExtensionOrNull<EnumerateAll>();
-		private static readonly Enumeration _enumExt = GetExtensionOrNull<Enumeration>();
+		private static readonly EnumerateAll _enumAllExt;
+		private static readonly Enumeration _enumExt;
 
 		private bool _disposed;
 		private readonly IHostAudioManager _sound;
@@ -66,10 +85,54 @@ namespace BizHawk.Bizware.Audio
 			_disposed = true;
 		}
 
-		public static IEnumerable<string> GetDeviceNames()
-			=> _enumAllExt?.GetStringList(GetEnumerateAllContextStringList.AllDevicesSpecifier)
-				?? _enumExt?.GetStringList(GetEnumerationContextStringList.DeviceSpecifiers)
-				?? Enumerable.Empty<string>();
+		private static unsafe IEnumerable<string> MarshalStringList(byte* stringList)
+		{
+			var ret = new List<string>();
+			var curStr = stringList;
+			while (true)
+			{
+				var nextStr = curStr;
+				var len = 0;
+				while (*nextStr++ != 0)
+				{
+					len++;
+				}
+
+				var str = Encoding.UTF8.GetString(curStr, len);
+				if (str.Length == 0)
+				{
+					break;
+				}
+
+				ret.Add(str);
+				curStr = nextStr;
+			}
+
+			return ret;
+		}
+
+		public static unsafe IEnumerable<string> GetDeviceNames()
+		{
+			if (_enumAllExt != null)
+			{
+				var stringList = _enumAllExt.GetStringList(null, GetEnumerateAllContextStringList.AllDevicesSpecifier);
+				if (stringList != null)
+				{
+					return MarshalStringList(stringList);
+				}
+			}
+
+			if (_enumExt != null)
+			{
+				var stringList = _enumExt.GetStringList(null, GetEnumerationContextStringList.DeviceSpecifiers);
+				if (stringList != null)
+				{
+					return MarshalStringList(stringList);
+				}
+			}
+
+			return [ ];
+		}
 
 		private int BufferSizeSamples { get; set; }
 

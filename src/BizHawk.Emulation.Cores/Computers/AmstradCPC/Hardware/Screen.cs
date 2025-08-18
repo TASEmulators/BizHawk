@@ -5,10 +5,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	/// <summary>
 	/// Basic emulation of a PAL Amstrad CPC CRT screen
-	/// 
-	/// Decoding of C-SYNC pulses are not emulated properly, 
+	///
+	/// Decoding of C-SYNC pulses are not emulated properly,
 	/// we just assume that so long as the C-VSYNC and C-HSYNC periods are correct, the screen will display.
-	/// 
+	///
 	/// References used:
 	/// - https://www.cpcwiki.eu/index.php/GT64/GT65
 	/// - https://www.cpcwiki.eu/index.php/CTM640/CTM644
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Arbirary processing buffer width
 		/// </summary>
-		private const int FRAMEBUFFER_MAX_WIDTH = 1024;	
+		private const int FRAMEBUFFER_MAX_WIDTH = 1024;
 
 		/// <summary>
 		/// Total scanlines per frame
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _timePosV;
 
 		private int _verticalTiming;
-		private bool _isVsync;				
+		private bool _isVsync;
 		private bool _frameEndPending;
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void VideoClock(int colour, int field, bool cHsync = false, bool cVsync = false)
 		{
 			// Beam moves continuously downwards at 50 Hz and left to right with a HSYNC pulse every 15625Hz
-			// Horizontal and vertical movement are independent. 
+			// Horizontal and vertical movement are independent.
 
 			// PAL Horizontal:
 			// - Beam moves right at a rate of 16 pixels per usec
@@ -123,11 +123,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// - Beam moves down at a rate of 1 line per 64 microseconds (although this movement covers two scanlines)
 			// - As soon as a VSYNC signal is detected, the PLL capacitor discharges and the beam moves back to the top (at the same horizontal position that VSYNC started)
 			// - If a VSYNC is not detected in time, the PLL will eventually move the beam back to the top
-			// - Unsure what the vertical screen time for this action is. 
+			// - Unsure what the vertical screen time for this action is.
 
 			int hHold = 118;	// pixels - approx (71.43 - 64) * 16
 			int vHold = 3;      // scanlines
-											
+
 
 			// * horizontal movement *
 			// gun moves left to right at a rate of 16 pixels per usec
@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// no vsync
 				_isVsync = false;
 			}
-			
+
 			void HackHPos()
 			{
 				// the field length is actually 312.5 scanlines, so HSYNC happens half way through a scanline

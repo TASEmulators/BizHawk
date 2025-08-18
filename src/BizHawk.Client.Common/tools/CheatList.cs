@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 		{
 			_defaultFileName = defaultFileName;
 
-			if (_cheatList.Any() && _changes && autosave)
+			if (autosave && _changes && _cheatList.Count is not 0)
 			{
 				if (string.IsNullOrEmpty(CurrentFileName))
 				{
@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -224,7 +224,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_config.AutoSaveOnClose)
 			{
-				if (Changes && _cheatList.Any())
+				if (Changes && _cheatList.Count is not 0)
 				{
 					if (string.IsNullOrWhiteSpace(CurrentFileName))
 					{
@@ -233,7 +233,7 @@ namespace BizHawk.Client.Common
 
 					SaveFile(CurrentFileName);
 				}
-				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
+				else if (_cheatList.Count is 0 && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
 					File.Delete(CurrentFileName);
 					_config.Recent.Remove(CurrentFileName);
@@ -255,12 +255,7 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				var file = new FileInfo(path);
-				if (file.Directory != null && !file.Directory.Exists)
-				{
-					file.Directory.Create();
-				}
-
+				new FileInfo(path).Directory?.Create();
 				var sb = new StringBuilder();
 
 				foreach (var cheat in _cheatList)
@@ -320,7 +315,7 @@ namespace BizHawk.Client.Common
 			}
 
 			using var sr = file.OpenText();
-			
+
 			if (!append)
 			{
 				Clear();
@@ -372,7 +367,7 @@ namespace BizHawk.Client.Common
 							type = Watch.DisplayTypeFromChar(vals[7][0]);
 							bigEndian = vals[8] == "1";
 						}
-						
+
 						// For backwards compatibility, don't assume these values exist
 						if (vals.Length > 9)
 						{
@@ -409,6 +404,8 @@ namespace BizHawk.Client.Common
 			for (int i = _cheatList.Count - 1; i >= 0; i--)
 			{
 				var cheat = _cheatList[i];
+				if (cheat.IsSeparator) continue;
+
 				var newDomain = domains[cheat.Domain.Name];
 				if (newDomain is not null)
 				{
@@ -434,7 +431,7 @@ namespace BizHawk.Client.Common
 				[SizeColumn] = c => (int) c.Size,
 				[EndianColumn] = c => c.BigEndian,
 				[TypeColumn] = c => c.Type,
-				[ComparisonType] = c => c.ComparisonType
+				[ComparisonType] = c => c.ComparisonType,
 			});
 
 		public void Sort(string column, bool reverse) => _cheatList = ColumnSorts.AppliedTo(_cheatList, column, firstIsDesc: reverse);

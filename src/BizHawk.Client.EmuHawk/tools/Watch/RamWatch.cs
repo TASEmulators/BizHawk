@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 					i++;
 				}
 			};
-			WatchesSubMenu.DropDownItems.Insert(11, deduperMenuItem);
+			_ = WatchesSubMenu.DropDownItems.InsertBefore(toolStripSeparator3, insert: deduperMenuItem);
 
 			Settings = new RamWatchSettings();
 
@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_watches.Any())
+			if (_watches.Count is not 0)
 			{
 				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			DisplayManager.OSD.ClearRamWatches();
-			if (_watches.Any())
+			if (_watches.Count is not 0)
 			{
 				_watches.UpdateValues(Config.RamWatchDefinePrevious);
 				DisplayOnScreenWatches();
@@ -370,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							X = Config.RamWatches.X,
 							Y = Config.RamWatches.Y + (i * 14),
-							Anchor = Config.RamWatches.Anchor
+							Anchor = Config.RamWatches.Anchor,
 						},
 						Color.Black,
 						frozen ? Color.Cyan : Color.White);
@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
-					MemoryDomains = MemoryDomains
+					MemoryDomains = MemoryDomains,
 				};
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -486,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "Edit Separator",
 					StartLocation = this.ChildPointToScreen(WatchListView),
 					Message = "Separator Text:",
-					TextInputType = InputPrompt.InputType.Text
+					TextInputType = InputPrompt.InputType.Text,
 				};
 
 				if (this.ShowDialogWithTempMute(inputPrompt).IsOk())
@@ -784,7 +784,7 @@ namespace BizHawk.Client.EmuHawk
 			var we = new WatchEditor
 			{
 				InitialLocation = this.ChildPointToScreen(WatchListView),
-				MemoryDomains = MemoryDomains
+				MemoryDomains = MemoryDomains,
 			};
 			we.SetWatch(CurrentDomain);
 			if (!this.ShowDialogWithTempMute(we).IsOk()) return;
@@ -820,7 +820,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.DWord => WatchSize.Word,
 				WatchSize.Word => WatchSize.Byte,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 			var a = Watch.GenerateWatch(ab.Domain, ab.Address, newSize, ab.Type, ab.BigEndian, ab.Notes);
 			var b = Watch.GenerateWatch(ab.Domain, ab.Address + (int) newSize, newSize, ab.Type, ab.BigEndian, ab.Notes);
@@ -857,7 +857,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var poke = new RamPoke(DialogController, SelectedWatches, MainForm.CheatList)
 				{
-					InitialLocation = this.ChildPointToScreen(WatchListView)
+					InitialLocation = this.ChildPointToScreen(WatchListView),
 				};
 
 				if (this.ShowDialogWithTempMute(poke).IsOk())
@@ -898,10 +898,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
 			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any() || indexes[0] == 0)
-			{
-				return;
-			}
+			if (indexes is [ ] or [ 0, .. ]) return;
 
 			foreach (var index in indexes)
 			{
@@ -954,10 +951,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveTopMenuItem_Click(object sender, EventArgs e)
 		{
 			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any())
-			{
-				return;
-			}
+			if (indexes.Count is 0) return;
 
 			for (int i = 0; i < indexes.Count; i++)
 			{
@@ -1177,7 +1171,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedWatches.ToList();
-			if (selected.Any())
+			if (selected.Count is not 0)
 			{
 				Tools.Load<HexEditor>();
 				ViewInHexEditor(
@@ -1193,7 +1187,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selected = SelectedWatches.ToList();
 
-			if (selected.Any())
+			if (selected.Count is not 0)
 			{
 				var debugger = Tools.Load<GenericDebugger>();
 
@@ -1208,7 +1202,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selected = SelectedWatches.ToList();
 
-			if (selected.Any())
+			if (selected.Count is not 0)
 			{
 				var debugger = Tools.Load<GenericDebugger>();
 

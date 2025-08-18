@@ -4,7 +4,11 @@ An emulation project.
 
 EmuHawk is a multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners). More info [below](#features-and-systems).
 
-A7800Hawk, Atari2600Hawk, C64Hawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#. MSXHawk is a bespoke emulation core written in C++. More info [below](#cores).
+A7800Hawk, Atari2600Hawk, C64Hawk, ChannelFHawk, ColecoHawk, GBHawk, IntelliHawk, NesHawk, O2Hawk, PCEHawk, SMSHawk, TI83Hawk, VectrexHawk, and ZXHawk are bespoke emulation cores written in C#.
+MSXHawk is a bespoke emulation core written in C++.
+More info [below](#cores).
+
+DiscoHawk is a disc image converter written in C#.
 
 [![(latest) release | GitHub](https://img.shields.io/github/release/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&sort=semver&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASEmulators/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASEmulators/BizHawk/issues)
@@ -66,8 +70,11 @@ Supported consoles and computers:
 	* Jaguar + CD
 	* Lynx
 * Bandai WonderSwan + Color
-* CBM Commodore 64
+* Commodore
+	* Amiga
+	* Commodore 64
 * Coleco Industries ColecoVision
+* Fairchild Channel F
 * GCE Vectrex
 * Magnavox Odyssey² / Videopac G7000
 * Mattel Intellivision
@@ -77,6 +84,8 @@ Supported consoles and computers:
 	* PC-FX
 * Neo Geo Pocket + Color
 * Nintendo
+	* 3DS
+	* DS + DSi
 	* Famicom / Nintendo Entertainment System + FDS
 	* Game Boy + Color
 	* Game Boy Advance
@@ -109,41 +118,44 @@ Released binaries can be found right here on GitHub (also linked at the top of t
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 Click `BizHawk-<version>-win-x64.zip` to download it. Also note the changelog, the full version of which is [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
-Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
+Extract it anywhere, but **don't mix different versions** of BizHawk, keep each version in its own folder. You may move or rename the folder containing `EmuHawk.exe`, even to another drive—as long as you keep all the files together.
 
 Run `EmuHawk.exe` to start. If startup is blocked by a Windows SmartScreen dialog, click "More Info" to reveal the override button. Third-party antivirus may also block startup. There are some command-line arguments you can use: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
-EmuHawk does have some prerequisites which it can't work without (it will let you know if they're missing). The list is [here](https://github.com/TASEmulators/BizHawk-Prereqs/blob/master/README), and we've made an all-in-one installer which you can get [here](https://github.com/TASEmulators/BizHawk-Prereqs/releases/latest).
-You should only have to run this once per machine, unless the changelog says we need something extra.
+If you get the message "EmuHawk needs X in order to run!" when launching EmuHawk, it means you need to install that component on your system. As of 2.10, only the [MSVC++ redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe) is required.  
+For older versions we have an all-in-one installer which you can get [here](https://github.com/TASEmulators/BizHawk-Prereqs/releases/latest), or you could download and install just the component that's missing.
 
 We will be following Microsoft in dropping support for old versions of Windows, that is, we reserve the right to ignore your problems
 unless you've updated to at least Win11 21H2 (initial release) or Win10 22H2. Read more on [MSDN](https://docs.microsoft.com/en-us/lifecycle/faq/windows).
+> You may find that the upgrade from Win10 to Win11 is not available for your PC. Rather than throwing it out and getting a new one, consider switching to Linux. See [endof10.org](https://endof10.org) for more info.
 
-A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit. It has many bugs that will never be fixed and it doesn't have all the features of the later versions.
+A "backport" release, [1.13.2](https://github.com/TASEmulators/BizHawk/releases/tag/1.13.2), is available for users of Windows XP, 7, or 8.1 32-bit.
+It has many bugs that will never be fixed (backports have ceased) and it doesn't have all the features of the later versions—you should probably get a new operating system instead.
 
 [to top](#bizhawk)
 
 ### Unix
 
-**Note**: There's only one dev working on Linux (@YoshiRulz)! Please have patience, and try not to bother everyone else.
-
 Install the listed package with your package manager (some buttons are links to the relevant package). The changelog can be found [over on TASVideos](https://tasvideos.org/Bizhawk/ReleaseHistory).
 
-[![Manjaro | bizhawk-monort (AUR)](https://img.shields.io/badge/Manjaro-bizhawk--monort_(AUR)-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk-monort)
+[![Arch Linux | bizhawk-bin (AUR)](https://img.shields.io/badge/Arch_Linux-bizhawk--bin_(AUR)-%231793D1.svg?logo=archlinux&style=popout)](https://aur.archlinux.org/packages/bizhawk-bin)
 
-No package for your distro? Install via Nix (see below), or install manually by grabbing the latest release here on GitHub:
+No package for your distro? Install via Nix ([see below](#nixnixos)), or install manually by grabbing the latest release here on GitHub:
 
 [![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
-The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.
-The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. WINE is also **not** a runtime dependency. If you try to use WINE anyway then you're on your own.  
+The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.  
+The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. Wine is also **not** a runtime dependency. If you try to use Wine anyway then you're on your own.  
 If it's not clear from the downloads here or in your package manager, EmuHawk is for x86_64 CPUs only.
 You may be able to run on AArch64 with missing features: see [#4052](https://github.com/TASEmulators/BizHawk/issues/4052).
 
-Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output. It takes mostly the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
+Run `EmuHawkMono.sh` to start EmuHawk—you can run it from anywhere, so creating a `.desktop` file to wrap the script is fine. The shell script should print an error if it fails, otherwise it's safe to ignore console output.
+It takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
 
 Most features and cores work, a notable omission being Mupen64Plus (N64). See the Linux thread, [#1430](https://github.com/TASEmulators/BizHawk/issues/1430), for a more detailed breakdown.
+
+**Note**: While the Linux port is about at parity, this remains a Windows-centric project. Please have patience as most of the dev team are on Windows.
 
 [to top](#bizhawk)
 
@@ -153,18 +165,18 @@ Not available for either AArch64 or x86_64 devices. The feature request is [#355
 
 #### iOS
 
-As with Apple Silicon Macs, not available.
+As with Apple silicon Macs, not available.
 
 If you were looking to emulate iOS apps, see [#3956](https://github.com/TASEmulators/BizHawk/issues/3956).
 
 #### macOS (legacy BizHawk)
 
 EmuHawk depends on certain libraries for graphics, and these don't work on macOS. Users on macOS have three options:
-* Use another machine with Windows or Linux, or install either in an x86_64 VM (WINE is not a VM).
+* Use another machine with Windows or Linux, or install either in an x86_64 VM (Wine is not a VM).
 * Use an older 1.x release, which was ported to macOS by @Sappharad (with replacements for the missing libraries), via Rosetta. Links and more details are in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659) (jump to last page for latest binaries). See [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) for details.
 * For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
 	* ...or use the Nix expression as a starting point instead.
-	* Either way, this probably won't work on Apple Silicon without a lot more effort. You'll probably want to build for x86_64 and run Mono via Rosetta. See [#4052](https://github.com/TASEmulators/BizHawk/issues/4052) re: Linux AArch64.
+	* Either way, this probably won't work on Apple silicon without a lot more effort. You'll probably want to build for x86_64 and run Mono via Rosetta. See [#4052](https://github.com/TASEmulators/BizHawk/issues/4052) re: Linux AArch64.
 
 #### Nix/NixOS
 
@@ -214,15 +226,13 @@ tl;dr:
 EmuHawk takes some command-line options which are documented in [the source](https://github.com/TASEmulators/BizHawk/blob/2d37fc1f13afb0774629f16ffea5ff86d9b47951/src/BizHawk.Client.Common/ArgParser.cs).
 On Linux starting from 2.10, these can also be viewed offline with the usual `--help`.
 
-On Windows 8.1/10, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
+On Windows 10+, it's easiest to use PowerShell for this. For example, to pass `--lua=C:\path\to\script.lua` as the first argument and `C:\path\to\rom.n64` as the second, navigate to the BizHawk install folder and run:
 ```pwsh
 ./EmuHawk.exe '--lua=C:\path\to\script.lua' 'C:\path\to\rom.n64'
 ```
 
-On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono`. (You can also `export` env. vars.) All the arguments work as on Windows, with some caveats:
-* file paths must be absolute (or relative to the install dir, `EmuHawkMono.sh` changes the CWD to there);
-* `--mono-no-redirect`: if you pass this flag *as the first argument*, it will be eaten by the script itself, and stdout/stderr will *not* be redirected to a file. (It's redirected by default.)
-** From 2.10, this will no longer be necessary.
+On Linux, you can pass arguments to `EmuHawkMono.sh` as expected and they will be forwarded to `mono` and to EmuHawk. (You can also `export` env. vars.)
+All the arguments work as on Windows, with the caveat that **file paths must be absolute**, or relative to the install dir (`EmuHawkMono.sh` changes the working dir to there).
 
 The same example as above would be `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.n64`.
 
@@ -319,19 +329,22 @@ In the table below, core names in **bold** are accuracy-focused and acceptable o
 
 System | Cores
 --:|:--
+3DS | **Encore**
 Apple II | **Virtu**
+Amiga | **UAE**
 Arcade | **MAME**
-Atari 2600 | **Atari2600Hawk**
+Atari 2600 | Atari2600Hawk, **Stella**
 Atari 7800 | **A7800Hawk**
 Atari Jaguar | **Virtual Jaguar**
 Atari Lynx | **Handy**
+Channel F | **ChannelFHawk**
 Commodore 64 | **C64Hawk**
 ColecoVision | **ColecoHawk**
 Game Boy / Color | **Gambatte**, **GBHawk**, **SameBoy**
 Game Boy Advance | **mGBA**
 Intellivision | **IntelliHawk**
 MSX | **MSXHawk**
-N64 | Ares64, **Mupen64Plus**
+N64 | **Ares64**, Mupen64Plus
 NDS | **melonDS**
 Neo Geo Pocket | **NeoPop**
 NES | **NesHawk**, quickerNES
@@ -341,7 +354,7 @@ Playstation (PSX) | **Nymashock**, **Octoshock**
 Sega 32X | **PicoDrive**
 Sega Game Gear | **SMSHawk**
 Sega Genesis | **Genplus-gx**
-Sega Master System | **SMSHawk**
+Sega Master System | **Genplus-gx**, **SMSHawk**
 Sega Saturn | **Saturnus**
 SNES | **BSNES**, Faust, Snes9x
 Super Game Boy | **BSNES**, **Gambatte**
@@ -354,12 +367,7 @@ Virtual Boy | **Virtual Boyee**
 WonderSwan / Color | **Cygne**
 ZX Spectrum | **ZXHawk**
 
-There are also works-in-progress for:
-* Amstrad CPC (home-grown core)
-* Fairchild Channel F (home-grown core)
-* others maybe ([candidates](https://gitlab.com/TASVideos/BizHawk/snippets/1890492))
-
-Please don't bother core devs about these WIPs unless you're looking to contribute in some way.
+For an idea of what systems may be covered in the future, check [our core request list](https://github.com/TASEmulators/BizHawk/wiki/Core-Requests).
 
 [to top](#bizhawk)
 
@@ -371,18 +379,40 @@ A short [FAQ](https://tasvideos.org/Bizhawk/FAQ) is provided on the TASVideos wi
 	- For the .NET API, [the ApiHawk server](https://discord.gg/UPhN4um3px)
 - The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)
 - `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
-- The [/r/BizHawk](https://reddit.com/r/BizHawk) subreddit
+- The [/r/BizHawk](https://reddit.com/r/BizHawk) and [/r/TAS](https://reddit.com/r/TAS) subreddits
 
 You can [open a new issue](https://github.com/TASEmulators/BizHawk/issues/new) at any time if you're logged in to GitHub. Please **at the very least read the issue templates**, we tend to ask the same questions for every one-line issue that's opened.
 
 ### Related projects
 
-* [Dolphin](https://dolphin-emu.org) for GameCube and Wii — cross-platform
-* [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — cross-platform; TASing is Windows-only
+Unless specified, the below emulators are all available for both Windows and Linux PCs. Many are also available on macOS and Android.
+
+* [Dolphin](https://dolphin-emu.org) for GameCube and Wii
+* [FCEUX](https://fceux.com/web/home.html) for NES/Famicom
+* [GBAHawk](https://github.com/alyosha-tas/GBAHawk) (not part of BizHawk) for GBA — requires Windows host
 * [libTAS](https://github.com/clementgallet/libTAS) for ELF (Linux desktop apps) — requires GNU+Linux host; also emulates other emulators
-* [lsnes](https://tasvideos.org/Lsnes) for GB and SNES — cross-platform
-* [melonDS](http://melonds.kuribo64.net) for Nintendo DS — cross-platform
-* [mGBA](https://mgba.io) for GBA and GB/C — cross-platform
+* [lsnes](https://tasvideos.org/Lsnes) for GB and SNES
+* [openMSX](https://openmsx.org) for MSX
+* Not rerecording-capable:
+	* [ares](https://ares-emu.net) for several consoles
+	* [Cemu](https://cemu.info/) for Wii U
+	* [Flycast](https://github.com/flyinghead/flycast) for Dreamcast
+	* [Ruffle](https://ruffle.rs) for Flash
+	* RIP Ryujinx :(
+* Ported to BizHawk:
+	* [BSNES](https://github.com/bsnes-emu/bsnes) for SNES
+	* [Genesis Plus GX](https://github.com/ekeeke/Genesis-Plus-GX) for Sega's 8- and 16-bit consoles
+	* [GSE](https://github.com/CasualPokePlayer/GSE) for GB/C
+	* [MAME](https://www.mamedev.org) for countless arcades, plug-and-plays, etc.
+	* [Mednafen](https://mednafen.github.io) for several consoles
+	* [melonDS](http://melonds.kuribo64.net) for Nintendo DS
+	* [Mupen64Plus](https://mupen64plus.org) for N64
+	* [mGBA](https://mgba.io) for GBA and GB/C
+	* [PicoDrive](https://github.com/irixxxx/picodrive) for Sega's 8- and 16-bit consoles
+	* [quickerNES](https://github.com/SergioMartin86/quickerNES) for NES/Famicom
+	* [SameBoy](https://sameboy.github.io) for GB/C
+	* [Stella](https://stella-emu.github.io) for Atari VCS/2600
+<!--* A full list of libraries used by BizHawk can be found under `Help` > `About...` from within EmuHawk, or in the bundled `licences.md` file.--><!-- TODO that -->
 
 Emulators for other systems can be found on the [EmulatorResources page](https://tasvideos.org/EmulatorResources) at TASVideos. The [TASEmulators GitHub page](https://github.com/TASEmulators) also holds copies of other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
@@ -393,8 +423,11 @@ Emulators for other systems can be found on the [EmulatorResources page](https:/
 ### EmuHawk or core development
 
 Do you want your name next to [these fine people](https://github.com/TASEmulators/BizHawk/graphs/contributors)?
-We have [many open issues](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted") with no-one to work on them.
-Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
+We have many open issues with no-one to work on them, including [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"help+wanted")
+and [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Open%20to%20PRs%20for%20existing%20design%22).
+- ['Tasks'](https://github.com/TASEmulators/BizHawk/issues?q=type%3ATask%20is%3Aopen) are issues with narrow scope and/or clear requirements.
+- Any which would be a good fit for someone who's new to Open Source are listed [here](https://github.com/TASEmulators/BizHawk/contribute) (spoilers: it's probably empty).
+- For issues in need of ~~bikeshedding~~ constructive discussion, look at [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Open%20to%20design%20proposals%20only%22) and [these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Waiting%20on%20dev%20consensus%22).
 
 [The contribution guidelines](https://github.com/TASEmulators/BizHawk/blob/master/contributing.md) have more details on how to get set up, work with the code, and submit changes to us.
 
@@ -402,12 +435,15 @@ Don't shy away from asking about an Issue on IRC/Discord (see above)! You might 
 For adding new features it's especially important, because details are often left out of the issue tracker, and we may want to make sure the new addition is future-proofed.
 
 With regards to core development, we're not particularly interested in PRs adding cores out-of-the-blue, but if you have experience in emulator development please get in touch. We have a wishlist of cores to port, and on top of that, many of our in-house cores are without a maintainer.
+- Open issues by programming language: [C](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Needs%20unmanaged%20changes%20%28C-lang%29%22), [C++](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Needs%20unmanaged%20changes%20%28C%2B%2B%29%22), ~~C#~~ (will have no lang label), [Rust](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Needs%20unmanaged%20changes%20%28Rust%29%22)
 
 [to top](#bizhawk)
 
 ### Testing/QA
 
-Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs, i.e. checking if they've been fixed or not.
+Not a programmer? You can still be helpful by grabbing a recent [dev build](#development-builds) and reproducing old bugs (checking if they're still broken or if they've been fixed).
+- [This label](https://github.com/TASEmulators/BizHawk/issues?q=label%3A%22Repro%3A%20Patch%20pending%22) tracks bugs which are likely fixed, but we're not sure.
+- Otherwise just filter by core and look for issues without a recent `Repro:` label.
 
 Those with hardware or other domain knowledge may be able to help triage [issues like these](https://github.com/TASEmulators/BizHawk/issues?q=label%3A"Needs+domain+knowledge+for+triage").
 
@@ -427,7 +463,7 @@ Any developers looking to re-use code from BizHawk in their own work should unde
 
 Disclaimer time! Can't have emulation software without a disclaimer...
 > Following the terms of our license does not make you immune from other contracts or laws.
-> Some or all of the following may be illegal where you live: creating a copy of non-free software for backup purposes ("dumping" or "ripping"); distributing copies of non-free software; soliciting pirated copies of software; knowingly posessing pirated copies of software; importing software from the USA (GitHub and TASVideos are American entities); using a backup copy of non-free software without the original.
-> For obvious reasons, **we cannot and will not distribute dumped games or firmware that is under copyright**.
+> Some or all of the following may be illegal where you live: creating a copy of non-free software for backup purposes ("dumping" or "ripping"); distributing copies of non-free software; soliciting pirated copies of software; knowingly possessing pirated copies of software; importing software from the USA (GitHub and TASVideos are American entities); using a backup copy of non-free software without the original.
+> For obvious reasons, **we cannot and will not distribute dumped games or firmware that are under copyright**.
 
 [to top](#bizhawk)

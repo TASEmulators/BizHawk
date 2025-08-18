@@ -39,7 +39,7 @@ namespace BizHawk.DATTool
 					var res = MessageBox.Show("Could not parse document as valid XML:\n\n" + s + "\n\nDo you wish to continue any other processing?", "Parsing Error", MessageBoxButtons.YesNo);
 					if (res != DialogResult.Yes)
 						return "";
-				}				
+				}
 			}
 
 			int startIndex = 0;
@@ -69,10 +69,10 @@ namespace BizHawk.DATTool
 				foreach (var g in query)
 				{
 					GameDB item = new GameDB();
-					item.Name = g.Value;
-					item.SHA1 = g.Elements("rom").First().Attribute("sha1").Value.ToUpperInvariant();
-					item.MD5 = g.Elements("rom").First().Attribute("md5").Value.ToUpperInvariant();
-					item.CRC32 = g.Elements("rom").First().Attribute("crc").Value.ToUpperInvariant();
+					item.Name = g.Attribute("name").Value;
+					item.SHA1 = g.Element("rom").Attribute("sha1").Value.ToUpperInvariant();
+					item.MD5 = g.Element("rom").Attribute("md5").Value.ToUpperInvariant();
+					item.CRC32 = g.Element("rom").Attribute("crc").Value.ToUpperInvariant();
 					item.System = GameDB.GetSystemCode(SysType);
 
 					ParseNOINTROFlags(item);
@@ -206,14 +206,14 @@ namespace BizHawk.DATTool
 						//	everything else
 						// all tosec cr, h, t etc.. will fall under RomStatus.Hack
 
-						if (e.Where(str => 
+						if (e.Where(str =>
 						// bad dump
 						str == "b" || str.StartsWithOrdinal("b ")).ToList().Count > 0)
 						{
 							// RomStatus.BadDump
 							g.Status = "B";
-						}							
-						else if (e.Where(str => 
+						}
+						else if (e.Where(str =>
 						// BIOS
 						str == "BIOS" || str.StartsWithOrdinal("BIOS ")).ToList().Count > 0)
 						{
@@ -233,7 +233,7 @@ namespace BizHawk.DATTool
 		{
 			List<string> DS = new List<string>
 			{
-				"alpha", "beta", "preview", "pre-release", "proto"
+				"alpha", "beta", "preview", "pre-release", "proto",
 			};
 			return DS.Exists(s.Contains);
 		}
@@ -242,7 +242,7 @@ namespace BizHawk.DATTool
 		{
 			List<string> CS = new List<string>
 			{
-				"CW", "CW-R", "FW", "GW", "GW-R", "LW", "PD", "SW", "SW-R"
+				"CW", "CW-R", "FW", "GW", "GW-R", "LW", "PD", "SW", "SW-R",
 			};
 			return CS.Exists(s.Contains);
 		}
@@ -251,7 +251,7 @@ namespace BizHawk.DATTool
 		{
 			List<string> LC = new List<string>
 			{
-				"En", "Ja", "Fr", "De", "Es", "It", "Nl", "Pt", "Sv", "No", "Da", "Fi", "Zh", "Ko", "Pl"
+				"En", "Ja", "Fr", "De", "Es", "It", "Nl", "Pt", "Sv", "No", "Da", "Fi", "Zh", "Ko", "Pl",
 			};
 
 			bool b = false;
@@ -278,7 +278,7 @@ namespace BizHawk.DATTool
 			List<string> CC = new List<string>
 			{
 				"World", "Australia", "Brazil", "Canada", "China", "France", "Germany", "Hong Kong", "Italy",
-				"Japan", "Korea", "Netherlands", "Spain", "Sweden", "USA", "Europe", "Asia"
+				"Japan", "Korea", "Netherlands", "Spain", "Sweden", "USA", "Europe", "Asia",
 			};
 
 			bool b = false;

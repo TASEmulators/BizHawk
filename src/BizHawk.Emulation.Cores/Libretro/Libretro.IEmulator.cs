@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -85,7 +82,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				}
 
 				BoolButtons.Add("Pointer Pressed");
-				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, (-32767).RangeTo(32767), 0);
+				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndDown, (-32767).RangeTo(32767), 0);
+				this.AddXYPair("Analog Left {0}", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
+				this.AddXYPair("Analog Right {0}", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
 
 				foreach (var s in new[] {
 					"Backspace", "Tab", "Clear", "Return", "Pause", "Escape",
@@ -110,29 +109,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 				BoolButtons.Add("Reset");
 
 				MakeImmutable();
-			}
-
-			protected override IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
-			{
-				// all this is to remove the keyboard buttons from P0 and put them in P3 so they appear at the end of the input display
-				var players = base.GenOrderedControls().ToList();
-				List<(string, AxisSpec?)> retroKeyboard = new();
-				var p0 = (List<(string, AxisSpec?)>) players[0];
-				for (var i = 0; i < p0.Count; /* incremented in body */)
-				{
-					(string ButtonName, AxisSpec?) button = p0[i];
-					if (CategoryLabels.TryGetValue(button.ButtonName, out var v) && v is CAT_KEYBOARD)
-					{
-						retroKeyboard.Add(button);
-						p0.RemoveAt(i);
-					}
-					else
-					{
-						i++;
-					}
-				}
-				players.Add(retroKeyboard);
-				return players;
 			}
 		}
 

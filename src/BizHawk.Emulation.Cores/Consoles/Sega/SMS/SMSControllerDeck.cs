@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Port1 = ControllerCtors[controller1](1);
 				Port2 = ControllerCtors[controller2](2);
 
-				if (!use_keyboard) 
+				if (!use_keyboard)
 				{
 					Definition = new ControllerDefinition(Port1.Definition.Name)
 					{
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			"Key 5", "Key T", "Key G", "Key B", "Key Down Arrow", "Key Right Bracket", "Key Left Bracket", "Key Caret",
 			"Key 6", "Key Y", "Key H", "Key N", "Key Left Arrow", "Key Return", "Key Yen", "Key Function",
 			"Key 7", "Key U", "Key J", "Key M", "Key Right Arrow", "Key Up Arrow", "Key Break", "Key Graph", "Key Control", "Key Shift",
-			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
+//			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2",
 		};
 	}
 }

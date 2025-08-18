@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.BoardType)
 			{
-				case "MAPPER044": 
+				case "MAPPER044":
 					break;
 				default:
 					return false;

@@ -1,0 +1,34 @@
+name: Build quickerNES core
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    paths: [ "quicknes/**" ]
+  push:
+    branches: [ "master" ]
+    paths: [ "quicknes/**" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  build-quickernes:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Getting submodule(s)
+      working-directory: ./quicknes
+      run: git submodule update --recursive --init core
+    - name: Building QuickerNES core (Linux)
+      working-directory: ./quicknes/make
+      run: make -j4; make install
+    - name: Upload quicknes core
+      uses: actions/upload-artifact@v4
+      with:
+        name: quicknes-core
+        path: |
+          Assets/dll/libquicknes.so
+        retention-days: 90

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public class DataTableDictionaryBind<TKey, TValue>

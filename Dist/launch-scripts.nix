@@ -15,7 +15,7 @@
 , profileManagedCalls
 }: let
 	/**
-	 * you can make use of the call duration data by seeing which methods it's spending the longest in: `mprof-report --reports=call --method-sort=self output/*.flame.mlpd` (really you'd want to sort by self/count but that's not an option)
+	 * you can make use of the call duration data by seeing which methods it's spending the longest in: `mprof-report --reports=call --method-sort=self output/*.flame.mlpd` (really you'd want to sort by the ratio `self/count` but that's not an option)
 	 *
 	 * the other useful profiling mode is allocations: `nix-shell --argstr profileManagedCalls " --profile=log:alloc,nocalls,output=%t.alloc.mlpd"`
 	 * you can make use of the allocation data by listing which types had the most instances allocated: `mprof-report --reports=alloc --alloc-sort=count output/*.alloc.mlpd`
@@ -30,10 +30,10 @@
 	 * call as `redirect-output-to-files /target/stdout.txt /target/stderr.txt /path/to/bin arg1 arg2...`
 	 */
 	redirectOutputToFiles = writeShellScript "redirect-output-to-files" ''
-		mktemp='${lib.getBin mktemp}/bin/mktemp'
+		mktemp='${lib.getExe' mktemp "mktemp"}'
 		o="$("$mktemp" -u)"
 		e="$("$mktemp" -u)"
-		'${lib.getBin mkfifo}/bin/mkfifo' "$o" "$e"
+		'${lib.getExe' mkfifo "mkfifo"}' "$o" "$e"
 		tee "$1" <"$o" &
 		shift
 		tee "$1" <"$e" | sed "s/.*/$(tput setaf 1)&$(tput sgr0)/" >&2 &
@@ -112,7 +112,7 @@
 		fi
 		printf "(capturing output in %s/EmuHawkMono_last*.txt)\n" "$PWD" >&2
 		exec '${redirectOutputToFiles}' EmuHawkMono_laststdout.txt EmuHawkMono_laststderr.txt \
-			'${lib.getBin bizhawkAssemblies.mono}/bin/mono'${monoProfilerFlag} \
+			'${lib.getExe bizhawkAssemblies.mono}'${monoProfilerFlag} \
 				"$mainAppPath" --config=config.json "$@"
 	'';
 in {
@@ -137,7 +137,7 @@ in {
 		${if profileManagedCalls == false then "" else ''printf "Will write profiling results to %s/*.mlpd\n" "$PWD"
 		''}export MONO_PATH="$BIZHAWK_HOME/dll"
 		${lib.optionalString (!debugPInvokes) "# "}export MONO_LOG_LEVEL=debug MONO_LOG_MASK=dll # pass `--arg debugPInvokes true` to nix-build to enable
-		exec '${lib.getBin bizhawkAssemblies.mono}/bin/mono'${monoProfilerFlag} \
+		exec '${lib.getExe bizhawkAssemblies.mono}'${monoProfilerFlag} \
 			"$BIZHAWK_HOME/DiscoHawk.exe" "$@"
 	'';
 	emuhawkNonNixOS = writeShellScript "emuhawk-mono-wrapper-non-nixos" ''exec '${nixGL}/bin/nixGL' '${emuhawk}' "$@"'';

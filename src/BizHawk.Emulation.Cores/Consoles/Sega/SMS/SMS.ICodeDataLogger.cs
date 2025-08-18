@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public enum CDLog_AddrType
 		{
 			None,
-			ROM, 
-			MainRAM, 
+			ROM,
+			MainRAM,
 			SaveRAM,
 			CartRAM, //"Cart (Volatile) RAM" aka ExtRam
 		}

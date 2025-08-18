@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -21,7 +20,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			foreach (NymaCore.PortResult result in nyma.ActualPortData)
 			{
-				var num = int.Parse(result.Port.ShortName.Last().ToString());
+				var num = int.Parse(result.Port.ShortName[^1].ToString());
 				var device = result.Device.ShortName;
 				if (device == "gamepad")
 				{

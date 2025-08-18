@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <typeparam name="T">The <see cref="IEmulatorService"/> to check</typeparam>
 		bool HasService<T>() where T : IEmulatorService;
-		
+
 		/// <summary>
 		/// Returns whether or not t is available
 		/// </summary>

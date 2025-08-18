@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Thinly wraps a GraphicsControl for EmuHawk's needs
 	/// </summary>
-	public class PresentationPanel
+	public class PresentationPanel : IDisposable
 	{
 		private readonly Config _config;
 
@@ -71,8 +71,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		public bool Resized { get; set; }
 
 		public Size NativeSize => GraphicsControl.ClientSize;
 	}

@@ -163,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public void Dispose()
 		{
+			_memorycallbacks.ActiveChanged -= SetMemoryCallbacks;
 			if (GambatteState != IntPtr.Zero)
 			{
 				LibGambatte.gambatte_destroy(GambatteState);

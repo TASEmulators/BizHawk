@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				// must be in same order as enum
 				new PaletteTypeItem("BizHawk", SnesColors.ColorType.BizHawk),
 				new PaletteTypeItem("bsnes", SnesColors.ColorType.BSNES),
-				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x)
+				new PaletteTypeItem("Snes9X", SnesColors.ColorType.Snes9x),
 			};
 			suppression = true;
 			comboPalette.DataSource = paletteTypeItems;
@@ -379,7 +379,7 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderSpriteToScreen(pixelptr, stride / 4, oam.X, oam.Y, si, i, oam, 256, 224, spriteMap);
 				}
 			}
-			if (selection == eDisplayType.OBJTiles0 || selection == eDisplayType.OBJTiles1)
+			if (selection is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 			{
 				allocate(128, 256);
 				int startTile;
@@ -482,11 +482,15 @@ namespace BizHawk.Client.EmuHawk
 		private enum eDisplayType
 		{
 			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ,
-			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104
+			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104,
 		}
 
-		private static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
-		private static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
+		private static bool IsDisplayTypeBG(eDisplayType type)
+			=> type is eDisplayType.BG1 or eDisplayType.BG2 or eDisplayType.BG3 or eDisplayType.BG4;
+
+		private static bool IsDisplayTypeOBJ(eDisplayType type)
+			=> type is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1;
+
 		private static int DisplayTypeBGNum(eDisplayType type) { if(IsDisplayTypeBG(type)) return (int)type; else return -1; }
 
 		private static SNESGraphicsDecoder.BGMode BGModeForDisplayType(eDisplayType type)
@@ -597,7 +601,7 @@ namespace BizHawk.Client.EmuHawk
 				X = start % 16,
 				Y = start / 16,
 				Width = num,
-				Height = num / 16
+				Height = num / 16,
 			};
 
 			if (ret.Height == 0) ret.Height = 1;
@@ -997,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, true, false, 1, currTileDataState.Tile, 1);
 				else if (currTileDataState.Type == eDisplayType.TilesMode7DC)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currTileDataState.Tile, 1);
-				else if (currTileDataState.Type == eDisplayType.OBJTiles0 || currTileDataState.Type == eDisplayType.OBJTiles1)
+				else if (currTileDataState.Type is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 				{
 					//render an obj tile
 					int tile = currTileDataState.Address / 32;
@@ -1040,11 +1044,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Bpp = bpp,
 				Type = CurrDisplaySelection,
-				Tile = tileNum
+				Tile = tileNum,
 			};
 			currTileDataState.Address = (bpp == 7 ? 8 : bpp) * 8 * currTileDataState.Tile;
 			currTileDataState.Palette = currPaletteSelection.start;
-			if (CurrDisplaySelection == eDisplayType.OBJTiles0 || CurrDisplaySelection == eDisplayType.OBJTiles1)
+			if (CurrDisplaySelection is eDisplayType.OBJTiles0 or eDisplayType.OBJTiles1)
 			{
 				if (tileNum < 256)
 					currTileDataState.Address += si.OBJTable0Addr;
@@ -1161,7 +1165,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								bgnum = (int) CurrDisplaySelection,
 								entry = map[tloc],
-								Location = new Point(tx, ty)
+								Location = new Point(tx, ty),
 							};
 
 							SetTab(tpMapEntry);
@@ -1226,7 +1230,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var cd = new ColorDialog
 			{
-				Color = pnBackdropColor.BackColor
+				Color = pnBackdropColor.BackColor,
 			};
 
 			if (cd.ShowDialog(this).IsOk())
@@ -1241,17 +1245,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == (Keys.C | Keys.Control))
 			{
-				// find the control under the mouse
-				Point m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m), GetChildAtPointSkip.Invisible);
-					top = found;
-				} while (found != null && found.HasChildren);
-
-				if (found is SNESGraphicsViewer v)
+				if (this.InnermostControlAt(Cursor.Position, GetChildAtPointSkip.Invisible) is SNESGraphicsViewer v)
 				{
 					lock (v)
 					{
@@ -1367,7 +1361,6 @@ namespace BizHawk.Client.EmuHawk
 			bool all = checkEN0_OBJ.Checked && checkEN0_BG1.Checked && checkEN0_BG2.Checked && checkEN0_BG3.Checked && checkEN0_BG4.Checked;
 			var newVal = !all;
 			checkEN0_OBJ.Checked = checkEN0_BG1.Checked = checkEN0_BG2.Checked = checkEN0_BG3.Checked = checkEN0_BG4.Checked = newVal;
-
 		}
 
 		private void lblEnPrio1_Click(object sender, EventArgs e)
@@ -1375,7 +1368,6 @@ namespace BizHawk.Client.EmuHawk
 			bool all = checkEN1_OBJ.Checked && checkEN1_BG1.Checked && checkEN1_BG2.Checked && checkEN1_BG3.Checked && checkEN1_BG4.Checked;
 			var newVal = !all;
 			checkEN1_OBJ.Checked = checkEN1_BG1.Checked = checkEN1_BG2.Checked = checkEN1_BG3.Checked = checkEN1_BG4.Checked = newVal;
-
 		}
 
 		private void lblEnPrio2_Click(object sender, EventArgs e)
@@ -1383,6 +1375,5 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lblEnPrio3_Click(object sender, EventArgs e)
 			=> checkEN3_OBJ.Checked = !checkEN3_OBJ.Checked;
-
 	} //class SNESGraphicsDebugger
 } //namespace BizHawk.Client.EmuHawk

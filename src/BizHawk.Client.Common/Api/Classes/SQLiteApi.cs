@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using BizHawk.Common.PathExtensions;
+
 using Microsoft.Data.Sqlite;
 
 namespace BizHawk.Client.Common
@@ -33,7 +35,10 @@ namespace BizHawk.Client.Common
 			try
 			{
 				_dbConnection?.Dispose();
-				_dbConnection = new(new SqliteConnectionStringBuilder { DataSource = name }.ToString());
+				_dbConnection = new(new SqliteConnectionStringBuilder
+				{
+					DataSource = name.MakeAbsolute(),
+				}.ToString());
 				_dbConnection.Open();
 				using var initCmds = new SqliteCommand(null, _dbConnection);
 				// Allows for reads and writes to happen at the same time

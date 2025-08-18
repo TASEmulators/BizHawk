@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaScript,
 			Cheat,
 			MovieFile,
-			LegacyMovieFile
+			LegacyMovieFile,
 		}
 
 		private readonly struct FileInformation

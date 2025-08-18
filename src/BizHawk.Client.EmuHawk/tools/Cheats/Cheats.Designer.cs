@@ -104,7 +104,6 @@ namespace BizHawk.Client.EmuHawk
 			this.CheatListView.Name = "CheatListView";
 			this.CheatListView.RowCount = 0;
 			this.CheatListView.ScrollSpeed = 0;
-			this.CheatListView.SeekingCutoffInterval = 0;
 			this.CheatListView.Size = new System.Drawing.Size(414, 321);
 			this.CheatListView.TabIndex = 1;
 			this.CheatListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.CheatListView_ColumnClick);

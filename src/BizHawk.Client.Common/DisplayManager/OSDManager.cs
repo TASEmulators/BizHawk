@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 
 
 
-		private static PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
+		private static Point GetCoordinates(IBlitter g, MessagePosition position, string message)
 		{
 			var size = g.MeasureString(message);
 			var x = position.Anchor.IsLeft()
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 				? position.Y * g.Scale
 				: g.ClipBounds.Height - position.Y * g.Scale - size.Height;
 
-			return new PointF(x, y);
+			return new Point((int)Math.Round(x), (int)Math.Round(y));
 		}
 
 		private string MakeFrameCounter()
@@ -87,6 +87,7 @@ namespace BizHawk.Client.Common
 		public void ClearRegularMessages()
 			=> _messages.Clear();
 
+		[Obsolete("use via IDialogParent.AddOnScreenMessage")]
 		public void AddMessage(string message, int? duration = null)
 			=> _messages.Add(new() {
 				Message = message,
@@ -103,7 +104,7 @@ namespace BizHawk.Client.Common
 				Message = message,
 				Position = pos,
 				BackGround = backGround,
-				ForeColor = foreColor
+				ForeColor = foreColor,
 			});
 		}
 
@@ -114,7 +115,7 @@ namespace BizHawk.Client.Common
 				Message = message,
 				Position = pos,
 				BackGround = backGround,
-				ForeColor = foreColor
+				ForeColor = foreColor,
 			});
 		}
 
@@ -137,7 +138,7 @@ namespace BizHawk.Client.Common
 
 			_messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 
-			if (_messages.Any())
+			if (_messages.Count is not 0)
 			{
 				if (_config.StackOSDMessages)
 				{
@@ -211,7 +212,7 @@ namespace BizHawk.Client.Common
 				: "";
 		}
 
-		private static void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
+		private static void DrawOsdMessage(IBlitter g, string message, Color color, int x, int y)
 			=> g.DrawString(message, color, x, y);
 
 		/// <summary>

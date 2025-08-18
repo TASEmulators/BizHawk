@@ -6,6 +6,5 @@
 	/// </summary>
 	public class DiskHandler
 	{
-
 	}
 }

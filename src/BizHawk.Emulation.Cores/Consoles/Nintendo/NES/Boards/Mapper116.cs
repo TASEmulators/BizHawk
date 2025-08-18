@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			private readonly Mapper116 master;
-
 		}
 
 		//configuration
@@ -72,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			
+
 			SetMirrorType(Cart.PadH, Cart.PadV);
 
 			Cart.BoardType = "MAPPER116_HACKY";
@@ -107,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			mode = 0;
 			Sync();
-			
+
 			return true;
 		}
 
@@ -190,7 +189,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 1: return mmc3.ReadPpu(addr);
 				case 2:
 				case 3: return mmc1.ReadPpu(addr);
-
 			}
 			return 0;
 		}
@@ -205,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if((addr & 0xF000) < 0xB000) addr &= 0xF000; //Garou Densetsu Special depends on this
 					addr -= 0x8000;
 
-					vrc2.WritePrg(addr, value); 
+					vrc2.WritePrg(addr, value);
 					break;
 				case 1: mmc3.WritePrg(addr, value); break;
 				case 2:
@@ -238,7 +236,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 1: mmc3.ClockPpu(); break;
 				case 2:
 				case 3: mmc1.ClockPpu(); break;
-
 			}
 		}
 	}

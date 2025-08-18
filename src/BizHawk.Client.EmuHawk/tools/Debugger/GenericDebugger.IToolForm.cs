@@ -31,6 +31,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool CanStepOut = false;
 
+		private bool _breakpointHit;
+
 		private void UpdateCapabilitiesProps()
 		{
 			try
@@ -96,6 +98,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void UpdateForBreakpointHit()
+		{
+			_breakpointHit = true;
+			FullUpdate();
+		}
+
 		private void FullUpdate()
 		{
 			RegisterPanel.UpdateValues();
@@ -109,7 +117,20 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCapabilitiesProps();
 			DisengageDebugger();
 			EngageDebugger();
-			FullUpdate();
+		}
+
+		protected override void GeneralUpdate() => FullUpdate();
+
+		protected override void UpdateAfter()
+		{
+			if (_breakpointHit)
+			{
+				_breakpointHit = false;
+			}
+			else
+			{
+				FullUpdate();
+			}
 		}
 	}
 }

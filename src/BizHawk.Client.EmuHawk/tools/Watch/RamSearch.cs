@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => 0,
 				WatchSize.Word => 1,
 				WatchSize.DWord => 2,
-				_ => SizeDropdown.SelectedIndex
+				_ => SizeDropdown.SelectedIndex,
 			};
 		}
 
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchList.Prev => _searches[index].PreviousStr,
 				WatchList.ChangesCol => _searches[index].ChangeCount.ToString(),
 				WatchList.Diff => _searches[index].Diff,
-				_ => text
+				_ => text,
 			};
 		}
 
@@ -315,7 +315,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			_dropdownDontfire = true;
-			SetSize(_settings.Size); // Calls NewSearch() automatically
+			SetSize(_settings.Size);
+			NewSearch();
 			_dropdownDontfire = false;
 			HardSetDisplayTypeDropDown(_settings.Type);
 		}
@@ -691,7 +692,12 @@ namespace BizHawk.Client.EmuHawk
 			DifferenceBox.ByteSize = size;
 			DifferentByBox.ByteSize = size;
 
-			NewSearch();
+			_searches.ConvertTo(_settings.Size);
+			_searches.SetType(_settings.Type);
+			UpdateList();
+			_searches.ClearHistory();
+
+			ToggleSearchDependentToolBarItems();
 		}
 
 		private void PopulateTypeDropDown()
@@ -706,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => ByteWatch.ValidTypes,
 				WatchSize.Word => WordWatch.ValidTypes,
 				WatchSize.DWord => DWordWatch.ValidTypes,
-				_ => new List<Common.WatchDisplayType>()
+				_ => [ ],
 			};
 
 			foreach (var type in types)
@@ -787,7 +793,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings.Mode = SearchMode.Fast;
 
-			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
+			if (_settings.PreviousType is PreviousType.LastFrame or PreviousType.LastChange)
 			{
 				SetPreviousType(PreviousType.LastSearch);
 			}
@@ -812,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveAddresses()
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Any())
+			if (indices.Count is not 0)
 			{
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
@@ -865,7 +871,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddToRamWatch()
 		{
 			var watches = SelectedWatches.ToList();
-			if (watches.Any())
+			if (watches.Count is not 0)
 			{
 				Tools.LoadRamWatch(true);
 				watches.ForEach(Tools.RamWatch.AddWatch);
@@ -906,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(WatchListView),
-				Message = "Enter a hexadecimal value"
+				Message = "Enter a hexadecimal value",
 			};
 
 			while (this.ShowDialogWithTempMute(prompt).IsOk())
@@ -955,7 +961,6 @@ namespace BizHawk.Client.EmuHawk
 				PreviewMode = true;
 				RecentSearches = new RecentFiles(8);
 				AutoSearchTakeLagFramesIntoAccount = true;
-
 			}
 
 			public List<RollColumn> Columns { get; set; }
@@ -1068,7 +1073,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchSize.Byte => ByteWatch.ValidTypes,
 				WatchSize.Word => WordWatch.ValidTypes,
 				WatchSize.DWord => DWordWatch.ValidTypes,
-				_ => new List<Common.WatchDisplayType>()
+				_ => [ ],
 			};
 
 			foreach (var type in types)
@@ -1077,7 +1082,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = $"{type}ToolStripMenuItem",
 						Text = Watch.DisplayTypeToString(type),
-						Checked = _settings.Type == type
+						Checked = _settings.Type == type,
 					};
 				var type1 = type;
 				item.Click += (o, ev) => DoDisplayTypeClick(type1);
@@ -1399,7 +1404,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				1 => WatchSize.Word,
 				2 => WatchSize.DWord,
-				_ => WatchSize.Byte
+				_ => WatchSize.Byte,
 			};
 
 		private void SizeDropdown_SelectedIndexChanged(object sender, EventArgs e)

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -18,7 +17,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
 		public LuaTable GetMemoryDomainList()
-			=> _th.ListToTable((List<string>) APIs.Memory.GetMemoryDomainList(), indexFrom: 0); //HACK cast will succeed as long as impl. returns .Select<T, string>().ToList() as IROC<string>
+			=> _th.EnumerateToLuaTable(APIs.Memory.GetMemoryDomainList(), indexFrom: 0);
 
 		[LuaMethodExample("local uimemget = memory.getmemorydomainsize( mainmemory.getname( ) );")]
 		[LuaMethod("getmemorydomainsize", "Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size")]
@@ -80,8 +79,9 @@ namespace BizHawk.Client.Common
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
 			{
-				foreach (var (addr, v) in _th.EnumerateEntries<long, long>(memoryblock))
+				foreach (var (addr0, v) in memoryblock)
 				{
+					var addr = (long) addr0;
 					if (addr < d.Size)
 					{
 						d.PokeByte(addr, (byte) v);
@@ -108,9 +108,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the domain).")]
 		public void WriteBytesAsDict(LuaTable addrMap, string domain = null)
 		{
-			foreach (var (addr, v) in _th.EnumerateEntries<long, long>(addrMap))
+			foreach (var (addr, v) in addrMap)
 			{
-				APIs.Memory.WriteByte(addr, (uint) v, domain);
+				APIs.Memory.WriteByte((long) addr, (uint) v, domain);
 			}
 		}
 

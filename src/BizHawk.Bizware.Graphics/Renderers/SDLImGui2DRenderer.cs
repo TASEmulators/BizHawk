@@ -164,7 +164,7 @@ namespace BizHawk.Bizware.Graphics
 							{
 								RenderCommand(sdlRenderer, IntPtr.Zero, _imGuiDrawList, cmd);
 							}
-	
+
 							break;
 						}
 						case DrawCallbackId.DisableBlending:

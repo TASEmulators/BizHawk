@@ -4,6 +4,6 @@ namespace BizHawk.Client.Common
 	{
 		None = 0,
 		All = 1,
-		OnlyController = 2
+		OnlyController = 2,
 	}
 }

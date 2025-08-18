@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PalettePath.Text.Length > 0)
 				{
-					var palette = new HawkFile(PalettePath.Text);
+					using var palette = new HawkFile(PalettePath.Text);
 
 					if (palette.Exists)
 					{
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 					return _settings.Palette;
 				}
-				
+
 				// no filename: interpret this as "reset to default"
 				if (showMsg)
 				{
@@ -120,9 +120,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return (byte[,])Palettes.QuickNESPalette.Clone();
-				
 			}
-			
+
 			// checkbox unchecked: we're reusing whatever palette was set
 			return _settings.Palette;
 		}

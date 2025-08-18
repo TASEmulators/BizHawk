@@ -6,6 +6,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 using ImageMagick;
 
@@ -19,7 +20,7 @@ namespace BizHawk.Tests.Testroms.GB
 		/// <param name="fileExt">w/o leading '.'</param>
 		private static (string Expect, string Actual, string Glob) GenFilenames((string Suite, string Case) id, string fileExt = "png")
 		{
-			var prefix = $"{id.Suite}/{id.Case.GetHashCode():X8}"; // hashcode of string sadly not stable
+			var prefix = $"{id.Suite}/{id.Case.StableStringHash():X8}";
 			var suffix = $"{id.Case.RemoveInvalidFileSystemChars().Replace(' ', '_').Replace("(no BIOS)", "noBIOS")}.{fileExt}";
 			return ($"{prefix}_expect_{suffix}", $"{prefix}_actual_{suffix}", $"{prefix}_*_{suffix}");
 		}

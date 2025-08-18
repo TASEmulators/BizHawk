@@ -34,6 +34,7 @@
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.cbMergeLAndRModifierKeys = new System.Windows.Forms.CheckBox();
+			this.cbEnableGCAdapterSupport = new System.Windows.Forms.CheckBox();
 			this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
 			this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
 			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -82,7 +83,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(280, 371);
+			this.OkBtn.Location = new System.Drawing.Point(280, 394);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 0;
@@ -94,7 +95,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(346, 371);
+			this.CancelBtn.Location = new System.Drawing.Point(346, 394);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 1;
@@ -112,11 +113,12 @@
 			this.tabControl1.Location = new System.Drawing.Point(9, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(400, 354);
+			this.tabControl1.Size = new System.Drawing.Size(400, 377);
 			this.tabControl1.TabIndex = 2;
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.cbEnableGCAdapterSupport);
 			this.tabPage1.Controls.Add(this.cbMergeLAndRModifierKeys);
 			this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
 			this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
@@ -135,6 +137,16 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// cbEnableGCAdapterSupport
+			// 
+			this.cbEnableGCAdapterSupport.AutoSize = true;
+			this.cbEnableGCAdapterSupport.Location = new System.Drawing.Point(7, 191);
+			this.cbEnableGCAdapterSupport.Name = "cbEnableGCAdapterSupport";
+			this.cbEnableGCAdapterSupport.Size = new System.Drawing.Size(320, 17);
+			this.cbEnableGCAdapterSupport.TabIndex = 29;
+			this.cbEnableGCAdapterSupport.Text = "Enable Wii U/Switch GameCube Adapter Support";
+			this.cbEnableGCAdapterSupport.UseVisualStyleBackColor = true;
 			// 
 			// cbMergeLAndRModifierKeys
 			// 
@@ -239,7 +251,7 @@
 			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-			this.groupBox1.Location = new System.Drawing.Point(6, 191);
+			this.groupBox1.Location = new System.Drawing.Point(6, 214);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(369, 133);
 			this.groupBox1.TabIndex = 15;
@@ -358,13 +370,23 @@
 			// 
 			this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(151, 33);
 			this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] {
-            100000,
+            86400,
+            0,
+            0,
+            0});
+			this.AutosaveSRAMtextBox.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
 			this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
 			this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
 			this.AutosaveSRAMtextBox.TabIndex = 5;
+			this.AutosaveSRAMtextBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// AutosaveSRAMradioButton1
 			// 
@@ -497,7 +519,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(418, 401);
+			this.ClientSize = new System.Drawing.Size(418, 424);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
@@ -564,5 +586,6 @@
 		private System.Windows.Forms.CheckBox NoMixedKeyPriorityCheckBox;
 		private WinForms.Controls.LocLabelEx locLabelEx1;
 		private System.Windows.Forms.CheckBox cbMergeLAndRModifierKeys;
+		private System.Windows.Forms.CheckBox cbEnableGCAdapterSupport;
 	}
 }

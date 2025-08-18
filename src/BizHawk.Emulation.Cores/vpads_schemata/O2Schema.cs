@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(195, 104, "K"),
 					new ButtonSchema(220, 104, "L"),
 
-					
+
 					new ButtonSchema(33, 134, "Z"),
 					new ButtonSchema(58, 134, "X"),
 					new ButtonSchema(83, 134, "C"),

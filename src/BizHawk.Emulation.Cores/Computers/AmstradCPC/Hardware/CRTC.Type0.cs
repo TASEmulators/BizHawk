@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override int CrtcType => 0;
 
 		public override void Clock() => throw new InvalidOperationException("CRTC Type 0 not implemented yet");
-		
+
 
 		/*
 		public override void Clock()
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		*/
 
 		/// <summary>
-		/// R3l: CRTC-type horizontal sync width independent helper function 
+		/// R3l: CRTC-type horizontal sync width independent helper function
 		/// </summary>
 		protected override int R3_HorizontalSyncWidth
 		{
@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// R3h: CRTC-type vertical sync width independent helper function 
+		/// R3h: CRTC-type vertical sync width independent helper function
 		/// </summary>
 		protected override int R3_VerticalSyncWidth
 		{
@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			// ACCC1.8 - 21.3.2
 			// CRTC0 randomly apparently returns 255 or 127 on this port
-			
+
 			// For the purposes of Bizhawk determinism, we will return one of the above values based on the current HCC
 			data = HCC.Bit(0) ? 255 : 127;
 			return true;

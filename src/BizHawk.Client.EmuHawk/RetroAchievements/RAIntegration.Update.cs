@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private static RAInterface _RA;
 		private static DynamicLibraryImportResolver _resolver;
 		private static Version _version;
-		
+
 		public static bool IsAvailable => _RA != null;
 
 		// can't have both a proxy with a monitor and without one, so...

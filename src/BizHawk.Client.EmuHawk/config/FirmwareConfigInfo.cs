@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Windows.Forms;
 
 // todo - display details on the current resolution status
@@ -13,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			// prep imagelist for listview
-			foreach (var kvp in FirmwareConfig.StatusIcons.OrderBy(static kvp => kvp.Key)) imageList1.Images.Add(kvp.Value);
+			foreach (var img in FirmwareConfig.StatusIcons.Values) imageList1.Images.Add(img);
 		}
 
 		private void LvOptions_KeyDown(object sender, KeyEventArgs e)

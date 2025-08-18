@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					return 0xFF;
 				}
-
 			}
 			else
 			{
@@ -85,7 +84,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						return;
 					}
-
 				}
 				else
 				{

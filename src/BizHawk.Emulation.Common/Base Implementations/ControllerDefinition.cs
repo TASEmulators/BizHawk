@@ -3,7 +3,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -88,7 +87,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public IDictionary<string, string> CategoryLabels { get; private set; } = new Dictionary<string, string>();
 
-		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, int> axes)
+		public void ApplyAxisConstraints(string constraintClass, Dictionary<string, int> axes)
 		{
 			if (!Axes.HasContraints) return;
 			foreach (var (k, v) in Axes)
@@ -101,8 +100,8 @@ namespace BizHawk.Emulation.Common
 						var xAxis = k;
 						var yAxis = circular.PairedAxis;
 						(axes[xAxis], axes[yAxis]) = circular.ApplyTo(
-							CollectionExtensions.GetValueOrDefault(axes, xAxis),
-							CollectionExtensions.GetValueOrDefault(axes, yAxis));
+							axes.GetValueOrDefault(xAxis),
+							axes.GetValueOrDefault(yAxis));
 						break;
 				}
 			}
@@ -114,6 +113,7 @@ namespace BizHawk.Emulation.Common
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
 		}
 
+		/// <remarks>implementors should include empty lists for empty players, including "player 0", to match this base implementation</remarks>
 		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
 			var ret = new List<(string, AxisSpec?)>[PlayerCount + 1];
@@ -165,8 +165,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public bool Any()
-		{
-			return BoolButtons.Any() || Axes.Any();
-		}
+			=> BoolButtons.Count is not 0 || Axes.Count is not 0;
 	}
 }

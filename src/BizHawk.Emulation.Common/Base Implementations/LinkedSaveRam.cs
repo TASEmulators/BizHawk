@@ -31,13 +31,13 @@ namespace BizHawk.Emulation.Common
 			return false;
 		}
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			var linkedBuffers = new List<byte[]>();
 			int len = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				linkedBuffers.Add(_linkedCores[i].AsSaveRam().CloneSaveRam() ?? Array.Empty<byte>());
+				linkedBuffers.Add(_linkedCores[i].AsSaveRam().CloneSaveRam(clearDirty) ?? Array.Empty<byte>());
 				len += linkedBuffers[i].Length;
 			}
 			byte[] ret = new byte[len];

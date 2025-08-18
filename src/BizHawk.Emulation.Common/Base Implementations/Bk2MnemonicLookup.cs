@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Diagnostics;
+
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -36,7 +38,7 @@ namespace BizHawk.Emulation.Common
 
 			if (key.Length == 1)
 			{
-				return key[0];
+				return key.StartsWith('.') ? 'p' : key[0];
 			}
 
 			return '!';
@@ -174,11 +176,30 @@ namespace BizHawk.Emulation.Common
 			["F7"] = '7',
 			["F8"] = '8',
 			["F9"] = '9',
-			["F10"] = '0'
+			["F10"] = '0',
 		};
 
 		private static readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
 		{
+			[VSystemID.Raw.Panasonic3DO] = new()
+			{
+				["LT"] = 'l',
+				["RT"] = 'r',
+				["P"] = 'P',
+				["Trigger"] = 'T',
+				["Reload"] = 'R',
+				["Is Off-Screen"] = 'O',
+				["Aux A"] = 'A',
+				["Start P1"] = '1',
+				["Start P2"] = '2',
+				["Coin P1"] = 'C',
+				["Coin P2"] = 'c',
+				["Service"] = 'S',
+				["Fourth Button"] = '4',
+				["Next Disc"] = '>',
+				["Prev Disc"] = '<',
+			},
+
 			[VSystemID.Raw.NES] = new()
 			{
 				["FDS Eject"] = 'E',
@@ -250,7 +271,7 @@ namespace BizHawk.Emulation.Common
 				["Extra3"] = '3',
 				["Extra4"] = '4',
 
-				["Subframe"] = 'F'
+				["Subframe"] = 'F',
 			},
 			[VSystemID.Raw.TI83] = new()
 			{
@@ -325,7 +346,7 @@ namespace BizHawk.Emulation.Common
 				["Right Shift"] = 's',
 				["Cursor Up/Down"] = 'u',
 				["Cursor Left/Right"] = 'l',
-				["Space"] = '_'
+				["Space"] = '_',
 			},
 			[VSystemID.Raw.ZXSpectrum] = new()
 			{
@@ -360,7 +381,7 @@ namespace BizHawk.Emulation.Common
 				["Up Cursor"] = 'u',
 				["Down Cursor"] = 'd',
 				["Left Cursor"] = 'l',
-				["Right Cursor"] = 'r'
+				["Right Cursor"] = 'r',
 			},
 			[VSystemID.Raw.N64] = new()
 			{
@@ -403,11 +424,11 @@ namespace BizHawk.Emulation.Common
 			[VSystemID.Raw.Lynx] = new()
 			{
 				["Option 1"] = '1',
-				["Option 2"] = '2'
+				["Option 2"] = '2',
 			},
 			[VSystemID.Raw.NGP] = new()
 			{
-				["Option"] = 'O'
+				["Option"] = 'O',
 			},
 			[VSystemID.Raw.AppleII] = new()
 			{
@@ -422,7 +443,7 @@ namespace BizHawk.Emulation.Common
 				["White Apple"] = 'w' ,
 				["Black Apple"] = 'b' ,
 				["L"] = 'L' ,
-				["R"] = 'R'
+				["R"] = 'R',
 			},
 			[VSystemID.Raw.INTV] = new()
 			{
@@ -440,14 +461,14 @@ namespace BizHawk.Emulation.Common
 				["WSW"] = 'w' ,
 				["WNW"] = 'w' ,
 				["NW"] = '\\' ,
-				["NNW"] = 'n'
+				["NNW"] = 'n',
 			},
 			[VSystemID.Raw.Coleco] = new()
 			{
 				["Yellow"] = 'Y',
 				["Red"] = 'R',
 				["Blue"] = 'B',
-				["Purple"] = 'P'
+				["Purple"] = 'P',
 			},
 			[VSystemID.Raw.VB] = new()
 			{
@@ -473,7 +494,7 @@ namespace BizHawk.Emulation.Common
 				["Mode 1: Set A"] = 'a',
 				["Mode 1: Set B"] = 'b',
 				["Mode 2: Set A"] = 'A',
-				["Mode 2: Set B"] = 'B'
+				["Mode 2: Set B"] = 'B',
 			},
 			[VSystemID.Raw.PCE] = new()
 			{
@@ -484,7 +505,7 @@ namespace BizHawk.Emulation.Common
 				["V"] = '5',
 				["VI"] = '6',
 				["Mode: Set 2-button"] = 'm',
-				["Mode: Set 6-button"] = 'M'
+				["Mode: Set 6-button"] = 'M',
 			},
 			[VSystemID.Raw.PCECD] = new()
 			{
@@ -495,7 +516,7 @@ namespace BizHawk.Emulation.Common
 				["V"] = '5',
 				["VI"] = '6',
 				["Mode: Set 2-button"] = 'm',
-				["Mode: Set 6-button"] = 'M'
+				["Mode: Set 6-button"] = 'M',
 			},
 			[VSystemID.Raw.N3DS] = new()
 			{
@@ -504,23 +525,23 @@ namespace BizHawk.Emulation.Common
 				["ZL"] = 'z',
 				["ZR"] = 'z',
 				["Touch"] = 'T',
-				["Tilt"] = 't'
+				["Tilt"] = 't',
 			},
 			[VSystemID.Raw.NDS] = new()
 			{
 				["LidOpen"] = 'o',
 				["LidClose"] = 'c',
 				["Microphone"] = 'M',
-				["Touch"] = 'T'
+				["Touch"] = 'T',
 			},
 			[VSystemID.Raw.O2] = new()
 			{
-				["PERIOD"] = '.',
+				["PERIOD"] = 'p',
 				["SPC"] = 's',
 				["YES"] = 'y',
 				["NO"] = 'n',
 				["CLR"] = 'c',
-				["ENT"] = 'e'
+				["ENT"] = 'e',
 			},
 			[VSystemID.Raw.Arcade] = new()
 			{
@@ -656,7 +677,7 @@ namespace BizHawk.Emulation.Common
 				["Mode: Set Analog(○)"] = 'o',
 				["L Gear Shift"] = 'L',
 				["R Gear Shift"] = 'R',
-				["Offscreen Shot"] = 'O'
+				["Offscreen Shot"] = 'O',
 			},
 			[VSystemID.Raw.PSX] = new()
 			{
@@ -702,7 +723,7 @@ namespace BizHawk.Emulation.Common
 				["Apostrophe"] = '\'',
 				["Grave"] = '`',
 				["Comma"] = ',',
-				["Period"] = '.',
+				["Period"] = 'p',
 				["Slash"] = '/',
 				["Space"] = 's',
 				["Tab"] = 't',
@@ -818,6 +839,134 @@ namespace BizHawk.Emulation.Common
 				["START"] = 'S',
 				["RESET"] = 'r',
 			},
+			[VSystemID.Raw.Doom] = new()
+			{
+				["Automap Toggle"] = 'a',
+				["Automap +"] = '+',
+				["Automap -"] = '-',
+				["Automap Full/Zoom"] = 'z',
+				["Automap Follow"] = 'f',
+				["Automap Up"] = 'u',
+				["Automap Down"] = 'd',
+				["Automap Right"] = 'r',
+				["Automap Left"] = 'l',
+				["Automap Grid"] = 'g',
+				["Automap Mark"] = 'm',
+				["Automap Clear Marks"] = 'c',
+				["Backward"] = 'v',
+				["Change Gamma"] = 'G',
+				["End Player"] = 'E',
+				["Fire"] = 'F',
+				["Fly Up"] = 'u',
+				["Fly Down"] = 'p',
+				["Fly Center"] = 'c',
+				["Forward"] = '^',
+				["Inventory Left"] = 'L',
+				["Inventory Right"] = 'R',
+				["Jump"] = 'J',
+				["Look Up"] = 'U',
+				["Look Down"] = 'D',
+				["Look Center"] = 'C',
+				["Run"] = 'R',
+				["Strafe"] = 'S',
+				["Strafe Left"] = '<',
+				["Strafe Right"] = '>',
+				["Turn Left"] = '{',
+				["Turn Right"] = '}',
+				["Use"] = 'U',
+				["Use Artifact"] = 'A',
+				["Weapon Select 1"] = '1',
+				["Weapon Select 2"] = '2',
+				["Weapon Select 3"] = '3',
+				["Weapon Select 4"] = '4',
+				["Weapon Select 5"] = '5',
+				["Weapon Select 6"] = '6',
+				["Weapon Select 7"] = '7',
+			},
+			[VSystemID.Raw.DOS] = new()
+			{
+				["Joystick Button 1"] = '1',
+				["Joystick Button 2"] = '2',
+				["Joystick Up"] = 'U',
+				["Joystick Down"] = 'D',
+				["Joystick Left"] = 'L',
+				["Joystick Right"] = 'R',
+				["Mouse Left Button"] = 'l',
+				["Mouse Middle Button"] = 'm',
+				["Mouse Right Button"] = 'r',
+				["Previous Floppy Disk"] = '<',
+				["Next Floppy Disk"] = '>',
+				["Swap Floppy Disk"] = 'v',
+				["Previous CDROM"] = '{',
+				["Next CDROM"] = '}',
+				["Swap CDROM"] = 'w',
+				["F1"] = '1',
+				["F2"] = '2',
+				["F3"] = '3',
+				["F4"] = '4',
+				["F5"] = '5',
+				["F6"] = '6',
+				["F7"] = '7',
+				["F8"] = '8',
+				["F9"] = '9',
+				["F10"] = '0',
+				["F11"] = '1',
+				["F12"] = '2',
+				["Escape"] = 'e',
+				["Tab"] = 't',
+				["Backspace"] = 'b',
+				["Enter"] = 'e',
+				["Space"] = 's',
+				["LeftAlt"] = 'a',
+				["RightAlt"] = 'a',
+				["LeftCtrl"] = 'c',
+				["RightCtrl"] = 'c',
+				["LeftShift"] = 's',
+				["RightShift"] = 's',
+				["CapsLock"] = 'C',
+				["ScrollLock"] = 'S',
+				["NumLock"] = 'N',
+				["Grave"] = '`',
+				["Minus"] = '-',
+				["Equals"] = '=',
+				["Backslash"] = 'b',
+				["LeftBracket"] = '[',
+				["RightBracket"] = ']',
+				["Semicolon"] = ';',
+				["Quote"] = '\'',
+				["Period"] = 'p', // because '.' represents no input
+				["Comma"] = ',',
+				["Slash"] = '/',
+				["ExtraLtGt"] = '>',
+				["PrintScreen"] = 'p',
+				["Pause"] = 'P',
+				["Insert"] = 'i',
+				["Home"] = 'h',
+				["Pageup"] = 'p',
+				["Delete"] = 'd',
+				["End"] = 'e',
+				["Pagedown"] = 'p',
+				["Left"] = '<',
+				["Up"] = '^',
+				["Down"] = 'v',
+				["Right"] = '>',
+				["KeyPad1"] = '1',
+				["KeyPad2"] = '2',
+				["KeyPad3"] = '3',
+				["KeyPad4"] = '4',
+				["KeyPad5"] = '5',
+				["KeyPad6"] = '6',
+				["KeyPad7"] = '7',
+				["KeyPad8"] = '8',
+				["KeyPad9"] = '9',
+				["KeyPad0"] = '0',
+				["KeyPadDivide"] = '/',
+				["KeyPadMultiply"] = '*',
+				["KeyPadMinus"] = '-',
+				["keyPadPlus"] = '+',
+				["KeyPadEnter"] = 'e',
+				["KeyPadPeriod"] = 'p',
+			},
 		};
 
 		private static readonly Dictionary<string, string> BaseAxisLookupTable = new Dictionary<string, string>
@@ -842,10 +991,20 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Dictionary<string, Dictionary<string, string>> AxisSystemOverrides = new Dictionary<string, Dictionary<string, string>>
 		{
+			[VSystemID.Raw.Panasonic3DO] = new()
+			{
+				["Flight Stick Horizontal Axis"] = "fsX",
+				["Flight Stick Vertical Axis"] = "fsY",
+				["Flight Stick Altitude Axis"] = "fsZ",
+				["Light Gun Screen X"] = "lgX",
+				["Light Gun Screen Y"] = "lgY",
+				["Trackball X"] = "tX",
+				["Trackball Y"] = "tY",
+			},
 			[VSystemID.Raw.A78] = new()
 			{
 				["VPos"] = "X",
-				["HPos"] = "Y"
+				["HPos"] = "Y",
 			},
 			[VSystemID.Raw.PSX] = new()
 			{
@@ -868,6 +1027,38 @@ namespace BizHawk.Emulation.Common
 				["Mouse Scroll X"] = "msX",
 				["Mouse Scroll Y"] = "msY",
 			},
+			[VSystemID.Raw.Doom] = new()
+			{
+				["Fly / Look"] = "L",
+				["Mouse Running"] = "mR",
+				["Mouse Turning"] = "mT",
+				["Run Speed"] = "R",
+				["Strafing Speed"] = "S",
+				["Turning Speed"] = "T",
+				["Turning Speed Frac."] = "t",
+				["Use Artifact"] = "U",
+				["Weapon Select"] = "W",
+			},
+			[VSystemID.Raw.DOS] = new()
+			{
+				["Mouse Position X"] = "mpX",
+				["Mouse Position Y"] = "mpY",
+				["Mouse Speed X"] = "msX",
+				["Mouse Speed Y"] = "msY",
+			},
 		};
+
+		static Bk2MnemonicLookup()
+		{
+			const string ERR_FMT_STR = $"{nameof(Bk2MnemonicLookup)}.{{1}}[\"{{0}}\"] must not be '.' as that indicates unpressed buttons";
+			foreach (var (k, v) in BaseMnemonicLookupTable)
+			{
+				Debug.Assert(v is not '.', ERR_FMT_STR, k, nameof(BaseMnemonicLookupTable));
+			}
+			foreach (var (sysID, dict) in SystemOverrides) foreach (var (k, v) in dict)
+			{
+				Debug.Assert(v is not '.', ERR_FMT_STR, k, $"{nameof(SystemOverrides)}[{sysID}]");
+			}
+		}
 	}
 }

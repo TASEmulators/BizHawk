@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common.movie.import
 					"gamepad16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.ExtendedGamepad,
 					"multitap" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.SuperMultitap,
 					"multitap16" => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Payload,
-					_ => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad
+					_ => BsnesApi.BSNES_PORT1_INPUT_DEVICE.Gamepad,
 				};
 			}
 			if ((portEntry = zip.GetEntry("port2")) != null)
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common.movie.import
 					"superscope" => BsnesApi.BSNES_INPUT_DEVICE.SuperScope,
 					"justifier" => BsnesApi.BSNES_INPUT_DEVICE.Justifier,
 					"justifiers" => BsnesApi.BSNES_INPUT_DEVICE.Justifiers,
-					_ => BsnesApi.BSNES_INPUT_DEVICE.Gamepad
+					_ => BsnesApi.BSNES_INPUT_DEVICE.Gamepad,
 				};
 			}
 
@@ -105,9 +105,9 @@ namespace BizHawk.Client.Common.movie.import
 						while (reader.ReadLine() is string line)
 						{
 							string author = line.Trim();
-							if (author != "")
+							if (author.Length is not 0)
 							{
-								if (authorLast != "")
+								if (authorLast.Length is not 0)
 								{
 									authorList += $"{authorLast}, ";
 								}
@@ -117,12 +117,12 @@ namespace BizHawk.Client.Common.movie.import
 						}
 					}
 
-					if (authorList != "")
+					if (authorList.Length is not 0)
 					{
 						authorList += "and ";
 					}
 
-					if (authorLast != "")
+					if (authorLast.Length is not 0)
 					{
 						authorList += authorLast;
 					}
@@ -178,9 +178,7 @@ namespace BizHawk.Client.Common.movie.import
 					{
 						while(reader.ReadLine() is string line)
 						{
-							if (line == "") continue;
-
-							ImportTextFrame(line);
+							if (line.Length is not 0) ImportTextFrame(line);
 						}
 					}
 					Result.Movie.AppendFrame(_controller);

@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common.movie.import
 			var controllerSettings = new NESControlSettings
 			{
 				NesLeftPort = nameof(ControllerNES),
-				NesRightPort = nameof(ControllerNES)
+				NesRightPort = nameof(ControllerNES),
 			};
 			_deck = controllerSettings.Instantiate((x, y) => true).AddSystemToControllerDef();
 			_deck.ControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);

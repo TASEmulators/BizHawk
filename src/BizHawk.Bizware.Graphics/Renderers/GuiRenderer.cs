@@ -55,7 +55,7 @@ namespace BizHawk.Bizware.Graphics
 			new(1.0f, 1.0f, 1.0f, 1.0f),
 			new(1.0f, 1.0f, 1.0f, 1.0f),
 			new(1.0f, 1.0f, 1.0f, 1.0f),
-			new(1.0f, 1.0f, 1.0f, 1.0f)
+			new(1.0f, 1.0f, 1.0f, 1.0f),
 		};
 
 		public void SetCornerColor(int which, Vector4 color)
@@ -350,6 +350,5 @@ void main()
 	if(uSamplerEnable) temp *= texture(uSampler0,vTexcoord0);
 	FragColor = temp;
 }";
-
 	}
 }

@@ -1,19 +1,17 @@
 using System.Drawing;
 using System.Windows.Forms;
+using BizHawk.Common.NumberExtensions;
+using static BizHawk.Client.Common.DisplayManagerBase;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class UIHelper
 	{
-		public static AutoScaleMode AutoScaleMode { get; } = AutoScaleMode.Font;
+		private static SizeF AutoScaleCurrentSize { get; } = GetCurrentAutoScaleSize();
 
-		public static SizeF AutoScaleBaseSize { get; } = new SizeF(6F, 13F);
+		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / DEFAULT_DPI;
 
-		public static SizeF AutoScaleCurrentSize { get; } = GetCurrentAutoScaleSize(AutoScaleMode);
-
-		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / AutoScaleBaseSize.Width;
-
-		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / AutoScaleBaseSize.Height;
+		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / DEFAULT_DPI;
 
 		public static SizeF AutoScaleFactor { get; } = new SizeF(AutoScaleFactorX, AutoScaleFactorY);
 
@@ -37,10 +35,15 @@ namespace BizHawk.Client.EmuHawk
 			return new Size(ScaleX(s.Width), ScaleY(s.Height));
 		}
 
-		private static SizeF GetCurrentAutoScaleSize(AutoScaleMode autoScaleMode)
+		private static SizeF GetCurrentAutoScaleSize()
 		{
-			using var form = new Form { AutoScaleMode = autoScaleMode };
+			using var form = new Form { AutoScaleMode = AutoScaleMode.Dpi };
 			return form.CurrentAutoScaleDimensions;
+		}
+
+		public static Point Unscale(Point p)
+		{
+			return new Point((p.X / AutoScaleFactorX).RoundToInt(), (p.Y / AutoScaleFactorY).RoundToInt());
 		}
 
 		public static int UnscaleX(int size)

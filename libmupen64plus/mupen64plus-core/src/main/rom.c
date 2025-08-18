@@ -144,16 +144,6 @@ m64p_error open_rom(const unsigned char* romimage, unsigned int size)
     /* allocate new buffer for ROM and copy into this buffer */
     rom_size = size;
 
-    /* round rom size to the next power of 2 */
-    while (rom_size & (rom_size - 1))
-    {
-        rom_size |= rom_size >> 1;
-        rom_size++;
-    }
-
-    if (rom_size == 0)
-        return M64ERR_INPUT_INVALID;
-
     rom = (unsigned char *) calloc(rom_size, sizeof(unsigned char));
     if (rom == NULL)
         return M64ERR_NO_MEMORY;

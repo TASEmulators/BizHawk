@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override DiskType DiskFormatType => DiskType.CPC;
 
 		/// <summary>
-		/// Attempts to parse incoming disk data 
+		/// Attempts to parse incoming disk data
 		/// </summary>
 		/// <returns>
 		/// TRUE:   disk parsed
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -70,8 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// check for unformatted track
 				if (DiskHeader.TrackSizes[i] == 0)
 				{
-					DiskTracks[i] = new Track();
-					DiskTracks[i].Sectors = new Sector[0];
+					DiskTracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 
@@ -158,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -200,10 +199,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					Array.Copy(data, mPos, S1, s1Pos, trkSize);
 					s1Pos += trkSize;
 				}
-				else
-				{
-
-				}
 
 				mPos += trkSize;
 			}
@@ -235,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			ser.EndSection();

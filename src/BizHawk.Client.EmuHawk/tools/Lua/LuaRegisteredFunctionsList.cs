@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateListView()
 		{
 			FunctionView.Items.Clear();
-			
+
 			var functions = _registeredFunctions
 				.OrderBy(f => f.Event)
 				.ThenBy(f => f.Name);
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
-				item.SubItems.Add(nlf.Guid.ToString());
+				item.SubItems.Add(nlf.GuidStr);
 				FunctionView.Items.Add(item);
 			}
 
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
-			RemoveAllBtn.Enabled = _registeredFunctions.Any();
+			RemoveAllBtn.Enabled = _registeredFunctions.Count is not 0;
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)

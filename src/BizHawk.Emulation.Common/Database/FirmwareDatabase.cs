@@ -63,7 +63,11 @@ namespace BizHawk.Emulation.Common
 			void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string desc)
 			{
 				Firmware(systemId, id, desc);
-				Option(systemId, id, File(hash, size, name, desc), FirmwareOptionStatus.Ideal);
+				Option(
+					systemId,
+					id,
+					File(hash, size, name, desc),
+					hash is SHA1Checksum.Dummy ? FirmwareOptionStatus.Unknown : FirmwareOptionStatus.Ideal);
 			}
 
 			void AddPatchAndMaybeReverse(FirmwarePatchOption fpo)
@@ -77,6 +81,60 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("DBEBD76A448447CB6E524AC3CB0FD19FC065D944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
 			FirmwareAndOption("1E5B0B2441A4979B6966D942B20CC76C413B8C5E", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
 			FirmwareAndOption("4103668C1BBD66C5E24558E73D4F3F92061A109A", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
+
+			// 3DO
+			// Information obtained from https://3dodev.com/software/roms
+
+			Firmware("3DO", "Panasonic_FZ1_U", "Panasonic FZ-1 (U)");
+			Option("3DO", "Panasonic_FZ1_U", File("34BF189111295F74D7B7DFC1F304D98B8D36325A", 1048576, "panafz1.bin", "Panasonic FZ-1 (U)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ1_U", File("DE3C55490733E6C69724D87E149B52ED955638ED", 1048576, "panafz1_dev_0.9.bin", "Panasonic FZ-1 (U) v0.9 dev build"));
+			Option("3DO", "Panasonic_FZ1_U", File("4CB4EE36E0F5BC0995D34992B4F241C420D49B2E", 1048576, "panafz1_dev.bin", "Panasonic FZ-1 (U) dev build"));
+
+			Firmware("3DO", "Panasonic_FZ1_E", "Panasonic FZ-1 (E)");
+			Option("3DO", "Panasonic_FZ1_E", File("1D0DB81E171EBC1D07CEFC8CE8AB082306186E56", 1048576, "panafz1e.bin", "Panasonic FZ-1 (E)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ1_E", File("4696951E492E5526772A860EA2C0F35411A80927", 1048576, "panafz1e-unencrypted.bin", "Panasonic FZ-1 (E) (unencrypted)"));
+
+			Firmware("3DO", "Panasonic_FZ1_J", "Panasonic FZ-1 (J)");
+			Option("3DO", "Panasonic_FZ1_J", File("EC7EC62D60EC0459A14ED56EBC66761EF3C80EFC", 1048576, "panafz1j.bin", "Panasonic FZ-1 (J)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ1_J", File("A417587AE3B0B8EF00C830920C21AF8BEE88E419", 1048576, "panafz1j - norsa.bin", "Panasonic FZ-1(J)(RSA check disabled)"));
+
+			Firmware("3DO", "Panasonic_FZ10_U", "Panasonic FZ-10 (U)");
+			Option("3DO", "Panasonic_FZ10_U", File("3C912300775D1AD730DC35757E279C274C0ACAAD", 1048576, "panafz10.bin", "Panasonic FZ-10 (U)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ10_U", File("F05E642322C03694F06A809C0B90FC27AC73C002", 1048576, "panafz10-norsa.bin", "Panasonic FZ-10 (U) (RSA check disabled)"));
+
+			Firmware("3DO", "Panasonic_FZ10_E", "Panasonic FZ-10 (E)");
+			Option("3DO", "Panasonic_FZ10_E", File("A900371F0CDCDC03F79557F11D406FD71251A5FD", 1048576, "panafz10e-anvil.bin", "Panasonic FZ-10 (E) [ANVIL]"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Panasonic_FZ10_E", File("2765C7B4557CC838B32567D2428D088980295159", 1048576, "panafz10e-anvil-norsa.bin", "Panasonic FZ-10 (E) [ANVIL] (RSA check disabled)"));
+
+			Firmware("3DO", "Panasonic_FZ10_J", "Panasonic FZ-10 (J)");
+			Option("3DO", "Panasonic_FZ10_J", File("FE7F9C9C6A98910013BF13F2CF798DE9FEA52ACD", 1048576, "panafz10j.bin", "Panasonic FZ-10 (J)"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Goldstar_GDO101P", "Goldstar GDO-101P");
+			Option("3DO", "Goldstar_GDO101P", File("C4A2E5336F77FB5F743DE1EEA2CDA43675EE2DE7", 1048576, "goldstar.bin", "Goldstar GDO-101P"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Goldstar_FC1", "Goldstar FC-1");
+			Option("3DO", "Goldstar_FC1", File("8EF7503C948314D242DA47B7FDC272F68DAC2AEE", 1048576, "goldstar_fc1_enc.bin", "Goldstar FC-1 (encrypted)"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Sanyo_IMP21J_Try", "Sanyo IMP-21J Try");
+			Option("3DO", "Sanyo_IMP21J_Try", File("B01C53DA256DDE43FFEC4AD3FC3ADFA8D635E943", 1048576, "sanyotry.bin", "Sanyo IMP-21J Try"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Sanyo_HC21", "Sanyo HC-21");
+			Option("3DO", "Sanyo_HC21", File("C389AF32BCADF0D86826927DC3D20B7072F90069", 1048576, "sanyo_hc21_b3_unenc.bin", "Sanyo HC-21 B3 (unencrypted)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Sanyo_HC21", File("29C40515DC1174FF13975BAA59EB532083E4A3D3", 1048576, "sanyo_hc21_alpha.bin", "Sanyo HC-21 (alpha 3/21/94)"));
+
+			Firmware("3DO", "Shootout_At_Old_Tucson", "(3DO Arcade) Shootout At Old Tucson");
+			Option("3DO", "Shootout_At_Old_Tucson", File("520D3D1B5897800AF47F92EFD2444A26B7A7DEAD", 524288, "3do_arcade_saot.bin", "Shootout At Old Tucson"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "3DO_NTSC_1fc2", "3DO-NTSC-1.0fc2");
+			Option("3DO", "3DO_NTSC_1fc2", File("BD325C869E1DDE8A3872FC21565E0646A3D5B525", 1048576, "3do_devkit_1.0fc2.bin", "3DO-NTSC-1.0fc2 encrypted development kit"), FirmwareOptionStatus.Ideal);
+
+			Firmware("3DO", "Kanji_ROM_Panasonic_FZ1", "Kanji ROM for Panasonic FZ-1");
+			Option("3DO", "Kanji_ROM_Panasonic_FZ1", File("ACD39A8FEE1B9D2950D5AB447846C11FB31AF63E", 933636, "panafz1-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J)"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Kanji_ROM_Panasonic_FZ1", File("884515605EE243577AB20767EF8C1A7368E4E407", 1048576, "panafz1j-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J) / Panasonic FZ-10 (J)"));
+
+			Firmware("3DO", "Kanji_ROM_Panasonic_FZ10", "Kanji ROM for Panasonic FZ-10");
+			Option("3DO", "Kanji_ROM_Panasonic_FZ10", File("2E857B957803D0331FD229328DF01F3FFAB69EEE", 1048576, "panafz10ja-anvil-kanji.bin", "Kanji ROM for: Panasonic FZ-10 (J) [ANVIL]"), FirmwareOptionStatus.Ideal);
+			Option("3DO", "Kanji_ROM_Panasonic_FZ10", File("884515605EE243577AB20767EF8C1A7368E4E407", 1048576, "panafz1j-kanji.bin", "Kanji ROM for Panasonic FZ-1 (J) / Panasonic FZ-10 (J)"));
 
 			// 3DS
 			// bleh, undefined hash AND size...
@@ -224,14 +282,14 @@ namespace BizHawk.Emulation.Common
 			var eu_mcdii_200w_b2 = File("45134EF8655B9D06B130726786EFE2F8B1D430A3", 131072, "MCD_eu_200w[b2].bin", "Mega CD II EU (v2.00w) [b2]", isBad: true);
 			var eu_mcdii_200w_b = File("523B3125FB0AC094E16AA072BC6CCDCA22E520E5", 131072, "MCD_eu_200w[b].bin", "Mega CD II EU (v2.00w) [b]", isBad: true);
 			var eu_mm_221x = File("75548AC9AAA6E81224499F9A1403B2B42433F5B7", 131072, "MM_eu_221x.bin", "Multi Mega EU (v2.21x)");
-			var eu_mm_221x_b2 = File("73FC9C014AD803E9E7D8076B3642A8A5224B3E51", 131072, "MM_eu_221x.bin", "Multi Mega EU (v2.21x) [b]", isBad: true);
+			var eu_mm_221x_b2 = File("73FC9C014AD803E9E7D8076B3642A8A5224B3E51", 131072, "MM_eu_221x[b].bin", "Multi Mega EU (v2.21x) [b]", isBad: true);
 			var jp_wm_m2 = File("B3F32E409BD5508C89ED8BE33D41A58D791D0E5D", 131072, "WM_jp_m2.bin", "Wondermega M2 JP");
 			var jp_wm_100W = File("3FC9358072F74BD24E3E297EA11B2BF15A7AF891", 131072, "WM_jp_100W.bin", "Wondermega JP (v1.00W)");
 			var us_xeye = File("651F14D5A5E0ECB974A60C0F43B1D2006323FB09", 131072, "XEye_us.bin", "X'Eye US");
 
 			var us_la_104 = File("AA811861F8874775075BD3F53008C8AAF59B07DB", 131072, "LA_us_104.bin", "LaserActive US (v1.04)");
-			var jp_la_105 = File("B3B1D880E288B6DC79EEC0FF1B0480C229EC141D", 131072, "LA_us_105.bin", "LaserActive JP (v1.05)");
-			var jp_la_102 = File("26237B333DB4A4C6770297FA5E655EA95840D5D9", 131072, "LA_us_102.bin", "LaserActive JP (v1.02)");
+			var jp_la_105 = File("B3B1D880E288B6DC79EEC0FF1B0480C229EC141D", 131072, "LA_jp_105.bin", "LaserActive JP (v1.05)");
+			var jp_la_102 = File("26237B333DB4A4C6770297FA5E655EA95840D5D9", 131072, "LA_jp_102.bin", "LaserActive JP (v1.02)");
 			var us_la_102 = File("8AF162223BB12FC19B414F126022910372790103", 131072, "LA_us_102.bin", "LaserActive US (v1.02)");
 
 			var jp_mcd_111b = File("204758D5A64C24E96E1A9FE6BD82E1878FEF7ADE", 131072, "MCD_jp_111b.bin", "Mega CD JP (v1.11b)");
@@ -327,8 +385,8 @@ namespace BizHawk.Emulation.Common
 			var knownhack1 = File("22A7547DBC302BCBFB4005CFB5A2D426D3F85AC6", 262144, "NDS_Firmware [b1].bin", "NDS Firmware", "known hack", true);
 			var knownhack2 = File("AE22DE59FBF3F35CCFBEACAEBA6FA87AC5E7B14B", 262144, "NDS_Firmware [b2].bin", "NDS Firmware", "known hack", true);
 			var knownhack3 = File("1CF9E67C2C703BB9961BBCDD39CD2C7E319A803B", 262144, "NDS_Firmware [b3].bin", "NDS Firmware", "known hack", true);
-			var likelygood1 = File("EDE9ADD041614EAA232059C63D8613B83FE4E954", 262144, "NDS_Firmware.bin", "NDS Firmware", "likely good");
-			var likelygood2 = File("2EF20B45D12CF00657D4B1BD37A5CC8506923440", 262144, "NDS_Firmware.bin", "NDS Firmware", "likely good");
+			var likelygood1 = File("EDE9ADD041614EAA232059C63D8613B83FE4E954", 262144, "NDS_Firmware_1.bin", "NDS Firmware", "likely good");
+			var likelygood2 = File("2EF20B45D12CF00657D4B1BD37A5CC8506923440", 262144, "NDS_Firmware_2.bin", "NDS Firmware", "likely good");
 			var likelygood3 = File("87DAE2500E889737AF51F4A5B5845770A62482F5", 262144, "NDS_Lite_Firmware.bin", "NDS-Lite Firmware", "likely good");
 			Option("NDS", "firmware", in knownhack1);
 			Option("NDS", "firmware", in knownhack2);
@@ -351,7 +409,7 @@ namespace BizHawk.Emulation.Common
 			// NES
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
 			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "FDS_disksys-nintendo.rom", "Bios (Nintendo)");
-			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "FDS_disksys-nintendo.rom", "Bios (TwinFC)");
+			var fdsTwinFc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "FDS_disksys-twinfc.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");
 			Option("NES", "Bios_FDS", in fdsNintendo, FirmwareOptionStatus.Ideal);
 			Option("NES", "Bios_FDS", in fdsTwinFc);
@@ -395,7 +453,7 @@ namespace BizHawk.Emulation.Common
 			var ps_22a = File("10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF", 524288, "PSX_2.2(A).bin", "PSX BIOS (Version 2.2 12/04/95 A)", "Used on SCPH-1001, DTL-H1201, DTL-H3001 [g]. This is for Rev C hardware [w].");
 			var ps_22e = File("B6A11579CAEF3875504FCF3831B8E3922746DF2C", 524288, "PSX_2.2(E).bin", "PSX BIOS (Version 2.2 12/04/95 E)", "Used on SCPH-1002, DTL-H1202, DTL-H3002 [g]. This is for Rev C hardware [w].");
 			var ps_22d = File("73107D468FC7CB1D2C5B18B269715DD889ECEF06", 524288, "PSX_2.2(D).bin", "PSX BIOS (Version 2.2 03/06/96 D)", "Used on DTL-H1100 [g]. This is for Rev C hardware, presumably.");
-			var ps_22jv = File("15C94DA3CC5A38A582429575AF4198C487FE893C", 1048576, "PSX_2.2(J).bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5903 [t].");
+			var ps_22jv = File("15C94DA3CC5A38A582429575AF4198C487FE893C", 1048576, "PSX_2.2(J)-V.bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5903 [t].");
 			var ps_30j = File("B05DEF971D8EC59F346F2D9AC21FB742E3EB6917", 524288, "PSX_3.0(J).bin", "PSX BIOS (Version 3.0 09/09/96 J)", "Used on SCPH-5500 [g]. This is for Rev C hardware [w]. Recommended for (J) [f].");
 			var ps_30a = File("0555C6FAE8906F3F09BAF5988F00E55F88E9F30B", 524288, "PSX_3.0(A).bin", "PSX BIOS (Version 3.0 11/18/96 A)", "Used on SCPH-5501, SCPH-5503, SCPH-7003 [g]. This is for Rev C hardware [w]. Recommended for (U) [f].");
 			var ps_30e = File("F6BC2D1F5EB6593DE7D089C425AC681D6FFFD3F0", 524288, "PSX_3.0(E).bin", "PSX BIOS (Version 3.0 01/06/97 E)", "Used on SCPH-5502, SCPH-5552 [g]. This is for Rev C hardware [w]. Recommended for (E) [f].");
@@ -403,7 +461,7 @@ namespace BizHawk.Emulation.Common
 			var ps_40j = File("77B10118D21AC7FFA9B35F9C4FD814DA240EB3E9", 524288, "PSX_4.0(J).bin", "PSX BIOS (Version 4.0 08/18/97 J)", "Used on SCPH-7000, SCPH-7500, SCPH-9000 [g]. This is for Rev C hardware [w].");
 			var ps_41a = File("14DF4F6C1E367CE097C11DEAE21566B4FE5647A9", 524288, "PSX_4.1(A).bin", "PSX BIOS (Version 4.1 12/16/97 A)", "Used on SCPH-7001, SCPH-7501, SCPH-7503, SCPH-9001, SCPH-9003, SCPH-9903 [g]. This is for Rev C hardware [w].");
 			var ps_41e = File("8D5DE56A79954F29E9006929BA3FED9B6A418C1D", 524288, "PSX_4.1(E).bin", "PSX BIOS (Version 4.1 12/16/97 E)", "Used on SCPH-7002, SCPH-7502, SCPH-9002 [g]. This is for Rev C hardware [w].");
-			var ps_41aw = File("1B0DBDB23DA9DC0776AAC58D0755DC80FEA20975", 524288, "PSX_4.1(A).bin", "PSX BIOS (Version 4.1 11/14/97 A)", "Used on SCPH-7000W [t].");
+			var ps_41aw = File("1B0DBDB23DA9DC0776AAC58D0755DC80FEA20975", 524288, "PSX_4.1(A)-W.bin", "PSX BIOS (Version 4.1 11/14/97 A)", "Used on SCPH-7000W [t].");
 			var psone_43j = File("339A48F4FCF63E10B5B867B8C93CFD40945FAF6C", 524288, "PSX_4.3(J).bin", "PSX BIOS (Version 4.3 03/11/00 J)", "Used on PSone SCPH-100 [g]. This is for Rev C PSone hardware [w].");
 			var psone_44e = File("BEB0AC693C0DC26DAF5665B3314DB81480FA5C7C", 524288, "PSX_4.4(E).bin", "PSX BIOS (Version 4.4 03/24/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var psone_45a = File("DCFFE16BD90A723499AD46C641424981338D8378", 524288, "PSX_4.5(A).bin", "PSX BIOS (Version 4.5 05/25/00 A)", "Used on PSone SCPH-101 [g]. This is for Rev C PSone hardware [w].");

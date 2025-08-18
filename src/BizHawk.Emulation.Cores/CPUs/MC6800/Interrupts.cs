@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 
 		private void ResetInterrupts()
 		{
-
+			//TODO
 		}
 	}
 }

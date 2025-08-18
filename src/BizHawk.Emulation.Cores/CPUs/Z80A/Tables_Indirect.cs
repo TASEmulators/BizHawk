@@ -38,7 +38,7 @@
 
 		// Note that this operation uses I_BIT, same as indexed BIT.
 		// This is where the strange behaviour in Flag bits 3 and 5 come from.
-		// normally WZ contain I* + n when doing I_BIT ops, but here we use that code path 
+		// normally WZ contain I* + n when doing I_BIT ops, but here we use that code path
 		// even though WZ is not assigned to, letting it's value from other operations show through
 		private void BIT_TE_IND(ushort operation, ushort bit, ushort src_l, ushort src_h)
 		{

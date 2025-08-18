@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		}
 
 		/// <summary>
-		/// Helper method moving from accumulator to IO pins 
+		/// Helper method moving from accumulator to IO pins
 		/// (complement)
 		/// </summary>
 		public void OUT_Func(byte dest, byte src)
@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		/// <summary>
 		/// Binary addition
-		/// Statuses modified: OVF, ZERO, CARRY, SIGN 
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
 		/// </summary>
 		public void ADD_Func(byte dest, byte src, byte src2 = ZERO)
@@ -145,19 +145,19 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			// The accumulator and the memory location addressed by the DCO registers are assumed to contain two BCD digits.
 			// The content of the address memory byte is added to the contents of the accumulator to give a BCD result in the accumulator
 			// providing these steps are followed:
-			// 
+			//
 			// Decimal addition is, in reality, three binary events. Consider 8-bit decimal addition.
 			// Assume two BCD digit augend XY is added to two BCD digit addend l).N, to give a BCD result PQ:
 			//  XY
 			// +ZW
 			//  --
 			// =PQ
-			// 
+			//
 			// Two carries are important: any intermediate carry (IC) out of the low order answer digit (Q), and any overall carry (C) out of the high order digit (P).
 			// The three binary steps required to perform BCD addition are as follows:
 
 			// STEP 1: Binary add H'66' to the augend. (this should happen before this function is called)
-			// STEP 2: Binary add the addend to the sum from Step 1. Record the status of the carry (C) and intermediate carry (IC). 
+			// STEP 2: Binary add the addend to the sum from Step 1. Record the status of the carry (C) and intermediate carry (IC).
 
 			var augend = Regs[dest];
 			var addend = Regs[src];
@@ -176,15 +176,15 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			FlagZ = (working & 0xFF) == 0;
 
 
-			// STEP 3: Add a factor to the sum from Step 2, based on the status of C and IC. The factor to be added is given by the following table: 
+			// STEP 3: Add a factor to the sum from Step 2, based on the status of C and IC. The factor to be added is given by the following table:
 			// C  IC	Sum to be added
 			// ------------------------
 			// 0  0		0xAA
 			// 0  1		0xA0
 			// 1  0		0x0A
 			// 1  1		0x00
-			// 
-			// In Step 3, any carry from the low order digit to the high order digit is suppressed. 
+			//
+			// In Step 3, any carry from the low order digit to the high order digit is suppressed.
 
 			if (!highCarry && !lowCarry)
 			{
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			Regs[dest] = (byte)(working & 0xFF);
 		}
-		
+
 		/// <summary>
 		/// Binary add the two's compliment of the accumulator to the value on the databus
 		/// Set flags accordingly but accumlator is not touched
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[ALU0] = twosComp;
 			Regs[ALU1] = Regs[DB];
 			ADD_Func(ALU0, ALU1, ONE);
-		}		
+		}
 
 		/// <summary>
 		/// Logical AND regs[dest] with regs[src] and store the result in regs[dest]
@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[dest] = (byte)(Regs[dest] ^ Regs[src]);
 
 			FlagS = !Regs[dest].Bit(7);
-			FlagZ = (Regs[dest] & 0xFF) == 0;			
+			FlagZ = (Regs[dest] & 0xFF) == 0;
 		}
 	}
 }

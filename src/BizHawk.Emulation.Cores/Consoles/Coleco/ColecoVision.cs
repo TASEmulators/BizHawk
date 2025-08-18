@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				Console.WriteLine("Using the Super Game Module");
 			}
-			
+
 			LoadRom(rom, skipBios);
 			SetupMemoryDomains();
 
@@ -286,7 +286,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					{
 						MC_bank = (addr - 0xFFC0) & (_romData.Length / 0x4000 - 1);
 					}
-					
+
 					// the first 16K of the map is always the last 16k of the ROM
 					if (addr < 0xC000)
 					{

@@ -9,6 +9,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="ppy.SDL2-CS" ExcludeAssets="native;contentFiles" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>
