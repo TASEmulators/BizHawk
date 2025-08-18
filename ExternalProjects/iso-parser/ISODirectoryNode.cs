@@ -41,7 +41,6 @@ namespace ISOParser
 			// Read the directory entries
 			while (s.Position < ((this.Offset * ISOFile.SECTOR_SIZE) + this.Length))
 			{
-				ISONode node;
 				ISONodeRecord record;
 				
 				// Read the record
@@ -61,12 +60,7 @@ namespace ISOParser
 				else
 				{
 					// Check if we already have this node
-					if (visited.ContainsKey(record.OffsetOfData))
-					{
-						// Get the node
-						node = visited[record.OffsetOfData];
-					}
-					else
+					if (!visited.TryGetValue(record.OffsetOfData, out var node))
 					{
 						// Create the node from the record
 						if (record.IsFile())

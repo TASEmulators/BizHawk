@@ -6,18 +6,18 @@ namespace BizHawk.Common
 {
 	public static class XlibImports
 	{
-		private const string LIB = "libX11.so.6";
+		private const string XLIB = "libX11.so.6";
 
-		[DllImport(LIB)]
+		[DllImport(XLIB)]
 		public static extern IntPtr XOpenDisplay(string? display_name);
 
-		[DllImport(LIB)]
+		[DllImport(XLIB)]
 		public static extern int XCloseDisplay(IntPtr display);
 
-		[DllImport(LIB)]
+		[DllImport(XLIB)]
 		public static extern void XLockDisplay(IntPtr display);
 
-		[DllImport(LIB)]
+		[DllImport(XLIB)]
 		public static extern void XUnlockDisplay(IntPtr display);
 
 		// helper struct for XLockDisplay/XUnlockDisplay
@@ -47,7 +47,179 @@ namespace BizHawk.Common
 			}
 		}
 
-		[DllImport(LIB)]
+		public enum Status : int
+		{
+			Success = 0,
+			BadRequest = 1,
+			BadValue = 2,
+			BadWindow = 3,
+			BadPixmap = 4,
+			BadAtom = 5,
+			BadCursor = 6,
+			BadFont = 7,
+			BadMatch = 8,
+			BadDrawable = 9,
+			BadAccess = 10,
+			BadAlloc = 11,
+			BadColor = 12,
+			BadGC = 13,
+			BadIDChoice = 14,
+			BadName = 15,
+			BadLength = 16,
+			BadImplementation = 17,
+		}
+
+		[DllImport(XLIB)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool XQueryExtension(IntPtr display, string name, out int major_opcode_return, out int first_event_return, out int first_error_return);
+
+		[DllImport(XLIB)]
+		public static extern IntPtr XDefaultRootWindow(IntPtr display);
+
+		[DllImport(XLIB)]
+		public static extern int XFlush(IntPtr display);
+
+		[DllImport(XLIB)]
+		public static extern int XPending(IntPtr display);
+
+		public enum XEventTypes : int
+		{
+			KeyPress = 2,
+			KeyRelease = 3,
+			ButtonPress = 4,
+			ButtonRelease = 5,
+			MotionNotify = 6,
+			EnterNotify = 7,
+			LeaveNotify = 8,
+			FocusIn = 9,
+			FocusOut = 10,
+			KeymapNotify = 11,
+			Expose = 12,
+			GraphicsExpose = 13,
+			NoExpose = 14,
+			VisibilityNotify = 15,
+			CreateNotify = 16,
+			DestroyNotify = 17,
+			UnmapNotify = 18,
+			MapNotify = 19,
+			MapRequest = 20,
+			ReparentNotify = 21,
+			ConfigureNotify = 22,
+			ConfigureRequest = 23,
+			GravityNotify = 24,
+			ResizeRequest = 25,
+			CirculateNotify = 26,
+			CirculateRequest = 27,
+			PropertyNotify = 28,
+			SelectionClear = 29,
+			SelectionRequest = 30,
+			SelectionNotify = 31,
+			ColormapNotify = 32,
+			ClientMessage = 33,
+			MappingNotify = 34,
+			GenericEvent = 35,
+			LASTEvent = 36,
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct XGenericEventCookie
+		{
+			public XEventTypes type;
+			public nuint serial;
+			public int send_event;
+			public IntPtr display;
+			public int extension;
+			public int evtype;
+			public uint cookie;
+			public IntPtr data;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct XEventPadding
+		{
+			public nint pad0, pad1, pad2, pad3, pad4, pad5, pad6, pad7;
+			public nint pad8, pad9, pad10, pad11, pad12, pad13, pad14, pad15;
+			public nint pad16, pad17, pad18, pad19, pad20, pad21, pad22, pad23;
+		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public struct XEvent
+		{
+			[FieldOffset(0)]
+			public XEventTypes type;
+			[FieldOffset(0)]
+			public XGenericEventCookie xcookie;
+			[FieldOffset(0)]
+			public XEventPadding pad;
+		}
+
+		[DllImport(XLIB)]
+		public static extern int XNextEvent(IntPtr display, out XEvent event_return);
+
+		[DllImport(XLIB)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool XGetEventData(IntPtr display, ref XGenericEventCookie cookie);
+
+		[DllImport(XLIB)]
+		public static extern void XFreeEventData(IntPtr display, ref XGenericEventCookie cookie);
+
+		[Flags]
+		public enum EventMask : uint
+		{
+			NoEventMask = 0,
+			KeyPressMask = 1 << 0,
+			KeyReleaseMask = 1 << 1,
+			ButtonPressMask = 1 << 2,
+			ButtonReleaseMask = 1 << 3,
+			EnterWindowMask = 1 << 4,
+			LeaveWindowMask = 1 << 5,
+			PointerMotionMask = 1 << 6,
+			PointerMotionHintMask = 1 << 7,
+			Button1MotionMask = 1 << 8,
+			Button2MotionMask = 1 << 9,
+			Button3MotionMask = 1 << 10,
+			Button4MotionMask = 1 << 11,
+			Button5MotionMask = 1 << 12,
+			ButtonMotionMask = 1 << 13,
+			KeymapStateMask = 1 << 14,
+			ExposureMask = 1 << 15,
+			VisibilityChangeMask = 1 << 16,
+			StructureNotifyMask = 1 << 17,
+			ResizeRedirectMask = 1 << 18,
+			SubstructureNotifyMask = 1 << 19,
+			SubstructureRedirectMask= 1 << 20,
+			FocusChangeMask = 1 << 21,
+			PropertyChangeMask = 1 << 22,
+			ColormapChangeMask = 1 << 23,
+			OwnerGrabButtonMask = 1 << 24,
+		}
+
+		public enum GrabMode : int
+		{
+			Sync = 0,
+			Async = 1,
+		}
+
+		// special Time
+		public const uint CurrentTime = 0;
+
+		public enum GrabResult : int
+		{
+			GrabSuccess = 0,
+			AlreadyGrabbed = 1,
+			GrabInvalidTime = 2,
+			GrabNotViewable = 3,
+			GrabFrozen = 4,
+		}
+
+		[DllImport(XLIB)]
+		public static extern GrabResult XGrabPointer(IntPtr display, IntPtr grab_window, [MarshalAs(UnmanagedType.Bool)] bool owner_events,
+			EventMask event_mask, GrabMode pointer_mode, GrabMode keyboard_mode, IntPtr confine_to, IntPtr cursor, nuint time);
+
+		[DllImport(XLIB)]
+		public static extern int XUngrabPointer(IntPtr display, nuint time);
+
+		[DllImport(XLIB)]
 		public static extern unsafe int XQueryKeymap(IntPtr display, byte* keys_return);
 
 		// copied from OpenTK
@@ -458,21 +630,21 @@ namespace BizHawk.Common
 			public nuint time;
 			public int x, y;
 			public int x_root, y_root;
-			public int state;
-			public int keycode;
+			public uint state;
+			public uint keycode;
 			[MarshalAs(UnmanagedType.Bool)]
 			public bool same_screen;
 		}
 
-		[DllImport(LIB)]
+		[DllImport(XLIB)]
 		[return: MarshalAs(UnmanagedType.SysUInt)]
 		public static extern Keysym XLookupKeysym(ref XKeyEvent key_event, int index);
 
-		[DllImport(LIB)]
+		[DllImport(XLIB)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool XkbQueryExtension(IntPtr display, out int opcode_rtrn, out int event_rtrn, out int error_rtrn, ref int major_in_out, ref int minor_in_out);
-		
-		[DllImport(LIB)]
+
+		[DllImport(XLIB)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool XkbSetDetectableAutoRepeat(IntPtr display, [MarshalAs(UnmanagedType.Bool)] bool detectable, [MarshalAs(UnmanagedType.Bool)] out bool supported_rtrn);
 
@@ -531,16 +703,17 @@ namespace BizHawk.Common
 			public IntPtr geom;
 		}
 
-		[DllImport(LIB)]
-		public static extern unsafe XkbDescRec* XkbAllocKeyboard(IntPtr display);
+		[DllImport(XLIB)]
+		public static extern unsafe XkbDescRec* XkbAllocKeyboard();
 
-		[DllImport(LIB)]
-		public static extern unsafe void XkbFreeKeyboard(XkbDescRec* xkb, int which, [MarshalAs(UnmanagedType.Bool)] bool free_all);
+		[DllImport(XLIB)]
+		public static extern unsafe void XkbFreeKeyboard(XkbDescRec* xkb, uint which, [MarshalAs(UnmanagedType.Bool)] bool free_all);
 
-		[DllImport(LIB)]
-		public static extern unsafe int XkbGetNames(IntPtr display, uint which, XkbDescRec* xkb);
+		[DllImport(XLIB)]
+		public static extern unsafe Status XkbGetNames(IntPtr display, uint which, XkbDescRec* xkb);
 
-		[DllImport(LIB)]
-		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, int keycode, int group, int level);
+		[DllImport(XLIB)]
+		[return: MarshalAs(UnmanagedType.SysUInt)]
+		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, uint keycode, int group, int level);
 	}
 }

@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AmstradCPC.BorderType.Visible => "Approximates what you see on a CPC monitor",
 				AmstradCPC.BorderType.Uncropped => "The full display area",
-				_ => lblBorderInfo.Text
+				_ => lblBorderInfo.Text,
 			};
 		}
 	}

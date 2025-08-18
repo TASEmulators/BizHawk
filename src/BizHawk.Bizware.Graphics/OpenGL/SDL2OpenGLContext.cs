@@ -20,6 +20,7 @@ namespace BizHawk.Bizware.Graphics
 	/// </summary>
 	public class SDL2OpenGLContext : IDisposable
 	{
+#pragma warning disable CA1065 // not sure how else to handle failure other than throwing with a good message
 		static SDL2OpenGLContext()
 		{
 			if (OSTailoredCode.IsUnixHost)
@@ -101,6 +102,7 @@ namespace BizHawk.Bizware.Graphics
 			// it's not needed and can be dangerous in some rare cases
 			SDL_SetHintWithPriority(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0", SDL_HintPriority.SDL_HINT_OVERRIDE);
 		}
+#pragma warning restore CA1065
 
 #if DEBUG_OPENGL
 		private static readonly DebugProc _debugProc = DebugCallback;
@@ -128,7 +130,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				throw new($"Could not set GL Major Version! SDL Error: {SDL_GetError()}");
 			}
-			
+
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, minorVersion) != 0)
 			{
 				throw new($"Could not set GL Minor Version! SDL Error: {SDL_GetError()}");

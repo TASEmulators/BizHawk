@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES
+	public sealed partial class NES
 	{
 		public struct CpuLink : IMOS6502XLink
 		{

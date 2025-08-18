@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 		{
 			None = 0,
 			WaterboxCoreConsistencyCheck = 1,
-			WaterboxMemoryConsistencyCheck = 2
+			WaterboxMemoryConsistencyCheck = 2,
 		}
 
 		/// <summary>

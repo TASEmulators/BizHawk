@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		public FeedbacksBindPanel(IDictionary<string, FeedbackBind> realConfigObject, ICollection<string>? realConfigButtons = null)
 		{
 			_realConfigObject = realConfigObject;
-			_flpMain.Controls.Add(new LabelEx { Text = "To bind, click \"Bind!\", move an axis (e.g. analog stick) on the desired gamepad, and choose from the dropdown.\nNote: haptic feedback won't work if your input method is DirectInput+XInput and your gamepad is shown as \"J#\"." });
+			_flpMain.Controls.Add(new LabelEx { Text = "To bind, click \"Bind!\", move an axis (e.g. analog stick) on the desired gamepad, and choose from the dropdown." });
 			var adapter = Input.Instance.Adapter;
 			foreach (var buttonName in realConfigButtons ?? realConfigObject.Keys)
 			{
@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 			var saveTo = saveConfigObject ?? _realConfigObject;
 			foreach (var c in _flpMain.Controls.OfType<FeedbackBindControl>())
 			{
-				if (string.IsNullOrEmpty(c.BoundGamepadPrefix)) continue;
 				saveTo[c.VChannelName] = new(c.BoundGamepadPrefix, c.BoundChannels, c.Prescale);
 			}
 		}

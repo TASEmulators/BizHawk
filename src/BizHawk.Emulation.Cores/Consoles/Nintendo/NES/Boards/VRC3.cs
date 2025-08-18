@@ -124,7 +124,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_banks_16k[0] = value & 0xF;
 					prg_banks_16k[0] &= prg_bank_mask_16k;
 					break;
-
 			}
 		}
 

@@ -36,6 +36,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 
 			InitMedia(_roms[_currentDisk]);
+
+			if (_board.CartPort.SaveRam is { } cartSaveRam)
+			{
+				ser.Register<ISaveRam>(cartSaveRam);
+			}
+
 			HardReset();
 
 			switch (SyncSettings.VicType)
@@ -163,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int _frame;
 		private readonly ITraceable _tracer;
-		
+
 		// Power stuff
 		private bool _powerPressed;
 		private bool _resetPressed;
@@ -329,6 +335,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					if (cart != null)
 					{
 						_board.CartPort.Connect(cart);
+						if (_board.CartPort.SaveRam != null)
+						{
+						}
 					}
 					break;
 				case C64Format.TAP:

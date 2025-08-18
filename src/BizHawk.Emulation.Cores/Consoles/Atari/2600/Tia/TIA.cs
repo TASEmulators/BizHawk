@@ -477,7 +477,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hsyncCnt >= (_hmove.LateHBlankReset ? 76 : 68))
 			{
 				_doTicks = false;
-				
+
 				// TODO: Remove this magic number
 				if ((_hsyncCnt / 4) >= 37)
 				{
@@ -875,7 +875,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_hmove.BallLatch = true;
 					_hmove.BallCnt = 0;
 
-					if (_hsyncCnt < 67) { _hmove.LateHBlankReset = true; }			
+					if (_hsyncCnt < 67) { _hmove.LateHBlankReset = true; }
 				}
 			}
 
@@ -1185,7 +1185,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			// some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
 			// happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
-			// assigned in some other bus access, so let's go with that. 
+			// assigned in some other bus access, so let's go with that.
 			coll += (byte)(mask & BusState);
 
 			if (!peek)
@@ -1576,7 +1576,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x2B) // HMCLR
 			{
-				_hmClrDelay = 1;			
+				_hmClrDelay = 1;
 			}
 			else if (maskedAddr == 0x2C) // CXCLR
 			{

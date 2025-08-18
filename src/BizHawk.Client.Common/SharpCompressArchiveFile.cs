@@ -11,7 +11,7 @@ using SharpCompress.Archives;
 namespace BizHawk.Client.Common
 {
 	/// <see cref="SharpCompressDearchivalMethod"/>
-	public class SharpCompressArchiveFile : IHawkArchiveFile
+	public sealed class SharpCompressArchiveFile : IHawkArchiveFile
 	{
 		private IArchive? _archive;
 
@@ -28,14 +28,14 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			if (_archive == null) throw new ObjectDisposedException(nameof(SharpCompressArchiveFile));
-			_archive.Dispose();
+			_archive?.Dispose();
 			_archive = null;
 		}
 
 		public void ExtractFile(int index, Stream stream)
 		{
-			var reader = _archive!.ExtractAllEntries();
+			if (_archive is null) throw new ObjectDisposedException(nameof(SharpCompressArchiveFile));
+			var reader = _archive.ExtractAllEntries();
 			for (var i = 0; i <= index; i++) reader.MoveToNextEntry();
 			using var entryStream = reader.OpenEntryStream();
 			entryStream.CopyTo(stream);
@@ -43,8 +43,8 @@ namespace BizHawk.Client.Common
 
 		public List<HawkArchiveFileItem>? Scan()
 		{
-			List<HawkArchiveFileItem> outFiles = new();
 			var entries = EnumerateArchiveFiles().ToList();
+			List<HawkArchiveFileItem> outFiles = new();
 			for (var i = 0; i < entries.Count; i++)
 			{
 				var (entry, archiveIndex) = entries[i];

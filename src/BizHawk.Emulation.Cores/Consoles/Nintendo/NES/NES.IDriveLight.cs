@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IDriveLight
+	public sealed partial class NES : IDriveLight
 	{
 		public bool DriveLightEnabled { get; }
 

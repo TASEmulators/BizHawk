@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common

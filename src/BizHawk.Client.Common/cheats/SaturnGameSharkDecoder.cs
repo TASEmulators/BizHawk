@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				result.Size = WatchSize.Byte;
 			}
-			
+
 			var s = code.Remove(0, 2);
 			result.Address = int.Parse(s.Remove(6, 5), NumberStyles.HexNumber);
 			result.Value = int.Parse(s.Remove(0, 7));

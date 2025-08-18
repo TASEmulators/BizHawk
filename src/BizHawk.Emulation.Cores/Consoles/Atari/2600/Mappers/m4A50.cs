@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Bankswitching method as defined/created by John Payson (aka SuperCat),
 	documented at http://www.casperkitty.com/stella/cartfmt.htm.
 
-	In this bankswitching scheme the 2600's 4K cartridge address space 
+	In this bankswitching scheme the 2600's 4K cartridge address space
 	is broken into four segments.  The first 2K segment accesses any 2K
 	region of RAM, or of the first 32K of ROM.  The second 1.5K segment
 	accesses the first 1.5K of any 2K region of RAM, or of the last 32K
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	bytes of ROM.
 	*/
 
-	internal sealed class m4A50 : MapperBase 
+	internal sealed class m4A50 : MapperBase
 	{
 		private byte[] _ram = new byte[32768];
 
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					// Copy the ROM image into my buffer
 					// Supported file sizes are 32/64/128K, which are duplicated if necessary
 					_romImage = new byte[131072];
-					
+
 					if (Core.Rom.Length < 65536)
 					{
 						for (int i = 0; i < 4; i++)

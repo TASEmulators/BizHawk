@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int> ReadPotY;
 
 		private RealFFT _fft;
-		private double[] _fftBuffer = new double[0];
+		private double[] _fftBuffer = [ ];
 
 		private readonly int _cpuCyclesNum;
 		private int _sampleCyclesNum;
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				int temp_filtered = 0;
 				int temp_not_filtered = 0;
 
-				//note that voice 3 disable is relevent only if it is not going to the filter 
+				//note that voice 3 disable is relevent only if it is not going to the filter
 				// see block diargam http://archive.6502.org/datasheets/mos_6581_sid.pdf
 				if (!_filterEnable[2] && _disableVoice3)
 					temp_v2 = 0;
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			if (!(_filterEnable[0] | _filterEnable[1] | _filterEnable[2]))
 			{
 				_filterIndex = _outputBufferIndex;
-			}	
+			}
 		}
 
 
@@ -259,16 +259,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 
-			_fft = new RealFFT(nsamp_2);
+			if (_fft == null)
+				_fft = new RealFFT(nsamp_2);
+			else
+				_fft.Resize(nsamp_2);
 
 			// eventually this will settle on a single buffer size and stop reallocating
 			if (_fftBuffer.Length < nsamp_2)
 				Array.Resize(ref _fftBuffer, nsamp_2);
 
-			// linearly interpolate the original sample set into the new denser sample set
-			for (double i = 0; i < nsamp_2; i++)
+			// If no filters are enabled, filtered output will be silent.
+			if (!_filterSelectLoPass && !_filterSelectHiPass && !_filterSelectBandPass)
 			{
-				_fftBuffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
+				for (var i = 0; i < nsamp_2; i++)
+					_fftBuffer[i] = 0;
+			}
+			else
+			{
+				// linearly interpolate the original sample set into the new denser sample set
+				for (double i = 0; i < nsamp_2; i++)
+				{
+					_fftBuffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
+				}
 			}
 
 			// now we have everything we need to perform the FFT
@@ -303,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					attenuation = 12 * attenuation;
 					_fftBuffer[i] = _fftBuffer[i] * Math.Pow(2, -attenuation / 10);
 				}
-				
+
 				// Band pass filter
 				if (_filterSelectBandPass)
 				{
@@ -312,7 +324,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					attenuation = 6 * attenuation;
 					_fftBuffer[i] = _fftBuffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
 				}
-				
 			}
 
 			// now transform back into time space and reassemble the attenuated frequency components
@@ -332,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				// the FFT is only an approximate model and fails at low sample rates
 				// what we want to do is limit how much the output samples can deviate from previous output
 				// thus smoothing out the FT samples
-				
+
 				if (i<16)
 					_outputBufferFiltered[(int)i + _filterIndex] = (int)((_lastFilteredValue * Math.Pow(15 - i,1) + _outputBufferFiltered[(int)i + _filterIndex] * Math.Pow(i,1))/ Math.Pow(15,1));
 			}

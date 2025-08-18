@@ -35,13 +35,13 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
 		bool IsTurboing { get; }
 
+		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		bool IsFastForwarding { get; }
+
 		int? PauseOnFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
 		bool PressRewind { get; set; }
-
-		/// <remarks>only referenced from <see cref="GenericDebugger"/></remarks>
-		event Action<bool> OnPauseChanged;
 
 		BitmapBuffer CaptureOSD();
 

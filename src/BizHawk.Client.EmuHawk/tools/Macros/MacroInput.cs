@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var main = new MovieZone(Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
 			{
-				Name = "Entire Movie"
+				Name = "Entire Movie",
 			};
 
 			_zones.Add(main);
@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var newZone = new MovieZone(Emulator, Tools, MovieSession, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
 			{
-				Name = $"Zone {_zones.Count}"
+				Name = $"Zone {_zones.Count}",
 			};
 			_zones.Add(newZone);
 			ZonesList.Items.Add($"{newZone.Name} - length: {newZone.Length}");

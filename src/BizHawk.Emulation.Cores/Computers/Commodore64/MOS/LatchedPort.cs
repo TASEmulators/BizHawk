@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// data works like this in these types of systems:
-		// 
+		//
 		//  directionA  directionB  result
 		//  0           0           1
 		//  1           0           latchA

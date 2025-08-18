@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common.movie.import
@@ -28,7 +29,7 @@ namespace BizHawk.Client.Common.movie.import
 					[9] = "none",
 					[10] = "none",
 					[11] = "none",
-				}
+				},
 			};
 
 			using var sr = SourceFile.OpenText();
@@ -44,20 +45,20 @@ namespace BizHawk.Client.Common.movie.import
 				{
 					ImportTextFrame(line);
 				}
-				else if (line.StartsWith("emuversion", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("emuversion"))
 				{
 					Result.Movie.Comments.Add($"{EmulationOrigin} Yabause version {ParseHeader(line, "emuVersion")}");
 				}
-				else if (line.StartsWith("version", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("version"))
 				{
 					string version = ParseHeader(line, "version");
 					Result.Movie.Comments.Add($"{MovieOrigin} .ymv version {version}");
 				}
-				else if (line.StartsWith("cdGameName", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("cdGameName"))
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.GameName] = ParseHeader(line, "romFilename");
 				}
-				else if (line.StartsWith("rerecordcount", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("rerecordcount"))
 				{
 					int rerecordCount;
 
@@ -73,7 +74,7 @@ namespace BizHawk.Client.Common.movie.import
 
 					Result.Movie.Rerecords = (ulong)rerecordCount;
 				}
-				else if (line.StartsWith("startsfromsavestate", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("startsfromsavestate"))
 				{
 					// If this movie starts from a savestate, we can't support it.
 					if (ParseHeader(line, "StartsFromSavestate") == "1")
@@ -81,7 +82,7 @@ namespace BizHawk.Client.Common.movie.import
 						Result.Errors.Add("Movies that begin with a savestate are not supported.");
 					}
 				}
-				else if (line.StartsWith("ispal", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("ispal"))
 				{
 					bool pal = ParseHeader(line, "isPal") == "1";
 					Result.Movie.HeaderEntries[HeaderKeys.Pal] = pal.ToString();
@@ -103,8 +104,13 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				BoolButtons = new List<string>
 				{
-					"Reset", "Power", "Previous Disk", "Next Disk", "P1 Left", "P1 Right", "P1 Up", "P1 Down", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R"
-				}
+					"Reset", "Power",
+					"Previous Disk", "Next Disk",
+					"P1 Left", "P1 Right", "P1 Up", "P1 Down",
+					"P1 Start",
+					"P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z",
+					"P1 L", "P1 R",
+				},
 			}.MakeImmutable());
 			controllers.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 
@@ -136,6 +142,5 @@ namespace BizHawk.Client.Common.movie.import
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
 			Result.Movie.AppendFrame(controllers);
 		}
-
 	}
 }

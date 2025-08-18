@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.DiscSystem
 		DiscStreamView_Mode2_Form2_2324,
 	}
 
+#pragma warning disable RCS1226 // bad formatting
 	/// <summary>
 	/// Allows you to stream data off a disc.
 	/// For future work: depending on the View you select, it may not be seekable (in other words, it would need to read sequentially)
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// TODO - Receive some information about the track that this stream is modeling, and have the stream return EOF at the end of the track?
 	/// </summary>
 	public class DiscStream : System.IO.Stream
+#pragma warning restore RCS1226
 	{
 		private readonly int SectorSize;
 		private readonly int NumSectors;
@@ -106,7 +108,6 @@ namespace BizHawk.Emulation.DiscSystem
 		internal void READLBA_Flat_Implementation(long disc_offset, byte[] buffer, int offset, int length, Action<int, byte[], int> sectorReader, int sectorSize, byte[] sectorBuf, ref int sectorBufferHint)
 		{
 			//hint is the sector number which is already read. to avoid repeatedly reading the sector from the disc in case of several small reads, so that sectorBuf can be used as a sector cache
-
 		}
 
 		//TODO - I'm not sure everything in here makes sense right now..

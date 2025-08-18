@@ -56,7 +56,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			private enum Mode
 			{
-				Normal, Quotable
+				Normal,
+				Quotable,
 			}
 
 			private string ReadToken(Mode mode)
@@ -140,11 +141,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				CurrentLine++;
 				var line = tr.ReadLine()?.Trim();
 				if (line is null) break;
-				if (line == string.Empty) continue;
+				if (line.Length is 0) continue;
 				var clp = new CueLineParser(line);
 
 				var key = clp.ReadToken().ToUpperInvariant();
-				
+
 				//remove nonsense at beginning
 				if (!IN_Strict)
 				{
@@ -312,12 +313,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							// cues don't support multiple sessions themselves, but it is common for rips to put SESSION # in REM fields
 							// so, if we have such a REM, we'll check if the comment starts with SESSION, and interpret that as a session "command"
 							var trimmed = comment.Trim();
-							if (trimmed.StartsWith("SESSION ", StringComparison.OrdinalIgnoreCase) && int.TryParse(trimmed.Substring(8), out var number) && number > 0)
+							if (trimmed.StartsWithIgnoreCase("SESSION ")
+								&& int.TryParse(trimmed.Substring(8), out var number) && number > 0)
 							{
 								OUT_CueFile.Commands.Add(new CUE_File.Command.SESSION(number));
 								break;
 							}
-							
+
 							OUT_CueFile.Commands.Add(new CUE_File.Command.REM(comment));
 							break;
 						}
@@ -381,7 +383,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					}
 					else Warn($"Unknown text at end of line after processing command: {key}");
 				}
-
 			} //end cue parsing loop
 
 			FinishLog();

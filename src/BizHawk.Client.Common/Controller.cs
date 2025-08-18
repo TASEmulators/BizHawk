@@ -48,6 +48,11 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
+#if BIZHAWKBUILD_SUPERHAWK
+		public bool AnyInputHeld
+			=> _buttons.ContainsValue(true) || _axes.Any(kvp => kvp.Value != _axisRanges[kvp.Key].Neutral);
+#endif
+
 		public bool this[string button] => IsPressed(button);
 
 		// Looks for bindings which are activated by the supplied physical button.
@@ -67,7 +72,7 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController finalHostController)
 		{
 			_buttons.Clear();
-			
+
 			foreach (var (k, v) in _bindings)
 			{
 				_buttons[k] = false;
@@ -98,6 +103,7 @@ namespace BizHawk.Client.Common
 
 				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
 				var range = _axisRanges[k]; // this was `GetValueOrPutNew`, but I really hope it was always found, since `new AxisSpec()` isn't valid --yoshi
+				if (range.IsReversed) value = -value;
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
 
 				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => ByteWatch.ValidTypes.Any(t => t == _type),
 						WatchSize.Word => WordWatch.ValidTypes.Any(t => t == _type),
 						WatchSize.DWord => DWordWatch.ValidTypes.Any(t => t == _type),
-						_ => false
+						_ => false,
 					};
 
 					if (!isTypeCompatible)
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.Word => ushort.MaxValue,
 				WatchSize.DWord => uint.MaxValue,
-				_ => byte.MaxValue
+				_ => byte.MaxValue,
 			};
 
 		private int MaxSignedInt =>
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.Word => short.MaxValue,
 				WatchSize.DWord => int.MaxValue,
-				_ => sbyte.MaxValue
+				_ => sbyte.MaxValue,
 			};
 
 		private int MinSignedInt =>
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				WatchSize.Word => short.MinValue,
 				WatchSize.DWord => int.MinValue,
-				_ => sbyte.MinValue
+				_ => sbyte.MinValue,
 			};
 
 		private const double Max12_4 = short.MaxValue / 16.0;
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 8,
 						WatchSize.Word => 16,
 						WatchSize.DWord => 32,
-						_ => 8
+						_ => 8,
 					};
 					break;
 				case WatchDisplayType.Hex:
@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 2,
 						WatchSize.Word => 4,
 						WatchSize.DWord => 8,
-						_ => 2
+						_ => 2,
 					};
 					break;
 				case WatchDisplayType.Signed:
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 4,
 						WatchSize.Word => 6,
 						WatchSize.DWord => 11,
-						_ => 4
+						_ => 4,
 					};
 					break;
 				case WatchDisplayType.Unsigned:
@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 						WatchSize.Byte => 3,
 						WatchSize.Word => 5,
 						WatchSize.DWord => 10,
-						_ => 3
+						_ => 3,
 					};
 					break;
 				case WatchDisplayType.FixedPoint_12_4:
@@ -459,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 					WatchDisplayType.FixedPoint_20_12 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 4096.0),
 					WatchDisplayType.FixedPoint_16_16 => (int)(double.Parse(Text, NumberFormatInfo.InvariantInfo) * 65536.0),
 					WatchDisplayType.Float => (int)NumberExtensions.ReinterpretAsUInt32(float.Parse(Text, NumberFormatInfo.InvariantInfo)),
-					_ => int.Parse(Text)
+					_ => int.Parse(Text),
 				};
 			}
 			catch
@@ -487,7 +487,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchDisplayType.FixedPoint_20_12 => (i / 4096.0).ToString("F5", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.FixedPoint_16_16 => (i / 65536.0).ToString("F5", NumberFormatInfo.InvariantInfo),
 				WatchDisplayType.Float => NumberExtensions.ReinterpretAsF32((uint)i).ToString("F6", NumberFormatInfo.InvariantInfo),
-				_ => i.ToString()
+				_ => i.ToString(),
 			};
 		}
 	}

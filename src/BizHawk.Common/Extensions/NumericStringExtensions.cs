@@ -50,6 +50,7 @@ namespace BizHawk.Common.StringExtensions
 		}
 		private static readonly Regex CleanHexRegex = new(@"^\s*(?:0x|\$)?(?<hex>[0-9A-Fa-f\s]+)\s*$");
 
+#pragma warning disable RCS1224 // don't want extension on nonspecific `string`/`ReadOnlySpan<char>`
 #if NET7_0_OR_GREATER
 		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
 			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
@@ -69,6 +70,7 @@ namespace BizHawk.Common.StringExtensions
 		public static byte ParseU8FromHex(string str)
 			=> byte.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
 #endif
+#pragma warning restore RCS1224
 
 		/// <returns><see langword="true"/> iff <paramref name="str"/> is not <see langword="null"/> and all chars of <paramref name="str"/> are digits</returns>
 		public static bool IsUnsigned(this string? str) => !string.IsNullOrWhiteSpace(str) && str.All(IsUnsigned);

@@ -39,6 +39,12 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			toolTip1.SetToolTip(AddMarkerButton, $"Add Marker to Emulated Frame ({config.HotkeyBindings["Set Marker"]})");
+			toolTip1.SetToolTip(AddMarkerWithTextButton, $"Add Marker with Text to Emulated Frame ({config.HotkeyBindings["Set Marker"]} {config.HotkeyBindings["Set Marker"]})");
+		}
+
 		private void SetupColumns()
 		{
 			MarkerView.AllColumns.Clear();
@@ -169,13 +175,11 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
 					Message = "Enter a message",
-					InitialValue =
-						Markers.IsMarker(frame) ?
-						Markers.PreviousOrCurrent(frame).Message :
-						""
+					InitialValue = Markers.IsMarker(frame) ? Markers.PreviousOrCurrent(frame).Message : string.Empty,
 				};
 
-				if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+				i.FollowMousePointer();
+				if (!i.ShowDialogOnScreen().IsOk()) return;
 
 				UpdateTextColumnWidth();
 				marker = new TasMovieMarker(frame, i.PromptText);
@@ -194,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateTextColumnWidth()
 		{
-			if (Markers.Any())
+			if (Markers.Count is not 0)
 			{
 				var longestBranchText = Markers
 					.OrderBy(b => b.Message?.Length ?? 0)
@@ -205,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker, bool openAtMouseCursor = false)
+		public void EditMarkerPopUp(TasMovieMarker marker)
 		{
 			var markerFrame = marker.Frame;
 			var i = new InputPrompt
@@ -213,17 +217,11 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue =
-					Markers.IsMarker(markerFrame)
-					? Markers.PreviousOrCurrent(markerFrame).Message
-					: ""
+				InitialValue = Markers.IsMarker(markerFrame) ? Markers.PreviousOrCurrent(markerFrame).Message : string.Empty,
 			};
-			if (openAtMouseCursor)
-			{
-				i.StartPosition = FormStartPosition.Manual;
-				i.Location = Cursor.Position - i.HalfSize(); // eww
-			}
-			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+
+			i.FollowMousePointer();
+			if (!i.ShowDialogOnScreen().IsOk()) return;
 
 			marker.Message = i.PromptText;
 			UpdateTextColumnWidth();
@@ -243,7 +241,8 @@ namespace BizHawk.Client.EmuHawk
 					: "0",
 			};
 
-			if (!this.ShowDialogWithTempMute(i).IsOk()
+			i.FollowMousePointer();
+			if (!i.ShowDialogOnScreen().IsOk()
 				|| !int.TryParse(i.PromptText, out var promptValue)
 				|| Markers.IsMarker(promptValue)) // don't move to frame with an existing marker
 			{

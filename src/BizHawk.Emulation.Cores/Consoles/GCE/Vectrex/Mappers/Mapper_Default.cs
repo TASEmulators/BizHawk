@@ -21,7 +21,7 @@
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-
+			// no-op
 		}
 
 		public override void PokeMemory(ushort addr, byte value)

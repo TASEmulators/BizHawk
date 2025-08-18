@@ -6,13 +6,19 @@ using System.Text;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 #pragma warning disable BHI1007 // target-typed Exception TODO don't
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
-	[PortedCore(CoreNames.Encore, "", "nightly-2104", "https://github.com/CasualPokePlayer/encore", singleInstance: true)]
+	[PortedCore(
+		name: CoreNames.Encore,
+		author: "Tropic Haze and Citra contributors; port by CasualPokePlayer",
+		portedVersion: "nightly-2104",
+		portedUrl: "https://github.com/CasualPokePlayer/encore",
+		singleInstance: true)]
 	[ServiceNotApplicable(typeof(IRegionable))]
 	public partial class Encore : IRomInfo
 	{
@@ -122,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_serviceProvider.Register<IVideoProvider>(_encoreVideoProvider);
 
 			var romPath = lp.Roms[0].RomPath;
-			if (lp.Roms[0].Extension.ToLowerInvariant() == ".cia")
+			if (".cia".EqualsIgnoreCase(lp.Roms[0].Extension))
 			{
 				var message = new byte[1024];
 				var res = _core.Encore_InstallCIA(_context, romPath, message, message.Length);
@@ -145,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			for (var i = 1; i < lp.Roms.Count; i++)
 			{
 				// doesn't make sense if not a CIA
-				if (lp.Roms[i].Extension.ToLowerInvariant() != ".cia")
+				if (".cia".EqualsIgnoreCase(lp.Roms[i].Extension))
 				{
 					Dispose();
 					throw new("ROMs after the index 0 should be CIAs");

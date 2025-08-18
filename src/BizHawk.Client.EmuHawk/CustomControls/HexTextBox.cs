@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			if (!e.KeyChar.IsHex())
 			{
 				e.Handled = true;
@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return null;
 				}
-				
+
 				return 0;
 			}
 
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			if (!e.KeyChar.IsUnsigned())
 			{
 				e.Handled = true;
@@ -287,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return null;
 				}
-				
+
 				return 0;
 			}
 

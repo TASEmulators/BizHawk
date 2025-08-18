@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		public RetainedViewportPanel(bool doubleBuffer = false)
 		{
 			CreateHandle();
-			
+
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, doubleBuffer);

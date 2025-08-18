@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -83,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var loginItem = new ToolStripMenuItem("Login")
 			{
-				Visible = !LoggedIn
+				Visible = !LoggedIn,
 			};
 			loginItem.Click += (_, _) =>
 			{
@@ -96,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var logoutItem = new ToolStripMenuItem("Logout")
 			{
-				Visible = LoggedIn
+				Visible = LoggedIn,
 			};
 			logoutItem.Click += (_, _) =>
 			{
@@ -114,24 +115,25 @@ namespace BizHawk.Client.EmuHawk
 			var enableCheevosItem = new ToolStripMenuItem("Enable Achievements")
 			{
 				Checked = CheevosActive,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableCheevosItem.CheckedChanged += (_, _) => CheevosActive = !CheevosActive;
 			raDropDownItems.Add(enableCheevosItem);
 
-			var enableLboardsItem = new ToolStripMenuItem("Enable Leaderboards")
+			var enableLboardNotifsItem = new ToolStripMenuItem("Enable Leaderboard Notifications")
 			{
-				Checked = LBoardsActive,
+				Checked = LBoardNotifsActive,
 				CheckOnClick = true,
-				Enabled = HardcoreMode
+				Enabled = HardcoreMode,
 			};
-			enableLboardsItem.CheckedChanged += (_, _) => LBoardsActive = !LBoardsActive;
-			raDropDownItems.Add(enableLboardsItem);
+			enableLboardNotifsItem.CheckedChanged += (_, _) => LBoardNotifsActive = !LBoardNotifsActive;
+			raDropDownItems.Add(enableLboardNotifsItem);
 
 			var enableRichPresenceItem = new ToolStripMenuItem("Enable Rich Presence")
 			{
-				Checked = RichPresenceActive,
-				CheckOnClick = true
+				Checked = RichPresenceActive || HardcoreMode,
+				CheckOnClick = true,
+				Enabled = !HardcoreMode,
 			};
 			enableRichPresenceItem.CheckedChanged += (_, _) => RichPresenceActive = !RichPresenceActive;
 			raDropDownItems.Add(enableRichPresenceItem);
@@ -139,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableHardcoreItem = new ToolStripMenuItem("Enable Hardcore Mode")
 			{
 				Checked = HardcoreMode,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableHardcoreItem.CheckedChanged += (_, _) =>
 			{
@@ -153,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 					ToSoftcoreMode();
 				}
 
-				enableLboardsItem.Enabled = HardcoreMode;
+				enableLboardNotifsItem.Enabled = HardcoreMode;
 			};
 			raDropDownItems.Add(enableHardcoreItem);
 
@@ -162,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableSoundEffectsItem = new ToolStripMenuItem("Enable Sound Effects")
 			{
 				Checked = EnableSoundEffects,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableSoundEffectsItem.CheckedChanged += (_, _) => EnableSoundEffects = !EnableSoundEffects;
 			raDropDownItems.Add(enableSoundEffectsItem);
@@ -170,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			var enableUnofficialCheevosItem = new ToolStripMenuItem("Test Unofficial Achievements")
 			{
 				Checked = AllowUnofficialCheevos,
-				CheckOnClick = true
+				CheckOnClick = true,
 			};
 			enableUnofficialCheevosItem.CheckedChanged += (_, _) => ToggleUnofficialCheevos();
 			raDropDownItems.Add(enableUnofficialCheevosItem);
@@ -245,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var config = _getConfig();
 			CheevosActive = config.RACheevosActive;
-			LBoardsActive = config.RALBoardsActive;
+			LBoardNotifsActive = config.RALBoardsActive;
 			RichPresenceActive = config.RARichPresenceActive;
 			_hardcoreMode = config.RAHardcoreMode;
 			EnableSoundEffects = config.RASoundEffects;
@@ -314,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 			var buffer = file.ReadAllBytes();
 			_lib.rc_runtime_deserialize_progress_sized(_runtime, buffer, (uint)buffer.Length, IntPtr.Zero);
 		}
-		
+
 		private void QuickLoadCallback(object _, BeforeQuickLoadEventArgs e)
 		{
 			if (HardcoreMode)
@@ -332,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var config = _getConfig();
 			config.RACheevosActive = CheevosActive;
-			config.RALBoardsActive = LBoardsActive;
+			config.RALBoardsActive = LBoardNotifsActive;
 			config.RARichPresenceActive = RichPresenceActive;
 			config.RAHardcoreMode = HardcoreMode;
 			config.RASoundEffects = EnableSoundEffects;
@@ -424,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_gameData = _cachedGameDatas.TryGetValue(gameId, out var cachedGameData)
 						? new(cachedGameData, () => AllowUnofficialCheevos)
-						: GetGameData(gameId);
+						: GetGameData(gameId) ?? new();
 				}
 
 				// this check seems redundant, but it covers the case where GetGameData failed somehow
@@ -527,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case LibRCheevos.rc_runtime_event_type_t.RC_RUNTIME_EVENT_LBOARD_STARTED:
 					{
-						if (!LBoardsActive || !HardcoreMode) return;
+						if (!HardcoreMode) return;
 
 						var lboard = _gameData.GetLboardById(evt->id);
 						if (!lboard.Invalid)
@@ -537,9 +539,13 @@ namespace BizHawk.Client.EmuHawk
 							if (!lboard.Hidden)
 							{
 								CurrentLboard = lboard;
-								_dialogParent.AddOnScreenMessage("Leaderboard Attempt Started!");
-								_dialogParent.AddOnScreenMessage(lboard.Description);
-								PlaySound(_lboardStartSound);
+
+								if (LBoardNotifsActive)
+								{
+									_dialogParent.AddOnScreenMessage("Leaderboard Attempt Started!");
+									_dialogParent.AddOnScreenMessage(lboard.Description);
+									PlaySound(_lboardStartSound);
+								}
 							}
 						}
 
@@ -547,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case LibRCheevos.rc_runtime_event_type_t.RC_RUNTIME_EVENT_LBOARD_CANCELED:
 					{
-						if (!LBoardsActive || !HardcoreMode) return;
+						if (!HardcoreMode) return;
 
 						var lboard = _gameData.GetLboardById(evt->id);
 						if (!lboard.Invalid)
@@ -559,19 +565,22 @@ namespace BizHawk.Client.EmuHawk
 									CurrentLboard = null;
 								}
 
-								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
-								_dialogParent.AddOnScreenMessage(lboard.Description);
-								PlaySound(_lboardFailedSound);
+								if (LBoardNotifsActive)
+								{
+									_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Failed! ({lboard.Score})");
+									_dialogParent.AddOnScreenMessage(lboard.Description);
+									PlaySound(_lboardFailedSound);
+								}
 							}
 
 							lboard.SetScore(0);
 						}
-						
+
 						break;
 					}
 				case LibRCheevos.rc_runtime_event_type_t.RC_RUNTIME_EVENT_LBOARD_UPDATED:
 					{
-						if (!LBoardsActive || !HardcoreMode) return;
+						if (!HardcoreMode) return;
 
 						var lboard = _gameData.GetLboardById(evt->id);
 						if (!lboard.Invalid)
@@ -583,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				case LibRCheevos.rc_runtime_event_type_t.RC_RUNTIME_EVENT_LBOARD_TRIGGERED:
 					{
-						if (!LBoardsActive || !HardcoreMode) return;
+						if (!HardcoreMode) return;
 
 						var lboard = _gameData.GetLboardById(evt->id);
 						if (!lboard.Invalid)
@@ -597,9 +606,12 @@ namespace BizHawk.Client.EmuHawk
 									CurrentLboard = null;
 								}
 
-								_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
-								_dialogParent.AddOnScreenMessage(lboard.Description);
-								PlaySound(_unlockSound);
+								if (LBoardNotifsActive)
+								{
+									_dialogParent.AddOnScreenMessage($"Leaderboard Attempt Complete! ({lboard.Score})");
+									_dialogParent.AddOnScreenMessage(lboard.Description);
+									PlaySound(_lboardCompleteSound);
+								}
 							}
 						}
 
@@ -649,7 +661,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			1 => Peek(address),
 			2 => Peek(address) | (Peek(address + 1) << 8),
-			4 => Peek(address) | (Peek(address + 1) << 8) | (Peek(address + 2) << 16) | (Peek(address + 3) << 24),
+			4 => BinaryPrimitives.ReadUInt32LittleEndian(unchecked(stackalloc byte[]
+			{
+				(byte) Peek(address),
+				(byte) Peek(address + 1),
+				(byte) Peek(address + 2),
+				(byte) Peek(address + 3),
+			})),
 			_ => throw new InvalidOperationException($"Requested {num_bytes} in {nameof(PeekCallback)}"),
 		};
 

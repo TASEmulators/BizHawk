@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
@@ -36,7 +35,7 @@ namespace BizHawk.Client.Common.movie.import
 				1 => "1.43",
 				4 => "1.51",
 				5 => "1.52",
-				_ => "Unknown"
+				_ => "Unknown",
 			};
 
 			Result.Movie.Comments.Add($"{EmulationOrigin} Snes9x version {version}");
@@ -215,7 +214,7 @@ namespace BizHawk.Client.Common.movie.import
 			*/
 			string[] buttons =
 			{
-				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A",
 			};
 
 			for (int frame = 0; frame <= frameCount; frame++)
@@ -289,7 +288,7 @@ namespace BizHawk.Client.Common.movie.import
 								break;
 						}
 
-						if (peripheral != "" && !Result.Warnings.Any())
+						if (peripheral.Length is not 0 && Result.Warnings.Count is 0)
 						{
 							Result.Warnings.Add($"Unable to import {peripheral}. Not supported yet");
 						}

@@ -13,11 +13,8 @@ namespace BizHawk.Client.EmuHawk
 		public FileExtensionPreferencesPicker(IDictionary<string, string> preferredPlatformsForExtensions)
 		{
 			_preferredPlatformsForExtensions = preferredPlatformsForExtensions;
-			_availableSystems = new SystemLookup().AllSystems.ToList();
 			InitializeComponent();
 		}
-
-		private readonly List<SystemLookup.SystemInfo> _availableSystems;
 
 		public string FileExtension { get; set; }
 		public string OriginalPreference { get; set; }
@@ -28,8 +25,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PlatformDropdown.SelectedIndex > 0)
 				{
-					return _availableSystems
-						.First(x => x.FullName == PlatformDropdown.SelectedItem.ToString()).SystemId;
+					return EmulatorExtensions.SystemIDDisplayNames
+						.First(x => x.Value == PlatformDropdown.SelectedItem.ToString()).Key;
 				}
 
 				return "";
@@ -39,9 +36,9 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulatePlatforms()
 		{
 			PlatformDropdown.Items.Add("Ask me on load");
-			foreach (var platform in _availableSystems)
+			foreach (var (systemId, fullName) in EmulatorExtensions.SystemIDDisplayNames)
 			{
-				PlatformDropdown.Items.Add(platform.FullName);
+				PlatformDropdown.Items.Add(fullName);
 			}
 		}
 
@@ -52,8 +49,8 @@ namespace BizHawk.Client.EmuHawk
 			var selectedSystemId = _preferredPlatformsForExtensions[FileExtension];
 			if (!string.IsNullOrEmpty(selectedSystemId))
 			{
-				var selectedSystem = _availableSystems.Find(s => s.SystemId == selectedSystemId)?.FullName ?? string.Empty;
-				if (PlatformDropdown.Items.Contains(selectedSystem))
+				if (EmulatorExtensions.SystemIDDisplayNames.TryGetValue(selectedSystemId, out string selectedSystem)
+					&& PlatformDropdown.Items.Contains(selectedSystem))
 				{
 					PlatformDropdown.SelectedItem = selectedSystem;
 				}

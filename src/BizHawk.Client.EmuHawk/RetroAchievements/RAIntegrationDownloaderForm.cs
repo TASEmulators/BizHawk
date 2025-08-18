@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start(_url);
+			Util.OpenUrlExternal(_url);
 		}
 	}
 }

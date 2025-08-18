@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public partial class ZX128Plus2a : SpectrumBase
     {
         /*  http://www.worldofspectrum.org/faq/reference/128kreference.htm
-         *  
+         *
          *  Port 0x7ffd behaves in the almost exactly the same way as on the 128K/+2, with two exceptions:
 
             Bit 4 is now the low bit of the ROM selection.
@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 LastContendedReadByte = data;
                 CPUMon.NextMemReadContended = false;
             }
-                
+
             return data;
         }
 
@@ -596,7 +596,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
             {
-                // shadow screen is not set to display or paging is disabled (probably in 48k mode) 
+                // shadow screen is not set to display or paging is disabled (probably in 48k mode)
                 // (use screen0 at RAM5)
                 value = RAM5[addr & 0x3FFF];
             }
@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             stream.Read(ROM1, 0, 16384);
             stream.Read(ROM2, 0, 16384);
             stream.Read(ROM3, 0, 16384);
-            stream.Dispose();            
+            stream.Dispose();
         }
     }
 }

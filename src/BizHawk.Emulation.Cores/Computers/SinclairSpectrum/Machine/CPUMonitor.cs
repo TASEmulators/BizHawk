@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						{
 							// high byte not 40-7f
 							// low bit set
-							// N:4                            
+							// N:4
 						}
 						else
 						{
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						{
 							// high byte not 40-7f
 							// low bit set
-							// N:4                            
+							// N:4
 						}
 						else
 						{
@@ -366,7 +366,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// fetch instruction without incrementing pc
 			//_cpu.FetchInstruction(_cpu.FetchMemory(firstByte));
-
 		}
 
 		public void SyncState(Serializer ser)

@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 				FilePath = patchedFilePath,
 				KnownFirmwareFile = ff,
 				Hash = patchOption.Value.TargetHash,
-				Size = patchedFileLength
+				Size = patchedFileLength,
 			};
 		}
 
@@ -170,7 +170,7 @@ namespace BizHawk.Client.Common
 					FilePath = reader.Dict[fo.Hash].FileInfo.FullName,
 					KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[fo.Hash],
 					Hash = fo.Hash,
-					Size = fo.Size
+					Size = fo.Size,
 				};
 			}
 

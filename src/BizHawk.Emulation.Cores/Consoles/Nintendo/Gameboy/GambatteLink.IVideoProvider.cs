@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int[] GetVideoBuffer() => VideoBuffer;
 
 		private readonly int[] VideoBuffer;
-		
+
 		private int[] CreateVideoBuffer()
 		{
 			var b = new int[BufferWidth * BufferHeight];
@@ -30,6 +30,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 			return b;
 		}
-
 	}
 }

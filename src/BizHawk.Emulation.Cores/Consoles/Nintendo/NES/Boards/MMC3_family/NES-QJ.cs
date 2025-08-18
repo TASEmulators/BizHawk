@@ -62,6 +62,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				block = value & 1;
 			}
 		}
-
 	}
 }

@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var tracksSynth = new Synthesize_DiscTracks_From_DiscTOC_Job(OUT_Disc, session);
 					tracksSynth.Run();
 				}
-				
+
 				//insert a synth provider to take care of the leadout track
 				//currently, we let mednafen take care of its own leadout track (we'll make that controllable later)
 				//TODO: This currently doesn't work well with multisessions (only the last session can have a leadout read with the current model)
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var ss_leadout = new SS_Leadout
 					{
 						SessionNumber = OUT_Disc.Sessions.Count - 1,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					};
 					bool Condition(int lba) => lba >= OUT_Disc.Sessions[OUT_Disc.Sessions.Count - 1].LeadoutLBA;
 					new ConditionalSectorSynthProvider().Install(OUT_Disc, Condition, ss_leadout);
@@ -230,5 +230,10 @@ namespace BizHawk.Emulation.DiscSystem
 			var len = new FileInfo(binFilePath).Length;
 			return GenerateCue(binFilename, isMode2: len % 2048 is not 0 && len % 2352 is 0);
 		}
+
+		public static void CreateSyntheticCue(string cueFilePath, string binFilePath)
+			=> File.WriteAllText(
+				path: cueFilePath,
+				contents: GenerateCue(binFilename: binFilePath/*abs is fine here*/, binFilePath: binFilePath)); //TODO as with .iso, may want to try both
 	}
 }

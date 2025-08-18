@@ -66,29 +66,31 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private static void Call(MemoryCallbackCollection cbs, uint addr, uint value, uint flags, string scope)
+		private static uint Call(MemoryCallbackCollection cbs, uint addr, uint value, uint flags, string scope)
 		{
+			uint cbReturn = value; //By default, if no callback is called, it will return the value sent by the core unmodified.
 			foreach (var cb in cbs)
 			{
 				if (!cb.Address.HasValue || (cb.Scope == scope && cb.Address == (addr & cb.AddressMask)))
 				{
-					cb.Callback(addr, value, flags);
+					if (cb.Callback(addr, value, flags) is uint n) cbReturn = n; //If many callbacks are registered to the same address, no matter the order, if one of them overrides the original value, that new value will be sent to the core, even if a second, third etc. callback doesn't return anything. If many callbacks try to override, only the last will be sent to the core.
 				}
 			}
+			return cbReturn;
 		}
 
-		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
+		public uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
 			if (!_hasAny)
 			{
-				return;
+				return value;
 			}
 
 			if (HasReads)
 			{
 				if ((flags & (uint) MemoryCallbackFlags.AccessRead) != 0)
 				{
-					Call(_reads, addr, value, flags, scope);
+					value = Call(_reads, addr, value, flags, scope);
 				}
 			}
 
@@ -96,7 +98,7 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((flags & (uint) MemoryCallbackFlags.AccessWrite) != 0)
 				{
-					Call(_writes, addr, value, flags, scope);
+					value = Call(_writes, addr, value, flags, scope);
 				}
 			}
 
@@ -104,9 +106,10 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((flags & (uint) MemoryCallbackFlags.AccessExecute) != 0)
 				{
-					Call(_execs, addr, value, flags, scope);
+					value = Call(_execs, addr, value, flags, scope);
 				}
 			}
+			return value;
 		}
 
 		public bool HasReads { get; private set; }
@@ -393,7 +396,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			public readonly IMemoryCallback Current => _items[_position];
-			
+
 			object IEnumerator.Current => Current;
 
 			public bool MoveNext() => ++_position < _items.Count;

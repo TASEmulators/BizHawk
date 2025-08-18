@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public class ScreenshotForm : Form
 	{
 		private const int WS_EX_TOPMOST = 0x00000008;
-		
+
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			bb.DiscardAlpha();
 			_bitmap = bb.ToSysdrawingBitmap();
 			Width = width;
-			Padding = (int) measureString(captionText, Font, width).Height;
+			Padding = (int)measureString(captionText, Font, width).Height;
 			_drawingHeight = height;
 			Text = captionText;
 			Location = location;

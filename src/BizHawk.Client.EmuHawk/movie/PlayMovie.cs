@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			TurboCheckbox.Checked = _config.TurboSeek;
 		}
 
-		private static string MovieTimeLengthStr(TimeSpan movieLength)
+		internal static string MovieTimeLengthStr(TimeSpan movieLength)
 			=> movieLength.ToString(movieLength.Days == 0 ? @"hh\:mm\:ss\.fff" : @"dd\:hh\:mm\:ss\.fff", DateTimeFormatInfo.InvariantInfo);
 
 		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			string displayedPath = entry.Filename.RemovePrefix(_config.PathEntries.MovieAbsolutePath() + Path.DirectorySeparatorChar);
 			e.Item = new ListViewItem(displayedPath)
 			{
-				ToolTipText = entry.Filename
+				ToolTipText = entry.Filename,
 			};
 			e.Item.SubItems.Add(entry.SystemID);
 			e.Item.SubItems.Add(entry.GameName);
@@ -217,13 +217,8 @@ namespace BizHawk.Client.EmuHawk
 			var tas = new List<int>();
 			for (var i = 0; i < indices.Count; i++)
 			{
-				foreach (var ext in MovieService.MovieExtensions)
-				{
-					if ($".{ext}".Equals(Path.GetExtension(_movieList[indices[i]].Filename), StringComparison.OrdinalIgnoreCase))
-					{
-						tas.Add(i);
-					}
-				}
+				var fileExt = Path.GetExtension(_movieList[indices[i]].Filename);
+				if (MovieService.MovieExtensions.Select(static s => $".{s}").Any(fileExt.EqualsIgnoreCase)) tas.Add(i);
 			}
 
 			if (tas.Count is 0)
@@ -359,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 				["File"] = x => Path.GetFileName(x.Filename),
 				["SysID"] = x => x.SystemID,
 				["Game"] = x => x.GameName,
-				["Length (est.)"] = x => x.FrameCount
+				["Length (est.)"] = x => x.FrameCount,
 			});
 
 		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -452,8 +447,8 @@ namespace BizHawk.Client.EmuHawk
 			var framesItem = new ListViewItem("Frames");
 			framesItem.SubItems.Add(_movieList[firstIndex].FrameCount.ToString());
 			DetailsView.Items.Add(framesItem);
-			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Any();
-			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Any();
+			CommentsBtn.Enabled = _movieList[firstIndex].Comments.Count is not 0;
+			SubtitlesBtn.Enabled = _movieList[firstIndex].Subtitles.Count is not 0;
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
@@ -481,7 +476,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Keys = DetailsView.Items[i].Text,
 					Values = DetailsView.Items[i].SubItems[1].Text,
-					BackgroundColor = DetailsView.Items[i].BackColor
+					BackgroundColor = DetailsView.Items[i].BackColor,
 				});
 			}
 
@@ -501,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 					.OrderBy(x => x.Values, _sortDetailsReverse)
 					.ThenBy(x => x.Keys)
 					.ToList(),
-				_ => detailsList
+				_ => detailsList,
 			};
 
 			DetailsView.Items.Clear();

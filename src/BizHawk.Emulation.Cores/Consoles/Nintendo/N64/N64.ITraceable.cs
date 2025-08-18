@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	partial class N64
+	public partial class N64
 	{
 		public TraceBuffer Tracer { get; private set; }
 

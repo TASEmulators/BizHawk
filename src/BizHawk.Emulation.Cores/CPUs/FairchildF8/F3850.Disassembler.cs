@@ -299,7 +299,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			ushort start_addr = addr;
 //			ushort extra_inc = 0;
+#pragma warning disable MA0084 // shadows `const int F3850<>.A`
 			byte A = read(addr++);
+#pragma warning restore MA0084
 			string format;
 			format = mnemonics[A];
 

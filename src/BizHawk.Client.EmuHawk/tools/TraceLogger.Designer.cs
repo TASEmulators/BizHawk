@@ -92,7 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TraceView.Name = "TraceView";
 			this.TraceView.RowCount = 0;
 			this.TraceView.ScrollSpeed = 0;
-			this.TraceView.SeekingCutoffInterval = 0;
 			this.TraceView.Size = new System.Drawing.Size(603, 414);
 			this.TraceView.TabIndex = 4;
 			this.TraceView.TabStop = false;

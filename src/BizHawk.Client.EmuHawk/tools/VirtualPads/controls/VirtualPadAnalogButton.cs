@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 						!value;
 
 					_readonly = value;
-				
+
 					Refresh();
 				}
 			}

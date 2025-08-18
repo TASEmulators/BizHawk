@@ -103,7 +103,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int nt = ((addr - 0x2000) >> 10) & 0x3;
 				addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
 				return base.ReadPpu(addr);
-
 			}
 		}
 		public override void WritePpu(int addr, byte value)
@@ -115,7 +114,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = 0x2000 + (addr & 0x3FF) + (nametables[nt] << 10);
 				base.WritePpu(addr, value);
 			}
-
 		}
 
 		public override void SyncState(Serializer ser)

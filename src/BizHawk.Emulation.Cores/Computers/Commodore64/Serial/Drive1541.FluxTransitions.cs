@@ -38,6 +38,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		private void ExecuteFlux()
 		{
+			var track = _disk?.Tracks[_trackNumber];
+			var bits = track == null ? Span<int>.Empty : track.Bits;
+
 			// This actually executes the main 16mhz clock
 			while (_clocks > 0)
 			{
@@ -55,8 +58,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					{
 						if (_diskBitsLeft <= 0)
 						{
-							if (_diskWriteEnabled)
-								_trackImageData[_diskByteOffset] = _diskOutputBits;
+							if (_diskWriteEnabled && track.Write(_diskByteOffset, _diskOutputBits))
+							{
+								_dirtyDiskTracks[_getCurrentDiskNumber()][_trackNumber] = true;
+								SaveRamModified = true;
+							}
 
 							_diskByteOffset++;
 
@@ -64,10 +70,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 								_diskByteOffset = 0;
 
 							if (!_diskWriteEnabled)
-								_diskBits = _trackImageData[_diskByteOffset];
+								_diskBits = bits[_diskByteOffset];
 
 							_diskOutputBits = 0;
-							_diskBitsLeft = Disk.FluxBitsPerEntry;
+							_diskBitsLeft = DiskTrack.FluxBitsPerEntry;
 						}
 					}
 					_diskOutputBits >>= 1;
@@ -139,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 							_byteReady = false;
 							if (_diskWriteBitsRemaining <= 0)
 							{
-								_diskWriteLatch = Via1.EffectivePrA;
+								_diskWriteLatch = Via1.PrA;
 								_diskWriteBitsRemaining = 8;
 								_byteReady = Via1.Ca2;
 							}
@@ -173,9 +179,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					}
 
 					// negative transition activates SO pin on CPU
-					_previousCa1 = Via1.Ca1;
-					Via1.Ca1 = !_byteReady;
-					if (_previousCa1 && !Via1.Ca1)
+					_previousCa1 = _via1Ca1;
+					_via1Ca1 = !_byteReady;
+					if (_previousCa1 && !_via1Ca1)
 					{
 						// cycle 6 is roughly 400ns
 						_overflowFlagDelaySr |= _diskCycle > 6 ? 4 : 2;

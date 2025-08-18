@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.Audio;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
@@ -18,15 +19,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
-		private static readonly FilesystemFilterSet MAMERomsFSFilterSet = new(new FilesystemFilter("MAME Arcade ROMs", new[] { "zip" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet MAMERomsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("MAME Arcade ROMs", extensions: [ "zip" ]));
 
-		private static readonly FilesystemFilterSet ScreenshotsFSFilterSet = new(FilesystemFilter.PNGs)
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet ScreenshotsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			FilesystemFilter.PNGs);
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -115,31 +114,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSlotSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SelectSlot1MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 1"];
-			SelectSlot2MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 2"];
-			SelectSlot3MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 3"];
-			SelectSlot4MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 4"];
-			SelectSlot5MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 5"];
-			SelectSlot6MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 6"];
-			SelectSlot7MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 7"];
-			SelectSlot8MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 8"];
-			SelectSlot9MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 9"];
-			SelectSlot0MenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select State 10"];
+			var slotMenuItems = new ToolStripMenuItem/*?*/[]
+			{
+				null,
+				SelectSlot1MenuItem,
+				SelectSlot2MenuItem,
+				SelectSlot3MenuItem,
+				SelectSlot4MenuItem,
+				SelectSlot5MenuItem,
+				SelectSlot6MenuItem,
+				SelectSlot7MenuItem,
+				SelectSlot8MenuItem,
+				SelectSlot9MenuItem,
+				SelectSlot0MenuItem,
+			};
+			for (var i = 1; i < slotMenuItems.Length; i++)
+			{
+				slotMenuItems[i]!.ShortcutKeyDisplayString = Config.HotkeyBindings[$"Select State {i}"];
+			}
 			PreviousSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Previous Slot"];
 			NextSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Next Slot"];
 			SaveToCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Save"];
 			LoadCurrentSlotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Quick Load"];
-
-			SelectSlot1MenuItem.Checked = Config.SaveSlot == 1;
-			SelectSlot2MenuItem.Checked = Config.SaveSlot == 2;
-			SelectSlot3MenuItem.Checked = Config.SaveSlot == 3;
-			SelectSlot4MenuItem.Checked = Config.SaveSlot == 4;
-			SelectSlot5MenuItem.Checked = Config.SaveSlot == 5;
-			SelectSlot6MenuItem.Checked = Config.SaveSlot == 6;
-			SelectSlot7MenuItem.Checked = Config.SaveSlot == 7;
-			SelectSlot8MenuItem.Checked = Config.SaveSlot == 8;
-			SelectSlot9MenuItem.Checked = Config.SaveSlot == 9;
-			SelectSlot0MenuItem.Checked = Config.SaveSlot is 10;
+			var slot = Config.SaveSlot;
+			for (var i = 1; i < slotMenuItems.Length; i++) slotMenuItems[i]!.Checked = slot == i;
 		}
 
 		private void SaveRamSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -183,13 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieEndRecordMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Record;
 			MovieEndStopMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Stop;
 			MovieEndPauseMenuItem.Checked = Config.Movies.MovieEndAction == MovieEndAction.Pause;
-
-			// Arguably an IControlMainForm property should be set here, but in reality only Tastudio is ever going to interfere with this logic
-			MovieEndFinishMenuItem.Enabled =
-			MovieEndRecordMenuItem.Enabled =
-			MovieEndStopMenuItem.Enabled =
-			MovieEndPauseMenuItem.Enabled =
-				!Tools.Has<TAStudio>();
+			MovieEndPlaySoundMenuItem.Checked = Config.Movies.PlaySoundOnMovieEnd;
 		}
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -294,17 +286,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectSlotMenuItems_Click(object sender, EventArgs e)
 		{
-			if (sender == SelectSlot1MenuItem) Config.SaveSlot = 1;
-			else if (sender == SelectSlot2MenuItem) Config.SaveSlot = 2;
-			else if (sender == SelectSlot3MenuItem) Config.SaveSlot = 3;
-			else if (sender == SelectSlot4MenuItem) Config.SaveSlot = 4;
-			else if (sender == SelectSlot5MenuItem) Config.SaveSlot = 5;
-			else if (sender == SelectSlot6MenuItem) Config.SaveSlot = 6;
-			else if (sender == SelectSlot7MenuItem) Config.SaveSlot = 7;
-			else if (sender == SelectSlot8MenuItem) Config.SaveSlot = 8;
-			else if (sender == SelectSlot9MenuItem) Config.SaveSlot = 9;
-			else if (sender == SelectSlot0MenuItem) Config.SaveSlot = 10;
-
+			Config.SaveSlot = (int) ((ToolStripItem) sender).Tag;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
@@ -504,6 +486,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png".SplitPathToDirAndFile();
+			if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 			var result = this.ShowFileSaveDialog(
 				filter: ScreenshotsFSFilterSet,
 				initDir: dir,
@@ -555,6 +538,8 @@ namespace BizHawk.Client.EmuHawk
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"];
 			SoftResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Soft Reset"];
 			HardResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hard Reset"];
+
+			RealTimeCounterMenuItem.Text = $"Est. {PlayMovie.MovieTimeLengthStr(Emulator.EstimatedRealTimeSincePowerOn())} since power-on";
 		}
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
@@ -771,6 +756,8 @@ namespace BizHawk.Client.EmuHawk
 
 			InitControls();
 			InputManager.SyncControls(Emulator, MovieSession, Config);
+
+			Tools.HandleHotkeyUpdate();
 		}
 
 		private void OpenFWConfigRomLoadFailed(RomLoader.RomErrorArgs args)
@@ -809,7 +796,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ESoundOutputMethod.XAudio2 => XAudio2SoundOutput.GetDeviceNames(),
 				ESoundOutputMethod.OpenAL => OpenALSoundOutput.GetDeviceNames(),
-				_ => Enumerable.Empty<string>()
+				_ => [ ],
 			};
 			var oldOutputMethod = Config.SoundOutputMethod;
 			var oldDevice = Config.SoundDevice;
@@ -828,6 +815,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			Sound.StartSound();
 			RewireSound();
+			UpdateStatusBarMuteIndicator();
 		}
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
@@ -893,12 +881,7 @@ namespace BizHawk.Client.EmuHawk
 					RewireSound();
 				}
 
-				old = Config.VSyncThrottle;
 				Config.VSyncThrottle = false;
-				if (old)
-				{
-					_presentationPanel.Resized = true;
-				}
 			}
 
 			ThrottleMessage();
@@ -911,12 +894,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.SoundThrottle)
 			{
 				Config.ClockThrottle = false;
-				var old = Config.VSyncThrottle;
 				Config.VSyncThrottle = false;
-				if (old)
-				{
-					_presentationPanel.Resized = true;
-				}
 			}
 
 			ThrottleMessage();
@@ -925,7 +903,6 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.VSyncThrottle = !Config.VSyncThrottle;
-			_presentationPanel.Resized = true;
 			if (Config.VSyncThrottle)
 			{
 				Config.ClockThrottle = false;
@@ -949,11 +926,6 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncEnabledMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.VSync = !Config.VSync;
-			if (!Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
-			{
-				_presentationPanel.Resized = true;
-			}
-
 			VsyncMessage();
 		}
 
@@ -1033,7 +1005,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = _getConfigPath().SplitPathToDirAndFile();
-			var result = this.ShowFileOpenDialog(filter: ConfigFileFSFilterSet, initDir: dir!, initFileName: file!);
+			var result = this.ShowFileOpenDialog(filter: ConfigFileFSFilterSet, initDir: dir!, initFileName: file);
 			if (result is not null) LoadConfigFile(result);
 		}
 
@@ -1071,8 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExternalToolMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			ExternalToolMenuItem.DropDownItems.Clear();
-			ExternalToolMenuItem.DropDownItems.AddRange(ExtToolManager.ToolStripItems.ToArray());
+			ExternalToolMenuItem.ReplaceDropDownItems(items: ExtToolManager.ToolStripItems.ToArray());
 			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
 				ExternalToolMenuItem.DropDownItems.Add(new ToolStripMenuItemEx { Enabled = false, Text = "(none)" });
@@ -1206,12 +1177,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/BizHawk");
+			Util.OpenUrlExternal("https://tasvideos.org/BizHawk");
 		}
 
 		private void ForumsMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/Forum/Subforum/64");
+			Util.OpenUrlExternal("https://tasvideos.org/Forum/Subforum/64");
 		}
 
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)
@@ -1221,7 +1192,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			using BizBox form = new(() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), atten: 1.0f));
+			var atten = Config.SoundEnabledNormal ? Config.SoundVolume / 100.0f : 0.0f;
+			using BizBox form = new(() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), atten));
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -1297,19 +1269,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var file = new FileInfo($"{SaveStatePrefix()}.QuickSave{Config.SaveSlot % 10}.State.bak");
-
-			if (file.Exists)
+			var quicksaveSlot = Config.SaveSlot;
+			if (File.Exists($"{SaveStatePrefix()}.QuickSave{quicksaveSlot % 10}.State.bak"))
 			{
 				UndoSavestateContextMenuItem.Enabled = true;
-				if (_stateSlots.IsRedo(MovieSession.Movie, Config.SaveSlot))
+				if (_stateSlots.IsRedo(MovieSession.Movie, quicksaveSlot))
 				{
-					UndoSavestateContextMenuItem.Text = $"Redo Save to slot {Config.SaveSlot}";
+					UndoSavestateContextMenuItem.Text = $"Redo Save to slot {quicksaveSlot}";
 					UndoSavestateContextMenuItem.Image = Properties.Resources.Redo;
 				}
 				else
 				{
-					UndoSavestateContextMenuItem.Text = $"Undo Save to slot {Config.SaveSlot}";
+					UndoSavestateContextMenuItem.Text = $"Undo Save to slot {quicksaveSlot}";
 					UndoSavestateContextMenuItem.Image = Properties.Resources.Undo;
 				}
 			}
@@ -1406,8 +1377,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{Config.SaveSlot % 10}.State", Config.SaveSlot);
-			AddOnScreenMessage($"Save slot {Config.SaveSlot} restored.");
+			var slot = Config.SaveSlot;
+			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{slot % 10}.State", slot);
+			AddOnScreenMessage($"Save slot {slot} restored.");
 		}
 
 		private void ClearSramContextMenuItem_Click(object sender, EventArgs e)
@@ -1440,17 +1412,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SlotStatusButtons_MouseEnter(object/*?*/ sender, EventArgs e)
 		{
-			var slot = 10;
-			if (sender == Slot1StatusButton) slot = 1;
-			else if (sender == Slot2StatusButton) slot = 2;
-			else if (sender == Slot3StatusButton) slot = 3;
-			else if (sender == Slot4StatusButton) slot = 4;
-			else if (sender == Slot5StatusButton) slot = 5;
-			else if (sender == Slot6StatusButton) slot = 6;
-			else if (sender == Slot7StatusButton) slot = 7;
-			else if (sender == Slot8StatusButton) slot = 8;
-			else if (sender == Slot9StatusButton) slot = 9;
-			//TODO just put the slot number in Control.Tag already
+			var slot = (int) ((ToolStripItem) sender).Tag;
 			if (!(HasSlot(slot) && ReadScreenshotFromSavestate(slot: slot) is {} bb))
 			{
 				_screenshotTooltip.FadeOut();
@@ -1543,12 +1505,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == true)
 			{
-				System.Threading.ThreadPool.QueueUserWorkItem(s =>
-				{
-					using (System.Diagnostics.Process.Start(VersionInfo.HomePage))
-					{
-					}
-				});
+				Util.OpenUrlExternal(VersionInfo.HomePage);
 			}
 			else if (result == false)
 			{
@@ -1583,7 +1540,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			_presentationPanel.Resized = true;
+			if (Config.CaptureMouse)
+			{
+				CaptureMouse(false);
+				CaptureMouse(true);
+			}
+
 			if (_framebufferResizedPending && WindowState is FormWindowState.Normal)
 			{
 				_framebufferResizedPending = false;
@@ -1642,5 +1604,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop(object sender, DragEventArgs e)
 			=> PathsFromDragDrop = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+		private void MovieEndPlaySoundMenuItem_Click(object sender, EventArgs e)
+			=> Config.Movies.PlaySoundOnMovieEnd = !((ToolStripMenuItem) sender).Checked;
 	}
 }

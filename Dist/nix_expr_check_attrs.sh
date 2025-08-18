@@ -6,7 +6,7 @@ printf "Checking all documented attrs are actually exposed (expect \`missing = [
 nix-instantiate --eval --strict -E 'import Dist/exposed-attr-checker.nix {}'
 printf "\n"
 
-attrNamesToCheck='discohawk-latest emuhawk-2_9_1 emuhawk-2_9 emuhawk-2_8 emuhawk-2_7 emuhawk-2_6_3 emuhawk-2_6_2 emuhawk-2_6_1 emuhawk-2_6'
+attrNamesToCheck='discohawk-latest emuhawk-2_10 emuhawk-2_9_1 emuhawk-2_9 emuhawk-2_8 emuhawk-2_7 emuhawk-2_6_3 emuhawk-2_6_2 emuhawk-2_6_1 emuhawk-2_6'
 attrNamesToCheckBinOnly='emuhawk-2_5_2 emuhawk-2_5_1 emuhawk-2_5 emuhawk-2_4_2 emuhawk-2_4_1 emuhawk-2_4 emuhawk-2_3_3 emuhawk-2_3_2'
 # not checking `forNixOS = false` since it's just the same wrapped with nixGL
 #commonBuildFlags='--pure --arg doCheck true' # not working :(

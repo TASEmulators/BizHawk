@@ -13,6 +13,16 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string PLACEHOLDER_TITLE = "(will take value from WindowTitle/WindowTitleStatic)";
 
+		/// <summary>removes transparency from an image by combining it with a solid background</summary>
+		public static Image FillImageBackground(Image img, Color c)
+		{
+			Bitmap result = new(width: img.Width, height: img.Height);
+			using var g = Graphics.FromImage(result);
+			g.Clear(c);
+			g.DrawImage(img, x: 0, y: 0, width: img.Width, height: img.Height);
+			return result;
+		}
+
 		/// <summary>
 		/// Under Mono, <see cref="SystemColors.Control">SystemColors.Control</see> returns an ugly beige.<br/>
 		/// This method recursively replaces the <see cref="Control.BackColor"/> of the given <paramref name="control"/> (can be a <see cref="Form"/>) with <see cref="Color.WhiteSmoke"/>
@@ -57,7 +67,9 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				if (DesignMode) return PLACEHOLDER_TITLE;
+#pragma warning disable CA1065 // yes, really throw
 				throw new NotImplementedException("you have to implement this; the Designer prevents this from being an abstract method");
+#pragma warning restore CA1065
 			}
 		}
 

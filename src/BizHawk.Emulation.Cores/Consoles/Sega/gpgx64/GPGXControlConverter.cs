@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new("Start", LibGPGX.INPUT_KEYS.INPUT_START),
 		];
 
-		private static readonly CName[] Genesis6 = 
+		private static readonly CName[] Genesis6 =
 		[
 			new("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
 			new("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new("Lightgun Offscreen Shot", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
 		];
 
-		private static readonly CName[] Activator = 
+		private static readonly CName[] Activator =
 		[
 			new("1L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1L),
 			new("1U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1U),

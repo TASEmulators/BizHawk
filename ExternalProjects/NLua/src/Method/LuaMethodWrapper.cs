@@ -95,14 +95,6 @@ namespace NLua.Method
 			return methods.Concat(baseMethods).ToArray();
 		}
 
-		/// <summary>
-		/// Convert C# exceptions into Lua errors
-		/// </summary>
-		/// <returns>num of things on stack</returns>
-		/// <param name="e">null for no pending exception</param>
-		internal int SetPendingException(Exception e)
-			=> _translator.interpreter.SetPendingException(e);
-
 		internal int FillMethodArguments(LuaState luaState, int numStackToSkip)
 		{
 			var args = _lastCalledMethod.args;
@@ -171,13 +163,18 @@ namespace NLua.Method
 			catch (TargetInvocationException e)
 			{
 				// Failure of method invocation
-				if (_translator.interpreter.UseTraceback) 
+				if (_translator.interpreter.UseTraceback)
+				{
 					e.GetBaseException().Data["Traceback"] = _translator.interpreter.GetDebugTraceback();
-				return SetPendingException(e.GetBaseException());
+				}
+
+				_translator.ThrowError(luaState, e.GetBaseException());
+				return 1;
 			}
 			catch (Exception e)
 			{
-				return SetPendingException(e);
+				_translator.ThrowError(luaState, e);
+				return 1;
 			}
 
 			return PushReturnValue(luaState);
@@ -318,8 +315,6 @@ namespace NLua.Method
 				throw new LuaException("Lua stack overflow");
 			}
 
-			SetPendingException(null);
-
 			// Method from name
 			if (_method == null)
 			{
@@ -350,7 +345,7 @@ namespace NLua.Method
 						return 1;
 					}
 				}
-				else if (!_translator.MatchParameters(luaState, _method,  _lastCalledMethod, 0))
+				else if (!_translator.MatchParameters(luaState, _method, _lastCalledMethod, 0))
 				{
 					_translator.ThrowError(luaState, "Invalid arguments to method call");
 					return 1;

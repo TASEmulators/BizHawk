@@ -2,12 +2,6 @@
 
 using System.Collections.Immutable;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 {
@@ -39,13 +33,13 @@ public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 			{
 				var operation = (IInvocationOperation) oac.Operation;
 				if (operation.IsImplicit || operation.Instance is null) return;
-				objectDotGetTypeSym ??= oac.Compilation.GetTypeByMetadataName("System.Object")!.GetMembers("GetType")[0];
+				objectDotGetTypeSym ??= oac.Compilation.GetSpecialType(SpecialType.System_Object).GetMembers("GetType")[0];
 				if (!objectDotGetTypeSym.Matches(operation.TargetMethod)) return;
 				if (operation.Instance.Syntax is not ThisExpressionSyntax and not IdentifierNameSyntax { Identifier.Text: "GetType" }) return; // called on something that isn't `this`
 				var enclosingType = operation.SemanticModel!.GetDeclaredSymbol(
 					((CSharpSyntaxNode) operation.Syntax).EnclosingTypeDeclarationSyntax()!,
 					oac.CancellationToken)!;
-				oac.ReportDiagnostic(Diagnostic.Create(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis, operation.Syntax.GetLocation(), enclosingType.Name));
+				(enclosingType.IsSealed ? DiagNoGetTypeOnThisSealed : DiagNoGetTypeOnThis).ReportAt(operation, oac, enclosingType.Name);
 			},
 			OperationKind.Invocation);
 	}

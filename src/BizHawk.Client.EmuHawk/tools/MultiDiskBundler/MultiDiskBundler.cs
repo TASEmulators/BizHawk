@@ -32,12 +32,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = ToolIcon;
+			SystemDropDown.Format += (_, formatArgs) =>
+			{
+				var sysID = (string) formatArgs.ListItem;
+				var dispName = EmulatorExtensions.SystemIDToDisplayName(sysID);
+				formatArgs.Value = string.IsNullOrEmpty(dispName) ? sysID : dispName;
+			};
 			SystemDropDown.Items.AddRange([
 				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
 				VSystemID.Raw.Arcade,
 				VSystemID.Raw.C64,
+				VSystemID.Raw.Doom,
+				VSystemID.Raw.DOS,
 				VSystemID.Raw.GBL,
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
@@ -45,6 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				VSystemID.Raw.N3DS,
 				VSystemID.Raw.N64,
 				VSystemID.Raw.NDS,
+				VSystemID.Raw.Panasonic3DO,
 				VSystemID.Raw.PCFX,
 				VSystemID.Raw.PSX,
 				VSystemID.Raw.SAT,
@@ -100,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
-				AddFiles(xmlGame.AssetFullPaths);
+				AddFiles(xmlGame.Assets.Select(static pfd => pfd.Path).ToList());
 			}
 			catch
 			{
@@ -178,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = "",
 				Location = UIHelper.Scale(new Point(6, start)),
 				Size = new Size(FileSelectorPanel.ClientSize.Width - UIHelper.ScaleX(12), UIHelper.ScaleY(41)),
-				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
 			};
 
 			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
@@ -186,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
-				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
@@ -261,8 +270,7 @@ namespace BizHawk.Client.EmuHawk
 
 								return new XElement(
 									"Asset",
-									new XAttribute("FileName", fileName)
-								);
+									new XAttribute("FileName", fileName.Replace('\\', '/'))); // should still work on Windows, and makes (at least relative paths) cross-platform
 							})
 						)
 					);

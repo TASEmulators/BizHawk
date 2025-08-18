@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
@@ -56,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return DoInit<T>(
 				lp.Roms.Select(r => (r.RomData,
-					Path.GetFileName(r.RomPath[(r.RomPath.LastIndexOf('|') + 1)..])!.ToLowerInvariant())).ToArray(),
+					Path.GetFileName(r.RomPath.SubstringAfter('|')).ToLowerInvariant())).ToArray(),
 				lp.Discs.Select(d => d.DiscData).ToArray(),
 				wbxFilename,
 				lp.Roms.FirstOrDefault()?.Extension,
@@ -191,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				VsyncNumerator = info.FpsFixed;
 				VsyncDenominator = 1 << 24;
-				ClockRate = info.MasterClock / (double)0x100000000;
+				ClockRate = info.MasterClock / /*0x1_0000_0000*/4294967296.0;
 				_soundBuffer = new short[22050 * 2];
 				_isArcade = info.GameType == LibNymaCore.GameMediumTypes.GMT_ARCADE;
 
@@ -356,7 +357,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private List<SettingT> GetSettingsData()
 		{
-			_exe.AddTransientFile(new byte[0], "settings");
+			_exe.AddTransientFile(Array.Empty<byte>(), "settings");
 			_nyma.DumpSettings();
 			var settingsBuff = _exe.RemoveTransientFile("settings");
 			return NymaTypes.Settings.GetRootAsSettings(new ByteBuffer(settingsBuff)).UnPack().Values;
@@ -364,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private List<NPortInfoT> GetInputPortsData()
 		{
-			_exe.AddTransientFile(new byte[0], "inputs");
+			_exe.AddTransientFile(Array.Empty<byte>(), "inputs");
 			_nyma.DumpInputs();
 			var settingsBuff = _exe.RemoveTransientFile("inputs");
 			return NymaTypes.NPorts.GetRootAsNPorts(new ByteBuffer(settingsBuff)).UnPack().Values;

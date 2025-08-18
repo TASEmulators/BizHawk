@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
@@ -67,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			int majorVer = data[8];
 			int minorVer = data[9];
 
-			if (ident.ToUpperInvariant() != "PZXT")
+			if (!"PZXT".EqualsIgnoreCase(ident))
 			{
 				// this is not a valid PZX format file
 				return false;
@@ -96,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// check whether this is a valid pzx format file by looking at the identifier in the header block
 			string ident = Encoding.ASCII.GetString(data, 0, 4);
 
-			if (ident.ToUpperInvariant() != "PZXT")
+			if (!"PZXT".EqualsIgnoreCase(ident))
 			{
 				// this is not a valid TZX format file
 				throw new Exception($"{nameof(PzxConverter)}: This is not a valid PZX format file");
@@ -153,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                                 bit 15 repeat count present: 0 not present 1 present
                         2      u16    duration1 bits 0-14 low/high (see bit 15) pulse duration bits
                                                 bit 15 duration encoding: 0 duration1 1 ((duration1<<16)+duration2)
-                        4      u16    duration2 optional low bits of pulse duration (see bit 15 of duration1) 
+                        4      u16    duration2 optional low bits of pulse duration (see bit 15 of duration1)
                         6      ...    ...       ditto repeated until the end of the block
                     */
 					case "PULS":
@@ -230,7 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 						List<ushort> s0 = new List<ushort>();
 						List<ushort> s1 = new List<ushort>();
-						List<byte> dData = new List<byte>();
 
 						uint initPulseLevel = 1;
 						int dCount = 1;
@@ -267,12 +268,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								s1.Add(s);
 							}
 
-							for (int i = 0; i < Math.Ceiling((decimal)dCount / 8); i++)
-							{
-								var buff = b[pos++];
-								dData.Add(buff);
-							}
-
+							var dData = b.AsSpan(start: pos, length: (dCount + 7) >> 3/* == `ceil(dCount/8)` */);
+							pos += dData.Length;
 							foreach (var by in dData)
 							{
 								for (int i = 7; i >= 0; i--)
@@ -285,7 +282,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
-
 									}
 									else
 									{
@@ -295,7 +291,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 											bLevel = !bLevel;
 											t.DataLevels.Add(bLevel);
 										}
-
 									}
 								}
 							}
@@ -305,8 +300,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 								bLevel = !bLevel;
 								t.DataLevels.Add(bLevel);
 							}
-								
-							dData.Clear();
 						}
 
 						// convert to tape block

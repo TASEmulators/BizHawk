@@ -7,7 +7,6 @@ namespace BizHawk.Client.Common
 	public interface ITasMovie : IMovie, INotifyPropertyChanged, IDisposable
 	{
 		bool BindMarkersToInput { get; set; }
-		bool LastPositionStable { get; set; }
 
 		IMovieChangeLog ChangeLog { get; }
 		IStateManager TasStateManager { get; }
@@ -20,6 +19,7 @@ namespace BizHawk.Client.Common
 		TasLagLog LagLog { get; }
 		IStringLog VerificationLog { get; }
 		int LastEditedFrame { get; }
+		bool LastEditWasRecording { get; }
 
 		Action<int> GreenzoneInvalidated { get; set; }
 
@@ -53,5 +53,7 @@ namespace BizHawk.Client.Common
 		void LoadBranch(TasBranch branch);
 
 		void CopyVerificationLog(IEnumerable<string> log);
+
+		bool IsReserved(int frame);
 	}
 }

@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			_segment = 0;
 			OpenFileSegment();
 		}
-		
+
 		/// <summary>
 		/// starts an ffmpeg process and sets up associated sockets
 		/// </summary>

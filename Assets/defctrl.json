@@ -129,7 +129,7 @@
 			"ZR": "R, J1 B8, X1 RightTrigger",
 			"Select": "Space, J1 B9, X1 Back",
 			"Start": "Enter, J1 B10, X1 Start",
-			"Touch": "WMouse L",
+			"Touch": "WMouse L, X1 Touchpad",
 			"Tilt": "WMouse R",
 		},
 		"NDS Controller": {
@@ -145,7 +145,7 @@
 			"R": "E, J1 B6, X1 RightShoulder",
 			"Select": "Space, J1 B9, X1 Back",
 			"Start": "Enter, J1 B10, X1 Start",
-			"Touch": "WMouse L",
+			"Touch": "WMouse L, X1 Touchpad",
 			"Microphone": "M"
 		},
 		"Atari 2600 Basic Controller": {
@@ -674,6 +674,56 @@
 			"Mouse Left Click": "Z",
 			"Mouse Middle Click": "X",
 			"Mouse Right Click": "C"
+		},
+		"Amiga Controller": {
+			"P1 Mouse Left Button": "WMouse L",
+			"P2 Joystick Up": "Up",
+			"P2 Joystick Down": "Down",
+			"P2 Joystick Left": "Left",
+			"P2 Joystick Right": "Right",
+			"P2 Joystick Button 1": "Z",
+			"P2 Joystick Button 2": "X",
+			"P2 Joystick Button 3": "C"
+		},
+		"Doom Controller": {
+			"P1 Fire": "WMouse L",
+			"P1 Use": "Space",
+			"P1 Forward": "W",
+			"P1 Backward": "S",
+			"P1 Turn Left": "E",
+			"P1 Turn Right": "Q",
+			"P1 Strafe Left": "A",
+			"P1 Strafe Right": "D",
+			"P1 Weapon Select 1": "Number1",
+			"P1 Weapon Select 2": "Number2",
+			"P1 Weapon Select 3": "Number3",
+			"P1 Weapon Select 4": "Number4",
+			"P1 Weapon Select 5": "Number5",
+			"P1 Weapon Select 6": "Number6",
+			"P1 Weapon Select 7": "Number7",
+			"P1 Inventory Left": "LeftBracket",
+			"P1 Inventory Right": "RightBracket",
+			"P1 Use Artifact": "Enter",
+			"P1 Look Up": "PageDown",
+			"P1 Look Down": "Delete",
+			"P1 Look Center": "End",
+			"P1 Fly Up": "PageUp",
+			"P1 Fly Down": "Insert",
+			"P1 Fly Center": "Home",
+			"P1 Jump": "Slash",
+			"Change Gamma": "F11",
+			"Automap Toggle": "Tab",
+			"Automap +": "KeypadAdd",
+			"Automap -": "KeypadSubtract",
+			"Automap Full/Zoom": "Keypad0",
+			"Automap Follow": "F",
+			"Automap Up": "Up",
+			"Automap Down": "Down",
+			"Automap Right": "Right",
+			"Automap Left": "Left",
+			"Automap Grid": "G",
+			"Automap Mark": "M",
+			"Automap Clear Marks": "C"
 		}
 	},
 	"AllTrollersAutoFire": {
@@ -1086,6 +1136,94 @@
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			}
+		},
+		"Amiga Controller": {
+			"P1 Mouse X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Mouse Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"3DO Controller": {
+			"P1 Mouse X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Mouse Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Flight Stick Horizontal Axis": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Flight Stick Vertical Axis": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Light Gun Screen X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Light Gun Screen Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Trackball X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Trackball Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"DOSBox Controller": {
+			"Mouse Position X": {
+				"Value": "WMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse Position Y": {
+				"Value": "WMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse Speed X": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"Mouse Speed Y": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
+		},
+		"Doom Controller": {
+			"P1 Mouse Running": {
+				"Value": "RMouse Y",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			},
+			"P1 Mouse Turning": {
+				"Value": "RMouse X",
+				"Mult": 1.0,
+				"Deadzone": 0.0
+			}
 		}
 	},
 	"AllTrollersFeedbacks": {
@@ -1094,6 +1232,32 @@
 				"Channels": "Left+Right",
 				"GamepadPrefix": "X1 ",
 				"Prescale": 1.0
+			}
+		},
+		"Gameboy Controller": {
+			"Rumble": {
+				"Channels": "Left+Right",
+				"GamepadPrefix": "X1 ",
+				"Prescale": 1.0
+			}
+		},
+		"GBA Controller": {
+			"Rumble": {
+				"Channels": "Left+Right",
+				"GamepadPrefix": "X1 ",
+				"Prescale": 1.0
+			}
+		},
+		"PSX Front Panel": {
+			"P1 Rumble Left (strong)": {
+			  "Channels": "Left",
+			  "GamepadPrefix": "X1 ",
+			  "Prescale": 1.0
+			},
+			"P1 Rumble Right (weak)": {
+			  "Channels": "Right",
+			  "GamepadPrefix": "X1 ",
+			  "Prescale": 1.0
 			}
 		}
 	}

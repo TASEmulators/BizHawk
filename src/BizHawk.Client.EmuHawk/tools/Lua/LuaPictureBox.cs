@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			LogOutputCallback = logOutputCallback;
 			TableHelper = tableHelper;
 		}
-		
+
 		public void LuaResize(int width, int height)
 		{
 			Width = width;
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillEllipse(brush, x, y, width, height);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawEllipse(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillPie(brush, x, y, width, height, startAngle, sweepAngle);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawPie(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startAngle, sweepAngle);
 		}
 
@@ -276,11 +276,12 @@ namespace BizHawk.Client.EmuHawk
 			var pointsList = TableHelper.EnumerateValues<LuaTable>(points)
 				.Select(table => TableHelper.EnumerateValues<long>(table).ToList()).ToList();
 			var pointsArr = new Point[pointsList.Count];
+			var x1 = x ?? 0;
+			var y1 = y ?? 0;
 			var i = 0;
 			foreach (var point in pointsList)
 			{
-				pointsArr[i] = new Point((int) point[0] + x ?? 0, (int) point[1] + y ?? 0);
-				i++;
+				pointsArr[i++] = new(x1 + (int) point[0], y1 + (int) point[1]);
 			}
 
 			var boxBackground = Graphics.FromImage(Image);
@@ -308,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillRectangle(GetBrush(bg.Value), x, y, width, height);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawRectangle(GetPen(TableHelper.SafeParseColor(line) ?? _defaultForeground), x, y, width, height);
 		}
 
@@ -399,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			boxBackground.DrawString(message, font, GetBrush(TableHelper.SafeParseColor(foreColor) ?? Color.Black), x, y);
 		}
-		
+
 		public Point GetMouse()
 		{
 			var p = PointToClient(MousePosition);

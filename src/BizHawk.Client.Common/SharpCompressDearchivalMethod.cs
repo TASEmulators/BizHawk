@@ -21,8 +21,7 @@ namespace BizHawk.Client.Common
 			offset = 0;
 			isExecutable = false;
 
-			bool isArchive = ArchiveFactory.IsArchive(fileName, out var type);
-			if (!isArchive) return false;
+			if (!ArchiveFactory.IsArchive(fileName, out var type)) return false;
 			if (type is not ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
 
 			// SharpCompress seems to overzealously flag files it thinks are the in original .tar format, so we'll check for false positives. This affects 0.24.0, and the latest at time of writing, 0.27.1.
@@ -47,9 +46,7 @@ namespace BizHawk.Client.Common
 			if (!fileStream.CanRead || !fileStream.CanSeek) return false;
 			long initialPosition = fileStream.Position;
 
-			bool isArchive = ArchiveFactory.IsArchive(fileStream, out var type);
-			fileStream.Seek(initialPosition, SeekOrigin.Begin);
-			if (!isArchive) return false;
+			if (!ArchiveFactory.IsArchive(fileStream, out var type)) return false;
 			if (type is not ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
 
 			// as above, SharpCompress seems to overzealously flag files it thinks are the in original .tar format, so we'll check for false positives

@@ -9,10 +9,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private IntPtr _saveRam;
 		private int _saveRamSize;
 
-		// yeah this is not the best. this will basically always return true as long as the saveRam exists.
 		public bool SaveRamModified => _saveRamSize != 0;
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveRamSize == 0) return null;
 

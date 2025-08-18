@@ -4,7 +4,9 @@ using BizHawk.Emulation.Cores.Components.I8048;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
-	[Core(CoreNames.O2Hawk, "")]
+	[Core(
+		name: CoreNames.O2Hawk,
+		author: "alyosha")]
 	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>, IBoardInfo
 	{
 		// memory domains
@@ -83,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
 			// set up differences between PAL and NTSC systems
-			if ((game.Region == "US" || game.Region == "EU-US" || game.Region == null) && !is_G7400)
+			if (!is_G7400 && game.Region is null or "US" or "EU-US")
 			{
 				is_pal = false;
 				pic_height = 240;
@@ -126,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			ticker = 0;
 
-			// some of these get overwritten, but 
+			// some of these get overwritten, but
 			addr_latch = 0;
 			kb_state_row = kb_state_col = 0;
 

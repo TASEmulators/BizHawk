@@ -5,16 +5,15 @@ namespace BizHawk.Common.IOExtensions
 {
 	public static class IOExtensions
 	{
-		public static readonly Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
+		private static Encoding? _shiftJIS = null;
+
+		public static Encoding ShiftJISEncoding
+			=> _shiftJIS ??= Encoding.GetEncoding("shift_jis");
 
 		public static Span<byte> GetBufferAsSpan(this MemoryStream ms)
 			=> ms.GetBuffer().AsSpan().Slice(start: 0, length: (int) ms.Length);
 
-		public static unsafe string GetString(this Encoding encoding, ReadOnlySpan<byte> bytes)
-		{
-			fixed (byte* p = bytes) return encoding.GetString(p, bytes.Length);
-		}
-
+		/// <remarks>does NOT seek to beginning</remarks>
 		public static byte[] ReadAllBytes(this Stream stream)
 		{
 			var outStream = new MemoryStream();
@@ -100,12 +99,12 @@ namespace BizHawk.Common.IOExtensions
 			}
 		}
 
-		public static void WriteBit(this BinaryWriter bw, Bit bit)
+		internal static void WriteBit(this BinaryWriter bw, Bit bit)
 		{
 			bw.Write((bool)bit);
 		}
 
-		public static Bit ReadBit(this BinaryReader br)
+		internal static Bit ReadBit(this BinaryReader br)
 		{
 			return br.ReadBoolean();
 		}

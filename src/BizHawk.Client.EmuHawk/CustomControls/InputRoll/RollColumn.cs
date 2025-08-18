@@ -4,6 +4,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
 	{
+		public int VerticalWidth { get; }
+		public int HorizontalHeight { get; }
 		public int Width { get; set; }
 		public int Left { get; set; }
 		public int Right { get; set; }
@@ -24,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool Emphasis { get; set; }
 
 		/// <summary>
-		/// Column header text will be drawn rotated, if true
+		/// Column text will be drawn rotated if true
 		/// </summary>
 		public bool Rotatable { get; set; }
 
@@ -36,11 +38,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public RollColumn(string name, int widthUnscaled, ColumnType type, string text)
+			: this(name, widthUnscaled, widthUnscaled, type, text) { }
+
+		public RollColumn(string name, int verticalWidth, int horizontalHeight, ColumnType type, string text)
 		{
 			Name = name;
 			Text = text;
 			Type = type;
-			Width = UIHelper.ScaleX(widthUnscaled);
+			VerticalWidth = UIHelper.ScaleX(verticalWidth);
+			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
+			Width = VerticalWidth;
 		}
 
 		public RollColumn(string name, int widthUnscaled, string text)

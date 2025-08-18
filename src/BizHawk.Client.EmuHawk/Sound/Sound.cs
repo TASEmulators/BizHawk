@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ESoundOutputMethod.XAudio2 => new XAudio2SoundOutput(this, config.SoundDevice),
 					ESoundOutputMethod.OpenAL => new OpenALSoundOutput(this, config.SoundDevice),
-					_ => new DummySoundOutput(this)
+					_ => new DummySoundOutput(this),
 				};
 			}
 		}
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void PlayWavFile(Stream wavFile, float atten)
 		{
-			if (atten <= 0) return;
+			if (!Config.SoundEnabled || atten <= 0) return;
 			try
 			{
 				_outputDevice.PlayWavFile(wavFile, Math.Min(atten, 1));

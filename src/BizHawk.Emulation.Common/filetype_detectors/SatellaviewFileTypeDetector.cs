@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
@@ -68,7 +69,7 @@ namespace BizHawk.Emulation.Common
 					LIMITED_2_PLAYS_LEFT => 2,
 					LIMITED_1_PLAYS_LEFT => 1,
 					LIMITED_0_PLAYS_LEFT => 0,
-					_ => -1
+					_ => -1,
 				};
 
 			public byte Revision
@@ -105,7 +106,9 @@ namespace BizHawk.Emulation.Common
 			var corruption = 0;
 			// "invalid" states were assigned a higher value if the wiki page was less vague
 
-			if (header.Title.Length is 0) corruption++;
+			static bool IsASCIIOrKana(char c)
+				=> c is (>= ' ' and <= '~') or (>= 'ぁ' and <= 'ヿ') or (>= '！' and <= '￮'); // doubt this matches SHIFT-JIS but it should cover all the kana which is what I expect in a title
+			if (!header.Title.Any(IsASCIIOrKana)) corruption++;
 
 			if (header.IsSelfDestructing)
 			{

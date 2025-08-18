@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	The read port is at 1000-13FF.
 	The write port is at 1400-17FF.
-	
+
 	Example games:
 		Magicard
 	 */
@@ -42,17 +42,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			
+
 			if (addr < 0x1400)
 			{
 				return _ram[(addr & 0x3FF)];
 			}
-			
+
 			if (addr >= 0x1800 && addr < 0x2000)
 			{
 				return Core.Rom[addr & 0x7FF];
 			}
-			
+
 			return base.ReadMemory(addr);
 		}
 

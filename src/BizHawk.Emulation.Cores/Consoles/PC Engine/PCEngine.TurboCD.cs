@@ -2,7 +2,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		public byte[] CdIoPorts = new byte[16];
 

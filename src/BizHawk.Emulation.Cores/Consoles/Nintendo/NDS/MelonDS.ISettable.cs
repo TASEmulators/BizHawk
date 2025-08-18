@@ -207,6 +207,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(false)]
 			public bool GLHiResCoordinates { get; set; }
 
+			[DisplayName("Enable JIT Recompiler")]
+			[Description("Enables JIT recompilation, offering a speed boost at the cost of accuracy. Debugging tools cannot be used with the JIT. Savestate size will be much larger with the JIT.")]
+			[DefaultValue(false)]
+			public bool EnableJIT { get; set; }
+
+			[JsonIgnore]
+			private int _jitmaxbranchsize;
+
+			[DisplayName("JIT Max Branch Size")]
+			[Description("Sets the maximum size of a JIT block. Higher values gain more speed but have a higher risk of timing problems.")]
+			[DefaultValue(32)]
+			public int JITMaxBranchSize
+			{
+				get => _jitmaxbranchsize;
+				set => _jitmaxbranchsize = Math.Max(1, Math.Min(value, 32));
+			}
+
+			[DisplayName("JIT Literal Optimizations")]
+			[Description("Performs literal optimizations in the JIT recompiler.")]
+			[DefaultValue(true)]
+			public bool JITLiteralOptimizations { get; set; }
+
+			[DisplayName("JIT Branch Optimizations")]
+			[Description("Performs branch optimizations in the JIT recompiler.")]
+			[DefaultValue(true)]
+			public bool JITBranchOptimizations { get; set; }
+
 			[JsonIgnore]
 			private DateTime _initaltime;
 
@@ -225,6 +252,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(true)]
 			public bool UseRealTime { get; set; }
 
+			[DisplayName("Touch Interpolation")]
+			[Description("If true, touch inputs will be interpolated, creating smoother touch movements. Required to progress in some games. May be undesirable when TASing.")]
+			[DefaultValue(true)]
+			public bool UseTouchInterpolation { get; set; }
+
 			[DisplayName("DSi Mode")]
 			[Description("If true, DSi mode will be used. Forced true if a DSiWare rom is detected.")]
 			[DefaultValue(false)]
@@ -234,6 +266,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[Description("If true, real BIOS files will be used. Forced true for DSi.")]
 			[DefaultValue(false)]
 			public bool UseRealBIOS { get; set; }
+
+			[DisplayName("Full DSi BIOS Boot")]
+			[Description("If true, the full DSi BIOS boot sequence will be done, instead of the first part HLE'd. Requires full (good) BIOS dumps. Ignored outside of DSi mode.")]
+			[DefaultValue(false)]
+			public bool FullDSiBIOSBoot { get; set; }
 
 			[DisplayName("Skip Firmware")]
 			[Description("If true, initial firmware boot will be skipped. Forced true if firmware cannot be booted (no real bios or missing firmware).")]
@@ -249,6 +286,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[Description("If true, the DSi NAND will have all its titles cleared. Forced true when recording a movie.")]
 			[DefaultValue(true)]
 			public bool ClearNAND { get; set; }
+
+			[DisplayName("Enable DLDI")]
+			[Description("If true, homebrew ROMs will have DLDI enabled, giving them a blank SD Card to use. Ignored for retail ROMs.")]
+			[DefaultValue(false)]
+			public bool EnableDLDI { get; set; }
+
+			[DisplayName("Enable DSi SD Card")]
+			[Description("If true, a blank SD card will be inserted into the DSi SD card slot. Ignored outside of DSi mode.")]
+			[DefaultValue(false)]
+			public bool EnableDSiSDCard { get; set; }
+
+			[DisplayName("DSi DSP HLE")]
+			[Description("If true, the DSi DSP will use HLE (High Level Emulation) if possible. Ignored outside of DSi mode.")]
+			[DefaultValue(true)]
+			public bool DSiDSPHLE { get; set; }
 
 			public enum StartUp : int
 			{

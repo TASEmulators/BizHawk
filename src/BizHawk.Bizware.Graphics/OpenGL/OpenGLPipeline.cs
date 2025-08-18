@@ -263,9 +263,6 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
-		public void SetUniformMatrix(string name, Matrix4x4 mat, bool transpose)
-			=> SetUniformMatrix(name, ref mat, transpose);
-
 		public unsafe void SetUniformMatrix(string name, ref Matrix4x4 mat, bool transpose)
 		{
 			if (_uniforms.TryGetValue(name, out var uid))

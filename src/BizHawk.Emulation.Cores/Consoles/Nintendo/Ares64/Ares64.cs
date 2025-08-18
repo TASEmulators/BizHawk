@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					gb1RomPtr = GetGBRomOrNull(0),
 					gb2RomPtr = GetGBRomOrNull(1),
 					gb3RomPtr = GetGBRomOrNull(2),
-					gb4RomPtr = GetGBRomOrNull(3)) 
+					gb4RomPtr = GetGBRomOrNull(3))
 				{
 					var loadData = new LibAres64.LoadData
 					{
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				Time = GetRtcTime(!DeterministicEmulation),
 				Reset = controller.IsPressed("Reset"),
 				Power = controller.IsPressed("Power"),
-				
+
 				BobDeinterlacer = _settings.Deinterlacer == LibAres64.DeinterlacerType.Bob,
 				FastVI = _settings.FastVI,
 				SkipDraw = !render,

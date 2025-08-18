@@ -33,6 +33,11 @@
 			return !(inputData && outputData);
 		}
 
+		private bool ViaReadByteReady()
+		{
+			return _via1Ca1;
+		}
+
 		private bool ViaReadAtn()
 		{
 			var inputAtn = ReadMasterAtn();
@@ -114,43 +119,36 @@
 
 		public int Read(int addr)
 		{
-			switch (addr & 0xFC00)
-			{
-				case 0x1800:
-					return Via0.Read(addr);
-				case 0x1C00:
-					return Via1.Read(addr);
-			}
-
 			if ((addr & 0x8000) != 0)
 			{
 				return DriveRom.Read(addr & 0x3FFF);
 			}
 
-			if ((addr & 0x1F00) < 0x800)
+			switch (addr & 0x1C00)
 			{
-				return _ram[addr & 0x7FF];
+				case < 0x800:
+					return _ram[addr & 0x7FF];
+				case 0x1800:
+					return Via0.Read(addr);
+				case 0x1C00:
+					return Via1.Read(addr);
+				default:
+					return 0;
 			}
-
-			return (addr >> 8) & 0xFF;
 		}
 
 		public void Write(int addr, int val)
 		{
-			switch (addr & 0xFC00)
+			switch (addr & 0x1C00)
 			{
+				case < 0x800:
+					_ram[addr & 0x7FF] = val & 0xFF;
+					break;
 				case 0x1800:
 					Via0.Write(addr, val);
 					break;
 				case 0x1C00:
 					Via1.Write(addr, val);
-					break;
-				default:
-					if ((addr & 0x8000) == 0 && (addr & 0x1F00) < 0x800)
-					{
-						_ram[addr & 0x7FF] = val & 0xFF;
-					}
-
 					break;
 			}
 		}

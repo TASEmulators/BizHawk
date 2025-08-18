@@ -48,17 +48,14 @@ namespace BizHawk.Client.EmuHawk
 			if (CanDisassemble)
 			{
 				Disassemble();
-				SetDisassemblerItemCount();
 			}
 		}
-		
+
 		private void Disassemble()
 		{
-			int lineCount = DisassemblerView.RowCount * 6 + 2;
-
 			_disassemblyLines.Clear();
 			uint currentAddress = _currentDisassemblerAddress;
-			for (int i = 0; i <= lineCount; ++i)
+			for (int i = 0; i <= DisassemblerView.RowCount; ++i)
 			{
 				if (currentAddress >= BusMaxValue)
 				{
@@ -69,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				_disassemblyLines.Add(new DisasmOp(currentAddress, advance, line));
 				currentAddress += (uint)advance;
 			}
+			DisassemblerView.Refresh();
 		}
 
 		private void DisassemblerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
@@ -90,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisassemblerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			if (_disassemblyLines.Any() && index < _disassemblyLines.Count)
+			if (0 <= index && index < _disassemblyLines.Count)
 			{
 				if (_disassemblyLines[index].Address == _currentDisassemblerAddress)
 				{
@@ -139,30 +137,25 @@ namespace BizHawk.Client.EmuHawk
 			if (DisassemblerView.VisibleRows > 0)
 			{
 				DisassemblerView.RowCount = DisassemblerView.VisibleRows * 6 + 2;
-			}		
+			}
 		}
 
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
 		{
 			SetDisassemblerItemCount();
-			if (CanDisassemble)
-			{
-				Disassemble();
-			}
+			UpdateDisassembler();
 		}
 
 		private void SmallIncrement()
 		{
 			IncrementCurrentAddress();
 			Disassemble();
-			DisassemblerView.Refresh();
 		}
 
 		private void SmallDecrement()
 		{
 			DecrementCurrentAddress();
 			Disassemble();
-			DisassemblerView.Refresh();
 		}
 
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
@@ -202,11 +195,6 @@ namespace BizHawk.Client.EmuHawk
 				blob.AppendFormat("{0} {1}\n", line.Address.ToHexString(_pcRegisterSize), line.Mnemonic);
 			}
 			Clipboard.SetDataObject(blob.ToString());
-		}
-
-		private void OnPauseChanged(bool isPaused)
-		{
-			if (isPaused) FullUpdate();
 		}
 
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)

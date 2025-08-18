@@ -1,7 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
-
-using BizHawk.Common.StringExtensions;
 
 using Newtonsoft.Json;
 
@@ -24,7 +21,7 @@ namespace BizHawk.Client.Common
 
 			var settings = JsonConvert.SerializeObject(TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
-			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
+			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw), zstdCompress: true);
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 			if (InputRollSettingsForSave != null)
@@ -33,15 +30,12 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(inputRollSettingsJson));
 			}
 
-			if (VerificationLog.Any())
+			if (VerificationLog.Count is not 0)
 			{
 				bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(VerificationLog.ToInputLog()));
 			}
 
-			if (Branches.Any())
-			{
-				Branches.Save(bs);
-			}
+			if (Branches.Count is not 0) Branches.Save(bs);
 
 			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 
@@ -64,7 +58,7 @@ namespace BizHawk.Client.Common
 			Markers.Clear();
 			ChangeLog.Clear();
 		}
-		
+
 		protected override void LoadFields(ZipStateLoader bl)
 		{
 			base.LoadFields(bl);
@@ -82,7 +76,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.Clear();
 			Changes = false;
 		}
-		
+
 		private void LoadTasprojExtras(ZipStateLoader bl)
 		{
 			bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => LagLog.Load(tr));

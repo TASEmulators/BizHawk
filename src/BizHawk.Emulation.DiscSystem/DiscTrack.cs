@@ -18,7 +18,7 @@
 
     	//These omissions could be handled by ReadStructure() policies which permit the scanning of the entire disc.
     	//After that, they could be cached in here.
-    	
+
     	/// <summary>
     	/// The number of the track (1-indexed)
     	/// </summary>
@@ -57,7 +57,7 @@
     	/// The next track in the session. null for the leadout track of a session.
     	/// </summary>
     	public DiscTrack NextTrack;
-		
+
 		/// <summary>
 		/// The Type of a track as specified in the TOC Q-Subchannel data from the control flags.
 		/// Could also be 4-Channel Audio, but we'll handle that later if needed
@@ -77,7 +77,7 @@
 			/// <summary>
 			/// Audio track( TOC Q control 0x04 flag clear )
 			/// </summary>
-			Audio
+			Audio,
 		}
     }
 }

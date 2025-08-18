@@ -37,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte MicVolume;
 			public byte GBALightSensor;
 			public byte ConsiderAltLag;
+			public byte UseTouchInterpolation;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -75,6 +76,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public bool DSi;
 			public bool ClearNAND;
 			public bool SkipFW;
+			public bool FullDSiBIOSBoot;
+			public bool EnableDLDI;
+			public bool EnableDSiSDCard;
+			public bool DSiDSPHLE;
+
+			public bool EnableJIT;
+			public int MaxBranchSize;
+			public bool LiteralOptimizations;
+			public bool BranchOptimizations;
 
 			public NDS.NDSSettings.AudioBitDepthType BitDepth;
 			public NDS.NDSSettings.AudioInterpolationType Interpolation;
@@ -141,22 +151,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract void PutSaveRam(IntPtr console, byte[] data, uint len);
 
 		[BizImport(CC)]
-		public abstract void GetSaveRam(IntPtr console, byte[] data);
+		public abstract void GetSaveRam(IntPtr console, byte[] data, bool clearDirty);
 
 		[BizImport(CC)]
 		public abstract int GetSaveRamLength(IntPtr console);
 
 		[BizImport(CC)]
-		public abstract bool SaveRamIsDirty();
+		public abstract bool SaveRamIsDirty(IntPtr console);
 
 		[BizImport(CC)]
-		public abstract void ImportDSiWareSavs(IntPtr console, uint titleId);
+		public abstract void ImportDSiWareSavs(IntPtr console, ulong titleId);
 
 		[BizImport(CC)]
-		public abstract void ExportDSiWareSavs(IntPtr console, uint titleId);
+		public abstract void ExportDSiWareSavs(IntPtr console, ulong titleId);
 
 		[BizImport(CC)]
-		public abstract void DSiWareSavsLength(IntPtr console, uint titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
+		public abstract void DSiWareSavsLength(IntPtr console, ulong titleId, out int publicSavSize, out int privateSavSize, out int bannerSavSize);
 
 		[BizImport(CC)]
 		public abstract void GetRegs(IntPtr console, uint[] regs);

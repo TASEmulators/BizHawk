@@ -1,5 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+
+using BizHawk.Common.StringExtensions;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -29,15 +32,18 @@ namespace BizHawk.Client.Common
 		public bool Frozen { get; set; }
 
 		[JsonIgnore]
-		public bool Empty => !recentlist.Any();
+		public bool Empty
+			=> recentlist.Count is 0;
 
 		[JsonIgnore]
 		public int Count => recentlist.Count;
 
 		[JsonIgnore]
-		public string MostRecent => recentlist.Any() ? recentlist[0] : "";
+		public string MostRecent
+			=> recentlist.Count is 0 ? string.Empty : recentlist[0];
 
-		public string this[int index] => recentlist.Any() ? recentlist[index] : "";
+		public string this[int index]
+			=> recentlist.Count is 0 ? string.Empty : recentlist[index];
 
 		public IEnumerator<string> GetEnumerator() => recentlist.GetEnumerator();
 
@@ -47,6 +53,17 @@ namespace BizHawk.Client.Common
 			{
 				recentlist.Clear();
 			}
+		}
+
+		public void ClearMoved()
+		{
+			if (Frozen) return;
+			recentlist.RemoveAll(entry =>
+			{
+				if (!OpenAdvancedSerializer.ParseRecentFile(filePath: ref entry, out _)) return false; // weird thing, don't touch
+				// else `entry` is a regular file path
+				return !File.Exists(entry);
+			});
 		}
 
 		public void Add(string newFile)
@@ -67,7 +84,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Frozen)
 			{
-				return recentlist.RemoveAll(recent => string.Equals(newFile, recent, StringComparison.OrdinalIgnoreCase)) != 0; // none removed => return false
+				return recentlist.RemoveAll(newFile.EqualsIgnoreCase) is not 0; // none removed => return false
 			}
 
 			return false;

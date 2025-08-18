@@ -18,32 +18,32 @@
 			switch (addr)
 			{
 				case 0x0:
-					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
-						_ifr &= 0xE7;
-					if (_acrPbLatchEnable)
-						return _pbLatch;
+					_ifr &= ~IRQ_CB1;
+					if ((_pcr & PCR_CB2_ACK) == 0)
+					{
+						_ifr &= ~IRQ_CB2;
+					}
+					_cb2Handshake = true;
+					_cb2Pulse = false;
 					break;
 				case 0x1:
-					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
-						_ifr &= 0xFC;
-					if (_acrPaLatchEnable)
-						return _paLatch;
+					_ifr &= ~IRQ_CA1;
+					if ((_pcr & PCR_CA2_ACK) == 0)
+					{
+						_ifr &= ~IRQ_CA2;
+					}
+					_ca2Handshake = true;
+					_ca2Pulse = false;
 					break;
 				case 0x4:
-					_ifr &= 0xBF;
+					_ifr &= ~IRQ_T1;
 					break;
 				case 0x8:
-					_ifr &= 0xDF;
+					_ifr &= ~IRQ_T2;
 					break;
 				case 0xA:
-					_ifr &= 0xFB;
-					_srCount = 8;
-					break;
-				case 0xF:
-					if (_acrPaLatchEnable)
-					{
-						return _paLatch;
-					}
+					_srAccessed = true;
+					_ifr &= ~IRQ_SR;
 					break;
 			}
 
@@ -55,10 +55,10 @@
 			switch (addr)
 			{
 				case 0x0:
-					return _port.ReadPrb(_prb, _ddrb);
+					return (PrB & DdrB) | (_irb & ~DdrB);
 				case 0x1:
 				case 0xF:
-					return _port.ReadExternalPra();
+					return _ira;
 				case 0x2:
 					return _ddrb;
 				case 0x3:
@@ -82,9 +82,9 @@
 				case 0xC:
 					return _pcr;
 				case 0xD:
-					return _ifr;
+					return (_ifr & 0x7F) | (_irq ? 0x80 : 0x00);
 				case 0xE:
-					return _ier | 0x80;
+					return _ier;
 			}
 
 			return 0xFF;
@@ -96,17 +96,19 @@
 			switch (addr)
 			{
 				case 0x0:
-					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
-						_ifr &= 0xE7;
-					if (_pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
-						_handshakeCb2NextClock = true;
+					_ifr &= ~IRQ_CB1;
+					if ((_pcr & PCR_CB2_ACK) == 0)
+					{
+						_ifr &= ~IRQ_CB2;
+					}
 					WriteRegister(addr, val);
 					break;
 				case 0x1:
-					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
-						_ifr &= 0xFC;
-					if (_pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
-						_handshakeCa2NextClock = true;
+					_ifr &= ~IRQ_CA1;
+					if ((_pcr & PCR_CA2_ACK) == 0)
+					{
+						_ifr &= ~IRQ_CA2;
+					}
 					WriteRegister(addr, val);
 					break;
 				case 0x4:
@@ -115,43 +117,41 @@
 					break;
 				case 0x5:
 					_t1L = (_t1L & 0xFF) | ((val & 0xFF) << 8);
-					_ifr &= 0xBF;
 					_t1C = _t1L;
-					_t1CLoaded = true;
-					_t1Delayed = 1;
-					_resetPb7NextClock = _acrT1Control == ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_PULSE_PB7;
+					_ifr &= ~IRQ_T1;
+					_t1Reload = false;
+					_t1Out = false;
+					_t1IrqAllowed = true;
 					break;
 				case 0x7:
 					_t1L = (_t1L & 0xFF) | ((val & 0xFF) << 8);
-					_ifr &= 0xBF;
+					_ifr &= ~IRQ_T1;
 					break;
 				case 0x8:
 					_t2L = (_t2L & 0xFF00) | (val & 0xFF);
 					break;
 				case 0x9:
 					_t2L = (_t2L & 0xFF) | ((val & 0xFF) << 8);
-					_ifr &= 0xDF;
-					if (_acrT2Control == ACR_T2_CONTROL_TIMED)
-					{
-						_t2C = _t2L;
-						_t2CLoaded = true;
-					}
-
-					_t2Delayed = 1;
+					_ifr &= ~IRQ_T2;
+					_t2IrqAllowed = true;
 					break;
 				case 0xA:
-					_ifr &= 0xFB;
-					_srCount = 8;
+					_srAccessed = true;
+					_srWritten = true;
 					WriteRegister(addr, val);
 					break;
 				case 0xD:
-					_ifr &= ~val;
+					_ifr &= ~(val & 0x7F);
 					break;
 				case 0xE:
-					if ((val & 0x80) != 0)
-						_ier |= val & 0x7F;
+					if ((val & IRQ_BIT) != 0)
+					{
+						_ier |= val & IRQ_MASK;
+					}
 					else
-						_ier &= ~val;
+					{
+						_ier &= ~(val & IRQ_MASK);
+					}
 					break;
 				default:
 					WriteRegister(addr, val);
@@ -161,15 +161,14 @@
 
 		private void WriteRegister(int addr, int val)
 		{
-			addr &= 0xF;
 			switch (addr)
 			{
 				case 0x0:
-					_prb = val & 0xFF;
+					_orb = val & 0xFF;
 					break;
 				case 0x1:
 				case 0xF:
-					_pra = val & 0xFF;
+					_ora = val & 0xFF;
 					break;
 				case 0x2:
 					_ddrb = val & 0xFF;
@@ -200,21 +199,12 @@
 					break;
 				case 0xB:
 					_acr = val & 0xFF;
-					_acrPaLatchEnable = (val & 0x01) != 0;
-					_acrPbLatchEnable = (val & 0x02) != 0;
-					_acrSrControl = (val & 0x1C);
-					_acrT2Control = (val & 0x20);
-					_acrT1Control = (val & 0xC0);
 					break;
 				case 0xC:
 					_pcr = val & 0xFF;
-					_pcrCa1IntControl = _pcr & 0x01;
-					_pcrCa2Control = _pcr & 0x0E;
-					_pcrCb1IntControl = (_pcr & 0x10) >> 4;
-					_pcrCb2Control = (_pcr & 0xE0) >> 4;
 					break;
 				case 0xD:
-					_ifr = val & 0xFF;
+					_ifr = val & 0x7F;
 					break;
 				case 0xE:
 					_ier = val & 0xFF;
@@ -224,18 +214,12 @@
 
 		public int DdrA => _ddra;
 
-		public int DdrB => _ddrb;
+		public int DdrB => _ddrb | (_acr & ACR_T1_PB7_OUT);
 
-		public int PrA => _pra;
+		public int PrA => _ora;
 
-		public int PrB => _prb;
-
-		public int EffectivePrA => _pra | ~_ddra;
-
-		public int EffectivePrB => _prb | ~_ddrb;
-
-		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra);
-
-		public int ActualPrB => _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb);
+		public int PrB => (_acr & ACR_T1_PB7_OUT) != 0
+			? (_orb & 0x7F) | (_t1Out ? 0x80 : 0x00)
+			: _orb;
 	}
 }

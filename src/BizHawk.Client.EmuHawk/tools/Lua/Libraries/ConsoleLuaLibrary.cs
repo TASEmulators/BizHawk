@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -66,23 +67,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string SerializeTable(LuaTable lti)
 			{
-				var keyObjs = lti.Keys;
-				var valueObjs = lti.Values;
-				if (keyObjs.Count != valueObjs.Count)
-				{
-					throw new ArgumentException(message: "each value must be paired with one key, they differ in number", paramName: nameof(lti));
-				}
-
-				var values = new object[keyObjs.Count];
-				var kvpIndex = 0;
-				foreach (var valueObj in valueObjs)
-				{
-					values[kvpIndex++] = valueObj;
-				}
-
-				return string.Concat(keyObjs.Cast<object>()
-					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
-					.Order());
+				var entries = lti.ToArray();
+				return string.Concat(entries.All(static kvp => kvp.Key is long)
+					? entries.OrderBy(static kvp => (long) kvp.Key, Comparer<long>.Default)
+						.Select(static kvp => $"{kvp.Key}: \"{kvp.Value}\"\n")
+					: entries.OrderBy(static kvp => kvp.Key)
+						.Select(static kvp => $"\"{kvp.Key}\": \"{kvp.Value}\"\n"));
 			}
 
 			if (!Tools.Has<LuaConsole>())
@@ -97,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					null => "nil",
 					LuaTable table => SerializeTable(table),
-					_ => output.ToString()
+					_ => output.ToString(),
 				});
 
 			if (outputs == null || outputs.Length == 0 || (outputs.Length == 1 && outputs[0] is null))

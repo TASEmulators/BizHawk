@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,8 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Client.Common;
-
+using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -110,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			/// total length of the movie: ms
 			/// </summary>
 			public ulong LengthMs { get; set; }
-			
+
 			/// <summary>
 			/// number of rerecords
 			/// </summary>
@@ -137,6 +139,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private class JmdFile
 		{
+			[ThreadStatic]
+			private static readonly byte[] ScratchSpace;
+
+			static JmdFile()
+				=> ScratchSpace = new byte[10];
+
 			// current timestamp position
 			private ulong _timestampOff;
 
@@ -252,10 +260,8 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteBe16(ushort v)
 			{
-				byte[] b = new byte[2];
-				b[0] = (byte)(v >> 8);
-				b[1] = (byte)(v & 255);
-				_f.Write(b, 0, 2);
+				BinaryPrimitives.WriteUInt16BigEndian(ScratchSpace, v);
+				_f.Write(ScratchSpace, offset: 0, count: sizeof(ushort));
 			}
 
 			/// <summary>
@@ -263,12 +269,8 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteBe32(uint v)
 			{
-				byte[] b = new byte[4];
-				b[0] = (byte)(v >> 24);
-				b[1] = (byte)(v >> 16);
-				b[2] = (byte)(v >> 8);
-				b[3] = (byte)(v & 255);
-				_f.Write(b, 0, 4);
+				BinaryPrimitives.WriteUInt32BigEndian(ScratchSpace, v);
+				_f.Write(ScratchSpace, offset: 0, count: sizeof(uint));
 			}
 
 			/// <summary>
@@ -276,13 +278,8 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteBe64(ulong v)
 			{
-				byte[] b = new byte[8];
-				for (int i = 7; i >= 0; i--)
-				{
-					b[i] = (byte)(v & 255);
-					v >>= 8;
-				}
-				_f.Write(b, 0, 8);
+				BinaryPrimitives.WriteUInt64BigEndian(ScratchSpace, v);
+				_f.Write(ScratchSpace, offset: 0, count: sizeof(ulong));
 			}
 
 			/// <summary>
@@ -291,15 +288,14 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			private void WriteVar(ulong v)
 			{
-				byte[] b = new byte[10];
+				ScratchSpace.Fill<byte>(0);
 				int i = 0;
 				while (v > 0)
 				{
-					if (i > 0)
-						b[i++] = (byte)((v & 127) | 128);
-					else
-						b[i++] = (byte)(v & 127);
-					v /= 128;
+					ScratchSpace[i] = unchecked((byte) (v & 0x7F));
+					if (i is 0) ScratchSpace[i] |= 0x80;
+					i++;
+					v >>= 7;
 				}
 
 				if (i == 0)
@@ -310,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (; i > 0; i--)
 					{
-						_f.WriteByte(b[i - 1]);
+						_f.WriteByte(ScratchSpace[i - 1]);
 					}
 				}
 			}
@@ -380,16 +376,16 @@ namespace BizHawk.Client.EmuHawk
 					Stream = 0,
 					Subtype = 1,// zlib compressed, other possibility is 0 = uncompressed
 					Data = source,
-					Timestamp = TimestampCalc(_fpsNum, _fpsDen, _totalFrames)
+					Timestamp = TimestampCalc(_fpsNum, _fpsDen, _totalFrames),
 				};
-				
+
 				_totalFrames++;
 				WriteVideo(j);
 			}
 
 			/// <summary>
 			/// assemble JMDPacket and send to PacketQueue
-			/// one audio packet is split up into many many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
+			/// one audio packet is split up into many, many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
 			/// </summary>
 			public void AddSamples(short[] samples)
 			{
@@ -420,9 +416,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Stream = 1,
 					Subtype = 1, // raw PCM audio
-					Data = new byte[4]
+					Data = new byte[4],
 				};
-				
+
 				j.Data[0] = (byte)(l >> 8);
 				j.Data[1] = (byte)(l & 255);
 				j.Data[2] = (byte)(r >> 8);
@@ -600,7 +596,7 @@ namespace BizHawk.Client.EmuHawk
 		public void OpenFile(string baseName)
 		{
 			string ext = Path.GetExtension(baseName);
-			if (ext == null || ext.ToLowerInvariant() != ".jmd")
+			if (ext?.EqualsIgnoreCase(".jmd") is false or null)
 			{
 				baseName += ".jmd";
 			}
@@ -628,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 		/// blocking thread safe queue, used for communication between main program and file writing thread
 		/// </summary>
 		private BlockingCollection<object> _threadQ;
-		
+
 		/// <summary>
 		/// file writing thread; most of the work happens here
 		/// </summary>
@@ -738,7 +734,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="v">VideoCopy to compress</param>
 		/// <returns>gzipped stream with width and height prepended</returns>
 		private delegate byte[] GzipFrameD(VideoCopy v);
-		
+
 		// delegate for GzipFrame
 		private GzipFrameD _gzipFrameDelegate;
 
@@ -781,7 +777,7 @@ namespace BizHawk.Client.EmuHawk
 				GameName = gameName,
 				Authors = authors,
 				LengthMs = lengthMs,
-				Rerecords = rerecords
+				Rerecords = rerecords,
 			};
 		}
 
@@ -807,6 +803,4 @@ namespace BizHawk.Client.EmuHawk
 		public bool UsesAudio => true;
 		public bool UsesVideo => true;
 	}
-
-
 }

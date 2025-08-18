@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		// need to wire more stuff into the core to actually know this
 		public bool SaveRamModified => LibGambatte.gambatte_getsavedatalength(GambatteState) != 0;
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			var length = LibGambatte.gambatte_getsavedatalength(GambatteState);
 

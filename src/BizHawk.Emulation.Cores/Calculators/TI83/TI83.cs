@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 						// 3   - Set if ON key is up
 						// 4-7 - Unknown
 
-						return (byte)((_controller.IsPressed("ON") ? 0 : 8) | 
+						return (byte)((_controller.IsPressed("ON") ? 0 : 8) |
 									  (TIM_1_int ? 2 : 0) |
 									  (ON_key_int ? 1 : 0));
 					}

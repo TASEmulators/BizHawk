@@ -122,7 +122,7 @@
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
 
-			else if (address >= 0x8000) 
+			else if (address >= 0x8000)
 			{
 				if (SaveRAM != null)
 				{
@@ -144,7 +144,6 @@
 						SaveRamBank = (byte)((value & 4) == 0 ? 1 : 2); // SaveRAM selected
 					else
 						SaveRamBank = 0; // ROM bank selected
-
 				}
 				else if (address == 0xFFFD) RomBank0 = (byte)(value % RomBanks);
 				else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);
@@ -157,7 +156,7 @@
 					else
 					{
 						RomBank2 = (byte)(value % RomBanks);
-					}					
+					}
 				}
 				return;
 			}

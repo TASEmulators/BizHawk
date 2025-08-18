@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		private void DIRECT_MEM_4(ushort oper, ushort dest)
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
-							IDLE,			
+							IDLE,
 							RD_INC_OP, ALU, ADDR, oper, dest, ALU);
 
 			IRQS = 3;
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
 							RD_INC, ALU, ADDR,
-							RD, ALU2, ADDR, 
+							RD, ALU2, ADDR,
 							SET_ADDR, ADDR, ALU, ALU2,
 							oper, ADDR);
 
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
 							ST_16, src,
-							WR_HI_INC, ADDR, src, 
+							WR_HI_INC, ADDR, src,
 							WR_DEC_LO, ADDR, src);
 
 			IRQS = 4;
@@ -362,7 +362,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 								SET_ADDR, ADDR, ALU, ALU2);
 
 				IRQS = 3;
-			}			
+			}
 		}
 
 		private void BR_(bool cond)
@@ -509,7 +509,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 					PopulateCURINSTR(WR_DEC_LO, src, US,
 									WR_DEC_HI_OP, src, US, PSH_n, src);
 				}
-				
+
 				Regs[ALU] &= 0x3F;
 			}
 			else if (Regs[ALU].Bit(5))

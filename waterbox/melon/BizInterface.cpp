@@ -3,9 +3,9 @@
 #include "SPU.h"
 #include "RTC.h"
 #include "GBACart.h"
-#include "frontend/mic_blow.h"
 
 #include "BizPlatform/BizOGL.h"
+#include "BizPlatform/BizUserData.h"
 #include "BizGLPresenter.h"
 
 #include <emulibc.h>
@@ -44,22 +44,8 @@ struct MyFrameInfo : public FrameInfo
 	u8 MicVolume;
 	u8 GBALightSensor;
 	bool ConsiderAltLag;
+	bool UseTouchInterpolation;
 };
-
-static s16 biz_mic_input[735];
-
-static int sampPos = 0;
-
-static void MicFeedNoise(u8 vol)
-{
-	int sampLen = sizeof(mic_blow) / sizeof(*mic_blow);
-
-	for (int i = 0; i < 735; i++)
-	{
-		biz_mic_input[i] = round((s16)mic_blow[sampPos++] * (vol / 100.0));
-		if (sampPos >= sampLen) sampPos = 0;
-	}
-}
 
 static bool RunningFrame = false;
 
@@ -71,8 +57,15 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 
 	if (f->Keys & 0x1000)
 	{
-		// move touch coords incrementally to our new touch point
-		f->NDS->MoveTouch(f->TouchX, f->TouchY);
+		if (f->UseTouchInterpolation)
+		{
+			// move touch coords incrementally to our new touch point
+			f->NDS->MoveTouch(f->TouchX, f->TouchY);
+		}
+		else
+		{
+			f->NDS->TouchScreen(f->TouchX, f->TouchY);
+		}
 	}
 	else
 	{
@@ -88,8 +81,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		f->NDS->SetLidClosed(true);
 	}
 
-	MicFeedNoise(f->MicVolume);
-	f->NDS->MicInputFrame(biz_mic_input, 735);
+	auto* bizUserData = static_cast<melonDS::Platform::BizUserData*>(f->NDS->UserData);
+	bizUserData->MicVolume = f->MicVolume;
 
 	if (auto* gbaCart = f->NDS->GetGBACart())
 	{
@@ -109,12 +102,16 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 		}
 	}
 
+	melonDS::NDS::Current = f->NDS;
 	f->NDS->RunFrame();
 
 	if (f->Keys & 0x1000)
 	{
-		// finalize touch after emulation finishes
-		f->NDS->TouchScreen(f->TouchX, f->TouchY);
+		if (f->UseTouchInterpolation)
+		{
+			// finalize touch after emulation finishes
+			f->NDS->TouchScreen(f->TouchX, f->TouchY);
+		}
 	}
 
 	auto& renderer3d = f->NDS->GetRenderer3D();

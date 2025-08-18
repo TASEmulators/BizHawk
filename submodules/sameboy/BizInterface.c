@@ -159,7 +159,6 @@ EXPORT biz_t* sameboy_create(u8* romdata, u32 romlen, u8* biosdata, u32 bioslen,
 	}
 	GB_load_boot_rom_from_buffer(&biz->gb, biosdata, bioslen);
 	GB_set_sample_rate(&biz->gb, GB_get_clock_rate(&biz->gb) / 2 / 8);
-	GB_set_rumble_mode(&biz->gb, GB_RUMBLE_ALL_GAMES);
 	GB_set_rumble_callback(&biz->gb, RumbleCallbackRelay);
 	GB_apu_set_sample_callback(&biz->gb, sample_cb);
 	GB_set_rgb_encode_callback(&biz->gb, rgb_cb);
@@ -557,6 +556,7 @@ typedef struct
 	s32 light_temperature;
 	GB_highpass_mode_t highpass_filter;
 	s32 interference_volume;
+	GB_rumble_mode_t rumble_mode;
 	u32 channel_mask;
 	bool background_enabled;
 	bool objects_enabled;
@@ -608,6 +608,7 @@ EXPORT void sameboy_setsettings(biz_t* biz, settings_t* settings)
 	GB_set_light_temperature(&biz->gb, settings->light_temperature / 10.0);
 	GB_set_highpass_filter_mode(&biz->gb, settings->highpass_filter);
 	GB_set_interference_volume(&biz->gb, settings->interference_volume / 100.0);
+	GB_set_rumble_mode(&biz->gb, settings->rumble_mode);
 	GB_set_background_rendering_disabled(&biz->gb, !settings->background_enabled);
 	GB_set_object_rendering_disabled(&biz->gb, !settings->objects_enabled);
 }

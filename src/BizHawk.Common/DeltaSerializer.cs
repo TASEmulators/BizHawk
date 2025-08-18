@@ -69,7 +69,7 @@ namespace BizHawk.Common
 					if (different > 0) // only not 0 if index == end immediately
 					{
 						different = index - blockStart - same;
-	
+
 						if (same < 4) // we have different bytes, but we hit the end of the spans before the 8 limit, and we have less than what a same block will save
 						{
 							different += same;

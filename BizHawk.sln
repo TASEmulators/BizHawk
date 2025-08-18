@@ -35,7 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.WinForms.Controls",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{74391239-9BC1-40CE-A3D7-180737C5302A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests", "src\BizHawk.Tests\BizHawk.Tests.csproj", "{284E19E2-661D-4A7D-864A-AC2FC91E7C25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Client.Common", "src\BizHawk.Tests.Client.Common\BizHawk.Tests.Client.Common.csproj", "{284E19E2-661D-4A7D-864A-AC2FC91E7C25}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Common", "src\BizHawk.Tests.Common\BizHawk.Tests.Common.csproj", "{39546396-C4D0-45D3-8C6A-D56D29B5BD72}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Emulation.Common", "src\BizHawk.Tests.Emulation.Common\BizHawk.Tests.Emulation.Common.csproj", "{D95E2B42-757A-4D19-8A76-84C6350BAD8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +103,14 @@ Global
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39546396-C4D0-45D3-8C6A-D56D29B5BD72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39546396-C4D0-45D3-8C6A-D56D29B5BD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39546396-C4D0-45D3-8C6A-D56D29B5BD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39546396-C4D0-45D3-8C6A-D56D29B5BD72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +124,8 @@ Global
 		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA} = {3627C08B-3E43-4224-9DA4-40BD69495FBC}
 		{B5A2214B-3CB0-48C4-8DB1-98B38D48AC4A} = {B51F1139-3D2C-41BE-A762-EF1F9B41EACA}
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25} = {74391239-9BC1-40CE-A3D7-180737C5302A}
+		{39546396-C4D0-45D3-8C6A-D56D29B5BD72} = {74391239-9BC1-40CE-A3D7-180737C5302A}
+		{D95E2B42-757A-4D19-8A76-84C6350BAD8D} = {74391239-9BC1-40CE-A3D7-180737C5302A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B9E4316-9185-412E-B951-A63355ACA956}

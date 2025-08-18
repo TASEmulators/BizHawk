@@ -303,7 +303,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var track = metadata[(4 + i * 24)..];
 				var cdMetadata = new CHDCdMetadata
 				{
-					Track = (uint)i + 1
+					Track = 1U + (uint) i,
 				};
 				if (bigEndian)
 				{
@@ -496,7 +496,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ret = new LoadResults
 			{
-				ChdPath = path
+				ChdPath = path,
 			};
 			try
 			{
@@ -747,7 +747,7 @@ namespace BizHawk.Emulation.DiscSystem
 						var synth = new SS_Gap
 						{
 							TrackType = ToCueTrackType(cdMetadata.TrackType, cdMetadata.IsCDI),
-							Policy = IN_DiscMountPolicy
+							Policy = IN_DiscMountPolicy,
 						};
 						const byte kADR = 1;
 						var control = cdMetadata.TrackType != LibChd.chd_track_type.CD_TRACK_AUDIO
@@ -957,8 +957,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				var hunkOffset = bw.BaseStream.Position;
 
-				// TODO: adjust compression level?
-				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, Zstd.MaxCompressionLevel))
+				using (var cstream = zstd.CreateZstdCompressionStream(bw.BaseStream, 0))
 				{
 					cstream.Write(curHunk, 0, curHunk.Length);
 				}
@@ -1196,10 +1195,7 @@ namespace BizHawk.Emulation.DiscSystem
 			// tag is hashed alongside the hash
 			// we use the same tag every time, so we can just reuse this array
 			var metadataTag = new byte[4];
-			metadataTag[0] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 24) & 0xFF);
-			metadataTag[1] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 16) & 0xFF);
-			metadataTag[2] = (byte)((LibChd.CDROM_TRACK_METADATA2_TAG >> 8) & 0xFF);
-			metadataTag[3] = (byte)(LibChd.CDROM_TRACK_METADATA2_TAG & 0xFF);
+			BinaryPrimitives.WriteUInt32BigEndian(metadataTag, LibChd.CDROM_TRACK_METADATA2_TAG);
 			foreach (var metadataHash in metadataHashes)
 			{
 				sha1Inc.AppendData(metadataTag);

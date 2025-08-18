@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Color _spriteback;
-		
+
 		[ConfigPersist]
 		public Color Spriteback
 		{
@@ -1002,17 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				Point m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				} while (found != null && found.HasChildren);
-
-				if (found is BmpView bv)
+				if (this.InnermostControlAt(Cursor.Position) is BmpView bv)
 				{
 					Clipboard.SetImage(bv.Bmp);
 					labelClipboard.Text = $"{bv.Text} copied to clipboard.";
@@ -1035,7 +1025,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowFullOpen = true,
 				AnyColor = true,
 				FullOpen = true,
-				Color = Spriteback
+				Color = Spriteback,
 			};
 
 			if (this.ShowDialogWithTempMute(dlg).IsOk())

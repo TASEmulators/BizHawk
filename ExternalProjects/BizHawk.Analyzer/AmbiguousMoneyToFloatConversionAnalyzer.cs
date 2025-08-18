@@ -2,11 +2,6 @@
 
 using System.Collections.Immutable;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 {
@@ -24,57 +19,50 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 	{
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
-		context.RegisterCompilationStartAction(initContext =>
-		{
-			var decimalSym = initContext.Compilation.GetTypeByMetadataName("System.Decimal")!;
-			var doubleSym = initContext.Compilation.GetTypeByMetadataName("System.Double")!;
-			var floatSym = initContext.Compilation.GetTypeByMetadataName("System.Single")!;
-			initContext.RegisterOperationAction(oac =>
+		context.RegisterOperationAction(
+			oac =>
+			{
+				var conversionOp = (IConversionOperation) oac.Operation;
+				var typeOutput = conversionOp.Type?.SpecialType ?? SpecialType.None;
+				var typeInput = conversionOp.Operand.Type?.SpecialType ?? SpecialType.None;
+				bool isToDecimal;
+				bool isDoublePrecision;
+				if (typeOutput is SpecialType.System_Decimal)
 				{
-					var conversionOp = (IConversionOperation) oac.Operation;
-					var typeOutput = conversionOp.Type;
-					var typeInput = conversionOp.Operand.Type;
-					bool isToDecimal;
-					bool isDoublePrecision;
-					if (decimalSym.Matches(typeOutput))
-					{
-						if (doubleSym.Matches(typeInput)) isDoublePrecision = true;
-						else if (floatSym.Matches(typeInput)) isDoublePrecision = false;
-						else return;
-						isToDecimal = true;
-					}
-					else if (decimalSym.Matches(typeInput))
-					{
-						if (doubleSym.Matches(typeOutput)) isDoublePrecision = true;
-						else if (floatSym.Matches(typeOutput)) isDoublePrecision = false;
-						else return;
-						isToDecimal = false;
-					}
-					else
-					{
-						return;
-					}
-					var conversionSyn = conversionOp.Syntax;
-					//TODO check the suggested methods are accessible (i.e. BizHawk.Common is referenced)
-					oac.ReportDiagnostic(Diagnostic.Create(
-						DiagAmbiguousMoneyToFloatConversion,
-						(conversionSyn.Parent?.Kind() is SyntaxKind.CheckedExpression or SyntaxKind.UncheckedExpression
-							? conversionSyn.Parent
-							: conversionSyn).GetLocation(),
-						conversionOp.IsChecked ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-						additionalLocations: null,
-						properties: null,
-						messageArgs: isToDecimal
-							? [
-								$"new decimal({(isDoublePrecision ? "double" : "float")})", // "checked"
-								"static NumberExtensions.ConvertToMoneyTruncated", // "unchecked"
-							]
-							: [
-								$"decimal.{(isDoublePrecision ? "ConvertToF64" : "ConvertToF32")} ext. (from NumberExtensions)", // "checked"
-								$"static Decimal.{(isDoublePrecision ? "ToDouble" : "ToSingle")}", // "unchecked"
-							]));
-				},
-				OperationKind.Conversion);
-		});
+					if (typeInput is SpecialType.System_Double) isDoublePrecision = true;
+					else if (typeInput is SpecialType.System_Single) isDoublePrecision = false;
+					else return;
+					isToDecimal = true;
+				}
+				else if (typeInput is SpecialType.System_Decimal)
+				{
+					if (typeOutput is SpecialType.System_Double) isDoublePrecision = true;
+					else if (typeOutput is SpecialType.System_Single) isDoublePrecision = false;
+					else return;
+					isToDecimal = false;
+				}
+				else
+				{
+					return;
+				}
+				var conversionSyn = conversionOp.Syntax;
+				//TODO check the suggested methods are accessible (i.e. BizHawk.Common is referenced)
+				DiagAmbiguousMoneyToFloatConversion.ReportAt(
+					conversionSyn.Parent?.Kind() is SyntaxKind.CheckedExpression or SyntaxKind.UncheckedExpression
+						? conversionSyn.Parent
+						: conversionSyn,
+					isErrorSeverity: conversionOp.IsChecked,
+					oac,
+					messageArgs: isToDecimal
+						? [
+							$"new decimal({(isDoublePrecision ? "double" : "float")})", // "checked"
+							"static NumberExtensions.ConvertToMoneyTruncated", // "unchecked"
+						]
+						: [
+							$"decimal.{(isDoublePrecision ? "ConvertToF64" : "ConvertToF32")} ext. (from NumberExtensions)", // "checked"
+							$"static Decimal.{(isDoublePrecision ? "ToDouble" : "ToSingle")}", // "unchecked"
+						]);
+			},
+			OperationKind.Conversion);
 	}
 }

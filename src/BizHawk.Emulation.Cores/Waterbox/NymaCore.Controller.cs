@@ -12,7 +12,7 @@ using static BizHawk.Emulation.Cores.Waterbox.LibNymaCore;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public partial class NymaCore
+	public abstract partial class NymaCore
 	{
 		private const int MAX_INPUT_DATA = 256;
 
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						continue;
 
 					var devices = portInfo.Devices;
-					
+
 					var device = devices.Find(a => a.ShortName == deviceName);
 					if (device == null)
 					{

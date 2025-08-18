@@ -54,21 +54,20 @@ enable = {true,true,true,true,true,true,true,true,true,true,true,true}
 --------------------------------------------------------------------------------
 
 -- Console Interface --
--- DO NOT CHANGE THIS, IS USED FOR DETECTION!
 
 do
-	pluged = {joypad.get(1)['Up'] ~= nil,
-			joypad.get( 2)['Up'] ~= nil,
-			joypad.get( 3)['Up'] ~= nil,
-			joypad.get( 4)['Up'] ~= nil,
-			joypad.get( 5)['Up'] ~= nil,
-			joypad.get( 6)['Up'] ~= nil,
-			joypad.get( 7)['Up'] ~= nil,
-			joypad.get( 8)['Up'] ~= nil,
-			joypad.get( 9)['Up'] ~= nil,
-			joypad.get(10)['Up'] ~= nil,
-			joypad.get(11)['Up'] ~= nil,
-			joypad.get(12)['Up'] ~= nil}
+	pluged = {next(joypad.get(1)) ~= nil,
+			next(joypad.get( 2)) ~= nil,
+			next(joypad.get( 3)) ~= nil,
+			next(joypad.get( 4)) ~= nil,
+			next(joypad.get( 5)) ~= nil,
+			next(joypad.get( 6)) ~= nil,
+			next(joypad.get( 7)) ~= nil,
+			next(joypad.get( 8)) ~= nil,
+			next(joypad.get( 9)) ~= nil,
+			next(joypad.get(10)) ~= nil,
+			next(joypad.get(11)) ~= nil,
+			next(joypad.get(12)) ~= nil}
 
 	sys = emu.getsystemid()
 	if sys == 'Game Gear' then sys = 'GG' end -- DualGG is weird
@@ -104,7 +103,7 @@ print('\nReminder: Enable Capure OSD when Dumping!\n')
 
 size = {{['A26']=10, ['C64']=24, ['NES']=40, ['PCE']=40, ['PCECD']=40, ['SGX']=40, ['GB']=16, ['GBC']=16, ['VB']=38, ['WSWAN']=28, ['SNES']=46, ['GEN']=46, ['GBA']=34, ['Coleco']=16, ['SAT']=46, ['A78']=20, ['SG']=20, ['SMS']=36, ['Lynx']=32, ['GG']=30, ['NGP']=29, ['PCFX']=50, ['PSX']=56},{['A26']=16, ['C64']=16, ['NES']=16, ['PCE']=16, ['PCECD']=16, ['SGX']=16, ['GB']=24, ['GBC']=24, ['VB']=28, ['WSWAN']=28, ['SNES']=20, ['GEN']=20, ['GBA']=16, ['Coleco']=38, ['SAT']=20, ['A78']=20, ['SG']=20, ['SMS']=16, ['Lynx']=15, ['GG']=22, ['NGP']=14, ['PCFX']=22, ['PSX']=34}}
 
-event.onframestart(function()
+dragHandlerGuid = event.onframestart(function()
 	x = input.getmouse()['X']
 	y = input.getmouse()['Y']
 	b = input.getmouse()['Left'] or input.getmouse()['Right']
@@ -1052,3 +1051,6 @@ while sys == 'PSX' do
 
 	emu.frameadvance()
 end
+
+print(string.format('Unsupported system: %s. Stopping script.', sys))
+event.unregisterbyid(dragHandlerGuid)

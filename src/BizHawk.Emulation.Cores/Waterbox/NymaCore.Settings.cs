@@ -8,7 +8,7 @@ using NymaTypes;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public partial class NymaCore : ISettable<NymaCore.NymaSettings, NymaCore.NymaSyncSettings>
+	public abstract partial class NymaCore : ISettable<NymaCore.NymaSettings, NymaCore.NymaSyncSettings>
 	{
 		public NymaSettingsInfo SettingsInfo { get; private set; }
 		private NymaSettings _settings;

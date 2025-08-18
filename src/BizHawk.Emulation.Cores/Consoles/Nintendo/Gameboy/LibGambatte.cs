@@ -71,12 +71,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
 		/// or until a video frame has been drawn.
-		/// 
+		///
 		/// There are 35112 stereo sound samples in a video frame.
 		/// May run for up to 2064 stereo samples too long.
 		/// A stereo sample consists of two native endian 2s complement 16-bit PCM samples,
 		/// with the left sample preceding the right one.
-		/// 
+		///
 		/// Returns early when a new video frame has finished drawing in the video buffer,
 		/// such that the caller may update the video output before the frame is overwritten.
 		/// The return value indicates whether a new video frame has been drawn, and the
@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="sl">0-153 inclusive</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
-		
+
 		/// <summary>
 		/// type of the link data sent callback
 		/// </summary>
@@ -552,7 +552,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="dest">length of at least 10, please</param>
 		[DllImport("libgambatte", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_getregs(IntPtr core, int[] dest);
-		
+
 		/// <summary>
 		/// set reg and flag values
 		/// </summary>

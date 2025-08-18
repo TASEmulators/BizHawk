@@ -1,5 +1,6 @@
-﻿using BizHawk.Common;
 using System.Runtime.CompilerServices;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {

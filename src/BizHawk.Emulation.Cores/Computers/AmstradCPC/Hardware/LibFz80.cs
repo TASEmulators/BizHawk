@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public byte DB
 		{
 			get => (byte)((_pins >> 16) & 0xFF);
-			set => _pins = (_pins & 0xFFFFFFFFFF00FFFF) | ((ulong)value << 16);
+			set => _pins = (_pins & ~0xFF_0000UL) | ((ulong) value << 16);
 		}
 
 		public long TotalExecutedCycles;
@@ -429,8 +429,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			ser.Sync(nameof(_pins), ref _pins);
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
-			
+
 			ser.EndSection();
 		}
-	}	
+	}
 }

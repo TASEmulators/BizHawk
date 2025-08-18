@@ -24,6 +24,7 @@ CCFLAGS := 	-Iutil \
 	-DHOOK_CPU \
 	-DINLINE=static\ __inline__ \
 	-DcdStream=cdStream \
+	-DMAXROMSIZE=33554432 \
 	-fcommon
 
 LDFLAGS :=

@@ -1,9 +1,7 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
-
-using BizHawk.Common;
 
 using NLua;
 
@@ -30,10 +28,43 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
-		public IEnumerable<(TKey Key, TValue Value)> EnumerateEntries<TKey, TValue>(LuaTable table)
-			=> table.Keys.Cast<TKey>().Select(k => (k, (TValue) table[k]));
-
-		public IEnumerable<T> EnumerateValues<T>(LuaTable table) => table.Values.Cast<T>();
+		public ArraySegment<T> EnumerateValues<T>(LuaTable table)
+		{
+			var n = table.Count;
+			if (n is 0) return new([ ]);
+			var values = new T[n];
+			var seen = ArrayPool<bool>.Shared.Rent(n);
+			var seenSpan = seen.AsSpan(start: 0, length: n);
+			seenSpan.Fill(false);
+			int cutoff;
+			try
+			{
+				foreach (var (k, v) in table) if (k is long i && 1 <= i && i <= n)
+				{
+					var ii = unchecked((int) (i - 1L));
+					values[ii] = (T) v;
+					seenSpan[ii] = true;
+				}
+				cutoff = seenSpan.IndexOf(value: false);
+			}
+			finally
+			{
+				seenSpan = Span<bool>.Empty;
+				ArrayPool<bool>.Shared.Return(seen);
+				seen = null!;
+			}
+			if (cutoff < n)
+			{
+				if (cutoff < 0) return new(values); // all present
+				if (cutoff is 0)
+				{
+					_logCallback("no numeric keys");
+					return new([ ]);
+				}
+				_logCallback($"ignoring {n - cutoff} entries");
+			}
+			return new(values, offset: 0, count: cutoff);
+		}
 
 		public LuaTable ListToTable<T>(IReadOnlyList<T> list, int indexFrom = 1)
 		{

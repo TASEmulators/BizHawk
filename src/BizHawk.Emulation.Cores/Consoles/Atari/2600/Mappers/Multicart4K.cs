@@ -46,6 +46,5 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_currentGame = 0;
 			}
 		}
-
 	}
 }

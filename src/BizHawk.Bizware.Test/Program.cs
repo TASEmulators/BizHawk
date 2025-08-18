@@ -86,8 +86,8 @@ namespace BizHawk.Bizware.Test
 			var running = true;
 			c.MouseClick += (_, args) =>
 			{
-				if (args.Button == MouseButtons.Left) running ^= true;
-				else if (args.Button == MouseButtons.Right) c.Retain ^= true;
+				if (args.Button == MouseButtons.Left) running = !running;
+				else if (args.Button == MouseButtons.Right) c.Retain = !c.Retain;
 			};
 
 			var start = DateTime.Now;

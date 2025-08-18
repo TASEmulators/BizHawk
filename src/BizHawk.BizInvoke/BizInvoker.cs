@@ -659,7 +659,7 @@ namespace BizHawk.BizInvoke
 					});
 			}
 
-			if (type.IsClass)
+			if (type is { IsClass: true, IsPointer: false })
 			{
 				// non ref of class can just be passed as pointer
 				// Just like in the `ref struct` case, if the fields aren't compatible, that's the caller's problem.

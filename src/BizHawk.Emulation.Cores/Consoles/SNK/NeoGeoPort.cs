@@ -44,16 +44,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		{
 			get
 			{
-				_exe.AddTransientFile(new byte[0], "SAV:flash");
+				_exe.AddTransientFile(Array.Empty<byte>(), "SAV:flash");
 				if (!_neopop.GetSaveRam())
 					throw new InvalidOperationException("Error divining saveram");
 				return _exe.RemoveTransientFile("SAV:flash").Length > 0;
 			}
 		}
 
-		public new byte[] CloneSaveRam()
+		public new byte[] CloneSaveRam(bool clearDirty)
 		{
-			_exe.AddTransientFile(new byte[0], "SAV:flash");
+			_exe.AddTransientFile(Array.Empty<byte>(), "SAV:flash");
 
 			if (!_neopop.GetSaveRam())
 				throw new InvalidOperationException("Error returning saveram");

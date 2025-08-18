@@ -80,7 +80,7 @@ impl<T> Return<T> {
 
 /// write bytes.  Return 0 on success, or < 0 on failure.
 /// Must write all provided bytes in one call or fail, not permitted to write less (unlike reader).
-pub type WriteCallback = extern fn(userdata: usize, data: *const u8, size: usize) -> i32;
+pub type WriteCallback = extern "C" fn(userdata: usize, data: *const u8, size: usize) -> i32;
 struct CWriter {
 	/// will be passed to callback
 	pub userdata: usize,
@@ -107,7 +107,7 @@ impl Write for CWriter {
 /// Read bytes into the buffer.  Return number of bytes read on success, or < 0 on failure.
 /// permitted to read less than the provided buffer size, but must always read at least 1
 /// byte if EOF is not reached.  If EOF is reached, should return 0.
-pub type ReadCallback = extern fn(userdata: usize, data: *mut u8, size: usize) -> isize;
+pub type ReadCallback = extern "C" fn(userdata: usize, data: *mut u8, size: usize) -> isize;
 struct CReader {
 	pub userdata: usize,
 	pub callback: ReadCallback,
@@ -126,7 +126,7 @@ impl Read for CReader {
 // #[repr(C)]
 // pub struct MissingFileCallback {
 // 	pub userdata: usize,
-// 	pub callback: extern fn(userdata: usize, name: *const c_char) -> *mut MissingFileResult,
+// 	pub callback: extern "C" fn(userdata: usize, name: *const c_char) -> *mut MissingFileResult,
 // }
 
 // #[repr(C)]
@@ -152,7 +152,7 @@ fn read_whole_file(reader: &mut CReader) -> anyhow::Result<Vec<u8>> {
 /// Given a guest executable and a memory layout, create a new host environment.  All data will be immediately consumed from the reader,
 /// which will not be used after this call.
 #[no_mangle]
-pub extern fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const c_char, callback: ReadCallback, userdata: usize, ret: &mut Return<*mut WaterboxHost>) {
+pub extern "C" fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const c_char, callback: ReadCallback, userdata: usize, ret: &mut Return<*mut WaterboxHost>) {
 	let mut reader = CReader {
 		userdata,
 		callback
@@ -166,7 +166,7 @@ pub extern fn wbx_create_host(layout: &MemoryLayoutTemplate, module_name: *const
 
 /// Tear down a host environment.  If called while the environment is active, will deactivate it first.
 #[no_mangle]
-pub extern fn wbx_destroy_host(obj: *mut WaterboxHost, ret: &mut Return<()>) {
+pub extern "C" fn wbx_destroy_host(obj: *mut WaterboxHost, ret: &mut Return<()>) {
 	let res = (|| {
 		unsafe {
 			drop(Box::from_raw(obj));
@@ -181,7 +181,7 @@ pub extern fn wbx_destroy_host(obj: *mut WaterboxHost, ret: &mut Return<()>) {
 /// while active.  Uses a mutex internally so as to not stomp over other host environments in the same 4GiB slice.
 /// Ignored if host is already active.
 #[no_mangle]
-pub extern fn wbx_activate_host(obj: &mut WaterboxHost, ret: &mut Return<()>) {
+pub extern "C" fn wbx_activate_host(obj: &mut WaterboxHost, ret: &mut Return<()>) {
 	let res = (|| {
 		obj.activate();
 		Ok(())
@@ -192,7 +192,7 @@ pub extern fn wbx_activate_host(obj: &mut WaterboxHost, ret: &mut Return<()>) {
 /// Deactivates a host environment, and releases the mutex.
 /// Ignored if host is not active
 #[no_mangle]
-pub extern fn wbx_deactivate_host(obj: &mut WaterboxHost, ret: &mut Return<()>) {
+pub extern "C" fn wbx_deactivate_host(obj: &mut WaterboxHost, ret: &mut Return<()>) {
 	obj.deactivate();
 	ret.put(Ok(()));
 }
@@ -201,7 +201,7 @@ pub extern fn wbx_deactivate_host(obj: &mut WaterboxHost, ret: &mut Return<()>) 
 /// while the host is active.  A missing proc is not an error and simply returns 0.  The guest function must be,
 /// and the returned callback will be, sysv abi, and will only pass up to 6 int/ptr args and no other arg types.
 #[no_mangle]
-pub extern fn wbx_get_proc_addr(obj: &mut WaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
+pub extern "C" fn wbx_get_proc_addr(obj: &mut WaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
 	match arg_to_str(name) {
 		Ok(s) => {
 			ret.put(obj.get_proc_addr(&s));
@@ -216,14 +216,14 @@ pub extern fn wbx_get_proc_addr(obj: &mut WaterboxHost, name: *const c_char, ret
 /// only needed if the guest exposes callin pointers that aren't named exports (for instance, if a function returns
 /// a pointer to another function).
 #[no_mangle]
-pub extern fn wbx_get_callin_addr(obj: &mut WaterboxHost, ptr: usize, ret: &mut Return<usize>) {
+pub extern "C" fn wbx_get_callin_addr(obj: &mut WaterboxHost, ptr: usize, ret: &mut Return<usize>) {
 	ret.put(obj.get_external_callin_ptr(ptr));
 }
 /// Returns the raw address of a function exported from the guest.  `wbx_get_proc_addr()` is equivalent to
 /// `wbx_get_callin_addr(wbx_get_proc_addr_raw()).  Most things should not use this directly, as the returned
 /// pointer will not have proper stack hygiene and will crash on syscalls from the guest.
 #[no_mangle]
-pub extern fn wbx_get_proc_addr_raw(obj: &mut WaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
+pub extern "C" fn wbx_get_proc_addr_raw(obj: &mut WaterboxHost, name: *const c_char, ret: &mut Return<usize>) {
 	match arg_to_str(name) {
 		Ok(s) => {
 			ret.put(obj.get_proc_addr_raw(&s));
@@ -240,13 +240,13 @@ pub extern fn wbx_get_proc_addr_raw(obj: &mut WaterboxHost, name: *const c_char,
 /// in the guest because `foo` was bound to the same slot and a particular slot gives a consistent pointer.
 /// The returned thunk will be, and the callback must be, sysv abi and will only pass up to 6 int/ptr args and no other arg types.
 #[no_mangle]
-pub extern fn wbx_get_callback_addr(obj: &mut WaterboxHost, callback: ExternalCallback, slot: usize, ret: &mut Return<usize>) {
+pub extern "C" fn wbx_get_callback_addr(obj: &mut WaterboxHost, callback: ExternalCallback, slot: usize, ret: &mut Return<usize>) {
 	ret.put(obj.get_external_callback_ptr(callback, slot));
 }
 
 /// Calls the seal operation, which is a one time action that prepares the host to save states.
 #[no_mangle]
-pub extern fn wbx_seal(obj: &mut WaterboxHost, ret: &mut Return<()>) {
+pub extern "C" fn wbx_seal(obj: &mut WaterboxHost, ret: &mut Return<()>) {
 	ret.put(obj.seal());
 }
 
@@ -254,7 +254,7 @@ pub extern fn wbx_seal(obj: &mut WaterboxHost, ret: &mut Return<()>) {
 /// To prevent nondeterminism, adding and removing files is very limited WRT savestates.  Every file added must either exist
 /// in every savestate, or never appear in any savestates.  All savestateable files must be added in the same order for every run.
 #[no_mangle]
-pub extern fn wbx_mount_file(obj: &mut WaterboxHost, name: *const c_char, callback: ReadCallback, userdata: usize, writable: bool, ret: &mut Return<()>) {
+pub extern "C" fn wbx_mount_file(obj: &mut WaterboxHost, name: *const c_char, callback: ReadCallback, userdata: usize, writable: bool, ret: &mut Return<()>) {
 	let mut reader = CReader {
 		userdata,
 		callback
@@ -270,7 +270,7 @@ pub extern fn wbx_mount_file(obj: &mut WaterboxHost, name: *const c_char, callba
 /// It is an error to remove a file which is currently open in the guest.
 /// If the file has been used in savestates, it does not make sense to remove it here, but nothing will stop you.
 #[no_mangle]
-pub extern fn wbx_unmount_file(obj: &mut WaterboxHost, name: *const c_char, callback_opt: Option<WriteCallback>, userdata: usize, ret: &mut Return<()>) {
+pub extern "C" fn wbx_unmount_file(obj: &mut WaterboxHost, name: *const c_char, callback_opt: Option<WriteCallback>, userdata: usize, ret: &mut Return<()>) {
 	let res: anyhow::Result<()> = (|| {
 		let data = obj.unmount_file(&arg_to_str(name)?)?;
 		if let Some(callback) = callback_opt {
@@ -291,7 +291,7 @@ pub extern fn wbx_unmount_file(obj: &mut WaterboxHost, name: *const c_char, call
 /// in the callback.  If the MissingFileResult is provided, it will be consumed immediately and will have the same effect
 /// as wbx_mount_file().  You may free resources associated with the MissingFileResult whenever control next returns to your code.
 // #[no_mangle]
-// pub extern fn wbx_set_missing_file_callback(obj: &mut WaterboxHost, mfc_o: Option<&MissingFileCallback>) {
+// pub extern "C" fn wbx_set_missing_file_callback(obj: &mut WaterboxHost, mfc_o: Option<&MissingFileCallback>) {
 // 	match mfc_o {
 // 		None => obj.set_missing_file_callback(None),
 // 		Some(mfc) => {
@@ -321,7 +321,7 @@ pub extern fn wbx_unmount_file(obj: &mut WaterboxHost, name: *const c_char, call
 /// Save state.  Must not be called before seal.  Must not be called with any writable files mounted.
 /// Must always be called with the same sequence and contents of readonly files.
 #[no_mangle]
-pub extern fn wbx_save_state(obj: &mut WaterboxHost, callback: WriteCallback, userdata: usize, ret: &mut Return<()>) {
+pub extern "C" fn wbx_save_state(obj: &mut WaterboxHost, callback: WriteCallback, userdata: usize, ret: &mut Return<()>) {
 	let mut writer = CWriter {
 		userdata,
 		callback
@@ -337,7 +337,7 @@ pub extern fn wbx_save_state(obj: &mut WaterboxHost, callback: WriteCallback, us
 /// Must be called with the same wbx executable and memory layout as in the savestate.
 /// Errors generally poison the environment; sorry!
 #[no_mangle]
-pub extern fn wbx_load_state(obj: &mut WaterboxHost, callback: ReadCallback, userdata: usize, ret: &mut Return<()>) {
+pub extern "C" fn wbx_load_state(obj: &mut WaterboxHost, callback: ReadCallback, userdata: usize, ret: &mut Return<()>) {
 	let mut reader = CReader {
 		userdata,
 		callback
@@ -349,7 +349,7 @@ pub extern fn wbx_load_state(obj: &mut WaterboxHost, callback: ReadCallback, use
 /// this should be set to false.  Set to true to help catch dangling pointer issues.  Will be ignored (and forced to true)
 /// if waterboxhost was built in debug mode.  This is a single global setting.
 #[no_mangle]
-pub extern fn wbx_set_always_evict_blocks(_val: bool) {
+pub extern "C" fn wbx_set_always_evict_blocks(_val: bool) {
 	#[cfg(not(debug_assertions))]
 	{
 		unsafe { ALWAYS_EVICT_BLOCKS = _val; }
@@ -358,7 +358,7 @@ pub extern fn wbx_set_always_evict_blocks(_val: bool) {
 
 /// Retrieve the number of pages of guest memory that this host is tracking
 #[no_mangle]
-pub extern fn wbx_get_page_len(obj: &mut WaterboxHost, ret: &mut Return<usize>) {
+pub extern "C" fn wbx_get_page_len(obj: &mut WaterboxHost, ret: &mut Return<usize>) {
 	ret.put(Ok(obj.page_len()))
 }
 
@@ -371,7 +371,7 @@ pub extern fn wbx_get_page_len(obj: &mut WaterboxHost, ret: &mut Return<usize>) 
 /// 0x40 - invisible
 /// 0x80 - dirty
 #[no_mangle]
-pub extern fn wbx_get_page_data(obj: &mut WaterboxHost, index: usize, ret: &mut Return<u8>) {
+pub extern "C" fn wbx_get_page_data(obj: &mut WaterboxHost, index: usize, ret: &mut Return<u8>) {
 	if index >= obj.page_len() {
 		ret.put(Err(anyhow!("Index out of range")))
 	} else {
