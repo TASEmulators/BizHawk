@@ -83,7 +83,7 @@ void RETRO_CALLCONV retro_log_printf_callback(enum retro_log_level level, const 
 {
   va_list ap;
   va_start(ap, format);
-  printf(format, ap);
+  vprintf(format, ap);
   va_end(ap);
 }
 
@@ -121,11 +121,11 @@ int16_t RETRO_CALLCONV retro_input_state_callback(unsigned port, unsigned device
   if (device == RETRO_DEVICE_ANALOG) switch (id)
   {
       case RETRO_DEVICE_ID_ANALOG_X:
-        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogX; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogX;
         return 0;
 
       case RETRO_DEVICE_ID_ANALOG_Y:
-        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogY; 
+        if (index == RETRO_DEVICE_INDEX_ANALOG_LEFT) return _inputData.leftAnalogY;
         return 0;
 
       default: return 0;
@@ -154,7 +154,7 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
     if (cmd == RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE) { return true; }
     if (cmd == RETRO_ENVIRONMENT_SET_PIXEL_FORMAT) { *((retro_pixel_format*) data) = RETRO_PIXEL_FORMAT_XRGB8888; return true; }
 	if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY) { *((const char**)data) = _userDataPath.c_str(); return true; }
-    if (cmd == RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY) { return true; } 
+    if (cmd == RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY) { return true; }
     if (cmd == RETRO_ENVIRONMENT_GET_CORE_OPTIONS_VERSION) { return false; }
     if (cmd == RETRO_ENVIRONMENT_SET_VARIABLES) { return false; }
     if (cmd == RETRO_ENVIRONMENT_SET_CORE_OPTIONS_UPDATE_DISPLAY_CALLBACK) { return false; }
@@ -169,7 +169,7 @@ bool RETRO_CALLCONV retro_environment_callback(unsigned cmd, void *data)
     if (cmd == RETRO_ENVIRONMENT_SHUTDOWN) { return false; }
     if (cmd == RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO) { return false; }
     if (cmd == RETRO_ENVIRONMENT_SET_GEOMETRY) { return false; }
-    
+
     fprintf(stderr, "Unrecognized environment callback command: %u\n", cmd);
 
     return false;
@@ -227,7 +227,7 @@ EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resource
 		_compatibilityFileData = std::string((const char*)buffer, resourceLen);
 		return true;
 	}
-	
+
 	if (name == "compatvr.ini")
 	{
 		printf("Loading resource: %s\n", name.c_str());
@@ -275,7 +275,7 @@ EXPORT bool loadResource(const char* resourceName, uint8_t* buffer, int resource
 
 
 EXPORT bool Init(const char* gameFile, const char* userDataPath)
-{ 
+{
 
 	printf("Game File: %s\n", gameFile);
 	printf("User Data Path: %s\n", userDataPath);
@@ -376,7 +376,7 @@ EXPORT void FrameAdvance(MyFrameInfo f)
 //   // m[memAreaIdx].Data  = get_sram_buffer();
 //   // m[memAreaIdx].Name  = "Non-volatile RAM";
 //   // m[memAreaIdx].Size  = get_sram_size();
-//   // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE; 
+//   // m[memAreaIdx].Flags = MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE;
 //   // memAreaIdx++;
 // }
 
