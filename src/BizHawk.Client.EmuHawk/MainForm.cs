@@ -4238,11 +4238,6 @@ namespace BizHawk.Client.EmuHawk
 			UpdateStatusBarRewindIndicator();
 		}
 
-		private int SlotToInt(string slot)
-		{
-			return int.Parse(slot.Substring(slot.Length - 1, 1));
-		}
-
 		public BitmapBuffer/*?*/ ReadScreenshotFromSavestate(int slot)
 		{
 			if (!Emulator.HasSavestates()) return null;
@@ -4308,7 +4303,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (handled) return true; // not sure
 
-			if (ToolControllingSavestates is { } tool) return tool.LoadQuickSave(SlotToInt(quickSlotName));
+			if (ToolControllingSavestates is { } tool) return tool.LoadQuickSave(slot);
 
 			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
 			if (!File.Exists(path))
@@ -4388,7 +4383,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ToolControllingSavestates is { } tool)
 			{
-				tool.SaveQuickSave(SlotToInt(quickSlotName));
+				tool.SaveQuickSave(slot);
 				return;
 			}
 
