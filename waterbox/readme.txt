@@ -33,6 +33,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* submodules/sameboy/libsameboy (required for new BSNES)
 		* waterbox/mame-arcade/mame (required for MAME)
 		* waterbox/melon/melonDS (required for melonDS)
+		* waterbox/melon/BizPlatform/faad2 (required for melonDS)
 		* waterbox/nyma/mednafen (required for all Nyma cores)
 		* waterbox/snes9x (required for Snes9x)
 		* waterbox/gpgx/Genesis-Plus-GX (required for gpgx)
@@ -41,7 +42,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* waterbox/dsda/core (required for dsda)
 		* waterbox/opera/opera-libretro (required for opera)
 		* waterbox/dosbox/dosbox-x (required for DOSBox-x)
-	* none of these submodules need to be cloned recursively
+	* most of these submodules do not need to be cloned recursively, except for dosbox-x.
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
 

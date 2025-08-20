@@ -30,6 +30,7 @@ jobs:
       working-directory: ./waterbox/
       run: git submodule update --init snes9x;
            git submodule update --init melon/melonDS;
+           git submodule update --init melon/BizPlatform/faad2;
            git submodule update --init nyma/mednafen;
            git submodule update --init ares64/ares/thirdparty/angrylion-rdp;
            git submodule update --init gpgx/Genesis-Plus-GX;
