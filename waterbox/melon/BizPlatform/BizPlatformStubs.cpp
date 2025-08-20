@@ -133,6 +133,18 @@ void Camera_Stop(int num, void* userdata)
 void Camera_CaptureFrame(int num, u32* frame, int width, int height, bool yuv, void* userdata)
 {
 	// TODO
+
+	u32 length = width * height;
+	if (yuv)
+	{
+		length /= 2;
+	}
+
+	u32 black = yuv ? 0x80008000 : 0x00000000;
+	for (u32 i = 0; i < length; i++)
+	{
+		frame[i] = black;
+	}
 }
 
 bool Addon_KeyDown(KeyType type, void* userdata)
