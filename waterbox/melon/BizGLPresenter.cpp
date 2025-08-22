@@ -263,7 +263,7 @@ static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u
 	}
 }
 
-ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* screenSettings, u32* width, u32* height, u32* vwidth, u32* vheight)
+ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* screenSettings, u32* width, u32* height)
 {
 	auto [w, h] = GetScreenSize(screenSettings, GLScale);
 	if (w != Width || h != Height)
@@ -303,18 +303,11 @@ ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* scree
 
 	*width = w;
 	*height = h;
+}
 
-	if (GLScale > 1)
-	{
-		auto [vw, vh] = GetScreenSize(screenSettings, 1);
-		*vwidth = vw;
-		*vheight = vh;
-	}
-	else
-	{
-		*vwidth = w;
-		*vheight = h;
-	}
+ECL_EXPORT void PresentGL(melonDS::NDS* nds)
+{
+	Present(nds->GPU);
 }
 
 ECL_EXPORT void GetTouchCoords(int* x, int* y)
