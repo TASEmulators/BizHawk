@@ -305,9 +305,11 @@ ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* scree
 	*height = h;
 }
 
-ECL_EXPORT void PresentGL(melonDS::NDS* nds)
+ECL_EXPORT void PresentGL(melonDS::NDS* nds, u32* width, u32* height)
 {
 	Present(nds->GPU);
+	*width = Width;
+	*height = Height;
 }
 
 ECL_EXPORT void GetTouchCoords(int* x, int* y)
