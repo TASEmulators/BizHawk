@@ -338,7 +338,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					{
 						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
 						// reallocate video buffer for scaling
-						if (_activeSyncSettings.GLScaleFactor > 1)
+						if (_activeSyncSettings.ThreeDeeRenderer != NDSSyncSettings.ThreeDeeRendererType.Software
+							&& _activeSyncSettings.GLScaleFactor > 1)
 						{
 							var maxWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
 							var maxHeight = (384 / 2 * _activeSyncSettings.GLScaleFactor) * 2 + (128 * _activeSyncSettings.GLScaleFactor);
@@ -636,12 +637,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var arm9Size = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x2C, 4));
 			var arm7RomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x30, 4));
 			var arm7Size = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x3C, 4));
-			if (arm9RomOffset > rom.Length ||
-				(arm9Size > 0x3BFE00 && !isDsiExclusive) ||
-				arm9RomOffset + arm9Size > rom.Length ||
-				arm7RomOffset > rom.Length ||
-				(arm7Size > 0x3BFE00 && !isDsiExclusive) ||
-				arm7RomOffset + arm7Size > rom.Length)
+			if (arm9RomOffset > rom.Length
+				|| (arm9Size > 0x3BFE00 && !isDsiExclusive)
+				|| arm9RomOffset + arm9Size > rom.Length
+				|| arm7RomOffset > rom.Length
+				|| (arm7Size > 0x3BFE00 && !isDsiExclusive)
+				|| arm7RomOffset + arm7Size > rom.Length)
 			{
 				return false;
 			}
@@ -652,10 +653,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				var arm9iSize = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1CC, 4));
 				var arm7iRomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1D0, 4));
 				var arm7iSize = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1DC, 4));
-				if (arm9iRomOffset > rom.Length ||
-					arm9iRomOffset + arm9iSize > rom.Length ||
-					arm7iRomOffset > rom.Length ||
-					arm7iRomOffset + arm7iSize > rom.Length)
+				if (arm9iRomOffset > rom.Length
+					|| arm9iRomOffset + arm9iSize > rom.Length
+					|| arm7iRomOffset > rom.Length
+					|| arm7iRomOffset + arm7iSize > rom.Length)
 				{
 					return false;
 				}
@@ -888,6 +889,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			_core.SetSoundConfig(_console, _settings.AudioBitDepth, _settings.AudioInterpolation);
+
+			// Present GL again post load state
+			// This is mainly important to mimic PopulateFromBuffer's functionality
+			// Note this doesn't actually do anything for OpenGL Classic and Compute (yet)
+			// But at least width and height will be corrected (since base LoadStateBinary overrides them)
+			if (_glTextureProvider != null)
+			{
+				_openGLProvider.ActivateGLContext(_glContext);
+				_core.PresentGL(_console, out var w , out var h);
+				BufferWidth = w;
+				BufferHeight = h;
+				_glTextureProvider.VideoDirty = true;
+			}
 		}
 
 		// omega hack
