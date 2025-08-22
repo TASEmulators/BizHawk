@@ -338,8 +338,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					{
 						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
 						// reallocate video buffer for scaling
-						if (_activeSyncSettings.ThreeDeeRenderer != NDSSyncSettings.ThreeDeeRendererType.Software
-							&& _activeSyncSettings.GLScaleFactor > 1)
+						if (_activeSyncSettings.GLScaleFactor > 1)
 						{
 							var maxWidth = (256 * _activeSyncSettings.GLScaleFactor) * 3 + ((128 * _activeSyncSettings.GLScaleFactor) * 4 / 3) + 1;
 							var maxHeight = (384 / 2 * _activeSyncSettings.GLScaleFactor) * 2 + (128 * _activeSyncSettings.GLScaleFactor);
