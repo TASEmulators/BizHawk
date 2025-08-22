@@ -44,6 +44,7 @@ CORE_SRCS = \
 	FATStorage.cpp \
 	FreeBIOS.cpp \
 	GBACart.cpp \
+	GBACartMotionPak.cpp \
 	GPU.cpp \
 	GPU2D.cpp \
 	GPU2D_Soft.cpp \
