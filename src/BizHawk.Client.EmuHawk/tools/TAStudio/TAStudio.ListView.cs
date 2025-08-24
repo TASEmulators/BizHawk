@@ -693,6 +693,7 @@ namespace BizHawk.Client.EmuHawk
 								CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis Edit: {frame}");
 								_axisEditColumn = buttonName;
 								AxisEditRow = frame;
+								Cursor = Cursors.SizeNS;
 								_axisTypedValue = "";
 								_axisEditYPos = e.Y;
 								_axisBackupState = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
@@ -900,6 +901,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MainForm.BlockFrameAdvance = false;
+
+			Cursor = Cursors.Default;
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
