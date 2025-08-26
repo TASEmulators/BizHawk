@@ -312,11 +312,13 @@ public partial class Mupen64 : IEmulator
 
 	private Mupen64InputPluginApi.InputState InputCallback(int controller)
 	{
+		var ret = new Mupen64InputPluginApi.InputState();
+		if (_controller is null) return ret;
+
 		IsLagFrame = false;
 		InputCallbacks.Call();
-
 		controller++;
-		var ret = new Mupen64InputPluginApi.InputState();
+
 		if (controller == 1 && _activeSyncSettings.Port1Connected || controller == 2 && _activeSyncSettings.Port2Connected
 			|| controller == 3 && _activeSyncSettings.Port3Connected || controller == 4 && _activeSyncSettings.Port4Connected)
 		{
