@@ -15,8 +15,8 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
-		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename these to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
+		<IsTargetingNetFramework>$(TargetFramework.StartsWith("net4"))</IsTargetingNetFramework> <!-- $(TargetFrameworkIdentifier) is unset here -->
 		<LangVersion>12.0</LangVersion>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<NoWarn>$(NoWarn);CS1591</NoWarn> <!-- CS1591 wants doc comments on every type/member, which is a recipe for useless generated or blank comments -->
