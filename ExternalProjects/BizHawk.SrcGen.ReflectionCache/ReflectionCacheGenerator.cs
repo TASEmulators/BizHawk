@@ -6,12 +6,15 @@ using System.Text;
 public sealed class ReflectionCacheGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
-		=> context.RegisterSourceOutput(context.AnalyzerConfigOptionsProvider, Execute);
+		=> context.RegisterSourceOutput(
+			context.AnalyzerConfigOptionsProvider.Combine(context.CompilationProvider),
+			Execute);
 
-	public void Execute(SourceProductionContext context, AnalyzerConfigOptionsProvider configProvider)
+	public void Execute(SourceProductionContext context, (AnalyzerConfigOptionsProvider Config, Compilation Compilation) providers)
 	{
-		if (!configProvider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var nSpace)
-			|| string.IsNullOrWhiteSpace(nSpace))
+		if (!providers.Config.GlobalOptions.TryGetValue("build_property.RootNamespace", out var nSpace)
+			|| string.IsNullOrWhiteSpace(nSpace)
+			|| providers.Compilation.GetTypeByMetadataName("BizHawk.Common.StringExtensions.StringExtensions") is null) // project does not have BizHawk.Common dependency TODO revisit w/ codegen'd kitchen sink
 		{
 			return;
 		}
