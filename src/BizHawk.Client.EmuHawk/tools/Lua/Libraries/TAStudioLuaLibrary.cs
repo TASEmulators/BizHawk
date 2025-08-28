@@ -16,6 +16,10 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
+		private const string DESC_LINE_BRANCH_CHANGE_CB
+			= " Your callback can have 1 parameter, which will be the index of the branch."
+			+ " Calling this function a second time will replace the existing callback with the new one.";
+
 		private static readonly IDictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
 
 		public ToolManager Tools { get; set; }
@@ -632,8 +636,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("onbranchsave", "called whenever a branch is created or updated. luaf must be a function that takes the integer branch index as a parameter")]
+		[LuaMethodExample("""
+			tastudio.onbranchsave(function(branch_index) console.writeline(branch_index); end);
+		""")]
+		[LuaMethod(
+			name: "onbranchsave",
+			description: "Sets a callback which fires after any branch is created or updated."
+				+ DESC_LINE_BRANCH_CHANGE_CB)]
 		public void OnBranchSave(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -645,8 +654,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("onbranchremove", "called whenever a branch is removed. luaf must be a function that takes the integer branch index as a parameter")]
+		[LuaMethodExample("""
+			tastudio.onbranchremove(function(branch_index) console.writeline(branch_index); end);
+		""")]
+		[LuaMethod(
+			name: "onbranchremove",
+			description: "Sets a callback which fires after any branch is removed."
+				+ DESC_LINE_BRANCH_CHANGE_CB)]
 		public void OnBranchRemove(LuaFunction luaf)
 		{
 			if (Engaged())
