@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
@@ -60,16 +59,12 @@ namespace BizHawk.Client.Common
 			_axisHolds.Clear();
 		}
 
-		private List<string> _justPressed = [ ];
-
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (var button in buttons)
 			{
 				_ = _buttonHolds.ToggleMembership(button);
 			}
-
-			_justPressed = buttons;
 		}
 	}
 
@@ -158,16 +153,12 @@ namespace BizHawk.Client.Common
 			foreach (var v in _axisPatterns.Values) v.GetNextValue(lagged);
 		}
 
-		private List<string> _justPressed = [ ];
-
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (var button in buttons)
 			{
 				SetButtonAutofire(button, !_boolPatterns.ContainsKey(button));
 			}
-
-			_justPressed = buttons;
 		}
 	}
 }
