@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 {
 	public partial class Opera : IRegionable
 	{
-		public DisplayType Region => _syncSettings.VideoStandard is VideoStandard.NTSC
+		public DisplayType Region => _activeSyncSettings.VideoStandard is VideoStandard.NTSC
 			? DisplayType.NTSC
 			: DisplayType.PAL;
 	}

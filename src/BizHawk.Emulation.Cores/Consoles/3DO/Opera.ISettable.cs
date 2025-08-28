@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -75,10 +76,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			OrbatakTrackball = 513,
 		}
 
-		public object GetSettings() => null;
-		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
+		public object GetSettings()
+			=> null;
+
+		public PutSettingsDirtyBits PutSettings(object o)
+			=> PutSettingsDirtyBits.None;
 
 		private SyncSettings _syncSettings;
+		private readonly SyncSettings _activeSyncSettings;
+
 		public SyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
@@ -95,31 +101,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			[DisplayName("System Type")]
 			[Description("Sets the version of the console to emulate. This choice determines the corresponding BIOS ROM to use.")]
 			[DefaultValue(SystemType.Panasonic_FZ1_U)]
-			[TypeConverter(typeof(SystemType))]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SystemType SystemType { get; set; }
 
 			[DisplayName("Font ROM")]
 			[Description("Determines whether (if any) addition ROM to load for regional font support.")]
 			[DefaultValue(FontROM.None)]
-			[TypeConverter(typeof(FontROM))]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public FontROM FontROM { get; set; }
 
 			[DisplayName("Video Standard")]
 			[Description("Determines the resolution and video timing. It should be selected according to the game and console's region.")]
 			[DefaultValue(VideoStandard.NTSC)]
-			[TypeConverter(typeof(VideoStandard))]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public VideoStandard VideoStandard { get; set; }
 
 			[DisplayName("Controller 1 Type")]
 			[Description("Sets the type of controller connected to the console's port 1.")]
 			[DefaultValue(ControllerType.Gamepad)]
-			[TypeConverter(typeof(ControllerType))]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ControllerType Controller1Type { get; set; }
 
 			[DisplayName("Controller 2 Type")]
 			[Description("Sets the type of controller connected to the console's port 2.")]
 			[DefaultValue(ControllerType.None)]
-			[TypeConverter(typeof(ControllerType))]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public ControllerType Controller2Type { get; set; }
 
 			public SyncSettings()

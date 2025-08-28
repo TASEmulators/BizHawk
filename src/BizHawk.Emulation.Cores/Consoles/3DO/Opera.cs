@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Buffers.Binary;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
@@ -15,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		isReleased: false)]
 	public partial class Opera : WaterboxCore
 	{
-		private static readonly Configuration ConfigNTSC = new Configuration
+		private static readonly Configuration ConfigNTSC = new()
 		{
 			SystemId = VSystemID.Raw.Panasonic3DO,
 			MaxSamples = 8 * 1024,
@@ -27,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			DefaultFpsDenominator = LibOpera.NTSC_VIDEO_DENOMINATOR,
 		};
 
-		private static readonly Configuration ConfigPAL1 = new Configuration
+		private static readonly Configuration ConfigPAL1 = new()
 		{
 			SystemId = VSystemID.Raw.Panasonic3DO,
 			MaxSamples = 8 * 1024,
@@ -39,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			DefaultFpsDenominator = LibOpera.PAL1_VIDEO_DENOMINATOR,
 		};
 
-		private static readonly Configuration ConfigPAL2 = new Configuration
+		private static readonly Configuration ConfigPAL2 = new()
 		{
 			SystemId = VSystemID.Raw.Panasonic3DO,
 			MaxSamples = 8 * 1024,
@@ -51,12 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			DefaultFpsDenominator = LibOpera.PAL2_VIDEO_DENOMINATOR,
 		};
 
-		private readonly List<IDiscAsset> _discAssets;
-
 		public override int VirtualWidth => BufferHeight * 4 / 3;
-		private LibOpera _libOpera;
-
-		// Image selection / swapping variables
 
 		[CoreConstructor(VSystemID.Raw.Panasonic3DO)]
 		public Opera(CoreLoadParameters<object, SyncSettings> lp)
@@ -67,26 +64,50 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 					null or VideoStandard.NTSC => ConfigNTSC,
 					VideoStandard.PAL1 => ConfigPAL1,
 					VideoStandard.PAL2 => ConfigPAL2,
-					_ => throw new InvalidOperationException($"unexpected value for sync setting {nameof(SyncSettings.VideoStandard)}"),
+					_ => throw new InvalidOperationException($"Unexpected value for sync setting {nameof(SyncSettings.VideoStandard)}"),
 				})
 		{
 			DriveLightEnabled = true;
-			_discAssets = lp.Discs;
 
-			// If no discs loaded, then there's nothing to emulate
-			if (_discAssets.Count == 0) throw new InvalidOperationException("No CDs provided for emulation");
-			_isMultidisc = _discAssets.Count > 1;
+			if (lp.Discs.Count == 0)
+			{
+				throw new InvalidOperationException("No CDs provided for emulation");
+			}
+
+			_isMultidisc = lp.Discs.Count > 1;
 
 			_CDReadCallback = CDRead;
 			_CDSectorCountCallback = CDSectorCount;
+
 			_discIndex = 0;
-			foreach (var disc in _discAssets) _cdReaders.Add(new(disc.DiscData));
+			_discNames = lp.Discs.Select(d => d.DiscName).ToArray();
+			_cdReaders = lp.Discs.Select(d => new DiscSectorReader(d.DiscData)).ToArray();
 
-			Console.WriteLine($"[CD] Sector count: {_discAssets[0].DiscData.Session1.LeadoutLBA}");
+			_cdSectorCounts = new int[_cdReaders.Length];
+			for (var i = 0; i < _cdSectorCounts.Length; i++)
+			{
+				// 3DO weirdly seems to be expecting a sector count that's represents a flat MiB count
+				// This sector count can be found within the first sector of the disc
+				// This sector count can also be inferred by rounding down the leadout LBA to a 512 multiple
+				_cdReaders[i].ReadLBA_2048(0, _sectorBuffer, 0);
+				var sectorCountInDisc = BinaryPrimitives.ReadInt32BigEndian(_sectorBuffer.AsSpan(80, 4));
+				var sectorCountFromLeadout = lp.Discs[i].DiscData.Session1.LeadoutLBA & ~0x1FF;
+				if (sectorCountInDisc != sectorCountFromLeadout)
+				{
+					Console.WriteLine($"Mismatched sector count in {_discNames[i]} ({sectorCountInDisc} / {sectorCountFromLeadout})");
+				}
+
+				// upstream uses this always, so might as well
+				_cdSectorCounts[i] = sectorCountInDisc;
+			}
+
+			Console.WriteLine($"[CD] Sector count: {_cdSectorCounts[0]}");
+
 			_syncSettings = lp.SyncSettings ?? new();
-			ControllerDefinition = CreateControllerDefinition(_syncSettings, _isMultidisc);
+			_activeSyncSettings = _syncSettings.Clone();
+			ControllerDefinition = CreateControllerDefinition(_activeSyncSettings, _isMultidisc);
 
-			_libOpera = PreInit<LibOpera>(
+			var libOpera = PreInit<LibOpera>(
 				new WaterboxOptions
 				{
 					Filename = "opera.wbx",
@@ -100,11 +121,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 				},
 				[ _CDReadCallback, _CDSectorCountCallback ]);
 
-			// Setting CD callbacks
-			_libOpera.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
+			libOpera.SetCdCallbacks(_CDReadCallback, _CDSectorCountCallback);
 
-			// Adding BIOS file
-			string biosType = _syncSettings.SystemType switch
+			var biosType = _activeSyncSettings.SystemType switch
 			{
 				SystemType.Panasonic_FZ1_U => "Panasonic_FZ1_U",
 				SystemType.Panasonic_FZ1_E => "Panasonic_FZ1_E",
@@ -118,22 +137,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 				SystemType.Sanyo_HC21 => "Sanyo_HC21",
 				SystemType.Shootout_At_Old_Tucson => "Shootout_At_Old_Tucson",
 				SystemType._3DO_NTSC_1fc2 => "3DO_NTSC_1fc2",
-				_ => "None",
+				_ => throw new InvalidOperationException($"Unknown {nameof(SystemType)}"),
 			};
 
 			var (biosData, biosInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw.Panasonic3DO, biosType), "BIOS ROM files are required!");
-			string biosFileName = biosInfo.Name + ".bin";
+			var biosFileName = biosInfo.Name + ".bin";
 			_exe.AddReadonlyFile(biosData, biosFileName);
 
-			// Adding Font ROM file, if required
-			string fontROMType = _syncSettings.FontROM switch
+			var fontROMType = _activeSyncSettings.FontROM switch
 			{
+				FontROM.None => "None",
 				FontROM.Kanji_ROM_Panasonic_FZ1 => "Kanji_ROM_Panasonic_FZ1",
 				FontROM.Kanji_ROM_Panasonic_FZ10 => "Kanji_ROM_Panasonic_FZ10",
-				_ => "None",
+				_ => throw new InvalidOperationException($"Unknown {nameof(FontROM)}"),
 			};
 
-			string fontROMFileName = "None";
+			var fontROMFileName = "None";
 			if (fontROMType != "None")
 			{
 				var (fontROMData, fontROMInfo) = CoreComm.CoreFileProvider.GetFirmwareWithGameInfoOrThrow(new(VSystemID.Raw.Panasonic3DO, fontROMType), "Font ROM files are required!");
@@ -141,16 +160,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 				fontROMFileName = fontROMInfo.Name;
 			}
 
-			////////////// Initializing Core
-			string cdName = _discAssets[0].DiscName;
-			Console.WriteLine($"Launching Core with Game: '{cdName}', BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
-			if (!_libOpera.Init(
-				gameFile: cdName,
+			Console.WriteLine($"Using BIOS ROM: '{biosFileName}', Font ROM: '{fontROMFileName}'");
+			if (!libOpera.Init(
+				gameFile: "3DO",
 				biosFile: biosFileName,
 				fontFile: fontROMFileName,
-				port1Type: (int) _syncSettings.Controller1Type,
-				port2Type: (int) _syncSettings.Controller2Type,
-				videoStandard: (int) _syncSettings.VideoStandard))
+				port1Type: (int) _activeSyncSettings.Controller1Type,
+				port2Type: (int) _activeSyncSettings.Controller2Type,
+				videoStandard: (int) _activeSyncSettings.VideoStandard))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
@@ -158,43 +175,63 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			PostInit();
 		}
 
-		// CD Handling logic
-		private bool _isMultidisc;
-		private bool _discInserted = true;
 		private readonly LibOpera.CDReadCallback _CDReadCallback;
 		private readonly LibOpera.CDSectorCountCallback _CDSectorCountCallback;
+
+		private readonly bool _isMultidisc;
+
 		private int _discIndex;
-		private readonly List<DiscSectorReader> _cdReaders = new List<DiscSectorReader>();
-		private static int CD_SECTOR_SIZE = 2048;
+		private readonly string[] _discNames;
+		private readonly DiscSectorReader[] _cdReaders;
+		private readonly int[] _cdSectorCounts;
+
+		private const int CD_SECTOR_SIZE = 2048;
 		private readonly byte[] _sectorBuffer = new byte[CD_SECTOR_SIZE];
 
 		private void SelectNextDisc()
 		{
 			_discIndex++;
-			if (_discIndex == _discAssets.Count) _discIndex = 0;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
+			if (_discIndex == _cdReaders.Length)
+			{
+				_discIndex = _cdReaders.Length - 1;
+			}
+
+			CoreComm.Notify((uint)_discIndex < _cdReaders.Length
+				? "No CDROM inserted"
+				: $"Selected CDROM {_discIndex}: {_discNames[_discIndex]}", null);
 		}
 
 		private void SelectPrevDisc()
 		{
 			_discIndex--;
-			if (_discIndex < 0) _discIndex = _discAssets.Count - 1;
-			CoreComm.Notify($"Selected CDROM {_discIndex}: {_discAssets[_discIndex].DiscName}", null);
+			if (_discIndex < -1)
+			{
+				_discIndex = -1;
+			}
+
+			CoreComm.Notify((uint)_discIndex < _cdReaders.Length
+				? "No CDROM inserted"
+				: $"Selected CDROM {_discIndex}: {_discNames[_discIndex]}", null);
 		}
 
 		private void CDRead(int lba, IntPtr dest)
 		{
-			if (_discIndex < _discAssets.Count)
+			if ((uint)_discIndex < _cdReaders.Length)
 			{
 				_cdReaders[_discIndex].ReadLBA_2048(lba, _sectorBuffer, 0);
 				Marshal.Copy(_sectorBuffer, 0, dest, CD_SECTOR_SIZE);
 			}
+
 			DriveLightOn = true;
 		}
 
 		private int CDSectorCount()
 		{
-			if (_discIndex < _discAssets.Count) return _discAssets[_discIndex].DiscData.Session1.LeadoutLBA;
+			if ((uint)_discIndex < _cdSectorCounts.Length)
+			{
+				return _cdSectorCounts[_discIndex];
+			}
+
 			return -1;
 		}
 
@@ -202,7 +239,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		{
 			var fi = new LibOpera.FrameInfo();
 
-			// Disc management
 			if (_isMultidisc)
 			{
 				if (controller.IsPressed("Next Disc")) SelectNextDisc();
@@ -210,21 +246,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			}
 
 			DriveLightOn = false;
-			fi.port1 = ProcessController(1, _syncSettings.Controller1Type, controller);
-			fi.port2 = ProcessController(2, _syncSettings.Controller2Type, controller);
+			fi.port1 = ProcessController(1, _activeSyncSettings.Controller1Type, controller);
+			fi.port2 = ProcessController(2, _activeSyncSettings.Controller2Type, controller);
 
-			// Game reset
-			if (controller.IsPressed("Reset")) fi.isReset = 1;
+			fi.isReset = controller.IsPressed("Reset") ? 1 : 0;
 
 			return fi;
 		}
 
 		private static LibOpera.GameInput ProcessController(int port, ControllerType type, IController controller)
 		{
-			LibOpera.GameInput gameInput = new LibOpera.GameInput();
+			var gameInput = default(LibOpera.GameInput);
 
 			switch (type)
 			{
+				case ControllerType.None:
+					break;
+
 				case ControllerType.Gamepad:
 					gameInput.gamepad.up = controller.IsPressed($"P{port} {JoystickButtons.Up}") ? 1 : 0;
 					gameInput.gamepad.down = controller.IsPressed($"P{port} {JoystickButtons.Down}") ? 1 : 0;
@@ -295,25 +333,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 					gameInput.orbatakTrackball.dX = controller.AxisValue($"P{port} {Inputs.TrackballPosX}");
 					gameInput.orbatakTrackball.dY = controller.AxisValue($"P{port} {Inputs.TrackballPosY}");
 					break;
+
+				default:
+					throw new InvalidOperationException();
 			}
 
 			return gameInput;
 		}
 
-		protected override void FrameAdvancePost()
-		{
-		}
-
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			writer.Write(_discIndex);
-			writer.Write(_discInserted);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_discIndex = reader.ReadInt32();
-			_discInserted = reader.ReadBoolean();
 		}
 	}
 }
