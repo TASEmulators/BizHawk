@@ -14,13 +14,13 @@ namespace BizHawk.Client.EmuHawk
 		public string Description
 		{
 			get => textBox1.Text;
-			init => textBox1.Text = value;
+			set => textBox1.Text = value;
 		}
 
 		public string DownloadFrom
 		{
 			get => txtUrl.Text;
-			init => txtUrl.Text = value;
+			set => txtUrl.Text = value;
 		}
 
 		protected virtual string DownloadTemp { get; } = null!;
@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		public string DownloadTo
 		{
 			get => txtLocation.Text;
-			init => txtLocation.Text = value;
+			set => txtLocation.Text = value;
 		}
 
 		public DownloaderForm()
