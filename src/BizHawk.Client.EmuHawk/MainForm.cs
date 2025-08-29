@@ -2429,7 +2429,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// this only works assuming the mouse is perfectly still
 				// if the mouse is slightly moving, it will use the "moving" cursor rather
-				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
+				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor.Value;
 
 				// This will actually fully hide the cursor
 				// However, this is a no-op on Mono, so we need to do both ways
@@ -4957,7 +4957,7 @@ namespace BizHawk.Client.EmuHawk
 				fbLocation.Offset(_presentationPanel.Control.Location);
 				Cursor.Clip = new(fbLocation, _presentationPanel.Control.Size);
 				Cursor.Hide();
-				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
+				_presentationPanel.Control.Cursor = Properties.Resources.BlankCursor.Value;
 				_cursorHidden = true;
 				BringToFront();
 
