@@ -120,38 +120,31 @@ namespace BizHawk.Client.EmuHawk
 				// or perhaps this is just some legacy junk windows keeps around for backwards compatibility reasons
 				// we can possibly workaround this by using the "short path name" rather (but this isn't guaranteed to exist)
 				const string SEMICOLON_IN_DIR_MSG =
-					"EmuHawk requires no semicolons within its base directory! EmuHawk will now close.";
+					"The path to the BizHawk folder contains a ';', which doesn't work with one of the Windows APIs used by EmuHawk."
+						+ "\nFind and rename the folder, or move BizHawk somewhere else.";
+				static int SetDllDirectoryFailed(string errMsg = SEMICOLON_IN_DIR_MSG)
+				{
+					MessageBox.Show(errMsg);
+					return -1;
+				}
 
 				if (dllDir.ContainsOrdinal(';'))
 				{
 					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
-					if (dllShortPathLen == 0)
-					{
-						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
-						return -1;
-					}
+					if (dllShortPathLen is 0) return SetDllDirectoryFailed();
 
 					var dllShortPathBuffer = new char[dllShortPathLen];
-					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
-					if (dllShortPathLen == 0)
-					{
-						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
-						return -1;
-					}
+					var dllShortPathLen1 = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					if (dllShortPathLen1 is 0) return SetDllDirectoryFailed();
 
-					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen);
-					if (dllDir.ContainsOrdinal(';'))
-					{
-						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
-						return -1;
-					}
+					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen1);
+					if (dllDir.ContainsOrdinal(';')) return SetDllDirectoryFailed();
 				}
 
 				if (!Win32Imports.SetDllDirectoryW(dllDir))
 				{
-					MessageBox.Show(
+					return SetDllDirectoryFailed(
 						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. EmuHawk will now close.");
-					return -1;
 				}
 
 				// Check if we have the C++ VS2015-2022 redist all in one redist be installed
@@ -165,9 +158,9 @@ namespace BizHawk.Client.EmuHawk
 					// else it's missing or corrupted
 					const string desc =
 						"Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64)";
-					MessageBox.Show($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) " +
-						$"Internal error message: {OSTailoredCode.LinkedLibManager.GetErrorMessage()}");
-					return -1;
+					return SetDllDirectoryFailed(
+						$"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.)"
+							+ $" Internal error message: {OSTailoredCode.LinkedLibManager.GetErrorMessage()}");
 				}
 			}
 
