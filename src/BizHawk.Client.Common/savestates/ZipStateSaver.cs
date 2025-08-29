@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		private readonly IZipWriter _zip;
 		private bool _isDisposed;
 
-		public bool AsTarbomb = /*!OSTailoredCode.IsUnixHost*/false;
+		public bool AsTarbomb = /*!OSTailoredCode.IsUnixHost*/true;
 
 		private static void WriteZipVersion(Stream s)
 		{
