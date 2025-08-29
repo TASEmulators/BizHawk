@@ -140,6 +140,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				else
 				{
 					Dispose();
+
+					// This is indicating a DLC CIA was installed
+					if (outMsg.ContainsOrdinal("not executable"))
+					{
+						throw new("The DLC CIA was successfully installed.");
+					}
+
+					// This is indicating an "update" CIA was installed
+					if (outMsg.ContainsOrdinal("not bootable"))
+					{
+						throw new("The update CIA was successfully installed.");
+					}
+
 					throw new(outMsg);
 				}
 			}
@@ -154,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				if (".cia".EqualsIgnoreCase(lp.Roms[i].Extension))
 				{
 					Dispose();
-					throw new("ROMs after the index 0 should be CIAs");
+					throw new("ROMs after the first ROM should be CIAs");
 				}
 
 				_core.Encore_InstallCIA(_context, lp.Roms[i].RomPath, dummyBuffer, dummyBuffer.Length);
