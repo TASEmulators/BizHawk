@@ -140,5 +140,6 @@ in {
 		exec '${lib.getExe bizhawkAssemblies.mono}'${monoProfilerFlag} \
 			"$BIZHAWK_HOME/DiscoHawk.exe" "$@"
 	'';
+#	emuhawkHeadless = `exec env -i BIZHAWK_HOME="$BIZHAWK_HOME" PATH="$PATH" TERM="$TERM" /nix/store/...-emuhawk-mono-wrapper "$@"`;
 	emuhawkNonNixOS = writeShellScript "emuhawk-mono-wrapper-non-nixos" ''exec '${nixGL}/bin/nixGL' '${emuhawk}' "$@"'';
 }
