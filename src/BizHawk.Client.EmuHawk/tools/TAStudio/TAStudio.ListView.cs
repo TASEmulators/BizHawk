@@ -524,8 +524,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
+					// Restore if we have not emulated PAST restore point and we are not already at restore point.
 					var record = CurrentTasMovie[RestorePositionFrame];
-					if (record.Lagged is null)
+					if (record.Lagged is null && Emulator.Frame < RestorePositionFrame)
 					{
 						RestorePosition();
 						return;
