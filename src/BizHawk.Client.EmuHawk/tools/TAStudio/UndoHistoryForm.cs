@@ -87,7 +87,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				while (Log.UndoIndex > index)
 				{
-					Log.Undo();
+					// Although we have a reference to the Log, TAStudio needs to do a little extra on undo.
+					_tastudio.UndoExternal();
 				}
 			});
 
