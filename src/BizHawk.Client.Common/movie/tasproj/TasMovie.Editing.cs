@@ -51,8 +51,8 @@ namespace BizHawk.Client.Common
 
 			LagLog.RemoveFrom(frame);
 			TasStateManager.InvalidateAfter(frame);
+			Markers.TruncateAt(frame); // must happen before the invalidation
 			GreenzoneInvalidated?.Invoke(frame);
-			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)
