@@ -17,6 +17,8 @@ install_to_bizhawk () {
 	fi
 }
 
+mkdir -p build
+
 rm -rf mupen64plus-core/projects/unix/_obj
 # do we want ACCURATE_FPU=1 here?
 make -C mupen64plus-core/projects/unix VULKAN=0 NEW_DYNAREC=1 OSD=0 ACCURATE_FPU=0 KEYBINDINGS=0 DEBUGGER=1 all -j4
