@@ -965,16 +965,18 @@ namespace BizHawk.Client.EmuHawk
 			_suppressContextMenu = false;
 		}
 
-		private void WheelSeek(int count)
+		private bool WheelSeek(int count)
 		{
 			if (_seekingTo != -1)
 			{
 				_seekingTo -= count;
 				RefreshDialog();
+				return false;
 			}
 			else
 			{
 				GoToFrame(Emulator.Frame - count);
+				return true;
 			}
 		}
 

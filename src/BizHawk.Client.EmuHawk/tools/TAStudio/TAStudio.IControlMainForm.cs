@@ -78,8 +78,7 @@
 		public bool Rewind()
 		{
 			int rewindStep = MainForm.IsFastForwarding ? Settings.RewindStepFast : Settings.RewindStep;
-			WheelSeek(rewindStep);
-			return true;
+			return WheelSeek(rewindStep);
 		}
 
 		public bool WantsToControlRestartMovie { get; }
