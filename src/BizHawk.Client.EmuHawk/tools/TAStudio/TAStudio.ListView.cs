@@ -984,10 +984,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_seekingTo -= count;
 
-				// that's a weird condition here, but for whatever reason it works best
 				if (count > 0 && Emulator.Frame >= _seekingTo)
 				{
-					GoToFrame(Emulator.Frame - count);
+					GoToFrame(_seekingTo);
 				}
 
 				RefreshDialog();

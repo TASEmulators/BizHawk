@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastRecordAction = -1;
 			if (frame == Emulator.Frame)
 			{
+				CancelSeek();
 				return;
 			}
 
