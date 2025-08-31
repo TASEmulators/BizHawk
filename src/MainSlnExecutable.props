@@ -1,6 +1,7 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
+		<AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
 		<AssemblyTitle>$(Description)</AssemblyTitle>
 		<!-- Output path will contain the executable along with all its dependencies. We copy the executable up one directory up later on.
 			This allows us to have the executable dependencies automagically copied over to our dll folder while still keeping the executable in the output folder. -->
