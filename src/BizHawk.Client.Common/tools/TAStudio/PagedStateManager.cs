@@ -341,6 +341,13 @@ namespace BizHawk.Client.Common
 
 			_bufferIsFull = true;
 
+			while (_unreservedStates.Count != 0)
+			{
+				StateInfo state = _unreservedStates.Dequeue();
+				if (!_states.Remove(state)) continue; // State was already removed.
+				return state.FirstPage;
+			}
+
 			while (true)
 			{
 				// A very special case: We have no mid or new states.
@@ -444,7 +451,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Capture(int frame, IStatable source, bool force = false)
+		public void Capture(int frame, IStatable source)
 		{
 			Debug.Assert(_states.Contains(new(0)), "State manager cannot be used until engaged.");
 
@@ -459,15 +466,17 @@ namespace BizHawk.Client.Common
 				// Zwinder did this, so I will too. I'm not sure it's a good idea but maybe it is.
 				return;
 			}
-			else if (force)
-			{
-				InternalCapture(frame, source, StateGroup.Mid);
-			}
 			else if (!_bufferIsFull || _newStates.Count == 0 || frame > _newStates.Min.Frame)
 			{
 				int max = frame - 1;
 				int min = frame - Settings.FramesBetweenNewStates;
-				int newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
+				int newestOlderState;
+				// Don't consider non-new states when looking at the gap. (unless we have no new states)
+				// This keeps the gaps regular even while frames are being reserved+unreserved for the last edited frame.
+				if (_newStates.Count != 0)
+					newestOlderState = _newStates.GetViewBetween(new(min), new(max)).Max.Frame;
+				else
+					newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
 
 				// Special case: If the buffer is entirely full of old states, we don't attempt to capture into new.
 				if (_bufferIsFull && _midStates.Count == 0 && _newStates.Count < 2)
@@ -551,6 +560,7 @@ namespace BizHawk.Client.Common
 			return Count < oldStateCount;
 		}
 
+		private Queue<StateInfo> _unreservedStates = new();
 		public void Unreserve(int frame)
 		{
 			// We need to get the real state info out of the set.
@@ -560,7 +570,37 @@ namespace BizHawk.Client.Common
 			// Remove the state if it's an old state we don't need.
 			if (!_newStates.Contains(state) && !_midStates.Contains(state) && !ShouldKeepForOld(frame))
 			{
-				RemoveState(state);
+				// Actually, check if it should be re-categorized first.
+				// This is important because the last edited frame will be temporarily reserved.
+				int max = frame - 1;
+				int min = frame - Settings.FramesBetweenMidStates;
+				int newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
+				max = frame + Settings.FramesBetweenMidStates;
+				min = frame + 1;
+				int oldestNewerState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
+
+				bool asMid = _midStates.Contains(new(newestOlderState));
+				int allowableGap = asMid ? Settings.FramesBetweenMidStates : Settings.FramesBetweenNewStates;
+
+				if (oldestNewerState - newestOlderState <= allowableGap)
+				{
+					// Keep until we need the space for another capture.
+					_unreservedStates.Enqueue(state);
+				}
+				else
+				{
+					int pages = (state.Size + PAGE_DATA_SIZE - 1) / PAGE_DATA_SIZE;
+					if (asMid)
+					{
+						_midPagesUsed += pages;
+						_midStates.Add(state);
+					}
+					else
+					{
+						_newPagesUsed += pages;
+						_newStates.Add(state);
+					}
+				}
 			}
 		}
 

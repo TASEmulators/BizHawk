@@ -131,7 +131,16 @@ namespace BizHawk.Client.Common
 			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
 
 			Changes = true;
-			LastEditedFrame = frame;
+
+			if (frame != LastEditedFrame)
+			{
+				// We may have force captued a state for the last edited frame.
+				// We don't need to keep the old one.
+				int frameThatWasReserved = LastEditedFrame - 1;
+				LastEditedFrame = frame;
+				if (!IsReserved(frameThatWasReserved)) TasStateManager.Unreserve(frameThatWasReserved);
+			}
+
 			if (anyStateInvalidated && IsCountingRerecords)
 			{
 				Rerecords++;
@@ -185,8 +194,7 @@ namespace BizHawk.Client.Common
 		{
 			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
-			// We will forbibly capture a state for the last edited frame (requested by #916 for case of "platforms with analog stick")
-			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
+			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
 		}
 
 
@@ -341,7 +349,9 @@ namespace BizHawk.Client.Common
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
 			return Markers.Exists(m => m.Frame - 1 == frame)
-				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
+				|| Branches.Any(b => b.Frame == frame) // Branches should already be in the reserved list, but it doesn't hurt to check
+			// We will forbibly capture a state for the last edited frame (requested by #916 for case of "platforms with analog stick")
+				|| frame == LastEditedFrame - 1;
 		}
 
 		public void Dispose()

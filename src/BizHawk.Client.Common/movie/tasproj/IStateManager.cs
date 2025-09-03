@@ -10,9 +10,9 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Requests that the current emulator state be captured
-		/// Unless force is true, the state may or may not be captured depending on the logic employed by "green-zone" management
+		/// The state may or may not be captured depending on the logic employed by "green-zone" management
 		/// </summary>
-		void Capture(int frame, IStatable source, bool force = false);
+		void Capture(int frame, IStatable source);
 
 		/// <summary>
 		/// Tell the state manager we no longer wish to reserve the state for the given frame.

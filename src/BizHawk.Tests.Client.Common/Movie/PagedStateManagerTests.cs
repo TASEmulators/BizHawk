@@ -270,11 +270,11 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void TestKeepsAtLeastAncientInterval()
 		{
 			IStatable ss = CreateStateSource();
+			int branchFrame = MakeDefaultSettings().FramesBetweenOldStates * 2 - 1;
 			WithRatioVariety((manager) =>
 			{
 				// Load branch with frame number almost at two old intervals
-				int branchFrame = manager.Settings.FramesBetweenOldStates * 2 - 1;
-				manager.Capture(branchFrame, ss, true);
+				manager.Capture(branchFrame, ss);
 				// Rewind to frame 0, play far enough that it will kick states before the branch.
 				for (int i = 0; i < 2000; i++)
 					manager.Capture(i, ss);
@@ -286,7 +286,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 					Assert.AreNotEqual(lastState, nextState, "FramesBetweenOldStates was not respected.");
 					lastState = nextState;
 				}
-			}, ss);
+			}, ss, [ branchFrame ]);
 		}
 
 		[TestMethod]
