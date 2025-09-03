@@ -35,7 +35,10 @@
 	<PropertyGroup Condition=" '$(MachineExtraCompilationFlag)' != '' ">
 		<DefineConstants>$(DefineConstants);$(MachineExtraCompilationFlag)</DefineConstants>
 	</PropertyGroup>
-	<ItemGroup Condition=" '$(RunStyleCop)' != '' OR '$(ContinuousIntegrationBuild)' != '' ">
+	<PropertyGroup Condition=" '$(RunStyleCop)' == '' AND '$(ContinuousIntegrationBuild)' != '' AND '$(ContinuousIntegrationBuild)' != 'false' ">
+		<RunStyleCop>true</RunStyleCop>
+	</PropertyGroup>
+	<ItemGroup Condition=" '$(RunStyleCop)' != '' and '$(RunStyleCop)' != 'false' ">
 		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
