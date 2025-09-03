@@ -161,8 +161,8 @@ namespace BizHawk.Client.Common
 				var hotkeyTriggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				bool isEmuInput = ActiveController.HasBinding(ie.LogicalButton.ToString());
 
-				bool shouldDoHotkey = config.InputHotkeyOverrideOptions != 1;
-				bool shouldDoEmuInput = config.InputHotkeyOverrideOptions != 2;
+				bool shouldDoHotkey = config.InputHotkeyOverrideOptions != Config.InputPriority.INPUT;
+				bool shouldDoEmuInput = config.InputHotkeyOverrideOptions != Config.InputPriority.HOTKEY;
 				if (shouldDoEmuInput && !isEmuInput) shouldDoHotkey = true;
 
 				bool didHotkey = false;
