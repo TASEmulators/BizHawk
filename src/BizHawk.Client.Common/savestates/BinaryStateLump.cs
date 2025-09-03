@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 		{
 			Name = name;
 			Ext = ext;
-			Debug.Assert(!ext.StartsWith('.'), "omit period of file extension");
+			Debug.Assert(string.IsNullOrEmpty(ext) || !ext.StartsWith('.'), "omit period of file extension"); 
 		}
 
 		protected BinaryStateLump()
