@@ -106,7 +106,14 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> FirmwareUserSpecifications { get; set; } = new Dictionary<string, string>();
 
 		// General Client Settings
-		public int InputHotkeyOverrideOptions { get; set; }
+		public enum InputPriority
+		{
+			BOTH,
+			INPUT,
+			HOTKEY,
+		}
+
+		public InputPriority InputHotkeyOverrideOptions { get; set; }
 		public bool NoMixedInputHokeyOverride { get; set; }
 
 		public bool StackOSDMessages { get; set; } = true;

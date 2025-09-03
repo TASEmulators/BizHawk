@@ -40,10 +40,6 @@ namespace BizHawk.Tests.Client.Common
 
 		private static readonly IReadOnlyList<string> _modifierKeys = new[] { "Super", "Ctrl", "Alt", "Shift" };
 
-		private static readonly int PRIORITY_BOTH = 0;
-		private static readonly int PRIORITY_INPUT = 1;
-		private static readonly int PRIORITY_HOTKEY = 2;
-
 		private InputEvent MakePressEvent(string keyboardButton, uint modifiers = 0)
 		{
 			return new()
@@ -284,7 +280,7 @@ namespace BizHawk.Tests.Client.Common
 			Context context = MakeContext();
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
-			context.config.InputHotkeyOverrideOptions = PRIORITY_BOTH;
+			context.config.InputHotkeyOverrideOptions = Config.InputPriority.BOTH;
 
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Z");
@@ -303,7 +299,7 @@ namespace BizHawk.Tests.Client.Common
 			Context context = MakeContext();
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
-			context.config.InputHotkeyOverrideOptions = PRIORITY_HOTKEY;
+			context.config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
 
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Z");
@@ -322,7 +318,7 @@ namespace BizHawk.Tests.Client.Common
 			Context context = MakeContext();
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
-			context.config.InputHotkeyOverrideOptions = PRIORITY_INPUT;
+			context.config.InputHotkeyOverrideOptions = Config.InputPriority.INPUT;
 
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Z");
@@ -340,7 +336,7 @@ namespace BizHawk.Tests.Client.Common
 			Context context = MakeContext();
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
-			context.config.InputHotkeyOverrideOptions = PRIORITY_HOTKEY;
+			context.config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
 
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Z");
 			manager.ActiveController.BindMulti("A", "Shift+Z");
@@ -360,7 +356,7 @@ namespace BizHawk.Tests.Client.Common
 			Context context = MakeContext();
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
-			context.config.InputHotkeyOverrideOptions = PRIORITY_INPUT;
+			context.config.InputHotkeyOverrideOptions = Config.InputPriority.INPUT;
 
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Z");
 			manager.ActiveController.BindMulti("A", "Shift+Z");
@@ -379,7 +375,7 @@ namespace BizHawk.Tests.Client.Common
 			Context context = MakeContext();
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
-			context.config.InputHotkeyOverrideOptions = PRIORITY_HOTKEY;
+			context.config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
 
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Shift+Z");

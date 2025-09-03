@@ -2751,15 +2751,15 @@ namespace BizHawk.Client.EmuHawk
 			switch (Config.InputHotkeyOverrideOptions)
 			{
 				default:
-				case 0:
+				case Config.InputPriority.BOTH:
 					KeyPriorityStatusLabel.Image = Properties.Resources.Both;
 					KeyPriorityStatusLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
 					break;
-				case 1:
+				case Config.InputPriority.INPUT:
 					KeyPriorityStatusLabel.Image = Properties.Resources.GameController;
 					KeyPriorityStatusLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
 					break;
-				case 2:
+				case Config.InputPriority.HOTKEY:
 					KeyPriorityStatusLabel.Image = Properties.Resources.HotKeys;
 					KeyPriorityStatusLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
 					break;
@@ -2859,28 +2859,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleKeyPriority()
 		{
-			Config.InputHotkeyOverrideOptions++;
-			if (Config.InputHotkeyOverrideOptions > 2)
+			int priority = (int)Config.InputHotkeyOverrideOptions;
+			priority++;
+			if (priority > 2)
 			{
-				Config.InputHotkeyOverrideOptions = 0;
+				priority = 0;
 			}
 
-			if (Config.NoMixedInputHokeyOverride && Config.InputHotkeyOverrideOptions == 0)
+			if (Config.NoMixedInputHokeyOverride && priority == 0)
 			{
-				Config.InputHotkeyOverrideOptions = 1;
+				priority = 1;
 			}
 
+			Config.InputHotkeyOverrideOptions = (Config.InputPriority)priority;
 			UpdateKeyPriorityIcon();
 			switch (Config.InputHotkeyOverrideOptions)
 			{
-				case 0:
+				case Config.InputPriority.BOTH:
 					AddOnScreenMessage("Key priority set to Both Hotkey and Input");
 					break;
-				case 1:
+				case Config.InputPriority.INPUT:
 					AddOnScreenMessage("Key priority set to Input over Hotkey");
 					break;
-				case 2:
-					AddOnScreenMessage("Key priority set to Input");
+				case Config.InputPriority.HOTKEY:
+					AddOnScreenMessage("Key priority set to Hotkey over Input");
 					break;
 			}
 		}
