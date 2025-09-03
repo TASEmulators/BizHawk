@@ -959,6 +959,8 @@ namespace BizHawk.Client.EmuHawk
 					finalHostController.AcceptNewAxis("WMouse Y", (int)((y * 20000) - 10000));
 				}
 
+				InputManager.RunControllerChain(Config);
+
 				// emu.yield()'ing scripts
 				if (Tools.Has<LuaConsole>())
 				{

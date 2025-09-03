@@ -152,6 +152,9 @@ namespace BizHawk.Client.Common
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
 
+		/// <summary>
+		/// Processes queued inputs and triggers input evets (i.e. hotkeys), but does not update output controllers.<br/>
+		/// </summary>
 		/// <param name="processUnboundInput">Events that did not do anything are forwarded out here.
 		/// This allows things like Windows' standard alt hotkeys (for menu items) to be handled by the
 		/// caller if the input didn't alrady do something else.</param>
@@ -262,8 +265,17 @@ namespace BizHawk.Client.Common
 				ControllerInputCoalescer.AcceptNewAxis("RMouse X", (int)(x * 10000));
 				ControllerInputCoalescer.AcceptNewAxis("RMouse Y", (int)(y * 10000));
 			}
+		}
 
+		/// <summary>
+		/// Update output controllers. Call <see cref="ProcessInput(IPhysicalInputSource, Func{string, bool}, Config, Action{InputEvent}, Func{string, bool})"/> shortly before this.
+		/// </summary>
+		public void RunControllerChain(Config config)
+		{
+			// client, only one step
 			ClientControls.LatchFromPhysical(_hotkeyCoalescer);
+
+			// controller, which actually has a chain
 			ActiveController.LatchFromPhysical(ControllerInputCoalescer);
 			ActiveController.OR_FromLogical(ClickyVirtualPadController);
 			AutoFireController.LatchFromPhysical(ControllerInputCoalescer);
