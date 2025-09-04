@@ -13,7 +13,7 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
+	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform, IConfigPersist
 	{
 		public static readonly FilesystemFilterSet TAStudioProjectsFSFilterSet = new(FilesystemFilter.TAStudioProjects);
 
@@ -56,13 +56,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _seekingTo = -1;
 
-		[ConfigPersist]
-		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
+		public TAStudioSettings Settings = new TAStudioSettings();
 
 		public TAStudioPalette Palette => Settings.Palette;
 
-		[ConfigPersist]
-		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+		public Font TasViewFont = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(Settings), ref Settings);
+			provider.Get(nameof(TasViewFont), ref TasViewFont);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Settings)] = Settings,
+				[nameof(TasViewFont)] = TasViewFont,
+			};
+		}
 
 		/// <summary>
 		/// This is meant to be used by Lua.
@@ -495,23 +507,6 @@ namespace BizHawk.Client.EmuHawk
 			var controller = MovieSession.GenerateMovieController();
 			controller.SetFromMnemonic(branch.InputLog[frame]);
 			return controller;
-		}
-
-		private int? FirstNonEmptySelectedFrame
-		{
-			get
-			{
-				var empty = Bk2LogEntryGenerator.EmptyEntry(MovieSession.MovieController);
-				foreach (var row in TasView.SelectedRows)
-				{
-					if (CurrentTasMovie[row].LogEntry != empty)
-					{
-						return row;
-					}
-				}
-
-				return null;
-			}
 		}
 
 		private ITasMovie ConvertCurrentMovieToTasproj()
@@ -972,6 +967,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
+#if false
 		private bool AutoAdjustInput()
 		{
 			var lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
@@ -1024,6 +1020,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return false;
 		}
+#endif
 
 		private void MainVerticalSplit_SplitterMoved(object sender, SplitterEventArgs e)
 		{

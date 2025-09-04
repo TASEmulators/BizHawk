@@ -1,5 +1,11 @@
 [*.cs]
 
+# Remove unused private member
+dotnet_diagnostic.IDE0051.severity = suggestion
+
+# Remove unread private member
+dotnet_diagnostic.IDE0052.severity = suggestion
+
 # The value returned by Stream.Read/Stream.ReadAsync is not used
 dotnet_diagnostic.MA0060.severity = suggestion
 

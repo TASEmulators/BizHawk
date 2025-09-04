@@ -13,7 +13,7 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class Cheats : ToolFormBase, IToolFormAutoConfig
+	public partial class Cheats : ToolFormBase, IToolFormAutoConfig, IRestoreDefaults, IConfigPersist
 	{
 		private const string NameColumn = "NamesColumn";
 		private const string AddressColumn = "AddressColumn";
@@ -78,8 +78,19 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains Core { get; set; }
 
-		[ConfigPersist]
-		public CheatsSettings Settings { get; set; }
+		public CheatsSettings Settings;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			provider.Get(nameof(Settings), ref Settings);
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(Settings)] = Settings,
+			};
+		}
 
 		public override void Restart()
 		{
@@ -513,8 +524,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
 			=> Config.Cheats.DisableOnLoad = !Config.Cheats.DisableOnLoad;
 
-		[RestoreDefaults]
-		private void RestoreDefaults()
+		void IRestoreDefaults.RestoreDefaults()
 		{
 			Settings = new CheatsSettings();
 

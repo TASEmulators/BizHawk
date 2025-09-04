@@ -92,24 +92,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override void Read(byte[] data)
 		{
 			/*
-                The .TAP files contain blocks of tape-saved data. All blocks start with two bytes specifying how many bytes will follow (not counting the two length bytes). Then raw tape data follows, including the flag and checksum bytes. The checksum is the bitwise XOR of all bytes including the flag byte. For example, when you execute the line SAVE "ROM" CODE 0,2 this will result:
+				 The .TAP files contain blocks of tape-saved data. All blocks start with two bytes specifying how many bytes will follow (not counting the two length bytes). Then raw tape data follows, including the flag and checksum bytes. The checksum is the bitwise XOR of all bytes including the flag byte. For example, when you execute the line SAVE "ROM" CODE 0,2 this will result:
 
-                |------ Spectrum-generated data -------|       |---------|
+				 |------ Spectrum-generated data -------|       |---------|
 
-               13 00 00 03 52 4f 4d 7x20 02 00 00 00 00 80 f1 04 00 ff f3 af a3
+				13 00 00 03 52 4f 4d 7x20 02 00 00 00 00 80 f1 04 00 ff f3 af a3
 
-               ^^^^^...... first block is 19 bytes (17 bytes+flag+checksum)
-                     ^^... flag byte (A reg, 00 for headers, ff for data blocks)
-                        ^^ first byte of header, indicating a code block
+				^^^^^...... first block is 19 bytes (17 bytes+flag+checksum)
+				      ^^... flag byte (A reg, 00 for headers, ff for data blocks)
+				         ^^ first byte of header, indicating a code block
 
-               file name ..^^^^^^^^^^^^^
-               header info ..............^^^^^^^^^^^^^^^^^
-               checksum of header .........................^^
-               length of second block ........................^^^^^
-               flag byte ............................................^^
-               first two bytes of rom .................................^^^^^
-               checksum (checkbittoggle would be a better name!).............^^
-            */
+				file name ..^^^^^^^^^^^^^
+				header info ..............^^^^^^^^^^^^^^^^^
+				checksum of header .........................^^
+				length of second block ........................^^^^^
+				flag byte ............................................^^
+				first two bytes of rom .................................^^^^^
+				checksum (checkbittoggle would be a better name!).............^^
+			*/
 
 			// clear existing tape blocks
 			_datacorder.DataBlocks.Clear();
@@ -162,12 +162,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				// process the type byte
-				/*  (The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file.
-                    A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal.
-                    If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given)
-                    and parameter 2 holds the start of the variable area relative to the start of the program. If it's a Code file, parameter 1 holds
-                    the start of the code block when saved, and parameter 2 holds 32768. For data files finally, the byte at position 14 decimal holds the variable name.)
-                */
+				/*
+					(The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file.
+					A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal.
+					If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given)
+					and parameter 2 holds the start of the variable area relative to the start of the program. If it's a Code file, parameter 1 holds
+					the start of the code block when saved, and parameter 2 holds 32768. For data files finally, the byte at position 14 decimal holds the variable name.)
+				*/
 
 				tdb.MetaData = new Dictionary<BlockDescriptorTitle, string>();
 
@@ -220,47 +221,47 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					tdb.AddMetaData(BlockDescriptorTitle.Undefined, description);
 				}
 				/*
-                if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || blockdata[1] == 3)
-                {
-                    // This is the PROGRAM header
-                    // take the 10 filename bytes (that start at offset 2)
-                    programData = blockdata.Skip(2).Take(10).ToArray();
+				if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || blockdata[1] == 3)
+				{
+					// This is the PROGRAM header
+					// take the 10 filename bytes (that start at offset 2)
+					programData = blockdata.Skip(2).Take(10).ToArray();
 
-                    // get the filename as a string (with padding removed)
-                    string fileName = Encoding.ASCII.GetString(programData).Trim();
+					// get the filename as a string (with padding removed)
+					string fileName = Encoding.ASCII.GetString(programData).Trim();
 
-                    // get the type
-                    string type = "";
-                    if (blockdata[0] == 0x00)
-                    {
-                        type = "Program";
-                    }
-                    else
-                    {
-                        type = "Bytes";
-                    }
+					// get the type
+					string type = "";
+					if (blockdata[0] == 0x00)
+					{
+						type = "Program";
+					}
+					else
+					{
+						type = "Bytes";
+					}
 
-                    // now build the description string
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append(type + ": ");
-                    sb.Append(fileName + " ");
-                    sb.Append(GetWordValue(blockdata, 14));
-                    sb.Append(':');
-                    sb.Append(GetWordValue(blockdata, 12));
-                    description = sb.ToString();
-                }
-                else if (blockdata[0] == 0xFF)
-                {
-                    // this is a data block
-                    description = "Data Block " + (blockSize - 2) + "bytes";
-                }
-                else
-                {
-                    // other type
-                    description = $"#{blockdata[0]:X2} block, {blockSize - 2} bytes";
-                    description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
-                }
-                */
+					// now build the description string
+					StringBuilder sb = new StringBuilder();
+					sb.Append(type + ": ");
+					sb.Append(fileName + " ");
+					sb.Append(GetWordValue(blockdata, 14));
+					sb.Append(':');
+					sb.Append(GetWordValue(blockdata, 12));
+					description = sb.ToString();
+				}
+				else if (blockdata[0] == 0xFF)
+				{
+					// this is a data block
+					description = "Data Block " + (blockSize - 2) + "bytes";
+				}
+				else
+				{
+					// other type
+					description = $"#{blockdata[0]:X2} block, {blockSize - 2} bytes";
+					description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
+				}
+				*/
 
 				tdb.BlockDescription = BlockType.Standard_Speed_Data_Block;
 

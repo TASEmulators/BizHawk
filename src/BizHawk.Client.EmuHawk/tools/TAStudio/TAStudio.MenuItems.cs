@@ -12,7 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TAStudio
+	public partial class TAStudio : IRestoreDefaults
 	{
 		private static readonly FilesystemFilterSet MoviesFSFilterSet = new(
 			new FilesystemFilter("All Available Files", MovieService.MovieExtensions.Reverse().ToArray()),
@@ -1255,9 +1255,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		// ReSharper disable once UnusedMember.Local
-		[RestoreDefaults]
-		private void RestoreDefaults()
+		void IRestoreDefaults.RestoreDefaults()
 		{
 			SetUpColumns();
 			SetUpToolStripColumns();

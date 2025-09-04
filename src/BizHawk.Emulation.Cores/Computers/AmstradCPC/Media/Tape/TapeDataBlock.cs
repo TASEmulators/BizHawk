@@ -53,29 +53,29 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/*
-        /// <summary>
-        /// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
-        /// Its basically tape information
-        /// </summary>
-        private byte[][] _tapeDescriptionData;
+		/// <summary>
+		/// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
+		/// Its basically tape information
+		/// </summary>
+		private byte[][] _tapeDescriptionData;
 
-        /// <summary>
-        /// Returns the Tape Description Data in a human readable format
-        /// </summary>
-        public List<string> TapeDescriptionData
-        {
-            get
-            {
-                List<string> data = new List<string>();
+		/// <summary>
+		/// Returns the Tape Description Data in a human readable format
+		/// </summary>
+		public List<string> TapeDescriptionData
+		{
+			get
+			{
+				List<string> data = new List<string>();
 
-                foreach (byte[] b in _tapeDescriptionData)
-                {
-                    data.Add(Encoding.ASCII.GetString(b));
-                }
+				foreach (byte[] b in _tapeDescriptionData)
+				{
+					data.Add(Encoding.ASCII.GetString(b));
+				}
 
-                return data;
-            }
-        }
+				return data;
+			}
+		}
 		*/
 
 

@@ -1,5 +1,7 @@
 using System.IO;
+#if false
 using System.Collections.Generic;
+#endif
 using System.Drawing.Imaging;
 using System.Text;
 
@@ -113,6 +115,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string DesiredExtension() => "syncless.txt";
 
+#if false
 		/// <summary>
 		/// splits the string into chunks of length s
 		/// </summary>
@@ -139,6 +142,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return output;
 		}
+#endif
 
 		private string GetAndCreatePathForFrameNum(int index)
 		{

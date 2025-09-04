@@ -146,34 +146,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private static readonly int[] CPCFirmwarePalette =
 		{
-			Colors.ARGB(0x00, 0x00, 0x00), // Black					0
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue					1
-            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue			2
-            Colors.ARGB(0x80, 0x00, 0x00), // Red					3
-            Colors.ARGB(0x80, 0x00, 0x80), // Magenta				4
-            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve					5
-            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red			6
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple				7
-            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta		8
-            Colors.ARGB(0x00, 0x80, 0x00), // Green					9
-            Colors.ARGB(0x00, 0x80, 0x80), // Cyan					10
-            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue				11
-            Colors.ARGB(0x80, 0x80, 0x00), // Yellow				12
-            Colors.ARGB(0x80, 0x80, 0x80), // White					13
-            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue			14
-            Colors.ARGB(0xFF, 0x80, 0x00), // Orange				15
-            Colors.ARGB(0xFF, 0x80, 0x80), // Pink					16
-            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta		17
-            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green			18
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green				19
-            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan			20
-            Colors.ARGB(0x80, 0xFF, 0x00), // Lime					21
-            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green			22
-            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan			23
-            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow			24
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow			25
-            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White			26
-        };
+			Colors.ARGB(0x00, 0x00, 0x00), // Black                	0
+			Colors.ARGB(0x00, 0x00, 0x80), // Blue                  1
+			Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue           2
+			Colors.ARGB(0x80, 0x00, 0x00), // Red                   3
+			Colors.ARGB(0x80, 0x00, 0x80), // Magenta               4
+			Colors.ARGB(0x80, 0x00, 0xFF), // Mauve                	5
+			Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red            6
+			Colors.ARGB(0xFF, 0x00, 0x80), // Purple                7
+			Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta        8
+			Colors.ARGB(0x00, 0x80, 0x00), // Green                 9
+			Colors.ARGB(0x00, 0x80, 0x80), // Cyan                  10
+			Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue              11
+			Colors.ARGB(0x80, 0x80, 0x00), // Yellow                12
+			Colors.ARGB(0x80, 0x80, 0x80), // White                 13
+			Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue           14
+			Colors.ARGB(0xFF, 0x80, 0x00), // Orange                15
+			Colors.ARGB(0xFF, 0x80, 0x80), // Pink                  16
+			Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta        17
+			Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green          18
+			Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green             19
+			Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan           20
+			Colors.ARGB(0x80, 0xFF, 0x00), // Lime                  21
+			Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green          22
+			Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan           23
+			Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow         24
+			Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow         25
+			Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White          26
+		};
 
 		/// <summary>
 		/// The standard CPC Pallete (ordered by hardware #)
@@ -182,38 +182,38 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private static readonly int[] CPCHardwarePalette =
 		{
 			Colors.ARGB(0x80, 0x80, 0x80), // White
-            Colors.ARGB(0x80, 0x80, 0x80), // White (duplicate)
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple
-            Colors.ARGB(0x00, 0x80, 0x80), // Cyan
-            Colors.ARGB(0xFF, 0x80, 0x80), // Pink
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple (duplicate)
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow (duplicate)
-            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
-            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
-            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
-            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
-            Colors.ARGB(0xFF, 0x80, 0x00), // Orange
-            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue (duplicate)
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green (duplicate)
-            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
-            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
-            Colors.ARGB(0x00, 0x00, 0x00), // Black
-            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
-            Colors.ARGB(0x00, 0x80, 0x00), // Green
-            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
-            Colors.ARGB(0x80, 0x00, 0x80), // Magenta
-            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
-            Colors.ARGB(0x80, 0xFF, 0x00), // Lime
-            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
-            Colors.ARGB(0x80, 0x00, 0x00), // Red
-            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
-            Colors.ARGB(0x80, 0x80, 0x00), // Yellow
-            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
-        };
+			Colors.ARGB(0x80, 0x80, 0x80), // White (duplicate)
+			Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
+			Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
+			Colors.ARGB(0x00, 0x00, 0x80), // Blue
+			Colors.ARGB(0xFF, 0x00, 0x80), // Purple
+			Colors.ARGB(0x00, 0x80, 0x80), // Cyan
+			Colors.ARGB(0xFF, 0x80, 0x80), // Pink
+			Colors.ARGB(0xFF, 0x00, 0x80), // Purple (duplicate)
+			Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow (duplicate)
+			Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
+			Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
+			Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
+			Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
+			Colors.ARGB(0xFF, 0x80, 0x00), // Orange
+			Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
+			Colors.ARGB(0x00, 0x00, 0x80), // Blue (duplicate)
+			Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green (duplicate)
+			Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
+			Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
+			Colors.ARGB(0x00, 0x00, 0x00), // Black
+			Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
+			Colors.ARGB(0x00, 0x80, 0x00), // Green
+			Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
+			Colors.ARGB(0x80, 0x00, 0x80), // Magenta
+			Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
+			Colors.ARGB(0x80, 0xFF, 0x00), // Lime
+			Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
+			Colors.ARGB(0x80, 0x00, 0x00), // Red
+			Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
+			Colors.ARGB(0x80, 0x80, 0x00), // Yellow
+			Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
+		};
 
 		/// <summary>
 		/// 4bit Screen Mode Value

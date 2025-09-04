@@ -100,7 +100,9 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// <summary>
 		/// The last used volume (used to modify blipbuffer delta values)
 		/// </summary>
+#pragma warning disable IDE0052 // Remove unread private members
 		private int lastVolume;
+#pragma warning restore IDE0052 // Remove unread private members
 
 
 		/// <summary>

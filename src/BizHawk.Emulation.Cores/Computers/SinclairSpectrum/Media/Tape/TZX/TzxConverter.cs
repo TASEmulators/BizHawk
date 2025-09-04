@@ -59,14 +59,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override bool CheckType(byte[] tzxRaw)
 		{
 			/*
-            // TZX Header
-            length: 10 bytes
-            Offset  Value       Type        Description
-            0x00    "ZXTape!"   ASCII[7]    TZX signature
-            0x07    0x1A        BYTE        End of text file marker
-            0x08    1           BYTE        TZX major revision number
-            0x09    20          BYTE        TZX minor revision number
-            */
+			// TZX Header
+			length: 10 bytes
+			Offset  Value       Type        Description
+			0x00    "ZXTape!"   ASCII[7]    TZX signature
+			0x07    0x1A        BYTE        End of text file marker
+			0x08    1           BYTE        TZX major revision number
+			0x09    20          BYTE        TZX minor revision number
+			*/
 
 			// check whether this is a valid tzx format file by looking at the identifier in the header
 			// (first 7 bytes of the file)
@@ -1938,18 +1938,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_position += 8;
 		}
 
-		/*              length: [01,02,03]+04
-                Offset	Value	Type	Description
-                0x00	-	    BYTE	Snapshot type:
-                                            00: .Z80 format
-                                            01: .SNA format
-                0x01	L	    BYTE[3]	Snapshot length
-                0x04	-	    BYTE[L]	Snapshot itself
+		/*          length: [01,02,03]+04
+			Offset  Value   Type    Description
+			0x00    -       BYTE    Snapshot type:
+			                            00: .Z80 format
+			                            01: .SNA format
+			0x01    L       BYTE[3] Snapshot length
+			0x04    -       BYTE[L] Snapshot itself
 
-                This would enable one to snapshot the game at the start and still have all the tape blocks (level data, etc.) in the same file.
-                Only .Z80 and .SNA snapshots are supported for compatibility reasons!
-                The emulator should take care of that the snapshot is not taken while the actual Tape loading is taking place (which doesn't do much sense).
-                And when an emulator encounters the snapshot block it should load it and then continue with the next block.               */
+			This would enable one to snapshot the game at the start and still have all the tape blocks (level data, etc.) in the same file.
+			Only .Z80 and .SNA snapshots are supported for compatibility reasons!
+			The emulator should take care of that the snapshot is not taken while the actual Tape loading is taking place (which doesn't do much sense).
+			And when an emulator encounters the snapshot block it should load it and then continue with the next block.
+		*/
 		private void ProcessBlockID40()
 		{
 			// currently not implemented properly in ZXHawk

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -8,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESNameTableViewer : ToolFormBase, IToolFormAutoConfig
+	public partial class NESNameTableViewer : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		// TODO:
 		// Show Scroll Lines + UI Toggle
@@ -28,11 +29,23 @@ namespace BizHawk.Client.EmuHawk
 		private IEmulator _emu
 			=> _core!;
 
-		[ConfigPersist]
 		private int RefreshRateConfig
 		{
 			get => RefreshRate.Value;
 			set => RefreshRate.Value = value;
+		}
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			int outValue = default;
+			if (provider.Get(nameof(RefreshRateConfig), ref outValue)) RefreshRateConfig = outValue;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(RefreshRateConfig)] = RefreshRateConfig,
+			};
 		}
 
 		private int _scanline;

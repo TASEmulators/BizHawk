@@ -3,10 +3,10 @@ using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
 /*****************************************************
-  TODO:
-  + HCounter (Manually set for light phaser emulation... should be only case it's polled)
-  + Try to clean up the organization of the source code.
-  + Mode 1 not implemented in VDP TMS modes. (I don't have a test case in SG1000 or Coleco)
+TODO:
++ HCounter (Manually set for light phaser emulation... should be only case it's polled)
++ Try to clean up the organization of the source code.
++ Mode 1 not implemented in VDP TMS modes. (I don't have a test case in SG1000 or Coleco)
 
 **********************************************************/
 

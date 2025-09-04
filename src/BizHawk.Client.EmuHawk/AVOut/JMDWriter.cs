@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		private const int NO_COMPRESSION = 0;
 		private const int BEST_COMPRESSION = 9;
 		private const int DEFAULT_COMPRESSION = -1;
-		private const int BEST_SPEED = 1;
+		//private const int BEST_SPEED = 1;
 
 		private static CompressionLevel GetCompressionLevel(int v)
 		{

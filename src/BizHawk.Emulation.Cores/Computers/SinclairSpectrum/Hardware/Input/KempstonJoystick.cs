@@ -76,14 +76,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
 		/*
-       public readonly string[] _bitPos = new string[]
-       {
-           "P1 Right",
-           "P1 Left",
-           "P1 Down",
-           "P1 Up",
-           "P1 Button"
-       };
-       */
+		public readonly string[] _bitPos = new string[]
+		{
+			"P1 Right",
+			"P1 Left",
+			"P1 Down",
+			"P1 Up",
+			"P1 Button"
+		};
+		*/
 	}
 }

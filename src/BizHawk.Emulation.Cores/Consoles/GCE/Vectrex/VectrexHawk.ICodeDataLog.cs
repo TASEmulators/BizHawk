@@ -65,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 		}
 
+#pragma warning disable IDE0051 // Remove unused private members
 		/// <summary>
 		/// A wrapper for FetchMemory which inserts CDL logic
 		/// </summary>
@@ -82,5 +83,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			RunCDL(address, CDLog_Flags.Data);
 			return ReadMemory(address);
 		}
+#pragma warning restore IDE0051 // Remove unused private members
 	}
 }

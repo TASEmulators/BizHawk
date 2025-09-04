@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 
 using BizHawk.Client.Common;
@@ -8,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig
+	public sealed partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig, IConfigPersist
 	{
 		public static Icon ToolIcon
 			=> Resources.CalculateIcon;
@@ -30,8 +31,21 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost) MinimumSize = (MaximumSize += new Size(48, 32)); // also updates current size
 		}
 
-		[ConfigPersist]
-		public bool TI83ToolTips { get; set; } = true;
+		public bool TI83ToolTips = true;
+
+		void IConfigPersist.LoadConfig(IConfigPersist.Provider provider)
+		{
+			bool outValue = default;
+			if (provider.Get(nameof(TI83ToolTips), ref outValue)) TI83ToolTips = outValue;
+		}
+		Dictionary<string, object> IConfigPersist.SaveConfig()
+		{
+			return new()
+			{
+				[nameof(TI83ToolTips)] = TI83ToolTips,
+			};
+		}
+
 
 		private void TI83KeyPad_Load(object sender, EventArgs e)
 		{
