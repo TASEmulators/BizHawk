@@ -88,19 +88,9 @@ namespace BizHawk.Client.Common
 			return file.Exists && Load(domains, file.FullName, false);
 		}
 
-		public void NewList(string defaultFileName, bool autosave = false)
+		public void NewList(string defaultFileName)
 		{
 			_defaultFileName = defaultFileName;
-
-			if (autosave && _changes && _cheatList.Count is not 0)
-			{
-				if (string.IsNullOrEmpty(CurrentFileName))
-				{
-					CurrentFileName = _defaultFileName;
-				}
-
-				Save();
-			}
 
 			_cheatList.Clear();
 			CurrentFileName = "";
