@@ -500,5 +500,20 @@ namespace BizHawk.Tests.Client.Common
 			source.AddInputEvent(MakePressEvent("Q"));
 			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
+
+		[TestMethod]
+		public void UnboundInputIsSeen()
+		{
+			Context context = MakeContext();
+			InputManager manager = context.manager;
+			FakeInputSource source = context.source;
+
+			source.AddInputEvent(MakePressEvent("A"));
+
+			bool sawUnboundInput = false;
+			manager.ProcessInput(source, context.processHotkey, context.config, (_) => sawUnboundInput = true);
+
+			Assert.IsTrue(sawUnboundInput);
+		}
 	}
 }
