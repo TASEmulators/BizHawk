@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSelectionToMacroMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected)
 			{
 				return;
 			}
@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected)
 			{
 				return;
 			}
@@ -321,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				var selectionEnd = TasView.SelectionEndIndex ?? 0;
 				var prevMarker = CurrentTasMovie.Markers.PreviousOrCurrent(selectionEnd);
@@ -355,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
 				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
@@ -419,7 +419,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				// copy paste from PasteMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
@@ -455,9 +455,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
-
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
@@ -482,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.Focused || !TasView.AnyRowsSelected) return;
+			if (!TasView.AnyRowsSelected) return;
 
 			CurrentTasMovie.SingleInvalidation(() =>
 			{
@@ -498,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				var selectionStart = TasView.SelectionStartIndex;
 				var rollBackFrame = selectionStart ?? 0;
@@ -531,7 +530,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
-			if (!TasView.Focused || !TasView.AnyRowsSelected) return;
+			if (!TasView.AnyRowsSelected) return;
 
 			var framesToInsert = TasView.SelectedRows;
 			var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
@@ -557,7 +556,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				CurrentTasMovie.InsertEmptyFrame(TasView.SelectionStartIndex ?? 0);
 			}
@@ -565,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				var insertionFrame = TasView.SelectionStartIndex ?? 0;
 				using var framesPrompt = new FramesPrompt();
@@ -578,7 +577,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				CurrentTasMovie.Truncate(TasView.SelectionEndIndex ?? 0);
 				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
