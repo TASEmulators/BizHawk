@@ -178,9 +178,11 @@ namespace BizHawk.Client.Common
 				if (!didHotkey) shouldDoEmuInput = true;
 				if (shouldDoEmuInput)
 				{
+					// We have to do this even if it's not an emu input
+					// because if Shift+A is bound it needs to see the Shift and A independently.
 					ControllerInputCoalescer.Receive(ie);
 				}
-				bool didEmuInput = shouldDoEmuInput;
+				bool didEmuInput = shouldDoEmuInput && isEmuInput;
 
 				if (!didHotkey && !didEmuInput)
 				{
