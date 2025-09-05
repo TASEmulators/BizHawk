@@ -54,7 +54,7 @@
 		/// <summary>
 		/// Function that is called by Mainform instead of using its own code
 		/// when a Tool sets WantsToControlRewind
-		/// Returns whether or not the rewind action actually occured
+		/// Returns whether or not the emulator should advance a frame
 		/// </summary>
 		bool Rewind();
 

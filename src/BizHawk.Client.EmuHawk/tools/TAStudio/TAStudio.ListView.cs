@@ -958,23 +958,18 @@ namespace BizHawk.Client.EmuHawk
 			_suppressContextMenu = false;
 		}
 
-		private void WheelSeek(int count)
+		private bool WheelSeek(int count)
 		{
 			if (_seekingTo != -1)
 			{
 				_seekingTo -= count;
-
-				// that's a weird condition here, but for whatever reason it works best
-				if (count > 0 && Emulator.Frame >= _seekingTo)
-				{
-					GoToFrame(Emulator.Frame - count);
-				}
-
 				RefreshDialog();
+				return false;
 			}
 			else
 			{
 				GoToFrame(Emulator.Frame - count);
+				return true;
 			}
 		}
 
