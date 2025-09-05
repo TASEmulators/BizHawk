@@ -210,7 +210,9 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
 			{
-				SaveBackup();
+				// TODO: This isn't ideal, but making it ideal would mean a big refactor.
+				FileWriteResult saveResult = SaveBackup();
+				if (saveResult.Exception != null) throw saveResult.Exception;
 				MakeBackup = false;
 			}
 

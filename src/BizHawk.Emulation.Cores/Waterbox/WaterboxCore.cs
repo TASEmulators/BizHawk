@@ -158,6 +158,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		public bool SupportsSaveRam => _saveramSize != 0;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveramSize == 0)
@@ -176,6 +178,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (!SupportsSaveRam) return;
+
 			// Checking if the size of the SaveRAM provided coincides with that expected. This is important for cores whose SaveRAM size can vary depending on their configuration.
 			if (data.Length != _saveramSize)
 			{

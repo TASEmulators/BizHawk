@@ -302,11 +302,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			var deltaBSize = reader.ReadInt32();
 			_deltaB = reader.ReadBytes(deltaBSize);
 
+			if (reader.BaseStream.Position != deltaASize + deltaBSize + 8) throw new InvalidOperationException("Incorrect sram size.");
+
 			DeltaSerializer.ApplyDelta(_originalMediaA, _chipA.Data, _deltaA);
 			DeltaSerializer.ApplyDelta(_originalMediaB, _chipB.Data, _deltaB);
 			_saveRamDirty = false;
 		}
 
 		public bool SaveRamModified => _saveRamDirty;
+
+		public bool SupportsSaveRam => true;
 	}
 }

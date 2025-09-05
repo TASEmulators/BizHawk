@@ -11,6 +11,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0
 			|| Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM) != 0;
 
+		public bool SupportsSaveRam =>
+			Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != null
+			|| Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM) != null;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			using (Api.EnterExit())
@@ -46,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
 				}
 
-				if (size == 0)
+				if (size == 0 || buf == null)
 				{
 					return;
 				}

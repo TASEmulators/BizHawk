@@ -10,16 +10,16 @@
 	{
 		/// <summary>
 		/// Returns a copy of the SaveRAM. Editing it won't do you any good unless you later call StoreSaveRam()
-		/// This IS allowed to return null.
-		/// Unfortunately, the core may think differently of a nonexisting (null) saveram vs a 0 size saveram.
-		/// Frontend users of the ISaveRam should treat null as nonexisting (and thus not even write the file, so that the "does not exist" condition can be roundtripped and not confused with an empty file)
+		/// This method must return null if and only if <see cref="SupportsSaveRam"/> is false.
 		/// </summary>
 		/// <param name="clearDirty">Whether the saveram should be considered in a clean state after this call for purposes of <see cref="SaveRamModified"/></param>
 		byte[]? CloneSaveRam(bool clearDirty = true);
 
 		/// <summary>
-		/// store new SaveRAM to the emu core. the data should be the same size as the return from ReadSaveRam()
+		/// Store new SaveRAM to the emu core.
+		/// The core must ignore calls to this method if <see cref="SupportsSaveRam"/> is false.
 		/// </summary>
+		/// <exception cref="Exception">The core may throw an exception if the given data is invalid.</exception>
 		void StoreSaveRam(byte[] data);
 
 		/// <summary>
@@ -28,5 +28,10 @@
 		/// This value should be considered a hint more than an absolute truth.
 		/// </summary>
 		bool SaveRamModified { get; }
+
+		/// <summary>
+		/// Certain cores may support SaveRam only in certain situations, for example only for certain games.
+		/// </summary>
+		bool SupportsSaveRam { get; }
 	}
 }

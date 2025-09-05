@@ -13,11 +13,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		{
 			if (SaveRAM != null)
 			{
+				if (data.Length != SaveRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Array.Copy(data, SaveRAM, data.Length);
 			}
 		}
 
 		public bool SaveRamModified { get; private set; }
+
+		public bool SupportsSaveRam => SaveRAM != null;
 
 		public byte[] SaveRAM;
 		private byte SaveRamBank;

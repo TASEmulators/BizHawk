@@ -39,6 +39,8 @@ public sealed partial class Drive1541 : ISaveRam
 
 	public bool SaveRamModified { get; private set; } = false;
 
+	public bool SupportsSaveRam => true;
+
 	public byte[] CloneSaveRam(bool clearDirty)
 	{
 		SaveDeltas();

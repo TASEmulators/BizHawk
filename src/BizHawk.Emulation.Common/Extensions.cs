@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Common
 
 		public static bool HasSaveRam(this IEmulator core)
 		{
-			return core != null && core.ServiceProvider.HasService<ISaveRam>();
+			return core != null && core.ServiceProvider.HasService<ISaveRam>() && core.AsSaveRam()!.SupportsSaveRam;
 		}
 
 		public static ISaveRam AsSaveRam(this IEmulator core)

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			if (!LibLynx.GetSaveRamPtr(Core, out var size, out var data))
 			{
-				throw new InvalidOperationException();
+				return;
 			}
 
 			if (srcData.Length != size) throw new ArgumentException(message: "buffer too small", paramName: nameof(srcData));
@@ -31,5 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		}
 
 		public bool SaveRamModified => LibLynx.GetSaveRamPtr(Core, out int unused, out IntPtr unused2);
+
+		public bool SupportsSaveRam => LibLynx.GetSaveRamPtr(Core, out int _, out IntPtr _);
 	}
 }

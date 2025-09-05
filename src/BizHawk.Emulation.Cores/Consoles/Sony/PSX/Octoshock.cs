@@ -984,6 +984,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
+		public bool SupportsSaveRam => true;
+
 
 		//THIS IS STILL AWFUL
 

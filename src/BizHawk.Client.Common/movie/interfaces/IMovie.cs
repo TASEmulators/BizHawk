@@ -67,19 +67,19 @@ namespace BizHawk.Client.Common
 		byte[] SaveRam { get; set; }
 
 		bool StartsFromSavestate { get; set; }
-		bool StartsFromSaveRam { get; set; }
+		bool StartsFromSaveRam { get; }
 
 		string LogKey { get; set; }
 
 		/// <summary>
 		/// Forces the creation of a backup file of the current movie state
 		/// </summary>
-		void SaveBackup();
+		FileWriteResult SaveBackup();
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
-		void Save();
+		FileWriteResult Save();
 
 		/// <summary>updates the <see cref="HeaderKeys.CycleCount"/> and <see cref="HeaderKeys.ClockRate"/> headers from the currently loaded core</summary>
 		void SetCycleValues();

@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public bool SaveRamModified => _saveRamSize != 0;
 
+		public bool SupportsSaveRam => _saveRamSize != 0;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveRamSize == 0) return null;

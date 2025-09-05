@@ -6,6 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 	{
 		public bool SaveRamModified => LibSameboy.sameboy_sramlen(SameboyState) != 0;
 
+		public bool SupportsSaveRam => LibSameboy.sameboy_sramlen(SameboyState) != 0;
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			int length = LibSameboy.sameboy_sramlen(SameboyState);
@@ -23,12 +25,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		public void StoreSaveRam(byte[] data)
 		{
 			int expected = LibSameboy.sameboy_sramlen(SameboyState);
+			if (expected == 0) return;
 			if (data.Length != expected) throw new ArgumentException(message: "Size of saveram data does not match expected!", paramName: nameof(data));
 
-			if (expected > 0)
-			{
-				LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
-			}
+			LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
 		}
 	}
 }
