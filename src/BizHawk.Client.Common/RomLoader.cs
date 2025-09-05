@@ -775,6 +775,12 @@ namespace BizHawk.Client.Common
 			out GameInfo game,
 			out bool cancel)
 		{
+			if (OpenAdvanced is OpenAdvanced_MAME)
+			{
+				LoadOther(nextComm, file, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
+				return;
+			}
+
 			try
 			{
 				LoadOther(nextComm, file, ext: ext, forcedCoreName: null, out nextEmulator, out rom, out game, out cancel);
