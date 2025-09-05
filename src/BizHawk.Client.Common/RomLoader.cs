@@ -808,8 +808,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			bool allowArchives = true;
-			if (OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path)) allowArchives = false;
+			bool allowArchives = !(OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path));
 			using var file = new HawkFile(path, false, allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
