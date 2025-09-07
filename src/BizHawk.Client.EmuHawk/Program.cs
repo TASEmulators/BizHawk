@@ -24,6 +24,12 @@ namespace BizHawk.Client.EmuHawk
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool DeleteFileW(string lpFileName);
 
+		public static void EnsureWinFormsInitialized()
+		{
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false); // prepopulates `Label.UseCompatibleTextRendering` and friends; `false` means to use the "new" renderer rather than the compatibility renderer
+		}
+
 		static Program()
 		{
 			// Quickly check if the user is running this as a 32 bit process somehow
@@ -31,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			// (There are no longer any hard 64 bit deps, i.e. SlimDX is no longer around)
 			if (!Environment.Is64BitProcess)
 			{
-				Application.EnableVisualStyles();
+				EnsureWinFormsInitialized();
 				using (var box = new ExceptionBox(
 							"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close."))
 				{
@@ -101,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 					WinForms.Controls.ReflectionCache.AsmVersion,
 				}.Any(asmVer => asmVer != thisAsmVer))
 			{
-				Application.EnableVisualStyles();
+				EnsureWinFormsInitialized();
 				MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
 				return -1;
 			}
@@ -122,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 						+ "\nFind and rename the folder, or move BizHawk somewhere else.";
 				static int SetDllDirectoryFailed(string errMsg = SEMICOLON_IN_DIR_MSG)
 				{
-					Application.EnableVisualStyles();
+					EnsureWinFormsInitialized();
 					MessageBox.Show(errMsg);
 					return -1;
 				}
@@ -174,12 +180,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (ArgParser.ArgParserException e)
 			{
-				Application.EnableVisualStyles();
+				EnsureWinFormsInitialized();
 				new ExceptionBox(e.Message).ShowDialog();
 				return 1;
 			}
 
-			Application.EnableVisualStyles();
+			EnsureWinFormsInitialized();
 			typeof(Form).GetField(OSTailoredCode.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)!
 				.SetValue(null, Properties.Resources.Logo);
 
