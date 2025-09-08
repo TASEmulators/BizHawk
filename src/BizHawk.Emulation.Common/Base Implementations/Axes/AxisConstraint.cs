@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Common
 	public interface AxisConstraint
 #pragma warning restore CA1715
 	{
-		public string? Class { get; }
+		string? Class { get; }
 
-		public string? PairedAxis { get; }
+		string? PairedAxis { get; }
 	}
 }

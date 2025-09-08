@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores
 
 		string Extension { get; }
 
-		public string RomPath { get; }
+		string RomPath { get; }
 
 		/// <summary>
 		/// GameInfo for this individual asset.  Doesn't make sense a lot of the time;
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores
 
 		DiscType DiscType { get; }
 
-		public string DiscName { get; set; }
+		string DiscName { get; set; }
 	}
 
 	public class CoreLoadParameters<TSettings, TSyncS>

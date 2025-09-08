@@ -5,7 +5,7 @@ namespace BizHawk.Common
 	/// </summary>
 	public interface IMemoryBlockPal : IDisposable
 	{
-		public ulong Start { get; }
+		ulong Start { get; }
 
 		/// <summary>
 		/// Change protection on [start, start + size), guaranteed to be page aligned and in the allocated area

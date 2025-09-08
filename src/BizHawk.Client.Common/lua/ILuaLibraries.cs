@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		LuaFunctionList RegisteredFunctions { get; }
 
-		public PathEntryCollection PathEntries { get; }
+		PathEntryCollection PathEntries { get; }
 
 		LuaFileList ScriptList { get; }
 
