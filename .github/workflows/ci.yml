@@ -43,7 +43,7 @@ jobs:
           dotnet-version: "10"
 
       - name: Test
-        run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
+        run: dotnet test BizHawk.slnx -c Release -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
         shell: pwsh
 
   package:
