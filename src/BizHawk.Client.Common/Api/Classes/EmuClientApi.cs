@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 				suppressOSD: false);
 
 		public bool OpenRom(string path)
-			=> _mainForm.LoadRom(path, new LoadRomArgs(OpenAdvancedSerializer.ParseWithLegacy(path));
+			=> _mainForm.LoadRom(path, new LoadRomArgs(OpenAdvancedSerializer.ParseWithLegacy(path)));
 
 		public void Pause() => _mainForm.PauseEmulator();
 
