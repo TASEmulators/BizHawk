@@ -15,6 +15,7 @@ csharp_space_after_cast = true
 csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
+dotnet_style_require_accessibility_modifiers = for_non_interface_members # for IDE0040
 trim_trailing_whitespace = true
 
 # Style rules
@@ -64,6 +65,8 @@ dotnet_diagnostic.IDE0032.severity = suggestion
 dotnet_diagnostic.IDE0034.severity = suggestion
 # Use pattern matching to avoid is check followed by a cast (without variable)
 dotnet_diagnostic.IDE0038.severity = warning
+# Add accessibility modifiers
+dotnet_diagnostic.IDE0040.severity = error # redundant with SA1400, but that's not running by default, but maybe this one and its config will affect VS2022 autocompletion
 # Use is null check
 dotnet_diagnostic.IDE0041.severity = warning
 # Deconstruct variable declaration
