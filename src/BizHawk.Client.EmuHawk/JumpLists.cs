@@ -6,16 +6,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class JumpLists
 	{
-		private static readonly Application App;
-
 		static JumpLists()
 		{
-			App = new Application();
+			var app = new Application();
 			var jmp = new JumpList
 			{
 				ShowRecentCategory = true,
 			};
-			JumpList.SetJumpList(App, jmp);
+			JumpList.SetJumpList(app, jmp);
 		}
 
 		/// <summary>

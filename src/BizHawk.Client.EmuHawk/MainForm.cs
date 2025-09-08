@@ -3829,7 +3829,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Config.RecentRoms.Add(openAdvancedArgs);
-					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
+					if (!OSTailoredCode.IsUnixHost) JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.NewMovieQueued)
