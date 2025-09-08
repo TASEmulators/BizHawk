@@ -16,7 +16,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "10"
 
       - name: Debug build with analyzers
         run: Dist/BuildDebug.sh -p:ContinuousIntegrationBuild=true -warnaserror
@@ -40,7 +40,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "10"
 
       - name: Test
         run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
@@ -56,7 +56,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "10"
 
       - name: Build solution
         run: Dist/BuildRelease.sh
