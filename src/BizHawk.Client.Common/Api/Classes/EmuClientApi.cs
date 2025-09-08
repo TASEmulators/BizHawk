@@ -86,7 +86,7 @@ namespace BizHawk.Client.Common
 
 		public void CloseEmulator(int? exitCode = null) => _mainForm.CloseEmulator(exitCode);
 
-		public void CloseRom() => _mainForm.CloseRom();
+		public void CloseRom() => _mainForm.LoadNullRom();
 
 		public void DisplayMessages(bool value) => _config.DisplayMessages = value;
 
@@ -158,9 +158,19 @@ namespace BizHawk.Client.Common
 
 		public void RebootCore() => _mainForm.RebootCore();
 
+		// TODO: Change return type to FileWriteResult.
 		public void SaveRam() => _mainForm.FlushSaveRAM();
 
-		public void SaveState(string name) => _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name, fromLua: false);
+		// TODO: Change return type to FileWriteResult.
+		// We may wish to change more than that, since we have a mostly-dupicate ISaveStateApi.Save, neither has documentation indicating what the differences are.
+		public void SaveState(string name)
+		{
+			FileWriteResult result = _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name);
+			if (result.Exception != null && result.Exception is not UnlessUsingApiException)
+			{
+				throw result.Exception;
+			}
+		}
 
 		public int ScreenHeight() => _displayManager.GetPanelNativeSize().Height;
 

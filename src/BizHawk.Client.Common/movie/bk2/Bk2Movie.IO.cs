@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Globalization;
 using System.IO;
 
@@ -11,25 +13,25 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		public void Save()
+		public FileWriteResult Save()
 		{
-			Write(Filename);
+			return Write(Filename);
 		}
 
-		public void SaveBackup()
+		public FileWriteResult SaveBackup()
 		{
 			if (string.IsNullOrWhiteSpace(Filename))
 			{
-				return;
+				return new();
 			}
 
-			var backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
+			string backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
 			backupName = Path.Combine(Session.BackupDirectory, Path.GetFileName(backupName));
 
-			Write(backupName, isBackup: true);
+			return Write(backupName, isBackup: true);
 		}
 
-		protected virtual void Write(string fn, bool isBackup = false)
+		protected virtual FileWriteResult Write(string fn, bool isBackup = false)
 		{
 			SetCycleValues();
 			// EmulatorVersion used to store the unchanging original emulator version.
@@ -40,13 +42,27 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 			Directory.CreateDirectory(Path.GetDirectoryName(fn)!);
 
-			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
-			AddLumps(bs, isBackup);
+			var createResult = ZipStateSaver.Create(fn, Session.Settings.MovieCompressionLevel);
+			if (createResult.IsError) return createResult;
 
-			if (!isBackup)
+			ZipStateSaver saver = createResult.Value!;
+			try
+			{
+				AddLumps(saver, isBackup);
+			}
+			catch (Exception ex)
+			{
+				saver.Abort();
+				return new(FileWriteEnum.FailedDuringWrite, createResult.Paths, ex);
+			}
+
+			FileWriteResult result = saver.CloseAndDispose();
+			if (!isBackup && !result.IsError)
 			{
 				Changes = false;
 			}
+
+			return result;
 		}
 
 		public void SetCycleValues() //TODO IEmulator should not be an instance prop of movies, it should be passed in to every call (i.e. from MovieService) --yoshi
@@ -133,7 +149,7 @@ namespace BizHawk.Client.Common
 
 			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
 			{
-				string line;
+				string? line;
 				while ((line = tr.ReadLine()) != null)
 				{
 					if (!string.IsNullOrWhiteSpace(line))

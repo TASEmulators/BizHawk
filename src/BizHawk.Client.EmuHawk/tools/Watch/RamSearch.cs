@@ -1007,7 +1007,13 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!string.IsNullOrWhiteSpace(watches.CurrentFileName))
 				{
-					if (watches.Save())
+					FileWriteResult saveResult = watches.Save();
+					if (saveResult.IsError)
+					{
+						this.ErrorMessageBox(saveResult);
+						MessageLabel.Text = $"Failed to save {Path.GetFileName(_currentFileName)}";
+					}
+					else
 					{
 						_currentFileName = watches.CurrentFileName;
 						MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
@@ -1016,11 +1022,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var result = watches.SaveAs(GetWatchSaveFileFromUser(CurrentFileName()));
-					if (result)
+					FileInfo/*?*/ file = GetWatchSaveFileFromUser(CurrentFileName());
+					if (file != null)
 					{
-						MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
-						Settings.RecentSearches.Add(watches.CurrentFileName);
+						var result = watches.SaveAs(file);
+						if (result.IsError)
+						{
+							this.ErrorMessageBox(result);
+							MessageLabel.Text = $"Failed to save {Path.GetFileName(_currentFileName)}";
+						}
+						else
+						{
+							MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
+							Settings.RecentSearches.Add(watches.CurrentFileName);
+						}
 					}
 				}
 			}
@@ -1034,7 +1049,15 @@ namespace BizHawk.Client.EmuHawk
 				watches.Add(_searches[i]);
 			}
 
-			if (watches.SaveAs(GetWatchSaveFileFromUser(CurrentFileName())))
+			FileInfo/*?*/ file = GetWatchSaveFileFromUser(CurrentFileName());
+			if (file == null) return;
+			FileWriteResult result = watches.SaveAs(file);
+			if (result.IsError)
+			{
+				this.ErrorMessageBox(result);
+				MessageLabel.Text = $"Failed to save {Path.GetFileName(_currentFileName)}";
+			}
+			else
 			{
 				_currentFileName = watches.CurrentFileName;
 				MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
