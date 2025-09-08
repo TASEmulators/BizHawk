@@ -39,14 +39,6 @@ namespace BizHawk.Tests
 			Assert.Fail(message);
 		}
 
-		public static void AreEqual<T>(
-			this CollectionAssert assert,
-			Span<T> expected,
-			Span<T> actual,
-			string? message = null)
-				where T : IEquatable<T>
-				=> assert.AreEqual((ReadOnlySpan<T>) expected, actual, message);
-
 		public static void Contains<T>(
 			this CollectionAssert assert,
 			IEnumerable<T> collection,

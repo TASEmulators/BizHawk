@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				// 384k roms require special loading code. Why ;_;
 				// In memory, 384k roms look like [1st 256k][Then full 384k]
 				RomData = new byte[0xA0000];
-				((ReadOnlySpan<byte>) rom.AsSpan(start: 0, length: 0x40000)).ConcatArray(rom, dest: RomData);
+				rom.AsSpan(start: 0, length: 0x40000).ConcatArray(rom, dest: RomData);
 			}
 			else
 			{
