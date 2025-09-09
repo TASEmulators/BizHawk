@@ -573,7 +573,17 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
+		private void NDS_SwapScreens()
+		{
+			if (Emulator is not NDS ds) return;
 
+			var settings = ds.GetSettings();
+			var next = !settings.ScreenInvert;
+			settings.ScreenInvert = next;
+			ds.PutSettings(settings);
+			AddOnScreenMessage($"Screen invert to {next}");
+			FrameBufferResized();
+		}
 
 		/// <remarks>should this not be a separate sysID? --yoshi</remarks>
 		private bool LoadedCoreIsNesHawkInVSMode

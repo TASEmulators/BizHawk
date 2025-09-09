@@ -185,6 +185,7 @@ namespace BizHawk.Client.Common
 			Bind("NDS", "Next Screen Layout");
 			Bind("NDS", "Previous Screen Layout");
 			Bind("NDS", "Screen Rotate");
+			Bind("NDS", "Swap Screens");
 
 			Bind("RAIntegration", "Open RA Overlay", "Escape");
 			Bind("RAIntegration", "RA Up", "Up");

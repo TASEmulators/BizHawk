@@ -564,6 +564,9 @@ namespace BizHawk.Client.EmuHawk
 				case "Screen Rotate":
 					NDS_IncrementScreenRotate();
 					break;
+				case "Swap Screens":
+					NDS_SwapScreens();
+					break;
 			}
 
 			return true;
