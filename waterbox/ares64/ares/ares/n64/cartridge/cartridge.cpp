@@ -7,6 +7,7 @@ Cartridge& cartridge = cartridgeSlot.cartridge;
 #include "flash.cpp"
 #include "rtc.cpp"
 #include "joybus.cpp"
+#include "sc64.cpp"
 #include "isviewer.cpp"
 #include "debugger.cpp"
 #include "serialization.cpp"
@@ -54,6 +55,16 @@ auto Cartridge::connect() -> void {
     isviewer.tracer->setTerminal(true);
   }
 
+  if(sc64.enabled) {
+    sc64.buffer.allocate(0x2000);
+    sc64.buffer.fill();
+
+    if(auto fp = system.pak->read("sd.raw")) { // TODO: More user-friendly path?
+      sc64.sd.allocate(fp->size());
+      sc64.sd.load(fp);
+    }
+  }
+
   debugger.load(node);
 
   power(false);
@@ -69,6 +80,10 @@ auto Cartridge::disconnect() -> void {
   flash.reset();
   isviewer.ram.reset();
   pak.reset();
+  if(sc64.enabled) {
+    sc64.sd.reset();
+    sc64.buffer.reset();
+  }
   node.reset();
 }
 
@@ -88,6 +103,12 @@ auto Cartridge::save() -> void {
   }
 
   rtc.save();
+
+  if(sc64.enabled) {
+    if(auto fp = system.pak->write("sd.raw")) {
+      sc64.sd.save(fp);
+    }
+  }
 }
 
 auto Cartridge::power(bool reset) -> void {
