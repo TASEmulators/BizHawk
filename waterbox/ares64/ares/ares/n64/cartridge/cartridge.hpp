@@ -4,6 +4,41 @@ struct Cartridge {
   Memory::Readable16 rom;
   Memory::Writable16 ram;
   Memory::Writable16 eeprom;
+  struct SC64 {
+    static constexpr u32 SDSectorWords = 512/4;
+
+    n1 enabled = true; // TODO: UI option
+    Memory::Writable sd;
+    Memory::Writable buffer;
+
+    n2 lockState = 0;
+    n1 busy = 0;
+    n1 error = 0;
+    u32 data0 = 0;
+    u32 data1 = 0;
+
+    n1 sdIsInit = 0;
+    u32 sdAddr = 0;
+
+    auto regReadWord(u32 address) -> u64;
+    auto regWriteWord(u32 address, u64 data_) -> void;
+
+    auto serialize(serializer& s) -> void;
+
+    template<u32 Size>
+    auto regRead(u32 address) -> u64 {
+      if constexpr(Size == Word) return regReadWord(address);
+      debug(unimplemented, "[SC64] Register read of size other than Word");
+      return 0; //Other sizes unimplemented
+    }
+
+    template<u32 Size>
+    auto regWrite(u32 address, u64 data) -> void {
+      if constexpr(Size == Word) return regWriteWord(address, data);
+      debug(unimplemented, "[SC64] Register write of size other than Word");
+      return; //Other sizes unimplemented
+    }
+  } sc64;
   struct Flash : Memory::Writable {
     template<u32 Size>
     auto read(u32 address) -> u64 {

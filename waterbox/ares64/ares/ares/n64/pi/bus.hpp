@@ -50,6 +50,20 @@ inline auto PI::busRead(u32 address) -> u32 {
   if(address <= 0x1000'0000 + cartridge.rom.size - 1) {
     return cartridge.rom.read<Size>(address);
   }
+  if(cartridge.sc64.enabled) {
+    if(address <= 0x1ffd'ffff) {
+      return unmapped;
+    }
+    if(address <= 0x1ffe'0000 + cartridge.sc64.buffer.size - 1) {
+      return cartridge.sc64.buffer.read<Size>(address);
+    }
+    if(address <= 0x1ffe'ffff) {
+      return unmapped;
+    }
+    if(address <= 0x1fff'ffff) {
+      return cartridge.sc64.regRead<Size>(address);
+    }
+  }
   return unmapped;
 }
 
@@ -104,6 +118,20 @@ inline auto PI::busWrite(u32 address, u32 data) -> void {
   }
   if(address <= 0x1000'0000 + cartridge.rom.size - 1) {
     return cartridge.rom.write<Size>(address, data);
+  }
+  if(cartridge.sc64.enabled) {
+    if(address <= 0x1ffd'ffff) {
+      return;
+    }
+    if(address <= 0x1ffe'0000 + cartridge.sc64.buffer.size - 1) {
+      return cartridge.sc64.buffer.write<Size>(address, data);
+    }
+    if(address <= 0x1ffe'ffff) {
+      return;
+    }
+    if(address <= 0x1fff'ffff) {
+        return cartridge.sc64.regWrite<Size>(address, data);
+    }
   }
   if(address <= 0x7fff'ffff) return;
 }
