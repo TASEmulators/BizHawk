@@ -965,7 +965,11 @@ namespace BizHawk.Emulation.DiscSystem
 						q.zero = 0;
 						q.AP_Timestamp = trackIndex.LBA + 150;
 						q.q_crc = 0;
-						session.RawTOCEntries.Add(new() { QData = q });
+						session.RawTOCEntries.Add(new()
+						{
+							QData = q,
+							AbsoluteTimestamp = trackIndex.LBA + 150
+						});
 					}
 				}
 

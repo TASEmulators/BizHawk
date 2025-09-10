@@ -168,7 +168,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			toc_sq.sec = BCD2.FromDecimal(0);
 			toc_sq.frame = BCD2.FromDecimal(0);
 			toc_sq.AP_Timestamp = OUT_Disc._Sectors.Count;
-			CurrentSession.RawTOCEntries.Add(new() { QData = toc_sq });
+			CurrentSession.RawTOCEntries.Add(new()
+			{
+				QData = toc_sq,
+				AbsoluteTimestamp = OUT_Disc._Sectors.Count
+			});
 		}
 
 		private void CloseSession()

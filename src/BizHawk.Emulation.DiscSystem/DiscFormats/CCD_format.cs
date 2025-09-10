@@ -578,7 +578,11 @@ namespace BizHawk.Emulation.DiscSystem
 					q_crc = 0, //meaningless
 				};
 
-				disc.Sessions[curSession].RawTOCEntries.Add(new() { QData = q });
+				disc.Sessions[curSession].RawTOCEntries.Add(new()
+				{
+					QData = q,
+					AbsoluteTimestamp = MSF.ToInt(entry.PMin, entry.PSec, entry.PFrame)
+				});
 			}
 
 			//analyze the RAWTocEntries to figure out what type of track track 1 is

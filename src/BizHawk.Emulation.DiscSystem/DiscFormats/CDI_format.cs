@@ -501,7 +501,11 @@ namespace BizHawk.Emulation.DiscSystem
 						q.zero = 0;
 						q.AP_Timestamp = disc._Sectors.Count;
 						q.q_crc = 0;
-						return new() { QData = q };
+						return new()
+						{
+							QData = q,
+							AbsoluteTimestamp = disc._Sectors.Count
+						};
 					}
 
 					var sectorSize = track.ReadMode switch

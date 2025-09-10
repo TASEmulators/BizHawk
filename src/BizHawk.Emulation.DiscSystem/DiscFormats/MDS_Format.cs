@@ -725,7 +725,11 @@ namespace BizHawk.Emulation.DiscSystem
 				q_crc = 0, //meaningless
 			};
 
-			return new() { QData = q };
+			return new()
+			{
+				QData = q,
+				AbsoluteTimestamp = MSF.ToInt(entry.PMin, entry.PSec, entry.PFrame)
+			};
 		}
 
 		/// <exception cref="MDSParseException">no file found at <paramref name="mdsPath"/> or BLOB error</exception>
