@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private readonly IntPtr _console;
 		private readonly NDSDisassembler _disassembler;
 
+		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly LibMelonDS.LogCallback _logCallback;
 
 		private bool loggingShouldInsertLevelNextCall = true;
@@ -45,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		private readonly MelonDSGLTextureProvider _glTextureProvider;
 		private readonly IOpenGLProvider _openGLProvider;
+		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly LibMelonDS.GetGLProcAddressCallback _getGLProcAddressCallback;
 		private object _glContext;
 
@@ -357,21 +359,67 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					}
 				}
 
+				// start off with baseline 128MiBs
+				uint mmapMiBSize = 128;
+				if (!IsDSiWare)
+				{
+					uint romSize = 1;
+					while (romSize < roms[0].Length)
+					{
+						romSize <<= 1;
+					}
+
+					mmapMiBSize += romSize / (1024 * 1024);
+
+					if (_activeSyncSettings.EnableDLDI)
+					{
+						mmapMiBSize += 256;
+					}
+				}
+
+				if (IsDSi)
+				{
+					// NAND is 240MiB, round off to 256MiBs here (extra 16MiB for other misc allocations)
+					mmapMiBSize += 256;
+
+					// clear NAND code allocates quite a bit of memory (enough for another copy of NAND itself)
+					if (_activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested)
+					{
+						mmapMiBSize += 256;
+					}
+
+					if (_activeSyncSettings.EnableDSiSDCard)
+					{
+						mmapMiBSize += 256;
+					}
+				}
+
+				if (roms.Count > 1)
+				{
+					uint romSize = 1;
+					while (romSize < roms[1].Length)
+					{
+						romSize <<= 1;
+					}
+
+					mmapMiBSize += romSize / (1024 * 1024);
+				}
+
 				_core = PreInit<LibMelonDS>(new()
 				{
 					Filename = "melonDS.wbx",
-					SbrkHeapSizeKB = 2 * 1024,
+					SbrkHeapSizeKB = 32 * 1024,
 					SealedHeapSizeKB = 4,
-					InvisibleHeapSizeKB = 48 * 1024,
+					InvisibleHeapSizeKB = 176 * 1024,
 					PlainHeapSizeKB = 4,
-					MmapHeapSizeKB = 1024 * 1024,
+					MmapHeapSizeKB = 1024 * mmapMiBSize,
 					SkipCoreConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 					SkipMemoryConsistencyCheck = CoreComm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
-				}, new Delegate[]
-				{
+				},
+				[
 					_readCallback, _writeCallback, _execCallback, _traceCallback,
 					_threadStartCallback, _logCallback, _getGLProcAddressCallback
-				});
+				]);
 
 				_core.SetLogCallback(_logCallback);
 
@@ -466,6 +514,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				consoleCreationArgs.DSi = IsDSi;
 				consoleCreationArgs.ClearNAND = _activeSyncSettings.ClearNAND || lp.DeterministicEmulationRequested;
 				consoleCreationArgs.SkipFW = _activeSyncSettings.SkipFirmware;
+				consoleCreationArgs.FullDSiBIOSBoot = _activeSyncSettings.FullDSiBIOSBoot;
+				consoleCreationArgs.EnableDLDI = _activeSyncSettings.EnableDLDI;
+				consoleCreationArgs.EnableDSiSDCard = _activeSyncSettings.EnableDSiSDCard;
+				consoleCreationArgs.DSiDSPHLE = _activeSyncSettings.DSiDSPHLE;
+
+				consoleCreationArgs.EnableJIT = _activeSyncSettings.EnableJIT;
+				consoleCreationArgs.MaxBranchSize = _activeSyncSettings.JITMaxBranchSize;
+				consoleCreationArgs.LiteralOptimizations = _activeSyncSettings.JITLiteralOptimizations;
+				consoleCreationArgs.BranchOptimizations = _activeSyncSettings.JITBranchOptimizations;
 
 				consoleCreationArgs.BitDepth = _settings.AudioBitDepth;
 				consoleCreationArgs.Interpolation = _settings.AudioInterpolation;
@@ -547,9 +604,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_disassembler = new(_core);
 				_serviceProvider.Register<IDisassemblable>(_disassembler);
 
-				const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
-				Tracer = new TraceBuffer(TRACE_HEADER);
-				_serviceProvider.Register(Tracer);
+				// tracelogger cannot be used with the JIT
+				if (!_activeSyncSettings.EnableJIT)
+				{
+					const string TRACE_HEADER = "ARM9+ARM7: Opcode address, opcode, registers (r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, SP, LR, PC, Cy, CpuMode)";
+					Tracer = new TraceBuffer(TRACE_HEADER);
+					_serviceProvider.Register(Tracer);
+				}
 
 				if (_glContext != null)
 				{
@@ -575,12 +636,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			var arm9Size = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x2C, 4));
 			var arm7RomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x30, 4));
 			var arm7Size = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x3C, 4));
-			if (arm9RomOffset > rom.Length ||
-				(arm9Size > 0x3BFE00 && !isDsiExclusive) ||
-				arm9RomOffset + arm9Size > rom.Length ||
-				arm7RomOffset > rom.Length ||
-				(arm7Size > 0x3BFE00 && !isDsiExclusive) ||
-				arm7RomOffset + arm7Size > rom.Length)
+			if (arm9RomOffset > rom.Length
+				|| (arm9Size > 0x3BFE00 && !isDsiExclusive)
+				|| arm9RomOffset + arm9Size > rom.Length
+				|| arm7RomOffset > rom.Length
+				|| (arm7Size > 0x3BFE00 && !isDsiExclusive)
+				|| arm7RomOffset + arm7Size > rom.Length)
 			{
 				return false;
 			}
@@ -591,10 +652,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				var arm9iSize = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1CC, 4));
 				var arm7iRomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1D0, 4));
 				var arm7iSize = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1DC, 4));
-				if (arm9iRomOffset > rom.Length ||
-					arm9iRomOffset + arm9iSize > rom.Length ||
-					arm7iRomOffset > rom.Length ||
-					arm7iRomOffset + arm7iSize > rom.Length)
+				if (arm9iRomOffset > rom.Length
+					|| arm9iRomOffset + arm9iSize > rom.Length
+					|| arm7iRomOffset > rom.Length
+					|| arm7iRomOffset + arm7iSize > rom.Length)
 				{
 					return false;
 				}
@@ -721,7 +782,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_openGLProvider.ActivateGLContext(_glContext);
 			}
 
-			_core.SetTraceCallback(Tracer.IsEnabled() ? _traceCallback : null, _settings.GetTraceMask());
+			var isTracing = Tracer?.IsEnabled() ?? false;
+			_core.SetTraceCallback(isTracing ? _traceCallback : null, _settings.GetTraceMask());
 
 			if (controller.IsPressed("Power"))
 			{
@@ -826,6 +888,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			_core.SetSoundConfig(_console, _settings.AudioBitDepth, _settings.AudioInterpolation);
+
+			// Present GL again post load state
+			// This is mainly important to mimic PopulateFromBuffer's functionality
+			// Note this doesn't actually do anything for OpenGL Classic and Compute (yet)
+			// But at least width and height will be corrected (since base LoadStateBinary overrides them)
+			if (_glTextureProvider != null)
+			{
+				_openGLProvider.ActivateGLContext(_glContext);
+				_core.PresentGL(_console, out var w , out var h);
+				BufferWidth = w;
+				BufferHeight = h;
+				_glTextureProvider.VideoDirty = true;
+			}
 		}
 
 		// omega hack

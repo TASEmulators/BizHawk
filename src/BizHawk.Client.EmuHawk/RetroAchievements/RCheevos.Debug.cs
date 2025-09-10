@@ -412,7 +412,6 @@ namespace BizHawk.Client.EmuHawk
 					VSystemID.Raw.GBA => ConsoleID.GBA,
 					VSystemID.Raw.GBC => ConsoleID.GBC,
 					VSystemID.Raw.GBL => ConsoleID.GB,
-					VSystemID.Raw.GEN when rom.GameInfo.GetBool("32X", false) => ConsoleID.Sega32X,
 					VSystemID.Raw.GEN => ConsoleID.MegaDrive,
 					VSystemID.Raw.GG => ConsoleID.GameGear,
 					VSystemID.Raw.GGL => ConsoleID.GameGear,

@@ -19,6 +19,9 @@
 	path = waterbox/melon/melonDS
 	url = https://github.com/TASEmulators/melonDS.git
 	branch = melonbiz
+[submodule "waterbox/melon/BizPlatform/faad2"]
+	path = waterbox/melon/BizPlatform/faad2
+	url = https://github.com/knik0/faad2.git
 [submodule "waterbox/musl"]
 	path = waterbox/musl
 	url = https://github.com/nattthebear/musl.git

@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		private static ControllerDefinition CreateControllerDefinition(SyncSettings settings, bool isMultiDisc)
 		{
 			var controller = new ControllerDefinition("3DO Controller");
-			setPortControllers(1, settings.Controller1Type, controller);
-			setPortControllers(2, settings.Controller2Type, controller);
+			SetPortControllers(1, settings.Controller1Type, controller);
+			SetPortControllers(2, settings.Controller2Type, controller);
 
 			// If this is multi-disc, add a cd swap option
 			if (isMultiDisc)
@@ -19,7 +19,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 				controller.BoolButtons.Add("Prev Disc");
 			}
 
-			// Adding Reset button
 			controller.BoolButtons.Add("Reset");
 
 			return controller.MakeImmutable();
@@ -32,13 +31,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 
 		public const int POINTER_MIN_POS = -32768;
 		public const int POINTER_MAX_POS = 32767;
-		private static void setPortControllers(int port, ControllerType type, ControllerDefinition controller)
+
+		private static void SetPortControllers(int port, ControllerType type, ControllerDefinition controller)
 		{
 			switch (type)
 			{
-				case ControllerType.Gamepad:
-					foreach (var button in JoystickButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
+				case ControllerType.None:
 					break;
+
+				case ControllerType.Gamepad:
+					foreach (var button in JoystickButtonCollection)
+					{
+						controller.BoolButtons.Add($"P{port} {button}");
+					}
+					break;
+
 				case ControllerType.Mouse:
 					controller.BoolButtons.AddRange([
 						$"P{port} {Inputs.MouseLeftButton}",
@@ -46,34 +53,59 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 						$"P{port} {Inputs.MouseRightButton}",
 						$"P{port} {Inputs.MouseFourthButton}",
 					]);
-					controller.AddAxis($"P{port} {Inputs.MouseX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+					controller
+						.AddAxis($"P{port} {Inputs.MouseX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.MouseY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
+
 				case ControllerType.FlightStick:
-					foreach (var button in FlightStickButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
-					controller.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+					foreach (var button in FlightStickButtonCollection)
+					{
+						controller.BoolButtons.Add($"P{port} {button}");
+					}
+					controller
+						.AddAxis($"P{port} {Inputs.FlighStickHorizontalAxis}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickVerticalAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2)
 						.AddAxis($"P{port} {Inputs.FlighStickAltitudeAxis}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
+
 				case ControllerType.LightGun:
-					foreach (var button in LightGunButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
-					controller.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
-						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0);
+					foreach (var button in LightGunButtonCollection)
+					{
+						controller.BoolButtons.Add($"P{port} {button}");
+					}
+					controller
+						.AddAxis($"P{port} {Inputs.LightGunScreenX}", POINTER_MIN_POS.RangeTo(POINTER_MAX_POS), 0)
+						.AddAxis($"P{port} {Inputs.LightGunScreenY}", POINTER_MIN_POS.RangeTo(POINTER_MAX_POS), 0);
 					break;
+
 				case ControllerType.ArcadeLightGun:
-					foreach (var button in ArcadeLightGunButtonCollection) controller.BoolButtons.Add($"P{port} {button}");
-					controller.AddAxis($"P{port} {Inputs.LightGunScreenX}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0)
-						.AddAxis($"P{port} {Inputs.LightGunScreenY}", (POINTER_MIN_POS).RangeTo(POINTER_MAX_POS), 0);
+					foreach (var button in ArcadeLightGunButtonCollection)
+					{
+						controller.BoolButtons.Add($"P{port} {button}");
+					}
+					controller
+						.AddAxis($"P{port} {Inputs.LightGunScreenX}", POINTER_MIN_POS.RangeTo(POINTER_MAX_POS), 0)
+						.AddAxis($"P{port} {Inputs.LightGunScreenY}", POINTER_MIN_POS.RangeTo(POINTER_MAX_POS), 0);
 					break;
+
 				case ControllerType.OrbatakTrackball:
-					foreach (var button in OrbatakTrackballCollection) controller.BoolButtons.Add($"P{port} {button}");
-					controller.AddAxis($"P{port} {Inputs.TrackballPosX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
+					foreach (var button in OrbatakTrackballCollection)
+					{
+						controller.BoolButtons.Add($"P{port} {button}");
+					}
+					controller
+						.AddAxis($"P{port} {Inputs.TrackballPosX}", MOUSE_MIN_POS_X.RangeTo(MOUSE_MAX_POS_X), (MOUSE_MIN_POS_X + MOUSE_MAX_POS_X) / 2)
 						.AddAxis($"P{port} {Inputs.TrackballPosY}", MOUSE_MIN_POS_Y.RangeTo(MOUSE_MAX_POS_Y), (MOUSE_MIN_POS_Y + MOUSE_MAX_POS_Y) / 2);
 					break;
+
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 
-		private static string[] JoystickButtonCollection = [
+		private static readonly string[] JoystickButtonCollection =
+		[
 			JoystickButtons.Up,
 			JoystickButtons.Down,
 			JoystickButtons.Left,
@@ -87,7 +119,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			JoystickButtons.ButtonR,
 		];
 
-		private static string[] FlightStickButtonCollection = [
+		private static readonly string[] FlightStickButtonCollection =
+		[
 			FlightStickButtons.Up,
 			FlightStickButtons.Down,
 			FlightStickButtons.Left,
@@ -101,14 +134,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			FlightStickButtons.RightTrigger,
 		];
 
-		private static string[] LightGunButtonCollection = [
+		private static readonly string[] LightGunButtonCollection =
+		[
 			LightGunButtons.Trigger,
 			LightGunButtons.Select,
 			LightGunButtons.Reload,
 			LightGunButtons.IsOffScreen,
 		];
 
-		private static string[] ArcadeLightGunButtonCollection = [
+		private static readonly string[] ArcadeLightGunButtonCollection =
+		[
 			ArcadeLightGunButtons.Trigger,
 			ArcadeLightGunButtons.Select,
 			ArcadeLightGunButtons.Start,
@@ -117,7 +152,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			ArcadeLightGunButtons.IsOffScreen,
 		];
 
-		private static string[] OrbatakTrackballCollection = [
+		private static readonly string[] OrbatakTrackballCollection =
+		[
 			OrbatakTrackballButtons.StartP1,
 			OrbatakTrackballButtons.StartP2,
 			OrbatakTrackballButtons.CoinP1,
@@ -139,6 +175,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			public const string ButtonL = "L";
 			public const string ButtonR = "R";
 		}
+
 		private static class FlightStickButtons
 		{
 			public const string Up = "Up";
@@ -162,6 +199,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			public const string Reload = "Reload";
 			public const string IsOffScreen = "Is Off-Screen";
 		}
+
 		private static class ArcadeLightGunButtons
 		{
 			public const string Trigger = "Trigger";

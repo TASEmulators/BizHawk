@@ -76,6 +76,13 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static void PopulateFromBuffer(this IVideoProvider videoProvider, int[] frameBuffer)
 		{
+			if (videoProvider is IGLTextureProvider)
+			{
+				// Don't bother if this is IGLTextureProvider
+				// As the GL texture is used for displaying, not the video buffer
+				return;
+			}
+
 			var b1 = frameBuffer;
 			var b2 = videoProvider.GetVideoBuffer();
 			int len = Math.Min(b1.Length, b2.Length);

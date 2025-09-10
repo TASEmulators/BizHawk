@@ -11,7 +11,7 @@
   (fetchNuGet { pname = "JunitXml.TestLogger"; version = "3.1.12"; sha256 = "1571rs2zpd7az5wp0bklx1h3pac388awlwhz70k0p0vv44h0v5jc"; })
   (fetchNuGet { pname = "Menees.Analyzers"; version = "3.2.2"; sha256 = "0zd7hh5xilm1svnz4dcvgryixkmsncdszzimy3fvz2xbs06cpksb"; })
   (fetchNuGet { pname = "Meziantou.Analyzer"; version = "2.0.206"; sha256 = "09a96pkvxrpbqv5fmgg0yc4mj94m6jknr0xn0rm843nl6zahvh4l"; })
-  (fetchNuGet { pname = "Meziantou.Polyfill"; version = "1.0.49"; sha256 = "1bfp7dkkprnyg02vgy30ssj7bz3nr6kjxggr5f1xhsh2xd3mcw6p"; })
+  (fetchNuGet { pname = "Meziantou.Polyfill"; version = "1.0.50"; sha256 = "17rmj94f1njs6nzqvkg3laqa0r04zdqp9zqyslknk93rs6rs67sy"; })
   (fetchNuGet { pname = "Microsoft.ApplicationInsights"; version = "2.23.0"; sha256 = "1gcdj4pbsmf6qj7qg2jycn349j1rx1viggp2n73rhrf21rpggiz6"; })
   (fetchNuGet { pname = "Microsoft.Bcl.AsyncInterfaces"; version = "5.0.0"; sha256 = "0cp5jbax2mf6xr3dqiljzlwi05fv6n9a35z337s92jcljiq674kf"; })
   (fetchNuGet { pname = "Microsoft.Bcl.AsyncInterfaces"; version = "8.0.0"; sha256 = "0z4jq5prnxyb4p3163yxx35znpd2msjd8hw8ysmv4ah90f5sd9gm"; })

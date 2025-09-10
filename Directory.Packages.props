@@ -9,7 +9,7 @@
 		<PackageVersion Include="Magick.NET-Q8-AnyCPU" Version="14.7.0" />
 		<PackageVersion Include="Menees.Analyzers" Version="3.2.2" />
 		<PackageVersion Include="Meziantou.Analyzer" Version="2.0.206" />
-		<PackageVersion Include="Meziantou.Polyfill" Version="1.0.49" />
+		<PackageVersion Include="Meziantou.Polyfill" Version="1.0.50" />
 		<PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />

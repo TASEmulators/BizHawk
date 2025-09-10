@@ -22,10 +22,11 @@
 #include gamedb_pce_cd.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_psx.txt
-#include gamedb_sega_sg1000.txt
+#include gamedb_sega_32x.txt
 #include gamedb_sega_gg.txt
-#include gamedb_sega_sms.txt
 #include gamedb_sega_md.txt
+#include gamedb_sega_sg1000.txt
+#include gamedb_sega_sms.txt
 #include gamedb_snes.txt
 #include gamedb_vectrex.txt
 #include gamedb_ws.txt

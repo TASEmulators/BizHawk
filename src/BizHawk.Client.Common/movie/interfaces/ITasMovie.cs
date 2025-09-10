@@ -21,6 +21,11 @@ namespace BizHawk.Client.Common
 		int LastEditedFrame { get; }
 		bool LastEditWasRecording { get; }
 
+		/// <summary>
+		/// Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history.
+		/// Called regardless of whether any states were actually invalidated.
+		/// The parameter is the last frame number who's savestate (if it exists) is still valid. That is, the first of the modified frames.
+		/// </summary>
 		Action<int> GreenzoneInvalidated { get; set; }
 
 		string DisplayValue(int frame, string buttonName);
@@ -43,10 +48,16 @@ namespace BizHawk.Client.Common
 		void InsertInput(int frame, IEnumerable<IController> inputStates);
 
 		void InsertEmptyFrame(int frame, int count = 1);
-		int CopyOverInput(int frame, IEnumerable<IController> inputStates);
+		void CopyOverInput(int frame, IEnumerable<IController> inputStates);
 
 		void RemoveFrame(int frame);
 		void RemoveFrames(ICollection<int> frames);
+
+		/// <summary>
+		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// </summary>
+		/// <param name="removeStart">The first frame to remove.</param>
+		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
 		void RemoveFrames(int removeStart, int removeUpTo);
 		void SetFrame(int frame, string source);
 
@@ -55,5 +66,14 @@ namespace BizHawk.Client.Common
 		void CopyVerificationLog(IEnumerable<string> log);
 
 		bool IsReserved(int frame);
+
+		/// <summary>
+		/// Sometimes we will be doing a whole bunch of small operations together. (e.g. large painting undo, large Lua edit)
+		/// This avoids using the greenzone invalidated callback for each one, making things run smoother.
+		/// Note that this is different from undo batching.
+		/// For one, we don't undo batch an undo itself.
+		/// For two, undo batches might span a significant amount of time during which users want to atually see edits or auto-restore in TAStudio.
+		/// </summary>
+		void SingleInvalidation(Action action);
 	}
 }

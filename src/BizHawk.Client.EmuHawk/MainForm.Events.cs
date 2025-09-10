@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Bizware.Audio;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
@@ -537,6 +538,8 @@ namespace BizHawk.Client.EmuHawk
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"];
 			SoftResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Soft Reset"];
 			HardResetMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Hard Reset"];
+
+			RealTimeCounterMenuItem.Text = $"Est. {PlayMovie.MovieTimeLengthStr(Emulator.EstimatedRealTimeSincePowerOn())} since power-on";
 		}
 
 		private void PauseMenuItem_Click(object sender, EventArgs e)
@@ -723,13 +726,13 @@ namespace BizHawk.Client.EmuHawk
 			switch (Config.InputHotkeyOverrideOptions)
 			{
 				default:
-				case 0:
+				case Config.InputPriority.BOTH:
 					BothHkAndControllerMenuItem.Checked = true;
 					break;
-				case 1:
+				case Config.InputPriority.INPUT:
 					InputOverHkMenuItem.Checked = true;
 					break;
-				case 2:
+				case Config.InputPriority.HOTKEY:
 					HkOverInputMenuItem.Checked = true;
 					break;
 			}
@@ -958,19 +961,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BothHkAndControllerMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.InputHotkeyOverrideOptions = 0;
+			Config.InputHotkeyOverrideOptions = Config.InputPriority.BOTH;
 			UpdateKeyPriorityIcon();
 		}
 
 		private void InputOverHkMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.InputHotkeyOverrideOptions = 1;
+			Config.InputHotkeyOverrideOptions = Config.InputPriority.INPUT;
 			UpdateKeyPriorityIcon();
 		}
 
 		private void HkOverInputMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.InputHotkeyOverrideOptions = 2;
+			Config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
 			UpdateKeyPriorityIcon();
 		}
 
@@ -1454,9 +1457,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Config.InputHotkeyOverrideOptions = Config.InputHotkeyOverrideOptions switch
 			{
-				1 => 2,
-				2 => Config.NoMixedInputHokeyOverride ? 1 : 0,
-				_ => 1,
+				Config.InputPriority.INPUT => Config.InputPriority.HOTKEY,
+				Config.InputPriority.HOTKEY => Config.NoMixedInputHokeyOverride ? Config.InputPriority.INPUT : Config.InputPriority.BOTH,
+				_ => Config.InputPriority.INPUT,
 			};
 			UpdateKeyPriorityIcon();
 		}

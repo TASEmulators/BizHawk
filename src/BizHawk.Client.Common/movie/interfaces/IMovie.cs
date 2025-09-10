@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
+using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -59,7 +61,7 @@ namespace BizHawk.Client.Common
 		// savestate anchor.
 		string TextSavestate { get; set; }
 		byte[] BinarySavestate { get; set; }
-		int[] SavestateFramebuffer { get; set; }
+		BitmapBuffer SavestateFramebuffer { get; set; }
 
 		// saveram anchor
 		byte[] SaveRam { get; set; }
@@ -239,7 +241,7 @@ namespace BizHawk.Client.Common
 
 				if (movie.SavestateFramebuffer != null && emulator.HasVideoProvider())
 				{
-					emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer);
+					emulator.AsVideoProvider().PopulateFromBuffer(movie.SavestateFramebuffer.Pixels);
 				}
 
 				emulator.ResetCounters();

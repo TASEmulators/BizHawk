@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -43,7 +44,7 @@ namespace BizHawk.Client.Common
 
 		// Input state for game controller inputs are coalesced here
 		// This relies on a client specific implementation!
-		public ControllerInputCoalescer ControllerInputCoalescer { get; set; }
+		public ControllerInputCoalescer ControllerInputCoalescer { get; set; } = new();
 
 		public Controller ClientControls { get; set; }
 
@@ -74,17 +75,6 @@ namespace BizHawk.Client.Common
 			session.MovieIn = UdLRControllerAdapter.Xor(StickyController);
 			session.StickySource = StickyController;
 			ControllerOutput.Source = session.MovieOut;
-		}
-
-		public void ToggleStickies()
-		{
-			StickyHoldController.MassToggleStickyState(ActiveController.PressedButtons);
-			StickyAutofireController.MassToggleStickyState(AutoFireController.PressedButtons); // does this even make sense?
-		}
-
-		public void ToggleAutoStickies()
-		{
-			StickyAutofireController.MassToggleStickyState(ActiveController.PressedButtons);
 		}
 
 		private static Controller BindToDefinition(
@@ -146,6 +136,128 @@ namespace BizHawk.Client.Common
 			}
 
 			return ret;
+		}
+
+		// input state which has been destined for client hotkey consumption are colesced here
+		private readonly InputCoalescer _hotkeyCoalescer = new InputCoalescer();
+
+		/// <summary>
+		/// Processes queued inputs and triggers input evets (i.e. hotkeys), but does not update output controllers.<br/>
+		/// </summary>
+		/// <param name="processUnboundInput">Events that did not do anything are forwarded out here.
+		/// This allows things like Windows' standard alt hotkeys (for menu items) to be handled by the
+		/// caller if the input didn't alrady do something else.</param>
+		public void ProcessInput(IPhysicalInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent> processUnboundInput)
+		{
+			// loop through all available events
+			InputEvent ie;
+			while ((ie = source.DequeueEvent()) != null)
+			{
+				// useful debugging:
+				// Console.WriteLine(ie);
+
+				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
+
+				var hotkeyTriggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				bool isEmuInput = ActiveController.HasBinding(ie.LogicalButton.ToString());
+
+				bool shouldDoHotkey = config.InputHotkeyOverrideOptions != Config.InputPriority.INPUT;
+				bool shouldDoEmuInput = config.InputHotkeyOverrideOptions != Config.InputPriority.HOTKEY;
+				if (shouldDoEmuInput && !isEmuInput) shouldDoHotkey = true;
+
+				bool didHotkey = false;
+				if (shouldDoHotkey)
+				{
+					if (ie.EventType is InputEventType.Press)
+					{
+						didHotkey = hotkeyTriggers.Aggregate(false, (current, trigger) => current | processHotkey(trigger));
+					}
+					_hotkeyCoalescer.Receive(ie);
+				}
+
+				if (!didHotkey) shouldDoEmuInput = true;
+				if (shouldDoEmuInput)
+				{
+					// We have to do this even if it's not an emu input
+					// because if Shift+A is bound it needs to see the Shift and A independently.
+					ControllerInputCoalescer.Receive(ie);
+				}
+				bool didEmuInput = shouldDoEmuInput && isEmuInput;
+
+				if (!didHotkey && !didEmuInput)
+				{
+					processUnboundInput(ie);
+				}
+			} // foreach event
+
+			// also handle axes
+			// we'll need to isolate the mouse coordinates so we can translate them
+			int? mouseDeltaX = null, mouseDeltaY = null;
+			foreach (var f in source.GetAxisValues())
+			{
+				if (f.Key == "RMouse X")
+					mouseDeltaX = f.Value;
+				else if (f.Key == "RMouse Y")
+					mouseDeltaY = f.Value;
+				else ControllerInputCoalescer.AcceptNewAxis(f.Key, f.Value);
+			}
+
+			if (mouseDeltaX != null && mouseDeltaY != null)
+			{
+				var mouseSensitivity = config.RelativeMouseSensitivity / 100.0f;
+				var x = mouseDeltaX.Value * mouseSensitivity;
+				var y = mouseDeltaY.Value * mouseSensitivity;
+				const int MAX_REL_MOUSE_RANGE = 120; // arbitrary
+				x = Math.Min(Math.Max(x, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				y = Math.Min(Math.Max(y, -MAX_REL_MOUSE_RANGE), MAX_REL_MOUSE_RANGE) / MAX_REL_MOUSE_RANGE;
+				ControllerInputCoalescer.AcceptNewAxis("RMouse X", (int)(x * 10000));
+				ControllerInputCoalescer.AcceptNewAxis("RMouse Y", (int)(y * 10000));
+			}
+		}
+
+		/// <summary>
+		/// Update output controllers. Call <see cref="ProcessInput(IPhysicalInputSource, Func{string, bool}, Config, Action{InputEvent})"/> shortly before this.
+		/// </summary>
+		public void RunControllerChain(Config config)
+		{
+			// client, only one step
+			ClientControls.LatchFromPhysical(_hotkeyCoalescer);
+
+			// controller, which actually has a chain
+			List<string> oldPressedButtons = ActiveController.PressedButtons;
+
+			ActiveController.LatchFromPhysical(ControllerInputCoalescer);
+			ActiveController.OR_FromLogical(ClickyVirtualPadController);
+			AutoFireController.LatchFromPhysical(ControllerInputCoalescer);
+
+			if (config.N64UseCircularAnalogConstraint)
+			{
+				ActiveController.ApplyAxisConstraints("Natural Circle");
+			}
+
+			if (ClientControls["Autohold"] || ClientControls["Autofire"])
+			{
+				List<string> newPressedButtons = ActiveController.PressedButtons;
+				List<string> justPressedButtons = new();
+				foreach (string button in newPressedButtons)
+				{
+					if (!oldPressedButtons.Contains(button)) justPressedButtons.Add(button);
+				}
+				if (justPressedButtons.Count != 0)
+				{
+					if (ClientControls["Autohold"])
+					{
+						StickyHoldController.MassToggleStickyState(justPressedButtons);
+					}
+					else
+					{
+						StickyAutofireController.MassToggleStickyState(justPressedButtons);
+					}
+				}
+			}
+
+			// autohold/autofire must not be affected by the following inputs
+			ActiveController.Overrides(ButtonOverrideAdapter);
 		}
 	}
 }

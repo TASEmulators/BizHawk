@@ -121,21 +121,24 @@ namespace BizHawk.Client.Common
 		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
-			var anyLagInvalidated = LagLog.RemoveFrom(frame);
-			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated?.Invoke(frame);
-			if (anyLagInvalidated || anyStateInvalidated)
+			if (_suspendInvalidation)
 			{
-				Changes = true;
+				_minInvalidationFrame = Math.Min(_minInvalidationFrame, frame);
+				return;
 			}
 
-			LastEditedFrame = frame;
-			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
+			LagLog.RemoveFrom(frame);
+			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
 
+			Changes = true;
+			LastEditedFrame = frame;
 			if (anyStateInvalidated && IsCountingRerecords)
 			{
 				Rerecords++;
 			}
+
+			GreenzoneInvalidated?.Invoke(frame);
+			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
 		}
 
 		public void InvalidateEntireGreenzone()
@@ -149,7 +152,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (_displayCache.Frame != frame)
+			if (_displayCache.Frame != frame || Log.Count == 1)
 			{
 				_displayCache.Controller ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
 				_displayCache.Controller.SetFromMnemonic(Log[frame]);
@@ -293,14 +296,12 @@ namespace BizHawk.Client.Common
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
 
-			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
-
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers.DeepClone();
 			}
 
-			Changes = true;
+			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

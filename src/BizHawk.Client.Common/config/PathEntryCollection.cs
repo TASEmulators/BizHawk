@@ -276,6 +276,8 @@ namespace BizHawk.Client.Common
 
 			CommonEntriesFor(VSystemID.Raw.O2, basePath: Path.Combine(".", "O2")),
 
+			CommonEntriesFor(VSystemID.Raw.Panasonic3DO, basePath: Path.Combine(".", "3DO")),
+
 			CommonEntriesFor(COMBINED_SYSIDS_PCE, basePath: Path.Combine(".", "PC Engine")),
 
 			CommonEntriesFor(VSystemID.Raw.PCFX, basePath: Path.Combine(".", "PCFX")),

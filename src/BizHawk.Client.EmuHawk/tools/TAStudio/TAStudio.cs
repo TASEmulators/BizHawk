@@ -64,6 +64,11 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
+		/// <summary>
+		/// This is meant to be used by Lua.
+		/// </summary>
+		public bool StopRecordingOnNextEdit = true;
+
 		public class TAStudioSettings
 		{
 			public TAStudioSettings()
@@ -585,7 +590,15 @@ namespace BizHawk.Client.EmuHawk
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
+
 			movie.PropertyChanged += TasMovie_OnPropertyChanged;
+			System.Collections.Specialized.NotifyCollectionChangedEventHandler refreshOnMarker = (_, _) => RefreshDialog();
+			movie.Markers.CollectionChanged += refreshOnMarker;
+			this.Disposed += (s, e) =>
+			{
+				movie.PropertyChanged -= TasMovie_OnPropertyChanged;
+				movie.Markers.CollectionChanged -= refreshOnMarker;
+			};
 
 			SuspendLayout();
 			WantsToControlStopMovie = false;
@@ -877,6 +890,13 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.TogglePause();
 		}
 
+		public override void OnPauseToggle(bool newPauseState)
+		{
+			// Consecutively recorded frames are merged into one undo action, until we pause.
+			// Then a new undo action should be used.
+			if (newPauseState) _extendNeedsMerge = false;
+		}
+
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
@@ -885,45 +905,6 @@ namespace BizHawk.Client.EmuHawk
 			var clipboardCount = _tasClipboard.Count;
 			if (clipboardCount is not 0) temp += $", Clipboard: {clipboardCount} {(clipboardCount is 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
-		}
-
-		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
-		{
-			if (insertionFrame <= CurrentTasMovie.InputLogLength)
-			{
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-			}
-		}
-
-		public void DeleteFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
-			{
-				// movie's RemoveFrames might do multiple separate invalidations
-				BeginBatchEdit();
-
-				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
-				CurrentTasMovie.RemoveFrames(framesToRemove);
-				SetSplicer();
-
-				EndBatchEdit();
-			}
-		}
-
-		public void ClearFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
-			{
-				BeginBatchEdit();
-
-				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
-				for (int i = beginningFrame; i < last; i++)
-				{
-					CurrentTasMovie.ClearFrame(i);
-				}
-
-				EndBatchEdit();
-			}
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
@@ -1059,7 +1040,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.NewCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
 			{
 				CurrentTasMovie.Markers.Move(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
-				RefreshDialog();
+				RefreshDialog(); // Marker move might have been rejected so we need to manually refresh.
 			}
 		}
 

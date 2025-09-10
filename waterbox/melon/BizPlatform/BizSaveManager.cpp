@@ -5,28 +5,28 @@
 #include "DSi_NAND.h"
 #include "Platform.h"
 
+#include "BizUserData.h"
+
 namespace melonDS::Platform
 {
-
-static bool NdsSaveRamIsDirty = false;
-static bool GbaSaveRamIsDirty = false;
 
 ECL_EXPORT void PutSaveRam(melonDS::NDS* nds, u8* data, u32 len)
 {
 	const u32 ndsSaveLen = nds->GetNDSSaveLength();
 	const u32 gbaSaveLen = nds->GetGBASaveLength();
+	auto* bizUserData = static_cast<BizUserData*>(nds->UserData);
 
 	if (len >= ndsSaveLen)
 	{
 		nds->SetNDSSave(data, len);
-		NdsSaveRamIsDirty = false;
+		bizUserData->NdsSaveRamIsDirty = false;
 
 		if (gbaSaveLen && len >= (ndsSaveLen + gbaSaveLen))
 		{
 			// don't use SetGBASave! it will re-allocate the save buffer (bad!)
 			// SetNDSSave is fine (and should be used)
 			memcpy(nds->GetGBASave(), data + ndsSaveLen, gbaSaveLen);
-			GbaSaveRamIsDirty = false;
+			bizUserData->GbaSaveRamIsDirty = false;
 		}
 	}
 }
@@ -35,17 +35,24 @@ ECL_EXPORT void GetSaveRam(melonDS::NDS* nds, u8* data, bool clearDirty)
 {
 	const u32 ndsSaveLen = nds->GetNDSSaveLength();
 	const u32 gbaSaveLen = nds->GetGBASaveLength();
+	auto* bizUserData = static_cast<BizUserData*>(nds->UserData);
 
 	if (ndsSaveLen)
 	{
 		memcpy(data, nds->GetNDSSave(), ndsSaveLen);
-		if (clearDirty) NdsSaveRamIsDirty = false;
+		if (clearDirty)
+		{
+			bizUserData->NdsSaveRamIsDirty = false;
+		}
 	}
 
 	if (gbaSaveLen)
 	{
 		memcpy(data + ndsSaveLen, nds->GetGBASave(), gbaSaveLen);
-		if (clearDirty) GbaSaveRamIsDirty = false;
+		if (clearDirty)
+		{
+			bizUserData->GbaSaveRamIsDirty = false;
+		}
 	}
 }
 
@@ -54,9 +61,10 @@ ECL_EXPORT u32 GetSaveRamLength(melonDS::NDS* nds)
 	return nds->GetNDSSaveLength() + nds->GetGBASaveLength();
 }
 
-ECL_EXPORT bool SaveRamIsDirty()
+ECL_EXPORT bool SaveRamIsDirty(melonDS::NDS* nds)
 {
-	return NdsSaveRamIsDirty || GbaSaveRamIsDirty;
+	auto* bizUserData = static_cast<BizUserData*>(nds->UserData);
+	return bizUserData->NdsSaveRamIsDirty || bizUserData->GbaSaveRamIsDirty;
 }
 
 ECL_EXPORT void ImportDSiWareSavs(melonDS::DSi* dsi, u64 titleId)
@@ -129,21 +137,23 @@ ECL_EXPORT void GetNANDData(melonDS::DSi* dsi, u8* buf)
 	}
 }
 
-void WriteNDSSave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen)
+void WriteNDSSave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen, void* userdata)
 {
-	NdsSaveRamIsDirty = true;
+	auto* bizUserData = static_cast<BizUserData*>(userdata);
+	bizUserData->NdsSaveRamIsDirty = true;
 }
 
-void WriteGBASave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen)
+void WriteGBASave(const u8* savedata, u32 savelen, u32 writeoffset, u32 writelen, void* userdata)
 {
-	GbaSaveRamIsDirty = true;
+	auto* bizUserData = static_cast<BizUserData*>(userdata);
+	bizUserData->GbaSaveRamIsDirty = true;
 }
 
-void WriteFirmware(const melonDS::Firmware& firmware, u32 writeoffset, u32 writelen)
+void WriteFirmware(const melonDS::Firmware& firmware, u32 writeoffset, u32 writelen, void* userdata)
 {
 }
 
-void WriteDateTime(int year, int month, int day, int hour, int minute, int second)
+void WriteDateTime(int year, int month, int day, int hour, int minute, int second, void* userdata)
 {
 }
 

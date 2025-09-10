@@ -2,12 +2,12 @@
 {
 	public interface IMovieConfig
 	{
-		public MovieEndAction MovieEndAction { get; }
-		public bool EnableBackupMovies { get; }
-		public bool MoviesOnDisk { get; }
-		public int MovieCompressionLevel { get; }
-		public bool VBAStyleMovieLoadState { get; }
-		public bool PlaySoundOnMovieEnd { get; set; }
+		MovieEndAction MovieEndAction { get; }
+		bool EnableBackupMovies { get; }
+		bool MoviesOnDisk { get; }
+		int MovieCompressionLevel { get; }
+		bool VBAStyleMovieLoadState { get; }
+		bool PlaySoundOnMovieEnd { get; set; }
 		ZwinderStateManagerSettings DefaultTasStateManagerSettings { get; }
 	}
 

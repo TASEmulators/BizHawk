@@ -33,20 +33,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		[BizImport(CC)]
 		public abstract void SetCdCallbacks(CDReadCallback cdrc, CDSectorCountCallback cdscc);
 
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract bool Init(string gameFile, string biosFile, string fontFile, int port1Type, int port2Type, int videoStandard);
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract bool sram_changed();
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract int get_sram_size();
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract void get_sram(IntPtr sramBuffer);
-
-		[BizImport(CC, Compatibility = true)]
-		public abstract void set_sram(IntPtr sramBuffer);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct GamepadInputs
@@ -147,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		{
 			public GameInput port1;
 			public GameInput port2;
-			public int isReset = 0;
+			public int isReset;
 		}
 	}
 }

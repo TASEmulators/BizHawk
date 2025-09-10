@@ -227,13 +227,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				// GB_MODEL_DMG_C = 0x003,
 				[Display(Name = "MGB")]
 				GB_MODEL_MGB = 0x100,
-				[Display(Name = "CGB-0 (Experimental)")]
+				[Display(Name = "CGB-0")]
 				GB_MODEL_CGB_0 = 0x200,
-				[Display(Name = "CGB-A (Experimental)")]
+				[Display(Name = "CGB-A")]
 				GB_MODEL_CGB_A = 0x201,
-				[Display(Name = "CGB-B (Experimental)")]
+				[Display(Name = "CGB-B")]
 				GB_MODEL_CGB_B = 0x202,
-				[Display(Name = "CGB-C (Experimental)")]
+				[Display(Name = "CGB-C")]
 				GB_MODEL_CGB_C = 0x203,
 				[Display(Name = "CGB-D")]
 				GB_MODEL_CGB_D = 0x204,

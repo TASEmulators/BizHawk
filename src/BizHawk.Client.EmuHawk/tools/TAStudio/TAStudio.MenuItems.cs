@@ -143,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSelectionToMacroMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected)
 			{
 				return;
 			}
@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected)
 			{
 				return;
 			}
@@ -277,42 +277,30 @@ namespace BizHawk.Client.EmuHawk
 			GreenzoneICheckSeparator.Visible =
 				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
+
+			UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
+			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
 		}
 
 		private void UndoMenuItem_Click(object sender, EventArgs e)
 		{
-			if (CurrentTasMovie.ChangeLog.Undo() < Emulator.Frame)
-			{
-				GoToFrame(CurrentTasMovie.ChangeLog.PreviousUndoFrame);
-			}
-			else
-			{
-				RefreshDialog();
-			}
-
-			// Currently I don't have a way to easily detect when CanUndo changes, so this button should be enabled always.
-			// UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
-			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
+			CurrentTasMovie.ChangeLog.Undo();
+			_extendNeedsMerge = false;
 		}
 
 		private void RedoMenuItem_Click(object sender, EventArgs e)
 		{
-			if (CurrentTasMovie.ChangeLog.Redo() < Emulator.Frame)
-			{
-				GoToFrame(CurrentTasMovie.ChangeLog.PreviousRedoFrame);
-			}
-			else
-			{
-				RefreshDialog();
-			}
-
-			// Currently I don't have a way to easily detect when CanUndo changes, so this button should be enabled always.
-			// UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
-			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
+			CurrentTasMovie.ChangeLog.Redo();
 		}
 
 		private void ShowUndoHistoryMenuItem_Click(object sender, EventArgs e)
 		{
+			if (_undoForm != null && !_undoForm.IsDisposed)
+			{
+				// We could just BringToFront, but closing is probably better since the new one will appear in the expected screen location.
+				_undoForm.Close();
+			}
+
 			_undoForm = new UndoHistoryForm(this) { Owner = this };
 			_undoForm.Show();
 			_undoForm.UpdateValues();
@@ -333,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				var selectionEnd = TasView.SelectionEndIndex ?? 0;
 				var prevMarker = CurrentTasMovie.Markers.PreviousOrCurrent(selectionEnd);
@@ -367,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
@@ -393,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
 				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
@@ -431,7 +419,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				// copy paste from PasteMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
@@ -467,9 +455,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
-
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
@@ -487,18 +474,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Clipboard.SetDataObject(sb.ToString());
-				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(list);
-				EndBatchEdit();
 				SetSplicer();
 			}
 		}
 
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected) return;
+
+			CurrentTasMovie.SingleInvalidation(() =>
 			{
-				BeginBatchEdit();
 				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectionStartIndex}-{TasView.SelectionEndIndex}");
 				foreach (int frame in TasView.SelectedRows)
 				{
@@ -506,13 +492,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CurrentTasMovie.ChangeLog.EndBatch();
-				EndBatchEdit();
-			}
+			});
 		}
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				var selectionStart = TasView.SelectionStartIndex;
 				var rollBackFrame = selectionStart ?? 0;
@@ -523,9 +508,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				BeginBatchEdit(); // movie's RemoveFrames may make multiple separate invalidations
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
-				EndBatchEdit();
 				SetTasViewRowCount();
 				SetSplicer();
 			}
@@ -547,27 +530,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneFramesXTimes(int timesToClone)
 		{
-			BeginBatchEdit();
-			for (int i = 0; i < timesToClone; i++)
+			if (!TasView.AnyRowsSelected) return;
+
+			var framesToInsert = TasView.SelectedRows;
+			var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
+
+			var inputLog = framesToInsert
+				.Select(CurrentTasMovie.GetInputLogEntry)
+				.ToList();
+
+			CurrentTasMovie.SingleInvalidation(() =>
 			{
-				if (TasView.Focused && TasView.AnyRowsSelected)
+				string batchName = $"Clone {inputLog.Count} frames starting at {TasView.FirstSelectedRowIndex}";
+				if (timesToClone != 1) batchName += $" {timesToClone} times";
+				CurrentTasMovie.ChangeLog.BeginNewBatch(batchName);
+
+				for (int i = 0; i < timesToClone; i++)
 				{
-					var framesToInsert = TasView.SelectedRows;
-					var insertionFrame = Math.Min((TasView.SelectionEndIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
-
-					var inputLog = framesToInsert
-						.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-						.ToList();
-
 					CurrentTasMovie.InsertInput(insertionFrame, inputLog);
 				}
-			}
-			EndBatchEdit();
+
+				CurrentTasMovie.ChangeLog.EndBatch();
+			});
 		}
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				CurrentTasMovie.InsertEmptyFrame(TasView.SelectionStartIndex ?? 0);
 			}
@@ -575,20 +564,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				var insertionFrame = TasView.SelectionStartIndex ?? 0;
 				using var framesPrompt = new FramesPrompt();
 				if (framesPrompt.ShowDialogOnScreen().IsOk())
 				{
-					InsertNumFrames(insertionFrame, framesPrompt.Frames);
+					CurrentTasMovie.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
 				}
 			}
 		}
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.Focused && TasView.AnyRowsSelected)
+			if (TasView.AnyRowsSelected)
 			{
 				CurrentTasMovie.Truncate(TasView.SelectionEndIndex ?? 0);
 				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
@@ -622,7 +611,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CurrentTasMovie.Markers.RemoveAll(m => TasView.IsRowSelected(m.Frame));
 			MarkerControl.UpdateMarkerCount();
-			RefreshDialog();
 		}
 
 		private void ClearGreenzoneMenuItem_Click(object sender, EventArgs e)

@@ -21,6 +21,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _lastRefresh;
 		private bool _doPause;
+		private bool _extended;
+		private bool _extendNeedsMerge;
 
 		private void UpdateProgressBar()
 		{
@@ -55,7 +57,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore()
 		{
-			if (CurrentTasMovie.IsAtEnd())
+			_extended = CurrentTasMovie.IsAtEnd() && !CurrentTasMovie.IsRecording();
+			if (_extended)
 			{
 				CurrentTasMovie.RecordFrame(CurrentTasMovie.Emulator.Frame, MovieSession.StickySource);
 			}
@@ -108,6 +111,18 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void FastUpdateAfter()
 		{
+			// Recording multiple frames, or auto-extending the movie, while unpaused should count as a single undo action.
+			// And do this before stopping the seek, which could puase.
+			if (!MainForm.EmulatorPaused && (CurrentTasMovie.IsRecording() || _extended))
+			{
+				if (_extendNeedsMerge) CurrentTasMovie.ChangeLog.MergeLastActions();
+				_extendNeedsMerge = true;
+			}
+			else
+			{
+				_extendNeedsMerge = false;
+			}
+
 			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
 			{
 				StopSeeking();

@@ -158,11 +158,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			Sync();
 			if(mode == 1) SyncIRQ(mmc3.mmc3.irq_pending);
+#if DEBUG
 			Console.Write("MODE: {0} ",mode);
 			if (mode == 0) Console.WriteLine("(vrc2)");
 			if (mode == 1) Console.WriteLine("(mmc3)");
 			if (mode == 2) Console.WriteLine("(mmc1)");
 			if (mode == 3) Console.WriteLine("(mmc1)");
+#endif
 		}
 
 		public override void WriteExp(int addr, byte value)
@@ -195,7 +197,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePrg(int addr, byte value)
 		{
+#if DEBUG
 			Console.WriteLine("{0:X4} = {1:X2}", addr+0x8000, value);
+#endif
 			switch (mode)
 			{
 				case 0:

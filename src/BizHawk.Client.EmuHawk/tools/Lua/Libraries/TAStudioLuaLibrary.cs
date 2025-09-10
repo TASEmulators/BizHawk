@@ -314,8 +314,10 @@ namespace BizHawk.Client.EmuHawk
 
 				_luaLibsImpl.IsUpdateSupressed = true;
 
-				Tastudio.ApiHawkBatchEdit(() =>
+				Tastudio.StopRecordingOnNextEdit = false;
+				Tastudio.CurrentTasMovie.SingleInvalidation(() =>
 				{
+					Tastudio.CurrentTasMovie.ChangeLog.BeginNewBatch("tastudio.applyinputchanges");
 					int size = _changeList.Count;
 
 					for (int i = 0; i < size; i++)
@@ -334,17 +336,28 @@ namespace BizHawk.Client.EmuHawk
 								}
 								break;
 							case LuaChangeTypes.InsertFrames:
-								Tastudio.InsertNumFrames(_changeList[i].Frame, _changeList[i].Number);
+								Tastudio.CurrentTasMovie.InsertEmptyFrame(_changeList[i].Frame, _changeList[i].Number);
 								break;
 							case LuaChangeTypes.DeleteFrames:
-								Tastudio.DeleteFrames(_changeList[i].Frame, _changeList[i].Number);
+								int endExclusive = _changeList[i].Frame + _changeList[i].Number;
+								endExclusive = Math.Min(Tastudio.CurrentTasMovie.InputLogLength, endExclusive);
+								if (_changeList[i].Frame < endExclusive)
+								{
+									Tastudio.CurrentTasMovie.RemoveFrames(_changeList[i].Frame, endExclusive);
+								}
 								break;
 							case LuaChangeTypes.ClearFrames:
-								Tastudio.ClearFrames(_changeList[i].Frame, _changeList[i].Number);
+								endExclusive = _changeList[i].Frame + _changeList[i].Number;
+								endExclusive = Math.Min(Tastudio.CurrentTasMovie.InputLogLength, endExclusive);
+								for (int j = _changeList[i].Frame; j < endExclusive; j++)
+								{
+									Tastudio.CurrentTasMovie.ClearFrame(j);
+								}
 								break;
 						}
 					}
 					_changeList.Clear();
+					Tastudio.CurrentTasMovie.ChangeLog.EndBatch();
 				});
 
 				_luaLibsImpl.IsUpdateSupressed = false;
@@ -471,7 +484,6 @@ namespace BizHawk.Client.EmuHawk
 				if (marker != null)
 				{
 					Tastudio.CurrentTasMovie.Markers.Remove(marker);
-					Tastudio.RefreshDialog();
 				}
 			}
 		}
@@ -491,7 +503,6 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					Tastudio.CurrentTasMovie.Markers.Add(frame, message1);
-					Tastudio.RefreshDialog();
 				}
 			}
 		}
@@ -544,7 +555,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
-		[LuaMethod("ongreenzoneinvalidated", "Called whenever the greenzone is invalidated. Your callback can have 1 parameter, which will be the index of the last row before the invalidated ones.")]
+		[LuaMethod("ongreenzoneinvalidated", "Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history. Called regardless of whether any states were actually invalidated. Your callback can have 1 parameter, which will be the last frame before the invalidated ones. That is, the first of the modified frames.")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())

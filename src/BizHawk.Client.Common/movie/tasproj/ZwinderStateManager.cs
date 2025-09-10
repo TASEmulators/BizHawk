@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
@@ -340,17 +339,19 @@ namespace BizHawk.Client.Common
 			int index = StateCache.BinarySearch(frame + 1);
 			if (index < 0)
 				index = ~index;
+			if (index <= 1)
+			{
+				// index == 0 should not be possible. (It's the index of the state after the given frame.)
+				// index == 1 would mean we are considering removing the state on frame 0.
+				// We must always have a state on frame 0.
+				return true;
+			}
 			if (index == StateCache.Count)
 			{
 				// There is no future state, so there is no gap between states for us to measure.
 				// We're probably unreserving for a marker removal. Allow it to be removed, so we don't pollute _reserved.
 				return false;
 			}
-			if (index <= 1)
-				// index == 0 should not be possible. (It's the index of the state after the given frame.)
-				// index == 1 would mean we are considering removing the state on frame 0.
-				// We must always have a state on frame 0.
-				return true;
 
 			int nextState = StateCache[index];
 			int previousState = StateCache[index - 2]; // assume StateCache[index - 1] == frame

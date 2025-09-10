@@ -14,6 +14,7 @@
 #include "fatfs/ff.h"
 
 #include "BizPlatform/BizFile.h"
+#include "BizPlatform/BizUserData.h"
 #include "BizTypes.h"
 
 extern melonDS::NDS* CurrentNDS;
@@ -381,7 +382,6 @@ static const std::pair<const char*, const char*> RegionalNandTitlePaths[] =
 {
 	std::make_pair("0:/title/0003000f/484e4c%x/content/title.tmd", "0:/title/0003000f/484e4c%x/content/%08x.app"),
 	std::make_pair("0:/title/00030015/484e42%x/content/title.tmd", "0:/title/00030015/484e42%x/content/%08x.app"),
-	std::make_pair("0:/title/00030017/484e41%x/content/title.tmd", "0:/title/00030017/484e41%x/content/%08x.app"),
 };
 
 static const char* const PhotoNandDirs[] =
@@ -529,6 +529,41 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
 			}
 
+			// Special logic for the System Menu app
+			// Under most circumstances, this is just a standard regional nand title
+			// However, Unlaunch's exploit will make the title.tmd much larger than normal
+			{
+				snprintf(nandPath, sizeof(nandPath), "0:/title/00030017/484e41%x/content/title.tmd", regionIdChar);
+				std::vector<u8> tmdFile;
+				if (!mount.ExportFile(nandPath, tmdFile)
+					|| tmdFile.size() < sizeof(melonDS::DSi_TMD::TitleMetadata))
+				{
+					throw std::runtime_error("Failed to export NAND TMD");
+				}
+
+				// shrink tmd down to its normal size if this happens to be an unlaunch exploit tmd
+				// (this also happens to undo an unlaunch exploited NAND back to its original state)
+				tmdFile.resize(sizeof(melonDS::DSi_TMD::TitleMetadata));
+
+				auto* tmd = reinterpret_cast<melonDS::DSi_TMD::TitleMetadata*>(tmdFile.data());
+				u32 version = tmd->Contents.GetVersion();
+				u64 contentSize = (u64)tmd->Contents.ContentSize[0] << 56 | (u64)tmd->Contents.ContentSize[1] << 48
+					| (u64)tmd->Contents.ContentSize[2] << 40 | (u64)tmd->Contents.ContentSize[3] << 32 | (u64)tmd->Contents.ContentSize[4] << 24
+					| (u64)tmd->Contents.ContentSize[5] << 16 | (u64)tmd->Contents.ContentSize[6] << 8 | (u64)tmd->Contents.ContentSize[7] << 0;
+
+				nandFiles.push_back(std::make_pair(std::move(tmdFile), std::string(nandPath)));
+
+				snprintf(nandPath, sizeof(nandPath), "0:/title/00030017/484e41%x/content/%08x.app", regionIdChar, version);
+				std::vector<u8> appFile;
+				if (!mount.ExportFile(nandPath, appFile)
+					|| appFile.size() != contentSize)
+				{
+					throw std::runtime_error("Failed to export NAND app file");
+				}
+
+				nandFiles.push_back(std::make_pair(std::move(appFile), std::string(nandPath)));
+			}
+
 			// sys/cert.sys also needs to be transferred over, but its size varies depending on if the DSi ever connected to the DSi Shop
 			// sys/dev.kp doesn't need to be present, as it isn't present DSis that have never connected to the DSi Shop
 			// This does make the shop unusable (well, it already is in multiple different ways) and Title Management won't be available
@@ -541,7 +576,7 @@ static melonDS::DSi_NAND::NANDImage CreateNandImage(
 				}
 
 				// DSi connected to the DSi Shop, remove those latter certificates
-				if (nandFile.size() == 0xF40)
+				if (nandFile.size() == 0xF40 || nandFile.size() == 0xC40)
 				{
 					nandFile.resize(0xA00);
 				}
@@ -1321,6 +1356,15 @@ struct ConsoleCreationArgs
 	bool DSi;
 	bool ClearNAND;
 	bool SkipFW;
+	bool FullDSiBIOSBoot;
+	bool EnableDLDI;
+	bool EnableDSiSDCard;
+	bool DSiDSPHLE;
+
+	bool EnableJIT;
+	u32 MaxBlockSize;
+	bool LiteralOptimizations;
+	bool BranchOptimizations;
 
 	int BitDepth;
 	int Interpolation;
@@ -1345,10 +1389,28 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 {
 	try
 	{
+		// SD Cards are set to be 256MiB always
+		constexpr u32 SD_CARD_SIZE = 256 * 1024 * 1024;
+
+		auto bizUserData = std::make_unique<melonDS::Platform::BizUserData>();
+		memset(bizUserData.get(), 0, sizeof(melonDS::Platform::BizUserData));
+
 		std::unique_ptr<melonDS::NDSCart::CartCommon> ndsRom = nullptr;
 		if (args->NdsRomData)
 		{
-			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, std::nullopt);
+			melonDS::NDSCart::NDSCartArgs cartArgs{};
+			if (args->EnableDLDI)
+			{
+				cartArgs.SDCard = melonDS::FATStorageArgs
+				{
+					"dldi.bin",
+					SD_CARD_SIZE,
+					false,
+					std::nullopt,
+				};
+			}
+
+			ndsRom = melonDS::NDSCart::ParseROM(args->NdsRomData, args->NdsRomLength, bizUserData.get(), std::move(cartArgs));
 
 			if (!ndsRom)
 			{
@@ -1360,7 +1422,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		if (args->GbaRomData)
 		{
 			auto gbaSram = CreateBlankGbaSram(args->GbaRomData, args->GbaRomLength);
-			gbaRom = melonDS::GBACart::ParseROM(args->GbaRomData, args->GbaRomLength, gbaSram.first.get(), gbaSram.second);
+			gbaRom = melonDS::GBACart::ParseROM(args->GbaRomData, args->GbaRomLength, gbaSram.first.get(), gbaSram.second, bizUserData.get());
 
 			if (!gbaRom)
 			{
@@ -1371,6 +1433,18 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 		auto arm9Bios = CreateBiosImage<melonDS::ARM9BIOSImage>(args->Arm9BiosData, args->Arm9BiosLength, melonDS::bios_arm9_bin);
 		auto arm7Bios = CreateBiosImage<melonDS::ARM7BIOSImage>(args->Arm7BiosData, args->Arm7BiosLength, melonDS::bios_arm7_bin);
 		auto firmware = CreateFirmware(args->FirmwareData, args->FirmwareLength, args->DSi, args->FwSettings);
+
+		std::optional<melonDS::JITArgs> jitArgs = std::nullopt;
+		if (args->EnableJIT)
+		{
+			jitArgs = melonDS::JITArgs
+			{
+				args->MaxBlockSize,
+				args->LiteralOptimizations,
+				args->BranchOptimizations,
+				false,
+			};
+		}
 
 		auto bitDepth = static_cast<melonDS::AudioBitDepth>(args->BitDepth);
 		auto interpolation = static_cast<melonDS::AudioInterpolation>(args->Interpolation);
@@ -1418,23 +1492,30 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 			auto arm7iBios = CreateBiosImage<melonDS::DSiBIOSImage>(args->Arm7iBiosData, args->Arm7iBiosLength);
 
 			// upstream applies this patch to overwrite the reset vector for non-full boots
-			static const u8 dsiBiosPatch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
-			memcpy(arm9iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
-			memcpy(arm7iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
+			if (!args->FullDSiBIOSBoot)
+			{
+				static const u8 dsiBiosPatch[] = { 0xFE, 0xFF, 0xFF, 0xEA };
+				memcpy(arm9iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
+				memcpy(arm7iBios->data(), dsiBiosPatch, sizeof(dsiBiosPatch));
+			}
 
 			auto nandImage = CreateNandImage(
 				args->NandData, args->NandLength, arm7iBios,
 				args->FwSettings, args->ClearNAND,
 				args->DsiWareData, args->DsiWareLength, args->TmdData, args->TmdLength);
 
+			std::optional<melonDS::FATStorage> dsiSdCard = std::nullopt;
+			if (args->EnableDSiSDCard)
+			{
+				dsiSdCard = melonDS::FATStorage("dsisd.bin", SD_CARD_SIZE, false, std::nullopt);
+			}
+
 			melonDS::DSiArgs dsiArgs
 			{
-				std::move(ndsRom),
-				std::move(gbaRom),
 				std::move(arm9Bios),
 				std::move(arm7Bios),
 				std::move(firmware),
-				std::nullopt,
+				std::move(jitArgs),
 				bitDepth,
 				interpolation,
 				std::nullopt,
@@ -1443,30 +1524,32 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(arm9iBios),
 				std::move(arm7iBios),
 				std::move(nandImage),
-				std::nullopt,
-				false,
+				std::move(dsiSdCard),
+				args->FullDSiBIOSBoot,
+				args->DSiDSPHLE,
 			};
 
-			nds = std::make_unique<melonDS::DSi>(std::move(dsiArgs));
+			nds = std::make_unique<melonDS::DSi>(std::move(dsiArgs), bizUserData.get());
 		}
 		else
 		{
 			melonDS::NDSArgs ndsArgs
 			{
-				std::move(ndsRom),
-				std::move(gbaRom),
 				std::move(arm9Bios),
 				std::move(arm7Bios),
 				std::move(firmware),
-				std::nullopt,
+				std::move(jitArgs),
 				bitDepth,
 				interpolation,
 				std::nullopt,
 				std::move(renderer3d)
 			};
 
-			nds = std::make_unique<melonDS::NDS>(std::move(ndsArgs));
+			nds = std::make_unique<melonDS::NDS>(std::move(ndsArgs), bizUserData.get());
 		}
+
+		nds->SetNDSCart(std::move(ndsRom));
+		nds->SetGBACart(std::move(gbaRom));
 
 		if (args->ThreeDeeRenderer == 0)
 		{
@@ -1489,6 +1572,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 
 		ResetConsole(nds.get(), args->SkipFW, dsiWareId);
 
+		bizUserData.release();
 		CurrentNDS = nds.release();
 		return CurrentNDS;
 	}

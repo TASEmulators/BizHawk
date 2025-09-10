@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class FFmpegDownloaderForm
+	partial class DownloaderForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FFmpegDownloaderForm));
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnDownload = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
@@ -73,7 +72,7 @@
 			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(699, 95);
 			this.textBox1.TabIndex = 10;
-			this.textBox1.Text = resources.GetString("textBox1.Text");
+			this.textBox1.Text = "%description%";
 			// 
 			// label3
 			// 
@@ -112,6 +111,7 @@
 			this.txtLocation.ReadOnly = true;
 			this.txtLocation.Size = new System.Drawing.Size(613, 20);
 			this.txtLocation.TabIndex = 15;
+			this.txtLocation.Text = "%downloadTo%";
 			// 
 			// label1
 			// 
@@ -138,8 +138,9 @@
 			this.txtUrl.ReadOnly = true;
 			this.txtUrl.Size = new System.Drawing.Size(613, 20);
 			this.txtUrl.TabIndex = 18;
+			this.txtUrl.Text = "%downloadFrom%";
 			// 
-			// FFmpegDownloaderForm
+			// DownloaderForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -159,10 +160,10 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(300, 160);
-			this.Name = "FFmpegDownloaderForm";
+			this.Name = "DownloaderForm";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Download FFmpeg";
+			this.Text = "%windowTitle%";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

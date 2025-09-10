@@ -16,6 +16,8 @@ namespace BizHawk.Client.Common
 		private Dictionary<string, ZipArchiveEntry> _entriesByName;
 		private readonly Zstd _zstd;
 
+		public int Version => _ver.Build;
+
 		private ZipStateLoader()
 		{
 			_zstd = new();
@@ -58,9 +60,19 @@ namespace BizHawk.Client.Common
 		private void PopulateEntries()
 		{
 			_entriesByName = new Dictionary<string, ZipArchiveEntry>();
+			if (_zip.Entries.Count is 0) return;
+			var allFilePaths = _zip.Entries.Select(static entry => entry.FullName).ToArray();
+			string commonPrefix = new(allFilePaths.CommonPrefix());
+			if (commonPrefix is not ([ ] or [ .., '/' ] or [ .., '\\' ]))
+			{
+				// not sure what happened but it's not right
+				commonPrefix = string.Empty; // assume it's a tarbomb (no top-level dir)
+				// and try reading anyway
+			}
 			foreach (var z in _zip.Entries)
 			{
-				string name = z.FullName.SubstringBefore('.').Replace('\\', '/');
+				//TODO this would fail for `/BizState/a.b.c/file.txt`, though thankfully we control all the filenames and don't have any like that
+				var name = z.FullName.RemovePrefix(commonPrefix).SubstringBefore('.').Replace('\\', '/');
 
 				// .zst compression is optional, but loader needs to know if it was used
 				if (z.FullName.EndsWith(".zst")) name += ".zst";

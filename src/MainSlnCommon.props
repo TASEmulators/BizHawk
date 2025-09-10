@@ -11,6 +11,7 @@
 		<MeziantouPolyfill_ExcludedPolyfills>T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute|T:System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute|T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute|T:System.Diagnostics.CodeAnalysis.UnscopedRefAttribute|T:System.Index|T:System.Range|T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute|T:System.Runtime.CompilerServices.CollectionBuilderAttribute|T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute|T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute|T:System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute|T:System.Runtime.CompilerServices.IsExternalInit|T:System.Runtime.CompilerServices.ModuleInitializerAttribute|T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute|T:System.Runtime.CompilerServices.RequiredMemberAttribute|T:System.Runtime.CompilerServices.SkipLocalsInitAttribute|T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute</MeziantouPolyfill_ExcludedPolyfills> <!-- these collide with PolySharp -->
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
 		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
