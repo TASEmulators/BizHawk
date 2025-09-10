@@ -2,7 +2,7 @@
 [//]: # "These lines are comments, for letting you know what you should be writing. You can delete them or leave them in."
 [//]: # "Also, please remember to link related Issues! If a bug hasn't been reported, you may submit a fix without creating an Issue."
 
-[//]: # "A button which takes you to the automated builds, once they're been processed—fill in your GitHub username and the name of the branch"
+[//]: # "A button which takes you to the automated builds, once they're been processed—fill in your GitHub username and the name of the branch (double a hyphen to escape it)."
 [![dev build for branch | USERNAME:BRANCHNAME](https://img.shields.io/badge/dev_build_for_branch-USERNAME:BRANCHNAME-8250DF?logo=github&logoColor=333333&style=popout)](https://nightly.link/USERNAME/BizHawk/workflows/ci/BRANCHNAME?preview)
 
 (describe changeset here)
