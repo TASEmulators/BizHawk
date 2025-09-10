@@ -480,12 +480,6 @@ namespace BizHawk.Common.CollectionExtensions
 			return str.Substring(startIndex: offset, length: length);
 		}
 
-#if !NET8_0_OR_GREATER
-		/// <summary>shallow clone</summary>
-		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list) where TKey : notnull
-			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
-#endif
-
 		/// <summary>
 		/// if <paramref name="collection"/> contains <paramref name="item"/>, removes every copy;
 		/// otherwise appends one copy
