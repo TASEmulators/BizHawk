@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.DiscSystem
 			entries.Insert(0, new()
 			{
 				QData = sq,
-				AbsoluteTimestamp = 0 // meaningless
+				AbsoluteTimestamp = 0, // meaningless
 			});
 
 			//last recorded track number:
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.DiscSystem
 			entries.Insert(1, new()
 			{
 				QData = sq,
-				AbsoluteTimestamp = 0 // meaningless
+				AbsoluteTimestamp = 0, // meaningless
 			});
 
 			//leadout:
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.DiscSystem
 			entries.Insert(2, new()
 			{
 				QData = sq,
-				AbsoluteTimestamp = IN_LeadoutTimestamp
+				AbsoluteTimestamp = IN_LeadoutTimestamp,
 			});
 		}
 	}

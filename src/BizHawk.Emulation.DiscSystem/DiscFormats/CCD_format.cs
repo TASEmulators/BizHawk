@@ -581,7 +581,7 @@ namespace BizHawk.Emulation.DiscSystem
 				disc.Sessions[curSession].RawTOCEntries.Add(new()
 				{
 					QData = q,
-					AbsoluteTimestamp = MSF.ToInt(entry.PMin, entry.PSec, entry.PFrame)
+					AbsoluteTimestamp = MSF.ToInt(entry.PMin, entry.PSec, entry.PFrame),
 				});
 			}
 

@@ -968,7 +968,7 @@ namespace BizHawk.Emulation.DiscSystem
 						session.RawTOCEntries.Add(new()
 						{
 							QData = q,
-							AbsoluteTimestamp = trackIndex.LBA + 150
+							AbsoluteTimestamp = trackIndex.LBA + 150,
 						});
 					}
 				}

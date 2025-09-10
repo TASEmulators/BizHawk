@@ -84,7 +84,7 @@
 				disc.Session1.RawTOCEntries.Add(new()
 				{
 					QData = q,
-					AbsoluteTimestamp = (int)m_te.lba + 150
+					AbsoluteTimestamp = (int) m_te.lba + 150,
 				});
 			}
 
@@ -107,7 +107,7 @@
 			disc.Session1.RawTOCEntries.Add(new()
 			{
 				QData = qA0,
-				AbsoluteTimestamp = 0 // meaningless
+				AbsoluteTimestamp = 0, // meaningless
 			});
 
 			var qA1 = new SubchannelQ
@@ -128,7 +128,7 @@
 			disc.Session1.RawTOCEntries.Add(new()
 			{
 				QData = qA1,
-				AbsoluteTimestamp = 0 // meaningless
+				AbsoluteTimestamp = 0, // meaningless
 			});
 		}
 	}

@@ -504,7 +504,7 @@ namespace BizHawk.Emulation.DiscSystem
 						return new()
 						{
 							QData = q,
-							AbsoluteTimestamp = disc._Sectors.Count
+							AbsoluteTimestamp = disc._Sectors.Count,
 						};
 					}
 

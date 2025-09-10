@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			CurrentSession.RawTOCEntries.Add(new()
 			{
 				QData = toc_sq,
-				AbsoluteTimestamp = OUT_Disc._Sectors.Count
+				AbsoluteTimestamp = OUT_Disc._Sectors.Count,
 			});
 		}
 

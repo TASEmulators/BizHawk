@@ -728,7 +728,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return new()
 			{
 				QData = q,
-				AbsoluteTimestamp = MSF.ToInt(entry.PMin, entry.PSec, entry.PFrame)
+				AbsoluteTimestamp = MSF.ToInt(entry.PMin, entry.PSec, entry.PFrame),
 			};
 		}
 
