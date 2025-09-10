@@ -11,9 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ppsspp\ext\rcheevos\src\rhash\aes.h" />
-    <ClInclude Include="..\ppsspp\ext\rcheevos\src\rhash\md5.h" />
-    <ClInclude Include="..\ppsspp\ext\rcheevos\src\rhash\rc_hash_internal.h" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -152,7 +149,6 @@
     <ClCompile Include="..\ppsspp\Core\Core.cpp" />
     <ClCompile Include="..\ppsspp\Core\CoreTiming.cpp" />
     <ClCompile Include="..\ppsspp\Core\CwCheat.cpp" />
-    <ClCompile Include="..\ppsspp\Core\HLE\NetAdhocCommon.cpp" />
     <ClCompile Include="..\ppsspp\Core\LuaContext.cpp" />
     <ClCompile Include="..\ppsspp\Core\Screenshot.cpp" />
     <ClCompile Include="..\ppsspp\Core\Debugger\Breakpoints.cpp" />
@@ -435,12 +431,7 @@
     <ClCompile Include="..\ppsspp\ext\libkirk\ec.c" />
     <ClCompile Include="..\ppsspp\ext\libkirk\kirk_engine.c" />
     <ClCompile Include="..\ppsspp\ext\libkirk\SHA1.c" />
-    <ClCompile Include="..\ppsspp\ext\loongarch-disasm.cpp" />
     <ClCompile Include="..\ppsspp\ext\minimp3\minimp3.cpp" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rhash\hash_disc.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rhash\hash_encrypted.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rhash\hash_rom.c" />
-    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rhash\hash_zip.c" />
     <ClCompile Include="..\ppsspp\ext\riscv-disas.cpp" />
     <ClCompile Include="..\ppsspp\ext\sfmt19937\SFMT.c" />
     <ClCompile Include="..\ppsspp\ext\udis86\decode.c" />
@@ -450,7 +441,6 @@
     <ClCompile Include="..\ppsspp\ext\udis86\syn.c" />
     <ClCompile Include="..\ppsspp\ext\udis86\udis86.c" />
     <ClCompile Include="..\ppsspp\ext\xbrz\xbrz.cpp" />
-    <ClCompile Include="..\ppsspp\ext\zstd\lib\compress\zstd_preSplit.c" />
     <ClCompile Include="..\ppsspp\GPU\Common\DepalettizeShaderCommon.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Common\DepthBufferCommon.cpp" />
     <ClCompile Include="..\ppsspp\GPU\Common\DepthRaster.cpp" />
@@ -696,6 +686,7 @@
     <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\runtime_progress.c" />
     <ClCompile Include="..\ppsspp\ext\rcheevos\src\rcheevos\runtime.c" />
     <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_client_raintegration.c" />
+    <ClCompile Include="..\ppsspp\ext\rcheevos\src\rurl\url.c" />
     <ClCompile Include="..\ppsspp\ext\rcheevos\src\rc_libretro.c" />
     <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_user.c" />
     <ClCompile Include="..\ppsspp\ext\rcheevos\src\rapi\rc_api_common.c" />
@@ -771,7 +762,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>ClangCL</PlatformToolset>
-    <ClangClAdditionalOptions>-fwrapv</ClangClAdditionalOptions>
+	<ClangClAdditionalOptions>-fwrapv</ClangClAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -779,7 +770,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>ClangCL</PlatformToolset>
-    <ClangClAdditionalOptions>-fwrapv</ClangClAdditionalOptions>
+	<ClangClAdditionalOptions>-fwrapv</ClangClAdditionalOptions>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
