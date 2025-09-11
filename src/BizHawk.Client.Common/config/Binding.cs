@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+#if DEBUG
+using System.Diagnostics;
+using BizHawk.Common.CollectionExtensions;
+#endif
+
 namespace BizHawk.Client.Common
 {
 	public class HotkeyInfo
@@ -133,7 +138,7 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Show Cursor");
 			Bind("TAStudio", "Select Current Frame");
 			Bind("TAStudio", "Toggle Follow Cursor", "Shift+F");
-			Bind("TAStudio", "Toggle Auto-Restore", "Shift+R");
+			Bind("TAStudio", "Toggle Auto-Restore", "Alt+R");
 			Bind("TAStudio", "Seek To Green Arrow", "R");
 			Bind("TAStudio", "Toggle Turbo Seek", "Shift+S");
 			Bind("TAStudio", "Undo", "Ctrl+Z"); // TODO: these are getting not unique enough
@@ -200,6 +205,14 @@ namespace BizHawk.Client.Common
 
 			AllHotkeys = dict;
 			Groupings = dict.Values.Select(static info => info.TabGroup).Distinct().ToList();
+
+#if DEBUG
+			var bindings = dict.Values
+				.Where(static info => !info.DisplayName.StartsWith("RA ") && !string.IsNullOrEmpty(info.DefaultBinding))
+				.Select(static info => info.DefaultBinding)
+				.ToArray();
+			Debug.Assert(bindings.Distinct().CountIsExactly(bindings.Length), "Do not default bind multiple hotkeys to the same button combination.");
+#endif
 		}
 
 		public static void ResolveWithDefaults(IDictionary<string, string> dict)
