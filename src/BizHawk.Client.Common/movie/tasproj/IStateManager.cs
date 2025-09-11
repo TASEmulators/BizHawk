@@ -6,21 +6,13 @@ namespace BizHawk.Client.Common
 {
 	public interface IStateManager : IDisposable
 	{
-		/// <summary>
-		/// Retrieves the savestate for the given frame,
-		/// If this frame does not have a state currently, will return an empty array.false
-		/// Try not to use this as it is not fast.
-		/// </summary>
-		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
-		byte[] this[int frame] { get; }
-
-		ZwinderStateManagerSettings Settings { get; }
+		IStateManagerSettings Settings { get; }
 
 		/// <summary>
 		/// Requests that the current emulator state be captured
-		/// Unless force is true, the state may or may not be captured depending on the logic employed by "green-zone" management
+		/// The state may or may not be captured depending on the logic employed by "green-zone" management
 		/// </summary>
-		void Capture(int frame, IStatable source, bool force = false);
+		void Capture(int frame, IStatable source);
 
 		/// <summary>
 		/// Tell the state manager we no longer wish to reserve the state for the given frame.
@@ -52,13 +44,19 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Updates the internal state saving logic settings
+		/// May create a new state manager
 		/// </summary>
-		void UpdateSettings(ZwinderStateManagerSettings settings, bool keepOldStates = false);
+		IStateManager UpdateSettings(IStateManagerSettings settings, bool keepOldStates = false);
 
 		/// <summary>
 		/// Serializes the current state of the instance for persisting to disk
 		/// </summary>
 		void SaveStateHistory(BinaryWriter bw);
+
+		/// <summary>
+		/// Deserializes the state of the instance that was persisted to disk
+		/// </summary>
+		void LoadStateHistory(BinaryReader br);
 
 		/// <summary>
 		/// Enables the instance to be used. An instance of <see cref="IStateManager"/> should not

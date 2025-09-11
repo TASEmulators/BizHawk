@@ -51,7 +51,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 		public FakeMovieSession(IEmulator emulator)
 		{
-			Settings = new MovieConfig();
+			Settings = new MovieConfig()
+			{
+				DefaultTasStateManagerSettings = new PagedStateManager.PagedSettings() { TotalMemoryLimitMB = 1 },
+			};
 			StickySource = new Bk2Controller(emulator.ControllerDefinition);
 			MovieController = new Bk2Controller(emulator.ControllerDefinition);
 		}
