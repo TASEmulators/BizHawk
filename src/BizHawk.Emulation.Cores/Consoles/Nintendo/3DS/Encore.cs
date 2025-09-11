@@ -9,8 +9,6 @@ using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
 	[PortedCore(
@@ -22,6 +20,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 	[ServiceNotApplicable(typeof(IRegionable))]
 	public partial class Encore : IRomInfo
 	{
+#pragma warning disable MA0058 // shouldn't end with "Exception" because it's not exceptional
+		public sealed class CIAInstallThrowable(string message) : Exception(message);
+#pragma warning restore MA0058
+
 		private static DynamicLibraryImportResolver _resolver;
 		private static LibEncore _core;
 
@@ -50,6 +52,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		public bool TouchScreenRotated { get; private set; }
 		public bool TouchScreenEnabled { get; private set; }
 
+		/// <exception cref="ArgumentException">attempting to load more than one rom (a rom + one or more CIAs is an acceptable combo)</exception>
+		/// <exception cref="CIAInstallThrowable">not exceptional; thrown to surface the result of installing a CIA</exception>
+		/// <exception cref="Exception">unmanaged call failed</exception>
+		/// <exception cref="InvalidOperationException">attempting to load rom from within an archive</exception>
+		/// <exception cref="PlatformNotSupportedException">no OpenGL 4.3 support</exception>
 		[CoreConstructor(VSystemID.Raw.N3DS)]
 		public Encore(CoreLoadParameters<EncoreSettings, EncoreSyncSettings> lp)
 		{
@@ -100,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_supportsOpenGL43 = _openGLProvider.SupportsGLVersion(4, 3);
 			if (!_supportsOpenGL43/* && _syncSettings.GraphicsApi == EncoreSyncSettings.EGraphicsApi.OpenGL*/)
 			{
-				throw new("OpenGL 4.3 is required, but it is not supported on this machine");
+				throw new PlatformNotSupportedException("OpenGL 4.3 is required, but it is not supported on this machine");
 				//lp.Comm.Notify("OpenGL 4.3 is not supported on this machine, falling back to software renderer", null);
 			}
 
@@ -144,16 +151,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 					// This is indicating a DLC CIA was installed
 					if (outMsg.ContainsOrdinal("not executable"))
 					{
-						throw new("The DLC CIA was successfully installed.");
+						throw new CIAInstallThrowable("The DLC CIA was successfully installed.");
 					}
 
 					// This is indicating an "update" CIA was installed
 					if (outMsg.ContainsOrdinal("not bootable"))
 					{
-						throw new("The update CIA was successfully installed.");
+						throw new CIAInstallThrowable("The update CIA was successfully installed.");
 					}
 
-					throw new(outMsg);
+					throw new CIAInstallThrowable(outMsg);
 				}
 			}
 
@@ -167,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				if (".cia".EqualsIgnoreCase(lp.Roms[i].Extension))
 				{
 					Dispose();
-					throw new("ROMs after the first ROM should be CIAs");
+					throw new ArgumentException(paramName: nameof(lp), message: "ROMs after the first ROM should be CIAs");
 				}
 
 				_core.Encore_InstallCIA(_context, lp.Roms[i].RomPath, dummyBuffer, dummyBuffer.Length);
@@ -177,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			if (!_core.Encore_LoadROM(_context, romPath, errorMessage, errorMessage.Length))
 			{
 				Dispose();
-				throw new($"{Encoding.UTF8.GetString(errorMessage).TrimEnd('\0')}");
+				throw new Exception($"{Encoding.UTF8.GetString(errorMessage).TrimEnd('\0')}");
 			}
 
 			InitMemoryDomains();

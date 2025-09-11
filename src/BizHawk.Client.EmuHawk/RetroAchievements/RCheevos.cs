@@ -11,8 +11,6 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos : RetroAchievements
@@ -219,6 +217,7 @@ namespace BizHawk.Client.EmuHawk
 			HardcoreMode = false;
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public RCheevos(
 			MainForm mainForm,
 			InputManager inputManager,
@@ -238,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			_runtime = _lib.rc_runtime_alloc();
 			if (_runtime == IntPtr.Zero)
 			{
-				throw new("rc_runtime_alloc returned NULL!");
+				throw new Exception("rc_runtime_alloc returned NULL!");
 			}
 
 			_eventcb = EventHandlerCallback;
@@ -344,6 +343,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool ValidateCallback(uint address)
 			=> address < _readMap.Length && _readMap[address] != 0xFF;
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
+		/// <exception cref="InvalidOperationException">core's <see cref="IMemoryDomains"/> totals to more than 255 'banks'</exception>
 		public override void Restart()
 		{
 			if (_firstRestart)
@@ -373,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 			_runtime = _lib.rc_runtime_alloc();
 			if (_runtime == IntPtr.Zero)
 			{
-				throw new("rc_runtime_alloc returned NULL!");
+				throw new Exception("rc_runtime_alloc returned NULL!");
 			}
 
 			// get console id

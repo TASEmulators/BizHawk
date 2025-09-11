@@ -10,8 +10,6 @@ using BizHawk.Common.NumberExtensions;
 
 using static SDL2.SDL;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Bizware.Input
 {
 	public sealed class SDL2InputAdapter : OSTailoredKeyMouseInputAdapter
@@ -93,6 +91,8 @@ namespace BizHawk.Bizware.Input
 			_isInit = false;
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
+		/// <exception cref="InvalidOperationException">called multiple times</exception>
 		public override void FirstInitAll(IntPtr mainFormHandle)
 		{
 			if (_isInit) throw new InvalidOperationException($"Cannot reinit with {nameof(FirstInitAll)}");
@@ -109,7 +109,7 @@ namespace BizHawk.Bizware.Input
 			{
 				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0)
 				{
-					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
+					throw new Exception($"SDL failed to init, SDL error: {SDL_GetError()}");
 				}
 			}
 			finally
@@ -131,6 +131,7 @@ namespace BizHawk.Bizware.Input
 				: [ ];
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public override void PreprocessHostGamepads()
 		{
 			if (!_sdlInitCalled)
@@ -138,7 +139,7 @@ namespace BizHawk.Bizware.Input
 				if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0)
 				{
 					SDL_QuitSubSystem(SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
-					throw new($"SDL failed to init, SDL error: {SDL_GetError()}");
+					throw new Exception($"SDL failed to init, SDL error: {SDL_GetError()}");
 				}
 
 				_sdlInitCalled = true;

@@ -7,8 +7,6 @@ using BizHawk.Common.NumberExtensions;
 
 using static SDL2.SDL;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Bizware.Audio
 {
 	internal sealed class SDL2WavStream : Stream, ISpanStream
@@ -47,12 +45,13 @@ namespace BizHawk.Bizware.Audio
 			out IntPtr audio_buf,
 			out uint audio_len);
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SDL2WavStream(Stream wavFile)
 		{
 			using var rwOpWrapper = new SDLRwOpsStreamWrapper(wavFile);
 			if (SDL_LoadWAV_RW(rwOpWrapper.Rw, 0, out var spec, out var wav, out var len) == IntPtr.Zero)
 			{
-				throw new($"Could not load WAV file! SDL error: {SDL_GetError()}");
+				throw new Exception($"Could not load WAV file! SDL error: {SDL_GetError()}");
 			}
 
 			Frequency = spec.freq;
@@ -146,12 +145,13 @@ namespace BizHawk.Bizware.Audio
 			private readonly SDLRWopsWriteCallback _writeCallback;
 			private readonly SDLRWopsCloseCallback _closeCallback;
 
+			/// <exception cref="Exception">unmanaged call failed</exception>
 			public unsafe SDLRwOpsStreamWrapper(Stream s)
 			{
 				Rw = SDL_AllocRW();
 				if (Rw == IntPtr.Zero)
 				{
-					throw new($"Could not allocate SDL_RWops! SDL error: {SDL_GetError()}");
+					throw new Exception($"Could not allocate SDL_RWops! SDL error: {SDL_GetError()}");
 				}
 
 				_s = s;

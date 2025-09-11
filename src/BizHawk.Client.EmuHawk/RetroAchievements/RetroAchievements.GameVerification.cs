@@ -16,8 +16,6 @@ using BizHawk.Emulation.DiscSystem;
 
 using CE = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Client.EmuHawk
 {
 	public abstract partial class RetroAchievements
@@ -29,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		private uint HashDisc(string path, ConsoleID consoleID)
 		{
 			// this shouldn't throw in practice, this is only called when loading was successful!
-			using var disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
+			using var disc = DiscExtensions.CreateAnyType(path, static errMsg => throw new Exception(errMsg));
 			var dsr = new DiscSectorReader(disc)
 			{
 				Policy =

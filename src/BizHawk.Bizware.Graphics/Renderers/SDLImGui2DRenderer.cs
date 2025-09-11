@@ -5,8 +5,6 @@ using ImGuiNET;
 
 using static SDL2.SDL;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
@@ -29,13 +27,14 @@ namespace BizHawk.Bizware.Graphics
 		{
 			public readonly IntPtr Surface;
 
+			/// <exception cref="Exception">unmanaged call failed</exception>
 			public SDLSurface(BitmapData bmpData)
 			{
 				Surface = SDL_CreateRGBSurfaceWithFormatFrom(
 					bmpData.Scan0, bmpData.Width, bmpData.Height, 8, bmpData.Stride, SDL_PIXELFORMAT_ABGR8888);
 				if (Surface == IntPtr.Zero)
 				{
-					throw new($"Failed to create SDL surface, SDL error: {SDL_GetError()}");
+					throw new Exception($"Failed to create SDL surface, SDL error: {SDL_GetError()}");
 				}
 			}
 
@@ -47,12 +46,13 @@ namespace BizHawk.Bizware.Graphics
 		{
 			public readonly IntPtr Renderer;
 
+			/// <exception cref="Exception">unmanaged call failed</exception>
 			public SDLSoftwareRenderer(SDLSurface surface)
 			{
 				Renderer = SDL_CreateSoftwareRenderer(surface.Surface);
 				if (Renderer == IntPtr.Zero)
 				{
-					throw new($"Failed to create SDL software renderer, SDL error: {SDL_GetError()}");
+					throw new Exception($"Failed to create SDL software renderer, SDL error: {SDL_GetError()}");
 				}
 			}
 
@@ -98,6 +98,8 @@ namespace BizHawk.Bizware.Graphics
 			);
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
+		/// <exception cref="InvalidOperationException">encountered unknown command; or encountered <see cref="ImGui2DRenderer.DrawCallbackId.DrawString"/> out of order</exception>
 		protected override void RenderInternal(int width, int height)
 		{
 			var rt = (GDIPlusRenderTarget)_pass2RenderTarget;
@@ -143,7 +145,7 @@ namespace BizHawk.Bizware.Graphics
 									var sdlTex = SDL_CreateTextureFromSurface(sdlRenderer, texSurf.Surface);
 									if (sdlTex == IntPtr.Zero)
 									{
-										throw new($"Failed to create SDL texture from surface, SDL error: {SDL_GetError()}");
+										throw new Exception($"Failed to create SDL texture from surface, SDL error: {SDL_GetError()}");
 									}
 
 									try
@@ -203,7 +205,7 @@ namespace BizHawk.Bizware.Graphics
 									var sdlTex = SDL_CreateTextureFromSurface(sdlRenderer, texSurf.Surface);
 									if (sdlTex == IntPtr.Zero)
 									{
-										throw new($"Failed to create SDL texture from surface, SDL error: {SDL_GetError()}");
+										throw new Exception($"Failed to create SDL texture from surface, SDL error: {SDL_GetError()}");
 									}
 
 									try
