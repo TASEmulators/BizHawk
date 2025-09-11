@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		{
 			if (_saveRamSize == 0)
 			{
-				return null;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			byte[] ret = new byte[_saveRamSize];
@@ -22,7 +22,9 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 
 		public new void StoreSaveRam(byte[] data)
 		{
-			if (_saveRamSize > 0)
+			if (_saveRamSize == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else
 			{
 				if (data.Length != _saveRamSize)
 				{

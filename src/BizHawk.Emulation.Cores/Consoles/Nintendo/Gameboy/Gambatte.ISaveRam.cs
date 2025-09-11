@@ -18,12 +18,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return ret;
 			}
 
-			return null;
+			throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
 			var expected = LibGambatte.gambatte_getsavedatalength(GambatteState);
+			if (expected == 0) throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			if (data.Length != expected) throw new ArgumentException(message: "Size of saveram data does not match expected!", paramName: nameof(data));
 
 			LibGambatte.gambatte_loadsavedata(GambatteState, data);

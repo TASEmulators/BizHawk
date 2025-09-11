@@ -163,6 +163,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			InitMemoryDomains();
 			InitMemoryCallbacks();
+			if (LibSameboy.sameboy_sramlen(SameboyState) == 0)
+			{
+				_serviceProvider.Unregister<ISaveRam>();
+			}
 
 			_inputcb = InputCallback;
 			_rumblecb = RumbleCallback;

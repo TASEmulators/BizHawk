@@ -23,6 +23,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				mms.Add(new MemoryDomainIntPtr("Save RAM", MemoryDomain.Endian.Little, p, s, true, 2));
 			}
+			else
+			{
+				_serviceProvider.Unregister<ISaveRam>();
+			}
 
 			LibLynx.GetReadOnlyCartPtrs(Core, out var s0, out var p0, out var s1, out var p1);
 			if (s0 > 0 && p0 != IntPtr.Zero)

@@ -6,20 +6,26 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	{
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
-			return (byte[]) SaveRAM?.Clone();
+			if (SaveRAM == null)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else
+				return (byte[]) SaveRAM.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (SaveRAM != null)
+			if (SaveRAM == null)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else
 			{
+				if (data.Length != SaveRAM.Length) throw new InvalidOperationException("Incorrect sram size.");
 				Array.Copy(data, SaveRAM, data.Length);
 			}
 		}
 
 		public bool SaveRamModified { get; private set; }
 
-		public byte[] SaveRAM;
+		private byte[] SaveRAM;
 		private byte SaveRamBank;
 	}
 }

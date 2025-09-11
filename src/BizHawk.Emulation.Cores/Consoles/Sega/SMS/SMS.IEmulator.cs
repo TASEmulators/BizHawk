@@ -4,7 +4,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS : IEmulator
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		private readonly BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		// not savestated variables
 		private int s_L, s_R;

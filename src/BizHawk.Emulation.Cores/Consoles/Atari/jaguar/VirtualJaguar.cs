@@ -113,6 +113,8 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 					}
 				}
 			}
+			if (_saveRamSize == 0)
+				_serviceProvider.Unregister<ISaveRam>();
 
 			_core.SetCdCallbacks(null, null);
 

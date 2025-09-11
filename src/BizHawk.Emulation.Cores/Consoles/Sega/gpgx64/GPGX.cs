@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			CDCallback = CDCallbackProc;
 			CDReadCallback = CDRead;
 
-			ServiceProvider = new BasicServiceProvider(this);
+			_serviceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
 
 			// Determining system ID from the rom. If no rom provided, assume Genesis (Sega CD)
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				};
 			}
 			PCRegisterName = SystemId is VSystemID.Raw.GEN ? "M68K PC" : "Z80 pc";
-			if (SystemId is not VSystemID.Raw.GEN) ((BasicServiceProvider) ServiceProvider).Unregister<IDisassemblable>();
+			if (SystemId is not VSystemID.Raw.GEN) _serviceProvider.Unregister<IDisassemblable>();
 
 			// three or six button?
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
@@ -141,6 +141,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				UpdateVideo();
 
 				SetMemoryDomains();
+				var size = 0;
+				var area = Core.gpgx_get_sram(ref size);
+				if (size == 0 || area == IntPtr.Zero)
+				{
+					_serviceProvider.Unregister<ISaveRam>();
+				}
 
 				Core.gpgx_set_input_callback(_inputCallback);
 
@@ -152,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (SystemId == VSystemID.Raw.GEN)
 				{
 					_tracer = new GPGXTraceBuffer(this, _memoryDomains, this);
-					((BasicServiceProvider)ServiceProvider).Register(_tracer);
+					_serviceProvider.Register(_tracer);
 				}
 			}
 
