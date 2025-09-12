@@ -58,6 +58,13 @@ namespace BizHawk.Emulation.DiscSystem
 			public bool IsCDI;
 
 			/// <summary>
+			/// Indicates audio is byteswapped
+			/// CHDs normally byteswap audio (for whatever reason)
+			/// Except for CHDs made with "old" GDROM metadata
+			/// </summary>
+			public bool ByteSwapAudio;
+
+			/// <summary>
 			/// Track type
 			/// </summary>
 			public LibChd.chd_track_type TrackType;
@@ -84,10 +91,17 @@ namespace BizHawk.Emulation.DiscSystem
 			public uint Frames;
 
 			/// <summary>
-			/// Number of "padding" frames in this track
+			/// Number of "extra" frames in this track
 			/// This is done in order to maintain a multiple of 4 frames for each track
-			/// These padding frames aren't representative of the actual disc anyways
+			/// These extra frames aren't representative of the actual disc anyways
 			/// They're only useful to know the offset of the next track within the chd
+			/// </summary>
+			public uint ExtraFrames;
+
+			/// <summary>
+			/// Number of "padding" frames in this track
+			/// This is actually just extra pregap frames for the next track
+			/// These pregap frames aren't within the CHD and must be generated
 			/// </summary>
 			public uint Padding;
 
@@ -195,7 +209,7 @@ namespace BizHawk.Emulation.DiscSystem
 			};
 		}
 
-		private static readonly string[] _metadataTags = { "TRACK", "TYPE", "SUBTYPE", "FRAMES", "PREGAP", "PGTYPE", "PGSUB", "POSTGAP" };
+		private static readonly string[] _metadataTags = [ "TRACK", "TYPE", "SUBTYPE", "FRAMES", "PREGAP", "PGTYPE", "PGSUB", "POSTGAP" ];
 
 		private static CHDCdMetadata ParseMetadata2(string metadata)
 		{
@@ -239,9 +253,11 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			ret.IsCDI = strs[1] == "CDI/2352";
+			ret.ByteSwapAudio = true;
 			ret.SectorSize = GetSectorSize(ret.TrackType);
 			ret.SubSize = GetSubSize(ret.SubType);
-			ret.Padding = (0 - ret.Frames) & 3;
+			ret.ExtraFrames = (0 - ret.Frames) & 3;
+			ret.Padding = 0;
 			return ret;
 		}
 
@@ -278,9 +294,62 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			ret.IsCDI = strs[1] == "CDI/2352";
+			ret.ByteSwapAudio = true;
 			ret.SectorSize = GetSectorSize(ret.TrackType);
 			ret.SubSize = GetSubSize(ret.SubType);
-			ret.Padding = (0 - ret.Frames) & 3;
+			ret.ExtraFrames = (0 - ret.Frames) & 3;
+			return ret;
+		}
+
+		private static readonly string[] _gdMetadataTags = [ "TRACK", "TYPE", "SUBTYPE", "FRAMES", "PAD", "PREGAP", "PGTYPE", "PGSUB", "POSTGAP" ];
+
+		private static CHDCdMetadata ParseMetadataGd(string metadata, bool oldGdMetadata)
+		{
+			var strs = metadata.Split(' ');
+			if (strs.Length != 9)
+			{
+				throw new CHDParseException("Malformed CHD format: Incorrect number of metadata tags");
+			}
+
+			for (var i = 0; i < 9; i++)
+			{
+				var spl = strs[i].Split(':');
+				if (spl.Length != 2 || _gdMetadataTags[i] != spl[0])
+				{
+					throw new CHDParseException("Malformed CHD format: Invalid metadata tag");
+				}
+
+				strs[i] = spl[1];
+			}
+
+			var ret = new CHDCdMetadata();
+			try
+			{
+				ret.Track = uint.Parse(strs[0]);
+				ret.TrackType = GetTrackType(strs[1]);
+				ret.SubType = GetSubType(strs[2]);
+				ret.Frames = uint.Parse(strs[3]);
+				ret.Padding = uint.Parse(strs[4]);
+				ret.Pregap = uint.Parse(strs[5]);
+				(ret.PregapTrackType, ret.PregapInChd) = GetTrackTypeForPregap(strs[6]);
+				ret.PregapSubType = GetSubType(strs[7]);
+				ret.PostGap = uint.Parse(strs[8]);
+			}
+			catch (Exception ex)
+			{
+				throw ex as CHDParseException ?? new("Malformed CHD format: Metadata parsing threw an exception", ex);
+			}
+
+			if (ret.PregapInChd && ret.Pregap == 0)
+			{
+				throw new CHDParseException("Malformed CHD format: CHD track type indicates it contained pregap data, but no pregap data is present");
+			}
+
+			ret.IsCDI = strs[1] == "CDI/2352";
+			ret.ByteSwapAudio = !oldGdMetadata;
+			ret.SectorSize = GetSectorSize(ret.TrackType);
+			ret.SubSize = GetSubSize(ret.SubType);
+			ret.ExtraFrames = (0 - ret.Frames) & 3;
 			return ret;
 		}
 
@@ -304,6 +373,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var cdMetadata = new CHDCdMetadata
 				{
 					Track = 1U + (uint) i,
+					ByteSwapAudio = true,
 				};
 				if (bigEndian)
 				{
@@ -312,7 +382,7 @@ namespace BizHawk.Emulation.DiscSystem
 					cdMetadata.SectorSize = BinaryPrimitives.ReadUInt32BigEndian(track[..8]);
 					cdMetadata.SubSize = BinaryPrimitives.ReadUInt32BigEndian(track[..12]);
 					cdMetadata.Frames = BinaryPrimitives.ReadUInt32BigEndian(track[..16]);
-					cdMetadata.Padding = BinaryPrimitives.ReadUInt32BigEndian(track[..20]);
+					cdMetadata.ExtraFrames = BinaryPrimitives.ReadUInt32BigEndian(track[..20]);
 				}
 				else
 				{
@@ -321,7 +391,7 @@ namespace BizHawk.Emulation.DiscSystem
 					cdMetadata.SectorSize = BinaryPrimitives.ReadUInt32LittleEndian(track[..8]);
 					cdMetadata.SubSize = BinaryPrimitives.ReadUInt32LittleEndian(track[..12]);
 					cdMetadata.Frames = BinaryPrimitives.ReadUInt32LittleEndian(track[..16]);
-					cdMetadata.Padding = BinaryPrimitives.ReadUInt32LittleEndian(track[..20]);
+					cdMetadata.ExtraFrames = BinaryPrimitives.ReadUInt32LittleEndian(track[..20]);
 				}
 
 				if (cdMetadata.SectorSize != GetSectorSize(cdMetadata.TrackType))
@@ -334,14 +404,35 @@ namespace BizHawk.Emulation.DiscSystem
 					throw new CHDParseException("Malformed CHD format: Invalid sub size");
 				}
 
-				var expectedPadding = (0 - cdMetadata.Frames) & 3;
-				if (cdMetadata.Padding != expectedPadding)
+				var expectedExtraFrames = (0 - cdMetadata.Frames) & 3;
+				if (cdMetadata.ExtraFrames != expectedExtraFrames)
 				{
-					throw new CHDParseException("Malformed CHD format: Invalid padding value");
+					throw new CHDParseException("Malformed CHD format: Invalid extra frames value");
 				}
 
 				cdMetadatas.Add(cdMetadata);
 			}
+		}
+
+		private static CHDCdMetadata SynthesizeDvdMetadata(uint sectorCount)
+		{
+			return new()
+			{
+				Track = 1,
+				IsCDI = false,
+				TrackType = LibChd.chd_track_type.CD_TRACK_MODE1,
+				SubType = LibChd.chd_sub_type.CD_SUB_NONE,
+				SectorSize = 2048,
+				SubSize = 0,
+				Frames = sectorCount,
+				ExtraFrames = 0, // DVDs have no extra frames
+				Padding = 0,
+				Pregap = 0,
+				PregapTrackType = LibChd.chd_track_type.CD_TRACK_MODE1,
+				PregapSubType = LibChd.chd_sub_type.CD_SUB_NONE,
+				PregapInChd = false,
+				PostGap = 0,
+			};
 		}
 
 		/// <exception cref="CHDParseException">malformed chd format</exception>
@@ -383,41 +474,92 @@ namespace BizHawk.Emulation.DiscSystem
 					Marshal.FreeCoTaskMem(ptr);
 				}
 
-				if (chdf.Header.hunkbytes == 0 || chdf.Header.hunkbytes % LibChd.CD_FRAME_SIZE != 0)
-				{
-					throw new CHDParseException("Malformed CHD format: Invalid hunk size");
-				}
-
-				// chd-rs puts the correct value here for older versions of chds which don't have this
-				// for newer chds, it is left as is, which might be invalid
-				if (chdf.Header.unitbytes != LibChd.CD_FRAME_SIZE)
-				{
-					throw new CHDParseException("Malformed CHD format: Invalid unit size");
-				}
-
 				var metadataOutput = new byte[256];
-				for (uint i = 0; i < 99; i++)
+				var isDvd = false;
 				{
-					var err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_TRACK_METADATA2_TAG,
-						i, metadataOutput, (uint)metadataOutput.Length, out var resultLen, out _, out _);
+					var err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.DVD_METADATA_TAG,
+						0, metadataOutput, (uint)metadataOutput.Length, out _, out _, out _);
 					if (err == LibChd.chd_error.CHDERR_NONE)
 					{
-						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen).TrimEnd('\0');
-						chdf.CdMetadatas.Add(ParseMetadata2(metadata));
-						continue;
+						// DVD metadata is blank, it being present at all is just to indicate the CHD has a DVD in it
+						isDvd = true;
 					}
+				}
 
-					err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_TRACK_METADATA_TAG,
-						i, metadataOutput, (uint)metadataOutput.Length, out resultLen, out _, out _);
-					if (err == LibChd.chd_error.CHDERR_NONE)
+				if (isDvd)
+				{
+					// DVD hunks are always 1 sector big (never multiple sectors)
+					if (chdf.Header.hunkbytes != LibChd.DVD_FRAME_SIZE)
 					{
-						var metadata = Encoding.ASCII.GetString(metadataOutput, 0,  (int)resultLen).TrimEnd('\0');
-						chdf.CdMetadatas.Add(ParseMetadata(metadata));
-						continue;
+						throw new CHDParseException("Malformed CHD format: Invalid hunk size");
 					}
 
-					// if no more metadata, we're out of tracks
-					break;
+					// chd-rs puts the correct value here for older versions of chds which don't have this
+					// for newer chds, it is left as is, which might be invalid
+					if (chdf.Header.unitbytes != LibChd.DVD_FRAME_SIZE)
+					{
+						throw new CHDParseException("Malformed CHD format: Invalid unit size");
+					}
+
+					// DVDs don't have any particular metadata, as the format is basic enough to not require such
+					// We'll synthesize metadata for later parsing
+					chdf.CdMetadatas.Add(SynthesizeDvdMetadata(chdf.Header.hunkcount));
+				}
+				else
+				{
+					if (chdf.Header.hunkbytes == 0 || chdf.Header.hunkbytes % LibChd.CD_FRAME_SIZE != 0)
+					{
+						throw new CHDParseException("Malformed CHD format: Invalid hunk size");
+					}
+
+					// chd-rs puts the correct value here for older versions of chds which don't have this
+					// for newer chds, it is left as is, which might be invalid
+					if (chdf.Header.unitbytes != LibChd.CD_FRAME_SIZE)
+					{
+						throw new CHDParseException("Malformed CHD format: Invalid unit size");
+					}
+
+					for (uint i = 0; i < 99; i++)
+					{
+						var err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_TRACK_METADATA2_TAG,
+							i, metadataOutput, (uint)metadataOutput.Length, out var resultLen, out _, out _);
+						if (err == LibChd.chd_error.CHDERR_NONE)
+						{
+							var metadata = Encoding.ASCII.GetString(metadataOutput, 0, (int)resultLen).TrimEnd('\0');
+							chdf.CdMetadatas.Add(ParseMetadata2(metadata));
+							continue;
+						}
+
+						err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.CDROM_TRACK_METADATA_TAG,
+							i, metadataOutput, (uint)metadataOutput.Length, out resultLen, out _, out _);
+						if (err == LibChd.chd_error.CHDERR_NONE)
+						{
+							var metadata = Encoding.ASCII.GetString(metadataOutput, 0, (int)resultLen).TrimEnd('\0');
+							chdf.CdMetadatas.Add(ParseMetadata(metadata));
+							continue;
+						}
+
+						err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.GDROM_OLD_METADATA_TAG,
+							i, metadataOutput, (uint)metadataOutput.Length, out resultLen, out _, out _);
+						if (err == LibChd.chd_error.CHDERR_NONE)
+						{
+							var metadata = Encoding.ASCII.GetString(metadataOutput, 0, (int)resultLen).TrimEnd('\0');
+							chdf.CdMetadatas.Add(ParseMetadataGd(metadata, oldGdMetadata: true));
+							continue;
+						}
+
+						err = LibChd.chd_get_metadata(chdf.ChdFile, LibChd.GDROM_TRACK_METADATA_TAG,
+							i, metadataOutput, (uint)metadataOutput.Length, out resultLen, out _, out _);
+						if (err == LibChd.chd_error.CHDERR_NONE)
+						{
+							var metadata = Encoding.ASCII.GetString(metadataOutput, 0, (int)resultLen).TrimEnd('\0');
+							chdf.CdMetadatas.Add(ParseMetadataGd(metadata, oldGdMetadata: false));
+							continue;
+						}
+
+						// if no more metadata, we're out of tracks
+						break;
+					}
 				}
 
 				// validate track numbers
@@ -458,11 +600,11 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new CHDParseException("Malformed CHD format: Pregap in chd is larger than total sectors in chd track");
 					}
 
-					chdExpectedNumSectors += cdMetadata.Frames + cdMetadata.Padding;
+					chdExpectedNumSectors += cdMetadata.Frames + cdMetadata.ExtraFrames;
 				}
 
 				// pad expected sectors up to the next hunk
-				var sectorsPerHunk = chdf.Header.hunkbytes / LibChd.CD_FRAME_SIZE;
+				var sectorsPerHunk = chdf.Header.hunkbytes / chdf.Header.unitbytes;
 				chdExpectedNumSectors = (chdExpectedNumSectors + sectorsPerHunk - 1) / sectorsPerHunk * sectorsPerHunk;
 
 				var chdActualNumSectors = chdf.Header.hunkcount * sectorsPerHunk;
@@ -610,7 +752,7 @@ namespace BizHawk.Emulation.DiscSystem
 						};
 					}
 
-					static SS_Base CreateSynth(LibChd.chd_track_type trackType)
+					static SS_Base CreateSynth(LibChd.chd_track_type trackType, bool byteSwapAudio)
 					{
 						return trackType switch
 						{
@@ -621,7 +763,8 @@ namespace BizHawk.Emulation.DiscSystem
 							LibChd.chd_track_type.CD_TRACK_MODE2_FORM2 => new SS_Mode2_Form2_2324(),
 							LibChd.chd_track_type.CD_TRACK_MODE2_FORM_MIX => new SS_Mode2_2336(),
 							LibChd.chd_track_type.CD_TRACK_MODE2_RAW => new SS_2352(),
-							LibChd.chd_track_type.CD_TRACK_AUDIO => new SS_CHD_Audio(),
+							LibChd.chd_track_type.CD_TRACK_AUDIO when byteSwapAudio => new SS_CHD_Audio(),
+							LibChd.chd_track_type.CD_TRACK_AUDIO => new SS_2352(),
 							_ => throw new InvalidOperationException(),
 						};
 					}
@@ -653,13 +796,16 @@ namespace BizHawk.Emulation.DiscSystem
 						pregapLength = 150;
 					}
 
+					var prevTrackPadding = cdMetadata.Track == 1 ? 0 : chdf.CdMetadatas[(int)cdMetadata.Track - 2].Padding;
+					pregapLength += prevTrackPadding;
+
 					var relMSF = -pregapLength;
 					for (var i = 0; i < pregapLength; i++)
 					{
 						SS_Base synth;
-						if (cdMetadata.PregapInChd)
+						if (cdMetadata.PregapInChd && i >= prevTrackPadding)
 						{
-							synth = CreateSynth(cdMetadata.PregapTrackType);
+							synth = CreateSynth(cdMetadata.PregapTrackType, cdMetadata.ByteSwapAudio);
 							synth.Blob = chdBlob;
 							synth.BlobOffset = chdOffset;
 						}
@@ -684,7 +830,7 @@ namespace BizHawk.Emulation.DiscSystem
 						synth.sq.q_crc = 0;
 						synth.Pause = true;
 
-						if (cdMetadata.PregapInChd)
+						if (cdMetadata.PregapInChd && i >= prevTrackPadding)
 						{
 							// wrap the base synth with our special synth if we have subcode in the chd
 							ISectorSynthJob2448 chdSynth = cdMetadata.PregapSubType switch
@@ -696,7 +842,7 @@ namespace BizHawk.Emulation.DiscSystem
 							};
 
 							disc._Sectors.Add(chdSynth);
-							chdOffset += LibChd.CD_FRAME_SIZE;
+							chdOffset += chdf.Header.unitbytes;
 						}
 						else
 						{
@@ -711,12 +857,12 @@ namespace BizHawk.Emulation.DiscSystem
 					var trackLength = cdMetadata.Frames;
 					if (cdMetadata.PregapInChd)
 					{
-						trackLength -= pregapLength;
+						trackLength -= pregapLength - prevTrackPadding;
 					}
 
 					for (var i = 0; i < trackLength; i++)
 					{
-						var synth = CreateSynth(cdMetadata.TrackType);
+						var synth = CreateSynth(cdMetadata.TrackType, cdMetadata.ByteSwapAudio);
 						synth.Blob = chdBlob;
 						synth.BlobOffset = chdOffset;
 						synth.Policy = IN_DiscMountPolicy;
@@ -740,11 +886,11 @@ namespace BizHawk.Emulation.DiscSystem
 							_ => throw new InvalidOperationException(),
 						};
 						disc._Sectors.Add(chdSynth);
-						chdOffset += LibChd.CD_FRAME_SIZE;
+						chdOffset += chdf.Header.unitbytes;
 						relMSF++;
 					}
 
-					chdOffset += cdMetadata.Padding * LibChd.CD_FRAME_SIZE;
+					chdOffset += cdMetadata.ExtraFrames * chdf.Header.unitbytes;
 
 					for (var i = 0; i < cdMetadata.PostGap; i++)
 					{
@@ -936,7 +1082,7 @@ namespace BizHawk.Emulation.DiscSystem
 				};
 
 				cdMetadata.PregapInChd = cdMetadata.Pregap > 0;
-				cdMetadata.Padding = (0 - cdMetadata.Frames) & 3;
+				cdMetadata.ExtraFrames = (0 - cdMetadata.Frames) & 3;
 				cdMetadata.PregapTrackType = cdMetadata.TrackType;
 				cdMetadatas.Add(cdMetadata);
 			}
@@ -1006,7 +1152,7 @@ namespace BizHawk.Emulation.DiscSystem
 					chdLba++;
 				}
 
-				for (var i = 0; i < cdMetadata.Padding; i++)
+				for (var i = 0; i < cdMetadata.ExtraFrames; i++)
 				{
 					chdPos = chdLba % CD_FRAMES_PER_HUNK;
 					if (chdPos == CD_FRAMES_PER_HUNK - 1)

@@ -29,9 +29,16 @@ namespace BizHawk.Emulation.DiscSystem
 		public const uint CDROM_TRACK_METADATA_TAG = 0x43485452; // CHTR
 		public const uint CDROM_TRACK_METADATA2_TAG = 0x43485432; // CHT2
 
+		public const uint GDROM_OLD_METADATA_TAG = 0x43484754; // CHGT
+		public const uint GDROM_TRACK_METADATA_TAG = 0x43484744; // CHGD
+
+		public const uint DVD_METADATA_TAG = 0x44564420; // DVD
+
 		// these formats are more for sscanf, they aren't suitable for C#
 		public const string CDROM_TRACK_METADATA_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d";
 		public const string CDROM_TRACK_METADATA2_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d PREGAP:%d PGTYPE:%s PGSUB:%s POSTGAP:%d";
+
+		public const string GDROM_TRACK_METADATA_FORMAT = "TRACK:%d TYPE:%s SUBTYPE:%s FRAMES:%d PAD:%d PREGAP:%d PGTYPE:%s PGSUB:%s POSTGAP:%d";
 
 		public const int CHD_OPEN_READ = 1;
 		public const int CHD_OPEN_READWRITE = 2;
@@ -133,6 +140,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 		// hunks should be a multiple of this for cd chds
 		public const uint CD_FRAME_SIZE = 2352 + 96;
+
+		// hunks are always this big for dvd chds
+		public const uint DVD_FRAME_SIZE = 2048;
 
 		[DllImport("chd_capi")]
 		public static extern chd_error chd_get_metadata(
