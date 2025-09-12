@@ -9,6 +9,20 @@ public static class RoslynUtils
 	public static TypeDeclarationSyntax? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
 		=> node.NearestAncestorOfType<TypeDeclarationSyntax>();
 
+	public static IBlockOperation? EnclosingCodeBlockOperation(this IOperation op)
+	{
+		var toReturn = op.FirstAncestorOrSelf<IBlockOperation>();
+		while (toReturn?.Parent is IBlockOperation blockOp) toReturn = blockOp;
+		return toReturn;
+	}
+
+	public static TNode? FirstAncestorOrSelf<TNode>(this IOperation? node)
+		where TNode : class, IOperation
+	{
+		for (; node is not null; node = node.Parent) if (node is TNode tnode) return tnode;
+		return null;
+	}
+
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
 		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"
 			? WellKnownMemberNames.ImplicitConversionName
@@ -131,6 +145,10 @@ public static class RoslynUtils
 	public static T? NearestAncestorOfType<T>(this CSharpSyntaxNode node)
 		where T : CSharpSyntaxNode
 		=> node.Parent?.FirstAncestorOrSelf<T>();
+
+	public static T? NearestAncestorOfType<T>(this IOperation op)
+		where T : class, IOperation
+		=> op.Parent?.FirstAncestorOrSelf<T>();
 
 	public static TextSpan Slice(this TextSpan span, int start)
 		=> TextSpan.FromBounds(start: span.Start + start, end: span.End);
