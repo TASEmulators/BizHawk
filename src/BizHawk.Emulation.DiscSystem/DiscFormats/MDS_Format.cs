@@ -1,14 +1,13 @@
+using System.Buffers.Binary;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
-
-using ISOParser;
+using BizHawk.Emulation.DiscSystem.CUE;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -19,7 +18,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// * Libmirage image-mds parser - https://sourceforge.net/projects/cdemu/files/libmirage/
 	/// * DiscImageChef -   https://github.com/claunia/DiscImageChef/blob/master/DiscImageChef.DiscImages/Alcohol120.cs
 	/// </summary>
-	public class MDS_Format
+	public static class MDS_Format
 	{
 		/// <summary>
 		/// A loose representation of an Alcohol 120 .mds file (with a few extras)
@@ -39,22 +38,22 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// List of MDS session blocks
 			/// </summary>
-			public readonly IList<ASession> Sessions = new List<ASession>();
+			public readonly IList<ASession> Sessions = [ ];
 
 			/// <summary>
 			/// List of track blocks
 			/// </summary>
-			public readonly IList<ATrack> Tracks = new List<ATrack>();
+			public readonly IList<ATrack> Tracks = [ ];
 
 			/// <summary>
 			/// Current parsed session objects
 			/// </summary>
-			public List<Session> ParsedSession = new();
+			public List<Session> ParsedSession = [ ];
 
 			/// <summary>
 			/// Calculated MDS TOC entries (still to be parsed into BizHawk)
 			/// </summary>
-			public readonly IList<ATOCEntry> TOCEntries = new List<ATOCEntry>();
+			public readonly IList<ATOCEntry> TOCEntries = [ ];
 		}
 
 		public class AHeader
@@ -114,20 +113,18 @@ namespace BizHawk.Emulation.DiscSystem
 			/// </summary>
 			public AHeader Parse(Stream stream)
 			{
-				var bc = EndianBitConverter.CreateForLittleEndian();
-
 				var header = new byte[88];
 				_ = stream.Read(header, offset: 0, count: header.Length); // stream size checked at callsite
 
-				this.Signature = Encoding.ASCII.GetString(header.Take(16).ToArray());
-				this.Version = header.Skip(16).Take(2).ToArray();
-				this.Medium = bc.ToInt16(header.Skip(18).Take(2).ToArray());
-				this.SessionCount = bc.ToInt16(header.Skip(20).Take(2).ToArray());
-				this.BCALength = bc.ToInt16(header.Skip(26).Take(2).ToArray());
-				this.BCAOffset = bc.ToInt32(header.Skip(36).Take(4).ToArray());
-				this.StructureOffset = bc.ToInt32(header.Skip(64).Take(4).ToArray());
-				this.SessionOffset = bc.ToInt32(header.Skip(80).Take(4).ToArray());
-				this.DPMOffset = bc.ToInt32(header.Skip(84).Take(4).ToArray());
+				this.Signature = Encoding.ASCII.GetString(header.AsSpan(0, 16));
+				this.Version = header.AsSpan(16, 2).ToArray();
+				this.Medium = BinaryPrimitives.ReadInt16LittleEndian(header.AsSpan(18, 2));
+				this.SessionCount = BinaryPrimitives.ReadInt16LittleEndian(header.AsSpan(20, 2));
+				this.BCALength = BinaryPrimitives.ReadInt16LittleEndian(header.AsSpan(26, 2));
+				this.BCAOffset = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(36, 4));
+				this.StructureOffset = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(64, 4));
+				this.SessionOffset = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(80, 4));
+				this.DPMOffset = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(84, 4));
 
 				return this;
 			}
@@ -200,13 +197,13 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// List of footer(filename) blocks for this track
 			/// </summary>
-			public List<AFooter> FooterBlocks = new();
+			public List<AFooter> FooterBlocks = [ ];
 
 			/// <summary>
 			/// List of the calculated full paths to this track's image file
 			/// The MDS file itself may contain a filename, or just an *.extension
 			/// </summary>
-			public List<string> ImageFileNamePaths = new();
+			public List<string> ImageFileNamePaths = [ ];
 
 			public int BlobIndex;
 		}
@@ -232,23 +229,17 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a parsed MDS TOC entry
 		/// </summary>
-		public class ATOCEntry
+		public class ATOCEntry(int entryNum)
 		{
-			public ATOCEntry(int entryNum)
-			{
-				EntryNum = entryNum;
-			}
-
 			/// <summary>
 			/// these should be 0-indexed
 			/// </summary>
-			public int EntryNum;
-
+			public int EntryNum = entryNum;
 
 			/// <summary>
 			/// 1-indexed - the session that this entry belongs to
 			/// </summary>
-			public int Session;
+			public int SessionNum;
 
 //          /// <summary>
 //          /// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME (give or take 150). It's not stored on the disc, and it's redundant.
@@ -294,7 +285,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// List of the calculated full paths to this track's image file
 			/// The MDS file itself may contain a filename, or just an *.extension
 			/// </summary>
-			public List<string> ImageFileNamePaths = new();
+			public List<string> ImageFileNamePaths = [ ];
 
 			/// <summary>
 			/// Track extra block
@@ -307,7 +298,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="MDSParseException">header is malformed or identifies file as MDS 2.x, or any track has a DVD mode</exception>
 		public static AFile Parse(FileStream stream)
 		{
-			var bc = EndianBitConverter.CreateForLittleEndian();
 			var isDvd = false;
 
 			var aFile = new AFile { MDSPath = stream.Name };
@@ -347,14 +337,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 				var session = new ASession
 				{
-					SessionStart = bc.ToInt32(sessionHeader.Take(4).ToArray()),
-					SessionEnd = bc.ToInt32(sessionHeader.Skip(4).Take(4).ToArray()),
-					SessionNumber = bc.ToInt16(sessionHeader.Skip(8).Take(2).ToArray()),
+					SessionStart = BinaryPrimitives.ReadInt32LittleEndian(sessionHeader.AsSpan(0, 4)),
+					SessionEnd = BinaryPrimitives.ReadInt32LittleEndian(sessionHeader.AsSpan(4, 4)),
+					SessionNumber = BinaryPrimitives.ReadInt16LittleEndian(sessionHeader.AsSpan(8, 2)),
 					AllBlocks = sessionHeader[10],
 					NonTrackBlocks = sessionHeader[11],
-					FirstTrack = bc.ToInt16(sessionHeader.Skip(12).Take(2).ToArray()),
-					LastTrack = bc.ToInt16(sessionHeader.Skip(14).Take(2).ToArray()),
-					TrackOffset = bc.ToInt32(sessionHeader.Skip(20).Take(4).ToArray()),
+					FirstTrack = BinaryPrimitives.ReadInt16LittleEndian(sessionHeader.AsSpan(12, 2)),
+					LastTrack = BinaryPrimitives.ReadInt16LittleEndian(sessionHeader.AsSpan(14, 2)),
+					TrackOffset = BinaryPrimitives.ReadInt32LittleEndian(sessionHeader.AsSpan(20, 4)),
 				};
 
 				//mdsf.Sessions.Add(session);
@@ -393,12 +383,12 @@ namespace BizHawk.Emulation.DiscSystem
 					track.PMin = trackHeader[9];
 					track.PSec = trackHeader[10];
 					track.PFrame = trackHeader[11];
-					track.ExtraOffset = bc.ToInt32(trackHeader.Skip(12).Take(4).ToArray());
-					track.SectorSize = bc.ToInt16(trackHeader.Skip(16).Take(2).ToArray());
-					track.PLBA = bc.ToInt32(trackHeader.Skip(36).Take(4).ToArray());
-					track.StartOffset = MemoryMarshal.Read<ulong>(trackHeader.AsSpan(start: 12 + sizeof(int) + sizeof(short) + 18 + sizeof(int)));
-					track.Files = bc.ToInt32(trackHeader.Skip(48).Take(4).ToArray());
-					track.FooterOffset = bc.ToInt32(trackHeader.Skip(52).Take(4).ToArray());
+					track.ExtraOffset = BinaryPrimitives.ReadInt32LittleEndian(trackHeader.AsSpan(12, 4));
+					track.SectorSize = BinaryPrimitives.ReadInt16LittleEndian(trackHeader.AsSpan(16, 2));
+					track.PLBA = BinaryPrimitives.ReadInt32LittleEndian(trackHeader.AsSpan(36, 4));
+					track.StartOffset = BinaryPrimitives.ReadUInt64LittleEndian(trackHeader.AsSpan(40, 8));
+					track.Files = BinaryPrimitives.ReadInt32LittleEndian(trackHeader.AsSpan(48, 4));
+					track.FooterOffset = BinaryPrimitives.ReadInt32LittleEndian(trackHeader.AsSpan(52, 4));
 
 					// check for track extra block - this can probably be handled in a separate loop,
 					// but I'll just store the current stream position then seek forward to the extra block for this track
@@ -411,8 +401,8 @@ namespace BizHawk.Emulation.DiscSystem
 						stream.Seek(track.ExtraOffset, SeekOrigin.Begin);
 						var bytesRead1 = stream.Read(extHeader, offset: 0, count: extHeader.Length);
 						Debug.Assert(bytesRead1 == extHeader.Length, "reached end-of-file while reading extra block of track");
-						track.ExtraBlock.Pregap = bc.ToInt32(extHeader.Take(4).ToArray());
-						track.ExtraBlock.Sectors = bc.ToInt32(extHeader.Skip(4).Take(4).ToArray());
+						track.ExtraBlock.Pregap = BinaryPrimitives.ReadInt32LittleEndian(extHeader.AsSpan(0, 4));
+						track.ExtraBlock.Sectors = BinaryPrimitives.ReadInt32LittleEndian(extHeader.AsSpan(4, 4));
 						stream.Seek(currPos, SeekOrigin.Begin);
 					}
 					else if (isDvd)
@@ -436,8 +426,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 						var f = new AFooter
 						{
-							FilenameOffset = bc.ToInt32(foot.Take(4).ToArray()),
-							WideChar = bc.ToInt32(foot.Skip(4).Take(4).ToArray()),
+							FilenameOffset = BinaryPrimitives.ReadInt32LittleEndian(foot.AsSpan(0, 4)),
+							WideChar = BinaryPrimitives.ReadInt32LittleEndian(foot.AsSpan(4, 4)),
 						};
 						track.FooterBlocks.Add(f);
 						track.FooterBlocks = track.FooterBlocks.Distinct().ToList();
@@ -463,23 +453,20 @@ namespace BizHawk.Emulation.DiscSystem
 									fname = new byte[aFile.Header.DPMOffset - stream.Position];
 								}
 							}
-
 							else
 							{
 								// looks like each filename string is 6 bytes with a trailing \0
 								fname = new byte[6];
 							}
 
-
 							// read the filename
 							var bytesRead2 = stream.Read(fname, offset: 0, count: fname.Length);
 							Debug.Assert(bytesRead2 == fname.Length, "reached end-of-file while reading track filename");
 
 							// if widechar is 1 filename is stored using 16-bit, otherwise 8-bit is used
-							if (f.WideChar == 1)
-								fileName = Encoding.Unicode.GetString(fname).TrimEnd('\0');
-							else
-								fileName = Encoding.Default.GetString(fname).TrimEnd('\0');
+							fileName = f.WideChar == 1
+								? Encoding.Unicode.GetString(fname).TrimEnd('\0')
+								: Encoding.UTF8.GetString(fname).TrimEnd('\0');
 						}
 						else
 						{
@@ -522,7 +509,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 
 			// build custom session object
-			aFile.ParsedSession = new();
+			aFile.ParsedSession = [ ];
 			foreach (var s in aSessions.Values)
 			{
 				var session = new Session();
@@ -549,7 +536,7 @@ namespace BizHawk.Emulation.DiscSystem
 			// now build the TOC object
 			foreach (var se in aFile.ParsedSession)
 			{
-				ATOCEntry CreateTOCEntryFromTrack(ATrack track)
+				static ATOCEntry CreateTOCEntryFromTrack(ATrack track, int sessionNumber)
 				{
 					return new(track.Point)
 					{
@@ -568,7 +555,7 @@ namespace BizHawk.Emulation.DiscSystem
 						PSec = track.PSec,
 						TrackMode = track.Mode & 0x7,
 						SectorSize = track.SectorSize,
-						Session = se.SessionSequence,
+						SessionNum = sessionNumber,
 						TrackOffset = Convert.ToInt64(track.StartOffset),
 						Zero = track.Zero,
 					};
@@ -578,7 +565,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					if (aTracks.TryGetValue(se.SessionSequence << 8 | 0xA0 | x, out var axTrack))
 					{
-						aFile.TOCEntries.Add(CreateTOCEntryFromTrack(axTrack));
+						aFile.TOCEntries.Add(CreateTOCEntryFromTrack(axTrack, se.SessionSequence));
 					}
 				}
 
@@ -593,7 +580,7 @@ namespace BizHawk.Emulation.DiscSystem
 							.OrderBy(a => a.Key)
 							.Select(a => a.Value))
 				{
-					aFile.TOCEntries.Add(CreateTOCEntryFromTrack(t));
+					aFile.TOCEntries.Add(CreateTOCEntryFromTrack(t, se.SessionSequence));
 				}
 
 				// TODO: first session might have 0xB0/0xC0 tracks... not sure how to handle these
@@ -614,12 +601,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public int EndTrack;
 		}
 
-
-		public class MDSParseException : Exception
-		{
-			public MDSParseException(string message) : base(message) { }
-		}
-
+		public class MDSParseException(string message) : Exception(message);
 
 		public class LoadResults
 		{
@@ -751,11 +733,11 @@ namespace BizHawk.Emulation.DiscSystem
 			disc.Sessions.Add(new() { Number = curSession });
 			foreach (var entry in mdsf.TOCEntries)
 			{
-				if (entry.Session != curSession)
+				if (entry.SessionNum != curSession)
 				{
-					if (entry.Session != curSession + 1)
+					if (entry.SessionNum != curSession + 1)
 						throw new MDSParseException("Session incremented more than one!");
-					curSession = entry.Session;
+					curSession = entry.SessionNum;
 					disc.Sessions.Add(new() { Number = curSession });
 				}
 
@@ -778,18 +760,18 @@ namespace BizHawk.Emulation.DiscSystem
 					// this is most certainly wrong
 					// nothing relies on the exact contents for now (only multisession core is VirtualJaguar which doesn't touch leadin)
 					// just needs sectors to be present due to track info LBAs of session 2+ accounting for this being present
-					var pregapTrackType = CUE.CueTrackType.Audio;
+					var pregapTrackType = CueTrackType.Audio;
 					if (tocSynth.Result.TOCItems[1].IsData)
 					{
 						pregapTrackType = tocSynth.Result.SessionFormat switch
 						{
-							SessionFormat.Type20_CDXA => CUE.CueTrackType.Mode2_2352,
-							SessionFormat.Type10_CDI => CUE.CueTrackType.CDI_2352,
-							SessionFormat.Type00_CDROM_CDDA => CUE.CueTrackType.Mode1_2352,
+							SessionFormat.Type20_CDXA => CueTrackType.Mode2_2352,
+							SessionFormat.Type10_CDI => CueTrackType.CDI_2352,
+							SessionFormat.Type00_CDROM_CDDA => CueTrackType.Mode1_2352,
 							_ => pregapTrackType,
 						};
 					}
-					disc._Sectors.Add(new CUE.SS_Gap()
+					disc._Sectors.Add(new SS_Gap
 					{
 						Policy = IN_DiscMountPolicy,
 						TrackType = pregapTrackType,
@@ -836,14 +818,14 @@ namespace BizHawk.Emulation.DiscSystem
 					// this is specified in the track extras block
 					if (track.ExtraBlock.Pregap > 0)
 					{
-						var pregapTrackType = CUE.CueTrackType.Audio;
+						var pregapTrackType = CueTrackType.Audio;
 						if (tocSynth.Result.TOCItems[1].IsData)
 						{
 							pregapTrackType = tocSynth.Result.SessionFormat switch
 							{
-								SessionFormat.Type20_CDXA => CUE.CueTrackType.Mode2_2352,
-								SessionFormat.Type10_CDI => CUE.CueTrackType.CDI_2352,
-								SessionFormat.Type00_CDROM_CDDA => CUE.CueTrackType.Mode1_2352,
+								SessionFormat.Type20_CDXA => CueTrackType.Mode2_2352,
+								SessionFormat.Type10_CDI => CueTrackType.CDI_2352,
+								SessionFormat.Type00_CDROM_CDDA => CueTrackType.Mode1_2352,
 								_ => pregapTrackType,
 							};
 						}
@@ -851,7 +833,7 @@ namespace BizHawk.Emulation.DiscSystem
 						{
 							relMSF++;
 
-							var ss_gap = new CUE.SS_Gap()
+							var ss_gap = new SS_Gap
 							{
 								Policy = IN_DiscMountPolicy,
 								TrackType = pregapTrackType,
@@ -889,19 +871,19 @@ namespace BizHawk.Emulation.DiscSystem
 							currBlobIndex++;
 						var mdfBlob = (IBlob) disc.DisposableResources[currBlobIndex];
 
-						CUE.SS_Base sBase = track.SectorSize switch
+						SS_Base sBase = track.SectorSize switch
 						{
-							2352 when track.TrackMode is 1 => new CUE.SS_2352(),
-							2048 when track.TrackMode is 2 => new CUE.SS_Mode1_2048(),
-							2336 when track.TrackMode is 0 or 3 or 7 => new CUE.SS_Mode2_2336(),
-							2048 when track.TrackMode is 4 => new CUE.SS_Mode2_Form1_2048(),
-							2324 when track.TrackMode is 5 => new CUE.SS_Mode2_Form2_2324(),
-							2328 when track.TrackMode is 5 => new CUE.SS_Mode2_Form2_2328(),
+							2352 when track.TrackMode is 1 => new SS_2352(),
+							2048 when track.TrackMode is 2 => new SS_Mode1_2048(),
+							2336 when track.TrackMode is 0 or 3 or 7 => new SS_Mode2_2336(),
+							2048 when track.TrackMode is 4 => new SS_Mode2_Form1_2048(),
+							2324 when track.TrackMode is 5 => new SS_Mode2_Form2_2324(),
+							2328 when track.TrackMode is 5 => new SS_Mode2_Form2_2328(),
 							// best guesses
-							2048 => new CUE.SS_Mode1_2048(),
-							2336 => new CUE.SS_Mode2_2336(),
-							2352 => new CUE.SS_2352(),
-							2448 => new CUE.SS_2448_Interleaved(),
+							2048 => new SS_Mode1_2048(),
+							2336 => new SS_Mode2_2336(),
+							2352 => new SS_2352(),
+							2448 => new SS_2448_Interleaved(),
 							_ => throw new InvalidOperationException($"Not supported: Sector Size {track.SectorSize}, Track Mode {track.TrackMode}"),
 						};
 
