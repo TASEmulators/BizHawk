@@ -966,11 +966,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_suppressContextMenu = true;
 				int notch = e.Delta / 120;
-				if (notch > 1)
-				{
-					notch *= 2;
-				}
-
 				WheelSeek(notch);
 			}
 		}
