@@ -218,9 +218,8 @@ namespace BizHawk.Emulation.DiscSystem
 					header.MediumType = br.ReadUInt16();
 					switch (header.MediumType)
 					{
-						case 0x0038:
-							throw new CDIParseException("Malformed CDI format: DVD was specified, but this is not supported!");
-						case 0x0098:
+						case 0x0038: // DVD
+						case 0x0098: // CD
 							return;
 						default:
 							throw new CDIParseException("Malformed CDI format: Invalid medium type!");
