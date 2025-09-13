@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
@@ -154,9 +155,9 @@ namespace BizHawk.Client.Common
 					{
 						if (bl.Version < 3)
 						{
-							var fb = br.ReadAllBytes();
+							var fb = MemoryMarshal.Cast<byte, int>(br.ReadAllBytes());
 							// width and height are unknown, so just use dummy values
-							SavestateFramebuffer = new BitmapBuffer(fb.Length / 4, 1, fb.ToIntBuffer());
+							SavestateFramebuffer = new BitmapBuffer(fb.Length / 4, 1, fb.ToArray());
 						}
 						else
 						{
