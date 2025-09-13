@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 						throw new CIAInstallThrowable("The update CIA was successfully installed.");
 					}
 
-					throw new CIAInstallThrowable(outMsg);
+					throw new Exception(outMsg);
 				}
 			}
 
