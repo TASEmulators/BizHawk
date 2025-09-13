@@ -98,6 +98,11 @@ namespace BizHawk.Client.EmuHawk
 						consoleLib.Tools = _mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}
+					else if (instance is EventsLuaLibrary eventsLib)
+					{
+						eventsLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
+						eventsLib.RemoveNamedFunctionMatching = RemoveNamedFunctionMatching;
+					}
 					else if (instance is FormsLuaLibrary formsLib)
 					{
 						formsLib.MainForm = _mainForm;
@@ -305,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 			_lua = null;
 		}
 
-		public INamedLuaFunction CreateAndRegisterNamedFunction(
+		private INamedLuaFunction CreateAndRegisterNamedFunction(
 			LuaFunction function,
 			string theEvent,
 			Action<string> logCallback,
@@ -317,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			return nlf;
 		}
 
-		public bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
+		private bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
 			var nlf = (NamedLuaFunction)RegisteredFunctions.FirstOrDefault(predicate);
 			if (nlf == null) return false;

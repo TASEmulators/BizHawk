@@ -1,5 +1,3 @@
-using NLua;
-
 namespace BizHawk.Client.Common
 {
 	public interface ILuaLibraries
@@ -16,15 +14,6 @@ namespace BizHawk.Client.Common
 
 		PathEntryCollection PathEntries { get; }
 
-		INamedLuaFunction CreateAndRegisterNamedFunction(
-			LuaFunction function,
-			string theEvent,
-			Action<string> logCallback,
-			LuaFile luaFile,
-			string name = null);
-
 		NLuaTableHelper GetTableHelper();
-
-		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
 	}
 }
