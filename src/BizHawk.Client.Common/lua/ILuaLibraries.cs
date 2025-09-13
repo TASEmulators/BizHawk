@@ -1,7 +1,5 @@
 using NLua;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Client.Common
 {
 	public interface ILuaLibraries
@@ -18,23 +16,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>not really sure if this is the right place to put it, multiple different places need this...</remarks>
 		bool IsInInputOrMemoryCallback { get; set; }
 
-		LuaFunctionList RegisteredFunctions { get; }
-
 		PathEntryCollection PathEntries { get; }
-
-		LuaFileList ScriptList { get; }
-
-		void CallLoadStateEvent(string name);
-
-		void CallSaveStateEvent(string name);
-
-		void CallFrameBeforeEvent();
-
-		void CallFrameAfterEvent();
-
-		void CallExitEvent(LuaFile lf);
-
-		void Close();
 
 		INamedLuaFunction CreateAndRegisterNamedFunction(
 			LuaFunction function,
@@ -45,20 +27,6 @@ namespace BizHawk.Client.Common
 
 		NLuaTableHelper GetTableHelper();
 
-		void Restart(IEmulatorServiceProvider newServiceProvider, Config config, IEmulator emulator, IGameInfo game);
-
 		bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate);
-
-		void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
-
-		/// <summary>
-		/// Executes Lua code. Automatically prepends <see langword="return"/> statement if possible.
-		/// </summary>
-		/// <returns>
-		/// Values returned by the Lua script, if any.
-		/// </returns>
-		object[] ExecuteString(string command);
-
-		(bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf);
 	}
 }
