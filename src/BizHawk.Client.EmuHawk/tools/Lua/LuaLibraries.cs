@@ -323,8 +323,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
-			var nlf = (NamedLuaFunction)RegisteredFunctions.FirstOrDefault(predicate);
-			if (nlf == null) return false;
+			if (RegisteredFunctions.FirstOrDefault(predicate) is not NamedLuaFunction nlf) return false;
 			RegisteredFunctions.Remove(nlf);
 			return true;
 		}
