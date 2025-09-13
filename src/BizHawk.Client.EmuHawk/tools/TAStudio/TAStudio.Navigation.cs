@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetVisibleFrame(int? frame = null)
 		{
-			if (TasView.AlwaysScroll && _leftButtonHeld)
+			if (_leftButtonHeld)
 			{
 				return;
 			}
