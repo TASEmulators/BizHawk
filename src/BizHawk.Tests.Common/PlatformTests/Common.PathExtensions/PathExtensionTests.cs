@@ -15,17 +15,17 @@ namespace BizHawk.Tests.Common.PathExtensions
 
 			var p = OSTailoredCode.IsUnixHost ? "/" : @"C:\";
 
-			Assert.IsFalse(PE.IsSubfolderOf(childPath: null, parentPath: p));
-			Assert.IsFalse(PE.IsSubfolderOf(childPath: p, parentPath: null));
-			Assert.IsFalse(PE.IsSubfolderOf(childPath: null, parentPath: null));
+			Assert.IsFalse(PE.IsSubfolderOf(childPath: null, parentPath: p), "IsSubfolderOf(null, *)");
+			Assert.IsFalse(PE.IsSubfolderOf(childPath: p, parentPath: null), "IsSubfolderOf(*, null)");
+			Assert.IsFalse(PE.IsSubfolderOf(childPath: null, parentPath: null), "IsSubfolderOf(null, null)");
 
-			Assert.IsNull(PE.GetRelativePath(fromPath: null, toPath: p));
-			Assert.IsNull(PE.GetRelativePath(fromPath: p, toPath: null));
-			Assert.IsNull(PE.GetRelativePath(fromPath: null, toPath: null));
+			Assert.IsNull(PE.GetRelativePath(fromPath: null, toPath: p), "GetRelativePath(null, *)");
+			Assert.IsNull(PE.GetRelativePath(fromPath: p, toPath: null), "GetRelativePath(*, null)");
+			Assert.IsNull(PE.GetRelativePath(fromPath: null, toPath: null), "GetRelativePath(null, null)");
 
-			Assert.IsNull(PE.MakeRelativeTo(absolutePath: null, basePath: p));
-			Assert.IsNull(PE.MakeRelativeTo(absolutePath: p, basePath: null));
-			Assert.IsNull(PE.MakeRelativeTo(absolutePath: null, basePath: null));
+			Assert.IsNull(PE.MakeRelativeTo(absolutePath: null, basePath: p), "MakeRelativeTo(null, *)");
+			Assert.IsNull(PE.MakeRelativeTo(absolutePath: p, basePath: null), "MakeRelativeTo(*, null)");
+			Assert.IsNull(PE.MakeRelativeTo(absolutePath: null, basePath: null), "MakeRelativeTo(null, null)");
 		}
 
 		[TestMethod]
@@ -43,7 +43,7 @@ namespace BizHawk.Tests.Common.PathExtensions
 		{
 			PlatformTestUtils.OnlyRunOnRealUnix();
 
-			Assert.AreEqual(expectedIsSubfolder, childPath.IsSubfolderOf(parentPath));
+			Assert.AreEqual(expectedIsSubfolder, childPath.IsSubfolderOf(parentPath), "child.IsSubfolderOf(parent)");
 		}
 
 		[TestMethod]
@@ -57,7 +57,7 @@ namespace BizHawk.Tests.Common.PathExtensions
 		{
 			PlatformTestUtils.OnlyRunOnWindows();
 
-			Assert.AreEqual(expectedIsSubfolder, childPath.IsSubfolderOf(parentPath));
+			Assert.AreEqual(expectedIsSubfolder, childPath.IsSubfolderOf(parentPath), "child.IsSubfolderOf(parent)");
 		}
 
 		[TestMethod]
@@ -70,9 +70,9 @@ namespace BizHawk.Tests.Common.PathExtensions
 		{
 			PlatformTestUtils.OnlyRunOnRealUnix();
 
-			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: basePath, toPath: absolutePath)); // params swapped w.r.t. `MakeRelativeTo`
+			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: basePath, toPath: absolutePath), "GetRelativePath(base, absolute)"); // params swapped w.r.t. `MakeRelativeTo`
 			// `MakeRelativeTo` is supposed to return an absolute path (the receiver is assumed to be absolute) iff the receiver isn't a child of the given base path
-			Assert.AreEqual(isChild ? expectedRelPath : absolutePath, absolutePath.MakeRelativeTo(basePath));
+			Assert.AreEqual(isChild ? expectedRelPath : absolutePath, absolutePath.MakeRelativeTo(basePath), "absolute.MakeRelativeTo(base)");
 		}
 
 		[TestMethod]
@@ -85,9 +85,9 @@ namespace BizHawk.Tests.Common.PathExtensions
 		{
 			PlatformTestUtils.OnlyRunOnWindows();
 
-			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: basePath, toPath: absolutePath)); // params swapped w.r.t. `MakeRelativeTo`
+			Assert.AreEqual(expectedRelPath, PE.GetRelativePath(fromPath: basePath, toPath: absolutePath), "GetRelativePath(base, absolute)"); // params swapped w.r.t. `MakeRelativeTo`
 			// `MakeRelativeTo` is supposed to return an absolute path (the receiver is assumed to be absolute) iff the receiver isn't a child of the given base path
-			Assert.AreEqual(isChild ? expectedRelPath : absolutePath, absolutePath.MakeRelativeTo(basePath));
+			Assert.AreEqual(isChild ? expectedRelPath : absolutePath, absolutePath.MakeRelativeTo(basePath), "absolute.MakeRelativeTo(base)");
 		}
 	}
 }

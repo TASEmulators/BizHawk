@@ -12,8 +12,8 @@ namespace BizHawk.Tests.Common.CustomCollections
 			list.Add(5); // `Insert` when `BinarySearch` returns negative
 			list.Add(8); // `Insert` when `BinarySearch` returns non-negative
 			list.Remove(3); // `Remove` when `BinarySearch` returns non-negative
-			CollectionAssert.AreEqual(new[] { 1, 4, 5, 7, 8, 8, 9, 11 }, list);
-			Assert.IsFalse(list.Remove(10)); // `Remove` when `BinarySearch` returns negative
+			CollectionAssert.AreEqual(new[] { 1, 4, 5, 7, 8, 8, 9, 11 }, list, "should match expected");
+			Assert.IsFalse(list.Remove(10), "should not be found"); // `Remove` when `BinarySearch` returns negative
 		}
 
 		[TestMethod]
@@ -59,7 +59,7 @@ namespace BizHawk.Tests.Common.CustomCollections
 		{
 			SortedList<T> sortlist = new(before);
 			sortlist.RemoveAfter(removeItem);
-			CollectionAssert.AreEqual(after, sortlist);
+			CollectionAssert.AreEqual(after, sortlist, "should match expected");
 		}
 
 		[TestMethod]

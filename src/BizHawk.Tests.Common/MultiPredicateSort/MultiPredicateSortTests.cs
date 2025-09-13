@@ -19,13 +19,13 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 		{
 			CollectionAssert.AreEqual(
 				SortedByYDescThenXDesc,
-				Unsorted.OrderByDescending(t => t.Y).ThenByDescending(t => t.X).ToArray()
-			);
+				Unsorted.OrderByDescending(static t => t.Y).ThenByDescending(static t => t.X).ToArray(),
+				".OrderByDesc(Y).ThenByDesc(X)");
 #pragma warning disable MA0030
 			CollectionAssert.AreEqual(
 				SortedByYDescThenXDesc,
-				Unsorted.OrderByDescending(t => t.X).OrderByDescending(t => t.Y).ToArray()
-			);
+				Unsorted.OrderByDescending(static t => t.X).OrderByDescending(static t => t.Y).ToArray(),
+				".OrderByDesc(X).OrderByDesc(Y)");
 #pragma warning restore MA0030
 		}
 
@@ -42,17 +42,15 @@ namespace BizHawk.Tests.Common.MultiPredicateSort
 				sorts.AppliedTo(
 					Unsorted,
 					"by_x",
-					new Dictionary<string, bool> { ["by_x"] = false, ["by_y"] = true }
-				)
-			);
+					new Dictionary<string, bool> { ["by_x"] = false, ["by_y"] = true }),
+				"by X asc., then by Y desc.");
 			CollectionAssert.AreEqual(
 				SortedByYDescThenXDesc,
 				sorts.AppliedTo(
 					Unsorted,
 					"by_y",
-					new Dictionary<string, bool> { ["by_x"] = true, ["by_y"] = true }
-				)
-			);
+					new Dictionary<string, bool> { ["by_x"] = true, ["by_y"] = true }),
+				"by Y desc., then by X desc.");
 		}
 	}
 }

@@ -29,19 +29,19 @@ namespace BizHawk.Tests.Common.checksums
 			}
 
 			var data = InitialiseArray();
-			Assert.AreEqual(EXPECTED, CRC32.Calculate(data));
+			Assert.AreEqual(EXPECTED, CRC32.Calculate(data), "result of Calculate");
 
 			data = InitialiseArray();
 			CRC32 crc32 = new();
 			crc32.Add(data);
-			Assert.AreEqual(EXPECTED, crc32.Result);
+			Assert.AreEqual(EXPECTED, crc32.Result, "result of adding some data to an instance");
 
 			var dataExtra = InitialiseArrayExtra();
 			CRC32 crc32Extra = new();
 			crc32Extra.Add(dataExtra);
-			Assert.AreEqual(EXPECTED_EXTRA, crc32Extra.Result);
+			Assert.AreEqual(EXPECTED_EXTRA, crc32Extra.Result, "result of adding different data to a different instance");
 			crc32.Incorporate(crc32Extra.Result, dataExtra.Length);
-			Assert.AreEqual(EXPECTED_COMBINED, crc32.Result);
+			Assert.AreEqual(EXPECTED_COMBINED, crc32.Result, "result of combining the second instance into the first");
 		}
 	}
 }

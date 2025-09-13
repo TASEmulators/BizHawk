@@ -67,10 +67,10 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		{
 			var a123 = new[] { 1, 2, 3 };
 			var a456 = new[] { 4, 5, 6 };
-			CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, a123.ConcatArray(a456));
-			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()));
-			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456));
-			CollectionAssert.That.IsEmpty(Array.Empty<int>().ConcatArray(Array.Empty<int>()));
+			CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, a123.ConcatArray(a456), "[1,2,3]cat[4,5,6]");
+			Assert.AreSame(a123, a123.ConcatArray(Array.Empty<int>()), "[1,2,3]cat[]");
+			Assert.AreSame(a456, Array.Empty<int>().ConcatArray(a456), "[]cat[4,5,6]");
+			CollectionAssert.That.IsEmpty(Array.Empty<int>().ConcatArray(Array.Empty<int>()), "[]cat[]");
 		}
 
 		[TestMethod]
@@ -98,7 +98,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			Assert.AreEqual(4, a.LowerBoundBinarySearch(static s => s.Length, 8), "length 8");
 
 			List<int> emptyList = new List<int>();
-			Assert.AreEqual(-1, emptyList.LowerBoundBinarySearch(static i => i, 13));
+			Assert.AreEqual(-1, emptyList.LowerBoundBinarySearch(static i => i, 13), "none of value 13");
 		}
 
 		[TestMethod]
@@ -111,7 +111,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			_ = Assert.Throws<InvalidOperationException>(
 				() => testList.BinarySearch(static s => s.Length, 7),
 				"none of length 7");
-			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3));
+			Assert.AreEqual("abc", testList.BinarySearch(static s => s.Length, 3), "find element of length 3");
 
 			List<int> emptyList = new List<int>();
 			_ = Assert.Throws<InvalidOperationException>(
