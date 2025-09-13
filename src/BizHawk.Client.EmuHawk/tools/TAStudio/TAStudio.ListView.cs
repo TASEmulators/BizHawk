@@ -924,6 +924,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_seekingTo != -1)
 			{
+				_shouldMoveGreenArrow = true;
 				_seekingTo -= count;
 
 				if (count > 0 && Emulator.Frame >= _seekingTo)
