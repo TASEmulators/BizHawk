@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 
 		public void Clear(IEmulator emulator)
 		{
-			if (_functions.Count is 0) return;
+			if (Count is 0) return;
 			if (emulator.InputCallbacksAvailable())
 			{
 				emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.InputCallback));

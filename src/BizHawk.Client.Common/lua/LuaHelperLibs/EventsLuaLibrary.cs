@@ -43,6 +43,15 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "event";
 
+		private void AddMemCallbackOnCore(INamedLuaFunction nlf, MemoryCallbackType kind, string/*?*/ scope, uint? address)
+			=> DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
+				ProcessScope(scope),
+				kind,
+				"Lua Hook",
+				nlf.MemCallback,
+				address,
+				null));
+
 		private void LogMemoryCallbacksNotImplemented(bool isWildcard)
 			=> Log($"{Emulator.Attributes().CoreName} does not implement {(isWildcard ? "wildcard " : string.Empty)}memory callbacks");
 
@@ -140,8 +149,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, LogOutputCallback, CurrentFile, name: name);
-					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
+					AddMemCallbackOnCore(nlf, MemoryCallbackType.Execute, scope, address);
 					return nlf.GuidStr;
 				}
 			}
@@ -185,14 +193,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, LogOutputCallback, CurrentFile, name: name);
-					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
-						ProcessScope(scope),
-						MemoryCallbackType.Execute,
-						"Lua Hook",
-						nlf.MemCallback,
-						null,
-						null
-					));
+					AddMemCallbackOnCore(nlf, MemoryCallbackType.Execute, scope, address: null);
 					return nlf.GuidStr;
 				}
 				// fall through
@@ -236,8 +237,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, LogOutputCallback, CurrentFile, name: name);
-					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
+					AddMemCallbackOnCore(nlf, MemoryCallbackType.Read, scope, address);
 					return nlf.GuidStr;
 				}
 			}
@@ -282,8 +282,7 @@ namespace BizHawk.Client.Common
 					}
 
 					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, LogOutputCallback, CurrentFile, name: name);
-					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
+					AddMemCallbackOnCore(nlf, MemoryCallbackType.Write, scope, address);
 					return nlf.GuidStr;
 				}
 			}
