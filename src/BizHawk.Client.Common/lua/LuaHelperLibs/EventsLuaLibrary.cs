@@ -44,13 +44,17 @@ namespace BizHawk.Client.Common
 		public override string Name => "event";
 
 		private void AddMemCallbackOnCore(INamedLuaFunction nlf, MemoryCallbackType kind, string/*?*/ scope, uint? address)
-			=> DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
+		{
+			var memCallbackImpl = DebuggableCore.MemoryCallbacks;
+			memCallbackImpl.Add(new MemoryCallback(
 				ProcessScope(scope),
 				kind,
 				"Lua Hook",
 				nlf.MemCallback,
 				address,
 				null));
+			nlf.OnRemove += () => memCallbackImpl.Remove(nlf.MemCallback);
+		}
 
 		private void LogMemoryCallbacksNotImplemented(bool isWildcard)
 			=> Log($"{Emulator.Attributes().CoreName} does not implement {(isWildcard ? "wildcard " : string.Empty)}memory callbacks");
@@ -91,7 +95,9 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					InputPollableCore.InputCallbacks.Add(nlf.InputCallback);
+					var inputCallbackImpl = InputPollableCore.InputCallbacks;
+					inputCallbackImpl.Add(nlf.InputCallback);
+					nlf.OnRemove += () => inputCallbackImpl.Remove(nlf.InputCallback);
 					return nlf.GuidStr;
 				}
 				catch (NotImplementedException)

@@ -30,6 +30,8 @@ namespace BizHawk.Client.Common
 
 		private readonly LuaFunction _function;
 
+		public Action/*?*/ OnRemove { get; set; } = null;
+
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
 			Func<LuaThread> createThreadCallback, ILuaLibraries luaLibraries, string name = null)
 		{

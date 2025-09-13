@@ -13,5 +13,7 @@ namespace BizHawk.Client.Common
 		MemoryCallbackDelegate MemCallback { get; }
 
 		string Name { get; }
+
+		Action OnRemove { get; set; }
 	}
 }

@@ -38,15 +38,7 @@ namespace BizHawk.Client.Common
 		private bool RemoveInner(NamedLuaFunction function, IEmulator emulator)
 		{
 			if (!_functions.Remove(function)) return false;
-			if (emulator.InputCallbacksAvailable())
-			{
-				emulator.AsInputPollable().InputCallbacks.Remove(function.InputCallback);
-			}
-
-			if (emulator.MemoryCallbacksAvailable())
-			{
-				emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
-			}
+			function.OnRemove?.Invoke();
 			return true;
 		}
 
@@ -68,17 +60,7 @@ namespace BizHawk.Client.Common
 		public void Clear(IEmulator emulator)
 		{
 			if (Count is 0) return;
-			if (emulator.InputCallbacksAvailable())
-			{
-				emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.InputCallback));
-			}
-
-			if (emulator.MemoryCallbacksAvailable())
-			{
-				var memoryCallbacks = emulator.AsDebuggable().MemoryCallbacks;
-				memoryCallbacks.RemoveAll(_functions.Select(w => w.MemCallback));
-			}
-
+			foreach (var function in _functions) function.OnRemove?.Invoke();
 			_functions.Clear();
 			Changed();
 		}
