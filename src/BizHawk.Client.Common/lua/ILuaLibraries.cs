@@ -6,8 +6,6 @@ namespace BizHawk.Client.Common
 	{
 		LuaDocumentation Docs { get; }
 
-		string EngineName { get; }
-
 		/// <remarks>pretty hacky... we don't want a lua script to be able to restart itself by rebooting the core</remarks>
 		bool IsRebootingCore { get; set; }
 

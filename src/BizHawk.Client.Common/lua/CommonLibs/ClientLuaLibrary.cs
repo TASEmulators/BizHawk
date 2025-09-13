@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("get_lua_engine", "returns the name of the Lua engine currently in use")]
 		public string GetLuaEngine()
-			=> _luaLibsImpl.EngineName;
+			=> "NLua+Lua";
 
 		[LuaMethodExample("client.invisibleemulation( true );")]
 		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]

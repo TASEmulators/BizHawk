@@ -172,8 +172,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
 
-		public string EngineName => "NLua+Lua";
-
 		public bool IsRebootingCore { get; set; }
 
 		public bool IsUpdateSupressed { get; set; }
