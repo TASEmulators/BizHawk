@@ -125,7 +125,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
 			{
+				bool smga = _shouldMoveGreenArrow;
 				StopSeeking();
+				_shouldMoveGreenArrow = smga;
 			}
 			UpdateProgressBar();
 		}
@@ -168,7 +170,6 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			StopSeeking();
 			if (CurrentTasMovie?.Changes is not true) return true;
 			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
 				caption: "Closing with Unsaved Changes",

@@ -4438,8 +4438,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (isRewinding)
 					{
-						runFrame = Emulator.Frame > 1; // TODO: the master should be deciding this!
-						rewindTool.Rewind();
+						runFrame = rewindTool.Rewind();
 					}
 				}
 				else
