@@ -285,7 +285,6 @@ namespace BizHawk.Client.EmuHawk
 		private void UndoMenuItem_Click(object sender, EventArgs e)
 		{
 			CurrentTasMovie.ChangeLog.Undo();
-			_extendNeedsMerge = false;
 		}
 
 		private void RedoMenuItem_Click(object sender, EventArgs e)

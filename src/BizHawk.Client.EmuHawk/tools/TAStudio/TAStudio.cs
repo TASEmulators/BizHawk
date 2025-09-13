@@ -607,6 +607,7 @@ namespace BizHawk.Client.EmuHawk
 			ResumeLayout();
 			if (result)
 			{
+				_lastRecordAction = -1;
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
@@ -892,9 +893,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void OnPauseToggle(bool newPauseState)
 		{
-			// Consecutively recorded frames are merged into one undo action, until we pause.
-			// Then a new undo action should be used.
-			if (newPauseState) _extendNeedsMerge = false;
+			// On pause, interrupt merging of recorded frames.
+			if (newPauseState) _lastRecordAction = -1;
 		}
 
 		private void SetSplicer()

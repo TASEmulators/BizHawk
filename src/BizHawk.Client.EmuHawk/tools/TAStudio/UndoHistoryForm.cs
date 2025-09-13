@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HistoryView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = column.Name == UndoColumnName
-				? Log.Names[index]
+				? Log.GetActionName(index)
 				: index.ToString();
 		}
 
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			HistoryView.RowCount = Log.Names.Count;
+			HistoryView.RowCount = Log.Count;
 			if (AutoScrollCheck.Checked && _lastUndoAction != Log.UndoIndex)
 			{
 				HistoryView.ScrollToIndex(Math.Max(Log.UndoIndex, 0));
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UndoButton_Click(object sender, EventArgs e)
 		{
-			_tastudio.UndoExternal();
+			Log.Undo();
 		}
 
 		private void RedoButton_Click(object sender, EventArgs e)
@@ -87,8 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				while (Log.UndoIndex > index)
 				{
-					// Although we have a reference to the Log, TAStudio needs to do a little extra on undo.
-					_tastudio.UndoExternal();
+					Log.Undo();
 				}
 			});
 

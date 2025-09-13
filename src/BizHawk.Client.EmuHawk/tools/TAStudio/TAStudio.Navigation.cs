@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void GoToFrame(int frame, bool OnLeftMouseDown = false)
 		{
+			_lastRecordAction = -1;
 			if (frame == Emulator.Frame)
 			{
 				return;

@@ -6,8 +6,21 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieChangeLog
 	{
-		List<string> Names { get; }
+		/// <summary>
+		/// The index of the action that would be undone, in the undo history list. If there is nothing to undo, -1.
+		/// </summary>
 		int UndoIndex { get; }
+
+		/// <summary>
+		/// The Id of the most recent recorded action.
+		/// <br/>This is different from index. IDs don't change and are never reused.
+		/// </summary>
+		int MostRecentId { get; }
+
+		/// <summary>
+		/// The total number of actions currently recorded.
+		/// </summary>
+		int Count { get; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the movie is recording action history.
@@ -32,10 +45,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void EndBatch();
 
+		string GetActionName(int index);
+
 		/// <summary>
-		/// Combine the last two undo actions, making them part of one batch action.
+		/// Combine two undo actions, making them part of one batch action.
+		/// The actions will be merged into the first one, which will keep its original name and id.
+		/// Use action IDs, not indexes.
 		/// </summary>
-		void MergeLastActions();
+		/// <param name="action1_id">The first action. Must have happened before action2.</param>
+		/// <param name="action2_id">The second action. Must have happened after action1.</param>
+		/// <returns>True if the actions were merged, or the second action doesn't exist. False otherwise.</returns>
+		bool MergeActions(int action1_id, int action2_id);
 
 		/// <summary>
 		/// Undoes the most recent action batch, if any exist.
@@ -69,7 +89,14 @@ namespace BizHawk.Client.Common
 			_movie = movie;
 		}
 
-		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
+		private class UndoItem
+		{
+			public List<IMovieAction> actions;
+			public string name;
+			public int id;
+		}
+
+		private readonly List<UndoItem> _history = new();
 		private readonly ITasMovie _movie;
 
 		private int _maxSteps = 1000;
@@ -77,10 +104,11 @@ namespace BizHawk.Client.Common
 		private bool _recordingBatch;
 
 		private List<IMovieAction> LatestBatch
-			=> _history[_history.Count - 1];
+			=> _history[_history.Count - 1].actions;
 
-		public List<string> Names { get; } = new List<string>();
 		public int UndoIndex { get; private set; } = -1;
+		public int MostRecentId => _totalSteps;
+		public int Count => _history.Count;
 
 		public int MaxSteps
 		{
@@ -105,7 +133,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_history.RemoveRange(0, upTo);
-			Names.RemoveRange(0, upTo);
 			UndoIndex -= upTo;
 			if (UndoIndex < -1)
 			{
@@ -121,7 +148,6 @@ namespace BizHawk.Client.Common
 		private void TruncateLog(int from)
 		{
 			_history.RemoveRange(from, _history.Count - from);
-			Names.RemoveRange(from, Names.Count - from);
 
 			if (UndoIndex < _history.Count - 1)
 			{
@@ -179,7 +205,6 @@ namespace BizHawk.Client.Common
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
 				_history.RemoveAt(_history.Count - 1);
-				Names.RemoveAt(Names.Count - 1);
 				UndoIndex--;
 			}
 			else
@@ -188,15 +213,24 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void MergeLastActions()
+		public string GetActionName(int index)
 		{
-			Debug.Assert(UndoIndex + 1 == _history.Count, "Don't merge the last actions if they aren't the last actions.");
-			Debug.Assert(_history.Count > 1, "Don't merge when there aren't actions to merge.");
+			return _history[index].name;
+		}
 
-			_history[_history.Count - 2].AddRange(_history[_history.Count - 1]);
+		public bool MergeActions(int action1, int action2)
+		{
+			int index2 = _history.FindLastIndex(item => item.id == action2);
+			if (index2 == -1) return true; // second action doesn't exist (perhaps it was already merged, or deleted for being a no-op)
+			if (index2 == 0) return false;
+			int index1 = index2 - 1;
+			if (_history[index1].id != action1) return false;
+
+			_history[index1].actions.AddRange(_history[index2].actions);
 			_history.RemoveAt(_history.Count - 1);
-			Names.RemoveAt(Names.Count - 1);
 			UndoIndex--;
+
+			return true;
 		}
 
 		public void Undo()
@@ -206,7 +240,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			List<IMovieAction> batch = _history[UndoIndex];
+			List<IMovieAction> batch = _history[UndoIndex].actions;
 			UndoIndex--;
 
 			bool wasRecording = IsRecording;
@@ -229,7 +263,7 @@ namespace BizHawk.Client.Common
 			}
 
 			UndoIndex++;
-			List<IMovieAction> batch = _history[UndoIndex];
+			List<IMovieAction> batch = _history[UndoIndex].actions;
 
 			bool wasRecording = IsRecording;
 			IsRecording = false;
@@ -255,9 +289,12 @@ namespace BizHawk.Client.Common
 			if (name.Length is 0) name = $"Undo step {_totalSteps}";
 			if (!_recordingBatch)
 			{
-				_history.Add(new List<IMovieAction>(1));
-				Names.Add(name);
-				_totalSteps += 1;
+				_totalSteps++;
+				UndoItem item = new();
+				item.actions = new List<IMovieAction>(1);
+				item.name = name;
+				item.id = _totalSteps;
+				_history.Add(item);
 
 				if (_history.Count <= MaxSteps)
 				{
@@ -266,7 +303,6 @@ namespace BizHawk.Client.Common
 				else
 				{
 					_history.RemoveAt(0);
-					Names.RemoveAt(0);
 				}
 			}
 		}

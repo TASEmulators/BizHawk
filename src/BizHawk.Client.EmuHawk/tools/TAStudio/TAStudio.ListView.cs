@@ -795,8 +795,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GreenzoneInvalidatedCallback?.Invoke(frame); // lua callback
 
+			// Recording multiple frames, or auto-extending the movie, while unpaused should count as a single undo action.
+			if (CurrentTasMovie.LastEditWasRecording && !MainForm.EmulatorPaused)
+			{
+				IMovieChangeLog log = CurrentTasMovie.ChangeLog;
+				if (_lastRecordAction == -1)
+				{
+					_lastRecordAction = log.MostRecentId;
+				}
+				else
+				{
+					bool merged = log.MergeActions(_lastRecordAction, log.MostRecentId);
+					if (!merged) _lastRecordAction = log.MostRecentId;
+				}
+			}
+			else
+			{
+				_lastRecordAction = -1;
+			}
+
 			if (CurrentTasMovie.LastEditWasRecording)
 			{
+				// With any recording edit, we don't need to do anything more here.
 				return false;
 			}
 
