@@ -1,6 +1,6 @@
 ﻿using BizHawk.Common;
 
-namespace BizHawk.Tests.Client.Common;
+namespace BizHawk.Tests.Common;
 
 [TestClass]
 public class ArrayConversionTests

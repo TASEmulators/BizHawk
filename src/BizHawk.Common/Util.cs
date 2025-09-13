@@ -159,79 +159,11 @@ namespace BizHawk.Common
 			return ret;
 		}
 
-		public static double[] ToDoubleBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, double>(buf).ToArray();
-		}
-
-		public static float[] ToFloatBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, float>(buf).ToArray();
-		}
-
-		/// <remarks>Each set of 4 elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each set is interpreted as the LSB, with the 4th being the MSB. Elements are used as raw bits without regard for sign.</remarks>
-		public static int[] ToIntBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, int>(buf).ToArray();
-		}
-
-		/// <remarks>Each pair of elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each pair is interpreted as the LSB. Elements are used as raw bits without regard for sign.</remarks>
-		public static short[] ToShortBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, short>(buf).ToArray();
-		}
-
 		public static byte[] ToUByteBuffer(this bool[] buf)
 		{
 			var ret = new byte[buf.Length];
 			for (int i = 0, len = buf.Length; i != len; i++) ret[i] = buf[i] ? (byte) 1 : (byte) 0;
 			return ret;
-		}
-
-		public static byte[] ToUByteBuffer(this double[] buf)
-		{
-			return MemoryMarshal.Cast<double, byte>(buf).ToArray();
-		}
-
-		public static byte[] ToUByteBuffer(this float[] buf)
-		{
-			return MemoryMarshal.Cast<float, byte>(buf).ToArray();
-		}
-
-		/// <remarks>Each element of <paramref name="buf"/> becomes 4 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
-		public static byte[] ToUByteBuffer(this int[] buf)
-		{
-			return MemoryMarshal.Cast<int, byte>(buf).ToArray();
-		}
-
-		/// <remarks>Each element of <paramref name="buf"/> becomes 2 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
-		public static byte[] ToUByteBuffer(this short[] buf)
-		{
-			return MemoryMarshal.Cast<short, byte>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToUByteBuffer(int[])"/>
-		public static byte[] ToUByteBuffer(this uint[] buf)
-		{
-			return MemoryMarshal.Cast<uint, byte>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToUByteBuffer(short[])"/>
-		public static byte[] ToUByteBuffer(this ushort[] buf)
-		{
-			return MemoryMarshal.Cast<ushort, byte>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToIntBuffer"/>
-		public static uint[] ToUIntBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, uint>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToShortBuffer"/>
-		public static ushort[] ToUShortBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, ushort>(buf).ToArray();
 		}
 
 		/// <summary>Tries really hard to keep the contents of <paramref name="desiredPath"/> saved (as <paramref name="backupPath"/>) while freeing that path to be used for a new file.</summary>
