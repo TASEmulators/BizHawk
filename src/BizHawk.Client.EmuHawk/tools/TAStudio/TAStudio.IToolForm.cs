@@ -111,7 +111,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
 			{
+				bool smga = _shouldMoveGreenArrow;
 				StopSeeking();
+				_shouldMoveGreenArrow = smga;
 			}
 			UpdateProgressBar();
 		}

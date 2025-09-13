@@ -67,29 +67,11 @@ namespace BizHawk.Client.EmuHawk
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternAxis[] AxisPatterns;
 
-		private void StartSeeking(int frame)
-		{
-			if (frame <= Emulator.Frame)
-			{
-				return;
-			}
-
-			_seekStartFrame = Emulator.Frame;
-			_seekingByEdit = false;
-
-			_seekingTo = frame;
-			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
-			MainForm.UnpauseEmulator();
-
-			if (_seekingTo - _seekStartFrame > 1)
-			{
-				MessageStatusLabel.Text = "Seeking...";
-				ProgressBar.Visible = true;
-			}
-		}
-
 		public void StopSeeking(bool skipRecModeCheck = false)
 		{
+			_shouldMoveGreenArrow = true;
+			if (_seekingTo == -1) return;
+
 			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
@@ -102,26 +84,6 @@ namespace BizHawk.Client.EmuHawk
 			if (_pauseAfterSeeking)
 			{
 				MainForm.PauseEmulator();
-			}
-
-			if (CurrentTasMovie != null)
-			{
-				RefreshDialog();
-				UpdateProgressBar();
-			}
-		}
-
-		private void CancelSeek()
-		{
-			_shouldMoveGreenArrow = true;
-			_seekingByEdit = false;
-			_seekingTo = -1;
-			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
-			_pauseAfterSeeking = false;
-			if (WasRecording)
-			{
-				TastudioRecordMode();
-				WasRecording = false;
 			}
 
 			RefreshDialog();
@@ -846,19 +808,19 @@ namespace BizHawk.Client.EmuHawk
 					if (_shouldMoveGreenArrow)
 					{
 						RestorePositionFrame = _seekingTo != -1 ? _seekingTo : Emulator.Frame;
-						// Green arrow should not move again until the user changes frame.
-						// This means any state load or unpause/frame advance/seek, that is not caused by an input edit.
-						// This is so that the user can make multiple edits with auto restore off, in any order, before a manual restore.
-						_shouldMoveGreenArrow = false;
 					}
 
-					_seekingByEdit = true; // must be before GoToFrame (it will load a state, and state loading checks _seekingByEdit)
 					GoToFrame(frame);
 					if (Settings.AutoRestoreLastPosition)
 					{
 						RestorePosition();
 					}
-					_seekingByEdit = true; // must be after GoToFrame & RestorePosition too (they'll set _seekingByEdit to false)
+					_seekingByEdit = true; // must be after GoToFrame & RestorePosition (they'll set _seekingByEdit to false)
+
+					// Green arrow should not move again until the user changes frame.
+					// This means any state load or unpause/frame advance/seek, that is not caused by an input edit.
+					// This is so that the user can make multiple edits with auto restore off, in any order, before a manual restore.
+					_shouldMoveGreenArrow = false;
 
 					needsRefresh = false; // Refresh will happen via GoToFrame.
 				}

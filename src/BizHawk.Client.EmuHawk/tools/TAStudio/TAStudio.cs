@@ -1156,7 +1156,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Truncate(branch.Frame);
 			}
 
-			CancelSeek();
+			StopSeeking();
 			RefreshDialog();
 		}
 	}
