@@ -18,6 +18,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			int changedUndoLength = movie.ChangeLog.UndoIndex;
 			int firstEditedFrame = originalLog.DivergentPoint(changedLog) ?? movie.InputLogLength;
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			if (!skipUndoIndexCheck)
 				Assert.AreEqual(originalUndoLength + expectedUndoItems, changedUndoLength);
 
@@ -41,6 +42,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				movie.ChangeLog.Redo();
 			Assert.AreEqual(firstEditedFrame, invalidateFrame);
 			Assert.IsNull(changedLog.DivergentPoint(movie.GetLogEntries()));
+#pragma warning restore BHI1600
 
 			movie.GreenzoneInvalidated = oldInvalidated;
 		}
@@ -218,6 +220,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			});
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void MarkersGetMoved()
 		{
@@ -269,6 +272,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(5, movie.Markers[0].Frame);
 			Assert.AreEqual(8, movie.Markers[1].Frame);
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void AllOperationsRespectBatching()
@@ -295,7 +299,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 					movie.SetFrame(0, entryA);
 					movie.ChangeLog.EndBatch();
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 					Assert.AreEqual(1, movie.ChangeLog.UndoIndex - beginIndex);
+#pragma warning restore BHI1600
 				});
 		}
 
@@ -311,7 +317,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 			int beginIndex = 0;
 			TasMovieTests.TestAllOperations(movie,
 				() => beginIndex = movie.ChangeLog.UndoIndex,
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 				() => Assert.AreEqual(1, movie.ChangeLog.UndoIndex - beginIndex)
+#pragma warning restore BHI1600
 			);
 		}
 
@@ -331,6 +339,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			}, 1, true);
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void UndoingMidBatchRetainsBatchState()
 		{
@@ -436,5 +445,6 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(3, movie.Markers[0].Frame);
 			Assert.IsFalse(movie.BindMarkersToInput);
 		}
+#pragma warning restore BHI1600
 	}
 }

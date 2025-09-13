@@ -23,6 +23,7 @@ namespace BizHawk.Tests.Client.Common.Display
 			_axisController.Definition.BuildMnemonicsCache(VSystemID.Raw.NULL);
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void Generate_BoolPressed_GeneratesMnemonic()
 		{
@@ -53,5 +54,6 @@ namespace BizHawk.Tests.Client.Common.Display
 			var actual = Bk2InputDisplayGenerator.Generate(_axisController);
 			Assert.AreEqual("          0,", actual);
 		}
+#pragma warning restore BHI1600
 	}
 }

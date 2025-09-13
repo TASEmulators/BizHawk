@@ -92,6 +92,7 @@ namespace BizHawk.Tests.Client.Common
 			return context;
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void BasicControllerInput()
 		{
@@ -515,5 +516,6 @@ namespace BizHawk.Tests.Client.Common
 
 			Assert.IsTrue(sawUnboundInput);
 		}
+#pragma warning restore BHI1600
 	}
 }

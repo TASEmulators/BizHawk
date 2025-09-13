@@ -8,6 +8,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[TestMethod]
 		public void TesCleanHex()
 		{
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.AreEqual("0123456789ABCDEFABCDEF", "0123456789ABCDEFabcdef".CleanHex());
 			Assert.AreEqual("ABCDEF", "0xABCDEF".CleanHex());
 			Assert.AreEqual("ABCDEF", "$ABCDEF".CleanHex());
@@ -21,6 +22,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual(string.Empty, "$$ABCDEF".CleanHex());
 			Assert.AreEqual(string.Empty, "ABCDEF$".CleanHex());
 			Assert.AreEqual(string.Empty, "A!B.C(DE)F".CleanHex());
+#pragma warning restore BHI1600
 		}
 	}
 }

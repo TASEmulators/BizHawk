@@ -17,6 +17,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 
 		private static object? ExpectedValue { get; set; }
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[LuaMethod("pass_object", "")]
 		public static void PassObject(object? o)
 			=> Assert.IsTrue(o == ExpectedValue);
@@ -157,6 +158,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 				}
 			}
 		}
+#pragma warning restore BHI1600
 
 		private static object? ReturnValue { get; set; }
 
@@ -252,6 +254,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			}
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void Lua_Return_Nil()
 		{
@@ -377,6 +380,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			Assert.IsTrue((double)table["bar"] == 0.0);
 			Assert.IsTrue((double)table["foo"] == 1.0);
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void Lua_Argument_Nil()
@@ -458,6 +462,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_callback(function(foo) pass_bool(foo[\"foo\"] == 0.123) pass_bool(foo[\"bar\"] == 0.321) end)");
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void Net_Return_Nullable()
 		{
@@ -582,6 +587,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ReturnValue = -123.0M;
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_decimal() == -123.0")[0]);
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void Net_Return_IntPtr()
@@ -599,6 +605,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_uintptr(return_uintptr())");
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void Net_Return_Char()
 		{
@@ -621,6 +628,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ReturnValue = "こんにちは";
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_string() == \"こんにちは\"")[0]);
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void Net_Return_Color()
@@ -629,6 +637,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_color(return_color())");
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void Net_Return_Table_FromList()
 		{
@@ -657,6 +666,7 @@ namespace BizHawk.Tests.Client.Common.Lua
 			ReturnValue = LuaInstance.DoString("return function() return 0.123 end")[0];
 			Assert.IsTrue((bool)LuaInstance.DoString("print(return_callback()) return return_callback()() == 0.123")[0]);
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void Net_Argument_Nullable()

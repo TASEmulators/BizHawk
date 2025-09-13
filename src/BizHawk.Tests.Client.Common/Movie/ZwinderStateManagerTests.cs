@@ -53,6 +53,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 		private IStatable CreateStateSource() => new StateSource {PaddingData = new byte[1000]};
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void SaveCreateRoundTrip()
 		{
@@ -452,6 +453,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(1, zw.AllStates().Count());
 			Assert.AreEqual(0, zw.AllStates().Single().Frame);
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void WhatIfTheHeadStateWrapsAround()
@@ -477,6 +479,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			zw.SaveStateBinary(new BinaryWriter(new MemoryStream()));
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void TestReadByteCorruption()
 		{
@@ -560,6 +563,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.AreEqual(4, state.Size);
 			Assert.AreEqual(1, state.GetReadStream().ReadByte());
 		}
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void BufferStressTest()

@@ -22,6 +22,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			_axisController.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void GenerateLogEntry_ExclamationForUnknownButtons()
 		{
@@ -54,5 +55,6 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var actual = Bk2LogEntryGenerator.GenerateLogEntry(_axisController);
 			Assert.AreEqual("|    0,    0,|", actual);
 		}
+#pragma warning restore BHI1600
 	}
 }

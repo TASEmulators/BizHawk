@@ -64,6 +64,7 @@ namespace BizHawk.Tests.Emulation.Common
 			var activeChangedInvoked = false;
 			_memoryCallbackSystem.ActiveChanged += () => activeChangedInvoked = true;
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.IsFalse(_memoryCallbackSystem.HasReads);
 			Assert.IsFalse(_memoryCallbackSystem.HasWrites);
 			Assert.IsFalse(_memoryCallbackSystem.HasExecutes);
@@ -108,6 +109,7 @@ namespace BizHawk.Tests.Emulation.Common
 			Assert.IsFalse(_memoryCallbackSystem.HasReads);
 			Assert.IsFalse(_memoryCallbackSystem.HasWrites);
 			Assert.IsFalse(_memoryCallbackSystem.HasExecutes);
+#pragma warning restore BHI1600
 		}
 
 		[TestMethod]

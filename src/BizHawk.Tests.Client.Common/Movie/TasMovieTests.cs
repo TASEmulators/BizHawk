@@ -70,6 +70,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			TestForSingleOperation(() => movie.SetAxisStates(15, 2, "Stick", 20));
 		}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void AllOperationsFlagChanges()
 		{
@@ -93,5 +94,6 @@ namespace BizHawk.Tests.Client.Common.Movie
 				() => Assert.AreEqual(1, invalidations)
 			);
 		}
+#pragma warning restore BHI1600
 	}
 }

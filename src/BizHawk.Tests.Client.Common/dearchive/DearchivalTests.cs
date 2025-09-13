@@ -26,7 +26,9 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 		private byte[] Rom => _rom.Value;
 
 		[TestMethod]
+#pragma warning disable BHI1600 // wants message argument
 		public void SanityCheck() => Assert.AreEqual("SHA1:70DCA8E791878BDD32426391E4233EA52B47CDD1", SHA1Checksum.ComputePrefixedHex(Rom));
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void TestSharpCompress()

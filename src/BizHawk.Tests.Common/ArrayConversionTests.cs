@@ -12,6 +12,7 @@ public class ArrayConversionTests
 		byte[] testArray = [ 1, 250, 128, 127, 0, 42, 100, 200, 15 ];
 
 		bool[] convertedBoolArray = testArray.ToBoolBuffer();
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		CollectionAssert.AreEqual(controlArray, testArray); // ensure testArray hasn't been altered
 		CollectionAssert.AreEqual(new[] { true, true, true, true, false, true, true, true, true }, convertedBoolArray);
 
@@ -38,6 +39,7 @@ public class ArrayConversionTests
 		double[] convertedDoubleArray = testArray.ToDoubleBuffer();
 		CollectionAssert.AreEqual(controlArray, testArray); // ensure testArray hasn't been altered
 		CollectionAssert.AreEqual(new[] { -5.4891820002610661E+40 }, convertedDoubleArray);
+#pragma warning restore BHI1600
 	}
 
 	[TestMethod]
@@ -47,10 +49,13 @@ public class ArrayConversionTests
 		bool[] testArray = [ true, false, false, false, true, true ];
 
 		byte[] convertedArray = testArray.ToUByteBuffer();
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 		CollectionAssert.AreEqual(controlArray, testArray); // ensure the array hasn't been altered
 		CollectionAssert.AreEqual(new byte[] { 1, 0, 0, 0, 1, 1 }, convertedArray);
+#pragma warning restore BHI1600
 	}
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 	[TestMethod]
 	public void TestFromShortArrayConversion()
 	{
@@ -116,4 +121,5 @@ public class ArrayConversionTests
 		CollectionAssert.AreEqual(controlArray, testArray); // ensure the array hasn't been altered
 		CollectionAssert.AreEqual(new byte[] { 244, 86, 42, 222, 164, 86, 122, 190, 19, 75, 242, 94, 186, 128, 86, 126 }, convertedArray);
 	}
+#pragma warning restore BHI1600
 }

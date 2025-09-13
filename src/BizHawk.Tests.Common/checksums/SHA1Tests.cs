@@ -14,7 +14,9 @@ namespace BizHawk.Tests.Common.checksums
 			byte[] data = [ ]; // empty data
 			byte[] expectedSha = [ 0xDA, 0x39, 0xA3, 0xEE, 0x5E, 0x6B, 0x4B, 0x0D, 0x32, 0x55, 0xBF, 0xEF, 0x95, 0x60, 0x18, 0x90, 0xAF, 0xD8, 0x07, 0x09 ];
 
+#pragma warning disable BHI1600 // wants message argument
 			CollectionAssert.AreEqual(expectedSha, SHA1Checksum.Compute(data));
+#pragma warning restore BHI1600
 		}
 
 		[TestMethod]

@@ -18,12 +18,15 @@ namespace BizHawk.Tests.Common.StringExtensions
 		{
 			var strArray = new[] { "Hello World" };
 			var actual = "hello world".In(strArray);
+#pragma warning disable BHI1600 // wants message argument
 			Assert.IsTrue(actual);
+#pragma warning restore BHI1600
 		}
 
 		[TestMethod]
 		public void TestRemovePrefix()
 		{
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.AreEqual("bcdef", abcdef.RemovePrefix('a', qrs));
 			Assert.AreEqual(string.Empty, "a".RemovePrefix('a', qrs));
 			Assert.AreEqual(qrs, abcdef.RemovePrefix('c', qrs));
@@ -38,11 +41,13 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual(qrs, abcdef.RemovePrefix("c", qrs));
 			Assert.AreEqual(qrs, abcdef.RemovePrefix("x", qrs));
 			Assert.AreEqual(qrs, string.Empty.RemovePrefix("abc", qrs));
+#pragma warning restore BHI1600
 		}
 
 		[TestMethod]
 		public void TestRemoveSuffix()
 		{
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.AreEqual("abc", abcdef.RemoveSuffix("def", qrs));
 			Assert.AreEqual("abcde", abcdef.RemoveSuffix("f", qrs));
 			Assert.AreEqual(abcdef, abcdef.RemoveSuffix(string.Empty, qrs));
@@ -51,6 +56,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual(qrs, abcdef.RemoveSuffix("d", qrs));
 			Assert.AreEqual(qrs, abcdef.RemoveSuffix("x", qrs));
 			Assert.AreEqual(qrs, string.Empty.RemoveSuffix("def", qrs));
+#pragma warning restore BHI1600
 		}
 
 		[DataRow(0, null)]
@@ -61,7 +67,9 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[DataRow(unchecked((int) 0xC74DE200), "Hello, world!!!")]
 		[TestMethod]
 		public void TestStableStringHashCases(int expected, string? str)
+#pragma warning disable BHI1600 //TODO disambiguate assert call
 			=> Assert.AreEqual(expected, str!.StableStringHash());
+#pragma warning restore BHI1600
 
 		[TestMethod]
 		public void TestStableStringHashInjective()
@@ -85,6 +93,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[TestMethod]
 		public void TestSubstringAfter()
 		{
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.AreEqual("def", abcdef.SubstringAfter("bc", qrs));
 			Assert.AreEqual(abcdef, abcdef.SubstringAfter(string.Empty, qrs));
 			Assert.AreEqual(string.Empty, abcdef.SubstringAfter(abcdef, qrs));
@@ -93,6 +102,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.AreEqual("abcdab", "abcdabcdab".SubstringAfter("cd", qrs));
 			Assert.AreEqual(qrs, abcdef.SubstringAfter("x", qrs));
 			Assert.AreEqual(qrs, string.Empty.SubstringAfter("abc", qrs));
+#pragma warning restore BHI1600
 		}
 
 		[TestMethod]
@@ -100,13 +110,16 @@ namespace BizHawk.Tests.Common.StringExtensions
 		{
 			// fewer tests for SubstringAfterLast as its implementation should match SubstringAfter, save for using LastIndexOf
 
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.AreEqual("ab", "abcdabcdab".SubstringAfterLast('d', qrs));
 			Assert.AreEqual(qrs, "abcdabcdab".SubstringAfterLast('x', qrs));
+#pragma warning restore BHI1600
 		}
 
 		[TestMethod]
 		public void TestSubstringBefore()
 		{
+#pragma warning disable BHI1600 //TODO disambiguate assert calls
 			Assert.AreEqual("abc", abcdef.SubstringBefore('d', qrs));
 			Assert.AreEqual(string.Empty, abcdef.SubstringBefore('a', qrs));
 			Assert.AreEqual(string.Empty, "a".SubstringBefore('a', qrs));
@@ -118,6 +131,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 
 			Assert.AreEqual("abcdabc", "abcdabcdab".SubstringBeforeLast('d', qrs));
 			Assert.AreEqual(qrs, "abcdabcdab".SubstringBeforeLast('x', qrs));
+#pragma warning restore BHI1600
 		}
 	}
 }

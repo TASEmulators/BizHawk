@@ -16,7 +16,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void ParseTasMovieVersion(string movieVersion, double expected)
 		{
 			var actual = MovieService.ParseTasMovieVersion(movieVersion);
+#pragma warning disable BHI1600 // wants message argument
 			Assert.AreEqual(expected, actual);
+#pragma warning restore BHI1600
 		}
 	}
 }
