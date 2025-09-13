@@ -2,10 +2,21 @@ using System.Threading;
 
 using BizHawk.Emulation.Common;
 
+using NLua;
+
 namespace BizHawk.Client.Common
 {
 	public abstract class LuaLibraryBase
 	{
+		public delegate INamedLuaFunction NLFAddCallback(
+			LuaFunction function,
+			string theEvent,
+			Action<string> logCallback,
+			LuaFile luaFile,
+			string name = null);
+
+		public delegate bool NLFRemoveCallback(Func<INamedLuaFunction, bool> predicate);
+
 		public PathEntryCollection PathEntries { get; set; }
 
 		protected LuaLibraryBase(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)

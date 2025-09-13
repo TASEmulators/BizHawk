@@ -13,6 +13,8 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to Doom games (functions may not run when a Doom game is not loaded)")]
 	public sealed class DoomLuaLibrary : LuaLibraryBase
 	{
+		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+
 		public DoomLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) { }
 
@@ -41,7 +43,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.RandomCallbacks;
-			var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
 			callbacks.Add(nlf.RandomCallback);
 			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
 			return nlf.GuidStr;
