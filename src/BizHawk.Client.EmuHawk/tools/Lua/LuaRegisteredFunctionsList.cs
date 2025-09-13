@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = _registeredFunctions[guid];
-					_registeredFunctions.Remove(nlf, _mainForm.Emulator);
+					_registeredFunctions.Remove(nlf);
 				}
 
 				PopulateListView();
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			_registeredFunctions.Clear(_mainForm.Emulator);
+			_registeredFunctions.Clear();
 			PopulateListView();
 		}
 

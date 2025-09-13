@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Client.Common
 {
 	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
@@ -28,27 +26,27 @@ namespace BizHawk.Client.Common
 			Changed();
 		}
 
-		public bool Remove(NamedLuaFunction function, IEmulator emulator)
+		public bool Remove(NamedLuaFunction function)
 		{
-			if (!RemoveInner(function, emulator)) return false;
+			if (!RemoveInner(function)) return false;
 			Changed();
 			return true;
 		}
 
-		private bool RemoveInner(NamedLuaFunction function, IEmulator emulator)
+		private bool RemoveInner(NamedLuaFunction function)
 		{
 			if (!_functions.Remove(function)) return false;
 			function.OnRemove?.Invoke();
 			return true;
 		}
 
-		public void RemoveForFile(LuaFile file, IEmulator emulator)
+		public void RemoveForFile(LuaFile file)
 		{
 			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
 
 			foreach (var function in functionsToRemove)
 			{
-				_ = RemoveInner(function, emulator);
+				_ = RemoveInner(function);
 			}
 
 			if (functionsToRemove.Count != 0)
@@ -57,7 +55,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Clear(IEmulator emulator)
+		public void Clear()
 		{
 			if (Count is 0) return;
 			foreach (var function in _functions) function.OnRemove?.Invoke();

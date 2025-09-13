@@ -1250,9 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
-		{
-			LuaImp.RegisteredFunctions.Clear(Emulator);
-		}
+			=> LuaImp.RegisteredFunctions.Clear();
 
 		public bool LoadByFileExtension(string path, out bool abort)
 		{
@@ -1506,7 +1504,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastScriptUsed = file;
 			if (file.Enabled && file.Thread is null)
 			{
-				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
+				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 			}
 			else if (!file.Enabled && file.Thread is not null)
@@ -1527,7 +1525,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file.Thread is not null)
 			{
 				LuaImp.CallExitEvent(file);
-				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
+				LuaImp.RegisteredFunctions.RemoveForFile(file);
 				file.Stop();
 			}
 		}

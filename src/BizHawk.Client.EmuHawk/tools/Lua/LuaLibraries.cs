@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				closeCallback.Call();
 			}
 
-			RegisteredFunctions.Clear(_mainForm.Emulator);
+			RegisteredFunctions.Clear();
 			ScriptList.Clear();
 			FormsLibrary.DestroyAll();
 			_lua.Dispose();
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var nlf = (NamedLuaFunction)RegisteredFunctions.FirstOrDefault(predicate);
 			if (nlf == null) return false;
-			RegisteredFunctions.Remove(nlf, _mainForm.Emulator);
+			RegisteredFunctions.Remove(nlf);
 			return true;
 		}
 
