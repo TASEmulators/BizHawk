@@ -298,8 +298,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="MDSParseException">header is malformed or identifies file as MDS 2.x, or any track has a DVD mode</exception>
 		public static AFile Parse(FileStream stream)
 		{
-			var isDvd = false;
-
 			var aFile = new AFile { MDSPath = stream.Name };
 
 			stream.Seek(0, SeekOrigin.Begin);
@@ -318,11 +316,9 @@ namespace BizHawk.Emulation.DiscSystem
 				throw new MDSParseException($"MDS Parse Error: Only MDS version 1.x is supported!\nDetected version: {aFile.Header.Version[0]}.{aFile.Header.Version[1]}");
 			}
 
-			isDvd = aFile.Header.Medium is 0x10 or 0x12;
-			if (isDvd)
-			{
-				throw new MDSParseException("DVD Detected. Not currently supported!");
-			}
+			// note that we don't do anything with DVD structures or BCA yet (nothing needs it anyways)
+			// TODO: probably should do some sanity checks here (DVDs should have a single "Mode 1" track with 2048 byte sectors)
+			var isDvd = aFile.Header.Medium is 0x10 or 0x12;
 
 			// parse sessions
 			var aSessions = new Dictionary<int, ASession>();
