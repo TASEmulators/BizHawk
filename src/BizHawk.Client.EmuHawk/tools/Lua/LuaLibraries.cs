@@ -87,14 +87,13 @@ namespace BizHawk.Client.EmuHawk
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
 					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 
-					// TODO: make EmuHawk libraries have a base class with common properties such as this
-					// and inject them here
 					if (instance is ClientLuaLibrary clientLib)
 					{
 						clientLib.MainForm = _mainForm;
 					}
 					else if (instance is ConsoleLuaLibrary consoleLib)
 					{
+						consoleLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
 						consoleLib.Tools = _mainForm.Tools;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}

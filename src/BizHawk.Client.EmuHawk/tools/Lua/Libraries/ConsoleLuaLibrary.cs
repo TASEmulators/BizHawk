@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ConsoleLuaLibrary : LuaLibraryBase
 	{
+		public Lazy<string> AllAPINames { get; set; }
+
 		public ToolManager Tools { get; set; }
 
 		public ConsoleLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
@@ -31,15 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("local stconget = console.getluafunctionslist( );")]
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public string GetLuaFunctionsList()
-		{
-			var list = new StringBuilder();
-			foreach (var function in _luaLibsImpl.Docs)
-			{
-				list.AppendLine(function.Name);
-			}
-
-			return list.ToString();
-		}
+			=> AllAPINames.Value;
 
 		[LuaMethodExample("console.log( \"New log.\" );")]
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
