@@ -4121,10 +4121,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			RA?.OnLoadState(path);
 
-			if (Tools.Has<LuaConsole>())
-			{
-				Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
-			}
+			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.CallStateLoadCallbacks(userFriendlyStateName);
 
 			SetMainformMovieInfo();
 			Tools.UpdateToolsBefore();
@@ -4255,10 +4252,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SaveState(path, quickSlotName, fromLua, suppressOSD);
 
-			if (Tools.Has<LuaConsole>())
-			{
-				Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
-			}
+			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.CallStateSaveCallbacks(quickSlotName);
 		}
 
 		public bool EnsureCoreIsAccurate()

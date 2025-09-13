@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
-		public ILuaLibraries LuaImp { get; private set; }
+		private ILuaLibraries LuaImp;
 
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
@@ -547,6 +547,12 @@ namespace BizHawk.Client.EmuHawk
 			ClearOutputWindow();
 			return result;
 		}
+
+		public void CallStateLoadCallbacks(string userFriendlyStateName)
+			=> LuaImp.CallLoadStateEvent(userFriendlyStateName);
+
+		public void CallStateSaveCallbacks(string userFriendlyStateName)
+			=> LuaImp.CallSaveStateEvent(userFriendlyStateName);
 
 		protected override void UpdateBefore()
 		{
