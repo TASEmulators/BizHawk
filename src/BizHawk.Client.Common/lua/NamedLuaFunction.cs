@@ -37,7 +37,6 @@ namespace BizHawk.Client.Common
 			Name = name ?? "Anonymous";
 			Event = theEvent;
 			CreateThreadCallback = createThreadCallback;
-			LuaLibraries = luaLibraries;
 
 			// When would a file be null?
 			// When a script is loaded with a callback, but no infinite loop so it closes
@@ -70,26 +69,26 @@ namespace BizHawk.Client.Common
 			};
 			InputCallback = () =>
 			{
-				LuaLibraries.IsInInputOrMemoryCallback = true;
+				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
 					Callback(Array.Empty<object>());
 				}
 				finally
 				{
-					LuaLibraries.IsInInputOrMemoryCallback = false;
+					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
 			MemCallback = (addr, val, flags) =>
 			{
-				LuaLibraries.IsInInputOrMemoryCallback = true;
+				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
 					return Callback([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
 				}
 				finally
 				{
-					LuaLibraries.IsInInputOrMemoryCallback = false;
+					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
 		}
@@ -113,11 +112,6 @@ namespace BizHawk.Client.Common
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }
-
-		/// <summary>
-		/// HACK
-		/// </summary>
-		private ILuaLibraries LuaLibraries { get; }
 
 		private Func<LuaThread> CreateThreadCallback { get; }
 
