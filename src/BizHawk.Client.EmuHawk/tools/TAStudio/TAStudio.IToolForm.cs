@@ -156,7 +156,6 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			StopSeeking();
 			if (CurrentTasMovie?.Changes is not true) return true;
 			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
 				caption: "Closing with Unsaved Changes",
