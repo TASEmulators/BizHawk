@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		author: "Libretro Team",
 		portedVersion: "2025.03.08 (67a29e6)",
 		portedUrl: "https://github.com/libretro/opera-libretro",
-		isReleased: false)]
+		isReleased: true)]
 	public partial class Opera : WaterboxCore
 	{
 		private static readonly Configuration ConfigNTSC = new()
