@@ -3829,7 +3829,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Config.RecentRoms.Add(openAdvancedArgs);
-					if (!OSTailoredCode.IsUnixHost) JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.NewMovieQueued)
@@ -3891,6 +3890,12 @@ namespace BizHawk.Client.EmuHawk
 					ExtToolManager.BuildToolStrip();
 
 					RomLoaded?.Invoke(this, EventArgs.Empty);
+
+					// Some window messages like paints may be dispatched during this function call and before it returns.
+					// Therefore this needs to be called very late after tools have been restarted
+					// to ensure no stale references like disposed cores are being used, see #4436.
+					if (!OSTailoredCode.IsUnixHost) JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
+
 					return true;
 				}
 				else if (Emulator.IsNull())
