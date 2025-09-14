@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+			var dropdownItems = _th.EnumerateAllValues<string>(items).ToList();
 			dropdownItems.Sort();
 
 			var dropdown = new LuaDropDown(dropdownItems);
@@ -1158,7 +1158,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (FindControlWithHandle(handle) is LuaDropDown ldd)
 				{
-					var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+					var dropdownItems = _th.EnumerateAllValues<string>(items).ToList();
 					if (alphabetize) dropdownItems.Sort();
 					ldd.SetItems(dropdownItems);
 				}
