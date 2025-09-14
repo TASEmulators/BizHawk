@@ -45,8 +45,8 @@ namespace BizHawk.Client.EmuHawk
 
 			j.threadsBar.Value = threads;
 			j.compressionBar.Value = compLevel;
-			j.ThreadsBar_Scroll(null, null);
-			j.CompressionBar_Scroll(null, null);
+			j.ThreadsBar_Scroll(null, EventArgs.Empty);
+			j.CompressionBar_Scroll(null, EventArgs.Empty);
 			j.threadLeft.Text = $"{tMin}";
 			j.threadRight.Text = $"{tMax}";
 			j.compressionLeft.Text = $"{cMin}";

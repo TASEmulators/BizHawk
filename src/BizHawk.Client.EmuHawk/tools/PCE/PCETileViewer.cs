@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				checkBoxVDC2.Checked = false;
 			}
 
-			CheckBoxVDC2_CheckedChanged(null, null);
+			CheckBoxVDC2_CheckedChanged(null, EventArgs.Empty);
 		}
 
 		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)

@@ -470,17 +470,39 @@ namespace BizHawk.Client.EmuHawk
 			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text));
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
-		public void ClearFramesExternal() => ClearFramesMenuItem_Click(null, null);
-		public void InsertFrameExternal() => InsertFrameMenuItem_Click(null, null);
-		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
-		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
-		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
-		public void CloneFramesXTimesExternal() => CloneFramesXTimesMenuItem_Click(null, null);
-		public void UndoExternal() => UndoMenuItem_Click(null, null);
-		public void RedoExternal() => RedoMenuItem_Click(null, null);
-		public void SelectBetweenMarkersExternal() => SelectBetweenMarkersMenuItem_Click(null, null);
-		public void SelectAllExternal() => SelectAllMenuItem_Click(null, null);
-		public void ReselectClipboardExternal() => ReselectClipboardMenuItem_Click(null, null);
+
+		public void ClearFramesExternal()
+			=> ClearFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void InsertFrameExternal()
+			=> InsertFrameMenuItem_Click(null, EventArgs.Empty);
+
+		public void InsertNumFramesExternal()
+			=> InsertNumFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void DeleteFramesExternal()
+			=> DeleteFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void CloneFramesExternal()
+			=> CloneFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void CloneFramesXTimesExternal()
+			=> CloneFramesXTimesMenuItem_Click(null, EventArgs.Empty);
+
+		public void UndoExternal()
+			=> UndoMenuItem_Click(null, EventArgs.Empty);
+
+		public void RedoExternal()
+			=> RedoMenuItem_Click(null, EventArgs.Empty);
+
+		public void SelectBetweenMarkersExternal()
+			=> SelectBetweenMarkersMenuItem_Click(null, EventArgs.Empty);
+
+		public void SelectAllExternal()
+			=> SelectAllMenuItem_Click(null, EventArgs.Empty);
+
+		public void ReselectClipboardExternal()
+			=> ReselectClipboardMenuItem_Click(null, EventArgs.Empty);
 
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{

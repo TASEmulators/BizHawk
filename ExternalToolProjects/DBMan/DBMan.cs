@@ -87,8 +87,7 @@ namespace BizHawk.DBManTool
 			if (RomChangesMade())
 			{
 				var result = MessageBox.Show("Save changes?", "Save or Cancel Changes", MessageBoxButtons.YesNo);
-				if (result == DialogResult.Yes)
-					saveButton_Click(null, null);
+				if (result is DialogResult.Yes) saveButton_Click(null, EventArgs.Empty);
 				SelectedRom = null;
 			}
 
@@ -264,7 +263,7 @@ namespace BizHawk.DBManTool
 			}
 			if (keyData == (Keys.S | Keys.Control) && SelectedRom != null) 
 			{
-				saveButton_Click(null, null);
+				saveButton_Click(null, EventArgs.Empty);
 				return true;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);

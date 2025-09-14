@@ -1303,15 +1303,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Delete))
 			{
-				RemoveScriptMenuItem_Click(null, null);
+				RemoveScriptMenuItem_Click(null, EventArgs.Empty);
 			}
 			else if (e.IsCtrl(Keys.A))
 			{
-				SelectAllMenuItem_Click(null, null);
+				SelectAllMenuItem_Click(null, EventArgs.Empty);
 			}
 			else if (e.IsPressed(Keys.F12))
 			{
-				RegisteredFunctionsMenuItem_Click(null, null);
+				RegisteredFunctionsMenuItem_Click(null, EventArgs.Empty);
 			}
 		}
 
@@ -1319,7 +1319,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.F12))
 			{
-				RegisteredFunctionsMenuItem_Click(null, null);
+				RegisteredFunctionsMenuItem_Click(null, EventArgs.Empty);
 			}
 		}
 

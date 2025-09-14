@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewMemory.ChangeBitmapSize(8, 16);
 
 			hScrollBarScanline.Value = 0;
-			hScrollBarScanline_ValueChanged(null, null); // not firing in this case??
+			hScrollBarScanline_ValueChanged(null, EventArgs.Empty); // not firing in this case??
 			radioButtonRefreshFrame.Checked = true;
 
 			KeyPreview = true;

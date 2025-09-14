@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 
 			AVStatusLabel.Visible = false;
 			SetPauseStatusBarIcon();
-			Tools.UpdateCheatRelatedTools(null, null);
+			Tools.UpdateCheatRelatedTools(null, new(null));
 			RebootStatusBarIcon.Visible = false;
 			UpdateNotification.Visible = false;
 			_statusBarDiskLightOnImage = Properties.Resources.LightOn;
@@ -3873,7 +3873,7 @@ namespace BizHawk.Client.EmuHawk
 					CreateRewinder();
 
 					RewireSound();
-					Tools.UpdateCheatRelatedTools(null, null);
+					Tools.UpdateCheatRelatedTools(null, new(null));
 					if (!MovieSession.NewMovieQueued && Config.AutoLoadLastSaveSlot && HasSlot(Config.SaveSlot))
 					{
 						_ = LoadstateCurrentSlot();

@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			LowResLargeScreenshotsCheckbox.Checked = !_config.Savestates.NoLowResLargeScreenshots;
 			BigScreenshotNumeric.Value = _config.Savestates.BigScreenshotSize / 1024;
 
-			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
+			ScreenshotInStatesCheckbox_CheckedChanged(null, EventArgs.Empty);
 		}
 
 		private void ScreenshotInStatesCheckbox_CheckedChanged(object sender, EventArgs e)

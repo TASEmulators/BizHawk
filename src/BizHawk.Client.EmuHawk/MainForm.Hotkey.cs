@@ -285,10 +285,10 @@ namespace BizHawk.Client.EmuHawk
 					ToggleReadOnly();
 					break;
 				case "Play Movie":
-					PlayMovieMenuItem_Click(null, null);
+					PlayMovieMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Record Movie":
-					RecordMovieMenuItem_Click(null, null);
+					RecordMovieMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Stop Movie":
 					StopMovie();
@@ -338,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 					AddOnScreenMessage($"Cheats toggled ({kind})");
 					break;
 				case "TAStudio":
-					TAStudioMenuItem_Click(null, null);
+					TAStudioMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "ToolBox":
 					ToolBoxMenuItem_Click(this, EventArgs.Empty);

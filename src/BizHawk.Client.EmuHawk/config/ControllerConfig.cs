@@ -485,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 					inputWidget.ClearAll();
 					break;
 				case AnalogBindControl control:
-					control.Unbind_Click(null, null);
+					control.Unbind_Click(null, EventArgs.Empty);
 					break;
 			}
 

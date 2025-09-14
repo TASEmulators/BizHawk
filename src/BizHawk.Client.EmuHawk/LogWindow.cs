@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Detach();
 			};
-			ListView_ClientSizeChanged(null, null);
+			ListView_ClientSizeChanged(null, EventArgs.Empty);
 			Attach();
 		}
 
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsCtrl(Keys.C))
 			{
-				ButtonCopy_Click(null, null);
+				ButtonCopy_Click(null, EventArgs.Empty);
 			}
 		}
 

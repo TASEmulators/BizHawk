@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			_zones.Clear();
 			ZonesList.Items.Clear();
 
-			MacroInputTool_Load(null, null);
+			MacroInputTool_Load(null, EventArgs.Empty);
 		}
 
 		public override bool AskSaveChanges()

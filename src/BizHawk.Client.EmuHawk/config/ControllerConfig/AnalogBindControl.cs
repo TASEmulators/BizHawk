@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 			labelButtonName.Text = buttonName;
 			trackBarSensitivity.Value = (int) Math.Round(bind.Mult * 20.0);
 			trackBarDeadzone.Value = (int) Math.Round(bind.Deadzone * 50.0);
-			TrackBarSensitivity_ValueChanged(null, null);
-			TrackBarDeadzone_ValueChanged(null, null);
+			TrackBarSensitivity_ValueChanged(null, EventArgs.Empty);
+			TrackBarDeadzone_ValueChanged(null, EventArgs.Empty);
 			textBox1.Text = bind.Value;
 		}
 

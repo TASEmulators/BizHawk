@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 				numericUpDown1 = { Value = config.GifWriterFrameskip },
 				numericUpDown2 = { Value = config.GifWriterDelay },
 			};
-			dlg.NumericUpDown2_ValueChanged(null, null);
+			dlg.NumericUpDown2_ValueChanged(null, EventArgs.Empty);
 
 			var result = dlg.ShowDialog(parent);
 			if (result.IsOk())

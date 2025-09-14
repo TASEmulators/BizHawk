@@ -369,9 +369,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void AddBranchExternal()
-		{
-			AddBranchToolStripMenuItem_Click(null, null);
-		}
+			=> AddBranchToolStripMenuItem_Click(null, EventArgs.Empty);
 
 		public bool LoadBranchExternal(int slot = -1)
 		{
@@ -419,13 +417,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			UpdateBranchToolStripMenuItem_Click(null, null);
+			UpdateBranchToolStripMenuItem_Click(null, EventArgs.Empty);
 		}
 
 		public void RemoveBranchExternal()
-		{
-			RemoveBranchToolStripMenuItem_Click(null, null);
-		}
+			=> RemoveBranchToolStripMenuItem_Click(null, EventArgs.Empty);
 
 		public void SelectBranchExternal(int slot)
 		{

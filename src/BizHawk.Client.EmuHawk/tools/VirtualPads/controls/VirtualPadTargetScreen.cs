@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			void UnsetLastFocusedNUD(object sender, EventArgs eventArgs)
-				=> setLastFocusedNUD(null, null);
+				=> setLastFocusedNUD(null, eventArgs);
 			XNumeric.GotFocus += setLastFocusedNUD;
 			XNumeric.LostFocus += UnsetLastFocusedNUD;
 			YNumeric.GotFocus += setLastFocusedNUD;

@@ -1578,7 +1578,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			Tools.UpdateCheatRelatedTools(null, null);
+			Tools.UpdateCheatRelatedTools(null, new(null));
 			MemoryViewerBox.Refresh();
 		}
 

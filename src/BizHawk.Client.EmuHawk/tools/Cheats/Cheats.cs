@@ -546,7 +546,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.IsCtrl(Keys.A))
 			{
-				SelectAllMenuItem_Click(null, null);
+				SelectAllMenuItem_Click(null, EventArgs.Empty);
 			}
 
 			DoSelectedIndexChange();

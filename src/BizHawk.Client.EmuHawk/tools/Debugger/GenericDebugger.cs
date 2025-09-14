@@ -208,19 +208,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == Keys.F11)
 			{
-				StepIntoMenuItem_Click(null, null);
+				StepIntoMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
 			if (keyData == (Keys.F11 | Keys.Shift))
 			{
-				StepOutMenuItem_Click(null, null);
+				StepOutMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
 			if (keyData == Keys.F10)
 			{
-				StepOverMenuItem_Click(null, null);
+				StepOverMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 

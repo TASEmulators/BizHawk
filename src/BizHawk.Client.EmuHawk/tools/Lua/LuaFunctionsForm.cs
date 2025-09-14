@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsCtrl(Keys.C))
 			{
-				FunctionView_Copy(null, null);
+				FunctionView_Copy(null, EventArgs.Empty);
 			}
 		}
 

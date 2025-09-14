@@ -1,6 +1,7 @@
 namespace BizHawk.Analyzers;
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 
@@ -95,6 +96,29 @@ public static class RoslynUtils
 	{
 		var syn = argOp.Syntax;
 		return model.GetTypeInfo(syn is ArgumentSyntax argSyn ? argSyn.Expression : syn, cancellationToken);
+	}
+
+	public static bool IsAssignableFrom(this ITypeSymbol supertype, [NotNullWhen(true)] ITypeSymbol? subtype)
+	{
+		if (subtype is null) return false;
+		bool MatchesPerTypeParamVariance(ITypeSymbol sym)
+			=> supertype.Matches(sym); //TODO actually check type params
+		switch (supertype.TypeKind)
+		{
+			case TypeKind.Class:
+				while (subtype is not null)
+				{
+					if (MatchesPerTypeParamVariance(subtype)) return true;
+					subtype = subtype.BaseType;
+				}
+				return false;
+			case TypeKind.Interface:
+				return subtype.AllInterfaces.Any(MatchesPerTypeParamVariance);
+			case TypeKind.Enum or TypeKind.Pointer or TypeKind.Struct:
+				return MatchesPerTypeParamVariance(subtype);
+			default:
+				throw new ArgumentException(paramName: nameof(supertype), message: "pretend this is a BHI6660 unexpected type kind (neither class/interface nor struct)");
+		}
 	}
 
 	public static bool IsEmpty(this SyntaxToken token)

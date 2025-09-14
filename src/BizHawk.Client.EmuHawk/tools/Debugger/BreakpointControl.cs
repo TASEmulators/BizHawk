@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Delete))
 			{
-				RemoveBreakpointButton_Click(null, null);
+				RemoveBreakpointButton_Click(null, EventArgs.Empty);
 			}
 		}
 

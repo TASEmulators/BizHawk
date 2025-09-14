@@ -65,8 +65,8 @@ namespace BizHawk.Client.EmuHawk
 		public override void Restart()
 		{
 			FileSelectorPanel.Controls.Clear();
-			AddButton_Click(null, null);
-			AddButton_Click(null, null);
+			AddButton_Click(null, EventArgs.Empty);
+			AddButton_Click(null, EventArgs.Empty);
 
 			if (!Game.IsNullInstance())
 			{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			var existingEmptyControls = FileSelectors.Count(fileSelector => string.IsNullOrEmpty(fileSelector.Path));
 			for (int i = existingEmptyControls; i < filePaths.Count; i++)
 			{
-				AddButton_Click(null, null);
+				AddButton_Click(null, EventArgs.Empty);
 			}
 
 			var fileSelectors = FileSelectors.ToArray();
