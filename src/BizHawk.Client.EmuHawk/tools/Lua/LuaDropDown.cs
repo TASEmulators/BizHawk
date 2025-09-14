@@ -8,14 +8,14 @@ namespace BizHawk.Client.EmuHawk
 		public LuaDropDown(ICollection<string> items)
 		{
 			this.ReplaceItems(items: items);
-			SelectedIndex = 0;
+			if (items.Count > 0) SelectedIndex = 0;
 			DropDownStyle = ComboBoxStyle.DropDownList;
 		}
 
 		public void SetItems(ICollection<string> items)
 		{
 			this.ReplaceItems(items: items);
-			SelectedIndex = 0;
+			if (items.Count > 0) SelectedIndex = 0;
 		}
 	}
 }
