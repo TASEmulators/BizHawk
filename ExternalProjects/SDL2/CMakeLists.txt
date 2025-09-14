@@ -98,7 +98,9 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 # Silence a warning when specifying INTERPROCEDURAL_OPTIMIZATION
 set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
-set(SDL_CMAKE_DEBUG_POSTFIX "") # would be `libSDL2d.so` without this, but EmuHawk only knows the usual `libSDL.so` filename
+# Would be `libSDL2d.so` without this, but EmuHawk only knows the usual `libSDL.so` filename
+set(SDL_CMAKE_DEBUG_POSTFIX "" CACHE STRING "" FORCE)
+
 add_subdirectory(SDL)
 
 if(WIN32)
@@ -122,7 +124,7 @@ if(WIN32)
 		target_compile_options(usb PRIVATE -w)
 	endif()
 
-	set_target_properties(usb PROPERTIES VERSION 1.0.27)
+	set_target_properties(usb PROPERTIES VERSION 1.0.29)
 	target_include_directories(usb BEFORE
 		PUBLIC libusb/libusb
 		PRIVATE libusb/msvc
@@ -131,12 +133,14 @@ if(WIN32)
 	target_link_libraries(SDL2 PRIVATE usb)
 endif()
 
-# ensure we have SDL2.dll / libSDL2.so
+# Ensure we have SDL2.dll / libSDL2.so
 set_target_properties(SDL2 PROPERTIES
 	NO_SONAME ON
 	OUTPUT_NAME "SDL2"
 )
-target_link_options(SDL2 PRIVATE -s)
+
+# Strip release builds
+target_link_options(SDL2 PRIVATE $<$<CONFIG:Release>:-s>)
 
 # Copy output to our dll folders
 # This requires a bit of magic (add_custom_command is not allowed for targets made with add_subdirectory)
