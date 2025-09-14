@@ -19,7 +19,10 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 	{
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
-		context.RegisterOperationAction(
+		context.RegisterCompilationStartAction(initContext =>
+		{
+			if (initContext.Compilation.GetTypeByMetadataName("BizHawk.Common.NumberExtensions.NumberExtensions") is null) return; // project does not have BizHawk.Common dependency
+			initContext.RegisterOperationAction(
 			oac =>
 			{
 				var conversionOp = (IConversionOperation) oac.Operation;
@@ -46,7 +49,6 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 					return;
 				}
 				var conversionSyn = conversionOp.Syntax;
-				//TODO check the suggested methods are accessible (i.e. BizHawk.Common is referenced)
 				DiagAmbiguousMoneyToFloatConversion.ReportAt(
 					conversionSyn.Parent?.Kind() is SyntaxKind.CheckedExpression or SyntaxKind.UncheckedExpression
 						? conversionSyn.Parent
@@ -64,5 +66,6 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzer : DiagnosticAnalyzer
 						]);
 			},
 			OperationKind.Conversion);
+		});
 	}
 }
