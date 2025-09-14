@@ -692,7 +692,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Commandline should always override auto-load
 				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
-				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom(oaor.Path.MakeAbsolute()); // fixes #3224; should this be done for all the IOpenAdvanced types? --yoshi
+				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom(oaor.Path.MakeAbsolute()); // fixes https://github.com/TASEmulators/BizHawk/issues/3224; should this be done for all the IOpenAdvanced types? --yoshi
 				_ = LoadRom(ioa.SimplePath, new LoadRomArgs(ioa));
 				if (Game.IsNullInstance())
 				{
@@ -3893,7 +3893,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// Some window messages like paints may be dispatched during this function call and before it returns.
 					// Therefore this needs to be called very late after tools have been restarted
-					// to ensure no stale references like disposed cores are being used, see #4436.
+					// to ensure no stale references like disposed cores are being used, see https://github.com/TASEmulators/BizHawk/issues/4436.
 					if (!OSTailoredCode.IsUnixHost) JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					return true;

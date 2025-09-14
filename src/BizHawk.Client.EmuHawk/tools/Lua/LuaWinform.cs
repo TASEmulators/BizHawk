@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			// #1957 - ownerFile can be full, if the script that generated the form ended which will happen if the script does not have a while true loop
+			// re: https://github.com/TASEmulators/BizHawk/issues/1957 - `ownerFile` can be null if the script that generated the form ended, which will happen if the script does not have a `while true` loop
 			LuaSandbox.Sandbox(_ownerFile?.Thread, () =>
 			{
 				Environment.CurrentDirectory = _currentDirectory;

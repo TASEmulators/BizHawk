@@ -208,7 +208,12 @@ namespace BizHawk.Client.Common
 				return collection.AbsolutePathFor(collection[PathEntryCollection.GLOBAL, "ROM"].Path, PathEntryCollection.GLOBAL);
 			}
 
-			if (collection.UseRecentForRoms) return /*PathUtils.SpecialRecentsDir*/string.Empty; // instructs OpenFileDialog to use the dir of the most recently-opened file, a behaviour consistent with previous versions, even though it may never have been intended; this system will be overhauled when adding #1574
+			if (collection.UseRecentForRoms)
+			{
+				return string.Empty; // instructs `OpenFileDialog` to use the dir of the most-recently-opened file
+				// that's the behaviour consistent with previous versions, even though the original intent seems to have been to mirror `%recent%` (i.e. `PathUtils.SpecialRecentsDir`)
+				// the whole path system is planned be overhauled anyway (https://github.com/TASEmulators/BizHawk/issues/1574), empowering the user to pick `%recent%` or this `%lastused%`
+			}
 
 			var path = collection[systemId, "ROM"];
 

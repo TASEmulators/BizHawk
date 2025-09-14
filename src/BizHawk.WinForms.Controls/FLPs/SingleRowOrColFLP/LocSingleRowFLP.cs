@@ -35,8 +35,10 @@ namespace BizHawk.WinForms.Controls
 		{
 			base.AutoSize = true;
 			base.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-			// for some reason this breaks stuff on mono, see #4376
-			if (!OSTailoredCode.IsUnixHost) base.MinimumSize = TinySize;
+			if (!OSTailoredCode.IsUnixHost) // for some reason this breaks stuff on mono, see https://github.com/TASEmulators/BizHawk/issues/4376
+			{
+				base.MinimumSize = TinySize;
+			}
 			base.WrapContents = false;
 		}
 	}
