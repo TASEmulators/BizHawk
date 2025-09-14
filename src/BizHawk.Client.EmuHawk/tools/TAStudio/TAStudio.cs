@@ -606,8 +606,13 @@ namespace BizHawk.Client.EmuHawk
 			ResumeLayout();
 			if (result)
 			{
+				// Initialize stuff.
 				RestorePositionFrame = -1;
 				_lastRecordAction = -1;
+				_doPause = false;
+
+				StopSeeking();
+
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
