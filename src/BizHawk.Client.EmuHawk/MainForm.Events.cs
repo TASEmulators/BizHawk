@@ -1037,7 +1037,6 @@ namespace BizHawk.Client.EmuHawk
 			BasicBotMenuItem.Enabled = Tools.IsAvailable<BasicBot>();
 
 			GameSharkConverterMenuItem.Enabled = Tools.IsAvailable<GameShark>();
-			MacroToolMenuItem.Enabled = MovieSession.Movie.IsActive() && Tools.IsAvailable<MacroInputTool>();
 			VirtualPadMenuItem.Enabled = Emulator.ControllerDefinition.Any();
 		}
 
@@ -1117,11 +1116,6 @@ namespace BizHawk.Client.EmuHawk
 		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<CDL>();
-		}
-
-		private void MacroToolMenuItem_Click(object sender, EventArgs e)
-		{
-			Tools.Load<MacroInputTool>();
 		}
 
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
