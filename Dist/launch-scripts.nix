@@ -47,6 +47,8 @@
 				Paths = [
 					({ System = "Global_NULL"; Type = "Base"; Path = "%%BIZHAWK_DATA_HOME%%"; }
 						// lib.optionalAttrs bizhawkAssemblies.hawkSourceInfo.pathConfigNeedsOrdinal { Ordinal = 1; })
+					({ System = "Libretro"; Type = "Cores"; Path = "${bizhawkAssemblies.libretroCores}/lib/retroarch/cores"; }
+						// lib.optionalAttrs bizhawkAssemblies.hawkSourceInfo.pathConfigNeedsOrdinal { Ordinal = 1; })
 				];
 			};
 		} // initConfig));

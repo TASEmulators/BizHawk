@@ -69,6 +69,7 @@ in {
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
+, libretroCores ? pkgs.callPackage Dist/packages-libretro.nix {}
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
 , profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 }: let
@@ -113,7 +114,7 @@ in {
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
 			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
-			buildConfig doCheck extraDefines extraDotnetBuildFlags;
+			buildConfig doCheck extraDefines extraDotnetBuildFlags libretroCores;
 		mono = lib.recursiveUpdate { meta.mainProgram = "mono"; } (if mono != null
 			then mono # allow older Mono if set explicitly
 			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
@@ -165,6 +166,7 @@ in {
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
 		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos;
+		inherit (emuhawk-local.assemblies) libretroCores;
 		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
 		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
 			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");

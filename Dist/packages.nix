@@ -32,6 +32,7 @@
 , doCheck
 , extraDefines
 , extraDotnetBuildFlags
+, libretroCores
 }: let
 	getMainOutput = lib.getOutput "out";
 	commonMeta = {
@@ -183,7 +184,9 @@
 		dontPatchELF = true;
 		passthru = {
 			inherit extraManagedDeps # could use this to backport changes to ExternalProjects? IDK
-				hawkSourceInfo; # simple way to override `nugetDeps` for patching: `buildAssembliesFor (bizhawkAssemblies-latest.hawkSourceInfo // { nugetDeps = /*...*/; })`
+				hawkSourceInfo # simple way to override `nugetDeps` for patching: `buildAssembliesFor (bizhawkAssemblies-latest.hawkSourceInfo // { nugetDeps = /*...*/; })`
+				libretroCores
+				;
 			inherit (finalAttrs) gnome-themes-extra mono;
 #			extraUnmanagedDeps = buildUnmanagedDepsFor hawkSourceInfo; # this will override the output of the same name, example: `buildEmuHawkInstallableFor { bizhawkAssemblies = bizhawkAssemblies-latest // { extraUnmanagedDeps = /*...*/; }; }`
 			# can similarly override `assets` output, only used by launch script to populate `BIZHAWK_DATA_HOME` if the dir doesn't exist at runtime,
@@ -292,7 +295,7 @@ in {
 			buildInputs = genDepsHostTargetFor { hawkSourceInfo = hawkSourceInfo'; }; # is using `buildInputs` like this correct? it's necessary because the launch script reads from it
 			outputs = [ "out" "assets" "extraUnmanagedDeps" "waterboxCores" ];
 			passthru = {
-				inherit gnome-themes-extra mono;
+				inherit gnome-themes-extra libretroCores mono;
 				hawkSourceInfo = hawkSourceInfo';
 			};
 			meta = commonMeta // {
