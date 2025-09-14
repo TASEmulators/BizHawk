@@ -117,13 +117,8 @@ namespace BizHawk.DBManTool
 							outf.Flush();
 						}
 					}
-
-
 				}); //major loop
-
 			} //using(outfile)
-
 		} //MyRun()
 	} //class PsxRedump
-
 }

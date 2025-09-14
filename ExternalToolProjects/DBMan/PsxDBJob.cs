@@ -74,7 +74,6 @@ namespace BizHawk.DBManTool
 					outf.WriteLine("{0}\tG\t{1}\tPSX\t\tdh={2}", hr.bizhash, hr.name, hr.datahash);
 				}
 			}
-
 		}
 	}
 
