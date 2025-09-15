@@ -54,8 +54,8 @@
 		/// <summary>
 		/// Function that is called by Mainform instead of using its own code
 		/// when a Tool sets WantsToControlRewind
-		/// Returns whether or not the rewind action actually occured
 		/// </summary>
+		/// <returns>Returns true if a frame advance is required.</returns>
 		bool Rewind();
 
 		bool WantsToControlRestartMovie { get; }

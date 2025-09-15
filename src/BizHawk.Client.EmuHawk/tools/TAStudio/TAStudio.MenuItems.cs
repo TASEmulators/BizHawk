@@ -1305,7 +1305,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
-			CancelSeek();
+			StopSeeking();
 		}
 
 		private void BranchContextMenuItem_Click(object sender, EventArgs e)

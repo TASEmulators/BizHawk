@@ -78,8 +78,11 @@
 		public bool Rewind()
 		{
 			int rewindStep = MainForm.IsFastForwarding ? Settings.RewindStepFast : Settings.RewindStep;
+			int frame = Emulator.Frame;
 			WheelSeek(rewindStep);
-			return true;
+			// we need a frame advance if a state was loaded (frame has changed)
+			// and also we are seeking (not already at the target frame)
+			return Emulator.Frame != frame && _seekingTo != -1;
 		}
 
 		public bool WantsToControlRestartMovie { get; }
