@@ -7,8 +7,8 @@ find "output" -type f \( -name '.keep' -o -wholename "output/EmuHawk.exe" -o -wh
 	-not -name "*.pdb" -not -name "*.lib" -not -name "*.pgd" -not -name "*.ipdb" -not -name "*.iobj" -not -name "*.exp" -not -name "*.ilk" \
 	-not -wholename "output/dll/*.xml" -not -wholename "output/dll/*.deps.json" \
 	-exec install -D -m644 "{}" "packaged_{}" \;
-rm "$targetDir/"*'/.keep'
 cd "$targetDir"
+rm -f */.keep
 if [ "$1" = "windows-x64" ]; then
 	rm -f "EmuHawkMono.sh"
 	cd "dll"
