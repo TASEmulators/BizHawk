@@ -7,7 +7,6 @@ find "output" -type f \( -wholename "output/EmuHawk.exe" -o -wholename "output/D
 	-not -name "*.pdb" -not -name "*.lib" -not -name "*.pgd" -not -name "*.ipdb" -not -name "*.iobj" -not -name "*.exp" -not -name "*.ilk" \
 	-not -wholename "output/dll/*.xml" -not -wholename "output/dll/*.deps.json" \
 	-exec install -D -m644 "{}" "packaged_{}" \;
-mkdir -p "$targetDir/ExternalTools" "$targetDir/Firmware" "$targetDir/Tools"
 cd "$targetDir"
 if [ "$1" = "windows-x64" ]; then
 	rm -f "EmuHawkMono.sh"
