@@ -28,6 +28,7 @@
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
+			<EmptyDirsToCreate Include="$(ExecFilesDest)ExternalTools;$(ExecFilesDest)Firmware;$(ExecFilesDest)Tools" />
 			<ExecFilesFromExecProj Include="$(OutputPath)$(MSBuildProjectName).*" /> <!-- doesn't include the .exe.config because those are automatically renamed??? -->
 			<ExecConfigFilesFromExecProj Include="$(OutputPath)$(TargetFileName).*" /> <!-- include the .exe.config files -->
 		</ItemGroup>
@@ -35,6 +36,7 @@
 		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
 		<Move SourceFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" DestinationFolder="$(ExecFilesDest)" />
 		<Move SourceFiles="@(ExecConfigFilesFromExecProj)" DestinationFolder="$(ExecFilesDest)" />
-		<MakeDir Directories="$(ExecFilesDest)ExternalTools;$(ExecFilesDest)Firmware;$(ExecFilesDest)Tools" />
+		<MakeDir Directories="@(EmptyDirsToCreate)" />
+		<Touch Files="@(EmptyDirsToCreate->Combine('.keep'))" AlwaysCreate="true" />
 	</Target>
 </Project>
