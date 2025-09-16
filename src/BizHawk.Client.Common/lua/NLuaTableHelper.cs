@@ -2,7 +2,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 
 using NLua;
 
@@ -28,14 +27,6 @@ namespace BizHawk.Client.Common
 			foreach (var (k, v) in dictionary) table[k] = v;
 			return table;
 		}
-
-		/// <summary>
-		/// Enumerates all values in <paramref name="table"/>, regardless of what their keys are.
-		/// </summary>
-		/// <returns>
-		/// An unordered sequence of values.
-		/// </returns>
-		public IEnumerable<T> EnumerateAllValues<T>(LuaTable table) => table.Values.Cast<T>();
 
 		/// <summary>
 		/// Enumerates values in a Lua-style array, starting with table[1], table[2], ... up to the first absent index.
