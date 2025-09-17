@@ -743,9 +743,7 @@ namespace BizHawk.Client.EmuHawk
 			using var controller = new ControllerConfig(this, Emulator, Config);
 			if (!this.ShowDialogWithTempMute(controller).IsOk()) return;
 			AddOnScreenMessage("Controller settings saved");
-
-			InitControls();
-			InputManager.SyncControls(Emulator, MovieSession, Config);
+			ReinitHostKeybinds(includedHotkeys: false);
 		}
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
@@ -753,11 +751,14 @@ namespace BizHawk.Client.EmuHawk
 			using var hotkeyConfig = new HotkeyConfig(Config);
 			if (!this.ShowDialogWithTempMute(hotkeyConfig).IsOk()) return;
 			AddOnScreenMessage("Hotkey settings saved");
+			ReinitHostKeybinds(includedHotkeys: true);
+		}
 
+		private void ReinitHostKeybinds(bool includedHotkeys)
+		{
 			InitControls();
 			InputManager.SyncControls(Emulator, MovieSession, Config);
-
-			Tools.HandleHotkeyUpdate();
+			if (includedHotkeys) Tools.HandleHotkeyUpdate();
 		}
 
 		private void OpenFWConfigRomLoadFailed(RomLoader.RomErrorArgs args)
@@ -852,7 +853,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new EmuHawkOptions(Config, BumpAutoFlushSaveRamTimer);
+			using EmuHawkOptions form = new(
+				Config,
+				BumpAutoFlushSaveRamTimer,
+				() => ReinitHostKeybinds(includedHotkeys: true));
 			if (!this.ShowDialogWithTempMute(form).IsOk()) return;
 			AddOnScreenMessage("Custom configurations saved.");
 		}

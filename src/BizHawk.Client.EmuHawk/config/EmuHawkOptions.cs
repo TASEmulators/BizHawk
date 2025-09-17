@@ -9,11 +9,14 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Action _autoFlushSaveRamTimerBumpCallback;
 
+		private readonly Action _reinitHostKeybinds;
+
 		private readonly Config _config;
 
-		public EmuHawkOptions(Config config, Action autoFlushSaveRamTimerBumpCallback)
+		public EmuHawkOptions(Config config, Action autoFlushSaveRamTimerBumpCallback, Action reinitHostKeybinds)
 		{
 			_autoFlushSaveRamTimerBumpCallback = autoFlushSaveRamTimerBumpCallback;
+			_reinitHostKeybinds = reinitHostKeybinds;
 			_config = config;
 			InitializeComponent();
 			cbEnableGCAdapterSupport.Text = OSTailoredCode.IsUnixHost
@@ -98,7 +101,11 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
 				if (result is DialogResult.Cancel) return;
-				if (result is DialogResult.Yes) _config.ReplaceKeysInBindings(merging ? Input.ModifierKeyPreMap : Input.ModifierKeyInvPreMap);
+				if (result is DialogResult.Yes)
+				{
+					_config.ReplaceKeysInBindings(merging ? Input.ModifierKeyPreMap : Input.ModifierKeyInvPreMap);
+					_reinitHostKeybinds();
+				}
 			}
 
 			_config.StartFullscreen = StartFullScreenCheckbox.Checked;
