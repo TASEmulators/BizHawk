@@ -188,6 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
 						"fastmem_size=0",
+						"cpu_multiplier=4",
 					]);
 					EnableCycleExact();
 					break;
