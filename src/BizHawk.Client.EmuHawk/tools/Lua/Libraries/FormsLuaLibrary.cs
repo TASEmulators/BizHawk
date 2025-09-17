@@ -1151,8 +1151,14 @@ namespace BizHawk.Client.EmuHawk
 			else if (width.HasValue || height.HasValue) WarnForMismatchedPair(functionName: functionName, kind: "width and height");
 		}
 
-		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
-		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting.")]
+		[LuaMethodExample("""
+			forms.setdropdownitems(dropdown_handle, { "item1", "item2" });
+		""")]
+		[LuaMethod(
+			name: "setdropdownitems",
+			description: "Replaces the list of options (strings) of a dropdown menu with a new list."
+				+ " If alphabetize is true or unset, it doesn't matter if the items table has out-of-order keys or non-numeric keys, all strings will be in chronological order (by codepoint)."
+				+ " If alphabetize is false, items will appear in the given order; the table's keys will be sorted by their numeric value, even if <= 0, and non-numeric keys will come at the end in an undefined order.")]
 		public void SetDropdownItems(long handle, LuaTable items, bool alphabetize = true)
 		{
 			try
