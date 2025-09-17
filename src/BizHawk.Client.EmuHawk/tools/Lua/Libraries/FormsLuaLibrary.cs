@@ -179,7 +179,8 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+			// Include non-numeric, unordered keys for backwards compatibility
+			var dropdownItems = items.Values.Cast<string>().ToList();
 			dropdownItems.Sort();
 
 			var dropdown = new LuaDropDown(dropdownItems);
@@ -1158,9 +1159,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (FindControlWithHandle(handle) is LuaDropDown ldd)
 				{
-					var dropdownItems = _th.EnumerateValues<string>(items).ToList();
-					if (alphabetize) dropdownItems.Sort();
-					ldd.SetItems(dropdownItems);
+					// Include non-numeric, unordered keys for backwards compatibility
+					// Sort numeric keys to maintain order of sequential {"Foo", "Bar"} tables when values are not alphabetized
+					// Order of non-numeric keys is undetermined
+					var dropdownItems = alphabetize
+						? items.Values.Cast<string>().Order()
+						: items.OrderBy(kvp => kvp.Key as long? ?? long.MaxValue).Select(kvp => (string)kvp.Value);
+					ldd.SetItems(dropdownItems.ToList());
 				}
 			}
 			catch (Exception ex)
