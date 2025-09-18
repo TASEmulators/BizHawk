@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, bool> Get()
 		{
 			var buttons = new Dictionary<string, bool>();
-			foreach (var (button, _) in _inputManager.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[button] = true;
+			foreach (var (button, _) in _inputManager.HostInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[button] = true;
 			return buttons;
 		}
 
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			=> _inputManager.ControllerInputCoalescer.AxisValues().ToDictionary();
 
 		public IReadOnlyList<string> GetPressedButtons()
-			=> _inputManager.ControllerInputCoalescer.BoolButtons().Where(static kvp => kvp.Value)
+			=> _inputManager.HostInputCoalescer.BoolButtons().Where(static kvp => kvp.Value)
 				.Select(static kvp => kvp.Key).ToList();
 	}
 }

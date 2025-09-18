@@ -46,6 +46,11 @@ namespace BizHawk.Client.Common
 		// This relies on a client specific implementation!
 		public ControllerInputCoalescer ControllerInputCoalescer { get; set; } = new();
 
+		/// <summary>
+		/// Created for <see cref="IInputApi"/>. Receives only buttons, and receives them regardless of input priority setting.
+		/// </summary>
+		public ApiInputCoalescer HostInputCoalescer { get; } = new();
+
 		public Controller ClientControls { get; set; }
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
@@ -157,6 +162,8 @@ namespace BizHawk.Client.Common
 				// Console.WriteLine(ie);
 
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
+
+				HostInputCoalescer.Receive(ie);
 
 				var hotkeyTriggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				bool isEmuInput = ActiveController.HasBinding(ie.LogicalButton.ToString());

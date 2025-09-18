@@ -44,8 +44,9 @@ namespace BizHawk.Client.Common
 		IReadOnlyDictionary<string, int> GetPressedAxes();
 
 		/// <returns>
-		/// List of (host) key/button names which are pressed
+		/// List of (host) key/button names which are pressed, including modifier combinations.
 		/// (i.e. were pressed when EmuHawk last polled; this is distinct from virtual gamepad polling/latching).
+		/// <br/>For example, if the user presses Shift+A this will return 3 values: "Shift", "A", and "Shift+A".
 		/// Unpressed buttons are omitted.
 		/// </returns>
 		/// <remarks>
