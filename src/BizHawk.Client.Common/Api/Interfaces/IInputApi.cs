@@ -44,16 +44,16 @@ namespace BizHawk.Client.Common
 		IReadOnlyDictionary<string, int> GetPressedAxes();
 
 		/// <returns>
-		/// List of (host) key/button names which are pressed, including modifier combinations.
-		/// (i.e. were pressed when EmuHawk last polled; this is distinct from virtual gamepad polling/latching).
-		/// <br/>For example, if the user presses Shift+A this will return 3 values: "Shift", "A", and "Shift+A".
-		/// Unpressed buttons are omitted.
+		/// List of (host) key/button names which are pressed
+		/// (i.e. were pressed when EmuHawk last polled; this is distinct from virtual gamepad polling/latching),
+		/// including modifier combinations (<c>"Shift+A"</c>). Unpressed buttons are omitted.
 		/// </returns>
 		/// <remarks>
 		/// Includes gamepad axes (<c>!axis.isNeutral</c>, with sticks as 4 "buttons" suffixed <c>"Up"</c>/<c>"Down"</c>/<c>"Left"</c>/<c>"Right"</c>).<br/>
 		/// Includes mouse buttons, but not axes (cursor position and wheel rotation).
 		/// Unlike <see cref="GetMouse"/>, these have the names <c>"WMouse L"</c>, <c>"WMouse R"</c>, <c>"WMouse M"</c>, <c>"WMouse 1"</c>, and <c>"WMouse 2"</c> for LMB, RMB, MMB, Mouse4, and Mouse5, respectively.<br/>
 		/// See <see cref="DistinctKey"/> for keyboard key names, though some are overridden by <see cref="DistinctKeyNameOverrides"/> (check the source).
+		/// When modifier keys are used, the included keys reflect how EmuHawk processes hotkeys; it's not simply the power set of all held keys.
 		/// </remarks>
 		IReadOnlyList<string> GetPressedButtons();
 	}
