@@ -10,7 +10,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 	[TestClass]
 	public class DearchivalTests
 	{
-		private const string EMBED_GROUP = "dearchive";
+		private const string EMBED_GROUP = "data.dearchive.";
 
 		private static readonly (string Filename, bool HasSharpCompressSupport)[] TestCases = {
 			("m3_scy_change.7z", true),
@@ -21,7 +21,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 			("m3_scy_change.zip", true),
 		};
 
-		private readonly Lazy<byte[]> _rom = new(() => EmbeddedData.GetStream(EMBED_GROUP, "m3_scy_change.gb").ReadAllBytes());
+		private readonly Lazy<byte[]> _rom = new(static () => ReflectionCache.EmbeddedResourceStream(EMBED_GROUP + "m3_scy_change.gb").ReadAllBytes());
 
 		private byte[] Rom => _rom.Value;
 
@@ -37,7 +37,7 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 			foreach (var filename in TestCases.Where(testCase => testCase.HasSharpCompressSupport)
 				.Select(testCase => testCase.Filename))
 			{
-				var archive = EmbeddedData.GetStream(EMBED_GROUP, filename);
+				var archive = ReflectionCache.EmbeddedResourceStream(EMBED_GROUP + filename);
 				Assert.IsTrue(sc.CheckSignature(archive, filename), $"{filename} is an archive, but wasn't detected as such"); // puts the seek pos of the Stream param back where it was (in this case at the start)
 				var af = sc.Construct(archive);
 				var items = af.Scan();
