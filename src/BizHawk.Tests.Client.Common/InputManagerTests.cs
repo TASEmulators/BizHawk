@@ -11,14 +11,31 @@ namespace BizHawk.Tests.Client.Common
 	[TestClass]
 	public class InputManagerTests
 	{
-		private class Context
+		internal class Context
 		{
-			public required InputManager manager;
-			public required Config config;
-			public required List<string> triggeredHotkeys = new();
-			public required Func<string, bool> processHotkey;
-			public required IEmulator emulator;
-			public required FakeInputSource source = new();
+			public InputManager manager = new();
+			public Config config = new();
+			public List<string> triggeredHotkeys = new();
+			public IEmulator emulator;
+			public FakeInputSource source = new();
+
+			private string[] _hotkeys;
+
+			public Context(string[]? hotkeys = null)
+			{
+				hotkeys ??= [ ];
+
+				emulator = new FakeEmulator();
+				manager.SyncControls(emulator, new FakeMovieSession(emulator), config);
+
+				ControllerDefinition cd = new("fake")
+				{
+					BoolButtons = hotkeys.ToList(),
+				};
+				manager.ClientControls = new Controller(cd.MakeImmutable());
+
+				_hotkeys = hotkeys;
+			}
 
 			public void EmulateFrameAdvance(bool lag = false)
 			{
@@ -31,84 +48,36 @@ namespace BizHawk.Tests.Client.Common
 
 			public void BasicInputProcessing()
 			{
-				manager.ProcessInput(source, processHotkey, config, (_) => { });
+				manager.ProcessInput(source, ProcessHotkey, config, (_) => { });
 				manager.RunControllerChain(config);
+			}
+
+			public bool ProcessHotkey(string trigger)
+			{
+				triggeredHotkeys.Add(trigger);
+				return _hotkeys.Contains(trigger);
 			}
 		}
 
 		private static readonly string[] _hotkeys = [ "Hotkey 1", "Autofire", "Autohold" ];
 
-		private static readonly IReadOnlyList<string> _modifierKeys = new[] { "Super", "Ctrl", "Alt", "Shift" };
-
-		private InputEvent MakePressEvent(string keyboardButton, uint modifiers = 0)
-		{
-			return new()
-			{
-				EventType = InputEventType.Press,
-				LogicalButton = new(keyboardButton, modifiers, () => _modifierKeys),
-				Source = Bizware.Input.HostInputType.Keyboard,
-			};
-		}
-
-		private InputEvent MakeReleaseEvent(string keyboardButton, uint modifiers = 0)
-		{
-			return new()
-			{
-				EventType = InputEventType.Release,
-				LogicalButton = new(keyboardButton, modifiers, () => _modifierKeys),
-				Source = Bizware.Input.HostInputType.Keyboard,
-			};
-		}
-
-		private Context MakeContext()
-		{
-			InputManager manager = new();
-			FakeEmulator emu = new();
-			Config config = new();
-			manager.SyncControls(emu, new FakeMovieSession(emu), config);
-
-			ControllerDefinition cd = new("fake")
-			{
-				BoolButtons = _hotkeys.ToList(),
-			};
-			manager.ClientControls = new Controller(cd.MakeImmutable());
-
-			List<string> triggeredHotkeys = new();
-			bool FakeProcessHotkey(string trigger)
-			{
-				triggeredHotkeys.Add(trigger);
-				return _hotkeys.Contains(trigger);
-			}
-			Context context = new()
-			{
-				config = config,
-				manager = manager,
-				triggeredHotkeys = triggeredHotkeys,
-				processHotkey = FakeProcessHotkey,
-				emulator = emu,
-				source = new FakeInputSource(),
-			};
-
-			return context;
-		}
-
 #pragma warning disable BHI1600 //TODO disambiguate assert calls
 		[TestMethod]
 		public void BasicControllerInput()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("B"));
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("C"));
 
-			source.AddInputEvent(MakeReleaseEvent("Q"));
+			source.MakeReleaseEvent("Q");
 			context.BasicInputProcessing();
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -116,19 +85,19 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void ControllerInputWithOneModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Shift+Q");
 
-			source.AddInputEvent(MakePressEvent("Shift"));
-			source.AddInputEvent(MakePressEvent("Shift+Q"));
+			source.MakePressEvent("Shift");
+			source.MakePressEvent("Shift+Q");
 
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
-			source.AddInputEvent(MakeReleaseEvent("Shift"));
+			source.MakeReleaseEvent("Shift");
 			context.BasicInputProcessing();
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -136,20 +105,20 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void ControllerInputWithMultipleModifiers()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Ctrl+Shift+Q");
 
-			source.AddInputEvent(MakePressEvent("Ctrl"));
-			source.AddInputEvent(MakePressEvent("Ctrl+Shift"));
-			source.AddInputEvent(MakePressEvent("Ctrl+Shift+Q"));
+			source.MakePressEvent("Ctrl");
+			source.MakePressEvent("Ctrl+Shift");
+			source.MakePressEvent("Ctrl+Shift+Q");
 
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
-			source.AddInputEvent(MakeReleaseEvent("Shift"));
+			source.MakeReleaseEvent("Shift");
 			context.BasicInputProcessing();
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -157,16 +126,16 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void ControllerInputAcceptsOutOfOrderModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Shift+Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 
-			source.AddInputEvent(MakePressEvent("Shift"));
+			source.MakePressEvent("Shift");
 			context.BasicInputProcessing();
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 		}
@@ -175,24 +144,24 @@ namespace BizHawk.Tests.Client.Common
 		public void ControllerInputIgnoresExtraModifier()
 		{
 			// Extra modifiers are ignored so that we can do inputs while doing another input that's bound to a modifier.
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Q");
 			manager.ActiveController.BindMulti("B", "Ctrl+Q");
 
-			source.AddInputEvent(MakePressEvent("Shift"));
-			source.AddInputEvent(MakePressEvent("Shift+Q"));
+			source.MakePressEvent("Shift");
+			source.MakePressEvent("Shift+Q");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 
-			source.AddInputEvent(MakeReleaseEvent("Q"));
+			source.MakeReleaseEvent("Q");
 			context.BasicInputProcessing();
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
 
-			source.AddInputEvent(MakePressEvent("Shift+Ctrl")); // "Shift+Ctrl" not "Ctrl+Shift"
-			source.AddInputEvent(MakePressEvent("Ctrl+Shift+Q"));
+			source.MakePressEvent("Shift+Ctrl"); // "Shift+Ctrl" not "Ctrl+Shift"
+			source.MakePressEvent("Ctrl+Shift+Q");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("B"));
@@ -201,12 +170,12 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void BasicHotkeyInput()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
 
 			Assert.AreEqual(1, context.triggeredHotkeys.Count);
@@ -216,12 +185,12 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyInputWithOneModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Q");
 
-			source.AddInputEvent(MakePressEvent("Shift+Q"));
+			source.MakePressEvent("Shift+Q");
 			context.BasicInputProcessing();
 
 			Assert.AreEqual(1, context.triggeredHotkeys.Count);
@@ -231,12 +200,12 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyInputWithMultipleModifiers()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ClientControls.BindMulti(_hotkeys[0], "Ctrl+Shift+Q");
 
-			source.AddInputEvent(MakePressEvent("Ctrl+Shift+Q"));
+			source.MakePressEvent("Ctrl+Shift+Q");
 			context.BasicInputProcessing();
 
 			Assert.AreEqual(1, context.triggeredHotkeys.Count);
@@ -246,16 +215,16 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyInputDoesNotTriggerWithOutOfOrderModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
 			Assert.AreEqual(0, context.triggeredHotkeys.Count);
 
-			source.AddInputEvent(MakePressEvent("Shift"));
+			source.MakePressEvent("Shift");
 			context.BasicInputProcessing();
 			Assert.AreEqual(0, context.triggeredHotkeys.Count);
 		}
@@ -263,13 +232,13 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyInputDoesNotTriggerWithExtraModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
-			source.AddInputEvent(MakePressEvent("Shift"));
-			source.AddInputEvent(MakePressEvent("Shift+Q"));
+			source.MakePressEvent("Shift");
+			source.MakePressEvent("Shift+Q");
 			context.BasicInputProcessing();
 
 			Assert.AreEqual(0, context.triggeredHotkeys.Count);
@@ -278,7 +247,7 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void SinglePressCanDoControllerAndHotkeyInput()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			context.config.InputHotkeyOverrideOptions = Config.InputPriority.BOTH;
@@ -286,7 +255,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Z");
 
-			source.AddInputEvent(MakePressEvent("Z"));
+			source.MakePressEvent("Z");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
@@ -297,7 +266,7 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyPriority()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			context.config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
@@ -305,7 +274,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Z");
 
-			source.AddInputEvent(MakePressEvent("Z"));
+			source.MakePressEvent("Z");
 			context.BasicInputProcessing();
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
@@ -316,7 +285,7 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void ControllerPriority()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			context.config.InputHotkeyOverrideOptions = Config.InputPriority.INPUT;
@@ -324,7 +293,7 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Z");
 
-			source.AddInputEvent(MakePressEvent("Z"));
+			source.MakePressEvent("Z");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
@@ -334,7 +303,7 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyPriorityWithModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			context.config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
@@ -342,8 +311,8 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Z");
 			manager.ActiveController.BindMulti("A", "Shift+Z");
 
-			source.AddInputEvent(MakePressEvent("Shift"));
-			source.AddInputEvent(MakePressEvent("Shift+Z"));
+			source.MakePressEvent("Shift");
+			source.MakePressEvent("Shift+Z");
 			context.BasicInputProcessing();
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
@@ -354,7 +323,7 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void ControllerPriorityWithModifier()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			context.config.InputHotkeyOverrideOptions = Config.InputPriority.INPUT;
@@ -362,8 +331,8 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Shift+Z");
 			manager.ActiveController.BindMulti("A", "Shift+Z");
 
-			source.AddInputEvent(MakePressEvent("Shift"));
-			source.AddInputEvent(MakePressEvent("Shift+Z"));
+			source.MakePressEvent("Shift");
+			source.MakePressEvent("Shift+Z");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
@@ -373,7 +342,7 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyOverrideDoesNotEatReleaseEvents()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			context.config.InputHotkeyOverrideOptions = Config.InputPriority.HOTKEY;
@@ -381,14 +350,14 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Z");
 			manager.ActiveController.BindMulti("A", "Shift+Z");
 
-			source.AddInputEvent(MakePressEvent("Shift"));
-			source.AddInputEvent(MakePressEvent("Shift+Z"));
+			source.MakePressEvent("Shift");
+			source.MakePressEvent("Shift+Z");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
 			Assert.AreEqual(0, context.triggeredHotkeys.Count);
 
-			source.AddInputEvent(MakeReleaseEvent("Z"));
+			source.MakeReleaseEvent("Z");
 			context.BasicInputProcessing();
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
@@ -397,12 +366,12 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void AutofireController()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.AutoFireController.BindMulti("A", "Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
@@ -415,17 +384,17 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void AutofireHotkey()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Q");
 			manager.ClientControls.BindMulti("Autofire", "W");
 
-			source.AddInputEvent(MakePressEvent("W"));
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("W");
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
-			source.AddInputEvent(MakeReleaseEvent("Q"));
-			source.AddInputEvent(MakeReleaseEvent("W"));
+			source.MakeReleaseEvent("Q");
+			source.MakeReleaseEvent("W");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
@@ -438,17 +407,17 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void AutoholdHotkey()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Q");
 			manager.ClientControls.BindMulti("Autohold", "W");
 
-			source.AddInputEvent(MakePressEvent("W"));
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("W");
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
-			source.AddInputEvent(MakeReleaseEvent("Q"));
-			source.AddInputEvent(MakeReleaseEvent("W"));
+			source.MakeReleaseEvent("Q");
+			source.MakeReleaseEvent("W");
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
@@ -461,18 +430,18 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void AutofireHotkeyDoesNotRespondToAlreadyHeldButton()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Q");
 			manager.ClientControls.BindMulti("Autofire", "W");
 
-			source.AddInputEvent(MakePressEvent("Q"));
+			source.MakePressEvent("Q");
 			context.BasicInputProcessing();
-			source.AddInputEvent(MakePressEvent("W"));
+			source.MakePressEvent("W");
 			context.BasicInputProcessing();
-			source.AddInputEvent(MakeReleaseEvent("Q"));
-			source.AddInputEvent(MakeReleaseEvent("W"));
+			source.MakeReleaseEvent("Q");
+			source.MakeReleaseEvent("W");
 			context.BasicInputProcessing();
 
 			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
@@ -481,38 +450,38 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void HotkeyIsNotSeenAsUnbound()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
+			source.MakePressEvent("Q");
+			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
 
 		[TestMethod]
 		public void InputIsNotSeenAsUnbound()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 			manager.ActiveController.BindMulti("A", "Q");
 
-			source.AddInputEvent(MakePressEvent("Q"));
-			manager.ProcessInput(source, context.processHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
+			source.MakePressEvent("Q");
+			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
 		}
 
 		[TestMethod]
 		public void UnboundInputIsSeen()
 		{
-			Context context = MakeContext();
+			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
 			FakeInputSource source = context.source;
 
-			source.AddInputEvent(MakePressEvent("A"));
+			source.MakePressEvent("A");
 
 			bool sawUnboundInput = false;
-			manager.ProcessInput(source, context.processHotkey, context.config, (_) => sawUnboundInput = true);
+			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_) => sawUnboundInput = true);
 
 			Assert.IsTrue(sawUnboundInput);
 		}

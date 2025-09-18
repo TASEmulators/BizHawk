@@ -14,5 +14,27 @@ namespace BizHawk.Tests.Client.Common.input
 		public KeyValuePair<string, int>[] GetAxisValues() => _axisValues;
 
 		public void AddInputEvent(InputEvent ie) => _events.Add(ie);
+
+		private static readonly IReadOnlyList<string> _modifierKeys = new[] { "Super", "Ctrl", "Alt", "Shift" };
+
+		public void MakePressEvent(string keyboardButton, uint modifiers = 0)
+		{
+			AddInputEvent(new()
+			{
+				EventType = InputEventType.Press,
+				LogicalButton = new(keyboardButton, modifiers, () => _modifierKeys),
+				Source = Bizware.Input.HostInputType.Keyboard,
+			});
+		}
+
+		public void MakeReleaseEvent(string keyboardButton, uint modifiers = 0)
+		{
+			AddInputEvent(new()
+			{
+				EventType = InputEventType.Release,
+				LogicalButton = new(keyboardButton, modifiers, () => _modifierKeys),
+				Source = Bizware.Input.HostInputType.Keyboard,
+			});
+		}
 	}
 }
