@@ -828,7 +828,7 @@ namespace BizHawk.Client.Common
 			{
 				var cancel = false;
 
-				if (OpenAdvanced is OpenAdvanced_Libretro or OpenAdvanced_LibretroNoGame)
+				if (OpenAdvanced is IOpenAdvancedLibretro)
 				{
 					// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 					// game name == name of core
