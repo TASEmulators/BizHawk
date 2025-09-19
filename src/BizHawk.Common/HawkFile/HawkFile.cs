@@ -75,20 +75,6 @@ namespace BizHawk.Common
 		/// <summary>returns the virtual name of the bound file (disregarding the archive). Useful as a basic content identifier.</summary>
 		public string Name => ArchiveMemberPath ?? FullPathWithoutMember;
 
-		/// <inheritdoc cref="HawkFile(string,bool)"/>
-		/// <param name="delayIOAndDearchive">Pass <see langword="true"/> to only populate a few fields (those that can be computed from the string <paramref name="path"/>), which is less computationally expensive.</param>
-		public HawkFile([HawkFilePath] string path, bool allowArchives, bool delayIOAndDearchive)
-		{
-			if (!delayIOAndDearchive) throw new ArgumentException(paramName: nameof(delayIOAndDearchive), message: "this overload assumes `delayIOAndDearchive: true`, most callers should use the other overload by omitting the argument");
-			var split = SplitArchiveMemberPath(path);
-			if (split != null)
-			{
-				(path, ArchiveMemberPath) = split.Value;
-				IsArchive = true; // we'll assume that the '|' is only used for archives
-			}
-			FullPathWithoutMember = path;
-		}
-
 		/// <summary>Makes a new HawkFile based on the provided path.</summary>
 		public HawkFile([HawkFilePath] string path, bool allowArchives = true)
 		{
@@ -300,7 +286,7 @@ namespace BizHawk.Common
 		private static string MakeCanonicalName(string root, string? member) => member == null ? root : $"{root}|{member}";
 
 		/// <returns>path / member path pair iff <paramref name="path"/> contains <c>'|'</c>, <see langword="null"/> otherwise</returns>
-		private static (string, string)? SplitArchiveMemberPath([HawkFilePath] string path)
+		public static (string ArchivePath, string MemberPath)? SplitArchiveMemberPath([HawkFilePath] string path)
 		{
 			var i = path.LastIndexOf('|');
 #if DEBUG

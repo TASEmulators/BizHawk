@@ -59,9 +59,10 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					if (crazyStuff)
 					{
 						if (physicalPath is null) throw new Exception("this will probably never appear but I can't be bothered checking --yoshi");
-						//TODO - use standard methods to split filename (hawkfile acquire?)
-						using HawkFile hf = new(physicalPath, allowArchives: true, delayIOAndDearchive: true);
-						var filePathWithoutMember = hf.FullPathWithoutMember;
+						var split = HawkFile.SplitArchiveMemberPath(physicalPath);
+						var (isArchive, filePathWithoutMember) = split is null
+							? (false, physicalPath)
+							: (true, split.Value.ArchivePath);
 						if (File.Exists(filePathWithoutMember))
 						{
 							//make a menuitem to show the last modified timestamp
@@ -71,7 +72,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							tsdd.Items.Add(tsmiTimestamp);
 							tsdd.Items.Add(new ToolStripSeparator());
 
-							if (hf.IsArchive)
+							if (isArchive)
 							{
 								//make a menuitem to let you copy the path
 								var tsmiCopyCanonicalPath = new ToolStripMenuItem { Text = "&Copy Canonical Path" };
