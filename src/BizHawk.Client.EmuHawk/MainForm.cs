@@ -692,7 +692,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Commandline should always override auto-load
 				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
-				if (ioa is OpenAdvanced_OpenRom oaor) ioa = new OpenAdvanced_OpenRom(oaor.Path.MakeAbsolute()); // fixes https://github.com/TASEmulators/BizHawk/issues/3224; should this be done for all the IOpenAdvanced types? --yoshi
 				_ = LoadRom(ioa.SimplePath, new LoadRomArgs(ioa));
 				if (Game.IsNullInstance())
 				{
@@ -3612,8 +3611,9 @@ namespace BizHawk.Client.EmuHawk
 			// what's the meaning of the last rom path when opening an archive? based on the archive file location
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
 			{
-				var leftPart = path.Split('|')[0];
-				Config.PathEntries.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
+				var physicalPath = path;
+				if (HawkFile.SplitArchiveMemberPath(path) is { } split) physicalPath = split.ArchivePath;
+				Config.PathEntries.LastRomPath = Path.GetDirectoryName(Path.GetFullPath(physicalPath)) ?? "";
 			}
 
 			return true;

@@ -81,8 +81,9 @@ namespace BizHawk.Common
 			string? autobind = null;
 			var split1 = SplitArchiveMemberPath(path);
 			if (split1 != null) (path, autobind) = split1.Value;
-			FullPathWithoutMember = path;
 			Exists = _rootExists = File.Exists(path);
+			if (_rootExists) path = Path.GetFullPath(path);
+			FullPathWithoutMember = path;
 			if (!_rootExists) return;
 
 			if (DearchivalMethod != null && allowArchives)
