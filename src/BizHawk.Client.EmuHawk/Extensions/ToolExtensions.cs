@@ -60,12 +60,11 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					{
 						//TODO - use standard methods to split filename (hawkfile acquire?)
 						var hf = new HawkFile(physicalPath ?? throw new Exception("this will probably never appear but I can't be bothered checking --yoshi"), delayIOAndDearchive: true);
-						bool canExplore = File.Exists(hf.FullPathWithoutMember);
-
-						if (canExplore)
+						var filePathWithoutMember = hf.FullPathWithoutMember;
+						if (File.Exists(filePathWithoutMember))
 						{
 							//make a menuitem to show the last modified timestamp
-							var timestamp = File.GetLastWriteTime(hf.FullPathWithoutMember);
+							var timestamp = File.GetLastWriteTime(filePathWithoutMember);
 							var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString(DateTimeFormatInfo.InvariantInfo) };
 
 							tsdd.Items.Add(tsmiTimestamp);
@@ -79,11 +78,11 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 								tsdd.Items.Add(tsmiCopyCanonicalPath);
 
 								var tsmiCopyArchivePath = new ToolStripMenuItem { Text = "Copy Archive Path" };
-								tsmiCopyArchivePath.Click += (o, ev) => { Clipboard.SetText(hf.FullPathWithoutMember); };
+								tsmiCopyArchivePath.Click += (_, _) => Clipboard.SetText(filePathWithoutMember);
 								tsdd.Items.Add(tsmiCopyArchivePath);
 
 								var tsmiOpenArchive = new ToolStripMenuItem { Text = "Open &Archive" };
-								tsmiOpenArchive.Click += (o, ev) => { System.Diagnostics.Process.Start(hf.FullPathWithoutMember); };
+								tsmiOpenArchive.Click += (_, _) => System.Diagnostics.Process.Start(filePathWithoutMember);
 								tsdd.Items.Add(tsmiOpenArchive);
 							}
 							else
@@ -98,12 +97,12 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 							// make a menuitem to let you explore to it
 							var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
-							string explorePath = $"\"{hf.FullPathWithoutMember}\"";
+							var explorePath = $"\"{filePathWithoutMember}\"";
 							tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", $"/select, {explorePath}"); };
 							tsdd.Items.Add(tsmiExplore);
 
 							var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
-							StringCollection lame = [ hf.FullPathWithoutMember ];
+							StringCollection lame = [ filePathWithoutMember ];
 							tsmiCopyFile.Click += (o, ev) => { Clipboard.SetFileDropList(lame); };
 							tsdd.Items.Add(tsmiCopyFile);
 
@@ -114,7 +113,11 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 								{
 									var tsddi = (ToolStripDropDownItem)o;
 									tsddi.Owner.Update();
-									Win32ShellContextMenu.ShowContextMenu(hf.FullPathWithoutMember, tsddi.Owner.Handle, tsddi.Owner.Location.X, tsddi.Owner.Location.Y);
+									Win32ShellContextMenu.ShowContextMenu(
+										filePathWithoutMember,
+										parentWindow: tsddi.Owner.Handle,
+										x: tsddi.Owner.Location.X,
+										y: tsddi.Owner.Location.Y);
 								};
 								tsdd.Items.Add(tsmiTest);
 							}
