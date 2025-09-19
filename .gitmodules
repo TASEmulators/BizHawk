@@ -76,7 +76,7 @@
 [submodule "waterbox/gpgx/Genesis-Plus-GX"]
 	path = waterbox/gpgx/Genesis-Plus-GX
 	url = https://github.com/TASEmulators/Genesis-Plus-GX.git
-	branch = tasvideos-3
+	branch = tasvideos-3.1
 [submodule "waterbox/stella/core"]
 	path = waterbox/stella/core
 	url = https://github.com/TASEmulators/stella.git
