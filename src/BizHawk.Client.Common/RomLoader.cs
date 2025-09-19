@@ -815,7 +815,7 @@ namespace BizHawk.Client.Common
 			}
 
 			bool allowArchives = !(OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path));
-			using var file = new HawkFile(path, false, allowArchives);
+			using HawkFile file = new(path, allowArchives: allowArchives);
 			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
 			CanonicalFullPath = file.CanonicalFullPath;

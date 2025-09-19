@@ -58,8 +58,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 					if (crazyStuff)
 					{
+						if (physicalPath is null) throw new Exception("this will probably never appear but I can't be bothered checking --yoshi");
 						//TODO - use standard methods to split filename (hawkfile acquire?)
-						var hf = new HawkFile(physicalPath ?? throw new Exception("this will probably never appear but I can't be bothered checking --yoshi"), delayIOAndDearchive: true);
+						using HawkFile hf = new(physicalPath, allowArchives: true, delayIOAndDearchive: true);
 						var filePathWithoutMember = hf.FullPathWithoutMember;
 						if (File.Exists(filePathWithoutMember))
 						{
