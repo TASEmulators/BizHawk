@@ -3612,7 +3612,7 @@ namespace BizHawk.Client.EmuHawk
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
 			{
 				var leftPart = path.Split('|')[0];
-				Config.PathEntries.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
+				Config.PathEntries.LastRomPath = Path.GetDirectoryName(Path.GetFullPath(leftPart)) ?? "";
 			}
 
 			return true;
