@@ -87,6 +87,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					players[i].RunSpeed      = controller.AxisValue($"P{port} Run Speed");
 					players[i].StrafingSpeed = controller.AxisValue($"P{port} Strafing Speed");
 					players[i].WeaponSelect  = controller.AxisValue($"P{port} Weapon Select");
+					if (players[i].WeaponSelect > 0)
+					{
+						players[i].Buttons = LibDSDA.Buttons.ChangeWeapon;
+					}
 					// core counts angle counterclockwise
 					players[i].TurningSpeed  = controller.AxisValue($"P{port} Turning Speed") << 8;
 
