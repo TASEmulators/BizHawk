@@ -1216,8 +1216,12 @@ namespace BizHawk.Client.EmuHawk
 			return Color.FromArgb(a, r, g, b);
 		}
 
-		[LuaMethodExample("forms.setsize( 332, 77, 99 );")]
-		[LuaMethod("setsize", "TODO")]
+		[LuaMethodExample("""
+			forms.setsize(textbox_handle, 640, 96);
+		""")]
+		[LuaMethod(
+			name: "setsize",
+			description: "Sets the size of a form (window) or a UI element.")]
 		public void SetSize(long handle, int width, int height)
 		{
 			var control = FindFormOrControlWithHandle(handle);
