@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private LibretroApi.retro_message retro_msg = default;
 
-		private readonly Action<string, int?> _notify;
+		private readonly CoreComm.AddOnScreenMessageCallback _notify;
 
 		private void FrameAdvancePrep(IController controller)
 		{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			if (retro_msg.frames > 0)
 			{
 				// TODO: pass frames for duration?
-				_notify(Mershul.PtrToStringUtf8(retro_msg.msg), null);
+				_notify(Mershul.PtrToStringUtf8(retro_msg.msg) ?? string.Empty);
 			}
 
 			Frame++;

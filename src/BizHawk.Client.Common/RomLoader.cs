@@ -112,9 +112,6 @@ namespace BizHawk.Client.Common
 			return e.Settings;
 		}
 
-		// For not throwing errors but simply outputting information to the screen
-		public Action<string, int?> MessageCallback { get; set; }
-
 		// TODO: reconsider the need for exposing these;
 		public IEmulator LoadedEmulator { get; private set; }
 		public GameInfo Game { get; private set; }

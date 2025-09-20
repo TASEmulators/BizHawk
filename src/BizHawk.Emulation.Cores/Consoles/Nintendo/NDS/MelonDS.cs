@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 					if (!_openGLProvider.SupportsGLVersion(majorGlVersion, minorGlVersion))
 					{
-						lp.Comm.Notify($"OpenGL {majorGlVersion}.{minorGlVersion} is not supported on this machine, falling back to software renderer", null);
+						lp.Comm.Notify($"OpenGL {majorGlVersion}.{minorGlVersion} is not supported on this machine, falling back to software renderer");
 						_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
 					}
 					else
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				{
 					if (!_openGLProvider.SupportsGLVersion(3, 1))
 					{
-						lp.Comm.Notify("OpenGL 3.1 is not supported on this machine, screen control options will not work.", null);
+						lp.Comm.Notify("OpenGL 3.1 is not supported on this machine, screen control options will not work.");
 					}
 					else
 					{

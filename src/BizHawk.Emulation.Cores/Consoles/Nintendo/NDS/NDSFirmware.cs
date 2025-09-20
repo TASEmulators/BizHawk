@@ -2,6 +2,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -9,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 	// TODO: a lot of this has been removed as it's not really needed anymore (our c++ code forces correctness everywhere)
 	internal static class NDSFirmware
 	{
-		public static void MaybeWarnIfBadFw(ReadOnlySpan<byte> fw, Action<string> warningCallback)
+		public static void MaybeWarnIfBadFw(ReadOnlySpan<byte> fw, CoreComm.ModalMessageBoxCallback warningCallback)
 		{
 			if (fw[0x17C] != 0xFF)
 			{
@@ -47,7 +48,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			"BFBC33D996AA73A050F1951529327D5844461A00", // MACi DS Lite (Korean v5, 2006-11-09)
 		};
 
-		private static unsafe void CheckDecryptedCodeChecksum(ReadOnlySpan<byte> fw, Action<string> warningCallback)
+		private static unsafe void CheckDecryptedCodeChecksum(
+			ReadOnlySpan<byte> fw,
+			CoreComm.ModalMessageBoxCallback warningCallback)
 		{
 			IntPtr decryptedFw;
 			int decrypedFwLen;

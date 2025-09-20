@@ -3661,7 +3661,6 @@ namespace BizHawk.Client.EmuHawk
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = romGame => args.ForcedSysID ?? ChoosePlatformForRom(romGame),
 					Deterministic = deterministic,
-					MessageCallback = AddOnScreenMessage,
 					OpenAdvanced = args.OpenAdvanced,
 				};
 				FirmwareManager.RecentlyServed.Clear();
