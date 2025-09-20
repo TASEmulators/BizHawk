@@ -4,7 +4,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	public partial class MSX : IEmulator, ISoundProvider, IVideoProvider
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		private BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		public ControllerDefinition ControllerDefinition => current_controller;
 

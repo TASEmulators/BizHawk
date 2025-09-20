@@ -618,6 +618,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					_serviceProvider.Register<IVideoProvider>(_glTextureProvider);
 					RefreshScreenSettings(_settings);
 				}
+
+				bool supportsSaveRam = IsDSiWare ? DSiWareSaveLength != 0 : _core.GetSaveRamLength(_console) != 0;
+				if (!supportsSaveRam)
+				{
+					_serviceProvider.Unregister<ISaveRam>();
+				}
 			}
 			catch
 			{

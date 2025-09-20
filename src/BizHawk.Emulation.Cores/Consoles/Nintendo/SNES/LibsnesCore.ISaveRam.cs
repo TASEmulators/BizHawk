@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				if (buf == null)
 				{
-					return null;
+					throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 				}
 
 				var ret = new byte[size];
@@ -46,9 +46,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
 				}
 
-				if (size == 0)
+				if (size == 0 || buf == null)
 				{
-					return;
+					throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 				}
 
 				if (size != data.Length)

@@ -323,6 +323,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Register<ISoundProvider>(_soundProvider);
 			ser.Register<IPCEngineSoundDebuggable>(PSG);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
+			if (BRAM == null)
+				ser.Unregister<ISaveRam>();
 			SetupMemoryDomains();
 		}
 

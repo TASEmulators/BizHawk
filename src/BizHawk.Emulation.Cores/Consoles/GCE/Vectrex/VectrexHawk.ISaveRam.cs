@@ -1,8 +1,8 @@
-﻿using BizHawk.Emulation.Common;
+﻿//using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
-	public partial class VectrexHawk : ISaveRam
+	public partial class VectrexHawk// : ISaveRam
 	{
 		public byte[] CloneSaveRam(bool clearDirty)
 		{

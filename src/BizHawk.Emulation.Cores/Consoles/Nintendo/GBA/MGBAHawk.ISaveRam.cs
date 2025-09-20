@@ -21,7 +21,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (len == 0)
 			{
-				return null;
+				// mGBA does not know a game's save type (and as a result actual savedata size) on startup.
+				// Consequently, it cannot conditionally provide the ISaveRam service.
+				// Unfortunately this means the frontend will create empty save files for games with no savedata.
+				return Array.Empty<byte>();
 			}
 
 			var ret = new byte[len];

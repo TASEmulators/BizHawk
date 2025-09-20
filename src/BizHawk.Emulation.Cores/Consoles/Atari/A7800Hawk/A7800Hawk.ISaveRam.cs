@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (data.Length != _hsram.Length) throw new InvalidOperationException("Incorrect sram size.");
 			Buffer.BlockCopy(data, 0, _hsram, 0, data.Length);
 		}
 

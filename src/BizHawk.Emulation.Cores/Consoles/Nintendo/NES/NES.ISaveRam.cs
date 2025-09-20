@@ -15,6 +15,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		private bool HasSaveRam()
+		{
+			if (Board == null) return false;
+			if (Board is FDS) return true;
+			if (Board.SaveRam == null) return false;
+			return true;
+		}
+
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (Board is FDS fds)
@@ -22,7 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return fds.ReadSaveRam();
 			}
 
-			return (byte[]) Board?.SaveRam?.Clone();
+			byte[]/*?*/ sram = (byte[])Board?.SaveRam?.Clone();
+			return sram ?? throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -30,14 +39,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (Board is FDS fds)
 			{
 				fds.StoreSaveRam(data);
-				return;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			if (Board?.SaveRam == null)
 			{
-				return;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
+			if (data.Length != Board.SaveRam.Length) throw new InvalidOperationException("Incorrect sram size.");
 			Array.Copy(data, Board.SaveRam, data.Length);
 		}
 	}
