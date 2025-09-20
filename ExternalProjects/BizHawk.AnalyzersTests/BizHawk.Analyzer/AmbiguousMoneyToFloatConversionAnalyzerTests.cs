@@ -24,5 +24,8 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzerTests
 				private static double D(decimal m)
 					=> {|BHI1105:checked((double) m)|};
 			}
+			namespace BizHawk.Common.NumberExtensions {
+				public static class NumberExtensions {} // Analyzer short-circuits if this doesn't exist, since that's where the helpers live
+			}
 		""");
 }
