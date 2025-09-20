@@ -5,5 +5,6 @@
 	<Import Project="../AnalyzersCommon.props" />
 	<ItemGroup>
 		<PackageReference Include="PolySharp" />
+		<EmbeddedResource Include="embedded/*.cs" />
 	</ItemGroup>
 </Project>
