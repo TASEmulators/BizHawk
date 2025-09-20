@@ -44,7 +44,6 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		private readonly LibWaterboxCore.EmptyCallback _ledCallback;
 		private readonly List<IRomAsset> _roms;
-		private const int _messageDuration = 4;
 		private const int _driveNullOrEmpty = -1;
 		private int[] _driveSlots;
 		private List<string> _args;
@@ -216,11 +215,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					fi.Action = LibUAE.DriveAction.EjectDisk;
 					if (_driveSlots[_currentDrive] == _driveNullOrEmpty)
 					{
-						CoreComm.Notify($"Drive FD{_currentDrive} is already empty!", _messageDuration);
+						CoreComm.Notify($"Drive FD{_currentDrive} is already empty!", duration: 4);
 					}
 					else
 					{
-						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+						CoreComm.Notify($"Ejected drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", duration: 4);
 						_driveSlots[_currentDrive] = _driveNullOrEmpty;
 					}
 				}
@@ -242,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						}
 					}
 					_driveSlots[_currentDrive] = _currentSlot;
-					CoreComm.Notify($"Inserted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+					CoreComm.Notify($"Inserted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", duration: 4);
 				}
 			}
 
@@ -253,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					_currentSlot++;
 					_currentSlot %= _roms.Count;
 					var selectedFile = _roms[_currentSlot];
-					CoreComm.Notify($"Selected slot {_currentSlot}: {GetFullName(selectedFile)}", _messageDuration);
+					CoreComm.Notify($"Selected slot {_currentSlot}: {GetFullName(selectedFile)}", duration: 4);
 				}
 			}
 
@@ -272,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 					{
 						name = GetFullName(_roms[_driveSlots[_currentDrive]]);
 					}
-					CoreComm.Notify($"Selected drive FD{_currentDrive}: {name}", _messageDuration);
+					CoreComm.Notify($"Selected drive FD{_currentDrive}: {name}", duration: 4);
 				}
 			}
 

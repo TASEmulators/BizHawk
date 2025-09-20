@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -1125,7 +1126,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static bool DisableSecondaryThrottling { get; set; }
 
-		public void AddOnScreenMessage(string message, int? duration = null)
+		public void AddOnScreenMessage(string message, [LiteralExpected] int? duration = null)
 		{
 #pragma warning disable CS0618 // this is the sanctioned call-site
 			OSD.AddMessage(message, duration);

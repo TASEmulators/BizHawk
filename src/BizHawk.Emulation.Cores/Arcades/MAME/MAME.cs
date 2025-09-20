@@ -35,7 +35,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_infoCallback = info =>
 			{
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
+#pragma warning disable BHI3200 // wants a literal value for duration
 				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
+#pragma warning restore BHI3200
 				RomDetails =
 					$"Full Name:          { _gameFullName }\r\n" +
 					$"Short Name:         { _gameShortName }\r\n" +

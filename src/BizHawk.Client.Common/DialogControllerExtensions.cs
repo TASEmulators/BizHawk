@@ -1,13 +1,17 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BizHawk.Client.Common
 {
 	public static class DialogControllerExtensions
 	{
-		public static void AddOnScreenMessage(this IDialogParent dialogParent, string message, int? duration = null)
-			=> dialogParent.DialogController.AddOnScreenMessage(message, duration);
+		public static void AddOnScreenMessage(
+			this IDialogParent dialogParent,
+			string message,
+			[LiteralExpected] int? duration = null)
+				=> dialogParent.DialogController.AddOnScreenMessage(message, duration);
 
 		public static void DoWithTempMute(this IDialogController dialogController, Action action)
 		{

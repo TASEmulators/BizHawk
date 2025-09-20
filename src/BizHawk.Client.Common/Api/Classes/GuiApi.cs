@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -122,7 +123,7 @@ namespace BizHawk.Client.Common
 
 		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
-		public void AddMessage(string message, int? duration = null)
+		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _dialogController.AddOnScreenMessage(message, duration);
 
 		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => Get2DRenderer(surfaceID).Clear();

@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private LibDOSBox _libDOSBox;
 		private readonly List<IRomAsset> _romAssets;
 		private readonly List<IDiscAsset> _discAssets;
-		private const int _messageDuration = 4;
 		private const double _wAspect = 4.0;
 		private const double _hAspect = 3.0;
 		private int _correctedWidth = LibDOSBox.VGA_MAX_WIDTH;
@@ -456,20 +455,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!_isPrevFloppyDiskPressed && controller.IsPressed(Inputs.PrevFloppyDisk))
 				{
 					_currentFloppyDisk = _currentFloppyDisk == 0 ? _floppyDiskCount - 1 : _currentFloppyDisk - 1;
-					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}", _messageDuration);
+					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}", duration: 4);
 				}
 
 				if (!_isNextFloppyDiskPressed && controller.IsPressed(Inputs.NextFloppyDisk))
 				{
 					_currentFloppyDisk = (_currentFloppyDisk + 1) % _floppyDiskCount;
-					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}", _messageDuration);
+					CoreComm.Notify($"Selected {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])}", duration: 4);
 				}
 
 				// Processing floppy disk swapping
 				if (!_isSwapFloppyDiskPressed && controller.IsPressed(Inputs.SwapFloppyDisk))
 				{
 					fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
-					CoreComm.Notify($"Inserted {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", _messageDuration);
+					CoreComm.Notify($"Inserted {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", duration: 4);
 				}
 			}
 
@@ -480,20 +479,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!_isPrevCDROMPressed && controller.IsPressed(Inputs.PrevCDROM))
 				{
 					_currentCDROM = _currentCDROM == 0 ? _cdRomFileNames.Count - 1 : _currentCDROM - 1;
-					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])}", _messageDuration);
+					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])}", duration: 4);
 				}
 
 				if (!_isNextCDROMPressed && controller.IsPressed(Inputs.NextCDROM))
 				{
 					_currentCDROM = (_currentCDROM + 1) % _cdRomFileNames.Count;
-					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])}", _messageDuration);
+					CoreComm.Notify($"Selected {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])}", duration: 4);
 				}
 
 				// Processing CDROM disk swapping
 				if (!_isSwapCDROMPressed && controller.IsPressed(Inputs.SwapCDROM))
 				{
 					fi.DriveActions.InsertCDROM = _currentCDROM;
-					CoreComm.Notify($"Inserted {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])} into drive D:", _messageDuration);
+					CoreComm.Notify($"Inserted {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])} into drive D:", duration: 4);
 				}
 			}
 

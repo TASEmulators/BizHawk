@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Collections.Generic;
 
@@ -88,7 +89,7 @@ namespace BizHawk.Client.Common
 			=> _messages.Clear();
 
 		[Obsolete("use via IDialogParent.AddOnScreenMessage")]
-		public void AddMessage(string message, int? duration = null)
+		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _messages.Add(new() {
 				Message = message,
 				ExpireAt = DateTime.Now + TimeSpan.FromSeconds(Math.Max(_config.OSDMessageDuration, duration ?? 0)),

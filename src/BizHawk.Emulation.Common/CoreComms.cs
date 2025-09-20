@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -8,7 +10,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class CoreComm
 	{
-		public delegate void AddOnScreenMessageCallback(string message, int? duration = null);
+		public delegate void AddOnScreenMessageCallback(string message, [LiteralExpected] int? duration = null);
 
 		public delegate void ModalMessageBoxCallback(string message);
 
