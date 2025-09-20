@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!_isSwapFloppyDiskPressed && controller.IsPressed(Inputs.SwapFloppyDisk))
 				{
 					fi.DriveActions.InsertFloppyDisk = _currentFloppyDisk;
-					CoreComm.Notify($"Insterted {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", _messageDuration);
+					CoreComm.Notify($"Inserted {FileNames.FD}{_currentFloppyDisk}: {GetFullName(_floppyDiskImageFiles[_currentFloppyDisk])} into drive A:", _messageDuration);
 				}
 			}
 
@@ -493,7 +493,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				if (!_isSwapCDROMPressed && controller.IsPressed(Inputs.SwapCDROM))
 				{
 					fi.DriveActions.InsertCDROM = _currentCDROM;
-					CoreComm.Notify($"Insterted {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])} into drive D:", _messageDuration);
+					CoreComm.Notify($"Inserted {FileNames.CD}{_currentCDROM}: {GetFullName(_discAssets[_currentCDROM])} into drive D:", _messageDuration);
 				}
 			}
 

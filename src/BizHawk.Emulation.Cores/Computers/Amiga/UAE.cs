@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						}
 					}
 					_driveSlots[_currentDrive] = _currentSlot;
-					CoreComm.Notify($"Insterted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
+					CoreComm.Notify($"Inserted drive FD{_currentDrive}: {GetFullName(_roms[_driveSlots[_currentDrive]])}", _messageDuration);
 				}
 			}
 
