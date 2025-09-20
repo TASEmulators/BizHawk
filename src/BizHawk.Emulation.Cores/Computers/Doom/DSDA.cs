@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 {
 	[PortedCore(
 		name: CoreNames.DSDA,
-		author: "The DSDA Team",
+		author: "The DSDA-Doom Team",
 		portedVersion: "0.28.2 (fe0dfa0)",
 		portedUrl: "https://github.com/kraflab/dsda-doom")]
 	[ServiceNotApplicable(typeof(ISaveRam))]
