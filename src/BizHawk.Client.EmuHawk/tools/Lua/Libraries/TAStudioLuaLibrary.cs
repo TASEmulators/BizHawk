@@ -181,6 +181,7 @@ namespace BizHawk.Client.EmuHawk
 				? _th.EnumerateToLuaTable(Tastudio.GetSelection(), indexFrom: 0)
 				: _th.CreateTable();
 
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
 		public void SubmitInputChange(int frame, string button, bool value)
@@ -378,7 +379,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethod("addcolumn", "")]
+		[LuaMethodExample("""
+			local cache = { [0] = "0" };
+			tastudio.onqueryitemtext(function(frame, col)
+				if col == "xp" then return cache[frame]; end
+			end);
+			tastudio.addcolumn("xp", "Experience", 30);
+			--TODO each frame, set `cache[emu.framecount()]` to e.g. `tostring(memory.readbyte(addr_of_xp))`
+			--TODO on loadstate, clear `cache` from `emu.framecount()` through to end
+			-- or you could try to de/serialise the `cache` table to a string and sync it via `userdata`
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "addcolumn",
+			description: "Extends the piano roll with an extra column for data visualisation."
+				+ " The text parameter is used as the column header, while the name parameter is used to identify the column for {{onqueryitem*}} callbacks."
+				+ " And width is obviously the width (in dp).")]
 		public void AddColumn(string name, string text, int width)
 		{
 			if (Engaged()) Tastudio.AddColumn(name: name, widthUnscaled: width, text: text);
