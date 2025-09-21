@@ -359,6 +359,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
 								{
 									spr_true_count++;
+									oam_index++;
 								}
 								else if (spr_true_count > 0 && spr_true_count < 4)
 								{
@@ -376,7 +377,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								}
 								else
 								{
-									oam_index += 5; // glitchy increment
+									// glitchy increments
+									oam_index += 1;
+
+									if ((oam_index & 3) != 0)
+									{
+										oam_index += 4;
+									}
 								}
 
 								read_value = soam[0]; //writes change to reads
