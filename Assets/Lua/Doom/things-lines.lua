@@ -288,11 +288,20 @@ local function struct_layout(struct)
 		struct.size = struct.size + size
 		return struct
 	 end
+	function struct.s8(name) return struct.add(name, 1, true) end
 	function struct.s16(name) return struct.add(name, 2, true) end
 	function struct.s32(name) return struct.add(name, 4, true) end
+	function struct.u8(name) return struct.add(name, 1, true) end
 	function struct.u32(name) return struct.add(name, 4, true) end
 	function struct.u64(name) return struct.add(name, 8, true) end
 	function struct.ptr(name) return struct.u64(name) end
+	function struct.bool(name) return struct.s32(name) end
+	function struct.array(name, type, count, ...)
+		for i = 1, count do
+			struct[type](name .. i, ...)
+		end
+		return struct
+	end
 
 	return struct
 end
