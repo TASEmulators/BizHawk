@@ -955,7 +955,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nes.dmc_dma_controller_conflict = false;
 
 					sample_buffer_filled = true;
-					if (nes.cpu.address_bus >= 0x4000 && nes.cpu.address_bus < 0x401F)
+					if (nes.cpu.address_bus >= 0x4000 && nes.cpu.address_bus <= 0x401F)
 					{
 						if ((sample_address & 0x1F) == 0x15)
 						{
@@ -1508,3 +1508,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 }
+
