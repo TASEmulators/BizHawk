@@ -1036,7 +1036,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				if ((addr & 0x1F) == 0x16 || (addr & 0x1F) == 0x17)
 				{
-					// only bits 5, 6, and 7 of the controller ports are open bus
+					ret &= 0xE0; // only bits 5, 6, and 7 of the controller ports are open bus
 					ret |= (byte)(ReadReg(0x4000 | (addr & 0x1F)) & 0x1F);
 				}
 			}
@@ -1149,4 +1149,3 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 }
-
