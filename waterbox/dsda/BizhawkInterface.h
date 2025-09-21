@@ -159,6 +159,7 @@ struct InitSettings
   int PreventLevelExit;
   int PreventGameEnd;
   int FullVision;
+  int DisplayPlayer;
   //unsigned int RNGSeed;
 } __attribute__((packed));
 

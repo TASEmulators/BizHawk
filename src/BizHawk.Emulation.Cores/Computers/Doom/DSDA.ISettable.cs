@@ -265,7 +265,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				=> (DoomSettings)MemberwiseClone();
 		}
 
-		private readonly string FMT_STR_PLAYER_NOT_ACTIVE = $"Trying to set '{typeof(DoomSettings).GetProperty(nameof(DoomSettings.DisplayPlayer)).DisplayName()}' to '{{0}}' but that player is not active.";
+		private readonly string FMT_STR_PLAYER_NOT_ACTIVE = $"Trying to set '{
+			typeof(DoomSettings)
+				.GetProperty(nameof(DoomSettings.DisplayPlayer))
+				.DisplayName()
+		}' to '{{0}}' but that player is not active.";
 
 		public PutSettingsDirtyBits PutSettings(DoomSettings o)
 		{

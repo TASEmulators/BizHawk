@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int PreventLevelExit;
 			public int PreventGameEnd;
 			public int FullVision;
+			public int DisplayPlayer;
 			//public uint RNGSeed;
 		}
 

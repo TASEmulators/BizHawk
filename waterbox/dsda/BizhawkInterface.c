@@ -357,6 +357,8 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   PlayerClass[2] = (pclass_t)settings->Player3Class;
   PlayerClass[3] = (pclass_t)settings->Player4Class;
 
+  displayplayer = consoleplayer = settings->DisplayPlayer;
+
   // Initializing DSDA core
   headlessMain(argc, argv);
   printf("DSDA Initialized\n");

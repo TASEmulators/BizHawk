@@ -128,6 +128,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				+ "dsda_show_level_splits 0\n"
 			);
 
+			if (!PlayerPresent(_syncSettings, _settings.DisplayPlayer))
+			{
+				_settings.DisplayPlayer = 0;
+				for (var player = 0; player <= 4 && _settings.DisplayPlayer == 0; player++)
+				{
+					if (PlayerPresent(_syncSettings, player))
+					{
+						_settings.DisplayPlayer = player;
+					}
+				}
+			}
+
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
@@ -180,7 +192,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					var initSettings = _syncSettings.GetNativeSettings();
 					initSettings.FullVision = _settings.FullVision ? 1 : 0;
+					initSettings.DisplayPlayer = _settings.DisplayPlayer - 1;
 					CreateArguments(initSettings);
+
 					var initResult = _core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
 					if (!initResult)
 					{
