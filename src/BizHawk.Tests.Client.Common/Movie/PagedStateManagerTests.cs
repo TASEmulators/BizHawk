@@ -494,6 +494,55 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.IsTrue(manager.HasState(reservedFrame2));
 		}
 
+		[TestMethod]
+		public void ForceCapturesAreTemporary()
+		{
+			// arrange
+			IStatable ss = CreateStateSource();
+			PagedStateManager manager = new(new()
+			{
+				TotalMemoryLimitMB = 1,
+				FramesBetweenNewStates = 4, // > 2
+				FramesBetweenMidStates = 8,
+				FramesBetweenOldStates = 20,
+			}, (f) => false);
+
+			manager.Engage(ss.CloneSavestate());
+			// We really only care about them being temporary when the buffer is full.
+			int lastNonForce = PAGE_COUNT * manager.Settings.FramesBetweenNewStates;
+			for (int i = 1; i <= lastNonForce; i++)
+				manager.Capture(i, ss);
+
+			manager.Capture(lastNonForce + 1, ss, true);
+
+			// act
+			manager.Capture(lastNonForce + 2, ss, true);
+
+			// assert
+			Assert.IsFalse(manager.HasState(lastNonForce + 1));
+		}
+
+		[TestMethod]
+		public void ForceCaptures()
+		{
+			// arrange
+			IStatable ss = CreateStateSource();
+			PagedStateManager manager = new(new()
+			{
+				TotalMemoryLimitMB = 1,
+				FramesBetweenNewStates = 4, // > 1
+				FramesBetweenMidStates = 8,
+				FramesBetweenOldStates = 20,
+			}, (f) => false);
+			manager.Engage(ss.CloneSavestate());
+
+			// act
+			manager.Capture(1, ss, true);
+
+			// assert
+			Assert.IsTrue(manager.HasState(1));
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
