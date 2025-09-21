@@ -43,6 +43,7 @@ Nix functions and data:
 - `depsForHistoricalRelease`
 - `IDEs`
 - `launchScriptsForLocalBuild`
+- `libretroCores`
 - `populateHawkSourceInfo`
 - `releaseTagSourceInfos`
 - `splitReleaseArtifact`
