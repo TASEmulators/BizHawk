@@ -370,6 +370,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					}
 
 					mmapMiBSize += romSize / (1024 * 1024);
+					if (romSize != roms[0].Length)
+					{
+						mmapMiBSize += ((uint)roms[0].Length + 1024 * 1024 - 1) / (1024 * 1024);
+					}
 
 					if (_activeSyncSettings.EnableDLDI)
 					{
@@ -403,6 +407,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					}
 
 					mmapMiBSize += romSize / (1024 * 1024);
+					if (romSize != roms[1].Length)
+					{
+						mmapMiBSize += ((uint)roms[1].Length + 1024 * 1024 - 1) / (1024 * 1024);
+					}
 				}
 
 				_core = PreInit<LibMelonDS>(new()
