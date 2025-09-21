@@ -87,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public ushort double_controller_read_address = 0;
 		public byte previous_controller1_read = 0;
 		public byte previous_controller2_read = 0;
+		public bool dmc_dma_controller_conflict;
 		public bool joypadStrobed;
 		public byte joypadStrobeValue;
 
@@ -826,6 +827,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				double_controller_read_address = (ushort) addr;
 				double_controller_read = TotalExecutedCycles + 1; // The shift register in the controller is only updated if the previous CPU cycle did not read from the controller port.
+				if (dmc_dma_controller_conflict)
+				{
+					double_controller_read++; // since the DMC DMA fetch routine occurs before cpu.ExecuteOne() which updates TotalExecutedCycles, we need to increment this value.
+				}
 			}
 
 			ret &= 0x1f;
