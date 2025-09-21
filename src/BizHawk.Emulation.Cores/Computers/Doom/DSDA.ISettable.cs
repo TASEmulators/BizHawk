@@ -247,9 +247,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public MapDetail MapDetails { get; set; }
 
 			[DisplayName("Map Trail")]
-			[Description("Shows previous positions of the player as a trail when map details are enabled.\n\nNot available in vanilla.\n\nRequires restart.")]
+			[Description("Shows previous positions of the player as a trail when Automap details are enabled.\n\nNot available in vanilla.\n\nRequires restart.")]
 			[DefaultValue(false)]
 			public bool MapTrail { get; set; }
+
+			[DisplayName("Map Trail Size")]
+			[Description("Number of previous positions to display as a trail on Automap [1 - 350].\n\nRequires restart.")]
+			[Range(1, 350)]
+			[DefaultValue(105)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int MapTrailSize { get; set; }
 
 			[DisplayName("Full Vision")]
 			[Description("Disables all darkness.\n\nAvailable in vanilla via the IDBEHOLDL cheat code.\n\nRequires restart.")]
@@ -257,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public bool FullVision { get; set; }
 
 			[DisplayName("Player Point of View")]
-			[Description("Which of the players' point of view to use during rendering.")]
+			[Description("Which of the players' point of view to use during rendering [1 - 4].")]
 			[Range(1, 4)]
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
@@ -287,7 +294,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			var ret = (_settings.ScaleFactor == o.ScaleFactor
 				&& _settings.InternalAspect == o.InternalAspect
 				&& _settings.FullVision == o.FullVision
-				&& _settings.MapTrail == o.MapTrail)
+				&& _settings.MapTrail == o.MapTrail
+				&& _settings.MapTrailSize == o.MapTrailSize)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
