@@ -343,7 +343,8 @@ iden_nums	4 14C
 --]]--
 
 MobjOffsets = struct_layout()
-	.add("thinker", 48)
+	.add("thinker", 44)
+	.pad(4)
 	.s32("x")
 	.s32("y")
 	.s32("z")
@@ -398,6 +399,7 @@ MobjOffsets = struct_layout()
 	.u32("pitch")
 	.s32("index")
 	.s16("patch_width")
+	.pad(2)
 	.s32("iden_nums")
 	-- the rest are non-doom
 	.offsets
