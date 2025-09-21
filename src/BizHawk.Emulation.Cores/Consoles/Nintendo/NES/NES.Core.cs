@@ -1006,41 +1006,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ret = Board.ReadReg2xxx(addr);
 			}
-			else if (addr < 0x4020)
-			{
-				// oam dma access board memory if cpu is not accessing registers
-				// this means that OAM DMA can actually access memory that the cpu cannot
-				if (oam_dma_exec)
-				{
-					if (cpu.address_bus is >= 0x4000 and < 0x4020)
-					{
-						ret = ReadReg(addr);
-					}
-					else
-					{
-						ret = Board.ReadExp(addr - 0x4000);
-					}
-				}
-				else
-				{
-					ret = ReadReg(addr);
-				}
-			}
 			else if (addr < 0x6000)
 			{
-				// oam dma will access registers if cpu is accessing them
-				if (oam_dma_exec && ((oam_dma_addr & 0xFF00) == 0x4000) && (cpu.PC >= 0x4000) && (cpu.PC < 0x4020))
-				{
-					ret = ReadReg(addr & 0x401F);
-				}
-				else
-				{
-					ret = Board.ReadExp(addr - 0x4000);
-				}
+				ret = DB;
 			}
 			else
 			{
 				ret = Board.ReadWram(addr - 0x6000);
+			}
+
+			if (cpu.address_bus >= 0x4000 && cpu.address_bus <= 0x401F)
+			{
+				// Regardless of the address the CPU is intending to read,
+				// if the 6502 address bus is pointing to the APU registers,
+				// then the APU registers are active.
+				if((addr & 0x1F) == 0x15)
+				{
+					if(!dmc_dma_exec)
+					{
+						ret &= 0x20; // only bit 5 of $4015 is open bus
+						ret |= (byte) (ReadReg(0x4000 | (addr & 0x1F)) & 0xDF);
+					}
+					else
+					{
+						// Poke OAMSTATUS to potentially clear the APU Frame Counter IRQ Flag.
+						// Does the DMC DMA sample get modified by this?
+						ReadReg(0x4000 | (addr & 0x1F));
+					}					
+				}
+				if ((addr & 0x1F) == 0x16 || (addr & 0x1F) == 0x17)
+				{
+					ret &= 0xE0; // only bits 5, 6, and 7 of $4015 is open bus
+					ret |= (byte) (ReadReg(0x4000 | (addr & 0x1F)) & 0x1F);
+				}
 			}
 
 			if (MemoryCallbacks.HasReads)
@@ -1049,7 +1047,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				MemoryCallbacks.CallMemoryCallbacks(addr, ret, flags, "System Bus");
 			}
 
-			if (addr != 0x4015)
+			if (!(cpu.address_bus >= 0x4000 && cpu.address_bus < 0x4020 && (addr & 0x1F) == 0x15))
 			{
 				// This register is internal to the CPU and so the external CPU data bus is disconnected when reading it.
 				// Therefore the returned value cannot be seen by external devices and the value does not affect open bus.

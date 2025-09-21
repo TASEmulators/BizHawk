@@ -950,17 +950,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (sample_length != 0)
 				{
-					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
-					sample_buffer_filled = true;
+					nes.dmc_dma_controller_conflict = true;
+					sample_buffer = apu.nes.ReadMemory((ushort) sample_address);
+					nes.dmc_dma_controller_conflict = false;
 
+					sample_buffer_filled = true;
 					if (nes.cpu.address_bus >= 0x4000 && nes.cpu.address_bus < 0x401F)
 					{
-						nes.dmc_dma_controller_conflict = true;
-						nes.ReadMemory((ushort) ((nes.cpu.address_bus & 0xFFE0) | (sample_address & 0x1F)));
-						nes.dmc_dma_controller_conflict = false;
-						if (nes.cpu.address_bus == 0x4016 || nes.cpu.address_bus == 0x4017)
+						if ((sample_address & 0x1F) == 0x15)
 						{
-							nes.DB = (byte)((sample_buffer & 0xE0) | (nes.DB & 0x1F)); // The bus conflict leaves the open bus bits of the controller filled with the bits from the sample buffer.
+							nes.DB = (byte)sample_buffer;
+						}
+						else if ((sample_address & 0x1F) == 0x16 || (sample_address & 0x1F) == 0x4017)
+						{
+							nes.DB = (byte) ((sample_buffer & 0xE0) | (nes.DB & 0x1F)); // The bus conflict leaves the open bus bits of the controller filled with the bits from the sample buffer.
 							// NOTE: When reading a controller port, different console revisions have different open bus bits.
 						}
 					}
