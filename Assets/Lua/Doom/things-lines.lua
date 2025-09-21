@@ -18,10 +18,10 @@ local PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for nicene
 -- shortcuts
 local rl     = memory.read_u32_le
 local rw     = memory.read_u16_le
-local rb     = memory.read_u8_le
+local rb     = memory.read_u8
 local rls    = memory.read_s32_le
 local rws    = memory.read_s16_le
-local rbs    = memory.read_s8_le
+local rbs    = memory.read_s8
 local text   = gui.text
 local box    = gui.drawBox
 local line   = gui.drawLine
