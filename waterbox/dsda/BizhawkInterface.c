@@ -132,7 +132,7 @@ void player_input(struct PackedPlayerInput *src, int id)
   int look = 0;
   int flyheight = 0;
   int buttons = src->Buttons & EXTRA_BUTTON_MASK;
-  player_t *player = &players[consoleplayer];
+  player_t *player = &players[id];
   ticcmd_t *dest = &local_cmds[id];
 
   dest->forwardmove = src->RunSpeed;
@@ -361,19 +361,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   headlessMain(argc, argv);
   printf("DSDA Initialized\n");
 
-  switch(compatibility_level) {
-  case prboom_6_compatibility:
-    longtics = 1;
-    break;
-  case mbf21_compatibility:
-    longtics = 1;
-    shorttics = !dsda_Flag(dsda_arg_longtics);
-    break;
-  default:
-    longtics = dsda_Flag(dsda_arg_longtics);
-    break;
-  }
-
   //if (compatibility_level >= boom_202_compatibility)
   //  rngseed = settings->RNGSeed;
 
@@ -393,11 +380,14 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   // Enabling DSDA output, for debugging
   enableOutput = 1;
 
-  if (settings->FullVision)
+  for (int i = 0; i < g_maxplayers; i++)
   {
-    for (int i = 0; i < 4; i++)
+    if (playeringame[i])
     {
-      if (playeringame[i])
+      // manually add players to tracker
+      mobj_ptrs[i] = players[i].mo;
+
+      if (settings->FullVision)
       {
         players[i].fixedcolormap = 1;
         players[i].powers[pw_infrared] = -1;
