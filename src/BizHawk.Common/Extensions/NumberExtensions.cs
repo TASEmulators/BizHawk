@@ -252,12 +252,20 @@ namespace BizHawk.Common.NumberExtensions
 		/// <remarks>don't use this in cores without picking a suitable ε</remarks>
 		public static bool HawkFloatEquality(this float f, float other, float ε = ReallySmallNumber) => Math.Abs(other - f) < ε;
 
-#pragma warning disable RCS1224 // don't want extension on nonspecific `float`/`uint`
+#pragma warning disable RCS1224 // don't want extension on nonspecific `double`/`float`/`uint`/`ulong`
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a float</summary>
 		public static float ReinterpretAsF32(uint value) => Unsafe.As<uint, float>(ref value);
 
+		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a double</summary>
+		public static double ReinterpretAsF64(ulong value)
+			=> Unsafe.As<ulong, double>(ref value);
+
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a uint</summary>
 		public static uint ReinterpretAsUInt32(float value) => Unsafe.As<float, uint>(ref value);
+
+		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a ulong</summary>
+		public static ulong ReinterpretAsUInt64(double value)
+			=> Unsafe.As<double, ulong>(ref value);
 #pragma warning restore RCS1224
 	}
 }

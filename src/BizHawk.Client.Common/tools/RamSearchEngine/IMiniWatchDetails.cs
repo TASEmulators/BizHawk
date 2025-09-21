@@ -9,7 +9,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 	/// </summary>
 	internal interface IMiniWatchDetails : IMiniWatch
 	{
-		uint Current { get; }
+		ulong Current { get; }
+
 		int ChangeCount { get; }
 		void ClearChangeCount();
 		void Update(PreviousType type, MemoryDomain domain, bool bigEndian);
@@ -25,7 +26,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 			=> Previous = _current;
 
-		public uint Current => _current;
+		public ulong Current => _current;
 
 		public int ChangeCount { get; private set; }
 
@@ -62,7 +63,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 			=> Previous = _current;
 
-		public uint Current => _current;
+		public ulong Current => _current;
 
 		public int ChangeCount { get; private set; }
 
@@ -94,18 +95,18 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		private uint _current;
 
 		public MiniDWordWatchDetailed(MemoryDomain domain, long addr, bool bigEndian) : base(domain, addr, bigEndian)
-			=> Previous = _current = GetValueInner(Address, domain, bigEndian: bigEndian);
+			=> Previous = _current = unchecked((uint) GetValueInner(Address, domain, bigEndian: bigEndian));
 
 		public override void SetPreviousToCurrent(MemoryDomain domain, bool bigEndian)
 			=> Previous = _current;
 
-		public uint Current => _current;
+		public ulong Current => _current;
 
 		public int ChangeCount { get; private set; }
 
 		public void Update(PreviousType type, MemoryDomain domain, bool bigEndian)
 		{
-			var newValue = GetValueInner(Address, domain, bigEndian: bigEndian);
+			var newValue = unchecked((uint) GetValueInner(Address, domain, bigEndian: bigEndian));
 			if (newValue != _current)
 			{
 				ChangeCount++;
