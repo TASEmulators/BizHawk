@@ -21,6 +21,7 @@
 #include "dsda/settings.h"
 
 #define SLOWTURNTICS 6
+#define MEMORY_PADDED_PLAYER 0x400 // sizeof(player_t) is 729 but we pad for nice representation
 #define MEMORY_PADDED_THING  0x200 // sizeof(mobj_t) is 464 but we pad for nice representation
 #define MEMORY_PADDED_LINE   0x100 // sizeof(line_t) is 232 but we pad for nice representation
 #define MEMORY_LINE_EXTRA    0x10  // position vertices are "put" at the end because frontend can't read them from a pointer (since it points to internal memory which we can't expose)
@@ -119,9 +120,10 @@ enum HudMode
 
 enum MemoryArrayType
 {
-  ARRAY_THINGS  = 0,
-  ARRAY_LINES   = 1,
-  ARRAY_SECTORS = 2
+  ARRAY_PLAYERS = 0,
+  ARRAY_THINGS  = 1,
+  ARRAY_LINES   = 2,
+  ARRAY_SECTORS = 3
 };
 
 typedef union

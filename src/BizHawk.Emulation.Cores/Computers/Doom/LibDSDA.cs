@@ -8,9 +8,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 	{
 		public enum MemoryArrayType : int
 		{
-			Things  = 0,
-			Lines   = 1,
-			Sectors = 2
+			Players = 0,
+			Things  = 1,
+			Lines   = 2,
+			Sectors = 3
 		}
 
 		public enum GameMode : int

@@ -482,7 +482,23 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 // TODO: expose sectors and linedefs like xdre does (but better)
 ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
 {
-  if (type == ARRAY_THINGS)
+  if (type == ARRAY_PLAYERS)
+  {
+    if (addr >= g_maxplayers * MEMORY_PADDED_PLAYER)
+      return MEMORY_OUT_OF_BOUNDS;
+
+    int index  = addr / MEMORY_PADDED_PLAYER;
+    int offset = addr % MEMORY_PADDED_PLAYER;
+
+    if (!playeringame[index] || offset >= sizeof(player_t))
+      return MEMORY_NULL;
+
+    player_t *player = &players[index];
+
+    char *data = (char *)player + offset;  
+    return *data;
+  }
+  else if (type == ARRAY_THINGS)
   {
     if (addr >= num_objects * MEMORY_PADDED_THING)
       return MEMORY_OUT_OF_BOUNDS;
