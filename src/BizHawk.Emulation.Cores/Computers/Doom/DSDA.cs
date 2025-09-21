@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					? AspectRatio._4by3
 					: _settings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
-				+ $"map_trail_mode {(_settings.MapTrail ? 1 : 0)}\n"
+				+ $"map_trail_mode {(_settings.MapTrail ? 2 : 0)}\n"
 				+ $"map_trail_size {_settings.MapTrailSize}\n"
 				+ "render_stretch_hud 1\n"       // patch_stretch_doom_format
 				+ "boom_translucent_sprites 0\n" // may become a setting at some point
