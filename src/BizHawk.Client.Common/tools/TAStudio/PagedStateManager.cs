@@ -122,6 +122,7 @@ namespace BizHawk.Client.Common
 			New,
 			Mid,
 			Old,
+			None,
 		}
 
 		private struct StateInfo: IComparable<StateInfo>
@@ -130,6 +131,7 @@ namespace BizHawk.Client.Common
 			public int LastPage;
 			public int Size;
 			public int Frame = -1;
+			public StateGroup Group;
 
 			public StateInfo() { }
 
@@ -159,6 +161,8 @@ namespace BizHawk.Client.Common
 		private bool _bufferIsFull = false;
 		private int _newPagesUsed = 0;
 		private int _midPagesUsed = 0;
+
+		private int _lastForceCapture = -1;
 
 		private class PagedStream : Stream
 		{
@@ -417,6 +421,7 @@ namespace BizHawk.Client.Common
 			{
 				Frame = frame,
 				FirstPage = _firstFree,
+				Group = destinationGroup,
 			};
 
 			using PagedStream stream = new(newState, this, false);
@@ -450,24 +455,32 @@ namespace BizHawk.Client.Common
 
 			if (HasState(frame)) return;
 
+			if (force)
+			{
+				if (HasState(_lastForceCapture))
+				{
+					StateInfo state = _states.GetViewBetween(new(_lastForceCapture), new(_lastForceCapture)).Min;
+					if (state.Group == StateGroup.Old && !_reserveCallback(_lastForceCapture) && !ShouldKeepForOld(_lastForceCapture))
+						RemoveState(state);
+				}
+				_lastForceCapture = frame;
+			}
+
+			StateGroup group = StateGroup.None;
 			if (_reserveCallback(frame))
 			{
-				InternalCapture(frame, source, StateGroup.Old);
+				group = StateGroup.Old;
 			}
 			else if (source.AvoidRewind)
 			{
 				// Zwinder did this, so I will too. I'm not sure it's a good idea but maybe it is.
-				return;
-			}
-			else if (force)
-			{
-				InternalCapture(frame, source, StateGroup.Mid);
+				// (do nothing)
 			}
 			else if (!_bufferIsFull || _newStates.Count == 0 || frame > _newStates.Min.Frame)
 			{
 				int max = frame - 1;
 				int min = frame - Settings.FramesBetweenNewStates;
-				int newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
+				int newestOlderState;
 
 				// Special case: If the buffer is entirely full of old states, we don't attempt to capture into new.
 				if (_bufferIsFull && _midStates.Count == 0 && _newStates.Count < 2)
@@ -477,19 +490,27 @@ namespace BizHawk.Client.Common
 					// In this case, we kinda want to ignore that new state.
 					if (_newStates.Count == 1)
 					{
-						newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
-						max = newestOlderState - 1;
+						int stateToIgnore = _states.GetViewBetween(new(min), new(max)).Max.Frame;
+						max = stateToIgnore - 1;
 					}
 					if (min <= max) newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
 					else newestOlderState = 0;
 
 					if (frame - newestOlderState >= Settings.FramesBetweenOldStates)
-						InternalCapture(frame, source, StateGroup.Old);
-					return;
+						group = StateGroup.Old;
 				}
+				else
+				{
+					// Don't consider non-new states when looking at the gap. (unless we have no new states)
+					// This keeps the gaps regular even when some frames are temporarily force captured.
+					if (_newStates.Count != 0)
+						newestOlderState = _newStates.GetViewBetween(new(min), new(max)).Max.Frame;
+					else
+						newestOlderState = _states.GetViewBetween(new(min), new(max)).Max.Frame;
 
-				if (frame - newestOlderState >= Settings.FramesBetweenNewStates)
-					InternalCapture(frame, source, StateGroup.New);
+					if (frame - newestOlderState >= Settings.FramesBetweenNewStates)
+						group = StateGroup.New;
+				}
 			}
 			else
 			{
@@ -497,8 +518,13 @@ namespace BizHawk.Client.Common
 				int min = frame - Settings.FramesBetweenMidStates;
 				StateInfo newestOlderState = _states.GetViewBetween(new(min), new(max)).Max;
 				if (frame - newestOlderState.Frame >= Settings.FramesBetweenMidStates)
-					InternalCapture(frame, source, StateGroup.Mid);
+					group = StateGroup.Mid;
 			}
+
+			if (group != StateGroup.None)
+				InternalCapture(frame, source, group);
+			else if (force)
+				InternalCapture(frame, source, StateGroup.Old);
 		}
 
 		public void Clear() => InvalidateAfter(0);
@@ -558,7 +584,7 @@ namespace BizHawk.Client.Common
 			if (state.Frame == 0) return;
 
 			// Remove the state if it's an old state we don't need.
-			if (!_newStates.Contains(state) && !_midStates.Contains(state) && !ShouldKeepForOld(frame))
+			if (state.Group == StateGroup.Old && !ShouldKeepForOld(frame))
 			{
 				RemoveState(state);
 			}
@@ -587,8 +613,7 @@ namespace BizHawk.Client.Common
 				{
 					foreach (StateInfo state in _states)
 					{
-						if (_newStates.Contains(state)) continue;
-						if (_midStates.Contains(state)) continue;
+						if (state.Group != StateGroup.Old) continue;
 
 						if (!_reserveCallback(state.Frame) && !ShouldKeepForOld(state.Frame))
 							RemoveState(state);
