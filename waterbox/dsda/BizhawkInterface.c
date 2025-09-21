@@ -542,6 +542,21 @@ ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
     char *data = (char *)line + offset;
     return *data;
   }
+  else if (type == ARRAY_SECTORS)
+  {
+    if (addr >= numsectors * MEMORY_PADDED_SECTOR)
+      return MEMORY_OUT_OF_BOUNDS;
+
+    int index    = addr / MEMORY_PADDED_SECTOR;
+    int offset   = addr % MEMORY_PADDED_SECTOR;
+    sector_t *sector = &sectors[index];
+
+    if (sector == NULL || offset >= sizeof(sector_t))
+      return MEMORY_NULL;
+
+    char *data = (char *)sector + offset;  
+    return *data;
+  }
   else
     return MEMORY_OUT_OF_BOUNDS;
 }

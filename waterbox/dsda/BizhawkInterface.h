@@ -24,6 +24,7 @@
 #define MEMORY_PADDED_PLAYER 0x400 // sizeof(player_t) is 729 but we pad for nice representation
 #define MEMORY_PADDED_THING  0x200 // sizeof(mobj_t) is 464 but we pad for nice representation
 #define MEMORY_PADDED_LINE   0x100 // sizeof(line_t) is 232 but we pad for nice representation
+#define MEMORY_PADDED_SECTOR 0x200 // sizeof(sector_t) is 344 but we pad for nice representation
 #define MEMORY_LINE_EXTRA    0x10  // position vertices are "put" at the end because frontend can't read them from a pointer (since it points to internal memory which we can't expose)
 #define MEMORY_OUT_OF_BOUNDS 0xFF
 #define MEMORY_NULL          0x88
