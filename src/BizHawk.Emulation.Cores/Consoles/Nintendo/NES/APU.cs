@@ -949,7 +949,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void Fetch()
 			{
 				if (sample_length != 0)
-				{			
+				{
 					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
 					sample_buffer_filled = true;
 
