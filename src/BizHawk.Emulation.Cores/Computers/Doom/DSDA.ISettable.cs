@@ -246,6 +246,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public MapDetail MapDetails { get; set; }
 
+			[DisplayName("Map Trail")]
+			[Description("Shows previous positions of the player as a trail when map details are enabled.\n\nNot available in vanilla.\n\nRequires restart.")]
+			[DefaultValue(false)]
+			public bool MapTrail { get; set; }
+
 			[DisplayName("Full Vision")]
 			[Description("Disables all darkness.\n\nAvailable in vanilla via the IDBEHOLDL cheat code.\n\nRequires restart.")]
 			[DefaultValue(false)]
@@ -281,7 +286,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 			var ret = (_settings.ScaleFactor == o.ScaleFactor
 				&& _settings.InternalAspect == o.InternalAspect
-				&& _settings.FullVision == o.FullVision)
+				&& _settings.FullVision == o.FullVision
+				&& _settings.MapTrail == o.MapTrail)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;

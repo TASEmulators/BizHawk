@@ -122,10 +122,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					? AspectRatio._4by3
 					: _settings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
+				+ $"map_trail_mode {(_settings.MapTrail ? 1 : 0)}\n"
 				+ "render_stretch_hud 1\n"       // patch_stretch_doom_format
 				+ "boom_translucent_sprites 0\n" // may become a setting at some point
 				+ "uncapped_framerate 0\n"
 				+ "dsda_show_level_splits 0\n"
+				+ "map_trail_size 105\n"
 			);
 
 			if (!PlayerPresent(_syncSettings, _settings.DisplayPlayer))
