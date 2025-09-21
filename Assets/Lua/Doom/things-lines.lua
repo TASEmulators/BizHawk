@@ -11,9 +11,6 @@ local CHAR_HEIGHT      = 16
 local NEGATIVE_MAXIMUM = 1 << 63
 local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
 -- sizes in bytes
-local SHORT     = 2
-local INT       = 4
-local POINTER   = 8
 local LINE_SIZE = 256 -- sizeof(line_t) is 232, but we padded it for niceness
 local MOBJ_SIZE = 512 -- sizeof(mobj_t) is 464, but we padded it for niceness
 -- shortcuts
@@ -30,7 +27,6 @@ local line   = gui.drawLine
 
 -- TOP LEVEL VARIABLES
 local Zoom     = 1
-local LastSize = 0
 local Init     = true
 -- tables
 -- view offset
@@ -99,12 +95,6 @@ end
 
 local function pan_down()
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/2
-end
-
-local function add_offset(size, name)
-	MobjOffsets[name] = LastSize
---	print(name, string.format("%X \t\t %X", size, LastSize))
-	LastSize = size + LastSize
 end
 
 function maybe_swap(left, right)
@@ -274,6 +264,30 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
+local function struct_layout(struct)
+	struct = struct or {}
+	struct.size = 0
+	struct.offsets = {}
+
+	function struct.add(name, size)
+		--print(string.format("%-19s %3X %3X", name, size, struct.size)); emu.yield()
+		struct.offsets[name] = struct.size
+		struct.size = struct.size + size
+		return struct
+	end
+	function struct.pad(size)
+		struct.size = struct.size + size
+		return struct
+	 end
+	function struct.s16(name) return struct.add(name, 2) end
+	function struct.s32(name) return struct.add(name, 4) end
+	function struct.u32(name) return struct.add(name, 4) end
+	function struct.u64(name) return struct.add(name, 8) end
+	function struct.ptr(name) return struct.u64(name) end
+
+	return struct
+end
+
 --[[--
 thinker		30 0
 x			4 30
@@ -328,64 +342,65 @@ patch_width	2 14A
 iden_nums	4 14C
 --]]--
 
-add_offset(48,      "thinker")
-add_offset(INT,     "x")
-add_offset(INT,     "y")
-add_offset(INT,     "z")
-add_offset(INT,     "padding1")
-add_offset(POINTER, "snext")
-add_offset(POINTER, "sprev")
-add_offset(INT,     "angle")
-add_offset(INT,     "sprite")
-add_offset(INT,     "frame")
-add_offset(INT,     "padding2")
-add_offset(POINTER, "bnext")
-add_offset(POINTER, "bprev")
-add_offset(POINTER, "subsector")
-add_offset(INT,     "floorz")
-add_offset(INT,     "ceilingz")
-add_offset(INT,     "dropoffz")
-add_offset(INT,     "radius")
-add_offset(INT,     "height")
-add_offset(INT,     "momx")
-add_offset(INT,     "momy")
-add_offset(INT,     "momz")
-add_offset(INT,     "validcount")
-add_offset(INT,     "type")
-add_offset(POINTER, "info")
-add_offset(INT,     "tics")
-add_offset(INT,     "padding3")
-add_offset(POINTER, "state")
-add_offset(8,       "flags")
-add_offset(INT,     "intflags")
-add_offset(INT,     "health")
-add_offset(SHORT,   "movedir")
-add_offset(SHORT,   "movecount")
-add_offset(SHORT,   "strafecount")
-add_offset(SHORT,   "padding4")
-add_offset(POINTER, "target")
-add_offset(SHORT,   "reactiontime")
-add_offset(SHORT,   "threshold")
-add_offset(SHORT,   "pursuecount")
-add_offset(SHORT,   "gear")
-add_offset(POINTER, "player")
-add_offset(SHORT,   "lastlook")
-add_offset(58,      "spawnpoint")
-add_offset(INT,     "padding5") -- unsure where this one should be exactly
-add_offset(POINTER, "tracer")
-add_offset(POINTER, "lastenemy")
-add_offset(INT,     "friction")
-add_offset(INT,     "movefactor")
-add_offset(POINTER, "touching_sectorlist")
-add_offset(INT,     "PrevX")
-add_offset(INT,     "PrevY")
-add_offset(INT,     "PrevZ")
-add_offset(INT,     "pitch")
-add_offset(INT,     "index")
-add_offset(SHORT,   "patch_width")
-add_offset(INT,     "iden_nums")
--- the rest are non-doom
--- print(Offsets)
+MobjOffsets = struct_layout()
+	.add("thinker", 48)
+	.s32("x")
+	.s32("y")
+	.s32("z")
+	.pad(4)
+	.ptr("snext")
+	.ptr("sprev")
+	.u32("angle")
+	.s32("sprite")
+	.s32("frame")
+	.pad(4)
+	.ptr("bnext")
+	.ptr("bprev")
+	.ptr("subsector")
+	.s32("floorz")
+	.s32("ceilingz")
+	.s32("dropoffz")
+	.s32("radius")
+	.s32("height")
+	.s32("momx")
+	.s32("momy")
+	.s32("momz")
+	.s32("validcount")
+	.s32("type")
+	.ptr("info")
+	.s32("tics")
+	.pad(4)
+	.ptr("state")
+	.u64("flags")
+	.s32("intflags")
+	.s32("health")
+	.s16("movedir")
+	.s16("movecount")
+	.s16("strafecount")
+	.pad(2)
+	.ptr("target")
+	.s16("reactiontime")
+	.s16("threshold")
+	.s16("pursuecount")
+	.s16("gear")
+	.ptr("player")
+	.s16("lastlook")
+	.add("spawnpoint", 58)
+	.pad(4)
+	.ptr("tracer")
+	.ptr("lastenemy")
+	.s32("friction")
+	.s32("movefactor")
+	.ptr("touching_sectorlist")
+	.s32("PrevX")
+	.s32("PrevY")
+	.s32("PrevZ")
+	.u32("pitch")
+	.s32("index")
+	.s16("patch_width")
+	.s32("iden_nums")
+	-- the rest are non-doom
+	.offsets
 
 MobjType = {
 --	"NULL" = -1,
