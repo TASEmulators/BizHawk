@@ -305,37 +305,39 @@ in {
 	];
 
 	until-2_10 = [];
-	only-2_10 = [];
-	since-2_10 = [
+	only-2_10 = [
 		{ pname = "CommunityToolkit.HighPerformance"; version = "8.3.2"; sha256 = "01s95dbi62z5issji8gm98cy21n8kkp7giqk5wbfzmp200ipq07k"; }
-		{ pname = "Google.FlatBuffers"; version = "23.5.26"; sha256 = "1yly6bjaqwpyh3f367wa8cr6pdwwpvan5q97xg55r1lfvpbbv51a"; }
-		{ pname = "ImGui.NET"; version = "1.90.6.1"; sha256 = "1v1zzlpz3g2h7azqqqhfcwssx9vminnb5pl9880jw28mfk5si1q8"; }
-		{ pname = "JunitXml.TestLogger"; version = "3.1.12"; sha256 = "1571rs2zpd7az5wp0bklx1h3pac388awlwhz70k0p0vv44h0v5jc"; }
-		{ pname = "Menees.Analyzers"; version = "3.2.2"; sha256 = "0zd7hh5xilm1svnz4dcvgryixkmsncdszzimy3fvz2xbs06cpksb"; }
 		{ pname = "Meziantou.Analyzer"; version = "2.0.163"; sha256 = "1nzn3j7dbbs101mwjksfmb06fnxzwpl4s2n1yi9cwlr9mhnqf33k"; }
 		{ pname = "Microsoft.ApplicationInsights"; version = "2.22.0"; sha256 = "0h5qkhmazlvwvjmxxj9pp2404rmvk55yf6npwcmlskv9mgfkli4r"; }
-		{ pname = "Microsoft.Bcl.AsyncInterfaces"; version = "8.0.0"; sha256 = "0z4jq5prnxyb4p3163yxx35znpd2msjd8hw8ysmv4ah90f5sd9gm"; }
-		{ pname = "Microsoft.Bcl.AsyncInterfaces"; version = "9.0.0"; sha256 = "0mbkcs54i5i7rs0sqimbyzijzylvpb94xm9ycfvmlz10c4wwvi86"; }
-		{ pname = "Microsoft.CodeAnalysis.BannedApiAnalyzers"; version = "3.3.4"; sha256 = "1vzrni7n94f17bzc13lrvcxvgspx9s25ap1p005z6i1ikx6wgx30"; }
 		{ pname = "Microsoft.CodeCoverage"; version = "17.10.0"; sha256 = "0s0v7jmrq85n356xv7zixvwa4z94fszjcr5vll8x4im1a2lp00f9"; }
-		{ pname = "Microsoft.Data.Sqlite.Core"; version = "8.0.4"; sha256 = "03i9b45n2vnsv4wdsk6qvjzj1ga2hcli168liyrqfa87l54skckd"; }
-		{ pname = "Microsoft.DotNet.PlatformAbstractions"; version = "3.1.6"; sha256 = "0b9myd7gqbpaw9pkd2bx45jhik9mwj0f1ss57sk2cxmag2lkdws5"; }
-		{ pname = "Microsoft.Extensions.DependencyModel"; version = "8.0.0"; sha256 = "02jnx23hm1vid3yd9pw4gghzn6qkgdl5xfc5r0zrcxdax70rsh5a"; }
 		{ pname = "Microsoft.NET.Test.Sdk"; version = "17.10.0"; sha256 = "13g8fwl09li8fc71nk13dgkb7gahd4qhamyg2xby7am63nlchhdf"; }
 		{ pname = "Microsoft.Testing.Extensions.Telemetry"; version = "1.2.1"; sha256 = "1a6hyd3szjjpjkbr0ncfria0x2qijv3lwr4drhxm15xamfy23azw"; }
 		{ pname = "Microsoft.Testing.Extensions.TrxReport.Abstractions"; version = "1.2.1"; sha256 = "19309m0b9cjy1642m99ipjvr6gxq6qb008bam3l10m1mz8m81j31"; }
 		{ pname = "Microsoft.Testing.Extensions.VSTestBridge"; version = "1.2.1"; sha256 = "1bly8375zng21yjbfdi08c14lgapngv06p1dlzbryimxicqzxixx"; }
 		{ pname = "Microsoft.Testing.Platform"; version = "1.2.1"; sha256 = "0zlbqmvdb1vxnvmxh6lk65mz57c7mz6dqb1s8in0cfww8kxg058k"; }
 		{ pname = "Microsoft.Testing.Platform.MSBuild"; version = "1.2.1"; sha256 = "07674xnhc84h36pvzswx6ibjy0bgfi2bxhqm1zyq9fidmim0ch07"; }
-		{ pname = "Microsoft.Win32.Registry"; version = "5.0.0"; sha256 = "102hvhq2gmlcbq8y2cb7hdr2dnmjzfp2k3asr1ycwrfacwyaak7n"; }
 		{ pname = "MSTest"; version = "3.4.3"; sha256 = "070avma2zdxdpn23a9chgz9n1kglxh8nbb1g2ggzk3xxi5sdjj0n"; }
 		{ pname = "MSTest.Analyzers"; version = "3.4.3"; sha256 = "14a6rzh4cvaf9bw63qlxw242fbmk4agyx9qgl19swpciqcaq7pxi"; }
 		{ pname = "MSTest.TestAdapter"; version = "3.4.3"; sha256 = "0hsslndnfyb6shgkmgy10f1c9p6b47ry20zr2l1msagmkrk49s5q"; }
 		{ pname = "MSTest.TestFramework"; version = "3.4.3"; sha256 = "0hviglzfv16dd3aczny455sy1k0rikzd5w34smfpjyxc0wqx6xvp"; }
 		{ pname = "PolySharp"; version = "1.14.1"; sha256 = "1gfpxlzmcip2zbmmgs2yfib8k53c0fp34lxwsyy46w5y47wp7a4p"; }
+		{ pname = "SharpCompress"; version = "0.38.0"; sha256 = "04sh7fzv7xhxxz2nb43arcs2ri9hb3acpb70kymbpagfmj8zf0kd"; }
+		{ pname = "ZstdSharp.Port"; version = "0.8.1"; sha256 = "1f0wb6h3m9nfp2a4lzj01fsz68jw9mdp9xg9nyzb4lp57p5jzr1x"; }
+	];
+	since-2_10 = [
+		{ pname = "Google.FlatBuffers"; version = "23.5.26"; sha256 = "1yly6bjaqwpyh3f367wa8cr6pdwwpvan5q97xg55r1lfvpbbv51a"; }
+		{ pname = "ImGui.NET"; version = "1.90.6.1"; sha256 = "1v1zzlpz3g2h7azqqqhfcwssx9vminnb5pl9880jw28mfk5si1q8"; }
+		{ pname = "JunitXml.TestLogger"; version = "3.1.12"; sha256 = "1571rs2zpd7az5wp0bklx1h3pac388awlwhz70k0p0vv44h0v5jc"; }
+		{ pname = "Menees.Analyzers"; version = "3.2.2"; sha256 = "0zd7hh5xilm1svnz4dcvgryixkmsncdszzimy3fvz2xbs06cpksb"; }
+		{ pname = "Microsoft.Bcl.AsyncInterfaces"; version = "8.0.0"; sha256 = "0z4jq5prnxyb4p3163yxx35znpd2msjd8hw8ysmv4ah90f5sd9gm"; }
+		{ pname = "Microsoft.Bcl.AsyncInterfaces"; version = "9.0.0"; sha256 = "0mbkcs54i5i7rs0sqimbyzijzylvpb94xm9ycfvmlz10c4wwvi86"; }
+		{ pname = "Microsoft.CodeAnalysis.BannedApiAnalyzers"; version = "3.3.4"; sha256 = "1vzrni7n94f17bzc13lrvcxvgspx9s25ap1p005z6i1ikx6wgx30"; }
+		{ pname = "Microsoft.Data.Sqlite.Core"; version = "8.0.4"; sha256 = "03i9b45n2vnsv4wdsk6qvjzj1ga2hcli168liyrqfa87l54skckd"; }
+		{ pname = "Microsoft.DotNet.PlatformAbstractions"; version = "3.1.6"; sha256 = "0b9myd7gqbpaw9pkd2bx45jhik9mwj0f1ss57sk2cxmag2lkdws5"; }
+		{ pname = "Microsoft.Extensions.DependencyModel"; version = "8.0.0"; sha256 = "02jnx23hm1vid3yd9pw4gghzn6qkgdl5xfc5r0zrcxdax70rsh5a"; }
+		{ pname = "Microsoft.Win32.Registry"; version = "5.0.0"; sha256 = "102hvhq2gmlcbq8y2cb7hdr2dnmjzfp2k3asr1ycwrfacwyaak7n"; }
 		{ pname = "PowerShell"; version = "7.4.2"; sha256 = "17nrp0spddhmalbxy7m5s1926b597x7zl9d50il2w115y5cggbf0"; }
 		{ pname = "ppy.SDL2-CS"; version = "1.0.630-alpha"; sha256 = "0jrf70jrz976b49ac0ygfy9qph2w7fnbfrqv0g0x7hlpaip33ra8"; }
-		{ pname = "SharpCompress"; version = "0.38.0"; sha256 = "04sh7fzv7xhxxz2nb43arcs2ri9hb3acpb70kymbpagfmj8zf0kd"; }
 		{ pname = "SharpGen.Runtime"; version = "2.0.0-beta.13"; sha256 = "1250z6sa9ghf84czlkzvaysb29c0n229z1f0vh5qls89akrkl7h8"; }
 		{ pname = "SharpGen.Runtime.COM"; version = "2.0.0-beta.13"; sha256 = "1lmv3jp2g7mgy9j23pd3j0wr3p89qiq8v6c6qxqf688izyni1166"; }
 		{ pname = "Silk.NET.Core"; version = "2.21.0"; sha256 = "0z24vczhivzszs28sw92kr9zlx3mxcic3lka8lig2zs6dl5591hg"; }
@@ -376,6 +378,46 @@ in {
 		{ pname = "Vortice.Mathematics"; version = "1.4.25"; sha256 = "0vl6g087disxyzskvkbnwym74s47lkza0ly3nk4y0y88zibcggrj"; }
 		{ pname = "Vortice.MediaFoundation"; version = "2.4.2"; sha256 = "0nk8r564w8x791nqn5457jcq0gj7v6k5v1mziisqy4945byjxcdl"; }
 		{ pname = "Vortice.XAudio2"; version = "2.4.2"; sha256 = "0iwnaa0jdl3782k9i9j2c0s7lyxjky1ph6i8dv12w3ym2p19h3qc"; }
-		{ pname = "ZstdSharp.Port"; version = "0.8.1"; sha256 = "1f0wb6h3m9nfp2a4lzj01fsz68jw9mdp9xg9nyzb4lp57p5jzr1x"; }
+	];
+
+	until-2_11 = [];
+	only-2_11 = [];
+	since-2_11 = [
+		{ pname = "CommunityToolkit.HighPerformance"; version = "8.4.0"; sha256 = "0sxwz8vihk8vvwv6knh6ipvdy967843yfaz2brn4vgp5y9k5km5b"; }
+		{ pname = "Meziantou.Analyzer"; version = "2.0.206"; sha256 = "09a96pkvxrpbqv5fmgg0yc4mj94m6jknr0xn0rm843nl6zahvh4l"; }
+		{ pname = "Meziantou.Polyfill"; version = "1.0.50"; sha256 = "17rmj94f1njs6nzqvkg3laqa0r04zdqp9zqyslknk93rs6rs67sy"; }
+		{ pname = "Microsoft.ApplicationInsights"; version = "2.23.0"; sha256 = "1gcdj4pbsmf6qj7qg2jycn349j1rx1viggp2n73rhrf21rpggiz6"; }
+		{ pname = "Microsoft.Bcl.AsyncInterfaces"; version = "5.0.0"; sha256 = "0cp5jbax2mf6xr3dqiljzlwi05fv6n9a35z337s92jcljiq674kf"; }
+		{ pname = "Microsoft.Bcl.HashCode"; version = "6.0.0"; sha256 = "0sxxkhqn3qfag8s43gc5krny6m7cwfpdgxpxslbwg35zn2xb5fgk"; }
+		{ pname = "Microsoft.CodeCoverage"; version = "17.13.0"; sha256 = "1jmvvx1d3gvjmm7777i8kjs0cnbb3q47vvbcsqrr18whxk2wiahq"; }
+		{ pname = "Microsoft.DiaSymReader"; version = "2.0.0"; sha256 = "0g4fqxqy68bgsqzxdpz8n1sw0az1zgk33zc0xa8bwibwd1k2s6pj"; }
+		{ pname = "Microsoft.Extensions.DependencyModel"; version = "6.0.2"; sha256 = "16m71z5598p44c9a4pvgamiddcyfj62xsrdfyr4yv2a6r213ylsr"; }
+		{ pname = "Microsoft.NET.Test.Sdk"; version = "17.13.0"; sha256 = "01p56340mn7awnszni5g23hpr3hhhxhxhkxk2ssnjw3w4nzv1kdi"; }
+		{ pname = "Microsoft.Testing.Extensions.CodeCoverage"; version = "17.14.2"; sha256 = "0ad2zgxf1q1fqks53gis3c7ra8rigzbiiw9g09adg6pn1rmrasdi"; }
+		{ pname = "Microsoft.Testing.Extensions.Telemetry"; version = "1.7.3"; sha256 = "0n3m4aypkm9lbf7rwpnm96mazwxd1sr7gjci9xkv6la2c5isr9b7"; }
+		{ pname = "Microsoft.Testing.Extensions.TrxReport"; version = "1.7.3"; sha256 = "0017hgm0xvc0q2xaindmg5623qj4fdy79qqads8pbxc8mfiqwzj1"; }
+		{ pname = "Microsoft.Testing.Extensions.TrxReport.Abstractions"; version = "1.7.3"; sha256 = "0b404ic6gss3rr69s6rvrmxn7ray4jvk8y81zvqk3ja7h79rwdrx"; }
+		{ pname = "Microsoft.Testing.Extensions.VSTestBridge"; version = "1.7.3"; sha256 = "1hz6nzx7hjsa17kip0r3szl2l7k0f4sixqnb7sxj6zcwddkb1pzi"; }
+		{ pname = "Microsoft.Testing.Platform"; version = "1.6.2"; sha256 = "13l6p80w9r0hh1zvxv7ws7qhzqg693jg1vv7lh5kcsdp6q0n1xs5"; }
+		{ pname = "Microsoft.Testing.Platform"; version = "1.7.3"; sha256 = "1021af9w54anzm8r7nb0lhw3ckc775y69dx0lbldm8zragbxgavi"; }
+		{ pname = "Microsoft.Testing.Platform.MSBuild"; version = "1.7.3"; sha256 = "1ws4s72z54qin1s0gb4c5rvhvf42ihljmz6ld8wzfhsldzkja4bi"; }
+		{ pname = "Microsoft.TestPlatform.AdapterUtilities"; version = "17.13.0"; sha256 = "1rv8h7q4kj8c2jhvfsj2c44fywcz670irygzxpjgk1vzlx6vggsn"; }
+		{ pname = "Microsoft.TestPlatform.ObjectModel"; version = "17.13.0"; sha256 = "0jgrsradkaln0nhzw8xz6dh631paw813fmfjx6hhzg7wz26iybg9"; }
+		{ pname = "MSTest"; version = "3.9.3"; sha256 = "0h4i4zz7h9f3c3h2x86vrw9y1rb6fy46b4p8fs2ljr00dr8y9yxi"; }
+		{ pname = "MSTest.Analyzers"; version = "3.9.3"; sha256 = "0bif6888m6dja8frdvhq09p4a864ckz7zcqwnc6j8damjf0ghgmq"; }
+		{ pname = "MSTest.TestAdapter"; version = "3.9.3"; sha256 = "0lw2b9hf2hhvlf1ddvi69346pgpd1lizsfxxbx654b20ga0dcjnj"; }
+		{ pname = "MSTest.TestFramework"; version = "3.9.3"; sha256 = "02z0lwdvksz9yxvqc44d1pvca671dk9vm71biqqzvfikk3kvaicj"; }
+		{ pname = "PolySharp"; version = "1.15.0"; sha256 = "0f15gnn3lqwzgfw2igpqynhichdwikbhxnj2a32xspxqjlwx8zww"; }
+		{ pname = "Roslynator.Analyzers"; version = "4.13.1"; sha256 = "1i5idw9ih60s4089sw2784xs9apn5zhnh763lknkpir28ya2kdbn"; }
+		{ pname = "SharpCompress"; version = "0.40.0"; sha256 = "0lbkz5wd17w0xzm0fws5id81zc3qni9pxchbjw1fbi7zzxwzj757"; }
+		{ pname = "System.Buffers"; version = "4.6.0"; sha256 = "15zw58cparmgsmhsljx8w90kym082fxn0fbb0rgqks3ma202ar3k"; }
+		{ pname = "System.Memory"; version = "4.6.0"; sha256 = "0niq2hb8iakaal5dxz7adwn4asngiik70hyz3wdf3s8c6lmh841s"; }
+		{ pname = "System.Numerics.Vectors"; version = "4.6.0"; sha256 = "0xfl8ks1whvn7682b3m9gavlx0rdixx0qqgkyrx687incjwvg93w"; }
+		{ pname = "System.Reflection.Metadata"; version = "8.0.0"; sha256 = "10a8vm0c3n5cili5nix6bdmiaxr69qisvk356pb81f2s8bgq40bm"; }
+		{ pname = "System.Runtime.CompilerServices.Unsafe"; version = "6.1.0"; sha256 = "09fcr2scr7g3s3l1c70dsp0qd50g5qw4884vqv96rfh72yjslaip"; }
+		{ pname = "System.Runtime.InteropServices.RuntimeInformation"; version = "4.3.0"; sha256 = "0q18r1sh4vn7bvqgd6dmqlw5v28flbpj349mkdish2vjyvmnb2ii"; }
+		{ pname = "System.Text.Encodings.Web"; version = "6.0.1"; sha256 = "16k07p94k2gax8k8rs0g389w0w689fjhvasl18zyr3ddjk0hlylp"; }
+		{ pname = "System.Threading.Tasks.Extensions"; version = "4.6.0"; sha256 = "19hy89rx832cr8hw8nm9bmfbd9bw22l8y51mpngpqxjwvb8h20iv"; }
+		{ pname = "ZstdSharp.Port"; version = "0.8.5"; sha256 = "1wj26rdd27968yb6yah4ysflga3zwb2rrz97jl5xv6dq9rwhai7r"; }
 	];
 }

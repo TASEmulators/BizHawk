@@ -15,7 +15,7 @@
 	 * the shell script for CI `/Dist/nix_expr_check_attrs.sh`, and the docs `/Dist/nix_expr_usage_docs.md`
 	 */
 	releases = [
-		"2.10" "2.9.1" "2.9" "2.8" "2.7" "2.6.3" "2.6.2" "2.6.1" "2.6"
+		"2.11" "2.10" "2.9.1" "2.9" "2.8" "2.7" "2.6.3" "2.6.2" "2.6.1" "2.6"
 		"2.5.2" "2.5.1" "2.5" "2.4.2" "2.4.1" "2.4" "2.3.3" "2.3.2"
 	];
 	releaseCount = lib.length releases;
@@ -75,6 +75,13 @@
 				-i $out/Dist/.InvokeCLIOnMainSln.sh
 		'';
 	in lib.mapAttrs (_: f) {
+		info-2_11 = {
+			version = "2.11";
+			rev = "427556b5ef3ac437eba754d90c5e7e9096c9a8df";
+			postFetch = from-2_9_1-no-git-patch;
+			hashPostPatching = "sha512-Aidkkp4zYa/0Qmzs4mdu+vj+zKYRnZtLKQoJGk1bgqIYwV6OMObLhwQWNG0/v/hvqR6p5XMeDtiEuNIvBbM5lg==";
+			dotnet-sdk = dotnet-sdk_8;
+		};
 		info-2_10 = {
 			version = "2.10";
 			rev = "dd232820493c05296c304b64bf09c57ff1e4812f";
@@ -254,6 +261,9 @@ in {
 			} // lib.optionalAttrs (!isVersionAtLeast "2.6" hawkSourceInfo.version) { stripRoot = false; } // value;
 		})
 		{
+			"2_11" = {
+				hashPrePatching = "sha512-apKPwtsH/VF4QRo8s8B1MVcVMK0w920tkfw66EjBpn8za8XezMVqXdBhMUAlqF6ahJn91NdjS0jDvBGpzGEZ8g=="; # NAR checksum; gzip archive is SHA512:
+			};
 			"2_10" = {
 				stripRoot = false;
 				hashPrePatching = "sha512-OSsbJ79bT4bjCLQXhwOgpTcyDA5Yw++M3YAcepd6V3Ilmm2xCamYHlh3j9fql3Q+cPw/Pa14JUDpq2TVU0H/sw=="; # NAR checksum; gzip archive is SHA512:3263E232C55678068A8E4F3D1E50144DC3510CC39BD65BB9FD0B252585A780814D1F513EC08222A01AA96226D44C423792758C41F3FF5070A32C0CD8B8384064

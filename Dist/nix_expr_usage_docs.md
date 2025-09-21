@@ -5,10 +5,12 @@ Installables:
 
 Version | Attr for asms | Attr for EmuHawk | Attr for DiscoHawk
 --:|:--|:--|:--
-2.10.1 dev (CWD) | `bizhawkAssemblies` | `emuhawk` | `discohawk`
-2.10 | (`bizhawkAssemblies-latest-bin`&nbsp;=&nbsp;) `bizhawkAssemblies-2_10-bin` | (`emuhawk-latest-bin`&nbsp;=&nbsp;) `emuhawk-2_10-bin` | (`discohawk-latest-bin`&nbsp;=&nbsp;) `discohawk-2_10-bin`
-2.10 from source | (`bizhawkAssemblies-latest`&nbsp;=&nbsp;) `bizhawkAssemblies-2_10` | (`emuhawk-latest`&nbsp;=&nbsp;) `emuhawk-2_10` | (`discohawk-latest`&nbsp;=&nbsp;) `discohawk-2_10`
+2.11.1 dev (CWD) | `bizhawkAssemblies` | `emuhawk` | `discohawk`
+2.11 | (`bizhawkAssemblies-latest-bin`&nbsp;=&nbsp;) `bizhawkAssemblies-2_11-bin` | (`emuhawk-latest-bin`&nbsp;=&nbsp;) `emuhawk-2_11-bin` | (`discohawk-latest-bin`&nbsp;=&nbsp;) `discohawk-2_11-bin`
+2.11 from source | (`bizhawkAssemblies-latest`&nbsp;=&nbsp;) `bizhawkAssemblies-2_11` | (`emuhawk-latest`&nbsp;=&nbsp;) `emuhawk-2_11` | (`discohawk-latest`&nbsp;=&nbsp;) `discohawk-2_11`
 |||
+2.10 | `bizhawkAssemblies-2_10-bin` | `emuhawk-2_10-bin` | DIY
+2.10 from source | DIY | `emuhawk-2_10` | DIY
 2.9.1 | `bizhawkAssemblies-2_9_1-bin` | `emuhawk-2_9_1-bin` | DIY
 2.9.1 from source | DIY | `emuhawk-2_9_1` | DIY
 2.9 | `bizhawkAssemblies-2_9-bin` | `emuhawk-2_9-bin` | DIY
