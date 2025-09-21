@@ -16,6 +16,10 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TAStudioLuaLibrary : LuaLibraryBase
 	{
+		private const string DESC_LINE_EDIT_QUEUE_APPLY = " Edits will take effect once you call {{tastudio.applyinputchanges}}.";
+
+		private const string DESC_LINE_EDIT_QUEUE_GLOBAL = " (For technical reasons, the queue is shared between all loaded scripts.)";
+
 		private const string DESC_LINE_BRANCH_CHANGE_CB
 			= " Your callback can have 1 parameter, which will be the index of the branch."
 			+ " Calling this function a second time will replace the existing callback with the new one.";
@@ -182,8 +186,15 @@ namespace BizHawk.Client.EmuHawk
 				: _th.CreateTable();
 
 #pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
-		[LuaMethodExample("")]
-		[LuaMethod("submitinputchange", "")]
+		[LuaMethodExample("""
+			tastudio.submitinputchange(10000, "P1 A", true);
+			tastudio.applyinputchanges();
+		""")]
+		[LuaMethod(
+			name: "submitinputchange",
+			description: "Queues a hold/release button operation for the frame specified."
+				+ DESC_LINE_EDIT_QUEUE_APPLY
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitInputChange(int frame, string button, bool value)
 		{
 			if (Engaged())
@@ -219,8 +230,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("submitanalogchange", "")]
+		[LuaMethodExample("""
+			tastudio.submitanalogchange(10000, "P1 Stick X", 127);
+			tastudio.applyinputchanges();
+		""")]
+		[LuaMethod(
+			name: "submitanalogchange",
+			description: "Queues a change axis value operation for the frame specified."
+				+ DESC_LINE_EDIT_QUEUE_APPLY
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitAnalogChange(int frame, string button, float value)
 		{
 			if (Engaged())
@@ -256,8 +274,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("submitinsertframes", "")]
+		[LuaMethodExample("""
+			tastudio.submitinsertframes(10000, 5);
+			tastudio.applyinputchanges();
+		""")]
+		[LuaMethod(
+			name: "submitinsertframes",
+			description: "Queues an insert operation, creating the specified number of frames (rows) immediately before the frame specified."
+				+ DESC_LINE_EDIT_QUEUE_APPLY
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitInsertFrames(int frame, int number)
 		{
 			if (Engaged() && 0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(frame) && number > 0)
@@ -271,8 +296,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("submitdeleteframes", "")]
+		[LuaMethodExample("""
+			tastudio.submitdeleteframes(10000, 5);
+			tastudio.applyinputchanges();
+		""")]
+		[LuaMethod(
+			name: "submitdeleteframes",
+			description: "Queues a delete operation for the specified number of frames, from the frame specified through to {{frame + number - 1}}."
+				+ DESC_LINE_EDIT_QUEUE_APPLY
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitDeleteFrames(int frame, int number)
 		{
 			if (Engaged() && 0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(frame) && number > 0)
@@ -286,8 +318,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("submitclearframes", "")]
+		[LuaMethodExample("""
+			tastudio.submitclearframes(10000, 5);
+			tastudio.applyinputchanges();
+		""")]
+		[LuaMethod(
+			name: "submitclearframes",
+			description: "Queues a clear operation for the specified number of frames, from the frame specified through to {{frame + number - 1}}."
+				+ DESC_LINE_EDIT_QUEUE_APPLY
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitClearFrames(int frame, int number)
 		{
 			if (Engaged() && 0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(frame) && number > 0)
@@ -301,8 +340,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("applyinputchanges", "")]
+		[LuaMethodExample("""
+			tastudio.submitinputchange(10000, "P1 A", true);
+			tastudio.applyinputchanges();
+		""")]
+		[LuaMethod(
+			name: "applyinputchanges",
+			description: "Applies the queued edit operations to the TAStudio project as a single batch."
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void ApplyInputChanges()
 		{
 			if (_changeList.Count == 0)
@@ -369,8 +414,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("")]
-		[LuaMethod("clearinputchanges", "")]
+		[LuaMethodExample("""
+			tastudio.submitinputchange(10000, "P1 A", true);
+			tastudio.clearinputchanges();
+			tastudio.applyinputchanges(); -- does nothing
+		""")]
+		[LuaMethod(
+			name: "clearinputchanges",
+			description: "Discards any edits queued for the TAStudio project by scripts."
+				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void ClearInputChanges()
 		{
 			if (Engaged())
