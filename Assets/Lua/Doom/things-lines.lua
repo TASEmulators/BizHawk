@@ -50,7 +50,7 @@ local LastScreenSize = {
 	h = client.screenheight()
 }
 -- forward declarations
-local Offsets      = {} -- mobj member offsets in bytes
+local MobjOffsets  = {} -- mobj member offsets in bytes
 local MobjType     = {}
 local SpriteNumber = {}
 local Objects      = {}
@@ -102,7 +102,7 @@ local function pan_down()
 end
 
 local function add_offset(size, name)
-	Offsets[name] = LastSize
+	MobjOffsets[name] = LastSize
 --	print(name, string.format("%X \t\t %X", size, LastSize))
 	LastSize = size + LastSize
 end
@@ -138,12 +138,12 @@ local function iterate()
 	if Init then return end
 	
 	for _, addr in ipairs(Objects) do
-		local x      = rls(addr + Offsets.x)
-		local y      = rls(addr + Offsets.y) * -1
-		local health = rls(addr + Offsets.health)
-		local radius = math.floor((rls(addr + Offsets.radius) >> 16) * Zoom)
-		local sprite = SpriteNumber[rls(addr + Offsets.sprite)]
-		local type   = rl(addr + Offsets.type)
+		local x      = rls(addr + MobjOffsets.x, "Things")
+		local y      = rls(addr + MobjOffsets.y, "Things") * -1
+		local health = rls(addr + MobjOffsets.health, "Things")
+		local radius = math.floor((rls(addr + MobjOffsets.radius, "Things") >> 16) * Zoom)
+		local sprite = SpriteNumber[rls(addr + MobjOffsets.sprite, "Things")]
+		local type   = rl(addr + MobjOffsets.type, "Things")
 		local pos    = { x = mapify_x(x), y = mapify_y(y) }
 		local color  = "white"
 			
@@ -193,13 +193,13 @@ local function init_objects()
 		local addr = i * MOBJ_SIZE
 		if addr > 0xFFFFFF then break end
 		
-		local thinker = rl(addr) & 0xFFFFFFFF -- just to check if mobj is there
+		local thinker = rl(addr, "Things") & 0xFFFFFFFF -- just to check if mobj is there
 		if thinker == OUT_OF_BOUNDS then break end
 		
 		if thinker ~= NULL_OBJECT then
-			local x    = rls(addr + Offsets.x) / 0xffff
-			local y    = rls(addr + Offsets.y) / 0xffff * -1
-			local type = rl (addr + Offsets.type)
+			local x    = rls(addr + MobjOffsets.x, "Things") / 0xffff
+			local y    = rls(addr + MobjOffsets.y, "Things") / 0xffff * -1
+			local type = rl (addr + MobjOffsets.type, "Things")
 			
 			if type == 0
 			then type = "PLAYER"
