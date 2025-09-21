@@ -10,9 +10,11 @@ local CHAR_WIDTH       = 10
 local CHAR_HEIGHT      = 16
 local NEGATIVE_MAXIMUM = 1 << 63
 local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
+local MAX_PLAYERS      = 4
 -- sizes in bytes
 local LINE_SIZE = 256 -- sizeof(line_t) is 232, but we padded it for niceness
 local MOBJ_SIZE = 512 -- sizeof(mobj_t) is 464, but we padded it for niceness
+local PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for niceness
 -- shortcuts
 local rl     = memory.read_u32_le
 local rw     = memory.read_u16_le
@@ -46,10 +48,11 @@ local LastScreenSize = {
 	h = client.screenheight()
 }
 -- forward declarations
-local MobjOffsets  = {} -- mobj member offsets in bytes
-local MobjType     = {}
-local SpriteNumber = {}
-local Objects      = {}
+local PlayerOffsets = {}-- player member offsets in bytes
+local MobjOffsets   = {} -- mobj member offsets in bytes
+local MobjType      = {}
+local SpriteNumber  = {}
+local Objects       = {}
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -305,6 +308,144 @@ local function struct_layout(struct)
 
 	return struct
 end
+
+--[[
+player_t https://github.com/TASEmulators/dsda-doom/blob/master/prboom2/src/d_player.h
+mobj              8   0
+playerstate       4   8
+cmd               E   C
+viewz             4  1C
+viewheight        4  20
+deltaviewheight   4  24
+bob               4  28
+health            4  2C
+armorpoints1      4  30
+armorpoints2      4  34
+armorpoints3      4  38
+armorpoints4      4  3C
+armortype         4  40
+powers1           4  44
+powers2           4  48
+powers3           4  4C
+powers4           4  50
+powers5           4  54
+powers6           4  58
+powers7           4  5C
+powers8           4  60
+powers9           4  64
+powers10          4  68
+powers11          4  6C
+powers12          4  70
+cards1            4  74
+cards2            4  78
+cards3            4  7C
+cards4            4  80
+cards5            4  84
+cards6            4  88
+cards7            4  8C
+cards8            4  90
+cards9            4  94
+cards10           4  98
+cards11           4  9C
+backpack          4  A0
+frags1            4  A4
+frags2            4  A8
+frags3            4  AC
+frags4            4  B0
+frags5            4  B4
+frags6            4  B8
+frags7            4  BC
+frags8            4  C0
+readyweapon       4  C4
+pendingweapon     4  C8
+weaponowned1      4  CC
+weaponowned2      4  D0
+weaponowned3      4  D4
+weaponowned4      4  D8
+weaponowned5      4  DC
+weaponowned6      4  E0
+weaponowned7      4  E4
+weaponowned8      4  E8
+weaponowned9      4  EC
+ammo1             4  F0
+ammo2             4  F4
+ammo3             4  F8
+ammo4             4  FC
+ammo5             4 100
+ammo6             4 104
+maxammo1          4 108
+maxammo2          4 10C
+maxammo3          4 110
+maxammo4          4 114
+maxammo5          4 118
+maxammo6          4 11C
+attackdown        4 120
+usedown           4 124
+cheats            4 128
+refire            4 12C
+killcount         4 130
+itemcount         4 134
+secretcount       4 138
+damagecount       4 13C
+bonuscount        4 140
+attacker          8 148
+extralight        4 150
+fixedcolormap     4 154
+colormap          4 158
+psprites         30 160
+didsecret         4 190
+momx              4 194
+mony              4 198
+maxkilldiscount   4 19C
+prev_viewz        4 1A0
+prev_viewangle    4 1A4
+prev_viewpitch    4 1A8
+(padding omitted)
+]]
+
+PlayerOffsets = struct_layout()
+	.ptr  ("mobj")
+	.s32  ("playerstate")
+	.add  ("cmd", 14, 2)
+	.s32  ("viewz")
+	.s32  ("viewheight")
+	.s32  ("deltaviewheight")
+	.s32  ("bob")
+	.s32  ("health")
+	.array("armorpoints", "s32", 4)
+	.s32  ("armortype")
+	.array("powers", "s32", 12)
+	.array("cards", "bool", 11)
+	.bool ("backpack")
+	.array("frags", "s32", 8)
+	.s32  ("readyweapon")
+	.s32  ("pendingweapon")
+	.array("weaponowned", "bool", 9)
+	.array("ammo", "s32", 6)
+	.array("maxammo", "s32", 6)
+	.s32  ("attackdown")
+	.s32  ("usedown")
+	.s32  ("cheats")
+	.s32  ("refire")
+	.s32  ("killcount")
+	.s32  ("itemcount")
+	.s32  ("secretcount")
+	.s32  ("damagecount")
+	.s32  ("bonuscount")
+	.ptr  ("attacker")
+	.s32  ("extralight")
+	.s32  ("fixedcolormap")
+	.s32  ("colormap")
+	.add  ("psprites", 24*2, 8)
+	.bool ("didsecret")
+	.s32  ("momx")
+	.s32  ("mony")
+	.s32  ("maxkilldiscount")
+	.s32  ("prev_viewz")
+	.u32  ("prev_viewangle")
+	.u32  ("prev_viewpitch")
+	-- the rest are non-doom
+	.offsets
 
 --[[--
 thinker		30 0
