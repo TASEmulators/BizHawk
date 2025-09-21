@@ -269,20 +269,29 @@ local function struct_layout(struct)
 	struct.size = 0
 	struct.offsets = {}
 
-	function struct.add(name, size)
+	function struct.add(name, size, alignment)
+		if alignment == true then alignment = size end
+		struct.align(alignment)
 		--print(string.format("%-19s %3X %3X", name, size, struct.size)); emu.yield()
 		struct.offsets[name] = struct.size
 		struct.size = struct.size + size
+		struct.align(alignment) -- add padding to structs
 		return struct
+	end
+	function struct.align(alignment)
+		if alignment and struct.size % alignment > 0 then
+			--print(string.format("%i bytes padding", alignment - (struct.size % alignment)))
+			struct.pad(alignment - (struct.size % alignment))
+		end
 	end
 	function struct.pad(size)
 		struct.size = struct.size + size
 		return struct
 	 end
-	function struct.s16(name) return struct.add(name, 2) end
-	function struct.s32(name) return struct.add(name, 4) end
-	function struct.u32(name) return struct.add(name, 4) end
-	function struct.u64(name) return struct.add(name, 8) end
+	function struct.s16(name) return struct.add(name, 2, true) end
+	function struct.s32(name) return struct.add(name, 4, true) end
+	function struct.u32(name) return struct.add(name, 4, true) end
+	function struct.u64(name) return struct.add(name, 8, true) end
 	function struct.ptr(name) return struct.u64(name) end
 
 	return struct
@@ -343,18 +352,15 @@ iden_nums	4 14C
 --]]--
 
 MobjOffsets = struct_layout()
-	.add("thinker", 44)
-	.pad(4)
+	.add("thinker", 44, 8)
 	.s32("x")
 	.s32("y")
 	.s32("z")
-	.pad(4)
 	.ptr("snext")
 	.ptr("sprev")
 	.u32("angle")
 	.s32("sprite")
 	.s32("frame")
-	.pad(4)
 	.ptr("bnext")
 	.ptr("bprev")
 	.ptr("subsector")
@@ -370,7 +376,6 @@ MobjOffsets = struct_layout()
 	.s32("type")
 	.ptr("info")
 	.s32("tics")
-	.pad(4)
 	.ptr("state")
 	.u64("flags")
 	.s32("intflags")
@@ -378,7 +383,6 @@ MobjOffsets = struct_layout()
 	.s16("movedir")
 	.s16("movecount")
 	.s16("strafecount")
-	.pad(2)
 	.ptr("target")
 	.s16("reactiontime")
 	.s16("threshold")
@@ -386,8 +390,7 @@ MobjOffsets = struct_layout()
 	.s16("gear")
 	.ptr("player")
 	.s16("lastlook")
-	.add("spawnpoint", 58)
-	.pad(4)
+	.add("spawnpoint", 58, 4)
 	.ptr("tracer")
 	.ptr("lastenemy")
 	.s32("friction")
@@ -399,7 +402,6 @@ MobjOffsets = struct_layout()
 	.u32("pitch")
 	.s32("index")
 	.s16("patch_width")
-	.pad(2)
 	.s32("iden_nums")
 	-- the rest are non-doom
 	.offsets
