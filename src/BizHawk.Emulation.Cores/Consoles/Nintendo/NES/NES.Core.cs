@@ -1032,12 +1032,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						// Poke OAMSTATUS to potentially clear the APU Frame Counter IRQ Flag.
 						// Does the DMC DMA sample get modified by this?
 						ReadReg(0x4000 | (addr & 0x1F));
-					}					
+					}
 				}
 				if ((addr & 0x1F) == 0x16 || (addr & 0x1F) == 0x17)
 				{
 					ret &= 0xE0; // only bits 5, 6, and 7 of $4015 is open bus
-					ret |= (byte) (ReadReg(0x4000 | (addr & 0x1F)) & 0x1F);
+					ret |= (byte)(ReadReg(0x4000 | (addr & 0x1F)) & 0x1F);
 				}
 			}
 
