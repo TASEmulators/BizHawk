@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 					offsetX = TasView.HorizontalOrientation ? 2 : 7;
 					text = FrameToStringPadded(index);
 				}
-				else
+				else if (column.Type is ColumnType.Boolean or ColumnType.Axis)
 				{
 					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
 					if (index == _axisEditRow && columnName == _axisEditColumn)
