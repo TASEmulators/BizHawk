@@ -197,36 +197,18 @@ namespace BizHawk.Client.EmuHawk
 				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitInputChange(int frame, string button, bool value)
 		{
-			if (Engaged())
+			if (!Engaged() || frame < 0) return;
+			if (frame >= Tastudio.CurrentTasMovie.InputLogLength // past end of movie, obviously not already set
+				|| Tastudio.CurrentTasMovie.BoolIsPressed(frame, button) != value) // not already set (though TODO a pending edit could change it)
 			{
-				if (frame >= 0)
+				_changeList.Add(new()
 				{
-					PendingChanges newChange = default;
-
-					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
-					{
-						if (Tastudio.CurrentTasMovie.BoolIsPressed(frame, button) != value) //Check if the button state is not already in the state the user set in the lua script
-						{
-							newChange.Type = LuaChangeTypes.InputChange;
-							newChange.InputType = InputChangeTypes.Bool;
-							newChange.Frame = frame;
-							newChange.Button = button;
-							newChange.ValueBool = value;
-
-							_changeList.Add(newChange);
-						}
-					}
-					else
-					{
-						newChange.Type = LuaChangeTypes.InputChange;
-						newChange.InputType = InputChangeTypes.Bool;
-						newChange.Frame = frame;
-						newChange.Button = button;
-						newChange.ValueBool = value;
-
-						_changeList.Add(newChange);
-					}
-				}
+					Type = LuaChangeTypes.InputChange,
+					InputType = InputChangeTypes.Bool,
+					Frame = frame,
+					Button = button,
+					ValueBool = value,
+				});
 			}
 		}
 
@@ -241,36 +223,19 @@ namespace BizHawk.Client.EmuHawk
 				+ DESC_LINE_EDIT_QUEUE_GLOBAL)]
 		public void SubmitAnalogChange(int frame, string button, float value)
 		{
-			if (Engaged())
+			if (!Engaged() || frame < 0) return;
+			var value1 = (int) value; //TODO change param type to int
+			if (frame >= Tastudio.CurrentTasMovie.InputLogLength // past end of movie, obviously not already set
+				|| Tastudio.CurrentTasMovie.GetAxisState(frame, button) != value1) // not already set (though TODO a pending edit could change it)
 			{
-				if (frame >= 0)
+				_changeList.Add(new()
 				{
-					PendingChanges newChange = default;
-
-					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
-					{
-						if (Tastudio.CurrentTasMovie.GetAxisState(frame, button) != (int) value) // Check if the button state is not already in the state the user set in the lua script
-						{
-							newChange.Type = LuaChangeTypes.InputChange;
-							newChange.InputType = InputChangeTypes.Axis;
-							newChange.Frame = frame;
-							newChange.Button = button;
-							newChange.ValueAxis = (int) value;
-
-							_changeList.Add(newChange);
-						}
-					}
-					else
-					{
-						newChange.Type = LuaChangeTypes.InputChange;
-						newChange.InputType = InputChangeTypes.Axis;
-						newChange.Frame = frame;
-						newChange.Button = button;
-						newChange.ValueAxis = (int) value;
-
-						_changeList.Add(newChange);
-					}
-				}
+					Type = LuaChangeTypes.InputChange,
+					InputType = InputChangeTypes.Axis,
+					Frame = frame,
+					Button = button,
+					ValueAxis = value1,
+				});
 			}
 		}
 
