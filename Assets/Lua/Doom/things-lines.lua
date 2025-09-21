@@ -127,6 +127,38 @@ local function get_line_count(str)
 	return lines, longest
 end
 
+local function iterate_players()
+	local playercount = 0
+	local total_killcount = 0
+	local total_itemcount = 0
+	local total_secretcount = 0
+
+	local stats = "    Heal Armr Kill Item Secr\n"
+	for i = 1, MAX_PLAYERS do
+		local addr = PLAYER_SIZE * (i - 1)
+		local mobj = rl(addr + PlayerOffsets.mobj, "Players")
+
+		if mobj ~= NULL_OBJECT then
+			playercount = playercount + 1
+			local health = rls(addr + PlayerOffsets.health, "Players")
+			local armor = rls(addr + PlayerOffsets.armorpoints1, "Players")
+			local killcount = rls(addr + PlayerOffsets.killcount, "Players")
+			local itemcount = rls(addr + PlayerOffsets.itemcount, "Players")
+			local secretcount = rls(addr + PlayerOffsets.secretcount, "Players")
+
+			total_killcount = total_killcount + killcount
+			total_itemcount = total_itemcount + itemcount
+			total_secretcount = total_secretcount + secretcount
+
+			stats = string.format("%s P%i %4i %4i %4i %4i %4i\n", stats, i, health, armor, killcount, itemcount, secretcount)
+		end
+	end
+	if playercount > 1 then
+		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
+	end
+	gui.text(0, 0, stats, nil, "topright")
+end
+
 local function iterate()
 	if Init then return end
 	
