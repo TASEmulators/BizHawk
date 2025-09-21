@@ -494,7 +494,7 @@ ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
 {
   if (type == ARRAY_THINGS)
   {
-    if (addr >= numthings * MEMORY_PADDED_THING)
+    if (addr >= num_objects * MEMORY_PADDED_THING)
       return MEMORY_OUT_OF_BOUNDS;
 
     int index    = addr / MEMORY_PADDED_THING;

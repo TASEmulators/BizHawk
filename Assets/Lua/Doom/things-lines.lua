@@ -148,7 +148,7 @@ local function iterate()
 		local color  = "white"
 			
 		if type == 0
-		then type = "PLAYER" print("PLAYER")
+		then type = "PLAYER"
 		else type = MobjType[type]
 		end
 		if health <= 0 then color = "red" end
@@ -202,7 +202,7 @@ local function init_objects()
 			local type = rl (addr + Offsets.type)
 			
 			if type == 0
-			then type = "PLAYER" print("PLAYER")
+			then type = "PLAYER"
 			else type = MobjType[type]
 			end
 		--	print(string.format("%d %f %f %02X", index, x, y, type))
