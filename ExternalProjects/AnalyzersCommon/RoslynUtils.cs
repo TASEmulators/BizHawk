@@ -7,6 +7,19 @@ using System.Threading;
 
 public static class RoslynUtils
 {
+	/// <summary>the chain of all classes which <paramref name="typeSym"/> inherits from, excluding itself</summary>
+	/// <remarks>if <paramref name="typeSym"/> is not <see cref="TypeKind.Class"/>, the returned lazy collection will be empty</remarks>
+	public static IEnumerable<ITypeSymbol> AllBaseTypes(this ITypeSymbol? typeSym)
+	{
+		if (typeSym?.TypeKind is not TypeKind.Class) yield break;
+		while (true)
+		{
+			typeSym = typeSym.BaseType;
+			if (typeSym is null) yield break;
+			yield return typeSym;
+		}
+	}
+
 	public static TypeDeclarationSyntax? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
 		=> node.NearestAncestorOfType<TypeDeclarationSyntax>();
 
@@ -103,22 +116,13 @@ public static class RoslynUtils
 		if (subtype is null) return false;
 		bool MatchesPerTypeParamVariance(ITypeSymbol sym)
 			=> supertype.Matches(sym); //TODO actually check type params
-		switch (supertype.TypeKind)
+		return supertype.TypeKind switch
 		{
-			case TypeKind.Class:
-				while (subtype is not null)
-				{
-					if (MatchesPerTypeParamVariance(subtype)) return true;
-					subtype = subtype.BaseType;
-				}
-				return false;
-			case TypeKind.Interface:
-				return subtype.AllInterfaces.Prepend(subtype).Any(MatchesPerTypeParamVariance);
-			case TypeKind.Enum or TypeKind.Pointer or TypeKind.Struct:
-				return MatchesPerTypeParamVariance(subtype);
-			default:
-				throw new ArgumentException(paramName: nameof(supertype), message: "pretend this is a BHI6660 unexpected type kind (neither class/interface nor struct)");
-		}
+			TypeKind.Class => subtype.AllBaseTypes().Prepend(subtype).Any(MatchesPerTypeParamVariance),
+			TypeKind.Interface => subtype.AllInterfaces.Prepend(subtype).Any(MatchesPerTypeParamVariance),
+			TypeKind.Enum or TypeKind.Pointer or TypeKind.Struct => MatchesPerTypeParamVariance(subtype),
+			_ => throw new ArgumentException(paramName: nameof(supertype), message: "pretend this is a BHI6660 unexpected type kind (neither class/interface nor struct)"),
+		};
 	}
 
 	public static bool IsEmpty(this SyntaxToken token)
