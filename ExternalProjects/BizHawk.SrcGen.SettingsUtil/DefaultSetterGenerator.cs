@@ -19,7 +19,7 @@ public class DefaultSetterGenerator : IIncrementalGenerator
 		context.RegisterSourceOutput(context.CompilationProvider.Combine(classDecls.Collect()), Execute);
 	}
 
-	private static void CreateDefaultSetter(StringBuilder source, INamespaceOrTypeSymbol symbol)
+	private static void CreateDefaultSetter(StringBuilder source, ITypeSymbol symbol, bool isCLSCompliant)
 	{
 		var props = symbol
 			.GetMembers()
@@ -27,7 +27,7 @@ public class DefaultSetterGenerator : IIncrementalGenerator
 			.ToImmutableArray();
 
 		source.Append($@"
-		public static void SetDefaultValues({symbol} settings)
+		{(isCLSCompliant ? string.Empty : "[CLSCompliant(false)] ")}public static void SetDefaultValues({symbol} settings)
 		{{");
 
 		foreach (var prop in props)
@@ -78,6 +78,7 @@ public class DefaultSetterGenerator : IIncrementalGenerator
 		var (compilation, classDeclarations) = value;
 		var consumerAttrSym = compilation.GetTypeByMetadataName("BizHawk.Emulation.Common.CoreSettingsAttribute");
 		if (consumerAttrSym is null) return;
+		var clsCompliantAttrSym = compilation.GetTypeByMetadataName(typeof(CLSCompliantAttribute).FullName)!;
 
 		// Generated source code
 		var source = new StringBuilder(@"
@@ -86,15 +87,15 @@ namespace BizHawk.Emulation.Cores
 	public static partial class SettingsUtil
 	{");
 
-		foreach (var (cds, semanticModel) in classDeclarations
+		foreach (var symbol in classDeclarations
 			.Where(tuple => tuple.CDS.AttributeLists.Matching(
 				consumerAttrSym,
 				tuple.SemanticModel,
-				context.CancellationToken).Any()))
+				context.CancellationToken).Any())
+			.Select(tuple => tuple.SemanticModel.GetDeclaredSymbol(tuple.CDS, context.CancellationToken))
+			.OfType<ITypeSymbol>())
 		{
-			var symbol = semanticModel.GetDeclaredSymbol(cds, context.CancellationToken);
-			if (symbol is null) continue; // probably never happens?
-			CreateDefaultSetter(source, symbol);
+			CreateDefaultSetter(source, symbol, symbol.GetIsCLSCompliant(clsCompliantAttrSym) ?? true);
 		}
 
 		source.Append(@"

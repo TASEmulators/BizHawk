@@ -20,6 +20,17 @@ public static class RoslynUtils
 		}
 	}
 
+	/// <summary>the chain of all types which <paramref name="typeSym"/> is contained within, excluding itself</summary>
+	public static IEnumerable<ITypeSymbol> AllEnclosingTypes(this ITypeSymbol? typeSym)
+	{
+		var containing = typeSym?.ContainingType;
+		while (containing is not null)
+		{
+			yield return containing;
+			containing = containing.ContainingType;
+		}
+	}
+
 	public static TypeDeclarationSyntax? EnclosingTypeDeclarationSyntax(this CSharpSyntaxNode node)
 		=> node.NearestAncestorOfType<TypeDeclarationSyntax>();
 
@@ -36,6 +47,13 @@ public static class RoslynUtils
 		for (; node is not null; node = node.Parent) if (node is TNode tnode) return tnode;
 		return null;
 	}
+
+	public static bool? GetIsCLSCompliant(this ITypeSymbol typeSym, ISymbol clsCompliantAttrSym)
+		=> typeSym.AllEnclosingTypes().Prepend(typeSym)
+			.Select(typeSym1 => typeSym1.GetAttributes()
+				.FirstOrDefault(ad => clsCompliantAttrSym.Matches(ad.AttributeClass))
+				?.ConstructorArguments[0].Value as bool?)
+			.FirstOrDefault(static tristate => tristate is not null);
 
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
 		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"
