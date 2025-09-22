@@ -613,6 +613,7 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("357AC4826297A6496035E3951CACDA55DCAE4B1B", 4194304, "BSX", "Rom_Tsuri", "Satellaview_Bass_Tsuri.sfc", "Itoi Shigesato no Bass Tsuri No. 1 Rom");
 
 			// TI83
+			// MAME "ti83"
 			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI83_102.rom", "TI-83 Rom v1.02");
 			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI83_103.rom", "TI-83 Rom v1.03");
 			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "TI83_104.rom", "TI-83 Rom v1.04");
@@ -620,6 +621,14 @@ namespace BizHawk.Emulation.Common
 			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "TI83_107.rom", "TI-83 Rom v1.07");
 			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "TI83_108.rom", "TI-83 Rom v1.08");
 			var ti83_110 = File("25B373B58523647BB7B904001D391615E0B79BEE", 262144, "TI83_110.rom", "TI-83 Rom v1.10");
+			// MAME "ti83p"
+			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 524288, "TI83p_103.rom", "TI-83 Plus Rom v1.03");
+			var ti83p_110 = File("F86CDEFE4ED5EF9965CD9EB667CB859E2CB10E19", 524288, "TI83p_110.rom", "TI-83 Plus Rom v1.10");
+			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 524288, "TI83p_112.rom", "TI-83 Plus Rom v1.12");
+			var ti83p_113 = File("9B79E994EA1CE7AF05B68F8ECEE8B1B1FC3F0810", 524288, "TI83p_113.rom", "TI-83 Plus Rom v1.13");
+			var ti83p_114 = File("46C66BA0421C03FC42F5AFB06C7D3AF812786140", 524288, "TI83p_114.rom", "TI-83 Plus Rom v1.14");
+			var ti83p_115 = File("8BD05FD47CAB4028F275D1CC5383FD4F0E193474", 524288, "TI83p_115.rom", "TI-83 Plus Rom v1.15");
+			var ti83p_116 = File("290BC81159EA061D8CCB56A6F63E042F150AFB32", 524288, "TI83p_116.rom", "TI-83 Plus Rom v1.16");
 			Firmware("TI83", "Rom", "TI-83 Rom");
 			Option("TI83", "Rom", in ti83_102);
 			Option("TI83", "Rom", in ti83_103);
@@ -628,6 +637,13 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", in ti83_107);
 			Option("TI83", "Rom", in ti83_108);
 			Option("TI83", "Rom", in ti83_110, FirmwareOptionStatus.Ideal);
+			Option("TI83", "Rom", in ti83p_103, FirmwareOptionStatus.Unacceptable);
+			Option("TI83", "Rom", in ti83p_110, FirmwareOptionStatus.Unacceptable);
+			Option("TI83", "Rom", in ti83p_112, FirmwareOptionStatus.Unacceptable);
+			Option("TI83", "Rom", in ti83p_113, FirmwareOptionStatus.Unacceptable);
+			Option("TI83", "Rom", in ti83p_114, FirmwareOptionStatus.Unacceptable);
+			Option("TI83", "Rom", in ti83p_115, FirmwareOptionStatus.Unacceptable);
+			Option("TI83", "Rom", in ti83p_116, FirmwareOptionStatus.Unacceptable);
 
 			// VEC
 			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "VEC_Bios.bin", "Bios");
@@ -655,4 +671,5 @@ namespace BizHawk.Emulation.Common
 		}
 	} // static class FirmwareDatabase
 }
+
 
