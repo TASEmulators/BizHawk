@@ -2,7 +2,7 @@
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.Common.Movie.Import
+namespace BizHawk.Client.Common
 {
 	// PXM files are directly compatible with binary-format PJM files, with the only
 	// difference being fewer flags implemented in the header, hence just calling the

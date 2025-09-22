@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Numerics;
 
 using BizHawk.Bizware.Graphics;
-using BizHawk.Client.Common.FilterManager;
 
 // Here's how to make a filter:
 // 1. Reset your state entirely in Initialize().

@@ -4,11 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
-using BizHawk.Client.Common.Filters;
-
 using BizHawk.Bizware.Graphics;
 
-namespace BizHawk.Client.Common.FilterManager
+namespace BizHawk.Client.Common.Filters
 {
 	public enum SurfaceDisposition
 	{

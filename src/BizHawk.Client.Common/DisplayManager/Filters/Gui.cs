@@ -2,7 +2,6 @@ using System.Drawing;
 using System.Numerics;
 
 using BizHawk.Bizware.Graphics;
-using BizHawk.Client.Common.FilterManager;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
