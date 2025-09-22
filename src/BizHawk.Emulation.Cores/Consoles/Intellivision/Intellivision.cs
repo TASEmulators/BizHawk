@@ -4,7 +4,8 @@ using BizHawk.Emulation.Cores.Components.CP1610;
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	[Core(CoreNames.IntelliHawk, "BrandonE, Alyosha")]
-	[ServiceNotApplicable(typeof(IRegionable), typeof(ISaveRam))]
+	[ServiceNotApplicable(typeof(IRegionable))]
+	[ServiceNotApplicable(typeof(ISaveRam))]
 	public sealed partial class Intellivision : IEmulator, IInputPollable, IDisassemblable,
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{

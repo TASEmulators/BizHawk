@@ -5,21 +5,19 @@ using System.Threading;
 namespace BizHawk.Emulation.Common
 {
 	[Core("NullHawk", "")]
-	[ServiceNotApplicable(
-		typeof(IVideoProvider),
-		typeof(IBoardInfo),
-		typeof(ICodeDataLogger),
-		typeof(IDebuggable),
-		typeof(IDisassemblable),
-		typeof(IInputPollable),
-		typeof(IMemoryDomains),
-		typeof(IRegionable),
-		typeof(ISaveRam),
-		typeof(ISettable<,>),
-		typeof(ISoundProvider),
-		typeof(IStatable),
-		typeof(ITraceable)
-	)]
+	[ServiceNotApplicable(typeof(IVideoProvider))]
+	[ServiceNotApplicable(typeof(IBoardInfo))]
+	[ServiceNotApplicable(typeof(ICodeDataLogger))]
+	[ServiceNotApplicable(typeof(IDebuggable))]
+	[ServiceNotApplicable(typeof(IDisassemblable))]
+	[ServiceNotApplicable(typeof(IInputPollable))]
+	[ServiceNotApplicable(typeof(IMemoryDomains))]
+	[ServiceNotApplicable(typeof(IRegionable))]
+	[ServiceNotApplicable(typeof(ISaveRam))]
+	[ServiceNotApplicable(typeof(ISettable<,>))]
+	[ServiceNotApplicable(typeof(ISoundProvider))]
+	[ServiceNotApplicable(typeof(IStatable))]
+	[ServiceNotApplicable(typeof(ITraceable))]
 	public class NullEmulator : IEmulator
 	{
 		public NullEmulator()
