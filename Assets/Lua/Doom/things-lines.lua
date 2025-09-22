@@ -10,27 +10,25 @@ local CHAR_WIDTH       = 10
 local CHAR_HEIGHT      = 16
 local NEGATIVE_MAXIMUM = 1 << 63
 local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
+local MAX_PLAYERS      = 4
 -- sizes in bytes
-local SHORT     = 2
-local INT       = 4
-local POINTER   = 8
-local LINE_SIZE = 256 -- sizeof(line_t) is 232, but we padded it for niceness
-local MOBJ_SIZE = 512 -- sizeof(mobj_t) is 464, but we padded it for niceness
+local LINE_SIZE   = 256  -- sizeof(line_t) is 232, but we padded it for niceness
+local MOBJ_SIZE   = 512  -- sizeof(mobj_t) is 464, but we padded it for niceness
+local PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for niceness
 -- shortcuts
-local rl     = memory.read_u32_le
-local rw     = memory.read_u16_le
-local rb     = memory.read_u8_le
-local rls    = memory.read_s32_le
-local rws    = memory.read_s16_le
-local rbs    = memory.read_s8_le
-local text   = gui.text
-local box    = gui.drawBox
-local line   = gui.drawLine
+local rl   = memory.read_u32_le
+local rw   = memory.read_u16_le
+local rb   = memory.read_u8
+local rls  = memory.read_s32_le
+local rws  = memory.read_s16_le
+local rbs  = memory.read_s8
+local text = gui.text
+local box  = gui.drawBox
+local line = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
 -- TOP LEVEL VARIABLES
 local Zoom     = 1
-local LastSize = 0
 local Init     = true
 -- tables
 -- view offset
@@ -50,10 +48,11 @@ local LastScreenSize = {
 	h = client.screenheight()
 }
 -- forward declarations
-local Offsets      = {} -- mobj member offsets in bytes
-local MobjType     = {}
-local SpriteNumber = {}
-local Objects      = {}
+local PlayerOffsets = {}-- player member offsets in bytes
+local MobjOffsets   = {} -- mobj member offsets in bytes
+local MobjType      = {}
+local SpriteNumber  = {}
+local Objects       = {}
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -101,12 +100,6 @@ local function pan_down()
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/2
 end
 
-local function add_offset(size, name)
-	Offsets[name] = LastSize
---	print(name, string.format("%X \t\t %X", size, LastSize))
-	LastSize = size + LastSize
-end
-
 function maybe_swap(left, right)
 	if left > right then
 		local smallest = right
@@ -134,16 +127,48 @@ local function get_line_count(str)
 	return lines, longest
 end
 
+local function iterate_players()
+	local playercount       = 0
+	local total_killcount   = 0
+	local total_itemcount   = 0
+	local total_secretcount = 0
+	local stats             = "      HP Armr Kill Item Secr\n"
+	for i = 1, MAX_PLAYERS do
+		local addr = PLAYER_SIZE * (i - 1)
+		local mobj = rl(addr + PlayerOffsets.mobj, "Players")
+
+		if mobj ~= NULL_OBJECT then
+			playercount       = playercount + 1
+			local health      = rls(addr + PlayerOffsets.health,       "Players")
+			local armor       = rls(addr + PlayerOffsets.armorpoints1, "Players")
+			local killcount   = rls(addr + PlayerOffsets.killcount,    "Players")
+			local itemcount   = rls(addr + PlayerOffsets.itemcount,    "Players")
+			local secretcount = rls(addr + PlayerOffsets.secretcount,  "Players")
+
+			total_killcount   = total_killcount   + killcount
+			total_itemcount   = total_itemcount   + itemcount
+			total_secretcount = total_secretcount + secretcount
+
+			stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
+				stats, i, health, armor, killcount, itemcount, secretcount)
+		end
+	end
+	if playercount > 1 then
+		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
+	end
+	gui.text(0, 0, stats, nil, "topright")
+end
+
 local function iterate()
 	if Init then return end
 	
 	for _, addr in ipairs(Objects) do
-		local x      = rls(addr + Offsets.x)
-		local y      = rls(addr + Offsets.y) * -1
-		local health = rls(addr + Offsets.health)
-		local radius = math.floor((rls(addr + Offsets.radius) >> 16) * Zoom)
-		local sprite = SpriteNumber[rls(addr + Offsets.sprite)]
-		local type   = rl(addr + Offsets.type)
+		local x      = rls(addr + MobjOffsets.x,      "Things")
+		local y      = rls(addr + MobjOffsets.y,      "Things") * -1
+		local health = rls(addr + MobjOffsets.health, "Things")
+		local radius = math.floor ((rls(addr + MobjOffsets.radius, "Things") >> 16) * Zoom)
+		local sprite = SpriteNumber[rls(addr + MobjOffsets.sprite, "Things")]
+		local type   = rl(addr + MobjOffsets.type, "Things")
 		local pos    = { x = mapify_x(x), y = mapify_y(y) }
 		local color  = "white"
 			
@@ -193,13 +218,13 @@ local function init_objects()
 		local addr = i * MOBJ_SIZE
 		if addr > 0xFFFFFF then break end
 		
-		local thinker = rl(addr) & 0xFFFFFFFF -- just to check if mobj is there
+		local thinker = rl(addr, "Things") & 0xFFFFFFFF -- just to check if mobj is there
 		if thinker == OUT_OF_BOUNDS then break end
 		
 		if thinker ~= NULL_OBJECT then
-			local x    = rls(addr + Offsets.x) / 0xffff
-			local y    = rls(addr + Offsets.y) / 0xffff * -1
-			local type = rl (addr + Offsets.type)
+			local x    = rls(addr + MobjOffsets.x,    "Things") / 0xffff
+			local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
+			local type = rl (addr + MobjOffsets.type, "Things")
 			
 			if type == 0
 			then type = "PLAYER"
@@ -274,118 +299,296 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
---[[--
-thinker		30 0
-x			4 30
-y			4 34
-z			4 38
-snext		8 3C
-sprev		8 44
-angle		4 4C
-sprite		4 50
-frame		4 54
-bnext		8 58
-bprev		8 60
-subsector	8 68
-floorz		4 70
-ceilingz	4 74
-dropoffz	4 78
-radius		4 7C
-height		4 80
-momx		4 84
-momy		4 88
-momz		4 8C
-validcount	4 90
-type		4 94
-info		8 98
-tics		4 A0
-state		8 A4
-flags		8 AC
-intflags	4 B4
-health		4 B8
-movedir		2 BC
-movecount	2 BE
-strafecount	2 C0
-target		8 C2
-reactiontime 2 CA
-threshold	2 CC
-pursuecount	2 CE
-gear		2 D0
-player		8 D2
-lastlook	2 DA
-spawnpoint	3A DC
-tracer		8 116
-lastenemy	8 11E
-friction	4 126
-movefactor	4 12A
-touching_sectorlist	8 12E
-PrevX		4 136
-PrevY		4 13A
-PrevZ		4 13E
-pitch		4 142
-index		4 146
-patch_width	2 14A
-iden_nums	4 14C
+local function struct_layout(struct)
+	struct = struct or {}
+	struct.size = 0
+	struct.offsets = {}
+
+	function struct.add(name, size, alignment)
+		if alignment == true then alignment = size end
+		struct.align(alignment)
+		--print(string.format("%-19s %3X %3X", name, size, struct.size)); emu.yield()
+		struct.offsets[name] = struct.size
+		struct.size = struct.size + size
+		struct.align(alignment) -- add padding to structs
+		return struct
+	end
+	function struct.align(alignment)
+		if alignment and struct.size % alignment > 0 then
+			--print(string.format("%i bytes padding", alignment - (struct.size % alignment)))
+			struct.pad(alignment - (struct.size % alignment))
+		end
+	end
+	function struct.pad(size)
+		struct.size = struct.size + size
+		return struct
+	 end
+	function struct.s8   (name) return struct.add(name, 1, true) end
+	function struct.s16  (name) return struct.add(name, 2, true) end
+	function struct.s32  (name) return struct.add(name, 4, true) end
+	function struct.u8   (name) return struct.add(name, 1, true) end
+	function struct.u32  (name) return struct.add(name, 4, true) end
+	function struct.u64  (name) return struct.add(name, 8, true) end
+	function struct.ptr  (name) return struct.u64(name) end
+	function struct.bool (name) return struct.s32(name) end
+	function struct.array(name, type, count, ...)
+		for i = 1, count do
+			struct[type](name .. i, ...)
+		end
+		return struct
+	end
+
+	return struct
+end
+
+--[[
+player_t https://github.com/TASEmulators/dsda-doom/blob/master/prboom2/src/d_player.h
+mobj              8   0
+playerstate       4   8
+cmd               E   C
+viewz             4  1C
+viewheight        4  20
+deltaviewheight   4  24
+bob               4  28
+health            4  2C
+armorpoints1      4  30
+armorpoints2      4  34
+armorpoints3      4  38
+armorpoints4      4  3C
+armortype         4  40
+powers1           4  44
+powers2           4  48
+powers3           4  4C
+powers4           4  50
+powers5           4  54
+powers6           4  58
+powers7           4  5C
+powers8           4  60
+powers9           4  64
+powers10          4  68
+powers11          4  6C
+powers12          4  70
+cards1            4  74
+cards2            4  78
+cards3            4  7C
+cards4            4  80
+cards5            4  84
+cards6            4  88
+cards7            4  8C
+cards8            4  90
+cards9            4  94
+cards10           4  98
+cards11           4  9C
+backpack          4  A0
+frags1            4  A4
+frags2            4  A8
+frags3            4  AC
+frags4            4  B0
+frags5            4  B4
+frags6            4  B8
+frags7            4  BC
+frags8            4  C0
+readyweapon       4  C4
+pendingweapon     4  C8
+weaponowned1      4  CC
+weaponowned2      4  D0
+weaponowned3      4  D4
+weaponowned4      4  D8
+weaponowned5      4  DC
+weaponowned6      4  E0
+weaponowned7      4  E4
+weaponowned8      4  E8
+weaponowned9      4  EC
+ammo1             4  F0
+ammo2             4  F4
+ammo3             4  F8
+ammo4             4  FC
+ammo5             4 100
+ammo6             4 104
+maxammo1          4 108
+maxammo2          4 10C
+maxammo3          4 110
+maxammo4          4 114
+maxammo5          4 118
+maxammo6          4 11C
+attackdown        4 120
+usedown           4 124
+cheats            4 128
+refire            4 12C
+killcount         4 130
+itemcount         4 134
+secretcount       4 138
+damagecount       4 13C
+bonuscount        4 140
+attacker          8 148
+extralight        4 150
+fixedcolormap     4 154
+colormap          4 158
+psprites         30 160
+didsecret         4 190
+momx              4 194
+mony              4 198
+maxkilldiscount   4 19C
+prev_viewz        4 1A0
+prev_viewangle    4 1A4
+prev_viewpitch    4 1A8
+(padding omitted)
+]]
+
+PlayerOffsets = struct_layout()
+	.ptr  ("mobj")
+	.s32  ("playerstate")
+	.add  ("cmd", 14, 2)
+	.s32  ("viewz")
+	.s32  ("viewheight")
+	.s32  ("deltaviewheight")
+	.s32  ("bob")
+	.s32  ("health")
+	.array("armorpoints", "s32", 4)
+	.s32  ("armortype")
+	.array("powers", "s32", 12)
+	.array("cards", "bool", 11)
+	.bool ("backpack")
+	.array("frags", "s32", 8)
+	.s32  ("readyweapon")
+	.s32  ("pendingweapon")
+	.array("weaponowned", "bool", 9)
+	.array("ammo", "s32", 6)
+	.array("maxammo", "s32", 6)
+	.s32  ("attackdown")
+	.s32  ("usedown")
+	.s32  ("cheats")
+	.s32  ("refire")
+	.s32  ("killcount")
+	.s32  ("itemcount")
+	.s32  ("secretcount")
+	.s32  ("damagecount")
+	.s32  ("bonuscount")
+	.ptr  ("attacker")
+	.s32  ("extralight")
+	.s32  ("fixedcolormap")
+	.s32  ("colormap")
+	.add  ("psprites", 24*2, 8)
+	.bool ("didsecret")
+	.s32  ("momx")
+	.s32  ("mony")
+	.s32  ("maxkilldiscount")
+	.s32  ("prev_viewz")
+	.u32  ("prev_viewangle")
+	.u32  ("prev_viewpitch")
+	-- the rest are non-doom
+	.offsets
+
+--[[
+mobj_t https://github.com/TASEmulators/dsda-doom/blob/master/prboom2/src/p_mobj.h
+thinker              2C   0
+x                     4  30
+y                     4  34
+z                     4  38
+snext                 8  40
+sprev                 8  48
+angle                 4  50
+sprite                4  54
+frame                 4  58
+bnext                 8  60
+bprev                 8  68
+subsector             8  70
+floorz                4  78
+ceilingz              4  7C
+dropoffz              4  80
+radius                4  84
+height                4  88
+momx                  4  8C
+momy                  4  90
+momz                  4  94
+validcount            4  98
+type                  4  9C
+info                  8  A0
+tics                  4  A8
+state                 8  B0
+flags                 8  B8
+intflags              4  C0
+health                4  C4
+movedir               2  C8
+movecount             2  CA
+strafecount           2  CC
+target                8  D0
+reactiontime          2  D8
+threshold             2  DA
+pursuecount           2  DC
+gear                  2  DE
+player                8  E0
+lastlook              2  E8
+spawnpoint           3A  EC
+tracer                8 128
+lastenemy             8 130
+friction              4 138
+movefactor            4 13C
+touching_sectorlist   8 140
+PrevX                 4 148
+PrevY                 4 14C
+PrevZ                 4 150
+pitch                 4 154
+index                 4 158
+patch_width           2 15C
+iden_nums             4 160
+(padding omitted)
 --]]--
 
-add_offset(48,      "thinker")
-add_offset(INT,     "x")
-add_offset(INT,     "y")
-add_offset(INT,     "z")
-add_offset(INT,     "padding1")
-add_offset(POINTER, "snext")
-add_offset(POINTER, "sprev")
-add_offset(INT,     "angle")
-add_offset(INT,     "sprite")
-add_offset(INT,     "frame")
-add_offset(INT,     "padding2")
-add_offset(POINTER, "bnext")
-add_offset(POINTER, "bprev")
-add_offset(POINTER, "subsector")
-add_offset(INT,     "floorz")
-add_offset(INT,     "ceilingz")
-add_offset(INT,     "dropoffz")
-add_offset(INT,     "radius")
-add_offset(INT,     "height")
-add_offset(INT,     "momx")
-add_offset(INT,     "momy")
-add_offset(INT,     "momz")
-add_offset(INT,     "validcount")
-add_offset(INT,     "type")
-add_offset(POINTER, "info")
-add_offset(INT,     "tics")
-add_offset(INT,     "padding3")
-add_offset(POINTER, "state")
-add_offset(8,       "flags")
-add_offset(INT,     "intflags")
-add_offset(INT,     "health")
-add_offset(SHORT,   "movedir")
-add_offset(SHORT,   "movecount")
-add_offset(SHORT,   "strafecount")
-add_offset(SHORT,   "padding4")
-add_offset(POINTER, "target")
-add_offset(SHORT,   "reactiontime")
-add_offset(SHORT,   "threshold")
-add_offset(SHORT,   "pursuecount")
-add_offset(SHORT,   "gear")
-add_offset(POINTER, "player")
-add_offset(SHORT,   "lastlook")
-add_offset(58,      "spawnpoint")
-add_offset(INT,     "padding5") -- unsure where this one should be exactly
-add_offset(POINTER, "tracer")
-add_offset(POINTER, "lastenemy")
-add_offset(INT,     "friction")
-add_offset(INT,     "movefactor")
-add_offset(POINTER, "touching_sectorlist")
-add_offset(INT,     "PrevX")
-add_offset(INT,     "PrevY")
-add_offset(INT,     "PrevZ")
-add_offset(INT,     "pitch")
-add_offset(INT,     "index")
-add_offset(SHORT,   "patch_width")
-add_offset(INT,     "iden_nums")
--- the rest are non-doom
--- print(Offsets)
+MobjOffsets = struct_layout()
+	.add("thinker", 44, 8)
+	.s32("x")
+	.s32("y")
+	.s32("z")
+	.ptr("snext")
+	.ptr("sprev")
+	.u32("angle")
+	.s32("sprite")
+	.s32("frame")
+	.ptr("bnext")
+	.ptr("bprev")
+	.ptr("subsector")
+	.s32("floorz")
+	.s32("ceilingz")
+	.s32("dropoffz")
+	.s32("radius")
+	.s32("height")
+	.s32("momx")
+	.s32("momy")
+	.s32("momz")
+	.s32("validcount")
+	.s32("type")
+	.ptr("info")
+	.s32("tics")
+	.ptr("state")
+	.u64("flags")
+	.s32("intflags")
+	.s32("health")
+	.s16("movedir")
+	.s16("movecount")
+	.s16("strafecount")
+	.ptr("target")
+	.s16("reactiontime")
+	.s16("threshold")
+	.s16("pursuecount")
+	.s16("gear")
+	.ptr("player")
+	.s16("lastlook")
+	.add("spawnpoint", 58, 4)
+	.ptr("tracer")
+	.ptr("lastenemy")
+	.s32("friction")
+	.s32("movefactor")
+	.ptr("touching_sectorlist")
+	.s32("PrevX")
+	.s32("PrevY")
+	.s32("PrevZ")
+	.u32("pitch")
+	.s32("index")
+	.s16("patch_width")
+	.s32("iden_nums")
+	-- the rest are non-doom
+	.offsets
 
 MobjType = {
 --	"NULL" = -1,
@@ -684,7 +887,8 @@ SpriteNumber = {
 
 while true do
 	if Init then init_objects() end
-	iterate()	
+	iterate()
+	iterate_players()
 	update_zoom()
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
