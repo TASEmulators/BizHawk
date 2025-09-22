@@ -171,17 +171,17 @@ namespace BizHawk.Emulation.Common
 #if false
 			Option("A78", "Bios_NTSC", File("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78_NTSC_speed_bios.bin", "NTSC Bios speed"));
 #endif
-			Option("A78", "Bios_NTSC", File("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78_NTSC_bios.bin", "NTSC Bios"));
+			Option("A78", "Bios_NTSC", File("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78_NTSC_bios.bin", "NTSC Bios"), FirmwareOptionStatus.Ideal);
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "A78_PAL_BIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "A78_highscore.bin", "Highscore Bios");
 
 			// AppleII
 			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
 			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");
-			Option("AppleII", "AppleIIe", in appleII_AppleIIe);
+			Option("AppleII", "AppleIIe", in appleII_AppleIIe, FirmwareOptionStatus.Ideal);
 			Firmware("AppleII", "DiskII", "DiskII.rom");
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "AppleIIe_DiskII.rom", "Disk II");
-			Option("AppleII", "DiskII", in appleII_DiskII);
+			Option("AppleII", "DiskII", in appleII_DiskII, FirmwareOptionStatus.Ideal);
 
 			// C64
 			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", 8192, "C64", "Kernal", "C64_Kernal.bin", "Kernal Rom");
@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Common
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "GBA_bios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "GBA_bios_Debug-(J).rom", "Bios (J Debug)");
 			Firmware("GBA", "Bios", "Bios");
-			Option("GBA", "Bios", in gbaNormal);
+			Option("GBA", "Bios", in gbaNormal, FirmwareOptionStatus.Ideal);
 			Option("GBA", "Bios", in gbaJDebug);
 
 			// GB
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Common
 			var jp_mcd_beta = File("F30D109D1C2F7C9FEAF38600C65834261DB73D1F", 131072, "MCD_jp_beta.bin", "Mega CD JP (Beta)");
 			var eu_mcd_221 = File("9DE4EDA59F544DB2D5FD7E6514601F7B648D8EB4", 131072, "MCD_eu_221.bin", "Mega CD EU (v2.21)");
 
-			Option("GEN", "CD_BIOS_EU", in eu_mcd_100);
+			Option("GEN", "CD_BIOS_EU", in eu_mcd_100, FirmwareOptionStatus.Ideal);
 			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200);
 			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200_b2);
 			Option("GEN", "CD_BIOS_EU", in eu_mcdii_200_b);
@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_JP", in jp_mcd_100g);
 			Option("GEN", "CD_BIOS_JP", in jp_mcd_100l);
 			Option("GEN", "CD_BIOS_JP", in jp_mcd_100o);
-			Option("GEN", "CD_BIOS_JP", in jp_mcd_100p);
+			Option("GEN", "CD_BIOS_JP", in jp_mcd_100p, FirmwareOptionStatus.Ideal);
 			Option("GEN", "CD_BIOS_JP", in jp_mcd_100p_b);
 			Option("GEN", "CD_BIOS_JP", in as_mcd_100s);
 			Option("GEN", "CD_BIOS_JP", in jp_mcd_100s);
@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Common
 
 			Option("GEN", "CD_BIOS_US", in us_scd1_100);
 			Option("GEN", "CD_BIOS_US", in us_scd1_100_h);
-			Option("GEN", "CD_BIOS_US", in us_scd1_110);
+			Option("GEN", "CD_BIOS_US", in us_scd1_110, FirmwareOptionStatus.Ideal);
 			Option("GEN", "CD_BIOS_US", in us_scd2_200);
 			Option("GEN", "CD_BIOS_US", in us_scd2_200_b);
 			Option("GEN", "CD_BIOS_US", in us_scd2_200w);
@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Common
 			Option("NDS", "firmware", in knownhack3);
 			Option("NDS", "firmware", in likelygood1);
 			Option("NDS", "firmware", in likelygood2);
-			Option("NDS", "firmware", in likelygood3);
+			Option("NDS", "firmware", in likelygood3, FirmwareOptionStatus.Ideal);
 
 			// really, this is pointless, firmwarei would just contain user settings for old DS mode? some wifi settings too? (maybe some crypto keys?)
 			FirmwareAndOption(SHA1Checksum.Dummy, 131072, "NDS", "firmwarei", "DSi_Firmware.bin", "DSi Firmware");
@@ -431,7 +431,7 @@ namespace BizHawk.Emulation.Common
 			Option("PCFX", "BIOS", in pcfxv101, FirmwareOptionStatus.Acceptable);
 			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
 			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "PCFX_fx-scsi.rom", "PCFX SCSI ROM");
-			Option("PCFX", "SCSIROM", in fxscsi);
+			Option("PCFX", "SCSIROM", in fxscsi, FirmwareOptionStatus.Ideal);
 
 			// PSX
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
@@ -572,11 +572,11 @@ namespace BizHawk.Emulation.Common
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
 			Firmware("SMS", "Korea", "SMS Bios (Korea)");
-			Option("SMS", "Export", in sms_us_13);
+			Option("SMS", "Export", in sms_us_13, FirmwareOptionStatus.Ideal);
 			Option("SMS", "Export", in sms_us_1b);
 			Option("SMS", "Export", in sms_m404);
-			Option("SMS", "Japan", in sms_jp_21);
-			Option("SMS", "Korea", in sms_kr);
+			Option("SMS", "Japan", in sms_jp_21, FirmwareOptionStatus.Ideal);
+			Option("SMS", "Korea", in sms_kr, FirmwareOptionStatus.Ideal);
 
 			// SNES
 			var sgb = File("6ED55C4368333B57F6A2F8BBD70CCD87ED48058E", 262144, "SNES_SGB_(JU).sfc", "Super Game Boy Rom (JU)");
@@ -613,14 +613,13 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("357AC4826297A6496035E3951CACDA55DCAE4B1B", 4194304, "BSX", "Rom_Tsuri", "Satellaview_Bass_Tsuri.sfc", "Itoi Shigesato no Bass Tsuri No. 1 Rom");
 
 			// TI83
-			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
-			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
-			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "TI83_104.rom", "TI-83 Rom v1.04"); // ?? is this size correct?
-			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", 262144, "TI83_106.rom", "TI-83 Rom v1.06"); // ?? is this size correct?
-			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "TI83_107.rom", "TI-83 Rom v1.07"); // formerly the 1.?? recommended one
-			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "TI83_108.rom", "TI-83 Rom v1.08"); // ?? is this size correct?
-			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "TI83p_103b.rom", "TI-83 Plus Rom v1.03"); // ?? is this size correct?
-			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "TI83p_112.rom", "TI-83 Plus Rom v1.12"); // ?? is this size correct?
+			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "TI83_102.rom", "TI-83 Rom v1.02");
+			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "TI83_103.rom", "TI-83 Rom v1.03");
+			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "TI83_104.rom", "TI-83 Rom v1.04");
+			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", 262144, "TI83_106.rom", "TI-83 Rom v1.06");
+			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "TI83_107.rom", "TI-83 Rom v1.07");
+			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "TI83_108.rom", "TI-83 Rom v1.08");
+			var ti83_110 = File("25B373B58523647BB7B904001D391615E0B79BEE", 262144, "TI83_110.rom", "TI-83 Rom v1.10");
 			Firmware("TI83", "Rom", "TI-83 Rom");
 			Option("TI83", "Rom", in ti83_102);
 			Option("TI83", "Rom", in ti83_103);
@@ -628,8 +627,7 @@ namespace BizHawk.Emulation.Common
 			Option("TI83", "Rom", in ti83_106);
 			Option("TI83", "Rom", in ti83_107);
 			Option("TI83", "Rom", in ti83_108);
-			Option("TI83", "Rom", in ti83p_103);
-			Option("TI83", "Rom", in ti83p_112);
+			Option("TI83", "Rom", in ti83_110, FirmwareOptionStatus.Ideal);
 
 			// VEC
 			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "VEC", "Bios", "VEC_Bios.bin", "Bios");
@@ -657,3 +655,4 @@ namespace BizHawk.Emulation.Common
 		}
 	} // static class FirmwareDatabase
 }
+
