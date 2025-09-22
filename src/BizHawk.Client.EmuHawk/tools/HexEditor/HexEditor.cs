@@ -176,9 +176,9 @@ namespace BizHawk.Client.EmuHawk
 			var fontSize1 = TextRenderer.MeasureText("0", font);
 			var fontSize2 = TextRenderer.MeasureText("00", font);
 			_fontWidth = fontSize2.Width - fontSize1.Width;
-			_fontHeight = fontSize1.Height;
-			const int MAGIC_FIX_NUMBER_H = 4; // don't wanna know
-			if (OSTailoredCode.IsUnixHost) _fontHeight -= MAGIC_FIX_NUMBER_H;
+			// and the same w.r.t. line height
+			var fontSize3 = TextRenderer.MeasureText("0\n0", font);
+			_fontHeight = fontSize3.Height - fontSize1.Height;
 
 			InitializeComponent();
 			Icon = ToolIcon;
