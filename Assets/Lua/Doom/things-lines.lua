@@ -12,19 +12,19 @@ local NEGATIVE_MAXIMUM = 1 << 63
 local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
 local MAX_PLAYERS      = 4
 -- sizes in bytes
-local LINE_SIZE = 256 -- sizeof(line_t) is 232, but we padded it for niceness
-local MOBJ_SIZE = 512 -- sizeof(mobj_t) is 464, but we padded it for niceness
+local LINE_SIZE   = 256  -- sizeof(line_t) is 232, but we padded it for niceness
+local MOBJ_SIZE   = 512  -- sizeof(mobj_t) is 464, but we padded it for niceness
 local PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for niceness
 -- shortcuts
-local rl     = memory.read_u32_le
-local rw     = memory.read_u16_le
-local rb     = memory.read_u8
-local rls    = memory.read_s32_le
-local rws    = memory.read_s16_le
-local rbs    = memory.read_s8
-local text   = gui.text
-local box    = gui.drawBox
-local line   = gui.drawLine
+local rl   = memory.read_u32_le
+local rw   = memory.read_u16_le
+local rb   = memory.read_u8
+local rls  = memory.read_s32_le
+local rws  = memory.read_s16_le
+local rbs  = memory.read_s8
+local text = gui.text
+local box  = gui.drawBox
+local line = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
 -- TOP LEVEL VARIABLES
@@ -128,29 +128,29 @@ local function get_line_count(str)
 end
 
 local function iterate_players()
-	local playercount = 0
-	local total_killcount = 0
-	local total_itemcount = 0
+	local playercount       = 0
+	local total_killcount   = 0
+	local total_itemcount   = 0
 	local total_secretcount = 0
-
-	local stats = "    Heal Armr Kill Item Secr\n"
+	local stats             = "      HP Armr Kill Item Secr\n"
 	for i = 1, MAX_PLAYERS do
 		local addr = PLAYER_SIZE * (i - 1)
 		local mobj = rl(addr + PlayerOffsets.mobj, "Players")
 
 		if mobj ~= NULL_OBJECT then
-			playercount = playercount + 1
-			local health = rls(addr + PlayerOffsets.health, "Players")
-			local armor = rls(addr + PlayerOffsets.armorpoints1, "Players")
-			local killcount = rls(addr + PlayerOffsets.killcount, "Players")
-			local itemcount = rls(addr + PlayerOffsets.itemcount, "Players")
-			local secretcount = rls(addr + PlayerOffsets.secretcount, "Players")
+			playercount       = playercount + 1
+			local health      = rls(addr + PlayerOffsets.health,       "Players")
+			local armor       = rls(addr + PlayerOffsets.armorpoints1, "Players")
+			local killcount   = rls(addr + PlayerOffsets.killcount,    "Players")
+			local itemcount   = rls(addr + PlayerOffsets.itemcount,    "Players")
+			local secretcount = rls(addr + PlayerOffsets.secretcount,  "Players")
 
-			total_killcount = total_killcount + killcount
-			total_itemcount = total_itemcount + itemcount
+			total_killcount   = total_killcount   + killcount
+			total_itemcount   = total_itemcount   + itemcount
 			total_secretcount = total_secretcount + secretcount
 
-			stats = string.format("%s P%i %4i %4i %4i %4i %4i\n", stats, i, health, armor, killcount, itemcount, secretcount)
+			stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
+				stats, i, health, armor, killcount, itemcount, secretcount)
 		end
 	end
 	if playercount > 1 then
@@ -163,10 +163,10 @@ local function iterate()
 	if Init then return end
 	
 	for _, addr in ipairs(Objects) do
-		local x      = rls(addr + MobjOffsets.x, "Things")
-		local y      = rls(addr + MobjOffsets.y, "Things") * -1
+		local x      = rls(addr + MobjOffsets.x,      "Things")
+		local y      = rls(addr + MobjOffsets.y,      "Things") * -1
 		local health = rls(addr + MobjOffsets.health, "Things")
-		local radius = math.floor((rls(addr + MobjOffsets.radius, "Things") >> 16) * Zoom)
+		local radius = math.floor ((rls(addr + MobjOffsets.radius, "Things") >> 16) * Zoom)
 		local sprite = SpriteNumber[rls(addr + MobjOffsets.sprite, "Things")]
 		local type   = rl(addr + MobjOffsets.type, "Things")
 		local pos    = { x = mapify_x(x), y = mapify_y(y) }
@@ -222,8 +222,8 @@ local function init_objects()
 		if thinker == OUT_OF_BOUNDS then break end
 		
 		if thinker ~= NULL_OBJECT then
-			local x    = rls(addr + MobjOffsets.x, "Things") / 0xffff
-			local y    = rls(addr + MobjOffsets.y, "Things") / 0xffff * -1
+			local x    = rls(addr + MobjOffsets.x,    "Things") / 0xffff
+			local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
 			local type = rl (addr + MobjOffsets.type, "Things")
 			
 			if type == 0
@@ -323,14 +323,14 @@ local function struct_layout(struct)
 		struct.size = struct.size + size
 		return struct
 	 end
-	function struct.s8(name) return struct.add(name, 1, true) end
-	function struct.s16(name) return struct.add(name, 2, true) end
-	function struct.s32(name) return struct.add(name, 4, true) end
-	function struct.u8(name) return struct.add(name, 1, true) end
-	function struct.u32(name) return struct.add(name, 4, true) end
-	function struct.u64(name) return struct.add(name, 8, true) end
-	function struct.ptr(name) return struct.u64(name) end
-	function struct.bool(name) return struct.s32(name) end
+	function struct.s8   (name) return struct.add(name, 1, true) end
+	function struct.s16  (name) return struct.add(name, 2, true) end
+	function struct.s32  (name) return struct.add(name, 4, true) end
+	function struct.u8   (name) return struct.add(name, 1, true) end
+	function struct.u32  (name) return struct.add(name, 4, true) end
+	function struct.u64  (name) return struct.add(name, 8, true) end
+	function struct.ptr  (name) return struct.u64(name) end
+	function struct.bool (name) return struct.s32(name) end
 	function struct.array(name, type, count, ...)
 		for i = 1, count do
 			struct[type](name .. i, ...)
@@ -887,7 +887,8 @@ SpriteNumber = {
 
 while true do
 	if Init then init_objects() end
-	iterate()	
+	iterate()
+	iterate_players()
 	update_zoom()
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
