@@ -113,7 +113,7 @@ public static class RoslynUtils
 				}
 				return false;
 			case TypeKind.Interface:
-				return subtype.AllInterfaces.Any(MatchesPerTypeParamVariance);
+				return subtype.AllInterfaces.Prepend(subtype).Any(MatchesPerTypeParamVariance);
 			case TypeKind.Enum or TypeKind.Pointer or TypeKind.Struct:
 				return MatchesPerTypeParamVariance(subtype);
 			default:
