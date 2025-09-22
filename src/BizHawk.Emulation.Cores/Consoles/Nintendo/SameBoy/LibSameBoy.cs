@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 {
+	[CLSCompliant(false)]
 	public abstract class LibSameboy
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

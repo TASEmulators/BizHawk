@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (_bulkPeekUshort != null)
@@ -61,6 +62,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
 		{
 			if (_bulkPeekUint != null)
@@ -73,6 +75,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public MemoryDomainDelegate(
 			string name,
 			long size,
@@ -135,6 +138,7 @@ namespace BizHawk.Emulation.Common
 	}
 
 
+	[CLSCompliant(false)]
 	public class MemoryDomainUshortArray : MemoryDomain
 	{
 		private ushort[] _data;

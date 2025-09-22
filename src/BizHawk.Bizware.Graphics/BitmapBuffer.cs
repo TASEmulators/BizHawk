@@ -422,6 +422,7 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Loads the BitmapBuffer from a source buffer, which is expected to be the right pixel format
 		/// </summary>
+		[CLSCompliant(false)]
 		public void LoadFrom(int width, int stride, int height, byte* data, BitmapLoadOptions options)
 		{
 			var cleanup = options.CleanupAlpha0;

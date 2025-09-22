@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 	{
 		public const int MAX_MEMORY_SIZE_MB = 256;
 
+		[CLSCompliant(false)] //TODO just need renaming
 		public enum ConfigurationPreset
 		{
 			[Display(Name = "[1981] IBM XT 5150 (4.77Mhz, 8086, 256KB RAM, Monochrome, PC Speaker)")]
@@ -35,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		}
 
 		/// <remarks>values are the actual size in bytes for each hdd selection</remarks>
+		[CLSCompliant(false)]
 		public enum HardDiskOptions : uint
 		{
 			None = 0,
@@ -241,6 +243,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		[CoreSettings]
 		public class SyncSettings
 		{
+			[CLSCompliant(false)]
 			[DisplayName("Configuration Preset")]
 			[Description("Establishes a base configuration for DOSBox roughly corresponding to the selected computer model. We recommend choosing a model that is roughly of the same year or above of the game / tool you plan to run. More modern models may require more CPU power to emulate.")]
 			[DefaultValue(ConfigurationPreset._1993_IBM_PS2_53_SLC2_486)]
@@ -267,6 +270,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(3.0)]
 			public float MouseSensitivity { get; set; }
 
+			[CLSCompliant(false)]
 			[DisplayName("Mount Formatted Hard Disk Drive")]
 			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. The hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.\n\nThis value will be ignored if a hard disk image (.hdd) is provided.")]
 			[DefaultValue(HardDiskOptions.None)]

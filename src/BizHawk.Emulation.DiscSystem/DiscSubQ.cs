@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.DiscSystem
 		PRE = 1, //Pre-emphasis enabled (audio tracks only)
 		DCP = 2, //Digital copy permitted
 		DATA = 4, //set for data tracks, clear for audio tracks
+		[CLSCompliant(false)] //TODO just needs renaming
 		_4CH = 8, //Four channel audio
 	}
 
@@ -83,6 +84,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Furthermore, it is meaningless (and in BizHawk, unpopulated) for a TOC Entry
 		/// (since an invalid CRC on a [theyre redundantly/duplicately stored] toc entry would cause it to get discarded in favor of another one with a correct CRC)
 		/// </summary>
+		[CLSCompliant(false)]
 		public ushort q_crc;
 
 		/// <summary>

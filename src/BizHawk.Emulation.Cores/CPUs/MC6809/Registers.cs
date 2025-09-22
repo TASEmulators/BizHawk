@@ -6,23 +6,52 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 	public partial class MC6809
 	{
 		// registers
+		[CLSCompliant(false)]
 		public ushort[] Regs = new ushort[14];
 
+		[CLSCompliant(false)]
 		public const ushort PC = 0;
+
+		[CLSCompliant(false)]
 		public const ushort US = 1;
+
+		[CLSCompliant(false)]
 		public const ushort SP = 2;
+
+		[CLSCompliant(false)]
 		public const ushort X = 3;
+
+		[CLSCompliant(false)]
 		public const ushort Y = 4;
+
+		[CLSCompliant(false)]
 		public const ushort A = 5;
+
+		[CLSCompliant(false)]
 		public const ushort B = 6;
+
+		[CLSCompliant(false)]
 		public const ushort ADDR = 7; // internal
+
+		[CLSCompliant(false)]
 		public const ushort ALU = 8; // internal
+
+		[CLSCompliant(false)]
 		public const ushort ALU2 = 9; // internal
+
+		[CLSCompliant(false)]
 		public const ushort DP = 10;
+
+		[CLSCompliant(false)]
 		public const ushort CC = 11;
+
+		[CLSCompliant(false)]
 		public const ushort Dr = 12;
+
+		[CLSCompliant(false)]
 		public const ushort IDX_EA = 13;
 
+		[CLSCompliant(false)]
 		public ushort D
 		{
 			get => (ushort)(Regs[B] | (Regs[A] << 8));
@@ -87,6 +116,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagI = true;
 		}
 
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, RegisterValue>

@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a CDI file, faithfully. Minimal interpretation of the data happens.
 		/// </summary>
+		[CLSCompliant(false)]
 		public class CDIFile
 		{
 			/// <summary>
@@ -58,6 +59,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a track/disc info block header from a CDI track
 		/// </summary>
+		[CLSCompliant(false)]
 		public class CDITrackHeader
 		{
 			/// <summary>
@@ -90,6 +92,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a track block from a CDI file
 		/// </summary>
+		[CLSCompliant(false)]
 		public class CDITrack : CDITrackHeader
 		{
 			/// <summary>
@@ -156,6 +159,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a disc info block from a CDI file
 		/// </summary>
+		[CLSCompliant(false)]
 		public class CDIDiscInfo : CDITrackHeader
 		{
 			/// <summary>
@@ -190,6 +194,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="CDIParseException">malformed cdi format</exception>
+		[CLSCompliant(false)]
 		public static CDIFile ParseFrom(Stream stream)
 		{
 			var cdif = new CDIFile();
@@ -408,6 +413,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public class LoadResults
 		{
+			[CLSCompliant(false)]
 			public CDIFile ParsedCDIFile;
 			public bool Valid;
 			public CDIParseException FailureException;

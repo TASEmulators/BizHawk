@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Common
 	{
 		private readonly List<Action> _inputCallbacks = new List<Action>();
 
+		[CLSCompliant(false)]
 		public MemoryBasedInputCallbackSystem(IDebuggable debuggableCore, string scope, IEnumerable<uint> addresses)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())

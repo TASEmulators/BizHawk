@@ -2,6 +2,7 @@ using System.IO;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public class MemoryBlock : IDisposable
 	{
 		/// <summary>allocate <paramref name="size"/> bytes</summary>

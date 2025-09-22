@@ -7,22 +7,52 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 	{
 		// registers
 
+		[CLSCompliant(false)]
 		public const ushort PCl = 0;
+
+		[CLSCompliant(false)]
 		public const ushort PCh = 1;
+
+		[CLSCompliant(false)]
 		public const ushort SPl = 2;
+
+		[CLSCompliant(false)]
 		public const ushort SPh = 3;
+
+		[CLSCompliant(false)]
 		public const ushort A = 4;
+
+		[CLSCompliant(false)]
 		public const ushort F = 5;
+
+		[CLSCompliant(false)]
 		public const ushort B = 6;
+
+		[CLSCompliant(false)]
 		public const ushort C = 7;
+
+		[CLSCompliant(false)]
 		public const ushort D = 8;
+
+		[CLSCompliant(false)]
 		public const ushort E = 9;
+
+		[CLSCompliant(false)]
 		public const ushort H = 10;
+
+		[CLSCompliant(false)]
 		public const ushort L = 11;
+
+		[CLSCompliant(false)]
 		public const ushort W = 12;
+
+		[CLSCompliant(false)]
 		public const ushort Z = 13;
+
+		[CLSCompliant(false)]
 		public const ushort Aim = 14; // use this indicator for RLCA etc., since the Z flag is reset on those
 
+		[CLSCompliant(false)]
 		public ushort[] Regs = new ushort[14];
 
 		public bool was_FlagI, FlagI;
@@ -51,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			set => Regs[5] = (ushort)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
+		[CLSCompliant(false)]
 		public ushort RegPC
 		{
 			get => (ushort)(Regs[0] | (Regs[1] << 8));
@@ -69,6 +100,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			}
 		}
 
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, RegisterValue>

@@ -149,6 +149,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte Number;
 		public byte ID;
 		public string Name;
+
+		[CLSCompliant(false)]
 		public ushort Address;
 
 		public FileKindE FileKind;

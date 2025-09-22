@@ -133,6 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(0)]
 			public int RTCDivisorOffset { get; set; }
 
+			[CLSCompliant(false)]
 			[DisplayName("Initial Time")]
 			[Description("Initial time of emulation in seconds.")]
 			[DefaultValue(typeof(ulong), "0")]

@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// <returns>
 	/// NULL if we should leave the value sent by the core as it is; the value to override with otherwise.
 	/// </returns>
+	[CLSCompliant(false)]
 	public delegate uint? MemoryCallbackDelegate(uint address, uint value, uint flags);
 
 	/// <summary>
@@ -15,6 +16,7 @@ namespace BizHawk.Emulation.Common
 	/// gets and sets memory callbacks in the core.  A memory callback should fire any time memory is
 	/// read/written/executed by the core, and depends on the type specified by the callback
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IMemoryCallbackSystem : IEnumerable<IMemoryCallback>
 	{
 		/*
@@ -84,6 +86,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	/// <seealso cref="IMemoryCallbackSystem"/>
 	/// <seealso cref="MemoryCallbackDelegate"/>
+	[CLSCompliant(false)]
 	public interface IMemoryCallback
 	{
 		MemoryCallbackType Type { get; }
@@ -105,6 +108,7 @@ namespace BizHawk.Emulation.Common
 	}
 
 #pragma warning disable RCS1191 //TODO this is genuinely broken but needs some dedicated thinking to fix
+	[CLSCompliant(false)]
 	[Flags]
 	public enum MemoryCallbackFlags : uint
 	{

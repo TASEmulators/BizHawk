@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision
 	{
+		[CLSCompliant(false)]
 		public readonly struct CpuLink(ColecoVision coleco) : IZ80ALink
 		{
 			public byte FetchMemory(ushort address)

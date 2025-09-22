@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class XInput2Imports
 	{
 		private const string XI2 = "libXi.so.6";

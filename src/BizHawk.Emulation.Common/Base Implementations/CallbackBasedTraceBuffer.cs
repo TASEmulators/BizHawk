@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Common
 	/// This allows for a traceable implementation without the need for additional API
 	/// Note that this technique will always be significantly slower than a direct implementation
 	/// </summary>
+	[CLSCompliant(false)]
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
 		private const string DEFAULT_HEADER = "Instructions";
@@ -42,6 +43,7 @@ namespace BizHawk.Emulation.Common
 
 		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
+		[CLSCompliant(false)]
 		protected abstract uint? TraceFromCallback(uint addr, uint value, uint flags);
 
 		private ITraceSink? _sink;

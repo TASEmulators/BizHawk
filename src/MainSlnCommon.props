@@ -16,17 +16,25 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(CLSCompliant)' == '' ">
+		<CLSCompliant>true</CLSCompliant>
+	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Meziantou.Polyfill" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.CLSCompliance.dll" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/BannedSymbols.BannedApiAnalyzers.txt" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/Menees.Analyzers.Settings.xml" />
 		<InternalsVisibleTo Include="$(MSBuildProjectName.Replace('BizHawk.', 'BizHawk.Tests.'))" />
 		<Using Include="System" />
+		<AssemblyAttribute Include="System.CLSCompliantAttribute">
+			<_Parameter1>$(CLSCompliant)</_Parameter1>
+			<_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+		</AssemblyAttribute>
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />

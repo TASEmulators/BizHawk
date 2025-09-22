@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// A generic linked implementation of IDebuggable that can be used by any link core
 	/// </summary>
 	/// <seealso cref="IDebuggable" />
+	[CLSCompliant(false)]
 	public class LinkedDebuggable : IDebuggable
 	{
 		private readonly IDebuggable[] _linkedCores;

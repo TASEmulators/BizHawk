@@ -888,6 +888,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return palette_compiled[pixel];
 		}
 
+		[CLSCompliant(false)]
 		public byte DummyReadMemory(ushort addr) { return 0; }
 
 		public void ApplySystemBusPoke(int addr, byte value)
@@ -919,6 +920,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		[CLSCompliant(false)]
 		public byte PeekMemory(ushort addr)
 		{
 			byte ret;
@@ -953,6 +955,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
+		[CLSCompliant(false)]
 		public void ExecFetch(ushort addr)
 		{
 			if (MemoryCallbacks.HasExecutes)
@@ -962,6 +965,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr)
 		{
 			if (!oam_dma_exec && !dmc_dma_exec)
@@ -1086,6 +1090,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value)
 		{
 			if (!oam_dma_exec)

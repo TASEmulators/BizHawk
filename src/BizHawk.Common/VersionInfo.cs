@@ -65,6 +65,7 @@ namespace BizHawk.Common
 			=> DeveloperBuild ? $"GIT {GIT_BRANCH}#{GIT_SHORTHASH}" : $"Version {MainVersion}"; // intentionally leaving '#' here to differentiate it from the "proper" one in `Help` > `About...` --yoshi
 
 		/// <summary>"2.5.1" => 0x02050100</summary>
+		[CLSCompliant(false)]
 		public static uint VersionStrToInt(string s)
 		{
 			var a = s.Split('.');

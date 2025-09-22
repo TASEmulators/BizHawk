@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class WmImports
 	{
 		public const uint PM_REMOVE = 0x0001U;
@@ -31,9 +32,11 @@ namespace BizHawk.Common
 			public uint lPrivate;
 		}
 
+		[CLSCompliant(false)]
 		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 		public delegate IntPtr WNDPROC(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		public struct WNDCLASSW
 		{

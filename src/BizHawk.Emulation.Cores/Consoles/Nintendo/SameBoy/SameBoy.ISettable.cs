@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		[CoreSettings]
 		public class SameboySettings
 		{
+			[CLSCompliant(false)]
 			public enum GBPaletteType : uint
 			{
 				[Display(Name = "Greyscale")]
@@ -64,12 +65,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 			private int[] _customPal;
 
+			[CLSCompliant(false)]
 			[DisplayName("GB Mono Palette")]
 			[Description("Selects which palette to use in GB mode. Does nothing in GBC mode.")]
 			[DefaultValue(GBPaletteType.GREY)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public GBPaletteType GBPalette { get; set; }
 
+			[CLSCompliant(false)]
 			public enum ColorCorrectionMode : uint
 			{
 				[Display(Name = "Disabled")]
@@ -88,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				MODERN_ACCURATE,
 			}
 
+			[CLSCompliant(false)]
 			[DisplayName("GBC Color Correction")]
 			[Description("Selects which color correction method to use in GBC mode. Does nothing in GB mode.")]
 			[DefaultValue(ColorCorrectionMode.MODERN_BALANCED)]
@@ -111,6 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			[DefaultValue(false)]
 			public bool ShowBorder { get; set; }
 
+			[CLSCompliant(false)]
 			public enum HighPassFilterMode : uint
 			{
 				[Display(Name = "None (Keep DC Offset)")]
@@ -121,6 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				HIGHPASS_REMOVE_DC_OFFSET,
 			}
 
+			[CLSCompliant(false)]
 			[DisplayName("High Pass Filter")]
 			[Description("Selects which high pass filter to use for audio.")]
 			[DefaultValue(HighPassFilterMode.HIGHPASS_ACCURATE)]
@@ -139,6 +145,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				set => _interferencevolume = Math.Max(0, Math.Min(100, value));
 			}
 
+			[CLSCompliant(false)]
 			public enum RumbleModeType : uint
 			{
 				[Display(Name = "Disabled")]
@@ -149,6 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				RUMBLE_ALL_GAMES
 			}
 
+			[CLSCompliant(false)]
 			[DisplayName("Rumble Mode")]
 			[Description("Sets which games should trigger rumble.")]
 			[DefaultValue(RumbleModeType.RUMBLE_CARTRIDGE_ONLY)]

@@ -7,7 +7,7 @@ namespace BizHawk.Common
 {
 	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
 #pragma warning disable CA1715 // breaks IInterface convention
-	public interface Range<out T> where T : unmanaged, IComparable<T>
+	public partial interface Range<out T> where T : unmanaged, IComparable<T>
 #pragma warning restore CA1715
 	{
 		T Start { get; }
@@ -16,7 +16,7 @@ namespace BizHawk.Common
 	}
 
 	/// <summary>represents a closed range of <typeparamref name="T"/> which can be grown or shrunk (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
-	public class MutableRange<T> : Range<T> where T : unmanaged, IComparable<T>
+	public partial class MutableRange<T> : Range<T> where T : unmanaged, IComparable<T>
 	{
 		private (T Start, T EndInclusive) r;
 
@@ -65,7 +65,7 @@ namespace BizHawk.Common
 	/// non-generic overloads are used where the method requires an increment or decrement<br/>
 	/// TODO which Enumerate algorithm is faster - <c>yield return</c> in loop or <see cref="Enumerable.Range"/>?
 	/// </remarks>
-	public static class RangeExtensions
+	public static partial class RangeExtensions
 	{
 		private const ulong MIN_LONG_NEGATION_AS_ULONG = 9223372036854775808UL;
 
@@ -82,27 +82,35 @@ namespace BizHawk.Common
 		/// <returns>true iff <paramref name="value"/> is contained in <paramref name="range"/> (<paramref name="value"/> is considered to be in the range if it's exactly equal to either bound)</returns>
 		public static bool Contains<T>(this Range<T> range, T value) where T : unmanaged, IComparable<T> => !(value.CompareTo(range.Start) < 0 || range.EndInclusive.CompareTo(value) < 0);
 
+		[CLSCompliant(false)]
 		public static uint Count(this Range<byte> range) => (uint) (range.EndInclusive - range.Start + 1);
 
 		/// <remarks>beware integer overflow when <paramref name="range"/> contains every value</remarks>
+		[CLSCompliant(false)]
 		public static uint Count(this Range<int> range) => (uint) ((long) range.EndInclusive - range.Start) + 1U;
 
 		/// <inheritdoc cref="Count(Range{int})"/>
+		[CLSCompliant(false)]
 		public static ulong Count(this Range<long> range) => (range.Contains(0L)
 			? (range.Start == long.MinValue ? MIN_LONG_NEGATION_AS_ULONG : (ulong) -range.Start) + (ulong) range.EndInclusive
 			: (ulong) (range.EndInclusive - range.Start)
 		) + 1UL;
 
+		[CLSCompliant(false)]
 		public static uint Count(this Range<sbyte> range) => (uint) (range.EndInclusive - range.Start + 1);
 
+		[CLSCompliant(false)]
 		public static uint Count(this Range<short> range) => (uint) (range.EndInclusive - range.Start + 1);
 
 		/// <inheritdoc cref="Count(Range{int})"/>
+		[CLSCompliant(false)]
 		public static uint Count(this Range<uint> range) => range.EndInclusive - range.Start + 1U;
 
 		/// <inheritdoc cref="Count(Range{int})"/>
+		[CLSCompliant(false)]
 		public static ulong Count(this Range<ulong> range) => range.EndInclusive - range.Start + 1UL;
 
+		[CLSCompliant(false)]
 		public static uint Count(this Range<ushort> range) => (uint) (range.EndInclusive - range.Start + 1);
 
 		public static void Deconstruct<T>(this Range<T> range, out T start, out T endInclusive)
@@ -152,10 +160,12 @@ namespace BizHawk.Common
 			yield return l;
 		}
 
+		[CLSCompliant(false)]
 		public static IEnumerable<sbyte> Enumerate(this Range<sbyte> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (sbyte) i);
 
 		public static IEnumerable<short> Enumerate(this Range<short> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (short) i);
 
+		[CLSCompliant(false)]
 		public static IEnumerable<uint> Enumerate(this Range<uint> range)
 		{
 			var i = range.Start;
@@ -163,6 +173,7 @@ namespace BizHawk.Common
 			yield return i;
 		}
 
+		[CLSCompliant(false)]
 		public static IEnumerable<ulong> Enumerate(this Range<ulong> range)
 		{
 			var l = range.Start;
@@ -170,6 +181,7 @@ namespace BizHawk.Common
 			yield return l;
 		}
 
+		[CLSCompliant(false)]
 		public static IEnumerable<ushort> Enumerate(this Range<ushort> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (ushort) i);
 
 		public static Range<T> GetImmutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => GetMutableCopy(range);
@@ -195,6 +207,7 @@ namespace BizHawk.Common
 			: new MutableRange<long>(start, endExclusive - 1L);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static MutableRange<sbyte> MutableRangeToExclusive(this sbyte start, sbyte endExclusive) => endExclusive == sbyte.MinValue
 			? throw ExclusiveRangeMinValExc
 			: new MutableRange<sbyte>(start, (sbyte) (endExclusive - 1));
@@ -205,16 +218,19 @@ namespace BizHawk.Common
 			: new MutableRange<short>(start, (short) (endExclusive - 1));
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static MutableRange<uint> MutableRangeToExclusive(this uint start, uint endExclusive) => endExclusive == uint.MinValue
 			? throw ExclusiveRangeMinValExc
 			: new MutableRange<uint>(start, endExclusive - 1U);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static MutableRange<ulong> MutableRangeToExclusive(this ulong start, ulong endExclusive) => endExclusive == ulong.MinValue
 			? throw ExclusiveRangeMinValExc
 			: new MutableRange<ulong>(start, endExclusive - 1UL);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static MutableRange<ushort> MutableRangeToExclusive(this ushort start, ushort endExclusive) => endExclusive == ushort.MinValue
 			? throw ExclusiveRangeMinValExc
 			: new MutableRange<ushort>(start, (ushort) (endExclusive - 1U));
@@ -233,18 +249,22 @@ namespace BizHawk.Common
 		public static Range<long> RangeToExclusive(this long start, long endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static Range<sbyte> RangeToExclusive(this sbyte start, sbyte endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static Range<short> RangeToExclusive(this short start, short endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static Range<uint> RangeToExclusive(this uint start, uint endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static Range<ulong> RangeToExclusive(this ulong start, ulong endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
+		[CLSCompliant(false)]
 		public static Range<ushort> RangeToExclusive(this ushort start, ushort endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
 		/// <returns>true iff <paramref name="value"/> is strictly contained in <paramref name="range"/> (<paramref name="value"/> is considered to be OUTSIDE the range if it's exactly equal to either bound)</returns>

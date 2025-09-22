@@ -115,11 +115,13 @@ namespace BizHawk.Emulation.Common
 			BlipBufDll.blip_clear(_context);
 		}
 
+		[CLSCompliant(false)]
 		public void AddDelta(uint clockTime, int delta)
 		{
 			BlipBufDll.blip_add_delta(_context, clockTime, delta);
 		}
 
+		[CLSCompliant(false)]
 		public void AddDeltaFast(uint clockTime, int delta)
 		{
 			BlipBufDll.blip_add_delta_fast(_context, clockTime, delta);
@@ -132,6 +134,7 @@ namespace BizHawk.Emulation.Common
 
 		public const int MaxFrame = BlipBufDll.BlipMaxFrame;
 
+		[CLSCompliant(false)]
 		public void EndFrame(uint clockDuration)
 		{
 			BlipBufDll.blip_end_frame(_context, clockDuration);

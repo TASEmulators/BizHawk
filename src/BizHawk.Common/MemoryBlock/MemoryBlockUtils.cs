@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BizHawk.Common
 {
-	public static class MemoryBlockUtils
+	public static partial class MemoryBlockUtils
 	{
 		/// <summary>
 		/// copy `len` bytes from `src` to `dest`
@@ -45,6 +45,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// bitmask corresponding to PageSize
 		/// </summary>
+		[CLSCompliant(false)]
 		public const ulong PageMask = PageSize - 1;
 
 		static MemoryBlockUtils()
@@ -61,24 +62,28 @@ namespace BizHawk.Common
 		/// <summary>
 		/// true if addr is aligned
 		/// </summary>
+		[CLSCompliant(false)]
 		public static bool Aligned(ulong addr)
 			=> (addr & PageMask) == 0;
 
 		/// <summary>
 		/// align address down to previous page boundary
 		/// </summary>
+		[CLSCompliant(false)]
 		public static ulong AlignDown(ulong addr)
 			=> addr & ~PageMask;
 
 		/// <summary>
 		/// align address up to next page boundary
 		/// </summary>
+		[CLSCompliant(false)]
 		public static ulong AlignUp(ulong addr)
 			=> ((addr - 1) | PageMask) + 1;
 
 		/// <summary>
 		/// return the minimum number of pages needed to hold size
 		/// </summary>
+		[CLSCompliant(false)]
 		public static int PagesNeeded(ulong size)
 			=> (int)((size + PageMask) >> PageShift);
 	}
@@ -87,8 +92,9 @@ namespace BizHawk.Common
 	// So we store them as long/ulong instead in many places, and use these helpers
 	// to convert to IntPtr when needed
 
-	public static class Z
+	public static partial class Z
 	{
+		[CLSCompliant(false)]
 		public static IntPtr US(ulong l)
 		{
 			if (IntPtr.Size == 8)
@@ -97,6 +103,7 @@ namespace BizHawk.Common
 				return (IntPtr)(int)l;
 		}
 
+		[CLSCompliant(false)]
 		public static UIntPtr UU(ulong l)
 		{
 			if (UIntPtr.Size == 8)
@@ -113,6 +120,7 @@ namespace BizHawk.Common
 				return (IntPtr)(int)l;
 		}
 
+		[CLSCompliant(false)]
 		public static UIntPtr SU(long l)
 		{
 			if (UIntPtr.Size == 8)

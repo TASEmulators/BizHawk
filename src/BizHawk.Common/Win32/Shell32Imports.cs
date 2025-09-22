@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class Shell32Imports
 	{
 		public const int BFFM_INITIALIZED = 1;

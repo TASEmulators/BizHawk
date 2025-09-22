@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static unsafe class LibZstd
 	{
 		static LibZstd()

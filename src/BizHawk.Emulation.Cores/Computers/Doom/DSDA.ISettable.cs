@@ -97,10 +97,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public enum AspectRatio
 		{
 			Native = 0,
+			[CLSCompliant(false)] //TODO just needs renaming
 			[Display(Name = "16:9")]
 			_16by9 = 1,
+			[CLSCompliant(false)] //TODO just needs renaming
 			[Display(Name = "16:10")]
 			_16by10 = 2,
+			[CLSCompliant(false)] //TODO just needs renaming
 			[Display(Name = "4:3")]
 			_4by3 = 3,
 		}

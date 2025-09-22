@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class Ole32Imports
 	{
 		public enum CLSCTX : uint

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common.NumberExtensions
 {
-	public static class NumberExtensions
+	public static partial class NumberExtensions
 	{
 		private const string ERR_MSG_PRECISION_LOSS = "unable to convert from decimal without loss of precision";
 
@@ -12,6 +12,7 @@ namespace BizHawk.Common.NumberExtensions
 			return string.Format($"{{0:X{numDigits}}}", n);
 		}
 
+		[CLSCompliant(false)]
 		public static string ToHexString(this uint n, int numDigits)
 		{
 			return string.Format($"{{0:X{numDigits}}}", n);
@@ -22,6 +23,7 @@ namespace BizHawk.Common.NumberExtensions
 			return string.Format($"{{0:X{numDigits}}}", n);
 		}
 
+		[CLSCompliant(false)]
 		public static string ToHexString(this ulong n, int numDigits)
 		{
 			return string.Format($"{{0:X{numDigits}}}", n);
@@ -37,6 +39,7 @@ namespace BizHawk.Common.NumberExtensions
 			return (b & (1 << index)) != 0;
 		}
 
+		[CLSCompliant(false)]
 		public static bool Bit(this ushort b, int index)
 		{
 			return (b & (1 << index)) != 0;
@@ -219,6 +222,7 @@ namespace BizHawk.Common.NumberExtensions
 		public static IntPtr Plus(this IntPtr p, int offset)
 			=> p + offset;
 
+		[CLSCompliant(false)]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static IntPtr Plus(this IntPtr p, uint offset)
 		{
@@ -254,9 +258,11 @@ namespace BizHawk.Common.NumberExtensions
 
 #pragma warning disable RCS1224 // don't want extension on nonspecific `float`/`uint`
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a float</summary>
+		[CLSCompliant(false)]
 		public static float ReinterpretAsF32(uint value) => Unsafe.As<uint, float>(ref value);
 
 		/// <summary> Reinterprets the byte representation of <paramref name="value"/> as a uint</summary>
+		[CLSCompliant(false)]
 		public static uint ReinterpretAsUInt32(float value) => Unsafe.As<float, uint>(ref value);
 #pragma warning restore RCS1224
 	}

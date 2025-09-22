@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Common
 
 		public override string ToString() => Name;
 
+		[CLSCompliant(false)]
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{
 			if (bigEndian)
@@ -46,6 +47,7 @@ namespace BizHawk.Emulation.Common
 			return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
 		}
 
+		[CLSCompliant(false)]
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
 			ReadOnlySpan<byte> scratch = stackalloc byte[]
@@ -60,6 +62,7 @@ namespace BizHawk.Emulation.Common
 				: BinaryPrimitives.ReadUInt32LittleEndian(scratch);
 		}
 
+		[CLSCompliant(false)]
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
 			if (bigEndian)
@@ -74,6 +77,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public virtual void PokeUint(long addr, uint val, bool bigEndian)
 		{
 			Span<byte> scratch = stackalloc byte[4];
@@ -104,6 +108,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
@@ -128,6 +133,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));

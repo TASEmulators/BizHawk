@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Common
 		public string[] AvailableScopes { get; }
 
 		/// <exception cref="InvalidOperationException">scope of <paramref name="callback"/> isn't available</exception>
+		[CLSCompliant(false)]
 		public void Add(IMemoryCallback callback)
 		{
 			if (!AvailableScopes.Contains(callback.Scope))
@@ -79,6 +80,7 @@ namespace BizHawk.Emulation.Common
 			return cbReturn;
 		}
 
+		[CLSCompliant(false)]
 		public uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
 			if (!_hasAny)
@@ -156,6 +158,7 @@ namespace BizHawk.Emulation.Common
 			return anyRemoved;
 		}
 
+		[CLSCompliant(false)]
 		public void Remove(MemoryCallbackDelegate action)
 		{
 			if (RemoveInternal(action))
@@ -167,6 +170,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void RemoveAll(IEnumerable<MemoryCallbackDelegate> actions)
 		{
 			bool changed = false;
@@ -199,10 +203,16 @@ namespace BizHawk.Emulation.Common
 		public delegate void ActiveChangedEventHandler();
 		public event ActiveChangedEventHandler ActiveChanged;
 
+		[CLSCompliant(false)]
 		public delegate void CallbackAddedEventHandler(IMemoryCallback callback);
+
+		[CLSCompliant(false)]
 		public event CallbackAddedEventHandler CallbackAdded;
 
+		[CLSCompliant(false)]
 		public delegate void CallbackRemovedEventHandler(IMemoryCallback callback);
+
+		[CLSCompliant(false)]
 		public event CallbackRemovedEventHandler CallbackRemoved;
 
 		private void Changes()
@@ -220,6 +230,7 @@ namespace BizHawk.Emulation.Common
 			CallbackRemoved?.Invoke(callback);
 		}
 
+		[CLSCompliant(false)]
 		public IEnumerator<IMemoryCallback> GetEnumerator()
 			=> _reads.Concat(_writes).Concat(_execs).GetEnumerator();
 
@@ -227,6 +238,7 @@ namespace BizHawk.Emulation.Common
 			=> GetEnumerator();
 	}
 
+	[CLSCompliant(false)]
 	public class MemoryCallback : IMemoryCallback
 	{
 		public MemoryCallback(string scope, MemoryCallbackType type, string name, MemoryCallbackDelegate callback, uint? address, uint? mask)

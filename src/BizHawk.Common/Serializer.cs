@@ -10,7 +10,7 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Common
 {
-	public class Serializer
+	public partial class Serializer
 	{
 		public Serializer() { }
 
@@ -255,6 +255,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref ushort[] val, bool useNull)
 		{
 			if (IsText)
@@ -293,6 +294,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void SyncText(string name, ref ushort[] val, bool useNull)
 		{
 			if (IsReader)
@@ -353,6 +355,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref uint[] val, bool useNull)
 		{
 			if (IsText)
@@ -369,6 +372,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void SyncText(string name, ref uint[] val, bool useNull)
 		{
 			if (IsReader)
@@ -467,6 +471,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref Bit val)
 		{
 			if (IsText)
@@ -483,6 +488,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void SyncText(string name, ref Bit val)
 		{
 			if (IsReader)
@@ -511,6 +517,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref ushort val)
 		{
 			if (IsText)
@@ -527,6 +534,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref uint val)
 		{
 			if (IsText)
@@ -543,6 +551,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref sbyte val)
 		{
 			if (IsText)
@@ -607,6 +616,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void Sync(string name, ref ulong val)
 		{
 			if (IsText)

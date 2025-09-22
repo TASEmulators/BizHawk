@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public string PCRegisterName => "PC";
 
+		[CLSCompliant(false)]
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			length = 4; // TODO: is this right?

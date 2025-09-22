@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			Console.WriteLine("EXCEPTION");
 		}
 
+		[CLSCompliant(false)]
 		public void OP_IMP(ushort oper)
 		{
 			PopulateCURINSTR(IDLE,
@@ -28,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		}
 
 		// Slightly different timing for these instructions
+		[CLSCompliant(false)]
 		public void OP_IMP2(ushort oper)
 		{
 			PopulateCURINSTR(IDLE,
@@ -38,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 4;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_R_IMP(ushort oper, ushort reg)
 		{
 			PopulateCURINSTR(IDLE,
@@ -48,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 4;
 		}
 
-
+		[CLSCompliant(false)]
 		public void OP_A_R(ushort oper, ushort reg)
 		{
 			PopulateCURINSTR(IDLE,
@@ -59,6 +62,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 4;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_IR(ushort oper, ushort reg)
 		{
 			PopulateCURINSTR(IDLE,
@@ -69,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 4;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_A_IR(ushort oper, ushort reg)
 		{
 			PopulateCURINSTR(IDLE,
@@ -79,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 4;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_DIR_IR(ushort oper, ushort reg)
 		{
 			PopulateCURINSTR(IDLE,
@@ -94,6 +100,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void IN_P_A(ushort oper, ushort port)
 		{
 			PopulateCURINSTR(IDLE,
@@ -109,6 +116,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void MOV_R(ushort dest, ushort src)
 		{
 			PopulateCURINSTR(IDLE,
@@ -151,6 +159,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			Console.WriteLine("OUT");
 		}
 
+		[CLSCompliant(false)]
 		public void OUT_P(ushort port)
 		{
 			PopulateCURINSTR(IDLE,
@@ -196,6 +205,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void MOV_A_P4(ushort port)
 		{
 			PopulateCURINSTR(IDLE,
@@ -211,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void MOV_P4_A(ushort port)
 		{
 			PopulateCURINSTR(IDLE,
@@ -256,6 +267,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void MOVX_A_R(ushort reg)
 		{
 			PopulateCURINSTR(EEA,
@@ -271,6 +283,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void MOVX_R_A(ushort reg)
 		{
 			PopulateCURINSTR(EEA,
@@ -286,6 +299,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_A_DIR(ushort oper)
 		{
 			PopulateCURINSTR(IDLE,
@@ -301,6 +315,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_R_DIR(ushort oper, ushort reg)
 		{
 			PopulateCURINSTR(IDLE,
@@ -318,6 +333,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		// TODO: This should only write back to the port destination if directly wired, otherwise we should wait for a write pulse
 		// TODO: for O2, P1 is tied direct to CTRL outputs so this is ok, BUS and P2 should do something else though
+		[CLSCompliant(false)]
 		public void OP_PB_DIR(ushort oper, ushort reg)
 		{
 			if (reg == 1)
@@ -348,6 +364,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void OP_EXP_A(ushort oper, ushort reg)
 		{
 			// Lower 4 bits only
@@ -364,6 +381,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void CALL(ushort dest_h)
 		{
 			// Lower 4 bits only
@@ -380,6 +398,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void DJNZ(ushort reg)
 		{
 			if ((Regs[reg + RB] - 1) == 0)
@@ -427,6 +446,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void JPB(ushort Tebit)
 		{
 			if (Regs[A].Bit(Tebit))
@@ -459,6 +479,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void JP_COND(ushort COND, ushort SPEC)
 		{
 			// NOTE: PC increment here gets replaced with ALU2 if ondition met, jump is relative to last 256 address block before increment.
@@ -477,6 +498,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			IRQS = 9;
 		}
 
+		[CLSCompliant(false)]
 		public void JP_2k(ushort high_addr)
 		{
 			PopulateCURINSTR(IDLE,

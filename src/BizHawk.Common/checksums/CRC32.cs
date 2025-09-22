@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Common
 {
 	/// <remarks>Implementation of CRC-32 (i.e. POSIX cksum), intended for comparing discs against the Redump.org database</remarks>
+	[CLSCompliant(false)]
 	public sealed class CRC32
 	{
 		/// <remarks>coefficients of the polynomial, in the format Wikipedia calls "reversed"</remarks>

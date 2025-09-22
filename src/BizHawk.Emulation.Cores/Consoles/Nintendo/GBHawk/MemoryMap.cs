@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		//public byte[] RAM_read = new byte[0x8000];
 		//public byte[] ZP_RAM_read = new byte[0x80];
 
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr)
 		{
 			if (MemoryCallbacks.HasReads)
@@ -258,6 +259,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return Read_Registers(addr);
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value)
 		{
 			if (MemoryCallbacks.HasWrites)
@@ -421,6 +423,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		[CLSCompliant(false)]
 		public byte PeekMemory(ushort addr)
 		{
 			if (ppu.DMA_bus_control)

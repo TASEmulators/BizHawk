@@ -7,13 +7,14 @@ namespace BizHawk.Common
 	/// <seealso cref="SHA1Checksum"/>
 	/// <seealso cref="SHA256Checksum"/>
 	/// <seealso cref="SHA512Checksum"/>
-	public static class CRC32Checksum
+	public static partial class CRC32Checksum
 	{
 		/// <remarks>in bits</remarks>
 		internal const int EXPECTED_LENGTH = 32;
 
 		internal const string PREFIX = "CRC32";
 
+		[CLSCompliant(false)]
 		public static byte[] BytesAsDigest(uint digest)
 		{
 			var a = BitConverter.GetBytes(digest);

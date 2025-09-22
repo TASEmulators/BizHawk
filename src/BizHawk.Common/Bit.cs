@@ -3,6 +3,7 @@ using System.Diagnostics;
 namespace BizHawk.Common
 {
 	// I think this is a little faster with uint than with byte
+	[CLSCompliant(false)]
 	public readonly record struct Bit(uint _val)
 	{
 		public static implicit operator Bit(int rhs)

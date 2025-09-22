@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Represents a CHD file.
 		/// This isn't particularly faithful to the format, but rather it just wraps a chd_file
 		/// </summary>
+		[CLSCompliant(false)]
 		public class CHDFile
 		{
 			/// <summary>
@@ -43,6 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Results of chd_get_metadata with cdrom track metadata tags
 		/// </summary>
+		[CLSCompliant(false)]
 		public class CHDCdMetadata
 		{
 			/// <summary>
@@ -436,6 +438,7 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <exception cref="CHDParseException">malformed chd format</exception>
+		[CLSCompliant(false)]
 		public static CHDFile ParseFrom(string path)
 		{
 			var chdf = new CHDFile();
@@ -628,6 +631,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public class LoadResults
 		{
+			[CLSCompliant(false)]
 			public CHDFile ParsedCHDFile;
 			public bool Valid;
 			public CHDParseException FailureException;

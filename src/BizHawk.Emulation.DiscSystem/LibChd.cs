@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// In practice, we use chd-rs, whose c api matches libchdr's
 	/// TODO: should this be common-ized? chd isn't limited to discs, it could be used for hard disk images (e.g. for MAME)
 	/// </summary>
+	[CLSCompliant(false)]
 	public static class LibChd
 	{
 		public const uint CHD_HEADER_VERSION = 5;

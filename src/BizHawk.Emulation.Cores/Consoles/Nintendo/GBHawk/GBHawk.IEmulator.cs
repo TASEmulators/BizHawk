@@ -10,7 +10,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
+
+		[CLSCompliant(false)]
 		public ushort Acc_X_state;
+
+		[CLSCompliant(false)]
 		public ushort Acc_Y_state;
 		public bool in_vblank_old;
 		public bool in_vblank;
@@ -359,11 +363,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			(Acc_X_state, Acc_Y_state) = _controllerDeck.ReadAcc1(controller);
 		}
 
+		[CLSCompliant(false)]
 		public byte GetButtons(ushort r)
 		{
 			return input_register;
 		}
 
+		[CLSCompliant(false)]
 		public byte GetIntRegs(ushort r)
 		{
 			if (r==0)
@@ -425,7 +431,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int[] frame_buffer;
 
-
+		[CLSCompliant(false)]
 		public uint[] vid_buffer;
 
 
@@ -469,7 +475,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int VsyncNumerator => 262144;
 		public int VsyncDenominator => 4389;
 
+		[CLSCompliant(false)]
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+
+		[CLSCompliant(false)]
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
 	}
 }
