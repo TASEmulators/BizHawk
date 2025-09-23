@@ -9,6 +9,7 @@ dsda.MAX_PLAYERS = 4
 dsda.LINE_SIZE   = 256  -- sizeof(line_t) is 232, but we padded it for niceness
 dsda.MOBJ_SIZE   = 512  -- sizeof(mobj_t) is 464, but we padded it for niceness
 dsda.PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for niceness
+dsda.SECTOR_SIZE = 512  -- sizeof(sector_t) is 344, but we padded it for niceness
 
 
 
@@ -155,6 +156,126 @@ dsda.mobj = dsda.struct_layout()
 	.s16("patch_width")
 	.s32("iden_nums")
 	-- the rest are non-doom
+
+-- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
+dsda.sector = dsda.struct_layout()
+	.s32  ("iSectorID")
+	.u32  ("flags")
+	.s32  ("floorheight")
+	.s32  ("ceilingheight")
+	.u8   ("soundtraversed")
+	.ptr  ("soundtarget")
+	.array("blockbox", "s32", 4)
+--	.array("bbox", "s32", 4)
+	.s32  ("bbox_top")
+	.s32  ("bbox_bottom")
+	.s32  ("bbox_left")
+	.s32  ("bbox_right")
+	.add  ("soundorg", 60, 8) -- degenmobj_t;
+	.s32  ("validcount")
+	.s32  ("gl_validcount")
+	.ptr  ("thinglist")
+	.s32  ("friction")
+	.s32  ("movefactor")
+	.ptr  ("floordata")
+	.ptr  ("ceilingdata")
+	.ptr  ("lightingdata")
+	.s8   ("stairlock")
+	.s32  ("prevsec")
+	.s32  ("nextsec")
+	.s32  ("heightsec")
+	.s16  ("bottommap")
+	.s16  ("midmapmap")
+	.s16  ("topmap")
+	.s16  ("colormap")
+	.ptr  ("touching_thinglist")
+	.s32  ("linecount")
+	.ptr  ("lines")
+	.s32  ("floorsky")
+	.s32  ("ceilingsky")
+	.s32  ("floor_xoffs")
+	.s32  ("floor_yoffs")
+	.s32  ("ceiling_xoffs")
+	.s32  ("ceiling_yoffs")
+	.s32  ("floorlightsec")
+	.s32  ("ceilinglightsec")
+	.s16  ("floorpic")
+	.s16  ("ceilingpic")
+	.s16  ("lightlevel")
+	.s16  ("special")
+	.s16  ("tag")
+	.s32  ("cachedheight")
+	.s32  ("scaleindex")
+  	-- e6y
+	.s32  ("INTERP_SectorFloor")
+	.s32  ("INTERP_SectorCeiling")
+	.s32  ("INTERP_FloorPanning")
+	.s32  ("INTERP_CeilingPanning")
+	.array("fakegroup", "s32", 2)
+	-- hexen
+	.s32  ("seqType") -- seqtype_t
+	-- zdoom
+	.s32  ("gravity")
+	-- begin damage_t
+	.s16  ("damage_amount")
+	.u8   ("damage_leakrate")
+	.u8   ("damage_interval")
+	.align(2)
+	-- end damage_t
+	.s16  ("lightlevel_floor")
+	.s16  ("lightlevel_ceiling")
+	.u32  ("floor_rotation")
+	.u32  ("ceiling_rotation")
+	.s32  ("floor_xscale")
+	.s32  ("floor_yscale")
+	.s32  ("ceiling_xscale")
+	.s32  ("ceiling_yscale")
+
+-- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
+-- followed by v1, v2 coords
+dsda.line = dsda.struct_layout()
+	.s32  ("iLineID")
+	.ptr  ("v1")
+	.ptr  ("v2")
+	.s32  ("dx")
+	.s32  ("dy")
+	.float("texel_length")
+	.u32  ("flags")
+	.s16  ("special")
+	.s16  ("tag")
+	.array("sidenum", "u16", 2)
+--	.array("bbox", "s32", 4)
+	.s32  ("bbox_top")
+	.s32  ("bbox_bottom")
+	.s32  ("bbox_left")
+	.s32  ("bbox_right")
+	.s32  ("slopetype") -- slopetype_t
+	.ptr  ("frontsector")
+	.ptr  ("backsector")
+	.s32  ("validcount")
+	.s32  ("validcount2")
+	.ptr  ("specialdata")
+	.s32  ("r_validcount")
+	.u8   ("r_flags")
+	.add  ("soundorg", 60, 8) -- degenmobj_t;
+	-- dsda
+	.u8   ("player_activation")
+	-- hexen
+	.array("special_args", "u32", 5)
+	-- zdoom
+	.u16  ("activation")
+	.u8   ("locknumber")
+	.s32  ("automap_style") -- automap_style_t
+	.s32  ("health")
+	.s32  ("healthgroup")
+	.ptr  ("tranmap")
+	.float("alpha")
+	.align(8)
+	-- BizHawk
+	.s32  ("v1_x")
+	.s32  ("v1_y")
+	.s32  ("v2_x")
+	.s32  ("v2_y")
 
 
 
