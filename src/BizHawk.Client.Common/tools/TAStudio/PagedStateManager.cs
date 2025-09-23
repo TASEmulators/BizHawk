@@ -139,6 +139,11 @@ namespace BizHawk.Client.Common
 			public StateInfo(int f) { Frame = f; }
 
 			public int CompareTo(StateInfo other) => Frame.CompareTo(other.Frame);
+
+			public Stream MakeReadStream(PagedStateManager manager)
+			{
+				return new PagedStream(this, manager, true);
+			}
 		}
 		/* Our collection of states needs to perform well in all of these tasks:
 		 * 1) Inserting states at any point. This will most commonly be at the end, but not always.
@@ -396,9 +401,24 @@ namespace BizHawk.Client.Common
 					//		This is so we can capture states while re-playing old sections.
 					// 2) Otherwise, we kick the oldest mid state.
 
-					// TODO: Can this GetViewBetween be made non-slow for viewing gaps?
-					StateInfo oldestNewerState = _midStates.GetViewBetween(new(frame), new(int.MaxValue)).Min;
-					StateInfo stateToKick = oldestNewerState.Frame != 0 ? oldestNewerState : _midStates.Min;
+					// Slow (see comment on _states)
+					//StateInfo oldestNewerState = _midStates.GetViewBetween(new(frame), new(int.MaxValue)).Min;
+					//StateInfo stateToKick = oldestNewerState.Frame != 0 ? oldestNewerState : _midStates.Min;
+					// Fast
+					int maxMidFrame = _midStates.Max.Frame;
+					StateInfo stateToKick;
+					if (frame > maxMidFrame)
+						stateToKick = _midStates.Min;
+					else
+					{
+						stateToKick = new(0);
+						int checkFrame = frame;
+						while (stateToKick.Frame == 0)
+						{
+							stateToKick = _midStates.GetViewBetween(new(checkFrame), new(checkFrame + Settings.FramesBetweenOldStates)).Min;
+							checkFrame += Settings.FramesBetweenOldStates;
+						}
+					}
 
 					// Kicking a state means checking if it belongs in old.
 					bool recategorizeAsOld = ShouldKeepForOld(stateToKick.Frame) || _reserveCallback(stateToKick.Frame);
@@ -540,7 +560,7 @@ namespace BizHawk.Client.Common
 				throw new ArgumentOutOfRangeException(nameof(frame));
 
 			StateInfo info = _states.GetViewBetween(new(0), new(frame)).Max;
-			return new(info.Frame, new PagedStream(info, this, true));
+			return new(info.Frame, info.MakeReadStream(this));
 		}
 
 		public bool HasState(int frame) => _states.Contains(new(frame));
@@ -598,7 +618,7 @@ namespace BizHawk.Client.Common
 				newManager.Engage(GetStateClosestToFrame(0).Value.ReadAllBytes());
 				if (keepOldStates) foreach (StateInfo state in _states)
 				{
-					Stream s = GetStateClosestToFrame(state.Frame).Value;
+					Stream s = state.MakeReadStream(this);
 					newManager.Capture(state.Frame, new StatableStream(s, (int)s.Length));
 				}
 
@@ -655,7 +675,7 @@ namespace BizHawk.Client.Common
 			{
 				bw.Write(state.Size);
 				bw.Write(state.Frame);
-				GetStateClosestToFrame(state.Frame).Value.CopyTo(bw.BaseStream);
+				state.MakeReadStream(this).CopyTo(bw.BaseStream);
 			}
 		}
 
