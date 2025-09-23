@@ -35,13 +35,13 @@ namespace BizHawk.Client.Common
 		protected override void ProcessInput(string button, bool state)
 		{
 			// For controller input, we want Shift+X to register as both Shift and X (for Keyboard controllers)
-			foreach (var s in button.Split('+')) Buttons[s] = state;
+			foreach (var s in Controller.SplitButtons(button)) Buttons[s] = state;
 		}
 
 		public override bool IsPressed(string button)
 		{
 			// Since we split all inputs into their separate physical buttons, we need to check combinations here.
-			string[] buttons = button.Split('+');
+			string[] buttons = Controller.SplitButtons(button);
 			return buttons.All(Buttons.GetValueOrDefault);
 		}
 	}
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 		protected override void ProcessInput(string button, bool state)
 		{
 			// For controller input, we want Shift+X to register as both Shift and X
-			foreach (var s in button.Split('+')) Buttons[s] = state;
+			foreach (var s in Controller.SplitButtons(button)) Buttons[s] = state;
 			// AND as the combination
 			base.ProcessInput(button, state);
 		}

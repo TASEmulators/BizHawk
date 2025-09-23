@@ -65,13 +65,29 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public bool HasBinding(string button)
 		{
-			string[] buttons = button.Split('+');
+			string[] buttons = SplitButtons(button);
 			return _bindings
 				.SelectMany(kvp => kvp.Value)
 				.Any((boundCombination) => {
-					string[] boundButtons = boundCombination.Split('+');
+					string[] boundButtons = SplitButtons(boundCombination);
 					return boundButtons.All((b) => buttons.Contains(b));
 				});
+		}
+
+		/// <summary>
+		/// Split a button (combination) into individual button components, e.g. Shift+A into Shift and A.
+		/// Components ending with + are assumed to be part of an axes name and are not split.
+		/// </summary>
+		/// <returns></returns>
+		public static string[] SplitButtons(string button)
+		{
+			// assume buttons ending with '+' are axes +/- names and don't split those
+			if (button.EndsWith('+'))
+			{
+				return button.Split('+', button.Count(c => c == '+'));
+			}
+
+			return button.Split('+');
 		}
 
 		/// <summary>
