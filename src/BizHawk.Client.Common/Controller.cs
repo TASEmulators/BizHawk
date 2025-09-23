@@ -78,7 +78,6 @@ namespace BizHawk.Client.Common
 		/// Split a button (combination) into individual button components, e.g. Shift+A into Shift and A.
 		/// Components ending with + are assumed to be part of an axes name and are not split.
 		/// </summary>
-		/// <returns></returns>
 		public static string[] SplitButtons(string button)
 		{
 			// assume buttons ending with '+' are axes +/- names and don't split those
