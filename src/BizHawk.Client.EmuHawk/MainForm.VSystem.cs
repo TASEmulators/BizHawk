@@ -278,16 +278,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(ams, Emulator)) return;
-				ams._machine.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				ams.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var tapeMediaIndex = ams._machine.TapeMediaIndex;
-			for (int i = 0; i < ams._tapeInfo.Count; i++)
+			var tapeMediaIndex = ams.TapeMediaIndex;
+			foreach (var (i, gi) in ams.TapeMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == tapeMediaIndex,
 					Tag = i,
-					Text = $"{i}: {ams._tapeInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				AmstradCPCTapesSubMenu.DropDownItems.Add(menuItem);
@@ -301,16 +301,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(ams, Emulator)) return;
-				ams._machine.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				ams.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var diskMediaIndex = ams._machine.DiskMediaIndex;
-			for (int i = 0; i < ams._diskInfo.Count; i++)
+			var diskMediaIndex = ams.DiskMediaIndex;
+			foreach (var (i, gi) in ams.DiskMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == diskMediaIndex,
 					Tag = i,
-					Text = $"{i}: {ams._diskInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				AmstradCPCDisksSubMenu.DropDownItems.Add(menuItem);
@@ -319,11 +319,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is AmstradCPC cpc)
-			{
-				AmstradCPCTapesSubMenu.Enabled = cpc._tapeInfo.Count > 0;
-				AmstradCPCDisksSubMenu.Enabled = cpc._diskInfo.Count > 0;
-			}
+			if (Emulator is not AmstradCPC cpc) return;
+			AmstradCPCTapesSubMenu.Enabled = cpc.TapeMedia.Count is not 0;
+			AmstradCPCDisksSubMenu.Enabled = cpc.DiskMedia.Count is not 0;
 		}
 
 
@@ -1058,16 +1056,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(speccy, Emulator)) return;
-				speccy._machine.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				speccy.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var tapeMediaIndex = speccy._machine.TapeMediaIndex;
-			for (int i = 0; i < speccy._tapeInfo.Count; i++)
+			var tapeMediaIndex = speccy.TapeMediaIndex;
+			foreach (var (i, gi) in speccy.TapeMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == tapeMediaIndex,
 					Tag = i,
-					Text = $"{i}: {speccy._tapeInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				ZXSpectrumTapesSubMenu.DropDownItems.Add(menuItem);
@@ -1081,16 +1079,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(speccy, Emulator)) return;
-				speccy._machine.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				speccy.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var diskMediaIndex = speccy._machine.DiskMediaIndex;
-			for (int i = 0; i < speccy._diskInfo.Count; i++)
+			var diskMediaIndex = speccy.DiskMediaIndex;
+			foreach (var (i, gi) in speccy.DiskMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == diskMediaIndex,
 					Tag = i,
-					Text = $"{i}: {speccy._diskInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
@@ -1123,8 +1121,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is not ZXSpectrum speccy) return;
-			ZXSpectrumTapesSubMenu.Enabled = speccy._tapeInfo.Count > 0;
-			ZXSpectrumDisksSubMenu.Enabled = speccy._diskInfo.Count > 0;
+			ZXSpectrumTapesSubMenu.Enabled = speccy.TapeMedia.Count is not 0;
+			ZXSpectrumDisksSubMenu.Enabled = speccy.DiskMedia.Count is not 0;
 		}
 
 

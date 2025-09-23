@@ -17,6 +17,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	[Core(CoreNames.ZXHawk, "Asnivor, Alyosha")]
 	public partial class ZXSpectrum : IRegionable, IDriveLight
 	{
+		public IReadOnlyList<IGameInfo> DiskMedia
+			=> _diskInfo.ToArray();
+
+		public int DiskMediaIndex
+		{
+			get => _machine.DiskMediaIndex;
+			set => _machine.DiskMediaIndex = value;
+		}
+
+		public IReadOnlyList<IGameInfo> TapeMedia
+			=> _tapeInfo.ToArray();
+
+		public int TapeMediaIndex
+		{
+			get => _machine.TapeMediaIndex;
+			set => _machine.TapeMediaIndex = value;
+		}
+
 		[CoreConstructor(VSystemID.Raw.ZXSpectrum)]
 		public ZXSpectrum(
 			CoreLoadParameters<ZXSpectrumSettings, ZXSpectrumSyncSettings> lp)
@@ -141,13 +159,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private readonly Z80A<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
-		public SpectrumBase _machine;
+
+		private SpectrumBase _machine;
+
 		public MachineType MachineType;
 
 		public List<GameInfo> _gameInfo;
 
-		public readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
-		public readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
+		internal readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
+
+		internal readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
 
 		private SyncSoundMixer SoundMixer;
 
