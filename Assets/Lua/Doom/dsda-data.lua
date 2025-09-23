@@ -43,8 +43,10 @@ function dsda.struct_layout(struct)
 	function struct.s16  (name) return struct.add(name, 2, true) end
 	function struct.s32  (name) return struct.add(name, 4, true) end
 	function struct.u8   (name) return struct.add(name, 1, true) end
+	function struct.u16  (name) return struct.add(name, 2, true) end
 	function struct.u32  (name) return struct.add(name, 4, true) end
 	function struct.u64  (name) return struct.add(name, 8, true) end
+	function struct.float(name) return struct.add(name, 4, true) end
 	function struct.ptr  (name) return struct.u64(name) end
 	function struct.bool (name) return struct.s32(name) end
 	function struct.array(name, type, count, ...)
