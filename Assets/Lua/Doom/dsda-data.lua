@@ -160,9 +160,8 @@ dsda.mobj = dsda.struct_layout()
 dsda.doom = {}
 
 dsda.doom.mobjtype = {
---	"NULL" = -1,
---	"ZERO",
---	"PLAYER = ZERO",
+--	[-1] = "NULL",
+	[ 0] = "PLAYER",
 	"POSSESSED",
 	"SHOTGUY",
 	"VILE",
@@ -307,7 +306,7 @@ dsda.doom.mobjtype = {
 }
 
 dsda.doom.spritenum = {
---	"TROO",
+	[0] = "TROO",
 	"SHTG",
 	"PUNG",
 	"PISG",

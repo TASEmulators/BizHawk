@@ -169,10 +169,7 @@ local function iterate()
 		local pos    = { x = mapify_x(x), y = mapify_y(y) }
 		local color  = "white"
 			
-		if type == 0
-		then type = "PLAYER"
-		else type = MobjType[type]
-		end
+		type = MobjType[type]
 		if health <= 0 then color = "red" end
 		--[[--
 		local z      = rls(addr + Offsets.z) / 0xffff
@@ -223,11 +220,8 @@ local function init_objects()
 			local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
 			local type = rl (addr + MobjOffsets.type, "Things")
 			
-			if type == 0
-			then type = "PLAYER"
-			else type = MobjType[type]
-			end
 		--	print(string.format("%d %f %f %02X", index, x, y, type))
+			type = MobjType[type]
 			if type
 			and not string.find(type, "MISC")
 			then
