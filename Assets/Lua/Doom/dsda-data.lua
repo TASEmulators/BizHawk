@@ -33,6 +33,7 @@ function dsda.struct_layout(struct)
 			--print(string.format("%i bytes padding", alignment - (struct.size % alignment)))
 			struct.pad(alignment - (struct.size % alignment))
 		end
+		return struct
 	end
 	function struct.pad(size)
 		struct.size = struct.size + size
