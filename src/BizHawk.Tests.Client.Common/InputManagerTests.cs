@@ -485,6 +485,32 @@ namespace BizHawk.Tests.Client.Common
 
 			Assert.IsTrue(sawUnboundInput);
 		}
+
+		[TestMethod]
+		public void ControllerInputsWithPlusAreNotSplit()
+		{
+			Context context = new(_hotkeys);
+			InputManager manager = context.manager;
+			FakeInputSource source = context.source;
+
+			manager.ActiveController.BindMulti("Right", "J1 X+");
+			manager.ActiveController.BindMulti("Down", "J1 Y+");
+
+			source.MakePressEvent("J1 X+");
+			context.BasicInputProcessing();
+
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("Right"));
+
+			source.MakePressEvent("J1 Y+");
+			context.BasicInputProcessing();
+
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("Down"));
+
+			source.MakeReleaseEvent("J1 X+");
+			context.BasicInputProcessing();
+
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("Down"));
+		}
 #pragma warning restore BHI1600
 	}
 }
