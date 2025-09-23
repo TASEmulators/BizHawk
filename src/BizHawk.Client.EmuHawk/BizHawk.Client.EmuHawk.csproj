@@ -24,7 +24,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Audio/BizHawk.Bizware.Audio.csproj" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Remove="Properties/Settings.Designer.cs" />
