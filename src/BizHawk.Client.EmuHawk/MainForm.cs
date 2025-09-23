@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -625,14 +624,13 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance = new Input(
 				Handle,
 				() => Config,
-				yieldAlt => ActiveForm switch
+				() => ActiveForm switch
 				{
 					null => Config.AcceptBackgroundInput // none of our forms are focused, check the background input config
 						? Config.AcceptBackgroundInputControllerOnly
 							? AllowInput.OnlyController
 							: AllowInput.All
 						: AllowInput.None,
-					TAStudio when yieldAlt => AllowInput.None,
 					FormBase { BlocksInputWhenFocused: false } => AllowInput.All,
 					ControllerConfig => AllowInput.All,
 					HotkeyConfig => AllowInput.All,
@@ -923,6 +921,8 @@ namespace BizHawk.Client.EmuHawk
 
 				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie) =>
 				{
+					if (ActiveForm is not FormBase afb) return;
+
 					// Alt key for menu items.
 					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
 					{
@@ -931,12 +931,12 @@ namespace BizHawk.Client.EmuHawk
 							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
 							if ((c >= 'a' && c <= 'z') || c == ' ')
 							{
-								SendAltKeyChar(c);
+								afb.SendAltKeyChar(c);
 							}
 						}
 						else if (ie.LogicalButton.Button == "Space")
 						{
-							SendPlainAltKey(32);
+							afb.SendPlainAltKey(32);
 						}
 					}
 
@@ -2355,23 +2355,6 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager.UpdateSource(video);
 		}
 
-		// sends a simulation of a plain alt key keystroke
-		private void SendPlainAltKey(int lparam)
-		{
-			var m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
-			base.WndProc(ref m);
-		}
-
-		/// <summary>HACK to send an alt+mnemonic combination</summary>
-		private void SendAltKeyChar(char c)
-			=> _ = typeof(ToolStrip).InvokeMember(
-				OSTailoredCode.IsUnixHost ? "ProcessMnemonic" : "ProcessMnemonicInternal",
-				BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance,
-				null,
-				MainformMenu,
-				new object/*?*/[] { c },
-				CultureInfo.InvariantCulture);
-
 		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(
 			appendAllFilesEntry: false,
 			new FilesystemFilter("Config File", extensions: [ "ini" ]));
@@ -2804,27 +2787,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private const int WmDeviceChange = 0x0219;
-
-		// Alt key hacks
-		protected override void WndProc(ref Message m)
-		{
-			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
-			if (m.Msg == 0x0112) // WM_SYSCOMMAND
-			{
-				if (m.WParam.ToInt32() == 0xF100) // SC_KEYMENU
-				{
-					return;
-				}
-			}
-
-			base.WndProc(ref m);
-		}
-
-		protected override bool ProcessDialogChar(char charCode)
-		{
-			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
-			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
-		}
 
 		private void UpdateCoreStatusBarButton()
 		{

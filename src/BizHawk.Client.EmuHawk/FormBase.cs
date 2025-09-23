@@ -96,5 +96,40 @@ namespace BizHawk.Client.EmuHawk
 			=> base.Text = Config?.UseStaticWindowTitles == true
 				? (_windowTitleStatic ??= WindowTitleStatic)
 				: WindowTitle;
+
+		// Alt key hacks. We need this in order for hotkey bindings with alt to work.
+
+		/// <summary>sends a simulation of a plain alt key keystroke</summary>
+		internal void SendPlainAltKey(int lparam)
+		{
+			var m = new Message { WParam = new IntPtr(0xF100), LParam = new IntPtr(lparam), Msg = 0x0112, HWnd = Handle };
+			base.WndProc(ref m);
+		}
+
+		/// <summary>HACK to send an alt+mnemonic combination</summary>
+		internal void SendAltKeyChar(char c) => ProcessMnemonic(c);
+
+		protected override void WndProc(ref Message m)
+		{
+			if (!BlocksInputWhenFocused)
+			{
+				// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
+				if (m.Msg == 0x0112) // WM_SYSCOMMAND
+				{
+					if (m.WParam.ToInt32() == 0xF100) // SC_KEYMENU
+					{
+						return;
+					}
+				}
+			}
+
+			base.WndProc(ref m);
+		}
+
+		protected override bool ProcessDialogChar(char charCode)
+		{
+			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
+			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
+		}
 	}
 }
