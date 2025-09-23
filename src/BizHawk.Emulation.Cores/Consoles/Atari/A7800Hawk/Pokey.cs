@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	 */
 	public sealed class Pokey
 	{
+		[CLSCompliant(false)]
 		public A7800Hawk Core { get; set; }
 
 		public int LocalAudioCycles;

@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
+	[CLSCompliant(false)]
 	public abstract class LibEncore
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

@@ -14,6 +14,7 @@ using BizHawk.Common.StringExtensions;
 namespace BizHawk.Client.Common
 {
 	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
+	[CLSCompliant(false)]
 	public static class ArgParser
 	{
 		private sealed class BespokeOption<T> : Option<T>

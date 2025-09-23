@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// This class holds a word (16 bits) <see cref="Watch"/>
 	/// </summary>
-	public sealed class WordWatch : Watch
+	public sealed partial class WordWatch : Watch
 	{
 		private ushort _previous;
 		private ushort _value;

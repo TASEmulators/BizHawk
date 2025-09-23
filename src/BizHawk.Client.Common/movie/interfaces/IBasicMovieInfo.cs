@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(MovieExtensions.CLS_IBASICMOVIEINFO)] //TODO only because of `Rerecords`, probably want to change that so movies are usable
 	public interface IBasicMovieInfo
 	{
 		// Filename of the movie, settable by the client

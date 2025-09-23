@@ -22,11 +22,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool BlocksInputWhenFocused => IsInMenuLoop;
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public new IMainFormForTools MainForm => base.MainForm;
 
+		[CLSCompliant(Client.Common.MovieSession.CLS_IMOVIESESSION)]
 		public new IMovieSession MovieSession => base.MovieSession;
 
 		// TODO: UI flow that conveniently allows to start from savestate
+		[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
@@ -105,6 +108,8 @@ namespace BizHawk.Client.EmuHawk
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
 			public string FollowCursorScrollMethod { get; set; }
+
+			[CLSCompliant(false)]
 			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }

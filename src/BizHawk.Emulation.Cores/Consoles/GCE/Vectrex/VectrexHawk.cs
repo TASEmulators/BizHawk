@@ -17,15 +17,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte[] RAM = new byte[0x400];
 
-		public byte[] _bios, minestorm;
-		public readonly byte[] _rom;
+		private byte[] _bios;
+
+		private byte[] minestorm;
+
+		internal readonly byte[] _rom;
 
 		private int _frame = 0;
 
-		public MapperBase mapper;
+		private MapperBase mapper;
 
 		private readonly ITraceable _tracer;
 
+		[CLSCompliant(false)]
 		public MC6809 cpu;
 		public PPU ppu;
 		public Audio audio;

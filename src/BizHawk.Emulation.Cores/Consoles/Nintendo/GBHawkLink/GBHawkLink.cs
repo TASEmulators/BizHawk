@@ -4,6 +4,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
+	[CLSCompliant(false)]
 	[Core(
 		name: CoreNames.GBHawkLink,
 		author: "alyosha and BizHawk contributors")]

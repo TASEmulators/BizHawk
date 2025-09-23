@@ -926,6 +926,7 @@ namespace BizHawk.Client.EmuHawk
 			PointMouseToNewCell();
 		}
 
+		[CLSCompliant(false)]
 		public bool _programmaticallyChangingRow = false;
 
 		/// <summary>

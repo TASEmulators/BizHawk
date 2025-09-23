@@ -94,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			return shortvol / increment;
 		}
 
+		[CLSCompliant(false)]
 		public Beeper(CPCBase machine)
 		{
 			_machine = machine;

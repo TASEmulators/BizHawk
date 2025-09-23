@@ -5,6 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public partial class LuaRegisteredFunctionsList : Form
 	{
 		private readonly IMainFormForApi _mainForm;

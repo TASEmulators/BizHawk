@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 			=> throw new NotImplementedException();
 
+		[CLSCompliant(false)]
 		public void SetCDL(I8048.eCDLogMemFlags flags, string type, int cdladdr)
 		{
 			if (type == null) return;

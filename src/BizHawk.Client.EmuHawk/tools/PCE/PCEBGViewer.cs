@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Properties.Resources.PceIcon;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IPceGpuView Viewer { get; private set; }
 		[RequiredService]

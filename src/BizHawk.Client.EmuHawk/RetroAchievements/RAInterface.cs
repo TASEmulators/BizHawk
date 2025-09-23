@@ -6,6 +6,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	public abstract class RAInterface
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

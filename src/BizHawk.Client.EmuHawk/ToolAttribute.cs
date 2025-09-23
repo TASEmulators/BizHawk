@@ -6,6 +6,7 @@ namespace BizHawk.Client.EmuHawk
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ToolAttribute : Attribute
 	{
+		[CLSCompliant(false)]
 		public ToolAttribute(bool released, string[] supportedSystems, string[] unsupportedCores)
 		{
 			Released = released;
@@ -13,7 +14,10 @@ namespace BizHawk.Client.EmuHawk
 			UnsupportedCores = unsupportedCores ?? Enumerable.Empty<string>();
 		}
 
+		[CLSCompliant(false)]
 		public ToolAttribute(bool released, string[] supportedSystems) : this(released, supportedSystems, null) {}
+
+		public ToolAttribute(bool released) : this(released, null, null) {}
 
 		public bool Released { get; }
 

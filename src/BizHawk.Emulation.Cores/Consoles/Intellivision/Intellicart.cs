@@ -165,6 +165,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return offset;
 		}
 
+		[CLSCompliant(false)]
 		public ushort? ReadCart(ushort addr, bool peek)
 		{
 			int range = addr / 2048;
@@ -177,6 +178,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return null;
 		}
 
+		[CLSCompliant(false)]
 		public bool WriteCart(ushort addr, ushort value, bool poke)
 		{
 			int range = addr / 2048;

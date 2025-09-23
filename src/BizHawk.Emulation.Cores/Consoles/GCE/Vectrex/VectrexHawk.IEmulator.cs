@@ -113,10 +113,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio.DisposeSound();
 		}
 
-		public int _frameHz = 50;
+		private int _frameHz = 50;
 
-		public int[] _vidbuffer;
-		public int[] _framebuffer;
+		internal int[] _vidbuffer;
+
+		internal int[] _framebuffer;
 
 		public int[] GetVideoBuffer()
 		{

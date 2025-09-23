@@ -53,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Returns an uint16 from a byte array based on offset
 		/// </summary>
+		[CLSCompliant(false)]
 		public static ushort GetWordValue(ReadOnlySpan<byte> buf, int offsetIndex)
 			=> BinaryPrimitives.ReadUInt16LittleEndian(buf.Slice(start: offsetIndex));
 

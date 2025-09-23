@@ -128,8 +128,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// Machine
 		public NecSystemType Type;
 		internal HuC6280 Cpu;
-		public VDC VDC1, VDC2;
-		public VCE VCE;
+
+		private VDC VDC1;
+
+		private VDC VDC2;
+
+		private VCE VCE;
+
 		private VPC VPC;
 		private ScsiCDBus SCSI;
 		private ADPCM ADPCM;
@@ -362,6 +367,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private string Region { get; set; }
 
 		public bool IsSgx => Type == NecSystemType.SuperGrafx;
+
+		[CLSCompliant(false)]
 		public unsafe void GetGpuData(int vdcIndex, Action<PceGpuData> callback)
 		{
 			var vdc = vdcIndex == 0 ? VDC1 : VDC2;

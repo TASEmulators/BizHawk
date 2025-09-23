@@ -380,6 +380,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			return format;
 		}
 
+		[CLSCompliant(false)]
 		public static string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
 		{
 			ushort start_addr = addr;

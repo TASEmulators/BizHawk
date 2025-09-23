@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
+	[CLSCompliant(false)]
 	public abstract class LibMAME
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

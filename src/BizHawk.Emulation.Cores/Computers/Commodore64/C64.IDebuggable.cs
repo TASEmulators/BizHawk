@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_selectedDebuggable = GetAvailableDebuggables().First();
 		}
 
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			if (_selectedDebuggable == null)
@@ -59,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public long TotalExecutedCycles => _selectedDebuggable.TotalExecutedCycles;
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem _memoryCallbacks;
 
 		IMemoryCallbackSystem IDebuggable.MemoryCallbacks => _memoryCallbacks;

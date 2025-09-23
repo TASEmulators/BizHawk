@@ -3,6 +3,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
+	[CLSCompliant(false)]
 	public abstract class LibSnes9x : LibWaterboxCore
 	{
 		public enum LeftPortDevice : uint

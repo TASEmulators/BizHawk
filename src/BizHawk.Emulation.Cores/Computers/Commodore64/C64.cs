@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			SetupMemoryDomains();
 		}
 
+		[CLSCompliant(false)]
 		public void ExecFetch(ushort addr)
 		{
 			if (_memoryCallbacks.HasExecutes)

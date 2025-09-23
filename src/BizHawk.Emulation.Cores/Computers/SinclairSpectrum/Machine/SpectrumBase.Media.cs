@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The index of the currently 'loaded' tape image
 		/// </summary>
+		[CLSCompliant(false)]
 		protected int tapeMediaIndex;
 		public int TapeMediaIndex
 		{
@@ -75,6 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The index of the currently 'loaded' disk image
 		/// </summary>
+		[CLSCompliant(false)]
 		protected int diskMediaIndex;
 		public int DiskMediaIndex
 		{

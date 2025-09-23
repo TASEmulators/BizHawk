@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Components.M68000
 {
+	[CLSCompliant(false)]
 	public sealed partial class MC68000
 	{
 		// Machine State
@@ -257,6 +258,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		}
 	}
 
+	[CLSCompliant(false)]
 	[StructLayout(LayoutKind.Explicit)]
 	public struct Register
 	{

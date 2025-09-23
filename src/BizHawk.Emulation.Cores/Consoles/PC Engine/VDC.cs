@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Components.H6280;
 namespace BizHawk.Emulation.Cores.PCEngine
 {
 	// HuC6270 Video Display Controller
+	[CLSCompliant(false)]
 	public sealed partial class VDC : IVideoProvider
 	{
 		public ushort[] VRAM = new ushort[0x8000];

@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
+	[CLSCompliant(false)]
 	public class LibFz80Wrapper
 	{
 		public const int Z80_PIN_M1 = 24;		// machine cycle 1

@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 {
 	// nb: multiple libretro cores could theoretically be ran at once
 	// but all of them would need to be different cores, a core itself is single instance
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.Libretro, "CasualPokePlayer", singleInstance: true, isReleased: false)]
 	public partial class LibretroHost
 	{

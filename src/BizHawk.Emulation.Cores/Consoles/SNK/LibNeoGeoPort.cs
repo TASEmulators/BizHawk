@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	public abstract class LibNeoGeoPort : LibNymaCore
+	public abstract partial class LibNeoGeoPort : LibNymaCore
 	{
 		[BizImport(CC)]
 		public abstract bool GetSaveRam();

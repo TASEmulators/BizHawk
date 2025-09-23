@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.DOS
 {
+	[CLSCompliant(false)]
 	public abstract class LibDOSBox : LibWaterboxCore
 	{
 

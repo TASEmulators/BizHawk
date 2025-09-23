@@ -32,6 +32,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			};
 		}
 
+		[CLSCompliant(false)]
 		public RamSearchEngine(SearchEngineSettings settings, IMemoryDomains memoryDomains, Compare compareTo, uint? compareValue, uint? differentBy)
 			: this(settings, memoryDomains)
 		{
@@ -104,6 +105,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// <summary>
 		/// Exposes the current watch state based on index
 		/// </summary>
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public Watch this[int index] =>
 			Watch.GenerateWatch(
 				_settings.Domain,
@@ -185,6 +187,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 			}
 		}
 
+		[CLSCompliant(false)]
 		public uint? CompareValue { get; set; }
 
 		public ComparisonOperator Operator { get; set; }
@@ -193,6 +196,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// zero 07-sep-2014 - this isn't ideal. but don't bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.<br/>
 		/// it already supported floats by way of reinterpret-cast, it just wasn't implemented correctly on this side --yoshi
 		/// </remarks>
+		[CLSCompliant(false)]
 		public uint? DifferentBy { get; set; }
 
 		public void Update()
@@ -238,6 +242,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/// Remove a set of watches
 		/// However, this should not be used with large data sets (100k or more) as it uses a contains logic to perform the task
 		/// </summary>
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public void RemoveSmallWatchRange(IEnumerable<Watch> watches)
 		{
 			if (UndoEnabled)

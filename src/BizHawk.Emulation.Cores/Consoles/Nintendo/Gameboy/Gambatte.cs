@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// <summary>
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.Gambatte, "sinamas/PSR org", "r830", "https://github.com/pokemon-speedrunning/gambatte-core")]
 	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{

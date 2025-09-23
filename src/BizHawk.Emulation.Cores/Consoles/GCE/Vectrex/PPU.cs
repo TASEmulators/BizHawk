@@ -11,16 +11,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public double x_pos, y_pos;
 
 		public int skip;
+
+		[CLSCompliant(false)]
 		public uint bright_int_1, bright_int_2, bright_int_3;
 
+		[CLSCompliant(false)]
 		public const uint br = 0xFFFFFFFF;
 
 		// lines to draw in a frame and vairables to go to new line
 		public double[] draw_lines = new double[1024 * 4 * 4];
+
+		[CLSCompliant(false)]
 		public uint[] line_brights = new uint[1024 * 3 * 4];
 		public bool[] line_vis = new bool[1024 * 4];
 
 		public double[] draw_lines_old_screen = new double[1024 * 4 * 4];
+
+		[CLSCompliant(false)]
 		public uint[] line_brights_old_screen = new uint[1024 * 3 * 4];
 		public bool[] line_vis_old_screen = new bool[1024 * 4];
 		public int line_pointer_old_screen;
@@ -28,6 +35,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public int line_pointer;
 		public bool blank_old, zero_old;
 		public byte x_vel_old, y_vel_old;
+
+		[CLSCompliant(false)]
 		public uint bright_int_1_old;
 
 		public void tick()

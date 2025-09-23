@@ -5,6 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
+	[CLSCompliant(false)]
 	public abstract class LibLynx
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

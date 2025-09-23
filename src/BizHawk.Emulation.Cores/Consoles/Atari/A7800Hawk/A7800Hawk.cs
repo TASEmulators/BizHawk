@@ -30,16 +30,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte[] RAM = new byte[0x1000];
 		public byte[] RAM_6532 = new byte[0x80];
 		public byte[] hs_bios_mem = new byte[0x800];
-		public byte[] _hsram = new byte[2048];
 
-		public readonly byte[] _rom;
-		public readonly byte[] _hsbios;
-		public readonly byte[] _bios;
+		internal byte[] _hsram = new byte[2048];
+
+		internal readonly byte[] _rom;
+
+		internal readonly byte[] _hsbios;
+
+		internal readonly byte[] _bios;
 
 		private int _frame = 0;
 
 		public string s_mapper;
-		public MapperBase mapper;
+
+		private MapperBase mapper;
+
 		public bool small_flag = false;
 		public bool PAL_Kara = false;
 		public int cart_RAM = 0;
@@ -48,13 +53,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private readonly ITraceable _tracer;
 
-		public MOS6502X<CpuLink> cpu;
-		public Maria maria;
-		public bool _isPAL;
-		public M6532 m6532;
+		internal MOS6502X<CpuLink> cpu;
+
+		private Maria maria;
+
+		private bool _isPAL;
+
+		internal M6532 m6532;
+
 		public TIA tia;
 		public Pokey pokey;
 
+		[CLSCompliant(false)]
 		public struct CpuLink : IMOS6502XLink
 		{
 			private readonly A7800Hawk _a7800;

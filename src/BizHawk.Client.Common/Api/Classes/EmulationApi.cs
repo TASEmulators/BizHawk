@@ -18,6 +18,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmulationApi : IEmulationApi
 	{

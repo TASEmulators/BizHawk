@@ -469,6 +469,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public HexenClass Player4Class { get; set; }
 
+			[CLSCompliant(false)]
 			public LibDSDA.InitSettings GetNativeSettings()
 			{
 				return new LibDSDA.InitSettings

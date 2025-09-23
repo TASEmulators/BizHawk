@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _joyLine;
 		private SpectrumBase _machine;
 
+		[CLSCompliant(false)]
 		public KempstonJoystick(SpectrumBase machine, int playerNumber)
 		{
 			_machine = machine;

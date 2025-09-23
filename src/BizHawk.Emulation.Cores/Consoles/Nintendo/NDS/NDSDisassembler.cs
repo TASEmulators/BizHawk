@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
-	public class NDSDisassembler : VerifiedDisassembler
+	public sealed partial class NDSDisassembler : VerifiedDisassembler
 	{
 		private readonly LibMelonDS _core;
 

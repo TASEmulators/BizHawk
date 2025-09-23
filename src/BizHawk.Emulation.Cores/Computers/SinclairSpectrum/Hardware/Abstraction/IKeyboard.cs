@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Represents a spectrum keyboard
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IKeyboard : IPortIODevice
 	{
 		/// <summary>

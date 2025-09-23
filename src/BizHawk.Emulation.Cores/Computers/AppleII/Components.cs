@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	/// <summary>
 	/// A container class for the individual machine components
 	/// </summary>
+	[CLSCompliant(false)]
 	public sealed class Components
 	{
 		public Components(byte[] appleIIe, byte[] diskIIRom)

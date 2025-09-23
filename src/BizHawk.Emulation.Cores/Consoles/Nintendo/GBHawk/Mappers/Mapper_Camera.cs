@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Gameboy Camera Mapper (no camera support yet)
 	// 128  kb of RAM
-	public class MapperCamera : MapperBase
+	public sealed partial class MapperCamera : MapperBase
 	{
 		public int ROM_bank;
 		public int RAM_bank;

@@ -11,6 +11,7 @@ using NLua;
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public sealed class LuaCanvas : Form
 	{

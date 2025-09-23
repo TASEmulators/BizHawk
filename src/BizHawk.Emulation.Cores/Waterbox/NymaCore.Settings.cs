@@ -252,7 +252,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// What devices can be plugged into each port
 			/// </summary>
 			public List<Port> Ports { get; set; } = new List<Port>();
+
+			[CLSCompliant(false)]
 			public List<SettingT> AllSettings { get; set; } = new List<SettingT>();
+
+			[CLSCompliant(false)]
 			public Dictionary<string, SettingT> AllSettingsByKey { get; set; } = new Dictionary<string, SettingT>();
 			public Dictionary<string, SettingOverride> AllOverrides { get; set; } = new Dictionary<string, SettingOverride>();
 			/// <summary>

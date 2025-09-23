@@ -9,7 +9,7 @@ using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class ConsoleLuaLibrary : LuaLibraryBase
+	public sealed partial class ConsoleLuaLibrary : LuaLibraryBase
 	{
 		public Lazy<string> AllAPINames { get; set; }
 

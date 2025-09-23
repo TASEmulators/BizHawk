@@ -16,15 +16,31 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		public Register16 RegCX;
 		public Register16 RegDX;
 
+		[CLSCompliant(false)]
 		public ushort CS;
+
+		[CLSCompliant(false)]
 		public ushort DS;
+
+		[CLSCompliant(false)]
 		public ushort ES;
+
+		[CLSCompliant(false)]
 		public ushort SS;
 
+		[CLSCompliant(false)]
 		public ushort SI;
+
+		[CLSCompliant(false)]
 		public ushort DI;
+
+		[CLSCompliant(false)]
 		public ushort IP;
+
+		[CLSCompliant(false)]
 		public ushort SP;
+
+		[CLSCompliant(false)]
 		public ushort BP;
 
 		public bool CF;
@@ -37,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		public bool DF;
 		public bool OF;
 
+		[CLSCompliant(false)]
 		public ushort Flags
 		{
 			get
@@ -68,21 +85,29 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		}
 
 		// We expect these properties to get inlined by the CLR -- at some point we should test this assumption
+
+		[CLSCompliant(false)]
 		public ushort AX
 		{
 			get => RegAX.Word;
 			set => RegAX.Word = value;
 		}
+
+		[CLSCompliant(false)]
 		public ushort BX
 		{
 			get => RegBX.Word;
 			set => RegBX.Word = value;
 		}
+
+		[CLSCompliant(false)]
 		public ushort CX
 		{
 			get => RegCX.Word;
 			set => RegCX.Word = value;
 		}
+
+		[CLSCompliant(false)]
 		public ushort DX
 		{
 			get => RegDX.Word;
@@ -133,6 +158,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 	[StructLayout(LayoutKind.Explicit)]
 	public struct Register16
 	{
+		[CLSCompliant(false)]
 		[FieldOffset(0)]
 		public ushort Word;
 

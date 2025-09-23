@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Sean Riddle's modified SCHACH cart mapper (multi-cart)
 	/// </summary>
-	public class MapperRIDDLE : VesCartBase
+	public sealed partial class MapperRIDDLE : VesCartBase
 	{
 		public override string BoardType => "RIDDLE";
 

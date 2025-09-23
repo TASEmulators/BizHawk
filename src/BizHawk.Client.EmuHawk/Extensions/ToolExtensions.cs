@@ -210,6 +210,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			return items.ToArray();
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public static void HandleLoadError(this RecentFiles recent, IMainFormForTools mainForm, string path, string encodedPath = null)
 		{
 			mainForm.DoWithTempMute(() =>

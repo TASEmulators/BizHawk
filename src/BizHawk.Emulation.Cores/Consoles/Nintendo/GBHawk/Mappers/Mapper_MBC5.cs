@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC5, common mapper for GBC games
-	public class MapperMBC5 : MapperBase
+	public sealed partial class MapperMBC5 : MapperBase
 	{
 		public int ROM_bank;
 		public int RAM_bank;

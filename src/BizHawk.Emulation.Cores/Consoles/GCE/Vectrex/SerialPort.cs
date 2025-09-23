@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	public class SerialPort
 	{
+		[CLSCompliant(false)]
 		public VectrexHawk Core { get; set; }
 
 		public byte ReadReg(int addr)

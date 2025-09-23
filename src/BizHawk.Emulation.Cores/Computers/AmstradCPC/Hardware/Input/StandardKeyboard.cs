@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// </summary>
 	public class StandardKeyboard : IKeyboard
 	{
+		[CLSCompliant(false)]
 		public CPCBase _machine { get; set; }
 
 		private int _currentLine;
@@ -53,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			set => _nonMatrixKeys = value;
 		}
 
+		[CLSCompliant(false)]
 		public StandardKeyboard(CPCBase machine)
 		{
 			_machine = machine;

@@ -9,7 +9,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]
-	public sealed class MainMemoryLuaLibrary : LuaLibraryBase
+	public sealed partial class MainMemoryLuaLibrary : LuaLibraryBase
 	{
 		public MainMemoryLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

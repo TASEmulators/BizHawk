@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ColorMatrix _paperAdjustment;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IGameboyCommon/*?*/ _gbCore { get; set; }
 

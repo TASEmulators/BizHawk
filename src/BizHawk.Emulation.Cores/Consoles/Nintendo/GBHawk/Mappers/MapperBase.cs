@@ -3,6 +3,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
+	[CLSCompliant(false)]
 	public class MapperBase
 	{
 		public GBHawk Core { get; set; }

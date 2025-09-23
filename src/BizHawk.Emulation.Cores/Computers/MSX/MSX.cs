@@ -205,6 +205,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		}
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 	}
 }

@@ -450,6 +450,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private readonly Z80A<ColecoVision.CpuLink> Cpu;
 
+		[CLSCompliant(false)]
 		public TMS9918A(Z80A<ColecoVision.CpuLink> cpu)
 		{
 			Cpu = cpu;

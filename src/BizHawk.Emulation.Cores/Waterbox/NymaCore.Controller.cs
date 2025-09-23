@@ -63,7 +63,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public string[] Devices { get; }
 			public ControllerDefinition Definition { get; }
+
+			[CLSCompliant(false)]
 			public List<PortResult> ActualPortData { get; set; } = new List<PortResult>();
+
+			[CLSCompliant(false)]
 			public ControllerAdapter(
 				List<NPortInfoT> allPorts,
 				IDictionary<int, string> config,
@@ -401,6 +405,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return new HashSet<string>();
 		}
 
+		[CLSCompliant(false)]
 		public class PortResult
 		{
 			/// <summary>
@@ -417,6 +422,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// In a fully initialized core, holds information about what was actually plugged in.  Please do not mutate it.
 		/// </summary>
 		/// <value></value>
+		[CLSCompliant(false)]
 		public List<PortResult> ActualPortData => _controllerAdapter.ActualPortData;
 	}
 }

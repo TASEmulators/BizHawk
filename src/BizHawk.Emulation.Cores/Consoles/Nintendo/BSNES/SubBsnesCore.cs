@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		portedUrl: "https://github.com/bsnes-emu/bsnes")]
 	public class SubBsnesCore : IEmulator, ICycleTiming
 	{
+		[CLSCompliant(false)]
 		[CoreConstructor(VSystemID.Raw.Satellaview)]
 		[CoreConstructor(VSystemID.Raw.SGB)]
 		[CoreConstructor(VSystemID.Raw.SNES)]

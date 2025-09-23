@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores;
 // SNES: GoldFinger (Action Replay II) Support?
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	[Tool(
 		released: true,
 		supportedSystems: new[] { VSystemID.Raw.GB, VSystemID.Raw.GBA, VSystemID.Raw.GEN, VSystemID.Raw.N64, VSystemID.Raw.NES, VSystemID.Raw.PSX, VSystemID.Raw.SAT, VSystemID.Raw.SGB, VSystemID.Raw.SMS, VSystemID.Raw.SNES },

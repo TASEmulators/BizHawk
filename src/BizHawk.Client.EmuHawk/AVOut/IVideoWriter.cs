@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)] // only `SetMetaData`, but these A/V-related classes aren't really important
 	public interface IVideoWriter : IDisposable
 	{
 		/// <summary>
@@ -116,6 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		public VideoWriterAttribute Attribs { get; } = attribs;
 
 		/// <param name="dialogParent">parent for if the user is shown config dialog</param>
+		[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 		public IVideoWriter Create(IDialogParent dialogParent) => (IVideoWriter) (
 			type.GetConstructor(CTOR_TYPES_A)
 				?.Invoke([ dialogParent ])
@@ -129,6 +131,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class VideoWriterInventory
 	{
+		internal const bool CLS_IVIDEOWRITER = false;
+
 		private static readonly Dictionary<string, VideoWriterInfo> VideoWriters = [ ];
 		private static readonly VideoWriterInfo[] VideoWritersOrdered;
 
@@ -168,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 		/// find an IVideoWriter by its short name
 		/// </summary>
 		/// <param name="dialogParent">parent for if the user is shown config dialog</param>
+		[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 		public static IVideoWriter GetVideoWriter(string name, IDialogParent dialogParent)
 		{
 			return VideoWriters.TryGetValue(name, out var ret)

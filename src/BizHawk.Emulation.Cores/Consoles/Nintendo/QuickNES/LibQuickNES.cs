@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
+	[CLSCompliant(false)]
 	public abstract class LibQuickNES
 	{
 		/// <summary>

@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
+	[CLSCompliant(false)]
 	[PortedCore(
 		name: CoreNames.QuickNes,
 		author: "SergioMartin86, kode54, Blargg",

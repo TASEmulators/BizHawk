@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		private Gameboy.GambatteSettings _s;
 		private Gameboy.GambatteSyncSettings _ss;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public void PutSettings(Config config, IGameInfo game, IMovieSession movieSession, Gameboy.GambatteSettings s, Gameboy.GambatteSyncSettings ss)
 		{
 			_game = game;
@@ -42,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			cbShowBorder.Checked = _s.ShowBorder;
 		}
 
+		[CLSCompliant(false)]
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
 		{
 			s = _s;

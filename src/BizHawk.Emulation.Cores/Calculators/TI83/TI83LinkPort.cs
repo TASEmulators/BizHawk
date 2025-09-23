@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 			Send
 		}
 
+		[CLSCompliant(false)]
 		public TI83LinkPort(TI83 parent)
 		{
 			Parent = parent;

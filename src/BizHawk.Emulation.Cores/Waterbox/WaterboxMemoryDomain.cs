@@ -10,8 +10,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public abstract class WaterboxMemoryDomain : MemoryDomain
 	{
+		[CLSCompliant(false)]
 		protected readonly IntPtr _data;
+
+		[CLSCompliant(false)]
 		protected readonly IMonitor _monitor;
+
+		[CLSCompliant(false)]
 		protected readonly long _addressMangler;
 
 		public MemoryArea Definition { get; }

@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// The abstract class that all emulated models will inherit from
     /// * Memory *
     /// </summary>
+    [CLSCompliant(false)]
     public abstract partial class SpectrumBase
     {
         /// <summary>

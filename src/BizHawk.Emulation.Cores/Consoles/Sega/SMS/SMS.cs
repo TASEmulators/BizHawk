@@ -233,7 +233,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private readonly byte[] BiosRom;
 
 		// Machine resources
-		public Z80A<CpuLink> Cpu;
+
+		internal Z80A<CpuLink> Cpu;
+
 		public byte[] SystemRam;
 		public VDP Vdp;
 		public SN76489sms PSG;
@@ -301,6 +303,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return DisplayType.NTSC;
 		}
 
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr)
 		{
 			if (MemoryCallbacks.HasReads)
@@ -312,6 +315,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return ReadMemoryMapper(addr);
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value)
 		{
 			WriteMemoryMapper(addr, value);
@@ -323,6 +327,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
+		[CLSCompliant(false)]
 		public byte FetchMemory(ushort addr)
 		{
 			return ReadMemoryMapper(addr);

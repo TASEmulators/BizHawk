@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// </summary>
 	public class StandardKeyboard : IKeyboard
 	{
+		[CLSCompliant(false)]
 		public SpectrumBase _machine { get; set; }
 		private byte[] LineStatus;
 		private string[] _keyboardMatrix;
@@ -41,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _nonMatrixKeys = value;
 		}
 
+		[CLSCompliant(false)]
 		public StandardKeyboard(SpectrumBase machine)
 		{
 			_machine = machine;
@@ -172,6 +174,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
+		[CLSCompliant(false)]
 		public byte ReadKeyboardByte(ushort addr)
 		{
 			return GetLineStatus((byte)(addr >> 8));
@@ -186,6 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool ReadPort(ushort port, ref int result)
 		{
 			/*
@@ -259,6 +263,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool WritePort(ushort port, int result)
 		{
 			// not implemented

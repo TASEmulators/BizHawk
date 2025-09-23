@@ -9,6 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
+	[CLSCompliant(false)]
 	public class mupen64plusApi : IDisposable
 	{
 		// Only left in because api needs to know the number of frames passed

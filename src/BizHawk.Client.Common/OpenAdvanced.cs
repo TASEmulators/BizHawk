@@ -100,6 +100,7 @@ namespace BizHawk.Client.Common
 			public string Path, CorePath;
 		}
 
+		[CLSCompliant(false)]
 		public Token token;
 
 		public string TypeName => "Libretro";

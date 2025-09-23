@@ -3,6 +3,7 @@
 namespace BizHawk.Emulation.Cores.PCEngine
 {
 	// HuC6260 Video Color Encoder
+	[CLSCompliant(false)]
 	public sealed class VCE
 	{
 		public ushort VceAddress;

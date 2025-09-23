@@ -8,8 +8,7 @@ using BizHawk.Emulation.Cores.Components.ARM;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CLSCompliant(false)]
-	public class ArmV4Disassembler : VerifiedDisassembler
+	public sealed partial class ArmV4Disassembler : VerifiedDisassembler
 	{
 		private readonly Darm _libdarm = BizInvoker.GetInvoker<Darm>(
 			new DynamicLibraryImportResolver(OSTailoredCode.IsUnixHost ? "libdarm.so" : "libdarm.dll", hasLimitedLifetime: false),

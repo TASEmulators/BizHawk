@@ -92,15 +92,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
 		public byte bus_value; // we need the last value on the bus for proper emulation of blocked SRAM
-		public ulong bus_access_time; // also need to keep track of the time of the access since it doesn't last very long
+
+		internal ulong bus_access_time; // also need to keep track of the time of the access since it doesn't last very long
+
 		public byte IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
 		public int IR_write;
 
 		// several undocumented GBC Registers
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
 
-		public byte[] _bios;
-		public readonly byte[] _rom;
+		private byte[] _bios;
+
+		internal readonly byte[] _rom;
+
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
@@ -110,18 +114,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private int _frame = 0;
 
 		public bool Use_MT;
-		public ushort addr_access;
 
-		public MapperBase mapper;
+		internal ushort addr_access;
+
+		internal MapperBase mapper;
 
 		private readonly GBHawkDisassembler _disassembler = new();
 
 		private readonly ITraceable _tracer;
 
-		public LR35902 cpu;
+		internal LR35902 cpu;
+
 		public PPU ppu;
-		public readonly GBTimer timer;
-		public Audio audio;
+
+		internal readonly GBTimer timer;
+
+		internal Audio audio;
+
 		public SerialPort serialport;
 
 		private static readonly byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
@@ -318,8 +327,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public ScanlineCallback _scanlineCallback;
-		public int _scanlineCallbackLine = 0;
+		internal ScanlineCallback _scanlineCallback;
+
+		internal int _scanlineCallbackLine = 0;
 
 		public void SetScanlineCallback(ScanlineCallback callback, int line)
 		{
@@ -728,6 +738,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return mppr;
 		}
 
+		[CLSCompliant(false)]
 		public class GBHawkDisassembler : VerifiedDisassembler
 		{
 			public bool UseRGBDSSyntax;

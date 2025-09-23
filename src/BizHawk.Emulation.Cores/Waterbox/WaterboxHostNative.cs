@@ -5,6 +5,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
+	[CLSCompliant(false)]
 	public abstract class WaterboxHostNative
 	{
 		[StructLayout(LayoutKind.Sequential)]

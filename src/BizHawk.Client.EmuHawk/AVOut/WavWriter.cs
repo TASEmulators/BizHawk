@@ -210,6 +210,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// slim wrapper on WavWriter that implements IVideoWriter (discards all video!)
 	/// </summary>
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("wave", "WAV writer", "Writes a series of standard RIFF wav files containing uncompressed audio.  Does not write video.  Splits every 2G.")]
 	public class WavWriterV : IVideoWriter
 	{

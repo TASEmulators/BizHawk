@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		private readonly ITraceable _tracer;
 
+		[CLSCompliant(false)]
 		public class GPGXTraceBuffer(
 			IDebuggable debuggableCore,
 			IMemoryDomains memoryDomains,

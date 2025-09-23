@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 		public IEnumerable<string> AvailableCpus { get; } = [ "6280" ];
 
+		[CLSCompliant(false)]
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			return DisassembleExt((ushort)addr, out length,

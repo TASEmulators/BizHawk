@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Initialization routine
 		/// </summary>
+		[CLSCompliant(false)]
 		public void Init(SpectrumBase machine)
 		{
 			_machine = machine;

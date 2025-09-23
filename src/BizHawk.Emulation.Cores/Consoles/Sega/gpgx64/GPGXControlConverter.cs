@@ -209,6 +209,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			});
 		}
 
+		[CLSCompliant(false)]
 		public GPGXControlConverter(LibGPGX.InputData input, string systemId, bool cdButtons)
 		{
 			Console.WriteLine("GPGX Controller report:");
@@ -298,6 +299,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDef.MakeImmutable();
 		}
 
+		[CLSCompliant(false)]
 		public void Convert(IController source, LibGPGX.InputData target)
 		{
 			_source = source;

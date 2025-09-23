@@ -35,6 +35,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[AttributeUsage(AttributeTargets.Class)]
+		[CLSCompliant(false)] //TODO make [ExternalToolApplicability.SingleRom] multi-application
 		public sealed class RomList : ExternalToolApplicabilityAttributeBase
 		{
 			private readonly IList<string> _romHashes;

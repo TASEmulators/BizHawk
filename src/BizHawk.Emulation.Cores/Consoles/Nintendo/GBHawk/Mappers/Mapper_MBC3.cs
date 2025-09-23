@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC3 mapper with Real Time Clock
-	public class MapperMBC3 : MapperBase
+	public sealed partial class MapperMBC3 : MapperBase
 	{
 		public int ROM_bank;
 		public int RAM_bank;

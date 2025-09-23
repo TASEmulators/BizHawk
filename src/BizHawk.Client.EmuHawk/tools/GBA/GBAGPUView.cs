@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Properties.Resources.GbaIcon.Value;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IGBAGPUViewable/*?*/ _gbaCore { get; set; }
 

@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//hardware/state
+		[CLSCompliant(false)]
 		public MOS6502X<CpuLink> cpu;
 		public PPU ppu;
 		public APU apu;
@@ -39,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private EDetectionOrigin origin = EDetectionOrigin.None;
 		private int sprdma_countdown;
 
-		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
+		internal bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 
 		/// <summary>
 		/// Clock speed of the main cpu in hz.  Used to time audio synthesis, which runs off the cpu clock.
@@ -52,7 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//variable set when VS system games are running
 		internal bool _isVS = false;
 		//some VS games have a ppu that switches 2000 and 2001, so keep trcak of that
-		public byte _isVS2c05 = 0;
+		internal byte _isVS2c05 = 0;
+
 		//since prg reg for VS System is set in the controller regs, it is convenient to have it here
 		//instead of in the board
 		public byte VS_chr_reg;
@@ -84,7 +86,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int old_s = 0;
 
 		public long double_controller_read = 0;
-		public ushort double_controller_read_address = 0;
+
+		private ushort double_controller_read_address = 0;
+
 		public byte previous_controller1_read = 0;
 		public byte previous_controller2_read = 0;
 		public bool dmc_dma_controller_conflict;
@@ -449,7 +453,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int oam_dma_index;
 		public bool oam_dma_exec = false;
-		public ushort oam_dma_addr;
+
+		private ushort oam_dma_addr;
+
 		public byte oam_dma_byte;
 		public bool dmc_dma_exec = false;
 		public bool dmc_realign;

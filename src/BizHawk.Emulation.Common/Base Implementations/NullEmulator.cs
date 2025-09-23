@@ -4,7 +4,6 @@ using System.Threading;
 
 namespace BizHawk.Emulation.Common
 {
-	[CLSCompliant(false)]
 	[Core("NullHawk", "")]
 	[ServiceNotApplicable(typeof(IVideoProvider))]
 	[ServiceNotApplicable(typeof(IBoardInfo))]

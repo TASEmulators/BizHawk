@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Libretro
 {
+	[CLSCompliant(false)]
 	public abstract class LibretroApi
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;
@@ -438,6 +439,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public abstract long retro_get_memory_size(RETRO_MEMORY id);
 	}
 
+	[CLSCompliant(false)]
 	public abstract class LibretroBridge
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

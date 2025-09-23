@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
+	[CLSCompliant(false)]
 	public sealed class STIC : IVideoProvider
 	{
 		public bool Sr1, Sr2, Sst, Fgbg = false;

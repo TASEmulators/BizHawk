@@ -5,7 +5,7 @@
 	/// Any size ROM / 2KB RAM mapped at 0x2800 - 0x2FFF
 	/// Info here: http://www.seanriddle.com/chanfmulti.html
 	/// </summary>
-	public class MapperSCHACH : VesCartBase
+	public sealed partial class MapperSCHACH : VesCartBase
 	{
 		public override string BoardType => "SCHACH";
 		public override bool HasActivityLED => true;

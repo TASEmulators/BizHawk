@@ -4,8 +4,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(CLS_LUALIBRARYBASE)]
 	public abstract class LuaLibraryBase
 	{
+		public const bool CLS_LUALIBRARYBASE = false;
+
 		public PathEntryCollection PathEntries { get; set; }
 
 		protected LuaLibraryBase(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)

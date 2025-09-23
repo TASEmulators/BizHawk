@@ -173,8 +173,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public bool enable_SGM_low = false;
 		public byte port_0x53, port_0x7F;
 
-		public int _sampleClock = 0;
-		public int _latchedSample = 0;
+		private int _sampleClock = 0;
+
+		private int _latchedSample = 0;
 
 		public int Frame => _frame;
 

@@ -31,6 +31,7 @@ namespace BizHawk.Client.Common
 
 		private readonly IDictionary<string, object> _userBag;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public SavestateFile(
 			IEmulator emulator,
 			IMovieSession movieSession,

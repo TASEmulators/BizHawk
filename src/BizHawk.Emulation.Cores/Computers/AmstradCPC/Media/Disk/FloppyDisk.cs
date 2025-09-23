@@ -85,6 +85,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 			}
 		}
+
+		[CLSCompliant(false)]
 		protected int _randomCounter;
 
 

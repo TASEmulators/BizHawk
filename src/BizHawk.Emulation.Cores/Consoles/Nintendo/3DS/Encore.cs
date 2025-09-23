@@ -11,6 +11,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
+	[CLSCompliant(false)]
 	[PortedCore(
 		name: CoreNames.Encore,
 		author: "Tropic Haze and Citra contributors; port by CasualPokePlayer",

@@ -13,6 +13,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	public partial class RCheevos : RetroAchievements
 	{
 		internal static readonly LibRCheevos _lib;

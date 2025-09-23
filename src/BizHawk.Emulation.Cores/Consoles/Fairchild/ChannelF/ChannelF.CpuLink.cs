@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF
 	{
+		[CLSCompliant(false)]
 		public readonly struct CpuLink(ChannelF channelF) : IF3850Link
 		{
 			public byte ReadMemory(ushort address)

@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
 	{
 		private readonly List<NamedLuaFunction> _functions = new List<NamedLuaFunction>();

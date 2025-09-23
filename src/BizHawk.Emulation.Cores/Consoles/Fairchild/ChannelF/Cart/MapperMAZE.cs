@@ -4,7 +4,7 @@
 	/// Maze ChannelF Cartridge
 	/// Utilises 2102 SRAM over IO
 	/// </summary>
-	public class MapperMAZE : VesCartBase
+	public sealed partial class MapperMAZE : VesCartBase
 	{
 		public override string BoardType => "MAZE";
 

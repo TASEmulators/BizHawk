@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		// pce always has two layers, sgx always has 4, and mednafen knows this
 		public bool IsSgx => SettingsInfo.LayerNames.Count == 4;
 
+		[CLSCompliant(false)]
 		public unsafe void GetGpuData(int vdc, Action<PceGpuData> callback)
 		{
 			using(_exe.EnterExit())
@@ -92,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		}
 	}
 
-	public abstract class LibHyperNyma : LibNymaCore
+	public abstract partial class LibHyperNyma : LibNymaCore
 	{
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void GetVramInfo([Out]PceGpuData v, int vdcIndex);

@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(MovieExtensions.CLS_IBASICMOVIEINFO)]
 	public class BasicMovieInfo : IBasicMovieInfo
 	{
 		private string _filename;

@@ -67,6 +67,7 @@ namespace BizHawk.Client.EmuHawk
 					}));
 		}
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public static IExternalApiProvider Restart(
 			IEmulatorServiceProvider serviceProvider,
 			IMainFormForApi mainForm,
@@ -83,6 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			return new BasicApiProvider(_container);
 		}
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public static ApiContainer RestartLua(
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback,

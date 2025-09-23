@@ -48,7 +48,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int temp_s_tia;
 		public int temp_s_pokey;
 		public int samp_l, samp_c;
-		public uint master_audio_clock;
+
+		private uint master_audio_clock;
+
 		public int temp;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
@@ -335,12 +337,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 
-		public int _frameHz = 60;
-		public int _screen_width = 320;
-		public int _screen_height = 263;
-		public int _vblanklines = 20;
+		private int _frameHz = 60;
 
-		public int[] _vidbuffer;
+		internal int _screen_width = 320;
+
+		internal int _screen_height = 263;
+
+		private int _vblanklines = 20;
+
+		internal int[] _vidbuffer;
 
 		public int[] GetVideoBuffer()
 		{

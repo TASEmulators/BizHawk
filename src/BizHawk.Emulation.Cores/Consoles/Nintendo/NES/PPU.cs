@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		private Region _region;
+		[CLSCompliant(false)]
 		public Region region
 		{
 			get => _region;

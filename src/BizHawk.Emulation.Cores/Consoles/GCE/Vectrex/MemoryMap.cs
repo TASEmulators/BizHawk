@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	public partial class VectrexHawk
 	{
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr)
 		{
 			if (MemoryCallbacks.HasReads)
@@ -52,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value)
 		{
 			if (MemoryCallbacks.HasWrites)
@@ -92,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 #pragma warning restore SA1508
 		}
 
+		[CLSCompliant(false)]
 		public byte PeekMemory(ushort addr)
 		{
 			if (addr < 0x8000)

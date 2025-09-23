@@ -1,5 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
+	[CLSCompliant(false)]
 	public static class SnesColors
 	{
 		// the SNES renders colors in a 15 bit RGB space.  in addition, there is a 4 bit "luma" or "brightness" register

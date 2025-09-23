@@ -5,6 +5,7 @@ namespace BizHawk.Client.EmuHawk
 	[SpecializedTool("Hash Discs")] // puts this in Nymashock's VSystem menu (the generic one), though when opened that way it's not modal
 	public partial class PSXHashDiscs : ToolFormBase
 	{
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IRedumpDiscChecksumInfo _psx { get; set; }
 

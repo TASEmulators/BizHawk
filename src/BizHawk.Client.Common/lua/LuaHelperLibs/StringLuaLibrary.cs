@@ -9,7 +9,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library exposing standard .NET string methods")]
-	public sealed class StringLuaLibrary : LuaLibraryBase
+	public sealed partial class StringLuaLibrary : LuaLibraryBase
 	{
 		public override string Name => "bizstring";
 

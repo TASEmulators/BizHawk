@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 		public static GifWriter.GifToken DoTokenForm(IWin32Window parent, Config config)
 		{
 			using var dlg = new GifWriterForm

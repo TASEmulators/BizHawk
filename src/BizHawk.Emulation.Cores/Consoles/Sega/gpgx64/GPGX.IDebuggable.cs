@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var regs = new LibGPGX.RegisterInfo[Core.gpgx_getmaxnumregs()];
@@ -42,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void SetCpuRegister(string register, int value)
 			=> throw new NotImplementedException();
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			get

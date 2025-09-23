@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public sealed class NamedLuaFunction : INamedLuaFunction
 	{
 		public const string EVENT_TYPE_CONSOLECLOSE = "OnConsoleClose";

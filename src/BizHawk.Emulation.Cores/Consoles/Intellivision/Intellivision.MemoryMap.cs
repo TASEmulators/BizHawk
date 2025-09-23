@@ -10,6 +10,7 @@
 		public byte[] GraphicsRom = new byte[2048];
 		public byte[] GraphicsRam = new byte[512];
 
+		[CLSCompliant(false)]
 		public ushort ReadMemory(ushort addr, bool peek)
 		{
 			ushort? cart = _cart.ReadCart(addr, peek);
@@ -209,6 +210,7 @@
 			return UNMAPPED;
 		}
 
+		[CLSCompliant(false)]
 		public bool WriteMemory(ushort addr, ushort value, bool poke)
 		{
 			bool cart = _cart.WriteCart(addr, value, poke);

@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
+	[CLSCompliant(false)]
 	public static class BizSwan
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
+	[CLSCompliant(false)]
 	public abstract class LibMelonDS : LibWaterboxCore
 	{
 		[Flags]

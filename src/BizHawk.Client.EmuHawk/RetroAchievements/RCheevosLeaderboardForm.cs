@@ -5,6 +5,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Shows information about a specific leaderboard
 	/// </summary>
+	[CLSCompliant(false)]
 	public partial class RCheevosLeaderboardForm : Form
 	{
 		private readonly RCheevos.LBoard _lboard;

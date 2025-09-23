@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public UserDataApi(IMovieSession movieSession) => _movieSession = movieSession;
 
 		/// <exception cref="InvalidOperationException">type of <paramref name="value"/> cannot be used in userdata</exception>

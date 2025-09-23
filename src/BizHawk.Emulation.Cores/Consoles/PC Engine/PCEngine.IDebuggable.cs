@@ -5,12 +5,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 			=> Cpu.GetCpuFlagsAndRegisters();
 
 		public void SetCpuRegister(string register, int value)
 			=> Cpu.SetCpuRegister(register, value);
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		public bool CanStep(StepType type) => false;

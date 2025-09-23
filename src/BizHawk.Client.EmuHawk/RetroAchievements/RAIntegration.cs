@@ -12,6 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	public partial class RAIntegration : RetroAchievements
 	{
 		private readonly RAInterface RA;

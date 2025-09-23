@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Main constructor
 		/// </summary>
+		[CLSCompliant(false)]
 		public AY38912(CPCBase machine)
 		{
 			_machine = machine;

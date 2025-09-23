@@ -237,6 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			RefreshAllBackdrops();
 		}
 
+		[CLSCompliant(false)]
 		public static void DoColorChooserFormDialog(IDialogParent parent, Config config, IGameInfo game, Gameboy.GambatteSettings s)
 		{
 			using var dlg = new ColorChooserForm(parent.DialogController, config, game);

@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to NDSHawk (functions may not run when an NDS game is not loaded)")]
-	public sealed class NDSLuaLibrary : LuaLibraryBase
+	public sealed partial class NDSLuaLibrary : LuaLibraryBase
 	{
 		public NDSLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

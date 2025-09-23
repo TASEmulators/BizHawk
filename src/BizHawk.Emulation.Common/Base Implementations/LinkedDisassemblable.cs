@@ -6,8 +6,7 @@ namespace BizHawk.Emulation.Common
 	/// A generic linked implementation of IDisassemblable that can be used by any link core
 	/// </summary>
 	/// <seealso cref="IDisassemblable" />
-	[CLSCompliant(false)]
-	public class LinkedDisassemblable : VerifiedDisassembler
+	public sealed partial class LinkedDisassemblable : VerifiedDisassembler
 	{
 		private readonly IDisassemblable _baseDisassembler;
 

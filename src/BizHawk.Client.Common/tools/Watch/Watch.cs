@@ -13,12 +13,15 @@ namespace BizHawk.Client.Common
 	/// with a specific size (8, 16 or 32bits).
 	/// This is an abstract class
 	/// </summary>
+	[CLSCompliant(CLS_WATCH)]
 	[DebuggerDisplay("Note={Notes}, Value={ValueString}")]
 	public abstract class Watch
 		: IEquatable<Watch>,
 		IEquatable<Cheat>,
 		IComparable<Watch>
 	{
+		public const bool CLS_WATCH = false;
+
 		private MemoryDomain _domain;
 		private WatchDisplayType _type;
 

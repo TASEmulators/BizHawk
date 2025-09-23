@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// 16K is idential to 48K, just without the top 32KB of RAM
 	/// </summary>
-	public class ZX16 : ZX48
+	public sealed partial class ZX16 : ZX48
 	{
 		/// <summary>
 		/// Main constructor

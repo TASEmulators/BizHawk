@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Initializes the datacorder device
 		/// </summary>
+		[CLSCompliant(false)]
 		public void Init(SpectrumBase machine)
 		{
 			_machine = machine;
@@ -833,6 +834,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool ReadPort(ushort port, ref int result)
 		{
 			if (TapeIsPlaying)
@@ -862,6 +864,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool WritePort(ushort port, int result)
 		{
 			if (!TapeIsPlaying)

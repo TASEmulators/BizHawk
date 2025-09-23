@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			get { return GetAvailableDisassemblables().SelectMany(d => d.AvailableCpus); }
 		}
 
+		[CLSCompliant(false)]
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			if (_selectedDisassemblable == null)

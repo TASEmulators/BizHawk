@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 	[ServiceNotApplicable(typeof(ISoundProvider))]
 	public partial class TI83 : TI83Common, IEmulator, IVideoProvider, IDebuggable, IInputPollable
 	{
+		[CLSCompliant(false)]
 		[CoreConstructor(VSystemID.Raw.TI83)]
 		public TI83(CoreLoadParameters<TI83CommonSettings, object> lp)
 		{

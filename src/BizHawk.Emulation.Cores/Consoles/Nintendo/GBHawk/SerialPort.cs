@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public class SerialPort
 	{
+		[CLSCompliant(false)]
 		public GBHawk Core { get; set; }
 
 		public byte serial_control;

@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Mapper only used by F-18 Hornet
-	public sealed class MapperF18 : MapperBase
+	public sealed partial class MapperF18 : MapperBase
 	{
 		private byte _bank;
 

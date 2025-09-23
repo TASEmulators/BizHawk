@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	public partial class A7800Hawk
 	{
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr)
 		{
 			if (MemoryCallbacks.HasReads)
@@ -106,6 +107,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return mapper.ReadMemory(addr);
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value)
 		{
 			if (MemoryCallbacks.HasWrites)

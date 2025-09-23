@@ -15,23 +15,28 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte addr_latch;
 		public byte kb_byte;
 		public bool ppu_en, vpp_en, RAM_en, kybrd_en, copy_en, cart_b0, cart_b1;
-		public ushort rom_bank;
-		public ushort bank_size;
 
-		public byte[] _bios;
-		public readonly byte[] _rom;
+		private ushort rom_bank;
+
+		private ushort bank_size;
+
+		private byte[] _bios;
+
+		internal readonly byte[] _rom;
+
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
 		public bool has_bat;
 
-		public int _frame = 0;
+		private int _frame = 0;
 
-		public MapperBase mapper;
+		private MapperBase mapper;
 
 		private readonly ITraceable _tracer;
 
-		public I8048 cpu;
+		internal I8048 cpu;
+
 		public PPU ppu;
 
 		public bool is_pal;

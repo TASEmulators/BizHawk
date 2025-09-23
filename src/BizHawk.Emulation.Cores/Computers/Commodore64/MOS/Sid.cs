@@ -19,7 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         */
 
 		// ------------------------------------
-		public int _databus;
+
+		private int _databus;
+
 		private int _cachedCycles;
 		private bool _disableVoice3;
 		private int _envelopeOutput0;

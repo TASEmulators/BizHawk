@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 	/// this way happens to perform better than the alternative
 	/// </remarks>
 	/// <seealso cref="IZ80ALink"/>
+	[CLSCompliant(false)]
 	public sealed partial class Z80A<TLink> where TLink : IZ80ALink
 	{
 		// operations that can take place in an instruction

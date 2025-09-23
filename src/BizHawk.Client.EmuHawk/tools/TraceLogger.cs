@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			new FilesystemFilter("Log Files", new[] { "log" }),
 			FilesystemFilter.TextFiles);
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public ITraceable _tracerCore { get; set; }
 

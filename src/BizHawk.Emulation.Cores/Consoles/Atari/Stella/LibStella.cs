@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Atari.Stella
 {
+	[CLSCompliant(false)]
 	public abstract class CInterface
 	{
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		public A7800SyncSettings _syncSettings = new();
+		private A7800SyncSettings _syncSettings = new();
 
 		public class A7800SyncSettings
 		{

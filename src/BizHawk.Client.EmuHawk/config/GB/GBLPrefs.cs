@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged || gbPrefControl3.SyncSettingsChanged || gbPrefControl4.SyncSettingsChanged;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public static DialogResult DoGBLPrefsDialog(
 			Config config,
 			IDialogParent dialogParent,

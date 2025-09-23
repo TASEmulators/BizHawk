@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// This class holds a byte (8 bits) <see cref="Watch"/>
 	/// </summary>
-	public sealed class ByteWatch : Watch
+	public sealed partial class ByteWatch : Watch
 	{
 		private byte _previous;
 		private byte _value;

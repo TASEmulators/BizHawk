@@ -8,6 +8,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	// TODO: don't use textboxes as labels
+	[CLSCompliant(Watch.CLS_WATCH)]
 	public partial class RamPoke : Form, IDialogParent
 	{
 		private readonly List<Watch> _watchList;

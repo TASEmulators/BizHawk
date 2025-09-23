@@ -20,6 +20,7 @@ namespace BizHawk.Client.Common
 		private int _val;
 		private bool _enabled;
 
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, CompareType comparisonType = CompareType.None)
 		{
 			_enabled = enabled;
@@ -320,6 +321,7 @@ namespace BizHawk.Client.Common
 			return !(a == b);
 		}
 
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public static bool operator ==(Cheat a, Watch b)
 		{
 			// If one is null, but not both, return false.
@@ -331,6 +333,7 @@ namespace BizHawk.Client.Common
 			return a.Domain == b.Domain && a.Address == b.Address;
 		}
 
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public static bool operator !=(Cheat a, Watch b)
 		{
 			return !(a == b);

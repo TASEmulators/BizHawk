@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public sealed class MemoryApi : IMemoryApi
 	{
 		[RequiredService]

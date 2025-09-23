@@ -74,12 +74,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Returns an int32 from a byte array based on offset
 		/// </summary>
+		[CLSCompliant(false)]
 		public static uint GetUInt32(ReadOnlySpan<byte> buf, int offsetIndex)
 			=> BinaryPrimitives.ReadUInt32LittleEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Returns an uint16 from a byte array based on offset
 		/// </summary>
+		[CLSCompliant(false)]
 		public static ushort GetWordValue(ReadOnlySpan<byte> buf, int offsetIndex)
 			=> BinaryPrimitives.ReadUInt16LittleEndian(buf.Slice(start: offsetIndex));
 

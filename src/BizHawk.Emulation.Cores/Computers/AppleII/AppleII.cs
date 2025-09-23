@@ -7,6 +7,7 @@ using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.Virtu, "fool")]
 	[ServiceNotApplicable(typeof(IBoardInfo))]
 	[ServiceNotApplicable(typeof(IRegionable))]

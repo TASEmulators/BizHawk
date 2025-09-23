@@ -171,6 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			Text = string.Format(_addressFormatStr, val);
 		}
 
+		[CLSCompliant(false)]
 		public void SetFromU64(ulong? val)
 			=> Text = val is null ? string.Empty : string.Format(_addressFormatStr, val.Value);
 
@@ -189,6 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			return long.Parse(Text, NumberStyles.HexNumber);
 		}
 
+		[CLSCompliant(false)]
 		public ulong? ToU64()
 			=> ulong.TryParse(Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var l)
 				? l

@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private LatchedPort _port;
 		private int _irqDelay;
 		private int _nmiDelay;
+		[CLSCompliant(false)]
 		public C64 c64;
 
 		private struct CpuLink : IMOS6502XLink

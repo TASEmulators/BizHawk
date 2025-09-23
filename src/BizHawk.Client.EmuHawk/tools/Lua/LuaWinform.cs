@@ -5,6 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public partial class LuaWinform : Form
 	{
 		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();

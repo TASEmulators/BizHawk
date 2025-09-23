@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
+	[CLSCompliant(false)]
 	public abstract class LibUAE : LibWaterboxCore
 	{
 		public const int PAL_WIDTH = 720;

@@ -18,8 +18,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		public int _lagCount = 0;
-		public bool _lagged = true;
-		public bool _isLag = false;
+		private int _lagCount = 0;
+
+		private bool _lagged = true;
+
+		internal bool _isLag = false;
 	}
 }

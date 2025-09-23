@@ -9,6 +9,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IBasicMovieInfo _movie;
 		private readonly Config _config;
 
+		[CLSCompliant(MovieExtensions.CLS_IBASICMOVIEINFO)]
 		public MovieHeaderEditor(IBasicMovieInfo movie, Config config)
 		{
 			_movie = movie;

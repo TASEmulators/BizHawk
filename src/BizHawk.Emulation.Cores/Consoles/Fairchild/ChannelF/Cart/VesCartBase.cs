@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
+	[CLSCompliant(false)]
 	public abstract class VesCartBase
 	{
 		public abstract string BoardType { get; }

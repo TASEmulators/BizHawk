@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	/// dumps in the "nut" container format
 	/// uncompressed video and audio
 	/// </summary>
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("nut", "NUT writer", "Writes a series of .nut files to disk, a container format which can be opened by ffmpeg.  All data is uncompressed.  Splits occur on resolution changes.  NOT RECOMMENDED FOR USE.")]
 	public class NutWriter : IVideoWriter
 	{

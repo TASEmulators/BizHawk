@@ -31,6 +31,7 @@ namespace BizHawk.Client.Common
 
 	// TODO: message callback / event handler
 	// TODO: consider other event handlers, switching modes?
+	[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 	public interface IMovie : IBasicMovieInfo
 	{
 		/// <summary>
@@ -197,8 +198,15 @@ namespace BizHawk.Client.Common
 		void CopyLog(IEnumerable<string> log);
 	}
 
+	[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 	public static class MovieExtensions
 	{
+		public const bool CLS_IBASICMOVIEINFO = false;
+
+		public const bool CLS_IMOVIE = false;
+
+		public const bool CLS_ITASMOVIE = false;
+
 		public static FilesystemFilterSet GetFSFilterSet(this IMovie/*?*/ movie)
 			=> new(new FilesystemFilter("Movie Files", new[] { movie?.PreferredExtension ?? MovieService.StandardMovieExtension }));
 

@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Super Game mapper but with extra ROM at the start of the file
 	// Have to add 1 to bank number to get correct bank value
-	public sealed class MapperSGE : MapperBase
+	public sealed partial class MapperSGE : MapperBase
 	{
 		private byte _bank;
 

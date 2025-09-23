@@ -5,12 +5,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters() => Cpu.GetCpuFlagsAndRegisters();
 
 		public void SetCpuRegister(string register, int value) => Cpu.SetCpuRegister(register, value);
 
 		public bool CanStep(StepType type) => false;
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		[FeatureNotImplemented]

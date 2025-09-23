@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.CP1610
 {
+	[CLSCompliant(false)]
 	public sealed partial class CP1610
 	{
 		private const ushort RESET = 0x1000;

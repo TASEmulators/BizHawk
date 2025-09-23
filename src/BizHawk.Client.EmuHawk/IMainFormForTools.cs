@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 	public interface IMainFormForTools : IDialogController
 	{
 		CheatCollection CheatList { get; }

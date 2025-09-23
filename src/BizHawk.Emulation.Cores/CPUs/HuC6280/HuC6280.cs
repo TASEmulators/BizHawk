@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
+	[CLSCompliant(false)]
 	public sealed partial class HuC6280
 	{
 		public HuC6280(IMemoryCallbackSystem callbacks)

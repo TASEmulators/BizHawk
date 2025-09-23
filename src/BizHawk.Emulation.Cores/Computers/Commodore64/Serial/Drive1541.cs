@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
+	[CLSCompliant(false)]
 	public sealed partial class Drive1541 : SerialPortDevice
 	{
 		private byte[][][] _diskDeltas;

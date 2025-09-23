@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
+	[CLSCompliant(false)]
 	public abstract class LibAres64 : LibWaterboxCore
 	{
 		[Flags]

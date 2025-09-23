@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Uncommitted logic array implementation (ULA)
 	/// </summary>
+	[CLSCompliant(false)]
 	public abstract class ULA : IVideoProvider
 	{
 		/// <summary>

@@ -2,6 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
+	[CLSCompliant(false)]
 	public class MapperBase
 	{
 		public A7800Hawk Core { get; set; }

@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 {
 	public partial class Sameboy : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] data = new int[10];
@@ -56,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { systemBusScope });
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		private LibSameboy.MemoryCallback _readcb;

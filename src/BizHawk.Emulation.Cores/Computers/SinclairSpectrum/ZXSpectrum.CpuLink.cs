@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	public partial class ZXSpectrum
 	{
+		[CLSCompliant(false)]
 		public readonly struct CpuLink(ZXSpectrum spectrum, SpectrumBase machine) : IZ80ALink
 		{
 			public byte FetchMemory(ushort address)

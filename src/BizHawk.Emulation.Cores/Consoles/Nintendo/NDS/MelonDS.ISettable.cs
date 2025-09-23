@@ -129,6 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			[DefaultValue(true)]
 			public bool TraceArm9Arm { get; set; }
 
+			[CLSCompliant(false)]
 			public LibMelonDS.TraceMask GetTraceMask()
 			{
 				var ret = LibMelonDS.TraceMask.NONE;
@@ -437,6 +438,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				set => _firmwaremessage = value.Substring(0, Math.Min(26, value.Length));
 			}
 
+			[CLSCompliant(false)]
 			public unsafe void GetFirmwareSettings(out LibMelonDS.FirmwareSettings fwSettings)
 			{
 				fwSettings.OverrideSettings = FirmwareOverride;

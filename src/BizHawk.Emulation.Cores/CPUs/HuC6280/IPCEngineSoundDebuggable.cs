@@ -2,6 +2,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components
 {
+	[CLSCompliant(false)]
 	public interface IPCEngineSoundDebuggable : ISpecializedEmulatorService
 	{
 #pragma warning disable CA1715 // breaks IInterface convention

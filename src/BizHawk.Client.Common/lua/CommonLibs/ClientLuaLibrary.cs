@@ -15,7 +15,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class ClientLuaLibrary : LuaLibraryBase
+	public sealed partial class ClientLuaLibrary : LuaLibraryBase
 	{
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }

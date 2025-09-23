@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Mapper with built in EEPROM, also used with Kirby's tilt 'n tumble
 	// The EEPROM contains 256 bytes of read/write memory
-	public class MapperMBC7 : MapperBase
+	public sealed partial class MapperMBC7 : MapperBase
 	{
 		public int ROM_bank;
 		public bool RAM_enable_1, RAM_enable_2;

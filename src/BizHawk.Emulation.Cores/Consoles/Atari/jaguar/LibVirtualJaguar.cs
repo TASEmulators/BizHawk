@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
+	[CLSCompliant(false)]
 	public abstract class LibVirtualJaguar : LibWaterboxCore
 	{
 		[Flags]

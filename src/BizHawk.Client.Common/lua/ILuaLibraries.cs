@@ -1,5 +1,6 @@
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(NLuaTableHelper.CLS_LUATABLE)]
 	public interface ILuaLibraries
 	{
 		/// <remarks>pretty hacky... we don't want a lua script to be able to restart itself by rebooting the core</remarks>

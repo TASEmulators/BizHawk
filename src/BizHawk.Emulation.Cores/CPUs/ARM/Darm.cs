@@ -5,6 +5,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Components.ARM
 {
+	[CLSCompliant(false)]
 	public abstract class Darm
 	{
 		public const CallingConvention cc = CallingConvention.Cdecl;

@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Main constructor
 		/// </summary>
+		[CLSCompliant(false)]
 		public AY38912(SpectrumBase machine)
 		{
 			_machine = machine;
@@ -51,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// |11-- ---- ---- --0-|	-	IN	-	Read value of currently selected register
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool ReadPort(ushort port, ref int value)
 		{
 			if (!port.Bit(1))
@@ -71,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// |11-- ---- ---- --0-|	-	OUT	-	Register Select
 		/// |10-- ---- ---- --0-|	-	OUT	-	Write value to currently selected register
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool WritePort(ushort port, int value)
 		{
 			if (!port.Bit(1))

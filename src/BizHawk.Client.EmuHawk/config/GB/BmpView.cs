@@ -94,6 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
+		[CLSCompliant(false)]
 		public static unsafe void Clear_Selected_Region(byte* base_pos, uint num_bytes)
 		{
 			for (uint i = 0; i < num_bytes; i++) { base_pos[i] = 0xFF; }

@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 
 		private readonly TI83Disassembler _disassembler = new();
 
+		[CLSCompliant(false)]
 		[CoreConstructor(VSystemID.Raw.TI83)]
 		public Emu83(CoreLoadParameters<TI83CommonSettings, object> lp)
 		{

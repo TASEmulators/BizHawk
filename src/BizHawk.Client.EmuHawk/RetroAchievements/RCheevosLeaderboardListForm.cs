@@ -7,6 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Shows a list of a user's current leaderboards
 	/// </summary>
+	[CLSCompliant(false)]
 	public partial class RCheevosLeaderboardListForm : Form
 	{
 		public bool IsShown { get; private set; }

@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// <summary>
 	/// static bindings into libgambatte.dll
 	/// </summary>
+	[CLSCompliant(false)]
 	public static class LibGambatte
 	{
 		/// <returns>opaque state pointer</returns>

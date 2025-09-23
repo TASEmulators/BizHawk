@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 {
 	public partial class Emu83 : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			int[] regs = new int[12];
@@ -37,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 		private long _callbackCycleCount = 0;
 		public long TotalExecutedCycles => Math.Max(LibEmu83.TI83_GetCycleCount(Context), _callbackCycleCount);
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" });

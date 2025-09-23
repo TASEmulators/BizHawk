@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.I8048;
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	// XROM mapper, 3KB ROM and 1KB data accessible through port 0
-	public class MapperXROM : MapperBase
+	public sealed partial class MapperXROM : MapperBase
 	{
 		public int ROM_mask;
 

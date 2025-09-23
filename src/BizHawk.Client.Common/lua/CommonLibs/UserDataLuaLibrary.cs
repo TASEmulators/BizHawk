@@ -7,7 +7,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
-	public sealed class UserDataLuaLibrary : LuaLibraryBase
+	public sealed partial class UserDataLuaLibrary : LuaLibraryBase
 	{
 		public UserDataLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

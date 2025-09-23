@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public ControllerDefinition ControllerDefinition { get; }
 
+		[CLSCompliant(false)]
 		public Snes9xControllers(Snes9x.SyncSettings ss)
 		{
 			switch (ss.LeftPort)

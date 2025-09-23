@@ -48,6 +48,7 @@ namespace BizHawk.Client.Common
 
 		private IEmulator GlobalEmulator;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		protected DisplayManagerBase(
 			Config config,
 			IEmulator emulator,
@@ -153,6 +154,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// rendering resources:
+		[CLSCompliant(false)] //TODO just needs renaming
 		protected readonly IGL _gl;
 
 		private StringRenderer _theOneFont;
@@ -183,6 +185,7 @@ namespace BizHawk.Client.Common
 		private readonly IGuiRenderer _renderer;
 
 		// layer resources
+		[CLSCompliant(false)] //TODO just needs renaming
 		protected FilterProgram _currentFilterProgram;
 
 		/// <summary>
@@ -202,6 +205,7 @@ namespace BizHawk.Client.Common
 
 		private readonly TextureFrugalizer _videoTextureFrugalizer;
 
+		[CLSCompliant(false)] //TODO just needs renaming
 		protected readonly RenderTargetFrugalizer[] _shaderChainFrugalizers;
 
 		private readonly RetroShaderChain _shaderChainHq2X;

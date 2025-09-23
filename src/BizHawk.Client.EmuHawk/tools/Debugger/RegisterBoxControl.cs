@@ -9,6 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RegisterBoxControl : UserControl
 	{
+		[CLSCompliant(false)]
 		public IDebuggable Core { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }
 

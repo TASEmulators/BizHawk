@@ -29,6 +29,8 @@ namespace BizHawk.Client.Common
 		public int X { get; set; }
 		public int Y { get; set; }
 		public int Duration { get; set; }
+
+		[CLSCompliant(false)]
 		public uint Color { get; set; }
 
 		public override string ToString()

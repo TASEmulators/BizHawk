@@ -4,9 +4,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public abstract class PPU
 	{
+		[CLSCompliant(false)]
 		public GBHawk Core { get; set; }
 
+		[CLSCompliant(false)]
 		public uint[] BG_palette = new uint[32];
+
+		[CLSCompliant(false)]
 		public uint[] OBJ_palette = new uint[32];
 
 		public bool HDMA_active;
@@ -125,6 +129,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		// variables not in state
 		public int total_counter;
+
+		[CLSCompliant(false)]
 		public uint[] color_palette = new uint[4];
 
 		public abstract byte ReadReg(int addr);

@@ -21,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public bool StartNewMovie(IMovie movie, bool newMovie)
 		{
 			if (movie is null) throw new ArgumentNullException(paramName: nameof(movie));

@@ -4,6 +4,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the Atari 7800 Maria graphics chip
+	[CLSCompliant(false)]
 	public sealed class Maria
 	{
 		public A7800Hawk Core { get; set; }

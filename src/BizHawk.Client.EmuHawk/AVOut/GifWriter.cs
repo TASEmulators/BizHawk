@@ -8,6 +8,7 @@ using PcxFileTypePlugin.Quantize;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("gif", "GIF writer", "Creates an animated .gif")]
 	public class GifWriter : IVideoWriter
 	{

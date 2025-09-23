@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 	/// This class hold a collection <see cref="Watch"/>
 	/// Different memory domain can be mixed
 	/// </summary>
+	[CLSCompliant(Watch.CLS_WATCH)]
 	public sealed partial class WatchList
 		: IList<Watch>
 	{

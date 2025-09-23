@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private readonly bool _dispose;
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public EditCommentsForm(IMovie movie, bool readOnly, bool disposeOnClose = false)
 		{
 			_movie = movie;

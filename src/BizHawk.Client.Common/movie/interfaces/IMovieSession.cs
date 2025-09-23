@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 	public interface IMovieSession
 	{
 		IMovieConfig Settings { get; }

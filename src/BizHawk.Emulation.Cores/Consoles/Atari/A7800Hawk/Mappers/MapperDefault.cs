@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Default mapper with no bank switching
 	// Just need to keep track of high score bios stuff
-	public sealed class MapperDefault : MapperBase
+	public sealed partial class MapperDefault : MapperBase
 	{
 		public override byte ReadMemory(ushort addr)
 		{

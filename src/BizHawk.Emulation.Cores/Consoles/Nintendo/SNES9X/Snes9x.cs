@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	{
 		private readonly LibSnes9x _core;
 
+		[CLSCompliant(false)]
 		[CoreConstructor(VSystemID.Raw.SNES)]
 		public Snes9x(CoreLoadParameters<Settings, SyncSettings> loadParameters)
 			:base(loadParameters.Comm, new Configuration
@@ -144,6 +145,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			return _settings.Clone();
 		}
 
+		[CLSCompliant(false)]
 		public SyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
@@ -178,6 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			return PutSettingsDirtyBits.None; // no reboot needed
 		}
 
+		[CLSCompliant(false)]
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
 			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
@@ -271,6 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 		}
 
+		[CLSCompliant(false)]
 		[CoreSettings]
 		public class SyncSettings
 		{

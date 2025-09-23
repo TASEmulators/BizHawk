@@ -11,6 +11,7 @@
 		/// <summary>
 		/// Simulates reading a byte of data from the address space
 		/// </summary>
+		[CLSCompliant(false)]
 		public byte ReadBus(ushort addr)
 		{
 			if (addr < 0x400)
@@ -30,6 +31,7 @@
 			}
 		}
 
+		[CLSCompliant(false)]
 		public CDLResult ReadCDL(ushort addr)
 		{
 			var result = new CDLResult();
@@ -58,6 +60,7 @@
 		/// Simulates writing a byte of data to the address space (in its default configuration, there is no writeable RAM in the
 		/// Channel F addressable through the address space)
 		/// </summary>
+		[CLSCompliant(false)]
 		public void WriteBus(ushort addr, byte value)
 			=> _cartridge.WriteBus(addr, value);
 	}

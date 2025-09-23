@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	public abstract partial class RetroAchievements : IRetroAchievements
 	{
 		protected readonly IDialogParent _dialogParent;

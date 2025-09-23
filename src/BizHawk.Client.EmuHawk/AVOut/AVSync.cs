@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class AudioStretcher : AVStretcher
+	public sealed partial class AudioStretcher : AVStretcher
 	{
 		public AudioStretcher(IVideoWriter w)
 		{
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	public class VideoStretcher : AVStretcher
+	public sealed partial class VideoStretcher : AVStretcher
 	{
 		public VideoStretcher(IVideoWriter w)
 		{
@@ -131,6 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	public abstract class AVStretcher : VwWrap, IVideoWriter
 	{
 		protected int FpsNum;
@@ -202,6 +203,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	public abstract class VwWrap : IVideoWriter
 	{
 		protected IVideoWriter W;

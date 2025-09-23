@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Properties.Resources.GambatteIcon;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IGameboyCommon/*?*/ _gbCore { get; set; }
 

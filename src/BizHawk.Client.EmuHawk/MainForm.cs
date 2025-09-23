@@ -435,6 +435,7 @@ namespace BizHawk.Client.EmuHawk
 			CloseRomContextMenuItem.Image = Properties.Resources.Close;
 		}
 
+		[CLSCompliant(false)]
 		public MainForm(
 			ParsedCLIFlags cliFlags,
 			IGL gl,
@@ -1211,6 +1212,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private OSDManager OSD => DisplayManager.OSD;
 
+		[CLSCompliant(Client.Common.MovieSession.CLS_IMOVIESESSION)]
 		public IMovieSession MovieSession { get; }
 
 		public GameInfo Game { get; private set; }

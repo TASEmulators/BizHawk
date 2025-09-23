@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private BlipBuffer _blip = new BlipBuffer(15000);
 
+		[CLSCompliant(false)]
 		public uint master_audio_clock;
 
 		private short current_sample, old_sample;

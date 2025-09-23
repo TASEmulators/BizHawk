@@ -16,12 +16,14 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Properties.Resources.NesControllerIcon;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public INESPPUViewable _nesCore { get; set; }
 
 		private INESPPUViewable _ppu
 			=> _nesCore!;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IEmulator _core { get; set; }
 

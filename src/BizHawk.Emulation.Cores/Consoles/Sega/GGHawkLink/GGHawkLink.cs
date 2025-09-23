@@ -3,6 +3,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
+	[CLSCompliant(false)]
 	[Core(
 		name: CoreNames.GGHawkLink,
 		author: "Vecna",

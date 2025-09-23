@@ -9,6 +9,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Components
 {
+	[CLSCompliant(false)]
 	public sealed class YM2413
 	{
 		public byte DetectionValue;

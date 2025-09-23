@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private LibNymaCore _nyma;
 
+		[CLSCompliant(false)]
 		protected T DoInit<T>(
 			CoreLoadParameters<NymaSettings, NymaSyncSettings> lp,
 			string wbxFilename,
@@ -66,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			);
 		}
 
+		[CLSCompliant(false)]
 		protected T DoInit<T>(
 			GameInfo game, byte[] rom, Disc[] discs, string wbxFilename,
 			string romExtension, bool deterministic, IDictionary<string, FirmwareID> firmwareIDMap = null)
@@ -81,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			);
 		}
 
+		[CLSCompliant(false)]
 		protected T DoInit<T>((byte[] Data, string Filename)[] roms, Disc[] discs, string wbxFilename,
 			string romExtension, bool deterministic, IDictionary<string, FirmwareID> firmwareIDMap = null)
 			where T : LibNymaCore
@@ -256,6 +259,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private IController _currentController;
 
+		[CLSCompliant(false)]
 		protected bool _isArcade;
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)

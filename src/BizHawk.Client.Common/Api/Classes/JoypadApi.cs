@@ -12,6 +12,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public JoypadApi(Action<string> logCallback, InputManager inputManager, IMovieSession movieSession)
 		{
 			LogCallback = logCallback;
