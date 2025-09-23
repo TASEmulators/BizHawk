@@ -1985,9 +1985,9 @@ namespace BizHawk.Client.EmuHawk
 						var width = (_fontWidth * 2 * (int)cheat.Size) + (gaps * _fontWidth);
 
 						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, _fontHeight));
-						e.Graphics.DrawRectangle(_blackPen, rect);
 						_freezeBrush.Color = Colors.Freeze;
 						e.Graphics.FillRectangle(_freezeBrush, rect);
+						e.Graphics.DrawRectangle(_blackPen, rect);
 					}
 				}
 			}
@@ -2002,8 +2002,6 @@ namespace BizHawk.Client.EmuHawk
 				var textPoint = new Point(textX, point.Y);
 
 				var rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + (NeedsExtra(addressHighlighted) ? _fontWidth : 0) + 2, _fontHeight));
-				e.Graphics.DrawRectangle(_blackPen, rect);
-
 				var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
 				if (MainForm.CheatList.IsActive(_domain, addressHighlighted))
@@ -2018,6 +2016,8 @@ namespace BizHawk.Client.EmuHawk
 					e.Graphics.FillRectangle(_highlightBrush, rect);
 					e.Graphics.FillRectangle(_highlightBrush, textRect);
 				}
+
+				e.Graphics.DrawRectangle(_blackPen, rect);
 			}
 
 			foreach (var address in _secondaryHighlightedAddresses)
@@ -2029,8 +2029,6 @@ namespace BizHawk.Client.EmuHawk
 					var textPoint = new Point(textX, point.Y);
 
 					var rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + 2, _fontHeight));
-					e.Graphics.DrawRectangle(_blackPen, rect);
-
 					var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
 					if (MainForm.CheatList.IsActive(_domain, address))
@@ -2045,6 +2043,8 @@ namespace BizHawk.Client.EmuHawk
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, rect);
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, textRect);
 					}
+
+					e.Graphics.DrawRectangle(_blackPen, rect);
 				}
 			}
 		}
