@@ -60,6 +60,7 @@ function dsda.struct_layout(struct)
 	return struct
 end
 
+-- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
 dsda.player = dsda.struct_layout()
 	.ptr  ("mobj")
 	.s32  ("playerstate")
@@ -103,6 +104,7 @@ dsda.player = dsda.struct_layout()
 	.u32  ("prev_viewpitch")
 	-- the rest are non-doom
 
+-- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 dsda.mobj = dsda.struct_layout()
 	.add("thinker", 44, 8)
 	.s32("x")
@@ -283,6 +285,7 @@ dsda.line = dsda.struct_layout()
 
 dsda.doom = {}
 
+-- mobjtype_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/info.h#L5778-L6498
 dsda.doom.mobjtype = {
 --	[-1] = "NULL",
 	[ 0] = "PLAYER",
@@ -429,6 +432,7 @@ dsda.doom.mobjtype = {
 	"PLASMA2"
 }
 
+-- spritenum_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/info.h#L50-L632
 dsda.doom.spritenum = {
 	[0] = "TROO",
 	"SHTG",
