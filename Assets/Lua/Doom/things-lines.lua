@@ -47,6 +47,7 @@ local LastScreenSize = {
 -- forward declarations
 local PlayerOffsets = dsda.player.offsets-- player member offsets in bytes
 local MobjOffsets   = dsda.mobj.offsets-- mobj member offsets in bytes
+local LineOffsets   = dsda.line.offsets-- line member offsets in bytes
 local MobjType      = dsda.doom.mobjtype
 local SpriteNumber  = dsda.doom.spritenum
 local Objects       = {}
@@ -192,11 +193,10 @@ local function iterate()
 		if id == OUT_OF_BOUNDS then break end
 		
 		if id ~= NULL_OBJECT then
-			local vertices_offset = 0xe8
-			local v1 = { x =  rls(addr+vertices_offset   , "Lines"),
-						 y = -rls(addr+vertices_offset+ 4, "Lines") }
-			local v2 = { x =  rls(addr+vertices_offset+ 8, "Lines"),
-						 y = -rls(addr+vertices_offset+12, "Lines") }
+			local v1 = { x =  rls(addr+LineOffsets.v1_x, "Lines"),
+			             y = -rls(addr+LineOffsets.v1_y, "Lines") }
+			local v2 = { x =  rls(addr+LineOffsets.v2_x, "Lines"),
+			             y = -rls(addr+LineOffsets.v2_y, "Lines") }
 			line(
 				mapify_x(v1.x),
 				mapify_y(v1.y),
