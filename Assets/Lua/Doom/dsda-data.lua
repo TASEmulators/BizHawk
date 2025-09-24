@@ -63,7 +63,7 @@ end
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
 dsda.player = dsda.struct_layout()
 	.ptr  ("mobj")
-	.s32  ("playerstate")
+	.s32  ("playerstate") -- playerstate_t
 	.add  ("cmd", 14, 2)
 	.s32  ("viewz")
 	.s32  ("viewheight")
@@ -76,8 +76,8 @@ dsda.player = dsda.struct_layout()
 	.array("cards", "bool", 11)
 	.bool ("backpack")
 	.array("frags", "s32", 8)
-	.s32  ("readyweapon")
-	.s32  ("pendingweapon")
+	.s32  ("readyweapon") -- weapontype_t
+	.s32  ("pendingweapon") -- weapontype_t
 	.array("weaponowned", "bool", 9)
 	.array("ammo", "s32", 6)
 	.array("maxammo", "s32", 6)
@@ -94,7 +94,7 @@ dsda.player = dsda.struct_layout()
 	.s32  ("extralight")
 	.s32  ("fixedcolormap")
 	.s32  ("colormap")
-	.add  ("psprites", 24*2, 8)
+	.add  ("psprites", 24*2, 8) -- pspdef_t[2]
 	.bool ("didsecret")
 	.s32  ("momx")
 	.s32  ("mony")
@@ -102,7 +102,31 @@ dsda.player = dsda.struct_layout()
 	.s32  ("prev_viewz")
 	.u32  ("prev_viewangle")
 	.u32  ("prev_viewpitch")
-	-- the rest are non-doom
+	-- heretic
+	.s32  ("flyheight")
+	.s32  ("lookdir")
+	.bool ("centering")
+	.array("inventory", "s32", 33*2) -- inventory_t { int type, int count }
+	.s32  ("readyArtifact") -- artitype_t
+	.s32  ("artifactCount")
+	.s32  ("inventorySlotNum")
+	.s32  ("flamecount")
+	.s32  ("chickenTics")
+	.s32  ("chickenPeck")
+	.ptr  ("rain1")
+	.ptr  ("rain2")
+	-- hexen
+	.s32  ("pclass") -- pclass_t
+	.s32  ("morphTics")
+	.s32  ("pieces")
+	.s16  ("yellowMessage")
+	.s32  ("poisoncount")
+	.ptr  ("poisoner")
+	.u32  ("jumpTics")
+	.u32  ("worldTimer")
+	-- zdoom
+	.s32  ("hazardcount")
+	.u8   ("hazardinterval")
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 dsda.mobj = dsda.struct_layout()
@@ -113,7 +137,7 @@ dsda.mobj = dsda.struct_layout()
 	.ptr("snext")
 	.ptr("sprev")
 	.u32("angle")
-	.s32("sprite")
+	.s32("sprite") -- spritenum_t
 	.s32("frame")
 	.ptr("bnext")
 	.ptr("bprev")
@@ -127,7 +151,7 @@ dsda.mobj = dsda.struct_layout()
 	.s32("momy")
 	.s32("momz")
 	.s32("validcount")
-	.s32("type")
+	.s32("type") -- mobjtype_t
 	.ptr("info")
 	.s32("tics")
 	.ptr("state")
@@ -144,7 +168,7 @@ dsda.mobj = dsda.struct_layout()
 	.s16("gear")
 	.ptr("player")
 	.s16("lastlook")
-	.add("spawnpoint", 58, 4)
+	.add("spawnpoint", 58, 4) -- mapthing_t
 	.ptr("tracer")
 	.ptr("lastenemy")
 	.s32("friction")
@@ -157,7 +181,24 @@ dsda.mobj = dsda.struct_layout()
 	.s32("index")
 	.s16("patch_width")
 	.s32("iden_nums")
-	-- the rest are non-doom
+	-- heretic
+	.s32  ("damage")
+	.u64  ("flags2")
+	.add  ("special1", 16, 8) -- specialval_t
+	.add  ("special2", 16, 8) -- specialval_t
+	-- hexen
+	.s32  ("floorpic")
+	.s32  ("floorclip")
+	.s32  ("archiveNum")
+	.s16  ("tid")
+	.s32  ("special")
+	.array("special_args", "s32", 5)
+	-- zdoom
+	.s32  ("gravity")
+	.float("alpha")
+	-- misc
+	.u8   ("color")
+	.ptr  ("tranmap")
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
 dsda.sector = dsda.struct_layout()
