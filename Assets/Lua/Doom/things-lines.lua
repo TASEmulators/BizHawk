@@ -193,16 +193,21 @@ local function iterate()
 		if id == OUT_OF_BOUNDS then break end
 		
 		if id ~= NULL_OBJECT then
+			local special =   rws(addr+LineOffsets.special, "Lines")
 			local v1 = { x =  rls(addr+LineOffsets.v1_x, "Lines"),
 			             y = -rls(addr+LineOffsets.v1_y, "Lines") }
 			local v2 = { x =  rls(addr+LineOffsets.v2_x, "Lines"),
 			             y = -rls(addr+LineOffsets.v2_y, "Lines") }
+
+			local color
+			if special ~= 0 then color = 0xffcc00ff end
+
 			line(
 				mapify_x(v1.x),
 				mapify_y(v1.y),
 				mapify_x(v2.x),
 				mapify_y(v2.y),
-				0xffcccccc)
+				color or 0xffcccccc)
 		end
 	end
 end
