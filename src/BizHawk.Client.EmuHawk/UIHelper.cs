@@ -8,11 +8,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static SizeF AutoScaleCurrentSize { get; } = GetCurrentAutoScaleSize();
 
-        public static SizeF AutoScaleBaseSize { get; } = new SizeF(6F, 13F);
+		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / 6F;
 
-		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / AutoScaleBaseSize.Width;
-
-		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / AutoScaleBaseSize.Height;
+		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / 13F;
 
 		public static SizeF AutoScaleFactor { get; } = new SizeF(AutoScaleFactorX, AutoScaleFactorY);
 
