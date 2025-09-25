@@ -50,11 +50,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PaletteViewer_Paint(object sender, PaintEventArgs e)
 		{
-			int size = UIHelper.ScaleX(16);
+			int size = UIHelper.ScaleDpi(16);
 			for (int i = 0; i < 16; i++)
 			{
-				int x = UIHelper.ScaleX(16 * i);
-				int y = UIHelper.ScaleY(16);
+				int x = UIHelper.ScaleDpi(16 * i);
+				int y = UIHelper.ScaleDpi(16);
 				BgPalettesBrush.Color = BgPalettes[i].Color;
 				SpritePalettesBrush.Color = SpritePalettes[i].Color;
 				e.Graphics.FillRectangle(BgPalettesBrush, new Rectangle(x, 0, size, size));

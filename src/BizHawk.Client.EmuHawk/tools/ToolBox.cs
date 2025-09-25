@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		public ToolBox()
 		{
 			InitializeComponent();
-			ToolBoxStrip.ImageScalingSize = UIHelper.Scale(ToolBoxStrip.ImageScalingSize);
+			ToolBoxStrip.ImageScalingSize = UIHelper.ScaleDpi(ToolBoxStrip.ImageScalingSize);
 			Icon = ToolIcon;
 		}
 

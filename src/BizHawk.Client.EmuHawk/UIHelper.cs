@@ -7,11 +7,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class UIHelper
 	{
-		private static SizeF AutoScaleCurrentSize { get; } = GetCurrentAutoScaleSize();
+		private static SizeF AutoScaleCurrentSize { get; } = GetCurrentAutoScaleSize(AutoScaleMode.Font);
 
-		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / DEFAULT_DPI;
+		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / 6F;
 
-		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / DEFAULT_DPI;
+		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / 13F;
+
+		public static float DpiFactor { get; } = GetCurrentAutoScaleSize(AutoScaleMode.Dpi).Width / DEFAULT_DPI;
 
 		public static SizeF AutoScaleFactor { get; } = new SizeF(AutoScaleFactorX, AutoScaleFactorY);
 
@@ -35,15 +37,25 @@ namespace BizHawk.Client.EmuHawk
 			return new Size(ScaleX(s.Width), ScaleY(s.Height));
 		}
 
-		private static SizeF GetCurrentAutoScaleSize()
+		private static SizeF GetCurrentAutoScaleSize(AutoScaleMode mode)
 		{
-			using var form = new Form { AutoScaleMode = AutoScaleMode.Dpi };
+			using var form = new Form { AutoScaleMode = mode };
 			return form.CurrentAutoScaleDimensions;
 		}
 
-		public static Point Unscale(Point p)
+		public static int ScaleDpi(int size)
 		{
-			return new Point((p.X / AutoScaleFactorX).RoundToInt(), (p.Y / AutoScaleFactorY).RoundToInt());
+			return (size * DpiFactor).RoundToInt();
+		}
+
+		public static Size ScaleDpi(Size size)
+		{
+			return new Size(ScaleDpi(size.Width), ScaleDpi(size.Height));
+		}
+
+		public static Point UnscaleDpi(Point p)
+		{
+			return new Point((p.X / DpiFactor).RoundToInt(), (p.Y / DpiFactor).RoundToInt());
 		}
 
 		public static int UnscaleX(int size)

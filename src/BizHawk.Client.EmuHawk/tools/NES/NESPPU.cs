@@ -537,7 +537,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleSpriteViewMouseMove(Point e)
 		{
-			var p = UIHelper.Unscale(e);
+			var p = UIHelper.UnscaleDpi(e);
 
 			byte[] oam = _ppu.GetOam();
 			byte[] ppuBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePaletteViewMouseMove(Point e)
 		{
-			var p = UIHelper.Unscale(e);
+			var p = UIHelper.UnscaleDpi(e);
 			if (p.X < 0 || p.X >= 256 || p.Y < 0 || p.Y >= 32) return;
 
 			int baseAddr = 0x3F00;
@@ -732,7 +732,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PatternView_MouseMove(object sender, MouseEventArgs e)
 		{
-			var p = UIHelper.Unscale(e.Location);
+			var p = UIHelper.UnscaleDpi(e.Location);
 			int table = 0;
 			int address;
 			int tile;
@@ -797,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateFormSize()
 		{
-			ClientSize = ClientSize with { Width = UIHelper.ScaleX(ChrRomView ? 850 : 570) };
+			ClientSize = ClientSize with { Width = UIHelper.ScaleDpi(ChrRomView ? 850 : 570) };
 		}
 
 		private void ChrRomViewReload()
