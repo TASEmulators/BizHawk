@@ -61,12 +61,34 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static string SerializeTable(LuaTable lti)
 			{
-				var entries = lti.ToArray();
-				return string.Concat(entries.All(static kvp => kvp.Key is long)
-					? entries.OrderBy(static kvp => (long) kvp.Key, Comparer<long>.Default)
-						.Select(static kvp => $"{kvp.Key}: \"{kvp.Value}\"\n")
-					: entries.OrderBy(static kvp => kvp.Key)
-						.Select(static kvp => $"\"{kvp.Key}\": \"{kvp.Value}\"\n"));
+				var sorted = lti
+					.OrderBy(static item => item.Key switch
+					{
+						long => 0,
+						string => 1,
+						double => 2,
+						bool => 3,
+						_ => 4, // tables, functions, ...
+					})
+					.ThenBy(static item => item.Key as long?)
+					.ThenBy(static item => item.Key as double?)
+					.ThenBy(static item => item.ToString());
+
+				var sb = new StringBuilder();
+				foreach (var item in sorted)
+				{
+					Append(sb, item.Key);
+					sb.Append(": ");
+					Append(sb, item.Value);
+					sb.Append('\n');
+				}
+				return sb.ToString();			
+
+				static void Append(StringBuilder sb, object value)
+				{
+					if (value is string str) sb.Append('"').Append(str).Append('"');
+					else sb.Append(value);
+				}
 			}
 
 			if (!Tools.Has<LuaConsole>())
