@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// handy for stashing the EDC somewhere with little endian
 		/// </summary>
 		public static void PokeUint(byte[] data, int offset, uint value)
-			=> BinaryPrimitives.WriteUInt32BigEndian(data.AsSpan(start: offset), value);
+			=> BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(start: offset), value);
 
 		/// <summary>
 		/// calculates EDC checksum for the range of data provided
