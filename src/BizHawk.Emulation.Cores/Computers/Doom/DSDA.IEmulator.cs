@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public bool FrameAdvance(IController controller, bool renderVideo, bool renderAudio)
 		{
 			// Declaring inputs
+			LibDSDA.PackedPlayerInput camera = new();
 			LibDSDA.PackedPlayerInput[] players = [
 				new LibDSDA.PackedPlayerInput(),
 				new LibDSDA.PackedPlayerInput(),
@@ -56,6 +57,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (controller.IsPressed("Automap Grid"))        automapButtons |= (1 << 9);
 			if (controller.IsPressed("Automap Mark"))        automapButtons |= (1 << 10);
 			if (controller.IsPressed("Automap Clear Marks")) automapButtons |= (1 << 11);
+
+
+			camera.RunSpeed      = controller.AxisValue($"Camera Run Speed");
+			camera.StrafingSpeed = controller.AxisValue($"Camera Strafing Speed");
+			camera.WeaponSelect  = controller.AxisValue($"Camera Mode");
+			camera.FlyLook       = controller.AxisValue($"Camera Fly");
+
+			if (controller.IsPressed($"Camera Reset"))
+				camera.Buttons |= LibDSDA.Buttons.Fire;
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -258,10 +268,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			IsLagFrame = _core.dsda_frame_advance(
 				automapButtons,
-				ref players[0],
-				ref players[1],
-				ref players[2],
-				ref players[3],
+				players,
+				ref camera,
 				ref renderInfo);
 
 			if (renderVideo)

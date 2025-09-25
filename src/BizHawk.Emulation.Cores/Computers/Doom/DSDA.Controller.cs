@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				if (PlayerPresent(settings, port))
 				{
 					controller
-						.AddAxis($"P{port} Run Speed", (-50).RangeTo(50), 0)
+						.AddAxis($"P{port} Run Speed",      (-50).RangeTo(50), 0)
 						.AddAxis($"P{port} Strafing Speed", (-50).RangeTo(50), 0)
 						.AddAxis($"P{port} Turning Speed", (-128).RangeTo(127), 0);
 
@@ -112,6 +112,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				"Automap Mark",
 				"Automap Clear Marks"
 			]);
+
+			controller
+				.AddAxis($"Camera Mode",                0.RangeTo(3), 0)
+				.AddAxis($"Camera Run Speed",      (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Strafing Speed", (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Turning Speed",  (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Fly",            (-128).RangeTo(127), 0);
+
+			controller.BoolButtons.Add("Camera Reset");
 
 			return controller.MakeImmutable();
 		}

@@ -8,6 +8,8 @@ AutomapButtons last_buttons = { 0 };
 
 void render_updates(struct PackedRenderInfo *renderInfo)
 {
+                       displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
+                       dsda_reveal_map               = renderInfo->MapDetails;
   dsda_UpdateIntConfig(dsda_config_usegamma,           renderInfo->Gamma,              true);
   dsda_UpdateIntConfig(dsda_config_automap_overlay,    renderInfo->MapOverlay,         true);
   dsda_UpdateIntConfig(dsda_config_show_messages,      renderInfo->ShowMessages,       true);
@@ -143,18 +145,18 @@ void player_input(struct PackedPlayerInput *src, int id)
   dest->buttons     = src->Buttons & REGULAR_BUTTON_MASK;
 
   // explicitly select artifact through in-game GUI
-  if (buttons & INVENTORY_LEFT && !(lastButtons[id] & INVENTORY_LEFT))
+  if (buttons & BUTTON_INVENTORY_LEFT && !(lastButtons[id] & BUTTON_INVENTORY_LEFT))
     InventoryMoveLeft ();
 
-  if (buttons & INVENTORY_RIGHT && !(lastButtons[id] & INVENTORY_RIGHT))
+  if (buttons & BUTTON_INVENTORY_RIGHT && !(lastButtons[id] & BUTTON_INVENTORY_RIGHT))
     InventoryMoveRight();
 
-  if (buttons & INVENTORY_SKIP && !(lastButtons[id] & INVENTORY_SKIP))
+  if (buttons & BUTTON_INVENTORY_SKIP && !(lastButtons[id] & BUTTON_INVENTORY_SKIP))
   { /* TODO */ }
 
   /* THE REST IS COPYPASTE FROM G_BuildTiccmd()!!! */
 
-  if (buttons & ARTIFACT_USE && !(lastButtons[id] & ARTIFACT_USE))
+  if (buttons & BUTTON_ARTIFACT_USE && !(lastButtons[id] & BUTTON_ARTIFACT_USE))
   {
     // use currently selected artifact
     if (inventory)
@@ -170,7 +172,7 @@ void player_input(struct PackedPlayerInput *src, int id)
   }
 
   // look/fly up/down/center keys override analog value
-  if (buttons & LOOK_DOWN || buttons & LOOK_UP)
+  if (buttons & BUTTON_LOOK_DOWN || buttons & BUTTON_LOOK_UP)
     ++lookHeld[id];
   else
     lookHeld[id] = 0;
@@ -180,12 +182,12 @@ void player_input(struct PackedPlayerInput *src, int id)
   else
     lspeed = 2;
 
-  if (buttons & LOOK_UP)     look      =  lspeed;
-  if (buttons & LOOK_DOWN)   look      = -lspeed;
-  if (buttons & LOOK_CENTER) look      = TOCENTER;
-  if (buttons & FLY_UP)      flyheight =  5; // note that the actual flyheight will be twice this
-  if (buttons & FLY_DOWN)    flyheight = -5;
-  if (buttons & FLY_CENTER)
+  if (buttons & BUTTON_LOOK_UP)     look      =  lspeed;
+  if (buttons & BUTTON_LOOK_DOWN)   look      = -lspeed;
+  if (buttons & BUTTON_LOOK_CENTER) look      = TOCENTER;
+  if (buttons & BUTTON_FLY_UP)      flyheight =  5; // note that the actual flyheight will be twice this
+  if (buttons & BUTTON_FLY_DOWN)    flyheight = -5;
+  if (buttons & BUTTON_FLY_CENTER)
   {
     flyheight = TOCENTER;
     look      = TOCENTER;
@@ -231,6 +233,42 @@ void player_input(struct PackedPlayerInput *src, int id)
   lastButtons[id] = buttons;
 }
 
+void walkcam_inputs(struct PackedPlayerInput *inputs)
+{
+  if (!inputs->WeaponSelect)
+    return;
+
+  walkcamera.type = inputs->WeaponSelect - 1; // repurposed!
+  P_SyncWalkcam(true, (walkcamera.type!=2));
+
+  if (inputs->Buttons & BT_ATTACK)
+  {
+    walkcamera.x     = players[consoleplayer].mo->x;
+    walkcamera.y     = players[consoleplayer].mo->y;
+    walkcamera.angle = players[consoleplayer].mo->angle;
+    //walkcamera.pitch = dsda_PlayerPitch(&players[0]);
+  }
+
+  // moving forward
+  walkcamera.x += FixedMul(
+    (ORIG_FRICTION / 4) * inputs->RunSpeed,
+    finecosine[walkcamera.angle >> ANGLETOFINESHIFT]);
+  walkcamera.y += FixedMul(
+    (ORIG_FRICTION / 4) * inputs->RunSpeed,
+    finesine[walkcamera.angle >> ANGLETOFINESHIFT]);
+
+  // strafing
+  walkcamera.x += FixedMul(
+    (ORIG_FRICTION / 6) * inputs->StrafingSpeed,
+    finecosine[(walkcamera.angle - ANG90) >> ANGLETOFINESHIFT]);
+  walkcamera.y += FixedMul(
+    (ORIG_FRICTION / 6) * inputs->StrafingSpeed,
+    finesine[(walkcamera.angle - ANG90) >> ANGLETOFINESHIFT]);
+
+  walkcamera.z     += (char)inputs->FlyLook; // repurposed!
+  walkcamera.angle += ((    inputs->TurningSpeed / 8) << ANGLETOFINESHIFT);
+}
+
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
 {
   int nSamples = 0;
@@ -272,7 +310,7 @@ ECL_EXPORT void dsda_init_video(struct PackedRenderInfo *renderInfo)
   headlessUpdateVideo();
 }
 
-ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerInput *player1Inputs, struct PackedPlayerInput *player2Inputs, struct PackedPlayerInput *player3Inputs, struct PackedPlayerInput *player4Inputs, struct PackedRenderInfo *renderInfo)
+ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerInput *playerInputs, struct PackedPlayerInput *walkcamInputs, struct PackedRenderInfo *renderInfo)
 {
   if (renderInfo->RenderVideo)
     render_updates(renderInfo);
@@ -280,19 +318,20 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
   // Setting inputs
   headlessClearTickCommand();
 
-  if (renderInfo->RenderVideo && gamestate == GS_LEVEL)
+  if (gamestate == GS_LEVEL)
+  {
     automap_inputs(buttons);
+    walkcam_inputs(walkcamInputs);
+  }
 
   if (buttons.data)
     finale_inputs();
 
-  dsda_reveal_map = renderInfo->MapDetails;
-
   // Setting Players inputs
-  player_input(player1Inputs, 0);
-  player_input(player2Inputs, 1);
-  player_input(player3Inputs, 2);
-  player_input(player4Inputs, 3);
+  player_input(&playerInputs[0], 0);
+  player_input(&playerInputs[1], 1);
+  player_input(&playerInputs[2], 2);
+  player_input(&playerInputs[3], 3);
 
   // Enabling/Disabling rendering, as required
   if ( renderInfo->RenderVideo) headlessEnableVideoRendering();
@@ -316,10 +355,7 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
 
     // Updating video
     if (renderInfo->RenderVideo)
-    {
-      displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
       headlessUpdateVideo();
-    }
   }
 
   // Assume wipe is lag

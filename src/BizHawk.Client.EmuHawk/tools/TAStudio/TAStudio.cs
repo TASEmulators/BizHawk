@@ -412,9 +412,7 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name.EndsWithOrdinal("Tape")
 					|| c.Name.EndsWithOrdinal("Disk")
 					|| c.Name.EndsWithOrdinal("Block")
-					|| c.Name.EndsWithOrdinal("Status")
-					|| c.Name.Contains("Automap")
-					|| c.Name.Contains("Gamma"));
+					|| c.Name.EndsWithOrdinal("Status"));
 
 			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{
@@ -426,6 +424,23 @@ namespace BizHawk.Client.EmuHawk
 						|| c.Name.EndsWithOrdinal("A Right"));
 
 				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
+			}
+			else if (Emulator.SystemId is VSystemID.Raw.Doom)
+			{
+				var columns = TasView.AllColumns
+					.Where(c =>
+						c.Name.Contains("Forward")
+						|| c.Name.Contains("Backward")
+						|| c.Name.Contains("Automap")
+						|| c.Name.Contains("Camera")
+						|| c.Name.Contains("Gamma")
+						|| c.Name.Contains("Mouse")
+						|| c.Name.Contains("Weapon Select ")
+						|| c.Name.Contains("Turn ")
+						|| c.Name.Contains("Strafe")
+						|| c.Name.EndsWithOrdinal("Run"));
+
+				columnsToHide = columnsToHide.Concat(columns);
 			}
 
 			foreach (var column in columnsToHide)

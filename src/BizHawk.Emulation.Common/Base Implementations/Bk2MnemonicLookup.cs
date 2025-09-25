@@ -854,6 +854,7 @@ namespace BizHawk.Emulation.Common
 				["Automap Mark"] = 'm',
 				["Automap Clear Marks"] = 'c',
 				["Backward"] = 'v',
+				["Camera Reset"] = 'R',
 				["Change Gamma"] = 'G',
 				["End Player"] = 'E',
 				["Fire"] = 'F',
@@ -1038,6 +1039,11 @@ namespace BizHawk.Emulation.Common
 				["Turning Speed Frac."] = "t",
 				["Use Artifact"] = "U",
 				["Weapon Select"] = "W",
+				["Camera Mode"] = "cM",
+				["Camera Run Speed"] = "cR",
+				["Camera Strafing Speed"] = "cS",
+				["Camera Turning Speed"] = "cT",
+				["Camera Fly"] = "cF",
 			},
 			[VSystemID.Raw.DOS] = new()
 			{

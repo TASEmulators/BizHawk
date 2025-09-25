@@ -141,10 +141,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool dsda_frame_advance(
 			int commonInputs,
-			ref PackedPlayerInput player1Inputs,
-			ref PackedPlayerInput player2Inputs,
-			ref PackedPlayerInput player3Inputs,
-			ref PackedPlayerInput player4Inputs,
+			PackedPlayerInput[] playerInputs,
+			ref PackedPlayerInput walkcamInputs,
 			ref PackedRenderInfo renderInfo);
 	}
 }
