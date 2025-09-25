@@ -48,12 +48,56 @@ public static class RoslynUtils
 		return null;
 	}
 
+	public static string GetAccessModifierKeyword(this ITypeSymbol typeSym)
+		=> typeSym.DeclaredAccessibility.ToCSharpKeyword(isMember: typeSym.ContainingType is not null);
+
+	public static string GetCSharpKeywordOrName(this ITypeSymbol typeSym)
+		=> typeSym.SpecialType switch
+		{
+			SpecialType.System_Object => "object",
+			SpecialType.System_Void => "void",
+			SpecialType.System_Boolean => "bool",
+			SpecialType.System_Char => "char",
+			SpecialType.System_SByte => "sbyte",
+			SpecialType.System_Byte => "byte",
+			SpecialType.System_Int16 => "short",
+			SpecialType.System_UInt16 => "ushort",
+			SpecialType.System_Int32 => "int",
+			SpecialType.System_UInt32 => "uint",
+			SpecialType.System_Int64 => "long",
+			SpecialType.System_UInt64 => "ulong",
+			SpecialType.System_Decimal => "decimal",
+			SpecialType.System_Single => "float",
+			SpecialType.System_Double => "double",
+			SpecialType.System_String => "string",
+			_ => typeSym.GetMetadataNameStr(),
+		};
+
 	public static bool? GetIsCLSCompliant(this ITypeSymbol typeSym, ISymbol clsCompliantAttrSym)
 		=> typeSym.AllEnclosingTypes().Prepend(typeSym)
 			.Select(typeSym1 => typeSym1.GetAttributes()
 				.FirstOrDefault(ad => clsCompliantAttrSym.Matches(ad.AttributeClass))
 				?.ConstructorArguments[0].Value as bool?)
 			.FirstOrDefault(static tristate => tristate is not null);
+
+	public static string GetMetadataNameStr(this INamedTypeSymbol typeSym)
+		=> typeSym.ContainingType is INamedTypeSymbol parent
+			? $"{parent.GetMetadataNameStr()}.{typeSym.Name}"
+			: typeSym.ContainingNamespace is INamespaceSymbol parentNS
+				? $"{parentNS.GetMetadataNameStr()}.{typeSym.Name}"
+				: typeSym.Name;
+
+	public static string GetMetadataNameStr(this INamespaceSymbol nsSym)
+		=> nsSym.ContainingNamespace is INamespaceSymbol { IsGlobalNamespace: false } parent
+			? $"{parent.GetMetadataNameStr()}.{nsSym.Name}"
+			: nsSym.Name;
+
+	private static string GetMetadataNameStr(this ITypeSymbol typeSym)
+		=> typeSym is INamedTypeSymbol named
+			? named.GetMetadataNameStr()
+			: typeSym.ContainingNamespace is INamespaceSymbol parentNS
+				? $"{parentNS.GetMetadataNameStr()}.{typeSym.Name}"
+				: typeSym.Name;
 
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
 		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"
@@ -201,6 +245,20 @@ public static class RoslynUtils
 
 	public static TextSpan Slice(this TextSpan span, int start, int length)
 		=> new(start: span.Start + start, length: length);
+
+	public static string ToCSharpKeyword(this Accessibility access, bool isMember = false)
+		=> access switch
+		{
+			Accessibility.Public => "public",
+			Accessibility.Private => "private",
+			Accessibility.Internal => "internal", // possibly `file`, but can't distinguish those, nor would that be useful
+			Accessibility.Protected => "protected",
+			Accessibility.NotApplicable when isMember => "private",
+			Accessibility.NotApplicable when !isMember => "internal",
+			Accessibility.ProtectedOrInternal => "protected internal",
+			Accessibility.ProtectedAndInternal => "private protected",
+			_ => string.Empty,
+		};
 
 	public static string ToMetadataNameStr(this NameSyntax nameSyn)
 		=> nameSyn switch
