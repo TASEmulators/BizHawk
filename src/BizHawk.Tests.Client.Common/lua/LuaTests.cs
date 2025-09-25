@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 
 using BizHawk.Client.Common;
+using NLua;
 
 namespace BizHawk.Tests.Client.Common.Lua
 {
@@ -915,6 +916,31 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			ExpectedValue = expected;
 			_ = LuaInstance.DoString(script);
+		}
+
+		[DataRow(
+			"""{123, "abc", true}""",
+			"1: 123\n" +
+			"2: \"abc\"\n" +
+			"3: True\n"
+		)]
+		[DataRow(
+			"""{ [456]="integer", [123]="integer", ["def"]="string", ["abc"]="string", [assert]="function", [false]="boolean", [coroutine.create(assert)]="thread", [{}]="table", }""",
+			"123: \"integer\"\n" +
+			"456: \"integer\"\n" +
+			"\"abc\": \"string\"\n" +
+			"\"def\": \"string\"\n" +
+			"False: \"boolean\"\n" +
+			"function: \"function\"\n" +
+			"table: \"table\"\n" +
+			"thread: \"thread\"\n"
+		)]
+		[TestMethod]
+		public void LuaExtensions_SerializeTable(string tableDeclaration, string expected)
+		{
+			var table = (LuaTable)LuaInstance.DoString($"return {tableDeclaration}").Single();
+			var actual = table.Serialize();
+			Assert.AreEqual(expected, actual);
 		}
 	}
 }
