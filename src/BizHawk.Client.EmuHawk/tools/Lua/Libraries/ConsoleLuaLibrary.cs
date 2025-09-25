@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -82,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 					Append(sb, item.Value);
 					sb.Append('\n');
 				}
-				return sb.ToString();			
+				return sb.ToString();
 
 				static void Append(StringBuilder sb, object value)
 				{
