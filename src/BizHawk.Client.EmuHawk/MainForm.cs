@@ -3693,6 +3693,9 @@ namespace BizHawk.Client.EmuHawk
 					launchLibretroCore: ioaRetro?.CorePath,
 					forcedCoreName: forcedCoreName);
 
+				var openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
+				Config.RecentRoms.Add(openAdvancedArgs);
+
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
@@ -3713,7 +3716,6 @@ namespace BizHawk.Client.EmuHawk
 
 				if (result)
 				{
-					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
 					Game = loader.Game;
@@ -3789,8 +3791,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.AsBoardInfo().BoardName);
 					}
-
-					Config.RecentRoms.Add(openAdvancedArgs);
 
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.NewMovieQueued)
