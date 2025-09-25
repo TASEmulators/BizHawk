@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				}, 4)
 			};
 
-			_memoryDomains = new(mm);
+			_memoryDomains = new(mm, this);
 			WireMemoryDomainPointers();
 		}
 

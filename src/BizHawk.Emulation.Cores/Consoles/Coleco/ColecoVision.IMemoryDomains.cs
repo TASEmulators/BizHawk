@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			SyncAllByteArrayDomains();
 
-			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList(), this);
 			((BasicServiceProvider)ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 
 			_memoryDomainsInit = true;

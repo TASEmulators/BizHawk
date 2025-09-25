@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				(a, v) => { OctoshockDll.shock_PokeMemory(psx, (uint)a, v); },
 				4));
 
-			MemoryDomains = new MemoryDomainList(mmd);
+			MemoryDomains = new MemoryDomainList(mmd, this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 

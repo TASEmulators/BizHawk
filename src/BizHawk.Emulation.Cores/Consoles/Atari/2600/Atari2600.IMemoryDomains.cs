@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			SyncAllByteArrayDomains();
 
-			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList(), this);
 			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
 
 			_memoryDomainsInit = true;

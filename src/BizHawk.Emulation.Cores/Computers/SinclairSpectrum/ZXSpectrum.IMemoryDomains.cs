@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			SyncAllByteArrayDomains();
 
-			memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList(), this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 
 			_memoryDomainsInit = true;
