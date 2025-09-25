@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 					})
 					.ThenBy(static item => item.Key as long?)
 					.ThenBy(static item => item.Key as double?)
-					.ThenBy(static item => item.Key.ToString(), StringComparer.InvariantCulture);
+					.ThenBy(static item => item.Key is not (long or double) ? item.Key.ToString() : null, StringComparer.InvariantCulture);
 
 				var sb = new StringBuilder();
 				foreach (var item in sorted)
