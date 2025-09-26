@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 				{
 					double d => d,
 					long i => i,
-					_ => (double?)null
+					_ => (double?)null,
 				})
 				.ThenBy(static item => item.Key as long?) // sort large integers that double can't represent
 				.ThenBy(static item => item.Key is not (long or double) ? item.Key.ToString() : null, StringComparer.InvariantCulture);
