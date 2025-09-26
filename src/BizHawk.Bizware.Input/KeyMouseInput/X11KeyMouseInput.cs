@@ -229,62 +229,30 @@ namespace BizHawk.Bizware.Input
 					{
 						var names = Marshal.PtrToStructure<XkbNamesRec>(keyboard->names);
 
-						for (int i = keyboard->min_key_code; i <= keyboard->max_key_code; i++)
+						int keyCodeMin = keyboard->min_key_code;
+						int keyCodeMax = keyboard->max_key_code;
+						for (var i = keyCodeMin; i <= keyCodeMax; i++)
 						{
 							var name = new string(names.keys[i].name, 0, 4);
-							var key = name switch
+							if (XkbStrMap.TryGetValue(name, out var key))
 							{
-								"TLDE" => DistinctKey.OemTilde,
-								"AE01" => DistinctKey.D1,
-								"AE02" => DistinctKey.D2,
-								"AE03" => DistinctKey.D3,
-								"AE04" => DistinctKey.D4,
-								"AE05" => DistinctKey.D5,
-								"AE06" => DistinctKey.D6,
-								"AE07" => DistinctKey.D7,
-								"AE08" => DistinctKey.D8,
-								"AE09" => DistinctKey.D9,
-								"AE10" => DistinctKey.D0,
-								"AE11" => DistinctKey.OemMinus,
-								"AE12" => DistinctKey.OemPlus,
-								"AD01" => DistinctKey.Q,
-								"AD02" => DistinctKey.W,
-								"AD03" => DistinctKey.E,
-								"AD04" => DistinctKey.R,
-								"AD05" => DistinctKey.T,
-								"AD06" => DistinctKey.Y,
-								"AD07" => DistinctKey.U,
-								"AD08" => DistinctKey.I,
-								"AD09" => DistinctKey.O,
-								"AD10" => DistinctKey.P,
-								"AD11" => DistinctKey.OemOpenBrackets,
-								"AD12" => DistinctKey.OemCloseBrackets,
-								"AC01" => DistinctKey.A,
-								"AC02" => DistinctKey.S,
-								"AC03" => DistinctKey.D,
-								"AC04" => DistinctKey.F,
-								"AC05" => DistinctKey.G,
-								"AC06" => DistinctKey.H,
-								"AC07" => DistinctKey.J,
-								"AC08" => DistinctKey.K,
-								"AC09" => DistinctKey.L,
-								"AC10" => DistinctKey.OemSemicolon,
-								"AC11" => DistinctKey.OemQuotes,
-								"AB01" => DistinctKey.Z,
-								"AB02" => DistinctKey.X,
-								"AB03" => DistinctKey.C,
-								"AB04" => DistinctKey.V,
-								"AB05" => DistinctKey.B,
-								"AB06" => DistinctKey.N,
-								"AB07" => DistinctKey.M,
-								"AB08" => DistinctKey.OemComma,
-								"AB09" => DistinctKey.OemPeriod,
-								"AB10" => DistinctKey.OemQuestion,
-								"BKSL" => DistinctKey.OemPipe,
-								_ => DistinctKey.Unknown,
-							};
+								KeyEnumMap[i] = key;
+								continue;
+							}
 
-							KeyEnumMap[i] = key;
+							for (var j = 0; j < names.num_key_aliases; j++)
+							{
+								var real = new string(names.key_aliases[j].real, 0, 4);
+								if (name == real)
+								{
+									var alias = new string(names.key_aliases[j].alias, 0, 4);
+									if (XkbStrMap.TryGetValue(alias, out key))
+									{
+										KeyEnumMap[i] = key;
+										break;
+									}
+								}
+							}
 						}
 					}
 
@@ -517,6 +485,134 @@ namespace BizHawk.Bizware.Input
 			[Keysym.KP_Page_Up] = DistinctKey.NumPad9,
 			[Keysym.KP_Delete] = DistinctKey.Decimal,
 			[Keysym.KP_Enter] = DistinctKey.NumPadEnter,
+		};
+
+		/// <summary>
+		/// These map xkb keycode strings to keys
+		/// These should be used first, as keycodes correspond to keyboard positions
+		/// </summary>
+		private static readonly IReadOnlyDictionary<string, DistinctKey> XkbStrMap = new Dictionary<string, DistinctKey>
+		{
+			["TLDE"] = DistinctKey.OemTilde,
+			["AE01"] = DistinctKey.D1,
+			["AE02"] = DistinctKey.D2,
+			["AE03"] = DistinctKey.D3,
+			["AE04"] = DistinctKey.D4,
+			["AE05"] = DistinctKey.D5,
+			["AE06"] = DistinctKey.D6,
+			["AE07"] = DistinctKey.D7,
+			["AE08"] = DistinctKey.D8,
+			["AE09"] = DistinctKey.D9,
+			["AE10"] = DistinctKey.D0,
+			["AE11"] = DistinctKey.OemMinus,
+			["AE12"] = DistinctKey.OemPlus,
+			["AD01"] = DistinctKey.Q,
+			["AD02"] = DistinctKey.W,
+			["AD03"] = DistinctKey.E,
+			["AD04"] = DistinctKey.R,
+			["AD05"] = DistinctKey.T,
+			["AD06"] = DistinctKey.Y,
+			["AD07"] = DistinctKey.U,
+			["AD08"] = DistinctKey.I,
+			["AD09"] = DistinctKey.O,
+			["AD10"] = DistinctKey.P,
+			["AD11"] = DistinctKey.OemOpenBrackets,
+			["AD12"] = DistinctKey.OemCloseBrackets,
+			["AC01"] = DistinctKey.A,
+			["AC02"] = DistinctKey.S,
+			["AC03"] = DistinctKey.D,
+			["AC04"] = DistinctKey.F,
+			["AC05"] = DistinctKey.G,
+			["AC06"] = DistinctKey.H,
+			["AC07"] = DistinctKey.J,
+			["AC08"] = DistinctKey.K,
+			["AC09"] = DistinctKey.L,
+			["AC10"] = DistinctKey.OemSemicolon,
+			["AC11"] = DistinctKey.OemQuotes,
+			["AB01"] = DistinctKey.Z,
+			["AB02"] = DistinctKey.X,
+			["AB03"] = DistinctKey.C,
+			["AB04"] = DistinctKey.V,
+			["AB05"] = DistinctKey.B,
+			["AB06"] = DistinctKey.N,
+			["AB07"] = DistinctKey.M,
+			["AB08"] = DistinctKey.OemComma,
+			["AB09"] = DistinctKey.OemPeriod,
+			["AB10"] = DistinctKey.OemQuestion,
+			["BKSL"] = DistinctKey.OemPipe,
+			["LSGT"] = DistinctKey.OemPipe,
+			["SPCE"] = DistinctKey.Space,
+			["ESC\0"] = DistinctKey.Escape,
+			["RTRN"] = DistinctKey.Enter,
+			["TAB\0"] = DistinctKey.Tab,
+			["BKSP"] = DistinctKey.Back,
+			["INS\0"] = DistinctKey.Insert,
+			["DELE"] = DistinctKey.Delete,
+			["RGHT"] = DistinctKey.Right,
+			["LEFT"] = DistinctKey.Left,
+			["DOWN"] = DistinctKey.Down,
+			["UP\0\0"] = DistinctKey.Up,
+			["PGUP"] = DistinctKey.PageUp,
+			["PGDN"] = DistinctKey.PageDown,
+			["HOME"] = DistinctKey.Home,
+			["END\0"] = DistinctKey.End,
+			["CAPS"] = DistinctKey.CapsLock,
+			["SCLK"] = DistinctKey.Scroll,
+			["NMLK"] = DistinctKey.NumLock,
+			["PRSC"] = DistinctKey.PrintScreen,
+			["PAUS"] = DistinctKey.Pause,
+			["FK01"] = DistinctKey.F1,
+			["FK02"] = DistinctKey.F2,
+			["FK03"] = DistinctKey.F3,
+			["FK04"] = DistinctKey.F4,
+			["FK05"] = DistinctKey.F5,
+			["FK06"] = DistinctKey.F6,
+			["FK07"] = DistinctKey.F7,
+			["FK08"] = DistinctKey.F8,
+			["FK09"] = DistinctKey.F9,
+			["FK10"] = DistinctKey.F10,
+			["FK11"] = DistinctKey.F11,
+			["FK12"] = DistinctKey.F12,
+			["FK13"] = DistinctKey.F13,
+			["FK14"] = DistinctKey.F14,
+			["FK15"] = DistinctKey.F15,
+			["FK16"] = DistinctKey.F16,
+			["FK17"] = DistinctKey.F17,
+			["FK18"] = DistinctKey.F18,
+			["FK19"] = DistinctKey.F19,
+			["FK20"] = DistinctKey.F20,
+			["FK21"] = DistinctKey.F21,
+			["FK22"] = DistinctKey.F22,
+			["FK23"] = DistinctKey.F23,
+			["FK24"] = DistinctKey.F24,
+			["KP0\0"] = DistinctKey.NumPad0,
+			["KP1\0"] = DistinctKey.NumPad1,
+			["KP2\0"] = DistinctKey.NumPad2,
+			["KP3\0"] = DistinctKey.NumPad3,
+			["KP4\0"] = DistinctKey.NumPad4,
+			["KP5\0"] = DistinctKey.NumPad5,
+			["KP6\0"] = DistinctKey.NumPad6,
+			["KP7\0"] = DistinctKey.NumPad7,
+			["KP8\0"] = DistinctKey.NumPad8,
+			["KP9\0"] = DistinctKey.NumPad9,
+			["KPDL"] = DistinctKey.Decimal,
+			["KPDV"] = DistinctKey.Divide,
+			["KPMU"] = DistinctKey.Multiply,
+			["KPSU"] = DistinctKey.Subtract,
+			["KPAD"] = DistinctKey.Add,
+			["KPEN"] = DistinctKey.NumPadEnter,
+			["KPEQ"] = DistinctKey.OemPlus,
+			["LFSH"] = DistinctKey.LeftShift,
+			["LCTL"] = DistinctKey.LeftCtrl,
+			["LALT"] = DistinctKey.LeftAlt,
+			["LWIN"] = DistinctKey.LWin,
+			["RTSH"] = DistinctKey.RightShift,
+			["RCTL"] = DistinctKey.RightCtrl,
+			["RALT"] = DistinctKey.RightAlt,
+			["LVL3"] = DistinctKey.RightAlt,
+			["MDSW"] = DistinctKey.RightAlt,
+			["RWIN"] = DistinctKey.RWin,
+			["MENU"] = DistinctKey.Apps,
 		};
 	}
 }
