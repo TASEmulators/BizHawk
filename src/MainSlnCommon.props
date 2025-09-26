@@ -8,7 +8,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>embedded</DebugType>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT;BIZHAWKBUILD_SUPERHAWK</DefineConstants>
-		<MeziantouPolyfill_ExcludedPolyfills>T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute|T:System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute|T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute|T:System.Diagnostics.CodeAnalysis.UnscopedRefAttribute|T:System.Index|T:System.Range|T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute|T:System.Runtime.CompilerServices.CollectionBuilderAttribute|T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute|T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute|T:System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute|T:System.Runtime.CompilerServices.IsExternalInit|T:System.Runtime.CompilerServices.ModuleInitializerAttribute|T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute|T:System.Runtime.CompilerServices.RequiredMemberAttribute|T:System.Runtime.CompilerServices.SkipLocalsInitAttribute|T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute</MeziantouPolyfill_ExcludedPolyfills> <!-- these collide with PolySharp -->
+		<MeziantouPolyfill_ExcludedPolyfills>@(MeziantouPolyfill_DeferToPolySharp, '|')</MeziantouPolyfill_ExcludedPolyfills>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
 		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
@@ -16,6 +16,25 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 	</PropertyGroup>
+	<ItemGroup>
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Index" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Range" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.UnscopedRefAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CollectionBuilderAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.IsExternalInit" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.ModuleInitializerAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.RequiredMemberAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.SkipLocalsInitAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute" />
+	</ItemGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
 	</PropertyGroup>
