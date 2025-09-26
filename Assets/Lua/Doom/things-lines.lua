@@ -48,7 +48,7 @@ local LastScreenSize = {
 local PlayerOffsets = dsda.player.offsets-- player member offsets in bytes
 local MobjOffsets   = dsda.mobj.offsets-- mobj member offsets in bytes
 local LineOffsets   = dsda.line.offsets-- line member offsets in bytes
-local MobjType      = dsda.doom.mobjtype
+local MobjType      = dsda.mobjtype
 local SpriteNumber  = dsda.doom.spritenum
 local Objects       = {}
 
