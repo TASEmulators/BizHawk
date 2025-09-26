@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 using BizHawk.Client.Common;
@@ -68,6 +69,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					null => "nil",
 					LuaTable table => table.Serialize(),
+					IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
 					_ => output.ToString(),
 				});
 

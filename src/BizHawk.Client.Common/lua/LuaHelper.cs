@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -39,7 +40,7 @@ namespace BizHawk.Client.Common
 			static void Append(StringBuilder sb, object value)
 			{
 				if (value is string str) sb.Append('"').Append(str).Append('"');
-				else sb.Append(value);
+				else sb.AppendFormat(CultureInfo.InvariantCulture, "{0}", value);
 			}
 		}
 	}
