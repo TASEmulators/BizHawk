@@ -18,13 +18,18 @@ namespace BizHawk.Client.Common
 				.OrderBy(static item => item.Key switch
 				{
 					long => 0,
+					double => 0,
 					string => 1,
-					double => 2,
-					bool => 3,
-					_ => 4, // tables, functions, ...
+					bool => 2,
+					_ => 3, // tables, functions, ...
 				})
-				.ThenBy(static item => item.Key as long?)
-				.ThenBy(static item => item.Key as double?)
+				.ThenBy(static item => item.Key switch
+				{
+					double d => d,
+					long i => i,
+					_ => (double?)null
+				})
+				.ThenBy(static item => item.Key as long?) // sort large integers that double can't represent
 				.ThenBy(static item => item.Key is not (long or double) ? item.Key.ToString() : null, StringComparer.InvariantCulture);
 
 			var sb = new StringBuilder();
