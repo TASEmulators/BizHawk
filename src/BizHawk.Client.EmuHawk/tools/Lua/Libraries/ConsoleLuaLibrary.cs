@@ -1,9 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Text;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.CollectionExtensions;
 
 using NLua;
 
@@ -59,16 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
-			static string SerializeTable(LuaTable lti)
-			{
-				var entries = lti.ToArray();
-				return string.Concat(entries.All(static kvp => kvp.Key is long)
-					? entries.OrderBy(static kvp => (long) kvp.Key, Comparer<long>.Default)
-						.Select(static kvp => $"{kvp.Key}: \"{kvp.Value}\"\n")
-					: entries.OrderBy(static kvp => kvp.Key)
-						.Select(static kvp => $"\"{kvp.Key}\": \"{kvp.Value}\"\n"));
-			}
-
 			if (!Tools.Has<LuaConsole>())
 			{
 				return;
@@ -80,7 +68,8 @@ namespace BizHawk.Client.EmuHawk
 				=> sb.Append(output switch
 				{
 					null => "nil",
-					LuaTable table => SerializeTable(table),
+					LuaTable table => table.PrettyPrintShallow(),
+					IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
 					_ => output.ToString(),
 				});
 

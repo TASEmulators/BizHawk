@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 
 using BizHawk.Client.Common;
+using NLua;
 
 namespace BizHawk.Tests.Client.Common.Lua
 {
@@ -915,6 +916,65 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			ExpectedValue = expected;
 			_ = LuaInstance.DoString(script);
+		}
+
+		[DataRow(
+			"""{123, "abc", true}""",
+			"1: 123\n" +
+			"2: \"abc\"\n" +
+			"3: True\n"
+		)]
+		[DataRow(
+			"""{ [456.789]="float", [123]="integer", ["def"]="string", ["abc"]="string", [assert]="function", [false]="boolean", [coroutine.create(assert)]="thread", [{}]="table", }""",
+			"123: \"integer\"\n" +
+			"456.789: \"float\"\n" +
+			"\"abc\": \"string\"\n" +
+			"\"def\": \"string\"\n" +
+			"False: \"boolean\"\n" +
+			"function: \"function\"\n" +
+			"table: \"table\"\n" +
+			"thread: \"thread\"\n"
+		)]
+		[DataRow(
+#pragma warning disable MA0136 // Line endings on the input string don't matter
+			"""
+			{
+				[3.5] = "3.5",
+				[3] = "3",
+				[2.5] = "2.5",
+				[2] = "2",
+				[1.5] = "1.5",
+				[1] = "1",
+				[0] = "0",
+				[-1] = "-1",
+				[9223372036854775807] = "max long",
+				[9223372036854775679] = "max long - 128",
+				[9223372036854775296] = "max long - 511",
+				[9223372036854775551] = "max long - 256",
+				[9223372036854775423] = "max long - 384",
+			}
+			""",
+#pragma warning restore MA0136
+			"-1: \"-1\"\n" +
+			"0: \"0\"\n" +
+			"1: \"1\"\n" +
+			"1.5: \"1.5\"\n" +
+			"2: \"2\"\n" +
+			"2.5: \"2.5\"\n" +
+			"3: \"3\"\n" +
+			"3.5: \"3.5\"\n" +
+			"9223372036854775296: \"max long - 511\"\n" +
+			"9223372036854775423: \"max long - 384\"\n" +
+			"9223372036854775551: \"max long - 256\"\n" +
+			"9223372036854775679: \"max long - 128\"\n" +
+			"9223372036854775807: \"max long\"\n"
+		)]
+		[TestMethod]
+		public void LuaExtensions_PrettyPrintShallow(string tableDeclaration, string expected)
+		{
+			var table = (LuaTable)LuaInstance.DoString($"return {tableDeclaration}").Single();
+			var actual = table.PrettyPrintShallow();
+			Assert.AreEqual(expected, actual);
 		}
 	}
 }
