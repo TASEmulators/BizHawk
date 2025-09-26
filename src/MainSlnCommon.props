@@ -11,6 +11,7 @@
 		<MeziantouPolyfill_ExcludedPolyfills>@(MeziantouPolyfill_DeferToPolySharp, '|')</MeziantouPolyfill_ExcludedPolyfills>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
+		<PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
 		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
 		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -19,13 +20,22 @@
 	<ItemGroup>
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Index" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Range" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.StackTraceHiddenAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.DynamicDependencyAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.RequiresAssemblyFilesAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.UnscopedRefAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CollectionBuilderAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.DisableRuntimeMarshallingAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.IsExternalInit" />
@@ -33,7 +43,15 @@
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.RequiredMemberAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.SkipLocalsInitAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.InteropServices.SuppressGCTransitionAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.ObsoletedOSPlatformAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.SupportedOSPlatformAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.SupportedOSPlatformGuardAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.TargetPlatformAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.UnsupportedOSPlatformAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.UnsupportedOSPlatformGuardAttribute" />
 	</ItemGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
