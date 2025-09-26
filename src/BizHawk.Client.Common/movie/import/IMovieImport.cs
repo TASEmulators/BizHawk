@@ -7,6 +7,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 	public interface IMovieImport
 	{
 		ImportResult Import(
@@ -141,6 +142,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 	public class ImportResult
 	{
 		public IList<string> Warnings { get; } = new List<string>();

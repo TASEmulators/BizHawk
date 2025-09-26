@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ToolManager"/> class.
 		/// </summary>
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public ToolManager(
 			MainForm owner,
 			Config config,
@@ -859,6 +860,7 @@ namespace BizHawk.Client.EmuHawk
 			return tool;
 		}
 
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public RamWatch RamWatch => GetTool<RamWatch>();
 
 		public RamSearch RamSearch => GetTool<RamSearch>();

@@ -18,12 +18,12 @@ namespace BizHawk.Emulation.Common
 	/// Any <see cref="IEmulatorService"/> which isn't specified and is also not implemented is assumed to be a work-in-progress.
 	/// These should be implemented as soon as possible, simply throwing a <see cref="NotImplementedException"/> on call, and should be annotated with <see cref="FeatureNotImplementedAttribute"/>.
 	/// </remarks>
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public sealed class ServiceNotApplicableAttribute : Attribute
 	{
 		public IReadOnlyCollection<Type> NotApplicableTypes { get; }
 
-		public ServiceNotApplicableAttribute(params Type[] types)
-			=> NotApplicableTypes = types;
+		public ServiceNotApplicableAttribute(Type type)
+			=> NotApplicableTypes = [ type ];
 	}
 }

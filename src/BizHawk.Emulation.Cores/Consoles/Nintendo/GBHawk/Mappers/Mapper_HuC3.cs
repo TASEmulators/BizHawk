@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Hudson HuC3 used with Robopon and others
-	public class MapperHuC3 : MapperBase
+	public sealed partial class MapperHuC3 : MapperBase
 	{
 		public int ROM_bank;
 		public int RAM_bank;

@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Computers.Doom
 {
+	[CLSCompliant(false)]
 	public abstract class LibDSDA
 	{
 		public enum MemoryArrayType : int

@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Internal Registers
 	/// </summary>
+	[CLSCompliant(false)]
 	public sealed partial class F3850<TLink>
 	{
 		/// <summary>

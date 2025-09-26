@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
 	public partial class AmstradCPC
 	{
+		[CLSCompliant(false)]
 		public readonly struct CpuLink(CPCBase machine) : IZ80ALink
 		{
 			public byte FetchMemory(ushort address)

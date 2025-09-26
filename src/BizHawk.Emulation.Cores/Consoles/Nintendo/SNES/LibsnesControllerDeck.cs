@@ -7,6 +7,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
+	[CLSCompliant(false)]
 	public class LibsnesControllerDeck
 	{
 		public enum ControllerType
@@ -97,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			=> def.AddXYPair(nameFormat, AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128, 0.RangeTo(239), 120); //TODO verify direction against hardware
 	}
 
+	[CLSCompliant(false)]
 	public interface ILibsnesController
 	{
 		/// <summary>
@@ -119,6 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// void SyncState(Serializer ser);
 	}
 
+	[CLSCompliant(false)]
 	public class SnesController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.Joypad;
@@ -181,6 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CLSCompliant(false)]
 	public class SnesMultitapController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.Multitap;
@@ -252,6 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CLSCompliant(false)]
 	public class SnesPayloadController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.Multitap;
@@ -269,6 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CLSCompliant(false)]
 	public class SnesUnpluggedController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.None;
@@ -283,6 +289,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CLSCompliant(false)]
 	public class SnesMouseController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Mouse;
@@ -325,6 +332,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CLSCompliant(false)]
 	public class SnesSuperScopeController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.SuperScope;
@@ -359,6 +367,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
+	[CLSCompliant(false)]
 	public class SnesJustifierController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Justifier;

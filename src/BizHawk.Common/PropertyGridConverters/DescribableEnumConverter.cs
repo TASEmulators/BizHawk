@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace BizHawk.Common
 {
-	public class DescribableEnumConverter : EnumConverter
+	public partial class DescribableEnumConverter : EnumConverter
 	{
 		private readonly Type enumType;
 

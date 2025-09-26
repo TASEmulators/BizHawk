@@ -81,6 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogController.ShowMessageBox("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
+		[CLSCompliant(false)]
 		public static DialogResult DoSettingsDialog(
 			Config config,
 			IDialogParent dialogParent,

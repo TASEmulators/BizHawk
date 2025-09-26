@@ -4,7 +4,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common.PathExtensions
 {
-	public static class PathExtensions
+	public static partial class PathExtensions
 	{
 		/// <returns><see langword="true"/> iff <paramref name="childPath"/> indicates a child of <paramref name="parentPath"/>, with <see langword="false"/> being returned if either path is <see langword="null"/></returns>
 		/// <remarks>algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
@@ -174,7 +174,7 @@ namespace BizHawk.Common.PathExtensions
 					: null);
 	}
 
-	public static class PathUtils
+	public static partial class PathUtils
 	{
 		/// <returns>absolute path of the user data dir <c>$BIZHAWK_DATA_HOME</c>, or fallback value equal to <see cref="ExeDirectoryPath"/></returns>
 		/// <remarks>

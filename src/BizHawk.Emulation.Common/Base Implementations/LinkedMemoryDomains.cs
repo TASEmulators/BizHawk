@@ -10,6 +10,10 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IMemoryDomains" />
 	public class LinkedMemoryDomains : MemoryDomainList
 	{
+		public LinkedMemoryDomains(IEmulator[] linkedCores, int numCores)
+			: this(linkedCores, numCores, linkedDisassemblable: null) {}
+
+		[CLSCompliant(false)]
 		public LinkedMemoryDomains(IEmulator[] linkedCores, int numCores, LinkedDisassemblable linkedDisassemblable)
 			: base(LinkMemoryDomains(linkedCores, numCores))
 		{

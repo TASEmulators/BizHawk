@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return rom.Length;
 		}
 
+		[CLSCompliant(false)]
 		public ushort? ReadCart(ushort addr, bool peek)
 		{
 			switch (_mapper)
@@ -227,6 +228,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return null;
 		}
 
+		[CLSCompliant(false)]
 		public bool WriteCart(ushort addr, ushort value, bool poke)
 		{
 			switch (_mapper)

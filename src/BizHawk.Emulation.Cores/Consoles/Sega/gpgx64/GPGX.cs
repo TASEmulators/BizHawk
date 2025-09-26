@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
+		[CLSCompliant(false)]
 		[CoreConstructor(VSystemID.Raw.GEN)]
 		[CoreConstructor(VSystemID.Raw.SMS)]
 		[CoreConstructor(VSystemID.Raw.GG)]
@@ -323,6 +324,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly LibGPGX.cd_read_cb CDReadCallback;
 
+		[CLSCompliant(false)]
 		public static LibGPGX.CDData GetCDDataStruct(Disc cd)
 		{
 			var ret = new LibGPGX.CDData();
@@ -395,11 +397,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControllerDefinition = ControlConverter.ControllerDef;
 		}
 
+		[CLSCompliant(false)]
 		public LibGPGX.INPUT_DEVICE[] GetDevices()
 			=> (LibGPGX.INPUT_DEVICE[])_input.dev.Clone();
 
 		public bool IsMegaCD => _cds != null;
 
+		[CLSCompliant(false)]
 		public class VDPView(in LibGPGX.VDPView v, IMonitor m) : IMonitor
 		{
 			public IntPtr VRAM = v.VRAM;
@@ -416,6 +420,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				=> m.Exit();
 		}
 
+		[CLSCompliant(false)]
 		public VDPView UpdateVDPViewContext()
 		{
 			Core.gpgx_get_vdp_view(out var v);

@@ -3,6 +3,7 @@
 	/// <summary>
 	/// Represents a user's view of what equipment is plugged into the PSX FIO
 	/// </summary>
+	[CLSCompliant(false)]
 	public class OctoshockFIOConfigUser
 	{
 		public bool[] Multitaps = new bool[2];
@@ -21,6 +22,7 @@
 	/// Represents a baked-down view of what's plugged into the PSX FIO.
 	/// But really, users are interested in it too (its what produces the player number assignments)
 	/// </summary>
+	[CLSCompliant(false)]
 	public class OctoshockFIOConfigLogical
 	{
 		public bool[] Multitaps;

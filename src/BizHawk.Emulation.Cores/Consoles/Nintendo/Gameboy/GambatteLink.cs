@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.GambatteLink, "sinamas/natt")]
 	public partial class GambatteLink : ILinkable, ILinkedGameBoyCommon, IRomInfo
 	{

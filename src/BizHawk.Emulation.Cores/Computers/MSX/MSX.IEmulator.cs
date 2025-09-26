@@ -176,6 +176,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public BlipBuffer blip = new BlipBuffer(4500);
 
 		public int[] Aud = new int [9000];
+
+		[CLSCompliant(false)]
 		public uint num_samp;
 
 		private const int blipbuffsize = 4500;
@@ -224,9 +226,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			blip.Clear();
 		}
 
-		public int _frameHz = 60;
+		private int _frameHz = 60;
 
-		public int[] _vidbuffer = new int[192 * 256];
+		private int[] _vidbuffer = new int[192 * 256];
 
 		public int[] GetVideoBuffer()
 		{

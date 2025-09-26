@@ -14,6 +14,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	public abstract class LibRCheevos
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

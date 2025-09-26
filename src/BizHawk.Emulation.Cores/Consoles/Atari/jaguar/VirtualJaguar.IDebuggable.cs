@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
 	public partial class VirtualJaguar : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public unsafe IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			// 148 registers, oh my
@@ -92,6 +93,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 			=> throw new NotImplementedException();
 #pragma warning restore CA1065
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new(new[] { "System Bus" });

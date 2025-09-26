@@ -27,12 +27,14 @@ namespace BizHawk.Client.EmuHawk
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
 		private bool _forceChange;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public INESPPUViewable _nesCore { get; set; }
 
 		private INESPPUViewable _ppu
 			=> _nesCore!;
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public IEmulator _core { get; set; }
 

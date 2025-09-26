@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Information about spectrum ROM
 	/// </summary>
+	[CLSCompliant(false)]
 	public class RomData
 	{
 		/// <summary>

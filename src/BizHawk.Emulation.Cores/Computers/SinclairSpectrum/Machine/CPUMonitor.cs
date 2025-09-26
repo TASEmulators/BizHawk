@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Current BUSRQ line array
 		/// </summary>
+		[CLSCompliant(false)]
 		public ushort BUSRQ
 		{
 			get
@@ -36,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
+		[CLSCompliant(false)]
 		public CPUMonitor(SpectrumBase machine)
 		{
 			_machine = machine;
@@ -45,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The last 16-bit port address that was detected
 		/// </summary>
+		[CLSCompliant(false)]
 		public ushort lastPortAddr;
 
 		/// <summary>
@@ -362,6 +365,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Called when the first byte of an instruction is fetched
 		/// </summary>
+		[CLSCompliant(false)]
 		public void OnExecFetch(ushort firstByte)
 		{
 			// fetch instruction without incrementing pc

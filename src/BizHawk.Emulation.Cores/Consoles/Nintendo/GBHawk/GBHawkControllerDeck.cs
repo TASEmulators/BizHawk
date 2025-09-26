@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return Port1.Read(c);
 		}
 
+		[CLSCompliant(false)]
 		public (ushort X, ushort Y) ReadAcc1(IController c)
 			=> Port1.ReadAcc(c);
 
@@ -52,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static IReadOnlyDictionary<string, Func<int, IPort>> _controllerCtors;
 
+		[CLSCompliant(false)]
 		public static IReadOnlyDictionary<string, Func<int, IPort>> ControllerCtors => _controllerCtors
 			??= new Dictionary<string, Func<int, IPort>>
 			{

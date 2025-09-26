@@ -18,8 +18,10 @@ namespace BizHawk.Client.EmuHawk
 
 		protected InputManager InputManager { get; private set; }
 
+		[CLSCompliant(false)]
 		protected IMainFormForTools MainForm { get; private set; }
 
+		[CLSCompliant(Client.Common.MovieSession.CLS_IMOVIESESSION)]
 		protected IMovieSession MovieSession { get; private set; }
 
 		protected IGameInfo Game { get; private set; }
@@ -33,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public virtual void Restart() {}
 
+		[CLSCompliant(Client.Common.MovieSession.CLS_IMOVIESESSION)]
 		public void SetToolFormBaseProps(
 			DisplayManager displayManager,
 			InputManager inputManager,

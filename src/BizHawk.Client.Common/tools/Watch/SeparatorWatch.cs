@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	/// This class holds a separator for RamWatch
 	/// Use the static property Instance to get it
 	/// </summary>
-	public sealed class SeparatorWatch : Watch
+	public sealed partial class SeparatorWatch : Watch
 	{
 		public static readonly IReadOnlyList<WatchDisplayType> ValidTypes = [ WatchDisplayType.Separator ];
 

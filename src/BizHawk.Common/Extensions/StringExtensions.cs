@@ -7,7 +7,7 @@ using CommunityToolkit.HighPerformance.Buffers;
 
 namespace BizHawk.Common.StringExtensions
 {
-	public static class StringExtensions
+	public static partial class StringExtensions
 	{
 		/// <remarks>based on <see href="https://stackoverflow.com/a/35081977"/></remarks>
 		public static char[] CommonPrefix(params string[] strings)

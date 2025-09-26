@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _inputKey;
 		private IMovieController _controller;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public MovieZone(IEmulator emulator, ToolManager tools, IMovieSession movieSession, int start, int length, string key = "")
 			: this(emulator, tools, movieSession)
 		{
@@ -127,6 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			_controller = newController;
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public void PlaceZone(IMovie movie, Config config)
 		{
 			if (movie is ITasMovie tasMovie)
@@ -214,6 +216,7 @@ namespace BizHawk.Client.EmuHawk
 			File.AppendAllLines(fileName, _log);
 		}
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public MovieZone(string fileName, IDialogController dialogController, IEmulator emulator, IMovieSession movieSession, ToolManager tools)
 			: this(emulator, tools, movieSession)
 		{

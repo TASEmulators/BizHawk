@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.Ares64, "ares team, Near", "v138", "https://ares-emu.net/")]
 	public partial class Ares64 : WaterboxCore, IRegionable
 	{

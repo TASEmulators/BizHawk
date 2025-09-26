@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Initializes the datacorder device
 		/// </summary>
+		[CLSCompliant(false)]
 		public void Init(CPCBase machine) => _machine = machine;
 
 		/// <summary>

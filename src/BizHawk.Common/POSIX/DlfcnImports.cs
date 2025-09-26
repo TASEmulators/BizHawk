@@ -8,7 +8,7 @@ namespace BizHawk.Common
 	/// Linux is a partial exception, as they weren't in libc until glibc 2.34
 	/// (For reference, Debian 10, the current Debian oldoldstable, is on glibc 2.28)
 	/// </summary>
-	public static class PosixDlfcnImports
+	public static partial class PosixDlfcnImports
 	{
 		public const int RTLD_NOW = 2;
 

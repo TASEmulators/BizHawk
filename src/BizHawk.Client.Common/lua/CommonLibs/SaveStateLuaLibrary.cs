@@ -1,6 +1,6 @@
 namespace BizHawk.Client.Common
 {
-	public sealed class SaveStateLuaLibrary : LuaLibraryBase
+	public sealed partial class SaveStateLuaLibrary : LuaLibraryBase
 	{
 		public SaveStateLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

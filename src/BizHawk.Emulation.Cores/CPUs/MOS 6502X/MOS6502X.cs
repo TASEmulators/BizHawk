@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 	/// this way happens to perform better than the alternative
 	/// </remarks>
 	/// <seealso cref="IMOS6502XLink"/>
+	[CLSCompliant(false)]
 	public sealed partial class MOS6502X<TLink> where TLink : IMOS6502XLink
 	{
 		private readonly TLink _link;

@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
+	[CLSCompliant(false)]
 	public abstract class BsnesCoreImpl
 	{
 		[BizImport(CallingConvention.Cdecl)]
@@ -104,6 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public abstract bool snes_msu_sync();
 	}
 
+	[CLSCompliant(false)]
 	public partial class BsnesApi : IDisposable, IMonitor, IStatable
 	{
 		internal WaterboxHost exe;

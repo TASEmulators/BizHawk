@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
+		[CLSCompliant(false)]
 		public readonly struct CpuLink(SMS sms) : IZ80ALink
 		{
 			public byte FetchMemory(ushort address)

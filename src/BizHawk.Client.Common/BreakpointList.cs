@@ -6,8 +6,10 @@ namespace BizHawk.Client.Common
 {
 	public class BreakpointList : List<Breakpoint>
 	{
+		[CLSCompliant(false)]
 		public MemoryCallbackDelegate Callback { get; set; }
 
+		[CLSCompliant(false)]
 		public void Add(IDebuggable core, string scope, uint address, uint mask, MemoryCallbackType type)
 		{
 			Add(new Breakpoint(core, scope, Callback, address, mask, type));
@@ -68,6 +70,7 @@ namespace BizHawk.Client.Common
 		private bool _active;
 		private readonly IDebuggable _core;
 
+		[CLSCompliant(false)]
 		public Breakpoint(bool readOnly, IDebuggable core, string scope, MemoryCallbackDelegate callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			Scope = scope;
@@ -82,6 +85,7 @@ namespace BizHawk.Client.Common
 			ReadOnly = readOnly;
 		}
 
+		[CLSCompliant(false)]
 		public Breakpoint(IDebuggable core, string scope, MemoryCallbackDelegate callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			Scope = scope;
@@ -95,6 +99,7 @@ namespace BizHawk.Client.Common
 			Active = enabled;
 		}
 
+		[CLSCompliant(false)]
 		public Breakpoint(string name, bool readOnly, IDebuggable core, string scope, MemoryCallbackDelegate callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			Scope = scope;
@@ -110,8 +115,14 @@ namespace BizHawk.Client.Common
 		}
 
 		public string Scope { get; }
+
+		[CLSCompliant(false)]
 		public MemoryCallbackDelegate Callback { get; }
+
+		[CLSCompliant(false)]
 		public uint? Address { get; set; }
+
+		[CLSCompliant(false)]
 		public uint? AddressMask { get; set; }
 		public MemoryCallbackType Type { get; set; }
 		public string Name { get; }
@@ -119,6 +130,7 @@ namespace BizHawk.Client.Common
 		public bool ReadOnly { get; set; }
 
 		// Adds an existing callback
+		[CLSCompliant(false)]
 		public Breakpoint(IDebuggable core, IMemoryCallback callback)
 		{
 			_core = core;

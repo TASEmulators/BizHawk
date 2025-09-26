@@ -33,7 +33,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CLSCompliant(false)] //TODO just needs renaming
 		public GBSettings _settings = new GBSettings();
+
+		[CLSCompliant(false)] //TODO just needs renaming
 		public GBSyncSettings _syncSettings = new GBSyncSettings();
 
 		[CoreSettings]
@@ -129,6 +132,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			private int _RTCInitialTime;
 			[JsonIgnore]
 			private int _RTCOffset;
+
+			[CLSCompliant(false)]
 			[JsonIgnore]
 			public ushort _DivInitialTime = 8;
 

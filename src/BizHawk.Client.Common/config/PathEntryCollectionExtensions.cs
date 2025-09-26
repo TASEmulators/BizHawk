@@ -230,6 +230,7 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path.Path, systemId);
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public static string SaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)
 		{
 			var name = game.FilesystemSafeName();
@@ -273,6 +274,7 @@ namespace BizHawk.Client.Common
 			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name);
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)
 		{
 			var path = collection.SaveRamAbsolutePath(game, movie);

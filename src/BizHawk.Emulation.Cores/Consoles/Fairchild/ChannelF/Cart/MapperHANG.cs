@@ -4,7 +4,7 @@
 	/// Hangman ChannelF Cartridge
 	/// Utilises 2102 SRAM over IO
 	/// </summary>
-	public class MapperHANG : VesCartBase
+	public sealed partial class MapperHANG : VesCartBase
 	{
 		public override string BoardType => "HANG";
 

@@ -4,6 +4,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubGBHawk
 {
+	[CLSCompliant(false)]
 	[Core(
 		name: CoreNames.SubGbHawk,
 		author: "alyosha and BizHawk contributors")]

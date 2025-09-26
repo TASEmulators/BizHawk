@@ -3,6 +3,7 @@
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	// Emulates the M6532 RIOT Chip
+	[CLSCompliant(false)]
 	public class M6532
 	{
 		private readonly Atari2600 _core;

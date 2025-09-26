@@ -156,6 +156,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private int audioStartLBA;
 		private int audioEndLBA;
 
+		[CLSCompliant(false)]
 		public ScsiCDBus(PCEngine pce, Disc disc)
 		{
 			this.pce = pce;

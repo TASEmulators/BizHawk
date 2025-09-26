@@ -682,7 +682,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// this timer never stops, ever, so it is convenient to use for even/odd timing used elsewhere
 			public int timer;
 			public int user_address;
-			public uint user_length, sample_length;
+
+			internal uint user_length;
+
+			internal uint sample_length;
+
 			public int sample_address, sample_buffer;
 			public bool sample_buffer_filled;
 
@@ -1468,7 +1472,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public uint sampleclock = 0;
+		internal uint sampleclock = 0;
 
 		private int oldmix = 0;
 		private int cart_sound = 0;

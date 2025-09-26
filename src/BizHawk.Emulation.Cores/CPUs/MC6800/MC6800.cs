@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 // Motorola Corp 6800
 namespace BizHawk.Emulation.Cores.Components.MC6800
 {
+	[CLSCompliant(false)]
 	public sealed partial class MC6800
 	{
 		// operations that can take place in an instruction

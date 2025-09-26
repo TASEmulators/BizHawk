@@ -14,7 +14,7 @@ namespace BizHawk.Common
 	// Of course in practice, this only applies to any code using long double, which is rarely used typically
 	// But musl (used for waterbox cores) does end up using it for float formating in the printf family
 	// This can extend to issues in games: https://github.com/TASEmulators/BizHawk/issues/3726
-	public static class FPCtrl
+	public static partial class FPCtrl
 	{
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void FixFPCtrlDelegate();

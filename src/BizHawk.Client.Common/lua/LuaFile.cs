@@ -2,8 +2,11 @@
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(CLS_NLUA)]
 	public class LuaFile
 	{
+		public const bool CLS_NLUA = false;
+
 		public LuaFile(string path)
 		{
 			Name = "";

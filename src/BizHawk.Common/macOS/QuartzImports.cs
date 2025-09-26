@@ -2,6 +2,7 @@
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class QuartzImports
 	{
 		public enum CGEventSourceStateID : int
@@ -9,6 +10,7 @@ namespace BizHawk.Common
 			kCGEventSourceStateHIDSystemState = 1,
 		}
 
+		[CLSCompliant(false)]
 		public enum CGKeyCode : ushort
 		{
 			kVK_ANSI_A = 0x00,

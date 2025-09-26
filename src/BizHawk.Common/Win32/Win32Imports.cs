@@ -12,6 +12,7 @@ namespace BizHawk.Common
 	/// <summary>
 	/// This is more just an assorted bunch of Win32 functions
 	/// </summary>
+	[CLSCompliant(false)]
 	public static class Win32Imports
 	{
 		public const int MAX_PATH = 260;
@@ -53,6 +54,7 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern unsafe int FormatMessageW(int flags, IntPtr source, uint messageId, uint languageId, char* outMsg, int size, IntPtr args);
 
+		[CLSCompliant(false)]
 		[DllImport("kernel32.dll", ExactSpelling = true)]
 		public static extern uint GetLastError();
 
@@ -62,6 +64,7 @@ namespace BizHawk.Common
 		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		public static extern bool SystemParametersInfoW(int uAction, int uParam, ref int lpvParam, int flags);
 
+		[CLSCompliant(false)]
 		[DllImport("winmm.dll", ExactSpelling = true)]
 		public static extern uint timeBeginPeriod(uint uMilliseconds);
 

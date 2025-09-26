@@ -56,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="owner">parent window</param>
 		/// <param name="emulator">The current emulator</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
+		[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 		public static IVideoWriter DoVideoWriterChooserDlg<T>(
 			IEnumerable<VideoWriterInfo> list,
 			T owner,

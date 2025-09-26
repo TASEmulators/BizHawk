@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		//private int _joyLine;
 		private readonly SpectrumBase _machine;
 
+		[CLSCompliant(false)]
 		public SinclairJoystick2(SpectrumBase machine, int playerNumber)
 		{
 			_machine = machine;

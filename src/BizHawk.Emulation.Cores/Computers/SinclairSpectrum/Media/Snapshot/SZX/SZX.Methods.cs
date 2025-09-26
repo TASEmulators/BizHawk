@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Exports state information to a byte array in ZX-State format
 		/// </summary>
+		[CLSCompliant(false)]
 		public static byte[] ExportSZX(SpectrumBase machine)
 		{
 			var s = new SZX(machine);

@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	/// <summary>
 	/// Contains the onboard chipset and glue.
 	/// </summary>
+	[CLSCompliant(false)]
 	public sealed partial class Motherboard
 	{
 		// chips

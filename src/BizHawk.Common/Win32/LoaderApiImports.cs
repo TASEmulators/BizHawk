@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	public static class LoaderApiImports
+	public static partial class LoaderApiImports
 	{
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		public static extern IntPtr GetModuleHandleW(string? lpModuleName);

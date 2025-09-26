@@ -3,6 +3,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
+	[CLSCompliant(false)]
 	public abstract unsafe class LibNymaCore : LibWaterboxCore
 	{
 		[StructLayout(LayoutKind.Sequential)]

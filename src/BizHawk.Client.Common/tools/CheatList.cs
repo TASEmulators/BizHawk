@@ -199,6 +199,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
+		[CLSCompliant(Watch.CLS_WATCH)]
 		public void RemoveRange(IEnumerable<Watch> watches)
 		{
 			_cheatList.RemoveAll(cheat => watches.Any(w => w == cheat));

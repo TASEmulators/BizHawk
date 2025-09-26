@@ -46,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private GraphicsControl _graphicsControl => _presentationPanel.GraphicsControl;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public DisplayManager(
 			Config config,
 			IEmulator emulator,

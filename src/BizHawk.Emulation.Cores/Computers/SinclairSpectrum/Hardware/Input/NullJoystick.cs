@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _joyLine;
 		private SpectrumBase _machine;
 
+		[CLSCompliant(false)]
 		public NullJoystick(SpectrumBase machine, int playerNumber)
 		{
 			_machine = machine;

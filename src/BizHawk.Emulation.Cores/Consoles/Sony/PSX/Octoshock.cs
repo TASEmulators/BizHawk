@@ -27,6 +27,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.Octoshock, "Mednafen Team")]
 	public unsafe partial class Octoshock : IEmulator, IInputPollable, IRegionable, ISaveRam,
 		ISettable<Octoshock.Settings, Octoshock.SyncSettings>, ISoundProvider, IStatable, IVideoProvider,

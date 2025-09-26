@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// This class holds a double word (32 bits) <see cref="Watch"/>
 	/// </summary>
-	public sealed class DWordWatch : Watch
+	public sealed partial class DWordWatch : Watch
 	{
 		private uint _value;
 		private uint _previous;

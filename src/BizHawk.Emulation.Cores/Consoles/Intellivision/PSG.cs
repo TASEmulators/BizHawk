@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_blip.SetRates(894866 / 4.0, 44100);
 		}
 
+		[CLSCompliant(false)]
 		public ushort[] Register = new ushort[16];
 
 		public int total_clock; // TODO: what is this used for?
@@ -111,7 +112,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		private int noise_per;
 		private int noise = 0x1;
 
+		[CLSCompliant(false)]
 		public Func<ushort, bool, ushort> ReadMemory;
+
+		[CLSCompliant(false)]
 		public Func<ushort, ushort, bool, bool> WriteMemory;
 
 		public void SyncState(Serializer ser)
@@ -140,6 +144,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.EndSection();
 		}
 
+		[CLSCompliant(false)]
 		public ushort? ReadPSG(ushort addr, bool peek)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
@@ -210,6 +215,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			env_vol_C = (Register[13] >> 4) & 0x3;
 		}
 
+		[CLSCompliant(false)]
 		public bool WritePSG(ushort addr, ushort value, bool poke)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)

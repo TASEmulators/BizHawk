@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Default Bank Switching Mapper used by most games
-	public sealed class MapperSG : MapperBase
+	public sealed partial class MapperSG : MapperBase
 	{
 		private byte _bank;
 		private byte[] RAM = new byte[0x4000];

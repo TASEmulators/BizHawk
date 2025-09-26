@@ -16,8 +16,11 @@ namespace BizHawk.Client.Common
 		Finish,
 	}
 
+	[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 	public class MovieSession : IMovieSession
 	{
+		public const bool CLS_IMOVIESESSION = false;
+
 		private readonly IDialogParent _dialogParent;
 
 		private readonly Action _pauseCallback;

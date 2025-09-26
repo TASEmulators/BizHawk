@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	public static class XfixesImports
+	public static partial class XfixesImports
 	{
 		private const string XFIXES = "libXfixes.so.3";
 

@@ -5,7 +5,7 @@ using NLua;
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
-	public sealed class MovieLuaLibrary : LuaLibraryBase
+	public sealed partial class MovieLuaLibrary : LuaLibraryBase
 	{
 		public MovieLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

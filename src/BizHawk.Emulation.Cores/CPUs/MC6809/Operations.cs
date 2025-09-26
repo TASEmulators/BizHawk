@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 {
 	public partial class MC6809
 	{
+		[CLSCompliant(false)]
 		public void Read_Func(ushort dest, ushort src)
 		{
 			if (CDLCallback != null)
@@ -14,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest] = ReadMemory(Regs[src]);
 		}
 
+		[CLSCompliant(false)]
 		public void Read_Inc_Func(ushort dest, ushort src)
 		{
 			if (CDLCallback != null)
@@ -28,12 +30,14 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[src]++;
 		}
 
+		[CLSCompliant(false)]
 		public void Write_Func(ushort dest, ushort src)
 		{
 			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)Regs[src]);
 		}
 
+		[CLSCompliant(false)]
 		public void Write_Dec_Lo_Func(ushort dest, ushort src)
 		{
 			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
@@ -41,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest] -= 1;
 		}
 
+		[CLSCompliant(false)]
 		public void Write_Dec_HI_Func(ushort dest, ushort src)
 		{
 			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
@@ -48,12 +53,14 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest] -= 1;
 		}
 
+		[CLSCompliant(false)]
 		public void Write_Hi_Func(ushort dest, ushort src)
 		{
 			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 		}
 
+		[CLSCompliant(false)]
 		public void Write_Hi_Inc_Func(ushort dest, ushort src)
 		{
 			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
@@ -61,6 +68,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest]++;
 		}
 
+		[CLSCompliant(false)]
 		public void Write_Lo_Inc_Func(ushort dest, ushort src)
 		{
 			CDLCallback?.Invoke(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
@@ -68,6 +76,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest]++;
 		}
 
+		[CLSCompliant(false)]
 		public void NEG_8_Func(ushort src)
 		{
 			int Reg16_d = 0;
@@ -86,11 +95,13 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[src] = ans;
 		}
 
+		[CLSCompliant(false)]
 		public void TR_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = Regs[src];
 		}
 
+		[CLSCompliant(false)]
 		public void LD_8_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = Regs[src];
@@ -100,6 +111,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[dest] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void ST_8_Func(ushort dest)
 		{
 			FlagZ = (Regs[dest] & 0xFF) == 0;
@@ -107,6 +119,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[dest] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void LD_16_Func(ushort dest, ushort src_h, ushort src_l)
 		{
 			Regs[dest] = (ushort)(Regs[src_h] << 8 | Regs[src_l]);
@@ -116,6 +129,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = Regs[dest] > 0x7FFF;
 		}
 
+		[CLSCompliant(false)]
 		public void ST_16_Func(ushort dest)
 		{
 			if (dest == Dr)
@@ -129,6 +143,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		}
 
 		// for LEAX/Y, zero flag can be effected, but not for U/S
+		[CLSCompliant(false)]
 		public void LEA_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = Regs[src];
@@ -139,6 +154,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void TST_Func(ushort src)
 		{
 			FlagZ = Regs[src] == 0;
@@ -146,6 +162,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void CLR_Func(ushort src)
 		{
 			Regs[src] = 0;
@@ -158,11 +175,13 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 
 		// source is considered a 16 bit signed value, used for long relative branch
 		// no flags used
+		[CLSCompliant(false)]
 		public void ADD16BR_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
 		}
 
+		[CLSCompliant(false)]
 		public void ADD8BR_Func(ushort dest, ushort src)
 		{
 			if (Regs[src] > 127) { Regs[src] |= 0xFF00; }
@@ -177,6 +196,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagZ = D == 0;
 		}
 
+		[CLSCompliant(false)]
 		public void ADD8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -198,6 +218,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest] = ans;
 		}
 
+		[CLSCompliant(false)]
 		public void SUB8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -220,6 +241,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		}
 
 		// same as SUB8 but result not stored
+		[CLSCompliant(false)]
 		public void CMP8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -239,6 +261,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 		}
 
+		[CLSCompliant(false)]
 		public void BIT_Func(ushort dest, ushort src)
 		{
 			ushort ans = (ushort)(Regs[dest] & Regs[src]);
@@ -248,6 +271,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = ans > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void ASL_Func(ushort src)
 		{
 			FlagC = Regs[src].Bit(7);
@@ -260,6 +284,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void ASR_Func(ushort src)
 		{
 			FlagC = Regs[src].Bit(0);
@@ -275,6 +300,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void LSR_Func(ushort src)
 		{
 			FlagC = Regs[src].Bit(0);
@@ -285,6 +311,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = false;
 		}
 
+		[CLSCompliant(false)]
 		public void COM_Func(ushort src)
 		{
 			Regs[src] = (ushort)((~Regs[src]) & 0xFF);
@@ -295,6 +322,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void SEX_Func(ushort src)
 		{
 			if (Regs[B] > 127)
@@ -310,6 +338,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = Regs[A] > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void AND8_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = (ushort)(Regs[dest] & Regs[src]);
@@ -319,6 +348,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = Regs[dest] > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void OR8_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = (ushort)(Regs[dest] | Regs[src]);
@@ -328,6 +358,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = Regs[dest] > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void XOR8_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
@@ -337,6 +368,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = Regs[dest] > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void ROR_Func(ushort src)
 		{
 			ushort c = (ushort)(FlagC ? 0x80 : 0);
@@ -349,6 +381,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void ROL_Func(ushort src)
 		{
 			ushort c = (ushort)(FlagC ? 1 : 0);
@@ -362,6 +395,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void INC8_Func(ushort src)
 		{
 			FlagV = Regs[src] == 0x7F;
@@ -372,6 +406,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void DEC8_Func(ushort src)
 		{
 			FlagV = Regs[src] == 0x80;
@@ -382,16 +417,19 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
+		[CLSCompliant(false)]
 		public void INC16_Func(ushort src)
 		{
 			Regs[src] += 1;
 		}
 
+		[CLSCompliant(false)]
 		public void DEC16_Func(ushort src)
 		{
 			Regs[src] -= 1;
 		}
 
+		[CLSCompliant(false)]
 		public void ADC8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -415,6 +453,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest] = ans;
 		}
 
+		[CLSCompliant(false)]
 		public void SBC8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -438,6 +477,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			Regs[dest] = ans;
 		}
 
+		[CLSCompliant(false)]
 		public void DA_Func(ushort src)
 		{
 			int a = Regs[src];
@@ -469,6 +509,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		}
 
 		// D register implied
+		[CLSCompliant(false)]
 		public void SUB16_Func(ushort src)
 		{
 			int Reg16_d = D;
@@ -488,6 +529,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		}
 
 		// D register implied
+		[CLSCompliant(false)]
 		public void ADD16_Func(ushort src)
 		{
 			int Reg16_d = D;
@@ -507,6 +549,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 		}
 
 		// D register implied
+		[CLSCompliant(false)]
 		public void CMP16D_Func(ushort src)
 		{
 			int Reg16_d = D;
@@ -523,6 +566,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
 		}
 
+		[CLSCompliant(false)]
 		public void CMP16_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -539,6 +583,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FlagV = (Regs[dest].Bit(15) != Regs[src].Bit(15)) && (Regs[dest].Bit(15) != ans.Bit(15));
 		}
 
+		[CLSCompliant(false)]
 		public void EXG_Func(ushort sel)
 		{
 			ushort src = 0;
@@ -624,6 +669,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			}
 		}
 
+		[CLSCompliant(false)]
 		public void TFR_Func(ushort sel)
 		{
 			ushort src = 0;

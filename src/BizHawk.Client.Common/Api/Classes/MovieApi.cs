@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public sealed class MovieApi : IMovieApi
 	{
 		private readonly IMainFormForApi _mainForm;

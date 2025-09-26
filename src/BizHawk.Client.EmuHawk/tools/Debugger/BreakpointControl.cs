@@ -10,6 +10,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(false)]
 	public partial class BreakpointControl : UserControl, IDialogParent
 	{
 		public IMainFormForTools MainForm { get; set; }

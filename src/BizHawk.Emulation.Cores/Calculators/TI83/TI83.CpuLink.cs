@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	public partial class TI83
 	{
+		[CLSCompliant(false)]
 		public readonly struct CpuLink(TI83 ti83) : IZ80ALink
 		{
 			public byte FetchMemory(ushort address)

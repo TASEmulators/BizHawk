@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace BizHawk.Common.StringExtensions
 {
 	/// <remarks>TODO how many of these methods can be replaced with <see cref="int.TryParse(string,out int)">int.TryParse</see> or similar? --yoshi</remarks>
-	public static class NumericStringExtensions
+	public static partial class NumericStringExtensions
 	{
 		/// <returns><see langword="true"/> iff <paramref name="c"/> is either <c>'0'</c> or <c>'1'</c></returns>
 		public static bool IsBinary(this char c) => c == '0' || c == '1';
@@ -52,15 +52,19 @@ namespace BizHawk.Common.StringExtensions
 
 #pragma warning disable RCS1224 // don't want extension on nonspecific `string`/`ReadOnlySpan<char>`
 #if NET7_0_OR_GREATER
+		[CLSCompliant(false)]
 		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
 			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
 
+		[CLSCompliant(false)]
 		public static byte ParseU8FromHex(ReadOnlySpan<char> str)
 			=> byte.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
 #else
+		[CLSCompliant(false)]
 		public static ushort ParseU16FromHex(ReadOnlySpan<char> str)
 			=> ParseU16FromHex(str.ToString());
 
+		[CLSCompliant(false)]
 		public static ushort ParseU16FromHex(string str)
 			=> ushort.Parse(str, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
 

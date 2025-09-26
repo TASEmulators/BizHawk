@@ -50,9 +50,7 @@ public static class RoslynUtils
 
 	public static bool? GetIsCLSCompliant(this ITypeSymbol typeSym, ISymbol clsCompliantAttrSym)
 		=> typeSym.AllEnclosingTypes().Prepend(typeSym)
-			.Select(typeSym1 => typeSym1.GetAttributes()
-				.FirstOrDefault(ad => clsCompliantAttrSym.Matches(ad.AttributeClass))
-				?.ConstructorArguments[0].Value as bool?)
+			.Select(typeSym1 => typeSym1.GetOwnCLSCompliantValue(clsCompliantAttrSym))
 			.FirstOrDefault(static tristate => tristate is not null);
 
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
@@ -111,6 +109,10 @@ public static class RoslynUtils
 			// ...and some operators only exist in VB.NET (dw, you're not missing anything)
 			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)"),
 		};
+
+	public static bool? GetOwnCLSCompliantValue(this ITypeSymbol typeSym, ISymbol clsCompliantAttrSym)
+		=> typeSym.GetAttributes().FirstOrDefault(ad => clsCompliantAttrSym.Matches(ad.AttributeClass))
+			?.ConstructorArguments[0].Value as bool?;
 
 	private static ITypeSymbol? GetThrownExceptionType(this SemanticModel model, ExpressionSyntax exprSyn)
 		=> exprSyn is ObjectCreationExpressionSyntax

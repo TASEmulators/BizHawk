@@ -3,6 +3,7 @@ using System.Text;
 
 namespace BizHawk.Common.IOExtensions
 {
+	[CLSCompliant(false)]
 	public static class IOExtensions
 	{
 		private static Encoding? _shiftJIS = null;

@@ -4,13 +4,14 @@ using System.Linq;
 
 namespace BizHawk.Common
 {
-	public class SortedList<T> : IList, IList<T>, IReadOnlyList<T>
+	public partial class SortedList<T> : IList, IList<T>, IReadOnlyList<T>
 		where T : IComparable<T>
 	{
 		private const string ERR_MSG_OUT_OF_ORDER = "setting/inserting elements must preserve ordering";
 
 		private const string ERR_MSG_WRONG_TYPE = "wrong type";
 
+		[CLSCompliant(false)] //TODO just needs renaming
 		protected readonly List<T> _list;
 
 		public virtual int Count => _list.Count;

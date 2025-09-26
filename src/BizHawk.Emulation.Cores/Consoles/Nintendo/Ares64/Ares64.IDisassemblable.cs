@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
-	public class Ares64Disassembler : VerifiedDisassembler
+	public sealed partial class Ares64Disassembler : VerifiedDisassembler
 	{
 		private readonly LibAres64 _core;
 		private readonly byte[] _disasmbuf = new byte[100]; // todo: is this big enough?

@@ -18,6 +18,7 @@ namespace BizHawk.Client.Common
 
 		private readonly IMovieSession _movieSession;
 
+		[CLSCompliant(false)]
 		public OSDManager(Config config, IEmulator emulator, InputManager inputManager, IMovieSession movieSession)
 		{
 			_config = config;

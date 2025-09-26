@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 	public interface ITasMovie : IMovie, INotifyPropertyChanged, IDisposable
 	{
 		bool BindMarkersToInput { get; set; }

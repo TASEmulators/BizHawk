@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	/// <summary>
 	/// static bindings into MSXHawk.dll
 	/// </summary>
+	[CLSCompliant(false)]
 	public static class LibMSX
 	{
 		private const string lib = "MSXHawk";

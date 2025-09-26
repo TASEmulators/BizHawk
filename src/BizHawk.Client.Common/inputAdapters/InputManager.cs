@@ -55,6 +55,7 @@ namespace BizHawk.Client.Common
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{
 			var def = emulator.ControllerDefinition;

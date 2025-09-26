@@ -2,6 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public interface IMemoryApi : IExternalApi
 	{
 		string MainMemoryName { get; }

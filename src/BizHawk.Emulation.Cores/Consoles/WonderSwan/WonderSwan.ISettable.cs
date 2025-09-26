@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			[Description("Colors to display in Wonderswan (not Color) mode")]
 			public Color[] BWPalette { get; private set; }
 
+			[CLSCompliant(false)]
 			public BizSwan.Settings GetNativeSettings()
 			{
 				var ret = new BizSwan.Settings();
@@ -84,6 +85,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
+		[CLSCompliant(false)]
 		[CoreSettings]
 		public class SyncSettings
 		{
@@ -160,6 +162,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public Settings GetSettings() => _settings.Clone();
 
+		[CLSCompliant(false)]
 		public SyncSettings GetSyncSettings() => _syncSettings.Clone();
 
 		public PutSettingsDirtyBits PutSettings(Settings o)
@@ -170,6 +173,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			return PutSettingsDirtyBits.None;
 		}
 
+		[CLSCompliant(false)]
 		public PutSettingsDirtyBits PutSyncSettings(SyncSettings o)
 		{
 			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);

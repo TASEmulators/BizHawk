@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class PPU
 	{
+		[CLSCompliant(false)]
 		public sealed class Reg_2001
 		{
 			public Bit color_disable; //Color disable (0: normal color; 1: AND all palette entries with 110000, effectively producing a monochrome display)
@@ -63,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//uses the internal counters concept at http://nesdev.icequake.net/PPU%20addressing.txt
 		//TODO - this should be turned into a state machine
+		[CLSCompliant(false)]
 		public sealed class PPUREGS
 		{
 			public PPUREGS()
@@ -249,6 +251,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		[CLSCompliant(false)]
 		public sealed class Reg_2000
 		{
 			private readonly PPUREGS _regs;
@@ -287,12 +290,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private Bit Reg2002_objoverflow;  //Sprite overflow. The PPU can handle only eight sprites on one scanline and sets this bit if it starts drawing sprites.
 		private Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
-		public Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
+
+		private Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
+
 		public bool Reg2002_vblank_active_pending; //set if Reg2002_vblank_active is pending
 		private bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
-		public PPUREGS ppur;
-		public Reg_2000 reg_2000;
-		public Reg_2001 reg_2001;
+
+		internal PPUREGS ppur;
+
+		internal Reg_2000 reg_2000;
+
+		private Reg_2001 reg_2001;
+
 		public byte reg_2003;
 		public byte reg_2006_2;
 

@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Calculators.Emu83
 {
-	public class TI83Disassembler : VerifiedDisassembler
+	public sealed partial class TI83Disassembler : VerifiedDisassembler
 	{
 		public override IEnumerable<string> AvailableCpus { get; } = new[] { "Z80" };
 

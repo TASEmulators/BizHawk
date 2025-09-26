@@ -7,7 +7,7 @@ using static BizHawk.Common.LoaderApiImports;
 
 namespace BizHawk.Common
 {
-	public static class OSTailoredCode
+	public static partial class OSTailoredCode
 	{
 		public static readonly DistinctOS CurrentOS;
 		public static readonly bool IsUnixHost;
@@ -90,6 +90,7 @@ namespace BizHawk.Common
 		private static readonly Lazy<bool> _isWSL = new(static () => IsUnixHost
 			&& SimpleSubshell(cmd: "uname", args: "-r", noOutputMsg: "missing uname?").ContainsIgnoreCase("microsoft"));
 
+		[CLSCompliant(false)]
 		public static (WindowsVersion Version, Version? Win10PlusVersion)? HostWindowsVersion => _HostWindowsVersion.Value;
 
 		public static bool IsWSL => _isWSL.Value;
@@ -247,6 +248,7 @@ namespace BizHawk.Common
 			Unknown,
 		}
 
+		[CLSCompliant(false)]
 		public enum WindowsVersion
 		{
 			XP,

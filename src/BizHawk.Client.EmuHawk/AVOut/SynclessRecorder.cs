@@ -10,6 +10,7 @@ using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("syncless", "Syncless Recording", "Writes each frame to a directory as a PNG and WAV pair, identified by frame number. The results can be exported into one video file.")]
 	public class SynclessRecorder : IVideoWriter
 	{

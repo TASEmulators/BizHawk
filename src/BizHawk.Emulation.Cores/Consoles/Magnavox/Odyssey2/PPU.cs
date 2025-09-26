@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public class PPU : ISoundProvider
 	{
+		[CLSCompliant(false)]
 		public O2Hawk Core { get; set; }
 
 		// not stated, set on game load
@@ -985,6 +986,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x00, 0x00, 0x00, 0x06, 0x6E, 0xFF, 0x7E, 00  // (boat 3)		0x3F
 															};
 
+		[CLSCompliant(false)]
 		public static readonly uint[] Color_Palette_SPR =
 		{
 			0xFF676767, // grey
@@ -997,6 +999,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFFFFFFF, // white
 		};
 
+		[CLSCompliant(false)]
 		public static readonly uint[] Color_Palette_BG =
 		{
 			0xFF000000, // black
@@ -1335,6 +1338,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte shift_0, shift_1, shift_2, aud_ctrl;
 		public byte shift_reg_0, shift_reg_1, shift_reg_2;
 
+		[CLSCompliant(false)]
 		public uint master_audio_clock;
 
 		public int tick_cnt, output_bit, shift_cnt;

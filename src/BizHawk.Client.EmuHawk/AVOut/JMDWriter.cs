@@ -19,6 +19,7 @@ namespace BizHawk.Client.EmuHawk
 	/// so each dump is always one file
 	/// they can be processed with JPC-rr streamtools or JMDSource (avisynth)
 	/// </summary>
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("jmd", "JMD writer", "Writes a JPC-rr multidump file (JMD).  These can be read and further processed with jpc-streamtools.  One JMD file contains all audio (uncompressed) and video (compressed).")]
 	public class JmdWriter : IVideoWriter
 	{

@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class LibBizHash
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

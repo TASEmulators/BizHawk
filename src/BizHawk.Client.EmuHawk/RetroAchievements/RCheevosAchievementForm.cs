@@ -7,6 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Shows information about a specific achievement
 	/// </summary>
+	[CLSCompliant(false)]
 	public partial class RCheevosAchievementForm : Form
 	{
 		public int OrderByKey()

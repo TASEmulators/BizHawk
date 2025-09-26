@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>
+        [CLSCompliant(false)]
         public override byte ReadPort(ushort port)
         {
             bool deviceAddressed = true;
@@ -55,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Writes a byte of data to a specified port address
         /// </summary>
+        [CLSCompliant(false)]
         public override void WritePort(ushort port, byte value)
         {
             // get a BitArray of the port

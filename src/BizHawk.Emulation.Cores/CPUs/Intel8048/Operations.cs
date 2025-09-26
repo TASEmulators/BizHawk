@@ -2,6 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Components.I8048
 {
+	[CLSCompliant(false)]
 	public partial class I8048
 	{
 		public void Read_Func(ushort dest, ushort src)

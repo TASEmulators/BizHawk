@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public IEnumerable<string> AvailableCpus { get; } = [ "CP1610" ];
 
+		[CLSCompliant(false)]
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			// Note: currently this core can only disassemble the SystemBus

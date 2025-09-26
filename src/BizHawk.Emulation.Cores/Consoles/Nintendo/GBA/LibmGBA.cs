@@ -5,6 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
+	[CLSCompliant(false)]
 	public abstract class LibmGBA
 	{
 		[Flags]

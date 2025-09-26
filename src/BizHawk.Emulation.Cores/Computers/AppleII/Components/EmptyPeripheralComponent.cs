@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		// TODO: remove when json isn't used
 		public EmptyPeripheralCard() { }
 
+		[CLSCompliant(false)]
 		public EmptyPeripheralCard(Video video)
 		{
 			_video = video;

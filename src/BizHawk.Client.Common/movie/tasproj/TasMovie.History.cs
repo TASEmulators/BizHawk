@@ -82,6 +82,7 @@ namespace BizHawk.Client.Common
 		void AddExtend(int originalLength, int count, string inputs);
 	}
 
+	[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 	public class TasMovieChangeLog : IMovieChangeLog
 	{
 		public TasMovieChangeLog(ITasMovie movie)
@@ -418,6 +419,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public interface IMovieAction
 	{
 		void Undo(ITasMovie movie);
@@ -427,8 +429,11 @@ namespace BizHawk.Client.Common
 		int LastFrame { get; }
 	}
 
+	[CLSCompliant(CLS_IMOVIEACTION)]
 	public class MovieAction : IMovieAction
 	{
+		internal const bool CLS_IMOVIEACTION = false;
+
 		public int FirstFrame { get; }
 		public int LastFrame { get; }
 
@@ -518,6 +523,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public sealed class MovieActionMarker : IMovieAction
 	{
 		public int FirstFrame { get; }
@@ -577,6 +583,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public class MovieActionFrameEdit : IMovieAction
 	{
 		public int FirstFrame { get; }
@@ -630,6 +637,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public class MovieActionPaint : IMovieAction
 	{
 		public int FirstFrame { get; }
@@ -699,6 +707,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public class MovieActionBindInput : IMovieAction
 	{
 		public int FirstFrame { get; }
@@ -752,6 +761,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public class MovieActionInsertFrames : IMovieAction
 	{
 		public int FirstFrame { get; }
@@ -808,6 +818,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public class MovieActionRemoveFrames : IMovieAction
 	{
 		public int FirstFrame { get; }
@@ -845,7 +856,7 @@ namespace BizHawk.Client.Common
 		}
 	}
 
-
+	[CLSCompliant(MovieAction.CLS_IMOVIEACTION)]
 	public class MovieActionExtend : IMovieAction
 	{
 		public int FirstFrame { get; }

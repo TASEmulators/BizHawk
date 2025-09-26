@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Components
 	{
 		private readonly int _spf;
 
+		[CLSCompliant(false)]
 		public sealed class PSGChannel : IPCEngineSoundDebuggable.ChannelData
 		{
 			public ushort Frequency;
@@ -47,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Components
 				=> (short[]) Wave.Clone();
 		}
 
+		[CLSCompliant(false)]
 		public PSGChannel[] Channels = new PSGChannel[8];
 
 		public bool[] UserMute = new bool[8];
@@ -92,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Components
 			frameStopTime = cycles;
 		}
 
+		[CLSCompliant(false)]
 		public ReadOnlySpan<IPCEngineSoundDebuggable.ChannelData> GetPSGChannelData()
 			=> Channels;
 

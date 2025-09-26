@@ -2,6 +2,7 @@ using System.Numerics;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 {
+	[CLSCompliant(false)]
 	public class _3DSMotionEmu
 	{
 		// update per frame

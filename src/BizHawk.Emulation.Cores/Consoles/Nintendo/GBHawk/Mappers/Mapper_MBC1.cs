@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC1 with bank switching and RAM
-	public class MapperMBC1 : MapperBase
+	public sealed partial class MapperMBC1 : MapperBase
 	{
 		public int ROM_bank;
 		public int RAM_bank;

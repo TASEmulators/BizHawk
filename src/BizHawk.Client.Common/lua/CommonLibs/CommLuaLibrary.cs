@@ -8,7 +8,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for communicating with other programs")]
-	public sealed class CommLuaLibrary : LuaLibraryBase
+	public sealed partial class CommLuaLibrary : LuaLibraryBase
 	{
 		private readonly IDictionary<Guid, ClientWebSocketWrapper> _websockets = new Dictionary<Guid, ClientWebSocketWrapper>();
 

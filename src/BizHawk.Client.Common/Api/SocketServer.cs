@@ -37,6 +37,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public ushort Port
 		{
 			get => _targetAddr.Port;
@@ -47,6 +48,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[CLSCompliant(false)]
 		public (string HostIP, ushort Port) TargetAddress
 		{
 			get => _targetAddr;
@@ -65,6 +67,7 @@ namespace BizHawk.Client.Common
 
 		public bool Successful { get; private set; }
 
+		[CLSCompliant(false)]
 		public SocketServer(Func<byte[]> takeScreenshotCallback, ProtocolType protocol, string ip, ushort port)
 		{
 			_protocol = protocol;

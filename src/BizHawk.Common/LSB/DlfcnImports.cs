@@ -7,7 +7,7 @@ namespace BizHawk.Common
 	/// For Linux, these come from libdl historically
 	/// (Although since glibc 2.34 these are just in libc, with libdl just calling into libc)
 	/// </summary>
-	public static class LinuxDlfcnImports
+	public static partial class LinuxDlfcnImports
 	{
 		public const int RTLD_NOW = 2;
 

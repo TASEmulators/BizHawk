@@ -10,6 +10,7 @@ using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public class LuaPictureBox : PictureBox
 	{
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();

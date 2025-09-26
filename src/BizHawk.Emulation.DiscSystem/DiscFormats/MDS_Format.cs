@@ -185,6 +185,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public long ExtraOffset;       /* Start offset of this track's extra block. */
 			public int SectorSize;          /* Sector size. */
 			public long PLBA;               /* Track start sector (PLBA). */
+			[CLSCompliant(false)]
 			public ulong StartOffset;       /* Track start offset (from beginning of MDS file) */
 			public long Files;             /* Number of filenames for this track */
 			public long FooterOffset;      /* Start offset of footer (from beginning of MDS file) */

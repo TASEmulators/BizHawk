@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace BizHawk.Common
 {
-	public class BizDateTimeConverter : DateTimeConverter
+	public partial class BizDateTimeConverter : DateTimeConverter
 	{
 		public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
 		{

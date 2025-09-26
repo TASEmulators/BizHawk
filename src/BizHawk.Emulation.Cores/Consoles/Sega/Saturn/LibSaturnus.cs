@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	public abstract class LibSaturnus : LibNymaCore
+	public abstract partial class LibSaturnus : LibNymaCore
 	{
 		[BizImport(CC)]
 		public abstract int GetSaveRamLength();

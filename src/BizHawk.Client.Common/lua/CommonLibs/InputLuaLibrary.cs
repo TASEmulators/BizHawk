@@ -2,7 +2,7 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class InputLuaLibrary : LuaLibraryBase
+	public sealed partial class InputLuaLibrary : LuaLibraryBase
 	{
 		public InputLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

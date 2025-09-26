@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 			=> throw new NotImplementedException();
 
+		[CLSCompliant(false)]
 		public void SetCDL(LR35902.eCDLogMemFlags flags, string type, int cdladdr)
 		{
 			if (type == null) return;

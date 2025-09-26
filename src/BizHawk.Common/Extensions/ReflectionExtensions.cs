@@ -8,7 +8,7 @@ namespace BizHawk.Common.ReflectionExtensions
 	/// <summary>
 	/// Reflection based helper methods
 	/// </summary>
-	public static class ReflectionExtensions
+	public static partial class ReflectionExtensions
 	{
 		/// <summary>filter used when looking for <c>[RequiredApi]</c> et al. by reflection for dependency injection</summary>
 		public const BindingFlags DI_TARGET_PROPS = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;

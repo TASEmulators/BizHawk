@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private byte compression_run_length;
 		private bool compression_run_is_compressed;
 
+		[CLSCompliant(false)]
 		public GambattePrinter(Gameboy gb, PrinterCallback callback)
 		{
 			this.gb = gb;

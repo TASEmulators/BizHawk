@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// Programmable Array Logic (PAL) device
 	/// The C6128's second page of 64KB of RAM is controlled by this chip
 	/// </summary>
+	[CLSCompliant(false)]
 	public class PAL16L8 : IPortIODevice
 	{
 		private readonly CPCBase _machine;

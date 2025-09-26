@@ -3,6 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(Client.Common.MovieSession.CLS_IMOVIESESSION)]
 	public interface IMainFormForRetroAchievements
 	{
 		LoadRomArgs CurrentlyOpenRomArgs { get; }

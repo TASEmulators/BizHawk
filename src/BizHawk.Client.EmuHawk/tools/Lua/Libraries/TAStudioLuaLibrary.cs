@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the Tastudio dialog of the EmuHawk client")]
 	[LuaLibrary(released: true)]
-	public sealed class TAStudioLuaLibrary : LuaLibraryBase
+	public sealed partial class TAStudioLuaLibrary : LuaLibraryBase
 	{
 		private const string DESC_LINE_EDIT_QUEUE_APPLY = " Edits will take effect once you call {{tastudio.applyinputchanges}}.";
 

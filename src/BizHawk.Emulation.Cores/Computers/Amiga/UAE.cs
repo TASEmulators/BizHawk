@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
+	[CLSCompliant(false)]
 	[PortedCore(
 		name: CoreNames.UAE,
 		author: "UAE Team",

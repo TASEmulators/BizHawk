@@ -124,6 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[CLSCompliant(false)]
 		public static void DoCGBColorChooserFormDialog(IDialogParent parent, Gameboy.GambatteSettings s)
 		{
 			using var dlg = new CGBColorChooserForm();

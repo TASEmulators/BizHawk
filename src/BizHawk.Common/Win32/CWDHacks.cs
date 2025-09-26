@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Common
 {
 	/// <summary>Gets/Sets the current working directory while bypassing the security checks triggered by the public API (<see cref="Environment.CurrentDirectory"/>).</summary>
-	public static class CWDHacks
+	public static partial class CWDHacks
 	{
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		private static extern unsafe int GetCurrentDirectoryW(int nBufferLength, char* lpBuffer);

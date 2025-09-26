@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class HeapApiImports
 	{
 		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]

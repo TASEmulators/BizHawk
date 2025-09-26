@@ -7,7 +7,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
-	public sealed class EmulationLuaLibrary : LuaLibraryBase
+	public sealed partial class EmulationLuaLibrary : LuaLibraryBase
 	{
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }

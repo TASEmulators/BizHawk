@@ -207,6 +207,7 @@ namespace BizHawk.Client.Common.Filters
 	{
 		private readonly Encore _encore;
 
+		[CLSCompliant(false)]
 		public ScreenControl3DS(Encore encore)
 		{
 			_encore = encore;

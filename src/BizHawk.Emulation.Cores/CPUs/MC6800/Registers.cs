@@ -3,18 +3,40 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 	public partial class MC6800
 	{
 		// registers
+		[CLSCompliant(false)]
 		public ushort[] Regs = new ushort[11];
 
+		[CLSCompliant(false)]
 		public const ushort PC = 0;
+
+		[CLSCompliant(false)]
 		public const ushort SP = 1;
+
+		[CLSCompliant(false)]
 		public const ushort X = 2;
+
+		[CLSCompliant(false)]
 		public const ushort A = 3;
+
+		[CLSCompliant(false)]
 		public const ushort B = 4;
+
+		[CLSCompliant(false)]
 		public const ushort ADDR = 5; // internal
+
+		[CLSCompliant(false)]
 		public const ushort ALU = 6; // internal
+
+		[CLSCompliant(false)]
 		public const ushort ALU2 = 7; // internal
+
+		[CLSCompliant(false)]
 		public const ushort DP = 8; // always zero
+
+		[CLSCompliant(false)]
 		public const ushort CC = 9;
+
+		[CLSCompliant(false)]
 		public const ushort IDX_EA = 10;
 
 		public bool FlagC

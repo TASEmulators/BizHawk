@@ -11,7 +11,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
 {
-	public static class FFmpegService
+	public static partial class FFmpegService
 	{
 		private const string BIN_HOST_URI_LINUX_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/raw/master/ffmpeg-4.4.1-static-linux-x64.7z";
 

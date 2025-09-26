@@ -9,7 +9,7 @@ namespace BizHawk.Common
 	/// <summary>
 	/// Used in conjunction with the <see cref="MaxLengthAttribute" /> will perform max length validation against a string value using PropertyGrid
 	/// </summary>
-	public class ConstrainedStringConverter : TypeConverter
+	public partial class ConstrainedStringConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
 		{

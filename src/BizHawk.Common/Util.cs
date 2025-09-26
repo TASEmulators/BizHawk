@@ -13,7 +13,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
 {
-	public static class Util
+	public static partial class Util
 	{
 		[Conditional("DEBUG")]
 		public static void BreakDebuggerIfAttached()

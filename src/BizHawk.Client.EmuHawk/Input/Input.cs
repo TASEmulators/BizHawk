@@ -366,6 +366,7 @@ namespace BizHawk.Client.EmuHawk
 		//controls whether modifier keys will be ignored as key press events
 		//this should be used by hotkey binders, but we may want modifier key events
 		//to get triggered in the main form
+		[CLSCompliant(false)]
 		public volatile bool EnableIgnoreModifiers = false;
 	}
 }

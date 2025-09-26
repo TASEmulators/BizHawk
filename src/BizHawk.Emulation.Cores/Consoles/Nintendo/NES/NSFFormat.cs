@@ -17,10 +17,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		public byte StartingSong;
 
+		[CLSCompliant(false)]
 		public ushort LoadAddress;
 
+		[CLSCompliant(false)]
 		public ushort InitAddress;
 
+		[CLSCompliant(false)]
 		public ushort PlayAddress;
 
 		public string SongName;
@@ -29,10 +32,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public string CopyrightHolder;
 
+		[CLSCompliant(false)]
 		public ushort SpeedNTSC;
 
 		public byte[] BankswitchInitValues = new byte[8];
 
+		[CLSCompliant(false)]
 		public ushort SpeedPAL;
 
 		public bool IsNTSC;

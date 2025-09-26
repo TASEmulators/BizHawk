@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// http://bread80.com/2021/06/03/understanding-the-amstrad-cpc-video-ram-and-gate-array-subsystem/
 	/// https://cpctech.cpcwiki.de/docs/crtcnew.html
 	/// </summary>
+	[CLSCompliant(false)]
 	public class GateArray : IPortIODevice
 	{
 		private readonly CPCBase _machine;

@@ -13,9 +13,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	public sealed class VPC : IVideoProvider
 	{
 		private readonly PCEngine PCE;
+		[CLSCompliant(false)]
 		public VDC VDC1;
+		[CLSCompliant(false)]
 		public VDC VDC2;
+		[CLSCompliant(false)]
 		public VCE VCE;
+		[CLSCompliant(false)]
 		public HuC6280 CPU;
 
 		public byte[] Registers = { 0x11, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00 };
@@ -27,6 +31,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int PriorityModeSlot2 => Registers[1] & 0x0F;
 		public int PriorityModeSlot3 => (Registers[1] >> 4) & 0x0F;
 
+		[CLSCompliant(false)]
 		public VPC(PCEngine pce, VDC vdc1, VDC vdc2, VCE vce, HuC6280 cpu)
 		{
 			PCE = pce;

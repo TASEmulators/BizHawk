@@ -3,6 +3,7 @@ using BizHawk.Emulation.Cores.Components.I8048;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
+	[CLSCompliant(false)]
 	public class MapperBase
 	{
 		public O2Hawk Core { get; set; }

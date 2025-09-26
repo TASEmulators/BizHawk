@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
 	{
+		[CLSCompliant(false)]
 		[CoreConstructor(VSystemID.Raw.WSWAN)]
 		public WonderSwan(byte[] file, bool deterministic, WonderSwan.Settings settings, WonderSwan.SyncSettings syncSettings)
 		{
@@ -103,8 +104,11 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
+
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var ret = new Dictionary<string, RegisterValue>();

@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Initialization routine
 		/// </summary>
+		[CLSCompliant(false)]
 		public void Init(CPCBase machine)
 		{
 			_machine = machine;

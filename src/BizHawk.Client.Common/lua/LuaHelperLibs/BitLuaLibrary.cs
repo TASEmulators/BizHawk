@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing standard bitwise operations.")]
-	public sealed class BitLuaLibrary : LuaLibraryBase
+	public sealed partial class BitLuaLibrary : LuaLibraryBase
 	{
 		public BitLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

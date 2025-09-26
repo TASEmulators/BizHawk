@@ -11,6 +11,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 {
+	[CLSCompliant(false)]
 	[PortedCore(CoreNames.TurboNyma, "Mednafen Team", "1.32.1", "https://mednafen.github.io/releases/")]
 	public class TurboNyma : NymaCore, IRegionable, IPceGpuView
 	{
@@ -120,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCE
 		}
 	}
 
-	public abstract class LibTurboNyma : LibNymaCore
+	public abstract partial class LibTurboNyma : LibNymaCore
 	{
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void GetVramInfo([Out]PceGpuData v, int vdcIndex);

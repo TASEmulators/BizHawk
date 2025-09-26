@@ -5,7 +5,7 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class GuiLuaLibrary : LuaLibraryBase, IDisposable
+	public sealed partial class GuiLuaLibrary : LuaLibraryBase, IDisposable
 	{
 		private DisplaySurfaceID _rememberedSurfaceID = DisplaySurfaceID.EmuCore;
 

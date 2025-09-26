@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController { get; }
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, PathEntryCollection pathEntries, bool readOnly, bool disposeOnClose = false)
 		{
 			_pathEntries = pathEntries;

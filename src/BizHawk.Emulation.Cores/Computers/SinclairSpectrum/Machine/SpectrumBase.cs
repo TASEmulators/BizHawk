@@ -18,17 +18,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
+		[CLSCompliant(false)]
 		public Z80A<ZXSpectrum.CpuLink> CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info
 		/// </summary>
+		[CLSCompliant(false)]
 		public RomData RomData { get; set; }
 
 		/// <summary>
 		/// The emulated ULA device
 		/// </summary>
 		//public ULABase ULADevice { get; set; }
+		[CLSCompliant(false)]
 		public ULA ULADevice { get; set; }
 
 		/// <summary>
@@ -54,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The spectrum keyboard
 		/// </summary>
+		[CLSCompliant(false)]
 		public virtual IKeyboard KeyboardDevice { get; set; }
 
 		/// <summary>
@@ -94,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The current cycle (T-State) that we are at in the frame
 		/// </summary>
+		[CLSCompliant(false)]
 		public long _frameCycles;
 
 		/// <summary>
@@ -109,7 +114,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Non-Deterministic bools
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool _render;
+		[CLSCompliant(false)]
 		public bool _renderSound;
 
 		/// <summary>

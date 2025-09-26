@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// <summary>
 	/// Represents a device that utilizes port IN &amp; OUT
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IPortIODevice
 	{
 		/// <summary>

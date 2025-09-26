@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class CommctrlImports
 	{
 		public const int LVM_FIRST = 0x1000;
@@ -39,6 +40,7 @@ namespace BizHawk.Common
 			// _WIN32_WINNT >= 0x0600
 			public uint state;
 
+			[CLSCompliant(false)]
 			[Flags]
 			public enum Mask : uint
 			{

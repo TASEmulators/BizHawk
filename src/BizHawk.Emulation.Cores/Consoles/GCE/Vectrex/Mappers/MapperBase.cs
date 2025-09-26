@@ -3,6 +3,7 @@ using BizHawk.Emulation.Cores.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
+	[CLSCompliant(false)]
 	public class MapperBase
 	{
 		public VectrexHawk Core { get; set; }

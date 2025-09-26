@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class XlibImports
 	{
 		private const string XLIB = "libX11.so.6";

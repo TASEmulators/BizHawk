@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Components.M68000;
 
 namespace BizHawk.Emulation.Cores.Atari.Jaguar
 {
-	public class JaguarDisassembler : VerifiedDisassembler
+	public sealed partial class JaguarDisassembler : VerifiedDisassembler
 	{
 		private readonly MC68000 _m68kDisassembler = new();
 

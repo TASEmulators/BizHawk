@@ -5,6 +5,7 @@ using NLua;
 // TODO - evaluate for re-entrancy problems
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public class LuaSandbox
 	{
 		private static readonly ConditionalWeakTable<LuaThread, LuaSandbox> SandboxForThread = new();

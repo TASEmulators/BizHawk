@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.GambatteIcon;
 		}
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public static DialogResult DoGBPrefsDialog(
 			Config config,
 			IDialogParent dialogParent,

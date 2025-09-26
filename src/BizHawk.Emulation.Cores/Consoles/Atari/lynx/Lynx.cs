@@ -13,7 +13,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		author: "K. Wilkins, Mednafen Team",
 		portedVersion: "0.9.34.1",
 		portedUrl: "https://mednafen.github.io/releases/")]
-	[ServiceNotApplicable(typeof(IRegionable), typeof(ISettable<,>))]
+	[ServiceNotApplicable(typeof(IRegionable))]
+	[ServiceNotApplicable(typeof(ISettable<,>))]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		private static readonly LibLynx LibLynx;

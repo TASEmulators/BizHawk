@@ -26,12 +26,16 @@ namespace BizHawk.Client.Common
 
 	public struct LogicalButton
 	{
+		[CLSCompliant(false)]
 		public const uint MASK_ALT = 1U << 2;
 
+		[CLSCompliant(false)]
 		public const uint MASK_CTRL = 1U << 1;
 
+		[CLSCompliant(false)]
 		public const uint MASK_SHIFT = 1U << 3;
 
+		[CLSCompliant(false)]
 		public const uint MASK_WIN = 1U << 0;
 
 		public static bool operator ==(LogicalButton lhs, LogicalButton rhs)
@@ -44,8 +48,10 @@ namespace BizHawk.Client.Common
 
 		public readonly string Button;
 
+		[CLSCompliant(false)]
 		public readonly uint Modifiers;
 
+		[CLSCompliant(false)]
 		public LogicalButton(string button, uint modifiers, Func<IReadOnlyList<string>> getEffectiveModListCallback)
 		{
 			_getEffectiveModListCallback = getEffectiveModListCallback;

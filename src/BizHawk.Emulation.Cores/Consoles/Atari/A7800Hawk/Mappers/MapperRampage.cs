@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Mapper only used by Rampage and Double Dragon
-	public sealed class MapperRampage : MapperBase
+	public sealed partial class MapperRampage : MapperBase
 	{
 		private byte _bank;
 

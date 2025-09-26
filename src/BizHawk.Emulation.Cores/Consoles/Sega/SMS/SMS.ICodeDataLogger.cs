@@ -52,10 +52,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public int Address;
 		}
 
+		[CLSCompliant(false)]
 		public delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
+
+		[CLSCompliant(false)]
 		public MapMemoryDelegate MapMemory;
 		public ICodeDataLog CDL;
 
+		[CLSCompliant(false)]
 		public void RunCDL(ushort address, CDLog_Flags flags)
 		{
 			if (MapMemory != null)
@@ -75,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		/// <summary>
 		/// A wrapper for FetchMemory which inserts CDL logic
 		/// </summary>
+		[CLSCompliant(false)]
 		public byte FetchMemory_CDL(ushort address)
 		{
 			RunCDL(address, CDLog_Flags.ExecFirst);
@@ -84,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		/// <summary>
 		/// A wrapper for ReadMemory which inserts CDL logic
 		/// </summary>
+		[CLSCompliant(false)]
 		public byte ReadMemory_CDL(ushort address)
 		{
 			RunCDL(address, CDLog_Flags.Data);

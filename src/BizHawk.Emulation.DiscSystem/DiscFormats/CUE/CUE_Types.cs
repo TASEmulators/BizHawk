@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		PRE = 1, //Pre-emphasis enabled (audio tracks only)
 		DCP = 2, //Digital copy permitted
 		DATA = 4, //Set automatically by cue-processing equipment, here for completeness
+		[CLSCompliant(false)] //TODO just needs renaming
 		_4CH = 8, //Four channel audio
 		SCMS = 64, //Serial copy management system (not supported by all recorders) (??)
 	}

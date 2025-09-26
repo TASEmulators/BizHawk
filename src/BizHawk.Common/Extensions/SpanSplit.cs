@@ -16,7 +16,7 @@ using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common
 {
-	public static class MemoryExtensionsBackports
+	public static partial class MemoryExtensionsBackports
 	{
 		/// <summary>
 		/// Returns a type that allows for enumeration of each element within a split span

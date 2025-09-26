@@ -13,6 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// uses pipes to launch an external ffmpeg process and encode
 	/// </summary>
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("ffmpeg", "FFmpeg writer", "Uses an external FFMPEG process to encode video and audio.  Various formats supported.  Splits on resolution change.")]
 	public class FFmpegWriter : IVideoWriter
 	{

@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 		public IEmuClientApi EmuClient
 			=> Get<IEmuClientApi>();
 
+		[CLSCompliant(false)]
 		public IEmulationApi Emulation
 			=> Get<IEmulationApi>(); // requires IEmulator
 
@@ -26,15 +27,18 @@ namespace BizHawk.Client.Common
 		public IJoypadApi Joypad
 			=> Get<IJoypadApi>();
 
+		[CLSCompliant(false)]
 		public IMemoryApi Memory
 			=> Get<IMemoryApi>(); // requires IEmulator
 
+		[CLSCompliant(false)]
 		public IMemoryEventsApi? MemoryEvents
 			=> TryGet<IMemoryEventsApi>(); // requires IDebuggable
 
 		public IMemorySaveStateApi? MemorySaveState
 			=> TryGet<IMemorySaveStateApi>(); // requires IStatable
 
+		[CLSCompliant(false)]
 		public IMovieApi Movie
 			=> Get<IMovieApi>();
 

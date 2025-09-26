@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	/// <summary>
 	/// Represents a GB add on
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IPort
 	{
 		byte Read(IController c);
@@ -22,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		int PortNum { get; }
 	}
 
+	[CLSCompliant(false)]
 	[DisplayName("Gameboy Controller")]
 	public class StandardControls : IPort
 	{
@@ -94,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 	}
 
+	[CLSCompliant(false)]
 	[DisplayName("Gameboy Controller + Tilt")]
 	public class StandardTilt : IPort
 	{

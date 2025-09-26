@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
+	[CLSCompliant(false)]
 	public interface IBSNESForGfxDebugger : ISpecializedEmulatorService
 	{
 #pragma warning disable CA1715 // breaks IInterface convention

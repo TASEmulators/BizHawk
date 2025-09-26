@@ -15,6 +15,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(NLuaTableHelper.CLS_LUATABLE)]
 	public class LuaLibraries : ILuaLibraries
 	{
 		public static readonly bool IsAvailable = LuaNativeMethodLoader.EnsureNativeMethodsLoaded();

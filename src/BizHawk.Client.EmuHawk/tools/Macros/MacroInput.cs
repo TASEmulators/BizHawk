@@ -9,7 +9,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Tool(false, null)]
+	[Tool(false)]
 	public partial class MacroInputTool : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]

@@ -6,6 +6,7 @@ using static BizHawk.Emulation.Cores.Nintendo.SNES.SNESGraphicsDecoder;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
+	[CLSCompliant(false)]
 	public sealed unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
 		private readonly BsnesApi _api;

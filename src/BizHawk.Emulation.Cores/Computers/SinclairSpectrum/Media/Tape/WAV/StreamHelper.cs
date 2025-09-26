@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			stream.Write(data, 0, data.Length);
 		}
 
+		[CLSCompliant(false)]
 		public static void Write(Stream stream, uint value)
 		{
 			byte[] data = BitConverter.GetBytes(value);
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			stream.Write(data, 0, data.Length);
 		}
 
+		[CLSCompliant(false)]
 		public static void Write(Stream stream, ushort value)
 		{
 			byte[] data = BitConverter.GetBytes(value);
@@ -38,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			stream.Write(data, 0, data.Length);
 		}
 
+		[CLSCompliant(false)]
 		public static void Write(Stream stream, sbyte value)
 		{
 			byte[] data = new byte[1];
@@ -60,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			value = BitConverter.ToInt32(data, 0);
 		}
 
+		[CLSCompliant(false)]
 		public static void Read(Stream stream, out uint value)
 		{
 			byte[] data = new byte[4];
@@ -74,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			value = BitConverter.ToInt16(data, 0);
 		}
 
+		[CLSCompliant(false)]
 		public static void Read(Stream stream, out ushort value)
 		{
 			byte[] data = new byte[2];
@@ -88,6 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			value = data[0];
 		}
 
+		[CLSCompliant(false)]
 		public static void Read(Stream stream, out sbyte value)
 		{
 			byte[] data = new byte[1];

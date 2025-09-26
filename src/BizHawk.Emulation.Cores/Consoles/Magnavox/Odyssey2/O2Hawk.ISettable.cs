@@ -29,8 +29,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
-		public O2Settings _settings = new O2Settings();
-		public O2SyncSettings _syncSettings = new O2SyncSettings();
+		internal O2Settings _settings = new();
+
+		private O2SyncSettings _syncSettings = new();
 
 		[CoreSettings]
 		public class O2Settings

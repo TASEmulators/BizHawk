@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 {
 	public partial class MOS6502X<TLink> : IDisassemblable
 	{
+		[CLSCompliant(false)]
 		public string Disassemble(ushort pc, out int bytesToAdvance)
 		{
 			return MOS6502X.Disassemble(pc, out bytesToAdvance, _link.PeekMemory);
@@ -23,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public IEnumerable<string> AvailableCpus { get; } = [ "6502" ];
 
+		[CLSCompliant(false)]
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			return MOS6502X.Disassemble((ushort)addr, out length, a => m.PeekByte(a));
@@ -41,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		/// <summary>
 		/// disassemble not from our own memory map, but from the supplied memory domain
 		/// </summary>
+		[CLSCompliant(false)]
 		public static string Disassemble(ushort pc, out int bytesToAdvance, Func<ushort, byte> peeker)
 		{
 			byte op = peeker(pc);

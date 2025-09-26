@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// calculates the complete disc hash for matching to a redump
 		/// </summary>
+		[CLSCompliant(false)]
 		public uint Calculate_PSX_RedumpHash()
 		{
 			CRC32 crc = new();

@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.I8048;
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	// Default mapper with no bank switching
-	public class MapperDefault : MapperBase
+	public sealed partial class MapperDefault : MapperBase
 	{
 		public int ROM_mask;
 

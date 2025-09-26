@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 	public partial class I8048
 	{
 		// registers
+		[CLSCompliant(false)]
 		public ushort[] Regs = new ushort[78];
 
 		// EA gets set to true on external memory address latch
@@ -25,39 +26,84 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 		public bool T0, T1, T1_old;
 
 		// 8 'registers' but really they point to locations in RAM
+		[CLSCompliant(false)]
 		public const ushort R0 = 0;
+
+		[CLSCompliant(false)]
 		public const ushort R1 = 1;
+
+		[CLSCompliant(false)]
 		public const ushort R2 = 2;
+
+		[CLSCompliant(false)]
 		public const ushort R3 = 3;
+
+		[CLSCompliant(false)]
 		public const ushort R4 = 4;
+
+		[CLSCompliant(false)]
 		public const ushort R5 = 5;
+
+		[CLSCompliant(false)]
 		public const ushort R6 = 6;
+
+		[CLSCompliant(false)]
 		public const ushort R7 = 7;
 
 		// offset for port regs
+		[CLSCompliant(false)]
 		public const ushort PX = 70;
 
 		// the location pointed to by the registers is controlled by the RAM bank
+		[CLSCompliant(false)]
 		public ushort RB = 0;
 
 		// high PC address bit is controlled by instruction bank
 		// only changes on JMP and CALL instructions
+		[CLSCompliant(false)]
 		public ushort MB = 0;
 
 		//RAM occupies registers 0-63
+		[CLSCompliant(false)]
 		public const ushort PC = 64;
+
+		[CLSCompliant(false)]
 		public const ushort PSW = 65;
+
+		[CLSCompliant(false)]
 		public const ushort A = 66;
+
+		[CLSCompliant(false)]
 		public const ushort ADDR = 67; // internal
+
+		[CLSCompliant(false)]
 		public const ushort ALU = 68; // internal
+
+		[CLSCompliant(false)]
 		public const ushort ALU2 = 69; // internal
+
+		[CLSCompliant(false)]
 		public const ushort BUS = 70;
+
+		[CLSCompliant(false)]
 		public const ushort P1 = 71;
+
+		[CLSCompliant(false)]
 		public const ushort P2 = 72;
+
+		[CLSCompliant(false)]
 		public const ushort P4 = 73;
+
+		[CLSCompliant(false)]
 		public const ushort P5 = 74;
+
+		[CLSCompliant(false)]
 		public const ushort P6 = 75;
+
+		[CLSCompliant(false)]
 		public const ushort P7 = 76;
+
+		[CLSCompliant(false)]
 		public const ushort TIM = 77;
 
 		public bool Flag3
@@ -102,6 +148,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			set => Regs[PSW] = (byte)((Regs[PSW] & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			return new Dictionary<string, RegisterValue>

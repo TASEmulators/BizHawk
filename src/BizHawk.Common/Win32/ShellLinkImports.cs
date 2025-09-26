@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class ShellLinkImports
 	{
 		/// <summary>The IShellLink interface allows Shell links to be created, modified, and resolved</summary>

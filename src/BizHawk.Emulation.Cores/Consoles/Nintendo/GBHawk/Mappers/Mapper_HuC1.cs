@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// hudson mapper used in ex Daikaijuu monogatari
-	public class MapperHuC1 : MapperBase
+	public sealed partial class MapperHuC1 : MapperBase
 	{
 		public int ROM_bank;
 		public int RAM_bank;

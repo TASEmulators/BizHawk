@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The SINF chunks
 			/// </summary>
+			[CLSCompliant(false)]
 			public readonly IList<NRGSessionInfo> SessionInfos = new List<NRGSessionInfo>();
 
 			/// <summary>
@@ -70,6 +71,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The MTYP chunk
 			/// </summary>
+			[CLSCompliant(false)]
 			public NRGMediaType MediaType;
 
 			/// <summary>
@@ -158,6 +160,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// So if you have different modes on tracks, this will be the largest mode size
 			/// Of course, this means sectors on the file may just have padding
 			/// </summary>
+			[CLSCompliant(false)]
 			public ushort SectorSize;
 
 			/// <summary>
@@ -234,6 +237,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// Track length in bytes
 			/// </summary>
+			[CLSCompliant(false)]
 			public ulong TrackLength;
 
 			/// <summary>
@@ -281,6 +285,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a SINF chunk
 		/// </summary>
+		[CLSCompliant(false)]
 		public class NRGSessionInfo : NRGChunk
 		{
 			/// <summary>
@@ -303,6 +308,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Represents a MTYP chunk
 		/// </summary>
+		[CLSCompliant(false)]
 		public class NRGMediaType : NRGChunk
 		{
 			/// <summary>

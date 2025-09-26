@@ -1,6 +1,7 @@
 <Project>
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
+		<CLSCompliant>false</CLSCompliant>
 		<EnableMSTestRunner>true</EnableMSTestRunner>
 		<OutputPath>$(ProjectDir)../../test_output</OutputPath>
 		<OutputType>Exe</OutputType>

@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			private readonly int _systemBusAddressShift;
 			private readonly long _systemBusSize;
 
+			[CLSCompliant(false)]
 			public MAMEMemoryDomain(string name, long size, Endian endian, int dataWidth, bool writable, LibMAME core, IMonitor monitor, int firstOffset, int systemBusAddressShift, long systemBusSize)
 			{
 				Name = name;

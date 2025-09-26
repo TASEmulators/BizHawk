@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private DatacorderDevice Tape => _machine.TapeDevice;
 		private IKeyboard Keyboard => _machine.KeyboardDevice;
 
+		[CLSCompliant(false)]
 		public PPI_8255(CPCBase machine)
 		{
 			_machine = machine;
@@ -299,6 +300,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Device responds to an IN instruction
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool ReadPort(ushort port, ref int result)
 		{
 			int PPIFunc = (port & 0x0300) >> 8; // portUpper & 3;
@@ -336,6 +338,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Device responds to an OUT instruction
 		/// </summary>
+		[CLSCompliant(false)]
 		public bool WritePort(ushort port, int result)
 		{
 			if (port.Bit(11))

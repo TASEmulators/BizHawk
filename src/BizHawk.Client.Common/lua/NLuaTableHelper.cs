@@ -7,8 +7,11 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(CLS_LUATABLE)]
 	public sealed class NLuaTableHelper
 	{
+		public const bool CLS_LUATABLE = false;
+
 		private readonly Action<string> _logCallback;
 
 		private readonly Lua _lua;

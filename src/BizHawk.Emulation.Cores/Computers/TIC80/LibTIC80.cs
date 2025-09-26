@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Computers.TIC80
 {
+	[CLSCompliant(false)]
 	public abstract class LibTIC80 : LibWaterboxCore
 	{
 		[Flags]

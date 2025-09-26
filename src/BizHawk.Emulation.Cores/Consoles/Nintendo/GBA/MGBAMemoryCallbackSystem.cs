@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
+	[CLSCompliant(false)]
 	public class MGBAMemoryCallbackSystem : IMemoryCallbackSystem, IDisposable
 	{
 		private LibmGBA _mgba;

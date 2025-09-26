@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// Tools such the debugger use this, but also LUA scripting, and tools like trace logging and code data logging can make use of this tool
 	/// If unavailable the debugger tool will still be available but disable the disassembly window but still be available if the <see cref="IDebuggable"/> service is available
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IDisassemblable : IEmulatorService
 	{
 		/// <summary>
@@ -35,6 +36,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// does sanity checking on CPU parameters
 	/// </summary>
+	[CLSCompliant(false)]
 	public abstract class VerifiedDisassembler : IDisassemblable
 	{
 		private string? _cpu;

@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common
 				.ToArray());
 
 		// Attempt to import another type of movie file into a movie object.
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public static ImportResult ImportFile(
 			IDialogParent dialogParent,
 			IMovieSession session,

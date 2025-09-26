@@ -6,7 +6,7 @@ using NLua;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
-	public sealed class GameInfoLuaLibrary : LuaLibraryBase
+	public sealed partial class GameInfoLuaLibrary : LuaLibraryBase
 	{
 		public GameInfoLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

@@ -10,6 +10,7 @@ namespace BizHawk.Common
 	/// largely from https://raw.githubusercontent.com/noserati/tpl/master/ThreadAffinityTaskScheduler.cs (MIT license)<br/>
 	/// most of this is used in <c>#if false</c> code in <c>mupen64plusApi.frame_advance()</c>, don't delete it
 	/// </remarks>
+	[CLSCompliant(false)]
 	public static class ThreadHacks
 	{
 		public const uint QS_ALLINPUT = 0x4FFU;

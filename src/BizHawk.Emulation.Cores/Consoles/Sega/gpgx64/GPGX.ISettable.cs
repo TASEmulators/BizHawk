@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public GPGXSettings GetSettings()
 			=> _settings.Clone();
 
+		[CLSCompliant(false)]
 		public GPGXSyncSettings GetSyncSettings()
 			=> _syncSettings.Clone();
 
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
+		[CLSCompliant(false)]
 		public PutSettingsDirtyBits PutSyncSettings(GPGXSyncSettings o)
 		{
 			var ret = GPGXSyncSettings.NeedsReboot(_syncSettings, o);
@@ -205,6 +207,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public GPGXSettings Clone()
 				=> (GPGXSettings)MemberwiseClone();
 
+			[CLSCompliant(false)]
 			public LibGPGX.DrawMask GetDrawMask()
 			{
 				LibGPGX.DrawMask ret = 0;
@@ -220,6 +223,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				=> !DeepEquality.DeepEquals(x, y);
 		}
 
+		[CLSCompliant(false)]
 		[CoreSettings]
 		public class GPGXSyncSettings
 		{

@@ -4,6 +4,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Calculators.Emu83
 {
+	[CLSCompliant(false)]
 	public abstract class LibEmu83
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

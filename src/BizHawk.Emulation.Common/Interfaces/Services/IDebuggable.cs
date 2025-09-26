@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Common
 	/// Tools like the debugger will gracefully degrade based on the availability of each component of this service,
 	/// it is expected that any of these features will throw a NotImplementedException if not implemented, and the client will manage accordingly
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IDebuggable : IEmulatorService
 	{
 		/// <summary>
@@ -44,6 +45,7 @@ namespace BizHawk.Emulation.Common
 		long TotalExecutedCycles { get; } // TODO: this should probably be a long, but most cores were using int, oh well
 	}
 
+	[CLSCompliant(false)]
 	public readonly struct RegisterValue
 	{
 		public readonly byte BitSize;

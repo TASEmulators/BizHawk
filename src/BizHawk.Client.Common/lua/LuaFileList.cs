@@ -6,6 +6,7 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(LuaFile.CLS_NLUA)]
 	public class LuaFileList : List<LuaFile>
 	{
 		private bool _changes;

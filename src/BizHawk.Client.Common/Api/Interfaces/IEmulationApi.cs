@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public interface IEmulationApi : IExternalApi
 	{
 		void DisplayVsync(bool enabled);

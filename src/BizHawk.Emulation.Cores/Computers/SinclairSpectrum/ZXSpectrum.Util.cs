@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// POKEs a memory bus address
 		/// </summary>
+		[CLSCompliant(false)]
 		public void PokeMemory(ushort addr, byte value)
 		{
 			_machine.WriteBus(addr, value);

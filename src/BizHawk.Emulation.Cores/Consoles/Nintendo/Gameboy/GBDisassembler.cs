@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public class GBDisassembler : VerifiedDisassembler
+	public sealed partial class GBDisassembler : VerifiedDisassembler
 	{
 		public bool UseRGBDSSyntax;
 

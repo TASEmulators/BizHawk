@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// Does not attempt to virtually present the disc as a BizHawk disc - that will be the
 	/// responsibility of the user of this code
 	/// </summary>
+	[CLSCompliant(false)]
 	public unsafe class MednaDisc : IDisposable
 	{
 		/// <exception cref="InvalidOperationException"><see cref="IsLibraryAvailable"/> is <see langword="false"/> (could not load <c>mednadisc.dll</c>), or unmanaged call failed</exception>

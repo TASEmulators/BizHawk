@@ -30,9 +30,8 @@ namespace BizHawk.Client.EmuHawk
 					.Select(t => new ServiceInfo(t, ser.GetService(t)))
 					.OrderBy(si => si.TypeName)
 					.ToDictionary(static si => si.TypeName);
-				var notApplicableAttribute = ((ServiceNotApplicableAttribute)Attribute
-					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicableAttribute)));
-				NotApplicableTypes = (notApplicableAttribute?.NotApplicableTypes ?? [ ])
+				NotApplicableTypes = emu.GetType().GetCustomAttributes<ServiceNotApplicableAttribute>()
+					.SelectMany(static attr => attr.NotApplicableTypes)
 					.Select(static x => x.ToString()).Order().ToList();
 			}
 		}

@@ -3,6 +3,7 @@ namespace BizHawk.Common
 	/// <summary>
 	/// Platform abstraction layer over mmap like functionality
 	/// </summary>
+	[CLSCompliant(false)]
 	public interface IMemoryBlockPal : IDisposable
 	{
 		ulong Start { get; }

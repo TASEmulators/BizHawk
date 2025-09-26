@@ -5,6 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// emulation notes:
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
+	[CLSCompliant(false)]
 	public static class Chip6526
 	{
 		public static Cia CreateCia1(C64.CiaType type, Func<int> readIec, Func<int> readUserPort)

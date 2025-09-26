@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public IEnumerable<string> AvailableCpus { get; } = [ "M68000" ];
 
+		[CLSCompliant(false)]
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			_disassemblerInstance.ReadWord = a => (short)m.PeekUshort(a, m.EndianType == MemoryDomain.Endian.Big);

@@ -82,6 +82,7 @@ namespace BizHawk.Client.Common
 	{
 		private readonly ITasMovie _movie;
 
+		[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 		public TasMovieMarkerList(ITasMovie movie)
 		{
 			_movie = movie;

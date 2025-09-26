@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public IDialogController DialogController => _mainForm;
 
+		[CLSCompliant(MovieSession.CLS_IMOVIESESSION)]
 		public PlayMovie(
 			IMainFormForTools mainForm,
 			Config config,

@@ -6,6 +6,7 @@ using DD = Microsoft.CodeAnalysis.DiagnosticDescriptor;
 using MI = System.Runtime.CompilerServices.MethodImplAttribute;
 using OAC = Microsoft.CodeAnalysis.Diagnostics.OperationAnalysisContext;
 using SNAC = Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext;
+using SPC = Microsoft.CodeAnalysis.SourceProductionContext;
 
 public static class DDExtensions
 {
@@ -92,6 +93,10 @@ public static class DDExtensions
 		=> ctx.ReportDiagnostic(Diagnostic.Create(diag, location, messageArgs: messageArgs));
 
 	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, Location location, SPC ctx, object?[]? messageArgs = null)
+		=> ctx.ReportDiagnostic(Diagnostic.Create(diag, location, messageArgs: messageArgs));
+
+	[MI(AggressiveInlining)]
 	public static void ReportAt(this DD diag, Location location, OAC ctx, string message)
 		=> diag.ReportAt(location, ctx, [ message ]);
 
@@ -168,11 +173,19 @@ public static class DDExtensions
 		=> diag.ReportAt(location.GetLocation(), ctx, messageArgs);
 
 	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, SyntaxNode location, SPC ctx, object?[]? messageArgs = null)
+		=> diag.ReportAt(location.GetLocation(), ctx, messageArgs);
+
+	[MI(AggressiveInlining)]
 	public static void ReportAt(this DD diag, SyntaxNode location, OAC ctx, string message)
 		=> diag.ReportAt(location, ctx, [ message ]);
 
 	[MI(AggressiveInlining)]
 	public static void ReportAt(this DD diag, SyntaxNode location, SNAC ctx, string message)
+		=> diag.ReportAt(location, ctx, [ message ]);
+
+	[MI(AggressiveInlining)]
+	public static void ReportAt(this DD diag, SyntaxNode location, SPC ctx, string message)
 		=> diag.ReportAt(location, ctx, [ message ]);
 
 	[MI(AggressiveInlining)]

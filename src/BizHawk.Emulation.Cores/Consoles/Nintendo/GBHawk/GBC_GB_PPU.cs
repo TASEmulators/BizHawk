@@ -47,8 +47,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool BG_V_flip;
 		public bool HDMA_mode;
 		public bool HDMA_run_once;
-		public ushort cur_DMA_src;
-		public ushort cur_DMA_dest;
+
+		private ushort cur_DMA_src;
+
+		private ushort cur_DMA_dest;
+
 		public int HDMA_length;
 		public int HDMA_countdown;
 		public int HBL_HDMA_count;

@@ -5,6 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 	public class SaveSlotManager
 	{
 		private readonly bool[] _slots = new bool[10];

@@ -5,6 +5,7 @@ using System.Net.Sockets;
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public readonly struct ParsedCLIFlags
 	{
 		public readonly int? cmdLoadSlot;

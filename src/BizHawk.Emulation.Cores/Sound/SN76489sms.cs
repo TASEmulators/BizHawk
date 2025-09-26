@@ -16,6 +16,8 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		public byte[] Chan_vol = new byte[4];
+
+		[CLSCompliant(false)]
 		public ushort[] Chan_tone = new ushort[4];
 
 		public int chan_sel;

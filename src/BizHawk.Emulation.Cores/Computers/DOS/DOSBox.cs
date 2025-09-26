@@ -314,6 +314,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			if (_cdRomFileNames.Count > 0) DriveLightEnabled = true;
 		}
 
+		[CLSCompliant(false)]
 		public static LibDOSBox.CDData GetCDDataStruct(Disc cd)
 		{
 			var ret = new LibDOSBox.CDData();

@@ -2,6 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Components.LR35902
 {
+	[CLSCompliant(false)]
 	public partial class LR35902
 	{
 		// local variables for operations, not stated

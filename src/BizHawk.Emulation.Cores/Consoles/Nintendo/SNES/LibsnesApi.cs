@@ -9,6 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
+	[CLSCompliant(false)]
 	public abstract unsafe class CoreImpl
 	{
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
@@ -23,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void PostLoadState();
 	}
 
+	[CLSCompliant(false)]
 	public unsafe partial class LibsnesApi : IDisposable, IMonitor, IStatable
 	{
 		static LibsnesApi()

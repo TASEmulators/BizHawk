@@ -930,6 +930,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Buffer.BlockCopy(_scanlinebuffer, srcbytes, _frameBuffer, 0, count);
 		}
 
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr, bool peek)
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
@@ -1196,6 +1197,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return coll;
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value, bool poke)
 		{
 			var maskedAddr = (ushort)(addr & 0x3f);

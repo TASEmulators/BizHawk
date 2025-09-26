@@ -2,7 +2,7 @@
 {
 	// Default mapper with no bank switching
 	// make sure peekmemory and poke memory don't effect the rest of the system!
-	public class MapperDefault : MapperBase
+	public sealed partial class MapperDefault : MapperBase
 	{
 		public override void Initialize()
 		{

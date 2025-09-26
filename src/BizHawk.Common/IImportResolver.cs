@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Common
 {
 	/// <summary>Implementors are able to provide pointers to functions in dynamically-linked libraries, which are loaded through some undefined mechanism.</summary>
-	public interface IImportResolver
+	public partial interface IImportResolver
 	{
 		IntPtr GetProcAddrOrZero(string entryPoint);
 
@@ -11,7 +11,7 @@ namespace BizHawk.Common
 		IntPtr GetProcAddrOrThrow(string entryPoint);
 	}
 
-	public class DynamicLibraryImportResolver : IDisposable, IImportResolver
+	public partial class DynamicLibraryImportResolver : IDisposable, IImportResolver
 	{
 		private IntPtr _p;
 

@@ -14,6 +14,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
+	[CLSCompliant(false)]
 	public unsafe interface ISNESGraphicsDecoder : IMonitor
 	{
 #pragma warning disable CA1715 // breaks IInterface convention
@@ -105,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		void SetBackColor(int snescol = -1);
 	}
 
+	[CLSCompliant(false)]
 	public unsafe class SNESGraphicsDecoder : ISNESGraphicsDecoder
 	{
 		public class PaletteSelection

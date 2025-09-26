@@ -51,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateWindowTitle();
 		}
 
+		[CLSCompliant(false)]
 		[RequiredService]
 		public ICodeDataLogger/*?*/ _cdlCore { get; set; }
 

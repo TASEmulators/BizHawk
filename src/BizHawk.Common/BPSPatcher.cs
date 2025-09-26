@@ -5,7 +5,7 @@ using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Common
 {
-	public static class BPSPatcher
+	public static partial class BPSPatcher
 	{
 		/// <remarks>
 		/// constructor assumes valid header/footer<br/>

@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	/// that would be completely arbitrary and would remove the whole requirement for this mess
 	/// </remarks>
 	[Description("Functions related specifically to Nes Cores")]
-	public sealed class NESLuaLibrary : LuaLibraryBase
+	public sealed partial class NESLuaLibrary : LuaLibraryBase
 	{
 		public NESLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

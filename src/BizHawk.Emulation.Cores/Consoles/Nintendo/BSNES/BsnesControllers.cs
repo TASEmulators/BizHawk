@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public ControllerDefinition Definition { get; }
 
+		[CLSCompliant(false)]
 		public BsnesControllers(BsnesCore.SnesSyncSettings ss, bool subframe = false)
 		{
 			_ports = new[]

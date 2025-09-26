@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk
 	{
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr)
 		{
 			if (MemoryCallbacks.HasReads)
@@ -26,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			return mapper.ReadMemory((ushort)((addr - 0x400) + bank_size * rom_bank));
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value)
 		{
 			if (MemoryCallbacks.HasWrites)
@@ -44,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
+		[CLSCompliant(false)]
 		public byte PeekMemory(ushort addr)
 		{
 			if (addr < 0x400)
@@ -54,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			return mapper.PeekMemory((ushort)((addr - 0x400) + bank_size * rom_bank));
 		}
 
+		[CLSCompliant(false)]
 		public byte ReadPort(ushort port)
 		{
 			if (port == 0)
@@ -128,6 +132,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			return kb_byte;
 		}
 
+		[CLSCompliant(false)]
 		public void WritePort(ushort port, byte value)
 		{
 			if (port == 0)

@@ -4,7 +4,7 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Rescue on Fractalus has unique RAM mapping
-	public sealed class MapperFractalus : MapperBase
+	public sealed partial class MapperFractalus : MapperBase
 	{
 		private byte[] RAM = new byte[0x800];
 

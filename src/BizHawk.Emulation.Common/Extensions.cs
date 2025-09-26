@@ -197,6 +197,7 @@ namespace BizHawk.Emulation.Common
 			return core != null && core.ServiceProvider.HasService<IDebuggable>();
 		}
 
+		[CLSCompliant(false)]
 		public static IDebuggable AsDebuggable(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<IDebuggable>();
@@ -232,6 +233,7 @@ namespace BizHawk.Emulation.Common
 			return false;
 		}
 
+		[CLSCompliant(false)]
 		public static bool MemoryCallbacksAvailable(this IDebuggable core)
 		{
 			if (core == null)
@@ -255,6 +257,7 @@ namespace BizHawk.Emulation.Common
 			return core != null && core.ServiceProvider.HasService<IDisassemblable>();
 		}
 
+		[CLSCompliant(false)]
 		public static IDisassemblable AsDisassembler(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<IDisassemblable>();

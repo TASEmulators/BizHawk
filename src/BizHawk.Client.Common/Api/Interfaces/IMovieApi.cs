@@ -2,6 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public interface IMovieApi : IExternalApi
 	{
 		bool StartsFromSavestate();

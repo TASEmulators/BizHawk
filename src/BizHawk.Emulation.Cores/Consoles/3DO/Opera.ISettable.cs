@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			Sanyo_HC21,
 			[Display(Name = "(3DO Arcade) Shootout At Old Tucson")]
 			Shootout_At_Old_Tucson,
+			[CLSCompliant(false)] //TODO just needs renaming
 			[Display(Name = "3DO-NTSC-1.0fc2")]
 			_3DO_NTSC_1fc2,
 		}

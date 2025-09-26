@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	public partial class NDS : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			var regs = new uint[2 * 16];
@@ -49,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset(_console);
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			get

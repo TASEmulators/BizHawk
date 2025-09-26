@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Writes a sequence of 24bpp PNG or JPG files
 	/// </summary>
+	[CLSCompliant(VideoWriterInventory.CLS_IVIDEOWRITER)]
 	[VideoWriter("imagesequence", "Image sequence writer", "Writes a sequence of 24bpp PNG or JPG files (default compression quality)")]
 	public class ImageSequenceWriter : IDisposable, IVideoWriter
 	{

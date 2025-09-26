@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The zx-state header appears right at the start of a zx-state (.szx) file.
 		/// </summary>
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTHEADER
 		{
@@ -51,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Block Header. Each real block starts with this header.
 		/// </summary>
+		[CLSCompliant(false)]
 		public struct ZXSTBLOCK
 		{
 			public uint dwId;
@@ -84,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Contains the Z80 registers and other internal state values. It does not contain any specific model registers.
 		/// </summary>
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTZ80REGS
 		{
@@ -142,6 +145,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// zx-state files will contain a number of 16KB RAM page blocks, depending on the specific Spectrum model.
 		/// </summary>
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTRAMPAGE
 		{
@@ -175,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The state of the Spectrum keyboard and any keyboard joystick emulation.
 		/// </summary>
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTKEYBOARD
 		{
@@ -185,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Joystick setup for both players.
 		/// </summary>
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTJOYSTICK
 		{
@@ -202,6 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ZXSTTP_COMPRESSED = 2
 		}
 
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTTAPE
 		{
@@ -242,6 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Each +3 disk drive that has a disk inserted in it will have one of these blocks.
 		/// They follow the ZXSTPLUS3 block which identifies the number of drives.
 		/// </summary>
+		[CLSCompliant(false)]
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct ZXSTDSKFILE
 		{

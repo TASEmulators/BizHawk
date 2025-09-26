@@ -6,12 +6,12 @@ namespace BizHawk.Common
 	/// <summary>
 	/// TODO: Switch to dotnet core and remove this junkus
 	/// </summary>
-	public interface ISpanStream
+	public partial interface ISpanStream
 	{
 		void Write(ReadOnlySpan<byte> buffer);
 		int Read(Span<byte> buffer);
 	}
-	public static class SpanStream
+	public static partial class SpanStream
 	{
 		/// <returns>a stream in spanstream mode, or a newly-created wrapper which provides that functionality</returns>
 		public static ISpanStream GetOrBuild(Stream s)

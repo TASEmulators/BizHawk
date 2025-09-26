@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.LR35902;
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Wisdom tree mapper (32K bank switching)
-	public class MapperWT : MapperBase
+	public sealed partial class MapperWT : MapperBase
 	{
 		public int ROM_bank;
 		public int ROM_mask;

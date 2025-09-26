@@ -18,7 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		public bool _islag = true;
+		private bool _islag = true;
+
 		private int _lagcount;
 	}
 }

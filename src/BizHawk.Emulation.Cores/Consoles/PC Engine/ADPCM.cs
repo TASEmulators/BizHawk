@@ -4,6 +4,7 @@ using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
+	[CLSCompliant(false)]
 	public sealed class ADPCM : IMixedSoundProvider
 	{
 		private readonly ScsiCDBus _scsi;

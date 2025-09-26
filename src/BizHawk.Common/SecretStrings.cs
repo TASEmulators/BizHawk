@@ -15,7 +15,7 @@ namespace BizHawk.Common
 	/// 5. In the case Environment.MachineName is the only thing available, the protection is low for a skilled attack, but sufficient for low grade attacks.
 	/// (Probably should just keep these strings outside of the main config file, but still protect them as to prevent secrets being present as plaintext)
 	/// </summary>
-	public static class SecretStrings
+	public static partial class SecretStrings
 	{
 		private static readonly Aes _aes;
 

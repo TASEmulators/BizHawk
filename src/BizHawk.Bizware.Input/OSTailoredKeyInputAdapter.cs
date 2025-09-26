@@ -14,6 +14,7 @@ namespace BizHawk.Bizware.Input
 	public abstract class OSTailoredKeyMouseInputAdapter : IHostInputAdapter
 	{
 		private IKeyMouseInput? _keyMouseInput;
+		[CLSCompliant(false)] //TODO just needs renaming
 		protected Func<bool>? _getHandleAlternateKeyboardLayouts;
 
 		public abstract string Desc { get; }

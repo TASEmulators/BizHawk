@@ -68,6 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
+        [CLSCompliant(false)]
         public bool ReadPort(ushort port, ref int data)
         {
             BitArray bits = new BitArray(new byte[] { (byte)data });
@@ -108,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
+        [CLSCompliant(false)]
         public bool WritePort(ushort port, int data)
         {
             BitArray bits = new BitArray(new byte[] { (byte)data });

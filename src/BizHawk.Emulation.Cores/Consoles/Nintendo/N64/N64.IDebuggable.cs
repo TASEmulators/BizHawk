@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			// note: the approach this code takes is somewhat bug-prone
@@ -72,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			throw new NotImplementedException();
 		}
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });

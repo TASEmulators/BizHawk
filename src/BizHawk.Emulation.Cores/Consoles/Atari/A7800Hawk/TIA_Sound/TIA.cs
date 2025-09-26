@@ -3,13 +3,16 @@
 	// Emulates the TIA
 	public sealed partial class TIA
 	{
+		[CLSCompliant(false)]
 		public A7800Hawk Core { get; set; }
 
 		public byte BusState;
 
 		private bool _doTicks;
 		public int AudioClocks; // not savestated
-		public int _hsyncCnt;
+
+		internal int _hsyncCnt;
+
 		private int _capChargeStart;
 		private bool _capCharging;
 
@@ -41,6 +44,7 @@
 			return LocalAudioCycles;
 		}
 
+		[CLSCompliant(false)]
 		public byte ReadMemory(ushort addr, bool peek)
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
@@ -194,6 +198,7 @@
 			*/
 		}
 
+		[CLSCompliant(false)]
 		public void WriteMemory(ushort addr, byte value, bool poke)
 		{
 			var maskedAddr = (ushort)(addr & 0x3f);

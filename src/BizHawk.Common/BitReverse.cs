@@ -1,5 +1,6 @@
 ﻿namespace BizHawk.Common
 {
+	[CLSCompliant(false)]
 	public static class BitReverse
 	{
 		static BitReverse()

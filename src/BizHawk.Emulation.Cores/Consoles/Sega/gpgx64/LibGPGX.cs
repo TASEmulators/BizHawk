@@ -7,6 +7,7 @@ using BizHawk.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
+	[CLSCompliant(false)]
 	public abstract class LibGPGX
 	{
 		[BizImport(CallingConvention.Cdecl)]

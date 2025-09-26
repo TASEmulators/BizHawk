@@ -4,7 +4,7 @@
 	/// Standard ChannelF Cartridge
 	/// 2KB ROM / NO RAM
 	/// </summary>
-	public class MapperSTD : VesCartBase
+	public sealed partial class MapperSTD : VesCartBase
 	{
 		public override string BoardType => "STD";
 

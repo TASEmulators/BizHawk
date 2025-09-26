@@ -7,6 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Shows a list of a user's current achievements
 	/// </summary>
+	[CLSCompliant(false)]
 	public partial class RCheevosAchievementListForm : Form
 	{
 		public bool IsShown { get; private set; }

@@ -26,30 +26,35 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// how large the normal heap should be.  it services sbrk calls
 		/// can be 0, but sbrk calls will crash.
 		/// </summary>
+		[CLSCompliant(false)]
 		public uint SbrkHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the sealed heap should be.  it services special allocations that become readonly after init
 		/// Must be > 0 and at least large enough to store argv and envp, and any alloc_sealed() calls
 		/// </summary>
+		[CLSCompliant(false)]
 		public uint SealedHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the invisible heap should be.  it services special allocations which are not savestated
 		/// Must be > 0 and at least large enough for the internal vtables, and any alloc_invisible() calls
 		/// </summary>
+		[CLSCompliant(false)]
 		public uint InvisibleHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the "plain" heap should be.  it is savestated, and contains
 		/// Must be > 0 and at least large enough for the internal pthread structure, and any alloc_plain() calls
 		/// </summary>
+		[CLSCompliant(false)]
 		public uint PlainHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the mmap heap should be.  it is savestated.
 		/// can be 0, but mmap calls will crash.
 		/// </summary>
+		[CLSCompliant(false)]
 		public uint MmapHeapSizeKB { get; set; }
 
 		/// <summary>

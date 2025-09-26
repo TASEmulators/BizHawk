@@ -5,10 +5,12 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 {
 	public partial class TI83 : IDebuggable
 	{
+		[CLSCompliant(false)]
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters() => _cpu.GetCpuFlagsAndRegisters();
 
 		public void SetCpuRegister(string register, int value) => _cpu.SetCpuRegister(register, value);
 
+		[CLSCompliant(false)]
 		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		[FeatureNotImplemented]

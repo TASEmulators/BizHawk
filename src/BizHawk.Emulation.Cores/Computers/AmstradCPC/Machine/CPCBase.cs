@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// The abstract class that all emulated models will inherit from
 	/// * Main properties / fields / contruction*
 	/// </summary>
+	[CLSCompliant(false)]
 	public abstract partial class CPCBase
 	{
 		/// <summary>

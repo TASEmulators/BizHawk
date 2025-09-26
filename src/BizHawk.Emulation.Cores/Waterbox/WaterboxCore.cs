@@ -15,8 +15,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private const int AUDIO_CHANNEL_COUNT = 2;
 
 		private LibWaterboxCore _core;
+
+		[CLSCompliant(false)]
 		protected WaterboxHost _exe;
+
+		[CLSCompliant(false)]
 		protected ICallingConventionAdapter _adapter;
+
+		[CLSCompliant(false)]
 		protected LibWaterboxCore.MemoryArea[] _memoryAreas;
 		private readonly LibWaterboxCore.EmptyCallback _inputCallback;
 		protected CoreComm CoreComm { get; }
@@ -267,6 +273,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			CycleCount = 0;
 		}
 
+		[CLSCompliant(false)]
 		protected readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 		public virtual string SystemId { get; }
@@ -362,7 +369,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 		}
 
+		[CLSCompliant(false)]
 		protected short[] _soundBuffer;
+
+		[CLSCompliant(false)]
 		protected int _numSamples;
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
@@ -372,6 +382,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return _videoBuffer;
 		}
 
+		[CLSCompliant(false)]
 		protected int[] _videoBuffer;
 		public virtual int VirtualWidth => BufferWidth;
 		public virtual int VirtualHeight => BufferHeight;

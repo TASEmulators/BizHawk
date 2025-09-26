@@ -11,6 +11,7 @@ using Emu = BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(Watch.CLS_WATCH)]
 	public sealed class WatchEditor : Form
 	{
 		public enum Mode

@@ -116,11 +116,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		//private readonly Z80A<CpuLink> _cpu;
 		private readonly LibFz80Wrapper _cpu;
 		private readonly TraceBuffer _tracer;
-		public IController _controller;
+
+		internal IController _controller;
 
 		private CPCBase _machine;
 
-		public List<GameInfo> _gameInfo;
+		internal List<GameInfo> _gameInfo;
 
 		internal readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
 

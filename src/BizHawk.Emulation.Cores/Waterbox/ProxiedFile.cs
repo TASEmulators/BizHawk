@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		private FileStream? _fileStream;
 
+		[CLSCompliant(false)]
 		public bool OpenMsuTrack(string romPath, ushort id) => Open($"{romPath}-{id}.pcm");
 
 		public bool Open(string path)

@@ -7,6 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public static class MovieConversionExtensions
 	{
+		[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 		public static ITasMovie ToTasMovie(this IMovie old)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
@@ -40,6 +41,7 @@ namespace BizHawk.Client.Common
 			return tas;
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_IMOVIE)]
 		public static IMovie ToBk2(this IMovie old)
 		{
 			var bk2 = old.Session.Get(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
@@ -71,6 +73,7 @@ namespace BizHawk.Client.Common
 			return bk2;
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
@@ -119,6 +122,7 @@ namespace BizHawk.Client.Common
 			return tas;
 		}
 
+		[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);

@@ -17,6 +17,7 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[CLSCompliant(Watch.CLS_WATCH)]
 	public partial class RamWatch : ToolFormBase, IToolFormAutoConfig
 	{
 		public static Icon ToolIcon

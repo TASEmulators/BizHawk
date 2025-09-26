@@ -3,11 +3,14 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
+	[CLSCompliant(false)]
 	public interface IPceGpuView : IEmulatorService
 	{
 		bool IsSgx { get; }
 		void GetGpuData(int vdc, Action<PceGpuData> callback);
 	}
+
+	[CLSCompliant(false)]
 	[StructLayout(LayoutKind.Sequential)]
 	public unsafe class PceGpuData
 	{

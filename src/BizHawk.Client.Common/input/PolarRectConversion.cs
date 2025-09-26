@@ -2,6 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
+	[CLSCompliant(false)]
 	public static class PolarRectConversion
 	{
 		/// <param name="r">radial displacement in range <c>0..181</c> (this is not asserted)</param>

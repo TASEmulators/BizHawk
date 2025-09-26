@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing SQLite operations.")]
-	public sealed class SQLiteLuaLibrary : LuaLibraryBase
+	public sealed partial class SQLiteLuaLibrary : LuaLibraryBase
 	{
 		public SQLiteLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}

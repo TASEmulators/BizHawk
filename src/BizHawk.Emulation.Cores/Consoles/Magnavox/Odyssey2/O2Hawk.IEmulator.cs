@@ -12,7 +12,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
-		public uint ticker;
+
+		private uint ticker;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -206,9 +207,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ppu.DisposeSound();
 		}
 
-		public int _frameHz = 60;
+		private int _frameHz = 60;
 
-		public int[] _vidbuffer;
+		internal int[] _vidbuffer;
 
 		public int[] frame_buffer;
 
@@ -244,9 +245,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
-		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
-		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
+		private static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 
-		public uint[] color_palette = new uint[4];
+		private static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
+
+		private uint[] color_palette = new uint[4];
 	}
 }

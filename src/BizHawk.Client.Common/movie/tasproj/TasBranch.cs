@@ -32,6 +32,8 @@ namespace BizHawk.Client.Common
 		public IStringLog InputLog { get; set; }
 		public BitmapBuffer CoreFrameBuffer { get; set; }
 		public BitmapBuffer OSDFrameBuffer { get; set; }
+
+		[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 		public TasMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
@@ -43,6 +45,7 @@ namespace BizHawk.Client.Common
 		public TasBranch Clone() => (TasBranch)MemberwiseClone();
 	}
 
+	[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 	public interface ITasBranchCollection : IList<TasBranch>
 	{
 		int Current { get; set; }
@@ -52,9 +55,11 @@ namespace BizHawk.Client.Common
 		void Replace(TasBranch old, TasBranch newBranch);
 
 		void Save(ZipStateSaver bs);
+
 		void Load(ZipStateLoader bl, ITasMovie movie);
 	}
 
+	[CLSCompliant(MovieExtensions.CLS_ITASMOVIE)]
 	public class TasBranchCollection : List<TasBranch>, ITasBranchCollection
 	{
 		private readonly ITasMovie _movie;

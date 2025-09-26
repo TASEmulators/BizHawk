@@ -2,6 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
+	[CLSCompliant(false)]
 	public interface ICart
 	{
 		int Parse(byte[] rom);

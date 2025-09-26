@@ -8,9 +8,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		internal int BH = 480;
 		internal bool VideoDirty;
 
+		[CLSCompliant(false)]
 		protected readonly LibEncore _core;
+
+		[CLSCompliant(false)]
 		protected readonly IntPtr _context;
 
+		[CLSCompliant(false)]
 		public EncoreVideoProvider(LibEncore core, IntPtr context)
 		{
 			_core = core;
@@ -47,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 	public class EncoreGLTextureProvider : EncoreVideoProvider, IGLTextureProvider
 	{
+		[CLSCompliant(false)]
 		public EncoreGLTextureProvider(LibEncore core, IntPtr context)
 			: base(core, context)
 		{

@@ -13,7 +13,7 @@ namespace BizHawk.Common
 	/// Files shouldn't be named that unless they're safe to delete, but notably, they may still be in use. That won't hurt this component.
 	/// When they're no longer in use, this component will then be able to delete them.
 	/// </summary>
-	public static class TempFileManager
+	public static partial class TempFileManager
 	{
 		// TODO - manage paths other than %temp%, make not static, or allow adding multiple paths to static instance
 

@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
+	[CLSCompliant(false)]
 	public static unsafe class OctoshockDll
 	{
 		private const CallingConvention cc = CallingConvention.Cdecl;

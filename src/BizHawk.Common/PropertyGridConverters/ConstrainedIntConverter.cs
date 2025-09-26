@@ -9,7 +9,7 @@ namespace BizHawk.Common
 	/// <summary>
 	/// Used in conjunction with the <see cref="RangeAttribute" /> will perform range validation against an int value using PropertyGrid
 	/// </summary>
-	public class ConstrainedIntConverter : TypeConverter
+	public partial class ConstrainedIntConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
 		{
