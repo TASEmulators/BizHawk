@@ -14,7 +14,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		[CoreConstructor(VSystemID.Raw.MSX)]
 		public MSX(CoreLoadParameters<MSXSettings, MSXSyncSettings> lp)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			_serviceProvider = new BasicServiceProvider(this);
+			_serviceProvider.Unregister<ISaveRam>();
 			Settings = lp.Settings ?? new MSXSettings();
 			SyncSettings = lp.SyncSettings ?? new MSXSyncSettings();
 
@@ -141,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			blip.SetRates(3579545, 44100);
 
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(this);
+			_serviceProvider.Register<ISoundProvider>(this);
 
 			SetupMemoryDomains();
 
@@ -156,9 +157,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			Tracer = new TraceBuffer(newHeader.ToString());
 
-			var serviceProvider = ServiceProvider as BasicServiceProvider;
-			serviceProvider.Register<ITraceable>(Tracer);
-			serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
+			_serviceProvider.Register<ITraceable>(Tracer);
+			_serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
 
 			current_controller = SyncSettings.Contr_Setting == MSXSyncSettings.ContrType.Keyboard ? MSXControllerKB : MSXControllerJS;
 		}

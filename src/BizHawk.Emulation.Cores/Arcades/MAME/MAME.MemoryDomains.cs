@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_memoryDomains.SystemBus = _memoryDomains[deviceName + " : System Bus"]!;
 			}
 
-			((BasicServiceProvider)ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(_memoryDomains);
 		}
 	}
 }

@@ -59,10 +59,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			mm.Add(Api.exe.GetPagesDomain());
 
 			_memoryDomains = new(mm);
-			((BasicServiceProvider) ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(_memoryDomains);
 
 			_memoryDomains.MainMemory = _memoryDomains[_isSGB ? "SGB WRAM" : "WRAM"];
 			_memoryDomains.SystemBus = _memoryDomains[_isSGB ? "SGB System Bus" : "System Bus"];
+
+			if (_saveRamSize == 0)
+				_serviceProvider.Unregister<ISaveRam>();
 		}
 	}
 }

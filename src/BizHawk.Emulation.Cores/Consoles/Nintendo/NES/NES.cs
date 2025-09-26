@@ -77,6 +77,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			ResetControllerDefinition(subframe);
+
+			if (!HasSaveRam())
+			{
+				ser.Unregister<ISaveRam>();
+			}
 		}
 
 		private static readonly bool USE_DATABASE = true;

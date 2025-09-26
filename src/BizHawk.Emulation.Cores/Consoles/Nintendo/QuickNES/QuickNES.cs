@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[CoreConstructor(VSystemID.Raw.NES)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			_serviceProvider = new BasicServiceProvider(this);
 			Context = QN.qn_new();
 			if (Context == IntPtr.Zero)
 			{
@@ -70,7 +70,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		private static readonly LibQuickNES QN;
 
-		public IEmulatorServiceProvider ServiceProvider { get; }
+
+		private readonly BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		int IVideoLogicalOffsets.ScreenX => _settings.ClipLeftAndRight ? 8 : 0;
 

@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private byte PeekRAM(long addr)
