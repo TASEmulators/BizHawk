@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Seek to the given frame, past or future, and load a state first if doing so gets us there faster.
 		/// Does nothing if we are already on the given frame.
 		/// </summary>
-		public void GoToFrame(int frame, bool OnLeftMouseDown = false)
+		public void GoToFrame(int frame, bool OnLeftMouseDown = false, bool skipLoadState = false)
 		{
 			_lastRecordAction = -1;
 			if (frame == Emulator.Frame)
@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			TastudioPlayMode();
 
 			var closestState = GetPriorStateForFramebuffer(frame);
-			if (frame < Emulator.Frame || closestState.Key > Emulator.Frame)
+			if (frame < Emulator.Frame || (closestState.Key > Emulator.Frame && !skipLoadState))
 			{
 				LoadState(closestState, true);
 			}
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				// restore makes no sense without pausing
 				// Pausing here ensures any seek done by GoToFrame pauses after completing.
 				MainForm.PauseEmulator();
-				GoToFrame(RestorePositionFrame);
+				GoToFrame(RestorePositionFrame, skipLoadState: !Config.TurboSeek);
 			}
 		}
 
