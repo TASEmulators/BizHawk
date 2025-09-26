@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			]);
 
 			controller
-				.AddAxis($"Camera Mode",                0.RangeTo(3), 0)
+				.AddAxis($"Camera Mode",             (-1).RangeTo(2),  -1)
 				.AddAxis($"Camera Run Speed",      (-128).RangeTo(127), 0)
 				.AddAxis($"Camera Strafing Speed", (-128).RangeTo(127), 0)
 				.AddAxis($"Camera Turning Speed",  (-128).RangeTo(127), 0)

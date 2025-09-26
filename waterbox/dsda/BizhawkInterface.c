@@ -235,11 +235,14 @@ void player_input(struct PackedPlayerInput *src, int id)
 
 void walkcam_inputs(struct PackedPlayerInput *inputs)
 {
-  if (!inputs->WeaponSelect)
-    return;
+  if (inputs->WeaponSelect != walkcamera.type && inputs->WeaponSelect >= 0) // repurposed!
+  {
+    walkcamera.type = inputs->WeaponSelect;
+    P_SyncWalkcam(true, true);
+  }
 
-  walkcamera.type = inputs->WeaponSelect - 1; // repurposed!
-  P_SyncWalkcam(true, (walkcamera.type!=2));
+  if (!walkcamera.type)
+    return;
 
   if (inputs->Buttons & BT_ATTACK)
   {
@@ -266,7 +269,7 @@ void walkcam_inputs(struct PackedPlayerInput *inputs)
     finesine[(walkcamera.angle - ANG90) >> ANGLETOFINESHIFT]);
 
   walkcamera.z     += (char)inputs->FlyLook; // repurposed!
-  walkcamera.angle += ((    inputs->TurningSpeed / 8) << ANGLETOFINESHIFT);
+  walkcamera.angle += (     inputs->TurningSpeed / 8) << ANGLETOFINESHIFT;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)

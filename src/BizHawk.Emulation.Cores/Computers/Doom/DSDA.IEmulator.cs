@@ -59,9 +59,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (controller.IsPressed("Automap Clear Marks")) automapButtons |= (1 << 11);
 
 
+			camera.WeaponSelect  = controller.AxisValue($"Camera Mode");
 			camera.RunSpeed      = controller.AxisValue($"Camera Run Speed");
 			camera.StrafingSpeed = controller.AxisValue($"Camera Strafing Speed");
-			camera.WeaponSelect  = controller.AxisValue($"Camera Mode");
+			camera.TurningSpeed  = controller.AxisValue($"Camera Turning Speed") << 8;
 			camera.FlyLook       = controller.AxisValue($"Camera Fly");
 
 			if (controller.IsPressed($"Camera Reset"))
