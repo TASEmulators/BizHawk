@@ -79,26 +79,52 @@ file readonly struct UnmanagedWidthCalculator()
 
 	private readonly WidthResultCache _cache = new();
 
-	private WidthResult Calc(ITypeSymbol typeSym)
+	private WidthResult Calc(ITypeSymbol typeSym, StringBuilder log)
 	{
 		if (_cache[typeSym] is WidthResult cached) return cached;
-		if (!typeSym.IsValueType) return _cache.Add(typeSym, INVALID);
-		if (typeSym.WidthAsPrimitive() is WidthResult primitive) return _cache.Add(typeSym, primitive);
+		if (!typeSym.IsValueType)
+		{
+			log.Append($";{typeSym.Name} is reference type");
+			return _cache.Add(typeSym, INVALID);
+		}
+		if (typeSym.WidthAsPrimitive() is WidthResult primitive)
+		{
+			log.Append($";{typeSym.Name} is primitive {primitive.WidthBytesExpr}");
+			return _cache.Add(typeSym, primitive);
+		}
 		var fields = typeSym.GetInstanceFields().ToArray();
-		if (fields.Length <= 1) return _cache.Add(typeSym, fields.Length is 0 ? INVALID : Calc(fields[0].Type));
+		if (fields.Length <= 1)
+		{
+			if (fields.Length is 0)
+			{
+				log.Append($";{typeSym.Name} has no fields?");
+				return _cache.Add(typeSym, INVALID);
+			}
+			else
+			{
+				var single = Calc(fields[0].Type, log);
+				log.Append($";{typeSym.Name} has single field {single.WidthBytesExpr}");
+				return _cache.Add(typeSym, single);
+			}
+		}
 		var totalWidth = 0;
 		foreach (var field in fields)
 		{
-			var result = Calc(field.Type);
-			if (result.WidthBytes < 0) return _cache.Add(typeSym, result);
+			var result = Calc(field.Type, log);
+			if (result.WidthBytes < 0)
+			{
+				log.Append($";{typeSym.Name} has invalid field");
+				return _cache.Add(typeSym, result);
+			}
 			totalWidth += result.WidthBytes;
 		}
+		log.Append($";{typeSym.Name} totals {totalWidth}");
 		return _cache.Add(typeSym, (null, totalWidth));
 	}
 
-	public string For(ITypeSymbol typeSym)
+	public string For(ITypeSymbol typeSym, StringBuilder log)
 	{
-		var (widthBytesExpr, widthBytes) = Calc(typeSym);
+		var (widthBytesExpr, widthBytes) = Calc(typeSym, log);
 		return widthBytesExpr is null ? widthBytes.ToString() : widthBytesExpr;
 	}
 }
@@ -179,7 +205,9 @@ public sealed class InlineArrayGenerator : IIncrementalGenerator
 				var isROStruct = sym.IsReadOnly;
 				var structName = sym.Name;
 				var elemTypeName = elem0Sym.Type.GetCSharpKeywordOrName();
-				sb.Append($"\n{indent}[StructLayout(LayoutKind.Sequential, Size = ELEM_COUNT * {sizeCalc.For(elem0Sym.Type)})]\n{
+				StringBuilder log = new();
+				var widthExpr = sizeCalc.For(elem0Sym.Type, log);
+				sb.Append($"\n/*{log}*/\n{indent}[StructLayout(LayoutKind.Sequential, Size = ELEM_COUNT * {widthExpr})]\n{
 					indent}[UnsafeValueType]\n{
 					indent}{sym.GetAccessModifierKeyword()} {(isROStruct ? "readonly partial struct" : "partial struct")} {structName}\n{
 					indent}{{\n");
