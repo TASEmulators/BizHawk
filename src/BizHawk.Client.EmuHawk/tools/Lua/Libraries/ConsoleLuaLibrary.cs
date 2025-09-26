@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				=> sb.Append(output switch
 				{
 					null => "nil",
-					LuaTable table => table.Serialize(),
+					LuaTable table => table.PrettyPrintShallow(),
 					IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
 					_ => output.ToString(),
 				});

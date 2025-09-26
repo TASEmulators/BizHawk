@@ -970,10 +970,10 @@ namespace BizHawk.Tests.Client.Common.Lua
 			"9223372036854775807: \"max long\"\n"
 		)]
 		[TestMethod]
-		public void LuaExtensions_SerializeTable(string tableDeclaration, string expected)
+		public void LuaExtensions_PrettyPrintShallow(string tableDeclaration, string expected)
 		{
 			var table = (LuaTable)LuaInstance.DoString($"return {tableDeclaration}").Single();
-			var actual = table.Serialize();
+			var actual = table.PrettyPrintShallow();
 			Assert.AreEqual(expected, actual);
 		}
 	}
