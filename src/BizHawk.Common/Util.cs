@@ -13,6 +13,18 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
 {
+	[InlineArray1(10)]
+	public readonly partial struct TestROStruct
+	{
+		private readonly Guid _element0;
+	}
+
+	[InlineArray1(10)]
+	public partial struct TestRWStruct
+	{
+		private int _element0;
+	}
+
 	public static class Util
 	{
 		[Conditional("DEBUG")]
