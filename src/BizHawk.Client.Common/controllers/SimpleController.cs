@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -38,7 +39,7 @@ namespace BizHawk.Client.Common
 			=> Buttons.GetValueOrDefault(button);
 
 		public int AxisValue(string name)
-			=> Axes.GetValueOrDefault(name);
+			=> Axes.GetValueOrPut(name, name1 => Definition.Axes[name1].Neutral);
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
 			=> HapticFeedback.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
