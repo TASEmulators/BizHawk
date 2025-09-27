@@ -255,6 +255,7 @@ namespace BizHawk.Client.Common
 				if (syncSettings.Player2Present) ParsePlayer(2);
 				if (syncSettings.Player3Present) ParsePlayer(3);
 				if (syncSettings.Player4Present) ParsePlayer(4);
+				controller.AcceptNewAxis($"Camera Mode", controller.Definition.Axes["Camera Mode"].Neutral);
 
 				Result.Movie.AppendFrame(controller);
 
