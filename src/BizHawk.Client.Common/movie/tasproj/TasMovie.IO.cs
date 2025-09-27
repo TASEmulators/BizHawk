@@ -19,7 +19,10 @@ namespace BizHawk.Client.Common
 		{
 			// at this point, TasStateManager may be null if we're currently importing a .bk2
 
-			var settings = JsonConvert.SerializeObject(TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings);
+			var settings = JsonConvert.SerializeObject(
+				TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings,
+				new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Objects }
+			);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw), zstdCompress: true);
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
@@ -135,13 +138,13 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			var settings = new ZwinderStateManagerSettings();
+			IStateManagerSettings settings = Session.Settings.DefaultTasStateManagerSettings;
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
 				{
-					settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					settings = JsonConvert.DeserializeObject<IStateManagerSettings>(json);
 				}
 				catch
 				{
@@ -150,35 +153,33 @@ namespace BizHawk.Client.Common
 			});
 
 			TasStateManager?.Dispose();
+			bool badHistory = false;
 			var hasHistory = bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{
-					TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
+					TasStateManager.LoadStateHistory(br);
 				}
 				catch
 				{
 					// Continue with a fresh manager. If state history got corrupted, the file is still very much useable
 					// and we would want the user to be able to load, and regenerate their state history
 					// however, we still have an issue of how state history got corrupted
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					badHistory = true;
 					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
 
-			if (!hasHistory)
+			if (!hasHistory || badHistory)
 			{
 				try
 				{
-					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
 				}
 				catch
 				{
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					TasStateManager = Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 				}
 			}
 		}

@@ -635,9 +635,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MainForm.FrameAdvance();
 
-				byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
-				if (greenZone.Length > 0)
+				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
+					Stream greenStream = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(Emulator.Frame).Value;
+					byte[] greenZone = new byte[greenStream.Length];
+					greenStream.Read(greenZone);
 					byte[] state = StatableEmulator.CloneSavestate();
 
 					if (!state.SequenceEqual(greenZone))
@@ -873,6 +875,12 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadBranchOnDoubleClickMenuItem_Click(object sender, EventArgs e)
 			=> Settings.LoadBranchOnDoubleClick = !Settings.LoadBranchOnDoubleClick;
 
+		private void MetaSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			UseOldSavestateManagerMenuItem.Checked = CurrentTasMovie.TasStateManager is ZwinderStateManager;
+			UseOldManagerAsDefaultMenuItem.Checked = Config.Movies.DefaultTasStateManagerSettings is ZwinderStateManagerSettings;
+		}
+
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
 			using MovieHeaderEditor form = new(CurrentTasMovie, Config)
@@ -887,8 +895,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using GreenzoneSettings form = new(
 				DialogController,
-				new ZwinderStateManagerSettings(CurrentTasMovie.TasStateManager.Settings),
-				(s, k) => { CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
+				CurrentTasMovie.TasStateManager.Settings.Clone(),
+				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
+				false)
+			{
+				Owner = this,
+				Location = this.ChildPointToScreen(TasView),
+			};
+			form.ShowDialogOnScreen();
+		}
+
+		private void UseOldSavestateManagerMenuItem_Click(object sender, EventArgs e)
+		{
+			IStateManagerSettings settings;
+			if (UseOldSavestateManagerMenuItem.Checked)
+				settings = new PagedStateManager.PagedSettings();
+			else
+				settings = new ZwinderStateManagerSettings();
+			using GreenzoneSettings form = new(
+				DialogController,
+				settings,
+				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
 				false)
 			{
 				Owner = this,
@@ -927,7 +954,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using GreenzoneSettings form = new(
 				DialogController,
-				new ZwinderStateManagerSettings(Config.Movies.DefaultTasStateManagerSettings),
+				Config.Movies.DefaultTasStateManagerSettings.Clone(),
+				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
+				true)
+			{
+				Owner = this,
+				Location = this.ChildPointToScreen(TasView),
+			};
+			form.ShowDialogOnScreen();
+		}
+
+		private void UseOldManagerAsDefaultMenuItem_Click(object sender, EventArgs e)
+		{
+			IStateManagerSettings settings;
+			if (UseOldManagerAsDefaultMenuItem.Checked)
+				settings = new PagedStateManager.PagedSettings();
+			else
+				settings = new ZwinderStateManagerSettings();
+			using GreenzoneSettings form = new(
+				DialogController,
+				settings,
 				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
 				true)
 			{

@@ -18,6 +18,10 @@ namespace BizHawk.Tests.Client.Common.config
 
 		private const string ZWINDER_SER = @"{""CurrentUseCompression"":false,""CurrentBufferSize"":256,""CurrentTargetFrameLength"":500,""CurrentStoreType"":0,""RecentUseCompression"":false,""RecentBufferSize"":128,""RecentTargetFrameLength"":2000,""RecentStoreType"":0,""GapsUseCompression"":false,""GapsBufferSize"":64,""GapsTargetFrameLength"":125,""GapsStoreType"":0,""AncientStateInterval"":5000,""AncientStoreType"":0}";
 
+		private const string PAGED_SER_BASE = @"""TotalMemoryLimitMB"":1024,""FramesBetweenNewStates"":4,""FramesBetweenMidStates"":20,""FramesBetweenOldStates"":400,""NewToMidRatio"":2.0,""FramesBetweenSavedStates"":100,""ForceSaveMarkerStates"":false}";
+		private const string PAGED_SER_WITH_TYPE = @"{""$type"":""BizHawk.Client.Common.PagedStateManager+PagedSettings, BizHawk.Client.Common""," + PAGED_SER_BASE;
+		private const string PAGED_SER = "{" + PAGED_SER_BASE;
+
 #if NET5_0_OR_GREATER
 		private static readonly IReadOnlySet<Type> KnownGoodFromStdlib = new HashSet<Type>
 #else
@@ -45,7 +49,7 @@ namespace BizHawk.Tests.Client.Common.config
 			[typeof(CheatConfig)] = $@"{{""DisableOnLoad"":false,""LoadFileByGame"":true,""AutoSaveOnClose"":true,""Recent"":{RECENT_SER}}}",
 			[typeof(FeedbackBind)] = @"{""Channels"":""Left+Right"",""GamepadPrefix"":""X1 "",""Prescale"":1.0}",
 			[typeof(MessagePosition)] = @"{""X"":0,""Y"":0,""Anchor"":0}",
-			[typeof(MovieConfig)] = $@"{{""MovieEndAction"":3,""EnableBackupMovies"":true,""MoviesOnDisk"":false,""MovieCompressionLevel"":2,""VBAStyleMovieLoadState"":false,""PlaySoundOnMovieEnd"":false,""DefaultTasStateManagerSettings"":{ZWINDER_SER}}}",
+			[typeof(MovieConfig)] = $@"{{""MovieEndAction"":3,""EnableBackupMovies"":true,""MoviesOnDisk"":false,""MovieCompressionLevel"":2,""VBAStyleMovieLoadState"":false,""PlaySoundOnMovieEnd"":false,""DefaultTasStateManagerSettings"":{PAGED_SER_WITH_TYPE}}}",
 			[typeof(PathEntry)] = PATHENTRY_SER,
 			[typeof(PathEntryCollection)] = $@"{{""Paths"":[{PATHENTRY_SER}],""UseRecentForRoms"":false,""LastRomPath"":"".""}}",
 			[typeof(RecentFiles)] = RECENT_SER,
@@ -53,6 +57,7 @@ namespace BizHawk.Tests.Client.Common.config
 			[typeof(SaveStateConfig)] = @"{""Type"":0,""CompressionLevelNormal"":1,""CompressionLevelRewind"":0,""MakeBackups"":true,""SaveScreenshot"":true,""BigScreenshotSize"":131072,""NoLowResLargeScreenshots"":false}",
 			[typeof(ToolDialogSettings)] = @"{""_wndx"":52,""_wndy"":44,""Width"":796,""Height"":455,""SaveWindowPosition"":true,""TopMost"":false,""FloatingWindow"":true,""AutoLoad"":false}",
 			[typeof(ZwinderStateManagerSettings)] = ZWINDER_SER,
+			[typeof(PagedStateManager.PagedSettings)] = PAGED_SER,
 		};
 
 		[TestMethod]

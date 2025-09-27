@@ -6,13 +6,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GreenzoneSettings : Form, IDialogParent
 	{
-		private readonly Action<ZwinderStateManagerSettings, bool> _saveSettings;
-		private ZwinderStateManagerSettings _settings;
+		private readonly Action<IStateManagerSettings, bool> _saveSettings;
+		private IStateManagerSettings _settings;
 		private readonly bool _isDefault;
 
 		public IDialogController DialogController { get; }
 
-		public GreenzoneSettings(IDialogController dialogController, ZwinderStateManagerSettings settings, Action<ZwinderStateManagerSettings, bool> saveSettings, bool isDefault)
+		public GreenzoneSettings(IDialogController dialogController, IStateManagerSettings settings, Action<IStateManagerSettings, bool> saveSettings, bool isDefault)
 		{
 			DialogController = dialogController;
 			InitializeComponent();
@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefaultsButton_Click(object sender, EventArgs e)
 		{
-			_settings = new ZwinderStateManagerSettings();
+			_settings = new PagedStateManager.PagedSettings();
 			SettingsPropertyGrid.SelectedObject = _settings;
 		}
 	}
