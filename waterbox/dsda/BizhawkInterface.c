@@ -235,9 +235,12 @@ void player_input(struct PackedPlayerInput *src, int id)
 
 void walkcam_inputs(struct PackedPlayerInput *inputs)
 {
+  sector_t *sec = R_PointInSector(players[consoleplayer].mo->x, players[consoleplayer].mo->y);
+  
   if (inputs->WeaponSelect != walkcamera.type && inputs->WeaponSelect >= 0) // repurposed!
   {
     walkcamera.type = inputs->WeaponSelect;
+    walkcamera.z    = sec->floorheight + 41 * FRACUNIT;
     P_SyncWalkcam(true, true);
   }
 
@@ -248,8 +251,9 @@ void walkcam_inputs(struct PackedPlayerInput *inputs)
   {
     walkcamera.x     = players[consoleplayer].mo->x;
     walkcamera.y     = players[consoleplayer].mo->y;
+    walkcamera.z     = sec->floorheight + 41 * FRACUNIT;
     walkcamera.angle = players[consoleplayer].mo->angle;
-    //walkcamera.pitch = dsda_PlayerPitch(&players[0]);
+  //walkcamera.pitch = dsda_PlayerPitch(&players[0]);
   }
 
   // moving forward
@@ -268,7 +272,7 @@ void walkcam_inputs(struct PackedPlayerInput *inputs)
     (ORIG_FRICTION / 6) * inputs->StrafingSpeed,
     finesine[(walkcamera.angle - ANG90) >> ANGLETOFINESHIFT]);
 
-  walkcamera.z     += (char)inputs->FlyLook; // repurposed!
+  walkcamera.z     += (char)inputs->FlyLook * FRACUNIT; // repurposed!
   walkcamera.angle += (     inputs->TurningSpeed / 8) << ANGLETOFINESHIFT;
 }
 

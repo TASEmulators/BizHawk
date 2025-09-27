@@ -16,6 +16,7 @@
 #include "i_sound.h"
 #include "i_video.h"
 #include "p_mobj.h"
+#include "r_main.h"
 
 #include "dsda/args.h"
 #include "dsda/messenger.h"
