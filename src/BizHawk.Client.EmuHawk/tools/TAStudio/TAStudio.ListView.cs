@@ -349,21 +349,17 @@ namespace BizHawk.Client.EmuHawk
 						if (ModifierKeys != Keys.Alt)
 						{
 							// nifty taseditor logic
+							// your TAS Editor logic failed us (it didn't account for non-contiguous `SelectedRows`) --yoshi
 							var selection = TasView.SelectedRows.ToArray(); // sorted asc, length >= 1
-							bool allPressed = true;
-							foreach (var index in selection)
-							{
-								if (index == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
-									|| !CurrentTasMovie.BoolIsPressed(index, buttonName))
-								{
-									allPressed = false;
-									break;
-								}
-							}
+							var allPressed = selection[selection.Length - 1] != CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
+								&& selection.All(index => CurrentTasMovie.BoolIsPressed(index, buttonName));
 							CurrentTasMovie.ChangeLog.BeginNewBatch($"{(allPressed ? "Unset" : "Set")} {selection.Length} frames of {buttonName} starting at {selection[0]}");
 							CurrentTasMovie.SingleInvalidation(() =>
 							{
-								CurrentTasMovie.SetBoolStates(frame: selection[0], count: selection.Length, buttonName, val: !allPressed);
+								foreach (var (start, count) in selection.ChunkConsecutive())
+								{
+									CurrentTasMovie.SetBoolStates(frame: start, count: count, buttonName, val: !allPressed);
+								}
 							});
 							CurrentTasMovie.ChangeLog.EndBatch();
 						}
