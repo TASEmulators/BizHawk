@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Common.NumberExtensions;
-using static BizHawk.Client.Common.DisplayManagerBase;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -9,9 +8,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static SizeF AutoScaleCurrentSize { get; } = GetCurrentAutoScaleSize();
 
-		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / DEFAULT_DPI;
+		public static float AutoScaleFactorX { get; } = AutoScaleCurrentSize.Width / 6F;
 
-		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / DEFAULT_DPI;
+		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / 13F;
 
 		public static SizeF AutoScaleFactor { get; } = new SizeF(AutoScaleFactorX, AutoScaleFactorY);
 
@@ -37,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static SizeF GetCurrentAutoScaleSize()
 		{
-			using var form = new Form { AutoScaleMode = AutoScaleMode.Dpi };
+			using var form = new Form { AutoScaleMode = AutoScaleMode.Font };
 			return form.CurrentAutoScaleDimensions;
 		}
 
