@@ -360,7 +360,13 @@ namespace BizHawk.Client.EmuHawk
 									break;
 								}
 							}
-							CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
+							var count = TasView.SelectedRows.Count();
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"{(allPressed ? "Unset" : "Set")} {count} frames of {buttonName} starting at {frame}");
+							CurrentTasMovie.SingleInvalidation(() =>
+							{
+								CurrentTasMovie.SetBoolStates(frame: frame, count: count, buttonName, val: !allPressed);
+							});
+							CurrentTasMovie.ChangeLog.EndBatch();
 						}
 						else
 						{
