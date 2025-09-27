@@ -53,7 +53,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void GenerateLogEntry_Floats()
 		{
 			var actual = Bk2LogEntryGenerator.GenerateLogEntry(_axisController);
-			Assert.AreEqual("|    0,    0,|", actual);
+			Assert.AreEqual("|  100,  100,|", actual);
 		}
 #pragma warning restore BHI1600
 	}

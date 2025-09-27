@@ -43,6 +43,8 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestMethod]
 		public void Generate_Floats()
 		{
+			_axisController.AcceptNewAxis("StickX", 0);
+			_axisController.AcceptNewAxis("StickY", 0);
 			var actual = Bk2InputDisplayGenerator.Generate(_axisController);
 			Assert.AreEqual("    0,    0,", actual);
 		}
@@ -50,9 +52,11 @@ namespace BizHawk.Tests.Client.Common.Display
 		[TestMethod]
 		public void Generate_MidRangeDisplaysEmpty()
 		{
-			_axisController.AcceptNewAxis("StickX", MidValue);
 			var actual = Bk2InputDisplayGenerator.Generate(_axisController);
-			Assert.AreEqual("          0,", actual);
+			Assert.AreEqual("            ", actual);
+			_axisController.AcceptNewAxis("StickX", MidValue);
+			actual = Bk2InputDisplayGenerator.Generate(_axisController);
+			Assert.AreEqual("            ", actual);
 		}
 #pragma warning restore BHI1600
 	}
