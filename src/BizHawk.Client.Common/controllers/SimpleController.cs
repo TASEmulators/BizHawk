@@ -39,7 +39,14 @@ namespace BizHawk.Client.Common
 			=> Buttons.GetValueOrDefault(button);
 
 		public int AxisValue(string name)
-			=> Axes.GetValueOrPut(name, name1 => Definition.Axes[name1].Neutral);
+			=> Axes.GetValueOrPut(name, NeutralValueForAxis);
+
+		private int NeutralValueForAxis(string name)
+#if false // always fails for host inputs, so if this was done in Debug builds then Debug builds would be unusable
+			=> Definition.Axes[name].Neutral; // throw if no such axis
+#else
+			=> Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
 			=> HapticFeedback.Select(kvp => (kvp.Key, kvp.Value)).ToArray();
