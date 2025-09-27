@@ -32,17 +32,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 			closestState.Value.Dispose();
 
-			_seekStartFrame = Emulator.Frame;
-			_seekingByEdit = false;
-
-			_seekingTo = frame;
-			MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
-			MainForm.UnpauseEmulator();
-
-			if (_seekingTo - _seekStartFrame > 1)
+			if (Emulator.Frame != frame)
 			{
-				MessageStatusLabel.Text = "Seeking...";
-				ProgressBar.Visible = true;
+				_seekStartFrame = Emulator.Frame;
+				_seekingByEdit = false;
+
+				_seekingTo = frame;
+				MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
+				MainForm.UnpauseEmulator();
+
+				if (_seekingTo - _seekStartFrame > 1)
+				{
+					MessageStatusLabel.Text = "Seeking...";
+					ProgressBar.Visible = true;
+				}
+			}
+			else
+			{
+				StopSeeking();
 			}
 
 			if (!OnLeftMouseDown)
