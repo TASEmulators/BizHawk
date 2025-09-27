@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common
 	{
 		private const string ERR_FMT_STR_INVALID_ADDR = "invalid address, must be in 0..<{0}";
 
-		public static ImmutableArray<LookupEntry> GenLookup(IDictionary<string, RegisterValue> regs)
+		private static ImmutableArray<LookupEntry> GenLookup(IDictionary<string, RegisterValue> regs)
 		{
 			List<LookupEntry> entries = new();
 			foreach (var (name, val) in regs)
