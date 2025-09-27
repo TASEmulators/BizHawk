@@ -945,7 +945,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_seekingTo != -1)
 			{
 				_shouldMoveGreenArrow = true;
-				_seekingTo -= count;
+				_seekingTo = Math.Max(_seekingTo - count, 0);
 
 				if (count > 0 && Emulator.Frame >= _seekingTo)
 				{
@@ -956,7 +956,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GoToFrame(Emulator.Frame - count);
+				GoToFrame(Math.Max(Emulator.Frame - count, 0));
 			}
 		}
 
