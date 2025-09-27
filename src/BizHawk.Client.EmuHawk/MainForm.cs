@@ -1805,79 +1805,36 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateDumpInfo(RomStatus? newStatus = null)
 		{
-			DumpStatusButton.Image = Properties.Resources.Blank;
-			DumpStatusButton.ToolTipText = "";
-
-			if (Emulator.IsNull() || Game.IsNullInstance())
+			var icon = Properties.Resources.Blank;
+			var tooltip = string.Empty;
+			if (!Game.IsNullInstance() && !Emulator.IsNull())
 			{
-				return;
+				if (newStatus is null) newStatus = Game.Status;
+				else Game.Status = newStatus.Value;
+				(icon, tooltip) = newStatus switch
+				{
+					RomStatus.GoodDump => (Properties.Resources.GreenCheck, "Verified good dump"),
+					RomStatus.BadDump => (Properties.Resources.ExclamationRed, "Warning: Bad ROM Dump"),
+					RomStatus.Homebrew => (Properties.Resources.HomeBrew, "Homebrew ROM"),
+					RomStatus.TranslatedRom => (Properties.Resources.Translation, "Translated ROM"),
+					RomStatus.Hack => (Properties.Resources.Hack, "Hacked ROM"),
+					RomStatus.Overdump => (Properties.Resources.ExclamationRed, "Warning: Overdump"),
+					RomStatus.NotInDatabase => (Properties.Resources.RetroQuestion, "Warning: Unknown ROM"),
+					// 3 from MAME:
+					RomStatus.Imperfect => (Properties.Resources.RetroQuestion, "Warning: Imperfect emulation"),
+					RomStatus.Unimplemented => (Properties.Resources.ExclamationRed, "Warning: Unemulated features"),
+					RomStatus.NotWorking => (Properties.Resources.ExclamationRed, "Warning: The game does not work"),
+					/*RomStatus.Unknown or RomStatus.Bios*/_ => (Properties.Resources.Hack, "Warning: ROM of Unknown Character"),
+				};
+				if (_multiDiskMode
+					&& newStatus is not (RomStatus.Imperfect or RomStatus.Unimplemented or RomStatus.NotWorking)) // don't override the warnings from MAME in this case
+				{
+					icon = Properties.Resources.RetroQuestion;
+					tooltip = "Multi-disk bundler";
+				}
 			}
-
-			var status = newStatus == null
-				? Game.Status
-				: (Game.Status = newStatus.Value);
-			if (status == RomStatus.BadDump)
-			{
-				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				DumpStatusButton.ToolTipText = "Warning: Bad ROM Dump";
-			}
-			else if (status == RomStatus.Overdump)
-			{
-				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				DumpStatusButton.ToolTipText = "Warning: Overdump";
-			}
-			else if (status == RomStatus.NotInDatabase)
-			{
-				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-				DumpStatusButton.ToolTipText = "Warning: Unknown ROM";
-			}
-			else if (status == RomStatus.TranslatedRom)
-			{
-				DumpStatusButton.Image = Properties.Resources.Translation;
-				DumpStatusButton.ToolTipText = "Translated ROM";
-			}
-			else if (status == RomStatus.Homebrew)
-			{
-				DumpStatusButton.Image = Properties.Resources.HomeBrew;
-				DumpStatusButton.ToolTipText = "Homebrew ROM";
-			}
-			else if (Game.Status == RomStatus.Hack)
-			{
-				DumpStatusButton.Image = Properties.Resources.Hack;
-				DumpStatusButton.ToolTipText = "Hacked ROM";
-			}
-			else if (Game.Status == RomStatus.Unknown)
-			{
-				DumpStatusButton.Image = Properties.Resources.Hack;
-				DumpStatusButton.ToolTipText = "Warning: ROM of Unknown Character";
-			}
-			else if (Game.Status == RomStatus.Imperfect)
-			{
-				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-				DumpStatusButton.ToolTipText = "Warning: Imperfect emulation";
-			}
-			else if (Game.Status == RomStatus.Unimplemented)
-			{
-				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				DumpStatusButton.ToolTipText = "Warning: Unemulated features";
-			}
-			else if (Game.Status == RomStatus.NotWorking)
-			{
-				DumpStatusButton.Image = Properties.Resources.ExclamationRed;
-				DumpStatusButton.ToolTipText = "Warning: The game does not work";
-			}
-			else
-			{
-				DumpStatusButton.Image = Properties.Resources.GreenCheck;
-				DumpStatusButton.ToolTipText = "Verified good dump";
-			}
-
-			if (_multiDiskMode
-				&& Game.Status is not (RomStatus.Imperfect or RomStatus.Unimplemented or RomStatus.NotWorking))
-			{
-				DumpStatusButton.ToolTipText = "Multi-disk bundler";
-				DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-			}
+			DumpStatusButton.Image = icon;
+			DumpStatusButton.ToolTipText = tooltip;
 		}
 
 		private bool _multiDiskMode;
