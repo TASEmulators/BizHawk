@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
