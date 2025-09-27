@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : FormBase, IDialogParent, IMainFormForApi, IMainFormForTools, IMainFormForRetroAchievements
 	{
+		private const string FMT_STR_DUMP_STATUS_MENUITEM_LABEL = "Dump Status Report{0}...";
+
 		private static readonly FilesystemFilterSet EmuHawkSaveStatesFSFilterSet = new(FilesystemFilter.EmuHawkSaveStates);
 
 		private static readonly FilesystemFilterSet LibretroCoresFSFilterSet = new(
@@ -55,6 +57,12 @@ namespace BizHawk.Client.EmuHawk
 		private const int WINDOW_SCALE_MAX = 10;
 
 		private readonly ToolStripMenuItemEx DOSSubMenu = new() { Text = "&DOS" };
+
+		private readonly ToolStripMenuItemEx DumpStatusReportMenuItem = new()
+		{
+			Enabled = false,
+			Text = string.Format(FMT_STR_DUMP_STATUS_MENUITEM_LABEL, string.Empty),
+		};
 
 		private readonly ToolStripMenuItemEx NullHawkVSysSubmenu = new() { Enabled = false, Text = "—" };
 
@@ -83,6 +91,8 @@ namespace BizHawk.Client.EmuHawk
 			Slot9StatusButton.Tag = SelectSlot9MenuItem.Tag = 9;
 			Slot0StatusButton.Tag = SelectSlot0MenuItem.Tag = 10;
 
+			DumpStatusReportMenuItem.Click += DumpStatusButton_Click;
+			EmulationSubMenu.DropDownItems.InsertBefore(LoadedCoreNameMenuItem, insert: DumpStatusReportMenuItem);
 			EmulationSubMenu.DropDownItems.InsertBefore(LoadedCoreNameMenuItem, insert: RealTimeCounterMenuItem);
 
 			{
@@ -1805,29 +1815,35 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateDumpInfo(RomStatus? newStatus = null)
 		{
+			const string DUMP_KIND_BAD = " (bad dump)";
+			const string DUMP_KIND_GOOD = " (good dump)";
+			const string DUMP_KIND_HACK = " (hack/homebrew)";
+			const string DUMP_KIND_MAME_BADEMU = " (unsupported board)";
+			const string DUMP_KIND_UNRECOGNIZED = " (unrecognized)";
+			var kind = string.Empty;
 			var icon = Properties.Resources.Blank;
 			var tooltip = string.Empty;
 			if (!Game.IsNullInstance() && !Emulator.IsNull())
 			{
 				if (newStatus is null) newStatus = Game.Status;
 				else Game.Status = newStatus.Value;
-				(icon, tooltip) = newStatus switch
+				(kind, icon, tooltip) = newStatus switch
 				{
-					RomStatus.GoodDump => (Properties.Resources.GreenCheck, "Verified good dump"),
-					RomStatus.BadDump => (Properties.Resources.ExclamationRed, "Warning: Bad ROM Dump"),
-					RomStatus.Homebrew => (Properties.Resources.HomeBrew, "Homebrew ROM"),
-					RomStatus.TranslatedRom => (Properties.Resources.Translation, "Translated ROM"),
-					RomStatus.Hack => (Properties.Resources.Hack, "Hacked ROM"),
-					RomStatus.Overdump => (Properties.Resources.ExclamationRed, "Warning: Overdump"),
-					RomStatus.NotInDatabase => (Properties.Resources.RetroQuestion, "Warning: Unknown ROM"),
+					RomStatus.GoodDump => (DUMP_KIND_GOOD, Properties.Resources.GreenCheck, "Verified good dump"),
+					RomStatus.BadDump => (DUMP_KIND_BAD, Properties.Resources.ExclamationRed, "Warning: Bad ROM Dump"),
+					RomStatus.Homebrew => (DUMP_KIND_HACK, Properties.Resources.HomeBrew, "Homebrew ROM"),
+					RomStatus.TranslatedRom => (DUMP_KIND_HACK, Properties.Resources.Translation, "Translated ROM"),
+					RomStatus.Hack => (DUMP_KIND_HACK, Properties.Resources.Hack, "Hacked ROM"),
+					RomStatus.Overdump => (DUMP_KIND_BAD, Properties.Resources.ExclamationRed, "Warning: Overdump"),
+					RomStatus.NotInDatabase => (DUMP_KIND_UNRECOGNIZED, Properties.Resources.RetroQuestion, "Warning: Unknown ROM"),
 					// 3 from MAME:
-					RomStatus.Imperfect => (Properties.Resources.RetroQuestion, "Warning: Imperfect emulation"),
-					RomStatus.Unimplemented => (Properties.Resources.ExclamationRed, "Warning: Unemulated features"),
-					RomStatus.NotWorking => (Properties.Resources.ExclamationRed, "Warning: The game does not work"),
-					/*RomStatus.Unknown or RomStatus.Bios*/_ => (Properties.Resources.Hack, "Warning: ROM of Unknown Character"),
+					RomStatus.Imperfect => (DUMP_KIND_MAME_BADEMU, Properties.Resources.RetroQuestion, "Warning: Imperfect emulation"),
+					RomStatus.Unimplemented => (DUMP_KIND_MAME_BADEMU, Properties.Resources.ExclamationRed, "Warning: Unemulated features"),
+					RomStatus.NotWorking => (DUMP_KIND_MAME_BADEMU, Properties.Resources.ExclamationRed, "Warning: The game does not work"),
+					/*RomStatus.Unknown or RomStatus.Bios*/_ => (DUMP_KIND_UNRECOGNIZED, Properties.Resources.Hack, "Warning: ROM of Unknown Character"),
 				};
 				if (_multiDiskMode
-					&& newStatus is not (RomStatus.Imperfect or RomStatus.Unimplemented or RomStatus.NotWorking)) // don't override the warnings from MAME in this case
+					&& kind is not DUMP_KIND_MAME_BADEMU) // don't override the warnings from MAME in this case
 				{
 					icon = Properties.Resources.RetroQuestion;
 					tooltip = "Multi-disk bundler";
@@ -1835,6 +1851,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			DumpStatusButton.Image = icon;
 			DumpStatusButton.ToolTipText = tooltip;
+			DumpStatusReportMenuItem.Enabled = kind.Length is not 0;
+			DumpStatusReportMenuItem.Image = icon;
+			DumpStatusReportMenuItem.Text = string.Format(FMT_STR_DUMP_STATUS_MENUITEM_LABEL, kind);
+			DumpStatusReportMenuItem.ToolTipText = tooltip;
 		}
 
 		private bool _multiDiskMode;
