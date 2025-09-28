@@ -427,16 +427,10 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   for (int i = 0; i < g_maxplayers; i++)
   {
-    if (playeringame[i])
+    if (playeringame[i] && settings->FullVision)
     {
-      // manually add players to tracker
-      mobj_ptrs[i] = players[i].mo;
-
-      if (settings->FullVision)
-      {
-        players[i].fixedcolormap = 1;
-        players[i].powers[pw_infrared] = -1;
-      }
+      players[i].fixedcolormap = 1;
+      players[i].powers[pw_infrared] = -1;
     }
   }
 
@@ -545,7 +539,7 @@ ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
   }
   else if (type == ARRAY_THINGS)
   {
-    if (addr >= num_objects * MEMORY_PADDED_THING)
+    if (addr >= thinker_count * MEMORY_PADDED_THING)
       return MEMORY_OUT_OF_BOUNDS;
 
     int index    = addr / MEMORY_PADDED_THING;
