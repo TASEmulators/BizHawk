@@ -1179,6 +1179,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.AllColumns.ColumnsChanged();
 		}
 
+		private bool _suspendEditLogic;
 		public void LoadBranch(TasBranch branch)
 		{
 			if (Settings.OldControlSchemeForBranches && !TasPlaybackBox.RecordingMode)
@@ -1187,7 +1188,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			_suspendEditLogic = true;
 			CurrentTasMovie.LoadBranch(branch);
+			_suspendEditLogic = false;
 			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
 
 			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
