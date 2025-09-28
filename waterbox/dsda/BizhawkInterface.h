@@ -161,7 +161,6 @@ struct InitSettings
   int Player4Class;
   int PreventLevelExit;
   int PreventGameEnd;
-  int FullVision;
   int DisplayPlayer;
   //unsigned int RNGSeed;
 } __attribute__((packed));
@@ -195,8 +194,11 @@ struct PackedRenderInfo
   int MapTotals;
   int MapTime;
   int MapCoordinates;
-  int MapDetails;
   int MapOverlay;
+  int MapDetails;
+  int MapTrail;
+  int MapTrailSize;
+  int FullVision;
   int PlayerPointOfView;
 } __attribute__((packed));
 

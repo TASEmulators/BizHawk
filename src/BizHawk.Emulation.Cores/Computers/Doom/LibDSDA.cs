@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int Player4Class;
 			public int PreventLevelExit;
 			public int PreventGameEnd;
-			public int FullVision;
 			public int DisplayPlayer;
 			//public uint RNGSeed;
 		}
@@ -86,25 +85,28 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct PackedRenderInfo
+		public struct PackedRenderInfo(DSDA.DoomSettings settings)
 		{
 			public int RenderVideo;
 			public int RenderAudio;
-			public int SfxVolume;
-			public int MusicVolume;
-			public int Gamma;
-			public int ShowMessages;
-			public int ReportSecrets;
-			public int HeadsUpMode;
-			public int DsdaExHud;
-			public int DisplayCoordinates;
-			public int DisplayCommands;
-			public int MapTotals;
-			public int MapTime;
-			public int MapCoordinates;
-			public int MapDetails;
-			public int MapOverlay;
-			public int PlayerPointOfView;
+			public int SfxVolume          = settings.SfxVolume;
+			public int MusicVolume        = settings.MusicVolume;
+			public int Gamma              = settings.Gamma;
+			public int ShowMessages       = Convert.ToInt32(settings.ShowMessages);
+			public int ReportSecrets      = Convert.ToInt32(settings.ReportSecrets);
+			public int HeadsUpMode        = (int) settings.HeadsUpMode;
+			public int DsdaExHud          = Convert.ToInt32(settings.DsdaExHud);
+			public int DisplayCoordinates = Convert.ToInt32(settings.DisplayCoordinates);
+			public int DisplayCommands    = Convert.ToInt32(settings.DisplayCommands);
+			public int MapTotals          = Convert.ToInt32(settings.MapTotals);
+			public int MapTime            = Convert.ToInt32(settings.MapTime);
+			public int MapCoordinates     = Convert.ToInt32(settings.MapCoordinates);
+			public int MapOverlay         = (int) settings.MapOverlay;
+			public int MapDetails         = (int) settings.MapDetails;
+			public int MapTrail           = settings.MapTrail ? 2 : 0;
+			public int MapTrailSize       = settings.MapTrailSize;
+			public int FullVision         = Convert.ToInt32(settings.FullVision);
+			public int PlayerPointOfView  = settings.DisplayPlayer - 1;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]

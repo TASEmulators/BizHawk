@@ -22,8 +22,26 @@ void render_updates(struct PackedRenderInfo *renderInfo)
   dsda_UpdateIntConfig(dsda_config_map_totals,         renderInfo->MapTotals,          true);
   dsda_UpdateIntConfig(dsda_config_map_time,           renderInfo->MapTime,            true);
   dsda_UpdateIntConfig(dsda_config_map_coordinates,    renderInfo->MapCoordinates,     true);
+  dsda_UpdateIntConfig(dsda_config_map_trail_mode,     renderInfo->MapTrail,           true);
+  dsda_UpdateIntConfig(dsda_config_map_trail_size,     renderInfo->MapTrailSize,       true);
   dsda_UpdateIntConfig(dsda_config_screenblocks,       renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
   dsda_UpdateIntConfig(dsda_config_hud_displayed,      renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
+
+  if (renderInfo->FullVision)
+  {
+    dsda_UpdateIntConfig(dsda_config_palette_ondamage, 0, true);
+    dsda_UpdateIntConfig(dsda_config_palette_onbonus,  0, true);
+    dsda_UpdateIntConfig(dsda_config_palette_onpowers, 0, true);
+
+    for (int i = 0; i < g_maxplayers; i++)
+    {
+      if (playeringame[i])
+      {
+        players[i].fixedcolormap = 1;
+        players[i].powers[pw_infrared] = -1;
+      }
+    }
+  }
 }
 
 // normally this is caused by keyboard inputs, while mouse buttons reset the cast.
@@ -424,15 +442,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   // Enabling DSDA output, for debugging
   enableOutput = 1;
-
-  for (int i = 0; i < g_maxplayers; i++)
-  {
-    if (playeringame[i] && settings->FullVision)
-    {
-      players[i].fixedcolormap = 1;
-      players[i].powers[pw_infrared] = -1;
-    }
-  }
 
   return 1;
 }

@@ -122,12 +122,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					? AspectRatio._4by3
 					: _settings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
-				+ $"map_trail_mode {(_settings.MapTrail ? 2 : 0)}\n"
-				+ $"map_trail_size {_settings.MapTrailSize}\n"
-				+ $"palette_ondamage {(_settings.FullVision ? 0 : 1)}\n"
 				+ "render_stretch_hud 1\n" // patch_stretch_doom_format
 				+ "uncapped_framerate 0\n"
-				+ "dsda_show_level_splits 0\n"
+				+ "dsda_show_level_splits 0\n" // TODO
 			);
 
 			if (!PlayerPresent(_syncSettings, _settings.DisplayPlayer))
@@ -193,7 +190,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_elf.AddReadonlyFile(_configFile, "dsda-doom.cfg");
 
 					var initSettings = _syncSettings.GetNativeSettings();
-					initSettings.FullVision = _settings.FullVision ? 1 : 0;
 					initSettings.DisplayPlayer = _settings.DisplayPlayer - 1;
 					CreateArguments(initSettings);
 

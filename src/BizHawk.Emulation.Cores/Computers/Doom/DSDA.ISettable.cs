@@ -293,9 +293,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 			var ret = (_settings.ScaleFactor == o.ScaleFactor
 				&& _settings.InternalAspect == o.InternalAspect
-				&& _settings.FullVision == o.FullVision
-				&& _settings.MapTrail == o.MapTrail
-				&& _settings.MapTrailSize == o.MapTrailSize)
+				&& _settings.FullVision == o.FullVision)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;

@@ -58,14 +58,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			if (controller.IsPressed("Automap Mark"))        automapButtons |= (1 << 10);
 			if (controller.IsPressed("Automap Clear Marks")) automapButtons |= (1 << 11);
 
+			camera.WeaponSelect  = controller.AxisValue("Camera Mode");
+			camera.RunSpeed      = controller.AxisValue("Camera Run Speed");
+			camera.StrafingSpeed = controller.AxisValue("Camera Strafing Speed");
+			camera.TurningSpeed  = controller.AxisValue("Camera Turning Speed") << 8;
+			camera.FlyLook       = controller.AxisValue("Camera Fly");
 
-			camera.WeaponSelect  = controller.AxisValue($"Camera Mode");
-			camera.RunSpeed      = controller.AxisValue($"Camera Run Speed");
-			camera.StrafingSpeed = controller.AxisValue($"Camera Strafing Speed");
-			camera.TurningSpeed  = controller.AxisValue($"Camera Turning Speed") << 8;
-			camera.FlyLook       = controller.AxisValue($"Camera Fly");
-
-			if (controller.IsPressed($"Camera Reset"))
+			if (controller.IsPressed("Camera Reset"))
 				camera.Buttons |= LibDSDA.Buttons.Fire;
 
 			for (int i = 0; i < 4; i++)
@@ -246,25 +245,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			var renderInfo = new LibDSDA.PackedRenderInfo()
+			var renderInfo = new LibDSDA.PackedRenderInfo(_settings)
 			{
-				SfxVolume          = _settings.SfxVolume,
-				MusicVolume        = _settings.MusicVolume,
-				Gamma              = _settings.Gamma,
-				HeadsUpMode        = (int)_settings.HeadsUpMode,
-				MapDetails         = (int)_settings.MapDetails,
-				MapOverlay         = (int)_settings.MapOverlay,
-				RenderVideo        = Convert.ToInt32(renderVideo),
-				RenderAudio        = Convert.ToInt32(renderAudio),
-				ShowMessages       = Convert.ToInt32(_settings.ShowMessages),
-				ReportSecrets      = Convert.ToInt32(_settings.ReportSecrets),
-				DsdaExHud          = Convert.ToInt32(_settings.DsdaExHud),
-				DisplayCoordinates = Convert.ToInt32(_settings.DisplayCoordinates),
-				DisplayCommands    = Convert.ToInt32(_settings.DisplayCommands),
-				MapTotals          = Convert.ToInt32(_settings.MapTotals),
-				MapTime            = Convert.ToInt32(_settings.MapTime),
-				MapCoordinates     = Convert.ToInt32(_settings.MapCoordinates),
-				PlayerPointOfView  = _settings.DisplayPlayer - 1,
+				RenderAudio = Convert.ToInt32(renderAudio),
+				RenderVideo = Convert.ToInt32(renderVideo)
 			};
 
 			IsLagFrame = _core.dsda_frame_advance(
