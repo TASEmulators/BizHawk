@@ -30,11 +30,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					1),
 				new MemoryDomainDelegate(
 					"Things",
-					0x1000000,
+					0x10000000,
 					MemoryDomain.Endian.Little,
 					addr =>
 					{
-						if (addr > 0xFFFFFF)
+						if (addr > 0xFFFFFFF)
 						{
 							throw new ArgumentOutOfRangeException(
 								paramName: nameof(addr),
