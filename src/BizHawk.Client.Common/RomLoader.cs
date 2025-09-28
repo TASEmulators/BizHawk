@@ -461,8 +461,6 @@ namespace BizHawk.Client.Common
 				_ => rom.GameInfo.System,
 			};
 
-			Util.DebugWriteLine($"{nameof(RomLoader)}.{nameof(LoadOther)}: sysID is {rom.GameInfo.System}");
-
 			if (string.IsNullOrEmpty(rom.GameInfo.System))
 			{
 				// Has the user picked a preference for this extension?
