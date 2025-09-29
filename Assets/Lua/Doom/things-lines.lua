@@ -21,7 +21,7 @@ local rws  = memory.read_s16_le
 local rbs  = memory.read_s8
 local text = gui.text
 local box  = gui.drawBox
-local line = gui.drawLine
+local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
 -- TOP LEVEL VARIABLES
@@ -131,25 +131,20 @@ local function iterate_players()
 	local total_itemcount   = 0
 	local total_secretcount = 0
 	local stats             = "      HP Armr Kill Item Secr\n"
-	for i = 1, dsda.MAX_PLAYERS do
-		local addr = dsda.PLAYER_SIZE * (i - 1)
-		local mobj = rl(addr + PlayerOffsets.mobj, "Players")
+	for addr, player in pairs(dsda.player.items) do
+		playercount       = playercount + 1
+		local health      = rls(addr + PlayerOffsets.health,       "Players")
+		local armor       = rls(addr + PlayerOffsets.armorpoints1, "Players")
+		local killcount   = rls(addr + PlayerOffsets.killcount,    "Players")
+		local itemcount   = rls(addr + PlayerOffsets.itemcount,    "Players")
+		local secretcount = rls(addr + PlayerOffsets.secretcount,  "Players")
 
-		if mobj ~= NULL_OBJECT then
-			playercount       = playercount + 1
-			local health      = rls(addr + PlayerOffsets.health,       "Players")
-			local armor       = rls(addr + PlayerOffsets.armorpoints1, "Players")
-			local killcount   = rls(addr + PlayerOffsets.killcount,    "Players")
-			local itemcount   = rls(addr + PlayerOffsets.itemcount,    "Players")
-			local secretcount = rls(addr + PlayerOffsets.secretcount,  "Players")
+		total_killcount   = total_killcount   + killcount
+		total_itemcount   = total_itemcount   + itemcount
+		total_secretcount = total_secretcount + secretcount
 
-			total_killcount   = total_killcount   + killcount
-			total_itemcount   = total_itemcount   + itemcount
-			total_secretcount = total_secretcount + secretcount
-
-			stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
-				stats, i, health, armor, killcount, itemcount, secretcount)
-		end
+		stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
+			stats, playercount, health, armor, killcount, itemcount, secretcount)
 	end
 	if playercount > 1 then
 		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
@@ -185,58 +180,42 @@ local function iterate()
 		end
 	end
 	
-	for i = 0, 100000 do
-		local addr = i * dsda.LINE_SIZE
-		if addr > 0xFFFFFF then break end
-		
-		local id = rl(addr, "Lines") & 0xFFFFFFFF
-		if id == OUT_OF_BOUNDS then break end
-		
-		if id ~= NULL_OBJECT then
-			local special =   rws(addr+LineOffsets.special, "Lines")
-			local v1 = { x =  rls(addr+LineOffsets.v1_x, "Lines"),
-			             y = -rls(addr+LineOffsets.v1_y, "Lines") }
-			local v2 = { x =  rls(addr+LineOffsets.v2_x, "Lines"),
-			             y = -rls(addr+LineOffsets.v2_y, "Lines") }
+	for addr, line in pairs(dsda.line.items) do
+		local special =   rws(addr+LineOffsets.special, "Lines")
+		local v1 = { x =  rls(addr+LineOffsets.v1_x, "Lines"),
+		             y = -rls(addr+LineOffsets.v1_y, "Lines") }
+		local v2 = { x =  rls(addr+LineOffsets.v2_x, "Lines"),
+		             y = -rls(addr+LineOffsets.v2_y, "Lines") }
 
-			local color
-			if special ~= 0 then color = 0xffcc00ff end
+		local color
+		if special ~= 0 then color = 0xffcc00ff end
 
-			line(
-				mapify_x(v1.x),
-				mapify_y(v1.y),
-				mapify_x(v2.x),
-				mapify_y(v2.y),
-				color or 0xffcccccc)
-		end
+		drawline(
+			mapify_x(v1.x),
+			mapify_y(v1.y),
+			mapify_x(v2.x),
+			mapify_y(v2.y),
+			color or 0xffcccccc)
 	end
 end
 
 local function init_objects()
-	for i = 0, 100000 do
-		local addr = i * dsda.MOBJ_SIZE
-		if addr > 0xFFFFFF then break end
-		
-		local thinker = rl(addr, "Things") & 0xFFFFFFFF -- just to check if mobj is there
-		if thinker == OUT_OF_BOUNDS then break end
-		
-		if thinker ~= NULL_OBJECT then
-			local x    = rls(addr + MobjOffsets.x,    "Things") / 0xffff
-			local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
-			local type = rl (addr + MobjOffsets.type, "Things")
-			
-		--	print(string.format("%d %f %f %02X", index, x, y, type))
-			type = MobjType[type]
-			if type
-			and not string.find(type, "MISC")
-			then
-				if x < OB.left   then OB.left   = x end
-				if x > OB.right  then OB.right  = x end
-				if y < OB.top    then OB.top    = y end
-				if y > OB.bottom then OB.bottom = y end
-				-- cache the Objects we need
-				table.insert(Objects, addr)
-			end
+	for addr, mobj in pairs(dsda.mobj.items) do
+		local x    = rls(addr + MobjOffsets.x,    "Things") / 0xffff
+		local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
+		local type = rl (addr + MobjOffsets.type, "Things")
+
+	--	print(string.format("%d %f %f %02X", index, x, y, type))
+		type = MobjType[type]
+		if type
+		and not string.find(type, "MISC")
+		then
+			if x < OB.left   then OB.left   = x end
+			if x > OB.right  then OB.right  = x end
+			if y < OB.top    then OB.top    = y end
+			if y > OB.bottom then OB.bottom = y end
+			-- cache the Objects we need
+			table.insert(Objects, addr)
 		end
 	end
 end
