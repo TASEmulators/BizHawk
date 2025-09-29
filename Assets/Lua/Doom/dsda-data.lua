@@ -1,3 +1,7 @@
+-- Core must be loaded to get memory domain sizes
+-- Throw an error so Lua doesn't cache the module in an invalid state
+assert(emu.getsystemid() == "Doom", "Doom core not loaded")
+
 local dsda = {
 	doom = {},
 	heretic = {},
@@ -7,6 +11,8 @@ local dsda = {
 
 
 -- Constants ---
+local NULL_OBJECT <const>   = 0x88888888 -- no object at that index
+local OUT_OF_BOUNDS <const> = 0xFFFFFFFF -- no such index
 
 dsda.MAX_PLAYERS = 4
 -- sizes in bytes
@@ -17,20 +23,64 @@ dsda.SECTOR_SIZE = 512  -- sizeof(sector_t) is 344, but we padded it for nicenes
 
 
 
+-- Utilities ---
+
+local function assertf(condition, format, ...)
+	if not condition then
+		error(string.format(format, ...), 2)
+	end
+end
+
+function dsda.read_u64_le(addr, domain)
+	return memory.read_u32_le(addr, domain) | memory.read_u32_le(addr + 4, domain) << 32
+end
+
+function dsda.read_bool(addr, domain)
+	return memory.read_u32_le(addr, domain) ~= 0
+end
+
+local function read_float_le(addr, domain)
+	return memory.readfloat(addr, false, domain)
+end
+
+
+
 -- Structs ---
 
-function dsda.struct_layout(struct)
+function dsda.struct_layout(struct, padded_size, domain, max_count)
 	struct = struct or {}
+	struct.padded_size = padded_size
+	struct.domain = domain
 	struct.size = 0
 	struct.offsets = {}
+	struct.items = {} -- This should be iterated with pairs()
 
-	function struct.add(name, size, alignment)
+	max_count = max_count or math.floor(memory.getmemorydomainsize(domain) / padded_size)
+	local max_address = (max_count - 1) * padded_size
+	struct.max_count = max_count
+	struct.max_address = max_address
+
+	local items_meta = {}
+	local item_props = {}
+	local item_meta = {}
+	setmetatable(struct.items, items_meta)
+
+	function struct.add(name, size, alignment, read_func)
+		assertf(struct.offsets[name] == nil, "Duplicate %s name %s", domain, name)
+
 		if alignment == true then alignment = size end
 		struct.align(alignment)
-		--print(string.format("%-19s %3X %3X", name, size, struct.size)); emu.yield()
-		struct.offsets[name] = struct.size
-		struct.size = struct.size + size
+		local offset = struct.size
+		struct.offsets[name] = offset
+		struct.size = offset + size
 		struct.align(alignment) -- add padding to structs
+		--print(string.format("%-19s %3X %3X", name, size, offset));
+
+		if read_func then
+			item_props[name] = function(self)
+				return read_func(self._address + offset, domain)
+			end
+		end
 		return struct
 	end
 	function struct.align(alignment)
@@ -44,28 +94,96 @@ function dsda.struct_layout(struct)
 		struct.size = struct.size + size
 		return struct
 	 end
-	function struct.s8   (name) return struct.add(name, 1, true) end
-	function struct.s16  (name) return struct.add(name, 2, true) end
-	function struct.s32  (name) return struct.add(name, 4, true) end
-	function struct.u8   (name) return struct.add(name, 1, true) end
-	function struct.u16  (name) return struct.add(name, 2, true) end
-	function struct.u32  (name) return struct.add(name, 4, true) end
-	function struct.u64  (name) return struct.add(name, 8, true) end
-	function struct.float(name) return struct.add(name, 4, true) end
+	function struct.s8   (name) return struct.add(name, 1, true, memory.read_s8) end
+	function struct.s16  (name) return struct.add(name, 2, true, memory.read_s16_le) end
+	function struct.s32  (name) return struct.add(name, 4, true, memory.read_s32_le) end
+	function struct.u8   (name) return struct.add(name, 1, true, memory.read_u8) end
+	function struct.u16  (name) return struct.add(name, 2, true, memory.read_u16_le) end
+	function struct.u32  (name) return struct.add(name, 4, true, memory.read_u32_le) end
+	function struct.u64  (name) return struct.add(name, 8, true, dsda.read_u64_le) end
+	function struct.float(name) return struct.add(name, 4, true, read_float_le) end
 	function struct.ptr  (name) return struct.u64(name) end
-	function struct.bool (name) return struct.s32(name) end
+	function struct.bool (name) return struct.add(name, 4, true, dsda.read_bool) end
 	function struct.array(name, type, count, ...)
+		--console.log("array", type, count, ...)
 		for i = 1, count do
 			struct[type](name .. i, ...)
 		end
 		return struct
 	end
 
+
+	local function get_item(address)
+		assertf(address >= 0 and address <= max_address and address % padded_size == 0,
+			"Invalid %s address %X", domain, address)
+
+		local peek = memory.read_u32_le(address, domain)
+		if peek == NULL_OBJECT then
+			--print("NULL_OBJECT", domain, bizstring.hex(address))
+			return nil
+		elseif peek == OUT_OF_BOUNDS then
+			--print("OUT_OF_BOUNDS", domain, bizstring.hex(address))
+			return false
+		end
+
+		local item = {
+			_address = address,
+		}
+		setmetatable(item, item_meta)
+		return item
+	end
+
+	-- iterator for each instance of the struct in the domain
+	local function next_item(_, address)
+		address = address and address + padded_size or 0
+		while address <= max_address do
+			local item = get_item(address)
+			if item then
+				return address, item
+			elseif item == false then -- OUT_OF_BOUNDS
+				break
+			else -- NULL_OBJECT
+				address = address + padded_size
+			end
+		end
+	end
+
+	-- iterator for each readable field in the struct
+	local function next_item_prop(item, key)
+		local next_key = next(item_props, key)
+		return next_key, item[next_key]
+	end
+
+	function struct.from_address(address)
+		return get_item(address) or nil
+	end
+
+	function struct.from_index(index)
+		return get_item((index - 1) * padded_size) or nil
+	end
+
+	function items_meta:__index(index)
+		return struct.from_address(index)
+	end
+
+	function items_meta:__pairs()
+		return next_item
+	end
+
+	function item_meta:__index(name)
+		local prop = item_props[name]
+		if prop then return prop(self) end
+	end
+
+	function item_meta:__pairs()
+		return next_item_prop, self, nil
+	end
+
 	return struct
 end
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
-dsda.player = dsda.struct_layout()
+dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAYERS)
 	.ptr  ("mobj")
 	.s32  ("playerstate") -- playerstate_t
 	.add  ("cmd", 14, 2)
@@ -133,7 +251,7 @@ dsda.player = dsda.struct_layout()
 	.u8   ("hazardinterval")
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj = dsda.struct_layout()
+dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
 	.add  ("thinker", 44, 8)
 	.s32  ("x")
 	.s32  ("y")
@@ -205,7 +323,7 @@ dsda.mobj = dsda.struct_layout()
 	.ptr  ("tranmap")
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector = dsda.struct_layout()
+dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
 	.s32  ("iSectorID")
 	.u32  ("flags")
 	.s32  ("floorheight")
@@ -253,7 +371,6 @@ dsda.sector = dsda.struct_layout()
 	.s16  ("tag")
 	.s32  ("cachedheight")
 	.s32  ("scaleindex")
-  	-- e6y
 	.s32  ("INTERP_SectorFloor")
 	.s32  ("INTERP_SectorCeiling")
 	.s32  ("INTERP_FloorPanning")
@@ -280,7 +397,7 @@ dsda.sector = dsda.struct_layout()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
 -- followed by v1, v2 coords
-dsda.line = dsda.struct_layout()
+dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
 	.s32  ("iLineID")
 	.ptr  ("v1")
 	.ptr  ("v2")
