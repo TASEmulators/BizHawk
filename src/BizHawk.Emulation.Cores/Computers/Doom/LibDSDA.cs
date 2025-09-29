@@ -87,8 +87,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[StructLayout(LayoutKind.Sequential)]
 		public struct PackedRenderInfo(DSDA.DoomSettings settings)
 		{
+			// only passed on frame advance
 			public int RenderVideo;
 			public int RenderAudio;
+			// passed on video init and frame advance
 			public int SfxVolume          = settings.SfxVolume;
 			public int MusicVolume        = settings.MusicVolume;
 			public int Gamma              = settings.Gamma;
@@ -105,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int MapDetails         = (int) settings.MapDetails;
 			public int MapTrail           = settings.MapTrail ? 2 : 0;
 			public int MapTrailSize       = settings.MapTrailSize;
-			public int FullVision         = Convert.ToInt32(settings.FullVision);
+			public int FullVision; // only passed on video init
 			public int PlayerPointOfView  = settings.DisplayPlayer - 1;
 		}
 

@@ -2,6 +2,7 @@
 
 bool foundIWAD = false;
 bool wipeDone = true;
+bool fullVision = false;
 int lookHeld[4] = { 0 };
 int lastButtons[4] = { 0 };
 AutomapButtons last_buttons = { 0 };
@@ -27,7 +28,7 @@ void render_updates(struct PackedRenderInfo *renderInfo)
   dsda_UpdateIntConfig(dsda_config_screenblocks,       renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
   dsda_UpdateIntConfig(dsda_config_hud_displayed,      renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
 
-  if (renderInfo->FullVision)
+  if (fullVision)
   {
     dsda_UpdateIntConfig(dsda_config_palette_ondamage, 0, true);
     dsda_UpdateIntConfig(dsda_config_palette_onbonus,  0, true);
@@ -331,6 +332,7 @@ ECL_EXPORT void dsda_get_video(struct VideoInfo* vi)
 
 ECL_EXPORT void dsda_init_video(struct PackedRenderInfo *renderInfo)
 {
+  fullVision = renderInfo->FullVision;
   render_updates(renderInfo);
   headlessUpdateVideo();
 }

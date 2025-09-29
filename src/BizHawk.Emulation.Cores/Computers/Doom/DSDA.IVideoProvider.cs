@@ -17,7 +17,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private void InitVideo()
 		{
-			var renderInfo = new LibDSDA.PackedRenderInfo(_settings);
+			var renderInfo = new LibDSDA.PackedRenderInfo(_settings)
+			{
+				FullVision = Convert.ToInt32(_settings.FullVision)
+			};
+
 			_core.dsda_init_video(ref renderInfo);
 			_vidBuff = new int[BufferWidth * BufferHeight];
 		}
