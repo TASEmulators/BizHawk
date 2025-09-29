@@ -133,18 +133,16 @@ local function iterate_players()
 	local stats             = "      HP Armr Kill Item Secr\n"
 	for addr, player in pairs(dsda.player.items) do
 		playercount       = playercount + 1
-		local health      = rls(addr + PlayerOffsets.health,       "Players")
-		local armor       = rls(addr + PlayerOffsets.armorpoints1, "Players")
-		local killcount   = rls(addr + PlayerOffsets.killcount,    "Players")
-		local itemcount   = rls(addr + PlayerOffsets.itemcount,    "Players")
-		local secretcount = rls(addr + PlayerOffsets.secretcount,  "Players")
+		local killcount   = player.killcount
+		local itemcount   = player.itemcount
+		local secretcount = player.secretcount
 
 		total_killcount   = total_killcount   + killcount
 		total_itemcount   = total_itemcount   + itemcount
 		total_secretcount = total_secretcount + secretcount
 
 		stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
-			stats, playercount, health, armor, killcount, itemcount, secretcount)
+			stats, playercount, player.health, player.armorpoints1, killcount, itemcount, secretcount)
 	end
 	if playercount > 1 then
 		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
@@ -154,23 +152,19 @@ end
 
 local function iterate()
 	if Init then return end
-	
-	for _, addr in ipairs(Objects) do
-		local x      = rls(addr + MobjOffsets.x,      "Things")
-		local y      = rls(addr + MobjOffsets.y,      "Things") * -1
-		local health = rls(addr + MobjOffsets.health, "Things")
-		local radius = math.floor ((rls(addr + MobjOffsets.radius, "Things") >> 16) * Zoom)
-		local sprite = SpriteNumber[rls(addr + MobjOffsets.sprite, "Things")]
-		local type   = rl(addr + MobjOffsets.type, "Things")
-		local pos    = { x = mapify_x(x), y = mapify_y(y) }
+
+	for _, mobj in ipairs(Objects) do
+		local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
+		local radius = math.floor ((mobj.radius >> 16) * Zoom)
+		--local sprite = SpriteNumber[mobj.sprite]
+		local type   = MobjType[mobj.type]
 		local color  = "white"
-			
-		type = MobjType[type]
-		if health <= 0 then color = "red" end
+
+		if mobj.health <= 0 then color = "red" end
 		--[[--
-		local z      = rls(addr + Offsets.z) / 0xffff
-		local index  = rl (addr + Offsets.index)
-		local tics   = rl (addr + Offsets.tics)
+		local z      = mobj.z
+		local index  = mobj.index
+		local tics   = mobj.tics
 		--]]--
 		if  in_range(pos.x, 0, client.screenwidth())
 		and in_range(pos.y, 0, client.screenheight())
@@ -181,11 +175,11 @@ local function iterate()
 	end
 	
 	for addr, line in pairs(dsda.line.items) do
-		local special =   rws(addr+LineOffsets.special, "Lines")
-		local v1 = { x =  rls(addr+LineOffsets.v1_x, "Lines"),
-		             y = -rls(addr+LineOffsets.v1_y, "Lines") }
-		local v2 = { x =  rls(addr+LineOffsets.v2_x, "Lines"),
-		             y = -rls(addr+LineOffsets.v2_y, "Lines") }
+		local special =   line.special
+		local v1 = { x =  line.v1_x,
+		             y = -line.v1_y, }
+		local v2 = { x =  line.v2_x,
+		             y = -line.v2_y }
 
 		local color
 		if special ~= 0 then color = 0xffcc00ff end
@@ -201,9 +195,9 @@ end
 
 local function init_objects()
 	for addr, mobj in pairs(dsda.mobj.items) do
-		local x    = rls(addr + MobjOffsets.x,    "Things") / 0xffff
-		local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
-		local type = rl (addr + MobjOffsets.type, "Things")
+		local x    = mobj.x / 0xffff
+		local y    = mobj.y / 0xffff * -1
+		local type = mobj.type
 
 	--	print(string.format("%d %f %f %02X", index, x, y, type))
 		type = MobjType[type]
@@ -215,7 +209,7 @@ local function init_objects()
 			if y < OB.top    then OB.top    = y end
 			if y > OB.bottom then OB.bottom = y end
 			-- cache the Objects we need
-			table.insert(Objects, addr)
+			table.insert(Objects, mobj)
 		end
 	end
 end
