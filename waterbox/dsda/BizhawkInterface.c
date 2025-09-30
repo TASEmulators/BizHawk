@@ -11,7 +11,7 @@ void render_updates(struct PackedRenderInfo *renderInfo)
 {
   displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
   dsda_reveal_map               = renderInfo->MapDetails;
-  
+
   dsda_UpdateIntConfig(dsda_config_usegamma,           renderInfo->Gamma,              true);
   dsda_UpdateIntConfig(dsda_config_automap_overlay,    renderInfo->MapOverlay,         true);
   dsda_UpdateIntConfig(dsda_config_show_messages,      renderInfo->ShowMessages,       true);
@@ -218,13 +218,19 @@ void player_input(struct PackedPlayerInput *src, int id)
     look      = TOCENTER;
   }
 
-  if (player->playerstate == PST_LIVE /*&& !dsda_FreeAim()*/)
+  if (look != 0)
   {
-      if (look < 0) look += 16;
-      dest->lookfly = look;
+    if (player->playerstate == PST_LIVE /*&& !dsda_FreeAim()*/)
+    {
+        if (look < 0) look += 16;
+        dest->lookfly = look;
+    }
   }
-  if (flyheight < 0) flyheight += 16;
-  dest->lookfly |= flyheight << 4;
+  if (flyheight != 0)
+  {
+    if (flyheight < 0) flyheight += 16;
+    dest->lookfly |= flyheight << 4;
+  }
 
   // weapon selection
   if (dest->buttons & BT_CHANGE)

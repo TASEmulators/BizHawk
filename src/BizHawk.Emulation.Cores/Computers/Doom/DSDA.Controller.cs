@@ -16,28 +16,29 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				if (PlayerPresent(settings, port))
 				{
 					controller
-						.AddAxis($"P{port} Run Speed",      (-50).RangeTo(50), 0)
-						.AddAxis($"P{port} Strafing Speed", (-50).RangeTo(50), 0)
-						.AddAxis($"P{port} Turning Speed", (-128).RangeTo(127), 0);
+						.AddAxis($"P{port} Run Speed",    (-50).RangeTo(50), 0)
+						.AddAxis($"P{port} Strafe Speed", (-50).RangeTo(50), 0)
+						.AddAxis($"P{port} Turn Speed",  (-128).RangeTo(127), 0);
 
 					// editing a short in tastudio would be a nightmare, so we split it:
 					// high byte represents shorttics mode and whole angle values
 					// low byte is fractional part only available with longtics
 					if (longtics)
 					{
-						controller.AddAxis($"P{port} Turning Speed Frac.", (-255).RangeTo(255), 0);
+						controller.AddAxis($"P{port} Turn Speed Frac.", (-255).RangeTo(255), 0);
 					}
 
 					controller
 						.AddAxis($"P{port} Weapon Select", 0.RangeTo(7), 0)
-						.AddAxis($"P{port} Mouse Running", (-128).RangeTo(127), 0)
+						.AddAxis($"P{port} Mouse Run", (-128).RangeTo(127), 0)
 						// current max raw mouse delta is 180
-						.AddAxis($"P{port} Mouse Turning", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0);
+						.AddAxis($"P{port} Mouse Turn", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0);
 
 					if (settings.InputFormat is not ControllerType.Doom)
 					{
 						controller
-							.AddAxis($"P{port} Fly / Look", (-7).RangeTo(7), 0)
+							.AddAxis($"P{port} Look", (-7).RangeTo(8), 0)
+							.AddAxis($"P{port} Fly",  (-7).RangeTo(8), 0)
 							.AddAxis($"P{port} Use Artifact", 0.RangeTo(10), 0);
 					}
 
@@ -114,11 +115,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			]);
 
 			controller
-				.AddAxis($"Camera Mode",             (-1).RangeTo(2),  -1)
-				.AddAxis($"Camera Run Speed",      (-128).RangeTo(127), 0)
-				.AddAxis($"Camera Strafing Speed", (-128).RangeTo(127), 0)
-				.AddAxis($"Camera Turning Speed",  (-128).RangeTo(127), 0)
-				.AddAxis($"Camera Fly",            (-128).RangeTo(127), 0);
+				.AddAxis($"Camera Mode",           (-1).RangeTo(2),  -1)
+				.AddAxis($"Camera Run Speed",    (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Strafe Speed", (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Turn Speed",   (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Fly",          (-128).RangeTo(127), 0);
 
 			controller.BoolButtons.Add("Camera Reset");
 

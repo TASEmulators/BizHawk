@@ -232,20 +232,24 @@ namespace BizHawk.Client.Common
 
 			void ParsePlayer(int port)
 			{
-				controller.AcceptNewAxis($"P{port} Run Speed",      unchecked((sbyte) input[i++]));
-				controller.AcceptNewAxis($"P{port} Strafing Speed", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis($"P{port} Run Speed",    unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis($"P{port} Strafe Speed", unchecked((sbyte) input[i++]));
+
 				if (turningResolution == DSDA.TurningResolution.Longtics)
 				{
 					// low byte comes first and is stored as an unsigned value
-					controller.AcceptNewAxis($"P{port} Turning Speed Frac.", input[i++]);
+					controller.AcceptNewAxis($"P{port} Turn Speed Frac.", input[i++]);
 				}
-				controller.AcceptNewAxis($"P{port} Turning Speed", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis($"P{port} Turn Speed", unchecked((sbyte) input[i++]));
 
 				var buttons = (LibDSDA.Buttons)input[i++];
 				controller[$"P{port} Fire"] = (buttons & LibDSDA.Buttons.Fire)         is not 0;
 				controller[$"P{port} Use" ] = (buttons & LibDSDA.Buttons.Use)          is not 0;
 				var changeWeapon            = (buttons & LibDSDA.Buttons.ChangeWeapon) is not 0;
-				var weapon = changeWeapon ? (((int)(buttons & LibDSDA.Buttons.WeaponMask) >> 3) + 1) : 0;
+
+				var weapon = changeWeapon
+					? (((int)(buttons & LibDSDA.Buttons.WeaponMask) >> 3) + 1)
+					: 0;
 				controller.AcceptNewAxis($"P{port} Weapon Select", weapon);
 			}
 
@@ -258,7 +262,8 @@ namespace BizHawk.Client.Common
 
 				Result.Movie.AppendFrame(controller);
 
-				if (i == input.Length) throw new Exception("Reached end of input movie stream without finalization byte");
+				if (i == input.Length)
+					throw new Exception("Reached end of input movie stream without finalization byte");
 			}
 			while (input[i] is not 0x80);
 		}

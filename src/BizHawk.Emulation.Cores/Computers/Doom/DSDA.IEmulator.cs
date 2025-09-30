@@ -60,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			camera.WeaponSelect  = controller.AxisValue("Camera Mode");
 			camera.RunSpeed      = controller.AxisValue("Camera Run Speed");
-			camera.StrafingSpeed = controller.AxisValue("Camera Strafing Speed");
-			camera.TurningSpeed  = controller.AxisValue("Camera Turning Speed") << 8;
+			camera.StrafingSpeed = controller.AxisValue("Camera Strafe Speed");
+			camera.TurningSpeed  = controller.AxisValue("Camera Turn Speed") << 8;
 			camera.FlyLook       = controller.AxisValue("Camera Fly");
 
 			if (controller.IsPressed("Camera Reset"))
@@ -95,18 +95,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// initial axis read
 					players[i].RunSpeed      = controller.AxisValue($"P{port} Run Speed");
-					players[i].StrafingSpeed = controller.AxisValue($"P{port} Strafing Speed");
+					players[i].StrafingSpeed = controller.AxisValue($"P{port} Strafe Speed");
 					players[i].WeaponSelect  = controller.AxisValue($"P{port} Weapon Select");
 					if (players[i].WeaponSelect > 0)
 					{
 						players[i].Buttons = LibDSDA.Buttons.ChangeWeapon;
 					}
 					// core counts angle counterclockwise
-					players[i].TurningSpeed  = controller.AxisValue($"P{port} Turning Speed") << 8;
+					players[i].TurningSpeed  = controller.AxisValue($"P{port} Turn Speed") << 8;
 
 					if (_syncSettings.TurningResolution == TurningResolution.Longtics)
 					{
-						players[i].TurningSpeed += controller.AxisValue($"P{port} Turning Speed Frac.");
+						players[i].TurningSpeed += controller.AxisValue($"P{port} Turn Speed Frac.");
 					}
 
 					// override weapon axis based on buttons
@@ -156,11 +156,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// mouse-driven running
 					// divider matches the core
-					players[i].RunSpeed -= (int)(controller.AxisValue($"P{port} Mouse Running") * _syncSettings.MouseRunSensitivity / 8.0);
+					players[i].RunSpeed -= (int)(controller.AxisValue($"P{port} Mouse Run") * _syncSettings.MouseRunSensitivity / 8.0);
 					players[i].RunSpeed = players[i].RunSpeed.Clamp<int>(-_runSpeeds[1], _runSpeeds[1]);
 
 					// mouse-driven turning
-					var mouseTurning = controller.AxisValue($"P{port} Mouse Turning") * _syncSettings.MouseTurnSensitivity;
+					var mouseTurning = controller.AxisValue($"P{port} Mouse Turn") * _syncSettings.MouseTurnSensitivity;
 
 					if (strafe)
 					{
@@ -201,7 +201,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Raven Games
 					if (_syncSettings.InputFormat is not ControllerType.Doom)
 					{
-						players[i].FlyLook     = controller.AxisValue($"P{port} Fly / Look");
+						int look = controller.AxisValue($"P{port} Look");
+						if (look < 0) look += 16;
+
+						int fly = controller.AxisValue($"P{port} Fly");
+						if (fly < 0) fly += 16;
+
+						players[i].FlyLook = (fly << 4) + look;
 						players[i].ArtifactUse = controller.AxisValue($"P{port} Use Artifact");
 
 						// these "buttons" are not part of ticcmd_t::buttons

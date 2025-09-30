@@ -14,8 +14,10 @@ namespace BizHawk.Client.Common
 		{
 			var input = SourceFile.OpenRead().ReadAllBytes();
 			var i = 0;
+
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.DSDA;
 			Result.Movie.SystemID = VSystemID.Raw.Doom;
+
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
 				InputFormat = DSDA.ControllerType.Heretic,
@@ -34,34 +36,48 @@ namespace BizHawk.Client.Common
 				TurningResolution = DSDA.TurningResolution.Shorttics,
 				RenderWipescreen = false,
 			};
+
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
 			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
 			controller.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
-			void ParsePlayer(string playerPfx)
+
+			void ParsePlayer(string port)
 			{
-				controller.AcceptNewAxis(playerPfx + "Run Speed"     , unchecked((sbyte) input[i++]));
-				controller.AcceptNewAxis(playerPfx + "Strafing Speed", unchecked((sbyte) input[i++]));
-				controller.AcceptNewAxis(playerPfx + "Turning Speed" , unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(port + "Run Speed",    unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(port + "Strafe Speed", unchecked((sbyte) input[i++]));
+				controller.AcceptNewAxis(port + "Turn Speed",   unchecked((sbyte) input[i++]));
 
-				var specialValue = (LibDSDA.Buttons)input[i++];
-				controller[playerPfx + "Fire"] = (specialValue & LibDSDA.Buttons.Fire) is not 0;
-				controller[playerPfx + "Use" ] = (specialValue & LibDSDA.Buttons.Use ) is not 0;
-				bool changeWeapon = (specialValue & LibDSDA.Buttons.ChangeWeapon) is not 0;
-				int weapon = changeWeapon ? (((int)(specialValue & LibDSDA.Buttons.WeaponMask) >> 3) + 1) : 0;
+				var buttons = (LibDSDA.Buttons)input[i++];
+				controller[port + "Fire"] = (buttons & LibDSDA.Buttons.Fire) is not 0;
+				controller[port + "Use" ] = (buttons & LibDSDA.Buttons.Use ) is not 0;
+				bool changeWeapon = (buttons & LibDSDA.Buttons.ChangeWeapon) is not 0;
 
-				controller.AcceptNewAxis(playerPfx + "Weapon Select", weapon);
-				controller.AcceptNewAxis(playerPfx + "Fly / Look"  , unchecked((sbyte) input[i++]));
-				controller.AcceptNewAxis(playerPfx + "Use Artifact", unchecked((sbyte) input[i++]));
+				int weapon = changeWeapon
+					? (((int)(buttons & LibDSDA.Buttons.WeaponMask) >> 3) + 1)
+					: 0;
+				controller.AcceptNewAxis(port + "Weapon Select", weapon);
+
+				int flylook = unchecked((sbyte) input[i++]);
+				int look = flylook & 15; if (look > 8) look -= 16;
+				int fly  = flylook >> 4; if (fly  > 8) fly  -= 16;
+				controller.AcceptNewAxis(port + "Look", look);
+				controller.AcceptNewAxis(port + "Fly", fly);
+
+				controller.AcceptNewAxis(port + "Use Artifact", unchecked((sbyte) input[i++]));
 			}
+
 			do
 			{
 				if (syncSettings.Player1Present) ParsePlayer("P1 ");
 				if (syncSettings.Player2Present) ParsePlayer("P2 ");
 				if (syncSettings.Player3Present) ParsePlayer("P3 ");
 				if (syncSettings.Player4Present) ParsePlayer("P4 ");
+
 				Result.Movie.AppendFrame(controller);
-				if (i == input.Length) throw new Exception("Reached end of input movie stream without finalization byte");
+
+				if (i == input.Length)
+					throw new Exception("Reached end of input movie stream without finalization byte");
 			}
 			while (input[i] is not 0x80);
 		}
