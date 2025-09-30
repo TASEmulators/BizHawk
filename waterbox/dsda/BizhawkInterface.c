@@ -9,8 +9,9 @@ AutomapButtons last_buttons = { 0 };
 
 void render_updates(struct PackedRenderInfo *renderInfo)
 {
-                       displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
-                       dsda_reveal_map               = renderInfo->MapDetails;
+  displayplayer = consoleplayer = renderInfo->PlayerPointOfView;
+  dsda_reveal_map               = renderInfo->MapDetails;
+  
   dsda_UpdateIntConfig(dsda_config_usegamma,           renderInfo->Gamma,              true);
   dsda_UpdateIntConfig(dsda_config_automap_overlay,    renderInfo->MapOverlay,         true);
   dsda_UpdateIntConfig(dsda_config_show_messages,      renderInfo->ShowMessages,       true);
@@ -23,10 +24,15 @@ void render_updates(struct PackedRenderInfo *renderInfo)
   dsda_UpdateIntConfig(dsda_config_map_totals,         renderInfo->MapTotals,          true);
   dsda_UpdateIntConfig(dsda_config_map_time,           renderInfo->MapTime,            true);
   dsda_UpdateIntConfig(dsda_config_map_coordinates,    renderInfo->MapCoordinates,     true);
-  dsda_UpdateIntConfig(dsda_config_map_trail_mode,     renderInfo->MapTrail,           true);
-  dsda_UpdateIntConfig(dsda_config_map_trail_size,     renderInfo->MapTrailSize,       true);
-  dsda_UpdateIntConfig(dsda_config_screenblocks,       renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
-  dsda_UpdateIntConfig(dsda_config_hud_displayed,      renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
+
+  dsda_UpdateIntConfig(dsda_config_screenblocks, renderInfo->HeadsUpMode != HUD_VANILLA ? 11 : 10, true);
+  dsda_UpdateIntConfig(dsda_config_hud_displayed, renderInfo->HeadsUpMode == HUD_NONE    ?  0 :  1, true);
+
+  if (dsda_IntConfig(dsda_config_map_trail_mode) != renderInfo->MapTrail)
+    dsda_UpdateIntConfig(dsda_config_map_trail_mode, renderInfo->MapTrail, true);
+
+  if (dsda_IntConfig(dsda_config_map_trail_size) != renderInfo->MapTrailSize)
+    dsda_UpdateIntConfig(dsda_config_map_trail_size, renderInfo->MapTrailSize, true);
 
   if (fullVision)
   {
