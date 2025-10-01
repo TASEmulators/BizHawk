@@ -12,6 +12,7 @@ local CHAR_WIDTH       = 10
 local CHAR_HEIGHT      = 16
 local NEGATIVE_MAXIMUM = 1 << 63
 local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
+local MAP_CLICK_BLOCK  = "P1 Fire" -- prevent this input while clicking on map buttons
 -- shortcuts
 local rl   = memory.read_u32_le
 local rw   = memory.read_u16_le
@@ -259,6 +260,9 @@ local function make_button(x, y, name, func)
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         ) then
 		if mouse.Left then
+			if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
+				joypad.set({ [MAP_CLICK_BLOCK] = false })
+			end
 			colorIndex = 3
 			func()
 		else colorIndex = 2 end
@@ -268,13 +272,8 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
-
-
-while true do
-	if Init then init_objects() end
-	iterate()
-	iterate_players()
-	update_zoom()
+event.onframestart(function()
+	-- do this before the frame to stop button clicks counting as game inputs
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
@@ -282,6 +281,13 @@ while true do
 	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
 	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
+end)
+
+while true do
+	if Init then init_objects() end
+	iterate()
+	iterate_players()
+	update_zoom()
 	text(10, client.screenheight()-170, string.format(
 		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
 		Zoom, Pan.x, Pan.y), 0xffbbddff)
