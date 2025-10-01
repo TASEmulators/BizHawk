@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 				if (m.Msg == WM_SYSCOMMAND)
 				{
-					if (m.WParam.ToInt32() == SC_KEYMENU)
+					if (m.WParam.ToInt32() == SC_KEYMENU && m.LParam == IntPtr.Zero)
 					{
 						return;
 					}
