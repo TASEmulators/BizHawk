@@ -899,6 +899,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool BlocksInputWhenFocused { get; } = false;
 
+		/// <summary>
+		/// Windows does tool stip menu focus things when Alt is released, not pressed.
+		/// However, if an alt combination is pressed then those things happen at that time instead.
+		/// So we need to know if a key combination was used, so we can skip the alt release logic.
+		/// </summary>
+		private bool _skipNextAltRelease = true;
+
 		public int ProgramRunLoop()
 		{
 			// needs to be done late, after the log console snaps on top
@@ -936,6 +943,7 @@ namespace BizHawk.Client.EmuHawk
 					// Alt key for menu items.
 					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
 					{
+						_skipNextAltRelease = true;
 						if (ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
@@ -945,6 +953,18 @@ namespace BizHawk.Client.EmuHawk
 						{
 							afb.SendAltCombination(' ');
 						}
+					}
+					else if (ie.EventType is InputEventType.Press && ie.LogicalButton.Button == "Alt")
+					{
+						// We will only do the alt release if the alt press itself was not already handled.
+						_skipNextAltRelease = false;
+					}
+					else if (ie.EventType is InputEventType.Release
+						&& !afb.BlocksInputWhenFocused
+						&& ie.LogicalButton.Button == "Alt"
+						&& !_skipNextAltRelease)
+					{
+						afb.FocusToolStipMenu();
 					}
 
 					// same as right-click

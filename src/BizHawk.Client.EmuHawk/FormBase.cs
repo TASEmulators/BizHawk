@@ -115,6 +115,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (character >= 'a' && character <= 'z') base.ProcessDialogChar(character);
 		}
 
+		internal void FocusToolStipMenu()
+		{
+			var m = new Message { WParam = new IntPtr(SC_KEYMENU), LParam = new IntPtr(0), Msg = WM_SYSCOMMAND, HWnd = Handle };
+			base.WndProc(ref m);
+		}
+
 		protected override void WndProc(ref Message m)
 		{
 			if (!BlocksInputWhenFocused)
