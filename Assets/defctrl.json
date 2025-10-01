@@ -1778,12 +1778,12 @@
 			}
 		},
 		"Doom Controller": {
-			"P1 Mouse Running": {
+			"P1 Mouse Run": {
 				"Value": "RMouse Y",
 				"Mult": 1.0,
 				"Deadzone": 0.0
 			},
-			"P1 Mouse Turning": {
+			"P1 Mouse Turn": {
 				"Value": "RMouse X",
 				"Mult": 1.0,
 				"Deadzone": 0.0
