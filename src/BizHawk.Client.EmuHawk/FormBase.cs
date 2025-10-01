@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 		public virtual bool BlocksInputWhenFocused
 			=> true;
 
+		public bool MenuIsOpen { get; private set; }
+
 		public Config? Config { get; set; }
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -90,6 +92,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
+
+			if (MainMenuStrip != null)
+			{
+				MainMenuStrip.MenuActivate += (_, _) => MenuIsOpen = true;
+				MainMenuStrip.MenuDeactivate += (_, _) => MenuIsOpen = false;
+			}
 		}
 
 		public void UpdateWindowTitle()
