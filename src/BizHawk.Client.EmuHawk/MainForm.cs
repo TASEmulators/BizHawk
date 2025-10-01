@@ -936,14 +936,17 @@ namespace BizHawk.Client.EmuHawk
 				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
 				Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
 
-				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie) =>
+				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie, handled) =>
 				{
 					if (ActiveForm is not FormBase afb) return;
 
 					// Alt key for menu items.
 					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
 					{
+						// Windows will not focus the menu if any other key was pressed while Alt is held. Regardless of whether that key did anything.
 						_skipNextAltRelease = true;
+						if (handled) return;
+
 						if (ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
@@ -954,6 +957,7 @@ namespace BizHawk.Client.EmuHawk
 							afb.SendAltCombination(' ');
 						}
 					}
+					else if (handled) return;
 					else if (ie.EventType is InputEventType.Press && ie.LogicalButton.Button == "Alt")
 					{
 						// We will only do the alt release if the alt press itself was not already handled.
