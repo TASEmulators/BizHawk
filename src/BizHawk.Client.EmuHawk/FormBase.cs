@@ -134,6 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override bool ProcessDialogChar(char charCode)
 		{
+			if (BlocksInputWhenFocused) return base.ProcessDialogChar(charCode);
 			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
 			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
 		}
