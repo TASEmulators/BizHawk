@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBG.ChangeBitmapSize(256, 256);
 		}
 
-		protected override void GeneralUpdate() => UpdateBefore();
+		protected override void GeneralUpdate() => UpdateAfter();
 
 		private static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewPalette.Refresh();
 		}
 
-		protected override void UpdateBefore()
+		protected override void UpdateAfter()
 		{
 			unsafe
 			{

@@ -35,9 +35,9 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.ChangeBitmapSize(256, 256);
 		}
 
-		protected override void GeneralUpdate() => UpdateBefore();
+		protected override void GeneralUpdate() => UpdateAfter();
 
-		protected override void UpdateBefore()
+		protected override void UpdateAfter()
 		{
 			DrawBacks();
 			DrawSprites();
