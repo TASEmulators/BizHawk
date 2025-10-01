@@ -939,14 +939,11 @@ namespace BizHawk.Client.EmuHawk
 						if (ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
-							if ((c >= 'a' && c <= 'z') || c == ' ')
-							{
-								afb.SendAltKeyChar(c);
-							}
+							afb.SendAltCombination(c);
 						}
 						else if (ie.LogicalButton.Button == "Space")
 						{
-							afb.SendPlainAltKey(32);
+							afb.SendAltCombination(' ');
 						}
 					}
 
