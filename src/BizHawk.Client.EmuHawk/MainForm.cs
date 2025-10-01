@@ -1120,7 +1120,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (wasTurboSeeking && value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					Tools.UpdateToolsBefore();
+					// Tools.UpdateToolsBefore(); // TODO: do we need this?
 					Tools.UpdateToolsAfter();
 				}
 			}
@@ -4068,7 +4068,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.CallStateLoadCallbacks(userFriendlyStateName);
 
 			SetMainformMovieInfo();
-			Tools.UpdateToolsBefore();
 			UpdateToolsAfter();
 			UpdateToolsLoadstate();
 			InputManager.AutoFireController.ClearStarts();

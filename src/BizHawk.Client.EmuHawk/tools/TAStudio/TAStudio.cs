@@ -924,7 +924,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateTools()
 		{
-			Tools.UpdateToolsBefore();
 			Tools.UpdateToolsAfter();
 		}
 
