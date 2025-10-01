@@ -283,6 +283,10 @@ event.onframestart(function()
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
 end)
 
+event.onexit(function()
+	gui.clearGraphics()
+end)
+
 while true do
 	if Init then init_objects() end
 	iterate()
