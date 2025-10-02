@@ -717,6 +717,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				branch.ChangeLog.MaxSteps = value;
 			}
+
+			if (_undoForm != null && !_undoForm.IsDisposed)
+			{
+				_undoForm.UpdateValues();
+			}
 		}
 
 		private void SetRewindStepFastMenuItem_Click(object sender, EventArgs e)
