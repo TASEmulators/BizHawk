@@ -99,6 +99,16 @@ namespace BizHawk.Client.Common
 			public List<IMovieAction> actions;
 			public string name;
 			public int id;
+
+			public UndoItem Clone()
+			{
+				return new()
+				{
+					actions = new(this.actions),
+					name = this.name,
+					id = this.id,
+				};
+			}
 		}
 
 		private List<UndoItem> _history = new();
@@ -316,7 +326,12 @@ namespace BizHawk.Client.Common
 		{
 			TasMovieChangeLog newLog = (TasMovieChangeLog)this.MemberwiseClone();
 			// The history list is the only thing that needs more than a shallow copy from MemberwiseClone.
-			newLog._history = new(_history);
+			newLog._history = new();
+			// Clone each UndoItem because they can be mutated by MergeActions.
+			foreach (UndoItem item in this._history)
+			{
+				newLog._history.Add(item.Clone());
+			}
 			return newLog;
 		}
 
