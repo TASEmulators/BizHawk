@@ -276,8 +276,15 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
-event.onframestart(function()
-	-- do this before the frame to stop button clicks counting as game inputs
+event.onexit(function()
+	gui.clearGraphics()
+	gui.cleartext()
+end)
+
+while true do
+	if Init then init_objects() end
+	gui.clearGraphics()
+	gui.cleartext()
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
@@ -285,14 +292,6 @@ event.onframestart(function()
 	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
 	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
-end)
-
-event.onexit(function()
-	gui.clearGraphics()
-end)
-
-while true do
-	if Init then init_objects() end
 	iterate()
 	iterate_players()
 	update_zoom()
@@ -301,5 +300,5 @@ while true do
 		Zoom, Pan.x, Pan.y), 0xffbbddff)
 	LastScreenSize.w = client.screenwidth()
 	LastScreenSize.h = client.screenheight()
-	emu.frameadvance()
+	emu.yield()
 end
