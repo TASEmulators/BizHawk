@@ -703,10 +703,22 @@ namespace BizHawk.Client.EmuHawk
 
 				if (val > 0)
 				{
-					Settings.MaxUndoSteps = CurrentTasMovie.ChangeLog.MaxSteps = val;
+					UpdateChangeLogMaxSteps(val);
 				}
 			}
 		}
+
+		public void UpdateChangeLogMaxSteps(int value)
+		{
+			Settings.MaxUndoSteps = value;
+			CurrentTasMovie.ChangeLog.MaxSteps = value;
+			BookMarkControl.SetBackupMaxSteps(value);
+			foreach (TasBranch branch in CurrentTasMovie.Branches)
+			{
+				branch.ChangeLog.MaxSteps = value;
+			}
+		}
+
 		private void SetRewindStepFastMenuItem_Click(object sender, EventArgs e)
 		{
 			using var prompt = new InputPrompt

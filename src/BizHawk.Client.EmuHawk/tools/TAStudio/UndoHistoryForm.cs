@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxStepsNum_ValueChanged(object sender, EventArgs e)
 		{
-			_tastudio.Settings.MaxUndoSteps = Log.MaxSteps = (int)MaxStepsNum.Value;
+			_tastudio.UpdateChangeLogMaxSteps((int)MaxStepsNum.Value);
 		}
 	}
 }

@@ -26,6 +26,11 @@ namespace BizHawk.Client.EmuHawk
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
 
+		public void SetBackupMaxSteps(int value)
+		{
+			if (_backupBranch != null) _backupBranch.ChangeLog.MaxSteps = value;
+		}
+
 		private enum BranchUndo
 		{
 			Load,

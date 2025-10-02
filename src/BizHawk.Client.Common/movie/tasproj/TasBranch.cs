@@ -194,6 +194,7 @@ namespace BizHawk.Client.Common
 			{
 				var b = new TasBranch();
 				b.ChangeLog = new TasMovieChangeLog(movie);
+				b.ChangeLog.MaxSteps = movie.ChangeLog.MaxSteps;
 
 				if (!bl.GetLump(nheader, abort: false, tr =>
 				{
