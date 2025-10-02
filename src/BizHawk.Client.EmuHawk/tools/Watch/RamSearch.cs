@@ -157,6 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			PopulateTypeDropDown();
 			HardSetDisplayTypeDropDown(_settings.Type);
 			DoDomainSizeCheck();
+			SetSize(_settings.Size);
 			SetReboot(false);
 
 			SpecificAddressBox.SetHexProperties(_settings.Domain.Size);
