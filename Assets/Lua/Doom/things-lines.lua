@@ -73,30 +73,34 @@ local function reset_view()
 	update_zoom()
 end
 
+local function pan_left(divider)
+	Pan.x = Pan.x + PAN_FACTOR/Zoom/(divider or 2)
+end
+
+local function pan_right(divider)
+	Pan.x = Pan.x - PAN_FACTOR/Zoom/(divider or 2)
+end
+
+local function pan_up(divider)
+	Pan.y = Pan.y + PAN_FACTOR/Zoom/(divider or 2)
+end
+
+local function pan_down(divider)
+	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
+end
+
 local function zoom_out()
 	local newZoom = Zoom * (1 - ZOOM_FACTOR)
 	if newZoom < MINIMAL_ZOOM then return end
 	Zoom = newZoom
+	pan_left(1)
+	pan_up(1.4)
 end
 
 local function zoom_in()
 	Zoom = Zoom * (1 + ZOOM_FACTOR)
-end
-
-local function pan_left()
-	Pan.x = Pan.x + PAN_FACTOR/Zoom/2
-end
-
-local function pan_right()
-	Pan.x = Pan.x - PAN_FACTOR/Zoom/2
-end
-
-local function pan_up()
-	Pan.y = Pan.y + PAN_FACTOR/Zoom/2
-end
-
-local function pan_down()
-	Pan.y = Pan.y - PAN_FACTOR/Zoom/2
+	pan_right(1)
+	pan_down(1.4)
 end
 
 function maybe_swap(smaller, bigger)
