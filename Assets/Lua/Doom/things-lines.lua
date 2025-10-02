@@ -51,7 +51,6 @@ local MobjOffsets   = dsda.mobj.offsets-- mobj member offsets in bytes
 local LineOffsets   = dsda.line.offsets-- line member offsets in bytes
 local MobjType      = dsda.mobjtype
 local SpriteNumber  = dsda.doom.spritenum
-local Objects       = {}
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -154,10 +153,10 @@ end
 local function iterate()
 	if Init then return end
 
-	for _, mobj in ipairs(Objects) do
+	for addr, mobj in pairs(dsda.mobj.items) do
 		local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
 		local radius = math.floor ((mobj.radius >> 16) * Zoom)
-		--local sprite = SpriteNumber[mobj.sprite]
+	--	local sprite = SpriteNumber[mobj.sprite]
 		local type   = MobjType[mobj.type]
 		local color  = "white"
 
@@ -169,6 +168,8 @@ local function iterate()
 		--]]--
 		if  in_range(pos.x, 0, client.screenwidth())
 		and in_range(pos.y, 0, client.screenheight())
+		and type
+		and not string.find(type, "MISC")
 		then
 			text(pos.x, pos.y, string.format("%s", type), color)
 			box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, color)
@@ -198,20 +199,12 @@ local function init_objects()
 	for addr, mobj in pairs(dsda.mobj.items) do
 		local x    = mobj.x / 0xffff
 		local y    = mobj.y / 0xffff * -1
-		local type = mobj.type
+		if x < OB.left   then OB.left   = x end
+		if x > OB.right  then OB.right  = x end
+		if y < OB.top    then OB.top    = y end
+		if y > OB.bottom then OB.bottom = y end
+	end
 
-	--	print(string.format("%d %f %f %02X", index, x, y, type))
-		type = MobjType[type]
-		if type
-		and not string.find(type, "MISC")
-		then
-			if x < OB.left   then OB.left   = x end
-			if x > OB.right  then OB.right  = x end
-			if y < OB.top    then OB.top    = y end
-			if y > OB.bottom then OB.bottom = y end
-			-- cache the Objects we need
-			table.insert(Objects, mobj)
-		end
 	end
 end
 
