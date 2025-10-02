@@ -247,7 +247,9 @@ function update_zoom()
 	elseif wheelDelta < 0 then zoom_out(-wheelDelta * WHEEL_ZOOM_FACTOR)
 	end
 	
-	if mouse.Left and input.get()["Shift"] then
+	if   mouse.Left
+	and (input.get()["Shift"]
+	or   input.get()["LeftShift"]) then
 		if     deltaX > 0 then pan_left ( DRAG_FACTOR/deltaX)
 		elseif deltaX < 0 then pan_right(-DRAG_FACTOR/deltaX)
 		end
@@ -304,7 +306,8 @@ local function make_button(x, y, name, func)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         )
-	and not input.get()["Shift"] then
+	and not input.get()["Shift"]
+	and not input.get()["LeftShift"] then
 		if mouse.Left then
 			if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
 				joypad.set({ [MAP_CLICK_BLOCK] = false })
