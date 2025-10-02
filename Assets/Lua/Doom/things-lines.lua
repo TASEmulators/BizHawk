@@ -51,6 +51,7 @@ local MobjOffsets   = dsda.mobj.offsets-- mobj member offsets in bytes
 local LineOffsets   = dsda.line.offsets-- line member offsets in bytes
 local MobjType      = dsda.mobjtype
 local SpriteNumber  = dsda.doom.spritenum
+local Lines         = {}
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -176,12 +177,20 @@ local function iterate()
 		end
 	end
 	
-	for addr, line in pairs(dsda.line.items) do
-		local special =   line.special
-		local v1 = { x =  line.v1_x,
-		             y = -line.v1_y, }
-		local v2 = { x =  line.v2_x,
-		             y = -line.v2_y }
+	for _, line in ipairs(Lines) do
+		-- Line positions need to be updated for polyobjects
+		-- No way to tell if a line is part of a polyobject, but they update validcount
+		-- when moving so this is a decent way of cutting down on memory reads
+		local validcount = line.validcount
+		if validcount ~= line._validcount then
+			line._validcount = validcount
+			line._v1 = { x =  line.v1_x,
+		                 y = -line.v1_y, }
+			line._v2 = { x =  line.v2_x,
+		                 y = -line.v2_y, }
+		end
+		local v1, v2  = line._v1, line._v2
+		local special = line.special
 
 		local color
 		if special ~= 0 then color = 0xffcc00ff end
@@ -205,6 +214,9 @@ local function init_objects()
 		if y > OB.bottom then OB.bottom = y end
 	end
 
+	Lines = {}
+	for addr, line in pairs(dsda.line.items) do
+		table.insert(Lines, line)
 	end
 end
 
