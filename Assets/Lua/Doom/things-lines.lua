@@ -8,6 +8,7 @@ local OUT_OF_BOUNDS     = 0xFFFFFFFF -- no such index
 local MINIMAL_ZOOM      = 0.0001     -- ???
 local ZOOM_FACTOR       = 0.02
 local WHEEL_ZOOM_FACTOR = 4
+local DRAG_FACTOR       = 10
 local PAN_FACTOR        = 10
 local CHAR_WIDTH        = 10
 local CHAR_HEIGHT       = 16
@@ -46,6 +47,11 @@ local OB = {
 local LastScreenSize = {
 	w = client.screenwidth(),
 	h = client.screenheight()
+}
+local LastMouse = {
+	x     = 0,
+	y     = 0,
+	wheel = 0
 }
 -- forward declarations
 local PlayerOffsets = dsda.player.offsets -- player member offsets in bytes
@@ -230,12 +236,30 @@ local function init_objects()
 end
 
 function update_zoom()
-	local newWheel   = math.floor(input.getmouse().Wheel/120)
-	local wheelDelta = newWheel - LastWheel
+	local mouse      = input.getmouse()
+	local mousePos   = client.transformPoint(mouse.X, mouse.Y)
+	local deltaX     = mousePos.x - LastMouse.x
+	local deltaY     = mousePos.y - LastMouse.y
+	local newWheel   = math.floor(mouse.Wheel/120)
+	local wheelDelta = newWheel - LastMouse.wheel
+	
 	if     wheelDelta > 0 then zoom_in ( wheelDelta * WHEEL_ZOOM_FACTOR)
 	elseif wheelDelta < 0 then zoom_out(-wheelDelta * WHEEL_ZOOM_FACTOR)
 	end
-	LastWheel = newWheel
+	
+	if mouse.Left and input.get()["Shift"] then
+		if     deltaX > 0 then pan_left ( DRAG_FACTOR/deltaX)
+		elseif deltaX < 0 then pan_right(-DRAG_FACTOR/deltaX)
+		end
+		if     deltaY > 0 then pan_up  ( DRAG_FACTOR/deltaY)
+		elseif deltaY < 0 then pan_down(-DRAG_FACTOR/deltaY)
+		end
+	end
+	
+	LastMouse.x     = mousePos.x
+	LastMouse.y     = mousePos.y
+	LastMouse.left  = mouse.Left
+	LastMouse.wheel = newWheel
 	
 	if not Init
 	and LastScreenSize.w == client.screenwidth()
@@ -279,7 +303,8 @@ local function make_button(x, y, name, func)
 	local mousePos = client.transformPoint(mouse.X, mouse.Y)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
-	and in_range(mousePos.y, y-boxHeight, y         ) then
+	and in_range(mousePos.y, y-boxHeight, y         )
+	and not input.get()["Shift"] then
 		if mouse.Left then
 			if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
 				joypad.set({ [MAP_CLICK_BLOCK] = false })
