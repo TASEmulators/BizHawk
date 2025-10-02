@@ -3,31 +3,33 @@
 local dsda = require("dsda-data")
 
 -- CONSTANTS
-local NULL_OBJECT      = 0x88888888 -- no object at that index
-local OUT_OF_BOUNDS    = 0xFFFFFFFF -- no such index
-local MINIMAL_ZOOM     = 0.0001     -- ???
-local ZOOM_FACTOR      = 0.02
-local PAN_FACTOR       = 10
-local CHAR_WIDTH       = 10
-local CHAR_HEIGHT      = 16
-local NEGATIVE_MAXIMUM = 1 << 63
-local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
-local MAP_CLICK_BLOCK  = "P1 Fire" -- prevent this input while clicking on map buttons
+local NULL_OBJECT       = 0x88888888 -- no object at that index
+local OUT_OF_BOUNDS     = 0xFFFFFFFF -- no such index
+local MINIMAL_ZOOM      = 0.0001     -- ???
+local ZOOM_FACTOR       = 0.02
+local WHEEL_ZOOM_FACTOR = 4
+local PAN_FACTOR        = 10
+local CHAR_WIDTH        = 10
+local CHAR_HEIGHT       = 16
+local NEGATIVE_MAXIMUM  = 1 << 63
+local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
+local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
 -- shortcuts
-local rl   = memory.read_u32_le
-local rw   = memory.read_u16_le
-local rb   = memory.read_u8
-local rls  = memory.read_s32_le
-local rws  = memory.read_s16_le
-local rbs  = memory.read_s8
-local text = gui.text
-local box  = gui.drawBox
+local rl       = memory.read_u32_le
+local rw       = memory.read_u16_le
+local rb       = memory.read_u8
+local rls      = memory.read_s32_le
+local rws      = memory.read_s16_le
+local rbs      = memory.read_s8
+local text     = gui.text
+local box      = gui.drawBox
 local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
 -- TOP LEVEL VARIABLES
-local Zoom     = 1
-local Init     = true
+local LastWheel = 0
+local Zoom      = 1
+local Init      = true
 -- tables
 -- view offset
 local Pan = {
@@ -46,9 +48,9 @@ local LastScreenSize = {
 	h = client.screenheight()
 }
 -- forward declarations
-local PlayerOffsets = dsda.player.offsets-- player member offsets in bytes
-local MobjOffsets   = dsda.mobj.offsets-- mobj member offsets in bytes
-local LineOffsets   = dsda.line.offsets-- line member offsets in bytes
+local PlayerOffsets = dsda.player.offsets -- player member offsets in bytes
+local MobjOffsets   = dsda.mobj.offsets   -- mobj member offsets in bytes
+local LineOffsets   = dsda.line.offsets   -- line member offsets in bytes
 local MobjType      = dsda.mobjtype
 local SpriteNumber  = dsda.doom.spritenum
 local Lines         = {}
@@ -89,18 +91,22 @@ local function pan_down(divider)
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
 end
 
-local function zoom_out()
-	local newZoom = Zoom * (1 - ZOOM_FACTOR)
-	if newZoom < MINIMAL_ZOOM then return end
-	Zoom = newZoom
-	pan_left(1)
-	pan_up(1.4)
+local function zoom_out(times)
+	for i=0, (times or 1) do
+		local newZoom = Zoom * (1 - ZOOM_FACTOR)
+		if newZoom < MINIMAL_ZOOM then return end
+		Zoom = newZoom
+		pan_left(1)
+		pan_up(1.4)
+	end
 end
 
-local function zoom_in()
-	Zoom = Zoom * (1 + ZOOM_FACTOR)
-	pan_right(1)
-	pan_down(1.4)
+local function zoom_in(times)
+	for i=0, (times or 1) do
+		Zoom = Zoom * (1 + ZOOM_FACTOR)
+		pan_right(1)
+		pan_down(1.4)
+	end
 end
 
 function maybe_swap(smaller, bigger)
@@ -224,6 +230,13 @@ local function init_objects()
 end
 
 function update_zoom()
+	local newWheel   = math.floor(input.getmouse().Wheel/120)
+	local wheelDelta = newWheel - LastWheel
+	if     wheelDelta > 0 then zoom_in ( wheelDelta * WHEEL_ZOOM_FACTOR)
+	elseif wheelDelta < 0 then zoom_out(-wheelDelta * WHEEL_ZOOM_FACTOR)
+	end
+	LastWheel = newWheel
+	
 	if not Init
 	and LastScreenSize.w == client.screenwidth()
 	and LastScreenSize.h == client.screenheight()
@@ -280,15 +293,7 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
-event.onexit(function()
-	gui.clearGraphics()
-	gui.cleartext()
-end)
-
-while true do
-	if Init then init_objects() end
-	gui.clearGraphics()
-	gui.cleartext()
+function make_buttons()
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
@@ -296,13 +301,32 @@ while true do
 	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
 	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
+end
+
+event.onexit(function()
+	gui.clearGraphics()
+	gui.cleartext()
+end)
+
+while true do
+	if Init then init_objects() end
+	
+	gui.clearGraphics()
+	gui.cleartext()
+	
+	make_buttons()
 	iterate()
 	iterate_players()
 	update_zoom()
+	
+	--[[--
 	text(10, client.screenheight()-170, string.format(
 		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
 		Zoom, Pan.x, Pan.y), 0xffbbddff)
+	--]]--
+	
 	LastScreenSize.w = client.screenwidth()
 	LastScreenSize.h = client.screenheight()
+	
 	emu.yield()
 end
