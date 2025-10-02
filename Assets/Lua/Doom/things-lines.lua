@@ -99,12 +99,11 @@ local function pan_down()
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/2
 end
 
-function maybe_swap(left, right)
-	if left > right then
-		local smallest = right
-		right = left
-		left = smallest
+function maybe_swap(smaller, bigger)
+	if smaller > bigger then
+		return bigger, smaller
 	end
+	return smaller, bigger
 end
 
 local function get_line_count(str)
@@ -232,8 +231,8 @@ function update_zoom()
 	and OB.bottom ~= NEGATIVE_MAXIMUM
 	and not emu.islagged()
 	then
-		maybe_swap(OB.right, OB.left)
-		maybe_swap(OB.top,   OB.bottom)
+		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
+		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
 		local span        = { x = OB.right-OB.left+200,        y = OB.bottom-OB.top+200         }
 		local scale       = { x = client.screenwidth()/span.x, y = client.screenheight()/span.y }
 		local spanCenter  = { x = OB.left+span.x/2, y = OB.top+span.y/2 }
