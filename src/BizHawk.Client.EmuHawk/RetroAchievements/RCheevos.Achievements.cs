@@ -6,7 +6,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
+#if false
 		private readonly RCheevosAchievementListForm _cheevoListForm = new();
+#endif
 
 		private sealed class CheevoUnlockRequest : RCheevoHttpRequest
 		{
