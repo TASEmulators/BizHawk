@@ -70,6 +70,11 @@ namespace BizHawk.Client.Common
 		bool CanRedo { get; }
 		int MaxSteps { get; set; }
 
+		/// <summary>
+		/// Creates a full copy of the change log.
+		/// </summary>
+		IMovieChangeLog Clone();
+
 		void AddGeneralUndo(int first, int last, string name = "");
 		int SetGeneralRedo();
 		void AddBoolToggle(int frame, string button, bool oldState, string name = "");
@@ -96,7 +101,7 @@ namespace BizHawk.Client.Common
 			public int id;
 		}
 
-		private readonly List<UndoItem> _history = new();
+		private List<UndoItem> _history = new();
 		private readonly ITasMovie _movie;
 
 		private int _maxSteps = 1000;
@@ -305,6 +310,14 @@ namespace BizHawk.Client.Common
 					_history.RemoveAt(0);
 				}
 			}
+		}
+
+		public IMovieChangeLog Clone()
+		{
+			TasMovieChangeLog newLog = (TasMovieChangeLog)this.MemberwiseClone();
+			// The history list is the only thing that needs more than a shallow copy from MemberwiseClone.
+			newLog._history = new(_history);
+			return newLog;
 		}
 
 		// TODO: These probably aren't the best way to handle undo/redo.

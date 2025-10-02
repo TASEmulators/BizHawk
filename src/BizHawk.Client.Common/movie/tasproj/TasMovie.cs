@@ -301,6 +301,8 @@ namespace BizHawk.Client.Common
 				Markers = branch.Markers.DeepClone();
 			}
 
+			ChangeLog = branch.ChangeLog.Clone();
+
 			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
 		}
 

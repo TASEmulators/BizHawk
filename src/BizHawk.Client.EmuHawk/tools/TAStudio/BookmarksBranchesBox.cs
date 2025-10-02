@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 				InputLog = Movie.GetLogEntries().Clone(),
 				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = MainForm.CaptureOSD(),
-				ChangeLog = new(Movie),
+				ChangeLog = Movie.ChangeLog.Clone(),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
 				UserText = Movie.Branches.NewBranchText,

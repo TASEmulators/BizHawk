@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 		public IStringLog InputLog { get; set; }
 		public BitmapBuffer CoreFrameBuffer { get; set; }
 		public BitmapBuffer OSDFrameBuffer { get; set; }
-		public TasMovieChangeLog ChangeLog { get; set; }
+		public IMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
 		public Guid Uuid { get; set; }
@@ -193,6 +193,7 @@ namespace BizHawk.Client.Common
 			while (true)
 			{
 				var b = new TasBranch();
+				b.ChangeLog = new TasMovieChangeLog(movie);
 
 				if (!bl.GetLump(nheader, abort: false, tr =>
 				{
