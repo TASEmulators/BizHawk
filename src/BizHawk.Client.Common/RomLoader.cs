@@ -9,6 +9,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.Sameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -507,6 +508,17 @@ namespace BizHawk.Client.Common
 					if (_config.GbAsSgb)
 					{
 						game.System = VSystemID.Raw.SGB;
+					}
+					break;
+				case VSystemID.Raw.NES:
+					try
+					{
+						_ = NES.InitInner(rom.RomData, new(), new(), out _);
+					}
+					catch (NES.HeaderlessRomException)
+					{
+						game.Status = RomStatus.BadDump; // for core
+						// except that doesn't affect the frontend? nor does `rom.GameInfo.Status`?
 					}
 					break;
 				case VSystemID.Raw.PSX when ext is ".bin":

@@ -17,6 +17,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
+		public sealed class HeaderlessRomException() : InvalidOperationException("iNES header not found and no gamedb entry");
+
 		public readonly struct InitResult
 		{
 			internal readonly Type/*?*/ BoardType;
@@ -425,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					}
 					if (choice == null)
-						throw new InvalidOperationException("iNES header not found and no gamedb entry");
+						throw new HeaderlessRomException();
 				}
 
 				if (exists)
@@ -618,6 +620,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			try
 			{
 				result = InitInner(rom, InitialMapperRegisterValues, LoadReport, out origin);
+			}
+			catch (HeaderlessRomException) when (gameInfo.Status is RomStatus.BadDump)
+			{
+				_ = DetectFromINES("NES\x1A\x02\x04\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00"u8, out var cartInfo, out _);
+//				cartInfo.BoardType = "MAPPER001";
+				result = new(cartInfo, FindBoard(cartInfo, origin, InitialMapperRegisterValues), null, null);
 			}
 			finally
 			{
