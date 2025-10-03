@@ -757,6 +757,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GreenzoneInvalidatedCallback?.Invoke(frame); // lua callback
 
+			if (_suspendEditLogic) return false;
+
 			// Recording multiple frames, or auto-extending the movie, while unpaused should count as a single undo action.
 			if (CurrentTasMovie.LastEditWasRecording && !MainForm.EmulatorPaused)
 			{
