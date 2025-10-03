@@ -284,31 +284,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
 
-		private class MyWriter : StringWriter
-		{
-			public MyWriter(TextWriter _loadReport)
-			{
-				loadReport = _loadReport;
-			}
-
-			private readonly TextWriter loadReport;
-			public override void WriteLine(string format, params object[] arg)
-			{
-				Console.WriteLine(format, arg);
-				loadReport.WriteLine(format, arg);
-			}
-			public override void WriteLine(string value)
-			{
-				Console.WriteLine(value);
-				loadReport.WriteLine(value);
-			}
-		}
-
 		public void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
 		{
-			LoadReport = new StringWriter();
-			LoadWriteLine("------");
-			LoadWriteLine("BEGIN NES rom analysis:");
+			StringWriter log = new();
+			log.WriteLine("------");
+			log.WriteLine("BEGIN NES rom analysis:");
 			byte[] file = rom;
 
 			Type boardType = null;
@@ -327,17 +307,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (file.AsSpan(start: 0, length: 4).SequenceEqual("UNIF"u8))
 			{
 				unif = new Unif(new MemoryStream(file));
-				LoadWriteLine("Found UNIF header:");
-				LoadWriteLine(unif.Cart);
-				LoadWriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
+				log.WriteLine("Found UNIF header:");
+				log.WriteLine(unif.Cart);
+				log.WriteLine("Since this is UNIF we can confidently parse PRG/CHR banks to hash.");
 				hash_sha1 = unif.Cart.Sha1;
 				hash_sha1_several.Add(hash_sha1);
-				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+				log.WriteLine("headerless rom hash: {0}", hash_sha1);
 			}
 			else if(file.AsSpan(0, 5).SequenceEqual("NESM\x1A"u8))
 			{
 				origin = EDetectionOrigin.NSF;
-				LoadWriteLine("Loading as NSF");
+				log.WriteLine("Loading as NSF");
 				var nsf = new NSFFormat();
 				nsf.WrapByteArray(file);
 
@@ -368,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				// FDS roms are just fed to the board, we don't do much else with them
 				origin = EDetectionOrigin.FDS;
-				LoadWriteLine("Found FDS header.");
+				log.WriteLine("Found FDS header.");
 				if (fdsbios == null)
 					throw new MissingFirmwareException("Missing FDS Bios");
 				cart = new CartInfo();
@@ -415,11 +395,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						hash_sha1_several.Add(hash_sha1);
 						choice = IdentifyFromBootGodDB(hash_sha1_several);
 						if (choice == null)
-							LoadWriteLine("Could not locate game in nescartdb");
+							log.WriteLine("Could not locate game in nescartdb");
 						else
 						{
-							LoadWriteLine("Chose board from nescartdb:");
-							LoadWriteLine(choice);
+							log.WriteLine("Chose board from nescartdb:");
+							log.WriteLine(choice);
 							origin = EDetectionOrigin.BootGodDB;
 						}
 					}
@@ -436,23 +416,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					hash_sha1_several.Add(hash_sha1);
 					hash_md5 = MD5Checksum.ComputePrefixedHex(trimmed);
 
-					LoadWriteLine("Found iNES header:");
-					LoadWriteLine(iNesHeaderInfo.ToString());
+					log.WriteLine("Found iNES header:");
+					log.WriteLine(iNesHeaderInfo.ToString());
 					if (iNesHeaderInfoV2 != null)
 					{
-						LoadWriteLine("Found iNES V2 header:");
-						LoadWriteLine(iNesHeaderInfoV2);
+						log.WriteLine("Found iNES V2 header:");
+						log.WriteLine(iNesHeaderInfoV2);
 					}
-					LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
+					log.WriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
 
-					LoadWriteLine("headerless rom hash: {0}", hash_sha1);
-					LoadWriteLine("headerless rom hash:  {0}", hash_md5);
+					log.WriteLine("headerless rom hash: {0}", hash_sha1);
+					log.WriteLine("headerless rom hash:  {0}", hash_md5);
 
 					if (iNesHeaderInfo.PrgSize == 16)
 					{
 						//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
 						//so a correct hash will include only 8KB.
-						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
+						log.WriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
 						var msTemp = new MemoryStream();
 						msTemp.Write(file, 16, 8 * 1024); //add prg
 						if (file.Length >= (16 * 1024 + iNesHeaderInfo.ChrSize * 1024 + 16))
@@ -475,10 +455,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						msTemp.Flush();
 						var bytes = msTemp.ToArray();
 						var hash = SHA1Checksum.ComputePrefixedHex(bytes);
-						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
+						log.WriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 						hash_sha1_several.Add(hash);
 						hash = MD5Checksum.ComputePrefixedHex(bytes);
-						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
+						log.WriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 					}
 				}
 			}
@@ -489,11 +469,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (choice == null)
 					choice = IdentifyFromGameDB(hash_sha1);
 				if (choice == null)
-					LoadWriteLine("Could not locate game in bizhawk gamedb");
+					log.WriteLine("Could not locate game in bizhawk gamedb");
 				else
 				{
 					origin = EDetectionOrigin.GameDB;
-					LoadWriteLine("Chose board from bizhawk gamedb: " + choice.BoardType);
+					log.WriteLine("Chose board from bizhawk gamedb: " + choice.BoardType);
 					//gamedb entries that don't specify prg/chr sizes can infer it from the ines header
 					if (iNesHeaderInfo != null)
 					{
@@ -517,11 +497,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					choice = IdentifyFromBootGodDB(hash_sha1_several);
 					if (choice == null)
-						LoadWriteLine("Could not locate game in nescartdb");
+						log.WriteLine("Could not locate game in nescartdb");
 					else
 					{
-						LoadWriteLine("Chose board from nescartdb:");
-						LoadWriteLine(choice);
+						log.WriteLine("Chose board from nescartdb:");
+						log.WriteLine(choice);
 						origin = EDetectionOrigin.BootGodDB;
 					}
 				}
@@ -532,7 +512,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (unif != null)
 				{
-					LoadWriteLine("Using information from UNIF header");
+					log.WriteLine("Using information from UNIF header");
 					choice = unif.Cart;
 					//ok, i have this Q-Boy rom with no VROM and no VRAM.
 					//we also certainly have games with VROM and no VRAM.
@@ -547,7 +527,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				if (iNesHeaderInfo != null)
 				{
-					LoadWriteLine("Attempting inference from iNES header");
+					log.WriteLine("Attempting inference from iNES header");
 					// try to spin up V2 header first, then V1 header
 					if (iNesHeaderInfoV2 != null)
 					{
@@ -557,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						catch { }
 						if (boardType == null)
-							LoadWriteLine("Failed to load as iNES V2");
+							log.WriteLine("Failed to load as iNES V2");
 						else
 							choice = iNesHeaderInfoV2;
 
@@ -569,14 +549,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						choice = iNesHeaderInfo; // we're out of options, really
 						boardType = FindBoard(iNesHeaderInfo, origin, InitialMapperRegisterValues);
 						if (boardType == null)
-							LoadWriteLine("Failed to load as iNES V1");
+							log.WriteLine("Failed to load as iNES V1");
 
 						// do not further meddle in wram sizes.  a board that is being loaded from a "MAPPERxxx"
 						// entry should know and handle the situation better for the individual board
 					}
 
-					LoadWriteLine("Chose board from iNES heuristics:");
-					LoadWriteLine(choice);
+					log.WriteLine("Chose board from iNES heuristics:");
+					log.WriteLine(choice);
 					origin = EDetectionOrigin.INES;
 				}
 			}
@@ -594,18 +574,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (choice.GameInfo != null)
 				choice.Bad = choice.GameInfo.IsRomStatusBad();
 
-			LoadWriteLine("Final game detection results:");
-			LoadWriteLine(choice);
-			LoadWriteLine("\"" + game_name + "\"");
-			LoadWriteLine("Implemented by: class " + boardType.Name);
+			log.WriteLine("Final game detection results:");
+			log.WriteLine(choice);
+			log.WriteLine("\"" + game_name + "\"");
+			log.WriteLine("Implemented by: class " + boardType.Name);
 			if (choice.Bad)
 			{
-				LoadWriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
-				LoadWriteLine("~~ YOU SHOULD FIND A BETTER FILE ~~");
+				log.WriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
+				log.WriteLine("~~ YOU SHOULD FIND A BETTER FILE ~~");
 			}
 
-			LoadWriteLine("END NES rom analysis");
-			LoadWriteLine("------");
+			log.WriteLine("END NES rom analysis");
+			log.WriteLine("------");
+
+			log.Flush();
+			LoadReport = new StringWriter();
+			LoadWriteLine(log.ToString().TrimEnd());
 
 			Board = CreateBoardInstance(boardType);
 
