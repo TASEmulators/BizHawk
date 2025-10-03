@@ -342,7 +342,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != CursorColumnName)
 				{
-					var frame = TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0;
 					var buttonName = TasView.CurrentCell.Column!.Name;
 
 					if (ControllerType.BoolButtons.Contains(buttonName))
@@ -350,17 +349,19 @@ namespace BizHawk.Client.EmuHawk
 						if (ModifierKeys != Keys.Alt)
 						{
 							// nifty taseditor logic
-							bool allPressed = true;
-							foreach (var index in TasView.SelectedRows)
+							// your TAS Editor logic failed us (it didn't account for non-contiguous `SelectedRows`) --yoshi
+							var selection = TasView.SelectedRows.ToArray(); // sorted asc, length >= 1
+							var allPressed = selection[selection.Length - 1] != CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
+								&& selection.All(index => CurrentTasMovie.BoolIsPressed(index, buttonName));
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"{(allPressed ? "Unset" : "Set")} {selection.Length} frames of {buttonName} starting at {selection[0]}");
+							CurrentTasMovie.SingleInvalidation(() =>
 							{
-								if (index == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
-									|| !CurrentTasMovie.BoolIsPressed(index, buttonName))
+								foreach (var (start, count) in selection.ChunkConsecutive())
 								{
-									allPressed = false;
-									break;
+									CurrentTasMovie.SetBoolStates(frame: start, count: count, buttonName, val: !allPressed);
 								}
-							}
-							CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
+							});
+							CurrentTasMovie.ChangeLog.EndBatch();
 						}
 						else
 						{
