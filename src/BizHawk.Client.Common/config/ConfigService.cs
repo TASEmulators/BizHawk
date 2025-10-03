@@ -104,19 +104,14 @@ namespace BizHawk.Client.Common
 			return config ?? new T();
 		}
 
-		public static void Save(string filepath, object config)
+		public static FileWriteResult Save(string filepath, object config)
 		{
-			var file = new FileInfo(filepath);
-			try
+			return FileWriter.Write(filepath, (fs) =>
 			{
-				using var writer = file.CreateText();
+				using var writer = new StreamWriter(fs);
 				var w = new JsonTextWriter(writer) { Formatting = Formatting.Indented };
 				Serializer.Serialize(w, config);
-			}
-			catch
-			{
-				/* Eat it */
-			}
+			});
 		}
 
 		// movie 1.0 header stuff
