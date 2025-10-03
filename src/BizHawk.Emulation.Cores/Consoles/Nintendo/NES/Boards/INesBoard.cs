@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	internal enum EDetectionOrigin
+	public enum EDetectionOrigin
 	{
 		None, BootGodDB, GameDB, INES, UNIF, FDS, NSF
 	}

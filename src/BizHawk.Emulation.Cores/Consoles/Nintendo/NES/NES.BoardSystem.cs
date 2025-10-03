@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// looks up from the bootgod DB
 		/// </summary>
-		private CartInfo IdentifyFromBootGodDB(IEnumerable<string> hash_sha1)
+		private static CartInfo IdentifyFromBootGodDB(IEnumerable<string> hash_sha1)
 		{
 			foreach (var hash in hash_sha1)
 			{
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// looks up from the game DB
 		/// </summary>
-		private CartInfo IdentifyFromGameDB(string hash)
+		private static CartInfo IdentifyFromGameDB(string hash)
 		{
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;

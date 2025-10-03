@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
+using BoardInitCB = System.Func<
+	BizHawk.Emulation.Cores.Nintendo.NES.NES,
+	byte[],
+	(BizHawk.Emulation.Cores.Nintendo.NES.INesBoard Board, string RegionAssumedWarning)>;
+
 //TODO - redo all timekeeping in terms of master clock
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -12,6 +17,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
+		public readonly struct InitResult
+		{
+			internal readonly Type/*?*/ BoardType;
+
+			internal readonly CartInfo/*?*/ Choice;
+
+			internal readonly CartInfo/*?*/ FromINes;
+
+			internal readonly Unif/*?*/ FromUnif;
+
+			internal readonly BoardInitCB/*?*/ InitCallback;
+
+			internal InitResult(BoardInitCB initCallback)
+			{
+				BoardType = default;
+				Choice = default;
+				FromINes = default;
+				FromUnif = default;
+				InitCallback = initCallback;
+			}
+
+			internal InitResult(CartInfo choice, Type boardType, CartInfo fromINes, Unif fromUnif)
+			{
+				BoardType = boardType;
+				Choice = choice;
+				FromINes = fromINes;
+				FromUnif = fromUnif;
+				InitCallback = null;
+			}
+
+			internal void Deconstruct(out CartInfo choice, out Type boardType, out CartInfo fromINes, out Unif fromUnif)
+			{
+				boardType = BoardType;
+				choice = Choice;
+				fromINes = FromINes;
+				fromUnif = FromUnif;
+			}
+		}
+
 		[CoreConstructor(VSystemID.Raw.NES)]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, NESSettings settings, NESSyncSettings syncSettings, bool subframe = false)
 		{
@@ -274,19 +318,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public string GameName => game_name;
 
-		private StringWriter LoadReport;
-
-		private void LoadWriteLine(string format, params object[] arg)
+		public static InitResult InitInner(
+			byte[] rom,
+			Dictionary<string, string> InitialMapperRegisterValues,
+			StringWriter log,
+			out EDetectionOrigin origin)
 		{
-			Console.WriteLine(format, arg);
-			LoadReport.WriteLine(format, arg);
-		}
-
-		private void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
-
-		public void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
-		{
-			StringWriter log = new();
 			log.WriteLine("------");
 			log.WriteLine("BEGIN NES rom analysis:");
 			byte[] file = rom;
@@ -298,8 +335,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			List<string> hash_sha1_several = new List<string>();
 			string hash_sha1 = null, hash_md5 = null;
 			Unif unif = null;
-
-			Dictionary<string, string> InitialMapperRegisterValues = new Dictionary<string, string>(SyncSettings.BoardProperties);
 
 			origin = EDetectionOrigin.None;
 
@@ -318,27 +353,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				origin = EDetectionOrigin.NSF;
 				log.WriteLine("Loading as NSF");
+			return new((core, _) =>
+			{
 				var nsf = new NSFFormat();
 				nsf.WrapByteArray(file);
 
-				cart = new CartInfo();
+				core.cart = new();
 				var nsfboard = new NSFBoard();
-				nsfboard.Create(this);
+				nsfboard.Create(core);
 				nsfboard.Rom = rom;
 				nsfboard.InitNSF( nsf);
 				nsfboard.InitialRegisterValues = InitialMapperRegisterValues;
-				nsfboard.Configure(origin);
-				nsfboard.Wram = new byte[cart.WramSize * 1024];
-				Board = nsfboard;
-				Board.PostConfigure();
-				AutoMapperProps.Populate(Board, SyncSettings);
+				nsfboard.Configure(core.origin);
+				nsfboard.Wram = new byte[core.cart.WramSize * 1024];
 
-				Console.WriteLine("Using NTSC display type for NSF for now");
-				_display_type = DisplayType.NTSC;
-
-				HardReset();
-
-				return;
+				return (nsfboard, "Using NTSC display type for NSF for now");
+			});
 			}
 			else if (file.AsSpan(start: 0, length: 4).SequenceEqual("FDS\x1A"u8)
 				|| file.AsSpan(start: 0, length: 4).SequenceEqual("\x01*NI"u8))
@@ -349,34 +379,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// FDS roms are just fed to the board, we don't do much else with them
 				origin = EDetectionOrigin.FDS;
 				log.WriteLine("Found FDS header.");
+			return new((core, fdsbios) =>
+			{
 				if (fdsbios == null)
 					throw new MissingFirmwareException("Missing FDS Bios");
-				cart = new CartInfo();
+				core.cart = new();
 				var fdsboard = new FDS();
 				fdsboard.biosrom = fdsbios;
 				fdsboard.SetDiskImage(rom);
-				fdsboard.Create(this);
+				fdsboard.Create(core);
 				// at the moment, FDS doesn't use the IRVs, but it could at some point in the future
 				fdsboard.InitialRegisterValues = InitialMapperRegisterValues;
-				fdsboard.Configure(origin);
-
-				Board = fdsboard;
+				fdsboard.Configure(core.origin);
 
 				//create the vram and wram if necessary
-				if (cart.WramSize != 0)
-					Board.Wram = new byte[cart.WramSize * 1024];
-				if (cart.VramSize != 0)
-					Board.Vram = new byte[cart.VramSize * 1024];
+				if (core.cart.WramSize is not 0) fdsboard.Wram = new byte[core.cart.WramSize * 1024];
+				if (core.cart.VramSize is not 0) fdsboard.Vram = new byte[core.cart.VramSize * 1024];
 
-				Board.PostConfigure();
-				AutoMapperProps.Populate(Board, SyncSettings);
-
-				Console.WriteLine("Using NTSC display type for FDS disk image");
-				_display_type = DisplayType.NTSC;
-
-				HardReset();
-
-				return;
+				return (fdsboard, "Using NTSC display type for FDS disk image");
+			});
 			}
 			else
 			{
@@ -561,8 +582,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			game_name = choice.Name;
-
 			//find a INESBoard to handle this
 			if (choice != null)
 				boardType = FindBoard(choice, origin, InitialMapperRegisterValues);
@@ -576,7 +595,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			log.WriteLine("Final game detection results:");
 			log.WriteLine(choice);
-			log.WriteLine("\"" + game_name + "\"");
+			log.WriteLine("\"{0}\"", choice.Name);
 			log.WriteLine("Implemented by: class " + boardType.Name);
 			if (choice.Bad)
 			{
@@ -587,9 +606,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			log.WriteLine("END NES rom analysis");
 			log.WriteLine("------");
 
-			log.Flush();
-			LoadReport = new StringWriter();
-			LoadWriteLine(log.ToString().TrimEnd());
+			return new(choice, boardType, iNesHeaderInfo, unif);
+		}
+
+		public void Init(GameInfo gameInfo, byte[] rom, byte[] fdsbios = null)
+		{
+			Dictionary<string, string> InitialMapperRegisterValues = new(SyncSettings.BoardProperties);
+
+			StringWriter LoadReport = new();
+			InitResult result;
+			try
+			{
+				result = InitInner(rom, InitialMapperRegisterValues, LoadReport, out origin);
+			}
+			finally
+			{
+				LoadReport.Flush();
+				Console.Write(LoadReport);
+			}
+			void LoadWriteLine(string format, params object[] arg)
+			{
+				Console.WriteLine(format, arg);
+				LoadReport.WriteLine(format, arg);
+			}
+
+			if (result.InitCallback is not null)
+			{
+				(Board, var regionAssumedWarning) = result.InitCallback(this, fdsbios);
+				Board.PostConfigure();
+				AutoMapperProps.Populate(Board, SyncSettings);
+				Console.WriteLine(regionAssumedWarning);
+				_display_type = DisplayType.NTSC;
+				HardReset();
+				return;
+			}
+			// else reached end
+			var file = rom;
+			var (choice, boardType, iNesHeaderInfo, unif) = result;
+			game_name = choice.Name;
 
 			Board = CreateBoardInstance(boardType);
 
