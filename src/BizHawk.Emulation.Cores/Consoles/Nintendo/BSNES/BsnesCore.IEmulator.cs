@@ -6,7 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	public partial class BsnesCore : IEmulator
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		private readonly BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		public ControllerDefinition ControllerDefinition => _controllers.Definition;
 

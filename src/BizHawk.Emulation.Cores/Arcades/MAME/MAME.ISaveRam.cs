@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			if (_nvramFilenames.Count == 0)
 			{
-				return null;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			for (int i = 0; i < _nvramFilenames.Count; i++)
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			if (_nvramFilenames.Count == 0)
 			{
-				return;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			using var ms = new MemoryStream(data, false);
