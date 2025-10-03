@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Calculators.Emu83
 					LibEmu83.TI83_WriteMemory(Context, (ushort)addr, val);
 				}, 1));
 
-			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			MemoryDomains = new MemoryDomainList(_memoryDomains, this);
 			_serviceProvider.Register(MemoryDomains);
 		}
 	}
