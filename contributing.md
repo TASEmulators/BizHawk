@@ -67,9 +67,9 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 
 ## For any: .NET project
 
-Currently, you'll need version 8.x of the SDK.
+Currently, you'll need version 10.x of the SDK.
 - Linux
-	- Install the .NET SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
+	- Install the .NET SDK (package name is usually `dotnet-sdk-10.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
 	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
@@ -113,10 +113,10 @@ Uses C#; you will need the .NET SDK or an IDE which includes it. See the [.NET s
 Most projects target .NET Standard 2.0, with some targeting .NET Framework 4.8. It's written at the top of their project files, or you can check the [project graph](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution).
 
 The source for EmuHawk, plus DiscoHawk and the supporting libraries, is in `/src`, with a few extra files used by the build system elsewhere.
-EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution), and they're all included in `/BizHawk.sln`.
+EmuHawk's project file `/src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj` includes the other projects [in a tree](https://github.com/TASEmulators/BizHawk/wiki/Dependencies#main-solution), and they're all included in `/BizHawk.slnx`.
 
-In VS2022, open `BizHawk.sln`, then select the "BizHawk.Client.EmuHawk | Release" configuration to build and run.
-To build from the command-line on Windows, simply run `dotnet build BizHawk.sln` from the repository's root, and then `output\EmuHawk.exe` will be available. Alternatively, you can run one of the existing build scripts that apply additional checks and configurations, such as `Dist\QuickTestBuildAndPackage_Release.bat`.
+In VS2022, open `BizHawk.slnx`, then select the "BizHawk.Client.EmuHawk | Release" configuration to build and run.
+To build from the command-line on Windows, simply run `dotnet build BizHawk.slnx` from the repository's root, and then `output\EmuHawk.exe` will be available. Alternatively, you can run one of the existing build scripts that apply additional checks and configurations, such as `Dist\QuickTestBuildAndPackage_Release.bat`.
 To build from the command-line on Unix, run `Dist/BuildRelease.sh`, and then `output/EmuHawkMono.sh` will be available.
 
 There are 2 build configurations. Besides `Release` there is `Debug`, which *does not run* bytecode optimisations, *does not remove* debugging symbols, *enables* additional logging and assertions, and *enables* some features. On Windows, a `Debug` executable will spawn a console window for stdout. Note there is also a "stronger" release build in the form of `VersionInfo.DeveloperBuild == false`, which is only used by GitLab CI for preparing a release (during `Dist/UpdateVersionInfoForRelease.sh`).
