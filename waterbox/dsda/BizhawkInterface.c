@@ -438,9 +438,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   headlessMain(argc, argv);
   printf("DSDA Initialized\n");
 
-  //if (compatibility_level >= boom_202_compatibility)
-  //  rngseed = settings->RNGSeed;
-
   // Initializing audio
   I_SetSoundCap();
   I_InitSound();

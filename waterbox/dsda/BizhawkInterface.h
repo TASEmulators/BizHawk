@@ -39,11 +39,9 @@
 extern int headlessMain(int argc, char **argv);
 extern void headlessRunSingleTick();
 extern void headlessClearTickCommand();
-extern void headlessSetTickCommand(int playerId, int forwardSpeed, int strafingSpeed, int turningSpeed, int fire, int action, int weapon, int automap, int lookfly, int artifact, int jump, int endPlayer);
 extern int thinker_count;
 extern mobj_t **mobj_ptrs;
 extern dsda_arg_t arg_value[dsda_arg_count];
-//extern unsigned int rngseed;
 
 // Video
 uint32_t _convertedPaletteBuffer[PALETTE_SIZE];
@@ -162,7 +160,6 @@ struct InitSettings
   int PreventLevelExit;
   int PreventGameEnd;
   int DisplayPlayer;
-  //unsigned int RNGSeed;
 } __attribute__((packed));
 
 struct PackedPlayerInput

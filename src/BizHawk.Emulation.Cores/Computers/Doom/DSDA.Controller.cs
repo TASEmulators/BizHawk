@@ -32,7 +32,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						.AddAxis($"P{port} Weapon Select", 0.RangeTo(7), 0)
 						.AddAxis($"P{port} Mouse Run", (-128).RangeTo(127), 0)
 						// current max raw mouse delta is 180
-						.AddAxis($"P{port} Mouse Turn", (longtics ? -180 : -128).RangeTo(longtics ? 180 : 127), 0);
+						.AddAxis($"P{port} Mouse Turn", (longtics ? -180 : -128)
+							.RangeTo(longtics ? 180 : 127), 0);
 
 					if (settings.InputFormat is not ControllerType.Doom)
 					{

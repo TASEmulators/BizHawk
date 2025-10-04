@@ -414,12 +414,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(TURBO_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int Turbo { get; set; }
-			/*
+
 			[DisplayName("Initial RNG Seed")]
 			[Description("Boom demos.")]
 			[DefaultValue(1993)]
 			public uint RNGSeed { get; set; }
-			*/
+
 			[DisplayName("Player 1 Present")]
 			[Description("Specifies if player 1 is present")]
 			[DefaultValue(true)]
@@ -478,7 +478,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					Player4Class = (int)Player4Class,
 					PreventLevelExit = PreventLevelExit ? 1 : 0,
 					PreventGameEnd = PreventGameEnd ? 1 : 0,
-					//RNGSeed = RNGSeed,
 				};
 			}
 

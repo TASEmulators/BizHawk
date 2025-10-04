@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				SealedHeapSizeKB = 4 * 1024,
 				InvisibleHeapSizeKB = totalWadSizeKb + 4 * 1024, // Make sure there's enough space for the wads
 				PlainHeapSizeKB = 4 * 1024,
-				MmapHeapSizeKB = 1024 * 1024, // Allow the game to malloc quite a lot of objects to support those big wads
+				MmapHeapSizeKB = 2 * 1024 * 1024, // Allow the game to malloc quite a lot of objects to support those big wads
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			});
@@ -281,7 +281,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ConditionalArg(_syncSettings.MultiplayerMode   == MultiplayerMode.Deathmatch, "-deathmatch");
 			ConditionalArg(_syncSettings.MultiplayerMode   == MultiplayerMode.Altdeath,   "-altdeath");
 			ConditionalArg(_syncSettings.Turbo > 0, $"-turbo {_syncSettings.Turbo}");
-			ConditionalArg((initSettings.Player1Present + initSettings.Player2Present + initSettings.Player3Present + initSettings.Player4Present) > 1, "-solo-net");
+			ConditionalArg((initSettings.Player1Present
+				+ initSettings.Player2Present
+				+ initSettings.Player3Present
+				+ initSettings.Player4Present) > 1, "-solo-net");
+
+			if (_syncSettings.CompatibilityLevel >= CompatibilityLevel.Boom_202)
+			{
+				_args.AddRange([ "-rngseed", $"{_syncSettings.RNGSeed}" ]);
+			}
 		}
 
 		private void ConditionalArg(bool condition, string setting)
@@ -309,6 +317,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly WaterboxHost _elf;
 		private readonly LibDSDA _core;
 		private readonly LibDSDA.load_archive_cb _loadCallback;
+		private readonly byte[] _dsdaWadFileData;
+		private readonly byte[] _configFile;
 		// order must match AspectRatio values since they're used as index
 		private readonly Point[][] _resolutions =
 		[
@@ -328,8 +338,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
 		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
 		private readonly string _dsdaWadFileName = "dsda-doom.wad";
-		private readonly byte[] _dsdaWadFileData;
-		private readonly byte[] _configFile;
+
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
 		private int _turnCarry; // Chocolate Doom mouse behaviour (enabled in upstream by default)
 		private bool _lastGammaInput;
@@ -338,6 +347,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _wadFiles;
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
+
 		public string RomDetails { get; } // IRomInfo
 
 		/// <summary>

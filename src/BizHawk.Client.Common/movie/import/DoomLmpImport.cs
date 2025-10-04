@@ -1,3 +1,5 @@
+using System.Buffers.Binary;
+
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -49,7 +51,7 @@ namespace BizHawk.Client.Common
 			var monstersRespawn   = false;
 			var fastMonsters      = false;
 			var noMonsters        = false;
-			//var rngSeed           = 1993U;
+			var rngSeed           = 1993U;
 
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.DSDA;
 			Result.Movie.SystemID = VSystemID.Raw.Doom;
@@ -107,10 +109,7 @@ namespace BizHawk.Client.Common
 			}
 			else // Boom territory
 			{
-				Result.Errors.Add($"Found BOOM demo format: v{(int)version}. Importing it is currently not supported.");
-				return;
 
-				/*
 				i++; // skip to signature's second byte
 				var portID = input[i++];
 				i += 4; // skip the rest of the signature
@@ -192,7 +191,6 @@ namespace BizHawk.Client.Common
 				i++; // demo insurance
 				rngSeed         = BinaryPrimitives.ReadUInt32BigEndian(input.AsSpan(i, 4));
 				i = 0x4D;
-				*/
 			}
 
 			DSDA.DoomSyncSettings syncSettings = new()
@@ -208,14 +206,14 @@ namespace BizHawk.Client.Common
 				NoMonsters = noMonsters,
 				TurningResolution = turningResolution,
 				RenderWipescreen = false,
-				//RNGSeed = rngSeed,
+				RNGSeed = rngSeed,
 			};
 
 			syncSettings.Player1Present = input[i++] is not 0;
 			syncSettings.Player2Present = input[i++] is not 0;
 			syncSettings.Player3Present = input[i++] is not 0;
 			syncSettings.Player4Present = input[i++] is not 0;
-			/*
+
 			if (compLevel >= DSDA.CompatibilityLevel.Boom_Compatibility
 				&& version >= DemoVersion.Boom_2_00)
 			{
@@ -223,7 +221,7 @@ namespace BizHawk.Client.Common
 				var g_maxplayers = 4;
 				i += FUTURE_MAXPLAYERS - g_maxplayers;
 			}
-			*/
+
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
 			var controller = new SimpleController(DSDA.CreateControllerDefinition(syncSettings));
