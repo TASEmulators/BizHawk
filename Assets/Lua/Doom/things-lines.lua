@@ -15,6 +15,18 @@ local CHAR_HEIGHT       = 16
 local NEGATIVE_MAXIMUM  = 1 << 63
 local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
 local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
+
+-- Map colors (0xAARRGGBB or "name" or false)
+local ENEMY_COLOR       = 0xFFFF0000
+local ENEMY_WAIT_COLOR  = 0xFFCC0000
+local CORPSE_COLOR      = false -- 0x80CC0000
+local MISSILE_COLOR     = 0xFFFF8000
+local PLAYER_COLOR      = 0xFF0080FF
+local COUNTITEM_COLOR   = false -- 0xA0FFFFFF
+local ITEM_COLOR        = false -- 0xA0FFFFFF
+local MISC_COLOR        = false -- 0xFFFFFFFF
+local INERT_COLOR       = false -- 0x80808080
+
 -- shortcuts
 local rl       = memory.read_u32_le
 local rw       = memory.read_u16_le
@@ -27,8 +39,14 @@ local box      = gui.drawBox
 local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
+local PlayerOffsets = dsda.player.offsets -- player member offsets in bytes
+local MobjOffsets   = dsda.mobj.offsets   -- mobj member offsets in bytes
+local LineOffsets   = dsda.line.offsets   -- line member offsets in bytes
+local MobjType      = dsda.mobjtype
+local SpriteNumber  = dsda.doom.spritenum
+local MobjFlags     = dsda.mobjflags
+
 -- TOP LEVEL VARIABLES
-local LastWheel = 0
 local Zoom      = 1
 local Init      = true
 -- tables
@@ -54,11 +72,6 @@ local LastMouse = {
 	wheel = 0
 }
 -- forward declarations
-local PlayerOffsets = dsda.player.offsets -- player member offsets in bytes
-local MobjOffsets   = dsda.mobj.offsets   -- mobj member offsets in bytes
-local LineOffsets   = dsda.line.offsets   -- line member offsets in bytes
-local MobjType      = dsda.mobjtype
-local SpriteNumber  = dsda.doom.spritenum
 local Lines         = {}
 
 --gui.defaultPixelFont("fceux")
@@ -141,6 +154,21 @@ local function get_line_count(str)
 	return lines, longest
 end
 
+local function get_mobj_color(mobj)
+	local flags = mobj.flags
+	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return PLAYER_COLOR end
+	if flags & (MobjFlags.COUNTKILL | MobjFlags.SKULLFLY) ~= 0 then
+		if flags & MobjFlags.CORPSE ~= 0 and flags & MobjFlags.RESSURECTED == 0 then return CORPSE_COLOR end
+		if flags & MobjFlags.AMBUSH ~= 0 or mobj.target == 0 then return ENEMY_WAIT_COLOR end
+		return ENEMY_COLOR
+	end
+	if flags & MobjFlags.COUNTITEM ~= 0 then return COUNTITEM_COLOR end
+	if flags & MobjFlags.SPECIAL ~= 0 then return ITEM_COLOR end
+	if flags & MobjFlags.MISSILE ~= 0 then return MISSILE_COLOR end
+	if flags & MobjFlags.SHOOTABLE ~= 0 then return MISC_COLOR end
+	return INERT_COLOR
+end
+
 local function iterate_players()
 	local playercount       = 0
 	local total_killcount   = 0
@@ -170,25 +198,27 @@ local function iterate()
 	if Init then return end
 
 	for addr, mobj in pairs(dsda.mobj.items) do
-		local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
-		local radius = math.floor ((mobj.radius >> 16) * Zoom)
-	--	local sprite = SpriteNumber[mobj.sprite]
-		local type   = MobjType[mobj.type]
-		local color  = "white"
+		local color  = get_mobj_color(mobj)
+		if color then -- not hidden
+			local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
 
-		if mobj.health <= 0 then color = "red" end
-		--[[--
-		local z      = mobj.z
-		local index  = mobj.index
-		local tics   = mobj.tics
-		--]]--
-		if  in_range(pos.x, 0, client.screenwidth())
-		and in_range(pos.y, 0, client.screenheight())
-		and type
-		and not string.find(type, "MISC")
-		then
-			text(pos.x, pos.y, string.format("%s", type), color)
-			box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, color)
+			if  in_range(pos.x, 0, client.screenwidth())
+			and in_range(pos.y, 0, client.screenheight())
+			then
+				local type   = mobj.type
+				local radius = math.floor ((mobj.radius >> 16) * Zoom)
+				--[[--
+				local z      = mobj.z
+				local index  = mobj.index
+				local tics   = mobj.tics
+				local health = mobj.health
+				local sprite = SpriteNumber[mobj.sprite]
+				--]]--
+
+				type = MobjType[type]
+				text(pos.x, pos.y, string.format("%s", type),  color)
+				box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, color)
+			end
 		end
 	end
 	
