@@ -2,7 +2,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 
-use std::{sync::Mutex, ptr::null_mut};
+use std::{arch::asm, sync::Mutex, ptr::null_mut};
 use lazy_static::lazy_static;
 
 const JIT_NOACTION: u32 = 0;
@@ -31,7 +31,9 @@ unsafe impl Sync for jit_descriptor {}
 
 #[no_mangle]
 #[inline(never)]
-extern "C" fn __jit_debug_register_code() {}
+extern "C" fn __jit_debug_register_code() {
+	unsafe { asm!(""); }
+}
 
 #[no_mangle]
 static mut __jit_debug_descriptor: jit_descriptor = jit_descriptor {
