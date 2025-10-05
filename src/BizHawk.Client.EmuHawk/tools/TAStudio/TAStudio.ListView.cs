@@ -824,6 +824,12 @@ namespace BizHawk.Client.EmuHawk
 
 					needsRefresh = false; // Refresh will happen via GoToFrame.
 				}
+				else if (Emulator.Frame == frame)
+				{
+					// In this case our regular capture logic won't get the chance
+					// to do a force capture on this edited frame. So do it here.
+					CurrentTasMovie.TasStateManager.Capture(frame, Emulator.AsStatable(), true);
+				}
 				_batchEditMinFrame = -1;
 			}
 
