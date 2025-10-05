@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
-	[Description("Functions specific to SNESHawk (functions may not run when an SNES game is not loaded)")]
+	[Description("Functions specific to the SNES system (functions may not run when an SNES game is not loaded)")]
 	public sealed class SNESLuaLibrary : LuaLibraryBase
 	{
 		public SNESLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)

@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
-	[Description("Functions specific to GenesisHawk (functions may not run when an Genesis game is not loaded)")]
+	[Description("Functions specific to the Genesis system (functions may not run when a Genesis game is not loaded)")]
 	public sealed class GenesisLuaLibrary : LuaLibraryBase
 	{
 		private const string ERR_MSG_UNSUPPORTED_CORE = $"`genesis.*` functions can only be used with {CoreNames.Gpgx}";
