@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 		private void doUpdateListSize()
 		{
 			virtualListView1.VirtualListSize = _lines.Count;
-			virtualListView1.EnsureVisible(_lines.Count - 1);
+			virtualListView1.EnsureVisible(virtualListView1.VirtualListSize - 1);
 		}
 
 		private void appendInvoked(string str)
@@ -218,3 +218,4 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 }
+
