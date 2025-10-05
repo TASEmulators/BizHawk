@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
@@ -131,7 +132,6 @@ namespace BizHawk.Client.Common
 			public int LastPage;
 			public int Size;
 			public int Frame = -1;
-			public StateGroup Group;
 
 			public StateInfo() { }
 
@@ -441,7 +441,6 @@ namespace BizHawk.Client.Common
 			{
 				Frame = frame,
 				FirstPage = _firstFree,
-				Group = destinationGroup,
 			};
 
 			using PagedStream stream = new(newState, this, false);
@@ -480,10 +479,10 @@ namespace BizHawk.Client.Common
 				if (HasState(_lastForceCapture))
 				{
 					StateInfo state = _states.GetViewBetween(new(_lastForceCapture), new(_lastForceCapture)).Min;
-					if (state.Group == StateGroup.Old && !_reserveCallback(_lastForceCapture) && !ShouldKeepForOld(_lastForceCapture))
+					if (!_reserveCallback(_lastForceCapture) && !ShouldKeepForOld(_lastForceCapture))
 						RemoveState(state);
 				}
-				_lastForceCapture = frame;
+				_lastForceCapture = -1; // This will get set if the frame is actually captured because of force.
 			}
 
 			StateGroup group = StateGroup.None;
@@ -544,7 +543,10 @@ namespace BizHawk.Client.Common
 			if (group != StateGroup.None)
 				InternalCapture(frame, source, group);
 			else if (force)
+			{
+				_lastForceCapture = frame;
 				InternalCapture(frame, source, StateGroup.Old);
+			}
 		}
 
 		public void Clear() => InvalidateAfter(0);
@@ -604,7 +606,7 @@ namespace BizHawk.Client.Common
 			if (state.Frame == 0) return;
 
 			// Remove the state if it's an old state we don't need.
-			if (state.Group == StateGroup.Old && !ShouldKeepForOld(frame))
+			if (!_newStates.Contains(state) && !_midStates.Contains(state) && !ShouldKeepForOld(frame))
 			{
 				RemoveState(state);
 			}
@@ -631,10 +633,11 @@ namespace BizHawk.Client.Common
 				this.Settings = pSettings;
 				if (recaptureOld)
 				{
-					foreach (StateInfo state in _states)
+					List<StateInfo> oldStates = _states
+						.Where(si => !_newStates.Contains(si) && !_midStates.Contains(si))
+						.ToList();
+					foreach (StateInfo state in oldStates)
 					{
-						if (state.Group != StateGroup.Old) continue;
-
 						if (!_reserveCallback(state.Frame) && !ShouldKeepForOld(state.Frame))
 							RemoveState(state);
 					}
