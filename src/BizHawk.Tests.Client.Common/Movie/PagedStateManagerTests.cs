@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -541,6 +542,90 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 			// assert
 			Assert.IsTrue(manager.HasState(1));
+		}
+
+		[TestMethod]
+		public void UpdateSettings_BufferIncreaseKeepsAllStates()
+		{
+			// arrange
+			IStatable ss = CreateStateSource();
+			PagedStateManager manager = new(MakeDefaultSettings(), (f) => false);
+			manager.Engage(ss.CloneSavestate());
+			for (int i = 0; i < PAGE_COUNT * manager.Settings.FramesBetweenMidStates; i++)
+			{
+				manager.Capture(i, ss);
+			}
+
+			List<int> stateFrames = new();
+			stateFrames.Add(manager.GetStateClosestToFrame(int.MaxValue).Key);
+			while (stateFrames[stateFrames.Count - 1] != 0)
+			{
+				stateFrames.Add(manager.GetStateClosestToFrame(stateFrames[stateFrames.Count - 1] - 1).Key);
+			}
+
+			// act
+			PagedStateManager.PagedSettings newSettings = (manager.Settings.Clone() as PagedStateManager.PagedSettings)!;
+			newSettings.TotalMemoryLimitMB = 2;
+			manager = (manager.UpdateSettings(newSettings, true) as PagedStateManager)!;
+
+			// assert
+			List<int> newStateFrames = new();
+			newStateFrames.Add(manager.GetStateClosestToFrame(int.MaxValue).Key);
+			while (newStateFrames[newStateFrames.Count - 1] != 0)
+			{
+				newStateFrames.Add(manager.GetStateClosestToFrame(newStateFrames[newStateFrames.Count - 1] - 1).Key);
+			}
+			CollectionAssert.AreEqual(stateFrames, newStateFrames);
+		}
+
+		[TestMethod]
+		public void UpdateSettings_OldGapIncreaseKeepsSomeStates()
+		{
+			// arrange
+			IStatable ss = CreateStateSource();
+			PagedStateManager manager = new(MakeDefaultSettings(), (f) => false);
+			manager.Engage(ss.CloneSavestate());
+			for (int i = 0; i < PAGE_COUNT * manager.Settings.FramesBetweenMidStates; i++)
+			{
+				manager.Capture(i, ss);
+			}
+			// at this point we have at least a couple states using the "old gap" size
+			int originalOldGapSize = manager.Settings.FramesBetweenOldStates;
+
+			// act
+			PagedStateManager.PagedSettings newSettings = (manager.Settings.Clone() as PagedStateManager.PagedSettings)!;
+			newSettings.FramesBetweenOldStates *= 2;
+			manager = (manager.UpdateSettings(newSettings, true) as PagedStateManager)!;
+
+			// assert
+			Assert.IsFalse(manager.HasState(originalOldGapSize * 1));
+			Assert.IsTrue(manager.HasState(originalOldGapSize * 2));
+			Assert.IsFalse(manager.HasState(originalOldGapSize * 3));
+			Assert.IsTrue(manager.HasState(originalOldGapSize * 4));
+		}
+
+		[TestMethod]
+		public void UnreserveRemovesState()
+		{
+			// arrange
+			IStatable ss = CreateStateSource();
+			List<int> reservedFrames = [ 1, 2 ];
+			PagedStateManager manager = new(MakeDefaultSettings(), reservedFrames.Contains);
+			manager.Engage(ss.CloneSavestate());
+			int captureUntil = PAGE_COUNT * manager.Settings.FramesBetweenMidStates;
+			for (int i = 0; i <= captureUntil; i++)
+			{
+				manager.Capture(i, ss);
+			}
+
+			// act
+			reservedFrames.RemoveAt(0);
+			manager.Unreserve(1);
+			// Current implementation may remove it immediately, but there's no reason in the future it can't wait until the space is needed.
+			manager.Capture(captureUntil + 1, ss);
+
+			// assert
+			Assert.IsFalse(manager.HasState(1));
 		}
 
 		private class StateSource : IStatable
