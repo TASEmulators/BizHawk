@@ -10,6 +10,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private void SetupMemoryDomains()
 		{
+			var pagesDomain = _elf.GetPagesDomain();
+			var internalMemorySize = pagesDomain.Size * 4096;
+
 			var domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate(
@@ -76,7 +79,40 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					},
 					null,
 					1),
-				_elf.GetPagesDomain()
+				new MemoryDomainDelegate(
+					"Internal Memory",
+					internalMemorySize,
+					MemoryDomain.Endian.Little,
+					addr =>
+					{
+						if (addr >= internalMemorySize)
+						{
+							throw new ArgumentOutOfRangeException(
+								paramName: nameof(addr),
+								addr, message: "address out of range");
+						}
+
+						var baseAddress = (IntPtr) 0x36f_0000_0000; // hardcoded for wbx
+						var page = addr / 4096;
+						const int readablePageBit = 1;
+
+						if ((pagesDomain.PeekByte(page) & readablePageBit) is not 0)
+						{
+							byte ret = 0;
+							unsafe
+							{
+								ret = ((byte*)baseAddress)[addr];
+							}
+							return ret;
+						}
+						else
+						{
+							return 0;
+						}
+					},
+					null,
+					1),
+				pagesDomain,
 			};
 			MemoryDomains = new MemoryDomainList(domains);
 			((BasicServiceProvider)ServiceProvider).Register(MemoryDomains);
