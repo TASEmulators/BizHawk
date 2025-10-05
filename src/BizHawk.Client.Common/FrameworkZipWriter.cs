@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.IO;
 using System.IO.Compression;
 
@@ -7,11 +9,11 @@ namespace BizHawk.Client.Common
 {
 	public class FrameworkZipWriter : IZipWriter
 	{
-		private ZipArchive _archive;
+		private ZipArchive? _archive;
 
-		private FileStream _fs;
+		private FileStream? _fs;
 
-		private Zstd _zstd;
+		private Zstd? _zstd;
 		private readonly CompressionLevel _level;
 		private readonly int _zstdCompressionLevel;
 
@@ -36,11 +38,11 @@ namespace BizHawk.Client.Common
 		{
 			// don't compress with deflate if we're already compressing with zstd
 			// this won't produce meaningful compression, and would just be a timesink
-			using var stream = _archive.CreateEntry(name, zstdCompress ? CompressionLevel.NoCompression : _level).Open();
+			using var stream = _archive!.CreateEntry(name, zstdCompress ? CompressionLevel.NoCompression : _level).Open();
 
 			if (zstdCompress)
 			{
-				using var z = _zstd.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
+				using var z = _zstd!.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
 				callback(z);
 			}
 			else
