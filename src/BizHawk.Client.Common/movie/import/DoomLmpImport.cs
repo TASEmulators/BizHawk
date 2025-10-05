@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 				Player1Present     = input[i++] is not 0,
 				Player2Present     = input[i++] is not 0,
 				Player3Present     = input[i++] is not 0,
-				Player4Present     = input[i++] is not 0
+				Player4Present     = input[i++] is not 0,
 			};
 
 			if (compLevel >= DSDA.CompatibilityLevel.Boom_Compatibility
