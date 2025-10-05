@@ -12,12 +12,10 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		public void Save()
-		{
-			Write(Filename);
-		}
+		public void Save(IEmulator emulator)
+			=> Write(Filename, emulator);
 
-		public void SaveBackup()
+		public void SaveBackup(IEmulator emulator)
 		{
 			if (string.IsNullOrWhiteSpace(Filename))
 			{
@@ -27,12 +25,12 @@ namespace BizHawk.Client.Common
 			var backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
 			backupName = Path.Combine(Session.BackupDirectory, Path.GetFileName(backupName));
 
-			Write(backupName, isBackup: true);
+			Write(backupName, emulator, isBackup: true);
 		}
 
-		protected virtual void Write(string fn, bool isBackup = false)
+		private void Write(string fn, IEmulator emulator, bool isBackup = false)
 		{
-			SetCycleValues();
+			SetCycleValues(emulator);
 			// EmulatorVersion used to store the unchanging original emulator version.
 			if (!Header.ContainsKey(HeaderKeys.OriginalEmulatorVersion))
 			{
@@ -50,10 +48,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetCycleValues() //TODO IEmulator should not be an instance prop of movies, it should be passed in to every call (i.e. from MovieService) --yoshi
+		public void SetCycleValues(IEmulator emulator)
 		{
 			// The saved cycle value will only be valid if the end of the movie has been emulated.
-			if (this.IsAtEnd() && Emulator.AsCycleTiming() is { } cycleCore)
+			if (this.IsAtEnd(emulator) && emulator.AsCycleTiming() is { } cycleCore)
 			{
 				// legacy movies may incorrectly have no ClockRate header value set
 				Header[HeaderKeys.ClockRate] = cycleCore.ClockRate.ToString(NumberFormatInfo.InvariantInfo);
@@ -117,18 +115,18 @@ namespace BizHawk.Client.Common
 			BinarySavestate = null;
 		}
 
-		protected override void LoadFields(ZipStateLoader bl)
+		protected override void LoadFields(ZipStateLoader bl, IEmulator emulator)
 		{
-			base.LoadFields(bl);
-			LoadBk2Fields(bl);
+			base.LoadFields(bl, emulator);
+			LoadBk2Fields(bl, emulator);
 		}
 
-		private void LoadBk2Fields(ZipStateLoader bl)
+		private void LoadBk2Fields(ZipStateLoader bl, IEmulator emulator)
 		{
 			bl.GetLump(BinaryStateLump.Input, abort: true, tr =>
 			{
 				IsCountingRerecords = false;
-				ExtractInputLog(tr, out _);
+				ExtractInputLog(tr, emulator, out _);
 				IsCountingRerecords = true;
 			});
 

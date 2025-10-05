@@ -48,6 +48,8 @@ namespace BizHawk.Client.Common
 
 		public string BackupDirectory { get; set; }
 
+		private IEmulator/*?*/ Emulator = null;
+
 		public IMovie Movie { get; private set; }
 		public bool ReadOnly { get; set; } = true;
 		public bool NewMovieQueued => _queuedMovie != null;
@@ -81,7 +83,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (Movie.IsFinished())
 			{
-				if (Movie.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
+				if (Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
 					Movie.SwitchToPlay();
 					LatchInputToLog();
@@ -98,7 +100,8 @@ namespace BizHawk.Client.Common
 			else if (Movie.IsRecording())
 			{
 				LatchInputToUser();
-				Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
+				var frame = Emulator.Frame;
+				Movie.RecordFrame(frame, frame, MovieOut.Source);
 			}
 		}
 
@@ -106,10 +109,10 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
-				tasMovie.GreenzoneCurrentFrame();
+				tasMovie.GreenzoneCurrentFrame(Emulator);
 			}
 
-			if (!ignoreMovieEndAction && Movie.IsPlaying() && Movie.Emulator.Frame == Movie.FrameCount)
+			if (!ignoreMovieEndAction && Movie.IsPlaying() && Emulator.Frame == Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}
@@ -154,7 +157,7 @@ namespace BizHawk.Client.Common
 			{
 				Movie.SwitchToRecord();
 
-				var result = Movie.ExtractInputLog(reader, out var errorMsg);
+				var result = Movie.ExtractInputLog(reader, Emulator, out var errorMsg);
 				if (!result)
 				{
 					Output(errorMsg);
@@ -222,15 +225,16 @@ namespace BizHawk.Client.Common
 			MovieController = new Bk2Controller(emulator.ControllerDefinition, _queuedMovie.LogKey);
 
 			Movie = _queuedMovie;
+			Emulator = emulator;
 			Movie.Attach(emulator);
 			_queuedMovie = null;
 
-			Movie.ProcessSavestate(Movie.Emulator);
-			Movie.ProcessSram(Movie.Emulator);
+			Movie.ProcessSavestate(emulator);
+			Movie.ProcessSram(emulator);
 
 			if (recordMode)
 			{
-				Movie.StartNewRecording();
+				Movie.StartNewRecording(Emulator);
 				ReadOnly = false;
 				// If we are starting a movie recording while another one is playing, we need to switch back to user input
 				LatchInputToUser();
@@ -262,7 +266,7 @@ namespace BizHawk.Client.Common
 
 				if (saveChanges && Movie.Changes)
 				{
-					Movie.Save();
+					Movie.Save(Emulator);
 					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
 				}
 				Movie.Stop();
@@ -289,7 +293,7 @@ namespace BizHawk.Client.Common
 				: new Bk2Movie(this, path);
 
 			if (loadMovie)
-				movie.Load();
+				movie.Load(Emulator);
 
 			return movie;
 		}
@@ -307,7 +311,7 @@ namespace BizHawk.Client.Common
 		// Latch input from the input log, if available
 		private void LatchInputToLog()
 		{
-			var input = Movie.GetInputState(Movie.Emulator.Frame);
+			var input = Movie.GetInputState(Emulator.Frame);
 
 			MovieController.SetFrom(input ?? StickySource);
 			MovieOut.Source = MovieController;
@@ -317,10 +321,10 @@ namespace BizHawk.Client.Common
 		{
 #if false // invariants given by single call-site
 			Debug.Assert(Movie.IsPlaying());
-			Debug.Assert(Movie.Emulator.Frame >= Movie.InputLogLength);
+			Debug.Assert(Emulator.Frame >= Movie.InputLogLength);
 #endif
 #if false // code below doesn't actually do anything as the cycle count is indiscriminately overwritten (or removed) on save anyway.
-			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
+			if (Movie.IsAtEnd() && Emulator.HasCycleTiming())
 			{
 				const string WINDOW_TITLE_MISMATCH = "Cycle count mismatch";
 				const string WINDOW_TITLE_MISSING = "Cycle count not yet saved";
@@ -330,7 +334,7 @@ namespace BizHawk.Client.Common
 				const string PFX_MISMATCH = "The cycle count (running time) saved into this movie ({0}) doesn't match the measured count ({1}) here at the end.\n";
 				const string ERR_FMT_STR_MISMATCH_READONLY = PFX_MISMATCH + "The movie was loaded in read-only mode. To correct the cycle count, load it in read-write mode and play to the end again.";
 				const string ERR_FMT_STR_MISMATCH_CONFIRM = PFX_MISMATCH + "Correct it now?";
-				var coreValue = Movie.Emulator.AsCycleTiming().CycleCount;
+				var coreValue = Emulator.AsCycleTiming().CycleCount;
 				if (!Movie.HeaderEntries.TryGetValue(HeaderKeys.CycleCount, out var movieValueStr)
 					|| !long.TryParse(movieValueStr, out var movieValue))
 				{

@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -11,6 +12,7 @@ namespace BizHawk.Client.Common
 	{
 		ImportResult Import(
 			IDialogParent dialogParent,
+			IEmulator emulator,
 			IMovieSession session,
 			string path,
 			Config config);
@@ -26,6 +28,7 @@ namespace BizHawk.Client.Common
 
 		public ImportResult Import(
 			IDialogParent dialogParent,
+			IEmulator emulator,
 			IMovieSession session,
 			string path,
 			Config config)
@@ -67,7 +70,7 @@ namespace BizHawk.Client.Common
 						Result.Movie.Hash = hash;
 				}
 
-				Result.Movie.Save();
+				Result.Movie.Save(emulator);
 			}
 
 			return Result;

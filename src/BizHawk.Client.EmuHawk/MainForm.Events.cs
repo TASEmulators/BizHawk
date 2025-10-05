@@ -410,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.Movies.EnableBackupMovies)
 			{
-				MovieSession.Movie.SaveBackup();
+				MovieSession.Movie.SaveBackup(Emulator);
 			}
 
 			StopMovie(saveChanges: false);
@@ -1331,14 +1331,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			MovieSession.Movie.SaveBackup();
+			MovieSession.Movie.SaveBackup(Emulator);
 			AddOnScreenMessage("Backup movie saved.");
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
 		{
 			if (MovieSession.Movie.NotActive()) return;
-			using EditSubtitlesForm form = new(this, MovieSession.Movie, Config.PathEntries, readOnly: MovieSession.ReadOnly);
+			using EditSubtitlesForm form = new(
+				this,
+				Emulator,
+				MovieSession.Movie,
+				Config.PathEntries,
+				readOnly: MovieSession.ReadOnly);
 			this.ShowDialogWithTempMute(form);
 		}
 
@@ -1375,7 +1380,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewCommentsContextMenuItem_Click(object sender, EventArgs e)
 		{
 			if (MovieSession.Movie.NotActive()) return;
-			using EditCommentsForm form = new(MovieSession.Movie, MovieSession.ReadOnly);
+			using EditCommentsForm form = new(MovieSession.Movie, Emulator, MovieSession.ReadOnly);
 			this.ShowDialogWithTempMute(form);
 		}
 
