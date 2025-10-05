@@ -12,29 +12,29 @@ namespace BizHawk.Client.Common
 	{
 		protected override void RunImport()
 		{
+			var i     = 0;
 			var input = SourceFile.OpenRead().ReadAllBytes();
-			var i = 0;
 
 			Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.DSDA;
 			Result.Movie.SystemID = VSystemID.Raw.Doom;
 
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DSDA.ControllerType.Heretic,
-				MultiplayerMode = DSDA.MultiplayerMode.Single_Coop,
-				MonstersRespawn = false,
-				FastMonsters = false,
-				NoMonsters = false,
+				InputFormat        = DSDA.ControllerType.Heretic,
+				MultiplayerMode    = DSDA.MultiplayerMode.Single_Coop,
+				MonstersRespawn    = false,
+				FastMonsters       = false,
+				NoMonsters         = false,
 				CompatibilityLevel = DSDA.CompatibilityLevel.Doom_12,
-				SkillLevel = (DSDA.SkillLevel) (1 + input[i++]),
-				InitialEpisode = input[i++],
-				InitialMap = input[i++],
-				Player1Present = input[i++] is not 0,
-				Player2Present = input[i++] is not 0,
-				Player3Present = input[i++] is not 0,
-				Player4Present = input[i++] is not 0,
-				TurningResolution = DSDA.TurningResolution.Shorttics,
-				RenderWipescreen = false,
+				SkillLevel         = (DSDA.SkillLevel) (1 + input[i++]),
+				InitialEpisode     = input[i++],
+				InitialMap         = input[i++],
+				Player1Present     = input[i++] is not 0,
+				Player2Present     = input[i++] is not 0,
+				Player3Present     = input[i++] is not 0,
+				Player4Present     = input[i++] is not 0,
+				TurningResolution  = DSDA.TurningResolution.Shorttics,
+				RenderWipescreen   = false,
 			};
 
 			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
@@ -49,20 +49,20 @@ namespace BizHawk.Client.Common
 				controller.AcceptNewAxis(port + "Turn Speed",   unchecked((sbyte) input[i++]));
 
 				var buttons = (LibDSDA.Buttons)input[i++];
-				controller[port + "Fire"] = (buttons & LibDSDA.Buttons.Fire) is not 0;
-				controller[port + "Use" ] = (buttons & LibDSDA.Buttons.Use ) is not 0;
-				bool changeWeapon = (buttons & LibDSDA.Buttons.ChangeWeapon) is not 0;
+				controller[port + "Fire"] = (buttons & LibDSDA.Buttons.Fire        ) is not 0;
+				controller[port + "Use" ] = (buttons & LibDSDA.Buttons.Use         ) is not 0;
+				var changeWeapon          = (buttons & LibDSDA.Buttons.ChangeWeapon) is not 0;
 
-				int weapon = changeWeapon
+				var weapon = changeWeapon
 					? (((int)(buttons & LibDSDA.Buttons.WeaponMask) >> 3) + 1)
 					: 0;
 				controller.AcceptNewAxis(port + "Weapon Select", weapon);
 
-				int flylook = unchecked((sbyte) input[i++]);
-				int look = flylook & 15; if (look > 8) look -= 16;
-				int fly  = flylook >> 4; if (fly  > 8) fly  -= 16;
+				var flylook = unchecked((sbyte) input[i++]);
+				var look = flylook & 15; if (look > 8) look -= 16;
+				var fly  = flylook >> 4; if (fly  > 8) fly  -= 16;
 				controller.AcceptNewAxis(port + "Look", look);
-				controller.AcceptNewAxis(port + "Fly", fly);
+				controller.AcceptNewAxis(port + "Fly",  fly);
 
 				controller.AcceptNewAxis(port + "Use Artifact", unchecked((sbyte) input[i++]));
 			}

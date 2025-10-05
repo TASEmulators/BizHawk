@@ -37,15 +37,14 @@ namespace BizHawk.Client.Common
 
 		protected override void RunImport()
 		{
-			var input = SourceFile.OpenRead().ReadAllBytes();
-			var i = 0;
-
+			DSDA.SkillLevel skill;
+			int episode;
+			int map;
+			var i                 = 0;
+			var input             = SourceFile.OpenRead().ReadAllBytes();
 			// version dependent settings
 			var compLevel         = DSDA.CompatibilityLevel.MBF21;
 			var turningResolution = DSDA.TurningResolution.Shorttics;
-			var skill             = DSDA.SkillLevel.UV;
-			var episode           = 1;
-			var map               = 0;
 			// v1.2- demos didn't store these (nor DisplayPlayer), they have to be explicitly set
 			var multiplayerMode   = DSDA.MultiplayerMode.Single_Coop;
 			var monstersRespawn   = false;
@@ -75,7 +74,7 @@ namespace BizHawk.Client.Common
 			if (version < DemoVersion.Doom_1_4)
 			{
 				// there is no version, the first byte is the skill level
-				skill     = (DSDA.SkillLevel)version;
+				skill     = (DSDA.SkillLevel) version;
 				episode   = input[i++];
 				map       = input[i++];
 				compLevel = DSDA.CompatibilityLevel.Doom_12;
@@ -87,7 +86,17 @@ namespace BizHawk.Client.Common
 				{
 					compLevel = DSDA.CompatibilityLevel.TasDoom;
 				}
-				else if (version >= DemoVersion.DoomClassic)
+				else if (version < DemoVersion.Doom_1_9)
+				{
+					// DSDA-Doom assumes 1.666 compat for sig < 107 but this should be fine too
+					compLevel = DSDA.CompatibilityLevel.Doom_1666;
+				}
+				else
+				{
+					compLevel = DSDA.CompatibilityLevel.Doom2_19;
+				}
+
+				if (version >= DemoVersion.DoomClassic)
 				{
 					turningResolution = DSDA.TurningResolution.Longtics;
 				}
@@ -100,16 +109,10 @@ namespace BizHawk.Client.Common
 				fastMonsters    = input[i++] is not 0;
 				noMonsters      = input[i++] is not 0;
 				i++; // DisplayPlayer is a non-sync setting so importers can't set it
-
-				// DSDA-Doom assumes 1.666 compat for sig < 107 but this should be fine too
-				compLevel = version < DemoVersion.Doom_1_9
-					? DSDA.CompatibilityLevel.Doom_1666
-					: DSDA.CompatibilityLevel.Doom2_19;
 				Console.WriteLine("Reading DOOM LMP demo version: {0}", version);
 			}
 			else // Boom territory
 			{
-
 				i++; // skip to signature's second byte
 				var portID = input[i++];
 				i += 4; // skip the rest of the signature
@@ -190,35 +193,34 @@ namespace BizHawk.Client.Common
 				noMonsters      = input[i++] is not 0;
 				i++; // demo insurance
 				rngSeed         = BinaryPrimitives.ReadUInt32BigEndian(input.AsSpan(i, 4));
-				i = 0x4D;
+				i               = 0x4D; // boom header size
 			}
 
 			DSDA.DoomSyncSettings syncSettings = new()
 			{
-				InputFormat = DSDA.ControllerType.Doom,
+				InputFormat        = DSDA.ControllerType.Doom,
 				CompatibilityLevel = compLevel,
-				SkillLevel = skill,
-				InitialEpisode = episode,
-				InitialMap = map,
-				MultiplayerMode = multiplayerMode,
-				MonstersRespawn = monstersRespawn,
-				FastMonsters = fastMonsters,
-				NoMonsters = noMonsters,
-				TurningResolution = turningResolution,
-				RenderWipescreen = false,
-				RNGSeed = rngSeed,
+				SkillLevel         = skill,
+				InitialEpisode     = episode,
+				InitialMap         = map,
+				MultiplayerMode    = multiplayerMode,
+				MonstersRespawn    = monstersRespawn,
+				FastMonsters       = fastMonsters,
+				NoMonsters         = noMonsters,
+				TurningResolution  = turningResolution,
+				RenderWipescreen   = false,
+				RNGSeed            = rngSeed,
+				Player1Present     = input[i++] is not 0,
+				Player2Present     = input[i++] is not 0,
+				Player3Present     = input[i++] is not 0,
+				Player4Present     = input[i++] is not 0
 			};
-
-			syncSettings.Player1Present = input[i++] is not 0;
-			syncSettings.Player2Present = input[i++] is not 0;
-			syncSettings.Player3Present = input[i++] is not 0;
-			syncSettings.Player4Present = input[i++] is not 0;
 
 			if (compLevel >= DSDA.CompatibilityLevel.Boom_Compatibility
 				&& version >= DemoVersion.Boom_2_00)
 			{
-				var FUTURE_MAXPLAYERS = 32;
-				var g_maxplayers = 4;
+				const int FUTURE_MAXPLAYERS = 32;
+				const int g_maxplayers = 4;
 				i += FUTURE_MAXPLAYERS - g_maxplayers;
 			}
 
@@ -241,8 +243,8 @@ namespace BizHawk.Client.Common
 				controller.AcceptNewAxis($"P{port} Turn Speed", unchecked((sbyte) input[i++]));
 
 				var buttons = (LibDSDA.Buttons)input[i++];
-				controller[$"P{port} Fire"] = (buttons & LibDSDA.Buttons.Fire)         is not 0;
-				controller[$"P{port} Use" ] = (buttons & LibDSDA.Buttons.Use)          is not 0;
+				controller[$"P{port} Fire"] = (buttons & LibDSDA.Buttons.Fire        ) is not 0;
+				controller[$"P{port} Use" ] = (buttons & LibDSDA.Buttons.Use         ) is not 0;
 				var changeWeapon            = (buttons & LibDSDA.Buttons.ChangeWeapon) is not 0;
 
 				var weapon = changeWeapon
