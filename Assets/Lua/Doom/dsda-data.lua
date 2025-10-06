@@ -445,12 +445,18 @@ dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
 	.s32  ("ceiling_xscale")
 	.s32  ("ceiling_yscale")
 
+-- vertex_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L70-L80
+dsda.vertex = dsda.struct_layout()
+	.s32  ("x")
+	.s32  ("y")
+	.s32  ("px")
+	.s32  ("py")
+
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
--- followed by v1, v2 coords
 dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
 	.s32  ("iLineID")
-	.ptr  ("v1")
-	.ptr  ("v2")
+	.ptrto("v1", dsda.vertex)
+	.ptrto("v2", dsda.vertex)
 	.s32  ("dx")
 	.s32  ("dy")
 	.float("texel_length")
@@ -484,12 +490,6 @@ dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
 	.s32  ("healthgroup")
 	.ptr  ("tranmap")
 	.float("alpha")
-	.align(8)
-	-- BizHawk
-	.s32  ("v1_x")
-	.s32  ("v1_y")
-	.s32  ("v2_x")
-	.s32  ("v2_y")
 
 
 
