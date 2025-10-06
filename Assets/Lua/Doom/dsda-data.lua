@@ -149,6 +149,10 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		end)
 		return struct
 	end
+	function struct.done()
+		struct.align(struct.alignment)
+		return struct
+	end
 
 	local function create_item(address, domain)
 		local item = {
@@ -303,6 +307,7 @@ dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAY
 	-- zdoom
 	.s32  ("hazardcount")
 	.u8   ("hazardinterval")
+	.done ()
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 dsda.mobj
@@ -375,6 +380,7 @@ dsda.mobj
 	-- misc
 	.u8   ("color")
 	.ptr  ("tranmap")
+	.done ()
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
 dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
@@ -448,6 +454,7 @@ dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
 	.s32  ("floor_yscale")
 	.s32  ("ceiling_xscale")
 	.s32  ("ceiling_yscale")
+	.done ()
 
 -- vertex_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L70-L80
 dsda.vertex = dsda.struct_layout()
@@ -455,6 +462,7 @@ dsda.vertex = dsda.struct_layout()
 	.s32  ("y")
 	.s32  ("px")
 	.s32  ("py")
+	.done ()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
 dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
@@ -494,6 +502,12 @@ dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
 	.s32  ("healthgroup")
 	.ptr  ("tranmap")
 	.float("alpha")
+	.done ()
+
+assert(dsda.line.size   == 232, "line.size does not match sizeof(line_t)")
+assert(dsda.mobj.size   == 464, "mobj.size does not match sizeof(mobj_t)")
+assert(dsda.player.size == 792, "player.size does not match sizeof(player_t)")
+assert(dsda.sector.size == 344, "sector.size does not match sizeof(sector_t)")
 
 
 
