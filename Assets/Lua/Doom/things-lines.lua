@@ -159,7 +159,7 @@ local function get_mobj_color(mobj)
 	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return PLAYER_COLOR end
 	if flags & (MobjFlags.COUNTKILL | MobjFlags.SKULLFLY) ~= 0 then
 		if flags & MobjFlags.CORPSE ~= 0 then return CORPSE_COLOR end
-		if flags & MobjFlags.AMBUSH ~= 0 or mobj.target == 0 then return ENEMY_WAIT_COLOR end
+		if flags & MobjFlags.AMBUSH ~= 0 or mobj.target_ptr == 0 then return ENEMY_WAIT_COLOR end
 		return ENEMY_COLOR
 	end
 	if flags & MobjFlags.COUNTITEM ~= 0 then return COUNTITEM_COLOR end

@@ -233,9 +233,12 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	return struct
 end
 
+-- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
+dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
+
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
 dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAYERS)
-	.ptr  ("mobj")
+	.ptrto("mo", dsda.mobj)
 	.s32  ("playerstate") -- playerstate_t
 	.add  ("cmd", 14, 2)
 	.s32  ("viewz")
@@ -263,7 +266,7 @@ dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAY
 	.s32  ("secretcount")
 	.s32  ("damagecount")
 	.s32  ("bonuscount")
-	.ptr  ("attacker")
+	.ptrto("attacker", dsda.mobj)
 	.s32  ("extralight")
 	.s32  ("fixedcolormap")
 	.s32  ("colormap")
@@ -286,15 +289,15 @@ dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAY
 	.s32  ("flamecount")
 	.s32  ("chickenTics")
 	.s32  ("chickenPeck")
-	.ptr  ("rain1")
-	.ptr  ("rain2")
+	.ptrto("rain1", dsda.mobj)
+	.ptrto("rain2", dsda.mobj)
 	-- hexen
 	.s32  ("pclass") -- pclass_t
 	.s32  ("morphTics")
 	.s32  ("pieces")
 	.s16  ("yellowMessage")
 	.s32  ("poisoncount")
-	.ptr  ("poisoner")
+	.ptrto("poisoner", dsda.mobj)
 	.u32  ("jumpTics")
 	.u32  ("worldTimer")
 	-- zdoom
@@ -302,13 +305,13 @@ dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAY
 	.u8   ("hazardinterval")
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
+dsda.mobj
 	.add  ("thinker", 44, 8)
 	.s32  ("x")
 	.s32  ("y")
 	.s32  ("z")
-	.ptr  ("snext")
-	.ptr  ("sprev")
+	.ptrto("snext", dsda.mobj)
+	.ptr  ("sprev") -- pointer to pointer
 	.u32  ("angle")
 	.s32  ("sprite") -- spritenum_t
 	.s32  ("frame")
@@ -334,16 +337,16 @@ dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
 	.s16  ("movedir")
 	.s16  ("movecount")
 	.s16  ("strafecount")
-	.ptr  ("target")
+	.ptrto("target", dsda.mobj)
 	.s16  ("reactiontime")
 	.s16  ("threshold")
 	.s16  ("pursuecount")
 	.s16  ("gear")
-	.ptr  ("player")
+	.ptrto("player", dsda.player)
 	.s16  ("lastlook")
 	.add  ("spawnpoint", 58, 4) -- mapthing_t
-	.ptr  ("tracer")
-	.ptr  ("lastenemy")
+	.ptrto("tracer", dsda.mobj)
+	.ptrto("lastenemy", dsda.mobj)
 	.s32  ("friction")
 	.s32  ("movefactor")
 	.ptr  ("touching_sectorlist")
@@ -380,7 +383,7 @@ dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
 	.s32  ("floorheight")
 	.s32  ("ceilingheight")
 	.u8   ("soundtraversed")
-	.ptr  ("soundtarget")
+	.ptrto("soundtarget", dsda.mobj)
 	.array("blockbox", "s32", 4)
 --	.array("bbox", "s32", 4)
 	.s32  ("bbox_top")
@@ -390,7 +393,7 @@ dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
 	.add  ("soundorg", 60, 8) -- degenmobj_t;
 	.s32  ("validcount")
 	.s32  ("gl_validcount")
-	.ptr  ("thinglist")
+	.ptrto("thinglist", dsda.mobj) -- start of snext linked list
 	.s32  ("friction")
 	.s32  ("movefactor")
 	.ptr  ("floordata")
@@ -406,7 +409,7 @@ dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
 	.s16  ("colormap")
 	.ptr  ("touching_thinglist")
 	.s32  ("linecount")
-	.ptr  ("lines")
+	.ptr  ("lines") -- pointer to pointer
 	.s32  ("floorsky")
 	.s32  ("ceilingsky")
 	.s32  ("floor_xoffs")
@@ -471,8 +474,8 @@ dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
 	.s32  ("bbox_left")
 	.s32  ("bbox_right")
 	.s32  ("slopetype") -- slopetype_t
-	.ptr  ("frontsector")
-	.ptr  ("backsector")
+	.ptrto("frontsector", dsda.sector)
+	.ptrto("backsector", dsda.sector)
 	.s32  ("validcount")
 	.s32  ("validcount2")
 	.ptr  ("specialdata")
