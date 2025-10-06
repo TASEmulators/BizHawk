@@ -58,6 +58,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	struct.padded_size = padded_size
 	struct.domain = domain
 	struct.size = 0
+	struct.alignment = 1
 	struct.offsets = {}
 	struct.items = {} -- This should be iterated with pairs()
 
@@ -90,6 +91,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		return struct
 	end
 	function struct.align(alignment)
+		struct.alignment = math.max(struct.alignment, alignment or 1)
 		if alignment and struct.size % alignment > 0 then
 			--print(string.format("%i bytes padding", alignment - (struct.size % alignment)))
 			struct.pad(alignment - (struct.size % alignment))
