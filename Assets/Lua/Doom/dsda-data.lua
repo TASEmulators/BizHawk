@@ -20,11 +20,6 @@ local WBX_POINTER_HI <const> = 0x36F
 local BusDomain <const>      = "System Bus"
 
 dsda.MAX_PLAYERS = 4
--- sizes in bytes
-dsda.LINE_SIZE   = 256  -- sizeof(line_t) is 232, but we padded it for niceness
-dsda.MOBJ_SIZE   = 512  -- sizeof(mobj_t) is 464, but we padded it for niceness
-dsda.PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for niceness
-dsda.SECTOR_SIZE = 512  -- sizeof(sector_t) is 344, but we padded it for niceness
 
 
 
@@ -238,10 +233,10 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 end
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
+dsda.mobj = dsda.struct_layout(nil, 512, "Things")
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
-dsda.player = dsda.struct_layout(nil, dsda.PLAYER_SIZE, "Players", dsda.MAX_PLAYERS)
+dsda.player = dsda.struct_layout(nil, 1024, "Players", dsda.MAX_PLAYERS)
 	.ptrto("mo", dsda.mobj)
 	.s32  ("playerstate") -- playerstate_t
 	.add  ("cmd", 14, 2)
@@ -383,7 +378,7 @@ dsda.mobj
 	.done ()
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector = dsda.struct_layout(nil, dsda.SECTOR_SIZE, "Sectors")
+dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
 	.s32  ("iSectorID")
 	.u32  ("flags")
 	.s32  ("floorheight")
@@ -465,7 +460,7 @@ dsda.vertex = dsda.struct_layout()
 	.done ()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
-dsda.line = dsda.struct_layout(nil, dsda.LINE_SIZE, "Lines")
+dsda.line = dsda.struct_layout(nil, 256, "Lines")
 	.s32  ("iLineID")
 	.ptrto("v1", dsda.vertex)
 	.ptrto("v2", dsda.vertex)
