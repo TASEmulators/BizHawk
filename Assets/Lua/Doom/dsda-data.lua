@@ -105,7 +105,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 
 		if read_func then
 			item_props[name] = function(self)
-				return read_func(self._address + offset, domain)
+				return read_func(self._address + offset, self._domain)
 			end
 		end
 		return struct
