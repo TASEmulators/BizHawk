@@ -228,11 +228,12 @@ local function iterate()
 		-- when moving so this is a decent way of cutting down on memory reads
 		local validcount = line.validcount
 		if validcount ~= line._validcount then
+			local v1, v2 = line.v1, line.v2
 			line._validcount = validcount
-			line._v1 = { x =  line.v1_x,
-		                 y = -line.v1_y, }
-			line._v2 = { x =  line.v2_x,
-		                 y = -line.v2_y, }
+			line._v1 = { x =  v1.x,
+			             y = -v1.y, }
+			line._v2 = { x =  v2.x,
+			             y = -v2.y, }
 		end
 		local v1, v2  = line._v1, line._v2
 		local special = line.special
