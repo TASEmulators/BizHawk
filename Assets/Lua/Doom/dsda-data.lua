@@ -23,6 +23,12 @@ dsda.SECTOR_SIZE = 512  -- sizeof(sector_t) is 344, but we padded it for nicenes
 
 
 
+-- Locals
+local read_u8   = memory.read_u8
+local read_u24  = memory.read_u24_le
+local read_u32  = memory.read_u32_le
+local readfloat = memory.readfloat
+
 -- Utilities ---
 
 local function assertf(condition, format, ...)
@@ -31,16 +37,16 @@ local function assertf(condition, format, ...)
 	end
 end
 
-	return memory.read_u32_le(addr, domain) | memory.read_u32_le(addr + 4, domain) << 32
 function dsda.read_s64_le(addr, domain)
+	return read_u32(addr, domain) | read_u32(addr + 4, domain) << 32
 end
 
 function dsda.read_bool(addr, domain)
-	return memory.read_u32_le(addr, domain) ~= 0
+	return read_u32(addr, domain) ~= 0
 end
 
 local function read_float_le(addr, domain)
-	return memory.readfloat(addr, false, domain)
+	return readfloat(addr, false, domain)
 end
 
 
@@ -117,7 +123,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		assertf(address >= 0 and address <= max_address and address % padded_size == 0,
 			"Invalid %s address %X", domain, address)
 
-		local peek = memory.read_u32_le(address, domain)
+		local peek = read_u32(address, domain)
 		if peek == NULL_OBJECT then
 			--print("NULL_OBJECT", domain, bizstring.hex(address))
 			return nil
