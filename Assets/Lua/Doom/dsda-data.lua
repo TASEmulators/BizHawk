@@ -31,8 +31,8 @@ local function assertf(condition, format, ...)
 	end
 end
 
-function dsda.read_u64_le(addr, domain)
 	return memory.read_u32_le(addr, domain) | memory.read_u32_le(addr + 4, domain) << 32
+function dsda.read_s64_le(addr, domain)
 end
 
 function dsda.read_bool(addr, domain)
@@ -100,9 +100,9 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	function struct.u8   (name) return struct.add(name, 1, true, memory.read_u8) end
 	function struct.u16  (name) return struct.add(name, 2, true, memory.read_u16_le) end
 	function struct.u32  (name) return struct.add(name, 4, true, memory.read_u32_le) end
-	function struct.u64  (name) return struct.add(name, 8, true, dsda.read_u64_le) end
+	function struct.s64  (name) return struct.add(name, 8, true, dsda.read_s64_le) end
 	function struct.float(name) return struct.add(name, 4, true, read_float_le) end
-	function struct.ptr  (name) return struct.u64(name) end
+	function struct.ptr  (name) return struct.s64(name) end
 	function struct.bool (name) return struct.add(name, 4, true, dsda.read_bool) end
 	function struct.array(name, type, count, ...)
 		--console.log("array", type, count, ...)
@@ -277,7 +277,7 @@ dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
 	.ptr  ("info")
 	.s32  ("tics")
 	.ptr  ("state")
-	.u64  ("flags")
+	.s64  ("flags")
 	.s32  ("intflags")
 	.s32  ("health")
 	.s16  ("movedir")
@@ -305,7 +305,7 @@ dsda.mobj = dsda.struct_layout(nil, dsda.MOBJ_SIZE, "Things")
 	.s32  ("iden_nums")
 	-- heretic
 	.s32  ("damage")
-	.u64  ("flags2")
+	.s64  ("flags2")
 	.add  ("special1", 16, 8) -- specialval_t
 	.add  ("special2", 16, 8) -- specialval_t
 	-- hexen
