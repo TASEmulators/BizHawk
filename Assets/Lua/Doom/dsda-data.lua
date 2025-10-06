@@ -208,6 +208,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 
 	-- Get a struct instance from the system bus
 	function struct.from_pointer(pointer)
+		if pointer == 0 then return nil end
 		assertf(pointer % struct.alignment == 0, "Unaligned pointer %X", pointer)
 		return create_item(pointer, BusDomain)
 	end
