@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		protected NesBoardBase board;
-		public MMC3(NesBoardBase board, int num_prg_banks)
+		public MMC3(NesBoardBase board)
 		{
 			just_cleared = just_cleared_pending = false;
 
@@ -293,7 +293,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return bank_1k;
 		}
 
-
 		public virtual void AddressPPU(int addr)
 		{
 			// see https://forums.nesdev.com/viewtopic.php?f=3&t=11361&start=60
@@ -390,7 +389,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WritePpu(addr, value);
 		}
 
-
 		public override void WritePrg(int addr, byte value)
 		{
 			mmc3.WritePRG(addr, value);
@@ -409,12 +407,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.ChrSize);
+			int num_chr_banks = Cart.ChrSize;
 			if (num_chr_banks == 0) // vram only board
-				num_chr_banks = 8;
+				num_chr_banks = Cart.VramSize;
 			chr_mask = num_chr_banks - 1;
 
-			mmc3 = new MMC3(this, num_prg_banks);
+			mmc3 = new MMC3(this);
 			SetMirrorType(EMirrorType.Vertical);
 		}
 	}

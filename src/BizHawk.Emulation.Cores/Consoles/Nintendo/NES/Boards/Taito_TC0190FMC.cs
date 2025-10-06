@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private class MMC3Variant : MMC3
 		{
 			public MMC3Variant(NesBoardBase board)
-			: base(board,0)
+			: base(board)
 			{
 			}
 

@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int num_chr_banks = (Cart.ChrSize);
 			chr_mask = num_chr_banks - 1;
 
-			mmc3 = new Mapper197_MMC3(this, num_prg_banks);
+			mmc3 = new Mapper197_MMC3(this);
 			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//This board has 512k CHR ROM, so the ByteBuffer in the base class deosn't suffice.
 		public int[] chr_regs_1k_512 = new int[8];
 
-		public Mapper197_MMC3(NesBoardBase board, int num_prg_banks)
-			: base(board, num_prg_banks) {}
+		public Mapper197_MMC3(NesBoardBase board)
+			: base(board) {}
 
 		public override void Sync()
 		{
