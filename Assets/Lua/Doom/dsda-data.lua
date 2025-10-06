@@ -11,8 +11,10 @@ local dsda = {
 
 
 -- Constants ---
-local NULL_OBJECT <const>   = 0x88888888 -- no object at that index
-local OUT_OF_BOUNDS <const> = 0xFFFFFFFF -- no such index
+local NULL_OBJECT <const>    = 0x88888888 -- no object at that index
+local OUT_OF_BOUNDS <const>  = 0xFFFFFFFF -- no such index
+local WBX_POINTER_HI <const> = 0x36F
+local BusDomain <const>      = "System Bus"
 
 dsda.MAX_PLAYERS = 4
 -- sizes in bytes
@@ -41,6 +43,11 @@ function dsda.read_s64_le(addr, domain)
 	return read_u32(addr, domain) | read_u32(addr + 4, domain) << 32
 end
 
+-- Returns the lower 4 bytes of an 8 byte pointer
+function dsda.read_ptr(addr, domain)
+	return read_u32(addr, domain)
+end
+
 function dsda.read_bool(addr, domain)
 	return read_u32(addr, domain) ~= 0
 end
@@ -62,10 +69,17 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	struct.offsets = {}
 	struct.items = {} -- This should be iterated with pairs()
 
-	max_count = max_count or math.floor(memory.getmemorydomainsize(domain) / padded_size)
-	local max_address = (max_count - 1) * padded_size
-	struct.max_count = max_count
-	struct.max_address = max_address
+	assert((padded_size ~= nil) == (domain ~= nil), "padded_size and domain must be specified together")
+
+	local max_address
+	if domain then
+		max_count = max_count or math.floor(memory.getmemorydomainsize(domain) / padded_size)
+		max_address = (max_count - 1) * padded_size
+		struct.max_count = max_count
+		struct.max_address = max_address
+	else
+		max_address = 0xFFFFFFFF
+	end
 
 	local items_meta = {}
 	local item_props = {}
@@ -119,9 +133,27 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		end
 		return struct
 	end
+	function struct.ptrto(name, target_struct)
+		local size = struct.size
+		struct.ptr(name .. "_ptr")
+		struct.size = size
+		struct.add(name, 8, true, function(addr, domain)
+			local ptr = dsda.read_ptr(addr, domain)
+			return target_struct.from_pointer(ptr)
+		end)
+		return struct
+	end
 
-
+	local function create_item(address, domain)
+		local item = {
+			_address = address,
+			_domain = domain,
+		}
+		setmetatable(item, item_meta)
+		return item
+	end
 	local function get_item(address)
+		assert(domain ~= nil, "Struct can only be accessed by pointer")
 		assertf(address >= 0 and address <= max_address and address % padded_size == 0,
 			"Invalid %s address %X", domain, address)
 
@@ -134,11 +166,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 			return false
 		end
 
-		local item = {
-			_address = address,
-		}
-		setmetatable(item, item_meta)
-		return item
+		return create_item(address, domain)
 	end
 
 	-- iterator for each instance of the struct in the domain
@@ -162,12 +190,20 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		return next_key, item[next_key]
 	end
 
+	-- Get a struct instance from its dedicated memory domain
 	function struct.from_address(address)
 		return get_item(address) or nil
 	end
 
+	-- Get a struct instance from its dedicated memory domain
 	function struct.from_index(index)
-		return get_item((index - 1) * padded_size) or nil
+		return get_item((index - 1) * (padded_size or 0)) or nil
+	end
+
+	-- Get a struct instance from the system bus
+	function struct.from_pointer(pointer)
+		assertf(pointer % struct.alignment == 0, "Unaligned pointer %X", pointer)
+		return create_item(pointer, BusDomain)
 	end
 
 	function items_meta:__index(index)
