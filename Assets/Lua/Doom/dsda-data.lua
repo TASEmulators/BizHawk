@@ -304,6 +304,46 @@ dsda.player = dsda.struct_layout(nil, 1024, "Players", dsda.MAX_PLAYERS)
 	.u8   ("hazardinterval")
 	.done ()
 
+-- mobjinfo_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L6525-L6589
+dsda.mobjinfo = dsda.struct_layout()
+	.s32  ("doomednum")
+	.s32  ("spawnstate")
+	.s32  ("spawnhealth")
+	.s32  ("seestate")
+	.s32  ("seesound")
+	.s32  ("reactiontime")
+	.s32  ("attacksound")
+	.s32  ("painstate")
+	.s32  ("painchance")
+	.s32  ("painsound")
+	.s32  ("meleestate")
+	.s32  ("missilestate")
+	.s32  ("deathstate")
+	.s32  ("xdeathstate")
+	.s32  ("deathsound")
+	.s32  ("speed")
+	.s32  ("radius")
+	.s32  ("height")
+	.s32  ("mass")
+	.s32  ("damage")
+	.s32  ("activesound")
+	.s64  ("flags") -- mobjflags
+	.s32  ("raisestate")
+	.s32  ("droppeditem") -- mobjtype_t
+	-- heretic
+	.s32  ("crashstate")
+	.s64  ("flags2")
+	-- mbf21
+	.s32  ("infighting_group")
+	.s32  ("projectile_group")
+	.s32  ("splash_group")
+	.s32  ("ripsound")
+	.s32  ("altspeed")
+	.s32  ("meleerange")
+	-- misc
+	.s32  ("bloodcolor")
+	.s32  ("visibility")
+
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 dsda.mobj
 	.add  ("thinker", 44, 8)
@@ -328,10 +368,10 @@ dsda.mobj
 	.s32  ("momz")
 	.s32  ("validcount")
 	.s32  ("type") -- mobjtype_t
-	.ptr  ("info")
+	.ptrto("info", dsda.mobjinfo)
 	.s32  ("tics")
 	.ptr  ("state")
-	.s64  ("flags")
+	.s64  ("flags") -- mobjflags
 	.s32  ("intflags")
 	.s32  ("health")
 	.s16  ("movedir")
