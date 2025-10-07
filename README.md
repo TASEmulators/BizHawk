@@ -62,6 +62,7 @@ EmuHawk's features (common across all cores) are:
 
 Supported consoles and computers:
 
+* 3DO
 * Apple II
 * Arcade machines
 * Atari
@@ -74,6 +75,8 @@ Supported consoles and computers:
 	* Amiga
 	* Commodore 64
 * Coleco Industries ColecoVision
+* Doom
+* DOS / Windows
 * Fairchild Channel F
 * GCE Vectrex
 * Magnavox Odyssey² / Videopac G7000
@@ -329,6 +332,7 @@ In the table below, core names in **bold** are accuracy-focused and acceptable o
 
 System | Cores
 --:|:--
+3DO | **Opera**
 3DS | **Encore**
 Apple II | **Virtu**
 Amiga | **UAE**
@@ -340,6 +344,8 @@ Atari Lynx | **Handy**
 Channel F | **ChannelFHawk**
 Commodore 64 | **C64Hawk**
 ColecoVision | **ColecoHawk**
+Doom | **DSDA-Doom**
+DOS / Windows | **DOSBox-X**
 Game Boy / Color | **Gambatte**, **GBHawk**, **SameBoy**
 Game Boy Advance | **mGBA**
 Intellivision | **IntelliHawk**
