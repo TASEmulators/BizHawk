@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Common
 
 		public override byte PeekByte(long addr)
 		{
+			if (addr < 0 || Size <= addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
 			return Peek(addr);
 		}
 
@@ -39,6 +40,7 @@ namespace BizHawk.Emulation.Common
 				FailPokingNotAllowed();
 				return;
 			}
+			if (addr < 0 || Size <= addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
 			_poke.Invoke(addr, val);
 		}
 
@@ -58,6 +60,10 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_bulkPeekUshort != null)
 			{
+				var start = addresses.Start;
+				if (start < 0 || Size <= start) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), start, message: string.Format(ERR_FMT_STR_START_OOR, Size));
+				var endExcl = start + checked((long) addresses.Count());
+				if (Size < endExcl) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), endExcl, message: string.Format(ERR_FMT_STR_END_OOR, Size));
 				_bulkPeekUshort.Invoke(addresses, bigEndian, values);
 			}
 			else
@@ -70,6 +76,10 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_bulkPeekUint != null)
 			{
+				var start = addresses.Start;
+				if (start < 0 || Size <= start) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), start, message: string.Format(ERR_FMT_STR_START_OOR, Size));
+				var endExcl = start + checked((long) addresses.Count());
+				if (Size < endExcl) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), endExcl, message: string.Format(ERR_FMT_STR_END_OOR, Size));
 				_bulkPeekUint.Invoke(addresses, bigEndian, values);
 			}
 			else
