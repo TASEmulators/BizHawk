@@ -20,6 +20,12 @@ namespace BizHawk.Emulation.Common
 			Unknown,
 		}
 
+		protected const string ERR_FMT_STR_ADDR_OOR = "address must be in 0..<{0}";
+
+		protected const string ERR_FMT_STR_END_OOR = "last address of range must be in 0..<{0}";
+
+		protected const string ERR_FMT_STR_START_OOR = "first address of range must be in 0..<{0}";
+
 		public string Name { get; protected set; }
 
 		public long Size { get; protected set; }
@@ -30,12 +36,17 @@ namespace BizHawk.Emulation.Common
 
 		public bool Writable { get; protected set; }
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="addr"/> not in <c>0..&lt;Size</c></exception>
+		/// <exception cref="IndexOutOfRangeException">some implementations throw this instead of <see cref="ArgumentOutOfRangeException"/></exception>
 		public abstract byte PeekByte(long addr);
 
+		/// <inheritdoc cref="PeekByte"/>
 		public abstract void PokeByte(long addr, byte val);
 
 		public override string ToString() => Name;
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="addr"/> (or addr implied by width of peek) not in <c>0..&lt;Size</c></exception>
+		/// <exception cref="IndexOutOfRangeException">some implementations throw this instead of <see cref="ArgumentOutOfRangeException"/></exception>
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{
 			if (bigEndian)
@@ -46,6 +57,7 @@ namespace BizHawk.Emulation.Common
 			return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
 		}
 
+		/// <inheritdoc cref="PeekUshort"/>
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
 			ReadOnlySpan<byte> scratch = stackalloc byte[]
@@ -60,6 +72,8 @@ namespace BizHawk.Emulation.Common
 				: BinaryPrimitives.ReadUInt32LittleEndian(scratch);
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="addr"/> (or addr implied by width of poke) not in <c>0..&lt;Size</c></exception>
+		/// <exception cref="IndexOutOfRangeException">some implementations throw this instead of <see cref="ArgumentOutOfRangeException"/></exception>
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
 			if (bigEndian)
@@ -74,6 +88,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		/// <inheritdoc cref="PokeUshort"/>
 		public virtual void PokeUint(long addr, uint val, bool bigEndian)
 		{
 			Span<byte> scratch = stackalloc byte[4];
@@ -85,6 +100,8 @@ namespace BizHawk.Emulation.Common
 			PokeByte(addr + 3, scratch[3]);
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="addresses"/> not contained in <c>0..&lt;Size</c></exception>
+		/// <exception cref="IndexOutOfRangeException">some implementations throw this instead of <see cref="ArgumentOutOfRangeException"/></exception>
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
@@ -104,6 +121,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		/// <inheritdoc cref="BulkPeekByte"/>
 		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
@@ -128,6 +146,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		/// <inheritdoc cref="BulkPeekByte"/>
 		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));

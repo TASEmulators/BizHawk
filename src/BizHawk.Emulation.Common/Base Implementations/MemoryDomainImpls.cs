@@ -118,10 +118,11 @@ namespace BizHawk.Emulation.Common
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				Data[addr] = val;
+				return;
 			}
+			Data[addr] = val;
 		}
 
 		public MemoryDomainByteArray(string name, Endian endian, byte[] data, bool writable, int wordSize)
@@ -181,48 +182,36 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public unsafe class MemoryDomainIntPtr : MemoryDomain
+	public class MemoryDomainIntPtr : MemoryDomain
 	{
 		public IntPtr Data { get; set; }
 
-		public override byte PeekByte(long addr)
+		public unsafe override byte PeekByte(long addr)
 		{
-			if ((ulong)addr < (ulong)Size)
-			{
-				return ((byte*)Data)[addr];
-			}
-
-			throw new ArgumentOutOfRangeException(nameof(addr));
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			return ((byte*) Data)[addr];
 		}
 
-		public override void PokeByte(long addr, byte val)
+		public override unsafe void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					((byte*)Data)[addr] = val;
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addr));
-				}
+				return;
 			}
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			((byte*) Data)[addr] = val;
 		}
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
+			//TODO why are we casting `long`s to `ulong` here?
 			var start = (ulong)addresses.Start;
+			if ((ulong) Size <= start) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), start, message: string.Format(ERR_FMT_STR_START_OOR, Size));
 			var count = addresses.Count();
-
-			if (start < (ulong)Size && (start + count) <= (ulong)Size)
-			{
-				Marshal.Copy((IntPtr)((ulong)Data + start), values, 0, (int)count);
-			}
-			else
-			{
-				throw new ArgumentOutOfRangeException(nameof(addresses));
-			}
+			var endExcl = start + count;
+			if ((ulong) Size < endExcl) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), endExcl, message: string.Format(ERR_FMT_STR_END_OOR, Size));
+			Marshal.Copy(source: (IntPtr) ((ulong) Data + start), destination: values, startIndex: 0, length: (int) count);
 		}
 
 		public void SetSize(long size)
@@ -248,33 +237,20 @@ namespace BizHawk.Emulation.Common
 
 		public override byte PeekByte(long addr)
 		{
-			if ((ulong)addr < (ulong)Size)
-			{
-				using (_monitor.EnterExit())
-				{
-					return ((byte*)Data)[addr];
-				}
-			}
-
-			throw new ArgumentOutOfRangeException(nameof(addr));
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			using (_monitor.EnterExit()) return ((byte*) Data)[addr];
 		}
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					using (_monitor.EnterExit())
-					{
-						((byte*)Data)[addr] = val;
-					}
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addr));
-				}
+				return;
 			}
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			using (_monitor.EnterExit()) ((byte*) Data)[addr] = val;
 		}
 
 		public void SetSize(long size)
@@ -307,27 +283,20 @@ namespace BizHawk.Emulation.Common
 
 		public override byte PeekByte(long addr)
 		{
-			if ((ulong)addr < (ulong)Size)
-			{
-				return ((byte*)Data)[addr ^ 1];
-			}
-
-			throw new ArgumentOutOfRangeException(nameof(addr));
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			return ((byte*) Data)[addr ^ 1L];
 		}
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					((byte*)Data)[addr ^ 1] = val;
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addr));
-				}
+				return;
 			}
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			((byte*) Data)[addr ^ 1L] = val;
 		}
 
 		public MemoryDomainIntPtrSwap16(string name, Endian endian, IntPtr data, long size, bool writable)
@@ -348,33 +317,20 @@ namespace BizHawk.Emulation.Common
 
 		public override byte PeekByte(long addr)
 		{
-			if ((ulong)addr < (ulong)Size)
-			{
-				using (_monitor.EnterExit())
-				{
-					return ((byte*)Data)[addr ^ 1];
-				}
-			}
-
-			throw new ArgumentOutOfRangeException(nameof(addr));
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			using (_monitor.EnterExit()) return ((byte*) Data)[addr ^ 1L];
 		}
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					using (_monitor.EnterExit())
-					{
-						((byte*)Data)[addr ^ 1] = val;
-					}
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addr));
-				}
+				return;
 			}
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			using (_monitor.EnterExit()) ((byte*) Data)[addr ^ 1L] = val;
 		}
 
 		public MemoryDomainIntPtrSwap16Monitor(string name, Endian endian, IntPtr data, long size, bool writable,

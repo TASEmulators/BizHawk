@@ -34,19 +34,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			public override byte PeekByte(long addr)
 			{
-				if ((ulong)addr >= (ulong)_systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
+				//TODO why are we casting `long`s to `ulong` here?
+				if ((ulong) _systemBusSize <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
 				addr += _firstOffset;
-				return _core.mame_read_byte((uint)addr << _systemBusAddressShift);
+				return _core.mame_read_byte((uint) addr << _systemBusAddressShift);
 			}
 
 			public override void PokeByte(long addr, byte val)
 			{
-				if (Writable)
+				if (!Writable)
 				{
-					if ((ulong)addr >= (ulong)_systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					addr += _firstOffset;
-					_core.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
+					return;
 				}
+				//TODO why are we casting `long`s to `ulong` here?
+				if ((ulong) _systemBusSize <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+				addr += _firstOffset;
+				_core.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
 			}
 
 			public override void Enter()
