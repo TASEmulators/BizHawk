@@ -43,10 +43,12 @@ end
 
 -- Returns the lower 4 bytes of an 8 byte pointer
 function dsda.read_ptr(addr, domain)
-	if dsda.check_pointers and read_u32(addr + 4, domain) ~= WBX_POINTER_HI then
-		error(string.format("Invalid pointer 0x%016X at %s 0x%X", dsda.read_s64_le(addr, domain), domain, addr))
+	local lo = read_u32(addr, domain)
+	if dsda.check_pointers then
+		local hi = read_u32(addr + 4, domain)
+		assertf(hi == WBX_POINTER_HI or hi | lo == 0, "Invalid pointer 0x%08X%08X at %s 0x%X", hi, lo, domain, addr)
 	end
-	return read_u32(addr, domain)
+	return lo
 end
 
 function dsda.read_bool(addr, domain)
