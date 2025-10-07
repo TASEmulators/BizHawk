@@ -86,6 +86,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 
 	local items_meta = {}
 	local item_props = {}
+	local item_funcs = {}
 	local item_meta = {}
 	setmetatable(struct.items, items_meta)
 
@@ -148,6 +149,14 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	end
 	function struct.done()
 		struct.align(struct.alignment)
+		return struct
+	end
+	function struct.prop(name, func)
+		item_props[name] = func
+		return struct
+	end
+	function struct.func(name, func)
+		item_funcs[name] = func
 		return struct
 	end
 
@@ -226,6 +235,8 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	function item_meta:__index(name)
 		local prop = item_props[name]
 		if prop then return prop(self) end
+		local func = item_funcs[name]
+		if func then return func end
 	end
 
 	function item_meta:__pairs()
