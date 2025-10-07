@@ -59,6 +59,21 @@ local function read_float_le(addr, domain)
 	return readfloat(addr, false, domain)
 end
 
+local function next_linked(state, prev)
+	local next
+	if prev == nil then
+		next = state.start
+	else
+		next = prev[state.key]
+	end
+	local value = state.value
+	return next, next and value and next[value]
+end
+
+function dsda.links(start, key, value)
+	return next_linked, { start = start, key = key, value = value }
+end
+
 
 
 -- Structs ---
@@ -457,6 +472,9 @@ dsda.mobj
 	.u8   ("color")
 	.ptr  ("tranmap")
 	.done ()
+	.func ("iterate_touching_sectorlist", function (self)
+		return dsda.links(self.touching_sectorlist, "m_tnext", "m_sector")
+	end)
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
 dsda.sector
@@ -531,6 +549,12 @@ dsda.sector
 	.s32  ("ceiling_xscale")
 	.s32  ("ceiling_yscale")
 	.done ()
+	.func ("iterate_thinglist", function (self)
+		return dsda.links(self.thinglist, "snext")
+	end)
+	.func ("iterate_touching_thinglist", function (self)
+		return dsda.links(self.touching_thinglist, "m_snext", "m_thing")
+	end)
 
 -- vertex_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L70-L80
 dsda.vertex = dsda.struct_layout()
