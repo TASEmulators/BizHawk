@@ -249,6 +249,33 @@ end
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 dsda.mobj = dsda.struct_layout(nil, 512, "Things")
 
+-- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
+dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
+
+-- msecnode_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L373-L382
+dsda.msecnode = dsda.struct_layout()
+dsda.msecnode
+	.ptrto("m_sector", dsda.sector)
+	.ptrto("m_thing", dsda.mobj)
+	.ptrto("m_tprev", dsda.msecnode)
+	.ptrto("m_tnext", dsda.msecnode)
+	.ptrto("m_sprev", dsda.msecnode)
+	.ptrto("m_snext", dsda.msecnode)
+	.bool ("visited")
+	.done ()
+
+-- state_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L5757-L5767
+dsda.state = dsda.struct_layout()
+	.s32  ("sprite") -- spritenum_t
+	.s64  ("frame")
+	.s64  ("tics")
+	.ptr  ("action")
+	.s32  ("nextstate")
+	.s64  ("misc1")
+	.s64  ("misc2")
+	.array("args", "s64", 8)
+	.s32  ("flags")
+
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
 dsda.player = dsda.struct_layout(nil, 1024, "Players", dsda.MAX_PLAYERS)
 	.ptrto("mo", dsda.mobj)
@@ -384,7 +411,7 @@ dsda.mobj
 	.s32  ("type") -- mobjtype_t
 	.ptrto("info", dsda.mobjinfo)
 	.s32  ("tics")
-	.ptr  ("state")
+	.ptrto("state", dsda.state) -- state_t
 	.s64  ("flags") -- mobjflags
 	.s32  ("intflags")
 	.s32  ("health")
@@ -403,7 +430,7 @@ dsda.mobj
 	.ptrto("lastenemy", dsda.mobj)
 	.s32  ("friction")
 	.s32  ("movefactor")
-	.ptr  ("touching_sectorlist")
+	.ptrto("touching_sectorlist", dsda.msecnode) -- start of msecnode.m_tnext linked list
 	.s32  ("PrevX")
 	.s32  ("PrevY")
 	.s32  ("PrevZ")
@@ -432,7 +459,7 @@ dsda.mobj
 	.done ()
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
+dsda.sector
 	.s32  ("iSectorID")
 	.u32  ("flags")
 	.s32  ("floorheight")
@@ -448,7 +475,7 @@ dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
 	.add  ("soundorg", 60, 8) -- degenmobj_t;
 	.s32  ("validcount")
 	.s32  ("gl_validcount")
-	.ptrto("thinglist", dsda.mobj) -- start of snext linked list
+	.ptrto("thinglist", dsda.mobj) -- start of mobj.snext linked list
 	.s32  ("friction")
 	.s32  ("movefactor")
 	.ptr  ("floordata")
@@ -462,7 +489,7 @@ dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
 	.s16  ("midmapmap")
 	.s16  ("topmap")
 	.s16  ("colormap")
-	.ptr  ("touching_thinglist")
+	.ptrto("touching_thinglist", dsda.msecnode) -- start of msecnode.m_snext linked list
 	.s32  ("linecount")
 	.ptr  ("lines") -- pointer to pointer to line
 	.s32  ("floorsky")
