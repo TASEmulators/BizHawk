@@ -351,12 +351,12 @@ dsda.mobj
 	.s32  ("y")
 	.s32  ("z")
 	.ptrto("snext", dsda.mobj)
-	.ptr  ("sprev") -- pointer to pointer
+	.ptr  ("sprev") -- pointer to pointer to mobj
 	.u32  ("angle")
 	.s32  ("sprite") -- spritenum_t
 	.s32  ("frame")
-	.ptr  ("bnext")
-	.ptr  ("bprev")
+	.ptrto("bnext", dsda.mobj)
+	.ptr  ("bprev") -- pointer to pointer to mobj
 	.ptr  ("subsector")
 	.s32  ("floorz")
 	.s32  ("ceilingz")
@@ -450,7 +450,7 @@ dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
 	.s16  ("colormap")
 	.ptr  ("touching_thinglist")
 	.s32  ("linecount")
-	.ptr  ("lines") -- pointer to pointer
+	.ptr  ("lines") -- pointer to pointer to line
 	.s32  ("floorsky")
 	.s32  ("ceilingsky")
 	.s32  ("floor_xoffs")
