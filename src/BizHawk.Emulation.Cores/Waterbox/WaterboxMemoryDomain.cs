@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
@@ -152,6 +153,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			//TODO why are we casting `long`s to `ulong` here?

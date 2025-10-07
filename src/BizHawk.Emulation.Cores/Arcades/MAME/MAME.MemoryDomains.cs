@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				if (!Writable)
 				{
+					FailPokingNotAllowed();
 					return;
 				}
 				//TODO why are we casting `long`s to `ulong` here?

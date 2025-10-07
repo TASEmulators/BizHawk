@@ -34,7 +34,12 @@ namespace BizHawk.Emulation.Common
 
 		public override void PokeByte(long addr, byte val)
 		{
-			_poke?.Invoke(addr, val);
+			if (_poke is null)
+			{
+				FailPokingNotAllowed();
+				return;
+			}
+			_poke.Invoke(addr, val);
 		}
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
@@ -120,6 +125,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			Data[addr] = val;
@@ -163,7 +169,10 @@ namespace BizHawk.Emulation.Common
 		public override void PokeByte(long addr, byte val)
 		{
 			if (!Writable)
+			{
+				FailPokingNotAllowed();
 				return;
+			}
 			long bit0 = addr & 1;
 			addr >>= 1;
 			if (bit0 == 0)
@@ -196,6 +205,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			//TODO why are we casting `long`s to `ulong` here?
@@ -246,6 +256,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			//TODO why are we casting `long`s to `ulong` here?
@@ -292,6 +303,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			//TODO why are we casting `long`s to `ulong` here?
@@ -326,6 +338,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (!Writable)
 			{
+				FailPokingNotAllowed();
 				return;
 			}
 			//TODO why are we casting `long`s to `ulong` here?

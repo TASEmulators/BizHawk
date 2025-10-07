@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System.Buffers.Binary;
+using System.Diagnostics;
 
 using BizHawk.Common;
 
@@ -26,6 +27,10 @@ namespace BizHawk.Emulation.Common
 
 		protected const string ERR_FMT_STR_START_OOR = "first address of range must be in 0..<{0}";
 
+		[Conditional("DEBUG")]
+		protected static void FailPokingNotAllowed()
+			=> throw new NotImplementedException($"{nameof(MemoryDomain)} does not support poking");
+
 		public string Name { get; protected set; }
 
 		public long Size { get; protected set; }
@@ -41,6 +46,7 @@ namespace BizHawk.Emulation.Common
 		public abstract byte PeekByte(long addr);
 
 		/// <inheritdoc cref="PeekByte"/>
+		/// <exception cref="NotSupportedException">poking is unavailable (<see cref="Writable"/> is <see langword="false"/>)</exception>
 		public abstract void PokeByte(long addr, byte val);
 
 		public override string ToString() => Name;
@@ -74,6 +80,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="addr"/> (or addr implied by width of poke) not in <c>0..&lt;Size</c></exception>
 		/// <exception cref="IndexOutOfRangeException">some implementations throw this instead of <see cref="ArgumentOutOfRangeException"/></exception>
+		/// <exception cref="NotSupportedException">poking is unavailable (<see cref="Writable"/> is <see langword="false"/>)</exception>
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
 			if (bigEndian)
