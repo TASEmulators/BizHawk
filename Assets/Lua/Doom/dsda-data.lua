@@ -127,7 +127,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	function struct.u32  (name) return struct.add(name, 4, true, memory.read_u32_le) end
 	function struct.s64  (name) return struct.add(name, 8, true, dsda.read_s64_le) end
 	function struct.float(name) return struct.add(name, 4, true, read_float_le) end
-	function struct.ptr  (name) return struct.s64(name) end
+	function struct.ptr  (name) return struct.add(name, 8, true, dsda.read_ptr) end
 	function struct.bool (name) return struct.add(name, 4, true, dsda.read_bool) end
 	function struct.array(name, type, count, ...)
 		--console.log("array", type, count, ...)
@@ -210,8 +210,9 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	-- Get a struct instance from the system bus
 	function struct.from_pointer(pointer)
 		if pointer == 0 then return nil end
+		assertf(pointer >> 32 == 0 or pointer >> 32 == WBX_POINTER_HI, "Invalid pointer %X", pointer)
 		assertf(pointer % struct.alignment == 0, "Unaligned pointer %X", pointer)
-		return create_item(pointer, BusDomain)
+		return create_item(pointer & 0xFFFFFFFF, BusDomain)
 	end
 
 	function items_meta:__index(index)
