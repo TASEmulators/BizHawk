@@ -310,6 +310,11 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
+					if (!Directory.Exists(initialDirectory))
+					{
+						initialDirectory = Config.PathEntries.RomAbsolutePath();
+						Directory.CreateDirectory(initialDirectory);
+					}
 				}
 			}
 			else
