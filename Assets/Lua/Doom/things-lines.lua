@@ -19,13 +19,16 @@ local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map 
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
 	player      = { color = 0xFF60A0FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
-	enemy       = { color = 0xFFF00000, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	enemy       = { color = 0xFFF00000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	corpse      = { color = 0x80AA0000, radius_min_zoom = 0.00, text_min_zoom = 0.30, },
 	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.05, text_min_zoom = 0.50, },
-	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.05, text_min_zoom = 0.75, },
-	item        = { color = 0xFF8060FF, radius_min_zoom = 0.05, text_min_zoom = 0.75, },
-	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.75, text_min_zoom = 1.50, },
+	item        = { color = 0xFF8060FF, radius_min_zoom = 0.75, text_min_zoom = 1.50, },
+	misc        = { color = 0xFFA0A0A0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+	solid       = { color = 0xFF505050, radius_min_zoom = 0.75, text_min_zoom = false, },
+--	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+	highlight   = { color = 0xFFFF00FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 }
 
 -- shortcuts
@@ -74,6 +77,11 @@ local LastMouse = {
 }
 -- forward declarations
 local Lines         = {}
+local PlayerTypes
+local EnemyTypes
+local MissileTypes
+local MiscTypes
+local InertTypes
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -155,10 +163,24 @@ local function get_line_count(str)
 	return lines, longest
 end
 
-local function get_mobj_pref(mobj)
+local function to_lookup(table)
+	local lookup = {}
+	for k, v in pairs(table) do
+		lookup[v] = k
+	end
+	return lookup
+end
+
+local function get_mobj_pref(mobj, mobjtype)
+	if HighlightTypes[mobjtype] then return MapPrefs.highlight end
+	if InertTypes[mobjtype] then return MapPrefs.inert end
+	if MiscTypes[mobjtype] then return MapPrefs.misc end
+	if MissileTypes[mobjtype] then return MapPrefs.missile end
+	if PlayerTypes[mobjtype] then return MapPrefs.player end
+
 	local flags = mobj.flags
 	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
-	if flags & (MobjFlags.COUNTKILL | MobjFlags.SKULLFLY) ~= 0 then
+	if flags & MobjFlags.COUNTKILL ~= 0 or EnemyTypes[mobjtype] then
 		if flags & MobjFlags.CORPSE ~= 0 then return MapPrefs.corpse end
 		return MapPrefs.enemy
 	end
@@ -166,11 +188,12 @@ local function get_mobj_pref(mobj)
 	if flags & MobjFlags.SPECIAL ~= 0 then return MapPrefs.item end
 	if flags & MobjFlags.MISSILE ~= 0 then return MapPrefs.missile end
 	if flags & MobjFlags.SHOOTABLE ~= 0 then return MapPrefs.shootable end
+	if flags & MobjFlags.SOLID ~= 0 then return MapPrefs.solid end
 	return MapPrefs.inert
 end
 
-local function get_mobj_color(mobj)
-	local pref = get_mobj_pref(mobj)
+local function get_mobj_color(mobj, mobjtype)
+	local pref = get_mobj_pref(mobj, mobjtype)
 	if not pref then return end
 	local color = pref.color
 	if not color or color < 0x01000000 then return end
@@ -210,7 +233,8 @@ local function iterate()
 	if Init then return end
 
 	for addr, mobj in pairs(dsda.mobj.items) do
-		local radius_color, text_color = get_mobj_color(mobj)
+		local type = mobj.type
+		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
 			local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
 
@@ -376,6 +400,70 @@ function make_buttons()
 	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
 end
+
+-- Additional types that are not identifiable by flags alone
+HighlightTypes = to_lookup({
+
+})
+PlayerTypes = to_lookup({
+	MobjType.PLAYER,
+	MobjType.HERETIC_PLAYER,
+	MobjType.HERETIC_CHICPLAYER,
+	MobjType.HEXEN_PLAYER_FIGHTER,
+	MobjType.HEXEN_PLAYER_CLERIC,
+	MobjType.HEXEN_PLAYER_MAGE,
+	MobjType.HEXEN_PIGPLAYER,
+
+})
+EnemyTypes = to_lookup({
+	MobjType.SKULL,
+})
+MissileTypes = to_lookup({
+	MobjType.HEXEN_THROWINGBOMB,
+	MobjType.HERETIC_FIREBOMB, MobjType.HEXEN_FIREBOMB,
+	MobjType.HEXEN_POISONBAG, MobjType.HEXEN_POISONCLOUD,
+	MobjType.HEXEN_DRAGON_FX2,
+	MobjType.HEXEN_SUMMON_FX,
+})
+MiscTypes = to_lookup({
+	MobjType.BOSSTARGET,
+	MobjType.TELEPORTMAN, MobjType.HERETIC_TELEPORTMAN, MobjType.HEXEN_TELEPORTMAN,
+	MobjType.PUSH, MobjType.PULL,
+	MobjType.HERETIC_PODGENERATOR,
+	MobjType.HEXEN_MAPSPOT, MobjType.HEXEN_MAPSPOTGRAVITY,
+	MobjType.HEXEN_THRUSTFLOOR_UP, MobjType.HEXEN_THRUSTFLOOR_DOWN,
+	MobjType.HEXEN_QUAKE_FOCUS,
+	MobjType.HEXEN_ZPOISONSHROOM,
+})
+InertTypes = to_lookup({
+	MobjType.HERETIC_BLOODSPLATTER,
+	MobjType.HERETIC_FEATHER,
+	MobjType.HERETIC_PODGOO,
+	MobjType.HERETIC_SPLASH,
+	MobjType.HERETIC_SLUDGECHUNK,
+	MobjType.HERETIC_TELEGLITTER, MobjType.HERETIC_TELEGLITTER2,
+	MobjType.HEXEN_BLOODSPLATTER,
+	MobjType.HEXEN_CORPSEBLOODDRIP,
+	MobjType.HEXEN_LEAF1, MobjType.HEXEN_LEAF2,
+	MobjType.HEXEN_SPLASH,
+	MobjType.HEXEN_SLUDGECHUNK,
+	MobjType.HEXEN_WATER_DRIP,
+	MobjType.HEXEN_DIRT1, MobjType.HEXEN_DIRT2, MobjType.HEXEN_DIRT3,
+	MobjType.HEXEN_DIRT4, MobjType.HEXEN_DIRT5, MobjType.HEXEN_DIRT6,
+	MobjType.HEXEN_FIREDEMON_FX1, MobjType.HEXEN_FIREDEMON_FX2, MobjType.HEXEN_FIREDEMON_FX3,
+	MobjType.HEXEN_FIREDEMON_FX4, MobjType.HEXEN_FIREDEMON_FX5,
+	MobjType.HEXEN_ICEGUY_WISP1, MobjType.HEXEN_ICEGUY_WISP2,
+	MobjType.HEXEN_KORAX_SPIRIT1, MobjType.HEXEN_KORAX_SPIRIT2, MobjType.HEXEN_KORAX_SPIRIT3,
+	MobjType.HEXEN_KORAX_SPIRIT4, MobjType.HEXEN_KORAX_SPIRIT5, MobjType.HEXEN_KORAX_SPIRIT6,
+	MobjType.HEXEN_POTTERYBIT1,
+	MobjType.HEXEN_SGSHARD0, MobjType.HEXEN_SGSHARD1, MobjType.HEXEN_SGSHARD2,
+	MobjType.HEXEN_SGSHARD3, MobjType.HEXEN_SGSHARD4, MobjType.HEXEN_SGSHARD5,
+	MobjType.HEXEN_SGSHARD6, MobjType.HEXEN_SGSHARD7, MobjType.HEXEN_SGSHARD8,
+	MobjType.HEXEN_SGSHARD9,
+	MobjType.HEXEN_WRAITHFX3,
+})
+
+
 
 event.onexit(function()
 	gui.clearGraphics()
