@@ -83,6 +83,8 @@ namespace BizHawk.Client.Common
 
 		bool IsTurbo();
 
+		bool IsRewinding();
+
 		/// <summary>
 		/// Load a savestate specified by its name
 		/// </summary>
