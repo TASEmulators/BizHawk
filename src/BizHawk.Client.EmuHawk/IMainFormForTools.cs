@@ -38,8 +38,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool IsFastForwarding { get; }
 
-		bool IsRewinding { get; }
-
 		int? PauseOnFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
