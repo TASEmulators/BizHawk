@@ -197,8 +197,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			}
 
 			CoreComm.Notify((uint)_discIndex < _cdReaders.Length
-				? "No CDROM inserted"
-				: $"Selected CDROM {_discIndex}: {_discNames[_discIndex]}");
+				? $"Selected CDROM {_discIndex}: {_discNames[_discIndex]}"
+				: "No CDROM inserted");
 		}
 
 		private void SelectPrevDisc()
@@ -209,9 +209,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 				_discIndex = -1;
 			}
 
-			CoreComm.Notify((uint)_discIndex < _cdReaders.Length
-				? "No CDROM inserted"
-				: $"Selected CDROM {_discIndex}: {_discNames[_discIndex]}");
+			CoreComm.Notify((uint) _discIndex < _cdReaders.Length
+				? $"Selected CDROM {_discIndex}: {_discNames[_discIndex]}"
+				: "No CDROM inserted");
 		}
 
 		private void CDRead(int lba, IntPtr dest)
