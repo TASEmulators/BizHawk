@@ -24,8 +24,6 @@ dsda.MAX_PLAYERS = 4
 
 
 -- Locals
-local read_u8   = memory.read_u8
-local read_u24  = memory.read_u24_le
 local read_u32  = memory.read_u32_le
 local readfloat = memory.readfloat
 
