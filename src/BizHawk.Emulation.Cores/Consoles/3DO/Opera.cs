@@ -188,8 +188,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		private const int CD_SECTOR_SIZE = 2048;
 		private readonly byte[] _sectorBuffer = new byte[CD_SECTOR_SIZE];
 
+		private bool _nextDiscPressed;
+		private bool _previousDiscPressed;
+
 		private void SelectNextDisc()
 		{
+			if (_nextDiscPressed) return;
+
 			_discIndex++;
 			if (_discIndex == _cdReaders.Length)
 			{
@@ -203,6 +208,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 
 		private void SelectPrevDisc()
 		{
+			if (_previousDiscPressed) return;
+
 			_discIndex--;
 			if (_discIndex < -1)
 			{
@@ -243,6 +250,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 			{
 				if (controller.IsPressed("Next Disc")) SelectNextDisc();
 				if (controller.IsPressed("Prev Disc")) SelectPrevDisc();
+				_nextDiscPressed = controller.IsPressed("Next Disc");
+				_previousDiscPressed = controller.IsPressed("Prev Disc");
 			}
 
 			DriveLightOn = false;
@@ -344,11 +353,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Panasonic3DO
 		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 			writer.Write(_discIndex);
+			writer.Write(_nextDiscPressed);
+			writer.Write(_previousDiscPressed);
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			_discIndex = reader.ReadInt32();
+			_nextDiscPressed = reader.ReadBoolean();
+			_previousDiscPressed = reader.ReadBoolean();
 		}
 	}
 }
