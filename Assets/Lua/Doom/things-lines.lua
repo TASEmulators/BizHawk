@@ -15,6 +15,7 @@ local CHAR_HEIGHT       = 16
 local NEGATIVE_MAXIMUM  = 1 << 63
 local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
 local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
+local VANILLA_DOOM      = false -- cache values that won't change in vanilla Doom, but can with advanced features (e.g. polyobjects)
 
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
@@ -75,6 +76,7 @@ local LastMouse = {
 	y     = 0,
 	wheel = 0
 }
+local LastFramecount = -1
 -- forward declarations
 local Lines         = {}
 local PlayerTypes
@@ -265,7 +267,7 @@ local function iterate()
 		-- Line positions need to be updated for polyobjects
 		-- No way to tell if a line is part of a polyobject, but they update validcount
 		-- when moving so this is a decent way of cutting down on memory reads
-		local validcount = line.validcount
+		local validcount = not VANILLA_DOOM and line.validcount
 		if validcount ~= line._validcount then
 			local v1, v2 = line.v1, line.v2
 			line._validcount = validcount
@@ -289,7 +291,7 @@ local function iterate()
 	end
 end
 
-local function init_objects()
+local function init_mobj_bounds()
 	for addr, mobj in pairs(dsda.mobj.items) do
 		local x    = mobj.x / 0xffff
 		local y    = mobj.y / 0xffff * -1
@@ -298,9 +300,25 @@ local function init_objects()
 		if y < OB.top    then OB.top    = y end
 		if y > OB.bottom then OB.bottom = y end
 	end
+end
 
+local function init_cache()
 	Lines = {}
 	for addr, line in pairs(dsda.line.items) do
+		-- selectively cache certain properties. by assigning them manually the read function won't be called again
+		-- TODO: invalidate cache on map change
+
+		-- assumption: lines can't become special, except for CmdSetLineSpecial
+		-- try to exclude lines that may have had a line id set (and therefore can be targeted by CmdSetLineSpecial)
+		-- this should only happen in Hexen+
+		if line.special == 0 and line.special_args1 == 0 then
+			line.special = 0
+		end
+
+		-- assumption: the vertex pointers never change (even if the vertex coordinates do)
+		line.v1 = line.v1
+		line.v2 = line.v2
+
 		table.insert(Lines, line)
 	end
 end
@@ -471,24 +489,39 @@ event.onexit(function()
 end)
 
 while true do
-	if Init then init_objects() end
-	
+	local framecount = emu.framecount()
+	local paused = client.ispaused()
+
+	if Init then init_mobj_bounds() end
+
+	-- re-init cache after state load, rewind, etc.
+	-- TODO: does this work with TAStudio seeking etc?
+	if framecount ~= LastFramecount and framecount ~= LastFramecount + 1 then
+		init_cache()
+	end
+
 	gui.clearGraphics()
 	gui.cleartext()
 	
 	make_buttons()
-	iterate()
-	iterate_players()
+
+	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
+	if framecount ~= LastFramecount or paused then
+		iterate()
+		iterate_players()
+	end
+
 	update_zoom()
-	
+
 	--[[--
 	text(10, client.screenheight()-170, string.format(
 		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
 		Zoom, Pan.x, Pan.y), 0xffbbddff)
 	--]]--
-	
+
 	LastScreenSize.w = client.screenwidth()
 	LastScreenSize.h = client.screenheight()
-	
+	LastFramecount = framecount
+
 	emu.yield()
 end
