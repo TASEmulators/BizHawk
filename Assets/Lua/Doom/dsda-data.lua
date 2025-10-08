@@ -267,6 +267,14 @@ dsda.mobj = dsda.struct_layout(nil, 512, "Things")
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
 dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
 
+-- subsector_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L422-L431
+dsda.subsector = dsda.struct_layout()
+	.ptrto("sector", dsda.sector)
+	.s32  ("numlines")
+	.s32  ("firstline")
+	.ptr  ("poly") -- polyobj_t
+	.done ()
+
 -- msecnode_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L373-L382
 dsda.msecnode = dsda.struct_layout()
 dsda.msecnode
@@ -413,7 +421,7 @@ dsda.mobj
 	.s32  ("frame")
 	.ptrto("bnext", dsda.mobj)
 	.ptr  ("bprev") -- pointer to pointer to mobj
-	.ptr  ("subsector")
+	.ptrto("subsector", dsda.subsector)
 	.s32  ("floorz")
 	.s32  ("ceilingz")
 	.s32  ("dropoffz")
