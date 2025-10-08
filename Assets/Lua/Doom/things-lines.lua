@@ -16,16 +16,17 @@ local NEGATIVE_MAXIMUM  = 1 << 63
 local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
 local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
 
--- Map colors (0xAARRGGBB or "name" or false)
-local ENEMY_COLOR       = 0xFFFF0000
-local ENEMY_WAIT_COLOR  = 0xFFCC0000
-local CORPSE_COLOR      = false -- 0x80CC0000
-local MISSILE_COLOR     = 0xFFFF8000
-local PLAYER_COLOR      = 0xFF0080FF
-local COUNTITEM_COLOR   = false -- 0xA0FFFFFF
-local ITEM_COLOR        = false -- 0xA0FFFFFF
-local MISC_COLOR        = false -- 0xFFFFFFFF
-local INERT_COLOR       = false -- 0x80808080
+-- Map colors (0xAARRGGBB or "name")
+local MapPrefs = {
+	player      = { color = 0xFF60A0FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	enemy       = { color = 0xFFF00000, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	corpse      = { color = 0x80AA0000, radius_min_zoom = 0.00, text_min_zoom = 0.30, },
+	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.05, text_min_zoom = 0.50, },
+	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.05, text_min_zoom = 0.75, },
+	item        = { color = 0xFF8060FF, radius_min_zoom = 0.05, text_min_zoom = 0.75, },
+	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+}
 
 -- shortcuts
 local rl       = memory.read_u32_le
@@ -154,19 +155,30 @@ local function get_line_count(str)
 	return lines, longest
 end
 
-local function get_mobj_color(mobj)
+local function get_mobj_pref(mobj)
 	local flags = mobj.flags
-	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return PLAYER_COLOR end
+	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
 	if flags & (MobjFlags.COUNTKILL | MobjFlags.SKULLFLY) ~= 0 then
-		if flags & MobjFlags.CORPSE ~= 0 then return CORPSE_COLOR end
-		if flags & MobjFlags.AMBUSH ~= 0 or mobj.target_ptr == 0 then return ENEMY_WAIT_COLOR end
-		return ENEMY_COLOR
+		if flags & MobjFlags.CORPSE ~= 0 then return MapPrefs.corpse end
+		return MapPrefs.enemy
 	end
-	if flags & MobjFlags.COUNTITEM ~= 0 then return COUNTITEM_COLOR end
-	if flags & MobjFlags.SPECIAL ~= 0 then return ITEM_COLOR end
-	if flags & MobjFlags.MISSILE ~= 0 then return MISSILE_COLOR end
-	if flags & MobjFlags.SHOOTABLE ~= 0 then return MISC_COLOR end
-	return INERT_COLOR
+	if flags & MobjFlags.COUNTITEM ~= 0 then return MapPrefs.countitem end
+	if flags & MobjFlags.SPECIAL ~= 0 then return MapPrefs.item end
+	if flags & MobjFlags.MISSILE ~= 0 then return MapPrefs.missile end
+	if flags & MobjFlags.SHOOTABLE ~= 0 then return MapPrefs.shootable end
+	return MapPrefs.inert
+end
+
+local function get_mobj_color(mobj)
+	local pref = get_mobj_pref(mobj)
+	if not pref then return end
+	local color = pref.color
+	if not color or color < 0x01000000 then return end
+	local radius_min_zoom = pref.radius_min_zoom or math.huge
+	local text_min_zoom   = pref.text_min_zoom   or math.huge
+	local radius_color    = Zoom >= radius_min_zoom and color or nil
+	local text_color      = Zoom >= text_min_zoom   and color or nil
+	return radius_color, text_color
 end
 
 local function iterate_players()
@@ -198,8 +210,8 @@ local function iterate()
 	if Init then return end
 
 	for addr, mobj in pairs(dsda.mobj.items) do
-		local color  = get_mobj_color(mobj)
-		if color then -- not hidden
+		local radius_color, text_color = get_mobj_color(mobj)
+		if radius_color or text_color then -- not hidden
 			local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
 
 			if  in_range(pos.x, 0, client.screenwidth())
@@ -214,10 +226,13 @@ local function iterate()
 				local health = mobj.health
 				local sprite = SpriteNumber[mobj.sprite]
 				--]]--
-
-				type = MobjType[type]
-				text(pos.x, pos.y, string.format("%s", type),  color)
-				box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, color)
+				if text_color then
+					type = MobjType[type]
+					text(pos.x, pos.y, string.format("%s", type),  text_color)
+				end
+				if radius_color then
+					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
+				end
 			end
 		end
 	end
