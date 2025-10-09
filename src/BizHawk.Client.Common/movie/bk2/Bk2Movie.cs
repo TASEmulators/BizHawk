@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -13,14 +14,19 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.MovieVersion] = "BizHawk v2.0.0";
 		}
 
+#pragma warning disable CS0618 // this is the sanctioned call-site
 		public virtual void Attach(IEmulator emulator)
 		{
 			Emulator = emulator;
 		}
 
-		protected bool IsAttached() => Emulator != null;
+		public void CheckAttachedMatches(IEmulator/*?*/ passed)
+			=> Debug.Assert(object.ReferenceEquals(passed, Emulator), $"Core instance doesn't match the object cached on the movie! (Missed call to {nameof(Attach)}?)");
+#pragma warning restore CS0618
 
-		public IEmulator Emulator { get; private set; }
+		[Obsolete("do not use")]
+		protected IEmulator Emulator { get; private set; }
+
 		public IMovieSession Session { get; }
 
 		protected bool MakeBackup { get; set; } = true;
@@ -52,17 +58,17 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public virtual void RecordFrame(int frame, IController source)
+		public virtual void RecordFrame(int targetFrame, int currentFrame, IController source)
 		{
 			if (Session.Settings.VBAStyleMovieLoadState)
 			{
-				if (Emulator.Frame < Log.Count)
+				if (currentFrame < Log.Count)
 				{
-					Truncate(Emulator.Frame);
+					Truncate(currentFrame);
 				}
 			}
 
-			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
+			SetFrameAt(targetFrame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 
 			Changes = true;
 		}

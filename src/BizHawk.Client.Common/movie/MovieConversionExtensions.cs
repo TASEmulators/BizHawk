@@ -2,6 +2,7 @@
 using System.Linq;
 
 using BizHawk.Common.PathExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -71,7 +72,7 @@ namespace BizHawk.Client.Common
 			return bk2;
 		}
 
-		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
+		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate, IEmulator emulator)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
@@ -115,11 +116,11 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			tas.Save();
+			tas.Save(emulator);
 			return tas;
 		}
 
-		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
+		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam, IEmulator emulator)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
@@ -146,7 +147,7 @@ namespace BizHawk.Client.Common
 				tas.Subtitles.Add(sub);
 			}
 
-			tas.Save();
+			tas.Save(emulator);
 			return tas;
 		}
 

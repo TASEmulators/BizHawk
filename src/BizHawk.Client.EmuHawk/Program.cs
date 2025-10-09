@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 					);
 					if (result == DialogResult.Yes)
 					{
-						movieSession.Movie.Save();
+						movieSession.Movie.Save(mf.Emulator);
 					}
 				}
 #endif
