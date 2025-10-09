@@ -69,6 +69,14 @@ namespace BizHawk.Client.Common
 		public LuaTable ReadBytesAsDict(long addr, int length, string domain = null)
 			=> _th.MemoryBlockToTable(APIs.Memory.ReadByteRange(addr, length, domain), addr);
 
+		[LuaMethodExample("local data = memory.read_bytes_as_string(0x100, 9, \"WRAM\")\nlocal some_s32_le, some_float = string.unpack(\"<i4f\", data)\nlocal some_byte = string.byte(data, 9)")]
+		[LuaMethod("read_bytes_as_string", "Reads {{length}} bytes starting at {{addr}} into a binary string. This string can be used with functions such as {{string.unpack}}. This string can contain any bytes including null bytes, and is not suitable for display as text.")]
+		public byte[] ReadBytesAsString(long addr, int length, string domain = null)
+		{
+			var bytes = APIs.Memory.ReadByteRange(addr, length, domain);
+			return bytes as byte[] ?? bytes.ToArray();
+		}
+
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock, string domain = null)
@@ -113,6 +121,11 @@ namespace BizHawk.Client.Common
 				APIs.Memory.WriteByte((long) addr, (uint) v, domain);
 			}
 		}
+
+		[LuaMethodExample("memory.write_bytes_as_string(0x100, string.pack(\"<i4f\", 1234, 456.789), \"WRAM\")\nmemory.write_bytes_as_string(0x108, \"\\xFE\\xED\", \"WRAM\")\nmemory.write_bytes_as_string(0x10A, string.char(0xBE, 0xEF), \"WRAM\")")]
+		[LuaMethod("write_bytes_as_string", "Writes bytes from a binary string to {{addr}}. The string can be created with functions such as {{string.pack}}, and can contain any bytes including null bytes. This is not a text encoding function.")]
+		public void WriteBytesAsString(long addr, byte[] bytes, string domain = null)
+			=> APIs.Memory.WriteByteRange(addr, bytes, domain);
 
 		[LuaMethodExample("local simemrea = memory.readfloat( 0x100, false, mainmemory.getname( ) );")]
 		[LuaMethod("readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]
