@@ -70,33 +70,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override byte PeekByte(long addr)
 		{
-			if ((ulong)addr < (ulong)Size)
-			{
-				using (_monitor.EnterExit())
-				{
-					return ((byte*)_data)[addr ^ _addressMangler];
-				}
-			}
-
-			throw new ArgumentOutOfRangeException(nameof(addr));
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			using (_monitor.EnterExit()) return ((byte*) _data)[addr ^ _addressMangler];
 		}
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					using (_monitor.EnterExit())
-					{
-						((byte*)_data)[addr ^ _addressMangler] = val;
-					}
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addr));
-				}
+				FailPokingNotAllowed();
+				return;
 			}
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			using (_monitor.EnterExit()) ((byte*) _data)[addr ^ _addressMangler] = val;
 		}
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
@@ -106,21 +92,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				base.BulkPeekByte(addresses, values);
 				return;
 			}
-
+			//TODO why are we casting `long`s to `ulong` here?
 			var start = (ulong)addresses.Start;
 			var count = addresses.Count();
-
-			if (start < (ulong)Size && (start + count) <= (ulong)Size)
-			{
-				using (_monitor.EnterExit())
-				{
-					Marshal.Copy(Z.US((ulong)_data + start), values, 0, (int)count);
-				}
-			}
-			else
-			{
-				throw new ArgumentOutOfRangeException(nameof(addresses));
-			}
+			if ((ulong) Size <= start) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), start, message: string.Format(ERR_FMT_STR_START_OOR, Size));
+			var endExcl = start + count;
+			if ((ulong) Size < endExcl) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), endExcl, message: string.Format(ERR_FMT_STR_END_OOR, Size));
+			using (_monitor.EnterExit()) Marshal.Copy(source: Z.US((ulong) _data + start), destination: values, startIndex: 0, length: (int) count);
 		}
 	}
 
@@ -164,29 +142,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override byte PeekByte(long addr)
 		{
-			if ((ulong)addr < (ulong)Size)
-			{
-				byte ret = 0;
-				_access.Access((IntPtr)(&ret), addr, 1, false);
-				return ret;
-			}
-
-			throw new ArgumentOutOfRangeException(nameof(addr));
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			byte ret = 0;
+			_access.Access((IntPtr) (&ret), address: addr, count: 1, write: false);
+			return ret;
 		}
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (Writable)
+			if (!Writable)
 			{
-				if ((ulong)addr < (ulong)Size)
-				{
-					_access.Access((IntPtr)(&val), addr, 1, true);
-				}
-				else
-				{
-					throw new ArgumentOutOfRangeException(nameof(addr));
-				}
+				FailPokingNotAllowed();
+				return;
 			}
+			//TODO why are we casting `long`s to `ulong` here?
+			if ((ulong) Size <= (ulong) addr) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: string.Format(ERR_FMT_STR_ADDR_OOR, Size));
+			_access.Access((IntPtr) (&val), address: addr, count: 1, write: true);
 		}
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
@@ -196,19 +168,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				base.BulkPeekByte(addresses, values);
 				return;
 			}
-
+			//TODO why are we casting `long`s to `ulong` here?
 			var start = (ulong)addresses.Start;
 			var count = addresses.Count();
-
-			if (start < (ulong)Size && (start + count) <= (ulong)Size)
-			{
-				fixed(byte* p = values)
-					_access.Access((IntPtr)p, (long)start, (long)count, false);
-			}
-			else
-			{
-				throw new ArgumentOutOfRangeException(nameof(addresses));
-			}
+			if ((ulong) Size <= start) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), start, message: string.Format(ERR_FMT_STR_START_OOR, Size));
+			var endExcl = start + count;
+			if ((ulong) Size < endExcl) throw new ArgumentOutOfRangeException(paramName: nameof(addresses), endExcl, message: string.Format(ERR_FMT_STR_END_OOR, Size));
+			fixed (byte* p = values) _access.Access((IntPtr) p, address: addresses.Start, count: (long) count, write: false);
 		}
 	}
 }
