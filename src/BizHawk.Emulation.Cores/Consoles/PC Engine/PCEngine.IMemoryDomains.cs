@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			domains.AddRange(_byteArrayDomains.Values);
 			domains.AddRange(_ushortArrayDomains.Values);
 
-			_memoryDomains = new MemoryDomainList(domains);
+			_memoryDomains = new MemoryDomainList(domains, this);
 			_memoryDomains.SystemBus = cpuBusDomain;
 			_memoryDomains.MainMemory = _byteArrayDomains["Main Memory"];
 
