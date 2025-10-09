@@ -1057,6 +1057,15 @@ namespace NLua
 				case bool b:
 					luaState.PushBoolean(b);
 					break;
+				case byte[] bytes:
+					luaState.PushBuffer(bytes);
+					break;
+				case Memory<byte> bytes:
+					luaState.PushBuffer(bytes.Span);
+					break;
+				case ReadOnlyMemory<byte> bytes:
+					luaState.PushBuffer(bytes.Span);
+					break;
 				default:
 				{
 					if (IsILua(o))
