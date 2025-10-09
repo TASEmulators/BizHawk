@@ -39,6 +39,18 @@ namespace BizHawk.Client.Common
 		public LuaTable Encode(string str, string encoding = "utf-8")
 			=> _th.EnumerateToLuaTable(Encoding.GetEncoding(encoding).GetBytes(str));
 
+		[LuaMethodExample("""
+			console.writeline(bizstring.fold("ABCDEFGHIKLMNOPQRSTUVWXYZ", 5));
+		""")]
+		[LuaMethod(
+			name: "fold",
+			description: "Folds (wraps) a string over multiple lines by naively chopping it at the given width."
+				+ " A newline is NOT appended to the end, the result will end with a newline iff the input ended with one."
+				+ " The width parameter is in UTF-16 code units, and the string is folded at that width regardless of how wide the text appears or whether it already contains newlines or other whitespace."
+				+ " The separator parameter, if passed, will be used instead of a newline.")]
+		public string Fold(string str, int width, string/*?*/ separator = null)
+			=> str.Fold(width: width, separator: separator);
+
 		[LuaMethodExample("local stbizhex = bizstring.hex( -12345 );")]
 		[LuaMethod("hex", "Converts the number to a string representation of the hexadecimal value of the given number")]
 		public static string Hex(long num)
