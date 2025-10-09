@@ -34,6 +34,55 @@ namespace BizHawk.Common.CollectionExtensions
 				=> _wrapped?.GetHashCode() ?? default;
 		}
 
+#if !NET6_0_OR_GREATER
+		/// <remarks>taken from .NET 9 source, MIT-licensed, specifically <see href="https://github.com/dotnet/dotnet/blob/v9.0.7/src/runtime/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/></remarks>
+		private static IEnumerable<T[]> EnumerableChunkIterator<T>(IEnumerable<T> source, int size)
+		{
+			using var iter = source.GetEnumerator();
+			// Before allocating anything, make sure there's at least one element.
+			if (!iter.MoveNext()) yield break;
+
+			// Now that we know we have at least one item, allocate an initial storage array. This is not
+			// the array we'll yield.  It starts out small in order to avoid significantly overallocating
+			// when the source has many fewer elements than the chunk size.
+			var arraySize = Math.Min(4, size);
+			int i;
+			do
+			{
+				var array = new T[arraySize];
+				array[0] = iter.Current; // Store the first item.
+				i = 1;
+				if (size != array.Length)
+				{
+					// This is the first chunk. As we fill the array, grow it as needed.
+					while (i < size && iter.MoveNext())
+					{
+						if (i >= array.Length)
+						{
+							arraySize = (int) Math.Min((uint) size, 2 * (uint) array.Length);
+							Array.Resize(ref array, arraySize);
+						}
+						array[i] = iter.Current;
+						i++;
+					}
+				}
+				else
+				{
+					// For all but the first chunk, the array will already be correctly sized.
+					// We can just store into it until either it's full or MoveNext returns false.
+					while ((uint) i < (uint) array.Length && iter.MoveNext())
+					{
+						array[i] = iter.Current;
+						i++;
+					}
+				}
+				if (i != array.Length) Array.Resize(ref array, i);
+				yield return array;
+			}
+			while (i >= size && iter.MoveNext());
+		}
+#endif
+
 		private const string ERR_MSG_IMMUTABLE_LIST = "immutable list passed to mutating method";
 
 		private const string WARN_NONGENERIC = "use generic overload";
@@ -145,6 +194,15 @@ namespace BizHawk.Common.CollectionExtensions
 
 		public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> enumerator)
 			=> new EnumeratorAsEnumerable<T>(enumerator);
+
+#if !NET6_0_OR_GREATER
+		/// <returns>chunks of length ≤ <paramref name="size"/> (the last chunk may be smaller)</returns>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="size"/> is below <c>1</c></exception>
+		public static IEnumerable<T[]> Chunk<T>(this IEnumerable<T> source, int size)
+			=> size < 1
+				? throw new ArgumentOutOfRangeException(paramName: nameof(size), size, message: "chunks must contain at least 1 element")
+				: EnumerableChunkIterator(source, size);
+#endif
 
 		/// <remarks>
 		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
