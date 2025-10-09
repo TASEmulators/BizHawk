@@ -334,12 +334,17 @@ namespace Jellyfish.Virtu
 			ser.Sync(nameof(_currentCapsLockState), ref _currentCapsLockState);
 			ser.Sync(nameof(_currentKeyPressed), ref _currentKeyPressed);
 			ser.Sync(nameof(_framesToRepeat), ref _framesToRepeat);
+			ser.Sync(nameof(_isAnyKeyDown), ref _isAnyKeyDown);
 		}
 
 		/// <summary>
 		/// true if any of the 56 basic keys are pressed
 		/// </summary>
-		public bool IsAnyKeyDown { get; private set; }
+		public bool IsAnyKeyDown
+		{
+			get => _isAnyKeyDown;
+			private set => _isAnyKeyDown = value;
+		}
 
 		/// <summary>
 		/// the currently latched key; 7 bits.
@@ -358,6 +363,7 @@ namespace Jellyfish.Virtu
 
 		private int _latch;
 		private bool _strobe;
+		private bool _isAnyKeyDown;
 
 		/// <summary>
 		/// true if caps lock is active
