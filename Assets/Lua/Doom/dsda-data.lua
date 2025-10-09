@@ -21,7 +21,21 @@ local BusDomain <const>      = "System Bus"
 
 dsda.MAX_PLAYERS = 4
 
+-- Padded sizes as they appear in the Lines/Things/Players/Sectors memory domains
+dsda.PADDED_SIZE = {
+	LINE   = 256,
+	MOBJ   = 512,
+	PLAYER = 1024,
+	SECTOR = 512,
+}
 
+-- Native sizes as they appear in the System Bus domain
+dsda.SIZE = {
+	LINE   = 232,
+	MOBJ   = 464,
+	PLAYER = 792,
+	SECTOR = 344,
+}
 
 -- Locals
 local read_u32  = memory.read_u32_le
@@ -260,10 +274,10 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 end
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj = dsda.struct_layout(nil, 512, "Things")
+dsda.mobj = dsda.struct_layout(nil, dsda.PADDED_SIZE.MOBJ, "Things")
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector = dsda.struct_layout(nil, 512, "Sectors")
+dsda.sector = dsda.struct_layout(nil, dsda.PADDED_SIZE.SECTOR, "Sectors")
 
 -- subsector_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L422-L431
 dsda.subsector = dsda.struct_layout()
@@ -298,7 +312,7 @@ dsda.state = dsda.struct_layout()
 	.s32  ("flags")
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
-dsda.player = dsda.struct_layout(nil, 1024, "Players", dsda.MAX_PLAYERS)
+dsda.player = dsda.struct_layout(nil, dsda.PADDED_SIZE.PLAYER, "Players", dsda.MAX_PLAYERS)
 	.ptrto("mo", dsda.mobj)
 	.s32  ("playerstate") -- playerstate_t
 	.add  ("cmd", 14, 2)
@@ -571,7 +585,7 @@ dsda.vertex = dsda.struct_layout()
 	.done ()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
-dsda.line = dsda.struct_layout(nil, 256, "Lines")
+dsda.line = dsda.struct_layout(nil, dsda.PADDED_SIZE.LINE, "Lines")
 	.s32  ("iLineID")
 	.ptrto("v1", dsda.vertex)
 	.ptrto("v2", dsda.vertex)
@@ -610,10 +624,10 @@ dsda.line = dsda.struct_layout(nil, 256, "Lines")
 	.float("alpha")
 	.done ()
 
-assert(dsda.line.size   == 232, "line.size does not match sizeof(line_t)")
-assert(dsda.mobj.size   == 464, "mobj.size does not match sizeof(mobj_t)")
-assert(dsda.player.size == 792, "player.size does not match sizeof(player_t)")
-assert(dsda.sector.size == 344, "sector.size does not match sizeof(sector_t)")
+assert(dsda.line.size   == dsda.SIZE.LINE,   "line.size does not match sizeof(line_t)")
+assert(dsda.mobj.size   == dsda.SIZE.MOBJ,   "mobj.size does not match sizeof(mobj_t)")
+assert(dsda.player.size == dsda.SIZE.PLAYER, "player.size does not match sizeof(player_t)")
+assert(dsda.sector.size == dsda.SIZE.SECTOR, "sector.size does not match sizeof(sector_t)")
 
 
 
