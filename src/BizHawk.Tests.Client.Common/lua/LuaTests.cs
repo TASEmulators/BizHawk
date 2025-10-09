@@ -112,6 +112,14 @@ namespace BizHawk.Tests.Client.Common.Lua
 				CollectionAssert.AreEqual((byte[]?) ExpectedValue, memory.ToArray());
 		}
 
+		[LuaMethod("pass_params_strings", "")]
+		public static void PassParamsStrings(params string[] o)
+			=> CollectionAssert.AreEqual((string[]?) ExpectedValue, o);
+
+		[LuaMethod("pass_params_objects", "")]
+		public static void PassParamsObjects(params object[] o)
+			=> CollectionAssert.AreEqual((object[]?) ExpectedValue, o);
+
 		[LuaMethod("pass_color", "")]
 		public static void PassColor(object? o)
 #pragma warning disable MSTEST0026 // "Prefer adding an additional assertion that checks for null" ??? maybe structure like the below method?
@@ -933,6 +941,20 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_string(0.321)");
 			ExpectedValue = "-0.321";
 			LuaInstance.DoString("pass_string(-0.321)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_ParamsStrings()
+		{
+			ExpectedValue = new string[] { "foo", "bar", "baz" };
+			LuaInstance.DoString("pass_params_strings(\"foo\", \"bar\", \"baz\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_ParamsObjectStrings()
+		{
+			ExpectedValue = new object[] { "foo", "bar", "baz" };
+			LuaInstance.DoString("pass_params_objects(\"foo\", \"bar\", \"baz\")");
 		}
 
 		[TestMethod]
