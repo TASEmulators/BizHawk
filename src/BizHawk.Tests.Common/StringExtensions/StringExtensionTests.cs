@@ -11,6 +11,8 @@ namespace BizHawk.Tests.Common.StringExtensions
 	{
 		private const string abcdef = "abcdef";
 
+		private const string FOLD_TEST_SENTENCE = "Hello, world! This is a test.";
+
 		private const string qrs = "qrs";
 
 		[TestMethod]
@@ -22,6 +24,23 @@ namespace BizHawk.Tests.Common.StringExtensions
 			Assert.IsTrue(actual);
 #pragma warning restore BHI1600
 		}
+
+		[DataRow(""/*empty string*/, 80, ""/*empty string*/)]
+		[DataRow(FOLD_TEST_SENTENCE, 80, FOLD_TEST_SENTENCE)]
+		[DataRow(FOLD_TEST_SENTENCE, 7, ". a testThis isworld! Hello, ")]
+		[DataRow("ABCDefghIJKLmnopQRSTuvwxYZ", 4, "YZuvwxQRSTmnopIJKLefghABCD")]
+		[TestMethod]
+		public void TestChunk(string initial, int width, string expected)
+			=> Assert.AreEqual(expected, string.Concat(initial.Chunk(width).Reverse()), "matches after transform");
+
+		[DataRow(""/*empty string*/, 80, ""/*empty string*/)]
+		[DataRow(FOLD_TEST_SENTENCE, 80, FOLD_TEST_SENTENCE)]
+		[DataRow(FOLD_TEST_SENTENCE, 7, "Hello, \nworld! \nThis is\n a test\n.")]
+		[DataRow("ABCDEFGHIKLMNOPQRSTUVWXYZ", 5, "ABCDE\nFGHIK\nLMNOP\nQRSTU\nVWXYZ")]
+		[DataRow("\n\t\t\n\t\t\n\t\n\t\t\n\t\t\n", 3, "\n\t\t\n\n\t\t\n\n\t\n\n\t\t\n\n\t\t\n")]
+		[TestMethod]
+		public void TestFold(string initial, int width, string expected)
+			=> Assert.AreEqual(expected, initial.Fold(width, "\n"), "matches after fold");
 
 		[TestMethod]
 		public void TestRemovePrefix()

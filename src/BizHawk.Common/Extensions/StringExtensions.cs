@@ -5,10 +5,16 @@ using System.Runtime.InteropServices;
 
 using CommunityToolkit.HighPerformance.Buffers;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
+		/// <inheritdoc cref="CollectionExtensions.CollectionExtensions.Chunk"/>
+		public static IEnumerable<string> Chunk(this string source, int size)
+			=> source.AsEnumerable().Chunk(size).Select(static chars => new string(chars)); //TODO super inefficient since Chunk allocates N arrays and then this allocates another N strings
+
 		/// <remarks>based on <see href="https://stackoverflow.com/a/35081977"/></remarks>
 		public static char[] CommonPrefix(params string[] strings)
 		{
@@ -49,6 +55,16 @@ namespace BizHawk.Common.StringExtensions
 		public static bool EqualsIgnoreCase(this string str, string other)
 			=> str.Equals(other, StringComparison.OrdinalIgnoreCase);
 #pragma warning restore RS0030
+
+		/// <summary>folds (wraps) <paramref name="str"/> over multiple lines by naively chopping it at <paramref name="width"/></summary>
+		/// <param name="separator">the string to be inserted between lines, default <see cref="Environment.NewLine"/></param>
+		/// <remarks>
+		/// a copy of <paramref name="separator"/> is NOT appended to the end, the result will end with one iff the input ended with one;
+		/// <paramref name="width"/> is in UTF-16 code units, and the string is folded at that width
+		/// regardless of how wide the text appears or whether it already contains newlines (<paramref name="separator"/>) or other whitespace
+		/// </remarks>
+		public static string Fold(this string str, int width, string? separator = null)
+			=> string.Join(separator ?? Environment.NewLine, str.Chunk(width));
 
 		/// <returns>
 		/// <see langword="true"/> if <paramref name="str"/> appears in <paramref name="options"/> (case-insensitive)
