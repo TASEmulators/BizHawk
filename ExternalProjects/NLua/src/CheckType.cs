@@ -436,36 +436,21 @@ namespace NLua
 			return retVal.ToCharArray();
 		}
 
-		private static object GetAsByteArray(LuaState luaState, int stackPos)
+		private static byte[] GetAsByteArray(LuaState luaState, int stackPos)
 		{
 			if (!luaState.IsStringOrNumber(stackPos))
 			{
 				return null;
 			}
 
-			var retVal = luaState.ToBuffer(stackPos, false);
-			return retVal;
+			return luaState.ToBuffer(stackPos, false);
 		}
 
 		private static object GetAsByteMemory(LuaState luaState, int stackPos)
-		{
-			if (!luaState.IsStringOrNumber(stackPos))
-			{
-				return null;
-			}
-
-			return (Memory<byte>) luaState.ToBuffer(stackPos, false);
-		}
+			=> GetAsByteArray(luaState, stackPos) is { } bytes ? (Memory<byte>?) bytes : null; // Simply casting null arrays to Memory<T>? actually gives you Memory<T>.Empty
 
 		private static object GetAsByteReadOnlyMemory(LuaState luaState, int stackPos)
-		{
-			if (!luaState.IsStringOrNumber(stackPos))
-			{
-				return null;
-			}
-
-			return (ReadOnlyMemory<byte>) luaState.ToBuffer(stackPos, false);
-		}
+			=> GetAsByteArray(luaState, stackPos) is { } bytes ? (ReadOnlyMemory<byte>?) bytes : null;
 
 		private static object GetAsString(LuaState luaState, int stackPos)
 			=> !luaState.IsStringOrNumber(stackPos) ? null : luaState.ToString(stackPos, false);
