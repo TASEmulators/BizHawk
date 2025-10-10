@@ -46,6 +46,12 @@ namespace BizHawk.Client.Common
 ** Some callbacks will be called with arguments, if the function you register has the right number of parameters. This will be noted in the registration function's docs.
 * table
 ** A standard Lua table
+* binary string
+** A regular Lua string containing raw bytes instead of text, used in some memory functions. Can contain any bytes including null bytes.
+** Not encoded as hex or any valid text encoding. Should not be written to the console.
+** Can be read using {{string.byte(some_string, index)}} or {{some_string:byte(index)}}
+** Created as {{""\x00\x01\x02\x03""}} or {{string.char(0x00, 0x01, 0x02, 0x03)}}
+** Can be converted from and to other data types with [https://www.lua.org/manual/5.4/manual.html#pdf-string.pack|string.pack] and [https://www.lua.org/manual/5.4/manual.html#pdf-string.unpack|string.unpack]
 * something else
 ** check the .NET documentation on MSDN")
 				.AppendLine()
