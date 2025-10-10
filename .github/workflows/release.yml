@@ -16,7 +16,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "10"
 
       - name: Get BizHawk version
         run: echo "BIZHAWK_VERSION=$(grep -Po "MainVersion = \"\K(.*)(?=\")" src/BizHawk.Common/VersionInfo.cs)" >> $GITHUB_ENV
