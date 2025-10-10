@@ -156,6 +156,11 @@ namespace BizHawk.Client.Common
 		public bool IsSeeking()
 			=> APIs.EmuClient.IsSeeking();
 
+		[LuaMethodExample("if ( client.isrewinding( ) ) then\r\n\tconsole.log( \"Returns true if emulator is rewinding, otherwise, false\" );\r\nend;")]
+		[LuaMethod("isrewinding", "Returns true if emulator is rewinding, otherwise, false")]
+		public bool IsRewinding()
+			=> APIs.EmuClient.IsRewinding();
+
 		[LuaMethodExample("client.opencheats( );")]
 		[LuaMethod("opencheats", "opens the Cheats dialog")]
 		public void OpenCheats()

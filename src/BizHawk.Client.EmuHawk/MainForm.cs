@@ -1130,6 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
 		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking;
 		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
+		public bool IsRewinding { get; private set; }
 
 		/// <summary>
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
@@ -2934,6 +2935,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out var returnToRecording);
+			IsRewinding = isRewinding;
 			_runloopFrameProgress |= isRewinding;
 
 			float atten = 0;
