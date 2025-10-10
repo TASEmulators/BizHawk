@@ -3,9 +3,6 @@
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../TestProjects.props" />
-	<PropertyGroup>
-		<NoWarn>$(NoWarn);CA1310;CA1416</NoWarn>
-	</PropertyGroup>
 	<PropertyGroup Condition=" '$(BIZHAWKTEST_RUN_KNOWN_FAILURES)' == '' ">
 		<DefineConstants>$(DefineConstants);SKIP_KNOWN_FAILURES</DefineConstants>
 	</PropertyGroup>

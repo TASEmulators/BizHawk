@@ -3,9 +3,6 @@
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../TestProjects.props" />
-	<PropertyGroup>
-		<NoWarn>$(NoWarn);CA1310;CA1416</NoWarn>
-	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms.GB/BizHawk.Tests.Testroms.GB.csproj" />
 		<EmbeddedResource Include="res/**/*" />
