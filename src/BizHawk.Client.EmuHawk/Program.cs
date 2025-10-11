@@ -6,13 +6,20 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+using BizHawk.BizInvoke;
+using BizHawk.Bizware.Audio;
 using BizHawk.Bizware.Graphics;
+using BizHawk.Bizware.Graphics.Controls;
+using BizHawk.Bizware.Input;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.DiscSystem;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -94,17 +101,17 @@ namespace BizHawk.Client.EmuHawk
 			var thisAsmVer = ReflectionCache.AsmVersion;
 			if (new[]
 				{
-					BizInvoke.ReflectionCache.AsmVersion,
-					Bizware.Audio.ReflectionCache.AsmVersion,
-					Bizware.Graphics.ReflectionCache.AsmVersion,
-					Bizware.Graphics.Controls.ReflectionCache.AsmVersion,
-					Bizware.Input.ReflectionCache.AsmVersion,
-					Client.Common.ReflectionCache.AsmVersion,
-					Common.ReflectionCache.AsmVersion,
-					Emulation.Common.ReflectionCache.AsmVersion,
-					Emulation.Cores.ReflectionCache.AsmVersion,
-					Emulation.DiscSystem.ReflectionCache.AsmVersion,
-					WinForms.Controls.ReflectionCache.AsmVersion,
+					ReflectionCache_Biz_Biz.AsmVersion,
+					ReflectionCache_Biz_Biz_Aud.AsmVersion,
+					ReflectionCache_Biz_Biz_Gra.AsmVersion,
+					ReflectionCache_Biz_Biz_Gra_Con.AsmVersion,
+					ReflectionCache_Biz_Biz_Inp.AsmVersion,
+					ReflectionCache_Biz_Cli_Com.AsmVersion,
+					ReflectionCache_Biz_Com.AsmVersion,
+					ReflectionCache_Biz_Emu_Com.AsmVersion,
+					ReflectionCache_Biz_Emu_Cor.AsmVersion,
+					ReflectionCache_Biz_Emu_Dis.AsmVersion,
+					ReflectionCache_Biz_Win_Con.AsmVersion,
 				}.Any(asmVer => asmVer != thisAsmVer))
 			{
 				EnsureWinFormsInitialized();

@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public static class MovieImport
 	{
-		private static readonly Dictionary<Type, ImporterForAttribute> Importers = Client.Common.ReflectionCache.Types
+		private static readonly Dictionary<Type, ImporterForAttribute> Importers = ReflectionCache.Types
 			.Select(t => (t, attr: (ImporterForAttribute) t.GetCustomAttributes(typeof(ImporterForAttribute)).FirstOrDefault()))
 			.Where(tuple => tuple.attr != null)
 			.ToDictionary(tuple => tuple.t, tuple => tuple.attr);

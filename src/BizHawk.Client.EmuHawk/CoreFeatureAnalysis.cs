@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 				ret.Nodes.Add(serviceNode);
 			}
 
-			foreach (var service in Emulation.Common.ReflectionCache.Types.Where(t => t.IsInterface
+			foreach (var service in ReflectionCache_Biz_Emu_Com.Types.Where(t => t.IsInterface
 				&& typeof(IEmulatorService).IsAssignableFrom(t) && !typeof(ISpecializedEmulatorService).IsAssignableFrom(t) // don't show ISpecializedEmulatorService subinterfaces as "missing" as there's no expectation that they'll be implemented eventually
 				&& t != typeof(IEmulatorService) && t != typeof(ITextStatable) // denylisting ITextStatable is a hack for now, eventually we can get merge it into IStatable w/ default interface methods
 				&& !ci.Services.ContainsKey(t.ToString()) && !ci.NotApplicableTypes.Contains(t.ToString())))

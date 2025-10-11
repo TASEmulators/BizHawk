@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var normalPriority = new List<Type>();
 
 			//scan types in this assembly to find ones that implement boards to add them to the list
-			foreach (var type in Emulation.Cores.ReflectionCache.Types)
+			foreach (var type in ReflectionCache.Types)
 			{
 				var attrs = type.GetCustomAttributes(typeof(NesBoardImplAttribute), true);
 				if (attrs.Length == 0) continue;

@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Properties.Resources.ToolBoxIcon;
 
-		private static readonly Lazy<IReadOnlyCollection<Type>> ToolTypes = new(() => EmuHawk.ReflectionCache.Types
+		private static readonly Lazy<IReadOnlyCollection<Type>> ToolTypes = new(static () => ReflectionCache.Types
 			.Where(static t => typeof(IToolForm).IsAssignableFrom(t) && typeof(Form).IsAssignableFrom(t)
 #if DEBUG // these tools are simply not compiled in Release config
 				&& t.Namespace is not "BizHawk.Client.EmuHawk.ForDebugging"

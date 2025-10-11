@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			_apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
 
 			// Register lua libraries
-			foreach (var lib in Client.Common.ReflectionCache.Types.Concat(EmuHawk.ReflectionCache.Types)
+			foreach (var lib in ReflectionCache_Biz_Cli_Com.Types.Concat(ReflectionCache.Types)
 				.Where(static t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed))
 			{
 				if (VersionInfo.DeveloperBuild

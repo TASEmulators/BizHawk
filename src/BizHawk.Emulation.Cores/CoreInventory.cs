@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores
 			SystemsFlat = systemsFlat.Values;
 		}
 
-		public static readonly CoreInventory Instance = new CoreInventory(new[] { Emulation.Cores.ReflectionCache.Types });
+		public static readonly CoreInventory Instance = new([ ReflectionCache.Types ]);
 	}
 
 	public enum CorePriority
