@@ -9,6 +9,8 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 
+using ReflectionCacheGB = BizHawk.Tests.Testroms.GB.ReflectionCache_Biz_Tes_Tes_GB;
+
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
 namespace BizHawk.Tests.Testroms.GB
@@ -70,7 +72,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 		private static readonly Regex HexStrFilenameRegex = new(@"_out[0-9A-F]+\.gbc?$");
 
-		private static readonly bool RomsArePresent = ReflectionCache.EmbeddedResourceList().Any(static s => s.StartsWith(SUITE_PREFIX));
+		private static readonly bool RomsArePresent = ReflectionCacheGB.EmbeddedResourceList().Any(static s => s.StartsWith(SUITE_PREFIX));
 
 		[ClassCleanup]
 		public static void AfterAll()
@@ -103,7 +105,7 @@ namespace BizHawk.Tests.Testroms.GB
 					endIndex = i;
 				}
 			}
-			var allFilenames = ReflectionCache.EmbeddedResourceList(SUITE_PREFIX).ToList();
+			var allFilenames = ReflectionCacheGB.EmbeddedResourceList(SUITE_PREFIX).ToList();
 			List<GambatteRefImageTestCase> refImageCases = new();
 			foreach (var filename in allFilenames.Where(static item => item.EndsWith(".png")).ToList())
 			{
@@ -158,7 +160,7 @@ namespace BizHawk.Tests.Testroms.GB
 			var caseStr = testCase.DisplayName();
 			TestUtils.ShortCircuitKnownFailure(caseStr, GambatteHexStrTestCase.KnownFailures, out var knownFail);
 			var actualUnnormalised = DummyFrontend.RunAndScreenshot(
-				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCache.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
+				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCacheGB.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
 				static fe => fe.FrameAdvanceBy(11)).AsBitmap();
 			var glyphCount = testCase.ExpectedValue.Length;
 			var screenshotMatches = true;
@@ -202,10 +204,10 @@ namespace BizHawk.Tests.Testroms.GB
 			var caseStr = testCase.DisplayName();
 			TestUtils.ShortCircuitKnownFailure(caseStr, GambatteRefImageTestCase.KnownFailures, out var knownFail);
 			var actualUnnormalised = DummyFrontend.RunAndScreenshot(
-				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCache.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
+				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCacheGB.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
 				static fe => fe.FrameAdvanceBy(14));
 			var state = GBScreenshotsEqual(
-				ReflectionCache.EmbeddedResourceStream(testCase.ExpectEmbedPath),
+				ReflectionCacheGB.EmbeddedResourceStream(testCase.ExpectEmbedPath),
 				actualUnnormalised,
 				knownFail,
 				testCase.Setup,

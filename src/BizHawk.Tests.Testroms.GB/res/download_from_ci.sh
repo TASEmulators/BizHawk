@@ -7,6 +7,7 @@ exec ../../BizHawk.Tests.Testroms.GB/.download_from_ci.sh \
 	cgb-acid-hell \
 	cgb-acid2 \
 	dmg-acid2 \
+	Gambatte-testroms \
 	mealybug-tearoom-tests \
 	rtc3test \
 	"$@"

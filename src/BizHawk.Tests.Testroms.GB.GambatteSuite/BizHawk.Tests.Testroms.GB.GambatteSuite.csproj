@@ -8,6 +8,5 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms.GB/BizHawk.Tests.Testroms.GB.csproj" />
-		<EmbeddedResource Include="res/**/*" />
 	</ItemGroup>
 </Project>
