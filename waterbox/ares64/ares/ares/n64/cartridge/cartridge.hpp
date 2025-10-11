@@ -7,7 +7,7 @@ struct Cartridge {
   struct SC64 {
     static constexpr u32 SDSectorWords = 512/4;
 
-    n1 enabled = true; // TODO: UI option
+    n1 enabled = false;
     Memory::Writable sd;
     Memory::Writable buffer;
 
