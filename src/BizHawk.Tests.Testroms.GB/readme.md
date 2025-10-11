@@ -73,4 +73,4 @@ $Env:BIZHAWKTEST_SAVE_IMAGES = "all"
 dotnet test -c Release -l "console;verbosity=detailed"
 ```
 
-Summary of `BIZHAWKTEST_RUN_KNOWN_FAILURES=1 ./run_tests_release.sh` should read 202 passed / 168 skipped / 0 failed.
+Summary of `BIZHAWKTEST_RUN_KNOWN_FAILURES=1 ./run_tests_release.sh` should read 206 passed / 164 skipped / 0 failed.
