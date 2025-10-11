@@ -131,6 +131,7 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Add Branch", "Alt+Insert");
 			Bind("TAStudio", "Delete Branch", "Alt+Delete");
 			Bind("TAStudio", "Show Cursor");
+			Bind("TAStudio", "Select Current Frame");
 			Bind("TAStudio", "Toggle Follow Cursor", "Shift+F");
 			Bind("TAStudio", "Toggle Auto-Restore", "Shift+R");
 			Bind("TAStudio", "Seek To Green Arrow", "R");
@@ -139,6 +140,7 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Redo", "Ctrl+Y");
 			Bind("TAStudio", "Seek To Prev Marker", "Shift+PageUp");
 			Bind("TAStudio", "Seek To Next Marker", "Shift+PageDown");
+			Bind("TAStudio", "Cancel Seek");
 			Bind("TAStudio", "Set Marker", "M");
 			Bind("TAStudio", "Delete Marker", "Ctrl+M");
 			Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A");

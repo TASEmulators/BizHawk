@@ -518,6 +518,14 @@ namespace BizHawk.Client.EmuHawk
 		public void ReselectClipboardExternal()
 			=> ReselectClipboardMenuItem_Click(null, EventArgs.Empty);
 
+		public void SelectCurrentFrame()
+		{
+			TasView.DeselectAll();
+			TasView.SelectRow(Emulator.Frame, true);
+
+			RefreshDialog();
+		}
+
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{
 			var branch = Guid.TryParseExact(branchId, format: "D", out var parsed)

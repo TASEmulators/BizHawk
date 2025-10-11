@@ -387,6 +387,10 @@ namespace BizHawk.Client.EmuHawk
 					Tools.TAStudio.SetVisibleFrame();
 					Tools.TAStudio.RefreshDialog();
 					break;
+				case "Select Current Frame":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SelectCurrentFrame();
+					break;
 				case "Toggle Follow Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					var playbackBox = Tools.TAStudio.TasPlaybackBox;
@@ -421,6 +425,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Seek To Next Marker":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.GoToNextMarker();
+					break;
+				case "Cancel Seek":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.StopSeeking();
 					break;
 				case "Set Marker":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
