@@ -147,6 +147,7 @@ static array_view<u8>* diskErrorData = nullptr;
 static array_view<u8>* saveData = nullptr;
 static array_view<u8>* rtcData = nullptr;
 static array_view<u8>* gbRomData[4] = { nullptr, nullptr, nullptr, nullptr, };
+static array_view<u8>* sdData = nullptr;
 
 typedef enum
 {
@@ -417,6 +418,8 @@ typedef struct
 	u8* DiskErrorData;
 	u64 DiskErrorLen;
 	GbRom GbRoms[4];
+	u8* SdData;
+	u64 SdLen;
 } LoadData;
 
 static bool LoadRom(LoadData* loadData, bool isPal)
@@ -645,6 +648,16 @@ ECL_EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal
 		{
 			return false;
 		}
+	}
+
+	if (loadData->SdData)
+	{
+		name = "sd.raw";
+		len = loadData->SdLen;
+		data = new u8[len];
+		memcpy(data, loadData->SdData, len);
+		sdData = new array_view<u8>(data, len);
+		platform->bizpak->append(name, *sdData);
 	}
 
 	root->power(false);
