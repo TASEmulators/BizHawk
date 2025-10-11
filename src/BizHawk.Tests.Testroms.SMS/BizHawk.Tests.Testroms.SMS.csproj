@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../Testroms.props" />
+	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms/BizHawk.Tests.Testroms.csproj" />
+		<EmbeddedResource Include="res/**/*" />
+	</ItemGroup>
+</Project>

@@ -3,7 +3,7 @@ using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Tests.Testroms
 {
-	public readonly struct DummyRomAsset(byte[] fileData) : IRomAsset
+	public readonly struct DummyRomAsset(byte[] fileData, string sysID = VSystemID.Raw.DEBUG) : IRomAsset
 	{
 #pragma warning disable CA1065 // yes, really throw
 		public string? Extension
@@ -13,10 +13,10 @@ namespace BizHawk.Tests.Testroms
 			=> fileData;
 
 		public GameInfo? Game
-			=> throw new NotImplementedException();
+			=> new() { System = sysID };
 
 		public byte[]? RomData
-			=> throw new NotImplementedException();
+			=> fileData;
 
 		public string? RomPath
 			=> throw new NotImplementedException();
