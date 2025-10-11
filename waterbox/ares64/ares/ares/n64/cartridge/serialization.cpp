@@ -3,4 +3,5 @@ auto Cartridge::serialize(serializer& s) -> void {
   s(eeprom);
   s(flash);
   s(rtc);
+  s(sc64);
 }
