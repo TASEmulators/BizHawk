@@ -563,6 +563,16 @@ ECL_EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal
 		platform->bizpak->append(name, *iplData);
 	}
 
+	if (loadData->SdData)
+	{
+		name = "sd.raw";
+		len = loadData->SdLen;
+		data = new u8[len];
+		memcpy(data, loadData->SdData, len);
+		sdData = new array_view<u8>(data, len);
+		platform->bizpak->append(name, *sdData);
+	}
+
 	string region = isPal ? "PAL" : "NTSC";
 	platform->bizpak->setAttribute("region", region);
 
@@ -648,16 +658,6 @@ ECL_EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal
 		{
 			return false;
 		}
-	}
-
-	if (loadData->SdData)
-	{
-		name = "sd.raw";
-		len = loadData->SdLen;
-		data = new u8[len];
-		memcpy(data, loadData->SdData, len);
-		sdData = new array_view<u8>(data, len);
-		platform->bizpak->append(name, *sdData);
 	}
 
 	root->power(false);

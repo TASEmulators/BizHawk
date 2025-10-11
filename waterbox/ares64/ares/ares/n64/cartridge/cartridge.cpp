@@ -59,7 +59,7 @@ auto Cartridge::connect() -> void {
     sc64.buffer.allocate(0x2000);
     sc64.buffer.fill();
 
-    if(auto fp = system.pak->read("sd.raw")) { // TODO: More user-friendly path?
+    if(auto fp = pak->read("sd.raw")) {
       sc64.sd.allocate(fp->size());
       sc64.sd.load(fp);
     }
