@@ -66,7 +66,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && ./build-and-install-zlib.sh
 
 6. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
-	cd ares64 && ./make-both.sh
+	cd ares64 && ./make-both.sh install
 	cd bsnescore && make install
 	cd dosbox && make install
 	cd dsda && make install
@@ -92,3 +92,4 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd virtualjaguar && make install
 
 Be aware MAME takes a very long while to build. Following suit, the provided make-all-cores.sh will only make MAME if INCLUDE_MAME is exported (e.g. `INCLUDE_MAME=1 ./make-all-cores.sh`).
+
