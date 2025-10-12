@@ -66,7 +66,7 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		public void TestChunk()
 			=> CollectionAssert.AreEqual(
 				new[] { "1234", "5678", "910" },
-				new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }.Chunk(4).Select(static a => string.Concat(a)).ToArray(),
+				CE.Chunk(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 4).Select(static a => string.Concat(a)).ToArray(),
 				"simple test of ints as decimal strings"); // since it's a BCL backport
 
 		[TestMethod]
