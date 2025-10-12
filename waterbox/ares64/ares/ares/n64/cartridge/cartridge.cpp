@@ -55,14 +55,12 @@ auto Cartridge::connect() -> void {
     isviewer.tracer->setTerminal(true);
   }
 
-  if(sc64.enabled) {
+  if(auto fp = pak->read("sd.raw")) {
+    sc64.sd.allocate(fp->size());
+    sc64.sd.load(fp);
     sc64.buffer.allocate(0x2000);
     sc64.buffer.fill();
-
-    if(auto fp = pak->read("sd.raw")) {
-      sc64.sd.allocate(fp->size());
-      sc64.sd.load(fp);
-    }
+    sc64.enabled = true;
   }
 
   debugger.load(node);
