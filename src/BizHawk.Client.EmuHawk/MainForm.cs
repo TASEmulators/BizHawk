@@ -3670,9 +3670,6 @@ namespace BizHawk.Client.EmuHawk
 					launchLibretroCore: ioaRetro?.CorePath,
 					forcedCoreName: forcedCoreName);
 
-				var openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
-				Config.RecentRoms.Add(openAdvancedArgs);
-
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
@@ -3690,6 +3687,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					oaMame.Path = loader.CanonicalFullPath;
 				}
+
+				var openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
+				Config.RecentRoms.Add(openAdvancedArgs);
 
 				if (result)
 				{
