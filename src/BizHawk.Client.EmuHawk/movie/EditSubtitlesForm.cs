@@ -5,6 +5,7 @@ using System.Globalization;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,14 +15,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly PathEntryCollection _pathEntries;
 
+		private readonly IEmulator _emulator;
+
 		private readonly IMovie _selectedMovie;
 		private readonly bool _readOnly;
 		private readonly bool _dispose;
 
 		public IDialogController DialogController { get; }
 
-		public EditSubtitlesForm(IDialogController dialogController, IMovie movie, PathEntryCollection pathEntries, bool readOnly, bool disposeOnClose = false)
+		public EditSubtitlesForm(
+			IDialogController dialogController,
+			IEmulator emulator,
+			IMovie movie,
+			PathEntryCollection pathEntries,
+			bool readOnly,
+			bool disposeOnClose = false)
 		{
+			_emulator = emulator;
 			_pathEntries = pathEntries;
 			_selectedMovie = movie;
 			_readOnly = readOnly;
@@ -115,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 					sub.Message = c.Value?.ToString();
 					_selectedMovie.Subtitles.Add(sub);
 				}
-				_selectedMovie.Save();
+				_selectedMovie.Save(_emulator);
 			}
 
 			Close();

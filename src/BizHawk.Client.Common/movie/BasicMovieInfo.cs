@@ -142,7 +142,7 @@ namespace BizHawk.Client.Common
 
 		public IDictionary<string, string> HeaderEntries => Header;
 
-		public bool Load()
+		public bool Load(IEmulator emulator)
 		{
 			if (!File.Exists(Filename))
 			{
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 				using var bl = ZipStateLoader.LoadAndDetect(Filename, true);
 				if (bl is null) return false;
 				ClearBeforeLoad();
-				LoadFields(bl);
+				LoadFields(bl, emulator);
 				if (FrameCount == 0)
 				{
 					// only iterate the input log if it hasn't been loaded already
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 			Comments.Clear();
 		}
 
-		protected virtual void LoadFields(ZipStateLoader bl)
+		protected virtual void LoadFields(ZipStateLoader bl, IEmulator emulator)
 		{
 			bl.GetLump(BinaryStateLump.Movieheader, abort: true, tr =>
 			{
