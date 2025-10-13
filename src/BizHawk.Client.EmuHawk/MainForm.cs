@@ -641,7 +641,7 @@ namespace BizHawk.Client.EmuHawk
 							? AllowInput.OnlyController
 							: AllowInput.All
 						: AllowInput.None,
-					FormBase { BlocksInputWhenFocused: false } => AllowInput.All,
+					FormBase { BlocksInputWhenFocused: false, MenuIsOpen: false } => AllowInput.All,
 					ControllerConfig => AllowInput.All,
 					HotkeyConfig => AllowInput.All,
 					LuaWinform { BlocksInputWhenFocused: false } => AllowInput.All,
@@ -899,6 +899,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool BlocksInputWhenFocused { get; } = false;
 
+		/// <summary>
+		/// Windows does tool stip menu focus things when Alt is released, not pressed.
+		/// However, if an alt combination is pressed then those things happen at that time instead.
+		/// So we need to know if a key combination was used, so we can skip the alt release logic.
+		/// </summary>
+		private bool _skipNextAltRelease = true;
+
 		public int ProgramRunLoop()
 		{
 			// needs to be done late, after the log console snaps on top
@@ -929,25 +936,39 @@ namespace BizHawk.Client.EmuHawk
 				InputManager.ActiveController.PrepareHapticsForHost(finalHostController);
 				Input.Instance.Adapter.SetHaptics(finalHostController.GetHapticsSnapshot());
 
-				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie) =>
+				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie, handled) =>
 				{
 					if (ActiveForm is not FormBase afb) return;
 
 					// Alt key for menu items.
 					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
 					{
+						// Windows will not focus the menu if any other key was pressed while Alt is held. Regardless of whether that key did anything.
+						_skipNextAltRelease = true;
+						if (handled) return;
+
 						if (ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
-							if ((c >= 'a' && c <= 'z') || c == ' ')
-							{
-								afb.SendAltKeyChar(c);
-							}
+							afb.SendAltCombination(c);
 						}
 						else if (ie.LogicalButton.Button == "Space")
 						{
-							afb.SendPlainAltKey(32);
+							afb.SendAltCombination(' ');
 						}
+					}
+					else if (handled) return;
+					else if (ie.EventType is InputEventType.Press && ie.LogicalButton.Button == "Alt")
+					{
+						// We will only do the alt release if the alt press itself was not already handled.
+						_skipNextAltRelease = false;
+					}
+					else if (ie.EventType is InputEventType.Release
+						&& !afb.BlocksInputWhenFocused
+						&& ie.LogicalButton.Button == "Alt"
+						&& !_skipNextAltRelease)
+					{
+						afb.FocusToolStipMenu();
 					}
 
 					// same as right-click
