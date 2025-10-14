@@ -90,8 +90,9 @@ end
 
 -- Structs ---
 
-function dsda.struct_layout(struct, padded_size, domain, max_count)
-	struct = struct or {}
+function dsda.struct_layout(struct_name, padded_size, domain, max_count)
+	local struct = {}
+	struct.name = struct_name
 	struct.padded_size = padded_size
 	struct.domain = domain
 	struct.size = 0
@@ -118,7 +119,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 	setmetatable(struct.items, items_meta)
 
 	function struct.add(name, size, alignment, read_func)
-		assertf(struct.offsets[name] == nil, "Duplicate %s name %s", domain, name)
+		assertf(struct.offsets[name] == nil, "Duplicate %s name %s", struct_name, name)
 
 		if alignment == true then alignment = size end
 		struct.align(alignment)
@@ -165,6 +166,7 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		return struct
 	end
 	function struct.ptrto(name, target_struct)
+		assert(target_struct ~= nil, "target_struct is nil")
 		local size = struct.size
 		struct.ptr(name .. "_ptr")
 		struct.size = size
@@ -196,9 +198,9 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		return item
 	end
 	local function get_item(address)
-		assert(domain ~= nil, "Struct can only be accessed by pointer")
+		assertf(domain ~= nil, "Struct %s can only be accessed by pointer", struct_name)
 		assertf(address >= 0 and address <= max_address and address % padded_size == 0,
-			"Invalid %s address %X", domain, address)
+			"Invalid %s address %X", struct_name, address)
 
 		local peek = read_u32(address, domain)
 		if peek == NULL_OBJECT then
@@ -270,17 +272,21 @@ function dsda.struct_layout(struct, padded_size, domain, max_count)
 		return next_item_prop, self, nil
 	end
 
+	function item_meta:__tostring()
+		return string.format("%s 0x%X (%s)", struct_name, self._address, self._domain)
+	end
+
 	return struct
 end
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj = dsda.struct_layout(nil, dsda.PADDED_SIZE.MOBJ, "Things")
+dsda.mobj = dsda.struct_layout("mobj", dsda.PADDED_SIZE.MOBJ, "Things")
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector = dsda.struct_layout(nil, dsda.PADDED_SIZE.SECTOR, "Sectors")
+dsda.sector = dsda.struct_layout("sector", dsda.PADDED_SIZE.SECTOR, "Sectors")
 
 -- subsector_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L422-L431
-dsda.subsector = dsda.struct_layout()
+dsda.subsector = dsda.struct_layout("subsector")
 	.ptrto("sector", dsda.sector)
 	.s32  ("numlines")
 	.s32  ("firstline")
@@ -288,7 +294,7 @@ dsda.subsector = dsda.struct_layout()
 	.done ()
 
 -- msecnode_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L373-L382
-dsda.msecnode = dsda.struct_layout()
+dsda.msecnode = dsda.struct_layout("msecnode")
 dsda.msecnode
 	.ptrto("m_sector", dsda.sector)
 	.ptrto("m_thing", dsda.mobj)
@@ -300,7 +306,7 @@ dsda.msecnode
 	.done ()
 
 -- state_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L5757-L5767
-dsda.state = dsda.struct_layout()
+dsda.state = dsda.struct_layout("state")
 	.s32  ("sprite") -- spritenum_t
 	.s64  ("frame")
 	.s64  ("tics")
@@ -312,7 +318,7 @@ dsda.state = dsda.struct_layout()
 	.s32  ("flags")
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
-dsda.player = dsda.struct_layout(nil, dsda.PADDED_SIZE.PLAYER, "Players", dsda.MAX_PLAYERS)
+dsda.player = dsda.struct_layout("player", dsda.PADDED_SIZE.PLAYER, "Players", dsda.MAX_PLAYERS)
 	.ptrto("mo", dsda.mobj)
 	.s32  ("playerstate") -- playerstate_t
 	.add  ("cmd", 14, 2)
@@ -381,7 +387,7 @@ dsda.player = dsda.struct_layout(nil, dsda.PADDED_SIZE.PLAYER, "Players", dsda.M
 	.done ()
 
 -- mobjinfo_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L6525-L6589
-dsda.mobjinfo = dsda.struct_layout()
+dsda.mobjinfo = dsda.struct_layout("mobjinfo")
 	.s32  ("doomednum")
 	.s32  ("spawnstate")
 	.s32  ("spawnhealth")
@@ -577,7 +583,7 @@ dsda.sector
 	end)
 
 -- vertex_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L70-L80
-dsda.vertex = dsda.struct_layout()
+dsda.vertex = dsda.struct_layout("vertex")
 	.s32  ("x")
 	.s32  ("y")
 	.s32  ("px")
@@ -585,7 +591,7 @@ dsda.vertex = dsda.struct_layout()
 	.done ()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
-dsda.line = dsda.struct_layout(nil, dsda.PADDED_SIZE.LINE, "Lines")
+dsda.line = dsda.struct_layout("line", dsda.PADDED_SIZE.LINE, "Lines")
 	.s32  ("iLineID")
 	.ptrto("v1", dsda.vertex)
 	.ptrto("v2", dsda.vertex)
