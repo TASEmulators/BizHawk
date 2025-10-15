@@ -126,15 +126,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			(Parent as RCheevosAchievementListForm)?.flowLayoutPanel1_MouseWheel(this, e);
 		}
-
-		public void SuspendDrawing()
-		{
-			WmImports.SendMessageW(this.Handle, 11, (IntPtr)0, IntPtr.Zero);
-		}
-
-		public void ResumeDrawing()
-		{
-			WmImports.SendMessageW(this.Handle, 11, (IntPtr) 1, IntPtr.Zero);
-		}
 	}
 }
