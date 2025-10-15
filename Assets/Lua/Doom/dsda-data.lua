@@ -176,6 +176,12 @@ function dsda.struct_layout(struct_name, padded_size, domain, max_count)
 		end)
 		return struct
 	end
+	function struct.embed(name, target_struct)
+		struct.add(name, target_struct.size, target_struct.alignment, function(addr, domain)
+			return target_struct.from_address_unchecked(addr, domain)
+		end)
+		return struct
+	end
 	function struct.done()
 		struct.align(struct.alignment)
 		return struct
@@ -235,6 +241,11 @@ function dsda.struct_layout(struct_name, padded_size, domain, max_count)
 		return next_key, item[next_key]
 	end
 
+	function struct.from_address_unchecked(address, domain)
+		assertf(domain ~= nil, "No domain specified")
+		return create_item(address, domain)
+	end
+
 	-- Get a struct instance from its dedicated memory domain
 	function struct.from_address(address)
 		return get_item(address) or nil
@@ -276,6 +287,10 @@ function dsda.struct_layout(struct_name, padded_size, domain, max_count)
 		return string.format("%s 0x%X (%s)", struct_name, self._address, self._domain)
 	end
 
+	function item_funcs:cast(target_struct)
+		return target_struct.from_address_unchecked(self._address, self._domain)
+	end
+
 	return struct
 end
 
@@ -305,6 +320,25 @@ dsda.msecnode
 	.bool ("visited")
 	.done ()
 
+-- thinker_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_think.h#L74-L90
+dsda.thinker = dsda.struct_layout("thinker")
+dsda.thinker
+	.ptrto("prev", dsda.thinker)
+	.ptrto("next", dsda.thinker)
+	.ptr  ("function")
+	.ptrto("cnext", dsda.thinker)
+	.ptrto("cprev", dsda.thinker)
+	.u32  ("references")
+	.done ()
+
+-- degenmobj_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L83-L87
+dsda.degenmobj = dsda.struct_layout("degenmobj")
+	.embed("thinker", dsda.thinker)
+	.s32  ("x")
+	.s32  ("y")
+	.s32  ("z")
+	.done ()
+
 -- state_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L5757-L5767
 dsda.state = dsda.struct_layout("state")
 	.s32  ("sprite") -- spritenum_t
@@ -316,12 +350,62 @@ dsda.state = dsda.struct_layout("state")
 	.s64  ("misc2")
 	.array("args", "s64", 8)
 	.s32  ("flags")
+	.done ()
+
+-- mapthing_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/doomdata.h#L315-L328
+dsda.mapthing = dsda.struct_layout("mapthing")
+	.s16  ("tid")
+	.s32  ("x")
+	.s32  ("y")
+	.s32  ("height")
+	.s16  ("angle")
+	.s16  ("type")
+	.s32  ("options")
+	.s32  ("special")
+	.array("special_args", "s32", 5)
+	.s32  ("gravity")
+	.s32  ("health")
+	.float("alpha")
+	.done()
+
+-- specialval_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/p_mobj.h#L252-L256
+dsda.specialval = dsda.struct_layout("specialval")
+	.s32  ("i")
+	.ptrto("m", dsda.mobj)
+	.done ()
+
+-- excmd_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_ticcmd.h#L39-L44
+dsda.excmd = dsda.struct_layout("excmd")
+	.u8   ("actions")
+	.u8   ("save_slot")
+	.u8   ("load_slot")
+	.s16  ("look")
+	.done ()
+
+-- ticcmd_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_ticcmd.h#L52-L65
+dsda.ticcmd = dsda.struct_layout("ticcmd")
+	.s8   ("forwardmove")
+	.s8   ("sidemove")
+	.s16  ("angleturn")
+	.u8   ("buttons")
+	.u8   ("lookfly")
+	.u8   ("arti")
+	.embed("ex", dsda.excmd)
+	.done ()
+
+-- pspdef_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/p_pspr.h#L73-L79
+dsda.pspdef = dsda.struct_layout("pspdef")
+	.ptrto("state", dsda.state)
+	.s32  ("tics")
+	.s32  ("sx")
+	.s32  ("sy")
+	.done ()
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
 dsda.player = dsda.struct_layout("player", dsda.PADDED_SIZE.PLAYER, "Players", dsda.MAX_PLAYERS)
 	.ptrto("mo", dsda.mobj)
 	.s32  ("playerstate") -- playerstate_t
-	.add  ("cmd", 14, 2)
+	.embed("cmd", dsda.ticcmd)
 	.s32  ("viewz")
 	.s32  ("viewheight")
 	.s32  ("deltaviewheight")
@@ -351,7 +435,7 @@ dsda.player = dsda.struct_layout("player", dsda.PADDED_SIZE.PLAYER, "Players", d
 	.s32  ("extralight")
 	.s32  ("fixedcolormap")
 	.s32  ("colormap")
-	.add  ("psprites", 24*2, 8) -- pspdef_t[2]
+	.array("psprites", "embed", 2, dsda.pspdef)
 	.bool ("didsecret")
 	.s32  ("momx")
 	.s32  ("mony")
@@ -425,10 +509,11 @@ dsda.mobjinfo = dsda.struct_layout("mobjinfo")
 	-- misc
 	.s32  ("bloodcolor")
 	.s32  ("visibility")
+	.done ()
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 dsda.mobj
-	.add  ("thinker", 44, 8)
+	.embed("thinker", dsda.thinker)
 	.s32  ("x")
 	.s32  ("y")
 	.s32  ("z")
@@ -452,7 +537,7 @@ dsda.mobj
 	.s32  ("type") -- mobjtype_t
 	.ptrto("info", dsda.mobjinfo)
 	.s32  ("tics")
-	.ptrto("state", dsda.state) -- state_t
+	.ptrto("state", dsda.state)
 	.s64  ("flags") -- mobjflags
 	.s32  ("intflags")
 	.s32  ("health")
@@ -466,7 +551,7 @@ dsda.mobj
 	.s16  ("gear")
 	.ptrto("player", dsda.player)
 	.s16  ("lastlook")
-	.add  ("spawnpoint", 58, 4) -- mapthing_t
+	.embed("spawnpoint", dsda.mapthing)
 	.ptrto("tracer", dsda.mobj)
 	.ptrto("lastenemy", dsda.mobj)
 	.s32  ("friction")
@@ -482,8 +567,8 @@ dsda.mobj
 	-- heretic
 	.s32  ("damage")
 	.s64  ("flags2")
-	.add  ("special1", 16, 8) -- specialval_t
-	.add  ("special2", 16, 8) -- specialval_t
+	.embed("special1", dsda.specialval)
+	.embed("special2", dsda.specialval)
 	-- hexen
 	.s32  ("floorpic")
 	.s32  ("floorclip")
@@ -516,7 +601,7 @@ dsda.sector
 	.s32  ("bbox_bottom")
 	.s32  ("bbox_left")
 	.s32  ("bbox_right")
-	.add  ("soundorg", 60, 8) -- degenmobj_t;
+	.embed("soundorg", dsda.degenmobj)
 	.s32  ("validcount")
 	.s32  ("gl_validcount")
 	.ptrto("thinglist", dsda.mobj) -- start of mobj.snext linked list
@@ -615,7 +700,7 @@ dsda.line = dsda.struct_layout("line", dsda.PADDED_SIZE.LINE, "Lines")
 	.ptr  ("specialdata")
 	.s32  ("r_validcount")
 	.u8   ("r_flags")
-	.add  ("soundorg", 60, 8) -- degenmobj_t;
+	.embed("soundorg", dsda.degenmobj)
 	-- dsda
 	.u8   ("player_activation")
 	-- hexen
