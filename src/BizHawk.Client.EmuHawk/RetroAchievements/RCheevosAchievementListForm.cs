@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -15,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private RCheevos.Cheevo[] _cheevos;
 		private RCheevosAchievementForm[] _cheevoForms;
-		private int _updateCooldown;
 		private Func<uint, string> _getCheevoProgress;
 		private Func<bool> _isHardcodeMode;
 
@@ -26,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			FormClosing += RCheevosAchievementListForm_FormClosing;
 			_cheevoForms = Array.Empty<RCheevosAchievementForm>();
-			_updateCooldown = 5; // only update every 5 frames / 12 fps (as this is rather expensive to update)
 			using var temp = new RCheevosAchievementForm(null);
 			_controlHeight = temp.Height + temp.Margin.Bottom + temp.Margin.Top;
 		}
@@ -57,22 +54,16 @@ namespace BizHawk.Client.EmuHawk
 			UpdateForms();
 		}
 
-		public void OnFrameAdvance(bool hardcore, bool forceUpdate = false)
+		public void OnFrameAdvance(bool hardcore)
 		{
-			_updateCooldown--;
-			if (_updateCooldown == 0 || forceUpdate)
+			var reorderedCheevos = _cheevos.OrderByDescending(f => f.OrderByKey(_getCheevoProgress)).ToArray();
+			_cheevos = reorderedCheevos;
+
+			UpdateForms();
+
+			foreach (var form in _cheevoForms)
 			{
-				_updateCooldown = 5;
-
-				var reorderedCheevos = _cheevos.OrderByDescending(f => f.OrderByKey(_getCheevoProgress)).ToArray();
-				_cheevos = reorderedCheevos;
-
-				UpdateForms();
-
-				foreach (var form in _cheevoForms)
-				{
-					form.OnFrameAdvance(hardcore);
-				}
+				form.OnFrameAdvance(hardcore);
 			}
 		}
 

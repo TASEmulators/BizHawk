@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 			var viewCheevoListItem = new ToolStripMenuItem("View Achievement List");
 			viewCheevoListItem.Click += (_, _) =>
 			{
-				_cheevoListForm.OnFrameAdvance(HardcoreMode, true);
+				_cheevoListForm.OnFrameAdvance(HardcoreMode);
 				_cheevoListForm.Show();
 			};
 			raDropDownItems.Add(viewCheevoListItem);
