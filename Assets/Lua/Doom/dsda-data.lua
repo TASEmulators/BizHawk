@@ -118,81 +118,86 @@ function dsda.struct_layout(struct_name, padded_size, domain, max_count)
 	local item_meta = {}
 	setmetatable(struct.items, items_meta)
 
-	function struct.add(name, size, alignment, read_func)
+	---@class builder
+	local builder = {}
+	builder.built_struct = struct
+	function builder.add(name, size, alignment, read_func)
 		assertf(struct.offsets[name] == nil, "Duplicate %s name %s", struct_name, name)
 
 		if alignment == true then alignment = size end
-		struct.align(alignment)
+		builder.align(alignment)
 		local offset = struct.size
 		struct.offsets[name] = offset
 		struct.size = offset + size
-		struct.align(alignment) -- add padding to structs
 		--print(string.format("%-19s %3X %3X", name, size, offset));
+		builder.align(alignment) -- add padding to structs
 
 		if read_func then
 			item_props[name] = function(self)
 				return read_func(self._address + offset, self._domain)
 			end
 		end
-		return struct
+		return builder
 	end
-	function struct.align(alignment)
+	function builder.align(alignment)
 		struct.alignment = math.max(struct.alignment, alignment or 1)
 		if alignment and struct.size % alignment > 0 then
-			--print(string.format("%i bytes padding", alignment - (struct.size % alignment)))
-			struct.pad(alignment - (struct.size % alignment))
+			--print(string.format("  %i bytes padding", alignment - (struct.size % alignment)))
+			builder.pad(alignment - (struct.size % alignment))
 		end
-		return struct
+		return builder
 	end
-	function struct.pad(size)
+	function builder.pad(size)
 		struct.size = struct.size + size
-		return struct
+		return builder
 	 end
-	function struct.s8   (name) return struct.add(name, 1, true, memory.read_s8) end
-	function struct.s16  (name) return struct.add(name, 2, true, memory.read_s16_le) end
-	function struct.s32  (name) return struct.add(name, 4, true, memory.read_s32_le) end
-	function struct.u8   (name) return struct.add(name, 1, true, memory.read_u8) end
-	function struct.u16  (name) return struct.add(name, 2, true, memory.read_u16_le) end
-	function struct.u32  (name) return struct.add(name, 4, true, memory.read_u32_le) end
-	function struct.s64  (name) return struct.add(name, 8, true, dsda.read_s64_le) end
-	function struct.float(name) return struct.add(name, 4, true, read_float_le) end
-	function struct.ptr  (name) return struct.add(name, 8, true, dsda.read_ptr) end
-	function struct.bool (name) return struct.add(name, 4, true, dsda.read_bool) end
-	function struct.array(name, type, count, ...)
+	function builder.s8   (name) return builder.add(name, 1, true, memory.read_s8) end
+	function builder.s16  (name) return builder.add(name, 2, true, memory.read_s16_le) end
+	function builder.s32  (name) return builder.add(name, 4, true, memory.read_s32_le) end
+	function builder.u8   (name) return builder.add(name, 1, true, memory.read_u8) end
+	function builder.u16  (name) return builder.add(name, 2, true, memory.read_u16_le) end
+	function builder.u32  (name) return builder.add(name, 4, true, memory.read_u32_le) end
+	function builder.s64  (name) return builder.add(name, 8, true, dsda.read_s64_le) end
+	function builder.float(name) return builder.add(name, 4, true, read_float_le) end
+	function builder.ptr  (name) return builder.add(name, 8, true, dsda.read_ptr) end
+	function builder.bool (name) return builder.add(name, 4, true, dsda.read_bool) end
+	function builder.array(name, type, count, ...)
 		--console.log("array", type, count, ...)
 		for i = 1, count do
-			struct[type](name .. i, ...)
+			builder[type](name .. i, ...)
 		end
-		return struct
+		return builder
 	end
-	function struct.ptrto(name, target_struct)
-		assert(target_struct ~= nil, "target_struct is nil")
+	function builder.ptrto(name, target_struct)
+		assertf(target_struct ~= nil, "%s.%s: target_struct is nil", struct_name, name)
+		target_struct = target_struct.built_struct or target_struct
 		local size = struct.size
-		struct.ptr(name .. "_ptr")
+		builder.ptr(name .. "_ptr")
 		struct.size = size
-		struct.add(name, 8, true, function(addr, domain)
+		builder.add(name, 8, true, function(addr, domain)
 			local ptr = dsda.read_ptr(addr, domain)
 			return target_struct.from_pointer(ptr)
 		end)
-		return struct
+		return builder
 	end
-	function struct.embed(name, target_struct)
-		struct.add(name, target_struct.size, target_struct.alignment, function(addr, domain)
+	function builder.embed(name, target_struct)
+		assertf(target_struct.built_struct == nil, "%s.%s: target_struct must be a finished struct and not a builder", struct_name, name)
+		builder.add(name, target_struct.size, target_struct.alignment, function(addr, domain)
 			return target_struct.from_address_unchecked(addr, domain)
 		end)
+		return builder
+	end
+	function builder.build()
+		builder.align(struct.alignment)
 		return struct
 	end
-	function struct.done()
-		struct.align(struct.alignment)
-		return struct
-	end
-	function struct.prop(name, func)
+	function builder.prop(name, func)
 		item_props[name] = func
-		return struct
+		return builder
 	end
-	function struct.func(name, func)
+	function builder.func(name, func)
 		item_funcs[name] = func
-		return struct
+		return builder
 	end
 
 	local function create_item(address, domain)
@@ -291,52 +296,52 @@ function dsda.struct_layout(struct_name, padded_size, domain, max_count)
 		return target_struct.from_address_unchecked(self._address, self._domain)
 	end
 
-	return struct
+	return builder
 end
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj = dsda.struct_layout("mobj", dsda.PADDED_SIZE.MOBJ, "Things")
+local mobj_builder = dsda.struct_layout("mobj", dsda.PADDED_SIZE.MOBJ, "Things")
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector = dsda.struct_layout("sector", dsda.PADDED_SIZE.SECTOR, "Sectors")
+local sector_builder = dsda.struct_layout("sector", dsda.PADDED_SIZE.SECTOR, "Sectors")
 
 -- subsector_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L422-L431
 dsda.subsector = dsda.struct_layout("subsector")
-	.ptrto("sector", dsda.sector)
+	.ptrto("sector", sector_builder)
 	.s32  ("numlines")
 	.s32  ("firstline")
 	.ptr  ("poly") -- polyobj_t
-	.done ()
+	.build()
 
 -- msecnode_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L373-L382
-dsda.msecnode = dsda.struct_layout("msecnode")
-dsda.msecnode
-	.ptrto("m_sector", dsda.sector)
-	.ptrto("m_thing", dsda.mobj)
-	.ptrto("m_tprev", dsda.msecnode)
-	.ptrto("m_tnext", dsda.msecnode)
-	.ptrto("m_sprev", dsda.msecnode)
-	.ptrto("m_snext", dsda.msecnode)
+local msecnode_builder = dsda.struct_layout("msecnode")
+dsda.msecnode = msecnode_builder
+	.ptrto("m_sector", sector_builder)
+	.ptrto("m_thing", mobj_builder)
+	.ptrto("m_tprev", msecnode_builder)
+	.ptrto("m_tnext", msecnode_builder)
+	.ptrto("m_sprev", msecnode_builder)
+	.ptrto("m_snext", msecnode_builder)
 	.bool ("visited")
-	.done ()
+	.build()
 
 -- thinker_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_think.h#L74-L90
-dsda.thinker = dsda.struct_layout("thinker")
-dsda.thinker
-	.ptrto("prev", dsda.thinker)
-	.ptrto("next", dsda.thinker)
+local thinker_builder = dsda.struct_layout("thinker")
+dsda.thinker = thinker_builder
+	.ptrto("prev", thinker_builder)
+	.ptrto("next", thinker_builder)
 	.ptr  ("function")
-	.ptrto("cnext", dsda.thinker)
-	.ptrto("cprev", dsda.thinker)
+	.ptrto("cnext", thinker_builder)
+	.ptrto("cprev", thinker_builder)
 	.u32  ("references")
-	.done ()
+	.build()
 
 --damage_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L117-L122
 dsda.damage = dsda.struct_layout("damage")
   .s16  ("amount")
   .u8   ("leakrate")
   .u8   ("interval")
-  .done ()
+  .build()
 
 -- degenmobj_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L83-L87
 dsda.degenmobj = dsda.struct_layout("degenmobj")
@@ -344,7 +349,7 @@ dsda.degenmobj = dsda.struct_layout("degenmobj")
 	.s32  ("x")
 	.s32  ("y")
 	.s32  ("z")
-	.done ()
+	.build()
 
 -- state_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L5757-L5767
 dsda.state = dsda.struct_layout("state")
@@ -357,7 +362,7 @@ dsda.state = dsda.struct_layout("state")
 	.s64  ("misc2")
 	.array("args", "s64", 8)
 	.s32  ("flags")
-	.done ()
+	.build()
 
 -- mapthing_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/doomdata.h#L315-L328
 dsda.mapthing = dsda.struct_layout("mapthing")
@@ -373,13 +378,13 @@ dsda.mapthing = dsda.struct_layout("mapthing")
 	.s32  ("gravity")
 	.s32  ("health")
 	.float("alpha")
-	.done()
+	.build()
 
 -- specialval_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/p_mobj.h#L252-L256
 dsda.specialval = dsda.struct_layout("specialval")
 	.s32  ("i")
-	.ptrto("m", dsda.mobj)
-	.done ()
+	.ptrto("m", mobj_builder)
+	.build()
 
 -- excmd_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_ticcmd.h#L39-L44
 dsda.excmd = dsda.struct_layout("excmd")
@@ -387,7 +392,7 @@ dsda.excmd = dsda.struct_layout("excmd")
 	.u8   ("save_slot")
 	.u8   ("load_slot")
 	.s16  ("look")
-	.done ()
+	.build()
 
 -- ticcmd_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_ticcmd.h#L52-L65
 dsda.ticcmd = dsda.struct_layout("ticcmd")
@@ -398,7 +403,7 @@ dsda.ticcmd = dsda.struct_layout("ticcmd")
 	.u8   ("lookfly")
 	.u8   ("arti")
 	.embed("ex", dsda.excmd)
-	.done ()
+	.build()
 
 -- pspdef_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/p_pspr.h#L73-L79
 dsda.pspdef = dsda.struct_layout("pspdef")
@@ -406,11 +411,11 @@ dsda.pspdef = dsda.struct_layout("pspdef")
 	.s32  ("tics")
 	.s32  ("sx")
 	.s32  ("sy")
-	.done ()
+	.build()
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
 dsda.player = dsda.struct_layout("player", dsda.PADDED_SIZE.PLAYER, "Players", dsda.MAX_PLAYERS)
-	.ptrto("mo", dsda.mobj)
+	.ptrto("mo", mobj_builder)
 	.s32  ("playerstate") -- playerstate_t
 	.embed("cmd", dsda.ticcmd)
 	.s32  ("viewz")
@@ -438,7 +443,7 @@ dsda.player = dsda.struct_layout("player", dsda.PADDED_SIZE.PLAYER, "Players", d
 	.s32  ("secretcount")
 	.s32  ("damagecount")
 	.s32  ("bonuscount")
-	.ptrto("attacker", dsda.mobj)
+	.ptrto("attacker", mobj_builder)
 	.s32  ("extralight")
 	.s32  ("fixedcolormap")
 	.s32  ("colormap")
@@ -461,21 +466,21 @@ dsda.player = dsda.struct_layout("player", dsda.PADDED_SIZE.PLAYER, "Players", d
 	.s32  ("flamecount")
 	.s32  ("chickenTics")
 	.s32  ("chickenPeck")
-	.ptrto("rain1", dsda.mobj)
-	.ptrto("rain2", dsda.mobj)
+	.ptrto("rain1", mobj_builder)
+	.ptrto("rain2", mobj_builder)
 	-- hexen
 	.s32  ("pclass") -- pclass_t
 	.s32  ("morphTics")
 	.s32  ("pieces")
 	.s16  ("yellowMessage")
 	.s32  ("poisoncount")
-	.ptrto("poisoner", dsda.mobj)
+	.ptrto("poisoner", mobj_builder)
 	.u32  ("jumpTics")
 	.u32  ("worldTimer")
 	-- zdoom
 	.s32  ("hazardcount")
 	.u8   ("hazardinterval")
-	.done ()
+	.build()
 
 -- mobjinfo_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/info.h#L6525-L6589
 dsda.mobjinfo = dsda.struct_layout("mobjinfo")
@@ -516,20 +521,20 @@ dsda.mobjinfo = dsda.struct_layout("mobjinfo")
 	-- misc
 	.s32  ("bloodcolor")
 	.s32  ("visibility")
-	.done ()
+	.build()
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-dsda.mobj
+dsda.mobj = mobj_builder
 	.embed("thinker", dsda.thinker)
 	.s32  ("x")
 	.s32  ("y")
 	.s32  ("z")
-	.ptrto("snext", dsda.mobj)
+	.ptrto("snext", mobj_builder)
 	.ptr  ("sprev") -- pointer to pointer to mobj
 	.u32  ("angle")
 	.s32  ("sprite") -- spritenum_t
 	.s32  ("frame")
-	.ptrto("bnext", dsda.mobj)
+	.ptrto("bnext", mobj_builder)
 	.ptr  ("bprev") -- pointer to pointer to mobj
 	.ptrto("subsector", dsda.subsector)
 	.s32  ("floorz")
@@ -551,7 +556,7 @@ dsda.mobj
 	.s16  ("movedir")
 	.s16  ("movecount")
 	.s16  ("strafecount")
-	.ptrto("target", dsda.mobj)
+	.ptrto("target", mobj_builder)
 	.s16  ("reactiontime")
 	.s16  ("threshold")
 	.s16  ("pursuecount")
@@ -559,8 +564,8 @@ dsda.mobj
 	.ptrto("player", dsda.player)
 	.s16  ("lastlook")
 	.embed("spawnpoint", dsda.mapthing)
-	.ptrto("tracer", dsda.mobj)
-	.ptrto("lastenemy", dsda.mobj)
+	.ptrto("tracer", mobj_builder)
+	.ptrto("lastenemy", mobj_builder)
 	.s32  ("friction")
 	.s32  ("movefactor")
 	.ptrto("touching_sectorlist", dsda.msecnode) -- start of msecnode.m_tnext linked list
@@ -589,19 +594,19 @@ dsda.mobj
 	-- misc
 	.u8   ("color")
 	.ptr  ("tranmap")
-	.done ()
 	.func ("iterate_touching_sectorlist", function (self)
 		return dsda.links(self.touching_sectorlist, "m_tnext", "m_sector")
 	end)
+	.build()
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-dsda.sector
+dsda.sector = sector_builder
 	.s32  ("iSectorID")
 	.u32  ("flags")
 	.s32  ("floorheight")
 	.s32  ("ceilingheight")
 	.u8   ("soundtraversed")
-	.ptrto("soundtarget", dsda.mobj)
+	.ptrto("soundtarget", mobj_builder)
 	.array("blockbox", "s32", 4)
 --	.array("bbox", "s32", 4)
 	.s32  ("bbox_top")
@@ -611,7 +616,7 @@ dsda.sector
 	.embed("soundorg", dsda.degenmobj)
 	.s32  ("validcount")
 	.s32  ("gl_validcount")
-	.ptrto("thinglist", dsda.mobj) -- start of mobj.snext linked list
+	.ptrto("thinglist", mobj_builder) -- start of mobj.snext linked list
 	.s32  ("friction")
 	.s32  ("movefactor")
 	.ptr  ("floordata")
@@ -661,13 +666,13 @@ dsda.sector
 	.s32  ("floor_yscale")
 	.s32  ("ceiling_xscale")
 	.s32  ("ceiling_yscale")
-	.done ()
 	.func ("iterate_thinglist", function (self)
 		return dsda.links(self.thinglist, "snext")
 	end)
 	.func ("iterate_touching_thinglist", function (self)
 		return dsda.links(self.touching_thinglist, "m_snext", "m_thing")
 	end)
+	.build()
 
 -- vertex_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L70-L80
 dsda.vertex = dsda.struct_layout("vertex")
@@ -675,7 +680,7 @@ dsda.vertex = dsda.struct_layout("vertex")
 	.s32  ("y")
 	.s32  ("px")
 	.s32  ("py")
-	.done ()
+	.build ()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
 dsda.line = dsda.struct_layout("line", dsda.PADDED_SIZE.LINE, "Lines")
@@ -715,7 +720,7 @@ dsda.line = dsda.struct_layout("line", dsda.PADDED_SIZE.LINE, "Lines")
 	.s32  ("healthgroup")
 	.ptr  ("tranmap")
 	.float("alpha")
-	.done ()
+	.build()
 
 assert(dsda.line.size   == dsda.SIZE.LINE,   "line.size does not match sizeof(line_t)")
 assert(dsda.mobj.size   == dsda.SIZE.MOBJ,   "mobj.size does not match sizeof(mobj_t)")
