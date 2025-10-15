@@ -86,14 +86,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int firstIndex = vScrollBar1.Value / _controlHeight;
 			int indexOffset = vScrollBar1.Value % _controlHeight;
-			int items = DisplayedItems();
-			firstIndex = Math.Min(firstIndex, _cheevos.Length - items);
+			while (firstIndex > _cheevos.Length - _cheevoForms.Length)
+			{
+				firstIndex--;
+				indexOffset += _controlHeight;
+			}
 			flowLayoutPanel1.SuspendDrawing();
 			flowLayoutPanel1.SuspendLayout();
 			bool refresh = flowLayoutPanel1.AutoScrollPosition.Y != -indexOffset;
-			for (int i = 0; i < flowLayoutPanel1.Controls.Count; i++)
+			for (int i = 0; i < _cheevoForms.Length; i++)
 			{
-				refresh |= ((RCheevosAchievementForm) flowLayoutPanel1.Controls[i]).UpdateCheevo(_cheevos[firstIndex + i], _isHardcodeMode());
+				refresh |= _cheevoForms[i].UpdateCheevo(_cheevos[firstIndex + i], _isHardcodeMode());
 			}
 			flowLayoutPanel1.AutoScrollPosition = new Point(0, indexOffset);
 			flowLayoutPanel1.ResumeLayout();
@@ -113,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int DisplayedItems()
 		{
-			return (int) Math.Ceiling((double) flowLayoutPanel1.Height / _controlHeight) + 1;
+			return Math.Min((int) Math.Ceiling((double) flowLayoutPanel1.Height / _controlHeight) + 1, _cheevos.Length);
 		}
 	}
 
