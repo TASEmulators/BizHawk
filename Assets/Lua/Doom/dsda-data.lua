@@ -331,6 +331,13 @@ dsda.thinker
 	.u32  ("references")
 	.done ()
 
+--damage_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L117-L122
+dsda.damage = dsda.struct_layout("damage")
+  .s16  ("amount")
+  .u8   ("leakrate")
+  .u8   ("interval")
+  .done ()
+
 -- degenmobj_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L83-L87
 dsda.degenmobj = dsda.struct_layout("degenmobj")
 	.embed("thinker", dsda.thinker)
@@ -645,12 +652,7 @@ dsda.sector
 	.s32  ("seqType") -- seqtype_t
 	-- zdoom
 	.s32  ("gravity")
-	-- begin damage_t
-	.s16  ("damage_amount")
-	.u8   ("damage_leakrate")
-	.u8   ("damage_interval")
-	.align(2)
-	-- end damage_t
+	.embed("damage", dsda.damage)
 	.s16  ("lightlevel_floor")
 	.s16  ("lightlevel_ceiling")
 	.u32  ("floor_rotation")
