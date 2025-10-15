@@ -234,6 +234,6 @@ namespace BizHawk.Emulation.DiscSystem
 		public static void CreateSyntheticCue(string cueFilePath, string binFilePath)
 			=> File.WriteAllText(
 				path: cueFilePath,
-				contents: GenerateCue(binFilePath: binFilePath));
+				contents: GenerateCue(binFilePath));
 	}
 }
