@@ -38,26 +38,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart(IEnumerable<RCheevos.Cheevo> cheevos, Func<uint, string> getCheevoProgress, Func<bool> isHardcodeMode)
 		{
+			_cheevos = cheevos.ToArray();
 			_getCheevoProgress = getCheevoProgress;
 			_isHardcodeMode = isHardcodeMode;
-			flowLayoutPanel1.Controls.Clear();
-			DisposeCheevoForms();
-			_cheevos = cheevos.ToArray();
-			_cheevoForms = new RCheevosAchievementForm[DisplayedItems()];
-			for (int i = 0; i < DisplayedItems(); i++)
-			{
-				_cheevoForms[i] = new RCheevosAchievementForm(getCheevoProgress);
-			}
-			flowLayoutPanel1.Controls.AddRange(_cheevoForms);
-			vScrollBar1.Maximum = _controlHeight * _cheevos.Length;
+
+			RCheevosAchievementListForm_SizeChanged(this, EventArgs.Empty);
 			vScrollBar1.Value = 0;
-			UpdateForms();
+			vScrollBar1.Maximum = _controlHeight * _cheevos.Length;
 		}
 
 		public void OnFrameAdvance(bool hardcore)
 		{
-			var reorderedCheevos = _cheevos.OrderByDescending(f => f.OrderByKey(_getCheevoProgress)).ToArray();
-			_cheevos = reorderedCheevos;
+			_cheevos = _cheevos.OrderByDescending(f => f.OrderByKey(_getCheevoProgress)).ToArray();
 
 			UpdateForms();
 
@@ -108,6 +100,24 @@ namespace BizHawk.Client.EmuHawk
 		private int DisplayedItems()
 		{
 			return Math.Min((int) Math.Ceiling((double) flowLayoutPanel1.Height / _controlHeight) + 1, _cheevos.Length);
+		}
+
+		private void RCheevosAchievementListForm_SizeChanged(object sender, EventArgs e)
+		{
+			vScrollBar1.LargeChange = vScrollBar1.Size.Height;
+			if (flowLayoutPanel1.Controls.Count != DisplayedItems())
+			{
+				flowLayoutPanel1.Controls.Clear();
+				DisposeCheevoForms();
+				_cheevoForms = new RCheevosAchievementForm[DisplayedItems()];
+				for (int i = 0; i < DisplayedItems(); i++)
+				{
+					_cheevoForms[i] = new RCheevosAchievementForm(_getCheevoProgress);
+				}
+				flowLayoutPanel1.Controls.AddRange(_cheevoForms);
+			}
+
+			UpdateForms();
 		}
 	}
 
