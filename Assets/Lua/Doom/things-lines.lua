@@ -1,6 +1,7 @@
 -- feos, 2025
 
-local dsda = require("dsda-data")
+local enums = require("dsda.enums")
+local structs = require("dsda.structs")
 
 -- CONSTANTS
 local NULL_OBJECT       = 0x88888888 -- no object at that index
@@ -44,12 +45,9 @@ local box      = gui.drawBox
 local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
-local PlayerOffsets = dsda.player.offsets -- player member offsets in bytes
-local MobjOffsets   = dsda.mobj.offsets   -- mobj member offsets in bytes
-local LineOffsets   = dsda.line.offsets   -- line member offsets in bytes
-local MobjType      = dsda.mobjtype
-local SpriteNumber  = dsda.doom.spritenum
-local MobjFlags     = dsda.mobjflags
+local MobjType      = enums.mobjtype
+local SpriteNumber  = enums.doom.spritenum
+local MobjFlags     = enums.mobjflags
 
 -- TOP LEVEL VARIABLES
 local Zoom      = 1
@@ -212,7 +210,7 @@ local function iterate_players()
 	local total_itemcount   = 0
 	local total_secretcount = 0
 	local stats             = "      HP Armr Kill Item Secr\n"
-	for addr, player in pairs(dsda.player.items) do
+	for addr, player in pairs(structs.player.items) do
 		playercount       = playercount + 1
 		local killcount   = player.killcount
 		local itemcount   = player.itemcount
@@ -234,7 +232,7 @@ end
 local function iterate()
 	if Init then return end
 
-	for addr, mobj in pairs(dsda.mobj.items) do
+	for addr, mobj in pairs(structs.mobj.items) do
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
@@ -292,7 +290,7 @@ local function iterate()
 end
 
 local function init_mobj_bounds()
-	for addr, mobj in pairs(dsda.mobj.items) do
+	for addr, mobj in pairs(structs.mobj.items) do
 		local x    = mobj.x / 0xffff
 		local y    = mobj.y / 0xffff * -1
 		if x < OB.left   then OB.left   = x end
@@ -304,7 +302,7 @@ end
 
 local function init_cache()
 	Lines = {}
-	for addr, line in pairs(dsda.line.items) do
+	for addr, line in pairs(structs.line.items) do
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
 		-- TODO: invalidate cache on map change
 
