@@ -23,7 +23,7 @@
 		public void RestoreDefaults(bool alsoWipeRecents = false)
 		{
 			AutoSaveOnClose = true;
-			DisableOnLoad = false;
+			DisableOnLoad = true;
 			LoadFileByGame = true;
 			if (alsoWipeRecents) Recent = new(8);
 		}
