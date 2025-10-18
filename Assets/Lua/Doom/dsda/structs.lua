@@ -407,7 +407,7 @@ structs.sector = sector
 	.s16  ("colormap")
 	.ptrto("touching_thinglist", structs.msecnode) -- start of msecnode.m_snext linked list
 	.s32  ("linecount")
-	.ptr  ("lines") -- pointer to pointer to line
+	.ptr  ("lines_ptr") -- pointer to pointer to line
 	.s32  ("floorsky")
 	.s32  ("ceilingsky")
 	.s32  ("floor_xoffs")
@@ -446,6 +446,11 @@ structs.sector = sector
 	end)
 	.func ("iterate_touching_thinglist", function (self)
 		return utils.links(self.touching_thinglist, "m_snext", "m_thing")
+	end)
+	.prop ("lines", function(self)
+		local lines_ptr = self.lines_ptr
+		if lines_ptr == 0 then return nil end -- probably doesn't ever happen?
+		return utils.pointer_array(lines_ptr, self._domain, self.linecount, structs.line.from_pointer)
 	end)
 	.build()
 
