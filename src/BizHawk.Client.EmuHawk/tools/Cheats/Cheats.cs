@@ -524,11 +524,7 @@ namespace BizHawk.Client.EmuHawk
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
-
-			Config.Cheats.DisableOnLoad = false;
-			Config.Cheats.LoadFileByGame = true;
-			Config.Cheats.AutoSaveOnClose = true;
-
+			Config.Cheats.RestoreDefaults();
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
