@@ -62,6 +62,60 @@ end
 
 
 
+local array_meta = {}
+function array_meta:__index(index)
+	if type(index) ~= "number" or index < 1 or index > self._length then
+		return nil
+	end
+	local offset = (index - 1) * self._size
+	return self._read(self._address + offset, self._domain)
+end
+function array_meta:__len()
+	return self._length
+end
+function array_meta:__pairs()
+	return ipairs(self)
+end
+
+function utils.array(address, domain, count, size, read_func)
+	return setmetatable({
+		_address = address,
+		_domain = domain,
+		_length = count,
+		_size = size,
+		_read = read_func,
+	}, array_meta)
+end
+
+
+
+local pointer_array_meta = {}
+function pointer_array_meta:__index(index)
+	if type(index) ~= "number" or index < 1 or index > self._length then
+		return nil
+	end
+	local offset = (index - 1) * 8
+	local ptr = utils.read_ptr(self._address + offset, self._domain)
+	return self._read(ptr, BusDomain)
+end
+function pointer_array_meta:__len()
+	return self._length
+end
+function pointer_array_meta:__pairs()
+	return ipairs(self)
+end
+
+function utils.pointer_array(address, domain, count, read_func)
+	return setmetatable({
+		_address = address,
+		_domain = domain,
+		_length = count,
+		_read = read_func,
+	}, pointer_array_meta)
+end
+
+
+
 function utils.struct_layout(struct_name, padded_size, domain, max_count)
 	local struct = {}
 	struct.name = struct_name
