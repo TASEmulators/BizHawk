@@ -501,7 +501,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AlwaysLoadCheatsMenuItem.Checked = Config.Cheats.LoadFileByGame;
 			AutoSaveCheatsMenuItem.Checked = Config.Cheats.AutoSaveOnClose;
-			DisableCheatsOnLoadMenuItem.Checked = Config.Cheats.DisableOnLoad;
+			DisableCheatsOnLoadMenuItem.Checked = !Config.Cheats.DisableOnLoad; // inverted because label was inverted without renaming variables
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
