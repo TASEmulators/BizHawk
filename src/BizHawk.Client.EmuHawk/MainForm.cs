@@ -3208,14 +3208,9 @@ namespace BizHawk.Client.EmuHawk
 
 				aw = Config.VideoWriterAudioSyncEffective ? new VideoStretcher(aw) : new AudioStretcher(aw);
 				aw.SetMovieParameters(Emulator.VsyncNumerator(), Emulator.VsyncDenominator());
-				if (Config.AVWriterResizeWidth > 0 && Config.AVWriterResizeHeight > 0)
-				{
-					aw.SetVideoParameters(Config.AVWriterResizeWidth, Config.AVWriterResizeHeight);
-				}
-				else
-				{
-					aw.SetVideoParameters(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight);
-				}
+				IVideoProvider output = GetCaptureProvider();
+				aw.SetVideoParameters(output.BufferWidth, output.BufferHeight);
+				(output as IDisposable)?.Dispose();
 
 				aw.SetAudioParameters(44100, 2, 16);
 
@@ -3361,75 +3356,78 @@ namespace BizHawk.Client.EmuHawk
 			RewireSound();
 		}
 
-		private void AvFrameAdvance()
+		private IVideoProvider GetCaptureProvider()
 		{
-			if (_currAviWriter == null) return;
-
-			// is this the best time to handle this? or deeper inside?
-			if (_argParser._currAviWriterFrameList?.Contains(Emulator.Frame) != false)
+			// TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
+			IVideoProvider output;
+			if (Config.AVWriterResizeWidth > 0 && Config.AVWriterResizeHeight > 0)
 			{
-				// TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
+				BitmapBuffer bbIn = null;
+				Bitmap bmpIn = null;
 				try
 				{
-					IVideoProvider output;
-					IDisposable disposableOutput = null;
-					if (Config.AVWriterResizeWidth > 0 && Config.AVWriterResizeHeight > 0)
+					bbIn = Config.AviCaptureOsd
+						? CaptureOSD()
+						: new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
+
+					bbIn.DiscardAlpha();
+
+					Bitmap bmpOut = new(width: Config.AVWriterResizeWidth, height: Config.AVWriterResizeHeight, PixelFormat.Format32bppArgb);
+					bmpIn = bbIn.ToSysdrawingBitmap();
+					using (var g = Graphics.FromImage(bmpOut))
 					{
-						BitmapBuffer bbIn = null;
-						Bitmap bmpIn = null;
-						try
+						if (Config.AVWriterPad)
 						{
-							bbIn = Config.AviCaptureOsd
-								? CaptureOSD()
-								: new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
-
-							bbIn.DiscardAlpha();
-
-							Bitmap bmpOut = new(width: Config.AVWriterResizeWidth, height: Config.AVWriterResizeHeight, PixelFormat.Format32bppArgb);
-							bmpIn = bbIn.ToSysdrawingBitmap();
-							using (var g = Graphics.FromImage(bmpOut))
-							{
-								if (Config.AVWriterPad)
-								{
-									g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
-									g.DrawImageUnscaled(bmpIn, (bmpOut.Width - bmpIn.Width) / 2, (bmpOut.Height - bmpIn.Height) / 2);
-								}
-								else
-								{
-									g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-									g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-									g.DrawImage(bmpIn, new Rectangle(0, 0, bmpOut.Width, bmpOut.Height));
-								}
-							}
-
-							output = new BmpVideoProvider(bmpOut, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
-							disposableOutput = (IDisposable) output;
-						}
-						finally
-						{
-							bbIn?.Dispose();
-							bmpIn?.Dispose();
-						}
-					}
-					else
-					{
-						if (Config.AviCaptureOsd)
-						{
-							output = new BitmapBufferVideoProvider(CaptureOSD());
-							disposableOutput = (IDisposable) output;
-						}
-						else if (Config.AviCaptureLua)
-						{
-							output = new BitmapBufferVideoProvider(CaptureLua());
-							disposableOutput = (IDisposable) output;
+							g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
+							g.DrawImageUnscaled(bmpIn, (bmpOut.Width - bmpIn.Width) / 2, (bmpOut.Height - bmpIn.Height) / 2);
 						}
 						else
 						{
-							output = _currentVideoProvider;
+							g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+							g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+							g.DrawImage(bmpIn, new Rectangle(0, 0, bmpOut.Width, bmpOut.Height));
 						}
 					}
 
+					output = new BmpVideoProvider(bmpOut, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
+				}
+				finally
+				{
+					bbIn?.Dispose();
+					bmpIn?.Dispose();
+				}
+			}
+			else
+			{
+				if (Config.AviCaptureOsd)
+				{
+					output = new BitmapBufferVideoProvider(CaptureOSD());
+				}
+				else if (Config.AviCaptureLua)
+				{
+					output = new BitmapBufferVideoProvider(CaptureLua());
+				}
+				else
+				{
+					output = _currentVideoProvider;
+				}
+			}
+
+			return output;
+		}
+
+		private void AvFrameAdvance()
+		{
+			// is this the best time to handle this? or deeper inside?
+			if (_argParser._currAviWriterFrameList?.Contains(Emulator.Frame) != false)
+			{
+				if (_currAviWriter == null) return;
+				IVideoProvider output = null;
+				try
+				{
 					_currAviWriter.SetFrame(Emulator.Frame);
+
+					output = GetCaptureProvider();
 
 					short[] samp;
 					int nsamp;
@@ -3442,7 +3440,6 @@ namespace BizHawk.Client.EmuHawk
 						((AudioStretcher) _currAviWriter).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
 					}
 
-					disposableOutput?.Dispose();
 
 					_dumpProxy.PutSamples(samp, nsamp);
 				}
@@ -3450,6 +3447,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ShowMessageBox(owner: null, $"Video dumping died:\n\n{e}");
 					AbortAv();
+				}
+				finally
+				{
+					(output as IDisposable)?.Dispose();
 				}
 			}
 
