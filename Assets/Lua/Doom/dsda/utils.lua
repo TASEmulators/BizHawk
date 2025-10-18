@@ -230,10 +230,32 @@ function utils.struct_layout(struct_name, padded_size, domain, max_count)
 	function builder.float(name) return builder.add(name, 4, true, read_float_le) end
 	function builder.ptr  (name) return builder.add(name, 8, true, utils.read_ptr) end
 	function builder.bool (name) return builder.add(name, 4, true, utils.read_bool) end
-	function builder.array(name, type, count, ...)
+	function builder.array(name, type, length, ...)
+		assertf(length > 0, "%s.%s: invalid length", struct_name, name)
 		--print(string.format("  %-19s %s[%i]", name, type, count))
-		for i = 1, count do
-			builder[type](name .. i, ...)
+		local element_props = {}
+		for i = 1, length do
+			local element_name = name..i
+			builder[type](element_name, ...)
+			element_props[i] = item_props[element_name]
+		end
+		if element_props[1] then
+			local array_meta = {}
+			function array_meta:__index(index)
+				local prop = element_props[index]
+				return prop and prop(self._item)
+			end
+			function array_meta:__len()
+				return length
+			end
+			function array_meta:__pairs()
+				return ipairs(self)
+			end
+			item_props[name] = function(self)
+				local array = setmetatable({ _item = self }, array_meta)
+				self[name] = array
+				return array
+			end
 		end
 		return builder
 	end
