@@ -293,6 +293,7 @@ function utils.struct_layout(struct_name, padded_size, domain, max_count)
 			builder[type](element_name, ...)
 			element_props[i] = item_props[element_name]
 		end
+		struct.offsets[name] = struct.offsets[name.."1"]
 		if element_props[1] then
 			local array_meta = {}
 			function array_meta:__index(index)
