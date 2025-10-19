@@ -143,6 +143,8 @@ namespace BizHawk.Client.Common
 
 		public bool IsTurbo() => _mainForm.IsTurboing;
 
+		public bool IsRewinding() => _mainForm.IsRewinding;
+
 		public bool LoadState(string name)
 			=> _mainForm.LoadState(
 				path: Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"),
