@@ -77,11 +77,11 @@ function array_meta:__pairs()
 	return ipairs(self)
 end
 
-function utils.array(address, domain, count, size, read_func)
+function utils.array(address, domain, length, size, read_func)
 	return setmetatable({
 		_address = address,
 		_domain = domain,
-		_length = count,
+		_length = length,
 		_size = size,
 		_read = read_func,
 	}, array_meta)
@@ -105,11 +105,11 @@ function pointer_array_meta:__pairs()
 	return ipairs(self)
 end
 
-function utils.pointer_array(address, domain, count, read_func)
+function utils.pointer_array(address, domain, length, read_func)
 	return setmetatable({
 		_address = address,
 		_domain = domain,
-		_length = count,
+		_length = length,
 		_read = read_func,
 	}, pointer_array_meta)
 end
