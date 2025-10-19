@@ -65,6 +65,12 @@ structs.excmd = utils.struct_layout("excmd")
 	.s16  ("look")
 	.build()
 
+-- inventory_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_player.h#L77-L81
+structs.inventory = utils.struct_layout("inventory")
+	.s32  ("type") -- artitype_t
+	.s32  ("count")
+	.build();
+
 -- mapthing_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/doomdata.h#L315-L328
 structs.mapthing = utils.struct_layout("mapthing")
 	.s16  ("tid")
@@ -235,7 +241,7 @@ structs.player = utils.struct_layout("player", structs.PADDED_SIZE.PLAYER, "Play
 	.s32  ("flyheight")
 	.s32  ("lookdir")
 	.bool ("centering")
-	.array("inventory", "s32", 33*2) -- inventory_t { int type, int count }
+	.array("inventory", "embed", 33, structs.inventory)
 	.s32  ("readyArtifact") -- artitype_t
 	.s32  ("artifactCount")
 	.s32  ("inventorySlotNum")
