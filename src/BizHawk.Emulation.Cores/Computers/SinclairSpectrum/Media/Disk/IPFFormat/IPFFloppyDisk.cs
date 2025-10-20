@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// now process the blocks
 			var infoBlock = blocks.Find(static a => a.RecordType == RecordHeaderType.INFO);
 			var IMGEblocks = blocks.Where(a => a.RecordType == RecordHeaderType.IMGE).ToList();
-			var DATAblocks = blocks.Where(a => a.RecordType == RecordHeaderType.DATA);
+			var DATAblocks = blocks.Where(static block => block.RecordType is RecordHeaderType.DATA).ToArray();
 
 			DiskHeader.NumberOfTracks = (byte)(IMGEblocks.Count);
 			DiskHeader.NumberOfSides = (byte)(infoBlock.INFOmaxSide + 1);

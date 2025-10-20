@@ -154,10 +154,10 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
-			Log.InsertRange(frame, inputLog);
-			ShiftBindedMarkers(frame, inputLog.Count());
-			ChangeLog.AddInsertInput(frame, inputLog.ToList(), BindMarkersToInput, $"Insert {inputLog.Count()} frame(s) at {frame}");
-
+			var inputLogCopy = inputLog.ToList();
+			Log.InsertRange(frame, inputLogCopy);
+			ShiftBindedMarkers(frame, inputLogCopy.Count);
+			ChangeLog.AddInsertInput(frame, inputLogCopy, BindMarkersToInput, $"Insert {inputLogCopy.Count} frame(s) at {frame}");
 			InvalidateAfter(frame);
 		}
 
