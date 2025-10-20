@@ -123,7 +123,7 @@ There are 2 build configurations. Besides `Release` there is `Debug`, which *doe
 
 We have an automated test suite in the solution which runs in CI, though you can and should run it before pushing.
 There are also [various Analyzers](https://github.com/TASEmulators/BizHawk/wiki/Roslyn-Analyzers-%28third-party%29) (static code analysis plugins) for detecting common mistakes and checking code style. Most of these are enabled by default for the main solution, but you can add `-p:RunStyleCop=true` when building.
-In addition, not every style rule is currently enabled, so please make sure you use tabs for indentation and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style), and match the line endings of the file you're editing (but don't try to fix code you're not working on).
+In addition, not every style rule is currently enabled, so please make sure you use tabs for indentation and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) (where braces are used), and match the line endings of the file you're editing (but don't try to fix code you're not working on).
 
 There are additional test suites specifically for regression-testing cores—these are not included in the solution and need to be run manually. See [the base project's readme](src/BizHawk.Tests.Testroms.GB/readme.md) for details.
 
