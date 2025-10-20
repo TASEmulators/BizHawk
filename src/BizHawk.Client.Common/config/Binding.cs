@@ -151,12 +151,17 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A");
 			Bind("TAStudio", "Select All", "Ctrl+Shift+A");
 			Bind("TAStudio", "Reselect Clip.", "Ctrl+B");
+			Bind("TAStudio", "Copy Frames", "Ctrl+C");
+			Bind("TAStudio", "Paste Frames", "Ctrl+V");
+			Bind("TAStudio", "Paste Insert Frames", "Ctrl+Shift+V");
+			Bind("TAStudio", "Cut Frames", "Ctrl+X");
 			Bind("TAStudio", "Clear Frames", "Delete");
 			Bind("TAStudio", "Delete Frames", "Ctrl+Delete");
 			Bind("TAStudio", "Insert Frame", "Insert");
 			Bind("TAStudio", "Insert # Frames", "Shift+Insert");
 			Bind("TAStudio", "Clone Frames", "Ctrl+Insert");
 			Bind("TAStudio", "Clone # Times", "Ctrl+Shift+Insert");
+			Bind("TAStudio", "State Hist. Integrity Check", "Ctrl+Shift+I");
 			Bind("TAStudio", "Analog Increment", "Up");
 			Bind("TAStudio", "Analog Decrement", "Down");
 			Bind("TAStudio", "Analog Incr. by 10", "Shift+Up");
