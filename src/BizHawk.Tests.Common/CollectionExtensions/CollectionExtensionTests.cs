@@ -62,6 +62,18 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			Assert.AreEqual(4, b.Count, nameof(CE.AddRange) + " failed on (ICollection<int> not List<int>)");
 		}
 
+		[DataRow(new int[] {}, "")]
+		[DataRow(new int[] { 1 }, "1")]
+		[DataRow(new int[] { 1, 2, 4 }, "1,2;4")]
+		[DataRow(new int[] { 1, 4, 5, 8, 9 }, "1;4,5;8,9")]
+		[DataRow(new int[] { -1, 0, 1 }, "-1,0,1")]
+		[TestMethod]
+		public void TestChunkConsecutive(int[] numbers, string expectedStr)
+			=> Assert.AreEqual(
+				expectedStr,
+				string.Join(";", numbers.ChunkConsecutive().Select(
+					static range => string.Join(",", Enumerable.Range(start: range.Start, count: range.Count)))));
+
 		[TestMethod]
 		public void TestChunk()
 			=> CollectionAssert.AreEqual(

@@ -204,6 +204,28 @@ namespace BizHawk.Common.CollectionExtensions
 				: EnumerableChunkIterator(source, size);
 #endif
 
+		public static IEnumerable<(int Start, int Count)> ChunkConsecutive(this IReadOnlyList<int> numbers)
+		{
+			if (numbers.Count is 0) yield break;
+			Debug.Assert(numbers.IsSortedAsc(), "should be sorted asc.");
+			var i = 0;
+			var blockStart = 0;
+			var lastValueSeen = numbers[i] - 1;
+			while (i < numbers.Count)
+			{
+				var value = numbers[i];
+				if (value - lastValueSeen is not 1)
+				{
+					// discontinuity; split off another block, and this is now the start of the next block
+					yield return (Start: numbers[blockStart], Count: i - blockStart);
+					blockStart = i;
+				}
+				lastValueSeen = value;
+				i++;
+			}
+			yield return (Start: numbers[blockStart], Count: i - blockStart); // `count` arg will be 0 if the whole list is contiguous
+		}
+
 		/// <remarks>
 		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
 		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
