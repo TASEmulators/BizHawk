@@ -156,8 +156,16 @@ namespace BizHawk.Client.Common
 		public bool IsSeeking()
 			=> APIs.EmuClient.IsSeeking();
 
-		[LuaMethodExample("if ( client.isrewinding( ) ) then\r\n\tconsole.log( \"Returns true if emulator is rewinding, otherwise, false\" );\r\nend;")]
-		[LuaMethod("isrewinding", "Returns true if emulator is rewinding, otherwise, false")]
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local speed = read_lateral_speed();
+			if (client.is_rewinding()) then speed = -speed; end
+			gui.text(0, 100, tostring(speed));
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "is_rewinding",
+			description: "Returns true iff the frontend is rewinding.")]
 		public bool IsRewinding()
 			=> APIs.EmuClient.IsRewinding();
 
