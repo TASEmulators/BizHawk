@@ -12,6 +12,8 @@ namespace BizHawk.Client.Common
 
 		MemoryCallbackDelegate MemCallback { get; }
 
+		Action<int> RandomCallback { get; }
+
 		string Name { get; }
 
 		Action OnRemove { get; set; }

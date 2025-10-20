@@ -401,17 +401,17 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
   return !wipeDone;
 }
 
-ECL_ENTRY void (*input_callback_cb)(void);
+ECL_ENTRY void (*random_callback_cb)(int);
 
-void real_input_callback(void)
+void biz_random_callback(int pr_class)
 {
-  if (input_callback_cb)
-    input_callback_cb();
+  if (random_callback_cb)
+    random_callback_cb(pr_class);
 }
 
-ECL_EXPORT void dsda_set_input_callback(ECL_ENTRY void (*fecb)(void))
+ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(int))
 {
-  input_callback_cb = fecb;
+  random_callback_cb = cb;
 }
 
 ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
