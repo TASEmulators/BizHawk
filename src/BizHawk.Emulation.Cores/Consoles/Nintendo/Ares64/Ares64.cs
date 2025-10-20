@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				{
 					rom = r.RomData;
 				}
-				else if(BinaryPrimitives.ReadUInt16LittleEndian(r.FileData.AsSpan(0x1FE, 2)) == 0xAA55)
+				else if (r.FileData.AsSpan(start: 0x1FE) is [ 0x55, 0xAA, .. ])
 				{
 					sdCard = r.FileData;
 				}
