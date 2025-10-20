@@ -88,6 +88,38 @@ namespace BizHawk.Tests.Client.Common.Lua
 		public static void PassString(string? o)
 			=> Assert.IsTrue(o == (string?)ExpectedValue);
 
+		[LuaMethod("pass_byte_array", "")]
+		public static void PassByteArray(byte[]? o)
+			=> CollectionAssert.AreEqual((byte[]?) ExpectedValue, o);
+
+		[LuaMethod("pass_byte_memory", "")]
+		public static void PassByteMemory(Memory<byte>? o)
+		{
+			Assert.AreEqual(ExpectedValue == null, o == null);
+			if (o is { } memory)
+				CollectionAssert.AreEqual((byte[]?) ExpectedValue, memory.ToArray());
+		}
+
+		// Separate method to ensure it's not in the NLua method cache yet
+		[LuaMethod("pass_byte_memory2", "")]
+		public static void PassByteMemory2(Memory<byte>? o) => PassByteMemory(o);
+
+		[LuaMethod("pass_byte_readonlymemory", "")]
+		public static void PassByteReadOnlyMemory(ReadOnlyMemory<byte>? o)
+		{
+			Assert.AreEqual(ExpectedValue == null, o == null);
+			if (o is { } memory)
+				CollectionAssert.AreEqual((byte[]?) ExpectedValue, memory.ToArray());
+		}
+
+		[LuaMethod("pass_params_strings", "")]
+		public static void PassParamsStrings(params string[] o)
+			=> CollectionAssert.AreEqual((string[]?) ExpectedValue, o);
+
+		[LuaMethod("pass_params_objects", "")]
+		public static void PassParamsObjects(params object[] o)
+			=> CollectionAssert.AreEqual((object[]?) ExpectedValue, o);
+
 		[LuaMethod("pass_color", "")]
 		public static void PassColor(object? o)
 #pragma warning disable MSTEST0026 // "Prefer adding an additional assertion that checks for null" ??? maybe structure like the below method?
@@ -230,6 +262,18 @@ namespace BizHawk.Tests.Client.Common.Lua
 		[LuaMethod("return_string", "")]
 		public static string? ReturnString()
 			=> (string?)ReturnValue;
+
+		[LuaMethod("return_byte_array", "")]
+		public static byte[]? ReturnByteArray()
+			=> (byte[]?)ReturnValue;
+
+		[LuaMethod("return_byte_memory", "")]
+		public static Memory<byte>? ReturnByteMemory()
+			=> (byte[]?) ReturnValue;
+
+		[LuaMethod("return_byte_readonlymemory", "")]
+		public static ReadOnlyMemory<byte>? ReturnByteReadOnlyMemory()
+			=> (byte[]?) ReturnValue;
 
 		[LuaMethod("return_table", "")]
 		public static NLua.LuaTable? ReturnTable()
@@ -487,6 +531,9 @@ namespace BizHawk.Tests.Client.Common.Lua
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_string() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_table() == nil")[0]);
 			Assert.IsTrue((bool)LuaInstance.DoString("return return_callback() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_byte_array() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_byte_memory() == nil")[0]);
+			Assert.IsTrue((bool)LuaInstance.DoString("return return_byte_readonlymemory() == nil")[0]);
 		}
 
 		[TestMethod]
@@ -631,6 +678,48 @@ namespace BizHawk.Tests.Client.Common.Lua
 		}
 #pragma warning restore BHI1600
 
+		private static (byte[] Bytes, string LuaString) GetTestBytes()
+		{
+			var array = Enumerable.Range(0, 256).Select(i => (byte) i).ToArray();
+			var str = string.Concat(array.Select(value => $@"\{value}"));
+			return (array, str);
+		}
+
+		[TestMethod]
+		public void Net_Return_ByteArray()
+		{
+			(ReturnValue, var luastr) = GetTestBytes();
+			Assert.IsTrue(LuaInstance.DoString($"return return_byte_array() == \"{luastr}\"") is [ true ]);
+		}
+
+		[TestMethod]
+		public void Net_Return_ByteArray_Empty()
+		{
+			ReturnValue = Array.Empty<byte>();
+			Assert.IsTrue(LuaInstance.DoString("return return_byte_array() == \"\"") is [ true ]);
+		}
+
+		[TestMethod]
+		public void Net_Return_ByteArray_NullTerminated()
+		{
+			ReturnValue = new byte[] { 0 };
+			Assert.IsTrue(LuaInstance.DoString("return return_byte_array() == \"\\0\"") is [ true ]);
+		}
+
+		[TestMethod]
+		public void Net_Return_ByteMemory()
+		{
+			(ReturnValue, var luastr) = GetTestBytes();
+			Assert.IsTrue(LuaInstance.DoString($"return return_byte_memory() == \"{luastr}\"") is [ true ]);
+		}
+
+		[TestMethod]
+		public void Net_Return_ByteReadOnlyMemory()
+		{
+			(ReturnValue, var luastr) = GetTestBytes();
+			Assert.IsTrue(LuaInstance.DoString($"return return_byte_readonlymemory() == \"{luastr}\"") is [ true ]);
+		}
+
 		[TestMethod]
 		public void Net_Return_Color()
 		{
@@ -693,6 +782,9 @@ namespace BizHawk.Tests.Client.Common.Lua
 			LuaInstance.DoString("pass_color(nil)");
 			LuaInstance.DoString("pass_table(nil)");
 			LuaInstance.DoString("pass_callback(nil)");
+			LuaInstance.DoString("pass_byte_array(nil)");
+			LuaInstance.DoString("pass_byte_memory(nil)");
+			LuaInstance.DoString("pass_byte_readonlymemory(nil)");
 		}
 
 		[TestMethod]
@@ -852,6 +944,20 @@ namespace BizHawk.Tests.Client.Common.Lua
 		}
 
 		[TestMethod]
+		public void Net_Argument_ParamsStrings()
+		{
+			ExpectedValue = new string[] { "foo", "bar", "baz" };
+			LuaInstance.DoString("pass_params_strings(\"foo\", \"bar\", \"baz\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_ParamsObjectStrings()
+		{
+			ExpectedValue = new object[] { "foo", "bar", "baz" };
+			LuaInstance.DoString("pass_params_objects(\"foo\", \"bar\", \"baz\")");
+		}
+
+		[TestMethod]
 		public void Net_Argument_Color()
 		{
 			ExpectedValue = Color.Aqua;
@@ -890,6 +996,50 @@ namespace BizHawk.Tests.Client.Common.Lua
 		{
 			ExpectedValue = 123.0;
 			LuaInstance.DoString("pass_callback(function() pass_f64(123.0) end)");
+		}
+
+		[TestMethod]
+		public void Net_Argument_StringToByteArray()
+		{
+			(ExpectedValue, var luastr) = GetTestBytes();
+			LuaInstance.DoString($"pass_byte_array(\"{luastr}\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_StringToByteMemory()
+		{
+			(ExpectedValue, var luastr) = GetTestBytes();
+			LuaInstance.DoString($"pass_byte_memory(\"{luastr}\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_StringToByteReadOnlyMemory ()
+		{
+			(ExpectedValue, var luastr) = GetTestBytes();
+			LuaInstance.DoString($"pass_byte_readonlymemory(\"{luastr}\")");
+		}
+
+		[TestMethod]
+		public void Net_Argument_StringToByteMemory_Empty()
+		{
+			ExpectedValue = Array.Empty<byte>();
+			LuaInstance.DoString("""pass_byte_memory("")""");
+		}
+
+		[TestMethod]
+		public void Net_Argument_StringToByteMemory_NullTerminated()
+		{
+			ExpectedValue = new byte[] { 0 };
+			LuaInstance.DoString("""pass_byte_memory("\0")""");
+		}
+
+		[TestMethod]
+		public void Net_Argument_StringToByteMemory_NullThenNotNull()
+		{
+			ExpectedValue = null;
+			LuaInstance.DoString("pass_byte_memory2(nil)");
+			ExpectedValue = new byte[] { 1, 2, 3 };
+			LuaInstance.DoString("""pass_byte_memory2("\1\2\3")""");
 		}
 
 		[DataRow(new long[0], "pass_table_ipairs({})")]
