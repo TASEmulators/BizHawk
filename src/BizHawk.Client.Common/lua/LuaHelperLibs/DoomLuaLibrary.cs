@@ -27,12 +27,12 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onprandom", "Calls the given lua function after each P_Random() call by Doom")]
 		public string OnPrandom(LuaFunction luaf, string name = null)
 		{
-			if (Emulator is not DSDA)
+			if (Emulator is not DSDA dsda)
 			{
 				throw new InvalidOperationException(ERR_MSG_UNSUPPORTED_CORE);
 			}
 
-			var callbacks = (Emulator as DSDA).RandomCallbacks;
+			var callbacks = dsda.RandomCallbacks;
 			var nlf = _luaLibsImpl.CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
 			callbacks.Add(nlf.RandomCallback);
 			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);

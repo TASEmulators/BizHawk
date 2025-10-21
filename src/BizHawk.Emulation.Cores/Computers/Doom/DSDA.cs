@@ -139,15 +139,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			_randomCallback = (pr_class) =>
+			_randomCallback = pr_class =>
 			{
-				if (RandomCallbacks.Count > 0)
-				{
-					foreach (var cb in RandomCallbacks)
-					{
-						cb(pr_class);
-					}
-				}
+				foreach (var cb in RandomCallbacks) cb(pr_class);
 			};
 
 			_elf = new WaterboxHost(new WaterboxOptions

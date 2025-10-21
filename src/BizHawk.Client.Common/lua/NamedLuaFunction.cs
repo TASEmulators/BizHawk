@@ -93,12 +93,12 @@ namespace BizHawk.Client.Common
 					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
-			RandomCallback = (pr_class) =>
+			RandomCallback = pr_class =>
 			{
 				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback([pr_class]);
+					Callback([ pr_class ]);
 				}
 				finally
 				{
