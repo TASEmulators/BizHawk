@@ -14,6 +14,8 @@ local BusDomain <const>      = "System Bus"
 
 
 
+local module_prefix = (...):match([[^(.-)[^./\]+$]])
+
 local read_u32  = memory.read_u32_le
 local readfloat = memory.readfloat
 
@@ -355,6 +357,23 @@ function utils.domain_struct_layout(struct_name, padded_size, domain, max_count)
 
 	function items_meta:__pairs()
 		return next_item
+	end
+
+	return builder
+end
+
+
+
+function utils.global_layout()
+	local symbols = require(module_prefix.."symbols")
+	---@class global_builder : builder
+	local builder = utils.struct_layout("[global]")
+
+	function builder.global(type, symbol, ...)
+		local pointer = assertf(symbols[symbol], "Undefined symbol %s", symbol)
+		builder.built_struct.size = pointer
+		builder[type](symbol, ...)
+		return builder
 	end
 
 	return builder
