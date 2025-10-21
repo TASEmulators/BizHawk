@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 					}
 					else if (attr is OptionalServiceAttribute)
 					{
-						if (pi.GetSetMethod(nonPublic: true) is MethodInfo setter) pair.Req.Add(new(pi.PropertyType, setter));
+						if (pi.GetSetMethod(nonPublic: true) is MethodInfo setter) pair.Opt.Add(new(pi.PropertyType, setter));
 						else Util.DebugWriteLine(ERR_FMT_STR_GETONLY_PROP, "OptionalService", @class.Name, pi.Name);
 						break;
 					}
