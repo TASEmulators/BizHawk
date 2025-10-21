@@ -25,6 +25,7 @@ local function assertf(condition, format, ...)
 	if not condition then
 		error(string.format(format, ...), 2)
 	end
+	return condition
 end
 
 function utils.read_s64_le(addr, domain)
@@ -116,37 +117,18 @@ end
 
 
 
-function utils.struct_layout(struct_name, padded_size, domain, max_count)
+function utils.struct_layout(struct_name)
 	local struct = {}
 	struct.name = struct_name
-	struct.padded_size = padded_size
-	struct.domain = domain
 	struct.size = 0
 	struct.alignment = 1
 	struct.offsets = {}
-	struct.items = {} -- This should be iterated with pairs()
 
-	assert((padded_size ~= nil) == (domain ~= nil), "padded_size and domain must be specified together")
-
-	local max_address
-	if domain then
-		-- Core must be loaded to get memory domain sizes. Throw an error so Lua doesn't cache the module in an invalid state
-		assert(emu.getsystemid() == "Doom", "Doom core not loaded")
-		max_count = max_count or math.floor(memory.getmemorydomainsize(domain) / padded_size)
-		max_address = (max_count - 1) * padded_size
-		struct.max_count = max_count
-		struct.max_address = max_address
-	else
-		max_address = 0xFFFFFFFF
-	end
-
-	local items_meta = {}
 	local item_props = {}
 	local item_funcs = {}
 	local item_meta = {}
-	setmetatable(struct.items, items_meta)
-
 	local function create_item(address, domain)
+		assert(domain ~= nil, "No domain specified")
 		local item = {
 			_address = address,
 			_domain = domain,
@@ -155,55 +137,17 @@ function utils.struct_layout(struct_name, padded_size, domain, max_count)
 		return item
 	end
 
-	local function get_item(address)
-		assertf(domain ~= nil, "Struct %s can only be accessed by pointer", struct_name)
-		assertf(address >= 0 and address <= max_address and address % padded_size == 0,
-			"Invalid %s address %X", struct_name, address)
-
-		local peek = read_u32(address, domain)
-		if peek == NULL_OBJECT then
-			return nil
-		elseif peek == OUT_OF_BOUNDS then
-			return false
-		end
-
-		return create_item(address, domain)
-	end
-
-	-- iterator for each instance of the struct in the domain
-	local function next_item(_, address)
-		address = address and address + padded_size or 0
-		while address <= max_address do
-			local item = get_item(address)
-			if item then
-				return address, item
-			elseif item == false then -- OUT_OF_BOUNDS
-				break
-			else -- NULL_OBJECT
-				address = address + padded_size
-			end
-		end
-	end
-
 	-- iterator for each readable field in the struct
 	local function next_item_prop(item, key)
 		local next_key = next(item_props, key)
 		return next_key, item[next_key]
 	end
 
-	function struct.from_address_unchecked(address, domain)
-		assertf(domain ~= nil, "No domain specified")
+	struct.from_address_unchecked = create_item
+
+	function struct.from_address(address, domain)
+		assertf(address % struct.alignment == 0, "Unaligned address %X", address)
 		return create_item(address, domain)
-	end
-
-	-- Get a struct instance from its dedicated memory domain
-	function struct.from_address(address)
-		return get_item(address) or nil
-	end
-
-	-- Get a struct instance from its dedicated memory domain
-	function struct.from_index(index)
-		return get_item((index - 1) * (padded_size or 0)) or nil
 	end
 
 	-- Get a struct instance from the system bus
@@ -212,14 +156,6 @@ function utils.struct_layout(struct_name, padded_size, domain, max_count)
 		assertf(pointer >> 32 == 0 or pointer >> 32 == WBX_POINTER_HI, "Invalid pointer %X", pointer)
 		assertf(pointer % struct.alignment == 0, "Unaligned pointer %X", pointer)
 		return create_item(pointer & 0xFFFFFFFF, BusDomain)
-	end
-
-	function items_meta:__index(index)
-		return struct.from_address(index)
-	end
-
-	function items_meta:__pairs()
-		return next_item
 	end
 
 	function item_meta:__index(name)
@@ -345,6 +281,82 @@ function utils.struct_layout(struct_name, padded_size, domain, max_count)
 		builder.align(struct.alignment)
 		return struct
 	end
+	return builder
+end
+
+
+
+function utils.domain_struct_layout(struct_name, padded_size, domain, max_count)
+	local builder = utils.struct_layout(struct_name)
+
+	local struct = builder.built_struct
+	struct.padded_size = padded_size
+	struct.domain = domain
+	struct.items = {} -- This should be iterated with pairs()
+
+	local max_address
+	-- Core must be loaded to get memory domain sizes. Throw an error so Lua doesn't cache the module in an invalid state
+	assert(emu.getsystemid() == "Doom", "Doom core not loaded")
+	max_count = max_count or math.floor(memory.getmemorydomainsize(domain) / padded_size)
+	max_address = (max_count - 1) * padded_size
+	struct.max_count = max_count
+	struct.max_address = max_address
+
+	local items_meta = {}
+	setmetatable(struct.items, items_meta)
+
+	local function get_item(address)
+		assertf(address >= 0 and address <= max_address and address % padded_size == 0,
+			"Invalid %s address %X", struct_name, address)
+
+		local peek = read_u32(address, domain)
+		if peek == NULL_OBJECT then
+			return nil
+		elseif peek == OUT_OF_BOUNDS then
+			return false
+		end
+
+		return struct.from_address_unchecked(address, domain)
+	end
+
+	-- iterator for each instance of the struct in the domain
+	local function next_item(_, address)
+		address = address and address + padded_size or 0
+		while address <= max_address do
+			local item = get_item(address)
+			if item then
+				return address, item
+			elseif item == false then -- OUT_OF_BOUNDS
+				break
+			else -- NULL_OBJECT
+				address = address + padded_size
+			end
+		end
+	end
+
+	-- Get a struct instance from its dedicated memory domain
+	function struct.from_address(address, domain)
+		assertf(address % struct.alignment == 0, "Unaligned address %X", address)
+		if domain == nil or domain == struct.domain then
+			return get_item(address) or nil
+		else
+			return struct.from_address_unchecked(address, domain)
+		end
+	end
+
+	-- Get a struct instance from its dedicated memory domain
+	function struct.from_index(index)
+		return get_item((index - 1) * (padded_size or 0)) or nil
+	end
+
+	function items_meta:__index(index)
+		return struct.from_address(index)
+	end
+
+	function items_meta:__pairs()
+		return next_item
+	end
+
 	return builder
 end
 
