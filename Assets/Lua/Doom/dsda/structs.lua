@@ -2,6 +2,7 @@
 
 local module_prefix = (...):match([[^(.-)[^./\]+$]])
 local utils = require(module_prefix.."utils")
+local symbols = require(module_prefix.."symbols")
 
 local structs = {}
 
@@ -456,5 +457,25 @@ assert(structs.line.size   == structs.SIZE.LINE,   "line.size does not match siz
 assert(structs.mobj.size   == structs.SIZE.MOBJ,   "mobj.size does not match sizeof(mobj_t)")
 assert(structs.player.size == structs.SIZE.PLAYER, "player.size does not match sizeof(player_t)")
 assert(structs.sector.size == structs.SIZE.SECTOR, "sector.size does not match sizeof(sector_t)")
+
+
+
+structs.global = utils.global_layout()
+	.global("s32",   "gameaction")
+	.global("s32",   "gamestate")
+	.global("s32",   "wipegamestate")
+	.global("s32",   "gameskill")
+	.global("s32",   "gameepisode")
+	.global("s32",   "gamemap")
+	.global("bool",  "in_game")
+	.global("bool",  "paused")
+	.global("bool",  "frozen_mode")
+	.global("s32",   "menuactive")
+	.global("s32",   "thinker_count")
+	.prop  ("mobjs", function(self)
+		return utils.pointer_array(symbols.mobj_ptrs, "System Bus", self.thinker_count, structs.mobj.from_pointer)
+	end)
+	.build()
+	.from_address_unchecked(0, "System Bus")
 
 return structs
