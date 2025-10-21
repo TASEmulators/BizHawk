@@ -139,6 +139,12 @@ local function zoom_in(times)
 	end
 end
 
+local function suppress_click_input()
+	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
+		joypad.set({ [MAP_CLICK_BLOCK] = false })
+	end
+end
+
 function maybe_swap(smaller, bigger)
 	if smaller > bigger then
 		return bigger, smaller
@@ -345,6 +351,7 @@ function update_zoom()
 		if     deltaY > 0 then pan_up  ( DRAG_FACTOR/deltaY)
 		elseif deltaY < 0 then pan_down(-DRAG_FACTOR/deltaY)
 		end
+		suppress_click_input()
 	end
 	
 	LastMouse.x     = mousePos.x
@@ -398,9 +405,7 @@ local function make_button(x, y, name, func)
 	and not input.get()["Shift"]
 	and not input.get()["LeftShift"] then
 		if mouse.Left then
-			if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
-				joypad.set({ [MAP_CLICK_BLOCK] = false })
-			end
+			suppress_click_input()
 			colorIndex = 3
 			func()
 		else colorIndex = 2 end
@@ -484,6 +489,13 @@ InertTypes = to_lookup({
 
 
 
+event.onframestart(function()
+	if client.ispaused() then return end -- frameadvance while paused
+	-- do this before frame start to suppress mouse click input
+	make_buttons()
+	update_zoom()
+end)
+
 event.onexit(function()
 	gui.clearGraphics()
 	gui.cleartext()
@@ -501,10 +513,14 @@ while true do
 		init_cache()
 	end
 
-	gui.clearGraphics()
-	gui.cleartext()
-	
-	make_buttons()
+	if paused then
+		-- OSD text is not automatically cleared while paused
+		gui.cleartext()
+		gui.clearGraphics()
+		-- while onframestart isn't called
+		make_buttons()
+		update_zoom()
+	end
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if framecount ~= LastFramecount or paused then
