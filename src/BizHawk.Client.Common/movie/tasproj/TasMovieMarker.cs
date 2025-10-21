@@ -183,6 +183,7 @@ namespace BizHawk.Client.Common
 
 		public new void InsertRange(int index, IEnumerable<TasMovieMarker> collection)
 		{
+			collection = collection as IReadOnlyCollection<TasMovieMarker> ?? collection.ToArray();
 			bool endBatch = _movie.ChangeLog.BeginNewBatch("Add Markers", true);
 			foreach (TasMovieMarker m in collection)
 			{
