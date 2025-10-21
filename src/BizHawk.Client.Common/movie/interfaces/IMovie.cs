@@ -74,15 +74,15 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Forces the creation of a backup file of the current movie state
 		/// </summary>
-		void SaveBackup();
+		void SaveBackup(IEmulator emulator);
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
-		void Save();
+		void Save(IEmulator emulator);
 
 		/// <summary>updates the <see cref="HeaderKeys.CycleCount"/> and <see cref="HeaderKeys.ClockRate"/> headers from the currently loaded core</summary>
-		void SetCycleValues();
+		void SetCycleValues(IEmulator emulator);
 
 		/// <summary>
 		/// Writes the input log directly to the stream, bypassing the need to load it all into ram as a string
@@ -109,12 +109,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="reader">The reader containing the contents of the input log</param>
 		/// <param name="errorMessage">Returns an error message, if any</param>
-		bool ExtractInputLog(TextReader reader, out string errorMessage);
+		bool ExtractInputLog(TextReader reader, IEmulator emulator, out string errorMessage);
 
 		/// <summary>
 		/// Tells the movie to start recording from the beginning.
 		/// </summary>
-		void StartNewRecording();
+		void StartNewRecording(IEmulator emulator);
 
 		/// <summary>
 		/// Tells the movie to start playback from the beginning
@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 		/// Records the given input into the given frame,
 		/// This is subject to normal movie recording logic
 		/// </summary>
-		void RecordFrame(int frame, IController source);
+		void RecordFrame(int targetFrame, int currentFrame, IController source);
 
 		/// <summary>
 		/// Instructs the movie to remove all input from its input log starting with the input at frame.
@@ -184,17 +184,14 @@ namespace BizHawk.Client.Common
 		void Attach(IEmulator emulator);
 
 		/// <summary>
-		/// The currently attached core or null if not yet attached
-		/// </summary>
-		IEmulator Emulator { get; }
-
-		/// <summary>
 		/// The current movie session
 		/// </summary>
 		IMovieSession Session { get; }
 
 		IStringLog GetLogEntries();
 		void CopyLog(IEnumerable<string> log);
+
+		void CheckAttachedMatches(IEmulator/*?*/ passed);
 	}
 
 	public static class MovieExtensions
@@ -218,8 +215,12 @@ namespace BizHawk.Client.Common
 		/// Emulation is currently right after the movie's last input frame,
 		/// but no further frames have been emulated.
 		/// </summary>
-		public static bool IsAtEnd(this IMovie movie) => movie != null && movie.Emulator?.Frame == movie.InputLogLength;
-
+		public static bool IsAtEnd(this IMovie movie, IEmulator emulator)
+		{
+			if (movie is null) return false;
+			movie.CheckAttachedMatches(emulator);
+			return emulator?.Frame == movie.InputLogLength;
+		}
 
 		/// <summary>
 		/// If the given movie contains a savestate it will be loaded if

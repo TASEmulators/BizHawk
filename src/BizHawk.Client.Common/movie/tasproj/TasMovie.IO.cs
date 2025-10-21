@@ -1,5 +1,5 @@
 ﻿using System.IO;
-
+using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -62,9 +62,9 @@ namespace BizHawk.Client.Common
 			ChangeLog.Clear();
 		}
 
-		protected override void LoadFields(ZipStateLoader bl)
+		protected override void LoadFields(ZipStateLoader bl, IEmulator emulator)
 		{
-			base.LoadFields(bl);
+			base.LoadFields(bl, emulator);
 
 			if (MovieService.IsCurrentTasVersion(Header[HeaderKeys.MovieVersion]))
 			{

@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				movie.Load();
+				movie.Load(_emulator);
 
 				// Don't do this from browse
 				if (movie.Hash == _game.Hash
@@ -518,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO this will allocate unnecessary memory when this movie is a TasMovie due to TasStateManager
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename, true);
-				var form = new EditCommentsForm(movie, readOnly: false, disposeOnClose: true);
+				using EditCommentsForm form = new(movie, _emulator, readOnly: false, disposeOnClose: true);
 				form.Show();
 			}
 		}
@@ -530,7 +530,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO this will allocate unnecessary memory when this movie is a TasMovie due to TasStateManager
 				var movie = _movieSession.Get(_movieList[MovieView.SelectedIndices[0]].Filename, true);
-				var form = new EditSubtitlesForm(DialogController, movie, _config.PathEntries, readOnly: false, disposeOnClose: true);
+				using EditSubtitlesForm form = new(
+					DialogController,
+					_emulator,
+					movie,
+					_config.PathEntries,
+					readOnly: false,
+					disposeOnClose: true);
 				form.Show();
 			}
 		}

@@ -93,7 +93,10 @@ namespace BizHawk.Client.Common
 				var lagged = LagLog[lagIndex];
 				if (lagged == null)
 				{
-					if (IsAttached() && Emulator.Frame == lagIndex)
+#pragma warning disable CS0618 //TODO pass in emulator... that is supported on indexers, but maybe there's a better way?
+					var currentFrame = Emulator?.Frame ?? -1;
+#pragma warning restore CS0618
+					if (lagIndex == currentFrame)
 					{
 						lagged = _inputPollable.IsLagFrame;
 					}
@@ -109,13 +112,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public override void StartNewRecording()
+		public override void StartNewRecording(IEmulator emulator)
 		{
 			ClearTasprojExtras();
 			Markers.Add(new TasMovieMarker(0, StartsFromSavestate ? "Savestate" : "Power on"), skipHistory: true);
 			ClearChanges();
 
-			base.StartNewRecording();
+			base.StartNewRecording(emulator);
 		}
 
 		// Removes lag log and greenzone after this frame
@@ -181,12 +184,12 @@ namespace BizHawk.Client.Common
 			return "!";
 		}
 
-		public void GreenzoneCurrentFrame()
+		public void GreenzoneCurrentFrame(IEmulator emulator)
 		{
-			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
+			LagLog[emulator.Frame] = _inputPollable.IsLagFrame;
 
 			// We will forcibly capture a state for the last edited frame (requested by https://github.com/TASEmulators/BizHawk/issues/916 for case of "platforms with analog stick")
-			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
+			TasStateManager.Capture(emulator.Frame, emulator.AsStatable(), emulator.Frame == LastEditedFrame - 1);
 		}
 
 
@@ -199,7 +202,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: this is 99% copy pasting of bad code
-		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
+		public override bool ExtractInputLog(TextReader reader, IEmulator emulator, out string errorMessage)
 		{
 			errorMessage = "";
 			int? stateFrame = null;
@@ -210,7 +213,7 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
 			{
-				SaveBackup();
+				SaveBackup(emulator);
 				MakeBackup = false;
 			}
 
