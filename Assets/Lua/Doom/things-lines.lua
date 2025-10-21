@@ -78,7 +78,7 @@ local LastMouse = {
 }
 local LastFramecount = -1
 -- forward declarations
-local Lines         = {}
+local Lines
 local PlayerTypes
 local EnemyTypes
 local MissileTypes
@@ -213,6 +213,32 @@ local function get_mobj_color(mobj, mobjtype)
 	return radius_color, text_color
 end
 
+local function  clear_cache()
+	Lines = nil
+end
+
+local function init_cache()
+	if Lines then return end
+	Lines = {}
+	for addr, line in pairs(structs.line.items) do
+		-- selectively cache certain properties. by assigning them manually the read function won't be called again
+		-- TODO: invalidate cache on map change
+
+		-- assumption: lines can't become special, except for CmdSetLineSpecial
+		-- try to exclude lines that may have had a line id set (and therefore can be targeted by CmdSetLineSpecial)
+		-- this should only happen in Hexen+
+		if line.special == 0 and line.special_args1 == 0 then
+			line.special = 0
+		end
+
+		-- assumption: the vertex pointers never change (even if the vertex coordinates do)
+		line.v1 = line.v1
+		line.v2 = line.v2
+
+		table.insert(Lines, line)
+	end
+end
+
 local function iterate_players()
 	local playercount       = 0
 	local total_killcount   = 0
@@ -242,6 +268,7 @@ local function iterate()
 	if Init then return end
 
 	for addr, mobj in pairs(structs.mobj.items) do
+	init_cache()
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
@@ -306,27 +333,6 @@ local function init_mobj_bounds()
 		if x > OB.right  then OB.right  = x end
 		if y < OB.top    then OB.top    = y end
 		if y > OB.bottom then OB.bottom = y end
-	end
-end
-
-local function init_cache()
-	Lines = {}
-	for addr, line in pairs(structs.line.items) do
-		-- selectively cache certain properties. by assigning them manually the read function won't be called again
-		-- TODO: invalidate cache on map change
-
-		-- assumption: lines can't become special, except for CmdSetLineSpecial
-		-- try to exclude lines that may have had a line id set (and therefore can be targeted by CmdSetLineSpecial)
-		-- this should only happen in Hexen+
-		if line.special == 0 and line.special_args1 == 0 then
-			line.special = 0
-		end
-
-		-- assumption: the vertex pointers never change (even if the vertex coordinates do)
-		line.v1 = line.v1
-		line.v2 = line.v2
-
-		table.insert(Lines, line)
 	end
 end
 
@@ -501,16 +507,23 @@ event.onexit(function()
 	gui.cleartext()
 end)
 
+event.onloadstate(function()
+	clear_cache()
+end)
+
+tastudio.onbranchload(function()
+	clear_cache()
+end)
+
 while true do
 	local framecount = emu.framecount()
 	local paused = client.ispaused()
 
 	if Init then init_mobj_bounds() end
 
-	-- re-init cache after state load, rewind, etc.
-	-- TODO: does this work with TAStudio seeking etc?
+	-- clear cache after rewind, turbo etc.
 	if framecount ~= LastFramecount and framecount ~= LastFramecount + 1 then
-		init_cache()
+		clear_cache()
 	end
 
 	if paused then
