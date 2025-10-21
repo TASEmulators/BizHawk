@@ -23,8 +23,16 @@ namespace BizHawk.Client.Common
 		private IEmulator Emulator { get; set; }
 
 		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
-		[LuaMethodExample("local rngcall = doom.onprandom(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each P_Random() call by Doom\" );\r\n\tend\r\n\t, \"Frame name\" );")]
-		[LuaMethod("onprandom", "Calls the given lua function after each P_Random() call by Doom")]
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local rngcall_cb_id = doom.on_prandom(function(pr_class)
+				console.log("RNG advanced (class-"..pr_class.." caller)");
+			end, "RNG notifier");
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "on_prandom",
+			description: "Fires immediately after each P_Random() call by Doom. Your callback can have 1 parameter, which will be an integer identifying what kind of object or action made the RNG call.")]
 		public string OnPrandom(LuaFunction luaf, string name = null)
 		{
 			if (Emulator is not DSDA dsda)
