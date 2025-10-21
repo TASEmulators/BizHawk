@@ -24,11 +24,11 @@ structs.SIZE = {
 }
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
-local mobj = utils.struct_layout("mobj", structs.PADDED_SIZE.MOBJ, "Things")
+local mobj = utils.domain_struct_layout("mobj", structs.PADDED_SIZE.MOBJ, "Things")
 -- forward declaration because of cross references, see further down for fields
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
-local sector = utils.struct_layout("sector", structs.PADDED_SIZE.SECTOR, "Sectors")
+local sector = utils.domain_struct_layout("sector", structs.PADDED_SIZE.SECTOR, "Sectors")
 -- forward declaration because of cross references, see further down for fields
 
 -- thinker_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_think.h#L74-L90
@@ -196,7 +196,7 @@ structs.vertex = utils.struct_layout("vertex")
 
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
-structs.player = utils.struct_layout("player", structs.PADDED_SIZE.PLAYER, "Players", structs.MAX_PLAYERS)
+structs.player = utils.domain_struct_layout("player", structs.PADDED_SIZE.PLAYER, "Players", structs.MAX_PLAYERS)
 	.ptrto("mo", mobj)
 	.s32  ("playerstate") -- playerstate_t
 	.embed("cmd", structs.ticcmd)
@@ -341,7 +341,7 @@ structs.mobj = mobj
 	.build()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
-structs.line = utils.struct_layout("line", structs.PADDED_SIZE.LINE, "Lines")
+structs.line = utils.domain_struct_layout("line", structs.PADDED_SIZE.LINE, "Lines")
 	.s32  ("iLineID")
 	.ptrto("v1", structs.vertex)
 	.ptrto("v2", structs.vertex)
