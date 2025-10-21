@@ -267,7 +267,7 @@ end
 local function iterate()
 	if Init then return end
 
-	for addr, mobj in pairs(structs.mobj.items) do
+	for _, mobj in pairs(structs.global.mobjs) do
 	init_cache()
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
@@ -326,7 +326,7 @@ local function iterate()
 end
 
 local function init_mobj_bounds()
-	for addr, mobj in pairs(structs.mobj.items) do
+	for _, mobj in pairs(structs.global.mobjs) do
 		local x    = mobj.x / 0xffff
 		local y    = mobj.y / 0xffff * -1
 		if x < OB.left   then OB.left   = x end
