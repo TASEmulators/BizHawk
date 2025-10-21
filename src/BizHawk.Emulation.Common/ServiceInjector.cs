@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -14,9 +15,9 @@ namespace BizHawk.Emulation.Common
 		{
 			public readonly Type PropType;
 
-			public readonly MethodInfo Setter;
+			public readonly MethodInfo? Setter;
 
-			public ServicePropInfo(Type propType, MethodInfo setter)
+			public ServicePropInfo(Type propType, MethodInfo? setter)
 			{
 				PropType = propType;
 				Setter = setter;
@@ -29,18 +30,26 @@ namespace BizHawk.Emulation.Common
 			this Type @class,
 			bool mayCache)
 		{
+			const string ERR_FMT_STR_GETONLY_PROP = "prop `[{0}] {1}.{2}` is get-only";
 			if (_cache.TryGetValue(@class, out var pair)) return pair;
 			pair = (new(), new());
 			foreach (var pi in @class.GetProperties(ReflectionExtensions.DI_TARGET_PROPS))
 			{
-				//TODO enumerate attrs only once
-				if (pi.GetCustomAttributes(typeof(RequiredServiceAttribute), inherit: false).Length is not 0)
+				foreach (var attr in pi.GetCustomAttributes())
 				{
-					pair.Req.Add(new(pi.PropertyType, pi.GetSetMethod(nonPublic: true)));
-				}
-				else if (pi.GetCustomAttributes(typeof(OptionalServiceAttribute), inherit: false).Length is not 0)
-				{
-					pair.Opt.Add(new(pi.PropertyType, pi.GetSetMethod(nonPublic: true)));
+					if (attr is RequiredServiceAttribute)
+					{
+						var setter = pi.GetSetMethod(nonPublic: true);
+						if (setter is null) Util.DebugWriteLine(ERR_FMT_STR_GETONLY_PROP, "RequiredService", @class.Name, pi.Name);
+						pair.Req.Add(new(pi.PropertyType, setter)); // pass through anyway, and `UpdateServices` will see it and `return false;`
+						break;
+					}
+					else if (attr is OptionalServiceAttribute)
+					{
+						if (pi.GetSetMethod(nonPublic: true) is MethodInfo setter) pair.Req.Add(new(pi.PropertyType, setter));
+						else Util.DebugWriteLine(ERR_FMT_STR_GETONLY_PROP, "OptionalService", @class.Name, pi.Name);
+						break;
+					}
 				}
 			}
 			if (mayCache) _cache[@class] = pair;
@@ -69,12 +78,13 @@ namespace BizHawk.Emulation.Common
 				{
 					return false;
 				}
+				if (info.Setter is null) return false;
 				info.Setter.Invoke(target, tmp);
 			}
 			foreach (var info in opt)
 			{
 				tmp[0] = source.GetService(info.PropType);
-				info.Setter.Invoke(target, tmp);
+				info.Setter!.Invoke(target, tmp);
 			}
 
 			return true;
