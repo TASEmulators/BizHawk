@@ -2,6 +2,7 @@
 
 local enums = require("dsda.enums")
 local structs = require("dsda.structs")
+local symbols = require("dsda.symbols")
 
 -- CONSTANTS
 local NULL_OBJECT       = 0x88888888 -- no object at that index
@@ -22,6 +23,7 @@ local VANILLA_DOOM      = false -- cache values that won't change in vanilla Doo
 local MapPrefs = {
 	player      = { color = 0xFF60A0FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 	enemy       = { color = 0xFFF00000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	enemy_idle  = { color = 0xFFAA0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	corpse      = { color = 0x80AA0000, radius_min_zoom = 0.00, text_min_zoom = 0.30, },
 	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.05, text_min_zoom = 0.50, },
@@ -182,6 +184,7 @@ local function get_mobj_pref(mobj, mobjtype)
 	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
 	if flags & MobjFlags.COUNTKILL ~= 0 or EnemyTypes[mobjtype] then
 		if flags & MobjFlags.CORPSE ~= 0 then return MapPrefs.corpse end
+		if mobj.state.action == symbols.A_Look then return MapPrefs.enemy_idle end
 		return MapPrefs.enemy
 	end
 	if flags & MobjFlags.COUNTITEM ~= 0 then return MapPrefs.countitem end
