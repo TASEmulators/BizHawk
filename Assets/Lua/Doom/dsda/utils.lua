@@ -18,6 +18,11 @@ local module_prefix = (...):match([[^(.-)[^./\]+$]])
 
 local read_u32  = memory.read_u32_le
 local readfloat = memory.readfloat
+local tointeger = math.tointeger
+
+local function asinteger(value)
+	return type(value) == "number" and tointeger(value) or nil
+end
 
 local function read_float_le(addr, domain)
 	return readfloat(addr, false, domain)
@@ -67,7 +72,8 @@ end
 
 local array_meta = {}
 function array_meta:__index(index)
-	if type(index) ~= "number" or index < 1 or index > self._length then
+	index = asinteger(index)
+	if not index or index < 1 or index > self._length then
 		return nil
 	end
 	local offset = (index - 1) * self._size
@@ -94,7 +100,8 @@ end
 
 local pointer_array_meta = {}
 function pointer_array_meta:__index(index)
-	if type(index) ~= "number" or index < 1 or index > self._length then
+	index = asinteger(index)
+	if not index or index < 1 or index > self._length then
 		return nil
 	end
 	local offset = (index - 1) * 8
@@ -223,7 +230,7 @@ function utils.struct_layout(struct_name)
 	function builder.ptr  (name) return builder.add(name, 8, true, utils.read_ptr) end
 	function builder.bool (name) return builder.add(name, 4, true, utils.read_bool) end
 	function builder.array(name, type, length, ...)
-		assertf(length > 0, "%s.%s: invalid length", struct_name, name)
+		assertf(asinteger(length) and length > 0, "%s.%s: invalid length", struct_name, name)
 		--print(string.format("  %-19s %s[%i]", name, type, count))
 		local element_props = {}
 		for i = 1, length do
