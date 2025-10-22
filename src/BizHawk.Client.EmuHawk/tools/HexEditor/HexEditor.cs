@@ -1506,7 +1506,15 @@ namespace BizHawk.Client.EmuHawk
 					Checked = _domain.Name == _romDomain.Name,
 				};
 
-				MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+				var n = MemoryDomains.Count - 1;
+				if (MemoryDomains[n] is RegistersMemoryDomain)
+				{
+					MemoryDomainsMenuItem.DropDownItems.Insert(n, new ToolStripSeparator());
+				}
+				else
+				{
+					MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+				}
 				MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
 
 				romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
