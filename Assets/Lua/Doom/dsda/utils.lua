@@ -376,11 +376,25 @@ function utils.global_layout()
 	---@class global_builder : builder
 	local builder = utils.struct_layout("[global]")
 
-	function builder.global(type, symbol, ...)
+	function builder.symas(type, symbol, name, ...)
 		local pointer = assertf(symbols[symbol], "Undefined symbol %s", symbol)
 		builder.built_struct.size = pointer
-		builder[type](symbol, ...)
+		builder.built_struct.alignment = 1
+		builder[type](name or symbol, ...)
 		return builder
+	end
+
+	function builder.sym(type, symbol, ...)
+		return builder.symas(type, symbol, symbol, ...)
+	end
+
+	local build = builder.build
+	function builder.build()
+		local struct = build()
+		-- these values are meaningless here, and nothing should accidentally use them
+		struct.size = nil
+		struct.alignment = nil
+		return struct.from_address_unchecked(0, BusDomain)
 	end
 
 	return builder
