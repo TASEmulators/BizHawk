@@ -77,6 +77,8 @@ local LastMouse = {
 	wheel = 0
 }
 local LastFramecount = -1
+local LastEpisode
+local LastMap
 -- forward declarations
 local Lines
 local PlayerTypes
@@ -222,7 +224,6 @@ local function init_cache()
 	Lines = {}
 	for addr, line in pairs(structs.line.items) do
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
-		-- TODO: invalidate cache on map change
 
 		-- assumption: lines can't become special, except for CmdSetLineSpecial
 		-- try to exclude lines that may have had a line id set (and therefore can be targeted by CmdSetLineSpecial)
@@ -267,8 +268,9 @@ end
 local function iterate()
 	if Init then return end
 
-	for _, mobj in pairs(structs.global.mobjs) do
 	init_cache()
+
+	for _, mobj in pairs(structs.global.mobjs) do
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
@@ -519,9 +521,16 @@ while true do
 	local framecount = emu.framecount()
 	local paused = client.ispaused()
 
+	local episode, map = structs.global.gameepisode, structs.global.gamemap
+	if episode ~= LastEpisode or map ~= LastMap then
+		clear_cache()
+		LastEpisode, LastMap = episode, map
+	end
+
 	if Init then init_mobj_bounds() end
 
 	-- clear cache after rewind, turbo etc.
+	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
 	if framecount ~= LastFramecount and framecount ~= LastFramecount + 1 then
 		clear_cache()
 	end
