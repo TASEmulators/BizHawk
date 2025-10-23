@@ -24,6 +24,14 @@ local function asinteger(value)
 	return type(value) == "number" and tointeger(value) or nil
 end
 
+local function not_null_ptr(ptr, domain)
+	if ptr ~= 0 or domain ~= BusDomain then
+		return ptr
+	else
+		return nil
+	end
+end
+
 local function read_float_le(addr, domain)
 	return readfloat(addr, false, domain)
 end
@@ -87,7 +95,7 @@ function array_meta:__pairs()
 end
 
 function utils.array(address, domain, length, size, read_func)
-	return setmetatable({
+	return not_null_ptr(address, domain) and setmetatable({
 		_address = address,
 		_domain = domain,
 		_length = length,
@@ -116,7 +124,7 @@ function pointer_array_meta:__pairs()
 end
 
 function utils.pointer_array(address, domain, length, read_func)
-	return setmetatable({
+	return not_null_ptr(address, domain) and setmetatable({
 		_address = address,
 		_domain = domain,
 		_length = length,

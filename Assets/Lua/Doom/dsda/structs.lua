@@ -236,9 +236,7 @@ structs.polyobj = utils.struct_layout("polyobj")
 	.ptr  ("specialdata")
 	.ptrto("subsector", structs.subsector)
 	.prop ("segs", function (self)
-		local segs_ptr = self.segs_ptr
-		if segs_ptr == 0 then return nil end
-		return utils.pointer_array(segs_ptr, "System Bus", self.numsegs, structs.seg.from_pointer)
+		return utils.pointer_array(self.segs_ptr, "System Bus", self.numsegs, structs.seg.from_pointer)
 	end)
 	.build()
 
@@ -494,9 +492,7 @@ structs.sector = sector
 		return utils.links(self.touching_thinglist, "m_snext", "m_thing")
 	end)
 	.prop ("lines", function(self)
-		local lines_ptr = self.lines_ptr
-		if lines_ptr == 0 then return nil end -- probably doesn't ever happen?
-		return utils.pointer_array(lines_ptr, self._domain, self.linecount, structs.line.from_pointer)
+		return utils.pointer_array(self.lines_ptr, self._domain, self.linecount, structs.line.from_pointer)
 	end)
 	.build()
 
