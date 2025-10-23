@@ -222,9 +222,12 @@ local function init_cache()
 	if Lines then return end
 
 	local polyobj_lines = {}
-	for _, polyobj in ipairs(structs.global.polyobjs) do
-		for _, seg in ipairs(polyobj.segs) do
-			polyobj_lines[seg.linedef.iLineID] = true
+	local polyobjs = structs.global.polyobjs
+	if polyobjs then
+		for _, polyobj in ipairs(polyobjs) do
+			for _, seg in ipairs(polyobj.segs) do
+				polyobj_lines[seg.linedef.iLineID] = true
+			end
 		end
 	end
 
