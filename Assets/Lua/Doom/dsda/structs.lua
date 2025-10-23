@@ -201,6 +201,10 @@ structs.vertex = utils.struct_layout("vertex")
 	.s32  ("y")
 	.s32  ("px")
 	.s32  ("py")
+	.func ("coords", function(self)
+		local x, y = utils.read_packed("ii", self._address, self._domain)
+		return x, y
+	end)
 	.build ()
 
 -- seg_t https://github.com/TASEmulators/dsda-doom/blob/3c31ede63018e32687e9f20e91884b65cac3bc79/prboom2/src/r_defs.h#L387-L401
@@ -420,6 +424,13 @@ structs.line = line
 	.s32  ("healthgroup")
 	.ptr  ("tranmap")
 	.float("alpha")
+	.func ("coords", function(self)
+		-- we only care about the low half each pointer, but we read the entire first pointer so we can get both in one read
+		local v1, v2 = utils.read_packed("TI", self._address + structs.line.offsets.v1, self._domain)
+		local x1, y1 = utils.read_packed("ii", v1 & 0xFFFFFFFF, "System Bus")
+		local x2, y2 = utils.read_packed("ii", v2, "System Bus")
+		return x1, y1, x2, y2
+	end)
 	.build()
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
