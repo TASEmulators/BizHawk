@@ -24,13 +24,15 @@ structs.SIZE = {
 	SECTOR = 344,
 }
 
+-- forward declarations because of cross references, see further down for fields
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 local mobj = utils.domain_struct_layout("mobj", structs.PADDED_SIZE.MOBJ, "Things")
--- forward declaration because of cross references, see further down for fields
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
 local sector = utils.domain_struct_layout("sector", structs.PADDED_SIZE.SECTOR, "Sectors")
--- forward declaration because of cross references, see further down for fields
+
+-- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
+local line = utils.domain_struct_layout("line", structs.PADDED_SIZE.LINE, "Lines")
 
 -- thinker_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_think.h#L74-L90
 local thinker = utils.struct_layout("thinker")
@@ -176,6 +178,12 @@ structs.subsector = utils.struct_layout("subsector")
 	.ptr  ("poly") -- polyobj_t
 	.build()
 
+-- https://github.com/TASEmulators/dsda-doom/blob/3c31ede63018e32687e9f20e91884b65cac3bc79/prboom2/src/p_spec.c#L5283-L5287
+structs.taggedline = utils.struct_layout("taggedline")
+	.ptrto("line", line)
+	.s32  ("lineTag")
+	.build()
+
 -- ticcmd_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/d_ticcmd.h#L52-L65
 structs.ticcmd = utils.struct_layout("ticcmd")
 	.s8   ("forwardmove")
@@ -194,6 +202,45 @@ structs.vertex = utils.struct_layout("vertex")
 	.s32  ("px")
 	.s32  ("py")
 	.build ()
+
+-- seg_t https://github.com/TASEmulators/dsda-doom/blob/3c31ede63018e32687e9f20e91884b65cac3bc79/prboom2/src/r_defs.h#L387-L401
+structs.seg = utils.struct_layout("seg")
+	.ptrto("v1", structs.vertex)
+	.ptrto("v2", structs.vertex)
+	.ptr  ("sidedef") -- side_t
+	.ptrto("linedef", line)
+	.ptrto("frontsector", sector)
+	.ptrto("backsector", sector)
+	.s32  ("offset")
+	.u32  ("angle")
+	.u32  ("pangle")
+	.u32  ("halflength")
+	.build()
+
+-- polyobj_t https://github.com/TASEmulators/dsda-doom/blob/3c31ede63018e32687e9f20e91884b65cac3bc79/prboom2/src/r_defs.h#L589-L607
+structs.polyobj = utils.struct_layout("polyobj")
+	.s32  ("numsegs")
+	.ptr  ("segs_ptr") -- seg_t**
+	.embed("startSpot", structs.degenmobj)
+	.ptr  ("originalPts_ptr") -- vertex_t*
+	.ptr  ("prevPts_ptr") -- vertex_t*
+	.u32  ("angle")
+	.s32  ("tag")
+	.array("bbox", "s32", 4)
+	.s32  ("validcount")
+	.s32  ("validcount2")
+	.bool ("crush")
+	.bool ("hurt")
+	.s32  ("seqType")
+	.s32  ("size")
+	.ptr  ("specialdata")
+	.ptrto("subsector", structs.subsector)
+	.prop ("segs", function (self)
+		local segs_ptr = self.segs_ptr
+		if segs_ptr == 0 then return nil end
+		return utils.pointer_array(segs_ptr, "System Bus", self.numsegs, structs.seg.from_pointer)
+	end)
+	.build()
 
 
 -- player_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/d_player.h#L143-L267
@@ -342,7 +389,7 @@ structs.mobj = mobj
 	.build()
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
-structs.line = utils.domain_struct_layout("line", structs.PADDED_SIZE.LINE, "Lines")
+structs.line = line
 	.s32  ("iLineID")
 	.ptrto("v1", structs.vertex)
 	.ptrto("v2", structs.vertex)
@@ -471,9 +518,30 @@ structs.global = utils.global_layout()
 	.sym  ("bool",  "paused")
 	.sym  ("bool",  "frozen_mode")
 	.sym  ("s32",   "menuactive")
+	.sym  ("array", "playeringame", "bool", structs.MAX_PLAYERS)
+	.sym  ("array", "players", "embed", structs.MAX_PLAYERS, structs.player)
 	.sym  ("s32",   "thinker_count")
+	.sym  ("s32",   "numlines")
+	.symas("ptr",   "lines", "lines_ptr")
+	.sym  ("s32",   "numsectors")
+	.symas("ptr",   "sectors", "sectors_ptr")
+	.sym  ("s32",   "po_NumPolyobjs")
+	.symas("ptr",   "polyobjs", "polyobjs_ptr")
+	.sym  ("s32",   "TaggedLineCount")
 	.prop ("mobjs", function(self)
 		return utils.pointer_array(symbols.mobj_ptrs, "System Bus", self.thinker_count, structs.mobj.from_pointer)
+	end)
+	.prop ("lines", function(self)
+		return utils.array(self.lines_ptr, "System Bus", self.numlines, structs.line.size, structs.line.from_address_unchecked)
+	end)
+	.prop ("sectors", function(self)
+		return utils.array(self.sectors_ptr, "System Bus", self.numsectors, structs.sector.size, structs.sector.from_address_unchecked)
+	end)
+	.prop ("polyobjs", function(self)
+		return utils.array(self.polyobjs_ptr, "System Bus", self.po_NumPolyobjs, structs.polyobj.size, structs.polyobj.from_address)
+	end)
+	.prop ("TaggedLines", function(self)
+		return utils.array(assert(symbols.TaggedLines), "System Bus", self.TaggedLineCount, structs.taggedline.size, structs.taggedline.from_address)
 	end)
 	.build()
 
