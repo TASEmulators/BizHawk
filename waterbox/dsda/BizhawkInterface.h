@@ -16,6 +16,7 @@
 #include "i_sound.h"
 #include "i_video.h"
 #include "p_mobj.h"
+#include "p_tick.h"
 #include "r_main.h"
 
 #include "dsda/args.h"
@@ -40,7 +41,7 @@ extern int headlessMain(int argc, char **argv);
 extern void headlessRunSingleTick();
 extern void headlessClearTickCommand();
 extern int thinker_count;
-extern mobj_t **mobj_ptrs;
+extern mobj_t *mobj_ptrs[MAX_OBJECTS];
 extern dsda_arg_t arg_value[dsda_arg_count];
 
 // Video
