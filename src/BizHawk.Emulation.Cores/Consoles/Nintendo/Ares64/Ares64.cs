@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 	{
 		private readonly LibAres64 _core;
 		private readonly Ares64Disassembler _disassembler;
+		private const int MameFormatSize = 0x435B0C0;
+		private const int NddFormatSize = 0x3DEC800;
 
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public Ares64(CoreLoadParameters<Ares64Settings, Ares64SyncSettings> lp)
@@ -78,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			{
 				_ = N64RomByteswapper.ToZ64Native(r.RomData); // no-op if N64 magic bytes not present
 
-				if (r.FileData.Length is 0x435B0C0 or 0x3DEC800)
+				if (r.FileData.Length is MameFormatSize or NddFormatSize)
 				{
 					(disk, error) = TransformDisk(r.FileData);
 				}
@@ -378,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					var systemBlock = disk.Length == 0x3DEC800 ? (systemBlocks[i] + 2) ^ 1 : (systemBlocks[i] + 2);
+					var systemBlock = disk.Length == NddFormatSize ? (systemBlocks[i] + 2) ^ 1 : (systemBlocks[i] + 2);
 					var systemOffset = systemBlock * 0x4D08;
 					ret[systemBlocks[i] + 2] = 1;
 					if (disk[systemOffset + 0x00] != 0x00) continue;
@@ -440,10 +442,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			if (disk is null) return default;
 
 			// already in mame format
-			if (disk.Length == 0x435B0C0) return (disk, CreateErrorTable(disk));
+			if (disk.Length == MameFormatSize) return (disk, CreateErrorTable(disk));
 
 			// ndd is always 0x3DEC800 bytes apparently?
-			if (disk.Length != 0x3DEC800) return default;
+			if (disk.Length != NddFormatSize) return default;
 
 			// need the error table for this
 			var errorTable = CreateErrorTable(disk);
@@ -479,7 +481,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			var dataFormat = new ReadOnlySpan<byte>(disk, systemOffset, 0xE8);
 
 			var diskIndex = 0;
-			var ret = new byte[0x435B0C0];
+			var ret = new byte[MameFormatSize];
 
 			var type = dataFormat[5] & 0xF;
 			var vzone = 0;
