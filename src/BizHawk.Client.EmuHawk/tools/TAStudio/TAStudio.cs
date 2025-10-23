@@ -226,14 +226,23 @@ namespace BizHawk.Client.EmuHawk
 			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
 			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
 			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
+			CopyMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Copy Frames"];
+			PasteMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Paste Frames"];
+			PasteInsertMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Paste Insert Frames"];
+			CutMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Cut Frames"];
 			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
 			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
 			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
 			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
 			CloneFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
 			CloneFramesXTimesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+			StateHistoryIntegrityCheckMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["State Hist. Integrity Check"];
 
 			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
+			copyToolStripMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Copy Frames"];
+			pasteToolStripMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Paste Frames"];
+			pasteInsertToolStripMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Paste Insert Frames"];
+			cutToolStripMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Cut Frames"];
 			ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
 			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
 			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
@@ -484,6 +493,21 @@ namespace BizHawk.Client.EmuHawk
 			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text));
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
+
+		public void CopyFramesExternal()
+			=> CopyMenuItem_Click(null, EventArgs.Empty);
+
+		public void PasteFramesExternal()
+			=> PasteMenuItem_Click(null, EventArgs.Empty);
+
+		public void PasteInsertFramesExternal()
+			=> PasteInsertMenuItem_Click(null, EventArgs.Empty);
+
+		public void CutFramesExternal()
+			=> CutMenuItem_Click(null, EventArgs.Empty);
+
+		public void StateHistoryIntegrityCheckExternal()
+			=> StateHistoryIntegrityCheckMenuItem_Click(null, EventArgs.Empty);
 
 		public void ClearFramesExternal()
 			=> ClearFramesMenuItem_Click(null, EventArgs.Empty);

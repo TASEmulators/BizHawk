@@ -6,6 +6,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm
 	{
+		private bool TAStudioFocused()
+		{
+			return Tools.IsLoaded<TAStudio>() && Tools.Get<TAStudio>().ContainsFocus;
+		}
+
 		private bool CheckHotkey(string trigger)
 		{
 			void SelectAndSaveToSlot(int slot)
@@ -77,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Screen Raw to Clipboard":
 					// Ctrl+C clash. any tool that has such acc must check this.
 					// maybe check if mainform has focus instead?
-					if (!(Tools.IsLoaded<TAStudio>() && Tools.Get<TAStudio>().ContainsFocus)) TakeScreenshotToClipboard();
+					if (!TAStudioFocused()) TakeScreenshotToClipboard();
 					break;
 				case "Screen Client to Clipboard":
 					TakeScreenshotClientToClipboard();
@@ -450,6 +455,24 @@ namespace BizHawk.Client.EmuHawk
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.ReselectClipboardExternal();
 					break;
+				case "Copy Frames":
+					// This one at least *needs* to check for TAStudio focus,
+					// specifically to avoid Ctrl+C conflicts
+					if (!TAStudioFocused()) return false;
+					Tools.TAStudio.CopyFramesExternal();
+					break;
+				case "Paste Frames":
+					if (!TAStudioFocused()) return false;
+					Tools.TAStudio.PasteFramesExternal();
+					break;
+				case "Paste Insert Frames":
+					if (!TAStudioFocused()) return false;
+					Tools.TAStudio.PasteInsertFramesExternal();
+					break;
+				case "Cut Frames":
+					if (!TAStudioFocused()) return false;
+					Tools.TAStudio.CutFramesExternal();
+					break;
 				case "Clear Frames":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.ClearFramesExternal();
@@ -473,6 +496,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone # Times":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesXTimesExternal();
+					break;
+				case "State Hist. Integrity Check":
+					if (!TAStudioFocused()) return false;
+					Tools.TAStudio.StateHistoryIntegrityCheckExternal();
 					break;
 				case "Analog Increment":
 					if (!Tools.IsLoaded<TAStudio>()) return false;

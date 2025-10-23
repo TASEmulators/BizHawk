@@ -405,26 +405,21 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// CopyMenuItem
 			// 
-			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.CopyMenuItem.Text = "Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
 			// PasteMenuItem
 			// 
-			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.PasteMenuItem.Text = "&Paste";
 			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
 			// PasteInsertMenuItem
 			// 
-			this.PasteInsertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.V)));
 			this.PasteInsertMenuItem.Text = "&Paste Insert";
 			this.PasteInsertMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
 			// 
 			// CutMenuItem
 			// 
-			this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.CutMenuItem.Text = "&Cut";
 			this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
 			// 
@@ -472,8 +467,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// StateHistoryIntegrityCheckMenuItem
 			// 
-			this.StateHistoryIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.I)));
 			this.StateHistoryIntegrityCheckMenuItem.Text = "State History Integrity Check";
 			this.StateHistoryIntegrityCheckMenuItem.Click += new System.EventHandler(this.StateHistoryIntegrityCheckMenuItem_Click);
 			// 
@@ -1056,25 +1049,21 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// copyToolStripMenuItem
 			// 
-			this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
 			this.copyToolStripMenuItem.Text = "Copy";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
 			// pasteToolStripMenuItem
 			// 
-			this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
 			this.pasteToolStripMenuItem.Text = "Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
 			// pasteInsertToolStripMenuItem
 			// 
-			this.pasteInsertToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Shift+V";
 			this.pasteInsertToolStripMenuItem.Text = "Paste Insert";
 			this.pasteInsertToolStripMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
 			// 
 			// cutToolStripMenuItem
 			// 
-			this.cutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
 			this.cutToolStripMenuItem.Text = "Cut";
 			this.cutToolStripMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
 			// 
