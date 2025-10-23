@@ -17,7 +17,6 @@ local CHAR_HEIGHT       = 16
 local NEGATIVE_MAXIMUM  = 1 << 63
 local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
 local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
-local VANILLA_DOOM      = false -- cache values that won't change in vanilla Doom, but can with advanced features (e.g. polyobjects)
 
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
@@ -221,23 +220,55 @@ end
 
 local function init_cache()
 	if Lines then return end
+
+	local polyobj_lines = {}
+	for _, polyobj in ipairs(structs.global.polyobjs) do
+		for _, seg in ipairs(polyobj.segs) do
+			polyobj_lines[seg.linedef.iLineID] = true
+		end
+	end
+
+	local tagged_lines = {}
+	for _, taggedline in ipairs(structs.global.TaggedLines) do
+		tagged_lines[taggedline.line.iLineID] = true
+	end
+
 	Lines = {}
-	for addr, line in pairs(structs.line.items) do
+	for addr, line in pairs(structs.global.lines) do
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
 
-		-- assumption: lines can't become special, except for CmdSetLineSpecial
-		-- try to exclude lines that may have had a line id set (and therefore can be targeted by CmdSetLineSpecial)
-		-- this should only happen in Hexen+
-		if line.special == 0 and line.special_args1 == 0 then
+		local lineId = line.iLineID
+
+		-- assumption: lines can't become special, except for script command CmdSetLineSpecial
+		-- exclude lines that have a line id set (and therefore can be targeted by scripts)
+		if line.special == 0 and not tagged_lines[lineId] then
 			line.special = 0
 		end
 
-		-- assumption: the vertex pointers never change (even if the vertex coordinates do)
-		line.v1 = line.v1
-		line.v2 = line.v2
+		if polyobj_lines[lineId] then -- polyobj lines move, so we can't chache their coordinates. this is a hexen+ thing
+			line._polyobj = true
+			-- assumption: the vertex pointers never change (even if the vertex coordinates do)
+			line.v1 = line.v1
+			line.v2 = line.v2
+		else
+			line._coords = { line:coords() }
+		end
 
 		table.insert(Lines, line)
 	end
+end
+
+local function cached_line_coords(line)
+	if line._polyobj then
+		local validcount = line.validcount
+		if validcount ~= line._validcount then
+			line._validcount = validcount
+			local x1, y1 = line.v1:coords()
+			local x2, y2 = line.v2:coords()
+			line._coords = { x1, y1, x2, y2 }
+		end
+	end
+	return table.unpack(line._coords)
 end
 
 local function iterate_players()
@@ -298,31 +329,19 @@ local function iterate()
 			end
 		end
 	end
-	
+
 	for _, line in ipairs(Lines) do
-		-- Line positions need to be updated for polyobjects
-		-- No way to tell if a line is part of a polyobject, but they update validcount
-		-- when moving so this is a decent way of cutting down on memory reads
-		local validcount = not VANILLA_DOOM and line.validcount
-		if validcount ~= line._validcount then
-			local v1, v2 = line.v1, line.v2
-			line._validcount = validcount
-			line._v1 = { x =  v1.x,
-			             y = -v1.y, }
-			line._v2 = { x =  v2.x,
-			             y = -v2.y, }
-		end
-		local v1, v2  = line._v1, line._v2
+		local x1, y1, x2, y2 = cached_line_coords(line)
 		local special = line.special
 
 		local color
 		if special ~= 0 then color = 0xffcc00ff end
 
 		drawline(
-			mapify_x(v1.x),
-			mapify_y(v1.y),
-			mapify_x(v2.x),
-			mapify_y(v2.y),
+			mapify_x( x1),
+			mapify_y(-y1),
+			mapify_x( x2),
+			mapify_y(-y2),
 			color or 0xffcccccc)
 	end
 end
