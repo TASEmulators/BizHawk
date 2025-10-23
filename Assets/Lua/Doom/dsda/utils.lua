@@ -61,6 +61,10 @@ function utils.read_bool(addr, domain)
 	return read_u32(addr, domain) ~= 0
 end
 
+function utils.read_packed(format, address, domain)
+	return string.unpack(format, memory.read_bytes_as_binary_string(address, string.packsize(format), domain))
+end
+
 local function next_linked(state, prev)
 	local next
 	if prev == nil then
