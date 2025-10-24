@@ -280,7 +280,7 @@ local function iterate_players()
 	local total_itemcount   = 0
 	local total_secretcount = 0
 	local stats             = "      HP Armr Kill Item Secr\n"
-	for addr, player in pairs(structs.player.items) do
+	for i, player in structs.global:iterate_players() do
 		playercount       = playercount + 1
 		local killcount   = player.killcount
 		local itemcount   = player.itemcount
@@ -291,7 +291,7 @@ local function iterate_players()
 		total_secretcount = total_secretcount + secretcount
 
 		stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
-			stats, playercount, player.health, player.armorpoints1, killcount, itemcount, secretcount)
+			stats, i, player.health, player.armorpoints1, killcount, itemcount, secretcount)
 	end
 	if playercount > 1 then
 		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)

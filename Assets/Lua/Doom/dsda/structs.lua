@@ -550,6 +550,19 @@ structs.global = utils.global_layout()
 	.prop ("TaggedLines", function(self)
 		return utils.array(assert(symbols.TaggedLines), "System Bus", self.TaggedLineCount, structs.taggedline.size, structs.taggedline.from_address)
 	end)
+	.cfunc("iterate_players", function()
+		local function next_player(global, i)
+			while i < structs.MAX_PLAYERS do
+				i = i + 1
+				if global.playeringame[i] then
+					return i, global.players[i]
+				end
+			end
+		end
+		return function(self)
+			return next_player, self or structs.global, 0
+		end
+	end)
 	.build()
 
 return structs

@@ -298,6 +298,12 @@ function utils.struct_layout(struct_name)
 		item_funcs[name] = func
 		return builder
 	end
+	function builder.cprop(name, create_func)
+		return builder.prop(name, create_func(struct, builder))
+	end
+	function builder.cfunc(name, create_func)
+		return builder.func(name, create_func(struct, builder))
+	end
 	function builder.build()
 		builder.align(struct.alignment)
 		return struct
