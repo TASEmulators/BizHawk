@@ -38,7 +38,9 @@ internal class LuaCatsGenerator
 		[typeof(System.Drawing.Color)] = "color",
 	};
 
-	private const string Preamble = @"---@meta _
+	private const string Preamble = @"error(""This is a definition file for Lua Language Server and not a usable script"")
+
+---@meta _
 
 ---@class color : userdata
 
