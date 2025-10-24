@@ -337,9 +337,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			public override void PokeByte(long addr, byte val)
-			{
-				throw new InvalidOperationException();
-			}
+				=> FailPokingNotAllowed();
 		}
 
 		public bool AvoidRewind => false;
