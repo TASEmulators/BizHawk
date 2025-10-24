@@ -33,6 +33,9 @@ internal class LuaCatsGenerator
 		[typeof(decimal)] = "number",
 		[typeof(string)] = "string",
 		[typeof(bool)] = "boolean",
+		[typeof(byte[])] = "string",
+		[typeof(Memory<byte>)] = "string",
+		[typeof(ReadOnlyMemory<byte>)] = "string",
 		[typeof(LuaFunction)] = "function",
 		[typeof(LuaTable)] = "table",
 		[typeof(System.Drawing.Color)] = "color",
@@ -149,16 +152,20 @@ internal class LuaCatsGenerator
 
 	private static string GetLuaType(Type type)
 	{
+		// try this twice, before and after extracting the array/nullable type
+		if (TypeConversions.TryGetValue(type, out string luaType))
+			return luaType;
+
 		if (type.IsArray)
 			return GetLuaType(type.GetElementType()) + "[]";
 
 		if (IsNullable(type))
 			type = type.GetGenericArguments()[0];
 
-		if (TypeConversions.TryGetValue(type, out string luaType))
+		if (TypeConversions.TryGetValue(type, out luaType))
 			return luaType;
-		else
-			throw new NotSupportedException($"Unknown type {type.FullName} used in API. Generator must be updated to handle this.");
+
+		throw new NotSupportedException($"Unknown type {type.FullName} used in API. Generator must be updated to handle this.");
 	}
 
 	private static bool IsNullable(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
