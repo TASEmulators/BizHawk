@@ -20,6 +20,8 @@ internal class LuaCatsGenerator
 	private static readonly Dictionary<Type, string> TypeConversions = new()
 	{
 		[typeof(object)] = "any",
+		[typeof(byte)] = "integer",
+		[typeof(sbyte)] = "integer",
 		[typeof(int)] = "integer",
 		[typeof(uint)] = "integer",
 		[typeof(short)] = "integer",
@@ -28,6 +30,7 @@ internal class LuaCatsGenerator
 		[typeof(ulong)] = "integer",
 		[typeof(float)] = "number",
 		[typeof(double)] = "number",
+		[typeof(decimal)] = "number",
 		[typeof(string)] = "string",
 		[typeof(bool)] = "boolean",
 		[typeof(LuaFunction)] = "function",
