@@ -53,6 +53,9 @@ namespace BizHawk.Client.Common
 			=> _buttons.ContainsValue(true) || _axes.Any(kvp => kvp.Value != _axisRanges[kvp.Key].Neutral);
 #endif
 
+		public bool IsMouseBound
+			=> _axisBindings.Values.Any(static bind => bind.Value is "RMouse X" or "RMouse Y" or "WMouse X" or "WMouse Y");
+
 		public bool this[string button] => IsPressed(button);
 
 		// Looks for bindings which are activated by the supplied physical button.

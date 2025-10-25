@@ -2735,6 +2735,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleCaptureMouse()
 		{
+			if (!InputManager.ActiveController.IsMouseBound)
+			{
+				AddOnScreenMessage("Nothing bound to mouse, not capturing cursor");
+				return;
+			}
 			Config.CaptureMouse = !Config.CaptureMouse;
 			CaptureMouse(Config.CaptureMouse);
 			if (Config.CaptureMouse) AddOnScreenMessage($"Mouse cursor captured, press {Config.HotkeyBindings["Capture Mouse"]} to uncapture", duration: 7);
