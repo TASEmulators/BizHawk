@@ -304,14 +304,16 @@ local function iterate()
 
 	init_cache()
 
+	local screenwidth, screenheight = client.screenwidth(), client.screenheight()
+
 	for _, mobj in pairs(structs.global.mobjs:readbulk()) do
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
 			local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
 
-			if  in_range(pos.x, 0, client.screenwidth())
-			and in_range(pos.y, 0, client.screenheight())
+			if  in_range(pos.x, 0, screenwidth)
+			and in_range(pos.y, 0, screenheight)
 			then
 				local type   = mobj.type
 				local radius = math.floor ((mobj.radius >> 16) * Zoom)
