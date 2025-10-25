@@ -384,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 			(BasicBotMenuItem.Image, /*BasicBotMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(BasicBot)]
 				= (/*BasicBot.ToolIcon.ToBitmap()*/Properties.Resources.BasicBotBit, "Basic Bot");
 			(CheatsMenuItem.Image, /*CheatsMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(Cheats)]
-				= (/*Cheats.ToolIcon.ToBitmap()*/Properties.Resources.Freeze, "Cheats");
+				= (/*Cheats.ToolIcon.ToBitmap()*/Properties.Resources.Cheat, "Cheats");
 			(GameSharkConverterMenuItem.Image, /*GameSharkConverterMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(GameShark)]
 				= (/*GameShark.ToolIcon.ToBitmap()*/Properties.Resources.Shark, "Cheat Code Converter");
 			(MultiDiskBundlerFileMenuItem.Image, /*MultiDiskBundlerFileMenuItem.Text*/_) = ToolManager.IconAndNameCache[typeof(MultiDiskBundler)]
@@ -1638,7 +1638,7 @@ namespace BizHawk.Client.EmuHawk
 			if (CheatList.AnyActive)
 			{
 				CheatStatusButton.ToolTipText = "Cheats are currently active";
-				CheatStatusButton.Image = Properties.Resources.Freeze;
+				CheatStatusButton.Image = Properties.Resources.Cheat;
 				CheatStatusButton.Visible = true;
 			}
 			else

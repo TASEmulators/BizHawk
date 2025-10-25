@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
 
 		public static Icon ToolIcon
-			=> Resources.FreezeIcon;
+			=> Resources.CheatIcon;
 
 		private string _sortedColumn;
 		private bool _sortReverse;

@@ -71,6 +71,8 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Camera = ReadEmbeddedBitmap("camera");
 		internal static readonly Bitmap CdLogger = ReadEmbeddedIconAsBitmap("cdlogger");
 		internal static readonly Icon CdLoggerIcon = ReadEmbeddedIcon("cdlogger");
+		internal static readonly Bitmap Cheat = ReadEmbeddedBitmap("Freeze");
+		internal static readonly Icon CheatIcon = ReadEmbeddedIcon("Freeze");
 		internal static readonly Bitmap Checkbox = ReadEmbeddedBitmap("checkbox");
 		internal static readonly Bitmap Circle = ReadEmbeddedBitmap("Circle");
 		internal static readonly Bitmap ClearConsole = ReadEmbeddedBitmap("clear_console");
@@ -100,7 +102,6 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap Find = ReadEmbeddedBitmap("FindHS");
 		internal static readonly Bitmap Forward = ReadEmbeddedBitmap("Forward");
 		internal static readonly Bitmap Freeze = ReadEmbeddedBitmap("Freeze");
-		internal static readonly Icon FreezeIcon = ReadEmbeddedIcon("Freeze");
 		internal static readonly Bitmap Fullscreen = ReadEmbeddedBitmap("Fullscreen");
 		internal static readonly Bitmap Gambatte = ReadEmbeddedBitmap("gambatte");
 		internal static readonly Icon GambatteIcon = ReadEmbeddedIcon("gambatte");
