@@ -82,22 +82,30 @@ end
 
 
 
-local array_meta = {}
-function array_meta:__index(index)
-	index = asinteger(index)
-	if not index or index < 1 or index > self._length then
-		return nil
+local function make_array_meta(read_func, members)
+	local meta = {}
+	function meta:__index(key)
+		local index = asinteger(key)
+		if index and index >= 1 and index <= self._length then
+			return read_func(self, index)
+		elseif members then
+			return members[key]
+		end
 	end
-	local offset = (index - 1) * self._size
-	return self._read(self._address + offset, self._domain)
-end
-function array_meta:__len()
-	return self._length
-end
-function array_meta:__pairs()
-	return ipairs(self)
+	function meta:__len()
+		return self._length
+	end
+	function meta:__pairs()
+		return ipairs(self)
+	end
+	return meta
 end
 
+
+local array_meta = make_array_meta(function(self, index)
+	local offset = (index - 1) * self._size
+	return self._read(self._address + offset, self._domain)
+end)
 function utils.array(address, domain, length, size, read_func)
 	return not_null_ptr(address, domain) and setmetatable({
 		_address = address,
@@ -109,24 +117,30 @@ function utils.array(address, domain, length, size, read_func)
 end
 
 
+local bulk_pointer_array_meta = make_array_meta(function(self, index)
+	local offset = (index - 1) * 8 + 1
+	local ptr = string.unpack("I", self._pointers, offset)
+	return self._read(ptr, BusDomain)
+end)
+function utils.bulk_pointer_array(address, domain, length, read_func)
+	return not_null_ptr(address, domain) and setmetatable({
+		_pointers = memory.read_bytes_as_binary_string(address, length * 8, domain),
+		_length = length,
+		_read = read_func,
+	}, bulk_pointer_array_meta)
+end
 
-local pointer_array_meta = {}
-function pointer_array_meta:__index(index)
-	index = asinteger(index)
-	if not index or index < 1 or index > self._length then
-		return nil
-	end
+
+local pointer_array = {}
+function pointer_array:readbulk()
+	self._pointers = memory.read_bytes_as_binary_string(self._address, self._length * 8, self._domain)
+	return setmetatable(self, bulk_pointer_array_meta)
+end
+local pointer_array_meta = make_array_meta(function(self, index)
 	local offset = (index - 1) * 8
 	local ptr = utils.read_ptr(self._address + offset, self._domain)
 	return self._read(ptr, BusDomain)
-end
-function pointer_array_meta:__len()
-	return self._length
-end
-function pointer_array_meta:__pairs()
-	return ipairs(self)
-end
-
+end, pointer_array)
 function utils.pointer_array(address, domain, length, read_func)
 	return not_null_ptr(address, domain) and setmetatable({
 		_address = address,

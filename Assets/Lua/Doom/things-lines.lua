@@ -225,7 +225,7 @@ local function init_cache()
 	local polyobjs = structs.global.polyobjs
 	if polyobjs then
 		for _, polyobj in ipairs(polyobjs) do
-			for _, seg in ipairs(polyobj.segs) do
+			for _, seg in ipairs(polyobj.segs:readbulk()) do
 				polyobj_lines[seg.linedef.iLineID] = true
 			end
 		end
@@ -304,7 +304,7 @@ local function iterate()
 
 	init_cache()
 
-	for _, mobj in pairs(structs.global.mobjs) do
+	for _, mobj in pairs(structs.global.mobjs:readbulk()) do
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
@@ -350,7 +350,7 @@ local function iterate()
 end
 
 local function init_mobj_bounds()
-	for _, mobj in pairs(structs.global.mobjs) do
+	for _, mobj in pairs(structs.global.mobjs:readbulk()) do
 		local x    = mobj.x / 0xffff
 		local y    = mobj.y / 0xffff * -1
 		if x < OB.left   then OB.left   = x end
