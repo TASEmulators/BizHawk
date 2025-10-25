@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			_cheevoForms = Array.Empty<RCheevosAchievementForm>();
 			using var temp = new RCheevosAchievementForm(null);
 			_controlHeight = temp.Height + temp.Margin.Bottom + temp.Margin.Top;
+			flowLayoutPanel1.BoundScrollBar = vScrollBar1;
 		}
 
 		private void DisposeCheevoForms()
@@ -92,11 +93,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void vScrollBar1_ValueChanged(object sender, EventArgs e) => UpdateForms();
 
-		public void flowLayoutPanel1_MouseWheel(object sender, MouseEventArgs e)
-		{
-			vScrollBar1.Value = (vScrollBar1.Value - e.Delta).Clamp(vScrollBar1.Minimum, vScrollBar1.Maximum - vScrollBar1.LargeChange + 1);
-		}
-
 		private int DisplayedItems()
 		{
 			return Math.Min((int) Math.Ceiling((double) flowLayoutPanel1.Height / _controlHeight) + 1, _cheevos.Length);
@@ -104,7 +100,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RCheevosAchievementListForm_SizeChanged(object sender, EventArgs e)
 		{
-			vScrollBar1.LargeChange = vScrollBar1.Size.Height;
 			if (flowLayoutPanel1.Controls.Count != DisplayedItems())
 			{
 				flowLayoutPanel1.Controls.Clear();
@@ -123,9 +118,28 @@ namespace BizHawk.Client.EmuHawk
 
 	public class VirtualizedFlowLayoutPanel : FlowLayoutPanel
 	{
+		private VScrollBar _boundScrollBar;
+		public VScrollBar BoundScrollBar
+		{
+			get => _boundScrollBar;
+			set
+			{
+				_boundScrollBar = value;
+				_boundScrollBar.SmallChange = 5;
+				_boundScrollBar.LargeChange = this.Height;
+			}
+		}
+
+		protected override void OnSizeChanged(EventArgs e)
+		{
+			if (_boundScrollBar is not null)
+				_boundScrollBar.LargeChange = this.Height;
+			base.OnSizeChanged(e);
+		}
+
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
-			(Parent as RCheevosAchievementListForm)?.flowLayoutPanel1_MouseWheel(this, e);
+			BoundScrollBar.Value = (BoundScrollBar.Value - e.Delta).Clamp(BoundScrollBar.Minimum, BoundScrollBar.Maximum - BoundScrollBar.LargeChange + 1);
 		}
 	}
 }
