@@ -5,8 +5,6 @@ local structs = require("dsda.structs")
 local symbols = require("dsda.symbols")
 
 -- CONSTANTS
-local NULL_OBJECT       = 0x88888888 -- no object at that index
-local OUT_OF_BOUNDS     = 0xFFFFFFFF -- no such index
 local MINIMAL_ZOOM      = 0.0001     -- ???
 local ZOOM_FACTOR       = 0.02
 local WHEEL_ZOOM_FACTOR = 4
@@ -35,12 +33,6 @@ local MapPrefs = {
 }
 
 -- shortcuts
-local rl       = memory.read_u32_le
-local rw       = memory.read_u16_le
-local rb       = memory.read_u8
-local rls      = memory.read_s32_le
-local rws      = memory.read_s16_le
-local rbs      = memory.read_s8
 local text     = gui.text
 local box      = gui.drawBox
 local drawline = gui.drawLine
@@ -146,7 +138,7 @@ local function suppress_click_input()
 	end
 end
 
-function maybe_swap(smaller, bigger)
+local function maybe_swap(smaller, bigger)
 	if smaller > bigger then
 		return bigger, smaller
 	end
@@ -237,7 +229,7 @@ local function init_cache()
 	end
 
 	Lines = {}
-	for addr, line in pairs(structs.global.lines) do
+	for _, line in pairs(structs.global.lines) do
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
 
 		local lineId = line.iLineID
@@ -447,7 +439,7 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
-function make_buttons()
+local function make_buttons()
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
