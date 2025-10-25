@@ -6,10 +6,10 @@ namespace BizHawk.Client.EmuHawk;
 
 public class VirtualizedFlowLayoutPanel : FlowLayoutPanel
 {
-	private VScrollBar _boundScrollBar;
+	private VScrollBar? _boundScrollBar;
 	public VScrollBar BoundScrollBar
 	{
-		get => _boundScrollBar;
+		get => _boundScrollBar!;
 		set
 		{
 			_boundScrollBar = value;
