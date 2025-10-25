@@ -149,10 +149,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Processes queued inputs and triggers input evets (i.e. hotkeys), but does not update output controllers.<br/>
 		/// </summary>
-		/// <param name="processUnboundInput">Events that did not do anything are forwarded out here.
+		/// <param name="processSpecialInput">All input events are forwarded out here.
 		/// This allows things like Windows' standard alt hotkeys (for menu items) to be handled by the
-		/// caller if the input didn't alrady do something else.</param>
-		public void ProcessInput(IPhysicalInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent> processUnboundInput)
+		/// caller if the input didn't alrady do something else.
+		/// <br/>The second parameter is true if the input already did something (hotkey or controller input).</param>
+		public void ProcessInput(IPhysicalInputSource source, Func<string, bool> processHotkey, Config config, Action<InputEvent, bool> processSpecialInput)
 		{
 			// loop through all available events
 			InputEvent ie;
@@ -191,10 +192,7 @@ namespace BizHawk.Client.Common
 				}
 				bool didEmuInput = shouldDoEmuInput && isEmuInput;
 
-				if (!didHotkey && !didEmuInput)
-				{
-					processUnboundInput(ie);
-				}
+				processSpecialInput(ie, didHotkey | didEmuInput);
 			} // foreach event
 
 			// also handle axes
@@ -223,7 +221,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Update output controllers. Call <see cref="ProcessInput(IPhysicalInputSource, Func{string, bool}, Config, Action{InputEvent})"/> shortly before this.
+		/// Update output controllers. Call <see cref="ProcessInput(IPhysicalInputSource, Func{string, bool}, Config, Action{InputEvent, bool})"/> shortly before this.
 		/// </summary>
 		public void RunControllerChain(Config config)
 		{
