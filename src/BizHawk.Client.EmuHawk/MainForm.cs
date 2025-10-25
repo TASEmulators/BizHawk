@@ -2737,7 +2737,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Config.CaptureMouse = !Config.CaptureMouse;
 			CaptureMouse(Config.CaptureMouse);
-			AddOnScreenMessage($"Capture Mouse {(Config.CaptureMouse ? "enabled" : "disabled")}");
+			if (Config.CaptureMouse) AddOnScreenMessage($"Mouse cursor captured, press {Config.HotkeyBindings["Capture Mouse"]} to uncapture", duration: 7);
+			else AddOnScreenMessage("Mouse cursor uncaptured");
 		}
 
 		private void ToggleStayOnTop()
