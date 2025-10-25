@@ -204,12 +204,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void SuspendDrawing(this Control control)
 		{
-			WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
+			}
 		}
 
 		public static void ResumeDrawing(this Control control)
 		{
-			WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+			}
 		}
 	}
 
