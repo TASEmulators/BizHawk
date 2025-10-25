@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
-			this.flowLayoutPanel1 = new BizHawk.Client.EmuHawk.DoubleBufferedFlowLayoutPanel();
+			this.flowLayoutPanel1 = new BizHawk.Client.EmuHawk.VirtualizedFlowLayoutPanel();
 			this.SuspendLayout();
 			// 
 			// vScrollBar1
@@ -39,7 +39,6 @@
 			this.vScrollBar1.Location = new System.Drawing.Point(537, 12);
 			this.vScrollBar1.Name = "vScrollBar1";
 			this.vScrollBar1.Size = new System.Drawing.Size(17, 567);
-			this.vScrollBar1.SmallChange = 5;
 			this.vScrollBar1.TabIndex = 1;
 			this.vScrollBar1.ValueChanged += new System.EventHandler(this.vScrollBar1_ValueChanged);
 			// 
@@ -54,7 +53,6 @@
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(544, 567);
 			this.flowLayoutPanel1.TabIndex = 0;
-			this.flowLayoutPanel1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.flowLayoutPanel1_MouseWheel);
 			// 
 			// RCheevosAchievementListForm
 			// 
@@ -77,7 +75,7 @@
 
 		#endregion
 
-		private DoubleBufferedFlowLayoutPanel flowLayoutPanel1;
+		private VirtualizedFlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.VScrollBar vScrollBar1;
 	}
 }
