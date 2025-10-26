@@ -53,6 +53,8 @@ namespace {nSpace}
 
 		public static readonly Version AsmVersion = Asm.GetName().Version!;
 
+		private static HashSet<string>? _resourceList = null;
+
 		public static Type[] Types => _types ??= Asm.GetTypesWithoutLoadErrors().ToArray();
 
 		public static IEnumerable<string> EmbeddedResourceList(string extraPrefix)
@@ -62,8 +64,10 @@ namespace {nSpace}
 				.Select(s => s.RemovePrefix(fullPrefix));
 		}}
 
-		public static IEnumerable<string> EmbeddedResourceList()
-			=> EmbeddedResourceList(string.Empty); // can't be simplified to `Asm.GetManifestResourceNames` call
+		public static IReadOnlyCollection<string> EmbeddedResourceList()
+			=> _resourceList ??= Asm.GetManifestResourceNames().Where(static s => s.StartsWithOrdinal(EMBED_PREFIX)) // ditto
+				.Select(static s => s.RemovePrefix(EMBED_PREFIX))
+				.ToHashSet();
 
 		/// <exception cref=""ArgumentException"">not found</exception>
 		public static Stream EmbeddedResourceStream(string embedPath)
