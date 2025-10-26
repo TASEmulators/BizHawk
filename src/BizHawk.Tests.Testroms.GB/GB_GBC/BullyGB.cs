@@ -31,7 +31,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 		private const string SUITE_ID = "BullyGB";
 
-		private static readonly IReadOnlyCollection<string> KnownFailures = new[]
+		private static readonly IReadOnlyList<string> KnownFailures = new[]
 		{
 			"BullyGB on CGB_C in GBHawk",
 			"BullyGB on CGB_C in SameBoy (no BIOS)",
@@ -46,7 +46,10 @@ namespace BizHawk.Tests.Testroms.GB
 
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
-			=> TestUtils.PrepareDBAndOutput(SUITE_ID);
+		{
+			TestUtils.AssertKnownFailuresAreSorted(KnownFailures, suiteID: SUITE_ID);
+			TestUtils.PrepareDBAndOutput(SUITE_ID);
+		}
 
 		private static string DisplayNameFor(CoreSetup setup)
 			=> $"BullyGB on {setup}";

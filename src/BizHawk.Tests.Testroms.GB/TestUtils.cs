@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Tests.Testroms.GB
@@ -23,6 +24,15 @@ namespace BizHawk.Tests.Testroms.GB
 		private static extern uint SetDllDirectory(string lpPathName);
 
 		private static readonly SortedSet<string> _initialised = new();
+
+		public static void AssertKnownFailuresAreSorted(IReadOnlyList<string> knownFailures, string suiteID)
+		{
+			if (knownFailures.IsSortedAsc()) return;
+			var sorted = knownFailures.ToArray();
+			Array.Sort(sorted);
+			var (iFirst, first) = knownFailures.Index().First(tuple => sorted[tuple.Index] != tuple.Item);
+			throw new Exception($"{suiteID} known-failing testcase list must be sorted (first inconsistency: [{iFirst}] = \"{first}\")");
+		}
 
 		public static bool IsKnownFailure(string caseStr, IReadOnlyCollection<string> knownFailures)
 			=> knownFailures is string[] a

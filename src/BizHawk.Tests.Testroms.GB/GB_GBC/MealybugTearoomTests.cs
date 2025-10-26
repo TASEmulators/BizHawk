@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -234,7 +233,7 @@ namespace BizHawk.Tests.Testroms.GB
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
 		{
-			if (!MealybugTestCase.KnownFailures.IsSortedAsc()) throw new Exception(SUITE_ID + " known-failing testcase list must be sorted");
+			TestUtils.AssertKnownFailuresAreSorted(MealybugTestCase.KnownFailures, suiteID: SUITE_ID);
 			TestUtils.PrepareDBAndOutput(SUITE_ID);
 		}
 

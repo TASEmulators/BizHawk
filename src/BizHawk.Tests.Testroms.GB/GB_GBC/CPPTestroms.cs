@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
@@ -160,7 +159,7 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
 		{
-			if (!CPPTestromsHexStrTestCase.KnownFailures.IsSortedAsc()) throw new Exception(SUITE_ID + " known-failing testcase list must be sorted");
+			TestUtils.AssertKnownFailuresAreSorted(CPPTestromsHexStrTestCase.KnownFailures, suiteID: SUITE_ID);
 			TestUtils.PrepareDBAndOutput(SUITE_ID);
 		}
 

@@ -73,7 +73,7 @@ namespace BizHawk.Tests.Testroms.GB
 
 		private static readonly IReadOnlyList<string> FilteredEmbedPaths = ReflectionCache.EmbeddedResourceList().Where(static s => s.Contains("acid")).ToList();
 
-		private static readonly IReadOnlyCollection<string> KnownFailures = new[]
+		private static readonly IReadOnlyList<string> KnownFailures = new[]
 		{
 			"", // none \o/
 		};
@@ -84,7 +84,10 @@ namespace BizHawk.Tests.Testroms.GB
 
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
-			=> TestUtils.PrepareDBAndOutput(SUITE_ID);
+		{
+			TestUtils.AssertKnownFailuresAreSorted(KnownFailures, suiteID: SUITE_ID);
+			TestUtils.PrepareDBAndOutput(SUITE_ID);
+		}
 
 		[AcidTestData]
 		[DataTestMethod]
