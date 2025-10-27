@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 cd "$(dirname "$(realpath "$0")")"
-exec ../../BizHawk.Tests.Testroms.GB/.download_from_ci.sh \
+exec ../../BizHawk.Tests.Testroms/.download_from_ci.sh \
 	BullyGB \
 	CasualPokePlayer-test-roms \
 	cgb-acid-hell \

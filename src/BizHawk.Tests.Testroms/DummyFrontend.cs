@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Tests.Testroms.GB
+namespace BizHawk.Tests.Testroms
 {
 	public sealed class DummyFrontend : IDisposable
 	{
@@ -16,6 +16,10 @@ namespace BizHawk.Tests.Testroms.GB
 		{
 			private static string FailMsg(string embedPath, string? msg)
 				=> $"failed to open required resource at {embedPath}, is it present in $(ProjectDir)/res?{(msg is not null ? " core says: " + msg : string.Empty)}";
+
+			private IReadOnlyCollection<string> _embeddedResourceList = null!;
+
+			private Func<string, Stream> _getEmbeddedResourceStream = null!;
 
 			public readonly IDictionary<FirmwareID, string> EmbedPathMap;
 
@@ -25,7 +29,7 @@ namespace BizHawk.Tests.Testroms.GB
 			/// <returns><see langword="true"/> iff succeeded</returns>
 			public bool AddIfExists(FirmwareID id, string embedPath)
 			{
-				var exists = ReflectionCache.EmbeddedResourceList().Contains(embedPath);
+				var exists = _embeddedResourceList.Contains(embedPath);
 				if (exists) EmbedPathMap[id] = embedPath;
 				return exists;
 			}
@@ -39,7 +43,7 @@ namespace BizHawk.Tests.Testroms.GB
 				Stream embeddedResourceStream;
 				try
 				{
-					embeddedResourceStream = ReflectionCache.EmbeddedResourceStream(embedPath);
+					embeddedResourceStream = _getEmbeddedResourceStream(embedPath);
 				}
 				catch (Exception)
 				{
@@ -75,6 +79,14 @@ namespace BizHawk.Tests.Testroms.GB
 
 			public string GetUserPath(string sysID, bool temp)
 				=> throw new NotImplementedException(); // only used by Encore
+
+			public void UseReflectionCache(
+				IReadOnlyCollection<string> embeddedResourceList,
+				Func<string, Stream> getEmbeddedResourceStream)
+			{
+				_embeddedResourceList = embeddedResourceList;
+				_getEmbeddedResourceStream = getEmbeddedResourceStream;
+			}
 		}
 
 		private static int _totalFrames = 0;

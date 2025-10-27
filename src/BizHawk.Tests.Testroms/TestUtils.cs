@@ -8,7 +8,7 @@ using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Tests.Testroms.GB
+namespace BizHawk.Tests.Testroms
 {
 	public static class TestUtils
 	{

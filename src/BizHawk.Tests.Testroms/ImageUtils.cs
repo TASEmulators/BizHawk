@@ -10,7 +10,7 @@ using BizHawk.Common.StringExtensions;
 
 using ImageMagick;
 
-namespace BizHawk.Tests.Testroms.GB
+namespace BizHawk.Tests.Testroms
 {
 	public static class ImageUtils
 	{

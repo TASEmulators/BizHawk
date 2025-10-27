@@ -53,31 +53,6 @@ namespace BizHawk.Tests.Testroms.GB
 				=> $"{Variant} in {CoreName}{(UseBIOS ? string.Empty : " (no BIOS)")}";
 		}
 
-		public readonly struct DummyRomAsset : IRomAsset
-		{
-			private readonly byte[] _fileData;
-
-#pragma warning disable CA1065 // yes, really throw
-			public string? Extension
-				=> throw new NotImplementedException();
-
-			public byte[]? FileData
-				=> _fileData;
-
-			public GameInfo? Game
-				=> throw new NotImplementedException();
-
-			public byte[]? RomData
-				=> throw new NotImplementedException();
-
-			public string? RomPath
-				=> throw new NotImplementedException();
-#pragma warning restore CA1065
-
-			public DummyRomAsset(byte[] fileData)
-				=> _fileData = fileData;
-		}
-
 		private static readonly GambatteSettings GambatteSettings = new() { CGBColors = GBColors.ColorType.vivid };
 
 		private static readonly GambatteSyncSettings GambatteSyncSettings_GB_NOBIOS = new() { ConsoleMode = GambatteSyncSettings.ConsoleModeType.GB, EnableBIOS = false, FrameLength = GambatteSyncSettings.FrameLengthType.EqualLengthFrames };
@@ -189,6 +164,7 @@ namespace BizHawk.Tests.Testroms.GB
 		public static DummyFrontend.ClassInitCallbackDelegate InitGBCore(CoreSetup setup, string romFilename, byte[] rom)
 			=> (efp, _, coreComm) =>
 			{
+				efp.UseReflectionCache(ReflectionCache.EmbeddedResourceList(), ReflectionCache.EmbeddedResourceStream);
 				if (setup.UseBIOS && !efp.AddEmbeddedGBBIOS(setup.Variant)) Assert.Inconclusive("BIOS not provided");
 				var game = Database.GetGameInfo(rom, romFilename);
 				IEmulator newCore = setup.CoreName switch

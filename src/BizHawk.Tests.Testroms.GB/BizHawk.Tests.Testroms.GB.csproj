@@ -4,10 +4,7 @@
 	</PropertyGroup>
 	<Import Project="../Testroms.props" />
 	<ItemGroup>
-		<PackageReference Include="Magick.NET-Q8-AnyCPU" />
-		<PackageReference Include="System.Drawing.Common" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms/BizHawk.Tests.Testroms.csproj" />
 		<EmbeddedResource Include="res/**/*" />
-		<Content Include="$(ProjectDir)../../Assets/gamedb/**/*" LinkBase="gamedb" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 </Project>
