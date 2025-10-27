@@ -12,6 +12,9 @@ res
 └─ SMSmemtest_artifact
 ```
 
+You must **build EmuHawk once** before running these tests, since they currently pull native binaries from the `output` dir in the repo root.
+But there is no direct dependency on EmuHawk or WinForms.
+
 Like when building EmuHawk, the target framework and configuration for all the BizHawk project deps is dictated by this project.
 That means .NET Standard 2.0 for most libraries, or else .NET Framework 4.8 (which you can override with e.g. `-p:TestProjTargetFrameworkOverride=net8.0`).
 To build and run the tests in `Release` configuration (or `Debug` if you need that for some reason):
