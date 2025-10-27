@@ -37,7 +37,7 @@ local text     = gui.text
 local box      = gui.drawBox
 local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
-
+local Globals       = structs.globals
 local MobjType      = enums.mobjtype
 local SpriteNumber  = enums.doom.spritenum
 local MobjFlags     = enums.mobjflags
@@ -214,7 +214,7 @@ local function init_cache()
 	if Lines then return end
 
 	local polyobj_lines = {}
-	local polyobjs = structs.global.polyobjs
+	local polyobjs = Globals.polyobjs
 	if polyobjs then
 		for _, polyobj in ipairs(polyobjs) do
 			for _, seg in ipairs(polyobj.segs:readbulk()) do
@@ -224,12 +224,12 @@ local function init_cache()
 	end
 
 	local tagged_lines = {}
-	for _, taggedline in ipairs(structs.global.TaggedLines) do
+	for _, taggedline in ipairs(Globals.TaggedLines) do
 		tagged_lines[taggedline.line.iLineID] = true
 	end
 
 	Lines = {}
-	for _, line in pairs(structs.global.lines) do
+	for _, line in pairs(Globals.lines) do
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
 
 		local lineId = line.iLineID
@@ -272,7 +272,7 @@ local function iterate_players()
 	local total_itemcount   = 0
 	local total_secretcount = 0
 	local stats             = "      HP Armr Kill Item Secr\n"
-	for i, player in structs.global:iterate_players() do
+	for i, player in Globals:iterate_players() do
 		playercount       = playercount + 1
 		local killcount   = player.killcount
 		local itemcount   = player.itemcount
@@ -298,7 +298,7 @@ local function iterate()
 
 	local screenwidth, screenheight = client.screenwidth(), client.screenheight()
 
-	for _, mobj in pairs(structs.global.mobjs:readbulk()) do
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
@@ -344,7 +344,7 @@ local function iterate()
 end
 
 local function init_mobj_bounds()
-	for _, mobj in pairs(structs.global.mobjs:readbulk()) do
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
 		local x    = mobj.x / 0xffff
 		local y    = mobj.y / 0xffff * -1
 		if x < OB.left   then OB.left   = x end
@@ -537,7 +537,7 @@ while true do
 	local framecount = emu.framecount()
 	local paused = client.ispaused()
 
-	local episode, map = structs.global.gameepisode, structs.global.gamemap
+	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
 		clear_cache()
 		LastEpisode, LastMap = episode, map

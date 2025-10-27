@@ -521,7 +521,7 @@ assert(structs.sector.size == structs.SIZE.SECTOR, "sector.size does not match s
 
 
 
-structs.global = utils.global_layout()
+structs.globals = utils.global_layout()
 	.sym  ("s32",   "gameskill")
 	.sym  ("s32",   "gameepisode")
 	.sym  ("s32",   "gamemap")
@@ -589,7 +589,7 @@ structs.global = utils.global_layout()
 			end
 		end
 		return function(self)
-			return next_player, self or structs.global, 0
+			return next_player, self or structs.globals, 0
 		end
 	end)
 	.func ("iterate_thinkers", function(self, class)
