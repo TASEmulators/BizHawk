@@ -170,6 +170,13 @@ structs.pspdef = utils.struct_layout("pspdef")
 	.s32  ("sy")
 	.build()
 
+-- rng_t
+structs.rng = utils.struct_layout("rng")
+	.array("seed", "u32", 65)
+	.s32  ("rndindex")
+	.s32  ("prndindex")
+	.build()
+
 -- subsector_t https://github.com/TASEmulators/dsda-doom/blob/623068c33f6bf21239c6c6941f221011b08b6bb9/prboom2/src/r_defs.h#L422-L431
 structs.subsector = utils.struct_layout("subsector")
 	.ptrto("sector", sector)
@@ -515,19 +522,41 @@ assert(structs.sector.size == structs.SIZE.SECTOR, "sector.size does not match s
 
 
 structs.global = utils.global_layout()
-	.sym  ("s32" ,  "gameaction")
-	.sym  ("s32",   "gamestate")
-	.sym  ("s32",   "wipegamestate")
 	.sym  ("s32",   "gameskill")
 	.sym  ("s32",   "gameepisode")
 	.sym  ("s32",   "gamemap")
+	.sym  ("s32",   "displayplayer")
+	-- timing
+	.sym  ("s32",   "gametic")
+	.sym  ("s32",   "leveltime")
+	.sym  ("s32",   "totalleveltimes")
+	-- stats
+	.sym  ("s32",   "levels_completed")
+	.sym  ("s32",   "totalkills")
+	.sym  ("s32",   "totallive")
+	.sym  ("s32",   "totalitems")
+	.sym  ("s32",   "totalsecret")
+	-- game/map data
+	.sym  ("s32",   "compatibility_level")
+	.sym  ("bool",  "heretic")
+	.sym  ("bool",  "hexen")
+	.sym  ("s32",   "gamemode")
+	.sym  ("s32",   "gamemission")
+	-- game state
+	.sym  ("bool",  "automap_active")
+	.sym  ("s32" ,  "gameaction")
+	.sym  ("s32",   "gamestate")
 	.sym  ("bool",  "in_game")
-	.sym  ("bool",  "paused")
-	.sym  ("bool",  "frozen_mode")
-	.sym  ("s32",   "menuactive")
+	.sym  ("bool",  "reachedLevelExit")
+	.sym  ("bool",  "reachedGameEnd")
+	-- rng
+	.sym  ("embed", "rng", structs.rng)
+	.sym  ("u32",   "rngseed")
+	-- arrays
+	.sym  ("array", "thinkerclasscap", "embed", 5, structs.thinker)
 	.sym  ("array", "playeringame", "bool", structs.MAX_PLAYERS)
 	.sym  ("array", "players", "embed", structs.MAX_PLAYERS, structs.player)
-	.sym  ("s32",   "thinker_count")
+	.sym  ("s32",   "thinker_count") -- for mobj_ptrs
 	.sym  ("s32",   "numlines")
 	.symas("ptr",   "lines", "lines_ptr")
 	.sym  ("s32",   "numsectors")
@@ -562,6 +591,11 @@ structs.global = utils.global_layout()
 		return function(self)
 			return next_player, self or structs.global, 0
 		end
+	end)
+	.func ("iterate_thinkers", function(self, class)
+		if not class then class = 5 end -- th_all
+		local iterator, state, start = utils.links(self.thinkerclasscap[class], class == 5 and "next" or "cnext")
+		return iterator, state, iterator(state, start) -- iterate once already to skip the cap
 	end)
 	.build()
 
