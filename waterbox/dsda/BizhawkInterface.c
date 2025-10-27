@@ -246,8 +246,28 @@ void player_input(struct PackedPlayerInput *src, int id)
       if (newweapon==wp_fist
         && player->weaponowned[wp_chainsaw]
         && player->readyweapon!=wp_chainsaw
-        && (player->readyweapon==wp_fist || !player->powers[pw_strength] || P_WeaponPreferred(wp_chainsaw, wp_fist)))
+        && (
+          player->readyweapon==wp_fist
+          || !player->powers[pw_strength]
+          || P_WeaponPreferred(wp_chainsaw, wp_fist)
+        )
+      )
         newweapon = wp_chainsaw;
+
+      // Select SSG from '3' only if it's owned and the player
+      // does not have a shotgun, or if the shotgun is already
+      // in use, or if the SSG is not already in use and the
+      // player prefers it.
+      if (newweapon == wp_shotgun
+        && gamemode == commercial
+        && player->weaponowned[wp_supershotgun]
+        && (
+          !player->weaponowned[wp_shotgun]
+          || player->readyweapon == wp_shotgun
+          || (player->readyweapon != wp_supershotgun && P_WeaponPreferred(wp_supershotgun, wp_shotgun))
+        )
+      )
+        newweapon = wp_supershotgun;
     }
 
     dest->buttons |= (newweapon) << BT_WEAPONSHIFT;
