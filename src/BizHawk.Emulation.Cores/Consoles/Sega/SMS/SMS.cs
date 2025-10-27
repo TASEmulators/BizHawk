@@ -159,13 +159,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else if (game.System == VSystemID.Raw.SMS && !game["GG_in_SMS"])
 			{
-				BiosRom = comm.CoreFileProvider.GetFirmware(new("SMS", _region.ToString()));
-
-				if (BiosRom == null)
-				{
-					throw new MissingFirmwareException("No BIOS found");
-				}
-
 				if (!game["RequireBios"] && !SyncSettings.UseBios)
 				{
 					// we are skipping the BIOS
@@ -173,6 +166,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 				else
 				{
+					BiosRom = comm.CoreFileProvider.GetFirmwareOrThrow(new("SMS", _region.ToString()));
 					Port3E = 0xF7;
 				}
 			}
