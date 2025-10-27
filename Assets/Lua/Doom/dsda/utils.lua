@@ -71,9 +71,10 @@ local function next_linked(state, prev)
 		next = state.start
 	else
 		next = prev[state.key]
+		if next == state.start then return nil end
 	end
 	local value = state.value
-	return next, next and value and next[value]
+	return next, next ~= nil and value ~= nil and next[value]
 end
 
 function utils.links(start, key, value)
@@ -202,6 +203,10 @@ function utils.struct_layout(struct_name)
 
 	function item_meta:__pairs()
 		return next_item_prop, self, nil
+	end
+
+	function item_meta:__eq(other)
+		return other._address == self._address and other._domain == self._domain
 	end
 
 	function item_meta:__tostring()
