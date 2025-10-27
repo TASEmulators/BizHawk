@@ -23,8 +23,11 @@ namespace BizHawk.Client.Common.movie.import
 			foreach (var (k, v) in bkm.Header) Result.Movie.HeaderEntries[k] = v;
 
 			// migrate some stuff, probably incomplete
-			if (Result.Movie.HeaderEntries[HeaderKeys.Core] is "QuickNes") Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.QuickNes;
-			if (Result.Movie.HeaderEntries[HeaderKeys.Core] is "EMU7800") Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.A7800Hawk;
+			if (Result.Movie.HeaderEntries.TryGetValue(HeaderKeys.Core, out string coreName))
+			{
+				if (coreName is "QuickNes") Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.QuickNes;
+				if (coreName is "EMU7800") Result.Movie.HeaderEntries[HeaderKeys.Core] = CoreNames.A7800Hawk;
+			}
 			if (Result.Movie.HeaderEntries[HeaderKeys.Platform] is "DGB") Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.GBL;
 
 			Result.Movie.SyncSettingsJson = bkm.SyncSettingsJson;
