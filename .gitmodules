@@ -40,6 +40,9 @@
 [submodule "submodules/libemu83"]
 	path = submodules/libemu83
 	url = https://github.com/CasualPokePlayer/Emu83.git
+[submodule "submodules/libre-roms-ci"]
+	path = submodules/libre-roms-ci
+	url = https://gitlab.com/tasbot/libre-roms-ci.git
 [submodule "submodules/sameboy/libsameboy"]
 	path = submodules/sameboy/libsameboy
 	url = https://github.com/LIJI32/SameBoy.git
