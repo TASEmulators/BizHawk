@@ -224,13 +224,13 @@ namespace BizHawk.Tests.Testroms.GB.CPPTestroms
 			{
 				case TestUtils.TestSuccessState.ExpectedFailure:
 					Assert.Inconclusive("expected failure, verified");
-					break;
+					return;
 				case TestUtils.TestSuccessState.Failure:
 					Assert.Fail("screenshot contains incorrect value");
-					break;
+					return;
 				case TestUtils.TestSuccessState.UnexpectedSuccess:
 					Assert.Fail("screenshot contains correct value unexpectedly (this is a good thing)");
-					break;
+					return;
 			}
 		}
 	}

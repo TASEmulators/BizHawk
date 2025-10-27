@@ -184,13 +184,13 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 			{
 				case TestUtils.TestSuccessState.ExpectedFailure:
 					Assert.Inconclusive("expected failure, verified");
-					break;
+					return;
 				case TestUtils.TestSuccessState.Failure:
 					Assert.Fail("screenshot contains incorrect value");
-					break;
+					return;
 				case TestUtils.TestSuccessState.UnexpectedSuccess:
 					Assert.Fail("screenshot contains correct value unexpectedly (this is a good thing)");
-					break;
+					return;
 			}
 		}
 
@@ -214,13 +214,13 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 			{
 				case TestUtils.TestSuccessState.ExpectedFailure:
 					Assert.Inconclusive("expected failure, verified");
-					break;
+					return;
 				case TestUtils.TestSuccessState.Failure:
 					Assert.Fail("expected and actual screenshots differ");
-					break;
+					return;
 				case TestUtils.TestSuccessState.UnexpectedSuccess:
 					Assert.Fail("expected and actual screenshots matched unexpectedly (this is a good thing)");
-					break;
+					return;
 			}
 		}
 	}

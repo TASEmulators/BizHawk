@@ -81,17 +81,18 @@ namespace BizHawk.Tests.Testroms.GB
 				{
 					case TestUtils.TestSuccessState.ExpectedFailure:
 						Console.WriteLine("expected failure, verified");
-						break;
+						return false;
 					case TestUtils.TestSuccessState.Failure:
 						Assert.Fail("expected and actual screenshots differ");
-						break;
+						return default;
 					case TestUtils.TestSuccessState.Success:
 						return true;
 					case TestUtils.TestSuccessState.UnexpectedSuccess:
 						Assert.Fail("expected and actual screenshots matched unexpectedly (this is a good thing)");
-						break;
+						return default;
+					default:
+						return default;
 				}
-				return false;
 			}
 			var (buttonA, buttonDown) = setup.CoreName is CoreNames.Gambatte ? ("A", "Down") : ("P1 A", "P1 Down");
 			fe.FrameAdvanceBy(6);

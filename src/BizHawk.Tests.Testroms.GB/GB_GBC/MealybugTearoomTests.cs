@@ -290,13 +290,13 @@ namespace BizHawk.Tests.Testroms.GB
 			{
 				case TestUtils.TestSuccessState.ExpectedFailure:
 					Assert.Inconclusive("expected failure, verified");
-					break;
+					return;
 				case TestUtils.TestSuccessState.Failure:
 					Assert.Fail("expected and actual screenshots differ");
-					break;
+					return;
 				case TestUtils.TestSuccessState.UnexpectedSuccess:
 					Assert.Fail("expected and actual screenshots matched unexpectedly (this is a good thing)");
-					break;
+					return;
 			}
 		}
 	}
