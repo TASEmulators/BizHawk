@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common.Filters;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -102,8 +103,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_imGuiResourceCache = new ImGuiResourceCache(_gl);
-			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.EmuCore, _gl.Create2DRenderer(_imGuiResourceCache));
-			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.Client, _gl.Create2DRenderer(_imGuiResourceCache));
+			// `_apiHawkIDTo2DRenderer` is a new empty dict, members are lazily-initialised
 
 			RefreshUserShader();
 		}
@@ -414,7 +414,7 @@ namespace BizHawk.Client.Common
 
 		private void AppendApiHawkLayer(FilterProgram chain, DisplaySurfaceID surfaceID)
 		{
-			var apiHawkRenderer = _apiHawkIDTo2DRenderer[surfaceID];
+			var apiHawkRenderer = GetApiHawk2DRenderer(surfaceID);
 			var fApiHawkLayer = new ApiHawkLayer(apiHawkRenderer);
 			chain.AddFilter(fApiHawkLayer, surfaceID.GetName());
 		}
@@ -947,7 +947,9 @@ namespace BizHawk.Client.Common
 		/// Implicitly, if the size changes the surface will be cleared
 		/// </summary>
 		public I2DRenderer GetApiHawk2DRenderer(DisplaySurfaceID surfaceID)
-			=> _apiHawkIDTo2DRenderer[surfaceID];
+			=> surfaceID is DisplaySurfaceID.EmuCore or DisplaySurfaceID.Client
+				? _apiHawkIDTo2DRenderer.GetValueOrPut(surfaceID, _ => _gl.Create2DRenderer(_imGuiResourceCache))
+				: throw new ArgumentOutOfRangeException(paramName: nameof(surfaceID), surfaceID, message: "invalid surface ID");
 
 		public void ClearApiHawkSurfaces()
 		{
