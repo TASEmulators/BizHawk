@@ -11,7 +11,7 @@ using BizHawk.Common.StringExtensions;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
-namespace BizHawk.Tests.Testroms.GB.GambatteSuite
+namespace BizHawk.Tests.Testroms.GB
 {
 	[TestClass]
 	public sealed partial class GambatteSuite

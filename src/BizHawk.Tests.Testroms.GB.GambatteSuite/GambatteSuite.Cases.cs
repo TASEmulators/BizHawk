@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
-namespace BizHawk.Tests.Testroms.GB.GambatteSuite
+namespace BizHawk.Tests.Testroms.GB
 {
 	public sealed partial class GambatteSuite
 	{

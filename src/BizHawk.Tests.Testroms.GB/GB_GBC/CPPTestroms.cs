@@ -8,7 +8,7 @@ using BizHawk.Common.IOExtensions;
 
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
-namespace BizHawk.Tests.Testroms.GB.CPPTestroms
+namespace BizHawk.Tests.Testroms.GB
 {
 	[TestClass]
 	public sealed class CPPTestroms
