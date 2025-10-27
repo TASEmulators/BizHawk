@@ -32,12 +32,14 @@ public sealed class ReflectionCacheGenerator : IIncrementalGenerator
 			}
 		}
 		var src = $@"#nullable enable
-{(langVersion >= LanguageVersion.CSharp10 ? $"\nglobal using ReflectionCache = {nSpace}.{className};\n" : string.Empty)}
+{(langVersion >= LanguageVersion.CSharp10 ? $"\n#pragma warning disable SA1209\nglobal using ReflectionCache = {nSpace}.{className};\n#pragma warning restore SA1209\n" : string.Empty)}
+#pragma warning disable SA1208
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+#pragma warning restore SA1208
 {(nSpace == "BizHawk.Common" ? string.Empty : "\nusing BizHawk.Common;")}
 using BizHawk.Common.StringExtensions;
 
