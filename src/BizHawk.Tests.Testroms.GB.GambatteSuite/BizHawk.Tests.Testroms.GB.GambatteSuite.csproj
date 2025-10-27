@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../TestProjects.props" />
+	<Import Project="../Testroms.props" />
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms.GB/BizHawk.Tests.Testroms.GB.csproj" />
 		<EmbeddedResource Include="res/**/*" />
