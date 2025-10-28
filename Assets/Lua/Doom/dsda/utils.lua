@@ -447,16 +447,14 @@ end
 
 
 
--- Assign (v, k) for every (k, v) so that the enums can be accessed by name, e.g. `mobjtype.PLAYER`
-function utils.assign_enum_keys(table, from, to)
-	for i = from or 0, to or math.huge do
-		local name = table[i]
-		if name ~= nil then
-			--assert(table[name] == nil, "duplicate name "..name)
-			table[name] = i
-		elseif to == nil then
-			return
-		end
+-- Assign (v, k) for every (k, v) so that the enums can be accessed by name or value, e.g. `mobjtype.PLAYER` or `mobjtype[0]`
+function utils.make_enum(enum)
+	local temp = {} -- enumerate to temp table
+	for key, value in pairs(enum) do
+		temp[value] = key
+	end
+	for key, value in pairs(temp) do
+		enum[key] = value
 	end
 end
 

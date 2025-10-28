@@ -55,6 +55,7 @@ enums.mobjflags = {
 	ALTSHADOW = 0x40000000000,
 	ICECORPSE = 0x80000000000,
 }
+utils.make_enum(enums.mobjflags)
 
 -- mobjtype_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/info.h#L5778-L6498
 enums.mobjtype = {
@@ -767,7 +768,7 @@ enums.mobjtype = {
 	"HEXEN_BAT",
 	"HEXEN_NUMMOBJTYPES",
 }
-utils.assign_enum_keys(enums.mobjtype)
+utils.make_enum(enums.mobjtype)
 
 -- spritenum_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/info.h#L50-L632
 enums.doom.spritenum = {
@@ -917,7 +918,7 @@ enums.doom.spritenum = {
 	"BON4",
 	"BLD2",
 }
-utils.assign_enum_keys(enums.doom.spritenum)
+utils.make_enum(enums.doom.spritenum)
 
 enums.heretic.spritenum = {
 	[0] = "IMPX",
@@ -1049,7 +1050,7 @@ enums.heretic.spritenum = {
 	"AMB1",
 	"AMB2",
 }
-utils.assign_enum_keys(enums.heretic.spritenum)
+utils.make_enum(enums.heretic.spritenum)
 
 enums.hexen.spritenum = {
 	[0] = "MAN1",
@@ -1353,6 +1354,6 @@ enums.hexen.spritenum = {
 	"KORX",
 	"ABAT",
 }
-utils.assign_enum_keys(enums.hexen.spritenum)
+utils.make_enum(enums.hexen.spritenum)
 
 return enums
