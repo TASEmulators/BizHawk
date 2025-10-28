@@ -57,6 +57,86 @@ enums.mobjflags = {
 }
 utils.make_enum(enums.mobjflags)
 
+-- MF2_* https://github.com/TASEmulators/dsda-doom/blob/1353ec54922a6af8cc5304f0f14f3e02b91194d4/prboom2/src/p_mobj.h#L465-L521
+enums.mobjflags2 = {
+	LOGRAV = 0x1,
+	WINDTHRUST = 0x2,
+	FLOORBOUNCE = 0x4,
+	THRUGHOST = 0x8,
+	FLY = 0x10,
+	FOOTCLIP = 0x20,
+	SPAWNFLOAT = 0x40,
+	NOTELEPORT = 0x80,
+	RIP = 0x100,
+	PUSHABLE = 0x200,
+	SLIDE = 0x400,
+	ONMOBJ = 0x800,
+	PASSMOBJ = 0x1000,
+	CANNOTPUSH = 0x2000,
+	FEETARECLIPPED = 0x4000,
+	BOSS = 0x8000,
+	FIREDAMAGE = 0x10000,
+	NODMGTHRUST = 0x20000,
+	TELESTOMP = 0x40000,
+	FLOATBOB = 0x80000,
+	DONTDRAW = 0x100000,
+	-- mbf21
+	SHORTMRANGE = 0x200000,
+	DMGIGNORED = 0x400000,
+	NORADIUSDMG = 0x800000,
+	FORCERADIUSDMG = 0x1000000,
+	HIGHERMPROB = 0x2000000,
+	RANGEHALF = 0x4000000,
+	NOTHRESHOLD = 0x8000000,
+	MAP07BOSS1 = 0x10000000,
+	MAP07BOSS2 = 0x20000000,
+	E1M8BOSS = 0x40000000,
+	E2M8BOSS = 0x80000000,
+	E3M8BOSS = 0x100000000,
+	E4M6BOSS = 0x200000000,
+	E4M8BOSS = 0x400000000,
+	LONGMELEE = 0x800000000,
+	FULLVOLSOUNDS = 0x1000000000,
+	-- hexen
+	BLASTED = 0x2000000000,
+	IMPACT = 0x4000000000,
+	PUSHWALL = 0x8000000000,
+	MCROSS = 0x10000000000,
+	PCROSS = 0x20000000000,
+	CANTLEAVEFLOORPIC = 0x40000000000,
+	NONSHOOTABLE = 0x80000000000,
+	INVULNERABLE = 0x100000000000,
+	DORMANT = 0x200000000000,
+	ICEDAMAGE = 0x400000000000,
+	SEEKERMISSILE = 0x800000000000,
+	REFLECTIVE = 0x1000000000000,
+	-- zdoom
+	CANUSEWALLS = 0x2000000000000,
+	COUNTSECRET = 0x4000000000000,
+}
+utils.make_enum(enums.mobjflags2)
+
+-- Bounding box indices, modified to be 1-based
+enums.box = {
+	top = 1,
+	bottom = 2,
+	left = 3,
+	right = 4,
+}
+utils.make_enum(enums.box)
+
+-- thinkerclasscap indices, modified to be 1-based
+--
+-- th_class https://github.com/TASEmulators/dsda-doom/blob/1353ec54922a6af8cc5304f0f14f3e02b91194d4/prboom2/src/p_tick.h#L57-L64
+enums.th_class = {
+	delete = 1,
+	misc = 2,
+	friends = 3,
+	enemies = 4,
+	all = 5,
+}
+utils.make_enum(enums.th_class)
+
 -- mobjtype_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/info.h#L5778-L6498
 enums.mobjtype = {
 --	[-1] = "NULL",
