@@ -37,6 +37,7 @@ local text     = gui.text
 local box      = gui.drawBox
 local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
+
 local Globals       = structs.globals
 local MobjType      = enums.mobjtype
 local SpriteNumber  = enums.doom.spritenum
