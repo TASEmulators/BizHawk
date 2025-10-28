@@ -182,6 +182,7 @@ function utils.struct_layout(struct_name)
 	struct.from_address_unchecked = create_item
 
 	function struct.from_address(address, domain)
+		if domain == BusDomain then return struct.from_pointer(address) end
 		assertf(address % struct.alignment == 0, "Unaligned address %X", address)
 		return create_item(address, domain)
 	end
@@ -380,13 +381,12 @@ function utils.domain_struct_layout(struct_name, padded_size, domain, max_count)
 		end
 	end
 
-	-- Get a struct instance from its dedicated memory domain
+	local from_address = struct.from_address
 	function struct.from_address(address, domain)
-		assertf(address % struct.alignment == 0, "Unaligned address %X", address)
 		if domain == nil or domain == struct.domain then
 			return get_item(address) or nil
 		else
-			return struct.from_address_unchecked(address, domain)
+			return from_address(address, domain)
 		end
 	end
 
