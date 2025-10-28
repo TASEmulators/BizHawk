@@ -71,7 +71,7 @@ $Reserved = [System.Collections.Generic.HashSet[String]] @(
 	"while"
 )
 
-'return {'
+'local symbols = {'
 foreach ($Symbol in $Symbols.GetEnumerator() | Sort-Object Key) {
 	if ($Symbol.Key -imatch '^[a-z_][a-z0-9_]*$' -and -not $Reserved.Contains($Symbol.Key)) {
 		'	{0} = 0x{1:X8},' -f $Symbol.Key, $Symbol.Value
@@ -80,4 +80,11 @@ foreach ($Symbol in $Symbols.GetEnumerator() | Sort-Object Key) {
 		'	["{0}"] = 0x{1:X8},' -f $Symbol.Key, $Symbol.Value
 	}
 }
-'}'
+@'
+}
+
+local module_prefix = (...):match([[^(.-)[^./\]+$]])
+local utils = require(module_prefix.."utils")
+utils.make_enum(symbols)
+return symbols
+'@

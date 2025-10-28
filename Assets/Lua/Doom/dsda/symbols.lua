@@ -1,4 +1,4 @@
-return {
+local symbols = {
 	_convertedPaletteBuffer = 0x00333BB0,
 	A_AccTeleGlitter = 0x00128CF0,
 	A_AddFlags = 0x001219A0,
@@ -4255,3 +4255,8 @@ return {
 	zmt_teleportdest3_info = 0x002091D0,
 	zoom_leveltime = 0x00334054,
 }
+
+local module_prefix = (...):match([[^(.-)[^./\]+$]])
+local utils = require(module_prefix.."utils")
+utils.make_enum(symbols)
+return symbols
