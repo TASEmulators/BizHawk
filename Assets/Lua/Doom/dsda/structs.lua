@@ -514,11 +514,6 @@ structs.sector = sector
 	end)
 	.build()
 
-assert(structs.line.size   == structs.SIZE.LINE,   "line.size does not match sizeof(line_t)")
-assert(structs.mobj.size   == structs.SIZE.MOBJ,   "mobj.size does not match sizeof(mobj_t)")
-assert(structs.player.size == structs.SIZE.PLAYER, "player.size does not match sizeof(player_t)")
-assert(structs.sector.size == structs.SIZE.SECTOR, "sector.size does not match sizeof(sector_t)")
-
 
 
 structs.globals = utils.global_layout()
@@ -598,5 +593,12 @@ structs.globals = utils.global_layout()
 		return iterator, state, iterator(state, start) -- iterate once already to skip the cap
 	end)
 	.build()
+
+
+
+assert(structs.line.size   == structs.SIZE.LINE,   "line.size does not match sizeof(line_t)")
+assert(structs.mobj.size   == structs.SIZE.MOBJ,   "mobj.size does not match sizeof(mobj_t)")
+assert(structs.player.size == structs.SIZE.PLAYER, "player.size does not match sizeof(player_t)")
+assert(structs.sector.size == structs.SIZE.SECTOR, "sector.size does not match sizeof(sector_t)")
 
 return structs
