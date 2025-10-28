@@ -207,8 +207,7 @@ function utils.struct_layout(struct_name)
 	function item_meta:__index(name)
 		local prop = item_props[name]
 		if prop then return prop(self) end
-		local func = item_funcs[name]
-		if func then return func end
+		return item_funcs[name]
 	end
 
 	function item_meta:__pairs()
@@ -401,7 +400,7 @@ function utils.domain_struct_layout(struct_name, padded_size, domain, max_count)
 
 	-- Get a struct instance from its dedicated memory domain
 	function struct.from_index(index)
-		return get_item((index - 1) * (padded_size or 0)) or nil
+		return get_item((index - 1) * padded_size) or nil
 	end
 
 	function items_meta:__index(index)
