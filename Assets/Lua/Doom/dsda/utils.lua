@@ -195,6 +195,15 @@ function utils.struct_layout(struct_name)
 		return create_item(pointer & 0xFFFFFFFF, BusDomain)
 	end
 
+	function struct.array(address, domain, length)
+		assertf(address % struct.alignment == 0, "Unaligned address %X", address)
+		return utils.array(address, domain, length, struct.size, struct.from_address_unchecked)
+	end
+
+	function struct.pointer_array(address, domain, length)
+		return utils.pointer_array(address, domain, length, struct.from_pointer)
+	end
+
 	function item_meta:__index(name)
 		local prop = item_props[name]
 		if prop then return prop(self) end
