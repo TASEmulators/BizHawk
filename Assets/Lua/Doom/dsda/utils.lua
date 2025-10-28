@@ -154,6 +154,7 @@ end
 
 
 function utils.struct_layout(struct_name)
+	---@class struct
 	local struct = {}
 	struct.name = struct_name
 	struct.size = 0
@@ -226,7 +227,7 @@ function utils.struct_layout(struct_name)
 		return target_struct.from_address_unchecked(self._address, self._domain)
 	end
 
-
+	---@class builder
 	local builder = {}
 	builder.built_struct = struct
 	function builder.add(name, size, alignment, read_func)
@@ -344,6 +345,7 @@ end
 function utils.domain_struct_layout(struct_name, padded_size, domain, max_count)
 	local builder = utils.struct_layout(struct_name)
 
+	---@class domain_struct : struct
 	local struct = builder.built_struct
 	struct.padded_size = padded_size
 	struct.domain = domain

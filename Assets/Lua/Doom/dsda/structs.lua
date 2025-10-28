@@ -1,7 +1,9 @@
 -- kalimag, 2025
 
 local module_prefix = (...):match([[^(.-)[^./\]+$]])
+---@module "utils"
 local utils = require(module_prefix.."utils")
+---@module "symbols"
 local symbols = require(module_prefix.."symbols")
 
 local structs = {}
@@ -319,7 +321,7 @@ structs.player = utils.domain_struct_layout("player", structs.PADDED_SIZE.PLAYER
 	-- zdoom
 	.s32  ("hazardcount")
 	.u8   ("hazardinterval")
-	.build()
+	.build() --[[@as domain_struct]]
 
 -- mobj_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/p_mobj.h#L277-L413
 structs.mobj = mobj
@@ -395,7 +397,7 @@ structs.mobj = mobj
 	.func ("iterate_touching_sectorlist", function (self)
 		return utils.links(self.touching_sectorlist, "m_tnext", "m_sector")
 	end)
-	.build()
+	.build() --[[@as domain_struct]]
 
 -- line_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L312-L347
 structs.line = line
@@ -438,7 +440,7 @@ structs.line = line
 		local x2, y2 = utils.read_packed("ii", v2, "System Bus")
 		return x1, y1, x2, y2
 	end)
-	.build()
+	.build() --[[@as domain_struct]]
 
 -- sector_t https://github.com/TASEmulators/dsda-doom/blob/5608ee441410ecae10a17ecdbe1940bd4e1a2856/prboom2/src/r_defs.h#L124-L213
 structs.sector = sector
@@ -512,7 +514,7 @@ structs.sector = sector
 	.prop ("lines", function(self)
 		return structs.line.pointer_array(self.lines_ptr, self._domain, self.linecount)
 	end)
-	.build()
+	.build() --[[@as domain_struct]]
 
 
 
@@ -592,7 +594,7 @@ structs.globals = utils.global_layout()
 		local iterator, state, start = utils.links(self.thinkerclasscap[class], class == 5 and "next" or "cnext")
 		return iterator, state, iterator(state, start) -- iterate once already to skip the cap
 	end)
-	.build()
+	.build() --[[@as table]]
 
 
 

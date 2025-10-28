@@ -1,6 +1,7 @@
 -- kalimag, 2025
 
 local module_prefix = (...):match([[^(.-)[^./\]+$]])
+---@module "utils"
 local utils = require(module_prefix.."utils")
 
 local enums = {
