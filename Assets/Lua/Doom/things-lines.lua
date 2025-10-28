@@ -1,35 +1,51 @@
 -- feos, 2025
 
+local enums = require("dsda.enums")
+local structs = require("dsda.structs")
+local symbols = require("dsda.symbols")
+
 -- CONSTANTS
-local NULL_OBJECT      = 0x88888888 -- no object at that index
-local OUT_OF_BOUNDS    = 0xFFFFFFFF -- no such index
-local MINIMAL_ZOOM     = 0.0001     -- ???
-local ZOOM_FACTOR      = 0.02
-local PAN_FACTOR       = 10
-local CHAR_WIDTH       = 10
-local CHAR_HEIGHT      = 16
-local NEGATIVE_MAXIMUM = 1 << 63
-local POSITIVE_MAXIMUM = ~NEGATIVE_MAXIMUM
-local MAX_PLAYERS      = 4
--- sizes in bytes
-local LINE_SIZE   = 256  -- sizeof(line_t) is 232, but we padded it for niceness
-local MOBJ_SIZE   = 512  -- sizeof(mobj_t) is 464, but we padded it for niceness
-local PLAYER_SIZE = 1024 -- sizeof(player_t) is 729, but we padded it for niceness
+local MINIMAL_ZOOM      = 0.0001     -- ???
+local ZOOM_FACTOR       = 0.02
+local WHEEL_ZOOM_FACTOR = 4
+local DRAG_FACTOR       = 10
+local PAN_FACTOR        = 10
+local CHAR_WIDTH        = 10
+local CHAR_HEIGHT       = 16
+local NEGATIVE_MAXIMUM  = 1 << 63
+local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
+local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
+
+-- Map colors (0xAARRGGBB or "name")
+local MapPrefs = {
+	player      = { color = 0xFF60A0FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	enemy       = { color = 0xFFF00000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	enemy_idle  = { color = 0xFFAA0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	corpse      = { color = 0x80AA0000, radius_min_zoom = 0.00, text_min_zoom = 0.30, },
+	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.05, text_min_zoom = 0.50, },
+	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.75, text_min_zoom = 1.50, },
+	item        = { color = 0xFF8060FF, radius_min_zoom = 0.75, text_min_zoom = 1.50, },
+	misc        = { color = 0xFFA0A0A0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+	solid       = { color = 0xFF505050, radius_min_zoom = 0.75, text_min_zoom = false, },
+--	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+	highlight   = { color = 0xFFFF00FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+}
+
 -- shortcuts
-local rl   = memory.read_u32_le
-local rw   = memory.read_u16_le
-local rb   = memory.read_u8
-local rls  = memory.read_s32_le
-local rws  = memory.read_s16_le
-local rbs  = memory.read_s8
-local text = gui.text
-local box  = gui.drawBox
-local line = gui.drawLine
+local text     = gui.text
+local box      = gui.drawBox
+local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
+local Globals       = structs.globals
+local MobjType      = enums.mobjtype
+local SpriteNumber  = enums.doom.spritenum
+local MobjFlags     = enums.mobjflags
+
 -- TOP LEVEL VARIABLES
-local Zoom     = 1
-local Init     = true
+local Zoom      = 1
+local Init      = true
 -- tables
 -- view offset
 local Pan = {
@@ -47,12 +63,21 @@ local LastScreenSize = {
 	w = client.screenwidth(),
 	h = client.screenheight()
 }
+local LastMouse = {
+	x     = 0,
+	y     = 0,
+	wheel = 0
+}
+local LastFramecount = -1
+local LastEpisode
+local LastMap
 -- forward declarations
-local PlayerOffsets = {}-- player member offsets in bytes
-local MobjOffsets   = {} -- mobj member offsets in bytes
-local MobjType      = {}
-local SpriteNumber  = {}
-local Objects       = {}
+local Lines
+local PlayerTypes
+local EnemyTypes
+local MissileTypes
+local MiscTypes
+local InertTypes
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -74,38 +99,51 @@ local function reset_view()
 	update_zoom()
 end
 
-local function zoom_out()
-	local newZoom = Zoom * (1 - ZOOM_FACTOR)
-	if newZoom < MINIMAL_ZOOM then return end
-	Zoom = newZoom
+local function pan_left(divider)
+	Pan.x = Pan.x + PAN_FACTOR/Zoom/(divider or 2)
 end
 
-local function zoom_in()
-	Zoom = Zoom * (1 + ZOOM_FACTOR)
+local function pan_right(divider)
+	Pan.x = Pan.x - PAN_FACTOR/Zoom/(divider or 2)
 end
 
-local function pan_left()
-	Pan.x = Pan.x + PAN_FACTOR/Zoom/2
+local function pan_up(divider)
+	Pan.y = Pan.y + PAN_FACTOR/Zoom/(divider or 2)
 end
 
-local function pan_right()
-	Pan.x = Pan.x - PAN_FACTOR/Zoom/2
+local function pan_down(divider)
+	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
 end
 
-local function pan_up()
-	Pan.y = Pan.y + PAN_FACTOR/Zoom/2
-end
-
-local function pan_down()
-	Pan.y = Pan.y - PAN_FACTOR/Zoom/2
-end
-
-function maybe_swap(left, right)
-	if left > right then
-		local smallest = right
-		right = left
-		left = smallest
+local function zoom_out(times)
+	for i=0, (times or 1) do
+		local newZoom = Zoom * (1 - ZOOM_FACTOR)
+		if newZoom < MINIMAL_ZOOM then return end
+		Zoom = newZoom
+		pan_left(1)
+		pan_up(1.4)
 	end
+end
+
+local function zoom_in(times)
+	for i=0, (times or 1) do
+		Zoom = Zoom * (1 + ZOOM_FACTOR)
+		pan_right(1)
+		pan_down(1.4)
+	end
+end
+
+local function suppress_click_input()
+	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
+		joypad.set({ [MAP_CLICK_BLOCK] = false })
+	end
+end
+
+local function maybe_swap(smaller, bigger)
+	if smaller > bigger then
+		return bigger, smaller
+	end
+	return smaller, bigger
 end
 
 local function get_line_count(str)
@@ -127,31 +165,126 @@ local function get_line_count(str)
 	return lines, longest
 end
 
+local function to_lookup(table)
+	local lookup = {}
+	for k, v in pairs(table) do
+		lookup[v] = k
+	end
+	return lookup
+end
+
+local function get_mobj_pref(mobj, mobjtype)
+	if HighlightTypes[mobjtype] then return MapPrefs.highlight end
+	if InertTypes[mobjtype] then return MapPrefs.inert end
+	if MiscTypes[mobjtype] then return MapPrefs.misc end
+	if MissileTypes[mobjtype] then return MapPrefs.missile end
+	if PlayerTypes[mobjtype] then return MapPrefs.player end
+
+	local flags = mobj.flags
+	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
+	if flags & MobjFlags.COUNTKILL ~= 0 or EnemyTypes[mobjtype] then
+		if flags & MobjFlags.CORPSE ~= 0 then return MapPrefs.corpse end
+		if mobj.state.action == symbols.A_Look then return MapPrefs.enemy_idle end
+		return MapPrefs.enemy
+	end
+	if flags & MobjFlags.COUNTITEM ~= 0 then return MapPrefs.countitem end
+	if flags & MobjFlags.SPECIAL ~= 0 then return MapPrefs.item end
+	if flags & MobjFlags.MISSILE ~= 0 then return MapPrefs.missile end
+	if flags & MobjFlags.SHOOTABLE ~= 0 then return MapPrefs.shootable end
+	if flags & MobjFlags.SOLID ~= 0 then return MapPrefs.solid end
+	return MapPrefs.inert
+end
+
+local function get_mobj_color(mobj, mobjtype)
+	local pref = get_mobj_pref(mobj, mobjtype)
+	if not pref then return end
+	local color = pref.color
+	if not color or color < 0x01000000 then return end
+	local radius_min_zoom = pref.radius_min_zoom or math.huge
+	local text_min_zoom   = pref.text_min_zoom   or math.huge
+	local radius_color    = Zoom >= radius_min_zoom and color or nil
+	local text_color      = Zoom >= text_min_zoom   and color or nil
+	return radius_color, text_color
+end
+
+local function  clear_cache()
+	Lines = nil
+end
+
+local function init_cache()
+	if Lines then return end
+
+	local polyobj_lines = {}
+	local polyobjs = Globals.polyobjs
+	if polyobjs then
+		for _, polyobj in ipairs(polyobjs) do
+			for _, seg in ipairs(polyobj.segs:readbulk()) do
+				polyobj_lines[seg.linedef.iLineID] = true
+			end
+		end
+	end
+
+	local tagged_lines = {}
+	for _, taggedline in ipairs(Globals.TaggedLines) do
+		tagged_lines[taggedline.line.iLineID] = true
+	end
+
+	Lines = {}
+	for _, line in pairs(Globals.lines) do
+		-- selectively cache certain properties. by assigning them manually the read function won't be called again
+
+		local lineId = line.iLineID
+
+		-- assumption: lines can't become special, except for script command CmdSetLineSpecial
+		-- exclude lines that have a line id set (and therefore can be targeted by scripts)
+		if line.special == 0 and not tagged_lines[lineId] then
+			line.special = 0
+		end
+
+		if polyobj_lines[lineId] then -- polyobj lines move, so we can't chache their coordinates. this is a hexen+ thing
+			line._polyobj = true
+			-- assumption: the vertex pointers never change (even if the vertex coordinates do)
+			line.v1 = line.v1
+			line.v2 = line.v2
+		else
+			line._coords = { line:coords() }
+		end
+
+		table.insert(Lines, line)
+	end
+end
+
+local function cached_line_coords(line)
+	if line._polyobj then
+		local validcount = line.validcount
+		if validcount ~= line._validcount then
+			line._validcount = validcount
+			local x1, y1 = line.v1:coords()
+			local x2, y2 = line.v2:coords()
+			line._coords = { x1, y1, x2, y2 }
+		end
+	end
+	return table.unpack(line._coords)
+end
+
 local function iterate_players()
 	local playercount       = 0
 	local total_killcount   = 0
 	local total_itemcount   = 0
 	local total_secretcount = 0
 	local stats             = "      HP Armr Kill Item Secr\n"
-	for i = 1, MAX_PLAYERS do
-		local addr = PLAYER_SIZE * (i - 1)
-		local mobj = rl(addr + PlayerOffsets.mobj, "Players")
+	for i, player in Globals:iterate_players() do
+		playercount       = playercount + 1
+		local killcount   = player.killcount
+		local itemcount   = player.itemcount
+		local secretcount = player.secretcount
 
-		if mobj ~= NULL_OBJECT then
-			playercount       = playercount + 1
-			local health      = rls(addr + PlayerOffsets.health,       "Players")
-			local armor       = rls(addr + PlayerOffsets.armorpoints1, "Players")
-			local killcount   = rls(addr + PlayerOffsets.killcount,    "Players")
-			local itemcount   = rls(addr + PlayerOffsets.itemcount,    "Players")
-			local secretcount = rls(addr + PlayerOffsets.secretcount,  "Players")
+		total_killcount   = total_killcount   + killcount
+		total_itemcount   = total_itemcount   + itemcount
+		total_secretcount = total_secretcount + secretcount
 
-			total_killcount   = total_killcount   + killcount
-			total_itemcount   = total_itemcount   + itemcount
-			total_secretcount = total_secretcount + secretcount
-
-			stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
-				stats, i, health, armor, killcount, itemcount, secretcount)
-		end
+		stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
+			stats, i, player.health, player.armorpoints1, killcount, itemcount, secretcount)
 	end
 	if playercount > 1 then
 		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
@@ -161,91 +294,96 @@ end
 
 local function iterate()
 	if Init then return end
-	
-	for _, addr in ipairs(Objects) do
-		local x      = rls(addr + MobjOffsets.x,      "Things")
-		local y      = rls(addr + MobjOffsets.y,      "Things") * -1
-		local health = rls(addr + MobjOffsets.health, "Things")
-		local radius = math.floor ((rls(addr + MobjOffsets.radius, "Things") >> 16) * Zoom)
-		local sprite = SpriteNumber[rls(addr + MobjOffsets.sprite, "Things")]
-		local type   = rl(addr + MobjOffsets.type, "Things")
-		local pos    = { x = mapify_x(x), y = mapify_y(y) }
-		local color  = "white"
-			
-		if type == 0
-		then type = "PLAYER"
-		else type = MobjType[type]
-		end
-		if health <= 0 then color = "red" end
-		--[[--
-		local z      = rls(addr + Offsets.z) / 0xffff
-		local index  = rl (addr + Offsets.index)
-		local tics   = rl (addr + Offsets.tics)
-		--]]--
-		if  in_range(pos.x, 0, client.screenwidth())
-		and in_range(pos.y, 0, client.screenheight())
-		then
-			text(pos.x, pos.y, string.format("%s", type), color)
-			box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, color)
+
+	init_cache()
+
+	local screenwidth, screenheight = client.screenwidth(), client.screenheight()
+
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
+		local type = mobj.type
+		local radius_color, text_color = get_mobj_color(mobj, type)
+		if radius_color or text_color then -- not hidden
+			local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
+
+			if  in_range(pos.x, 0, screenwidth)
+			and in_range(pos.y, 0, screenheight)
+			then
+				local type   = mobj.type
+				local radius = math.floor ((mobj.radius >> 16) * Zoom)
+				--[[--
+				local z      = mobj.z
+				local index  = mobj.index
+				local tics   = mobj.tics
+				local health = mobj.health
+				local sprite = SpriteNumber[mobj.sprite]
+				--]]--
+				if text_color then
+					type = MobjType[type]
+					text(pos.x, pos.y, string.format("%s", type),  text_color)
+				end
+				if radius_color then
+					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
+				end
+			end
 		end
 	end
-	
-	for i = 0, 100000 do
-		local addr = i * LINE_SIZE
-		if addr > 0xFFFFFF then break end
-		
-		local id = rl(addr, "Lines") & 0xFFFFFFFF
-		if id == OUT_OF_BOUNDS then break end
-		
-		if id ~= NULL_OBJECT then
-			local vertices_offset = 0xe8
-			local v1 = { x =  rls(addr+vertices_offset   , "Lines"),
-						 y = -rls(addr+vertices_offset+ 4, "Lines") }
-			local v2 = { x =  rls(addr+vertices_offset+ 8, "Lines"),
-						 y = -rls(addr+vertices_offset+12, "Lines") }
-			line(
-				mapify_x(v1.x),
-				mapify_y(v1.y),
-				mapify_x(v2.x),
-				mapify_y(v2.y),
-				0xffcccccc)
-		end
+
+	for _, line in ipairs(Lines) do
+		local x1, y1, x2, y2 = cached_line_coords(line)
+		local special = line.special
+
+		local color
+		if special ~= 0 then color = 0xffcc00ff end
+
+		drawline(
+			mapify_x( x1),
+			mapify_y(-y1),
+			mapify_x( x2),
+			mapify_y(-y2),
+			color or 0xffcccccc)
 	end
 end
 
-local function init_objects()
-	for i = 0, 100000 do
-		local addr = i * MOBJ_SIZE
-		if addr > 0xFFFFFF then break end
-		
-		local thinker = rl(addr, "Things") & 0xFFFFFFFF -- just to check if mobj is there
-		if thinker == OUT_OF_BOUNDS then break end
-		
-		if thinker ~= NULL_OBJECT then
-			local x    = rls(addr + MobjOffsets.x,    "Things") / 0xffff
-			local y    = rls(addr + MobjOffsets.y,    "Things") / 0xffff * -1
-			local type = rl (addr + MobjOffsets.type, "Things")
-			
-			if type == 0
-			then type = "PLAYER"
-			else type = MobjType[type]
-			end
-		--	print(string.format("%d %f %f %02X", index, x, y, type))
-			if type
-			and not string.find(type, "MISC")
-			then
-				if x < OB.left   then OB.left   = x end
-				if x > OB.right  then OB.right  = x end
-				if y < OB.top    then OB.top    = y end
-				if y > OB.bottom then OB.bottom = y end
-				-- cache the Objects we need
-				table.insert(Objects, addr)
-			end
-		end
+local function init_mobj_bounds()
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
+		local x    = mobj.x / 0xffff
+		local y    = mobj.y / 0xffff * -1
+		if x < OB.left   then OB.left   = x end
+		if x > OB.right  then OB.right  = x end
+		if y < OB.top    then OB.top    = y end
+		if y > OB.bottom then OB.bottom = y end
 	end
 end
 
 function update_zoom()
+	local mouse      = input.getmouse()
+	local mousePos   = client.transformPoint(mouse.X, mouse.Y)
+	local deltaX     = mousePos.x - LastMouse.x
+	local deltaY     = mousePos.y - LastMouse.y
+	local newWheel   = math.floor(mouse.Wheel/120)
+	local wheelDelta = newWheel - LastMouse.wheel
+	
+	if     wheelDelta > 0 then zoom_in ( wheelDelta * WHEEL_ZOOM_FACTOR)
+	elseif wheelDelta < 0 then zoom_out(-wheelDelta * WHEEL_ZOOM_FACTOR)
+	end
+	
+	if   mouse.Left
+	and (input.get()["Shift"]
+	or   input.get()["LeftShift"]) then
+		if     deltaX > 0 then pan_left ( DRAG_FACTOR/deltaX)
+		elseif deltaX < 0 then pan_right(-DRAG_FACTOR/deltaX)
+		end
+		if     deltaY > 0 then pan_up  ( DRAG_FACTOR/deltaY)
+		elseif deltaY < 0 then pan_down(-DRAG_FACTOR/deltaY)
+		end
+		suppress_click_input()
+	end
+	
+	LastMouse.x     = mousePos.x
+	LastMouse.y     = mousePos.y
+	LastMouse.left  = mouse.Left
+	LastMouse.wheel = newWheel
+	
 	if not Init
 	and LastScreenSize.w == client.screenwidth()
 	and LastScreenSize.h == client.screenheight()
@@ -257,8 +395,8 @@ function update_zoom()
 	and OB.bottom ~= NEGATIVE_MAXIMUM
 	and not emu.islagged()
 	then
-		maybe_swap(OB.right, OB.left)
-		maybe_swap(OB.top,   OB.bottom)
+		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
+		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
 		local span        = { x = OB.right-OB.left+200,        y = OB.bottom-OB.top+200         }
 		local scale       = { x = client.screenwidth()/span.x, y = client.screenheight()/span.y }
 		local spanCenter  = { x = OB.left+span.x/2, y = OB.top+span.y/2 }
@@ -288,8 +426,11 @@ local function make_button(x, y, name, func)
 	local mousePos = client.transformPoint(mouse.X, mouse.Y)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
-	and in_range(mousePos.y, y-boxHeight, y         ) then
+	and in_range(mousePos.y, y-boxHeight, y         )
+	and not input.get()["Shift"]
+	and not input.get()["LeftShift"] then
 		if mouse.Left then
+			suppress_click_input()
 			colorIndex = 3
 			func()
 		else colorIndex = 2 end
@@ -299,597 +440,7 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
-local function struct_layout(struct)
-	struct = struct or {}
-	struct.size = 0
-	struct.offsets = {}
-
-	function struct.add(name, size, alignment)
-		if alignment == true then alignment = size end
-		struct.align(alignment)
-		--print(string.format("%-19s %3X %3X", name, size, struct.size)); emu.yield()
-		struct.offsets[name] = struct.size
-		struct.size = struct.size + size
-		struct.align(alignment) -- add padding to structs
-		return struct
-	end
-	function struct.align(alignment)
-		if alignment and struct.size % alignment > 0 then
-			--print(string.format("%i bytes padding", alignment - (struct.size % alignment)))
-			struct.pad(alignment - (struct.size % alignment))
-		end
-	end
-	function struct.pad(size)
-		struct.size = struct.size + size
-		return struct
-	 end
-	function struct.s8   (name) return struct.add(name, 1, true) end
-	function struct.s16  (name) return struct.add(name, 2, true) end
-	function struct.s32  (name) return struct.add(name, 4, true) end
-	function struct.u8   (name) return struct.add(name, 1, true) end
-	function struct.u32  (name) return struct.add(name, 4, true) end
-	function struct.u64  (name) return struct.add(name, 8, true) end
-	function struct.ptr  (name) return struct.u64(name) end
-	function struct.bool (name) return struct.s32(name) end
-	function struct.array(name, type, count, ...)
-		for i = 1, count do
-			struct[type](name .. i, ...)
-		end
-		return struct
-	end
-
-	return struct
-end
-
---[[
-player_t https://github.com/TASEmulators/dsda-doom/blob/master/prboom2/src/d_player.h
-mobj              8   0
-playerstate       4   8
-cmd               E   C
-viewz             4  1C
-viewheight        4  20
-deltaviewheight   4  24
-bob               4  28
-health            4  2C
-armorpoints1      4  30
-armorpoints2      4  34
-armorpoints3      4  38
-armorpoints4      4  3C
-armortype         4  40
-powers1           4  44
-powers2           4  48
-powers3           4  4C
-powers4           4  50
-powers5           4  54
-powers6           4  58
-powers7           4  5C
-powers8           4  60
-powers9           4  64
-powers10          4  68
-powers11          4  6C
-powers12          4  70
-cards1            4  74
-cards2            4  78
-cards3            4  7C
-cards4            4  80
-cards5            4  84
-cards6            4  88
-cards7            4  8C
-cards8            4  90
-cards9            4  94
-cards10           4  98
-cards11           4  9C
-backpack          4  A0
-frags1            4  A4
-frags2            4  A8
-frags3            4  AC
-frags4            4  B0
-frags5            4  B4
-frags6            4  B8
-frags7            4  BC
-frags8            4  C0
-readyweapon       4  C4
-pendingweapon     4  C8
-weaponowned1      4  CC
-weaponowned2      4  D0
-weaponowned3      4  D4
-weaponowned4      4  D8
-weaponowned5      4  DC
-weaponowned6      4  E0
-weaponowned7      4  E4
-weaponowned8      4  E8
-weaponowned9      4  EC
-ammo1             4  F0
-ammo2             4  F4
-ammo3             4  F8
-ammo4             4  FC
-ammo5             4 100
-ammo6             4 104
-maxammo1          4 108
-maxammo2          4 10C
-maxammo3          4 110
-maxammo4          4 114
-maxammo5          4 118
-maxammo6          4 11C
-attackdown        4 120
-usedown           4 124
-cheats            4 128
-refire            4 12C
-killcount         4 130
-itemcount         4 134
-secretcount       4 138
-damagecount       4 13C
-bonuscount        4 140
-attacker          8 148
-extralight        4 150
-fixedcolormap     4 154
-colormap          4 158
-psprites         30 160
-didsecret         4 190
-momx              4 194
-mony              4 198
-maxkilldiscount   4 19C
-prev_viewz        4 1A0
-prev_viewangle    4 1A4
-prev_viewpitch    4 1A8
-(padding omitted)
-]]
-
-PlayerOffsets = struct_layout()
-	.ptr  ("mobj")
-	.s32  ("playerstate")
-	.add  ("cmd", 14, 2)
-	.s32  ("viewz")
-	.s32  ("viewheight")
-	.s32  ("deltaviewheight")
-	.s32  ("bob")
-	.s32  ("health")
-	.array("armorpoints", "s32", 4)
-	.s32  ("armortype")
-	.array("powers", "s32", 12)
-	.array("cards", "bool", 11)
-	.bool ("backpack")
-	.array("frags", "s32", 8)
-	.s32  ("readyweapon")
-	.s32  ("pendingweapon")
-	.array("weaponowned", "bool", 9)
-	.array("ammo", "s32", 6)
-	.array("maxammo", "s32", 6)
-	.s32  ("attackdown")
-	.s32  ("usedown")
-	.s32  ("cheats")
-	.s32  ("refire")
-	.s32  ("killcount")
-	.s32  ("itemcount")
-	.s32  ("secretcount")
-	.s32  ("damagecount")
-	.s32  ("bonuscount")
-	.ptr  ("attacker")
-	.s32  ("extralight")
-	.s32  ("fixedcolormap")
-	.s32  ("colormap")
-	.add  ("psprites", 24*2, 8)
-	.bool ("didsecret")
-	.s32  ("momx")
-	.s32  ("mony")
-	.s32  ("maxkilldiscount")
-	.s32  ("prev_viewz")
-	.u32  ("prev_viewangle")
-	.u32  ("prev_viewpitch")
-	-- the rest are non-doom
-	.offsets
-
---[[
-mobj_t https://github.com/TASEmulators/dsda-doom/blob/master/prboom2/src/p_mobj.h
-thinker              2C   0
-x                     4  30
-y                     4  34
-z                     4  38
-snext                 8  40
-sprev                 8  48
-angle                 4  50
-sprite                4  54
-frame                 4  58
-bnext                 8  60
-bprev                 8  68
-subsector             8  70
-floorz                4  78
-ceilingz              4  7C
-dropoffz              4  80
-radius                4  84
-height                4  88
-momx                  4  8C
-momy                  4  90
-momz                  4  94
-validcount            4  98
-type                  4  9C
-info                  8  A0
-tics                  4  A8
-state                 8  B0
-flags                 8  B8
-intflags              4  C0
-health                4  C4
-movedir               2  C8
-movecount             2  CA
-strafecount           2  CC
-target                8  D0
-reactiontime          2  D8
-threshold             2  DA
-pursuecount           2  DC
-gear                  2  DE
-player                8  E0
-lastlook              2  E8
-spawnpoint           3A  EC
-tracer                8 128
-lastenemy             8 130
-friction              4 138
-movefactor            4 13C
-touching_sectorlist   8 140
-PrevX                 4 148
-PrevY                 4 14C
-PrevZ                 4 150
-pitch                 4 154
-index                 4 158
-patch_width           2 15C
-iden_nums             4 160
-(padding omitted)
---]]--
-
-MobjOffsets = struct_layout()
-	.add("thinker", 44, 8)
-	.s32("x")
-	.s32("y")
-	.s32("z")
-	.ptr("snext")
-	.ptr("sprev")
-	.u32("angle")
-	.s32("sprite")
-	.s32("frame")
-	.ptr("bnext")
-	.ptr("bprev")
-	.ptr("subsector")
-	.s32("floorz")
-	.s32("ceilingz")
-	.s32("dropoffz")
-	.s32("radius")
-	.s32("height")
-	.s32("momx")
-	.s32("momy")
-	.s32("momz")
-	.s32("validcount")
-	.s32("type")
-	.ptr("info")
-	.s32("tics")
-	.ptr("state")
-	.u64("flags")
-	.s32("intflags")
-	.s32("health")
-	.s16("movedir")
-	.s16("movecount")
-	.s16("strafecount")
-	.ptr("target")
-	.s16("reactiontime")
-	.s16("threshold")
-	.s16("pursuecount")
-	.s16("gear")
-	.ptr("player")
-	.s16("lastlook")
-	.add("spawnpoint", 58, 4)
-	.ptr("tracer")
-	.ptr("lastenemy")
-	.s32("friction")
-	.s32("movefactor")
-	.ptr("touching_sectorlist")
-	.s32("PrevX")
-	.s32("PrevY")
-	.s32("PrevZ")
-	.u32("pitch")
-	.s32("index")
-	.s16("patch_width")
-	.s32("iden_nums")
-	-- the rest are non-doom
-	.offsets
-
-MobjType = {
---	"NULL" = -1,
---	"ZERO",
---	"PLAYER = ZERO",
-	"POSSESSED",
-	"SHOTGUY",
-	"VILE",
-	"FIRE",
-	"UNDEAD",
-	"TRACER",
-	"SMOKE",
-	"FATSO",
-	"FATSHOT",
-	"CHAINGUY",
-	"TROOP",
-	"SERGEANT",
-	"SHADOWS",
-	"HEAD",
-	"BRUISER",
-	"BRUISERSHOT",
-	"KNIGHT",
-	"SKULL",
-	"SPIDER",
-	"BABY",
-	"CYBORG",
-	"PAIN",
-	"WOLFSS",
-	"KEEN",
-	"BOSSBRAIN",
-	"BOSSSPIT",
-	"BOSSTARGET",
-	"SPAWNSHOT",
-	"SPAWNFIRE",
-	"BARREL",
-	"TROOPSHOT",
-	"HEADSHOT",
-	"ROCKET",
-	"PLASMA",
-	"BFG",
-	"ARACHPLAZ",
-	"PUFF",
-	"BLOOD",
-	"TFOG",
-	"IFOG",
-	"TELEPORTMAN",
-	"EXTRABFG",
-	"MISC0",
-	"MISC1",
-	"MISC2",
-	"MISC3",
-	"MISC4",
-	"MISC5",
-	"MISC6",
-	"MISC7",
-	"MISC8",
-	"MISC9",
-	"MISC10",
-	"MISC11",
-	"MISC12",
-	"INV",
-	"MISC13",
-	"INS",
-	"MISC14",
-	"MISC15",
-	"MISC16",
-	"MEGA",
-	"CLIP",
-	"MISC17",
-	"MISC18",
-	"MISC19",
-	"MISC20",
-	"MISC21",
-	"MISC22",
-	"MISC23",
-	"MISC24",
-	"MISC25",
-	"CHAINGUN",
-	"MISC26",
-	"MISC27",
-	"MISC28",
-	"SHOTGUN",
-	"SUPERSHOTGUN",
-	"MISC29",
-	"MISC30",
-	"MISC31",
-	"MISC32",
-	"MISC33",
-	"MISC34",
-	"MISC35",
-	"MISC36",
-	"MISC37",
-	"MISC38",
-	"MISC39",
-	"MISC40",
-	"MISC41",
-	"MISC42",
-	"MISC43",
-	"MISC44",
-	"MISC45",
-	"MISC46",
-	"MISC47",
-	"MISC48",
-	"MISC49",
-	"MISC50",
-	"MISC51",
-	"MISC52",
-	"MISC53",
-	"MISC54",
-	"MISC55",
-	"MISC56",
-	"MISC57",
-	"MISC58",
-	"MISC59",
-	"MISC60",
-	"MISC61",
-	"MISC62",
-	"MISC63",
-	"MISC64",
-	"MISC65",
-	"MISC66",
-	"MISC67",
-	"MISC68",
-	"MISC69",
-	"MISC70",
-	"MISC71",
-	"MISC72",
-	"MISC73",
-	"MISC74",
-	"MISC75",
-	"MISC76",
-	"MISC77",
-	"MISC78",
-	"MISC79",
-	"MISC80",
-	"MISC81",
-	"MISC82",
-	"MISC83",
-	"MISC84",
-	"MISC85",
-	"MISC86",
-	"PUSH",
-	"PULL",
-	"DOGS",
-	"PLASMA1",
-	"PLASMA2"
-}
-
-SpriteNumber = {
---	"TROO",
-	"SHTG",
-	"PUNG",
-	"PISG",
-	"PISF",
-	"SHTF",
-	"SHT2",
-	"CHGG",
-	"CHGF",
-	"MISG",
-	"MISF",
-	"SAWG",
-	"PLSG",
-	"PLSF",
-	"BFGG",
-	"BFGF",
-	"BLUD",
-	"PUFF",
-	"BAL1",
-	"BAL2",
-	"PLSS",
-	"PLSE",
-	"MISL",
-	"BFS1",
-	"BFE1",
-	"BFE2",
-	"TFOG",
-	"IFOG",
-	"PLAY",
-	"POSS",
-	"SPOS",
-	"VILE",
-	"FIRE",
-	"FATB",
-	"FBXP",
-	"SKEL",
-	"MANF",
-	"FATT",
-	"CPOS",
-	"SARG",
-	"HEAD",
-	"BAL7",
-	"BOSS",
-	"BOS2",
-	"SKUL",
-	"SPID",
-	"BSPI",
-	"APLS",
-	"APBX",
-	"CYBR",
-	"PAIN",
-	"SSWV",
-	"KEEN",
-	"BBRN",
-	"BOSF",
-	"ARM1",
-	"ARM2",
-	"BAR1",
-	"BEXP",
-	"FCAN",
-	"BON1",
-	"BON2",
-	"BKEY",
-	"RKEY",
-	"YKEY",
-	"BSKU",
-	"RSKU",
-	"YSKU",
-	"STIM",
-	"MEDI",
-	"SOUL",
-	"PINV",
-	"PSTR",
-	"PINS",
-	"MEGA",
-	"SUIT",
-	"PMAP",
-	"PVIS",
-	"CLIP",
-	"AMMO",
-	"ROCK",
-	"BROK",
-	"CELL",
-	"CELP",
-	"SHEL",
-	"SBOX",
-	"BPAK",
-	"BFUG",
-	"MGUN",
-	"CSAW",
-	"LAUN",
-	"PLAS",
-	"SHOT",
-	"SGN2",
-	"COLU",
-	"SMT2",
-	"GOR1",
-	"POL2",
-	"POL5",
-	"POL4",
-	"POL3",
-	"POL1",
-	"POL6",
-	"GOR2",
-	"GOR3",
-	"GOR4",
-	"GOR5",
-	"SMIT",
-	"COL1",
-	"COL2",
-	"COL3",
-	"COL4",
-	"CAND",
-	"CBRA",
-	"COL6",
-	"TRE1",
-	"TRE2",
-	"ELEC",
-	"CEYE",
-	"FSKU",
-	"COL5",
-	"TBLU",
-	"TGRN",
-	"TRED",
-	"SMBT",
-	"SMGT",
-	"SMRT",
-	"HDB1",
-	"HDB2",
-	"HDB3",
-	"HDB4",
-	"HDB5",
-	"HDB6",
-	"POB1",
-	"POB2",
-	"BRS1",
-	"TLMP",
-	"TLP2",
-	"TNT1",
-	"DOGS",
-	"PLS1",
-	"PLS2",
-	"BON3",
-	"BON4",
-	"BLD2"
-}
-
-while true do
-	if Init then init_objects() end
-	iterate()
-	iterate_players()
-	update_zoom()
+local function make_buttons()
 	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
 	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
@@ -897,10 +448,136 @@ while true do
 	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
 	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
+end
+
+-- Additional types that are not identifiable by flags alone
+HighlightTypes = to_lookup({
+
+})
+PlayerTypes = to_lookup({
+	MobjType.PLAYER,
+	MobjType.HERETIC_PLAYER,
+	MobjType.HERETIC_CHICPLAYER,
+	MobjType.HEXEN_PLAYER_FIGHTER,
+	MobjType.HEXEN_PLAYER_CLERIC,
+	MobjType.HEXEN_PLAYER_MAGE,
+	MobjType.HEXEN_PIGPLAYER,
+
+})
+EnemyTypes = to_lookup({
+	MobjType.SKULL,
+})
+MissileTypes = to_lookup({
+	MobjType.HEXEN_THROWINGBOMB,
+	MobjType.HERETIC_FIREBOMB, MobjType.HEXEN_FIREBOMB,
+	MobjType.HEXEN_POISONBAG, MobjType.HEXEN_POISONCLOUD,
+	MobjType.HEXEN_DRAGON_FX2,
+	MobjType.HEXEN_SUMMON_FX,
+})
+MiscTypes = to_lookup({
+	MobjType.BOSSTARGET,
+	MobjType.TELEPORTMAN, MobjType.HERETIC_TELEPORTMAN, MobjType.HEXEN_TELEPORTMAN,
+	MobjType.PUSH, MobjType.PULL,
+	MobjType.HERETIC_PODGENERATOR,
+	MobjType.HEXEN_MAPSPOT, MobjType.HEXEN_MAPSPOTGRAVITY,
+	MobjType.HEXEN_THRUSTFLOOR_UP, MobjType.HEXEN_THRUSTFLOOR_DOWN,
+	MobjType.HEXEN_QUAKE_FOCUS,
+	MobjType.HEXEN_ZPOISONSHROOM,
+})
+InertTypes = to_lookup({
+	MobjType.HERETIC_BLOODSPLATTER,
+	MobjType.HERETIC_FEATHER,
+	MobjType.HERETIC_PODGOO,
+	MobjType.HERETIC_SPLASH,
+	MobjType.HERETIC_SLUDGECHUNK,
+	MobjType.HERETIC_TELEGLITTER, MobjType.HERETIC_TELEGLITTER2,
+	MobjType.HEXEN_BLOODSPLATTER,
+	MobjType.HEXEN_CORPSEBLOODDRIP,
+	MobjType.HEXEN_LEAF1, MobjType.HEXEN_LEAF2,
+	MobjType.HEXEN_SPLASH,
+	MobjType.HEXEN_SLUDGECHUNK,
+	MobjType.HEXEN_WATER_DRIP,
+	MobjType.HEXEN_DIRT1, MobjType.HEXEN_DIRT2, MobjType.HEXEN_DIRT3,
+	MobjType.HEXEN_DIRT4, MobjType.HEXEN_DIRT5, MobjType.HEXEN_DIRT6,
+	MobjType.HEXEN_FIREDEMON_FX1, MobjType.HEXEN_FIREDEMON_FX2, MobjType.HEXEN_FIREDEMON_FX3,
+	MobjType.HEXEN_FIREDEMON_FX4, MobjType.HEXEN_FIREDEMON_FX5,
+	MobjType.HEXEN_ICEGUY_WISP1, MobjType.HEXEN_ICEGUY_WISP2,
+	MobjType.HEXEN_KORAX_SPIRIT1, MobjType.HEXEN_KORAX_SPIRIT2, MobjType.HEXEN_KORAX_SPIRIT3,
+	MobjType.HEXEN_KORAX_SPIRIT4, MobjType.HEXEN_KORAX_SPIRIT5, MobjType.HEXEN_KORAX_SPIRIT6,
+	MobjType.HEXEN_POTTERYBIT1,
+	MobjType.HEXEN_SGSHARD0, MobjType.HEXEN_SGSHARD1, MobjType.HEXEN_SGSHARD2,
+	MobjType.HEXEN_SGSHARD3, MobjType.HEXEN_SGSHARD4, MobjType.HEXEN_SGSHARD5,
+	MobjType.HEXEN_SGSHARD6, MobjType.HEXEN_SGSHARD7, MobjType.HEXEN_SGSHARD8,
+	MobjType.HEXEN_SGSHARD9,
+	MobjType.HEXEN_WRAITHFX3,
+})
+
+
+
+event.onframestart(function()
+	if client.ispaused() then return end -- frameadvance while paused
+	-- do this before frame start to suppress mouse click input
+	make_buttons()
+	update_zoom()
+end)
+
+event.onexit(function()
+	gui.clearGraphics()
+	gui.cleartext()
+end)
+
+event.onloadstate(function()
+	clear_cache()
+end)
+
+tastudio.onbranchload(function()
+	clear_cache()
+end)
+
+while true do
+	local framecount = emu.framecount()
+	local paused = client.ispaused()
+
+	local episode, map = Globals.gameepisode, Globals.gamemap
+	if episode ~= LastEpisode or map ~= LastMap then
+		clear_cache()
+		LastEpisode, LastMap = episode, map
+	end
+
+	if Init then init_mobj_bounds() end
+
+	-- clear cache after rewind, turbo etc.
+	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
+	if framecount ~= LastFramecount and framecount ~= LastFramecount + 1 then
+		clear_cache()
+	end
+
+	if paused then
+		-- OSD text is not automatically cleared while paused
+		gui.cleartext()
+		gui.clearGraphics()
+		-- while onframestart isn't called
+		make_buttons()
+		update_zoom()
+	end
+
+	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
+	if framecount ~= LastFramecount or paused then
+		iterate()
+		iterate_players()
+	end
+
+	update_zoom()
+
+	--[[--
 	text(10, client.screenheight()-170, string.format(
 		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
 		Zoom, Pan.x, Pan.y), 0xffbbddff)
+	--]]--
+
 	LastScreenSize.w = client.screenwidth()
 	LastScreenSize.h = client.screenheight()
-	emu.frameadvance()
+	LastFramecount = framecount
+
+	emu.yield()
 end
