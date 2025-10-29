@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 					EMsgBoxIcon.Question);
 				if (result == true)
 				{
-					MovieSession.Movie.Save();
+					MovieSession.Movie.Save(Emulator);
 				}
 				else if (result == null)
 				{
@@ -561,7 +561,7 @@ namespace BizHawk.Client.EmuHawk
 		private ITasMovie ConvertCurrentMovieToTasproj()
 		{
 			var tasMovie = MovieSession.Movie.ToTasMovie();
-			tasMovie.Save(); // should this be done?
+			tasMovie.Save(Emulator); // should this be done?
 			return tasMovie;
 		}
 
@@ -809,9 +809,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (saveBackup)
-				movieToSave.SaveBackup();
+				movieToSave.SaveBackup(Emulator);
 			else
-				movieToSave.Save();
+				movieToSave.Save(Emulator);
 
 			MessageStatusLabel.Text = saveBackup
 				? $"Backup .{(saveAsBk2 ? MovieService.StandardMovieExtension : MovieService.TasMovieExtension)} saved to \"Movie backups\" path."
@@ -845,7 +845,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageStatusLabel.Owner.Update();
 				Cursor = Cursors.WaitCursor;
 				CurrentTasMovie.Filename = fileInfo.FullName;
-				CurrentTasMovie.Save();
+				CurrentTasMovie.Save(Emulator);
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				MessageStatusLabel.Text = "File saved.";
 				Cursor = Cursors.Default;
