@@ -873,12 +873,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Freeze()
 		{
 			groupFreeze.SuspendLayout();
-
-			if (!OSTailoredCode.IsUnixHost)
-			{
-				// WM_SETREDRAW false
-				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero);
-			}
+			groupFreeze.SuspendDrawing();
 
 			var tp = tabctrlDetails.SelectedTab;
 
@@ -895,12 +890,7 @@ namespace BizHawk.Client.EmuHawk
 			if (tp == tpOBJ) groupFreeze.Text = "Freeze - OBJ";
 
 			groupFreeze.ResumeLayout();
-
-			if (!OSTailoredCode.IsUnixHost)
-			{
-				// WM_SETREDRAW true
-				WmImports.SendMessageW(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero);
-			}
+			groupFreeze.ResumeDrawing();
 
 			groupFreeze.Refresh();
 		}
