@@ -126,7 +126,12 @@ check_style:
   - /app/run_infersharp.sh "infer-in"
   stage: test
 
-.package_linux_x64:
+.package_linux_arm64:
+  extends: .package_linux_base
+  variables:
+    CI_HAWK_RID: "linux-arm64"
+
+.package_linux_base:
   artifacts:
     expire_in: "1 month"
     name: "$CI_HAWK_ARTIFACT_NAME"
@@ -138,10 +143,15 @@ check_style:
   - job: build_asms_debug
     artifacts: false
   script:
-  - Dist/Package.sh 'linux-x64'
+  - Dist/Package.sh "$CI_HAWK_RID"
   - cd packaged_output
   - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
   stage: package
+
+.package_linux_x64:
+  extends: .package_linux_base
+  variables:
+    CI_HAWK_RID: "linux-x64"
 
 .package_windows_x64:
   artifacts:
@@ -168,6 +178,14 @@ package_devbuild_linux:
   rules:
   - if: $CI_COMMIT_REF_SLUG == "master"
     when: always
+
+package_devbuild_linux_arm:
+  extends: .package_linux_arm64
+  rules:
+  - if: $CI_COMMIT_REF_SLUG == "master"
+    when: always
+  variables:
+    CI_HAWK_ARTIFACT_NAME_TAR: "${CI_HAWK_ARTIFACT_NAME}_arm64.tar"
 
 package_devbuild_windows:
   extends: .package_windows_x64
