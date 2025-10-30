@@ -268,12 +268,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public float MouseSensitivity { get; set; }
 
 			[DisplayName("Mouse Absolute Screen Width")]
-			[Description("For absolute mouse inputs, this value (in pixels) allows adjusting the mapping (in pixels) between the mouse's absolute horizontal position on the Bizhawk window and that of the DOSBox host.")]
+			[Description("For absolute mouse inputs, this value allows adjusting the mapping (in pixels) between the mouse's absolute horizontal position on the Bizhawk window and that of the DOSBox host.")]
 			[DefaultValue(LibDOSBox.SVGA_MAX_WIDTH)]
 			public uint MouseAbsoluteScreenWidth { get; set; }
 
 			[DisplayName("Mouse Absolute Screen Height")]
-			[Description("For absolute mouse inputs, this value (in pixels) allows adjusting the mapping (in pixels) between the mouse's absolute vertical position on the Bizhawk window and that of the DOSBox host.")]
+			[Description("For absolute mouse inputs, this value allows adjusting the mapping (in pixels) between the mouse's absolute vertical position on the Bizhawk window and that of the DOSBox host.")]
 			[DefaultValue(LibDOSBox.SVGA_MAX_HEIGHT)]
 			public uint MouseAbsoluteScreenHeight { get; set; }
 
