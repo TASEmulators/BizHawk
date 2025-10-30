@@ -71,8 +71,10 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		public void TestChunkConsecutive(int[] numbers, string expectedStr)
 			=> Assert.AreEqual(
 				expectedStr,
+#pragma warning disable MA0089 // CI builds this for .NET Core where there's a `char` overload for `string.Join`
 				string.Join(";", numbers.ChunkConsecutive().Select(
 					static range => string.Join(",", Enumerable.Range(start: range.Start, count: range.Count)))));
+#pragma warning restore MA0089
 
 		[TestMethod]
 		public void TestChunk()
