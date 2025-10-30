@@ -65,8 +65,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				// Although most apps (including windows) use speed to compute the mouse position, some games (SimCity) use the absolute value
 				// The absolute values needs to be 1:1 with the video size, as this is translated 1:1 to the core.
 				// The effect is that the position on BK's window translates perfectly to the core
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo(LibDOSBox.SVGA_MAX_WIDTH), LibDOSBox.SVGA_MAX_WIDTH / 2);
-				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo(LibDOSBox.SVGA_MAX_HEIGHT), LibDOSBox.SVGA_MAX_HEIGHT / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosX, (0).RangeTo((int)settings.MouseAbsoluteScreenWidth), (int) settings.MouseAbsoluteScreenWidth / 2);
+				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.PosY, (0).RangeTo((int)settings.MouseAbsoluteScreenHeight), (int) settings.MouseAbsoluteScreenHeight / 2);
 
 				// Range above 180 results in minimal mouse movement values bigger than 1, and we need 1 as a basis before sensitivity is applied
 				// To adjust sensitivity, use the corresponding sync setting (global sensitivity for raw deltas is a TODO)

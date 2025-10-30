@@ -262,10 +262,20 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(true)]
 			public bool EnableMouse { get; set; }
 
-			[DisplayName("Mouse Sensitivity")]
-			[Description("Adjusts the mouse relative speed (mickey) multiplier.")]
+			[DisplayName("Mouse Relative Sensitivity")]
+			[Description("For relative mouse inputs, this adjusts the mouse relative speed (mickey) multiplier.")]
 			[DefaultValue(3.0)]
 			public float MouseSensitivity { get; set; }
+
+			[DisplayName("Mouse Absolute Screen Width")]
+			[Description("For absolute mouse inputs, this value (in pixels) allows adjusting the mapping (in pixels) between the mouse's absolute horizontal position on the Bizhawk window and that of the DOSBox host.")]
+			[DefaultValue(LibDOSBox.SVGA_MAX_WIDTH)]
+			public uint MouseAbsoluteScreenWidth { get; set; }
+
+			[DisplayName("Mouse Absolute Screen Height")]
+			[Description("For absolute mouse inputs, this value (in pixels) allows adjusting the mapping (in pixels) between the mouse's absolute vertical position on the Bizhawk window and that of the DOSBox host.")]
+			[DefaultValue(LibDOSBox.SVGA_MAX_HEIGHT)]
+			public uint MouseAbsoluteScreenHeight { get; set; }
 
 			[DisplayName("Mount Formatted Hard Disk Drive")]
 			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. The hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.\n\nThis value will be ignored if a hard disk image (.hdd) is provided.")]
