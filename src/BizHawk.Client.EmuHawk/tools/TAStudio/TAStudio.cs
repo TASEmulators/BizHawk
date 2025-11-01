@@ -646,7 +646,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SuspendLayout();
 			WantsToControlStopMovie = false;
-			bool result = MainForm.StartNewMovie(movie, isNew);
+			bool result = ReferenceEquals(CurrentTasMovie, movie) || MainForm.StartNewMovie(movie, isNew);
 			WantsToControlStopMovie = true;
 			ResumeLayout();
 			if (result)
