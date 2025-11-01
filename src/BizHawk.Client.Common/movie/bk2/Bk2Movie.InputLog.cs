@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		{
 			return frame < FrameCount && frame >= 0
 				? Log[frame]
-				: "";
+				: Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
 		}
 
 		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
