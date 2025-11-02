@@ -312,7 +312,7 @@ public partial class Mupen64 : IEmulator
 
 	private Mupen64InputPluginApi.InputState InputCallback(int controller)
 	{
-		var ret = new Mupen64InputPluginApi.InputState();
+		var ret = default(Mupen64InputPluginApi.InputState);
 		if (_controller is null) return ret;
 
 		IsLagFrame = false;

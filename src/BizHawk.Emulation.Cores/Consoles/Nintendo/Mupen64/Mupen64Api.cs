@@ -26,7 +26,7 @@ public abstract class Mupen64Api
 		PLUGIN_FAIL,     /* A plugin function returned a fatal error */
 		SYSTEM_FAIL,     /* A system function call, such as an SDL or file operation, failed */
 		UNSUPPORTED,     /* Function call is not supported (ie, core not built with debugger) */
-		WRONG_TYPE       /* A given input type parameter cannot be used for desired operation */
+		WRONG_TYPE,      /* A given input type parameter cannot be used for desired operation */
 	}
 
 	public enum m64p_command
@@ -51,7 +51,7 @@ public abstract class Mupen64Api
 		CORE_STATE_SET,
 		READ_SCREEN,
 		RESET,
-		ADVANCE_FRAME
+		ADVANCE_FRAME,
 	}
 
 	public enum m64p_plugin_type
@@ -61,7 +61,7 @@ public abstract class Mupen64Api
 		GFX,
 		AUDIO,
 		INPUT,
-		CORE
+		CORE,
 	}
 
 	public enum m64p_core_param
@@ -76,14 +76,14 @@ public abstract class Mupen64Api
 		AUDIO_MUTE,
 		INPUT_GAMESHARK,
 		STATE_LOADCOMPLETE,
-		STATE_SAVECOMPLETE
+		STATE_SAVECOMPLETE,
 	}
 
 	public enum m64p_emu_state
 	{
 		STOPPED = 1,
 		RUNNING,
-		PAUSED
+		PAUSED,
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -97,12 +97,12 @@ public abstract class Mupen64Api
 	{
 		NONE = 1,
 		WINDOWED,
-		FULLSCREEN
+		FULLSCREEN,
 	}
 
 	public enum m64p_video_flags
 	{
-		SUPPORT_RESIZING = 1
+		SUPPORT_RESIZING = 1,
 	}
 
 	public enum m64p_GLattr
@@ -119,13 +119,13 @@ public abstract class Mupen64Api
 		MULTISAMPLESAMPLES,
 		CONTEXT_MAJOR_VERSION,
 		CONTEXT_MINOR_VERSION,
-		CONTEXT_PROFILE_MASK
+		CONTEXT_PROFILE_MASK,
 	}
 
 	public enum m64p_render_mode
 	{
 		OPENGL = 0,
-		VULKAN
+		VULKAN,
 	}
 
 	public enum m64p_dbg_memptr_type
@@ -135,21 +135,21 @@ public abstract class Mupen64Api
 		SI_REG,
 		VI_REG,
 		RI_REG,
-		AI_REG
+		AI_REG,
 	}
 
 	public enum m64p_type {
 		INT = 1,
 		FLOAT,
 		BOOL,
-		STRING
+		STRING,
 	}
 
 	public enum m64p_dbg_runstate
 	{
 		PAUSED = 0,
 		STEPPING,
-		RUNNING
+		RUNNING,
 	}
 
 	public enum m64p_dbg_cpu_data
@@ -162,7 +162,7 @@ public abstract class Mupen64Api
 		REG_COP1_DOUBLE_PTR,
 		REG_COP1_SIMPLE_PTR,
 		REG_COP1_FGR_64,
-		TLB
+		TLB,
 	}
 
 	public enum m64p_msg_level
@@ -171,7 +171,7 @@ public abstract class Mupen64Api
 		WARNING,
 		INFO,
 		STATUS,
-		VERBOSE
+		VERBOSE,
 	}
 
 	public enum m64p_dbg_state
@@ -180,7 +180,7 @@ public abstract class Mupen64Api
       PREVIOUS_PC,
       NUM_BREAKPOINTS,
       CPU_DYNACORE,
-      CPU_NEXT_INTERRUPT
+      CPU_NEXT_INTERRUPT,
     }
 
 	public enum m64p_dbg_bkp_command
@@ -192,7 +192,7 @@ public abstract class Mupen64Api
 		REMOVE_IDX,
 		ENABLE,
 		DISABLE,
-		CHECK
+		CHECK,
 	}
 
 	[Flags]
@@ -202,7 +202,7 @@ public abstract class Mupen64Api
 		READ = 0x02,
 		WRITE = 0x04,
 		EXEC = 0x08,
-		LOG = 0x10 /* Log to the console when this breakpoint hits */
+		LOG = 0x10, /* Log to the console when this breakpoint hits */
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -228,9 +228,9 @@ public abstract class Mupen64Api
 	public delegate m64p_error VidExtFuncToggleFS();
 	public delegate m64p_error VidExtFuncResizeWindow(int width, int height);
 	public delegate uint VidExtFuncGLGetDefaultFramebuffer();
-    public delegate m64p_error VidExtFuncInitWithRenderMode(m64p_render_mode renderMode);
-    public delegate m64p_error VidExtFuncVKGetSurface(ref IntPtr surface, IntPtr instance);
-    public delegate m64p_error VidExtFuncVKGetInstanceExtensions(ref IntPtr extensions, ref uint numExtensions);
+	public delegate m64p_error VidExtFuncInitWithRenderMode(m64p_render_mode renderMode);
+	public delegate m64p_error VidExtFuncVKGetSurface(ref IntPtr surface, IntPtr instance);
+	public delegate m64p_error VidExtFuncVKGetInstanceExtensions(ref IntPtr extensions, ref uint numExtensions);
 
 	[StructLayout(LayoutKind.Sequential)]
 	public sealed class m64p_video_extension_functions_managed

@@ -15,7 +15,9 @@ public partial class Mupen64 : IVideoProvider
 	public int VirtualHeight => BufferHeight;
 	public int BufferWidth { get; private set; }
 	public int BufferHeight { get; private set; }
+#pragma warning disable BHI1008 // lol
 	public int VsyncNumerator { get; private init; }
+#pragma warning restore BHI1008
 	public int VsyncDenominator => 1;
 	public int BackgroundColor => 0;
 
@@ -34,8 +36,8 @@ public partial class Mupen64 : IVideoProvider
 			int width = 0;
 			int height = 0;
 			VideoPluginApi.ReadScreen2(IntPtr.Zero, ref width, ref height, 1);
-			Debug.Assert(width <= BufferWidth);
-			Debug.Assert(height <= BufferHeight);
+			Debug.Assert(width <= BufferWidth, $"ReadScreen2 call returned width larger than screen width! ({width} > {BufferWidth})");
+			Debug.Assert(height <= BufferHeight, $"ReadScreen2 call returned height larger than screen height! ({height} > {BufferHeight})");
 
 			Array.Clear(_videoBuffer, width * height, _videoBuffer.Length - width * height);
 

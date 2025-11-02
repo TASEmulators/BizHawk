@@ -22,7 +22,6 @@ public abstract class Mupen64InputPluginApi : Mupen64PluginApi
 		U_CBUTTON = 1 << 11,
 		R_TRIG = 1 << 12,
 		L_TRIG = 1 << 13,
-
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
