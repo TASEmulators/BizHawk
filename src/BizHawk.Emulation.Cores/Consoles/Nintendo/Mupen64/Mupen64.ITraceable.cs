@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using BizHawk.Common;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Mupen64;
@@ -24,7 +24,6 @@ public partial class Mupen64 : ITraceable
 			{
 				registerStringBuilder.Append($" {registerName}:{registerValue.Value.ToString($"X{registerValue.BitSize / 4}")}");
 			}
-
 		}
 
 		Sink.Put(new TraceInfo(disassembly, registerStringBuilder.ToString()));
