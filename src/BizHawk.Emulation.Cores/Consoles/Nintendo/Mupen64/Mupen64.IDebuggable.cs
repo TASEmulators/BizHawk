@@ -67,7 +67,7 @@ public partial class Mupen64 : IDebuggable
 		return type switch
 		{
 			StepType.Into => true,
-			_ => false
+			_ => false,
 		};
 	}
 
@@ -90,7 +90,9 @@ public partial class Mupen64 : IDebuggable
 	}
 
 	[FeatureNotImplemented] // can probably implement this for pure interpreter at least, but is it worth it?
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 	public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 	private void AddBreakpoint(IMemoryCallback callback)
 	{
@@ -107,7 +109,7 @@ public partial class Mupen64 : IDebuggable
 		{
 			address = address,
 			endaddr = endAddress,
-			flags = flags
+			flags = flags,
 		};
 
 		Mupen64Api.DebugBreakpointCommand(Mupen64Api.m64p_dbg_bkp_command.ADD_STRUCT, 0, ref breakpoint);

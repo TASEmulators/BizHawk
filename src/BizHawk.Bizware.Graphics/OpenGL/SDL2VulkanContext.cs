@@ -6,6 +6,7 @@ public class SDL2VulkanContext : IDisposable
 {
 	private IntPtr _sdlWindow;
 
+#pragma warning disable CA1065 // not sure how else to handle failure other than throwing with a good message
 	static SDL2VulkanContext()
 	{
 		if (SDL_Vulkan_LoadLibrary(null) != 0)
@@ -13,6 +14,7 @@ public class SDL2VulkanContext : IDisposable
 			throw new Exception($"SDL_Vulkan_LoadLibrary failed: {SDL_GetError()}");
 		}
 	}
+#pragma warning restore CA1065
 
 	public SDL2VulkanContext(int width, int height)
 	{

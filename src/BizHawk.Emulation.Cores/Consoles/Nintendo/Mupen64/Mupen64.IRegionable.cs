@@ -9,14 +9,16 @@ public partial class Mupen64 : IRegionable
 	public DisplayType Region
 	{
 		get => _region;
+#pragma warning disable BHI1008 // lol
 		private init
 		{
 			_region = value;
 			VsyncNumerator = _region switch
 			{
 				DisplayType.PAL => 50,
-				_ => 60
+				_ => 60,
 			};
 		}
+#pragma warning restore BHI1008
 	}
 }
