@@ -711,9 +711,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!skipExtToolWarning)
 				{
 					if (!_owner.ShowMessageBox2(
-						"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no.",
-						"Confirm loading",
-						EMsgBoxIcon.Question))
+						caption: "Confirm loading",
+						icon: EMsgBoxIcon.Question,
+						text: "Trust this external tool to run on your device?"
+							+ "\nIf you're not 100% sure of what the tool will do, choose \"No\"."))
 					{
 						return null;
 					}
