@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		[CoreConstructor(VSystemID.Raw.GBC)]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ GBSettings settings, GBSyncSettings syncSettings, bool subframe = false)
 		{
-			var ser = new BasicServiceProvider(this);
+			_serviceProvider = new BasicServiceProvider(this);
 
 			cpu = new LR35902
 			{
@@ -204,17 +204,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ppu.Core = this;
 			serialport.Core = this;
 
-			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(audio);
-			ServiceProvider = ser;
+			_serviceProvider.Register<IVideoProvider>(this);
+			_serviceProvider.Register<ISoundProvider>(audio);
 
 			_ = PutSettings(settings ?? new GBSettings());
 			_syncSettings = syncSettings ?? new GBSyncSettings();
 
 			_tracer = new TraceBuffer(cpu.TraceHeader);
-			ser.Register<ITraceable>(_tracer);
-			ser.Register<IStatable>(new StateSerializer(SyncState));
-            ser.Register<IDisassemblable>(_disassembler);
+			_serviceProvider.Register<ITraceable>(_tracer);
+			_serviceProvider.Register<IStatable>(new StateSerializer(SyncState));
+			_serviceProvider.Register<IDisassemblable>(_disassembler);
 			SetupMemoryDomains();
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 			HardReset();
@@ -660,6 +659,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					cart_RAM[i] = 0xFF;
 				}
+			}
+
+			if (cart_RAM == null)
+			{
+				_serviceProvider.Unregister<ISaveRam>();
 			}
 
 			// Extra RTC initialization for mbc3, HuC3, and TAMA5

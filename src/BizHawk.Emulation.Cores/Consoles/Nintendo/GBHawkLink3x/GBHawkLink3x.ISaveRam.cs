@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				return temp;
 			}
 
-			return null;
+			throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -84,7 +84,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				if (R.cart_RAM != null)
 				{
 					Buffer.BlockCopy(data, temp, R.cart_RAM, 0, R.cart_RAM.Length);
+					temp += R.cart_RAM.Length;
 				}
+
+				if (temp == 0) throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+				if (data.Length != temp) throw new InvalidOperationException("Incorrect sram size.");
 
 				Console.WriteLine("loading SRAM here");
 			}
