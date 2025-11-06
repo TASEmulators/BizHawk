@@ -7,6 +7,7 @@ using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -103,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var (k, b) in bindings)
 				{
-					var l = new Label
+					var l = new LocSzLabelEx
 					{
 						Text = b.DisplayName,
 						Location = new Point(x, y),
@@ -136,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (tab == "TAStudio")
 				{
-					tb.Controls.Add(new Label
+					tb.Controls.Add(new LocSzLabelEx
 					{
 						Text = "Save States hotkeys operate with branches when TAStudio is engaged.",
 						Location = new Point(x, y),

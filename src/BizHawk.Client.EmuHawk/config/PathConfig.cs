@@ -7,6 +7,7 @@ using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -96,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 					var tempSystem = path.System;
 					btn.Click += (sender, args) => BrowseFolder(tempBox, tempPath, tempSystem);
 
-					var label = new Label
+					var label = new LocSzLabelEx
 					{
 						Text = path.Type,
 						Location = new Point(widgetOffset + buttonWidth + padding, y + UIHelper.ScaleY(4)),

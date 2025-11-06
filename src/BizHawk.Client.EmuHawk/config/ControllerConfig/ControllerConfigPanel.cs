@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -136,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 				iw.BringToFront();
 				Controls.Add(iw);
 				_inputs.Add(iw);
-				var label = new Label
+				var label = new LocSzLabelEx
 				{
 					Location = new Point(x + _inputSize + _labelPadding, y + UIHelper.ScaleY(3)),
 					Size = new Size(labelWidth, UIHelper.ScaleY(15)),
