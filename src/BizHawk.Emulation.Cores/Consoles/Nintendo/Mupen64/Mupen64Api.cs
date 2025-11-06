@@ -304,7 +304,7 @@ public abstract class Mupen64Api
 	[BizImport(CallingConvention.Cdecl)]
 	public abstract m64p_error CoreDetachPlugin(m64p_plugin_type pluginType);
 
-	[BizImport(CallingConvention.Cdecl)]
+	[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 	public abstract m64p_error CoreDoCommand(m64p_command command, int paramInt, IntPtr paramPtr);
 
 	public unsafe m64p_error CoreDoCommand(m64p_command command, int arrayLength, byte[] array)
