@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 	{
 		private readonly LibAres64 _core;
 		private readonly Ares64Disassembler _disassembler;
+		private const int MameFormatSize = 0x435B0C0;
+		private const int NddFormatSize = 0x3DEC800;
 
 		[CoreConstructor(VSystemID.Raw.N64)]
 		public Ares64(CoreLoadParameters<Ares64Settings, Ares64SyncSettings> lp)
@@ -64,18 +66,40 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				return ninLogoSha1 == SHA1Checksum.ComputeDigestHex(new ReadOnlySpan<byte>(rom).Slice(0x104, 48));
 			}
 
+			List<byte[]> gbRoms = [ ];
+			byte[] rom = null;
+			byte[] disk = null;
+			byte[] error = null;
+			byte[] sdCard = null;
+
 			// TODO: this is normally handled frontend side
 			// except XML files don't go through RomGame
 			// (probably should, but needs refactoring)
-			foreach (var r in lp.Roms) _ = N64RomByteswapper.ToZ64Native(r.RomData); // no-op if N64 magic bytes not present
+			foreach (var r in lp.Roms)
+			{
+				_ = N64RomByteswapper.ToZ64Native(r.RomData); // no-op if N64 magic bytes not present
 
-			var gbRoms = lp.Roms.FindAll(r => IsGBRom(r.FileData)).Select(r => r.FileData).ToArray();
-			var rom = lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && (char)r.RomData[0x3B] is 'N' or 'C')?.RomData;
-			var (disk, error) = TransformDisk(lp.Roms.Find(r => !gbRoms.Contains(r.FileData) && r.RomData != rom)?.FileData);
+				if (r.FileData.Length is MameFormatSize or NddFormatSize)
+				{
+					(disk, error) = TransformDisk(r.FileData);
+				}
+				else if (IsGBRom(r.FileData))
+				{
+					gbRoms.Add(r.FileData);
+				}
+				else if ((char) r.RomData[0x3B] is 'N' or 'C')
+				{
+					rom = r.RomData;
+				}
+				else if (r.FileData.AsSpan(start: 0x1FE) is [ 0x55, 0xAA, .. ])
+				{
+					sdCard = r.FileData;
+				}
+			}
 
 			if (rom is null && disk is null)
 			{
-				if (gbRoms.Length == 0 && lp.Roms.Count == 1) // let's just assume it's an N64 ROM then
+				if (gbRoms.Count == 0 && lp.Roms.Count == 1) // let's just assume it's an N64 ROM then
 				{
 					rom = lp.Roms[0].RomData;
 				}
@@ -116,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			}
 
 			byte[] GetGBRomOrNull(int n)
-				=> n < gbRoms.Length ? gbRoms[n] : null;
+				=> n < gbRoms.Count ? gbRoms[n] : null;
 
 			unsafe
 			{
@@ -129,7 +153,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					gb1RomPtr = GetGBRomOrNull(0),
 					gb2RomPtr = GetGBRomOrNull(1),
 					gb3RomPtr = GetGBRomOrNull(2),
-					gb4RomPtr = GetGBRomOrNull(3))
+					gb4RomPtr = GetGBRomOrNull(3),
+					sdPtr = sdCard)
 				{
 					var loadData = new LibAres64.LoadData
 					{
@@ -151,6 +176,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 						Gb3RomLen = GetGBRomOrNull(2)?.Length ?? 0,
 						Gb4RomData = (IntPtr)gb4RomPtr,
 						Gb4RomLen = GetGBRomOrNull(3)?.Length ?? 0,
+						SdData = (IntPtr)sdPtr,
+						SdLen = sdCard?.Length ?? 0,
 					};
 					if (!_core.Init(ref loadData, ControllerSettings, pal, GetRtcTime(!DeterministicEmulation)))
 					{
@@ -352,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					var systemBlock = disk.Length == 0x3DEC800 ? (systemBlocks[i] + 2) ^ 1 : (systemBlocks[i] + 2);
+					var systemBlock = disk.Length == NddFormatSize ? (systemBlocks[i] + 2) ^ 1 : (systemBlocks[i] + 2);
 					var systemOffset = systemBlock * 0x4D08;
 					ret[systemBlocks[i] + 2] = 1;
 					if (disk[systemOffset + 0x00] != 0x00) continue;
@@ -414,10 +441,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			if (disk is null) return default;
 
 			// already in mame format
-			if (disk.Length == 0x435B0C0) return (disk, CreateErrorTable(disk));
+			if (disk.Length == MameFormatSize) return (disk, CreateErrorTable(disk));
 
 			// ndd is always 0x3DEC800 bytes apparently?
-			if (disk.Length != 0x3DEC800) return default;
+			if (disk.Length != NddFormatSize) return default;
 
 			// need the error table for this
 			var errorTable = CreateErrorTable(disk);
@@ -453,7 +480,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			var dataFormat = new ReadOnlySpan<byte>(disk, systemOffset, 0xE8);
 
 			var diskIndex = 0;
-			var ret = new byte[0x435B0C0];
+			var ret = new byte[MameFormatSize];
 
 			var type = dataFormat[5] & 0xF;
 			var vzone = 0;
