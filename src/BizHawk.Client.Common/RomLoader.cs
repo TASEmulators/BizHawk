@@ -811,10 +811,10 @@ namespace BizHawk.Client.Common
 
 			bool allowArchives = !(OpenAdvanced is OpenAdvanced_MAME || MAMEMachineDB.IsMAMEMachine(path));
 			using HawkFile file = new(path, allowArchives: allowArchives);
-			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
+			// make sure path is absolute
+			path = CanonicalFullPath = file.CanonicalFullPath;
 
-			path = file.CanonicalFullPath; // make sure path is absolute
-			CanonicalFullPath = file.CanonicalFullPath;
+			if (!file.Exists && OpenAdvanced is not OpenAdvanced_LibretroNoGame) return false; // if the provided file doesn't even exist, give up! (unless libretro no game is used)
 
 			IEmulator nextEmulator;
 			RomGame rom = null;
