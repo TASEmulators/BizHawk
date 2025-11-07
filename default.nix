@@ -21,7 +21,7 @@
 , writeText ? pkgs.writeText
 # source
 , hawkSourceInfoDevBuild ? let # called "dev build", but you could pass whatever branch and commit you want here
-	version = "2.10.1-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
+	version = "2.11.1-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
 in {
 	inherit version;
 	src = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
