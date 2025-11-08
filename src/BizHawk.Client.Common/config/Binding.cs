@@ -19,11 +19,13 @@ namespace BizHawk.Client.Common
 			var dict = new Dictionary<string, HotkeyInfo>();
 			var i = 0;
 #if true
-			void Bind(string tabGroup, string displayName, string defaultBinding = "", string toolTip = "")
-				=> dict.Add(displayName, new(tabGroup: tabGroup, i++, displayName: displayName, toolTip: toolTip, defaultBinding: defaultBinding));
+			// Note (2025-10-23): Having bindings init with an intended scope would be better than merely marking overlaps with defaultBindingOverlaps
+			// e.g., for Ctrl+C overlaps (like MainForm vs. TAStudio), there's other code that checks which UI is focused, but consolidating such scope here on init would be better. --RetroEdit
+			void Bind(string tabGroup, string displayName, string defaultBinding = "", string toolTip = "", bool defaultBindingOverlaps = false)
+				=> dict.Add(displayName, new(tabGroup: tabGroup, i++, displayName: displayName, toolTip: toolTip, defaultBinding: defaultBinding, defaultBindingOverlaps: defaultBindingOverlaps));
 #else //TODO switch to a sort key more resilient than the DisplayName, like with this example (need to update `Config.HotkeyBindings["A Hotkey"]` usages across codebase; please switch it to a `Config.GetHotkeyBindings` method so it can return "<not bound>")
 			void Bind(string tabGroup, string displayName, string defaultBinding = "", string toolTip = "")
-				=> dict.Add($"{tabGroup}__{displayName}".Replace(" ", ""), new(tabGroup: tabGroup, i++, displayName: displayName, toolTip: toolTip, defaultBinding: defaultBinding));
+				=> dict.Add($"{tabGroup}__{displayName}".Replace(" ", ""), new(tabGroup: tabGroup, i++, displayName: displayName, toolTip: toolTip, defaultBinding: defaultBinding, defaultBindingOverlaps: defaultBindingOverlaps));
 #endif
 
 			Bind("General", "Frame Advance", "F");
@@ -61,7 +63,7 @@ namespace BizHawk.Client.Common
 			Bind("General", "Reboot Core", "Ctrl+R");
 			Bind("General", "Toggle Sound");
 			Bind("General", "Exit Program");
-			Bind("General", "Screen Raw to Clipboard", "Ctrl+C");
+			Bind("General", "Screen Raw to Clipboard", "Ctrl+C", defaultBindingOverlaps: true);
 			Bind("General", "Screen Client to Clipboard", "Ctrl+Shift+C");
 			Bind("General", "Toggle Skip Lag Frame");
 			Bind("General", "Toggle Key Priority");
@@ -151,12 +153,17 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A");
 			Bind("TAStudio", "Select All", "Ctrl+Shift+A");
 			Bind("TAStudio", "Reselect Clip.", "Ctrl+B");
+			Bind("TAStudio", "Copy Frames", "Ctrl+C", defaultBindingOverlaps: true);
+			Bind("TAStudio", "Paste Frames", "Ctrl+V");
+			Bind("TAStudio", "Paste Insert Frames", "Ctrl+Shift+V");
+			Bind("TAStudio", "Cut Frames", "Ctrl+X");
 			Bind("TAStudio", "Clear Frames", "Delete");
 			Bind("TAStudio", "Delete Frames", "Ctrl+Delete");
 			Bind("TAStudio", "Insert Frame", "Insert");
 			Bind("TAStudio", "Insert # Frames", "Shift+Insert");
 			Bind("TAStudio", "Clone Frames", "Ctrl+Insert");
 			Bind("TAStudio", "Clone # Times", "Ctrl+Shift+Insert");
+			Bind("TAStudio", "State Hist. Integrity Check", "Ctrl+Shift+I");
 			Bind("TAStudio", "Analog Increment", "Up");
 			Bind("TAStudio", "Analog Decrement", "Down");
 			Bind("TAStudio", "Analog Incr. by 10", "Shift+Up");
@@ -195,20 +202,20 @@ namespace BizHawk.Client.Common
 			Bind("NDS", "Swap Screens");
 
 			Bind("RAIntegration", "Open RA Overlay", "Escape");
-			Bind("RAIntegration", "RA Up", "Up");
-			Bind("RAIntegration", "RA Down", "Down");
-			Bind("RAIntegration", "RA Left", "Left");
-			Bind("RAIntegration", "RA Right", "Right");
-			Bind("RAIntegration", "RA Confirm", "X");
-			Bind("RAIntegration", "RA Cancel", "Z");
-			Bind("RAIntegration", "RA Quit", "Backspace");
+			Bind("RAIntegration", "RA Up", "Up", defaultBindingOverlaps: true);
+			Bind("RAIntegration", "RA Down", "Down", defaultBindingOverlaps: true);
+			Bind("RAIntegration", "RA Left", "Left", defaultBindingOverlaps: true);
+			Bind("RAIntegration", "RA Right", "Right", defaultBindingOverlaps: true);
+			Bind("RAIntegration", "RA Confirm", "X", defaultBindingOverlaps: true);
+			Bind("RAIntegration", "RA Cancel", "Z", defaultBindingOverlaps: true);
+			Bind("RAIntegration", "RA Quit", "Backspace", defaultBindingOverlaps: true);
 
 			AllHotkeys = dict;
 			Groupings = dict.Values.Select(static info => info.TabGroup).Distinct().ToList();
 
 #if DEBUG
 			var bindings = dict.Values
-				.Where(static info => !info.DisplayName.StartsWith("RA ") && !string.IsNullOrEmpty(info.DefaultBinding))
+				.Where(static info => !info.DefaultBindingOverlapCheckOverride && !string.IsNullOrEmpty(info.DefaultBinding))
 				.Select(static info => info.DefaultBinding)
 				.ToArray();
 			Debug.Assert(bindings.Distinct().CountIsExactly(bindings.Length), "Do not default bind multiple hotkeys to the same button combination.");
@@ -223,6 +230,8 @@ namespace BizHawk.Client.Common
 
 		public readonly string DefaultBinding;
 
+		public readonly bool DefaultBindingOverlapCheckOverride;
+
 		public readonly string DisplayName;
 
 		public readonly int Ordinal;
@@ -231,13 +240,14 @@ namespace BizHawk.Client.Common
 
 		public readonly string ToolTip;
 
-		private HotkeyInfo(string tabGroup, int ordinal, string displayName, string toolTip, string defaultBinding)
+		private HotkeyInfo(string tabGroup, int ordinal, string displayName, string toolTip, string defaultBinding, bool defaultBindingOverlaps)
 		{
 			DefaultBinding = defaultBinding;
 			DisplayName = displayName;
 			Ordinal = ordinal;
 			TabGroup = tabGroup;
 			ToolTip = toolTip;
+			DefaultBindingOverlapCheckOverride = defaultBindingOverlaps;
 		}
 	}
 }
