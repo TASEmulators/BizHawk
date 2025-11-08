@@ -112,20 +112,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly LibMAME _core;
 		private readonly WaterboxHost _exe;
 		private readonly ICallingConventionAdapter _adapter;
-
+		private readonly SortedList<string, string> _romHashes = [ ];
+		private readonly string _gameFileName;
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
 		private readonly LibMAME.BaseTimeCallbackDelegate _baseTimeCallback;
 		private readonly LibMAME.InputPollCallbackDelegate _inputPollCallback;
 		private readonly LibMAME.InfoCallbackDelegate _infoCallback;
 
-		public string RomDetails { get; set; }
-
-		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
 		private string _driverSourceFile = "";
 		private string _loadFailure = string.Empty;
-		private readonly SortedList<string, string> _romHashes = new();
+		private byte[] _configFile;
+
+		public string RomDetails { get; set; }
 
 		private void StartMAME(List<IRomAsset> roms)
 		{
@@ -182,6 +182,27 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_exe.AddReadonlyFile(MakeRomData(rom), MakeFileName(rom));
 			}
 
+			_configFile = Encoding.UTF8.GetBytes(
+				"<?xml version=\"1.0\"?>\n" +
+				"<mameconfig version=\"10\">\n" +
+				$"	<system name=\"{gameName}\">\n" +
+				"		<crosshairs>\n" +
+				"			<crosshair player=\"0\" mode=\"0\" />" +
+				"			<crosshair player=\"1\" mode=\"0\" />" +
+				"			<crosshair player=\"2\" mode=\"0\" />" +
+				"			<crosshair player=\"3\" mode=\"0\" />" +
+				"			<crosshair player=\"4\" mode=\"0\" />" +
+				"			<crosshair player=\"5\" mode=\"0\" />" +
+				"			<crosshair player=\"6\" mode=\"0\" />" +
+				"			<crosshair player=\"7\" mode=\"0\" />" +
+				"			<autotime val=\"0\" />\n" +
+				"		</crosshairs>\n" +
+				"	</system>\n" +
+				"</mameconfig>\n"
+			);
+
+			_exe.AddReadonlyFile(_configFile, "cfg/" + gameName + ".cfg");
+
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			var args = new List<string>
 			{
@@ -198,7 +219,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"-nvram_directory",                "", // path to nvram
 				"-artpath",                        "", // path to artwork
 				"-diff_directory",                 "", // path to hdd diffs
-				"-cfg_directory",                  "", // path to config
 				"-volume",                      "-32", // lowest attenuation means mame osd remains silent
 				"-output",                  "console", // print everything to hawk console
 				"-samplerate", _sampleRate.ToString(), // match hawk samplerate
