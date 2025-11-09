@@ -66,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				if (analogField.Length is not 0 && !analogField.ContainsOrdinal('%'))
 				{
+					var dupName = "";
 					var keys = analogField.Split(',');
 					var tag = keys[0];
 					var field = keys[1];
@@ -74,7 +75,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					var def = int.Parse(keys[2]);
 					var min = int.Parse(keys[3]);
 					var max = int.Parse(keys[4]);
-					MAMEController.AddAxis(field, min.RangeTo(max), def);
+
+					if (MAMEController.Axes.ContainsKey(field))
+					{
+						dupName = $" [{tag}]";
+					}
+
+					MAMEController.AddAxis(field + dupName, min.RangeTo(max), def);
 				}
 			}
 
