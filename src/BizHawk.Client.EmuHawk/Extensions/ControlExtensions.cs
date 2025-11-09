@@ -383,8 +383,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.GetType().Name == "DocComment")
 					{
-						var field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
-						field?.SetValue(control, true);
+						var fi = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
+						fi?.SetValue(control, true);
 						using var label = new Label();
 						var maxSize = new Size(grid.Width - 9, 999999);
 						control.Height = label.Height + TextRenderer.MeasureText(desc, control.Font, maxSize, TextFormatFlags.WordBreak).Height;

@@ -143,8 +143,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				if (member.MemberType == MemberTypes.Property)
 				{
-					var field = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
-					dictionary.Add(member.Name, field);
+					var value = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
+					dictionary.Add(member.Name, value);
 				}
 			}
 

@@ -31,9 +31,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var axes = new Dictionary<string, AxisSpec>();
 			var fieldsTagsList = new List<Tuple<string, string, AxisSpec?>>();
 
-			void AddFieldPtr(string tag, string field, AxisSpec? axis = null)
+			void AddFieldPtr(string tag, string @field, AxisSpec? axis = null)
 			{
-				var ptr = _core.mame_input_get_field_ptr(tag, field);
+				var ptr = _core.mame_input_get_field_ptr(tag, @field);
 
 				if (ptr == IntPtr.Zero)
 				{
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 
 				fieldPtrList.Add(ptr);
-				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?>(field, tag, axis));
+				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?>(@field, tag, axis));
 			}
 
 			MAMEController.BoolButtons.Add("Reset");
@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				if (buttonField.Length is not 0 && !buttonField.ContainsOrdinal('%'))
 				{
 					var tag = buttonField.SubstringBefore(',');
-					var field = buttonField.SubstringAfterLast(',');
-					AddFieldPtr(tag, field);
+					var @field = buttonField.SubstringAfterLast(',');
+					AddFieldPtr(tag, @field);
 				}
 			}
 
@@ -63,34 +63,34 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					var keys = analogField.Split(',');
 					var tag = keys[0];
-					var field = keys[1];
+					var @field = keys[1];
 					var def = int.Parse(keys[2]);
 					var min = int.Parse(keys[3]);
 					var max = int.Parse(keys[4]);
-					AddFieldPtr(tag, field, new AxisSpec(min.RangeTo(max), def));
+					AddFieldPtr(tag, @field, new AxisSpec(min.RangeTo(max), def));
 				}
 			}
 
 			foreach (var entry in fieldsTagsList)
 			{
-				var field = entry.Item1;
+				var @field = entry.Item1;
 				var tag = entry.Item2;
 				var axis = entry.Item3;
 
-				if (fieldsTagsList.Where(e => e.Item1 == field).Skip(1).Any())
+				if (fieldsTagsList.Where(e => e.Item1 == @field).Skip(1).Any())
 				{
-					field = $"{field} [{tag}]";
+					@field = $"{@field} [{tag}]";
 				}
 
 				if (axis == null)
 				{
-					buttonFieldList.Add(field);
-					MAMEController.BoolButtons.Add(field);
+					buttonFieldList.Add(@field);
+					MAMEController.BoolButtons.Add(@field);
 				}
 				else
 				{
-					analogFieldList.Add(field);
-					MAMEController.AddAxis(field, axis.Value.Range, axis.Value.Neutral);
+					analogFieldList.Add(@field);
+					MAMEController.AddAxis(@field, axis.Value.Range, axis.Value.Neutral);
 				}
 			}
 

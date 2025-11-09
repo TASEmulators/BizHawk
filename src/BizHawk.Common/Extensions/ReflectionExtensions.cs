@@ -66,12 +66,12 @@ namespace BizHawk.Common.ReflectionExtensions
 		{
 			var type = typeof(T);
 
-			foreach (var field in type.GetFields())
+			foreach (var fi in type.GetFields())
 			{
-				var memberDesc = field.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr
+				var memberDesc = fi.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr
 					? descAttr.Description
-					: field.Name;
-				if (memberDesc == description) return (T) field.GetValue(null);
+					: fi.Name;
+				if (memberDesc == description) return (T) fi.GetValue(null);
 			}
 
 			return default(T);

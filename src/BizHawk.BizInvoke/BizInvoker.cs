@@ -249,7 +249,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			// define a field on the class to hold the delegate
-			var field = type.DefineField(
+			var @field = type.DefineField(
 				$"DelegateField{baseMethod.Name}",
 				delegateType,
 				FieldAttributes.Public);
@@ -277,7 +277,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			il.Emit(OpCodes.Ldarg_0);
-			il.Emit(OpCodes.Ldfld, field);
+			il.Emit(OpCodes.Ldfld, @field);
 			for (var i = 0; i < paramTypes.Length; i++)
 			{
 				il.Emit(OpCodes.Ldarg, (short)(i + 1));
@@ -315,7 +315,7 @@ namespace BizHawk.BizInvoke
 			{
 				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
 				var interopDelegate = adapter.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
-				o.GetType().GetField(field.Name).SetValue(o, interopDelegate);
+				o.GetType().GetField(@field.Name).SetValue(o, interopDelegate);
 			};
 		}
 
@@ -359,7 +359,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			// define a field on the type to hold the entry pointer
-			var field = type.DefineField(
+			var @field = type.DefineField(
 				$"EntryPtrField{baseMethod.Name}",
 				typeof(IntPtr),
 				FieldAttributes.Public);
@@ -402,7 +402,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			il.Emit(OpCodes.Ldarg_0);
-			il.Emit(OpCodes.Ldfld, field);
+			il.Emit(OpCodes.Ldfld, @field);
 			il.EmitCalli(
 				OpCodes.Calli,
 				nativeCall,
@@ -442,7 +442,7 @@ namespace BizHawk.BizInvoke
 			return (o, dll, adapter) =>
 			{
 				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
-				o.GetType().GetField(field.Name).SetValue(
+				o.GetType().GetField(@field.Name).SetValue(
 					o, adapter.GetDepartureFunctionPointer(entryPtr, new(returnType, paramTypes), o));
 			};
 		}

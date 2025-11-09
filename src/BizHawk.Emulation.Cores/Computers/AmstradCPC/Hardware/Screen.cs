@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Should be called at the pixel clock rate (in the case of the Amstrad CPC, 16MHz)
 		/// </summary>
-		public void VideoClock(int colour, int field, bool cHsync = false, bool cVsync = false)
+		public void VideoClock(int colour, int fieldColour, bool cHsync = false, bool cVsync = false)
 		{
 			// Beam moves continuously downwards at 50 Hz and left to right with a HSYNC pulse every 15625Hz
 			// Horizontal and vertical movement are independent.
