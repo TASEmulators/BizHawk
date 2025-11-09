@@ -10,6 +10,9 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>duplicated with <c>LibretroControllerDef</c></remarks>
 		private const string PFX_RETROPAD = "RetroPad ";
 
+		/// <remarks>arcade-only appendix to resolve name clashes</remarks>
+		private const string MAME_TAG = " [:";
+
 		public static char Lookup(string button, string systemId)
 		{
 			var key = button.Replace("Key ", "");
@@ -25,6 +28,11 @@ namespace BizHawk.Emulation.Common
 				}
 			}
 			key = key.RemovePrefix(PFX_RETROPAD);
+
+			if (key.Contains(MAME_TAG))
+			{
+				key = key[..key.IndexOf(MAME_TAG)];
+			}
 
 			if (SystemOverrides.TryGetValue(systemId, out var overridesForSys) && overridesForSys.TryGetValue(key, out var c))
 			{
@@ -1052,6 +1060,10 @@ namespace BizHawk.Emulation.Common
 				["Mouse Position Y"] = "mpY",
 				["Mouse Speed X"] = "msX",
 				["Mouse Speed Y"] = "msY",
+			},
+			[VSystemID.Raw.Arcade] = new()
+			{
+				["Pedal 1"] = "pedal1",
 			},
 		};
 

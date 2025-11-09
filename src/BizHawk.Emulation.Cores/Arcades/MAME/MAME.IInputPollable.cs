@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
@@ -27,8 +28,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var buttonFieldList = new List<string>();
 			var analogFieldList = new List<string>();
 			var fieldPtrList = new List<IntPtr>();
+			var axes = new Dictionary<string, AxisSpec>();
+			var fieldsTagsList = new List<Tuple<string, string, AxisSpec?>>();
 
-			void AddFieldPtr(string tag, string field)
+			void AddFieldPtr(string tag, string field, AxisSpec? axis = null)
 			{
 				var ptr = _core.mame_input_get_field_ptr(tag, field);
 
@@ -39,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 
 				fieldPtrList.Add(ptr);
+				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?>(field, tag, axis));
 			}
 
 			MAMEController.BoolButtons.Add("Reset");
@@ -49,16 +53,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				{
 					var tag = buttonField.SubstringBefore(',');
 					var field = buttonField.SubstringAfterLast(',');
-					var dupName = "";
-					buttonFieldList.Add(field);
 					AddFieldPtr(tag, field);
-
-					if (MAMEController.BoolButtons.Contains(field))
-					{
-						dupName = $" [{ tag }]";
-					}
-
-					MAMEController.BoolButtons.Add(field + dupName);
 				}
 			}
 
@@ -66,22 +61,36 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				if (analogField.Length is not 0 && !analogField.ContainsOrdinal('%'))
 				{
-					var dupName = "";
 					var keys = analogField.Split(',');
 					var tag = keys[0];
 					var field = keys[1];
-					analogFieldList.Add(field);
-					AddFieldPtr(tag, field);
 					var def = int.Parse(keys[2]);
 					var min = int.Parse(keys[3]);
 					var max = int.Parse(keys[4]);
+					AddFieldPtr(tag, field, new AxisSpec(min.RangeTo(max), def));
+				}
+			}
 
-					if (MAMEController.Axes.ContainsKey(field))
-					{
-						dupName = $" [{tag}]";
-					}
+			foreach (var entry in fieldsTagsList)
+			{
+				var field = entry.Item1;
+				var tag = entry.Item2;
+				var axis = entry.Item3;
 
-					MAMEController.AddAxis(field + dupName, min.RangeTo(max), def);
+				if (fieldsTagsList.Where(e => e.Item1 == field).Skip(1).Any())
+				{
+					field = $"{field} [{tag}]";
+				}
+
+				if (axis == null)
+				{
+					buttonFieldList.Add(field);
+					MAMEController.BoolButtons.Add(field);
+				}
+				else
+				{
+					analogFieldList.Add(field);
+					MAMEController.AddAxis(field, axis.Value.Range, axis.Value.Neutral);
 				}
 			}
 
