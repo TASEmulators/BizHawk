@@ -378,11 +378,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadBranchExternal(int slot = -1)
 		{
-			if (Tastudio.AxisEditingMode)
-			{
-				return false;
-			}
-
 			if (slot != -1)
 			{
 				if (Branches[slot] != null)
@@ -402,11 +397,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateBranchExternal(int slot = -1)
 		{
-			if (Tastudio.AxisEditingMode)
-			{
-				return;
-			}
-
 			if (slot != -1)
 			{
 				if (Branches[slot] != null)
@@ -430,11 +420,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectBranchExternal(int slot)
 		{
-			if (Tastudio.AxisEditingMode)
-			{
-				return;
-			}
-
 			if (Branches[slot] != null)
 			{
 				Select(slot, true);

@@ -21,6 +21,37 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 			}
 
+			// avoid conflict with regular hotkeys
+			if (Tools.IsLoaded<TAStudio>() && Tools.TAStudio.AxisEditingMode)
+			{
+				switch (trigger)
+				{
+					default:
+						return false;
+
+					case "Analog Increment":
+						Tools.TAStudio.AnalogIncrementByOne();
+						break;
+					case "Analog Decrement":
+						Tools.TAStudio.AnalogDecrementByOne();
+						break;
+					case "Analog Incr. by 10":
+						Tools.TAStudio.AnalogIncrementByTen();
+						break;
+					case "Analog Decr. by 10":
+						Tools.TAStudio.AnalogDecrementByTen();
+						break;
+					case "Analog Maximum":
+						Tools.TAStudio.AnalogMax();
+						break;
+					case "Analog Minimum":
+						Tools.TAStudio.AnalogMin();
+						break;
+				}
+
+				return true;
+			}
+
 			switch (trigger)
 			{
 				default:
@@ -473,30 +504,6 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone # Times":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesXTimesExternal();
-					break;
-				case "Analog Increment":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogIncrementByOne();
-					break;
-				case "Analog Decrement":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogDecrementByOne();
-					break;
-				case "Analog Incr. by 10":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogIncrementByTen();
-					break;
-				case "Analog Decr. by 10":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogDecrementByTen();
-					break;
-				case "Analog Maximum":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogMax();
-					break;
-				case "Analog Minimum":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogMin();
 					break;
 
 				// SNES
