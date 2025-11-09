@@ -68,21 +68,10 @@ namespace BizHawk.Common.ReflectionExtensions
 
 			foreach (var field in type.GetFields())
 			{
-				if (Attribute.GetCustomAttribute(field,
-					typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
-				{
-					if (attribute.Description == description)
-					{
-						return (T)field.GetValue(null);
-					}
-				}
-				else
-				{
-					if (field.Name == description)
-					{
-						return (T)field.GetValue(null);
-					}
-				}
+				var memberDesc = field.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr
+					? descAttr.Description
+					: field.Name;
+				if (memberDesc == description) return (T) field.GetValue(null);
 			}
 
 			return default(T);
