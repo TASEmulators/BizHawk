@@ -32,14 +32,15 @@ namespace BizHawk.Client.Common.cheats
 			};
 		}
 
-		public MemoryDomain CheatDomain()
+		public MemoryDomain CheatDomain(DecodeResult validDecodeResult)
 		{
-			var domain = CheatDomainName();
+			var domain = CheatDomainName(validDecodeResult);
 			return domain is null ? _domains.SystemBus : _domains[domain]!;
 		}
 
-		private string CheatDomainName() => _systemId switch
+		private string CheatDomainName(DecodeResult validDecodeResult) => _systemId switch
 		{
+			VSystemID.Raw.GEN => validDecodeResult.Address < 0x400000 ? "MD CART" : null,
 			VSystemID.Raw.N64 => "RDRAM",
 			VSystemID.Raw.PSX => "MainRAM",
 #if false

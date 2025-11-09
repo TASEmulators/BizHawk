@@ -1246,8 +1246,13 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				GameSharkDecoder decoder = new(Emulator.AsMemoryDomains(), Emulator.SystemId);
-				domain = decoder.CheatDomain();
-				return decoder.Decode(code);
+				var result = decoder.Decode(code);
+				if (result.IsValid(out var valid))
+				{
+					domain = decoder.CheatDomain(valid);
+				}
+
+				return result;
 			}
 			catch (Exception e)
 			{
