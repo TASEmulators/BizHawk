@@ -65,13 +65,13 @@ set(SDL_X11_XSHAPE OFF)
 set(SDL_WAYLAND OFF)
 
 # We only need WGL for Windows and GLX for Linux
+# We also want Vulkan support for eventual core usage
 set(SDL_DIRECTFB OFF)
 set(SDL_DUMMYVIDEO OFF)
 set(SDL_RPI OFF)
 set(SDL_RENDER_D3D OFF)
 set(SDL_RENDER_METAL OFF)
 set(SDL_VIVANTE OFF)
-set(SDL_VULKAN OFF)
 set(SDL_KMSDRM OFF)
 set(SDL_OFFSCREEN OFF)
 
