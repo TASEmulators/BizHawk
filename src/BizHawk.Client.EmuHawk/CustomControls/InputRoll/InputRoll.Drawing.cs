@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 					? e.ClipRectangle.Width / CellWidth
 					: e.ClipRectangle.Height / CellHeight;
 
-				var lastVisibleRow = firstVisibleRow + visibleRows;
+				var lastVisibleRow = LastVisibleRow;
 
 				if (visibleColumns.Count is not 0
 					&& (HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight))
