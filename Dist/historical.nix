@@ -9,6 +9,7 @@
 , dotnet-sdk_5
 , dotnet-sdk_6
 , dotnet-sdk_8
+, dotnet-sdk_10
 }: let
 	/**
 	 * updating? make sure to hit the rest of this file, the hand-written deps `/Dist/deps-historical.nix`,
@@ -219,7 +220,7 @@ in {
 		inherit neededExtraManagedDepsApprox;
 		__contentAddressed = false; #TODO try w/ CA
 		copyingAssetsInEmuHawkProj = isVersionAtLeast "2.6.3" version;
-		dotnet-sdk = dotnet-sdk_8;
+		dotnet-sdk = dotnet-sdk_10;
 		exePathRespectsEnvVar = isVersionAtLeast "2.9.2" version;
 		hasAssemblyResolveHandler = isVersionAtLeast "2.3.3" version;
 		hasAssetsInOutput = !isVersionAtLeast "2.6.1" version;

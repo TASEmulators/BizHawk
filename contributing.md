@@ -67,9 +67,9 @@ It's probably a good idea to get the .NET SDK, even if you're not working on a .
 
 ## For any: .NET project
 
-Currently, you'll need version 8.x of the SDK.
+Currently, you'll need version 10.x of the SDK.
 - Linux
-	- Install the .NET SDK (package name is usually `dotnet-sdk-8.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
+	- Install the .NET SDK (package name is usually `dotnet-sdk-10.0`, see [full instructions](https://learn.microsoft.com/dotnet/core/install/linux)).
 	- VS Community isn't available for Linux, but Rider and VS Code are.
 	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
