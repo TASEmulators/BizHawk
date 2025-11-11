@@ -633,6 +633,26 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
+		private void EXG()
+		{
+		}
+
+		private void EXG_Disasm(DisassemblyInfo info)
+		{
+			int mode = (op >> 3) & 0b11001;
+			int reg1 = (op >> 9) & 7;
+			int reg2 = op & 7;
+
+			info.Mnemonic = "exg";
+
+			switch (mode)
+			{
+				case 0b01000: info.Args = $"D{reg1}, D{reg2}"; break;
+				case 0b01001: info.Args = $"A{reg1}, A{reg2}"; break;
+				case 0b10001: info.Args = $"D{reg1}, A{reg2}"; break;
+			}
+		}
+
 		private void PEA()
 		{
 			int mode = (op >> 3) & 7;

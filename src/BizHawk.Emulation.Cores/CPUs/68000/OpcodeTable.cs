@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			Assign("or", OR1, "1000", "Xn", "1", "Size2_1", "AmXn");
 			Assign("not", NOT, "01000110", "Size2_1", "AmXn");
 			Assign("neg", NEG, "01000100", "Size2_1", "AmXn");
+			Assign("exg", EXG, "1100", "Xn", "1", "Size1", "Size1", "00", "Size1", "Xn");
 
 			Assign("jmp", JMP, "0100111011", "AmXn");
 			Assign("jsr", JSR, "0100111010", "AmXn");
