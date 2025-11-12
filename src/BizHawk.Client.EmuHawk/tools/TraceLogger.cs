@@ -266,11 +266,8 @@ namespace BizHawk.Client.EmuHawk
 		private void CloseFile()
 		{
 			// TODO: save the remaining instructions in CoreComm
-			if (_streamWriter != null)
-			{
-				_streamWriter.Close();
-				_streamWriter = null;
-			}
+			_streamWriter?.Close();
+			_streamWriter = null;
 		}
 
 		private FileInfo GetFileFromUser()

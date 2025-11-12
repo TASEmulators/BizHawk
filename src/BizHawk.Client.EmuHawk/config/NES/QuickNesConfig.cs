@@ -73,11 +73,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.OnClosed(e);
 
-			if (pictureBox1.Image != null)
-			{
-				pictureBox1.Image.Dispose();
-				pictureBox1.Image = null;
-			}
+			pictureBox1.Image?.Dispose();
+			pictureBox1.Image = null;
 		}
 
 		private void ButtonPal_Click(object sender, EventArgs e)

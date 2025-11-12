@@ -1017,11 +1017,8 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			// NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
-			if (DisplayManager != null)
-			{
-				DisplayManager.Dispose();
-				DisplayManager = null;
-			}
+			DisplayManager?.Dispose();
+			DisplayManager = null;
 
 			RA?.Dispose();
 			RA = null;
@@ -2196,11 +2193,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Shutdown()
 		{
-			if (_currAviWriter != null)
-			{
-				_currAviWriter.CloseFile();
-				_currAviWriter = null;
-			}
+			_currAviWriter?.CloseFile();
+			_currAviWriter = null;
 		}
 
 		private DateTime _lastMessageCheck = DateTime.MinValue;

@@ -505,11 +505,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public mupen64plusApi(N64 bizhawkCore, byte[] rom, VideoPluginSettings video_settings, int SaveType, int CoreType, bool DisableExpansionSlot)
 		{
 			// There can only be one core (otherwise breaks mupen64plus)
-			if (AttachedCore != null)
-			{
-				AttachedCore.Dispose();
-				AttachedCore = null;
-			}
+			AttachedCore?.Dispose();
+			AttachedCore = null;
 			this.bizhawkCore = bizhawkCore;
 
 			connectFunctionPointers();

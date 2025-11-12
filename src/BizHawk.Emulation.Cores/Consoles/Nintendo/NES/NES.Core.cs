@@ -145,11 +145,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void Dispose()
 		{
-			if (blip != null)
-			{
-				blip.Dispose();
-				blip = null;
-			}
+			blip?.Dispose();
+			blip = null;
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)

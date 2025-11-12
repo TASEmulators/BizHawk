@@ -308,17 +308,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			_controllerAdapter.DoRumble(_currentController, _inputPortData);
 
-			if (_frameThreadProcActive != null)
-			{
-				// The nyma core unmanaged code should always release the threadproc to completion
-				// before returning from Emulate, but even when it does occasionally the threadproc
-				// might not actually finish first
+			// The nyma core unmanaged code should always release the threadproc to completion
+			// before returning from Emulate, but even when it does occasionally the threadproc
+			// might not actually finish first
 
-				// It MUST be allowed to finish now, because the theadproc doesn't know about or participate
-				// in the waterbox core lockout (IMonitor) directly -- it assumes the parent has handled that
-				_frameThreadProcActive.Wait();
-				_frameThreadProcActive = null;
-			}
+			// It MUST be allowed to finish now, because the theadproc doesn't know about or participate
+			// in the waterbox core lockout (IMonitor) directly -- it assumes the parent has handled that
+			_frameThreadProcActive?.Wait();
+			_frameThreadProcActive = null;
 		}
 
 		private int _mdfnNominalWidth;

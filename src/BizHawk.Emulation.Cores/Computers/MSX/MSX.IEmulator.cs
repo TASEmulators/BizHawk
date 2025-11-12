@@ -166,11 +166,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				MSX_Pntr = IntPtr.Zero;
 			}
 
-			if (blip != null)
-			{
-				blip.Dispose();
-				blip = null;
-			}
+			blip?.Dispose();
+			blip = null;
 		}
 
 		public BlipBuffer blip = new BlipBuffer(4500);

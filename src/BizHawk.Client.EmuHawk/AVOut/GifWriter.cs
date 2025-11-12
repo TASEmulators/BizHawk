@@ -255,11 +255,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Dispose()
 		{
-			if (_f != null)
-			{
-				_f.Dispose();
-				_f = null;
-			}
+			_f?.Dispose();
+			_f = null;
 		}
 
 		public bool UsesAudio => false;

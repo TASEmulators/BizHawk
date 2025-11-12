@@ -53,19 +53,13 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			if (_archive != null)
-			{
-				_archive.Dispose();
-				_archive = null;
-			}
+			_archive?.Dispose();
+			_archive = null;
 			_fs?.Flush(flushToDisk: true);
 			_fs?.Dispose();
 			_fs = null;
-			if (_zstd != null)
-			{
-				_zstd.Dispose();
-				_zstd = null;
-			}
+			_zstd?.Dispose();
+			_zstd = null;
 		}
 	}
 }

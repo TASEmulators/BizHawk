@@ -148,17 +148,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void DisposeSound()
 		{
-			if (_blipL != null)
-			{
-				_blipL.Dispose();
-				_blipL = null;
-			}
+			_blipL?.Dispose();
+			_blipL = null;
 
-			if (_blipR != null)
-			{
-				_blipR.Dispose();
-				_blipR = null;
-			}
+			_blipR?.Dispose();
+			_blipR = null;
 		}
 	}
 }

@@ -720,11 +720,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			else
 			{
 				_linkConnected = false;
-				if (printer != null) // have no idea how this is ever null???
-				{
-					printer.Disconnect();
-					printer = null;
-				}
+				printer?.Disconnect(); // have no idea how this is ever null???
+				printer = null;
 			}
 		}
 
