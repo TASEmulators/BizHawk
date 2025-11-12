@@ -33,6 +33,23 @@ namespace BizHawk.Tests.Client.Common.Dearchive
 
 		[DynamicData(nameof(TestCases))]
 		[TestMethod]
+		public void TestLibarchive(string filename, bool hasSharpCompressSupport)
+		{
+			var sc = LibarchiveDearchivalMethod.Instance;
+			var archive = ReflectionCache.EmbeddedResourceStream(EMBED_GROUP + filename);
+			Assert.IsTrue(sc.CheckSignature(archive, filename), $"{filename} is an archive, but wasn't detected as such"); // puts the seek pos of the Stream param back where it was (in this case at the start)
+			using var af = sc.Construct(archive);
+			var items = af.Scan();
+			Assert.IsNotNull(items, $"{filename} contains 1 file, but it couldn't be enumerated correctly");
+			Assert.AreEqual(1, items!.Count, $"{filename} contains 1 file, but was detected as containing {items.Count} files");
+			using MemoryStream ms = new((int) items[0].Size);
+			af.ExtractFile(items[0].ArchiveIndex, ms);
+			ms.Seek(0L, SeekOrigin.Begin);
+			CollectionAssert.AreEqual(Rom, ms.ReadAllBytes(), $"the file extracted from {filename} doesn't match the uncompressed file");
+		}
+
+		[DynamicData(nameof(TestCases))]
+		[TestMethod]
 		public void TestSharpCompress(string filename, bool hasSharpCompressSupport)
 		{
 			if (!hasSharpCompressSupport) return;

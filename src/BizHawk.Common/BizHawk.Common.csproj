@@ -15,6 +15,7 @@
 		<PackageReference Include="System.ComponentModel.Annotations" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+		<PackageReference Include="LibArchive.Net" />
 	</ItemGroup>
 	<ItemGroup>
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
