@@ -11,37 +11,28 @@ namespace BizHawk.Tests.Client.Common.cheats
 	[TestClass]
 	public class CheatDecoderTests
 	{
-		[AttributeUsage(AttributeTargets.Method)]
-		private sealed class CheatcodeDataAttribute : Attribute, ITestDataSource
+		public static string? GetTestCaseDispName(MethodInfo methodInfo, object?[]? data)
 		{
-			public bool GenerateNonsense { get; set; } = false;
-
-			public IEnumerable<object?[]> GetData(MethodInfo methodInfo)
-				=> GenerateNonsense ? NonsenseData : RealData;
-
-			public string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+			static string Format(object? o) => o switch
 			{
-				static string Format(object? o) => o switch
-				{
-					null => "null",
-					int i => $"0x{i:X}",
-					string s => $"\"{s}\"",
-					_ => o.ToString()!,
-				};
-				return data is null ? null : $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
-			}
+				null => "null",
+				int i => $"0x{i:X}",
+				string s => $"\"{s}\"",
+				_ => o.ToString()!,
+			};
+			return data is null ? null : $"{methodInfo.Name}({string.Join(", ", data.Select(Format))})";
 		}
 
 		private const string ERROR_GBA_CODEBREAKER = "Codebreaker/GameShark SP/Xploder codes are not yet supported.";
 
 		private static readonly int? NO_COMPARE = null;
 
-		private static readonly IEnumerable<object?[]> NonsenseData = new[]
+		private static IEnumerable<object?[]> NonsenseData { get; } = new[]
 		{
 			new[] { VSystemID.Raw.GBA, "33003D0E0020", ERROR_GBA_CODEBREAKER },
 		};
 
-		private static readonly IEnumerable<object?[]> RealData = new[]
+		private static IEnumerable<object?[]> RealData { get; } = new[]
 		{
 			new object?[] { VSystemID.Raw.GB, "0A1-B9F", 0x01B9, 0x0A, NO_COMPARE, WatchSize.Byte },
 			new object?[] { VSystemID.Raw.GB, "068-5FF-E66", 0x085F, 0x06, 0x03, WatchSize.Byte },
@@ -55,7 +46,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 			new object?[] { VSystemID.Raw.SNES, "7E1F2801", 0x7E1F28, 0x01, NO_COMPARE, WatchSize.Byte },
 		};
 
-		[CheatcodeData]
+		[DynamicData(nameof(RealData), DynamicDataDisplayName = nameof(GetTestCaseDispName))]
 		[TestMethod]
 		public void TestCheatcodeParsing(string systemID, string code, int address, int value, int? compare, WatchSize size)
 		{
@@ -75,7 +66,7 @@ namespace BizHawk.Tests.Client.Common.cheats
 			Assert.AreEqual(compare, valid.Compare, "wrong compare");
 		}
 
-		[CheatcodeData(GenerateNonsense = true)]
+		[DynamicData(nameof(NonsenseData), DynamicDataDisplayName = nameof(GetTestCaseDispName))]
 		[TestMethod]
 		public void TestNonsenseParsing(string systemID, string code, string error)
 		{
