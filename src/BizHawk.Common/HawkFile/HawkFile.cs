@@ -91,7 +91,7 @@ namespace BizHawk.Common
 				var ext = Path.GetExtension(path).ToLowerInvariant();
 				if (DearchivalMethod.AllowedArchiveExtensions.Contains(ext))
 				{
-					if (DearchivalMethod.CheckSignature(path, out _, out _))
+					if (DearchivalMethod.CheckSignature(path))
 					{
 						_extractor = DearchivalMethod.Construct(path);
 						try

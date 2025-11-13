@@ -16,11 +16,8 @@ namespace BizHawk.Client.Common
 	{
 		private SharpCompressDearchivalMethod() {}
 
-		public bool CheckSignature(string fileName, out int offset, out bool isExecutable)
+		public bool CheckSignature(string fileName)
 		{
-			offset = 0;
-			isExecutable = false;
-
 			if (!ArchiveFactory.IsArchive(fileName, out var type)) return false;
 			if (type is not ArchiveType.Tar) return true; // not expecting false positives from anything but .tar for now
 

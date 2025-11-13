@@ -7,7 +7,7 @@ namespace BizHawk.Common
 	public interface IFileDearchivalMethod<out T> where T : IHawkArchiveFile
 	{
 		/// <remarks>TODO could this receive a <see cref="HawkFile"/> itself? possibly handy, in very clever scenarios of mounting fake files</remarks>
-		bool CheckSignature(string fileName, out int offset, out bool isExecutable);
+		bool CheckSignature(string fileName);
 
 		/// <remarks>for now, only used in tests</remarks>
 		bool CheckSignature(Stream fileStream, string? filenameHint = null);
