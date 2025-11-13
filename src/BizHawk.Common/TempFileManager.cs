@@ -123,8 +123,10 @@ namespace BizHawk.Common
 		{
 			// yes... this is how we're doing it, for now, until it's proven to be troublesome
 			Directory.CreateDirectory(path);
+			Environment.SetEnvironmentVariable("TMPDIR", path);
 			Environment.SetEnvironmentVariable("TMP", path);
 			Environment.SetEnvironmentVariable("TEMP", path);
+			Environment.SetEnvironmentVariable("TEMPDIR", path);
 		}
 	}
 }
