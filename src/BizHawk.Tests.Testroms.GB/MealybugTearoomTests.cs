@@ -237,8 +237,8 @@ namespace BizHawk.Tests.Testroms.GB
 			TestUtils.PrepareDBAndOutput(SUITE_ID);
 		}
 
-		[DataTestMethod]
 		[MealybugTestData]
+		[TestMethod]
 		public void RunMealybugTest(MealybugTestCase testCase)
 		{
 			TestUtils.ShortCircuitMissingRom(RomsArePresent);

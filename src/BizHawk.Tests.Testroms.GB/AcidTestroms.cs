@@ -90,7 +90,7 @@ namespace BizHawk.Tests.Testroms.GB
 		}
 
 		[AcidTestData]
-		[DataTestMethod]
+		[TestMethod]
 		public void RunAcidTest(AcidTestCase testCase)
 		{
 			TestUtils.ShortCircuitMissingRom(isPresent: FilteredEmbedPaths.Contains(testCase.RomEmbedPath));

@@ -58,8 +58,8 @@ namespace BizHawk.Tests.Testroms.SMS
 		private static string DisplayNameFor(CoreSetup setup, string subTest)
 			=> $"SMSmemtest.{subTest} on {setup}";
 
-		[DataTestMethod]
 		[SMSmemtestData]
+		[TestMethod]
 		public void RunSMSmemtest(CoreSetup setup)
 		{
 			TestUtils.ShortCircuitMissingRom(RomIsPresent);

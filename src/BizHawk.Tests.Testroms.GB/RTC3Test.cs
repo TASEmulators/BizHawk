@@ -60,8 +60,8 @@ namespace BizHawk.Tests.Testroms.GB
 		private static string DisplayNameFor(CoreSetup setup, string subTest)
 			=> $"RTC3Test.{subTest} on {setup}";
 
-		[DataTestMethod]
 		[RTC3TestData]
+		[TestMethod]
 		public void RunRTC3Test(CoreSetup setup)
 		{
 			TestUtils.ShortCircuitMissingRom(RomIsPresent);

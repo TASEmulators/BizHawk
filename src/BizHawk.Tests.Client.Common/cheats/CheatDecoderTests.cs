@@ -55,8 +55,8 @@ namespace BizHawk.Tests.Client.Common.cheats
 			new object?[] { VSystemID.Raw.SNES, "7E1F2801", 0x7E1F28, 0x01, NO_COMPARE, WatchSize.Byte },
 		};
 
-		[DataTestMethod]
 		[CheatcodeData]
+		[TestMethod]
 		public void TestCheatcodeParsing(string systemID, string code, int address, int value, int? compare, WatchSize size)
 		{
 			var result = new GameSharkDecoder(null, systemID).Decode(code);
@@ -75,8 +75,8 @@ namespace BizHawk.Tests.Client.Common.cheats
 			Assert.AreEqual(compare, valid.Compare, "wrong compare");
 		}
 
-		[DataTestMethod]
 		[CheatcodeData(GenerateNonsense = true)]
+		[TestMethod]
 		public void TestNonsenseParsing(string systemID, string code, string error)
 		{
 			var result = new GameSharkDecoder(null, systemID).Decode(code);

@@ -55,7 +55,7 @@ namespace BizHawk.Tests.Testroms.GB
 			=> $"BullyGB on {setup}";
 
 		[BullyTestData]
-		[DataTestMethod]
+		[TestMethod]
 		public void RunBullyTest(CoreSetup setup)
 		{
 			TestUtils.ShortCircuitMissingRom(RomIsPresent);

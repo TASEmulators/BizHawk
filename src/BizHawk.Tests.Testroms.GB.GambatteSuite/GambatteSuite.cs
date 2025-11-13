@@ -136,8 +136,8 @@ namespace BizHawk.Tests.Testroms.GB
 			return (refImageCases, hexStrCases);
 		}
 
-		[DataTestMethod]
 		[GambatteHexStrTestData]
+		[TestMethod]
 		public void RunGambatteHexStrTest(GambatteHexStrTestCase testCase)
 		{
 			static bool GlyphMatches(Bitmap b, int xOffset, byte v)
@@ -196,8 +196,8 @@ namespace BizHawk.Tests.Testroms.GB
 			}
 		}
 
-		[DataTestMethod]
 		[GambatteRefImageTestData]
+		[TestMethod]
 		public void RunGambatteRefImageTest(GambatteRefImageTestCase testCase)
 		{
 			TestUtils.ShortCircuitMissingRom(RomsArePresent);

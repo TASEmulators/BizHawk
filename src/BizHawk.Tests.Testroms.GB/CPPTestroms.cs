@@ -163,8 +163,8 @@ namespace BizHawk.Tests.Testroms.GB
 			TestUtils.PrepareDBAndOutput(SUITE_ID);
 		}
 
-		[DataTestMethod]
 		[CPPTestromsHexStrTestData]
+		[TestMethod]
 		public void RunCPPTestromsHexStrTest(CPPTestromsHexStrTestCase testCase)
 		{
 			static bool GlyphMatches(Bitmap b, int xOffset, int yOffset, byte v)
