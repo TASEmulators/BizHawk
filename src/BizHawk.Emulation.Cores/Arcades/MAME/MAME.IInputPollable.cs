@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					// however, mame sometimes has the minimum be "larger" as a way to indicate signed logic
 					if (min > max)
 					{
-						if (def == 0)
+						if (min > 0 && def == 0)
 						{
 							min = -min;
 						}
