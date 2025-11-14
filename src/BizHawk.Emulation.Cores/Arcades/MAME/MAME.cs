@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"for tag, _ in pairs(manager.machine.ioport.ports) do " +
 					"for name, field in pairs(manager.machine.ioport.ports[tag].fields) do " +
 						"if field.type_class ~= \"dipswitch\" and field.is_analog then " +
-							"table.insert(final, string.format(\"%s,%s,%d,%d,%d;\", tag, name, field.defvalue, field.minvalue, field.maxvalue)) " +
+							"table.insert(final, string.format(\"%s,%s,%d,%d,%d,%d;\", tag, name, field.defvalue, field.minvalue, field.maxvalue, field.mask)) " +
 						"end " +
 					"end " +
 				"end " +

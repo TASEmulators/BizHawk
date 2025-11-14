@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -20,6 +21,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private IntPtr[] _fieldPtrs;
 		private int[] _fieldInputs;
 
+		// negative min value seems to be represented as positive in mame
+		// which needs to be used in combination with the mask.
+		// for example, Top Landing has ranges like 0x800 - 0 - 0x7ff and mask 0xfff
+		// all positive internally but the internal negative value appears as (mask - value).
+		// when sending those back to the core we have to convert them back
+		private Dictionary<string, int> _wildAxes = [ ];
+
 		private void GetInputFields()
 		{
 			var buttonFields = MameGetString(MAMELuaCommand.GetButtonFields).Split(';');
@@ -29,9 +37,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			var analogFieldList = new List<string>();
 			var fieldPtrList = new List<IntPtr>();
 			var axes = new Dictionary<string, AxisSpec>();
-			var fieldsTagsList = new List<Tuple<string, string, AxisSpec?>>();
+			var fieldsTagsList = new List<Tuple<string, string, AxisSpec?, bool, int>>();
 
-			void AddFieldPtr(string tag, string @field, AxisSpec? axis = null)
+			void AddFieldPtr(
+				string tag,
+				string @field,
+				AxisSpec? axis = null,
+				bool isWild = false,
+				int mask = 0
+			)
 			{
 				var ptr = _core.mame_input_get_field_ptr(tag, @field);
 
@@ -42,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 
 				fieldPtrList.Add(ptr);
-				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?>(@field, tag, axis));
+				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?, bool, int>(@field, tag, axis, isWild, mask));
 			}
 
 			MAMEController.BoolButtons.Add("Reset");
@@ -67,7 +81,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					var def = int.Parse(keys[2]);
 					var min = int.Parse(keys[3]);
 					var max = int.Parse(keys[4]);
-					AddFieldPtr(tag, @field, new AxisSpec(min.RangeTo(max), def));
+					var mask = int.Parse(keys[5]);
+					var isWild = min > def;
+
+					if (isWild)
+					{
+						min -= mask;
+					}
+
+					AddFieldPtr(tag, @field, new AxisSpec(min.RangeTo(max), def), isWild, mask);
 				}
 			}
 
@@ -76,10 +98,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var @field = entry.Item1;
 				var tag = entry.Item2;
 				var axis = entry.Item3;
+				var isWild = entry.Item4;
+				var mask = entry.Item5;
+				var combined = $"{@field} [{tag}]";
 
 				if (fieldsTagsList.Where(e => e.Item1 == @field).Skip(1).Any())
 				{
-					@field = $"{@field} [{tag}]";
+					@field = combined;
+				}
+
+				if (isWild)
+				{
+					_wildAxes.Add(@field, mask);
 				}
 
 				if (axis == null)
@@ -114,10 +144,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_fieldInputs[i] = controller.IsPressed(_buttonFields[i]) ? 1 : 0;
 			}
 
+			var analogs = "";
+
 			for (var i = 0; i < _analogFields.Length; i++)
 			{
-				_fieldInputs[_buttonFields.Length + i] = controller.AxisValue(_analogFields[i]);
+				var value = controller.AxisValue(_analogFields[i]);
+				var axis = controller.Definition.Axes.First(a => a.Key == _analogFields[i]).Value;
+
+				if (value < axis.Neutral && _wildAxes.TryGetValue(_analogFields[i], out int mask))
+				{
+					value += mask;
+				}
+
+				_fieldInputs[_buttonFields.Length + i] = value;
+
+				analogs += value.ToHexString(4) + " ";
 			}
+
+			Console.WriteLine(analogs);
 
 			_core.mame_input_set_fields(_fieldPtrs, _fieldInputs, _fieldInputs.Length);
 
