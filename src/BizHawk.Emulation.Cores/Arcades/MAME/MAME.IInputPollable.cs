@@ -18,15 +18,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private string[] _buttonFields;
 		private string[] _analogFields;
+		private Dictionary<string, int> _analogMasks;
 		private IntPtr[] _fieldPtrs;
 		private int[] _fieldInputs;
-
-		// negative min value seems to be represented as positive in mame
-		// which needs to be used in combination with the mask.
-		// for example, Top Landing has ranges like 0x800 - 0 - 0x7ff and mask 0xfff
-		// all positive internally but the internal negative value appears as (mask - value).
-		// when sending those back to the core we have to convert them back
-		private Dictionary<string, int> _wildAxes = [ ];
 
 		private void GetInputFields()
 		{
@@ -35,15 +29,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			var buttonFieldList = new List<string>();
 			var analogFieldList = new List<string>();
+			var analogMaskDict = new Dictionary<string, int>();
 			var fieldPtrList = new List<IntPtr>();
-			var axes = new Dictionary<string, AxisSpec>();
-			var fieldsTagsList = new List<Tuple<string, string, AxisSpec?, bool, int>>();
+			var fieldsTagsList = new List<Tuple<string, string, AxisSpec?, int>>();
 
 			void AddFieldPtr(
 				string tag,
 				string @field,
 				AxisSpec? axis = null,
-				bool isWild = false,
 				int mask = 0
 			)
 			{
@@ -56,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				}
 
 				fieldPtrList.Add(ptr);
-				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?, bool, int>(@field, tag, axis, isWild, mask));
+				fieldsTagsList.Add(new Tuple<string, string, AxisSpec?, int>(@field, tag, axis, mask));
 			}
 
 			MAMEController.BoolButtons.Add("Reset");
@@ -82,14 +75,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					var min = int.Parse(keys[3]);
 					var max = int.Parse(keys[4]);
 					var mask = int.Parse(keys[5]);
-					var isWild = min > def;
 
-					if (isWild)
+					// we expect the minimum to be actually be smaller than the maximum
+					// however, mame sometimes has the minimum be "larger" as a way to indicate signed logic
+					if (min > max)
 					{
-						min -= mask;
+						if (def == 0)
+						{
+							min = -min;
+						}
+						else
+						{
+							// not sure what to actually do in this case
+							// throw until we have an example of games having non-0 def with min > max
+							throw new Exception("Fatal error: Minimum is greater than maximum with non-0 default for analog field, please report");
+						}
 					}
 
-					AddFieldPtr(tag, @field, new AxisSpec(min.RangeTo(max), def), isWild, mask);
+					AddFieldPtr(tag, @field, new AxisSpec(min.RangeTo(max), def), mask);
 				}
 			}
 
@@ -98,18 +101,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				var @field = entry.Item1;
 				var tag = entry.Item2;
 				var axis = entry.Item3;
-				var isWild = entry.Item4;
-				var mask = entry.Item5;
+				var mask = entry.Item4;
 				var combined = $"{@field} [{tag}]";
 
 				if (fieldsTagsList.Where(e => e.Item1 == @field).Skip(1).Any())
 				{
 					@field = combined;
-				}
-
-				if (isWild)
-				{
-					_wildAxes.Add(@field, mask);
 				}
 
 				if (axis == null)
@@ -120,12 +117,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				else
 				{
 					analogFieldList.Add(@field);
+					analogMaskDict.Add(@field, mask);
 					MAMEController.AddAxis(@field, axis.Value.Range, axis.Value.Neutral);
 				}
 			}
 
 			_buttonFields = buttonFieldList.ToArray();
 			_analogFields = analogFieldList.ToArray();
+			_analogMasks = analogMaskDict;
 			_fieldPtrs = fieldPtrList.ToArray();
 			_fieldInputs = new int[_fieldPtrs.Length];
 
@@ -148,16 +147,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			for (var i = 0; i < _analogFields.Length; i++)
 			{
-				var value = controller.AxisValue(_analogFields[i]);
-				var axis = controller.Definition.Axes.First(a => a.Key == _analogFields[i]).Value;
-
-				if (value < axis.Neutral && _wildAxes.TryGetValue(_analogFields[i], out int mask))
-				{
-					value += mask;
-				}
-
+				var analogField = _analogFields[i];
+				var value = controller.AxisValue(analogField);
+				value &= _analogMasks[analogField];
 				_fieldInputs[_buttonFields.Length + i] = value;
-
 				analogs += value.ToHexString(4) + " ";
 			}
 
