@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
 		private string _driverSourceFile = "";
-		private string _loadFailure = string.Empty;
+		private string _loadFailure = "";
 		private byte[] _configFile;
 
 		public string RomDetails { get; set; }

@@ -26,10 +26,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public DSDA(CoreLoadParameters<DoomSettings, DoomSyncSettings> lp)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+			Comm = lp.Comm;
 			_finalSyncSettings = _syncSettings = lp.SyncSettings ?? new DoomSyncSettings();
 			_settings = lp.Settings ?? new DoomSettings();
-			Comm = lp.Comm;
 			_loadCallback = LoadCallback;
+			_errorCallback = ErrorCallback;
 
 			// Gathering information for the rest of the wads
 			_wadFiles = lp.Roms;
@@ -48,12 +49,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (foundIWAD)
 					{
 						throw new ArgumentException(
-							$"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{iwadName}' was already provided",
+							$"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{_iwadName}' was already provided",
 							paramName: nameof(lp));
 					}
 
-					iwadName = wadFile.RomPath;
-					iwadData = wadFile.RomData;
+					_iwadName = wadFile.RomPath;
+					_iwadData = wadFile.RomData;
 					foundIWAD = true;
 					recognized = true;
 				}
@@ -74,18 +75,18 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			// Check at least one IWAD was provided
 			if (!foundIWAD)
 			{
-				iwadData = lp.Comm.CoreFileProvider.GetFirmware(
+				_iwadData = lp.Comm.CoreFileProvider.GetFirmware(
 					new(VSystemID.Raw.Doom, "Doom2_IWAD"));
 
-				if (iwadData == null)
+				if (_iwadData == null)
 				{
 					throw new ArgumentException(
 						"No IWAD file provided",
 						paramName: nameof(lp));
 				}
 
-				_ = FirmwareDatabase.FirmwareFilesByHash.TryGetValue(SHA1Checksum.ComputeDigestHex(iwadData), out var ff);
-				iwadName = ff.RecommendedName;
+				_ = FirmwareDatabase.FirmwareFilesByHash.TryGetValue(SHA1Checksum.ComputeDigestHex(_iwadData), out var ff);
+				_iwadName = ff.RecommendedName;
 			}
 
 			// Getting dsda-doom.wad -- required by DSDA
@@ -98,9 +99,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				totalWadSize += wadFile.FileData.Length;
 			}
 			int totalWadSizeKb = (totalWadSize / 1024) + 1;
-			if (!string.IsNullOrEmpty(iwadName))
+			if (!string.IsNullOrEmpty(_iwadName))
 			{
-				totalWadSizeKb += iwadData.Length / 1024;
+				totalWadSizeKb += _iwadData.Length / 1024;
 			}
 			Console.WriteLine($"Reserving {totalWadSizeKb}kb for WAD file memory");
 
@@ -173,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _randomCallback
+					_loadCallback, _randomCallback, _errorCallback
 				], _elf);
 
 				using (_elf.EnterExit())
@@ -184,11 +185,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					_core.dsda_add_wad_file(_dsdaWadFileName, _dsdaWadFileData.Length, _loadCallback);
 
 					// Adding IWAD file
-					_gameMode = _core.dsda_add_wad_file(iwadName, iwadData.Length, _loadCallback);
+					_gameMode = _core.dsda_add_wad_file(_iwadName, _iwadData.Length, _loadCallback);
 					if (_gameMode is LibDSDA.GameMode.Fail)
 					{
 						throw new ArgumentException(
-							$"Could not load IWAD file: '{iwadName}'",
+							$"Could not load IWAD file: '{_iwadName}'",
 							paramName: nameof(lp));
 					}
 
@@ -210,6 +211,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					initSettings.DisplayPlayer = _settings.DisplayPlayer - 1;
 					CreateArguments(initSettings);
 
+					_core.dsda_set_error_callback(_errorCallback);
+
 					var initResult = _core.dsda_init(ref initSettings, _args.Count, _args.ToArray());
 					if (!initResult)
 					{
@@ -223,9 +226,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 					// db stores md5 for detection but it's nice to show both to user
 					RomDetails = lp.Game.Name +
-						$"\r\n\r\nIWAD: {Path.GetFileName(iwadName.SubstringAfter('|'))}" +
-						$"\r\n{SHA1Checksum.ComputePrefixedHex(iwadData)}" +
-						$"\r\n{MD5Checksum.ComputePrefixedHex(iwadData)}";
+						$"\r\n\r\nIWAD: {Path.GetFileName(_iwadName.SubstringAfter('|'))}" +
+						$"\r\n{SHA1Checksum.ComputePrefixedHex(_iwadData)}" +
+						$"\r\n{MD5Checksum.ComputePrefixedHex(_iwadData)}";
 
 					if (_pwadFiles.Count > 0)
 					{
@@ -338,10 +341,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly LibDSDA.load_archive_cb _loadCallback;
 		private readonly byte[] _dsdaWadFileData;
 		private readonly byte[] _configFile;
+		private readonly int[] _runSpeeds = [ 25, 50 ];
+		private readonly int[] _strafeSpeeds = [ 24, 40 ];
+		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
+		private readonly string _dsdaWadFileName = "dsda-doom.wad";
+
 		// order must match AspectRatio values since they're used as index
 		private readonly Point[][] _resolutions =
 		[
-			// we want to support 1x widescreen so internal scale is universal,
+			// we want to support 1x widescreen so that internal scale is universal,
 			// but lowest widescreen multiple of native height (corrected or not) is 1280x720.
 			// it doesn't divide nicely so we have to use
 			// artificial lowres replacements that aren't exactly 16:9 or 16:10.
@@ -353,13 +361,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[ new(426, 256), new(854, 512), new(1280, 768) ],
 			[ new(320, 240) ],
 		];
-		private readonly int[] _runSpeeds = [ 25, 50 ];
-		private readonly int[] _strafeSpeeds = [ 24, 40 ];
-		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
-		private readonly string _dsdaWadFileName = "dsda-doom.wad";
-		private byte[] iwadData = Array.Empty<byte>();
-		private string iwadName = "";
 
+		private string _iwadName = "";
+		private byte[] _iwadData = Array.Empty<byte>();
 		private int[] _turnHeld = [ 0, 0, 0, 0 ];
 		private int _turnCarry; // Chocolate Doom mouse behaviour (enabled in upstream by default)
 		private bool _lastGammaInput;
@@ -368,10 +372,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
+		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<int>> RandomCallbacks = [ ];
-
 		public string RomDetails { get; } // IRomInfo
+
+		private void ErrorCallback(string error)
+		{
+			throw new Exception($"\n\n{error}\n");
+		}
 
 		/// <summary>
 		/// core callback for file loading
@@ -400,14 +409,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				srcdata = _dsdaWadFileData;
 			}
 
-			if (filename == iwadName)
+			if (filename == _iwadName)
 			{
-				if (iwadData == null)
+				if (_iwadData == null)
 				{
-					Console.WriteLine($"Could not read from WAD file '{iwadName}'");
+					Console.WriteLine($"Could not read from WAD file '{_iwadName}'");
 					return 0;
 				}
-				srcdata = iwadData;
+				srcdata = _iwadData;
 			}
 
 			foreach (var wadFile in _wadFiles)
