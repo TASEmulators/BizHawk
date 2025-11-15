@@ -31,7 +31,6 @@
 
 		/// <param name="msg">exception message to show on failure</param>
 		/// <exception cref="MissingFirmwareException">if not found</exception>
-		/// <remarks>only used in PCEHawk</remarks>
 		(byte[] FW, GameInfo Game) GetFirmwareWithGameInfoOrThrow(FirmwareID id, string? msg = null);
 	}
 }

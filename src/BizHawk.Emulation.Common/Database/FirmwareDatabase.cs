@@ -198,6 +198,9 @@ namespace BizHawk.Emulation.Common
 			// Coleco
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "Coleco_Bios.bin", "Bios");
 
+			// Doom
+			FirmwareAndOption("7EC7652FCFCE8DDC6E801839291F0E28EF1D5AE7", 14604584, "Doom", "Doom2_IWAD", "doom2.wad", "Base game for Doom 2 PWADs");
+
 			// GBA
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "GBA_bios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "GBA_bios_Debug-(J).rom", "Bios (J Debug)");
