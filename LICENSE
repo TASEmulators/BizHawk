@@ -1,21 +1,199 @@
-This repository contains original work chiefly in c# by the BizHawk team (which is all provided under the MIT License), embedded submodules from other authors with their own licenses clearly provided, other embedded submodules from other authors WITHOUT their own licenses clearly provided, customizations by the BizHawk team to many of those submodules (which is provided under the MIT license), and compiled binary executable modules from other authors without their licenses OR their origins clearly indicated.
+BizHawkRafaelia LICENSE AND ATTRIBUTION NOTICE
+==============================================
 
-Due to the high degree of licensing heterogeneity of this repository and the nature of some of the licenses contained therein, its condition as-is should be considered an illegal combination of several incompatible GPL licenses.
+This is BizHawkRafaelia, a customized fork of BizHawk maintained by Rafael Melo Reis.
 
-However, if many of the C/C++ emulation cores were removed, the result would be an almost pristine MIT-licensed work. We are therefore providing this repository "under the MIT license" with the expectation that the c# parts of the remaining "frontend" elements authored the BizHawk team is what will be of interest to most people; and besides, those elements constitute the bulk of the original work.
+IMPORTANT: This repository contains code under MULTIPLE LICENSES. Read carefully.
 
-In short, individuals with a keen interest in the licensing details of any portion of this repository should contact us or else assume it is a minefield.
+LICENSE STRUCTURE:
+-----------------
 
---------------------------
-All of the BizHawk team's original work is provided under this license:
---------------------------
+1. ORIGINAL BIZHAWK WORK (C# Frontend and Supporting Libraries)
+   - License: MIT License (see below)
+   - Copyright: BizHawk team
+   - Location: Primarily in /src directory
+
+2. BIZHAWKRAFAELIA CUSTOMIZATIONS
+   - License: MIT License (see below)
+   - Copyright: Rafael Melo Reis and contributors
+   - Additions: Optimizations, documentation, and custom features
+
+3. EMULATION CORES AND THIRD-PARTY COMPONENTS
+   - Various licenses including:
+     * GNU General Public License v2.0 (GPL-2.0)
+     * GNU General Public License v3.0 (GPL-3.0)
+     * BSD Licenses (various)
+     * LGPL (Lesser GNU General Public License)
+     * MIT License
+     * Custom licenses with restrictions
+   - See ATTRIBUTIONS.md for complete list with specific locations
+
+CRITICAL LICENSE COMPLIANCE INFORMATION:
+---------------------------------------
+
+Due to the high degree of licensing heterogeneity, this repository contains components 
+under incompatible licenses (particularly GPL-2.0, GPL-3.0, and non-commercial licenses).
+
+DISTRIBUTION REQUIREMENTS:
+- If you distribute this software, you MUST comply with ALL applicable licenses
+- GPL-licensed components require source code distribution
+- Some components prohibit commercial use
+- See ATTRIBUTIONS.md for detailed compliance requirements
+
+RECOMMENDED READING:
+- CONTRIBUTORS.md - All project contributors and attributions
+- ATTRIBUTIONS.md - Detailed license information for each component
+- REFERENCES.md - Bibliographic references and inspirations
+
+For detailed licensing of specific components, check:
+- Individual LICENSE files in component directories
+- ATTRIBUTIONS.md for comprehensive license mapping
+
+This project maintains the STRICTEST STANDARDS for attribution and license compliance,
+exceeding legal minimums to ensure proper recognition of all contributors and respect
+for all licenses.
+
+================================================
+MIT LICENSE - BizHawk Team Original Work
+================================================
 
 MIT License
 
 Copyright (c) BizHawk team
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this 
+software and associated documentation files (the "Software"), to deal in the Software 
+without restriction, including without limitation the rights to use, copy, modify, 
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to 
+permit persons to whom the Software is furnished to do so, subject to the following 
+conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies 
+or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+================================================
+MIT LICENSE - BizHawkRafaelia Customizations
+================================================
+
+MIT License
+
+Copyright (c) 2025 Rafael Melo Reis and BizHawkRafaelia contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this 
+software and associated documentation files (the "Software"), to deal in the Software 
+without restriction, including without limitation the rights to use, copy, modify, 
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to 
+permit persons to whom the Software is furnished to do so, subject to the following 
+conditions:
+
+The above copyright notice and this permission notice shall be included in all copies 
+or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+================================================
+GNU GENERAL PUBLIC LICENSE COMPLIANCE NOTICE
+================================================
+
+Many emulation cores in this repository are licensed under various versions of the 
+GNU General Public License (GPL):
+
+GPL-2.0 COMPONENTS:
+- Mupen64Plus (Nintendo 64)
+- Gambatte (Game Boy/Color)
+- Mednafen cores (various systems)
+- MAME arcade cores
+- Cygne (WonderSwan)
+- Handy (Atari Lynx)
+- Various sound chip implementations
+
+GPL-3.0 COMPONENTS:
+- BSNES (Super Nintendo)
+- melonDS (Nintendo DS/DSi)
+- Encore/Panda3DS (Nintendo 3DS)
+- Virtual Jaguar (Atari Jaguar)
+
+LGPL COMPONENTS:
+- blip_buf audio library
+- OpenAL (audio)
+- Various supporting libraries
+
+GPL COMPLIANCE REQUIREMENTS:
+1. Source code must be provided for all GPL-licensed components
+2. Modifications to GPL code must be released under GPL
+3. GPL license text must be included with distribution
+4. Copyright notices must be preserved
+5. User rights under GPL cannot be restricted
+
+For complete GPL license texts, see:
+- GPL-2.0: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+- GPL-3.0: https://www.gnu.org/licenses/gpl-3.0.html
+- LGPL: https://www.gnu.org/licenses/lgpl.html
+
+Or find GPL license files in respective component directories.
+
+================================================
+OTHER LICENSES
+================================================
+
+This repository also contains components under:
+- BSD Licenses (2-clause, 3-clause, modified)
+- Mozilla Public License 2.0 (MPL-2.0) - mGBA
+- ISC License - Ares64
+- Apache License 2.0 - FlatBuffers
+- zlib License - SDL2, zlib, and others
+- Custom licenses with specific restrictions
+
+COMPLETE COMPONENT LICENSE MAPPING:
+See ATTRIBUTIONS.md for comprehensive license details of each component.
+
+================================================
+NO WARRANTY
+================================================
+
+ALL COMPONENTS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+See individual license files for complete warranty disclaimers.
+
+================================================
+CONTACT AND COMPLIANCE QUESTIONS
+================================================
+
+For licensing questions or compliance concerns:
+- Review ATTRIBUTIONS.md for detailed information
+- Check component-specific LICENSE files
+- Open an issue at: https://github.com/rafaelmeloreisnovo/BizHawkRafaelia/issues
+- Consult legal counsel for commercial or redistribution scenarios
+
+================================================
+ATTRIBUTION REQUIREMENTS
+================================================
+
+When using, modifying, or distributing this software:
+1. Include this LICENSE file
+2. Include CONTRIBUTORS.md
+3. Include ATTRIBUTIONS.md
+4. Respect all component licenses
+5. Maintain all copyright notices
+6. Provide proper attribution in derivative works
+
+BizHawkRafaelia maintains attribution standards that EXCEED legal requirements
+to ensure proper recognition of all contributors and upstream projects.
+
+================================================
+
+Last Updated: 2025-11-16
+Project: BizHawkRafaelia
+Maintainer: Rafael Melo Reis
+Upstream: BizHawk by TASEmulators

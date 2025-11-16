@@ -1,0 +1,54 @@
+/*
+ * ===========================================================================
+ * BizHawkRafaelia - Multi-System Emulator
+ * ===========================================================================
+ * 
+ * This file is part of BizHawkRafaelia, a customized fork of BizHawk.
+ * 
+ * Copyright (c) 2025 Rafael Melo Reis and contributors
+ * Copyright (c) BizHawk team (original work)
+ * 
+ * BizHawkRafaelia: https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ * Original BizHawk: https://github.com/TASEmulators/BizHawk
+ * 
+ * ---------------------------------------------------------------------------
+ * LICENSE INFORMATION
+ * ---------------------------------------------------------------------------
+ * 
+ * This component is licensed under: [SPECIFY LICENSE HERE]
+ * 
+ * Available licenses in this project:
+ * - MIT License (BizHawk core and BizHawkRafaelia customizations)
+ * - GPL-2.0 (various emulation cores)
+ * - GPL-3.0 (BSNES, melonDS, etc.)
+ * - BSD licenses (various)
+ * - See ATTRIBUTIONS.md for complete license information
+ * 
+ * ---------------------------------------------------------------------------
+ * ATTRIBUTION
+ * ---------------------------------------------------------------------------
+ * 
+ * Original Author(s): [SPECIFY ORIGINAL AUTHORS]
+ * Modified by: [YOUR NAME] - [DESCRIPTION OF CHANGES]
+ * Date: [DATE]
+ * 
+ * If this code is derived from another project:
+ * - Original Project: [PROJECT NAME]
+ * - Original License: [LICENSE]
+ * - Original Author: [AUTHOR]
+ * - Modifications: [DESCRIPTION]
+ * 
+ * ---------------------------------------------------------------------------
+ * DOCUMENTATION
+ * ---------------------------------------------------------------------------
+ * 
+ * [Brief description of what this file does]
+ * 
+ * References:
+ * - [Any technical documentation or references]
+ * 
+ * See REFERENCES.md for bibliographic references
+ * See CONTRIBUTORS.md for full list of contributors
+ * 
+ * ===========================================================================
+ */

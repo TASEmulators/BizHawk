@@ -1,6 +1,30 @@
-# BizHawk
+# BizHawkRafaelia
 
-An emulation project.
+A customized fork of BizHawk with enhanced documentation and optimization focus.
+
+**Maintainer**: Rafael Melo Reis  
+**Upstream**: [BizHawk by TASEmulators](https://github.com/TASEmulators/BizHawk)
+
+## About This Fork
+
+BizHawkRafaelia is a specialized fork of BizHawk that emphasizes:
+- **Strict attribution and licensing compliance** - exceeding legal requirements
+- **Comprehensive documentation** - detailed contributor and license information
+- **Unified code structure** - centralized includes and dependencies
+- **Performance optimization** - refined engines for better execution time
+- **Bibliographic references** - acknowledging all inspirations and sources
+
+### Key Documentation
+
+**IMPORTANT**: Before using or contributing, please review:
+- [**CONTRIBUTORS.md**](CONTRIBUTORS.md) - Complete list of all contributors
+- [**ATTRIBUTIONS.md**](ATTRIBUTIONS.md) - Detailed third-party licenses and compliance
+- [**REFERENCES.md**](REFERENCES.md) - Bibliographic references and inspirations
+- [**LICENSE**](LICENSE) - Multi-license structure explained
+- [**UNIFIED_STRUCTURE.md**](UNIFIED_STRUCTURE.md) - Code organization guidelines
+- [**OPTIMIZATION.md**](OPTIMIZATION.md) - Performance optimization guidelines
+
+## Original BizHawk Description
 
 EmuHawk is a multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners). More info [below](#features-and-systems).
 
@@ -466,6 +490,67 @@ Not available. Contact YoshiRulz on Discord or [elsewhere](https://yoshirulz.dev
 EmuHawk and DiscoHawk can be used by anyone for any purpose allowed by the permissive *MIT License* (Expat). The [full text](https://github.com/TASEmulators/BizHawk/blob/master/LICENSE) is very short.
 
 Any developers looking to re-use code from BizHawk in their own work should understand which files the license applies to. It's included in the text, but tl;dr: anything outside `/src` isn't ours and we can't give you permission to share, use, or sell it. That means not all the files included with BizHawk *releases or dev builds* are free to share, either.
+
+## BizHawkRafaelia-Specific Features
+
+This fork adds:
+
+### Enhanced Documentation
+* **[CONTRIBUTORS.md](CONTRIBUTORS.md)** - Comprehensive contributor attribution
+* **[ATTRIBUTIONS.md](ATTRIBUTIONS.md)** - Detailed third-party license tracking
+* **[REFERENCES.md](REFERENCES.md)** - Complete bibliographic references
+* **[UNIFIED_STRUCTURE.md](UNIFIED_STRUCTURE.md)** - Code organization standards
+* **[OPTIMIZATION.md](OPTIMIZATION.md)** - Performance optimization guidelines
+
+### Strict License Compliance
+* Exceeds legal requirements for attribution
+* Explicit GNU GPL compliance documentation
+* Clear component license mapping
+* Detailed contribution requirements
+
+### Code Organization
+* Unified header templates for C/C++ and C#
+* Centralized include structure guidelines
+* Consistent attribution standards
+* Clear dependency documentation
+
+### Optimization Focus
+* Performance optimization guidelines
+* Engine refinement documentation
+* Stability improvement strategies
+* Cross-platform compatibility emphasis
+
+### How to Use This Documentation
+
+**For Users**:
+- Review [LICENSE](LICENSE) to understand the multi-license structure
+- Check [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for specific component licenses
+
+**For Contributors**:
+- Read [UNIFIED_STRUCTURE.md](UNIFIED_STRUCTURE.md) before adding code
+- Use provided header templates for new files
+- Follow [OPTIMIZATION.md](OPTIMIZATION.md) for performance work
+- Update [CONTRIBUTORS.md](CONTRIBUTORS.md) with your contributions
+
+**For Redistributors**:
+- Comply with ALL licenses listed in [ATTRIBUTIONS.md](ATTRIBUTIONS.md)
+- Include all documentation files
+- Respect GPL source code requirements
+- Maintain attribution standards
+
+### Upstream Compatibility
+
+BizHawkRafaelia maintains compatibility with upstream BizHawk while adding enhanced documentation and organization. Changes are focused on:
+- Documentation improvements
+- License compliance
+- Code organization
+- Performance guidelines
+
+Core emulation functionality remains compatible with upstream BizHawk.
+
+[to top](#bizhawkrafaelia)
+
+## Original BizHawk License Information
 
 Disclaimer time! Can't have emulation software without a disclaimer...
 > Following the terms of our license does not make you immune from other contracts or laws.
