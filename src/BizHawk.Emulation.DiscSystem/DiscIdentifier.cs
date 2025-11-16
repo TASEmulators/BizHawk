@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using ISOParser;
 
