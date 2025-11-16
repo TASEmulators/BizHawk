@@ -213,6 +213,8 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 						case RecordDeclarationSyntax rds when rds.ClassOrStructKeyword.ToString() is not "class": // `record struct`s don't use this kind
 							DiagRecordImplicitlyRefType.ReportAt(rds.Keyword, snac);
 							break;
+						case RecordDeclarationSyntax: // else correct usage, do not flag
+							break;
 						case SwitchExpressionArmSyntax { WhenClause: null, Pattern: DiscardPatternSyntax, Expression: ThrowExpressionSyntax tes }:
 							var thrownExceptionType = snac.SemanticModel.GetThrownExceptionType(tes);
 							if (thrownExceptionType is null)
@@ -225,6 +227,8 @@ public class HawkSourceAnalyzer : DiagnosticAnalyzer
 							}
 							// else correct usage, do not flag
 							break;
+						case SwitchExpressionArmSyntax:
+							break; // per above
 					}
 				},
 				SyntaxKind.AnonymousObjectCreationExpression,

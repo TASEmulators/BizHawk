@@ -24,7 +24,7 @@ public sealed class NoNullEventArgsAnalyzer : DiagnosticAnalyzer
 		context.EnableConcurrentExecution();
 		context.RegisterCompilationStartAction(initContext =>
 		{
-			var eventArgsClassSym = initContext.Compilation.GetTypeByMetadataName(typeof(EventArgs).FullName)!;
+			var eventArgsClassSym = initContext.Compilation.GetTypeByMetadataName(typeof(EventArgs).FullName!)!;
 			initContext.RegisterOperationAction(
 				oac =>
 				{

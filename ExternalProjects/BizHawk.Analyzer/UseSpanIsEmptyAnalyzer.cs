@@ -79,7 +79,7 @@ public sealed class UseSpanIsEmptyAnalyzer : DiagnosticAnalyzer
 							}
 							if (!TryGetConstExprValue(sentinelOp, out maybeConstExpr)) return;
 							break;
-						case IIsPatternOperation { Pattern: var pattern } patternOp:
+						case IIsPatternOperation { Pattern: var pattern }:
 							var negated = false;
 							if (pattern is INegatedPatternOperation negPatternOp)
 							{

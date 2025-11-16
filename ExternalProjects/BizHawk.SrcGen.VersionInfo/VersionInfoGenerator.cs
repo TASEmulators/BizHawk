@@ -37,7 +37,7 @@ public class VersionInfoGenerator : IIncrementalGenerator
 #endif
 	}
 
-	public void Execute(SourceProductionContext context, Compilation compilation)
+	private static void Execute(SourceProductionContext context, Compilation compilation)
 	{
 		// Finds the current project directory in order to pass to git commands.
 		// This is written in a way to (hopefully) work both for build and IDE analyzers

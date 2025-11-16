@@ -10,7 +10,7 @@ public sealed class ReflectionCacheGenerator : IIncrementalGenerator
 			context.AnalyzerConfigOptionsProvider.Combine(context.ParseOptionsProvider).Combine(context.CompilationProvider),
 			Execute);
 
-	public void Execute(
+	private static void Execute(
 		SourceProductionContext context,
 		((AnalyzerConfigOptionsProvider Config, ParseOptions ParseOptions) More, Compilation Compilation) providers)
 	{

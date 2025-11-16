@@ -71,14 +71,14 @@ public class DefaultSetterGenerator : IIncrementalGenerator
 ");
 	}
 
-	public void Execute(
+	private static void Execute(
 		SourceProductionContext context,
 		(Compilation Compilation, ImmutableArray<TestType> ClassDeclarations) value)
 	{
 		var (compilation, classDeclarations) = value;
 		var consumerAttrSym = compilation.GetTypeByMetadataName("BizHawk.Emulation.Common.CoreSettingsAttribute");
 		if (consumerAttrSym is null) return;
-		var clsCompliantAttrSym = compilation.GetTypeByMetadataName(typeof(CLSCompliantAttribute).FullName)!;
+		var clsCompliantAttrSym = compilation.GetTypeByMetadataName(typeof(CLSCompliantAttribute).FullName!)!;
 
 		// Generated source code
 		var source = new StringBuilder(@"

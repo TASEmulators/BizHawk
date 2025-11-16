@@ -63,51 +63,49 @@ public static class RoslynUtils
 				: WellKnownMemberNames.CheckedExplicitConversionName;
 
 	public static string GetMethodName(this OperatorDeclarationSyntax ods)
-		=> ods.OperatorToken.ToString() switch
+		=> /*SyntaxFacts.GetText(ods.OperatorToken.Kind())*/ods.OperatorToken.ToString() switch
 		{
-			"!" => WellKnownMemberNames.LogicalNotOperatorName,
-			"!=" => WellKnownMemberNames.InequalityOperatorName,
-			"%" => WellKnownMemberNames.ModulusOperatorName,
-			"&" => WellKnownMemberNames.BitwiseAndOperatorName,
-			"&&" => WellKnownMemberNames.LogicalAndOperatorName,
-			"*" => ods.CheckedKeyword.IsEmpty()
+			CSharpOperatorSigils.UnaryBoolInv => WellKnownMemberNames.LogicalNotOperatorName,
+			CSharpOperatorSigils.BinaryNeq => WellKnownMemberNames.InequalityOperatorName,
+			CSharpOperatorSigils.BinaryMod => WellKnownMemberNames.ModulusOperatorName,
+			CSharpOperatorSigils.BinaryBitAnd => WellKnownMemberNames.BitwiseAndOperatorName,
+			CSharpOperatorSigils.BinaryLazyAnd => WellKnownMemberNames.LogicalAndOperatorName,
+			CSharpOperatorSigils.BinaryMul => ods.CheckedKeyword.IsEmpty()
 				? WellKnownMemberNames.MultiplyOperatorName
 				: WellKnownMemberNames.CheckedMultiplyOperatorName,
-			"+" => ods.ParameterList.Parameters.Count is 1
-				? WellKnownMemberNames.UnaryPlusOperatorName
-				: ods.CheckedKeyword.IsEmpty()
-					? WellKnownMemberNames.AdditionOperatorName
-					: WellKnownMemberNames.CheckedAdditionOperatorName,
-			"++" => ods.CheckedKeyword.IsEmpty()
+			CSharpOperatorSigils.UnaryPlus when ods.ParameterList.Parameters.Count is 1 => WellKnownMemberNames.UnaryPlusOperatorName,
+			CSharpOperatorSigils.BinaryAdd => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.AdditionOperatorName
+				: WellKnownMemberNames.CheckedAdditionOperatorName,
+			CSharpOperatorSigils.UnaryIncr => ods.CheckedKeyword.IsEmpty()
 				? WellKnownMemberNames.IncrementOperatorName
 				: WellKnownMemberNames.CheckedIncrementOperatorName,
-			"-" => ods.ParameterList.Parameters.Count is 1
-				? ods.CheckedKeyword.IsEmpty()
-					? WellKnownMemberNames.UnaryNegationOperatorName
-					: WellKnownMemberNames.CheckedUnaryNegationOperatorName
-				: ods.CheckedKeyword.IsEmpty()
-					? WellKnownMemberNames.SubtractionOperatorName
-					: WellKnownMemberNames.CheckedSubtractionOperatorName,
-			"--" => ods.CheckedKeyword.IsEmpty()
+			CSharpOperatorSigils.UnaryNumNeg when ods.ParameterList.Parameters.Count is 1 => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.UnaryNegationOperatorName
+				: WellKnownMemberNames.CheckedUnaryNegationOperatorName,
+			CSharpOperatorSigils.BinarySub => ods.CheckedKeyword.IsEmpty()
+				? WellKnownMemberNames.SubtractionOperatorName
+				: WellKnownMemberNames.CheckedSubtractionOperatorName,
+			CSharpOperatorSigils.UnaryDecr => ods.CheckedKeyword.IsEmpty()
 				? WellKnownMemberNames.DecrementOperatorName
 				: WellKnownMemberNames.CheckedDecrementOperatorName,
-			"/" => ods.CheckedKeyword.IsEmpty()
+			CSharpOperatorSigils.BinaryDiv => ods.CheckedKeyword.IsEmpty()
 				? WellKnownMemberNames.DivisionOperatorName
 				: WellKnownMemberNames.CheckedDivisionOperatorName,
-			"<" => WellKnownMemberNames.LessThanOperatorName,
-			"<<" => WellKnownMemberNames.LeftShiftOperatorName,
-			"<=" => WellKnownMemberNames.LessThanOrEqualOperatorName,
-			"==" => WellKnownMemberNames.EqualityOperatorName,
-			">" => WellKnownMemberNames.GreaterThanOperatorName,
-			">=" => WellKnownMemberNames.GreaterThanOrEqualOperatorName,
-			">>" => WellKnownMemberNames.RightShiftOperatorName,
-			">>>" => WellKnownMemberNames.UnsignedRightShiftOperatorName,
-			"^" => WellKnownMemberNames.ExclusiveOrOperatorName,
-			"false" => WellKnownMemberNames.FalseOperatorName,
-			"true" => WellKnownMemberNames.TrueOperatorName,
-			"|" => WellKnownMemberNames.BitwiseOrOperatorName,
-			"||" => WellKnownMemberNames.LogicalOrOperatorName,
-			"~" => WellKnownMemberNames.OnesComplementOperatorName,
+			CSharpOperatorSigils.BinaryLt => WellKnownMemberNames.LessThanOperatorName,
+			CSharpOperatorSigils.BinaryBitLshift => WellKnownMemberNames.LeftShiftOperatorName,
+			CSharpOperatorSigils.BinaryLeq => WellKnownMemberNames.LessThanOrEqualOperatorName,
+			CSharpOperatorSigils.BinaryEq => WellKnownMemberNames.EqualityOperatorName,
+			CSharpOperatorSigils.BinaryGt => WellKnownMemberNames.GreaterThanOperatorName,
+			CSharpOperatorSigils.BinaryGeq => WellKnownMemberNames.GreaterThanOrEqualOperatorName,
+			CSharpOperatorSigils.BinaryBitRshiftSE => WellKnownMemberNames.RightShiftOperatorName,
+			CSharpOperatorSigils.BinaryBitRshiftNoSE => WellKnownMemberNames.UnsignedRightShiftOperatorName,
+			CSharpOperatorSigils.BinaryBitXor => WellKnownMemberNames.ExclusiveOrOperatorName,
+			CSharpOperatorSigils.UnaryFalsy => WellKnownMemberNames.FalseOperatorName,
+			CSharpOperatorSigils.UnaryTruthy => WellKnownMemberNames.TrueOperatorName,
+			CSharpOperatorSigils.BinaryBitOr => WellKnownMemberNames.BitwiseOrOperatorName,
+			CSharpOperatorSigils.BinaryLazyOr => WellKnownMemberNames.LogicalOrOperatorName,
+			CSharpOperatorSigils.UnaryBitInv => WellKnownMemberNames.OnesComplementOperatorName,
 			// ...and some operators only exist in VB.NET (dw, you're not missing anything)
 			_ => throw new ArgumentException(paramName: nameof(ods), message: "pretend this is a BHI6660 unexpected token in AST (in this case, a new kind of operator was added to C#)"),
 		};
