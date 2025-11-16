@@ -434,13 +434,13 @@ ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(int))
 }
 
 // showing errors to user
-ECL_ENTRY void (*error_callback_cb)(const char *);
-void biz_error_callback(const char *s)
+ECL_ENTRY void (*error_callback_cb)(char *);
+void biz_error_callback(char *s)
 {
   if (error_callback_cb)
     error_callback_cb(s);
 }
-ECL_EXPORT void dsda_set_error_callback(ECL_ENTRY void (*cb)(const char *))
+ECL_EXPORT void dsda_set_error_callback(ECL_ENTRY void (*cb)(char *))
 {
   error_callback_cb = cb;
 }
