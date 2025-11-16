@@ -194,12 +194,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private void CloseFile()
 		{
-			if (curr_track != null)
-			{
-				//flag this track as the final one in the file
-				curr_track.IsFinalInFile = true;
-			}
-
+			curr_track?.IsFinalInFile = true;
 			curr_file = null;
 		}
 

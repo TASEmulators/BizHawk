@@ -816,12 +816,7 @@ namespace BizHawk.Client.EmuHawk
 			bool valid = TranslatePaletteCoord(e.Location, out var pt);
 			if (!valid) return;
 			selectedColorNum = pt.Y * 16 + pt.X;
-
-			if (currTileDataState != null)
-			{
-				currTileDataState.Palette = currPaletteSelection.start;
-			}
-
+			currTileDataState?.Palette = currPaletteSelection.start;
 			SyncColorSelection();
 			InternalUpdateValues();
 		}

@@ -189,8 +189,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (addr < 0x2000)
 				{
 					addr = ApplyMemoryMap(11, chr_banks_2k, addr);
-					if (Vram != null)
-						Vram[addr] = value;
+					Vram?[addr] = value;
 				}
 				else
 				{
