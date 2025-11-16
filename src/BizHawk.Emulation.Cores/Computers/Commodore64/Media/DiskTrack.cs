@@ -55,7 +55,7 @@ public sealed class DiskTrack
 	public DiskTrack Clone()
 	{
 		var clone = new DiskTrack();
-		Bits.CopyTo(clone._bits.AsSpan());
+		Bits.CopyTo(clone._bits);
 		clone._original = _original;
 		return clone;
 	}

@@ -123,11 +123,11 @@ namespace BizHawk.Emulation.Common
 			Array.Reverse(primaryKeyYBytes); // convert big endian to little endian
 			var primaryKeyY = new BigInteger(primaryKeyYBytes);
 
-			Derive3DSNormalKey(primaryKeyX, primaryKeyY).AsSpan().CopyTo(primaryKey);
+			Derive3DSNormalKey(primaryKeyX, primaryKeyY).CopyTo(primaryKey);
 
 			if (programIdBytes.IsEmpty)
 			{
-				Derive3DSNormalKey(secondaryKeyX, primaryKeyY).AsSpan().CopyTo(secondaryKey);
+				Derive3DSNormalKey(secondaryKeyX, primaryKeyY).CopyTo(secondaryKey);
 				return;
 			}
 
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Common
 				Buffer.BlockCopy(sha256Digest, 0, secondaryKeyYBytes, 1, 16);
 				Array.Reverse(secondaryKeyYBytes); // convert big endian to little endian
 				var secondaryKeyY = new BigInteger(secondaryKeyYBytes);
-				Derive3DSNormalKey(secondaryKeyX, secondaryKeyY).AsSpan().CopyTo(secondaryKey);
+				Derive3DSNormalKey(secondaryKeyX, secondaryKeyY).CopyTo(secondaryKey);
 				return;
 			}
 

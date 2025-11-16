@@ -291,7 +291,7 @@ namespace BizHawk.Common.CollectionExtensions
 			var i = 0;
 			foreach (var arr in arrays)
 			{
-				arr.AsSpan().CopyTo(combined.AsSpan(start: i));
+				arr.CopyTo(combined.AsSpan(start: i));
 				i += arr.Length;
 			}
 			return combined;

@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				if (byteswapped)
 				{
-					EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
+					EndiannessUtils.MutatingByteSwap16(buf2352);
 				}
 
 				buffer.AddRange(new ArraySegment<byte>(buf2352, bootOff, Math.Min(2352 - bootOff, bootLen)));
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					if (byteswapped)
 					{
-						EndiannessUtils.MutatingByteSwap16(buf2352.AsSpan());
+						EndiannessUtils.MutatingByteSwap16(buf2352);
 					}
 
 					buffer.AddRange(new ArraySegment<byte>(buf2352, 0, Math.Min(2352, bootLen)));
