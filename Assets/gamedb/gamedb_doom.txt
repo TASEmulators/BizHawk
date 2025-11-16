@@ -134,3 +134,5 @@ ec5b38b30ba2b70e278205776af3fbb5		Freedoom: Phase 2 (v0.11.1)	Doom		Doom
 83560b2963424fa4a2eb971194428bf8		Freedoom: Phase 2 (v0.12.0)	Doom		Doom
 ca9a4159a7833544a89144c7f5053412		Freedoom: Phase 2 (v0.12.1)	Doom		Doom
 cd666466759b5e5f63af93c5f0ffd0a1		Freedoom: Phase 2 (v0.13.0)	Doom		Doom
+65ed74d522bdf6649c2831b13b9e02b4		Hacx - IWAD release (v1.2)	Doom		Doom
+25485721882b050afa96a56e5758dd52		Chex Quest	Doom		Doom

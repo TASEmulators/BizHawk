@@ -60,7 +60,17 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 				else if (wadFile.RomData is [ (byte) 'P', (byte) 'W', (byte) 'A', (byte) 'D', .. ])
 				{
-					_pwadFiles.Add(wadFile);
+					if (_fakePwads.Contains(GetFullName(wadFile).ToLowerInvariant()))
+					{
+						_iwadName = wadFile.RomPath;
+						_iwadData = wadFile.RomData;
+						foundIWAD = true;
+					}
+					else
+					{
+						_pwadFiles.Add(wadFile);
+					}
+
 					recognized = true;
 				}
 
@@ -345,6 +355,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private readonly int[] _strafeSpeeds = [ 24, 40 ];
 		private readonly int[] _turnSpeeds = [ 640, 1280, 320 ];
 		private readonly string _dsdaWadFileName = "dsda-doom.wad";
+
+		// these are IWADs in terms of contents but they have "PWAD" in header
+		// source ports including upstream have special hacks to load them like IWADs
+		private readonly List<string> _fakePwads = [ "chex.wad", "rekkrsa.wad" ];
 
 		// order must match AspectRatio values since they're used as index
 		private readonly Point[][] _resolutions =
