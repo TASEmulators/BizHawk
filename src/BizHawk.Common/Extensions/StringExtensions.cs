@@ -161,7 +161,7 @@ namespace BizHawk.Common.StringExtensions
 				=> (n << shift) + (n >> ((sizeof(int) * 8) - shift));
 			int hash1 = 0x15051505;
 			int hash2 = 0x15051505;
-			var span = MemoryMarshal.AsBytes(str.AsSpan());
+			var span = str.BytesSpan();
 			while (true)
 			{
 				if (span.Length < sizeof(int))

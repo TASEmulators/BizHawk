@@ -5,6 +5,8 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -508,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int dataLen = samples.Length * sizeof(short);
 			byte[] data = ArrayPool<byte>.Shared.Rent(dataLen);
-			MemoryMarshal.AsBytes(samples.AsSpan()).CopyTo(data);
+			samples.BytesSpan().CopyTo(data);
 			if (dataLen == 0)
 			{
 				_audioDone = true;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -194,6 +195,25 @@ namespace BizHawk.Common.CollectionExtensions
 
 		public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> enumerator)
 			=> new EnumeratorAsEnumerable<T>(enumerator);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<byte> BytesSpan<T>(this T[] array)
+			where T : struct
+			=> MemoryMarshal.AsBytes(array.AsSpan());
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static ReadOnlySpan<byte> BytesSpan<T>(this ReadOnlySpan<T> span)
+			where T : struct
+			=> MemoryMarshal.AsBytes(span);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<byte> BytesSpan<T>(this Span<T> span)
+			where T : struct
+			=> MemoryMarshal.AsBytes(span);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static ReadOnlySpan<byte> BytesSpan(this string str)
+			=> MemoryMarshal.AsBytes(str.AsSpan());
 
 #if !NET6_0_OR_GREATER
 		/// <returns>chunks of length ≤ <paramref name="size"/> (the last chunk may be smaller)</returns>

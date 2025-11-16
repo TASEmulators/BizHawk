@@ -1,8 +1,8 @@
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 					throw new InvalidOperationException("Invalid length of values array");
 				}
 
-				BulkPeekByte((uint)addresses.Start, MemoryMarshal.AsBytes(values.AsSpan()));
+				BulkPeekByte((uint) addresses.Start, values.BytesSpan());
 
 				if (bigEndian)
 				{
@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 					throw new InvalidOperationException("Invalid length of values array");
 				}
 
-				BulkPeekByte((uint)addresses.Start, MemoryMarshal.AsBytes(values.AsSpan()));
+				BulkPeekByte((uint) addresses.Start, values.BytesSpan());
 
 				if (bigEndian)
 				{
