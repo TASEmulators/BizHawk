@@ -43,7 +43,7 @@ in {
 , libgdiplus ? pkgs.libgdiplus
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
-, mono ? null
+, mono ? pkgs.mono
 , nixGLChannel ? (pkgs.nixgl or import (fetchzip {
 	url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
 	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
@@ -109,12 +109,7 @@ in {
 			git
 			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
 			buildConfig doCheck extraDefines extraDotnetBuildFlags libretroCores;
-		mono = lib.recursiveUpdate { meta.mainProgram = "mono"; } (if mono != null
-			then mono # allow older Mono if set explicitly
-			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
-				then pkgs.mono
-				else lib.trace "provided Mono too old, using Mono from Nixpkgs 23.05"
-					((import Dist/nixpkgs.nix).nixpkgs-23_05 system fetchzip).mono);
+		mono = lib.recursiveUpdate { meta.mainProgram = "mono"; } mono;
 		monoBasic = fetchzip {
 			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
 			nativeBuildInputs = [ dpkg ];
