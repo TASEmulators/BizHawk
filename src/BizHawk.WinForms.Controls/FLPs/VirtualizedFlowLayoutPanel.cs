@@ -23,8 +23,7 @@ public class VirtualizedFlowLayoutPanel : FlowLayoutPanel
 
 	protected override void OnSizeChanged(EventArgs e)
 	{
-		if (_boundScrollBar is not null)
-			_boundScrollBar.LargeChange = this.Height;
+		_boundScrollBar?.LargeChange = this.Height;
 		base.OnSizeChanged(e);
 	}
 

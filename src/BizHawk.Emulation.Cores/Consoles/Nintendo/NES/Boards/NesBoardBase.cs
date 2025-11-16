@@ -158,12 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public virtual void WriteWram(int addr, byte value)
-		{
-			if (_wram != null)
-			{
-				_wram[addr & _wramMask] = value;
-			}
-		}
+			=> _wram?[addr & _wramMask] = value;
 
 		private int _wramMask;
 		public virtual void PostConfigure()
@@ -204,10 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if (Vram != null)
-				{
-					Vram[addr] = value;
-				}
+				Vram?[addr] = value;
 			}
 			else
 			{

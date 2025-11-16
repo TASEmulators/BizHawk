@@ -350,10 +350,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			bool spriteLimit = ForceSpriteLimit | Settings.SpriteLimit;
 			VDC1.PerformSpriteLimit = spriteLimit;
-			if (VDC2 != null)
-			{
-				VDC2.PerformSpriteLimit = spriteLimit;
-			}
+			VDC2?.PerformSpriteLimit = spriteLimit;
 		}
 
 
