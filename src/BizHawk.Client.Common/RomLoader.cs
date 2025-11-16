@@ -557,7 +557,7 @@ namespace BizHawk.Client.Common
 					const string ERR_MSG_NOT_PSXEXE = "Got an .exe which is not in the PSX-EXE format!"
 						+ "\nIf you're trying to load a PE (Windows program), you need to load the unextracted disc image. See https://tasvideos.org/BizHawk/DOSBox for details." // sadly won't be clickable
 						+ "\n"; // extra blank line to separate from stacktrace below
-					if (!rom.FileData.AsSpan().StartsWith("PS-X EXE"u8)) throw new /*NoAvailableCoreException*/InvalidOperationException(ERR_MSG_NOT_PSXEXE);
+					if (!rom.FileData.StartsWith("PS-X EXE"u8)) throw new /*NoAvailableCoreException*/InvalidOperationException(ERR_MSG_NOT_PSXEXE);
 					break;
 			}
 			var cip = new CoreInventoryParameters(this)

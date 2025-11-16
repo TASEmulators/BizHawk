@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			try
 			{
 				var hash = SHA1Checksum.ComputeDigestHex(Util.UnsafeSpanFromPointer(decryptedFw, decrypedFwLen));
-				if (!_goodHashes.AsSpan().Contains(hash))
+				if (!_goodHashes.Contains(hash))
 				{
 					warningCallback($"Potentially bad firmware dump! Decrypted hash {hash} does not match known good dumps.");
 				}

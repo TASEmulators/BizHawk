@@ -382,7 +382,7 @@ namespace BizHawk.Emulation.Common
 						if ((exeFsSectionSize & 0xF) != 0)
 						{
 							var ivCopy = new byte[iv.Length];
-							iv.AsSpan().CopyTo(ivCopy);
+							iv.CopyTo(ivCopy);
 							exeFsSectionOffset &= ~0xFU;
 
 							// First decrypt these last bytes using the secondary key
@@ -390,11 +390,11 @@ namespace BizHawk.Emulation.Common
 
 							// Now re-encrypt these bytes using the primary key
 							aes.Key = primaryKey;
-							ivCopy.AsSpan().CopyTo(iv);
+							ivCopy.CopyTo(iv);
 							AesCtrTransform(aes, iv, exeFsBuffer.AsSpan((int)exeFsSectionOffset, (int)(0x10 - (exeFsSectionSize & 0xF))));
 
 							// All of the padding can now be decrypted using the primary key
-							ivCopy.AsSpan().CopyTo(iv);
+							ivCopy.CopyTo(iv);
 							exeFsSectionSize += 0x10 - (exeFsSectionSize & 0xF);
 						}
 
