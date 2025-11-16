@@ -734,6 +734,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception ex)
 			{
+				var sysIDWas = game?.System ?? VSystemID.Raw.SNES;
 				xmlGame = null;
 				try
 				{
@@ -754,7 +755,7 @@ namespace BizHawk.Client.Common
 				}
 				catch
 				{
-					DoLoadErrorCallback(ex.ToString(), game?.System ?? VSystemID.Raw.SNES, LoadErrorType.Xml);
+					DoLoadErrorCallback(ex.ToString(), sysIDWas, LoadErrorType.Xml);
 					return false;
 				}
 			}
