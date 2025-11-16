@@ -597,12 +597,14 @@ namespace BizHawk.Common.CollectionExtensions
 		/// <returns>
 		/// <see langword="true"/> if all <see langword="true"/>,
 		/// <see langword="false"/> if all <see langword="false"/>,
-		/// <see langword="true"/> if mixed (or empty)
+		/// <see langword="null"/> if mixed (or empty)
 		/// </returns>
 		public static bool? Unanimity(this ISet<bool> set)
-			=> set.Contains(false)
-				? set.Contains(true) ? null : false
-				: set.Contains(true) ? true : null;
+#if true
+			=> set.Count is 1 ? set.First() : null;
+#else //TODO
+			=> set.SingleOrNull();
+#endif
 
 		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
 		public static bool? Unanimity(this ReadOnlySpan<bool> span)
