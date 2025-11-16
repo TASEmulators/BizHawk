@@ -1,0 +1,55 @@
+/*
+ * ===========================================================================
+ * BizHawkRafaelia - Multi-System Emulator
+ * ===========================================================================
+ * 
+ * This file is part of BizHawkRafaelia, a customized fork of BizHawk.
+ * 
+ * Copyright (c) 2025 Rafael Melo Reis and contributors
+ * Copyright (c) BizHawk team (original work)
+ * 
+ * BizHawkRafaelia: https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ * Original BizHawk: https://github.com/TASEmulators/BizHawk
+ * 
+ * ---------------------------------------------------------------------------
+ * LICENSE: MIT License
+ * ---------------------------------------------------------------------------
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ * 
+ * ---------------------------------------------------------------------------
+ * ATTRIBUTION
+ * ---------------------------------------------------------------------------
+ * 
+ * Original Author(s): [SPECIFY ORIGINAL AUTHORS]
+ * Modified by: [YOUR NAME] - [DESCRIPTION OF CHANGES]
+ * Date: [DATE]
+ * 
+ * ---------------------------------------------------------------------------
+ * DOCUMENTATION
+ * ---------------------------------------------------------------------------
+ * 
+ * [Brief description of what this file does]
+ * 
+ * See CONTRIBUTORS.md for full list of contributors
+ * See ATTRIBUTIONS.md for third-party attributions
+ * See REFERENCES.md for bibliographic references
+ * 
+ * ===========================================================================
+ */
