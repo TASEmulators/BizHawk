@@ -6,8 +6,6 @@ using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
 
-using BizHawk.Common.CollectionExtensions;
-
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics
@@ -184,7 +182,7 @@ namespace BizHawk.Bizware.Graphics
 
 						if (vendor == Vendor.Intel)
 						{
-							if (_blacklistedIntelDeviceIds.Contains(adapter.Description.DeviceId))
+							if (_blacklistedIntelDeviceIds.AsSpan().Contains(adapter.Description.DeviceId))
 							{
 								return;
 							}

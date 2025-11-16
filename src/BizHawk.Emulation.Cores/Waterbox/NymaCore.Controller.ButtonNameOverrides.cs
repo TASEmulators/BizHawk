@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BizHawk.Emulation.Cores.Waterbox
@@ -8,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public abstract partial class NymaCore
 	{
 		private static bool IsRomanNumeral(string str)
-			=> new[] {"I", "II", "III", "IV", "V", "VI"}.Contains(str);
+			=> str is "I" or "II" or "III" or "IV" or "V" or "VI";
 
 		private static readonly Dictionary<string, string> ButtonNameOverrides = new Dictionary<string, string>
 		{

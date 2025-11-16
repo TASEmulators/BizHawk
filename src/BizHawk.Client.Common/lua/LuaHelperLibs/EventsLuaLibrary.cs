@@ -1,4 +1,3 @@
-using System.Linq;
 using System.ComponentModel;
 
 using NLua;
@@ -351,8 +350,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private bool HasScope(string scope)
-		{
-			return string.IsNullOrWhiteSpace(scope) || DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
-		}
+			=> string.IsNullOrWhiteSpace(scope)
+				|| DebuggableCore.MemoryCallbacks.AvailableScopes.AsSpan().Contains(scope);
 	}
 }

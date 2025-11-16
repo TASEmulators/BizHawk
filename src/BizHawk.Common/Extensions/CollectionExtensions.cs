@@ -246,13 +246,6 @@ namespace BizHawk.Common.CollectionExtensions
 			yield return (Start: numbers[blockStart], Count: i - blockStart); // `count` arg will be 0 if the whole list is contiguous
 		}
 
-		/// <remarks>
-		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
-		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
-		/// </remarks>
-		public static bool Contains<T>(this T[] array, T value)
-			=> Array.IndexOf(array, value) >= 0;
-
 		/// <returns>
 		/// portion of <paramref name="dest"/> that was written to,
 		/// unless either span is empty, in which case the other reference is returned<br/>
