@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				}
 
 				var ret = new byte[DSiWareSaveLength];
-				publicSav.AsSpan().CopyTo(ret.AsSpan().Slice(0, PublicSavSize));
-				privateSav.AsSpan().CopyTo(ret.AsSpan().Slice(PublicSavSize, PrivateSavSize));
-				bannerSav.AsSpan().CopyTo(ret.AsSpan().Slice(PublicSavSize + PrivateSavSize, BannerSavSize));
+				publicSav.CopyTo(ret.AsSpan());
+				privateSav.CopyTo(ret.AsSpan(start: PublicSavSize));
+				bannerSav.CopyTo(ret.AsSpan(start: PublicSavSize + PrivateSavSize));
 				return ret;
 			}
 
@@ -56,9 +56,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				if (data.Length == DSiWareSaveLength)
 				{
-					if (PublicSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(0, PublicSavSize).ToArray(), "public.sav");
-					if (PrivateSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(PublicSavSize, PrivateSavSize).ToArray(), "private.sav");
-					if (BannerSavSize > 0) _exe.AddReadonlyFile(data.AsSpan().Slice(PublicSavSize + PrivateSavSize, BannerSavSize).ToArray(), "banner.sav");
+					if (PublicSavSize > 0) _exe.AddReadonlyFile(data.AsSpan(0, PublicSavSize).ToArray(), "public.sav");
+					if (PrivateSavSize > 0) _exe.AddReadonlyFile(data.AsSpan(PublicSavSize, PrivateSavSize).ToArray(), "private.sav");
+					if (BannerSavSize > 0) _exe.AddReadonlyFile(data.AsSpan(PublicSavSize + PrivateSavSize, BannerSavSize).ToArray(), "banner.sav");
 
 					_core.ImportDSiWareSavs(_console, DSiTitleId.Full);
 

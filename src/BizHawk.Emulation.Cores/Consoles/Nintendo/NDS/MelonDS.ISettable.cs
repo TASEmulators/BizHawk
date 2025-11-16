@@ -447,9 +447,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					var username = new Span<char>(p, 10);
 					username.Clear();
 
-					FirmwareUsername
-						.AsSpan()
-						.Slice(0, fwSettings.UsernameLength)
+					FirmwareUsername.AsSpan(start: 0, length: fwSettings.UsernameLength)
 						.CopyTo(username);
 				}
 
@@ -464,9 +462,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					var message = new Span<char>(p, 26);
 					message.Clear();
 
-					FirmwareMessage
-						.AsSpan()
-						.Slice(0, fwSettings.MessageLength)
+					FirmwareMessage.AsSpan(start: 0, length: fwSettings.MessageLength)
 						.CopyTo(message);
 				}
 

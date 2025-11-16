@@ -666,7 +666,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if ((job.Parts & ESectorSynthPart.User2352) != 0)
 				{
 					Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2352);
-					EndiannessUtils.MutatingByteSwap16(job.DestBuffer2448.AsSpan().Slice(job.DestOffset, 2352));
+					EndiannessUtils.MutatingByteSwap16(job.DestBuffer2448.AsSpan(start: job.DestOffset, length: 2352));
 				}
 
 				// if subcode is needed, synthesize it
@@ -1133,7 +1133,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var trackType = i < cdMetadata.Pregap ? cdMetadata.PregapTrackType : cdMetadata.TrackType;
 					if (trackType == LibChd.chd_track_type.CD_TRACK_AUDIO)
 					{
-						EndiannessUtils.MutatingByteSwap16(sectorBuf.AsSpan()[..2352]);
+						EndiannessUtils.MutatingByteSwap16(sectorBuf.AsSpan(start: 0, length: 2352));
 					}
 
 					chdPos = chdLba % CD_FRAMES_PER_HUNK;

@@ -11,7 +11,7 @@ namespace BizHawk.Common.IOExtensions
 			=> _shiftJIS ??= Encoding.GetEncoding("shift_jis");
 
 		public static Span<byte> GetBufferAsSpan(this MemoryStream ms)
-			=> ms.GetBuffer().AsSpan().Slice(start: 0, length: (int) ms.Length);
+			=> ms.GetBuffer().AsSpan(start: 0, length: (int) ms.Length);
 
 		/// <remarks>does NOT seek to beginning</remarks>
 		public static byte[] ReadAllBytes(this Stream stream)
