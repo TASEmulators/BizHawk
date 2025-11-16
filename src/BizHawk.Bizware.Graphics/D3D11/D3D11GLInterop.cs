@@ -197,7 +197,7 @@ namespace BizHawk.Bizware.Graphics
 
 						if (vendor == Vendor.Intel)
 						{
-							if (_blacklistedIntelDeviceIds.AsSpan().Contains(adapter.Description.DeviceId))
+							if (_blacklistedIntelDeviceIds.Contains(adapter.Description.DeviceId))
 							{
 								return;
 							}

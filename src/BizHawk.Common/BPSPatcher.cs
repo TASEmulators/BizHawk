@@ -205,7 +205,7 @@ namespace BizHawk.Common
 		private const string ERR_MSG_UNINIT = "uninitialised struct";
 
 		private static bool CheckCRC(ReadOnlySpan<byte> data, ReadOnlySpan<byte> reversedChecksum)
-			=> ((ReadOnlySpan<byte>) CRC32Checksum.Compute(data)).ReversedSequenceEqual(reversedChecksum);
+			=> CRC32Checksum.Compute(data).ReversedSequenceEqual(reversedChecksum);
 
 		public static bool IsBPSFile(ReadOnlySpan<byte> dataWithHeader, out BPSPayload patchStruct)
 		{
