@@ -2,7 +2,6 @@ using System.Text;
 using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
