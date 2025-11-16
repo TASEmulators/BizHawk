@@ -187,7 +187,7 @@
 				hawkSourceInfo # simple way to override `nugetDeps` for patching: `buildAssembliesFor (bizhawkAssemblies-latest.hawkSourceInfo // { nugetDeps = /*...*/; })`
 				libretroCores
 				;
-			inherit (finalAttrs) gnome-themes-extra mono;
+			inherit (finalAttrs) dotnet-sdk gnome-themes-extra mono;
 #			extraUnmanagedDeps = buildUnmanagedDepsFor hawkSourceInfo; # this will override the output of the same name, example: `buildEmuHawkInstallableFor { bizhawkAssemblies = bizhawkAssemblies-latest // { extraUnmanagedDeps = /*...*/; }; }`
 			# can similarly override `assets` output, only used by launch script to populate `BIZHAWK_DATA_HOME` if the dir doesn't exist at runtime,
 			# and `waterboxCores` output, which holds just the Waterbox cores, as the name suggests
