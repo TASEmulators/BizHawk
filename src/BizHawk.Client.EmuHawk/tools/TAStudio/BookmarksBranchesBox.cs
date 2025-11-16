@@ -27,9 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		private BranchUndo _branchUndo = BranchUndo.None;
 
 		public void SetBackupMaxSteps(int value)
-		{
-			if (_backupBranch != null) _backupBranch.ChangeLog.MaxSteps = value;
-		}
+			=> _backupBranch?.ChangeLog.MaxSteps = value;
 
 		private enum BranchUndo
 		{
@@ -353,11 +351,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (_branchUndo == BranchUndo.Text)
 			{
 				var branch = Branches.SingleOrDefault(b => b.Uuid == _backupBranch.Uuid);
-				if (branch != null)
-				{
-					branch.UserText = _backupBranch.UserText;
-				}
-
+				branch?.UserText = _backupBranch.UserText;
 				Tastudio.MainForm.AddOnScreenMessage("Branch Text Edit canceled");
 			}
 			else if (_branchUndo == BranchUndo.Remove)

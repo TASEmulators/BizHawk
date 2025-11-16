@@ -3688,13 +3688,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					oaRetro.token.Path = loader.CanonicalFullPath;
 				}
-
-				if (oaOpenrom != null)
+				else if (oaOpenrom is not null)
 				{
 					oaOpenrom.Path = loader.CanonicalFullPath;
 				}
-
-				if (ioa is OpenAdvanced_MAME oaMame)
+				else if (ioa is OpenAdvanced_MAME oaMame)
 				{
 					oaMame.Path = loader.CanonicalFullPath;
 				}

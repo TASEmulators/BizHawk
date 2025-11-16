@@ -135,16 +135,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				ay38912.PanningConfiguration = settings.AYPanConfig;
 				ay38912.Volume = settings.AYVolume;
 			}
-
-			if (_machine.BuzzerDevice != null)
-			{
-				_machine.BuzzerDevice.Volume = settings.EarVolume;
-			}
-
-			if (_machine.TapeBuzzer != null)
-			{
-				_machine.TapeBuzzer.Volume = settings.TapeVolume;
-			}
+			_machine.BuzzerDevice?.Volume = settings.EarVolume;
+			_machine.TapeBuzzer?.Volume = settings.TapeVolume;
 
 			DCFilter dc = new DCFilter(SoundMixer, 512);
 			ser.Register<ISoundProvider>(dc);

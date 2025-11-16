@@ -879,11 +879,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				_frameThreadEndEvent.Wait();
 				_renderThreadRanThisFrame = false;
 			}
-
-			if (_glTextureProvider != null)
-			{
-				_glTextureProvider.VideoDirty = true;
-			}
+			_glTextureProvider?.VideoDirty = true;
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
