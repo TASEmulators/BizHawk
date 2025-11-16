@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public abstract class RCheevoHttpRequest : IDisposable
 		{
-			private readonly object _syncObject = new();
+			private readonly Lock _syncObject = new();
 			private readonly ManualResetEventSlim _completionEvent = new();
 			private bool _isDisposed;
 

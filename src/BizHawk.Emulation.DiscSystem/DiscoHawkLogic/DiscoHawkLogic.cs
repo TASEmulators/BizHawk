@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.DiscSystem
 				po.CancellationToken = cts.Token;
 				po.MaxDegreeOfParallelism = 1;
 				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
-				object olock = new object();
+				Lock olock = new();
 				int ctr=0;
 				bool blocked = false;
 				try

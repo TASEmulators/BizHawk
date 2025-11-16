@@ -25,7 +25,7 @@ namespace BizHawk.Bizware.Input
 		private List<KeyEvent> _keyEvents = [ ];
 		private (int X, int Y) _mouseDelta;
 		private (int X, int Y) _lastMouseAbsPos;
-		private readonly object _lockObj = new();
+		private readonly Lock _lockObj = new();
 		private bool _disposed;
 
 		private IntPtr RawInputBuffer;

@@ -16,7 +16,7 @@ namespace BizHawk.Bizware.Input
 	{
 		private IntPtr Display;
 		private readonly bool[] LastKeyState = new bool[256];
-		private readonly object LockObj = new();
+		private readonly Lock LockObj = new();
 		private readonly DistinctKey[] KeyEnumMap = new DistinctKey[256];
 		private readonly bool _supportsXInput2;
 		private readonly int _xi2Opcode;

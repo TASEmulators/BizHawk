@@ -233,7 +233,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			private readonly MemoryBlock _memory;
-			private readonly object _sync = new();
+			private readonly Lock _sync = new();
 			private readonly WeakReference?[] _refs;
 
 			public MsHostSysVGuest()

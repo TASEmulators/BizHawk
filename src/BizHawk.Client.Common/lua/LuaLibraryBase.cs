@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 		protected static LuaFile CurrentFile { get; private set; }
 
 		private static Thread _currentHostThread;
-		private static readonly object ThreadMutex = new();
+		private static readonly Lock ThreadMutex = new();
 
 		public abstract string Name { get; }
 
