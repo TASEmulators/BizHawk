@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using System.Linq;
 
 namespace BizHawk.Common
 {
@@ -18,12 +17,10 @@ namespace BizHawk.Common
 
 		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
 		{
-			var range = (RangeAttribute)context!.Instance
+			var range = context!.Instance
 				.GetType()
 				.GetProperty(context.PropertyDescriptor!.Name)!
-				.GetCustomAttributes()
-				.First(i => i.GetType() == typeof(RangeAttribute));
-
+				.GetCustomAttribute<RangeAttribute>();
 			range.Validate(value, context.PropertyDescriptor.Name);
 
 			if (value == null)

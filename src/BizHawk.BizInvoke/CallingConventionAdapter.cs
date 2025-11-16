@@ -92,7 +92,7 @@ namespace BizHawk.BizInvoke
 
 	public static class CallingConventionAdapters
 	{
-		private class NativeConvention : ICallingConventionAdapter
+		internal sealed class NativeConvention : ICallingConventionAdapter
 		{
 			public IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 				=> p;

@@ -112,7 +112,7 @@ namespace BizHawk.BizInvoke
 		public static T GetInvoker<T>(IImportResolver dll, ICallingConventionAdapter adapter)
 			where T : class
 		{
-			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
+			var nonTrivialAdapter = adapter is not CallingConventionAdapters.NativeConvention;
 			InvokerImpl impl;
 			lock (Impls) impl = Impls.GetValueOrPut(
 				typeof(T),
@@ -129,7 +129,7 @@ namespace BizHawk.BizInvoke
 		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			where T : class
 		{
-			var nonTrivialAdapter = adapter.GetType() != CallingConventionAdapters.Native.GetType();
+			var nonTrivialAdapter = adapter is not CallingConventionAdapters.NativeConvention;
 			InvokerImpl impl;
 			lock (Impls) impl = Impls.GetValueOrPut(
 				typeof(T),

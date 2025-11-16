@@ -130,10 +130,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			// set audio device settings
-			if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
+			if (_machine.AYDevice is AY38912 ay38912)
 			{
-				((AY38912)_machine.AYDevice).PanningConfiguration = settings.AYPanConfig;
-				_machine.AYDevice.Volume = settings.AYVolume;
+				ay38912.PanningConfiguration = settings.AYPanConfig;
+				ay38912.Volume = settings.AYVolume;
 			}
 
 			if (_machine.BuzzerDevice != null)

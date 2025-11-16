@@ -48,12 +48,58 @@ public static class RoslynUtils
 		return null;
 	}
 
+	/// <param name="typeSym">the type in question</param>
+	/// <param name="fullName">
+	/// pass <see langword="false"/> to use <see cref="ISymbol.Name"/> on its own for non-keyword types,
+	/// rather than prefixing it with the containing (type and) namespace
+	/// </param>
+	public static string GetCSharpKeywordOrName(this ITypeSymbol typeSym, bool fullName = true)
+		=> typeSym.SpecialType switch
+		{
+			SpecialType.System_Object => CSharpTypeKeywords.System_Object,
+			SpecialType.System_Void => CSharpTypeKeywords.System_Void,
+			SpecialType.System_Boolean => CSharpTypeKeywords.System_Boolean,
+			SpecialType.System_Char => CSharpTypeKeywords.System_Char,
+			SpecialType.System_SByte => CSharpTypeKeywords.System_SByte,
+			SpecialType.System_Byte => CSharpTypeKeywords.System_Byte,
+			SpecialType.System_Int16 => CSharpTypeKeywords.System_Int16,
+			SpecialType.System_UInt16 => CSharpTypeKeywords.System_UInt16,
+			SpecialType.System_Int32 => CSharpTypeKeywords.System_Int32,
+			SpecialType.System_UInt32 => CSharpTypeKeywords.System_UInt32,
+			SpecialType.System_Int64 => CSharpTypeKeywords.System_Int64,
+			SpecialType.System_UInt64 => CSharpTypeKeywords.System_UInt64,
+			SpecialType.System_Decimal => CSharpTypeKeywords.System_Decimal,
+			SpecialType.System_Single => CSharpTypeKeywords.System_Single,
+			SpecialType.System_Double => CSharpTypeKeywords.System_Double,
+			SpecialType.System_String => CSharpTypeKeywords.System_String,
+			_ => fullName ? typeSym.GetMetadataNameStr() : typeSym.Name,
+		};
+
 	public static bool? GetIsCLSCompliant(this ITypeSymbol typeSym, ISymbol clsCompliantAttrSym)
 		=> typeSym.AllEnclosingTypes().Prepend(typeSym)
 			.Select(typeSym1 => typeSym1.GetAttributes()
 				.FirstOrDefault(ad => clsCompliantAttrSym.Matches(ad.AttributeClass))
 				?.ConstructorArguments[0].Value as bool?)
 			.FirstOrDefault(static tristate => tristate is not null);
+
+	public static string GetMetadataNameStr(this INamedTypeSymbol typeSym)
+		=> typeSym.ContainingType is INamedTypeSymbol parent
+			? $"{parent.GetMetadataNameStr()}.{typeSym.Name}"
+			: typeSym.ContainingNamespace is INamespaceSymbol parentNS
+				? $"{parentNS.GetMetadataNameStr()}.{typeSym.Name}"
+				: typeSym.Name;
+
+	public static string GetMetadataNameStr(this INamespaceSymbol nsSym)
+		=> nsSym.ContainingNamespace is INamespaceSymbol { IsGlobalNamespace: false } parent
+			? $"{parent.GetMetadataNameStr()}.{nsSym.Name}"
+			: nsSym.Name;
+
+	private static string GetMetadataNameStr(this ITypeSymbol typeSym)
+		=> typeSym is INamedTypeSymbol named
+			? named.GetMetadataNameStr()
+			: typeSym.ContainingNamespace is INamespaceSymbol parentNS
+				? $"{parentNS.GetMetadataNameStr()}.{typeSym.Name}"
+				: typeSym.Name;
 
 	public static string GetMethodName(this ConversionOperatorDeclarationSyntax cods)
 		=> cods.ImplicitOrExplicitKeyword.ToString() is "implicit"

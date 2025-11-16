@@ -679,27 +679,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			foreach (string Parameter in video_settings.Parameters.Keys)
 			{
-				if (video_settings.Parameters[Parameter].GetType() == typeof(string))
+				var paramValue = video_settings.Parameters[Parameter];
+				if (paramValue is string str)
 				{
-					string value = ((string)video_settings.Parameters[Parameter]);
-					StringBuilder sb = new StringBuilder(value);
+					StringBuilder sb = new(str);
 					m64pConfigSetParameterStr(video_plugin_section, Parameter, m64p_type.M64TYPE_STRING, sb);
 				}
 				else
 				{
 					int value = 0;
-
-					if (video_settings.Parameters[Parameter].GetType() == typeof(int))
+					if (paramValue is int i)
 					{
-						value = (int)video_settings.Parameters[Parameter];
+						value = i;
 					}
-					else if (video_settings.Parameters[Parameter].GetType() == typeof(bool))
+					else if (paramValue is bool b)
 					{
-						value = (bool)video_settings.Parameters[Parameter] ? 1 : 0;
+						value = b ? 1 : 0;
 					}
-					else if (video_settings.Parameters[Parameter] is Enum)
+					else if (paramValue is Enum)
 					{
-						value = (int)video_settings.Parameters[Parameter];
+						value = (int) paramValue;
 					}
 					m64pConfigSetParameter(video_plugin_section, Parameter, m64p_type.M64TYPE_INT, ref value);
 				}

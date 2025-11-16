@@ -5,6 +5,14 @@ using System.Collections.Immutable;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 {
+	private static readonly DiagnosticDescriptor DiagNoGetTypeForTypeCheck = new(
+		id: "BHI1106",
+		title: "Use pattern matching instead of `.GetType() == typeof()`",
+		messageFormat: "Replace with `is {0}`",
+		category: "Usage",
+		defaultSeverity: DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
 	private static readonly DiagnosticDescriptor DiagNoGetTypeOnThis = new(
 		id: "BHI1101",
 		title: "Don't call this.GetType(), use typeof operator (or replace subtype check with better encapsulation)",
@@ -21,7 +29,8 @@ public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(DiagNoGetTypeOnThisSealed, DiagNoGetTypeOnThis);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+		= ImmutableArray.Create(DiagNoGetTypeOnThisSealed, DiagNoGetTypeOnThis, DiagNoGetTypeForTypeCheck);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -35,6 +44,12 @@ public sealed class UseTypeofOperatorAnalyzer : DiagnosticAnalyzer
 				if (operation.IsImplicit || operation.Instance is null) return;
 				objectDotGetTypeSym ??= oac.Compilation.GetSpecialType(SpecialType.System_Object).GetMembers("GetType")[0];
 				if (!objectDotGetTypeSym.Matches(operation.TargetMethod)) return;
+				if (operation.Parent is IBinaryOperation { OperatorKind: BinaryOperatorKind.Equals or BinaryOperatorKind.NotEquals } parent
+					&& (parent.LeftOperand == operation ? parent.RightOperand : parent.LeftOperand) is ITypeOfOperation { TypeOperand: var type })
+				{
+					DiagNoGetTypeForTypeCheck.ReportAt(operation, oac, type.GetCSharpKeywordOrName(fullName: false));
+					return;
+				}
 				if (operation.Instance.Syntax is not ThisExpressionSyntax and not IdentifierNameSyntax { Identifier.Text: "GetType" }) return; // called on something that isn't `this`
 				var enclosingType = operation.SemanticModel!.GetDeclaredSymbol(
 					((CSharpSyntaxNode) operation.Syntax).EnclosingTypeDeclarationSyntax()!,
