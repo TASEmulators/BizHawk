@@ -4,7 +4,6 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 
 
