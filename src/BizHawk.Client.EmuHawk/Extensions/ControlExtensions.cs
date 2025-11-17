@@ -23,6 +23,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ControlExtensions
 	{
+		private const int WM_SETREDRAW = 0x000B;
+
 		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
 		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
 			where T : Enum
@@ -199,6 +201,22 @@ namespace BizHawk.Client.EmuHawk
 				false => CheckState.Unchecked,
 				null => CheckState.Indeterminate,
 			};
+
+		public static void SuspendDrawing(this Control control)
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
+			}
+		}
+
+		public static void ResumeDrawing(this Control control)
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+			}
+		}
 	}
 
 	public static class ListViewExtensions
