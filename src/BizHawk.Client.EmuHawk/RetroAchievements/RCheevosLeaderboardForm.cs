@@ -7,18 +7,32 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class RCheevosLeaderboardForm : Form
 	{
-		private readonly RCheevos.LBoard _lboard;
+		private RCheevos.LBoard _lboard;
 
-		public RCheevosLeaderboardForm(RCheevos.LBoard lboard)
+		public RCheevosLeaderboardForm()
 		{
 			InitializeComponent();
-			titleBox.Text = lboard.Title;
-			descriptionBox.Text = lboard.Description;
-			scoreBox.Text = lboard.Score;
-			lowerIsBetterBox.Checked = lboard.LowerIsBetter;
-			_lboard = lboard;
 			TopLevel = false;
 			Show();
+		}
+
+		public bool UpdateLBoard(RCheevos.LBoard lboard)
+		{
+			bool updated = _lboard != lboard;
+
+			_lboard = lboard;
+
+			titleBox.Text = lboard.Title;
+			descriptionBox.Text = lboard.Description;
+			lowerIsBetterBox.Checked = lboard.LowerIsBetter;
+
+			if (scoreBox.Text != _lboard.Score)
+			{
+				scoreBox.Text = _lboard.Score;
+				updated = true;
+			}
+
+			return updated;
 		}
 
 		public void OnFrameAdvance()
