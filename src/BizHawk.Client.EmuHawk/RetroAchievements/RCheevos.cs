@@ -196,15 +196,13 @@ namespace BizHawk.Client.EmuHawk
 			};
 			raDropDownItems.Add(viewCheevoListItem);
 
-#if false
 			var viewLboardListItem = new ToolStripMenuItem("View Leaderboard List");
 			viewLboardListItem.Click += (_, _) =>
 			{
-				_lboardListForm.OnFrameAdvance(true);
+				_lboardListForm.OnFrameAdvance();
 				_lboardListForm.Show();
 			};
 			raDropDownItems.Add(viewLboardListItem);
-#endif
 		}
 
 		protected override void HandleHardcoreModeDisable(string reason)
@@ -267,9 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			Stop();
 			_gameInfoForm.Dispose();
 			_cheevoListForm.Dispose();
-#if false
 			_lboardListForm.Dispose();
-#endif
 			_mainForm.QuicksaveLoad -= QuickLoadCallback;
 		}
 
@@ -455,9 +451,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
 			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress, () => HardcoreMode);
-#if false
 			_lboardListForm.Restart(_gameData.GameID == 0 ? Array.Empty<LBoard>() : _gameData.LBoardEnumerable);
-#endif
 
 			Update();
 
@@ -710,12 +704,10 @@ namespace BizHawk.Client.EmuHawk
 				_cheevoListForm.OnFrameAdvance(HardcoreMode);
 			}
 
-#if false
 			if (_lboardListForm.Visible)
 			{
 				_lboardListForm.OnFrameAdvance();
 			}
-#endif
 		}
 	}
 }

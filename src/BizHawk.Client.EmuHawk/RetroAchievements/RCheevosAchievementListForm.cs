@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RCheevosAchievementListForm : Form
 	{
 		private RCheevos.Cheevo[] _cheevos;
-		private RCheevosAchievementForm[] _cheevoForms;
+		private RCheevosAchievementForm[] _cheevoForms = [ ];
 		private Func<uint, string> _getCheevoProgress;
 		private Func<bool> _isHardcodeMode;
 
@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			FormClosing += RCheevosAchievementListForm_FormClosing;
-			_cheevoForms = Array.Empty<RCheevosAchievementForm>();
 			using var temp = new RCheevosAchievementForm(null);
 			_controlHeight = temp.Height + temp.Margin.Bottom + temp.Margin.Top;
 			flowLayoutPanel1.BoundScrollBar = vScrollBar1;

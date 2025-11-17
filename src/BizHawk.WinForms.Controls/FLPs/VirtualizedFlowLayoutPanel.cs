@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
 
 using BizHawk.Common.NumberExtensions;
 
@@ -7,6 +8,8 @@ namespace BizHawk.Client.EmuHawk;
 public class VirtualizedFlowLayoutPanel : FlowLayoutPanel
 {
 	private VScrollBar? _boundScrollBar;
+	[Browsable(false)]
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public VScrollBar BoundScrollBar
 	{
 		get => _boundScrollBar!;
