@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable UnusedMember.Global
 
@@ -359,156 +357,38 @@ namespace BizHawk.Common
 			VK_NONE = 0xFF,
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct RAWINPUTDEVICE
+		public static class HidUsagePage
 		{
-			public HidUsagePage usUsagePage;
-			public HidUsageId usUsage;
-			public RIDEV dwFlags;
-			public IntPtr hwndTarget;
-
-			public enum HidUsagePage : ushort
-			{
-				GENERIC = 1,
-				GAME = 5,
-				LED = 8,
-				BUTTON = 9,
-			}
-
-			public enum HidUsageId : ushort
-			{
-				GENERIC_POINTER = 1,
-				GENERIC_MOUSE = 2,
-				GENERIC_JOYSTICK = 4,
-				GENERIC_GAMEPAD = 5,
-				GENERIC_KEYBOARD = 6,
-				GENERIC_KEYPAD = 7,
-				GENERIC_MULTI_AXIS_CONTROLLER = 8,
-			}
-
-			[Flags]
-			public enum RIDEV : int
-			{
-				REMOVE = 0x00000001,
-				EXCLUDE = 0x00000010,
-				PAGEONLY = 0x00000020,
-				NOLEGACY = PAGEONLY | EXCLUDE,
-				INPUTSINK = 0x00000100,
-				CAPTUREMOUSE = 0x00000200,
-				NOHOTKEYS = CAPTUREMOUSE,
-				APPKEYS = 0x00000400,
-				EXINPUTSINK = 0x00001000,
-				DEVNOTIFY = 0x00002000,
-			}
+			public const ushort GENERIC = 1;
+			public const ushort GAME = 5;
+			public const ushort LED = 8;
+			public const ushort BUTTON = 9;
 		}
 
-		public enum RID : uint
+		public static class HidUsageId
 		{
-			HEADER = 0x10000005,
-			INPUT = 0x10000003,
+			public const ushort GENERIC_POINTER = 1;
+			public const ushort GENERIC_MOUSE = 2;
+			public const ushort GENERIC_JOYSTICK = 4;
+			public const ushort GENERIC_GAMEPAD = 5;
+			public const ushort GENERIC_KEYBOARD = 6;
+			public const ushort GENERIC_KEYPAD = 7;
+			public const ushort GENERIC_MULTI_AXIS_CONTROLLER = 8;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct RAWINPUTHEADER
+		public static class RIM_TYPE
 		{
-			public RIM_TYPE dwType;
-			public uint dwSize;
-			public IntPtr hDevice;
-			public IntPtr wParam;
-
-			public enum RIM_TYPE : uint
-			{
-				MOUSE = 0,
-				KEYBOARD = 1,
-				HID = 2,
-			}
+			public const uint MOUSE = 0;
+			public const uint KEYBOARD = 1;
+			public const uint HID = 2;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		public struct RAWMOUSE
+		public static class RI_KEY
 		{
-			public MOUSE_FLAGS usFlags;
-			public uint ulButtons;
-			public uint ulRawButtons;
-			public int lLastX;
-			public int lLastY;
-			public uint ulExtraInformation;
-
-			[Flags]
-			public enum MOUSE_FLAGS : ushort
-			{
-				MOVE_RELATIVE = 0,
-				MOVE_ABSOLUTE = 1,
-				VIRTUAL_DESKTOP = 2,
-				ATTRIBUTES_CHANGED = 4,
-				MOVE_NOCOALESCE = 8,
-			}
+			public const ushort MAKE = 0;
+			public const ushort BREAK = 1;
+			public const ushort E0 = 2;
+			public const ushort E1 = 4;
 		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct RAWKEYBOARD
-		{
-			public ushort MakeCode;
-			public RI_KEY Flags;
-			public ushort Reserved;
-			public VirtualKey VKey;
-			public uint Message;
-			public uint ExtraInformation;
-
-			[Flags]
-			public enum RI_KEY : ushort
-			{
-				MAKE = 0,
-				BREAK = 1,
-				E0 = 2,
-				E1 = 4,
-			}
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct RAWHID
-		{
-			public uint dwSizeHid;
-			public uint dwCount;
-			public byte bRawData;
-		}
-
-		[StructLayout(LayoutKind.Explicit)]
-		public struct RAWINPUTDATA
-		{
-			[FieldOffset(0)]
-			public RAWMOUSE mouse;
-			[FieldOffset(0)]
-			public RAWKEYBOARD keyboard;
-			[FieldOffset(0)]
-			public RAWHID hid;
-		}
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct RAWINPUT
-		{
-			public RAWINPUTHEADER header;
-			public RAWINPUTDATA data;
-		}
-
-		[DllImport("user32.dll", ExactSpelling = true)]
-		public static extern int GetRawInputData(IntPtr hRawInput, RID uiCommand, IntPtr pData, out int bSize, int cbSizeHeader);
-
-		[DllImport("user32.dll", ExactSpelling = true)]
-		public static extern unsafe int GetRawInputData(IntPtr hRawInput, RID uiCommand, RAWINPUT* pData, ref int bSize, int cbSizeHeader);
-
-		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-		public static extern unsafe int GetRawInputBuffer(RAWINPUT* pData, ref int bSize, int cbSizeHeader);
-
-		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern unsafe bool RegisterRawInputDevices(RAWINPUTDEVICE* pRawInputDevice, uint uiNumDevices, int cbSize);
-
-		[DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool RegisterRawInputDevices(RAWINPUTDEVICE[] pRawInputDevices, uint uiNumDevices, int cbSize);
-
-		[DllImport("user32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-		public static extern uint MapVirtualKeyW(uint uCode, uint uMapType);
 	}
 }

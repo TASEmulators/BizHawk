@@ -21,6 +21,8 @@ using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.WinForms.Controls;
 
+using Windows.Win32;
+
 namespace BizHawk.Client.EmuHawk
 {
 	internal static class Program
@@ -142,14 +144,14 @@ namespace BizHawk.Client.EmuHawk
 
 				if (dllDir.ContainsOrdinal(';'))
 				{
-					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
+					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir);
 					if (dllShortPathLen is 0) return SetDllDirectoryFailed();
 
 					var dllShortPathBuffer = new char[dllShortPathLen];
-					var dllShortPathLen1 = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					var dllShortPathLen1 = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer);
 					if (dllShortPathLen1 is 0) return SetDllDirectoryFailed();
 
-					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen1);
+					dllDir = dllShortPathBuffer.AsSpan(start: 0, length: (int) dllShortPathLen).ToString();
 					if (dllDir.ContainsOrdinal(';')) return SetDllDirectoryFailed();
 				}
 

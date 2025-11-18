@@ -1,0 +1,7 @@
+{
+	"className": "Win32Imports",
+	"multiTargetingFriendlyAPIs": true,
+	"public": true,
+	"wideCharOnly": false,
+	"$schema": "https://aka.ms/CsWin32.schema.json"
+}

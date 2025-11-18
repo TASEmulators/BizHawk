@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				WmImports.HideCaret(Handle);
+				WmImports.HideCaret(new(Handle));
 			}
 
 			base.OnMouseClick(e);
@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				WmImports.HideCaret(Handle);
+				WmImports.HideCaret(new(Handle));
 			}
 		}
 
