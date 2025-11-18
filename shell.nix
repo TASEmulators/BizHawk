@@ -25,7 +25,7 @@
 			++ lib.optionals useVSCode [] #TODO https://devblogs.microsoft.com/dotnet/csharp-dev-kit-now-generally-available/ https://learn.microsoft.com/en-us/training/modules/implement-visual-studio-code-debugging-tools/
 			;
 		inputsFrom = [ drv ];
-		shellHook = avail.shellHook drv;
+		shellHook = avail.shellHook false drv;
 	};
 	shells = lib.pipe avail [
 		(lib.mapAttrs (name: drv: if lib.hasPrefix "bizhawkAssemblies-" name then drv else drv.assemblies or null))

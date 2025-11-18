@@ -46,7 +46,7 @@
                 powershell
               ];
               inputsFrom = [ drv ];
-              shellHook = avail.shellHook drv;
+              shellHook = avail.shellHook true drv;
             };
         in
         {

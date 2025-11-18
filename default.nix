@@ -174,9 +174,9 @@ in {
 		IDEs = {
 			kate = [ kate omnisharp-roslyn ];
 		};
-		shellHook = drv: ''
+		shellHook = isFlake: drv: ''
 			export BIZHAWKBUILD_HOME='${builtins.toString ./.}'
-			export BIZHAWK_HOME="$BIZHAWKBUILD_HOME/output/"
+			export BIZHAWK_HOME="${if isFlake then "$(pwd -P)" else "$BIZHAWKBUILD_HOME"}/output/"
 			ldLibPath='${lib.makeLibraryPath drv.buildInputs}' # for running tests
 			if [ -z "$LD_LIBRARY_PATH" ]; then
 				export LD_LIBRARY_PATH="$ldLibPath"
