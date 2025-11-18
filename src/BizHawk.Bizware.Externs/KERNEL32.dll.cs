@@ -17,8 +17,8 @@ namespace Windows.Win32
 		}
 
 		/// <seealso cref="HeapAlloc(SafeHandle, HEAP_FLAGS, nuint)"/>
-		public static unsafe IntPtr HeapAlloc(int dwBytes, HEAP_FLAGS dwFlags = HEAP_FLAGS.HEAP_NONE)
-			=> unchecked((IntPtr) HeapAlloc(GetProcessHeap_SafeHandle(), dwFlags, dwBytes: (UIntPtr) dwBytes));
+		public static unsafe void* HeapAlloc(int dwBytes, HEAP_FLAGS dwFlags = HEAP_FLAGS.HEAP_NONE)
+			=> HeapAlloc(GetProcessHeap_SafeHandle(), dwFlags, dwBytes: (UIntPtr) dwBytes);
 
 		/// <inheritdoc cref="IsWow64Process(HANDLE, BOOL*)"/>
 		public static unsafe BOOL IsWow64Process(HANDLE hProcess, out BOOL Wow64Process)
