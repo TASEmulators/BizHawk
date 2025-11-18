@@ -431,7 +431,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e) when (!_config.DontTryOtherCores && e is not (
 					MissingFirmwareException
-					or InternalErrorException
+					or InternalCoreException
 					or { InnerException: MissingFirmwareException }
 				))
 				{

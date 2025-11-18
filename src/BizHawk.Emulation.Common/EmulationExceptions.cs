@@ -42,9 +42,9 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public class InternalErrorException : Exception
+	public class InternalCoreException : Exception
 	{
-		public InternalErrorException(string message) : base(message)
+		public InternalCoreException(string message) : base(message)
 		{
 		}
 	}

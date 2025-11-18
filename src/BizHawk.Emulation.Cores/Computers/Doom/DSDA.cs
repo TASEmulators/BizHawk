@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 		private void ErrorCallback(string error)
 		{
-			throw new InternalErrorException($"\n\n{error}\n");
+			throw new InternalCoreException($"\n\n{error}\n");
 		}
 
 		/// <summary>
