@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Common", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Emulation.Common", "src\BizHawk.Tests.Emulation.Common\BizHawk.Tests.Emulation.Common.csproj", "{D95E2B42-757A-4D19-8A76-84C6350BAD8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.Externs", "src\BizHawk.Bizware.Externs\BizHawk.Bizware.Externs.csproj", "{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCB48DE4-8D71-4F8B-ABE4-55E9B62FA511}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

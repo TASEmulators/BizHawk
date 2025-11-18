@@ -5,18 +5,15 @@
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<PolySharpExcludeGeneratedTypes>System.Diagnostics.CodeAnalysis.UnscopedRefAttribute</PolySharpExcludeGeneratedTypes>
 		<PolySharpUsePublicAccessibilityForGeneratedTypes>true</PolySharpUsePublicAccessibilityForGeneratedTypes>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.HighPerformance" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" />
 		<PackageReference Include="Microsoft.Win32.Registry" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" />
 		<PackageReference Include="PolySharp" />
 		<PackageReference Include="System.ComponentModel.Annotations" />
-		<PackageReference Include="System.Memory" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Externs/BizHawk.Bizware.Externs.csproj" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
 	<Target Name="InstallGitHooks" AfterTargets="PreBuildEvent">
