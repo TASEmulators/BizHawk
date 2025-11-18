@@ -346,7 +346,8 @@ namespace BizHawk.Client.EmuHawk
 				wfex.nAvgBytesPerSec = (uint)(wfex.nBlockAlign * a_samplerate);
 			}
 
-			public int fps, fps_scale;
+			public uint fps;
+			public uint fps_scale;
 		}
 
 		private readonly Parameters _parameters = new Parameters();
@@ -360,10 +361,10 @@ namespace BizHawk.Client.EmuHawk
 			bool change = false;
 
 			change |= fpsNum != _parameters.fps;
-			_parameters.fps = fpsNum;
+			_parameters.fps = checked((uint) fpsNum);
 
 			change |= _parameters.fps_scale != fpsDen;
-			_parameters.fps_scale = fpsDen;
+			_parameters.fps_scale = checked((uint) fpsDen);
 
 			if (change)
 			{
@@ -413,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 			public byte[] Format = Array.Empty<byte>();
 			public byte[] Parms = Array.Empty<byte>();
 
-			private static unsafe string Decode_mmioFOURCC(int code)
+			private static unsafe string Decode_mmioFOURCC(uint code)
 			{
 				var chs = stackalloc char[4];
 
@@ -439,12 +440,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (opts.lpFormat != IntPtr.Zero)
 				{
-					Marshal.Copy(opts.lpFormat, ret.Format, 0, opts.cbFormat);
+					Marshal.Copy(opts.lpFormat, ret.Format, 0, checked((int) opts.cbFormat));
 				}
 
 				if (opts.lpParms != IntPtr.Zero)
 				{
-					Marshal.Copy(opts.lpParms, ret.Parms, 0, opts.cbParms);
+					Marshal.Copy(opts.lpParms, ret.Parms, 0, checked((int) opts.cbParms));
 				}
 
 				return ret;
@@ -473,14 +474,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_comprOptions.cbParms != 0)
 				{
-					_comprOptions.lpParms = HeapAlloc(GetProcessHeap(), 0, _comprOptions.cbParms);
-					Marshal.Copy(Parms, 0, _comprOptions.lpParms, _comprOptions.cbParms);
+					_comprOptions.lpParms = HeapAlloc(GetProcessHeap(), default, new UIntPtr(_comprOptions.cbParms));
+					Marshal.Copy(Parms, 0, _comprOptions.lpParms, checked((int) _comprOptions.cbParms));
 				}
 
 				if (_comprOptions.cbFormat != 0)
 				{
-					_comprOptions.lpFormat = HeapAlloc(GetProcessHeap(), 0, _comprOptions.cbFormat);
-					Marshal.Copy(Format, 0, _comprOptions.lpFormat, _comprOptions.cbFormat);
+					_comprOptions.lpFormat = HeapAlloc(GetProcessHeap(), default, new UIntPtr(_comprOptions.cbFormat));
+					Marshal.Copy(Format, 0, _comprOptions.lpFormat, checked((int) _comprOptions.cbFormat));
 				}
 
 				opts = _comprOptions;
@@ -521,20 +522,20 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 
-					comprOptions.fccType = b.ReadInt32();
-					comprOptions.fccHandler = b.ReadInt32();
-					comprOptions.dwKeyFrameEvery = b.ReadInt32();
-					comprOptions.dwQuality = b.ReadInt32();
-					comprOptions.dwBytesPerSecond = b.ReadInt32();
-					comprOptions.dwFlags = b.ReadInt32();
+					comprOptions.fccType = b.ReadUInt32();
+					comprOptions.fccHandler = b.ReadUInt32();
+					comprOptions.dwKeyFrameEvery = b.ReadUInt32();
+					comprOptions.dwQuality = b.ReadUInt32();
+					comprOptions.dwBytesPerSecond = b.ReadUInt32();
+					comprOptions.dwFlags = b.ReadUInt32();
 					//comprOptions.lpFormat = b.ReadInt32();
-					comprOptions.cbFormat = b.ReadInt32();
+					comprOptions.cbFormat = b.ReadUInt32();
 					//comprOptions.lpParms = b.ReadInt32();
-					comprOptions.cbParms = b.ReadInt32();
-					comprOptions.dwInterleaveEvery = b.ReadInt32();
+					comprOptions.cbParms = b.ReadUInt32();
+					comprOptions.dwInterleaveEvery = b.ReadUInt32();
 
-					format = b.ReadBytes(comprOptions.cbFormat);
-					parms = b.ReadBytes(comprOptions.cbParms);
+					format = b.ReadBytes(checked((int) comprOptions.cbFormat));
+					parms = b.ReadBytes(checked((int) comprOptions.cbParms));
 				}
 				catch (IOException)
 				{
@@ -624,14 +625,14 @@ namespace BizHawk.Client.EmuHawk
 			public long GetLengthApproximation()
 				=> _outStatus.video_bytes + _outStatus.audio_bytes;
 
-			private static unsafe int AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
+			private static unsafe nint AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
 			{
 				fixed (AVIWriterImports.AVICOMPRESSOPTIONS* _popts = &opts)
 				{
 					var pStream = &stream;
 					var popts = _popts;
 					var ppopts = &popts;
-					return AVIWriterImports.AVISaveOptions(owner, 0, 1, pStream, ppopts);
+					return AVIWriterImports.AVISaveOptions(owner, default, 1, pStream, ppopts);
 				}
 			}
 
@@ -651,8 +652,11 @@ namespace BizHawk.Client.EmuHawk
 					File.Delete(destPath);
 				}
 
-				var hr = AVIWriterImports.AVIFileOpenW(ref _pAviFile, destPath,
-					AVIWriterImports.OpenFileStyle.OF_CREATE | AVIWriterImports.OpenFileStyle.OF_WRITE, 0);
+				var hr = AVIWriterImports.AVIFileOpenW(
+					out _pAviFile,
+					destPath,
+					AVIWriterImports.OpenFileStyle.OF_CREATE | AVIWriterImports.OpenFileStyle.OF_WRITE,
+					default);
 				var hrEx = Marshal.GetExceptionForHR(hr);
 				if (hrEx != null)
 				{
@@ -663,12 +667,12 @@ namespace BizHawk.Client.EmuHawk
 				var vidstream_header = default(AVIWriterImports.AVISTREAMINFOW);
 				var bmih = default(AVIWriterImports.BITMAPINFOHEADER);
 				parameters.PopulateBITMAPINFOHEADER24(ref bmih);
-				vidstream_header.fccType = /*BinaryPrimitives.ReadInt32LittleEndian("vids"u8)*/0x73646976;
+				vidstream_header.fccType = /*BinaryPrimitives.ReadInt32LittleEndian("vids"u8)*/0x73646976U;
 				vidstream_header.dwRate = parameters.fps;
 				vidstream_header.dwScale = parameters.fps_scale;
-				vidstream_header.dwSuggestedBufferSize = (int)bmih.biSizeImage;
+				vidstream_header.dwSuggestedBufferSize = bmih.biSizeImage;
 
-				hr = AVIWriterImports.AVIFileCreateStreamW(_pAviFile, out _pAviRawVideoStream, ref vidstream_header);
+				hr = AVIWriterImports.AVIFileCreateStreamW(_pAviFile, out _pAviRawVideoStream, in vidstream_header);
 				hrEx = Marshal.GetExceptionForHR(hr);
 				if (hrEx != null)
 				{
@@ -680,14 +684,14 @@ namespace BizHawk.Client.EmuHawk
 				var audstream_header = default(AVIWriterImports.AVISTREAMINFOW);
 				var wfex = default(AVIWriterImports.WAVEFORMATEX);
 				parameters.PopulateWAVEFORMATEX(ref wfex);
-				audstream_header.fccType = /*BinaryPrimitives.ReadInt32LittleEndian("auds"u8)*/0x73647561;
-				audstream_header.dwQuality = -1;
+				audstream_header.fccType = /*BinaryPrimitives.ReadInt32LittleEndian("auds"u8)*/0x73647561U;
+				audstream_header.dwQuality = /*-1*/~0U;
 				audstream_header.dwScale = wfex.nBlockAlign;
-				audstream_header.dwRate = (int)wfex.nAvgBytesPerSec;
+				audstream_header.dwRate = wfex.nAvgBytesPerSec;
 				audstream_header.dwSampleSize = wfex.nBlockAlign;
 				audstream_header.dwInitialFrames = 1; // ??? optimal value?
 
-				hr = AVIWriterImports.AVIFileCreateStreamW(_pAviFile, out _pAviRawAudioStream, ref audstream_header);
+				hr = AVIWriterImports.AVIFileCreateStreamW(_pAviFile, out _pAviRawAudioStream, in audstream_header);
 				hrEx = Marshal.GetExceptionForHR(hr);
 				if (hrEx != null)
 				{
@@ -745,7 +749,11 @@ namespace BizHawk.Client.EmuHawk
 				// open compressed video stream
 				_currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(out var opts);
 
-				var hr = AVIWriterImports.AVIMakeCompressedStream(out _pAviCompressedVideoStream, _pAviRawVideoStream, ref opts, IntPtr.Zero);
+				var hr = AVIWriterImports.AVIMakeCompressedStream(
+					out _pAviCompressedVideoStream,
+					_pAviRawVideoStream,
+					in opts,
+					IntPtr.Zero);
 				var hrEx = Marshal.GetExceptionForHR(hr);
 				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref opts);
 				if (hrEx != null)

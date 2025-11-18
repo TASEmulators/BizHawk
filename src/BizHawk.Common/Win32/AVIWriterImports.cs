@@ -3,6 +3,8 @@
 #if AVI_SUPPORT
 using System.Runtime.InteropServices;
 
+using HRESULT = int;
+
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace BizHawk.Common
@@ -19,23 +21,23 @@ namespace BizHawk.Common
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct AVISTREAMINFOW
 		{
-			public int fccType;
-			public int fccHandler;
-			public int dwFlags;
-			public int dwCaps;
-			public short wPriority;
-			public short wLanguage;
-			public int dwScale;
-			public int dwRate;
-			public int dwStart;
-			public int dwLength;
-			public int dwInitialFrames;
-			public int dwSuggestedBufferSize;
-			public int dwQuality;
-			public int dwSampleSize;
+			public uint fccType;
+			public uint fccHandler;
+			public uint dwFlags;
+			public uint dwCaps;
+			public ushort wPriority;
+			public ushort wLanguage;
+			public uint dwScale;
+			public uint dwRate;
+			public uint dwStart;
+			public uint dwLength;
+			public uint dwInitialFrames;
+			public uint dwSuggestedBufferSize;
+			public uint dwQuality;
+			public uint dwSampleSize;
 			public RECT rcFrame;
-			public int dwEditCount;
-			public int dwFormatChangeCount;
+			public uint dwEditCount;
+			public uint dwFormatChangeCount;
 			[MarshalAs(UnmanagedType.LPWStr, SizeConst = 64)]
 			public string szName;
 
@@ -71,17 +73,17 @@ namespace BizHawk.Common
 		[StructLayout(LayoutKind.Sequential)]
 		public struct AVICOMPRESSOPTIONS
 		{
-			public int fccType;
-			public int fccHandler;
-			public int dwKeyFrameEvery;
-			public int dwQuality;
-			public int dwBytesPerSecond;
-			public int dwFlags;
+			public uint fccType;
+			public uint fccHandler;
+			public uint dwKeyFrameEvery;
+			public uint dwQuality;
+			public uint dwBytesPerSecond;
+			public uint dwFlags;
 			public IntPtr lpFormat;
-			public int cbFormat;
+			public uint cbFormat;
 			public IntPtr lpParms;
-			public int cbParms;
-			public int dwInterleaveEvery;
+			public uint cbParms;
+			public uint dwInterleaveEvery;
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -101,41 +103,41 @@ namespace BizHawk.Common
 
 		/// <summary>Create a new stream in an existing file and creates an interface to the new stream</summary>
 		[DllImport("avifil32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-		public static extern int AVIFileCreateStreamW(IntPtr pfile, out IntPtr ppavi, ref AVISTREAMINFOW psi);
+		public static extern HRESULT AVIFileCreateStreamW(IntPtr pfile, out IntPtr ppavi, in AVISTREAMINFOW psi);
 
 		[DllImport("avifil32.dll", ExactSpelling = true)]
 		public static extern void AVIFileInit();
 
 		[DllImport("avifil32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
-		public static extern int AVIFileOpenW(ref IntPtr pAviFile, [MarshalAs(UnmanagedType.LPWStr)] string szFile, OpenFileStyle uMode, int lpHandler);
+		public static extern HRESULT AVIFileOpenW(out IntPtr ppfile, [MarshalAs(UnmanagedType.LPWStr)] string szFile, OpenFileStyle uMode, /*(Guid*)*/IntPtr lpHandler);
 
 		/// <summary>Release an open AVI stream</summary>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern int AVIFileRelease(IntPtr pfile);
+		public static extern uint AVIFileRelease(IntPtr pfile);
 
 		/// <summary>Create a compressed stream from an uncompressed stream and a compression filter, and returns the address of a pointer to the compressed stream</summary>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern int AVIMakeCompressedStream(out IntPtr ppsCompressed, IntPtr psSource, ref AVICOMPRESSOPTIONS lpOptions, IntPtr pclsidHandler);
+		public static extern HRESULT AVIMakeCompressedStream(out IntPtr ppsCompressed, IntPtr ppsSource, in AVICOMPRESSOPTIONS lpOptions, IntPtr pclsidHandler);
 
 		/// <summary>Retrieve the save options for a file and returns them in a buffer</summary>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern unsafe int AVISaveOptions(IntPtr hwnd, int flags, int streams, void* ppAvi, void* plpOptions);
+		public static extern unsafe nint AVISaveOptions(IntPtr hwnd, uint uiFlags, int nStreams, void* ppavi, AVICOMPRESSOPTIONS** plpOptions);
 
 		/// <inheritdoc cref="AVIFileRelease"/>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern int AVIStreamRelease(IntPtr pavi);
+		public static extern uint AVIStreamRelease(IntPtr pavi);
 
 		/// <summary>Set the format of a stream at the specified position</summary>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern int AVIStreamSetFormat(IntPtr pavi, int lPos, ref BITMAPINFOHEADER lpFormat, int cbFormat);
+		public static extern HRESULT AVIStreamSetFormat(IntPtr pavi, int lPos, ref BITMAPINFOHEADER lpFormat, int cbFormat);
 
 		/// <inheritdoc cref="AVIStreamSetFormat(System.IntPtr,int,ref BizHawk.Common.AVIWriterImports.BITMAPINFOHEADER,int)"/>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern int AVIStreamSetFormat(IntPtr pavi, int lPos, ref WAVEFORMATEX lpFormat, int cbFormat);
+		public static extern HRESULT AVIStreamSetFormat(IntPtr pavi, int lPos, ref WAVEFORMATEX lpFormat, int cbFormat);
 
 		/// <summary>Write data to a stream</summary>
 		[DllImport("avifil32.dll", ExactSpelling = true)]
-		public static extern int AVIStreamWrite(IntPtr pavi, int lStart, int lSamples, IntPtr lpBuffer, int cbBuffer, int dwFlags, IntPtr plSampWritten, out int plBytesWritten);
+		public static extern HRESULT AVIStreamWrite(IntPtr pavi, int lStart, int lSamples, IntPtr lpBuffer, int cbBuffer, uint dwFlags, /*out int*/IntPtr plSampWritten, out int plBytesWritten);
 	}
 }
 #endif
