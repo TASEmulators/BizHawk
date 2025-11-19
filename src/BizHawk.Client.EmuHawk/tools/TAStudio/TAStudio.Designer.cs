@@ -218,8 +218,6 @@ namespace BizHawk.Client.EmuHawk
             this.ColumnsSubMenu,
             this.HelpSubMenu});
 			this.TASMenu.TabIndex = 0;
-			this.TASMenu.MenuActivate += new System.EventHandler(this.TASMenu_MenuActivate);
-			this.TASMenu.MenuDeactivate += new System.EventHandler(this.TASMenu_MenuDeactivate);
 			// 
 			// FileSubMenu
 			// 

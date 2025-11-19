@@ -48,7 +48,7 @@ namespace BizHawk.Tests.Client.Common
 
 			public void BasicInputProcessing()
 			{
-				manager.ProcessInput(source, ProcessHotkey, config, (_) => { });
+				manager.ProcessInput(source, ProcessHotkey, config, (_, _) => { });
 				manager.RunControllerChain(config);
 			}
 
@@ -448,7 +448,7 @@ namespace BizHawk.Tests.Client.Common
 		}
 
 		[TestMethod]
-		public void HotkeyIsNotSeenAsUnbound()
+		public void HotkeyIsNotSeenAsUnhandled()
 		{
 			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
@@ -456,11 +456,11 @@ namespace BizHawk.Tests.Client.Common
 			manager.ClientControls.BindMulti(_hotkeys[0], "Q");
 
 			source.MakePressEvent("Q");
-			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
+			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_, handled) => Assert.IsTrue(handled, "Bound key was seen as unbound."));
 		}
 
 		[TestMethod]
-		public void InputIsNotSeenAsUnbound()
+		public void InputIsNotSeenAsUnhandled()
 		{
 			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
@@ -468,11 +468,11 @@ namespace BizHawk.Tests.Client.Common
 			manager.ActiveController.BindMulti("A", "Q");
 
 			source.MakePressEvent("Q");
-			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_) => Assert.Fail("Bound key was seen as unbound."));
+			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_, handled) => Assert.IsTrue(handled, "Bound key was seen as unbound."));
 		}
 
 		[TestMethod]
-		public void UnboundInputIsSeen()
+		public void UnboundInputIsSeenAsUnhandled()
 		{
 			Context context = new(_hotkeys);
 			InputManager manager = context.manager;
@@ -480,10 +480,7 @@ namespace BizHawk.Tests.Client.Common
 
 			source.MakePressEvent("A");
 
-			bool sawUnboundInput = false;
-			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_) => sawUnboundInput = true);
-
-			Assert.IsTrue(sawUnboundInput);
+			manager.ProcessInput(source, context.ProcessHotkey, context.config, (_, handled) => Assert.IsFalse(handled, "Unbound key was seen as handled."));
 		}
 
 		[TestMethod]
