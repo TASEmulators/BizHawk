@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk

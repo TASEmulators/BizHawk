@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	3F (TigerVision)
 	-----
 
-	Traditionally, this method was used on the TigerVision games.  The ROMs were all 8K, and 
+	Traditionally, this method was used on the TigerVision games.  The ROMs were all 8K, and
 	there's two 2K pages in the 4K of address space. The upper bank is fixed to the last 2K
 	of the ROM.
 
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	register, and this has been done... however do not think 512K ROMs have been made just
 	yet.
 	*/
-	internal sealed class m3F : MapperBase 
+	internal sealed class m3F : MapperBase
 	{
 		private int _lowBank2K;
 
@@ -45,12 +45,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			
+
 			if (addr < 0x1800) // Low 2k Bank
 			{
 				return Core.Rom[(_lowBank2K << 11) + (addr & 0x07FF)];
 			}
-			
+
 			if (addr < 0x2000) // High bank fixed to last 2k of ROM
 			{
 				return Core.Rom[Core.Rom.Length - 2048 + (addr & 0x07FF)];

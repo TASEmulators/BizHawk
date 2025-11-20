@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -10,6 +11,83 @@ namespace BizHawk.Common.CollectionExtensions
 	public static class CollectionExtensions
 #pragma warning restore MA0104
 	{
+		private struct EnumeratorAsEnumerable<T> : IEnumerable<T>
+		{
+			private IEnumerator<T>? _wrapped;
+
+			public EnumeratorAsEnumerable(IEnumerator<T> wrapped)
+				=> _wrapped = wrapped;
+
+			public override bool Equals(object? other)
+				=> other is EnumeratorAsEnumerable<T> wrapper && object.Equals(_wrapped, wrapper._wrapped);
+
+			public IEnumerator<T> GetEnumerator()
+			{
+				var temp = _wrapped ?? throw new InvalidOperationException("double enumeration (or `default`/zeroed struct)");
+				_wrapped = null;
+				return temp;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+				=> GetEnumerator();
+
+			public override int GetHashCode()
+				=> _wrapped?.GetHashCode() ?? default;
+		}
+
+#if !NET6_0_OR_GREATER
+		/// <remarks>taken from .NET 9 source, MIT-licensed, specifically <see href="https://github.com/dotnet/dotnet/blob/v9.0.7/src/runtime/src/libraries/System.Linq/src/System/Linq/Chunk.cs"/></remarks>
+		private static IEnumerable<T[]> EnumerableChunkIterator<T>(IEnumerable<T> source, int size)
+		{
+			using var iter = source.GetEnumerator();
+			// Before allocating anything, make sure there's at least one element.
+			if (!iter.MoveNext()) yield break;
+
+			// Now that we know we have at least one item, allocate an initial storage array. This is not
+			// the array we'll yield.  It starts out small in order to avoid significantly overallocating
+			// when the source has many fewer elements than the chunk size.
+			var arraySize = Math.Min(4, size);
+			int i;
+			do
+			{
+				var array = new T[arraySize];
+				array[0] = iter.Current; // Store the first item.
+				i = 1;
+				if (size != array.Length)
+				{
+					// This is the first chunk. As we fill the array, grow it as needed.
+					while (i < size && iter.MoveNext())
+					{
+						if (i >= array.Length)
+						{
+							arraySize = (int) Math.Min((uint) size, 2 * (uint) array.Length);
+							Array.Resize(ref array, arraySize);
+						}
+						array[i] = iter.Current;
+						i++;
+					}
+				}
+				else
+				{
+					// For all but the first chunk, the array will already be correctly sized.
+					// We can just store into it until either it's full or MoveNext returns false.
+					while ((uint) i < (uint) array.Length && iter.MoveNext())
+					{
+						array[i] = iter.Current;
+						i++;
+					}
+				}
+				if (i != array.Length) Array.Resize(ref array, i);
+				yield return array;
+			}
+			while (i >= size && iter.MoveNext());
+		}
+#endif
+
+		private const string ERR_MSG_IMMUTABLE_LIST = "immutable list passed to mutating method";
+
+		private const string WARN_NONGENERIC = "use generic overload";
+
 		public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
 			this IEnumerable<TSource> source,
 			Func<TSource, TKey> keySelector,
@@ -115,12 +193,58 @@ namespace BizHawk.Common.CollectionExtensions
 			foreach (var item in collection) list.Add(item);
 		}
 
-		/// <remarks>
-		/// Contains method for arrays which does not need Linq, but rather uses Array.IndexOf
-		/// similar to <see cref="ICollection{T}.Contains">ICollection's Contains</see>
-		/// </remarks>
-		public static bool Contains<T>(this T[] array, T value)
-			=> Array.IndexOf(array, value) >= 0;
+		public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> enumerator)
+			=> new EnumeratorAsEnumerable<T>(enumerator);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<byte> BytesSpan<T>(this T[] array)
+			where T : struct
+			=> MemoryMarshal.AsBytes(array.AsSpan());
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static ReadOnlySpan<byte> BytesSpan<T>(this ReadOnlySpan<T> span)
+			where T : struct
+			=> MemoryMarshal.AsBytes(span);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Span<byte> BytesSpan<T>(this Span<T> span)
+			where T : struct
+			=> MemoryMarshal.AsBytes(span);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static ReadOnlySpan<byte> BytesSpan(this string str)
+			=> MemoryMarshal.AsBytes(str.AsSpan());
+
+#if !NET6_0_OR_GREATER
+		/// <returns>chunks of length ≤ <paramref name="size"/> (the last chunk may be smaller)</returns>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="size"/> is below <c>1</c></exception>
+		public static IEnumerable<T[]> Chunk<T>(this IEnumerable<T> source, int size)
+			=> size < 1
+				? throw new ArgumentOutOfRangeException(paramName: nameof(size), size, message: "chunks must contain at least 1 element")
+				: EnumerableChunkIterator(source, size);
+#endif
+
+		public static IEnumerable<(int Start, int Count)> ChunkConsecutive(this IReadOnlyList<int> numbers)
+		{
+			if (numbers.Count is 0) yield break;
+			Debug.Assert(numbers.IsSortedAsc(), "should be sorted asc.");
+			var i = 0;
+			var blockStart = 0;
+			var lastValueSeen = numbers[i] - 1;
+			while (i < numbers.Count)
+			{
+				var value = numbers[i];
+				if (value - lastValueSeen is not 1)
+				{
+					// discontinuity; split off another block, and this is now the start of the next block
+					yield return (Start: numbers[blockStart], Count: i - blockStart);
+					blockStart = i;
+				}
+				lastValueSeen = value;
+				i++;
+			}
+			yield return (Start: numbers[blockStart], Count: i - blockStart); // `count` arg will be 0 if the whole list is contiguous
+		}
 
 		/// <returns>
 		/// portion of <paramref name="dest"/> that was written to,
@@ -129,8 +253,8 @@ namespace BizHawk.Common.CollectionExtensions
 		/// </returns>
 		public static ReadOnlySpan<T> ConcatArray<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b, Span<T> dest)
 		{
-			if (b.Length is 0) return a;
-			if (a.Length is 0) return b;
+			if (b.IsEmpty) return a;
+			if (a.IsEmpty) return b;
 			var combinedLen = a.Length + b.Length;
 			if (combinedLen < dest.Length) return Span<T>.Empty;
 			a.CopyTo(dest);
@@ -149,6 +273,40 @@ namespace BizHawk.Common.CollectionExtensions
 			return combined;
 		}
 
+		/// <returns>freshly-allocated array</returns>
+#pragma warning disable RCS1224 // will be `params` when we bump `$(LangVersion)`; `this params` is nonsensical
+		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<T[]> arrays)
+#pragma warning restore RCS1224
+		{
+			var combinedLength = arrays.Sum(static a => a.Length); //TODO detect overflow
+			if (combinedLength is 0) return Array.Empty<T>();
+			var combined = new T[combinedLength];
+			var i = 0;
+			foreach (var arr in arrays)
+			{
+				arr.CopyTo(combined.AsSpan(start: i));
+				i += arr.Length;
+			}
+			return combined;
+		}
+
+		/// <returns>freshly-allocated array</returns>
+#pragma warning disable RCS1224 // will be `params` when we bump `$(LangVersion)`; `this params` is nonsensical
+		public static T[] ConcatArrays<T>(/*params*/ IReadOnlyCollection<ArraySegment<T>> arrays)
+#pragma warning restore RCS1224
+		{
+			var combinedLength = arrays.Sum(static a => a.Count); //TODO detect overflow
+			if (combinedLength is 0) return Array.Empty<T>();
+			var combined = new T[combinedLength];
+			var i = 0;
+			foreach (var arr in arrays)
+			{
+				arr.AsSpan().CopyTo(combined.AsSpan(start: i));
+				i += arr.Count;
+			}
+			return combined;
+		}
+
 		public static bool CountIsAtLeast<T>(this IEnumerable<T> collection, int n)
 			=> collection is ICollection countable
 				? countable.Count >= n
@@ -159,31 +317,9 @@ namespace BizHawk.Common.CollectionExtensions
 				? countable.Count == n
 				: collection.Take(n + 1).Count() == n;
 
-#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER)
-		/// <summary>
-		/// Returns the value at <paramref name="key"/>.
-		/// If the key is not present, returns default(TValue).
-		/// backported from .NET Core 2.0
-		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
-			=> dictionary.TryGetValue(key, out var found) ? found : default;
-
-		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K)"/>
-		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
-			=> dictionary.TryGetValue(key, out var found) ? found : default;
-
-		/// <summary>
-		/// Returns the value at <paramref name="key"/>.
-		/// If the key is not present, returns <paramref name="defaultValue"/>.
-		/// backported from .NET Core 2.0
-		/// </summary>
-		public static TValue? GetValueOrDefault<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
-			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
-
-		/// <inheritdoc cref="GetValueOrDefault{K,V}(IDictionary{K,V},K,V)"/>
-		public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
-			=> dictionary.TryGetValue(key, out var found) ? found : defaultValue;
-#endif
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Fill<T>(this T[] array, T value)
+			=> array.AsSpan().Fill(value);
 
 		/// <summary>
 		/// Returns the value at <paramref name="key"/>.
@@ -225,6 +361,111 @@ namespace BizHawk.Common.CollectionExtensions
 			return -1;
 		}
 
+		public static bool InsertAfter<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertAfter<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		public static bool InsertAfterLast<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertAfterLast<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint + 1, insert);
+			return true;
+		}
+
+		public static bool InsertBefore<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertBefore<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		public static bool InsertBeforeLast<T>(this IList<T> list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static bool InsertBeforeLast<T>(this IList list, T needle, T insert)
+		{
+			Debug.Assert(!list.IsReadOnly, ERR_MSG_IMMUTABLE_LIST);
+			var insertPoint = list.LastIndexOf(needle);
+			if (insertPoint < 0) return false;
+			list.Insert(insertPoint, insert);
+			return true;
+		}
+
+		public static int LastIndexOf<T>(this IList<T> list, T item)
+		{
+			if (list is T[] arr) return Array.LastIndexOf(arr, item);
+			if (list is List<T> bclList) return bclList.LastIndexOf(item);
+			if (item is null)
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (list[i] is null) return i;
+			}
+			else
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (item.Equals(list[i])) return i;
+			}
+			return -1;
+		}
+
+		[Obsolete(WARN_NONGENERIC)]
+		public static int LastIndexOf(this IList list, object? item)
+		{
+			if (item is null)
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (list[i] is null) return i;
+			}
+			else
+			{
+				for (var i = list.Count - 1; i >= 0; i--) if (item.Equals(list[i])) return i;
+			}
+			return -1;
+		}
+
 		public static T? FirstOrNull<T>(this IEnumerable<T> list, Func<T, bool> predicate)
 			where T : struct
 		{
@@ -234,17 +475,29 @@ namespace BizHawk.Common.CollectionExtensions
 			return null;
 		}
 
-#if !NET7_0_OR_GREATER
-		/// <remarks>shorthand for <c>this.OrderBy(static e => e)</c>, backported from .NET 7</remarks>
-		public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source)
-			where T : IComparable<T>
-			=> source.OrderBy(ReturnSelf);
-
-		/// <remarks>shorthand for <c>this.OrderByDescending(static e => e)</c>, backported from .NET 7</remarks>
-		public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> source)
-			where T : IComparable<T>
-			=> source.OrderByDescending(ReturnSelf);
+		/// <returns><see langword="true"/> iff any removed</returns>
+		public static bool RemoveAll<T>(this ICollection<T> collection, T item)
+		{
+			if (collection is ISet<T>) return collection.Remove(item);
+#if false // probably not worth it, would need to benchmark
+			if (collection is IList<T> list)
+			{
+				// remove from end
+				var i = list.LastIndexOf(item);
+				if (i < 0) return false;
+				do
+				{
+					list.RemoveAt(i);
+					i = list.LastIndexOf(item);
+				}
+				while (i < 0);
+				return true;
+			}
 #endif
+			if (!collection.Remove(item)) return false;
+			while (collection.Remove(item)) {/*noop*/}
+			return true;
+		}
 
 		/// <inheritdoc cref="List{T}.RemoveAll"/>
 		/// <remarks>
@@ -273,10 +526,6 @@ namespace BizHawk.Common.CollectionExtensions
 			return c - list.Count;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static T ReturnSelf<T>(this T self)
-			=> self;
-
 		public static bool ReversedSequenceEqual<T>(this ReadOnlySpan<T> a, ReadOnlySpan<T> b)
 			where T : IEquatable<T>
 		{
@@ -290,6 +539,20 @@ namespace BizHawk.Common.CollectionExtensions
 				i++;
 			}
 			return true;
+		}
+
+		/// <summary>
+		/// if <paramref name="shouldBeMember"/> is <see langword="false"/>,
+		/// removes every copy of <paramref name="item"/> from <paramref name="collection"/>;
+		/// else if <paramref name="shouldBeMember"/> is <see langword="true"/>
+		/// and <paramref name="item"/> is not present in <paramref name="collection"/>, appends one copy;
+		/// else no-op (does not limit to one copy)
+		/// </summary>
+		public static void SetMembership<T>(this ICollection<T> collection, T item, bool shouldBeMember)
+		{
+			if (!shouldBeMember) _ = collection.RemoveAll(item);
+			else if (!collection.Contains(item)) collection.Add(item);
+			// else noop
 		}
 
 		public static ReadOnlySpan<T> Slice<T>(this ReadOnlySpan<T> span, Range range)
@@ -310,9 +573,55 @@ namespace BizHawk.Common.CollectionExtensions
 			return str.Substring(startIndex: offset, length: length);
 		}
 
-		/// <summary>shallow clone</summary>
-		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> list)
-			=> list.ToDictionary(static kvp => kvp.Key, static kvp => kvp.Value);
+		/// <summary>
+		/// if <paramref name="collection"/> contains <paramref name="item"/>, removes every copy;
+		/// otherwise appends one copy
+		/// </summary>
+		/// <returns>new membership state (<see langword="true"/> iff added)</returns>
+		public static bool ToggleMembership<T>(this ICollection<T> collection, T item)
+		{
+			var removed = collection.RemoveAll(item);
+			if (!removed) collection.Add(item);
+			return removed;
+		}
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool? Unanimity(this IEnumerable<bool> lazy)
+			=> lazy is IReadOnlyCollection<bool> collection
+				? Unanimity(collection)
+				: Unanimity(lazy as ISet<bool> ?? lazy.ToHashSet());
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		public static bool? Unanimity(this IReadOnlyCollection<bool> collection)
+		{
+			if (collection is bool[] arr) return Unanimity(arr.AsSpan());
+			if (collection is List<bool> list)
+			{
+				return list is [ var first, .. ] && list.IndexOf(!first, index: 1) < 0 ? first : null;
+			}
+			using var iter = collection.GetEnumerator();
+			if (!iter.MoveNext()) return null;
+			var first1 = iter.Current;
+			while (iter.MoveNext()) if (iter.Current != first1) return null;
+			return first1;
+		}
+
+		/// <returns>
+		/// <see langword="true"/> if all <see langword="true"/>,
+		/// <see langword="false"/> if all <see langword="false"/>,
+		/// <see langword="null"/> if mixed (or empty)
+		/// </returns>
+		public static bool? Unanimity(this ISet<bool> set)
+#if true
+			=> set.Count is 1 ? set.First() : null;
+#else //TODO
+			=> set.SingleOrNull();
+#endif
+
+		/// <inheritdoc cref="Unanimity(ISet{bool})"/>
+		public static bool? Unanimity(this ReadOnlySpan<bool> span)
+			=> span is [ var first, .. ] && !span.Slice(start: 1).Contains(!first) ? first : null;
 
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>

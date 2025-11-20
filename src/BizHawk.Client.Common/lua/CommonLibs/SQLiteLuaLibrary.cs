@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			return result switch
 			{
 				Dictionary<string, object> dict => _th.DictToTable(dict),
-				_ => result
+				_ => result,
 			};
 		}
 	}

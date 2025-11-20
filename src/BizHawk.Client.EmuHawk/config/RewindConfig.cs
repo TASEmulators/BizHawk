@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				FullnessLabel.Text = $"{fullnessRatio:P2}";
 				var stateCount = rewinder.Count;
 				RewindFramesUsedLabel.Text = stateCount.ToString();
-				_avgStateSize = stateCount is 0 ? 0UL : (ulong) Math.Round(rewinder.Size * fullnessRatio / stateCount);
+				_avgStateSize = stateCount is 0 ? (ulong) _statableCore.CloneSavestate().Length : (ulong) Math.Round(rewinder.Size * fullnessRatio / stateCount);
 			}
 			else
 			{
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			LowResLargeScreenshotsCheckbox.Checked = !_config.Savestates.NoLowResLargeScreenshots;
 			BigScreenshotNumeric.Value = _config.Savestates.BigScreenshotSize / 1024;
 
-			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
+			ScreenshotInStatesCheckbox_CheckedChanged(null, EventArgs.Empty);
 		}
 
 		private void ScreenshotInStatesCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -155,16 +155,25 @@ namespace BizHawk.Client.EmuHawk
 		private void CalculateEstimates()
 		{
 			double estFrames = 0.0;
+			var bufferSize = 1L << (int) BufferSizeUpDown.Value;
+			labelEx1.Text = bufferSize.ToString();
+			int calculatedRewindInterval = TargetRewindIntervalRadioButton.Checked ? (int) TargetRewindIntervalNumeric.Value : 1;
 			if (_avgStateSize is not 0UL)
 			{
-				var bufferSize = 1L << (int) BufferSizeUpDown.Value;
-				labelEx1.Text = bufferSize.ToString();
 				bufferSize *= 1024 * 1024;
 				estFrames = bufferSize / (double) _avgStateSize;
+				if (TargetFrameLengthRadioButton.Checked)
+					calculatedRewindInterval = (int) Math.Ceiling((int) TargetFrameLengthNumeric.Value / estFrames);
 			}
 			ApproxFramesLabel.Text = $"{estFrames:n0} frames";
-			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0:n} minutes";
+			EstTimeLabel.Text = $"{estFrames / _framerate / 60.0 * calculatedRewindInterval:n} minutes";
 		}
+
+		private void FrameLength_ValueChanged(object sender, EventArgs e) => CalculateEstimates();
+
+		private void RewindInterval_ValueChanged(object sender, EventArgs e) => CalculateEstimates();
+
+		private void RewindInterval_CheckedChanged(object sender, EventArgs e) => CalculateEstimates();
 
 		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)
 		{

@@ -34,6 +34,8 @@ namespace NLua
 			_extractValues.Add(typeof(string), GetAsString);
 			_extractValues.Add(typeof(char[]), GetAsCharArray);
 			_extractValues.Add(typeof(byte[]), GetAsByteArray);
+			_extractValues.Add(typeof(Memory<byte>), GetAsByteMemory);
+			_extractValues.Add(typeof(ReadOnlyMemory<byte>), GetAsByteReadOnlyMemory);
 			_extractValues.Add(typeof(LuaFunction), GetAsFunction);
 			_extractValues.Add(typeof(LuaTable), GetAsTable);
 			_extractValues.Add(typeof(LuaThread), GetAsThread);
@@ -93,9 +95,10 @@ namespace NLua
 				if (luatype == LuaType.Nil)
 				{
 					// Return the correct extractor anyways
-					if (netParamIsNumeric || paramType == typeof(bool))
+					// Otherwise the wrong extractor will be cached inside MethodCache.argTypes
+					if (_extractValues.TryGetValue(paramType, out var extractor))
 					{
-						return _extractValues[paramType];
+						return extractor;
 					}
 
 					return _extractNetObject;
@@ -134,7 +137,8 @@ namespace NLua
 				}
 			}
 
-			var netParamIsString = paramType == typeof(string) || paramType == typeof(char[]) || paramType == typeof(byte[]);
+			var netParamIsString = paramType == typeof(string) || paramType == typeof(char[]) ||
+				paramType == typeof(byte[]) || paramType == typeof(ReadOnlyMemory<byte>) || paramType == typeof(Memory<byte>);
 
 			if (netParamIsNumeric)
 			{
@@ -432,16 +436,21 @@ namespace NLua
 			return retVal.ToCharArray();
 		}
 
-		private static object GetAsByteArray(LuaState luaState, int stackPos)
+		private static byte[] GetAsByteArray(LuaState luaState, int stackPos)
 		{
 			if (!luaState.IsStringOrNumber(stackPos))
 			{
 				return null;
 			}
 
-			var retVal = luaState.ToBuffer(stackPos, false);
-			return retVal;
+			return luaState.ToBuffer(stackPos, false);
 		}
+
+		private static object GetAsByteMemory(LuaState luaState, int stackPos)
+			=> GetAsByteArray(luaState, stackPos) is { } bytes ? (Memory<byte>?) bytes : null; // Simply casting null arrays to Memory<T>? actually gives you Memory<T>.Empty
+
+		private static object GetAsByteReadOnlyMemory(LuaState luaState, int stackPos)
+			=> GetAsByteArray(luaState, stackPos) is { } bytes ? (ReadOnlyMemory<byte>?) bytes : null;
 
 		private static object GetAsString(LuaState luaState, int stackPos)
 			=> !luaState.IsStringOrNumber(stackPos) ? null : luaState.ToString(stackPos, false);

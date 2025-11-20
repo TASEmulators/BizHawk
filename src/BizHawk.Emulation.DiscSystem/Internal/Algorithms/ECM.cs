@@ -9,6 +9,8 @@
 //I can't figure out what winUAE is doing.
 //Martin writes these algorithms in his own inimitable format. We should try transcribing them here for testing.
 
+using System.Buffers.Binary;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -171,12 +173,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// handy for stashing the EDC somewhere with little endian
 		/// </summary>
 		public static void PokeUint(byte[] data, int offset, uint value)
-		{
-			data[offset + 0] = (byte)((value >> 0) & 0xFF);
-			data[offset + 1] = (byte)((value >> 8) & 0xFF);
-			data[offset + 2] = (byte)((value >> 16) & 0xFF);
-			data[offset + 3] = (byte)((value >> 24) & 0xFF);
-		}
+			=> BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(start: offset), value);
 
 		/// <summary>
 		/// calculates EDC checksum for the range of data provided
@@ -194,7 +191,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			return crc;
 		}
-		
+
 		/// <summary>
 		/// returns the address from a sector. useful for saving it before zeroing it for ECC calculations
 		/// </summary>

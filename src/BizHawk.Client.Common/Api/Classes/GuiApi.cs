@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -17,6 +18,8 @@ namespace BizHawk.Client.Common
 		{
 			FormatFlags = StringFormatFlags.MeasureTrailingSpaces,
 		};
+
+		private readonly IDialogController _dialogController;
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -44,8 +47,12 @@ namespace BizHawk.Client.Common
 		private DisplaySurfaceID? _usingSurfaceID;
 		public bool HasGUISurface => true;
 
-		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
+		public GuiApi(
+			IDialogController dialogController,
+			DisplayManagerBase displayManager,
+			Action<string> logCallback)
 		{
+			_dialogController = dialogController;
 			LogCallback = logCallback;
 			_displayManager = displayManager;
 		}
@@ -116,8 +123,8 @@ namespace BizHawk.Client.Common
 
 		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
-		public void AddMessage(string message, int? duration = null)
-			=> _displayManager.OSD.AddMessage(message, duration);
+		public void AddMessage(string message, [LiteralExpected] int? duration = null)
+			=> _dialogController.AddOnScreenMessage(message, duration);
 
 		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => Get2DRenderer(surfaceID).Clear();
 
@@ -413,7 +420,7 @@ namespace BizHawk.Client.Common
 					"italic" => FontStyle.Italic,
 					"strikethrough" => FontStyle.Strikeout,
 					"underline" => FontStyle.Underline,
-					_ => FontStyle.Regular
+					_ => FontStyle.Regular,
 				};
 
 				using var g = Graphics.FromImage(_nullGraphicsBitmap);
@@ -540,7 +547,7 @@ namespace BizHawk.Client.Common
 					"bottomleft" => 2,
 					"3" => 3,
 					"bottomright" => 3,
-					_ => default
+					_ => default,
 				};
 			}
 			else

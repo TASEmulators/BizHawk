@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-CPROM": //videomation
 					AssertPrg(32); AssertChr(0); AssertVram(16); AssertWram(0);
 					break;
-				
+
 				default:
 					return false;
 			}
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return true;
 		}
-		
+
 		public override void WritePrg(int addr, byte value)
 		{
 			value = HandleNormalPRGConflict(addr,value);

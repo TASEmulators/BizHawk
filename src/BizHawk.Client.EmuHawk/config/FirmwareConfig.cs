@@ -61,39 +61,41 @@ namespace BizHawk.Client.EmuHawk
 		// Redundant with SystemLookup? Not so fast. That data drives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
-			["Amiga"] = "Amiga",
-			["NES"] = "NES",
-			["SNES"] = "SNES",
-			["BSX"] = "SNES+Satellaview",
-			["PCECD"] = "PCE-CD",
-			["SAT"] = "Saturn",
-			["A78"] = "Atari 7800",
-			["Coleco"] = "Colecovision",
-			["GBA"] = "GBA",
-			["NDS"] = "Nintendo DS",
+			["32X"] = "32X",
+			["3DO"] = "3DO / 3DO Arcade / 3DO M2",
 			["3DS"] = "Nintendo 3DS",
-			["TI83"] = "TI-83",
-			["INTV"] = "Intellivision",
+			["A78"] = "Atari 7800",
+			["Amiga"] = "Amiga",
+			["AmstradCPC"] = "Amstrad CPC",
+			["AppleII"] = "Apple II",
+			["BSX"] = "SNES+Satellaview",
 			["C64"] = "C64",
+			["ChannelF"] = "Channel F",
+			["Coleco"] = "Colecovision",
+			["Doom"] = "Doom",
+			["GB"] = "Game Boy",
+			["GBA"] = "GBA",
+			["GBC"] = "Game Boy Color",
 			["GEN"] = "Genesis",
-			["SMS"] = "Sega Master System",
 			["GG"] = "Sega Game Gear",
-			["PSX"] = "PlayStation",
+			["INTV"] = "Intellivision",
 			["Jaguar"] = "Jaguar",
 			["Lynx"] = "Lynx",
-			["AppleII"] = "Apple II",
-			["O2"] = "Odyssey 2 / Philips Videopac+ G7400",
-			["GB"] = "Game Boy",
-			["GBC"] = "Game Boy Color",
-			["PCFX"] = "PC-FX",
-			["32X"] = "32X",
-			["ZXSpectrum"] = "ZX Spectrum",
-			["AmstradCPC"] = "Amstrad CPC",
-			["ChannelF"] = "Channel F",
-			["VEC"] = "Vectrex",
 			["MSX"] = "MSX",
 			["N64DD"] = "N64 Disk Drive",
+			["NDS"] = "Nintendo DS",
+			["NES"] = "NES",
+			["O2"] = "Odyssey 2 / Philips Videopac+ G7400",
+			["PCECD"] = "PCE-CD",
+			["PCFX"] = "PC-FX",
 //			["PS2"] = "Sony PlayStation 2",
+			["PSX"] = "PlayStation",
+			["SAT"] = "Saturn",
+			["SNES"] = "SNES",
+			["SMS"] = "Sega Master System",
+			["TI83"] = "TI-83",
+			["VEC"] = "Vectrex",
+			["ZXSpectrum"] = "ZX Spectrum",
 		};
 
 		public string TargetSystem { get; set; }
@@ -210,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 					Tag = fr,
 					UseItemStyleForSubItems = false,
 					ImageIndex = (int) FirmwareOptionStatus.Unknown,
-					ToolTipText = null
+					ToolTipText = null,
 				};
 				lvi.SubItems.Add(sysID);
 				lvi.SubItems.Add(fr.ID.Firmware);
@@ -317,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// lazy substring extraction. really should do a better job
 					var basePath = _pathEntries.FirmwareAbsolutePath() + Path.DirectorySeparatorChar;
-					
+
 					var path = ri.FilePath.Replace(basePath, "");
 
 					// bolden the item if the user has specified a path for it
@@ -478,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 					// to always be copied to the global firmware directory
 					if (hf.IsArchive)
 					{
-						var ac = new ArchiveChooser(new HawkFile(filePath));
+						using var ac = new ArchiveChooser(hf);
 						if (!ac.ShowDialog(this).IsOk()) return;
 
 						var insideFile = hf.BindArchiveMember(ac.SelectedMemberIndex);
@@ -546,10 +548,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var fciDialog = new FirmwareConfigInfo
 			{
-				lblFirmware =
-				{
-					Text = $"{fr.ID} ({fr.Description})"
-				}
+				lblFirmware = { Text = $"{fr.ID} ({fr.Description})" },
 			};
 
 			foreach (var o in options)
@@ -631,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				if (errors != "")
+				if (errors.Length is not 0)
 				{
 					errors += "\n";
 				}

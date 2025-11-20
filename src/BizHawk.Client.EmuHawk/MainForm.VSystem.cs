@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Atari.Atari2600;
 using BizHawk.Emulation.Cores.Atari.Jaguar;
 using BizHawk.Emulation.Cores.Atari.Lynx;
+using BizHawk.Emulation.Cores.Atari.Stella;
 using BizHawk.Emulation.Cores.Calculators.Emu83;
 using BizHawk.Emulation.Cores.Calculators.TI83;
 using BizHawk.Emulation.Cores.ColecoVision;
@@ -19,6 +20,8 @@ using BizHawk.Emulation.Cores.Computers.Amiga;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Computers.DOS;
+using BizHawk.Emulation.Cores.Computers.Doom;
 using BizHawk.Emulation.Cores.Computers.MSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Computers.TIC80;
@@ -33,6 +36,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.VB;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
+using BizHawk.Emulation.Cores.Consoles.Panasonic3DO;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
@@ -76,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				A7800Hawk => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenA7800HawkFilterSettingsDialog(ISettingsAdapter settable)
@@ -89,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				A7800Hawk => OpenA7800HawkFilterSettingsDialog(GetSettingsAdapterForLoadedCore<A7800Hawk>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
@@ -128,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				AppleII => OpenVirtuSettingsDialog(),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -169,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				C64 => OpenC64HawkSettingsDialog(),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void C64SubMenu_DropDownOpened(object sender, EventArgs e)
@@ -190,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				ColecoVision => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ColecoVision>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void ColecoHawkSetSkipBIOSIntro(bool newValue, ISettingsAdapter settable)
@@ -238,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				AmstradCPC => OpenCPCHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenCPCHawkAudioSettingsDialog(ISettingsAdapter settable)
@@ -251,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				AmstradCPC => OpenCPCHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenCPCHawkSettingsDialog(ISettingsAdapter settable)
@@ -264,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				AmstradCPC => OpenCPCHawkSettingsDialog(GetSettingsAdapterForLoadedCore<AmstradCPC>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void AmstradCpcTapesSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -274,16 +278,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(ams, Emulator)) return;
-				ams._machine.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				ams.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var tapeMediaIndex = ams._machine.TapeMediaIndex;
-			for (int i = 0; i < ams._tapeInfo.Count; i++)
+			var tapeMediaIndex = ams.TapeMediaIndex;
+			foreach (var (i, gi) in ams.TapeMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == tapeMediaIndex,
 					Tag = i,
-					Text = $"{i}: {ams._tapeInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				AmstradCPCTapesSubMenu.DropDownItems.Add(menuItem);
@@ -297,16 +301,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(ams, Emulator)) return;
-				ams._machine.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				ams.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var diskMediaIndex = ams._machine.DiskMediaIndex;
-			for (int i = 0; i < ams._diskInfo.Count; i++)
+			var diskMediaIndex = ams.DiskMediaIndex;
+			foreach (var (i, gi) in ams.DiskMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == diskMediaIndex,
 					Tag = i,
-					Text = $"{i}: {ams._diskInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				AmstradCPCDisksSubMenu.DropDownItems.Add(menuItem);
@@ -315,11 +319,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is AmstradCPC cpc)
-			{
-				AmstradCPCTapesSubMenu.Enabled = cpc._tapeInfo.Count > 0;
-				AmstradCPCDisksSubMenu.Enabled = cpc._diskInfo.Count > 0;
-			}
+			if (Emulator is not AmstradCPC cpc) return;
+			AmstradCPCTapesSubMenu.Enabled = cpc.TapeMedia.Count is not 0;
+			AmstradCPCDisksSubMenu.Enabled = cpc.DiskMedia.Count is not 0;
 		}
 
 
@@ -343,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 				GBHawk => OpenGBHawkSettingsDialog(),
 				Sameboy => OpenSameBoySettingsDialog(),
 				SubGBHawk => OpenSubGBHawkSettingsDialog(),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenSameBoyPaletteSettingsDialog(ISettingsAdapter settable)
@@ -356,7 +358,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				Sameboy => OpenSameBoyPaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Sameboy>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
@@ -372,8 +374,32 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				GambatteLink => OpenGambatteLinkSettingsDialog(GetSettingsAdapterForLoadedCore<GambatteLink>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
+
+		private DialogResult OpenDOSBoxSettingsDialog()
+			=> OpenGenericCoreConfigFor<DOSBox>(CoreNames.DOSBox + " Settings");
+
+		private void DOSSExportHddMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Emulator is not DOSBox dosbox) return;
+			try
+			{
+				var result = this.ShowFileSaveDialog(
+					discardCWDChange: true,
+					fileExt: "hdd",
+					filter: DOSBoxHDDImageFilterSet,
+					initDir: Config.PathEntries.ToolsAbsolutePath());
+				if (result is not null)
+				{
+					File.WriteAllBytes(result, dosbox.GetHDDContents());
+				}
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ToggleGambatteSyncSetting(
@@ -424,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				Intellivision => OpenIntelliHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Intellivision>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -459,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				N64 => OpenMupen64PlusGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<N64>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void N64CircularAnalogRangeMenuItem_Click(object sender, EventArgs e)
@@ -521,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 				NDS.ScreenRotationKind.Rotate90 => NDS.ScreenRotationKind.Rotate180,
 				NDS.ScreenRotationKind.Rotate180 => NDS.ScreenRotationKind.Rotate270,
 				NDS.ScreenRotationKind.Rotate270 => NDS.ScreenRotationKind.Rotate0,
-				_ => settings.ScreenRotation
+				_ => settings.ScreenRotation,
 			};
 			settings.ScreenRotation = next;
 			ds.PutSettings(settings);
@@ -545,7 +571,17 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
+		private void NDS_SwapScreens()
+		{
+			if (Emulator is not NDS ds) return;
 
+			var settings = ds.GetSettings();
+			var next = !settings.ScreenInvert;
+			settings.ScreenInvert = next;
+			ds.PutSettings(settings);
+			AddOnScreenMessage($"Screen invert to {next}");
+			FrameBufferResized();
+		}
 
 		/// <remarks>should this not be a separate sysID? --yoshi</remarks>
 		private bool LoadedCoreIsNesHawkInVSMode
@@ -580,7 +616,7 @@ namespace BizHawk.Client.EmuHawk
 				NES => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk => OpenNesHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				QuickNES => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenNesHawkGraphicsSettingsDialog(ISettingsAdapter settable)
@@ -601,7 +637,7 @@ namespace BizHawk.Client.EmuHawk
 				NES => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk => OpenNesHawkGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
 				QuickNES => OpenQuickNesGraphicsSettingsDialog(GetSettingsAdapterForLoadedCore<QuickNES>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void NesSoundChannelsMenuItem_Click(object sender, EventArgs e)
@@ -618,7 +654,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NES { IsVS: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<NES>()),
 				SubNESHawk { IsVs: true } => OpenNesHawkVSSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenNesHawkAdvancedSettingsDialog(ISettingsAdapter settable, bool hasMapperProperties)
@@ -632,7 +668,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NES nesHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<NES>(), nesHawk.HasMapperProperties),
 				SubNESHawk subNESHawk => OpenNesHawkAdvancedSettingsDialog(GetSettingsAdapterForLoadedCore<SubNESHawk>(), subNESHawk.HasMapperProperties),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
@@ -703,7 +739,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				Octoshock => OpenOctoshockGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenOctoshockSettingsDialog(ISettingsAdapter settable, OctoshockDll.eVidStandard vidStandard, Size vidSize)
@@ -714,7 +750,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = Emulator switch
 			{
 				Octoshock octoshock => OpenOctoshockSettingsDialog(GetSettingsAdapterForLoadedCore<Octoshock>(), octoshock.SystemVidStandard, octoshock.CurrentVideoSize),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 			if (result.IsOk()) FrameBufferResized();
 		}
@@ -752,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 				LibsnesCore => OpenOldBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
 				BsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				SubBsnesCore => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -770,7 +806,7 @@ namespace BizHawk.Client.EmuHawk
 				LibsnesCore => OpenOldBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<LibsnesCore>()),
 				BsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<BsnesCore>()),
 				SubBsnesCore => OpenBSNESSettingsDialog(GetSettingsAdapterForLoadedCore<SubBsnesCore>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -857,7 +893,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (layer is < 1 or > 4) return; // should this throw?
 			bool result = false;
-			if (Emulator is LibsnesCore bsnes)
+			if (Emulator is BsnesCore bsnes)
 			{
 				var s = bsnes.GetSettings();
 				result = layer switch
@@ -866,9 +902,23 @@ namespace BizHawk.Client.EmuHawk
 					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
 					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
 					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
-					_ => result
+					_ => result,
 				};
 				bsnes.PutSettings(s);
+				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
+			}
+			else if (Emulator is LibsnesCore bsnes1)
+			{
+				var s = bsnes1.GetSettings();
+				result = layer switch
+				{
+					1 => s.ShowOBJ_0 = !s.ShowOBJ_0,
+					2 => s.ShowOBJ_1 = !s.ShowOBJ_1,
+					3 => s.ShowOBJ_2 = !s.ShowOBJ_2,
+					4 => s.ShowOBJ_3 = !s.ShowOBJ_3,
+					_ => result,
+				};
+				bsnes1.PutSettings(s);
 				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
 			else if (Emulator is Snes9x snes9X)
@@ -880,7 +930,7 @@ namespace BizHawk.Client.EmuHawk
 					2 => s.ShowSprites1 = !s.ShowSprites1,
 					3 => s.ShowSprites2 = !s.ShowSprites2,
 					4 => s.ShowSprites3 = !s.ShowSprites3,
-					_ => result
+					_ => result,
 				};
 				snes9X.PutSettings(s);
 				AddOnScreenMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
@@ -934,17 +984,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Emu83 => OpenTI83PaletteSettingsDialog(GetSettingsAdapterForLoadedCore<Emu83>()),
 				TI83 => OpenTI83PaletteSettingsDialog(GetSettingsAdapterForLoadedCore<TI83>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 			if (result.IsOk()) AddOnScreenMessage("Palette settings saved");
 		}
 
+		private static readonly FilesystemFilterSet DOSBoxHDDImageFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("DOSBox HDD Images", extensions: [ "hdd" ]));
 
-
-		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(new FilesystemFilter("ZX-State files", new[] { "szx" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet ZXStateFilesFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("ZX-State files", extensions: [ "szx" ]));
 
 		private DialogResult OpenZXHawkSyncSettingsDialog(ISettingsAdapter settable)
 		{
@@ -956,7 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkSyncSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenZXHawkGamepadSettingsDialog(ISettingsAdapter settable)
@@ -969,7 +1020,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkGamepadSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenZXHawkAudioSettingsDialog(ISettingsAdapter settable)
@@ -982,7 +1033,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkAudioSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private DialogResult OpenZXHawkSettingsDialog(ISettingsAdapter settable)
@@ -995,7 +1046,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _ = Emulator switch
 			{
 				ZXSpectrum => OpenZXHawkSettingsDialog(GetSettingsAdapterForLoadedCore<ZXSpectrum>()),
-				_ => DialogResult.None
+				_ => DialogResult.None,
 			};
 
 		private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1005,16 +1056,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(speccy, Emulator)) return;
-				speccy._machine.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				speccy.TapeMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var tapeMediaIndex = speccy._machine.TapeMediaIndex;
-			for (int i = 0; i < speccy._tapeInfo.Count; i++)
+			var tapeMediaIndex = speccy.TapeMediaIndex;
+			foreach (var (i, gi) in speccy.TapeMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == tapeMediaIndex,
 					Tag = i,
-					Text = $"{i}: {speccy._tapeInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				ZXSpectrumTapesSubMenu.DropDownItems.Add(menuItem);
@@ -1028,16 +1079,16 @@ namespace BizHawk.Client.EmuHawk
 			EventHandler clickHandler = (clickSender, _) =>
 			{
 				if (!object.ReferenceEquals(speccy, Emulator)) return;
-				speccy._machine.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
+				speccy.DiskMediaIndex = (int) ((ToolStripItem) clickSender).Tag;
 			};
-			var diskMediaIndex = speccy._machine.DiskMediaIndex;
-			for (int i = 0; i < speccy._diskInfo.Count; i++)
+			var diskMediaIndex = speccy.DiskMediaIndex;
+			foreach (var (i, gi) in speccy.DiskMedia.Index())
 			{
 				ToolStripMenuItem menuItem = new()
 				{
 					Checked = i == diskMediaIndex,
 					Tag = i,
-					Text = $"{i}: {speccy._diskInfo[i].Name}",
+					Text = $"{i}: {gi.Name}",
 				};
 				menuItem.Click += clickHandler;
 				ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
@@ -1070,8 +1121,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is not ZXSpectrum speccy) return;
-			ZXSpectrumTapesSubMenu.Enabled = speccy._tapeInfo.Count > 0;
-			ZXSpectrumDisksSubMenu.Enabled = speccy._diskInfo.Count > 0;
+			ZXSpectrumTapesSubMenu.Enabled = speccy.TapeMedia.Count is not 0;
+			ZXSpectrumDisksSubMenu.Enabled = speccy.DiskMedia.Count is not 0;
 		}
 
 
@@ -1113,6 +1164,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			List<ToolStripItem> items = new();
+			// cores A-Z by value of `CoreAttribute.CoreName`
 
 			// A7800Hawk
 			var a7800HawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenA7800HawkGamepadSettingsDialog(GetSettingsAdapterFor<A7800Hawk>()));
@@ -1144,21 +1196,11 @@ namespace BizHawk.Client.EmuHawk
 			bsnesSubmenu.DropDownOpened += (_, _) => bsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not BsnesCore;
 			items.Add(bsnesSubmenu);
 
-			// SubBSNESv115+
-			var subBsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
-			var subBsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
-			var subBsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.SubBsnes115, subBsnesGamepadSettingsItem, subBsnesSettingsItem);
-			subBsnesSubmenu.DropDownOpened += (_, _) => subBsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not SubBsnesCore;
-			items.Add(subBsnesSubmenu);
-
 			// C64Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.C64Hawk, CreateSettingsItem("Settings...", (_, _) => OpenC64HawkSettingsDialog())));
 
 			// ChannelFHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.ChannelFHawk, CreateGenericCoreConfigItem<ChannelF>(CoreNames.ChannelFHawk)));
-
-			// Encore
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
 
 			// ColecoHawk
 			var colecoHawkGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenColecoHawkGamepadSettingsDialog(GetSettingsAdapterFor<ColecoVision>()));
@@ -1185,8 +1227,17 @@ namespace BizHawk.Client.EmuHawk
 			// Cygne
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Cygne, CreateGenericCoreConfigItem<WonderSwan>(CoreNames.Cygne)));
 
+			// DOSBox
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.DOSBox, CreateGenericCoreConfigItem<DOSBox>(CoreNames.DOSBox)));
+
+			// DSDA-Doom
+			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.DSDA, CreateGenericCoreConfigItem<DSDA>(CoreNames.DSDA)));
+
 			// Emu83
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.Emu83, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<Emu83>()))));
+
+			// Encore
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Encore, CreateGenericCoreConfigItem<Encore>(CoreNames.Encore)));
 
 			// Faust
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Faust, CreateGenericNymaCoreConfigItem<Faust>(CoreNames.Faust, Faust.CachedSettingsInfo)));
@@ -1210,11 +1261,11 @@ namespace BizHawk.Client.EmuHawk
 			// GBHawkLink4x
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GBHawkLink4x, CreateGenericCoreConfigItem<GBHawkLink4x>(CoreNames.GBHawkLink4x)));
 
-			// GGHawkLink
-			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GGHawkLink, CreateGenericCoreConfigItem<GGHawkLink>(CoreNames.GGHawkLink)));
-
 			// Genplus-gx
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Gpgx, CreateGenericCoreConfigItem<GPGX>(CoreNames.Gpgx)));
+
+			// GGHawkLink
+			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.GGHawkLink, CreateGenericCoreConfigItem<GGHawkLink>(CoreNames.GGHawkLink)));
 
 			// Handy
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.Handy, CreateGenericCoreConfigItem<Lynx>(CoreNames.Handy))); // as Handy doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
@@ -1326,14 +1377,14 @@ namespace BizHawk.Client.EmuHawk
 			};
 			items.Add(octoshockSubmenu);
 
+			// Opera
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Opera, CreateGenericCoreConfigItem<Opera>(CoreNames.Opera)));
+
 			// PCEHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PceHawk, CreateGenericCoreConfigItem<PCEngine>(CoreNames.PceHawk)));
 
 			// PicoDrive
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.PicoDrive, CreateGenericCoreConfigItem<PicoDrive>(CoreNames.PicoDrive)));
-
-			// UAE
-			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.UAE, CreateGenericCoreConfigItem<UAE>(CoreNames.UAE)));
 
 			// QuickNes
 			var quickNesGamepadSettingsItem = CreateSettingsItem("Controller Settings...", (_, _) => OpenQuickNesGamepadSettingsDialog(GetSettingsAdapterFor<QuickNES>()));
@@ -1362,6 +1413,16 @@ namespace BizHawk.Client.EmuHawk
 			// Snes9x
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Snes9X, CreateGenericCoreConfigItem<Snes9x>(CoreNames.Snes9X)));
 
+			// Stella
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Stella, CreateGenericCoreConfigItem<Stella>(CoreNames.Stella)));
+
+			// SubBSNESv115+
+			var subBsnesGamepadSettingsItem = CreateSettingsItem("Controller Configuration...", (_, _) => OpenBSNESGamepadSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
+			var subBsnesSettingsItem = CreateSettingsItem("Options...", (_, _) => OpenBSNESSettingsDialog(GetSettingsAdapterFor<SubBsnesCore>()));
+			var subBsnesSubmenu = CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.SubBsnes115, subBsnesGamepadSettingsItem, subBsnesSettingsItem);
+			subBsnesSubmenu.DropDownOpened += (_, _) => subBsnesGamepadSettingsItem.Enabled = MovieSession.Movie.NotActive() || Emulator is not SubBsnesCore;
+			items.Add(subBsnesSubmenu);
+
 			// SubGBHawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Handhelds, CoreNames.SubGbHawk, CreateSettingsItem("Settings...", (_, _) => OpenSubGBHawkSettingsDialog())));
 
@@ -1386,17 +1447,20 @@ namespace BizHawk.Client.EmuHawk
 			};
 			items.Add(subNESHawkSubmenu);
 
+			// T. S. T.
+			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, CreateGenericNymaCoreConfigItem<Tst>(CoreNames.TST, Tst.CachedSettingsInfo)));
+
 			// TI83Hawk
 			items.Add(CreateCoreSubmenu(VSystemCategory.Other, CoreNames.TI83Hawk, CreateSettingsItem("Palette...", (_, _) => OpenTI83PaletteSettingsDialog(GetSettingsAdapterFor<TI83>()))));
 
 			// TIC80
 			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.TIC80, CreateGenericCoreConfigItem<TIC80>(CoreNames.TIC80)));
 
-			// T. S. T.
-			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TST, CreateGenericNymaCoreConfigItem<Tst>(CoreNames.TST, Tst.CachedSettingsInfo)));
-
 			// TurboNyma
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.TurboNyma, CreateGenericNymaCoreConfigItem<TurboNyma>(CoreNames.TurboNyma, TurboNyma.CachedSettingsInfo)));
+
+			// UAE
+			items.Add(CreateCoreSubmenu(VSystemCategory.PCs, CoreNames.UAE, CreateGenericCoreConfigItem<UAE>(CoreNames.UAE)));
 
 			// uzem
 			items.Add(CreateCoreSubmenu(VSystemCategory.Consoles, CoreNames.Uzem, CreateGenericCoreConfigItem<Uzem>(CoreNames.Uzem))); // as uzem doesn't implement `ISettable<,>`, this opens an empty `GenericCoreConfig`, which is dumb, but matches the existing behaviour
@@ -1432,10 +1496,12 @@ namespace BizHawk.Client.EmuHawk
 				var i = GenericCoreSubMenu.Text.IndexOf('&');
 				if (i != -1) AvailableAccelerators.Add(GenericCoreSubMenu.Text[i + 1]);
 			}
+			NullHawkVSysSubmenu.Visible = false;
 			GenericCoreSubMenu.Visible = false;
 			TI83SubMenu.Visible = false;
 			NESSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
+			DOSSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
@@ -1453,6 +1519,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (sysID)
 			{
 				case VSystemID.Raw.NULL:
+					NullHawkVSysSubmenu.Visible = true;
 					break;
 				case VSystemID.Raw.A78:
 					A7800SubMenu.Visible = true;
@@ -1468,6 +1535,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case VSystemID.Raw.Coleco:
 					ColecoSubMenu.Visible = true;
+					break;
+				case VSystemID.Raw.DOS when Emulator is DOSBox:
+					DOSSubMenu.Visible = true;
 					break;
 				case VSystemID.Raw.INTV:
 					IntvSubMenu.Visible = true;

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	/*
 	Spectra-video Compumate Add-on Kevtris Documentation
 
-	This is more than just a cartridge mapper- it's also a "computer" add-on.  
+	This is more than just a cartridge mapper- it's also a "computer" add-on.
 	There's two 8K EPROMs soldered on top of each other.  There's two short
 	wires with DB-9's on them which you plug into the two controller ports.
 	A 42 or so key membrane keyboard with audio in and audio out, and 1K of RAM.
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	R - 4017 RST, and RAM direction. (high = write, low = read)
 	E - RAM enable. 1 = disable RAM, 0 = enable RAM
 	3 - Row 3 of keyboard
-	1 - Row 1 of keyboard 
+	1 - Row 1 of keyboard
 	B - 2 bit ROM bank number
 
 	All bits are outputs except for the 2 row inputs from the keyboard.
@@ -75,24 +75,24 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	  0     1     2     3     4     5     6     7     8     9
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| 7 | | 6 | | 8 | | 2 | | 3 | | 0 | | 9 | | 5 | | 1 | | 4 |  0
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| U | | Y | | I | | W | | E | | P | | O | | T | | Q | | R |  1
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+     Row
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| J | | H | | K | | S | | D | |ent| | L | | G | | A | | F |  2
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| M | | N | | < | | X | | C | |spc| | > | | B | | Z | | V |  3
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 
 	Function and Shift are separate keys that are read by 2 of the paddle inputs.
 	These two buttons pull the specific paddle input low when pressed.
 
-	Because the inputs are inverted, a low indicates a pressed button, and a high 
+	Because the inputs are inverted, a low indicates a pressed button, and a high
 	is an unpressed one.
 
-	The audio input/output are designed to drive a tape player.  The audio output is 
+	The audio input/output are designed to drive a tape player.  The audio output is
 	buffered through an inverter and 2 resistors and a capacitor to reduce the level
 	to feed it into the tape player.
 
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	* SpectraVideo Compumate Add-on Stella Documentation
 	Cartridge class used for SpectraVideo Compumate bankswitched games.
 
-	This is more than just a cartridge mapper - it's also a "computer" add-on.  
+	This is more than just a cartridge mapper - it's also a "computer" add-on.
 	There's two 8K EPROMs soldered on top of each other.  There's two short
 	wires with DB-9's on them which you plug into the two controller ports.
 	A 42 or so key membrane keyboard with audio in and audio out, and 2K of RAM.
@@ -150,24 +150,24 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	0     1     2     3     4     5     6     7     8     9
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| 7 | | 6 | | 8 | | 2 | | 3 | | 0 | | 9 | | 5 | | 1 | | 4 |  0
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| U | | Y | | I | | W | | E | | P | | O | | T | | Q | | R |  1
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+     Row
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| J | | H | | K | | S | | D | |ent| | L | | G | | A | | F |  2
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 	| M | | N | | < | | X | | C | |spc| | > | | B | | Z | | V |  3
-	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+	+---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
 
 	Function and Shift are separate keys that are read by 2 of the paddle inputs.
 	These two buttons pull the specific paddle input low when pressed.
 
-	Because the inputs are inverted, a low indicates a pressed button, and a high 
+	Because the inputs are inverted, a low indicates a pressed button, and a high
 	is an unpressed one.
 
-	The audio input/output are designed to drive a tape player.  The audio output is 
+	The audio input/output are designed to drive a tape player.  The audio output is
 	buffered through an inverter and 2 resistors and a capacitor to reduce the level
 	to feed it into the tape player.
 
@@ -217,8 +217,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public override byte ReadMemory(ushort addr)
-		{ 
-			// A unique feature of the keyboard is that it changes the operation of inputs 0-3 
+		{
+			// A unique feature of the keyboard is that it changes the operation of inputs 0-3
 			// by holding them high in the no-button-pressed state.
 			// However exposing this behaviour to the rest of the system would be overly cumbersome
 			// so instead we bypass these cases here
@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				var bit5 = value.Bit(5);
 				var bit4 = value.Bit(4);
-				
+
 				// D5 RAM direction. (high = write, low = read)
 				// 0 -> enable RAM writing (if D4 = 1)
 				// D4 = RAM enable: 1 = disable RAM, 0 = enable RAM

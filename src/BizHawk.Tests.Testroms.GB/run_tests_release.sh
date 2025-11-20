@@ -1,2 +1,4 @@
 #!/bin/sh
-cd "$(dirname "$(realpath "$0")")" && ../BizHawk.Tests.Testroms.GB/.run_tests_with_configuration.sh "Release" "$@"
+set -e
+cd "$(dirname "$(realpath "$0")")"
+exec ../BizHawk.Tests.Testroms/.run_tests_with_configuration.sh "Release" "$@"

@@ -218,7 +218,7 @@
 
 				if (!_rasterXHold)
 					_rasterX++;
-				
+
 				_srColor0 <<= 1;
 				_srColor1 <<= 1;
 				_srColor2 <<= 1;

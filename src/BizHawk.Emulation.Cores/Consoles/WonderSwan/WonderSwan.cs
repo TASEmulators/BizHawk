@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -16,7 +15,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			ServiceProvider = new BasicServiceProvider(this);
 			_settings = settings ?? new Settings();
 			_syncSettings = syncSettings ?? new SyncSettings();
-			
+
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)
@@ -130,7 +129,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		private BizSwan.MemoryCallback ReadCallbackD;
 		private BizSwan.MemoryCallback WriteCallbackD;
@@ -180,9 +181,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		}
 
 		private void SetInputCallback()
-		{
-			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
-		}
+			=> BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Count is 0 ? null : ButtonCallbackD);
 
 		private void SetMemoryCallbacks()
 		{

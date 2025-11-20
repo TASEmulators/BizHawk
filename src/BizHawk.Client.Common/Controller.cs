@@ -48,17 +48,49 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, FeedbackBind> _feedbackBindings = new Dictionary<string, FeedbackBind>();
 
+#if BIZHAWKBUILD_SUPERHAWK
+		public bool AnyInputHeld
+			=> _buttons.ContainsValue(true) || _axes.Any(kvp => kvp.Value != _axisRanges[kvp.Key].Neutral);
+#endif
+
+		public bool IsMouseBound
+			=> _axisBindings.Values.Any(static bind => bind.Value is "RMouse X" or "RMouse Y" or "WMouse X" or "WMouse Y");
+
 		public bool this[string button] => IsPressed(button);
 
 		// Looks for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 			=> _bindings.Where(b => b.Value.Contains(button)).Select(static b => b.Key).ToList();
 
-		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
-		public bool HasBinding(string button) =>
-			_bindings
+		/// <summary>
+		/// Checks if the given button combination would be a controller input.
+		/// This means Shift+A will return true if an input is bound to either A or Shift+A.
+		/// </summary>
+		public bool HasBinding(string button)
+		{
+			string[] buttons = SplitButtons(button);
+			return _bindings
 				.SelectMany(kvp => kvp.Value)
-				.Any(boundButton => boundButton == button);
+				.Any((boundCombination) => {
+					string[] boundButtons = SplitButtons(boundCombination);
+					return boundButtons.All((b) => buttons.Contains(b));
+				});
+		}
+
+		/// <summary>
+		/// Split a button (combination) into individual button components, e.g. Shift+A into Shift and A.
+		/// Components ending with + are assumed to be part of an axes name and are not split.
+		/// </summary>
+		public static string[] SplitButtons(string button)
+		{
+			// assume buttons ending with '+' are axes +/- names and don't split those
+			if (button.EndsWith('+'))
+			{
+				return button.Split('+', button.Count(c => c == '+'));
+			}
+
+			return button.Split('+');
+		}
 
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
@@ -67,7 +99,7 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController finalHostController)
 		{
 			_buttons.Clear();
-			
+
 			foreach (var (k, v) in _bindings)
 			{
 				_buttons[k] = false;
@@ -98,6 +130,7 @@ namespace BizHawk.Client.Common
 
 				// -1..1 -> -A..A (where A is the larger "side" of the range e.g. a range of 0..50, neutral=10 would give A=40, and thus a value in -40..40)
 				var range = _axisRanges[k]; // this was `GetValueOrPutNew`, but I really hope it was always found, since `new AxisSpec()` isn't valid --yoshi
+				if (range.IsReversed) value = -value;
 				value *= Math.Max(range.Neutral - range.Min, range.Max - range.Neutral);
 
 				// shift the midpoint, so a value of 0 becomes range.Neutral (and, assuming >=1x multiplier, all values in range are reachable)

@@ -14,6 +14,8 @@
 		<PackageReference Include="JunitXml.TestLogger" PrivateAssets="all" />
 		<ProjectReference Include="$(MSBuildProjectDirectory)/../BizHawk.Analyzer/BizHawk.Analyzer.csproj" />
 		<None Remove="*.sh" />
+		<Using Include="System;System.Threading.Tasks" />
+		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
 	</ItemGroup>
 	<Target Name="DontUpdatePrebuiltAssemblies" AfterTargets="PostBuildEvent">
 		<Exec Command="git restore $(MSBuildProjectDirectory)/../../References" />

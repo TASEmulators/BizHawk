@@ -93,18 +93,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					};
 
 					var DIPSwitchOptions = MameGetString(MAMELuaCommand.GetDIPSwitchOptions(tag, fieldName));
-					var options = DIPSwitchOptions.Split(new[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-
+					var options = DIPSwitchOptions.Split('\n');
+					if (options.Length is 0) continue;
 					foreach (var option in options)
 					{
-						var opt = option.Split(new[] { '~' }, StringSplitOptions.RemoveEmptyEntries);
+						var opt = option.Split('~');
 						setting.Options.Add(opt[0], opt[1]);
 					}
-
-					if (options.Any())
-					{
-						CurrentDriverSettings.Add(setting);
-					}
+					CurrentDriverSettings.Add(setting);
 				}
 			}
 		}
@@ -115,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				var s = CurrentDriverSettings.SingleOrDefault(s => s.LookupKey == setting.Key);
 
-				if (s != null && s.Type == SettingType.DIPSWITCH)
+				if (s?.Type is SettingType.DIPSWITCH)
 				{
 					_core.mame_lua_execute($"{ s.LuaCode }.user_value = { setting.Value }");
 				}
@@ -138,15 +134,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			foreach (var ROM in ROMs)
 			{
-				if (ROM != string.Empty)
+				if (ROM.Length is not 0)
 				{
 					var substrings = ROM.Split('~');
 					var name = substrings[0];
 					var hashdata = substrings[1];
 					var flags = long.Parse(substrings[2]);
-
-					if ((flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_SYSTEM_BIOS
-						|| (flags & LibMAME.ROMENTRY_TYPEMASK) == LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
+					if ((flags & LibMAME.ROMENTRY_TYPEMASK) is LibMAME.ROMENTRYTYPE_SYSTEM_BIOS or LibMAME.ROMENTRYTYPE_DEFAULT_BIOS)
 					{
 						setting.Options.Add(name, hashdata);
 
@@ -199,15 +193,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				GameName = _gameShortName,
 				LuaCode = LibMAME.VIEW_LUA_CODE,
 				Type = SettingType.VIEW,
-				DefaultValue = MameGetString(MAMELuaCommand.GetViewName("1"))
+				DefaultValue = "1"
 			};
 
 			foreach (var View in Views)
 			{
-				if (View != string.Empty)
+				if (View.Length is not 0)
 				{
-					var substrings = View.Split(',');
-					setting.Options.Add(substrings[1], substrings[1]);
+					var substrings = View.Split('@');
+					setting.Options.Add(substrings[0], substrings[1]);
 				}
 			}
 

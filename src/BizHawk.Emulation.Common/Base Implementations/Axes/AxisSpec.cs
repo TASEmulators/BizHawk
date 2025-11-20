@@ -56,5 +56,15 @@ namespace BizHawk.Emulation.Common
 
 		public override int GetHashCode()
 			=> HashCode.Combine(Range.Start, Range.EndInclusive, Neutral, IsReversed, Constraint);
+
+		public override string ToString()
+		{
+			string FormatAsArgument(AxisConstraint constraint)
+				=> $", {constraint.GetType().Name} {{ PairedAxis: {constraint.PairedAxis} }}";
+			return $"{nameof(AxisSpec)}({Min}..={Max}, {Neutral}{
+				(IsReversed ? ", isReversed: true" : string.Empty)}{
+				(Constraint is null ? string.Empty : FormatAsArgument(Constraint))
+				})";
+		}
 	}
 }

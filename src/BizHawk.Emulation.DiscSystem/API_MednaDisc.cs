@@ -35,9 +35,17 @@ namespace BizHawk.Emulation.DiscSystem
 		public MednadiscTOC TOC;
 		public MednadiscTOCTrack[] TOCTracks;
 
-		[ThreadStatic] private static byte[] buf2442 = new byte[2448];
-		[ThreadStatic] private static byte[] buf96 = new byte[96];
+		[ThreadStatic]
+		private static byte[] _buf2442;
 
+		private static byte[] buf2442
+			=> _buf2442 ??= new byte[2448]; // misnomer?
+
+		[ThreadStatic]
+		private static byte[] _buf96;
+
+		private static byte[] buf96
+			=> _buf96 ??= new byte[96];
 
 		public void Read_2442(int LBA, byte[] buffer, int offset)
 		{

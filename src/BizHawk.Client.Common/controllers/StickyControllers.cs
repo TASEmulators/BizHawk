@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -37,16 +37,7 @@ namespace BizHawk.Client.Common
 		public void SetHapticChannelStrength(string name, int strength) => throw new NotSupportedException();
 
 		public void SetButtonHold(string button, bool enabled)
-		{
-			if (enabled)
-			{
-				_buttonHolds.Add(button);
-			}
-			else
-			{
-				_buttonHolds.Remove(button);
-			}
-		}
+			=> _buttonHolds.SetMembership(button, shouldBeMember: enabled);
 
 		public void SetAxisHold(string name, int? value)
 		{
@@ -68,23 +59,12 @@ namespace BizHawk.Client.Common
 			_axisHolds.Clear();
 		}
 
-		private List<string> _justPressed = [ ];
-
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (var button in buttons)
 			{
-				if (_buttonHolds.Contains(button))
-				{
-					_buttonHolds.Remove(button);
-				}
-				else
-				{
-					_buttonHolds.Add(button);
-				}
+				_ = _buttonHolds.ToggleMembership(button);
 			}
-
-			_justPressed = buttons;
 		}
 	}
 
@@ -173,16 +153,12 @@ namespace BizHawk.Client.Common
 			foreach (var v in _axisPatterns.Values) v.GetNextValue(lagged);
 		}
 
-		private List<string> _justPressed = [ ];
-
 		public void MassToggleStickyState(List<string> buttons)
 		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			foreach (var button in buttons)
 			{
 				SetButtonAutofire(button, !_boolPatterns.ContainsKey(button));
 			}
-
-			_justPressed = buttons;
 		}
 	}
 }

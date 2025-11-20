@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					// Adding set of gamepad buttons (P1)
 					AddButtons(GamepadButtons[0]);
-					
+
 					break;
 
 				case Port1PeripheralOption.FourScore:
@@ -173,8 +173,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
 				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
 				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-			},					
-			new[] {				
+			},
+			new[] {
 				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
 				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
 				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
@@ -566,7 +566,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"7A7BCA9A30A9F1B8AD3B45FA7DD7C8C180F53640", // Jetsons, The - Cogswell's Caper! (U) [t1]	NES
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [o1]
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [!]
-			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!] 
+			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!]
 			"7E1C9F23BF9BECB7831459598339A4DC9A3CECFC", // Joe and Mac (E) [!]
 			"A654DE12A59D07BAFF30DD6CB5E1AD05EB20B2D7", // Jumpy Demo by Rwin (PD)
 			"DE42818873470458DF29F515A193F536A0642EA8", // Kamikaze Mario DX Plus V1
@@ -714,6 +714,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"6A01FB7F185A45BAA21CC1EEDEB945CACA1C4D92", // Battle City (VS) [p1][!]
 			"D9B1B87204E025A637821A0168475E1209CE0C8A", // Top Gun (VS)
 			"4D5C2BF0B8EAA1690182D692A02BE1CC871481F4", // Punch-Out!! (E) (VS)
+			"2DC2C795421A5DB2427C460F35828A23BEBA9274", // Lagrange Point
+			"E808EBC015A94A38DCB0EAA9383267BEB4CF08EA", // Lagrange Point English localisation V1.00 by Aeon Genesis
+			"33C6C29404E1D3F01FA0059ACB6949EB2BCD80F0", // Lagrange Point English localisation V1.01 by Aeon Genesis
+			"3356604FC7F9A0E797266DDF75BED409B73996EC", // Super Mario All Stars NES ("2017") by infidelity on RHDN
+			"1739219B2D45C1BED0F1D4FA3E4E405985D564DC", // Super Mario All-Stars NES (crt_v10-15-17) by infidelity on RHDN
+			"E47FAE77EF57A5D2C8FB34C9EF38AC50B0B9FE7F", // Super Mario All-Stars NES (emu_v10-15-17) by infidelity on RHDN
 		};
 	}
 }

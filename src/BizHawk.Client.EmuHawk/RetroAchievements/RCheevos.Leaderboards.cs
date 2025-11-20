@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool LBoardsActive { get; set; }
+		private bool LBoardNotifsActive { get; set; }
 		private LBoard CurrentLboard { get; set; }
 
 		public class LBoard

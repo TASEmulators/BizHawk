@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -8,12 +10,13 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class CoreComm
 	{
-		public readonly Func<string, bool?> Question;
+		public delegate void AddOnScreenMessageCallback(string message, [LiteralExpected] int? duration = null);
+
+		public delegate void ModalMessageBoxCallback(string message);
 
 		public CoreComm(
-			Action<string> showMessage,
-			Action<string, int?> notifyMessage,
-			Func<string, bool?> question,
+			ModalMessageBoxCallback showMessage,
+			AddOnScreenMessageCallback notifyMessage,
 			ICoreFileProvider coreFileProvider,
 			CorePreferencesFlags prefs,
 			IOpenGLProvider oglProvider
@@ -21,7 +24,6 @@ namespace BizHawk.Emulation.Common
 		{
 			ShowMessage = showMessage;
 			Notify = notifyMessage;
-			Question = question;
 			CoreFileProvider = coreFileProvider;
 			CorePreferences = prefs;
 			OpenGLProvider = oglProvider;
@@ -32,19 +34,19 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets a message to show. Reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>
-		public Action<string> ShowMessage { get; }
+		public ModalMessageBoxCallback ShowMessage { get; }
 
 		/// <summary>
 		/// Gets a message to show for optional duration in seconds. Less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
-		public Action<string, int?> Notify { get; }
+		public AddOnScreenMessageCallback Notify { get; }
 
 		[Flags]
 		public enum CorePreferencesFlags
 		{
 			None = 0,
 			WaterboxCoreConsistencyCheck = 1,
-			WaterboxMemoryConsistencyCheck = 2
+			WaterboxMemoryConsistencyCheck = 2,
 		}
 
 		/// <summary>

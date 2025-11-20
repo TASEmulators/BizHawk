@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -18,7 +17,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
 		public LuaTable GetMemoryDomainList()
-			=> _th.ListToTable((List<string>) APIs.Memory.GetMemoryDomainList(), indexFrom: 0); //HACK cast will succeed as long as impl. returns .Select<T, string>().ToList() as IROC<string>
+			=> _th.EnumerateToLuaTable(APIs.Memory.GetMemoryDomainList(), indexFrom: 0);
 
 		[LuaMethodExample("local uimemget = memory.getmemorydomainsize( mainmemory.getname( ) );")]
 		[LuaMethod("getmemorydomainsize", "Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size")]
@@ -70,6 +69,21 @@ namespace BizHawk.Client.Common
 		public LuaTable ReadBytesAsDict(long addr, int length, string domain = null)
 			=> _th.MemoryBlockToTable(APIs.Memory.ReadByteRange(addr, length, domain), addr);
 
+#pragma warning disable MA0136 // [LuaMethodExample] normalizes line endings
+		[LuaMethodExample("""
+		local data = memory.read_bytes_as_binary_string(0x100, 32, "WRAM")
+		local some_s32_le, some_float = string.unpack("<i4f", data)
+		for i = 1, #data do
+			print(data:byte(i))
+		end
+		""")]
+		[LuaMethod("read_bytes_as_binary_string", "Reads {{length}} bytes starting at {{addr}} into a binary string. This string can be read with functions such as {{string.byte}} and {{string.unpack}}. This string can contain any bytes including null bytes, and is not suitable for display as text.")]
+		public byte[] ReadBytesAsString(long addr, int length, string domain = null)
+		{
+			var bytes = APIs.Memory.ReadByteRange(addr, length, domain);
+			return bytes as byte[] ?? bytes.ToArray();
+		}
+
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock, string domain = null)
@@ -80,8 +94,9 @@ namespace BizHawk.Client.Common
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
 			{
-				foreach (var (addr, v) in _th.EnumerateEntries<long, long>(memoryblock))
+				foreach (var (addr0, v) in memoryblock)
 				{
+					var addr = (long) addr0;
 					if (addr < d.Size)
 					{
 						d.PokeByte(addr, (byte) v);
@@ -108,11 +123,21 @@ namespace BizHawk.Client.Common
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the domain).")]
 		public void WriteBytesAsDict(LuaTable addrMap, string domain = null)
 		{
-			foreach (var (addr, v) in _th.EnumerateEntries<long, long>(addrMap))
+			foreach (var (addr, v) in addrMap)
 			{
-				APIs.Memory.WriteByte(addr, (uint) v, domain);
+				APIs.Memory.WriteByte((long) addr, (uint) v, domain);
 			}
 		}
+
+		[LuaMethodExample("""
+		memory.write_bytes_as_binary_string(0x100, string.pack("<i4f", 1234, 456.789), "WRAM")
+		memory.write_bytes_as_binary_string(0x108, "\xFE\xED", "WRAM")
+		memory.write_bytes_as_binary_string(0x10A, string.char(0xBE, 0xEF), "WRAM")
+		""")]
+		[LuaMethod("write_bytes_as_binary_string", "Writes bytes from a binary string to {{addr}}. The string can be created with functions such as {{string.pack}}, and can contain any bytes including null bytes. This is not a text encoding function.")]
+		public void WriteBytesAsString(long addr, byte[] bytes, string domain = null)
+			=> APIs.Memory.WriteByteRange(addr, bytes, domain);
+#pragma warning restore MA0136
 
 		[LuaMethodExample("local simemrea = memory.readfloat( 0x100, false, mainmemory.getname( ) );")]
 		[LuaMethod("readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]

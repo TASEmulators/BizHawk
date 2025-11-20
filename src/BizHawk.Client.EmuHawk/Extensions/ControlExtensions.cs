@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -12,6 +13,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -21,29 +23,22 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ControlExtensions
 	{
+		private const int WM_SETREDRAW = 0x000B;
+
 		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
 		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
 			where T : Enum
 		{
-			box.Items.Clear();
-			box.Items.AddRange(typeof(T).GetEnumDescriptions().Cast<object>().ToArray());
+			box.ReplaceItems(items: typeof(T).GetEnumDescriptions());
 			box.SelectedItem = enumVal.GetDescription();
 		}
-
-		/// <summary>extension method to make <see cref="Control.Invoke(Delegate)"/> easier to use</summary>
-		public static void Invoke(this Control control, Action action)
-			=> control.Invoke(action);
-
-		/// <summary>extension method to make <see cref="Control.BeginInvoke(Delegate)"/> easier to use</summary>
-		public static void BeginInvoke(this Control control, Action action)
-			=> control.BeginInvoke(action);
 
 		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
 			{
 				Name = "GeneratedColumnsSubMenu",
-				Text = "Columns"
+				Text = "Columns",
 			};
 
 			var columns = inputRoll.AllColumns;
@@ -56,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
-					Tag = column.Name
+					Tag = column.Name,
 				};
 
 				menuItem.CheckedChanged += (o, ev) =>
@@ -158,10 +153,69 @@ namespace BizHawk.Client.EmuHawk
 			return tabControl.TabPages.Cast<TabPage>();
 		}
 
+		public static Control? InnermostControlAt(this Form form, Point pos, GetChildAtPointSkip flags = GetChildAtPointSkip.None)
+		{
+			Control? top = form;
+			Control? found;
+			do
+			{
+				found = top!.GetChildAtPoint(top.PointToClient(pos), flags);
+				top = found;
+			} while (found is { HasChildren: true });
+			return found;
+		}
+
+#pragma warning disable CS0618 // WinForms doesn't use generics ofc
+		public static bool InsertAfter(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
+			=> ((IList) items).InsertAfter(needle, insert: insert);
+
+		public static bool InsertAfterLast(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
+			=> ((IList) items).InsertAfterLast(needle, insert: insert);
+
+		public static bool InsertBefore(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
+			=> ((IList) items).InsertBefore(needle, insert: insert);
+
+		public static bool InsertBeforeLast(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
+			=> ((IList) items).InsertBeforeLast(needle, insert: insert);
+#pragma warning restore CS0618
+
 		public static void ReplaceDropDownItems(this ToolStripDropDownItem menu, params ToolStripItem[] items)
 		{
 			menu.DropDownItems.Clear();
 			menu.DropDownItems.AddRange(items);
+		}
+
+		public static void ReplaceItems(this ComboBox dropdown, params object[] items)
+		{
+			dropdown.Items.Clear();
+			dropdown.Items.AddRange(items);
+		}
+
+		public static void ReplaceItems(this ComboBox dropdown, IEnumerable<object> items)
+			=> dropdown.ReplaceItems(items: items.ToArray());
+
+		public static CheckState ToCheckState(this bool? tristate)
+			=> tristate switch
+			{
+				true => CheckState.Checked,
+				false => CheckState.Unchecked,
+				null => CheckState.Indeterminate,
+			};
+
+		public static void SuspendDrawing(this Control control)
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
+			}
+		}
+
+		public static void ResumeDrawing(this Control control)
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+			}
 		}
 	}
 
@@ -324,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 			=> !e.Alt && e.Control && e.Shift && e.KeyCode == key;
 
 		/// <summary>
-		/// Changes the description heigh area to match the rows needed for the largest description in the list
+		/// Changes the description height area to match the rows needed for the largest description in the list
 		/// </summary>
 		public static void AdjustDescriptionHeightToFit(this PropertyGrid grid)
 		{
@@ -347,10 +401,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.GetType().Name == "DocComment")
 					{
-						var field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
-						field?.SetValue(control, true);
-						int height = (int)Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
-						control.Height = Math.Max(20, height) + 16; // magic for now
+						var fi = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
+						fi?.SetValue(control, true);
+						using var label = new Label();
+						var maxSize = new Size(grid.Width - 9, 999999);
+						control.Height = label.Height + TextRenderer.MeasureText(desc, control.Font, maxSize, TextFormatFlags.WordBreak).Height;
 						return;
 					}
 				}

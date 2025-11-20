@@ -5,73 +5,56 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio
 	{
 		/// <summary>
-		/// Only goes to go to the frame if it is an event before current emulation, otherwise it is just a future event that can freely be edited
+		/// Seek to the given frame, past or future, and load a state first if doing so gets us there faster.
+		/// Does nothing if we are already on the given frame.
 		/// </summary>
-		private void GoToLastEmulatedFrameIfNecessary(int frame, bool OnLeftMouseDown = false)
+		public void GoToFrame(int frame, bool OnLeftMouseDown = false, bool skipLoadState = false)
 		{
-			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
+			_lastRecordAction = -1;
+			if (frame == Emulator.Frame)
 			{
-				if (frame <= Emulator.Frame)
-				{
-					if ((MainForm.EmulatorPaused || !MainForm.IsSeeking)
-						&& !CurrentTasMovie.LastPositionStable && !_playbackInterrupted)
-					{
-						LastPositionFrame = Emulator.Frame;
-						CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
-					}
-
-					GoToFrame(frame, false, false, OnLeftMouseDown);
-				}
-				else
-				{
-					_triggerAutoRestore = false;
-				}
+				StopSeeking();
+				return;
 			}
-		}
 
-		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false, bool OnLeftMouseDown = false)
-		{
-			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
-			// Otherwise, load the latest state (if not already there) and seek while recording.
+			// Unpausing after a seek may seem like we aren't really seeking at all:
+			// what is the significance of a seek to frame if we don't pause?
+			// Answer: We use this in order to temporarily disable recording mode when the user navigates to a frame. (to avoid recording between whatever is the most recent state and the user-specified frame)
+			// Other answer: turbo seek, navigating while unpaused
+			_pauseAfterSeeking = MainForm.EmulatorPaused || (_seekingTo != -1 && _pauseAfterSeeking);
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
+			TastudioPlayMode();
 
-			if (frame <= CurrentTasMovie.InputLogLength)
+			var closestState = GetPriorStateForFramebuffer(frame);
+			if (frame < Emulator.Frame || (closestState.Key > Emulator.Frame && !skipLoadState))
 			{
-				// Get as close as we can then emulate there
-				StartAtNearestFrameAndEmulate(frame, fromLua, fromRewinding);
-				if (!OnLeftMouseDown) { MaybeFollowCursor(); }			
+				LoadState(closestState, true);
 			}
-			else // Emulate to a future frame
+			closestState.Value.Dispose();
+
+			if (Emulator.Frame != frame)
 			{
-				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
-				{
-					bool wasPaused = MainForm.EmulatorPaused;
-					MainForm.FrameAdvance();
-					if (!wasPaused)
-					{
-						MainForm.UnpauseEmulator();
-					}
-				}
-				else
-				{
-					TastudioPlayMode();
+				_seekStartFrame = Emulator.Frame;
+				_seekingByEdit = false;
 
-					var lastState = GetPriorStateForFramebuffer(frame);
-					if (lastState.Key > Emulator.Frame)
-					{
-						LoadState(lastState, true);
-					}
+				_seekingTo = frame;
+				MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
+				MainForm.UnpauseEmulator();
 
-					StartSeeking(frame);
+				if (_seekingTo - _seekStartFrame > 1)
+				{
+					MessageStatusLabel.Text = "Seeking...";
+					ProgressBar.Visible = true;
 				}
 			}
-		}
-
-		public void GoToPreviousFrame()
-		{
-			if (Emulator.Frame > 0)
+			else
 			{
-				GoToFrame(Emulator.Frame - 1);
+				StopSeeking();
+			}
+
+			if (!OnLeftMouseDown)
+			{
+				MaybeFollowCursor();
 			}
 		}
 
@@ -92,12 +75,23 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(next);
 		}
 
+		public void RestorePosition()
+		{
+			if (RestorePositionFrame != -1)
+			{
+				// restore makes no sense without pausing
+				// Pausing here ensures any seek done by GoToFrame pauses after completing.
+				MainForm.PauseEmulator();
+				GoToFrame(RestorePositionFrame, skipLoadState: !Config.TurboSeek);
+			}
+		}
+
 		/// <summary>
 		/// Makes the given frame visible. If no frame is given, makes the current frame visible.
 		/// </summary>
 		public void SetVisibleFrame(int? frame = null)
 		{
-			if (TasView.AlwaysScroll && _leftButtonHeld)
+			if (_leftButtonHeld)
 			{
 				return;
 			}

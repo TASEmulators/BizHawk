@@ -84,10 +84,11 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayMovieMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StopMovieMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PlayFromBeginningMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ImportMoviesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveMovieMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveMovieAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.StopMovieWithoutSavingMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
+			this.ImportMoviesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator14 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.AutomaticallyBackupMoviesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FullMovieLoadstatesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -96,6 +97,8 @@ namespace BizHawk.Client.EmuHawk
 			this.MovieEndRecordMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MovieEndStopMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.MovieEndPauseMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator32 = new System.Windows.Forms.ToolStripSeparator();
+			this.MovieEndPlaySoundMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AVSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RecordAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ConfigAndRecordAVMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -375,7 +378,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowMenuContextMenuSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.ShowMenuContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -771,11 +773,6 @@ namespace BizHawk.Client.EmuHawk
 			this.PlayFromBeginningMenuItem.Text = "Play from Beginning";
 			this.PlayFromBeginningMenuItem.Click += new System.EventHandler(this.PlayFromBeginningMenuItem_Click);
 			// 
-			// ImportMoviesMenuItem
-			// 
-			this.ImportMoviesMenuItem.Text = "Import Movies...";
-			this.ImportMoviesMenuItem.Click += new System.EventHandler(this.ImportMovieMenuItem_Click);
-			// 
 			// SaveMovieMenuItem
 			// 
 			this.SaveMovieMenuItem.Text = "&Save Movie";
@@ -790,6 +787,16 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.StopMovieWithoutSavingMenuItem.Text = "Stop Movie without Saving";
 			this.StopMovieWithoutSavingMenuItem.Click += new System.EventHandler(this.StopMovieWithoutSavingMenuItem_Click);
+			// 
+			// toolStripSeparator25
+			// 
+			this.toolStripSeparator25.Name = "toolStripSeparator25";
+			this.toolStripSeparator25.Size = new System.Drawing.Size(228, 6);
+			// 
+			// ImportMoviesMenuItem
+			// 
+			this.ImportMoviesMenuItem.Text = "Import Movies...";
+			this.ImportMoviesMenuItem.Click += new System.EventHandler(this.ImportMovieMenuItem_Click);
 			// 
 			// AutomaticallyBackupMoviesMenuItem
 			// 
@@ -807,7 +814,9 @@ namespace BizHawk.Client.EmuHawk
             this.MovieEndFinishMenuItem,
             this.MovieEndRecordMenuItem,
             this.MovieEndStopMenuItem,
-            this.MovieEndPauseMenuItem});
+            this.MovieEndPauseMenuItem,
+            this.toolStripSeparator32,
+            this.MovieEndPlaySoundMenuItem});
 			this.MovieEndSubMenu.Text = "On Movie End";
 			this.MovieEndSubMenu.DropDownOpened += new System.EventHandler(this.MovieEndSubMenu_DropDownOpened);
 			// 
@@ -818,7 +827,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MovieEndRecordMenuItem
 			// 
-			this.MovieEndRecordMenuItem.Text = "Switch To Record";
+			this.MovieEndRecordMenuItem.Text = "Switch to Record";
 			this.MovieEndRecordMenuItem.Click += new System.EventHandler(this.MovieEndRecordMenuItem_Click);
 			// 
 			// MovieEndStopMenuItem
@@ -830,6 +839,18 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.MovieEndPauseMenuItem.Text = "Pause";
 			this.MovieEndPauseMenuItem.Click += new System.EventHandler(this.MovieEndPauseMenuItem_Click);
+			// 
+			// toolStripSeparator32
+			// 
+			this.toolStripSeparator32.Name = "toolStripSeparator32";
+			this.toolStripSeparator32.Size = new System.Drawing.Size(177, 6);
+			// 
+			// MovieEndPlaySoundMenuItem
+			// 
+			this.MovieEndPlaySoundMenuItem.Name = "MovieEndPlaySoundMenuItem";
+			this.MovieEndPlaySoundMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.MovieEndPlaySoundMenuItem.Text = "Play Sound";
+			this.MovieEndPlaySoundMenuItem.Click += new System.EventHandler(this.MovieEndPlaySoundMenuItem_Click);
 			// 
 			// AVSubMenu
 			// 
@@ -869,7 +890,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CaptureLuaMenuItem.CheckOnClick = true;
 			this.CaptureLuaMenuItem.Name = "CaptureLuaMenuItem";
-			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(232, 22);
+			this.CaptureLuaMenuItem.Size = new System.Drawing.Size(205, 22);
 			this.CaptureLuaMenuItem.Text = "Capture Lua";
 			this.CaptureLuaMenuItem.Click += new System.EventHandler(this.CaptureLuaMenuItem_Click);
 			// 
@@ -986,7 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 			this.WindowSizeSubMenu.Text = "&Window Size";
 			this.WindowSizeSubMenu.DropDownOpened += new System.EventHandler(this.WindowSizeSubMenu_DropDownOpened);
 			// 
-			// ResizeWithFramebufferMenuItem
+			// DisableResizeWithFramebufferMenuItem
 			// 
 			this.DisableResizeWithFramebufferMenuItem.CheckOnClick = true;
 			this.DisableResizeWithFramebufferMenuItem.Text = "&Static Size";
@@ -2389,11 +2410,6 @@ namespace BizHawk.Client.EmuHawk
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
 			// 
-			// toolStripSeparator25
-			// 
-			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(228, 6);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -2779,5 +2795,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 		private ToolStripMenuItemEx DisableResizeWithFramebufferMenuItem;
 		private ToolStripSeparatorEx toolStripSeparator26;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator32;
+		private System.Windows.Forms.ToolStripMenuItem MovieEndPlaySoundMenuItem;
 	}
 }

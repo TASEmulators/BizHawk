@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
@@ -23,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[CoreConstructor(VSystemID.Raw.Arcade)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
-			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath).ToLowerInvariant();
+			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath.SubstringAfter('|')).ToLowerInvariant();
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ServiceProvider = new BasicServiceProvider(this);
@@ -36,7 +35,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_infoCallback = info =>
 			{
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");
+#pragma warning disable BHI3200 // wants a literal value for duration
 				lp.Comm.Notify(text, 4 * Regex.Matches(text, "\n").Count);
+#pragma warning restore BHI3200
 				RomDetails =
 					$"Full Name:          { _gameFullName }\r\n" +
 					$"Short Name:         { _gameShortName }\r\n" +
@@ -45,24 +46,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					$"Framerate:          { (float)VsyncNumerator / VsyncDenominator } " +
 					$"({ VsyncNumerator } / { VsyncDenominator })\r\n" +
 					$"Driver Source File: { _driverSourceFile.RemovePrefix("src")}\r\n\r\n" +
-					text + (text == "" ? "" : "\r\n") +
+					text + (text.Length is 0 ? string.Empty : "\r\n") +
 					string.Join("\r\n", _romHashes.Select(static r => $"{r.Value} - {r.Key}"));
 
-				if (text.Contains("imperfect", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.Imperfect;
-				}
-
-				if (text.Contains("unemulated", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.Unimplemented;
-				}
-
-				if (text.Contains("doesn't work", StringComparison.OrdinalIgnoreCase))
-				{
-					lp.Game.Status = RomStatus.NotWorking;
-				}
-
+				if (text.ContainsIgnoreCase("doesn't work")) lp.Game.Status = RomStatus.NotWorking;
+				else if (text.ContainsIgnoreCase("unemulated")) lp.Game.Status = RomStatus.Unimplemented;
+				else if (text.ContainsIgnoreCase("imperfect")) lp.Game.Status = RomStatus.Imperfect;
 			};
 
 			_exe = new(new()
@@ -85,10 +74,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				StartMAME(lp.Roms);
 			}
 
-			if (_loadFailure != string.Empty)
+			if (_loadFailure.Length is not 0)
 			{
 				Dispose();
-				throw new Exception("\n\n" + _loadFailure);
+				throw new InternalCoreException("\n\n" + _loadFailure);
 			}
 
 			// concat all SHA1 hashes together (unprefixed), then hash that
@@ -123,20 +112,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private readonly LibMAME _core;
 		private readonly WaterboxHost _exe;
 		private readonly ICallingConventionAdapter _adapter;
-
+		private readonly SortedList<string, string> _romHashes = [ ];
+		private readonly string _gameFileName;
 		private readonly LibMAME.LogCallbackDelegate _logCallback;
 		private readonly LibMAME.BaseTimeCallbackDelegate _baseTimeCallback;
 		private readonly LibMAME.InputPollCallbackDelegate _inputPollCallback;
 		private readonly LibMAME.InfoCallbackDelegate _infoCallback;
 
-		public string RomDetails { get; set; }
-
-		private readonly string _gameFileName;
 		private string _gameFullName = "Arcade";
 		private string _gameShortName = "arcade";
 		private string _driverSourceFile = "";
-		private string _loadFailure = string.Empty;
-		private readonly SortedList<string, string> _romHashes = new();
+		private string _loadFailure = "";
+		private byte[] _configFile;
+
+		public string RomDetails { get; set; }
 
 		private void StartMAME(List<IRomAsset> roms)
 		{
@@ -185,40 +174,60 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// mame expects chd files in a folder of the game name
 			string MakeFileName(IRomAsset rom)
 				=> rom.Extension.ToLowerInvariant() is ".chd"
-					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
-					: Path.GetFileNameWithoutExtension(rom.RomPath).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
+					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
+					: Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
 
 			foreach (var rom in roms)
 			{
 				_exe.AddReadonlyFile(MakeRomData(rom), MakeFileName(rom));
 			}
 
+			_configFile = Encoding.UTF8.GetBytes(
+				"<?xml version=\"1.0\"?>\n" +
+				"<mameconfig version=\"10\">\n" +
+				$"	<system name=\"{gameName}\">\n" +
+				"		<crosshairs>\n" +
+				"			<crosshair player=\"0\" mode=\"0\" />" +
+				"			<crosshair player=\"1\" mode=\"0\" />" +
+				"			<crosshair player=\"2\" mode=\"0\" />" +
+				"			<crosshair player=\"3\" mode=\"0\" />" +
+				"			<crosshair player=\"4\" mode=\"0\" />" +
+				"			<crosshair player=\"5\" mode=\"0\" />" +
+				"			<crosshair player=\"6\" mode=\"0\" />" +
+				"			<crosshair player=\"7\" mode=\"0\" />" +
+				"			<autotime val=\"0\" />\n" +
+				"		</crosshairs>\n" +
+				"	</system>\n" +
+				"</mameconfig>\n"
+			);
+
+			_exe.AddReadonlyFile(_configFile, "cfg/" + gameName + ".cfg");
+
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			var args = new List<string>
 			{
-				 "mame"                                 // dummy, internally discarded by index, so has to go first
-				, _gameFileName                         // no dash for rom names
-				, "-noreadconfig"                       // forbid reading ini files
-				, "-nowriteconfig"                      // forbid writing ini files
-				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
-				, "-nothrottle"                         // forbid throttling to "real" speed of the device
-				, "-update_in_pause"                    // ^ including frame-advancing
-				, "-rompath",                       ""  // mame doesn't load roms from full paths, only from dirs to scan
-				, "-joystick_contradictory"             // allow L+R/U+D on digital joystick
-				, "-nvram_directory",               ""  // path to nvram
-				, "-artpath",                       ""  // path to artwork
-				, "-diff_directory",                ""  // path to hdd diffs
-				, "-cfg_directory",                 ""  // path to config
-				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
-				, "-output",                 "console"  // print everything to hawk console
-				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
-				, "-sound",                     "none"  // forbid osd sound driver
-				, "-video",                     "none"  // forbid mame window altogether
-				, "-keyboardprovider",          "none"
-				, "-mouseprovider",             "none"
-				, "-lightgunprovider",          "none"
-				, "-joystickprovider",          "none"
+				"mame",                                // dummy, internally discarded by index, so has to go first
+				_gameFileName,                         // no dash for rom names
+				"-noreadconfig",                       // forbid reading ini files
+				"-nowriteconfig",                      // forbid writing ini files
+				"-norewind",                           // forbid rewind savestates (captured upon frame advance)
+				"-skip_gameinfo",                      // forbid this blocking screen that requires user input
+				"-nothrottle",                         // forbid throttling to "real" speed of the device
+				"-update_in_pause",                    // ^ including frame-advancing
+				"-rompath",                        "", // mame doesn't load roms from full paths, only from dirs to scan
+				"-joystick_contradictory",             // allow L+R/U+D on digital joystick
+				"-nvram_directory",                "", // path to nvram
+				"-artpath",                        "", // path to artwork
+				"-diff_directory",                 "", // path to hdd diffs
+				"-volume",                      "-32", // lowest attenuation means mame osd remains silent
+				"-output",                  "console", // print everything to hawk console
+				"-samplerate", _sampleRate.ToString(), // match hawk samplerate
+				"-sound",                      "none", // forbid osd sound driver
+				"-video",                      "none", // forbid mame window altogether
+				"-keyboardprovider",           "none",
+				"-mouseprovider",              "none",
+				"-lightgunprovider",           "none",
+				"-joystickprovider",           "none",
 			};
 
 			if (_syncSettings.DriverSettings.TryGetValue(
@@ -255,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_core.mame_coswitch();
 				_core.mame_lua_execute(MAMELuaCommand.Unpause);
 			}
-			else if (_loadFailure == string.Empty)
+			else if (_loadFailure.Length is 0)
 			{
 				_loadFailure = "Unknown load error occurred???";
 			}
@@ -263,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			foreach (var rom in roms)
 			{
 				// only close non-chd files
-				if (rom.Extension.ToLowerInvariant() != ".chd")
+				if (!".chd".EqualsIgnoreCase(rom.Extension))
 				{
 					_exe.RemoveReadonlyFile(MakeFileName(rom));
 				}
@@ -280,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return string.Empty;
 			}
 
-			var ret = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			var ret = Mershul.PtrToStringUtf8(ptr);
 			_core.mame_lua_free_string(ptr);
 			return ret;
 		}
@@ -301,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAME is { mameVersion }\n" +
 				$"MAMEHawk is { version }");
 		}
-		
+
 		private void MAMELogCallback(LibMAME.OutputChannel channel, int size, string data)
 		{
 			if (data.Contains("NOT FOUND") && channel == LibMAME.OutputChannel.ERROR)
@@ -400,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"for tag, _ in pairs(manager.machine.ioport.ports) do " +
 					"for name, field in pairs(manager.machine.ioport.ports[tag].fields) do " +
 						"if field.type_class ~= \"dipswitch\" and field.is_analog then " +
-							"table.insert(final, string.format(\"%s,%s,%d,%d,%d;\", tag, name, field.defvalue, field.minvalue, field.maxvalue)) " +
+							"table.insert(final, string.format(\"%s,%s,%d,%d,%d,%d;\", tag, name, field.defvalue, field.minvalue, field.maxvalue, field.mask)) " +
 						"end " +
 					"end " +
 				"end " +
@@ -421,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetViewsInfo =
 				"local final = {} " +
 				"for index, name in pairs(manager.machine.video.snapshot_target.view_names) do " +
-					"table.insert(final, string.format(\"%s,%s;\", index, name)) " +
+					"table.insert(final, string.format(\"%04d@%s;\", index, name)) " +
 				"end " +
 				"table.sort(final) " +
 				"return table.concat(final)";
@@ -446,10 +455,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public static string GetDIPSwitchOptions(string tag, string fieldName) =>
 				"local final = { } " +
 				$"for value, description in pairs(manager.machine.ioport.ports[\"{ tag }\"].fields[\"{ fieldName }\"].settings) do " +
-					"table.insert(final, string.format(\"%d~%s@\", value, description)) " +
+					"table.insert(final, string.format(\"%d~%s\", value, description)) " +
 				"end " +
 				"table.sort(final) " +
-				"return table.concat(final)";
+				"return table.concat(final, '\\n')";
 			public static string GetViewName(string index) =>
 				$"return manager.machine.video.snapshot_target.view_names[{ index }]";
 		}

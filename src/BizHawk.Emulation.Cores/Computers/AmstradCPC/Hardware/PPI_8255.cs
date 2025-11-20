@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					// PSG (Sound/Keyboard/Joystick)
 					result = INPortA();
-					
+
 					break;
 
 				// Port B Read

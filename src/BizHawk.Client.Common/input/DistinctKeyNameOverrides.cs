@@ -1,8 +1,10 @@
+using BizHawk.Bizware.Input;
+
 namespace BizHawk.Client.Common
 {
 	public static class DistinctKeyNameOverrides
 	{
-		public static string GetName(in DistinctKey k)
+		public static string GetName(DistinctKey k)
 			=> k switch
 			{
 				DistinctKey.Back => "Backspace",
@@ -51,7 +53,7 @@ namespace BizHawk.Client.Common
 				DistinctKey.OemQuotes => "Apostrophe",
 				DistinctKey.OemBackslash => "OEM102",
 				DistinctKey.NumPadEnter => "KeypadEnter",
-				_ => k.ToString()
+				_ => k.ToString(),
 			};
 	}
 }

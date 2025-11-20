@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Reflection;
 
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 
@@ -24,27 +25,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CoreName = emu.Attributes().CoreName;
 				Released = emu.Attributes().Released;
-				Services = new Dictionary<string, ServiceInfo>();
 				var ser = emu.ServiceProvider;
-				foreach (Type t in ser.AvailableServices.Where(type => type != emu.GetType()))
-				{
-					var si = new ServiceInfo(t, ser.GetService(t));
-					Services.Add(si.TypeName, si);
-				}
-
+				Services = ser.AvailableServices.Except([ emu.GetType() ])
+					.Select(t => new ServiceInfo(t, ser.GetService(t)))
+					.OrderBy(si => si.TypeName)
+					.ToDictionary(static si => si.TypeName);
 				var notApplicableAttribute = ((ServiceNotApplicableAttribute)Attribute
 					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicableAttribute)));
-
-				if (notApplicableAttribute != null)
-				{
-					NotApplicableTypes = notApplicableAttribute.NotApplicableTypes
-					.Select(x => x.ToString())
-					.ToList();
-				}
-				else
-				{
-					NotApplicableTypes = new List<string>();
-				}
+				NotApplicableTypes = (notApplicableAttribute?.NotApplicableTypes ?? [ ])
+					.Select(static x => x.ToString()).Order().ToList();
 			}
 		}
 
@@ -125,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 			var ret = new TreeNode
 			{
 				Text = ci.CoreName + (ci.Released ? "" : " (UNRELEASED)"),
-				ForeColor = ci.Released ? Color.Black : Color.DarkGray
+				ForeColor = ci.Released ? Color.Black : Color.DarkGray,
 			};
 
 			foreach (var service in ci.Services.Values)
@@ -137,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					ForeColor = service.Complete ? Color.Black : Color.Red,
 					ImageKey = img,
 					SelectedImageKey = img,
-					StateImageKey = img
+					StateImageKey = img,
 				};
 
 				foreach (var function in service.Functions)
@@ -149,13 +138,13 @@ namespace BizHawk.Client.EmuHawk
 						ForeColor = function.Complete ? Color.Black : Color.Red,
 						ImageKey = img,
 						SelectedImageKey = img,
-						StateImageKey = img
+						StateImageKey = img,
 					});
 				}
 				ret.Nodes.Add(serviceNode);
 			}
 
-			foreach (var service in Emulation.Common.ReflectionCache.Types.Where(t => t.IsInterface
+			foreach (var service in ReflectionCache_Biz_Emu_Com.Types.Where(t => t.IsInterface
 				&& typeof(IEmulatorService).IsAssignableFrom(t) && !typeof(ISpecializedEmulatorService).IsAssignableFrom(t) // don't show ISpecializedEmulatorService subinterfaces as "missing" as there's no expectation that they'll be implemented eventually
 				&& t != typeof(IEmulatorService) && t != typeof(ITextStatable) // denylisting ITextStatable is a hack for now, eventually we can get merge it into IStatable w/ default interface methods
 				&& !ci.Services.ContainsKey(t.ToString()) && !ci.NotApplicableTypes.Contains(t.ToString())))
@@ -167,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 					ForeColor = Color.Red,
 					ImageKey = img,
 					SelectedImageKey = img,
-					StateImageKey = img
+					StateImageKey = img,
 				};
 				ret.Nodes.Add(serviceNode);
 			}
@@ -227,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 						ForeColor = core.CoreAttr.Released ? Color.Black : Color.DarkGray,
 						ImageKey = img,
 						SelectedImageKey = img,
-						StateImageKey = img
+						StateImageKey = img,
 					};
 					CoreTree.Nodes.Add(coreNode);
 				}

@@ -41,7 +41,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			FindBox.Select();
-
 		}
 
 		private string GetFindBoxChars()
@@ -78,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 					Nullable = HexRadio.Checked,
 					Text = text,
 					Size = size,
-					Location = location
+					Location = location,
 				};
 			}
 			else
@@ -87,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = text,
 					Size = size,
-					Location = location
+					Location = location,
 				};
 			}
 
@@ -110,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyData == Keys.Enter)
 			{
-				Find_Next_Click(null, null);
+				Find_Next_Click(null, EventArgs.Empty);
 				e.Handled = true;
 			}
 		}
@@ -124,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyData == Keys.Enter)
 			{
-				Find_Next_Click(null, null);
+				Find_Next_Click(null, EventArgs.Empty);
 				e.Handled = true;
 			}
 		}

@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 //TODO - could stringpool the BootGod DB for a pedantic optimization
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	partial class NES
+	public sealed partial class NES
 	{
 		private static readonly List<Type> INESBoardImplementors = new List<Type>();
 
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var normalPriority = new List<Type>();
 
 			//scan types in this assembly to find ones that implement boards to add them to the list
-			foreach (var type in Emulation.Cores.ReflectionCache.Types)
+			foreach (var type in ReflectionCache.Types)
 			{
 				var attrs = type.GetCustomAttributes(typeof(NesBoardImplAttribute), true);
 				if (attrs.Length == 0) continue;
@@ -157,7 +157,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;
 
+#pragma warning disable MA0084 // shadows `CartInfo this.cart`
 			CartInfo cart = new CartInfo();
+#pragma warning restore MA0084
 
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.GetOptions();

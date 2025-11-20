@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private class MMC3Variant : MMC3
 		{
 			public MMC3Variant(NesBoardBase board)
-			: base(board,0)
+			: base(board)
 			{
 			}
 
@@ -57,11 +57,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (delay > 0)
 				{
-					
+
 					delay--;
 					if(delay==0 && irq_pending)
 						board.IrqSignal = true;
-
 				}
 			}
 		}
@@ -156,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					chr_regs_1k[2] = (byte)(value * 2);
 					chr_regs_1k[3] = (byte)(value * 2 + 1);
 					break;
-				
+
 				case 0x2000: //$A000 [CCCC CCCC]   CHR Reg 2 (1k @ $1000)
 					chr_regs_1k[4] = value;
 					break;

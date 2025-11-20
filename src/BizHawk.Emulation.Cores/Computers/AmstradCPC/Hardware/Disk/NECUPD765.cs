@@ -73,9 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				//d.IntStatus = 0;
 				//d.SeekState = SeekSubState.Idle;
 				//d.SeekIntState = SeekIntStatus.Normal;
-
 			}
-
 		}
 
 		/// <summary>

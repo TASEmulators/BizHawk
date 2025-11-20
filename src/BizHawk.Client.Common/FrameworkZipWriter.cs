@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.IO;
 using System.IO.Compression;
 
@@ -7,15 +9,18 @@ namespace BizHawk.Client.Common
 {
 	public class FrameworkZipWriter : IZipWriter
 	{
-		private ZipArchive _archive;
-		private Zstd _zstd;
+		private ZipArchive? _archive;
+
+		private FileStream? _fs;
+
+		private Zstd? _zstd;
 		private readonly CompressionLevel _level;
 		private readonly int _zstdCompressionLevel;
 
 		public FrameworkZipWriter(string path, int compressionLevel)
 		{
-			_archive = new ZipArchive(new FileStream(path, FileMode.Create, FileAccess.Write),
-				ZipArchiveMode.Create, false);
+			_fs = new(path, FileMode.Create, FileAccess.Write);
+			_archive = new(_fs, ZipArchiveMode.Create, leaveOpen: true);
 			if (compressionLevel == 0)
 				_level = CompressionLevel.NoCompression;
 			else if (compressionLevel < 5)
@@ -33,11 +38,11 @@ namespace BizHawk.Client.Common
 		{
 			// don't compress with deflate if we're already compressing with zstd
 			// this won't produce meaningful compression, and would just be a timesink
-			using var stream = _archive.CreateEntry(name, zstdCompress ? CompressionLevel.NoCompression : _level).Open();
+			using var stream = _archive!.CreateEntry(name, zstdCompress ? CompressionLevel.NoCompression : _level).Open();
 
 			if (zstdCompress)
 			{
-				using var z = _zstd.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
+				using var z = _zstd!.CreateZstdCompressionStream(stream, _zstdCompressionLevel);
 				callback(z);
 			}
 			else
@@ -48,17 +53,13 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			if (_archive != null)
-			{
-				_archive.Dispose();
-				_archive = null;
-			}
-
-			if (_zstd != null)
-			{
-				_zstd.Dispose();
-				_zstd = null;
-			}
+			_archive?.Dispose();
+			_archive = null;
+			_fs?.Flush(flushToDisk: true);
+			_fs?.Dispose();
+			_fs = null;
+			_zstd?.Dispose();
+			_zstd = null;
 		}
 	}
 }

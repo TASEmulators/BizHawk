@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		{
 			return frame < FrameCount && frame >= 0
 				? Log[frame]
-				: "";
+				: Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
 		}
 
 		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
-				if (Mode == MovieMode.Play || Mode == MovieMode.Finished)
+				if (Mode is MovieMode.Play or MovieMode.Finished)
 				{
 					Mode = MovieMode.Finished;
 					return true;

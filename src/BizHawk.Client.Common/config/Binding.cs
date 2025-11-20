@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
+#if DEBUG
+using System.Diagnostics;
+using BizHawk.Common.CollectionExtensions;
+#endif
 
 namespace BizHawk.Client.Common
 {
@@ -66,6 +69,8 @@ namespace BizHawk.Client.Common
 			Bind("General", "Toggle Messages");
 			Bind("General", "Toggle Display Nothing");
 			Bind("General", "Accept Background Input");
+			Bind("General", "Capture Mouse", "WMouse M");
+			Bind("General", "Toggle Stay on Top");
 
 			Bind("Save States", "Save State 1", "Shift+F1");
 			Bind("Save States", "Save State 2", "Shift+F2");
@@ -131,11 +136,18 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Add Branch", "Alt+Insert");
 			Bind("TAStudio", "Delete Branch", "Alt+Delete");
 			Bind("TAStudio", "Show Cursor");
+			Bind("TAStudio", "Select Current Frame");
 			Bind("TAStudio", "Toggle Follow Cursor", "Shift+F");
-			Bind("TAStudio", "Toggle Auto-Restore", "Shift+R");
+			Bind("TAStudio", "Toggle Auto-Restore", "Alt+R");
+			Bind("TAStudio", "Seek To Green Arrow", "R");
 			Bind("TAStudio", "Toggle Turbo Seek", "Shift+S");
 			Bind("TAStudio", "Undo", "Ctrl+Z"); // TODO: these are getting not unique enough
 			Bind("TAStudio", "Redo", "Ctrl+Y");
+			Bind("TAStudio", "Seek To Prev Marker", "Shift+PageUp");
+			Bind("TAStudio", "Seek To Next Marker", "Shift+PageDown");
+			Bind("TAStudio", "Cancel Seek");
+			Bind("TAStudio", "Set Marker", "M");
+			Bind("TAStudio", "Delete Marker", "Ctrl+M");
 			Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A");
 			Bind("TAStudio", "Select All", "Ctrl+Shift+A");
 			Bind("TAStudio", "Reselect Clip.", "Ctrl+B");
@@ -180,6 +192,7 @@ namespace BizHawk.Client.Common
 			Bind("NDS", "Next Screen Layout");
 			Bind("NDS", "Previous Screen Layout");
 			Bind("NDS", "Screen Rotate");
+			Bind("NDS", "Swap Screens");
 
 			Bind("RAIntegration", "Open RA Overlay", "Escape");
 			Bind("RAIntegration", "RA Up", "Up");
@@ -192,6 +205,14 @@ namespace BizHawk.Client.Common
 
 			AllHotkeys = dict;
 			Groupings = dict.Values.Select(static info => info.TabGroup).Distinct().ToList();
+
+#if DEBUG
+			var bindings = dict.Values
+				.Where(static info => !info.DisplayName.StartsWith("RA ") && !string.IsNullOrEmpty(info.DefaultBinding))
+				.Select(static info => info.DefaultBinding)
+				.ToArray();
+			Debug.Assert(bindings.Distinct().CountIsExactly(bindings.Length), "Do not default bind multiple hotkeys to the same button combination.");
+#endif
 		}
 
 		public static void ResolveWithDefaults(IDictionary<string, string> dict)

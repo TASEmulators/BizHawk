@@ -4,9 +4,9 @@ namespace BizHawk.Emulation.Common
 	/// <remarks>docs of individual controllers are being collected in comments of https://github.com/TASEmulators/BizHawk/issues/1200</remarks>
 	public enum AxisPairOrientation : byte
 	{
-		RightAndUp = 0,
-		RightAndDown = 1,
-		LeftAndUp = 2,
-		LeftAndDown = 3
+		RightAndDown = 0,
+		RightAndUp = 1,
+		LeftAndDown = 2,
+		LeftAndUp = 3,
 	}
 }

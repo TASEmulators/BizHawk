@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = new Size(100, 50),
 				SizeMode = PictureBoxSizeMode.AutoSize,
 				TabIndex = 0,
-				TabStop = false
+				TabStop = false,
 			};
 			Controls.Add(luaPictureBox);
 
@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 		""")]
 		[LuaMethod(
 			name: "DrawImageRegion",
-			description: "Draws part of the image in the given file (.bmp, .gif, .jpg, .png, or .tif) to the referenced."
+			description: "Draws part of the image in the given file (.bmp, .gif, .jpg, .png, or .tif) to the referenced canvas."
 				+ " Consult this diagram to see its usage (renders embedded on the TASVideos Wiki): [https://user-images.githubusercontent.com/13409956/198868522-55dc1e5f-ae67-4ebb-a75f-558656cb4468.png|alt=Diagram showing how to use forms.drawImageRegion]"
 				+ " The file contents will be cached and re-used next time this function is called with the same path on this canvas. The canvas' cache can be cleared with ClearImageCache.")]
 		public void DrawImageRegion(

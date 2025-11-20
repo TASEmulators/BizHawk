@@ -9,11 +9,13 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<Description>Multi-system emulator frontend</Description>
 		<Nullable>disable</Nullable>
+		<NoWarn>$(NoWarn);MA0162</NoWarn> <!-- MA0162 is helpful for migration to .NET Core -->
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" />
+		<Reference Include="PresentationFramework" />
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
@@ -22,7 +24,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Audio/BizHawk.Bizware.Audio.csproj" />
-		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics.Controls/BizHawk.Bizware.Graphics.Controls.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.WinForms.Controls/BizHawk.WinForms.Controls.csproj" />
 		<Compile Remove="Properties/Settings.Designer.cs" />

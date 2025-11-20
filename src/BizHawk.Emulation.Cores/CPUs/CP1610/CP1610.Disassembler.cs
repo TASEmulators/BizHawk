@@ -11,7 +11,9 @@
 			ushort addr, offset;
 			int decle2, decle3, cond, ext;
 			string result = "";
+#pragma warning disable MA0084 // shadows `int this.opcode`
 			int opcode = ReadMemory(pc, true) & 0x3FF;
+#pragma warning restore MA0084
 			switch (opcode)
 			{
 				case 0x000:

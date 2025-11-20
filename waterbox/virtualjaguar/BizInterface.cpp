@@ -107,17 +107,17 @@ ECL_EXPORT bool SaveRamIsDirty()
 	return IsMemTrack() ? mtDirty : eeprom_dirty;
 }
 
-ECL_EXPORT void GetSaveRam(u8* dst)
+ECL_EXPORT void GetSaveRam(u8* dst, bool clearDirty)
 {
 	if (IsMemTrack())
 	{
 		memcpy(dst, mtMem, sizeof(mtMem));
-		mtDirty = false;
+		if (clearDirty) mtDirty = false;
 	}
 	else
 	{
 		memcpy(dst, eeprom_ram, sizeof(eeprom_ram));
-		eeprom_dirty = false;
+		if (clearDirty) eeprom_dirty = false;
 	}
 }
 

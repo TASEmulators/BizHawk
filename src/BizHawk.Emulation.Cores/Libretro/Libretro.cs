@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private class BridgeGuard(IntPtr parentHandler) : IMonitor
 		{
-			private static readonly object _sync = new();
+			private static readonly Lock _sync = new();
 			private static IntPtr _activeHandler;
 			private static int _refCount;
 

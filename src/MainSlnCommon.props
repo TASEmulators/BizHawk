@@ -7,27 +7,53 @@
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>embedded</DebugType>
-		<DefineConstants>$(DefineConstants);AVI_SUPPORT</DefineConstants>
+		<DefineConstants>$(DefineConstants);AVI_SUPPORT;BIZHAWKBUILD_SUPERHAWK</DefineConstants>
+		<MeziantouPolyfill_ExcludedPolyfills>@(MeziantouPolyfill_DeferToPolySharp, '|')</MeziantouPolyfill_ExcludedPolyfills>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
 		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 	</PropertyGroup>
+	<ItemGroup>
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Index" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Range" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.ExperimentalAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Diagnostics.CodeAnalysis.UnscopedRefAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CollectionBuilderAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.IsExternalInit" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.ModuleInitializerAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.RequiredMemberAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.SkipLocalsInitAttribute" />
+		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute" />
+	</ItemGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">
-		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Meziantou.Polyfill" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.ReflectionCache.dll" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/BannedSymbols.BannedApiAnalyzers.txt" />
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/Menees.Analyzers.Settings.xml" />
+		<CompilerVisibleProperty Include="MSBuildProjectName" />
+		<InternalsVisibleTo Include="$(MSBuildProjectName.Replace('BizHawk.', 'BizHawk.Tests.'))" />
 		<Using Include="System" />
+		<Using Include="System.Object" Alias="Lock" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />
 	</ItemGroup>
+	<Target Name="UbuntuMispackagedSDKCheck" BeforeTargets="Build">
+		<Error Condition=" '$(OS)' != 'Windows_NT' AND !Exists('$(MSBuildSDKsPath)/Microsoft.NET.Sdk.WindowsDesktop/targets/Microsoft.NET.Sdk.WindowsDesktop.targets') "
+			Text="Microsoft.NET.Sdk.WindowsDesktop is missing—if you're on Ubuntu, DON'T install the .NET SDK from the official repos" />
+	</Target>
 </Project>

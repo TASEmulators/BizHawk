@@ -6,7 +6,9 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Common
 {
 	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
+#pragma warning disable CA1715 // breaks IInterface convention
 	public interface Range<out T> where T : unmanaged, IComparable<T>
+#pragma warning restore CA1715
 	{
 		T Start { get; }
 

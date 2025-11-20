@@ -10,10 +10,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 
 using BizHawk.Bizware.Graphics;
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
-
-using BizHawk.Client.Common.FilterManager;
 
 namespace BizHawk.Client.Common.Filters
 {
@@ -26,11 +23,7 @@ namespace BizHawk.Client.Common.Filters
 			while (true)
 			{
 				var match = RxInclude.Match(content);
-				if (match.Value == string.Empty)
-				{
-					return content;
-				}
-
+				if (match.Value.Length is 0) return content;
 				var fname = match.Groups[4].Value;
 				fname = Path.Combine(baseDirectory,fname);
 				var includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
@@ -71,7 +64,7 @@ namespace BizHawk.Client.Common.Filters
 						{
 							EDispMethod.OpenGL => Path.ChangeExtension(path, ".glsl"),
 							EDispMethod.D3D11 => Path.ChangeExtension(path, ".hlsl"),
-							_ => throw new InvalidOperationException()
+							_ => throw new InvalidOperationException(),
 						};
 					}
 				}
@@ -165,13 +158,7 @@ namespace BizHawk.Client.Common.Filters
 				else
 				{
 					// remove comments from end of value. exclusive from above condition, since comments after quoted strings would be snipped by the quoted string extraction
-					var hash = value.IndexOf('#');
-					if (hash != -1)
-					{
-						value = value.Substring(0, hash);
-					}
-
-					value = value.Trim();
+					value = value.SubstringBefore('#').Trim();
 				}
 				dict[key.ToLowerInvariant()] = value;
 			}
@@ -214,7 +201,10 @@ namespace BizHawk.Client.Common.Filters
 
 		public enum ScaleType
 		{
-			NotSet, Source, Viewport, Absolute
+			NotSet,
+			Source,
+			Viewport,
+			Absolute,
 		}
 
 		public class ShaderPass
@@ -264,7 +254,7 @@ namespace BizHawk.Client.Common.Filters
 			{
 				"true" => true,
 				"false" => false,
-				_ => throw new InvalidOperationException("Unparsable bool in CGP file content")
+				_ => throw new InvalidOperationException("Unparsable bool in CGP file content"),
 			};
 		}
 	}
@@ -298,14 +288,14 @@ namespace BizHawk.Client.Common.Filters
 			{
 				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.X,
 				RetroShaderPreset.ScaleType.Source => (int)(inSize.Width * _sp.Scale.X),
-				_ => _outputSize.Width
+				_ => _outputSize.Width,
 			};
 
 			_outputSize.Height = _sp.ScaleTypeY switch
 			{
 				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.Y,
 				RetroShaderPreset.ScaleType.Source => (int)(inSize.Height * _sp.Scale.Y),
-				_ => _outputSize.Height
+				_ => _outputSize.Height,
 			};
 
 			DeclareOutput(new SurfaceState(new(_outputSize), SurfaceDisposition.RenderTarget));
@@ -325,14 +315,14 @@ namespace BizHawk.Client.Common.Filters
 			{
 				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.X,
 				RetroShaderPreset.ScaleType.Source => (int)(inSize.Width * _sp.Scale.X),
-				_ => outsize.Width
+				_ => outsize.Width,
 			};
 
 			outsize.Height = _sp.ScaleTypeY switch
 			{
 				RetroShaderPreset.ScaleType.Absolute => (int)_sp.Scale.Y,
 				RetroShaderPreset.ScaleType.Source => (int)(inSize.Height * _sp.Scale.Y),
-				_ => outsize.Height
+				_ => outsize.Height,
 			};
 
 			return outsize;

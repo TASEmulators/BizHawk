@@ -1,0 +1,7 @@
+[*.cs]
+
+# Elements should have the same indentation
+dotnet_diagnostic.SA1137.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion

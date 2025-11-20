@@ -18,15 +18,8 @@ namespace BizHawk.Bizware.Graphics
 
 		string GetUniformSamplerName(int index);
 
-		/// <summary>
-		/// Sets a uniform sampler to use use the provided texture
-		/// </summary>
+		/// <summary>Sets a uniform sampler to use the provided texture</summary>
 		void SetUniformSampler(string name, ITexture2D tex);
-
-		/// <summary>
-		/// Sets a uniform value
-		/// </summary>
-		void SetUniformMatrix(string name, Matrix4x4 mat, bool transpose = false);
 
 		/// <summary>
 		/// Sets a uniform value

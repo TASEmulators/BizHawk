@@ -32,7 +32,9 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stmaiget = mainmemory.getname( );")]
 		[LuaMethod("getname", "returns the name of the domain defined as main memory for the given core")]
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 		public string GetName()
+#pragma warning restore CA1721
 			=> MainMemName;
 
 		[LuaMethodExample("local uimaiget = mainmemory.getcurrentmemorydomainsize( );")]
@@ -67,6 +69,21 @@ namespace BizHawk.Client.Common
 		public LuaTable ReadBytesAsDict(long addr, int length)
 			=> _th.MemoryBlockToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName), addr);
 
+#pragma warning disable MA0136 // [LuaMethodExample] normalizes line endings
+		[LuaMethodExample("""
+		local data = mainmemory.read_bytes_as_binary_string(0x100, 32)
+		local some_s32_le, some_float = string.unpack("<i4f", data)
+		for i = 1, #data do
+			print(data:byte(i))
+		end
+		""")]
+		[LuaMethod("read_bytes_as_binary_string", "Reads {{length}} bytes starting at {{addr}} into a binary string. This string can be read with functions such as {{string.byte}} and {{string.unpack}}. This string can contain any bytes including null bytes, and is not suitable for display as text.")]
+		public byte[] ReadBytesAsString(long addr, int length)
+		{
+			var bytes = APIs.Memory.ReadByteRange(addr, length, MainMemName);
+			return bytes as byte[] ?? bytes.ToArray();
+		}
+
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock)
@@ -77,8 +94,9 @@ namespace BizHawk.Client.Common
 			var d = Domain;
 			if (d.CanPoke())
 			{
-				foreach (var (addr, v) in _th.EnumerateEntries<long, long>(memoryblock))
+				foreach (var (addr0, v) in memoryblock)
 				{
+					var addr = (long) addr0;
 					if (addr < d.Size)
 					{
 						d.PokeByte(addr, (byte) v);
@@ -105,11 +123,21 @@ namespace BizHawk.Client.Common
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the main memory).")]
 		public void WriteBytesAsDict(LuaTable addrMap)
 		{
-			foreach (var (addr, v) in _th.EnumerateEntries<long, long>(addrMap))
+			foreach (var (addr, v) in addrMap)
 			{
-				APIs.Memory.WriteByte(addr, (uint) v, MainMemName);
+				APIs.Memory.WriteByte((long) addr, (uint) v, MainMemName);
 			}
 		}
+
+		[LuaMethodExample("""
+		mainmemory.write_bytes_as_binary_string(0x100, string.pack("<i4f", 1234, 456.789))
+		mainmemory.write_bytes_as_binary_string(0x108, "\xFE\xED")
+		mainmemory.write_bytes_as_binary_string(0x10A, string.char(0xBE, 0xEF))
+		""")]
+		[LuaMethod("write_bytes_as_binary_string", "Writes bytes from a binary string to {{addr}}. The string can be created with functions such as {{string.pack}}, and can contain any bytes including null bytes. This is not a text encoding function.")]
+		public void WriteBytesAsString(long addr, byte[] bytes)
+			=> APIs.Memory.WriteByteRange(addr, bytes, MainMemName);
+#pragma warning restore MA0136
 
 		[LuaMethodExample("local simairea = mainmemory.readfloat(0x100, false);")]
 		[LuaMethod("readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]

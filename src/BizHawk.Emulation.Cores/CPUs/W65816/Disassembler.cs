@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 		public string Cpu { get; set; }
 
 		private readonly W65816 disassemblerCpu = new W65816();
-		
+
 		public IEnumerable<string> AvailableCpus { get; } = [ "W65816" ];
 
 		public string PCRegisterName => "PC";
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					ibuf = "asl"; break;
 				case 0x90:
 					ibuf = "bcc"; break;
-				case 0xB0: 
+				case 0xB0:
 					ibuf = "bcs"; break;
 				case 0xF0:
 					ibuf = "beq"; break;
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					ibuf = "brl"; break;
 				case 0x89:case 0x2C:case 0x24:case 0x3C:case 0x34:
 					ibuf = "bit"; break;
-				case 0x00: 
+				case 0x00:
 					ibuf = "brk"; break;
 				case 0x18:
 					ibuf = "clc"; break;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 					ibuf = "cpy"; break;
 				case 0x3A:case 0xCE:case 0xC6:case 0xDE:case 0xD6:
 					ibuf = "dec"; break;
-				case 0xCA: 
+				case 0xCA:
 					ibuf = "dex"; break;
 				case 0x88:
 					ibuf = "dey"; break;

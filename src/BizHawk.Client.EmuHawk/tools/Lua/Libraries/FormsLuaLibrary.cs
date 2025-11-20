@@ -179,7 +179,8 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			var dropdownItems = _th.EnumerateValues<string>(items).ToList();
+			// Include non-numeric, unordered keys for backwards compatibility
+			var dropdownItems = items.Values.Cast<string>().ToList();
 			dropdownItems.Sort();
 
 			var dropdown = new LuaDropDown(dropdownItems);
@@ -1150,17 +1151,27 @@ namespace BizHawk.Client.EmuHawk
 			else if (width.HasValue || height.HasValue) WarnForMismatchedPair(functionName: functionName, kind: "width and height");
 		}
 
-		[LuaMethodExample("forms.setdropdownitems(dropdown_handle, { \"item1\", \"item2\" });")]
-		[LuaMethod("setdropdownitems", "Updates the item list of a dropdown menu. The optional third parameter toggles alphabetical sorting of items, pass false to skip sorting.")]
+		[LuaMethodExample("""
+			forms.setdropdownitems(dropdown_handle, { "item1", "item2" });
+		""")]
+		[LuaMethod(
+			name: "setdropdownitems",
+			description: "Replaces the list of options (strings) of a dropdown menu with a new list."
+				+ " If alphabetize is true or unset, it doesn't matter if the items table has out-of-order keys or non-numeric keys, all strings will be in chronological order (by codepoint)."
+				+ " If alphabetize is false, items will appear in the given order; the table's keys will be sorted by their numeric value, even if <= 0, and non-numeric keys will come at the end in an undefined order.")]
 		public void SetDropdownItems(long handle, LuaTable items, bool alphabetize = true)
 		{
 			try
 			{
 				if (FindControlWithHandle(handle) is LuaDropDown ldd)
 				{
-					var dropdownItems = _th.EnumerateValues<string>(items).ToList();
-					if (alphabetize) dropdownItems.Sort();
-					ldd.SetItems(dropdownItems);
+					// Include non-numeric, unordered keys for backwards compatibility
+					// Sort numeric keys to maintain order of sequential {"Foo", "Bar"} tables when values are not alphabetized
+					// Order of non-numeric keys is undetermined
+					var dropdownItems = alphabetize
+						? items.Values.Cast<string>().Order()
+						: items.OrderBy(kvp => kvp.Key as long? ?? long.MaxValue).Select(kvp => (string)kvp.Value);
+					ldd.SetItems(dropdownItems.ToList());
 				}
 			}
 			catch (Exception ex)
@@ -1205,8 +1216,12 @@ namespace BizHawk.Client.EmuHawk
 			return Color.FromArgb(a, r, g, b);
 		}
 
-		[LuaMethodExample("forms.setsize( 332, 77, 99 );")]
-		[LuaMethod("setsize", "TODO")]
+		[LuaMethodExample("""
+			forms.setsize(textbox_handle, 640, 96);
+		""")]
+		[LuaMethod(
+			name: "setsize",
+			description: "Sets the size of a form (window) or a UI element.")]
 		public void SetSize(long handle, int width, int height)
 		{
 			var control = FindFormOrControlWithHandle(handle);

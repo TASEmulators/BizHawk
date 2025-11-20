@@ -23,7 +23,7 @@
 #include "libretro/libretro-core.h"
 
 static const int PUAE_WINDOW_HEIGHT_NTSC = 482;
-static const int PUAE_WINDOW_HEIGHT_PAL = 568;
+static const int PUAE_WINDOW_HEIGHT_PAL = 574;
 static const int FILENAME_MAXLENGTH = 64;
 static const int KEY_COUNT = 0x68;
 
@@ -93,6 +93,7 @@ enum DriveAction
 
 enum ControllerType
 {
+	CONTROLLER_NONE,
 	CONTROLLER_JOYSTICK,
 	CONTROLLER_MOUSE,
 	CONTROLLER_CD32PAD

@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	partial class WonderSwan : ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
+	public partial class WonderSwan : ISettable<WonderSwan.Settings, WonderSwan.SyncSettings>
 	{
 		private Settings _settings;
 		private SyncSettings _syncSettings;
@@ -176,6 +176,5 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			_syncSettings = o;
 			return ret ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
-
 	}
 }

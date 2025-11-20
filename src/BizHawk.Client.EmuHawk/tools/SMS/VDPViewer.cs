@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBG.ChangeBitmapSize(256, 256);
 		}
 
-		protected override void GeneralUpdate() => UpdateBefore();
+		protected override void GeneralUpdate() => UpdateAfter();
 
 		private static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewPalette.Refresh();
 		}
 
-		protected override void UpdateBefore()
+		protected override void UpdateAfter()
 		{
 			unsafe
 			{
@@ -180,17 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				Point m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				} while (found != null && found.HasChildren);
-
-				if (found is BmpView bv)
+				if (this.InnermostControlAt(Cursor.Position) is BmpView bv)
 				{
 					Clipboard.SetImage(bv.Bmp);
 				}

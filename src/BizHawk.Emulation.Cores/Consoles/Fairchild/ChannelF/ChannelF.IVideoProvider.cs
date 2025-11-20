@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				_pixelClockCounter -= PixelClocksPerFrame;
 			}
-		}		
+		}
 
 		private static int[] ClampBuffer(int[] buffer, int originalWidth, int originalHeight, int trimLeft, int trimTop, int trimRight, int trimBottom)
 		{

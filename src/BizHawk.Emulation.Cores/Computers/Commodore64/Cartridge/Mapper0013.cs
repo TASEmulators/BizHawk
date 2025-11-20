@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				{
 					throw new Exception("Cartridge image has an invalid bank");
 				}
-				
+
 				// Addresses other than 0x8000 are not supported.
 				if (chip.Address != 0x8000)
 				{
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				{
 					_bankMask = unchecked((byte) ((_bankMask << 1) | 1));
 				}
-				
+
 				var bank = new byte[BankSize];
 
 				bank.AsSpan().Fill(DummyData);
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			UpdateState();
 		}
 
-		public override int Peek8000(int addr) => 
+		public override int Peek8000(int addr) =>
 			_currentBank[addr];
 
 		public override void PokeDE00(int addr, int val)
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int Read8000(int addr) => 
+		public override int Read8000(int addr) =>
 			_currentBank[addr];
 
 		private void UpdateState()

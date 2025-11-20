@@ -15,7 +15,7 @@
 	 * the shell script for CI `/Dist/nix_expr_check_attrs.sh`, and the docs `/Dist/nix_expr_usage_docs.md`
 	 */
 	releases = [
-		"2.9.1" "2.9" "2.8" "2.7" "2.6.3" "2.6.2" "2.6.1" "2.6"
+		"2.11" "2.10" "2.9.1" "2.9" "2.8" "2.7" "2.6.3" "2.6.2" "2.6.1" "2.6"
 		"2.5.2" "2.5.1" "2.5" "2.4.2" "2.4.1" "2.4" "2.3.3" "2.3.2"
 	];
 	releaseCount = lib.length releases;
@@ -65,19 +65,34 @@
 				-i $out/Build/standin.sh
 			sed 's/$(git rev-list HEAD --count)/'"$commitCount"'/' -i $out/Build/standin.sh
 		'';
+		/**
+		 * `$(...)` is literal here--this script invokes Git in a subshell,
+		 * and we need to run it during the build without `nativeBuildInputs = [ git ];`
+		 * (though in this case the build would continue with the dummy value after printing an error)
+		 */
+		from-2_9_1-no-git-patch = ''
+			sed 's/$(git rev-parse --verify HEAD || printf "0000000000000000000000000000000000000000")/'"$shortHash"'/' \
+				-i $out/Dist/.InvokeCLIOnMainSln.sh
+		'';
 	in lib.mapAttrs (_: f) {
+		info-2_11 = {
+			version = "2.11";
+			rev = "427556b5ef3ac437eba754d90c5e7e9096c9a8df";
+			postFetch = from-2_9_1-no-git-patch;
+			hashPostPatching = "sha512-Aidkkp4zYa/0Qmzs4mdu+vj+zKYRnZtLKQoJGk1bgqIYwV6OMObLhwQWNG0/v/hvqR6p5XMeDtiEuNIvBbM5lg==";
+			dotnet-sdk = dotnet-sdk_8;
+		};
+		info-2_10 = {
+			version = "2.10";
+			rev = "dd232820493c05296c304b64bf09c57ff1e4812f";
+			postFetch = from-2_9_1-no-git-patch;
+			hashPostPatching = "sha512-h9qbVY0eR2fJU3iGCo+R419pZliJNZMcsjWPK3Ho/d/aVZqqu44tOzjO6QLlOCS4vMzk/Nj8HnBH43rHqRtaFg==";
+			dotnet-sdk = dotnet-sdk_8;
+		};
 		info-2_9_1 = {
 			version = "2.9.1";
 			rev = "745efb1dd8eb82f31ba9201a79cdfc5bcaf1f5d1";
-			/**
-			 * `$(...)` is literal here--this script invokes Git in a subshell,
-			 * and we need to run it during the build without `nativeBuildInputs = [ git ];`
-			 * (though in this case the build would continue with the dummy value after printing an error)
-			 */
-			postFetch = ''
-				sed 's/$(git rev-parse --verify HEAD || printf "0000000000000000000000000000000000000000")/'"$shortHash"'/' \
-					-i $out/Dist/.InvokeCLIOnMainSln.sh
-			'';
+			postFetch = from-2_9_1-no-git-patch;
 			hashPostPatching = "sha512-7/uvlkR+OxwxErrp0BK+B7ZURp58p8B581lv5iAZgO3Lr6e92kTptypLt7pmqZdZrrsSmuCphNuRfHu0BZeg0A==";
 			dotnet-sdk = dotnet-sdk_6;
 		};
@@ -246,6 +261,13 @@ in {
 			} // lib.optionalAttrs (!isVersionAtLeast "2.6" hawkSourceInfo.version) { stripRoot = false; } // value;
 		})
 		{
+			"2_11" = {
+				hashPrePatching = "sha512-apKPwtsH/VF4QRo8s8B1MVcVMK0w920tkfw66EjBpn8za8XezMVqXdBhMUAlqF6ahJn91NdjS0jDvBGpzGEZ8g=="; # NAR checksum; gzip archive is SHA512:
+			};
+			"2_10" = {
+				stripRoot = false;
+				hashPrePatching = "sha512-OSsbJ79bT4bjCLQXhwOgpTcyDA5Yw++M3YAcepd6V3Ilmm2xCamYHlh3j9fql3Q+cPw/Pa14JUDpq2TVU0H/sw=="; # NAR checksum; gzip archive is SHA512:3263E232C55678068A8E4F3D1E50144DC3510CC39BD65BB9FD0B252585A780814D1F513EC08222A01AA96226D44C423792758C41F3FF5070A32C0CD8B8384064
+			};
 			"2_9_1" = {
 				stripRoot = false;
 				hashPrePatching = "sha512-VX+TlQoCWCNj76HpCXmDsS7SQly+/QeYCnu170+8kF6Y6cZkjMmILQxaC9XfTchVb/zFGMr/8gfgcZToOFZUeQ=="; # NAR checksum; gzip archive is SHA512:BEC7E558963416B3749EF558BC682D1A874A43DF8FE3083224EC7C4C0326CDFEA662EF5C604EEA7C1743D2EEB13656CCF749F0CDB3A413F4985C4B305A95E742

@@ -6,12 +6,20 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+using BizHawk.BizInvoke;
+using BizHawk.Bizware.Audio;
 using BizHawk.Bizware.Graphics;
+using BizHawk.Bizware.Graphics.Controls;
+using BizHawk.Bizware.Input;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.DiscSystem;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -21,23 +29,22 @@ namespace BizHawk.Client.EmuHawk
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool SetDllDirectoryW(string lpPathName);
-
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool DeleteFileW(string lpFileName);
+
+		public static void EnsureWinFormsInitialized()
+		{
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false); // prepopulates `Label.UseCompatibleTextRendering` and friends; `false` means to use the "new" renderer rather than the compatibility renderer
+		}
 
 		static Program()
 		{
-			// This needs to be done before the warnings/errors show up
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-
 			// Quickly check if the user is running this as a 32 bit process somehow
 			// TODO: We may want to remove this sometime, EmuHawk should be able to run somewhat as 32 bit if the user really wants to
 			// (There are no longer any hard 64 bit deps, i.e. SlimDX is no longer around)
 			if (!Environment.Is64BitProcess)
 			{
+				EnsureWinFormsInitialized();
 				using (var box = new ExceptionBox(
 							"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close."))
 				{
@@ -58,18 +65,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
-			_ = SetDllDirectoryW(dllDir);
-
 			try
 			{
-				// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+				// before we load anything from the dll dir, whack the MOTW from everything in that directory (that's a dll)
 				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 				// We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+				var todo = new Queue<DirectoryInfo>([ new DirectoryInfo(dllDir) ]);
 				while (todo.Count != 0)
 				{
 					var di = todo.Dequeue();
@@ -86,15 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[STAThread]
 		private static int Main(string[] args)
-		{
-			var exitCode = SubMain(args);
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
-				Process.GetCurrentProcess().Kill();
-			}
-			return exitCode;
-		}
+			=> SubMain(args);
 
 		// NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -105,25 +101,64 @@ namespace BizHawk.Client.EmuHawk
 			var thisAsmVer = ReflectionCache.AsmVersion;
 			if (new[]
 				{
-					BizInvoke.ReflectionCache.AsmVersion,
-					Bizware.Audio.ReflectionCache.AsmVersion,
-					Bizware.Graphics.ReflectionCache.AsmVersion,
-					Bizware.Graphics.Controls.ReflectionCache.AsmVersion,
-					Bizware.Input.ReflectionCache.AsmVersion,
-					Client.Common.ReflectionCache.AsmVersion,
-					Common.ReflectionCache.AsmVersion,
-					Emulation.Common.ReflectionCache.AsmVersion,
-					Emulation.Cores.ReflectionCache.AsmVersion,
-					Emulation.DiscSystem.ReflectionCache.AsmVersion,
-					WinForms.Controls.ReflectionCache.AsmVersion,
+					ReflectionCache_Biz_Biz.AsmVersion,
+					ReflectionCache_Biz_Biz_Aud.AsmVersion,
+					ReflectionCache_Biz_Biz_Gra.AsmVersion,
+					ReflectionCache_Biz_Biz_Gra_Con.AsmVersion,
+					ReflectionCache_Biz_Biz_Inp.AsmVersion,
+					ReflectionCache_Biz_Cli_Com.AsmVersion,
+					ReflectionCache_Biz_Com.AsmVersion,
+					ReflectionCache_Biz_Emu_Com.AsmVersion,
+					ReflectionCache_Biz_Emu_Cor.AsmVersion,
+					ReflectionCache_Biz_Emu_Dis.AsmVersion,
+					ReflectionCache_Biz_Win_Con.AsmVersion,
 				}.Any(asmVer => asmVer != thisAsmVer))
 			{
+				EnsureWinFormsInitialized();
 				MessageBox.Show("One or more of the BizHawk.* assemblies have the wrong version!\n(Did you attempt to update by overwriting an existing install?)");
 				return -1;
 			}
 
+			string dllDir = null;
 			if (!OSTailoredCode.IsUnixHost)
 			{
+				// this will look in subdirectory "dll" to load pinvoked stuff
+				// declared above to be re-used later on, see second SetDllDirectoryW call
+				dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+
+				// windows prohibits a semicolon for SetDllDirectoryW, although such paths are fully valid otherwise
+				// presumingly windows internally has ; used as a path separator, like with PATH
+				// or perhaps this is just some legacy junk windows keeps around for backwards compatibility reasons
+				// we can possibly workaround this by using the "short path name" rather (but this isn't guaranteed to exist)
+				const string SEMICOLON_IN_DIR_MSG =
+					"The path to the BizHawk folder contains a ';', which doesn't work with one of the Windows APIs used by EmuHawk."
+						+ "\nFind and rename the folder, or move BizHawk somewhere else.";
+				static int SetDllDirectoryFailed(string errMsg = SEMICOLON_IN_DIR_MSG)
+				{
+					EnsureWinFormsInitialized();
+					MessageBox.Show(errMsg);
+					return -1;
+				}
+
+				if (dllDir.ContainsOrdinal(';'))
+				{
+					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
+					if (dllShortPathLen is 0) return SetDllDirectoryFailed();
+
+					var dllShortPathBuffer = new char[dllShortPathLen];
+					var dllShortPathLen1 = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					if (dllShortPathLen1 is 0) return SetDllDirectoryFailed();
+
+					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen1);
+					if (dllDir.ContainsOrdinal(';')) return SetDllDirectoryFailed();
+				}
+
+				if (!Win32Imports.SetDllDirectoryW(dllDir))
+				{
+					return SetDllDirectoryFailed(
+						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. EmuHawk will now close.");
+				}
+
 				// Check if we have the C++ VS2015-2022 redist all in one redist be installed
 				var p = OSTailoredCode.LinkedLibManager.LoadOrZero("vcruntime140_1.dll");
 				if (p != IntPtr.Zero)
@@ -135,14 +170,11 @@ namespace BizHawk.Client.EmuHawk
 					// else it's missing or corrupted
 					const string desc =
 						"Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017, 2019, and 2022 (x64)";
-					MessageBox.Show($"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.) " +
-						$"Internal error message: {OSTailoredCode.LinkedLibManager.GetErrorMessage()}");
-					return -1;
+					return SetDllDirectoryFailed(
+						$"EmuHawk needs {desc} in order to run! See the readme on GitHub for more info. (EmuHawk will now close.)"
+							+ $" Internal error message: {OSTailoredCode.LinkedLibManager.GetErrorMessage()}");
 				}
 			}
-
-			typeof(Form).GetField(OSTailoredCode.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)!
-				.SetValue(null, Properties.Resources.Logo);
 
 			TempFileManager.Start();
 
@@ -155,9 +187,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (ArgParser.ArgParserException e)
 			{
+				EnsureWinFormsInitialized();
 				new ExceptionBox(e.Message).ShowDialog();
 				return 1;
 			}
+
+			EnsureWinFormsInitialized();
+			typeof(Form).GetField(OSTailoredCode.IsUnixHost ? "default_icon" : "defaultIcon", BindingFlags.NonPublic | BindingFlags.Static)!
+				.SetValue(null, Properties.Resources.Logo);
 
 			var configPath = cliFlags.cmdConfigFile ?? Path.Combine(PathUtils.ExeDirectoryPath, "config.ini");
 
@@ -182,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				initialConfig = ConfigService.Load<Config>(configPath);
 			}
 			initialConfig.ResolveDefaults();
-			if (initialConfig.SaveSlot is 0) initialConfig.SaveSlot = 10; //TODO remove after a while
+			if (cliFlags.GDIPlusRequested) initialConfig.DispMethod = EDispMethod.GdiPlus;
 			// initialConfig should really be globalConfig as it's mutable
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
@@ -209,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 						1 or 2 when !OSTailoredCode.IsUnixHost => dispMethod == EDispMethod.D3D11
 							? (EDispMethod.OpenGL, "OpenGL")
 							: (EDispMethod.D3D11, "Direct3D11"),
-						_ => (EDispMethod.GdiPlus, "GDI+")
+						_ => (EDispMethod.GdiPlus, "GDI+"),
 					};
 
 				IGL CheckRenderer(IGL gl)
@@ -269,12 +306,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
-			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
-			{
-				initialConfig.DispMethod = EDispMethod.GdiPlus;
-			}
-
 			var workingGL = TryInitIGL(initialConfig.DispMethod);
 
 			Sound globalSound = null;
@@ -284,10 +315,12 @@ namespace BizHawk.Client.EmuHawk
 				// WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				// The relevant initialization happened just before in "create IGL context".
 				// It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
-				// note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
-				// pasting should be safe (not affecting the jit order of things)
-				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
-				_ = SetDllDirectoryW(dllDir);
+				if (!Win32Imports.SetDllDirectoryW(dllDir))
+				{
+					MessageBox.Show(
+						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. EmuHawk will now close.");
+					return -1;
+				}
 			}
 
 			if (!initialConfig.SkipSuperuserPrivsCheck

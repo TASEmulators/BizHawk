@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
@@ -129,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					Settings.Columns = LuaListView.AllColumns;
-					
+
 					DisplayManager.ClearApiHawkSurfaces();
 					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
@@ -152,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
-		public ILuaLibraries LuaImp { get; private set; }
+		private LuaLibraries LuaImp;
 
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
@@ -220,7 +221,10 @@ namespace BizHawk.Client.EmuHawk
 				Emulator,
 				Game);
 
-			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());
+			InputBox.AutoCompleteCustomSource.Clear();
+			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
+				.Select(static f => $"{f.Library}.{f.Name}")
+				.ToArray());
 
 			foreach (var file in runningScripts)
 			{
@@ -420,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaFile.RunState.Running => Resources.ts_h_arrow_green,
 				LuaFile.RunState.Paused => Resources.Pause,
-				_ => Resources.Stop
+				_ => Resources.Stop,
 			};
 		}
 
@@ -499,7 +503,6 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
-			
 		}
 
 		public void ClearOutputWindow()
@@ -511,6 +514,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
+				OutputBox.SelectionLength = 0;
 				OutputBox.Text = "";
 				OutputBox.Refresh();
 			});
@@ -543,6 +547,12 @@ namespace BizHawk.Client.EmuHawk
 			ClearOutputWindow();
 			return result;
 		}
+
+		public void CallStateLoadCallbacks(string userFriendlyStateName)
+			=> LuaImp.CallLoadStateEvent(userFriendlyStateName);
+
+		public void CallStateSaveCallbacks(string userFriendlyStateName)
+			=> LuaImp.CallSaveStateEvent(userFriendlyStateName);
 
 		protected override void UpdateBefore()
 		{
@@ -603,7 +613,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (!LuaImp.ScriptList.Any()
+			if (LuaImp.ScriptList.Count is 0
 				|| LuaImp.IsUpdateSupressed
 				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
 			{
@@ -802,9 +812,9 @@ namespace BizHawk.Client.EmuHawk
 				MoveDownMenuItem.Enabled =
 					LuaListView.AnyRowsSelected;
 
-			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
+			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Count is not 0;
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
-			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Any();
+			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
@@ -932,7 +942,7 @@ namespace BizHawk.Client.EmuHawk
 				Process.Start(new ProcessStartInfo
 				{
 					Verb = "Open",
-					FileName = file.Path
+					FileName = file.Path,
 				});
 			}
 		}
@@ -940,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count is not 0)
 			{
 				foreach (var item in items)
 				{
@@ -1066,7 +1076,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaImp.RegisteredFunctions.Any())
+			if (LuaImp.RegisteredFunctions.Count is not 0)
 			{
 				var alreadyOpen = false;
 				foreach (Form form in Application.OpenForms)
@@ -1082,7 +1092,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new LuaRegisteredFunctionsList((MainForm) MainForm, LuaImp.RegisteredFunctions)
 					{
-						StartLocation = this.ChildPointToScreen(LuaListView)
+						StartLocation = this.ChildPointToScreen(LuaListView),
 					}.Show();
 				}
 			}
@@ -1181,7 +1191,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("https://tasvideos.org/BizHawk/LuaFunctions");
+			Util.OpenUrlExternal("https://tasvideos.org/BizHawk/LuaFunctions");
 		}
 
 		private void ScriptListContextMenu_Opening(object sender, CancelEventArgs e)
@@ -1195,20 +1205,15 @@ namespace BizHawk.Client.EmuHawk
 				ScriptContextSeparator.Visible =
 				LuaImp.ScriptList.Exists(file => file.Enabled);
 
-			ClearRegisteredFunctionsContextItem.Enabled =
-				LuaImp.RegisteredFunctions.Any();
+			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
-			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
-			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled =
-				SelectAllContextItem.Enabled =
-				OutputBox.Text.Any();
-
-			ClearRegisteredFunctionsLogContextItem.Enabled =
-				LuaImp.RegisteredFunctions.Any();
+			RegisteredFunctionsContextItem.Enabled = ClearRegisteredFunctionsLogContextItem.Enabled
+				= LuaImp.RegisteredFunctions.Count is not 0;
+			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
+			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 		}
 
 		private void ClearConsoleContextItem_Click(object sender, EventArgs e)
@@ -1245,9 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
-		{
-			LuaImp.RegisteredFunctions.Clear(Emulator);
-		}
+			=> LuaImp.RegisteredFunctions.Clear();
 
 		public bool LoadByFileExtension(string path, out bool abort)
 		{
@@ -1266,6 +1269,17 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 			return false;
+		}
+
+		public void LoadFromCommandLine(string path)
+		{
+			if (path.EndsWith(".luases", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = LoadLuaSession(path);
+				return;
+			}
+			LoadLuaFile(path);
+			UpdateDialog();
 		}
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
@@ -1289,15 +1303,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.Delete))
 			{
-				RemoveScriptMenuItem_Click(null, null);
+				RemoveScriptMenuItem_Click(null, EventArgs.Empty);
 			}
 			else if (e.IsCtrl(Keys.A))
 			{
-				SelectAllMenuItem_Click(null, null);
+				SelectAllMenuItem_Click(null, EventArgs.Empty);
 			}
 			else if (e.IsPressed(Keys.F12))
 			{
-				RegisteredFunctionsMenuItem_Click(null, null);
+				RegisteredFunctionsMenuItem_Click(null, EventArgs.Empty);
 			}
 		}
 
@@ -1305,7 +1319,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsPressed(Keys.F12))
 			{
-				RegisteredFunctionsMenuItem_Click(null, null);
+				RegisteredFunctionsMenuItem_Click(null, EventArgs.Empty);
 			}
 		}
 
@@ -1490,7 +1504,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastScriptUsed = file;
 			if (file.Enabled && file.Thread is null)
 			{
-				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator); // First remove any existing registered functions for this file
+				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 			}
 			else if (!file.Enabled && file.Thread is not null)
@@ -1511,7 +1525,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file.Thread is not null)
 			{
 				LuaImp.CallExitEvent(file);
-				LuaImp.RegisteredFunctions.RemoveForFile(file, Emulator);
+				LuaImp.RegisteredFunctions.RemoveForFile(file);
 				file.Stop();
 			}
 		}

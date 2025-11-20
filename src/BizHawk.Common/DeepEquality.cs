@@ -105,10 +105,10 @@ namespace BizHawk.Common
 			{
 				return o1.Equals(o2);
 			}
-			
-			foreach (var field in GetAllFields(t1))
+
+			foreach (var fi in GetAllFields(t1))
 			{
-				if (!DeepEquals(field.GetValue(o1), field.GetValue(o2)))
+				if (!DeepEquals(fi.GetValue(o1), fi.GetValue(o2)))
 				{
 					return false;
 				}

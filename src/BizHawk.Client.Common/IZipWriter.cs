@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.IO;
 
 namespace BizHawk.Client.Common

@@ -17,9 +17,6 @@ namespace BizHawk.Client.Common
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
-
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
@@ -95,44 +92,18 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("get_lua_engine", "returns the name of the Lua engine currently in use")]
 		public string GetLuaEngine()
-			=> _luaLibsImpl.EngineName;
+			=> "NLua+Lua";
 
 		[LuaMethodExample("client.invisibleemulation( true );")]
 		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]
 		public void InvisibleEmulation(bool invisible)
 			=> APIs.EmuClient.InvisibleEmulation(invisible);
 
-		[LuaMethodExample("client.seekframe( 100 );")]
-		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
+		[LuaDeprecatedMethod]
+		[LuaMethod("seekframe", "Does nothing. Use the pause/unpause functions instead and a loop that waits for the desired frame.")]
 		public void SeekFrame(int frame)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
-			{
-				throw new InvalidOperationException("client.seekframe() is not allowed during input/memory callbacks");
-			}
-
-			if (frame < Emulator.Frame)
-			{
-				Log("client.seekframe: cannot seek backwards");
-				return;
-			}
-			if (frame == Emulator.Frame) return;
-
-			bool wasPaused = MainForm.EmulatorPaused;
-
-			// can't re-enter lua while doing this
-			_luaLibsImpl.IsUpdateSupressed = true;
-			while (Emulator.Frame != frame)
-			{
-				MainForm.SeekFrameAdvance();
-			}
-
-			_luaLibsImpl.IsUpdateSupressed = false;
-
-			if (!wasPaused)
-			{
-				MainForm.UnpauseEmulator();
-			}
+			Log("Deprecated function client.seekframe() used. Replace the call with pause/unpause functions and a loop that waits for the desired frame.");
 		}
 
 		[LuaMethodExample("local sounds_terrible = client.get_approx_framerate() < 55;")]
@@ -184,6 +155,19 @@ namespace BizHawk.Client.Common
 		[LuaMethod("isseeking", "Returns true if emulator is seeking, otherwise, false")]
 		public bool IsSeeking()
 			=> APIs.EmuClient.IsSeeking();
+
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local speed = read_lateral_speed();
+			if (client.is_rewinding()) then speed = -speed; end
+			gui.text(0, 100, tostring(speed));
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "is_rewinding",
+			description: "Returns true iff the frontend is rewinding.")]
+		public bool IsRewinding()
+			=> APIs.EmuClient.IsRewinding();
 
 		[LuaMethodExample("client.opencheats( );")]
 		[LuaMethod("opencheats", "opens the Cheats dialog")]
@@ -411,18 +395,9 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (!MainForm.Emulator.HasMemoryDomains())
-			{
-				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
-				return;
-			}
-			
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
-			var result = decoder.Decode(code);
-			
+			var result = MainForm.DecodeCheatForAPI(code, out var domain);
 			if (result.IsValid(out var valid))
 			{
-				var domain = decoder.CheatDomain();
 				MainForm.CheatList.Add(valid.ToCheat(domain, code));
 			}
 			else
@@ -440,15 +415,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (!MainForm.Emulator.HasMemoryDomains())
-			{
-				Log($"cheat codes not supported by the current system: {MainForm.Emulator.SystemId}");
-				return;
-			}
-
-			var decoder = new GameSharkDecoder(MainForm.Emulator.AsMemoryDomains(), MainForm.Emulator.SystemId);
-			var result = decoder.Decode(code);
-
+			var result = MainForm.DecodeCheatForAPI(code, out var domain);
 			if (result.IsValid(out var valid))
 			{
 				MainForm.CheatList.RemoveRange(

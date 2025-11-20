@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
@@ -135,7 +134,7 @@ namespace BizHawk.Client.Common
 			{
 				return 1; // shrug
 			}
-			
+
 			if (_fixedRewindInterval)
 			{
 				return _targetRewindInterval;
@@ -145,7 +144,7 @@ namespace BizHawk.Client.Common
 			var sizeRatio = Size / (float)_states[HeadStateIndex].Size;
 			var frameRatio = _targetFrameLength / sizeRatio;
 
-			var idealInterval = (int)Math.Round(frameRatio);
+			var idealInterval = (int)Math.Ceiling(frameRatio);
 			return Math.Max(idealInterval, 1);
 		}
 
@@ -343,8 +342,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void LoadStateBodyBinary(BinaryReader reader)
+		public void Load(BinaryReader reader)
 		{
+			int version = reader.ReadByte();
+			if (version != 1)
+				throw new InvalidOperationException("Bad format");
+
 			_firstStateIndex = 0;
 			_nextStateIndex = reader.ReadInt32();
 			long nextByte = 0;
@@ -357,43 +360,6 @@ namespace BizHawk.Client.Common
 			}
 			_backingStore.Position = 0;
 			MemoryBlockUtils.CopySome(reader.BaseStream, _backingStore, nextByte);
-		}
-
-		public static ZwinderBuffer Create(BinaryReader reader, RewindConfig rewindConfig, bool hackyV0 = false)
-		{
-			ZwinderBuffer ret;
-
-			// Initial format had no version number, but I think it's a safe bet no valid file has buffer size 2^56 or more so this should work.
-			int version = hackyV0 ? 0 : reader.ReadByte();
-			if (version == 0)
-			{
-				byte[] sizeArr = new byte[8];
-				reader.Read(sizeArr, 1, 7);
-				var size = MemoryMarshal.Read<long>(sizeArr);
-				var sizeMask = reader.ReadInt64();
-				var targetFrameLength = reader.ReadInt32();
-				var useCompression = reader.ReadBoolean();
-				ret = new ZwinderBuffer(new RewindConfig
-				{
-					BufferSize = (int)(size >> 20),
-					UseFixedRewindInterval = false,
-					TargetFrameLength = targetFrameLength,
-					TargetRewindInterval = 5,
-					AllowOutOfOrderStates = false,
-					UseCompression = useCompression
-				});
-				if (ret.Size != size || ret._sizeMask != sizeMask)
-				{
-					throw new InvalidOperationException("Bad format");
-				}
-			}
-			else if (version == 1)
-				ret = new ZwinderBuffer(rewindConfig);
-			else
-				throw new InvalidOperationException("Bad format");
-
-			ret.LoadStateBodyBinary(reader);
-			return ret;
 		}
 
 		private sealed class SaveStateStream : Stream, ISpanStream
@@ -443,14 +409,22 @@ namespace BizHawk.Client.Common
 			public override int Read(byte[] buffer, int offset, int count) => throw new IOException();
 			public override long Seek(long offset, SeekOrigin origin) => throw new IOException();
 			public override void SetLength(long value) => throw new IOException();
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			public override int Read(Span<byte> buffer) => throw new IOException();
+#else
 			public int Read(Span<byte> buffer) => throw new IOException();
+#endif
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
 				Write(new ReadOnlySpan<byte>(buffer, offset, count));
 			}
 
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			public override void Write(ReadOnlySpan<byte> buffer)
+#else
 			public void Write(ReadOnlySpan<byte> buffer)
+#endif
 			{
 				long requestedSize = _position + buffer.Length;
 				while (requestedSize > _notifySize)
@@ -526,7 +500,11 @@ namespace BizHawk.Client.Common
 				return Read(new Span<byte>(buffer, offset, count));
 			}
 
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			public override int Read(Span<byte> buffer)
+#else
 			public int Read(Span<byte> buffer)
+#endif
 			{
 				long n = Math.Min(_size - _position, buffer.Length);
 				int ret = (int)n;
@@ -577,7 +555,11 @@ namespace BizHawk.Client.Common
 			public override void SetLength(long value) => throw new IOException();
 			public override void Write(byte[] buffer, int offset, int count) => throw new IOException();
 
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			public override void Write(ReadOnlySpan<byte> buffer) => throw new IOException();
+#else
 			public void Write(ReadOnlySpan<byte> buffer) => throw new IOException();
+#endif
 		}
 	}
 }

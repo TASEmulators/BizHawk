@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private readonly Disc IN_Disc;
 
 		private readonly DiscSession IN_Session;
-		
+
 		private DiscTOC TOCRaw => IN_Session.TOC;
 		private IList<DiscTrack> Tracks => IN_Session.Tracks;
 
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				Number = 0,
 				Control = EControlQ.None, //we'll set this later
-				LBA = -new Timestamp(99,99,99).Sector //obvious garbage
+				LBA = -new Timestamp(99,99,99).Sector, //obvious garbage
 			});
 
 			for (var i = TOCRaw.FirstRecordedTrackNumber; i <= TOCRaw.LastRecordedTrackNumber; i++)
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					Number = i,
 					Control = item.Control,
-					LBA = item.LBA
+					LBA = item.LBA,
 				};
 				Tracks.Add(track);
 
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//kind of a guess, but not completely
 				Control = Tracks[Tracks.Count - 1].Control,
 				Mode = Tracks[Tracks.Count - 1].Mode,
-				LBA = TOCRaw.LeadoutLBA
+				LBA = TOCRaw.LeadoutLBA,
 			});
 
 			//link track list

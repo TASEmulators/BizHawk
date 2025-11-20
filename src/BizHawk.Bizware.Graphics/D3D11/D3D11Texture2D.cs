@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+
+using BizHawk.Common.CollectionExtensions;
 
 using Vortice.Direct3D;
 using Vortice.Direct3D11;
@@ -37,8 +38,10 @@ namespace BizHawk.Bizware.Graphics
 			Width = width;
 			Height = height;
 			IsUpsideDown = wrapped;
+#pragma warning disable CA2214 // calling override before subclass ctor executes
 			// ReSharper disable once VirtualMemberCallInConstructor
 			CreateTexture();
+#pragma warning restore CA2214
 			Textures.Add(this);
 		}
 
@@ -92,8 +95,7 @@ namespace BizHawk.Bizware.Graphics
 			{
 				var srcSpan = Context.MapReadOnly<byte>(StagingTexture);
 				var pixels = new int[Width * Height];
-				var dstSpan = MemoryMarshal.AsBytes(pixels.AsSpan());
-
+				var dstSpan = pixels.BytesSpan();
 				if (srcSpan.Length == dstSpan.Length)
 				{
 					srcSpan.CopyTo(dstSpan);

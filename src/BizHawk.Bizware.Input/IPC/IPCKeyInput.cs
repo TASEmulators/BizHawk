@@ -4,8 +4,6 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 
-using BizHawk.Client.Common;
-
 // this is not a very safe or pretty protocol, I'm not proud of it
 namespace BizHawk.Bizware.Input
 {
@@ -21,7 +19,7 @@ namespace BizHawk.Bizware.Input
 			}
 		}
 
-		private static readonly List<KeyEvent> PendingKeyEvents = new();
+		private static readonly List<KeyEvent> PendingKeyEvents = [ ];
 		private static bool IPCActive;
 
 		private static void IPCThread()

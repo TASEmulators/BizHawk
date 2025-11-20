@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				cpu.instr_pntr = cpu_state_hold;
-			}	
+			}
 		}
 
 		public void process_delays()

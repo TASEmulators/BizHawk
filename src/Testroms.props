@@ -1,0 +1,22 @@
+<Project>
+	<Import Project="TestProjects.props" />
+	<PropertyGroup Condition=" '$(BIZHAWKTEST_RUN_KNOWN_FAILURES)' == '' ">
+		<DefineConstants>$(DefineConstants);SKIP_KNOWN_FAILURES</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(BIZHAWKTEST_SAVE_IMAGES)' == '' OR '$(BIZHAWKTEST_SAVE_IMAGES)' == 'failures' ">
+		<DefineConstants>$(DefineConstants);SAVE_IMAGES_ON_FAIL</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(BIZHAWKTEST_SAVE_IMAGES)' == 'all' ">
+		<DefineConstants>$(DefineConstants);SAVE_IMAGES_ON_FAIL;SAVE_IMAGES_ON_PASS</DefineConstants>
+	</PropertyGroup>
+	<!-- BIZHAWKTEST_SAVE_IMAGES=none => no extra defines -->
+	<PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+		<MagickCopyNativeLinux>true</MagickCopyNativeLinux>
+	</PropertyGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.TestDataSourceDiscoveryAttribute">
+			<_Parameter1>Microsoft.VisualStudio.TestTools.UnitTesting.TestDataSourceDiscoveryOption.DuringExecution</_Parameter1>
+			<_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+		</AssemblyAttribute>
+	</ItemGroup>
+</Project>

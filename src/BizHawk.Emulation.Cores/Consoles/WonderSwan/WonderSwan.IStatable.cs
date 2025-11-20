@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	partial class WonderSwan: ITextStatable
+	public partial class WonderSwan : ITextStatable
 	{
 		private void InitIStatable()
 			=> savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];

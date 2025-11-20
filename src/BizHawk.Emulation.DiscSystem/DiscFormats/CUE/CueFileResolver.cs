@@ -2,6 +2,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Emulation.DiscSystem.CUE
 {
 	/// <summary>
@@ -33,6 +35,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// </summary>
 		public List<string> Resolve(string path)
 		{
+			var interpretedAsRel = Path.Combine(_baseDir, path);
 			string targetFile = Path.GetFileName(path);
 			string targetFragment = Path.GetFileNameWithoutExtension(path);
 
@@ -66,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (cmp == 0)
 				{
 					//take care to add an exact match at the beginning
-					if (string.Equals(filePath, Path.Combine(_baseDir, path), StringComparison.OrdinalIgnoreCase))
+					if (filePath.EqualsIgnoreCase(interpretedAsRel))
 						results.Insert(0, filePath);
 					else
 						results.Add(filePath);

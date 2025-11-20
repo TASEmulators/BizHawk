@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Numerics;
 
 using BizHawk.Bizware.Graphics;
-using BizHawk.Client.Common.FilterManager;
 
 // Here's how to make a filter:
 // 1. Reset your state entirely in Initialize().
@@ -139,7 +138,7 @@ namespace BizHawk.Client.Common.Filters
 			{
 				SurfaceDirection = direction,
 				Channel = channel,
-				SurfaceDisposition = disposition
+				SurfaceDisposition = disposition,
 			};
 
 			_ioSurfaceInfos.Add(iosi);
@@ -171,7 +170,8 @@ namespace BizHawk.Client.Common.Filters
 
 		public enum SurfaceDirection
 		{
-			Input, Output
+			Input,
+			Output,
 		}
 	}
 }

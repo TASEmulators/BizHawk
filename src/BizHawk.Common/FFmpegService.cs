@@ -17,7 +17,14 @@ namespace BizHawk.Common
 
 		private const string BIN_HOST_URI_WIN_X64 = "https://github.com/TASEmulators/ffmpeg-binaries/raw/master/ffmpeg-4.4.1-static-windows-x64.7z";
 
+		private const string BIN_SHA256_LINUX_X64 = "3EA58083710F63BF920B16C7D5D24AE081E7D731F57A656FED11AF0410D4EB48";
+
+		private const string BIN_SHA256_WIN_X64 = "8436760AF8F81C95EFF92D854A7684E6D3CEDB872888420359FC45C8EB2664AC";
+
 		private const string VERSION = "ffmpeg version 4.4.1";
+
+		public static string DownloadSHA256Checksum
+			=> OSTailoredCode.IsUnixHost ? BIN_SHA256_LINUX_X64 : BIN_SHA256_WIN_X64;
 
 		public static string FFmpegPath => Path.Combine(PathUtils.DataDirectoryPath, "dll", OSTailoredCode.IsUnixHost ? "ffmpeg" : "ffmpeg.exe");
 
@@ -78,7 +85,7 @@ namespace BizHawk.Common
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
-				RedirectStandardError = true
+				RedirectStandardError = true,
 			};
 
 			Process proc = new Process();
@@ -129,7 +136,7 @@ namespace BizHawk.Common
 			return new RunResults
 			{
 				ExitCode = proc.ExitCode,
-				Text = resultText
+				Text = resultText,
 			};
 		}
 
@@ -153,5 +160,4 @@ namespace BizHawk.Common
 			}
 		}
 	}
-
 }

@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.WinForms.Controls
 {
 	/// <inheritdoc cref="Docs.SingleRowOrColFLP"/>
@@ -11,7 +13,9 @@ namespace BizHawk.WinForms.Controls
 		public new bool AutoSize => base.AutoSize;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 		public new AutoSizeMode AutoSizeMode => base.AutoSizeMode;
+#pragma warning restore CA1721
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -31,7 +35,10 @@ namespace BizHawk.WinForms.Controls
 		{
 			base.AutoSize = true;
 			base.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-			base.MinimumSize = TinySize;
+			if (!OSTailoredCode.IsUnixHost) // for some reason this breaks stuff on mono, see https://github.com/TASEmulators/BizHawk/issues/4376
+			{
+				base.MinimumSize = TinySize;
+			}
 			base.WrapContents = false;
 		}
 	}

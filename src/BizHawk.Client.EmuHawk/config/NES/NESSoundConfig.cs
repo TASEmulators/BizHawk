@@ -12,9 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		private NES.NESSettings _settings;
 
 		public override void Restart()
-		{
-			NESSoundConfig_Load(null, null);
-		}
+			=> NESSoundConfig_Load(null, EventArgs.Empty);
 
 		protected override string WindowTitleStatic => "NES Sound Channels";
 

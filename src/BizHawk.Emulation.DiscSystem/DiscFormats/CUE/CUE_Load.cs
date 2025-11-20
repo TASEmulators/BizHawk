@@ -42,7 +42,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		private enum BurnType
 		{
-			Normal, Pregap, Postgap
+			Normal,
+			Pregap,
+			Postgap,
 		}
 
 		private class BlobInfo
@@ -146,7 +148,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				//if (cct.IsFinalInFile)
 				//{
 				//  //length is determined from length of file
-						
+
 				//}
 			}
 		}
@@ -166,7 +168,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			toc_sq.sec = BCD2.FromDecimal(0);
 			toc_sq.frame = BCD2.FromDecimal(0);
 			toc_sq.AP_Timestamp = OUT_Disc._Sectors.Count;
-			CurrentSession.RawTOCEntries.Add(new() { QData = toc_sq });
+			CurrentSession.RawTOCEntries.Add(new()
+			{
+				QData = toc_sq,
+				AbsoluteTimestamp = OUT_Disc._Sectors.Count,
+			});
 		}
 
 		private void CloseSession()
@@ -224,7 +230,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					CloseSession();
 					CurrentSession = new()
 					{
-						Number = cct.Session
+						Number = cct.Session,
 					};
 				}
 
@@ -394,7 +400,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				{
 					var ss = new SS_Gap
 					{
-						TrackType = cct.TrackType // TODO - old track type in some < -150 cases?
+						TrackType = cct.TrackType, // TODO - old track type in some < -150 cases?
 					};
 
 					//-subq-

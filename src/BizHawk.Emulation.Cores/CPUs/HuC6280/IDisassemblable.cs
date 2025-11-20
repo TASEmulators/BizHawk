@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
-	partial class HuC6280 : IDisassemblable
+	public sealed partial class HuC6280 : IDisassemblable
 	{
 		public string Cpu
 		{

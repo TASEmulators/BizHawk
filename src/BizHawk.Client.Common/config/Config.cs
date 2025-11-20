@@ -36,8 +36,6 @@ namespace BizHawk.Client.Common
 				[ CoreNames.GambatteLink, CoreNames.GBHawkLink, CoreNames.GBHawkLink3x, CoreNames.GBHawkLink4x ]),
 			([ VSystemID.Raw.SGB ],
 				[ CoreNames.Gambatte, CoreNames.Bsnes115, CoreNames.SubBsnes115, CoreNames.Bsnes ]),
-			([ VSystemID.Raw.GEN ],
-				[ CoreNames.Gpgx, CoreNames.PicoDrive ]),
 			([ VSystemID.Raw.N64 ],
 				[ CoreNames.Mupen64Plus, CoreNames.Ares64 ]),
 			([ VSystemID.Raw.NES ],
@@ -108,13 +106,21 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> FirmwareUserSpecifications { get; set; } = new Dictionary<string, string>();
 
 		// General Client Settings
-		public int InputHotkeyOverrideOptions { get; set; }
+		public enum InputPriority
+		{
+			BOTH,
+			INPUT,
+			HOTKEY,
+		}
+
+		public InputPriority InputHotkeyOverrideOptions { get; set; }
 		public bool NoMixedInputHokeyOverride { get; set; }
 
 		public bool StackOSDMessages { get; set; } = true;
 
 		private Dictionary<string, int> TargetZoomFactors { get; set; } = new()
 		{
+			[VSystemID.Raw.Doom] = 2,
 			[VSystemID.Raw.GB] = 3,
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
@@ -169,6 +175,8 @@ namespace BizHawk.Client.Common
 		public string UpdateLatestVersion { get; set; } = "";
 		public string UpdateIgnoreVersion { get; set; } = "";
 		public bool SkipOutdatedOsCheck { get; set; }
+		public bool CaptureMouse { get; set; } = false;
+		public bool MainFormMouseCaptureForcesTopmost { get; set; } = false;
 
 		public bool SkipSuperuserPrivsCheck { get; set; }
 
@@ -191,7 +199,7 @@ namespace BizHawk.Client.Common
 
 		public ClientProfile SelectedProfile { get; set; } = ClientProfile.Unknown;
 
-		// N64
+		// TODO: make this not N64-specific, it doesn't need to be
 		public bool N64UseCircularAnalogConstraint { get; set; } = true;
 
 		// Run-Control settings
@@ -203,6 +211,9 @@ namespace BizHawk.Client.Common
 		public bool Unthrottled { get; set; } = false;
 		public bool AutoMinimizeSkipping { get; set; } = true;
 		public bool VSyncThrottle { get; set; } = false;
+#if BIZHAWKBUILD_SUPERHAWK
+		public bool SuperHawkThrottle { get; set; } = false;
+#endif
 
 		public RewindConfig Rewind { get; set; } = new RewindConfig();
 
@@ -427,7 +438,7 @@ namespace BizHawk.Client.Common
 		public int OSDMessageDuration { get; set; } = 2;
 
 		public Queue<string> RecentCores { get; set; } = new();
-		
+
 		public Dictionary<string, string> TrustedExtTools { get; set; } = new();
 
 		// RetroAchievements settings
@@ -449,5 +460,9 @@ namespace BizHawk.Client.Common
 		public int AVWriterResizeWidth { get; set; } = 0;
 
 		public bool GCAdapterSupportEnabled { get; set; } = false;
+
+		public bool ScaleOSDWithSystemScale { get; set; } = true;
+
+		public int RelativeMouseSensitivity { get; set; } = 100;
 	}
 }

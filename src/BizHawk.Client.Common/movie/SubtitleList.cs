@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 						Y = int.Parse(subParts[3]),
 						Duration = int.Parse(subParts[4]),
 						Color = uint.Parse(subParts[5], NumberStyles.HexNumber),
-						Message = message.Trim()
+						Message = message.Trim(),
 					});
 
 					return true;
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 			}
-			
+
 			return false;
 		}
 

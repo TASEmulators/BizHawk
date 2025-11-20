@@ -39,6 +39,12 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			toolTip1.SetToolTip(AddMarkerButton, $"Add Marker to Emulated Frame ({config.HotkeyBindings["Set Marker"]})");
+			toolTip1.SetToolTip(AddMarkerWithTextButton, $"Add Marker with Text to Emulated Frame ({config.HotkeyBindings["Set Marker"]} {config.HotkeyBindings["Set Marker"]})");
+		}
+
 		private void SetupColumns()
 		{
 			MarkerView.AllColumns.Clear();
@@ -151,7 +157,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!MarkerView.AnyRowsSelected) return;
 			foreach (var i in MarkerView.SelectedRows.Select(index => Markers[index]).ToList()) Markers.Remove(i);
 			MarkerView.RowCount = Markers.Count;
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateMarkerCount()
@@ -169,10 +174,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
 					Message = "Enter a message",
-					InitialValue =
-						Markers.IsMarker(frame) ?
-						Markers.PreviousOrCurrent(frame).Message :
-						""
+					InitialValue = Markers.IsMarker(frame) ? Markers.PreviousOrCurrent(frame).Message : string.Empty,
 				};
 
 				i.FollowMousePointer();
@@ -190,12 +192,11 @@ namespace BizHawk.Client.EmuHawk
 			Markers.Add(marker);
 			var index = Markers.IndexOf(marker);
 			MarkerView.MakeIndexVisible(index);
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateTextColumnWidth()
 		{
-			if (Markers.Any())
+			if (Markers.Count is not 0)
 			{
 				var longestBranchText = Markers
 					.OrderBy(b => b.Message?.Length ?? 0)
@@ -214,10 +215,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue =
-					Markers.IsMarker(markerFrame)
-					? Markers.PreviousOrCurrent(markerFrame).Message
-					: ""
+				InitialValue = Markers.IsMarker(markerFrame) ? Markers.PreviousOrCurrent(markerFrame).Message : string.Empty,
 			};
 
 			i.FollowMousePointer();
@@ -251,7 +249,6 @@ namespace BizHawk.Client.EmuHawk
 			Markers.Move(marker.Frame, promptValue);
 			UpdateTextColumnWidth();
 			UpdateValues();
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateValues()

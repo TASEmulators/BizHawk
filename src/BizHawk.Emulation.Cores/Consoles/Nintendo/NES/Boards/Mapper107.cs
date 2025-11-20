@@ -62,6 +62,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_bank_8k &= chr_bank_mask_8k;
 			prg_bank_32k &= prg_bank_mask_32k;
 		}
-
 	}
 }

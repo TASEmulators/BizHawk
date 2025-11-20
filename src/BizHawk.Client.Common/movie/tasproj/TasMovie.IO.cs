@@ -1,7 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
-
-using BizHawk.Common.StringExtensions;
 
 using Newtonsoft.Json;
 
@@ -22,9 +19,12 @@ namespace BizHawk.Client.Common
 		{
 			// at this point, TasStateManager may be null if we're currently importing a .bk2
 
-			var settings = JsonConvert.SerializeObject(TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings);
+			var settings = JsonConvert.SerializeObject(
+				TasStateManager?.Settings ?? Session.Settings.DefaultTasStateManagerSettings,
+				new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Objects }
+			);
 			bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
-			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw));
+			bs.PutLump(BinaryStateLump.LagLog, tw => LagLog.Save(tw), zstdCompress: true);
 			bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 			if (InputRollSettingsForSave != null)
@@ -33,15 +33,12 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.ClientSettings, (TextWriter tw) => tw.Write(inputRollSettingsJson));
 			}
 
-			if (VerificationLog.Any())
+			if (VerificationLog.Count is not 0)
 			{
 				bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(VerificationLog.ToInputLog()));
 			}
 
-			if (Branches.Any())
-			{
-				Branches.Save(bs);
-			}
+			if (Branches.Count is not 0) Branches.Save(bs);
 
 			bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(TasSession)));
 
@@ -64,7 +61,7 @@ namespace BizHawk.Client.Common
 			Markers.Clear();
 			ChangeLog.Clear();
 		}
-		
+
 		protected override void LoadFields(ZipStateLoader bl)
 		{
 			base.LoadFields(bl);
@@ -82,7 +79,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.Clear();
 			Changes = false;
 		}
-		
+
 		private void LoadTasprojExtras(ZipStateLoader bl)
 		{
 			bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => LagLog.Load(tr));
@@ -141,13 +138,13 @@ namespace BizHawk.Client.Common
 				}
 			});
 
-			var settings = new ZwinderStateManagerSettings();
+			IStateManagerSettings settings = Session.Settings.DefaultTasStateManagerSettings;
 			bl.GetLump(BinaryStateLump.StateHistorySettings, abort: false, tr =>
 			{
 				var json = tr.ReadToEnd();
 				try
 				{
-					settings = JsonConvert.DeserializeObject<ZwinderStateManagerSettings>(json);
+					settings = JsonConvert.DeserializeObject<IStateManagerSettings>(json);
 				}
 				catch
 				{
@@ -156,35 +153,33 @@ namespace BizHawk.Client.Common
 			});
 
 			TasStateManager?.Dispose();
+			bool badHistory = false;
 			var hasHistory = bl.GetLump(BinaryStateLump.StateHistory, abort: false, br =>
 			{
 				try
 				{
-					TasStateManager = ZwinderStateManager.Create(br, settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
+					TasStateManager.LoadStateHistory(br);
 				}
 				catch
 				{
 					// Continue with a fresh manager. If state history got corrupted, the file is still very much useable
 					// and we would want the user to be able to load, and regenerate their state history
 					// however, we still have an issue of how state history got corrupted
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					badHistory = true;
 					Session.PopupMessage("State history was corrupted, clearing and working with a fresh history.");
 				}
 			});
 
-			if (!hasHistory)
+			if (!hasHistory || badHistory)
 			{
 				try
 				{
-					TasStateManager = new ZwinderStateManager(settings, IsReserved);
+					TasStateManager = settings.CreateManager(IsReserved);
 				}
 				catch
 				{
-					TasStateManager = new ZwinderStateManager(
-						Session.Settings.DefaultTasStateManagerSettings,
-						IsReserved);
+					TasStateManager = Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 				}
 			}
 		}

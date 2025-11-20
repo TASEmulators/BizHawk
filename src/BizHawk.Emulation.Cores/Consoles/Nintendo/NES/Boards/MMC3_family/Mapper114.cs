@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						base.WritePrg(1, value);
 					}
 					break;
-				case 0x6000: //$E000 
+				case 0x6000: //$E000
 					if (value > 0)
 					{
 						base.WritePrg(0x6001, value);

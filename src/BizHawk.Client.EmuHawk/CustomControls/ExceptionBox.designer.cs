@@ -39,9 +39,9 @@
 			this.tableLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// btnOK
-			// 
+			//
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnOK.Location = new System.Drawing.Point(625, 304);
 			this.btnOK.Name = "btnOK";
@@ -50,9 +50,9 @@
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-			// 
+			//
 			// tableLayoutPanel1
-			// 
+			//
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -68,9 +68,9 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(703, 330);
 			this.tableLayoutPanel1.TabIndex = 1;
-			// 
+			//
 			// txtException
-			// 
+			//
 			this.tableLayoutPanel1.SetColumnSpan(this.txtException, 2);
 			this.txtException.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.txtException.Location = new System.Drawing.Point(3, 3);
@@ -80,9 +80,9 @@
 			this.txtException.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtException.Size = new System.Drawing.Size(697, 295);
 			this.txtException.TabIndex = 1;
-			// 
+			//
 			// flowLayoutPanel1
-			// 
+			//
 			this.flowLayoutPanel1.AutoSize = true;
 			this.flowLayoutPanel1.Controls.Add(this.btnCopy);
 			this.flowLayoutPanel1.Controls.Add(this.lblDone);
@@ -91,9 +91,9 @@
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(87, 29);
 			this.flowLayoutPanel1.TabIndex = 2;
-			// 
+			//
 			// btnCopy
-			// 
+			//
 			this.btnCopy.Location = new System.Drawing.Point(3, 3);
 			this.btnCopy.Name = "btnCopy";
 			this.btnCopy.Size = new System.Drawing.Size(75, 23);
@@ -101,23 +101,23 @@
 			this.btnCopy.Text = "Copy";
 			this.btnCopy.UseVisualStyleBackColor = true;
 			this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
-			// 
+			//
 			// lblDone
-			// 
+			//
 			this.lblDone.AutoSize = true;
 			this.lblDone.Location = new System.Drawing.Point(84, 10);
 			this.lblDone.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
 			this.lblDone.Name = "lblDone";
 			this.lblDone.Size = new System.Drawing.Size(0, 13);
 			this.lblDone.TabIndex = 4;
-			// 
+			//
 			// timer1
-			// 
+			//
 			this.timer1.Enabled = true;
 			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-			// 
+			//
 			// ExceptionBox
-			// 
+			//
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -2,12 +2,11 @@
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
-	<Import Project="../TestProjects.props" />
+	<Import Project="../Testroms.props" />
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);CA1310;CA1416</NoWarn>
+		<RootNamespace>BizHawk.Tests.Testroms.GB</RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Testroms.GB/BizHawk.Tests.Testroms.GB.csproj" />
-		<EmbeddedResource Include="res/**/*" />
 	</ItemGroup>
 </Project>

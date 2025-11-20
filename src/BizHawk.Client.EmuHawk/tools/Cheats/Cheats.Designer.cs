@@ -279,17 +279,17 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AlwaysLoadCheatsMenuItem
 			// 
-			this.AlwaysLoadCheatsMenuItem.Text = "Always load cheats";
+			this.AlwaysLoadCheatsMenuItem.Text = "Restore Session when Switching Game";
 			this.AlwaysLoadCheatsMenuItem.Click += new System.EventHandler(this.AlwaysLoadCheatsMenuItem_Click);
 			// 
 			// AutoSaveCheatsMenuItem
 			// 
-			this.AutoSaveCheatsMenuItem.Text = "Autosave cheats";
+			this.AutoSaveCheatsMenuItem.Text = "Save Session when Closing or Switching Game";
 			this.AutoSaveCheatsMenuItem.Click += new System.EventHandler(this.AutoSaveCheatsMenuItem_Click);
 			// 
 			// DisableCheatsOnLoadMenuItem
 			// 
-			this.DisableCheatsOnLoadMenuItem.Text = "Disable Cheats on Load";
+			this.DisableCheatsOnLoadMenuItem.Text = "Restore Cheats' States (when loading from disk, enable cheats which were saved enabled)";
 			this.DisableCheatsOnLoadMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadMenuItem_Click);
 			// 
 			// toolStrip1

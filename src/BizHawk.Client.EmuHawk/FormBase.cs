@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 		public virtual bool BlocksInputWhenFocused
 			=> true;
 
+		public bool MenuIsOpen { get; private set; }
+
 		public Config? Config { get; set; }
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -67,7 +69,9 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				if (DesignMode) return PLACEHOLDER_TITLE;
+#pragma warning disable CA1065 // yes, really throw
 				throw new NotImplementedException("you have to implement this; the Designer prevents this from being an abstract method");
+#pragma warning restore CA1065
 			}
 		}
 
@@ -88,11 +92,57 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
+
+			if (MainMenuStrip != null)
+			{
+				MainMenuStrip.MenuActivate += (_, _) => MenuIsOpen = true;
+				MainMenuStrip.MenuDeactivate += (_, _) => MenuIsOpen = false;
+			}
 		}
 
 		public void UpdateWindowTitle()
 			=> base.Text = Config?.UseStaticWindowTitles == true
 				? (_windowTitleStatic ??= WindowTitleStatic)
 				: WindowTitle;
+
+		// Alt key hacks. We need this in order for hotkey bindings with alt to work.
+		private const int WM_SYSCOMMAND = 0x0112;
+		private const int SC_KEYMENU = 0xF100;
+		internal void SendAltCombination(char character)
+		{
+			var m = new Message { WParam = new IntPtr(SC_KEYMENU), LParam = new IntPtr(character), Msg = WM_SYSCOMMAND, HWnd = Handle };
+			if (character == ' ') base.WndProc(ref m);
+			else if (character >= 'a' && character <= 'z') base.ProcessDialogChar(character);
+		}
+
+		internal void FocusToolStipMenu()
+		{
+			var m = new Message { WParam = new IntPtr(SC_KEYMENU), LParam = new IntPtr(0), Msg = WM_SYSCOMMAND, HWnd = Handle };
+			base.WndProc(ref m);
+		}
+
+		protected override void WndProc(ref Message m)
+		{
+			if (!BlocksInputWhenFocused)
+			{
+				// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
+				if (m.Msg == WM_SYSCOMMAND)
+				{
+					if (m.WParam.ToInt32() == SC_KEYMENU && m.LParam == IntPtr.Zero)
+					{
+						return;
+					}
+				}
+			}
+
+			base.WndProc(ref m);
+		}
+
+		protected override bool ProcessDialogChar(char charCode)
+		{
+			if (BlocksInputWhenFocused) return base.ProcessDialogChar(charCode);
+			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
+			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
+		}
 	}
 }

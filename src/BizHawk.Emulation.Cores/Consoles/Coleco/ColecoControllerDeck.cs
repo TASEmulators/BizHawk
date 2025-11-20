@@ -86,5 +86,4 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public static string DefaultControllerName => typeof(StandardController).DisplayName();
 	}
-
 }

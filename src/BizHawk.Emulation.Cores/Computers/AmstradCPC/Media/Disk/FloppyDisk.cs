@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
@@ -118,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				if (!sec.ContainsMultipleWeakSectors)
 				{
 					byte[] origData = sec.SectorData.ToArray();
-					List<byte> data = new List<byte>();
+					List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
 					for (int m = 0; m < 3; m++)
 					{
 						for (int i = 0; i < 512; i++)
@@ -240,8 +242,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for SPEEDLOCK ident in sector 0
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
-			if (!ident.Contains("SPEEDLOCK", StringComparison.OrdinalIgnoreCase))
-				return false;
+			if (!ident.ContainsIgnoreCase("SPEEDLOCK")) return false;
 
 			// check for correct sector 0 lengths
 			if (DiskTracks[0].Sectors[0] is not { SectorSize: 2, SectorData.Length: >= 0x200 }) return false;
@@ -296,8 +297,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for ALKATRAZ ident in sector 0
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
-			if (!ident.Contains("ALKATRAZ PROTECTION SYSTEM", StringComparison.OrdinalIgnoreCase))
-				return false;
+			if (!ident.ContainsIgnoreCase("ALKATRAZ PROTECTION SYSTEM")) return false;
 
 			// ALKATRAZ NOTES (-asni 2018-05-01)
 			// ---------------------------------
@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			//      TrackID is consistent between the sectors although is usually high (233, 237 etc)
 			//      SideID is fairly random looking but with all IDs being even
 			//      SectorID is also fairly random looking but contains both odd and even numbers
-			//            
+			//
 			// There doesnt appear to be any CRC errors in this track, but the sector size is always 1 (256 bytes)
 			// Each sector contains different filler byte
 			// Once track 0 is loaded the CPU completely reads all the sectors in this track one-by-one.
@@ -337,8 +337,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for PAUL OWENS ident in sector 2
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[2].SectorData, 0, DiskTracks[0].Sectors[2].SectorData.Length);
-			if (!ident.Contains("PAUL OWENS", StringComparison.OrdinalIgnoreCase))
-				return false;
+			if (!ident.ContainsIgnoreCase("PAUL OWENS")) return false;
 
 			// Paul Owens Disk Protection Notes (-asni 2018-05-01)
 			// ---------------------------------------------------
@@ -379,8 +378,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// check for Hexagon ident in sector 8
 			string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[8].SectorData, 0, DiskTracks[0].Sectors[8].SectorData.Length);
-			if (ident.Contains("GON DISK PROT", StringComparison.OrdinalIgnoreCase))
-				return true;
+			if (ident.ContainsIgnoreCase("GON DISK PROT")) return true;
 
 			// hexagon protection may not be labelled as such
 			var track = DiskTracks[1];
@@ -395,8 +393,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			// Hexagon Copy Protection Notes (-asni 2018-05-01)
 			// ---------------------------------------------------
-			//
-			// 
+			// none
 
 			return false;
 		}
@@ -414,7 +411,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             // check for speedlock copyright notice
             string ident = Encoding.ASCII.GetString(DiskData, 0x100, 0x1400);
-            if (!ident.ToUpper().Contains("SPEEDLOCK"))
+            if (!ident.ContainsIgnoreCase("SPEEDLOCK"))
             {
                 // speedlock not found
                 return;
@@ -446,8 +443,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // we are going to create a total of 5 weak sector copies
             // keeping the original copy
             byte[] origData = sec.SectorData.ToArray();
-            List<byte> data = new List<byte>();
-            //Random rnd = new Random();
+            List<byte> data = new(); //TODO pretty sure the length and indices here are known in advance and this can just be an array --yoshi
 
             for (int i = 0; i < 6; i++)
             {
@@ -593,19 +589,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// (including any multiple weak/random data)
 			/// </summary>
 			public byte[] TrackSectorData
-			{
-				get
-				{
-					List<byte> list = new List<byte>();
-
-					foreach (var sec in Sectors)
-					{
-						list.AddRange(sec.ActualData);
-					}
-
-					return list.ToArray();
-				}
-			}
+				=> CollectionExtensions.ConcatArrays(Sectors.Select(static sec => sec.ActualData).ToArray());
 		}
 
 		public class Sector
@@ -656,15 +640,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						int size = 0x80 << SectorSize;
 						if (size > ActualDataByteLength)
 						{
-							List<byte> l = new List<byte>();
-							l.AddRange(SectorData);
-							for (int i = 0; i < size - ActualDataByteLength; i++)
-							{
-								//l.Add(SectorData[i]);
-								l.Add(SectorData[SectorData.Length - 1]);
-							}
-
-							return l.ToArray();
+							var buf = new byte[SectorData.Length + size - ActualDataByteLength];
+							SectorData.AsSpan().CopyTo(buf);
+//							SectorData.AsSpan(start: 0, length: buf.Length - SectorData.Length)
+//								.CopyTo(buf.AsSpan(start: SectorData.Length));
+							buf.AsSpan(start: SectorData.Length).Fill(SectorData[SectorData.Length - 1]);
+							return buf;
 						}
 						else
 						{
@@ -688,8 +669,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 						/*
                         int copies = ActualDataByteLength / (0x80 << SectorSize);
-                        Random rnd = new Random();
-                        int r = rnd.Next(0, copies - 1);
+                        var r = new Random(Seed: 4) // chosen by fair dice roll. guaranteed to be random.
+                            .Next(0, copies - 1);
                         int step = r * (0x80 << SectorSize);
                         byte[] res = new byte[(0x80 << SectorSize)];
                         Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
@@ -725,5 +706,4 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		PaulOwens,
 		ShadowOfTheBeast
 	}
-
 }

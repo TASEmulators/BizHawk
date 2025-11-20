@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -60,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 							Location = new(UIHelper.ScaleX(35), UIHelper.ScaleY(17)),
 							Width = UIHelper.ScaleX(121),
 						};
-						c.Items.AddRange(Disassembler.AvailableCpus.Cast<object>().ToArray());
+						c.ReplaceItems(items: Disassembler.AvailableCpus);
 						c.SelectedItem = Disassembler.Cpu;
 						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
 						return c;
@@ -209,19 +208,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == Keys.F11)
 			{
-				StepIntoMenuItem_Click(null, null);
+				StepIntoMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
 			if (keyData == (Keys.F11 | Keys.Shift))
 			{
-				StepOutMenuItem_Click(null, null);
+				StepOutMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
 			if (keyData == Keys.F10)
 			{
-				StepOverMenuItem_Click(null, null);
+				StepOverMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 

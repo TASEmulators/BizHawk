@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	unsafe partial class LibsnesApi
+	public unsafe partial class LibsnesApi
 	{
 		private bool Handle_BRK(eMessage msg)
 		{
@@ -42,7 +42,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					case eMessage.eMessage_BRK_scanlineStart:
 						scanlineStart?.Invoke(_comm->scanline);
 						break;
-
 				} //switch(msg)
 
 				_core.Message(eMessage.eMessage_Resume);

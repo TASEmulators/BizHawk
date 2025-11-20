@@ -82,6 +82,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			// memory domain pointers are no longer valid, reset them
 			WireMemoryDomains();
+
+			// load state will force present to restore the framebuffer
+			_encoreVideoProvider.VideoDirty = true;
 		}
 	}
 }

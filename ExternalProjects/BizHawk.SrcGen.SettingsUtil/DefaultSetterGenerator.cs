@@ -1,34 +1,25 @@
 ﻿namespace BizHawk.SrcGen.SettingsUtil;
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using BizHawk.Analyzers;
+
+using TestType = (ClassDeclarationSyntax CDS, SemanticModel SemanticModel);
 
 [Generator]
-public class DefaultSetterGenerator : ISourceGenerator
+public class DefaultSetterGenerator : IIncrementalGenerator
 {
-	public class SyntaxReceiver : ISyntaxContextReceiver
+	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		public readonly List<(ClassDeclarationSyntax, SemanticModel)> ClassDeclarations = new();
-
-		public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
-		{
-			if (context.Node is ClassDeclarationSyntax cds)
-			{
-				ClassDeclarations.Add((cds, context.SemanticModel));
-			}
-		}
+		var classDecls = context.SyntaxProvider.CreateSyntaxProvider(
+			predicate: static (syntaxNode, _) => syntaxNode is ClassDeclarationSyntax,
+			transform: static (ctx, _) => ((ClassDeclarationSyntax) ctx.Node, ctx.SemanticModel));
+		context.RegisterSourceOutput(context.CompilationProvider.Combine(classDecls.Collect()), Execute);
 	}
 
-	public void Initialize(GeneratorInitializationContext context)
-		=> context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-
-	private static void CreateDefaultSetter(StringBuilder source, INamespaceOrTypeSymbol symbol)
+	private static void CreateDefaultSetter(StringBuilder source, ITypeSymbol symbol, bool isCLSCompliant)
 	{
 		var props = symbol
 			.GetMembers()
@@ -36,7 +27,7 @@ public class DefaultSetterGenerator : ISourceGenerator
 			.ToImmutableArray();
 
 		source.Append($@"
-		public static void SetDefaultValues({symbol} settings)
+		{(isCLSCompliant ? string.Empty : "[CLSCompliant(false)] ")}public static void SetDefaultValues({symbol} settings)
 		{{");
 
 		foreach (var prop in props)
@@ -80,31 +71,31 @@ public class DefaultSetterGenerator : ISourceGenerator
 ");
 	}
 
-	public void Execute(GeneratorExecutionContext context)
+	private static void Execute(
+		SourceProductionContext context,
+		(Compilation Compilation, ImmutableArray<TestType> ClassDeclarations) value)
 	{
-		if (context.SyntaxContextReceiver is not SyntaxReceiver syntaxReceiver)
-		{
-			return;
-		}
+		var (compilation, classDeclarations) = value;
+		var consumerAttrSym = compilation.GetTypeByMetadataName("BizHawk.Emulation.Common.CoreSettingsAttribute");
+		if (consumerAttrSym is null) return;
+		var clsCompliantAttrSym = compilation.GetTypeByMetadataName(typeof(CLSCompliantAttribute).FullName!)!;
 
 		// Generated source code
 		var source = new StringBuilder(@"
-namespace BizHawk.Common
+namespace BizHawk.Emulation.Cores
 {
 	public static partial class SettingsUtil
 	{");
 
-		foreach (var (cds, semanticModel) in syntaxReceiver.ClassDeclarations)
+		foreach (var symbol in classDeclarations
+			.Where(tuple => tuple.CDS.AttributeLists.Matching(
+				consumerAttrSym,
+				tuple.SemanticModel,
+				context.CancellationToken).Any())
+			.Select(tuple => tuple.SemanticModel.GetDeclaredSymbol(tuple.CDS, context.CancellationToken))
+			.OfType<ITypeSymbol>())
 		{
-			if (cds.AttributeLists.SelectMany(e => e.Attributes)
-			    .Any(e => e.Name.NormalizeWhitespace().ToFullString() == "CoreSettings"))
-			{
-				var symbol = semanticModel.GetDeclaredSymbol(cds, context.CancellationToken);
-				if (symbol is not null) // probably never happens?
-				{
-					CreateDefaultSetter(source, symbol);
-				}
-			}
+			CreateDefaultSetter(source, symbol, symbol.GetIsCLSCompliant(clsCompliantAttrSym) ?? true);
 		}
 
 		source.Append(@"

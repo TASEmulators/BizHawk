@@ -30,6 +30,8 @@ namespace BizHawk.Client.Common
 
 		private readonly LuaFunction _function;
 
+		public Action/*?*/ OnRemove { get; set; } = null;
+
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
 			Func<LuaThread> createThreadCallback, ILuaLibraries luaLibraries, string name = null)
 		{
@@ -37,7 +39,6 @@ namespace BizHawk.Client.Common
 			Name = name ?? "Anonymous";
 			Event = theEvent;
 			CreateThreadCallback = createThreadCallback;
-			LuaLibraries = luaLibraries;
 
 			// When would a file be null?
 			// When a script is loaded with a callback, but no infinite loop so it closes
@@ -60,35 +61,48 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					_function.Call(args);
+					return _function.Call(args);
 				}
 				catch (Exception ex)
 				{
 					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
+				return null;
 			};
 			InputCallback = () =>
 			{
-				LuaLibraries.IsInInputOrMemoryCallback = true;
+				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
 					Callback(Array.Empty<object>());
 				}
 				finally
 				{
-					LuaLibraries.IsInInputOrMemoryCallback = false;
+					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
 			MemCallback = (addr, val, flags) =>
 			{
-				LuaLibraries.IsInInputOrMemoryCallback = true;
+				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback(new object[] { addr, val, flags });
+					return Callback([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
 				}
 				finally
 				{
-					LuaLibraries.IsInInputOrMemoryCallback = false;
+					luaLibraries.IsInInputOrMemoryCallback = false;
+				}
+			};
+			RandomCallback = pr_class =>
+			{
+				luaLibraries.IsInInputOrMemoryCallback = true;
+				try
+				{
+					Callback([ pr_class ]);
+				}
+				finally
+				{
+					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
 		}
@@ -106,24 +120,24 @@ namespace BizHawk.Client.Common
 
 		public Guid Guid { get; }
 
+		public string GuidStr
+			=> Guid.ToString("D");
+
 		public string Name { get; }
 
 		public LuaFile LuaFile { get; private set; }
-
-		/// <summary>
-		/// HACK
-		/// </summary>
-		private ILuaLibraries LuaLibraries { get; }
 
 		private Func<LuaThread> CreateThreadCallback { get; }
 
 		public string Event { get; }
 
-		private Action<object[]> Callback { get; }
+		private Func<object[], object[]> Callback { get; }
 
 		public Action InputCallback { get; }
 
 		public MemoryCallbackDelegate MemCallback { get; }
+
+		public Action<int> RandomCallback { get; }
 
 		public void Call(string name = null)
 		{

@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var tracksSynth = new Synthesize_DiscTracks_From_DiscTOC_Job(OUT_Disc, session);
 					tracksSynth.Run();
 				}
-				
+
 				//insert a synth provider to take care of the leadout track
 				//currently, we let mednafen take care of its own leadout track (we'll make that controllable later)
 				//TODO: This currently doesn't work well with multisessions (only the last session can have a leadout read with the current model)
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var ss_leadout = new SS_Leadout
 					{
 						SessionNumber = OUT_Disc.Sessions.Count - 1,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					};
 					bool Condition(int lba) => lba >= OUT_Disc.Sessions[OUT_Disc.Sessions.Count - 1].LeadoutLBA;
 					new ConditionalSectorSynthProvider().Install(OUT_Disc, Condition, ss_leadout);
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.DiscSystem
 //				OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; // NOT SURE WE NEED THIS (only makes sense for cue probably)
 			}
 
-			var (dir, file, ext) = IN_FromPath.SplitPathToDirFileAndExt();
+			var (dir, _, ext) = IN_FromPath.SplitPathToDirFileAndExt();
 			switch (ext.ToLowerInvariant())
 			{
 				case ".ccd":
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.DiscSystem
 					// make a fake .cue file to represent this .iso and mount that
 					// however... to save many users from a stupid mistake, check if the size is NOT a multiple of 2048 (but IS a multiple of 2352) and in that case consider it a mode2 disc
 					//TODO try it both ways and check the disc type to use whichever one succeeds in identifying a disc type
-					LoadCue(cueDirPath: dir, cueContent: GenerateCue(binFilename: file, binFilePath: IN_FromPath));
+					LoadCue(cueDirPath: dir, cueContent: GenerateCue(binFilePath: IN_FromPath));
 					break;
 				case ".toc":
 					throw new NotSupportedException(".TOC not supported yet");
@@ -220,20 +220,20 @@ namespace BizHawk.Emulation.DiscSystem
 			if (OUT_Disc != null) OUT_Disc.SynthProvider = new ArraySectorSynthProvider { Sectors = OUT_Disc._Sectors, FirstLBA = -150 };
 		}
 
-		public static string GenerateCue(string binFilename, bool isMode2)
-			=> $@"FILE ""{binFilename}"" BINARY
+		public static string GenerateCue(string binFilePath, bool isMode2)
+			=> $@"FILE ""{binFilePath}"" BINARY
   TRACK 01 {(isMode2 ? "MODE2/2352" : "MODE1/2048")}
     INDEX 01 00:00:00";
 
-		public static string GenerateCue(string binFilename, string binFilePath)
+		public static string GenerateCue(string binFilePath)
 		{
 			var len = new FileInfo(binFilePath).Length;
-			return GenerateCue(binFilename, isMode2: len % 2048 is not 0 && len % 2352 is 0);
+			return GenerateCue(binFilePath, isMode2: len % 2048 is not 0 && len % 2352 is 0);
 		}
 
 		public static void CreateSyntheticCue(string cueFilePath, string binFilePath)
 			=> File.WriteAllText(
 				path: cueFilePath,
-				contents: GenerateCue(binFilename: binFilePath/*abs is fine here*/, binFilePath: binFilePath)); //TODO as with .iso, may want to try both
+				contents: GenerateCue(binFilePath));
 	}
 }

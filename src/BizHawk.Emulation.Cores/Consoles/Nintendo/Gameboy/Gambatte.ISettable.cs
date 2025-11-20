@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			/// true to mute all audio
 			/// </summary>
 			public bool Muted;
-			
+
 			/// <summary>
 			/// true to use rgbds syntax
 			/// </summary>

@@ -4,7 +4,6 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -39,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = fullName,
 					Location = UIHelper.Scale(new Point(15, 15 + (count * spacing))),
-					Size = UIHelper.Scale(new Size(200, 23))
+					Size = UIHelper.Scale(new Size(200, 23)),
 				};
 
 				PlatformsGroupBox.Controls.Add(radio);

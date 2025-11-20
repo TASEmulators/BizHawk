@@ -156,6 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			public int LightTemperature;
 			public Sameboy.SameboySettings.HighPassFilterMode HighPassFilter;
 			public int InterferenceVolume;
+			public Sameboy.SameboySettings.RumbleModeType RumbleMode;
 			public int ChannelMask;
 			[MarshalAs(UnmanagedType.U1)]
 			public bool BackgroundEnabled;

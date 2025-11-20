@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 			labelButtonName.Text = buttonName;
 			trackBarSensitivity.Value = (int) Math.Round(bind.Mult * 20.0);
 			trackBarDeadzone.Value = (int) Math.Round(bind.Deadzone * 50.0);
-			TrackBarSensitivity_ValueChanged(null, null);
-			TrackBarDeadzone_ValueChanged(null, null);
+			TrackBarSensitivity_ValueChanged(null, EventArgs.Empty);
+			TrackBarDeadzone_ValueChanged(null, EventArgs.Empty);
 			textBox1.Text = bind.Value;
 		}
 
@@ -37,10 +37,25 @@ namespace BizHawk.Client.EmuHawk
 			{
 				timer1.Stop();
 				_listening = false;
-				_bind.Value = bindValue;
-				textBox1.Text = Bind.Value;
 				buttonBind.Text = "Bind!";
 				Input.Instance.StopListeningForAxisEvents();
+				// rebinding the same mouse axis toggles between relative and absolute
+				const string AXIS_MX = "WMouse X";
+				const string AXIS_MRX = "RMouse X";
+				const string AXIS_MY = "WMouse Y";
+				const string AXIS_MRY = "RMouse Y";
+				var oldBind = _bind.Value;
+				if (bindValue is AXIS_MX)
+				{
+					if (oldBind is AXIS_MX) bindValue = AXIS_MRX;
+					else if (oldBind is AXIS_MRX) bindValue = AXIS_MX;
+				}
+				else if (bindValue is AXIS_MY)
+				{
+					if (oldBind is AXIS_MY) bindValue = AXIS_MRY;
+					else if (oldBind is AXIS_MRY) bindValue = AXIS_MY;
+				}
+				textBox1.Text = _bind.Value = bindValue;
 			}
 		}
 

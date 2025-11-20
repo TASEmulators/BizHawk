@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -22,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public bool ClearAlsoClearsAnalog { get; set; }
-		
+
 		private bool _readOnly;
 
 		private Control _lastFocusedNUD = null;
@@ -85,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			Type schemaType;
 			try
 			{
-				schemaType = Emulation.Cores.ReflectionCache.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
+				schemaType = ReflectionCache_Biz_Emu_Cor.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
 					.Select(t => (SchemaType: t, Attr: t.GetCustomAttributes(false).OfType<SchemaAttribute>().FirstOrDefault()))
 					.First(tuple => tuple.Attr?.SystemId == Emulator.SystemId)
 					.SchemaType;
@@ -109,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						ButtonSchema => buttonControls.Contains,
 						DiscManagerSchema => s => buttonControls.Contains(s) || axisControls.ContainsKey(s),
-						_ => axisControls.ContainsKey
+						_ => axisControls.ContainsKey,
 					};
 					if (!searchSetContains(controlSchema.Name))
 					{

@@ -1,9 +1,5 @@
 namespace BizHawk.Tests.Analyzers;
 
-using System.Threading.Tasks;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
 	BizHawk.Analyzers.HawkSourceAnalyzer,
 	Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
@@ -106,11 +102,22 @@ public sealed class HawkSourceAnalyzerTests
 		""");
 
 	[TestMethod]
+	public Task CheckMisuseOfInitAccessor()
+		=> Verify.VerifyAnalyzerAsync("""
+			public sealed class Cases {
+				public int A { get; {|BHI1008:init;|} }
+			}
+			namespace System.Runtime.CompilerServices {
+				public static class IsExternalInit {} // this sample is compiled for lowest-common-denominator of `netstandard2.0`, so `init` accessor gives an error without this
+			}
+		""");
+
+	[TestMethod]
 	public Task CheckMisuseOfInterpolatedString()
 		=> Verify.VerifyAnalyzerAsync("""
 			public static class Cases {
 				private static readonly int Z = $@"{0x100}".Length;
-				private static readonly int A = {|BHI1004:@$"{0x100}"|}.Length;
+				private static readonly int A = {|BHI1004:@$"|}{0x100}".Length;
 			}
 		""");
 
@@ -123,9 +130,9 @@ public sealed class HawkSourceAnalyzerTests
 				private static readonly int[] X = W ? [ ] : V;
 				private static readonly int[] Y = [ 0x80, 0x20, 0x40 ];
 				private static readonly bool Z = Y is [ _, > 20, .. ];
-				private static readonly int[] A = {|BHI1110:[0x80, 0x20, 0x40 ]|};
-				private static readonly bool B = A is {|BHI1110:[ _, > 20, ..]|};
-				private static readonly bool C = A is {|BHI1110:[_, > 20, ..]|};
+				private static readonly int[] A = {|BHI1110:[|}0x80, 0x20, 0x40 ];
+				private static readonly bool B = A is [ _, > 20, ..{|BHI1110:]|};
+				private static readonly bool C = A is [_, > 20, ..{|BHI1110:]|}; // the way this is written, it will flag end and then start
 				private static readonly int[] D = {|BHI1110:[]|};
 				private static readonly bool E = D is {|BHI1110:[]|};
 				private static readonly int[] F = E ? {|BHI1110:[]|} : D;
@@ -137,7 +144,7 @@ public sealed class HawkSourceAnalyzerTests
 		=> Verify.VerifyAnalyzerAsync("""
 			internal record struct Y {}
 			internal record class Z {}
-			{|BHI1130:internal record A {}|}
+			internal {|BHI1130:record|} A {}
 		""");
 
 	[TestMethod]

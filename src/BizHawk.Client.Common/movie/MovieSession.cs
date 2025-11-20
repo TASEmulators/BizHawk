@@ -8,7 +8,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public enum MovieEndAction { Stop, Pause, Record, Finish }
+	public enum MovieEndAction
+	{
+		Stop,
+		Pause,
+		Record,
+		Finish,
+	}
 
 	public class MovieSession : IMovieSession
 	{
@@ -16,6 +22,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
+		private readonly Action _movieEndSound;
 
 		private IMovie _queuedMovie;
 
@@ -24,7 +31,8 @@ namespace BizHawk.Client.Common
 			string backDirectory,
 			IDialogParent dialogParent,
 			Action pauseCallback,
-			Action modeChangedCallback)
+			Action modeChangedCallback,
+			Action movieEndSound = null)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
@@ -33,6 +41,7 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
+			_movieEndSound = movieEndSound;
 		}
 
 		public IMovieConfig Settings { get; }
@@ -45,6 +54,9 @@ namespace BizHawk.Client.Common
 		public string QueuedSyncSettings => _queuedMovie.SyncSettingsJson;
 
 		public string QueuedCoreName => _queuedMovie?.Core;
+
+		public string/*?*/ QueuedSysID
+			=> _queuedMovie?.SystemID;
 
 		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
@@ -82,12 +94,6 @@ namespace BizHawk.Client.Common
 			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
-				// if we're at the movie's end and the MovieEndAction is record, just continue recording in play mode
-				// TODO change to TAStudio check
-				if (Movie is ITasMovie && Movie.Emulator.Frame == Movie.FrameCount && Settings.MovieEndAction == MovieEndAction.Record)
-				{
-					Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
-				}
 			}
 			else if (Movie.IsRecording())
 			{
@@ -96,16 +102,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void HandleFrameAfter()
+		public void HandleFrameAfter(bool ignoreMovieEndAction)
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				// TODO change to TAStudio check
-				if (Settings.MovieEndAction == MovieEndAction.Record) return;
 			}
 
-			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.FrameCount)
+			if (!ignoreMovieEndAction && Movie.IsPlaying() && Movie.Emulator.Frame == Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}
@@ -143,27 +147,12 @@ namespace BizHawk.Client.Common
 
 			if (ReadOnly)
 			{
-				if (Movie.IsRecording())
-				{
-					Movie.SwitchToPlay();
-				}
-				else if (Movie.IsPlayingOrFinished())
-				{
-					// set the controller state to the previous frame for input display purposes
-					int previousFrame = Movie.Emulator.Frame - 1;
-					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
-				}
+				Movie.SwitchToPlay();
+				LatchInputToLog();
 			}
 			else
 			{
-				if (Movie.IsFinished())
-				{
-					Movie.StartNewRecording();
-				}
-				else if (Movie.IsPlayingOrFinished())
-				{
-					Movie.SwitchToRecord();
-				}
+				Movie.SwitchToRecord();
 
 				var result = Movie.ExtractInputLog(reader, out var errorMsg);
 				if (!result)
@@ -174,6 +163,8 @@ namespace BizHawk.Client.Common
 
 				LatchInputToUser();
 			}
+
+			HandleFrameAfter(false);
 
 			return true;
 		}
@@ -269,11 +260,12 @@ namespace BizHawk.Client.Common
 
 				message += "stopped.";
 
-				var result = Movie.Stop(saveChanges);
-				if (result)
+				if (saveChanges && Movie.Changes)
 				{
+					Movie.Save();
 					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
 				}
+				Movie.Stop();
 
 				Output(message);
 				ReadOnly = true;
@@ -281,20 +273,12 @@ namespace BizHawk.Client.Common
 				_modeChangedCallback();
 			}
 
-			if (Movie is IDisposable d
-				&& Movie != _queuedMovie) // Uberhack, remove this and Loading Tastudio with a bk2 already loaded breaks, probably other TAStudio scenarios as well
+			if (Movie is IDisposable d)
 			{
 				d.Dispose();
 			}
 
 			Movie = null;
-		}
-
-		public void ConvertToTasProj()
-		{
-			Movie = Movie.ToTasMovie();
-			Movie.Save();
-			Movie.SwitchToPlay();
 		}
 
 		public IMovie Get(string path, bool loadMovie)
@@ -389,7 +373,7 @@ namespace BizHawk.Client.Common
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
-					Movie.Stop();
+					StopMovie();
 					break;
 				case MovieEndAction.Record:
 					Movie.SwitchToRecord();
@@ -403,6 +387,9 @@ namespace BizHawk.Client.Common
 					Movie.FinishedMode();
 					break;
 			}
+
+			if (Settings.MovieEndAction is not MovieEndAction.Record && Settings.PlaySoundOnMovieEnd)
+				_movieEndSound?.Invoke();
 
 			_modeChangedCallback();
 		}

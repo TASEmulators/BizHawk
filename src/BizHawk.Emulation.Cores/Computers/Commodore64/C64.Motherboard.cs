@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			BasicRom = new Chip23128();
 			CharRom = new Chip23128();
 			KernalRom = new Chip23128();
-			
+
 			if (Cpu != null)
 				Cpu.DebuggerStep = Execute;
 			if (DiskDrive != null)

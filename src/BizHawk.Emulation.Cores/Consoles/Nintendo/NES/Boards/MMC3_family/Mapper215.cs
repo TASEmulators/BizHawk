@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_mask_8k, chr_mask_1k;
 
-		private readonly byte[] regs_sec = { 0, 2, 5, 3, 6, 1, 7, 4 }; 
+		private readonly byte[] regs_sec = { 0, 2, 5, 3, 6, 1, 7, 4 };
 
 		/*
 		 *  I'm not sure where these matrices originated from, but they don't seem to be needed
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_regs_8k[2] = (byte)(0xFE & prg_mask_8k);
 			prg_regs_8k[3] = (byte)(0xFF & prg_mask_8k);
 
-			
+
 			return true;
 		}
 
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (addr == 0x0001) { exRegs[1] = value; }
 				if (addr == 0x0007) { exRegs[2] = value; mmc3.reg_addr = 0; sync_prg_2(); }
 			}
-			
+
 			base.WriteWram(addr, value);
 		}
 
@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						else
 						{
 							SetMirrorType(EMirrorType.Horizontal);
-						}					
+						}
 					}
 					break;
 				case 0xA001:

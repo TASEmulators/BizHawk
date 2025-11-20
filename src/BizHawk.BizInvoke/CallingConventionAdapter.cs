@@ -92,7 +92,7 @@ namespace BizHawk.BizInvoke
 
 	public static class CallingConventionAdapters
 	{
-		private class NativeConvention : ICallingConventionAdapter
+		internal sealed class NativeConvention : ICallingConventionAdapter
 		{
 			public IntPtr GetArrivalFunctionPointer(IntPtr p, InvokerParameterInfo pp, object lifetime)
 				=> p;
@@ -137,7 +137,7 @@ namespace BizHawk.BizInvoke
 			private class ReferenceEqualityComparer : IEqualityComparer<Delegate>
 			{
 				public bool Equals(Delegate x, Delegate y)
-					=> x == y;
+					=> object.ReferenceEquals(x, y);
 
 				public int GetHashCode(Delegate obj)
 					=> RuntimeHelpers.GetHashCode(obj);
@@ -233,7 +233,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			private readonly MemoryBlock _memory;
-			private readonly object _sync = new();
+			private readonly Lock _sync = new();
 			private readonly WeakReference?[] _refs;
 
 			public MsHostSysVGuest()

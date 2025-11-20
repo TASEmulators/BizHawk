@@ -28,24 +28,25 @@ namespace BizHawk.Client.Common.cheats
 				VSystemID.Raw.SAT => Saturn(code),
 				VSystemID.Raw.SMS => Sms(code),
 				VSystemID.Raw.SNES => Snes(code),
-				_ => new InvalidCheatCode("Cheat codes not currently supported on this system")
+				_ => new InvalidCheatCode("Cheat codes not currently supported on this system"),
 			};
 		}
 
-		public MemoryDomain CheatDomain()
+		public MemoryDomain CheatDomain(DecodeResult validDecodeResult)
 		{
-			var domain = CheatDomainName();
+			var domain = CheatDomainName(validDecodeResult);
 			return domain is null ? _domains.SystemBus : _domains[domain]!;
 		}
 
-		private string CheatDomainName() => _systemId switch
+		private string CheatDomainName(DecodeResult validDecodeResult) => _systemId switch
 		{
+			VSystemID.Raw.GEN => validDecodeResult.Address < 0x400000 ? "MD CART" : null,
 			VSystemID.Raw.N64 => "RDRAM",
 			VSystemID.Raw.PSX => "MainRAM",
 #if false
 			VSystemID.Raw.SAT => "Work Ram High", // Work RAM High may be incorrect?
 #endif
-			_ => null
+			_ => null,
 
 		};
 
@@ -138,7 +139,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				return SnesActionReplayDecoder.Decode(code);
 			}
-			
+
 			return new InvalidCheatCode($"Unknown code type: {code}");
 		}
 	}

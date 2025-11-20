@@ -1,12 +1,11 @@
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.LR35902;
-
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
-
-using BizHawk.Common.ReflectionExtensions;
 
 // TODO: mode1_disableint_gbc.gbc behaves differently between GBC and GBA, why?
 // TODO: Window Position A6 behaves differently
@@ -19,7 +18,9 @@ using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	[Core(CoreNames.GbHawk, "")]
+	[Core(
+		name: CoreNames.GbHawk,
+		author: "alyosha and BizHawk contributors")]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
@@ -63,8 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// memory domains
 		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB
 		public byte[] ZP_RAM = new byte[0x80];
-		/* 
-		 * VRAM is arranged as: 
+		/*
+		 * VRAM is arranged as:
 		 * 0x1800 Tiles
 		 * 0x400 BG Map 1
 		 * 0x400 BG Map 2
@@ -143,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				GetIntRegs = GetIntRegs,
 				SetIntRegs = SetIntRegs
 			};
-			
+
 			timer = new();
 			audio = new Audio();
 			serialport = new SerialPort();
@@ -365,7 +366,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serialport.Reset();
 			mapper.Reset();
 			cpu.Reset();
-			
+
 			vid_buffer = new uint[VirtualWidth * VirtualHeight];
 			frame_buffer = new int[VirtualWidth * VirtualHeight];
 
@@ -496,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		// TODO: move callbacks to cpu to avoid having to make a non-inlinable 
+		// TODO: move callbacks to cpu to avoid having to make a non-inlinable
 		private void ExecFetch(ushort addr)
 		{
 			if (MemoryCallbacks.HasExecutes)
@@ -571,7 +572,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
 			}
-			
+
 			// Wisdom Tree does not identify their mapper, so use hash instead
 			else if (romHashSHA1 is RomChecksums.WisdomTreeJoshua or RomChecksums.WisdomTreeSpiritualWarfare or RomChecksums.WisdomTreeExodus or RomChecksums.WisdomTreeKJVBible or RomChecksums.WisdomTreeNIVBible)
 			{
@@ -660,7 +661,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					cart_RAM[i] = 0xFF;
 				}
 			}
-			
+
 			// Extra RTC initialization for mbc3, HuC3, and TAMA5
 			if (mppr == "MBC3")
 			{
@@ -722,7 +723,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Use_MT = true;
 
 				// currently no date / time input for TAMA5
-
 			}
 
 			return mppr;

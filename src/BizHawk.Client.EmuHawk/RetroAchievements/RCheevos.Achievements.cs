@@ -6,7 +6,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
+#if false
 		private readonly RCheevosAchievementListForm _cheevoListForm = new();
+#endif
 
 		private sealed class CheevoUnlockRequest : RCheevoHttpRequest
 		{
@@ -91,8 +93,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_badgeUnlockedRequest = new(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT);
 				_badgeLockedRequest = new(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT_LOCKED);
-				requests.Add(_badgeUnlockedRequest); 
-				requests.Add(_badgeLockedRequest); 
+				requests.Add(_badgeUnlockedRequest);
+				requests.Add(_badgeLockedRequest);
 			}
 
 			public Cheevo(in LibRCheevos.rc_api_achievement_definition_t cheevo, Func<bool> allowUnofficialCheevos)
@@ -166,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ToSoftcoreMode()
 		{
 			if (_gameData == null || _gameData.GameID == 0) return;
-			
+
 			// don't worry if the meanings of _active and _inactive are wrong
 			// if they are, then they're both already finished
 

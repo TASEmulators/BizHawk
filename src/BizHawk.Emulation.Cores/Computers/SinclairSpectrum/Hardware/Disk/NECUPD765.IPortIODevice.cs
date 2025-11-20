@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     //outputString += ",," + data + "," + ActiveCommand.CommandCode + "\r\n";
                     BuildCSVLine();
                 }
-                    
+
                 return true;
             }
 
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     BuildCSVLine();
                     //System.IO.File.WriteAllText(outputfile, outputString);
                 }
-                    
+
                 return true;
             }
 
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     BuildCSVLine();
                     //System.IO.File.WriteAllText(outputfile, outputString);
                 }
-                    
+
                 return true;
             }
 

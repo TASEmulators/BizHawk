@@ -7,7 +7,9 @@ using System.CommandLine.Parsing;
 using System.Linq;
 using System.Net.Sockets;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -46,6 +48,8 @@ namespace BizHawk.Client.Common
 		private static readonly BespokeOption<string?> OptionAVDumpType = new("--dump-type"); // desc added in static ctor
 
 		private static readonly BespokeOption<string?> OptionConfigFilePath = new(name: "--config", description: "path of config file to use");
+
+		private static readonly BespokeOption<bool> OptionGDIPlus = new(name: "--gdi", description: "pass to use the GDI+ display method rather than whatever preference is set in the config file");
 
 		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(aliases: [ "--url-get", "--url_get" ], description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
 
@@ -104,6 +108,7 @@ namespace BizHawk.Client.Common
 			root.Add(/* --dump-name */ OptionAVDumpName);
 			root.Add(/* --dump-type */ OptionAVDumpType);
 			root.Add(/* --fullscreen */ OptionLaunchFullscreen);
+			root.Add(/* --gdi */ OptionGDIPlus);
 			root.Add(/* --load-slot */ OptionLoadQuicksaveSlot);
 			root.Add(/* --load-state */ OptionLoadSavestateFilePath);
 			root.Add(/* --lua */ OptionLuaFilePath);
@@ -143,12 +148,13 @@ namespace BizHawk.Client.Common
 		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
 		{
 			parsed = default;
+			if (args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
 			var result = Parser.Parse(args);
 			if (result.Errors.Count is not 0)
 			{
 				// write all to stdout and show first in modal dialog (done in `catch` block in `Program`)
-				Console.WriteLine("failed to parse command-line arguments:");
-				foreach (var error in result.Errors) Console.WriteLine(error.Message);
+				Console.Error.WriteLine("failed to parse command-line arguments:");
+				foreach (var error in result.Errors) Console.Error.WriteLine(error.Message);
 				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
 			}
 			var triggeredGeneratedOption = GeneratedOptions.FirstOrDefault(o => result.FindResultFor(o) is not null);
@@ -162,6 +168,12 @@ namespace BizHawk.Client.Common
 				{
 					return exitCode;
 				}
+			}
+			if (result.GetValueForOption(OptionQueryAppVersion))
+			{
+				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
+				Console.WriteLine(VersionInfo.GetEmuVersion());
+				return 0;
 			}
 
 			var autoDumpLength = result.GetValueForOption(OptionAVDumpEndAtFrame);
@@ -191,7 +203,7 @@ namespace BizHawk.Client.Common
 					? ((string?, string?)?) null // don't bother
 					: (httpClientURIGET, httpClientURIPOST);
 
-			var audiosync = result.GetValueForOption(OptionAVDumpAudioSync)?.Equals("true", StringComparison.OrdinalIgnoreCase);
+			var audiosync = result.GetValueForOption(OptionAVDumpAudioSync)?.EqualsIgnoreCase("true");
 
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
 			if (result.GetValueForOption(OptionUserdataUnparsedPairs) is string list1)
@@ -213,11 +225,11 @@ namespace BizHawk.Client.Common
 				cmdDumpType: result.GetValueForOption(OptionAVDumpType),
 				currAviWriterFrameList: currAviWriterFrameList,
 				autoDumpLength: autoDumpLength ?? 0,
-				printVersion: result.GetValueForOption(OptionQueryAppVersion),
 				cmdDumpName: result.GetValueForOption(OptionAVDumpName),
 				autoCloseOnDump: result.GetValueForOption(OptionAVDumpQuitWhenDone),
 				chromeless: result.GetValueForOption(OptionLaunchChromeless),
 				startFullscreen: result.GetValueForOption(OptionLaunchFullscreen),
+				gdiPlusRequested: result.GetValueForOption(OptionGDIPlus),
 				luaScript: luaScript,
 				luaConsole: luaConsole,
 				socketAddress: socketAddress,

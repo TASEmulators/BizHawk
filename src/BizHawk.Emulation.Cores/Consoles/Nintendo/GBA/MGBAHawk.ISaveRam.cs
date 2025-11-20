@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 
 using BizHawk.Emulation.Common;
 
@@ -9,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	{
 		private readonly byte[] _saveScratch = new byte[262144];
 
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			int len = LibmGBA.BizGetSaveRam(Core, _saveScratch, _saveScratch.Length);
 			if (len == _saveScratch.Length)
@@ -29,11 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return ret;
 		}
 
-		private static readonly byte[] _legacyHeader = Encoding.ASCII.GetBytes("GBABATT\0");
-
 		public void StoreSaveRam(byte[] data)
 		{
-			if (data.AsSpan().Slice(0, 8).SequenceEqual(_legacyHeader))
+			if (data.AsSpan().StartsWith("GBABATT\0"u8))
 			{
 				data = LegacyFix(data);
 			}

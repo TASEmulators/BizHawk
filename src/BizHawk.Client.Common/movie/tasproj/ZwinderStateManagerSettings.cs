@@ -3,9 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 using BizHawk.Common;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Client.Common
 {
-	public class ZwinderStateManagerSettings
+	[JsonConverter(typeof(NoConverter))]
+	public class ZwinderStateManagerSettings : IStateManagerSettings
 	{
 		public ZwinderStateManagerSettings() { }
 
@@ -44,7 +47,7 @@ namespace BizHawk.Client.Common
 		public int CurrentBufferSize { get; set; } = 256;
 
 		[DisplayName("Current - Target Frame Length")]
-		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)\n\nThe Current buffer is the primary buffer used near the last edited frame. This should be the largest buffer to ensure minimal gaps during editing.")]
+		[Description("Desired minimum rewind range (number of emulated frames you can go back before running out of buffer)\n\nThe Current buffer is the primary buffer used near the last edited frame. This should be the largest buffer to ensure minimal gaps during editing.")]
 		[Range(1, int.MaxValue)]
 		[TypeConverter(typeof(ConstrainedIntConverter))]
 		public int CurrentTargetFrameLength { get; set; } = 500;
@@ -67,7 +70,7 @@ namespace BizHawk.Client.Common
 		public int RecentBufferSize { get; set; } = 128;
 
 		[DisplayName("Recent - Target Frame Length")]
-		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer).\n\nThe Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
+		[Description("Desired minimum rewind range (number of emulated frames you can go back before running out of buffer).\n\nThe Recent buffer is where the current frames decay as the buffer fills up. The goal of this buffer is to maximize the amount of movie that can be fairly quickly navigated to. Therefore, a high target frame length is ideal here.")]
 		[Range(1, int.MaxValue)]
 		[TypeConverter(typeof(ConstrainedIntConverter))]
 		public int RecentTargetFrameLength { get; set; } = 2000;
@@ -90,7 +93,7 @@ namespace BizHawk.Client.Common
 		public int GapsBufferSize { get; set; } = 64;
 
 		[DisplayName("Gaps - Target Frame Length")]
-		[Description("Desired frame length (number of emulated frames you can go back before running out of buffer)\n\nThe Gap buffer is used for temporary storage when replaying older segment of the run without editing.  It is used to 're-greenzone' large gaps while navigating around in an older area of the movie. This buffer can be small, and a similar size to target frame length ratio as current is ideal.")]
+		[Description("Desired minimum rewind range (number of emulated frames you can go back before running out of buffer)\n\nThe Gap buffer is used for temporary storage when replaying older segment of the run without editing.  It is used to 're-greenzone' large gaps while navigating around in an older area of the movie. This buffer can be small, and a similar size to target frame length ratio as current is ideal.")]
 		[Range(1, int.MaxValue)]
 		[TypeConverter(typeof(ConstrainedIntConverter))]
 		public int GapsTargetFrameLength { get; set; } = 125;
@@ -109,6 +112,13 @@ namespace BizHawk.Client.Common
 		[Description("Where to keep the reserved states.")]
 		public IRewindSettings.BackingStoreType AncientStoreType { get; set; } = IRewindSettings.BackingStoreType.Memory;
 
+		public IStateManager CreateManager(Func<int, bool> reserveCallback)
+		{
+			return new ZwinderStateManager(this, reserveCallback);
+		}
+
+		public IStateManagerSettings Clone() => new ZwinderStateManagerSettings(this);
+
 		// Just to simplify some other code.
 		public RewindConfig Current()
 		{
@@ -119,7 +129,7 @@ namespace BizHawk.Client.Common
 				UseFixedRewindInterval = false,
 				TargetFrameLength = CurrentTargetFrameLength,
 				AllowOutOfOrderStates = false,
-				BackingStore = CurrentStoreType
+				BackingStore = CurrentStoreType,
 			};
 		}
 		public RewindConfig Recent()
@@ -131,7 +141,7 @@ namespace BizHawk.Client.Common
 				UseFixedRewindInterval = false,
 				TargetFrameLength = RecentTargetFrameLength,
 				AllowOutOfOrderStates = false,
-				BackingStore = RecentStoreType
+				BackingStore = RecentStoreType,
 			};
 		}
 		public RewindConfig GapFiller()
@@ -143,7 +153,7 @@ namespace BizHawk.Client.Common
 				UseFixedRewindInterval = false,
 				TargetFrameLength = GapsTargetFrameLength,
 				AllowOutOfOrderStates = false,
-				BackingStore = GapsStoreType
+				BackingStore = GapsStoreType,
 			};
 		}
 	}

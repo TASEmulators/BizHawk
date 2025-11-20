@@ -31,8 +31,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
 			{
 				_filteredList = _functionList
-					.Where(f => $"{f.Library}.{f.Name}".Contains(FilterBox.Text, StringComparison.OrdinalIgnoreCase)
-						|| f.Description.Contains(FilterBox.Text, StringComparison.OrdinalIgnoreCase))
+					.Where(f => $"{f.Library}.{f.Name}".ContainsIgnoreCase(FilterBox.Text)
+						|| f.Description.ContainsIgnoreCase(FilterBox.Text))
 					.ToList();
 			}
 			else
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				2 => _functionList.OrderBy(x => x.Name, _columnSort.Descending).ToList(),
 				3 => _functionList.OrderBy(x => x.ParameterList, _columnSort.Descending).ToList(),
 				4 => _functionList.OrderBy(x => x.Description, _columnSort.Descending).ToList(),
-				_ => _functionList
+				_ => _functionList,
 			};
 
 			UpdateList();
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsCtrl(Keys.C))
 			{
-				FunctionView_Copy(null, null);
+				FunctionView_Copy(null, EventArgs.Empty);
 			}
 		}
 
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 				Clipboard.SetText(sb.ToString());
 			}
 		}
-		
+
 		private void UpdateList()
 		{
 			GenerateFilteredList();

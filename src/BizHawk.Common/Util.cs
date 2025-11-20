@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -8,9 +9,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using BizHawk.Common.StringExtensions;
+
 namespace BizHawk.Common
 {
-	public static unsafe class Util
+	public static class Util
 	{
 		[Conditional("DEBUG")]
 		public static void BreakDebuggerIfAttached()
@@ -64,12 +67,6 @@ namespace BizHawk.Common
 			return data;
 		}
 
-		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value)
-		{
-			key = kvp.Key;
-			value = kvp.Value;
-		}
-
 		/// <remarks>adapted from https://stackoverflow.com/a/3928856/7467292, values are compared using <see cref="EqualityComparer{T}.Default">EqualityComparer.Default</see></remarks>
 		public static bool DictionaryEqual<TKey, TValue>(IDictionary<TKey, TValue> a, IDictionary<TKey, TValue> b)
 			where TKey : notnull
@@ -80,19 +77,11 @@ namespace BizHawk.Common
 			return a.All(kvp => b.TryGetValue(kvp.Key, out var bVal) && comparer.Equals(kvp.Value, bVal));
 		}
 
-#if NETCOREAPP3_0_OR_GREATER
 		public static string DescribeIsNull<T>(T? obj, [CallerArgumentExpression(nameof(obj))] string? expr = default)
-#else
-		public static string DescribeIsNull<T>(T? obj, string expr)
-#endif
 			where T : class
 			=> $"{expr} is {(obj is null ? "null" : "not null")}";
 
-#if NETCOREAPP3_0_OR_GREATER
 		public static string DescribeIsNullValT<T>(T? boxed, [CallerArgumentExpression(nameof(boxed))] string? expr = default)
-#else
-		public static string DescribeIsNullValT<T>(T? boxed, string expr)
-#endif
 			where T : struct
 			=> $"{expr} is {(boxed is null ? "null" : "not null")}";
 
@@ -107,10 +96,15 @@ namespace BizHawk.Common
 			return $"{filesize / 1099511627776.0:.##} TiB";
 		}
 
+		public static string GetRandomUUIDStr()
+			=> Guid.NewGuid().ToString("D");
+
 		/// <returns>all <see cref="Type">Types</see> with the name <paramref name="className"/></returns>
 		/// <remarks>adapted from https://stackoverflow.com/a/13727044/7467292</remarks>
 		public static IList<Type> GetTypeByName(string className) => AppDomain.CurrentDomain.GetAssemblies()
-			.SelectMany(asm => asm.GetTypesWithoutLoadErrors().Where(type => className.Equals(type.Name, StringComparison.OrdinalIgnoreCase))).ToList();
+			.SelectMany(static asm => asm.GetTypesWithoutLoadErrors())
+			.Where(type => type.Name.EqualsIgnoreCase(className))
+			.ToList();
 
 		/// <remarks>TODO replace this with GetTypes (i.e. the try block) when VB.NET dep is properly removed</remarks>
 		public static IEnumerable<Type> GetTypesWithoutLoadErrors(this Assembly assembly)
@@ -141,26 +135,6 @@ namespace BizHawk.Common
 			return ms.ToArray();
 		}
 
-		public static int Memcmp(void* a, void* b, int len)
-		{
-			var ba = (byte*) a;
-			var bb = (byte*) b;
-			for (var i = 0; i != len; i++)
-			{
-				var _a = ba[i];
-				var _b = bb[i];
-				var c = _a - _b;
-				if (c != 0) return c;
-			}
-			return 0;
-		}
-
-		public static void Memset(void* ptr, int val, int len)
-		{
-			var bptr = (byte*) ptr;
-			for (var i = 0; i != len; i++) bptr[i] = (byte) val;
-		}
-
 		public static byte[]? ReadByteBuffer(this BinaryReader br, bool returnNull)
 		{
 			var len = br.ReadInt32();
@@ -185,79 +159,11 @@ namespace BizHawk.Common
 			return ret;
 		}
 
-		public static double[] ToDoubleBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, double>(buf).ToArray();
-		}
-
-		public static float[] ToFloatBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, float>(buf).ToArray();
-		}
-
-		/// <remarks>Each set of 4 elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each set is interpreted as the LSB, with the 4th being the MSB. Elements are used as raw bits without regard for sign.</remarks>
-		public static int[] ToIntBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, int>(buf).ToArray();
-		}
-
-		/// <remarks>Each pair of elements in <paramref name="buf"/> becomes 1 element in the returned buffer. The first of each pair is interpreted as the LSB. Elements are used as raw bits without regard for sign.</remarks>
-		public static short[] ToShortBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, short>(buf).ToArray();
-		}
-
 		public static byte[] ToUByteBuffer(this bool[] buf)
 		{
 			var ret = new byte[buf.Length];
 			for (int i = 0, len = buf.Length; i != len; i++) ret[i] = buf[i] ? (byte) 1 : (byte) 0;
 			return ret;
-		}
-
-		public static byte[] ToUByteBuffer(this double[] buf)
-		{
-			return MemoryMarshal.Cast<double, byte>(buf).ToArray();
-		}
-
-		public static byte[] ToUByteBuffer(this float[] buf)
-		{
-			return MemoryMarshal.Cast<float, byte>(buf).ToArray();
-		}
-
-		/// <remarks>Each element of <paramref name="buf"/> becomes 4 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
-		public static byte[] ToUByteBuffer(this int[] buf)
-		{
-			return MemoryMarshal.Cast<int, byte>(buf).ToArray();
-		}
-
-		/// <remarks>Each element of <paramref name="buf"/> becomes 2 elements in the returned buffer, with the LSB coming first. Elements are used as raw bits without regard for sign.</remarks>
-		public static byte[] ToUByteBuffer(this short[] buf)
-		{
-			return MemoryMarshal.Cast<short, byte>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToUByteBuffer(int[])"/>
-		public static byte[] ToUByteBuffer(this uint[] buf)
-		{
-			return MemoryMarshal.Cast<uint, byte>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToUByteBuffer(short[])"/>
-		public static byte[] ToUByteBuffer(this ushort[] buf)
-		{
-			return MemoryMarshal.Cast<ushort, byte>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToIntBuffer"/>
-		public static uint[] ToUIntBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, uint>(buf).ToArray();
-		}
-
-		/// <inheritdoc cref="ToShortBuffer"/>
-		public static ushort[] ToUShortBuffer(this byte[] buf)
-		{
-			return MemoryMarshal.Cast<byte, ushort>(buf).ToArray();
 		}
 
 		/// <summary>Tries really hard to keep the contents of <paramref name="desiredPath"/> saved (as <paramref name="backupPath"/>) while freeing that path to be used for a new file.</summary>
@@ -301,23 +207,25 @@ namespace BizHawk.Common
 		}
 
 		/// <summary>creates span over <paramref name="length"/> octets starting at <paramref name="ptr"/></summary>
+		/// <remarks>returns empty span if <paramref name="ptr"/> is the null pointer (<see cref="IntPtr.Zero"/>)</remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Span<byte> UnsafeSpanFromPointer(IntPtr ptr, int length)
-		{
-			return new(pointer: ptr.ToPointer(), length: length);
-		}
+		public static unsafe Span<byte> UnsafeSpanFromPointer(IntPtr ptr, int length)
+			=> ptr == IntPtr.Zero ? [ ] : new(pointer: ptr.ToPointer(), length: length);
 
+#if false // unused
 		/// <summary>
 		/// creates span over <paramref name="count"/><c> * sizeof(</c><typeparamref name="T"/><c>)</c> octets
 		/// starting at <paramref name="ptr"/>
 		/// </summary>
-		/// <remarks>uses native endianness</remarks>
+		/// <remarks>
+		/// uses native endianness and <paramref name="ptr"/> must be aligned (else UB);
+		/// returns empty span if <paramref name="ptr"/> is the null pointer (<see cref="IntPtr.Zero"/>)
+		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Span<T> UnsafeSpanFromPointer<T>(IntPtr ptr, int count)
+		public static unsafe Span<T> UnsafeSpanFromPointerAligned<T>(IntPtr ptr, int count)
 			where T : unmanaged
-		{
-			return new(pointer: ptr.ToPointer(), length: count * sizeof(T));
-		}
+			=> ptr == IntPtr.Zero ? [ ] : new(pointer: ptr.ToPointer(), length: count * sizeof(T));
+#endif
 
 		public static void WriteByteBuffer(this BinaryWriter bw, byte[]? data)
 		{
@@ -329,6 +237,34 @@ namespace BizHawk.Common
 			{
 				bw.Write(data.Length);
 				bw.Write(data);
+			}
+		}
+
+		// Process.Start does not correctly handle urls in mono version pre-6.12.0.122,
+		// so we use an explicit function handling it instead
+		public static void OpenUrlExternal(string url)
+		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				string[] apps = (OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS)
+					? [ "open" ]
+					: [ "xdg-open", "gnome-open", "kfmclient" ];
+
+				foreach (string app in apps)
+				{
+					try
+					{
+						Process.Start(new ProcessStartInfo(app, url) { UseShellExecute = true });
+					}
+					catch (Win32Exception)
+					{
+						continue;
+					}
+				}
+			}
+			else
+			{
+				Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 			}
 		}
 	}

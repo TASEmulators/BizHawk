@@ -6,9 +6,6 @@ using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
 
-using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.StringExtensions;
-
 using static SDL2.SDL;
 
 namespace BizHawk.Bizware.Graphics
@@ -40,11 +37,35 @@ namespace BizHawk.Bizware.Graphics
 			Nvida,
 			Amd,
 			Intel,
-			Unknown
+			Unknown,
 		}
 
+		// Avoid old Intel gpus, these have been reported crashing with gl interop
+		// Reported GPUs: Intel HD Graphics 4600, Intel HD Graphics 5500, and Intel HD Graphics 530
+		// (Presumingly all Haswell, Broadwell and Skylake are affected, better safe than sorry)
+		// Note: Intel HD Graphics 4000 (Ivy Bridge) is reported as NOT crashing
+		// Presumingly it's so old it doesn't even report gl interop support
 		private static readonly int[] _blacklistedIntelDeviceIds =
 		[
+			// Bay Trail GPUs (in-between Ivy Bridge and Haswell)
+			0x0155, 0x0157, 0x0F30, 0x0F31,
+			0x0F32, 0x0F33,
+			// Haswell GPUs
+			0x0402, 0x0406, 0x040A, 0x040B,
+			0x040E, 0x0412, 0x0416, 0x041A,
+			0x041B, 0x041E, 0x0422, 0x0426,
+			0x042A, 0x042B, 0x042E, 0x0A02,
+			0x0A06, 0x0A0A, 0x0A0B, 0x0A0E,
+			0x0A12, 0x0A16, 0x0A1A, 0x0A1B,
+			0x0A1E, 0x0A22, 0x0A26, 0x0A2A,
+			0x0A2B, 0x0A2E, 0x0C02, 0x0C06,
+			0x0C0A, 0x0C0B, 0x0C0E, 0x0C12,
+			0x0C16, 0x0C1A, 0x0C1B, 0x0C1E,
+			0x0C22, 0x0C26, 0x0C2A, 0x0C2B,
+			0x0C2E, 0x0D02, 0x0D06, 0x0D0A,
+			0x0D0B, 0x0D0E, 0x0D12, 0x0D16,
+			0x0D1A, 0x0D1B, 0x0D1E, 0x0D22,
+			0x0D26, 0x0D2A, 0x0D2B, 0x0D2E,
 			// Broadwell GPUs
 			0x1602, 0x1606, 0x160A, 0x160B,
 			0x160D, 0x160E, 0x1612, 0x1616,
@@ -52,6 +73,8 @@ namespace BizHawk.Bizware.Graphics
 			0x1622, 0x1626, 0x162A, 0x162B,
 			0x162D, 0x162E, 0x1632, 0x1636,
 			0x163A, 0x163B, 0x163D, 0x163E,
+			// Cherryview GPUs (in-between Broadwell and Skylake)
+			0x22B0, 0x22B1, 0x22B2, 0x22B3,
 			// Skylake GPUs
 			0x1902, 0x1906, 0x190A, 0x190B,
 			0x190E, 0x1912, 0x1913, 0x1915,
@@ -159,9 +182,7 @@ namespace BizHawk.Bizware.Graphics
 
 						if (vendor == Vendor.Intel)
 						{
-							// avoid Broadwell and Skylake gpus, these have been reported crashing with gl interop
-							// (specifically, Intel HD Graphics 5500 and Intel HD Graphics 530, presumingly all Broadwell and Skylake are affected, better safe than sorry)
-							if (_blacklistedIntelDeviceIds.Contains(adapter.Description.DeviceId))
+							if (_blacklistedIntelDeviceIds.AsSpan().Contains(adapter.Description.DeviceId))
 							{
 								return;
 							}

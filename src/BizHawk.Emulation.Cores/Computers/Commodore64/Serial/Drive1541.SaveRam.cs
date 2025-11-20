@@ -39,8 +39,10 @@ public sealed partial class Drive1541 : ISaveRam
 
 	public bool SaveRamModified { get; private set; } = false;
 
-	public byte[] CloneSaveRam()
+	public byte[] CloneSaveRam(bool clearDirty)
 	{
+		SaveDeltas();
+
 		using var ms = new MemoryStream();
 		using var bw = new BinaryWriter(ms);
 		bw.Write(_usedDiskTracks.Length);
@@ -54,7 +56,7 @@ public sealed partial class Drive1541 : ISaveRam
 			}
 		}
 
-		SaveRamModified = false;
+		if (clearDirty) SaveRamModified = false;
 		return ms.ToArray();
 	}
 

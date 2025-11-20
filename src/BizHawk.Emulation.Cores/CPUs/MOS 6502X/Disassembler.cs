@@ -1,5 +1,6 @@
-using BizHawk.Emulation.Common;
 using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.M6502
 {

@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		protected RetroAchievements(
 			MainForm mainForm,
 			InputManager inputManager,
-			ToolManager tools, 
+			ToolManager tools,
 			Func<Config> getConfig,
 			ToolStripItemCollection raDropDownItems,
 			Action shutdownRACallback)

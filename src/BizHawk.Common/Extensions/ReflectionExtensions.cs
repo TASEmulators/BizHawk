@@ -47,10 +47,8 @@ namespace BizHawk.Common.ReflectionExtensions
 			return obj.ToString();
 		}
 
-		/// <summary>
-		/// Returns the DisplayName attribute value if it exists, else the name of the class
-		/// </summary>
-		public static string DisplayName(this Type type)
+		/// <returns><see cref="DisplayNameAttribute">[DisplayName]</see>, falling back to <see cref="MemberInfo.Name"/></returns>
+		public static string DisplayName(this MemberInfo type)
 		{
 			var attr = type.GetCustomAttributes(typeof(DisplayNameAttribute), false).FirstOrDefault();
 			return attr is DisplayNameAttribute displayName ? displayName.DisplayName : type.Name;
@@ -68,23 +66,12 @@ namespace BizHawk.Common.ReflectionExtensions
 		{
 			var type = typeof(T);
 
-			foreach (var field in type.GetFields())
+			foreach (var fi in type.GetFields())
 			{
-				if (Attribute.GetCustomAttribute(field,
-					typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
-				{
-					if (attribute.Description == description)
-					{
-						return (T)field.GetValue(null);
-					}
-				}
-				else
-				{
-					if (field.Name == description)
-					{
-						return (T)field.GetValue(null);
-					}
-				}
+				var memberDesc = fi.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr
+					? descAttr.Description
+					: fi.Name;
+				if (memberDesc == description) return (T) fi.GetValue(null);
 			}
 
 			return default(T);

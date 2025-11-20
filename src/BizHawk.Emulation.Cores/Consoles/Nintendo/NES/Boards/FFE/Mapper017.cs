@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_mask_8k = Cart.PrgSize / 8 - 1;
 			chr_mask_1k = Cart.ChrSize / 1 - 1;
 
-			//Initial State 
+			//Initial State
 			prg_regs_8k[0] = 0x00;
 			prg_regs_8k[1] = 0x01;
 			prg_regs_8k[2] = 0xFE;

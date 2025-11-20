@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
@@ -28,6 +27,8 @@ namespace BizHawk.Client.Common
 		private readonly IVideoProvider _videoProvider;
 		private readonly IMovieSession _movieSession;
 
+		private readonly SettingsAdapter _settable;
+
 		private readonly IDictionary<string, object> _userBag;
 
 		public SavestateFile(
@@ -41,6 +42,12 @@ namespace BizHawk.Client.Common
 			}
 
 			_emulator = emulator;
+			_settable = new(
+				_emulator,
+				mayPutCoreSettings: static () => false,
+				handlePutCoreSettings: static _ => {},
+				mayPutCoreSyncSettings: static () => false,
+				handlePutCoreSyncSettings: static _ => {});
 			_statable = emulator.AsStatable();
 			if (emulator.HasVideoProvider())
 			{
@@ -83,8 +90,17 @@ namespace BizHawk.Client.Common
 
 				using (new SimpleTime("Save Framebuffer"))
 				{
-					bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
+					bs.PutLump(
+						BinaryStateLump.Framebuffer,
+						s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight),
+						zstdCompress: false);
 				}
+			}
+
+			if (_settable.HasSyncSettings)
+			{
+				var syncSettingsJson = ConfigService.SaveWithType(_settable.GetSyncSettings());
+				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(syncSettingsJson));
 			}
 
 			if (_movieSession.Movie.IsActive())
@@ -99,7 +115,7 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (_userBag.Any())
+			if (_userBag.Count is not 0)
 			{
 				bs.PutLump(BinaryStateLump.UserData,
 					tw =>
@@ -109,9 +125,9 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie tasMovie)
 			{
-				bs.PutLump(BinaryStateLump.LagLog, tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw));
+				bs.PutLump(BinaryStateLump.LagLog, tw => tasMovie.LagLog.Save(tw), zstdCompress: true);
 			}
 		}
 
@@ -136,6 +152,36 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			// next, check sync settings match
+			if (_settable.HasSyncSettings)
+			{
+				string/*?*/ loadedSyncSettings = null;
+				bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							loadedSyncSettings = line;
+							break;
+						}
+					}
+				});
+				if (loadedSyncSettings is null
+					|| !ConfigService.SaveWithType(_settable.GetSyncSettings())
+						.Equals(loadedSyncSettings, StringComparison.Ordinal))
+				{
+					dialogParent.ModalMessageBox(
+						loadedSyncSettings is null
+							? "This savestate doesn't contain sync settings, so it must be from an older version.\nLoadstate cancelled."
+							: "This savestate was made with a different core or different sync settings.\nLoadstate cancelled.",
+						"Savestate sync settings mismatch",
+						EMsgBoxIcon.Info);
+					return false;
+				}
+			}
+
 			// Movie timeline check must happen before the core state is loaded
 			if (_movieSession.Movie.IsActive())
 			{
@@ -148,7 +194,15 @@ namespace BizHawk.Client.Common
 
 			using (new SimpleTime("Load Core"))
 			{
-				bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+				try
+				{
+					bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+				}
+				catch (Exception e)
+				{
+					Util.DebugWriteLine(e);
+					return false;
+				}
 			}
 
 			// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
@@ -186,9 +240,9 @@ namespace BizHawk.Client.Common
 				foreach (var (k, v) in bag) _userBag.Add(k, v);
 			}
 
-			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie tasMovie)
 			{
-				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => ((ITasMovie) _movieSession.Movie).LagLog.Load(tr));
+				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => tasMovie.LagLog.Load(tr));
 			}
 
 			return true;

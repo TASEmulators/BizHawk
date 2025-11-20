@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			int width = 0;
 			int height = 0;
 			api.GetScreenDimensions(ref width, ref height);
-			
+
 			SetBufferSize(
 				width > videosettings.Width ? width : videosettings.Width,
 				height > videosettings.Height ? height : videosettings.Height

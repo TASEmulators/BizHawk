@@ -2,7 +2,7 @@
 **/.vscode/
 /output/**
 /packaged_output
-/result
+/result*
 /test_output
 **/ipch/**
 /Assets/dll/*.wbx

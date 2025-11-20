@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Common
 
 		private static void LoadDatabase_Escape(string line, bool inUser, bool silent)
 		{
-			if (!line.StartsWith("#include", StringComparison.InvariantCultureIgnoreCase)) return;
+			var isUserInclude = line.StartsWithIgnoreCase("#includeuser");
+			if (!isUserInclude && !line.StartsWithIgnoreCase("#include")) return;
 
-			var isUserInclude = line.StartsWith("#includeuser", StringComparison.InvariantCultureIgnoreCase);
 			var searchUser = inUser || isUserInclude;
 			line = line.Substring(isUserInclude ? 12 : 8).TrimStart();
 			var filename = Path.Combine(searchUser ? _userRoot : _bundledRoot, line);
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Common
 				RomStatus.Hack => "H",
 				RomStatus.NotInDatabase => "U",
 				RomStatus.Unknown => "U",
-				_ => ""
+				_ => string.Empty,
 			});
 
 			sb
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Common
 				"D" => RomStatus.Homebrew,
 				"H" => RomStatus.Hack,
 				"U" => RomStatus.Unknown,
-				_ => RomStatus.GoodDump
+				_ => RomStatus.GoodDump,
 			};
 			_ = iter.MoveNext();
 			var knownName = lineStr.Substring(iter.Current);
@@ -208,8 +208,26 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
-			_bundledRoot = bundledRoot;
-			_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			if (Directory.Exists(bundledRoot))
+			{
+				_bundledRoot = bundledRoot;
+				_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+			}
+#if false //TODO synthesise `#includeuser gamedb_user.txt` and load
+			else if (Directory.Exists(userRoot))
+			{
+				_bundledRoot = userRoot;
+				_userRoot = userRoot;
+			}
+#endif
+			else
+			{
+				Console.WriteLine("gamedb root not found");
+				// nothing to do
+				DB = FrozenDictionary<string, CompactGameInfo>.Empty;
+				_acquire.Set();
+				return;
+			}
 
 			_expected = new DirectoryInfo(_bundledRoot!).EnumerateFiles("*.txt").Select(static fi => fi.Name).ToList();
 
@@ -279,7 +297,7 @@ namespace BizHawk.Emulation.Common
 			{
 				Hash = hashSHA1,
 				Status = RomStatus.NotInDatabase,
-				NotInDatabase = true
+				NotInDatabase = true,
 			};
 
 #if !BIZHAWKBUILD_GAMEDB_ALWAYS_MISS
@@ -463,6 +481,10 @@ namespace BizHawk.Emulation.Common
 					game.System = VSystemID.Raw.Amiga;
 					break;
 
+				case ".D88" or ".DMF" or ".FDD" /*or ".FDI"*/ or ".IMA" or ".IMG" or ".NFD" or ".XDF":
+					game.System = VSystemID.Raw.DOS;
+					break;
+
 				case ".IPF":
 					var ipfId = new IpfIdentifier(romData);
 					game.System = ipfId.IdentifiedSystem;
@@ -470,12 +492,15 @@ namespace BizHawk.Emulation.Common
 
 				case ".32X":
 					game.System = VSystemID.Raw.Sega32X;
-					game.AddOption("32X", "true");
 					break;
 
 				case ".VEC":
 					game.System = VSystemID.Raw.VEC;
 					game.AddOption("VEC", "true");
+					break;
+
+				case ".WAD":
+					game.System = VSystemID.Raw.Doom;
 					break;
 
 				case ".ZIP":
@@ -487,7 +512,9 @@ namespace BizHawk.Emulation.Common
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
+#pragma warning disable CA1862 // testing whether it's all-caps
 			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
+#pragma warning restore CA1862
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLowerInvariant());
 			}

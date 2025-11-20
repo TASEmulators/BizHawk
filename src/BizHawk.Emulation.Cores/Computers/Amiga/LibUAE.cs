@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		public const int PAL_WIDTH = 720;
 		public const int NTSC_WIDTH = PAL_WIDTH;
 		// the core renders 576 which is what libretro displays
-		// but default window height is 568 in original UAE and WinUAE
+		// but default window height is 568 in original PUAE and WinUAE
 		// this lets us hide a black line and a weird artifact that our A600 config has there
-		public const int PAL_HEIGHT = 568;
+		public const int PAL_HEIGHT = 574;
 		// WinUAE displays 484 lines for NTSC
 		// but libretro port only renders 482 and then only displays 480
 		public const int NTSC_HEIGHT = 482;
@@ -88,13 +88,32 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			public int MouseY;
 		}
 
+#if true
 		public enum ControllerType : int
 		{
-			Joystick,
-			Mouse,
+			None = 0,
+			[Display(Name = "Joystick")]
+			DJoy = 1,
+			Mouse = 2,
 			[Display(Name = "CD32 pad")]
-			CD32_pad
+			CD32Joy = 3,
 		}
+#else //TODO matches upstream -- requires unmanaged change
+		public enum ControllerType : int
+		{
+			None = 0,
+			Mouse = 1,
+//			MouseNoWheel,
+			[Display(Name = "Joystick")]
+			DJoy = 3,
+//			Gamepad,
+//			AJoy,
+//			CDTVJoy,
+			[Display(Name = "CD32 pad")]
+			CD32Joy = 7,
+//			Lightpen,
+		}
+#endif
 
 		public enum DriveAction : int
 		{
@@ -106,20 +125,21 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		[Flags]
 		public enum AllButtons : short
 		{
-			Up       = 0b0000000000000001,
-			Down     = 0b0000000000000010,
-			Left     = 0b0000000000000100,
-			Right    = 0b0000000000001000,
-			Button_1 = 0b0000000000010000,
-			Button_2 = 0b0000000000100000,
-			Button_3 = 0b0000000001000000,
-			Play     = 0b0000000010000000,
-			Rewind   = 0b0000000100000000,
-			Forward  = 0b0000001000000000,
-			Green    = 0b0000010000000000,
-			Yellow   = 0b0000100000000000,
-			Red      = 0b0001000000000000,
-			Blue     = 0b0010000000000000
+			None     = 0b0000_0000_0000_0000,
+			Up       = 0b0000_0000_0000_0001,
+			Down     = 0b0000_0000_0000_0010,
+			Left     = 0b0000_0000_0000_0100,
+			Right    = 0b0000_0000_0000_1000,
+			Button_1 = 0b0000_0000_0001_0000,
+			Button_2 = 0b0000_0000_0010_0000,
+			Button_3 = 0b0000_0000_0100_0000,
+			Play     = 0b0000_0000_1000_0000,
+			Rewind   = 0b0000_0001_0000_0000,
+			Forward  = 0b0000_0010_0000_0000,
+			Green    = 0b0000_0100_0000_0000,
+			Yellow   = 0b0000_1000_0000_0000,
+			Red      = 0b0001_0000_0000_0000,
+			Blue     = 0b0010_0000_0000_0000,
 		}
 
 		// https://wiki.amigaos.net/wiki/Keymap_Library

@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			["Watches"] = _ramWatches,
 			["Messages"] = _messages,
 			["Rerecords"] = _reRecordCounter,
-			["Autohold"] = _autohold
+			["Autohold"] = _autohold,
 		};
 
 		private Dictionary<string, int> Colors => new Dictionary<string, int>
@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			["Main Messages"] = _config.MessagesColor,
 			["Alert Messages"] = _config.AlertMessageColor,
 			["Previous Frame Input"] = _config.LastInputColor,
-			["Movie Input"] = _config.MovieInputColor
+			["Movie Input"] = _config.MovieInputColor,
 		};
 
 		private IEnumerable<ColorRow> ColorRows => ColorBox.Controls.OfType<ColorRow>();
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			_reRecordCounter = _config.ReRecordCounter.Clone();
 			_messages = _config.Messages.Clone();
 			_autohold = _config.Autohold.Clone();
-			_ramWatches = _config.RamWatches.Clone();	
+			_ramWatches = _config.RamWatches.Clone();
 
 			InitializeComponent();
 
@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 				var row = new MessageRow
 				{
 					Name = name,
-					Location = new Point(10, y)
+					Location = new(10, y),
 				};
 				row.Size = new Size(MessageTypeBox.Width - 12, row.Size.Height);
 				row.Bind(name, pos, e => SetMessagePosition(row, e));
@@ -132,14 +132,14 @@ namespace BizHawk.Client.EmuHawk
 					Name = name,
 					Location = new Point(10, y),
 					DisplayName = name,
-					SelectedColor = argb
+					SelectedColor = argb,
 				};
 				row.Size = new Size(ColorBox.Width - 12, row.Size.Height);
 				y += row.Size.Height;
 				ColorBox.Controls.Add(row);
 			}
 		}
-		
+
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			_config.Fps = _fps;

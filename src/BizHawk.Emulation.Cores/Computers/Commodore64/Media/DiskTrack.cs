@@ -55,7 +55,7 @@ public sealed class DiskTrack
 	public DiskTrack Clone()
 	{
 		var clone = new DiskTrack();
-		Bits.CopyTo(clone._bits.AsSpan());
+		Bits.CopyTo(clone._bits);
 		clone._original = _original;
 		return clone;
 	}
@@ -105,21 +105,19 @@ public sealed class DiskTrack
 		// in the 1541 disk drive. Outer tracks have more surface area, so a technique is used to read
 		// bits at a higher rate.
 
-		var paddedLength = density switch
-		{
-			3 => Math.Max(bytes.Length, 7692),
-			2 => Math.Max(bytes.Length, 7142),
-			1 => Math.Max(bytes.Length, 6666),
-			0 => Math.Max(bytes.Length, 6250),
-			_ => bytes.Length
-		};
-
-		// One extra byte is added at the end to break up tracks so that if the data is perfectly
+		// Extra bits are added at the end to break up tracks so that if the data is perfectly
 		// aligned in an unfortunate way, loaders don't seize up trying to find data. Some copy protections
 		// will read the same track repeatedly to account for variations in drive mechanics, and this should get
 		// the more temperamental ones to load eventually.
 
-		paddedLength++;
+		var paddedLength = density switch
+		{
+			3 => Math.Max(bytes.Length, 7820),
+			2 => Math.Max(bytes.Length, 7170),
+			1 => Math.Max(bytes.Length, 6300),
+			0 => Math.Max(bytes.Length, 6020),
+			_ => bytes.Length
+		};
 
 		// It is possible that there are more or fewer bits than the specification due to any number
 		// of reasons (e.g. copy protection, tiny variations in motor speed) so we pad out with the "default"
@@ -128,34 +126,23 @@ public sealed class DiskTrack
 		using var paddedBytesMem = MemoryPool<byte>.Shared.Rent(paddedLength);
 		var paddedBytes = paddedBytesMem.Memory.Span.Slice(0, paddedLength);
 		bytes.CopyTo(paddedBytes);
-		paddedBytes.Slice(bytes.Length).Fill(0xAA);
+		paddedBytes.Slice(bytes.Length).Fill(0x55);
 
-		var lengthBits = paddedLength * 8 - 7;
-		var remainingBits = lengthBits;
-
+		long bitsDen = paddedLength * 8 + 3;
 		const long bitsNum = FluxEntriesPerTrack * FluxBitsPerEntry;
-		long bitsDen = lengthBits;
 
+		var bitIdx = 0;
 		for (var i = 0; i < paddedLength; i++)
 		{
 			var byteData = paddedBytes[i];
 			for (var j = 0; j < 8; j++)
 			{
-				var offset = fluxBitOffset + ((i * 8 + j) * bitsNum / bitsDen);
-				var byteOffset = (int)(offset / FluxBitsPerEntry);
-				var bitOffset = (int)(offset % FluxBitsPerEntry);
-				_bits[byteOffset] |= (byteData >> 7) << bitOffset;
+				var bit = fluxBitOffset + (bitIdx * bitsNum / bitsDen);
+				bitIdx++;
+				var entry = (int)(bit / FluxBitsPerEntry % FluxEntriesPerTrack);
+				var entryBit = (int)(bit % FluxBitsPerEntry);
+				_bits[entry] |= (byteData >> 7) << entryBit;
 				byteData <<= 1;
-				remainingBits--;
-				if (remainingBits <= 0)
-				{
-					break;
-				}
-			}
-
-			if (remainingBits <= 0)
-			{
-				break;
 			}
 		}
 

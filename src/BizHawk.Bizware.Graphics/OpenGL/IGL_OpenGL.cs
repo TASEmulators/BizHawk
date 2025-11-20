@@ -3,8 +3,6 @@ using System.Numerics;
 
 using Silk.NET.OpenGL;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
@@ -39,12 +37,13 @@ namespace BizHawk.Bizware.Graphics
 		/// <summary>
 		/// Should be called once the GL context is created
 		/// </summary>
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public void InitGLState()
 		{
 			GL.GetInteger(GetPName.MaxTextureSize, out var maxTextureDimension);
 			if (maxTextureDimension == 0)
 			{
-				throw new($"Failed to get max texture size, GL error: {GL.GetError()}");
+				throw new Exception($"Failed to get max texture size, GL error: {GL.GetError()}");
 			}
 
 			MaxTextureDimension = maxTextureDimension;

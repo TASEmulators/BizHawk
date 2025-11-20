@@ -7,7 +7,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it?
 // perhaps missing domains shouldn't fail a check
@@ -39,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private bool CDLAutoStart { get; set; } = true;
-		
+
 		[ConfigPersist]
 		private bool CDLAutoResume { get; set; } = true;
 
@@ -108,6 +107,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			DisassembleMenuItem.Tag = CodeDataLogger.GetType().GetMethod(nameof(ICodeDataLogger.DisassembleCDL))!
+				.IsImplemented();
 			//don't try to recover the current CDL!
 			//even though it seems like it might be nice, it might get mixed up between games. even if we use CheckCDL. Switching games with the same memory map will be bad.
 			_cdl = null;
@@ -143,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int[] totals = new int[8];
 				int total = 0;
-				
+
 				for (int i = 0; i < 256; i++)
 					map[i] = 0;
 
@@ -234,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 					ShutdownCDL();
 					return true;
 				}
-				
+
 				ShutdownCDL();
 				return false;
 			}
@@ -283,8 +284,8 @@ namespace BizHawk.Client.EmuHawk
 			SaveAsMenuItem.Enabled =
 				AppendMenuItem.Enabled =
 				ClearMenuItem.Enabled =
-				DisassembleMenuItem.Enabled =
 				_cdl != null;
+			DisassembleMenuItem.Enabled = _cdl is not null && /*core implements feature*/(bool) DisassembleMenuItem.Tag;
 
 			miAutoSave.Checked = CDLAutoSave;
 			miAutoStart.Checked = CDLAutoStart;
@@ -383,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file == null)
 				return false;
-				
+
 			SetCurrentFilename(file.FullName);
 			RunSave();
 			return true;

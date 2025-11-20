@@ -21,10 +21,60 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 			}
 
+			// avoid conflict with regular hotkeys
+			if (Tools.IsLoaded<TAStudio>() && Tools.TAStudio.AxisEditingMode)
+			{
+				switch (trigger)
+				{
+					default:
+						return false;
+
+					case "Analog Increment":
+						Tools.TAStudio.AnalogIncrementByOne();
+						break;
+					case "Analog Decrement":
+						Tools.TAStudio.AnalogDecrementByOne();
+						break;
+					case "Analog Incr. by 10":
+						Tools.TAStudio.AnalogIncrementByTen();
+						break;
+					case "Analog Decr. by 10":
+						Tools.TAStudio.AnalogDecrementByTen();
+						break;
+					case "Analog Maximum":
+						Tools.TAStudio.AnalogMax();
+						break;
+					case "Analog Minimum":
+						Tools.TAStudio.AnalogMin();
+						break;
+				}
+
+				return true;
+			}
+
 			switch (trigger)
 			{
 				default:
 					return false;
+
+				// Hotkeys handled elsewhere, via the hotkey controller
+				case "Autohold":
+				case "Autofire":
+				case "Frame Advance":
+				case "Turbo":
+				case "Rewind":
+				case "Fast Forward":
+				case "Open RA Overlay":
+					break;
+				case "RA Up":
+				case "RA Down":
+				case "RA Left":
+				case "RA Right":
+				case "RA Confirm":
+				case "RA Cancel":
+				case "RA Quit":
+					// don't consider these keys outside of RAIntegration overlay being active
+					return RA is RAIntegration { OverlayActive: true };
 
 				// General
 				case "Pause":
@@ -33,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Frame Inch":
 					//special! allow this key to get handled as Frame Advance, too
 					FrameInch = true;
-					return false;
+					break;
 				case "Toggle Throttle":
 					ToggleUnthrottled();
 					break;
@@ -149,6 +199,12 @@ namespace BizHawk.Client.EmuHawk
 				case "Accept Background Input":
 					ToggleBackgroundInput();
 					break;
+				case "Capture Mouse":
+					ToggleCaptureMouse();
+					break;
+				case "Toggle Stay on Top":
+					ToggleStayOnTop();
+					break;
 
 				// Save States
 				case "Save State 1":
@@ -260,10 +316,10 @@ namespace BizHawk.Client.EmuHawk
 					ToggleReadOnly();
 					break;
 				case "Play Movie":
-					PlayMovieMenuItem_Click(null, null);
+					PlayMovieMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Record Movie":
-					RecordMovieMenuItem_Click(null, null);
+					RecordMovieMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Stop Movie":
 					StopMovie();
@@ -313,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 					AddOnScreenMessage($"Cheats toggled ({kind})");
 					break;
 				case "TAStudio":
-					TAStudioMenuItem_Click(null, null);
+					TAStudioMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "ToolBox":
 					ToolBoxMenuItem_Click(this, EventArgs.Empty);
@@ -362,6 +418,10 @@ namespace BizHawk.Client.EmuHawk
 					Tools.TAStudio.SetVisibleFrame();
 					Tools.TAStudio.RefreshDialog();
 					break;
+				case "Select Current Frame":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SelectCurrentFrame();
+					break;
 				case "Toggle Follow Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					var playbackBox = Tools.TAStudio.TasPlaybackBox;
@@ -371,6 +431,10 @@ namespace BizHawk.Client.EmuHawk
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					var playbackBox1 = Tools.TAStudio.TasPlaybackBox;
 					playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
+					break;
+				case "Seek To Green Arrow":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RestorePosition();
 					break;
 				case "Toggle Turbo Seek":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
@@ -384,6 +448,26 @@ namespace BizHawk.Client.EmuHawk
 				case "Redo":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.RedoExternal();
+					break;
+				case "Seek To Prev Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToPreviousMarker();
+					break;
+				case "Seek To Next Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToNextMarker();
+					break;
+				case "Cancel Seek":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.StopSeeking();
+					break;
+				case "Set Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SetMarker();
+					break;
+				case "Delete Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RemoveMarker();
 					break;
 				case "Sel. bet. Markers":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
@@ -420,30 +504,6 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone # Times":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesXTimesExternal();
-					break;
-				case "Analog Increment":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogIncrementByOne();
-					break;
-				case "Analog Decrement":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogDecrementByOne();
-					break;
-				case "Analog Incr. by 10":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogIncrementByTen();
-					break;
-				case "Analog Decr. by 10":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogDecrementByTen();
-					break;
-				case "Analog Maximum":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogMax();
-					break;
-				case "Analog Minimum":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogMin();
 					break;
 
 				// SNES
@@ -519,36 +579,12 @@ namespace BizHawk.Client.EmuHawk
 				case "Screen Rotate":
 					NDS_IncrementScreenRotate();
 					break;
+				case "Swap Screens":
+					NDS_SwapScreens();
+					break;
 			}
 
 			return true;
-		}
-
-		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
-		private bool IsInternalHotkey(string trigger)
-		{
-			switch (trigger)
-			{
-				default:
-					return false;
-				case "Autohold":
-				case "Autofire":
-				case "Frame Advance":
-				case "Turbo":
-				case "Rewind":
-				case "Fast Forward":
-				case "Open RA Overlay":
-					return true;
-				case "RA Up":
-				case "RA Down":
-				case "RA Left":
-				case "RA Right":
-				case "RA Confirm":
-				case "RA Cancel":
-				case "RA Quit":
-					// don't consider these keys outside of RAIntegration overlay being active
-					return RA is RAIntegration { OverlayActive: true };
-			}
 		}
 	}
 }

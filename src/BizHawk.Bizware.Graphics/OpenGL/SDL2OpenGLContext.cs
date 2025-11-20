@@ -11,8 +11,6 @@ using BizHawk.Common.StringExtensions;
 
 using static SDL2.SDL;
 
-#pragma warning disable BHI1007 // target-typed Exception TODO don't
-
 namespace BizHawk.Bizware.Graphics
 {
 	/// <summary>
@@ -20,6 +18,7 @@ namespace BizHawk.Bizware.Graphics
 	/// </summary>
 	public class SDL2OpenGLContext : IDisposable
 	{
+#pragma warning disable CA1065 // not sure how else to handle failure other than throwing with a good message
 		static SDL2OpenGLContext()
 		{
 			if (OSTailoredCode.IsUnixHost)
@@ -37,7 +36,7 @@ namespace BizHawk.Bizware.Graphics
 			// init SDL video
 			if (SDL_Init(SDL_INIT_VIDEO) != 0)
 			{
-				throw new($"Could not init SDL video! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not init SDL video! SDL Error: {SDL_GetError()}");
 			}
 
 			if (OSTailoredCode.IsUnixHost)
@@ -81,7 +80,7 @@ namespace BizHawk.Bizware.Graphics
 					SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "0");
 					if (SDL_GL_LoadLibrary(null) != 0)
 					{
-						throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+						throw new Exception($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
 					}
 				}
 			}
@@ -90,7 +89,7 @@ namespace BizHawk.Bizware.Graphics
 				// load the default OpenGL library
 				if (SDL_GL_LoadLibrary(null) != 0)
 				{
-					throw new($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
+					throw new Exception($"Could not load default OpenGL library! SDL Error: {SDL_GetError()}");
 				}
 			}
 
@@ -101,6 +100,7 @@ namespace BizHawk.Bizware.Graphics
 			// it's not needed and can be dangerous in some rare cases
 			SDL_SetHintWithPriority(SDL_HINT_WINDOWS_ENABLE_MESSAGELOOP, "0", SDL_HintPriority.SDL_HINT_OVERRIDE);
 		}
+#pragma warning restore CA1065
 
 #if DEBUG_OPENGL
 		private static readonly DebugProc _debugProc = DebugCallback;
@@ -111,6 +111,7 @@ namespace BizHawk.Bizware.Graphics
 		private IntPtr _sdlWindow;
 		private IntPtr _glContext;
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		private static void SetAttributes(int majorVersion, int minorVersion, bool coreProfile, bool shareContext)
 		{
 			// set some sensible defaults
@@ -121,23 +122,23 @@ namespace BizHawk.Bizware.Graphics
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 0) is not 0
 				|| SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1) is not 0)
 			{
-				throw new($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not set GL attributes! SDL Error: {SDL_GetError()}");
 			}
 
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion) != 0)
 			{
-				throw new($"Could not set GL Major Version! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not set GL Major Version! SDL Error: {SDL_GetError()}");
 			}
-			
+
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, minorVersion) != 0)
 			{
-				throw new($"Could not set GL Minor Version! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not set GL Minor Version! SDL Error: {SDL_GetError()}");
 			}
 
 #if DEBUG_OPENGL
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG) != 0)
 			{
-				throw new($"Could not set GL Debug Flag! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not set GL Debug Flag! SDL Error: {SDL_GetError()}");
 			}
 #endif
 
@@ -147,21 +148,22 @@ namespace BizHawk.Bizware.Graphics
 
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, profile) != 0)
 			{
-				throw new($"Could not set GL profile! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not set GL profile! SDL Error: {SDL_GetError()}");
 			}
 
 			if (SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_SHARE_WITH_CURRENT_CONTEXT, shareContext ? 1 : 0) != 0)
 			{
-				throw new($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not set share context attribute! SDL Error: {SDL_GetError()}");
 			}
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		private void CreateContext()
 		{
 			_glContext = SDL_GL_CreateContext(_sdlWindow);
 			if (_glContext == IntPtr.Zero)
 			{
-				throw new($"Could not create GL Context! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not create GL Context! SDL Error: {SDL_GetError()}");
 			}
 
 #if DEBUG_OPENGL
@@ -176,6 +178,7 @@ namespace BizHawk.Bizware.Graphics
 #endif
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SDL2OpenGLContext(IntPtr nativeWindowhandle, int majorVersion, int minorVersion, bool coreProfile)
 		{
 			// Controls are not shared, they are the sharees
@@ -184,7 +187,7 @@ namespace BizHawk.Bizware.Graphics
 			_sdlWindow = SDL_CreateWindowFrom(nativeWindowhandle);
 			if (_sdlWindow == IntPtr.Zero)
 			{
-				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
 			try
@@ -198,6 +201,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SDL2OpenGLContext(int majorVersion, int minorVersion, bool coreProfile)
 		{
 			// offscreen contexts are shared (as we want to send texture from it over to our control's context)
@@ -208,7 +212,7 @@ namespace BizHawk.Bizware.Graphics
 				SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
 			if (_sdlWindow == IntPtr.Zero)
 			{
-				throw new($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
+				throw new Exception($"Could not create SDL Window! SDL Error: {SDL_GetError()}");
 			}
 
 			try
@@ -239,21 +243,23 @@ namespace BizHawk.Bizware.Graphics
 
 		public bool IsCurrent => SDL_GL_GetCurrentContext() == _glContext;
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public void MakeContextCurrent()
 		{
 			// no-op if already current
 			if (SDL_GL_MakeCurrent(_sdlWindow, _glContext) != 0)
 			{
-				throw new($"Failed to set context to current! SDL error: {SDL_GetError()}");
+				throw new Exception($"Failed to set context to current! SDL error: {SDL_GetError()}");
 			}
 		}
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public static void MakeNoneCurrent()
 		{
 			// no-op if nothing is current
 			if (SDL_GL_MakeCurrent(IntPtr.Zero, IntPtr.Zero) != 0)
 			{
-				throw new($"Failed to clear current context! SDL error: {SDL_GetError()}");
+				throw new Exception($"Failed to clear current context! SDL error: {SDL_GetError()}");
 			}
 		}
 

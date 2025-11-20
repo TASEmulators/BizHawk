@@ -134,5 +134,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			base.OnLoad(e);
 		}
+
+		public virtual void HandleHotkeyUpdate() { }
+
+		public virtual void OnPauseToggle(bool newPauseState) { }
 	}
 }

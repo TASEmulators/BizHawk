@@ -1,4 +1,4 @@
-namespace BizHawk.Emulation.Common.Base_Implementations
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A simple sound provider that will operate in sync mode only, offering back whatever data was sent in PutSamples

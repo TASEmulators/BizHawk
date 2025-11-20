@@ -96,6 +96,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER005":
 					Cart.WramSize = 64;
 					break;
+				case "MAPPER0005-00": // from NES 2.0 extension
+					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 				case "HVC-ELROM":
 					AssertPrg(128, 256); AssertChr(128);
@@ -167,7 +169,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// for iNES, we assume 64K wram
 		private int? MaskWRAM(int bank)
 		{
-			bank &= 7;
+#if DEBUG
+			if (bank < 0 || (Cart.WramSize is 128 ? 0xF : 0x7) < bank) throw new ArgumentOutOfRangeException(paramName: nameof(bank), bank, message: "invalid bank index");
+#endif
 			switch (Cart.WramSize)
 			{
 				case 0:
@@ -184,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						return null;
 					else
 						return bank & 3;
-				case 64:
+				case 64 or 128:
 					return bank;
 				default:
 					throw new Exception();
@@ -262,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bank_1k = _aBanks1K[bank_1k];
 			}
-		
+
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
 			return addr;
@@ -516,10 +520,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_fill_attrib |= (byte)(nt_fill_attrib << 2);
 					nt_fill_attrib |= (byte)(nt_fill_attrib << 4);
 					break;
-				
+
 
 				case 0x1113: //$5113:  [.... .PPP]        (simplified, but technically inaccurate -- see below)
-					wram_bank = value & 7;
+					wram_bank = value & (Cart.WramSize is 128 ? 0b1111 : 0b0111);
 					break;
 
 				//$5114-5117:  [RPPP PPPP] PRG select
@@ -530,7 +534,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				//$5120 - $5127 'A' Regs:
-				case 0x1120: case 0x1121: case 0x1122: case 0x1123: 
+				case 0x1120: case 0x1121: case 0x1122: case 0x1123:
 				case 0x1124: case 0x1125: case 0x1126: case 0x1127:
 					ab_mode = 0;
 					regs_a[addr - 0x1120] = value | (chr_reg_high<<8);
@@ -597,7 +601,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case 0x1205: //$5205:  low 8 bits of product
-					ret = product_low; 
+					ret = product_low;
 					break;
 				case 0x1206: //$5206:  high 8 bits of product
 					ret = product_high;
@@ -700,7 +704,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SyncIRQ();
 				}
 			}
-
 		}
 
 		public override void ClockCpu()

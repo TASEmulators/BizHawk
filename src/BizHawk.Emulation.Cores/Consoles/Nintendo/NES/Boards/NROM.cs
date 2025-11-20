@@ -22,6 +22,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// No VS game used mapper zero but some were changed to use noraml CHR mapping I think
 					NES._isVS = true;
 					break;
+				case "MAPPER0000-00":
+					AssertPrg(8, 16, 32);
+					AssertChr(8); AssertVram(0); AssertWram(0, 2, 4, 8);
+					break;
 				case "BANDAI-NROM-128":
 				case "BANDAI-NROM-256":
 				case "HVC-HROM": //Donkey Kong Jr. (J)
@@ -58,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TENGEN-800003": // ms pac man, others
 				case "UNIF_NES-NROM-128": // various
 				case "UNIF_NES-NROM-256": // Locksmith
-					AssertPrg(8, 16, 32); 
+					AssertPrg(8, 16, 32);
 					AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 				case "AVE-NINA-03":
@@ -66,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// and emulates as simple NROM
 					if (Cart.Chips.Count != 0)
 						return false;
-					AssertPrg(8, 16, 32); 
+					AssertPrg(8, 16, 32);
 					AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
@@ -81,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_byte_mask = (Cart.PrgSize*1024) - 1;
 			SetMirrorType(Cart.PadH, Cart.PadV);
-			
+
 			return true;
 		}
 

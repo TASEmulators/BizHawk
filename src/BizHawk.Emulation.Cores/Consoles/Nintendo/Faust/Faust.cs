@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			if (deterministic)
 				// force ST renderer
-				SettingOverrides.Add("snes_faust.renderer", new() { Hide = true, Default = "0" });
+				SettingOverrides["snes_faust.renderer"] = new() { Hide = true, Default = "0" };
 
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 

@@ -1,5 +1,6 @@
 using System.Drawing;
 
+using BizHawk.Client.Common.cheats;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -12,7 +13,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		Point DesktopLocation { get; }
 
-		/// <remarks>only referenced from <c>ClientLuaLibrary</c></remarks>
+		/// <remarks>only referenced from <c>LuaRegisteredFunctionsList</c></remarks>
 		IEmulator Emulator { get; }
 
 		bool EmulatorPaused { get; }
@@ -25,6 +26,9 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		bool IsTurboing { get; }
+
+		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		bool IsRewinding { get; }
 
 		/// <remarks>only referenced from <see cref="CommApi"/></remarks>
 		(HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
@@ -43,6 +47,9 @@ namespace BizHawk.Client.Common
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void CloseRom(bool clearSram = false);
+
+		/// <remarks>only referenced from <c>ClientLuaLibrary</c></remarks>
+		IDecodeResult DecodeCheatForAPI(string code, out MemoryDomain/*?*/ domain);
 
 		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
 		void EnableRewind(bool enabled);

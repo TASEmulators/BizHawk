@@ -15,6 +15,24 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	[Core(CoreNames.CPCHawk, "Asnivor", isReleased: false)]
 	public partial class AmstradCPC : IRegionable, IDriveLight
 	{
+		public IReadOnlyList<IGameInfo> DiskMedia
+			=> _diskInfo.ToArray();
+
+		public int DiskMediaIndex
+		{
+			get => _machine.DiskMediaIndex;
+			set => _machine.DiskMediaIndex = value;
+		}
+
+		public IReadOnlyList<IGameInfo> TapeMedia
+			=> _tapeInfo.ToArray();
+
+		public int TapeMediaIndex
+		{
+			get => _machine.TapeMediaIndex;
+			set => _machine.TapeMediaIndex = value;
+		}
+
 		[CoreConstructor(VSystemID.Raw.AmstradCPC)]
 		public AmstradCPC(CoreLoadParameters<AmstradCPCSettings, AmstradCPCSyncSettings> lp)
 		{
@@ -73,10 +91,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				SoundMixer.AddSource(_machine.AYDevice, "AY-3-3912");
 
 			// set audio device settings
-			if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
+			if (_machine.AYDevice is AY38912 ay38912)
 			{
-				((AY38912)_machine.AYDevice).PanningConfiguration = settings.AYPanConfig;
-				_machine.AYDevice.Volume = settings.AYVolume;
+				ay38912.PanningConfiguration = settings.AYPanConfig;
+				ay38912.Volume = settings.AYVolume;
 			}
 
 			if (_machine.TapeBuzzer != null)
@@ -99,11 +117,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private readonly LibFz80Wrapper _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
-		public CPCBase _machine;
+
+		private CPCBase _machine;
 
 		public List<GameInfo> _gameInfo;
-		public readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
-		public readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
+
+		internal readonly IList<GameInfo> _tapeInfo = new List<GameInfo>();
+
+		internal readonly IList<GameInfo> _diskInfo = new List<GameInfo>();
 
 		private SoundProviderMixer SoundMixer;
 

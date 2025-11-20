@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
 
 		public static Icon ToolIcon
-			=> Resources.FreezeIcon;
+			=> Resources.CheatIcon;
 
 		private string _sortedColumn;
 		private bool _sortReverse;
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 							Cheat.CompareType.LessThan => "<",
 							Cheat.CompareType.LessThanOrEqual => "<=",
 							Cheat.CompareType.NotEqual => "!=",
-							_ => ""
+							_ => string.Empty,
 						};
 
 					break;
@@ -400,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count is not 0)
 			{
 				foreach (var item in items)
 				{
@@ -488,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{	
+		{
 			MainForm.CheatList.DisableAll();
 		}
 
@@ -501,7 +501,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AlwaysLoadCheatsMenuItem.Checked = Config.Cheats.LoadFileByGame;
 			AutoSaveCheatsMenuItem.Checked = Config.Cheats.AutoSaveOnClose;
-			DisableCheatsOnLoadMenuItem.Checked = Config.Cheats.DisableOnLoad;
+			DisableCheatsOnLoadMenuItem.Checked = !Config.Cheats.DisableOnLoad; // inverted because label was inverted without renaming variables
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
@@ -524,11 +524,7 @@ namespace BizHawk.Client.EmuHawk
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
-
-			Config.Cheats.DisableOnLoad = false;
-			Config.Cheats.LoadFileByGame = true;
-			Config.Cheats.AutoSaveOnClose = true;
-
+			Config.Cheats.RestoreDefaults();
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -546,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.IsCtrl(Keys.A))
 			{
-				SelectAllMenuItem_Click(null, null);
+				SelectAllMenuItem_Click(null, EventArgs.Empty);
 			}
 
 			DoSelectedIndexChange();
@@ -600,7 +596,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedCheats.ToList();
-			if (selected.Any())
+			if (selected.Count is not 0)
 			{
 				Tools.Load<HexEditor>();
 

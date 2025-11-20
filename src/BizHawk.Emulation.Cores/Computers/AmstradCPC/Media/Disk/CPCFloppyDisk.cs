@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override DiskType DiskFormatType => DiskType.CPC;
 
 		/// <summary>
-		/// Attempts to parse incoming disk data 
+		/// Attempts to parse incoming disk data
 		/// </summary>
 		/// <returns>
 		/// TRUE:   disk parsed
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				// check for unformatted track
 				if (DiskHeader.TrackSizes[i] == 0)
 				{
-					DiskTracks[i] = new Track { Sectors = new Sector[0] };
+					DiskTracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			ser.EndSection();

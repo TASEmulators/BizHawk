@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 {
 	public partial class UAE
 	{
-		private LibUAE.ControllerType[] _ports { get; set; }
+		private LibUAE.ControllerType[] Ports { get; set; }
 		private static readonly (string Name, LibUAE.AllButtons Button)[] _joystickMap = CreateJoystickMap();
 		private static readonly (string Name, LibUAE.AllButtons Button)[] _cd32padMap = CreateCd32padMap();
 		private static readonly (string Name, LibUAE.UAEKeyboard Key)[] _keyboardMap = CreateKeyboardMap();
@@ -62,13 +62,13 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (int port = 1; port <= 2; port++)
 			{
-				LibUAE.ControllerType type = port == 1
+				var type = port == 1
 					? settings.ControllerPort1
 					: settings.ControllerPort2;
 
 				switch (type)
 				{
-					case LibUAE.ControllerType.Joystick:
+					case LibUAE.ControllerType.DJoy:
 						{
 							foreach (var (name, _) in _joystickMap)
 							{
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 							}
 							break;
 						}
-					case LibUAE.ControllerType.CD32_pad:
+					case LibUAE.ControllerType.CD32Joy:
 						{
 							foreach (var (name, _) in _cd32padMap)
 							{

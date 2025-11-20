@@ -364,7 +364,6 @@
 							return true;
 						}
 						return false;
-
 					}
 					else if (addr <= 0xBBFF)
 					{

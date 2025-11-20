@@ -46,17 +46,19 @@ namespace BizHawk.Client.EmuHawk
 				BgPalettesPrev[x] = new Palette(x);
 				SpritePalettesPrev[x] = new Palette(x + 16);
 			}
-
 		}
 
 		private void PaletteViewer_Paint(object sender, PaintEventArgs e)
 		{
-			for (int x = 0; x < 16; x++)
+			int size = UIHelper.ScaleDpi(16);
+			for (int i = 0; i < 16; i++)
 			{
-				BgPalettesBrush.Color = BgPalettes[x].Color;
-				SpritePalettesBrush.Color = SpritePalettes[x].Color;
-				e.Graphics.FillRectangle(BgPalettesBrush, new Rectangle(x * 16, 0, 16, 16));
-				e.Graphics.FillRectangle(SpritePalettesBrush, new Rectangle(x * 16, 16, 16, 16));
+				int x = UIHelper.ScaleDpi(16 * i);
+				int y = UIHelper.ScaleDpi(16);
+				BgPalettesBrush.Color = BgPalettes[i].Color;
+				SpritePalettesBrush.Color = SpritePalettes[i].Color;
+				e.Graphics.FillRectangle(BgPalettesBrush, new Rectangle(x, 0, size, size));
+				e.Graphics.FillRectangle(SpritePalettesBrush, new Rectangle(x, y, size, size));
 			}
 		}
 

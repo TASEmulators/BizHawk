@@ -173,7 +173,7 @@
 			this.Controls.Add(this.PatternList);
 			this.Controls.Add(this.ButtonBox);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(209, 9999);
+			this.MaximumSize = new System.Drawing.Size(320, 9999);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(209, 39);
 			this.Name = "PatternsForm";

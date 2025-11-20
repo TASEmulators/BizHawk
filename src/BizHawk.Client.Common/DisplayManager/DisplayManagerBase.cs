@@ -9,8 +9,8 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 
 using BizHawk.Bizware.Graphics;
-using BizHawk.Client.Common.FilterManager;
 using BizHawk.Client.Common.Filters;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS;
@@ -73,9 +73,6 @@ namespace BizHawk.Client.Common
 			}
 
 			{
-				using var xml = ReflectionCache.EmbeddedResourceStream("Resources.courier16px.fnt");
-				using var tex = ReflectionCache.EmbeddedResourceStream("Resources.courier16px_0.png");
-				_theOneFont = new(_gl, xml, tex);
 				using var gens = ReflectionCache.EmbeddedResourceStream("Resources.gens.ttf");
 				LoadCustomFont(gens);
 				using var fceux = ReflectionCache.EmbeddedResourceStream("Resources.fceux.ttf");
@@ -106,8 +103,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_imGuiResourceCache = new ImGuiResourceCache(_gl);
-			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.EmuCore, _gl.Create2DRenderer(_imGuiResourceCache));
-			_apiHawkIDTo2DRenderer.Add(DisplaySurfaceID.Client, _gl.Create2DRenderer(_imGuiResourceCache));
+			// `_apiHawkIDTo2DRenderer` is a new empty dict, members are lazily-initialised
 
 			RefreshUserShader();
 		}
@@ -152,14 +148,37 @@ namespace BizHawk.Client.Common
 				s?.Dispose();
 			}
 
-			_theOneFont.Dispose();
+			_theOneFont?.Dispose();
 			_renderer.Dispose();
 		}
 
 		// rendering resources:
 		protected readonly IGL _gl;
 
-		private readonly StringRenderer _theOneFont;
+		private StringRenderer _theOneFont;
+		private StringRenderer Font
+		{
+			get
+			{
+				double scale = GlobalConfig.ScaleOSDWithSystemScale ? (double)GetGraphicsControlDpi() / DEFAULT_DPI : 1;
+				int fontSize = scale switch
+				{
+					< 1.25 => 16,
+					< 1.5 => 20,
+					< 2 => 25,
+					_ => 32,
+				};
+
+				if (_theOneFont?.LineHeight != fontSize)
+				{
+					using var fontInfo = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px.fnt");
+					using var tex = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px_0.png");
+					_theOneFont = new(_gl, fontInfo, tex);
+				}
+
+				return _theOneFont;
+			}
+		}
 
 		private readonly IGuiRenderer _renderer;
 
@@ -276,7 +295,7 @@ namespace BizHawk.Client.Common
 
 			var fPresent = new FinalPresentation(chainOutSize);
 			var fInput = new SourceImage(chainInSize);
-			var fOSD = new OSD(includeOSD, OSD, _theOneFont);
+			var fOSD = new OSD(includeOSD, OSD, Font, Font.LineHeight / 16f);
 
 			var chain = new FilterProgram();
 
@@ -345,7 +364,7 @@ namespace BizHawk.Client.Common
 			{
 				1 => FinalPresentation.eFilterOption.Bilinear,
 				2 => FinalPresentation.eFilterOption.Bicubic,
-				_ => FinalPresentation.eFilterOption.None
+				_ => FinalPresentation.eFilterOption.None,
 			};
 
 			// if bicubic is selected and unavailable, don't use it. use bilinear instead I guess
@@ -395,7 +414,7 @@ namespace BizHawk.Client.Common
 
 		private void AppendApiHawkLayer(FilterProgram chain, DisplaySurfaceID surfaceID)
 		{
-			var apiHawkRenderer = _apiHawkIDTo2DRenderer[surfaceID];
+			var apiHawkRenderer = GetApiHawk2DRenderer(surfaceID);
 			var fApiHawkLayer = new ApiHawkLayer(apiHawkRenderer);
 			chain.AddFilter(fApiHawkLayer, surfaceID.GetName());
 		}
@@ -456,7 +475,7 @@ namespace BizHawk.Client.Common
 				Simulate = displayNothing,
 				ChainOutsize = GetGraphicsControlSize(),
 				IncludeOSD = true,
-				IncludeUserFilters = true
+				IncludeUserFilters = true,
 			};
 
 			UpdateSourceInternal(job);
@@ -468,7 +487,7 @@ namespace BizHawk.Client.Common
 			{
 				NDS nds => new ScreenControlNDS(nds),
 				Encore encore => new ScreenControl3DS(encore),
-				_ => null
+				_ => null,
 			};
 		}
 
@@ -815,8 +834,6 @@ namespace BizHawk.Client.Common
 			filterProgram.GuiRenderer = _renderer;
 			filterProgram.GL = _gl;
 
-			filterProgram.ControlDpi = GetGraphicsControlDpi();
-
 			//setup the source image filter
 			var fInput = (SourceImage)filterProgram["input"];
 			fInput.Texture = videoTexture;
@@ -930,7 +947,9 @@ namespace BizHawk.Client.Common
 		/// Implicitly, if the size changes the surface will be cleared
 		/// </summary>
 		public I2DRenderer GetApiHawk2DRenderer(DisplaySurfaceID surfaceID)
-			=> _apiHawkIDTo2DRenderer[surfaceID];
+			=> surfaceID is DisplaySurfaceID.EmuCore or DisplaySurfaceID.Client
+				? _apiHawkIDTo2DRenderer.GetValueOrPut(surfaceID, _ => _gl.Create2DRenderer(_imGuiResourceCache))
+				: throw new ArgumentOutOfRangeException(paramName: nameof(surfaceID), surfaceID, message: "invalid surface ID");
 
 		public void ClearApiHawkSurfaces()
 		{

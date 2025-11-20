@@ -8,7 +8,6 @@ using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -124,11 +123,11 @@ namespace BizHawk.Emulation.Common
 			Array.Reverse(primaryKeyYBytes); // convert big endian to little endian
 			var primaryKeyY = new BigInteger(primaryKeyYBytes);
 
-			Derive3DSNormalKey(primaryKeyX, primaryKeyY).AsSpan().CopyTo(primaryKey);
+			Derive3DSNormalKey(primaryKeyX, primaryKeyY).CopyTo(primaryKey);
 
 			if (programIdBytes.IsEmpty)
 			{
-				Derive3DSNormalKey(secondaryKeyX, primaryKeyY).AsSpan().CopyTo(secondaryKey);
+				Derive3DSNormalKey(secondaryKeyX, primaryKeyY).CopyTo(secondaryKey);
 				return;
 			}
 
@@ -163,7 +162,7 @@ namespace BizHawk.Emulation.Common
 				Buffer.BlockCopy(sha256Digest, 0, secondaryKeyYBytes, 1, 16);
 				Array.Reverse(secondaryKeyYBytes); // convert big endian to little endian
 				var secondaryKeyY = new BigInteger(secondaryKeyYBytes);
-				Derive3DSNormalKey(secondaryKeyX, secondaryKeyY).AsSpan().CopyTo(secondaryKey);
+				Derive3DSNormalKey(secondaryKeyX, secondaryKeyY).CopyTo(secondaryKey);
 				return;
 			}
 
@@ -215,7 +214,7 @@ namespace BizHawk.Emulation.Common
 						0x01 => 0x25,
 						0x0A => 0x18,
 						0x0B => 0x1B,
-						_ => throw new InvalidOperationException($"Invalid crypto method {cryptoMethod:X2}")
+						_ => throw new InvalidOperationException($"Invalid crypto method {cryptoMethod:X2}"),
 					};
 
 					// We only need the program id if we're doing seed crypto
@@ -243,13 +242,13 @@ namespace BizHawk.Emulation.Common
 					iv.AsSpan(9).Clear();
 					break;
 				case 1:
-					// First 8 bytes is the partition id in normal byte order 
+					// First 8 bytes is the partition id in normal byte order
 					header.AsSpan(0x108, 8).CopyTo(iv);
 
 					// Next 4 bytes are 0
 					iv.AsSpan(8, 4).Clear();
 
-					// Last 4 bytes is the ExeFS byte offset in big endian 
+					// Last 4 bytes is the ExeFS byte offset in big endian
 					BinaryPrimitives.WriteUInt32BigEndian(iv.AsSpan(12, 4), (uint)exeFsOffset);
 					break;
 				default:

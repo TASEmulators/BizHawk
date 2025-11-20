@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				return new GifToken(0, 0)
 				{
 					Frameskip = config.GifWriterFrameskip,
-					FrameDelay = config.GifWriterDelay
+					FrameDelay = config.GifWriterDelay,
 				};
 			}
 
@@ -255,11 +255,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Dispose()
 		{
-			if (_f != null)
-			{
-				_f.Dispose();
-				_f = null;
-			}
+			_f?.Dispose();
+			_f = null;
 		}
 
 		public bool UsesAudio => false;

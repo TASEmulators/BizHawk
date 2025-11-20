@@ -58,11 +58,15 @@ namespace BizHawk.Emulation.DiscSystem
 				SessionFormat.Type00_CDROM_CDDA => 0x00,
 				SessionFormat.Type10_CDI => 0x10,
 				SessionFormat.Type20_CDXA => 0x20,
-				_ => throw new InvalidOperationException("Invalid SessionFormat")
+				_ => throw new InvalidOperationException("Invalid SessionFormat"),
 			};
 			sq.ap_frame.DecimalValue = 0;
 
-			entries.Insert(0, new() { QData = sq });
+			entries.Insert(0, new()
+			{
+				QData = sq,
+				AbsoluteTimestamp = 0, // meaningless
+			});
 
 			//last recorded track number:
 			sq.q_index.BCDValue = 0xA1;
@@ -70,13 +74,21 @@ namespace BizHawk.Emulation.DiscSystem
 			sq.ap_sec.DecimalValue = 0;
 			sq.ap_frame.DecimalValue = 0;
 
-			entries.Insert(1, new() { QData = sq });
+			entries.Insert(1, new()
+			{
+				QData = sq,
+				AbsoluteTimestamp = 0, // meaningless
+			});
 
 			//leadout:
 			sq.q_index.BCDValue = 0xA2;
 			sq.AP_Timestamp = IN_LeadoutTimestamp;
 
-			entries.Insert(2, new() { QData = sq });
+			entries.Insert(2, new()
+			{
+				QData = sq,
+				AbsoluteTimestamp = IN_LeadoutTimestamp,
+			});
 		}
 	}
 }

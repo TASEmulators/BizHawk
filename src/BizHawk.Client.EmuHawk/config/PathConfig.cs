@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 						MinimumSize = new Size(UIHelper.ScaleX(26), UIHelper.ScaleY(23)),
 						AutoCompleteMode = AutoCompleteMode.SuggestAppend,
 						AutoCompleteCustomSource = AutoCompleteOptions,
-						AutoCompleteSource = AutoCompleteSource.CustomSource
+						AutoCompleteSource = AutoCompleteSource.CustomSource,
 					};
 
 					var btn = new Button
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(widgetOffset, y + buttonOffsetY),
 						Size = new Size(buttonWidth, buttonHeight),
 						Name = path.Type,
-						Anchor = AnchorStyles.Top | AnchorStyles.Right
+						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 
 					var tempBox = box;
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(widgetOffset + buttonWidth + padding, y + UIHelper.ScaleY(4)),
 						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Name = path.Type,
-						Anchor = AnchorStyles.Top | AnchorStyles.Right
+						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
 
 					t.Controls.Add(label);
@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 					Name = system,
 					Text = systemDisplayName,
 					Width = UIHelper.ScaleX(200), // Initial Left/Width of child controls are based on this size.
-					AutoScroll = true
+					AutoScroll = true,
 				};
 				PopulateTabPage(t, system);
 				comboSystem.Items.Add(systemDisplayName);
@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
+					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system),
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;
@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 				using var f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
-					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system)
+					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system),
 				};
 				result = f.ShowDialog();
 				selectedPath = f.SelectedPath;

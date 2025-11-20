@@ -3,4 +3,8 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../AnalyzersCommon.props" />
+	<ItemGroup>
+		<PackageReference Include="PolySharp" />
+		<EmbeddedResource Include="embedded/*.cs" />
+	</ItemGroup>
 </Project>

@@ -3,4 +3,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../AnalyzersCommon.props" />
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);SA1135</NoWarn> <!-- the Analyzer for SA1135 chokes on the tuple alias syntax -->
+	</PropertyGroup>
 </Project>

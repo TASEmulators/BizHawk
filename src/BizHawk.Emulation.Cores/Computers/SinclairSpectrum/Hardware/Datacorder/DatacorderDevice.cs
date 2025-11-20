@@ -440,7 +440,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				cycles -= _waitEdge;
 
 				if (_position == 0 && _tapeIsPlaying)
-				{				
+				{
 					// notify about the current block
 					var bl = _dataBlocks[_currentDataBlockIndex];
 
@@ -478,7 +478,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
 						}
 						_machine.Spectrum.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
-
 					}
 
 					// skip any empty blocks (and process any command blocks)
@@ -588,11 +587,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			ushort addr = _cpu.RegPC;
 
-			if (_machine.Spectrum.SyncSettings.DeterministicEmulation)
-			{
-
-			}
-
 			var tb = DataBlocks[_currentDataBlockIndex];
 			var tData = tb.BlockData;
 
@@ -606,7 +600,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (toRead < _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8))
 			{
-
+				// no-op
 			}
 			else
 			{
@@ -661,7 +655,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_currentDataBlockIndex++;
 
 			return true;
-
 		}
 
 		private long _lastINCycle = 0;
@@ -797,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				var block = DataBlocks[_currentDataBlockIndex];
 
 				// is this a pause block?
-				if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
+				if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
 				{
 					// don't autostop the tape here
 					return;

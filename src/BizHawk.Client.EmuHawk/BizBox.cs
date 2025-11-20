@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -22,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			linkLabel1.LinkVisited = true;
-			Process.Start(VersionInfo.HomePage);
+			Util.OpenUrlExternal(VersionInfo.HomePage);
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -36,23 +35,27 @@ namespace BizHawk.Client.EmuHawk
 			VersionLabel.Text = VersionInfo.GetFullVersionDetails();
 			DateLabel.Text = VersionInfo.ReleaseDate;
 			(linkLabel2.Text, linkLabel2.Tag) = VersionInfo.GetGitCommitLink();
-			foreach (var core in CoreInventory.Instance.SystemsFlat.Where(core => core.CoreAttr.Released)
-				.OrderByDescending(core => core.Name.ToLowerInvariant()))
+
+			CoreInfoPanel.SuspendLayout();
+			foreach (var core in CoreInventory.Instance.SystemsFlat
+				.OrderBy(static core => core.CoreAttr.Released)
+				.ThenByDescending(static core => core.Name, StringComparer.OrdinalIgnoreCase))
 			{
 				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core.CoreAttr)
 				{
-					Dock = DockStyle.Top
+					Dock = DockStyle.Top,
 				});
 			}
+			CoreInfoPanel.ResumeLayout();
 		}
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-			=> Process.Start((string) ((Control) sender).Tag);
+			=> Util.OpenUrlExternal((string) ((Control) sender).Tag);
 
 		private void btnCopyHash_Click(object sender, EventArgs e)
 			=> Clipboard.SetText(VersionInfo.GIT_HASH);
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-			=> Process.Start(VersionInfo.BizHawkContributorsListURI);
+			=> Util.OpenUrlExternal(VersionInfo.BizHawkContributorsListURI);
 	}
 }

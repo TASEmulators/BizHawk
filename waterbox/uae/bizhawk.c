@@ -48,6 +48,8 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	for (int port = 0; port <= 1; port++)
 	{
 		Controller *controller = (port == 0) ? &f->Port1 : &f->Port2;
+		if (controller->Type == CONTROLLER_NONE) continue;
+		
 		cd32_pad_enabled[port] = 0;
 		joydir[port] = 0;
 

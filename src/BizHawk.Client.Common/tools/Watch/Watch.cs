@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
 		/// <param name="size">A <see cref="WatchSize"/> (byte, word, double word)</param>
-		/// <param name="type">How you you want to display the value See <see cref="WatchDisplayType"/></param>
+		/// <param name="type">selected format for displaying the value</param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
 		/// <exception cref="ArgumentException">Occurs when a <see cref="WatchDisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common
 				WatchSize.Byte => new ByteWatch(domain, address, type, bigEndian, note, (byte) value, (byte) prev, changeCount),
 				WatchSize.Word => new WordWatch(domain, address, type, bigEndian, note, (ushort) value, (ushort) prev, changeCount),
 				WatchSize.DWord => new DWordWatch(domain, address, type, bigEndian, note, (uint) value, (uint) prev, changeCount),
-				_ => SeparatorWatch.NewSeparatorWatch(note)
+				_ => SeparatorWatch.NewSeparatorWatch(note),
 			};
 		}
 
@@ -252,7 +252,7 @@ namespace BizHawk.Client.Common
 		/// Gets a list a <see cref="WatchDisplayType"/> that can be used for this <see cref="Watch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="WatchDisplayType"/></returns>
-		public abstract IEnumerable<WatchDisplayType> AvailableTypes();
+		public abstract IReadOnlyList<WatchDisplayType> AvailableTypes();
 
 		/// <summary>
 		/// Resets the previous value; set it to the current one
@@ -556,7 +556,7 @@ namespace BizHawk.Client.Common
 				WatchDisplayType.FixedPoint_12_4 => "Fixed Point 12.4",
 				WatchDisplayType.FixedPoint_20_12 => "Fixed Point 20.12",
 				WatchDisplayType.FixedPoint_16_16 => "Fixed Point 16.16",
-				_ => type.ToString()
+				_ => type.ToString(),
 			};
 		}
 
@@ -567,7 +567,7 @@ namespace BizHawk.Client.Common
 				"Fixed Point 12.4" => WatchDisplayType.FixedPoint_12_4,
 				"Fixed Point 20.12" => WatchDisplayType.FixedPoint_20_12,
 				"Fixed Point 16.16" => WatchDisplayType.FixedPoint_16_16,
-				_ => (WatchDisplayType) Enum.Parse(typeof(WatchDisplayType), name)
+				_ => (WatchDisplayType) Enum.Parse(typeof(WatchDisplayType), name),
 			};
 		}
 
@@ -581,7 +581,7 @@ namespace BizHawk.Client.Common
 					WatchSize.Byte => 'b',
 					WatchSize.Word => 'w',
 					WatchSize.DWord => 'd',
-					_ => 'S'
+					_ => 'S',
 				};
 			}
 		}
@@ -594,7 +594,7 @@ namespace BizHawk.Client.Common
 				'b' => WatchSize.Byte,
 				'w' => WatchSize.Word,
 				'd' => WatchSize.DWord,
-				_ => WatchSize.Separator
+				_ => WatchSize.Separator,
 			};
 		}
 
@@ -613,7 +613,7 @@ namespace BizHawk.Client.Common
 					WatchDisplayType.FixedPoint_20_12 => '2',
 					WatchDisplayType.FixedPoint_16_16 => '3',
 					WatchDisplayType.Float => 'f',
-					_ => '_'
+					_ => '_',
 				};
 			}
 		}
@@ -631,7 +631,7 @@ namespace BizHawk.Client.Common
 				'2' => WatchDisplayType.FixedPoint_20_12,
 				'3' => WatchDisplayType.FixedPoint_16_16,
 				'f' => WatchDisplayType.Float,
-				_ => WatchDisplayType.Separator
+				_ => WatchDisplayType.Separator,
 			};
 		}
 

@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		static ApiManager()
 		{
 			var list = new List<(Type, Type, ConstructorInfo, Type[])>();
-			foreach (var implType in Common.ReflectionCache.Types.Concat(ReflectionCache.Types)
+			foreach (var implType in ReflectionCache_Biz_Cli_Com.Types.Concat(ReflectionCache.Types)
 				.Where(t => /*t.IsClass &&*/t.IsSealed)) // small optimisation; api impl. types are all sealed classes
 			{
 				var interfaceType = implType.GetInterfaces().FirstOrDefault(t => typeof(IExternalApi).IsAssignableFrom(t) && t != typeof(IExternalApi));
@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,
+				[typeof(IDialogController)] = ((MainForm) mainForm).DialogController,
 				[typeof(DisplayManagerBase)] = displayManager,
 				[typeof(InputManager)] = inputManager,
 				[typeof(IMovieSession)] = movieSession,

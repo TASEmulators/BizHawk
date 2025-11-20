@@ -9,6 +9,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Icon ToolIcon
 			=> Resources.TAStudioIcon;
 
-		public override bool BlocksInputWhenFocused => IsInMenuLoop;
+		public override bool BlocksInputWhenFocused => false;
 
 		public new IMainFormForTools MainForm => base.MainForm;
 
@@ -28,12 +29,9 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: UI flow that conveniently allows to start from savestate
 		public ITasMovie CurrentTasMovie => MovieSession.Movie as ITasMovie;
 
-		public bool IsInMenuLoop { get; private set; }
-
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
-		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer;
 
@@ -50,7 +48,11 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
 		/// </summary>
-		public int LastPositionFrame { get; private set; }
+		public int RestorePositionFrame { get; private set; } = -1;
+		private bool _shouldMoveGreenArrow;
+		private bool _seekingByEdit;
+
+		private int _seekingTo = -1;
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();
@@ -60,12 +62,17 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
+		/// <summary>
+		/// This is meant to be used by Lua.
+		/// </summary>
+		public bool StopRecordingOnNextEdit = true;
+
 		public class TAStudioSettings
 		{
 			public TAStudioSettings()
 			{
 				RecentTas = new RecentFiles(8);
-				AutoPause = true;
+				AutoPause = false;
 				FollowCursor = true;
 				ScrollSpeed = 6;
 				FollowCursorAlwaysScroll = false;
@@ -114,11 +121,30 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutoadjustInput { get; set; }
 			public TAStudioPalette Palette { get; set; }
 			public int MaxUndoSteps { get; set; } = 1000;
+			public int RewindStep { get; set; } = 1;
+			public int RewindStepFast { get; set; } = 4;
 		}
 
 		public TAStudio()
 		{
 			InitializeComponent();
+			ToolStripMenuItemEx goToFrameMenuItem = new()
+			{
+				ShortcutKeys = Keys.Control | Keys.G,
+				Text = "Go to Frame...",
+			};
+			goToFrameMenuItem.Click += (_, _) =>
+			{
+				MainForm.PauseEmulator();
+				using InputPrompt dialog = new()
+				{
+					Text = "Go to Frame",
+					Message = "Jump/Seek to frame index:",
+					TextInputType = InputPrompt.InputType.Unsigned,
+				};
+				if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
+			};
+			_ = EditSubMenu.DropDownItems.InsertAfter(ReselectClipboardMenuItem, insert: goToFrameMenuItem);
 
 			RecentSubMenu.Image = Resources.Recent;
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
@@ -143,11 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
-			LastPositionFrame = -1;
 
-			BookMarkControl.LoadedCallback = BranchLoaded;
-			BookMarkControl.SavedCallback = BranchSaved;
-			BookMarkControl.RemovedCallback = BranchRemoved;
 			TasView.MouseLeave += TAStudio_MouseLeave;
 			TasView.CellHovered += (_, e) =>
 			{
@@ -166,16 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.Rotatable)
-			{
-				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
-					.ToArray());
-
-				RightClickMenu.Items
-					.OfType<ToolStripMenuItem>()
-					.First(t => t.Name == "RotateMenuItem")
-					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
-			}
+			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
 
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
@@ -197,9 +210,37 @@ namespace BizHawk.Client.EmuHawk
 				Settings.BranchMarkerSplitDistance,
 				_defaultBranchMarkerSplitDistance);
 
+			HandleHotkeyUpdate();
+
 			TasView.Font = TasViewFont;
 			RefreshDialog();
 			_initialized = true;
+		}
+
+		public override void HandleHotkeyUpdate()
+		{
+			UndoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Undo"];
+			RedoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Redo"];
+			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
+			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
+			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
+			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
+			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
+			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
+			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
+			CloneFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
+			CloneFramesXTimesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+
+			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
+			ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
+			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
+			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
+			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
+			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
+			CloneXTimesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+
+			TasPlaybackBox.UpdateHotkeyTooltips(Config);
+			MarkerControl.UpdateHotkeyTooltips(Config);
 		}
 
 		private bool LoadMostRecentOrStartNew()
@@ -242,8 +283,8 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				ConvertCurrentMovieToTasproj();
-				success = StartNewMovieWrapper(CurrentTasMovie, isNew: false);
+				var tasMovie = ConvertCurrentMovieToTasproj();
+				success = LoadMovie(tasMovie);
 			}
 
 			// Start Scenario 2: A tasproj is already active
@@ -271,15 +312,11 @@ namespace BizHawk.Client.EmuHawk
 			// Attempts to load failed, abort
 			if (!success)
 			{
-				Disengage();
 				return false;
 			}
 
 			MainForm.AddOnScreenMessage("TAStudio engaged");
-			_originalEndAction = Config.Movies.MovieEndAction;
 			MainForm.DisableRewind();
-			Config.Movies.MovieEndAction = MovieEndAction.Record;
-			MainForm.SetMainformMovieInfo();
 			MovieSession.ReadOnly = true;
 			SetSplicer();
 
@@ -345,9 +382,13 @@ namespace BizHawk.Client.EmuHawk
 
 				TasView.AllColumns.Add(new(
 					name: name,
-					widthUnscaled: (maxLength * 6) + 14, // magic numbers reused in EditBranchTextPopUp() --feos // not since eb63fa5a9 (before 2.3.3) --yoshi
+					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
+					horizontalHeight: (maxLength * 6) + 14,
 					type: type,
-					text: mnemonic));
+					text: mnemonic)
+				{
+					Rotatable = type is ColumnType.Axis,
+				});
 			}
 
 			var columnsToHide = TasView.AllColumns
@@ -381,6 +422,23 @@ namespace BizHawk.Client.EmuHawk
 						|| c.Name.EndsWithOrdinal("A Right"));
 
 				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
+			}
+			else if (Emulator.SystemId is VSystemID.Raw.Doom)
+			{
+				var columns = TasView.AllColumns
+					.Where(c =>
+						c.Name.Contains("Forward")
+						|| c.Name.Contains("Backward")
+						|| c.Name.Contains("Automap")
+						|| c.Name.Contains("Camera")
+						|| c.Name.Contains("Gamma")
+						|| c.Name.Contains("Mouse")
+						|| c.Name.Contains("Weapon Select ")
+						|| c.Name.Contains("Turn ")
+						|| c.Name.Contains("Strafe")
+						|| c.Name.EndsWithOrdinal("Run"));
+
+				columnsToHide = columnsToHide.Concat(columns);
 			}
 
 			foreach (var column in columnsToHide)
@@ -424,21 +482,53 @@ namespace BizHawk.Client.EmuHawk
 			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text));
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
-		public void ClearFramesExternal() => ClearFramesMenuItem_Click(null, null);
-		public void InsertFrameExternal() => InsertFrameMenuItem_Click(null, null);
-		public void InsertNumFramesExternal() => InsertNumFramesMenuItem_Click(null, null);
-		public void DeleteFramesExternal() => DeleteFramesMenuItem_Click(null, null);
-		public void CloneFramesExternal() => CloneFramesMenuItem_Click(null, null);
-		public void CloneFramesXTimesExternal() => CloneFramesXTimesMenuItem_Click(null, null);
-		public void UndoExternal() => UndoMenuItem_Click(null, null);
-		public void RedoExternal() => RedoMenuItem_Click(null, null);
-		public void SelectBetweenMarkersExternal() => SelectBetweenMarkersMenuItem_Click(null, null);
-		public void SelectAllExternal() => SelectAllMenuItem_Click(null, null);
-		public void ReselectClipboardExternal() => ReselectClipboardMenuItem_Click(null, null);
+
+		public void ClearFramesExternal()
+			=> ClearFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void InsertFrameExternal()
+			=> InsertFrameMenuItem_Click(null, EventArgs.Empty);
+
+		public void InsertNumFramesExternal()
+			=> InsertNumFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void DeleteFramesExternal()
+			=> DeleteFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void CloneFramesExternal()
+			=> CloneFramesMenuItem_Click(null, EventArgs.Empty);
+
+		public void CloneFramesXTimesExternal()
+			=> CloneFramesXTimesMenuItem_Click(null, EventArgs.Empty);
+
+		public void UndoExternal()
+			=> UndoMenuItem_Click(null, EventArgs.Empty);
+
+		public void RedoExternal()
+			=> RedoMenuItem_Click(null, EventArgs.Empty);
+
+		public void SelectBetweenMarkersExternal()
+			=> SelectBetweenMarkersMenuItem_Click(null, EventArgs.Empty);
+
+		public void SelectAllExternal()
+			=> SelectAllMenuItem_Click(null, EventArgs.Empty);
+
+		public void ReselectClipboardExternal()
+			=> ReselectClipboardMenuItem_Click(null, EventArgs.Empty);
+
+		public void SelectCurrentFrame()
+		{
+			TasView.DeselectAll();
+			TasView.SelectRow(Emulator.Frame, true);
+
+			RefreshDialog();
+		}
 
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{
-			var branch = CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid.ToString() == branchId);
+			var branch = Guid.TryParseExact(branchId, format: "D", out var parsed)
+				? CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid == parsed)
+				: null;
 			if (branch == null || frame >= branch.InputLog.Count)
 			{
 				return null;
@@ -466,11 +556,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ConvertCurrentMovieToTasproj()
+		private ITasMovie ConvertCurrentMovieToTasproj()
 		{
-			MovieSession.ConvertToTasProj();
-			Settings.RecentTas.Add(MovieSession.Movie.Filename);
-			MainForm.SetMainformMovieInfo();
+			var tasMovie = MovieSession.Movie.ToTasMovie();
+			tasMovie.Save(); // should this be done?
+			return tasMovie;
 		}
 
 		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)
@@ -540,17 +630,32 @@ namespace BizHawk.Client.EmuHawk
 
 			movie.InputRollSettingsForSave = () => TasView.UserSettingsSerialized();
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
-			movie.GreenzoneInvalidated = GreenzoneInvalidated;
+			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
+
 			movie.PropertyChanged += TasMovie_OnPropertyChanged;
+			System.Collections.Specialized.NotifyCollectionChangedEventHandler refreshOnMarker = (_, _) => RefreshDialog();
+			movie.Markers.CollectionChanged += refreshOnMarker;
+			this.Disposed += (s, e) =>
+			{
+				movie.PropertyChanged -= TasMovie_OnPropertyChanged;
+				movie.Markers.CollectionChanged -= refreshOnMarker;
+			};
 
 			SuspendLayout();
 			WantsToControlStopMovie = false;
-			bool result = MainForm.StartNewMovie(movie, isNew);
+			bool result = ReferenceEquals(CurrentTasMovie, movie) || MainForm.StartNewMovie(movie, isNew);
 			WantsToControlStopMovie = true;
 			ResumeLayout();
 			if (result)
 			{
+				// Initialize stuff.
+				RestorePositionFrame = -1;
+				_lastRecordAction = -1;
+				_doPause = false;
+
+				StopSeeking();
+
 				BookMarkControl.UpdateTextColumnWidth();
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
@@ -657,10 +762,8 @@ namespace BizHawk.Client.EmuHawk
 			_engaged = false;
 			MainForm.PauseOnFrame = null;
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
-			Config.Movies.MovieEndAction = _originalEndAction;
 			WantsToControlRewind = false;
 			MainForm.EnableRewind(true);
-			MainForm.SetMainformMovieInfo();
 		}
 
 		private const string DefaultTasProjectName = "default";
@@ -683,7 +786,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTas(bool saveAsBk2 = false, bool saveBackup = false)
 		{
-			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName()) return;
+			if (string.IsNullOrEmpty(CurrentTasMovie.Filename) || CurrentTasMovie.Filename == DefaultTasProjName())
+			{
+				SaveAsTas();
+				return;
+			}
 
 			_autosaveTimer.Stop();
 			MessageStatusLabel.Text = saveBackup
@@ -762,20 +869,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
 
-		// Slow but guarantees the entire dialog refreshes
-		private void FullRefresh()
-		{
-			SetTasViewRowCount();
-			TasView.Refresh(); // An extra refresh potentially but we need to guarantee
-			MarkerControl.UpdateValues();
-			BookMarkControl.UpdateValues();
-
-			if (_undoForm != null && !_undoForm.IsDisposed)
-			{
-				_undoForm.UpdateValues();
-			}
-		}
-
 		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
 			if (_exiting)
@@ -801,39 +894,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void RefreshForInputChange(int firstChangedFrame)
-		{
-			if (TasView.IsPartiallyVisible(firstChangedFrame) || firstChangedFrame < TasView.FirstVisibleRow)
-			{
-				RefreshDialog();
-			}
-		}
-
 		private void SetTasViewRowCount()
 		{
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			_lastRefresh = Emulator.Frame;
-		}
-
-		public void DoAutoRestore()
-		{
-			if (Settings.AutoRestoreLastPosition && LastPositionFrame != -1)
-			{
-				if (LastPositionFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
-				{
-					StartSeeking(LastPositionFrame);
-				}
-			}
-			else
-			{
-				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
-				{
-					// this happens when we're holding the left button while unpaused - view scrolls down, new input gets drawn, seek pauses
-					MainForm.UnpauseEmulator();
-				}
-
-				_autoRestorePaused = null;
-			}
 		}
 
 		/// <summary>
@@ -843,66 +907,6 @@ namespace BizHawk.Client.EmuHawk
 		private KeyValuePair<int,Stream> GetPriorStateForFramebuffer(int frame)
 		{
 			return CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame > 0 ? frame - 1 : 0);
-		}
-
-		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
-		{
-			if (frame == Emulator.Frame)
-			{
-				return;
-			}
-
-			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
-			TastudioPlayMode();
-			var closestState = GetPriorStateForFramebuffer(frame);
-			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
-			{
-				LoadState(closestState, true);
-			}
-			closestState.Value.Dispose();
-
-			if (fromLua)
-			{
-				bool wasPaused = MainForm.EmulatorPaused;
-
-				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
-				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
-				// PauseOnFrame = frame;
-
-				while (Emulator.Frame != frame)
-				{
-					MainForm.SeekFrameAdvance();
-				}
-
-				if (!wasPaused)
-				{
-					MainForm.UnpauseEmulator();
-				}
-
-				// lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
-				if (WasRecording)
-				{
-					TastudioRecordMode();
-				}
-
-				// now the next section won't happen since we're at the right spot
-			}
-
-			// frame == Emulator.Frame when frame == 0
-			if (frame > Emulator.Frame)
-			{
-				// make seek frame keep up with emulation on fast scrolls
-				if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
-				{
-					StartSeeking(frame);
-				}
-				else
-				{
-					// GUI users may want to be protected from clobbering their video when skipping around...
-					// well, users who are rewinding aren't. (that gets done through the seeking system in the call above)
-					// users who are clicking around.. I don't know.
-				}
-			}
 		}
 
 		public void LoadState(KeyValuePair<int, Stream> state, bool discardApiHawkSurfaces = false)
@@ -926,7 +930,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateTools()
 		{
-			Tools.UpdateToolsBefore();
 			Tools.UpdateToolsAfter();
 		}
 
@@ -935,102 +938,20 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.TogglePause();
 		}
 
+		public override void OnPauseToggle(bool newPauseState)
+		{
+			// On pause, interrupt merging of recorded frames.
+			if (newPauseState) _lastRecordAction = -1;
+		}
+
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
 			var selectedRowCount = TasView.SelectedRows.Count();
 			var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
-			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
+			var clipboardCount = _tasClipboard.Count;
+			if (clipboardCount is not 0) temp += $", Clipboard: {clipboardCount} {(clipboardCount is 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
-		}
-
-		private void DoTriggeredAutoRestoreIfNeeded()
-		{
-			// Disable the seek that could have been initiated when painting.
-			// This must done before DoAutoRestore, otherwise it would disable the auto-restore seek.
-			if (_playbackInterrupted)
-			{
-				MainForm.PauseOnFrame = null;
-			}
-
-			if (_triggerAutoRestore)
-			{
-				TastudioPlayMode(true); // once user started editing, rec mode is unsafe
-				DoAutoRestore();
-
-				_triggerAutoRestore = false;
-				_autoRestorePaused = null;
-			}
-
-			if (_playbackInterrupted)
-			{
-				MainForm.UnpauseEmulator();
-				_playbackInterrupted = false;
-			}
-		}
-
-		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
-		{
-			if (insertionFrame <= CurrentTasMovie.InputLogLength)
-			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
-
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(insertionFrame);
-				}
-			}
-		}
-
-		public void DeleteFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
-			{
-				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
-				CurrentTasMovie.RemoveFrames(framesToRemove);
-				SetSplicer();
-
-				var needsToRollback = beginningFrame < Emulator.Frame;
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(beginningFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(beginningFrame);
-				}
-			}
-		}
-
-		public void ClearFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (beginningFrame < CurrentTasMovie.InputLogLength)
-			{
-				var needsToRollback = TasView.SelectionStartIndex < Emulator.Frame;
-				int last = Math.Min(beginningFrame + numberOfFrames, CurrentTasMovie.InputLogLength);
-				for (int i = beginningFrame; i < last; i++)
-				{
-					CurrentTasMovie.ClearFrame(i);
-				}
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(beginningFrame);
-					DoAutoRestore();
-				}
-				else
-				{
-					RefreshForInputChange(beginningFrame);
-				}
-			}
 		}
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
@@ -1077,18 +998,24 @@ namespace BizHawk.Client.EmuHawk
 		private void TAStudio_MouseLeave(object sender, EventArgs e)
 		{
 			toolTip1.SetToolTip(TasView, null);
-			DoTriggeredAutoRestoreIfNeeded();
+		}
+
+		private void TAStudio_Deactivate(object sender, EventArgs e)
+		{
+			if (_leftButtonHeld)
+			{
+				TasView_MouseUp(this, new(MouseButtons.Left, 0, 0, 0, 0));
+			}
+			if (_rightClickFrame != -1)
+			{
+				_suppressContextMenu = true;
+				TasView_MouseUp(this, new(MouseButtons.Right, 0, 0, 0, 0));
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			if (keyData == Keys.Tab
-				|| keyData == (Keys.Shift | Keys.Tab)
-				|| keyData == Keys.Space)
-			{
-				return true;
-			}
-
+			if (keyData is Keys.Tab or (Keys.Shift | Keys.Tab) or Keys.Space) return true;
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
@@ -1110,29 +1037,20 @@ namespace BizHawk.Client.EmuHawk
 						{
 							framesToRemove.Add(frame);
 						}
-						else
-						{
-							break;
-						}
 					}
 
 					// Deleting this frame requires rewinding a frame.
 					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, $"Bind Input; Delete {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
+
 					CurrentTasMovie.RemoveFrames(framesToRemove);
 					foreach (int f in framesToRemove)
 					{
 						CurrentTasMovie.LagLog.RemoveHistoryAt(f + 1); // Removes from WasLag
 					}
-					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 
-					CurrentTasMovie.LastPositionStable = true;
-					GoToLastEmulatedFrameIfNecessary(Emulator.Frame - 1);
-					if (!MainForm.HoldFrameAdvance)
-					{
-						MainForm.PauseOnFrame = LastPositionFrame;
-					}
+					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					return true;
 				}
 
@@ -1168,23 +1086,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
 			{
-				var currentMarker = CurrentTasMovie.Markers.Single(m => m.Frame == e.OldCell.RowIndex.Value);
-				int newFrame = e.NewCell.RowIndex.Value;
-				var newMarker = new TasMovieMarker(newFrame, currentMarker.Message);
-				CurrentTasMovie.Markers.Remove(currentMarker);
-				CurrentTasMovie.Markers.Add(newMarker);
-				RefreshDialog();
+				CurrentTasMovie.Markers.Move(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				RefreshDialog(); // Marker move might have been rejected so we need to manually refresh.
 			}
-		}
-
-		private void TASMenu_MenuActivate(object sender, EventArgs e)
-		{
-			IsInMenuLoop = true;
-		}
-
-		private void TASMenu_MenuDeactivate(object sender, EventArgs e)
-		{
-			IsInMenuLoop = false;
 		}
 
 		// Stupid designer
@@ -1198,7 +1102,7 @@ namespace BizHawk.Client.EmuHawk
 			using var fontDialog = new FontDialog
 			{
 				ShowColor = false,
-				Font = TasView.Font
+				Font = TasView.Font,
 			};
 			if (fontDialog.ShowDialog() != DialogResult.Cancel)
 			{
@@ -1235,7 +1139,7 @@ namespace BizHawk.Client.EmuHawk
 					if (axisSpec.HasValue)
 					{
 						string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
-						yield return (name, mnemonic, Math.Max(mnemonic.Length, axisSpec.Value.MaxDigits));
+						yield return (name, mnemonic, axisSpec.Value.MaxDigits);
 					}
 					else
 					{
@@ -1243,6 +1147,57 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+		}
+
+		private void HandleRotationChanged(object sender, EventArgs e)
+		{
+			CurrentTasMovie.FlagChanges();
+			if (TasView.HorizontalOrientation)
+			{
+				BranchesMarkersSplit.Orientation = Orientation.Vertical;
+				BranchesMarkersSplit.SplitterDistance = 200;
+				foreach (var rollColumn in TasView.AllColumns)
+				{
+					rollColumn.Width = rollColumn.HorizontalHeight;
+				}
+			}
+			else
+			{
+				BranchesMarkersSplit.Orientation = Orientation.Horizontal;
+				BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
+				foreach (var rollColumn in TasView.AllColumns)
+				{
+					rollColumn.Width = rollColumn.VerticalWidth;
+				}
+			}
+
+			TasView.AllColumns.ColumnsChanged();
+		}
+
+		private bool _suspendEditLogic;
+		public void LoadBranch(TasBranch branch)
+		{
+			if (Settings.OldControlSchemeForBranches && !TasPlaybackBox.RecordingMode)
+			{
+				GoToFrame(branch.Frame);
+				return;
+			}
+
+			_suspendEditLogic = true;
+			CurrentTasMovie.LoadBranch(branch);
+			_suspendEditLogic = false;
+			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+
+			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
+
+			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)
+			{
+				CurrentTasMovie.Truncate(branch.Frame);
+			}
+
+			StopSeeking();
+			RefreshDialog();
 		}
 	}
 }

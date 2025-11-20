@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = "CloseBtn",
 				Text = "&Close",
-				ShortcutKeyDisplayString = "Alt+F4"
+				ShortcutKeyDisplayString = "Alt+F4",
 			};
 
 			closeMenuItem.Click += (o, e) => { form.Close(); };
@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (settings.UseWindowSize)
 			{
-				if (form.FormBorderStyle == FormBorderStyle.Sizable || form.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+				if (form.FormBorderStyle is FormBorderStyle.Sizable or FormBorderStyle.SizableToolWindow)
 				{
 					form.Size = settings.WindowSize;
 				}
@@ -564,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 				string.IsNullOrWhiteSpace(name) ? toolType.Name : name);
 		}
 
-		public IEnumerable<Type> AvailableTools => EmuHawk.ReflectionCache.Types
+		public IEnumerable<Type> AvailableTools => ReflectionCache.Types
 			.Where(t => !t.IsInterface && typeof(IToolForm).IsAssignableFrom(t) && IsAvailable(t));
 
 		/// <summary>
@@ -711,9 +711,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!skipExtToolWarning)
 				{
 					if (!_owner.ShowMessageBox2(
-						"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no.",
-						"Confirm loading",
-						EMsgBoxIcon.Question))
+						caption: "Confirm loading",
+						icon: EMsgBoxIcon.Question,
+						text: "Trust this external tool to run on your device?"
+							+ "\nIf you're not 100% sure of what the tool will do, choose \"No\"."))
 					{
 						return null;
 					}
@@ -793,7 +794,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
+		public void HandleHotkeyUpdate()
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive && tool is ToolFormBase toolForm)
+				{
+					toolForm.HandleHotkeyUpdate();
+				}
+			}
+		}
+
+		public void OnPauseToggle(bool newPauseState)
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive && tool is ToolFormBase toolForm)
+				{
+					toolForm.OnPauseToggle(newPauseState);
+				}
+			}
+		}
+
+		private static readonly IReadOnlyCollection<string> PossibleToolTypeNames = ReflectionCache.Types
+			.Select(static t => t.AssemblyQualifiedName).ToHashSet();
 
 		public bool IsAvailable(Type tool)
 		{
@@ -877,13 +901,7 @@ namespace BizHawk.Client.EmuHawk
 		public string GenerateDefaultCheatFilename()
 		{
 			var path = _config.PathEntries.CheatsAbsolutePath(_game.System);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && !f.Directory.Exists)
-			{
-				f.Directory.Create();
-			}
-
+			new FileInfo(path).Directory?.Create();
 			return Path.Combine(path, $"{_game.FilesystemSafeName()}.cht");
 		}
 

@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Config _config;
 
+		private readonly IDialogController _dialogController;
+
 		private readonly DisplayManagerBase _displayManager;
 
 		private readonly IMainFormForApi _mainForm;
@@ -30,9 +32,17 @@ namespace BizHawk.Client.Common
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManagerBase displayManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmuClientApi(
+			Config config,
+			IDialogController dialogController,
+			DisplayManagerBase displayManager,
+			IEmulator emulator,
+			IGameInfo game,
+			IMainFormForApi mainForm,
+			Action<string> logCallback)
 		{
 			_config = config;
+			_dialogController = dialogController;
 			_displayManager = displayManager;
 			Emulator = emulator;
 			Game = game;
@@ -58,16 +68,16 @@ namespace BizHawk.Client.Common
 #pragma warning disable MA0091 // passing through `sender` is intentional
 		private void CallBeforeQuickLoad(object sender, BeforeQuickLoadEventArgs args)
 			=> BeforeQuickLoad?.Invoke(sender, args);
- 
+
 		private void CallBeforeQuickSave(object sender, BeforeQuickSaveEventArgs args)
 			=> BeforeQuickSave?.Invoke(sender, args);
- 
+
 		private void CallRomLoaded(object sender, EventArgs args)
 			=> RomLoaded?.Invoke(sender, args);
- 
+
 		private void CallStateLoaded(object sender, StateLoadedEventArgs args)
 			=> StateLoaded?.Invoke(sender, args);
- 
+
 		private void CallStateSaved(object sender, StateSavedEventArgs args)
 			=> StateSaved?.Invoke(sender, args);
 #pragma warning restore MA0091
@@ -133,6 +143,8 @@ namespace BizHawk.Client.Common
 
 		public bool IsTurbo() => _mainForm.IsTurboing;
 
+		public bool IsRewinding() => _mainForm.IsRewinding;
+
 		public bool LoadState(string name)
 			=> _mainForm.LoadState(
 				path: Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"),
@@ -140,7 +152,7 @@ namespace BizHawk.Client.Common
 				suppressOSD: false);
 
 		public bool OpenRom(string path)
-			=> _mainForm.LoadRom(path, new LoadRomArgs(new OpenAdvanced_OpenRom(path)));
+			=> _mainForm.LoadRom(path, new LoadRomArgs(OpenAdvancedSerializer.ParseWithLegacy(path)));
 
 		public void Pause() => _mainForm.PauseEmulator();
 
@@ -198,7 +210,7 @@ namespace BizHawk.Client.Common
 			{
 				_config.SetWindowScaleFor(Emulator.SystemId, size);
 				_mainForm.FrameBufferResized(forceWindowResize: true);
-				_displayManager.OSD.AddMessage($"Window size set to {size}x");
+				_dialogController.AddOnScreenMessage($"Window size set to {size}x");
 			}
 			else
 			{

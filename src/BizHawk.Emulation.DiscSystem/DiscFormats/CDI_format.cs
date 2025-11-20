@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// The track blocks
 			/// </summary>
 			public readonly List<CDITrack> Tracks = [ ];
-			
+
 			/// <summary>
 			/// The disc info block
 			/// </summary>
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// </summary>
 			public byte NumTracks;
 		}
-		
+
 		/// <summary>
 		/// Represents a track/disc info block header from a CDI track
 		/// </summary>
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// </summary>
 			public uint SessionType;
 		}
-		
+
 		/// <summary>
 		/// Represents a disc info block from a CDI file
 		/// </summary>
@@ -218,9 +218,8 @@ namespace BizHawk.Emulation.DiscSystem
 					header.MediumType = br.ReadUInt16();
 					switch (header.MediumType)
 					{
-						case 0x0038:
-							throw new CDIParseException("Malformed CDI format: DVD was specified, but this is not supported!");
-						case 0x0098:
+						case 0x0038: // DVD
+						case 0x0098: // CD
 							return;
 						default:
 							throw new CDIParseException("Malformed CDI format: Invalid medium type!");
@@ -392,7 +391,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					throw new CDIParseException("Malformed CDI format: Total track number mismatch!");
 				}
-				
+
 				if (stream.Position != stream.Length - 4)
 				{
 					//throw new CDIParseException("Malformed CDI format: Did not reach end of footer after parsing!");
@@ -419,7 +418,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var ret = new LoadResults
 			{
-				CdiPath = path
+				CdiPath = path,
 			};
 			try
 			{
@@ -475,7 +474,7 @@ namespace BizHawk.Emulation.DiscSystem
 							0 => CueTrackType.Mode1_2352,
 							1 => CueTrackType.CDI_2352,
 							2 => CueTrackType.Mode2_2352,
-							_ => cueTrackType
+							_ => cueTrackType,
 						};
 					}
 					disc._Sectors.Add(new SS_Gap
@@ -501,7 +500,11 @@ namespace BizHawk.Emulation.DiscSystem
 						q.zero = 0;
 						q.AP_Timestamp = disc._Sectors.Count;
 						q.q_crc = 0;
-						return new() { QData = q };
+						return new()
+						{
+							QData = q,
+							AbsoluteTimestamp = disc._Sectors.Count,
+						};
 					}
 
 					var sectorSize = track.ReadMode switch
@@ -511,7 +514,7 @@ namespace BizHawk.Emulation.DiscSystem
 						2 => 2352,
 						3 => 2368,
 						4 => 2448,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 					var curIndex = 0;
 					var relMSF = -track.IndexSectorCounts[0];
@@ -540,7 +543,7 @@ namespace BizHawk.Emulation.DiscSystem
 							2 => new SS_2352(),
 							3 => new SS_2364_DeinterleavedQ(),
 							4 => new SS_2448_Interleaved(),
-							_ => throw new InvalidOperationException()
+							_ => throw new InvalidOperationException(),
 						};
 						synth.Blob = cdiBlob;
 						synth.BlobOffset = blobOffset;
@@ -570,7 +573,7 @@ namespace BizHawk.Emulation.DiscSystem
 					disc._Sectors.Add(new SS_Leadout
 					{
 						SessionNumber = session.Number,
-						Policy = IN_DiscMountPolicy
+						Policy = IN_DiscMountPolicy,
 					});
 				}
 

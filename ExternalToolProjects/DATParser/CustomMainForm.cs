@@ -43,12 +43,12 @@ namespace BizHawk.DATTool
 						AutoSize = true,
 						Controls = {
 							btnDATConv,
-							CreateArgsLabel("Parse External DAT Files (NoIntro / TOSEC)")
-						}
-					}					
+							CreateArgsLabel("Parse External DAT Files (NoIntro / TOSEC)"),
+						},
+					},
 				},
 				Dock = DockStyle.Fill,
-				FlowDirection = FlowDirection.TopDown
+				FlowDirection = FlowDirection.TopDown,
 			});
 			ResumeLayout();
 		}

@@ -1,9 +1,5 @@
 namespace BizHawk.Tests.Analyzers;
 
-using System.Threading.Tasks;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
 	BizHawk.Analyzers.AmbiguousMoneyToFloatConversionAnalyzer,
 	Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
@@ -27,6 +23,9 @@ public sealed class AmbiguousMoneyToFloatConversionAnalyzerTests
 					=> {|BHI1105:unchecked((decimal) d)|};
 				private static double D(decimal m)
 					=> {|BHI1105:checked((double) m)|};
+			}
+			namespace BizHawk.Common.NumberExtensions {
+				public static class NumberExtensions {} // Analyzer short-circuits if this doesn't exist, since that's where the helpers live
 			}
 		""");
 }

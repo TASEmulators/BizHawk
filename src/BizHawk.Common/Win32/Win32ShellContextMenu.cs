@@ -93,7 +93,9 @@ namespace BizHawk.Common
 				NODEFAULT = 0x00000020,
 				INCLUDESTATIC = 0x00000040,
 				EXTENDEDVERBS = 0x00000100,
+#pragma warning disable RCS1157 // this is a mask, not a member
 				RESERVED = 0xffff0000,
+#pragma warning restore RCS1157
 			}
 
 			[StructLayout(LayoutKind.Sequential)]

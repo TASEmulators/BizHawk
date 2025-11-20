@@ -33,12 +33,16 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 		* submodules/sameboy/libsameboy (required for new BSNES)
 		* waterbox/mame-arcade/mame (required for MAME)
 		* waterbox/melon/melonDS (required for melonDS)
+		* waterbox/melon/BizPlatform/faad2 (required for melonDS)
 		* waterbox/nyma/mednafen (required for all Nyma cores)
 		* waterbox/snes9x (required for Snes9x)
 		* waterbox/gpgx/Genesis-Plus-GX (required for gpgx)
-		* waterbox/uae/libretro-uae (required for puae)
+		* waterbox/uae/libretro-uae (required for uae)
 		* waterbox/stella/core (required for stella)
-	* none of these submodules need to be cloned recursively
+		* waterbox/dsda/core (required for dsda)
+		* waterbox/opera/opera-libretro (required for opera)
+		* waterbox/dosbox/dosbox-x (required for DOSBox-x)
+	* most of these submodules do not need to be cloned recursively, except for dosbox-x.
 
 3. Consider whether it is time to update your build environment (i.e. sudo apt-get upgrade). Build environment tools are generally best kept at the latest version, to ensure top performance for our users.
 
@@ -62,8 +66,10 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && ./build-and-install-zlib.sh
 
 6. You are now ready to start building cores. Each supports `make` and `make install`, as well as `make debug` and `make install-debug` for local development.  From the root directory, the following should all be valid:
-	cd ares64 && ./make-both.sh
+	cd ares64 && ./make-both.sh install
 	cd bsnescore && make install
+	cd dosbox && make install
+	cd dsda && make install
 	cd gpgx && make install
 	cd libsnes && make install
 	cd mame-arcade && make install
@@ -76,6 +82,7 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd nyma && make -f ss.mak install
 	cd nyma && make -f shock.mak install
 	cd nyma && make -f vb.mak install
+	cd opera && make install
 	cd picodrive && make install
 	cd stella && make install
 	cd snes9x && make install
@@ -85,3 +92,4 @@ It consists of a modified musl libc, and build scripts to tie it all together.
 	cd virtualjaguar && make install
 
 Be aware MAME takes a very long while to build. Following suit, the provided make-all-cores.sh will only make MAME if INCLUDE_MAME is exported (e.g. `INCLUDE_MAME=1 ./make-all-cores.sh`).
+

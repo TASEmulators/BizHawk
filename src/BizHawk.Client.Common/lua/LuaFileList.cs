@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					var scriptPath = line.Substring(2, line.Length - 2);
+					var scriptPath = line.Substring(startIndex: 2);
 					if (!Path.IsPathRooted(scriptPath))
 					{
 						var directory = Path.GetDirectoryName(path);
@@ -93,9 +93,7 @@ namespace BizHawk.Client.Common
 
 					Add(new LuaFile(scriptPath)
 					{
-						State = !disableOnLoad && line.Substring(0, 1) == "1"
-							? LuaFile.RunState.Running
-							: LuaFile.RunState.Disabled
+						State = !disableOnLoad && line.StartsWith('1') ? LuaFile.RunState.Running : LuaFile.RunState.Disabled,
 					});
 				}
 			}

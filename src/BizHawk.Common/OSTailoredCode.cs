@@ -87,7 +87,8 @@ namespace BizHawk.Common
 			return (winVer, null);
 		});
 
-		private static readonly Lazy<bool> _isWSL = new(() => IsUnixHost && SimpleSubshell("uname", "-r", "missing uname?").Contains("microsoft", StringComparison.InvariantCultureIgnoreCase));
+		private static readonly Lazy<bool> _isWSL = new(static () => IsUnixHost
+			&& SimpleSubshell(cmd: "uname", args: "-r", noOutputMsg: "missing uname?").ContainsIgnoreCase("microsoft"));
 
 		public static (WindowsVersion Version, Version? Win10PlusVersion)? HostWindowsVersion => _HostWindowsVersion.Value;
 
@@ -120,7 +121,7 @@ namespace BizHawk.Common
 			DistinctOS.Windows => new WindowsLLManager(),
 			DistinctOS.BSD => new PosixLLManager(),
 			DistinctOS.Unknown => throw new NotSupportedException("Cannot link libraries with Unknown OS"),
-			_ => throw new InvalidOperationException()
+			_ => throw new InvalidOperationException(),
 		});
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
@@ -216,7 +217,7 @@ namespace BizHawk.Common
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
 				var ret = GetProcAddrOrZero(hModule, procName);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, {GetErrorMessage()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)} trying to find symbol {procName}, {GetErrorMessage()}");
 			}
 
 			public IntPtr LoadOrZero(string dllToLoad) => LoadLibraryW(dllToLoad);
@@ -224,7 +225,7 @@ namespace BizHawk.Common
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
 				var ret = LoadOrZero(dllToLoad);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)} while trying to load {dllToLoad}, {GetErrorMessage()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)} trying to load {dllToLoad}, {GetErrorMessage()}");
 			}
 
 			public unsafe string GetErrorMessage()
@@ -273,8 +274,8 @@ namespace BizHawk.Common
 					RedirectStandardError = checkStderr,
 					RedirectStandardInput = true,
 					RedirectStandardOutput = checkStdout,
-					UseShellExecute = false
-				}
+					UseShellExecute = false,
+				},
 			};
 
 		/// <param name="cmd">POSIX <c>$0</c></param>

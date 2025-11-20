@@ -2,8 +2,6 @@
 
 using System.Collections.Generic;
 
-using BizHawk.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	// the idea here is that various connected peripherals have their controls all merged

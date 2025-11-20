@@ -7,6 +7,7 @@ using BizHawk.Common.PathExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
+#pragma warning disable RCS1226 // bad formatting
 	/// <remarks>
 	/// cue format preferences notes
 	///
@@ -16,6 +17,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// it seems not to be able to handle binpertrack, or maybe i am doing something wrong (still haven't ruled it out)
 	/// </remarks>
 	public static class DiscoHawkLogic
+#pragma warning restore RCS1226
 	{
 		private static bool CompareFile(string infile, DiscInterface loadDiscInterface, DiscInterface cmpif, bool verbose, CancellationTokenSource cancelToken, StringWriter sw)
 		{
@@ -363,7 +365,7 @@ namespace BizHawk.Emulation.DiscSystem
 				po.CancellationToken = cts.Token;
 				po.MaxDegreeOfParallelism = 1;
 				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
-				object olock = new object();
+				Lock olock = new();
 				int ctr=0;
 				bool blocked = false;
 				try

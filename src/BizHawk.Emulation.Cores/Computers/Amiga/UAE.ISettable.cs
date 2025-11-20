@@ -145,56 +145,57 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		private void CreateArguments(UAESyncSettings settings)
 		{
-			_args = new List<string>
-			{
+			_args =
+			[
 				"uae",
-			};
+			];
 
 			switch(settings.MachineConfig)
 			{
 				case MachineConfig.A500_OCS_130_512K_512K:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A500);
-					AppendSetting(new List<string>
-					{
+					AppendSetting(
+					[
 						"cpu_model=" + (int)CpuModel._68000,
 						"chipset=" + Chipset.OCS,
 						"chipset_compatible=" + _chipsetCompatible,
 						"chipmem_size=" + (int)ChipMemory.KB_512,
 						"bogomem_size=" + (int)SlowMemory.KB_512,
 						"fastmem_size=0",
-					});
+					]);
 					EnableCycleExact();
 					break;
 				case MachineConfig.A600_ECS_205_2M:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A600);
-					AppendSetting(new List<string>
-					{
+					AppendSetting(
+					[
 						"cpu_model=" + (int)CpuModel._68000,
 						"chipset=" + Chipset.ECS,
 						"chipset_compatible=" + _chipsetCompatible,
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
 						"fastmem_size=0",
-					});
+					]);
 					EnableCycleExact();
 					break;
 				case MachineConfig.A1200_AGA_310_2M_8M:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A1200);
-					AppendSetting(new List<string>
-					{
+					AppendSetting(
+					[
 						"cpu_model=" + (int)CpuModel._68020,
 						"chipset=" + Chipset.AGA,
 						"chipset_compatible=" + _chipsetCompatible,
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
 						"fastmem_size=0",
-					});
+						"cpu_multiplier=4",
+					]);
 					EnableCycleExact();
 					break;
 				case MachineConfig.A4000_AGA_310_2M_8M:
 					_chipsetCompatible = Enum.GetName(typeof(ChipsetCompatible), ChipsetCompatible.A4000);
-					AppendSetting(new List<string>
-					{
+					AppendSetting(
+					[
 						"cpu_model=" + (int)CpuModel._68040,
 						"fpu_model=68040",
 						"mmu_model=68040",
@@ -203,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
 						"fastmem_size=8",
-					});
+					]);
 					break;
 			}
 
@@ -258,34 +259,24 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			for (int port = 0; port <= 1; port++)
 			{
-				LibUAE.ControllerType type = port == 0
+				var type = port == 0
 					? settings.ControllerPort1
 					: settings.ControllerPort2;
-
-				switch (type)
-				{
-					case LibUAE.ControllerType.Joystick:
-						AppendSetting($"joyport{port}mode=djoy");
-						break;
-					case LibUAE.ControllerType.CD32_pad:
-						AppendSetting($"joyport{port}mode=cd32joy");
-						break;
-					case LibUAE.ControllerType.Mouse:
-						AppendSetting($"joyport{port}mode=mouse");
-						break;
-				}
+				AppendSetting(type is LibUAE.ControllerType.None
+					? $"joyport{port}=none"
+					: $"joyport{port}mode={type.ToString().ToLowerInvariant()}");
 			}
 		}
 
 		private void EnableCycleExact()
 		{
-			AppendSetting(new List<string>
-			{
+			AppendSetting(
+			[
 				"cpu_compatible=true",
 				"cpu_cycle_exact=true",
 				"cpu_memory_cycle_exact=true",
 				"blitter_cycle_exact=true",
-			});
+			]);
 		}
 
 		private void AppendSetting(List<string> settings)
@@ -298,12 +289,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 		private void AppendSetting(string setting)
 		{
-			_args.AddRange(new List<string>
-			{
+			_args.AddRange(
+			[
 				"-s", setting
-			});
+			]);
 		}
-		
+
 		public object GetSettings() => null;
 		public PutSettingsDirtyBits PutSettings(object o) => PutSettingsDirtyBits.None;
 
@@ -371,7 +362,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 
 			[DisplayName("Controller port 2")]
 			[Description("")]
-			[DefaultValue(LibUAE.ControllerType.Joystick)]
+			[DefaultValue(LibUAE.ControllerType.DJoy)]
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public LibUAE.ControllerType ControllerPort2 { get; set; }
 

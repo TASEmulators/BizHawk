@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		private readonly ISoundProvider _left;
 		private readonly ISoundProvider _right;
 		private int _nsamp;
-		private short[] _samp = new short[0];
+		private short[] _samp = [ ];
 
 		private readonly short[] _leftOverflow = new short[32];
 		private int _leftOverflowCount = 0;
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Sound
 			_right.GetSamplesSync(out var sampr, out var nsampr);
 
 			int n = Math.Min(nsampl + _leftOverflowCount, nsampr + _rightOverflowCount);
-			
+
 			if (_samp.Length < n * 2)
 				_samp = new short[n * 2];
 

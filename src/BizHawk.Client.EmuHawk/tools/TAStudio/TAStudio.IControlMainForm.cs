@@ -77,28 +77,12 @@
 
 		public bool Rewind()
 		{
-			// copy pasted from TasView_MouseWheel(), just without notch logic
-			if (MainForm.IsSeeking && !MainForm.EmulatorPaused)
-			{
-				MainForm.PauseOnFrame--;
-
-				// that's a weird condition here, but for whatever reason it works best
-				if (Emulator.Frame >= MainForm.PauseOnFrame)
-				{
-					MainForm.PauseEmulator();
-					StopSeeking();
-					GoToPreviousFrame();
-				}
-
-				RefreshDialog();
-			}
-			else
-			{
-				StopSeeking(); // late breaking memo: don't know whether this is needed
-				GoToPreviousFrame();
-			}
-
-			return true;
+			int rewindStep = MainForm.IsFastForwarding ? Settings.RewindStepFast : Settings.RewindStep;
+			int frame = Emulator.Frame;
+			WheelSeek(rewindStep);
+			// we need a frame advance if a state was loaded (frame has changed)
+			// and also we are seeking (not already at the target frame)
+			return Emulator.Frame != frame && _seekingTo != -1;
 		}
 
 		public bool WantsToControlRestartMovie { get; }
@@ -113,5 +97,7 @@
 
 		public bool WantsToControlReboot => false;
 		public void RebootCore() => throw new NotSupportedException("This should never be called");
+
+		public bool WantsToBypassMovieEndAction => true;
 	}
 }

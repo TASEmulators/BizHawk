@@ -118,14 +118,14 @@ mod trip_pal {
 	use libc::*;
 	use super::*;
 
-	type SaHandler = unsafe extern fn(i32) -> ();
-	type SaSigaction = unsafe extern fn(i32, *const siginfo_t, *const ucontext_t) -> ();
+	type SaHandler = unsafe extern "C" fn(i32) -> ();
+	type SaSigaction = unsafe extern "C" fn(i32, *const siginfo_t, *const ucontext_t) -> ();
 	static mut SA_OLD: Option<Box<sigaction>> = None;
 
 	pub fn initialize() {
 		use std::mem::{transmute, zeroed};
 
-		unsafe extern fn handler(sig: i32, info: *const siginfo_t, ucontext: *const ucontext_t) {
+		unsafe extern "C" fn handler(sig: i32, info: *const siginfo_t, ucontext: *const ucontext_t) {
 			let fault_address = (*info).si_addr() as usize;
 			let write = (*ucontext).uc_mcontext.gregs[REG_ERR as usize] & 2 != 0;
 			let rethrow = !write || match trip(fault_address) {

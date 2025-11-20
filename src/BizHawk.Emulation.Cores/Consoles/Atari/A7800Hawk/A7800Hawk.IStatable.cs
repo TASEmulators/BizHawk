@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("Cart RAM", ref cart_RAM);
 			ser.Sync(nameof(is_pokey), ref is_pokey);
 			ser.Sync(nameof(is_pokey_450), ref is_pokey_450);
-			
+
 
 			ser.Sync(nameof(temp_s_tia), ref temp_s_tia);
 			ser.Sync(nameof(temp_s_pokey), ref temp_s_pokey);

@@ -37,6 +37,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			if (newLog.Count != currentLog.Count)
+				return Math.Min(newLog.Count, currentLog.Count);
+
 			return null;
 		}
 
@@ -211,7 +214,7 @@ namespace BizHawk.Client.Common
 			}
 
 			void IEnumerator.Reset() { _index = -1; }
-			
+
 			public void Dispose() { }
 		}
 

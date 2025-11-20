@@ -13,22 +13,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void WriteReg(int addr, byte value)
 		{
-
+			//TODO
 		}
 
 		public void serial_transfer_tick()
 		{
-
+			//TODO
 		}
 
 		public void Reset()
 		{
-
+			//TODO
 		}
 
 		public void SyncState(Serializer ser)
 		{
-
+			//TODO
 		}
 	}
 }

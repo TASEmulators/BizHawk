@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public abstract class RCheevoHttpRequest : IDisposable
 		{
-			private readonly object _syncObject = new();
+			private readonly Lock _syncObject = new();
 			private readonly ManualResetEventSlim _completionEvent = new();
 			private bool _isDisposed;
 
@@ -82,9 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			protected void DisposeWithoutWait()
 			{
-#pragma warning disable BHI1101 // yeah, complain I guess, but this is a hack so meh
-				if (GetType() != typeof(FailedRCheevosRequest)) throw new InvalidOperationException();
-#pragma warning restore BHI1101
+				if (this is FailedRCheevosRequest) throw new InvalidOperationException();
 				_completionEvent.Dispose();
 				_isDisposed = true;
 			}

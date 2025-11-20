@@ -6,6 +6,7 @@
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(TestProjTargetFrameworkOverride)' != '' AND '$(TargetFramework)' == 'net48' ">
+		<MeziantouPolyfill_ExcludedPolyfills>$(MeziantouPolyfill_ExcludedPolyfills)|M:System.Collections.Immutable.ImmutableArray`1.AsSpan(System.Range)</MeziantouPolyfill_ExcludedPolyfills> <!-- no idea why but this was failing -->
 		<TargetFramework>$(TestProjTargetFrameworkOverride)</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>

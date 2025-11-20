@@ -1,5 +1,11 @@
 <Project>
+	<PropertyGroup>
+		<RunStyleCop>true</RunStyleCop>
+	</PropertyGroup>
 	<Import Project="../Common.props" />
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);SA1028</NoWarn>
+	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)/../src/Menees.Analyzers.Settings.xml" />
 		<None Remove="*.sh" />

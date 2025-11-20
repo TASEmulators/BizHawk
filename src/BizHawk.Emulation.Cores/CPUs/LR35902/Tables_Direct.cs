@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						RD, W, PCl, PCh,
 						INC16, PCl, PCh,
-						COND_CHECK, cond, 0,							
+						COND_CHECK, cond, 0,
 						IDLE,
 						ASGN, Z, 0,
 						IDLE,
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						RD, W, PCl, PCh,
 						INC16, PCl, PCh,
-						IDLE,							
+						IDLE,
 						IDLE,
 						RD, Z, PCl, PCh,
 						INC16, PCl, PCh,
@@ -208,10 +208,10 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						IDLE,
 						WR, SPl, SPh, PCh,
-						IDLE,							
+						IDLE,
 						IDLE,
 						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCl,				
+						WR, SPl, SPh, PCl,
 						TR, PCl, W,
 						TR, PCh, Z,
 						HALT_CHK,
@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 							INC16, SPl, SPh,
 							HALT_CHK,
 							OP };
-			} 
+			}
 		}
 
 		private void RST_(ushort n)
@@ -303,12 +303,12 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 						IDLE,
 						IDLE,
 						DEC16, SPl, SPh,
-						IDLE,						
-						IDLE,					
+						IDLE,
+						IDLE,
 						IDLE,
 						WR, SPl, SPh, PCh,
 						DEC16, SPl, SPh,
-						IDLE,				
+						IDLE,
 						IDLE,
 						WR, SPl, SPh, PCl,
 						ASGN, PCh, 0,

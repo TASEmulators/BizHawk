@@ -2,12 +2,13 @@
 {
 	public interface IMovieConfig
 	{
-		public MovieEndAction MovieEndAction { get; }
-		public bool EnableBackupMovies { get; }
-		public bool MoviesOnDisk { get; }
-		public int MovieCompressionLevel { get; }
-		public bool VBAStyleMovieLoadState { get; }
-		ZwinderStateManagerSettings DefaultTasStateManagerSettings { get; }
+		MovieEndAction MovieEndAction { get; }
+		bool EnableBackupMovies { get; }
+		bool MoviesOnDisk { get; }
+		int MovieCompressionLevel { get; }
+		bool VBAStyleMovieLoadState { get; }
+		bool PlaySoundOnMovieEnd { get; set; }
+		IStateManagerSettings DefaultTasStateManagerSettings { get; }
 	}
 
 	public class MovieConfig : IMovieConfig
@@ -17,7 +18,8 @@
 		public bool MoviesOnDisk { get; set; }
 		public int MovieCompressionLevel { get; set; } = 2;
 		public bool VBAStyleMovieLoadState { get; set; }
+		public bool PlaySoundOnMovieEnd { get; set; }
 
-		public ZwinderStateManagerSettings DefaultTasStateManagerSettings { get; set; } = new ZwinderStateManagerSettings();
+		public IStateManagerSettings DefaultTasStateManagerSettings { get; set; } = new PagedStateManager.PagedSettings();
 	}
 }

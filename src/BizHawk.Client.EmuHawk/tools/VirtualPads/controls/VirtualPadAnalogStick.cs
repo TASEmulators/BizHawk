@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			manualR.Maximum = Math.Max(RectToPolarHelper(RangeX.Max, RangeY.Max).R, RectToPolarHelper(RangeX.Min, RangeY.Min).R);
 
 			void UnsetLastFocusedNUD(object sender, EventArgs eventArgs)
-				=> setLastFocusedNUD(null, null);
+				=> setLastFocusedNUD(null, eventArgs);
 			ManualX.ValueChanged += ManualXY_ValueChanged;
 			ManualX.GotFocus += setLastFocusedNUD;
 			ManualX.LostFocus += UnsetLastFocusedNUD;

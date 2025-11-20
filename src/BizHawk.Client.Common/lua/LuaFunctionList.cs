@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Client.Common
 {
 	public class LuaFunctionList : IEnumerable<NamedLuaFunction>
@@ -12,10 +10,15 @@ namespace BizHawk.Client.Common
 
 		private readonly Action Changed;
 
+		public int Count
+			=> _functions.Count;
+
 		public LuaFunctionList(Action onChanged) => Changed = onChanged;
 
-		public NamedLuaFunction this[string guid]
-			=> _functions.Find(nlf => nlf.Guid.ToString() == guid);
+		public NamedLuaFunction/*?*/ this[string guid]
+			=> Guid.TryParseExact(guid, format: "D", out var parsed)
+				? _functions.Find(nlf => nlf.Guid == parsed)
+				: null;
 
 		public void Add(NamedLuaFunction nlf)
 		{
@@ -23,34 +26,27 @@ namespace BizHawk.Client.Common
 			Changed();
 		}
 
-		public bool Remove(NamedLuaFunction function, IEmulator emulator)
+		public bool Remove(NamedLuaFunction function)
 		{
-			if (emulator.InputCallbacksAvailable())
-			{
-				emulator.AsInputPollable().InputCallbacks.Remove(function.InputCallback);
-			}
-
-			if (emulator.MemoryCallbacksAvailable())
-			{
-				emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
-			}
-
-			var result = _functions.Remove(function);
-			if (result)
-			{
-				Changed();
-			}
-
-			return result;
+			if (!RemoveInner(function)) return false;
+			Changed();
+			return true;
 		}
 
-		public void RemoveForFile(LuaFile file, IEmulator emulator)
+		private bool RemoveInner(NamedLuaFunction function)
+		{
+			if (!_functions.Remove(function)) return false;
+			function.OnRemove?.Invoke();
+			return true;
+		}
+
+		public void RemoveForFile(LuaFile file)
 		{
 			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
 
 			foreach (var function in functionsToRemove)
 			{
-				Remove(function, emulator);
+				_ = RemoveInner(function);
 			}
 
 			if (functionsToRemove.Count != 0)
@@ -59,19 +55,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Clear(IEmulator emulator)
+		public void Clear()
 		{
-			if (emulator.InputCallbacksAvailable())
-			{
-				emulator.AsInputPollable().InputCallbacks.RemoveAll(_functions.Select(w => w.InputCallback));
-			}
-
-			if (emulator.MemoryCallbacksAvailable())
-			{
-				var memoryCallbacks = emulator.AsDebuggable().MemoryCallbacks;
-				memoryCallbacks.RemoveAll(_functions.Select(w => w.MemCallback));
-			}
-
+			if (Count is 0) return;
+			foreach (var function in _functions) function.OnRemove?.Invoke();
 			_functions.Clear();
 			Changed();
 		}

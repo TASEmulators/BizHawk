@@ -13,16 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install .NET 8
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8"
 
       - name: Debug build with analyzers
-        run: Dist/BuildDebug.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+        run: Dist/BuildDebug.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
       - name: Release build with analyzers
-        run: Dist/BuildRelease.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+        run: Dist/BuildRelease.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
   test:
     name: Test
@@ -37,13 +37,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install .NET 8
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8"
 
       - name: Test
-        run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true
+        run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
         shell: pwsh
 
   package:
@@ -53,7 +53,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install .NET 8
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8"

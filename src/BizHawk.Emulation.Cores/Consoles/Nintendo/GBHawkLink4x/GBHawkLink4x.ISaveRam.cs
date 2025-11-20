@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 {
 	public partial class GBHawkLink4x : ISaveRam
 	{
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (A.cart_RAM != null || B.cart_RAM != null || C.cart_RAM != null || D.cart_RAM != null)
 			{

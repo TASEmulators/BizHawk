@@ -3,6 +3,9 @@ root = true
 [*]
 indent_style = tab
 
+[*.yml]
+indent_style = space
+
 [*.cs]
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -12,10 +15,14 @@ csharp_space_after_cast = true
 csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 csharp_indent_labels = one_less_than_current
+dotnet_style_require_accessibility_modifiers = for_non_interface_members # for IDE0040
+trim_trailing_whitespace = true
 
 # Style rules
 # Can't be in .globalconfig because dotnet format doesn't respect that https://github.com/dotnet/format/issues/1643
 
+# Remove `this` or `Me` qualification
+dotnet_diagnostic.IDE0003.severity = silent
 # Remove unnecessary cast
 dotnet_diagnostic.IDE0004.severity = warning
 # Remove unnecessary import
@@ -23,21 +30,29 @@ dotnet_diagnostic.IDE0005.severity = warning
 # Use var instead of explicit type
 dotnet_diagnostic.IDE0007.severity = suggestion
 # Use explicit type instead of var
-dotnet_diagnostic.IDE0008.severity = suggestion
+dotnet_diagnostic.IDE0008.severity = silent
+# Add `this` or `Me` qualification
+dotnet_diagnostic.IDE0009.severity = silent
 # Inline variable declaration
 dotnet_diagnostic.IDE0018.severity = warning
 # Use pattern matching to avoid as followed by a null check
 dotnet_diagnostic.IDE0019.severity = warning
 # Use pattern matching to avoid is check followed by a cast (with variable)
 dotnet_diagnostic.IDE0020.severity = warning
+# Use expression body for constructors
+dotnet_diagnostic.IDE0021.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
 # Use expression body for methods
-dotnet_diagnostic.IDE0022.severity = suggestion
+dotnet_diagnostic.IDE0022.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
+# Use expression body for conversion operators
+dotnet_diagnostic.IDE0023.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
+# Use expression body for operators
+dotnet_diagnostic.IDE0024.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
 # Use expression body for properties
-dotnet_diagnostic.IDE0025.severity = suggestion
+dotnet_diagnostic.IDE0025.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
 # Use expression body for indexers
-dotnet_diagnostic.IDE0026.severity = suggestion
+dotnet_diagnostic.IDE0026.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
 # Use expression body for accessors
-dotnet_diagnostic.IDE0027.severity = suggestion
+dotnet_diagnostic.IDE0027.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
 # Null check can be simplified
 dotnet_diagnostic.IDE0029.severity = warning
 # Null check can be simplified
@@ -50,6 +65,8 @@ dotnet_diagnostic.IDE0032.severity = suggestion
 dotnet_diagnostic.IDE0034.severity = suggestion
 # Use pattern matching to avoid is check followed by a cast (without variable)
 dotnet_diagnostic.IDE0038.severity = warning
+# Add accessibility modifiers
+dotnet_diagnostic.IDE0040.severity = silent # ~~redundant with SA1400, but that's not running by default, and maybe this one and its config will affect VS2022 autocompletion~~ scratch that, it's currently broken https://github.com/dotnet/roslyn/issues/80169
 # Use is null check
 dotnet_diagnostic.IDE0041.severity = warning
 # Deconstruct variable declaration
@@ -65,6 +82,8 @@ dotnet_diagnostic.IDE0054.severity = warning
 dotnet_diagnostic.IDE0056.severity = suggestion
 # Use range operator
 dotnet_diagnostic.IDE0057.severity = suggestion
+# Use expression body for local functions
+dotnet_diagnostic.IDE0061.severity = silent # UseExpressionBodyDiagnosticAnalyzer very slow
 # Use simple using statement
 dotnet_diagnostic.IDE0063.severity = suggestion
 # Make struct fields writable

@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public abstract byte mame_read_byte(uint address);
 
 		[BizImport(cc)]
-		public abstract IntPtr mame_input_get_field_ptr(string tag, string field);
+		public abstract IntPtr mame_input_get_field_ptr(string tag, string @field);
 
 		[BizImport(cc)]
 		public abstract void mame_input_set_fields(IntPtr[] fields, int[] inputs, int length);

@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 
 			_inputPollable = emulator.AsInputPollable();
 
-			TasStateManager ??= new ZwinderStateManager(Session.Settings.DefaultTasStateManagerSettings, IsReserved);
+			TasStateManager ??= Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 			if (StartsFromSavestate)
 			{
 				TasStateManager.Engage(BinarySavestate);
@@ -73,6 +73,7 @@ namespace BizHawk.Client.Common
 		public ITasSession TasSession { get; private set; } = new TasSession();
 
 		public int LastEditedFrame { get; private set; } = -1;
+		public bool LastEditWasRecording { get; private set; }
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
@@ -80,7 +81,7 @@ namespace BizHawk.Client.Common
 		public TasLagLog LagLog { get; } = new TasLagLog();
 
 		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager { get; private set; }
+		public IStateManager TasStateManager { get; set; }
 
 		public Action<int> GreenzoneInvalidated { get; set; }
 
@@ -103,7 +104,7 @@ namespace BizHawk.Client.Common
 					HasState = TasStateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = lagged,
-					WasLagged = LagLog.History(lagIndex)
+					WasLagged = LagLog.History(lagIndex),
 				};
 			}
 		}
@@ -120,20 +121,24 @@ namespace BizHawk.Client.Common
 		// Removes lag log and greenzone after this frame
 		private void InvalidateAfter(int frame)
 		{
-			var anyLagInvalidated = LagLog.RemoveFrom(frame);
-			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
-			GreenzoneInvalidated(frame);
-			if (anyLagInvalidated || anyStateInvalidated)
+			if (_suspendInvalidation)
 			{
-				Changes = true;
+				_minInvalidationFrame = Math.Min(_minInvalidationFrame, frame);
+				return;
 			}
 
-			LastEditedFrame = frame;
+			LagLog.RemoveFrom(frame);
+			var anyStateInvalidated = TasStateManager.InvalidateAfter(frame);
 
+			Changes = true;
+			LastEditedFrame = frame;
 			if (anyStateInvalidated && IsCountingRerecords)
 			{
 				Rerecords++;
 			}
+
+			GreenzoneInvalidated?.Invoke(frame);
+			LastEditWasRecording = false; // We can set it here; it's only used in the GreenzoneInvalidated action.
 		}
 
 		public void InvalidateEntireGreenzone()
@@ -147,13 +152,13 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (_displayCache.Frame != frame)
+			if (_displayCache.Frame != frame || Log.Count == 1)
 			{
 				_displayCache.Controller ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
 				_displayCache.Controller.SetFromMnemonic(Log[frame]);
 				_displayCache.Frame = frame;
 			}
-			
+
 			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
 		}
 
@@ -178,21 +183,13 @@ namespace BizHawk.Client.Common
 
 		public void GreenzoneCurrentFrame()
 		{
-			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
-			// but accounting for that requires access to Mainform.IsSeeking
-			if (Emulator.Frame != LastEditedFrame)
-			{
-				// emulated a new frame, current editing segment may change now. taseditor logic
-				LastPositionStable = false;
-			}
-
 			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
-			// We will forbibly capture a state for the last edited frame (requested by #916 for case of "platforms with analog stick")
+			// We will forcibly capture a state for the last edited frame (requested by https://github.com/TASEmulators/BizHawk/issues/916 for case of "platforms with analog stick")
 			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
 		}
 
-		
+
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
 			foreach (string entry in log)
@@ -286,7 +283,7 @@ namespace BizHawk.Client.Common
 			{
 				LagLog.RemoveFrom(timelineBranchFrame.Value);
 				TasStateManager.InvalidateAfter(timelineBranchFrame.Value);
-				GreenzoneInvalidated(timelineBranchFrame.Value);
+				GreenzoneInvalidated?.Invoke(timelineBranchFrame.Value);
 			}
 
 			return true;
@@ -299,14 +296,14 @@ namespace BizHawk.Client.Common
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
 
-			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
-
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers.DeepClone();
 			}
 
-			Changes = true;
+			ChangeLog = branch.ChangeLog.Clone();
+
+			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -340,7 +337,7 @@ namespace BizHawk.Client.Common
 		public void ClearChanges() => Changes = false;
 		public void FlagChanges() => Changes = true;
 
-		private bool IsReserved(int frame)
+		public bool IsReserved(int frame)
 		{
 			// Why the frame before?
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen

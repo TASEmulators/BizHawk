@@ -4,7 +4,9 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 {
-	[Core(CoreNames.GBHawkLink3x, "")]
+	[Core(
+		name: CoreNames.GBHawkLink3x,
+		author: "alyosha and BizHawk contributors")]
 	public partial class GBHawkLink3x : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 		ISettable<GBHawkLink3x.GBLink3xSettings, GBHawkLink3x.GBLink3xSyncSettings>,
 		ILinkedGameBoyCommon
@@ -73,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			R = new GBHawk.GBHawk(lp.Comm, lp.Roms[2].Game, lp.Roms[2].RomData, tempSetR, tempSyncR);
 
 			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(this); 
+			ser.Register<ISoundProvider>(this);
 
 			_tracer = new TraceBuffer(L.cpu.TraceHeader);
 			ser.Register(_tracer);

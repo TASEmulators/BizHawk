@@ -1,0 +1,48 @@
+name: Build and package release build
+
+on:
+  push:
+    branches: [ "release" ]
+  workflow_dispatch:
+
+jobs:
+  package:
+    name: Build and package release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Get BizHawk version
+        run: echo "BIZHAWK_VERSION=$(grep -Po "MainVersion = \"\K(.*)(?=\")" src/BizHawk.Common/VersionInfo.cs)" >> $GITHUB_ENV
+
+      - name: Update version info
+        run: Dist/UpdateVersionInfoForRelease.sh
+
+      - name: Build solution
+        run: Dist/BuildRelease.sh
+
+      - name: Package (Linux)
+        run: Dist/Package.sh
+      - name: Package into .tar.gz
+        working-directory: packaged_output
+        run: tar -czf ../BizHawk-${{ env.BIZHAWK_VERSION }}-linux-x64.tar.gz --owner=0 --group=0 *
+
+      - name: Package (Windows)
+        run: Dist/Package.sh windows-x64
+      - name: Package into .zip
+        working-directory: packaged_output
+        run: zip -r ../BizHawk-${{ env.BIZHAWK_VERSION }}-win-x64.zip .
+
+      - name: Upload release builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: BizHawk-${{ env.BIZHAWK_VERSION }}-release
+          path: |
+            BizHawk-${{ env.BIZHAWK_VERSION }}-linux-x64.tar.gz
+            BizHawk-${{ env.BIZHAWK_VERSION }}-win-x64.zip

@@ -76,10 +76,17 @@ enum class RETRO_DEVICE {
 	LAST,
 };
 
+enum class RETRO_DEVICE_INDEX_ANALOG {
+	LEFT = 0,
+	RIGHT = 1,
+	BUTTON = 2,
+
+	LAST,
+};
+
 enum class RETRO_DEVICE_ID_ANALOG {
 	X = 0,
 	Y = 1,
-	BUTTON = 2,
 
 	LAST,
 };

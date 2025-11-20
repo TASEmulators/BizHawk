@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public override void Clock() => throw new InvalidOperationException("CRTC Type 4 not implemented yet");
 
 		/// <summary>
-		/// R3l: CRTC-type horizontal sync width independent helper function 
+		/// R3l: CRTC-type horizontal sync width independent helper function
 		/// </summary>
 		protected override int R3_HorizontalSyncWidth
 		{
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		}
 
 		/// <summary>
-		/// R3h: CRTC-type vertical sync width independent helper function 
+		/// R3h: CRTC-type vertical sync width independent helper function
 		/// </summary>
 		protected override int R3_VerticalSyncWidth
 		{

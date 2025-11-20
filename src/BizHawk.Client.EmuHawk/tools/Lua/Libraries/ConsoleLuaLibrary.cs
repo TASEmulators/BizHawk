@@ -1,8 +1,7 @@
-using System.Linq;
+using System.Globalization;
 using System.Text;
 
 using BizHawk.Client.Common;
-using BizHawk.Common.CollectionExtensions;
 
 using NLua;
 
@@ -10,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ConsoleLuaLibrary : LuaLibraryBase
 	{
+		public Lazy<string> AllAPINames { get; set; }
+
 		public ToolManager Tools { get; set; }
 
 		public ConsoleLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
@@ -30,15 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("local stconget = console.getluafunctionslist( );")]
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public string GetLuaFunctionsList()
-		{
-			var list = new StringBuilder();
-			foreach (var function in _luaLibsImpl.Docs)
-			{
-				list.AppendLine(function.Name);
-			}
-
-			return list.ToString();
-		}
+			=> AllAPINames.Value;
 
 		[LuaMethodExample("console.log( \"New log.\" );")]
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
@@ -64,27 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
-			static string SerializeTable(LuaTable lti)
-			{
-				var keyObjs = lti.Keys;
-				var valueObjs = lti.Values;
-				if (keyObjs.Count != valueObjs.Count)
-				{
-					throw new ArgumentException(message: "each value must be paired with one key, they differ in number", paramName: nameof(lti));
-				}
-
-				var values = new object[keyObjs.Count];
-				var kvpIndex = 0;
-				foreach (var valueObj in valueObjs)
-				{
-					values[kvpIndex++] = valueObj;
-				}
-
-				return string.Concat(keyObjs.Cast<object>()
-					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
-					.Order());
-			}
-
 			if (!Tools.Has<LuaConsole>())
 			{
 				return;
@@ -96,8 +68,9 @@ namespace BizHawk.Client.EmuHawk
 				=> sb.Append(output switch
 				{
 					null => "nil",
-					LuaTable table => SerializeTable(table),
-					_ => output.ToString()
+					LuaTable table => table.PrettyPrintShallow(),
+					IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+					_ => output.ToString(),
 				});
 
 			if (outputs == null || outputs.Length == 0 || (outputs.Length == 1 && outputs[0] is null))

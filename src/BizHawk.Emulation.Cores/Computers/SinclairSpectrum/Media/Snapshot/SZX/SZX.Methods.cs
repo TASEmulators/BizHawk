@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
 					// ZXSTAYBLOCK
-					if (s._machine.Spectrum.MachineType != MachineType.ZXSpectrum16 && s._machine.Spectrum.MachineType != MachineType.ZXSpectrum48)
+					if (s._machine.Spectrum.MachineType is not (MachineType.ZXSpectrum16 or MachineType.ZXSpectrum48))
 					{
 						var gStruct = s.GetZXSTAYBLOCK();
 						block.dwId = MediaConverter.GetUInt32(Encoding.UTF8.GetBytes("AY\0\0"), 0);
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							break;
 					}
 					/*
-                    // ZXSTPLUS3                   
+                    // ZXSTPLUS3
                     if (s._machine.Spectrum.MachineType == MachineType.ZXSpectrum128Plus3)
                     {
                         var iStruct = s.GetZXSTPLUS3();
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             buff = MediaConverter.SerializeRaw(jStruct);
                             r.Write(buff);
                         }
-                    }                    
+                    }
 
                     // ZXSTTAPE
                     if (s._machine.tapeImages.Count() > 0)
@@ -220,7 +220,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         r.Write(terminator);
                     }
                     */
-
 				}
 
 				result = ms.ToArray();

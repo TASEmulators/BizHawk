@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			$6000-7FFF:  [CCCC PPPP]   High CHR, PRG bits
 			$8000-FFFF:  [.CCC ...P]   Low CHR, PRG bits
- 
+
 			'C' selects 8k CHR @ $0000
 			'P' select 32k PRG @ $8000
 		 */
-		
+
 		//configuration
 		private int prg_bank_mask_32k, chr_bank_mask_8k;
 
