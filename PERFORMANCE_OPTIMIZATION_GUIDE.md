@@ -245,7 +245,9 @@ Console.WriteLine($"Gen2 collections: {stats.Gen2Delta}");
 
 ### 5. Stack Allocation Optimization
 
-Use `stackalloc` for small temporary buffers (< 1KB):
+**Note**: This optimization requires .NET Standard 2.1+ or .NET Core 2.1+. BizHawk currently targets .NET Standard 2.0 for maximum compatibility, so this pattern is not yet applicable. However, when the project upgrades to a newer target framework, consider using `stackalloc` for small temporary buffers (< 1KB).
+
+**Future optimization (when targeting .NET Standard 2.1+)**:
 
 **Before**:
 ```csharp
@@ -253,7 +255,7 @@ var buffer = new byte[256];
 ProcessSmallData(buffer);
 ```
 
-**After** (.NET Standard 2.1+):
+**After** (requires .NET Standard 2.1+):
 ```csharp
 Span<byte> buffer = stackalloc byte[256];
 ProcessSmallData(buffer);
@@ -265,6 +267,8 @@ ProcessSmallData(buffer);
 - Automatic cleanup
 
 **Caution**: Only use for small, short-lived buffers. Stack overflow risk for large allocations.
+
+**Current alternative for .NET Standard 2.0**: Use ArrayPool for temporary buffers as shown in the buffer pooling section.
 
 ## Optimization Checklist for New Code
 

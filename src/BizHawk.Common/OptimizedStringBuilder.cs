@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -99,9 +100,9 @@ namespace BizHawk.Common
 
 			// Estimate capacity
 			int capacity = values.Length - 1; // separators
-			foreach (var str in values)
+			foreach (var str in values.Where(s => s != null))
 			{
-				if (str != null) capacity += str.Length;
+				capacity += str.Length;
 			}
 
 			var sb = new StringBuilder(capacity);
@@ -209,14 +210,16 @@ namespace BizHawk.Common
 		{
 			if (obj == null) return;
 			
-			// Don't grow pool beyond max size
-			if (_count >= _maxSize) return;
-			
 			var resetObj = _reset != null ? _reset(obj) : obj;
 			if (resetObj != null)
 			{
+				var newCount = System.Threading.Interlocked.Increment(ref _count);
+				if (newCount > _maxSize)
+				{
+					System.Threading.Interlocked.Decrement(ref _count);
+					return;
+				}
 				_objects.Add(resetObj);
-				System.Threading.Interlocked.Increment(ref _count);
 			}
 		}
 	}

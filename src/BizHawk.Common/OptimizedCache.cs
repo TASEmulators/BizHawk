@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common
@@ -15,7 +16,7 @@ namespace BizHawk.Common
 	{
 		private sealed class CacheNode
 		{
-			public TKey Key;
+			public readonly TKey Key;
 			public TValue Value;
 			public CacheNode? Prev;
 			public CacheNode? Next;
@@ -64,8 +65,8 @@ namespace BizHawk.Common
 
 			_capacity = capacity;
 			_cache = new Dictionary<TKey, CacheNode>(capacity);
-			_head = new CacheNode(null!, null!);
-			_tail = new CacheNode(null!, null!);
+			_head = new CacheNode(default!, default!);
+			_tail = new CacheNode(default!, default!);
 			_head.Next = _tail;
 			_tail.Prev = _head;
 			_count = 0;
@@ -157,6 +158,11 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Gets or adds a value to the cache using a factory function.
 		/// </summary>
+		/// <remarks>
+		/// Warning: The factory function is executed while holding the cache lock.
+		/// Ensure the factory is fast and does not call back into this cache or acquire other locks
+		/// to avoid deadlocks and performance issues.
+		/// </remarks>
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
 		{
 			lock (_lock)
@@ -227,7 +233,7 @@ namespace BizHawk.Common
 	{
 		private sealed class CacheEntry
 		{
-			public TValue Value;
+			public readonly TValue Value;
 			public readonly DateTime ExpirationTime;
 
 			public CacheEntry(TValue value, DateTime expirationTime)
@@ -303,6 +309,11 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Gets or adds a value to the cache using a factory function.
 		/// </summary>
+		/// <remarks>
+		/// Warning: The factory function is executed while holding the cache lock.
+		/// Ensure the factory is fast and does not call back into this cache or acquire other locks
+		/// to avoid deadlocks and performance issues.
+		/// </remarks>
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
 		{
 			return GetOrAdd(key, valueFactory, _defaultExpiration);
@@ -311,6 +322,11 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Gets or adds a value to the cache using a factory function with custom expiration.
 		/// </summary>
+		/// <remarks>
+		/// Warning: The factory function is executed while holding the cache lock.
+		/// Ensure the factory is fast and does not call back into this cache or acquire other locks
+		/// to avoid deadlocks and performance issues.
+		/// </remarks>
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory, TimeSpan expiration)
 		{
 			lock (_lock)
@@ -357,14 +373,7 @@ namespace BizHawk.Common
 		{
 			lock (_lock)
 			{
-				var keysToRemove = new List<TKey>();
-				foreach (var kvp in _cache)
-				{
-					if (kvp.Value.IsExpired)
-					{
-						keysToRemove.Add(kvp.Key);
-					}
-				}
+				var keysToRemove = _cache.Where(kvp => kvp.Value.IsExpired).Select(kvp => kvp.Key).ToList();
 
 				foreach (var key in keysToRemove)
 				{

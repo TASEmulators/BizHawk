@@ -71,7 +71,7 @@ namespace BizHawk.Common
 				Debug.Assert(bytesRead == 4, "failed to read tail");
 				src.Seek(0, SeekOrigin.Begin);
 				using var gs = new GZipStream(src, CompressionMode.Decompress, true);
-				var expectedSize = MemoryMarshal.Read<int>(tmp.AsSpan().Slice(0, 4));
+				var expectedSize = MemoryMarshal.Read<int>(tmp);
 				if (expectedSize < 0) throw new InvalidOperationException("Invalid GZIP size");
 				var data = new byte[expectedSize];
 				using var ms = new MemoryStream(data);

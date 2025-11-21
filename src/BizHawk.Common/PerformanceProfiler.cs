@@ -263,11 +263,8 @@ namespace BizHawk.Common
 			{
 				if (_enabled)
 				{
-					_stopwatch?.Stop();
-					if (_stopwatch != null)
-					{
-						_profiler.RecordSample(_name, _stopwatch.ElapsedTicks);
-					}
+					_stopwatch!.Stop();
+					_profiler.RecordSample(_name, _stopwatch.ElapsedTicks);
 				}
 			}
 		}
