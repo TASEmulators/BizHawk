@@ -228,7 +228,7 @@ namespace BizHawk.Common
 		private sealed class CacheEntry
 		{
 			public TValue Value;
-			public DateTime ExpirationTime;
+			public readonly DateTime ExpirationTime;
 
 			public CacheEntry(TValue value, DateTime expirationTime)
 			{
