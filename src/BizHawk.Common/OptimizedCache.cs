@@ -64,8 +64,8 @@ namespace BizHawk.Common
 
 			_capacity = capacity;
 			_cache = new Dictionary<TKey, CacheNode>(capacity);
-			_head = new CacheNode(default, default);
-			_tail = new CacheNode(default, default);
+			_head = new CacheNode(null!, null!);
+			_tail = new CacheNode(null!, null!);
 			_head.Next = _tail;
 			_tail.Prev = _head;
 			_count = 0;
