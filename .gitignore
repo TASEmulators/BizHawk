@@ -9,6 +9,10 @@
 Backup/
 UpgradeLog.htm
 
+# Build artifacts
+**/bin/
+**/obj/
+
 *.ilk
 *.il
 *.tlog
