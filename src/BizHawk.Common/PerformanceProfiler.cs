@@ -248,7 +248,7 @@ namespace BizHawk.Common
 		{
 			private readonly PerformanceProfiler _profiler;
 			private readonly string _name;
-			private readonly Stopwatch _stopwatch;
+			private readonly Stopwatch? _stopwatch;
 			private readonly bool _enabled;
 
 			internal ProfileScope(PerformanceProfiler profiler, string name, bool enabled)
@@ -261,10 +261,13 @@ namespace BizHawk.Common
 
 			public void Dispose()
 			{
-				if (_enabled && _stopwatch != null)
+				if (_enabled)
 				{
-					_stopwatch.Stop();
-					_profiler.RecordSample(_name, _stopwatch.ElapsedTicks);
+					_stopwatch?.Stop();
+					if (_stopwatch != null)
+					{
+						_profiler.RecordSample(_name, _stopwatch.ElapsedTicks);
+					}
 				}
 			}
 		}

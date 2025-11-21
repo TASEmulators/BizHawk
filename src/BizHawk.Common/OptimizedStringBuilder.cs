@@ -178,30 +178,46 @@ namespace BizHawk.Common
 	}
 
 	/// <summary>
-	/// Simple object pool for reusing expensive objects.
+	/// Simple object pool for reusing expensive objects with a maximum size limit.
 	/// </summary>
 	internal class ObjectPool<T> where T : class
 	{
 		private readonly Func<T> _factory;
 		private readonly Func<T, T> _reset;
 		private readonly System.Collections.Concurrent.ConcurrentBag<T> _objects = new System.Collections.Concurrent.ConcurrentBag<T>();
+		private readonly int _maxSize;
+		private int _count;
 
-		public ObjectPool(Func<T> factory, Func<T, T> reset)
+		public ObjectPool(Func<T> factory, Func<T, T> reset, int maxSize = 64)
 		{
 			_factory = factory ?? throw new ArgumentNullException(nameof(factory));
 			_reset = reset;
+			_maxSize = maxSize;
 		}
 
 		public T Get()
 		{
-			return _objects.TryTake(out var item) ? item : _factory();
+			if (_objects.TryTake(out var item))
+			{
+				System.Threading.Interlocked.Decrement(ref _count);
+				return item;
+			}
+			return _factory();
 		}
 
 		public void Return(T obj)
 		{
 			if (obj == null) return;
+			
+			// Don't grow pool beyond max size
+			if (_count >= _maxSize) return;
+			
 			var resetObj = _reset != null ? _reset(obj) : obj;
-			if (resetObj != null) _objects.Add(resetObj);
+			if (resetObj != null)
+			{
+				_objects.Add(resetObj);
+				System.Threading.Interlocked.Increment(ref _count);
+			}
 		}
 	}
 }

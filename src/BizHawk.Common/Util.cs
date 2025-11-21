@@ -58,23 +58,30 @@ namespace BizHawk.Common
 		public static void DebugWriteLine(string format, params object[] arg) => Console.WriteLine(format, arg);
 
 		/// <exception cref="InvalidOperationException">issues with parsing <paramref name="src"/></exception>
-		/// <remarks>Optimized version using stackalloc for small temporary buffer</remarks>
+		/// <remarks>Optimized version using ArrayPool for temporary buffer</remarks>
 		public static byte[] DecompressGzipFile(Stream src)
 		{
-			Span<byte> tmp = stackalloc byte[4];
-			if (src.Read(tmp.Slice(0, 2)) != 2) throw new InvalidOperationException("Unexpected end of stream");
-			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
-			src.Seek(-4, SeekOrigin.End);
-			var bytesRead = src.Read(tmp);
-			Debug.Assert(bytesRead == tmp.Length, "failed to read tail");
-			src.Seek(0, SeekOrigin.Begin);
-			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
-			var expectedSize = MemoryMarshal.Read<int>(tmp);
-			if (expectedSize < 0) throw new InvalidOperationException("Invalid GZIP size");
-			var data = new byte[expectedSize];
-			using var ms = new MemoryStream(data);
-			gs.CopyTo(ms);
-			return data;
+			var tmp = ArrayPool<byte>.Shared.Rent(4);
+			try
+			{
+				if (src.Read(tmp, 0, 2) != 2) throw new InvalidOperationException("Unexpected end of stream");
+				if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
+				src.Seek(-4, SeekOrigin.End);
+				var bytesRead = src.Read(tmp, 0, 4);
+				Debug.Assert(bytesRead == 4, "failed to read tail");
+				src.Seek(0, SeekOrigin.Begin);
+				using var gs = new GZipStream(src, CompressionMode.Decompress, true);
+				var expectedSize = MemoryMarshal.Read<int>(tmp.AsSpan().Slice(0, 4));
+				if (expectedSize < 0) throw new InvalidOperationException("Invalid GZIP size");
+				var data = new byte[expectedSize];
+				using var ms = new MemoryStream(data);
+				gs.CopyTo(ms);
+				return data;
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(tmp);
+			}
 		}
 
 		/// <remarks>adapted from https://stackoverflow.com/a/3928856/7467292, values are compared using <see cref="EqualityComparer{T}.Default">EqualityComparer.Default</see></remarks>
