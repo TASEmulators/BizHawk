@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -24,12 +25,19 @@ namespace BizHawk.Common
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{
 			const int size = 0x2000;
-			var buffer = new byte[size];
-			while (len > 0)
+			var buffer = ArrayPool<byte>.Shared.Rent(size);
+			try
 			{
-				var n = src.Read(buffer, 0, (int) Math.Min(len, size));
-				dest.Write(buffer, 0, n);
-				len -= n;
+				while (len > 0)
+				{
+					var n = src.Read(buffer, 0, (int) Math.Min(len, size));
+					dest.Write(buffer, 0, n);
+					len -= n;
+				}
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}
 
@@ -50,18 +58,20 @@ namespace BizHawk.Common
 		public static void DebugWriteLine(string format, params object[] arg) => Console.WriteLine(format, arg);
 
 		/// <exception cref="InvalidOperationException">issues with parsing <paramref name="src"/></exception>
-		/// <remarks>TODO use <see cref="MemoryStream(int)"/> and <see cref="MemoryStream.ToArray"/> instead of using <see cref="MemoryStream(byte[])"/> and keeping a reference to the array? --yoshi</remarks>
+		/// <remarks>Optimized version using stackalloc for small temporary buffer</remarks>
 		public static byte[] DecompressGzipFile(Stream src)
 		{
-			var tmp = new byte[4];
-			if (src.Read(tmp, 0, 2) != 2) throw new InvalidOperationException("Unexpected end of stream");
+			Span<byte> tmp = stackalloc byte[4];
+			if (src.Read(tmp.Slice(0, 2)) != 2) throw new InvalidOperationException("Unexpected end of stream");
 			if (tmp[0] != 0x1F || tmp[1] != 0x8B) throw new InvalidOperationException("GZIP header not present");
 			src.Seek(-4, SeekOrigin.End);
-			var bytesRead = src.Read(tmp, offset: 0, count: tmp.Length);
+			var bytesRead = src.Read(tmp);
 			Debug.Assert(bytesRead == tmp.Length, "failed to read tail");
 			src.Seek(0, SeekOrigin.Begin);
 			using var gs = new GZipStream(src, CompressionMode.Decompress, true);
-			var data = new byte[MemoryMarshal.Read<int>(tmp)]; //TODO definitely not a uint? worth checking, though values >= 0x80000000U would immediately throw here since it would amount to a negative array length
+			var expectedSize = MemoryMarshal.Read<int>(tmp);
+			if (expectedSize < 0) throw new InvalidOperationException("Invalid GZIP size");
+			var data = new byte[expectedSize];
 			using var ms = new MemoryStream(data);
 			gs.CopyTo(ms);
 			return data;
