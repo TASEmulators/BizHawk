@@ -44,11 +44,22 @@ echo "✓ .NET SDK found: $DOTNET_VERSION"
 
 # Check for .NET MAUI workload (required for Android)
 if ! dotnet workload list | grep -q "maui"; then
-    echo -e "${YELLOW}Installing .NET MAUI workload...${NC}"
-    dotnet workload install maui
+    echo -e "${YELLOW}.NET MAUI workload is required but not installed.${NC}"
+    echo -e "${YELLOW}This script will install it automatically.${NC}"
+    read -p "Do you want to install .NET MAUI workload now? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Installing .NET MAUI workload...${NC}"
+        dotnet workload install maui
+        echo "✓ .NET MAUI workload installed"
+    else
+        echo -e "${RED}ERROR: .NET MAUI workload is required for Android builds${NC}"
+        echo "Please install it manually with: dotnet workload install maui"
+        exit 1
+    fi
+else
+    echo "✓ .NET MAUI workload already installed"
 fi
-
-echo "✓ .NET MAUI workload installed"
 
 # Check for Android SDK (via ANDROID_HOME or ANDROID_SDK_ROOT)
 if [ -z "$ANDROID_HOME" ] && [ -z "$ANDROID_SDK_ROOT" ]; then
