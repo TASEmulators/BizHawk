@@ -36,6 +36,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static async Task<byte[]> ReadFileAsync(string path, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentException("Path cannot be null or empty", nameof(path));
+            
             using var stream = new FileStream(
                 path,
                 FileMode.Open,
@@ -71,6 +74,11 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static async Task WriteFileAsync(string path, byte[] data, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentException("Path cannot be null or empty", nameof(path));
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            
             using var stream = new FileStream(
                 path,
                 FileMode.Create,
@@ -91,6 +99,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static byte[] ReadLargeFile(string path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentException("Path cannot be null or empty", nameof(path));
+            
             var fileInfo = new FileInfo(path);
             var length = fileInfo.Length;
 
@@ -137,6 +148,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static byte[] CompressGZip(byte[] data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            
             using var output = new MemoryStream();
             using (var gzip = new GZipStream(output, CompressionLevel.Optimal))
             {
@@ -150,6 +164,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static byte[] DecompressGZip(byte[] compressedData)
         {
+            if (compressedData == null)
+                throw new ArgumentNullException(nameof(compressedData));
+            
             using var input = new MemoryStream(compressedData);
             using var gzip = new GZipStream(input, CompressionMode.Decompress);
             using var output = new MemoryStream();
@@ -164,6 +181,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static byte[] CompressDeflate(byte[] data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            
             using var output = new MemoryStream();
             using (var deflate = new DeflateStream(output, CompressionLevel.Fastest))
             {
@@ -177,6 +197,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static byte[] DecompressDeflate(byte[] compressedData)
         {
+            if (compressedData == null)
+                throw new ArgumentNullException(nameof(compressedData));
+            
             using var input = new MemoryStream(compressedData);
             using var deflate = new DeflateStream(input, CompressionMode.Decompress);
             using var output = new MemoryStream();
@@ -191,6 +214,9 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public static float EstimateCompressionRatio(byte[] data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            
             // Simple entropy estimation
             // Real compression depends on data patterns
             var histogram = new int[256];
@@ -221,14 +247,19 @@ namespace BizHawk.Rafaelia.Optimization.IO
     /// </summary>
     public sealed class ReadAheadCache : IDisposable
     {
-        private readonly int _maxCacheSize;
+        private readonly long _maxCacheSize;
         private readonly System.Collections.Concurrent.ConcurrentDictionary<string, CacheEntry> _cache;
         private long _currentCacheSize;
         private bool _disposed;
 
         public ReadAheadCache(int maxCacheSizeMB = 128)
         {
-            _maxCacheSize = maxCacheSizeMB * 1024 * 1024;
+            if (maxCacheSizeMB <= 0)
+                throw new ArgumentOutOfRangeException(nameof(maxCacheSizeMB), "maxCacheSizeMB must be positive.");
+            // Prevent overflow: max allowed MB is (int.MaxValue / (1024 * 1024))
+            if (maxCacheSizeMB > int.MaxValue / (1024 * 1024))
+                throw new ArgumentOutOfRangeException(nameof(maxCacheSizeMB), $"maxCacheSizeMB must not exceed {int.MaxValue / (1024 * 1024)}.");
+            _maxCacheSize = (long)maxCacheSizeMB * 1024 * 1024;
             _cache = new System.Collections.Concurrent.ConcurrentDictionary<string, CacheEntry>();
             _currentCacheSize = 0;
         }
@@ -239,6 +270,11 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// </summary>
         public async Task<byte[]> GetOrLoadAsync(string path)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(ReadAheadCache));
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentException("Path cannot be null or empty", nameof(path));
+            
             // Check cache first
             if (_cache.TryGetValue(path, out var entry))
             {

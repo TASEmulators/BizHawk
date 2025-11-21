@@ -113,6 +113,13 @@ namespace BizHawk.Rafaelia.Core.Memory
         /// <param name="height">Frame height in pixels</param>
         public MatrixFrameBuffer(int width, int height)
         {
+            if (width <= 0)
+                throw new ArgumentOutOfRangeException(nameof(width), "Width must be positive");
+            if (height <= 0)
+                throw new ArgumentOutOfRangeException(nameof(height), "Height must be positive");
+            if ((long)width * height > int.MaxValue)
+                throw new ArgumentException("Buffer size exceeds maximum array size");
+            
             _width = width;
             _height = height;
             // 2D array provides better cache locality than 1D
@@ -137,6 +144,9 @@ namespace BizHawk.Rafaelia.Core.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetPixel(int y, int x)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(MatrixFrameBuffer));
+            
             return _buffer[y, x];
         }
 
@@ -146,6 +156,9 @@ namespace BizHawk.Rafaelia.Core.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetPixel(int y, int x, byte value)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(MatrixFrameBuffer));
+            
             _buffer[y, x] = value;
         }
 
@@ -154,6 +167,9 @@ namespace BizHawk.Rafaelia.Core.Memory
         /// </summary>
         public void Clear()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(MatrixFrameBuffer));
+            
             Array.Clear(_buffer, 0, _buffer.Length);
         }
 
@@ -164,6 +180,8 @@ namespace BizHawk.Rafaelia.Core.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<byte> GetRowSpan(int row)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(MatrixFrameBuffer));
             if (row < 0 || row >= _height)
                 throw new ArgumentOutOfRangeException(nameof(row));
 

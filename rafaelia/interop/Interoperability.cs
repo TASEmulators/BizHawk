@@ -178,6 +178,9 @@ namespace BizHawk.Rafaelia.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool IsAligned(void* ptr, int alignment)
         {
+            if (ptr == null)
+                throw new ArgumentNullException(nameof(ptr));
+            
             return ((long)ptr & (alignment - 1)) == 0;
         }
 

@@ -52,6 +52,13 @@ namespace BizHawk.Rafaelia.Core.CPU
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void FastCopy(byte[] source, byte[] destination, int length)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (destination == null)
+                throw new ArgumentNullException(nameof(destination));
+            if (length < 0 || length > source.Length || length > destination.Length)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            
             if (length < Vector<byte>.Count)
             {
                 // Small copy: use fast native method
@@ -91,6 +98,11 @@ namespace BizHawk.Rafaelia.Core.CPU
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void FastClear(byte[] array, int length)
         {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            if (length < 0 || length > array.Length)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            
             if (length < Vector<byte>.Count)
             {
                 Array.Clear(array, 0, length);
@@ -234,6 +246,9 @@ namespace BizHawk.Rafaelia.Core.CPU
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] CreateByteTable(Func<byte, byte> transform)
         {
+            if (transform == null)
+                throw new ArgumentNullException(nameof(transform));
+            
             byte[] table = new byte[256];
             for (int i = 0; i < 256; i++)
                 table[i] = transform((byte)i);
@@ -247,6 +262,9 @@ namespace BizHawk.Rafaelia.Core.CPU
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort[] CreateUInt16Table(Func<ushort, ushort> transform)
         {
+            if (transform == null)
+                throw new ArgumentNullException(nameof(transform));
+            
             ushort[] table = new ushort[65536];
             for (int i = 0; i < 65536; i++)
                 table[i] = transform((ushort)i);
@@ -260,6 +278,14 @@ namespace BizHawk.Rafaelia.Core.CPU
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ApplyByteTable(byte[] input, byte[] output, byte[] table)
         {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
+            if (output == null)
+                throw new ArgumentNullException(nameof(output));
+            if (table == null)
+                throw new ArgumentNullException(nameof(table));
+            if (table.Length != 256)
+                throw new ArgumentException("Table must have exactly 256 entries", nameof(table));
             if (input.Length != output.Length)
                 throw new ArgumentException("Input and output must be same length");
 

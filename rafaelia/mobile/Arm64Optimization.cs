@@ -108,6 +108,11 @@ namespace BizHawk.Rafaelia.Mobile
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void NeonClear(byte* ptr, int length)
         {
+            if (ptr == null)
+                throw new ArgumentNullException(nameof(ptr));
+            if (length < 0)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            
             if (!IsNeonSupported || length < 16)
             {
                 // Fallback for small buffers
@@ -366,6 +371,9 @@ namespace BizHawk.Rafaelia.Mobile
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool IsCacheLineAligned(void* ptr)
         {
+            if (ptr == null)
+                throw new ArgumentNullException(nameof(ptr));
+            
             return ((long)ptr & (CacheLineSize - 1)) == 0;
         }
     }
