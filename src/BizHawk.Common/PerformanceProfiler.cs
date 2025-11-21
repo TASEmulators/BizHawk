@@ -353,13 +353,13 @@ namespace BizHawk.Common
 	/// </summary>
 	public sealed class MemoryStats
 	{
-		public long TotalMemoryBytes { get; set; }
-		public int Gen0Collections { get; set; }
-		public int Gen1Collections { get; set; }
-		public int Gen2Collections { get; set; }
-		public int Gen0Delta { get; set; }
-		public int Gen1Delta { get; set; }
-		public int Gen2Delta { get; set; }
+		public long TotalMemoryBytes { get; init; }
+		public int Gen0Collections { get; init; }
+		public int Gen1Collections { get; init; }
+		public int Gen2Collections { get; init; }
+		public int Gen0Delta { get; init; }
+		public int Gen1Delta { get; init; }
+		public int Gen2Delta { get; init; }
 
 		public override string ToString()
 		{
