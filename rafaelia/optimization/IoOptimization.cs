@@ -247,6 +247,8 @@ namespace BizHawk.Rafaelia.Optimization.IO
     /// </summary>
     public sealed class ReadAheadCache : IDisposable
     {
+        private const int MaxAllowedCacheSizeMB = int.MaxValue / (1024 * 1024);
+        
         private readonly long _maxCacheSize;
         private readonly System.Collections.Concurrent.ConcurrentDictionary<string, CacheEntry> _cache;
         private long _currentCacheSize;
@@ -257,8 +259,8 @@ namespace BizHawk.Rafaelia.Optimization.IO
             if (maxCacheSizeMB <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxCacheSizeMB), "maxCacheSizeMB must be positive.");
             // Prevent overflow: max allowed MB is (int.MaxValue / (1024 * 1024))
-            if (maxCacheSizeMB > int.MaxValue / (1024 * 1024))
-                throw new ArgumentOutOfRangeException(nameof(maxCacheSizeMB), $"maxCacheSizeMB must not exceed {int.MaxValue / (1024 * 1024)}.");
+            if (maxCacheSizeMB > MaxAllowedCacheSizeMB)
+                throw new ArgumentOutOfRangeException(nameof(maxCacheSizeMB), $"maxCacheSizeMB must not exceed {MaxAllowedCacheSizeMB}.");
             _maxCacheSize = (long)maxCacheSizeMB * 1024 * 1024;
             _cache = new System.Collections.Concurrent.ConcurrentDictionary<string, CacheEntry>();
             _currentCacheSize = 0;
