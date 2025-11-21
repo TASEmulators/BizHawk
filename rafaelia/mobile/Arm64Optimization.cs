@@ -45,6 +45,14 @@ namespace BizHawk.Rafaelia.Mobile
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void NeonMemoryCopy(byte* source, byte* destination, int length)
         {
+            // Null pointer checks
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (destination == null)
+                throw new ArgumentNullException(nameof(destination));
+            if (length < 0)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            
             if (!IsNeonSupported || length < 16)
             {
                 // Fallback for non-NEON or small copies

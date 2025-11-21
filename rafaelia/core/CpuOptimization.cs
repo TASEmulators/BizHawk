@@ -63,25 +63,23 @@ namespace BizHawk.Rafaelia.Core.CPU
             fixed (byte* srcPtr = source)
             fixed (byte* dstPtr = destination)
             {
-                byte* src = srcPtr;
-                byte* dst = dstPtr;
                 int remaining = length;
 
                 // Process full vectors
                 while (remaining >= Vector<byte>.Count)
                 {
-                    Vector<byte> vector = Unsafe.Read<Vector<byte>>(src);
-                    Unsafe.Write(dst, vector);
-                    
-                    src += Vector<byte>.Count;
-                    dst += Vector<byte>.Count;
+                    Vector<byte> vector = Unsafe.Read<Vector<byte>>(srcPtr + (length - remaining));
+                    Unsafe.Write(dstPtr + (length - remaining), vector);
                     remaining -= Vector<byte>.Count;
                 }
 
                 // Handle remaining bytes
                 if (remaining > 0)
                 {
-                    Buffer.MemoryCopy(src, dst, remaining, remaining);
+                    Buffer.MemoryCopy(srcPtr + (length - remaining), 
+                                    dstPtr + (length - remaining), 
+                                    remaining, 
+                                    remaining);
                 }
             }
         }

@@ -44,13 +44,19 @@ namespace BizHawk.Rafaelia.Optimization.IO
                 OptimalBufferSize,
                 FileOptions.Asynchronous | FileOptions.SequentialScan);
 
-            var length = (int)stream.Length;
-            var buffer = new byte[length];
+            var length = stream.Length;
+            
+            // Check for files larger than 2GB
+            if (length > int.MaxValue)
+                throw new InvalidOperationException($"File is too large ({length} bytes). Maximum supported size is {int.MaxValue} bytes.");
+            
+            var buffer = new byte[(int)length];
             
             int totalRead = 0;
-            while (totalRead < length)
+            int bytesToRead = (int)length;
+            while (totalRead < bytesToRead)
             {
-                int read = await stream.ReadAsync(buffer, totalRead, length - totalRead, cancellationToken);
+                int read = await stream.ReadAsync(buffer, totalRead, bytesToRead - totalRead, cancellationToken);
                 if (read == 0)
                     break;
                 totalRead += read;
@@ -81,11 +87,16 @@ namespace BizHawk.Rafaelia.Optimization.IO
         /// Reads file with memory-mapped I/O for very large files.
         /// Perfect for ROM files, disc images, etc. over 100MB.
         /// Allows OS to manage paging - uses minimal physical RAM.
+        /// Note: Maximum file size is limited by available address space.
         /// </summary>
         public static byte[] ReadLargeFile(string path)
         {
             var fileInfo = new FileInfo(path);
             var length = fileInfo.Length;
+
+            // Check for files larger than 2GB (int.MaxValue limitation)
+            if (length > int.MaxValue)
+                throw new InvalidOperationException($"File is too large ({length} bytes). Maximum supported size is {int.MaxValue} bytes.");
 
             // For files > 100MB, use memory mapping
             if (length > 100 * 1024 * 1024)
@@ -101,7 +112,7 @@ namespace BizHawk.Rafaelia.Optimization.IO
                 
                 using var accessor = mmf.CreateViewAccessor(0, 0, System.IO.MemoryMappedFiles.MemoryMappedFileAccess.Read);
                 
-                var buffer = new byte[length];
+                var buffer = new byte[(int)length];
                 accessor.ReadArray(0, buffer, 0, (int)length);
                 return buffer;
             }

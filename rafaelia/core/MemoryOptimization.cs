@@ -162,16 +162,15 @@ namespace BizHawk.Rafaelia.Core.Memory
         /// Perfect for SIMD operations on entire scanlines.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Span<byte> GetRowSpan(int row)
+        public Span<byte> GetRowSpan(int row)
         {
             if (row < 0 || row >= _height)
                 throw new ArgumentOutOfRangeException(nameof(row));
 
-            // Direct memory access for zero-allocation span creation
-            fixed (byte* ptr = &_buffer[row, 0])
-            {
-                return new Span<byte>(ptr, _width);
-            }
+            // Use MemoryMarshal to create span without fixed statement issues
+            return System.Runtime.InteropServices.MemoryMarshal.CreateSpan(
+                ref _buffer[row, 0], 
+                _width);
         }
 
         public void Dispose()
