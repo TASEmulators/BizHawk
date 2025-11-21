@@ -208,7 +208,7 @@ namespace BizHawk.Rafaelia.Core.Memory
     /// </summary>
     public ref struct StackBuffer<T> where T : unmanaged
     {
-        private Span<T> _buffer;
+        private readonly Span<T> _buffer;
 
         /// <summary>
         /// Creates a stack-allocated buffer. Memory is freed automatically.
