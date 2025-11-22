@@ -353,14 +353,31 @@ namespace BizHawk.Common
 	/// </summary>
 	public sealed class MemoryStats
 	{
-		public long TotalMemoryBytes { get; set; }
-		public int Gen0Collections { get; set; }
-		public int Gen1Collections { get; set; }
-		public int Gen2Collections { get; set; }
-		public int Gen0Delta { get; set; }
-		public int Gen1Delta { get; set; }
-		public int Gen2Delta { get; set; }
+		public MemoryStats(
+			long totalMemoryBytes,
+			int gen0Collections,
+			int gen1Collections,
+			int gen2Collections,
+			int gen0Delta,
+			int gen1Delta,
+			int gen2Delta)
+		{
+			TotalMemoryBytes = totalMemoryBytes;
+			Gen0Collections = gen0Collections;
+			Gen1Collections = gen1Collections;
+			Gen2Collections = gen2Collections;
+			Gen0Delta = gen0Delta;
+			Gen1Delta = gen1Delta;
+			Gen2Delta = gen2Delta;
+		}
 
+		public long TotalMemoryBytes { get; }
+		public int Gen0Collections { get; }
+		public int Gen1Collections { get; }
+		public int Gen2Collections { get; }
+		public int Gen0Delta { get; }
+		public int Gen1Delta { get; }
+		public int Gen2Delta { get; }
 		public override string ToString()
 		{
 			return $"Memory: {MemoryMonitor.FormatBytes(TotalMemoryBytes)}, " +
