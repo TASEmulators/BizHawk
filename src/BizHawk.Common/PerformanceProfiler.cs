@@ -275,7 +275,7 @@ namespace BizHawk.Common
 	/// </summary>
 	public sealed class ProfileStats
 	{
-		public string Name { get; set; }
+		public string Name { get; set; } = string.Empty;
 		public long CallCount { get; set; }
 		public double TotalMilliseconds { get; set; }
 		public double AverageMilliseconds { get; set; }
@@ -301,16 +301,15 @@ namespace BizHawk.Common
 			var gen1 = GC.CollectionCount(1);
 			var gen2 = GC.CollectionCount(2);
 
-			var stats = new MemoryStats
-			{
-				TotalMemoryBytes = GC.GetTotalMemory(false),
-				Gen0Collections = gen0,
-				Gen1Collections = gen1,
-				Gen2Collections = gen2,
-				Gen0Delta = (int)(gen0 - _lastGen0Count),
-				Gen1Delta = (int)(gen1 - _lastGen1Count),
-				Gen2Delta = (int)(gen2 - _lastGen2Count)
-			};
+			var stats = new MemoryStats(
+				totalMemoryBytes: GC.GetTotalMemory(false),
+				gen0Collections: gen0,
+				gen1Collections: gen1,
+				gen2Collections: gen2,
+				gen0Delta: (int)(gen0 - _lastGen0Count),
+				gen1Delta: (int)(gen1 - _lastGen1Count),
+				gen2Delta: (int)(gen2 - _lastGen2Count)
+			);
 
 			_lastGen0Count = gen0;
 			_lastGen1Count = gen1;
@@ -353,14 +352,31 @@ namespace BizHawk.Common
 	/// </summary>
 	public sealed class MemoryStats
 	{
-		public long TotalMemoryBytes { get; init; }
-		public int Gen0Collections { get; init; }
-		public int Gen1Collections { get; init; }
-		public int Gen2Collections { get; init; }
-		public int Gen0Delta { get; init; }
-		public int Gen1Delta { get; init; }
-		public int Gen2Delta { get; init; }
+		public MemoryStats(
+			long totalMemoryBytes,
+			int gen0Collections,
+			int gen1Collections,
+			int gen2Collections,
+			int gen0Delta,
+			int gen1Delta,
+			int gen2Delta)
+		{
+			TotalMemoryBytes = totalMemoryBytes;
+			Gen0Collections = gen0Collections;
+			Gen1Collections = gen1Collections;
+			Gen2Collections = gen2Collections;
+			Gen0Delta = gen0Delta;
+			Gen1Delta = gen1Delta;
+			Gen2Delta = gen2Delta;
+		}
 
+		public long TotalMemoryBytes { get; }
+		public int Gen0Collections { get; }
+		public int Gen1Collections { get; }
+		public int Gen2Collections { get; }
+		public int Gen0Delta { get; }
+		public int Gen1Delta { get; }
+		public int Gen2Delta { get; }
 		public override string ToString()
 		{
 			return $"Memory: {MemoryMonitor.FormatBytes(TotalMemoryBytes)}, " +
