@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[DisplayName("Console Mode")]
-			[Description("Picks which console to emulate. 'SGB2' always in effect when 'GB in SGB' is checked.")]
+			[Description("Picks which console to emulate. 'SGB2' is always in effect when 'GB in SGB' is checked.")]
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 
