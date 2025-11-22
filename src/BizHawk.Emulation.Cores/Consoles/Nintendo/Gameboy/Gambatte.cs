@@ -47,12 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				var flags = LibGambatte.LoadFlags.READONLY_SAV;
 
-				if (game.System == VSystemID.Raw.SGB)
-				{
-					_syncSettings.ConsoleMode = GambatteSyncSettings.ConsoleModeType.SGB2;
-				}
-
-				switch (_syncSettings.ConsoleMode)
+				switch (game.System is VSystemID.Raw.SGB ? GambatteSyncSettings.ConsoleModeType.SGB2 : _syncSettings.ConsoleMode)
 				{
 					case GambatteSyncSettings.ConsoleModeType.GB:
 						break;
