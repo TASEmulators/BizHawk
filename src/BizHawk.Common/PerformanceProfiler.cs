@@ -301,16 +301,15 @@ namespace BizHawk.Common
 			var gen1 = GC.CollectionCount(1);
 			var gen2 = GC.CollectionCount(2);
 
-			var stats = new MemoryStats
-			{
-				TotalMemoryBytes = GC.GetTotalMemory(false),
-				Gen0Collections = gen0,
-				Gen1Collections = gen1,
-				Gen2Collections = gen2,
-				Gen0Delta = (int)(gen0 - _lastGen0Count),
-				Gen1Delta = (int)(gen1 - _lastGen1Count),
-				Gen2Delta = (int)(gen2 - _lastGen2Count)
-			};
+			var stats = new MemoryStats(
+				totalMemoryBytes: GC.GetTotalMemory(false),
+				gen0Collections: gen0,
+				gen1Collections: gen1,
+				gen2Collections: gen2,
+				gen0Delta: (int)(gen0 - _lastGen0Count),
+				gen1Delta: (int)(gen1 - _lastGen1Count),
+				gen2Delta: (int)(gen2 - _lastGen2Count)
+			);
 
 			_lastGen0Count = gen0;
 			_lastGen1Count = gen1;
