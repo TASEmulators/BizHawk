@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationId>com.rafaelmeloreis.bizhawkrafaelia</ApplicationId>
+		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<AndroidManifest>AndroidManifest.xml</AndroidManifest>
+		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+		<TargetPlatformVersion>33.0</TargetPlatformVersion>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidSigningKeyStore></AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias></AndroidSigningKeyAlias>
+		<AndroidEnableProguard>false</AndroidEnableProguard>
+		<AndroidLinkMode>None</AndroidLinkMode>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+		<AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj" />
+		<ProjectReference Include="..\..\rafaelia\BizHawk.Rafaelia.csproj" />
+	</ItemGroup>
+
+</Project>
