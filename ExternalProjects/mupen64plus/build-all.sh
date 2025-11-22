@@ -53,7 +53,7 @@ cmake --build build/video-angrylion-plus
 install_to_bizhawk build/video-angrylion-plus/ mupen64plus-video-angrylion-plus
 
 rm -rf build/video-GLideN64 && mkdir -p build/video-GLideN64
-cmake -S mupen64plus-video-GLideN64/src -B build/video-GLideN64 -G Ninja -DCMAKE_BUILD_TYPE=Release -DVEC4_OPT=On -DCRC_OPT=On -DMUPENPLUSAPI=On -DNO_OSD=On
+cmake -S mupen64plus-video-GLideN64/src -B build/video-GLideN64 -G Ninja -DCMAKE_CXX_FLAGS="-fno-gnu-unique" -DCMAKE_BUILD_TYPE=Release -DVEC4_OPT=On -DCRC_OPT=On -DMUPENPLUSAPI=On -DNO_OSD=On
 cmake --build build/video-GLideN64
 install_to_bizhawk build/video-GLideN64/plugin/Release/ mupen64plus-video-GLideN64
 
