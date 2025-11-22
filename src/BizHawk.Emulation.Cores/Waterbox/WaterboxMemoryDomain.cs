@@ -191,12 +191,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
-			if (_addressMangler != 0)
-			{
-				base.BulkPeekByte(addresses, values);
-				return;
-			}
-
 			var start = (ulong)addresses.Start;
 			var count = addresses.Count();
 
