@@ -8,6 +8,7 @@
 #include "BizTypes.h"
 #include "dthumb.h"
 
+#include <type_traits>
 #include <waterboxcore.h>
 
 melonDS::NDS* CurrentNDS;
@@ -164,11 +165,22 @@ static bool SafeToPeek(u32 addr)
 			case 0x04000601:
 			case 0x04000602:
 			case 0x04000603:
+			case 0x04100000:
 				return false;
 		}
 	}
 	else // arm7
 	{
+		switch (addr)
+		{
+			case 0x04000130:
+			case 0x04000131:
+			case 0x04000134:
+			case 0x04000136:
+			case 0x04000137:
+				return false;
+		}
+
 		if (addr >= 0x04800000 && addr <= 0x04810000)
 		{
 			if (addr & 1) addr--;
@@ -181,26 +193,38 @@ static bool SafeToPeek(u32 addr)
 	return true;
 }
 
-static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
+template <typename access_size>
+static void ARM9AccessSized(access_size* buffer, s64 address, s64 count, bool write)
 {
+	static_assert(
+		std::is_same<access_size, u32>::value ||
+		std::is_same<access_size, u16>::value ||
+		std::is_same<access_size, u8>::value
+	);
+
 	if (write)
 	{
 		while (count--)
 		{
 			if (address < CurrentNDS->ARM9.ITCMSize)
 			{
-				CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)] = *buffer;
+				*(access_size*)&(CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)]) = *buffer;
 			}
 			else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
 			{
-				CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)] = *buffer;
+				*(access_size*)&(CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)]) = *buffer;
 			}
 			else
 			{
-				CurrentNDS->ARM9Write8(address, *buffer);
+				if constexpr (std::is_same<access_size, u32>::value)
+					CurrentNDS->ARM9Write32(address, *buffer);
+				else if constexpr (std::is_same<access_size, u16>::value)
+					CurrentNDS->ARM9Write16(address, *buffer);
+				else if constexpr (std::is_same<access_size, u8>::value)
+					CurrentNDS->ARM9Write8(address, *buffer);
 			}
 
-			address++;
+			address += sizeof(access_size);
 			buffer++;
 		}
 	}
@@ -210,32 +234,64 @@ static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 		{
 			if (address < CurrentNDS->ARM9.ITCMSize)
 			{
-				*buffer = CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)];
+				*buffer = *(access_size*)&(CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)]);
 			}
 			else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
 			{
-				*buffer = CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)];
+				*buffer = *(access_size*)&(CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)]);
 			}
 			else
 			{
-				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read8(address) : 0;
+				if constexpr (std::is_same<access_size, u32>::value)
+					*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read32(address) : 0;
+				else if constexpr (std::is_same<access_size, u16>::value)
+					*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read16(address) : 0;
+				else if constexpr (std::is_same<access_size, u8>::value)
+					*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read8(address) : 0;
 			}
 
-			address++;
+			address += sizeof(access_size);
 			buffer++;
 		}
 	}
 }
-
-static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
+static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
 {
+	if (((u64)buffer & 3) == 0 && (count & 3) == 0 && (address & 3) == 0)
+	{
+		ARM9AccessSized<u32>((u32*)buffer, address, count >> 2, write);
+	}
+	else if (((u64)buffer & 1) == 0 && (count & 1) == 0 && (address & 1) == 0)
+	{
+		ARM9AccessSized<u16>((u16*)buffer, address, count >> 1, write);
+	}
+	else
+	{
+		ARM9AccessSized<u8>(buffer, address, count, write);
+	}
+}
+
+template <typename access_size>
+static void ARM7AccessSized(access_size* buffer, s64 address, s64 count, bool write)
+{
+	static_assert(
+		std::is_same<access_size, u32>::value ||
+		std::is_same<access_size, u16>::value ||
+		std::is_same<access_size, u8>::value
+	);
+
 	if (write)
 	{
 		while (count--)
 		{
-			CurrentNDS->ARM7Write8(address, *buffer);
+			if constexpr (std::is_same<access_size, u32>::value)
+				CurrentNDS->ARM7Write32(address, *buffer);
+			else if constexpr (std::is_same<access_size, u16>::value)
+				CurrentNDS->ARM7Write16(address, *buffer);
+			else if constexpr (std::is_same<access_size, u8>::value)
+				CurrentNDS->ARM7Write8(address, *buffer);
 
-			address++;
+			address += sizeof(access_size);
 			buffer++;
 		}
 	}
@@ -243,11 +299,31 @@ static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
 	{
 		while (count--)
 		{
-			*buffer = SafeToPeek<false>(address) ? CurrentNDS->ARM7Read8(address) : 0;
+			if constexpr (std::is_same<access_size, u32>::value)
+				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM7Read32(address) : 0;
+			else if constexpr (std::is_same<access_size, u16>::value)
+				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM7Read16(address) : 0;
+			else if constexpr (std::is_same<access_size, u8>::value)
+				*buffer = SafeToPeek<false>(address) ? CurrentNDS->ARM7Read8(address) : 0;
 
-			address++;
+			address += sizeof(access_size);
 			buffer++;
 		}
+	}
+}
+static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
+{
+	if (((u64)buffer & 3) == 0 && (count & 3) == 0 && (address & 3) == 0)
+	{
+		ARM7AccessSized<u32>((u32*)buffer, address, count >> 2, write);
+	}
+	else if (((u64)buffer & 1) == 0 && (count & 1) == 0 && (address & 1) == 0)
+	{
+		ARM7AccessSized<u16>((u16*)buffer, address, count >> 1, write);
+	}
+	else
+	{
+		ARM7AccessSized<u8>(buffer, address, count, write);
 	}
 }
 
