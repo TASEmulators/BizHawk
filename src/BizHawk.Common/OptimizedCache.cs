@@ -88,7 +88,7 @@ namespace BizHawk.Common
 					return true;
 				}
 
-				value = default;
+				value = default!;
 				return false;
 			}
 		}
@@ -200,21 +200,23 @@ namespace BizHawk.Common
 		{
 			node.Next = _head.Next;
 			node.Prev = _head;
-			_head.Next.Prev = node;
+			_head.Next!.Prev = node;
 			_head.Next = node;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void RemoveNode(CacheNode node)
 		{
-			node.Prev.Next = node.Next;
-			node.Next.Prev = node.Prev;
+			// Invariant: node is always part of the linked list, so Prev and Next are never null
+			node.Prev!.Next = node.Next;
+			node.Next!.Prev = node.Prev;
 		}
 
 		private void RemoveLeastRecentlyUsed()
 		{
 			var lru = _tail.Prev;
-			if (lru != _head)
+			// The list is never empty (always has sentinel head/tail nodes)
+			if (lru != _head && lru != null)
 			{
 				RemoveNode(lru);
 				_cache.Remove(lru.Key);
@@ -281,7 +283,7 @@ namespace BizHawk.Common
 					_cache.Remove(key);
 				}
 
-				value = default;
+				value = default!;
 				return false;
 			}
 		}
