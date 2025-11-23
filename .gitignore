@@ -54,3 +54,8 @@ UpgradeLog.htm
 
 launchSettings.json
 activation_report.json
+
+# Android signing keystores (never commit these!)
+*.keystore
+*.jks
+keystore.base64

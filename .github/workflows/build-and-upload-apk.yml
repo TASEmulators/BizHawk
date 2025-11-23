@@ -97,7 +97,20 @@ jobs:
           dotnet restore src/BizHawk.Android/BizHawk.Android.csproj --verbosity normal
         timeout-minutes: 10
 
-      - name: Build unsigned Android APK
+      - name: Setup Android Keystore for Signing
+        run: |
+          # Decode keystore from base64
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > $HOME/bizhawk-debug.keystore
+          
+          # Set keystore environment variables for build
+          echo "KEYSTORE_PATH=$HOME/bizhawk-debug.keystore" >> $GITHUB_ENV
+          echo "KEYSTORE_ALIAS=bizhawk-debug" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=bizhawk-debug-password" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=bizhawk-debug-password" >> $GITHUB_ENV
+          
+          echo "✓ Keystore configured for APK signing"
+
+      - name: Build signed Android APK
         run: |
           dotnet publish src/BizHawk.Android/BizHawk.Android.csproj \
             -c Release \
@@ -105,17 +118,26 @@ jobs:
             -p:AndroidPackageFormat=apk \
             -p:RuntimeIdentifier=android-arm64 \
             -p:AndroidSdkDirectory=$ANDROID_HOME \
+            -p:AndroidSigningKeyStore=$KEYSTORE_PATH \
+            -p:AndroidSigningKeyAlias=$KEYSTORE_ALIAS \
+            -p:AndroidSigningKeyPass=$KEY_PASSWORD \
+            -p:AndroidSigningStorePass=$KEYSTORE_PASSWORD \
             --no-restore \
             --verbosity detailed
         timeout-minutes: 30
 
-      - name: Find and copy APK
+      - name: Find and copy signed APK
         run: |
           # Create output directory
           mkdir -p output/android
           
-          # Find the APK (look for unsigned or any apk)
-          APK_FILE=$(find src/BizHawk.Android/bin/Release -name "*.apk" | grep -v ".signed.apk" | head -1)
+          # Find the signed APK
+          APK_FILE=$(find src/BizHawk.Android/bin/Release -name "*-Signed.apk" | head -1)
+          
+          if [ -z "$APK_FILE" ]; then
+            echo "Signed APK not found, looking for any APK..."
+            APK_FILE=$(find src/BizHawk.Android/bin/Release -name "*.apk" | head -1)
+          fi
           
           if [ -z "$APK_FILE" ]; then
             echo "ERROR: APK file not found!"
@@ -127,15 +149,15 @@ jobs:
           echo "Found APK: $APK_FILE"
           
           # Copy to output directory with standard name
-          cp "$APK_FILE" output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+          cp "$APK_FILE" output/android/BizHawkRafaelia-signed-arm64-v8a.apk
           
           # Get APK size
-          ls -lh output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+          ls -lh output/android/BizHawkRafaelia-signed-arm64-v8a.apk
 
       - name: Generate build info
         run: |
           cat > output/android/build-info.txt << EOF
-          BizHawkRafaelia - Unsigned APK Build Report
+          BizHawkRafaelia - Signed APK Build Report
           ============================================
           
           Build Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
@@ -146,16 +168,16 @@ jobs:
           Workflow Run: ${{ github.run_number }}
           
           APK Information:
-            File: BizHawkRafaelia-unsigned-arm64-v8a.apk
-            Size: $(du -h output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk | cut -f1)
+            File: BizHawkRafaelia-signed-arm64-v8a.apk
+            Size: $(du -h output/android/BizHawkRafaelia-signed-arm64-v8a.apk | cut -f1)
             Target: ARM64-v8a (Android 7.0+)
-            Signed: No (unsigned)
+            Signed: Yes (debug keystore)
           
           Installation Command:
-            adb install BizHawkRafaelia-unsigned-arm64-v8a.apk
+            adb install BizHawkRafaelia-signed-arm64-v8a.apk
           
-          WARNING: This is an unsigned APK for testing purposes only.
-          For production distribution, you must sign the APK with your keystore.
+          NOTE: This APK is signed with a debug keystore for testing and CI.
+          For production releases, use a production keystore with proper security.
           
           Performance Optimizations:
             ✓ Rafaelia performance framework
@@ -173,12 +195,12 @@ jobs:
           
           cat output/android/build-info.txt
 
-      - name: Upload APK as artifact
+      - name: Upload signed APK as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BizHawkRafaelia-APK-${{ github.sha }}
+          name: BizHawkRafaelia-Signed-APK-${{ github.sha }}
           path: |
-            output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+            output/android/BizHawkRafaelia-signed-arm64-v8a.apk
             output/android/build-info.txt
           retention-days: 90
           if-no-files-found: error
@@ -188,27 +210,28 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+            output/android/BizHawkRafaelia-signed-arm64-v8a.apk
             output/android/build-info.txt
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build summary
         run: |
-          echo "# ✅ APK Build Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "# ✅ Signed APK Build Successful!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📦 Build Details" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
-          echo "- **APK Size**: $(du -h output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "- **APK Size**: $(du -h output/android/BizHawkRafaelia-signed-arm64-v8a.apk | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Signed**: Yes (debug keystore)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📥 Download APK" >> $GITHUB_STEP_SUMMARY
-          echo "The compiled APK is available as an artifact from this workflow run:" >> $GITHUB_STEP_SUMMARY
+          echo "The signed APK is available as an artifact from this workflow run:" >> $GITHUB_STEP_SUMMARY
           echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📱 Installation" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "adb install BizHawkRafaelia-unsigned-arm64-v8a.apk" >> $GITHUB_STEP_SUMMARY
+          echo "adb install BizHawkRafaelia-signed-arm64-v8a.apk" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⚠️ **Note**: This is an unsigned APK. For production use, sign it with your keystore." >> $GITHUB_STEP_SUMMARY
+          echo "ℹ️ **Note**: This APK is signed with a debug keystore for testing and CI." >> $GITHUB_STEP_SUMMARY

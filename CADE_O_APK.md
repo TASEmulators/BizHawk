@@ -24,7 +24,7 @@
 ## Instalação
 
 ```bash
-adb install BizHawkRafaelia-unsigned-arm64-v8a.apk
+adb install BizHawkRafaelia-signed-arm64-v8a.apk
 ```
 
 ## Especificações do APK
@@ -32,15 +32,16 @@ adb install BizHawkRafaelia-unsigned-arm64-v8a.apk
 ✅ **Compilado automaticamente** - A cada commit  
 ✅ **ARM64-v8a** - Otimizado para dispositivos modernos  
 ✅ **Android 7.0+** - Compatível com a maioria dos celulares  
+✅ **Assinado digitalmente** - Pronto para instalação  
 ✅ **Performance Rafaelia** - Todas otimizações incluídas  
 ✅ **SIMD NEON** - Aceleração de hardware  
 ✅ **Zero-allocation pooling** - Gestão eficiente de memória  
 
-## ⚠️ Importante
+## ℹ️ Importante
 
-- Este é um APK **NÃO ASSINADO** para testes
-- Para produção, assine com sua própria keystore
-- Veja [APK_GENERATION_README.md](APK_GENERATION_README.md) para mais detalhes
+- Este é um APK **ASSINADO COM KEYSTORE DE DEBUG** para testes e desenvolvimento
+- Para produção, gere e use sua própria keystore de release
+- Veja [APK_SIGNING_GUIDE.md](APK_SIGNING_GUIDE.md) para detalhes sobre assinatura
 
 ## Perguntas Frequentes
 
