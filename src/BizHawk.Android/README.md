@@ -1,5 +1,15 @@
 # BizHawk Rafaelia - Android APK
 
+## 🚀 QUER O APK PRONTO? BAIXE AQUI!
+
+**Não quer compilar? Baixe o APK já compilado direto do GitHub Actions!**
+
+👉 **[CLIQUE AQUI PARA BAIXAR O APK](../../DOWNLOAD_APK.md)** 👈
+
+Ou veja: [CADÊ O APK? AQUI!](../../CADE_O_APK.md) (versão em português)
+
+---
+
 Este projeto permite gerar um APK Android não assinado e compilado do BizHawk Rafaelia otimizado para ARM64.
 
 ## Pré-requisitos

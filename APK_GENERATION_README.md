@@ -6,6 +6,20 @@
 
 ---
 
+## 🚀 WANT PRE-COMPILED APK? DOWNLOAD IT NOW!
+
+**Don't want to build? Download the pre-compiled APK directly from GitHub Actions!**
+
+👉 **[CLICK HERE TO DOWNLOAD COMPILED APK](DOWNLOAD_APK.md)** 👈
+
+Pre-built APKs are automatically generated for every commit and available as:
+- **GitHub Actions Artifacts** - Latest development builds
+- **Release Assets** - Stable release builds
+
+See [DOWNLOAD_APK.md](DOWNLOAD_APK.md) for detailed download instructions in English and Portuguese.
+
+---
+
 ## Overview
 
 This document provides comprehensive instructions for generating unsigned ARM64 APK files with full bug mitigation, testing, and validation frameworks.

@@ -5,6 +5,30 @@ A customized fork of BizHawk with enhanced documentation and optimization focus.
 **Maintainer**: Rafael Melo Reis  
 **Upstream**: [BizHawk by TASEmulators](https://github.com/TASEmulators/BizHawk)
 
+## 📥 Download Compiled APK (Android)
+
+**Pre-built APK files are available!** No need to compile from source.
+
+### Latest Build
+Download the compiled APK from GitHub Actions artifacts:
+- Go to [Actions](../../actions/workflows/build-and-upload-apk.yml)
+- Click on the most recent successful workflow run
+- Download the APK artifact from the "Artifacts" section
+
+### Release Builds
+For stable releases, download from [Releases](../../releases) page.
+
+### Installation
+```bash
+adb install BizHawkRafaelia-unsigned-arm64-v8a.apk
+```
+
+⚠️ **Note**: The APK is unsigned. For testing purposes only. For production distribution, sign it with your own keystore.
+
+See [APK_GENERATION_README.md](APK_GENERATION_README.md) for detailed instructions on building locally or signing the APK.
+
+---
+
 ## About This Fork
 
 BizHawkRafaelia is a specialized fork of BizHawk that emphasizes:

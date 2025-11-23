@@ -1,0 +1,214 @@
+name: Build and Upload APK
+
+on:
+  push:
+    branches: [ master, copilot/**, release ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+  release:
+    types: [created, published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write  # Required for uploading release assets
+  actions: read    # Required for reading workflow artifacts
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Display .NET version
+        run: dotnet --version
+
+      - name: Setup Java 17 (required for Android SDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android SDK Command-line Tools
+        run: |
+          # Note: Update CMDLINE_TOOLS_VERSION periodically from:
+          # https://developer.android.com/studio#command-line-tools-only
+          CMDLINE_TOOLS_VERSION="11076708"
+          
+          # Create SDK directory
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          
+          # Download and extract command-line tools
+          wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip" -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip
+          mv cmdline-tools latest
+          rm cmdline-tools.zip
+          
+          # Set environment variables
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+
+      - name: Accept Android SDK licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Install Android SDK components
+        run: |
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0" \
+            "ndk;26.1.10909125"
+
+      - name: Install .NET Android workload
+        run: |
+          dotnet workload install android --skip-manifest-update
+          dotnet workload list
+
+      - name: Restore Rafaelia dependencies
+        run: |
+          dotnet restore rafaelia/BizHawk.Rafaelia.csproj --verbosity normal
+        timeout-minutes: 10
+
+      - name: Build Rafaelia modules
+        run: |
+          dotnet build rafaelia/BizHawk.Rafaelia.csproj -c Release --no-restore --verbosity normal
+        timeout-minutes: 15
+
+      - name: Restore Android project dependencies
+        run: |
+          dotnet restore src/BizHawk.Android/BizHawk.Android.csproj --verbosity normal
+        timeout-minutes: 10
+
+      - name: Build unsigned Android APK
+        run: |
+          dotnet publish src/BizHawk.Android/BizHawk.Android.csproj \
+            -c Release \
+            -f net9.0-android \
+            -p:AndroidPackageFormat=apk \
+            -p:RuntimeIdentifier=android-arm64 \
+            -p:AndroidSdkDirectory=$ANDROID_HOME \
+            --no-restore \
+            --verbosity detailed
+        timeout-minutes: 30
+
+      - name: Find and copy APK
+        run: |
+          # Create output directory
+          mkdir -p output/android
+          
+          # Find the APK (look for unsigned or any apk)
+          APK_FILE=$(find src/BizHawk.Android/bin/Release -name "*.apk" | grep -v ".signed.apk" | head -1)
+          
+          if [ -z "$APK_FILE" ]; then
+            echo "ERROR: APK file not found!"
+            echo "Looking in:"
+            find src/BizHawk.Android/bin/Release -type f -name "*.apk" || echo "No APK files found"
+            exit 1
+          fi
+          
+          echo "Found APK: $APK_FILE"
+          
+          # Copy to output directory with standard name
+          cp "$APK_FILE" output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+          
+          # Get APK size
+          ls -lh output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+
+      - name: Generate build info
+        run: |
+          cat > output/android/build-info.txt << EOF
+          BizHawkRafaelia - Unsigned APK Build Report
+          ============================================
+          
+          Build Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          Build Configuration: Release
+          .NET SDK Version: $(dotnet --version)
+          Git Commit: ${{ github.sha }}
+          Git Branch: ${{ github.ref_name }}
+          Workflow Run: ${{ github.run_number }}
+          
+          APK Information:
+            File: BizHawkRafaelia-unsigned-arm64-v8a.apk
+            Size: $(du -h output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk | cut -f1)
+            Target: ARM64-v8a (Android 7.0+)
+            Signed: No (unsigned)
+          
+          Installation Command:
+            adb install BizHawkRafaelia-unsigned-arm64-v8a.apk
+          
+          WARNING: This is an unsigned APK for testing purposes only.
+          For production distribution, you must sign the APK with your keystore.
+          
+          Performance Optimizations:
+            ✓ Rafaelia performance framework
+            ✓ ARM64 NEON SIMD optimizations
+            ✓ Memory pooling (zero-allocation)
+            ✓ Adaptive hardware management
+            ✓ Power-efficient algorithms
+            ✓ Thermal throttling mitigation
+          
+          Download from GitHub Actions Artifacts or Releases:
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          
+          For questions: https://github.com/${{ github.repository }}
+          EOF
+          
+          cat output/android/build-info.txt
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BizHawkRafaelia-APK-${{ github.sha }}
+          path: |
+            output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+            output/android/build-info.txt
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Upload APK to release (if release event)
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+            output/android/build-info.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build summary
+        run: |
+          echo "# ✅ APK Build Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📦 Build Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "- **APK Size**: $(du -h output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📥 Download APK" >> $GITHUB_STEP_SUMMARY
+          echo "The compiled APK is available as an artifact from this workflow run:" >> $GITHUB_STEP_SUMMARY
+          echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📱 Installation" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "adb install BizHawkRafaelia-unsigned-arm64-v8a.apk" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **Note**: This is an unsigned APK. For production use, sign it with your keystore." >> $GITHUB_STEP_SUMMARY
