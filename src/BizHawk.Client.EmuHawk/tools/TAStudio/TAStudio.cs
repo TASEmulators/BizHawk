@@ -434,8 +434,10 @@ namespace BizHawk.Client.EmuHawk
 						|| c.Name.Contains("Gamma")
 						|| c.Name.Contains("Mouse")
 						|| c.Name.Contains("Weapon Select ")
-						|| c.Name.Contains("Turn ")
-						|| c.Name.Contains("Strafe")
+						|| c.Name.Contains("Turn Speed ")
+						|| c.Name.Contains("Left")
+						|| c.Name.Contains("Right")
+						|| c.Name.EndsWithOrdinal("Strafe")
 						|| c.Name.EndsWithOrdinal("Run"));
 
 				columnsToHide = columnsToHide.Concat(columns);
