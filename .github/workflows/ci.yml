@@ -20,9 +20,11 @@ jobs:
 
       - name: Debug build with analyzers
         run: Dist/BuildDebug.sh -p:ContinuousIntegrationBuild=true -warnaserror
+        continue-on-error: false
 
       - name: Release build with analyzers
         run: Dist/BuildRelease.sh -p:ContinuousIntegrationBuild=true -warnaserror
+        continue-on-error: false
 
   test:
     name: Test

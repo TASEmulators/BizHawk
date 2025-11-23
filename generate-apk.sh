@@ -33,7 +33,22 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 
 # Check prerequisites
-echo -e "${YELLOW}[1/6] Checking prerequisites...${NC}"
+echo -e "${YELLOW}[1/8] Running bug mitigation framework...${NC}"
+echo ""
+
+# Run comprehensive bug detection and mitigation framework
+if [ -f "scripts/bug-mitigation-framework.sh" ]; then
+    echo -e "${BLUE}Executing comprehensive bug analysis...${NC}"
+    bash scripts/bug-mitigation-framework.sh || {
+        echo -e "${YELLOW}⚠️  Bug mitigation framework completed with warnings${NC}"
+        echo -e "${YELLOW}Proceeding with build (review mitigation report)${NC}"
+    }
+else
+    echo -e "${YELLOW}⚠️  Bug mitigation framework not found, skipping...${NC}"
+fi
+
+echo ""
+echo -e "${YELLOW}[2/8] Checking prerequisites...${NC}"
 
 if ! command -v dotnet &> /dev/null; then
     echo -e "${RED}ERROR: .NET SDK not found${NC}"
@@ -52,29 +67,29 @@ fi
 
 echo "✓ Android project found"
 
-# Step 2: Clean previous builds
+# Step 3: Clean previous builds
 echo ""
-echo -e "${YELLOW}[2/6] Cleaning previous builds...${NC}"
+echo -e "${YELLOW}[3/8] Cleaning previous builds...${NC}"
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 dotnet clean "$PROJECT_PATH" -c "$BUILD_CONFIG" > /dev/null 2>&1 || true
 echo "✓ Build directory cleaned"
 
-# Step 3: Restore dependencies
+# Step 4: Restore dependencies
 echo ""
-echo -e "${YELLOW}[3/6] Restoring dependencies...${NC}"
+echo -e "${YELLOW}[4/8] Restoring dependencies...${NC}"
 dotnet restore "$PROJECT_PATH"
 echo "✓ Dependencies restored"
 
-# Step 4: Build Rafaelia optimization modules
+# Step 5: Build Rafaelia optimization modules
 echo ""
-echo -e "${YELLOW}[4/6] Building Rafaelia optimization modules...${NC}"
+echo -e "${YELLOW}[5/8] Building Rafaelia optimization modules...${NC}"
 dotnet build "rafaelia/BizHawk.Rafaelia.csproj" -c "$BUILD_CONFIG" > /dev/null
 echo "✓ Rafaelia modules built"
 
-# Step 5: Build Android APK
+# Step 6: Build Android APK
 echo ""
-echo -e "${YELLOW}[5/6] Building unsigned Android APK...${NC}"
+echo -e "${YELLOW}[6/8] Building unsigned Android APK...${NC}"
 echo -e "${BLUE}This may take several minutes...${NC}"
 
 # Build the APK without signing
@@ -98,9 +113,9 @@ fi
 
 echo "✓ APK built successfully"
 
-# Step 6: Locate and copy APK
+# Step 7: Locate and copy APK
 echo ""
-echo -e "${YELLOW}[6/6] Locating output APK...${NC}"
+echo -e "${YELLOW}[7/8] Locating output APK...${NC}"
 
 # Find the generated APK
 APK_SOURCE=$(find src/BizHawk.Android/bin/$BUILD_CONFIG -name "*.apk" | grep -v ".signed.apk" | head -1)
@@ -186,4 +201,36 @@ For questions: https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
 EOF
 
 echo -e "${GREEN}Build report saved: $OUTPUT_DIR/build-info.txt${NC}"
+echo ""
+
+# Step 8: Final validation
+echo -e "${YELLOW}[8/8] Running final APK validation...${NC}"
+echo ""
+
+# Validate APK structure
+echo "  → Validating APK file integrity..."
+if file "$APK_OUTPUT" | grep -q "Zip archive data"; then
+    echo -e "  ${GREEN}✓ APK file structure valid${NC}"
+else
+    echo -e "  ${RED}✗ APK file structure invalid${NC}"
+    exit 1
+fi
+
+# Check APK size sanity
+APK_SIZE_BYTES=$(stat -f%z "$APK_OUTPUT" 2>/dev/null || stat -c%s "$APK_OUTPUT" 2>/dev/null)
+if [ $APK_SIZE_BYTES -lt 1048576 ]; then  # Less than 1MB is suspicious
+    echo -e "  ${YELLOW}⚠️  APK size seems small ($APK_SIZE), verify build${NC}"
+elif [ $APK_SIZE_BYTES -gt 524288000 ]; then  # More than 500MB is suspicious
+    echo -e "  ${YELLOW}⚠️  APK size seems large ($APK_SIZE), consider optimization${NC}"
+else
+    echo -e "  ${GREEN}✓ APK size reasonable: $APK_SIZE${NC}"
+fi
+
+# List APK contents summary
+echo "  → Analyzing APK contents..."
+unzip -l "$APK_OUTPUT" 2>/dev/null | grep -E "assemblies/|lib/" | wc -l | xargs echo "    Assembly/Library files:" || true
+
+# Final summary
+echo ""
+echo -e "${GREEN}✓ Final validation complete${NC}"
 echo ""
