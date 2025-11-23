@@ -1,14 +1,67 @@
-// ===========================================================================
-// BizHawkRafaelia - Lag & Latency Mitigation Module
-// ===========================================================================
-// 
-// FORK PARENT: BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk)
-// FORK MAINTAINER: Rafael Melo Reis (https://github.com/rafaelmeloreisnovo/BizHawkRafaelia)
-// 
-// Purpose: Detect and mitigate lag, latency, and freezing issues
-// Implements: Real-time performance monitoring and adaptive optimization
-// ZIPRAF_OMEGA: ψχρΔΣΩ performance compliance
-// ===========================================================================
+/*
+ * ===========================================================================
+ * BizHawkRafaelia - Lag & Latency Mitigation Module
+ * ===========================================================================
+ * 
+ * ORIGINAL AUTHORS:
+ *   - BizHawk Core Team (TASEmulators) - https://github.com/TASEmulators/BizHawk
+ *     Original performance monitoring and frame timing systems
+ * 
+ * OPTIMIZATION ENHANCEMENTS BY:
+ *   - Rafael Melo Reis - https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ *     Real-time lag detection, adaptive mitigation, performance tracking
+ * 
+ * LICENSE: MIT (inherited from BizHawk parent project)
+ * 
+ * MODULE PURPOSE:
+ *   Provides real-time performance monitoring and lag mitigation:
+ *   - Detects lag events (>16ms) and freezes (>500ms)
+ *   - Tracks operation performance with rolling averages
+ *   - Adaptive mitigation strategies based on performance level
+ *   - GC pressure detection and optimization
+ *   - Performance reporting and diagnostics
+ * 
+ * PERFORMANCE TARGETS:
+ *   - Maintain 60 FPS (16.67ms per frame) on all operations
+ *   - Detect and mitigate lag events before user perception
+ *   - Reduce freeze events by 80%+ through proactive optimization
+ *   - Sub-millisecond overhead for performance tracking
+ * 
+ * CROSS-PLATFORM COMPATIBILITY:
+ *   - Windows, Linux, macOS: Full support
+ *   - All platforms: Consistent timing and detection
+ *   - Thread-safe operation across all platforms
+ * 
+ * LOW-LEVEL EXPLANATION:
+ *   Performance monitoring and mitigation work through:
+ *   1. TIMING: High-resolution Stopwatch measures operation duration
+ *      with microsecond precision (uses RDTSC on x86, PMCCNTR on ARM).
+ *   2. DETECTION: Compares timings against thresholds:
+ *      - 16ms = 60 FPS baseline (one frame time)
+ *      - 50ms = Severe lag (user perceives stuttering)
+ *      - 500ms = Freeze (user perceives hang)
+ *   3. ADAPTATION: Adjusts system behavior based on aggregate metrics:
+ *      - Reduce quality settings when lag is widespread
+ *      - Trigger GC when memory pressure contributes to freezes
+ *      - Apply compacting GC in critical situations
+ *   4. STATISTICS: Rolling averages smooth out transient spikes
+ *      and provide accurate long-term performance picture.
+ * 
+ *   The mitigation strategy is hierarchical:
+ *   - Optimal/Good: No action needed
+ *   - Degraded: Suggest quality reduction
+ *   - Poor: Force optimized GC (Gen1)
+ *   - Critical: Force full compacting GC (Gen2)
+ * 
+ * USAGE NOTES:
+ *   - Wrap critical operations with MeasureOperation()
+ *   - Use "using" pattern for automatic disposal and timing
+ *   - Check performance level periodically (1s intervals)
+ *   - Generate reports for diagnostics and optimization
+ *   - Clear tracking when benchmarking specific scenarios
+ * 
+ * ===========================================================================
+ */
 
 using System;
 using System.Collections.Concurrent;
@@ -82,8 +135,8 @@ namespace BizHawk.Rafaelia.Core
 				(_, tracker) =>
 				{
 					tracker.LastDurationMs = elapsedMs;
-					tracker.MaxDurationMs = Math.Max(tracker.MaxDurationMs, elapsedMs);
-					tracker.MinDurationMs = Math.Min(tracker.MinDurationMs, elapsedMs);
+					tracker.MaxDurationMs = System.Math.Max(tracker.MaxDurationMs, elapsedMs);
+					tracker.MinDurationMs = System.Math.Min(tracker.MinDurationMs, elapsedMs);
 					tracker.SampleCount++;
 					
 					// Calculate rolling average

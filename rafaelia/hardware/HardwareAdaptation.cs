@@ -3,12 +3,58 @@
  * BizHawkRafaelia - Hardware Adaptation Module
  * ===========================================================================
  * 
- * FORK PARENT: BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk)
- * FORK MAINTAINER: Rafael Melo Reis (https://github.com/rafaelmeloreisnovo/BizHawkRafaelia)
+ * ORIGINAL AUTHORS:
+ *   - BizHawk Core Team (TASEmulators) - https://github.com/TASEmulators/BizHawk
+ *     Original emulation and platform detection foundations
  * 
- * Module: Hardware Adaptation
- * Purpose: Dynamic quality adjustment from minimum to optimal hardware
- * Target: Support 2GB RAM devices to 32GB+ workstations
+ * OPTIMIZATION ENHANCEMENTS BY:
+ *   - Rafael Melo Reis - https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ *     Hardware profiling, adaptive quality management, tier classification
+ * 
+ * LICENSE: MIT (inherited from BizHawk parent project)
+ * 
+ * MODULE PURPOSE:
+ *   Provides hardware detection and adaptive quality management:
+ *   - CPU core count and architecture detection (x64 vs ARM64)
+ *   - Memory availability detection and classification
+ *   - Hardware tier classification (Minimum/Good/Excellent)
+ *   - Adaptive quality settings based on hardware capabilities
+ *   - Recommendations for cache sizes, thread counts, and features
+ * 
+ * PERFORMANCE TARGETS:
+ *   - Support 2GB RAM minimum devices
+ *   - Scale up to 32GB+ workstation systems
+ *   - Automatic quality adjustment for optimal performance/quality balance
+ *   - Smooth 60 FPS on all hardware tiers with appropriate settings
+ * 
+ * CROSS-PLATFORM COMPATIBILITY:
+ *   - Windows: Full hardware detection support
+ *   - Linux: Full support via RuntimeInformation
+ *   - macOS (Intel): Full support
+ *   - macOS (Apple Silicon): ARM64 detection and optimization
+ *   - Android/iOS: Mobile-specific power and thermal considerations
+ * 
+ * LOW-LEVEL EXPLANATION:
+ *   Hardware adaptation ensures optimal performance across diverse devices:
+ *   1. DETECTION: Uses OS APIs to query CPU cores, RAM, and architecture.
+ *   2. CLASSIFICATION: Groups hardware into tiers based on capabilities.
+ *   3. ADAPTATION: Adjusts settings (cache size, thread count, quality) to match.
+ *   4. OPTIMIZATION: On weak hardware, reduces quality to maintain framerate.
+ *      On strong hardware, maximizes quality for best experience.
+ * 
+ *   This is critical for:
+ *   - Mobile devices with limited resources
+ *   - Laptops that may throttle under heavy load
+ *   - Workstations that can handle maximum quality
+ *   - Cross-generational device support (5+ years)
+ * 
+ * USAGE NOTES:
+ *   - Hardware detection is performed once at startup (singleton pattern)
+ *   - Quality settings can be overridden by user preferences
+ *   - Monitor thermal state on mobile devices to prevent overheating
+ *   - Cache sizes should scale with available RAM
+ *   - Thread counts should leave headroom for OS and other processes
+ * 
  * ===========================================================================
  */
 
