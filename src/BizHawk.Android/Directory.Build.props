@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <!-- Disable PolySharp entirely for net9.0-android since it causes type conflicts -->
+    <PolySharpIncludeGeneratedTypes>
+      <!-- Empty means no types will be generated -->
+    </PolySharpIncludeGeneratedTypes>
+  </PropertyGroup>
+</Project>

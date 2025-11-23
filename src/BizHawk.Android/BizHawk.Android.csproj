@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<TargetFrameworks>net9.0-android</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -10,7 +10,7 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<AndroidManifest>AndroidManifest.xml</AndroidManifest>
 		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
-		<TargetPlatformVersion>33.0</TargetPlatformVersion>
+		<TargetPlatformVersion>35.0</TargetPlatformVersion>
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidSigningKeyStore></AndroidSigningKeyStore>
 		<AndroidSigningKeyAlias></AndroidSigningKeyAlias>
@@ -18,11 +18,15 @@
 		<AndroidLinkMode>None</AndroidLinkMode>
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
-		<AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
+		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+		<!-- Suppress CS0433 for PolySharp type ambiguity between BizHawk.Common and .NET 9 built-in types -->
+		<NoWarn>$(NoWarn);CS0433</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj" />
+		<ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
+			<Aliases>bizcommon</Aliases>
+		</ProjectReference>
 		<ProjectReference Include="..\..\rafaelia\BizHawk.Rafaelia.csproj" />
 	</ItemGroup>
 

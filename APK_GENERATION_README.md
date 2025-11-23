@@ -25,9 +25,9 @@ This document provides comprehensive instructions for generating unsigned ARM64 
 
 ### Prerequisites
 
-1. **.NET SDK 8.0+**
+1. **.NET SDK 9.0+**
    ```bash
-   dotnet --version  # Should be 8.0 or higher
+   dotnet --version  # Should be 9.0 or higher
    ```
 
 2. **Android SDK** (for APK generation)
@@ -371,7 +371,7 @@ The framework generates:
 ### Common Issues
 
 **Q: "ERROR: .NET SDK not found"**  
-A: Install .NET SDK 8.0+ from https://dot.net
+A: Install .NET SDK 9.0+ from https://dot.net
 
 **Q: "ERROR: Android SDK not found"**  
 A: Install Android SDK and set ANDROID_HOME environment variable

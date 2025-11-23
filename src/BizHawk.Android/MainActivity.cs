@@ -1,6 +1,8 @@
+extern alias bizcommon;
 using Android.App;
 using Android.OS;
 using Android.Widget;
+using Android.Views;
 
 namespace BizHawkRafaelia.Android
 {
@@ -21,7 +23,7 @@ namespace BizHawkRafaelia.Android
 			{
 				Text = "BizHawk Rafaelia\nOptimized ARM64 Build\n\nPerformance Framework Active",
 				TextSize = 24,
-				Gravity = Android.Views.GravityFlags.Center
+				Gravity = GravityFlags.Center
 			};
 			
 			layout.AddView(textView);

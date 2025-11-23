@@ -4,7 +4,7 @@
           android:versionCode="1"
           android:versionName="1.0">
 	
-	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="33" />
+	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="35" />
 	
 	<!-- Permissions -->
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

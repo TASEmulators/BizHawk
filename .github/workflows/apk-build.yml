@@ -23,7 +23,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "9"
 
       - name: Make scripts executable
         run: chmod +x scripts/*.sh generate-apk.sh
@@ -58,7 +58,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "9"
 
       - name: Restore Rafaelia dependencies
         run: |
@@ -131,7 +131,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "9"
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -174,7 +174,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8"
+          dotnet-version: "9"
 
       - name: Check Android project structure
         run: |

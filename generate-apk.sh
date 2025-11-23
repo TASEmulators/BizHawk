@@ -95,9 +95,9 @@ echo -e "${BLUE}This may take several minutes...${NC}"
 # Build the APK without signing
 dotnet build "$PROJECT_PATH" \
     -c "$BUILD_CONFIG" \
-    -f net8.0-android \
+    -f net9.0-android \
     -p:AndroidPackageFormat=apk \
-    -p:AndroidSupportedAbis=arm64-v8a
+    -p:RuntimeIdentifier=android-arm64
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}ERROR: APK build failed${NC}"
