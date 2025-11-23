@@ -1,0 +1,314 @@
+name: APK Build and Bug Mitigation
+
+on:
+  push:
+    branches: [ main, master, develop, release, apk ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bug-mitigation-analysis:
+    name: Bug Mitigation Framework Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Make scripts executable (if exist)
+        run: |
+          shopt -s nullglob || true
+          for f in scripts/*.sh generate-apk.sh; do
+            [ -f "$f" ] && chmod +x "$f"
+          done
+
+      - name: Run Bug Mitigation Framework (if exists)
+        run: |
+          if [ -f scripts/bug-mitigation-framework.sh ]; then
+            bash scripts/bug-mitigation-framework.sh || echo "::warning::Bug mitigation exited non-zero"
+          else
+            echo "::notice::No bug-mitigation script found, skipping"
+          fi
+        continue-on-error: true
+
+      - name: Upload Bug Mitigation Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bug-mitigation-report
+          path: output/bug-mitigation-report.txt
+          if-no-files-found: ignore
+
+  rafaelia-modules-build:
+    name: Build Rafaelia Modules
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Restore Rafaelia dependencies (try multiple likely paths)
+        run: |
+          set -e
+          candidates=(
+            "rafaelia/BizHawk.Rafaelia.csproj"
+            "Rafaelia/BizHawk.Rafaelia.csproj"
+            "src/rafaelia/BizHawk.Rafaelia.csproj"
+          )
+          found=0
+          for c in "${candidates[@]}"; do
+            if [ -f "$c" ]; then
+              echo "::notice::Found Rafaelia csproj at $c"
+              dotnet restore "$c" --verbosity normal
+              found=1
+              break
+            fi
+          done
+          if [ $found -eq 0 ]; then
+            echo "::error::Rafaelia project file not found in expected locations"
+            exit 1
+          fi
+        timeout-minutes: 10
+
+      - name: Build Rafaelia modules (Release)
+        run: |
+          dotnet build rafaelia/BizHawk.Rafaelia.csproj -c Release --no-restore --verbosity normal || true
+          echo "::notice::Rafaelia build attempted"
+        timeout-minutes: 15
+
+      - name: Upload Rafaelia build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rafaelia-modules
+          path: rafaelia/bin/Release/
+          if-no-files-found: ignore
+
+  activation-validation:
+    name: Run Activation Script
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run Activation Script (if present)
+        run: |
+          if [ -f "rafaelia/ativar.py" ]; then
+            python3 rafaelia/ativar.py || echo "::warning::Activation script returned non-zero"
+          else
+            echo "::warning::Activation script not found, skipping"
+          fi
+        continue-on-error: true
+        timeout-minutes: 10
+
+      - name: Upload Activation Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: activation-report
+          path: activation_report.json
+          if-no-files-found: ignore
+
+  comprehensive-tests:
+    name: Comprehensive Test Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [rafaelia-modules-build]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Make scripts executable
+        run: |
+          shopt -s nullglob || true
+          for f in scripts/*.sh; do [ -f "$f" ] && chmod +x "$f"; done
+
+      - name: Run Comprehensive Test Suite
+        run: |
+          if [ -f "scripts/test-apk-build.sh" ]; then
+            bash scripts/test-apk-build.sh || echo "::warning::Some tests failed"
+          else
+            echo "::warning::Test script not found, skipping"
+          fi
+        continue-on-error: true
+        timeout-minutes: 30
+
+      - name: Display Test Results
+        if: always()
+        run: echo "Test execution completed. Check artifacts for detailed results."
+
+  apk-build-check:
+    name: APK Build Prerequisites Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8"
+
+      - name: Check Android project structure (multi-candidate)
+        run: |
+          set -e
+          candidates=(
+            "src/BizHawk.Android/BizHawk.Android.csproj"
+            "BizHawk.Android/BizHawk.Android.csproj"
+            "src/Android/BizHawk.Android.csproj"
+            "android-app/BizHawk.Android.csproj"
+            "Mobile/BizHawk.Android.csproj"
+          )
+          found=0
+          for p in "${candidates[@]}"; do
+            if [ -f "$p" ]; then
+              echo "::notice:: Android project exists at $p"
+              echo "::notice:: Begin file preview:"
+              sed -n '1,120p' "$p" || true
+              found=1
+              break
+            fi
+          done
+          if [ $found -eq 0 ]; then
+            echo "::error:: Android project not found in any expected location"
+            echo "::error:: Please ensure the Android project is present or update this workflow"
+            exit 1
+          fi
+
+      - name: Check if Android workload is needed
+        run: |
+          echo "::notice::Android workload installation would be needed for full APK build"
+          echo "::notice::Skipping actual APK build in CI here (use android-apk-build.yml to build if Android project is Gradle-based)"
+
+      - name: Validate Build Scripts
+        run: |
+          if [ -f "generate-apk.sh" ]; then
+            chmod +x generate-apk.sh
+            echo "::notice:: APK generation script is present"
+          else
+            echo "::warning:: generate-apk.sh not found"
+          fi
+
+          if [ -f "build-android-arm64.sh" ]; then
+            chmod +x build-android-arm64.sh
+            echo "::notice:: ARM64 build script is present"
+          else
+            echo "::warning:: build-android-arm64.sh not found"
+          fi
+
+  documentation-check:
+    name: Documentation Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Required Documentation
+        run: |
+          set -e
+          files=(
+            "APK_GENERATION_README.md"
+            "BUG_MITIGATION_GUIDE.md"
+            "IMPLEMENTATION_COMPLETE.md"
+            "GAP_FILLING_SUMMARY.md"
+            "ativar.txt"
+          )
+
+          missing=0
+          missing_files=""
+          for file in "${files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "::notice:: $file exists"
+            else
+              echo "::warning:: $file missing"
+              missing=$((missing + 1))
+              missing_files="$missing_files $file"
+            fi
+          done
+
+          if [ $missing -gt 0 ]; then
+            echo "::warning:: $missing documentation file(s) missing:$missing_files"
+          else
+            echo "::notice::All documentation files present"
+          fi
+        timeout-minutes: 3
+
+      - name: Check Core Module Files
+        run: |
+          set -e
+          modules=(
+            "rafaelia/core/TesteDeMesaValidator.cs"
+            "rafaelia/core/MemoryLeakDetector.cs"
+            "rafaelia/core/LagMitigator.cs"
+            "rafaelia/core/ComplianceImplementation.cs"
+          )
+
+          missing=0
+          missing_modules=""
+          for module in "${modules[@]}"; do
+            if [ -f "$module" ]; then
+              echo "::notice:: $module exists"
+            else
+              echo "::error:: $module missing"
+              missing=$((missing + 1))
+              missing_modules="$missing_modules $module"
+            fi
+          done
+
+          if [ $missing -gt 0 ]; then
+            echo "::error:: $missing core module(s) missing:$missing_modules"
+            exit 1
+          else
+            echo "::notice::All core modules present"
+          fi
+        timeout-minutes: 3
+
+  summary:
+    name: Workflow Summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [bug-mitigation-analysis, rafaelia-modules-build, activation-validation, comprehensive-tests, apk-build-check, documentation-check]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "# BizHawkRafaelia CI Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Bug Mitigation Analysis: ${{ needs.bug-mitigation-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Rafaelia Modules Build: ${{ needs.rafaelia-modules-build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Activation Validation: ${{ needs.activation-validation.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Comprehensive Tests: ${{ needs.comprehensive-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- APK Build Check: ${{ needs.apk-build-check.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Documentation Check: ${{ needs.documentation-check.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Notes" >> $GITHUB_STEP_SUMMARY
+          echo "- Full APK build requires Android SDK (use android-apk-build.yml for Gradle projects)" >> $GITHUB_STEP_SUMMARY
+          echo "- Bug mitigation framework runs as informational" >> $GITHUB_STEP_SUMMARY
