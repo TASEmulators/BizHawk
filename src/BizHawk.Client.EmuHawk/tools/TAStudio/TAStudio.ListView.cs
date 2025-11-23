@@ -294,9 +294,12 @@ namespace BizHawk.Client.EmuHawk
 				else if (column.Type is ColumnType.Boolean or ColumnType.Axis)
 				{
 					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
-					if (index == _axisEditRow && columnName == _axisEditColumn)
+					if ((index == _axisEditRow || _extraAxisRows.Contains(index))
+						&& columnName == _axisEditColumn)
 					{
-						text = _axisTypedValue;
+						text = _axisTypedValue.Length == 0
+							? _axisBackupState.ToString()
+							: _axisTypedValue;
 					}
 					else if (index < CurrentTasMovie.InputLogLength)
 					{
@@ -520,6 +523,7 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.IsRowSelected(frame);
 						return;
 					}
+
 					if (_axisEditColumn != buttonName
 						|| !(_axisEditRow == frame || _extraAxisRows.Contains(frame)))
 					{
