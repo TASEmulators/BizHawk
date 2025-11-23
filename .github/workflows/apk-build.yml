@@ -2,9 +2,9 @@ name: APK Build and Bug Mitigation
 
 on:
   push:
-    branches: [ main, develop, copilot/generate-apk-without-signature ]
+    branches: [ master, copilot/**, release ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ master ]
   workflow_dispatch:
 
 concurrency:
@@ -15,6 +15,7 @@ jobs:
   bug-mitigation-analysis:
     name: Bug Mitigation Framework Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +31,12 @@ jobs:
       - name: Run Bug Mitigation Framework
         run: |
           cd ${{ github.workspace }}
-          bash scripts/bug-mitigation-framework.sh || true
+          bash scripts/bug-mitigation-framework.sh
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::warning::Bug mitigation framework exited with code $EXIT_CODE"
+            echo "This is informational and won't fail the build"
+          fi
         continue-on-error: true
 
       - name: Upload Bug Mitigation Report
@@ -44,6 +50,7 @@ jobs:
   rafaelia-modules-build:
     name: Build Rafaelia Modules
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,10 +61,19 @@ jobs:
           dotnet-version: "8"
 
       - name: Restore Rafaelia dependencies
-        run: dotnet restore rafaelia/BizHawk.Rafaelia.csproj
+        run: |
+          if [ ! -f "rafaelia/BizHawk.Rafaelia.csproj" ]; then
+            echo "::error::Rafaelia project file not found"
+            exit 1
+          fi
+          dotnet restore rafaelia/BizHawk.Rafaelia.csproj --verbosity normal
+        timeout-minutes: 10
 
       - name: Build Rafaelia modules (Release)
-        run: dotnet build rafaelia/BizHawk.Rafaelia.csproj -c Release --no-restore
+        run: |
+          dotnet build rafaelia/BizHawk.Rafaelia.csproj -c Release --no-restore --verbosity normal
+          echo "::notice::Rafaelia modules built successfully"
+        timeout-minutes: 15
 
       - name: Upload Rafaelia build artifacts
         uses: actions/upload-artifact@v4
@@ -68,6 +84,7 @@ jobs:
   activation-validation:
     name: Run Activation Script
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,8 +97,19 @@ jobs:
       - name: Run Activation Script
         run: |
           cd ${{ github.workspace }}
-          python3 rafaelia/ativar.py || true
+          if [ ! -f "rafaelia/ativar.py" ]; then
+            echo "::warning::Activation script not found, skipping"
+            exit 0
+          fi
+          python3 rafaelia/ativar.py
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::warning::Activation script exited with code $EXIT_CODE"
+          else
+            echo "::notice::Activation validation completed successfully"
+          fi
         continue-on-error: true
+        timeout-minutes: 10
 
       - name: Upload Activation Report
         uses: actions/upload-artifact@v4
@@ -94,6 +122,7 @@ jobs:
   comprehensive-tests:
     name: Comprehensive Test Suite
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     needs: [rafaelia-modules-build]
     steps:
       - name: Checkout
@@ -115,8 +144,19 @@ jobs:
       - name: Run Comprehensive Test Suite
         run: |
           cd ${{ github.workspace }}
-          bash scripts/test-apk-build.sh || true
+          if [ ! -f "scripts/test-apk-build.sh" ]; then
+            echo "::error::Test script not found"
+            exit 1
+          fi
+          bash scripts/test-apk-build.sh
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "::notice::All tests passed"
+          else
+            echo "::warning::Some tests failed with exit code $EXIT_CODE"
+          fi
         continue-on-error: true
+        timeout-minutes: 30
 
       - name: Display Test Results
         if: always()
@@ -126,6 +166,7 @@ jobs:
   apk-build-check:
     name: APK Build Prerequisites Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -138,35 +179,48 @@ jobs:
       - name: Check Android project structure
         run: |
           if [ -f "src/BizHawk.Android/BizHawk.Android.csproj" ]; then
-            echo "✓ Android project exists"
+            echo "::notice::✓ Android project exists"
             cat src/BizHawk.Android/BizHawk.Android.csproj
           else
-            echo "✗ Android project not found"
+            echo "::error::✗ Android project not found at src/BizHawk.Android/BizHawk.Android.csproj"
+            echo "::error::Please ensure the Android project is properly set up"
             exit 1
           fi
 
       - name: Check if Android workload is needed
         run: |
-          echo "Android workload installation would be needed for full APK build"
-          echo "Skipping actual APK build in CI (requires Android SDK)"
+          echo "::notice::Android workload installation would be needed for full APK build"
+          echo "::notice::Skipping actual APK build in CI (requires Android SDK)"
+          echo "::notice::For local builds, run: ./generate-apk.sh"
 
       - name: Validate Build Scripts
         run: |
-          chmod +x generate-apk.sh
-          echo "✓ APK generation script is valid"
+          if [ -f "generate-apk.sh" ]; then
+            chmod +x generate-apk.sh
+            echo "::notice::✓ APK generation script is valid"
+          else
+            echo "::error::✗ generate-apk.sh not found"
+            exit 1
+          fi
           
-          chmod +x build-android-arm64.sh
-          echo "✓ ARM64 build script is valid"
+          if [ -f "build-android-arm64.sh" ]; then
+            chmod +x build-android-arm64.sh
+            echo "::notice::✓ ARM64 build script is valid"
+          else
+            echo "::warning::build-android-arm64.sh not found"
+          fi
 
   documentation-check:
     name: Documentation Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Check Required Documentation
         run: |
+          set -e
           files=(
             "APK_GENERATION_README.md"
             "BUG_MITIGATION_GUIDE.md"
@@ -176,23 +230,28 @@ jobs:
           )
           
           missing=0
+          missing_files=""
           for file in "${files[@]}"; do
             if [ -f "$file" ]; then
-              echo "✓ $file exists"
+              echo "::notice::✓ $file exists"
             else
-              echo "✗ $file missing"
+              echo "::warning::✗ $file missing"
               missing=$((missing + 1))
+              missing_files="$missing_files $file"
             fi
           done
           
           if [ $missing -gt 0 ]; then
-            echo "Warning: $missing documentation file(s) missing"
+            echo "::warning::$missing documentation file(s) missing:$missing_files"
+            echo "::warning::Consider adding these files for complete documentation"
           else
-            echo "All documentation files present"
+            echo "::notice::All documentation files present"
           fi
+        timeout-minutes: 3
 
       - name: Check Core Module Files
         run: |
+          set -e
           modules=(
             "rafaelia/core/TesteDeMesaValidator.cs"
             "rafaelia/core/MemoryLeakDetector.cs"
@@ -201,25 +260,30 @@ jobs:
           )
           
           missing=0
+          missing_modules=""
           for module in "${modules[@]}"; do
             if [ -f "$module" ]; then
-              echo "✓ $module exists"
+              echo "::notice::✓ $module exists"
             else
-              echo "✗ $module missing"
+              echo "::error::✗ $module missing"
               missing=$((missing + 1))
+              missing_modules="$missing_modules $module"
             fi
           done
           
           if [ $missing -gt 0 ]; then
-            echo "Error: $missing core module(s) missing"
+            echo "::error::$missing core module(s) missing:$missing_modules"
+            echo "::error::These modules are required for the APK build"
             exit 1
           else
-            echo "All core modules present"
+            echo "::notice::All core modules present"
           fi
+        timeout-minutes: 3
 
   summary:
     name: Workflow Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [bug-mitigation-analysis, rafaelia-modules-build, activation-validation, comprehensive-tests, apk-build-check, documentation-check]
     if: always()
     steps:

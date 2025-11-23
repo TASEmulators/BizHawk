@@ -13,6 +13,7 @@ jobs:
 
   build-waterbox:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
     - uses: actions/checkout@v4
     - name: Install clang 18
