@@ -20,9 +20,11 @@ This fork is maintained by:
 
 ## Upstream BizHawk Project
 
-BizHawkRafaelia is derived from the BizHawk emulator project. The original BizHawk project has numerous contributors whose work forms the foundation of this fork.
+BizHawkRafaelia is derived from the BizHawk emulator project by **TASEmulators** and the **BizHawk Core Team**. The original BizHawk project has numerous contributors whose work forms the foundation of this fork.
 
-### Main BizHawk Team (Upstream)
+**Primary Attribution**: This project is built upon BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk), licensed under MIT License with various emulation cores under their respective licenses.
+
+### Main BizHawk Team (Upstream) - TASEmulators Organization
 
 The BizHawk project was created and maintained by:
 
@@ -179,4 +181,8 @@ For detailed license information, see:
 
 ---
 
-Last Updated: 2025-11-16
+**Last Updated**: 2025-11-23
+
+**Primary Attribution**: BizHawkRafaelia is derived from BizHawk by TASEmulators and the BizHawk Core Team. All original authors retain their copyrights and moral rights as specified in international conventions (Berne Convention, WIPO Copyright Treaty).
+
+**Humanitarian Commitment**: This project acknowledges contributions from all communities and commits to benefit allocation as documented in HUMANITARIAN_GUIDELINES.md.

@@ -463,17 +463,272 @@ Available: https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
 }
 ```
 
+## International Legal and Humanitarian Frameworks
+
+BizHawkRafaelia operates within a comprehensive legal and humanitarian framework based on international conventions, treaties, and human rights standards.
+
+### Copyright and Intellectual Property Conventions
+
+#### 1. Berne Convention for the Protection of Literary and Artistic Works
+
+**Established**: 1886 (Paris), revised multiple times (latest: Paris Act 1971)  
+**Organization**: World Intellectual Property Organization (WIPO)  
+**URL**: https://www.wipo.int/treaties/en/ip/berne/  
+**Member States**: 181 countries (as of 2024)
+
+**Key Principles Applied**:
+- Automatic copyright protection from creation
+- Minimum protection period: Life + 50 years
+- National treatment principle
+- Moral rights protection (attribution and integrity)
+
+**Citation**: WIPO. (1971). Berne Convention for the Protection of Literary and Artistic Works (Paris Act). https://www.wipo.int/treaties/en/ip/berne/
+
+#### 2. WIPO Copyright Treaty (WCT)
+
+**Adopted**: December 20, 1996 (Geneva)  
+**Entry into Force**: March 6, 2002  
+**URL**: https://www.wipo.int/treaties/en/ip/wct/  
+**Contracting Parties**: 115 (as of 2024)
+
+**Relevance**: Extends Berne Convention to digital environment, protects software and databases.
+
+**Citation**: WIPO. (1996). WIPO Copyright Treaty. https://www.wipo.int/treaties/en/ip/wct/
+
+#### 3. Universal Copyright Convention (UCC)
+
+**Established**: September 6, 1952 (Geneva)  
+**Organization**: UNESCO  
+**Status**: Alternative to Berne Convention
+
+**Relevance**: © symbol copyright notice requirements, international recognition.
+
+**Citation**: UNESCO. (1952). Universal Copyright Convention. https://www.unesco.org/en/legal-affairs/universal-copyright-convention
+
+### Human Rights Frameworks
+
+#### 1. Universal Declaration of Human Rights (UDHR)
+
+**Adopted**: December 10, 1948  
+**Organization**: United Nations General Assembly  
+**URL**: https://www.un.org/en/about-us/universal-declaration-of-human-rights  
+**Status**: Foundational human rights document
+
+**Relevant Articles**:
+- **Article 27**: Right to participate in cultural life and benefit from scientific progress
+- **Article 27(2)**: Right to protection of moral and material interests from authorship
+
+**Citation**: United Nations. (1948). Universal Declaration of Human Rights. UN General Assembly Resolution 217 A. https://www.un.org/en/about-us/universal-declaration-of-human-rights
+
+#### 2. International Covenant on Economic, Social and Cultural Rights (ICESCR)
+
+**Adopted**: December 16, 1966  
+**Entry into Force**: January 3, 1976  
+**URL**: https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-economic-social-and-cultural-rights  
+**State Parties**: 171
+
+**Relevant Provisions**: Right to education, cultural participation, benefit from scientific progress.
+
+**Citation**: United Nations. (1966). International Covenant on Economic, Social and Cultural Rights. UN General Assembly Resolution 2200A (XXI). https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-economic-social-and-cultural-rights
+
+#### 3. UN Convention on the Rights of the Child (CRC)
+
+**Adopted**: November 20, 1989  
+**Entry into Force**: September 2, 1990  
+**URL**: https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-child  
+**Ratification**: 196 countries (nearly universal)
+
+**Key Articles Applied**:
+- **Article 2**: Non-discrimination
+- **Article 13**: Freedom of expression and information
+- **Article 16**: Privacy protection
+- **Article 17**: Access to appropriate information
+- **Article 31**: Right to leisure and play
+
+**Citation**: United Nations. (1989). Convention on the Rights of the Child. UN General Assembly Resolution 44/25. https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-child
+
+#### 4. UN Declaration on the Rights of Indigenous Peoples (UNDRIP)
+
+**Adopted**: September 13, 2007  
+**Organization**: UN General Assembly  
+**URL**: https://www.un.org/development/desa/indigenouspeoples/declaration-on-the-rights-of-indigenous-peoples.html  
+**Support**: 144 countries (4 against, 11 abstentions, later changed to support)
+
+**Key Articles**:
+- **Article 3**: Self-determination
+- **Article 11**: Cultural heritage and traditional knowledge
+- **Article 15**: Dignity and diversity in education and public information
+- **Article 31**: Cultural heritage, traditional knowledge, and traditional cultural expressions
+
+**Citation**: United Nations. (2007). United Nations Declaration on the Rights of Indigenous Peoples. UN General Assembly Resolution 61/295. https://www.un.org/development/desa/indigenouspeoples/declaration-on-the-rights-of-indigenous-peoples.html
+
+#### 5. Vienna Declaration and Programme of Action
+
+**Adopted**: June 25, 1993  
+**Conference**: World Conference on Human Rights  
+**URL**: https://www.ohchr.org/en/instruments-mechanisms/instruments/vienna-declaration-and-programme-action  
+
+**Principle**: "All human rights are universal, indivisible and interdependent and interrelated."
+
+**Citation**: United Nations. (1993). Vienna Declaration and Programme of Action. World Conference on Human Rights. https://www.ohchr.org/en/instruments-mechanisms/instruments/vienna-declaration-and-programme-action
+
+### UNESCO Frameworks
+
+#### UNESCO Universal Declaration on Cultural Diversity
+
+**Adopted**: November 2, 2001  
+**Organization**: UNESCO General Conference  
+**URL**: https://www.unesco.org/en/legal-affairs/unesco-universal-declaration-cultural-diversity
+
+**Key Principles**:
+- Cultural diversity as common heritage of humanity
+- Cultural rights as human rights
+- Cultural diversity as ethical imperative
+- Link between cultural diversity and development
+
+**Citation**: UNESCO. (2001). UNESCO Universal Declaration on Cultural Diversity. https://www.unesco.org/en/legal-affairs/unesco-universal-declaration-cultural-diversity
+
+### UNICEF Business Principles
+
+#### Children's Rights and Business Principles
+
+**Published**: March 12, 2012  
+**Organizations**: UNICEF, UN Global Compact, Save the Children  
+**URL**: https://www.unicef.org/csr/
+
+**Ten Principles**:
+1. Meet responsibility to respect children's rights
+2. Contribute to elimination of child labour
+3. Provide decent work for young workers
+4. Ensure protection and safety
+5. Ensure products and services are safe
+6. Use responsible marketing
+7. Respect children's privacy
+8. Support children in emergency situations
+9. Help protect the environment
+10. Reinforce community efforts
+
+**Citation**: UNICEF, UN Global Compact, & Save the Children. (2012). Children's Rights and Business Principles. https://www.unicef.org/csr/
+
+### Accessibility Standards
+
+#### Web Content Accessibility Guidelines (WCAG) 2.1
+
+**Published**: June 5, 2018  
+**Organization**: World Wide Web Consortium (W3C)  
+**URL**: https://www.w3.org/TR/WCAG21/  
+**Status**: W3C Recommendation
+
+**Principles**: Perceivable, Operable, Understandable, Robust (POUR)
+
+**Citation**: W3C. (2018). Web Content Accessibility Guidelines (WCAG) 2.1. https://www.w3.org/TR/WCAG21/
+
+### UN Sustainable Development Goals (SDGs)
+
+#### Relevant SDGs for Software Development
+
+**Adopted**: September 25, 2015  
+**Organization**: United Nations  
+**URL**: https://sdgs.un.org/goals  
+**Target Year**: 2030
+
+**Applicable SDGs**:
+- **SDG 4**: Quality Education (access to educational resources)
+- **SDG 7**: Affordable and Clean Energy (energy-efficient software)
+- **SDG 10**: Reduced Inequalities (equal access to technology)
+- **SDG 16**: Peace, Justice and Strong Institutions (accountability, transparency)
+
+**Citation**: United Nations. (2015). Transforming our world: the 2030 Agenda for Sustainable Development. UN General Assembly Resolution 70/1. https://sdgs.un.org/goals
+
+### Environmental Standards
+
+#### Green Computing Initiative
+
+**Concept**: Environmentally sustainable computing practices  
+**Key Principles**:
+- Energy-efficient software design
+- Extended device lifespan through optimization
+- Reduced electronic waste
+- Sustainable development practices
+
+**References**:
+- Murugesan, S. (2008). "Harnessing Green IT: Principles and Practices." *IT Professional*, 10(1), 24-33.
+- IEEE Computer Society. "Green Computing" initiatives and standards.
+
+### Data Protection and Privacy
+
+#### GDPR-Inspired Privacy Principles
+
+**Regulation**: General Data Protection Regulation (EU)  
+**Effective**: May 25, 2018  
+**URL**: https://gdpr-info.eu/
+
+**Key Principles Applied**:
+- Data minimization
+- Purpose limitation
+- Privacy by design
+- User consent requirements
+- Right to access and deletion
+
+**Note**: While GDPR is EU law, its principles inform global privacy best practices.
+
+**Citation**: European Parliament and Council. (2016). Regulation (EU) 2016/679 (General Data Protection Regulation). Official Journal of the European Union, L 119/1.
+
+## International Organizations
+
+### United Nations (UN)
+
+**Website**: https://www.un.org/  
+**Human Rights Office**: https://www.ohchr.org/  
+**Role**: International cooperation, human rights standards, peacekeeping
+
+### UNICEF (United Nations Children's Fund)
+
+**Website**: https://www.unicef.org/  
+**Mission**: Humanitarian aid and development for children  
+**Focus**: Child rights, welfare, and protection
+
+### UNESCO (United Nations Educational, Scientific and Cultural Organization)
+
+**Website**: https://www.unesco.org/  
+**Mission**: Peace through education, science, culture, and communication  
+**Programs**: Cultural heritage, education, science
+
+### WIPO (World Intellectual Property Organization)
+
+**Website**: https://www.wipo.int/  
+**Mission**: Promote and protect intellectual property worldwide  
+**Treaties**: Berne Convention, WCT, WPPT, and more
+
+### International Labour Organization (ILO)
+
+**Website**: https://www.ilo.org/  
+**Mission**: Promote social justice and internationally recognized labour rights  
+**Standards**: Child labour elimination, decent work
+
+## Compliance and Enforcement
+
+BizHawkRafaelia implements these international standards through:
+
+1. **Automated Compliance Checking**: See `LegalComplianceChecker.cs`
+2. **Documentation**: See `LEGAL_COMPLIANCE_FRAMEWORK.md`
+3. **Humanitarian Guidelines**: See `HUMANITARIAN_GUIDELINES.md`
+4. **Continuous Monitoring**: CI/CD integration for ongoing verification
+5. **Transparency**: Public reporting and accountability
+
+**Scale of Compliance**: This project aims to exceed minimum legal requirements by **100x** in documentation comprehensiveness and transparency, setting a standard for ethical open-source development.
+
 ## Conclusion
 
 BizHawkRafaelia stands on the shoulders of giants. This document recognizes the immense collective effort of the emulation community, hardware researchers, software engineers, and preservationists who made this work possible.
 
 Every contributor, from those who wrote technical documentation to those who developed emulation cores, from those who created test ROMs to those who reported bugs, has played a crucial role in advancing the field of emulation.
 
-This project is dedicated to preserving computing history and enabling tool-assisted speedrunning as an art form and technical pursuit.
+This project is dedicated to preserving computing history and enabling tool-assisted speedrunning as an art form and technical pursuit, while respecting international law, human rights, and humanitarian principles.
 
 ---
 
-**Last Updated**: 2025-11-16  
+**Last Updated**: 2025-11-23  
 **Maintained By**: Rafael Melo Reis  
 **Project**: BizHawkRafaelia  
 **License**: See LICENSE, CONTRIBUTORS.md, and ATTRIBUTIONS.md

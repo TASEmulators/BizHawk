@@ -61,6 +61,7 @@ This comprehensive documentation suite provides everything you need to install, 
 | [INSTALLATION_MACOS.md](INSTALLATION_MACOS.md) | macOS workarounds and alternatives | macOS (Intel/Apple Silicon) |
 | [INSTALLATION_ANDROID.md](INSTALLATION_ANDROID.md) | Android APK installation and setup | Android 7+ ARM64 |
 | [HARDWARE_COMPATIBILITY_MATRIX.md](HARDWARE_COMPATIBILITY_MATRIX.md) | Hardware requirements and compatibility | All platforms |
+| [BATTERY_OPTIMIZATION_GUIDE.md](BATTERY_OPTIMIZATION_GUIDE.md) | Battery usage optimization strategies | Mobile/Portable devices |
 
 ### 3. Architecture and Development
 
@@ -72,7 +73,16 @@ This comprehensive documentation suite provides everything you need to install, 
 | [RAFAELIA_IMPLEMENTATION_SUMMARY.md](RAFAELIA_IMPLEMENTATION_SUMMARY.md) | Rafaelia modules implementation | Developers |
 | [BUG_MITIGATION_GUIDE.md](BUG_MITIGATION_GUIDE.md) | Bug detection and mitigation framework | Developers, QA |
 
-### 4. Header Templates
+### 4. Legal and Humanitarian Framework
+
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| [LEGAL_COMPLIANCE_FRAMEWORK.md](LEGAL_COMPLIANCE_FRAMEWORK.md) | International law and conventions framework | Legal, Everyone |
+| [HUMANITARIAN_GUIDELINES.md](HUMANITARIAN_GUIDELINES.md) | Children's and indigenous peoples' rights | Everyone |
+| [REFERENCES.md](REFERENCES.md) | International conventions and treaties | Legal, Researchers |
+| [ATTRIBUTIONS.md](ATTRIBUTIONS.md) | Humanitarian organization references | Everyone |
+
+### 5. Header Templates
 
 | File | Purpose |
 |------|---------|
