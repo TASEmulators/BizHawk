@@ -20,10 +20,12 @@ APP_NAME="BizHawkRafaelia"
 PROJECT_PATH="src/BizHawk.Android/BizHawk.Android.csproj"
 
 # Keystore configuration (can be overridden via environment variables)
+# NOTE: Default values are intentionally simple and public for debug/CI purposes
+# For production, set environment variables with secure credentials
 KEYSTORE_PATH="${KEYSTORE_PATH:-bizhawk-debug.keystore}"
 KEYSTORE_ALIAS="${KEYSTORE_ALIAS:-bizhawk-debug}"
-KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-bizhawk-debug-password}"
-KEY_PASSWORD="${KEY_PASSWORD:-bizhawk-debug-password}"
+KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-bizhawk-debug-password}"  # Public credential - DEBUG ONLY
+KEY_PASSWORD="${KEY_PASSWORD:-bizhawk-debug-password}"  # Public credential - DEBUG ONLY
 
 # Colors for output
 RED='\033[0;31m'

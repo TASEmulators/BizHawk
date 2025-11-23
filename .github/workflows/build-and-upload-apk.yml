@@ -100,9 +100,12 @@ jobs:
       - name: Setup Android Keystore for Signing
         run: |
           # Decode keystore from base64
+          # NOTE: This uses a DEBUG keystore with public credentials for CI/CD
+          # Production releases should use a separate keystore with private credentials
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > $HOME/bizhawk-debug.keystore
           
           # Set keystore environment variables for build
+          # NOTE: These credentials are intentionally public for development/CI purposes
           echo "KEYSTORE_PATH=$HOME/bizhawk-debug.keystore" >> $GITHUB_ENV
           echo "KEYSTORE_ALIAS=bizhawk-debug" >> $GITHUB_ENV
           echo "KEYSTORE_PASSWORD=bizhawk-debug-password" >> $GITHUB_ENV

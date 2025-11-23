@@ -14,9 +14,11 @@
 set -e
 
 # Configuration
+# NOTE: These credentials are INTENTIONALLY simple and public for debug/CI purposes
+# For production, generate a separate keystore with strong, private passwords
 KEYSTORE_NAME="bizhawk-debug.keystore"
 KEYSTORE_ALIAS="bizhawk-debug"
-KEYSTORE_PASSWORD="bizhawk-debug-password"
+KEYSTORE_PASSWORD="bizhawk-debug-password"  # Public credential - DEBUG ONLY
 VALIDITY_DAYS=10000
 
 # Colors for output
