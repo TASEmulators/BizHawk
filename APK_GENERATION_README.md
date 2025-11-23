@@ -22,11 +22,12 @@ See [DOWNLOAD_APK.md](DOWNLOAD_APK.md) for detailed download instructions in Eng
 
 ## Overview
 
-This document provides comprehensive instructions for generating unsigned ARM64 APK files with full bug mitigation, testing, and validation frameworks.
+This document provides comprehensive instructions for generating signed ARM64 APK files with full bug mitigation, testing, and validation frameworks.
 
 ## Features
 
-✅ **Unsigned ARM64 APK Generation** - Production-ready APK for Android devices  
+✅ **Signed ARM64 APK Generation** - Production-ready APK for Android devices  
+✅ **Automatic APK Signing** - Debug keystore for development and CI  
 ✅ **Comprehensive Bug Detection** - 7-phase static analysis framework  
 ✅ **Teste de Mesa Validation** - Logical algorithm testing methodology  
 ✅ **Memory Leak Detection** - Real-time leak monitoring and mitigation  
@@ -62,21 +63,22 @@ This document provides comprehensive instructions for generating unsigned ARM64 
 git clone https://github.com/rafaelmeloreisnovo/BizHawkRafaelia.git
 cd BizHawkRafaelia
 
-# Generate unsigned ARM64 APK with full validation
+# Generate signed ARM64 APK with full validation
 ./generate-apk.sh
 ```
 
 The script will:
 1. Run comprehensive bug mitigation analysis (7 phases)
 2. Check prerequisites
-3. Clean previous builds
-4. Restore dependencies
-5. Build Rafaelia optimization modules
-6. Generate unsigned ARM64 APK
-7. Validate APK structure and integrity
-8. Generate detailed build report
+3. Generate or locate debug keystore
+4. Clean previous builds
+5. Restore dependencies
+6. Build Rafaelia optimization modules
+7. Generate and sign ARM64 APK
+8. Validate APK structure and integrity
+9. Generate detailed build report
 
-**Output**: `./output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk`
+**Output**: `./output/android/BizHawkRafaelia-signed-arm64-v8a.apk`
 
 ---
 
@@ -238,9 +240,9 @@ Console.WriteLine($"Lag Events: {stats.TotalLagEvents}");
 ```
 output/
 ├── android/
-│   ├── BizHawkRafaelia-unsigned-arm64-v8a.apk  # Main APK file
-│   └── build-info.txt                          # Build details
-└── bug-mitigation-report.txt                   # Bug analysis report
+│   ├── BizHawkRafaelia-signed-arm64-v8a.apk  # Signed APK file
+│   └── build-info.txt                        # Build details
+└── bug-mitigation-report.txt                 # Bug analysis report
 ```
 
 ### Build Information Report
@@ -248,7 +250,8 @@ output/
 Contains:
 - Build date and configuration
 - .NET SDK version
-- APK information (size, target platform)
+- APK information (size, target platform, signing status)
+- Keystore information (for debug builds)
 - Installation instructions
 - Performance optimizations applied
 
@@ -256,40 +259,44 @@ Contains:
 
 ## APK Installation
 
-### Option 1: Install Directly (Testing)
+### Install APK Directly
 
 ```bash
 # Connect Android device via USB
 adb devices
 
-# Install APK
-adb install ./output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+# Install signed APK
+adb install ./output/android/BizHawkRafaelia-signed-arm64-v8a.apk
 
 # Run application
 adb shell am start -n com.rafaelmeloreis.bizhawkrafaelia/.MainActivity
 ```
 
-### Option 2: Sign APK (Production)
+### Production Signing
+
+The generated APK is signed with a debug keystore. For production releases:
+
+👉 **See [APK_SIGNING_GUIDE.md](APK_SIGNING_GUIDE.md) for complete production signing instructions**
+
+Quick overview:
 
 ```bash
-# Generate keystore (one-time)
+# Generate production keystore (one-time, keep it secure!)
 keytool -genkey -v -keystore my-release-key.keystore \
   -alias my-key-alias \
   -keyalg RSA \
   -keysize 2048 \
   -validity 10000
 
-# Sign APK
-apksigner sign \
-  --ks my-release-key.keystore \
-  --out BizHawkRafaelia-signed.apk \
-  ./output/android/BizHawkRafaelia-unsigned-arm64-v8a.apk
+# Build with production keystore
+export KEYSTORE_PATH="my-release-key.keystore"
+export KEYSTORE_ALIAS="my-key-alias"
+export KEYSTORE_PASSWORD="your-secure-password"
+export KEY_PASSWORD="your-secure-password"
+./generate-apk.sh
 
 # Verify signature
-apksigner verify BizHawkRafaelia-signed.apk
-
-# Install signed APK
-adb install BizHawkRafaelia-signed.apk
+apksigner verify ./output/android/BizHawkRafaelia-signed-arm64-v8a.apk
 ```
 
 ---
@@ -468,6 +475,8 @@ This is a fork of BizHawk (https://github.com/TASEmulators/BizHawk)
 - **Parent Project**: https://github.com/TASEmulators/BizHawk
 - **ARM64 Support**: See ARM64_MOBILE_SUPPORT.md
 - **Bug Mitigation**: See BUG_MITIGATION_GUIDE.md
+- **APK Signing Guide**: See APK_SIGNING_GUIDE.md
+- **GitHub Actions Setup**: See GITHUB_ACTIONS_SETUP.md
 - **Optimization Guide**: See ativa.txt
 - **ZIPRAF_OMEGA**: See rafaelia/README_ativar.md
 
