@@ -1,6 +1,7 @@
 **/.vs/**
 **/.vscode/
 /output/**
+!/output/bug-mitigation-report.txt
 /packaged_output
 /result*
 /test_output

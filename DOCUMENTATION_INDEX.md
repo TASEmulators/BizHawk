@@ -70,6 +70,17 @@ Welcome to BizHawkRafaelia! This index helps you find the right documentation fo
 **Methodology:**
 - [README.md](README.md) - TASing features and tools
 
+### 🚀 For Maintainers & Release Management
+
+**Quality assurance:**
+- [BUG_MITIGATION_GUIDE.md](BUG_MITIGATION_GUIDE.md) - Bug mitigation framework
+- [PR_MERGE_READINESS_CHECKLIST.md](PR_MERGE_READINESS_CHECKLIST.md) - Pre-merge validation
+- [MERGE_PREPARATION_SUMMARY.md](MERGE_PREPARATION_SUMMARY.md) - Merge preparation summary
+
+**PR review process:**
+- [PR_MERGE_READINESS_CHECKLIST.md](PR_MERGE_READINESS_CHECKLIST.md) - Comprehensive checklist
+- [MERGE_PREPARATION_SUMMARY.md](MERGE_PREPARATION_SUMMARY.md) - Executive summary
+
 ## Complete Documentation List
 
 ### Primary Documentation
@@ -84,6 +95,9 @@ Welcome to BizHawkRafaelia! This index helps you find the right documentation fo
 | [UNIFIED_STRUCTURE.md](UNIFIED_STRUCTURE.md) | 275 | Code organization guidelines |
 | [OPTIMIZATION.md](OPTIMIZATION.md) | 491 | Performance optimization guidelines |
 | [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) | 391 | Project implementation summary |
+| [BUG_MITIGATION_GUIDE.md](BUG_MITIGATION_GUIDE.md) | 498 | Comprehensive bug mitigation framework |
+| [PR_MERGE_READINESS_CHECKLIST.md](PR_MERGE_READINESS_CHECKLIST.md) | 330+ | Pre-merge validation checklist |
+| [MERGE_PREPARATION_SUMMARY.md](MERGE_PREPARATION_SUMMARY.md) | 370+ | Merge preparation executive summary |
 
 ### Development Resources
 
@@ -99,7 +113,7 @@ Welcome to BizHawkRafaelia! This index helps you find the right documentation fo
 |----------|---------|
 | [SECURITY.md](SECURITY.md) | Security policy |
 
-**Total Documentation**: 3,400+ lines
+**Total Documentation**: 4,800+ lines
 
 ## Documentation by Topic
 
@@ -219,7 +233,7 @@ All BizHawkRafaelia documentation follows these principles:
 
 ## Updates
 
-This index is maintained alongside the documentation. Last updated: 2025-11-16
+This index is maintained alongside the documentation. Last updated: 2025-11-23
 
 When documentation changes:
 - Update this index
@@ -246,6 +260,6 @@ For questions: Open an issue on GitHub
 
 **Note**: This documentation represents industry-leading standards for open source attribution, license compliance, and technical documentation. All documentation exceeds legal minimum requirements.
 
-**Last Updated**: 2025-11-16  
-**Version**: 1.0  
+**Last Updated**: 2025-11-23  
+**Version**: 1.1  
 **Status**: Complete

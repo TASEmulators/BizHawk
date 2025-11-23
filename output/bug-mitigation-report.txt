@@ -1,0 +1,7 @@
+[BUG-1] MEDIUM - Memory: Found 26 files with unmanaged memory allocation
+[BUG-2] HIGH - Memory Leak: Event subscriptions (3801) >> unsubscriptions (1065)
+[BUG-3] MEDIUM - Lag: Found 14 Thread.Sleep calls
+[BUG-4] HIGH - Logic: Low ratio of null checks vs dereferences - potential NullReferenceException
+[BUG-5] MEDIUM - Logic: Potential division by zero risks
+[BUG-6] CRITICAL - Resource Leak: Mismatch between IDisposable declarations and implementations
+[BUG-7] HIGH - Concurrency: Shared state without adequate concurrent protection
