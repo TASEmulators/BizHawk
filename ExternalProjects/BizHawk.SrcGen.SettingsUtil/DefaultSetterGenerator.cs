@@ -6,7 +6,7 @@ using System.Text;
 
 using BizHawk.Analyzers;
 
-using TestType = (ClassDeclarationSyntax CDS, SemanticModel SemanticModel);
+using TestType = (TypeDeclarationSyntax TDS, SemanticModel SemanticModel);
 
 [Generator]
 public class DefaultSetterGenerator : IIncrementalGenerator
@@ -14,8 +14,8 @@ public class DefaultSetterGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		var classDecls = context.SyntaxProvider.CreateSyntaxProvider(
-			predicate: static (syntaxNode, _) => syntaxNode is ClassDeclarationSyntax,
-			transform: static (ctx, _) => ((ClassDeclarationSyntax) ctx.Node, ctx.SemanticModel));
+			predicate: static (syntaxNode, _) => syntaxNode is ClassDeclarationSyntax or RecordDeclarationSyntax,
+			transform: static (ctx, _) => ((TypeDeclarationSyntax) ctx.Node, ctx.SemanticModel));
 		context.RegisterSourceOutput(context.CompilationProvider.Combine(classDecls.Collect()), Execute);
 	}
 
@@ -88,11 +88,11 @@ namespace BizHawk.Emulation.Cores
 	{");
 
 		foreach (var symbol in classDeclarations
-			.Where(tuple => tuple.CDS.AttributeLists.Matching(
+			.Where(tuple => tuple.TDS.AttributeLists.Matching(
 				consumerAttrSym,
 				tuple.SemanticModel,
 				context.CancellationToken).Any())
-			.Select(tuple => tuple.SemanticModel.GetDeclaredSymbol(tuple.CDS, context.CancellationToken))
+			.Select(tuple => tuple.SemanticModel.GetDeclaredSymbol(tuple.TDS, context.CancellationToken))
 			.OfType<ITypeSymbol>())
 		{
 			CreateDefaultSetter(source, symbol, symbol.GetIsCLSCompliant(clsCompliantAttrSym) ?? true);
