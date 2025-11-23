@@ -1,0 +1,119 @@
+================================================================
+BizHawkRafaelia - APK Signing Setup for GitHub Actions
+================================================================
+
+IMPORTANT: Follow these steps to enable automatic APK signing in GitHub Actions.
+
+================================================================
+Step 1: Add GitHub Secret
+================================================================
+
+1. Go to GitHub Repository Settings:
+   https://github.com/rafaelmeloreisnovo/BizHawkRafaelia/settings/secrets/actions
+
+2. Click "New repository secret"
+
+3. Add the following secret:
+   
+   Name: ANDROID_KEYSTORE_BASE64
+   
+   Value: Copy the ENTIRE content from the keystore.base64 file
+          (The base64 file is in the same directory as this file)
+
+4. Click "Add secret"
+
+5. Verify: Push a commit and check that the GitHub Actions workflow succeeds
+
+================================================================
+Step 2: Clean Up
+================================================================
+
+After successfully adding the secret:
+
+1. Delete the keystore.base64 file (contains sensitive data):
+   rm keystore.base64
+
+2. Optionally keep bizhawk-debug.keystore for local development:
+   - Store it securely
+   - Do NOT commit it to git (already in .gitignore)
+
+3. Delete this instruction file:
+   rm SETUP_INSTRUCTIONS.txt
+
+================================================================
+Important Notes
+================================================================
+
+✅ WHAT THIS IS:
+- A debug keystore for automated builds and CI/CD
+- Allows GitHub Actions to sign APKs automatically
+- Enables team members to build signed APKs locally
+
+⚠️ WHAT THIS IS NOT:
+- This is NOT a production keystore
+- Do NOT use for official releases
+- Credentials are intentionally simple for development
+
+🔐 FOR PRODUCTION RELEASES:
+- Generate a separate production keystore
+- Use strong, random passwords
+- Store securely (password manager, HSM, etc.)
+- NEVER commit to version control
+- See APK_SIGNING_GUIDE.md for full instructions
+
+================================================================
+Keystore Credentials (for development/CI):
+================================================================
+
+These credentials are intentionally public for development:
+
+- File: bizhawk-debug.keystore
+- Alias: bizhawk-debug
+- Store Password: bizhawk-debug-password
+- Key Password: bizhawk-debug-password
+- Validity: 10000 days (~27 years)
+- Algorithm: RSA 2048-bit
+
+================================================================
+Verification
+================================================================
+
+To verify the setup worked:
+
+1. Push a commit to trigger the workflow
+2. Go to: https://github.com/rafaelmeloreisnovo/BizHawkRafaelia/actions
+3. Find "Build and Upload APK" workflow
+4. Check that all steps complete successfully
+5. Download the artifact and verify it's a signed APK:
+   
+   apksigner verify BizHawkRafaelia-signed-arm64-v8a.apk
+
+================================================================
+Troubleshooting
+================================================================
+
+If the workflow fails:
+
+1. Verify secret name is exactly: ANDROID_KEYSTORE_BASE64
+2. Ensure base64 content has NO newlines (single line)
+3. Check workflow logs for specific error messages
+4. See GITHUB_ACTIONS_SETUP.md for detailed troubleshooting
+
+================================================================
+Documentation
+================================================================
+
+For more information, see:
+
+- APK_SIGNING_GUIDE.md - Complete signing documentation
+- GITHUB_ACTIONS_SETUP.md - Detailed GitHub Actions setup
+- APK_GENERATION_README.md - APK build instructions
+
+================================================================
+Contact
+================================================================
+
+For questions or issues:
+https://github.com/rafaelmeloreisnovo/BizHawkRafaelia/issues
+
+================================================================

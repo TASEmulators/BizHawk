@@ -1,14 +1,14 @@
 #!/bin/bash
 # ===========================================================================
-# BizHawkRafaelia - Generate Unsigned Android APK
+# BizHawkRafaelia - Generate Signed Android APK
 # ===========================================================================
 # 
 # FORK PARENT: BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk)
 # FORK MAINTAINER: Rafael Melo Reis (https://github.com/rafaelmeloreisnovo/BizHawkRafaelia)
 # 
-# Purpose: Generate unsigned and compiled Android ARM64 APK
+# Purpose: Generate signed and compiled Android ARM64 APK
 # Target: ARM64-v8a Android devices (Android 7.0+)
-# Output: Unsigned APK ready for installation or signing
+# Output: Signed APK ready for installation
 # ===========================================================================
 
 set -e  # Exit on error
@@ -19,6 +19,14 @@ OUTPUT_DIR="./output/android"
 APP_NAME="BizHawkRafaelia"
 PROJECT_PATH="src/BizHawk.Android/BizHawk.Android.csproj"
 
+# Keystore configuration (can be overridden via environment variables)
+# NOTE: Default values are intentionally simple and public for debug/CI purposes
+# For production, set environment variables with secure credentials
+KEYSTORE_PATH="${KEYSTORE_PATH:-bizhawk-debug.keystore}"
+KEYSTORE_ALIAS="${KEYSTORE_ALIAS:-bizhawk-debug}"
+KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-bizhawk-debug-password}"  # Public credential - DEBUG ONLY
+KEY_PASSWORD="${KEY_PASSWORD:-bizhawk-debug-password}"  # Public credential - DEBUG ONLY
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -28,7 +36,7 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}BizHawkRafaelia - APK Generator${NC}"
-echo -e "${GREEN}Generate Unsigned Compiled APK${NC}"
+echo -e "${GREEN}Generate Signed Compiled APK${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 
@@ -67,6 +75,29 @@ fi
 
 echo "✓ Android project found"
 
+# Check for keystore
+echo ""
+if [ ! -f "$KEYSTORE_PATH" ]; then
+    echo -e "${YELLOW}⚠️  Keystore not found at: $KEYSTORE_PATH${NC}"
+    echo -e "${YELLOW}Generating debug keystore...${NC}"
+    
+    # Generate debug keystore if it doesn't exist
+    if [ -f "scripts/generate-debug-keystore.sh" ]; then
+        bash scripts/generate-debug-keystore.sh
+    else
+        echo -e "${RED}ERROR: Cannot generate keystore (script not found)${NC}"
+        echo "Please create a keystore manually or provide KEYSTORE_PATH"
+        exit 1
+    fi
+    
+    if [ ! -f "$KEYSTORE_PATH" ]; then
+        echo -e "${RED}ERROR: Keystore generation failed${NC}"
+        exit 1
+    fi
+fi
+
+echo "✓ Keystore found: $KEYSTORE_PATH"
+
 # Step 3: Clean previous builds
 echo ""
 echo -e "${YELLOW}[3/8] Cleaning previous builds...${NC}"
@@ -89,15 +120,19 @@ echo "✓ Rafaelia modules built"
 
 # Step 6: Build Android APK
 echo ""
-echo -e "${YELLOW}[6/8] Building unsigned Android APK...${NC}"
+echo -e "${YELLOW}[6/8] Building signed Android APK...${NC}"
 echo -e "${BLUE}This may take several minutes...${NC}"
 
-# Build the APK without signing
+# Build the APK with signing
 dotnet build "$PROJECT_PATH" \
     -c "$BUILD_CONFIG" \
     -f net9.0-android \
     -p:AndroidPackageFormat=apk \
-    -p:RuntimeIdentifier=android-arm64
+    -p:RuntimeIdentifier=android-arm64 \
+    -p:AndroidSigningKeyStore="$KEYSTORE_PATH" \
+    -p:AndroidSigningKeyAlias="$KEYSTORE_ALIAS" \
+    -p:AndroidSigningKeyPass="$KEY_PASSWORD" \
+    -p:AndroidSigningStorePass="$KEYSTORE_PASSWORD"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}ERROR: APK build failed${NC}"
@@ -117,8 +152,13 @@ echo "✓ APK built successfully"
 echo ""
 echo -e "${YELLOW}[7/8] Locating output APK...${NC}"
 
-# Find the generated APK
-APK_SOURCE=$(find src/BizHawk.Android/bin/$BUILD_CONFIG -name "*.apk" | grep -v ".signed.apk" | head -1)
+# Find the generated signed APK
+APK_SOURCE=$(find src/BizHawk.Android/bin/$BUILD_CONFIG -name "*-Signed.apk" | head -1)
+
+if [ -z "$APK_SOURCE" ]; then
+    echo -e "${YELLOW}Signed APK not found, looking for any APK...${NC}"
+    APK_SOURCE=$(find src/BizHawk.Android/bin/$BUILD_CONFIG -name "*.apk" | head -1)
+fi
 
 if [ -z "$APK_SOURCE" ]; then
     echo -e "${RED}ERROR: Could not locate generated APK${NC}"
@@ -127,7 +167,7 @@ if [ -z "$APK_SOURCE" ]; then
 fi
 
 # Copy to output directory
-APK_OUTPUT="$OUTPUT_DIR/${APP_NAME}-unsigned-arm64-v8a.apk"
+APK_OUTPUT="$OUTPUT_DIR/${APP_NAME}-signed-arm64-v8a.apk"
 cp "$APK_SOURCE" "$APK_OUTPUT"
 
 # Get APK size
@@ -139,26 +179,17 @@ echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}✓ SUCCESS!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
-echo -e "${GREEN}Unsigned APK generated:${NC}"
+echo -e "${GREEN}Signed APK generated:${NC}"
 echo -e "${BLUE}  Location: $APK_OUTPUT${NC}"
 echo -e "${BLUE}  Size: $APK_SIZE${NC}"
 echo ""
-echo -e "${YELLOW}Installation Options:${NC}"
+echo -e "${YELLOW}Installation:${NC}"
 echo ""
-echo -e "${GREEN}1. Install directly (for testing):${NC}"
+echo -e "${GREEN}Install APK:${NC}"
 echo "   adb install $APK_OUTPUT"
 echo ""
-echo -e "${GREEN}2. Sign the APK (for distribution):${NC}"
-echo "   # Generate keystore (one-time):"
-echo "   keytool -genkey -v -keystore my-release-key.keystore \\"
-echo "     -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000"
-echo ""
-echo "   # Sign APK:"
-echo "   apksigner sign --ks my-release-key.keystore \\"
-echo "     --out ${APP_NAME}-signed.apk $APK_OUTPUT"
-echo ""
-echo -e "${YELLOW}Note: This is an UNSIGNED APK.${NC}"
-echo "For production use, you must sign it with your keystore."
+echo -e "${GREEN}Note:${NC} This APK is signed with a debug keystore."
+echo "For production releases, use a production keystore with proper security."
 echo ""
 echo -e "${BLUE}Features included:${NC}"
 echo "  • Rafaelia performance optimizations"
@@ -170,7 +201,7 @@ echo ""
 
 # Generate build report
 cat > "$OUTPUT_DIR/build-info.txt" << EOF
-BizHawkRafaelia - Unsigned APK Build Report
+BizHawkRafaelia - Signed APK Build Report
 ============================================
 
 Build Date: $(date)
@@ -178,16 +209,20 @@ Build Configuration: $BUILD_CONFIG
 .NET SDK Version: $DOTNET_VERSION
 
 APK Information:
-  File: ${APP_NAME}-unsigned-arm64-v8a.apk
+  File: ${APP_NAME}-signed-arm64-v8a.apk
   Size: $APK_SIZE
   Target: ARM64-v8a (Android 7.0+)
-  Signed: No (unsigned)
+  Signed: Yes (debug keystore)
+
+Keystore Information:
+  Path: $KEYSTORE_PATH
+  Alias: $KEYSTORE_ALIAS
 
 Installation Command:
   adb install $APK_OUTPUT
 
-WARNING: This is an unsigned APK for testing purposes only.
-For production distribution, you must sign the APK with your keystore.
+NOTE: This APK is signed with a debug keystore for testing purposes.
+For production distribution, use a production keystore with proper security.
 
 Performance Optimizations:
   ✓ Rafaelia performance framework

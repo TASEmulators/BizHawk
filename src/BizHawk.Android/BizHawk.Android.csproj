@@ -12,8 +12,11 @@
 		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
 		<TargetPlatformVersion>35.0</TargetPlatformVersion>
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
-		<AndroidSigningKeyStore></AndroidSigningKeyStore>
-		<AndroidSigningKeyAlias></AndroidSigningKeyAlias>
+		<!-- Android Signing Configuration (can be overridden via command line or environment variables) -->
+		<AndroidSigningKeyStore>$(AndroidSigningKeyStore)</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>$(AndroidSigningKeyAlias)</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>$(AndroidSigningKeyPass)</AndroidSigningKeyPass>
+		<AndroidSigningStorePass>$(AndroidSigningStorePass)</AndroidSigningStorePass>
 		<AndroidEnableProguard>false</AndroidEnableProguard>
 		<AndroidLinkMode>None</AndroidLinkMode>
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
