@@ -195,8 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				color = Palette.AnalogEdit_Col;
 			}
-
-			if (_alternateRowColor.GetValueOrPut(
+			else if (_alternateRowColor.GetValueOrPut(
 				columnName,
 				columnName1 => {
 					var playerNumber = ControllerDefinition.PlayerNumber(columnName1);
