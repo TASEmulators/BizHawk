@@ -27,7 +27,7 @@
 - **Architecture**: ARM64-v8a (64-bit ARM)
 - **RAM**: 3 GB (4 GB recommended)
 - **Storage**: 500 MB free space (1 GB recommended)
-- **GPU**: OpenGL ES 3.0+ or Vulkan 1.0+
+- **GPU**: OpenGL ES 3.0+ or Vulkan 1.0+ (Vulkan 1.1+ recommended)
 - **CPU**: Snapdragon 665 / MediaTek Helio G80 or equivalent
 
 ### Recommended Requirements

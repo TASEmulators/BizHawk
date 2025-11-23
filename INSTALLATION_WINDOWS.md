@@ -22,7 +22,7 @@
 ### Minimum
 - **OS**: Windows 10 (64-bit), version 1909 or later
 - **CPU**: Intel Core 2 Duo / AMD Athlon 64 X2 (2008+)
-- **RAM**: 2 GB
+- **RAM**: 4 GB (2 GB absolute minimum, not recommended)
 - **GPU**: OpenGL 3.3 compatible (integrated graphics OK)
 - **Storage**: 500 MB free space
 - **Display**: 1024x768 resolution

@@ -144,7 +144,7 @@ This document provides a comprehensive hardware compatibility matrix for BizHawk
 
 **Desktop/Laptop**:
 - **CPU**: Intel Core 2 Duo / AMD Athlon 64 X2 (2008+)
-- **RAM**: 2 GB
+- **RAM**: 2 GB (4 GB strongly recommended)
 - **GPU**: Integrated graphics with OpenGL 3.3 support
 - **Storage**: 500 MB free space
 - **OS**: Windows 10, Ubuntu 20.04, or equivalent

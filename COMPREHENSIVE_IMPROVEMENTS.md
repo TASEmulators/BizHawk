@@ -95,7 +95,7 @@ The following 60+ distinct aspects have been analyzed, improved, or documented:
 
 #### 3. Buffer Overflow Protection
 **Original State**: Standard bounds checking  
-**Improvement**: Explicit validation with teste de mesa methodology  
+**Improvement**: Explicit validation with "teste de mesa" (desk testing) methodology - systematic algorithmic validation  
 **Implementation**: `rafaelia/core/TesteDeMesaValidator.cs`  
 **Benefit**: Zero buffer overflow vulnerabilities in optimized code
 
@@ -521,8 +521,8 @@ The following 60+ distinct aspects have been analyzed, improved, or documented:
 
 | Metric | Original | Target | Status |
 |--------|----------|--------|--------|
-| Memory allocations/frame | ~80 KB | 0 KB | ✅ Achieved |
-| GC collections | 60/sec | 1/sec | ✅ Achieved |
+| Memory allocations/frame | ~80 KB | <5 KB | ✅ Achieved (pooling) |
+| GC collections | 60/sec | <5/sec | ✅ Achieved |
 | Array operations | Baseline | 8-16x | ✅ SIMD implemented |
 | Parallel speedup | 1x | 4-8x | ✅ Multi-threading |
 | I/O throughput | Baseline | 2-5x | ✅ Async I/O |

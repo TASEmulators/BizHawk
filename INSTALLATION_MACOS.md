@@ -73,7 +73,9 @@ Run Windows or Linux in a VM for full BizHawkRafaelia 2.x support.
 brew install --cask utm
 
 # 2. Download Windows 11 ARM ISO
+# Note: Requires Microsoft account and Windows Insider Program membership
 # https://www.microsoft.com/software-download/windowsinsiderpreviewARM64
+# Alternative: Use Windows 11 for ARM retail if available in your region
 
 # 3. Create VM in UTM:
 #    - Architecture: ARM64
