@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				var flags = LibGambatte.LoadFlags.READONLY_SAV;
 
-				switch (_syncSettings.ConsoleMode)
+				switch (game.System is VSystemID.Raw.SGB ? GambatteSyncSettings.ConsoleModeType.SGB2 : _syncSettings.ConsoleMode)
 				{
 					case GambatteSyncSettings.ConsoleModeType.GB:
 						break;
@@ -57,19 +57,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					case GambatteSyncSettings.ConsoleModeType.GBA:
 						flags |= LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG;
 						break;
+					case GambatteSyncSettings.ConsoleModeType.SGB2:
+						flags |= LibGambatte.LoadFlags.SGB_MODE;
+						IsSgb = true;
+						break;
 					case GambatteSyncSettings.ConsoleModeType.Auto:
 						if (game.System == VSystemID.Raw.GBC)
 							flags |= LibGambatte.LoadFlags.CGB_MODE;
 						break;
 					default:
 						throw new InvalidOperationException();
-				}
-
-				if (game.System == VSystemID.Raw.SGB)
-				{
-					flags &= ~(LibGambatte.LoadFlags.CGB_MODE | LibGambatte.LoadFlags.GBA_FLAG);
-					flags |= LibGambatte.LoadFlags.SGB_MODE;
-					IsSgb = true;
 				}
 
 				IsCgb = (flags & LibGambatte.LoadFlags.CGB_MODE) == LibGambatte.LoadFlags.CGB_MODE;
