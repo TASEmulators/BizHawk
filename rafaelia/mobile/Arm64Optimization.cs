@@ -3,12 +3,61 @@
  * BizHawkRafaelia - Mobile/ARM64 Optimization Module
  * ===========================================================================
  * 
- * FORK PARENT: BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk)
- * FORK MAINTAINER: Rafael Melo Reis (https://github.com/rafaelmeloreisnovo/BizHawkRafaelia)
+ * ORIGINAL AUTHORS:
+ *   - BizHawk Core Team (TASEmulators) - https://github.com/TASEmulators/BizHawk
+ *     Original cross-platform emulation framework
  * 
- * Module: Mobile/ARM64 Optimization
- * Purpose: ARM64-specific optimizations and Android APK support
- * Target: Efficient execution on mobile ARM64 processors
+ * OPTIMIZATION ENHANCEMENTS BY:
+ *   - Rafael Melo Reis - https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ *     ARM64/NEON SIMD, power management, thermal throttling, touch optimization
+ * 
+ * LICENSE: MIT (inherited from BizHawk parent project)
+ * 
+ * MODULE PURPOSE:
+ *   Provides ARM64-specific optimizations for mobile and Apple Silicon devices:
+ *   - ARM NEON SIMD operations (128-bit vectorization)
+ *   - Power management (PowerSaver/Balanced/Performance profiles)
+ *   - Thermal management and throttling
+ *   - Touch input optimization for mobile interfaces
+ *   - Cache line alignment for ARM64 (64-byte cache lines)
+ * 
+ * PERFORMANCE TARGETS:
+ *   - 4-8x speedup via NEON vectorization on ARM64
+ *   - 30-50% battery life improvement in PowerSaver mode
+ *   - Smooth 60 FPS on modern ARM devices (last 5 years)
+ *   - Thermal throttling prevents device overheating
+ *   - <16ms touch latency for responsive mobile experience
+ * 
+ * CROSS-PLATFORM COMPATIBILITY:
+ *   - Android (ARM64): Full NEON support, power management
+ *   - iOS (ARM64): Full NEON support on all modern iPhones/iPads
+ *   - Apple Silicon Macs (M1/M2/M3): Full optimization support
+ *   - Other ARM64 devices: Full NEON support where available
+ *   - Graceful fallback on non-ARM platforms
+ * 
+ * LOW-LEVEL EXPLANATION:
+ *   ARM64 processors have specific characteristics requiring targeted optimizations:
+ *   1. NEON SIMD: ARM's vector instruction set, equivalent to x86 SSE/AVX.
+ *      Processes 16 bytes in parallel using 128-bit registers.
+ *   2. CACHE LINES: ARM64 uses 64-byte cache lines (vs 64 bytes on x86).
+ *      Data structures should align to this boundary to prevent false sharing.
+ *   3. POWER EFFICIENCY: ARM focuses on power efficiency over raw performance.
+ *      Must balance computation with battery life and heat generation.
+ *   4. THERMAL THROTTLING: Mobile devices have limited cooling, requiring
+ *      adaptive throttling to prevent overheating and maintain user comfort.
+ * 
+ *   Memory operations on ARM64:
+ *   - Load/Store operations can be unaligned but aligned is 2x faster
+ *   - Prefetching is less aggressive than x86, manual prefetch helps
+ *   - Write-through cache on most implementations
+ * 
+ * USAGE NOTES:
+ *   - Always check IsNeonSupported before using NEON intrinsics
+ *   - Align buffers to 64-byte boundaries for optimal performance
+ *   - Monitor thermal state and throttle appropriately on mobile
+ *   - Power profiles should adapt to battery level and charging state
+ *   - Touch buffer size (16 points) sufficient for gesture recognition
+ * 
  * ===========================================================================
  */
 

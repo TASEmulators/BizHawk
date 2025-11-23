@@ -345,7 +345,7 @@ namespace BizHawk.Rafaelia.Core.CPU
         /// Gets optimal parallelism level based on CPU core count.
         /// Uses 75% of available cores to leave headroom for system.
         /// </summary>
-        public static int OptimalParallelism => Math.Max(1, (Environment.ProcessorCount * 3) / 4);
+        public static int OptimalParallelism => System.Math.Max(1, (Environment.ProcessorCount * 3) / 4);
 
         /// <summary>
         /// Parallel for loop with optimal task partitioning.
@@ -383,7 +383,7 @@ namespace BizHawk.Rafaelia.Core.CPU
         /// <param name="processor">Chunk processor</param>
         public static void ProcessChunksParallel<T>(T[] array, Action<T[], int, int> processor)
         {
-            int chunkSize = Math.Max(1, array.Length / OptimalParallelism);
+            int chunkSize = System.Math.Max(1, array.Length / OptimalParallelism);
             
             Parallel.For(0, OptimalParallelism, i =>
             {
@@ -569,7 +569,7 @@ namespace BizHawk.Rafaelia.Core.CPU
             {
                 long write = Interlocked.Read(ref _writePosition);
                 long read = Interlocked.Read(ref _readPosition);
-                return (int)Math.Max(0, Math.Min(_capacity, write - read));
+                return (int)System.Math.Max(0, System.Math.Min(_capacity, write - read));
             }
         }
 

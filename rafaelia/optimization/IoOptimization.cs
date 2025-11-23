@@ -3,12 +3,58 @@
  * BizHawkRafaelia - I/O Optimization Module
  * ===========================================================================
  * 
- * FORK PARENT: BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk)
- * FORK MAINTAINER: Rafael Melo Reis (https://github.com/rafaelmeloreisnovo/BizHawkRafaelia)
+ * ORIGINAL AUTHORS:
+ *   - BizHawk Core Team (TASEmulators) - https://github.com/TASEmulators/BizHawk
+ *     Original file I/O and disk management systems
  * 
- * Module: I/O Optimization
- * Purpose: High-performance disk I/O with caching and compression
- * Target: 1/3 disk usage, 5x I/O throughput
+ * OPTIMIZATION ENHANCEMENTS BY:
+ *   - Rafael Melo Reis - https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ *     Async I/O, memory-mapped files, compression, read-ahead caching
+ * 
+ * LICENSE: MIT (inherited from BizHawk parent project)
+ * 
+ * MODULE PURPOSE:
+ *   Provides high-performance disk I/O operations:
+ *   - Async file operations with large buffers (64KB+)
+ *   - Memory-mapped I/O for large files (>100MB)
+ *   - Compression utilities (GZip, Deflate) for storage reduction
+ *   - Read-ahead caching with LRU eviction
+ *   - Optimal buffer sizes for maximum throughput
+ * 
+ * PERFORMANCE TARGETS:
+ *   - 2-5x faster than standard File operations
+ *   - 90% reduction in I/O syscalls through buffering
+ *   - 2-3x compression ratio on save states
+ *   - 80%+ reduction in perceived I/O latency via caching
+ *   - 1/3 disk usage through compression
+ * 
+ * CROSS-PLATFORM COMPATIBILITY:
+ *   - Windows: Full async I/O, memory-mapped files, compression
+ *   - Linux: Full support with optimal buffer sizes
+ *   - macOS: Full support on all architectures
+ *   - All platforms benefit from .NET 8.0+ I/O improvements
+ * 
+ * LOW-LEVEL EXPLANATION:
+ *   I/O operations are among the slowest in computing (1000-10000x slower than RAM).
+ *   Optimizations work through:
+ *   1. BUFFERING: Reading/writing in large chunks (64KB) reduces syscall overhead
+ *      by batching multiple I/O requests into one, amortizing the cost.
+ *   2. ASYNC I/O: Allows CPU to do other work while waiting for disk, preventing
+ *      thread blocking and improving throughput on multi-core systems.
+ *   3. MEMORY MAPPING: OS manages paging between disk and RAM automatically,
+ *      avoiding explicit read/write syscalls. Perfect for random access patterns.
+ *   4. COMPRESSION: Reduces bytes written to disk, trading CPU cycles for I/O time.
+ *      On modern systems, compression is often faster than writing uncompressed data.
+ *   5. CACHING: Keeps frequently accessed data in RAM (LRU = Least Recently Used
+ *      eviction), eliminating disk access entirely for hot data.
+ * 
+ * USAGE NOTES:
+ *   - Use async methods for all I/O to prevent blocking
+ *   - Memory-mapped files ideal for large sequential reads (ROM files)
+ *   - Compression best for save states and infrequently accessed data
+ *   - Cache size should be 5-10% of available RAM
+ *   - Always handle cancellation tokens properly in async operations
+ * 
  * ===========================================================================
  */
 

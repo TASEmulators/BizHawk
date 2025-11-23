@@ -60,7 +60,7 @@ namespace BizHawk.Rafaelia.Core
 		{
 			_testCounter++;
 
-			if (Math.Abs(divisor) < double.Epsilon)
+			if (System.Math.Abs(divisor) < double.Epsilon)
 			{
 				LogValidation(false, ValidationCategory.DivisionByZero,
 					$"Division by zero in context: {context}", (int)divisor);
