@@ -3,12 +3,59 @@
  * BizHawkRafaelia - Interoperability Module
  * ===========================================================================
  * 
- * FORK PARENT: BizHawk by TASEmulators (https://github.com/TASEmulators/BizHawk)
- * FORK MAINTAINER: Rafael Melo Reis (https://github.com/rafaelmeloreisnovo/BizHawkRafaelia)
+ * ORIGINAL AUTHORS:
+ *   - BizHawk Core Team (TASEmulators) - https://github.com/TASEmulators/BizHawk
+ *     Original cross-platform compatibility framework
  * 
- * Module: Interoperability
- * Purpose: Cross-platform and cross-version compatibility layer
- * Target: Support .NET Framework 4.8, .NET 6, .NET 8, Mono
+ * OPTIMIZATION ENHANCEMENTS BY:
+ *   - Rafael Melo Reis - https://github.com/rafaelmeloreisnovo/BizHawkRafaelia
+ *     Runtime detection, compatibility shims, performance diagnostics
+ * 
+ * LICENSE: MIT (inherited from BizHawk parent project)
+ * 
+ * MODULE PURPOSE:
+ *   Provides cross-platform and cross-runtime compatibility:
+ *   - Runtime detection (.NET Framework, .NET Core, Mono)
+ *   - Platform feature detection (Windows, Linux, macOS, Android)
+ *   - Compatibility shims for features not available on all runtimes
+ *   - Memory alignment utilities
+ *   - Performance diagnostics and profiling
+ * 
+ * COMPATIBILITY TARGETS:
+ *   - .NET 8.0 (primary target)
+ *   - .NET 6.0 (LTS support)
+ *   - Mono (Linux compatibility)
+ *   - Windows, Linux, macOS, Android platforms
+ *   - x64 and ARM64 architectures
+ * 
+ * CROSS-PLATFORM COMPATIBILITY:
+ *   - Windows: Full support for all features
+ *   - Linux: Full support via .NET Core/Mono
+ *   - macOS (Intel/Apple Silicon): Full support
+ *   - Android: Mobile-specific feature detection
+ * 
+ * LOW-LEVEL EXPLANATION:
+ *   Different .NET runtimes have varying capabilities:
+ *   1. .NET Framework (Windows-only, older): Limited SIMD, no Span<T>
+ *   2. .NET Core/.NET 5+ (cross-platform): Full SIMD, Span<T>, intrinsics
+ *   3. Mono (cross-platform): Good compatibility, slower than CoreCLR
+ * 
+ *   This module provides:
+ *   - DETECTION: Identifies runtime and available features at startup
+ *   - SHIMS: Provides fallback implementations for missing features
+ *   - DIAGNOSTICS: Reports capabilities for troubleshooting
+ * 
+ *   Memory alignment is critical for SIMD:
+ *   - Aligned loads/stores are 2x faster than unaligned
+ *   - Cache lines are 64 bytes on most CPUs
+ *   - SIMD registers require 16/32-byte alignment
+ * 
+ * USAGE NOTES:
+ *   - Check runtime features before using advanced APIs
+ *   - Use compatibility shims when targeting multiple runtimes
+ *   - Align buffers for SIMD operations
+ *   - Generate diagnostics for bug reports
+ * 
  * ===========================================================================
  */
 
