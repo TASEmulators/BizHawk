@@ -197,8 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x1001:
 					//sound address port
-					if (fm != null)
-						fm.RegisterLatch = value;
+					fm?.RegisterLatch = value;
 					break;
 				case 0x1003:
 					//sound data port

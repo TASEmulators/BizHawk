@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			// set up the lowest level synth provider
-			if (OUT_Disc != null) OUT_Disc.SynthProvider = new ArraySectorSynthProvider { Sectors = OUT_Disc._Sectors, FirstLBA = -150 };
+			OUT_Disc?.SynthProvider = new ArraySectorSynthProvider { Sectors = OUT_Disc._Sectors, FirstLBA = -150 };
 		}
 
 		public static string GenerateCue(string binFilePath, bool isMode2)

@@ -134,7 +134,7 @@ namespace BizHawk.Client.Common
 					SetFromMnemonic(mnemonic.AsSpan(3));
 					break;
 				case "Dual Gameboy Controller":
-					SetFromMnemonic(mnemonic.AsSpan());
+					SetFromMnemonic(mnemonic);
 					break;
 				case "WonderSwan Controller":
 					SetFromMnemonic(mnemonic.AsSpan(1));
