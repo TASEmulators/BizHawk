@@ -17,14 +17,16 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
-using static BizHawk.Common.CommctrlImports;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Controls;
+
+using static Windows.Win32.Win32Imports;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class ControlExtensions
 	{
-		private const int WM_SETREDRAW = 0x000B;
-
 		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
 		public static void PopulateFromEnum<T>(this ComboBox box, T enumVal)
 			where T : Enum
@@ -206,7 +208,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
+				WPARAM falseVal = new(0);
+				WmImports.SendMessageW(new(control.Handle), Win32Imports.WM_SETREDRAW, falseVal, default);
 			}
 		}
 
@@ -214,7 +217,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
-				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+				WPARAM trueVal = new(1);
+				WmImports.SendMessageW(new(control.Handle), Win32Imports.WM_SETREDRAW, trueVal, default);
 			}
 		}
 	}
@@ -266,34 +270,39 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnHeader = WmImports.SendMessageW(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+			var columnHeader = WmImports.SendMessageW(
+				new(listViewControl.Handle),
+				Win32Imports.LVM_GETHEADER,
+				default,
+				IntPtr.Zero);
 			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
 				var columnPtr = new IntPtr(columnNumber);
-				var item = new HDITEMW { mask = HDITEMW.Mask.Format };
-				if (SendMessageW(columnHeader, HDM_GETITEMW, columnPtr, ref item) == IntPtr.Zero)
+				var item = new HDITEMW { mask = HDI_MASK.HDI_FORMAT };
+				if (SendMessageW(new(columnHeader.Value), Win32Imports.HDM_GETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}
 
+				// enum can't be `[Flags]`
+				const int MASK_SORT_ASC = unchecked((int) HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTUP);
+				const int MASK_SORT_DESC = unchecked((int) HEADER_CONTROL_FORMAT_FLAGS.HDF_SORTDOWN);
+				var fmt = unchecked((int) item.fmt);
 				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
-					item.fmt &= ~HDITEMW.Format.SortDown & ~HDITEMW.Format.SortUp;
+					fmt &= ~(MASK_SORT_DESC | MASK_SORT_ASC);
 				}
-				// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-				else switch (order)
+				else if (order is SortOrder.Ascending)
 				{
-					case SortOrder.Ascending:
-						item.fmt &= ~HDITEMW.Format.SortDown;
-						item.fmt |= HDITEMW.Format.SortUp;
-						break;
-					case SortOrder.Descending:
-						item.fmt &= ~HDITEMW.Format.SortUp;
-						item.fmt |= HDITEMW.Format.SortDown;
-						break;
+					fmt = (fmt & ~MASK_SORT_DESC) | MASK_SORT_ASC;
 				}
+				else // order is SortOrder.Descending
+				{
+					fmt = (fmt & ~MASK_SORT_ASC) | MASK_SORT_DESC;
+				}
+				item.fmt = unchecked((HEADER_CONTROL_FORMAT_FLAGS) fmt);
 
-				if (SendMessageW(columnHeader, HDM_SETITEMW, columnPtr, ref item) == IntPtr.Zero)
+				if (SendMessageW(new(columnHeader.Value), Win32Imports.HDM_SETITEMW, columnPtr, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}
