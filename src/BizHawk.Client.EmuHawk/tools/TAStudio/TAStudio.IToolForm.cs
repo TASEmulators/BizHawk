@@ -56,9 +56,10 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateBefore()
 		{
-			if (CurrentTasMovie.IsAtEnd() && !CurrentTasMovie.IsRecording())
+			if (CurrentTasMovie.IsAtEnd(Emulator) && !CurrentTasMovie.IsRecording())
 			{
-				CurrentTasMovie.RecordFrame(CurrentTasMovie.Emulator.Frame, MovieSession.StickySource);
+				var frame = Emulator.Frame;
+				CurrentTasMovie.RecordFrame(frame, frame, MovieSession.StickySource);
 			}
 		}
 
@@ -94,8 +95,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Settings.AutoPause && _seekingTo == -1)
 			{
-				if (_doPause && CurrentTasMovie.IsAtEnd()) MainForm.PauseEmulator();
-				_doPause = !CurrentTasMovie.IsAtEnd();
+				if (_doPause && CurrentTasMovie.IsAtEnd(Emulator)) MainForm.PauseEmulator();
+				_doPause = !CurrentTasMovie.IsAtEnd(Emulator);
 			}
 
 			if (!_seekingByEdit)

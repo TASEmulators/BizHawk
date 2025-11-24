@@ -1,15 +1,17 @@
-﻿namespace BizHawk.Client.Common
+﻿using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
 		public MovieMode Mode { get; protected set; } = MovieMode.Inactive;
 
-		public virtual void StartNewRecording()
+		public virtual void StartNewRecording(IEmulator emulator)
 		{
 			Mode = MovieMode.Record;
 			if (MakeBackup && Session.Settings.EnableBackupMovies && Log.Count is not 0)
 			{
-				SaveBackup();
+				SaveBackup(emulator);
 				MakeBackup = false;
 			}
 

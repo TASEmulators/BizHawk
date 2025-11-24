@@ -18,16 +18,16 @@ namespace BizHawk.Client.Common
 
 		// InvalidateAfter being last ensures that the GreenzoneInvalidated callback sees all edits.
 
-		public override void RecordFrame(int frame, IController source)
+		public override void RecordFrame(int targetFrame, int currentFrame, IController source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame, $"Record Frame: {frame}");
-			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
+			ChangeLog.AddGeneralUndo(targetFrame, targetFrame, $"Record Frame: {targetFrame}");
+			SetFrameAt(targetFrame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 			ChangeLog.SetGeneralRedo();
 
-			LagLog[frame] = _inputPollable.IsLagFrame;
+			LagLog[targetFrame] = _inputPollable.IsLagFrame;
 			LastEditWasRecording = true;
 
-			InvalidateAfter(frame);
+			InvalidateAfter(targetFrame);
 		}
 
 		public override void Truncate(int frame)
