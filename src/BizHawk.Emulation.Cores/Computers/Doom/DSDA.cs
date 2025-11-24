@@ -42,18 +42,20 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			foreach (var wadFile in _wadFiles)
 			{
 				bool recognized = false;
-
+#pragma warning disable CS0618
+				var filePath = wadFile.RomPath;
+#pragma warning restore CS0618
 				if (wadFile.RomData is [ (byte) 'I', (byte) 'W', (byte) 'A', (byte) 'D', .. ])
 				{
 					// Check not more than one IWAD is provided
 					if (foundIWAD)
 					{
 						throw new ArgumentException(
-							$"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{_iwadName}' was already provided",
+							$"More than one IWAD provided. Trying to load '{filePath}', but IWAD '{_iwadName}' was already provided",
 							paramName: nameof(lp));
 					}
 
-					_iwadName = wadFile.RomPath;
+					_iwadName = filePath;
 					_iwadData = wadFile.RomData;
 					foundIWAD = true;
 					recognized = true;
@@ -62,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					if (_fakePwads.Contains(GetFullName(wadFile).ToLowerInvariant()))
 					{
-						_iwadName = wadFile.RomPath;
+						_iwadName = filePath;
 						_iwadData = wadFile.RomData;
 						foundIWAD = true;
 					}
@@ -77,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				if (!recognized)
 				{
 					throw new ArgumentException(
-						$"Unrecognized WAD provided: '{wadFile.RomPath}' has non-standard header.",
+						$"Unrecognized WAD provided: '{filePath}' has non-standard header.",
 						paramName: nameof(lp));
 				}
 			}
@@ -206,11 +208,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Adding PWAD file(s)
 					foreach (var wadFile in _pwadFiles)
 					{
-						_gameMode = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+#pragma warning disable CS0618
+						var filePath = wadFile.RomPath;
+#pragma warning restore CS0618
+						_gameMode = _core.dsda_add_wad_file(filePath, wadFile.RomData.Length, _loadCallback);
 						if (_gameMode is LibDSDA.GameMode.Fail)
 						{
 							throw new ArgumentException(
-								$"Could not load PWAD file: '{wadFile.RomPath}'",
+								$"Could not load PWAD file: '{filePath}'",
 								paramName: nameof(lp));
 						}
 					}
@@ -332,7 +337,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
-		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+		private string GetFullName(IRomAsset rom)
+#pragma warning disable CS0618
+			=> Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+#pragma warning restore CS0618
 
 		private static bool PlayerPresent(DoomSyncSettings syncSettings, int port) =>
 			port switch
@@ -435,7 +443,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			foreach (var wadFile in _wadFiles)
 			{
+#pragma warning disable CS0618
 				if (filename == wadFile.RomPath)
+#pragma warning restore CS0618
 				{
 					if (wadFile.FileData == null)
 					{
