@@ -45,6 +45,7 @@ namespace BizHawk.Bizware.Graphics
 		// (Presumingly all Haswell, Broadwell and Skylake are affected, better safe than sorry)
 		// Note: Intel HD Graphics 4000 (Ivy Bridge) is reported as NOT crashing
 		// Presumingly it's so old it doesn't even report gl interop support
+		// Note: Intel HD Graphics 630 also reported crashing, so assuming all of Kaby Lake is broken too
 		private static readonly int[] _blacklistedIntelDeviceIds =
 		[
 			// Bay Trail GPUs (in-between Ivy Bridge and Haswell)
@@ -82,7 +83,19 @@ namespace BizHawk.Bizware.Graphics
 			0x191D, 0x191E, 0x1921, 0x1923,
 			0x1926, 0x1927, 0x192A, 0x192B,
 			0x192D, 0x1932, 0x193A, 0x193B,
-			0x193D
+			0x193D,
+			// Apollo Lake GPUs (in-between Skylake and Kaby Lake)
+			0x0A84, 0x1A84, 0x1A85, 0x5A84,
+			0x5A85,
+			// Gemini Lake GPUs (another in-between Skylake and Kaby Lake)
+			0x3184, 0x3185,
+			// Kaby Lake GPUs
+			0x5902, 0x5906, 0x5908, 0x590A,
+			0x590B, 0x590E, 0x5912, 0x5913,
+			0x5915, 0x5916, 0x5917, 0x591A,
+			0x591B, 0x591C, 0x591D, 0x591E,
+			0x5921, 0x5923, 0x5926, 0x5927,
+			0x593B, 0x87C0,
 		];
 
 		static D3D11GLInterop()
