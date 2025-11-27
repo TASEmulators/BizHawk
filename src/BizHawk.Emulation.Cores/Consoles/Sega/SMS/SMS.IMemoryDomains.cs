@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			SyncAllByteArrayDomains();
 
-			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList(), this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 
 			_memoryDomainsInit = true;

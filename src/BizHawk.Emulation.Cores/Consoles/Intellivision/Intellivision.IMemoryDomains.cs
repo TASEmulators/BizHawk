@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				)
 			};
 
-			MemoryDomains = new MemoryDomainList(domains);
+			MemoryDomains = new MemoryDomainList(domains, this);
 			((BasicServiceProvider) ServiceProvider).Register(MemoryDomains);
 		}
 
