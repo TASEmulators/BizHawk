@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
 using BizHawk.BizInvoke;
@@ -189,14 +190,74 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		public override ushort PeekUshort(long addr, bool bigEndian)
+		{
+			if ((ulong)addr < (ulong)Size - 1)
+			{
+				byte[] bytes = new byte[2];
+				BulkPeekByte(addr.RangeTo(addr+1), bytes);
+				if (bigEndian) return BinaryPrimitives.ReadUInt16BigEndian(bytes);
+				else return BinaryPrimitives.ReadUInt16LittleEndian(bytes);
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException(nameof(addr));
+			}
+		}
+
+		public override void PokeUshort(long addr, ushort val, bool bigEndian)
+		{
+			if (Writable)
+			{
+				if ((ulong)addr < (ulong)Size - 1)
+				{
+					Span<byte> bytes = stackalloc byte[2];
+					if (bigEndian) BinaryPrimitives.WriteUInt16BigEndian(bytes, val);
+					else BinaryPrimitives.WriteUInt16LittleEndian(bytes, val);
+					BulkPokeByte(addr, bytes);
+				}
+				else
+				{
+					throw new ArgumentOutOfRangeException(nameof(addr));
+				}
+			}
+		}
+
+		public override uint PeekUint(long addr, bool bigEndian)
+		{
+			if ((ulong)addr < (ulong)Size - 3)
+			{
+				byte[] bytes = new byte[4];
+				BulkPeekByte(addr.RangeTo(addr+3), bytes);
+				if (bigEndian) return BinaryPrimitives.ReadUInt32BigEndian(bytes);
+				else return BinaryPrimitives.ReadUInt32LittleEndian(bytes);
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException(nameof(addr));
+			}
+		}
+
+		public override void PokeUint(long addr, uint val, bool bigEndian)
+		{
+			if (Writable)
+			{
+				if ((ulong)addr < (ulong)Size - 3)
+				{
+					Span<byte> bytes = stackalloc byte[4];
+					if (bigEndian) BinaryPrimitives.WriteUInt32BigEndian(bytes, val);
+					else BinaryPrimitives.WriteUInt32LittleEndian(bytes, val);
+					BulkPokeByte(addr, bytes);
+				}
+				else
+				{
+					throw new ArgumentOutOfRangeException(nameof(addr));
+				}
+			}
+		}
+
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
-			if (_addressMangler != 0)
-			{
-				base.BulkPeekByte(addresses, values);
-				return;
-			}
-
 			var start = (ulong)addresses.Start;
 			var count = addresses.Count();
 
@@ -208,6 +269,35 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			else
 			{
 				throw new ArgumentOutOfRangeException(nameof(addresses));
+			}
+		}
+
+		public override void BulkPokeByte(long addr, byte[] memoryblock)
+		{
+			var count = memoryblock.Length;
+
+			if (addr < Size && ((ulong)addr + (ulong)count) <= (ulong)Size)
+			{
+				fixed(byte* p = memoryblock)
+					_access.Access((IntPtr)p, addr, count, true);
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException(nameof(addr));
+			}
+		}
+
+		private void BulkPokeByte(long addr, Span<byte> memoryblock)
+		{
+			long count = memoryblock.Length;
+			if (addr < Size && ((ulong)addr + (ulong)count) <= (ulong)Size)
+			{
+				fixed(byte* p = memoryblock)
+					_access.Access((IntPtr)p, addr, count, true);
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException(nameof(addr));
 			}
 		}
 	}

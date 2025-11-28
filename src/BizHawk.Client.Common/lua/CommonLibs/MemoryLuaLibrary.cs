@@ -117,7 +117,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("memory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });")]
 		[LuaMethod("write_bytes_as_array", "Writes sequential bytes starting at addr.")]
 		public void WriteBytesAsArray(long addr, LuaTable bytes, string domain = null)
-			=> APIs.Memory.WriteByteRange(addr, _th.EnumerateValues<long>(bytes).Select(l => (byte) l).ToList(), domain);
+			=> APIs.Memory.WriteByteRange(addr, _th.EnumerateValues<long>(bytes).Select(l => (byte) l).ToArray(), domain);
 
 		[LuaMethodExample("memory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });")]
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the domain).")]

@@ -152,6 +152,22 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public virtual void BulkPokeByte(long addr, byte[] memoryblock)
+		{
+			if (!Writable)
+			{
+				return;
+			}
+			if (addr < 0) return;
+			long lastReqAddr = addr + memoryblock.Length - 1;
+			if (lastReqAddr >= Size) return;
+			long iSrc = 0;
+			using (this.EnterExit())
+			{
+				while (addr <= lastReqAddr) PokeByte(addr++, memoryblock[iSrc++]);
+			}
+		}
+
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
 
 		/// <summary>
