@@ -19,6 +19,7 @@ TARGET = melonDS.wbx
 
 CORE_SRCS = \
 	ARCodeFile.cpp \
+	ARDatabaseDAT.cpp \
 	AREngine.cpp \
 	ARM.cpp \
 	ARMInterpreter.cpp \
@@ -117,7 +118,7 @@ MISC_SRCS = \
 	sha1/sha1.c \
 	tiny-AES-c/aes.c \
 	xxhash/xxhash.c \
-	blip_buf/blip_buf.c
+	blip-buf/blip_buf.c
 
 BIZPLATFORM_SRCS = \
 	BizAAC.cpp \

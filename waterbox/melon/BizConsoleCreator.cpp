@@ -1518,6 +1518,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(jitArgs),
 				bitDepth,
 				interpolation,
+				44100.0f,
 				std::nullopt,
 				std::move(renderer3d),
 				// dsi specific args
@@ -1541,6 +1542,7 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 				std::move(jitArgs),
 				bitDepth,
 				interpolation,
+				44100.0f,
 				std::nullopt,
 				std::move(renderer3d)
 			};

@@ -15,11 +15,12 @@ public:
 	virtual bool ReadLine(char* str, int count) = 0;
 	virtual bool Seek(s64 offset, FileSeekOrigin origin) = 0;
 	virtual void Rewind() = 0;
-	virtual size_t Read(void* data, u64 count) = 0;
+	virtual size_t Read(void* data, u64 size, u64 count) = 0;
 	virtual bool Flush() = 0;
-	virtual size_t Write(const void* data, u64 count) = 0;
+	virtual size_t Write(const void* data, u64 size, u64 count) = 0;
 	virtual int WriteFormatted(const char* fmt, va_list args) = 0;
 	virtual size_t Length() = 0;
+	virtual size_t Position() = 0;
 };
 
 struct MemoryFile final : FileHandle
@@ -87,12 +88,17 @@ public:
 		pos = 0;
 	}
 
-	size_t Read(void* data_, u64 count)
+	size_t Read(void* data_, u64 size_, u64 count)
 	{
-		count = std::min(count, (u64)(size - pos));
-		memcpy(data_, &data[pos], count);
-		pos += count;
-		return count;
+		u64 len = std::min(size_ * count, (u64)(size - pos) / size_ * size_);
+		if (len == 0)
+		{
+			return 0;
+		}
+
+		memcpy(data_, &data[pos], len);
+		pos += len;
+		return len / size_;
 	}
 
 	bool Flush()
@@ -100,12 +106,17 @@ public:
 		return true;
 	}
 
-	size_t Write(const void* data_, u64 count)
+	size_t Write(const void* data_, u64 size_, u64 count)
 	{
-		count = std::min(count, (u64)(size - pos));
-		memcpy(&data[pos], data_, count);
-		pos += count;
-		return count;
+		u64 len = std::min(size_ * count, (u64)(size - pos) / size_ * size_);
+		if (len == 0)
+		{
+			return 0;
+		}
+
+		memcpy(&data[pos], data_, len);
+		pos += len;
+		return len / size_;
 	}
 
 	int WriteFormatted(const char* fmt, va_list args)
@@ -143,6 +154,11 @@ public:
 	size_t Length()
 	{
 		return size;
+	}
+
+	size_t Position()
+	{
+		return pos;
 	}
 
 private:
@@ -207,9 +223,9 @@ public:
 		rewind(file);
 	}
 
-	size_t Read(void* data, u64 count)
+	size_t Read(void* data, u64 size, u64 count)
 	{
-		return fread(data, 1, count, file);
+		return fread(data, size, count, file);
 	}
 
 	bool Flush()
@@ -217,9 +233,9 @@ public:
 		return fflush(file) == 0;
 	}
 
-	size_t Write(const void* data, u64 count)
+	size_t Write(const void* data, u64 size, u64 count)
 	{
-		return fwrite(data, 1, count, file);
+		return fwrite(data, size, count, file);
 	}
 
 	int WriteFormatted(const char* fmt, va_list args)
@@ -234,6 +250,11 @@ public:
 		long len = ftell(file);
 		fseek(file, pos, SEEK_SET);
 		return len;
+	}
+
+	size_t Position()
+	{
+		return ftell(file);
 	}
 
 private:
@@ -334,6 +355,11 @@ bool FileReadLine(char* str, int count, FileHandle* file)
 	return file->ReadLine(str, count);
 }
 
+u64 FilePosition(FileHandle* file)
+{
+	return file->Position();
+}
+
 bool FileSeek(FileHandle* file, s64 offset, FileSeekOrigin origin)
 {
 	return file->Seek(offset, origin);
@@ -346,7 +372,7 @@ void FileRewind(FileHandle* file)
 
 u64 FileRead(void* data, u64 size, u64 count, FileHandle* file)
 {
-	return file->Read(data, size * count);
+	return file->Read(data, size, count);
 }
 
 bool FileFlush(FileHandle* file)
@@ -356,7 +382,7 @@ bool FileFlush(FileHandle* file)
 
 u64 FileWrite(const void* data, u64 size, u64 count, FileHandle* file)
 {
-	return file->Write(data, size * count);
+	return file->Write(data, size, count);
 }
 
 u64 FileWriteFormatted(FileHandle* file, const char* fmt, ...)
