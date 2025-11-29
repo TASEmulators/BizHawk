@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (data.AsSpan().StartsWith("GBABATT\0"u8))
+			if (data.StartsWith("GBABATT\0"u8))
 			{
 				data = LegacyFix(data);
 			}

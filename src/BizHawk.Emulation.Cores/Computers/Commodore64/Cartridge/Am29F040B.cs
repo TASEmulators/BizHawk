@@ -144,8 +144,8 @@ public class Am29F040B
 		_endAddress = ImageMask;
 	}
 
-	public Span<byte> Data =>
-		_data.AsSpan();
+	public Span<byte> Data
+		=> _data;
 
 	public int Peek(int addr) =>
 		_data[addr & ImageMask] & 0xFF;

@@ -351,6 +351,6 @@ namespace BizHawk.Client.Common
 
 		private bool HasScope(string scope)
 			=> string.IsNullOrWhiteSpace(scope)
-				|| DebuggableCore.MemoryCallbacks.AvailableScopes.AsSpan().Contains(scope);
+				|| DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
 	}
 }

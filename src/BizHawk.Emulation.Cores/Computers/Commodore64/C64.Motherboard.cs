@@ -147,10 +147,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			CharRom = new Chip23128();
 			KernalRom = new Chip23128();
 
-			if (Cpu != null)
-				Cpu.DebuggerStep = Execute;
-			if (DiskDrive != null)
-				DiskDrive.DebuggerStep = Execute;
+			Cpu?.DebuggerStep = Execute;
+			DiskDrive?.DebuggerStep = Execute;
 		}
 
 		public int ClockNumerator { get; }

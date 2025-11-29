@@ -644,7 +644,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						if (size > ActualDataByteLength)
 						{
 							var buf = new byte[SectorData.Length + size - ActualDataByteLength];
-							SectorData.AsSpan().CopyTo(buf);
+							SectorData.CopyTo(buf);
 //							SectorData.AsSpan(start: 0, length: buf.Length - SectorData.Length)
 //								.CopyTo(buf.AsSpan(start: SectorData.Length));
 							buf.AsSpan(start: SectorData.Length).Fill(SectorData[SectorData.Length - 1]);
