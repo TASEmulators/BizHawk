@@ -11,10 +11,10 @@
         "dependencies": {
           "DotNetAnalyzers.DocumentationAnalyzers": "1.0.0-beta.59",
           "Menees.Analyzers": "3.2.2",
-          "Meziantou.Analyzer": "2.0.163",
+          "Meziantou.Analyzer": "2.0.206",
           "NETStandard.Library": "2.0.3",
           "Nullable": "1.3.1",
-          "Roslynator.Analyzers": "4.12.11",
+          "Roslynator.Analyzers": "4.13.1",
           "StyleCop.Analyzers": "1.2.0-beta.556",
           "System.Memory": "4.6.0"
         },
@@ -29,7 +29,7 @@
       },
       "DotNetAnalyzers.DocumentationAnalyzers.Unstable/1.0.0.59": {},
       "Menees.Analyzers/3.2.2": {},
-      "Meziantou.Analyzer/2.0.163": {},
+      "Meziantou.Analyzer/2.0.206": {},
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "NETStandard.Library/2.0.3": {
         "dependencies": {
@@ -37,7 +37,7 @@
         }
       },
       "Nullable/1.3.1": {},
-      "Roslynator.Analyzers/4.12.11": {},
+      "Roslynator.Analyzers/4.13.1": {},
       "StyleCop.Analyzers/1.2.0-beta.556": {
         "dependencies": {
           "StyleCop.Analyzers.Unstable": "1.2.0.556"
@@ -110,12 +110,12 @@
       "path": "menees.analyzers/3.2.2",
       "hashPath": "menees.analyzers.3.2.2.nupkg.sha512"
     },
-    "Meziantou.Analyzer/2.0.163": {
+    "Meziantou.Analyzer/2.0.206": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-vN0YmOkuvPLukMsefLHYCWYaLPzpc6SfoR74aPwuLeK8QdxgxkavywQ1q/II0shLEEaN1RhlMjmL1RxMPW853w==",
-      "path": "meziantou.analyzer/2.0.163",
-      "hashPath": "meziantou.analyzer.2.0.163.nupkg.sha512"
+      "sha512": "sha512-xMo9P/8PWHiH47jiWJA7C/YRvKVuTxNS+/XDsMLaAbRE/jxpGonK9OCMUcP6XPU5BTBYwT50V4GVwWBn2F/DFw==",
+      "path": "meziantou.analyzer/2.0.206",
+      "hashPath": "meziantou.analyzer.2.0.206.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -138,12 +138,12 @@
       "path": "nullable/1.3.1",
       "hashPath": "nullable.1.3.1.nupkg.sha512"
     },
-    "Roslynator.Analyzers/4.12.11": {
+    "Roslynator.Analyzers/4.13.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-yvsRYT5EVtcT+V8ZW+5cxd1O9Sgf8PbC7DlQL/T5NA4g5yjaFe+WQ7evpy92Lj29m2E+XayBsO2TnCWKZlPWaA==",
-      "path": "roslynator.analyzers/4.12.11",
-      "hashPath": "roslynator.analyzers.4.12.11.nupkg.sha512"
+      "sha512": "sha512-KZpLy6ZlCebMk+d/3I5KU2R7AOb4LNJ6tPJqPtvFXmO8bEBHQvCIAvJOnY2tu4C9/aVOROTDYUFADxFqw1gh/g==",
+      "path": "roslynator.analyzers/4.13.1",
+      "hashPath": "roslynator.analyzers.4.13.1.nupkg.sha512"
     },
     "StyleCop.Analyzers/1.2.0-beta.556": {
       "type": "package",

@@ -103,20 +103,24 @@ namespace NLua.Method
 			{
 				var type = _lastCalledMethod.argTypes[i];
 				var index = i + 1 + numStackToSkip;
-				if (_lastCalledMethod.argTypes[i].IsParamsArray)
+				if (type.IsParamsArray)
 				{
 					var count = _lastCalledMethod.argTypes.Length - i;
 					var paramArray = ObjectTranslator.TableToArray(luaState, type.ExtractValue, type.ParameterType, index, count);
-					args[_lastCalledMethod.argTypes[i].Index] = paramArray;
+					args[type.Index] = paramArray;
 				}
 				else
 				{
 					args[type.Index] = type.ExtractValue(luaState, index);
 				}
 
-				if (_lastCalledMethod.args[_lastCalledMethod.argTypes[i].Index] == null &&
-				    !luaState.IsNil(i + 1 + numStackToSkip))
+				if (args[type.Index] == null)
 				{
+					if (type.IsNilAllowed && luaState.IsNil(i + 1 + numStackToSkip))
+					{
+						continue;
+					}
+
 					return i + 1;
 				}
 			}
@@ -135,8 +139,8 @@ namespace NLua.Method
 			}
 
 			//  If not return void,we need add 1,
-			//  or we will lost the function's return value 
-			//  when call dotnet function like "int foo(arg1,out arg2,out arg3)" in Lua code 
+			//  or we will lost the function's return value
+			//  when call dotnet function like "int foo(arg1,out arg2,out arg3)" in Lua code
 			if (!_lastCalledMethod.IsReturnVoid && nReturnValues > 0)
 			{
 				nReturnValues++;

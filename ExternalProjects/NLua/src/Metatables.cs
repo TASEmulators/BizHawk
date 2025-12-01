@@ -1420,7 +1420,33 @@ namespace NLua
 			}
 
 			return paramArray;
+		}
 
+		private static bool IsNilAllowed(Type paramType)
+		{
+			if (paramType.IsByRef)
+			{
+				paramType = paramType.GetElementType();
+			}
+
+			var underlyingType = Nullable.GetUnderlyingType(paramType!);
+			if (underlyingType != null)
+			{
+				return true;
+			}
+
+			if (paramType.IsInterface || paramType.IsClass)
+			{
+				return true;
+			}
+
+			// these represent strings, in which case nil is allowed
+			if (paramType == typeof(ReadOnlyMemory<byte>) || paramType == typeof(Memory<byte>))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -1460,7 +1486,8 @@ namespace NLua
 						Index = index,
 						ExtractValue = extractValue,
 						IsParamsArray = true,
-						ParameterType = paramArrayType
+						ParameterType = paramArrayType,
+						IsNilAllowed = IsNilAllowed(paramArrayType),
 					};
 
 					argTypes.Add(methodArg);
@@ -1490,7 +1517,8 @@ namespace NLua
 					{
 						Index = index,
 						ExtractValue = extractValue,
-						ParameterType = currentNetParam.ParameterType
+						ParameterType = currentNetParam.ParameterType,
+						IsNilAllowed = IsNilAllowed(currentNetParam.ParameterType),
 					};
 
 					argTypes.Add(methodArg);

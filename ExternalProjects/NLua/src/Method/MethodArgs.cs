@@ -14,5 +14,7 @@ namespace NLua.Method
 		// Type-conversion function
 		public ExtractValue ExtractValue;
 		public bool IsParamsArray;
+
+		public bool IsNilAllowed;
 	}
 }
