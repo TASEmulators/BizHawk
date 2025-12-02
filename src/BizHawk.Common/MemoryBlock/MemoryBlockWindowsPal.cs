@@ -1,5 +1,7 @@
-using static BizHawk.Common.MemoryApiImports;
+using Windows.Win32.System.Memory;
+
 using static BizHawk.Common.MemoryBlock;
+using static Windows.Win32.Win32Imports;
 
 namespace BizHawk.Common
 {
@@ -11,7 +13,10 @@ namespace BizHawk.Common
 		public MemoryBlockWindowsPal(ulong size)
 		{
 			var ptr = (ulong)VirtualAlloc(
-				UIntPtr.Zero, Z.UU(size), AllocationType.MEM_RESERVE | AllocationType.MEM_COMMIT, MemoryProtection.NOACCESS);
+				UIntPtr.Zero,
+				Z.UU(size),
+				VIRTUAL_ALLOCATION_TYPE.MEM_RESERVE | VIRTUAL_ALLOCATION_TYPE.MEM_COMMIT,
+				PAGE_PROTECTION_FLAGS.PAGE_NOACCESS);
 
 			if (ptr == 0)
 			{
@@ -29,12 +34,12 @@ namespace BizHawk.Common
 			}
 		}
 
-		private static MemoryProtection GetKernelMemoryProtectionValue(Protection prot) => prot switch
+		private static PAGE_PROTECTION_FLAGS GetKernelMemoryProtectionValue(Protection prot) => prot switch
 		{
-			Protection.None => MemoryProtection.NOACCESS,
-			Protection.R => MemoryProtection.READONLY,
-			Protection.RW => MemoryProtection.READWRITE,
-			Protection.RX => MemoryProtection.EXECUTE_READ,
+			Protection.None => PAGE_PROTECTION_FLAGS.PAGE_NOACCESS,
+			Protection.R => PAGE_PROTECTION_FLAGS.PAGE_READONLY,
+			Protection.RW => PAGE_PROTECTION_FLAGS.PAGE_READWRITE,
+			Protection.RX => PAGE_PROTECTION_FLAGS.PAGE_EXECUTE_READ,
 			_ => throw new InvalidOperationException(nameof(prot)),
 		};
 
@@ -45,7 +50,7 @@ namespace BizHawk.Common
 				return;
 			}
 
-			VirtualFree(Z.UU(Start), UIntPtr.Zero, FreeType.Release);
+			VirtualFree(Z.UU(Start), UIntPtr.Zero, VIRTUAL_FREE_TYPE.MEM_RELEASE);
 			_disposed = true;
 		}
 	}

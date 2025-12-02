@@ -48,6 +48,9 @@
 		<InternalsVisibleTo Include="$(MSBuildProjectName.Replace('BizHawk.', 'BizHawk.Tests.'))" />
 		<Using Include="System" />
 		<Using Include="System.Object" Alias="Lock" />
+		<Using Include="Windows.Win32.Win32Imports" Alias="MemoryApiImports" />
+		<Using Include="Windows.Win32.Win32Imports" Alias="Shell32Imports" />
+		<Using Include="Windows.Win32.Win32Imports" Alias="WmImports" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
 		<Compile Remove="$(MSBuildProjectDirectory)/debug/**/*" />

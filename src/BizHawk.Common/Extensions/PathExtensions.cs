@@ -2,6 +2,8 @@ using System.IO;
 
 using BizHawk.Common.StringExtensions;
 
+using Windows.Win32;
+
 namespace BizHawk.Common.PathExtensions
 {
 	public static class PathExtensions
