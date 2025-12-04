@@ -7,21 +7,12 @@ namespace BizHawk.Client.Common
 		public LuaFile(string path)
 		{
 			Path = path;
-			State = RunState.Running;
-			FrameWaiting = false;
+			State = RunState.Disabled;
 		}
 
-		public LuaFile(string name, string path)
-		{
-			Path = path;
-			IsSeparator = false;
-		}
-
-		private LuaFile(bool isSeparator)
+		private LuaFile(bool isSeparator) : this("")
 		{
 			IsSeparator = isSeparator;
-			Path = "";
-			State = RunState.Disabled;
 		}
 
 		public static LuaFile SeparatorInstance => new(true);
