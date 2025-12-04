@@ -359,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var luaFile = new LuaFile("", absolutePath);
+				var luaFile = new LuaFile(absolutePath);
 
 				LuaImp.ScriptList.Add(luaFile);
 				LuaListView.RowCount = LuaImp.ScriptList.Count;
@@ -847,7 +847,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			File.Copy(sourceFileName: templatePath, destFileName: result, overwrite: true);
-			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
+			LuaImp.ScriptList.Add(new LuaFile(result));
 			Config!.RecentLua.Add(result);
 			UpdateDialog();
 			Process.Start(new ProcessStartInfo
@@ -977,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result is null) return;
 				string text = File.ReadAllText(script.Path);
 				File.WriteAllText(result, text);
-				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
+				LuaImp.ScriptList.Add(new LuaFile(result));
 				Config!.RecentLua.Add(result);
 				UpdateDialog();
 				Process.Start(new ProcessStartInfo
