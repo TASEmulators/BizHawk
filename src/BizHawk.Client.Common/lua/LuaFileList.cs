@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			return base.Remove(item);
 		}
 
-		public bool Load(string path, bool disableOnLoad)
+		public bool Load(string path, bool disableOnLoad, Action onFunctionListChange)
 		{
 			var file = new FileInfo(path);
 			if (!file.Exists)
@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 						scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
 					}
 
-					Add(new LuaFile(scriptPath)
+					Add(new LuaFile(scriptPath, onFunctionListChange)
 					{
 						State = !disableOnLoad && line.StartsWith('1') ? LuaFile.RunState.Running : LuaFile.RunState.Disabled,
 					});
