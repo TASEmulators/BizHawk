@@ -184,7 +184,7 @@ namespace BizHawk.Tests.Client.Common.lua
 			context.RunYielding();
 
 			// assert
-			Assert.AreEqual(0, context.RegisteredFunctionsCount());
+			Assert.AreEqual(0, context.FunctionsRegisteredToScript(0).Count);
 		}
 
 		[TestMethod]
@@ -200,7 +200,7 @@ namespace BizHawk.Tests.Client.Common.lua
 			context.StopScript(0);
 
 			// assert
-			Assert.AreEqual(0, context.RegisteredFunctionsCount());
+			Assert.AreEqual(0, context.FunctionsRegisteredToScript(0).Count);
 		}
 
 		[TestMethod]
@@ -214,7 +214,7 @@ namespace BizHawk.Tests.Client.Common.lua
 			context.RunYielding();
 
 			// assert
-			Assert.AreEqual(0, context.RegisteredFunctionsCount());
+			Assert.AreEqual(0, context.FunctionsRegisteredToScript(0).Count);
 		}
 	}
 }

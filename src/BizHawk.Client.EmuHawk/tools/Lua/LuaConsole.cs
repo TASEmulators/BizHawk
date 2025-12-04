@@ -225,11 +225,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
-			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
 			LuaImp?.Close();
 			LuaImp = new LuaLibraries(
 				newScripts,
-				registeredFuncList,
 				Emulator.ServiceProvider,
 				MainFormForApi,
 				Config,
@@ -253,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				EnableLuaFile(file);
 			}
 
-			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath());
+			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath(), UpdateRegisteredFunctionsDialog);
 			_nonFile.Thread = LuaImp.SpawnCoroutine(null);
 			LuaSandbox.CreateSandbox(_nonFile.Thread, _nonFile.Path);
 
@@ -350,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var luaFile = new LuaFile(absolutePath);
+				var luaFile = new LuaFile(absolutePath, UpdateRegisteredFunctionsDialog);
 
 				LuaImp.ScriptList.Add(luaFile);
 				LuaListView.RowCount = LuaImp.ScriptList.Count;
@@ -535,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RemoveAllLuaFiles();
 
-			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad);
+			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad, UpdateRegisteredFunctionsDialog);
 
 			foreach (var script in LuaImp.ScriptList)
 			{
@@ -706,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
-				form.UpdateValues(LuaImp.RegisteredFunctions);
+				form.UpdateValues(LuaImp.ScriptList);
 			}
 		}
 
@@ -787,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Count is not 0;
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
-			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
+			RegisteredFunctionsMenuItem.Enabled = true;
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
@@ -830,7 +828,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			File.Copy(sourceFileName: templatePath, destFileName: result, overwrite: true);
-			LuaImp.ScriptList.Add(new LuaFile(result));
+			LuaImp.ScriptList.Add(new LuaFile(result, UpdateRegisteredFunctionsDialog));
 			Config!.RecentLua.Add(result);
 			UpdateDialog();
 			Process.Start(new ProcessStartInfo
@@ -954,7 +952,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result is null) return;
 				string text = File.ReadAllText(script.Path);
 				File.WriteAllText(result, text);
-				LuaImp.ScriptList.Add(new LuaFile(result));
+				LuaImp.ScriptList.Add(new LuaFile(result, UpdateRegisteredFunctionsDialog));
 				Config!.RecentLua.Add(result);
 				UpdateDialog();
 				Process.Start(new ProcessStartInfo
@@ -1043,25 +1041,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaImp.RegisteredFunctions.Count is not 0)
+			var alreadyOpen = false;
+			foreach (Form form in Application.OpenForms)
 			{
-				var alreadyOpen = false;
-				foreach (Form form in Application.OpenForms)
+				if (form is LuaRegisteredFunctionsList)
 				{
-					if (form is LuaRegisteredFunctionsList)
-					{
-						alreadyOpen = true;
-						form.Activate();
-					}
+					alreadyOpen = true;
+					form.Activate();
 				}
+			}
 
-				if (!alreadyOpen)
+			if (!alreadyOpen)
+			{
+				new LuaRegisteredFunctionsList(LuaImp.ScriptList)
 				{
-					new LuaRegisteredFunctionsList(LuaImp.RegisteredFunctions)
-					{
-						StartLocation = this.ChildPointToScreen(LuaListView),
-					}.Show();
-				}
+					StartLocation = this.ChildPointToScreen(LuaListView),
+				}.Show();
 			}
 		}
 
@@ -1172,13 +1167,13 @@ namespace BizHawk.Client.EmuHawk
 				ScriptContextSeparator.Visible =
 				LuaImp.ScriptList.Exists(file => file.Enabled);
 
-			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
+			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.ScriptList.Any(lf => lf.Functions.Count != 0);
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = ClearRegisteredFunctionsLogContextItem.Enabled
-				= LuaImp.RegisteredFunctions.Count is not 0;
+				= LuaImp.ScriptList.Any(lf => lf.Functions.Count != 0);
 			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
 			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 		}
@@ -1211,7 +1206,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
-			=> LuaImp.RegisteredFunctions.Clear();
+		{
+			foreach (LuaFile lf in LuaImp.ScriptList)
+				lf.Functions.Clear();
+		}
 
 		public bool LoadByFileExtension(string path, out bool abort)
 		{
@@ -1453,7 +1451,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastScriptUsed = file;
 			if (file.Enabled && file.Thread is null)
 			{
-				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
+				file.Functions.Clear(); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
 			}
 			else if (!file.Enabled && file.Thread is not null)
@@ -1474,7 +1472,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file.Thread is not null)
 			{
 				LuaImp.CallExitEvent(file);
-				LuaImp.RegisteredFunctions.RemoveForFile(file);
+				file.Functions.Clear();
 				file.Stop();
 			}
 		}

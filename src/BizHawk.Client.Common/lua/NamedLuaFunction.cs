@@ -36,29 +36,14 @@ namespace BizHawk.Client.Common
 		public Action/*?*/ OnRemove { get; set; } = null;
 
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
-			Func<LuaThread> createThreadCallback, ILuaLibraries luaLibraries, string name = null)
+			ILuaLibraries luaLibraries, string name = null)
 		{
 			_function = function;
 			_luaImp = luaLibraries;
 			_exceptionCallback = logCallback;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
-			CreateThreadCallback = createThreadCallback;
-
-			// When would a file be null?
-			// When a script is loaded with a callback, but no infinite loop so it closes
-			// Then that callback proceeds to register more callbacks
-			// In these situations, we will generate a thread for this new callback on the fly here
-			// Scenarios like this suggest that a thread being managed by a LuaFile is a bad idea,
-			// and we should refactor
-			if (luaFile == null)
-			{
-				DetachFromScript();
-			}
-			else
-			{
-				LuaFile = luaFile;
-			}
+			LuaFile = luaFile;
 
 			Guid = Guid.NewGuid();
 
@@ -89,17 +74,6 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		public void DetachFromScript()
-		{
-			var thread = CreateThreadCallback();
-
-			// Current dir will have to do for now, but this will inevitably not be desired
-			// Users will expect it to be the same directly as the thread that spawned this callback
-			// But how do we know what that directory was?
-			LuaSandbox.CreateSandbox(thread, ".");
-			LuaFile = new LuaFile(".") { Thread = thread };
-		}
-
 		public Guid Guid { get; }
 
 		public string GuidStr
@@ -107,9 +81,7 @@ namespace BizHawk.Client.Common
 
 		public string Name { get; }
 
-		public LuaFile LuaFile { get; private set; }
-
-		private Func<LuaThread> CreateThreadCallback { get; }
+		private LuaFile LuaFile { get; }
 
 		public string Event { get; }
 
