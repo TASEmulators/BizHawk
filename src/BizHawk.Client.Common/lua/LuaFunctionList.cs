@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -38,21 +37,6 @@ namespace BizHawk.Client.Common
 			if (!_functions.Remove(function)) return false;
 			function.OnRemove?.Invoke();
 			return true;
-		}
-
-		public void RemoveForFile(LuaFile file)
-		{
-			var functionsToRemove = _functions.Where(l => l.LuaFile.Path == file.Path || ReferenceEquals(l.LuaFile.Thread, file.Thread)).ToList();
-
-			foreach (var function in functionsToRemove)
-			{
-				_ = RemoveInner(function);
-			}
-
-			if (functionsToRemove.Count != 0)
-			{
-				Changed();
-			}
 		}
 
 		public void Clear()

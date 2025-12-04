@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -39,7 +40,6 @@ namespace BizHawk.Tests.Client.Common.lua
 
 			lua = new(
 				new LuaFileList([ ], () => { }),
-				new LuaFunctionList(() => { }),
 				emulator.ServiceProvider,
 				mainApi,
 				config,
@@ -51,7 +51,7 @@ namespace BizHawk.Tests.Client.Common.lua
 		public void AddScript(string path, bool enable)
 		{
 			string absolutePath = Path.GetFullPath(Path.Combine(BASE_SCRIPT_PATH, path));
-			LuaFile luaFile = new(absolutePath);
+			LuaFile luaFile = new(absolutePath, () => { });
 			lua.ScriptList.Add(luaFile);
 			if (enable)
 			{
@@ -93,9 +93,9 @@ namespace BizHawk.Tests.Client.Common.lua
 			return lua.ScriptList[id].State;
 		}
 
-		public int RegisteredFunctionsCount()
+		public List<NamedLuaFunction> FunctionsRegisteredToScript(int id)
 		{
-			return lua.RegisteredFunctions.Count;
+			return lua.ScriptList[id].Functions.ToList();
 		}
 	}
 }
