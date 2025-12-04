@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 
 		public void StopAllScripts()
 		{
-			ForEach(lf => lf.State = LuaFile.RunState.Disabled);
+			ForEach(lf => lf.Stop());
 		}
 
 		public new void Clear()
@@ -91,10 +91,10 @@ namespace BizHawk.Client.Common
 						scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
 					}
 
-					Add(new LuaFile(scriptPath, onFunctionListChange)
-					{
-						State = !disableOnLoad && line.StartsWith('1') ? LuaFile.RunState.Running : LuaFile.RunState.Disabled,
-					});
+					LuaFile lf = new LuaFile(scriptPath, onFunctionListChange);
+					Add(lf);
+					if (!disableOnLoad && line.StartsWith('1'))
+						lf.ScheduleStart();
 				}
 			}
 

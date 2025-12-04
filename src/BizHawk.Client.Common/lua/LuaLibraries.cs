@@ -259,16 +259,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void CallExitEvent(LuaFile lf)
-		{
-			foreach (var exitCallback in lf.Functions
-				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP)
-				.ToList())
-			{
-				exitCallback.Call();
-			}
-		}
-
 		public void Close()
 		{
 			foreach (LuaFile file in ScriptList)
@@ -317,11 +307,21 @@ namespace BizHawk.Client.Common
 			ClearCurrentThread();
 		}
 
-		public LuaThread SpawnCoroutine(string/*?*/ file)
+		public LuaThread SpawnCoroutineAndSandbox(string file)
 		{
-			var content = file == null ? "" : File.ReadAllText(file);
+			var content = File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
-			return _lua.NewThread(main);
+			var thread = _lua.NewThread(main);
+			LuaSandbox.CreateSandbox(thread, Path.GetDirectoryName(file));
+			return thread;
+		}
+
+		public LuaThread SpawnBlankCoroutineAndSandbox(string directory)
+		{
+			var main = _lua.LoadString("", "main");
+			var thread = _lua.NewThread(main);
+			LuaSandbox.CreateSandbox(thread, Path.GetDirectoryName(directory));
+			return thread;
 		}
 
 		/// <summary>
@@ -337,7 +337,7 @@ namespace BizHawk.Client.Common
 			}
 
 			bool anyStopped = false;
-			foreach (var lf in ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
+			foreach (var lf in ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running))
 			{
 				var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 				if (!prohibit)
@@ -362,7 +362,6 @@ namespace BizHawk.Client.Common
 					if (shouldStop)
 					{
 						anyStopped = true;
-						CallExitEvent(lf);
 						lf.Stop();
 					}
 
