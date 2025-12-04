@@ -4,13 +4,14 @@ namespace BizHawk.Client.Common
 {
 	public class LuaFile
 	{
-		public LuaFile(string path)
+		public LuaFile(string path, Action onFunctionListChange)
 		{
 			Path = path;
 			State = RunState.Disabled;
+			Functions = new(onFunctionListChange);
 		}
 
-		private LuaFile(bool isSeparator) : this("")
+		private LuaFile(bool isSeparator) : this("", () => { })
 		{
 			IsSeparator = isSeparator;
 		}
@@ -23,6 +24,8 @@ namespace BizHawk.Client.Common
 		public bool IsSeparator { get; }
 		public LuaThread Thread { get; set; }
 		public bool FrameWaiting { get; set; }
+
+		public LuaFunctionList Functions { get; }
 
 		public enum RunState
 		{

@@ -41,7 +41,6 @@ namespace BizHawk.Client.Common
 
 		public LuaLibraries(
 			LuaFileList scriptList,
-			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
 			IMainFormForApi mainForm,
 			Config config,
@@ -64,7 +63,6 @@ namespace BizHawk.Client.Common
 			};
 			LuaWait = new AutoResetEvent(false);
 			PathEntries = config.PathEntries;
-			RegisteredFunctions = registeredFuncList;
 			ScriptList = scriptList;
 			Docs.Clear();
 			_apiContainer = apiContainer;
@@ -213,21 +211,25 @@ namespace BizHawk.Client.Common
 
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public LuaFunctionList RegisteredFunctions { get; }
-
 		public void CallSaveStateEvent(string name)
 		{
-			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
+			foreach (LuaFile file in ScriptList)
 			{
-				lf.Call(name);
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
+				{
+					func.Call(name);
+				}
 			}
 		}
 
 		public void CallLoadStateEvent(string name)
 		{
-			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
+			foreach (LuaFile file in ScriptList)
 			{
-				lf.Call(name);
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
+				{
+					func.Call(name);
+				}
 			}
 		}
 
@@ -235,9 +237,12 @@ namespace BizHawk.Client.Common
 		{
 			if (IsUpdateSupressed) return;
 
-			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
+			foreach (LuaFile file in ScriptList)
 			{
-				lf.Call();
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
+				{
+					func.Call();
+				}
 			}
 		}
 
@@ -245,17 +250,19 @@ namespace BizHawk.Client.Common
 		{
 			if (IsUpdateSupressed) return;
 
-			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
+			foreach (LuaFile file in ScriptList)
 			{
-				lf.Call();
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
+				{
+					func.Call();
+				}
 			}
 		}
 
 		public void CallExitEvent(LuaFile lf)
 		{
-			foreach (var exitCallback in RegisteredFunctions
-				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
-					&& (l.LuaFile.Path == lf.Path || ReferenceEquals(l.LuaFile.Thread, lf.Thread)))
+			foreach (var exitCallback in lf.Functions
+				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP)
 				.ToList())
 			{
 				exitCallback.Call();
@@ -264,14 +271,18 @@ namespace BizHawk.Client.Common
 
 		public void Close()
 		{
-			foreach (var closeCallback in RegisteredFunctions
-				.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE)
-				.ToList())
+			foreach (LuaFile file in ScriptList)
 			{
-				closeCallback.Call();
+				foreach (var closeCallback in file.Functions
+					.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE)
+					.ToList())
+				{
+					closeCallback.Call();
+				}
+
+				file.Functions.Clear();
 			}
 
-			RegisteredFunctions.Clear();
 			ScriptList.Clear();
 			foreach (IDisposable disposable in _disposables)
 			{
@@ -287,15 +298,15 @@ namespace BizHawk.Client.Common
 			string theEvent,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, CurrentFile, () => _lua.NewThread(), this, name);
-			RegisteredFunctions.Add(nlf);
+			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, CurrentFile, this, name);
+			CurrentFile.Functions.Add(nlf);
 			return nlf;
 		}
 
 		private bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
 		{
-			if (RegisteredFunctions.FirstOrDefault(predicate) is not NamedLuaFunction nlf) return false;
-			RegisteredFunctions.Remove(nlf);
+			if (CurrentFile.Functions.FirstOrDefault(predicate) is not NamedLuaFunction nlf) return false;
+			CurrentFile.Functions.Remove(nlf);
 			return true;
 		}
 
@@ -343,7 +354,6 @@ namespace BizHawk.Client.Common
 						anyStopped = true;
 						CallExitEvent(lf);
 						lf.Stop();
-						DetachRegisteredFunctions(lf);
 					}
 
 					lf.FrameWaiting = waitForFrame;
@@ -351,15 +361,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return anyStopped;
-		}
-
-		private void DetachRegisteredFunctions(LuaFile lf)
-		{
-			foreach (var nlf in RegisteredFunctions
-				.Where(f => f.LuaFile == lf))
-			{
-				nlf.DetachFromScript();
-			}
 		}
 
 		public object[] ExecuteString(string command)
