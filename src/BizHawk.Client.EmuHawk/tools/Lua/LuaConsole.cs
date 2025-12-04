@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 				// we don't use runningScripts here as the other scripts need to be stopped too
 				foreach (var file in LuaImp.ScriptList)
 				{
-					DisableLuaScript(file);
+					file.Stop();
 				}
 			}
 
@@ -256,13 +256,11 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var file in runningScripts)
 			{
-				file.State = LuaFile.RunState.Running;
 				EnableLuaFile(file);
 			}
 
 			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath(), UpdateRegisteredFunctionsDialog);
-			_nonFile.Thread = LuaImp.SpawnCoroutine(null);
-			LuaSandbox.CreateSandbox(_nonFile.Thread, _nonFile.Path);
+			_nonFile.Start(LuaImp.SpawnBlankCoroutineAndSandbox(null));
 
 			UpdateDialog();
 		}
@@ -365,12 +363,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!Settings.DisableLuaScriptsOnLoad)
 				{
-					luaFile.State = LuaFile.RunState.Running;
+					EnableLuaFile(luaFile);
 					Console.WriteLine($"[{WindowTitleStatic}] loaded script {absolutePath}");
 				}
 				else
 				{
-					luaFile.State = LuaFile.RunState.Disabled;
 					Console.WriteLine($"[{WindowTitleStatic}] added script {absolutePath} without starting it");
 				}
 
@@ -399,7 +396,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!item.IsSeparator)
 			{
-				DisableLuaScript(item);
+				item.Stop();
 				RemoveFileWatcher(item);
 			}
 			LuaImp.ScriptList.Remove(item);
@@ -560,7 +557,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!script.IsSeparator)
 				{
-					if (script.Enabled)
+					if (script.State == LuaFile.RunState.AwaitingStart)
 					{
 						EnableLuaFile(script);
 						Console.WriteLine($"[{WindowTitleStatic}] loaded script {script.Path} via session");
@@ -923,20 +920,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				item.Thread = LuaImp.SpawnCoroutine(item.Path);
-				LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
+				item.Start(LuaImp.SpawnCoroutineAndSandbox(item.Path));
 			}
 			catch (IOException)
 			{
-				item.State = LuaFile.RunState.Disabled;
+				item.Stop();
 				WriteLine($"Unable to access file {item.Path}");
-				item.State = LuaFile.RunState.Disabled;
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine($"[{WindowTitleStatic}] failed to start script {item.Path}:\n{ex}");
 				DialogController.ShowMessageBox(ex.ToString());
-				item.State = LuaFile.RunState.Disabled;
 			}
 		}
 
@@ -1085,7 +1079,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var file in LuaImp.ScriptList)
 			{
-				DisableLuaScript(file);
+				file.Stop();
 			}
 			UpdateDialog();
 		}
@@ -1500,35 +1494,18 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			file.Toggle();
 			_lastScriptUsed = file;
-			if (file.Enabled && file.Thread is null)
+			if (file.Enabled)
 			{
-				file.Functions.Clear(); // First remove any existing registered functions for this file
-				EnableLuaFile(file);
+				file.Stop();
 				Console.WriteLine($"[{WindowTitleStatic}] enabled script {file.Path}");
 			}
-			else if (!file.Enabled && file.Thread is not null)
+			else
 			{
-				DisableLuaScript(file);
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				EnableLuaFile(file);
 			}
 
 			LuaListView.Refresh();
-		}
-
-		private void DisableLuaScript(LuaFile file)
-		{
-			if (file.IsSeparator) return;
-
-			file.State = LuaFile.RunState.Disabled;
-
-			if (file.Thread is not null)
-			{
-				LuaImp.CallExitEvent(file);
-				file.Functions.Clear();
-				file.Stop();
-			}
 		}
 
 		private void RefreshLuaScript(LuaFile file)
