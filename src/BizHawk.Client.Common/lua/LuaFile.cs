@@ -6,7 +6,6 @@ namespace BizHawk.Client.Common
 	{
 		public LuaFile(string path)
 		{
-			Name = "";
 			Path = path;
 			State = RunState.Running;
 			FrameWaiting = false;
@@ -14,32 +13,25 @@ namespace BizHawk.Client.Common
 
 		public LuaFile(string name, string path)
 		{
-			Name = name;
 			Path = path;
 			IsSeparator = false;
-
-			// the current directory for the lua task will start off wherever the lua file is located
-			CurrentDirectory = System.IO.Path.GetDirectoryName(path);
 		}
 
 		private LuaFile(bool isSeparator)
 		{
 			IsSeparator = isSeparator;
-			Name = "";
 			Path = "";
 			State = RunState.Disabled;
 		}
 
 		public static LuaFile SeparatorInstance => new(true);
 
-		public string Name { get; set; }
 		public string Path { get; }
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
 		public bool IsSeparator { get; }
 		public LuaThread Thread { get; set; }
 		public bool FrameWaiting { get; set; }
-		public string CurrentDirectory { get; set; }
 
 		public enum RunState
 		{

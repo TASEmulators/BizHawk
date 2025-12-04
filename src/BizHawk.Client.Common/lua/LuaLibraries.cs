@@ -310,11 +310,10 @@ namespace BizHawk.Client.Common
 		private INamedLuaFunction CreateAndRegisterNamedFunction(
 			LuaFunction function,
 			string theEvent,
-			Action<string> logCallback,
 			LuaFile luaFile,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, logCallback, luaFile, () => _lua.NewThread(), this, name);
+			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, luaFile, () => _lua.NewThread(), this, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
