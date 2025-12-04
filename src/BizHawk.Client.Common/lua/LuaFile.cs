@@ -1,4 +1,6 @@
-﻿using NLua;
+﻿using System.Linq;
+
+using NLua;
 
 namespace BizHawk.Client.Common
 {
@@ -22,7 +24,7 @@ namespace BizHawk.Client.Common
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
 		public bool IsSeparator { get; }
-		public LuaThread Thread { get; set; }
+		public LuaThread Thread { get; private set; }
 		public bool FrameWaiting { get; set; }
 		public bool RunningEventsOnly { get; set; } = false;
 
@@ -33,9 +35,10 @@ namespace BizHawk.Client.Common
 			Disabled,
 			Running,
 			Paused,
+			AwaitingStart,
 		}
 
-		public RunState State { get; set; }
+		public RunState State { get; private set; }
 
 		public void Stop()
 		{
@@ -45,25 +48,36 @@ namespace BizHawk.Client.Common
 			}
 
 			State = RunState.Disabled;
+
+			foreach (NamedLuaFunction func in Functions
+				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP)
+				.ToList())
+			{
+				func.Call();
+			}
+			Functions.Clear();
+
 			Thread.Dispose();
 			Thread = null;
 		}
 
-		public void Toggle()
+		public void Start(LuaThread thread)
 		{
-			switch (State)
-			{
-				case RunState.Paused:
-					State = RunState.Running;
-					break;
-				case RunState.Disabled:
-					State = RunState.Running;
-					FrameWaiting = false;
-					break;
-				default:
-					State = RunState.Disabled;
-					break;
-			}
+			if (Thread is not null) throw new InvalidOperationException("Cannot start an already started Lua file.");
+
+			Thread = thread;
+			State = RunState.Running;
+			FrameWaiting = false;
+			RunningEventsOnly = false;
+
+			// Execution will not actually begin until the client calls LuaConsole.ResumeScripts
+		}
+
+		public void ScheduleStart()
+		{
+			if (State != RunState.Disabled) throw new InvalidOperationException("A Lua file that wasn't stopped was scheduled to start.");
+
+			State = RunState.AwaitingStart;
 		}
 
 		public void TogglePause()
