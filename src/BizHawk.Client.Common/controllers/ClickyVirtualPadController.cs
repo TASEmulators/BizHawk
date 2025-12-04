@@ -38,6 +38,6 @@ namespace BizHawk.Client.Common
 			=> _ = _pressed.ToggleMembership(button);
 
 		public void SetBool(string button, bool value)
-			=> _pressed.SetMembership(button, shouldBeMember: !value);
+			=> _pressed.SetMembership(button, shouldBeMember: value);
 	}
 }

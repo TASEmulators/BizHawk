@@ -992,7 +992,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
 			{
 				double probability = _cachedControlProbabilities[button];
-				bool pressed = !(rand.Next(100) < probability);
+				bool pressed = rand.Next(100) < probability;
 
 				InputManager.ClickyVirtualPadController.SetBool(button, pressed);
 			}
