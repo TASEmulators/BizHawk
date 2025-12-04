@@ -1437,7 +1437,7 @@ namespace BizHawk.Client.EmuHawk
 					changeBy = -1;
 				}
 
-				if (ModifierKeys == Keys.Shift)
+				if (e.Modifiers == Keys.Shift)
 				{
 					changeBy *= 10;
 				}
