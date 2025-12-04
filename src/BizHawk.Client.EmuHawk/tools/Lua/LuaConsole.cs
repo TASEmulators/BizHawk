@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -1314,36 +1313,25 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			var columnToSort = e.Column!.Name;
-			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{
 				_sortReverse = false;
 			}
 
-			// For getting the name of the .lua file, for some reason this field is kept blank in LuaFile.cs?
-			// The Name variable gets emptied again near the end just in case it would break something.
-			for (var i = 0; i < LuaImp.ScriptList.Count; i++)
-			{
-				var words = Regex.Split(LuaImp.ScriptList[i].Path, ".lua");
-				var split = words[0].Split(Path.DirectorySeparatorChar);
-
-				luaListTemp.Add(LuaImp.ScriptList[i]);
-				luaListTemp[i].Name = split[split.Length - 1];
-			}
-
 			// Script, Path
+			List<LuaFile> luaListTemp;
 			switch (columnToSort)
 			{
 				case "Script":
-					luaListTemp = luaListTemp
-						.OrderBy(lf => lf.Name, _sortReverse)
+					luaListTemp = LuaImp.ScriptList
+						.OrderBy(lf => Path.GetFileNameWithoutExtension(lf.Path), _sortReverse)
 						.ThenBy(lf => lf.Path)
 						.ToList();
 					break;
-				case "PathName":
-					luaListTemp = luaListTemp
+				default: // case "PathName":
+					luaListTemp = LuaImp.ScriptList
 						.OrderBy(lf => lf.Path, _sortReverse)
-						.ThenBy(lf => lf.Name)
+						.ThenBy(lf => Path.GetFileNameWithoutExtension(lf.Path))
 						.ToList();
 					break;
 			}
@@ -1351,7 +1339,6 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < LuaImp.ScriptList.Count; i++)
 			{
 				LuaImp.ScriptList[i] = luaListTemp[i];
-				LuaImp.ScriptList[i].Name = "";
 			}
 
 			UpdateDialog();
