@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.RandomCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", CurrentFile, name: name);
 			callbacks.Add(nlf.RandomCallback);
 			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
 			return nlf.GuidStr;
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.UseCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", LogOutputCallback, CurrentFile, name: name);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", CurrentFile, name: name);
 			callbacks.Add(nlf.LineCallback);
 			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
 			return nlf.GuidStr;
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.CrossCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", LogOutputCallback, CurrentFile, name: name);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", CurrentFile, name: name);
 			callbacks.Add(nlf.LineCallback);
 			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
 			return nlf.GuidStr;
