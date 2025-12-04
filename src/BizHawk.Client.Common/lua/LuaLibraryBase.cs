@@ -11,7 +11,6 @@ namespace BizHawk.Client.Common
 		public delegate INamedLuaFunction NLFAddCallback(
 			LuaFunction function,
 			string theEvent,
-			Action<string> logCallback,
 			LuaFile luaFile,
 			string name = null);
 
