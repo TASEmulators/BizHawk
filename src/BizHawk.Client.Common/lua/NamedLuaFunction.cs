@@ -1,4 +1,3 @@
-using BizHawk.Emulation.Common;
 using NLua;
 
 namespace BizHawk.Client.Common
@@ -46,32 +45,6 @@ namespace BizHawk.Client.Common
 			LuaFile = luaFile;
 
 			Guid = Guid.NewGuid();
-
-			InputCallback = () =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call(Array.Empty<object>());
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
-			MemCallback = (addr, val, flags) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				uint? ret =  Call([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
-				luaLibraries.IsInInputOrMemoryCallback = false;
-				return ret;
-			};
-			RandomCallback = pr_class =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call([ pr_class ]);
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
-			LineCallback = (line, thing) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call([ line, thing ]);
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
 		}
 
 		public Guid Guid { get; }
@@ -84,14 +57,6 @@ namespace BizHawk.Client.Common
 		private LuaFile LuaFile { get; }
 
 		public string Event { get; }
-
-		public Action InputCallback { get; }
-
-		public MemoryCallbackDelegate MemCallback { get; }
-
-		public Action<int> RandomCallback { get; }
-
-		public Action<long, long> LineCallback { get; }
 
 		public void Call(string name = null)
 		{
