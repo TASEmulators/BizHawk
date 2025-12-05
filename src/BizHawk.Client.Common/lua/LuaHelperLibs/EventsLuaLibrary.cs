@@ -36,14 +36,22 @@ namespace BizHawk.Client.Common
 		private void AddMemCallbackOnCore(INamedLuaFunction nlf, MemoryCallbackType kind, string/*?*/ scope, uint? address)
 		{
 			var memCallbackImpl = DebuggableCore.MemoryCallbacks;
+			MemoryCallbackDelegate memCallback = (addr, val, flags) =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				uint? ret = nlf.Call([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+				return ret;
+			};
+
 			memCallbackImpl.Add(new MemoryCallback(
 				ProcessScope(scope),
 				kind,
 				"Lua Hook",
-				nlf.MemCallback,
+				memCallback,
 				address,
 				null));
-			nlf.OnRemove += () => memCallbackImpl.Remove(nlf.MemCallback);
+			nlf.OnRemove += () => memCallbackImpl.Remove(memCallback);
 		}
 
 		private void LogMemoryCallbacksNotImplemented(bool isWildcard)
@@ -86,8 +94,14 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var inputCallbackImpl = InputPollableCore.InputCallbacks;
-					inputCallbackImpl.Add(nlf.InputCallback);
-					nlf.OnRemove += () => inputCallbackImpl.Remove(nlf.InputCallback);
+					Action InputCallback = () =>
+					{
+						_luaLibsImpl.IsInInputOrMemoryCallback = true;
+						nlf.Call(Array.Empty<object>());
+						_luaLibsImpl.IsInInputOrMemoryCallback = false;
+					};
+					inputCallbackImpl.Add(InputCallback);
+					nlf.OnRemove += () => inputCallbackImpl.Remove(InputCallback);
 					return nlf.GuidStr;
 				}
 				catch (NotImplementedException)

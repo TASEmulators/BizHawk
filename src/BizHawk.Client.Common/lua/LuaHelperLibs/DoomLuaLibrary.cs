@@ -44,8 +44,15 @@ namespace BizHawk.Client.Common
 
 			var callbacks = dsda.RandomCallbacks;
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", name: name);
-			callbacks.Add(nlf.RandomCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
+			Action<int> RandomCallback = pr_class =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ pr_class ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(RandomCallback);
+			nlf.OnRemove += () => callbacks.Remove(RandomCallback);
 			return nlf.GuidStr;
 		}
 
@@ -69,8 +76,15 @@ namespace BizHawk.Client.Common
 
 			var callbacks = dsda.UseCallbacks;
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", name: name);
-			callbacks.Add(nlf.LineCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
+			Action<long, long> LineCallback = (line, thing) =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ line, thing ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 
@@ -94,8 +108,15 @@ namespace BizHawk.Client.Common
 
 			var callbacks = dsda.CrossCallbacks;
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", name: name);
-			callbacks.Add(nlf.LineCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
+			Action<long, long> LineCallback = (line, thing) =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ line, thing ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 	}
