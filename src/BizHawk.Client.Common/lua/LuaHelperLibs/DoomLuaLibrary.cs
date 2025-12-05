@@ -44,8 +44,15 @@ namespace BizHawk.Client.Common
 
 			var callbacks = dsda.RandomCallbacks;
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", name: name);
-			callbacks.Add(nlf.RandomCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
+			Action<int> RandomCallback = pr_class =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ pr_class ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(RandomCallback);
+			nlf.OnRemove += () => callbacks.Remove(RandomCallback);
 			return nlf.GuidStr;
 		}
 	}
