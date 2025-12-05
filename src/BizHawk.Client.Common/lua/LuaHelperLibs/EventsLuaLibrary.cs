@@ -36,14 +36,17 @@ namespace BizHawk.Client.Common
 		private void AddMemCallbackOnCore(INamedLuaFunction nlf, MemoryCallbackType kind, string/*?*/ scope, uint? address)
 		{
 			var memCallbackImpl = DebuggableCore.MemoryCallbacks;
+			MemoryCallbackDelegate memCallback = (addr, val, flags) =>
+				nlf.Call(addr, val, flags) is [ long n ] ? unchecked((uint) n) : null;
+
 			memCallbackImpl.Add(new MemoryCallback(
 				ProcessScope(scope),
 				kind,
 				"Lua Hook",
-				nlf.MemCallback,
+				memCallback,
 				address,
 				null));
-			nlf.OnRemove += () => memCallbackImpl.Remove(nlf.MemCallback);
+			nlf.OnRemove += () => memCallbackImpl.Remove(memCallback);
 		}
 
 		private void LogMemoryCallbacksNotImplemented(bool isWildcard)
@@ -78,7 +81,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
 		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
-			var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_INPUTPOLL, name: name);
+			var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_INPUTPOLL, ApiGroup.PROHIBITED_MID_FRAME, name: name);
 			//TODO should we bother registering the function if the service isn't supported? none of the other events work this way --yoshi
 
 			if (InputPollableCore != null)
@@ -86,8 +89,9 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var inputCallbackImpl = InputPollableCore.InputCallbacks;
-					inputCallbackImpl.Add(nlf.InputCallback);
-					nlf.OnRemove += () => inputCallbackImpl.Remove(nlf.InputCallback);
+					Action InputCallback = () => nlf.Call();
+					inputCallbackImpl.Add(InputCallback);
+					nlf.OnRemove += () => inputCallbackImpl.Remove(InputCallback);
 					return nlf.GuidStr;
 				}
 				catch (NotImplementedException)
@@ -144,7 +148,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, ApiGroup.PROHIBITED_MID_FRAME, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Execute, scope, address);
 					return nlf.GuidStr;
 				}
@@ -188,7 +192,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, ApiGroup.PROHIBITED_MID_FRAME, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Execute, scope, address: null);
 					return nlf.GuidStr;
 				}
@@ -232,7 +236,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, ApiGroup.PROHIBITED_MID_FRAME, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Read, scope, address);
 					return nlf.GuidStr;
 				}
@@ -277,7 +281,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, ApiGroup.PROHIBITED_MID_FRAME, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Write, scope, address);
 					return nlf.GuidStr;
 				}

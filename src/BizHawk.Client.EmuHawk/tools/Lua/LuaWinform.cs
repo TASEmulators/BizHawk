@@ -26,16 +26,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			_luaImp.Sandbox(_ownerFile, () =>
-			{
-				foreach (LuaEvent luaEvent in ControlEvents)
+			_luaImp.Sandbox(
+				luaFile: _ownerFile,
+				callback: () =>
 				{
-					if (luaEvent.Control == handle)
+					foreach (LuaEvent luaEvent in ControlEvents)
 					{
-						luaEvent.Event.Call();
+						if (luaEvent.Control == handle)
+						{
+							luaEvent.Event.Call();
+						}
 					}
-				}
-			});
+				},
+				prohibitedApis: ApiGroup.YIELDING);
 		}
 
 		public class LuaEvent

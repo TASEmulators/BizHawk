@@ -1387,24 +1387,27 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Maybe make these try-catches more general // what try-catches? LuaSandbox.Sandbox? --yoshi
 				if (!string.IsNullOrWhiteSpace(rawCommand))
 				{
-					if (rawCommand.Contains("emu.frameadvance(")) //TODO this is pitiful; do it properly with a flag like the one we use for rom loads --yoshi
+					if (rawCommand.Contains("emu.frameadvance(")) // This will be checked properly later, but keep this for now because the error reporting later isn't great.
 					{
 						WriteLine("emu.frameadvance() can not be called from the console");
 						return;
 					}
 
-					LuaImp.Sandbox(_nonFile, () =>
-					{
-						var prevMessageCount = _messageCount;
-						var results = LuaImp.ExecuteString(rawCommand);
-						// empty array if the command was e.g. a variable assignment or a loop without return statement
-						// "void" functions return a single null
-						// if output didn't change, Print will take care of writing out "(no return)"
-						if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
+					LuaImp.Sandbox(
+						luaFile: _nonFile,
+						callback: () =>
 						{
-							_consoleLib.Log(results);
-						}
-					});
+							var prevMessageCount = _messageCount;
+							var results = LuaImp.ExecuteString(rawCommand);
+							// empty array if the command was e.g. a variable assignment or a loop without return statement
+							// "void" functions return a single null
+							// if output didn't change, Print will take care of writing out "(no return)"
+							if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
+							{
+								_consoleLib.Log(results);
+							}
+						},
+						prohibitedApis: ApiGroup.YIELDING);
 
 					_messageCount = 0;
 					_consoleCommandHistory.Insert(0, rawCommand);

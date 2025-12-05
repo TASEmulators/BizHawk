@@ -9,13 +9,12 @@ namespace BizHawk.Client.Common
 
 		bool IsUpdateSupressed { get; set; }
 
-		/// <remarks>not really sure if this is the right place to put it, multiple different places need this...</remarks>
-		bool IsInInputOrMemoryCallback { get; set; }
-
 		PathEntryCollection PathEntries { get; }
+
+		ApiGroup ProhibitedApis { get; }
 
 		NLuaTableHelper GetTableHelper();
 
-		void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null);
+		void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null, ApiGroup prohibitedApis = ApiGroup.NONE);
 	}
 }

@@ -159,13 +159,13 @@ namespace BizHawk.Client.Common
 
 		public bool IsUpdateSupressed { get; set; }
 
-		public bool IsInInputOrMemoryCallback { get; set; }
-
 		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 
 		private EventWaitHandle LuaWait;
 
 		public PathEntryCollection PathEntries { get; private set; }
+
+		public ApiGroup ProhibitedApis { get; private set; } = ApiGroup.NONE;
 
 		public LuaFileList ScriptList { get; }
 
@@ -286,9 +286,10 @@ namespace BizHawk.Client.Common
 		private INamedLuaFunction CreateAndRegisterNamedFunction(
 			LuaFunction function,
 			string theEvent,
+			ApiGroup prohibitedApis,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, CurrentFile, this, name);
+			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, CurrentFile, this, prohibitedApis, name);
 			CurrentFile.Functions.Add(nlf);
 			return nlf;
 		}
@@ -300,11 +301,16 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null)
+		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null, ApiGroup prohibitedApis = ApiGroup.NONE)
 		{
+			ApiGroup previousApiGroup = ProhibitedApis;
+			ProhibitedApis |= prohibitedApis;
+
 			SetCurrentThread(luaFile);
 			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback ?? _defaultExceptionCallback);
 			ClearCurrentThread();
+
+			ProhibitedApis = previousApiGroup;
 		}
 
 		public LuaThread SpawnCoroutineAndSandbox(string file)
@@ -446,12 +452,22 @@ namespace BizHawk.Client.Common
 
 		private void FrameAdvance()
 		{
+			if (ProhibitedApis.HasFlag(ApiGroup.YIELDING))
+ 			{
+ 				throw new InvalidOperationException("emu.frameadvance() is not allowed during any callbacks");
+ 			}
+
 			FrameAdvanceRequested = true;
 			CurrentFile.Thread.Yield();
 		}
 
 		private void EmuYield()
 		{
+			if (ProhibitedApis.HasFlag(ApiGroup.YIELDING))
+ 			{
+ 				throw new InvalidOperationException("emu.yield() is not allowed during any callbacks");
+ 			}
+
 			CurrentFile.Thread.Yield();
 		}
 	}

@@ -1,4 +1,3 @@
-using BizHawk.Emulation.Common;
 using NLua;
 
 namespace BizHawk.Client.Common
@@ -33,14 +32,18 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> _exceptionCallback;
 
+
+		private readonly ApiGroup _prohibitedApis;
+
 		public Action/*?*/ OnRemove { get; set; } = null;
 
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
-			ILuaLibraries luaLibraries, string name = null)
+			ILuaLibraries luaLibraries, ApiGroup prohibitedApis, string name = null)
 		{
 			_function = function;
 			_luaImp = luaLibraries;
 			_exceptionCallback = logCallback;
+			_prohibitedApis = prohibitedApis;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
 			LuaFile = luaFile;
@@ -48,38 +51,6 @@ namespace BizHawk.Client.Common
 #pragma warning disable RS0030 // this is to ensure no collisions
 			Guid = Guid.NewGuid();
 #pragma warning restore RS0030
-
-			InputCallback = () =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call(Array.Empty<object>());
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
-			MemCallback = (addr, val, flags) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				uint? ret =  Call([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
-				luaLibraries.IsInInputOrMemoryCallback = false;
-				return ret;
-			};
-			RandomCallback = info =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call([ info ]);
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
-			InterceptCallback = block =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call([ block ]);
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
-			LineCallback = (line, thing) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				Call([ line, thing ]);
-				luaLibraries.IsInInputOrMemoryCallback = false;
-			};
 		}
 
 		public Guid Guid { get; }
@@ -93,27 +64,15 @@ namespace BizHawk.Client.Common
 
 		public string Event { get; }
 
-		public Action InputCallback { get; }
-
-		public MemoryCallbackDelegate MemCallback { get; }
-
-		public Action<string> RandomCallback { get; }
-
-		public Action<int> InterceptCallback { get; }
-
-		public Action<long, long> LineCallback { get; }
-
-		public void Call(string name = null)
-		{
-			_luaImp.Sandbox(LuaFile, () => _  = _function.Call(name), (s) =>
-				_exceptionCallback($"error running function attached by the event {Event}\nError message: {s}"));
-		}
-
 		public object[] Call(params object[] args)
 		{
 			object[] ret = null;
-			_luaImp.Sandbox(LuaFile, () => ret = _function.Call(args), (s) =>
-				_exceptionCallback($"error running function attached by the event {Event}\nError message: {s}"));
+			_luaImp.Sandbox(
+				luaFile: LuaFile,
+				callback: () => ret = _function.Call(args),
+				exceptionCallback: (s) => _exceptionCallback($"error running function attached by the event {Event}\nError message: {s}"),
+				prohibitedApis: _prohibitedApis);
+
 			return ret;
 		}
 	}

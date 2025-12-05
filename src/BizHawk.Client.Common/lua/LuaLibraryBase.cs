@@ -9,6 +9,7 @@ namespace BizHawk.Client.Common
 		public delegate INamedLuaFunction NLFAddCallback(
 			LuaFunction function,
 			string theEvent,
+			ApiGroup prohibitedApis = ApiGroup.YIELDING,
 			string name = null);
 
 		public delegate bool NLFRemoveCallback(Func<INamedLuaFunction, bool> predicate);
