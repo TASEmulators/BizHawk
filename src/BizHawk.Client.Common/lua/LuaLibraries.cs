@@ -140,7 +140,10 @@ namespace BizHawk.Client.Common
 		private readonly IMainFormForApi _mainForm;
 
 		private Lua _lua = new();
-		private LuaThread _currThread;
+
+		private Thread _currentHostThread;
+		private readonly Lock ThreadMutex = new();
+		public LuaFile CurrentFile { get; private set; }
 
 		private readonly NLuaTableHelper _th;
 
@@ -310,10 +313,9 @@ namespace BizHawk.Client.Common
 		private INamedLuaFunction CreateAndRegisterNamedFunction(
 			LuaFunction function,
 			string theEvent,
-			LuaFile luaFile,
 			string name = null)
 		{
-			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, luaFile, () => _lua.NewThread(), this, name);
+			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, CurrentFile, () => _lua.NewThread(), this, name);
 			RegisteredFunctions.Add(nlf);
 			return nlf;
 		}
@@ -410,22 +412,45 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private void ClearCurrentThread()
+		{
+			lock (ThreadMutex)
+			{
+				_currentHostThread = null;
+				CurrentFile = null;
+			}
+		}
+
+		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
+		private void SetCurrentThread(LuaFile luaFile)
+		{
+			lock (ThreadMutex)
+			{
+				if (_currentHostThread != null)
+				{
+					throw new InvalidOperationException("Can't have two lua files running at a time!");
+					// We just don't have logic for handling multiple lua files.
+					// If we did, we still have to ensure we aren't running in two host threads at the same time.
+				}
+
+				_currentHostThread = Thread.CurrentThread;
+				CurrentFile = luaFile;
+			}
+		}
+
 		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
 		{
-			_currThread = lf.Thread;
+			SetCurrentThread(lf);
 
 			try
 			{
-				LuaLibraryBase.SetCurrentThread(lf);
+				var execResult = lf.Thread.Resume();
 
-				var execResult = _currThread.Resume();
-
-				_currThread = null;
 				var result = execResult switch
 				{
 					LuaStatus.OK => (WaitForFrame: false, Terminated: true),
 					LuaStatus.Yield => (WaitForFrame: FrameAdvanceRequested, Terminated: false),
-					_ => throw new InvalidOperationException($"{nameof(_currThread.Resume)}() returned {execResult}?"),
+					_ => throw new InvalidOperationException($"{nameof(lf.Thread.Resume)}() returned {execResult}?"),
 				};
 
 				FrameAdvanceRequested = false;
@@ -433,7 +458,7 @@ namespace BizHawk.Client.Common
 			}
 			finally
 			{
-				LuaLibraryBase.ClearCurrentThread();
+				ClearCurrentThread();
 			}
 		}
 
@@ -445,12 +470,12 @@ namespace BizHawk.Client.Common
 		private void FrameAdvance()
 		{
 			FrameAdvanceRequested = true;
-			_currThread.Yield();
+			CurrentFile.Thread.Yield();
 		}
 
 		private void EmuYield()
 		{
-			_currThread.Yield();
+			CurrentFile.Thread.Yield();
 		}
 	}
 }
