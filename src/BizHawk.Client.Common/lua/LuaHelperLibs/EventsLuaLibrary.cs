@@ -65,20 +65,20 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
 		public string OnFrameEnd(LuaFunction luaf, string name = null)
-			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_POSTFRAME, CurrentFile, name: name)
+			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_POSTFRAME, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local steveonf = event.onframestart(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the beginning of each frame before any emulation and drawing occurs\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
 		public string OnFrameStart(LuaFunction luaf, string name = null)
-			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_PREFRAME, CurrentFile, name: name)
+			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_PREFRAME, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local steveoni = event.oninputpoll(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each time the emulator core polls for input\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
 		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
-			var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_INPUTPOLL, CurrentFile, name: name);
+			var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_INPUTPOLL, name: name);
 			//TODO should we bother registering the function if the service isn't supported? none of the other events work this way --yoshi
 
 			if (InputPollableCore != null)
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Your callback can have 1 parameter, which will be the name of the loaded state.")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
-			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_LOADSTATE, CurrentFile, name: name)
+			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_LOADSTATE, name: name)
 				.GuidStr;
 
 		[LuaDeprecatedMethod]
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, CurrentFile, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXEC, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Execute, scope, address);
 					return nlf.GuidStr;
 				}
@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, CurrentFile, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMEXECANY, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Execute, scope, address: null);
 					return nlf.GuidStr;
 				}
@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, CurrentFile, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMREAD, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Read, scope, address);
 					return nlf.GuidStr;
 				}
@@ -277,7 +277,7 @@ namespace BizHawk.Client.Common
 						return EMPTY_UUID_STR;
 					}
 
-					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, CurrentFile, name: name);
+					var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_MEMWRITE, name: name);
 					AddMemCallbackOnCore(nlf, MemoryCallbackType.Write, scope, address);
 					return nlf.GuidStr;
 				}
@@ -295,19 +295,19 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onsavestate", "Fires after a state is saved. Your callback can have 1 parameter, which will be the name of the saved state.")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
-			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_SAVESTATE, CurrentFile, name: name)
+			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_SAVESTATE, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local steveone = event.onexit(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the calling script has stopped\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
 		public string OnExit(LuaFunction luaf, string name = null)
-			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_ENGINESTOP, CurrentFile, name: name)
+			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_ENGINESTOP, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onconsoleclose", "Fires when the emulator console closes")]
 		public string OnConsoleClose(LuaFunction luaf, string name = null)
-			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE, CurrentFile, name: name)
+			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
