@@ -1019,10 +1019,12 @@ GPGX_EX void gpgx_clear_deepfreeze_list()
 
 GPGX_EX void gpgx_reset(int hard)
 {
-	if (hard)
+	if (hard) {
+		system_init();
 		system_reset();
-	else
+	} else {
 		gen_reset(0);
+	}
 }
 
 GPGX_EX void gpgx_set_mem_callback(ECL_ENTRY unsigned (*read)(unsigned, unsigned), ECL_ENTRY unsigned (*write)(unsigned, unsigned), ECL_ENTRY unsigned (*exec)(unsigned, unsigned))
