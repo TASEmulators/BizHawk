@@ -29,6 +29,7 @@ else
 	mv mupen64plus-core/projects/unix/mupen64plus.dll build/
 fi
 install_to_bizhawk build/ mupen64plus
+cp mupen64plus-core/data/mupen64plus.ini ../../Assets/gamedb/
 
 make -C mupen64plus-audio-bkm install
 
