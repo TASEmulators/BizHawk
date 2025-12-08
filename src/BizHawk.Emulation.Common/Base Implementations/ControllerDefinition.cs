@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Common
 
 		private IReadOnlyList<IReadOnlyList<(string, AxisSpec?)>>? _orderedControls;
 
-		/// <summary>starts with console buttons, then each player's buttons individually</summary>
+		/// <summary>Starts with console buttons, then each player's buttons individually</summary>
 		public IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> ControlsOrdered
 		{
 			get
@@ -35,6 +35,11 @@ namespace BizHawk.Emulation.Common
 		public readonly string Name;
 
 		private Dictionary<string, char>? _mnemonicsCache;
+
+		/// <summary>
+		/// A mapping between buttons names and their Bk2 mnemonics.
+		/// (it's only relevant for buttons, not axes)
+		/// </summary>
 		public IReadOnlyDictionary<string, char>? MnemonicsCache => _mnemonicsCache;
 
 		/// <remarks>
@@ -113,7 +118,7 @@ namespace BizHawk.Emulation.Common
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
 		}
 
-		/// <remarks>implementors should include empty lists for empty players, including "player 0", to match this base implementation</remarks>
+		/// <remarks>Implementors should include empty lists for empty players, including "player 0" (console buttons), to match this base implementation</remarks>
 		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
 			var ret = new List<(string, AxisSpec?)>[PlayerCount + 1];
@@ -123,7 +128,7 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
-		/// <summary>permanently disables the ability to mutate this instance; returns this reference</summary>
+		/// <summary>Permanently disables the ability to mutate this instance; returns this reference</summary>
 		public ControllerDefinition MakeImmutable()
 		{
 			BoolButtons = BoolButtons.ToImmutableList();
@@ -134,6 +139,12 @@ namespace BizHawk.Emulation.Common
 			return this;
 		}
 
+		/// <summary>
+		/// Get the player number associated with a control (button, analog axis, etc.).
+		/// Returns 0 for general console buttons not associated with a particular player's control port.
+		/// (for example, returns 0 for the Power button on NES)
+		/// For some consoles like (non-linked) Game Boy, this always returns 0.
+		/// </summary>
 		public static int PlayerNumber(string buttonName)
 		{
 			var match = PlayerRegex.Match(buttonName);
@@ -144,6 +155,11 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
 
+		/// <summary>
+		/// Returns the number of players.
+		/// Currently only returns 0 for consoles where all control ports are empty,
+		/// so returns 1 for (non-linked) Game Boy and similar cases.
+		/// </summary>
 		public int PlayerCount
 		{
 			get
