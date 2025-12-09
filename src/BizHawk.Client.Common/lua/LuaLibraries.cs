@@ -326,7 +326,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null)
+		public void Sandbox(LuaThread thread, Action callback, Action<string> exceptionCallback = null)
 		{
 			LuaSandbox.GetSandbox(thread).Sandbox(callback, exceptionCallback);
 		}
@@ -372,9 +372,10 @@ namespace BizHawk.Client.Common
 
 						lf.FrameWaiting = waitForFrame;
 					}
-				}, () =>
+				}, (s) =>
 				{
 					anyStopped = true;
+					_defaultExceptionCallback(s);
 					lf.Stop();
 					DetachRegisteredFunctions(lf);
 				});

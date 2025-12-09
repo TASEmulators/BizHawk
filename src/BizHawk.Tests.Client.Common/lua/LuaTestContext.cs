@@ -46,8 +46,6 @@ namespace BizHawk.Tests.Client.Common.lua
 				print,
 				apiContainer
 			);
-
-			LuaSandbox.DefaultLogger = print;
 		}
 
 		public void AddScript(string path, bool enable)
