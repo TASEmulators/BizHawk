@@ -56,7 +56,7 @@ namespace BizHawk.Tests.Client.Common.lua
 			lua.ScriptList.Add(luaFile);
 			if (enable)
 			{
-				lua.SpawnAndSetFileThread(luaFile.Path, luaFile);
+				luaFile.Thread = lua.SpawnCoroutine(luaFile.Path);
 				LuaSandbox.CreateSandbox(luaFile.Thread, Path.GetDirectoryName(luaFile.Path));
 				luaFile.State = LuaFile.RunState.Running;
 			}

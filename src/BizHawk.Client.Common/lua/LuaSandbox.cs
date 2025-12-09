@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 
 				EnvironmentSandbox.Sandbox(callback);
 			}
-			catch (NLua.Exceptions.LuaException ex)
+			catch (Exception ex)
 			{
 				var exStr = ex.ToString() + '\n';
 				if (ex.InnerException is not null)

@@ -341,9 +341,6 @@ namespace BizHawk.Client.Common
 			return _lua.NewThread(main);
 		}
 
-		public void SpawnAndSetFileThread(string/*?*/ pathToLoad, LuaFile lf)
-			=> lf.Thread = SpawnCoroutine(pathToLoad);
-
 		/// <summary>
 		/// resumes suspended scripts
 		/// </summary>
