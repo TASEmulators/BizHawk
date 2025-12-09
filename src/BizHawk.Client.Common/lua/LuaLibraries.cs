@@ -216,31 +216,17 @@ namespace BizHawk.Client.Common
 
 		public void CallSaveStateEvent(string name)
 		{
-			try
+			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
-				{
-					lf.Call(name);
-				}
-			}
-			catch (Exception e)
-			{
-				_defaultExceptionCallback($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
+				lf.Call(name);
 			}
 		}
 
 		public void CallLoadStateEvent(string name)
 		{
-			try
+			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
-				{
-					lf.Call(name);
-				}
-			}
-			catch (Exception e)
-			{
-				_defaultExceptionCallback($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
+				lf.Call(name);
 			}
 		}
 
@@ -248,16 +234,9 @@ namespace BizHawk.Client.Common
 		{
 			if (IsUpdateSupressed) return;
 
-			try
+			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
-				{
-					lf.Call();
-				}
-			}
-			catch (Exception e)
-			{
-				_defaultExceptionCallback($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
+				lf.Call();
 			}
 		}
 
@@ -265,16 +244,9 @@ namespace BizHawk.Client.Common
 		{
 			if (IsUpdateSupressed) return;
 
-			try
+			foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
 			{
-				foreach (var lf in RegisteredFunctions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
-				{
-					lf.Call();
-				}
-			}
-			catch (Exception e)
-			{
-				_defaultExceptionCallback($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
+				lf.Call();
 			}
 		}
 
