@@ -9,8 +9,6 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly ConditionalWeakTable<LuaThread, LuaSandbox> SandboxForThread = new();
 
-		public static Action<string> DefaultLogger { get; set; }
-
 		public void SetSandboxCurrentDirectory(string dir)
 		{
 			_currentDirectory = dir;
@@ -41,7 +39,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Sandbox(Action callback, Action exceptionCallback)
+		public void Sandbox(Action callback, Action<string> exceptionCallback)
 		{
 			string savedEnvironmentCurrDir = null;
 			try
@@ -64,8 +62,7 @@ namespace BizHawk.Client.Common
 				}
 
 				Console.Write(exStr);
-				DefaultLogger(exStr);
-				exceptionCallback?.Invoke();
+				exceptionCallback.Invoke(exStr);
 			}
 			finally
 			{
