@@ -150,7 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemIcon += LuaListView_QueryItemImage;
 
 			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
-			LuaSandbox.DefaultLogger = WriteToOutputWindow;
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
@@ -255,8 +254,9 @@ namespace BizHawk.Client.EmuHawk
 						LuaImp.SpawnAndSetFileThread(file.Path, file);
 						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
 						file.State = LuaFile.RunState.Running;
-					}, () =>
+					}, (s) =>
 					{
+						WriteToOutputWindow(s);
 						file.State = LuaFile.RunState.Disabled;
 					});
 				}
@@ -897,8 +897,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaImp.SpawnAndSetFileThread(item.Path, item);
 					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
-				}, () =>
+				}, (s) =>
 				{
+					WriteToOutputWindow(s);
 					item.State = LuaFile.RunState.Disabled;
 				});
 

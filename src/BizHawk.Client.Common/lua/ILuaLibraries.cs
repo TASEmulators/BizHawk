@@ -18,6 +18,6 @@ namespace BizHawk.Client.Common
 
 		NLuaTableHelper GetTableHelper();
 
-		void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null);
+		void Sandbox(LuaThread thread, Action callback, Action<string> exceptionCallback = null);
 	}
 }
