@@ -157,6 +157,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private ConsoleLuaLibrary _consoleLib;
 
+		private LuaFile _nonFile;
+
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
 		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);
@@ -249,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					LuaImp.Sandbox(file.Thread, () =>
+					LuaImp.Sandbox(file, () =>
 					{
 						LuaImp.SpawnAndSetFileThread(file.Path, file);
 						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
@@ -265,6 +267,10 @@ namespace BizHawk.Client.EmuHawk
 					DialogController.ShowMessageBox(ex.ToString());
 				}
 			}
+
+			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath());
+			LuaImp.SpawnAndSetFileThread(null, _nonFile);
+			LuaSandbox.CreateSandbox(_nonFile.Thread, _nonFile.Path);
 
 			UpdateDialog();
 		}
@@ -893,7 +899,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				LuaImp.Sandbox(null, () =>
+				LuaImp.Sandbox(_nonFile, () =>
 				{
 					LuaImp.SpawnAndSetFileThread(item.Path, item);
 					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
@@ -1372,7 +1378,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					LuaImp.Sandbox(null, () =>
+					LuaImp.Sandbox(_nonFile, () =>
 					{
 						var prevMessageCount = _messageCount;
 						var results = LuaImp.ExecuteString(rawCommand);

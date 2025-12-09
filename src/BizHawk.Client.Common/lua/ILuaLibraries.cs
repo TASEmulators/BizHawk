@@ -1,5 +1,3 @@
-using NLua;
-
 namespace BizHawk.Client.Common
 {
 	public interface ILuaLibraries
@@ -18,6 +16,6 @@ namespace BizHawk.Client.Common
 
 		NLuaTableHelper GetTableHelper();
 
-		void Sandbox(LuaThread thread, Action callback, Action<string> exceptionCallback = null);
+		void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null);
 	}
 }

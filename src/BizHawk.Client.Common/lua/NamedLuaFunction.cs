@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 
 		public void Call(string name = null)
 		{
-			_luaImp.Sandbox(LuaFile.Thread, () =>
+			_luaImp.Sandbox(LuaFile, () =>
 			{
 				_function.Call(name);
 			});
