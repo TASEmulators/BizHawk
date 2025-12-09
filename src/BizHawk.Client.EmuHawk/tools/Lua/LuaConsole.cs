@@ -258,28 +258,12 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var file in runningScripts)
 			{
-				try
-				{
-					LuaImp.Sandbox(file, () =>
-					{
-						LuaImp.SpawnAndSetFileThread(file.Path, file);
-						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
-						file.State = LuaFile.RunState.Running;
-					}, (s) =>
-					{
-						WriteToOutputWindow(s);
-						file.State = LuaFile.RunState.Disabled;
-					});
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"[{WindowTitleStatic}] failed to re-enable script {file.Path} after {nameof(Restart)}:\n{ex}");
-					DialogController.ShowMessageBox(ex.ToString());
-				}
+				file.State = LuaFile.RunState.Running;
+				EnableLuaFile(file);
 			}
 
 			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath());
-			LuaImp.SpawnAndSetFileThread(null, _nonFile);
+			_nonFile.Thread = LuaImp.SpawnCoroutine(null);
 			LuaSandbox.CreateSandbox(_nonFile.Thread, _nonFile.Path);
 
 			UpdateDialog();
@@ -384,7 +368,6 @@ namespace BizHawk.Client.EmuHawk
 				if (!Settings.DisableLuaScriptsOnLoad)
 				{
 					luaFile.State = LuaFile.RunState.Running;
-					EnableLuaFile(luaFile);
 					Console.WriteLine($"[{WindowTitleStatic}] loaded script {absolutePath}");
 				}
 				else
@@ -668,18 +651,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			try
+			bool anyStopped = LuaImp.ResumeScripts(includeFrameWaiters);
+			if (anyStopped)
 			{
-				bool anyStopped = LuaImp.ResumeScripts(includeFrameWaiters);
-				if (anyStopped)
-				{
-					UpdateDialog();
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"[{WindowTitleStatic}] failed to resume script:\n{ex}");
-				DialogController.ShowMessageBox(ex.ToString());
 				UpdateDialog();
 			}
 
@@ -951,27 +925,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				LuaImp.Sandbox(_nonFile, () =>
-				{
-					LuaImp.SpawnAndSetFileThread(item.Path, item);
-					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
-				}, (s) =>
-				{
-					WriteToOutputWindow(s);
-					item.State = LuaFile.RunState.Disabled;
-				});
-
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				item.Thread = LuaImp.SpawnCoroutine(item.Path);
+				LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
 			}
 			catch (IOException)
 			{
 				item.State = LuaFile.RunState.Disabled;
 				WriteLine($"Unable to access file {item.Path}");
+				item.State = LuaFile.RunState.Disabled;
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine($"[{WindowTitleStatic}] failed to start script {item.Path}:\n{ex}");
 				DialogController.ShowMessageBox(ex.ToString());
+				item.State = LuaFile.RunState.Disabled;
 			}
 		}
 
