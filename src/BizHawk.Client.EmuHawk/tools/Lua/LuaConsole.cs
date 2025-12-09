@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					LuaSandbox.Sandbox(file.Thread, () =>
+					LuaImp.Sandbox(file.Thread, () =>
 					{
 						LuaImp.SpawnAndSetFileThread(file.Path, file);
 						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
@@ -919,7 +919,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				LuaSandbox.Sandbox(null, () =>
+				LuaImp.Sandbox(null, () =>
 				{
 					LuaImp.SpawnAndSetFileThread(item.Path, item);
 					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
@@ -1397,7 +1397,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					LuaSandbox.Sandbox(null, () =>
+					LuaImp.Sandbox(null, () =>
 					{
 						var prevMessageCount = _messageCount;
 						var results = LuaImp.ExecuteString(rawCommand);

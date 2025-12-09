@@ -327,6 +327,11 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
+		public void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null)
+		{
+			LuaSandbox.GetSandbox(thread).Sandbox(callback, exceptionCallback);
+		}
+
 		public LuaThread SpawnCoroutine(string file)
 		{
 			var content = File.ReadAllText(file);
@@ -352,7 +357,7 @@ namespace BizHawk.Client.Common
 			bool anyStopped = false;
 			foreach (var lf in ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
 			{
-				LuaSandbox.Sandbox(lf.Thread, () =>
+				Sandbox(lf.Thread, () =>
 				{
 					var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 					if (!prohibit)
