@@ -327,19 +327,21 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Sandbox(LuaThread thread, Action callback, Action<string> exceptionCallback = null)
+		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null)
 		{
-			LuaSandbox.GetSandbox(thread).Sandbox(callback, exceptionCallback);
+			SetCurrentThread(luaFile);
+			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback);
+			ClearCurrentThread();
 		}
 
-		public LuaThread SpawnCoroutine(string file)
+		public LuaThread SpawnCoroutine(string/*?*/ file)
 		{
-			var content = File.ReadAllText(file);
+			var content = file == null ? "" : File.ReadAllText(file);
 			var main = _lua.LoadString(content, "main");
 			return _lua.NewThread(main);
 		}
 
-		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
+		public void SpawnAndSetFileThread(string/*?*/ pathToLoad, LuaFile lf)
 			=> lf.Thread = SpawnCoroutine(pathToLoad);
 
 		/// <summary>
@@ -357,29 +359,26 @@ namespace BizHawk.Client.Common
 			bool anyStopped = false;
 			foreach (var lf in ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
 			{
-				Sandbox(lf.Thread, () =>
+				var prohibit = lf.FrameWaiting && !includeFrameWaiters;
+				if (!prohibit)
 				{
-					var prohibit = lf.FrameWaiting && !includeFrameWaiters;
-					if (!prohibit)
+					bool hadException = false;
+					var (waitForFrame, terminated) = ResumeScript(lf, (s) =>
 					{
-						var (waitForFrame, terminated) = ResumeScript(lf);
-						if (terminated)
-						{
-							anyStopped = true;
-							CallExitEvent(lf);
-							lf.Stop();
-							DetachRegisteredFunctions(lf);
-						}
+						Print(s);
+						hadException = true; // Can't call the exit event here: recursive sandboxing is disallowed.
+					});
 
-						lf.FrameWaiting = waitForFrame;
+					if (hadException || terminated)
+					{
+						anyStopped = true;
+						CallExitEvent(lf);
+						lf.Stop();
+						DetachRegisteredFunctions(lf);
 					}
-				}, (s) =>
-				{
-					anyStopped = true;
-					_defaultExceptionCallback(s);
-					lf.Stop();
-					DetachRegisteredFunctions(lf);
-				});
+
+					lf.FrameWaiting = waitForFrame;
+				}
 			}
 
 			return anyStopped;
@@ -444,28 +443,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf)
+		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf, Action<string> exceptionCallback)
 		{
-			SetCurrentThread(lf);
+			var result = (WaitForFrame: false, Terminated: true);
+			LuaStatus? execResult = null;
+			Sandbox(lf, () => execResult = lf.Thread.Resume(), exceptionCallback);
+			if (execResult == null) return result;
 
-			try
-			{
-				var execResult = lf.Thread.Resume();
+			if (execResult == LuaStatus.Yield)
+				result = (WaitForFrame: FrameAdvanceRequested, Terminated: false);
+			else if (execResult != LuaStatus.OK)
+				exceptionCallback($"{nameof(lf.Thread.Resume)}() returned {execResult}?");
 
-				var result = execResult switch
-				{
-					LuaStatus.OK => (WaitForFrame: false, Terminated: true),
-					LuaStatus.Yield => (WaitForFrame: FrameAdvanceRequested, Terminated: false),
-					_ => throw new InvalidOperationException($"{nameof(lf.Thread.Resume)}() returned {execResult}?"),
-				};
-
-				FrameAdvanceRequested = false;
-				return result;
-			}
-			finally
-			{
-				ClearCurrentThread();
-			}
+			FrameAdvanceRequested = false;
+			return result;
 		}
 
 		public static void Print(params object[] outputs)

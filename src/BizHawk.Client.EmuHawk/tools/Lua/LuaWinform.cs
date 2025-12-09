@@ -9,7 +9,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
 
-		private readonly string _currentDirectory = Environment.CurrentDirectory;
 		private readonly LuaFile _ownerFile;
 		private readonly ILuaLibraries _luaImp;
 
@@ -27,10 +26,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			// re: https://github.com/TASEmulators/BizHawk/issues/1957 - `ownerFile` can be null if the script that generated the form ended, which will happen if the script does not have a `while true` loop
-			_luaImp.Sandbox(_ownerFile?.Thread, () =>
+			_luaImp.Sandbox(_ownerFile, () =>
 			{
-				Environment.CurrentDirectory = _currentDirectory;
 				foreach (LuaEvent luaEvent in ControlEvents)
 				{
 					if (luaEvent.Control == handle)
