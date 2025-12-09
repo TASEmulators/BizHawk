@@ -1,6 +1,5 @@
-using NLua;
-
 using BizHawk.Emulation.Common;
+using NLua;
 
 namespace BizHawk.Client.Common
 {
@@ -30,12 +29,15 @@ namespace BizHawk.Client.Common
 
 		private readonly LuaFunction _function;
 
+		private readonly ILuaLibraries _luaImp;
+
 		public Action/*?*/ OnRemove { get; set; } = null;
 
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
 			Func<LuaThread> createThreadCallback, ILuaLibraries luaLibraries, string name = null)
 		{
 			_function = function;
+			_luaImp = luaLibraries;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
 			CreateThreadCallback = createThreadCallback;
@@ -155,7 +157,7 @@ namespace BizHawk.Client.Common
 
 		public void Call(string name = null)
 		{
-			LuaSandbox.Sandbox(LuaFile.Thread, () =>
+			_luaImp.Sandbox(LuaFile.Thread, () =>
 			{
 				_function.Call(name);
 			});
