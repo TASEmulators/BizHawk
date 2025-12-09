@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 			string title = null,
 			LuaFunction onClose = null)
 		{
-			var form = new LuaWinform(_luaLibsImpl.CurrentFile, WindowClosed);
+			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
