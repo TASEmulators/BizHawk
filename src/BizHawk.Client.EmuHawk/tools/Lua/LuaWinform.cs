@@ -11,12 +11,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly string _currentDirectory = Environment.CurrentDirectory;
 		private readonly LuaFile _ownerFile;
+		private readonly ILuaLibraries _luaImp;
 
 		public bool BlocksInputWhenFocused { get; set; } = true;
 
-		public LuaWinform(LuaFile ownerFile, Action<IntPtr> formsWindowClosedCallback)
+		public LuaWinform(LuaFile ownerFile, ILuaLibraries luaLibraries, Action<IntPtr> formsWindowClosedCallback)
 		{
 			_ownerFile = ownerFile;
+			_luaImp = luaLibraries;
 			InitializeComponent();
 			Icon = Properties.Resources.TextDocIcon;
 			StartPosition = FormStartPosition.CenterParent;
@@ -26,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		public void DoLuaEvent(IntPtr handle)
 		{
 			// re: https://github.com/TASEmulators/BizHawk/issues/1957 - `ownerFile` can be null if the script that generated the form ended, which will happen if the script does not have a `while true` loop
-			LuaSandbox.Sandbox(_ownerFile?.Thread, () =>
+			_luaImp.Sandbox(_ownerFile?.Thread, () =>
 			{
 				Environment.CurrentDirectory = _currentDirectory;
 				foreach (LuaEvent luaEvent in ControlEvents)

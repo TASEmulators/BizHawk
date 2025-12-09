@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OwnerForm is not IWin32Window ownerForm)
 				throw new Exception("IDialogParent must implement IWin32Window");
 
-			var form = new LuaWinform(_luaLibsImpl.CurrentFile, WindowClosed);
+			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{

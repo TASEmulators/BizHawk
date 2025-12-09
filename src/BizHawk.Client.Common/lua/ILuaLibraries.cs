@@ -1,3 +1,5 @@
+using NLua;
+
 namespace BizHawk.Client.Common
 {
 	public interface ILuaLibraries
@@ -15,5 +17,7 @@ namespace BizHawk.Client.Common
 		PathEntryCollection PathEntries { get; }
 
 		NLuaTableHelper GetTableHelper();
+
+		void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null);
 	}
 }

@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		private void Sandbox(Action callback, Action exceptionCallback)
+		public void Sandbox(Action callback, Action exceptionCallback)
 		{
 			string savedEnvironmentCurrDir = null;
 			try
@@ -105,11 +105,6 @@ namespace BizHawk.Client.Common
 				// return CreateSandbox(thread);
 				throw new InvalidOperationException("HOARY GORILLA HIJINX");
 			}
-		}
-
-		public static void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null)
-		{
-			GetSandbox(thread).Sandbox(callback, exceptionCallback);
 		}
 	}
 }
