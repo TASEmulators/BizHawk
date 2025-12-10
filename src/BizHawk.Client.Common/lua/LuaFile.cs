@@ -24,6 +24,7 @@ namespace BizHawk.Client.Common
 		public bool IsSeparator { get; }
 		public LuaThread Thread { get; set; }
 		public bool FrameWaiting { get; set; }
+		public bool RunningEventsOnly { get; set; } = false;
 
 		public LuaFunctionList Functions { get; }
 
