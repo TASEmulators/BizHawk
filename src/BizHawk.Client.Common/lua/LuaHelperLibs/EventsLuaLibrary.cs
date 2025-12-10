@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
-	public sealed class EventsLuaLibrary : LuaLibraryBase
+	public sealed class EventsLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
 		private static readonly string EMPTY_UUID_STR = Guid.Empty.ToString("D");
 
