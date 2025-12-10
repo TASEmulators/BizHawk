@@ -11,7 +11,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to Doom games (functions may not run when a Doom game is not loaded)")]
-	public sealed class DoomLuaLibrary : LuaLibraryBase
+	public sealed class DoomLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
 		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 

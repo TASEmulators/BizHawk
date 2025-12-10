@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var overrideIcon = QueryItemIconCallback?.Invoke(index, column.Name);
+			var overrideIcon = QueryItemIconCallback(index, column.Name);
 
 			if (overrideIcon != null)
 			{
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Color? overrideColor = QueryItemBgColorCallback?.Invoke(index, column.Name);
+			Color? overrideColor = QueryItemBgColorCallback(index, column.Name);
 
 			if (overrideColor.HasValue)
 			{
@@ -327,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var overrideText = QueryItemTextCallback?.Invoke(index, column.Name);
+			var overrideText = QueryItemTextCallback(index, column.Name);
 			if (overrideText != null)
 			{
 				text = overrideText;
