@@ -342,14 +342,24 @@ namespace BizHawk.Client.Common
 				var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 				if (!prohibit)
 				{
+					bool shouldStop = true;
+					bool waitForFrame = false;
 					bool hadException = false;
-					var (waitForFrame, terminated) = ResumeScript(lf, (s) =>
+					if (!lf.RunningEventsOnly)
 					{
-						Print(s);
-						hadException = true; // Can't call the exit event here: recursive sandboxing is disallowed.
-					});
+						(waitForFrame, shouldStop) = ResumeScript(lf, (s) =>
+						{
+							Print(s);
+							hadException = true;
+						});
+					}
+					// An exception in a main loop should stop everything. The code meant to run each frame cannot be run anymore.
+					if (hadException)
+						shouldStop = true;
+					else
+						shouldStop = shouldStop && !lf.Functions.Any(f => f.Event != NamedLuaFunction.EVENT_TYPE_ENGINESTOP);
 
-					if (hadException || terminated)
+					if (shouldStop)
 					{
 						anyStopped = true;
 						CallExitEvent(lf);
@@ -426,6 +436,7 @@ namespace BizHawk.Client.Common
 				exceptionCallback($"{nameof(lf.Thread.Resume)}() returned {execResult}?");
 
 			FrameAdvanceRequested = false;
+			lf.RunningEventsOnly = result.Terminated;
 			return result;
 		}
 
