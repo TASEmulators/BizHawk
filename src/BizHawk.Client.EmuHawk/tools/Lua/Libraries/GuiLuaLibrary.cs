@@ -364,6 +364,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var canvas = new LuaCanvas(APIs.Emulation, PathEntries, width, height, x, y, _th, LogOutputCallback);
 			canvas.Show();
+			LuaFile lf = _luaLibsImpl.CurrentFile;
+			lf.AddDisposable(canvas);
+			canvas.FormClosed += (s, e) => lf.RemoveDisposable(canvas);
 			return _th.ObjectToTable(canvas);
 		}
 

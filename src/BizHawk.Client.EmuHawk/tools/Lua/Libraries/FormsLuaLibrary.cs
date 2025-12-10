@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OwnerForm is not IWin32Window ownerForm)
 				throw new Exception("IDialogParent must implement IWin32Window");
 
-			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed);
+			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed, onClose);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
@@ -304,21 +304,6 @@ namespace BizHawk.Client.EmuHawk
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
 			form.Show(ownerForm);
-
-			form.FormClosed += (o, e) =>
-			{
-				if (onClose != null)
-				{
-					try
-					{
-						onClose.Call();
-					}
-					catch (Exception ex)
-					{
-						Log(ex.ToString());
-					}
-				}
-			};
 
 			return (long)form.Handle;
 		}
