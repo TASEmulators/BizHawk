@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 			string title = null,
 			LuaFunction onClose = null)
 		{
-			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed);
+			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed, onClose);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
@@ -302,21 +302,6 @@ namespace BizHawk.Client.EmuHawk
 			form.Icon = SystemIcons.Application;
 			form.Owner = MainForm;
 			form.Show();
-
-			form.FormClosed += (o, e) =>
-			{
-				if (onClose != null)
-				{
-					try
-					{
-						onClose.Call();
-					}
-					catch (Exception ex)
-					{
-						Log(ex.ToString());
-					}
-				}
-			};
 
 			return (long)form.Handle;
 		}

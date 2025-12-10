@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using NLua;
 
 namespace BizHawk.Client.Common
 {
+	public interface IKeepFileRunning : IDisposable { }
+
 	public class LuaFile
 	{
 		public LuaFile(string path, Action onFunctionListChange)
@@ -30,6 +33,8 @@ namespace BizHawk.Client.Common
 
 		public LuaFunctionList Functions { get; }
 
+		private List<IDisposable> _disposables = new();
+
 		public enum RunState
 		{
 			Disabled,
@@ -39,6 +44,16 @@ namespace BizHawk.Client.Common
 		}
 
 		public RunState State { get; private set; }
+
+		public void AddDisposable(IDisposable disposable) => _disposables.Add(disposable);
+
+		public void RemoveDisposable(IDisposable disposable) => _disposables.Remove(disposable);
+
+		public bool ShouldKeepRunning()
+		{
+			return _disposables.Exists((d) => d is IKeepFileRunning)
+				|| Functions.Any(f => f.Event != NamedLuaFunction.EVENT_TYPE_ENGINESTOP);
+		}
 
 		public void Stop()
 		{
@@ -56,6 +71,10 @@ namespace BizHawk.Client.Common
 				func.Call();
 			}
 			Functions.Clear();
+
+			foreach (IDisposable disposable in _disposables.ToList())
+				disposable.Dispose();
+			_disposables.Clear();
 
 			Thread.Dispose();
 			Thread = null;
