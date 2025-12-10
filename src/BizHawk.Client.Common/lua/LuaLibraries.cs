@@ -357,7 +357,7 @@ namespace BizHawk.Client.Common
 					if (hadException)
 						shouldStop = true;
 					else
-						shouldStop = shouldStop && !lf.Functions.Any(f => f.Event != NamedLuaFunction.EVENT_TYPE_ENGINESTOP);
+						shouldStop = shouldStop && !lf.ShouldKeepRunning();
 
 					if (shouldStop)
 					{
