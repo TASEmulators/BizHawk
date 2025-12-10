@@ -301,9 +301,10 @@ namespace BizHawk.Client.Common
 
 		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null)
 		{
-			SetCurrentThread(luaFile);
+			bool setThread = SetCurrentThread(luaFile);
 			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback);
-			ClearCurrentThread();
+			if (setThread)
+				ClearCurrentThread();
 		}
 
 		public LuaThread SpawnCoroutineAndSandbox(string file)
@@ -405,19 +406,28 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
-		private void SetCurrentThread(LuaFile luaFile)
+		private bool SetCurrentThread(LuaFile luaFile)
 		{
 			lock (ThreadMutex)
 			{
-				if (_currentHostThread != null)
+				if (_currentHostThread != null && _currentHostThread != Thread.CurrentThread)
 				{
-					throw new InvalidOperationException("Can't have two lua files running at a time!");
+					throw new InvalidOperationException("Can't run lua from two host threads at the same time!");
+				}
+
+				if (CurrentFile == luaFile)
+				{
+					return false;
+				}
+				else if (CurrentFile != null)
+				{
 					// We just don't have logic for handling multiple lua files.
-					// If we did, we still have to ensure we aren't running in two host threads at the same time.
+					throw new InvalidOperationException("Can't have two lua files running at a time!");
 				}
 
 				_currentHostThread = Thread.CurrentThread;
 				CurrentFile = luaFile;
+				return true;
 			}
 		}
 
