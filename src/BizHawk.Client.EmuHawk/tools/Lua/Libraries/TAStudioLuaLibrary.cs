@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the Tastudio dialog of the EmuHawk client")]
 	[LuaLibrary(released: true)]
-	public sealed class TAStudioLuaLibrary : LuaLibraryBase
+	public sealed class TAStudioLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
 		private const string DESC_LINE_EDIT_QUEUE_APPLY = " Edits will take effect once you call {{tastudio.applyinputchanges}}.";
 
@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly IDictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
 
 		public ToolManager Tools { get; set; }
+
+		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
 		public TAStudioLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
@@ -610,7 +612,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemBgColorCallback = (index, name) => _th.SafeParseColor(luaf.Call(index, name)?.FirstOrDefault());
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemBg");
+				TAStudio.QueryColor callback = (index, name) => _th.SafeParseColor(luaf.Call(index, name)?.FirstOrDefault());
+
+				Tastudio.AddQueryBgColorCallback(callback);
+				nlf.OnRemove += () => Tastudio.RemoveQueryBgColorCallback(callback);
 			}
 		}
 
@@ -620,7 +626,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemTextCallback = (index, name) => luaf.Call(index, name)?.FirstOrDefault()?.ToString();
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemText");
+				TAStudio.QueryText callback = (index, name) => luaf.Call(index, name)?.FirstOrDefault()?.ToString();
+
+				Tastudio.AddQueryItemTextCallback(callback);
+				nlf.OnRemove += () => Tastudio.RemoveQueryItemTextCallback(callback);
 			}
 		}
 
@@ -630,7 +640,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.QueryItemIconCallback = (index, name) =>
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemIcon");
+				TAStudio.QueryIcon callback = (index, name) =>
 				{
 					var result = luaf.Call(index, name);
 					if (result?.FirstOrDefault() is not null)
@@ -640,6 +651,9 @@ namespace BizHawk.Client.EmuHawk
 
 					return null;
 				};
+
+				Tastudio.AddQueryItemIconCallback(callback);
+				nlf.OnRemove += () => Tastudio.RemoveQueryItemIconCallback(callback);
 			}
 		}
 
@@ -657,10 +671,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.GreenzoneInvalidatedCallback = index =>
-				{
-					luaf.Call(index);
-				};
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnGreenzoneInvalidated");
+				Action<int> callback = index => luaf.Call(index);
+
+				Tastudio.GreenzoneInvalidatedCallback += callback;
+				nlf.OnRemove += () => Tastudio.GreenzoneInvalidatedCallback -= callback;
 			}
 		}
 
@@ -670,10 +685,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchLoadedCallback = index =>
-				{
-					luaf.Call(index);
-				};
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchLoad");
+				Action<int> callback = index => luaf.Call(index);
+
+				Tastudio.BranchLoadedCallback += callback;
+				nlf.OnRemove += () => Tastudio.BranchLoadedCallback -= callback;
 			}
 		}
 
@@ -688,10 +704,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchSavedCallback = index =>
-				{
-					luaf.Call(index);
-				};
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchSave");
+				Action<int> callback = index => luaf.Call(index);
+
+				Tastudio.BranchSavedCallback += callback;
+				nlf.OnRemove += () => Tastudio.BranchSavedCallback -= callback;
 			}
 		}
 
@@ -706,10 +723,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchRemovedCallback = index =>
-				{
-					luaf.Call(index);
-				};
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchRemove");
+				Action<int> callback = index => luaf.Call(index);
+
+				Tastudio.BranchRemovedCallback += callback;
+				nlf.OnRemove += () => Tastudio.BranchRemovedCallback -= callback;
 			}
 		}
 	}

@@ -92,13 +92,8 @@ namespace BizHawk.Client.Common
 						clientLib.MainForm = _mainForm;
 						clientLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
 					}
-					else if (instance is DoomLuaLibrary doomLib)
-					{
-						doomLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
-					}
 					else if (instance is EventsLuaLibrary eventsLib)
 					{
-						eventsLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
 						eventsLib.RemoveNamedFunctionMatching = RemoveNamedFunctionMatching;
 					}
 
@@ -192,6 +187,11 @@ namespace BizHawk.Client.Common
 
 		public void AddLibrary(LuaLibraryBase lib)
 		{
+			if (lib is IRegisterFunctions rfLib)
+			{
+				rfLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
+			}
+
 			if (lib is IDisposable disposable)
 			{
 				_disposables.Add(disposable);
