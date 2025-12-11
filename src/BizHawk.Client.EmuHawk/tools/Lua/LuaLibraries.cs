@@ -19,13 +19,34 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static readonly bool IsAvailable = LuaNativeMethodLoader.EnsureNativeMethodsLoaded();
 
+		private void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
+		{
+			var libraryDesc = type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
+				.Select(static descAttr => descAttr.Description)
+				.FirstOrDefault() ?? string.Empty;
+			if (instance != null) _lua.NewTable(name);
+			foreach (var method in type.GetMethods())
+			{
+				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+				if (foundAttrs.Length == 0) continue;
+				if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute)foundAttrs[0]).Name}", instance, method);
+				LibraryFunction libFunc = new(
+					library: name,
+					libraryDescription: libraryDesc,
+					method,
+					suggestInREPL: instance != null
+				);
+				Docs.Add(libFunc);
+			}
+		}
+
 		public LuaLibraries(
 			LuaFileList scriptList,
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
 			IMainFormForApi mainForm,
 			Config config,
-			ToolManager toolManager,
+			Action<string> printCallback,
 			IDialogParent dialogParent,
 			ApiContainer apiContainer)
 		{
@@ -34,29 +55,14 @@ namespace BizHawk.Client.EmuHawk
 				throw new InvalidOperationException("The Lua dynamic library was not able to be loaded");
 			}
 
-			void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
-			{
-				var libraryDesc = type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
-					.Select(static descAttr => descAttr.Description)
-					.FirstOrDefault() ?? string.Empty;
-				if (instance != null) _lua.NewTable(name);
-				foreach (var method in type.GetMethods())
-				{
-					var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
-					if (foundAttrs.Length == 0) continue;
-					if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute)foundAttrs[0]).Name}", instance, method);
-					LibraryFunction libFunc = new(
-						library: name,
-						libraryDescription: libraryDesc,
-						method,
-						suggestInREPL: instance != null
-					);
-					Docs.Add(libFunc);
-				}
-			}
-
-			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
+			_th = new NLuaTableHelper(_lua, printCallback);
 			_mainForm = mainForm;
+			_defaultExceptionCallback = printCallback;
+			_logToLuaConsoleCallback = (o) =>
+			{
+				foreach (object obj in o)
+					printCallback(obj.ToString());
+			};
 			LuaWait = new AutoResetEvent(false);
 			PathEntries = config.PathEntries;
 			RegisteredFunctions = registeredFuncList;
@@ -65,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			_apiContainer = apiContainer;
 
 			// Register lua libraries
-			foreach (var lib in ReflectionCache_Biz_Cli_Com.Types.Concat(ReflectionCache.Types)
+			foreach (var lib in ReflectionCache_Biz_Cli_Com.Types
 				.Where(static t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed))
 			{
 				if (VersionInfo.DeveloperBuild
@@ -81,18 +87,13 @@ namespace BizHawk.Client.EmuHawk
 						continue;
 					}
 
-					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, (Action<string>)LogToLuaConsole);
+					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, printCallback);
 					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 
 					if (instance is ClientLuaLibrary clientLib)
 					{
 						clientLib.MainForm = _mainForm;
-					}
-					else if (instance is ConsoleLuaLibrary consoleLib)
-					{
-						consoleLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
-						consoleLib.Tools = toolManager;
-						_logToLuaConsoleCallback = consoleLib.Log;
+						clientLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
 					}
 					else if (instance is DoomLuaLibrary doomLib)
 					{
@@ -103,28 +104,18 @@ namespace BizHawk.Client.EmuHawk
 						eventsLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
 						eventsLib.RemoveNamedFunctionMatching = RemoveNamedFunctionMatching;
 					}
-					else if (instance is FormsLuaLibrary formsLib)
-					{
-
-						formsLib.OwnerForm = dialogParent;
-					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
 						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
 						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
 						{
-							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, LogToLuaConsole);
+							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, printCallback);
 							canvas.Show();
 							return _th.ObjectToTable(canvas);
 						};
 					}
-					else if (instance is TAStudioLuaLibrary tastudioLib)
-					{
-						tastudioLib.Tools = toolManager;
-					}
 
-					EnumerateLuaFunctions(instance.Name, lib, instance);
-					Libraries.Add(lib, instance);
+					AddLibrary(instance);
 				}
 			}
 
@@ -151,8 +142,6 @@ namespace BizHawk.Client.EmuHawk
 
 			EmulationLuaLibrary.FrameAdvanceCallback = FrameAdvance;
 			EmulationLuaLibrary.YieldCallback = EmuYield;
-
-			EnumerateLuaFunctions(nameof(LuaCanvas), typeof(LuaCanvas), null); // add LuaCanvas to Lua function reference table
 		}
 
 		private ApiContainer _apiContainer;
@@ -166,7 +155,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly NLuaTableHelper _th;
 
-		private static Action<object[]> _logToLuaConsoleCallback = a => Console.WriteLine("a Lua lib is logging during init and the console lib hasn't been initialised yet");
+		private readonly Action<string> _defaultExceptionCallback;
+
+		private static Action<object[]> _logToLuaConsoleCallback;
 
 		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
 
@@ -187,8 +178,6 @@ namespace BizHawk.Client.EmuHawk
 		public PathEntryCollection PathEntries { get; private set; }
 
 		public LuaFileList ScriptList { get; }
-
-		private static void LogToLuaConsole(object outputs) => _logToLuaConsoleCallback(new[] { outputs });
 
 		public NLuaTableHelper GetTableHelper() => _th;
 
@@ -211,6 +200,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void AddLibrary(LuaLibraryBase lib)
+		{
+			EnumerateLuaFunctions(lib.Name, lib.GetType(), lib);
+			Libraries.Add(lib.GetType(), lib);
+
+			if (lib is IPrintingLibrary printLib)
+				_logToLuaConsoleCallback = printLib.Log;
+		}
+
+		public void AddTypeToDocs(Type type)
+		{
+			EnumerateLuaFunctions(type.GetType().Name, type, null);
+		}
+
 		public bool FrameAdvanceRequested { get; private set; }
 
 		public LuaFunctionList RegisteredFunctions { get; }
@@ -226,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				LogToLuaConsole($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
+				_defaultExceptionCallback($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
 			}
 		}
 
@@ -241,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				LogToLuaConsole($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
+				_defaultExceptionCallback($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
 			}
 		}
 
@@ -258,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				LogToLuaConsole($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
+				_defaultExceptionCallback($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
 			}
 		}
 
@@ -275,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				LogToLuaConsole($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
+				_defaultExceptionCallback($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
 			}
 		}
 
