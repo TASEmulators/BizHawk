@@ -104,16 +104,6 @@ namespace BizHawk.Client.EmuHawk
 						eventsLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
 						eventsLib.RemoveNamedFunctionMatching = RemoveNamedFunctionMatching;
 					}
-					else if (instance is GuiLuaLibrary guiLib)
-					{
-						// emu lib may be null now, depending on order of ReflectionCache.Types, but definitely won't be null when this is called
-						guiLib.CreateLuaCanvasCallback = (width, height, x, y) =>
-						{
-							var canvas = new LuaCanvas(EmulationLuaLibrary, width, height, x, y, _th, printCallback);
-							canvas.Show();
-							return _th.ObjectToTable(canvas);
-						};
-					}
 
 					AddLibrary(instance);
 				}
@@ -159,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Action<object[]> _logToLuaConsoleCallback;
 
-		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
+		private List<IDisposable> _disposables = new();
 
 		public LuaDocumentation Docs { get; } = new LuaDocumentation();
 
@@ -202,6 +192,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddLibrary(LuaLibraryBase lib)
 		{
+			if (lib is IDisposable disposable)
+			{
+				_disposables.Add(disposable);
+			}
+
 			EnumerateLuaFunctions(lib.Name, lib.GetType(), lib);
 			Libraries.Add(lib.GetType(), lib);
 
@@ -304,7 +299,11 @@ namespace BizHawk.Client.EmuHawk
 
 			RegisteredFunctions.Clear();
 			ScriptList.Clear();
-			FormsLibrary.DestroyAll();
+			foreach (IDisposable disposable in _disposables)
+			{
+				disposable.Dispose();
+			}
+			_disposables.Clear();
 			_lua.Dispose();
 			_lua = null;
 		}
