@@ -17,6 +17,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : LuaLibraryBase
 	{
+		public Lazy<string> AllAPINames { get; set; }
+
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
@@ -110,6 +112,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("get_approx_framerate", "Gets the (host) framerate, approximated from frame durations.")]
 		public int GetApproxFramerate()
 			=> APIs.EmuClient.GetApproxFramerate();
+
+		[LuaMethodExample("local stconget = client.getluafunctionslist( );")]
+		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
+		public string GetLuaFunctionsList()
+			=> AllAPINames.Value;
 
 		[LuaMethodExample("local incliget = client.gettargetscanlineintensity( );")]
 		[LuaMethod("gettargetscanlineintensity", "Gets the current scanline intensity setting, used for the scanline display filter")]
