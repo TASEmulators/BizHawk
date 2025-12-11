@@ -96,6 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			f.Config = _config;
 			if (form is not ToolFormBase tool) return;
 			tool.SetToolFormBaseProps(_displayManager, _inputManager, _owner, _movieSession, this, _game);
+			if (form is LuaConsole luaConsole) luaConsole.MainForm = _owner; // could go via ServiceProvider but nah
 		}
 
 		/// <summary>

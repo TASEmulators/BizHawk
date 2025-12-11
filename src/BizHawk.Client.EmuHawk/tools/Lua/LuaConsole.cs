@@ -50,8 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public ToolDialogSettings.ColumnList Columns { get; set; }
 
-		[RequiredService]
-		private new IMainFormForApiInit MainForm { get; set; }
+		internal new IMainFormForApiInit MainForm { get; set; }
 
 		public class LuaConsoleSettings
 		{
