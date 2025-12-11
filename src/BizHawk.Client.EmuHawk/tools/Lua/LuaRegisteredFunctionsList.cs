@@ -7,13 +7,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaRegisteredFunctionsList : Form
 	{
-		private readonly IMainFormForApi _mainForm;
-
 		private LuaFunctionList _registeredFunctions;
 
-		public LuaRegisteredFunctionsList(IMainFormForApi mainForm, LuaFunctionList registeredFunctions)
+		public LuaRegisteredFunctionsList(LuaFunctionList registeredFunctions)
 		{
-			_mainForm = mainForm;
 			_registeredFunctions = registeredFunctions;
 			InitializeComponent();
 			Icon = Properties.Resources.TextDocIcon;
