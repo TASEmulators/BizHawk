@@ -12,7 +12,7 @@ using NLua;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for creating and managing custom dialogs")]
-	public sealed class FormsLuaLibrary : LuaLibraryBase
+	public sealed class FormsLuaLibrary : LuaLibraryBase, IDisposable
 	{
 		private const string DESC_LINE_OPT_CTRL_POS = " If the x and y parameters are both nil/unset, the control's Location property won't be set. If both are specified, the control will be positioned at (x, y) within the given form.";
 
@@ -57,6 +57,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void SetText(Control control, string caption)
 			=> control.Text = caption ?? string.Empty;
+
+		public void Dispose()
+		{
+			DestroyAll();
+		}
 
 		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
