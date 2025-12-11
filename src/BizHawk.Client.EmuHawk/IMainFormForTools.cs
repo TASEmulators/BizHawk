@@ -6,8 +6,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public interface IMainFormForTools : IDialogController
 	{
+		/// <remarks>referenced by 3 or more tools</remarks>
 		CheatCollection CheatList { get; }
 
+		/// <remarks>referenced by 3 or more tools</remarks>
 		string CurrentlyOpenRom { get; }
 
 		/// <remarks>only referenced from <see cref="HexEditor"/></remarks>
@@ -15,10 +17,6 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool EmulatorPaused { get; }
-
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		// TODO: remove? or does anything ever need access to the FirmwareManager
-		FirmwareManager FirmwareManager { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool GameIsClosing { get; }
@@ -29,20 +27,19 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		bool InvisibleEmulation { get; set; }
 
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		bool IsSeeking { get; }
-
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
 		bool IsTurboing { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool IsFastForwarding { get; }
 
+		/// <remarks>referenced from <see cref="PlayMovie"/> and <see cref="TAStudio"/></remarks>
 		int? PauseOnFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
 		bool PressRewind { get; set; }
 
+		/// <remarks>referenced from <see cref="BookmarksBranchesBox"/> and <see cref="VideoWriterChooserForm"/></remarks>
 		BitmapBuffer CaptureOSD();
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
@@ -70,19 +67,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		BitmapBuffer MakeScreenshotImage();
 
+		/// <remarks>referenced from <see cref="ToolFormBase"/></remarks>
 		void MaybePauseFromMenuOpened();
 
+		/// <remarks>referenced from <see cref="ToolFormBase"/></remarks>
 		void MaybeUnpauseFromMenuClosed();
 
+		/// <remarks>referenced by 3 or more tools</remarks>
 		void PauseEmulator();
 
+		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool BlockFrameAdvance { get; set; }
 
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
-		void SeekFrameAdvance();
-
+		/// <remarks>referenced from <see cref="PlaybackBox"/> and <see cref="TAStudio"/></remarks>
 		void SetMainformMovieInfo();
 
+		/// <remarks>referenced by 3 or more tools</remarks>
 		bool StartNewMovie(IMovie movie, bool newMovie);
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
@@ -91,6 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		void TogglePause();
 
+		/// <remarks>referenced by 3 or more tools</remarks>
 		void UnpauseEmulator();
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>

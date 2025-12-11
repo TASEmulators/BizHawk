@@ -7,62 +7,62 @@ namespace BizHawk.Client.Common
 {
 	public interface IMainFormForApi
 	{
-		/// <remarks>only referenced from <c>ClientLuaLibrary</c></remarks>
+		/// <remarks>only referenced from <see cref="ClientLuaLibrary"/></remarks>
 		CheatCollection CheatList { get; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		Point DesktopLocation { get; }
 
-		/// <remarks>only referenced from <c>LuaRegisteredFunctionsList</c></remarks>
-		IEmulator Emulator { get; }
-
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool EmulatorPaused { get; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool InvisibleEmulation { get; set; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsSeeking { get; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsTurboing { get; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsRewinding { get; }
 
 		/// <remarks>only referenced from <see cref="CommApi"/></remarks>
 		(HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool PauseAvi { get; set; }
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void ClearHolds();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void ClickSpeedItem(int num);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void CloseEmulator(int? exitCode = null);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void CloseRom(bool clearSram = false);
 
-		/// <remarks>only referenced from <c>ClientLuaLibrary</c></remarks>
+		/// <remarks>only referenced from <see cref="ClientLuaLibrary"/></remarks>
 		IDecodeResult DecodeCheatForAPI(string code, out MemoryDomain/*?*/ domain);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void EnableRewind(bool enabled);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool FlushSaveRAM(bool autosave = false);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		/// <param name="forceWindowResize">Override <see cref="Common.Config.ResizeWithFramebuffer"/></param>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void FrameBufferResized(bool forceWindowResize = false);
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void FrameSkipMessage();
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
@@ -79,18 +79,19 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
 		bool LoadQuickSave(int slot, bool suppressOSD = false);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool LoadRom(string path, LoadRomArgs args);
 
+		/// <remarks>referenced from <see cref="EmuClientApi"/> and <see cref="SaveStateApi"/></remarks>
 		bool LoadState(string path, string userFriendlyStateName, bool suppressOSD = false);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void PauseEmulator();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool RebootCore();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void Render();
 
 		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
@@ -99,41 +100,49 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
 		void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false);
 
+		/// <remarks>referenced from <see cref="EmuClientApi"/> and <see cref="SaveStateApi"/></remarks>
 		void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false);
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void SeekFrameAdvance();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void StepRunLoop_Throttle();
 
 		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
 		void StopMovie(bool saveChanges = true);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void TakeScreenshot();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void TakeScreenshot(string path);
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void TakeScreenshotToClipboard();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void TogglePause();
 
-		/// <remarks>only referenced from <c>EmuClientApi</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void ToggleSound();
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void UnpauseEmulator();
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		event BeforeQuickLoadEventHandler QuicksaveLoad;
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		event BeforeQuickSaveEventHandler QuicksaveSave;
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		event EventHandler RomLoaded;
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		event StateLoadedEventHandler SavestateLoaded;
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		event StateSavedEventHandler SavestateSaved;
 	}
 }
