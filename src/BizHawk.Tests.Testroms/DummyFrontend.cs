@@ -153,7 +153,7 @@ namespace BizHawk.Tests.Testroms
 			CoreAsDebuggable = Core.CanDebug() ? Core.AsDebuggable() : null;
 			CoreAsMemDomains = Core.HasMemoryDomains() ? Core.AsMemoryDomains() : null;
 			_coreAsVP = core.AsVideoProvider();
-			_dispMan = new(_config, core, () => (_coreAsVP!.VirtualWidth, _coreAsVP.VirtualHeight));
+			_dispMan = new(_config, core);
 		}
 
 		public void Dispose()
