@@ -4,27 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public static class ApiManager
 	{
-		private static readonly IReadOnlyList<(Type ImplType, Type InterfaceType, ConstructorInfo Ctor, Type[] CtorTypes)> _apiTypes;
+		private static readonly List<(Type ImplType, Type InterfaceType, ConstructorInfo Ctor, Type[] CtorTypes)> _apiTypes = new();
 
 		static ApiManager()
 		{
-			var list = new List<(Type, Type, ConstructorInfo, Type[])>();
-			foreach (var implType in ReflectionCache_Biz_Cli_Com.Types.Concat(ReflectionCache.Types)
+			foreach (var implType in ReflectionCache_Biz_Cli_Com.Types
 				.Where(t => /*t.IsClass &&*/t.IsSealed)) // small optimisation; api impl. types are all sealed classes
 			{
-				var interfaceType = implType.GetInterfaces().FirstOrDefault(t => typeof(IExternalApi).IsAssignableFrom(t) && t != typeof(IExternalApi));
-				if (interfaceType == null) continue; // if we couldn't determine what it's implementing, then it's not an api impl. type
-				var ctor = implType.GetConstructors().Single();
-				list.Add((implType, interfaceType, ctor, ctor.GetParameters().Select(pi => pi.ParameterType).ToArray()));
+				AddApiType(implType);
 			}
-			_apiTypes = list.ToArray();
+		}
+
+		public static void AddApiType(Type type)
+		{
+			var interfaceType = type.GetInterfaces().FirstOrDefault(t => typeof(IExternalApi).IsAssignableFrom(t) && t != typeof(IExternalApi));
+			if (interfaceType == null) return; // if we couldn't determine what it's implementing, then it's not an api impl. type
+			var ctor = type.GetConstructors().Single();
+			_apiTypes.Add((type, interfaceType, ctor, ctor.GetParameters().Select(pi => pi.ParameterType).ToArray()));
 		}
 
 		private static ApiContainer? _container;
@@ -38,20 +40,21 @@ namespace BizHawk.Client.EmuHawk
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
-			ToolManager toolManager,
+			IToolLoader toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
+			IGameInfo game,
+			IDialogController dialogController)
 		{
 			var avail = new Dictionary<Type, object>
 			{
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,
-				[typeof(IDialogController)] = ((MainForm) mainForm).DialogController,
+				[typeof(IDialogController)] = dialogController,
 				[typeof(DisplayManagerBase)] = displayManager,
 				[typeof(InputManager)] = inputManager,
 				[typeof(IMovieSession)] = movieSession,
-				[typeof(ToolManager)] = toolManager,
+				[typeof(IToolLoader)] = toolManager,
 				[typeof(Config)] = config,
 				[typeof(IEmulator)] = emulator,
 				[typeof(IGameInfo)] = game,
@@ -73,13 +76,14 @@ namespace BizHawk.Client.EmuHawk
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
-			ToolManager toolManager,
+			IToolLoader toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
+			IGameInfo game,
+			IDialogController dialogController)
 		{
 			_container?.Dispose();
-			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game, dialogController);
 			return new BasicApiProvider(_container);
 		}
 
@@ -90,13 +94,14 @@ namespace BizHawk.Client.EmuHawk
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
-			ToolManager toolManager,
+			IToolLoader toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
+			IGameInfo game,
+			IDialogController dialogController)
 		{
 			_luaContainer?.Dispose();
-			_luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			_luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game, dialogController);
 			return _luaContainer;
 		}
 	}

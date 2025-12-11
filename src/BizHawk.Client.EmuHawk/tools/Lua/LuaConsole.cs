@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -149,11 +148,14 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemIcon += LuaListView_QueryItemImage;
 
 			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
-			LuaSandbox.DefaultLogger = WriteToOutputWindow;
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
 		}
 
 		private LuaLibraries LuaImp;
+
+		private ConsoleLuaLibrary _consoleLib;
+
+		private LuaFile _nonFile;
 
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
@@ -188,13 +190,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			List<LuaFile> runningScripts = new();
 
+			ApiContainer apiContainer = ApiManager.RestartLua(
+				Emulator.ServiceProvider,
+				WriteToOutputWindow,
+				MainForm.MainForApi,
+				DisplayManager,
+				InputManager,
+				MovieSession,
+				Tools,
+				Config,
+				Emulator,
+				Game,
+				DialogController);
+
 			// Things we need to do with the existing LuaImp before we can make a new one
 			if (LuaImp is not null)
 			{
 				if (LuaImp.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					LuaImp.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
+					LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
 					return;
 				}
 
@@ -203,23 +218,25 @@ namespace BizHawk.Client.EmuHawk
 				// we don't use runningScripts here as the other scripts need to be stopped too
 				foreach (var file in LuaImp.ScriptList)
 				{
-					DisableLuaScript(file);
+					file.Stop();
 				}
 			}
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
-			LuaFunctionList registeredFuncList = new(onChanged: UpdateRegisteredFunctionsDialog);
 			LuaImp?.Close();
 			LuaImp = new LuaLibraries(
 				newScripts,
-				registeredFuncList,
 				Emulator.ServiceProvider,
-				(MainForm) MainForm, //HACK
-				DisplayManager,
-				InputManager,
+				MainForm.MainForApi,
 				Config,
-				Emulator,
-				Game);
+				WriteToOutputWindow,
+				apiContainer);
+
+			_consoleLib = new ConsoleLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools };
+			LuaImp.AddLibrary(_consoleLib);
+			LuaImp.AddLibrary(new FormsLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { MainForm = MainForm as Form });
+			LuaImp.AddLibrary(new TAStudioLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools });
+			LuaImp.AddLibrary(new GuiLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow));
 
 			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
@@ -228,23 +245,11 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var file in runningScripts)
 			{
-				try
-				{
-					LuaSandbox.Sandbox(file.Thread, () =>
-					{
-						LuaImp.SpawnAndSetFileThread(file.Path, file);
-						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(file.Path));
-						file.State = LuaFile.RunState.Running;
-					}, () =>
-					{
-						file.State = LuaFile.RunState.Disabled;
-					});
-				}
-				catch (Exception ex)
-				{
-					DialogController.ShowMessageBox(ex.ToString());
-				}
+				EnableLuaFile(file);
 			}
+
+			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath(), UpdateRegisteredFunctionsDialog);
+			_nonFile.Start(LuaImp.SpawnBlankCoroutineAndSandbox(null));
 
 			UpdateDialog();
 		}
@@ -339,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var luaFile = new LuaFile("", absolutePath);
+				var luaFile = new LuaFile(absolutePath, UpdateRegisteredFunctionsDialog);
 
 				LuaImp.ScriptList.Add(luaFile);
 				LuaListView.RowCount = LuaImp.ScriptList.Count;
@@ -347,12 +352,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!Settings.DisableLuaScriptsOnLoad)
 				{
-					luaFile.State = LuaFile.RunState.Running;
 					EnableLuaFile(luaFile);
-				}
-				else
-				{
-					luaFile.State = LuaFile.RunState.Disabled;
 				}
 
 				if (Settings.ReloadOnScriptFileChange)
@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!item.IsSeparator)
 			{
-				DisableLuaScript(item);
+				item.Stop();
 				RemoveFileWatcher(item);
 			}
 			LuaImp.ScriptList.Remove(item);
@@ -524,13 +524,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RemoveAllLuaFiles();
 
-			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad);
+			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad, UpdateRegisteredFunctionsDialog);
 
 			foreach (var script in LuaImp.ScriptList)
 			{
 				if (!script.IsSeparator)
 				{
-					if (script.Enabled)
+					if (script.State == LuaFile.RunState.AwaitingStart)
 					{
 						EnableLuaFile(script);
 					}
@@ -613,56 +613,18 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (LuaImp.ScriptList.Count is 0
-				|| LuaImp.IsUpdateSupressed
-				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
+			if (MainForm.IsTurboing && !Config.RunLuaDuringTurbo)
 			{
 				return;
 			}
 
-			foreach (var lf in LuaImp.ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
+			bool anyStopped = LuaImp.ResumeScripts(includeFrameWaiters);
+			if (anyStopped)
 			{
-				try
-				{
-					LuaSandbox.Sandbox(lf.Thread, () =>
-					{
-						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
-						if (!prohibit)
-						{
-							var (waitForFrame, terminated) = LuaImp.ResumeScript(lf);
-							if (terminated)
-							{
-								LuaImp.CallExitEvent(lf);
-								lf.Stop();
-								DetachRegisteredFunctions(lf);
-								UpdateDialog();
-							}
-
-							lf.FrameWaiting = waitForFrame;
-						}
-					}, () =>
-					{
-						lf.Stop();
-						DetachRegisteredFunctions(lf);
-						LuaListView.Refresh();
-					});
-				}
-				catch (Exception ex)
-				{
-					DialogController.ShowMessageBox(ex.ToString());
-				}
+				UpdateDialog();
 			}
 
 			_messageCount = 0;
-		}
-
-		private void DetachRegisteredFunctions(LuaFile lf)
-		{
-			foreach (var nlf in LuaImp.RegisteredFunctions
-				.Where(f => f.LuaFile == lf))
-			{
-				nlf.DetachFromScript();
-			}
 		}
 
 		private FileInfo GetSaveFileFromUser()
@@ -733,7 +695,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
-				form.UpdateValues(LuaImp.RegisteredFunctions);
+				form.UpdateValues(LuaImp.ScriptList);
 			}
 		}
 
@@ -814,7 +776,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Count is not 0;
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
-			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
+			RegisteredFunctionsMenuItem.Enabled = true;
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
@@ -857,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			File.Copy(sourceFileName: templatePath, destFileName: result, overwrite: true);
-			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
+			LuaImp.ScriptList.Add(new LuaFile(result, UpdateRegisteredFunctionsDialog));
 			Config!.RecentLua.Add(result);
 			UpdateDialog();
 			Process.Start(new ProcessStartInfo
@@ -903,20 +865,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				LuaSandbox.Sandbox(null, () =>
-				{
-					LuaImp.SpawnAndSetFileThread(item.Path, item);
-					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(item.Path));
-				}, () =>
-				{
-					item.State = LuaFile.RunState.Disabled;
-				});
-
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				item.Start(LuaImp.SpawnCoroutineAndSandbox(item.Path));
 			}
 			catch (IOException)
 			{
-				item.State = LuaFile.RunState.Disabled;
+				item.Stop();
 				WriteLine($"Unable to access file {item.Path}");
 			}
 			catch (Exception ex)
@@ -987,7 +940,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result is null) return;
 				string text = File.ReadAllText(script.Path);
 				File.WriteAllText(result, text);
-				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
+				LuaImp.ScriptList.Add(new LuaFile(result, UpdateRegisteredFunctionsDialog));
 				Config!.RecentLua.Add(result);
 				UpdateDialog();
 				Process.Start(new ProcessStartInfo
@@ -1069,32 +1022,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var file in LuaImp.ScriptList)
 			{
-				DisableLuaScript(file);
+				file.Stop();
 			}
 			UpdateDialog();
 		}
 
 		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaImp.RegisteredFunctions.Count is not 0)
+			var alreadyOpen = false;
+			foreach (Form form in Application.OpenForms)
 			{
-				var alreadyOpen = false;
-				foreach (Form form in Application.OpenForms)
+				if (form is LuaRegisteredFunctionsList)
 				{
-					if (form is LuaRegisteredFunctionsList)
-					{
-						alreadyOpen = true;
-						form.Activate();
-					}
+					alreadyOpen = true;
+					form.Activate();
 				}
+			}
 
-				if (!alreadyOpen)
+			if (!alreadyOpen)
+			{
+				new LuaRegisteredFunctionsList((MainForm) MainForm, LuaImp.ScriptList)
 				{
-					new LuaRegisteredFunctionsList((MainForm) MainForm, LuaImp.RegisteredFunctions)
-					{
-						StartLocation = this.ChildPointToScreen(LuaListView),
-					}.Show();
-				}
+					StartLocation = this.ChildPointToScreen(LuaListView),
+				}.Show();
 			}
 		}
 
@@ -1205,13 +1155,13 @@ namespace BizHawk.Client.EmuHawk
 				ScriptContextSeparator.Visible =
 				LuaImp.ScriptList.Exists(file => file.Enabled);
 
-			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Count is not 0;
+			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.ScriptList.Any(lf => lf.Functions.Count != 0);
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = ClearRegisteredFunctionsLogContextItem.Enabled
-				= LuaImp.RegisteredFunctions.Count is not 0;
+				= LuaImp.ScriptList.Any(lf => lf.Functions.Count != 0);
 			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
 			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 		}
@@ -1244,7 +1194,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
-			=> LuaImp.RegisteredFunctions.Clear();
+		{
+			foreach (LuaFile lf in LuaImp.ScriptList)
+				lf.Functions.Clear();
+		}
 
 		public bool LoadByFileExtension(string path, out bool abort)
 		{
@@ -1323,36 +1276,25 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			var columnToSort = e.Column!.Name;
-			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{
 				_sortReverse = false;
 			}
 
-			// For getting the name of the .lua file, for some reason this field is kept blank in LuaFile.cs?
-			// The Name variable gets emptied again near the end just in case it would break something.
-			for (var i = 0; i < LuaImp.ScriptList.Count; i++)
-			{
-				var words = Regex.Split(LuaImp.ScriptList[i].Path, ".lua");
-				var split = words[0].Split(Path.DirectorySeparatorChar);
-
-				luaListTemp.Add(LuaImp.ScriptList[i]);
-				luaListTemp[i].Name = split[split.Length - 1];
-			}
-
 			// Script, Path
+			List<LuaFile> luaListTemp;
 			switch (columnToSort)
 			{
 				case "Script":
-					luaListTemp = luaListTemp
-						.OrderBy(lf => lf.Name, _sortReverse)
+					luaListTemp = LuaImp.ScriptList
+						.OrderBy(lf => Path.GetFileNameWithoutExtension(lf.Path), _sortReverse)
 						.ThenBy(lf => lf.Path)
 						.ToList();
 					break;
-				case "PathName":
-					luaListTemp = luaListTemp
+				default: // case "PathName":
+					luaListTemp = LuaImp.ScriptList
 						.OrderBy(lf => lf.Path, _sortReverse)
-						.ThenBy(lf => lf.Name)
+						.ThenBy(lf => Path.GetFileNameWithoutExtension(lf.Path))
 						.ToList();
 					break;
 			}
@@ -1360,7 +1302,6 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < LuaImp.ScriptList.Count; i++)
 			{
 				LuaImp.ScriptList[i] = luaListTemp[i];
-				LuaImp.ScriptList[i].Name = "";
 			}
 
 			UpdateDialog();
@@ -1393,7 +1334,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					LuaSandbox.Sandbox(null, () =>
+					LuaImp.Sandbox(_nonFile, () =>
 					{
 						var prevMessageCount = _messageCount;
 						var results = LuaImp.ExecuteString(rawCommand);
@@ -1402,7 +1343,7 @@ namespace BizHawk.Client.EmuHawk
 						// if output didn't change, Print will take care of writing out "(no return)"
 						if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
 						{
-							LuaLibraries.Print(results);
+							_consoleLib.Log(results);
 						}
 					});
 
@@ -1494,34 +1435,17 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			file.Toggle();
 			_lastScriptUsed = file;
-			if (file.Enabled && file.Thread is null)
+			if (file.Enabled)
 			{
-				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
-				EnableLuaFile(file);
+				file.Stop();
 			}
-			else if (!file.Enabled && file.Thread is not null)
+			else
 			{
-				DisableLuaScript(file);
-				// there used to be a call here which did a redraw of the Gui/OSD, which included a call to `Tools.UpdateToolsAfter` --yoshi
+				EnableLuaFile(file);
 			}
 
 			LuaListView.Refresh();
-		}
-
-		private void DisableLuaScript(LuaFile file)
-		{
-			if (file.IsSeparator) return;
-
-			file.State = LuaFile.RunState.Disabled;
-
-			if (file.Thread is not null)
-			{
-				LuaImp.CallExitEvent(file);
-				LuaImp.RegisteredFunctions.RemoveForFile(file);
-				file.Stop();
-			}
 		}
 
 		private void RefreshLuaScript(LuaFile file)
