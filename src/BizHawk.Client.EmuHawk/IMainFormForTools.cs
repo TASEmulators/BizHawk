@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>referenced by 3 or more tools</remarks>
 		string CurrentlyOpenRom { get; }
 
-		/// <remarks>only referenced from <see cref="HexEditor"/></remarks>
+		/// <remarks>referenced from <see cref="HexEditor"/> and RetroAchievements</remarks>
 		LoadRomArgs CurrentlyOpenRomArgs { get; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		bool LoadQuickSave(int slot, bool suppressOSD = false);
 
-		/// <remarks>only referenced from <see cref="MultiDiskBundler"/></remarks>
+		/// <remarks>referenced from <see cref="MultiDiskBundler"/> and RetroAchievements</remarks>
 		bool LoadRom(string path, LoadRomArgs args);
 
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="BookmarksBranchesBox"/></remarks>
 		void UpdateStatusSlots();
 
-		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		/// <remarks>referenced from <see cref="TAStudio"/> and RetroAchievements</remarks>
 		void UpdateWindowTitle();
 	}
 }
