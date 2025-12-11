@@ -709,7 +709,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!LoadLuaSession(path))
 				{
-					Config.RecentLuaSession.HandleLoadError(MainForm, path);
+					Config.RecentLuaSession.HandleLoadError(this, path: path);
 				}
 			}
 		}

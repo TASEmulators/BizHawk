@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = _watches.Load(path, append: false);
 				if (!loadResult)
 				{
-					Config.RecentWatches.HandleLoadError(MainForm, path);
+					Config.RecentWatches.HandleLoadError(this, path: path);
 				}
 				else
 				{

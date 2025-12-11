@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = MainForm.CheatList.Load(Core, path, append: false);
 				if (!loadResult)
 				{
-					Config.Cheats.Recent.HandleLoadError(MainForm, path);
+					Config.Cheats.Recent.HandleLoadError(this, path: path);
 				}
 				else
 				{

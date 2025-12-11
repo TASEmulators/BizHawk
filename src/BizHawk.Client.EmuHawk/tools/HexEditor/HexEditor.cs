@@ -1330,7 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = LoadTable(path);
 			if (!result)
 			{
-				RecentTables.HandleLoadError(MainForm, path);
+				RecentTables.HandleLoadError(this, path: path);
 			}
 			else
 			{

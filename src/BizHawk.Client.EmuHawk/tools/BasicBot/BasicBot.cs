@@ -562,7 +562,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = LoadBotFile(path);
 			if (!result && !File.Exists(path))
 			{
-				Settings.RecentBotFiles.HandleLoadError(MainForm, path);
+				Settings.RecentBotFiles.HandleLoadError(this, path: path);
 			}
 		}
 

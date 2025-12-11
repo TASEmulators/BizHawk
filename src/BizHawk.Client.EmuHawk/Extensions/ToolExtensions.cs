@@ -210,13 +210,20 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			return items.ToArray();
 		}
 
-		public static void HandleLoadError(this RecentFiles recent, IMainFormForTools mainForm, string path, string encodedPath = null)
+		public static void HandleLoadError(
+			this RecentFiles recent,
+			IDialogParent dialogParent,
+			string path,
+			string encodedPath = null)
 		{
-			mainForm.DoWithTempMute(() =>
+			dialogParent.DialogController.DoWithTempMute(() =>
 			{
 				if (recent.Frozen)
 				{
-					mainForm.ShowMessageBox($"Could not open {path}", "File not found", EMsgBoxIcon.Error);
+					dialogParent.ModalMessageBox(
+						caption: "File not found",
+						icon: EMsgBoxIcon.Error,
+						text: $"Could not open {path}");
 				}
 				else
 				{

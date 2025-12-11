@@ -694,7 +694,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!File.Exists(path))
 			{
-				Settings.RecentTas.HandleLoadError(MainForm, path);
+				Settings.RecentTas.HandleLoadError(this, path: path);
 			}
 			else
 			{

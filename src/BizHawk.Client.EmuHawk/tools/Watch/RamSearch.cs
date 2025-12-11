@@ -571,7 +571,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!file.Exists)
 			{
-				Settings.RecentSearches.HandleLoadError(MainForm, path);
+				Settings.RecentSearches.HandleLoadError(this, path: path);
 			}
 			else
 			{
