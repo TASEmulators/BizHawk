@@ -157,6 +157,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private LuaLibraries LuaImp;
 
+		private ConsoleLuaLibrary _consoleLib;
+
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
 		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);
@@ -231,9 +233,13 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.ServiceProvider,
 				MainFormForApi,
 				Config,
-				Tools,
+				WriteToOutputWindow,
 				(IDialogParent)MainForm, // not sure why neither main form interface implements IDialogParent, but our MainForm class does
 				apiContainer);
+			_consoleLib = new ConsoleLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools };
+			LuaImp.AddLibrary(_consoleLib);
+			LuaImp.AddLibrary(new FormsLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { OwnerForm = (IDialogParent)MainForm });
+			LuaImp.AddLibrary(new TAStudioLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools });
 
 			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
@@ -1416,7 +1422,7 @@ namespace BizHawk.Client.EmuHawk
 						// if output didn't change, Print will take care of writing out "(no return)"
 						if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
 						{
-							LuaLibraries.Print(results);
+							_consoleLib.Log(results);
 						}
 					});
 
