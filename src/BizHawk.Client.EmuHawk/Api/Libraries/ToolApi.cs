@@ -8,6 +8,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ToolApi : IToolApi
 	{
+		static ToolApi()
+		{
+			ApiManager.AddApiType(typeof(ToolApi));
+		}
+
 		private readonly IToolLoader _toolLoader;
 
 		public IEnumerable<Type> AvailableTools => _toolLoader.AvailableTools.ToList(); // defensive copy in case ToolManager's implementation changes
