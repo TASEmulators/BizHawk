@@ -155,6 +155,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private LuaLibraries LuaImp;
 
+		private ConsoleLuaLibrary _consoleLib;
+
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
 		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);
@@ -188,13 +190,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			List<LuaFile> runningScripts = new();
 
+			ApiContainer apiContainer = ApiManager.RestartLua(
+				Emulator.ServiceProvider,
+				WriteToOutputWindow,
+				MainForm.MainForApi,
+				DisplayManager,
+				InputManager,
+				MovieSession,
+				Tools,
+				Config,
+				Emulator,
+				Game,
+				DialogController);
+
 			// Things we need to do with the existing LuaImp before we can make a new one
 			if (LuaImp is not null)
 			{
 				if (LuaImp.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					LuaImp.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
+					LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
 					return;
 				}
 
@@ -215,14 +230,14 @@ namespace BizHawk.Client.EmuHawk
 				registeredFuncList,
 				Emulator.ServiceProvider,
 				MainForm.MainForApi,
-				DisplayManager,
-				InputManager,
 				Config,
-				Emulator,
-				Game,
-				MovieSession,
-				Tools,
-				DialogController);
+				WriteToOutputWindow,
+				apiContainer);
+
+			_consoleLib = new ConsoleLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools };
+			LuaImp.AddLibrary(_consoleLib);
+			LuaImp.AddLibrary(new FormsLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { MainForm = MainForm as Form });
+			LuaImp.AddLibrary(new TAStudioLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools });
 
 			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
@@ -1405,7 +1420,7 @@ namespace BizHawk.Client.EmuHawk
 						// if output didn't change, Print will take care of writing out "(no return)"
 						if (results is not ([ ] or [ null ]) || _messageCount == prevMessageCount)
 						{
-							LuaLibraries.Print(results);
+							_consoleLib.Log(results);
 						}
 					});
 
