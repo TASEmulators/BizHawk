@@ -76,6 +76,8 @@ namespace BizHawk.Client.EmuHawk
 			ToolTipText = "Rewinder is capturing states",
 		};
 
+		public IMainFormForApi MainForApi => this;
+
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();

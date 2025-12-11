@@ -214,12 +214,15 @@ namespace BizHawk.Client.EmuHawk
 				newScripts,
 				registeredFuncList,
 				Emulator.ServiceProvider,
-				(MainForm) MainForm, //HACK
+				MainForm.MainForApi,
 				DisplayManager,
 				InputManager,
 				Config,
 				Emulator,
-				Game);
+				Game,
+				MovieSession,
+				Tools,
+				DialogController);
 
 			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)

@@ -68,7 +68,8 @@ namespace BizHawk.Client.EmuHawk
 				this,
 				_config,
 				_emulator,
-				_game);
+				_game,
+				_owner.DialogController);
 
 		/// <summary>
 		/// Loads the tool dialog T (T must implements <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
