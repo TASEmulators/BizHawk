@@ -336,6 +336,57 @@ namespace BizHawk.Client.Common
 		public void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
 			=> lf.Thread = SpawnCoroutine(pathToLoad);
 
+		/// <summary>
+		/// resumes suspended scripts
+		/// </summary>
+		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
+		/// <returns>true if any script stopped</returns>
+		public bool ResumeScripts(bool includeFrameWaiters)
+		{
+			if (ScriptList.Count == 0 || IsUpdateSupressed)
+			{
+				return false;
+			}
+
+			bool anyStopped = false;
+			foreach (var lf in ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
+			{
+				LuaSandbox.Sandbox(lf.Thread, () =>
+				{
+					var prohibit = lf.FrameWaiting && !includeFrameWaiters;
+					if (!prohibit)
+					{
+						var (waitForFrame, terminated) = ResumeScript(lf);
+						if (terminated)
+						{
+							anyStopped = true;
+							CallExitEvent(lf);
+							lf.Stop();
+							DetachRegisteredFunctions(lf);
+						}
+
+						lf.FrameWaiting = waitForFrame;
+					}
+				}, () =>
+				{
+					anyStopped = true;
+					lf.Stop();
+					DetachRegisteredFunctions(lf);
+				});
+			}
+
+			return anyStopped;
+		}
+
+		private void DetachRegisteredFunctions(LuaFile lf)
+		{
+			foreach (var nlf in RegisteredFunctions
+				.Where(f => f.LuaFile == lf))
+			{
+				nlf.DetachFromScript();
+			}
+		}
+
 		public object[] ExecuteString(string command)
 		{
 			const string ChunkName = "input"; // shows up in error messages
