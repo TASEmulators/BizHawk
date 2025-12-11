@@ -634,56 +634,26 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (LuaImp.ScriptList.Count is 0
-				|| LuaImp.IsUpdateSupressed
-				|| (MainForm.IsTurboing && !Config.RunLuaDuringTurbo))
+			if (MainForm.IsTurboing && !Config.RunLuaDuringTurbo)
 			{
 				return;
 			}
 
-			foreach (var lf in LuaImp.ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running && lf.Thread is not null))
+			try
 			{
-				try
+				bool anyStopped = LuaImp.ResumeScripts(includeFrameWaiters);
+				if (anyStopped)
 				{
-					LuaSandbox.Sandbox(lf.Thread, () =>
-					{
-						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
-						if (!prohibit)
-						{
-							var (waitForFrame, terminated) = LuaImp.ResumeScript(lf);
-							if (terminated)
-							{
-								LuaImp.CallExitEvent(lf);
-								lf.Stop();
-								DetachRegisteredFunctions(lf);
-								UpdateDialog();
-							}
-
-							lf.FrameWaiting = waitForFrame;
-						}
-					}, () =>
-					{
-						lf.Stop();
-						DetachRegisteredFunctions(lf);
-						LuaListView.Refresh();
-					});
+					UpdateDialog();
 				}
-				catch (Exception ex)
-				{
-					DialogController.ShowMessageBox(ex.ToString());
-				}
+			}
+			catch (Exception ex)
+			{
+				DialogController.ShowMessageBox(ex.ToString());
+				UpdateDialog();
 			}
 
 			_messageCount = 0;
-		}
-
-		private void DetachRegisteredFunctions(LuaFile lf)
-		{
-			foreach (var nlf in LuaImp.RegisteredFunctions
-				.Where(f => f.LuaFile == lf))
-			{
-				nlf.DetachFromScript();
-			}
 		}
 
 		private FileInfo GetSaveFileFromUser()
