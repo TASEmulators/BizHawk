@@ -8,12 +8,11 @@ using System.Threading;
 using NLua;
 using NLua.Native;
 
-using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public class LuaLibraries : ILuaLibraries
 	{
