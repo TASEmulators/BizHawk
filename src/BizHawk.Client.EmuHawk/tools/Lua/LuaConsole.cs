@@ -50,6 +50,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public ToolDialogSettings.ColumnList Columns { get; set; }
 
+		[RequiredService]
+		private new IMainFormForApiInit MainForm { get; set; }
+
 		public class LuaConsoleSettings
 		{
 			public LuaConsoleSettings()
@@ -214,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				newScripts,
 				registeredFuncList,
 				Emulator.ServiceProvider,
-				(MainForm) MainForm, //HACK
+				MainForm,
 				DisplayManager,
 				InputManager,
 				Config,

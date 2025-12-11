@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaFileList scriptList,
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
-			MainForm mainForm,
+			IMainFormForApiInit mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			Config config,
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly InputManager _inputManager;
 
-		private readonly MainForm _mainForm;
+		private readonly IMainFormForApiInit _mainForm;
 
 		private Lua _lua = new();
 		private LuaThread _currThread;

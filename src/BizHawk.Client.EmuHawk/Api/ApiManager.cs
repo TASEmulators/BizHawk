@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		private static ApiContainer Register(
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback,
-			IMainFormForApi mainForm,
+			IMainFormForApiInit mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,
-				[typeof(IDialogController)] = ((MainForm) mainForm).DialogController,
+				[typeof(IDialogController)] = mainForm.DialogController,
 				[typeof(DisplayManagerBase)] = displayManager,
 				[typeof(InputManager)] = inputManager,
 				[typeof(IMovieSession)] = movieSession,
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IExternalApiProvider Restart(
 			IEmulatorServiceProvider serviceProvider,
-			IMainFormForApi mainForm,
+			IMainFormForApiInit mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 		public static ApiContainer RestartLua(
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback,
-			IMainFormForApi mainForm,
+			IMainFormForApiInit mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,

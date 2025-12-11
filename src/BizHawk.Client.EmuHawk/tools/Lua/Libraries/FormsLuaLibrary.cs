@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public FormsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
-		public Form MainForm { get; set; }
+		public IDialogParent MainForm { get; set; }
 
 		public override string Name => "forms";
 
@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 			form.MaximizeBox = false;
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
-			form.Owner = MainForm;
+			form.Owner = (Form) MainForm;
 			form.Show();
 
 			form.FormClosed += (o, e) =>
@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 			string filter = null)
 		{
 			if (initialDirectory is null && fileName is not null) initialDirectory = Path.GetDirectoryName(fileName);
-			var result = ((IDialogParent) MainForm).ShowFileOpenDialog(
+			var result = MainForm.ShowFileOpenDialog(
 				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
 				initDir: initialDirectory ?? PathEntries.LuaAbsolutePath(),
 				initFileName: fileName);
