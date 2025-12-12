@@ -264,6 +264,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private bool? TasView_QueryShouldSelect(MouseButtons button)
+		{
+			if (AxisEditingMode)
+			{
+				if (ModifierKeys == Keys.Shift || ModifierKeys == Keys.Control)
+				{
+					// This just makes it easier to select multiple rows with axis editing mode, by allowing multiple row selection when clicking columns that aren't the frame column.
+					return true;
+				}
+				else if (TasView.CurrentCell.Column.Name == AxisEditColumn && TasView.IsRowSelected(TasView.CurrentCell.RowIndex.Value))
+				{
+					// We will start editing via mouse, so don't unselect if we have multiple selected rows.
+					return false;
+				}
+			}
+
+			return null;
+		}
+
 		private readonly string[] _formatCache = Enumerable.Range(1, 10).Select(i => $"D{i}").ToArray();
 
 		/// <returns><paramref name="index"/> with leading zeroes such that every frame in the movie will be printed with the same number of digits</returns>
