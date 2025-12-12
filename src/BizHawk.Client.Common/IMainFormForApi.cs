@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsSeeking { get; }
 
-		/// <remarks>referenced from <see cref="EmuClientApi"/> and <c>LuaConsole</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsTurboing { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
 
 		/// <param name="forceWindowResize">Override <see cref="Common.Config.ResizeWithFramebuffer"/></param>
-		/// <remarks>referenced from <see cref="EmuClientApi"/> and <c>LuaConsole</c></remarks>
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void FrameBufferResized(bool forceWindowResize = false);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
