@@ -18,7 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		private string _startAxisDrawColumn = "";
 		private bool _boolPaintState;
 		private int _axisPaintState;
-		private int _axisBackupState;
 		private bool _patternPaint;
 		private bool _startCursorDrag;
 		private bool _startSelectionDrag;
@@ -29,22 +28,39 @@ namespace BizHawk.Client.EmuHawk
 		private bool _batchEditing;
 
 		// Editing analog input
-		private string _axisEditColumn = "";
-		private int _axisEditRow = -1;
-		private string _axisTypedValue;
-		private int _axisEditYPos = -1;
-		private int AxisEditRow
+		private string/*?*/ __axisEditColumn = null; // __ do not access directly
+		private string/*?*/ AxisEditColumn
 		{
+			get => __axisEditColumn;
 			set
 			{
-				_axisEditRow = value;
-				TasView.SuspendHotkeys = AxisEditingMode;
+				__axisEditColumn = value;
+				_axisEditYPos = -1;
+
+				if (AxisEditingMode)
+				{
+					_axisTypedValue = "";
+					_didAxisType = false;
+					TasView.SuspendHotkeys = true;
+				}
+				else
+				{
+					if (_didAxisType)
+					{
+						_didAxisType = false;
+						CurrentTasMovie.ChangeLog.EndBatch();
+					}
+					TasView.SuspendHotkeys = false;
+				}
 			}
 		}
 
-		public bool AxisEditingMode => _axisEditRow != -1;
+		private string _axisTypedValue = "";
+		private bool _didAxisType;
+		private int _axisEditYPos = -1;
+		private bool _exitAxisEditingOnMouseUp;
 
-		private readonly List<int> _extraAxisRows = new List<int>();
+		public bool AxisEditingMode => AxisEditColumn != null;
 
 		// Right-click dragging
 		private string[] _rightClickInput;
@@ -189,9 +205,7 @@ namespace BizHawk.Client.EmuHawk
 					color = Color.FromArgb(0x60, 0xFF, 0xFF, 0xFF);
 				}
 			}
-			else if (AxisEditingMode
-				&& (index == _axisEditRow || _extraAxisRows.Contains(index))
-				&& columnName == _axisEditColumn)
+			else if (columnName == AxisEditColumn && TasView.IsRowSelected(index))
 			{
 				color = Palette.AnalogEdit_Col;
 			}
@@ -294,12 +308,9 @@ namespace BizHawk.Client.EmuHawk
 				else if (column.Type is ColumnType.Boolean or ColumnType.Axis)
 				{
 					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
-					if ((index == _axisEditRow || _extraAxisRows.Contains(index))
-						&& columnName == _axisEditColumn)
+					if (columnName == AxisEditColumn && TasView.IsRowSelected(index) && _didAxisType)
 					{
-						text = _axisTypedValue.Length == 0
-							? _axisBackupState.ToString()
-							: _axisTypedValue;
+						text = _axisTypedValue;
 					}
 					else if (index < CurrentTasMovie.InputLogLength)
 					{
@@ -512,37 +523,27 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_leftButtonHeld = true;
 
-				// SuuperW: Exit axis editing mode, or re-enter mouse editing
 				if (AxisEditingMode)
 				{
 					if (ModifierKeys is Keys.Control or Keys.Shift)
 					{
-						_extraAxisRows.Clear();
-						_extraAxisRows.AddRange(TasView.SelectedRows);
+						// Begin selecting rows.
 						_startSelectionDrag = true;
 						_selectionDragState = TasView.IsRowSelected(frame);
 						return;
 					}
 
-					if (_axisEditColumn != buttonName
-						|| !(_axisEditRow == frame || _extraAxisRows.Contains(frame)))
+					if (AxisEditColumn != buttonName|| !TasView.IsRowSelected(frame))
 					{
-						_extraAxisRows.Clear();
-						AxisEditRow = -1;
+						// Exit axis editing mode
+						AxisEditColumn = null;
 						SetTasViewRowCount();
 					}
 					else
 					{
-						if (_extraAxisRows.Contains(frame))
-						{
-							_extraAxisRows.Clear();
-							AxisEditRow = frame;
-							SetTasViewRowCount();
-						}
-
+						// Begin axis edit via mouse
 						_axisEditYPos = e.Y;
-						_axisPaintState = CurrentTasMovie.GetAxisState(frame, buttonName);
-
+						_exitAxisEditingOnMouseUp = true;
 						return;
 					}
 				}
@@ -652,18 +653,18 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else // Double-click enters axis editing mode
 						{
-							if (_axisEditColumn == buttonName && _axisEditRow == frame)
+							if (AxisEditColumn != null && (AxisEditColumn != buttonName || !TasView.IsRowSelected(frame)))
 							{
-								AxisEditRow = -1;
+								AxisEditColumn = null;
 							}
 							else
 							{
 								CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis Edit: {frame}");
-								_axisEditColumn = buttonName;
-								AxisEditRow = frame;
+								AxisEditColumn = buttonName;
 								_axisTypedValue = "";
+								_didAxisType = false;
 								_axisEditYPos = e.Y;
-								_axisBackupState = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
+								_exitAxisEditingOnMouseUp = false;
 							}
 
 							RefreshDialog();
@@ -875,9 +876,10 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ReleaseCurrentCell();
 
 			// Exit axis editing if value was changed with cursor
-			if (AxisEditingMode && _axisPaintState != CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn))
+			if (AxisEditingMode && _exitAxisEditingOnMouseUp)
 			{
-				AxisEditRow = -1;
+				AxisEditColumn = null;
+				RefreshDialog();
 			}
 			_axisPaintState = 0;
 			_axisEditYPos = -1;
@@ -1070,10 +1072,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (!TasView.IsRowSelected(i))
 						TasView.SelectRow(i, _selectionDragState);
-					if (AxisEditingMode && ModifierKeys is Keys.Control or Keys.Shift)
-					{
-						_extraAxisRows.SetMembership(i, shouldBeMember: _selectionDragState);
-					}
 				}
 
 				SetSplicer();
@@ -1266,19 +1264,15 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
 		{
 			// For axis editing
-			if (AxisEditingMode)
+			if (_axisEditYPos == -1)
 			{
-				int increment = (_axisEditYPos - e.Y) / 4;
-				if (_axisEditYPos == -1)
-				{
-					return;
-				}
-
-				var value = (_axisPaintState + increment).ConstrainWithin(ControllerType.Axes[_axisEditColumn].Range);
-				CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
-				_axisTypedValue = value.ToString();
-				RefreshDialog();
+				return;
 			}
+
+			int increment = (_axisEditYPos - e.Y) / 4;
+			AnalogChangeBy(increment);
+			_axisEditYPos -= increment * 4;
+			if (increment != 0) _exitAxisEditingOnMouseUp = true;
 		}
 
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
@@ -1288,50 +1282,63 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AnalogIncrementByOne()
 		{
-			if (AxisEditingMode)
-			{
-				EditAnalogProgrammatically(new KeyEventArgs(Keys.Up));
-			}
+			AnalogChangeBy(1);
 		}
 
 		public void AnalogDecrementByOne()
 		{
-			if (AxisEditingMode)
-			{
-				EditAnalogProgrammatically(new KeyEventArgs(Keys.Down));
-			}
+			AnalogChangeBy(-1);
 		}
 
 		public void AnalogIncrementByTen()
 		{
-			if (AxisEditingMode)
-			{
-				EditAnalogProgrammatically(new KeyEventArgs(Keys.Up | Keys.Shift));
-			}
+			AnalogChangeBy(10);
 		}
 
 		public void AnalogDecrementByTen()
 		{
-			if (AxisEditingMode)
+			AnalogChangeBy(-10);
+		}
+
+		private void AnalogChangeBy(int change)
+		{
+			if (!AxisEditingMode) return;
+
+			Console.WriteLine($"Axis change by {change}");
+			foreach (int frame in TasView.SelectedRows)
 			{
-				EditAnalogProgrammatically(new KeyEventArgs(Keys.Down | Keys.Shift));
+				int value = CurrentTasMovie.GetAxisState(frame, AxisEditColumn) + change;
+				value = value.ConstrainWithin(ControllerType.Axes[AxisEditColumn].Range);
+				CurrentTasMovie.SetAxisState(frame, AxisEditColumn, value);
+				_axisTypedValue = value.ToString(); // Typing with multiple rows selected has undefined behavior if the values do not all match.
 			}
+			RefreshDialog();
 		}
 
 		public void AnalogMax()
 		{
-			if (AxisEditingMode)
+			if (!AxisEditingMode) return;
+
+			int value = ControllerType.Axes[AxisEditColumn].Max;
+			foreach (int frame in TasView.SelectedRows)
 			{
-				EditAnalogProgrammatically(new KeyEventArgs(Keys.Right));
+				CurrentTasMovie.SetAxisState(frame, AxisEditColumn, value);
 			}
+			_axisTypedValue = value.ToString();
+			RefreshDialog();
 		}
 
 		public void AnalogMin()
 		{
-			if (AxisEditingMode)
+			if (!AxisEditingMode) return;
+
+			int value = ControllerType.Axes[AxisEditColumn].Min;
+			foreach (int frame in TasView.SelectedRows)
 			{
-				EditAnalogProgrammatically(new KeyEventArgs(Keys.Left));
+				CurrentTasMovie.SetAxisState(frame, AxisEditColumn, value);
 			}
+			_axisTypedValue = value.ToString();
+			RefreshDialog();
 		}
 
 		public void EditAnalogProgrammatically(KeyEventArgs e)
@@ -1344,10 +1351,9 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: properly handle axis editing batches
 			BeginBatchEdit();
 
-			int value = CurrentTasMovie.GetAxisState(_axisEditRow, _axisEditColumn);
 			string prevTyped = _axisTypedValue;
 
-			var range = ControllerType.Axes[_axisEditColumn];
+			var range = ControllerType.Axes[AxisEditColumn];
 
 			// feos: typing past max digits overwrites existing value, not touching the sign
 			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
@@ -1365,17 +1371,7 @@ namespace BizHawk.Client.EmuHawk
 				curMinus = "";
 			}
 
-			if (e.KeyCode == Keys.Right)
-			{
-				value = range.Max;
-				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
-			}
-			else if (e.KeyCode == Keys.Left)
-			{
-				value = range.Min;
-				_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
-			}
-			else if (e.KeyCode is >= Keys.D0 and <= Keys.D9)
+			if (e.KeyCode is >= Keys.D0 and <= Keys.D9)
 			{
 				if (curDigits >= maxDigits)
 				{
@@ -1401,81 +1397,54 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
-				if (_axisTypedValue.Length is 0) // Very first key press is backspace?
+				if (!_didAxisType)
 				{
-					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
+					_axisTypedValue = CurrentTasMovie.GetAxisState(TasView.SelectedRows.First(), AxisEditColumn).ToString();
+					_didAxisType = true;
 				}
-
-				_axisTypedValue = _axisTypedValue.Substring(startIndex: 0, length: _axisTypedValue.Length - 1); // drop last char
-				if (!int.TryParse(_axisTypedValue, out value)) value = 0;
+				if (_axisTypedValue.Length != 0)
+				{
+					_axisTypedValue = _axisTypedValue.Substring(startIndex: 0, length: _axisTypedValue.Length - 1); // drop last char
+				}
 			}
 			else if (e.KeyCode == Keys.Enter)
 			{
-				_axisEditYPos = -1;
-				AxisEditRow = -1;
+				AxisEditColumn = null;
 			}
 			else if (e.KeyCode == Keys.Escape)
 			{
-				_axisEditYPos = -1;
-
-				if (_axisBackupState != _axisPaintState)
-				{
-					CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, _axisBackupState);
-				}
-
-				AxisEditRow = -1;
-			}
-			else
-			{
-				int changeBy = 0;
-				if (e.KeyCode == Keys.Up)
-				{
-					changeBy = 1;
-				}
-				else if (e.KeyCode == Keys.Down)
-				{
-					changeBy = -1;
-				}
-
-				if (e.Modifiers == Keys.Shift)
-				{
-					changeBy *= 10;
-				}
-
-				value += changeBy;
-				if (changeBy != 0)
-				{
-					_axisTypedValue = value.ToString(NumberFormatInfo.InvariantInfo);
-				}
+				AxisEditColumn = null;
+				CurrentTasMovie.ChangeLog.Undo(); // TODO: Only do this if we've actually done something!
 			}
 
 			if (!AxisEditingMode)
 			{
 				CurrentTasMovie.ChangeLog.EndBatch();
 			}
-			else
+			else if (_axisTypedValue != prevTyped)
 			{
+				_didAxisType = true;
+
+				int value;
 				if (_axisTypedValue.Length is 0)
 				{
-					if (prevTyped.Length is not 0)
-					{
-						value = ControllerType.Axes[_axisEditColumn].Neutral;
-						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
-					}
+					value = ControllerType.Axes[AxisEditColumn].Neutral;
 				}
 				else
 				{
 					if (int.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
 					{
 						value = value.ConstrainWithin(range.Range);
-
-						CurrentTasMovie.SetAxisState(_axisEditRow, _axisEditColumn, value);
+					}
+					else
+					{
+						value = 0;
 					}
 				}
 
-				foreach (int row in _extraAxisRows)
+				foreach (int row in TasView.SelectedRows)
 				{
-					CurrentTasMovie.SetAxisState(row, _axisEditColumn, value);
+					CurrentTasMovie.SetAxisState(row, AxisEditColumn, value);
 				}
 			}
 
@@ -1498,11 +1467,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.InputLogLength-1);
 			}
 
-			if (AxisEditingMode
-				&& e.KeyCode != Keys.Right
-				&& e.KeyCode != Keys.Left
-				&& e.KeyCode != Keys.Up
-				&& e.KeyCode != Keys.Down)
+			if (AxisEditingMode)
 			{
 				EditAnalogProgrammatically(e);
 			}
