@@ -2,6 +2,7 @@
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -31,7 +32,7 @@ namespace BizHawk.Client.Common
 				: Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
 		}
 
-		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
+		public virtual bool ExtractInputLog(TextReader reader, IEmulator emulator, out string errorMessage)
 		{
 			errorMessage = "";
 			int? stateFrame = null;
@@ -39,7 +40,7 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
 			{
-				SaveBackup();
+				SaveBackup(emulator);
 				MakeBackup = false;
 			}
 

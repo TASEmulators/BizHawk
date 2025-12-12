@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -53,6 +54,6 @@ namespace BizHawk.Client.Common
 		/// Tells the movie to load the contents of Filename
 		/// </summary>
 		/// <returns>Return whether or not the file was successfully loaded</returns>
-		bool Load();
+		bool Load(IEmulator emulator);
 	}
 }
