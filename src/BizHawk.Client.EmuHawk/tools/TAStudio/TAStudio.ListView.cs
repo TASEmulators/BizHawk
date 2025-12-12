@@ -355,7 +355,8 @@ namespace BizHawk.Client.EmuHawk
 				else if (column.Type is ColumnType.Boolean or ColumnType.Axis)
 				{
 					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
-					if (columnName == AxisEditColumn && TasView.IsRowSelected(index) && _didAxisType)
+					bool axisEditing = columnName == AxisEditColumn && TasView.IsRowSelected(index);
+					if (axisEditing && _didAxisType)
 					{
 						text = _axisTypedValue;
 					}
@@ -365,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == ColumnType.Axis)
 						{
 							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (text == ((float) ControllerType.Axes[columnName].Neutral).ToString(NumberFormatInfo.InvariantInfo))
+							if (!axisEditing && text == ((float) ControllerType.Axes[columnName].Neutral).ToString(NumberFormatInfo.InvariantInfo))
 							{
 								text = "";
 							}
