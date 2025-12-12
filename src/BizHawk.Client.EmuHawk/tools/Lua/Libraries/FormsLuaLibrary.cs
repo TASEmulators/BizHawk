@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public FormsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
-		public IDialogParent MainForm { get; set; }
+		public IDialogParent OwnerForm { get; set; }
 
 		public override string Name => "forms";
 
@@ -284,6 +284,9 @@ namespace BizHawk.Client.EmuHawk
 			string title = null,
 			LuaFunction onClose = null)
 		{
+			if (OwnerForm is not IWin32Window ownerForm)
+				throw new Exception("IDialogParent must implement IWin32Window");
+
 			var form = new LuaWinform(CurrentFile, WindowClosed);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
@@ -295,8 +298,7 @@ namespace BizHawk.Client.EmuHawk
 			form.MaximizeBox = false;
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
-			form.Owner = (Form) MainForm;
-			form.Show();
+			form.Show(ownerForm);
 
 			form.FormClosed += (o, e) =>
 			{
@@ -325,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 			string filter = null)
 		{
 			if (initialDirectory is null && fileName is not null) initialDirectory = Path.GetDirectoryName(fileName);
-			var result = MainForm.ShowFileOpenDialog(
+			var result = OwnerForm.ShowFileOpenDialog(
 				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
 				initDir: initialDirectory ?? PathEntries.LuaAbsolutePath(),
 				initFileName: fileName);
