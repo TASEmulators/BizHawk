@@ -1373,48 +1373,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string prevTyped = _axisTypedValue;
+			AxisSpec axis = ControllerType.Axes[AxisEditColumn];
 
-			var range = ControllerType.Axes[AxisEditColumn];
-
-			// feos: typing past max digits overwrites existing value, not touching the sign
-			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
-			// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
-			int maxDigits = range.MaxDigits;
-			int curDigits = _axisTypedValue.Length;
-			string curMinus;
-			if (_axisTypedValue.StartsWith('-'))
-			{
-				curDigits -= 1;
-				curMinus = "-";
-			}
-			else
-			{
-				curMinus = "";
-			}
-
+			int charToType = -1;
 			if (e.KeyCode is >= Keys.D0 and <= Keys.D9)
 			{
-				if (curDigits >= maxDigits)
-				{
-					_axisTypedValue = curMinus;
-				}
-
-				_axisTypedValue += e.KeyCode - Keys.D0;
+				charToType = e.KeyCode - Keys.D0;
 			}
 			else if (e.KeyCode is >= Keys.NumPad0 and <= Keys.NumPad9)
 			{
-				if (curDigits >= maxDigits)
-				{
-					_axisTypedValue = curMinus;
-				}
+				charToType = e.KeyCode - Keys.NumPad0;
+			}
 
-				_axisTypedValue += e.KeyCode - Keys.NumPad0;
+			if (charToType != -1)
+			{
+				if ((_axisTypedValue.StartsWith('-') && _axisTypedValue.Length < axis.Min.ToString().Length)
+					|| (!_axisTypedValue.StartsWith('-') && _axisTypedValue.Length < axis.Max.ToString().Length))
+				{
+					_axisTypedValue += charToType;
+				}
 			}
 			else if (e.KeyCode is Keys.OemMinus or Keys.Subtract)
 			{
-				_axisTypedValue = _axisTypedValue.StartsWith('-')
-					? _axisTypedValue.Substring(startIndex: 1)
-					: $"-{_axisTypedValue}";
+				if (axis.Min < 0)
+				{
+					_axisTypedValue = _axisTypedValue.StartsWith('-')
+						? _axisTypedValue.Substring(startIndex: 1)
+						: $"-{_axisTypedValue}";
+				}
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
@@ -1446,13 +1432,13 @@ namespace BizHawk.Client.EmuHawk
 				int value;
 				if (_axisTypedValue.Length is 0)
 				{
-					value = ControllerType.Axes[AxisEditColumn].Neutral;
+					value = axis.Neutral;
 				}
 				else
 				{
 					if (int.TryParse(_axisTypedValue, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out value)) // String "-" can't be parsed.
 					{
-						value = value.ConstrainWithin(range.Range);
+						value = value.ConstrainWithin(axis.Range);
 					}
 					else
 					{
