@@ -1,8 +1,10 @@
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Globalization;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
@@ -41,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_axisTypedValue = "";
 					_didAxisType = false;
+					_axisRestoreId = CurrentTasMovie.ChangeLog.MostRecentId;
 					TasView.SuspendHotkeys = true;
 				}
 				else
@@ -58,7 +61,26 @@ namespace BizHawk.Client.EmuHawk
 		private string _axisTypedValue = "";
 		private bool _didAxisType;
 		private int _axisEditYPos = -1;
-		private bool _exitAxisEditingOnMouseUp;
+		private bool _exitAxisEditingOnMouseUp = true;
+		private int _axisRestoreId;
+
+		/// <summary>
+		/// Begin editing an axis value by dragging the mouse.
+		/// </summary>
+		/// <param name="yPos">The initial vertical position of the cursor.</param>
+		/// <param name="exitOnMouseUp">True to axis editing mode (not mouse edit mode) on mouse up even if no edit occured.</param>
+		private void BeginAxisMouseEdit(int yPos, bool exitOnMouseUp)
+		{
+			Debug.Assert(AxisEditingMode, "Don't begin axis mouse edit outside of axis editing mode.");
+
+			_axisEditYPos = yPos;
+			_axisTypedValue = "";
+			_didAxisType = false;
+			_exitAxisEditingOnMouseUp = exitOnMouseUp;
+			_axisRestoreId = CurrentTasMovie.ChangeLog.MostRecentId;
+
+			CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis mouse edit, frame {TasView.SelectedRows.First()}");
+		}
 
 		public bool AxisEditingMode => AxisEditColumn != null;
 
@@ -556,9 +578,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						// Begin axis edit via mouse
-						_axisEditYPos = e.Y;
-						_exitAxisEditingOnMouseUp = true;
+						BeginAxisMouseEdit(e.Y, true);
 					}
 					return;
 				}
@@ -674,12 +694,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis Edit: {frame}");
 								AxisEditColumn = buttonName;
-								_axisTypedValue = "";
-								_didAxisType = false;
-								_axisEditYPos = e.Y;
-								_exitAxisEditingOnMouseUp = false;
+								BeginAxisMouseEdit(e.Y, false);
 							}
 
 							RefreshDialog();
@@ -745,14 +761,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Begins a batch of edits, for auto-restore purposes. Auto-restore will be delayed until EndBatchEdit is called.
-		/// </summary>
-		private void BeginBatchEdit()
-		{
-			_batchEditing = true;
 		}
 
 		/// <returns>Returns true if the input list was redrawn.</returns>
@@ -890,21 +898,19 @@ namespace BizHawk.Client.EmuHawk
 			_startAxisDrawColumn = "";
 			TasView.ReleaseCurrentCell();
 
+			CurrentTasMovie.ChangeLog.EndBatch();
+
 			// Exit axis editing if value was changed with cursor
 			if (AxisEditingMode && _exitAxisEditingOnMouseUp)
 			{
 				AxisEditColumn = null;
-				RefreshDialog();
 			}
 			_axisPaintState = 0;
 			_axisEditYPos = -1;
 
-			if (!AxisEditingMode)
-			{
-				CurrentTasMovie.ChangeLog?.EndBatch();
-			}
-
 			MainForm.BlockFrameAdvance = false;
+
+			RefreshDialog(); // Even if no edits happened, the undo form may need updating because we potentially ended a batch.
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
@@ -1311,14 +1317,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!AxisEditingMode) return;
 
-			Console.WriteLine($"Axis change by {change}");
-			foreach (int frame in TasView.SelectedRows)
+			if (_didAxisType)
 			{
-				int value = CurrentTasMovie.GetAxisState(frame, AxisEditColumn) + change;
-				value = value.ConstrainWithin(ControllerType.Axes[AxisEditColumn].Range);
-				CurrentTasMovie.SetAxisState(frame, AxisEditColumn, value);
-				_axisTypedValue = value.ToString(); // Typing with multiple rows selected has undefined behavior if the values do not all match.
+				_didAxisType = false;
+				CurrentTasMovie.ChangeLog.EndBatch();
 			}
+
+			bool batch = CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis change by {change}, frame {TasView.SelectedRows.First()}", true);
+			CurrentTasMovie.SingleInvalidation(() =>
+			{
+				foreach (int frame in TasView.SelectedRows)
+				{
+					int value = CurrentTasMovie.GetAxisState(frame, AxisEditColumn) + change;
+					value = value.ConstrainWithin(ControllerType.Axes[AxisEditColumn].Range);
+					CurrentTasMovie.SetAxisState(frame, AxisEditColumn, value);
+					_axisTypedValue = value.ToString(); // Typing with multiple rows selected has undefined behavior if the values do not all match.
+				}
+			});
+			if (batch) CurrentTasMovie.ChangeLog.EndBatch();
+
 			RefreshDialog();
 		}
 
@@ -1354,9 +1371,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			// TODO: properly handle axis editing batches
-			BeginBatchEdit();
 
 			string prevTyped = _axisTypedValue;
 
@@ -1421,15 +1435,12 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.KeyCode == Keys.Escape)
 			{
 				AxisEditColumn = null;
-				CurrentTasMovie.ChangeLog.Undo(); // TODO: Only do this if we've actually done something!
+				CurrentTasMovie.ChangeLog.Undo(_axisRestoreId);
 			}
 
-			if (!AxisEditingMode)
+			if (_axisTypedValue != prevTyped)
 			{
-				CurrentTasMovie.ChangeLog.EndBatch();
-			}
-			else if (_axisTypedValue != prevTyped)
-			{
+				CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis edit: {TasView.SelectedRows.First()}", true);
 				_didAxisType = true;
 
 				int value;
@@ -1449,14 +1460,17 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				foreach (int row in TasView.SelectedRows)
+				CurrentTasMovie.SingleInvalidation(() =>
 				{
-					CurrentTasMovie.SetAxisState(row, AxisEditColumn, value);
-				}
+					foreach (int row in TasView.SelectedRows)
+					{
+						CurrentTasMovie.SetAxisState(row, AxisEditColumn, value);
+					}
+				});
 			}
 
-			bool didRefresh = EndBatchEdit();
-			if (!didRefresh && (prevTyped != _axisTypedValue || !AxisEditingMode))
+			// We (probably) need a refresh if the typed value changed or we've exited axis editing mode.
+			if (prevTyped != _axisTypedValue || !AxisEditingMode)
 			{
 				RefreshDialog();
 			}
