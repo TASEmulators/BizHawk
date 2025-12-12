@@ -23,12 +23,11 @@ namespace BizHawk.Client.EmuHawk
 			LuaFileList scriptList,
 			LuaFunctionList registeredFuncList,
 			IEmulatorServiceProvider serviceProvider,
-			IMainFormForApiInit mainForm,
-			DisplayManagerBase displayManager,
-			InputManager inputManager,
+			IMainFormForApi mainForm,
 			Config config,
-			IEmulator emulator,
-			IGameInfo game)
+			ToolManager toolManager,
+			IDialogParent dialogParent,
+			ApiContainer apiContainer)
 		{
 			if (!IsAvailable)
 			{
@@ -57,15 +56,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_th = new NLuaTableHelper(_lua, LogToLuaConsole);
-			_displayManager = displayManager;
-			_inputManager = inputManager;
 			_mainForm = mainForm;
 			LuaWait = new AutoResetEvent(false);
 			PathEntries = config.PathEntries;
 			RegisteredFunctions = registeredFuncList;
 			ScriptList = scriptList;
 			Docs.Clear();
-			_apiContainer = ApiManager.RestartLua(serviceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			_apiContainer = apiContainer;
 
 			// Register lua libraries
 			foreach (var lib in ReflectionCache_Biz_Cli_Com.Types.Concat(ReflectionCache.Types)
@@ -94,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 					else if (instance is ConsoleLuaLibrary consoleLib)
 					{
 						consoleLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
-						consoleLib.Tools = _mainForm.Tools;
+						consoleLib.Tools = toolManager;
 						_logToLuaConsoleCallback = consoleLib.Log;
 					}
 					else if (instance is DoomLuaLibrary doomLib)
@@ -108,7 +105,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is FormsLuaLibrary formsLib)
 					{
-						formsLib.MainForm = _mainForm;
+
+						formsLib.OwnerForm = dialogParent;
 					}
 					else if (instance is GuiLuaLibrary guiLib)
 					{
@@ -122,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (instance is TAStudioLuaLibrary tastudioLib)
 					{
-						tastudioLib.Tools = _mainForm.Tools;
+						tastudioLib.Tools = toolManager;
 					}
 
 					EnumerateLuaFunctions(instance.Name, lib, instance);
@@ -159,13 +157,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private ApiContainer _apiContainer;
 
-		private readonly DisplayManagerBase _displayManager;
-
 		private GuiApi GuiAPI => (GuiApi)_apiContainer.Gui;
 
-		private readonly InputManager _inputManager;
-
-		private readonly IMainFormForApiInit _mainForm;
+		private readonly IMainFormForApi _mainForm;
 
 		private Lua _lua = new();
 		private LuaThread _currThread;
@@ -201,10 +195,9 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart(
 			IEmulatorServiceProvider newServiceProvider,
 			Config config,
-			IEmulator emulator,
-			IGameInfo game)
+			ApiContainer apiContainer)
 		{
-			_apiContainer = ApiManager.RestartLua(newServiceProvider, LogToLuaConsole, _mainForm, _displayManager, _inputManager, _mainForm.MovieSession, _mainForm.Tools, config, emulator, game);
+			_apiContainer = apiContainer;
 			PathEntries = config.PathEntries;
 			foreach (var lib in Libraries.Values)
 			{

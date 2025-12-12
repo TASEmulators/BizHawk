@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public ToolDialogSettings.ColumnList Columns { get; set; }
 
-		internal new IMainFormForApiInit MainForm { get; set; }
+		internal IMainFormForApi MainFormForApi { get; set; }
 
 		public class LuaConsoleSettings
 		{
@@ -190,13 +190,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			List<LuaFile> runningScripts = new();
 
+			ApiContainer apiContainer = ApiManager.RestartLua(
+				Emulator.ServiceProvider,
+				WriteToOutputWindow,
+				MainFormForApi,
+				DisplayManager,
+				InputManager,
+				MovieSession,
+				Tools,
+				Config,
+				Emulator,
+				Game,
+				DialogController);
+
 			// Things we need to do with the existing LuaImp before we can make a new one
 			if (LuaImp is not null)
 			{
 				if (LuaImp.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					LuaImp.Restart(Emulator.ServiceProvider, Config, Emulator, Game);
+					LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
 					return;
 				}
 
@@ -216,12 +229,11 @@ namespace BizHawk.Client.EmuHawk
 				newScripts,
 				registeredFuncList,
 				Emulator.ServiceProvider,
-				MainForm,
-				DisplayManager,
-				InputManager,
+				MainFormForApi,
 				Config,
-				Emulator,
-				Game);
+				Tools,
+				(IDialogParent)MainForm, // not sure why neither main form interface implements IDialogParent, but our MainForm class does
+				apiContainer);
 
 			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
