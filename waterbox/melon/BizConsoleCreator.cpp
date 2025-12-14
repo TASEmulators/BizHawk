@@ -9,6 +9,7 @@
 #include "CRC32.h"
 #include "FreeBIOS.h"
 #include "SPI.h"
+#include "InvisiblePoolAllocator.h"
 
 #include "fatfs/diskio.h"
 #include "fatfs/ff.h"
@@ -1389,6 +1390,11 @@ ECL_EXPORT melonDS::NDS* CreateConsole(ConsoleCreationArgs* args, char* error)
 {
 	try
 	{
+		if (!invisible_pool_init())
+		{
+			throw std::runtime_error("Failed to allocate invisible pool");
+		}
+
 		// SD Cards are set to be 256MiB always
 		constexpr u32 SD_CARD_SIZE = 256 * 1024 * 1024;
 
