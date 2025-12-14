@@ -60,7 +60,7 @@ void* alloc_sealed(size_t size)
 	return alloc_helper(size, &__wbxsysinfo.sealed, &__sealed_current, "sealed");
 }
 
-static unsigned long __invisible_current;
+ECL_INVISIBLE static unsigned long __invisible_current;
 void* alloc_invisible(size_t size)
 {
 	return alloc_helper(size, &__wbxsysinfo.invis, &__invisible_current, "invisible");
