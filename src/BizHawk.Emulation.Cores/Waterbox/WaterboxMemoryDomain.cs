@@ -336,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_read8.Access((IntPtr)p, addresses.Start, (long)addresses.Count());
 		}
 
-		public void BulkPokeByte(long addr, Span<byte> values)
+		public override void BulkPokeByte(long addr, Span<byte> values)
 		{
 			if ((ulong)addr + (ulong)values.Length > (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr));
 
@@ -354,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_read16.Access((IntPtr)p, addresses.Start, (long)addresses.Count() / sizeof(ushort));
 		}
 
-		public void BulkPokeUshort(long addr, Span<ushort> values)
+		public override void BulkPokeUshort(long addr, bool bigEndian, Span<ushort> values)
 		{
 			if ((ulong)addr + (ulong)values.Length * sizeof(ushort) > (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr));
 
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_read32.Access((IntPtr)p, addresses.Start, (long)addresses.Count() / sizeof(uint));
 		}
 
-		public void BulkPokeUint(long addr, Span<uint> values)
+		public override void BulkPokeUint(long addr, bool bigEndian, Span<uint> values)
 		{
 			if ((ulong)addr + (ulong)values.Length * sizeof(uint) > (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr));
 
