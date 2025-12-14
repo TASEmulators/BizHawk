@@ -1,19 +1,19 @@
--- feos, 2025
+-- feos, kalimag, 2025
 
-local enums = require("dsda.enums")
+local enums   = require("dsda.enums")
 local structs = require("dsda.structs")
 local symbols = require("dsda.symbols")
 
+
 -- CONSTANTS
-local MINIMAL_ZOOM      = 0.0001     -- ???
-local ZOOM_FACTOR       = 0.02
-local WHEEL_ZOOM_FACTOR = 4
+
+local MINIMAL_ZOOM      = 0.0001 -- ???
+local ZOOM_FACTOR       = 0.01
+local WHEEL_ZOOM_FACTOR = 10
 local DRAG_FACTOR       = 10
 local PAN_FACTOR        = 10
 local CHAR_WIDTH        = 10
 local CHAR_HEIGHT       = 16
-local NEGATIVE_MAXIMUM  = 1 << 63
-local POSITIVE_MAXIMUM  = ~NEGATIVE_MAXIMUM
 local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
 
 -- Map colors (0xAARRGGBB or "name")
@@ -23,30 +23,35 @@ local MapPrefs = {
 	enemy_idle  = { color = 0xFFAA0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	corpse      = { color = 0x80AA0000, radius_min_zoom = 0.00, text_min_zoom = 0.30, },
 	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.05, text_min_zoom = 0.50, },
-	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.75, text_min_zoom = 1.50, },
-	item        = { color = 0xFF8060FF, radius_min_zoom = 0.75, text_min_zoom = 1.50, },
+	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
+	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+	item        = { color = 0xFF8060FF, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
 	misc        = { color = 0xFFA0A0A0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
 	solid       = { color = 0xFF505050, radius_min_zoom = 0.75, text_min_zoom = false, },
---	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
 	highlight   = { color = 0xFFFF00FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 }
 
 -- shortcuts
+
 local text     = gui.text
 local box      = gui.drawBox
 local drawline = gui.drawLine
 --local text = gui.pixelText -- INSANELY SLOW
 
-local Globals       = structs.globals
-local MobjType      = enums.mobjtype
-local SpriteNumber  = enums.doom.spritenum
-local MobjFlags     = enums.mobjflags
+local Globals      = structs.globals
+local MobjType     = enums.mobjtype
+local SpriteNumber = enums.doom.spritenum
+local MobjFlags    = enums.mobjflags
+
 
 -- TOP LEVEL VARIABLES
-local Zoom      = 1
-local Init      = true
+
+local Zoom = 1
+local Init = true
+
 -- tables
+
 -- view offset
 local Pan = {
 	x = 0,
@@ -54,10 +59,10 @@ local Pan = {
 }
 -- object positions bounds
 local OB = {
-	top    = POSITIVE_MAXIMUM,
-	left   = POSITIVE_MAXIMUM,
-	bottom = NEGATIVE_MAXIMUM,
-	right  = NEGATIVE_MAXIMUM
+	top    = math.maxinteger,
+	left   = math.maxinteger,
+	bottom = math.mininteger,
+	right  = math.mininteger
 }
 local LastScreenSize = {
 	w = client.screenwidth(),
@@ -71,7 +76,9 @@ local LastMouse = {
 local LastFramecount = -1
 local LastEpisode
 local LastMap
+
 -- forward declarations
+
 local Lines
 local PlayerTypes
 local EnemyTypes
@@ -82,20 +89,119 @@ local InertTypes
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
 
-local function mapify_x(coord)
-	return math.floor(((coord / 0xffff)+Pan.x)*Zoom)
+-- TYPE CONVERTERS
+
+local function tuple_to_vertex(xx, yy)
+	return { x = xx, y = yy }
 end
 
-local function mapify_y(coord)
-	return math.floor(((coord / 0xffff)+Pan.y)*Zoom)
+local function vertex_to_tuple(v)
+	return table.unpack(v)
 end
+
+local function tuple_to_line(x1, y1, x2, y2)
+	return {
+		v1 = { x = x1, y = y1 },
+		v2 = { x = x2, y = y2 }
+	}
+end
+
+local function line_to_tuple(l)
+	return table.unpack(l.v1), table.unpack(l.v2)
+end
+
+-- GAME/SCREEN CODECS
+
+local function decode_x(coord)
+	return math.floor(((coord / 0xffff) + Pan.x) * Zoom)
+end
+
+local function decode_y(coord)
+	return math.floor(((-coord / 0xffff) + Pan.y) * Zoom)
+end
+
+local function encode_x(coord)
+	return math.floor(((coord / Zoom) - Pan.x) * 0xffff)
+end
+
+local function encode_y(coord)
+	return -math.floor(((coord / Zoom) - Pan.y) * 0xffff)
+end
+
+-- return value matches passed value (line/vertex tuple/table)
+local function codec(method, arg1, arg2, arg3, arg4)
+	local func_x, func_y
+	
+	if method == "encode" then
+		func_x = encode_x
+		func_y = encode_y
+	elseif method == "decode" then
+		func_x = decode_x
+		func_y = decode_y
+	end
+	
+	-- all 4 args passed
+	if arg1 and arg2 and arg3 and arg4 then
+	
+		-- line as 4 coords
+		return func_x(arg1), func_y(arg2), func_x(arg3), func_y(arg4)
+	
+	-- only 2 args passed
+	elseif arg1 and arg2 and not (arg3 or arg4) then
+		if type(arg1) == "table" and type(arg2) == "table"
+		and arg1.x and arg1.y and arg2.x and arg2.y then
+		
+			-- line as 2 vertices
+			return
+				{ x = func_x(arg1.x), y = func_y(arg1.y) },
+				{ x = func_x(arg2.x), y = func_y(arg2.y) }
+		else
+		
+			-- vertex as 2 coords
+			return func_x(arg1), func_y(arg2)
+		end
+	
+	-- only 1 arg passed
+	elseif arg1 and not (arg2 or arg3 or arg4) and type(arg1) == "table" then
+		if arg1.v1 and arg1.v2 then
+			if type(arg1.v1) == "table" and type(arg1.v2) == "table"
+			and arg1.v1.x and arg1.v1.y and arg1.v2.x and arg1.v2.y then
+			
+				-- line
+				return {
+					v1 = { x = func_x(arg1.v1.x), y = func_y(arg1.v1.y) },
+					v2 = { x = func_x(arg1.v2.x), y = func_y(arg1.v2.y) }
+				}
+			end
+		elseif arg1.x and arg1.y then
+			
+			-- vertex
+			return { x = func_x(arg1.x), y = func_y(arg1.y) }
+		end
+	end
+end
+
+local function game_to_screen(arg1, arg2, arg3, arg4)
+	return codec("decode", arg1, arg2, arg3, arg4)
+end
+
+local function screen_to_game(arg1, arg2, arg3, arg4)
+	return codec("encode", arg1, arg2, arg3, arg4)
+end
+
 
 local function in_range(var, minimum, maximum)
 	return var >= minimum and var <= maximum
 end
 
 local function reset_view()
-	Init = true
+	OB = {
+		top    = math.maxinteger,
+		left   = math.maxinteger,
+		bottom = math.mininteger,
+		right  = math.mininteger
+	}
+	Init = true	
 	update_zoom()
 end
 
@@ -115,22 +221,39 @@ local function pan_down(divider)
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
 end
 
-local function zoom_out(times)
-	for i=0, (times or 1) do
-		local newZoom = Zoom * (1 - ZOOM_FACTOR)
+local function zoom(times, mouseCenter)
+	local mouse
+	local mousePos
+	local zoomCenter
+	local direction = 1
+	times = times or 1
+	
+	if times < 0 then
+		direction = -1
+		times = -times
+	end
+	
+	if mouseCenter then
+		mouse      = input.getmouse()
+		mousePos   = client.transformPoint(mouse.X, mouse.Y)
+		zoomCenter = screen_to_game(mousePos)
+	else
+		zoomCenter = screen_to_game({
+			x = client.screenwidth ()/2,
+			y = client.screenheight()/2
+		})
+	end
+	
+	for i=0, times do
+		local newZoom = Zoom + Zoom * ZOOM_FACTOR * direction
 		if newZoom < MINIMAL_ZOOM then return end
 		Zoom = newZoom
-		pan_left(1)
-		pan_up(1.4)
 	end
-end
-
-local function zoom_in(times)
-	for i=0, (times or 1) do
-		Zoom = Zoom * (1 + ZOOM_FACTOR)
-		pan_right(1)
-		pan_down(1.4)
-	end
+	
+	zoomCenter.x = (encode_x(mouseCenter and mousePos.x or client.screenwidth ()/2)-zoomCenter.x)
+	zoomCenter.y = (encode_y(mouseCenter and mousePos.y or client.screenheight()/2)-zoomCenter.y)
+	Pan.x = Pan.x + zoomCenter.x / 0xffff
+	Pan.y = Pan.y - zoomCenter.y / 0xffff
 end
 
 local function suppress_click_input()
@@ -175,10 +298,10 @@ end
 
 local function get_mobj_pref(mobj, mobjtype)
 	if HighlightTypes[mobjtype] then return MapPrefs.highlight end
-	if InertTypes[mobjtype] then return MapPrefs.inert end
-	if MiscTypes[mobjtype] then return MapPrefs.misc end
-	if MissileTypes[mobjtype] then return MapPrefs.missile end
-	if PlayerTypes[mobjtype] then return MapPrefs.player end
+	if InertTypes    [mobjtype] then return MapPrefs.inert     end
+	if MiscTypes     [mobjtype] then return MapPrefs.misc      end
+	if MissileTypes  [mobjtype] then return MapPrefs.missile   end
+	if PlayerTypes   [mobjtype] then return MapPrefs.player    end
 
 	local flags = mobj.flags
 	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
@@ -188,10 +311,10 @@ local function get_mobj_pref(mobj, mobjtype)
 		return MapPrefs.enemy
 	end
 	if flags & MobjFlags.COUNTITEM ~= 0 then return MapPrefs.countitem end
-	if flags & MobjFlags.SPECIAL ~= 0 then return MapPrefs.item end
-	if flags & MobjFlags.MISSILE ~= 0 then return MapPrefs.missile end
+	if flags & MobjFlags.SPECIAL   ~= 0 then return MapPrefs.item      end
+	if flags & MobjFlags.MISSILE   ~= 0 then return MapPrefs.missile   end
 	if flags & MobjFlags.SHOOTABLE ~= 0 then return MapPrefs.shootable end
-	if flags & MobjFlags.SOLID ~= 0 then return MapPrefs.solid end
+	if flags & MobjFlags.SOLID     ~= 0 then return MapPrefs.solid     end
 	return MapPrefs.inert
 end
 
@@ -303,23 +426,23 @@ local function iterate()
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		if radius_color or text_color then -- not hidden
-			local pos    = { x = mapify_x(mobj.x), y = mapify_y(-mobj.y) }
+			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
 			if  in_range(pos.x, 0, screenwidth)
 			and in_range(pos.y, 0, screenheight)
 			then
 				local type   = mobj.type
-				local radius = math.floor ((mobj.radius >> 16) * Zoom)
+				local radius = math.floor((mobj.radius / 0xffff) * Zoom)
+				local index  = mobj.index
 				--[[--
 				local z      = mobj.z
-				local index  = mobj.index
 				local tics   = mobj.tics
 				local health = mobj.health
 				local sprite = SpriteNumber[mobj.sprite]
 				--]]--
 				if text_color then
-					type = MobjType[type]
-					text(pos.x, pos.y, string.format("%s", type),  text_color)
+				--	type = MobjType[type]
+					text(pos.x, pos.y, string.format("%d", index),  text_color)
 				end
 				if radius_color then
 					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
@@ -328,26 +451,21 @@ local function iterate()
 		end
 	end
 
-	for _, line in ipairs(Lines) do
-		local x1, y1, x2, y2 = cached_line_coords(line)
+	for i, line in ipairs(Lines) do
+		local color = 0xffcccccc
+		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
 		local special = line.special
 
-		local color
 		if special ~= 0 then color = 0xffcc00ff end
 
-		drawline(
-			mapify_x( x1),
-			mapify_y(-y1),
-			mapify_x( x2),
-			mapify_y(-y2),
-			color or 0xffcccccc)
+		drawline(x1, y1, x2, y2, color)
 	end
 end
 
 local function init_mobj_bounds()
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local x    = mobj.x / 0xffff
-		local y    = mobj.y / 0xffff * -1
+		local x = mobj.x / 0xffff
+		local y = mobj.y / 0xffff * -1
 		if x < OB.left   then OB.left   = x end
 		if x > OB.right  then OB.right  = x end
 		if y < OB.top    then OB.top    = y end
@@ -358,48 +476,40 @@ end
 function update_zoom()
 	local mouse      = input.getmouse()
 	local mousePos   = client.transformPoint(mouse.X, mouse.Y)
+	local mouseWheel = math.floor(mouse.Wheel/120)
 	local deltaX     = mousePos.x - LastMouse.x
 	local deltaY     = mousePos.y - LastMouse.y
-	local newWheel   = math.floor(mouse.Wheel/120)
-	local wheelDelta = newWheel - LastMouse.wheel
+	local deltaWheel = mouseWheel - LastMouse.wheel
 	
-	if     wheelDelta > 0 then zoom_in ( wheelDelta * WHEEL_ZOOM_FACTOR)
-	elseif wheelDelta < 0 then zoom_out(-wheelDelta * WHEEL_ZOOM_FACTOR)
-	end
+	if deltaWheel ~= 0 then zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true) end
 	
-	if   mouse.Left
-	and (input.get()["Shift"]
-	or   input.get()["LeftShift"]) then
-		if     deltaX > 0 then pan_left ( DRAG_FACTOR/deltaX)
-		elseif deltaX < 0 then pan_right(-DRAG_FACTOR/deltaX)
-		end
-		if     deltaY > 0 then pan_up  ( DRAG_FACTOR/deltaY)
-		elseif deltaY < 0 then pan_down(-DRAG_FACTOR/deltaY)
-		end
+	if input.get()["Space"] then
+		if deltaX ~= 0 then pan_left(DRAG_FACTOR/deltaX) end
+		if deltaY ~= 0 then pan_up  (DRAG_FACTOR/deltaY) end
 		suppress_click_input()
 	end
 	
 	LastMouse.x     = mousePos.x
 	LastMouse.y     = mousePos.y
 	LastMouse.left  = mouse.Left
-	LastMouse.wheel = newWheel
+	LastMouse.wheel = mouseWheel
 	
 	if not Init
 	and LastScreenSize.w == client.screenwidth()
 	and LastScreenSize.h == client.screenheight()
 	then return end
 	
-	if  OB.top    ~= POSITIVE_MAXIMUM
-	and OB.left   ~= POSITIVE_MAXIMUM
-	and OB.right  ~= NEGATIVE_MAXIMUM
-	and OB.bottom ~= NEGATIVE_MAXIMUM
+	if  OB.top    ~= math.maxinteger
+	and OB.left   ~= math.maxinteger
+	and OB.right  ~= math.mininteger
+	and OB.bottom ~= math.mininteger
 	and not emu.islagged()
 	then
 		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
 		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
 		local span        = { x = OB.right-OB.left+200,        y = OB.bottom-OB.top+200         }
 		local scale       = { x = client.screenwidth()/span.x, y = client.screenheight()/span.y }
-		local spanCenter  = { x = OB.left+span.x/2, y = OB.top+span.y/2 }
+		local spanCenter  = { x = OB.left+span.x/2,            y = OB.top+span.y/2 }
 		      Zoom        = math.min(scale.x, scale.y)
 		local sreenCenter = { x = client.screenwidth()/Zoom/2, y = client.screenheight()/Zoom/2 }
 		      Pan.x       = -math.floor(spanCenter.x - sreenCenter.x)
@@ -441,8 +551,8 @@ local function make_button(x, y, name, func)
 end
 
 local function make_buttons()
-	make_button( 10, client.screenheight()-70, "Zoom\nIn",    zoom_in   )
-	make_button( 10, client.screenheight()-10, "Zoom\nOut",   zoom_out  )
+	make_button( 10, client.screenheight()-70, "Zoom\nIn",    function() zoom( 1) end )
+	make_button( 10, client.screenheight()-10, "Zoom\nOut",   function() zoom(-1) end )
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
 	make_button(150, client.screenheight()-70, "Pan \nUp",    pan_up    )
 	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
@@ -541,6 +651,7 @@ while true do
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
 		clear_cache()
+		reset_view()
 		LastEpisode, LastMap = episode, map
 	end
 
