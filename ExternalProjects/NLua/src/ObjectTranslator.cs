@@ -880,6 +880,11 @@ namespace NLua
 			// Before create new tables, check if there is any finalized object to clean.
 			CleanFinalizedReferences(luaState);
 
+			if (luaState.Type(index) != LuaType.Table)
+			{
+				return null;
+			}
+
 			luaState.PushCopy(index);
 			var reference = luaState.Ref(LuaRegistry.Index);
 			return reference == -1 ? null : new LuaTable(reference, interpreter);
@@ -892,6 +897,11 @@ namespace NLua
 		{
 			// Before create new tables, check if there is any finalized object to clean.
 			CleanFinalizedReferences(luaState);
+
+			if (luaState.Type(index) != LuaType.Thread)
+			{
+				return null;
+			}
 
 			luaState.PushCopy(index);
 			var reference = luaState.Ref(LuaRegistry.Index);
@@ -906,6 +916,11 @@ namespace NLua
 			// Before create new tables, check if there is any finalized object to clean.
 			CleanFinalizedReferences(luaState);
 
+			if (luaState.Type(index) != LuaType.UserData)
+			{
+				return null;
+			}
+
 			luaState.PushCopy(index);
 			var reference = luaState.Ref(LuaRegistry.Index);
 			return reference == -1 ? null : new LuaUserData(reference, interpreter);
@@ -918,6 +933,11 @@ namespace NLua
 		{
 			// Before create new tables, check if there is any finalized object to clean.
 			CleanFinalizedReferences(luaState);
+
+			if (luaState.Type(index) != LuaType.Function)
+			{
+				return null;
+			}
 
 			luaState.PushCopy(index);
 			var reference = luaState.Ref(LuaRegistry.Index);
