@@ -330,8 +330,9 @@ local function get_mobj_color(mobj, mobjtype)
 	return radius_color, text_color
 end
 
-local function  clear_cache()
+local function clear_cache()
 	Lines = nil
+	reset_view()
 end
 
 local function init_cache()
@@ -415,12 +416,52 @@ local function iterate_players()
 	gui.text(0, 0, stats, nil, "topright")
 end
 
+-- helper to get squared distance (avoids sqrt for comparison)
+function dist_sq(p1, p2)
+    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
+end
+
+local function distance_from_line(p, a, b)
+	local ab_sq = dist_sq(a, b)
+	
+	if ab_sq == 0 then return math.sqrt(dist_sq(p, a)) end -- A and B are the same point
+
+	-- project point P onto the line AB
+	-- t = ((P-A) . (B-A)) / |B-A|^2
+	local t =
+		((p.x - a.x) * (b.x - a.x) +
+		 (p.y - a.y) * (b.y - a.y)) / ab_sq
+	
+	-- clamp t to [0, 1] to stay within the segment
+	t = math.max(0, math.min(1, t))
+
+	-- find the closest point on the segment (D)
+	local closestPoint = {
+		x = a.x + t * (b.x - a.x),
+		y = a.y + t * (b.y - a.y)
+	}
+
+	-- return the distance from P to the closest point D
+	local dist = math.sqrt(dist_sq(p, closestPoint))
+		
+--	if ((b.y - a.y) / (b.x - a.x)) * (p.x - a.x) + a.y < p.y then return -dist end
+	
+	return dist
+end
+
 local function iterate()
 	if Init then return end
 
 	init_cache()
-
-	local screenwidth, screenheight = client.screenwidth(), client.screenheight()
+	
+	local closest_line
+	local selected_sector
+	local mouse         = input.getmouse()
+	local mousePos      = client.transformPoint(mouse.X, mouse.Y)
+	local gameMousePos  = screen_to_game(mousePos)
+	local screenwidth   = client.screenwidth()
+	local screenheight  = client.screenheight()
+	local shortest_dist = math.maxinteger
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
 		local type = mobj.type
@@ -458,8 +499,51 @@ local function iterate()
 
 		if special ~= 0 then color = 0xffcc00ff end
 
-		drawline(x1, y1, x2, y2, color)
+		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
+		
+		x1, y1, x2, y2 = cached_line_coords(line)
+		
+		local dist = distance_from_line(
+			gameMousePos,
+			tuple_to_vertex(x1, y1),
+			tuple_to_vertex(x2, y2))
+		
+		if dist < shortest_dist then
+			shortest_dist = dist
+			closest_line = line
+		end
 	end
+	
+	if closest_line then
+		local x1, y1, x2, y2 = cached_line_coords(closest_line)
+		local side =
+			(gameMousePos.x - x1) * (x2 - x1) -
+			(gameMousePos.y - x1) * (y2 - y1)
+		
+		if side <= 0 then
+			if closest_line.backsector then
+				selected_sector = closest_line.backsector
+			end
+		else
+			if closest_line.frontsector then
+				selected_sector = closest_line.frontsector
+			end
+		end
+	end
+	
+	if selected_sector then
+		for _, line in ipairs(selected_sector.lines) do
+			local x1, y1, x2, y2 = game_to_screen(line:coords())
+			gui.drawLine(x1, y1, x2, y2, 0xff00ffff)
+		end
+	end
+	
+	if closest_line then
+		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
+		drawline(x1, y1, x2, y2, 0xffff8800)
+	end
+	
+--	text(50,10,shortest_dist/0xffff)
 end
 
 local function init_mobj_bounds()
@@ -536,9 +620,7 @@ local function make_button(x, y, name, func)
 	local mousePos = client.transformPoint(mouse.X, mouse.Y)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
-	and in_range(mousePos.y, y-boxHeight, y         )
-	and not input.get()["Shift"]
-	and not input.get()["LeftShift"] then
+	and in_range(mousePos.y, y-boxHeight, y         ) then
 		if mouse.Left then
 			suppress_click_input()
 			colorIndex = 3
@@ -551,8 +633,8 @@ local function make_button(x, y, name, func)
 end
 
 local function make_buttons()
-	make_button( 10, client.screenheight()-70, "Zoom\nIn",    function() zoom( 1) end )
-	make_button( 10, client.screenheight()-10, "Zoom\nOut",   function() zoom(-1) end )
+	make_button( 10, client.screenheight()-70, "Zoom\nIn",  function() zoom( 1) end)
+	make_button( 10, client.screenheight()-10, "Zoom\nOut", function() zoom(-1) end)
 	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
 	make_button(150, client.screenheight()-70, "Pan \nUp",    pan_up    )
 	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
@@ -651,7 +733,6 @@ while true do
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
 		clear_cache()
-		reset_view()
 		LastEpisode, LastMap = episode, map
 	end
 
@@ -688,7 +769,7 @@ while true do
 
 	LastScreenSize.w = client.screenwidth()
 	LastScreenSize.h = client.screenheight()
-	LastFramecount = framecount
+	LastFramecount   = framecount
 
 	emu.yield()
 end
