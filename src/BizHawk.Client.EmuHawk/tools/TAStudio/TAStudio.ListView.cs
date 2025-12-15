@@ -36,6 +36,9 @@ namespace BizHawk.Client.EmuHawk
 			get => __axisEditColumn;
 			set
 			{
+				// If we're changing column, exit axis editing mode first.
+				if (AxisEditingMode && value != null) __axisEditColumn = null;
+
 				__axisEditColumn = value;
 				_axisEditYPos = -1;
 
