@@ -278,6 +278,12 @@ namespace BizHawk.Client.EmuHawk
 					// We will start editing via mouse, so don't unselect if we have multiple selected rows.
 					return false;
 				}
+				else
+				{
+					// Exit axis editing mode (ideally we wouldn't change state in the query method, but we can't do this on mouse down because the selection will have already changed)
+					AxisEditColumn = null;
+					SetTasViewRowCount();
+				}
 			}
 
 			return null;
@@ -547,22 +553,14 @@ namespace BizHawk.Client.EmuHawk
 					if (ModifierKeys is Keys.Control or Keys.Shift)
 					{
 						// User was selecting additional rows.
-						return;
-					}
-
-					if (AxisEditColumn != buttonName|| !TasView.IsRowSelected(frame))
-					{
-						// Exit axis editing mode
-						AxisEditColumn = null;
-						SetTasViewRowCount();
 					}
 					else
 					{
 						// Begin axis edit via mouse
 						_axisEditYPos = e.Y;
 						_exitAxisEditingOnMouseUp = true;
-						return;
 					}
+					return;
 				}
 
 				if (targetCol.Name is CursorColumnName)
