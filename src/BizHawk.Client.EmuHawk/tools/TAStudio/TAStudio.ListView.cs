@@ -64,22 +64,19 @@ namespace BizHawk.Client.EmuHawk
 		private string _axisTypedValue = "";
 		private bool _didAxisType;
 		private int _axisEditYPos = -1;
-		private bool _exitAxisEditingOnMouseUp = true;
 		private int _axisRestoreId;
 
 		/// <summary>
 		/// Begin editing an axis value by dragging the mouse.
 		/// </summary>
 		/// <param name="yPos">The initial vertical position of the cursor.</param>
-		/// <param name="exitOnMouseUp">True to axis editing mode (not mouse edit mode) on mouse up even if no edit occured.</param>
-		private void BeginAxisMouseEdit(int yPos, bool exitOnMouseUp)
+		private void BeginAxisMouseEdit(int yPos)
 		{
 			Debug.Assert(AxisEditingMode, "Don't begin axis mouse edit outside of axis editing mode.");
 
 			_axisEditYPos = yPos;
 			_axisTypedValue = "";
 			_didAxisType = false;
-			_exitAxisEditingOnMouseUp = exitOnMouseUp;
 			_axisRestoreId = CurrentTasMovie.ChangeLog.MostRecentId;
 
 			CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis mouse edit, frame {TasView.SelectedRows.First()}");
@@ -582,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						BeginAxisMouseEdit(e.Y, true);
+						BeginAxisMouseEdit(e.Y);
 					}
 					return;
 				}
@@ -699,7 +696,7 @@ namespace BizHawk.Client.EmuHawk
 							else
 							{
 								AxisEditColumn = buttonName;
-								BeginAxisMouseEdit(e.Y, false);
+								BeginAxisMouseEdit(e.Y);
 							}
 
 							RefreshDialog();
@@ -904,13 +901,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CurrentTasMovie.ChangeLog.EndBatch();
 
-			// Exit axis editing if value was changed with cursor
-			if (AxisEditingMode && _exitAxisEditingOnMouseUp)
-			{
-				AxisEditColumn = null;
-			}
-			_axisPaintState = 0;
-			_axisEditYPos = -1;
+			_axisEditYPos = -1; // exit mouse edit mode
 
 			MainForm.BlockFrameAdvance = false;
 
@@ -1289,7 +1280,6 @@ namespace BizHawk.Client.EmuHawk
 			int increment = (_axisEditYPos - e.Y) / 4;
 			AnalogChangeBy(increment);
 			_axisEditYPos -= increment * 4;
-			if (increment != 0) _exitAxisEditingOnMouseUp = true;
 		}
 
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
