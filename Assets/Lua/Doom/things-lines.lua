@@ -256,6 +256,39 @@ local function zoom(times, mouseCenter)
 	Pan.y = Pan.y - zoomCenter.y / 0xffff
 end
 
+-- helper to get squared distance (avoids sqrt for comparison)
+function dist_sq(p1, p2)
+    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
+end
+
+local function distance_from_line(p, a, b)
+	local ab_sq = dist_sq(a, b)
+	
+	if ab_sq == 0 then return math.sqrt(dist_sq(p, a)) end -- A and B are the same point
+
+	-- project point P onto the line AB
+	-- t = ((P-A) . (B-A)) / |B-A|^2
+	local t =
+		((p.x - a.x) * (b.x - a.x) +
+		 (p.y - a.y) * (b.y - a.y)) / ab_sq
+	
+	-- clamp t to [0, 1] to stay within the segment
+	t = math.max(0, math.min(1, t))
+
+	-- find the closest point on the segment (D)
+	local closestPoint = {
+		x = a.x + t * (b.x - a.x),
+		y = a.y + t * (b.y - a.y)
+	}
+
+	-- return the distance from P to the closest point D
+	local dist = math.sqrt(dist_sq(p, closestPoint))
+		
+	if ((b.y - a.y) / (b.x - a.x)) * (p.x - a.x) + a.y < p.y then return -dist end
+	
+	return dist
+end
+
 local function suppress_click_input()
 	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
 		joypad.set({ [MAP_CLICK_BLOCK] = false })
@@ -416,39 +449,6 @@ local function iterate_players()
 	gui.text(0, 0, stats, nil, "topright")
 end
 
--- helper to get squared distance (avoids sqrt for comparison)
-function dist_sq(p1, p2)
-    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
-end
-
-local function distance_from_line(p, a, b)
-	local ab_sq = dist_sq(a, b)
-	
-	if ab_sq == 0 then return math.sqrt(dist_sq(p, a)) end -- A and B are the same point
-
-	-- project point P onto the line AB
-	-- t = ((P-A) . (B-A)) / |B-A|^2
-	local t =
-		((p.x - a.x) * (b.x - a.x) +
-		 (p.y - a.y) * (b.y - a.y)) / ab_sq
-	
-	-- clamp t to [0, 1] to stay within the segment
-	t = math.max(0, math.min(1, t))
-
-	-- find the closest point on the segment (D)
-	local closestPoint = {
-		x = a.x + t * (b.x - a.x),
-		y = a.y + t * (b.y - a.y)
-	}
-
-	-- return the distance from P to the closest point D
-	local dist = math.sqrt(dist_sq(p, closestPoint))
-		
---	if ((b.y - a.y) / (b.x - a.x)) * (p.x - a.x) + a.y < p.y then return -dist end
-	
-	return dist
-end
-
 local function iterate()
 	if Init then return end
 
@@ -508,17 +508,17 @@ local function iterate()
 			tuple_to_vertex(x1, y1),
 			tuple_to_vertex(x2, y2))
 		
-		if dist < shortest_dist then
-			shortest_dist = dist
+		if math.abs(dist) < shortest_dist then
+			shortest_dist = math.abs(dist)
 			closest_line = line
 		end
 	end
 	
 	if closest_line then
-		local x1, y1, x2, y2 = cached_line_coords(closest_line)
+		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
 		local side =
-			(gameMousePos.x - x1) * (x2 - x1) -
-			(gameMousePos.y - x1) * (y2 - y1)
+			(mousePos.y - y1) * (x2 - x1) -
+			(mousePos.x - x1) * (y2 - y1)
 		
 		if side <= 0 then
 			if closest_line.backsector then
