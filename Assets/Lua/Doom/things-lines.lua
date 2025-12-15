@@ -19,16 +19,16 @@ local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map 
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
 	player      = { color = 0xFF60A0FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
-	enemy       = { color = 0xFFF00000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	enemy       = { color = 0xFFFF0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy_idle  = { color = 0xFFAA0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	corpse      = { color = 0x80AA0000, radius_min_zoom = 0.00, text_min_zoom = 0.30, },
+--	corpse      = { color = 0xAAAAAAAA, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
 	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	shootable   = { color = 0xFFFFDD00, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
-	countitem   = { color = 0xFF8060FF, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
-	item        = { color = 0xFF8060FF, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
-	misc        = { color = 0xFFA0A0A0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+	shootable   = { color = 0xFFAAAAAA, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
+	countitem   = { color = 0xFFFFFF00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+	item        = { color = 0xFF00FF00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+--	misc        = { color = 0xFFA0A0A0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
 	solid       = { color = 0xFF505050, radius_min_zoom = 0.75, text_min_zoom = false, },
-	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+--	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
 	highlight   = { color = 0xFFFF00FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 }
 
@@ -48,6 +48,7 @@ local MobjFlags    = enums.mobjflags
 -- TOP LEVEL VARIABLES
 
 local Zoom = 1
+local Follow = false
 local Init = true
 
 -- tables
@@ -71,7 +72,8 @@ local LastScreenSize = {
 local LastMouse = {
 	x     = 0,
 	y     = 0,
-	wheel = 0
+	wheel = 0,
+	left  = false
 }
 local LastFramecount = -1
 local LastEpisode
@@ -194,17 +196,6 @@ local function in_range(var, minimum, maximum)
 	return var >= minimum and var <= maximum
 end
 
-local function reset_view()
-	OB = {
-		top    = math.maxinteger,
-		left   = math.maxinteger,
-		bottom = math.mininteger,
-		right  = math.mininteger
-	}
-	Init = true	
-	update_zoom()
-end
-
 local function pan_left(divider)
 	Pan.x = Pan.x + PAN_FACTOR/Zoom/(divider or 2)
 end
@@ -227,6 +218,8 @@ local function zoom(times, mouseCenter)
 	local zoomCenter
 	local direction = 1
 	times = times or 1
+	
+	if Follow then mouseCenter = false end
 	
 	if times < 0 then
 		direction = -1
@@ -254,6 +247,12 @@ local function zoom(times, mouseCenter)
 	zoomCenter.y = (encode_y(mouseCenter and mousePos.y or client.screenheight()/2)-zoomCenter.y)
 	Pan.x = Pan.x + zoomCenter.x / 0xffff
 	Pan.y = Pan.y - zoomCenter.y / 0xffff
+end
+
+local function follow_toggle()
+	if Mouse.Left and not LastMouse.left then
+		Follow = not Follow
+	end
 end
 
 -- helper to get squared distance (avoids sqrt for comparison)
@@ -363,11 +362,6 @@ local function get_mobj_color(mobj, mobjtype)
 	return radius_color, text_color
 end
 
-local function clear_cache()
-	Lines = nil
-	reset_view()
-end
-
 local function init_cache()
 	if Lines then return end
 
@@ -456,48 +450,18 @@ local function iterate()
 	
 	local closest_line
 	local selected_sector
-	local mouse         = input.getmouse()
-	local mousePos      = client.transformPoint(mouse.X, mouse.Y)
+	local mousePos      = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos  = screen_to_game(mousePos)
 	local screenwidth   = client.screenwidth()
 	local screenheight  = client.screenheight()
 	local shortest_dist = math.maxinteger
 
-	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local type = mobj.type
-		local radius_color, text_color = get_mobj_color(mobj, type)
-		if radius_color or text_color then -- not hidden
-			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
-
-			if  in_range(pos.x, 0, screenwidth)
-			and in_range(pos.y, 0, screenheight)
-			then
-				local type   = mobj.type
-				local radius = math.floor((mobj.radius / 0xffff) * Zoom)
-				local index  = mobj.index
-				--[[--
-				local z      = mobj.z
-				local tics   = mobj.tics
-				local health = mobj.health
-				local sprite = SpriteNumber[mobj.sprite]
-				--]]--
-				if text_color then
-				--	type = MobjType[type]
-					text(pos.x, pos.y, string.format("%d", index),  text_color)
-				end
-				if radius_color then
-					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
-				end
-			end
-		end
-	end
-
 	for i, line in ipairs(Lines) do
-		local color = 0xffcccccc
+		local color = 0xffffffff
 		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
 		local special = line.special
 
-		if special ~= 0 then color = 0xffcc00ff end
+		if special ~= 0 then color = 0xffff00ff end
 
 		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
 		
@@ -542,6 +506,35 @@ local function iterate()
 		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
 		drawline(x1, y1, x2, y2, 0xffff8800)
 	end
+
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
+		local type = mobj.type
+		local radius_color, text_color = get_mobj_color(mobj, type)
+		if radius_color or text_color then -- not hidden
+			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
+
+			if  in_range(pos.x, 0, screenwidth)
+			and in_range(pos.y, 0, screenheight)
+			then
+				local type   = mobj.type
+				local radius = math.floor((mobj.radius / 0xffff) * Zoom)
+				local index  = mobj.index
+				--[[--
+				local z      = mobj.z
+				local tics   = mobj.tics
+				local health = mobj.health
+				local sprite = SpriteNumber[mobj.sprite]
+				--]]--
+				if text_color then
+				--	type = MobjType[type]
+					text(pos.x, pos.y, string.format("%d", index),  text_color)
+				end
+				if radius_color then
+					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
+				end
+			end
+		end
+	end
 	
 --	text(50,10,shortest_dist/0xffff)
 end
@@ -557,13 +550,18 @@ local function init_mobj_bounds()
 	end
 end
 
-function update_zoom()
-	local mouse      = input.getmouse()
-	local mousePos   = client.transformPoint(mouse.X, mouse.Y)
-	local mouseWheel = math.floor(mouse.Wheel/120)
-	local deltaX     = mousePos.x - LastMouse.x
-	local deltaY     = mousePos.y - LastMouse.y
-	local deltaWheel = mouseWheel - LastMouse.wheel
+local function get_player1_xy()
+	for _, player in Globals.iterate_players() do
+		return { x = player.mo.x, y = player.mo.y }
+	end
+end
+
+local function update_zoom()
+	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
+	local mouseWheel   = math.floor(Mouse.Wheel/120)
+	local deltaX       = mousePos.x - LastMouse.x
+	local deltaY       = mousePos.y - LastMouse.y
+	local deltaWheel   = mouseWheel - LastMouse.wheel
 	
 	if deltaWheel ~= 0 then zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true) end
 	
@@ -575,8 +573,20 @@ function update_zoom()
 	
 	LastMouse.x     = mousePos.x
 	LastMouse.y     = mousePos.y
-	LastMouse.left  = mouse.Left
 	LastMouse.wheel = mouseWheel
+	
+	if Follow and Globals.gamestate == 0 then
+		local playerPos = get_player1_xy()
+		local screenCenter = screen_to_game({
+			x = client.screenwidth ()/2,
+			y = client.screenheight()/2
+		})
+		
+		screenCenter.x = screenCenter.x - playerPos.x
+		screenCenter.y = screenCenter.y - playerPos.y
+		Pan.x = Pan.x + screenCenter.x / 0xffff
+		Pan.y = Pan.y - screenCenter.y / 0xffff
+	end
 	
 	if not Init
 	and LastScreenSize.w == client.screenwidth()
@@ -602,6 +612,22 @@ function update_zoom()
 	end
 end
 
+local function reset_view()
+	OB = {
+		top    = math.maxinteger,
+		left   = math.maxinteger,
+		bottom = math.mininteger,
+		right  = math.mininteger
+	}
+	Init = true	
+	update_zoom()
+end
+
+local function clear_cache()
+	Lines = nil
+	reset_view()
+end
+
 local function make_button(x, y, name, func)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
@@ -616,12 +642,11 @@ local function make_button(x, y, name, func)
 	
 	local textX    = x + boxWidth /2 - textWidth /2
 	local textY    = y + boxHeight/2 - textHeight/2 - boxHeight
-	local mouse    = input.getmouse()
-	local mousePos = client.transformPoint(mouse.X, mouse.Y)
+	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         ) then
-		if mouse.Left then
+		if Mouse.Left then
 			suppress_click_input()
 			colorIndex = 3
 			func()
@@ -633,13 +658,15 @@ local function make_button(x, y, name, func)
 end
 
 local function make_buttons()
-	make_button( 10, client.screenheight()-70, "Zoom\nIn",  function() zoom( 1) end)
-	make_button( 10, client.screenheight()-10, "Zoom\nOut", function() zoom(-1) end)
-	make_button( 80, client.screenheight()-40, "Pan\nLeft",   pan_left  )
-	make_button(150, client.screenheight()-70, "Pan \nUp",    pan_up    )
-	make_button(150, client.screenheight()-10, "Pan\nDown",   pan_down  )
-	make_button(220, client.screenheight()-40, "Pan\nRight",  pan_right )
+	make_button( 10, client.screenheight()-40, "+", function() zoom( 1) end)
+	make_button( 10, client.screenheight()-10, "-", function() zoom(-1) end)
+	make_button( 40, client.screenheight()-24, "<", pan_left  )
+	make_button( 64, client.screenheight()-40, "^", pan_up    )
+	make_button( 64, client.screenheight()-10, "v", pan_down  )
+	make_button( 88, client.screenheight()-24, ">", pan_right )
 	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
+	make_button(118, client.screenheight()-10,
+		string.format("Follow\n%s", Follow and "ON" or "OFF"), follow_toggle)
 end
 
 -- Additional types that are not identifiable by flags alone
@@ -728,7 +755,8 @@ end)
 
 while true do
 	local framecount = emu.framecount()
-	local paused = client.ispaused()
+	local paused     = client.ispaused()
+	Mouse = input.getmouse()
 
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
@@ -750,16 +778,16 @@ while true do
 		gui.clearGraphics()
 		-- while onframestart isn't called
 		make_buttons()
-		update_zoom()
-	end
-
-	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
-	if framecount ~= LastFramecount or paused then
-		iterate()
-		iterate_players()
 	end
 
 	update_zoom()
+
+	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
+	if (framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
+		iterate()
+		LastMouse.left   = Mouse.Left
+	--	iterate_players()
+	end
 
 	--[[--
 	text(10, client.screenheight()-170, string.format(
