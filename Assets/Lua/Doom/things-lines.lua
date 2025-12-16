@@ -7,29 +7,31 @@ local symbols = require("dsda.symbols")
 
 -- CONSTANTS
 
-local MINIMAL_ZOOM      = 0.0001 -- ???
-local ZOOM_FACTOR       = 0.01
-local WHEEL_ZOOM_FACTOR = 10
-local DRAG_FACTOR       = 10
-local PAN_FACTOR        = 10
-local CHAR_WIDTH        = 10
-local CHAR_HEIGHT       = 16
-local MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
+local FRACBITS          <const> = 16
+local FRACUNIT          <const> = 1 << FRACBITS
+local MINIMAL_ZOOM      <const> = 0.0001 -- ???
+local ZOOM_FACTOR       <const> = 0.01
+local WHEEL_ZOOM_FACTOR <const> = 10
+local DRAG_FACTOR       <const> = 10
+local PAN_FACTOR        <const> = 10
+local CHAR_WIDTH        <const> = 10
+local CHAR_HEIGHT       <const> = 16
+local MAP_CLICK_BLOCK   <const> = "P1 Fire" -- prevent this input while clicking on map buttons
 
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
-	player      = { color = 0xFF60A0FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
-	enemy       = { color = 0xFFFF0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	enemy_idle  = { color = 0xFFAA0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
---	corpse      = { color = 0xAAAAAAAA, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
-	missile     = { color = 0xFFFF8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	shootable   = { color = 0xFFAAAAAA, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
-	countitem   = { color = 0xFFFFFF00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
-	item        = { color = 0xFF00FF00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
---	misc        = { color = 0xFFA0A0A0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
-	solid       = { color = 0xFF505050, radius_min_zoom = 0.75, text_min_zoom = false, },
+	player      = { color = 0xff60a0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+--	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
+	missile     = { color = 0xffff8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	shootable   = { color = 0xffaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
+	countitem   = { color = 0xffffff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+	item        = { color = 0xff00ff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+--	misc        = { color = 0xffa0a0a0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false, },
 --	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
-	highlight   = { color = 0xFFFF00FF, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	highlight   = { color = 0xffff00ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 }
 
 -- shortcuts
@@ -37,7 +39,6 @@ local MapPrefs = {
 local text     = gui.text
 local box      = gui.drawBox
 local drawline = gui.drawLine
---local text = gui.pixelText -- INSANELY SLOW
 
 local Globals      = structs.globals
 local MobjType     = enums.mobjtype
@@ -116,19 +117,19 @@ end
 -- GAME/SCREEN CODECS
 
 local function decode_x(coord)
-	return math.floor(((coord / 0xffff) + Pan.x) * Zoom)
+	return math.floor(((coord / FRACUNIT) + Pan.x) * Zoom)
 end
 
 local function decode_y(coord)
-	return math.floor(((-coord / 0xffff) + Pan.y) * Zoom)
+	return math.floor(((-coord / FRACUNIT) + Pan.y) * Zoom)
 end
 
 local function encode_x(coord)
-	return math.floor(((coord / Zoom) - Pan.x) * 0xffff)
+	return math.floor(((coord / Zoom) - Pan.x) * FRACUNIT)
 end
 
 local function encode_y(coord)
-	return -math.floor(((coord / Zoom) - Pan.y) * 0xffff)
+	return -math.floor(((coord / Zoom) - Pan.y) * FRACUNIT)
 end
 
 -- return value matches passed value (line/vertex tuple/table)
@@ -246,8 +247,8 @@ local function zoom(times, mouseCenter)
 	
 	zoomCenter.x = (encode_x(mouseCenter and mousePos.x or client.screenwidth ()/2)-zoomCenter.x)
 	zoomCenter.y = (encode_y(mouseCenter and mousePos.y or client.screenheight()/2)-zoomCenter.y)
-	Pan.x = Pan.x + zoomCenter.x / 0xffff
-	Pan.y = Pan.y - zoomCenter.y / 0xffff
+	Pan.x = Pan.x + zoomCenter.x / FRACUNIT
+	Pan.y = Pan.y - zoomCenter.y / FRACUNIT
 end
 
 local function follow_toggle()
@@ -419,6 +420,12 @@ local function cached_line_coords(line)
 	return table.unpack(line._coords)
 end
 
+local function get_player1_xy()
+	for _, player in Globals.iterate_players() do
+		return { x = player.mo.x, y = player.mo.y }
+	end
+end
+
 local function iterate_players()
 	local playercount       = 0
 	local total_killcount   = 0
@@ -501,17 +508,47 @@ local function iterate()
 			-- cached_line_coords gives some length error?
 			local x1, y1, x2, y2 = game_to_screen(line:coords())
 			gui.drawLine(x1, y1, x2, y2, 0xff00ffff)
+		
+			gui.text(0, 30, string.format(
+				"SECTOR\nid:   %d\nflr:  %.2f\nceil: %.2f\nspec: %d",
+				selected_sector.iSectorID,
+				selected_sector.floorheight / FRACUNIT,
+				selected_sector.ceilingheight / FRACUNIT,
+				selected_sector.special
+			), 0xff00ffff)
 		end
 	end
 	
 	if closest_line then
-		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
-		drawline(x1, y1, x2, y2, 0xffff8800)
+		local distances = {}
+		local x1, y1, x2, y2 = cached_line_coords(closest_line)
+		local pos = get_player1_xy()
+		
+		for i, player in structs.globals.iterate_players() do
+			distances[i] = math.floor(distancePointToLineSegment(
+				{ x = pos.x / FRACUNIT, y = pos.y / FRACUNIT },
+				{ x = x1    / FRACUNIT, y = y1    / FRACUNIT },
+				{ x = x2    / FRACUNIT, y = y2    / FRACUNIT }
+			))
+		end
+		
+		x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
+		drawline(x1, y1, x2, y2, 0xffff8800)		
+		gui.text(0, 120, string.format(
+			"LINEDEF\nid:   %d\nv1x:  %.0f\nv1y:  %.0f\nv2x:  %.0f\nv2y:  %.0f\ndist: %d",
+			closest_line.iLineID,
+			closest_line.v1.x / FRACUNIT,
+			closest_line.v1.y / FRACUNIT,
+			closest_line.v2.x / FRACUNIT,
+			closest_line.v2.y / FRACUNIT,
+			distances[1]
+		), 0xffff8800)
 	end
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
 		local type = mobj.type
 		local radius_color, text_color = get_mobj_color(mobj, type)
+		
 		if radius_color or text_color then -- not hidden
 			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
@@ -519,28 +556,42 @@ local function iterate()
 			and in_range(pos.y, 0, screenheight)
 			then
 				local type   = mobj.type
-				local radius = math.floor((mobj.radius / 0xffff) * Zoom)
+				local radius = mobj.radius
+				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
 				local index  = mobj.index
-				--[[--
-				local z      = mobj.z
-				local tics   = mobj.tics
-				local health = mobj.health
-				local sprite = SpriteNumber[mobj.sprite]
-				--]]--
 				
-				if  in_range(mousePos.x, pos.x - radius, pos.x + radius)
-				and in_range(mousePos.y, pos.y - radius, pos.y + radius)
+				if  in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
+				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
 				then
 					radius_color = "white"
 					text_color   = "white"
+					
+					gui.text(0, 240, string.format(
+						"THING (%s)\nid:   %d\nx:    %.5f\ny:    %.5f\nz:    %.2f\n" ..
+						"rad:  %.0f\ntics: %d\nhp:   %d\nrt:   %d\nthre: %d",
+						MobjType[type],
+						mobj.index,
+						mobj.x / FRACUNIT,
+						mobj.y / FRACUNIT,
+						mobj.z / FRACUNIT,
+						mobj.radius / FRACUNIT,
+						mobj.tics,
+						mobj.health,
+						mobj.reactiontime,
+						mobj.threshold
+					))
 				end
 				
 				if radius_color then
-					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
+					box(
+						pos.x - screen_radius, 
+						pos.y - screen_radius,
+						pos.x + screen_radius,
+						pos.y + screen_radius,
+						radius_color)
 				end
 				
 				if text_color then
-				--	type = MobjType[type]
 					text(
 						pos.x - radius + 1,
 						pos.y - radius,
@@ -550,23 +601,17 @@ local function iterate()
 		end
 	end
 	
---	text(50,10,shortest_dist/0xffff)
+--	text(50,10,shortest_dist/FRACUNIT)
 end
 
 local function init_mobj_bounds()
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local x = mobj.x / 0xffff
-		local y = mobj.y / 0xffff * -1
+		local x = mobj.x / FRACUNIT
+		local y = mobj.y / FRACUNIT * -1
 		if x < OB.left   then OB.left   = x end
 		if x > OB.right  then OB.right  = x end
 		if y < OB.top    then OB.top    = y end
 		if y > OB.bottom then OB.bottom = y end
-	end
-end
-
-local function get_player1_xy()
-	for _, player in Globals.iterate_players() do
-		return { x = player.mo.x, y = player.mo.y }
 	end
 end
 
@@ -600,8 +645,8 @@ local function update_zoom()
 		
 		screenCenter.x = screenCenter.x - playerPos.x
 		screenCenter.y = screenCenter.y - playerPos.y
-		Pan.x = Pan.x + screenCenter.x / 0xffff
-		Pan.y = Pan.y - screenCenter.y / 0xffff
+		Pan.x = Pan.x + screenCenter.x / FRACUNIT
+		Pan.y = Pan.y - screenCenter.y / FRACUNIT
 	end
 	
 	if not Init
