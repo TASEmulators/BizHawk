@@ -90,6 +90,7 @@ local InertTypes
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
+client.SetClientExtraPadding(240, 0, 0, 0)
 
 -- TYPE CONVERTERS
 
@@ -298,7 +299,7 @@ local function maybe_swap(smaller, bigger)
 	if smaller > bigger then
 		return bigger, smaller
 	end
-	return smaller, bigger
+	return smaller - 100, bigger + 100
 end
 
 local function get_line_count(str)
@@ -497,6 +498,7 @@ local function iterate()
 	
 	if selected_sector then
 		for _, line in ipairs(selected_sector.lines) do
+			-- cached_line_coords gives some length error?
 			local x1, y1, x2, y2 = game_to_screen(line:coords())
 			gui.drawLine(x1, y1, x2, y2, 0xff00ffff)
 		end
@@ -525,12 +527,24 @@ local function iterate()
 				local health = mobj.health
 				local sprite = SpriteNumber[mobj.sprite]
 				--]]--
-				if text_color then
-				--	type = MobjType[type]
-					text(pos.x, pos.y, string.format("%d", index),  text_color)
+				
+				if  in_range(mousePos.x, pos.x - radius, pos.x + radius)
+				and in_range(mousePos.y, pos.y - radius, pos.y + radius)
+				then
+					radius_color = "white"
+					text_color   = "white"
 				end
+				
 				if radius_color then
 					box(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, radius_color)
+				end
+				
+				if text_color then
+				--	type = MobjType[type]
+					text(
+						pos.x - radius + 1,
+						pos.y - radius,
+						string.format("%d", index),  text_color)
 				end
 			end
 		end
@@ -557,6 +571,8 @@ local function get_player1_xy()
 end
 
 local function update_zoom()
+	local screenwidth  = client.screenwidth()
+	local screenheight = client.screenheight()
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local mouseWheel   = math.floor(Mouse.Wheel/120)
 	local deltaX       = mousePos.x - LastMouse.x
@@ -578,8 +594,8 @@ local function update_zoom()
 	if Follow and Globals.gamestate == 0 then
 		local playerPos = get_player1_xy()
 		local screenCenter = screen_to_game({
-			x = client.screenwidth ()/2,
-			y = client.screenheight()/2
+			x = screenwidth /2,
+			y = screenheight/2
 		})
 		
 		screenCenter.x = screenCenter.x - playerPos.x
@@ -589,8 +605,8 @@ local function update_zoom()
 	end
 	
 	if not Init
-	and LastScreenSize.w == client.screenwidth()
-	and LastScreenSize.h == client.screenheight()
+	and LastScreenSize.w == screenwidth
+	and LastScreenSize.h == screenheight
 	then return end
 	
 	if  OB.top    ~= math.maxinteger
@@ -601,14 +617,18 @@ local function update_zoom()
 	then
 		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
 		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
-		local span        = { x = OB.right-OB.left+200,        y = OB.bottom-OB.top+200         }
-		local scale       = { x = client.screenwidth()/span.x, y = client.screenheight()/span.y }
-		local spanCenter  = { x = OB.left+span.x/2,            y = OB.top+span.y/2 }
-		      Zoom        = math.min(scale.x, scale.y)
-		local sreenCenter = { x = client.screenwidth()/Zoom/2, y = client.screenheight()/Zoom/2 }
-		      Pan.x       = -math.floor(spanCenter.x - sreenCenter.x)
-		      Pan.y       = -math.floor(spanCenter.y - sreenCenter.y)
-		      Init        = false
+		local span         = { x = OB.right-OB.left,   y = OB.bottom-OB.top    }
+		local scale        = { x = screenwidth/span.x, y = screenheight/span.y }
+		      Zoom         = math.min(scale.x, scale.y)
+		local spanCenter   = { x = OB.left+span.x/2,   y = OB.top+span.y/2     }
+		local sreenCenter  = { x = screenwidth/Zoom/2, y = screenheight/Zoom/2 }
+		
+		if not Follow then
+			Pan.x = -math.floor(spanCenter.x - sreenCenter.x)
+			Pan.y = -math.floor(spanCenter.y - sreenCenter.y)
+		end
+		
+		Init = false
 	end
 end
 
@@ -646,11 +666,18 @@ local function make_button(x, y, name, func)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         ) then
-		if Mouse.Left then
-			suppress_click_input()
-			colorIndex = 3
-			func()
-		else colorIndex = 2 end
+		if not (Follow
+		and (func == pan_left
+		or   func == pan_up
+		or   func == pan_down
+		or   func == pan_right))
+		then
+			if Mouse.Left then
+				suppress_click_input()
+				colorIndex = 3
+				func()
+			else colorIndex = 2 end
+		end
 	end
 	
 	box(x, y, x+boxWidth, y-boxHeight, 0xaaffffff, colors[colorIndex])
@@ -664,9 +691,9 @@ local function make_buttons()
 	make_button( 64, client.screenheight()-40, "^", pan_up    )
 	make_button( 64, client.screenheight()-10, "v", pan_down  )
 	make_button( 88, client.screenheight()-24, ">", pan_right )
-	make_button(300, client.screenheight()-10, "Reset\nView", reset_view)
+	make_button(118, client.screenheight()-40, "Reset View", reset_view)
 	make_button(118, client.screenheight()-10,
-		string.format("Follow\n%s", Follow and "ON" or "OFF"), follow_toggle)
+		string.format("Follow %s", Follow and "ON " or "OFF"), follow_toggle)
 end
 
 -- Additional types that are not identifiable by flags alone
@@ -756,7 +783,7 @@ end)
 while true do
 	local framecount = emu.framecount()
 	local paused     = client.ispaused()
-	Mouse = input.getmouse()
+	Mouse            = input.getmouse()
 
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
