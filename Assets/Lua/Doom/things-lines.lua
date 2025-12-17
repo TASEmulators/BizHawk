@@ -16,6 +16,7 @@ local DRAG_FACTOR       <const> = 10
 local PAN_FACTOR        <const> = 10
 local CHAR_WIDTH        <const> = 10
 local CHAR_HEIGHT       <const> = 16
+local PADDING_WIDTH     <const> = 240
 local MAP_CLICK_BLOCK   <const> = "P1 Fire" -- prevent this input while clicking on map buttons
 
 -- Map colors (0xAARRGGBB or "name")
@@ -51,6 +52,7 @@ local MobjFlags    = enums.mobjflags
 local Zoom = 1
 local Follow = false
 local Init = true
+local Players = {}
 
 -- tables
 
@@ -77,10 +79,11 @@ local LastMouse = {
 	left  = false
 }
 local LastFramecount = -1
-local LastEpisode
-local LastMap
 
 -- forward declarations
+
+local LastEpisode
+local LastMap
 
 local Lines
 local PlayerTypes
@@ -91,7 +94,7 @@ local InertTypes
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
-client.SetClientExtraPadding(240, 0, 0, 0)
+client.SetClientExtraPadding(PADDING_WIDTH, 0, 0, 0)
 
 -- TYPE CONVERTERS
 
@@ -420,19 +423,20 @@ local function cached_line_coords(line)
 	return table.unpack(line._coords)
 end
 
-local function get_player1_xy()
-	for _, player in Globals.iterate_players() do
-		return { x = player.mo.x, y = player.mo.y }
-	end
-end
-
 local function iterate_players()
+	--[[--
 	local playercount       = 0
 	local total_killcount   = 0
 	local total_itemcount   = 0
 	local total_secretcount = 0
 	local stats             = "      HP Armr Kill Item Secr\n"
+	--]]--
 	for i, player in Globals:iterate_players() do
+		Players[i] = {
+			x = player.mo.x,
+			y = player.mo.y
+		}
+		--[[--
 		playercount       = playercount + 1
 		local killcount   = player.killcount
 		local itemcount   = player.itemcount
@@ -444,11 +448,14 @@ local function iterate_players()
 
 		stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
 			stats, i, player.health, player.armorpoints1, killcount, itemcount, secretcount)
+		--]]--
 	end
+	--[[--
 	if playercount > 1 then
 		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
 	end
-	gui.text(0, 0, stats, nil, "topright")
+	text(0, 0, stats, nil, "topright")
+	--]]--
 end
 
 local function iterate()
@@ -458,6 +465,7 @@ local function iterate()
 	
 	local closest_line
 	local selected_sector
+	local texts         = {}
 	local mousePos      = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos  = screen_to_game(mousePos)
 	local screenwidth   = client.screenwidth()
@@ -507,42 +515,34 @@ local function iterate()
 		for _, line in ipairs(selected_sector.lines) do
 			-- cached_line_coords gives some length error?
 			local x1, y1, x2, y2 = game_to_screen(line:coords())
-			gui.drawLine(x1, y1, x2, y2, 0xff00ffff)
-		
-			gui.text(0, 30, string.format(
-				"SECTOR\nid:   %d\nflr:  %.2f\nceil: %.2f\nspec: %d",
+			drawline(x1, y1, x2, y2, 0xff00ffff)
+			texts.sector = string.format(
+				"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
 				selected_sector.iSectorID,
+				selected_sector.special,
 				selected_sector.floorheight / FRACUNIT,
-				selected_sector.ceilingheight / FRACUNIT,
-				selected_sector.special
-			), 0xff00ffff)
+				selected_sector.ceilingheight / FRACUNIT)
 		end
 	end
 	
 	if closest_line then
-		local distances = {}
 		local x1, y1, x2, y2 = cached_line_coords(closest_line)
-		local pos = get_player1_xy()
-		
-		for i, player in structs.globals.iterate_players() do
-			distances[i] = math.floor(distancePointToLineSegment(
-				{ x = pos.x / FRACUNIT, y = pos.y / FRACUNIT },
-				{ x = x1    / FRACUNIT, y = y1    / FRACUNIT },
-				{ x = x2    / FRACUNIT, y = y2    / FRACUNIT }
-			))
-		end
+		local pos = select(2, next(Players))
+		local distance = distance_from_line(
+			{ x = pos.x / FRACUNIT, y = pos.y / FRACUNIT },
+			{ x = x1    / FRACUNIT, y = y1    / FRACUNIT },
+			{ x = x2    / FRACUNIT, y = y2    / FRACUNIT }
+		)
 		
 		x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
 		drawline(x1, y1, x2, y2, 0xffff8800)		
-		gui.text(0, 120, string.format(
-			"LINEDEF\nid:   %d\nv1x:  %.0f\nv1y:  %.0f\nv2x:  %.0f\nv2y:  %.0f\ndist: %d",
-			closest_line.iLineID,
-			closest_line.v1.x / FRACUNIT,
-			closest_line.v1.y / FRACUNIT,
-			closest_line.v2.x / FRACUNIT,
-			closest_line.v2.y / FRACUNIT,
-			distances[1]
-		), 0xffff8800)
+		texts.line = string.format(
+			"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+			closest_line.iLineID, distance,
+			math.floor(closest_line.v1.x / FRACUNIT),
+			math.floor(closest_line.v1.y / FRACUNIT),
+			math.floor(closest_line.v2.x / FRACUNIT),
+			math.floor(closest_line.v2.y / FRACUNIT))
 	end
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
@@ -566,11 +566,10 @@ local function iterate()
 					radius_color = "white"
 					text_color   = "white"
 					
-					gui.text(0, 240, string.format(
-						"THING (%s)\nid:   %d\nx:    %.5f\ny:    %.5f\nz:    %.2f\n" ..
-						"rad:  %.0f\ntics: %d\nhp:   %d\nrt:   %d\nthre: %d",
-						MobjType[type],
-						mobj.index,
+					texts.thing = string.format(
+						"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
+						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+						mobj.index, MobjType[type],
 						mobj.x / FRACUNIT,
 						mobj.y / FRACUNIT,
 						mobj.z / FRACUNIT,
@@ -578,8 +577,7 @@ local function iterate()
 						mobj.tics,
 						mobj.health,
 						mobj.reactiontime,
-						mobj.threshold
-					))
+						mobj.threshold)
 				end
 				
 				if radius_color then
@@ -593,13 +591,19 @@ local function iterate()
 				
 				if text_color then
 					text(
-						pos.x - radius + 1,
-						pos.y - radius,
+						pos.x - screen_radius + 1,
+						pos.y - screen_radius,
 						string.format("%d", index),  text_color)
 				end
 			end
 		end
 	end
+	
+	box(0, 0, PADDING_WIDTH, screenheight, 0xb0000000, 0xb0000000)
+	
+	if texts.thing  then text(10, 208, texts.thing             ) end
+	if texts.line   then text(10, 314, texts.line,   0xffff8800) end
+	if texts.sector then text(10, 370, texts.sector, 0xff00ffff) end
 	
 --	text(50,10,shortest_dist/FRACUNIT)
 end
@@ -637,14 +641,14 @@ local function update_zoom()
 	LastMouse.wheel = mouseWheel
 	
 	if Follow and Globals.gamestate == 0 then
-		local playerPos = get_player1_xy()
+		local player = select(2, next(Players))
 		local screenCenter = screen_to_game({
 			x = screenwidth /2,
 			y = screenheight/2
 		})
 		
-		screenCenter.x = screenCenter.x - playerPos.x
-		screenCenter.y = screenCenter.y - playerPos.y
+		screenCenter.x = screenCenter.x - player.x
+		screenCenter.y = screenCenter.y - player.y
 		Pan.x = Pan.x + screenCenter.x / FRACUNIT
 		Pan.y = Pan.y - screenCenter.y / FRACUNIT
 	end
@@ -856,9 +860,9 @@ while true do
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if (framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
+		iterate_players()
 		iterate()
-		LastMouse.left   = Mouse.Left
-	--	iterate_players()
+		LastMouse.left = Mouse.Left
 	end
 
 	--[[--
