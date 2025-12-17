@@ -500,10 +500,10 @@ local function iterate()
 	local shortest_dist = math.maxinteger
 					
 	texts.player = string.format(
-		"    X: %.5f\n    Y: %.5f\n    Z: %.2f\n" ..
-		"distX: %.5f\ndistY: %.5f\ndistZ: %.2f\n" ..
-		" momX: %.5f\n momY: %.5f\n" ..
-		"distM: %f\n dirM: %f\nangle: %d",
+		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
+		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
+		" momX: %.6f\n momY: %.6f\n" ..
+		"distM: %.6f\n dirM: %.6f\nangle: %d",
 		player.x,
 		player.y,
 		player.z,
