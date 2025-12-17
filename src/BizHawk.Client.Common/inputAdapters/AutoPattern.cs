@@ -32,9 +32,9 @@
 
 		private int _index;
 
-		public bool SkipsLag { get; } = true;
-		public bool[] Pattern { get; } = { true };
-		public int Loop { get; }
+		public bool SkipsLag { get; private set; } = true;
+		public bool[] Pattern { get; private set; } = { true };
+		public int Loop { get; private set; }
 
 		/// <summary>
 		/// Gets the next value and increments index.
@@ -109,9 +109,9 @@
 
 		private int _index;
 
-		public bool SkipsLag { get; } = true;
-		public int[] Pattern { get; } = { 0 };
-		public int Loop { get; }
+		public bool SkipsLag { get; private set; } = true;
+		public int[] Pattern { get; private set; } = { 0 };
+		public int Loop { get; private set; }
 
 		/// <summary>
 		/// Gets the next value and increments index.

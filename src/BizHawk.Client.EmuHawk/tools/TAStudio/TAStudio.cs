@@ -125,6 +125,14 @@ namespace BizHawk.Client.EmuHawk
 			public int RewindStepFast { get; set; } = 4;
 		}
 
+		private class MovieClientSettings
+		{
+			public InputRoll.InputRollSettings InputRollSettings { get; set; }
+
+			public AutoPatternBool[] BoolPatterns { get; set; }
+			public AutoPatternAxis[] AxisPatterns { get; set; }
+		}
+
 		public TAStudio()
 		{
 			InitializeComponent();
@@ -630,7 +638,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_initializing = true;
 
-			movie.InputRollSettingsForSave = () => TasView.UserSettingsSerialized();
+			movie.ClientSettingsForSave = () =>
+			{
+				MovieClientSettings clientSettings = new()
+				{
+					InputRollSettings = TasView.GetUserSettings(),
+					AxisPatterns = AxisPatterns,
+					BoolPatterns = BoolPatterns,
+				};
+				return ConfigService.SaveWithType(clientSettings);
+			};
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
@@ -662,16 +679,34 @@ namespace BizHawk.Client.EmuHawk
 				MarkerControl.UpdateTextColumnWidth();
 				TastudioPlayMode();
 				UpdateWindowTitle();
-				if (CurrentTasMovie.InputRollSettings != null)
+				bool hasClientSettings = CurrentTasMovie.LoadedClientSettings != null;
+				if (hasClientSettings)
 				{
-					TasView.LoadSettingsSerialized(CurrentTasMovie.InputRollSettings);
+					object settings = ConfigService.LoadWithType(CurrentTasMovie.LoadedClientSettings);
+
+					if (settings is InputRoll.InputRollSettings inputRollSettings)
+					{
+						// Old movie.
+						TasView.LoadSettings(inputRollSettings);
+					}
+					else if (settings is MovieClientSettings clientSettings)
+					{
+						TasView.LoadSettings(clientSettings.InputRollSettings);
+						AxisPatterns = clientSettings.AxisPatterns;
+						BoolPatterns = clientSettings.BoolPatterns;
+					}
+					else
+					{
+						this.DialogController.ShowMessageBox("Failed to load the movie's client settings. Movie is still usable.", "Warning", EMsgBoxIcon.Warning);
+						hasClientSettings = false;
+					}
 				}
-				else
+				if (!hasClientSettings)
 				{
 					SetUpColumns();
+					SetupCustomPatterns();
 				}
 				SetUpToolStripColumns();
-				SetupCustomPatterns();
 				UpdateAutoFire();
 			}
 
