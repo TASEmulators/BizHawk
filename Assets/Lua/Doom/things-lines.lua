@@ -9,6 +9,8 @@ local symbols = require("dsda.symbols")
 
 local FRACBITS          <const> = 16
 local FRACUNIT          <const> = 1 << FRACBITS
+local ANGLE_90          <const> = 0x40000000
+local ANGLES            <const> = 64 -- byte type for now
 local MINIMAL_ZOOM      <const> = 0.0001 -- ???
 local ZOOM_FACTOR       <const> = 0.01
 local WHEEL_ZOOM_FACTOR <const> = 10
@@ -21,7 +23,7 @@ local MAP_CLICK_BLOCK   <const> = "P1 Fire" -- prevent this input while clicking
 
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
-	player      = { color = 0xff60a0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 --	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
@@ -433,9 +435,33 @@ local function iterate_players()
 	--]]--
 	for i, player in Globals:iterate_players() do
 		Players[i] = {
-			x = player.mo.x,
-			y = player.mo.y
+			x     = player.mo.x     / FRACUNIT,
+			y     = player.mo.y     / FRACUNIT,
+			z     = player.mo.z     / FRACUNIT,
+			prevx = player.mo.PrevX / FRACUNIT,
+			prevy = player.mo.PrevY / FRACUNIT,
+			prevz = player.mo.PrevZ / FRACUNIT,
+			momx  = player.mo.momx  / FRACUNIT,
+			momy  = player.mo.momy  / FRACUNIT,
+			angle = math.floor(player.mo.angle * (ANGLES / ANGLE_90))
 		}
+		
+		Players[i].distx      = Players[i].x - Players[i].prevx
+		Players[i].disty      = Players[i].y - Players[i].prevy
+		Players[i].distz      = Players[i].z - Players[i].prevz		
+		Players[i].distmoved  = math.sqrt(
+			Players[i].distx * Players[i].distx +
+			Players[i].disty * Players[i].disty)
+		
+		if Players[i].distx == 0 and Players[i].disty == 0 then
+			Players[i].dirmoved = 0
+		else
+			local angle = math.atan(Players[i].distx / Players[i].disty) * 180 / math.pi - 90
+			if Players[i].disty >= 0
+			then Players[i].dirmoved = -angle
+			else Players[i].dirmoved = -angle + 180
+			end
+		end
 		--[[--
 		playercount       = playercount + 1
 		local killcount   = player.killcount
@@ -466,11 +492,30 @@ local function iterate()
 	local closest_line
 	local selected_sector
 	local texts         = {}
+	local player        = select(2, next(Players)) -- first present player only for now
 	local mousePos      = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos  = screen_to_game(mousePos)
 	local screenwidth   = client.screenwidth()
 	local screenheight  = client.screenheight()
 	local shortest_dist = math.maxinteger
+					
+	texts.player = string.format(
+		"    X: %.5f\n    Y: %.5f\n    Z: %.2f\n" ..
+		"distX: %.5f\ndistY: %.5f\ndistZ: %.2f\n" ..
+		" momX: %.5f\n momY: %.5f\n" ..
+		"distM: %f\n dirM: %f\nangle: %d",
+		player.x,
+		player.y,
+		player.z,
+		player.distx,
+		player.disty,
+		player.distz,
+		player.momx,
+		player.momy,
+		player.distmoved,
+		player.dirmoved,
+		player.angle
+	)
 
 	for i, line in ipairs(Lines) do
 		local color = 0xffffffff
@@ -527,11 +572,10 @@ local function iterate()
 	
 	if closest_line then
 		local x1, y1, x2, y2 = cached_line_coords(closest_line)
-		local pos = select(2, next(Players))
 		local distance = distance_from_line(
-			{ x = pos.x / FRACUNIT, y = pos.y / FRACUNIT },
-			{ x = x1    / FRACUNIT, y = y1    / FRACUNIT },
-			{ x = x2    / FRACUNIT, y = y2    / FRACUNIT }
+			{ x = player.x / FRACUNIT, y = player.y / FRACUNIT },
+			{ x = x1       / FRACUNIT, y = y1       / FRACUNIT },
+			{ x = x2       / FRACUNIT, y = y2       / FRACUNIT }
 		)
 		
 		x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
@@ -593,16 +637,18 @@ local function iterate()
 					text(
 						pos.x - screen_radius + 1,
 						pos.y - screen_radius,
-						string.format("%d", index),  text_color)
+						string.format("%d", index),
+						text_color)
 				end
 			end
 		end
 	end
 	
-	box(0, 0, PADDING_WIDTH, screenheight, 0xb0000000, 0xb0000000)
+	box(0, 0, PADDING_WIDTH, screenheight, 0xb0000000, 0xb0000000)	
+	text(10, 42, texts.player, MapPrefs.player.color)
 	
-	if texts.thing  then text(10, 208, texts.thing             ) end
-	if texts.line   then text(10, 314, texts.line,   0xffff8800) end
+	if texts.thing  then text(10, 222, texts.thing             ) end
+	if texts.line   then text(10, 320, texts.line,   0xffff8800) end
 	if texts.sector then text(10, 370, texts.sector, 0xff00ffff) end
 	
 --	text(50,10,shortest_dist/FRACUNIT)
