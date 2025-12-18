@@ -579,8 +579,28 @@ local function iterate()
 	end
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local type = mobj.type
+		local type  = mobj.type
+		local index = mobj.index
 		local radius_color, text_color = get_mobj_color(mobj, type)
+				
+		if #TrackedThings > 0 then
+			local id = TrackedThings[#TrackedThings]
+			
+			if id == index then
+				texts.thing = string.format(
+					"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
+					"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+					mobj.index, MobjType[type],
+					mobj.x / FRACUNIT,
+					mobj.y / FRACUNIT,
+					mobj.z / FRACUNIT,
+					mobj.radius / FRACUNIT,
+					mobj.tics,
+					mobj.health,
+					mobj.reactiontime,
+					mobj.threshold)
+			end
+		end
 		
 		if radius_color or text_color then -- not hidden
 			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
@@ -591,7 +611,6 @@ local function iterate()
 				local type   = mobj.type
 				local radius = mobj.radius
 				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
-				local index  = mobj.index
 				
 				if  in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
 				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
@@ -600,7 +619,7 @@ local function iterate()
 					radius_color = "white"
 					text_color   = "white"
 					
-					texts.thing = string.format(
+					texts.thing = texts.thing or string.format(
 						"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
 						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
 						mobj.index, MobjType[type],
@@ -640,6 +659,8 @@ local function iterate()
 	if texts.thing  then text(10, 222, texts.thing             ) end
 	if texts.line   then text(10, 320, texts.line,   0xffff8800) end
 	if texts.sector then text(10, 370, texts.sector, 0xff00ffff) end
+	
+	texts.thing = nil
 	
 --	text(50,10,shortest_dist/FRACUNIT)
 end
@@ -798,7 +819,7 @@ local function input_prompt()
 	elseif input.Backspace and not LastInput.Backspace and value ~= "" then
 		value = value:sub(1, -2)
 	elseif input.Enter and not LastInput.Enter and value ~= "" then
-		CurrentPrompt.value = tonumber(value)
+		CurrentPrompt.fun(tonumber(value))
 		CurrentPrompt = nil
 		return
 	elseif input["Number0"] and not LastInput["Number0"] and value ~= "" then value = value .. "0"
@@ -848,10 +869,12 @@ local function add_thing()
 		msg =
 			"Enter thing ID from\nlevel editor.\n\n" ..
 			"Hit \"Enter\" to send,\n\"Backspace\" to erase,\nor \"Escape\" to cancel.",
-		fun = func,
+		fun = function(id)
+			table.insert(TrackedThings, id)
+			print(TrackedThings)
+		end,
 		value = nil
 	}
---	table.insert(TrackedThings
 end
 
 local function add_line()
