@@ -447,10 +447,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _tools.Find(t => t.GetType() == toolType)?.IsActive is true;
 
 		public bool IsOnScreen(Point topLeft)
-		{
-			return Screen.AllScreens.Any(
-				screen => screen.WorkingArea.Contains(topLeft));
-		}
+			=> DrawingExtensions.BoundsOfDisplayContaining(topLeft) is not null;
 
 		/// <summary>
 		/// Returns true if an instance of T exists

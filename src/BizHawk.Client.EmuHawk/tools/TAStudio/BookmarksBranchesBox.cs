@@ -622,8 +622,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					location.Y = Math.Max(0, location.Y);
-					var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(location));
-					var h = screen.WorkingArea.Bottom - bottom;
+					var screen = DrawingExtensions.BoundsOfDisplayContaining(location)
+						?? default; //TODO is zeroed the correct fallback value? --yoshi
+					var h = screen.Bottom - bottom;
 
 					if (h < 0)
 					{

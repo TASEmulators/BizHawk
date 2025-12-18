@@ -910,12 +910,17 @@ namespace BizHawk.Client.EmuHawk
 					var bottomRight = new Point(
 						topLeft.X + RightClickMenu.Width,
 						topLeft.Y + RightClickMenu.Height);
-					var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(topLeft));
+					var screen = DrawingExtensions.BoundsOfDisplayContaining(topLeft)
+						?? default; //TODO is zeroed the correct fallback value? --yoshi
 					// if we don't fully fit, move to the other side of the pointer
-					if (bottomRight.X > screen.WorkingArea.Right)
+					if (bottomRight.X > screen.Right)
+					{
 						offset.X -= RightClickMenu.Width;
-					if (bottomRight.Y > screen.WorkingArea.Bottom)
+					}
+					if (bottomRight.Y > screen.Bottom)
+					{
 						offset.Y -= RightClickMenu.Height;
+					}
 					topLeft.Offset(offset);
 					// if the screen is insultingly tiny, best we can do is avoid negative pos
 					RightClickMenu.Show(

@@ -87,8 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			var topLeft = new Point(
 				Math.Max(0, form.Location.X),
 				Math.Max(0, form.Location.Y));
-			var screen = Screen.AllScreens.Select(static s => s.WorkingArea)
-				.FirstOrNull(a => a.Contains(topLeft))
+			var screen = DrawingExtensions.BoundsOfDisplayContaining(topLeft)
 				?? default; //TODO is zeroed the correct fallback value? --yoshi
 			var w = screen.Right - form.Bounds.Right;
 			var h = screen.Bottom - form.Bounds.Bottom;
