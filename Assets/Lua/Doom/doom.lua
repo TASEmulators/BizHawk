@@ -80,12 +80,19 @@ local LastMouse = {
 	wheel = 0,
 	left  = false
 }
+
+local TrackedThings  = {}
+local TrackedLines   = {}
+local TrackedSectors = {}
 local LastFramecount = -1
+local ScreenWidth    = client.screenwidth()
+local ScreenHeight   = client.screenheight()
 
 -- forward declarations
 
 local LastEpisode
 local LastMap
+local LastInput
 
 local Lines
 local PlayerTypes
@@ -93,6 +100,7 @@ local EnemyTypes
 local MissileTypes
 local MiscTypes
 local InertTypes
+local CurrentPrompt
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -239,8 +247,8 @@ local function zoom(times, mouseCenter)
 		zoomCenter = screen_to_game(mousePos)
 	else
 		zoomCenter = screen_to_game({
-			x = client.screenwidth ()/2,
-			y = client.screenheight()/2
+			x = ScreenWidth /2,
+			y = ScreenHeight/2
 		})
 	end
 	
@@ -250,8 +258,8 @@ local function zoom(times, mouseCenter)
 		Zoom = newZoom
 	end
 	
-	zoomCenter.x = (encode_x(mouseCenter and mousePos.x or client.screenwidth ()/2)-zoomCenter.x)
-	zoomCenter.y = (encode_y(mouseCenter and mousePos.y or client.screenheight()/2)-zoomCenter.y)
+	zoomCenter.x = (encode_x(mouseCenter and mousePos.x or ScreenWidth /2)-zoomCenter.x)
+	zoomCenter.y = (encode_y(mouseCenter and mousePos.y or ScreenHeight/2)-zoomCenter.y)
 	Pan.x = Pan.x + zoomCenter.x / FRACUNIT
 	Pan.y = Pan.y - zoomCenter.y / FRACUNIT
 end
@@ -306,25 +314,6 @@ local function maybe_swap(smaller, bigger)
 		return bigger, smaller
 	end
 	return smaller - 100, bigger + 100
-end
-
-local function get_line_count(str)
-	local lines = 1
-	local longest = 0
-	local size = 0
-	for i = 1, #str do
-		local c = str:sub(i, i)
-		if c == '\n' then
-			lines = lines + 1
-			if size > longest then
-				longest = size
-				size = -1
-			end
-		end
-		size = size + 1
-	end
-	if size > longest then longest = size end
-	return lines, longest
 end
 
 local function to_lookup(table)
@@ -495,8 +484,6 @@ local function iterate()
 	local player        = select(2, next(Players)) -- first present player only for now
 	local mousePos      = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos  = screen_to_game(mousePos)
-	local screenwidth   = client.screenwidth()
-	local screenheight  = client.screenheight()
 	local shortest_dist = math.maxinteger
 					
 	texts.player = string.format(
@@ -516,7 +503,7 @@ local function iterate()
 		player.dirmoved,
 		player.angle
 	)
-
+	
 	for i, line in ipairs(Lines) do
 		local color = 0xffffffff
 		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
@@ -539,54 +526,56 @@ local function iterate()
 		end
 	end
 	
-	if closest_line then
-		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
-		local side =
-			(mousePos.y - y1) * (x2 - x1) -
-			(mousePos.x - x1) * (y2 - y1)
-		
-		if side <= 0 then
-			if closest_line.backsector then
-				selected_sector = closest_line.backsector
-			end
-		else
-			if closest_line.frontsector then
-				selected_sector = closest_line.frontsector
+	if mousePos.x > PADDING_WIDTH and not CurrentPrompt then
+		if closest_line then
+			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
+			local side =
+				(mousePos.y - y1) * (x2 - x1) -
+				(mousePos.x - x1) * (y2 - y1)
+			
+			if side <= 0 then
+				if closest_line.backsector then
+					selected_sector = closest_line.backsector
+				end
+			else
+				if closest_line.frontsector then
+					selected_sector = closest_line.frontsector
+				end
 			end
 		end
-	end
-	
-	if selected_sector then
-		for _, line in ipairs(selected_sector.lines) do
-			-- cached_line_coords gives some length error?
-			local x1, y1, x2, y2 = game_to_screen(line:coords())
-			drawline(x1, y1, x2, y2, 0xff00ffff)
-			texts.sector = string.format(
-				"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
-				selected_sector.iSectorID,
-				selected_sector.special,
-				selected_sector.floorheight / FRACUNIT,
-				selected_sector.ceilingheight / FRACUNIT)
-		end
-	end
-	
-	if closest_line then
-		local x1, y1, x2, y2 = cached_line_coords(closest_line)
-		local distance = distance_from_line(
-			{ x = player.x / FRACUNIT, y = player.y / FRACUNIT },
-			{ x = x1       / FRACUNIT, y = y1       / FRACUNIT },
-			{ x = x2       / FRACUNIT, y = y2       / FRACUNIT }
-		)
 		
-		x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
-		drawline(x1, y1, x2, y2, 0xffff8800)		
-		texts.line = string.format(
-			"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-			closest_line.iLineID, distance,
-			math.floor(closest_line.v1.x / FRACUNIT),
-			math.floor(closest_line.v1.y / FRACUNIT),
-			math.floor(closest_line.v2.x / FRACUNIT),
-			math.floor(closest_line.v2.y / FRACUNIT))
+		if selected_sector then
+			for _, line in ipairs(selected_sector.lines) do
+				-- cached_line_coords gives some length error?
+				local x1, y1, x2, y2 = game_to_screen(line:coords())
+				drawline(x1, y1, x2, y2, 0xff00ffff)
+				texts.sector = string.format(
+					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
+					selected_sector.iSectorID,
+					selected_sector.special,
+					selected_sector.floorheight / FRACUNIT,
+					selected_sector.ceilingheight / FRACUNIT)
+			end
+		end
+		
+		if closest_line then
+			local x1, y1, x2, y2 = cached_line_coords(closest_line)
+			local distance = distance_from_line(
+				{ x = player.x / FRACUNIT, y = player.y / FRACUNIT },
+				{ x = x1       / FRACUNIT, y = y1       / FRACUNIT },
+				{ x = x2       / FRACUNIT, y = y2       / FRACUNIT }
+			)
+			
+			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
+			drawline(x1, y1, x2, y2, 0xffff8800)		
+			texts.line = string.format(
+				"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+				closest_line.iLineID, distance,
+				math.floor(closest_line.v1.x / FRACUNIT),
+				math.floor(closest_line.v1.y / FRACUNIT),
+				math.floor(closest_line.v2.x / FRACUNIT),
+				math.floor(closest_line.v2.y / FRACUNIT))
+		end
 	end
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
@@ -596,8 +585,8 @@ local function iterate()
 		if radius_color or text_color then -- not hidden
 			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
-			if  in_range(pos.x, 0, screenwidth)
-			and in_range(pos.y, 0, screenheight)
+			if  in_range(pos.x, 0, ScreenWidth)
+			and in_range(pos.y, 0, ScreenHeight)
 			then
 				local type   = mobj.type
 				local radius = mobj.radius
@@ -606,6 +595,7 @@ local function iterate()
 				
 				if  in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
 				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
+				and mousePos.x > PADDING_WIDTH and not CurrentPrompt
 				then
 					radius_color = "white"
 					text_color   = "white"
@@ -644,7 +634,7 @@ local function iterate()
 		end
 	end
 	
-	box(0, 0, PADDING_WIDTH, screenheight, 0xb0000000, 0xb0000000)	
+	box(0, 0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)	
 	text(10, 42, texts.player, MapPrefs.player.color)
 	
 	if texts.thing  then text(10, 222, texts.thing             ) end
@@ -666,8 +656,6 @@ local function init_mobj_bounds()
 end
 
 local function update_zoom()
-	local screenwidth  = client.screenwidth()
-	local screenheight = client.screenheight()
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local mouseWheel   = math.floor(Mouse.Wheel/120)
 	local deltaX       = mousePos.x - LastMouse.x
@@ -689,8 +677,8 @@ local function update_zoom()
 	if Follow and Globals.gamestate == 0 then
 		local player = select(2, next(Players))
 		local screenCenter = screen_to_game({
-			x = screenwidth /2,
-			y = screenheight/2
+			x = ScreenWidth /2,
+			y = ScreenHeight/2
 		})
 		
 		screenCenter.x = screenCenter.x - player.x
@@ -700,8 +688,8 @@ local function update_zoom()
 	end
 	
 	if not Init
-	and LastScreenSize.w == screenwidth
-	and LastScreenSize.h == screenheight
+	and LastScreenSize.w == ScreenWidth
+	and LastScreenSize.h == ScreenHeight
 	then return end
 	
 	if  OB.top    ~= math.maxinteger
@@ -713,10 +701,10 @@ local function update_zoom()
 		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
 		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
 		local span         = { x = OB.right-OB.left,   y = OB.bottom-OB.top    }
-		local scale        = { x = screenwidth/span.x, y = screenheight/span.y }
+		local scale        = { x = ScreenWidth/span.x, y = ScreenHeight/span.y }
 		      Zoom         = math.min(scale.x, scale.y)
 		local spanCenter   = { x = OB.left+span.x/2,   y = OB.top+span.y/2     }
-		local sreenCenter  = { x = screenwidth/Zoom/2, y = screenheight/Zoom/2 }
+		local sreenCenter  = { x = ScreenWidth/Zoom/2, y = ScreenHeight/Zoom/2 }
 		
 		if not Follow then
 			Pan.x = -math.floor(spanCenter.x - sreenCenter.x)
@@ -743,6 +731,25 @@ local function clear_cache()
 	reset_view()
 end
 
+local function get_line_count(str)
+	local count   = 1
+	local longest = 0
+	local size    = 0
+	for i = 1, #str do
+		local c = str:sub(i, i)
+		if c == '\n' then
+			count = count + 1
+			if size > longest then
+				longest = size
+			end
+			size = -1
+		end
+		size = size + 1
+	end
+	if size > longest then longest = size end
+	return count, longest
+end
+
 local function make_button(x, y, name, func)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
@@ -751,16 +758,18 @@ local function make_button(x, y, name, func)
 	local textHeight = lineCount*CHAR_HEIGHT
 	local colors     = { 0x66bbddff, 0xaabbddff, 0xaa88aaff }
 	local colorIndex = 1
+	local padding    = 10
 	
-	if textWidth  + 10 > boxWidth  then boxWidth  = textWidth  + 10 end
-	if textHeight + 10 > boxHeight then boxHeight = textHeight + 10 end
+	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
+	if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
 	
 	local textX    = x + boxWidth /2 - textWidth /2
 	local textY    = y + boxHeight/2 - textHeight/2 - boxHeight
 	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
-	and in_range(mousePos.y, y-boxHeight, y         ) then
+	and in_range(mousePos.y, y-boxHeight, y         )
+	and not CurrentPrompt then
 		if not (Follow
 		and (func == pan_left
 		or   func == pan_up
@@ -779,16 +788,97 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
+local function input_prompt()
+	local input = input.get()
+	local value = tostring(CurrentPrompt.value or "")
+	
+	if input.Escape and not LastInput.Escape then
+		CurrentPrompt = nil
+		return
+	elseif input.Backspace and not LastInput.Backspace and value ~= "" then
+		value = value:sub(1, -2)
+	elseif input.Enter and not LastInput.Enter and value ~= "" then
+		CurrentPrompt.value = tonumber(value)
+		CurrentPrompt = nil
+		return
+	elseif input["Number0"] and not LastInput["Number0"] and value ~= "" then value = value .. "0"
+	elseif input["Number1"] and not LastInput["Number1"] then value = value .. "1"
+	elseif input["Number2"] and not LastInput["Number2"] then value = value .. "2"
+	elseif input["Number3"] and not LastInput["Number3"] then value = value .. "3"
+	elseif input["Number4"] and not LastInput["Number4"] then value = value .. "4"
+	elseif input["Number5"] and not LastInput["Number5"] then value = value .. "5"
+	elseif input["Number6"] and not LastInput["Number6"] then value = value .. "6"
+	elseif input["Number7"] and not LastInput["Number7"] then value = value .. "7"
+	elseif input["Number8"] and not LastInput["Number8"] then value = value .. "8"
+	elseif input["Number9"] and not LastInput["Number9"] then value = value .. "9"
+	end
+	
+	local boxWidth   = CHAR_WIDTH
+	local boxHeight  = CHAR_HEIGHT
+	local message    = CurrentPrompt.msg .. "\n\n" .. value .. "_"
+	local lineCount, longest = get_line_count(message)
+	local textWidth  = longest  *CHAR_WIDTH
+	local textHeight = lineCount*CHAR_HEIGHT
+	local colors     = { 0x66bbddff, 0xaabbddff, 0xaa88aaff }
+	local colorIndex = 2
+	local padding    = 50
+	
+	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
+	if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
+	
+	local x       = ScreenWidth /2 - textWidth /2
+	local y       = ScreenHeight/2 - textHeight/2
+	local textX   = x + boxWidth /2 - textWidth /2
+	local textY   = y + boxHeight/2 - textHeight/2 - boxHeight
+	
+	box(x, y, x+boxWidth, y-boxHeight, 0xaaffffff, colors[colorIndex])
+	text(textX, textY, message, 0xffffffff)
+	
+	if value ~= "" then
+		CurrentPrompt.value = tonumber(value)
+	end
+	
+	LastInput = input
+end
+
+local function add_thing()
+	if CurrentPrompt then return end
+	
+	CurrentPrompt = {
+		msg =
+			"Enter thing ID from\nlevel editor.\n\n" ..
+			"Hit \"Enter\" to send,\n\"Backspace\" to erase,\nor \"Escape\" to cancel.",
+		fun = func,
+		value = nil
+	}
+--	table.insert(TrackedThings
+end
+
+local function add_line()
+
+end
+
+local function add_sector()
+
+end
+
 local function make_buttons()
-	make_button( 10, client.screenheight()-40, "+", function() zoom( 1) end)
-	make_button( 10, client.screenheight()-10, "-", function() zoom(-1) end)
-	make_button( 40, client.screenheight()-24, "<", pan_left  )
-	make_button( 64, client.screenheight()-40, "^", pan_up    )
-	make_button( 64, client.screenheight()-10, "v", pan_down  )
-	make_button( 88, client.screenheight()-24, ">", pan_right )
-	make_button(118, client.screenheight()-40, "Reset View", reset_view)
-	make_button(118, client.screenheight()-10,
+	make_button(ScreenWidth-315,  30, "Add Thing",  add_thing  )
+	make_button(ScreenWidth-210,  30, "Add Line",   add_line   )
+	make_button(ScreenWidth-115,  30, "Add Sector", add_sector )
+	make_button( 10, ScreenHeight-40, "+",          function() zoom( 1) end)
+	make_button( 10, ScreenHeight-10, "-",          function() zoom(-1) end)
+	make_button( 40, ScreenHeight-24, "<",          pan_left   )
+	make_button( 64, ScreenHeight-40, "^",          pan_up     )
+	make_button( 64, ScreenHeight-10, "v",          pan_down   )
+	make_button( 88, ScreenHeight-24, ">",          pan_right  )
+	make_button(118, ScreenHeight-40, "Reset View", reset_view )
+	make_button(118, ScreenHeight-10,
 		string.format("Follow %s", Follow and "ON " or "OFF"), follow_toggle)
+	
+	if CurrentPrompt then
+		input_prompt()
+	end
 end
 
 -- Additional types that are not identifiable by flags alone
@@ -858,6 +948,8 @@ InertTypes = to_lookup({
 event.onframestart(function()
 	if client.ispaused() then return end -- frameadvance while paused
 	-- do this before frame start to suppress mouse click input
+	ScreenWidth  = client.screenwidth()
+	ScreenHeight = client.screenheight()
 	make_buttons()
 	update_zoom()
 end)
@@ -879,6 +971,8 @@ while true do
 	local framecount = emu.framecount()
 	local paused     = client.ispaused()
 	Mouse            = input.getmouse()
+	ScreenWidth      = client.screenwidth()
+	ScreenHeight     = client.screenheight()
 
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
@@ -912,13 +1006,13 @@ while true do
 	end
 
 	--[[--
-	text(10, client.screenheight()-170, string.format(
+	text(10, ScreenHeight-170, string.format(
 		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
 		Zoom, Pan.x, Pan.y), 0xffbbddff)
 	--]]--
 
-	LastScreenSize.w = client.screenwidth()
-	LastScreenSize.h = client.screenheight()
+	LastScreenSize.w = ScreenWidth
+	LastScreenSize.h = ScreenHeight
 	LastFramecount   = framecount
 
 	emu.yield()
