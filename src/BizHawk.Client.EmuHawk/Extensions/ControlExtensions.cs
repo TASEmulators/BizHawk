@@ -87,9 +87,11 @@ namespace BizHawk.Client.EmuHawk
 			var topLeft = new Point(
 				Math.Max(0, form.Location.X),
 				Math.Max(0, form.Location.Y));
-			var screen = Screen.AllScreens.First(s => s.WorkingArea.Contains(topLeft));
-			var w = screen.WorkingArea.Right - form.Bounds.Right;
-			var h = screen.WorkingArea.Bottom - form.Bounds.Bottom;
+			var screen = Screen.AllScreens.Select(static s => s.WorkingArea)
+				.FirstOrNull(a => a.Contains(topLeft))
+				?? default; //TODO is zeroed the correct fallback value? --yoshi
+			var w = screen.Right - form.Bounds.Right;
+			var h = screen.Bottom - form.Bounds.Bottom;
 			if (h < 0) topLeft.Y += h;
 			if (w < 0) topLeft.X += w;
 			form.SetDesktopLocation(topLeft.X, topLeft.Y);
