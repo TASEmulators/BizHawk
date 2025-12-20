@@ -84,12 +84,16 @@ local LastMouse = {
 local TrackedThings  = {}
 local TrackedLines   = {}
 local TrackedSectors = {}
+local ThingIDs       = {}
+local LineIDs        = {}
+local SectorIDs      = {}
 local LastFramecount = -1
 local ScreenWidth    = client.screenwidth()
 local ScreenHeight   = client.screenheight()
 
 -- forward declarations
 
+local Input
 local LastEpisode
 local LastMap
 local LastInput
@@ -381,6 +385,7 @@ local function init_cache()
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
 
 		local lineId = line.iLineID
+		LineIDs[lineId] = true
 
 		-- assumption: lines can't become special, except for script command CmdSetLineSpecial
 		-- exclude lines that have a line id set (and therefore can be targeted by scripts)
@@ -398,6 +403,10 @@ local function init_cache()
 		end
 
 		table.insert(Lines, line)
+	end
+	
+	for _, sector in pairs(Globals.sectors) do
+		SectorIDs[sector.iSectorID] = true
 	end
 end
 
@@ -582,6 +591,10 @@ local function iterate()
 		local type  = mobj.type
 		local index = mobj.index
 		local radius_color, text_color = get_mobj_color(mobj, type)
+		
+		if index >= 0 then
+			ThingIDs[index] = true
+		end
 				
 		if #TrackedThings > 0 then
 			local id = TrackedThings[#TrackedThings]
@@ -748,7 +761,10 @@ local function reset_view()
 end
 
 local function clear_cache()
-	Lines = nil
+	Lines     = nil
+	ThingIDs  = {}
+	LineIDs   = {}
+	SectorIDs = {}
 	reset_view()
 end
 
@@ -809,88 +825,105 @@ local function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
+local function check_press(key)
+	return Input[key] and not LastInput[key]
+end
+
 local function input_prompt()
-	local input = input.get()
+	Input       = input.get()
 	local value = tostring(CurrentPrompt.value or "")
 	
-	if input.Escape and not LastInput.Escape then
+	if check_press("Escape") then
 		CurrentPrompt = nil
 		return
-	elseif input.Backspace and not LastInput.Backspace and value ~= "" then
+	elseif check_press("Backspace") then
 		value = value:sub(1, -2)
-	elseif input.Enter and not LastInput.Enter and value ~= "" then
+	elseif (check_press("Enter") or check_press("KeypadEnter")) and value ~= "" then
 		CurrentPrompt.fun(tonumber(value))
 		CurrentPrompt = nil
 		return
-	elseif input["Number0"] and not LastInput["Number0"] and value ~= "" then value = value .. "0"
-	elseif input["Number1"] and not LastInput["Number1"] then value = value .. "1"
-	elseif input["Number2"] and not LastInput["Number2"] then value = value .. "2"
-	elseif input["Number3"] and not LastInput["Number3"] then value = value .. "3"
-	elseif input["Number4"] and not LastInput["Number4"] then value = value .. "4"
-	elseif input["Number5"] and not LastInput["Number5"] then value = value .. "5"
-	elseif input["Number6"] and not LastInput["Number6"] then value = value .. "6"
-	elseif input["Number7"] and not LastInput["Number7"] then value = value .. "7"
-	elseif input["Number8"] and not LastInput["Number8"] then value = value .. "8"
-	elseif input["Number9"] and not LastInput["Number9"] then value = value .. "9"
+	else
+		for i = 0, 9 do
+			local digit  = tostring(i)
+			local number = "Number" .. digit
+			local keypad = "Keypad" .. digit
+			if (check_press(number)
+			or  check_press(keypad))
+			then value = value .. digit
+			end
+		end
 	end
 	
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
-	local message    = CurrentPrompt.msg .. "\n\n" .. value .. "_"
+	local message    = string.format(
+		"Enter %s ID from\nlevel editor.\n\n" ..
+		"Hit \"Enter\" to send,\n" ..
+		"\"Backspace\" to erase,\n" ..
+		"or \"Escape\" to cancel.\n\n%s_",
+		CurrentPrompt.msg, value)
 	local lineCount, longest = get_line_count(message)
 	local textWidth  = longest  *CHAR_WIDTH
 	local textHeight = lineCount*CHAR_HEIGHT
-	local colors     = { 0x66bbddff, 0xaabbddff, 0xaa88aaff }
-	local colorIndex = 2
 	local padding    = 50
 	
 	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
 	if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
 	
-	local x       = ScreenWidth /2 - textWidth /2
-	local y       = ScreenHeight/2 - textHeight/2
-	local textX   = x + boxWidth /2 - textWidth /2
-	local textY   = y + boxHeight/2 - textHeight/2 - boxHeight
+	local x     = ScreenWidth /2 - textWidth /2
+	local y     = ScreenHeight/2 - textHeight/2
+	local textX = x + boxWidth /2 - textWidth /2
+	local textY = y + boxHeight/2 - textHeight/2
 	
-	box(x, y, x+boxWidth, y-boxHeight, 0xaaffffff, colors[colorIndex])
+	box(x, y, x+boxWidth, y+boxHeight, 0xaaffffff, 0xaabbddff)
 	text(textX, textY, message, 0xffffffff)
 	
 	if value ~= "" then
 		CurrentPrompt.value = tonumber(value)
+	else
+		CurrentPrompt.value = nil
 	end
 	
-	LastInput = input
+	LastInput = Input
 end
 
-local function add_thing()
+local function add_entity(type)
 	if CurrentPrompt then return end
 	
+	local lookup, array
+	
+	if type == "thing" then
+		lookup = ThingIDs
+		array  = TrackedThings
+	elseif type == "line" then
+		lookup = LineIDs
+		array  = TrackedLines
+	elseif type == "sector" then
+		lookup = SectorIDs
+		array  = TrackedSectors
+	else print("ERROR: Wrong entity type: " .. type) return
+	end
+	
 	CurrentPrompt = {
-		msg =
-			"Enter thing ID from\nlevel editor.\n\n" ..
-			"Hit \"Enter\" to send,\n\"Backspace\" to erase,\nor \"Escape\" to cancel.",
+		msg = type,
 		fun = function(id)
-			table.insert(TrackedThings, id)
-			print(TrackedThings)
+			if not lookup[id] then
+				print(string.format("\nERROR: Can't add %s %d because it doesn't exist!\n", type, id))
+				return
+			end
+			table.insert(array, id)
+			print(string.format("Added %s %d", type, id))
 		end,
 		value = nil
 	}
 end
 
-local function add_line()
-
-end
-
-local function add_sector()
-
-end
-
 local function make_buttons()
-	make_button(ScreenWidth-315,  30, "Add Thing",  add_thing  )
-	make_button(ScreenWidth-210,  30, "Add Line",   add_line   )
-	make_button(ScreenWidth-115,  30, "Add Sector", add_sector )
-	make_button( 10, ScreenHeight-40, "+",          function() zoom( 1) end)
-	make_button( 10, ScreenHeight-10, "-",          function() zoom(-1) end)
+	make_button(ScreenWidth-315,  30, "Add Thing",  function() add_entity("thing" ) end)
+	make_button(ScreenWidth-210,  30, "Add Line",   function() add_entity("line"  ) end)
+	make_button(ScreenWidth-115,  30, "Add Sector", function() add_entity("sector") end)
+	make_button( 10, ScreenHeight-40, "+",          function() zoom      ( 1      ) end)
+	make_button( 10, ScreenHeight-10, "-",          function() zoom      (-1      ) end)
 	make_button( 40, ScreenHeight-24, "<",          pan_left   )
 	make_button( 64, ScreenHeight-40, "^",          pan_up     )
 	make_button( 64, ScreenHeight-10, "v",          pan_down   )
@@ -1027,12 +1060,6 @@ while true do
 		iterate()
 		LastMouse.left = Mouse.Left
 	end
-
-	--[[--
-	text(10, ScreenHeight-170, string.format(
-		"Zoom: %.4f\nPanX: %s\nPanY: %s", 
-		Zoom, Pan.x, Pan.y), 0xffbbddff)
-	--]]--
 
 	LastScreenSize.w = ScreenWidth
 	LastScreenSize.h = ScreenHeight
