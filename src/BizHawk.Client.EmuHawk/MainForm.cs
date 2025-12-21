@@ -1076,7 +1076,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _emulatorPaused;
 		public bool EmulatorPaused
 		{
-			get => _emulatorPaused;
+			get => _emulatorPaused && !_unpauseByFrameAdvance;
 
 			private set
 			{
@@ -1085,6 +1085,23 @@ namespace BizHawk.Client.EmuHawk
 				_emulatorPaused = value;
 
 				OnPauseToggle(value);
+			}
+		}
+
+		private bool _unpauseByFrameAdvance;
+
+		/// <summary>
+		/// Avoids using EmulatorPaused to handle frame advance, thus allowing Lua to unpause during a frame advance.
+		/// </summary>
+		private bool UnpauseByFrameAdvance
+		{
+			get => _unpauseByFrameAdvance;
+			set
+			{
+				if (_unpauseByFrameAdvance == value) return;
+				_unpauseByFrameAdvance = value;
+
+				OnPauseToggle(!value);
 			}
 		}
 
@@ -2935,13 +2952,14 @@ namespace BizHawk.Client.EmuHawk
 					// handle the initial trigger of a frame advance
 					runFrame = true;
 					_frameAdvanceTimestamp = currentTimestamp;
+					// Pausing is inconsistent with the behavior of TAStudio while seeking, but it's always been this way so.
 					PauseEmulator();
 				}
 				else if (frameProgressTimeElapsed)
 				{
 					runFrame = true;
 					_runloopFrameProgress = true;
-					UnpauseEmulator();
+					UnpauseByFrameAdvance = true;
 				}
 			}
 			else
@@ -2949,7 +2967,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_runloopFrameAdvance)
 				{
 					// handle release of frame advance
-					PauseEmulator();
+					UnpauseByFrameAdvance = false;
 				}
 				_runloopFrameProgress = false;
 			}
