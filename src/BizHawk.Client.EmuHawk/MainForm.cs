@@ -1082,14 +1082,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_didMenuPause = false; // overwritten where relevant
 				if (_emulatorPaused == value) return;
-				if (_emulatorPaused && !value) // Unpausing
-				{
-					InitializeFpsData();
-				}
-
-				if (value != _emulatorPaused) Tools.OnPauseToggle(value);
 				_emulatorPaused = value;
+
+				OnPauseToggle(value);
 			}
+		}
+
+		private void OnPauseToggle(bool newPauseState)
+		{
+			if (!newPauseState) // Unpausing
+			{
+				InitializeFpsData();
+			}
+
+			Tools.OnPauseToggle(newPauseState);
+			SetPauseStatusBarIcon();
 		}
 
 		public bool BlockFrameAdvance { get; set; }
@@ -1341,13 +1348,11 @@ namespace BizHawk.Client.EmuHawk
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			SetPauseStatusBarIcon();
 		}
 
 		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
-			SetPauseStatusBarIcon();
 		}
 
 		public void TogglePause()
