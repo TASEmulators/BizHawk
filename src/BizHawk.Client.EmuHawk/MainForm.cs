@@ -1101,7 +1101,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool FrameInch { get; set; }
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
 		public bool PressRewind { get; set; } // necessary for tastudio < button
-		public bool FastForward { get; set; }
 
 		/// <summary>
 		/// Disables updates for video/audio, and enters "turbo" mode.
@@ -1147,8 +1146,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
-		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking;
-		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
+		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking || InvisibleEmulation;
+		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing;
 		public bool IsRewinding { get; private set; }
 
 		/// <summary>
@@ -2177,7 +2176,7 @@ namespace BizHawk.Client.EmuHawk
 			// method is selected, but the clock throttle determines that by itself and
 			// everything appears normal here.
 			var rewind = Rewinder?.Active == true && (InputManager.ClientControls["Rewind"] || PressRewind);
-			var fastForward = InputManager.ClientControls["Fast Forward"] || FastForward;
+			var fastForward = IsFastForwarding;
 			var turbo = IsTurboing;
 
 			int speedPercent = fastForward ? Config.SpeedPercentAlternate : Config.SpeedPercent;

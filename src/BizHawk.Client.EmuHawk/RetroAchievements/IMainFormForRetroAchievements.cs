@@ -9,8 +9,6 @@ namespace BizHawk.Client.EmuHawk
 
 		bool FrameInch { get; set; }
 
-		bool FastForward { get; }
-
 		GameInfo Game { get; }
 
 		IMovieSession MovieSession { get; }

@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common
 			=> "NLua+Lua";
 
 		[LuaMethodExample("client.invisibleemulation( true );")]
-		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]
+		[LuaMethod("invisibleemulation", "Enters/exits turbo mode and disables/enables most emulator updates.")]
 		public void InvisibleEmulation(bool invisible)
 			=> APIs.EmuClient.InvisibleEmulation(invisible);
 

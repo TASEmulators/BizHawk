@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			_inputManager.ClientControls.Overrides(_hardcoreHotkeyOverrides);
 			_mainForm.FrameInch = false;
 
-			var fastForward = _inputManager.ClientControls["Fast Forward"] || _mainForm.FastForward;
+			var fastForward = _mainForm.IsFastForwarding;
 			var speedPercent = fastForward ? _getConfig().SpeedPercentAlternate : _getConfig().SpeedPercent;
 			if (speedPercent < 100)
 			{
