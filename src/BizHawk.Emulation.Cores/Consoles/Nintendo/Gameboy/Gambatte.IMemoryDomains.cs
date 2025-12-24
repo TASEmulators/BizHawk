@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram, "CartRAM");
 
-			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			MemoryDomains = new MemoryDomainList(_memoryDomains, this);
 			_serviceProvider.Register(MemoryDomains);
 		}
 	}
