@@ -185,11 +185,13 @@ namespace BizHawk.Emulation.Common
 	{
 		public IntPtr Data { get; set; }
 
+		private readonly int _endianSwap;
+
 		public override byte PeekByte(long addr)
 		{
 			if ((ulong)addr < (ulong)Size)
 			{
-				return ((byte*)Data)[addr];
+				return ((byte*)Data)[addr ^ _endianSwap];
 			}
 
 			throw new ArgumentOutOfRangeException(nameof(addr));
@@ -201,7 +203,7 @@ namespace BizHawk.Emulation.Common
 			{
 				if ((ulong)addr < (ulong)Size)
 				{
-					((byte*)Data)[addr] = val;
+					((byte*)Data)[addr ^ _endianSwap] = val;
 				}
 				else
 				{
@@ -212,6 +214,12 @@ namespace BizHawk.Emulation.Common
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
+			if (_endianSwap != 0)
+			{
+				base.BulkPeekByte(addresses, values);
+				return;
+			}
+
 			var start = (ulong)addresses.Start;
 			var count = addresses.Count();
 
@@ -230,7 +238,7 @@ namespace BizHawk.Emulation.Common
 			Size = size;
 		}
 
-		public MemoryDomainIntPtr(string name, Endian endian, IntPtr data, long size, bool writable, int wordSize)
+		public MemoryDomainIntPtr(string name, Endian endian, IntPtr data, long size, bool writable, int wordSize, bool swapped = false)
 		{
 			Name = name;
 			EndianType = endian;
@@ -238,6 +246,7 @@ namespace BizHawk.Emulation.Common
 			Size = size;
 			Writable = writable;
 			WordSize = wordSize;
+			_endianSwap = swapped ? wordSize - 1 : 0;
 		}
 	}
 
