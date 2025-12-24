@@ -17,11 +17,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// Unpausing after a seek may seem like we aren't really seeking at all:
-			// what is the significance of a seek to frame if we don't pause?
-			// Answer: We use this in order to temporarily disable recording mode when the user navigates to a frame. (to avoid recording between whatever is the most recent state and the user-specified frame)
-			// Other answer: turbo seek, navigating while unpaused
-			_pauseAfterSeeking = MainForm.EmulatorPaused || (_seekingTo != -1 && _pauseAfterSeeking);
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode();
 
@@ -37,9 +32,13 @@ namespace BizHawk.Client.EmuHawk
 				_seekStartFrame = Emulator.Frame;
 				_seekingByEdit = false;
 
+				// Unpausing after a seek may seem like we aren't really seeking at all:
+				// what is the significance of a seek to frame if we don't pause?
+				// Answer: We use this in order to temporarily disable recording mode when the user navigates to a frame. (to avoid recording between whatever is the most recent state and the user-specified frame)
+				// Other answer: turbo seek, navigating while unpaused
+				_pauseAfterSeeking = MainForm.UnpauseEmulator() || (_seekingTo != -1 && _pauseAfterSeeking);
 				_seekingTo = frame;
 				MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
-				MainForm.UnpauseEmulator();
 
 				if (_seekingTo - _seekStartFrame > 1)
 				{
