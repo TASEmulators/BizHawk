@@ -1367,9 +1367,11 @@ namespace BizHawk.Client.EmuHawk
 			EmulatorPaused = true;
 		}
 
-		public void UnpauseEmulator()
+		public bool UnpauseEmulator()
 		{
+			bool ret = _emulatorPaused;
 			EmulatorPaused = false;
+			return ret;
 		}
 
 		public void TogglePause()

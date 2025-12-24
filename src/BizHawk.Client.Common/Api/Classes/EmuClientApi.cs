@@ -228,7 +228,7 @@ namespace BizHawk.Client.Common
 
 		public Point TransformPoint(Point point) => _displayManager.TransformPoint(point);
 
-		public void Unpause() => _mainForm.UnpauseEmulator();
+		public bool Unpause() => _mainForm.UnpauseEmulator();
 
 		public void UnpauseAv() => _mainForm.PauseAvi = false;
 

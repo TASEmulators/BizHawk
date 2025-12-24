@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 		void TogglePause();
 
 		/// <remarks>referenced by 3 or more tools</remarks>
-		void UnpauseEmulator();
+		bool UnpauseEmulator();
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
 		void Unthrottle();
