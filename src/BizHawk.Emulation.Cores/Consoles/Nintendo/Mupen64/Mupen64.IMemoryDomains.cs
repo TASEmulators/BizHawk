@@ -19,7 +19,8 @@ public partial class Mupen64
 				Mupen64Api.DebugMemGetPointer(memoryDomain),
 				(long)Mupen64Api.DebugMemGetSize(memoryDomain),
 				true,
-				4));
+				4,
+				swapped: true));
 		}
 
 		memoryDomains.Add(new MemoryDomainDelegate
