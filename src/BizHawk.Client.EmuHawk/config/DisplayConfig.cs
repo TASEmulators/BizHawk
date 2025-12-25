@@ -97,13 +97,16 @@ namespace BizHawk.Client.EmuHawk
 					new LabelEx { Text = "When no rom loaded, draw \"snow\" (white noise):" },
 					new SingleRowFLP { Controls = { rbSnowAlways, rbSnowNever } },
 					rbSnowForChristmas,
-					new SingleRowFLP { Controls =
+					new SingleRowFLP
 					{
-						new LabelEx { Text = "Brightness multiplier:" },
-						nudSnowIntensity,
-						new LabelEx { Text = "RNG bias:" },
-						nudSnowBias,
-					} },
+						Controls =
+						{
+							new LabelEx { Text = "Brightness multiplier:" },
+							nudSnowIntensity,
+							new LabelEx { Text = "RNG bias:" },
+							nudSnowBias,
+						},
+					},
 					new SingleRowFLP { Controls = { lblFramerate, tbSnowFramerate } },
 				},
 				Location = new(5, 15),
