@@ -1306,6 +1306,7 @@ namespace BizHawk.Client.EmuHawk
 			using DisplayConfig window = new(Config, DialogController, GL);
 			if (this.ShowDialogWithTempMute(window).IsOk())
 			{
+				DisplayManager.UpdateGlobals(Config, Emulator);
 				DisplayManager.RefreshUserShader();
 				FrameBufferResized();
 				SynchChrome();

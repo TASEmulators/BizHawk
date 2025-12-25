@@ -2348,9 +2348,18 @@ namespace BizHawk.Client.EmuHawk
 			//rendering flakes out egregiously if we have a zero size
 			//can we fix it later not to?
 			if (isZero)
+			{
 				DisplayManager.Blank();
+			}
 			else
-				DisplayManager.UpdateSource(video);
+			{
+				DisplayManager.UpdateSource(video, useSnow: Emulator is NullEmulator && (Config.SnowyNullHawk switch
+				{
+					SnowyNullVideo.TriggerCriterion.Always => true,
+					SnowyNullVideo.TriggerCriterion.WeekOfChristmas => DateTime.Now.DayOfYear is >= 354/*Dec. 20*/ and <= 360/*Dec. 26*/,
+					_ => false,
+				}));
+			}
 		}
 
 		public static readonly FilesystemFilterSet ConfigFileFSFilterSet = new(

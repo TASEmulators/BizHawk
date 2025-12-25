@@ -10,6 +10,7 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.HighPerformance" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" />
+		<PackageReference Include="Microsoft.Bcl.Numerics" />
 		<PackageReference Include="Microsoft.Win32.Registry" />
 		<PackageReference Include="PolySharp" />
 		<PackageReference Include="System.ComponentModel.Annotations" />

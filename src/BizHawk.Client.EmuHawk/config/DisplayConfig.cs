@@ -6,6 +6,9 @@ using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -21,6 +24,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private string _pathSelection;
 
+		private readonly RadioButtonGroupTracker _snowRadioTracker;
+
+		private readonly SzNUDEx nudSnowBias = new()
+		{
+			DecimalPlaces = 2,
+			Increment = 0.25m,
+			Maximum = 2.0m,
+			Minimum = -2.0m,
+			Size = new(48, 23),
+		};
+
+		private readonly SzNUDEx nudSnowIntensity = new()
+		{
+			DecimalPlaces = 1,
+			Increment = 0.1m,
+			Maximum = 1.0m,
+			Minimum = 0.1m,
+			Size = new(48, 23),
+		};
+
+		private readonly TransparentTrackBar tbSnowFramerate = new() { Maximum = 20, Minimum = 1, Size = new(160, 45) };
+
 		public IDialogController DialogController { get; }
 
 		public bool NeedReset { get; set; }
@@ -30,8 +55,61 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_gl = gl;
 			DialogController = dialogController;
+			var snowSettings = _config.GetCoreSettings<NullEmulator, SnowyNullVideo.Settings>() ?? new();
 
 			InitializeComponent();
+			LocSzGroupBoxEx grpSnow = new() { Location = new(6, 200), Size = new(371, 160), Text = "Snowy NullHawk" };
+			_snowRadioTracker = grpSnow.Tracker;
+			RadioButtonEx rbSnowAlways = new(_snowRadioTracker)
+			{
+				Checked = config.SnowyNullHawk is SnowyNullVideo.TriggerCriterion.Always,
+				Name = nameof(rbSnowAlways),
+				Tag = SnowyNullVideo.TriggerCriterion.Always,
+				Text = "Always",
+			};
+			RadioButtonEx rbSnowForChristmas = new(_snowRadioTracker)
+			{
+				Checked = config.SnowyNullHawk is SnowyNullVideo.TriggerCriterion.WeekOfChristmas,
+				Name = nameof(rbSnowForChristmas),
+				Tag = SnowyNullVideo.TriggerCriterion.WeekOfChristmas,
+				Text = "During Christmas (Dec. 20th through 26th)",
+			};
+			RadioButtonEx rbSnowNever = new(_snowRadioTracker)
+			{
+				Checked = config.SnowyNullHawk is SnowyNullVideo.TriggerCriterion.Never,
+				Name = nameof(rbSnowNever),
+				Tag = SnowyNullVideo.TriggerCriterion.Never,
+				Text = "Never",
+			};
+			LabelEx lblFramerate = new();
+			tbSnowFramerate.ValueChanged += (changedSender, _) =>
+			{
+				var val = ((TrackBar) changedSender).Value;
+				lblFramerate.Text = $"Framerate: {60.0 / val:F1} Hz";
+			};
+			tbSnowFramerate.Value = snowSettings.FramerateScalar;
+			nudSnowIntensity.Value = new(snowSettings.Intensity);
+			nudSnowBias.Value = new(snowSettings.Bias);
+			grpSnow.Controls.Add(new LocSzSingleColumnFLP
+			{
+				Controls =
+				{
+					new LabelEx { Text = "When no rom loaded, draw \"snow\" (white noise):" },
+					new SingleRowFLP { Controls = { rbSnowAlways, rbSnowNever } },
+					rbSnowForChristmas,
+					new SingleRowFLP { Controls =
+					{
+						new LabelEx { Text = "Brightness multiplier:" },
+						nudSnowIntensity,
+						new LabelEx { Text = "RNG bias:" },
+						nudSnowBias,
+					} },
+					new SingleRowFLP { Controls = { lblFramerate, tbSnowFramerate } },
+				},
+				Location = new(5, 15),
+				Size = new(320, 144),
+			});
+			tpMisc.Controls.Add(grpSnow);
 
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
 			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
@@ -169,6 +247,15 @@ namespace BizHawk.Client.EmuHawk
 			if (rbDisplayAbsoluteZero.Checked) _config.DispSpeedupFeatures = 0;
 
 			_config.UseStaticWindowTitles = cbStaticWindowTitles.Checked;
+
+			_config.SnowyNullHawk = _snowRadioTracker.GetSelectionTagAs<SnowyNullVideo.TriggerCriterion>()
+				?? SnowyNullVideo.TriggerCriterion.WeekOfChristmas;
+			_config.PutCoreSettings(
+				new SnowyNullVideo.Settings(
+					Bias: nudSnowBias.Value.ConvertToF32(),
+					FramerateScalar: tbSnowFramerate.Value,
+					Intensity: nudSnowIntensity.Value.ConvertToF32()),
+				typeof(NullEmulator));
 
 			if (rbUseRaw.Checked)
 				_config.DispManagerAR = EDispManagerAR.None;

@@ -49,6 +49,8 @@ namespace BizHawk.Client.Common
 
 		private IEmulator GlobalEmulator;
 
+		public SnowyNullVideo SnowyVP { get; private set; }
+
 		protected DisplayManagerBase(
 			Config config,
 			IEmulator emulator,
@@ -60,6 +62,10 @@ namespace BizHawk.Client.Common
 		{
 			GlobalConfig = config;
 			GlobalEmulator = emulator;
+			SnowyVP = new()
+			{
+				LiveSettings = GlobalConfig.GetCoreSettings<NullEmulator, SnowyNullVideo.Settings>() ?? new(),
+			};
 			OSD = new(config, emulator, inputManager, movieSession);
 			_gl = gl;
 			_renderer = renderer;
@@ -112,6 +118,10 @@ namespace BizHawk.Client.Common
 		{
 			GlobalConfig = config;
 			GlobalEmulator = emulator;
+			SnowyVP = new()
+			{
+				LiveSettings = GlobalConfig.GetCoreSettings<NullEmulator, SnowyNullVideo.Settings>() ?? new(),
+			};
 			OSD.UpdateGlobals(config, emulator);
 		}
 
@@ -466,12 +476,12 @@ namespace BizHawk.Client.Common
 		/// This will receive an emulated output frame from an IVideoProvider and run it through the complete frame processing pipeline
 		/// Then it will stuff it into the bound PresentationPanel.
 		/// </summary>
-		public void UpdateSource(IVideoProvider videoProvider)
+		public void UpdateSource(IVideoProvider videoProvider, bool useSnow = false)
 		{
 			var displayNothing = GlobalConfig.DispSpeedupFeatures == 0;
 			var job = new JobInfo
 			{
-				VideoProvider = videoProvider,
+				VideoProvider = useSnow ? SnowyVP : videoProvider,
 				Simulate = displayNothing,
 				ChainOutsize = GetGraphicsControlSize(),
 				IncludeOSD = true,

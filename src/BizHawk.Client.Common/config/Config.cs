@@ -464,5 +464,7 @@ namespace BizHawk.Client.Common
 		public bool ScaleOSDWithSystemScale { get; set; } = true;
 
 		public int RelativeMouseSensitivity { get; set; } = 100;
+
+		public SnowyNullVideo.TriggerCriterion SnowyNullHawk { get; set; } = SnowyNullVideo.TriggerCriterion.WeekOfChristmas;
 	}
 }
