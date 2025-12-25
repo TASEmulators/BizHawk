@@ -136,6 +136,7 @@ public abstract class Mupen64Api
 		VI_REG,
 		RI_REG,
 		AI_REG,
+		ROM,
 	}
 
 	public enum m64p_type {
