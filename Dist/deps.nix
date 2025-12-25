@@ -17,6 +17,7 @@
   (fetchNuGet { pname = "Microsoft.Bcl.AsyncInterfaces"; version = "8.0.0"; sha256 = "0z4jq5prnxyb4p3163yxx35znpd2msjd8hw8ysmv4ah90f5sd9gm"; })
   (fetchNuGet { pname = "Microsoft.Bcl.AsyncInterfaces"; version = "9.0.0"; sha256 = "0mbkcs54i5i7rs0sqimbyzijzylvpb94xm9ycfvmlz10c4wwvi86"; })
   (fetchNuGet { pname = "Microsoft.Bcl.HashCode"; version = "6.0.0"; sha256 = "0sxxkhqn3qfag8s43gc5krny6m7cwfpdgxpxslbwg35zn2xb5fgk"; })
+  (fetchNuGet { pname = "Microsoft.Bcl.Numerics"; version = "10.0.1"; sha256 = "0kpp9gb6djjnf0j3f58015m77qdsml2hfcyd1wwhwhk653csxyak"; })
   (fetchNuGet { pname = "Microsoft.CodeAnalysis.BannedApiAnalyzers"; version = "3.3.4"; sha256 = "1vzrni7n94f17bzc13lrvcxvgspx9s25ap1p005z6i1ikx6wgx30"; })
   (fetchNuGet { pname = "Microsoft.CodeCoverage"; version = "17.13.0"; sha256 = "1jmvvx1d3gvjmm7777i8kjs0cnbb3q47vvbcsqrr18whxk2wiahq"; })
   (fetchNuGet { pname = "Microsoft.CSharp"; version = "4.7.0"; sha256 = "0gd67zlw554j098kabg887b5a6pq9kzavpa3jjy5w53ccjzjfy8j"; })
