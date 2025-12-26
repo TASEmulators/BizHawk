@@ -31,6 +31,11 @@ namespace BizHawk.Bizware.Graphics
 				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
 				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
 				SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+				// set EGL_PLATFORM, many users have reported crashes with SDL_GL_LoadLibrary
+				// this is from EGL_PLATFORM being set to wayland by users to workaround wonky autodetection with nvidia drivers
+				// this is made worse with SDL as it uses eglGetDisplay rather than eglGetPlatformDisplay
+				// as such EGL assumes the display is a wayland display and proceeds to crash with that assumption
+				Environment.SetEnvironmentVariable("EGL_PLATFORM", "x11");
 			}
 
 			// init SDL video
