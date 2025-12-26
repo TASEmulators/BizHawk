@@ -45,7 +45,7 @@ using BizHawk.WinForms.Controls;
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MainForm : FormBase, IDialogParent,
-		IMainFormForApiInit, IMainFormForRetroAchievements, IMainFormForTools
+		IMainFormForApi, IMainFormForRetroAchievements, IMainFormForTools
 	{
 		private const string FMT_STR_DUMP_STATUS_MENUITEM_LABEL = "Dump Status Report{0}...";
 
@@ -1226,7 +1226,7 @@ namespace BizHawk.Client.EmuHawk
 
 		internal readonly ExternalToolManager ExtToolManager;
 
-		public ToolManager Tools { get; }
+		private readonly ToolManager Tools;
 
 		private IControlMainform ToolControllingSavestates => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlSavestates);
 		private IControlMainform ToolControllingRewind => Tools.FirstOrNull<IControlMainform>(tool => tool.WantsToControlRewind);
