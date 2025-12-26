@@ -38,6 +38,7 @@ typedef void (*MemoryFunctionHook)(uint8_t* buffer, int64_t address, int64_t cou
 #define MEMORYAREA_FLAGS_WORDSIZE8 256
 #define MEMORYAREA_FLAGS_SWAPPED 512
 #define MEMORYAREA_FLAGS_FUNCTIONHOOK 1024
+#define MEMORYAREA_FLAGS_SIZEDFUNCTIONHOOKS 2048
 
 #ifdef __cplusplus
 }
