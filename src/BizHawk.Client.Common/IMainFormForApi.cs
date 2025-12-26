@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		bool EmulatorPaused { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		bool InvisibleEmulation { get; set; }
+		bool InvisibleEmulateNextFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsSeeking { get; }
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 		void ToggleSound();
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		void UnpauseEmulator();
+		bool UnpauseEmulator();
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		event BeforeQuickLoadEventHandler QuicksaveLoad;
