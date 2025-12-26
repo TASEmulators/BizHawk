@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		bool HoldFrameAdvance { get; set; }
 
 		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
-		bool InvisibleEmulation { get; set; }
+		bool InvisibleEmulateNextFrame { get; set; }
 
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool IsFastForwarding { get; }

@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 		public int GetWindowSize()
 			=> _config.GetWindowScaleFor(Emulator.SystemId);
 
-		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
+		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulateNextFrame = invisible;
 
 		public bool IsPaused() => _mainForm.EmulatorPaused;
 

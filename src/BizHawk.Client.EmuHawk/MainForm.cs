@@ -1002,8 +1002,12 @@ namespace BizHawk.Client.EmuHawk
 				Tools.GeneralUpdateActiveExtTools();
 
 				StepRunLoop_Core();
-				Render();
-				StepRunLoop_Throttle();
+
+				if (!_invisibleEmulation)
+				{
+					Render();
+					StepRunLoop_Throttle();
+				}
 
 				// HACK: RAIntegration might peek at memory during messages
 				// we need this to allow memory access here, otherwise it will deadlock
@@ -1145,7 +1149,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <item><description><see cref="ClientLuaLibrary.InvisibleEmulation(bool)"/></description></item>
 		/// </list>
 		/// </summary>
-		public bool InvisibleEmulation { get; set; }
+		public bool InvisibleEmulateNextFrame { get; set; }
+
+		private bool _invisibleEmulation;
 
 		private long MouseWheelTracker;
 
@@ -1170,7 +1176,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
-		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking || InvisibleEmulation;
+		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking || _invisibleEmulation;
 		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing;
 		public bool IsRewinding { get; private set; }
 
@@ -2976,11 +2982,11 @@ namespace BizHawk.Client.EmuHawk
 
 			_runloopFrameAdvance = frameAdvance;
 
+			bool unpaused = !EmulatorPaused || _invisibleEmulation;
 #if BIZHAWKBUILD_SUPERHAWK
-			if (!EmulatorPaused && (!Config.SuperHawkThrottle || InputManager.ClientControls.AnyInputHeld))
-#else
-			if (!EmulatorPaused)
+			unpaused = unpaused && (!Config.SuperHawkThrottle || InputManager.ClientControls.AnyInputHeld);
 #endif
+			if (unpaused)
 			{
 				runFrame = true;
 			}
@@ -2994,15 +3000,20 @@ namespace BizHawk.Client.EmuHawk
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
+				_invisibleEmulation = InvisibleEmulateNextFrame;
+
 				var isFastForwarding = IsFastForwarding;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
 
-				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
+				if (!_invisibleEmulation)
 				{
-					InitializeFpsData();
-				}
+					if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
+					{
+						InitializeFpsData();
+					}
 
-				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
+					_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
+				}
 
 				// client input-related duties
 				OSD.ClearGuiText();
@@ -3022,13 +3033,13 @@ namespace BizHawk.Client.EmuHawk
 					Tools.UpdateToolsBefore();
 				}
 
-				if (!InvisibleEmulation)
+				if (!_invisibleEmulation)
 				{
 					CaptureRewind(isRewinding);
 				}
 
 				// Set volume, if enabled
-				if (Config.SoundEnabledNormal && !InvisibleEmulation)
+				if (Config.SoundEnabledNormal && !_invisibleEmulation)
 				{
 					atten = Config.SoundVolume / 100.0f;
 
@@ -3073,7 +3084,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool atTurboSeekEnd = IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value - 1;
-				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd);
+				bool render = !_invisibleEmulation && (!_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd);
 				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
 				MovieSession.HandleFrameAfter(ToolBypassingMovieEndAction is not null);
@@ -3114,12 +3125,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (!PauseAvi && newFrame && !InvisibleEmulation)
+				if (!PauseAvi && newFrame && !_invisibleEmulation)
 				{
 					AvFrameAdvance();
 				}
 
-				if (newFrame)
+				if (newFrame && !_invisibleEmulation)
 				{
 					_framesSinceLastFpsUpdate++;
 

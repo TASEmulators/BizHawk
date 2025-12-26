@@ -25,6 +25,8 @@ local function seek_frame(frame)
 	if pause then client.pause() end
 end
 
+event.onexit(function() client.invisibleemulation(false) end)
+
 while true do
 	client.invisibleemulation(true)
 	local memorystate = memorysavestate.savecorestate()
@@ -46,6 +48,5 @@ while true do
 	client.invisibleemulation(true)
 	memorysavestate.loadcorestate(memorystate)
 	memorysavestate.removestate(memorystate)
---	client.invisibleemulation(false)
 	emu.frameadvance()
 end
