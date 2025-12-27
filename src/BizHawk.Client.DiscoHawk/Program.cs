@@ -8,6 +8,9 @@ using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
+
 namespace BizHawk.Client.DiscoHawk
 {
 	internal static class Program
@@ -67,9 +70,9 @@ namespace BizHawk.Client.DiscoHawk
 				const uint WM_DROPFILES = 0x0233;
 				const uint WM_COPYDATA = 0x004A;
 				const uint WM_COPYGLOBALDATA = 0x0049;
-				WmImports.ChangeWindowMessageFilter(WM_DROPFILES, WmImports.ChangeWindowMessageFilterFlags.Add);
-				WmImports.ChangeWindowMessageFilter(WM_COPYDATA, WmImports.ChangeWindowMessageFilterFlags.Add);
-				WmImports.ChangeWindowMessageFilter(WM_COPYGLOBALDATA, WmImports.ChangeWindowMessageFilterFlags.Add);
+				WmImports.ChangeWindowMessageFilter(WM_DROPFILES, CHANGE_WINDOW_MESSAGE_FILTER_FLAGS.MSGFLT_ADD);
+				WmImports.ChangeWindowMessageFilter(WM_COPYDATA, CHANGE_WINDOW_MESSAGE_FILTER_FLAGS.MSGFLT_ADD);
+				WmImports.ChangeWindowMessageFilter(WM_COPYGLOBALDATA, CHANGE_WINDOW_MESSAGE_FILTER_FLAGS.MSGFLT_ADD);
 
 				// this will look in subdirectory "dll" to load pinvoked stuff
 				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
@@ -83,7 +86,7 @@ namespace BizHawk.Client.DiscoHawk
 
 				if (dllDir.ContainsOrdinal(';'))
 				{
-					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
+					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir);
 					if (dllShortPathLen == 0)
 					{
 						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
@@ -91,14 +94,14 @@ namespace BizHawk.Client.DiscoHawk
 					}
 
 					var dllShortPathBuffer = new char[dllShortPathLen];
-					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer);
 					if (dllShortPathLen == 0)
 					{
 						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
 						return;
 					}
 
-					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen);
+					dllDir = dllShortPathBuffer.AsSpan(start: 0, length: (int) dllShortPathLen).ToString();
 					if (dllDir.ContainsOrdinal(';'))
 					{
 						MessageBox.Show(SEMICOLON_IN_DIR_MSG);

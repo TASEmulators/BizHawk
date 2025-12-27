@@ -1,5 +1,8 @@
 ﻿using BizHawk.Common;
 
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <remarks>Derived from http://www.codeproject.com/KB/cs/ScreenSaverControl.aspx</remarks>
@@ -19,17 +22,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				get
 				{
-					const int SPI_GETSCREENSAVERTIMEOUT = 14;
-					int value = default;
-					Win32Imports.SystemParametersInfoW(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
-					return value;
+					_ = Win32Imports.SystemParametersInfoW(
+						SYSTEM_PARAMETERS_INFO_ACTION.SPI_GETSCREENSAVETIMEOUT,
+						uiParam: 0,
+						out var value);
+					return unchecked((int) value);
 				}
 				set
 				{
-					const int SPI_SETSCREENSAVERTIMEOUT = 15;
-					const int SPIF_SENDWININICHANGE = 2;
-					int nullVar = default;
-					Win32Imports.SystemParametersInfoW(SPI_SETSCREENSAVERTIMEOUT, value, ref nullVar, SPIF_SENDWININICHANGE);
+					_ = Win32Imports.SystemParametersInfoW(
+						SYSTEM_PARAMETERS_INFO_ACTION.SPI_SETSCREENSAVETIMEOUT,
+						unchecked((uint) value),
+						SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS.SPIF_SENDWININICHANGE);
 				}
 			}
 		}

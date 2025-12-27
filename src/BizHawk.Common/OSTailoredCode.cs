@@ -3,7 +3,12 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common.StringExtensions;
 
-using static BizHawk.Common.LoaderApiImports;
+using Microsoft.Win32.SafeHandles;
+
+using Windows.Win32;
+using Windows.Win32.System.Diagnostics.Debug;
+
+using static Windows.Win32.Win32Imports;
 
 namespace BizHawk.Common
 {
@@ -210,9 +215,24 @@ namespace BizHawk.Common
 
 		private class WindowsLLManager : ILinkedLibManager
 		{
-			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
+			private sealed class DummySafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+			{
+				public DummySafeHandle(IntPtr hModule)
+					: base(ownsHandle: true)
+					=> SetHandle(hModule);
 
-			public IntPtr GetProcAddrOrZero(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
+				protected override bool ReleaseHandle()
+					=> true;
+			}
+
+			public int FreeByPtr(IntPtr hModule)
+				=> FreeLibrary(new(hModule)) ? 0 : 1;
+
+			public unsafe IntPtr GetProcAddrOrZero(IntPtr hModule, string procName)
+			{
+				DummySafeHandle wrapper = new(hModule);
+				return GetProcAddress(wrapper, procName);
+			}
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
@@ -220,7 +240,10 @@ namespace BizHawk.Common
 				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)} trying to find symbol {procName}, {GetErrorMessage()}");
 			}
 
-			public IntPtr LoadOrZero(string dllToLoad) => LoadLibraryW(dllToLoad);
+			public unsafe IntPtr LoadOrZero(string dllToLoad)
+			{
+				fixed (char* ptr = dllToLoad) return LoadLibraryW(ptr);
+			}
 
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
@@ -231,10 +254,16 @@ namespace BizHawk.Common
 			public unsafe string GetErrorMessage()
 			{
 				var errCode = Win32Imports.GetLastError();
-				var buffer = stackalloc char[1024];
-				const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
-				var sz = Win32Imports.FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, IntPtr.Zero, errCode, 0, buffer, 1024, IntPtr.Zero);
-				return $"error code: 0x{errCode:X8}, error message: {new string(buffer, 0, sz)}";
+				Span<char> buffer = stackalloc char[1024];
+				var sz = Win32Imports.FormatMessageW(
+					FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_SYSTEM,
+					lpSource: default,
+					dwMessageId: errCode,
+					dwLanguageId: 0,
+					buffer,
+					nSize: 1024,
+					Arguments: default);
+				return $"error code: 0x{errCode:X8}, error message: {buffer.Slice(start: 0, length: (int) sz).ToString()}";
 			}
 		}
 

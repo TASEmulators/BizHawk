@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+	<Import Project="../MainSlnCommon.props" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Windows.CsWin32" />
+		<PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+	</ItemGroup>
+</Project>

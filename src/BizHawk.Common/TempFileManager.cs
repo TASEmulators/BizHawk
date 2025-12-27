@@ -6,6 +6,8 @@ using System.Threading;
 
 using BizHawk.Common.PathExtensions;
 
+using Windows.Win32;
+
 namespace BizHawk.Common
 {
 	/// <summary>

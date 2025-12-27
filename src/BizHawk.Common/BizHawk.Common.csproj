@@ -14,10 +14,7 @@
 		<PackageReference Include="Microsoft.Win32.Registry" />
 		<PackageReference Include="PolySharp" />
 		<PackageReference Include="System.ComponentModel.Annotations" />
-		<PackageReference Include="System.Memory" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
-	</ItemGroup>
-	<ItemGroup>
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Externs/BizHawk.Bizware.Externs.csproj" />
 		<Analyzer Include="$(MSBuildProjectDirectory)/../../References/BizHawk.SrcGen.VersionInfo.dll" />
 	</ItemGroup>
 	<Target Name="InstallGitHooks" AfterTargets="PreBuildEvent">
