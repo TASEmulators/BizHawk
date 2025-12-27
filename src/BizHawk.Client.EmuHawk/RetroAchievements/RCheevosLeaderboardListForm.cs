@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -9,18 +10,18 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class RCheevosLeaderboardListForm : Form
 	{
-		public bool IsShown { get; private set; }
+		private RCheevos.LBoard[] _lboards;
+		private RCheevosLeaderboardForm[] _lboardForms = [ ];
 
-		private RCheevosLeaderboardForm[] _lboardForms;
-		private int _updateCooldown;
+		private readonly int _controlHeight;
 
 		public RCheevosLeaderboardListForm()
 		{
 			InitializeComponent();
 			FormClosing += RCheevosLeaderboardListForm_FormClosing;
-			Shown += (_, _) => IsShown = true;
-			_lboardForms = Array.Empty<RCheevosLeaderboardForm>();
-			_updateCooldown = 5; // only update every 5 frames / 12 fps (as this is rather expensive to update)
+			using var temp = new RCheevosLeaderboardForm();
+			_controlHeight = temp.Height + temp.Margin.Bottom + temp.Margin.Top;
+			flowLayoutPanel1.BoundScrollBar = vScrollBar1;
 		}
 
 		private void DisposeLboardForms()
@@ -33,16 +34,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart(IEnumerable<RCheevos.LBoard> lboards)
 		{
+			_lboards = lboards.ToArray();
 			flowLayoutPanel1.Controls.Clear();
-			DisposeLboardForms();
-			_lboardForms = lboards.Select(lboard => new RCheevosLeaderboardForm(lboard)).ToArray();
-			flowLayoutPanel1.Controls.AddRange(_lboardForms);
+
+			RCheevosLeaderboardListForm_SizeChanged(this, EventArgs.Empty);
+			vScrollBar1.Value = 0;
+			vScrollBar1.Maximum = _controlHeight * _lboards.Length;
 		}
 
-		public void OnFrameAdvance(bool forceUpdate = false)
+		public void OnFrameAdvance()
 		{
-			if (--_updateCooldown > 0 && !forceUpdate) return;
-			_updateCooldown = 5;
 			foreach (var lb in _lboardForms)
 			{
 				lb.OnFrameAdvance();
@@ -53,7 +54,55 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Hide();
 			e.Cancel = true;
-			IsShown = false;
+		}
+
+		private void UpdateForms()
+		{
+			int firstIndex = vScrollBar1.Value / _controlHeight;
+			int indexOffset = vScrollBar1.Value % _controlHeight;
+			while (firstIndex > _lboards.Length - _lboardForms.Length)
+			{
+				firstIndex--;
+				indexOffset += _controlHeight;
+			}
+			flowLayoutPanel1.SuspendDrawing();
+			flowLayoutPanel1.SuspendLayout();
+			bool refresh = flowLayoutPanel1.AutoScrollPosition.Y != -indexOffset;
+			for (int i = 0; i < _lboardForms.Length; i++)
+			{
+				refresh |= _lboardForms[i].UpdateLBoard(_lboards[firstIndex + i]);
+			}
+			flowLayoutPanel1.AutoScrollPosition = new Point(0, indexOffset);
+			flowLayoutPanel1.ResumeLayout();
+			flowLayoutPanel1.ResumeDrawing();
+			if (refresh)
+			{
+				Refresh();
+			}
+		}
+
+		private void vScrollBar1_ValueChanged(object sender, EventArgs e) => UpdateForms();
+
+		private int DisplayedItems()
+		{
+			return Math.Min((int) Math.Ceiling((double) flowLayoutPanel1.Height / _controlHeight) + 1, _lboards.Length);
+		}
+
+		private void RCheevosLeaderboardListForm_SizeChanged(object sender, EventArgs e)
+		{
+			if (flowLayoutPanel1.Controls.Count != DisplayedItems())
+			{
+				flowLayoutPanel1.Controls.Clear();
+				DisposeLboardForms();
+				_lboardForms = new RCheevosLeaderboardForm[DisplayedItems()];
+				for (int i = 0; i < DisplayedItems(); i++)
+				{
+					_lboardForms[i] = new RCheevosLeaderboardForm();
+				}
+				flowLayoutPanel1.Controls.AddRange(_lboardForms);
+			}
+
+			UpdateForms();
 		}
 	}
 }
