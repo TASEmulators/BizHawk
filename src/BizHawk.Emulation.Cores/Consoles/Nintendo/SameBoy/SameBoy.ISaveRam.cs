@@ -10,25 +10,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 		{
 			int length = LibSameboy.sameboy_sramlen(SameboyState);
 
-			if (length > 0)
+			if (length == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+			else
 			{
 				byte[] ret = new byte[length];
 				LibSameboy.sameboy_savesram(SameboyState, ret);
 				return ret;
 			}
-
-			return null;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
 			int expected = LibSameboy.sameboy_sramlen(SameboyState);
+			if (expected == 0) throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			if (data.Length != expected) throw new ArgumentException(message: "Size of saveram data does not match expected!", paramName: nameof(data));
 
-			if (expected > 0)
-			{
-				LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
-			}
+			LibSameboy.sameboy_loadsram(SameboyState, data, data.Length);
 		}
 	}
 }

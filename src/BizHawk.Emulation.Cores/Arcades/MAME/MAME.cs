@@ -25,13 +25,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath.SubstringAfter('|')).ToLowerInvariant();
 			_syncSettings = lp.SyncSettings ?? new();
 
-			ServiceProvider = new BasicServiceProvider(this);
+			_serviceProvider = new BasicServiceProvider(this);
+			_serviceProvider.Unregister<ISaveRam>();
 			DeterministicEmulation = !_syncSettings.RTCSettings.UseRealTime || lp.DeterministicEmulationRequested;
 
 			_logCallback = MAMELogCallback;
 			_baseTimeCallback = MAMEBaseTimeCallback;
 			_inputPollCallback = InputCallbacks.Call;
-			_filenameCallback = name => _nvramFilenames.Add(name);
+			_filenameCallback = name => {
+				_nvramFilenames.Add(name);
+				_serviceProvider.Register<ISaveRam>(this);
+			};
 			_infoCallback = info =>
 			{
 				var text = info.Replace(". ", "\n").Replace("\n\n", "\n");

@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			ser.Register<ICodeDataLogger>(L);
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(this);
+			if (L.SaveRAM == null && R.SaveRAM == null)
+				ser.Unregister<ISaveRam>();
 
 			_tracer = new TraceBuffer(L.Cpu.TraceHeader);
 			ser.Register(_tracer);

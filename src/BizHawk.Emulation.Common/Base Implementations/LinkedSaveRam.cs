@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Common
 		{
 			for (int i = 0; i < _numCores; i++)
 			{
-				if (_linkedCores[i].AsSaveRam().SaveRamModified)
+				if (_linkedCores[i].AsSaveRam()?.SaveRamModified == true)
 				{
 					return true;
 				}
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Common
 			int len = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				linkedBuffers.Add(_linkedCores[i].AsSaveRam().CloneSaveRam(clearDirty) ?? Array.Empty<byte>());
+				linkedBuffers.Add(_linkedCores[i].AsSaveRam()?.CloneSaveRam(clearDirty) ?? Array.Empty<byte>());
 				len += linkedBuffers[i].Length;
 			}
 			byte[] ret = new byte[len];
@@ -55,13 +55,15 @@ namespace BizHawk.Emulation.Common
 			int pos = 0;
 			for (int i = 0; i < _numCores; i++)
 			{
-				var toCopy = _linkedCores[i].AsSaveRam().CloneSaveRam(); // wait CloneSaveRam is already a copy, why are we copying it again
-				if (toCopy is null) continue;
-				var b = new byte[toCopy.Length];
+				var numberBytesToCopy = _linkedCores[i].AsSaveRam()?.CloneSaveRam().Length;
+				if (numberBytesToCopy is null) continue;
+				var b = new byte[numberBytesToCopy.Value];
 				Buffer.BlockCopy(data, pos, b, 0, b.Length);
 				pos += b.Length;
 				_linkedCores[i].AsSaveRam().StoreSaveRam(b);
 			}
+
+			if (data.Length != pos) throw new InvalidOperationException("Incorrect sram size.");
 		}
 	}
 }

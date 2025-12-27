@@ -178,8 +178,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				domains.Add(cartRamD);
 			}
 
+			if (A.cart_RAM == null && B.cart_RAM == null && C.cart_RAM == null && D.cart_RAM == null)
+			{
+				_serviceProvider.Unregister<ISaveRam>();
+			}
+
 			MemoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_serviceProvider.Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private byte PeekSystemBusA(long addr)

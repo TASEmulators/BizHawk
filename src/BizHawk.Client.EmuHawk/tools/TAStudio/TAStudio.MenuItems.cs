@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				var saveRam = SaveRamEmulator?.CloneSaveRam(clearDirty: false) ?? throw new Exception("No SaveRam");
+				var saveRam = SaveRamEmulator?.CloneSaveRam(clearDirty: false) ?? throw new Exception("No SaveRam; this button should have been disabled.");
 				GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
 				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
 				MainForm.PauseEmulator();

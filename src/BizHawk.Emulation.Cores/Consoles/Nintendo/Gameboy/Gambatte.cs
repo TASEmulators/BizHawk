@@ -248,6 +248,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					remote: _syncSettings.EnableRemote);
 
 				NewSaveCoreSetBuff();
+
+				if (LibGambatte.gambatte_getsavedatalength(GambatteState) == 0)
+				{
+					_serviceProvider.Unregister<ISaveRam>();
+				}
 			}
 			catch
 			{

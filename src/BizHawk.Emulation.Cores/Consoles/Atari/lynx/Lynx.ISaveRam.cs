@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			if (!LibLynx.GetSaveRamPtr(Core, out var size, out var data))
 			{
-				return null;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			byte[] ret = new byte[size];
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			if (!LibLynx.GetSaveRamPtr(Core, out var size, out var data))
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			}
 
 			if (srcData.Length != size) throw new ArgumentException(message: "buffer too small", paramName: nameof(srcData));

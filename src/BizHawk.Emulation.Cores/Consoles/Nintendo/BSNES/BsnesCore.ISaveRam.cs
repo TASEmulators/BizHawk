@@ -13,7 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public byte[] CloneSaveRam(bool clearDirty)
 		{
-			if (_saveRamSize == 0) return null;
+			if (_saveRamSize == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 
 			byte[] saveRamCopy = new byte[_saveRamSize];
 			using (Api.exe.EnterExit())
@@ -33,7 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (_saveRamSize == 0) return;
+			if (_saveRamSize == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 
 			if (data.Length != _saveRamSize)
 			{

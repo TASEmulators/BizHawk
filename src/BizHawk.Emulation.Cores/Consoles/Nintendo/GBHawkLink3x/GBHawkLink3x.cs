@@ -37,8 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			if (lp.Roms.Count != 3)
 				throw new InvalidOperationException("Wrong number of roms");
 
-			var ser = new BasicServiceProvider(this);
-			ServiceProvider = ser;
+			_serviceProvider = new BasicServiceProvider(this);
 
 			Link3xSettings = lp.Settings ?? new GBLink3xSettings();
 			Link3xSyncSettings = lp.SyncSettings ?? new GBLink3xSyncSettings();
@@ -74,11 +73,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			C = new GBHawk.GBHawk(lp.Comm, lp.Roms[1].Game, lp.Roms[1].RomData, tempSetC, tempSyncC);
 			R = new GBHawk.GBHawk(lp.Comm, lp.Roms[2].Game, lp.Roms[2].RomData, tempSetR, tempSyncR);
 
-			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(this);
+			_serviceProvider.Register<IVideoProvider>(this);
+			_serviceProvider.Register<ISoundProvider>(this);
 
 			_tracer = new TraceBuffer(L.cpu.TraceHeader);
-			ser.Register(_tracer);
+			_serviceProvider.Register(_tracer);
 
 			_lStates = L.ServiceProvider.GetService<IStatable>();
 			_cStates = C.ServiceProvider.GetService<IStatable>();

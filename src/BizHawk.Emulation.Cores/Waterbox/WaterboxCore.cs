@@ -88,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					.Where(md => md.Definition.Flags.HasFlag(LibWaterboxCore.MemoryDomainFlags.Saverammable))
 					.ToArray();
 				_saveramSize = (int)_saveramAreas.Sum(a => a.Size);
+				if (_saveramSize == 0)
+					_serviceProvider.Unregister<ISaveRam>();
 
 				_exe.Seal();
 			}
@@ -161,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public virtual byte[] CloneSaveRam(bool clearDirty)
 		{
 			if (_saveramSize == 0)
-				return null;
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
 			using (_exe.EnterExit())
 			{
 				var ret = new byte[_saveramSize];
@@ -176,6 +178,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public virtual void StoreSaveRam(byte[] data)
 		{
+			if (_saveramSize == 0)
+				throw new InvalidOperationException("Core currently has no SRAM and should not be providing ISaveRam service.");
+
 			// Checking if the size of the SaveRAM provided coincides with that expected. This is important for cores whose SaveRAM size can vary depending on their configuration.
 			if (data.Length != _saveramSize)
 			{

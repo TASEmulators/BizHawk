@@ -22,8 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters) : this(loadParameters, false) { }
 		public BsnesCore(CoreLoadParameters<SnesSettings, SnesSyncSettings> loadParameters, bool subframe = false)
 		{
-			var ser = new BasicServiceProvider(this);
-			ServiceProvider = ser;
+			_serviceProvider = new BasicServiceProvider(this);
 
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringBefore('|'), null);
 			CoreComm = loadParameters.Comm;
@@ -90,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			// start up audio resampler
 			InitAudio();
-			ser.Register<ISoundProvider>(_soundProvider);
+			_serviceProvider.Register<ISoundProvider>(_soundProvider);
 
 			if (_isSGB)
 			{
@@ -141,8 +140,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			const string TRACE_HEADER = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, B, flags (NVMXDIZC), V, H)";
 			_tracer = new TraceBuffer(TRACE_HEADER);
-			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
-			ser.Register(_tracer);
+			_serviceProvider.Register<IDisassemblable>(new W65816_DisassemblerService());
+			_serviceProvider.Register(_tracer);
 
 			Api.Seal();
 		}

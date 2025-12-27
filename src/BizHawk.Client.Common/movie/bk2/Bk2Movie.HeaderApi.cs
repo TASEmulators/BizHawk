@@ -51,26 +51,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool StartsFromSaveRam
-		{
-			// ReSharper disable SimplifyConditionalTernaryExpression
-			get => Header.TryGetValue(HeaderKeys.StartsFromSaveram, out var s) ? bool.Parse(s) : false;
-			// ReSharper restore SimplifyConditionalTernaryExpression
-			set
-			{
-				if (value)
-				{
-					if (!Header.ContainsKey(HeaderKeys.StartsFromSaveram))
-					{
-						Header.Add(HeaderKeys.StartsFromSaveram, "True");
-					}
-				}
-				else
-				{
-					Header.Remove(HeaderKeys.StartsFromSaveram);
-				}
-			}
-		}
+		public bool StartsFromSaveRam => SaveRam != null;
 
 		public override string GameName
 		{

@@ -8,7 +8,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public string SystemId => VSystemID.Raw.Arcade;
 		public bool DeterministicEmulation { get; }
 		public int Frame { get; private set; }
-		public IEmulatorServiceProvider ServiceProvider { get; }
+
+		private BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
+
 		public ControllerDefinition ControllerDefinition => MAMEController;
 
 		/// <summary>

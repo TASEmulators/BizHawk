@@ -27,12 +27,8 @@ using BizHawk.Client.Common.cheats;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Computers.AppleII;
-using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Computers.DOS;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
-using BizHawk.Emulation.Cores.Consoles.SNK;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
@@ -1922,36 +1918,24 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
+				byte[] sram = null;
 				try
 				{
-					byte[] sram;
-
-					// some cores might not know how big the saveram ought to be, so just send it the whole file
-					if (Emulator is AppleII or C64 or DOSBox or MGBAHawk or NeoGeoPort or NES { BoardName: "FDS" })
-					{
-						sram = File.ReadAllBytes(saveramToLoad.FullName);
-					}
-					else
-					{
-						var oldRam = Emulator.AsSaveRam().CloneSaveRam();
-						if (oldRam is null)
-						{
-							// we have a SaveRAM file, but the current core does not have save ram.
-							// just skip loading the saveram file in that case
-							return;
-						}
-
-						// why do we silently truncate\pad here instead of warning\erroring?
-						sram = new byte[oldRam.Length];
-						using var fs = saveramToLoad.OpenRead();
-						_ = fs.Read(sram, 0, sram.Length);
-					}
-
-					Emulator.AsSaveRam().StoreSaveRam(sram);
+					sram = File.ReadAllBytes(saveramToLoad.FullName);
 				}
-				catch (IOException e)
+				catch (Exception e)
 				{
-					AddOnScreenMessage("An error occurred while loading Sram");
+					AddOnScreenMessage("An IO error occurred while loading Sram");
+					Console.Error.WriteLine(e);
+				}
+
+				try
+				{
+					if (sram != null) Emulator.AsSaveRam().StoreSaveRam(sram);
+				}
+				catch (Exception e)
+				{
+					AddOnScreenMessage("The core threw an error while loading Sram");
 					Console.Error.WriteLine(e);
 				}
 			}
@@ -1977,9 +1961,7 @@ namespace BizHawk.Client.EmuHawk
 				var backupPath = $"{path}.bak";
 				var backupFile = new FileInfo(backupPath);
 
-				var saveram = Emulator.AsSaveRam().CloneSaveRam();
-				if (saveram == null)
-					return true;
+				var saveram = Emulator.AsSaveRam().CloneSaveRam()!;
 
 				try
 				{

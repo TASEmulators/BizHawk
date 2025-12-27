@@ -4,7 +4,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IEmulator, ISoundProvider
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		private readonly BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 

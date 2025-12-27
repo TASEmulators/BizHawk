@@ -5,7 +5,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public partial class GBHawk : IEmulator, IVideoProvider
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; }
+		private readonly BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
