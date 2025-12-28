@@ -53,6 +53,7 @@ local MobjFlags    = enums.mobjflags
 
 local Zoom = 1
 local Follow = false
+local Hilite = false
 local Init = true
 local Players = {}
 
@@ -271,6 +272,12 @@ end
 local function follow_toggle()
 	if Mouse.Left and not LastMouse.left then
 		Follow = not Follow
+	end
+end
+
+local function hilite_toggle()
+	if Mouse.Left and not LastMouse.left then
+		Hilite = not Hilite
 	end
 end
 
@@ -522,16 +529,18 @@ local function iterate()
 
 		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
 		
-		x1, y1, x2, y2 = cached_line_coords(line)
-		
-		local dist = distance_from_line(
-			gameMousePos,
-			tuple_to_vertex(x1, y1),
-			tuple_to_vertex(x2, y2))
-		
-		if math.abs(dist) < shortest_dist then
-			shortest_dist = math.abs(dist)
-			closest_line = line
+		if Hilite then
+			x1, y1, x2, y2 = cached_line_coords(line)
+			
+			local dist = distance_from_line(
+				gameMousePos,
+				tuple_to_vertex(x1, y1),
+				tuple_to_vertex(x2, y2))
+			
+			if math.abs(dist) < shortest_dist then
+				shortest_dist = math.abs(dist)
+				closest_line = line
+			end
 		end
 	end
 	
@@ -625,7 +634,8 @@ local function iterate()
 				local radius = mobj.radius
 				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
 				
-				if  in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
+				if  Hilite
+				and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
 				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
 				and mousePos.x > PADDING_WIDTH and not CurrentPrompt
 				then
@@ -922,9 +932,9 @@ local function add_entity(type)
 end
 
 local function make_buttons()
-	make_button(-315,  30, "Add Thing",  function() add_entity("thing" ) end)
-	make_button(-210,  30, "Add Line",   function() add_entity("line"  ) end)
 	make_button(-115,  30, "Add Sector", function() add_entity("sector") end)
+	make_button(-210,  30, "Add Line",   function() add_entity("line"  ) end)
+	make_button(-315,  30, "Add Thing",  function() add_entity("thing" ) end)
 	make_button(  10, -40, "+",          function() zoom      ( 1      ) end)
 	make_button(  10, -10, "-",          function() zoom      (-1      ) end)
 	make_button(  40, -24, "<",          pan_left   )
@@ -933,7 +943,9 @@ local function make_buttons()
 	make_button(  88, -24, ">",          pan_right  )
 	make_button( 118, -40, "Reset View", reset_view )
 	make_button( 118, -10,
-		string.format("Follow %s", Follow and "ON " or "OFF"), follow_toggle)
+		string.format("Follow %s",    Follow and "ON " or "OFF"), follow_toggle)
+	make_button(-460, 30,
+		string.format("Highlight %s", Hilite and "ON " or "OFF"), hilite_toggle)
 	
 	if CurrentPrompt then
 		input_prompt()
