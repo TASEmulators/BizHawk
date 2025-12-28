@@ -1,7 +1,7 @@
 #!/bin/sh
 
 case "$0" in
-	*"EmuHawkMono.sh");;
+	*".sh");;
 	*"/bin/"*"sh")
 		# Very bad way to detect /path/to/shell
 		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?"
@@ -16,7 +16,7 @@ case "$0" in
 esac
 cd "$(dirname -- "$(realpath -- "$0")")" || ( echo "Can't navigate to \$0's path?" >& 2; exit 1 )
 
-libpath=
+libpath=""
 if [ "$(command -v lsb_release)" ]; then
 	# shellcheck disable=SC2018,SC2019
 	case "$(lsb_release -i | head -n1 | cut -c17- | tr A-Z a-z)" in
@@ -33,7 +33,7 @@ if [ -z "$libpath" ]; then
 	libpath="/usr/lib"
 fi
 
-export GTK_DATA_PREFIX=
+export GTK_DATA_PREFIX=""
 export LD_LIBRARY_PATH="$PWD/dll:$PWD:$libpath"
 export MONO_CRASH_NOFILE=1
 export MONO_WINFORMS_XIM_STYLE=disabled # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
@@ -46,7 +46,7 @@ fi
 if (ps -C "mono" -o "cmd" --no-headers | grep -Fq "EmuHawk.exe"); then
 	echo "(it seems EmuHawk is already running, NOT capturing output)" >& 2
 	mono EmuHawk.exe "$@"
-	return 0
+	exit "$?"
 fi
 
 o="$(mktemp -u)"
@@ -56,3 +56,4 @@ echo "(capturing output in $PWD/EmuHawkMono_last*.txt)" >& 2
 tee EmuHawkMono_laststdout.txt < "$o" &
 tee EmuHawkMono_laststderr.txt < "$e" | sed "s/.*/$(tput setaf 1)&$(tput sgr0)/" >& 2 &
 mono EmuHawk.exe "$@" > "$o" 2> "$e"
+exit "$?"
