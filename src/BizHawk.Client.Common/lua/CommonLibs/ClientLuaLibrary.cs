@@ -95,7 +95,14 @@ namespace BizHawk.Client.Common
 			=> "NLua+Lua";
 
 		[LuaMethodExample("client.invisibleemulation( true );")]
-		[LuaMethod("invisibleemulation", "Enters/exits turbo mode and disables/enables most emulator updates.")]
+		[LuaMethod(
+			name: "invisibleemulation",
+			description: "Disables/enables invisible emulation, starting on the next frame. During invisible emulation:"
+				+ " (1) All rendering and sound is disabled, including A/V capture."
+				+ " (2) Emulation runs at maximum speed with turbo enabled, regardless of pause state."
+				+ " (3) Frame rate is not calculated."
+				+ " (4) With one additional frame of delay, state capture for rewind+TAStudio is disabled."
+			)]
 		public void InvisibleEmulation(bool invisible)
 			=> APIs.EmuClient.InvisibleEmulation(invisible);
 
