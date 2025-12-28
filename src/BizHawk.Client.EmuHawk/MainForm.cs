@@ -1149,9 +1149,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <item><description><see cref="ClientLuaLibrary.InvisibleEmulation(bool)"/></description></item>
 		/// </list>
 		/// </summary>
-		public bool InvisibleEmulateNextFrame { get; set; }
+		public bool InvisibleEmulation { get => _invisibleUpdate; set => _invisibleEmulateNextFrame = value; }
 
+		private bool _invisibleEmulateNextFrame;
 		private bool _invisibleEmulation;
+		private bool _invisibleUpdate;
 
 		private long MouseWheelTracker;
 
@@ -1176,7 +1178,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
-		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking || _invisibleEmulation;
+		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking || _invisibleUpdate;
 		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing;
 		public bool IsRewinding { get; private set; }
 
@@ -3000,7 +3002,7 @@ namespace BizHawk.Client.EmuHawk
 			// BlockFrameAdvance (true when input it being editted in TAStudio) supercedes all other frame advance conditions
 			if ((runFrame || force) && !BlockFrameAdvance)
 			{
-				_invisibleEmulation = InvisibleEmulateNextFrame;
+				_invisibleEmulation = _invisibleEmulateNextFrame;
 
 				var isFastForwarding = IsFastForwarding;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
@@ -3066,7 +3068,7 @@ namespace BizHawk.Client.EmuHawk
 
 				RA?.OnFrameAdvance();
 
-				if (Config.AutosaveSaveRAM)
+				if (Config.AutosaveSaveRAM && !_invisibleEmulation)
 				{
 					AutoFlushSaveRamIn--;
 					if (AutoFlushSaveRamIn <= 0)
@@ -3087,7 +3089,7 @@ namespace BizHawk.Client.EmuHawk
 				bool render = !_invisibleEmulation && (!_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd);
 				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
-				MovieSession.HandleFrameAfter(ToolBypassingMovieEndAction is not null);
+				if (!_invisibleUpdate) MovieSession.HandleFrameAfter(ToolBypassingMovieEndAction is not null);
 
 				if (returnToRecording)
 				{
@@ -3124,6 +3126,7 @@ namespace BizHawk.Client.EmuHawk
 						UpdateToolsAfter();
 					}
 				}
+				_invisibleUpdate = _invisibleEmulation;
 
 				if (!PauseAvi && newFrame && !_invisibleEmulation)
 				{
@@ -4410,6 +4413,8 @@ namespace BizHawk.Client.EmuHawk
 			var isRewinding = false;
 
 			returnToRecording = false;
+
+			if (_invisibleEmulation) return false;
 
 			if (ToolControllingRewind is { } rewindTool)
 			{

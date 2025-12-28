@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
-			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
+			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null || MainForm.InvisibleEmulation)
 			{
 				return;
 			}
@@ -109,6 +109,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void FastUpdateAfter()
 		{
+			if (MainForm.InvisibleEmulation) return;
+
 			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
 			{
 				bool smga = _shouldMoveGreenArrow;

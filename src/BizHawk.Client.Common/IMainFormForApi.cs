@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		bool EmulatorPaused { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		bool InvisibleEmulateNextFrame { get; set; }
+		bool InvisibleEmulation { get; set; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsSeeking { get; }

@@ -1047,8 +1047,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (InvisibleEmulationCheckBox.Checked)
 			{
-				_previousInvisibleEmulation = MainForm.InvisibleEmulateNextFrame;
-				MainForm.InvisibleEmulateNextFrame = true;
+				_previousInvisibleEmulation = MainForm.InvisibleEmulation;
+				MainForm.InvisibleEmulation = true;
 			}
 
 			UpdateBotStatusIcon();
@@ -1103,7 +1103,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RestoreConfigFlags()
 		{
 			Config.DisplayMessages = _previousDisplayMessage;
-			MainForm.InvisibleEmulateNextFrame = _previousInvisibleEmulation;
+			MainForm.InvisibleEmulation = _previousInvisibleEmulation;
 			var movie = MovieSession.Movie;
 			if (movie.IsRecording()) movie.IsCountingRerecords = _oldCountingSetting;
 		}
