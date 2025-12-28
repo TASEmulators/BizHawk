@@ -21,6 +21,12 @@ local CHAR_HEIGHT       <const> = 16
 local PADDING_WIDTH     <const> = 240
 local MAP_CLICK_BLOCK   <const> = "P1 Fire" -- prevent this input while clicking on map buttons
 
+local TrackedType = {
+	THING  = 0,
+	LINE   = 1,
+	SECTOR = 2
+}
+
 -- Map colors (0xAARRGGBB or "name")
 local MapPrefs = {
 	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
@@ -51,14 +57,17 @@ local MobjFlags    = enums.mobjflags
 
 -- TOP LEVEL VARIABLES
 
-local Zoom = 1
-local Follow = false
-local Hilite = false
-local Init = true
-local Players = {}
+local Zoom           = 1
+local Follow         = false
+local Hilite         = false
+local Init           = true
+local LastFramecount = -1
+local ScreenWidth    = client.screenwidth()
+local ScreenHeight   = client.screenheight()
 
 -- tables
 
+local Players = {}
 -- view offset
 local Pan = {
 	x = 0,
@@ -81,24 +90,30 @@ local LastMouse = {
 	wheel = 0,
 	left  = false
 }
-
-local TrackedThings  = {}
-local TrackedLines   = {}
-local TrackedSectors = {}
-local ThingIDs       = {}
-local LineIDs        = {}
-local SectorIDs      = {}
-local LastFramecount = -1
-local ScreenWidth    = client.screenwidth()
-local ScreenHeight   = client.screenheight()
+local Tracked = {
+	[TrackedType.THING] = {
+		TrackedList = {},
+		IDs         = {},
+		Current     = -1,
+		Name        = "thing"
+	},
+	[TrackedType.LINE] = {
+		TrackedList = {},
+		IDs         = {},
+		Current     = -1,
+		Name        = "line"
+	},
+	[TrackedType.SECTOR] = {
+		TrackedList = {},
+		IDs         = {},
+		Current     = -1,
+		Name        = "sector"
+	}
+}
 
 -- forward declarations
 
 local Input
-local LastEpisode
-local LastMap
-local LastInput
-
 local Lines
 local PlayerTypes
 local EnemyTypes
@@ -106,6 +121,9 @@ local MissileTypes
 local MiscTypes
 local InertTypes
 local CurrentPrompt
+local LastEpisode
+local LastMap
+local LastInput
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -392,7 +410,7 @@ local function init_cache()
 		-- selectively cache certain properties. by assigning them manually the read function won't be called again
 
 		local lineId = line.iLineID
-		LineIDs[lineId] = true
+		Tracked[TrackedType.LINE].IDs[lineId] = true
 
 		-- assumption: lines can't become special, except for script command CmdSetLineSpecial
 		-- exclude lines that have a line id set (and therefore can be targeted by scripts)
@@ -413,7 +431,7 @@ local function init_cache()
 	end
 	
 	for _, sector in pairs(Globals.sectors) do
-		SectorIDs[sector.iSectorID] = true
+		Tracked[TrackedType.SECTOR].IDs[sector.iSectorID] = true
 	end
 end
 
@@ -520,17 +538,58 @@ local function iterate()
 		player.angle
 	)
 	
+	for _, sector in pairs(Globals.sectors) do
+		local index   = sector.iSectorID
+		local entity  = Tracked[TrackedType.SECTOR]
+		local list    = entity.TrackedList
+		
+		if #list > 0 then
+			local id = list[entity.Current]
+			
+			if id == index then
+				texts.sector = string.format(
+					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
+					index,
+					sector.special,
+					sector.floorheight   / FRACUNIT,
+					sector.ceilingheight / FRACUNIT)
+			end
+		end
+	end
+	
 	for i, line in ipairs(Lines) do
-		local color = 0xffffffff
 		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
+		local color   = 0xffffffff
 		local special = line.special
+		local index   = line.iLineID
+		local entity  = Tracked[TrackedType.LINE]
+		local list    = entity.TrackedList
 
 		if special ~= 0 then color = 0xffff00ff end
 
 		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
+		x1, y1, x2, y2 = cached_line_coords(line)
+		
+		if #list > 0 then
+			local id       = list[entity.Current]
+			local distance = distance_from_line(
+				{ x = player.x,      y = player.y      },
+				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+			)
+			
+			if id == index then
+				texts.line = string.format(
+					"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+					index, distance,
+					math.floor(x1 / FRACUNIT),
+					math.floor(y1 / FRACUNIT),
+					math.floor(x2 / FRACUNIT),
+					math.floor(y2 / FRACUNIT))
+			end
+		end
 		
 		if Hilite then
-			x1, y1, x2, y2 = cached_line_coords(line)
 			
 			local dist = distance_from_line(
 				gameMousePos,
@@ -567,7 +626,7 @@ local function iterate()
 				-- cached_line_coords gives some length error?
 				local x1, y1, x2, y2 = game_to_screen(line:coords())
 				drawline(x1, y1, x2, y2, 0xff00ffff)
-				texts.sector = string.format(
+				texts.sector = texts.sector or string.format(
 					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
 					selected_sector.iSectorID,
 					selected_sector.special,
@@ -585,8 +644,8 @@ local function iterate()
 			)
 			
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
-			drawline(x1, y1, x2, y2, 0xffff8800)		
-			texts.line = string.format(
+			drawline(x1, y1, x2, y2, 0xffff8800)
+			texts.line = texts.line or string.format(
 				"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 				closest_line.iLineID, distance,
 				math.floor(closest_line.v1.x / FRACUNIT),
@@ -597,16 +656,19 @@ local function iterate()
 	end
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local type  = mobj.type
-		local index = mobj.index
+		local entity = Tracked[TrackedType.THING]
+		local list   = entity.TrackedList
+		local type   = mobj.type
+		local index  = mobj.index
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		
+		-- players have index -1, things to be removed have -2
 		if index >= 0 then
-			ThingIDs[index] = true
+			entity.IDs[index] = true
 		end
-				
-		if #TrackedThings > 0 then
-			local id = TrackedThings[#TrackedThings]
+		
+		if #list > 0 then
+			local id = list[entity.Current]
 			
 			if id == index then
 				texts.thing = string.format(
@@ -676,7 +738,7 @@ local function iterate()
 		end
 	end
 	
-	box(0, 0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)	
+	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)	
 	text(10, 42, texts.player, MapPrefs.player.color)
 	
 	if texts.thing  then text(10, 222, texts.thing             ) end
@@ -684,8 +746,6 @@ local function iterate()
 	if texts.sector then text(10, 370, texts.sector, 0xff00ffff) end
 	
 	texts.thing = nil
-	
---	text(50,10,shortest_dist/FRACUNIT)
 end
 
 local function init_mobj_bounds()
@@ -772,10 +832,16 @@ end
 
 local function clear_cache()
 	Lines     = nil
-	ThingIDs  = {}
-	LineIDs   = {}
-	SectorIDs = {}
 	reset_view()
+	Tracked[TrackedType.THING ].TrackedList = {}
+	Tracked[TrackedType.THING ].IDs         = {}
+	Tracked[TrackedType.THING ].Current     = -1
+	Tracked[TrackedType.LINE  ].TrackedList = {}
+	Tracked[TrackedType.LINE  ].IDs         = {}
+	Tracked[TrackedType.LINE  ].Current     = -1
+	Tracked[TrackedType.SECTOR].TrackedList = {}
+	Tracked[TrackedType.SECTOR].IDs         = {}
+	Tracked[TrackedType.SECTOR].Current     = -1
 end
 
 local function get_line_count(str)
@@ -903,45 +969,54 @@ end
 local function add_entity(type)
 	if CurrentPrompt then return end
 	
-	local lookup, array
-	
-	if type == "thing" then
-		lookup = ThingIDs
-		array  = TrackedThings
-	elseif type == "line" then
-		lookup = LineIDs
-		array  = TrackedLines
-	elseif type == "sector" then
-		lookup = SectorIDs
-		array  = TrackedSectors
-	else print("ERROR: Wrong entity type: " .. type) return
-	end
+	local entity = Tracked[type]
+	local lookup = entity.IDs
+	local array  = entity.TrackedList
+	local name   = entity.Name
 	
 	CurrentPrompt = {
 		msg = type,
 		fun = function(id)
 			if not lookup[id] then
-				print(string.format("\nERROR: Can't add %s %d because it doesn't exist!\n", type, id))
+				print(string.format(
+					"\nERROR: Can't add %s %d because it doesn't exist!\n", name, id
+				))
 				return
 			end
+			
+			--[[
+			we either look for items longer with big tracked lists, or we add by index
+			and potentially waste memory if there are thousands of entities in a map
+			because gaps will also be there. since people are unlikely to track hundreds
+			of items, relying on traversing the whole list every time is probably fine.
+			--]]
+			for i = 1, #array do
+				if array[i] == id then
+					print(string.format(
+						"\nERROR: Can't add %s %d because it's already there!\n", name, id
+					))
+					return
+				end
+			end
 			table.insert(array, id)
-			print(string.format("Added %s %d", type, id))
+			Tracked[type].Current = #array
+			print(string.format("Added %s %d", name, id))
 		end,
 		value = nil
 	}
 end
 
 local function make_buttons()
-	make_button(-115,  30, "Add Sector", function() add_entity("sector") end)
-	make_button(-210,  30, "Add Line",   function() add_entity("line"  ) end)
-	make_button(-315,  30, "Add Thing",  function() add_entity("thing" ) end)
-	make_button(  10, -40, "+",          function() zoom      ( 1      ) end)
-	make_button(  10, -10, "-",          function() zoom      (-1      ) end)
-	make_button(  40, -24, "<",          pan_left   )
-	make_button(  64, -40, "^",          pan_up     )
-	make_button(  64, -10, "v",          pan_down   )
-	make_button(  88, -24, ">",          pan_right  )
-	make_button( 118, -40, "Reset View", reset_view )
+	make_button(-115,  30, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
+	make_button(-210,  30, "Add Line",   function() add_entity(TrackedType.LINE  ) end)
+	make_button(-315,  30, "Add Thing",  function() add_entity(TrackedType.THING ) end)
+	make_button(  10, -40, "+",          function() zoom      ( 1                ) end)
+	make_button(  10, -10, "-",          function() zoom      (-1                ) end)
+	make_button(  40, -24, "<",          pan_left  )
+	make_button(  64, -40, "^",          pan_up    )
+	make_button(  64, -10, "v",          pan_down  )
+	make_button(  88, -24, ">",          pan_right )
+	make_button( 118, -40, "Reset View", reset_view)
 	make_button( 118, -10,
 		string.format("Follow %s",    Follow and "ON " or "OFF"), follow_toggle)
 	make_button(-460, 30,
