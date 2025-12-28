@@ -46,6 +46,7 @@ fi
 if (ps -C "mono" -o "cmd" --no-headers | grep -Fq "EmuHawk.exe"); then
 	echo "(it seems EmuHawk is already running, NOT capturing output)" >& 2
 	mono EmuHawk.exe "$@"
+	return 0
 fi
 
 o="$(mktemp -u)"
