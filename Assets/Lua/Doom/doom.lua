@@ -756,7 +756,7 @@ local function reset_view()
 		bottom = math.mininteger,
 		right  = math.mininteger
 	}
-	Init = true	
+	Init = true
 	update_zoom()
 end
 
@@ -788,14 +788,17 @@ local function get_line_count(str)
 end
 
 local function make_button(x, y, name, func)
+	local lineCount, longest = get_line_count(name)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
-	local lineCount, longest = get_line_count(name)
 	local textWidth  = longest  *CHAR_WIDTH
 	local textHeight = lineCount*CHAR_HEIGHT
 	local colors     = { 0x66bbddff, 0xaabbddff, 0xaa88aaff }
 	local colorIndex = 1
 	local padding    = 10
+	
+	if x < 0 then x = ScreenWidth  + x end
+	if y < 0 then y = ScreenHeight + y end
 	
 	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
 	if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
@@ -919,17 +922,17 @@ local function add_entity(type)
 end
 
 local function make_buttons()
-	make_button(ScreenWidth-315,  30, "Add Thing",  function() add_entity("thing" ) end)
-	make_button(ScreenWidth-210,  30, "Add Line",   function() add_entity("line"  ) end)
-	make_button(ScreenWidth-115,  30, "Add Sector", function() add_entity("sector") end)
-	make_button( 10, ScreenHeight-40, "+",          function() zoom      ( 1      ) end)
-	make_button( 10, ScreenHeight-10, "-",          function() zoom      (-1      ) end)
-	make_button( 40, ScreenHeight-24, "<",          pan_left   )
-	make_button( 64, ScreenHeight-40, "^",          pan_up     )
-	make_button( 64, ScreenHeight-10, "v",          pan_down   )
-	make_button( 88, ScreenHeight-24, ">",          pan_right  )
-	make_button(118, ScreenHeight-40, "Reset View", reset_view )
-	make_button(118, ScreenHeight-10,
+	make_button(-315,  30, "Add Thing",  function() add_entity("thing" ) end)
+	make_button(-210,  30, "Add Line",   function() add_entity("line"  ) end)
+	make_button(-115,  30, "Add Sector", function() add_entity("sector") end)
+	make_button(  10, -40, "+",          function() zoom      ( 1      ) end)
+	make_button(  10, -10, "-",          function() zoom      (-1      ) end)
+	make_button(  40, -24, "<",          pan_left   )
+	make_button(  64, -40, "^",          pan_up     )
+	make_button(  64, -10, "v",          pan_down   )
+	make_button(  88, -24, ">",          pan_right  )
+	make_button( 118, -40, "Reset View", reset_view )
+	make_button( 118, -10,
 		string.format("Follow %s", Follow and "ON " or "OFF"), follow_toggle)
 	
 	if CurrentPrompt then
