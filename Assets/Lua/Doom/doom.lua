@@ -53,6 +53,7 @@ local MobjFlags    = enums.mobjflags
 
 local Zoom = 1
 local Follow = false
+local Hilite = false
 local Init = true
 local Players = {}
 
@@ -271,6 +272,12 @@ end
 local function follow_toggle()
 	if Mouse.Left and not LastMouse.left then
 		Follow = not Follow
+	end
+end
+
+local function hilite_toggle()
+	if Mouse.Left and not LastMouse.left then
+		Hilite = not Hilite
 	end
 end
 
@@ -522,16 +529,18 @@ local function iterate()
 
 		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
 		
-		x1, y1, x2, y2 = cached_line_coords(line)
-		
-		local dist = distance_from_line(
-			gameMousePos,
-			tuple_to_vertex(x1, y1),
-			tuple_to_vertex(x2, y2))
-		
-		if math.abs(dist) < shortest_dist then
-			shortest_dist = math.abs(dist)
-			closest_line = line
+		if Hilite then
+			x1, y1, x2, y2 = cached_line_coords(line)
+			
+			local dist = distance_from_line(
+				gameMousePos,
+				tuple_to_vertex(x1, y1),
+				tuple_to_vertex(x2, y2))
+			
+			if math.abs(dist) < shortest_dist then
+				shortest_dist = math.abs(dist)
+				closest_line = line
+			end
 		end
 	end
 	
@@ -562,7 +571,7 @@ local function iterate()
 					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
 					selected_sector.iSectorID,
 					selected_sector.special,
-					selected_sector.floorheight / FRACUNIT,
+					selected_sector.floorheight   / FRACUNIT,
 					selected_sector.ceilingheight / FRACUNIT)
 			end
 		end
@@ -570,9 +579,9 @@ local function iterate()
 		if closest_line then
 			local x1, y1, x2, y2 = cached_line_coords(closest_line)
 			local distance = distance_from_line(
-				{ x = player.x / FRACUNIT, y = player.y / FRACUNIT },
-				{ x = x1       / FRACUNIT, y = y1       / FRACUNIT },
-				{ x = x2       / FRACUNIT, y = y2       / FRACUNIT }
+				{ x = player.x,      y = player.y      },
+				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
 			)
 			
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
@@ -625,7 +634,8 @@ local function iterate()
 				local radius = mobj.radius
 				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
 				
-				if  in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
+				if  Hilite
+				and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
 				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
 				and mousePos.x > PADDING_WIDTH and not CurrentPrompt
 				then
@@ -711,14 +721,14 @@ local function update_zoom()
 	if Follow and Globals.gamestate == 0 then
 		local player = select(2, next(Players))
 		local screenCenter = screen_to_game({
-			x = ScreenWidth /2,
+			x = (ScreenWidth+PADDING_WIDTH)/2,
 			y = ScreenHeight/2
 		})
 		
-		screenCenter.x = screenCenter.x - player.x
-		screenCenter.y = screenCenter.y - player.y
-		Pan.x = Pan.x + screenCenter.x / FRACUNIT
-		Pan.y = Pan.y - screenCenter.y / FRACUNIT
+		screenCenter.x = screenCenter.x / FRACUNIT - player.x
+		screenCenter.y = screenCenter.y / FRACUNIT - player.y
+		Pan.x = Pan.x + screenCenter.x
+		Pan.y = Pan.y - screenCenter.y
 	end
 	
 	if not Init
@@ -734,11 +744,11 @@ local function update_zoom()
 	then
 		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
 		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
-		local span         = { x = OB.right-OB.left,   y = OB.bottom-OB.top    }
-		local scale        = { x = ScreenWidth/span.x, y = ScreenHeight/span.y }
+		local span         = { x = OB.right-OB.left,                   y = OB.bottom-OB.top    }
+		local scale        = { x = (ScreenWidth-PADDING_WIDTH)/span.x, y = ScreenHeight/span.y }
 		      Zoom         = math.min(scale.x, scale.y)
-		local spanCenter   = { x = OB.left+span.x/2,   y = OB.top+span.y/2     }
-		local sreenCenter  = { x = ScreenWidth/Zoom/2, y = ScreenHeight/Zoom/2 }
+		local spanCenter   = { x = OB.left+span.x/2,                   y = OB.top+span.y/2     }
+		local sreenCenter  = { x = (ScreenWidth+PADDING_WIDTH)/Zoom/2, y = ScreenHeight/Zoom/2 }
 		
 		if not Follow then
 			Pan.x = -math.floor(spanCenter.x - sreenCenter.x)
@@ -756,7 +766,7 @@ local function reset_view()
 		bottom = math.mininteger,
 		right  = math.mininteger
 	}
-	Init = true	
+	Init = true
 	update_zoom()
 end
 
@@ -788,14 +798,17 @@ local function get_line_count(str)
 end
 
 local function make_button(x, y, name, func)
+	local lineCount, longest = get_line_count(name)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
-	local lineCount, longest = get_line_count(name)
 	local textWidth  = longest  *CHAR_WIDTH
 	local textHeight = lineCount*CHAR_HEIGHT
 	local colors     = { 0x66bbddff, 0xaabbddff, 0xaa88aaff }
 	local colorIndex = 1
 	local padding    = 10
+	
+	if x < 0 then x = ScreenWidth  + x end
+	if y < 0 then y = ScreenHeight + y end
 	
 	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
 	if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
@@ -919,18 +932,20 @@ local function add_entity(type)
 end
 
 local function make_buttons()
-	make_button(ScreenWidth-315,  30, "Add Thing",  function() add_entity("thing" ) end)
-	make_button(ScreenWidth-210,  30, "Add Line",   function() add_entity("line"  ) end)
-	make_button(ScreenWidth-115,  30, "Add Sector", function() add_entity("sector") end)
-	make_button( 10, ScreenHeight-40, "+",          function() zoom      ( 1      ) end)
-	make_button( 10, ScreenHeight-10, "-",          function() zoom      (-1      ) end)
-	make_button( 40, ScreenHeight-24, "<",          pan_left   )
-	make_button( 64, ScreenHeight-40, "^",          pan_up     )
-	make_button( 64, ScreenHeight-10, "v",          pan_down   )
-	make_button( 88, ScreenHeight-24, ">",          pan_right  )
-	make_button(118, ScreenHeight-40, "Reset View", reset_view )
-	make_button(118, ScreenHeight-10,
-		string.format("Follow %s", Follow and "ON " or "OFF"), follow_toggle)
+	make_button(-115,  30, "Add Sector", function() add_entity("sector") end)
+	make_button(-210,  30, "Add Line",   function() add_entity("line"  ) end)
+	make_button(-315,  30, "Add Thing",  function() add_entity("thing" ) end)
+	make_button(  10, -40, "+",          function() zoom      ( 1      ) end)
+	make_button(  10, -10, "-",          function() zoom      (-1      ) end)
+	make_button(  40, -24, "<",          pan_left   )
+	make_button(  64, -40, "^",          pan_up     )
+	make_button(  64, -10, "v",          pan_down   )
+	make_button(  88, -24, ">",          pan_right  )
+	make_button( 118, -40, "Reset View", reset_view )
+	make_button( 118, -10,
+		string.format("Follow %s",    Follow and "ON " or "OFF"), follow_toggle)
+	make_button(-460, 30,
+		string.format("Highlight %s", Hilite and "ON " or "OFF"), hilite_toggle)
 	
 	if CurrentPrompt then
 		input_prompt()
