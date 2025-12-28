@@ -562,7 +562,7 @@ local function iterate()
 					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
 					selected_sector.iSectorID,
 					selected_sector.special,
-					selected_sector.floorheight / FRACUNIT,
+					selected_sector.floorheight   / FRACUNIT,
 					selected_sector.ceilingheight / FRACUNIT)
 			end
 		end
@@ -570,9 +570,9 @@ local function iterate()
 		if closest_line then
 			local x1, y1, x2, y2 = cached_line_coords(closest_line)
 			local distance = distance_from_line(
-				{ x = player.x / FRACUNIT, y = player.y / FRACUNIT },
-				{ x = x1       / FRACUNIT, y = y1       / FRACUNIT },
-				{ x = x2       / FRACUNIT, y = y2       / FRACUNIT }
+				{ x = player.x,      y = player.y      },
+				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
 			)
 			
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
@@ -711,14 +711,14 @@ local function update_zoom()
 	if Follow and Globals.gamestate == 0 then
 		local player = select(2, next(Players))
 		local screenCenter = screen_to_game({
-			x = ScreenWidth /2,
+			x = (ScreenWidth+PADDING_WIDTH)/2,
 			y = ScreenHeight/2
 		})
 		
-		screenCenter.x = screenCenter.x - player.x
-		screenCenter.y = screenCenter.y - player.y
-		Pan.x = Pan.x + screenCenter.x / FRACUNIT
-		Pan.y = Pan.y - screenCenter.y / FRACUNIT
+		screenCenter.x = screenCenter.x / FRACUNIT - player.x
+		screenCenter.y = screenCenter.y / FRACUNIT - player.y
+		Pan.x = Pan.x + screenCenter.x
+		Pan.y = Pan.y - screenCenter.y
 	end
 	
 	if not Init
@@ -734,11 +734,11 @@ local function update_zoom()
 	then
 		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
 		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
-		local span         = { x = OB.right-OB.left,   y = OB.bottom-OB.top    }
-		local scale        = { x = ScreenWidth/span.x, y = ScreenHeight/span.y }
+		local span         = { x = OB.right-OB.left,                   y = OB.bottom-OB.top    }
+		local scale        = { x = (ScreenWidth-PADDING_WIDTH)/span.x, y = ScreenHeight/span.y }
 		      Zoom         = math.min(scale.x, scale.y)
-		local spanCenter   = { x = OB.left+span.x/2,   y = OB.top+span.y/2     }
-		local sreenCenter  = { x = ScreenWidth/Zoom/2, y = ScreenHeight/Zoom/2 }
+		local spanCenter   = { x = OB.left+span.x/2,                   y = OB.top+span.y/2     }
+		local sreenCenter  = { x = (ScreenWidth+PADDING_WIDTH)/Zoom/2, y = ScreenHeight/Zoom/2 }
 		
 		if not Follow then
 			Pan.x = -math.floor(spanCenter.x - sreenCenter.x)
