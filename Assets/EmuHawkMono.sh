@@ -1,35 +1,57 @@
 #!/bin/sh
-cd "$(dirname "$(realpath "$0")")"
-libpath=""
+
+case "$0" in
+	*"EmuHawkMono.sh");;
+	*"/bin/"*"sh")
+		# Very bad way to detect /path/to/shell
+		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?"
+		# stupid bash workaround
+		# shellcheck disable=SC2317
+		return 1 2> /dev/null || exit 1;;
+	*"/"*);;
+	*)
+		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?"
+		# shellcheck disable=SC2317
+		return 1 2> /dev/null || exit 1
+esac
+cd "$(dirname -- "$(realpath -- "$0")")" || ( echo "Can't navigate to \$0's path?" >& 2; exit 1 )
+
+libpath=
 if [ "$(command -v lsb_release)" ]; then
+	# shellcheck disable=SC2018,SC2019
 	case "$(lsb_release -i | head -n1 | cut -c17- | tr A-Z a-z)" in
 		"arch"|"artix"|"manjarolinux") libpath="/usr/lib";;
 		"fedora"|"gentoo"|"nobaralinux"|"opensuse") libpath="/usr/lib64";;
-		"nixos") libpath="/usr/lib"; printf "Running on NixOS? Why aren't you using the Nix expr?\n";;
+		"nixos") libpath="/usr/lib"; echo "Running on NixOS? Why aren't you using the Nix expr?" >& 2;;
 		"debian"|"linuxmint"|"pop"|"ubuntu") libpath="/usr/lib/x86_64-linux-gnu";;
 	esac
 else
-	printf "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)\n"
+	echo "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)" >& 2
 fi
 if [ -z "$libpath" ]; then
-	printf "%s\n" "Unknown distro, assuming system-wide libraries are in /usr/lib..."
+	echo "Unknown distro, assuming system-wide libraries are in /usr/lib..." >& 2
 	libpath="/usr/lib"
 fi
+
+export GTK_DATA_PREFIX=
 export LD_LIBRARY_PATH="$PWD/dll:$PWD:$libpath"
 export MONO_CRASH_NOFILE=1
 export MONO_WINFORMS_XIM_STYLE=disabled # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
+
 if [ "$1" = "--mono-no-redirect" ]; then
-#	printf "(passing --mono-no-redirect is no longer necessary)\n" #TODO uncomment later
+	echo "(passing --mono-no-redirect is no longer necessary)" >& 2
 	shift
 fi
+# shellcheck disable=SC2009
 if (ps -C "mono" -o "cmd" --no-headers | grep -Fq "EmuHawk.exe"); then
-	printf "(it seems EmuHawk is already running, NOT capturing output)\n" >&2
-	exec mono EmuHawk.exe "$@"
+	echo "(it seems EmuHawk is already running, NOT capturing output)" >& 2
+	mono EmuHawk.exe "$@"
 fi
+
 o="$(mktemp -u)"
 e="$(mktemp -u)"
 mkfifo "$o" "$e"
-printf "(capturing output in %s/EmuHawkMono_last*.txt)\n" "$PWD" >&2
-tee EmuHawkMono_laststdout.txt <"$o" &
-tee EmuHawkMono_laststderr.txt <"$e" | sed "s/.*/$(tput setaf 1)&$(tput sgr0)/" >&2 &
-exec mono EmuHawk.exe "$@" >"$o" 2>"$e"
+echo "(capturing output in $PWD/EmuHawkMono_last*.txt)" >& 2
+tee EmuHawkMono_laststdout.txt < "$o" &
+tee EmuHawkMono_laststderr.txt < "$e" | sed "s/.*/$(tput setaf 1)&$(tput sgr0)/" >& 2 &
+mono EmuHawk.exe "$@" > "$o" 2> "$e"
