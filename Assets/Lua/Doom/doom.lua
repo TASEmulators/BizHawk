@@ -590,7 +590,6 @@ local function iterate()
 		end
 		
 		if Hilite then
-			
 			local dist = distance_from_line(
 				gameMousePos,
 				tuple_to_vertex(x1, y1),
@@ -675,9 +674,9 @@ local function iterate()
 					"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
 					"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
 					mobj.index, MobjType[type],
-					mobj.x / FRACUNIT,
-					mobj.y / FRACUNIT,
-					mobj.z / FRACUNIT,
+					mobj.x      / FRACUNIT,
+					mobj.y      / FRACUNIT,
+					mobj.z      / FRACUNIT,
 					mobj.radius / FRACUNIT,
 					mobj.tics,
 					mobj.health,
@@ -708,9 +707,9 @@ local function iterate()
 						"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
 						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
 						mobj.index, MobjType[type],
-						mobj.x / FRACUNIT,
-						mobj.y / FRACUNIT,
-						mobj.z / FRACUNIT,
+						mobj.x      / FRACUNIT,
+						mobj.y      / FRACUNIT,
+						mobj.z      / FRACUNIT,
 						mobj.radius / FRACUNIT,
 						mobj.tics,
 						mobj.health,
