@@ -4,13 +4,13 @@ case "$0" in
 	*".sh");;
 	*"/bin/"*"sh")
 		# Very bad way to detect /path/to/shell
-		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?"
+		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?" >& 2
 		# stupid bash workaround
 		# shellcheck disable=SC2317
 		return 1 2> /dev/null || exit 1;;
 	*"/"*);;
 	*)
-		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?"
+		echo "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?" >& 2
 		# shellcheck disable=SC2317
 		return 1 2> /dev/null || exit 1
 esac
