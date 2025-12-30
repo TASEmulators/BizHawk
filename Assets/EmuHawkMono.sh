@@ -14,7 +14,10 @@ case "$0" in
 		# shellcheck disable=SC2317
 		return 1 2> /dev/null || exit 1
 esac
-cd "$(dirname -- "$(realpath -- "$0")")" || ( echo "Can't navigate to \$0's path?" >& 2; exit 1 )
+if ! cd "$(dirname -- "$(realpath -- "$0")")"; then
+	echo "Can't navigate to \$0's path?" >& 2
+	exit 1
+fi
 
 libpath=""
 if [ "$(command -v lsb_release)" ]; then
