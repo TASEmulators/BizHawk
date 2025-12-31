@@ -58,7 +58,6 @@ namespace BizHawk.Client.EmuHawk
 		private Dictionary<string, double> _cachedControlProbabilities;
 
 		private bool _previousDisplayMessage;
-		private bool _previousInvisibleEmulation;
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -76,7 +75,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public RecentFiles RecentBotFiles { get; set; } = new RecentFiles();
 			public bool TurboWhenBotting { get; set; } = true;
-			public bool InvisibleEmulation { get; set; }
 		}
 
 		private string _windowTitle = "Basic Bot";
@@ -142,7 +140,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (OSTailoredCode.IsUnixHost) ClientSize = new(707, 587);
 
-			_previousInvisibleEmulation = InvisibleEmulationCheckBox.Checked = Settings.InvisibleEmulation;
 			_previousDisplayMessage = Config.DisplayMessages;
 			Closing += (_, _) => StopBot();
 		}
@@ -1045,12 +1042,6 @@ namespace BizHawk.Client.EmuHawk
 				SetMaxSpeed();
 			}
 
-			if (InvisibleEmulationCheckBox.Checked)
-			{
-				_previousInvisibleEmulation = MainForm.InvisibleEmulation;
-				MainForm.InvisibleEmulation = true;
-			}
-
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
 		}
@@ -1103,7 +1094,6 @@ namespace BizHawk.Client.EmuHawk
 		private void RestoreConfigFlags()
 		{
 			Config.DisplayMessages = _previousDisplayMessage;
-			MainForm.InvisibleEmulation = _previousInvisibleEmulation;
 			var movie = MovieSession.Movie;
 			if (movie.IsRecording()) movie.IsCountingRerecords = _oldCountingSetting;
 		}
@@ -1302,9 +1292,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Util.OpenUrlExternal("https://tasvideos.org/Bizhawk/BasicBot");
 		}
-
-		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)
-			=> Settings.InvisibleEmulation = !Settings.InvisibleEmulation;
 
 		private void MaximizeAddressBox_TextChanged(object sender, EventArgs e)
 		{

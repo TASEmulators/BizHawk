@@ -24,9 +24,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
 		bool HoldFrameAdvance { get; set; }
 
-		/// <remarks>only referenced from <see cref="BasicBot"/></remarks>
-		bool InvisibleEmulation { get; set; }
-
 		/// <remarks>only referenced from <see cref="LuaConsole"/></remarks>
 		bool IsTurboing { get; }
 
