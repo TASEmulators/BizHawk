@@ -65,6 +65,27 @@ local LastFramecount = -1
 local ScreenWidth    = client.screenwidth()
 local ScreenHeight   = client.screenheight()
 
+-- closure object
+
+local TrackedEntity = {}
+function TrackedEntity.new(name)
+	local self = {}
+	
+	self.TrackedList = {}
+	self.IDs         = {}
+	self.Current     = nil
+	self.Min         = math.maxinteger
+	self.Max         = math.mininteger
+	self.Name        = name
+
+	return self
+end
+local Tracked = {
+	[TrackedType.THING ] = TrackedEntity.new("thing" ),
+	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
+	[TrackedType.SECTOR] = TrackedEntity.new("sector")
+}
+
 -- tables
 
 local Players = {}
@@ -73,7 +94,7 @@ local Pan = {
 	x = 0,
 	y = 0
 }
--- object positions bounds
+-- map object positions bounds
 local OB = {
 	top    = math.maxinteger,
 	left   = math.maxinteger,
@@ -89,26 +110,6 @@ local LastMouse = {
 	y     = 0,
 	wheel = 0,
 	left  = false
-}
-local Tracked = {
-	[TrackedType.THING] = {
-		TrackedList = {},
-		IDs         = {},
-		Current     = -1,
-		Name        = "thing"
-	},
-	[TrackedType.LINE] = {
-		TrackedList = {},
-		IDs         = {},
-		Current     = -1,
-		Name        = "line"
-	},
-	[TrackedType.SECTOR] = {
-		TrackedList = {},
-		IDs         = {},
-		Current     = -1,
-		Name        = "sector"
-	}
 }
 
 -- forward declarations
@@ -538,23 +539,50 @@ local function iterate()
 		player.angle
 	)
 	
-	for _, sector in pairs(Globals.sectors) do
-		local index   = sector.iSectorID
-		local entity  = Tracked[TrackedType.SECTOR]
-		local list    = entity.TrackedList
-		
-		if #list > 0 then
-			local id = list[entity.Current]
-			
-			if id == index then
-				texts.sector = string.format(
-					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
-					index,
-					sector.special,
-					sector.floorheight   / FRACUNIT,
-					sector.ceilingheight / FRACUNIT)
-			end
-		end
+	if Tracked[TrackedType.SECTOR].Current then
+		local entity = Tracked[TrackedType.SECTOR]
+		local sector = entity.TrackedList[entity.Current]
+		texts.sector = string.format(
+			"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
+			sector.iSectorID,
+			sector.special,
+			sector.floorheight   / FRACUNIT,
+			sector.ceilingheight / FRACUNIT)
+	end
+	
+	if Tracked[TrackedType.LINE].Current then
+		local entity         = Tracked[TrackedType.LINE]
+		local line           = entity.TrackedList[entity.Current]
+		local x1, y1, x2, y2 = cached_line_coords(line)
+		local distance       = distance_from_line(
+			{ x = player.x,      y = player.y      },
+			{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+			{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+		)
+		texts.line = string.format(
+			"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+			line.iLineID, distance,
+			math.floor(x1 / FRACUNIT),
+			math.floor(y1 / FRACUNIT),
+			math.floor(x2 / FRACUNIT),
+			math.floor(y2 / FRACUNIT))
+	end
+	
+	if Tracked[TrackedType.THING].Current then
+		local entity = Tracked[TrackedType.THING]
+		local mobj   = entity.TrackedList[entity.Current]
+		texts.thing  = string.format(
+			"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
+			"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+			mobj.index, MobjType[mobj.type],
+			mobj.x      / FRACUNIT,
+			mobj.y      / FRACUNIT,
+			mobj.z      / FRACUNIT,
+			mobj.radius / FRACUNIT,
+			mobj.tics,
+			mobj.health,
+			mobj.reactiontime,
+			mobj.threshold)
 	end
 	
 	for i, line in ipairs(Lines) do
@@ -569,25 +597,6 @@ local function iterate()
 
 		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
 		x1, y1, x2, y2 = cached_line_coords(line)
-		
-		if #list > 0 then
-			local id       = list[entity.Current]
-			local distance = distance_from_line(
-				{ x = player.x,      y = player.y      },
-				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
-				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
-			)
-			
-			if id == index then
-				texts.line = string.format(
-					"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-					index, distance,
-					math.floor(x1 / FRACUNIT),
-					math.floor(y1 / FRACUNIT),
-					math.floor(x2 / FRACUNIT),
-					math.floor(y2 / FRACUNIT))
-			end
-		end
 		
 		if Hilite then
 			local dist = distance_from_line(
@@ -656,7 +665,6 @@ local function iterate()
 
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
 		local entity = Tracked[TrackedType.THING]
-		local list   = entity.TrackedList
 		local type   = mobj.type
 		local index  = mobj.index
 		local radius_color, text_color = get_mobj_color(mobj, type)
@@ -666,32 +674,12 @@ local function iterate()
 			entity.IDs[index] = true
 		end
 		
-		if #list > 0 then
-			local id = list[entity.Current]
-			
-			if id == index then
-				texts.thing = string.format(
-					"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
-					"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
-					mobj.index, MobjType[type],
-					mobj.x      / FRACUNIT,
-					mobj.y      / FRACUNIT,
-					mobj.z      / FRACUNIT,
-					mobj.radius / FRACUNIT,
-					mobj.tics,
-					mobj.health,
-					mobj.reactiontime,
-					mobj.threshold)
-			end
-		end
-		
 		if radius_color or text_color then -- not hidden
 			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
 			if  in_range(pos.x, 0, ScreenWidth)
 			and in_range(pos.y, 0, ScreenHeight)
 			then
-				local type   = mobj.type
 				local radius = mobj.radius
 				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
 				
@@ -830,17 +818,13 @@ local function reset_view()
 end
 
 local function clear_cache()
-	Lines     = nil
+	Lines = nil
 	reset_view()
-	Tracked[TrackedType.THING ].TrackedList = {}
-	Tracked[TrackedType.THING ].IDs         = {}
-	Tracked[TrackedType.THING ].Current     = -1
-	Tracked[TrackedType.LINE  ].TrackedList = {}
-	Tracked[TrackedType.LINE  ].IDs         = {}
-	Tracked[TrackedType.LINE  ].Current     = -1
-	Tracked[TrackedType.SECTOR].TrackedList = {}
-	Tracked[TrackedType.SECTOR].IDs         = {}
-	Tracked[TrackedType.SECTOR].Current     = -1
+	Tracked = {
+		[TrackedType.THING ] = TrackedEntity.new("thing" ),
+		[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
+		[TrackedType.SECTOR] = TrackedEntity.new("sector")
+	}
 end
 
 local function get_line_count(str)
@@ -968,10 +952,40 @@ end
 local function add_entity(type)
 	if CurrentPrompt then return end
 	
+	local adder
 	local entity = Tracked[type]
 	local lookup = entity.IDs
 	local array  = entity.TrackedList
 	local name   = entity.Name
+	
+	if type == TrackedType.LINE then
+		adder = function(id)
+			for _, line in pairs(Globals.lines) do
+				if id == line.iLineID then
+					array[id] = line
+					return
+				end
+			end
+		end
+	elseif type == TrackedType.SECTOR then
+		adder = function(id)
+			for _, sector in pairs(Globals.sectors) do
+				if id == sector.iSectorID then
+					array[id] = sector
+					return
+				end
+			end
+		end
+	elseif type == TrackedType.THING then
+		adder = function(id)
+			for _, mobj in pairs(Globals.mobjs:readbulk()) do
+				if id == mobj.index then
+					array[id] = mobj
+					return
+				end
+			end
+		end
+	end
 	
 	CurrentPrompt = {
 		msg = type,
@@ -983,22 +997,18 @@ local function add_entity(type)
 				return
 			end
 			
-			--[[
-			we either look for items longer with big tracked lists, or we add by index
-			and potentially waste memory if there are thousands of entities in a map
-			because gaps will also be there. since people are unlikely to track hundreds
-			of items, relying on traversing the whole list every time is probably fine.
-			--]]
-			for i = 1, #array do
-				if array[i] == id then
-					print(string.format(
-						"\nERROR: Can't add %s %d because it's already there!\n", name, id
-					))
-					return
-				end
+			if array[id] then
+				print(string.format(
+					"\nERROR: Can't add %s %d because it's already there!\n", name, id
+				))
+				return
 			end
-			table.insert(array, id)
-			Tracked[type].Current = #array
+			
+			if id < entity.Min then entity.Min = id end
+			if id > entity.Max then entity.Max = id end
+			
+			adder(id)
+			entity.Current = id
 			print(string.format("Added %s %d", name, id))
 		end,
 		value = nil
