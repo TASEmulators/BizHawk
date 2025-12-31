@@ -26,6 +26,8 @@ namespace BizHawk.Client.Common
 
 		public const string EVENT_TYPE_SAVESTATE = "OnSavestateSave";
 
+		public const string EVENT_TYPE_FUTURE = "BeforeFutureFrame";
+
 		private readonly LuaFunction _function;
 
 		private readonly ILuaLibraries _luaImp;

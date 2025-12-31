@@ -26,6 +26,8 @@ namespace BizHawk.Tests.Client.Common
 		public (HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers => (null!, null!, null!);
 
 		public bool PauseAvi { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public int MaxFutureFrames { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public Func<int, bool> PreFutureFrameCallback { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 #pragma warning disable CS0067 // Events are never used
 		public event BeforeQuickLoadEventHandler? QuicksaveLoad;
