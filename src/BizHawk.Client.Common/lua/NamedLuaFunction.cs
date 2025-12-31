@@ -28,6 +28,8 @@ namespace BizHawk.Client.Common
 
 		public const string EVENT_TYPE_SAVESTATE = "OnSavestateSave";
 
+		public const string EVENT_TYPE_FUTURE = "BeforeFutureFrame";
+
 		private readonly LuaFunction _function;
 
 		public Action/*?*/ OnRemove { get; set; } = null;
@@ -83,6 +85,7 @@ namespace BizHawk.Client.Common
 					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
+			FutureCallback = (f) => Callback([ f ]) is [ bool r ] ? r : false;
 			MemCallback = (addr, val, flags) =>
 			{
 				luaLibraries.IsInInputOrMemoryCallback = true;
@@ -160,6 +163,8 @@ namespace BizHawk.Client.Common
 		private Func<object[], object[]> Callback { get; }
 
 		public Action InputCallback { get; }
+
+		public Func<int, bool> FutureCallback { get; }
 
 		public MemoryCallbackDelegate MemCallback { get; }
 
