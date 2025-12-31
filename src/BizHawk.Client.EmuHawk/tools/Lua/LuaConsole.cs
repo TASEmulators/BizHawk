@@ -1092,11 +1092,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					using LuaRegisteredFunctionsList funcListForm = new(LuaImp.RegisteredFunctions)
+					new LuaRegisteredFunctionsList(LuaImp.RegisteredFunctions)
 					{
 						StartLocation = this.ChildPointToScreen(LuaListView),
-					};
-					funcListForm.Show();
+					}.Show();
 				}
 			}
 		}
