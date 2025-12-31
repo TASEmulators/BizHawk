@@ -6,6 +6,8 @@ namespace BizHawk.Client.Common
 	{
 		Action InputCallback { get; }
 
+		Func<int, bool> FutureCallback { get; }
+
 		Guid Guid { get; }
 
 		string GuidStr { get; }
