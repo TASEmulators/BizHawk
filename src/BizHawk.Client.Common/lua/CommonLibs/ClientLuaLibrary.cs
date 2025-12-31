@@ -271,9 +271,14 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("client.show_future(function(frame) return frame == 1 end, 1)")]
 		[LuaMethod(
 			name: "show_future",
-			description: "Tell the client to display a frame from the future, instead of the current frame. The given lua function " +
-				"will be called before each future frame is emulated until the function returns true, at which point future " +
-				"emulation will be stopped and the most recently emulated frame will be displayed.")]
+			description: "Tell the client to display a frame from the future, instead of the current frame. " +
+				"The given lua function will be called before emulating each future frame. " +
+				"It can have 1 parameter, which is the number of frames into the future that have already been emulated. " +
+				"Return false to emulate another future frame. " +
+				"When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displaed. " +
+				"Unregister the callback with event.unregister____ to disable future frame dispaly. " +
+				"No more than `maxFrames` future frames will be emulated. Useful to avoid freezing " +
+				"the client UI in case of accidentally never returning true from the callback.")]
 		public string ShowFuture(LuaFunction luaf, int maxFrames, string name = null)
 		{
 			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_FUTURE, LogOutputCallback, CurrentFile, name: name);

@@ -139,7 +139,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Tell the client to display a frame from the future, instead of the current frame.
 		/// </summary>
-		/// <param name="preFrameCallback">This will be called before emulating each future frame. Emulation will stop when this function returns true, and the just-run frame will be displaed. Pass null to disable future frame display.</param>
+		/// <param name="preFrameCallback">This will be called before emulating each future frame.
+		/// The parameter is the number of frames into the future that have already been emulated.
+		/// Return false to emulate another future frame.
+		/// When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displaed.
+		/// <br/>Pass null to disable future frame display.</param>
 		/// <param name="maxFrames">The maximum number of future frames to emulate. Useful to avoid freezing the client UI in case of accidentally never returning true from the callback.</param>
 		void ShowFuture(Func<int, bool> preFrameCallback, int maxFrames);
 
