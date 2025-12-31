@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
-			public bool OldControlSchemeForBranches { get; set; } // Deprecated due to other features existing.
+			public bool OldControlSchemeForBranches { get; set; }
 			public bool LoadBranchOnDoubleClick { get; set; }
 			public bool DenoteStatesWithIcons { get; set; }
 			public bool DenoteStatesWithBGColor { get; set; }

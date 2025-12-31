@@ -99,6 +99,7 @@
 			this.AutopauseCheckbox = new System.Windows.Forms.CheckBox();
 			this.SettingsCancelButton = new System.Windows.Forms.Button();
 			this.ApplyButton = new System.Windows.Forms.Button();
+			this.OldBranchesCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
@@ -699,6 +700,7 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.OldBranchesCheckbox);
 			this.tabPage3.Controls.Add(this.BranchDoubleClickCheckbox);
 			this.tabPage3.Controls.Add(this.FastRewindNum);
 			this.tabPage3.Controls.Add(this.label8);
@@ -958,6 +960,16 @@
 			this.ApplyButton.UseVisualStyleBackColor = true;
 			this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
 			// 
+			// OldBranchesCheckbox
+			// 
+			this.OldBranchesCheckbox.AutoSize = true;
+			this.OldBranchesCheckbox.Location = new System.Drawing.Point(12, 346);
+			this.OldBranchesCheckbox.Name = "OldBranchesCheckbox";
+			this.OldBranchesCheckbox.Size = new System.Drawing.Size(179, 17);
+			this.OldBranchesCheckbox.TabIndex = 518;
+			this.OldBranchesCheckbox.Text = "Old control scheme for branches";
+			this.OldBranchesCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// TAStudioSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1071,5 +1083,6 @@
 		private System.Windows.Forms.Label DefaultManagerSettingsAppliedLabel;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.CheckBox OldBranchesCheckbox;
 	}
 }

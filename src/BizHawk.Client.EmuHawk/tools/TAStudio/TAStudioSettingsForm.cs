@@ -69,6 +69,7 @@ namespace BizHawk.Client.EmuHawk
 			BindMarkersCheckbox.Checked = _settings.GeneralClientSettings.BindMarkersToInput;
 			AutopauseCheckbox.Checked = _settings.GeneralClientSettings.AutoPause;
 			BranchDoubleClickCheckbox.Checked = _settings.GeneralClientSettings.LoadBranchOnDoubleClick;
+			OldBranchesCheckbox.Checked = _settings.GeneralClientSettings.OldControlSchemeForBranches;
 			IncludeFrameNumberCheckbox.Checked = _settings.GeneralClientSettings.CopyIncludesFrameNo;
 			AlwaysScrollCheckbox.Checked =  _settings.GeneralClientSettings.FollowCursorAlwaysScroll;
 			UndoCountNum.Value = _settings.GeneralClientSettings.MaxUndoSteps;
@@ -460,6 +461,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.GeneralClientSettings.BindMarkersToInput = BindMarkersCheckbox.Checked;
 			_settings.GeneralClientSettings.AutoPause = AutopauseCheckbox.Checked;
 			_settings.GeneralClientSettings.LoadBranchOnDoubleClick = BranchDoubleClickCheckbox.Checked;
+			_settings.GeneralClientSettings.OldControlSchemeForBranches = OldBranchesCheckbox.Checked;
 			_settings.GeneralClientSettings.CopyIncludesFrameNo = IncludeFrameNumberCheckbox.Checked;
 			_settings.GeneralClientSettings.FollowCursorAlwaysScroll = AlwaysScrollCheckbox.Checked;
 			_settings.GeneralClientSettings.MaxUndoSteps = (int)UndoCountNum.Value;
