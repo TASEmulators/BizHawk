@@ -49,7 +49,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (foundIWAD)
 					{
 						throw new ArgumentException(
+#pragma warning disable CS0618
 							$"More than one IWAD provided. Trying to load '{wadFile.RomPath}', but IWAD '{_iwadName}' was already provided",
+#pragma warning restore CS0618
 							paramName: nameof(lp));
 					}
 
@@ -77,7 +79,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				if (!recognized)
 				{
 					throw new ArgumentException(
+#pragma warning disable CS0618
 						$"Unrecognized WAD provided: '{wadFile.RomPath}' has non-standard header.",
+#pragma warning restore CS0618
 						paramName: nameof(lp));
 				}
 			}
@@ -210,7 +214,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 						if (_gameMode is LibDSDA.GameMode.Fail)
 						{
 							throw new ArgumentException(
+#pragma warning disable CS0618
 								$"Could not load PWAD file: '{wadFile.RomPath}'",
+#pragma warning restore CS0618
 								paramName: nameof(lp));
 						}
 					}
@@ -332,7 +338,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 		}
 
-		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+		private string GetFullName(IRomAsset rom)
+#pragma warning disable CS0618
+			=> Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+#pragma warning restore CS0618
 
 		private static bool PlayerPresent(DoomSyncSettings syncSettings, int port) =>
 			port switch
