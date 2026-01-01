@@ -60,7 +60,10 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Undoes the most recent action batch, if any exist.
 		/// </summary>
-		void Undo();
+		/// <param name="untilId">If given, as many actions will be undone as needed to make the action
+		/// of the given ID the most recent action. The action with the given ID will not be undone.
+		/// </param>
+		void Undo(int? untilId = null);
 
 		/// <summary>
 		/// Redoes the most recent undo, if any exist.
@@ -248,10 +251,23 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Undo()
+		public void Undo(int? untilId = null)
 		{
 			if (UndoIndex == -1)
 			{
+				return;
+			}
+
+			if (untilId != null)
+			{
+				int id = untilId.Value;
+				_movie.SingleInvalidation(() =>
+				{
+					while (UndoIndex >= 0 && id < _history[UndoIndex].id)
+					{
+						Undo();
+					}
+				});
 				return;
 			}
 
