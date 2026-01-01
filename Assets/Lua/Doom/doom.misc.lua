@@ -709,7 +709,7 @@ function add_entity(type)
 	end
 	
 	CurrentPrompt = {
-		msg = type,
+		msg = name,
 		fun = function(id)
 			if not lookup[id] then
 				print(string.format(
