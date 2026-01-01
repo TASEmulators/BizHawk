@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 							paramName: nameof(lp));
 					}
 
-					_iwadName = wadFile.RomPath;
+					_iwadName = GetFullName(wadFile);
 					_iwadData = wadFile.RomData;
 					foundIWAD = true;
 					recognized = true;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					if (_fakePwads.Contains(GetFullName(wadFile).ToLowerInvariant()))
 					{
-						_iwadName = wadFile.RomPath;
+						_iwadName = GetFullName(wadFile);
 						_iwadData = wadFile.RomData;
 						foundIWAD = true;
 					}
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Adding PWAD file(s)
 					foreach (var wadFile in _pwadFiles)
 					{
-						_gameMode = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+						_gameMode = _core.dsda_add_wad_file(GetFullName(wadFile), wadFile.RomData.Length, _loadCallback);
 						if (_gameMode is LibDSDA.GameMode.Fail)
 						{
 							throw new ArgumentException(
@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			foreach (var wadFile in _wadFiles)
 			{
-				if (filename == wadFile.RomPath)
+				if (filename == GetFullName(wadFile))
 				{
 					if (wadFile.FileData == null)
 					{
