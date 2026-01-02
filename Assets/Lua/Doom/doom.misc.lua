@@ -450,7 +450,6 @@ function update_zoom()
 	if input.get()["Space"] then
 		if deltaX ~= 0 then pan_left(DRAG_FACTOR/deltaX) end
 		if deltaY ~= 0 then pan_up  (DRAG_FACTOR/deltaY) end
-		suppress_click_input()
 	end
 	
 	LastMouse.x     = mousePos.x
@@ -589,18 +588,19 @@ function make_button(x, y, name, func)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         )
-	and not CurrentPrompt then
-		if not (Follow
-		and (func == pan_left
-		or   func == pan_up
-		or   func == pan_down
-		or   func == pan_right))
-		then
-			if Mouse.Left then
-				suppress_click_input()
-				colorIndex = 3
-				func()
-			else colorIndex = 2 end
+	and not CurrentPrompt
+	and not (Follow
+	and (func == pan_left
+	or   func == pan_up
+	or   func == pan_down
+	or   func == pan_right))
+	then
+		if Mouse.Left then
+			suppress_click_input()
+			colorIndex = 3
+			func()
+		else
+			colorIndex = 2
 		end
 	end
 	

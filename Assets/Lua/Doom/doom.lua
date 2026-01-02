@@ -312,6 +312,36 @@ local function make_buttons()
 end
 
 
+-- CALLBACKS
+
+event.onframestart(function()
+	if CurrentPrompt then
+		suppress_click_input()
+	end
+	
+	if client.ispaused() then return end -- frameadvance while paused
+	
+	-- do this before frame start to suppress mouse click input
+	ScreenWidth  = client.screenwidth()
+	ScreenHeight = client.screenheight()
+	make_buttons()
+	update_zoom()
+end)
+
+event.onexit(function()
+	gui.clearGraphics()
+	gui.cleartext()
+end)
+
+event.onloadstate(function()
+	clear_cache()
+end)
+
+tastudio.onbranchload(function()
+	clear_cache()
+end)
+
+
 -- MAIN LOOP
 
 while true do
@@ -339,11 +369,11 @@ while true do
 		-- OSD text is not automatically cleared while paused
 		gui.cleartext()
 		gui.clearGraphics()
+		
 		-- while onframestart isn't called
 		make_buttons()
+		update_zoom()
 	end
-
-	update_zoom()
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if (framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
@@ -358,28 +388,3 @@ while true do
 
 	emu.yield()
 end
-
-
--- CALLBACKS
-
-event.onframestart(function()
-	if client.ispaused() then return end -- frameadvance while paused
-	-- do this before frame start to suppress mouse click input
-	ScreenWidth  = client.screenwidth()
-	ScreenHeight = client.screenheight()
-	make_buttons()
-	update_zoom()
-end)
-
-event.onexit(function()
-	gui.clearGraphics()
-	gui.cleartext()
-end)
-
-event.onloadstate(function()
-	clear_cache()
-end)
-
-tastudio.onbranchload(function()
-	clear_cache()
-end)
