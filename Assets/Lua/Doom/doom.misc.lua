@@ -88,6 +88,11 @@ LastMouse = {
 	wheel = 0,
 	left  = false
 }
+TextPosY = {
+	Thing  = 222,
+	Line   = 320,
+	Sector = 370
+}
 
 -- forward declarations
 
@@ -438,6 +443,29 @@ function cached_line_coords(line)
 	return table.unpack(line._coords)
 end
 
+function scroll_list(entity, delta)
+	local list  = entity.TrackedList
+	local limit = entity.Max
+	local step  = 1
+	
+	if delta < 0 then
+		limit = entity.Min
+		step  = -1
+		delta = -delta
+	end
+		
+	if entity.Current == limit then return end
+	
+	for i = entity.Current+step, limit, step do
+		if list[i] then delta = delta - 1 end
+		if delta == 0 then
+			entity.Current = i
+			return
+		end
+	end
+	
+end
+
 function update_zoom()
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local mouseWheel   = math.floor(Mouse.Wheel/120)
@@ -445,7 +473,17 @@ function update_zoom()
 	local deltaY       = mousePos.y - LastMouse.y
 	local deltaWheel   = mouseWheel - LastMouse.wheel
 	
-	if deltaWheel ~= 0 then zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true) end
+	if deltaWheel ~= 0 then
+		if mousePos.x > PADDING_WIDTH then
+			zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true)
+		elseif in_range(mousePos.y, TextPosY.Thing, TextPosY.Line) then
+			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
+		elseif in_range(mousePos.y, TextPosY.Line, TextPosY.Sector) then
+			scroll_list(Tracked[TrackedType.LINE], -deltaWheel)
+		elseif in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+32) then
+			scroll_list(Tracked[TrackedType.SECTOR], -deltaWheel)
+		end
+	end
 	
 	if input.get()["Space"] then
 		if deltaX ~= 0 then pan_left(DRAG_FACTOR/deltaX) end
