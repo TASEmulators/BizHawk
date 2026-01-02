@@ -498,6 +498,8 @@ function update_zoom()
 end
 
 function reset_view()
+	if LastMouse.left then return end
+	
 	OB = {
 		top    = math.maxinteger,
 		left   = math.maxinteger,
