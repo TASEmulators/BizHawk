@@ -68,13 +68,13 @@ local function iterate()
 
 	init_cache()
 	
-	local closest_line
-	local selected_sector
-	local texts         = {}
-	local player        = select(2, next(Players)) -- first present player only for now
-	local mousePos      = client.transformPoint(Mouse.X, Mouse.Y)
-	local gameMousePos  = screen_to_game(mousePos)
-	local shortest_dist = math.maxinteger
+	local closestLine
+	local selectedSector
+	local texts        = {}
+	local player       = select(2, next(Players)) -- first present player only for now
+	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
+	local gameMousePos = screen_to_game(mousePos)
+	local shortestDist = math.maxinteger
 					
 	texts.player = string.format(
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
@@ -108,7 +108,7 @@ local function iterate()
 	if Tracked[TrackedType.LINE].Current then
 		local entity         = Tracked[TrackedType.LINE]
 		local line           = entity.TrackedList[entity.Current]
-		local x1, y1, x2, y2 = cached_line_coords(line)
+		local x1, y1, x2, y2 = line:coords()
 		local distance       = distance_from_line(
 			{ x = player.x,      y = player.y      },
 			{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
@@ -140,7 +140,7 @@ local function iterate()
 			mobj.threshold)
 	end
 	
-	for i, line in ipairs(Lines) do
+	for _, line in ipairs(Lines) do
 		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
 		local color   = 0xffffffff
 		local special = line.special
@@ -159,47 +159,47 @@ local function iterate()
 				tuple_to_vertex(x1, y1),
 				tuple_to_vertex(x2, y2))
 			
-			if math.abs(dist) < shortest_dist then
-				shortest_dist = math.abs(dist)
-				closest_line = line
+			if math.abs(dist) < shortestDist then
+				shortestDist = math.abs(dist)
+				closestLine  = line
 			end
 		end
 	end
 	
 	if mousePos.x > PADDING_WIDTH and not CurrentPrompt then
-		if closest_line then
-			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closest_line))
+		if closestLine then
+			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closestLine))
 			local side =
 				(mousePos.y - y1) * (x2 - x1) -
 				(mousePos.x - x1) * (y2 - y1)
 			
 			if side <= 0 then
-				if closest_line.backsector then
-					selected_sector = closest_line.backsector
+				if closestLine.backsector then
+					selectedSector = closestLine.backsector
 				end
 			else
-				if closest_line.frontsector then
-					selected_sector = closest_line.frontsector
+				if closestLine.frontsector then
+					selectedSector = closestLine.frontsector
 				end
 			end
 		end
 		
-		if selected_sector then
-			for _, line in ipairs(selected_sector.lines) do
+		if selectedSector then
+			for _, line in ipairs(selectedSector.lines) do
 				-- cached_line_coords gives some length error?
 				local x1, y1, x2, y2 = game_to_screen(line:coords())
 				drawline(x1, y1, x2, y2, 0xff00ffff)
-				texts.sector = texts.sector or string.format(
+				texts.sector = string.format(
 					"SECTOR %d  spec: %d\nflo: %.2f  ceil: %.2f",
-					selected_sector.iSectorID,
-					selected_sector.special,
-					selected_sector.floorheight   / FRACUNIT,
-					selected_sector.ceilingheight / FRACUNIT)
+					selectedSector.iSectorID,
+					selectedSector.special,
+					selectedSector.floorheight   / FRACUNIT,
+					selectedSector.ceilingheight / FRACUNIT)
 			end
 		end
 		
-		if closest_line then
-			local x1, y1, x2, y2 = cached_line_coords(closest_line)
+		if closestLine then
+			local x1, y1, x2, y2 = cached_line_coords(closestLine)
 			local distance = distance_from_line(
 				{ x = player.x,      y = player.y      },
 				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
@@ -208,13 +208,13 @@ local function iterate()
 			
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
 			drawline(x1, y1, x2, y2, 0xffff8800)
-			texts.line = texts.line or string.format(
+			texts.line = string.format(
 				"LINEDEF %d  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-				closest_line.iLineID, distance,
-				math.floor(closest_line.v1.x / FRACUNIT),
-				math.floor(closest_line.v1.y / FRACUNIT),
-				math.floor(closest_line.v2.x / FRACUNIT),
-				math.floor(closest_line.v2.y / FRACUNIT))
+				closestLine.iLineID, distance,
+				math.floor(closestLine.v1.x / FRACUNIT),
+				math.floor(closestLine.v1.y / FRACUNIT),
+				math.floor(closestLine.v2.x / FRACUNIT),
+				math.floor(closestLine.v2.y / FRACUNIT))
 		end
 	end
 
@@ -246,7 +246,7 @@ local function iterate()
 					radius_color = "white"
 					text_color   = "white"
 					
-					texts.thing = texts.thing or string.format(
+					texts.thing = string.format(
 						"THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
 						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
 						mobj.index, MobjType[type],
@@ -294,8 +294,8 @@ local function make_buttons()
 	make_button(-115,  30, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
 	make_button(-210,  30, "Add Line",   function() add_entity(TrackedType.LINE  ) end)
 	make_button(-315,  30, "Add Thing",  function() add_entity(TrackedType.THING ) end)
-	make_button(  10, -40, "+",          function() zoom      ( 1                ) end)
-	make_button(  10, -10, "-",          function() zoom      (-1                ) end)
+	make_button(  10, -40, "+",          function() zoom( 1) end)
+	make_button(  10, -10, "-",          function() zoom(-1) end)
 	make_button(  40, -24, "<",          pan_left  )
 	make_button(  64, -40, "^",          pan_up    )
 	make_button(  64, -10, "v",          pan_down  )

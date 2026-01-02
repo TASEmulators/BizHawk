@@ -615,7 +615,7 @@ function check_press(key)
 end
 
 function input_prompt()
-	Input       = input.get()
+	Input = input.get()
 	local value = tostring(CurrentPrompt.value or "")
 	
 	if check_press("Escape") then
@@ -655,8 +655,8 @@ function input_prompt()
 	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
 	if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
 	
-	local x     = ScreenWidth /2 - textWidth /2
-	local y     = ScreenHeight/2 - textHeight/2
+	local x     = ScreenWidth  /2 - textWidth /2
+	local y     = ScreenHeight /2 - textHeight/2
 	local textX = x + boxWidth /2 - textWidth /2
 	local textY = y + boxHeight/2 - textHeight/2
 	
