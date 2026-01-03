@@ -95,7 +95,14 @@ namespace BizHawk.Client.Common
 			=> "NLua+Lua";
 
 		[LuaMethodExample("client.invisibleemulation( true );")]
-		[LuaMethod("invisibleemulation", "Enters/exits turbo mode and disables/enables most emulator updates.")]
+		[LuaMethod(
+			name: "invisibleemulation",
+			description: "Disables/enables invisible emulation, starting on the next frame. During invisible emulation:"
+				+ " (1) All rendering and sound is disabled, including A/V capture."
+				+ " (2) Emulation runs at maximum speed with turbo enabled, regardless of pause state."
+				+ " (3) Frame rate is not calculated."
+				+ " (4) With one additional frame of delay, state capture for rewind+TAStudio is disabled."
+			)]
 		public void InvisibleEmulation(bool invisible)
 			=> APIs.EmuClient.InvisibleEmulation(invisible);
 
@@ -304,8 +311,8 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("client.unpause( );")]
-		[LuaMethod("unpause", "Unpauses the emulator")]
-		public void Unpause()
+		[LuaMethod("unpause", "Unpauses the emulator. Returns True if client.pause should be called if you want to restore the previous pause state. Note that this is not the same as checking client.ispaused before unpausing. If the user was holding frame advance, emulation will have already been unpaused and releasing frame advance will not pause.")]
+		public bool Unpause()
 			=> APIs.EmuClient.Unpause();
 
 		[LuaMethodExample("client.unpause_av( );")]

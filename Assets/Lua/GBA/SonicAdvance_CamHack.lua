@@ -6,6 +6,8 @@ local addr_offY = 0x5B98
 local addr_camX = 0x59D0
 local addr_camY = 0x59D2
 
+event.onexit(function() client.invisibleemulation(false) end)
+
 while true do
 	client.invisibleemulation(true)
 	local memorystate = memorysavestate.savecorestate()
@@ -21,12 +23,11 @@ while true do
 	mainmemory.write_u16_le(addr_camX, Xval)
 	mainmemory.write_u16_le(addr_camY, Yval)
 	
-	client.seekframe(emu.framecount()+1)
+	emu.frameadvance()
 	client.invisibleemulation(false)
-	client.seekframe(emu.framecount()+1)
+	emu.frameadvance()
 	client.invisibleemulation(true)
 	memorysavestate.loadcorestate(memorystate)
 	memorysavestate.removestate(memorystate)
---	client.invisibleemulation(false)
 	emu.frameadvance()
 end

@@ -137,7 +137,7 @@ namespace BizHawk.Client.EmuHawk
 				clientVer: $"{VersionInfo.MainVersion}{(VersionInfo.DeveloperBuild ? "-dev" : string.Empty)}");
 
 			_isActive = () => !Emu.IsNull();
-			_unpause = _mainForm.UnpauseEmulator;
+			_unpause = () => _ = _mainForm.UnpauseEmulator();
 			_pause = _mainForm.PauseEmulator;
 			_rebuildMenu = RebuildMenu;
 			_estimateTitle = buffer =>
