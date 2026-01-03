@@ -23,7 +23,7 @@ local function iterate_players()
 			prevz = player.mo.PrevZ / FRACUNIT,
 			momx  = player.mo.momx  / FRACUNIT,
 			momy  = player.mo.momy  / FRACUNIT,
-			angle = math.floor(player.mo.angle * (ANGLES / ANGLE_90))
+			angle = math.floor(player.mo.angle * (Angle / ANGLE_90))
 		}
 		
 		Players[i].distx      = Players[i].x - Players[i].prevx

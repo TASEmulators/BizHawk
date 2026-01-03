@@ -11,7 +11,6 @@ symbols = require("dsda.symbols")
 FRACBITS          = 16
 FRACUNIT          = 1 << FRACBITS
 ANGLE_90          = 0x40000000
-ANGLES            = 64 -- byte type for now
 MINIMAL_ZOOM      = 0.0001 -- ???
 ZOOM_FACTOR       = 0.01
 WHEEL_ZOOM_FACTOR = 10
@@ -22,6 +21,19 @@ CHAR_HEIGHT       = 16
 PADDING_WIDTH     = 240
 MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
 SETTINGS_FILENAME = "doom.settings.lua"
+
+-- enums
+TrackedType = {
+	THING  = 1,
+	LINE   = 2,
+	SECTOR = 3
+}
+AngleType = {
+	LONGTICS = 16384,
+    FINE     = 2048,
+    DEGREES  = 90,
+    BYTE     = 64
+}
 
 -- closure object
 TrackedEntity = {}
@@ -49,17 +61,12 @@ Zoom           = 1
 Follow         = false
 Hilite         = false
 Init           = true
+Angle          = AngleType.BYTE
 LastFramecount = -1
 ScreenWidth    = client.screenwidth()
 ScreenHeight   = client.screenheight()
 
 -- tables
-
-TrackedType = {
-	THING  = 1,
-	LINE   = 2,
-	SECTOR = 3
-}
 
 Tracked = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
@@ -67,6 +74,7 @@ Tracked = {
 	[TrackedType.SECTOR] = TrackedEntity.new("sector")
 }
 Players = {}
+Config  = {}
 -- view offset
 Pan = {
 	x = 0,
@@ -302,50 +310,6 @@ function get_line_count(str)
 	return count, longest
 end
 
-local function __genOrderedIndex( t )
-    local orderedIndex = {}
-    for key in pairs(t) do
-        table.insert( orderedIndex, key )
-    end
-    table.sort( orderedIndex )
-    return orderedIndex
-end
-
-local function orderedNext(t, state)
-    -- Equivalent of the next function, but returns the keys in the alphabetic
-    -- order. We use a temporary ordered key table that is stored in the
-    -- table being iterated.
-
-    local key = nil
-    --print("orderedNext: state = "..tostring(state) )
-    if state == nil then
-        -- the first time, generate the index
-        t.__orderedIndex = __genOrderedIndex( t )
-        key = t.__orderedIndex[1]
-    else
-        -- fetch the next value
-        for i = 1,#t.__orderedIndex do
-            if t.__orderedIndex[i] == state then
-                key = t.__orderedIndex[i+1]
-            end
-        end
-    end
-
-    if key then
-        return key, t[key]
-    end
-
-    -- no more value to return, cleanup
-    t.__orderedIndex = nil
-    return
-end
-
-local function orderedPairs(t)
-    -- Equivalent of the pairs() function on tables. Allows to iterate
-    -- in order
-    return orderedNext, t, nil
-end
-
 
 -- MATH
 
@@ -440,29 +404,46 @@ MobjFlags    = enums.mobjflags
 
 -- IO
 
-config = {} -- to keep it separate from the global env
-
 function settings_read()
-	local file, err = loadfile(SETTINGS_FILENAME, "t", config)
+	local file, err = loadfile(SETTINGS_FILENAME, "t", Config)
 	if file then
 		file()
 	else
-		print(err)
+	--	print(err)
 		return
 	end
 	
+	Angle = Config.Angle
+	
 	for _,type in pairs(TrackedType) do
 		local entity   = Tracked[type]
-		local source   = config.tracked[entity.Name]
+		local source   = Config.tracked[entity.Name]
 		entity.Current = source.Current
 		entity.Min     = source.Min
 		entity.Max     = source.Max
 		
-		for k,_ in orderedPairs(source.TrackedList) do
-			for _, mobj in pairs(Globals.mobjs:readbulk()) do
-				if k == mobj.index then
-					entity.TrackedList[k] = mobj
-					print(string.format("Loaded thing %d from config", k))
+		if type == TrackedType.LINE then
+			for _,v in pairs(source.TrackedList) do
+				for _, line in pairs(Globals.lines) do
+					if v == line.iLineID then
+						entity.TrackedList[v] = line
+					end
+				end
+			end
+		elseif type == TrackedType.SECTOR then
+			for _,v in pairs(source.TrackedList) do
+				for _, sector in pairs(Globals.sectors) do
+					if v == sector.iSectorID then
+						entity.TrackedList[v] = sector
+					end
+				end
+			end
+		elseif type == TrackedType.THING then
+			for _,v in pairs(source.TrackedList) do
+				for _, mobj in pairs(Globals.mobjs:readbulk()) do
+					if v == mobj.index then
+						entity.TrackedList[v] = mobj
+					end
 				end
 			end
 		end
@@ -472,24 +453,32 @@ end
 function settings_write()
 	local file, err = io.open(SETTINGS_FILENAME, "w")
 	if file then
-		local conf = {}
+		file:write("-- available angle types:\n")
+		for k,v in pairs(AngleType) do
+			file:write(string.format("-- %5d (%s)\n", v, k))
+		end
+		file:write("Angle = " .. Angle .. "\n")
 		
-		for _,t in orderedPairs(TrackedType) do
+		local tracked = {}
+		
+		for _,t in pairs(TrackedType) do
 			local entity        = Tracked[t]
 			local name          = entity.Name
-			conf[name]          = {}
-			local setting       = conf[name]
+			tracked[name]       = {}
+			local setting       = tracked[name]
 			setting.TrackedList = {}
 			setting.Current     = entity.Current
 			setting.Min         = entity.Min
 			setting.Max         = entity.Max
 			
-			for k,_ in orderedPairs(entity.TrackedList) do
-				setting.TrackedList[k] = true
+			for k,_ in pairs(entity.TrackedList) do
+				table.insert(setting.TrackedList, k)
 			end
+			
+			table.sort(setting.TrackedList)
 		end
 		
-		file:write("tracked = " .. dump(conf))
+		file:write("\ntracked = " .. dump(tracked) .. "\n")
 	else
 		print(err)
 	end
@@ -574,6 +563,8 @@ function cached_line_coords(line)
 end
 
 function scroll_list(entity, delta)
+	if not entity.Current then return end
+	
 	local list  = entity.TrackedList
 	local limit = entity.Max
 	local step  = 1
