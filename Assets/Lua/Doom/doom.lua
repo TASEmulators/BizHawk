@@ -1,4 +1,5 @@
 -- feos, kalimag, 2025
+
 dofile("doom.misc.lua")
 
 
@@ -75,7 +76,7 @@ local function iterate()
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos = screen_to_game(mousePos)
 	local shortestDist = math.maxinteger
-					
+	
 	texts.player = string.format(
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
@@ -312,8 +313,6 @@ local function iterate()
 	if texts.thing  then text(10, 222, texts.thing             ) end
 	if texts.line   then text(10, 320, texts.line,   0xffff8800) end
 	if texts.sector then text(10, 370, texts.sector, 0xff00ffff) end
-	
-	texts.thing = nil
 end
 
 local function make_buttons()
@@ -357,6 +356,7 @@ end)
 event.onexit(function()
 	gui.clearGraphics()
 	gui.cleartext()
+	settings_write()
 end)
 
 event.onloadstate(function()

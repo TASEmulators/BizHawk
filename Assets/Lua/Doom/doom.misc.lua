@@ -21,6 +21,7 @@ CHAR_WIDTH        = 10
 CHAR_HEIGHT       = 16
 PADDING_WIDTH     = 240
 MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
+SETTINGS_FILENAME = "doom.settings.lua"
 
 -- closure object
 TrackedEntity = {}
@@ -55,9 +56,9 @@ ScreenHeight   = client.screenheight()
 -- tables
 
 TrackedType = {
-	THING  = 0,
-	LINE   = 1,
-	SECTOR = 2
+	THING  = 1,
+	LINE   = 2,
+	SECTOR = 3
 }
 
 Tracked = {
@@ -111,6 +112,7 @@ LastInput     = nil
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
 client.SetClientExtraPadding(PADDING_WIDTH, 0, 0, 0)
+
 
 -- GAME/SCREEN CODECS
 
@@ -192,6 +194,7 @@ function screen_to_game(arg1, arg2, arg3, arg4)
 end
 
 
+-- AUTOMAP
 
 function pan_left(divider)
 	Pan.x = Pan.x + PAN_FACTOR/Zoom/(divider or 2)
@@ -247,6 +250,30 @@ function zoom(times, mouseCenter)
 end
 
 
+-- UTIL
+
+local function dump(o, indent)
+	local offset = ""
+	if not indent then
+		offset = ""
+		indent = 0
+	end
+	for i = 1, indent do
+		offset = offset .. "\t"
+	end
+	if type(o) == 'table' then
+		local s = '{'
+		for k,v in pairs(o) do
+			if type(k) ~= 'number' then k = '"'..k..'"' end
+			if type(v) == 'string' then v = '"'..v..'"' end
+			s = string.format("%s\n%s\t[%s] = %s,", s, offset, k, dump(v, indent+1))
+		end
+		return s .. '\n' .. offset .. '}'
+	else
+		if type(o) == 'number' then o = string.format("%d", o) end
+		return tostring(o)
+	end
+end
 
 function to_lookup(table)
 	local lookup = {}
@@ -273,6 +300,50 @@ function get_line_count(str)
 	end
 	if size > longest then longest = size end
 	return count, longest
+end
+
+local function __genOrderedIndex( t )
+    local orderedIndex = {}
+    for key in pairs(t) do
+        table.insert( orderedIndex, key )
+    end
+    table.sort( orderedIndex )
+    return orderedIndex
+end
+
+local function orderedNext(t, state)
+    -- Equivalent of the next function, but returns the keys in the alphabetic
+    -- order. We use a temporary ordered key table that is stored in the
+    -- table being iterated.
+
+    local key = nil
+    --print("orderedNext: state = "..tostring(state) )
+    if state == nil then
+        -- the first time, generate the index
+        t.__orderedIndex = __genOrderedIndex( t )
+        key = t.__orderedIndex[1]
+    else
+        -- fetch the next value
+        for i = 1,#t.__orderedIndex do
+            if t.__orderedIndex[i] == state then
+                key = t.__orderedIndex[i+1]
+            end
+        end
+    end
+
+    if key then
+        return key, t[key]
+    end
+
+    -- no more value to return, cleanup
+    t.__orderedIndex = nil
+    return
+end
+
+local function orderedPairs(t)
+    -- Equivalent of the pairs() function on tables. Allows to iterate
+    -- in order
+    return orderedNext, t, nil
 end
 
 
@@ -365,6 +436,65 @@ Globals      = structs.globals
 MobjType     = enums.mobjtype
 SpriteNumber = enums.doom.spritenum
 MobjFlags    = enums.mobjflags
+
+
+-- IO
+
+config = {} -- to keep it separate from the global env
+
+function settings_read()
+	local file, err = loadfile(SETTINGS_FILENAME, "t", config)
+	if file then
+		file()
+	else
+		print(err)
+		return
+	end
+	
+	for _,type in pairs(TrackedType) do
+		local entity   = Tracked[type]
+		local source   = config.tracked[entity.Name]
+		entity.Current = source.Current
+		entity.Min     = source.Min
+		entity.Max     = source.Max
+		
+		for k,_ in orderedPairs(source.TrackedList) do
+			for _, mobj in pairs(Globals.mobjs:readbulk()) do
+				if k == mobj.index then
+					entity.TrackedList[k] = mobj
+					print(string.format("Loaded thing %d from config", k))
+				end
+			end
+		end
+	end
+end
+
+function settings_write()
+	local file, err = io.open(SETTINGS_FILENAME, "w")
+	if file then
+		local conf = {}
+		
+		for _,t in orderedPairs(TrackedType) do
+			local entity        = Tracked[t]
+			local name          = entity.Name
+			conf[name]          = {}
+			local setting       = conf[name]
+			setting.TrackedList = {}
+			setting.Current     = entity.Current
+			setting.Min         = entity.Min
+			setting.Max         = entity.Max
+			
+			for k,_ in orderedPairs(entity.TrackedList) do
+				setting.TrackedList[k] = true
+			end
+		end
+		
+		file:write("tracked = " .. dump(conf))
+	else
+		print(err)
+	end
+	file:close()
+end
 
 
 function init_mobj_bounds()
@@ -467,11 +597,11 @@ function scroll_list(entity, delta)
 end
 
 function update_zoom()
-	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
-	local mouseWheel   = math.floor(Mouse.Wheel/120)
-	local deltaX       = mousePos.x - LastMouse.x
-	local deltaY       = mousePos.y - LastMouse.y
-	local deltaWheel   = mouseWheel - LastMouse.wheel
+	local mousePos   = client.transformPoint(Mouse.X, Mouse.Y)
+	local mouseWheel = math.floor(Mouse.Wheel/120)
+	local deltaX     = mousePos.x - LastMouse.x
+	local deltaY     = mousePos.y - LastMouse.y
+	local deltaWheel = mouseWheel - LastMouse.wheel
 	
 	if deltaWheel ~= 0 then
 		if mousePos.x > PADDING_WIDTH then
@@ -594,6 +724,8 @@ function init_cache()
 	for _, sector in pairs(Globals.sectors) do
 		Tracked[TrackedType.SECTOR].IDs[sector.iSectorID] = true
 	end
+	
+	settings_read()
 end
 
 function clear_cache()
@@ -771,6 +903,7 @@ function add_entity(type)
 			adder(id)
 			entity.Current = id
 			print(string.format("Added %s %d", name, id))
+			settings_write()
 		end,
 		value = nil
 	}
