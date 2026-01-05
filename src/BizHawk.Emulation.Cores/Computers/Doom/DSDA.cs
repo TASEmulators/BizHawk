@@ -167,6 +167,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				foreach (var cb in RandomCallbacks) cb(pr_class);
 			};
 
+			_useCallback = player =>
+			{
+				foreach (var cb in UseCallbacks) cb(player);
+			};
+
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
@@ -184,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _randomCallback, _errorCallback
+					_loadCallback, _randomCallback, _useCallback, _errorCallback
 				], _elf);
 
 				using (_elf.EnterExit())
@@ -282,6 +287,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
 				_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
+				_core.dsda_set_use_callback(UseCallbacks.Count > 0 ? _useCallback : null);
 			}
 			catch
 			{
@@ -386,9 +392,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
+		private LibDSDA.use_cb _useCallback;
 		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<int>> RandomCallbacks = [ ];
+		public List<Action<int>> UseCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo
 
 		private void ErrorCallback(string error)
