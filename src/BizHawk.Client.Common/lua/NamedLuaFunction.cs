@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback([line, thing]);
+					Callback([ line, thing ]);
 				}
 				finally
 				{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common
 				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback([line, thing]);
+					Callback([ line, thing ]);
 				}
 				finally
 				{
