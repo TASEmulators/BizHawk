@@ -105,19 +105,7 @@ namespace BizHawk.Client.Common
 					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
-			UseCallback = (line, thing) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				try
-				{
-					Callback([ line, thing ]);
-				}
-				finally
-				{
-					luaLibraries.IsInInputOrMemoryCallback = false;
-				}
-			};
-			CrossCallback = (line, thing) =>
+			LineCallback = (line, thing) =>
 			{
 				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
@@ -163,9 +151,7 @@ namespace BizHawk.Client.Common
 
 		public Action<int> RandomCallback { get; }
 
-		public Action<long, long> UseCallback { get; }
-
-		public Action<long, long> CrossCallback { get; }
+		public Action<long, long> LineCallback { get; }
 
 		public void Call(string name = null)
 		{

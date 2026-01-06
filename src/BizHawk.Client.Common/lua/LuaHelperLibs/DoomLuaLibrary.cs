@@ -69,8 +69,8 @@ namespace BizHawk.Client.Common
 
 			var callbacks = dsda.UseCallbacks;
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.UseCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.UseCallback);
+			callbacks.Add(nlf.LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
 			return nlf.GuidStr;
 		}
 
@@ -94,8 +94,8 @@ namespace BizHawk.Client.Common
 
 			var callbacks = dsda.CrossCallbacks;
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.CrossCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.CrossCallback);
+			callbacks.Add(nlf.LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
 			return nlf.GuidStr;
 		}
 	}

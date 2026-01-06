@@ -398,8 +398,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
-		private LibDSDA.use_cb _useCallback;
-		private LibDSDA.cross_cb _crossCallback;
+		private LibDSDA.line_cb _useCallback;
+		private LibDSDA.line_cb _crossCallback;
 		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<int>> RandomCallbacks = [ ];

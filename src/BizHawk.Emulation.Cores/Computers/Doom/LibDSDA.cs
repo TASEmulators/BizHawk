@@ -154,14 +154,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract void dsda_set_random_callback(random_cb cb);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void use_cb(long line, long thing);
+		public delegate void line_cb(long line, long thing);
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_set_use_callback(use_cb cb);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void cross_cb(long line, long thing);
+		public abstract void dsda_set_use_callback(line_cb cb);
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void dsda_set_cross_callback(cross_cb cb);
+		public abstract void dsda_set_cross_callback(line_cb cb);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void error_cb(string error);
