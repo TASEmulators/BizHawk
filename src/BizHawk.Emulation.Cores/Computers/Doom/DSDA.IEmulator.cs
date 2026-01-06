@@ -259,6 +259,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
 			_core.dsda_set_use_callback(UseCallbacks.Count > 0 ? _useCallback : null);
+			_core.dsda_set_cross_callback(CrossCallbacks.Count > 0 ? _crossCallback : null);
 
 			IsLagFrame = _core.dsda_frame_advance(
 				automapButtons,

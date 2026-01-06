@@ -421,16 +421,28 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
   return !wipeDone;
 }
 
-// P_UseSpecialLine() calls by player
-ECL_ENTRY void (*use_callback_cb)(int);
-void biz_use_callback(int player)
+// P_UseSpecialLine() calls
+ECL_ENTRY void (*use_callback_cb)(line_t*, mobj_t*);
+void biz_use_callback(line_t* line, mobj_t* mo)
 {
   if (use_callback_cb)
-    use_callback_cb(player);
+    use_callback_cb(line, mo);
 }
-ECL_EXPORT void dsda_set_use_callback(ECL_ENTRY void (*cb)(int))
+ECL_EXPORT void dsda_set_use_callback(ECL_ENTRY void (*cb)(line_t*, mobj_t*))
 {
   use_callback_cb = cb;
+}
+
+// P_CrossCompatibleSpecialLine() calls
+ECL_ENTRY void (*cross_callback_cb)(line_t*, mobj_t*);
+void biz_cross_callback(line_t* line, mobj_t* mo)
+{
+  if (cross_callback_cb)
+    cross_callback_cb(line, mo);
+}
+ECL_EXPORT void dsda_set_cross_callback(ECL_ENTRY void (*cb)(line_t*, mobj_t*))
+{
+  cross_callback_cb = cb;
 }
 
 // P_Random() calls

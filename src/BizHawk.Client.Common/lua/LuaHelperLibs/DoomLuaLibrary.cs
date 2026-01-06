@@ -52,14 +52,14 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
 #pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
 		[LuaMethodExample("""
-			local usesuccess_cb_id = doom.on_use(function(player)
-				console.log("Use press succeeded for player "..player);
+			local usesuccess_cb_id = doom.on_use(function(line, thing)
+				console.log("line "..line.." used by mobj "..mobj);
 			end, "Use notifier");
 		""")]
 #pragma warning restore MA0136
 		[LuaMethod(
 			name: "on_use",
-			description: "Fires when P_UseSpecialLine() is called by one of the players via the Use button input. Your callback can have 1 parameter, which will be an integer identifying which player triggered it.")]
+			description: "Fires when P_UseSpecialLine() is called by a mobj (thing). Your callback can have 2 parameters, which will be pointers to activated line and to mobj that triggered it.")]
 		public string OnUse(LuaFunction luaf, string name = null)
 		{
 			if (Emulator is not DSDA dsda)
@@ -71,6 +71,31 @@ namespace BizHawk.Client.Common
 			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", LogOutputCallback, CurrentFile, name: name);
 			callbacks.Add(nlf.UseCallback);
 			nlf.OnRemove += () => callbacks.Remove(nlf.UseCallback);
+			return nlf.GuidStr;
+		}
+
+		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local crossline_cb_id = doom.on_cross(function(line, thing)
+				console.log("line "..line.." crossed by mobj "..mobj);
+			end, "Cross notifier");
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "on_cross",
+			description: "Fires when P_CrossCompatibleSpecialLine() is called by a mobj (thing). Your callback can have 2 parameters, which will be pointers to activated line and to mobj that triggered it.")]
+		public string OnCross(LuaFunction luaf, string name = null)
+		{
+			if (Emulator is not DSDA dsda)
+			{
+				throw new InvalidOperationException(ERR_MSG_UNSUPPORTED_CORE);
+			}
+
+			var callbacks = dsda.CrossCallbacks;
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", LogOutputCallback, CurrentFile, name: name);
+			callbacks.Add(nlf.CrossCallback);
+			nlf.OnRemove += () => callbacks.Remove(nlf.CrossCallback);
 			return nlf.GuidStr;
 		}
 	}

@@ -167,9 +167,14 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				foreach (var cb in RandomCallbacks) cb(pr_class);
 			};
 
-			_useCallback = player =>
+			_useCallback = (line, thing) =>
 			{
-				foreach (var cb in UseCallbacks) cb(player);
+				foreach (var cb in UseCallbacks) cb(line, thing);
+			};
+
+			_crossCallback = (line, thing) =>
+			{
+				foreach (var cb in CrossCallbacks) cb(line, thing);
 			};
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -189,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _randomCallback, _useCallback, _errorCallback
+					_loadCallback, _randomCallback, _useCallback, _crossCallback, _errorCallback
 				], _elf);
 
 				using (_elf.EnterExit())
@@ -288,6 +293,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 				_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
 				_core.dsda_set_use_callback(UseCallbacks.Count > 0 ? _useCallback : null);
+				_core.dsda_set_cross_callback(CrossCallbacks.Count > 0 ? _crossCallback : null);
 			}
 			catch
 			{
@@ -393,10 +399,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
 		private LibDSDA.use_cb _useCallback;
+		private LibDSDA.cross_cb _crossCallback;
 		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<int>> RandomCallbacks = [ ];
-		public List<Action<int>> UseCallbacks = [ ];
+		public List<Action<long, long>> UseCallbacks = [ ];
+		public List<Action<long, long>> CrossCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo
 
 		private void ErrorCallback(string error)
