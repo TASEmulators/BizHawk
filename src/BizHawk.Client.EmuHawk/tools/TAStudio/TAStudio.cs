@@ -412,18 +412,7 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name.EndsWithOrdinal("Block")
 					|| c.Name.EndsWithOrdinal("Status"));
 
-			if (Emulator.SystemId is VSystemID.Raw.N64)
-			{
-				var fakeAnalogControls = TasView.AllColumns
-					.Where(c =>
-						c.Name.EndsWithOrdinal("A Up")
-						|| c.Name.EndsWithOrdinal("A Down")
-						|| c.Name.EndsWithOrdinal("A Left")
-						|| c.Name.EndsWithOrdinal("A Right"));
-
-				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
-			}
-			else if (Emulator.SystemId is VSystemID.Raw.Doom)
+			if (Emulator.SystemId is VSystemID.Raw.Doom)
 			{
 				var columns = TasView.AllColumns
 					.Where(c =>
