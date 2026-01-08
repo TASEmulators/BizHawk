@@ -55,7 +55,11 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 		private bool _nextDrivePressed;
 		private int _correctedWidth;
 		private string _chipsetCompatible = "";
-		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+
+		private string GetFullName(IRomAsset rom)
+#pragma warning disable CS0618
+			=> Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+#pragma warning restore CS0618
 
 		public override int VirtualWidth => _correctedWidth;
 
