@@ -34,20 +34,21 @@ namespace BizHawk.Client.EmuHawk
 		private static ApiContainer Register(
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback,
-			IMainFormForApiInit mainForm,
+			IMainFormForApi mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
+			IGameInfo game,
+			IDialogController dialogController)
 		{
 			var avail = new Dictionary<Type, object>
 			{
 				[typeof(Action<string>)] = logCallback,
 				[typeof(IMainFormForApi)] = mainForm,
-				[typeof(IDialogController)] = mainForm.DialogController,
+				[typeof(IDialogController)] = dialogController,
 				[typeof(DisplayManagerBase)] = displayManager,
 				[typeof(InputManager)] = inputManager,
 				[typeof(IMovieSession)] = movieSession,
@@ -69,34 +70,36 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IExternalApiProvider Restart(
 			IEmulatorServiceProvider serviceProvider,
-			IMainFormForApiInit mainForm,
+			IMainFormForApi mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
+			IGameInfo game,
+			IDialogController dialogController)
 		{
 			_container?.Dispose();
-			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			_container = Register(serviceProvider, Console.WriteLine, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game, dialogController);
 			return new BasicApiProvider(_container);
 		}
 
 		public static ApiContainer RestartLua(
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback,
-			IMainFormForApiInit mainForm,
+			IMainFormForApi mainForm,
 			DisplayManagerBase displayManager,
 			InputManager inputManager,
 			IMovieSession movieSession,
 			ToolManager toolManager,
 			Config config,
 			IEmulator emulator,
-			IGameInfo game)
+			IGameInfo game,
+			IDialogController dialogController)
 		{
 			_luaContainer?.Dispose();
-			_luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game);
+			_luaContainer = Register(serviceProvider, logCallback, mainForm, displayManager, inputManager, movieSession, toolManager, config, emulator, game, dialogController);
 			return _luaContainer;
 		}
 	}
