@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 			{
 				"fceux",
 				"gens",
-			}).Select(s => _displayManager.CustomFonts.Families.First(f => f.Name.EqualsIgnoreCase(s)));
+			}).Select(s => _displayManager.CustomFonts.Families.First(f => f.Name.EqualsIgnoreCase(s))).ToArray();
 		}
 
 		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
