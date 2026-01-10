@@ -5,9 +5,11 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -44,6 +46,8 @@ namespace BizHawk.Client.Common
 
 		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
 
+		private readonly FontFamily[] _pixelFonts;
+
 		private DisplaySurfaceID? _usingSurfaceID;
 		public bool HasGUISurface => true;
 
@@ -55,6 +59,11 @@ namespace BizHawk.Client.Common
 			_dialogController = dialogController;
 			LogCallback = logCallback;
 			_displayManager = displayManager;
+			_pixelFonts = (new[]
+			{
+				"fceux",
+				"gens",
+			}).Select(s => _displayManager.CustomFonts.Families.First(f => f.Name.EqualsIgnoreCase(s)));
 		}
 
 		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
@@ -519,7 +528,7 @@ namespace BizHawk.Client.Common
 				}
 
 				using var g = Graphics.FromImage(_nullGraphicsBitmap);
-				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				var font = new Font(_pixelFonts[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 				var sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
 
 				var r = Get2DRenderer(surfaceID);
