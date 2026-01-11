@@ -151,8 +151,12 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				_libDOSBox.PushCDData(curDiscIndex, CDDataStruct.End, CDDataStruct.Last);
 
 				// Passing track data to the core
-				for (var trackIdx = 0; trackIdx < CDDataStruct.Last; trackIdx++) _libDOSBox.PushTrackData(curDiscIndex, trackIdx, CDDataStruct.Tracks[trackIdx]);
-			}
+				for (var trackIdx = 0; trackIdx < CDDataStruct.Last; trackIdx++)
+				{
+					// Console.WriteLine($"[CD] Adding Track {trackIdx}. Start: {CDDataStruct.Tracks[trackIdx].Start}, End: {CDDataStruct.Tracks[trackIdx].End}, End: {CDDataStruct.Tracks[trackIdx].Offset}");
+					_libDOSBox.PushTrackData(curDiscIndex, trackIdx, CDDataStruct.Tracks[trackIdx]);
+				}
+							}
 			////// CD Loading Logic End
 
 			// Getting base config file

@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 		public const int VGA_MAX_WIDTH = 640;
 		public const int VGA_MAX_HEIGHT = 480;
-		public const int SVGA_MAX_WIDTH = 1024;
-		public const int SVGA_MAX_HEIGHT = 768;
+		public const int SVGA_MAX_WIDTH = 2560;
+		public const int SVGA_MAX_HEIGHT = 2048;
 
 		// Default FPS: 70.086592427616921
 		public const int DEFAULT_FRAMERATE_NUMERATOR_DOS = 3146888;
