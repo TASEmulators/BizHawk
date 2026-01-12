@@ -10,17 +10,18 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class RCheevosLeaderboardListForm : Form
 	{
-		private RCheevos.LBoard[] _lboards;
+		private RCheevos.LBoard[] _lboards = [ ];
 		private RCheevosLeaderboardForm[] _lboardForms = [ ];
 
 		private readonly int _controlHeight;
 
 		public RCheevosLeaderboardListForm()
 		{
-			InitializeComponent();
-			FormClosing += RCheevosLeaderboardListForm_FormClosing;
 			using var temp = new RCheevosLeaderboardForm();
 			_controlHeight = temp.Height + temp.Margin.Bottom + temp.Margin.Top;
+
+			InitializeComponent();
+			FormClosing += RCheevosLeaderboardListForm_FormClosing;
 			flowLayoutPanel1.BoundScrollBar = vScrollBar1;
 		}
 
