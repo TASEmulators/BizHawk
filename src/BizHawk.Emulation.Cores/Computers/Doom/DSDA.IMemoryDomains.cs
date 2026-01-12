@@ -283,8 +283,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 
 			public override void PokeByte(long addr, byte val)
-			{
-			}
+				=> FailPokingNotAllowed();
 		}
 	}
 }
