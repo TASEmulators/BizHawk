@@ -7,6 +7,7 @@ using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
@@ -446,6 +447,16 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var column in columnsToHide)
 			{
 				column.Visible = false;
+			}
+			if (!TasView.AllColumns.Where(static c => c.Visible)
+#if true
+				.CountIsAtLeast(2))
+#else
+				.Select(static c => c.Name).Except([ CursorColumnName, FrameColumnName ]).Any())
+#endif
+			{
+				// edge case: no columns are visible!
+				foreach (var c in TasView.AllColumns) c.Visible = true; // as a fallback, just show everything
 			}
 
 			foreach (var column in TasView.VisibleColumns)
