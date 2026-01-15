@@ -2695,7 +2695,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MovieSession.Movie.IsActive())
 			{
-				MovieSession.Movie.Save();
+				MovieSession.Movie.Save(Emulator);
 				AddOnScreenMessage($"{MovieSession.Movie.Filename} saved.");
 			}
 		}
@@ -4022,7 +4022,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProcessMovieImport(string fn, bool start)
 		{
-			var result = MovieImport.ImportFile(this, MovieSession, fn, Config);
+			var result = MovieImport.ImportFile(this, Emulator, MovieSession, fn, Config);
 
 			if (result.Errors.Count is not 0)
 			{

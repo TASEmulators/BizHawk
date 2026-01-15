@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 				}
 				_movieSession.Movie.Filename = filename;
 			}
-			_movieSession.Movie.Save();
+			_movieSession.Movie.Save(_mainForm.Emulator);
 		}
 
 		public IReadOnlyDictionary<string, string> GetHeader()
