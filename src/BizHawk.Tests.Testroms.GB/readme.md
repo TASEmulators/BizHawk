@@ -22,7 +22,7 @@ You must **build EmuHawk once** before running these tests, since they currently
 But there is no direct dependency on EmuHawk or WinForms.
 
 Like when building EmuHawk, the target framework and configuration for all the BizHawk project deps is dictated by this project.
-That means .NET Standard 2.0 for most libraries, or else .NET Framework 4.8 (which you can override with e.g. `-p:TestProjTargetFrameworkOverride=net8.0`).
+That means .NET Standard 2.0 for most libraries, or else .NET Framework 4.8 (which you can override with e.g. `-p:TestProjTargetFrameworkOverride=net10.0`).
 To build and run the tests in `Release` configuration (or `Debug` if you need that for some reason):
 - On Linux, run `run_tests_release.sh` or `run_tests_debug.sh`.
 - On Windows, pass `-c Release` to `dotnet test` (must `cd` to this project). Omitting `-c` will use `Debug`.

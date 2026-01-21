@@ -2,12 +2,13 @@
 	<Import Project="MainSlnCommon.props" />
 	<PropertyGroup>
 		<AccelerateBuildsInVisualStudio>false</AccelerateBuildsInVisualStudio>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AssemblyTitle>$(Description)</AssemblyTitle>
 		<!-- Output path will contain the executable along with all its dependencies. We copy the executable up one directory up later on.
 			This allows us to have the executable dependencies automagically copied over to our dll folder while still keeping the executable in the output folder. -->
-		<OutputPath>$(MSBuildProjectDirectory)/../../output/dll/</OutputPath>
+		<OutputPath>$(MSBuildProjectDirectory)/../../output/$(TargetFramework)/dll/</OutputPath>
 		<Product>$(MSBuildProjectName.Substring($([MSBuild]::Add($(MSBuildProjectName.LastIndexOf('.')), 1))))</Product>
-		<ExecFilesDest>$(MSBuildProjectDirectory)/../../output/</ExecFilesDest>
+		<ExecFilesDest>$(MSBuildProjectDirectory)/../../output/$(TargetFramework)/</ExecFilesDest>
 		<!-- Setting TargetFileName does not change the AssemblyName (as setting TargetName would), but also does not change the output file name
 			for the executable on build (as one would expect). So we still need to rename the executable file below. Using this method has the advantage
 			of IDEs respecting the TargetFileName and expecting it. -->
@@ -33,8 +34,8 @@
 			<ExecConfigFilesFromExecProj Include="$(OutputPath)$(TargetFileName).*" /> <!-- include the .exe.config files -->
 		</ItemGroup>
 		<!-- Surely this can be done in one step, right? FIXME -->
-		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" />
-		<Move SourceFiles="@(ExecFilesFromExecProj->Replace('BizHawk.Client.', ''))" DestinationFolder="$(ExecFilesDest)" />
+		<Move SourceFiles="@(ExecFilesFromExecProj)" DestinationFolder="$(ExecFilesDest)" />
+		<Move SourceFiles="$(ExecFilesDest)$(MSBuildProjectName).exe" DestinationFiles="$(TargetPath)" />
 		<Move SourceFiles="@(ExecConfigFilesFromExecProj)" DestinationFolder="$(ExecFilesDest)" />
 		<MakeDir Directories="@(EmptyDirsToCreate)" />
 		<Touch Files="@(EmptyDirsToCreate->Combine('.keep'))" AlwaysCreate="true" />

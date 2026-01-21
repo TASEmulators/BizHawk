@@ -202,9 +202,9 @@ namespace BizHawk.BizInvoke
 				postCreateHooks,
 				type.CreateType()!,
 				connectMonitor: monitor
-					? (o, m) => o.GetType().GetField(monitorField!.Name).SetValue(o, m)
+					? (o, m) => o.GetType().GetField(monitorField!.Name)!.SetValue(o, m)
 					: null,
-				connectCallingConventionAdapter: (o, a) => o.GetType().GetField(adapterField.Name).SetValue(o, a));
+				connectCallingConventionAdapter: (o, a) => o.GetType().GetField(adapterField.Name)!.SetValue(o, a));
 		}
 
 		/// <summary>
@@ -315,7 +315,7 @@ namespace BizHawk.BizInvoke
 			{
 				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
 				var interopDelegate = adapter.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
-				o.GetType().GetField(@field.Name).SetValue(o, interopDelegate);
+				o.GetType().GetField(@field.Name)!.SetValue(o, interopDelegate);
 			};
 		}
 
@@ -442,7 +442,7 @@ namespace BizHawk.BizInvoke
 			return (o, dll, adapter) =>
 			{
 				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
-				o.GetType().GetField(@field.Name).SetValue(
+				o.GetType().GetField(@field.Name)!.SetValue(
 					o, adapter.GetDepartureFunctionPointer(entryPtr, new(returnType, paramTypes), o));
 			};
 		}
@@ -602,7 +602,7 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Brfalse, isNull);
 
 				var encoding = il.DeclareLocal(typeof(Encoding), false);
-				il.EmitCall(OpCodes.Call, typeof(Encoding).GetProperty("UTF8")!.GetGetMethod(), Type.EmptyTypes);
+				il.EmitCall(OpCodes.Call, typeof(Encoding).GetProperty("UTF8")!.GetGetMethod()!, Type.EmptyTypes);
 				il.Emit(OpCodes.Stloc, encoding);
 
 				var strlenbytes = il.DeclareLocal(typeof(int), false);
@@ -634,7 +634,7 @@ namespace BizHawk.BizInvoke
 				il.Emit(OpCodes.Add);
 				// charcount
 				il.Emit(OpCodes.Ldloc, strval);
-				il.Emit(OpCodes.Call, typeof(string).GetProperty("Length")!.GetGetMethod());
+				il.Emit(OpCodes.Call, typeof(string).GetProperty("Length")!.GetGetMethod()!);
 				// bytes
 				il.Emit(OpCodes.Ldloc, bytes);
 				// bytelength
