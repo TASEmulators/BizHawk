@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private const sbyte _maxAnalogY = 127;
 		private const sbyte _minAnalogY = -128;
 
-		public static (sbyte x, sbyte y) GetStickValues(IController Controller, int i)
+		public static (sbyte X, sbyte Y) GetStickValues(IController Controller, int i)
 		{
 			// Analog stick right = +X
 			// Analog stick up = +Y
