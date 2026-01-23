@@ -4,9 +4,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
-#if false
 		private readonly RCheevosLeaderboardListForm _lboardListForm = new();
-#endif
 
 		private sealed class LboardTriggerRequest : RCheevoHttpRequest
 		{
