@@ -215,6 +215,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				}
 				else if (controllerSettings[i] != LibAres64.ControllerType.Unplugged)
 				{
+					ret.BoolButtons.Add($"P{i + 1} A Up");
+					ret.BoolButtons.Add($"P{i + 1} A Down");
+					ret.BoolButtons.Add($"P{i + 1} A Left");
+					ret.BoolButtons.Add($"P{i + 1} A Right");
 					ret.BoolButtons.Add($"P{i + 1} DPad U");
 					ret.BoolButtons.Add($"P{i + 1} DPad D");
 					ret.BoolButtons.Add($"P{i + 1} DPad L");
@@ -299,8 +303,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					controller.SetHapticChannelStrength($"P{num} Rumble Pak", _core.GetRumbleStatus(i) ? int.MaxValue : 0);
 				}
 				var buttonsState = GetButtons(controller, num);
-				var stickXState = unchecked((short) controller.AxisValue($"P{num} X Axis"));
-				var stickYState = unchecked((short) controller.AxisValue($"P{num} Y Axis"));
+				var stickXState = controller.IsPressed($"P{num} A Left") ? (short)-128 :
+				                  controller.IsPressed($"P{num} A Right") ? (short)127 :
+								  unchecked((short) controller.AxisValue($"P{num} X Axis"));
+				var stickYState = controller.IsPressed($"P{num} A Up") ? (short)127 :
+				                  controller.IsPressed($"P{num} A Down") ? (short)-128 :
+								  unchecked((short) controller.AxisValue($"P{num} Y Axis"));
 				switch (num)
 				{
 					case 1:
