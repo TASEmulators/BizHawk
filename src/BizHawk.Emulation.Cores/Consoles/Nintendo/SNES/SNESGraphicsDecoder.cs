@@ -1071,7 +1071,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						screen[dofs] = color;
 						Paletteize(screen, dofs, oam.Palette * 16 + 128, 1);
 						Colorize(screen, dofs, 1);
-						if (spriteMap != null) spriteMap[dx, dy] = (byte)spritenum;
+						spriteMap?[dx, dy] = (byte) spritenum;
 					}
 				}
 		}

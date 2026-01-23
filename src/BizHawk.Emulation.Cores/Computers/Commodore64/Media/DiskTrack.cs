@@ -67,15 +67,13 @@ public sealed class DiskTrack
 	/// True only if the content differs.
 	/// </returns>
 	public bool IsModified()
-		=> !_original.AsSpan().SequenceEqual(_bits);
+		=> !_original.SequenceEqual(_bits);
 
 	/// <summary>
 	/// Resets this track to the state of the original media.
 	/// </summary>
 	public void Reset()
-	{
-		_original.CopyTo(_bits.AsSpan());
-	}
+		=> _original.CopyTo(_bits);
 
 	/// <summary>
 	/// Write an entry to <see cref="Bits"/>.
@@ -146,6 +144,6 @@ public sealed class DiskTrack
 			}
 		}
 
-		_bits.CopyTo(_original.AsSpan());
+		_bits.CopyTo(_original);
 	}
 }

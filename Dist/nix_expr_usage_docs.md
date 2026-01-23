@@ -84,7 +84,7 @@ nix-build --pure -A emuhawk.fetch-deps && ./result
 ```sh
 nix-shell # = `nix-shell -A emuhawk-latest`
 # (in shell):
-Dist/BuildDebug.sh # = `dotnet build -c Debug BizHawk.sln`
+Dist/BuildDebug.sh # = `dotnet build -c Debug BizHawk.slnx`
 emuhawk-monort-local # = `cd output && mono EmuHawk.exe`
 
 # if deps (besides NuGet packages) have changed, may need to do this instead, but it will do a slow copy of the repo to the Nix store

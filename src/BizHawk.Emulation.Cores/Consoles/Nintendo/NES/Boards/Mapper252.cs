@@ -151,8 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if (Vram != null)
-					Vram[addr&0x7FF] = value;
+				Vram?[addr & 0x7FF] = value;
 			}
 			else
 			{
