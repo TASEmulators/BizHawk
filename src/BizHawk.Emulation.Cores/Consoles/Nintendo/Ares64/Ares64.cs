@@ -5,6 +5,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 {
@@ -303,12 +304,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 					controller.SetHapticChannelStrength($"P{num} Rumble Pak", _core.GetRumbleStatus(i) ? int.MaxValue : 0);
 				}
 				var buttonsState = GetButtons(controller, num);
-				var stickXState = controller.IsPressed($"P{num} A Left") ? (short)-128 :
-				                  controller.IsPressed($"P{num} A Right") ? (short)127 :
-								  unchecked((short) controller.AxisValue($"P{num} X Axis"));
-				var stickYState = controller.IsPressed($"P{num} A Up") ? (short)127 :
-				                  controller.IsPressed($"P{num} A Down") ? (short)-128 :
-								  unchecked((short) controller.AxisValue($"P{num} Y Axis"));
+				(short stickXState, short stickYState) = N64Input.GetStickValues(controller, num);
 				switch (num)
 				{
 					case 1:

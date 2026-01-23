@@ -39,19 +39,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private const sbyte _maxAnalogY = 127;
 		private const sbyte _minAnalogY = -128;
 
-		/// <summary>
-		/// Translates controller input from EmuHawk into
-		/// N64 controller data
-		/// </summary>
-		/// <param name="i">Id of controller to update and shove</param>
-		public int GetControllerInput(int i)
+		public static (sbyte x, sbyte y) GetStickValues(IController Controller, int i)
 		{
-			_emuCore.InputCallbacks.Call();
-			ThisFrameInputPolled = true;
-
 			// Analog stick right = +X
 			// Analog stick up = +Y
-			string p = "P" + (i + 1);
+			string p = "P" + i;
 			sbyte x;
 			if (Controller.IsPressed(p + " A Left"))
 			{
@@ -79,6 +71,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				y = (sbyte)Controller.AxisValue(p + " Y Axis");
 			}
+
+			return (x, y);
+		}
+
+		/// <summary>
+		/// Translates controller input from EmuHawk into
+		/// N64 controller data
+		/// </summary>
+		/// <param name="i">Id of controller to update and shove</param>
+		public int GetControllerInput(int i)
+		{
+			_emuCore.InputCallbacks.Call();
+			ThisFrameInputPolled = true;
+
+			(sbyte x, sbyte y) = GetStickValues(Controller, i + 1);
 
 			int value = ReadController(i + 1);
 			value |= (x & 0xFF) << 16;
