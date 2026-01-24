@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private const sbyte _maxAnalogY = 127;
 		private const sbyte _minAnalogY = -128;
 
+		/// <param name="i">player number (from 1)</param>
 		public static (sbyte X, sbyte Y) GetStickValues(IController Controller, int i)
 		{
 			// Analog stick right = +X
@@ -79,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// Translates controller input from EmuHawk into
 		/// N64 controller data
 		/// </summary>
-		/// <param name="i">Id of controller to update and shove</param>
+		/// <param name="i">index (from 0) of controller to update and shove</param>
 		public int GetControllerInput(int i)
 		{
 			_emuCore.InputCallbacks.Call();
