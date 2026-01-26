@@ -449,9 +449,9 @@
 		<Compile Update="tools/TAStudio/MarkerControl.cs" SubType="UserControl" />
 		<Compile Update="tools/TAStudio/MarkerControl.Designer.cs" DependentUpon="MarkerControl.cs" />
 		<EmbeddedResource Update="tools/TAStudio/MarkerControl.resx" DependentUpon="MarkerControl.cs" />
-		<Compile Update="tools/TAStudio/PatternsForm.cs" SubType="Form" />
-		<Compile Update="tools/TAStudio/PatternsForm.Designer.cs" DependentUpon="PatternsForm.cs" />
-		<EmbeddedResource Update="tools/TAStudio/PatternsForm.resx" DependentUpon="PatternsForm.cs" />
+		<Compile Update="tools/TAStudio/TAStudioSettingsForm.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudioSettingsForm.Designer.cs" DependentUpon="TAStudioSettingsForm.cs" />
+		<EmbeddedResource Update="tools/TAStudio/TAStudioSettingsForm.resx" DependentUpon="TAStudioSettingsForm.cs" />
 		<Compile Update="tools/TAStudio/PlaybackBox.cs" SubType="UserControl" />
 		<Compile Update="tools/TAStudio/PlaybackBox.Designer.cs" DependentUpon="PlaybackBox.cs" />
 		<EmbeddedResource Update="tools/TAStudio/PlaybackBox.resx" DependentUpon="PlaybackBox.cs" />
