@@ -154,7 +154,10 @@ namespace BizHawk.Client.Common
 
 		Point TransformPoint(Point point);
 
-		void Unpause();
+		/// <returns>True if <see cref="Pause"/> should be called if you want to restore the previous pause state.
+		/// <br/>Note that this is not the same as checking <see cref="IsPaused"/> before unpausing.
+		/// If the user was holding frame advance, emulation will have already been unpaused and releasing frame advance will not pause.</returns>
+		bool Unpause();
 
 		void UnpauseAv();
 
