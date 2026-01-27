@@ -153,9 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_addressMangler == 0)
 					{
-						var ret = new byte[length];
-						_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
-						Marshal.Copy(ret, 0, buffer, (int)length);
+						_domain.BulkPeekByte(addr, Util.UnsafeSpanFromPointer(ptr: buffer, length: (int) length));
 					}
 					else
 					{
