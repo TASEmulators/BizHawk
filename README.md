@@ -148,8 +148,8 @@ No package for your distro? Install via Nix ([see below](#nixnixos)), or install
 [![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
-The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.  
-The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. Wine is also **not** a runtime dependency. If you try to use Wine anyway then you're on your own.  
+The runtime dependencies are glibc, **Mono "complete"**, OpenAL, Lua 5.4, and `lsb_release`.  
+<sup>The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. Wine is also **not** a runtime dependency. If you try to use Wine anyway then you're on your own.</sup>  
 If it's not clear from the downloads here or in your package manager, EmuHawk is for x86_64 CPUs only.
 You may be able to run on AArch64 with missing features: see [#4052](https://github.com/TASEmulators/BizHawk/issues/4052).
 

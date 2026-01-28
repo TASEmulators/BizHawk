@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 							paramName: nameof(lp));
 					}
 
-					_iwadName = wadFile.RomPath;
+					_iwadName = GetFullName(wadFile);
 					_iwadData = wadFile.RomData;
 					foundIWAD = true;
 					recognized = true;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					if (_fakePwads.Contains(GetFullName(wadFile).ToLowerInvariant()))
 					{
-						_iwadName = wadFile.RomPath;
+						_iwadName = GetFullName(wadFile);
 						_iwadData = wadFile.RomData;
 						foundIWAD = true;
 					}
@@ -167,6 +167,16 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				foreach (var cb in RandomCallbacks) cb(pr_class);
 			};
 
+			_useCallback = (line, thing) =>
+			{
+				foreach (var cb in UseCallbacks) cb(line, thing);
+			};
+
+			_crossCallback = (line, thing) =>
+			{
+				foreach (var cb in CrossCallbacks) cb(line, thing);
+			};
+
 			_elf = new WaterboxHost(new WaterboxOptions
 			{
 				Path = PathUtils.DllDirectoryPath,
@@ -184,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _randomCallback, _errorCallback
+					_loadCallback, _randomCallback, _useCallback, _crossCallback, _errorCallback
 				], _elf);
 
 				using (_elf.EnterExit())
@@ -206,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Adding PWAD file(s)
 					foreach (var wadFile in _pwadFiles)
 					{
-						_gameMode = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+						_gameMode = _core.dsda_add_wad_file(GetFullName(wadFile), wadFile.RomData.Length, _loadCallback);
 						if (_gameMode is LibDSDA.GameMode.Fail)
 						{
 							throw new ArgumentException(
@@ -282,6 +292,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				ControllerDefinition = CreateControllerDefinition(_syncSettings);
 
 				_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
+				_core.dsda_set_use_callback(UseCallbacks.Count > 0 ? _useCallback : null);
+				_core.dsda_set_cross_callback(CrossCallbacks.Count > 0 ? _crossCallback : null);
 			}
 			catch
 			{
@@ -386,9 +398,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
+		private LibDSDA.line_cb _useCallback;
+		private LibDSDA.line_cb _crossCallback;
 		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<int>> RandomCallbacks = [ ];
+		public List<Action<long, long>> UseCallbacks = [ ];
+		public List<Action<long, long>> CrossCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo
 
 		private void ErrorCallback(string error)
@@ -435,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			foreach (var wadFile in _wadFiles)
 			{
-				if (filename == wadFile.RomPath)
+				if (filename == GetFullName(wadFile))
 				{
 					if (wadFile.FileData == null)
 					{

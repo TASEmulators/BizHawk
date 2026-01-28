@@ -122,10 +122,11 @@ enum HudMode
 
 enum MemoryArrayType
 {
-  ARRAY_PLAYERS = 0,
-  ARRAY_THINGS  = 1,
-  ARRAY_LINES   = 2,
-  ARRAY_SECTORS = 3
+  ARRAY_PLAYERS  = 0,
+  ARRAY_THINGS   = 1,
+  ARRAY_LINES    = 2,
+  ARRAY_SECTORS  = 3,
+  ARRAY_BLOCKMAP = 4,
 };
 
 typedef union

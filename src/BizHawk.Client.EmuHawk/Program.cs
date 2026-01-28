@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 				switch (dispMethod)
 				{
 					case EDispMethod.D3D11:
-						if (OSTailoredCode.IsUnixHost || OSTailoredCode.IsWine)
+						if (OSTailoredCode.IsUnixHost)
 						{
 							// possibly sharing config w/ Windows, assume the user wants the not-slow method (but don't change the config)
 							return TryInitIGL(EDispMethod.OpenGL);

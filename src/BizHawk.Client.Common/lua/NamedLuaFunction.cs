@@ -105,6 +105,18 @@ namespace BizHawk.Client.Common
 					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
+			LineCallback = (line, thing) =>
+			{
+				luaLibraries.IsInInputOrMemoryCallback = true;
+				try
+				{
+					Callback([ line, thing ]);
+				}
+				finally
+				{
+					luaLibraries.IsInInputOrMemoryCallback = false;
+				}
+			};
 		}
 
 		public void DetachFromScript()
@@ -138,6 +150,8 @@ namespace BizHawk.Client.Common
 		public MemoryCallbackDelegate MemCallback { get; }
 
 		public Action<int> RandomCallback { get; }
+
+		public Action<long, long> LineCallback { get; }
 
 		public void Call(string name = null)
 		{
