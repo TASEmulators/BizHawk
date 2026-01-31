@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -645,26 +644,16 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool RightButtonHeld { get; private set; }
 
-		public string UserSettingsSerialized()
-		{
-			var settings = ConfigService.SaveWithType(Settings);
-			return settings;
-		}
+		public InputRollSettings GetUserSettings() => Settings;
 
-		public void LoadSettingsSerialized(string settingsJson)
+		public void LoadSettings(InputRollSettings settings)
 		{
-			var settings = ConfigService.LoadWithType(settingsJson);
-
-			// TODO: don't silently fail, inform the user somehow
-			if (settings is InputRollSettings rollSettings)
-			{
-				_columns = rollSettings.Columns;
-				_columns.ChangedCallback = ColumnChangedCallback;
-				_columns.ColumnsChanged();
-				HorizontalOrientation = rollSettings.HorizontalOrientation;
-				LagFramesToHide = rollSettings.LagFramesToHide;
-				HideWasLagFrames = rollSettings.HideWasLagFrames;
-			}
+			_columns = settings.Columns;
+			_columns.ChangedCallback = ColumnChangedCallback;
+			_columns.ColumnsChanged();
+			HorizontalOrientation = settings.HorizontalOrientation;
+			LagFramesToHide = settings.LagFramesToHide;
+			HideWasLagFrames = settings.HideWasLagFrames;
 		}
 
 		private InputRollSettings Settings => new InputRollSettings

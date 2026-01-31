@@ -666,48 +666,6 @@ namespace BizHawk.Client.EmuHawk
 			DialogController.ShowMessageBox("Integrity Check passed");
 		}
 
-		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
-			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
-			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
-			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
-			SingleClickAxisEditMenuItem.Checked = Settings.SingleClickAxisEdit;
-			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
-			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
-			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
-			CopyIncludesFrameNoMenuItem.Checked = Settings.CopyIncludesFrameNo;
-		}
-
-		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
-		{
-			using var prompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Number of Undo Levels to keep",
-				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString(),
-			};
-
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
-			if (result.IsOk())
-			{
-				int val = 0;
-				try
-				{
-					val = int.Parse(prompt.PromptText);
-				}
-				catch
-				{
-					DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
-				}
-
-				if (val > 0)
-				{
-					UpdateChangeLogMaxSteps(val);
-				}
-			}
-		}
-
 		public void UpdateChangeLogMaxSteps(int value)
 		{
 			Settings.MaxUndoSteps = value;
@@ -724,216 +682,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetRewindStepFastMenuItem_Click(object sender, EventArgs e)
-		{
-			using var prompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Number of frames to go back\nwhen pressing the rewind key\nwhile fast-forwarding:",
-				InitialValue = Settings.RewindStepFast.ToString(),
-			};
-
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
-			if (!result.IsOk())
-			{
-				return;
-			}
-
-			int val = 0;
-			try
-			{
-				val = int.Parse(prompt.PromptText);
-			}
-			catch
-			{
-				DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
-			}
-
-			if (val > 0)
-			{
-				Settings.RewindStepFast = val;
-			}
-		}
-
-		private void SetRewindStepMenuItem_Click(object sender, EventArgs e)
-		{
-			using var prompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Number of frames to go back\nwhen pressing the rewind key:",
-				InitialValue = Settings.RewindStep.ToString(),
-			};
-
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
-			if (!result.IsOk())
-			{
-				return;
-			}
-
-			int val = 0;
-			try
-			{
-				val = int.Parse(prompt.PromptText);
-			}
-			catch
-			{
-				DialogController.ShowMessageBox("Invalid Entry.", "Input Error", EMsgBoxIcon.Error);
-			}
-
-			if (val > 0)
-			{
-				Settings.RewindStep = val;
-			}
-		}
-
 		private void CopyIncludesFrameNoMenuItem_Click(object sender, EventArgs e)
 			=> Settings.CopyIncludesFrameNo = !Settings.CopyIncludesFrameNo;
-
-		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
-		{
-			using var prompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Autosave Interval in seconds\nSet to 0 to disable",
-				InitialValue = (Settings.AutosaveInterval / 1000).ToString(),
-			};
-
-			var result = MainForm.DoWithTempMute(() => prompt.ShowDialogOnScreen());
-			if (result.IsOk())
-			{
-				uint val = uint.Parse(prompt.PromptText) * 1000;
-				Settings.AutosaveInterval = val;
-				if (val > 0)
-				{
-					_autosaveTimer.Interval = (int)val;
-					_autosaveTimer.Start();
-				}
-			}
-		}
-
-		private void AutosaveAsBk2MenuItem_Click(object sender, EventArgs e)
-			=> Settings.AutosaveAsBk2 = !Settings.AutosaveAsBk2;
-
-		private void AutosaveAsBackupFileMenuItem_Click(object sender, EventArgs e)
-			=> Settings.AutosaveAsBackupFile = !Settings.AutosaveAsBackupFile;
-
-		private void BackupPerFileSaveMenuItem_Click(object sender, EventArgs e)
-			=> Settings.BackupPerFileSave = !Settings.BackupPerFileSave;
-
-		private void ApplyPatternToPaintedInputMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			onlyOnAutoFireColumnsToolStripMenuItem.Enabled = applyPatternToPaintedInputToolStripMenuItem.Checked;
-		}
-
-		private void SingleClickAxisEditMenuItem_Click(object sender, EventArgs e)
-			=> Settings.SingleClickAxisEdit = !Settings.SingleClickAxisEdit;
-
-		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.BindMarkersToInput = CurrentTasMovie.BindMarkersToInput = BindMarkersToInputMenuItem.Checked;
-		}
-
-		private void AutoPauseAtEndMenuItem_Click(object sender, EventArgs e)
-			=> Settings.AutoPause = !Settings.AutoPause;
-
-		private void AutoHoldMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			if (autoHoldToolStripMenuItem.Checked)
-			{
-				autoFireToolStripMenuItem.Checked = false;
-				customPatternToolStripMenuItem.Checked = false;
-
-				if (!keepSetPatternsToolStripMenuItem.Checked)
-				{
-					UpdateAutoFire();
-				}
-			}
-		}
-
-		private void AutoFireMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			if (autoFireToolStripMenuItem.Checked)
-			{
-				autoHoldToolStripMenuItem.Checked = false;
-				customPatternToolStripMenuItem.Checked = false;
-
-				if (!keepSetPatternsToolStripMenuItem.Checked)
-				{
-					UpdateAutoFire();
-				}
-			}
-		}
-
-		private void CustomPatternMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			if (customPatternToolStripMenuItem.Checked)
-			{
-				autoHoldToolStripMenuItem.Checked = false;
-				autoFireToolStripMenuItem.Checked = false;
-
-				if (!keepSetPatternsToolStripMenuItem.Checked)
-				{
-					UpdateAutoFire();
-				}
-			}
-		}
-
-		private void SetCustomsMenuItem_Click(object sender, EventArgs e)
-		{
-			// Exceptions in PatternsForm are not caught by the debugger, I have no idea why.
-			// Exceptions in UndoForm are caught, which makes it weirder.
-			var pForm = new PatternsForm(this) { Owner = this };
-			pForm.Show();
-		}
-
-		private void OldControlSchemeForBranchesMenuItem_Click(object sender, EventArgs e)
-			=> Settings.OldControlSchemeForBranches = !Settings.OldControlSchemeForBranches;
-
-		private void LoadBranchOnDoubleClickMenuItem_Click(object sender, EventArgs e)
-			=> Settings.LoadBranchOnDoubleClick = !Settings.LoadBranchOnDoubleClick;
-
-		private void MetaSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			UseOldSavestateManagerMenuItem.Checked = CurrentTasMovie.TasStateManager is ZwinderStateManager;
-			UseOldManagerAsDefaultMenuItem.Checked = Config.Movies.DefaultTasStateManagerSettings is ZwinderStateManagerSettings;
-		}
 
 		private void HeaderMenuItem_Click(object sender, EventArgs e)
 		{
 			using MovieHeaderEditor form = new(CurrentTasMovie, Config)
-			{
-				Owner = this,
-				Location = this.ChildPointToScreen(TasView),
-			};
-			form.ShowDialogOnScreen();
-		}
-
-		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			using GreenzoneSettings form = new(
-				DialogController,
-				CurrentTasMovie.TasStateManager.Settings.Clone(),
-				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
-				false)
-			{
-				Owner = this,
-				Location = this.ChildPointToScreen(TasView),
-			};
-			form.ShowDialogOnScreen();
-		}
-
-		private void UseOldSavestateManagerMenuItem_Click(object sender, EventArgs e)
-		{
-			IStateManagerSettings settings;
-			if (UseOldSavestateManagerMenuItem.Checked)
-				settings = new PagedStateManager.PagedSettings();
-			else
-				settings = new ZwinderStateManagerSettings();
-			using GreenzoneSettings form = new(
-				DialogController,
-				settings,
-				(s, k) => { CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s, k); },
-				false)
 			{
 				Owner = this,
 				Location = this.ChildPointToScreen(TasView),
@@ -965,174 +719,6 @@ namespace BizHawk.Client.EmuHawk
 				Location = this.ChildPointToScreen(TasView),
 			};
 			form.ShowDialogOnScreen();
-		}
-
-		private void DefaultStateSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			using GreenzoneSettings form = new(
-				DialogController,
-				Config.Movies.DefaultTasStateManagerSettings.Clone(),
-				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
-				true)
-			{
-				Owner = this,
-				Location = this.ChildPointToScreen(TasView),
-			};
-			form.ShowDialogOnScreen();
-		}
-
-		private void UseOldManagerAsDefaultMenuItem_Click(object sender, EventArgs e)
-		{
-			IStateManagerSettings settings;
-			if (UseOldManagerAsDefaultMenuItem.Checked)
-				settings = new PagedStateManager.PagedSettings();
-			else
-				settings = new ZwinderStateManagerSettings();
-			using GreenzoneSettings form = new(
-				DialogController,
-				settings,
-				(s, k) => { Config.Movies.DefaultTasStateManagerSettings = s; },
-				true)
-			{
-				Owner = this,
-				Location = this.ChildPointToScreen(TasView),
-			};
-			form.ShowDialogOnScreen();
-		}
-
-		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RotateMenuItem.ShortcutKeyDisplayString = TasView.RotateHotkeyStr;
-		}
-
-		private void HideLagFramesSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			HideLagFrames0.Checked = TasView.LagFramesToHide == 0;
-			HideLagFrames1.Checked = TasView.LagFramesToHide == 1;
-			HideLagFrames2.Checked = TasView.LagFramesToHide == 2;
-			HideLagFrames3.Checked = TasView.LagFramesToHide == 3;
-			hideWasLagFramesToolStripMenuItem.Checked = TasView.HideWasLagFrames;
-		}
-
-		private void IconsMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			DenoteStatesWithIconsToolStripMenuItem.Checked = Settings.DenoteStatesWithIcons;
-			DenoteStatesWithBGColorToolStripMenuItem.Checked = Settings.DenoteStatesWithBGColor;
-			DenoteMarkersWithIconsToolStripMenuItem.Checked = Settings.DenoteMarkersWithIcons;
-			DenoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.DenoteMarkersWithBGColor;
-		}
-
-		private void FollowCursorMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			alwaysScrollToolStripMenuItem.Checked = Settings.FollowCursorAlwaysScroll;
-			scrollToViewToolStripMenuItem.Checked = false;
-			scrollToTopToolStripMenuItem.Checked = false;
-			scrollToBottomToolStripMenuItem.Checked = false;
-			scrollToCenterToolStripMenuItem.Checked = false;
-			if (TasView.ScrollMethod == "near")
-			{
-				scrollToViewToolStripMenuItem.Checked = true;
-			}
-			else if (TasView.ScrollMethod == "top")
-			{
-				scrollToTopToolStripMenuItem.Checked = true;
-			}
-			else if (TasView.ScrollMethod == "bottom")
-			{
-				scrollToBottomToolStripMenuItem.Checked = true;
-			}
-			else
-			{
-				scrollToCenterToolStripMenuItem.Checked = true;
-			}
-		}
-
-		private void RotateMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.HorizontalOrientation = !TasView.HorizontalOrientation;
-		}
-
-		private void HideLagFramesX_Click(object sender, EventArgs e)
-		{
-			TasView.LagFramesToHide = (int)((ToolStripMenuItem)sender).Tag;
-			MaybeFollowCursor();
-			RefreshDialog();
-		}
-
-		private void HideWasLagFramesMenuItem_Click(object sender, EventArgs e)
-			=> TasView.HideWasLagFrames = !TasView.HideWasLagFrames;
-
-		private void AlwaysScrollMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
-		}
-
-		private void ScrollToViewMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "near";
-		}
-
-		private void ScrollToTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "top";
-		}
-
-		private void ScrollToBottomMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "bottom";
-		}
-
-		private void ScrollToCenterMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
-		}
-
-		private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
-			RefreshDialog();
-		}
-
-		private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
-			RefreshDialog();
-		}
-
-		private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
-			RefreshDialog();
-		}
-
-		private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
-			RefreshDialog();
-		}
-
-		private void ColorSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			using TAStudioColorSettingsForm form = new(Palette, p => Settings.Palette = p)
-			{
-				Owner = this,
-				StartPosition = FormStartPosition.Manual,
-				Location = this.ChildPointToScreen(TasView),
-			};
-			form.ShowDialogOnScreen();
-		}
-
-		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
-		{
-			var inputPrompt = new InputPrompt
-			{
-				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Frames per tick:",
-				InitialValue = TasView.ScrollSpeed.ToString(),
-			};
-			if (!this.ShowDialogWithTempMute(inputPrompt).IsOk()) return;
-			TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
-			Settings.ScrollSpeed = TasView.ScrollSpeed;
 		}
 
 		private void SetUpToolStripColumns()
@@ -1384,6 +970,45 @@ namespace BizHawk.Client.EmuHawk
 		private void ForumThreadMenuItem_Click(object sender, EventArgs e)
 		{
 			Util.OpenUrlExternal("https://tasvideos.org/Forum/Topics/13505");
+		}
+
+		private void TAStudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TAStudioSettingsForm settingsForm = new(new()
+				{
+					GeneralClientSettings = Settings,
+					MovieSettings = GetMovieSettings(),
+					CurrentStateManagerSettings = CurrentTasMovie.TasStateManager.Settings,
+					DefaultStateManagerSettings = Config.Movies.DefaultTasStateManagerSettings,
+				},
+				MovieSession.MovieController.Definition,
+				(s) =>
+				{
+					// settings objects are mutated by the settings form, but some still need to be handled
+					TasView.LoadSettings(s.MovieSettings.InputRollSettings);
+					TasView.Font = Settings.TasViewFont;
+					TasView.ScrollSpeed = Settings.ScrollSpeed;
+					TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
+					TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+
+					AxisPatterns = s.MovieSettings.AxisPatterns;
+					BoolPatterns = s.MovieSettings.BoolPatterns;
+					UpdateAutoFire();
+
+					if (CurrentTasMovie.TasStateManager.Settings != s.CurrentStateManagerSettings)
+					{
+						bool keep = DialogController.ShowMessageBox2("Attempt to keep old states?", "Keep old states?");
+						CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s.CurrentStateManagerSettings, keep);
+					}
+					Config.Movies.DefaultTasStateManagerSettings = s.DefaultStateManagerSettings;
+
+					UpdateChangeLogMaxSteps(Settings.MaxUndoSteps);
+					CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
+				}
+			);
+			settingsForm.ShowDialog(this);
+
+			RefreshDialog();
 		}
 	}
 }
