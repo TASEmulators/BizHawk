@@ -78,6 +78,7 @@
 			this.PatternPaintAutoColumnsOnlyRadioButton = new System.Windows.Forms.RadioButton();
 			this.PatternPaintNeverRadioButton = new System.Windows.Forms.RadioButton();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.OldBranchesCheckbox = new System.Windows.Forms.CheckBox();
 			this.BranchDoubleClickCheckbox = new System.Windows.Forms.CheckBox();
 			this.FastRewindNum = new System.Windows.Forms.NumericUpDown();
 			this.label8 = new System.Windows.Forms.Label();
@@ -99,7 +100,6 @@
 			this.AutopauseCheckbox = new System.Windows.Forms.CheckBox();
 			this.SettingsCancelButton = new System.Windows.Forms.Button();
 			this.ApplyButton = new System.Windows.Forms.Button();
-			this.OldBranchesCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
@@ -162,7 +162,7 @@
 			this.label10.AutoSize = true;
 			this.label10.Location = new System.Drawing.Point(3, 188);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(97, 13);
+			this.label10.Size = new System.Drawing.Size(100, 13);
 			this.label10.TabIndex = 104;
 			this.label10.Text = "Lag frames to hide:";
 			// 
@@ -196,7 +196,7 @@
             0,
             0});
 			this.HideLagNum.Name = "HideLagNum";
-			this.HideLagNum.Size = new System.Drawing.Size(50, 20);
+			this.HideLagNum.Size = new System.Drawing.Size(50, 21);
 			this.HideLagNum.TabIndex = 102;
 			// 
 			// MarkerColorCheckbox
@@ -204,7 +204,7 @@
 			this.MarkerColorCheckbox.AutoSize = true;
 			this.MarkerColorCheckbox.Location = new System.Drawing.Point(6, 104);
 			this.MarkerColorCheckbox.Name = "MarkerColorCheckbox";
-			this.MarkerColorCheckbox.Size = new System.Drawing.Size(230, 17);
+			this.MarkerColorCheckbox.Size = new System.Drawing.Size(233, 17);
 			this.MarkerColorCheckbox.TabIndex = 6;
 			this.MarkerColorCheckbox.Text = "Denote markers with color on frame column";
 			this.MarkerColorCheckbox.UseVisualStyleBackColor = true;
@@ -214,7 +214,7 @@
 			this.MarkerIconsCheckbox.AutoSize = true;
 			this.MarkerIconsCheckbox.Location = new System.Drawing.Point(6, 81);
 			this.MarkerIconsCheckbox.Name = "MarkerIconsCheckbox";
-			this.MarkerIconsCheckbox.Size = new System.Drawing.Size(151, 17);
+			this.MarkerIconsCheckbox.Size = new System.Drawing.Size(152, 17);
 			this.MarkerIconsCheckbox.TabIndex = 5;
 			this.MarkerIconsCheckbox.Text = "Denote markers with icons";
 			this.MarkerIconsCheckbox.UseVisualStyleBackColor = true;
@@ -224,7 +224,7 @@
 			this.StateColorCheckbox.AutoSize = true;
 			this.StateColorCheckbox.Location = new System.Drawing.Point(6, 58);
 			this.StateColorCheckbox.Name = "StateColorCheckbox";
-			this.StateColorCheckbox.Size = new System.Drawing.Size(200, 17);
+			this.StateColorCheckbox.Size = new System.Drawing.Size(202, 17);
 			this.StateColorCheckbox.TabIndex = 4;
 			this.StateColorCheckbox.Text = "Denote states with background color";
 			this.StateColorCheckbox.UseVisualStyleBackColor = true;
@@ -234,7 +234,7 @@
 			this.StateIconsCheckbox.AutoSize = true;
 			this.StateIconsCheckbox.Location = new System.Drawing.Point(6, 35);
 			this.StateIconsCheckbox.Name = "StateIconsCheckbox";
-			this.StateIconsCheckbox.Size = new System.Drawing.Size(142, 17);
+			this.StateIconsCheckbox.Size = new System.Drawing.Size(144, 17);
 			this.StateIconsCheckbox.TabIndex = 3;
 			this.StateIconsCheckbox.Text = "Denote states with icons";
 			this.StateIconsCheckbox.UseVisualStyleBackColor = true;
@@ -244,9 +244,9 @@
 			this.HideWasLagCheckbox.AutoSize = true;
 			this.HideWasLagCheckbox.Location = new System.Drawing.Point(6, 210);
 			this.HideWasLagCheckbox.Name = "HideWasLagCheckbox";
-			this.HideWasLagCheckbox.Size = new System.Drawing.Size(121, 17);
+			this.HideWasLagCheckbox.Size = new System.Drawing.Size(130, 17);
 			this.HideWasLagCheckbox.TabIndex = 103;
-			this.HideWasLagCheckbox.Text = "Hide was lag frames";
+			this.HideWasLagCheckbox.Text = "Hide \"was lag\" frames";
 			this.HideWasLagCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// RotateCheckbox
@@ -254,7 +254,7 @@
 			this.RotateCheckbox.AutoSize = true;
 			this.RotateCheckbox.Location = new System.Drawing.Point(6, 164);
 			this.RotateCheckbox.Name = "RotateCheckbox";
-			this.RotateCheckbox.Size = new System.Drawing.Size(100, 17);
+			this.RotateCheckbox.Size = new System.Drawing.Size(103, 17);
 			this.RotateCheckbox.TabIndex = 100;
 			this.RotateCheckbox.Text = "Rotate input roll";
 			this.RotateCheckbox.UseVisualStyleBackColor = true;
@@ -291,7 +291,7 @@
 			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(6, 29);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(139, 13);
+			this.label11.Size = new System.Drawing.Size(142, 13);
 			this.label11.TabIndex = 205;
 			this.label11.Text = "Set to 0 to disable autosave";
 			// 
@@ -300,7 +300,7 @@
 			this.BackupOnSaveCheckbox.AutoSize = true;
 			this.BackupOnSaveCheckbox.Location = new System.Drawing.Point(6, 102);
 			this.BackupOnSaveCheckbox.Name = "BackupOnSaveCheckbox";
-			this.BackupOnSaveCheckbox.Size = new System.Drawing.Size(223, 17);
+			this.BackupOnSaveCheckbox.Size = new System.Drawing.Size(222, 17);
 			this.BackupOnSaveCheckbox.TabIndex = 204;
 			this.BackupOnSaveCheckbox.Text = "When manually saving, also save backup";
 			this.BackupOnSaveCheckbox.UseVisualStyleBackColor = true;
@@ -310,7 +310,7 @@
 			this.AutosaveBackupCheckbox.AutoSize = true;
 			this.AutosaveBackupCheckbox.Location = new System.Drawing.Point(6, 79);
 			this.AutosaveBackupCheckbox.Name = "AutosaveBackupCheckbox";
-			this.AutosaveBackupCheckbox.Size = new System.Drawing.Size(181, 17);
+			this.AutosaveBackupCheckbox.Size = new System.Drawing.Size(182, 17);
 			this.AutosaveBackupCheckbox.TabIndex = 203;
 			this.AutosaveBackupCheckbox.Text = "Save as .backup (no greenzone)";
 			this.AutosaveBackupCheckbox.UseVisualStyleBackColor = true;
@@ -320,7 +320,7 @@
 			this.AutosaveBk2Checkbox.AutoSize = true;
 			this.AutosaveBk2Checkbox.Location = new System.Drawing.Point(6, 56);
 			this.AutosaveBk2Checkbox.Name = "AutosaveBk2Checkbox";
-			this.AutosaveBk2Checkbox.Size = new System.Drawing.Size(89, 17);
+			this.AutosaveBk2Checkbox.Size = new System.Drawing.Size(88, 17);
 			this.AutosaveBk2Checkbox.TabIndex = 202;
 			this.AutosaveBk2Checkbox.Text = "Save as .bk2";
 			this.AutosaveBk2Checkbox.UseVisualStyleBackColor = true;
@@ -330,7 +330,7 @@
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(208, 8);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(47, 13);
+			this.label5.Size = new System.Drawing.Size(46, 13);
 			this.label5.TabIndex = 6;
 			this.label5.Text = "seconds";
 			// 
@@ -339,7 +339,7 @@
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(6, 8);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(105, 13);
+			this.label4.Size = new System.Drawing.Size(109, 13);
 			this.label4.TabIndex = 5;
 			this.label4.Text = "Autosave frequency:";
 			// 
@@ -352,7 +352,7 @@
             0,
             0});
 			this.AutosaveIntervalNum.Name = "AutosaveIntervalNum";
-			this.AutosaveIntervalNum.Size = new System.Drawing.Size(85, 20);
+			this.AutosaveIntervalNum.Size = new System.Drawing.Size(85, 21);
 			this.AutosaveIntervalNum.TabIndex = 201;
 			// 
 			// tabPage4
@@ -377,7 +377,7 @@
 			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(9, 362);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(230, 13);
+			this.label12.Size = new System.Drawing.Size(233, 13);
 			this.label12.TabIndex = 306;
 			this.label12.Text = "Each movie contains its own savestate settings";
 			// 
@@ -442,7 +442,7 @@
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(6, 9);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(112, 13);
+			this.label6.Size = new System.Drawing.Size(117, 13);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "Management strategy:";
 			// 
@@ -500,7 +500,7 @@
             0,
             0});
 			this.CountNum.Name = "CountNum";
-			this.CountNum.Size = new System.Drawing.Size(38, 20);
+			this.CountNum.Size = new System.Drawing.Size(38, 21);
 			this.CountNum.TabIndex = 423;
 			this.CountNum.Value = new decimal(new int[] {
             1,
@@ -524,7 +524,7 @@
             0,
             -2147483648});
 			this.ValueNum.Name = "ValueNum";
-			this.ValueNum.Size = new System.Drawing.Size(51, 20);
+			this.ValueNum.Size = new System.Drawing.Size(51, 21);
 			this.ValueNum.TabIndex = 422;
 			this.ValueNum.Visible = false;
 			this.ValueNum.ValueChanged += new System.EventHandler(this.ValueNum_ValueChanged);
@@ -551,7 +551,7 @@
 			this.LagBox.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.LagBox.Location = new System.Drawing.Point(6, 243);
 			this.LagBox.Name = "LagBox";
-			this.LagBox.Size = new System.Drawing.Size(132, 17);
+			this.LagBox.Size = new System.Drawing.Size(135, 17);
 			this.LagBox.TabIndex = 426;
 			this.LagBox.Text = "Account for lag frames";
 			this.LagBox.UseVisualStyleBackColor = true;
@@ -624,7 +624,7 @@
 			this.PatternCustomRadioButton.AutoSize = true;
 			this.PatternCustomRadioButton.Location = new System.Drawing.Point(6, 68);
 			this.PatternCustomRadioButton.Name = "PatternCustomRadioButton";
-			this.PatternCustomRadioButton.Size = new System.Drawing.Size(60, 17);
+			this.PatternCustomRadioButton.Size = new System.Drawing.Size(61, 17);
 			this.PatternCustomRadioButton.TabIndex = 412;
 			this.PatternCustomRadioButton.TabStop = true;
 			this.PatternCustomRadioButton.Text = "Custom";
@@ -636,7 +636,7 @@
 			this.PatternHoldRadioButton.AutoSize = true;
 			this.PatternHoldRadioButton.Location = new System.Drawing.Point(6, 22);
 			this.PatternHoldRadioButton.Name = "PatternHoldRadioButton";
-			this.PatternHoldRadioButton.Size = new System.Drawing.Size(47, 17);
+			this.PatternHoldRadioButton.Size = new System.Drawing.Size(46, 17);
 			this.PatternHoldRadioButton.TabIndex = 410;
 			this.PatternHoldRadioButton.TabStop = true;
 			this.PatternHoldRadioButton.Text = "Hold";
@@ -647,7 +647,7 @@
 			this.PatternAutoFireRadioButton.AutoSize = true;
 			this.PatternAutoFireRadioButton.Location = new System.Drawing.Point(6, 45);
 			this.PatternAutoFireRadioButton.Name = "PatternAutoFireRadioButton";
-			this.PatternAutoFireRadioButton.Size = new System.Drawing.Size(67, 17);
+			this.PatternAutoFireRadioButton.Size = new System.Drawing.Size(70, 17);
 			this.PatternAutoFireRadioButton.TabIndex = 411;
 			this.PatternAutoFireRadioButton.TabStop = true;
 			this.PatternAutoFireRadioButton.Text = "Auto-Fire";
@@ -670,7 +670,7 @@
 			this.PatternPaintAlwaysRadioButton.AutoSize = true;
 			this.PatternPaintAlwaysRadioButton.Location = new System.Drawing.Point(6, 65);
 			this.PatternPaintAlwaysRadioButton.Name = "PatternPaintAlwaysRadioButton";
-			this.PatternPaintAlwaysRadioButton.Size = new System.Drawing.Size(58, 17);
+			this.PatternPaintAlwaysRadioButton.Size = new System.Drawing.Size(59, 17);
 			this.PatternPaintAlwaysRadioButton.TabIndex = 402;
 			this.PatternPaintAlwaysRadioButton.TabStop = true;
 			this.PatternPaintAlwaysRadioButton.Text = "Always";
@@ -681,7 +681,7 @@
 			this.PatternPaintAutoColumnsOnlyRadioButton.AutoSize = true;
 			this.PatternPaintAutoColumnsOnlyRadioButton.Location = new System.Drawing.Point(6, 42);
 			this.PatternPaintAutoColumnsOnlyRadioButton.Name = "PatternPaintAutoColumnsOnlyRadioButton";
-			this.PatternPaintAutoColumnsOnlyRadioButton.Size = new System.Drawing.Size(131, 17);
+			this.PatternPaintAutoColumnsOnlyRadioButton.Size = new System.Drawing.Size(134, 17);
 			this.PatternPaintAutoColumnsOnlyRadioButton.TabIndex = 401;
 			this.PatternPaintAutoColumnsOnlyRadioButton.TabStop = true;
 			this.PatternPaintAutoColumnsOnlyRadioButton.Text = "Auto-Fire columns only";
@@ -723,26 +723,36 @@
 			this.tabPage3.Text = "Misc";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
+			// OldBranchesCheckbox
+			// 
+			this.OldBranchesCheckbox.AutoSize = true;
+			this.OldBranchesCheckbox.Location = new System.Drawing.Point(12, 346);
+			this.OldBranchesCheckbox.Name = "OldBranchesCheckbox";
+			this.OldBranchesCheckbox.Size = new System.Drawing.Size(181, 17);
+			this.OldBranchesCheckbox.TabIndex = 518;
+			this.OldBranchesCheckbox.Text = "Old control scheme for branches";
+			this.OldBranchesCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// BranchDoubleClickCheckbox
 			// 
 			this.BranchDoubleClickCheckbox.AutoSize = true;
 			this.BranchDoubleClickCheckbox.Location = new System.Drawing.Point(12, 323);
 			this.BranchDoubleClickCheckbox.Name = "BranchDoubleClickCheckbox";
-			this.BranchDoubleClickCheckbox.Size = new System.Drawing.Size(174, 17);
+			this.BranchDoubleClickCheckbox.Size = new System.Drawing.Size(171, 17);
 			this.BranchDoubleClickCheckbox.TabIndex = 517;
 			this.BranchDoubleClickCheckbox.Text = "Load branch by double clicking";
 			this.BranchDoubleClickCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// FastRewindNum
 			// 
-			this.FastRewindNum.Location = new System.Drawing.Point(102, 202);
+			this.FastRewindNum.Location = new System.Drawing.Point(116, 200);
 			this.FastRewindNum.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
 			this.FastRewindNum.Name = "FastRewindNum";
-			this.FastRewindNum.Size = new System.Drawing.Size(44, 20);
+			this.FastRewindNum.Size = new System.Drawing.Size(67, 21);
 			this.FastRewindNum.TabIndex = 512;
 			this.FastRewindNum.Value = new decimal(new int[] {
             1,
@@ -755,20 +765,20 @@
 			this.label8.AutoSize = true;
 			this.label8.Location = new System.Drawing.Point(9, 204);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(87, 13);
+			this.label8.Size = new System.Drawing.Size(91, 13);
 			this.label8.TabIndex = 12;
 			this.label8.Text = "Fast rewind step:";
 			// 
 			// RewindNum
 			// 
-			this.RewindNum.Location = new System.Drawing.Point(102, 176);
+			this.RewindNum.Location = new System.Drawing.Point(116, 175);
 			this.RewindNum.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
 			this.RewindNum.Name = "RewindNum";
-			this.RewindNum.Size = new System.Drawing.Size(44, 20);
+			this.RewindNum.Size = new System.Drawing.Size(67, 21);
 			this.RewindNum.TabIndex = 511;
 			this.RewindNum.Value = new decimal(new int[] {
             1,
@@ -781,7 +791,7 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(9, 178);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(69, 13);
+			this.label7.Size = new System.Drawing.Size(70, 13);
 			this.label7.TabIndex = 12;
 			this.label7.Text = "Rewind step:";
 			// 
@@ -803,7 +813,7 @@
 			this.ScrollToCenterRadio.AutoSize = true;
 			this.ScrollToCenterRadio.Location = new System.Drawing.Point(6, 88);
 			this.ScrollToCenterRadio.Name = "ScrollToCenterRadio";
-			this.ScrollToCenterRadio.Size = new System.Drawing.Size(94, 17);
+			this.ScrollToCenterRadio.Size = new System.Drawing.Size(96, 17);
 			this.ScrollToCenterRadio.TabIndex = 504;
 			this.ScrollToCenterRadio.TabStop = true;
 			this.ScrollToCenterRadio.Text = "scroll to center";
@@ -814,7 +824,7 @@
 			this.ScrollToBottomRadio.AutoSize = true;
 			this.ScrollToBottomRadio.Location = new System.Drawing.Point(6, 65);
 			this.ScrollToBottomRadio.Name = "ScrollToBottomRadio";
-			this.ScrollToBottomRadio.Size = new System.Drawing.Size(96, 17);
+			this.ScrollToBottomRadio.Size = new System.Drawing.Size(99, 17);
 			this.ScrollToBottomRadio.TabIndex = 503;
 			this.ScrollToBottomRadio.TabStop = true;
 			this.ScrollToBottomRadio.Text = "scroll to bottom";
@@ -825,7 +835,7 @@
 			this.ScrollToTopRadio.AutoSize = true;
 			this.ScrollToTopRadio.Location = new System.Drawing.Point(6, 42);
 			this.ScrollToTopRadio.Name = "ScrollToTopRadio";
-			this.ScrollToTopRadio.Size = new System.Drawing.Size(79, 17);
+			this.ScrollToTopRadio.Size = new System.Drawing.Size(81, 17);
 			this.ScrollToTopRadio.TabIndex = 502;
 			this.ScrollToTopRadio.TabStop = true;
 			this.ScrollToTopRadio.Text = "scroll to top";
@@ -836,7 +846,7 @@
 			this.ScrollToViewRadio.AutoSize = true;
 			this.ScrollToViewRadio.Location = new System.Drawing.Point(6, 19);
 			this.ScrollToViewRadio.Name = "ScrollToViewRadio";
-			this.ScrollToViewRadio.Size = new System.Drawing.Size(86, 17);
+			this.ScrollToViewRadio.Size = new System.Drawing.Size(87, 17);
 			this.ScrollToViewRadio.TabIndex = 501;
 			this.ScrollToViewRadio.TabStop = true;
 			this.ScrollToViewRadio.Text = "scroll to view";
@@ -847,7 +857,7 @@
 			this.AlwaysScrollCheckbox.AutoSize = true;
 			this.AlwaysScrollCheckbox.Location = new System.Drawing.Point(9, 5);
 			this.AlwaysScrollCheckbox.Name = "AlwaysScrollCheckbox";
-			this.AlwaysScrollCheckbox.Size = new System.Drawing.Size(231, 17);
+			this.AlwaysScrollCheckbox.Size = new System.Drawing.Size(238, 17);
 			this.AlwaysScrollCheckbox.TabIndex = 500;
 			this.AlwaysScrollCheckbox.Text = "When following cursor, scroll at every frame";
 			this.AlwaysScrollCheckbox.UseVisualStyleBackColor = true;
@@ -857,7 +867,7 @@
 			this.BindMarkersCheckbox.AutoSize = true;
 			this.BindMarkersCheckbox.Location = new System.Drawing.Point(12, 254);
 			this.BindMarkersCheckbox.Name = "BindMarkersCheckbox";
-			this.BindMarkersCheckbox.Size = new System.Drawing.Size(125, 17);
+			this.BindMarkersCheckbox.Size = new System.Drawing.Size(127, 17);
 			this.BindMarkersCheckbox.TabIndex = 514;
 			this.BindMarkersCheckbox.Text = "Bind markers to input";
 			this.BindMarkersCheckbox.UseVisualStyleBackColor = true;
@@ -867,14 +877,14 @@
 			this.IncludeFrameNumberCheckbox.AutoSize = true;
 			this.IncludeFrameNumberCheckbox.Location = new System.Drawing.Point(12, 277);
 			this.IncludeFrameNumberCheckbox.Name = "IncludeFrameNumberCheckbox";
-			this.IncludeFrameNumberCheckbox.Size = new System.Drawing.Size(228, 17);
+			this.IncludeFrameNumberCheckbox.Size = new System.Drawing.Size(232, 17);
 			this.IncludeFrameNumberCheckbox.TabIndex = 515;
 			this.IncludeFrameNumberCheckbox.Text = "Include frame numbers when copying input";
 			this.IncludeFrameNumberCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// UndoCountNum
 			// 
-			this.UndoCountNum.Location = new System.Drawing.Point(106, 228);
+			this.UndoCountNum.Location = new System.Drawing.Point(116, 227);
 			this.UndoCountNum.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -886,7 +896,7 @@
             0,
             0});
 			this.UndoCountNum.Name = "UndoCountNum";
-			this.UndoCountNum.Size = new System.Drawing.Size(68, 20);
+			this.UndoCountNum.Size = new System.Drawing.Size(67, 21);
 			this.UndoCountNum.TabIndex = 513;
 			this.UndoCountNum.Value = new decimal(new int[] {
             10,
@@ -899,16 +909,16 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(9, 230);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(90, 13);
+			this.label1.Size = new System.Drawing.Size(91, 13);
 			this.label1.TabIndex = 7;
 			this.label1.Text = "Max Undo Count:";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(180, 152);
+			this.label3.Location = new System.Drawing.Point(189, 152);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(76, 13);
+			this.label3.Size = new System.Drawing.Size(78, 13);
 			this.label3.TabIndex = 6;
 			this.label3.Text = "frames per tick";
 			// 
@@ -916,7 +926,7 @@
 			// 
 			this.ScrollSpeedNum.Location = new System.Drawing.Point(116, 150);
 			this.ScrollSpeedNum.Name = "ScrollSpeedNum";
-			this.ScrollSpeedNum.Size = new System.Drawing.Size(58, 20);
+			this.ScrollSpeedNum.Size = new System.Drawing.Size(67, 21);
 			this.ScrollSpeedNum.TabIndex = 510;
 			// 
 			// label2
@@ -933,7 +943,7 @@
 			this.AutopauseCheckbox.AutoSize = true;
 			this.AutopauseCheckbox.Location = new System.Drawing.Point(12, 300);
 			this.AutopauseCheckbox.Name = "AutopauseCheckbox";
-			this.AutopauseCheckbox.Size = new System.Drawing.Size(196, 17);
+			this.AutopauseCheckbox.Size = new System.Drawing.Size(200, 17);
 			this.AutopauseCheckbox.TabIndex = 516;
 			this.AutopauseCheckbox.Text = "Automatically pause at end of movie";
 			this.AutopauseCheckbox.UseVisualStyleBackColor = true;
@@ -959,16 +969,6 @@
 			this.ApplyButton.Text = "Apply";
 			this.ApplyButton.UseVisualStyleBackColor = true;
 			this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
-			// 
-			// OldBranchesCheckbox
-			// 
-			this.OldBranchesCheckbox.AutoSize = true;
-			this.OldBranchesCheckbox.Location = new System.Drawing.Point(12, 346);
-			this.OldBranchesCheckbox.Name = "OldBranchesCheckbox";
-			this.OldBranchesCheckbox.Size = new System.Drawing.Size(179, 17);
-			this.OldBranchesCheckbox.TabIndex = 518;
-			this.OldBranchesCheckbox.Text = "Old control scheme for branches";
-			this.OldBranchesCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// TAStudioSettingsForm
 			// 
