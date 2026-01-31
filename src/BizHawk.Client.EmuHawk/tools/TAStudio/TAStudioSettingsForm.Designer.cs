@@ -302,7 +302,7 @@
 			this.BackupOnSaveCheckbox.Name = "BackupOnSaveCheckbox";
 			this.BackupOnSaveCheckbox.Size = new System.Drawing.Size(222, 17);
 			this.BackupOnSaveCheckbox.TabIndex = 204;
-			this.BackupOnSaveCheckbox.Text = "When manually saving, also save backup";
+			this.BackupOnSaveCheckbox.Text = "When manually saving, also save .backup";
 			this.BackupOnSaveCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// AutosaveBackupCheckbox
