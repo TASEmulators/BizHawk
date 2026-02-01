@@ -205,6 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
+			TasView.QueryShouldSelectCell += TasView_QueryShouldSelect;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 
 			TasView.MouseLeave += TAStudio_MouseLeave;

@@ -425,6 +425,12 @@ namespace BizHawk.Client.EmuHawk
 		public event QueryFrameLagHandler QueryFrameLag;
 
 		/// <summary>
+		/// Fires when a cell that can be selected is clicked. Return null to use default selection logic.
+		/// </summary>
+		[Category("Mouse")]
+		public event QueryShouldSelectCellHandler QueryShouldSelectCell;
+
+		/// <summary>
 		/// Fires when the mouse moves from one cell to another (including column header cells)
 		/// </summary>
 		[Category("Mouse")]
@@ -500,6 +506,11 @@ namespace BizHawk.Client.EmuHawk
 		/// Check if a given frame is a lag frame
 		/// </summary>
 		public delegate bool QueryFrameLagHandler(int index, bool hideWasLag);
+
+		/// <summary>
+		/// Check if clicking the current cell should select it.
+		/// </summary>
+		public delegate bool? QueryShouldSelectCellHandler(MouseButtons button);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
@@ -1104,7 +1115,6 @@ namespace BizHawk.Client.EmuHawk
 			base.OnMouseLeave(e);
 		}
 
-		// TODO add query callback of whether to select the cell or not
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
@@ -1129,17 +1139,37 @@ namespace BizHawk.Client.EmuHawk
 				{
 					RightButtonHeld = true;
 				}
+
+				// In the case that we have a context menu already open, we must manually update the CurrentCell as MouseMove isn't triggered while it is open.
+				if (AllowRightClickSelection && CurrentCell == null)
+					OnMouseMove(e);
+			}
+
+			bool shouldSelect = false;
+			bool useDefaultSelection = true;
+			if (IsHoveringOnDataCell)
+			{
+				if (QueryShouldSelectCell != null)
+				{
+					bool? result = QueryShouldSelectCell(e.Button);
+					shouldSelect = result != false;
+					useDefaultSelection = result == null;
+				}
+				else
+				{
+					shouldSelect = true;
+				}
 			}
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (IsHoveringOnDataCell)
+				if (shouldSelect)
 				{
 					if (ModifierKeys == Keys.Alt)
 					{
 						// do marker drag here
 					}
-					else if (ModifierKeys is Keys.Shift && CurrentCell.Column! is { Type: ColumnType.Text } col)
+					else if (ModifierKeys is Keys.Shift && (!useDefaultSelection || CurrentCell.Column!.Type is ColumnType.Text))
 					{
 						if (_selectedItems.Count is not 0)
 						{
@@ -1171,7 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 											additionEndExcl = targetRow + 1;
 										}
 									}
-									for (var i = additionStart; i < additionEndExcl; i++) SelectCell(new() { RowIndex = i, Column = col });
+									for (var i = additionStart; i < additionEndExcl; i++) SelectCell(new() { RowIndex = i, Column = CurrentCell.Column });
 								}
 							}
 							else
@@ -1184,7 +1214,7 @@ namespace BizHawk.Client.EmuHawk
 							SelectCell(CurrentCell);
 						}
 					}
-					else if (ModifierKeys is Keys.Control && CurrentCell.Column!.Type is ColumnType.Text)
+					else if (ModifierKeys is Keys.Control && (!useDefaultSelection || CurrentCell.Column!.Type is ColumnType.Text))
 					{
 						SelectCell(CurrentCell, toggle: true);
 					}
@@ -1202,11 +1232,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AllowRightClickSelection && e.Button == MouseButtons.Right)
 			{
-				// In the case that we have a context menu already open, we must manually update the CurrentCell as MouseMove isn't triggered while it is open.
-				if (CurrentCell == null)
-					OnMouseMove(e);
-
-				if (!IsHoveringOnColumnCell)
+				if (shouldSelect)
 				{
 					// If this cell is not currently selected, clear and select
 					if (!_selectedItems.Contains(CurrentCell))

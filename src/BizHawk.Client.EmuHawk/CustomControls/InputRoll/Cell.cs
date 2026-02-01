@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using System.Diagnostics;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -106,7 +105,8 @@ namespace BizHawk.Client.EmuHawk
 			var i = _list.BinarySearch(item);
 			if (i >= 0)
 			{
-				Debug.Assert(false, $"{nameof(CellList)}'s distinctness invariant was almost broken! CellList.Add({(item is null ? "null" : item.ToString())})");
+				// We can end up adding cells that are already selected pretty easily, by combining Alt multi-selection with Shift range-selection.
+				// System.Diagnostics.Debug.Assert(false, $"{nameof(CellList)}'s distinctness invariant was almost broken! CellList.Add({(item is null ? "null" : item.ToString())})");
 				return;
 			}
 			_list.Insert(~i, item);
