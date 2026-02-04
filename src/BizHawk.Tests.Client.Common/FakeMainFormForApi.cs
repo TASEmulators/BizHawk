@@ -27,7 +27,7 @@ namespace BizHawk.Tests.Client.Common
 
 		public bool PauseAvi { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 		public int MaxFutureFrames { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public Func<int, bool> PreFutureFrameCallback { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public ShowFutureCallback PreFutureFrameCallback { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 #pragma warning disable CS0067 // Events are never used
 		public event BeforeQuickLoadEventHandler? QuicksaveLoad;

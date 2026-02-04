@@ -219,8 +219,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ShowFuture(Func<int, bool> preFrameCallback, int maxFrames)
+		public void ShowFuture(ShowFutureCallback/*?*/ preFrameCallback, short maxFrames)
 		{
+			if (maxFrames < 1 && preFrameCallback != null)
+			{
+				_logCallback($"Invalid number of future frames ({maxFrames}); number must be positive.");
+				return;
+			}
+
 			_mainForm.PreFutureFrameCallback = preFrameCallback;
 			_mainForm.MaxFutureFrames = maxFrames;
 		}

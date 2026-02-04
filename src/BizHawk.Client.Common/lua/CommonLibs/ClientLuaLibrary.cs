@@ -286,11 +286,17 @@ namespace BizHawk.Client.Common
 				"Unregister the callback with event.unregister____ to disable future frame display. " +
 				"No more than `maxFrames` future frames will be emulated. Useful to avoid freezing " +
 				"the client UI in case of accidentally never returning true from the callback.")]
-		public string ShowFuture(LuaFunction luaf, int maxFrames, string name = null)
+		public string ShowFuture(LuaFunction luaf, long maxFrames, string name = null)
 		{
+			if (maxFrames < 1 || maxFrames > short.MaxValue)
+			{
+				Log($"Invalid number of future frames ({maxFrames}); number must be positive and less than 2^15.");
+				return "";
+			}
+
 			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_FUTURE, prohibitedApis: ApiGroup.PROHIBITED_MID_FRAME, name: name);
-			Func<int, bool> FutureCallback = (f) => nlf.Call(f) is [ bool r ] ? r : false;
-			APIs.EmuClient.ShowFuture(FutureCallback, maxFrames);
+			ShowFutureCallback FutureCallback = (f) => nlf.Call(f) is [ bool r ] ? r : false;
+			APIs.EmuClient.ShowFuture(FutureCallback, (short)maxFrames);
 			nlf.OnRemove += () => APIs.EmuClient.ShowFuture(null, 0);
 			return nlf.GuidStr;
 		}
