@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -87,6 +88,11 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
+		[OptionalService]
+		private IDebuggable _maybeDebuggableCore { get; set; }
+
+		private IMemoryCallbackSystem/*?*/ MemoryCallbacks = null;
+
 		private readonly int _fontWidth;
 		private readonly int _fontHeight;
 
@@ -154,6 +160,7 @@ namespace BizHawk.Client.EmuHawk
 		private SolidBrush _freezeHighlightBrush;
 		private SolidBrush _highlightBrush;
 		private SolidBrush _secondaryHighlightBrush;
+		private SolidBrush _heatmapHighlightBrush;
 
 		private string _windowTitle = "Hex Editor";
 
@@ -270,10 +277,48 @@ namespace BizHawk.Client.EmuHawk
 				ResetScrollBar();
 			}
 
+			MemoryCallbacks?.Remove(MemReadCallback);
+			RerentHeatmap(_domain.Size);
+			MemoryCallbacks = _maybeDebuggableCore?.MemoryCallbacksAvailable() is true
+				? _maybeDebuggableCore.MemoryCallbacks
+				: null;
+			MemoryCallbacks?.Add(new MemoryCallback(
+				scope: MemoryDomains.HasSystemBus
+					? MemoryDomains.SystemBus.Name
+					: MemoryCallbacks.AvailableScopes[0],
+				MemoryCallbackType.Read,
+				name: "Hex Editor heatmap hook",
+				MemReadCallback,
+				address: null,
+				mask: null));
+
 			SetDataSize(DataSize);
 			SetHeader();
 
 			GeneralUpdate();
+		}
+
+		private ushort[]/*?*/ _heatmap = null;
+
+		private ushort _heatmapTimestamp = 0;
+
+		/// <remarks><see href="https://github.com/TASEmulators/BizHawk/wiki/C%23-and-.NET-docs-supplement#allocation-limits"/></remarks>
+		private const uint MAX_ARRAY_INDEX = int.MaxValue - 1;
+
+		private void RerentHeatmap(long size)
+		{
+			if (_heatmap is not null) ArrayPool<ushort>.Shared.Return(_heatmap, clearArray: false);
+			_heatmap = size - 1L <= MAX_ARRAY_INDEX
+				? ArrayPool<ushort>.Shared.Rent((int) size)
+				: null;
+			_heatmapTimestamp = 0;
+		}
+
+		private uint? MemReadCallback(uint address, uint value, uint flags)
+		{
+			if (_heatmap is null || _heatmap.Length <= address) return null;
+			_heatmap[address] = _heatmapTimestamp++;
+			return null;
 		}
 
 		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, WatchSize size)
@@ -528,6 +573,7 @@ namespace BizHawk.Client.EmuHawk
 			_freezeHighlightBrush = new SolidBrush(Colors.HighlightFreeze);
 			_highlightBrush = new SolidBrush(Colors.Highlight);
 			_secondaryHighlightBrush = new SolidBrush(Color.FromArgb(0x44, Colors.Highlight));
+			_heatmapHighlightBrush = _secondaryHighlightBrush.GetMutableCopy();
 		}
 
 		private void CloseHexFind()
@@ -1989,6 +2035,42 @@ namespace BizHawk.Client.EmuHawk
 						e.Graphics.FillRectangle(_freezeBrush, rect);
 						e.Graphics.DrawRectangle(_blackPen, rect);
 					}
+				}
+			}
+
+			for (var i = 0; i < _rowsVisible; i++)
+			{
+				var row = HexScrollBar.Value + (long) i;
+				var baseAddr = row << 4;
+				if (_heatmap.Length < baseAddr + 16) break; //TODO off-by-one here? not sure if `<` or `<=`
+				for (var j = 0; j < 16; j += DataSize)
+				{
+					var address = unchecked((int) (baseAddr + j));
+					var heatRaw = DataSize switch
+					{
+						4 => Math.Max(
+							Math.Max(_heatmap[address], _heatmap[address + 1]),
+							Math.Max(_heatmap[address + 2], _heatmap[address + 3])),
+						2 => Math.Max(_heatmap[address], _heatmap[address + 1]),
+						_ => unchecked((int) _heatmap[address]),
+					};
+					// questionable math alert
+					const int TIMESTAMP_WRAP_COUNT = ushort.MaxValue + 1;
+					var heat = (_heatmapTimestamp - heatRaw) % TIMESTAMP_WRAP_COUNT;
+					var heatScaled = unchecked((byte) (heat * 255.0f / TIMESTAMP_WRAP_COUNT));
+
+					var point = GetAddressCoordinates(address);
+					var textX = (int)GetTextX(address);
+					var textPoint = new Point(textX, point.Y);
+
+					var rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + 2, _fontHeight));
+					var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
+
+					_heatmapHighlightBrush.Color = Color.FromArgb(0xFF - heatScaled, Colors.Highlight);
+					e.Graphics.FillRectangle(_secondaryHighlightBrush, rect);
+					e.Graphics.FillRectangle(_secondaryHighlightBrush, textRect);
+
+					e.Graphics.DrawRectangle(_blackPen, rect);
 				}
 			}
 
