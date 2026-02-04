@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 		/// When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displaed.
 		/// <br/>Pass null to disable future frame display.</param>
 		/// <param name="maxFrames">The maximum number of future frames to emulate. Useful to avoid freezing the client UI in case of accidentally never returning true from the callback.</param>
-		void ShowFuture(Func<int, bool> preFrameCallback, int maxFrames);
+		void ShowFuture(ShowFutureCallback preFrameCallback, int maxFrames);
 
 		void SpeedMode(int percent);
 

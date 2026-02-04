@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		bool PauseAvi { get; set; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		public Func<int, bool>/*?*/ PreFutureFrameCallback { get; set; }
+		public ShowFutureCallback/*?*/ PreFutureFrameCallback { get; set; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void ClearHolds();
