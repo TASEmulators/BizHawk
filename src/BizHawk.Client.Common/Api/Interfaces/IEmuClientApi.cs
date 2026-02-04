@@ -154,6 +154,10 @@ namespace BizHawk.Client.Common
 
 		Point TransformPoint(Point point);
 
+		/// <summary>
+		/// Unpauses the emulator. Note that the user can pause again before the next frame, either with the pause key or by releasing frame advance.
+		/// If you wish to force emulation to continue, consider using <see cref="DoFrameAdvance"/> instead.
+		/// </summary>
 		void Unpause();
 
 		void UnpauseAv();
