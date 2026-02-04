@@ -304,7 +304,12 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("client.unpause( );")]
-		[LuaMethod("unpause", "Unpauses the emulator")]
+		[LuaMethod(
+			"unpause",
+			"Unpauses the emulator. Note that the user can pause again before the next frame,"
+				+ " either with the pause key or by releasing frame advance."
+				+ " If you want to force emulation to continue, put this and emu.yield (not frameadvance)"
+				+ " inside a loop that runs until the desired frame.")]
 		public void Unpause()
 			=> APIs.EmuClient.Unpause();
 
