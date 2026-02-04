@@ -1186,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public event StateSavedEventHandler SavestateSaved;
 
-		public Func<int, bool>/*?*/ PreFutureFrameCallback { get; set; }
+		public ShowFutureCallback/*?*/ PreFutureFrameCallback { get; set; }
 
 		public int MaxFutureFrames { get; set; }
 

@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 
 		public Action InputCallback { get; }
 
-		public Func<int, bool> FutureCallback { get; }
+		public ShowFutureCallback FutureCallback { get; }
 
 		public MemoryCallbackDelegate MemCallback { get; }
 

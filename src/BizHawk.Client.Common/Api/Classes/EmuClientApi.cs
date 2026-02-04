@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ShowFuture(Func<int, bool> preFrameCallback, int maxFrames)
+		public void ShowFuture(ShowFutureCallback preFrameCallback, int maxFrames)
 		{
 			_mainForm.PreFutureFrameCallback = preFrameCallback;
 			_mainForm.MaxFutureFrames = maxFrames;
