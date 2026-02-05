@@ -7,10 +7,8 @@ using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class ConsoleLuaLibrary : LuaLibraryBase
+	public sealed class ConsoleLuaLibrary : LuaLibraryBase, IPrintingLibrary
 	{
-		public Lazy<string> AllAPINames { get; set; }
-
 		public ToolManager Tools { get; set; }
 
 		public ConsoleLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
@@ -27,11 +25,6 @@ namespace BizHawk.Client.EmuHawk
 				Tools.LuaConsole.ClearOutputWindow();
 			}
 		}
-
-		[LuaMethodExample("local stconget = console.getluafunctionslist( );")]
-		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
-		public string GetLuaFunctionsList()
-			=> AllAPINames.Value;
 
 		[LuaMethodExample("console.log( \"New log.\" );")]
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
