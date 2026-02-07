@@ -188,11 +188,10 @@ namespace BizHawk.Client.EmuHawk
 				_gameInfoForm.Show();
 			};
 			raDropDownItems.Add(viewGameInfoItem);
-#if false
 			var viewCheevoListItem = new ToolStripMenuItem("View Achievement List");
 			viewCheevoListItem.Click += (_, _) =>
 			{
-				_cheevoListForm.OnFrameAdvance(HardcoreMode, true);
+				_cheevoListForm.OnFrameAdvance(HardcoreMode);
 				_cheevoListForm.Show();
 			};
 			raDropDownItems.Add(viewCheevoListItem);
@@ -200,11 +199,10 @@ namespace BizHawk.Client.EmuHawk
 			var viewLboardListItem = new ToolStripMenuItem("View Leaderboard List");
 			viewLboardListItem.Click += (_, _) =>
 			{
-				_lboardListForm.OnFrameAdvance(true);
+				_lboardListForm.OnFrameAdvance();
 				_lboardListForm.Show();
 			};
 			raDropDownItems.Add(viewLboardListItem);
-#endif
 		}
 
 		protected override void HandleHardcoreModeDisable(string reason)
@@ -266,10 +264,8 @@ namespace BizHawk.Client.EmuHawk
 			_runtime = IntPtr.Zero;
 			Stop();
 			_gameInfoForm.Dispose();
-#if false
 			_cheevoListForm.Dispose();
 			_lboardListForm.Dispose();
-#endif
 			_mainForm.QuicksaveLoad -= QuickLoadCallback;
 		}
 
@@ -454,10 +450,8 @@ namespace BizHawk.Client.EmuHawk
 			_lib.rc_runtime_validate_addresses(_runtime, _eventcb, _validatecb);
 
 			_gameInfoForm.Restart(_gameData.Title, _gameData.TotalCheevoPoints(HardcoreMode), CurrentRichPresence ?? "N/A");
-#if false
-			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress);
+			_cheevoListForm.Restart(_gameData.GameID == 0 ? Array.Empty<Cheevo>() : _gameData.CheevoEnumerable, GetCheevoProgress, () => HardcoreMode);
 			_lboardListForm.Restart(_gameData.GameID == 0 ? Array.Empty<LBoard>() : _gameData.LBoardEnumerable);
-#endif
 
 			Update();
 
@@ -705,17 +699,15 @@ namespace BizHawk.Client.EmuHawk
 					CurrentLboard is null ? "N/A" : $"{CurrentLboard.Description} ({CurrentLboard.Score})",
 					CurrentRichPresence ?? "N/A");
 			}
-#if false
-			if (_cheevoListForm.IsShown)
+			if (_cheevoListForm.Visible)
 			{
 				_cheevoListForm.OnFrameAdvance(HardcoreMode);
 			}
 
-			if (_lboardListForm.IsShown)
+			if (_lboardListForm.Visible)
 			{
 				_lboardListForm.OnFrameAdvance();
 			}
-#endif
 		}
 	}
 }
