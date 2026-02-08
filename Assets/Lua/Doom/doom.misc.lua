@@ -414,8 +414,25 @@ function settings_read()
 		return
 	end
 	
-	Angle = Config.Angle
+	-- ANGLE TYPE
+	Angle = Config.Angle or AngleType.BYTE
 	
+	-- MAP STATE
+	if not Config.Zoom
+	or not Config.PanX
+	or not Config.PanY
+	or Config.Follow == nil
+	then
+		reset_view()
+	end
+	Zoom   = Config.Zoom   or 1
+	Pan.x  = Config.PanX   or 0
+	Pan.y  = Config.PanY   or 0
+	Follow = Config.Follow or false
+	Hilite = Config.Hilite or false
+	
+	-- TRACKED ENTITIES
+	if not Config.tracked then return end
 	for _,type in pairs(TrackedType) do
 		local entity   = Tracked[type]
 		local source   = Config.tracked[entity.Name]
@@ -454,12 +471,23 @@ end
 function settings_write()
 	local file, err = io.open(SETTINGS_FILENAME, "w")
 	if file then
+		-- ANGLE TYPE
 		file:write("-- available angle types:\n")
 		for k,v in pairs(AngleType) do
 			file:write(string.format("-- %5d (%s)\n", v, k))
 		end
 		file:write("Angle = " .. Angle .. "\n")
+		file:write("\n")
 		
+		-- MAP STATE
+		file:write("Zoom = "   ..          Zoom    .. "\n")
+		file:write("PanX = "   ..          Pan.x   .. "\n")
+		file:write("PanY = "   ..          Pan.y   .. "\n")
+		file:write("Follow = " .. tostring(Follow) .. "\n")
+		file:write("Hilite = " .. tostring(Hilite) .. "\n")
+		file:write("\n")
+		
+		-- TRACKED ENTITIES
 		local tracked = {}
 		
 		for _,t in pairs(TrackedType) do
@@ -479,7 +507,8 @@ function settings_write()
 			table.sort(setting.TrackedList)
 		end
 		
-		file:write("\ntracked = " .. dump(tracked) .. "\n")
+		file:write("tracked = " .. dump(tracked) .. "\n")
+		file:write("\n")
 	else
 		print(err)
 	end

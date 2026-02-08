@@ -316,20 +316,21 @@ local function iterate()
 end
 
 local function make_buttons()
-	make_button(-115,  30, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
-	make_button(-210,  30, "Add Line",   function() add_entity(TrackedType.LINE  ) end)
-	make_button(-315,  30, "Add Thing",  function() add_entity(TrackedType.THING ) end)
-	make_button(  10, -40, "+",          function() zoom( 1) end)
-	make_button(  10, -10, "-",          function() zoom(-1) end)
-	make_button(  40, -24, "<",          pan_left  )
-	make_button(  64, -40, "^",          pan_up    )
-	make_button(  64, -10, "v",          pan_down  )
-	make_button(  88, -24, ">",          pan_right )
-	make_button( 118, -40, "Reset View", reset_view)
-	make_button( 118, -10,
-		string.format("Follow %s",    Follow and "ON " or "OFF"), follow_toggle)
-	make_button(-460, 30,
-		string.format("Highlight %s", Hilite and "ON " or "OFF"), hilite_toggle)
+	make_button(PADDING_WIDTH+5,30,"Add Thing ",function() add_entity(TrackedType.THING ) end)
+	make_button(PADDING_WIDTH+5,60,"Add Line  ",function() add_entity(TrackedType.LINE  ) end)
+	make_button(PADDING_WIDTH+5,90,"Add Sector",function() add_entity(TrackedType.SECTOR) end)
+	make_button(-115, 30, "Reset View",                             reset_view   )
+	make_button(-115, 90, "Follow " .. (Follow and "ON " or "OFF"), follow_toggle)
+	make_button(-115, 60, "Hilite " .. (Hilite and "ON " or "OFF"), hilite_toggle)
+	
+	--[[--
+	make_button(10, -40, "+", function() zoom( 1) end)
+	make_button(10, -10, "-", function() zoom(-1) end)
+	make_button(40, -24, "<", pan_left )
+	make_button(64, -40, "^", pan_up   )
+	make_button(64, -10, "v", pan_down )
+	make_button(88, -24, ">", pan_right)
+	--]]--
 	
 	if CurrentPrompt then
 		input_prompt()
