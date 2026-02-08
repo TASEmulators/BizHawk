@@ -72,6 +72,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				_subframeMode = _syncSettings.SubframeInput;
 				ControllerDefinition = _subframeMode ? SubGBAController : GBAController;
+				if (!_subframeMode)
+				{
+					ser.Unregister<ICycleTiming>();
+				}
 			}
 			catch
 			{
