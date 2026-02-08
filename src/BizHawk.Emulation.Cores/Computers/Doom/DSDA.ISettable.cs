@@ -158,12 +158,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
-			[DisplayName("Internal Aspect Ratio")]
-			[Description("Sets aspect ratio of the rendered screen. 'Native' is multiples of 320x200 with aspect correction (to 4:3) applied by the frontend, similar to vanilla. Other modes produce pre-corrected image, useful for viewing Automap on higher resolutions (to avoid pixel distortion caused by external aspect correcton).\n\nRequires restart.")]
-			[DefaultValue(AspectRatio.Native)]
-			[TypeConverter(typeof(DescribableEnumConverter))]
-			public AspectRatio InternalAspect { get; set; }
-
 			[DisplayName("Sfx Volume")]
 			[Description("Sound effects volume [0 - 15].")]
 			[Range(0, 15)]
@@ -284,8 +278,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					message: string.Format(FMT_STR_PLAYER_NOT_ACTIVE, o.DisplayPlayer),
 					paramName: nameof(o));
 			}
-			var ret = (_settings.InternalAspect == o.InternalAspect
-				&& _settings.FullVision == o.FullVision)
+			var ret = (_settings.FullVision == o.FullVision)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
 			_settings = o;
@@ -301,6 +294,12 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			[DefaultValue(1)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int ScaleFactor { get; set; }
+
+			[DisplayName("Internal Aspect Ratio")]
+			[Description("Sets aspect ratio of the rendered screen. 'Native' is multiples of 320x200 with aspect correction (to 4:3) applied by the frontend, similar to vanilla. Other modes produce pre-corrected image, useful for viewing Automap on higher resolutions (to avoid pixel distortion caused by external aspect correcton).")]
+			[DefaultValue(AspectRatio.Native)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public AspectRatio InternalAspect { get; set; }
 
 			[DefaultValue(ControllerType.Doom)]
 			[DisplayName("Input Format")]

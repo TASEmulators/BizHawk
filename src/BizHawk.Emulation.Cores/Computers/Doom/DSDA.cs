@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			Point resolution;
 			int multiplier = 1;
-			var aspectIndex = (int)_settings.InternalAspect;
+			var aspectIndex = (int) _syncSettings.InternalAspect;
 			var resolutionIndex = _syncSettings.ScaleFactor - 1;
 			var resolutions = _resolutions[aspectIndex];
 
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			BufferWidth = resolution.X * multiplier;
 			BufferHeight = resolution.Y * multiplier;
-			VirtualHeight = _settings.InternalAspect == AspectRatio.Native
+			VirtualHeight = _syncSettings.InternalAspect == AspectRatio.Native
 				? BufferWidth * 3 / 4
 				: BufferHeight;
 
@@ -141,9 +141,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				$"screen_resolution \"{BufferWidth}x{BufferHeight}\"\n"
 				// we need the core to treat native resolution as 4:3 aspect,
 				// that ensures FOV is correct on higher resolutions
-				+ $"render_aspect {(int)(_settings.InternalAspect == AspectRatio.Native
+				+ $"render_aspect {(int)(_syncSettings.InternalAspect == AspectRatio.Native
 					? AspectRatio._4by3
-					: _settings.InternalAspect)}\n"
+					: _syncSettings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "render_stretch_hud 1\n" // patch_stretch_doom_format
 				+ "uncapped_framerate 0\n"
