@@ -323,8 +323,8 @@ void walkcam_inputs(struct PackedPlayerInput *inputs)
     (ORIG_FRICTION / 6) * inputs->StrafingSpeed,
     finesine[(walkcamera.angle - ANG90) >> ANGLETOFINESHIFT]);
 
-  walkcamera.z     += (char)inputs->FlyLook * FRACUNIT; // repurposed!
-  walkcamera.angle += (     inputs->TurningSpeed / 8) << ANGLETOFINESHIFT;
+  walkcamera.z     +=  inputs->FlyLook * FRACUNIT; // repurposed!
+  walkcamera.angle += (inputs->TurningSpeed / 8) << ANGLETOFINESHIFT;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
