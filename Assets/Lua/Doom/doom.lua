@@ -1,4 +1,4 @@
--- feos, kalimag, 2025
+-- feos, kalimag, 2025-2026
 
 dofile("doom.misc.lua")
 
