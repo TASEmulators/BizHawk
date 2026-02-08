@@ -99,9 +99,9 @@ LastMouse = {
 	left  = false
 }
 TextPosY = {
-	Thing  = 222,
-	Line   = 320,
-	Sector = 370
+	Thing  = 252,
+	Line   = 350,
+	Sector = 416
 }
 
 -- forward declarations
@@ -631,7 +631,7 @@ function update_zoom()
 			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
 		elseif in_range(mousePos.y, TextPosY.Line, TextPosY.Sector) then
 			scroll_list(Tracked[TrackedType.LINE], -deltaWheel)
-		elseif in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+32) then
+		elseif in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
 			scroll_list(Tracked[TrackedType.SECTOR], -deltaWheel)
 		end
 	end

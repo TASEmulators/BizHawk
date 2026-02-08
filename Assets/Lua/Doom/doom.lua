@@ -81,7 +81,8 @@ local function iterate()
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
 		" momX: %.6f\n momY: %.6f\n" ..
-		"distM: %.6f\n dirM: %.6f\nangle: %d",
+		"distM: %.6f\n dirM: %.6f\nangle: %d\n" ..
+		"  tic: %d\n time: %.2f", -- xdre limits to centiseconds
 		player.x,
 		player.y,
 		player.z,
@@ -92,7 +93,9 @@ local function iterate()
 		player.momy,
 		player.distmoved,
 		player.dirmoved,
-		player.angle
+		player.angle,
+		Globals.gametic - 1,
+		Globals.leveltime / 35
 	)
 	
 	if Tracked[TrackedType.THING].Current then
@@ -140,8 +143,9 @@ local function iterate()
 		end
 		
 		texts.line = string.format(
-			"%sLINEDEF %d%s  dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-			min, line.iLineID, max, distance,
+			"%sLINEDEF %d%s\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+			min, line.iLineID, max,
+			distance,
 			math.floor(x1 / FRACUNIT),
 			math.floor(y1 / FRACUNIT),
 			math.floor(x2 / FRACUNIT),
@@ -155,12 +159,12 @@ local function iterate()
 		local sector = entity.TrackedList[entity.Current]
 		
 		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+31) then
-			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+31, 0xffffffff, 0x88ffffff)
+		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
+			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+64, 0xffffffff, 0x88ffffff)
 		end
 		
 		texts.sector = string.format(
-			"%sSECTOR %d%s  spec: %d\nflo: %.2f  ceil: %.2f",
+			"%sSECTOR %d%s\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
 			min, sector.iSectorID, max,
 			sector.special,
 			sector.floorheight   / FRACUNIT,
@@ -279,7 +283,7 @@ local function iterate()
 				local x1, y1, x2, y2 = game_to_screen(line:coords())
 				drawline(x1, y1, x2, y2, 0xff00ffff)
 				texts.sector = string.format(
-					"  SECTOR %d    spec: %d\nflo: %.2f  ceil: %.2f",
+					"  SECTOR %d\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
 					selectedSector.iSectorID,
 					selectedSector.special,
 					selectedSector.floorheight   / FRACUNIT,
@@ -298,7 +302,7 @@ local function iterate()
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
 			drawline(x1, y1, x2, y2, 0xffff8800)
 			texts.line = string.format(
-				"  LINEDEF %d    dist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+				"  LINEDEF %d\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 				closestLine.iLineID, distance,
 				math.floor(closestLine.v1.x / FRACUNIT),
 				math.floor(closestLine.v1.y / FRACUNIT),
@@ -307,12 +311,12 @@ local function iterate()
 		end
 	end
 	
-	box( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
+	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
 	text(10, 42, texts.player, MapPrefs.player.color)
 	
-	if texts.thing  then text(10, 222, texts.thing             ) end
-	if texts.line   then text(10, 320, texts.line,   0xffff8800) end
-	if texts.sector then text(10, 370, texts.sector, 0xff00ffff) end
+	if texts.thing  then text(10, TextPosY.Thing,  texts.thing             ) end
+	if texts.line   then text(10, TextPosY.Line,   texts.line,   0xffff8800) end
+	if texts.sector then text(10, TextPosY.Sector, texts.sector, 0xff00ffff) end
 end
 
 local function make_buttons()
