@@ -158,13 +158,6 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSettings
 		{
-			[DisplayName("Internal Resolution Scale Factor")]
-			[Description("Which factor to increase internal resolution by [1 - 12]. Improves \"quality\" of the rendered image at the cost of accuracy.\n\nVanilla resolution is 320x200 resized to 4:3 DAR on a CRT monitor.\n\nRequires restart.")]
-			[Range(1, 12)]
-			[DefaultValue(1)]
-			[TypeConverter(typeof(ConstrainedIntConverter))]
-			public int ScaleFactor { get; set; }
-
 			[DisplayName("Internal Aspect Ratio")]
 			[Description("Sets aspect ratio of the rendered screen. 'Native' is multiples of 320x200 with aspect correction (to 4:3) applied by the frontend, similar to vanilla. Other modes produce pre-corrected image, useful for viewing Automap on higher resolutions (to avoid pixel distortion caused by external aspect correcton).\n\nRequires restart.")]
 			[DefaultValue(AspectRatio.Native)]
@@ -291,8 +284,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					message: string.Format(FMT_STR_PLAYER_NOT_ACTIVE, o.DisplayPlayer),
 					paramName: nameof(o));
 			}
-			var ret = (_settings.ScaleFactor == o.ScaleFactor
-				&& _settings.InternalAspect == o.InternalAspect
+			var ret = (_settings.InternalAspect == o.InternalAspect
 				&& _settings.FullVision == o.FullVision)
 				? PutSettingsDirtyBits.None
 				: PutSettingsDirtyBits.RebootCore;
@@ -303,6 +295,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		[CoreSettings]
 		public class DoomSyncSettings
 		{
+			[DisplayName("Internal Resolution Scale Factor")]
+			[Description("Which factor to increase internal resolution by [1 - 12]. Improves \"quality\" of the rendered image at the cost of accuracy.\n\nVanilla resolution is 320x200 resized to 4:3 DAR on a CRT monitor.")]
+			[Range(1, 12)]
+			[DefaultValue(1)]
+			[TypeConverter(typeof(ConstrainedIntConverter))]
+			public int ScaleFactor { get; set; }
+
 			[DefaultValue(ControllerType.Doom)]
 			[DisplayName("Input Format")]
 			[Description("The format provided for the players' input.")]

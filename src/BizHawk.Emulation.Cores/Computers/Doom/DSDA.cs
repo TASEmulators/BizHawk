@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			Point resolution;
 			int multiplier = 1;
 			var aspectIndex = (int)_settings.InternalAspect;
-			var resolutionIndex = _settings.ScaleFactor - 1;
+			var resolutionIndex = _syncSettings.ScaleFactor - 1;
 			var resolutions = _resolutions[aspectIndex];
 
 			if (resolutionIndex < resolutions.Length)
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 			else
 			{
-				multiplier = _settings.ScaleFactor - resolutions.Length + 1;
+				multiplier = _syncSettings.ScaleFactor - resolutions.Length + 1;
 				resolution = resolutions[^1];
 			}
 
