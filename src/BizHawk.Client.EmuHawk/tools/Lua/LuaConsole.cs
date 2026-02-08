@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			RefreshScriptMenuItem.Image = Resources.Refresh;
 			ToggleScriptMenuItem.Image = Resources.Checkbox;
 			PauseScriptMenuItem.Image = Resources.Pause;
-			EditScriptMenuItem.Image = Resources.Cut;
+			EditScriptMenuItem.Image = Resources.Pencil;
 			RemoveScriptMenuItem.Image = Resources.Delete;
 			InsertSeparatorMenuItem.Image = Resources.InsertSeparator;
 			MoveUpMenuItem.Image = Resources.MoveUp;
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			ToggleScriptToolbarItem.Image = Resources.Checkbox;
 			RefreshScriptToolbarItem.Image = Resources.Refresh;
 			PauseToolbarItem.Image = Resources.Pause;
-			EditToolbarItem.Image = Resources.Cut;
+			EditToolbarItem.Image = Resources.Pencil;
 			RemoveScriptToolbarItem.Image = Resources.Delete;
 			DuplicateToolbarButton.Image = Resources.Duplicate;
 			ClearConsoleToolbarButton.Image = Resources.ClearConsole;
