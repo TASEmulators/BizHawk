@@ -15,15 +15,16 @@ local function iterate_players()
 	--]]--
 	for i, player in Globals:iterate_players() do
 		Players[i] = {
-			x     = player.mo.x     / FRACUNIT,
-			y     = player.mo.y     / FRACUNIT,
-			z     = player.mo.z     / FRACUNIT,
-			prevx = player.mo.PrevX / FRACUNIT,
-			prevy = player.mo.PrevY / FRACUNIT,
-			prevz = player.mo.PrevZ / FRACUNIT,
-			momx  = player.mo.momx  / FRACUNIT,
-			momy  = player.mo.momy  / FRACUNIT,
-			angle = math.floor(player.mo.angle * (Angle / ANGLE_90))
+			thinker = player.mo.thinker._address,
+			x       = player.mo.x     / FRACUNIT,
+			y       = player.mo.y     / FRACUNIT,
+			z       = player.mo.z     / FRACUNIT,
+			prevx   = player.mo.PrevX / FRACUNIT,
+			prevy   = player.mo.PrevY / FRACUNIT,
+			prevz   = player.mo.PrevZ / FRACUNIT,
+			momx    = player.mo.momx  / FRACUNIT,
+			momy    = player.mo.momy  / FRACUNIT,
+			angle   = math.floor(player.mo.angle * (Angle / ANGLE_90))
 		}
 		
 		Players[i].distx      = Players[i].x - Players[i].prevx
@@ -372,16 +373,44 @@ tastudio.onbranchload(function()
 	clear_cache()
 end)
 
+function line_event(event, line, thing)
+	line  = line  - 0x36f00000000
+	thing = thing - 0x36f00000000
+	
+	for i, player in pairs(Players) do
+		if player.thinker == thing then
+			thing = "player " .. i
+			break
+		end
+	end
+	
+	if type(thing) ~= "string" then
+		for _, mobj in pairs(Globals.mobjs:readbulk()) do
+			if thing == mobj.thinker._address then
+				thing = "thing " .. mobj.index
+				break
+			end
+		end
+	end
+	
+	print(string.format(
+		"line %d %s by %s",
+		memory.read_s32_le(line, "System Bus"),
+		event, thing
+	))
+end
+doom.on_use  (function(line, thing) line_event("USED",    line, thing) end)
+doom.on_cross(function(line, thing) line_event("CROSSED", line, thing) end)
+
 
 -- MAIN LOOP
 
 while true do
-	local framecount = emu.framecount()
-	local paused     = client.ispaused()
-	Mouse            = input.getmouse()
-	ScreenWidth      = client.screenwidth()
-	ScreenHeight     = client.screenheight()
-
+	Mouse              = input.getmouse()
+	ScreenWidth        = client.screenwidth()
+	ScreenHeight       = client.screenheight()
+	local framecount   = emu.framecount()
+	local paused       = client.ispaused()
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	if episode ~= LastEpisode or map ~= LastMap then
 		clear_cache()
