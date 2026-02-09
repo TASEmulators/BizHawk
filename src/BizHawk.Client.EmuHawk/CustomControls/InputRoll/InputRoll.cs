@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_selectedItems.LastOrDefault()?.RowIndex >= _rowCount)
 					{
 						var iLastToKeep = _selectedItems.LowerBoundBinarySearch(static c => c.RowIndex ?? -1, _rowCount);
-						while (iLastToKeep > -1 && (_selectedItems[iLastToKeep + 1].RowIndex ?? -1) >= _rowCount) iLastToKeep--;
+						while (iLastToKeep > -1 && (_selectedItems[iLastToKeep].RowIndex ?? -1) >= _rowCount) iLastToKeep--;
 						_selectedItems = _selectedItems.Slice(start: 0, length: iLastToKeep + 1);
 					}
 
