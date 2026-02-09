@@ -237,7 +237,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!BranchView.AnyRowsSelected) return false; // why'd we do all that then
 
 			var success = LoadSelectedBranch();
-			Tastudio.BranchLoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
 			return success;
 		}
 
@@ -337,7 +336,6 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				Tastudio.LoadBranch(_backupBranch);
-				Tastudio.BranchLoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
