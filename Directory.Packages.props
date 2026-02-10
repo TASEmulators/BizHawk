@@ -40,11 +40,11 @@
 		<PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageVersion Include="System.Drawing.Common" Version="6.0.0" />
 		<PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
-		<PackageVersion Include="System.Memory" Version="4.6.0" />
+		<PackageVersion Include="System.Memory" Version="4.6.3" />
 		<PackageVersion Include="System.Net.Http" Version="4.3.4" />
 		<PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
 		<PackageVersion Include="System.Resources.Extensions" Version="7.0.0" />
-		<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" />
+		<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
 		<PackageVersion Include="System.Text.Json" Version="9.0.0" /> <!-- transitive dependency of Silk.NET; 8.0.0 generates build warnings -->
 		<PackageVersion Include="Vortice.Direct3D11" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Vortice.D3DCompiler" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
