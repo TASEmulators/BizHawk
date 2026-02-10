@@ -57,5 +57,7 @@
 	<ItemGroup Condition=" $(IsTargetingNetFramework) ">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" />
 		<PackageReference Include="System.Resources.Extensions" PrivateAssets="all" />
+		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.Net.Http" />
 	</ItemGroup>
 </Project>
