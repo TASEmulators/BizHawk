@@ -10,7 +10,7 @@
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT;BIZHAWKBUILD_SUPERHAWK</DefineConstants>
 		<MeziantouPolyfill_ExcludedPolyfills>@(MeziantouPolyfill_DeferToPolySharp, '|')</MeziantouPolyfill_ExcludedPolyfills>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<NoWarn>$(NoWarn);CS1573;NU1702</NoWarn>
+		<NoWarn>$(NoWarn);CS1573</NoWarn>
 		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
 		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
