@@ -27,12 +27,12 @@
 		<PackageVersion Include="ppy.SDL2-CS" Version="1.0.630-alpha" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Roslynator.Analyzers" Version="4.13.1" />
 		<PackageVersion Include="SharpCompress" Version="0.40.0" />
-		<PackageVersion Include="Silk.NET.OpenAL" Version="2.21.0" />
-		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.21.0" />
-		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.21.0" />
-		<PackageVersion Include="Silk.NET.OpenAL.Extensions.EXT" Version="2.21.0" />
-		<PackageVersion Include="Silk.NET.OpenGL" Version="2.21.0" />
-		<PackageVersion Include="Silk.NET.WGL.Extensions.NV" Version="2.21.0" />
+		<PackageVersion Include="Silk.NET.OpenAL" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.OpenAL.Extensions.Enumeration" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.OpenAL.Extensions.EXT" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.OpenGL" Version="2.23.0" />
+		<PackageVersion Include="Silk.NET.WGL.Extensions.NV" Version="2.23.0" />
 		<PackageVersion Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.8" />
 		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" /><!-- don't forget to update .stylecop.json at the same time -->
 		<PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
@@ -45,7 +45,6 @@
 		<PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
 		<PackageVersion Include="System.Resources.Extensions" Version="7.0.0" />
 		<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-		<PackageVersion Include="System.Text.Json" Version="9.0.0" /> <!-- transitive dependency of Silk.NET; 8.0.0 generates build warnings -->
 		<PackageVersion Include="Vortice.Direct3D11" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Vortice.D3DCompiler" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
 		<PackageVersion Include="Vortice.MediaFoundation" Version="2.4.2" /> <!-- last version with .NET Standard 2.0 support -->
