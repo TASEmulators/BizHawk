@@ -600,39 +600,45 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.onqueryitembg( function( currentindex, itemname )\r\n\tconsole.log( \"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitembg", "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
-		public void OnQueryItemBg(LuaFunction luaf)
+		public string OnQueryItemBg(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemBg");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemBg", name: name);
 				TAStudio.QueryColor callback = (index, name) => _th.SafeParseColor(luaf.Call(index, name)?.FirstOrDefault());
 
 				Tastudio.AddQueryBgColorCallback(callback);
 				nlf.OnRemove += () => Tastudio.RemoveQueryBgColorCallback(callback);
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 
 		[LuaMethodExample("tastudio.onqueryitemtext( function( currentindex, itemname )\r\n\tconsole.log( \"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitemtext", "Called during the text draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string to be displayed.")]
-		public void OnQueryItemText(LuaFunction luaf)
+		public string OnQueryItemText(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemText");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemText", name: name);
 				TAStudio.QueryText callback = (index, name) => luaf.Call(index, name)?.FirstOrDefault()?.ToString();
 
 				Tastudio.AddQueryItemTextCallback(callback);
 				nlf.OnRemove += () => Tastudio.RemoveQueryItemTextCallback(callback);
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 
 		[LuaMethodExample("tastudio.onqueryitemicon( function( currentindex, itemname )\r\n\tconsole.log( \"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitemicon", "Called during the icon draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string, the path to the {{.ico}} file to be displayed. The file will be cached, so if you change the file on disk, call {{tastudio.clearIconCache()}}.")]
-		public void OnQueryItemIcon(LuaFunction luaf)
+		public string OnQueryItemIcon(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemIcon");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnQueryItemIcon", name: name);
 				TAStudio.QueryIcon callback = (index, name) =>
 				{
 					var result = luaf.Call(index, name);
@@ -646,7 +652,10 @@ namespace BizHawk.Client.EmuHawk
 
 				Tastudio.AddQueryItemIconCallback(callback);
 				nlf.OnRemove += () => Tastudio.RemoveQueryItemIconCallback(callback);
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 
 		[LuaMethodExample("tastudio.clearIconCache();")]
@@ -659,30 +668,36 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
 		[LuaMethod("ongreenzoneinvalidated", "Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history. Called regardless of whether any states were actually invalidated. Your callback can have 1 parameter, which will be the last frame before the invalidated ones. That is, the first of the modified frames.")]
-		public void OnGreenzoneInvalidated(LuaFunction luaf)
+		public string OnGreenzoneInvalidated(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnGreenzoneInvalidated");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnGreenzoneInvalidated", name: name);
 				Action<int> callback = index => luaf.Call(index);
 
 				Tastudio.GreenzoneInvalidatedCallback += callback;
 				nlf.OnRemove += () => Tastudio.GreenzoneInvalidatedCallback -= callback;
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 
 		[LuaMethodExample("tastudio.onbranchload( function( currentindex )\r\n\tconsole.log( \"Called whenever a branch is loaded.\" );\r\nend );")]
 		[LuaMethod("onbranchload", "called whenever a branch is loaded. luaf must be a function that takes the integer branch index as a parameter")]
-		public void OnBranchLoad(LuaFunction luaf)
+		public string OnBranchLoad(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchLoad");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchLoad", name: name);
 				Action<int> callback = index => luaf.Call(index);
 
 				Tastudio.BranchLoadedCallback += callback;
 				nlf.OnRemove += () => Tastudio.BranchLoadedCallback -= callback;
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 
 		[LuaMethodExample("""
@@ -692,16 +707,19 @@ namespace BizHawk.Client.EmuHawk
 			name: "onbranchsave",
 			description: "Sets a callback which fires after any branch is created or updated."
 				+ DESC_LINE_BRANCH_CHANGE_CB)]
-		public void OnBranchSave(LuaFunction luaf)
+		public string OnBranchSave(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchSave");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchSave", name: name);
 				Action<int> callback = index => luaf.Call(index);
 
 				Tastudio.BranchSavedCallback += callback;
 				nlf.OnRemove += () => Tastudio.BranchSavedCallback -= callback;
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 
 		[LuaMethodExample("""
@@ -711,16 +729,19 @@ namespace BizHawk.Client.EmuHawk
 			name: "onbranchremove",
 			description: "Sets a callback which fires after any branch is removed."
 				+ DESC_LINE_BRANCH_CHANGE_CB)]
-		public void OnBranchRemove(LuaFunction luaf)
+		public string OnBranchRemove(LuaFunction luaf, string name = null)
 		{
 			if (Engaged())
 			{
-				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchRemove");
+				var nlf = CreateAndRegisterNamedFunction(luaf, "OnBranchRemove", name: name);
 				Action<int> callback = index => luaf.Call(index);
 
 				Tastudio.BranchRemovedCallback += callback;
 				nlf.OnRemove += () => Tastudio.BranchRemovedCallback -= callback;
+
+				return nlf.GuidStr;
 			}
+			return "";
 		}
 	}
 }
