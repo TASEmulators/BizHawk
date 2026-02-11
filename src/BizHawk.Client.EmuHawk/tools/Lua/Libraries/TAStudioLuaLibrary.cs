@@ -425,10 +425,7 @@ namespace BizHawk.Client.EmuHawk
 			if (index != null)
 			{
 				var branch = Tastudio.CurrentTasMovie.Branches[index.Value];
-				if (branch != null)
-				{
-					branch.UserText = text1;
-				}
+				branch?.UserText = text1;
 			}
 			else
 			{

@@ -29,8 +29,6 @@ namespace BizHawk.Client.Common
 		public const string VsyncAttoseconds = "VsyncAttoseconds"; // used for Arcade due to it representing thousands of different systems with different vsync rates
 		public const string Core = "Core";
 
-		private static FrozenSet<string> field;
-
 		private static ISet<string> AllValues
 			=> field ??= typeof(HeaderKeys).GetFields()
 				.Select(static fi => fi.GetValue(null).ToString())

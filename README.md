@@ -218,7 +218,7 @@ See the [contributor guidelines](https://github.com/TASEmulators/BizHawk/blob/ma
 
 tl;dr:
 - On Unix, run `Dist/BuildRelease.sh` (uses .NET SDK CLI). You can also use Rider or VS Code.
-- On Windows, run in [VS2022](https://visualstudio.microsoft.com/vs/community). You can also use the command-line (`dotnet build BizHawk.sln`), Rider, or VS Code.
+- On Windows, run in [VS2022](https://visualstudio.microsoft.com/vs/community). You can also use the command-line (`dotnet build BizHawk.slnx`), Rider, or VS Code.
 
 [to top](#bizhawk)
 

@@ -66,10 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				if (Core.cart_RAM != null)
-				{
-					Core.cart_RAM[addr - 0xA000] = value;
-				}
+				Core.cart_RAM?[addr - 0xA000] = value;
 			}
 		}
 

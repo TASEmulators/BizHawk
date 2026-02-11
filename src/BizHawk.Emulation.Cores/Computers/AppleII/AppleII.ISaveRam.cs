@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				}
 				else if (maybeDifferent)
 				{
-					original.AsSpan().CopyTo(current);
+					original.CopyTo(current);
 				}
 			});
 		}

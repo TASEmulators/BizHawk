@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				var bank = new byte[BankSize];
 
 				bank.AsSpan().Fill(DummyData);
-				chip.ConvertDataToBytes().CopyTo(bank.AsSpan());
+				chip.ConvertDataToBytes().CopyTo(bank);
 
 				_banks[chip.Bank] = bank;
 

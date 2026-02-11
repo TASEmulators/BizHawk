@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Text;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;

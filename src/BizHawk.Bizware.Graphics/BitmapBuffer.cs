@@ -10,8 +10,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common.CollectionExtensions;
-
 using SDGraphics = System.Drawing.Graphics;
 
 namespace BizHawk.Bizware.Graphics
