@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 using System.Linq;
 using System.Net.Sockets;
@@ -16,88 +15,126 @@ namespace BizHawk.Client.Common
 	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
 	public static class ArgParser
 	{
-		private sealed class BespokeOption<T> : Option<T>
+		private static readonly Argument<string?> ArgumentRomFilePath = new("rom")
 		{
-			public BespokeOption(string name)
-				: base(name) {}
+			DefaultValueFactory = _ => null,
+			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`",
+		};
 
-			public BespokeOption(string name, string description)
-				: base(name: name, description: description) {}
+		private static readonly Option<string?> OptionAVDumpAudioSync = new("--audiosync")
+		{
+			Description = "bool; `true` is the only truthy value, all else falsey; if not set, uses remembered state from config",
+		};
 
-			public BespokeOption(string[] aliases)
-				: base(aliases) {}
+		private static readonly Option<int?> OptionAVDumpEndAtFrame = new("--dump-length")
+		{
+			Description = "int; frame index at which to stop A/V dumping (encoding)",
+		};
 
-			public BespokeOption(string[] aliases, string description)
-				: base(aliases, description) {}
-		}
+		private static readonly Option<string?> OptionAVDumpFrameList = new("--dump-frames"); // desc added in static ctor
 
-		private static readonly Argument<string?> ArgumentRomFilePath = new(name: "rom", () => null, description: "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help");
+		private static readonly Option<string?> OptionAVDumpName = new("--dump-name"); // desc added in static ctor
 
-		private static readonly IReadOnlyList<Option> GeneratedOptions;
+		private static readonly Option<bool> OptionAVDumpQuitWhenDone = new("--dump-close")
+		{
+			Description = "pass to quit completely after A/V dumping (encoding) finishes",
+		};
 
-		private static readonly BespokeOption<string?> OptionAVDumpAudioSync = new(name: "--audiosync", description: "bool; `true` is the only truthy value, all else falsey; if not set, uses remembered state from config");
+		private static readonly Option<string?> OptionAVDumpType = new("--dump-type"); // desc added in static ctor
 
-		private static readonly BespokeOption<int?> OptionAVDumpEndAtFrame = new(name: "--dump-length", description: "int; frame index at which to stop A/V dumping (encoding)");
+		private static readonly Option<string?> OptionConfigFilePath = new("--config")
+		{
+			Description = "path of config file to use",
+		};
 
-		private static readonly BespokeOption<string?> OptionAVDumpFrameList = new("--dump-frames"); // desc added in static ctor
+		private static readonly Option<bool> OptionGDIPlus = new("--gdi")
+		{
+			Description = "pass to use the GDI+ display method rather than whatever preference is set in the config file",
+		};
 
-		private static readonly BespokeOption<string?> OptionAVDumpName = new("--dump-name"); // desc added in static ctor
+		private static readonly Option<string?> OptionHTTPClientURIGET = new("--url-get", "--url_get")
+		{
+			Description = "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)",
+		};
 
-		private static readonly BespokeOption<bool> OptionAVDumpQuitWhenDone = new(name: "--dump-close", description: "pass to quit completely after A/V dumping (encoding) finishes");
+		private static readonly Option<string?> OptionHTTPClientURIPOST = new("--url-post", "--url_post")
+		{
+			Description = "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)",
+		};
 
-		private static readonly BespokeOption<string?> OptionAVDumpType = new("--dump-type"); // desc added in static ctor
+		private static readonly Option<bool> OptionLaunchChromeless = new("--chromeless")
+		{
+			Description = "pass and the 'chrome' (a.k.a. GUI) will never be shown, not even in windowed mode",
+		};
 
-		private static readonly BespokeOption<string?> OptionConfigFilePath = new(name: "--config", description: "path of config file to use");
+		private static readonly Option<bool> OptionLaunchFullscreen = new("--fullscreen")
+		{
+			Description = "pass to launch in fullscreen",
+		};
 
-		private static readonly BespokeOption<bool> OptionGDIPlus = new(name: "--gdi", description: "pass to use the GDI+ display method rather than whatever preference is set in the config file");
+		private static readonly Option<int?> OptionLoadQuicksaveSlot = new("--load-slot")
+		{
+			Description = "int; quicksave slot which should be loaded on launch",
+		};
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIGET = new(aliases: [ "--url-get", "--url_get" ], description: "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)");
+		private static readonly Option<string?> OptionLoadSavestateFilePath = new("--load-state"); // desc added in static ctor
 
-		private static readonly BespokeOption<string?> OptionHTTPClientURIPOST = new(aliases: [ "--url-post", "--url_post" ], description: "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)");
+		private static readonly Option<string?> OptionLuaFilePath = new("--lua"); // desc added in static ctor
 
-		private static readonly BespokeOption<bool> OptionLaunchChromeless = new(name: "--chromeless", description: "pass and the 'chrome' (a.k.a. GUI) will never be shown, not even in windowed mode");
+		private static readonly Option<string?> OptionMMFPath = new("--mmf")
+		{
+			Description = "path of file to use for 'memory-mapped file' IPC (Lua `comm.mmf*`)",
+		};
 
-		private static readonly BespokeOption<bool> OptionLaunchFullscreen = new(name: "--fullscreen", description: "pass to launch in fullscreen");
+		private static readonly Option<string?> OptionMovieFilePath = new("--movie")
+		{
+			Description = "path; input movie which should be loaded on launch",
+		};
 
-		private static readonly BespokeOption<int?> OptionLoadQuicksaveSlot = new(name: "--load-slot", description: "int; quicksave slot which should be loaded on launch");
+		private static readonly Option<string?> OptionOpenExternalTool = new("--open-ext-tool-dll")
+		{
+			Description = "the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened: 1) available (no load errors, correct system/rom, etc.) and 2) dll path matches given string; or dll filename matches given string with or without `.dll`",
+		};
 
-		private static readonly BespokeOption<string?> OptionLoadSavestateFilePath = new("--load-state"); // desc added in static ctor
+		private static readonly Option<bool> OptionOpenLuaConsole = new("--luaconsole")
+		{
+			Description = "pass to open the Lua Console",
+		};
 
-		private static readonly BespokeOption<string?> OptionLuaFilePath = new("--lua"); // desc added in static ctor
+		private static readonly Option<bool> OptionQueryAppVersion = new("--version")
+		{
+			Description = "print version information and immediately exit",
+		};
 
-		private static readonly BespokeOption<string?> OptionMMFPath = new(name: "--mmf", description: "path of file to use for 'memory-mapped file' IPC (Lua `comm.mmf*`)");
+		private static readonly Option<string?> OptionSocketServerIP = new("--socket-ip", "--socket_ip"); // desc added in static ctor
 
-		private static readonly BespokeOption<string?> OptionMovieFilePath = new(name: "--movie", description: "path; input movie which should be loaded on launch");
+		private static readonly Option<ushort?> OptionSocketServerPort = new("--socket-port", "--socket_port"); // desc added in static ctor
 
-		private static readonly BespokeOption<string?> OptionOpenExternalTool = new(name: "--open-ext-tool-dll", description: "the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened: 1) available (no load errors, correct system/rom, etc.) and 2) dll path matches given string; or dll filename matches given string with or without `.dll`");
+		private static readonly Option<bool> OptionSocketServerUseUDP = new("--socket-udp", "--socket_udp"); // desc added in static ctor
 
-		private static readonly BespokeOption<bool> OptionOpenLuaConsole = new(name: "--luaconsole", description: "pass to open the Lua Console");
-
-		private static readonly BespokeOption<bool> OptionQueryAppVersion = new(name: "--version", description: "pass to print version information and immediately quit");
-
-		private static readonly BespokeOption<string?> OptionSocketServerIP = new(aliases: [ "--socket-ip", "--socket_ip" ]); // desc added in static ctor
-
-		private static readonly BespokeOption<ushort?> OptionSocketServerPort = new(aliases: [ "--socket-port", "--socket_port" ]); // desc added in static ctor
-
-		private static readonly BespokeOption<bool> OptionSocketServerUseUDP = new(aliases: [ "--socket-udp", "--socket_udp" ]); // desc added in static ctor
-
-		private static readonly BespokeOption<string?> OptionUserdataUnparsedPairs = new(name: "--userdata", description: "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string");
-
-		private static readonly Parser Parser;
+		private static readonly Option<string?> OptionUserdataUnparsedPairs = new("--userdata")
+		{
+			Description = "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string",
+		};
 
 		static ArgParser()
 		{
-			OptionAVDumpFrameList.Description = $"comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding); implies `--{OptionAVDumpEndAtFrame.Name}=<end>` where `<end>` is the highest frame listed";
-			OptionAVDumpName.Description = $"ignored unless `--{OptionAVDumpType.Name}` also passed";
-			OptionAVDumpType.Description = $"ignored unless `--{OptionAVDumpName.Name}` also passed";
-			OptionLoadSavestateFilePath.Description = "path; savestate which should be loaded on launch; this takes precedence over `--{OptionLoadQuicksaveSlot.Name}`";
-			OptionLuaFilePath.Description = $"implies `--{OptionOpenLuaConsole.Name}`";
-			OptionSocketServerIP.Description = $"string; IP address for Unix socket IPC (Lua `comm.socket*`); must be paired with `--{OptionSocketServerPort.Name}`";
-			OptionSocketServerPort.Description = $"int; port for Unix socket IPC (Lua `comm.socket*`); must be paired with `--{OptionSocketServerIP.Name}`";
-			OptionSocketServerUseUDP.Description = $"pass to use UDP instead of TCP for Unix socket IPC (Lua `comm.socket*`); ignored unless `--{OptionSocketServerIP.Name} --{OptionSocketServerPort.Name}` also passed";
+			OptionAVDumpFrameList.Description = $"comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding); implies `{OptionAVDumpEndAtFrame.Name}=<end>` where `<end>` is the highest frame listed";
+			OptionAVDumpName.Description = $"ignored unless `{OptionAVDumpType.Name}` also passed";
+			OptionAVDumpType.Description = $"ignored unless `{OptionAVDumpName.Name}` also passed";
+			OptionLoadSavestateFilePath.Description = $"path; savestate which should be loaded on launch; this takes precedence over `{OptionLoadQuicksaveSlot.Name}`";
+			OptionLuaFilePath.Description = $"implies `{OptionOpenLuaConsole.Name}`";
+			OptionSocketServerIP.Description = $"string; IP address for Unix socket IPC (Lua `comm.socket*`); must be paired with `{OptionSocketServerPort.Name}`";
+			OptionSocketServerPort.Description = $"int; port for Unix socket IPC (Lua `comm.socket*`); must be paired with `{OptionSocketServerIP.Name}`";
+			OptionSocketServerUseUDP.Description = $"pass to use UDP instead of TCP for Unix socket IPC (Lua `comm.socket*`); ignored unless `{OptionSocketServerIP.Name} {OptionSocketServerPort.Name}` also passed";
+		}
 
-			RootCommand root = new();
+		private static RootCommand GetRootCommand()
+		{
+			RootCommand root = new("BizHawk, a multi-system emulator frontend");
 			root.Add(ArgumentRomFilePath);
+			root.Options.RemoveAll(option => option is VersionOption); // we have our own version command
+
 			// `--help` uses this order, so keep alphabetised by flag
 			root.Add(/* --audiosync */ OptionAVDumpAudioSync);
 			root.Add(/* --chromeless */ OptionLaunchChromeless);
@@ -124,23 +161,16 @@ namespace BizHawk.Client.Common
 			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
 			root.Add(/* --version */ OptionQueryAppVersion);
 
-			Parser = new CommandLineBuilder(root)
-//				.UseVersionOption() // "cannot be combined with other arguments" which is fair enough but `--config` is crucial on NixOS
-				.UseHelp()
-//				.UseEnvironmentVariableDirective() // useless
-				.UseParseDirective()
-				.UseSuggestDirective()
-//				.RegisterWithDotnetSuggest() // intended for dotnet tools
-//				.UseTypoCorrections() // we're only using the parser, and I guess this only works with the full buy-in
-//				.UseParseErrorReporting() // we're only using the parser, and I guess this only works with the full buy-in
-//				.UseExceptionHandler() // we're only using the parser, so nothing should be throwing
-//				.CancelOnProcessTermination() // we're only using the parser, so there's not really anything to cancel
-				.Build();
-			GeneratedOptions = root.Options.Where(static o =>
+			return root;
+		}
+
+		private static void EnsureConsole()
+		{
+			if (!OSTailoredCode.IsUnixHost)
 			{
-				var t = o.GetType();
-				return !t.IsGenericType || t.GetGenericTypeDefinition() != typeof(BespokeOption<>); // no there is no simpler way to do this
-			}).ToArray();
+				// the behavior of this kinda sucks, but it's better than nothing I think
+				Win32Imports.AttachConsole(Win32Imports.ATTACH_PARENT_PROCESS);
+			}
 		}
 
 		/// <return>exit code, or <see langword="null"/> if should not exit</return>
@@ -149,36 +179,33 @@ namespace BizHawk.Client.Common
 		{
 			parsed = default;
 			if (args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
-			var result = Parser.Parse(args);
+			var rootCommand = GetRootCommand();
+			var result = CommandLineParser.Parse(rootCommand, args);
 			if (result.Errors.Count is not 0)
 			{
-				// write all to stdout and show first in modal dialog (done in `catch` block in `Program`)
-				Console.Error.WriteLine("failed to parse command-line arguments:");
-				foreach (var error in result.Errors) Console.Error.WriteLine(error.Message);
+				// generate useful commandline error output
+				EnsureConsole();
+				result.Invoke();
+				// show first error in modal dialog (done in `catch` block in `Program`)
 				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
 			}
-			var triggeredGeneratedOption = GeneratedOptions.FirstOrDefault(o => result.FindResultFor(o) is not null);
-			if (triggeredGeneratedOption is not null)
+			if (result.Action is not null)
 			{
+				EnsureConsole();
 				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has...
-				var exitCode = result.Invoke();
-				// ...and maybe exit
-				if (exitCode is not 0
-					|| triggeredGeneratedOption.Name is "help") // `Name` may be localised meaning this won't work? I can't grok the source for `HelpOption`
-				{
-					return exitCode;
-				}
+				return result.Invoke();
 			}
-			if (result.GetValueForOption(OptionQueryAppVersion))
+			if (result.GetValue(OptionQueryAppVersion))
 			{
+				EnsureConsole();
 				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
 				Console.WriteLine(VersionInfo.GetEmuVersion());
 				return 0;
 			}
 
-			var autoDumpLength = result.GetValueForOption(OptionAVDumpEndAtFrame);
+			var autoDumpLength = result.GetValue(OptionAVDumpEndAtFrame);
 			HashSet<int>? currAviWriterFrameList = null;
-			if (result.GetValueForOption(OptionAVDumpFrameList) is string list)
+			if (result.GetValue(OptionAVDumpFrameList) is string list)
 			{
 				currAviWriterFrameList = new();
 				currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
@@ -186,27 +213,27 @@ namespace BizHawk.Client.Common
 				autoDumpLength ??= currAviWriterFrameList.Max();
 			}
 
-			var luaScript = result.GetValueForOption(OptionLuaFilePath);
-			var luaConsole = luaScript is not null || result.GetValueForOption(OptionOpenLuaConsole);
+			var luaScript = result.GetValue(OptionLuaFilePath);
+			var luaConsole = luaScript is not null || result.GetValue(OptionOpenLuaConsole);
 
-			var socketIP = result.GetValueForOption(OptionSocketServerIP);
-			var socketPort = result.GetValueForOption(OptionSocketServerPort);
+			var socketIP = result.GetValue(OptionSocketServerIP);
+			var socketPort = result.GetValue(OptionSocketServerPort);
 			var socketAddress = socketIP is null && socketPort is null
 				? ((string, ushort)?) null // don't bother
 				: socketIP is not null && socketPort is not null
 					? (socketIP, socketPort.Value)
 					: throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
 
-			var httpClientURIGET = result.GetValueForOption(OptionHTTPClientURIGET);
-			var httpClientURIPOST = result.GetValueForOption(OptionHTTPClientURIPOST);
+			var httpClientURIGET = result.GetValue(OptionHTTPClientURIGET);
+			var httpClientURIPOST = result.GetValue(OptionHTTPClientURIPOST);
 			var httpAddresses = httpClientURIGET is null && httpClientURIPOST is null
 					? ((string?, string?)?) null // don't bother
 					: (httpClientURIGET, httpClientURIPOST);
 
-			var audiosync = result.GetValueForOption(OptionAVDumpAudioSync)?.EqualsIgnoreCase("true");
+			var audiosync = result.GetValue(OptionAVDumpAudioSync)?.EqualsIgnoreCase("true");
 
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
-			if (result.GetValueForOption(OptionUserdataUnparsedPairs) is string list1)
+			if (result.GetValue(OptionUserdataUnparsedPairs) is string list1)
 			{
 				userdataUnparsedPairs = new();
 				foreach (var s in list1.Split(';'))
@@ -218,28 +245,28 @@ namespace BizHawk.Client.Common
 			}
 
 			parsed = new(
-				cmdLoadSlot: result.GetValueForOption(OptionLoadQuicksaveSlot),
-				cmdLoadState: result.GetValueForOption(OptionLoadSavestateFilePath),
-				cmdConfigFile: result.GetValueForOption(OptionConfigFilePath),
-				cmdMovie: result.GetValueForOption(OptionMovieFilePath),
-				cmdDumpType: result.GetValueForOption(OptionAVDumpType),
+				cmdLoadSlot: result.GetValue(OptionLoadQuicksaveSlot),
+				cmdLoadState: result.GetValue(OptionLoadSavestateFilePath),
+				cmdConfigFile: result.GetValue(OptionConfigFilePath),
+				cmdMovie: result.GetValue(OptionMovieFilePath),
+				cmdDumpType: result.GetValue(OptionAVDumpType),
 				currAviWriterFrameList: currAviWriterFrameList,
 				autoDumpLength: autoDumpLength ?? 0,
-				cmdDumpName: result.GetValueForOption(OptionAVDumpName),
-				autoCloseOnDump: result.GetValueForOption(OptionAVDumpQuitWhenDone),
-				chromeless: result.GetValueForOption(OptionLaunchChromeless),
-				startFullscreen: result.GetValueForOption(OptionLaunchFullscreen),
-				gdiPlusRequested: result.GetValueForOption(OptionGDIPlus),
+				cmdDumpName: result.GetValue(OptionAVDumpName),
+				autoCloseOnDump: result.GetValue(OptionAVDumpQuitWhenDone),
+				chromeless: result.GetValue(OptionLaunchChromeless),
+				startFullscreen: result.GetValue(OptionLaunchFullscreen),
+				gdiPlusRequested: result.GetValue(OptionGDIPlus),
 				luaScript: luaScript,
 				luaConsole: luaConsole,
 				socketAddress: socketAddress,
-				mmfFilename: result.GetValueForOption(OptionMMFPath),
+				mmfFilename: result.GetValue(OptionMMFPath),
 				httpAddresses: httpAddresses,
 				audiosync: audiosync,
-				openExtToolDll: result.GetValueForOption(OptionOpenExternalTool),
-				socketProtocol: result.GetValueForOption(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
+				openExtToolDll: result.GetValue(OptionOpenExternalTool),
+				socketProtocol: result.GetValue(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
 				userdataUnparsedPairs: userdataUnparsedPairs,
-				cmdRom: result.GetValueForArgument(ArgumentRomFilePath)
+				cmdRom: result.GetValue(ArgumentRomFilePath)
 			);
 			return null;
 		}
