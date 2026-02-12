@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		private static readonly Argument<string?> ArgumentRomFilePath = new("rom")
 		{
 			DefaultValueFactory = _ => null,
-			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`",
+			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help",
 		};
 
 		private static readonly Option<string?> OptionAVDumpAudioSync = new("--audiosync")
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 
 		private static readonly Option<bool> OptionGDIPlus = new("--gdi")
 		{
-			Description = "pass to use the GDI+ display method rather than whatever preference is set in the config file",
+			Description = "use the GDI+ display method rather than whatever preference is set in the config file",
 		};
 
 		private static readonly Option<string?> OptionHTTPClientURIGET = new("--url-get", "--url_get")
@@ -64,12 +64,12 @@ namespace BizHawk.Client.Common
 
 		private static readonly Option<bool> OptionLaunchChromeless = new("--chromeless")
 		{
-			Description = "pass and the 'chrome' (a.k.a. GUI) will never be shown, not even in windowed mode",
+			Description = "never show the GUI (a.k.a. 'chrome'), not even in windowed mode",
 		};
 
 		private static readonly Option<bool> OptionLaunchFullscreen = new("--fullscreen")
 		{
-			Description = "pass to launch in fullscreen",
+			Description = "launch in fullscreen",
 		};
 
 		private static readonly Option<int?> OptionLoadQuicksaveSlot = new("--load-slot")
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 
 		private static readonly Option<bool> OptionOpenLuaConsole = new("--luaconsole")
 		{
-			Description = "pass to open the Lua Console",
+			Description = "open the Lua Console, even if not loading a script",
 		};
 
 		private static readonly Option<bool> OptionQueryAppVersion = new("--version")
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 			OptionAVDumpName.Description = $"ignored unless `{OptionAVDumpType.Name}` also passed";
 			OptionAVDumpType.Description = $"ignored unless `{OptionAVDumpName.Name}` also passed";
 			OptionLoadSavestateFilePath.Description = $"path; savestate which should be loaded on launch; this takes precedence over `{OptionLoadQuicksaveSlot.Name}`";
-			OptionLuaFilePath.Description = $"implies `{OptionOpenLuaConsole.Name}`";
+			OptionLuaFilePath.Description = $"path; Lua script or Console session to load; implies `{OptionOpenLuaConsole.Name}`";
 			OptionSocketServerIP.Description = $"string; IP address for Unix socket IPC (Lua `comm.socket*`); must be paired with `{OptionSocketServerPort.Name}`";
 			OptionSocketServerPort.Description = $"int; port for Unix socket IPC (Lua `comm.socket*`); must be paired with `{OptionSocketServerIP.Name}`";
 			OptionSocketServerUseUDP.Description = $"pass to use UDP instead of TCP for Unix socket IPC (Lua `comm.socket*`); ignored unless `{OptionSocketServerIP.Name} {OptionSocketServerPort.Name}` also passed";
@@ -131,7 +131,9 @@ namespace BizHawk.Client.Common
 
 		private static RootCommand GetRootCommand()
 		{
-			RootCommand root = new("BizHawk, a multi-system emulator frontend");
+			RootCommand root = new($"{
+				(string.IsNullOrEmpty(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString)
+			}, a multi-system emulator frontend\n{VersionInfo.GetEmuVersion()}");
 			root.Add(ArgumentRomFilePath);
 			root.Options.RemoveAll(option => option is VersionOption); // we have our own version command
 
@@ -191,14 +193,14 @@ namespace BizHawk.Client.Common
 			}
 			if (result.Action is not null)
 			{
+				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has
 				EnsureConsole();
-				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has...
 				return result.Invoke();
 			}
 			if (result.GetValue(OptionQueryAppVersion))
 			{
-				EnsureConsole();
 				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
+				EnsureConsole();
 				Console.WriteLine(VersionInfo.GetEmuVersion());
 				return 0;
 			}
