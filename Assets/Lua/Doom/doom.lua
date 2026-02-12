@@ -108,6 +108,13 @@ local function iterate()
 		if mousePos.x <= PADDING_WIDTH
 		and in_range(mousePos.y, TextPosY.Thing, TextPosY.Line-1) then
 			box(0, TextPosY.Thing, PADDING_WIDTH, TextPosY.Line-1, 0xffffffff, 0x88ffffff)
+			
+			if input.get()["Delete"] then
+				Confirmation = {
+					type = TrackedType.THING,
+					id   = mobj.index
+				}
+			end
 		end
 		
 		texts.thing  = string.format(
@@ -141,6 +148,13 @@ local function iterate()
 		if mousePos.x <= PADDING_WIDTH
 		and in_range(mousePos.y, TextPosY.Line, TextPosY.Sector-1) then
 			box(0, TextPosY.Line, PADDING_WIDTH, TextPosY.Sector-1, 0xffffffff, 0x88ffffff)
+			
+			if input.get()["Delete"] then
+				Confirmation = {
+					type = TrackedType.LINE,
+					id   = line.iLineID
+				}
+			end
 		end
 		
 		texts.line = string.format(
@@ -162,6 +176,13 @@ local function iterate()
 		if mousePos.x <= PADDING_WIDTH
 		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
 			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+64, 0xffffffff, 0x88ffffff)
+			
+			if input.get()["Delete"] then
+				Confirmation = {
+					type = TrackedType.SECTOR,
+					id   = sector.iSectorID
+				}
+			end
 		end
 		
 		texts.sector = string.format(
@@ -172,143 +193,139 @@ local function iterate()
 			sector.ceilingheight / FRACUNIT)
 	end
 
-	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local entity = Tracked[TrackedType.THING]
-		local type   = mobj.type
-		local index  = mobj.index
-		local radius_color, text_color = get_mobj_color(mobj, type)
-		
-		-- players have index -1, things to be removed have -2
-		if index >= 0 then
-			entity.IDs[index] = true
-		end
-		
-		if radius_color or text_color then -- not hidden
-			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
+	if ShowMap then
+		for _, mobj in pairs(Globals.mobjs:readbulk()) do
+			local type   = mobj.type
+			local index  = mobj.index
+			local radius_color, text_color = get_mobj_color(mobj, type)
+			
+			if radius_color or text_color then -- not hidden
+				local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
-			if  in_range(pos.x, 0, ScreenWidth)
-			and in_range(pos.y, 0, ScreenHeight)
-			then
-				local radius = mobj.radius
-				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
-				
-				if  Hilite
-				and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
-				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
-				and mousePos.x > PADDING_WIDTH and not CurrentPrompt
+				if  in_range(pos.x, 0, ScreenWidth)
+				and in_range(pos.y, 0, ScreenHeight)
 				then
-					radius_color = "white"
-					text_color   = "white"
+					local radius = mobj.radius
+					local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
 					
-					texts.thing = string.format(
-						"  THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
-						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
-						mobj.index, MobjType[type],
-						mobj.x      / FRACUNIT,
-						mobj.y      / FRACUNIT,
-						mobj.z      / FRACUNIT,
-						mobj.radius / FRACUNIT,
-						mobj.tics,
-						mobj.health,
-						mobj.reactiontime,
-						mobj.threshold)
-				end
-				
-				if radius_color then
-					box(
-						pos.x - screen_radius, 
-						pos.y - screen_radius,
-						pos.x + screen_radius,
-						pos.y + screen_radius,
-						radius_color)
-				end
-				
-				if text_color then
-					text(
-						pos.x - screen_radius + 1,
-						pos.y - screen_radius,
-						string.format("%d", index),
-						text_color)
+					if  Hilite
+					and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
+					and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
+					and mousePos.x > PADDING_WIDTH and not freeze_gui()
+					then
+						radius_color = "white"
+						text_color   = "white"
+						
+						texts.thing = string.format(
+							"  THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
+							"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+							mobj.index, MobjType[type],
+							mobj.x      / FRACUNIT,
+							mobj.y      / FRACUNIT,
+							mobj.z      / FRACUNIT,
+							mobj.radius / FRACUNIT,
+							mobj.tics,
+							mobj.health,
+							mobj.reactiontime,
+							mobj.threshold)
+					end
+					
+					if radius_color then
+						box(
+							pos.x - screen_radius, 
+							pos.y - screen_radius,
+							pos.x + screen_radius,
+							pos.y + screen_radius,
+							radius_color)
+					end
+					
+					if text_color and index >= 0 then
+						text(
+							pos.x - screen_radius + 1,
+							pos.y - screen_radius,
+							string.format("%d", index),
+							text_color)
+					end
 				end
 			end
 		end
-	end
-	
-	for _, line in ipairs(Lines) do
-		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
-		local color   = 0xffffffff
-		local special = line.special
-		local index   = line.iLineID
-		local entity  = Tracked[TrackedType.LINE]
-		local list    = entity.TrackedList
+		
+		for _, line in ipairs(Lines) do
+			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
+			local color   = 0xffffffff
+			local special = line.special
+			local index   = line.iLineID
+			local entity  = Tracked[TrackedType.LINE]
+			local list    = entity.TrackedList
 
-		if special ~= 0 then color = 0xffff00ff end
+			if special ~= 0 then color = 0xffff00ff end
 
-		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
-		x1, y1, x2, y2 = cached_line_coords(line)
-		
-		if Hilite then
-			local dist = distance_from_line(
-				gameMousePos,
-				tuple_to_vertex(x1, y1),
-				tuple_to_vertex(x2, y2))
+			drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
+			x1, y1, x2, y2 = cached_line_coords(line)
 			
-			if math.abs(dist) < shortestDist then
-				shortestDist = math.abs(dist)
-				closestLine  = line
-			end
-		end
-	end
-	
-	if mousePos.x > PADDING_WIDTH and not CurrentPrompt then
-		if closestLine then
-			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closestLine))
-			local side =
-				(mousePos.y - y1) * (x2 - x1) -
-				(mousePos.x - x1) * (y2 - y1)
-			
-			if side <= 0 then
-				if closestLine.backsector then
-					selectedSector = closestLine.backsector
-				end
-			else
-				if closestLine.frontsector then
-					selectedSector = closestLine.frontsector
+			if Hilite then
+				local dist = distance_from_line(
+					gameMousePos,
+					tuple_to_vertex(x1, y1),
+					tuple_to_vertex(x2, y2))
+				
+				if math.abs(dist) < shortestDist then
+					shortestDist = math.abs(dist)
+					closestLine  = line
 				end
 			end
 		end
 		
-		if selectedSector then
-			for _, line in ipairs(selectedSector.lines) do
-				-- cached_line_coords gives some length error?
-				local x1, y1, x2, y2 = game_to_screen(line:coords())
-				drawline(x1, y1, x2, y2, 0xff00ffff)
-				texts.sector = string.format(
-					"  SECTOR %d\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
-					selectedSector.iSectorID,
-					selectedSector.special,
-					selectedSector.floorheight   / FRACUNIT,
-					selectedSector.ceilingheight / FRACUNIT)
+		if mousePos.x > PADDING_WIDTH and not freeze_gui() then
+			if closestLine then
+				local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closestLine))
+				local side =
+					(mousePos.y - y1) * (x2 - x1) -
+					(mousePos.x - x1) * (y2 - y1)
+				
+				if side <= 0 then
+					if closestLine.backsector then
+						selectedSector = closestLine.backsector
+					end
+				else
+					if closestLine.frontsector then
+						selectedSector = closestLine.frontsector
+					end
+				end
 			end
-		end
-		
-		if closestLine then
-			local x1, y1, x2, y2 = cached_line_coords(closestLine)
-			local distance = distance_from_line(
-				{ x = player.x,      y = player.y      },
-				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
-				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
-			)
 			
-			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
-			drawline(x1, y1, x2, y2, 0xffff8800)
-			texts.line = string.format(
-				"  LINEDEF %d\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-				closestLine.iLineID, distance,
-				math.floor(closestLine.v1.x / FRACUNIT),
-				math.floor(closestLine.v1.y / FRACUNIT),
-				math.floor(closestLine.v2.x / FRACUNIT),
-				math.floor(closestLine.v2.y / FRACUNIT))
+			if selectedSector then
+				for _, line in ipairs(selectedSector.lines) do
+					-- cached_line_coords gives some length error?
+					local x1, y1, x2, y2 = game_to_screen(line:coords())
+					drawline(x1, y1, x2, y2, 0xff00ffff)
+					texts.sector = string.format(
+						"  SECTOR %d\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
+						selectedSector.iSectorID,
+						selectedSector.special,
+						selectedSector.floorheight   / FRACUNIT,
+						selectedSector.ceilingheight / FRACUNIT)
+				end
+			end
+			
+			if closestLine then
+				local x1, y1, x2, y2 = cached_line_coords(closestLine)
+				local distance = distance_from_line(
+					{ x = player.x,      y = player.y      },
+					{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+					{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+				)
+				
+				x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
+				drawline(x1, y1, x2, y2, 0xffff8800)
+				texts.line = string.format(
+					"  LINEDEF %d\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+					closestLine.iLineID, distance,
+					math.floor(closestLine.v1.x / FRACUNIT),
+					math.floor(closestLine.v1.y / FRACUNIT),
+					math.floor(closestLine.v2.x / FRACUNIT),
+					math.floor(closestLine.v2.y / FRACUNIT))
+			end
 		end
 	end
 	
@@ -320,13 +337,34 @@ local function iterate()
 	if texts.sector then text(10, TextPosY.Sector, texts.sector, 0xff00ffff) end
 end
 
+local function cycle_log_types(isUse)
+	if isUse
+	then LineUseLog   = (LineUseLog   + 1) % (LineLogType.ALL + 1)
+	else LineCrossLog = (LineCrossLog + 1) % (LineLogType.ALL + 1)
+	end
+end
+
 local function make_buttons()
-	make_button(PADDING_WIDTH+5,30,"Add Thing ",function() add_entity(TrackedType.THING ) end)
-	make_button(PADDING_WIDTH+5,60,"Add Line  ",function() add_entity(TrackedType.LINE  ) end)
-	make_button(PADDING_WIDTH+5,90,"Add Sector",function() add_entity(TrackedType.SECTOR) end)
-	make_button(-115, 30, "Reset View",                             reset_view   )
-	make_button(-115, 90, "Follow " .. (Follow and "ON " or "OFF"), follow_toggle)
-	make_button(-115, 60, "Hilite " .. (Hilite and "ON " or "OFF"), hilite_toggle)
+	make_button(-115, 30, "Add Thing ", function() add_entity(TrackedType.THING ) end)
+	make_button(-115, 60, "Add Line  ", function() add_entity(TrackedType.LINE  ) end)
+	make_button(-115, 90, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
+	
+	local useName = "NONE"
+	if     LineUseLog == LineLogType.PLAYER then useName = "PLAYER"
+	elseif LineUseLog == LineLogType.ALL    then useName = "ALL"
+	end
+	
+	local crossName = "NONE"
+	if     LineCrossLog == LineLogType.PLAYER then crossName = "PLAYER"
+	elseif LineCrossLog == LineLogType.ALL    then crossName = "ALL"
+	end
+	
+	make_button(PADDING_WIDTH+5, 30,"Log Use   "..useName,  function() cycle_log_types(true ) end)
+	make_button(PADDING_WIDTH+5, 60,"Log Cross "..crossName,function() cycle_log_types(false) end)
+	make_button(PADDING_WIDTH+5, 90,(ShowMap and "Hide" or "Show") .. " Map  ",map_toggle   )
+	make_button(PADDING_WIDTH+5,120,"Reset View",                              reset_view   )
+	make_button(PADDING_WIDTH+5,150,"Hilite " .. (Hilite  and "ON " or "OFF"), hilite_toggle)
+	make_button(PADDING_WIDTH+5,180,"Follow " .. (Follow  and "ON " or "OFF"), follow_toggle)
 	
 	--[[--
 	make_button(10, -40, "+", function() zoom( 1) end)
@@ -339,6 +377,44 @@ local function make_buttons()
 	
 	if CurrentPrompt then
 		input_prompt()
+	elseif Confirmation then
+		Input = input.get()
+		
+		local boxWidth   = CHAR_WIDTH
+		local boxHeight  = CHAR_HEIGHT
+		local message    = string.format(
+			"Stop tracking %s %d?\n\n" ..
+			"Hit \"Enter\" to confirm,\n" ..
+			"or \"Escape\" to cancel.",
+			Tracked[Confirmation.type].Name,
+			Confirmation.id
+		)
+		local lineCount, longest = get_line_count(message)
+		local textWidth  = longest  *CHAR_WIDTH
+		local textHeight = lineCount*CHAR_HEIGHT
+		local padding    = 50
+		
+		if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
+		if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
+		
+		local x     = ScreenWidth  /2 - textWidth /2
+		local y     = ScreenHeight /2 - textHeight/2
+		local textX = x + boxWidth /2 - textWidth /2
+		local textY = y + boxHeight/2 - textHeight/2
+		
+		box(x, y, x+boxWidth, y+boxHeight, 0xaaffffff, 0xaabbddff)
+		text(textX, textY, message, 0xffffffff)
+		
+		if check_press("Escape") then
+			Confirmation = nil
+		elseif (check_press("Enter") or check_press("KeypadEnter")) then
+			local entity = Tracked[Confirmation.type]
+			entity.TrackedList[Confirmation.id] = nil
+			entity.Current = entity.Min
+			Confirmation = nil
+		end
+	
+		LastInput = Input
 	end
 end
 
@@ -346,7 +422,7 @@ end
 -- CALLBACKS
 
 event.onframestart(function()
-	if CurrentPrompt then
+	if freeze_gui() then
 		suppress_click_input()
 	end
 	
@@ -384,7 +460,10 @@ function line_event(event, line, thing)
 		end
 	end
 	
-	if type(thing) ~= "string" then
+	if type(thing) ~= "string" -- thing is not player
+	and ((LineUseLog   == LineLogType.ALL and event == "USED")
+	or   (LineCrossLog == LineLogType.ALL and event == "CROSSED"))
+	then
 		for _, mobj in pairs(Globals.mobjs:readbulk()) do
 			if thing == mobj.thinker._address then
 				thing = "thing " .. mobj.index
@@ -393,14 +472,24 @@ function line_event(event, line, thing)
 		end
 	end
 	
-	print(string.format(
-		"line %d %s by %s",
-		memory.read_s32_le(line, "System Bus"),
-		event, thing
-	))
+	if type(thing) == "string" then
+		print(string.format(
+			"line %d %s by %s",
+			memory.read_s32_le(line, "System Bus"),
+			event, thing
+		))
+	end
 end
-doom.on_use  (function(line, thing) line_event("USED",    line, thing) end)
-doom.on_cross(function(line, thing) line_event("CROSSED", line, thing) end)
+doom.on_use(function(line, thing)
+	if LineUseLog ~= LineLogType.NONE
+	then line_event("USED", line, thing)
+	end
+end)
+doom.on_cross(function(line, thing)
+	if LineCrossLog ~= LineLogType.NONE
+	then line_event("CROSSED", line, thing)
+	end
+end)
 
 
 -- MAIN LOOP

@@ -35,6 +35,11 @@ AngleType = {
     DEGREES  = 90,
     BYTE     = 64
 }
+LineLogType = {
+	NONE   = 0,
+	PLAYER = 1,
+	ALL    = 2
+}
 
 -- closure object
 TrackedEntity = {}
@@ -58,29 +63,36 @@ drawline = gui.drawLine
 
 -- TOP LEVEL VARIABLES
 
+Init           = true
+ScreenWidth    = client.screenwidth()
+ScreenHeight   = client.screenheight()
+LineUseLog     = LineLogType.NONE
+LineCrossLog   = LineLogType.NONE
+LastFramecount = -1
+
+
+-- saved to config
 Zoom           = 1
 Follow         = false
 Hilite         = false
-Init           = true
+ShowMap        = true
 Angle          = AngleType.BYTE
-LastFramecount = -1
-ScreenWidth    = client.screenwidth()
-ScreenHeight   = client.screenheight()
-
--- tables
-
 Tracked = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
 	[TrackedType.SECTOR] = TrackedEntity.new("sector")
 }
-Players = {}
-Config  = {}
 -- view offset
 Pan = {
 	x = 0,
 	y = 0
 }
+
+
+-- tables
+
+Players = {}
+Config  = {}
 -- map object positions bounds
 OB = {
 	top    = math.maxinteger,
@@ -114,6 +126,7 @@ MissileTypes  = nil
 MiscTypes     = nil
 InertTypes    = nil
 CurrentPrompt = nil
+Confirmation  = nil
 LastEpisode   = nil
 LastMap       = nil
 LastInput     = nil
@@ -261,7 +274,7 @@ end
 
 -- UTIL
 
-local function dump(o, indent)
+function dump(o, indent)
 	local offset = ""
 	if not indent then
 		offset = ""
@@ -425,11 +438,12 @@ function settings_read()
 	then
 		reset_view()
 	end
-	Zoom   = Config.Zoom   or 1
-	Pan.x  = Config.PanX   or 0
-	Pan.y  = Config.PanY   or 0
-	Follow = Config.Follow or false
-	Hilite = Config.Hilite or false
+	Zoom    = Config.Zoom    or 1
+	Pan.x   = Config.PanX    or 0
+	Pan.y   = Config.PanY    or 0
+	ShowMap = Config.ShowMap or false
+	Follow  = Config.Follow  or false
+	Hilite  = Config.Hilite  or false
 	
 	-- TRACKED ENTITIES
 	if not Config.tracked then return end
@@ -480,11 +494,12 @@ function settings_write()
 		file:write("\n")
 		
 		-- MAP STATE
-		file:write("Zoom = "   ..          Zoom    .. "\n")
-		file:write("PanX = "   ..          Pan.x   .. "\n")
-		file:write("PanY = "   ..          Pan.y   .. "\n")
-		file:write("Follow = " .. tostring(Follow) .. "\n")
-		file:write("Hilite = " .. tostring(Hilite) .. "\n")
+		file:write("Zoom = "    ..          Zoom     .. "\n")
+		file:write("PanX = "    ..          Pan.x    .. "\n")
+		file:write("PanY = "    ..          Pan.y    .. "\n")
+		file:write("Follow = "  .. tostring(Follow)  .. "\n")
+		file:write("Hilite = "  .. tostring(Hilite)  .. "\n")
+		file:write("ShowMap = " .. tostring(ShowMap) .. "\n")
 		file:write("\n")
 		
 		-- TRACKED ENTITIES
@@ -518,25 +533,32 @@ end
 
 function init_mobj_bounds()
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local x = mobj.x / FRACUNIT
-		local y = mobj.y / FRACUNIT * -1
+		local x      = mobj.x / FRACUNIT
+		local y      = mobj.y / FRACUNIT * -1
+		local index  = mobj.index
+		local entity = Tracked[TrackedType.THING]
 		if x < OB.left   then OB.left   = x end
 		if x > OB.right  then OB.right  = x end
 		if y < OB.top    then OB.top    = y end
 		if y > OB.bottom then OB.bottom = y end
+		
+		-- players have index -1, things to be removed have -2
+		if index >= 0 then
+			entity.IDs[index] = true
+		end
 	end
 end
 
 function follow_toggle()
-	if Mouse.Left and not LastMouse.left then
-		Follow = not Follow
-	end
+	Follow = not Follow
 end
 
 function hilite_toggle()
-	if Mouse.Left and not LastMouse.left then
-		Hilite = not Hilite
-	end
+	Hilite = not Hilite
+end
+
+function map_toggle()
+	ShowMap = not ShowMap
 end
 
 function suppress_click_input()
@@ -781,14 +803,14 @@ function make_button(x, y, name, func)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         )
-	and not CurrentPrompt
+	and not freeze_gui()
 	and not (Follow
 	and (func == pan_left
 	or   func == pan_up
 	or   func == pan_down
 	or   func == pan_right))
 	then
-		if Mouse.Left then
+		if Mouse.Left and not LastMouse.left then
 			suppress_click_input()
 			colorIndex = 3
 			func()
@@ -928,6 +950,11 @@ function add_entity(type)
 		end,
 		value = nil
 	}
+end
+
+function freeze_gui()
+	return CurrentPrompt ~= nil
+	or     Confirmation  ~= nil
 end
 
 
