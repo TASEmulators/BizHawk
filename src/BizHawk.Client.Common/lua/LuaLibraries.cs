@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public LuaLibraries(
-			LuaFileList scriptList,
+			List<LuaFile> scriptList,
 			IEmulatorServiceProvider serviceProvider,
 			IMainFormForApi mainForm,
 			Config config,
@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 
 		public PathEntryCollection PathEntries { get; private set; }
 
-		public LuaFileList ScriptList { get; }
+		public List<LuaFile> ScriptList { get; }
 
 		public NLuaTableHelper GetTableHelper() => _th;
 
