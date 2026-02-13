@@ -177,17 +177,17 @@ namespace BizHawk.Client.Common
 
 		/// <return>exit code, or <see langword="null"/> if should not exit</return>
 		/// <exception cref="ArgParserException">parsing failure, or invariant broken</exception>
-		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
+		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args, bool fromUnitTest = false)
 		{
 			parsed = default;
-			if (args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
+			if (!fromUnitTest && args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
 			var rootCommand = GetRootCommand();
 			var result = CommandLineParser.Parse(rootCommand, args);
 			if (result.Errors.Count is not 0)
 			{
 				// generate useful commandline error output
 				EnsureConsole();
-				result.Invoke();
+				if (!fromUnitTest) result.Invoke();
 				// show first error in modal dialog (done in `catch` block in `Program`)
 				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
 			}
@@ -195,13 +195,13 @@ namespace BizHawk.Client.Common
 			{
 				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has
 				EnsureConsole();
-				return result.Invoke();
+				return fromUnitTest ? 0 : result.Invoke();
 			}
 			if (result.GetValue(OptionQueryAppVersion))
 			{
 				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
 				EnsureConsole();
-				Console.WriteLine(VersionInfo.GetEmuVersion());
+				if (!fromUnitTest) Console.WriteLine(VersionInfo.GetEmuVersion());
 				return 0;
 			}
 
