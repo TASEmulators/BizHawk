@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			SyncAllByteArrayDomains();
 
-			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList()) { MainMemory = domains[0] };
+			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList(), this) { MainMemory = domains[0] };
 			((BasicServiceProvider)ServiceProvider).Register(_memoryDomains);
 
 			_memoryDomainsInit = true;

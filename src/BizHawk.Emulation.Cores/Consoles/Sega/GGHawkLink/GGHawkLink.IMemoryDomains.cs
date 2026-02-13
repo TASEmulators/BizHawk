@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 				domains.Add(cartRamR);
 			}
 
-			_memoryDomains = new MemoryDomainList(domains);
+			_memoryDomains = new MemoryDomainList(domains, this);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 

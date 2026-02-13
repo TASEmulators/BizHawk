@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Common
 	/// If this service is available the client will expose many RAM related tools such as the Hex Editor, RAM Search/Watch, and Cheats
 	/// In addition, this is an essential service for effective LUA scripting, and many other tools
 	/// </summary>
-	public interface IMemoryDomains : IEnumerable<MemoryDomain>, IEmulatorService
+	public interface IMemoryDomains : IReadOnlyList<MemoryDomain>, IEmulatorService
 	{
 		MemoryDomain? this[string name] { get; }
 

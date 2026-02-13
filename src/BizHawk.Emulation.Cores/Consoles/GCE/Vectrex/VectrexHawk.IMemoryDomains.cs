@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					1),
 			};
 
-			MemoryDomains = new MemoryDomainList(domains);
+			MemoryDomains = new MemoryDomainList(domains, this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 

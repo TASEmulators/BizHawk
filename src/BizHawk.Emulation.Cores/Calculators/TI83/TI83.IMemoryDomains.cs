@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 
 			SyncAllByteArrayDomains();
 
-			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList(), this);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 
 			_memoryDomainsInit = true;
