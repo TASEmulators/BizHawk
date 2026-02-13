@@ -5,6 +5,7 @@ using System.Reflection;
 
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -30,6 +31,7 @@ namespace BizHawk.Client.Common
 		// Attempt to import another type of movie file into a movie object.
 		public static ImportResult ImportFile(
 			IDialogParent dialogParent,
+			IEmulator emulator,
 			IMovieSession session,
 			string path,
 			Config config)
@@ -39,7 +41,7 @@ namespace BizHawk.Client.Common
 			// Create a new instance of the importer class using the no-argument constructor
 			return result is { Key: var importerType }
 				&& importerType.GetConstructor(Type.EmptyTypes)?.Invoke(Array.Empty<object>()) is IMovieImport importer
-					? importer.Import(dialogParent, session, path, config)
+					? importer.Import(dialogParent, emulator, session, path, config)
 					: ImportResult.Error($"No importer found for file type {ext}");
 		}
 	}

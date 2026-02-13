@@ -44,7 +44,9 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
-					Emulator.Frame, StatableEmulator.CloneSavestate());
+					Emulator.Frame,
+					StatableEmulator.CloneSavestate(),
+					Emulator);
 
 				MainForm.PauseEmulator();
 				LoadMovie(newProject, true);
@@ -57,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var saveRam = SaveRamEmulator?.CloneSaveRam(clearDirty: false) ?? throw new Exception("No SaveRam");
 				GoToFrame(TasView.AnyRowsSelected ? TasView.FirstSelectedRowIndex : 0);
-				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
+				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam, Emulator);
 				MainForm.PauseEmulator();
 				LoadMovie(newProject, true);
 			}
@@ -202,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_autosaveTimer.Stop();
 
-			if (Emulator.HasCycleTiming() && !CurrentTasMovie.IsAtEnd())
+			if (Emulator.HasCycleTiming() && !CurrentTasMovie.IsAtEnd(Emulator))
 			{
 				DialogController.ShowMessageBox("This core requires emulation to be on the last frame when writing the movie, otherwise movie length will appear incorrect.", "Warning", EMsgBoxIcon.Warning);
 			}
@@ -224,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				var bk2 = CurrentTasMovie.ToBk2();
 				bk2.Filename = fileInfo.FullName;
 				bk2.Attach(Emulator); // required to be able to save the cycle count for ICycleTiming emulators
-				bk2.Save();
+				bk2.Save(Emulator);
 				MessageStatusLabel.Text = $"{bk2.Name} exported.";
 				Cursor = Cursors.Default;
 			}
@@ -697,7 +699,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CommentsMenuItem_Click(object sender, EventArgs e)
 		{
-			using EditCommentsForm form = new(CurrentTasMovie, false)
+			using EditCommentsForm form = new(CurrentTasMovie, Emulator, false)
 			{
 				Owner = this,
 				StartPosition = FormStartPosition.Manual,
@@ -710,6 +712,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using EditSubtitlesForm form = new(
 				DialogController,
+				Emulator,
 				CurrentTasMovie,
 				Config!.PathEntries,
 				readOnly: false)

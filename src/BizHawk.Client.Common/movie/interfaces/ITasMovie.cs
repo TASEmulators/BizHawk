@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void ClearFrame(int frame);
 
-		void GreenzoneCurrentFrame();
+		void GreenzoneCurrentFrame(IEmulator emulator);
 		void ToggleBoolState(int frame, string buttonName);
 		void SetAxisState(int frame, string buttonName, int val);
 		void SetAxisStates(int frame, int count, string buttonName, int val);

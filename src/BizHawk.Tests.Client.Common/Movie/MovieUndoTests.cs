@@ -184,39 +184,39 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void RecordFrameAtEnd()
 		{
-			ITasMovie movie = TasMovieTests.MakeMovie(5);
+			ITasMovie movie = TasMovieTests.MakeMovie(5, out var emulator);
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
-				Bk2Controller controller = new Bk2Controller(movie.Emulator.ControllerDefinition);
+				Bk2Controller controller = new Bk2Controller(emulator.ControllerDefinition);
 				controller.SetBool("A", true);
-				movie.RecordFrame(5, controller);
+				movie.RecordFrame(targetFrame: 5, currentFrame: emulator.Frame, controller);
 			});
 		}
 
 		[TestMethod]
 		public void RecordFrameInMiddle()
 		{
-			ITasMovie movie = TasMovieTests.MakeMovie(5);
+			ITasMovie movie = TasMovieTests.MakeMovie(5, out var emulator);
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
-				Bk2Controller controller = new Bk2Controller(movie.Emulator.ControllerDefinition);
+				Bk2Controller controller = new Bk2Controller(emulator.ControllerDefinition);
 				controller.SetBool("A", true);
-				movie.RecordFrame(2, controller);
+				movie.RecordFrame(targetFrame: 2, currentFrame: emulator.Frame, controller);
 			});
 		}
 
 		[TestMethod]
 		public void RecordFrameZero()
 		{
-			ITasMovie movie = TasMovieTests.MakeMovie(5);
+			ITasMovie movie = TasMovieTests.MakeMovie(5, out var emulator);
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
-				Bk2Controller controller = new Bk2Controller(movie.Emulator.ControllerDefinition);
+				Bk2Controller controller = new Bk2Controller(emulator.ControllerDefinition);
 				controller.SetBool("A", true);
-				movie.RecordFrame(0, controller);
+				movie.RecordFrame(targetFrame: 0, currentFrame: emulator.Frame, controller);
 			});
 		}
 
@@ -277,18 +277,19 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void AllOperationsRespectBatching()
 		{
-			ITasMovie movie = TasMovieTests.MakeMovie(10);
+			ITasMovie movie = TasMovieTests.MakeMovie(10, out var emulator);
 
 			// Some actions can move markers.
 			movie.Markers.Add(9, "");
 			movie.BindMarkersToInput = true;
 
-			Bk2Controller controllerA = new Bk2Controller(movie.Emulator.ControllerDefinition);
+			Bk2Controller controllerA = new Bk2Controller(emulator.ControllerDefinition);
 			controllerA.SetBool("A", true);
 			string entryA = Bk2LogEntryGenerator.GenerateLogEntry(controllerA);
 
 			int beginIndex = 0;
 			TasMovieTests.TestAllOperations(movie,
+				emulator,
 				() =>
 				{
 					beginIndex = movie.ChangeLog.UndoIndex;
@@ -308,7 +309,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void AllOperationsGiveOneUndo()
 		{
-			ITasMovie movie = TasMovieTests.MakeMovie(10);
+			ITasMovie movie = TasMovieTests.MakeMovie(10, out var emulator);
 
 			// Some actions can move markers.
 			movie.Markers.Add(9, "");
@@ -316,6 +317,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 			int beginIndex = 0;
 			TasMovieTests.TestAllOperations(movie,
+				emulator,
 				() => beginIndex = movie.ChangeLog.UndoIndex,
 #pragma warning disable BHI1600 //TODO disambiguate assert calls
 				() => Assert.AreEqual(1, movie.ChangeLog.UndoIndex - beginIndex)
@@ -424,10 +426,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void GeneralRespectsMarkerBinding()
 		{
 			// This was just a silly bug.
-			ITasMovie movie = TasMovieTests.MakeMovie(5);
+			ITasMovie movie = TasMovieTests.MakeMovie(5, out var emulator);
 			movie.Markers.Add(3, "a");
 
-			Bk2Controller controllerA = new Bk2Controller(movie.Emulator.ControllerDefinition);
+			Bk2Controller controllerA = new Bk2Controller(emulator.ControllerDefinition);
 			controllerA.SetBool("A", true);
 
 			movie.BindMarkersToInput = true;

@@ -1,4 +1,5 @@
 ﻿using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Tests.Client.Common.Movie
 {
@@ -6,8 +7,11 @@ namespace BizHawk.Tests.Client.Common.Movie
 	public class TasMovieTests
 	{
 		internal static TasMovie MakeMovie(int numberOfFrames)
+			=> MakeMovie(numberOfFrames, out _);
+
+		internal static TasMovie MakeMovie(int numberOfFrames, out IEmulator emu)
 		{
-			FakeEmulator emu = new FakeEmulator();
+			emu = new FakeEmulator();
 			FakeMovieSession session = new(emu);
 			TasMovie movie = new(session, "/fake/path");
 			session.Movie = movie;
@@ -18,11 +22,11 @@ namespace BizHawk.Tests.Client.Common.Movie
 			return movie;
 		}
 
-		public static void TestAllOperations(ITasMovie movie, Action PreOperation, Action PostOperation)
+		public static void TestAllOperations(ITasMovie movie, IEmulator emulator, Action PreOperation, Action PostOperation)
 		{
-			Bk2Controller controllerEmpty = new Bk2Controller(movie.Emulator.ControllerDefinition);
+			Bk2Controller controllerEmpty = new Bk2Controller(emulator.ControllerDefinition);
 			string entryEmpty = Bk2LogEntryGenerator.GenerateLogEntry(controllerEmpty);
-			Bk2Controller controllerA = new Bk2Controller(movie.Emulator.ControllerDefinition);
+			Bk2Controller controllerA = new Bk2Controller(emulator.ControllerDefinition);
 			controllerA.SetBool("A", true);
 			string entryA = Bk2LogEntryGenerator.GenerateLogEntry(controllerA);
 
@@ -37,7 +41,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				movie.ChangeLog.Undo();
 			}
 
-			TestForSingleOperation(() => movie.RecordFrame(1, controllerA));
+			TestForSingleOperation(() => movie.RecordFrame(targetFrame: 1, currentFrame: emulator.Frame, controllerA));
 			TestForSingleOperation(() => movie.Truncate(3));
 			TestForSingleOperation(() => movie.PokeFrame(1, controllerA));
 			TestForSingleOperation(() => movie.SetFrame(1, entryA));
@@ -74,9 +78,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void AllOperationsFlagChanges()
 		{
-			ITasMovie movie = MakeMovie(10);
+			ITasMovie movie = MakeMovie(10, out var emulator);
 
 			TestAllOperations(movie,
+				emulator,
 				movie.ClearChanges,
 				() => Assert.IsTrue(movie.Changes)
 			);
@@ -85,11 +90,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		[TestMethod]
 		public void AllOperationsProduceSingleInvalidation()
 		{
-			ITasMovie movie = MakeMovie(10);
+			ITasMovie movie = MakeMovie(10, out var emulator);
 			int invalidations = 0;
 			movie.GreenzoneInvalidated = (_) => invalidations++;
 
 			TestAllOperations(movie,
+				emulator,
 				() => invalidations = 0,
 				() => Assert.AreEqual(1, invalidations)
 			);

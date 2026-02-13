@@ -1,19 +1,23 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditCommentsForm : Form
 	{
+		private readonly IEmulator _emulator;
+
 		private readonly IMovie _movie;
 		private readonly bool _readOnly;
 		private string _lastHeaderClicked;
 		private bool _sortReverse;
 		private readonly bool _dispose;
 
-		public EditCommentsForm(IMovie movie, bool readOnly, bool disposeOnClose = false)
+		public EditCommentsForm(IMovie movie, IEmulator emulator, bool readOnly, bool disposeOnClose = false)
 		{
+			_emulator = emulator;
 			_movie = movie;
 			_readOnly = readOnly;
 			_lastHeaderClicked = "";
@@ -55,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				_movie.Comments.Add(c.Value.ToString());
 			}
 
-			_movie.Save();
+			_movie.Save(_emulator);
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
