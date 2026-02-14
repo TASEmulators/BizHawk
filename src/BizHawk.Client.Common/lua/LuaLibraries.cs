@@ -136,7 +136,9 @@ namespace BizHawk.Client.Common
 
 		private Thread _currentHostThread;
 		private readonly Lock ThreadMutex = new();
-		public LuaFile CurrentFile { get; private set; }
+
+		private Stack<LuaFile> _runningFiles = new();
+		public LuaFile CurrentFile => _runningFiles.Peek();
 
 		private readonly NLuaTableHelper _th;
 
@@ -307,9 +309,10 @@ namespace BizHawk.Client.Common
 			ProhibitedApis |= prohibitedApis;
 
 			bool setThread = SetCurrentThread(luaFile);
+			_runningFiles.Push(luaFile);
 			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback ?? _defaultExceptionCallback);
-			if (setThread)
-				ClearCurrentThread();
+			_runningFiles.Pop();
+			if (setThread) ClearCurrentThread();
 
 			ProhibitedApis = previousApiGroup;
 		}
@@ -408,7 +411,6 @@ namespace BizHawk.Client.Common
 			lock (ThreadMutex)
 			{
 				_currentHostThread = null;
-				CurrentFile = null;
 			}
 		}
 
@@ -417,24 +419,13 @@ namespace BizHawk.Client.Common
 		{
 			lock (ThreadMutex)
 			{
-				if (_currentHostThread != null && _currentHostThread != Thread.CurrentThread)
+				bool wasNull = _currentHostThread is null;
+				if (!wasNull && _currentHostThread != Thread.CurrentThread)
 				{
 					throw new InvalidOperationException("Can't run lua from two host threads at the same time!");
 				}
-
-				if (CurrentFile == luaFile)
-				{
-					return false;
-				}
-				else if (CurrentFile != null)
-				{
-					// We just don't have logic for handling multiple lua files.
-					throw new InvalidOperationException("Can't have two lua files running at a time!");
-				}
-
 				_currentHostThread = Thread.CurrentThread;
-				CurrentFile = luaFile;
-				return true;
+				return wasNull;
 			}
 		}
 
