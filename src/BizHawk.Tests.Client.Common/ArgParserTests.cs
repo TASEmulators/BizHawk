@@ -21,7 +21,7 @@ namespace BizHawk.Tests.Client.Common
 			var e = Assert.ThrowsExactly<ArgParser.ArgParserException>(() => exitCode = ArgParser.ParseArguments(out _, args, fromUnitTest: true));
 			Assert.AreNotEqual(0, exitCode ?? 1);
 			Assert.Contains(substring: "Unrecog", e.Message);
-//			Assert.Contains(substring: "--nonexistent", e.Message);
+			Assert.Contains(substring: "--nonexistent", e.Message);
 		}
 	}
 }
