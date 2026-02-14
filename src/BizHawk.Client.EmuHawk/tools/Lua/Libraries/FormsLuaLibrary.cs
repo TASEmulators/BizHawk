@@ -153,9 +153,10 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("destroyall", "Closes and removes all Lua created dialogs")]
 		public void DestroyAll()
 		{
-			for (var i = _luaForms.Count - 1; i >= 0; i--)
+			// A form's close handler may close other forms.
+			foreach (LuaWinform form in _luaForms.ToArray())
 			{
-				_luaForms[i].Close();
+				if (!form.IsDisposed) form.Close();
 			}
 			_luaForms.Clear();
 		}

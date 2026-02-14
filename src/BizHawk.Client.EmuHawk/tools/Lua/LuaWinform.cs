@@ -33,11 +33,11 @@ namespace BizHawk.Client.EmuHawk
 				if (_closed) return;
 				_closed = true;
 
+				formsWindowClosedCallback(Handle); // This one first. _closeCallback may end up disposing this instance.
 				if (_closeCallback != null)
 				{
 					_luaImp.Sandbox(_ownerFile, () => _ = _closeCallback.Call());
 				}
-				formsWindowClosedCallback(Handle);
 				_ownerFile.RemoveDisposable(this);
 			};
 		}
