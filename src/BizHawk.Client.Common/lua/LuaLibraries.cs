@@ -303,7 +303,7 @@ namespace BizHawk.Client.Common
 		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null)
 		{
 			bool setThread = SetCurrentThread(luaFile);
-			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback);
+			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback ?? _defaultExceptionCallback);
 			if (setThread)
 				ClearCurrentThread();
 		}
