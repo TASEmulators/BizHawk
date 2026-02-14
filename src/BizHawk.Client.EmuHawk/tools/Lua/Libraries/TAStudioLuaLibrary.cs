@@ -178,6 +178,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample("local famesLeftToSeek = tastudio.getseekframe() - emu.framecount();")]
+		[LuaMethod("getseekframe", "Gets the frame that TAStudio is seeking to, or the current frame is no seek is in progress.")]
+		public int GetSeekFrame()
+		{
+			if (!Engaged()) return 0;
+			return Tastudio.GetSeekFrame();
+		}
+
 		[LuaMethodExample("local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
 		public LuaTable GetSelection()

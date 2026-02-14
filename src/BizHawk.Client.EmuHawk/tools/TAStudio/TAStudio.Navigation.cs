@@ -106,5 +106,10 @@ namespace BizHawk.Client.EmuHawk
 				SetVisibleFrame();
 			}
 		}
+
+		public int GetSeekFrame()
+		{
+			return _seekingTo == -1 ? Emulator.Frame : _seekingTo;
+		}
 	}
 }
