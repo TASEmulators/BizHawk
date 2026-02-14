@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 			base.Truncate(frame);
 			ChangeLog.SetGeneralRedo();
 
-			Markers.TruncateAt(frame);
+			if (BindMarkersToInput) Markers.TruncateAt(frame);
 
 			if (endBatch) ChangeLog.EndBatch();
 
