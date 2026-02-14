@@ -1,5 +1,3 @@
-using System.Threading;
-
 using BizHawk.Emulation.Common;
 
 using NLua;
@@ -11,8 +9,6 @@ namespace BizHawk.Client.Common
 		public delegate INamedLuaFunction NLFAddCallback(
 			LuaFunction function,
 			string theEvent,
-			Action<string> logCallback,
-			LuaFile luaFile,
 			string name = null);
 
 		public delegate bool NLFRemoveCallback(Func<INamedLuaFunction, bool> predicate);
@@ -28,11 +24,6 @@ namespace BizHawk.Client.Common
 			PathEntries = _luaLibsImpl.PathEntries;
 		}
 
-		protected static LuaFile CurrentFile { get; private set; }
-
-		private static Thread _currentHostThread;
-		private static readonly Lock ThreadMutex = new();
-
 		public abstract string Name { get; }
 
 		public ApiContainer APIs { get; set; }
@@ -43,32 +34,8 @@ namespace BizHawk.Client.Common
 
 		protected readonly NLuaTableHelper _th;
 
-		public static void ClearCurrentThread()
-		{
-			lock (ThreadMutex)
-			{
-				_currentHostThread = null;
-				CurrentFile = null;
-			}
-		}
-
 		/// <remarks>for implementors to reset any fields whose value depends on <see cref="APIs"/> or a <see cref="IEmulatorService">service</see></remarks>
 		public virtual void Restarted() {}
-
-		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
-		public static void SetCurrentThread(LuaFile luaFile)
-		{
-			lock (ThreadMutex)
-			{
-				if (_currentHostThread != null)
-				{
-					throw new InvalidOperationException("Can't have lua running in two host threads at a time!");
-				}
-
-				_currentHostThread = Thread.CurrentThread;
-				CurrentFile = luaFile;
-			}
-		}
 
 		protected void Log(string message)
 			=> LogOutputCallback?.Invoke(message);

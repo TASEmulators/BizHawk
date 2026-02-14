@@ -14,7 +14,9 @@ namespace BizHawk.Client.EmuHawk
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public sealed class LuaCanvas : Form
 	{
-		private readonly EmulationLuaLibrary _emuLib;
+		private readonly IEmulationApi _emuLib;
+
+		private readonly PathEntryCollection _pathEntrys;
 
 		private readonly NLuaTableHelper _th;
 
@@ -23,7 +25,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly LuaPictureBox luaPictureBox;
 
 		public LuaCanvas(
-			EmulationLuaLibrary emuLib,
+			IEmulationApi emuLib,
+			PathEntryCollection pathEntrys,
 			int width,
 			int height,
 			int? x,
@@ -32,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			Action<string> logOutputCallback)
 		{
 			_emuLib = emuLib;
+			_pathEntrys = pathEntrys;
 			_th = tableHelper;
 			LogOutputCallback = logOutputCallback;
 
@@ -485,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("save_image_to_disk", "Saves everything that's been drawn to a .png file at the given path. Relative paths are relative to the path set for \"Screenshots\" for the current system.")]
 		public void SaveImageToDisk(string path)
 		{
-			luaPictureBox.Image.Save(path.MakeAbsolute(_emuLib.PathEntries.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
+			luaPictureBox.Image.Save(path.MakeAbsolute(_pathEntrys.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
 		}
 	}
 }

@@ -1,15 +1,14 @@
 using System.Drawing;
 using System.Linq;
 
+using BizHawk.Client.Common;
 using NLua;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	public sealed class GuiLuaLibrary : LuaLibraryBase, IDisposable
 	{
 		private DisplaySurfaceID _rememberedSurfaceID = DisplaySurfaceID.EmuCore;
-
-		public Func<int, int, int?, int?, LuaTable> CreateLuaCanvasCallback { get; set; }
 
 		public GuiLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
@@ -362,7 +361,14 @@ namespace BizHawk.Client.Common
 				+ " The width and height parameters determine the size of the canvas."
 				+ " If the x and y parameters are both nil/unset, the form (window) will appear at the default position. If both are specified, the form will be positioned at (x, y) on the screen.")] // technically x can be specified w/o y but let's leave that as UB
 		public LuaTable CreateCanvas(int width, int height, int? x = null, int? y = null)
-			=> CreateLuaCanvasCallback(width, height, x, y);
+		{
+			var canvas = new LuaCanvas(APIs.Emulation, PathEntries, width, height, x, y, _th, LogOutputCallback);
+			canvas.Show();
+			LuaFile lf = _luaLibsImpl.CurrentFile;
+			lf.AddDisposable(canvas);
+			canvas.FormClosed += (s, e) => lf.RemoveDisposable(canvas);
+			return _th.ObjectToTable(canvas);
+		}
 
 		[LuaMethodExample("gui.use_surface( \"client\" );")]
 		[LuaMethod("use_surface", "Stores the name of a surface to draw on, so you don't need to pass it to every draw function. The default is \"emucore\", and the other valid value is \"client\".")]

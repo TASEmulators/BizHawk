@@ -11,7 +11,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to Doom games (functions may not run when a Doom game is not loaded)")]
-	public sealed class DoomLuaLibrary : LuaLibraryBase
+	public sealed class DoomLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
 		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
@@ -43,9 +43,16 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.RandomCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.RandomCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", name: name);
+			Action<int> RandomCallback = pr_class =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ pr_class ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(RandomCallback);
+			nlf.OnRemove += () => callbacks.Remove(RandomCallback);
 			return nlf.GuidStr;
 		}
 
@@ -68,9 +75,16 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.UseCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.LineCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", name: name);
+			Action<long, long> LineCallback = (line, thing) =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ line, thing ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 
@@ -93,9 +107,16 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.CrossCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.LineCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", name: name);
+			Action<long, long> LineCallback = (line, thing) =>
+			{
+				_luaLibsImpl.IsInInputOrMemoryCallback = true;
+				nlf.Call([ line, thing ]);
+				_luaLibsImpl.IsInInputOrMemoryCallback = false;
+			};
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 	}
