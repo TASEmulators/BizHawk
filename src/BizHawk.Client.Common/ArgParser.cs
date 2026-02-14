@@ -15,9 +15,8 @@ namespace BizHawk.Client.Common
 	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
 	public static class ArgParser
 	{
-		private static readonly Argument<string?> ArgumentRomFilePath = new("rom")
+		private static readonly Argument<string[]> ArgumentRomFilePath = new("rom")
 		{
-			DefaultValueFactory = _ => null,
 			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help",
 		};
 
@@ -134,7 +133,6 @@ namespace BizHawk.Client.Common
 			RootCommand root = new($"{
 				(string.IsNullOrEmpty(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString)
 			}, a multi-system emulator frontend\n{VersionInfo.GetEmuVersion()}");
-			root.Add(ArgumentRomFilePath);
 			root.Options.RemoveAll(option => option is VersionOption); // we have our own version command
 
 			// `--help` uses this order, so keep alphabetised by flag
@@ -163,6 +161,7 @@ namespace BizHawk.Client.Common
 			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
 			root.Add(/* --version */ OptionQueryAppVersion);
 
+			root.Add(ArgumentRomFilePath);
 			return root;
 		}
 
@@ -203,6 +202,15 @@ namespace BizHawk.Client.Common
 				EnsureConsole();
 				if (!fromUnitTest) Console.WriteLine(VersionInfo.GetEmuVersion());
 				return 0;
+			}
+
+			var unmatchedArguments = result.GetValue(ArgumentRomFilePath) ?? [ ];
+			if (unmatchedArguments.Length >= 2)
+			{
+				var foundFlagLike = unmatchedArguments.FirstOrDefault(static s => s.StartsWith("--"));
+				throw new ArgParserException(foundFlagLike is null
+					? "Multiple rom paths provided. (Did you delete half of a flag? Or forget the \"--\" of one?)"
+					: $"Unrecognised flag(s): \"{foundFlagLike}\"");
 			}
 
 			var autoDumpLength = result.GetValue(OptionAVDumpEndAtFrame);
@@ -268,8 +276,7 @@ namespace BizHawk.Client.Common
 				openExtToolDll: result.GetValue(OptionOpenExternalTool),
 				socketProtocol: result.GetValue(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
 				userdataUnparsedPairs: userdataUnparsedPairs,
-				cmdRom: result.GetValue(ArgumentRomFilePath)
-			);
+				cmdRom: unmatchedArguments.LastOrDefault()); // `unmatchedArguments.Length` must be 0 or 1 at this point, but in case we change how that's handled, 'last' here preserves the behaviour from the old hand-rolled parser
 			return null;
 		}
 
