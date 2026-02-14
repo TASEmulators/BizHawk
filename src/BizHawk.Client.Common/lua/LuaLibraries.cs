@@ -148,6 +148,9 @@ namespace BizHawk.Client.Common
 
 		private List<IDisposable> _disposables = new();
 
+		private int _resumeState = 0;
+		private bool InCallback => _resumeState == 0;
+
 		public LuaDocumentation Docs { get; } = new LuaDocumentation();
 
 		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
@@ -304,6 +307,8 @@ namespace BizHawk.Client.Common
 
 		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null)
 		{
+			_resumeState = Math.Max(0, _resumeState - 1);
+
 			bool setThread = SetCurrentThread(luaFile);
 			_runningFiles.Push(luaFile);
 			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback ?? _defaultExceptionCallback);
@@ -427,6 +432,7 @@ namespace BizHawk.Client.Common
 		{
 			var result = (WaitForFrame: false, Terminated: true);
 			LuaStatus? execResult = null;
+			_resumeState = 2;
 			Sandbox(lf, () => execResult = lf.Thread.Resume(), exceptionCallback);
 			if (execResult == null) return result;
 
@@ -447,12 +453,22 @@ namespace BizHawk.Client.Common
 
 		private void FrameAdvance()
 		{
+			if (InCallback)
+			{
+				// Throw so that callback execution stops, avoiding potentail infinite loops. Unfortunately the message in the console will be ugly.
+				throw new Exception("emu.frameadvance is not available in events or callbacks");
+			}
 			FrameAdvanceRequested = true;
 			CurrentFile.Thread.Yield();
 		}
 
 		private void EmuYield()
 		{
+			if (InCallback)
+			{
+				// Throw so that callback execution stops, avoiding potentail infinite loops. Unfortunately the message in the console will be ugly.
+				throw new Exception("emu.yield is not available in events or callbacks");
+			}
 			CurrentFile.Thread.Yield();
 		}
 	}
