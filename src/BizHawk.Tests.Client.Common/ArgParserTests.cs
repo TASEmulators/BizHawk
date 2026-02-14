@@ -1,3 +1,6 @@
+using System.IO;
+using System.Linq;
+
 using BizHawk.Client.Common;
 
 namespace BizHawk.Tests.Client.Common
@@ -10,6 +13,16 @@ namespace BizHawk.Tests.Client.Common
 		[TestMethod]
 		public void TestConfigWithHelpOrVersion(params string[] args)
 			=> Assert.AreEqual(0, ArgParser.ParseArguments(out _, args, fromUnitTest: true));
+
+		[TestMethod]
+		public void TestHelpSaysPassFlagsFirst()
+		{
+			using StringWriter output = new();
+			ArgParser.RunHelpActionForUnitTest(output);
+			var outputLines = output.ToString().Split('\n');
+			var usageLine = outputLines[outputLines.Index().First(tuple => tuple.Item.Contains("Usage:")).Index + 1].ToUpperInvariant();
+			Assert.IsTrue(usageLine.IndexOf("OPTION") < usageLine.IndexOf("ROM"));
+		}
 
 		[DataRow("rom.nes", "--nonexistent")]
 		[DataRow("--nonexistent", "rom.nes")]

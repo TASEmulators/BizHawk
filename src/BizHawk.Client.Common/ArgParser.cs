@@ -2,7 +2,10 @@
 
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Help;
+using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -15,9 +18,30 @@ namespace BizHawk.Client.Common
 	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
 	public static class ArgParser
 	{
+		private sealed class HelpSedAction(HelpAction stockAction) : SynchronousCommandLineAction
+		{
+			public override int Invoke(ParseResult parseResult)
+			{
+				var outerOutput = parseResult.InvocationConfiguration.Output;
+				using StringWriter innerOutput = new();
+				parseResult.InvocationConfiguration.Output = innerOutput;
+				var result = stockAction.Invoke(parseResult);
+				var dollarZero = OSTailoredCode.IsUnixHost
+#if true
+					? "./EmuHawkMono.sh"
+#else //TODO for .NET Core: see https://github.com/dotnet/runtime/issues/101837
+					? Environment.GetCommandLineArgs()[0].SubstringAfterLast('/')
+#endif
+					: Environment.GetCommandLineArgs()[0].SubstringAfterLast('\\');
+				outerOutput.Write(innerOutput.ToString().Replace("EmuHawk", dollarZero)
+					.Replace("[<rom>...] [options]", "[option...] [rom]"));
+				return result;
+			}
+		}
+
 		private static readonly Argument<string[]> ArgumentRomFilePath = new("rom")
 		{
-			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help",
+			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`",
 		};
 
 		private static readonly Option<string?> OptionAVDumpAudioSync = new("--audiosync")
@@ -134,6 +158,8 @@ namespace BizHawk.Client.Common
 				(string.IsNullOrEmpty(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString)
 			}, a multi-system emulator frontend\n{VersionInfo.GetEmuVersion()}");
 			root.Options.RemoveAll(option => option is VersionOption); // we have our own version command
+			var helpOption = root.Options.OfType<HelpOption>().First();
+			helpOption.Action = new HelpSedAction((HelpAction) helpOption.Action!);
 
 			// `--help` uses this order, so keep alphabetised by flag
 			root.Add(/* --audiosync */ OptionAVDumpAudioSync);
@@ -278,6 +304,13 @@ namespace BizHawk.Client.Common
 				userdataUnparsedPairs: userdataUnparsedPairs,
 				cmdRom: unmatchedArguments.LastOrDefault()); // `unmatchedArguments.Length` must be 0 or 1 at this point, but in case we change how that's handled, 'last' here preserves the behaviour from the old hand-rolled parser
 			return null;
+		}
+
+		internal static void RunHelpActionForUnitTest(TextWriter output)
+		{
+			var result = CommandLineParser.Parse(GetRootCommand(), [ "--help" ]);
+			result.InvocationConfiguration.Output = output;
+			result.Invoke();
 		}
 
 		public sealed class ArgParserException : Exception
