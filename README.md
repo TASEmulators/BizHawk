@@ -382,7 +382,7 @@ For an idea of what systems may be covered in the future, check [our core reques
 A short [FAQ](https://tasvideos.org/Bizhawk/FAQ) is provided on the TASVideos wiki. If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASEmulators/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
 - `#bizhawk` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
 	- Also the more specialised channels `#tas-production` and `#scripting` (for Lua) on that server
-	- For the .NET API, [the ApiHawk server](https://discord.gg/UPhN4um3px)
+	- For the .NET API, [the ApiHawk server](https://tinyurl.com/4ke83nta)
 - The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)
 - `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
 - The [/r/BizHawk](https://reddit.com/r/BizHawk) and [/r/TAS](https://reddit.com/r/TAS) subreddits
