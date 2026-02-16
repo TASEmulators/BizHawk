@@ -120,16 +120,18 @@ namespace BizHawk.Client.DiscoHawk
 
 			if (args.Length == 0)
 			{
-				using var dialog = new MainDiscoForm();
+				var i18n = MultiMessageContext.ForCurrentCulture();
+				using MainDiscoForm dialog = new(i18n);
 				dialog.ShowDialog();
 			}
 			else
 			{
 				DiscoHawkLogic.RunWithArgs(
 					args,
-					results =>
+					results => // invoked 0..1 times
 					{
-						using var cr = new ComparisonResults { textBox1 = { Text = results } };
+						var i18n = MultiMessageContext.ForCurrentCulture();
+						using ComparisonResults cr = new(i18n) { textBox1 = { Text = results } };
 						cr.ShowDialog();
 					});
 			}
