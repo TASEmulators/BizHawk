@@ -98,9 +98,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (Core != IntPtr.Zero)
 			{
+				_memoryCallbacks.Dispose();
 				LibmGBA.BizDestroy(Core);
 				Core = IntPtr.Zero;
-				_memoryCallbacks.Dispose();
 			}
 		}
 
