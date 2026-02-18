@@ -157,9 +157,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Clear()
 		{
-			foreach (var cb in _callbacks)
+			while (_callbacks.Count > 0)
 			{
-				Remove(cb);
+				Remove(_callbacks[^1]);
 			}
 		}
 
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Dispose()
 		{
-			_callbacks.Clear();
+			Clear();
 			_mgba = null;
 			_core = IntPtr.Zero;
 		}
