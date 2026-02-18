@@ -87,6 +87,7 @@ namespace BizHawk.Client.EmuHawk
 					if (instance is ClientLuaLibrary clientLib)
 					{
 						clientLib.MainForm = _mainForm;
+						clientLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
 					}
 					else if (instance is ConsoleLuaLibrary consoleLib)
 					{

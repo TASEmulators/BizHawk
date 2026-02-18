@@ -1105,27 +1105,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
 		public bool PressRewind { get; set; } // necessary for tastudio < button
 
-		/// <summary>
-		/// Disables updates for video/audio, and enters "turbo" mode.
-		/// Can be used to replicate Gens-rr's "latency compensation" that involves:
-		/// <list type="bullet">
-		/// <item><description>Saving a no-framebuffer state that is stored in RAM</description></item>
-		/// <item><description>Emulating forth for some frames with updates disabled</description></item>
-		/// <item><description><list type="bullet">
-		/// <item><description>Optionally hacking in-game memory
-		/// (like camera position, to show off-screen areas)</description></item>
-		/// </list></description></item>
-		/// <item><description>Updating the screen</description></item>
-		/// <item><description>Loading the no-framebuffer state from RAM</description></item>
-		/// </list>
-		/// The most common use case is CamHack for Sonic games.
-		/// Accessing this from Lua allows to keep internal code hacks to minimum.
-		/// <list type="bullet">
-		/// <item><description><see cref="ClientLuaLibrary.InvisibleEmulation(bool)"/></description></item>
-		/// </list>
-		/// </summary>
-		public bool InvisibleEmulation { get; set; }
-
 		private long MouseWheelTracker;
 
 		private int? _pauseOnFrame;
@@ -1149,7 +1128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
-		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking || InvisibleEmulation;
+		public bool IsTurboing => InputManager.ClientControls["Turbo"] || IsTurboSeeking;
 		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing;
 		public bool IsRewinding { get; private set; }
 
@@ -1209,6 +1188,10 @@ namespace BizHawk.Client.EmuHawk
 		public event StateLoadedEventHandler SavestateLoaded;
 
 		public event StateSavedEventHandler SavestateSaved;
+
+		public ShowFutureCallback/*?*/ PreFutureFrameCallback { get; set; }
+
+		public int MaxFutureFrames { get; set; }
 
 		private readonly InputManager InputManager;
 
@@ -2866,14 +2849,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SeekFrameAdvance()
-		{
-			PressFrameAdvance = true;
-			StepRunLoop_Core(true);
-			DisplayManager.DiscardApiHawkSurfaces();
-			PressFrameAdvance = false;
-		}
-
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
@@ -2978,13 +2953,10 @@ namespace BizHawk.Client.EmuHawk
 					Tools.UpdateToolsBefore();
 				}
 
-				if (!InvisibleEmulation)
-				{
-					CaptureRewind(isRewinding);
-				}
+				CaptureRewind(isRewinding);
 
 				// Set volume, if enabled
-				if (Config.SoundEnabledNormal && !InvisibleEmulation)
+				if (Config.SoundEnabledNormal)
 				{
 					atten = Config.SoundVolume / 100.0f;
 
@@ -3043,7 +3015,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool atTurboSeekEnd = IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value - 1;
-				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd);
+				bool render = !_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd;
 				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
 				MovieSession.HandleFrameAfter(ToolBypassingMovieEndAction is not null);
@@ -3084,11 +3056,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (!PauseAvi && newFrame && !InvisibleEmulation)
-				{
-					AvFrameAdvance();
-				}
-
 				if (newFrame)
 				{
 					_framesSinceLastFpsUpdate++;
@@ -3106,6 +3073,33 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_wasRewinding = isRewinding;
+
+				if (newFrame && PreFutureFrameCallback != null)
+				{
+					IStatable statable = Emulator.AsStatable();
+					MemoryStream state = new();
+					statable.SaveStateBinary(new(state));
+
+					int frameCount = 0;
+					while (!PreFutureFrameCallback(frameCount) && frameCount < MaxFutureFrames)
+					{
+						frameCount++;
+						MovieSession.HandleFrameBefore();
+						Emulator.FrameAdvance(InputManager.ControllerOutput, true, false);
+						CheatList.Pulse();
+						// No tools updates here. No existing tool (except Lua, but that gets the ShowFutureFrameCallback) needs to do anything.
+						// Maybe in the future we'll add a special update type, or add a callback for this.
+						// Note that other callbacks (e.g. memory hooks) are still being used.
+					}
+
+					state.Seek(0, SeekOrigin.Begin);
+					statable.LoadStateBinary(new(state));
+				}
+
+				if (!PauseAvi && newFrame)
+				{
+					AvFrameAdvance();
+				}
 			}
 			else if (isRewinding)
 			{

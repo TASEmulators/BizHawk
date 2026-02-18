@@ -135,8 +135,6 @@ namespace BizHawk.Client.Common
 		public int GetWindowSize()
 			=> _config.GetWindowScaleFor(Emulator.SystemId);
 
-		public void InvisibleEmulation(bool invisible) => _mainForm.InvisibleEmulation = invisible;
-
 		public bool IsPaused() => _mainForm.EmulatorPaused;
 
 		public bool IsSeeking() => _mainForm.IsSeeking;
@@ -186,13 +184,6 @@ namespace BizHawk.Client.Common
 
 		public int ScreenWidth() => _displayManager.GetPanelNativeSize().Width;
 
-		public void SeekFrame(int frame)
-		{
-			var wasPaused = _mainForm.EmulatorPaused;
-			while (Emulator.Frame != frame) _mainForm.SeekFrameAdvance();
-			if (!wasPaused) _mainForm.UnpauseEmulator();
-		}
-
 		public void SetClientExtraPadding(int left, int top, int right, int bottom)
 		{
 			_displayManager.ClientExtraPadding = (left, top, right, bottom);
@@ -226,6 +217,12 @@ namespace BizHawk.Client.Common
 			{
 				_logCallback("Invalid window size");
 			}
+		}
+
+		public void ShowFuture(ShowFutureCallback preFrameCallback, int maxFrames)
+		{
+			_mainForm.PreFutureFrameCallback = preFrameCallback;
+			_mainForm.MaxFutureFrames = maxFrames;
 		}
 
 		public void SpeedMode(int percent)

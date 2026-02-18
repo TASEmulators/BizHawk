@@ -17,6 +17,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : LuaLibraryBase
 	{
+		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
@@ -93,18 +95,6 @@ namespace BizHawk.Client.Common
 		[LuaMethod("get_lua_engine", "returns the name of the Lua engine currently in use")]
 		public string GetLuaEngine()
 			=> "NLua+Lua";
-
-		[LuaMethodExample("client.invisibleemulation( true );")]
-		[LuaMethod("invisibleemulation", "Enters/exits turbo mode and disables/enables most emulator updates.")]
-		public void InvisibleEmulation(bool invisible)
-			=> APIs.EmuClient.InvisibleEmulation(invisible);
-
-		[LuaDeprecatedMethod]
-		[LuaMethod("seekframe", "Does nothing. Use the pause/unpause functions instead and a loop that waits for the desired frame.")]
-		public void SeekFrame(int frame)
-		{
-			Log("Deprecated function client.seekframe() used. Replace the call with pause/unpause functions and a loop that waits for the desired frame.");
-		}
 
 		[LuaMethodExample("local sounds_terrible = client.get_approx_framerate() < 55;")]
 		[LuaMethod("get_approx_framerate", "Gets the (host) framerate, approximated from frame durations.")]
@@ -277,6 +267,25 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setwindowsize", "Sets the main window's size to the give value. Accepted values are 1, 2, 3, 4, 5, and 10")]
 		public void SetWindowSize(int size)
 			=> APIs.EmuClient.SetWindowSize(size);
+
+		[LuaMethodExample("client.show_future(function(frame) return frame == 1 end, 1)")]
+		[LuaMethod(
+			name: "show_future",
+			description: "Tell the client to display a frame from the future, instead of the current frame. " +
+				"The given lua function will be called before emulating each future frame. " +
+				"It can have 1 parameter, which is the number of frames into the future that have already been emulated. " +
+				"Return false to emulate another future frame. " +
+				"When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displaed. " +
+				"Unregister the callback with event.unregister____ to disable future frame dispaly. " +
+				"No more than `maxFrames` future frames will be emulated. Useful to avoid freezing " +
+				"the client UI in case of accidentally never returning true from the callback.")]
+		public string ShowFuture(LuaFunction luaf, int maxFrames, string name = null)
+		{
+			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_FUTURE, LogOutputCallback, CurrentFile, name: name);
+			APIs.EmuClient.ShowFuture(nlf.FutureCallback, maxFrames);
+			nlf.OnRemove += () => APIs.EmuClient.ShowFuture(null, 0);
+			return nlf.GuidStr;
+		}
 
 		[LuaMethodExample("client.speedmode( 75 );")]
 		[LuaMethod("speedmode", "Sets the speed of the emulator (in terms of percent)")]
