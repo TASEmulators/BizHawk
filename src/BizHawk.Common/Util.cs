@@ -43,11 +43,11 @@ namespace BizHawk.Common
 
 		/// <summary>equivalent to <see cref="Console.WriteLine(object)">Console.WriteLine</see> but is <c>#ifdef DEBUG</c></summary>
 		[Conditional("DEBUG")]
-		public static void DebugWriteLine(object value) => Console.WriteLine(value);
+		public static void DebugWriteLine(object? value) => Console.WriteLine(value);
 
 		/// <summary>equivalent to <see cref="Console.WriteLine(string, object[])">Console.WriteLine</see> but is <c>#ifdef DEBUG</c></summary>
 		[Conditional("DEBUG")]
-		public static void DebugWriteLine(string format, params object[] arg) => Console.WriteLine(format, arg);
+		public static void DebugWriteLine(string format, params object?[] arg) => Console.WriteLine(format, arg);
 
 		/// <exception cref="InvalidOperationException">issues with parsing <paramref name="src"/></exception>
 		/// <remarks>TODO use <see cref="MemoryStream(int)"/> and <see cref="MemoryStream.ToArray"/> instead of using <see cref="MemoryStream(byte[])"/> and keeping a reference to the array? --yoshi</remarks>
