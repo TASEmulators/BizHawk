@@ -86,7 +86,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			};
 			Api.core.snes_init(ref snesInitData);
 			Api.SetCallbacks(callbacks);
-			PutSettings(loadParameters.Settings ?? new SnesSettings());
 
 			// start up audio resampler
 			InitAudio();
@@ -121,6 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				Api.core.snes_load_cartridge_normal(loadParameters.Roms[0].RomData, loadParameters.Roms[0].RomData.Length);
 			}
+
+			PutSettings(loadParameters.Settings ?? new SnesSettings());
 
 			using (Api.EnterExit()) this.BoardName = Marshal.PtrToStringAnsi(Api.core.snes_get_board());
 			_region = Api.core.snes_get_region();
