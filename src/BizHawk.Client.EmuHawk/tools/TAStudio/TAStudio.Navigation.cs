@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (frame < Emulator.Frame || (closestState.Key > Emulator.Frame && !skipLoadState))
 			{
-				LoadState(closestState, true);
+				LoadState(closestState);
 			}
 			closestState.Value.Dispose();
 
