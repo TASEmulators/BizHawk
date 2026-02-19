@@ -8,6 +8,7 @@
 #include "BizTypes.h"
 #include "dthumb.h"
 
+#include <type_traits>
 #include <waterboxcore.h>
 
 melonDS::NDS* CurrentNDS;
@@ -181,73 +182,117 @@ static bool SafeToPeek(u32 addr)
 	return true;
 }
 
-static void ARM9Access(u8* buffer, s64 address, s64 count, bool write)
+template <typename access_size>
+static void ARM9ReadSized(access_size* buffer, s64 address, s64 count)
 {
-	if (write)
-	{
-		while (count--)
-		{
-			if (address < CurrentNDS->ARM9.ITCMSize)
-			{
-				CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)] = *buffer;
-			}
-			else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
-			{
-				CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)] = *buffer;
-			}
-			else
-			{
-				CurrentNDS->ARM9Write8(address, *buffer);
-			}
+	static_assert(
+		std::is_same<access_size, u32>::value ||
+		std::is_same<access_size, u16>::value ||
+		std::is_same<access_size, u8>::value
+	);
 
-			address++;
-			buffer++;
-		}
-	}
-	else
+	while (count--)
 	{
-		while (count--)
+		if (address < CurrentNDS->ARM9.ITCMSize)
 		{
-			if (address < CurrentNDS->ARM9.ITCMSize)
-			{
-				*buffer = CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)];
-			}
-			else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
-			{
-				*buffer = CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)];
-			}
-			else
-			{
+			*buffer = *(access_size*)&(CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)]);
+		}
+		else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
+		{
+			*buffer = *(access_size*)&(CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)]);
+		}
+		else
+		{
+			if constexpr (std::is_same<access_size, u32>::value)
+				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read32(address) : 0;
+			else if constexpr (std::is_same<access_size, u16>::value)
+				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read16(address) : 0;
+			else if constexpr (std::is_same<access_size, u8>::value)
 				*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM9Read8(address) : 0;
-			}
-
-			address++;
-			buffer++;
 		}
+
+		address += sizeof(access_size);
+		buffer++;
 	}
 }
 
-static void ARM7Access(u8* buffer, s64 address, s64 count, bool write)
+template <typename access_size>
+static void ARM9WriteSized(access_size* buffer, s64 address, s64 count)
 {
-	if (write)
-	{
-		while (count--)
-		{
-			CurrentNDS->ARM7Write8(address, *buffer);
+	static_assert(
+		std::is_same<access_size, u32>::value ||
+		std::is_same<access_size, u16>::value ||
+		std::is_same<access_size, u8>::value
+	);
 
-			address++;
-			buffer++;
-		}
-	}
-	else
+	while (count--)
 	{
-		while (count--)
+		if (address < CurrentNDS->ARM9.ITCMSize)
 		{
+			*(access_size*)&(CurrentNDS->ARM9.ITCM[address & (melonDS::ITCMPhysicalSize - 1)]) = *buffer;
+		}
+		else if ((address & CurrentNDS->ARM9.DTCMMask) == CurrentNDS->ARM9.DTCMBase)
+		{
+			*(access_size*)&(CurrentNDS->ARM9.DTCM[address & (melonDS::DTCMPhysicalSize - 1)]) = *buffer;
+		}
+		else
+		{
+			if constexpr (std::is_same<access_size, u32>::value)
+				CurrentNDS->ARM9Write32(address, *buffer);
+			else if constexpr (std::is_same<access_size, u16>::value)
+				CurrentNDS->ARM9Write16(address, *buffer);
+			else if constexpr (std::is_same<access_size, u8>::value)
+				CurrentNDS->ARM9Write8(address, *buffer);
+		}
+
+		address += sizeof(access_size);
+		buffer++;
+	}
+}
+
+template <typename access_size>
+static void ARM7ReadSized(access_size* buffer, s64 address, s64 count)
+{
+	static_assert(
+		std::is_same<access_size, u32>::value ||
+		std::is_same<access_size, u16>::value ||
+		std::is_same<access_size, u8>::value
+	);
+
+	while (count--)
+	{
+		if constexpr (std::is_same<access_size, u32>::value)
+			*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM7Read32(address) : 0;
+		else if constexpr (std::is_same<access_size, u16>::value)
+			*buffer = SafeToPeek<true>(address) ? CurrentNDS->ARM7Read16(address) : 0;
+		else if constexpr (std::is_same<access_size, u8>::value)
 			*buffer = SafeToPeek<false>(address) ? CurrentNDS->ARM7Read8(address) : 0;
 
-			address++;
-			buffer++;
-		}
+		address += sizeof(access_size);
+		buffer++;
+	}
+}
+
+template <typename access_size>
+static void ARM7WriteSized(access_size* buffer, s64 address, s64 count)
+{
+	static_assert(
+		std::is_same<access_size, u32>::value ||
+		std::is_same<access_size, u16>::value ||
+		std::is_same<access_size, u8>::value
+	);
+
+	while (count--)
+	{
+		if constexpr (std::is_same<access_size, u32>::value)
+			CurrentNDS->ARM7Write32(address, *buffer);
+		else if constexpr (std::is_same<access_size, u16>::value)
+			CurrentNDS->ARM7Write16(address, *buffer);
+		else if constexpr (std::is_same<access_size, u8>::value)
+			CurrentNDS->ARM7Write8(address, *buffer);
+
+		address += sizeof(access_size);
+		buffer++;
 	}
 }
 
@@ -299,8 +344,24 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 		ADD_MEMORY_DOMAIN("NWRAM C", dsi->NWRAM_C, melonDS::NWRAMSize, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE);
 	}
 
-	ADD_MEMORY_DOMAIN("ARM9 System Bus", ARM9Access, 1ull << 32, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK);
-	ADD_MEMORY_DOMAIN("ARM7 System Bus", ARM7Access, 1ull << 32, MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_FUNCTIONHOOK);
+	uint64_t flags = MEMORYAREA_FLAGS_WORDSIZE4 | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SIZEDFUNCTIONHOOKS;
+	static void* bus9[6];
+	bus9[0] = reinterpret_cast<void*>(ARM9ReadSized<u8>);
+	bus9[1] = reinterpret_cast<void*>(ARM9WriteSized<u8>);
+	bus9[2] = reinterpret_cast<void*>(ARM9ReadSized<u16>);
+	bus9[3] = reinterpret_cast<void*>(ARM9WriteSized<u16>);
+	bus9[4] = reinterpret_cast<void*>(ARM9ReadSized<u32>);
+	bus9[5] = reinterpret_cast<void*>(ARM9WriteSized<u32>);
+	ADD_MEMORY_DOMAIN("ARM9 System Bus", bus9, 1ull << 32, flags);
+
+	static void* bus7[6];
+	bus7[0] = reinterpret_cast<void*>(ARM7ReadSized<u8>);
+	bus7[1] = reinterpret_cast<void*>(ARM7WriteSized<u8>);
+	bus7[2] = reinterpret_cast<void*>(ARM7ReadSized<u16>);
+	bus7[3] = reinterpret_cast<void*>(ARM7WriteSized<u16>);
+	bus7[4] = reinterpret_cast<void*>(ARM7ReadSized<u32>);
+	bus7[5] = reinterpret_cast<void*>(ARM7WriteSized<u32>);
+	ADD_MEMORY_DOMAIN("ARM7 System Bus", bus7, 1ull << 32, flags);
 
 	// fixme: include more shit
 }
