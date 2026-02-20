@@ -90,10 +90,7 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			if ((long)addresses.Count() != values.Length)
-			{
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if (addresses.Count() > (uint)values.Length) throw new ArgumentException($"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
 
 			using (this.EnterExit())
 			{
@@ -104,27 +101,46 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public virtual void BulkPokeByte(long startAddress, Span<byte> values)
+		{
+			if (values == null) throw new ArgumentNullException(paramName: nameof(values));
+
+			using (this.EnterExit())
+			{
+				long address = startAddress;
+				for (var i = 0; i < values.Length; i++, address++)
+				{
+					 PokeByte(address, values[i]);
+				}
+			}
+		}
+
 		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
-
-			if ((start & 1) != 0 || (end & 1) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-			if (values.LongLength * 2 != end - start)
-			{
-				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if (addresses.Count() > (uint)values.Length * sizeof(ushort)) throw new ArgumentException($"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 2)
-					values[i] = PeekUshort(start, bigEndian);
+				long address = addresses.Start;
+				for (var i = 0; i < values.Length; i++, address += sizeof(ushort))
+					values[i] = PeekUshort(address, bigEndian);
+			}
+		}
+
+		public virtual void BulkPokeUshort(long startAddress, bool bigEndian, Span<ushort> values)
+		{
+			if (values == null) throw new ArgumentNullException(paramName: nameof(values));
+
+			using (this.EnterExit())
+			{
+				long address = startAddress;
+				for (var i = 0; i < values.Length; i++, address += sizeof(ushort))
+				{
+					 PokeUshort(address, values[i], bigEndian);
+				}
 			}
 		}
 
@@ -133,22 +149,27 @@ namespace BizHawk.Emulation.Common
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
-			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
-
-			if ((start & 3) != 0 || (end & 3) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-			if (values.LongLength * 4 != end - start)
-			{
-				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if (addresses.Count() > (uint)values.Length * sizeof(uint)) throw new ArgumentException($"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 4)
-					values[i] = PeekUint(start, bigEndian);
+				var address = addresses.Start;
+				for (var i = 0; i < values.Length; i++, address += sizeof(uint))
+					values[i] = PeekUint(address, bigEndian);
+			}
+		}
+
+		public virtual void BulkPokeUint(long startAddress, bool bigEndian, Span<uint> values)
+		{
+			if (values == null) throw new ArgumentNullException(paramName: nameof(values));
+
+			using (this.EnterExit())
+			{
+				long address = startAddress;
+				for (var i = 0; i < values.Length; i++, address += sizeof(uint))
+				{
+					 PokeUint(address, values[i], bigEndian);
+				}
 			}
 		}
 
