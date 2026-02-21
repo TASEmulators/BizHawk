@@ -34,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
 		// Also a UsesRam, and similar method
 		private readonly List<IToolForm> _tools = new List<IToolForm>();
+		private readonly List<IToolForm> _toolsToRestart = new();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ToolManager"/> class.
@@ -589,6 +590,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void Stop()
+		{
+			foreach (IToolForm tool in _tools.Where(static t => t.IsActive))
+			{
+				_toolsToRestart.Add(tool);
+				tool.Stop();
+			}
+		}
+
 		public void Restart(Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
@@ -604,7 +614,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool)
 					&& (tool is not IExternalToolForm || ApiInjector.UpdateApis(GetOrInitApiProvider, tool)))
 				{
-					if (tool.IsActive) tool.Restart();
+					if (_toolsToRestart.Contains(tool)) tool.Restart();
 				}
 				else
 				{
@@ -618,6 +628,8 @@ namespace BizHawk.Client.EmuHawk
 				tool.Close();
 				_tools.Remove(tool);
 			}
+
+			_toolsToRestart.Clear();
 		}
 
 		/// <summary>
