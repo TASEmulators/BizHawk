@@ -18,6 +18,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager : IToolLoader
 	{
+		static ToolManager()
+		{
+			// APIs are used by tools, so this seems like a good place to add API types to the manager.
+			// Only API types not visible to BizHawk.Client.Common need to be added here.
+			ApiManager.AddApiType(typeof(ToolApi));
+		}
+
 		private readonly MainForm _owner;
 		private Config _config;
 		private readonly DisplayManager _displayManager;
