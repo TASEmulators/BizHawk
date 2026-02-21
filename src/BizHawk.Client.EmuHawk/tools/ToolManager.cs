@@ -135,6 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (newTool is Form form) form.Owner = _owner;
 			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null; //TODO pass `true` for `mayCache` when from EmuHawk assembly
+			if (newTool is IExternalToolForm && !ApiInjector.UpdateApis(GetOrInitApiProvider, newTool)) return null;
 			SetBaseProperties(newTool);
 			var toolTypeName = typeof(T).FullName!;
 			// auto settings
