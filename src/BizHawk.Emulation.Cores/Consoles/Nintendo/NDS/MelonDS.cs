@@ -121,6 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				ReadOnlySpan<byte> romHeader = roms[0].AsSpan(0, 0x1000);
 				ReadOnlySpan<byte> dsiWare = [ ], bios7i = [ ];
+#if false
 				if (!IsRomValid(roms[0]))
 				{
 					// if the ROM isn't valid, this could potentially be a backup TAD the user is attempting to load
@@ -295,6 +296,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 						throw new InvalidOperationException("Backup TAD did not have DSiWare");
 					}
 				}
+#endif
 
 				DSiTitleId = GetDSiTitleId(romHeader);
 				IsDSi |= IsDSiWare;
@@ -638,22 +640,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			// check ARM7/ARM9 (and maybe ARM7i/ARM9i) binary offsets/sizes to see if they're sane
 			// if these are wildly wrong, the ROM may crash the core
-			var unitCode = rom[0x12];
-			var isDsiExclusive = (unitCode & 0x03) == 3;
 			var arm9RomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x20, 4));
 			var arm9Size = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x2C, 4));
 			var arm7RomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x30, 4));
 			var arm7Size = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x3C, 4));
-			if (arm9RomOffset > rom.Length
-				|| (arm9Size > 0x3BFE00 && !isDsiExclusive)
+			if (arm9RomOffset < 0x200
+				|| arm9RomOffset > rom.Length
 				|| arm9RomOffset + arm9Size > rom.Length
+				|| arm7RomOffset < 0x200
 				|| arm7RomOffset > rom.Length
-				|| (arm7Size > 0x3BFE00 && !isDsiExclusive)
 				|| arm7RomOffset + arm7Size > rom.Length)
 			{
 				return false;
 			}
 
+			var unitCode = rom[0x12];
 			if ((unitCode & 0x02) != 0)
 			{
 				var arm9iRomOffset = BinaryPrimitives.ReadUInt32LittleEndian(rom.Slice(0x1C0, 4));
