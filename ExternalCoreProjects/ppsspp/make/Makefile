@@ -842,8 +842,8 @@ SRCS =  ../bizhawk.cpp \
 
 LDFLAGS = -shared -s $(CXXFLAGS)
 
-DEST = ../../Assets/dll
-DESTCOPY = ../../output/dll
+DEST = ../../../Assets/dll
+DESTCOPY = ../../../output/dll
 OBJS := $(addsuffix .o,$(basename $(SRCS)))
 
 %.o: %.c

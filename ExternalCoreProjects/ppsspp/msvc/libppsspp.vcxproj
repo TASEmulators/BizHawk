@@ -784,11 +784,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>.;..\ppsspp\ext;..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;..\ppsspp\ext\native\tools\prebuilt;..\ppsspp\ext\native\tools\prebuilt\freetype;..\jaffarCommon\subprojects\SDL2_TTF\external\SDL2\include;$(IncludePath)</IncludePath>
-    <OutDir>..\Assets\dll</OutDir>
+    <OutDir>..\..\Assets\dll</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>.;..\ppsspp\ext;..\ppsspp\ext\glslang;..\ppsspp;..\ppsspp\libretro;..\ppsspp\ext\OpenXR-SDK\include;..\ppsspp\Common;..\ppsspp\ext\armips;..\ppsspp\ext\libzip;..\ppsspp\ext\libpng17;..\ppsspp\ext\zstd\lib;..\ppsspp\ext\libchdr\include;..\ppsspp\ext\miniupnp\miniupnpc\src;..\ppsspp\ext\miniupnp\miniupnpc\include;..\ppsspp\ext\snappy\;..\ppsspp\ext\rcheevos\include\;..\ppsspp\ext\cmake\cpu_features\..\..\cpu_features\include;..\ppsspp\ext\libchdr\deps\lzma-22.01\include\;..\ppsspp\ext\lua\;..\ppsspp\ext\zlib\;..\ppsspp\ext\glew;..\ppsspp\ext\glslang-build;..\ppsspp\ext\glslang;..\ppsspp\ffmpeg\linux\x86_64\include\;..\ppsspp\ext\miniupnp-build\;..\jaffarCommon\include;..\jaffarCommon\third_party;..\ppsspp\ext\native\tools\prebuilt;..\ppsspp\ext\native\tools\prebuilt\freetype;..\jaffarCommon\subprojects\SDL2_TTF\external\SDL2\include;$(IncludePath)</IncludePath>
-    <OutDir>..\Assets\dll</OutDir>
+    <OutDir>..\..\Assets\dll</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -929,9 +929,9 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <Target Name="CopyToHawkAssets" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(OutDir)libppsspp.dll" DestinationFolder="$(ProjectDir)..\..\Assets\dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutDir)libppsspp.dll" DestinationFolder="$(ProjectDir)..\..\..\Assets\dll" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="CopyToHawkOutput" AfterTargets="PostBuildEvent" Condition=" Exists('$(ProjectDir)..\..\output\dll') ">
-    <Copy SourceFiles="$(OutDir)libppsspp.dll" DestinationFolder="$(ProjectDir)..\..\output\dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutDir)libppsspp.dll" DestinationFolder="$(ProjectDir)..\..\..\output\dll" SkipUnchangedFiles="true" />
   </Target>
 </Project>

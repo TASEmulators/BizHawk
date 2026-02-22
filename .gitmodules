@@ -97,10 +97,10 @@
 	url = https://github.com/TASEmulators/dsda-doom.git
 	branch = wbx
 [submodule "ppsspp/ppsspp"]
-	path = ppsspp/ppsspp
+	path = ExternalCoreProjects/ppsspp/ppsspp
 	url = https://github.com/TASEmulators/ppsspp.git
 [submodule "ppsspp/jaffarCommon"]
-	path = ppsspp/jaffarCommon
+	path = ExternalCoreProjects/ppsspp/jaffarCommon
 	url = https://github.com/SergioMartin86/jaffarCommon.git
 [submodule "waterbox/opera/opera-libretro"]
 	path = waterbox/opera/opera-libretro
