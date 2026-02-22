@@ -6,7 +6,9 @@ using System.IO.Compression;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+#if false
 using System.Security.Cryptography;
+#endif
 using System.Text;
 using System.Threading;
 
