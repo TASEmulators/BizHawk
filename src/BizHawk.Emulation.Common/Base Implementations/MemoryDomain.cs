@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Common
 			if ((start & 1) != 0 || (end & 1) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
 
-			if (values.LongLength * 2 != end - start)
+			if (values.LongLength * sizeof(ushort) != end - start)
 			{
 				// a longer array could be valid, but nothing needs that so don't support it for now
 				throw new InvalidOperationException("Invalid length of values array");
@@ -123,8 +123,10 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 2)
+				for (var i = 0; i < values.Length; i++, start += sizeof(ushort))
+				{
 					values[i] = PeekUshort(start, bigEndian);
+				}
 			}
 		}
 
@@ -139,7 +141,7 @@ namespace BizHawk.Emulation.Common
 			if ((start & 3) != 0 || (end & 3) != 0)
 				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
 
-			if (values.LongLength * 4 != end - start)
+			if (values.LongLength * sizeof(uint) != end - start)
 			{
 				// a longer array could be valid, but nothing needs that so don't support it for now
 				throw new InvalidOperationException("Invalid length of values array");
@@ -147,8 +149,10 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 4)
+				for (var i = 0; i < values.Length; i++, start += sizeof(uint))
+				{
 					values[i] = PeekUint(start, bigEndian);
+				}
 			}
 		}
 
