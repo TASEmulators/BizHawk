@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			public override void BulkPeekByte(Range<long> addresses, byte[] values)
+			public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
 			{
 				if (addresses is null)
 					throw new ArgumentNullException(paramName: nameof(addresses));
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				BulkPeekByte((uint) addresses.Start, values);
 			}
 
-			public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+			public override void BulkPeekUshort(Int64ClosedRange addresses, bool bigEndian, ushort[] values)
 			{
 				if (addresses is null)
 					throw new ArgumentNullException(paramName: nameof(addresses));
@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+			public override void BulkPeekUint(Int64ClosedRange addresses, bool bigEndian, uint[] values)
 			{
 				if (addresses is null)
 					throw new ArgumentNullException(paramName: nameof(addresses));
