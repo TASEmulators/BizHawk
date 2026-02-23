@@ -386,13 +386,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									}
 								}
 
-								read_value = soam[0]; //writes change to reads
+								read_value = soam[(soam_index * 4) & 0x1F]; //writes change to reads
 							}
 						}
 						else
 						{
 							// if we don't write sprites anymore, just scan through the oam
-							read_value = soam[0];
+							read_value = soam[(soam_index * 4) & 0x1F];
 							oam_index += 4;
 						}
 					}
