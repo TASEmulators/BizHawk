@@ -409,8 +409,24 @@ local function make_buttons()
 			Confirmation = nil
 		elseif (check_press("Enter") or check_press("KeypadEnter")) then
 			local entity = Tracked[Confirmation.type]
-			entity.TrackedList[Confirmation.id] = nil
-			entity.Current = entity.Min
+			
+			if entity.Min == entity.Max then
+				-- it was the final entry, drop the whole thing
+				Tracked[Confirmation.type] = TrackedEntity.new(entity.Name)
+			else
+				if entity.Max == Confirmation.id then
+					scroll_list(entity, -1)
+					entity.Max = entity.Current
+				else
+					scroll_list(entity, 1)
+					
+					if entity.Min == Confirmation.id then
+						entity.Min = entity.Current
+					end
+				end
+				entity.TrackedList[Confirmation.id] = nil
+			end
+			
 			Confirmation = nil
 		end
 	

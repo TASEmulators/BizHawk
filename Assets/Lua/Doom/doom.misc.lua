@@ -72,11 +72,11 @@ LastFramecount = -1
 
 
 -- saved to config
-Zoom           = 1
-Follow         = false
-Hilite         = false
-ShowMap        = true
-Angle          = AngleType.BYTE
+Zoom    = 1
+Follow  = false
+Hilite  = false
+ShowMap = true
+Angle   = AngleType.BYTE
 Tracked = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
