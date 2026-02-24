@@ -82,8 +82,7 @@ local function iterate()
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
 		" momX: %.6f\n momY: %.6f\n" ..
-		"distM: %.6f\n dirM: %.6f\nangle: %d\n" ..
-		"  tic: %d\n time: %.2f", -- xdre limits to centiseconds
+		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
 		player.x,
 		player.y,
 		player.z,
@@ -94,9 +93,7 @@ local function iterate()
 		player.momy,
 		player.distmoved,
 		player.dirmoved,
-		player.angle,
-		Globals.gametic - 1,
-		Globals.leveltime / 35
+		player.angle
 	)
 	
 	if Tracked[TrackedType.THING].Current then
@@ -331,6 +328,20 @@ local function iterate()
 	
 	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
 	text(10, 42, texts.player, MapPrefs.player.color)
+	
+	local rngindex = Globals.rng.rndindex
+	text(
+		PADDING_WIDTH,
+		ScreenHeight-32*ScreenHeight/200-50,
+		string.format(
+			" tic: %d\n" ..
+			"time: %.2f\n" .. -- xdre limits to centiseconds
+			" rng: #%03d %d",
+			Globals.gametic - 1,
+			Globals.leveltime / 35,
+			rngindex,
+			memory.readbyte(memory.read_u32_le(symbols.rndtable) + rngindex, "System Bus")
+	))
 	
 	if texts.thing  then text(10, TextPosY.Thing,  texts.thing             ) end
 	if texts.line   then text(10, TextPosY.Line,   texts.line,   0xffff8800) end

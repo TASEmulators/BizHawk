@@ -64,11 +64,27 @@ drawline = gui.drawLine
 -- TOP LEVEL VARIABLES
 
 Init           = true
+Globals        = structs.globals
+MobjType       = enums.mobjtype
+SpriteNumber   = enums.doom.spritenum
+MobjFlags      = enums.mobjflags
 ScreenWidth    = client.screenwidth()
 ScreenHeight   = client.screenheight()
 LineUseLog     = LineLogType.NONE
 LineCrossLog   = LineLogType.NONE
 LastFramecount = -1
+Input          = nil
+Lines          = nil
+PlayerTypes    = nil
+EnemyTypes     = nil
+MissileTypes   = nil
+MiscTypes      = nil
+InertTypes     = nil
+CurrentPrompt  = nil
+Confirmation   = nil
+LastEpisode    = nil
+LastMap        = nil
+LastInput      = nil
 
 
 -- saved to config
@@ -115,21 +131,22 @@ TextPosY = {
 	Line   = 350,
 	Sector = 416
 }
+-- map colors (0xAARRGGBB or "name")
+MapPrefs = {
+	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+--	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
+	missile     = { color = 0xffff8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
+	shootable   = { color = 0xffaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
+	countitem   = { color = 0xffffff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+	item        = { color = 0xff00ff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
+--	misc        = { color = 0xffa0a0a0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false, },
+--	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+	highlight   = { color = 0xffff00ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+}
 
--- forward declarations
-
-Input         = nil
-Lines         = nil
-PlayerTypes   = nil
-EnemyTypes    = nil
-MissileTypes  = nil
-MiscTypes     = nil
-InertTypes    = nil
-CurrentPrompt = nil
-Confirmation  = nil
-LastEpisode   = nil
-LastMap       = nil
-LastInput     = nil
 
 --gui.defaultPixelFont("fceux")
 gui.use_surface("client")
@@ -216,6 +233,28 @@ function screen_to_game(arg1, arg2, arg3, arg4)
 end
 
 
+-- TYPE CONVERTERS
+
+function tuple_to_vertex(xx, yy)
+	return { x = xx, y = yy }
+end
+
+function vertex_to_tuple(v)
+	return table.unpack(v)
+end
+
+function tuple_to_line(x1, y1, x2, y2)
+	return {
+		v1 = { x = x1, y = y1 },
+		v2 = { x = x2, y = y2 }
+	}
+end
+
+function line_to_tuple(l)
+	return table.unpack(l.v1), table.unpack(l.v2)
+end
+
+
 -- AUTOMAP
 
 function pan_left(divider)
@@ -271,6 +310,88 @@ function zoom(times, mouseCenter)
 	Pan.y = Pan.y - zoomCenter.y / FRACUNIT
 end
 
+function update_zoom()
+	local mousePos   = client.transformPoint(Mouse.X, Mouse.Y)
+	local mouseWheel = math.floor(Mouse.Wheel/120)
+	local deltaX     = mousePos.x - LastMouse.x
+	local deltaY     = mousePos.y - LastMouse.y
+	local deltaWheel = mouseWheel - LastMouse.wheel
+	
+	if deltaWheel ~= 0 then
+		if mousePos.x > PADDING_WIDTH then
+			zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true)
+		elseif in_range(mousePos.y, TextPosY.Thing, TextPosY.Line) then
+			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
+		elseif in_range(mousePos.y, TextPosY.Line, TextPosY.Sector) then
+			scroll_list(Tracked[TrackedType.LINE], -deltaWheel)
+		elseif in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
+			scroll_list(Tracked[TrackedType.SECTOR], -deltaWheel)
+		end
+	end
+	
+	if input.get()["Space"] then
+		if deltaX ~= 0 then pan_left(DRAG_FACTOR/deltaX) end
+		if deltaY ~= 0 then pan_up  (DRAG_FACTOR/deltaY) end
+	end
+	
+	LastMouse.x     = mousePos.x
+	LastMouse.y     = mousePos.y
+	LastMouse.wheel = mouseWheel
+	
+	if Follow and Globals.gamestate == 0 then
+		local player = select(2, next(Players))
+		local screenCenter = screen_to_game({
+			x = (ScreenWidth+PADDING_WIDTH)/2,
+			y = ScreenHeight/2
+		})
+		
+		screenCenter.x = screenCenter.x / FRACUNIT - player.x
+		screenCenter.y = screenCenter.y / FRACUNIT - player.y
+		Pan.x = Pan.x + screenCenter.x
+		Pan.y = Pan.y - screenCenter.y
+	end
+	
+	if not Init
+	and LastScreenSize.w == ScreenWidth
+	and LastScreenSize.h == ScreenHeight
+	then return end
+	
+	if  OB.top    ~= math.maxinteger
+	and OB.left   ~= math.maxinteger
+	and OB.right  ~= math.mininteger
+	and OB.bottom ~= math.mininteger
+	and not emu.islagged()
+	then
+		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
+		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
+		local span         = { x = OB.right-OB.left,                   y = OB.bottom-OB.top    }
+		local scale        = { x = (ScreenWidth-PADDING_WIDTH)/span.x, y = ScreenHeight/span.y }
+		      Zoom         = math.min(scale.x, scale.y)
+		local spanCenter   = { x = OB.left+span.x/2,                   y = OB.top+span.y/2     }
+		local sreenCenter  = { x = (ScreenWidth+PADDING_WIDTH)/Zoom/2, y = ScreenHeight/Zoom/2 }
+		
+		if not Follow then
+			Pan.x = -math.floor(spanCenter.x - sreenCenter.x)
+			Pan.y = -math.floor(spanCenter.y - sreenCenter.y)
+		end
+		
+		Init = false
+	end
+end
+
+function reset_view()
+	if LastMouse.left then return end
+	
+	OB = {
+		top    = math.maxinteger,
+		left   = math.maxinteger,
+		bottom = math.mininteger,
+		right  = math.mininteger
+	}
+	Init = true
+	update_zoom()
+end
+
 
 -- UTIL
 
@@ -324,6 +445,10 @@ function get_line_count(str)
 	return count, longest
 end
 
+function check_press(key)
+	return Input[key] and not LastInput[key]
+end
+
 
 -- MATH
 
@@ -370,50 +495,6 @@ function distance_from_line(p, a, b)
 	
 	return dist
 end
-
-
--- TYPE CONVERTERS
-
-function tuple_to_vertex(xx, yy)
-	return { x = xx, y = yy }
-end
-
-function vertex_to_tuple(v)
-	return table.unpack(v)
-end
-
-function tuple_to_line(x1, y1, x2, y2)
-	return {
-		v1 = { x = x1, y = y1 },
-		v2 = { x = x2, y = y2 }
-	}
-end
-
-function line_to_tuple(l)
-	return table.unpack(l.v1), table.unpack(l.v2)
-end
-
-
--- Map colors (0xAARRGGBB or "name")
-MapPrefs = {
-	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
-	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
---	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
-	missile     = { color = 0xffff8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	shootable   = { color = 0xffaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
-	countitem   = { color = 0xffffff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
-	item        = { color = 0xff00ff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
---	misc        = { color = 0xffa0a0a0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
-	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false, },
---	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
-	highlight   = { color = 0xffff00ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
-}
-
-Globals      = structs.globals
-MobjType     = enums.mobjtype
-SpriteNumber = enums.doom.spritenum
-MobjFlags    = enums.mobjflags
 
 
 -- IO
@@ -531,75 +612,7 @@ function settings_write()
 end
 
 
-function init_mobj_bounds()
-	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local x      = mobj.x / FRACUNIT
-		local y      = mobj.y / FRACUNIT * -1
-		local index  = mobj.index
-		local entity = Tracked[TrackedType.THING]
-		if x < OB.left   then OB.left   = x end
-		if x > OB.right  then OB.right  = x end
-		if y < OB.top    then OB.top    = y end
-		if y > OB.bottom then OB.bottom = y end
-		
-		-- players have index -1, things to be removed have -2
-		if index >= 0 then
-			entity.IDs[index] = true
-		end
-	end
-end
-
-function follow_toggle()
-	Follow = not Follow
-end
-
-function hilite_toggle()
-	Hilite = not Hilite
-end
-
-function map_toggle()
-	ShowMap = not ShowMap
-end
-
-function suppress_click_input()
-	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
-		joypad.set({ [MAP_CLICK_BLOCK] = false })
-	end
-end
-
-function get_mobj_pref(mobj, mobjtype)
-	if HighlightTypes[mobjtype] then return MapPrefs.highlight end
-	if InertTypes    [mobjtype] then return MapPrefs.inert     end
-	if MiscTypes     [mobjtype] then return MapPrefs.misc      end
-	if MissileTypes  [mobjtype] then return MapPrefs.missile   end
-	if PlayerTypes   [mobjtype] then return MapPrefs.player    end
-
-	local flags = mobj.flags
-	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
-	if flags & MobjFlags.COUNTKILL ~= 0 or EnemyTypes[mobjtype] then
-		if flags & MobjFlags.CORPSE ~= 0 then return MapPrefs.corpse end
-		if mobj.state.action == symbols.A_Look then return MapPrefs.enemy_idle end
-		return MapPrefs.enemy
-	end
-	if flags & MobjFlags.COUNTITEM ~= 0 then return MapPrefs.countitem end
-	if flags & MobjFlags.SPECIAL   ~= 0 then return MapPrefs.item      end
-	if flags & MobjFlags.MISSILE   ~= 0 then return MapPrefs.missile   end
-	if flags & MobjFlags.SHOOTABLE ~= 0 then return MapPrefs.shootable end
-	if flags & MobjFlags.SOLID     ~= 0 then return MapPrefs.solid     end
-	return MapPrefs.inert
-end
-
-function get_mobj_color(mobj, mobjtype)
-	local pref = get_mobj_pref(mobj, mobjtype)
-	if not pref then return end
-	local color = pref.color
-	if not color or color < 0x01000000 then return end
-	local radius_min_zoom = pref.radius_min_zoom or math.huge
-	local text_min_zoom   = pref.text_min_zoom   or math.huge
-	local radius_color    = Zoom >= radius_min_zoom and color or nil
-	local text_color      = Zoom >= text_min_zoom   and color or nil
-	return radius_color, text_color
-end
+-- CACHE
 
 function cached_line_coords(line)
 	if line._polyobj then
@@ -612,113 +625,6 @@ function cached_line_coords(line)
 		end
 	end
 	return table.unpack(line._coords)
-end
-
-function scroll_list(entity, delta)
-	if not entity.Current then return end
-	
-	local list  = entity.TrackedList
-	local limit = entity.Max
-	local step  = 1
-	
-	if delta < 0 then
-		limit = entity.Min
-		step  = -1
-		delta = -delta
-	end
-		
-	if entity.Current == limit then return end
-	
-	for i = entity.Current+step, limit, step do
-		if list[i] then delta = delta - 1 end
-		if delta == 0 then
-			entity.Current = i
-			return
-		end
-	end
-	
-end
-
-function update_zoom()
-	local mousePos   = client.transformPoint(Mouse.X, Mouse.Y)
-	local mouseWheel = math.floor(Mouse.Wheel/120)
-	local deltaX     = mousePos.x - LastMouse.x
-	local deltaY     = mousePos.y - LastMouse.y
-	local deltaWheel = mouseWheel - LastMouse.wheel
-	
-	if deltaWheel ~= 0 then
-		if mousePos.x > PADDING_WIDTH then
-			zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true)
-		elseif in_range(mousePos.y, TextPosY.Thing, TextPosY.Line) then
-			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
-		elseif in_range(mousePos.y, TextPosY.Line, TextPosY.Sector) then
-			scroll_list(Tracked[TrackedType.LINE], -deltaWheel)
-		elseif in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
-			scroll_list(Tracked[TrackedType.SECTOR], -deltaWheel)
-		end
-	end
-	
-	if input.get()["Space"] then
-		if deltaX ~= 0 then pan_left(DRAG_FACTOR/deltaX) end
-		if deltaY ~= 0 then pan_up  (DRAG_FACTOR/deltaY) end
-	end
-	
-	LastMouse.x     = mousePos.x
-	LastMouse.y     = mousePos.y
-	LastMouse.wheel = mouseWheel
-	
-	if Follow and Globals.gamestate == 0 then
-		local player = select(2, next(Players))
-		local screenCenter = screen_to_game({
-			x = (ScreenWidth+PADDING_WIDTH)/2,
-			y = ScreenHeight/2
-		})
-		
-		screenCenter.x = screenCenter.x / FRACUNIT - player.x
-		screenCenter.y = screenCenter.y / FRACUNIT - player.y
-		Pan.x = Pan.x + screenCenter.x
-		Pan.y = Pan.y - screenCenter.y
-	end
-	
-	if not Init
-	and LastScreenSize.w == ScreenWidth
-	and LastScreenSize.h == ScreenHeight
-	then return end
-	
-	if  OB.top    ~= math.maxinteger
-	and OB.left   ~= math.maxinteger
-	and OB.right  ~= math.mininteger
-	and OB.bottom ~= math.mininteger
-	and not emu.islagged()
-	then
-		OB.left, OB.right  = maybe_swap(OB.left, OB.right)
-		OB.top,  OB.bottom = maybe_swap(OB.top,  OB.bottom)
-		local span         = { x = OB.right-OB.left,                   y = OB.bottom-OB.top    }
-		local scale        = { x = (ScreenWidth-PADDING_WIDTH)/span.x, y = ScreenHeight/span.y }
-		      Zoom         = math.min(scale.x, scale.y)
-		local spanCenter   = { x = OB.left+span.x/2,                   y = OB.top+span.y/2     }
-		local sreenCenter  = { x = (ScreenWidth+PADDING_WIDTH)/Zoom/2, y = ScreenHeight/Zoom/2 }
-		
-		if not Follow then
-			Pan.x = -math.floor(spanCenter.x - sreenCenter.x)
-			Pan.y = -math.floor(spanCenter.y - sreenCenter.y)
-		end
-		
-		Init = false
-	end
-end
-
-function reset_view()
-	if LastMouse.left then return end
-	
-	OB = {
-		top    = math.maxinteger,
-		left   = math.maxinteger,
-		bottom = math.mininteger,
-		right  = math.mininteger
-	}
-	Init = true
-	update_zoom()
 end
 
 function init_cache()
@@ -781,6 +687,34 @@ function clear_cache()
 	}
 end
 
+
+-- GUI
+
+function scroll_list(entity, delta)
+	if not entity.Current then return end
+	
+	local list  = entity.TrackedList
+	local limit = entity.Max
+	local step  = 1
+	
+	if delta < 0 then
+		limit = entity.Min
+		step  = -1
+		delta = -delta
+	end
+		
+	if entity.Current == limit then return end
+	
+	for i = entity.Current+step, limit, step do
+		if list[i] then delta = delta - 1 end
+		if delta == 0 then
+			entity.Current = i
+			return
+		end
+	end
+	
+end
+
 function make_button(x, y, name, func)
 	local lineCount,
 	      longest    = get_line_count(name)
@@ -822,10 +756,6 @@ function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
-function check_press(key)
-	return Input[key] and not LastInput[key]
-end
-
 function show_dialog(message)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
@@ -845,6 +775,87 @@ function show_dialog(message)
 	
 	box(x, y, x+boxWidth, y+boxHeight, 0xaaffffff, 0xaabbddff)
 	text(textX, textY, message, 0xffffffff)
+end
+
+function freeze_gui()
+	return CurrentPrompt ~= nil
+	or     Confirmation  ~= nil
+end
+
+
+-- TOGGLES
+
+function follow_toggle()
+	Follow = not Follow
+end
+
+function hilite_toggle()
+	Hilite = not Hilite
+end
+
+function map_toggle()
+	ShowMap = not ShowMap
+end
+
+
+-- MISC
+
+function suppress_click_input()
+	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
+		joypad.set({ [MAP_CLICK_BLOCK] = false })
+	end
+end
+
+function init_mobj_bounds()
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
+		local x      = mobj.x / FRACUNIT
+		local y      = mobj.y / FRACUNIT * -1
+		local index  = mobj.index
+		local entity = Tracked[TrackedType.THING]
+		if x < OB.left   then OB.left   = x end
+		if x > OB.right  then OB.right  = x end
+		if y < OB.top    then OB.top    = y end
+		if y > OB.bottom then OB.bottom = y end
+		
+		-- players have index -1, things to be removed have -2
+		if index >= 0 then
+			entity.IDs[index] = true
+		end
+	end
+end
+
+function get_mobj_pref(mobj, mobjtype)
+	if HighlightTypes[mobjtype] then return MapPrefs.highlight end
+	if InertTypes    [mobjtype] then return MapPrefs.inert     end
+	if MiscTypes     [mobjtype] then return MapPrefs.misc      end
+	if MissileTypes  [mobjtype] then return MapPrefs.missile   end
+	if PlayerTypes   [mobjtype] then return MapPrefs.player    end
+
+	local flags = mobj.flags
+	if flags & (MobjFlags.PICKUP | MobjFlags.FRIEND) ~= 0 then return MapPrefs.player end
+	if flags & MobjFlags.COUNTKILL ~= 0 or EnemyTypes[mobjtype] then
+		if flags & MobjFlags.CORPSE ~= 0 then return MapPrefs.corpse end
+		if mobj.state.action == symbols.A_Look then return MapPrefs.enemy_idle end
+		return MapPrefs.enemy
+	end
+	if flags & MobjFlags.COUNTITEM ~= 0 then return MapPrefs.countitem end
+	if flags & MobjFlags.SPECIAL   ~= 0 then return MapPrefs.item      end
+	if flags & MobjFlags.MISSILE   ~= 0 then return MapPrefs.missile   end
+	if flags & MobjFlags.SHOOTABLE ~= 0 then return MapPrefs.shootable end
+	if flags & MobjFlags.SOLID     ~= 0 then return MapPrefs.solid     end
+	return MapPrefs.inert
+end
+
+function get_mobj_color(mobj, mobjtype)
+	local pref = get_mobj_pref(mobj, mobjtype)
+	if not pref then return end
+	local color = pref.color
+	if not color or color < 0x01000000 then return end
+	local radius_min_zoom = pref.radius_min_zoom or math.huge
+	local text_min_zoom   = pref.text_min_zoom   or math.huge
+	local radius_color    = Zoom >= radius_min_zoom and color or nil
+	local text_color      = Zoom >= text_min_zoom   and color or nil
+	return radius_color, text_color
 end
 
 function add_entity(type)
@@ -912,11 +923,6 @@ function add_entity(type)
 		end,
 		value = nil
 	}
-end
-
-function freeze_gui()
-	return CurrentPrompt ~= nil
-	or     Confirmation  ~= nil
 end
 
 
