@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				if (_cycleOverflow < cycles)
 				{
 					cycles -= _cycleOverflow;
+					var cyclesRan = cycles;
 					IsLagFrame = LibmGBA.BizSubAdvance(
 						Core,
 						LibmGBA.GetButtons(controller),
@@ -44,8 +45,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						(short)controller.AxisValue("Tilt Y"),
 						(short)controller.AxisValue("Tilt Z"),
 						(byte)(255 - controller.AxisValue("Light Sensor")),
-						ref cycles);
-					_cycleOverflow = cycles;
+						ref cyclesRan);
+					_cycleOverflow = cyclesRan - cycles;
+					TotalExecutedCycles += cyclesRan;
 				}
 				else
 				{
@@ -65,7 +67,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					(short)controller.AxisValue("Tilt X"),
 					(short)controller.AxisValue("Tilt Y"),
 					(short)controller.AxisValue("Tilt Z"),
-					(byte)(255 - controller.AxisValue("Light Sensor")));
+					(byte)(255 - controller.AxisValue("Light Sensor")),
+					out var cycles);
+				TotalExecutedCycles += cycles;
 			}
 
 			if (IsLagFrame)

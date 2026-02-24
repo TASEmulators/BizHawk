@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => (long)LibmGBA.BizGetGlobalTime(Core);
+		public long TotalExecutedCycles { get; private set; }
 
 		private static readonly string[] RegisterNames =
 		{
