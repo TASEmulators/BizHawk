@@ -1,0 +1,475 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+
+using NLua;
+using NLua.Native;
+
+using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.Common
+{
+	public class LuaLibraries : ILuaLibraries
+	{
+		public static readonly bool IsAvailable = LuaNativeMethodLoader.EnsureNativeMethodsLoaded();
+
+		private void EnumerateLuaFunctions(string name, Type type, LuaLibraryBase instance)
+		{
+			var libraryDesc = type.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>()
+				.Select(static descAttr => descAttr.Description)
+				.FirstOrDefault() ?? string.Empty;
+			if (instance != null) _lua.NewTable(name);
+			foreach (var method in type.GetMethods())
+			{
+				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+				if (foundAttrs.Length == 0) continue;
+				if (instance != null) _lua.RegisterFunction($"{name}.{((LuaMethodAttribute)foundAttrs[0]).Name}", instance, method);
+				LibraryFunction libFunc = new(
+					library: name,
+					libraryDescription: libraryDesc,
+					method,
+					suggestInREPL: instance != null
+				);
+				Docs.Add(libFunc);
+			}
+		}
+
+		public LuaLibraries(
+			List<LuaFile> scriptList,
+			IEmulatorServiceProvider serviceProvider,
+			IMainFormForApi mainForm,
+			Config config,
+			Action<string> printCallback,
+			IDialogParent dialogParent,
+			ApiContainer apiContainer)
+		{
+			if (!IsAvailable)
+			{
+				throw new InvalidOperationException("The Lua dynamic library was not able to be loaded");
+			}
+
+			_th = new NLuaTableHelper(_lua, printCallback);
+			_mainForm = mainForm;
+			_defaultExceptionCallback = printCallback;
+			_logToLuaConsoleCallback = (o) =>
+			{
+				foreach (object obj in o)
+					printCallback(obj.ToString());
+			};
+			LuaWait = new AutoResetEvent(false);
+			PathEntries = config.PathEntries;
+			ScriptList = scriptList;
+			Docs.Clear();
+			_apiContainer = apiContainer;
+
+			// Register lua libraries
+			foreach (var lib in ReflectionCache_Biz_Cli_Com.Types
+				.Where(static t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed))
+			{
+				if (VersionInfo.DeveloperBuild
+					|| lib.GetCustomAttribute<LuaLibraryAttribute>(inherit: false)?.Released is not false)
+				{
+					if (!ServiceInjector.IsAvailable(serviceProvider, lib))
+					{
+						Util.DebugWriteLine($"couldn't instantiate {lib.Name}, adding to docs only");
+						EnumerateLuaFunctions(
+							lib.Name.RemoveSuffix("LuaLibrary").ToLowerInvariant(), // why tf aren't we doing this for all of them? or grabbing it from an attribute?
+							lib,
+							instance: null);
+						continue;
+					}
+
+					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, printCallback);
+					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
+
+					if (instance is ClientLuaLibrary clientLib)
+					{
+						clientLib.MainForm = _mainForm;
+						clientLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
+					}
+					else if (instance is EventsLuaLibrary eventsLib)
+					{
+						eventsLib.RemoveNamedFunctionMatching = RemoveNamedFunctionMatching;
+					}
+
+					AddLibrary(instance);
+				}
+			}
+
+			_lua.RegisterFunction("print", this, typeof(LuaLibraries).GetMethod(nameof(Print)));
+
+			var packageTable = (LuaTable) _lua["package"];
+			var luaPath = PathEntries.LuaAbsolutePath();
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// add %exe%/Lua to library resolution pathset (LUA_PATH)
+				// this is done already on windows, but not on linux it seems?
+				packageTable["path"] = $"{luaPath}/?.lua;{luaPath}?/init.lua;{packageTable["path"]}";
+				// we need to modifiy the cpath so it looks at our lua dir too, and remove the relative pathing
+				// we do this on Windows too, but keep in mind Linux uses .so and Windows use .dll
+				// TODO: Does the relative pathing issue Windows has also affect Linux? I'd assume so...
+				packageTable["cpath"] = $"{luaPath}/?.so;{luaPath}/loadall.so;{packageTable["cpath"]}";
+				packageTable["cpath"] = ((string)packageTable["cpath"]).Replace(";./?.so", "");
+			}
+			else
+			{
+				packageTable["cpath"] = $"{luaPath}\\?.dll;{luaPath}\\loadall.dll;{packageTable["cpath"]}";
+				packageTable["cpath"] = ((string)packageTable["cpath"]).Replace(";.\\?.dll", "");
+			}
+
+			EmulationLuaLibrary.FrameAdvanceCallback = FrameAdvance;
+			EmulationLuaLibrary.YieldCallback = EmuYield;
+		}
+
+		private ApiContainer _apiContainer;
+
+		private GuiApi GuiAPI => (GuiApi)_apiContainer.Gui;
+
+		private readonly IMainFormForApi _mainForm;
+
+		private Lua _lua = new();
+
+		private Thread _currentHostThread;
+		private readonly Lock ThreadMutex = new();
+
+		private Stack<LuaFile> _runningFiles = new();
+		public LuaFile CurrentFile => _runningFiles.Peek();
+
+		private readonly NLuaTableHelper _th;
+
+		private readonly Action<string> _defaultExceptionCallback;
+
+		private static Action<object[]> _logToLuaConsoleCallback;
+
+		private List<IDisposable> _disposables = new();
+
+		private int _resumeState = 0;
+		private bool InCallback => _resumeState == 0;
+
+		public LuaDocumentation Docs { get; } = new LuaDocumentation();
+
+		private EmulationLuaLibrary EmulationLuaLibrary => (EmulationLuaLibrary)Libraries[typeof(EmulationLuaLibrary)];
+
+		public bool IsRebootingCore { get; set; }
+
+		public bool IsUpdateSupressed { get; set; }
+
+		public bool IsInInputOrMemoryCallback { get; set; }
+
+		private readonly IDictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
+
+		private EventWaitHandle LuaWait;
+
+		public PathEntryCollection PathEntries { get; private set; }
+
+		public List<LuaFile> ScriptList { get; }
+
+		public NLuaTableHelper GetTableHelper() => _th;
+
+		public void Restart(
+			IEmulatorServiceProvider newServiceProvider,
+			Config config,
+			ApiContainer apiContainer)
+		{
+			_apiContainer = apiContainer;
+			PathEntries = config.PathEntries;
+			foreach (var lib in Libraries.Values)
+			{
+				lib.APIs = _apiContainer;
+				if (!ServiceInjector.UpdateServices(newServiceProvider, lib, mayCache: true))
+				{
+					throw new Exception("Lua lib has required service(s) that can't be fulfilled");
+				}
+
+				lib.Restarted();
+			}
+		}
+
+		public void AddLibrary(LuaLibraryBase lib)
+		{
+			if (lib is IRegisterFunctions rfLib)
+			{
+				rfLib.CreateAndRegisterNamedFunction = CreateAndRegisterNamedFunction;
+			}
+
+			if (lib is IDisposable disposable)
+			{
+				_disposables.Add(disposable);
+			}
+
+			EnumerateLuaFunctions(lib.Name, lib.GetType(), lib);
+			Libraries.Add(lib.GetType(), lib);
+
+			if (lib is IPrintingLibrary printLib)
+				_logToLuaConsoleCallback = printLib.Log;
+		}
+
+		public void AddTypeToDocs(Type type)
+		{
+			EnumerateLuaFunctions(type.GetType().Name, type, null);
+		}
+
+		public bool FrameAdvanceRequested { get; private set; }
+
+		public void CallSaveStateEvent(string name)
+		{
+			foreach (LuaFile file in ScriptList)
+			{
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_SAVESTATE).ToList())
+				{
+					func.Call(name);
+				}
+			}
+		}
+
+		public void CallLoadStateEvent(string name)
+		{
+			foreach (LuaFile file in ScriptList)
+			{
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_LOADSTATE).ToList())
+				{
+					func.Call(name);
+				}
+			}
+		}
+
+		public void CallFrameBeforeEvent()
+		{
+			if (IsUpdateSupressed) return;
+
+			foreach (LuaFile file in ScriptList)
+			{
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_PREFRAME).ToList())
+				{
+					func.Call();
+				}
+			}
+		}
+
+		public void CallFrameAfterEvent()
+		{
+			if (IsUpdateSupressed) return;
+
+			foreach (LuaFile file in ScriptList)
+			{
+				foreach (var func in file.Functions.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_POSTFRAME).ToList())
+				{
+					func.Call();
+				}
+			}
+		}
+
+		public void Close()
+		{
+			foreach (LuaFile file in ScriptList)
+			{
+				foreach (var closeCallback in file.Functions
+					.Where(static l => l.Event == NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE)
+					.ToList())
+				{
+					closeCallback.Call();
+				}
+
+				file.Functions.Clear();
+			}
+
+			ScriptList.Clear();
+			foreach (IDisposable disposable in _disposables)
+			{
+				disposable.Dispose();
+			}
+			_disposables.Clear();
+			_lua.Dispose();
+			_lua = null;
+		}
+
+		private INamedLuaFunction CreateAndRegisterNamedFunction(
+			LuaFunction function,
+			string theEvent,
+			string name = null)
+		{
+			var nlf = new NamedLuaFunction(function, theEvent, _defaultExceptionCallback, CurrentFile, this, name);
+			CurrentFile.Functions.Add(nlf);
+			return nlf;
+		}
+
+		private bool RemoveNamedFunctionMatching(Func<INamedLuaFunction, bool> predicate)
+		{
+			if (CurrentFile.Functions.FirstOrDefault(predicate) is not NamedLuaFunction nlf) return false;
+			CurrentFile.Functions.Remove(nlf);
+			return true;
+		}
+
+		public void Sandbox(LuaFile luaFile, Action callback, Action<string> exceptionCallback = null)
+		{
+			_resumeState = Math.Max(0, _resumeState - 1);
+
+			bool setThread = SetCurrentThread(luaFile);
+			_runningFiles.Push(luaFile);
+			LuaSandbox.GetSandbox(luaFile.Thread).Sandbox(callback, exceptionCallback ?? _defaultExceptionCallback);
+			_runningFiles.Pop();
+			if (setThread) ClearCurrentThread();
+		}
+
+		public LuaThread SpawnCoroutineAndSandbox(string file)
+		{
+			var content = File.ReadAllText(file);
+			var main = _lua.LoadString(content, "main");
+			var thread = _lua.NewThread(main);
+			LuaSandbox.CreateSandbox(thread, Path.GetDirectoryName(file));
+			return thread;
+		}
+
+		public LuaThread SpawnBlankCoroutineAndSandbox(string directory)
+		{
+			var main = _lua.LoadString("", "main");
+			var thread = _lua.NewThread(main);
+			LuaSandbox.CreateSandbox(thread, Path.GetDirectoryName(directory));
+			return thread;
+		}
+
+		/// <summary>
+		/// resumes suspended scripts
+		/// </summary>
+		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
+		/// <returns>true if any script stopped</returns>
+		public bool ResumeScripts(bool includeFrameWaiters)
+		{
+			if (ScriptList.Count == 0 || IsUpdateSupressed)
+			{
+				return false;
+			}
+
+			bool anyStopped = false;
+			foreach (var lf in ScriptList.Where(static lf => lf.State is LuaFile.RunState.Running))
+			{
+				var prohibit = lf.FrameWaiting && !includeFrameWaiters;
+				if (!prohibit)
+				{
+					bool shouldStop = true;
+					bool waitForFrame = false;
+					bool hadException = false;
+					if (!lf.RunningEventsOnly)
+					{
+						(waitForFrame, shouldStop) = ResumeScript(lf, (s) =>
+						{
+							Print(s);
+							hadException = true;
+						});
+					}
+					// An exception in a main loop should stop everything. The code meant to run each frame cannot be run anymore.
+					if (hadException)
+						shouldStop = true;
+					else
+						shouldStop = shouldStop && !lf.ShouldKeepRunning();
+
+					if (shouldStop)
+					{
+						anyStopped = true;
+						lf.Stop();
+					}
+
+					lf.FrameWaiting = waitForFrame;
+				}
+			}
+
+			return anyStopped;
+		}
+
+		public object[] ExecuteString(string command)
+		{
+			const string ChunkName = "input"; // shows up in error messages
+
+			// Use LoadString to separate parsing and execution, to tell syntax errors and runtime errors apart
+			LuaFunction func;
+			try
+			{
+				// Adding a return is necessary to get out return values of functions and turn expressions ("1+1" etc.) into valid statements
+				func = _lua.LoadString($"return {command}", ChunkName);
+			}
+			catch (Exception)
+			{
+				// command may be a valid statement without the added "return"
+				// if previous attempt couldn't be parsed, run the raw command
+				return _lua.DoString(command, ChunkName);
+			}
+
+			using (func)
+			{
+				return func.Call();
+			}
+		}
+
+		private void ClearCurrentThread()
+		{
+			lock (ThreadMutex)
+			{
+				_currentHostThread = null;
+			}
+		}
+
+		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
+		private bool SetCurrentThread(LuaFile luaFile)
+		{
+			lock (ThreadMutex)
+			{
+				bool wasNull = _currentHostThread is null;
+				if (!wasNull && _currentHostThread != Thread.CurrentThread)
+				{
+					throw new InvalidOperationException("Can't run lua from two host threads at the same time!");
+				}
+				_currentHostThread = Thread.CurrentThread;
+				return wasNull;
+			}
+		}
+
+		public (bool WaitForFrame, bool Terminated) ResumeScript(LuaFile lf, Action<string> exceptionCallback)
+		{
+			var result = (WaitForFrame: false, Terminated: true);
+			LuaStatus? execResult = null;
+			_resumeState = 2;
+			Sandbox(lf, () => execResult = lf.Thread.Resume(), exceptionCallback);
+			if (execResult == null) return result;
+
+			if (execResult == LuaStatus.Yield)
+				result = (WaitForFrame: FrameAdvanceRequested, Terminated: false);
+			else if (execResult != LuaStatus.OK)
+				exceptionCallback($"{nameof(lf.Thread.Resume)}() returned {execResult}?");
+
+			FrameAdvanceRequested = false;
+			lf.RunningEventsOnly = result.Terminated;
+			return result;
+		}
+
+		public static void Print(params object[] outputs)
+		{
+			_logToLuaConsoleCallback(outputs);
+		}
+
+		private void FrameAdvance()
+		{
+			if (InCallback)
+			{
+				// Throw so that callback execution stops, avoiding potentail infinite loops. Unfortunately the message in the console will be ugly.
+				throw new Exception("emu.frameadvance is not available in events or callbacks");
+			}
+			FrameAdvanceRequested = true;
+			CurrentFile.Thread.Yield();
+		}
+
+		private void EmuYield()
+		{
+			if (InCallback)
+			{
+				// Throw so that callback execution stops, avoiding potentail infinite loops. Unfortunately the message in the console will be ugly.
+				throw new Exception("emu.yield is not available in events or callbacks");
+			}
+			CurrentFile.Thread.Yield();
+		}
+	}
+}
