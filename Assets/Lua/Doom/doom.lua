@@ -375,35 +375,53 @@ local function make_buttons()
 	make_button(88, -24, ">", pan_right)
 	--]]--
 	
+	Input = input.get()
+	
 	if CurrentPrompt then
-		input_prompt()
-	elseif Confirmation then
-		Input = input.get()
+		local value = tostring(CurrentPrompt.value or "")
 		
-		local boxWidth   = CHAR_WIDTH
-		local boxHeight  = CHAR_HEIGHT
-		local message    = string.format(
+		if check_press("Escape") then
+			CurrentPrompt = nil
+			return
+		elseif check_press("Backspace") then
+			value = value:sub(1, -2)
+		elseif (check_press("Enter") or check_press("KeypadEnter")) and value ~= "" then
+			CurrentPrompt.fun(tonumber(value))
+			CurrentPrompt = nil
+			return
+		else
+			for i = 0, 9 do
+				local digit  = tostring(i)
+				local number = "Number" .. digit
+				local keypad = "Keypad" .. digit
+				if (check_press(number)
+				or  check_press(keypad))
+				then value = value .. digit
+				end
+			end
+		end
+		
+		show_dialog(string.format(
+			"Enter %s ID from\nlevel editor.\n\n" ..
+			"Hit \"Enter\" to send,\n" ..
+			"\"Backspace\" to erase,\n" ..
+			"or \"Escape\" to cancel.\n\n%s_",
+			CurrentPrompt.msg, value
+		))
+		
+		if value ~= "" then
+			CurrentPrompt.value = tonumber(value)
+		else
+			CurrentPrompt.value = nil
+		end
+	elseif Confirmation then
+		show_dialog(string.format(
 			"Stop tracking %s %d?\n\n" ..
 			"Hit \"Enter\" to confirm,\n" ..
 			"or \"Escape\" to cancel.",
 			Tracked[Confirmation.type].Name,
 			Confirmation.id
-		)
-		local lineCount, longest = get_line_count(message)
-		local textWidth  = longest  *CHAR_WIDTH
-		local textHeight = lineCount*CHAR_HEIGHT
-		local padding    = 50
-		
-		if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
-		if textHeight + padding > boxHeight then boxHeight = textHeight + padding end
-		
-		local x     = ScreenWidth  /2 - textWidth /2
-		local y     = ScreenHeight /2 - textHeight/2
-		local textX = x + boxWidth /2 - textWidth /2
-		local textY = y + boxHeight/2 - textHeight/2
-		
-		box(x, y, x+boxWidth, y+boxHeight, 0xaaffffff, 0xaabbddff)
-		text(textX, textY, message, 0xffffffff)
+		))
 		
 		if check_press("Escape") then
 			Confirmation = nil
@@ -429,9 +447,9 @@ local function make_buttons()
 			
 			Confirmation = nil
 		end
-	
-		LastInput = Input
 	end
+		
+	LastInput = Input
 end
 
 

@@ -782,7 +782,8 @@ function clear_cache()
 end
 
 function make_button(x, y, name, func)
-	local lineCount, longest = get_line_count(name)
+	local lineCount,
+	      longest    = get_line_count(name)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
 	local textWidth  = longest  *CHAR_WIDTH
@@ -804,16 +805,14 @@ function make_button(x, y, name, func)
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         )
 	and not freeze_gui()
-	and not (Follow
-	and (func == pan_left
-	or   func == pan_up
-	or   func == pan_down
-	or   func == pan_right))
 	then
-		if Mouse.Left and not LastMouse.left then
+		if Mouse.Left then
 			suppress_click_input()
 			colorIndex = 3
-			func()
+			
+			if not LastMouse.left then
+				func()
+			end
 		else
 			colorIndex = 2
 		end
@@ -827,40 +826,11 @@ function check_press(key)
 	return Input[key] and not LastInput[key]
 end
 
-function input_prompt()
-	Input = input.get()
-	local value = tostring(CurrentPrompt.value or "")
-	
-	if check_press("Escape") then
-		CurrentPrompt = nil
-		return
-	elseif check_press("Backspace") then
-		value = value:sub(1, -2)
-	elseif (check_press("Enter") or check_press("KeypadEnter")) and value ~= "" then
-		CurrentPrompt.fun(tonumber(value))
-		CurrentPrompt = nil
-		return
-	else
-		for i = 0, 9 do
-			local digit  = tostring(i)
-			local number = "Number" .. digit
-			local keypad = "Keypad" .. digit
-			if (check_press(number)
-			or  check_press(keypad))
-			then value = value .. digit
-			end
-		end
-	end
-	
+function show_dialog(message)
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
-	local message    = string.format(
-		"Enter %s ID from\nlevel editor.\n\n" ..
-		"Hit \"Enter\" to send,\n" ..
-		"\"Backspace\" to erase,\n" ..
-		"or \"Escape\" to cancel.\n\n%s_",
-		CurrentPrompt.msg, value)
-	local lineCount, longest = get_line_count(message)
+	local lineCount,
+	      longest    = get_line_count(message)
 	local textWidth  = longest  *CHAR_WIDTH
 	local textHeight = lineCount*CHAR_HEIGHT
 	local padding    = 50
@@ -875,14 +845,6 @@ function input_prompt()
 	
 	box(x, y, x+boxWidth, y+boxHeight, 0xaaffffff, 0xaabbddff)
 	text(textX, textY, message, 0xffffffff)
-	
-	if value ~= "" then
-		CurrentPrompt.value = tonumber(value)
-	else
-		CurrentPrompt.value = nil
-	end
-	
-	LastInput = Input
 end
 
 function add_entity(type)
