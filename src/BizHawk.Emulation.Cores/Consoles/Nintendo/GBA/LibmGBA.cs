@@ -188,9 +188,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract void BizSetRegister(IntPtr ctx, int index, int value);
 
 		[BizImport(cc)]
-		public abstract ulong BizGetGlobalTime(IntPtr ctx);
-
-		[BizImport(cc)]
 		public abstract void BizWriteBus(IntPtr ctx, uint addr, byte val);
 
 		[BizImport(cc)]
