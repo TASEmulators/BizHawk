@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			for (var i = 1; i < lp.Roms.Count; i++)
 			{
 				// doesn't make sense if not a CIA
-				if (".cia".EqualsIgnoreCase(lp.Roms[i].Extension))
+				if (!".cia".EqualsIgnoreCase(lp.Roms[i].Extension))
 				{
 					Dispose();
 					throw new ArgumentException(paramName: nameof(lp), message: "ROMs after the first ROM should be CIAs");
