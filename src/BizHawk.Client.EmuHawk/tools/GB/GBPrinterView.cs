@@ -1,9 +1,11 @@
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
@@ -87,6 +89,16 @@ namespace BizHawk.Client.EmuHawk
 			// In this implementation:
 			//   the bottom margin and top margin are just white lines at the top and bottom
 			//   exposure is ignored
+			//   height of 0 is treated as a height of 1 but zeroed data
+			var shouldFreePointer = false;
+			if (height is 0)
+			{
+				var sizeBytes = PaperWidth * sizeof(uint);
+				image = Marshal.AllocCoTaskMem(sizeBytes);
+				shouldFreePointer = true;
+				Util.UnsafeSpanFromPointer(image, length: sizeBytes).Fill(0);
+				height = 1;
+			}
 
 			// The page received image
 			var page = BitmapBuffer.CreateBitmapObject(new(width: PaperWidth, height: height));
@@ -108,6 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (shouldFreePointer) Marshal.FreeCoTaskMem(image);
 			page.UnlockBits(bmp);
 
 			// add it to the bottom of the history
