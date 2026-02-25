@@ -5,6 +5,8 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class BmpView : Control
@@ -81,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			Bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
+			Bmp = BitmapBuffer.CreateBitmapObject(new(width: w, height: h));
 			BmpView_SizeChanged(null, EventArgs.Empty);
 			Refresh();
 		}
