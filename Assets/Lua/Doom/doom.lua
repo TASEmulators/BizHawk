@@ -348,13 +348,6 @@ local function iterate()
 	if texts.sector then text(10, TextPosY.Sector, texts.sector, 0xff00ffff) end
 end
 
-local function cycle_log_types(isUse)
-	if isUse
-	then LineUseLog   = (LineUseLog   + 1) % (LineLogType.ALL + 1)
-	else LineCrossLog = (LineCrossLog + 1) % (LineLogType.ALL + 1)
-	end
-end
-
 local function make_buttons()
 	local w = PADDING_WIDTH
 	
@@ -372,22 +365,13 @@ local function make_buttons()
 	elseif LineCrossLog == LineLogType.ALL    then crossName = "ALL"
 	end
 	
-	make_button(w+5, 26,"Log Use   "..useName,  function() cycle_log_types(true ) end)
-	make_button(w+5, 52,"Log Cross "..crossName,function() cycle_log_types(false) end)
-	make_button(w+5, 78,"Log RNG " .. (RNGLog and "ON" or "OFF"), prandom_toggle)
-	make_button(w+5,104,(ShowMap and "Hide" or "Show") .. " Map  ",map_toggle    )
-	make_button(w+5,130,"Reset View",                              reset_view    )
-	make_button(w+5,156,"Hilite " .. (Hilite  and "ON " or "OFF"), hilite_toggle )
-	make_button(w+5,182,"Follow " .. (Follow  and "ON " or "OFF"), follow_toggle )
-	
-	--[[--
-	make_button(10, -40, "+", function() zoom( 1) end)
-	make_button(10, -10, "-", function() zoom(-1) end)
-	make_button(40, -24, "<", pan_left )
-	make_button(64, -40, "^", pan_up   )
-	make_button(64, -10, "v", pan_down )
-	make_button(88, -24, ">", pan_right)
-	--]]--
+	make_button(w+5,  26, "Log Use   "..useName,   function() cycle_log_types(true ) end)
+	make_button(w+5,  52, "Log Cross "..crossName, function() cycle_log_types(false) end)
+	make_button(w+5,  78, "Log RNG "  ..(RNGLog and "ON" or "OFF"),       prandom_toggle)
+	make_button(w+5, 104, (ShowMap and "Hide" or "Show").." Map  ",       map_toggle    )
+	make_button(w+5, 130, "Reset View",                                   reset_view    )
+	make_button(w+5, 156, "Hilite "   ..(Hilite and "ON " or "OFF"),      hilite_toggle )
+	make_button(w+5, 182, "Follow "   ..(Follow and "ON " or "OFF"),      follow_toggle )
 	
 	Input = input.get()
 	
@@ -472,17 +456,21 @@ end
 doom.on_prandom(function(info)
 	if not RNGLog then return end
 	
-	local tic = Globals.gametic - 1
+	local seed = ""
 	
-	if tic < 0 then tic = 0 end
+	if Globals.compatibility_level >= 7 then
+		seed = string.format("%010u",
+			Globals.rng.seed[PRANDOM_ALL_IN_ONE+1]
+		)
+	else
+		seed = string.format("%03d",
+			memory.readbyte(memory.read_u32_le(symbols.rndtable) + Globals.rng.rndindex)
+		)
+	end
 	
 	table.insert(PRandomInfo, string.format(
-		"%d (%d): #%03d %010u %s",
-		tic,
-		#PRandomInfo,
-		Globals.rng.rndindex,
-		Globals.rng.seed[PRANDOM_ALL_IN_ONE],
-		info
+		"%d (%d): #%03d %s %s",
+		Globals.gametic, #PRandomInfo+1, Globals.rng.rndindex, seed, info
 	))
  end)
 

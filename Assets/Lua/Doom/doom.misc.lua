@@ -151,9 +151,27 @@ MapPrefs = {
 }
 
 
---gui.defaultPixelFont("fceux")
 gui.use_surface("client")
 client.SetClientExtraPadding(PADDING_WIDTH, 0, 0, 0)
+
+
+-- TOGGLES
+
+function follow_toggle()
+	Follow = not Follow
+end
+
+function hilite_toggle()
+	Hilite = not Hilite
+end
+
+function map_toggle()
+	ShowMap = not ShowMap
+end
+
+function prandom_toggle()
+	RNGLog = not RNGLog
+end
 
 
 -- GAME/SCREEN CODECS
@@ -450,6 +468,13 @@ end
 
 function check_press(key)
 	return Input[key] and not LastInput[key]
+end
+
+function cycle_log_types(isUse)
+	if isUse
+	then LineUseLog   = (LineUseLog   + 1) % (LineLogType.ALL + 1)
+	else LineCrossLog = (LineCrossLog + 1) % (LineLogType.ALL + 1)
+	end
 end
 
 
@@ -783,25 +808,6 @@ end
 function freeze_gui()
 	return CurrentPrompt ~= nil
 	or     Confirmation  ~= nil
-end
-
-
--- TOGGLES
-
-function follow_toggle()
-	Follow = not Follow
-end
-
-function hilite_toggle()
-	Hilite = not Hilite
-end
-
-function map_toggle()
-	ShowMap = not ShowMap
-end
-
-function prandom_toggle()
-	RNGLog = not RNGLog
 end
 
 
