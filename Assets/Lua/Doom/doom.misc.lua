@@ -9,19 +9,20 @@ symbols = require("dsda.symbols")
 
 -- CONSTANTS
 
-FRACBITS          = 16
-FRACUNIT          = 1 << FRACBITS
-ANGLE_90          = 0x40000000
-MINIMAL_ZOOM      = 0.0001 -- ???
-ZOOM_FACTOR       = 0.01
-WHEEL_ZOOM_FACTOR = 10
-DRAG_FACTOR       = 10
-PAN_FACTOR        = 10
-CHAR_WIDTH        = 10
-CHAR_HEIGHT       = 16
-PADDING_WIDTH     = 240
-MAP_CLICK_BLOCK   = "P1 Fire" -- prevent this input while clicking on map buttons
-SETTINGS_FILENAME = "doom.settings.lua"
+FRACBITS           = 16
+FRACUNIT           = 1 << FRACBITS
+ANGLE_90           = 0x40000000
+MINIMAL_ZOOM       = 0.0001 -- ???
+ZOOM_FACTOR        = 0.01
+WHEEL_ZOOM_FACTOR  = 10
+DRAG_FACTOR        = 10
+PAN_FACTOR         = 10
+CHAR_WIDTH         = 10
+CHAR_HEIGHT        = 16
+PADDING_WIDTH      = 240
+PRANDOM_ALL_IN_ONE = 49
+MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
+SETTINGS_FILENAME  = "doom.settings.lua"
 
 -- enums
 TrackedType = {
@@ -72,6 +73,7 @@ ScreenWidth    = client.screenwidth()
 ScreenHeight   = client.screenheight()
 LineUseLog     = LineLogType.NONE
 LineCrossLog   = LineLogType.NONE
+RNGLog         = false
 LastFramecount = -1
 Input          = nil
 Lines          = nil
@@ -107,8 +109,9 @@ Pan = {
 
 -- tables
 
-Players = {}
-Config  = {}
+Players     = {}
+Config      = {}
+PRandomInfo = {}
 -- map object positions bounds
 OB = {
 	top    = math.maxinteger,
@@ -724,7 +727,7 @@ function make_button(x, y, name, func)
 	local textHeight = lineCount*CHAR_HEIGHT
 	local colors     = { 0x66bbddff, 0xaabbddff, 0xaa88aaff }
 	local colorIndex = 1
-	local padding    = 10
+	local padding    = 6
 	
 	if x < 0 then x = ScreenWidth  + x end
 	if y < 0 then y = ScreenHeight + y end
@@ -795,6 +798,10 @@ end
 
 function map_toggle()
 	ShowMap = not ShowMap
+end
+
+function prandom_toggle()
+	RNGLog = not RNGLog
 end
 
 

@@ -356,9 +356,11 @@ local function cycle_log_types(isUse)
 end
 
 local function make_buttons()
-	make_button(-115, 30, "Add Thing ", function() add_entity(TrackedType.THING ) end)
-	make_button(-115, 60, "Add Line  ", function() add_entity(TrackedType.LINE  ) end)
-	make_button(-115, 90, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
+	local w = PADDING_WIDTH
+	
+	make_button(-110, 26, "Add Thing ", function() add_entity(TrackedType.THING ) end)
+	make_button(-110, 52, "Add Line  ", function() add_entity(TrackedType.LINE  ) end)
+	make_button(-110, 78, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
 	
 	local useName = "NONE"
 	if     LineUseLog == LineLogType.PLAYER then useName = "PLAYER"
@@ -370,12 +372,13 @@ local function make_buttons()
 	elseif LineCrossLog == LineLogType.ALL    then crossName = "ALL"
 	end
 	
-	make_button(PADDING_WIDTH+5, 30,"Log Use   "..useName,  function() cycle_log_types(true ) end)
-	make_button(PADDING_WIDTH+5, 60,"Log Cross "..crossName,function() cycle_log_types(false) end)
-	make_button(PADDING_WIDTH+5, 90,(ShowMap and "Hide" or "Show") .. " Map  ",map_toggle   )
-	make_button(PADDING_WIDTH+5,120,"Reset View",                              reset_view   )
-	make_button(PADDING_WIDTH+5,150,"Hilite " .. (Hilite  and "ON " or "OFF"), hilite_toggle)
-	make_button(PADDING_WIDTH+5,180,"Follow " .. (Follow  and "ON " or "OFF"), follow_toggle)
+	make_button(w+5, 26,"Log Use   "..useName,  function() cycle_log_types(true ) end)
+	make_button(w+5, 52,"Log Cross "..crossName,function() cycle_log_types(false) end)
+	make_button(w+5, 78,"Log RNG " .. (RNGLog and "ON" or "OFF"), prandom_toggle)
+	make_button(w+5,104,(ShowMap and "Hide" or "Show") .. " Map  ",map_toggle    )
+	make_button(w+5,130,"Reset View",                              reset_view    )
+	make_button(w+5,156,"Hilite " .. (Hilite  and "ON " or "OFF"), hilite_toggle )
+	make_button(w+5,182,"Follow " .. (Follow  and "ON " or "OFF"), follow_toggle )
 	
 	--[[--
 	make_button(10, -40, "+", function() zoom( 1) end)
@@ -464,27 +467,27 @@ local function make_buttons()
 end
 
 
-local texts = {}
-
 -- CALLBACKS
 
 doom.on_prandom(function(info)
+	if not RNGLog then return end
+	
 	local tic = Globals.gametic - 1
 	
 	if tic < 0 then tic = 0 end
 	
-	table.insert(texts, string.format(
+	table.insert(PRandomInfo, string.format(
 		"%d (%d): #%03d %010u %s",
 		tic,
-		#texts,
+		#PRandomInfo,
 		Globals.rng.rndindex,
-		Globals.rng.seed[49],
+		Globals.rng.seed[PRANDOM_ALL_IN_ONE],
 		info
 	))
  end)
 
 event.onframestart(function()
-	texts = {}
+	PRandomInfo = {}
 	
 	if freeze_gui() then
 		suppress_click_input()
@@ -500,7 +503,7 @@ event.onframestart(function()
 end)
 
 event.onframeend(function()
-	for _,v in pairs(texts) do
+	for _,v in pairs(PRandomInfo) do
 		print(v)
 	end
 end)
