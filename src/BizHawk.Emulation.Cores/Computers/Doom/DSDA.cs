@@ -162,9 +162,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			_randomCallback = pr_class =>
+			_randomCallback = info =>
 			{
-				foreach (var cb in RandomCallbacks) cb(pr_class);
+				foreach (var cb in RandomCallbacks) cb(info);
 			};
 
 			_useCallback = (line, thing) =>
@@ -402,7 +402,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private LibDSDA.line_cb _crossCallback;
 		private LibDSDA.error_cb _errorCallback;
 
-		public List<Action<int>> RandomCallbacks = [ ];
+		public List<Action<string>> RandomCallbacks = [ ];
 		public List<Action<long, long>> UseCallbacks = [ ];
 		public List<Action<long, long>> CrossCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo

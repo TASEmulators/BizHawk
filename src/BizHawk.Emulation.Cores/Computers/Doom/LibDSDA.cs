@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ref PackedRenderInfo renderInfo);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void random_cb(int pr_class);
+		public delegate void random_cb(string info);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_set_random_callback(random_cb cb);
 

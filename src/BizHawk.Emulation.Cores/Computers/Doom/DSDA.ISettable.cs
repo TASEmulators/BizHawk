@@ -414,7 +414,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			public int Turbo { get; set; }
 
 			[DisplayName("Initial RNG Seed")]
-			[Description("Boom demos.")]
+			[Description("Only for compatibility level 9 and above. Default value is 1993.")]
 			[DefaultValue(1993)]
 			public uint RNGSeed { get; set; }
 

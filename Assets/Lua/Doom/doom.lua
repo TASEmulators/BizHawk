@@ -464,9 +464,28 @@ local function make_buttons()
 end
 
 
+local texts = {}
+
 -- CALLBACKS
 
+doom.on_prandom(function(info)
+	local tic = Globals.gametic - 1
+	
+	if tic < 0 then tic = 0 end
+	
+	table.insert(texts, string.format(
+		"%d (%d): #%03d %010u %s",
+		tic,
+		#texts,
+		Globals.rng.rndindex,
+		Globals.rng.seed[49],
+		info
+	))
+ end)
+
 event.onframestart(function()
+	texts = {}
+	
 	if freeze_gui() then
 		suppress_click_input()
 	end
@@ -478,6 +497,12 @@ event.onframestart(function()
 	ScreenHeight = client.screenheight()
 	make_buttons()
 	update_zoom()
+end)
+
+event.onframeend(function()
+	for _,v in pairs(texts) do
+		print(v)
+	end
 end)
 
 event.onexit(function()
@@ -546,6 +571,7 @@ while true do
 	local framecount   = emu.framecount()
 	local paused       = client.ispaused()
 	local episode, map = Globals.gameepisode, Globals.gamemap
+	
 	if episode ~= LastEpisode or map ~= LastMap then
 		clear_cache()
 		LastEpisode, LastMap = episode, map

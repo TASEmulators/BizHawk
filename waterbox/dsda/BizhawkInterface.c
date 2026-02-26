@@ -446,13 +446,13 @@ ECL_EXPORT void dsda_set_cross_callback(ECL_ENTRY void (*cb)(line_t*, mobj_t*))
 }
 
 // P_Random() calls
-ECL_ENTRY void (*random_callback_cb)(int);
-void biz_random_callback(int pr_class)
+ECL_ENTRY void (*random_callback_cb)(const char *);
+void biz_random_callback(const char *info)
 {
   if (random_callback_cb)
-    random_callback_cb(pr_class);
+    random_callback_cb(info);
 }
-ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(int))
+ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(const char *))
 {
   random_callback_cb = cb;
 }
