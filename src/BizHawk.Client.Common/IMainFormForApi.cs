@@ -17,9 +17,6 @@ namespace BizHawk.Client.Common
 		bool EmulatorPaused { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		bool InvisibleEmulation { get; set; }
-
-		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsSeeking { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
@@ -28,11 +25,17 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool IsRewinding { get; }
 
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
+		public int MaxFutureFrames { get; set; }
+
 		/// <remarks>only referenced from <see cref="CommApi"/></remarks>
 		(HttpCommunication HTTP, MemoryMappedFiles MMF, SocketServer Sockets) NetworkingHelpers { get; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		bool PauseAvi { get; set; }
+
+		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
+		public ShowFutureCallback/*?*/ PreFutureFrameCallback { get; set; }
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void ClearHolds();
@@ -108,9 +111,6 @@ namespace BizHawk.Client.Common
 		/// <returns>Returns a value indicating if there was an error and (if there was) why.</returns>
 		/// <remarks>referenced from <see cref="EmuClientApi"/> and <see cref="SaveStateApi"/></remarks>
 		FileWriteResult SaveState(string path, string userFriendlyStateName, bool suppressOSD = false);
-
-		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		void SeekFrameAdvance();
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void StepRunLoop_Throttle();
