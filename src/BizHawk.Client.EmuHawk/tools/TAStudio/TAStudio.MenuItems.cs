@@ -380,47 +380,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.AnyRowsSelected)
-			{
-				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
-
-				// TODO: copy paste from PasteInsertMenuItem_Click!
-				IDataObject data = Clipboard.GetDataObject();
-				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
-				{
-					string input = (string)data.GetData(DataFormats.StringFormat);
-					if (!string.IsNullOrWhiteSpace(input))
-					{
-						string[] lines = input.Split('\n');
-						if (lines.Length > 0)
-						{
-							_tasClipboard.Clear();
-							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
-							for (int i = 0; i < linesToPaste; i++)
-							{
-								var line = ControllerFromMnemonicStr(lines[i]);
-								if (line == null)
-								{
-									return;
-								}
-
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
-							}
-
-							CurrentTasMovie.CopyOverInput(TasView.SelectionStartIndex ?? 0, _tasClipboard.Select(static x => x.ControllerState));
-						}
-					}
-				}
-			}
+			// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+			// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
+			MaybePasteFromClipboard(overwriteSelection: true);
 		}
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
+			=> MaybePasteFromClipboard(overwriteSelection: false);
+
+		private void MaybePasteFromClipboard(bool overwriteSelection)
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				// copy paste from PasteMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
 				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
 				{
@@ -444,8 +415,10 @@ namespace BizHawk.Client.EmuHawk
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
-							var selectionStart = TasView.SelectionStartIndex;
-							CurrentTasMovie.InsertInput(selectionStart ?? 0, _tasClipboard.Select(static x => x.ControllerState));
+							var selectionStart = TasView.SelectionStartIndex ?? 0;
+							var inputStates = _tasClipboard.Select(static x => x.ControllerState);
+							if (overwriteSelection) CurrentTasMovie.CopyOverInput(selectionStart, inputStates);
+							else CurrentTasMovie.InsertInput(selectionStart, inputStates);
 						}
 					}
 				}
