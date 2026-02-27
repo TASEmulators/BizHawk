@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				domains.Add(CartRam);
 			}
 
-			MemoryDomains = new MemoryDomainList(domains);
+			MemoryDomains = new MemoryDomainList(domains, this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 

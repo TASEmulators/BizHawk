@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				domains.AddRange(_board.CartPort.CreateMemoryDomains());
 			}
 
-			_memoryDomains = new MemoryDomainList(domains);
+			_memoryDomains = new MemoryDomainList(domains, this);
 			((BasicServiceProvider)ServiceProvider).Register(_memoryDomains);
 		}
 
