@@ -26,6 +26,7 @@ M:System.Random.#ctor;this is a source of nondeterminism
 M:System.String.GetHashCode;use StableStringHash extension
 P:System.StringComparer.InvariantCultureIgnoreCase;use OrdinalIgnoreCase
 F:System.StringComparison.InvariantCultureIgnoreCase;use OrdinalIgnoreCase
+M:System.Windows.Forms.Clipboard.GetDataObject;use Contains{Text,Image}/Get{Text,Image}
 M:System.Windows.Forms.Control.Focus;use Activate for Forms, or Select otherwise
 F:System.Windows.Forms.DataFormats.StringFormat;use UnicodeText
 F:System.Windows.Forms.DataFormats.Text;use UnicodeText

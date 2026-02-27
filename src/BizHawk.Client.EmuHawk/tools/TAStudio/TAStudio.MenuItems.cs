@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled = TasView.AnyRowsSelected
-				&& (Clipboard.GetDataObject()?.GetDataPresent(DataFormats.UnicodeText) ?? false);
+					&& Clipboard.ContainsText();
 
 			ClearGreenzoneMenuItem.Enabled =
 				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Count > 1;
@@ -391,9 +391,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MaybePasteFromClipboard(bool overwriteSelection)
 		{
 			if (!TasView.AnyRowsSelected) return;
-			IDataObject data = Clipboard.GetDataObject();
-			if (data?.GetDataPresent(DataFormats.UnicodeText) is not true) return;
-			string input = (string) data.GetData(DataFormats.UnicodeText);
+			var input = Clipboard.GetText();
 			if (string.IsNullOrWhiteSpace(input)) return;
 			string[] lines = input.Split('\n');
 			if (lines.Length is 0) return;
@@ -898,8 +896,7 @@ namespace BizHawk.Client.EmuHawk
 
 			pasteToolStripMenuItem.Enabled =
 				pasteInsertToolStripMenuItem.Enabled =
-				(Clipboard.GetDataObject()?.GetDataPresent(DataFormats.UnicodeText) ?? false)
-				&& TasView.AnyRowsSelected;
+					TasView.AnyRowsSelected && Clipboard.ContainsText();
 
 			var selectionIsSingleRow = TasView.SelectedRows.CountIsExactly(1);
 			StartNewProjectFromNowMenuItem.Visible =
