@@ -60,7 +60,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		[CoreConstructor(VSystemID.Raw.N3DS)]
 		public Encore(CoreLoadParameters<EncoreSettings, EncoreSyncSettings> lp)
 		{
+#pragma warning disable CS0618
 			if (lp.Roms.Exists(static r => HawkFile.PathContainsPipe(r.RomPath)))
+#pragma warning restore CS0618
 			{
 				throw new InvalidOperationException("3DS does not support compressed ROMs");
 			}
@@ -134,7 +136,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			_serviceProvider.Register<IVideoProvider>(_encoreVideoProvider);
 
+#pragma warning disable CS0618
 			var romPath = lp.Roms[0].RomPath;
+#pragma warning restore CS0618
 			if (".cia".EqualsIgnoreCase(lp.Roms[0].Extension))
 			{
 				var message = new byte[1024];
@@ -177,7 +181,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 					throw new ArgumentException(paramName: nameof(lp), message: "ROMs after the first ROM should be CIAs");
 				}
 
+#pragma warning disable CS0618
 				_core.Encore_InstallCIA(_context, lp.Roms[i].RomPath, dummyBuffer, dummyBuffer.Length);
+#pragma warning restore CS0618
 			}
 
 			var errorMessage = new byte[1024];
