@@ -404,22 +404,20 @@ namespace BizHawk.Client.EmuHawk
 		private void PasteWatchesFromClipBoard()
 		{
 			var data = Clipboard.GetDataObject();
+			if (data?.GetDataPresent(DataFormats.Text) is not true) return;
 
-			if (data != null && data.GetDataPresent(DataFormats.Text))
+			var clipboardRows = ((string)data.GetData(DataFormats.Text)).Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (var row in clipboardRows)
 			{
-				var clipboardRows = ((string)data.GetData(DataFormats.Text)).Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-				foreach (var row in clipboardRows)
+				var watch = Watch.FromString(row, MemoryDomains);
+				if (watch is not null)
 				{
-					var watch = Watch.FromString(row, MemoryDomains);
-					if (watch is not null)
-					{
-						_watches.Add(watch);
-					}
+					_watches.Add(watch);
 				}
-
-				FullyUpdateWatchList();
 			}
+
+			FullyUpdateWatchList();
 		}
 
 		private void FullyUpdateWatchList()
