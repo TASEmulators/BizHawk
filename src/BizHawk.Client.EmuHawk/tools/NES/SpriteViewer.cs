@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class SpriteViewer : Control
@@ -11,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			var pSize = new Size(256, 96);
-			Sprites = new Bitmap(pSize.Width, pSize.Height);
+			Sprites = BitmapBuffer.CreateBitmapObject(pSize);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
@@ -34,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			var b = new Bitmap(Width, Height);
+			var b = BitmapBuffer.CreateBitmapObject(Size);
 			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.PathExtensions;
 
@@ -74,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			// was this done after reflow for a reason? --yoshi
 			luaPictureBox.Width = width;
 			luaPictureBox.Height = height;
-			luaPictureBox.Image = new Bitmap(width, height);
+			luaPictureBox.Image = BitmapBuffer.CreateBitmapObject(luaPictureBox.Size);
 			PerformLayout();
 		}
 

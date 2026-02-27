@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class NameTableViewer : Control
@@ -10,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		public NameTableViewer()
 		{
 			var pSize = new Size(512, 480);
-			Nametables = new Bitmap(pSize.Width, pSize.Height);
+			Nametables = BitmapBuffer.CreateBitmapObject(pSize);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -70,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			using var b = new Bitmap(Width, Height);
+			using var b = BitmapBuffer.CreateBitmapObject(Size);
 			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 			Clipboard.SetImage(b);

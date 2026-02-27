@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Drawing.Imaging;
+
+using BizHawk.Bizware.Graphics;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -13,11 +14,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public PceBgCanvas()
 		{
-			Bat = new Bitmap(BAT_WIDTH, BAT_HEIGHT, PixelFormat.Format32bppArgb);
+			Size = new(BAT_WIDTH, BAT_HEIGHT);
+			Bat = BitmapBuffer.CreateBitmapObject(Size);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
-			Size = new Size(BAT_WIDTH, BAT_HEIGHT);
 			Paint += BGViewer_Paint;
 		}
 
