@@ -390,39 +390,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaybePasteFromClipboard(bool overwriteSelection)
 		{
-			if (TasView.AnyRowsSelected)
+			if (!TasView.AnyRowsSelected) return;
+			IDataObject data = Clipboard.GetDataObject();
+			if (data?.GetDataPresent(DataFormats.StringFormat) is not true) return;
+			string input = (string)data.GetData(DataFormats.StringFormat);
+			if (string.IsNullOrWhiteSpace(input)) return;
+			string[] lines = input.Split('\n');
+			if (lines.Length is 0) return;
+
+			_tasClipboard.Clear();
+			int linesToPaste = lines.Length;
+			if (lines[lines.Length - 1].Length is 0) linesToPaste--;
+			for (int i = 0; i < linesToPaste; i++)
 			{
-				IDataObject data = Clipboard.GetDataObject();
-				if (data != null && data.GetDataPresent(DataFormats.StringFormat))
+				var line = ControllerFromMnemonicStr(lines[i]);
+				if (line == null)
 				{
-					string input = (string)data.GetData(DataFormats.StringFormat);
-					if (!string.IsNullOrWhiteSpace(input))
-					{
-						string[] lines = input.Split('\n');
-						if (lines.Length > 0)
-						{
-							_tasClipboard.Clear();
-							int linesToPaste = lines.Length;
-							if (lines[lines.Length - 1].Length is 0) linesToPaste--;
-							for (int i = 0; i < linesToPaste; i++)
-							{
-								var line = ControllerFromMnemonicStr(lines[i]);
-								if (line == null)
-								{
-									return;
-								}
-
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
-							}
-
-							var selectionStart = TasView.SelectionStartIndex ?? 0;
-							var inputStates = _tasClipboard.Select(static x => x.ControllerState);
-							if (overwriteSelection) CurrentTasMovie.CopyOverInput(selectionStart, inputStates);
-							else CurrentTasMovie.InsertInput(selectionStart, inputStates);
-						}
-					}
+					return;
 				}
+
+				_tasClipboard.Add(new TasClipboardEntry(i, line));
 			}
+
+			var selectionStart = TasView.SelectionStartIndex ?? 0;
+			var inputStates = _tasClipboard.Select(static x => x.ControllerState);
+			if (overwriteSelection) CurrentTasMovie.CopyOverInput(selectionStart, inputStates);
+			else CurrentTasMovie.InsertInput(selectionStart, inputStates);
 		}
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
