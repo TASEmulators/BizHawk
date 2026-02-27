@@ -1346,7 +1346,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var data = Clipboard.GetDataObject();
 			PasteMenuItem.Enabled = _domain.Writable && AreAnyHighlighted
-				&& data?.GetDataPresent(DataFormats.Text) is true;
+				&& data?.GetDataPresent(DataFormats.UnicodeText) is true;
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
@@ -1408,12 +1408,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var data = Clipboard.GetDataObject();
 
-			if (data == null || !data.GetDataPresent(DataFormats.Text))
+			if (data == null || !data.GetDataPresent(DataFormats.UnicodeText))
 			{
 				return;
 			}
 
-			var clipboardRaw = (string)data.GetData(DataFormats.Text);
+			var clipboardRaw = (string) data.GetData(DataFormats.UnicodeText);
 			var hex = clipboardRaw.OnlyHex();
 
 			var numBytes = hex.Length / 2;
@@ -1894,9 +1894,9 @@ namespace BizHawk.Client.EmuHawk
 					= AreAnyHighlighted && _domain.Writable;
 
 			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
-			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
+			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.UnicodeText);
 
-			ContextSeparator1.Visible = AreAnyHighlighted || data?.GetDataPresent(DataFormats.Text) is true;
+			ContextSeparator1.Visible = AreAnyHighlighted || data?.GetDataPresent(DataFormats.UnicodeText) is true;
 
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
