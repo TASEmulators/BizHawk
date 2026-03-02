@@ -84,7 +84,10 @@ static void SanitizeExternalFirmware(melonDS::Firmware& firmware)
 		memset(&header.Bytes[0x28], 0xFF, 2);
 	}
 
-	memcpy(&header.Bytes[0x2C], &defaultHeader.Bytes[0x2C], 0x136);
+	// MAC address offset is 0x36, so we skip writing from 0x36 to 0x3B (48 bit)
+	// to avoid copying melonDS default MAC address 0x0009BF112233
+	memcpy(&header.Bytes[0x2C], &defaultHeader.Bytes[0x2C], 10);
+	memcpy(&header.Bytes[0x3C], &defaultHeader.Bytes[0x3C], 0x126);
 	memset(&header.Bytes[0x162], 0xFF, 0x9E);
 
 	if (isDSiFw)
