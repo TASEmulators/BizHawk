@@ -63,6 +63,17 @@ static std::unique_ptr<T> CreateBiosImage(u8* biosData, u32 biosLength, std::opt
 	return std::move(bios);
 }
 
+static bool isValidMacAddress(const melonDS::MacAddress& mac)
+{
+    // 48bit MAC address v1–v5: 00:09:BF:XX:XX:XX
+    const bool isV1toV5 = mac[0] == 0x00 && mac[1] == 0x09 && mac[2] == 0xBF;
+
+    // 48bit MAC address v6–v7: 00:16:56:XX:XX:XX
+    const bool isV6toV7 = mac[0] == 0x00 && mac[1] == 0x16 && mac[2] == 0x56;
+
+    return isV1toV5 || isV6toV7;
+}
+
 static void SanitizeExternalFirmware(melonDS::Firmware& firmware)
 {
 	auto& header = firmware.GetHeader();
@@ -84,9 +95,16 @@ static void SanitizeExternalFirmware(melonDS::Firmware& firmware)
 		memset(&header.Bytes[0x28], 0xFF, 2);
 	}
 
+	memcpy(&header.Bytes[0x2C], &defaultHeader.Bytes[0x2C], 10);
+
 	// MAC address offset is 0x36, so we skip writing from 0x36 to 0x3B (48 bit)
 	// to avoid copying melonDS default MAC address 0x0009BF112233
-	memcpy(&header.Bytes[0x2C], &defaultHeader.Bytes[0x2C], 10);
+	// only if the external firmware MAC address is valid
+	if (!isValidMacAddress(header.MacAddr))
+	{
+		memcpy(&header.Bytes[0x36], &defaultHeader.Bytes[0x36], 6);
+	}
+
 	memcpy(&header.Bytes[0x3C], &defaultHeader.Bytes[0x3C], 0x126);
 	memset(&header.Bytes[0x162], 0xFF, 0x9E);
 
