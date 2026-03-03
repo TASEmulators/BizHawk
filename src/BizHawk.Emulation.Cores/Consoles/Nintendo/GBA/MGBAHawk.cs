@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 
 			long baseTime = (long)_syncSettings.RTCInitialTime.Subtract(_epoch).TotalSeconds;
-			long increment = TotalExecutedCycles >> 24;
+			long increment = CycleCount >> 24;
 			return baseTime + increment;
 		}
 	}

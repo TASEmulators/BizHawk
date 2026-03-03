@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						(byte)(255 - controller.AxisValue("Light Sensor")),
 						ref cyclesRan);
 					_cycleOverflow = cyclesRan - cycles;
-					TotalExecutedCycles += cyclesRan;
+					CycleCount += cyclesRan;
 				}
 				else
 				{
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					(short)controller.AxisValue("Tilt Z"),
 					(byte)(255 - controller.AxisValue("Light Sensor")),
 					out var cycles);
-				TotalExecutedCycles += cycles;
+				CycleCount += cycles;
 			}
 
 			if (IsLagFrame)

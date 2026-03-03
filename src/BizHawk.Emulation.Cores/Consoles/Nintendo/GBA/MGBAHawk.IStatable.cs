@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writer.Write(LagCount);
 			writer.Write(Frame);
 			writer.Write(_cycleOverflow);
-			writer.Write(TotalExecutedCycles);
+			writer.Write(CycleCount);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
 			_cycleOverflow = reader.ReadInt32();
-			TotalExecutedCycles = reader.ReadInt64();
+			CycleCount = reader.ReadInt64();
 		}
 	}
 }
