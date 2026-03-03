@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public long TotalExecutedCycles => CycleCount + LibmGBA.BizGetCallbackCycleOffset(Core);
 
 		private static readonly string[] RegisterNames =
-		{
+		[
 			"R0",
 			"R1",
 			"R2",
@@ -81,6 +81,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			"R15",
 			"CPSR",
 			"SPSR"
-		};
+		];
 	}
 }
