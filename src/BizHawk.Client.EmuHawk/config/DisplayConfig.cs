@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 					groupBox5,
 					flpStaticWindowTitles,
 					grpSnow,
-				}
+				},
 			});
 
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
