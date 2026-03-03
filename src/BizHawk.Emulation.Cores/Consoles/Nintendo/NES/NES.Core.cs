@@ -1005,7 +1005,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				ret = DB;
+				// Famicom Disk System Registers, or open bus. APU Registers need to be activated based on the position of the 6502 address bus, see below.
+				ret = Board.ReadExp(addr - 0x4000);
 			}
 			else
 			{
