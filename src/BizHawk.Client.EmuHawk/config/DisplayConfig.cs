@@ -112,7 +112,17 @@ namespace BizHawk.Client.EmuHawk
 				Location = new(5, 15),
 				Size = new(320, 144),
 			});
-			tpMisc.Controls.Add(grpSnow);
+			tpMisc.Controls.Remove(flpStaticWindowTitles);
+			tpMisc.Controls.Remove(groupBox5);
+			tpMisc.Controls.Add(new SingleColumnFLP
+			{
+				Controls =
+				{
+					groupBox5,
+					flpStaticWindowTitles,
+					grpSnow,
+				}
+			});
 
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
 			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
