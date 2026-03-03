@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -16,12 +15,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
-		private static readonly FilesystemFilterSet BundlesFSFilterSet = new(new FilesystemFilter("XML Files", new[] { "xml" }));
-
 		public static Icon ToolIcon
 			=> Properties.Resources.DualIcon;
 
-		private XElement _currentXml;
+		private MultiDiskBundleModel _live;
 
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
@@ -158,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			File.WriteAllText(fileInfo.FullName, _currentXml.ToString());
+			File.WriteAllText(fileInfo.FullName, _live.XMLString);
 			return true;
 		}
 
@@ -248,33 +245,21 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var basePath = Path.GetDirectoryName(Path.GetFullPath(name.SubstringBefore('|')));
-
-					_currentXml = new XElement("BizHawk-XMLGame",
-						new XAttribute("System", system),
-						new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
-						new XElement("LoadAssets",
-							names.Select(n =>
-							{
-								string currentRomPath = Path.GetFullPath(n);
-								string fileName;
-
-								try
-								{
-									fileName = PathExtensions.GetRelativePath(basePath, currentRomPath)!;
-								}
-								catch (ArgumentException)
-								{
-									// if a relative path cannot be constructed, use an absolute path
-									fileName = currentRomPath;
-								}
-
-								return new XElement(
-									"Asset",
-									new XAttribute("FileName", fileName.Replace('\\', '/'))); // should still work on Windows, and makes (at least relative paths) cross-platform
-							})
-						)
-					);
-
+					_live = new(bundlePath: name, sysID: system, names.Select(n =>
+					{
+						string currentRomPath = Path.GetFullPath(n);
+						string fileName;
+						try
+						{
+							fileName = PathExtensions.GetRelativePath(basePath, currentRomPath)!;
+						}
+						catch (ArgumentException)
+						{
+							// if a relative path cannot be constructed, use an absolute path
+							fileName = currentRomPath;
+						}
+						return fileName.Replace('\\', '/'); // should still work on Windows, and makes (at least relative paths) cross-platform
+					}).ToArray());
 					SaveRunButton.Enabled = true;
 					SaveButton.Enabled = true;
 					return true;
@@ -285,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				//swallow exceptions, since this is just validation logic
 			}
 
-			_currentXml = null;
+			_live = null;
 			SaveRunButton.Enabled = false;
 			SaveButton.Enabled = false;
 			return false;
@@ -329,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var result = this.ShowFileSaveDialog(
-				filter: BundlesFSFilterSet,
+				filter: MultiDiskBundleModel.BundlesFSFilterSet,
 				initDir: initialDirectory,
 				initFileName: filename);
 			if (result is not null) NameBox.Text = result;
