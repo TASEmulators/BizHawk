@@ -372,10 +372,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					luaFile.State = LuaFile.RunState.Running;
 					EnableLuaFile(luaFile);
+					Console.WriteLine($"[{WindowTitleStatic}] loaded script {absolutePath}");
 				}
 				else
 				{
 					luaFile.State = LuaFile.RunState.Disabled;
+					Console.WriteLine($"[{WindowTitleStatic}] added script {absolutePath} without starting it");
 				}
 
 				if (Settings.ReloadOnScriptFileChange)
@@ -558,6 +560,7 @@ namespace BizHawk.Client.EmuHawk
 			RemoveAllLuaFiles();
 
 			var result = LuaImp.ScriptList.Load(path, Settings.DisableLuaScriptsOnLoad);
+			Console.WriteLine($"[{WindowTitleStatic}] loaded session {LuaImp.ScriptList.Filename}");
 
 			foreach (var script in LuaImp.ScriptList)
 			{
@@ -566,6 +569,7 @@ namespace BizHawk.Client.EmuHawk
 					if (script.Enabled)
 					{
 						EnableLuaFile(script);
+						Console.WriteLine($"[{WindowTitleStatic}] loaded script {script.Path} via session");
 					}
 
 					Config.RecentLua.Add(script.Path);
@@ -918,6 +922,7 @@ namespace BizHawk.Client.EmuHawk
 			File.Copy(sourceFileName: templatePath, destFileName: result, overwrite: true);
 			LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
 			Config!.RecentLua.Add(result);
+			Console.WriteLine($"[{WindowTitleStatic}] copied template script to {result}");
 			UpdateDialog();
 			Process.Start(new ProcessStartInfo
 			{
@@ -1048,6 +1053,7 @@ namespace BizHawk.Client.EmuHawk
 				File.WriteAllText(result, text);
 				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(result), result));
 				Config!.RecentLua.Add(result);
+				Console.WriteLine($"[{WindowTitleStatic}] copied script {script.Path} to {result}");
 				UpdateDialog();
 				Process.Start(new ProcessStartInfo
 				{
@@ -1560,6 +1566,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
+				Console.WriteLine($"[{WindowTitleStatic}] enabled script {file.Path}");
 			}
 			else if (!file.Enabled && file.Thread is not null)
 			{
