@@ -15,6 +15,7 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -32,6 +33,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Icon ToolIcon
 			=> Resources.TextDocIcon;
+
+		private readonly ToolStripMenuItemEx DuplicateToStdoutMenuItem = new() { Text = "Copy All Logged Messages to Terminal/stdout" };
 
 		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new();
 		private readonly Dictionary<LuaFile, FileSystemWatcher> _watches = new();
@@ -74,6 +77,8 @@ namespace BizHawk.Client.EmuHawk
 			public bool DisableLuaScriptsOnLoad { get; set; }
 
 			public bool WarnedOnceOnOverwrite { get; set; }
+
+			public bool DuplicateToStdout { get; set; } = OSTailoredCode.IsUnixHost;
 		}
 
 		[ConfigPersist]
@@ -88,6 +93,10 @@ namespace BizHawk.Client.EmuHawk
 			_lastColumnSorted = "";
 
 			InitializeComponent();
+
+			DuplicateToStdoutMenuItem.Click += (_, _) => Settings.DuplicateToStdout = !Settings.DuplicateToStdout;
+			SettingsSubMenu.DropDownItems.InsertAfter(ReloadWhenScriptFileChangesMenuItem, insert: DuplicateToStdoutMenuItem);
+
 			ToggleScriptContextItem.Image = Resources.Refresh;
 			PauseScriptContextItem.Image = Resources.Pause;
 			EditScriptContextItem.Image = Resources.Cut;
@@ -517,6 +526,16 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.SelectionStart = OutputBox.Text.Length;
 				OutputBox.ScrollToCaret();
 			});
+			if (!Settings.DuplicateToStdout) return;
+#if true
+			Console.Write("[Lua script] {0}", message);
+#else //TODO keep track of origin script and include that as well
+			Console.Write(
+				senderFilenameNoExt is null ? "[Lua REPL] {1}" : "[Lua script: {0}] {1}",
+				senderFilenameNoExt,
+				message);
+#endif
+			if (!message.EndsWith('\n')) Console.WriteLine('\\'); // indicate continued lines; still won't make sense w.r.t. backslashes as an escape character, but it's good enough for humans
 		}
 
 		public void ClearOutputWindow()
@@ -1143,6 +1162,7 @@ namespace BizHawk.Client.EmuHawk
 			DisableScriptsOnLoadMenuItem.Checked = Settings.DisableLuaScriptsOnLoad;
 			ReturnAllIfNoneSelectedMenuItem.Checked = Settings.ToggleAllIfNoneSelected;
 			ReloadWhenScriptFileChangesMenuItem.Checked = Settings.ReloadOnScriptFileChange;
+			DuplicateToStdoutMenuItem.Checked = Settings.DuplicateToStdout;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
