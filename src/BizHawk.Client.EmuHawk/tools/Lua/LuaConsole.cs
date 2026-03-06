@@ -265,6 +265,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
+					Console.WriteLine($"[{WindowTitleStatic}] failed to re-enable script {file.Path} after {nameof(Restart)}:\n{ex}");
 					DialogController.ShowMessageBox(ex.ToString());
 				}
 			}
@@ -686,6 +687,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
+					Console.WriteLine($"[{WindowTitleStatic}] failed to resume script {lf.Path}:\n{ex}");
 					DialogController.ShowMessageBox(ex.ToString());
 				}
 			}
@@ -985,6 +987,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine($"[{WindowTitleStatic}] failed to start script {item.Path}:\n{ex}");
 				DialogController.ShowMessageBox(ex.ToString());
 			}
 		}
@@ -1355,6 +1358,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine($"[{WindowTitleStatic}] drag+drop handler failed:\n{ex}");
 				DialogController.ShowMessageBox(ex.ToString());
 			}
 		}
