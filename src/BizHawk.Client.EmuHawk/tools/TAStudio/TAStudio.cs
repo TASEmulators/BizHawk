@@ -1028,7 +1028,7 @@ namespace BizHawk.Client.EmuHawk
 			return CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame > 0 ? frame - 1 : 0);
 		}
 
-		public void LoadState(KeyValuePair<int, Stream> state, bool discardApiHawkSurfaces = false)
+		public void LoadState(KeyValuePair<int, Stream> state, int? branchIndex = null)
 		{
 			StatableEmulator.LoadStateBinary(new BinaryReader(state.Value));
 
@@ -1037,9 +1037,15 @@ namespace BizHawk.Client.EmuHawk
 				Emulator.ResetCounters();
 			}
 
-			UpdateTools();
-			if (discardApiHawkSurfaces)
+			if (branchIndex.HasValue)
 			{
+				BranchLoadedCallback?.Invoke(branchIndex.Value);
+			}
+			UpdateTools();
+			if (!branchIndex.HasValue)
+			{
+				// If we are not a branch, we won't have a saved inamge.
+				// We will emulate 1 frame to get one, so we can discard now.
 				DisplayManager.DiscardApiHawkSurfaces();
 			}
 		}
@@ -1305,7 +1311,7 @@ namespace BizHawk.Client.EmuHawk
 			_suspendEditLogic = true;
 			CurrentTasMovie.LoadBranch(branch);
 			_suspendEditLogic = false;
-			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)));
+			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)), CurrentTasMovie.Branches.IndexOf(branch));
 
 			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
