@@ -263,6 +263,18 @@ namespace BizHawk.Client.EmuHawk
 		protected override void UpdateAfter() => Update(fast: false);
 		protected override void FastUpdateAfter() => Update(fast: true);
 
+		public override void Stop()
+		{
+			if (_isBotting)
+			{
+				StopBot();
+			}
+			else if (_replayMode)
+			{
+				FinishReplay();
+			}
+		}
+
 		public override void Restart()
 		{
 			_ = StatableCore!; // otherwise unused due to loadstating via MainForm; however this service is very much required so the property needs to be present
@@ -274,16 +286,6 @@ namespace BizHawk.Client.EmuHawk
 				_bigEndian = _currentDomain.EndianType == MemoryDomain.Endian.Big;
 				_dataSize = 1;
 			}
-
-			if (_isBotting)
-			{
-				StopBot();
-			}
-			else if (_replayMode)
-			{
-				FinishReplay();
-			}
-
 
 			if (_lastRom != MainForm.CurrentlyOpenRom)
 			{
