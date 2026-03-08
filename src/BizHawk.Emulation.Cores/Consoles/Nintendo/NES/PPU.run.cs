@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										{
 											oam_index &= 0x1FC;
 										}
-										soam_index++;
+										// soam_index no longer increments now that Secondary OAM is full.
 										spr_true_count = 0;
 									}
 								}
