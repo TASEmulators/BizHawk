@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
@@ -40,7 +40,7 @@ jobs:
         run: zip -r ../BizHawk-${{ env.BIZHAWK_VERSION }}-win-x64.zip .
 
       - name: Upload release builds
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BizHawk-${{ env.BIZHAWK_VERSION }}-release
           path: |
