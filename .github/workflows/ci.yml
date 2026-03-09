@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
@@ -35,10 +35,10 @@ jobs:
             - { prettyname: Linux, fullname: ubuntu-22.04 } # newer ubuntu versions don't ship with mono, so we need to pin for now, see https://github.com/actions/runner-images/issues/10636
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
@@ -51,10 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
@@ -64,7 +64,7 @@ jobs:
       - name: Package (Linux)
         run: Dist/Package.sh
       - name: Upload Linux dev build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BizHawk-dev-linux
           path: packaged_output
@@ -72,7 +72,7 @@ jobs:
       - name: Package (Windows)
         run: Dist/Package.sh windows-x64
       - name: Upload Windows dev build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BizHawk-dev-windows
           path: packaged_output
