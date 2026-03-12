@@ -8,7 +8,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public enum MovieEndAction { Stop, Pause, Record, Finish }
+	public enum MovieEndAction
+	{
+		Stop,
+		Pause,
+		Record,
+		Finish,
+	}
 
 	public class MovieSession : IMovieSession
 	{
@@ -16,6 +22,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
+		private readonly Action _movieEndSound;
 
 		private IMovie _queuedMovie;
 
@@ -24,7 +31,8 @@ namespace BizHawk.Client.Common
 			string backDirectory,
 			IDialogParent dialogParent,
 			Action pauseCallback,
-			Action modeChangedCallback)
+			Action modeChangedCallback,
+			Action movieEndSound = null)
 		{
 			Settings = settings;
 			BackupDirectory = backDirectory;
@@ -33,6 +41,7 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
+			_movieEndSound = movieEndSound;
 		}
 
 		public IMovieConfig Settings { get; }
@@ -46,18 +55,22 @@ namespace BizHawk.Client.Common
 
 		public string QueuedCoreName => _queuedMovie?.Core;
 
+		public string/*?*/ QueuedSysID
+			=> _queuedMovie?.SystemID;
+
 		public IDictionary<string, object> UserBag { get; set; } = new Dictionary<string, object>();
 
-		public IInputAdapter MovieIn { get; set; }
+		public IController MovieIn { get; set; }
 		public IInputAdapter MovieOut { get; } = new CopyControllerAdapter();
-		public IStickyAdapter StickySource { get; set; }
+		public IController StickySource { get; set; }
 
-		public IMovieController MovieController { get; private set; } = new Bk2Controller("", NullController.Instance.Definition);
+		public IMovieController MovieController { get; private set; } = new Bk2Controller(NullController.Instance.Definition);
 
-		public IMovieController GenerateMovieController(ControllerDefinition definition = null)
+		public IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null)
 		{
-			// TODO: expose Movie.LogKey and pass in here
-			return new Bk2Controller("", definition ?? MovieController.Definition);
+			// TODO: should this fallback to Movie.LogKey?
+			// this function is kinda weird
+			return new Bk2Controller(definition ?? MovieController.Definition, logKey);
 		}
 
 		public void HandleFrameBefore()
@@ -78,35 +91,25 @@ namespace BizHawk.Client.Common
 					LatchInputToUser();
 				}
 			}
-			else if (Movie.IsPlayingOrFinished())
+			else if (Movie.IsPlaying())
 			{
 				LatchInputToLog();
-
-				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
-				{
-					HandleFrameLoopForRecordMode();
-				}
 			}
 			else if (Movie.IsRecording())
 			{
-				HandleFrameLoopForRecordMode();
+				LatchInputToUser();
+				Movie.RecordFrame(Movie.Emulator.Frame, MovieOut.Source);
 			}
 		}
 
-		// TODO: this is a mess, simplify
-		public void HandleFrameAfter()
+		public void HandleFrameAfter(bool ignoreMovieEndAction)
 		{
 			if (Movie is ITasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlayingOrFinished() && Settings.MovieEndAction == MovieEndAction.Record && Movie.Emulator.Frame >= tasMovie.InputLogLength)
-				{
-					HandleFrameLoopForRecordMode();
-					return;
-				}
 			}
 
-			if (Movie.IsPlaying() && Movie.Emulator.Frame >= Movie.InputLogLength)
+			if (!ignoreMovieEndAction && Movie.IsPlaying() && Movie.Emulator.Frame == Movie.FrameCount)
 			{
 				HandlePlaybackEnd();
 			}
@@ -144,31 +147,12 @@ namespace BizHawk.Client.Common
 
 			if (ReadOnly)
 			{
-				if (Movie.IsRecording())
-				{
-					Movie.SwitchToPlay();
-				}
-				else if (Movie.IsPlayingOrFinished())
-				{
-					// set the controller state to the previous frame for input display purposes
-					int previousFrame = Movie.Emulator.Frame - 1;
-					Movie.Session.MovieController.SetFrom(Movie.GetInputState(previousFrame));
-				}
-				else if (Movie.IsFinished())
-				{
-					LatchInputToUser();
-				}
+				Movie.SwitchToPlay();
+				LatchInputToLog();
 			}
 			else
 			{
-				if (Movie.IsFinished())
-				{
-					Movie.StartNewRecording();
-				}
-				else if (Movie.IsPlayingOrFinished())
-				{
-					Movie.SwitchToRecord();
-				}
+				Movie.SwitchToRecord();
 
 				var result = Movie.ExtractInputLog(reader, out var errorMsg);
 				if (!result)
@@ -179,6 +163,8 @@ namespace BizHawk.Client.Common
 
 				LatchInputToUser();
 			}
+
+			HandleFrameAfter(false);
 
 			return true;
 		}
@@ -233,7 +219,7 @@ namespace BizHawk.Client.Common
 
 		public void RunQueuedMovie(bool recordMode, IEmulator emulator)
 		{
-			MovieController = new Bk2Controller(emulator.ControllerDefinition);
+			MovieController = new Bk2Controller(emulator.ControllerDefinition, _queuedMovie.LogKey);
 
 			Movie = _queuedMovie;
 			Movie.Attach(emulator);
@@ -258,8 +244,9 @@ namespace BizHawk.Client.Common
 		public void AbortQueuedMovie()
 			=> _queuedMovie = null;
 
-		public void StopMovie(bool saveChanges = true)
+		public FileWriteResult StopMovie(bool saveChanges = true)
 		{
+			FileWriteResult/*?*/ result = null;
 			if (Movie.IsActive())
 			{
 				var message = "Movie ";
@@ -274,11 +261,21 @@ namespace BizHawk.Client.Common
 
 				message += "stopped.";
 
-				var result = Movie.Stop(saveChanges);
-				if (result)
+				if (saveChanges && Movie.Changes)
 				{
-					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+					result = Movie.Save();
+					if (result.IsError)
+					{
+						Output($"Failed to write {Path.GetFileName(Movie.Filename)} to disk.");
+						Output(result.UserFriendlyErrorMessage());
+						return result;
+					}
+					else
+					{
+						Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+					}
 				}
+				Movie.Stop();
 
 				Output(message);
 				ReadOnly = true;
@@ -286,20 +283,14 @@ namespace BizHawk.Client.Common
 				_modeChangedCallback();
 			}
 
-			if (Movie is IDisposable d
-				&& Movie != _queuedMovie) // Uberhack, remove this and Loading Tastudio with a bk2 already loaded breaks, probably other TAStudio scenarios as well
+			if (Movie is IDisposable d)
 			{
 				d.Dispose();
 			}
 
 			Movie = null;
-		}
 
-		public void ConvertToTasProj()
-		{
-			Movie = Movie.ToTasMovie();
-			Movie.Save();
-			Movie.SwitchToPlay();
+			return result ?? new();
 		}
 
 		public IMovie Get(string path, bool loadMovie)
@@ -329,13 +320,8 @@ namespace BizHawk.Client.Common
 		private void LatchInputToLog()
 		{
 			var input = Movie.GetInputState(Movie.Emulator.Frame);
-			if (input == null)
-			{
-				HandleFrameAfter();
-				return;
-			}
 
-			MovieController.SetFrom(input);
+			MovieController.SetFrom(input ?? StickySource);
 			MovieOut.Source = MovieController;
 		}
 
@@ -345,6 +331,7 @@ namespace BizHawk.Client.Common
 			Debug.Assert(Movie.IsPlaying());
 			Debug.Assert(Movie.Emulator.Frame >= Movie.InputLogLength);
 #endif
+#if false // code below doesn't actually do anything as the cycle count is indiscriminately overwritten (or removed) on save anyway.
 			if (Movie.IsAtEnd() && Movie.Emulator.HasCycleTiming())
 			{
 				const string WINDOW_TITLE_MISMATCH = "Cycle count mismatch";
@@ -394,10 +381,13 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+#endif
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
-					Movie.Stop();
+					// Technically this can save the movie, but it'd be weird to be in that situation.
+					// Do we want that?
+					StopMovie();
 					break;
 				case MovieEndAction.Record:
 					Movie.SwitchToRecord();
@@ -412,22 +402,10 @@ namespace BizHawk.Client.Common
 					break;
 			}
 
+			if (Settings.MovieEndAction is not MovieEndAction.Record && Settings.PlaySoundOnMovieEnd)
+				_movieEndSound?.Invoke();
+
 			_modeChangedCallback();
-		}
-
-		private void HandleFrameLoopForRecordMode()
-		{
-			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is ITasMovie && Movie.IsPlayingOrFinished())
-			{
-				MovieController.SetFromSticky(StickySource);
-			}
-			else
-			{
-				MovieController.SetFrom(MovieIn);
-			}
-
-			Movie.RecordFrame(Movie.Emulator.Frame, MovieController);
 		}
 	}
 }

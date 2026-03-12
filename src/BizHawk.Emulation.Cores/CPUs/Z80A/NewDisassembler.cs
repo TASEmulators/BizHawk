@@ -5,29 +5,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public sealed partial class Z80A : IDisassemblable
+	public static class Z80ADisassembler
 	{
-		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
-		{
-			//d immediately succeeds the opcode
-			//n immediate succeeds the opcode and the displacement (if present)
-			//nn immediately succeeds the opcode and the displacement (if present)
-
-			if (format.ContainsOrdinal("nn")) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
-			if (format.ContainsOrdinal('n')) format = format.Replace("n", $"{read(addr++):X2}h");
-
-			format = format.Replace("+d", "d");
-			if (format.ContainsOrdinal('d'))
-			{
-				var b = unchecked ((sbyte) read(addr++));
-				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
-			}
-
-			return format;
-		}
-
 		private static readonly string[] mnemonics =
-		{
+		[
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD HL, BC", "LD A, (BC)", "DEC BC", //0x0C
@@ -92,10 +73,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL P, nn", "PUSH AF", "OR n", "RST $30", //0xF8
 			"RET M", "LD SP, HL", "JP M, nn", "EI", //0xFC
 			"CALL M, nn", "[FD]", "CP n", "RST $38", //0x100
-		};
+		];
 
 		private static readonly string[] mnemonicsDD =
-		{
+		[
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD IX, BC", "LD A, (BC)", "DEC BC", //0x0C
@@ -160,10 +141,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL P, nn", "PUSH AF", "OR n", "RST $30", //0xF8
 			"RET M", "LD SP, IX", "JP M, nn", "EI", //0xFC
 			"CALL M, nn", "[!!DD FD!!]", "CP n", "RST $38", //0x100
-		};
+		];
 
 		private static readonly string[] mnemonicsFD =
-		{
+		[
 			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD IY, BC", "LD A, (BC)", "DEC BC", //0x0C
@@ -228,83 +209,83 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"CALL P, nn", "PUSH AF", "OR n", "RST $30", //0xF8
 			"RET M", "LD SP, IY", "JP M, nn", "EI", //0xFC
 			"CALL M, nn", "[!FD FD!]", "CP n", "RST $38", //0x100
-		};
+		];
 
 		private static readonly string[] mnemonicsDDCB =
-		{
-			"RLC (IX+d)->B", "RLC (IX+d)->C", "RLC (IX+d)->D", "RLC (IX+d)->E", "RLC (IX+d)->H", "RLC (IX+d)->L", "RLC (IX+d)", "RLC (IX+d)->A", 
-			"RRC (IX+d)->B", "RRC (IX+d)->C", "RRC (IX+d)->D", "RRC (IX+d)->E", "RRC (IX+d)->H", "RRC (IX+d)->L", "RRC (IX+d)", "RRC (IX+d)->A", 
-			"RL (IX+d)->B", "RL (IX+d)->C", "RL (IX+d)->D", "RL (IX+d)->E", "RL (IX+d)->H", "RL (IX+d)->L", "RL (IX+d)", "RL (IX+d)->A", 
-			"RR (IX+d)->B", "RR (IX+d)->C", "RR (IX+d)->D", "RR (IX+d)->E", "RR (IX+d)->H", "RR (IX+d)->L", "RR (IX+d)", "RR (IX+d)->A", 
-			"SLA (IX+d)->B", "SLA (IX+d)->C", "SLA (IX+d)->D", "SLA (IX+d)->E", "SLA (IX+d)->H", "SLA (IX+d)->L", "SLA (IX+d)", "SLA (IX+d)->A", 
-			"SRA (IX+d)->B", "SRA (IX+d)->C", "SRA (IX+d)->D", "SRA (IX+d)->E", "SRA (IX+d)->H", "SRA (IX+d)->L", "SRA (IX+d)", "SRA (IX+d)->A", 
-			"SL1 (IX+d)->B", "SL1 (IX+d)->C", "SL1 (IX+d)->D", "SL1 (IX+d)->E", "SL1 (IX+d)->H", "SL1 (IX+d)->L", "SL1 (IX+d)", "SL1 (IX+d)->A", 
-			"SRL (IX+d)->B", "SRL (IX+d)->C", "SRL (IX+d)->D", "SRL (IX+d)->E", "SRL (IX+d)->H", "SRL (IX+d)->L", "SRL (IX+d)", "SRL (IX+d)->A", 
-			"BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", 
-			"BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", 
-			"BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", 
-			"BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", 
-			"BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", 
-			"BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", 
-			"BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", 
-			"BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", 
-			"RES 0 (IX+d)->B", "RES 0 (IX+d)->C", "RES 0 (IX+d)->D", "RES 0 (IX+d)->E", "RES 0 (IX+d)->H", "RES 0 (IX+d)->L", "RES 0 (IX+d)", "RES 0 (IX+d)->A", 
-			"RES 1 (IX+d)->B", "RES 1 (IX+d)->C", "RES 1 (IX+d)->D", "RES 1 (IX+d)->E", "RES 1 (IX+d)->H", "RES 1 (IX+d)->L", "RES 1 (IX+d)", "RES 1 (IX+d)->A", 
-			"RES 2 (IX+d)->B", "RES 2 (IX+d)->C", "RES 2 (IX+d)->D", "RES 2 (IX+d)->E", "RES 2 (IX+d)->H", "RES 2 (IX+d)->L", "RES 2 (IX+d)", "RES 2 (IX+d)->A", 
-			"RES 3 (IX+d)->B", "RES 3 (IX+d)->C", "RES 3 (IX+d)->D", "RES 3 (IX+d)->E", "RES 3 (IX+d)->H", "RES 3 (IX+d)->L", "RES 3 (IX+d)", "RES 3 (IX+d)->A", 
-			"RES 4 (IX+d)->B", "RES 4 (IX+d)->C", "RES 4 (IX+d)->D", "RES 4 (IX+d)->E", "RES 4 (IX+d)->H", "RES 4 (IX+d)->L", "RES 4 (IX+d)", "RES 4 (IX+d)->A", 
-			"RES 5 (IX+d)->B", "RES 5 (IX+d)->C", "RES 5 (IX+d)->D", "RES 5 (IX+d)->E", "RES 5 (IX+d)->H", "RES 5 (IX+d)->L", "RES 5 (IX+d)", "RES 5 (IX+d)->A", 
-			"RES 6 (IX+d)->B", "RES 6 (IX+d)->C", "RES 6 (IX+d)->D", "RES 6 (IX+d)->E", "RES 6 (IX+d)->H", "RES 6 (IX+d)->L", "RES 6 (IX+d)", "RES 6 (IX+d)->A", 
-			"RES 7 (IX+d)->B", "RES 7 (IX+d)->C", "RES 7 (IX+d)->D", "RES 7 (IX+d)->E", "RES 7 (IX+d)->H", "RES 7 (IX+d)->L", "RES 7 (IX+d)", "RES 7 (IX+d)->A", 
-			"SET 0 (IX+d)->B", "SET 0 (IX+d)->C", "SET 0 (IX+d)->D", "SET 0 (IX+d)->E", "SET 0 (IX+d)->H", "SET 0 (IX+d)->L", "SET 0 (IX+d)", "SET 0 (IX+d)->A", 
-			"SET 1 (IX+d)->B", "SET 1 (IX+d)->C", "SET 1 (IX+d)->D", "SET 1 (IX+d)->E", "SET 1 (IX+d)->H", "SET 1 (IX+d)->L", "SET 1 (IX+d)", "SET 1 (IX+d)->A", 
-			"SET 2 (IX+d)->B", "SET 2 (IX+d)->C", "SET 2 (IX+d)->D", "SET 2 (IX+d)->E", "SET 2 (IX+d)->H", "SET 2 (IX+d)->L", "SET 2 (IX+d)", "SET 2 (IX+d)->A", 
-			"SET 3 (IX+d)->B", "SET 3 (IX+d)->C", "SET 3 (IX+d)->D", "SET 3 (IX+d)->E", "SET 3 (IX+d)->H", "SET 3 (IX+d)->L", "SET 3 (IX+d)", "SET 3 (IX+d)->A", 
-			"SET 4 (IX+d)->B", "SET 4 (IX+d)->C", "SET 4 (IX+d)->D", "SET 4 (IX+d)->E", "SET 4 (IX+d)->H", "SET 4 (IX+d)->L", "SET 4 (IX+d)", "SET 4 (IX+d)->A", 
-			"SET 5 (IX+d)->B", "SET 5 (IX+d)->C", "SET 5 (IX+d)->D", "SET 5 (IX+d)->E", "SET 5 (IX+d)->H", "SET 5 (IX+d)->L", "SET 5 (IX+d)", "SET 5 (IX+d)->A", 
-			"SET 6 (IX+d)->B", "SET 6 (IX+d)->C", "SET 6 (IX+d)->D", "SET 6 (IX+d)->E", "SET 6 (IX+d)->H", "SET 6 (IX+d)->L", "SET 6 (IX+d)", "SET 6 (IX+d)->A", 
-			"SET 7 (IX+d)->B", "SET 7 (IX+d)->C", "SET 7 (IX+d)->D", "SET 7 (IX+d)->E", "SET 7 (IX+d)->H", "SET 7 (IX+d)->L", "SET 7 (IX+d)", "SET 7 (IX+d)->A", 
-		};
+		[
+			"RLC (IX+d)->B", "RLC (IX+d)->C", "RLC (IX+d)->D", "RLC (IX+d)->E", "RLC (IX+d)->H", "RLC (IX+d)->L", "RLC (IX+d)", "RLC (IX+d)->A",
+			"RRC (IX+d)->B", "RRC (IX+d)->C", "RRC (IX+d)->D", "RRC (IX+d)->E", "RRC (IX+d)->H", "RRC (IX+d)->L", "RRC (IX+d)", "RRC (IX+d)->A",
+			"RL (IX+d)->B", "RL (IX+d)->C", "RL (IX+d)->D", "RL (IX+d)->E", "RL (IX+d)->H", "RL (IX+d)->L", "RL (IX+d)", "RL (IX+d)->A",
+			"RR (IX+d)->B", "RR (IX+d)->C", "RR (IX+d)->D", "RR (IX+d)->E", "RR (IX+d)->H", "RR (IX+d)->L", "RR (IX+d)", "RR (IX+d)->A",
+			"SLA (IX+d)->B", "SLA (IX+d)->C", "SLA (IX+d)->D", "SLA (IX+d)->E", "SLA (IX+d)->H", "SLA (IX+d)->L", "SLA (IX+d)", "SLA (IX+d)->A",
+			"SRA (IX+d)->B", "SRA (IX+d)->C", "SRA (IX+d)->D", "SRA (IX+d)->E", "SRA (IX+d)->H", "SRA (IX+d)->L", "SRA (IX+d)", "SRA (IX+d)->A",
+			"SL1 (IX+d)->B", "SL1 (IX+d)->C", "SL1 (IX+d)->D", "SL1 (IX+d)->E", "SL1 (IX+d)->H", "SL1 (IX+d)->L", "SL1 (IX+d)", "SL1 (IX+d)->A",
+			"SRL (IX+d)->B", "SRL (IX+d)->C", "SRL (IX+d)->D", "SRL (IX+d)->E", "SRL (IX+d)->H", "SRL (IX+d)->L", "SRL (IX+d)", "SRL (IX+d)->A",
+			"BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)", "BIT 0, (IX+d)",
+			"BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)", "BIT 1, (IX+d)",
+			"BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)", "BIT 2, (IX+d)",
+			"BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)", "BIT 3, (IX+d)",
+			"BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)", "BIT 4, (IX+d)",
+			"BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)", "BIT 5, (IX+d)",
+			"BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)", "BIT 6, (IX+d)",
+			"BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)", "BIT 7, (IX+d)",
+			"RES 0 (IX+d)->B", "RES 0 (IX+d)->C", "RES 0 (IX+d)->D", "RES 0 (IX+d)->E", "RES 0 (IX+d)->H", "RES 0 (IX+d)->L", "RES 0 (IX+d)", "RES 0 (IX+d)->A",
+			"RES 1 (IX+d)->B", "RES 1 (IX+d)->C", "RES 1 (IX+d)->D", "RES 1 (IX+d)->E", "RES 1 (IX+d)->H", "RES 1 (IX+d)->L", "RES 1 (IX+d)", "RES 1 (IX+d)->A",
+			"RES 2 (IX+d)->B", "RES 2 (IX+d)->C", "RES 2 (IX+d)->D", "RES 2 (IX+d)->E", "RES 2 (IX+d)->H", "RES 2 (IX+d)->L", "RES 2 (IX+d)", "RES 2 (IX+d)->A",
+			"RES 3 (IX+d)->B", "RES 3 (IX+d)->C", "RES 3 (IX+d)->D", "RES 3 (IX+d)->E", "RES 3 (IX+d)->H", "RES 3 (IX+d)->L", "RES 3 (IX+d)", "RES 3 (IX+d)->A",
+			"RES 4 (IX+d)->B", "RES 4 (IX+d)->C", "RES 4 (IX+d)->D", "RES 4 (IX+d)->E", "RES 4 (IX+d)->H", "RES 4 (IX+d)->L", "RES 4 (IX+d)", "RES 4 (IX+d)->A",
+			"RES 5 (IX+d)->B", "RES 5 (IX+d)->C", "RES 5 (IX+d)->D", "RES 5 (IX+d)->E", "RES 5 (IX+d)->H", "RES 5 (IX+d)->L", "RES 5 (IX+d)", "RES 5 (IX+d)->A",
+			"RES 6 (IX+d)->B", "RES 6 (IX+d)->C", "RES 6 (IX+d)->D", "RES 6 (IX+d)->E", "RES 6 (IX+d)->H", "RES 6 (IX+d)->L", "RES 6 (IX+d)", "RES 6 (IX+d)->A",
+			"RES 7 (IX+d)->B", "RES 7 (IX+d)->C", "RES 7 (IX+d)->D", "RES 7 (IX+d)->E", "RES 7 (IX+d)->H", "RES 7 (IX+d)->L", "RES 7 (IX+d)", "RES 7 (IX+d)->A",
+			"SET 0 (IX+d)->B", "SET 0 (IX+d)->C", "SET 0 (IX+d)->D", "SET 0 (IX+d)->E", "SET 0 (IX+d)->H", "SET 0 (IX+d)->L", "SET 0 (IX+d)", "SET 0 (IX+d)->A",
+			"SET 1 (IX+d)->B", "SET 1 (IX+d)->C", "SET 1 (IX+d)->D", "SET 1 (IX+d)->E", "SET 1 (IX+d)->H", "SET 1 (IX+d)->L", "SET 1 (IX+d)", "SET 1 (IX+d)->A",
+			"SET 2 (IX+d)->B", "SET 2 (IX+d)->C", "SET 2 (IX+d)->D", "SET 2 (IX+d)->E", "SET 2 (IX+d)->H", "SET 2 (IX+d)->L", "SET 2 (IX+d)", "SET 2 (IX+d)->A",
+			"SET 3 (IX+d)->B", "SET 3 (IX+d)->C", "SET 3 (IX+d)->D", "SET 3 (IX+d)->E", "SET 3 (IX+d)->H", "SET 3 (IX+d)->L", "SET 3 (IX+d)", "SET 3 (IX+d)->A",
+			"SET 4 (IX+d)->B", "SET 4 (IX+d)->C", "SET 4 (IX+d)->D", "SET 4 (IX+d)->E", "SET 4 (IX+d)->H", "SET 4 (IX+d)->L", "SET 4 (IX+d)", "SET 4 (IX+d)->A",
+			"SET 5 (IX+d)->B", "SET 5 (IX+d)->C", "SET 5 (IX+d)->D", "SET 5 (IX+d)->E", "SET 5 (IX+d)->H", "SET 5 (IX+d)->L", "SET 5 (IX+d)", "SET 5 (IX+d)->A",
+			"SET 6 (IX+d)->B", "SET 6 (IX+d)->C", "SET 6 (IX+d)->D", "SET 6 (IX+d)->E", "SET 6 (IX+d)->H", "SET 6 (IX+d)->L", "SET 6 (IX+d)", "SET 6 (IX+d)->A",
+			"SET 7 (IX+d)->B", "SET 7 (IX+d)->C", "SET 7 (IX+d)->D", "SET 7 (IX+d)->E", "SET 7 (IX+d)->H", "SET 7 (IX+d)->L", "SET 7 (IX+d)", "SET 7 (IX+d)->A",
+		];
 
 		private static readonly string[] mnemonicsFDCB =
-		{
-			"RLC (IY+d)->B", "RLC (IY+d)->C", "RLC (IY+d)->D", "RLC (IY+d)->E", "RLC (IY+d)->H", "RLC (IY+d)->L", "RLC (IY+d)", "RLC (IY+d)->A", 
-			"RRC (IY+d)->B", "RRC (IY+d)->C", "RRC (IY+d)->D", "RRC (IY+d)->E", "RRC (IY+d)->H", "RRC (IY+d)->L", "RRC (IY+d)", "RRC (IY+d)->A", 
-			"RL (IY+d)->B", "RL (IY+d)->C", "RL (IY+d)->D", "RL (IY+d)->E", "RL (IY+d)->H", "RL (IY+d)->L", "RL (IY+d)", "RL (IY+d)->A", 
-			"RR (IY+d)->B", "RR (IY+d)->C", "RR (IY+d)->D", "RR (IY+d)->E", "RR (IY+d)->H", "RR (IY+d)->L", "RR (IY+d)", "RR (IY+d)->A", 
-			"SLA (IY+d)->B", "SLA (IY+d)->C", "SLA (IY+d)->D", "SLA (IY+d)->E", "SLA (IY+d)->H", "SLA (IY+d)->L", "SLA (IY+d)", "SLA (IY+d)->A", 
-			"SRA (IY+d)->B", "SRA (IY+d)->C", "SRA (IY+d)->D", "SRA (IY+d)->E", "SRA (IY+d)->H", "SRA (IY+d)->L", "SRA (IY+d)", "SRA (IY+d)->A", 
-			"SL1 (IY+d)->B", "SL1 (IY+d)->C", "SL1 (IY+d)->D", "SL1 (IY+d)->E", "SL1 (IY+d)->H", "SL1 (IY+d)->L", "SL1 (IY+d)", "SL1 (IY+d)->A", 
-			"SRL (IY+d)->B", "SRL (IY+d)->C", "SRL (IY+d)->D", "SRL (IY+d)->E", "SRL (IY+d)->H", "SRL (IY+d)->L", "SRL (IY+d)", "SRL (IY+d)->A", 
-			"BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", 
-			"BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", 
-			"BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", 
-			"BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", 
-			"BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", 
-			"BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", 
-			"BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", 
-			"BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", 
-			"RES 0 (IY+d)->B", "RES 0 (IY+d)->C", "RES 0 (IY+d)->D", "RES 0 (IY+d)->E", "RES 0 (IY+d)->H", "RES 0 (IY+d)->L", "RES 0 (IY+d)", "RES 0 (IY+d)->A", 
-			"RES 1 (IY+d)->B", "RES 1 (IY+d)->C", "RES 1 (IY+d)->D", "RES 1 (IY+d)->E", "RES 1 (IY+d)->H", "RES 1 (IY+d)->L", "RES 1 (IY+d)", "RES 1 (IY+d)->A", 
-			"RES 2 (IY+d)->B", "RES 2 (IY+d)->C", "RES 2 (IY+d)->D", "RES 2 (IY+d)->E", "RES 2 (IY+d)->H", "RES 2 (IY+d)->L", "RES 2 (IY+d)", "RES 2 (IY+d)->A", 
-			"RES 3 (IY+d)->B", "RES 3 (IY+d)->C", "RES 3 (IY+d)->D", "RES 3 (IY+d)->E", "RES 3 (IY+d)->H", "RES 3 (IY+d)->L", "RES 3 (IY+d)", "RES 3 (IY+d)->A", 
-			"RES 4 (IY+d)->B", "RES 4 (IY+d)->C", "RES 4 (IY+d)->D", "RES 4 (IY+d)->E", "RES 4 (IY+d)->H", "RES 4 (IY+d)->L", "RES 4 (IY+d)", "RES 4 (IY+d)->A", 
-			"RES 5 (IY+d)->B", "RES 5 (IY+d)->C", "RES 5 (IY+d)->D", "RES 5 (IY+d)->E", "RES 5 (IY+d)->H", "RES 5 (IY+d)->L", "RES 5 (IY+d)", "RES 5 (IY+d)->A", 
-			"RES 6 (IY+d)->B", "RES 6 (IY+d)->C", "RES 6 (IY+d)->D", "RES 6 (IY+d)->E", "RES 6 (IY+d)->H", "RES 6 (IY+d)->L", "RES 6 (IY+d)", "RES 6 (IY+d)->A", 
-			"RES 7 (IY+d)->B", "RES 7 (IY+d)->C", "RES 7 (IY+d)->D", "RES 7 (IY+d)->E", "RES 7 (IY+d)->H", "RES 7 (IY+d)->L", "RES 7 (IY+d)", "RES 7 (IY+d)->A", 
-			"SET 0 (IY+d)->B", "SET 0 (IY+d)->C", "SET 0 (IY+d)->D", "SET 0 (IY+d)->E", "SET 0 (IY+d)->H", "SET 0 (IY+d)->L", "SET 0 (IY+d)", "SET 0 (IY+d)->A", 
-			"SET 1 (IY+d)->B", "SET 1 (IY+d)->C", "SET 1 (IY+d)->D", "SET 1 (IY+d)->E", "SET 1 (IY+d)->H", "SET 1 (IY+d)->L", "SET 1 (IY+d)", "SET 1 (IY+d)->A", 
-			"SET 2 (IY+d)->B", "SET 2 (IY+d)->C", "SET 2 (IY+d)->D", "SET 2 (IY+d)->E", "SET 2 (IY+d)->H", "SET 2 (IY+d)->L", "SET 2 (IY+d)", "SET 2 (IY+d)->A", 
-			"SET 3 (IY+d)->B", "SET 3 (IY+d)->C", "SET 3 (IY+d)->D", "SET 3 (IY+d)->E", "SET 3 (IY+d)->H", "SET 3 (IY+d)->L", "SET 3 (IY+d)", "SET 3 (IY+d)->A", 
-			"SET 4 (IY+d)->B", "SET 4 (IY+d)->C", "SET 4 (IY+d)->D", "SET 4 (IY+d)->E", "SET 4 (IY+d)->H", "SET 4 (IY+d)->L", "SET 4 (IY+d)", "SET 4 (IY+d)->A", 
-			"SET 5 (IY+d)->B", "SET 5 (IY+d)->C", "SET 5 (IY+d)->D", "SET 5 (IY+d)->E", "SET 5 (IY+d)->H", "SET 5 (IY+d)->L", "SET 5 (IY+d)", "SET 5 (IY+d)->A", 
-			"SET 6 (IY+d)->B", "SET 6 (IY+d)->C", "SET 6 (IY+d)->D", "SET 6 (IY+d)->E", "SET 6 (IY+d)->H", "SET 6 (IY+d)->L", "SET 6 (IY+d)", "SET 6 (IY+d)->A", 
-			"SET 7 (IY+d)->B", "SET 7 (IY+d)->C", "SET 7 (IY+d)->D", "SET 7 (IY+d)->E", "SET 7 (IY+d)->H", "SET 7 (IY+d)->L", "SET 7 (IY+d)", "SET 7 (IY+d)->A", 
-		};
+		[
+			"RLC (IY+d)->B", "RLC (IY+d)->C", "RLC (IY+d)->D", "RLC (IY+d)->E", "RLC (IY+d)->H", "RLC (IY+d)->L", "RLC (IY+d)", "RLC (IY+d)->A",
+			"RRC (IY+d)->B", "RRC (IY+d)->C", "RRC (IY+d)->D", "RRC (IY+d)->E", "RRC (IY+d)->H", "RRC (IY+d)->L", "RRC (IY+d)", "RRC (IY+d)->A",
+			"RL (IY+d)->B", "RL (IY+d)->C", "RL (IY+d)->D", "RL (IY+d)->E", "RL (IY+d)->H", "RL (IY+d)->L", "RL (IY+d)", "RL (IY+d)->A",
+			"RR (IY+d)->B", "RR (IY+d)->C", "RR (IY+d)->D", "RR (IY+d)->E", "RR (IY+d)->H", "RR (IY+d)->L", "RR (IY+d)", "RR (IY+d)->A",
+			"SLA (IY+d)->B", "SLA (IY+d)->C", "SLA (IY+d)->D", "SLA (IY+d)->E", "SLA (IY+d)->H", "SLA (IY+d)->L", "SLA (IY+d)", "SLA (IY+d)->A",
+			"SRA (IY+d)->B", "SRA (IY+d)->C", "SRA (IY+d)->D", "SRA (IY+d)->E", "SRA (IY+d)->H", "SRA (IY+d)->L", "SRA (IY+d)", "SRA (IY+d)->A",
+			"SL1 (IY+d)->B", "SL1 (IY+d)->C", "SL1 (IY+d)->D", "SL1 (IY+d)->E", "SL1 (IY+d)->H", "SL1 (IY+d)->L", "SL1 (IY+d)", "SL1 (IY+d)->A",
+			"SRL (IY+d)->B", "SRL (IY+d)->C", "SRL (IY+d)->D", "SRL (IY+d)->E", "SRL (IY+d)->H", "SRL (IY+d)->L", "SRL (IY+d)", "SRL (IY+d)->A",
+			"BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)", "BIT 0, (IY+d)",
+			"BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)", "BIT 1, (IY+d)",
+			"BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)", "BIT 2, (IY+d)",
+			"BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)", "BIT 3, (IY+d)",
+			"BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)", "BIT 4, (IY+d)",
+			"BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)", "BIT 5, (IY+d)",
+			"BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)", "BIT 6, (IY+d)",
+			"BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)", "BIT 7, (IY+d)",
+			"RES 0 (IY+d)->B", "RES 0 (IY+d)->C", "RES 0 (IY+d)->D", "RES 0 (IY+d)->E", "RES 0 (IY+d)->H", "RES 0 (IY+d)->L", "RES 0 (IY+d)", "RES 0 (IY+d)->A",
+			"RES 1 (IY+d)->B", "RES 1 (IY+d)->C", "RES 1 (IY+d)->D", "RES 1 (IY+d)->E", "RES 1 (IY+d)->H", "RES 1 (IY+d)->L", "RES 1 (IY+d)", "RES 1 (IY+d)->A",
+			"RES 2 (IY+d)->B", "RES 2 (IY+d)->C", "RES 2 (IY+d)->D", "RES 2 (IY+d)->E", "RES 2 (IY+d)->H", "RES 2 (IY+d)->L", "RES 2 (IY+d)", "RES 2 (IY+d)->A",
+			"RES 3 (IY+d)->B", "RES 3 (IY+d)->C", "RES 3 (IY+d)->D", "RES 3 (IY+d)->E", "RES 3 (IY+d)->H", "RES 3 (IY+d)->L", "RES 3 (IY+d)", "RES 3 (IY+d)->A",
+			"RES 4 (IY+d)->B", "RES 4 (IY+d)->C", "RES 4 (IY+d)->D", "RES 4 (IY+d)->E", "RES 4 (IY+d)->H", "RES 4 (IY+d)->L", "RES 4 (IY+d)", "RES 4 (IY+d)->A",
+			"RES 5 (IY+d)->B", "RES 5 (IY+d)->C", "RES 5 (IY+d)->D", "RES 5 (IY+d)->E", "RES 5 (IY+d)->H", "RES 5 (IY+d)->L", "RES 5 (IY+d)", "RES 5 (IY+d)->A",
+			"RES 6 (IY+d)->B", "RES 6 (IY+d)->C", "RES 6 (IY+d)->D", "RES 6 (IY+d)->E", "RES 6 (IY+d)->H", "RES 6 (IY+d)->L", "RES 6 (IY+d)", "RES 6 (IY+d)->A",
+			"RES 7 (IY+d)->B", "RES 7 (IY+d)->C", "RES 7 (IY+d)->D", "RES 7 (IY+d)->E", "RES 7 (IY+d)->H", "RES 7 (IY+d)->L", "RES 7 (IY+d)", "RES 7 (IY+d)->A",
+			"SET 0 (IY+d)->B", "SET 0 (IY+d)->C", "SET 0 (IY+d)->D", "SET 0 (IY+d)->E", "SET 0 (IY+d)->H", "SET 0 (IY+d)->L", "SET 0 (IY+d)", "SET 0 (IY+d)->A",
+			"SET 1 (IY+d)->B", "SET 1 (IY+d)->C", "SET 1 (IY+d)->D", "SET 1 (IY+d)->E", "SET 1 (IY+d)->H", "SET 1 (IY+d)->L", "SET 1 (IY+d)", "SET 1 (IY+d)->A",
+			"SET 2 (IY+d)->B", "SET 2 (IY+d)->C", "SET 2 (IY+d)->D", "SET 2 (IY+d)->E", "SET 2 (IY+d)->H", "SET 2 (IY+d)->L", "SET 2 (IY+d)", "SET 2 (IY+d)->A",
+			"SET 3 (IY+d)->B", "SET 3 (IY+d)->C", "SET 3 (IY+d)->D", "SET 3 (IY+d)->E", "SET 3 (IY+d)->H", "SET 3 (IY+d)->L", "SET 3 (IY+d)", "SET 3 (IY+d)->A",
+			"SET 4 (IY+d)->B", "SET 4 (IY+d)->C", "SET 4 (IY+d)->D", "SET 4 (IY+d)->E", "SET 4 (IY+d)->H", "SET 4 (IY+d)->L", "SET 4 (IY+d)", "SET 4 (IY+d)->A",
+			"SET 5 (IY+d)->B", "SET 5 (IY+d)->C", "SET 5 (IY+d)->D", "SET 5 (IY+d)->E", "SET 5 (IY+d)->H", "SET 5 (IY+d)->L", "SET 5 (IY+d)", "SET 5 (IY+d)->A",
+			"SET 6 (IY+d)->B", "SET 6 (IY+d)->C", "SET 6 (IY+d)->D", "SET 6 (IY+d)->E", "SET 6 (IY+d)->H", "SET 6 (IY+d)->L", "SET 6 (IY+d)", "SET 6 (IY+d)->A",
+			"SET 7 (IY+d)->B", "SET 7 (IY+d)->C", "SET 7 (IY+d)->D", "SET 7 (IY+d)->E", "SET 7 (IY+d)->H", "SET 7 (IY+d)->L", "SET 7 (IY+d)", "SET 7 (IY+d)->A",
+		];
 
 		private static readonly string[] mnemonicsCB =
-		{
-			"RLC B", "RLC C", "RLC D", "RLC E", "RLC H", "RLC L", "RLC (HL)", "RLC A", 
+		[
+			"RLC B", "RLC C", "RLC D", "RLC E", "RLC H", "RLC L", "RLC (HL)", "RLC A",
 			"RRC B", "RRC C", "RRC D", "RRC E", "RRC H", "RRC L", "RRC (HL)", "RRC A",
 			"RL B", "RL C", "RL D", "RL E", "RL H", "RL L", "RL (HL)", "RL A",
 			"RR B", "RR C", "RR D", "RR E", "RR H", "RR L", "RR (HL)", "RR A",
@@ -336,15 +317,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"SET 5, B", "SET 5, C", "SET 5, D", "SET 5, E", "SET 5, H", "SET 5, L", "SET 5, (HL)", "SET 5, A",
 			"SET 6, B", "SET 6, C", "SET 6, D", "SET 6, E", "SET 6, H", "SET 6, L", "SET 6, (HL)", "SET 6, A",
 			"SET 7, B", "SET 7, C", "SET 7, D", "SET 7, E", "SET 7, H", "SET 7, L", "SET 7, (HL)", "SET 7, A",
-		};
+		];
 
 		private static readonly string[] mnemonicsED =
-		{
-			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
-			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
-			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
-			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", 
-			
+		[
+			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP",
+			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP",
+			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP",
+			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP",
+
 			"IN B, C", "OUT C, B", "SBC HL, BC", "LD (nn), BC", //0x44
 			"NEG", "RETN", "IM $0", "LD I, A", //0x48
 			"IN C, C", "OUT C, C", "ADC HL, BC", "LD BC, (nn)", //0x4C
@@ -353,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"NEG", "RETN", "IM $1", "LD A, I", //0x58
 			"IN E, C", "OUT C, E", "ADC HL, DE", "LD DE, (nn)", //0x5C
 			"NEG", "RETI", "IM $2", "LD A, R", //0x60
-			
+
 			"IN H, C", "OUT C, H", "SBC HL, HL", "LD (nn), HL", //0x64
 			"NEG", "RETN", "IM $0", "RRD", //0x68
 			"IN L, C", "OUT C, L", "ADC HL, HL", "LD HL, (nn)", //0x6C
@@ -378,7 +359,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0xE0
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0xF0
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
-		};
+		];
+
+		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
+		{
+			//d immediately succeeds the opcode
+			//n immediate succeeds the opcode and the displacement (if present)
+			//nn immediately succeeds the opcode and the displacement (if present)
+
+			if (format.ContainsOrdinal("nn")) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
+			if (format.ContainsOrdinal('n')) format = format.Replace("n", $"{read(addr++):X2}h");
+
+			format = format.Replace("+d", "d");
+			if (format.ContainsOrdinal('d'))
+			{
+				var b = unchecked ((sbyte) read(addr++));
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{Math.Abs((short) b):X2}h");
+			}
+
+			return format;
+		}
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
 		{
@@ -416,7 +416,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				default: format = mnemonics[A]; break;
 			}
-			
+
 			string temp = Result(format, read, ref addr);
 
 			addr += extra_inc;
@@ -430,7 +430,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			return temp;
 		}
+	}
 
+	public sealed partial class Z80A<TLink> : IDisassemblable
+	{
 		public string Cpu
 		{
 			get => "Z80";
@@ -439,15 +442,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "Z80"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "Z80" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
-		{
-			string ret = Disassemble((ushort)addr, a => m.PeekByte(a), out length);
-			return ret;
-		}
+			=> Z80ADisassembler.Disassemble((ushort)addr, a => m.PeekByte(a), out length);
 	}
 }

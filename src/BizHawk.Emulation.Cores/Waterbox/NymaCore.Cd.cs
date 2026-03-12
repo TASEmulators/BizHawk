@@ -4,7 +4,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	abstract partial class NymaCore : IDriveLight
+	public abstract partial class NymaCore : IDriveLight
 	{
 		// this code was mostly copied from Saturnus, which it will replace soon(R)
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
@@ -47,5 +47,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public bool DriveLightEnabled => _disks?.Length > 0;
 		public bool DriveLightOn { get; private set; }
+
+		public string DriveLightIconDescription => "CD Drive Activity";
 	}
 }

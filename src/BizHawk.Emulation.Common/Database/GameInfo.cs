@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Common
 			Region = "",
 			Status = RomStatus.GoodDump,
 			ForcedCore = "",
-			NotInDatabase = false
+			NotInDatabase = false,
 		};
 
 		internal GameInfo(CompactGameInfo cgi)
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return false;
 			}
-			
+
 			return defaultVal;
 		}
 
@@ -182,8 +182,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		public static bool IsRomStatusBad(this IGameInfo game)
-		{
-			return game.Status == RomStatus.BadDump || game.Status == RomStatus.Overdump;
-		}
+			=> game.Status is RomStatus.BadDump or RomStatus.Overdump;
 	}
 }

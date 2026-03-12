@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					65536,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.PeekMemory((ushort) addr),
-					(addr, value) => _mapper.PokeMemory((ushort) addr, value), 1) 
+					(addr, value) => _mapper.PokeMemory((ushort) addr, value), 1)
 			};
 
 			if (_mapper.CartRam.Length > 0)

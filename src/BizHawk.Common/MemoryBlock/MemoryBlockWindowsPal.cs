@@ -35,7 +35,7 @@ namespace BizHawk.Common
 			Protection.R => MemoryProtection.READONLY,
 			Protection.RW => MemoryProtection.READWRITE,
 			Protection.RX => MemoryProtection.EXECUTE_READ,
-			_ => throw new InvalidOperationException(nameof(prot))
+			_ => throw new InvalidOperationException(nameof(prot)),
 		};
 
 		public void Dispose()

@@ -1,0 +1,10 @@
+[*.cs]
+
+# Do not use default value type constructor
+dotnet_diagnostic.SA1129.severity = suggestion
+
+# Elements should have the same indentation
+dotnet_diagnostic.SA1137.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion

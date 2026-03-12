@@ -181,7 +181,7 @@
 					return 0xFF;
 			}
 		}
-		
+
 		public void Write(int addr, int val)
 		{
 			addr &= 0x3F;

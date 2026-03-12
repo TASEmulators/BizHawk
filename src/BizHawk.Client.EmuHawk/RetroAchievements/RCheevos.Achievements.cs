@@ -6,11 +6,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
+#if false
 		private readonly RCheevosAchievementListForm _cheevoListForm = new();
+#endif
 
 		private sealed class CheevoUnlockRequest : RCheevoHttpRequest
 		{
 			private readonly LibRCheevos.rc_api_award_achievement_request_t _apiParams;
+			private readonly DateTime _unlockTime;
 
 			protected override void ResponseCallback(byte[] serv_resp)
 			{
@@ -24,13 +27,17 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void DoRequest()
 			{
-				var apiParamsResult = _lib.rc_api_init_award_achievement_request(out var api_req, in _apiParams);
+				var secondsSinceUnlock = (DateTime.UtcNow - _unlockTime).TotalSeconds;
+				var apiParams = new LibRCheevos.rc_api_award_achievement_request_t(_apiParams.username, _apiParams.api_token,
+					_apiParams.achievement_id, _apiParams.hardcore, _apiParams.game_hash, (uint)secondsSinceUnlock);
+				var apiParamsResult = _lib.rc_api_init_award_achievement_request(out var api_req, in apiParams);
 				InternalDoRequest(apiParamsResult, ref api_req);
 			}
 
 			public CheevoUnlockRequest(string username, string api_token, uint achievement_id, bool hardcore, string game_hash)
 			{
-				_apiParams = new(username, api_token, achievement_id, hardcore, game_hash);
+				_apiParams = new(username, api_token, achievement_id, hardcore, game_hash, seconds_since_unlock: 0);
+				_unlockTime = DateTime.UtcNow;
 			}
 		}
 
@@ -86,8 +93,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_badgeUnlockedRequest = new(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT);
 				_badgeLockedRequest = new(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT_LOCKED);
-				requests.Add(_badgeUnlockedRequest); 
-				requests.Add(_badgeLockedRequest); 
+				requests.Add(_badgeUnlockedRequest);
+				requests.Add(_badgeLockedRequest);
 			}
 
 			public Cheevo(in LibRCheevos.rc_api_achievement_definition_t cheevo, Func<bool> allowUnofficialCheevos)
@@ -147,21 +154,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_gameData.GameID == 0)
 			{
-				AllowUnofficialCheevos ^= true;
+				AllowUnofficialCheevos = !AllowUnofficialCheevos;
 				return;
 			}
 
 			_activeModeUnlocksRequest.Wait();
 
 			DeactivateCheevos(HardcoreMode);
-			AllowUnofficialCheevos ^= true;
+			AllowUnofficialCheevos = !AllowUnofficialCheevos;
 			ActivateCheevos(HardcoreMode);
 		}
 
 		private void ToSoftcoreMode()
 		{
 			if (_gameData == null || _gameData.GameID == 0) return;
-			
+
 			// don't worry if the meanings of _active and _inactive are wrong
 			// if they are, then they're both already finished
 

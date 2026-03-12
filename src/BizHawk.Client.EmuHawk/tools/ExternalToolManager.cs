@@ -88,14 +88,14 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Created -= DirectoryMonitor_Created;
 				DirectoryMonitor.Dispose();
 			}
-			var path = _config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path;
+			var path = _config.PathEntries.ExternalToolsAbsolutePath();
 			if (Directory.Exists(path))
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
 				{
 					IncludeSubdirectories = false,
 					NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName,
-					Filter = "*.dll"
+					Filter = "*.dll",
 				};
 				DirectoryMonitor.Created += DirectoryMonitor_Created;
 				DirectoryMonitor.EnableRaisingEvents = true;
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (var depFilename in toolAttribute.LoadAssemblyFiles)
 					{
-						var depFilePath = $"{_config.PathEntries[PathEntryCollection.GLOBAL, "External Tools"].Path}/{depFilename}";
+						var depFilePath = Path.Combine(_config.PathEntries.ExternalToolsAbsolutePath(), depFilename);
 						Console.WriteLine($"preloading assembly {depFilePath} requested by ext. tool {toolAttribute.Name}");
 						Assembly.LoadFrom(depFilePath);
 					}
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 #if DEBUG
 					asmChecksum: string.Empty,
 #else
-					asmChecksum: SHA1Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
+					asmChecksum: SHA512Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
 #endif
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName);
@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 					ExternalToolApplicabilityAttributeBase.DuplicateException => "The IExternalToolForm has conflicting applicability attributes.",
 					ExternalToolAttribute.MissingException => "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
 					ReflectionTypeLoadException => "Something went wrong while trying to load the assembly.",
-					_ => $"An exception of type {e.GetType().FullName} was thrown while trying to load the assembly and look for an IExternalToolForm:\n{e.Message}"
+					_ => $"An exception of type {e.GetType().FullName} was thrown while trying to load the assembly and look for an IExternalToolForm:\n{e}",
 				};
 			}
 			return item;

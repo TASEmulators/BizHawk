@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
-			} 
+			}
 		}
 
 		public override byte ReadMemoryHigh(ushort addr)
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (RAM_enable)
 				{
 					Core.cart_RAM[addr - 0xA000] = (byte)(value & 0xF);
-				}				
+				}
 			}
 		}
 

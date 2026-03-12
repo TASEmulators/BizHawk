@@ -11,6 +11,29 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class DisplayManager : DisplayManagerBase
 	{
+		// this function requires at least windows 10
+		private static readonly unsafe delegate* unmanaged[Stdcall]<IntPtr, int> _getDpiForWindow;
+
+		static DisplayManager()
+		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				return;
+			}
+
+			var lib = OSTailoredCode.LinkedLibManager.LoadOrZero("user32.dll");
+			if (lib == IntPtr.Zero)
+			{
+				return;
+			}
+
+			unsafe
+			{
+				_getDpiForWindow = (delegate* unmanaged[Stdcall]<IntPtr, int>)
+					OSTailoredCode.LinkedLibManager.GetProcAddrOrZero(lib, "GetDpiForWindow");
+			}
+		}
+
 		private readonly Func<bool> _getIsSecondaryThrottlingDisabled;
 
 		private bool? _lastVsyncSetting;
@@ -51,11 +74,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override Size GetPanelNativeSize() => _presentationPanel.NativeSize;
 
-		protected override int GetGraphicsControlDpi()
-			=> OSTailoredCode.IsUnixHost ? DisplayManagerBase.DEFAULT_DPI : GraphicsControlDpi;
-
-		// DeviceDpi is not available under mono, so we need to have this access wrapped in a separate function
-		private int GraphicsControlDpi => _graphicsControl.DeviceDpi;
+		protected override unsafe int GetGraphicsControlDpi()
+			=> _getDpiForWindow == null ? DEFAULT_DPI : _getDpiForWindow(_graphicsControl.Handle);
 
 		protected override Point GraphicsControlPointToClient(Point p) => _graphicsControl.PointToClient(p);
 
@@ -110,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			Debug.Assert(inFinalTarget);
+			Debug.Assert(inFinalTarget, "not in final target?");
 
 			// present and conclude drawing
 			_graphicsControl.SwapBuffers();

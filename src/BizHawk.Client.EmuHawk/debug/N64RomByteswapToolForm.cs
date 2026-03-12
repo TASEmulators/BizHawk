@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 						0 => "n64",
 						1 => "v64",
 						2 => "z64",
-						_ => null
+						_ => null,
 					},
 					initDir: Config!.PathEntries.RomAbsolutePath());
 				if (filename is not null) txtTargetFile.Text = filename;
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 					{
 						0 => N64RomByteswapper.ToN64LittleEndian(rom),
 						1 => N64RomByteswapper.ToV64ByteSwapped(rom),
-						_ => N64RomByteswapper.ToZ64Native(rom)
+						_ => N64RomByteswapper.ToZ64Native(rom),
 					};
 					File.WriteAllBytes(txtTargetFile.Text, rom);
 					this.ModalMessageBox($"wrote {txtTargetFile.Text}\n{SHA1Checksum.ComputePrefixedHex(rom)}");
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 					new SingleRowFLP { Controls = { new LabelEx { Text = "to" }, comboFormats } },
 					new SingleRowFLP { Controls = { txtTargetFile, GenControl.Button("(browse)", width: 75, ChooseTargetFile) } },
 					GenControl.Button("--> convert", width: 75, DoConvert),
-				}
+				},
 			});
 			ResumeLayout();
 		}

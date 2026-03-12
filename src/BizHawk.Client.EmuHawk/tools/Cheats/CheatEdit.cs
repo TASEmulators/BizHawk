@@ -38,12 +38,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
-			DomainDropDown.Items.Clear();
-			DomainDropDown.Items.AddRange(MemoryDomains
-				.Where(d => d.Writable)
-				.Select(d => (object) d.ToString())
-				.ToArray());
+			DomainDropDown.ReplaceItems(items: MemoryDomains.Where(static d => d.Writable)
+				.Select(static d => d.ToString()));
 
 			DomainDropDown.SelectedItem = MemoryDomains.HasSystemBus
 				? MemoryDomains.SystemBus.ToString()
@@ -93,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
 			{
-				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawUInt() becomes nullable
+				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
 			}
 
 			_loading = false;
@@ -132,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(WatchDisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawUInt() becomes nullable
+			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 
@@ -310,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 		public Cheat GetCheat()
 		{
 			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()]!;
-			var address = AddressBox.ToRawUInt().Value;
+			var address = AddressBox.ToRawInt().Value;
 			if (address < domain.Size)
 			{
 				var watch = Watch.GenerateWatch(
@@ -330,19 +326,19 @@ namespace BizHawk.Client.EmuHawk
 					"<" => Cheat.CompareType.LessThan,
 					"<=" => Cheat.CompareType.LessThanOrEqual,
 					"!=" => Cheat.CompareType.NotEqual,
-					_ => Cheat.CompareType.None
+					_ => Cheat.CompareType.None,
 				};
 
-				var compare = CompareBox.ToRawUInt();
+				var compare = CompareBox.ToRawInt();
 				return new Cheat(
 					watch,
-					value: (int)ValueBox.ToRawUInt().Value,
-					compare: (int?)compare,
+					value: ValueBox.ToRawInt().Value,
+					compare: compare,
 					enabled: true,
 					comparisonType);
 			}
 
-			MessageBox.Show($"{address} is not a valid address for the domain {domain.Name}", "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			MessageBox.Show($"0x{address:X} is not a valid address for the domain {domain.Name}", "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return Cheat.Separator;
 		}
 
@@ -373,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			// Don't need to do anything in this case
 			if (!empty && CompareTypeDropDown.Items.Count == 6)
 			{
@@ -384,10 +380,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (empty)
 			{
-				CompareTypeDropDown.Items.AddRange(new object[]
-				{
-					""
-				});
+				CompareTypeDropDown.Items.Add(string.Empty);
 			}
 			else
 			{
@@ -398,7 +391,7 @@ namespace BizHawk.Client.EmuHawk
 					">=",
 					"<",
 					"<=",
-					"!="
+					"!=",
 				});
 			}
 

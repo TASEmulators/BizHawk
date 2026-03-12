@@ -5,6 +5,7 @@
 #include "nyma.h"
 #include <emulibc.h>
 #include <waterboxcore.h>
+#include <src/ss/ak93c45.h>
 #include <src/ss/cart.h>
 #include <src/ss/smpc.h>
 namespace MDFN_IEN_SS
@@ -42,6 +43,8 @@ namespace MDFN_IEN_SS
 	extern uint16* CS1RAM;
 	extern uint16 ExtRAM[0x200000];
 	extern uint16 ROM[0x100000];
+	extern uint16 STV_ROM[0x3000000 / sizeof(uint16)];
+	extern AK93C45 eep;
 
 	extern int ActiveCartType;
 
@@ -72,6 +75,9 @@ ECL_EXPORT uint32_t GetSaveRamLength()
 	if (ActiveCartType == CART_BACKUP_MEM)
 		return sizeof(BackupRAM) + sizeof(ExtBackupRAM) + sizeof(uint8_t) + sizeof(RTC.raw) + sizeof(SaveMem);
 
+	if (ActiveCartType == CART_STV)
+		return sizeof(BackupRAM) + sizeof(eep.mem) + sizeof(uint8_t) + sizeof(RTC.raw) + sizeof(SaveMem);
+
 	return sizeof(BackupRAM) + sizeof(uint8_t) + sizeof(RTC.raw) + sizeof(SaveMem);
 }
 
@@ -84,6 +90,12 @@ ECL_EXPORT void GetSaveRam(uint8_t* data)
 	{
 		memcpy(data, ExtBackupRAM, sizeof(ExtBackupRAM));
 		data += sizeof(ExtBackupRAM);
+	}
+
+	if (ActiveCartType == CART_STV)
+	{
+		memcpy(data, eep.mem, sizeof(eep.mem));
+		data += sizeof(eep.mem);
 	}
 
 	*data = RTC.Valid;
@@ -111,6 +123,16 @@ ECL_EXPORT void PutSaveRam(uint8_t* data, uint32_t length)
 			memcpy(ExtBackupRAM, data, sizeof(ExtBackupRAM));
 			data += sizeof(ExtBackupRAM);
 			length -= sizeof(ExtBackupRAM);
+		}
+	}
+
+	if (ActiveCartType == CART_STV)
+	{
+		if (length >= sizeof(eep.mem))
+		{
+			memcpy(eep.mem, data, sizeof(eep.mem));
+			data += sizeof(eep.mem);
+			length -= sizeof(eep.mem);
 		}
 	}
 
@@ -144,7 +166,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	while (0)
 	AddMemoryDomain("Sound Ram", SCSP.GetRAMPtr(), 0x100000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	AddMemoryDomain("Backup Ram", BackupRAM, sizeof(BackupRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
-	AddMemoryDomain("Boot Rom", BIOSROM, 524288, MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	AddMemoryDomain("Boot Rom", BIOSROM, 524288, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	AddMemoryDomain("Work Ram Low", WorkRAML, sizeof(WorkRAML), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	AddMemoryDomain("Work Ram High", WorkRAMH, sizeof(WorkRAMH), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_PRIMARY);
 	AddMemoryDomain("VDP1 Ram", VDP1::VRAM, sizeof(VDP1::VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
@@ -160,7 +182,12 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea* m)
 	if (ActiveCartType == CART_EXTRAM_1M)
 		AddMemoryDomain("Ram Cart", ExtRAM, sizeof(ExtRAM) / 4, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	if (ActiveCartType == CART_KOF95 || ActiveCartType == CART_ULTRAMAN)
-	AddMemoryDomain("Rom Cart", ROM, sizeof(ROM), MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+		AddMemoryDomain("Rom Cart", ROM, sizeof(ROM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	if (ActiveCartType == CART_STV)
+	{
+		AddMemoryDomain("Rom Cart", STV_ROM, sizeof(STV_ROM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+		AddMemoryDomain("STV EEPROM", eep.mem, sizeof(eep.mem), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+	}
 	AddMemoryDomain("SMPC RTC", RTC.raw, sizeof(RTC.raw), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1);
 	AddMemoryDomain("SMPC SaveMem", SaveMem, sizeof(SaveMem), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1);
 }

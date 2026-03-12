@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//pretty much just one game. 
+	//pretty much just one game.
 	//wires the mapper outputs to control the nametables. check out the companion board TLSROM
 	internal sealed class Mapper095 : Namcot108Board_Base
 	{

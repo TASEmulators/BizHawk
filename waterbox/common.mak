@@ -37,7 +37,7 @@ CCFLAGS := $(COMMONFLAGS) $(CCFLAGS)
 LDFLAGS := $(LDFLAGS) -static -no-pie -Wl,--eh-frame-hdr,-O2 -T $(LINKSCRIPT) #-Wl,--plugin,$(LD_PLUGIN)
 CCFLAGS_DEBUG := -O0 -g
 CCFLAGS_RELEASE := -O3 -flto -DNDEBUG
-CCFLAGS_RELEASE_ASONLY := -O3
+CCFLAGS_RELEASE_ASONLY := -O3 -DNDEBUG
 LDFLAGS_DEBUG :=
 LDFLAGS_RELEASE :=
 CXXFLAGS := $(COMMONFLAGS) $(CXXFLAGS) -I$(SYSROOT)/include/c++/v1 -fno-use-cxa-atexit -fvisibility-inlines-hidden
@@ -46,8 +46,14 @@ CXXFLAGS_RELEASE := -O3 -flto -DNDEBUG
 CXXFLAGS_RELEASE_ASONLY := -O3
 
 EXTRA_LIBS := -L $(SYSROOT)/lib/linux -lclang_rt.builtins-x86_64 $(EXTRA_LIBS)
+CPP_EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
+
 ifneq ($(filter %.cpp,$(SRCS)),)
-EXTRA_LIBS := -lc++ -lc++abi -lunwind $(EXTRA_LIBS)
+EXTRA_LIBS += $(CPP_EXTRA_LIBS)
+endif
+
+ifneq ($(filter %.cxx,$(SRCS)),)
+EXTRA_LIBS += $(CPP_EXTRA_LIBS)
 endif
 
 _OBJS := $(addsuffix .o,$(abspath $(SRCS)))
@@ -62,6 +68,18 @@ $(OBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
 	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.cxx.o: %.cxx
+	@echo cxx $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.s.o: %.s
+	@echo cc $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.S.o: %.S
+	@echo cc $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
 $(DOBJ_DIR)/%.c.o: %.c
 	@echo cc $<
 	@mkdir -p $(@D)
@@ -70,11 +88,27 @@ $(DOBJ_DIR)/%.cpp.o: %.cpp
 	@echo cxx $<
 	@mkdir -p $(@D)
 	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
+$(DOBJ_DIR)/%.cxx.o: %.cxx
+	@echo cxx $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CXXFLAGS) $(CXXFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
+$(DOBJ_DIR)/%.s.o: %.s
+	@echo cc $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
+$(DOBJ_DIR)/%.S.o: %.S
+	@echo cc $<
+	@mkdir -p $(@D)
+	@$(CC) -c -o $@ $< $(CCFLAGS) $(CCFLAGS_DEBUG) $(PER_FILE_FLAGS_$<)
 $(OBJ_DIR)/%.c.s: %.c
 	@echo cc -S $<
 	@mkdir -p $(@D)
 	@$(CC) -c -S -o $@ $< $(CCFLAGS) $(CCFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
 $(OBJ_DIR)/%.cpp.s: %.cpp
+	@echo cxx -S $<
+	@mkdir -p $(@D)
+	@$(CC) -c -S -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)
+$(OBJ_DIR)/%.cxx.s: %.cxx
 	@echo cxx -S $<
 	@mkdir -p $(@D)
 	@$(CC) -c -S -o $@ $< $(CXXFLAGS) $(CXXFLAGS_RELEASE_ASONLY) $(PER_FILE_FLAGS_$<)

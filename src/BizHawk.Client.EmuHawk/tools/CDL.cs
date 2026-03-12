@@ -7,7 +7,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Common;
 
 // TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it?
 // perhaps missing domains shouldn't fail a check
@@ -39,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private bool CDLAutoStart { get; set; } = true;
-		
+
 		[ConfigPersist]
 		private bool CDLAutoResume { get; set; } = true;
 
@@ -108,6 +107,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
+			DisassembleMenuItem.Tag = CodeDataLogger.GetType().GetMethod(nameof(ICodeDataLogger.DisassembleCDL))!
+				.IsImplemented();
 			//don't try to recover the current CDL!
 			//even though it seems like it might be nice, it might get mixed up between games. even if we use CheckCDL. Switching games with the same memory map will be bad.
 			_cdl = null;
@@ -143,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int[] totals = new int[8];
 				int total = 0;
-				
+
 				for (int i = 0; i < 256; i++)
 					map[i] = 0;
 
@@ -184,9 +185,7 @@ namespace BizHawk.Client.EmuHawk
 					lvi[3] = $"{total}";
 				if (tsbViewStyle.SelectedIndex == 2)
 				{
-					int n = (int) (dataA.Length / 1024.0f);
-					float ncheck = dataA.Length / 1024.0f;
-					lvi[4] = $"of {(n == ncheck ? "" : "~")}{n} KBytes";
+					lvi[4] = $"of {(dataA.Length % 1024 == 0 ? "" : "~")}{dataA.Length / 1024} KBytes";
 				}
 				else
 					lvi[4] = $"of {dataA.Length} Bytes";
@@ -215,18 +214,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_currentFilename != null)
 				{
-					RunSave();
+					bool saveResult2 = RunSave();
 					ShutdownCDL();
-					return true;
+					return saveResult2;
 				}
 			}
 
-			// TODO - I don't like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-			var result = DialogController.ShowMessageBox2("Save changes to CDL session?", "CDL Auto Save", EMsgBoxIcon.Question);
-			if (!result)
+			var result = DialogController.ShowMessageBox3("Save changes to CDL session?", "CDL Save", EMsgBoxIcon.Question);
+			if (result == false)
 			{
 				ShutdownCDL();
 				return true;
+			}
+			else if (result == null)
+			{
+				ShutdownCDL();
+				return false;
 			}
 
 			if (string.IsNullOrWhiteSpace(_currentFilename))
@@ -236,14 +239,14 @@ namespace BizHawk.Client.EmuHawk
 					ShutdownCDL();
 					return true;
 				}
-				
+
 				ShutdownCDL();
 				return false;
 			}
 
-			RunSave();
+			bool saveResult = RunSave();
 			ShutdownCDL();
-			return true;
+			return saveResult;
 		}
 
 		private bool _autoloading;
@@ -285,8 +288,8 @@ namespace BizHawk.Client.EmuHawk
 			SaveAsMenuItem.Enabled =
 				AppendMenuItem.Enabled =
 				ClearMenuItem.Enabled =
-				DisassembleMenuItem.Enabled =
 				_cdl != null;
+			DisassembleMenuItem.Enabled = _cdl is not null && /*core implements feature*/(bool) DisassembleMenuItem.Tag;
 
 			miAutoSave.Checked = CDLAutoSave;
 			miAutoStart.Checked = CDLAutoStart;
@@ -342,11 +345,20 @@ namespace BizHawk.Client.EmuHawk
 			LoadFile(file.FullName);
 		}
 
-		private void RunSave()
+		/// <summary>
+		/// returns false if the operation was canceled
+		/// </summary>
+		private bool RunSave()
 		{
-			_recent.Add(_currentFilename);
-			using var fs = new FileStream(_currentFilename, FileMode.Create, FileAccess.Write);
-			_cdl.Save(fs);
+			TryAgainResult result = this.DoWithTryAgainBox(
+				() => FileWriter.Write(_currentFilename, _cdl.Save),
+				"Failed to save CDL session.");
+			if (result == TryAgainResult.Saved)
+			{
+				_recent.Add(_currentFilename);
+				return true;
+			}
+			return result != TryAgainResult.Canceled;
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -385,10 +397,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file == null)
 				return false;
-				
+
 			SetCurrentFilename(file.FullName);
-			RunSave();
-			return true;
+			return RunSave();
 		}
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
@@ -575,18 +586,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void MiAutoSave_Click(object sender, EventArgs e)
-		{
-			CDLAutoSave ^= true;
-		}
+			=> CDLAutoSave = !CDLAutoSave;
 
 		private void MiAutoStart_Click(object sender, EventArgs e)
-		{
-			CDLAutoStart ^= true;
-		}
+			=> CDLAutoStart = !CDLAutoStart;
 
 		private void MiAutoResume_Click(object sender, EventArgs e)
-		{
-			CDLAutoResume ^= true;
-		}
+			=> CDLAutoResume = !CDLAutoResume;
 	}
 }

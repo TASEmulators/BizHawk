@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -22,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public bool ClearAlsoClearsAnalog { get; set; }
-		
+
 		private bool _readOnly;
 
 		private Control _lastFocusedNUD = null;
@@ -85,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			Type schemaType;
 			try
 			{
-				schemaType = Emulation.Cores.ReflectionCache.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
+				schemaType = ReflectionCache_Biz_Emu_Cor.Types.Where(typeof(IVirtualPadSchema).IsAssignableFrom)
 					.Select(t => (SchemaType: t, Attr: t.GetCustomAttributes(false).OfType<SchemaAttribute>().FirstOrDefault()))
 					.First(tuple => tuple.Attr?.SystemId == Emulator.SystemId)
 					.SchemaType;
@@ -109,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						ButtonSchema => buttonControls.Contains,
 						DiscManagerSchema => s => buttonControls.Contains(s) || axisControls.ContainsKey(s),
-						_ => axisControls.ContainsKey
+						_ => axisControls.ContainsKey,
 					};
 					if (!searchSetContains(controlSchema.Name))
 					{
@@ -120,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ControllerPanel.Controls.AddRange(padSchemata.Select(s => (Control) new VirtualPad(s, InputManager, SetLastFocusedNUD)).Reverse().ToArray());
+			ControllerPanel.Controls.AddRange(padSchemata.Select(Control (s) => new VirtualPad(s, InputManager, SetLastFocusedNUD)).Reverse().ToArray());
 		}
 
 		public void ScrollToPadSchema(string padSchemaName)
@@ -141,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsActive)
 			{
 				return;
 			}
@@ -153,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsActive)
 			{
 				return;
 			}
@@ -224,9 +225,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void StickyMenuItem_Click(object sender, EventArgs e)
-		{
-			StickyPads ^= true;
-		}
+			=> StickyPads = !StickyPads;
 
 		private void PadBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -244,8 +243,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ClearClearsAnalogInputMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAlsoClearsAnalog ^= true;
-		}
+			=> ClearAlsoClearsAnalog = !ClearAlsoClearsAnalog;
 	}
 }

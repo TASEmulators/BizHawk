@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	CHR-ROM - 16kb
 	Mirroring - Vertical
 	ines Mapper 87
-	
+
 	Example Games:
 	--------------------------
 	City Connection (J) - JF_05

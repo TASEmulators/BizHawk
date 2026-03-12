@@ -1,6 +1,7 @@
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -8,13 +9,19 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Action _autoFlushSaveRamTimerBumpCallback;
 
+		private readonly Action _reinitHostKeybinds;
+
 		private readonly Config _config;
 
-		public EmuHawkOptions(Config config, Action autoFlushSaveRamTimerBumpCallback)
+		public EmuHawkOptions(Config config, Action autoFlushSaveRamTimerBumpCallback, Action reinitHostKeybinds)
 		{
 			_autoFlushSaveRamTimerBumpCallback = autoFlushSaveRamTimerBumpCallback;
+			_reinitHostKeybinds = reinitHostKeybinds;
 			_config = config;
 			InitializeComponent();
+			cbEnableGCAdapterSupport.Text = OSTailoredCode.IsUnixHost
+				? "Enable Wii U/Switch GameCube Adapter Support (via libusb)"
+				: "Enable Wii U/Switch GameCube Adapter Support (via Zadig/WinUSB)";
 		}
 
 		public int AutosaveSaveRAMSeconds
@@ -51,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				AutosaveSRAMtextBox.Value = value;
+				AutosaveSRAMtextBox.Value = ((decimal) value).Clamp(AutosaveSRAMtextBox.Minimum, AutosaveSRAMtextBox.Maximum);
 			}
 		}
 
@@ -79,6 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = _config.Movies.MoviesOnDisk;
 			cbSkipWaterboxIntegrityChecks.Checked = _config.SkipWaterboxIntegrityChecks;
 			NoMixedKeyPriorityCheckBox.Checked = _config.NoMixedInputHokeyOverride;
+			cbEnableGCAdapterSupport.Checked = _config.GCAdapterSupportEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -93,7 +101,11 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
 				if (result is DialogResult.Cancel) return;
-				if (result is DialogResult.Yes) _config.ReplaceKeysInBindings(merging ? Input.ModifierKeyPreMap : Input.ModifierKeyInvPreMap);
+				if (result is DialogResult.Yes)
+				{
+					_config.ReplaceKeysInBindings(merging ? Input.ModifierKeyPreMap : Input.ModifierKeyInvPreMap);
+					_reinitHostKeybinds();
+				}
 			}
 
 			_config.StartFullscreen = StartFullScreenCheckbox.Checked;
@@ -118,6 +130,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.Movies.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.SkipWaterboxIntegrityChecks = cbSkipWaterboxIntegrityChecks.Checked;
 			_config.NoMixedInputHokeyOverride = NoMixedKeyPriorityCheckBox.Checked;
+			_config.GCAdapterSupportEnabled = cbEnableGCAdapterSupport.Checked;
 
 			Close();
 			DialogResult = DialogResult.OK;

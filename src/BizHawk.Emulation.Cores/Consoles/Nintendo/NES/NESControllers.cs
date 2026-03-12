@@ -816,7 +816,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			"0DEL",
 			"0SPACE",
 			"0DOWN",
-
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }
@@ -950,7 +949,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int x = c.AxisValue("0Pen X");
 				int y = c.AxisValue("0Pen Y");
 				// http://forums.nesdev.com/viewtopic.php?p=19454#19454
-				// it almost feels like the hardware guys got the request for 
+				// it almost feels like the hardware guys got the request for
 				// a tablet that returned x in [0, 255] and y in [0, 239] and then
 				// accidentally flipped the whole thing sideways
 				x = (x + 8) * 240 / 256;

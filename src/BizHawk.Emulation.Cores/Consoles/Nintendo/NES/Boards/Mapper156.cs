@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	DIS23C01 DAOU ROM CONTROLLER, Korea
 	* Metal Force (K)
 	* Buzz and Waldog (K)
-	* General's Son (K) 
+	* General's Son (K)
 	*/
 	internal sealed class Mapper156 : NesBoardBase
 	{
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						SetMirrorType(EMirrorType.Vertical);
 					else
 						SetMirrorType(EMirrorType.Horizontal);
-					break;				
+					break;
 			}
 		}
 

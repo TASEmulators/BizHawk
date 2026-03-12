@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text;
 using BizHawk.Common;
 
@@ -44,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					}
 					else
 					{
-						_cycle = (int)(BitConverter.ToUInt32(_tapeData, _pos - 1) >> 8);
+						_cycle = (int) (MemoryMarshal.Read<uint>(_tapeData.AsSpan(start: _pos - 1)) >> 8);
 						_pos += 3;
 						if (_cycle == 0)
 						{
@@ -87,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					throw new Exception("This tape has an unsupported version");
 				}
 
-				var size = BitConverter.ToUInt32(tapeFile, 16);
+				var size = MemoryMarshal.Read<uint>(tapeFile.AsSpan(start: 16));
 				if (size + 20 != tapeFile.Length)
 				{
 					throw new Exception("Tape file header specifies a length that doesn't match the file size");

@@ -23,9 +23,7 @@ namespace BizHawk.Client.Common
 	public sealed class LuaMethodExampleAttribute : Attribute
 	{
 		public LuaMethodExampleAttribute(string example)
-		{
-			Example = example;
-		}
+			=> Example = example.ReplaceLineEndings();
 
 		public string Example { get; }
 	}

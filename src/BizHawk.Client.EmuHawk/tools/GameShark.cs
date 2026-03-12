@@ -46,10 +46,10 @@ namespace BizHawk.Client.EmuHawk
 					var code = l.ToUpperInvariant().Trim();
 					var decoder = new GameSharkDecoder(MemoryDomains, Emulator.SystemId);
 					var result = decoder.Decode(code);
-					var domain = decoder.CheatDomain();
 
 					if (result.IsValid(out var valid))
 					{
+						var domain = decoder.CheatDomain(valid);
 						var description = !string.IsNullOrWhiteSpace(txtDescription.Text)
 							? txtDescription.Text
 							: code;
@@ -62,7 +62,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					DialogController.ShowMessageBox($"An Error occured: {ex.GetType()}", "Error", EMsgBoxIcon.Error);
+					using ExceptionBox dialog = new(ex);
+					this.ShowDialogAsChild(dialog);
 				}
 			}
 

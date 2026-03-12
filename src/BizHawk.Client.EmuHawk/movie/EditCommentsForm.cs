@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
@@ -27,14 +26,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditCommentsForm_Load(object sender, EventArgs e)
 		{
-			if (_movie.Comments.Any())
+			for (int i = 0; i < _movie.Comments.Count; i++)
 			{
-				for (int i = 0; i < _movie.Comments.Count; i++)
-				{
-					CommentGrid.Rows.Add();
-					var c = CommentGrid.Rows[i].Cells[0];
-					c.Value = _movie.Comments[i];
-				}
+				CommentGrid.Rows.Add();
+				var c = CommentGrid.Rows[i].Cells[0];
+				c.Value = _movie.Comments[i];
 			}
 
 			if (_readOnly)
@@ -59,7 +55,8 @@ namespace BizHawk.Client.EmuHawk
 				_movie.Comments.Add(c.Value.ToString());
 			}
 
-			_movie.Save();
+			FileWriteResult result = _movie.Save();
+			if (result.IsError) throw result.Exception!;
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)

@@ -16,11 +16,11 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			var domains = new List<MemoryDomain>
 			{
 				new MemoryDomainDelegate(
-					"System Bus", 
-					0x10000, 
+					"System Bus",
+					0x10000,
 					MemoryDomain.Endian.Little,
 					(addr) => LibMSX.MSX_getsysbus(MSX_Pntr, (int)(addr & 0xFFFF)),
-					(addr, value) => { }, 
+					(addr, value) => { },
 					1),
 				new MemoryDomainDelegate(
 					"VRAM",

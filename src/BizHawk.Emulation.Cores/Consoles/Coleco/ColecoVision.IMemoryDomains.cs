@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				addr =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					return _cpu.ReadMemory((ushort)addr);
+					return ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr is < 0 or > 0xFFFF) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
-					_cpu.WriteMemory((ushort)addr, value);
+					WriteMemory((ushort)addr, value);
 				}, 1)
 			};
 

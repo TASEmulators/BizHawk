@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg3_0 = s.ShowBG3_0,
 				ShowBg3_1 = s.ShowBG3_1,
 				ShowBg4_0 = s.ShowBG4_0,
-				ShowBg4_1 = s.ShowBG4_1
+				ShowBg4_1 = s.ShowBG4_1,
 			};
 
 			var result = dialogParent.ShowDialogAsChild(dlg);
@@ -97,31 +97,31 @@ namespace BizHawk.Client.EmuHawk
 		private bool AlwaysDoubleSize
 		{
 			get => cbDoubleSize.Checked;
-			init => cbDoubleSize.Checked = value;
+			set => cbDoubleSize.Checked = value;
 		}
 
 		private bool CropSGBFrame
 		{
 			get => cbCropSGBFrame.Checked;
-			init => cbCropSGBFrame.Checked = value;
+			set => cbCropSGBFrame.Checked = value;
 		}
 
 		private bool NoPPUSpriteLimit
 		{
 			get => cbNoPPUSpriteLimit.Checked;
-			init => cbNoPPUSpriteLimit.Checked = value;
+			set => cbNoPPUSpriteLimit.Checked = value;
 		}
 
 		private bool ShowOverscan
 		{
 			get => cbShowOverscan.Checked;
-			init => cbShowOverscan.Checked = value;
+			set => cbShowOverscan.Checked = value;
 		}
 
 		private bool ShowCursor
 		{
 			get => cbShowCursor.Checked;
-			init => cbShowCursor.Checked = value;
+			set => cbShowCursor.Checked = value;
 		}
 
 		private BsnesApi.ASPECT_RATIO_CORRECTION AspectRatioCorrection => (BsnesApi.ASPECT_RATIO_CORRECTION)AspectRatioCorrectionBox.SelectedIndex;
@@ -129,43 +129,43 @@ namespace BizHawk.Client.EmuHawk
 		private bool Hotfixes
 		{
 			get => cbGameHotfixes.Checked;
-			init => cbGameHotfixes.Checked = value;
+			set => cbGameHotfixes.Checked = value;
 		}
 
 		private bool FastPPU
 		{
 			get => cbFastPPU.Checked;
-			init => cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked = value;
+			set => cbDoubleSize.Enabled = cbNoPPUSpriteLimit.Enabled = cbFastPPU.Checked = value;
 		}
 
 		private bool FastDSP
 		{
 			get => cbFastDSP.Checked;
-			init => cbFastDSP.Checked = value;
+			set => cbFastDSP.Checked = value;
 		}
 
 		private bool FastCoprocessors
 		{
 			get => cbFastCoprocessor.Checked;
-			init => cbFastCoprocessor.Checked = value;
+			set => cbFastCoprocessor.Checked = value;
 		}
 
 		private bool UseSGB2
 		{
 			get => cbUseSGB2.Checked;
-			init => cbUseSGB2.Checked = value;
+			set => cbUseSGB2.Checked = value;
 		}
 
 		private bool UseRealTime
 		{
 			get => cbUseRealTime.Checked;
-			init => cbUseRealTime.Checked = value;
+			set => cbUseRealTime.Checked = value;
 		}
 
 		private DateTime InitialTime
 		{
 			get => dtpInitialTime.Value;
-			init => dtpInitialTime.Value = value;
+			set => dtpInitialTime.Value = value;
 		}
 
 		private BsnesApi.ENTROPY Entropy => (BsnesApi.ENTROPY) EntropyBox.SelectedIndex;
@@ -174,19 +174,77 @@ namespace BizHawk.Client.EmuHawk
 
 		private BsnesCore.SATELLAVIEW_CARTRIDGE SatellaviewCartridge => (BsnesCore.SATELLAVIEW_CARTRIDGE)SatellaviewCartridgeBox.SelectedIndex;
 
-		private bool ShowObj1 { get => Obj1Checkbox.Checked; init => Obj1Checkbox.Checked = value; }
-		private bool ShowObj2 { get => Obj2Checkbox.Checked; init => Obj2Checkbox.Checked = value; }
-		private bool ShowObj3 { get => Obj3Checkbox.Checked; init => Obj3Checkbox.Checked = value; }
-		private bool ShowObj4 { get => Obj4Checkbox.Checked; init => Obj4Checkbox.Checked = value; }
+		private bool ShowObj1
+		{
+			get => Obj1Checkbox.Checked;
+			set => Obj1Checkbox.Checked = value;
+		}
 
-		private bool ShowBg1_0 { get => Bg1_0Checkbox.Checked; init => Bg1_0Checkbox.Checked = value; }
-		private bool ShowBg1_1 { get => Bg1_1Checkbox.Checked; init => Bg1_1Checkbox.Checked = value; }
-		private bool ShowBg2_0 { get => Bg2_0Checkbox.Checked; init => Bg2_0Checkbox.Checked = value; }
-		private bool ShowBg2_1 { get => Bg2_1Checkbox.Checked; init => Bg2_1Checkbox.Checked = value; }
-		private bool ShowBg3_0 { get => Bg3_0Checkbox.Checked; init => Bg3_0Checkbox.Checked = value; }
-		private bool ShowBg3_1 { get => Bg3_1Checkbox.Checked; init => Bg3_1Checkbox.Checked = value; }
-		private bool ShowBg4_0 { get => Bg4_0Checkbox.Checked; init => Bg4_0Checkbox.Checked = value; }
-		private bool ShowBg4_1 { get => Bg4_1Checkbox.Checked; init => Bg4_1Checkbox.Checked = value; }
+		private bool ShowObj2
+		{
+			get => Obj2Checkbox.Checked;
+			set => Obj2Checkbox.Checked = value;
+		}
+
+		private bool ShowObj3
+		{
+			get => Obj3Checkbox.Checked;
+			set => Obj3Checkbox.Checked = value;
+		}
+
+		private bool ShowObj4
+		{
+			get => Obj4Checkbox.Checked;
+			set => Obj4Checkbox.Checked = value;
+		}
+
+		private bool ShowBg1_0
+		{
+			get => Bg1_0Checkbox.Checked;
+			set => Bg1_0Checkbox.Checked = value;
+		}
+
+		private bool ShowBg1_1
+		{
+			get => Bg1_1Checkbox.Checked;
+			set => Bg1_1Checkbox.Checked = value;
+		}
+
+		private bool ShowBg2_0
+		{
+			get => Bg2_0Checkbox.Checked;
+			set => Bg2_0Checkbox.Checked = value;
+		}
+
+		private bool ShowBg2_1
+		{
+			get => Bg2_1Checkbox.Checked;
+			set => Bg2_1Checkbox.Checked = value;
+		}
+
+		private bool ShowBg3_0
+		{
+			get => Bg3_0Checkbox.Checked;
+			set => Bg3_0Checkbox.Checked = value;
+		}
+
+		private bool ShowBg3_1
+		{
+			get => Bg3_1Checkbox.Checked;
+			set => Bg3_1Checkbox.Checked = value;
+		}
+
+		private bool ShowBg4_0
+		{
+			get => Bg4_0Checkbox.Checked;
+			set => Bg4_0Checkbox.Checked = value;
+		}
+
+		private bool ShowBg4_1
+		{
+			get => Bg4_1Checkbox.Checked;
+			set => Bg4_1Checkbox.Checked = value;
+		}
 
 		private void BtnOk_Click(object sender, EventArgs e)
 		{

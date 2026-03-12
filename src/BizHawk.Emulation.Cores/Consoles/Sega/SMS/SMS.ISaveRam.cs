@@ -4,8 +4,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS : ISaveRam
 	{
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
+			if (clearDirty) SaveRamModified = false;
 			return (byte[]) SaveRAM?.Clone();
 		}
 
@@ -15,6 +16,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Array.Copy(data, SaveRAM, data.Length);
 			}
+
+			SaveRamModified = false;
 		}
 
 		public bool SaveRamModified { get; private set; }

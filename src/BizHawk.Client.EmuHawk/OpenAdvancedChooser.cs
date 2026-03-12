@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		LibretroLaunchNoGame,
 		LibretroLaunchGame,
 		ClassicLaunchGame,
-		MameLaunchGame
+		MameLaunchGame,
 	}
 
 	public partial class OpenAdvancedChooser : Form, IDialogParent
@@ -83,9 +83,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var coreComm = _createCoreComm();
 				using var retro = new LibretroHost(coreComm, _game, core, true);
-				btnLibretroLaunchGame.Enabled = true;
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;
+				if (!string.IsNullOrEmpty(retro.Description.ValidExtensions))
+					btnLibretroLaunchGame.Enabled = true;
 
 				//print descriptive information
 				var descr = retro.Description;
@@ -95,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 				Console.WriteLine($"{nameof(descr.NeedsRomAsPath)}: {descr.NeedsRomAsPath}");
 				Console.WriteLine($"{nameof(descr.NeedsArchives)}: {descr.NeedsArchives}");
 				Console.WriteLine($"{nameof(descr.SupportsNoGame)}: {descr.SupportsNoGame}");
-					
+
 				foreach (var v in descr.Variables.Values)
 					Console.WriteLine(v);
 			}

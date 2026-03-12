@@ -74,7 +74,6 @@ namespace BizHawk.DBManTool
 					outf.WriteLine("{0}\tG\t{1}\tPSX\t\tdh={2}", hr.bizhash, hr.name, hr.datahash);
 				}
 			}
-
 		}
 	}
 
@@ -115,7 +114,7 @@ namespace BizHawk.DBManTool
 				Records.Add(new RedumpRecord()
 				{
 					name = name,
-					crc = spec_crc_calc.Current.ToString("X8")
+					crc = spec_crc_calc.Current.ToString("X8"),
 				});
 			}
 		}

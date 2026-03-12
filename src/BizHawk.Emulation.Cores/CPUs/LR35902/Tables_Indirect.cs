@@ -13,7 +13,7 @@
 						operation, Z,
 						IDLE,
 						WR, src_l, src_h, Z,
-						IDLE,					
+						IDLE,
 						IDLE,
 						HALT_CHK,
 						OP };
@@ -24,7 +24,7 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,	
+						IDLE,
 						RD, Z, src_l, src_h,
 						IDLE,
 						operation, bit, Z,
@@ -52,8 +52,8 @@
 		private void REG_OP_IND_INC(ushort operation, ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,					
-						IDLE,					
+						{IDLE,
+						IDLE,
 						IDLE,
 						RD, Z, src_l, src_h,
 						operation, dest, Z,
@@ -217,7 +217,7 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,					
+						IDLE,
 						RD, Z, src_l, src_h,
 						IDLE,
 						INC8, Z,
@@ -234,7 +234,7 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,	
+						IDLE,
 						RD, Z, src_l, src_h,
 						IDLE,
 						DEC8, Z,
@@ -250,15 +250,15 @@
 		private void LD_8_IND_FF(ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,					
-						IDLE,					
+						{IDLE,
+						IDLE,
 						IDLE,
 						RD, W, src_l, src_h,
 						INC16, src_l, src_h,
 						IDLE,
 						ASGN, Z , 0xFF,
 						RD, dest, W, Z,
-						IDLE,					
+						IDLE,
 						IDLE,
 						HALT_CHK,
 						OP };
@@ -275,7 +275,7 @@
 						IDLE,
 						ASGN, Z , 0xFF,
 						WR, W, Z, src,
-						IDLE,		
+						IDLE,
 						IDLE,
 						HALT_CHK,
 						OP };
@@ -288,7 +288,7 @@
 						IDLE,
 						ASGN, Z , 0xFF,
 						RD, dest, C, Z,
-						IDLE,	
+						IDLE,
 						IDLE,
 						HALT_CHK,
 						OP };
@@ -301,7 +301,7 @@
 						IDLE,
 						ASGN, Z , 0xFF,
 						WR, C, Z, src,
-						IDLE,					
+						IDLE,
 						IDLE,
 						HALT_CHK,
 						OP };

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		private void INT_OP_IND(ushort operation, ushort src_l, ushort src_h)
 		{
@@ -38,7 +38,7 @@
 
 		// Note that this operation uses I_BIT, same as indexed BIT.
 		// This is where the strange behaviour in Flag bits 3 and 5 come from.
-		// normally WZ contain I* + n when doing I_BIT ops, but here we use that code path 
+		// normally WZ contain I* + n when doing I_BIT ops, but here we use that code path
 		// even though WZ is not assigned to, letting it's value from other operations show through
 		private void BIT_TE_IND(ushort operation, ushort bit, ushort src_l, ushort src_h)
 		{
@@ -461,7 +461,7 @@
 					(IDLE,
 						IDLE,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						IN, ALU, C, B,
 						IDLE,
@@ -482,7 +482,7 @@
 						WAIT,
 						RD, ALU, L, H,
 						IDLE,
-						WAIT,
+						IDLE,
 						WAIT,
 						REP_OP_O, C, B, ALU, operation, 3, operation, repeat_instr);
 

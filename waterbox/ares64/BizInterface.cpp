@@ -147,6 +147,7 @@ static array_view<u8>* diskErrorData = nullptr;
 static array_view<u8>* saveData = nullptr;
 static array_view<u8>* rtcData = nullptr;
 static array_view<u8>* gbRomData[4] = { nullptr, nullptr, nullptr, nullptr, };
+static array_view<u8>* sdData = nullptr;
 
 typedef enum
 {
@@ -417,6 +418,8 @@ typedef struct
 	u8* DiskErrorData;
 	u64 DiskErrorLen;
 	GbRom GbRoms[4];
+	u8* SdData;
+	u64 SdLen;
 } LoadData;
 
 static bool LoadRom(LoadData* loadData, bool isPal)
@@ -558,6 +561,16 @@ ECL_EXPORT bool Init(LoadData* loadData, ControllerType* controllers, bool isPal
 		memcpy(data, loadData->IplData, len);
 		iplData = new array_view<u8>(data, len);
 		platform->bizpak->append(name, *iplData);
+	}
+
+	if (loadData->SdData)
+	{
+		name = "sd.raw";
+		len = loadData->SdLen;
+		data = new u8[len];
+		memcpy(data, loadData->SdData, len);
+		sdData = new array_view<u8>(data, len);
+		platform->bizpak->append(name, *sdData);
 	}
 
 	string region = isPal ? "PAL" : "NTSC";
@@ -722,27 +735,35 @@ static u8 PeekFunc(u64 address)
 
 	if (addr > 0x0403'ffff && addr <= 0x0407'ffff) // RSP
 	{
-		address = (address & 0x3ffff) >> 2;
+		address = (address & 0x1f) >> 2;
 		if (address == 7) // SP_SEMAPHORE
 		{
 			return GetByteFromWord(ares::Nintendo64::rsp.status.semaphore & 1, addr);
 		}
 	}
-	else if (addr > 0x0407'ffff && addr <= 0x040f'ffff) // RSP Status
+	else if (addr > 0x0407'ffff && addr <= 0x040b'ffff) // RSP Status
 	{
-		address = (address & 0x7ffff) >> 2;
+		address = (address & 0x1f) >> 2;
 		if (address == 0) // SP_PC_REG
 		{
 			return GetByteFromWord(ares::Nintendo64::rsp.ipu.pc & 0xFFF, addr);
 		}
 	}
+	else if (addr > 0x040b'ffff && addr <= 0x040f'ffff) // unmapped
+	{
+		return 0;
+	}
 	else if (addr > 0x046f'ffff && addr <= 0x047f'ffff) // RI
 	{
-		address = (address & 0xfffff) >> 2;
+		address = (address & 0x1f) >> 2;
 		if (address == 3) // RI_SELECT
 		{
 			return GetByteFromWord(ares::Nintendo64::ri.io.select, addr);
 		}
+	}
+	else if (addr > 0x048f'ffff && addr <= 0x04ff'ffff) // unmapped
+	{
+		return 0;
 	}
 
 	ares::Nintendo64::Thread unused;

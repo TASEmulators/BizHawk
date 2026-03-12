@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(256); AssertVram(0); AssertWram(0);
 					break;
 				case "SUNSOFT-4":
-					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
+					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
 					break;
 				case "UNIF_NES-NTBROM":
 					AssertPrg(128 + 16); AssertChr(128); Cart.WramSize = 8; Cart.VramSize = 0;

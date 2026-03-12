@@ -14,7 +14,6 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Map some bytes
 		/// </summary>
-		/// <param name="size"></param>
 		/// <exception cref="InvalidOperationException">
 		/// failed to mmap
 		/// </exception>
@@ -47,7 +46,7 @@ namespace BizHawk.Common
 			Protection.R => MemoryProtection.Read,
 			Protection.RW => MemoryProtection.Read | MemoryProtection.Write,
 			Protection.RX => MemoryProtection.Read | MemoryProtection.Execute,
-			_ => throw new InvalidOperationException(nameof(prot))
+			_ => throw new InvalidOperationException(nameof(prot)),
 		};
 
 		public void Protect(ulong start, ulong size, Protection prot)

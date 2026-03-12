@@ -1,6 +1,6 @@
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		private bool iff1;
 		public bool IFF1
@@ -36,13 +36,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 		}
 
-		public Action IRQCallback = () => {};
-		public Action NMICallback = () => {};
-
-		// this will be a few cycles off for now
-		// it should suffice for now until Alyosha returns from hiatus
-		public Action IRQACKCallback = () => {};
-
 		private void NMI_()
 		{
 			PopulateCURINSTR
@@ -67,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Otherwise operation just continues as normal
 		// For now assume a NOP is on the data bus, in which case no stack operations occur
 
-		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly 
+		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly
 		private void INTERRUPT_0(ushort src)
 		{
 			PopulateCURINSTR

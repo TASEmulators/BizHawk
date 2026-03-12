@@ -128,7 +128,7 @@ namespace BizHawk.Common
 			public override long Length
 				=> throw new NotImplementedException();
 
-			public override long Position 
+			public override long Position
 			{
 				get => throw new NotImplementedException();
 				set => throw new NotImplementedException();

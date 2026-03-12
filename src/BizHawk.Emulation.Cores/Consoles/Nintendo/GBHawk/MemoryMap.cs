@@ -33,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				uint flags = (uint)MemoryCallbackFlags.AccessRead;
 				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 			}
-			
+
 			addr_access = addr;
-			
+
 			if (ppu.DMA_bus_control)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
@@ -75,11 +75,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (ppu.DMA_OAM_access)
 					{
 						return OAM[addr - 0xFE00];
-					}	
-					else 
+					}
+					else
 					{
 						return 0xFF;
-					}				
+					}
 				}
 
 				if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				return ppu.DMA_byte;
 			}
-			
+
 			if (addr < 0x8000)
 			{
 				if (addr >= 0x900)
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					return 0xFF;
-				}				
+				}
 			}
 
 			if (addr < 0xC000)
@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				uint flags = (uint)MemoryCallbackFlags.AccessWrite;
 				MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 			}
-			
+
 			addr_access = addr;
 
 			if (ppu.DMA_bus_control)
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr >= 0xFE00 && addr < 0xFEA0 && ppu.DMA_OAM_access)
 				{
-					OAM[addr - 0xFE00] = value; 
+					OAM[addr - 0xFE00] = value;
 				}
 				else if (addr >= 0xFF00 && addr < 0xFF80) // The game GOAL! Requires Hardware Regs to be accessible
 				{
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				return;
 			}
-		
+
 			// Writes are more likely from the top down
 			if (addr >= 0xFF00)
 			{
@@ -336,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (ppu.OAM_access_write) { OAM[addr - 0xFE00] = value; }
 				}
-				// unmapped memory writes depend on console		
+				// unmapped memory writes depend on console
 				else
 				{
 					if (is_GBC)
@@ -370,9 +370,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr >= 0x8000)
 			{
-				if (ppu.VRAM_access_write) 
-				{ 
-					VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; 
+				if (ppu.VRAM_access_write)
+				{
+					VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value;
 				}
 			}
 			else

@@ -2,16 +2,20 @@
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	public partial class QuickNES : ISaveRam
+	public sealed partial class QuickNES : ISaveRam
 	{
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
+			if (!QN.qn_has_battery_ram(Context)) return null;
+
 			LibQuickNES.ThrowStringError(QN.qn_battery_ram_save(Context, _saveRamBuff, _saveRamBuff.Length));
 			return (byte[])_saveRamBuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
+			if (!QN.qn_has_battery_ram(Context)) return;
+
 			LibQuickNES.ThrowStringError(QN.qn_battery_ram_load(Context, data, data.Length));
 		}
 

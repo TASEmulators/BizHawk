@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Calculators.TI83
 		private byte[] _variableData;
 
 		private Action _nextStep;
-		
+
 		private ushort _bytesToSend;
 		private byte _bitsLeft;
 		private byte _currentByte;

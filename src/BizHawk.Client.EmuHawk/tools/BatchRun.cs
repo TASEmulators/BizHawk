@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var pp = (Tuple<int, List<string>>)o;
-				BatchRunner br = new BatchRunner(_config, _createCoreComm(), pp.Item2, pp.Item1);
+				BatchRunner br = new(_createCoreComm(), _config, this, pp.Item2, pp.Item1);
 				br.OnProgress += BrOnProgress;
 				var results = br.Run();
 				this.Invoke(() => { label3.Text = "Status: Finished!"; _mostRecentResults = results; });

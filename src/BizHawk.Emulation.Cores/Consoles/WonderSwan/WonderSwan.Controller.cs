@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
-	partial class WonderSwan
+	public partial class WonderSwan
 	{
 		public static readonly ControllerDefinition WonderSwanController = new ControllerDefinition("WonderSwan Controller")
 		{
@@ -96,6 +96,5 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			return ret;
 		}
-
 	}
 }

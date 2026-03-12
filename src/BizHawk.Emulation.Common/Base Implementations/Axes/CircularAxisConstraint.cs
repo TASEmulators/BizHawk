@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Common
 			var length = Math.Sqrt(xVal * xVal + yVal * yVal);
 			var ratio = Magnitude / length;
 			return ratio < 1.0
-				? ((int) (xVal * ratio), (int) (yVal * ratio))
+				? ((int) Math.Round(xVal * ratio), (int) Math.Round(yVal * ratio))
 				: ((int) xVal, (int) yVal);
 		}
 	}

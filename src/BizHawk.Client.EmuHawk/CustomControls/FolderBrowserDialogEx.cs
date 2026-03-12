@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 					pszDisplayName = pszDisplayName,
 					lpszTitle = Description,
 					ulFlags = browseOptions,
-					lpfn = Callback
+					lpfn = Callback,
 				};
 
 				pidlRet = SHBrowseForFolderW(ref bi);

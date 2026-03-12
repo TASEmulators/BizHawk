@@ -72,10 +72,6 @@ namespace BizHawk.Emulation.Cores
 					{
 						DisplayName = "Right",
 					},
-					new ButtonSchema(275, 105, "Mouse Relative Toggle")
-					{
-						DisplayName = "Relative Toggle",
-					},
 				}
 			};
 		}

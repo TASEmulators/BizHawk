@@ -88,19 +88,9 @@ namespace BizHawk.Client.Common
 			return file.Exists && Load(domains, file.FullName, false);
 		}
 
-		public void NewList(string defaultFileName, bool autosave = false)
+		public void NewList(string defaultFileName)
 		{
 			_defaultFileName = defaultFileName;
-
-			if (_cheatList.Any() && _changes && autosave)
-			{
-				if (string.IsNullOrEmpty(CurrentFileName))
-				{
-					CurrentFileName = _defaultFileName;
-				}
-
-				Save();
-			}
 
 			_cheatList.Clear();
 			CurrentFileName = "";
@@ -177,7 +167,7 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -205,12 +195,6 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void RemoveAll()
-		{
-			_cheatList.Clear();
-			Changes = true;
-		}
-
 		public void Clear()
 		{
 			_cheatList.Clear();
@@ -226,28 +210,38 @@ namespace BizHawk.Client.Common
 		public bool IsActive(MemoryDomain domain, long address)
 			=> _cheatList.Exists(cheat => !cheat.IsSeparator && cheat.Enabled && cheat.Domain == domain && cheat.Contains(address));
 
-		public void SaveOnClose()
+		public FileWriteResult SaveOnClose()
 		{
 			if (_config.AutoSaveOnClose)
 			{
-				if (Changes && _cheatList.Any())
+				if (Changes && _cheatList.Count is not 0)
 				{
 					if (string.IsNullOrWhiteSpace(CurrentFileName))
 					{
 						CurrentFileName = _defaultFileName;
 					}
 
-					SaveFile(CurrentFileName);
+					return SaveFile(CurrentFileName);
 				}
-				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
+				else if (_cheatList.Count is 0 && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					File.Delete(CurrentFileName);
+					try
+					{
+						File.Delete(CurrentFileName);
+					}
+					catch (Exception ex)
+					{
+						return new(FileWriteEnum.FailedToDeleteGeneric, new(CurrentFileName, ""), ex);
+					}
 					_config.Recent.Remove(CurrentFileName);
+					return new();
 				}
 			}
+
+			return new();
 		}
 
-		public bool Save()
+		public FileWriteResult Save()
 		{
 			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
@@ -257,59 +251,51 @@ namespace BizHawk.Client.Common
 			return SaveFile(CurrentFileName);
 		}
 
-		public bool SaveFile(string path)
+		public FileWriteResult SaveFile(string path)
 		{
-			try
+			var sb = new StringBuilder();
+
+			foreach (var cheat in _cheatList)
 			{
-				var file = new FileInfo(path);
-				if (file.Directory != null && !file.Directory.Exists)
+				if (cheat.IsSeparator)
 				{
-					file.Directory.Create();
+					sb.AppendLine("----");
 				}
-
-				var sb = new StringBuilder();
-
-				foreach (var cheat in _cheatList)
+				else
 				{
-					if (cheat.IsSeparator)
-					{
-						sb.AppendLine("----");
-					}
-					else
-					{
-						// Set to hex for saving
-						var tempCheatType = cheat.Type;
+					// Set to hex for saving
+					var tempCheatType = cheat.Type;
 
-						cheat.SetType(WatchDisplayType.Hex);
+					cheat.SetType(WatchDisplayType.Hex);
 
-						sb
-							.Append(cheat.AddressStr).Append('\t')
-							.Append(cheat.ValueStr).Append('\t')
-							.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
-							.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
-							.Append(cheat.Enabled ? '1' : '0').Append('\t')
-							.Append(cheat.Name).Append('\t')
-							.Append(cheat.SizeAsChar).Append('\t')
-							.Append(cheat.TypeAsChar).Append('\t')
-							.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
-							.Append(cheat.ComparisonType).Append('\t')
-							.AppendLine();
+					sb
+						.Append(cheat.AddressStr).Append('\t')
+						.Append(cheat.ValueStr).Append('\t')
+						.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
+						.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
+						.Append(cheat.Enabled ? '1' : '0').Append('\t')
+						.Append(cheat.Name).Append('\t')
+						.Append(cheat.SizeAsChar).Append('\t')
+						.Append(cheat.TypeAsChar).Append('\t')
+						.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
+						.Append(cheat.ComparisonType).Append('\t')
+						.AppendLine();
 
-						cheat.SetType(tempCheatType);
-					}
+					cheat.SetType(tempCheatType);
 				}
-
-				File.WriteAllText(path, sb.ToString());
-
+			}
+			FileWriteResult result = FileWriter.Write(path, (fs) =>
+			{
+				StreamWriter sw = new(fs);
+				sw.Write(sb.ToString());
+			});
+			if (!result.IsError)
+			{
 				CurrentFileName = path;
 				_config.Recent.Add(CurrentFileName);
 				Changes = false;
-				return true;
 			}
-			catch
-			{
-				return false;
-			}
+			return result;
 		}
 
 		public bool Load(IMemoryDomains domains, string path, bool append)
@@ -326,7 +312,7 @@ namespace BizHawk.Client.Common
 			}
 
 			using var sr = file.OpenText();
-			
+
 			if (!append)
 			{
 				Clear();
@@ -378,7 +364,7 @@ namespace BizHawk.Client.Common
 							type = Watch.DisplayTypeFromChar(vals[7][0]);
 							bigEndian = vals[8] == "1";
 						}
-						
+
 						// For backwards compatibility, don't assume these values exist
 						if (vals.Length > 9)
 						{
@@ -410,6 +396,26 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
+		public void UpdateDomains(IMemoryDomains domains)
+		{
+			for (int i = _cheatList.Count - 1; i >= 0; i--)
+			{
+				var cheat = _cheatList[i];
+				if (cheat.IsSeparator) continue;
+
+				var newDomain = domains[cheat.Domain.Name];
+				if (newDomain is not null)
+				{
+					cheat.Domain = newDomain;
+				}
+				else
+				{
+					_cheatList.RemoveAt(i);
+					Changes = true;
+				}
+			}
+		}
+
 		private static readonly RigidMultiPredicateSort<Cheat> ColumnSorts
 			= new RigidMultiPredicateSort<Cheat>(new Dictionary<string, Func<Cheat, IComparable>>
 			{
@@ -422,7 +428,7 @@ namespace BizHawk.Client.Common
 				[SizeColumn] = c => (int) c.Size,
 				[EndianColumn] = c => c.BigEndian,
 				[TypeColumn] = c => c.Type,
-				[ComparisonType] = c => c.ComparisonType
+				[ComparisonType] = c => c.ComparisonType,
 			});
 
 		public void Sort(string column, bool reverse) => _cheatList = ColumnSorts.AppliedTo(_cheatList, column, firstIsDesc: reverse);

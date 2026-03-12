@@ -103,8 +103,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						break;
 				}
-			}		
-			else 
+			}
+			else
 				base.WritePrg(addr, value);
 		}
 

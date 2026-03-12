@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Linq;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -13,18 +14,17 @@ namespace BizHawk.Client.EmuHawk
 	// TODO - Allow relative paths in record TextBox
 	public sealed class RecordMovie : Form, IDialogParent
 	{
-		private const string START_FROM_POWERON = "Power-On";
+		private const string START_FROM_POWERON = "Power-on (clean)";
 
-		private const string START_FROM_SAVERAM = "SaveRam";
+		private const string START_FROM_SAVERAM = "SaveRAM";
 
-		private const string START_FROM_SAVESTATE = "Now";
+		private const string START_FROM_SAVESTATE = "SaveRAM + savestate";
 
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
 		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
 		private readonly IMovieSession _movieSession;
-		private readonly FirmwareManager _firmwareManager;
 
 		private readonly TextBox AuthorBox;
 
@@ -41,8 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			Config config,
 			GameInfo game,
 			IEmulator core,
-			IMovieSession movieSession,
-			FirmwareManager firmwareManager)
+			IMovieSession movieSession)
 		{
 			if (game.IsNullInstance()) throw new InvalidOperationException("how is the traditional Record dialog open with no game loaded? please report this including as much detail as possible");
 
@@ -51,7 +50,6 @@ namespace BizHawk.Client.EmuHawk
 			_game = game;
 			_emulator = core;
 			_movieSession = movieSession;
-			_firmwareManager = firmwareManager;
 
 			SuspendLayout();
 
@@ -105,8 +103,8 @@ namespace BizHawk.Client.EmuHawk
 				MaxDropDownItems = 32,
 				Size = new(152, 21),
 			};
+			if (_emulator.HasSaveRam() && _emulator.AsSaveRam().CloneSaveRam(clearDirty: false) is not null) StartFromCombo.Items.Add(START_FROM_SAVERAM);
 			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
-			if (_emulator.HasSaveRam()) StartFromCombo.Items.Add(START_FROM_SAVERAM);
 
 			DefaultAuthorCheckBox = new()
 			{
@@ -186,20 +184,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
+				path = Path.IsPathRooted(path)
+					? Path.GetFullPath(path)
+					: Path.Combine(_config.PathEntries.MovieAbsolutePath(), path);
+
+				if (!MovieService.MovieExtensions.Select(static ext => $".{ext}").Contains(Path.GetExtension(path)))
 				{
-					if (path[0] != Path.DirectorySeparatorChar)
-					{
-						path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
-					}
-
-					path = _config.PathEntries.MovieAbsolutePath() + path;
-
-					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
-					{
-						// If no valid movie extension, add movie extension
-						path += $".{MovieService.StandardMovieExtension}";
-					}
+					// If no valid movie extension, add movie extension
+					path += $".{MovieService.StandardMovieExtension}";
 				}
 			}
 
@@ -211,8 +203,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = MakePath();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
-				var test = new FileInfo(path);
-				if (test.Exists)
+				if (File.Exists(path))
 				{
 					var result = DialogController.ShowMessageBox2($"{path} already exists, overwrite?", "Confirm overwrite", EMsgBoxIcon.Warning, useOKCancel: true);
 					if (!result)
@@ -222,14 +213,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var movieToRecord = _movieSession.Get(path);
+				movieToRecord.Author = AuthorBox.Text ?? _config.DefaultAuthor;
 
-				var fileInfo = new FileInfo(path);
-				if (!fileInfo.Exists)
-				{
-					Directory.CreateDirectory(fileInfo.DirectoryName);
-				}
-
-				if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVESTATE && _emulator.HasSavestates())
+				var selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
+				if (selectedStartFromValue is START_FROM_SAVESTATE && _emulator.HasSavestates())
 				{
 					var core = _emulator.AsStatable();
 
@@ -246,26 +233,19 @@ namespace BizHawk.Client.EmuHawk
 						movieToRecord.TextSavestate = sw.ToString();
 					}
 
-					// TODO: do we want to support optionally not saving this?
-					movieToRecord.SavestateFramebuffer = Array.Empty<int>();
 					if (_emulator.HasVideoProvider())
 					{
-						movieToRecord.SavestateFramebuffer = (int[])_emulator.AsVideoProvider().GetVideoBuffer().Clone();
+						var v = _emulator.AsVideoProvider();
+						movieToRecord.SavestateFramebuffer = new BitmapBuffer(v.BufferWidth, v.BufferHeight, v.GetVideoBuffer());
 					}
 				}
-				else if (StartFromCombo.SelectedItem.ToString() is START_FROM_SAVERAM && _emulator.HasSaveRam())
+				else if (selectedStartFromValue is START_FROM_SAVERAM && _emulator.HasSaveRam())
 				{
 					var core = _emulator.AsSaveRam();
 					movieToRecord.StartsFromSaveRam = true;
-					movieToRecord.SaveRam = core.CloneSaveRam();
+					movieToRecord.SaveRam = core.CloneSaveRam(clearDirty: false);
 				}
 
-				movieToRecord.PopulateWithDefaultHeaderValues(
-					_emulator,
-					((MainForm) _mainForm).GetSettingsAdapterForLoadedCoreUntyped(), //HACK
-					_game,
-					_firmwareManager,
-					AuthorBox.Text ?? _config.DefaultAuthor);
 				_mainForm.StartNewMovie(movieToRecord, true);
 
 				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
@@ -290,22 +270,23 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string movieFolderPath = _config.PathEntries.MovieAbsolutePath();
-			
+
 			// Create movie folder if it doesn't already exist
 			try
 			{
 				Directory.CreateDirectory(movieFolderPath);
 			}
-			catch (Exception movieDirException)
+			catch (IOException)
 			{
-				if (movieDirException is IOException
-					|| movieDirException is UnauthorizedAccessException)
-				{
-					//TO DO : Pass error to user?
-				}
-				else throw;
+				// ignored
+				//TODO present to user?
 			}
-			
+			catch (UnauthorizedAccessException)
+			{
+				// ignored
+				//TODO present to user?
+			}
+
 			var filterset = _movieSession.Movie.GetFSFilterSet();
 			var result = this.ShowFileSaveDialog(
 				fileExt: $".{filterset.Filters[0].Extensions.First()}",

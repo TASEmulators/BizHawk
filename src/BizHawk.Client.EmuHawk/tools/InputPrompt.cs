@@ -18,7 +18,13 @@ namespace BizHawk.Client.EmuHawk
 			StartLocation = new Point(-1, -1);
 		}
 
-		public enum InputType { Hex, Unsigned, Signed, Text }
+		public enum InputType
+		{
+			Hex,
+			Unsigned,
+			Signed,
+			Text,
+		}
 
 		public Point StartLocation { get; set; }
 		public InputType TextInputType { get; set; }
@@ -73,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					
+
 					if (!e.KeyChar.IsHex())
 					{
 						e.Handled = true;
@@ -85,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					
+
 					if (!e.KeyChar.IsSigned())
 					{
 						e.Handled = true;

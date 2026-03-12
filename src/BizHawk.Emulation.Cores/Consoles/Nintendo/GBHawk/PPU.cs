@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public class PPU
+	public abstract class PPU
 	{
 		public GBHawk Core { get; set; }
 
@@ -127,60 +127,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int total_counter;
 		public uint[] color_palette = new uint[4];
 
-		public virtual byte ReadReg(int addr)
-		{
-			return 0;
-		}
+		public abstract byte ReadReg(int addr);
 
-		public virtual void WriteReg(int addr, byte value)
-		{
+		public abstract void WriteReg(int addr, byte value);
 
-		}
-
-		public virtual void tick()
-		{
-
-		}
+		public abstract void tick();
 
 		// might be needed, not sure yet
-		public virtual void latch_delay()
-		{
+		public abstract void latch_delay();
 
-		}
+		public abstract void render(int render_cycle);
 
-		public virtual void render(int render_cycle)
-		{
-
-		}
-
-		public virtual void process_sprite()
-		{
-
-		}
+		public abstract void process_sprite();
 
 		// normal DMA moves twice as fast in double speed mode on GBC
 		// So give it it's own function so we can seperate it from PPU tick
-		public virtual void DMA_tick()
-		{
+		public abstract void DMA_tick();
 
-		}
+		public abstract void OAM_scan(int OAM_cycle);
 
-		public virtual void OAM_scan(int OAM_cycle)
-		{
-
-		}
-
-		public virtual void Reset()
-		{
-
-		}
+		public abstract void Reset();
 
 		// order sprites according to x coordinate
 		// note that for sprites of equal x coordinate, priority goes to first on the list
-		public virtual void reorder_and_assemble_sprites()
-		{
-
-		}
+		public abstract void reorder_and_assemble_sprites();
 
 		public virtual void SyncState(Serializer ser)
 		{
@@ -221,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(stat_line), ref stat_line);
 			ser.Sync(nameof(stat_line_old), ref stat_line_old);
 			ser.Sync(nameof(LCD_was_off), ref LCD_was_off);
-			
+
 			ser.Sync(nameof(OAM_scan_index), ref OAM_scan_index);
 			ser.Sync(nameof(SL_sprites_index), ref SL_sprites_index);
 			ser.Sync(nameof(SL_sprites), ref SL_sprites, false);
@@ -248,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(sprite_fetch_counter), ref sprite_fetch_counter);
 			ser.Sync(nameof(sprite_attr_list), ref sprite_attr_list, false);
 			ser.Sync(nameof(sprite_pixel_list), ref sprite_pixel_list, false);
-			ser.Sync(nameof(sprite_present_list), ref sprite_present_list, false);		
+			ser.Sync(nameof(sprite_present_list), ref sprite_present_list, false);
 			ser.Sync(nameof(temp_fetch), ref temp_fetch);
 			ser.Sync(nameof(tile_inc), ref tile_inc);
 			ser.Sync(nameof(pre_render), ref pre_render);

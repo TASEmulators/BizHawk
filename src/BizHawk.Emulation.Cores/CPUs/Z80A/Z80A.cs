@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
@@ -6,10 +7,15 @@ using BizHawk.Common.NumberExtensions;
 // Z80A CPU
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public sealed partial class Z80A
+	/// <remarks>
+	/// this type parameter might look useless—and it is—but after monomorphisation,
+	/// this way happens to perform better than the alternative
+	/// </remarks>
+	/// <seealso cref="IZ80ALink"/>
+	public sealed partial class Z80A<TLink> where TLink : IZ80ALink
 	{
 		// operations that can take place in an instruction
-		public const ushort IDLE = 0; 
+		public const ushort IDLE = 0;
 		public const ushort OP = 1;
 		public const ushort OP_F = 2; // used for repeating operations
 		public const ushort HALT = 3;
@@ -34,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort RLC = 22;
 		public const ushort RL = 23;
 		public const ushort RRC = 24;
-		public const ushort RR = 25;	
+		public const ushort RR = 25;
 		public const ushort CPL = 26;
 		public const ushort DA = 27;
 		public const ushort SCF = 28;
@@ -49,9 +55,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort SLL = 37;
 		public const ushort BIT = 38;
 		public const ushort RES = 39;
-		public const ushort SET = 40;		
+		public const ushort SET = 40;
 		public const ushort EI = 41;
-		public const ushort DI = 42;	
+		public const ushort DI = 42;
 		public const ushort EXCH = 43;
 		public const ushort EXX = 44;
 		public const ushort EXCH_16 = 45;
@@ -64,9 +70,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort EI_RETI = 52; // reti has no delay in interrupt enable
 		public const ushort OUT = 53;
 		public const ushort IN = 54;
-		public const ushort NEG = 55;		
+		public const ushort NEG = 55;
 		public const ushort RRD = 56;
-		public const ushort RLD = 57;		
+		public const ushort RLD = 57;
 		public const ushort SET_FL_LD_R = 58;
 		public const ushort SET_FL_CP_R = 59;
 		public const ushort SET_FL_IR = 60;
@@ -87,11 +93,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort IORQ = 75;
 
 		// non-state variables
-		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
+		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;
 		public byte temp_R;
 
-		public Z80A()
+		private TLink _link;
+
+		public Z80A(TLink link)
 		{
+			_link = link;
 			Reset();
 			InitTableParity();
 		}
@@ -238,54 +247,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
-
-		// Memory Access 
-		public Func<ushort, byte> FetchMemory;
-		public Func<ushort, byte> ReadMemory;
-		public Action<ushort, byte> WriteMemory;
-		public Func<ushort, byte> PeekMemory;
-		public Func<ushort, byte> DummyReadMemory;
-
-		// Hardware I/O Port Access
-		public Func<ushort, byte> ReadHardware;
-		public Action<ushort, byte> WriteHardware;
-
-		// Data Bus
-		// Interrupting Devices are responsible for putting a value onto the data bus
-		// for as long as the interrupt is valid
-		public Func<byte> FetchDB;
-
-		//this only calls when the first byte of an instruction is fetched.
-		public Action<ushort> OnExecFetch;
-
-		public void UnregisterMemoryMapper()
-		{
-			ReadMemory = null;
-			WriteMemory = null;
-			PeekMemory = null;
-			DummyReadMemory = null;
-			ReadHardware = null;
-			WriteHardware = null;
-		}
-
-		public void SetCallbacks
-		(
-			Func<ushort, byte> ReadMemory,
-			Func<ushort, byte> DummyReadMemory,
-			Func<ushort, byte> PeekMemory,
-			Action<ushort, byte> WriteMemory,
-			Func<ushort, byte> ReadHardware,
-			Action<ushort, byte> WriteHardware
-		)
-		{
-			this.ReadMemory = ReadMemory;
-			this.DummyReadMemory = DummyReadMemory;
-			this.PeekMemory = PeekMemory;
-			this.WriteMemory = WriteMemory;
-			this.ReadHardware = ReadHardware;
-			this.WriteHardware = WriteHardware;
-		}
+		public void SetCpuLink(TLink link)
+			=> _link = link;
 
 		// Execute instructions
 		public void ExecuteOne()
@@ -298,15 +261,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case OP:
 					// should never reach here
-				
+
 					break;
 				case OP_F:
-					// Read the opcode of the next instruction	
-					OnExecFetch?.Invoke(RegPC);
+					// Read the opcode of the next instruction
+					_link.OnExecFetch(RegPC);
 					TraceCallback?.Invoke(State());
-					opcode = FetchMemory(RegPC++);
+					opcode = _link.FetchMemory(RegPC++);
 					FetchInstruction();
-					
+
 					temp_R = (byte)(Regs[R] & 0x7F);
 					temp_R++;
 					temp_R &= 0x7F;
@@ -521,11 +484,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					}
 
-					opcode = FetchMemory(RegPC++);
+					opcode = _link.FetchMemory(RegPC++);
 					FetchInstruction();
 					instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
 					I_skip = true;
-					
+
 					// for prefetched case, the PC stays on the BUS one cycle longer
 					if ((src_t == IXCBpre) || (src_t == IYCBpre)) { BUSRQ[0] = PCh; }
 
@@ -599,7 +562,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					{
 						if (Ztemp2 == INC16) { INC16_Func(E, D); }
 						else { DEC16_Func(E, D); }
-					}				
+					}
 					break;
 				case SET_FL_CP_R:
 					SET_FL_CP_Func();
@@ -650,7 +613,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					Regs[Z] = cur_instr[instr_pntr++];
 					Regs[W] = 0;
 					break;
-				case REP_OP_I:			
+				case REP_OP_I:
 					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 
 					Ztemp4 = cur_instr[instr_pntr++];
@@ -667,7 +630,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						FlagP = TableParity[((Regs[ALU] + Regs[C] - 1) & 7) ^ Regs[B]];
 					}
 					else
-					{				
+					{
 						TR16_Func(Z, W, C, B);
 						INC16_Func(Z, W);
 						DEC8_Func(B);
@@ -714,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						DEC16_Func(L, H);
 						DEC8_Func(B);
 						TR16_Func(Z, W, C, B);
-						DEC16_Func(Z, W);			
+						DEC16_Func(Z, W);
 					}
 					else
 					{
@@ -753,7 +716,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 
 				case IORQ:
-					IRQACKCallback();
+					_link.IRQACKCallback();
 					break;
 			}
 
@@ -779,7 +742,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff2 = iff1;
 					iff1 = false;
 					NMI_();
-					NMICallback();
+					_link.NMICallback();
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -811,7 +774,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							INTERRUPT_2();
 							break;
 					}
-					IRQCallback();
+					_link.IRQCallback();
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -854,12 +817,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			int bytes_read = 0;
 
-			string disasm = disassemble ? Disassemble(RegPC, ReadMemory, out bytes_read) : "---";
+			string disasm = disassemble ? Z80ADisassembler.Disassemble(RegPC, _link.ReadMemory, out bytes_read) : "---";
 			string byte_code = null;
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += $"{ReadMemory((ushort)(RegPC + i)):X2}";
+				byte_code += $"{_link.ReadMemory((ushort)(RegPC + i)):X2}";
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
@@ -921,7 +884,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		/// <summary>
 		/// Optimization method to set cur_instr
-		/// </summary>	
+		/// </summary>
 		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
 			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,

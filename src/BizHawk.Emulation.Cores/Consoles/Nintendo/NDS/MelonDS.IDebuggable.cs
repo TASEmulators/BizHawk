@@ -49,7 +49,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public long TotalExecutedCycles => CycleCount + _core.GetCallbackCycleOffset(_console);
 
-		public IMemoryCallbackSystem MemoryCallbacks => _memoryCallbacks;
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			get
+			{
+				if (!_activeSyncSettings.EnableJIT)
+				{
+					return _memoryCallbacks;
+				}
+
+#pragma warning disable CA1065
+				throw new NotImplementedException();
+#pragma warning restore CA1065
+			}
+		}
 
 		// FIXME: internally the code actually just does this for either bus (probably don't want to bother adding support)
 		private readonly MemoryCallbackSystem _memoryCallbacks = new([ "ARM9 System Bus" ]);
@@ -67,23 +80,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				{
 					if (getHasCBOfType())
 					{
-						MemoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "ARM9 System Bus");
+						_memoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "ARM9 System Bus");
 					}
 				};
 			}
 
-			_readCallback = CreateCallback(MemoryCallbackFlags.AccessRead, () => MemoryCallbacks.HasReads);
-			_writeCallback = CreateCallback(MemoryCallbackFlags.AccessWrite, () => MemoryCallbacks.HasWrites);
-			_execCallback = CreateCallback(MemoryCallbackFlags.AccessExecute, () => MemoryCallbacks.HasExecutes);
+			_readCallback = CreateCallback(MemoryCallbackFlags.AccessRead, () => _memoryCallbacks.HasReads);
+			_writeCallback = CreateCallback(MemoryCallbackFlags.AccessWrite, () => _memoryCallbacks.HasWrites);
+			_execCallback = CreateCallback(MemoryCallbackFlags.AccessExecute, () => _memoryCallbacks.HasExecutes);
 
 			_memoryCallbacks.ActiveChanged += SetMemoryCallbacks;
 		}
 
 		private void SetMemoryCallbacks()
 		{
-			_core.SetMemoryCallback(0, MemoryCallbacks.HasReads ? _readCallback : null);
-			_core.SetMemoryCallback(1, MemoryCallbacks.HasWrites ? _writeCallback : null);
-			_core.SetMemoryCallback(2, MemoryCallbacks.HasExecutes ? _execCallback : null);
+			_core.SetMemoryCallback(0, _memoryCallbacks.HasReads ? _readCallback : null);
+			_core.SetMemoryCallback(1, _memoryCallbacks.HasWrites ? _writeCallback : null);
+			_core.SetMemoryCallback(2, _memoryCallbacks.HasExecutes ? _execCallback : null);
 		}
 	}
 }

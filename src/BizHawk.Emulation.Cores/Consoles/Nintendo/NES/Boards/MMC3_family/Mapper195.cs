@@ -15,7 +15,7 @@
 			}
 
 			vram_bank_mask_1k = Cart.VramSize / 1 - 1;
-			
+
 			BaseSetup();
 			return true;
 		}
@@ -36,7 +36,7 @@
 			{
 				Wram[addr - 0x1000] = value;
 			}
-			
+
 			base.WriteExp(addr, value);
 		}
 
@@ -87,7 +87,7 @@
 					// nothing to write to VROM
 				}
 			}
-			else 
+			else
 				base.WritePpu(addr, value);
 		}
 	}

@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				exRegs[mmc3.cmd & 3] = value;
 			}
-			else 
+			else
 				base.WritePrg(addr, value);
 		}
 	}

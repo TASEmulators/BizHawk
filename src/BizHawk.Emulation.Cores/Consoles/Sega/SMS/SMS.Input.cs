@@ -33,7 +33,7 @@
 			value &= _controllerDeck.ReadPort1_c2(_controller);
 
 			PostsetControllerState(1);
-			
+
 			if (!IsGameGear_C && SyncSettings.UseKeyboard)
 			{
 				// 7 represents ordinary controller reads
@@ -50,7 +50,7 @@
 							value &= (byte)~(1 << bit);
 						}
 					}
-				}			
+				}
 			}
 
 			return value;
@@ -125,7 +125,7 @@
 			const int phaserRadius = 4;
 
 			// specifically lightgun needs to do things on a per-line basis
-			if (!IsGameGear_C) 
+			if (!IsGameGear_C)
 			{
 				if (SyncSettings.Port1 == SMSControllerTypes.Phaser)
 				{
@@ -242,4 +242,4 @@
 			}
 		}
 	}
-} 
+}

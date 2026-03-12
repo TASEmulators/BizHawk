@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
 					}
-					
+
 					break;
 			}
 		}
@@ -105,8 +105,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			IRQ_block = false;
 
-			if (serial_clock > 0) 
-			{ 
+			if (serial_clock > 0)
+			{
 				serial_clock--;
 
 				if (serial_clock == 0)
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serial_bits = 8;
 			clk_rate = -1;
 			going_out = 0;
-			coming_in = 1;		
+			coming_in = 1;
 			can_pulse = false;
 			IRQ_block = false;
 		}

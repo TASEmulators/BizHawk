@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common;
 
@@ -20,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public Mapper000A(IList<int[]> newData)
 		{
-			_rom = new int[0x2000];
-			Array.Copy(newData.First(), _rom, 0x2000);
+			if (newData[0] is not { Length: >= 0x2000 } first) throw new ArgumentException(paramName: nameof(newData), message: "first array must have 0x2000 elements");
+			_rom = first.AsSpan(start: 0, length: 0x2000).ToArray();
 			pinGame = true;
 		}
 

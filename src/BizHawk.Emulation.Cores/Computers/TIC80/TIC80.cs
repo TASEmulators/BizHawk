@@ -9,7 +9,6 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Computers.TIC80
 {
 	[PortedCore(CoreNames.TIC80, "nesbox", "v1.0.2164", "https://tic80.com/")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight), })]
 	public sealed partial class TIC80 : WaterboxCore
 	{
 		private readonly LibTIC80 _core;

@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			set
 			{
 				_mmc3type = value;
-				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp || _mmc3type == EMMC3Type.MMC6);
+				oldIrqType = value is EMMC3Type.MMC3A or EMMC3Type.MMC3BNonSharp or EMMC3Type.MMC6;
 			}
 		}
 
@@ -64,10 +64,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		protected NesBoardBase board;
-		public MMC3(NesBoardBase board, int num_prg_banks)
+		public MMC3(NesBoardBase board)
 		{
 			just_cleared = just_cleared_pending = false;
-			
+
 			MirrorMask = 1;
 			this.board = board;
 			if (board.Cart.Chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
@@ -86,7 +86,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			regs[6] = 0;
 			regs[7] = 1;
 
+#pragma warning disable CA2214 // calling override before subclass ctor executes
 			Sync();
+#pragma warning restore CA2214
 		}
 
 		public virtual void Sync()
@@ -201,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4001: //$C001 - IRQ Clear
 					// does not take immediate effect (fixes Klax)
-					just_cleared_pending = true;				
+					just_cleared_pending = true;
 					break;
 				case 0x6000: //$E000 - IRQ Acknowledge / Disable
 					irq_enable = false;
@@ -247,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					IRQ_EQ_Pass();
 			}
-			
+
 			irq_reload_flag = false;
 		}
 
@@ -272,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (oldIrqType)
 					irq_reload_flag = true;
 			}
-			
+
 			just_cleared = just_cleared_pending;
 			just_cleared_pending = false;
 		}
@@ -290,7 +292,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bank_1k = chr_regs_1k[bank_1k];
 			return bank_1k;
 		}
-
 
 		public virtual void AddressPPU(int addr)
 		{
@@ -315,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				a12_old = a12;
-			}		
+			}
 		}
 	}
 
@@ -388,7 +389,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WritePpu(addr, value);
 		}
 
-
 		public override void WritePrg(int addr, byte value)
 		{
 			mmc3.WritePRG(addr, value);
@@ -407,12 +407,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int num_prg_banks = Cart.PrgSize / 8;
 			prg_mask = num_prg_banks - 1;
 
-			int num_chr_banks = (Cart.ChrSize);
+			int num_chr_banks = Cart.ChrSize;
 			if (num_chr_banks == 0) // vram only board
-				num_chr_banks = 8;
+				num_chr_banks = Cart.VramSize;
 			chr_mask = num_chr_banks - 1;
 
-			mmc3 = new MMC3(this, num_prg_banks);
+			mmc3 = new MMC3(this);
 			SetMirrorType(EMirrorType.Vertical);
 		}
 	}

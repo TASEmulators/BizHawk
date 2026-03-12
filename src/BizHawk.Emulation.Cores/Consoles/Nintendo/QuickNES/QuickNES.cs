@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		author: "SergioMartin86, kode54, Blargg",
 		portedVersion: "1.0.0",
 		portedUrl: "https://github.com/SergioMartin86/quickerNES")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
 		ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
@@ -28,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
 		}
 
-		[CoreConstructor(VSystemID.Raw.NES, Priority = CorePriority.Low)]
+		[CoreConstructor(VSystemID.Raw.NES)]
 		public QuickNES(byte[] file, QuickNESSettings settings, QuickNESSyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
@@ -82,21 +81,84 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void SetControllerDefinition()
 		{
 			ControllerDefinition def = new("NES Controller");
+
+			// Function to add gamepad buttons
 			void AddButtons(IEnumerable<(string PrefixedName, uint Bitmask)> entries)
 				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
-			AddButtons(_syncSettings.Port1 switch
+
+			// Parsing Port1 inputs
+
+			switch (_syncSettings.Port1)
 			{
-				Port1PeripheralOption.Gamepad => GamepadButtons[0],
-				Port1PeripheralOption.FourScore => FourScoreButtons[0],
-				_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
-			});
-			AddButtons(_syncSettings.Port2 switch
+				case Port1PeripheralOption.Gamepad:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(GamepadButtons[0]);
+
+					break;
+
+				case Port1PeripheralOption.FourScore:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(FourScoreButtons[0]);
+
+					break;
+
+				case Port1PeripheralOption.ArkanoidNES:
+
+					// Adding Arkanoid Paddle potentiometer
+					def.AddAxis("P2 Paddle", 0.RangeTo(160), 80);
+
+					// Adding Arkanoid Fire button
+					def.BoolButtons.Add("P2 Fire");
+
+					break;
+
+				case Port1PeripheralOption.ArkanoidFamicom:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(GamepadButtons[0]);
+
+					// Adding dummy set of P2 buttons (not yet supported)
+					def.BoolButtons.Add("P2 Up");
+					def.BoolButtons.Add("P2 Down");
+					def.BoolButtons.Add("P2 Left");
+					def.BoolButtons.Add("P2 Right");
+					def.BoolButtons.Add("P2 B");
+					def.BoolButtons.Add("P2 A");
+					def.BoolButtons.Add("P2 M"); // Microphone
+
+					// Adding Arkanoid Paddle potentiometer
+					def.AddAxis("P3 Paddle", 0.RangeTo(160), 80);
+
+					// Adding Arkanoid Fire button
+					def.BoolButtons.Add("P3 Fire");
+
+					break;
+			}
+
+			// Parsing Port2 inputs
+
+			switch (_syncSettings.Port2)
 			{
-				Port2PeripheralOption.Gamepad => GamepadButtons[1],
-				Port2PeripheralOption.FourScore2 => FourScoreButtons[1],
-				_ => Enumerable.Empty<(string PrefixedName, uint Bitmask)>()
-			});
+				case Port2PeripheralOption.Gamepad:
+
+					// Adding set of gamepad buttons (P1)
+					AddButtons(GamepadButtons[1]);
+
+					break;
+
+				case Port2PeripheralOption.FourScore2:
+
+					// Adding set of gamepad buttons (P2)
+					AddButtons(FourScoreButtons[1]);
+
+					break;
+			}
+
+			// Adding console buttons
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
+
 			ControllerDefinition = def.MakeImmutable();
 		}
 
@@ -111,8 +173,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
 				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
 				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-			},					
-			new[] {				
+			},
+			new[] {
 				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
 				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
 				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
@@ -167,7 +229,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		};
 
 
-
 		private void SetPads(IController controller, out uint j1, out uint j2)
 		{
 			static uint PackGamepadButtonsFor(int portNumber, IController controller)
@@ -198,6 +259,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			switch (_syncSettings.Port1)
 			{
 				case Port1PeripheralOption.Gamepad:
+				case Port1PeripheralOption.ArkanoidFamicom:
 					j1 = PackGamepadButtonsFor(0, controller);
 					break;
 				case Port1PeripheralOption.FourScore:
@@ -215,6 +277,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
+		public enum QuickerNESInternalControllerTypeEnumeration : byte
+		{
+			None = 0x0,
+			Joypad = 0x1,
+			ArkanoidNES = 0x2,
+			ArkanoidFamicom = 0x3,
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			CheckDisposed();
@@ -228,7 +298,47 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
-			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
+			// Getting correct internal controller type for QuickerNES
+			QuickerNESInternalControllerTypeEnumeration internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.None;
+
+			// Handling Port2
+			switch (_syncSettings.Port2)
+			{
+				case Port2PeripheralOption.Gamepad:
+				case Port2PeripheralOption.FourScore2:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.Joypad; break;
+			}
+
+			// Handling Port1 -- Using Arkanoid overrides the selection for Port2
+			switch (_syncSettings.Port1)
+			{
+				case Port1PeripheralOption.Gamepad:
+				case Port1PeripheralOption.FourScore:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.Joypad; break;
+				case Port1PeripheralOption.ArkanoidNES:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.ArkanoidNES; break;
+				case Port1PeripheralOption.ArkanoidFamicom:
+					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.ArkanoidFamicom; break;
+			}
+
+			// Parsing arkanoid inputs
+			byte arkanoidPos = 0;
+			byte arkanoidFire = 0;
+
+			switch (_syncSettings.Port1)
+			{
+				case Port1PeripheralOption.ArkanoidNES:
+					arkanoidPos = unchecked((byte)controller.AxisValue("P2 Paddle"));
+					arkanoidFire = controller.IsPressed("P2 Fire") ? (byte) 1 : (byte) 0;
+					break;
+
+				case Port1PeripheralOption.ArkanoidFamicom:
+					arkanoidPos = unchecked((byte)controller.AxisValue("P3 Paddle"));
+					arkanoidFire = controller.IsPressed("P3 Fire") ? (byte) 1 : (byte) 0;
+					break;
+			}
+
+			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2, arkanoidPos, arkanoidFire, (uint) internalQuickerNESControllerType));
 			IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 			if (IsLagFrame)
 				LagCount++;
@@ -285,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				throw new UnsupportedGameException("Game known to not be playable in this core");
 			}
 
-			sha1 = "sha1:" + sha1; // huh?
+			sha1 = $"{SHA1Checksum.PREFIX}:{sha1}";
 			var carts = BootGodDb.Identify(sha1);
 
 			if (carts.Count > 0)
@@ -456,7 +566,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"7A7BCA9A30A9F1B8AD3B45FA7DD7C8C180F53640", // Jetsons, The - Cogswell's Caper! (U) [t1]	NES
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [o1]
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [!]
-			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!] 
+			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!]
 			"7E1C9F23BF9BECB7831459598339A4DC9A3CECFC", // Joe and Mac (E) [!]
 			"A654DE12A59D07BAFF30DD6CB5E1AD05EB20B2D7", // Jumpy Demo by Rwin (PD)
 			"DE42818873470458DF29F515A193F536A0642EA8", // Kamikaze Mario DX Plus V1
@@ -604,6 +714,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"6A01FB7F185A45BAA21CC1EEDEB945CACA1C4D92", // Battle City (VS) [p1][!]
 			"D9B1B87204E025A637821A0168475E1209CE0C8A", // Top Gun (VS)
 			"4D5C2BF0B8EAA1690182D692A02BE1CC871481F4", // Punch-Out!! (E) (VS)
+			"2DC2C795421A5DB2427C460F35828A23BEBA9274", // Lagrange Point
+			"E808EBC015A94A38DCB0EAA9383267BEB4CF08EA", // Lagrange Point English localisation V1.00 by Aeon Genesis
+			"33C6C29404E1D3F01FA0059ACB6949EB2BCD80F0", // Lagrange Point English localisation V1.01 by Aeon Genesis
+			"3356604FC7F9A0E797266DDF75BED409B73996EC", // Super Mario All Stars NES ("2017") by infidelity on RHDN
+			"1739219B2D45C1BED0F1D4FA3E4E405985D564DC", // Super Mario All-Stars NES (crt_v10-15-17) by infidelity on RHDN
+			"E47FAE77EF57A5D2C8FB34C9EF38AC50B0B9FE7F", // Super Mario All-Stars NES (emu_v10-15-17) by infidelity on RHDN
 		};
 	}
 }

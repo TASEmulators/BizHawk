@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			Buffer.BlockCopy(tmp, 0, _colorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
 			radioButtonManual.Checked = true;
 			GenerateWidgets();
-			hScrollBar1_ValueChanged(null, null);
+			hScrollBar1_ValueChanged(null, EventArgs.Empty);
 			RecomputeRefresh();
 		}
 
@@ -811,17 +811,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				Point m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				} while (found != null && found.HasChildren);
-
-				if (found is BmpView view)
+				if (this.InnermostControlAt(Cursor.Position) is BmpView view)
 				{
 					Clipboard.SetImage(view.Bmp);
 					labelClipboard.Text = $"{view.Text} copied to clipboard.";

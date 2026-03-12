@@ -4,7 +4,7 @@ libpath=""
 if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | head -n1 | cut -c17- | tr A-Z a-z)" in
 		"arch"|"artix"|"manjarolinux") libpath="/usr/lib";;
-		"fedora"|"gentoo"|"opensuse") libpath="/usr/lib64";;
+		"fedora"|"gentoo"|"nobaralinux"|"opensuse") libpath="/usr/lib64";;
 		"nixos") libpath="/usr/lib"; printf "Running on NixOS? Why aren't you using the Nix expr?\n";;
 		"debian"|"linuxmint"|"pop"|"ubuntu") libpath="/usr/lib/x86_64-linux-gnu";;
 	esac
@@ -18,7 +18,6 @@ fi
 export LD_LIBRARY_PATH="$PWD/dll:$PWD:$libpath"
 export MONO_CRASH_NOFILE=1
 export MONO_WINFORMS_XIM_STYLE=disabled # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
-export BIZHAWK_INT_SYSLIB_PATH="$libpath"
 if [ "$1" = "--mono-no-redirect" ]; then
 #	printf "(passing --mono-no-redirect is no longer necessary)\n" #TODO uncomment later
 	shift

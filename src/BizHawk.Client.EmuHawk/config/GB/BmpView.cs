@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 			Bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
-			BmpView_SizeChanged(null, null);
+			BmpView_SizeChanged(null, EventArgs.Empty);
 			Refresh();
 		}
 

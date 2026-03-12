@@ -138,14 +138,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			if (leftMode)
 			{
 				byte retVal = 0x4F;
-				
+
 				if (c.IsPressed(Definition.BoolButtons[0])) retVal &= 0x3F;
-				
+
 				float x = c.AxisValue(Definition.Axes[0]);
 				float y = c.AxisValue(Definition.Axes[1]);
 
 				var angle = updateWheel ? wheelAngle : CalcDirection(x, y);
-				
+
 				byte temp2 = 0;
 
 				int temp1 = (int)Math.Floor(angle / 1.25);
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 
 				retVal |= temp2;
-				
+
 				return retVal;
 			}
 

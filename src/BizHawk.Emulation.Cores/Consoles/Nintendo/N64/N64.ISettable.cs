@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public N64Settings GetSettings()
 		{
-			return _settings.Clone();
+			return _settings with { };
 		}
 
 		public N64SyncSettings GetSyncSettings()
@@ -18,8 +18,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public PutSettingsDirtyBits PutSettings(N64Settings o)
 		{
+			bool changed = o != _settings;
 			_settings = o;
-			return PutSettingsDirtyBits.RebootCore;
+			return changed ? PutSettingsDirtyBits.RebootCore : PutSettingsDirtyBits.None;
 		}
 
 		public PutSettingsDirtyBits PutSyncSettings(N64SyncSettings o)

@@ -1,34 +1,20 @@
-using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Shell;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class JumpLists
 	{
-		private static readonly Type JumpList;
-		private static readonly Type JumpTask;
-
 		static JumpLists()
 		{
-			try
+			var app = new Application();
+			var jmp = new JumpList
 			{
-				var presentationFramework =
-					Assembly.Load(
-						"PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-				var application = presentationFramework.GetType("System.Windows.Application");
-				JumpList = presentationFramework.GetType("System.Windows.Shell.JumpList");
-				JumpTask = presentationFramework.GetType("System.Windows.Shell.JumpTask");
-				var app = Activator.CreateInstance(application);
-				dynamic jmp = Activator.CreateInstance(JumpList);
-				jmp.ShowRecentCategory = true;
-				JumpList
-					.GetMethod("SetJumpList")
-					?.Invoke(null, new[] {app, jmp});
-			}
-			catch
-			{
-				// Do nothing
-			}
+				ShowRecentCategory = true,
+			};
+			JumpList.SetJumpList(app, jmp);
 		}
 
 		/// <summary>
@@ -38,25 +24,37 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="title">The text displayed in the jumplist entry</param>
 		public static void AddRecentItem(string fullPath, string title)
 		{
-			try
-			{
-				var execPath = AppContext.BaseDirectory;
-				dynamic ji = Activator.CreateInstance(JumpTask);
+			string exepath = Assembly.GetEntryAssembly()!.Location;
 
-				ji.ApplicationPath = execPath;
-				ji.Arguments = $"\"{fullPath}\"";
-				ji.Title = title;
-				// for some reason, this doesn't work
-				ji.WorkingDirectory = Path.GetDirectoryName(execPath);
-
-				JumpList
-					.GetMethod("AddToRecentCategory", new[] {JumpTask})
-					?.Invoke(null, new[] {ji});
-			}
-			catch
+			var ji = new JumpTask
 			{
-				// Do nothing
-			}
+				ApplicationPath = exepath,
+				Arguments = QuoteAndEscapeArgument(fullPath),
+				Title = title,
+			};
+			JumpList.AddToRecentCategory(ji);
+		}
+
+		/// <summary>
+		/// Wrap a single command line argument in double quotes and escape characters
+		/// so that it correctly roundtrips back to <c>args[]</c> as a single argument.
+		/// </summary>
+		private static string QuoteAndEscapeArgument(string argument)
+		{
+			if (!string.IsNullOrEmpty(argument) && argument.IndexOfAny([ ' ', '"', '\t', '\n' ]) == -1)
+				return argument;
+
+			// Windows/.NET command line mangling
+			// see https://learn.microsoft.com/en-us/dotnet/api/system.environment.getcommandlineargs#remarks
+
+			// any double quote needs to be escaped with a backslash
+			// any series of backslashes *directly preceding* a double quote also need to be escaped
+			// so basically: insert \ before ", double any existing \ before a "
+			// special case: backslashes at the end of the string also need to be escaped (so the wrapping double quote isn't)
+			return '"' + Regex.Replace(argument ?? "",
+				@"(\\*)(""|\\\z)", // group $1: 0 or more backslashes; group $2: double quote, or backslash at end of string
+				"$1$1\\$2" // repeat group $1 twice, then backslash and group $2
+			) + '"';
 		}
 	}
 }

@@ -1,9 +1,5 @@
 namespace BizHawk.Tests.Analyzers;
 
-using System.Threading.Tasks;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<
 	BizHawk.Analyzers.UseTypeofOperatorAnalyzer,
 	Microsoft.CodeAnalysis.Testing.DefaultVerifier>;

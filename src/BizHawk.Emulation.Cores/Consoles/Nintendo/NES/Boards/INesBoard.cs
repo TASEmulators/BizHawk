@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// base class pre-configuration
 		void Create(NES nes);
 
-		// one-time inherited classes configuration 
+		// one-time inherited classes configuration
 		bool Configure(EDetectionOrigin origin);
 
 		// one-time base class configuration (which can take advantage of any information setup by the more-informed Configure() method)

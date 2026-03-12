@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	partial class NymaCore
+	public abstract partial class NymaCore
 	{
 		private static bool IsRomanNumeral(string str)
-			=> new[] {"I", "II", "III", "IV", "V", "VI"}.Contains(str);
+			=> str is "I" or "II" or "III" or "IV" or "V" or "VI";
 
 		private static readonly Dictionary<string, string> ButtonNameOverrides = new Dictionary<string, string>
 		{
@@ -36,9 +35,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private string OverrideButtonName(string original)
 		{
 			// VB hack
-			if (ButtonNameOverrides.ContainsKey(original))
+			if (ButtonNameOverrides.TryGetValue(original, out string vbOverrideName))
 			{
-				original = ButtonNameOverrides[original];
+				original = vbOverrideName;
 			}
 
 			original = Regex.Replace(original, @"\s*(↑|↓|←|→)\s*", "");
@@ -48,9 +47,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				original = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(original.ToLowerInvariant());
 			}
 
-			if (ButtonNameOverrides.ContainsKey(original))
+			if (ButtonNameOverrides.TryGetValue(original, out string overrideName))
 			{
-				original = ButtonNameOverrides[original];
+				original = overrideName;
 			}
 
 			// TODO: Add dictionaries or whatever here as needed

@@ -62,6 +62,12 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			toolTip1.SetToolTip(NextMarkerButton, config.HotkeyBindings["Seek To Next Marker"]);
+			toolTip1.SetToolTip(PreviousMarkerButton, config.HotkeyBindings["Seek To Prev Marker"]);
+		}
+
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
@@ -95,26 +101,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TurboSeekCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_loading)
-			{
-				Tastudio.Config.TurboSeek ^= true;
-			}
+			if (!_loading) Tastudio.Config.TurboSeek = !Tastudio.Config.TurboSeek;
 		}
 
 		private void AutoRestoreCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_loading)
-			{
-				Tastudio.Settings.AutoRestoreLastPosition ^= true;
-			}
+			if (!_loading) Tastudio.Settings.AutoRestoreLastPosition = !Tastudio.Settings.AutoRestoreLastPosition;
 		}
 
 		private void FollowCursorCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_loading)
 			{
-				Tastudio.Settings.FollowCursor ^= true;
-
+				Tastudio.Settings.FollowCursor = !Tastudio.Settings.FollowCursor;
 				if (Tastudio.Settings.FollowCursor)
 				{
 					Tastudio.SetVisibleFrame();
@@ -125,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
 		{
-			RecordingMode ^= true;
+			RecordingMode = !RecordingMode;
 			Tastudio.WasRecording = RecordingMode; // hard reset at manual click and hotkey
 		}
 

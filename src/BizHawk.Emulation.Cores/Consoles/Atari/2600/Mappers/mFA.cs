@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	accessing 1FF8, 1FF9, and 1FFA.   There's also 256 bytes of RAM mapped into 1000-11FF.
 	The write port is at 1000-10FF, and the read port is 1100-11FF.
 	 */
-	internal sealed class mFA : MapperBase 
+	internal sealed class mFA : MapperBase
 	{
 		private int _toggle;
 		private byte[] _ram = new byte[256];
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			=> WriteMem(addr, value, false);
 
 		public override void PokeMemory(ushort addr, byte value)
-			=> WriteMem(addr, value, true);	
+			=> WriteMem(addr, value, true);
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -58,17 +58,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			
+
 			if (addr < 0x1100)
 			{
 				return 0xFF;
 			}
-			
+
 			if (addr < 0x1200)
 			{
 				return _ram[addr & 0xFF];
 			}
-			
+
 			return Core.Rom[(_toggle << 12) + (addr & 0xFFF)];
 		}
 

@@ -40,32 +40,46 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			_cachedSettingsInfo ??= SettingsInfo.Clone();
 		}
 
-		public new bool SaveRamModified
+		public override bool SaveRamModified
 		{
 			get
 			{
-				_exe.AddTransientFile(new byte[0], "SAV:flash");
+				_exe.AddTransientFile(Array.Empty<byte>(), "SAV:flash");
 				if (!_neopop.GetSaveRam())
 					throw new InvalidOperationException("Error divining saveram");
 				return _exe.RemoveTransientFile("SAV:flash").Length > 0;
 			}
 		}
 
-		public new byte[] CloneSaveRam()
+		public override byte[] CloneSaveRam(bool clearDirty)
 		{
-			_exe.AddTransientFile(new byte[0], "SAV:flash");
-
-			if (!_neopop.GetSaveRam())
+			_exe.AddTransientFile([ ], "SAV:flash");
+			var success = _neopop.GetSaveRam();
+			var ret = _exe.RemoveTransientFile("SAV:flash");
+			if (!success)
+			{
 				throw new InvalidOperationException("Error returning saveram");
-			return _exe.RemoveTransientFile("SAV:flash");
+			}
+
+			return ret;
 		}
 
-		public new void StoreSaveRam(byte[] data)
+		public override void StoreSaveRam(byte[] data)
 		{
-			_exe.AddTransientFile(data, "SAV:flash");
-			if (!_neopop.PutSaveRam())
+			if (data.Length == 0)
+			{
+				// Empty SaveRAM is valid here, that means at the time of flushing SaveRAM, flash was not attempted to be used yet
+				// The core will reject attempts to put this empty file however, so we must return here
+				return;
+			}
+
+			_exe.AddReadonlyFile(data, "SAV:flash");
+			var success = _neopop.PutSaveRam();
+			_exe.RemoveReadonlyFile("SAV:flash");
+			if (!success)
+			{
 				throw new InvalidOperationException("Core rejected the saveram");
-			_exe.RemoveTransientFile("SAV:flash");
+			}
 		}
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>

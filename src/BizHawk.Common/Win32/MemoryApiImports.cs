@@ -17,7 +17,7 @@ namespace BizHawk.Common
 			MEM_LARGE_PAGES = 0x20000000,
 			MEM_PHYSICAL = 0x00400000,
 			MEM_TOP_DOWN = 0x00100000,
-			MEM_WRITE_WATCH = 0x00200000
+			MEM_WRITE_WATCH = 0x00200000,
 		}
 
 		[Flags]
@@ -33,7 +33,7 @@ namespace BizHawk.Common
 			WRITECOPY = 0x08,
 			GUARD_Modifierflag = 0x100,
 			NOCACHE_Modifierflag = 0x200,
-			WRITECOMBINE_Modifierflag = 0x400
+			WRITECOMBINE_Modifierflag = 0x400,
 		}
 
 		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]

@@ -7,13 +7,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaRegisteredFunctionsList : Form
 	{
-		private readonly IMainFormForApi _mainForm;
-
 		private LuaFunctionList _registeredFunctions;
 
-		public LuaRegisteredFunctionsList(IMainFormForApi mainForm, LuaFunctionList registeredFunctions)
+		public LuaRegisteredFunctionsList(LuaFunctionList registeredFunctions)
 		{
-			_mainForm = mainForm;
 			_registeredFunctions = registeredFunctions;
 			InitializeComponent();
 			Icon = Properties.Resources.TextDocIcon;
@@ -45,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateListView()
 		{
 			FunctionView.Items.Clear();
-			
+
 			var functions = _registeredFunctions
 				.OrderBy(f => f.Event)
 				.ThenBy(f => f.Name);
@@ -53,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
-				item.SubItems.Add(nlf.Guid.ToString());
+				item.SubItems.Add(nlf.GuidStr);
 				FunctionView.Items.Add(item);
 			}
 
@@ -92,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
 					var nlf = _registeredFunctions[guid];
-					_registeredFunctions.Remove(nlf, _mainForm.Emulator);
+					_registeredFunctions.Remove(nlf);
 				}
 
 				PopulateListView();
@@ -111,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			_registeredFunctions.Clear(_mainForm.Emulator);
+			_registeredFunctions.Clear();
 			PopulateListView();
 		}
 
@@ -120,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
-			RemoveAllBtn.Enabled = _registeredFunctions.Any();
+			RemoveAllBtn.Enabled = _registeredFunctions.Count is not 0;
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)

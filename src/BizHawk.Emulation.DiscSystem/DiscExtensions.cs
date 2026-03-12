@@ -2,7 +2,9 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscExtensions
 	{
+#pragma warning disable RCS1224 // don't want extension on nonspecific `string`
 		public static Disc CreateAnyType(string path, Action<string> errorCallback)
+#pragma warning restore RCS1224
 		{
 			return CreateImpl(null, path, errorCallback);
 		}
@@ -16,7 +18,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//--- load the disc in a context which will let us abort if it's going to take too long
 			var discMountJob = new DiscMountJob(fromPath: path, slowLoadAbortThreshold: 8);
 			discMountJob.Run();
-			
+
 			if (discMountJob.OUT_SlowLoadAborted)
 			{
 				errorCallback("This disc would take too long to load. Run it through DiscoHawk first, or find a new rip because this one is probably junk");
@@ -25,9 +27,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (discMountJob.OUT_ErrorLevel)
 			{
-				throw new Exception(string.IsNullOrEmpty(discMountJob.OUT_Log)
+				errorCallback(string.IsNullOrEmpty(discMountJob.OUT_Log)
 					? $"Could not process file \"{path}\"."
 					: $"Could not process file \"{path}\". Warnings/errors:\n{discMountJob.OUT_Log}\n(end disc load log)");
+				return discMountJob.OUT_Disc;
 			}
 
 			var disc = discMountJob.OUT_Disc;

@@ -5,7 +5,6 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	/// <summary>For Dega's <see href="https://tasvideos.org/EmulatorResources/MMV"><c>.mmv</c> format</see></summary>
 	[ImporterFor("Dega", ".mmv")]
 	internal class MmvImport : MovieImporter
@@ -96,6 +95,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			var ss = new SMS.SmsSyncSettings();
 			var cd = new SMSControllerDeck(ss.Port1, ss.Port2, isGameGear, ss.UseKeyboard);
+			cd.Definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			SimpleController controllers = new(cd.Definition);
 
 			/*

@@ -3,54 +3,53 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Bizware.Input
 {
 	/// <summary>
-	/// Abstract class which only handles keyboard input
+	/// Abstract class which only handles keyboard and mouse input
 	/// Uses OS specific functionality, as there is no good cross platform way to do this
 	/// (Mostly as all the available cross-platform options require a focused window, arg!)
 	/// TODO: Doesn't work for Wayland yet (must use XWayland, which Wayland users need to use anyways for BizHawk)
 	/// </summary>
-	public abstract class OSTailoredKeyInputAdapter : IHostInputAdapter
+	public abstract class OSTailoredKeyMouseInputAdapter : IHostInputAdapter
 	{
-		private IKeyInput? _keyInput;
-		protected Config? _config;
+		private IKeyMouseInput? _keyMouseInput;
+		protected Func<bool>? _getHandleAlternateKeyboardLayouts;
 
 		public abstract string Desc { get; }
 
 		public virtual void DeInitAll()
-			=> _keyInput!.Dispose();
+			=> _keyMouseInput!.Dispose();
 
 		public virtual void FirstInitAll(IntPtr mainFormHandle)
 		{
-			_keyInput = KeyInputFactory.CreateKeyInput();
+			_keyMouseInput = KeyMouseInputFactory.CreateKeyMouseInput();
 			IPCKeyInput.Initialize(); // why not? this isn't necessarily OS specific
 		}
 
 		public abstract IReadOnlyDictionary<string, IReadOnlyCollection<string>> GetHapticsChannels();
 
-		public abstract void ReInitGamepads(IntPtr mainFormHandle);
-
 		public abstract void PreprocessHostGamepads();
 
-		public abstract void ProcessHostGamepads(Action<string?, bool, ClientInputFocus> handleButton, Action<string?, int> handleAxis);
+		public abstract void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis);
 
 		public virtual IEnumerable<KeyEvent> ProcessHostKeyboards()
 		{
-			if (_config is null)
+			if (_getHandleAlternateKeyboardLayouts is null)
 			{
-				throw new InvalidOperationException(nameof(ProcessHostKeyboards) + " called before the global config was passed");
+				throw new InvalidOperationException(nameof(ProcessHostKeyboards) + " called before alternate keyboard layout enable callback was set");
 			}
 
-			var ret = _keyInput!.Update(_config.HandleAlternateKeyboardLayouts);
+			var ret = _keyMouseInput!.UpdateKeyInputs(_getHandleAlternateKeyboardLayouts());
 			return ret.Concat(IPCKeyInput.Update());
 		}
 
+		public virtual (int DeltaX, int DeltaY) ProcessHostMice()
+			=> _keyMouseInput!.UpdateMouseInput();
+
 		public abstract void SetHaptics(IReadOnlyCollection<(string Name, int Strength)> hapticsSnapshot);
 
-		public virtual void UpdateConfig(Config config)
-			=> _config = config;
+		public virtual void SetAlternateKeyboardLayoutEnableCallback(Func<bool> getHandleAlternateKeyboardLayouts)
+			=> _getHandleAlternateKeyboardLayouts = getHandleAlternateKeyboardLayouts;
 	}
 }

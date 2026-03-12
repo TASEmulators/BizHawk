@@ -1,8 +1,5 @@
 { system ? builtins.currentSystem
-, pkgs ? import (builtins.fetchTarball {
-	url = "https://github.com/NixOS/nixpkgs/archive/24.05.tar.gz";
-	sha256 = "1lr1h35prqkd1mkmzriwlpvxcb34kmhc9dnr48gkm8hh089hifmx";
-}) { inherit system; }
+, pkgs ? (import Dist/nixpkgs.nix).nixpkgs-24_05 system
 , lib ? pkgs.lib
 , stdenv ? pkgs.stdenvNoCC
 # infrastructure
@@ -21,7 +18,7 @@
 , writeText ? pkgs.writeText
 # source
 , hawkSourceInfoDevBuild ? let # called "dev build", but you could pass whatever branch and commit you want here
-	version = "2.9.2-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
+	version = "2.11.1-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
 in {
 	inherit version;
 	src = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
@@ -31,13 +28,12 @@ in {
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
 , dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
 	then result.value
-	else (import (fetchzip {
-		url = "https://github.com/NixOS/nixpkgs/archive/a8f575995434695a10b574d35ca51b0f26ae9049.tar.gz"; # commit immediately before .NET 5 was removed
-		hash = "sha512-3ysJjKK1lYV1r/zLohyuD1fiK+8TD3MMA3TrX9fb42nKqzfGGW62Aom7ltiyyxbVbBYOCXUy41Z5Y0j2VOxRKw==";
-	}) { inherit system; }).dotnet-sdk_5
+	else ((import Dist/nixpkgs.nix).nixpkgs-22_11-with-dotnet-5 system fetchzip).dotnet-sdk_5
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
+, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
+, gtk2-x11 ? pkgs.gtk2-x11
 , kate ? pkgs.kate.overrideAttrs (oldAttrs: {
 	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
 		url = "https://invent.kde.org/utilities/kate/-/commit/9ddf4f0c9eb3c26a0ab33c862d2b161bcbdc6a6e.patch"; # Fix name of OmniSharp LSP binary
@@ -47,7 +43,7 @@ in {
 , libgdiplus ? pkgs.libgdiplus
 , libGL ? pkgs.libGL
 , lua ? pkgs.lua54Packages.lua
-, mono ? null
+, mono ? pkgs.mono
 , nixGLChannel ? (pkgs.nixgl or import (fetchzip {
 	url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
 	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
@@ -64,11 +60,12 @@ in {
 , debugPInvokes ? false # forwarded to Dist/launch-scripts.nix
 , debugDotnetHostCrashes ? false # forwarded to Dist/launch-scripts.nix
 , doCheck ? true # runs `Dist/BuildTest${buildConfig}.sh`
-, emuhawkBuildFlavour ? "NixHawk"
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
+, libretroCores ? pkgs.callPackage Dist/packages-libretro.nix {}
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
+, profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 }: let
 	isVersionAtLeast = lib.flip lib.versionAtLeast; # I stand by this being the more useful param order w.r.t. currying
 	replaceDotWithUnderscore = s: lib.replaceStrings [ "." ] [ "_" ] s;
@@ -100,7 +97,7 @@ in {
 		inherit lib
 			writeShellScript writeText
 			bizhawkAssemblies nixGL
-			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild;
+			debugPInvokes debugDotnetHostCrashes initConfig isManualLocalBuild profileManagedCalls;
 		mkfifo = coreutils;
 		mktemp = coreutils;
 	};
@@ -110,17 +107,9 @@ in {
 			buildDotnetModule fetchpatch fetchzip hardLinkJoin launchScriptsFor makeDesktopItem
 				releaseTagSourceInfos runCommand symlinkJoin writeShellScriptBin
 			git
-			libgdiplus libGL lua openal SDL2 udev zstd
-			buildConfig doCheck emuhawkBuildFlavour extraDefines extraDotnetBuildFlags;
-		mono = if mono != null
-			then mono # allow older Mono if set explicitly
-			else if isVersionAtLeast "6.12.0.151" pkgs.mono.version
-				then pkgs.mono
-				else lib.trace "provided Mono too old, using Mono from Nixpkgs 23.05"
-					(import (fetchzip {
-						url = "https://github.com/NixOS/nixpkgs/archive/23.05.tar.gz";
-						hash = "sha512-REPJ9fRKxTefvh1d25MloT4bXJIfxI+1EvfVWq644Tzv+nuq2BmiGMiBNmBkyN9UT5fl2tdjqGliye3gZGaIGg==";
-					}) { inherit system; }).mono;
+			gnome-themes-extra gtk2-x11 libgdiplus libGL lua openal SDL2 udev zstd
+			buildConfig doCheck extraDefines extraDotnetBuildFlags libretroCores;
+		mono = lib.recursiveUpdate { meta.mainProgram = "mono"; } mono;
 		monoBasic = fetchzip {
 			url = "https://download.mono-project.com/repo/debian/pool/main/m/mono-basic/libmono-microsoft-visualbasic10.0-cil_4.7-0xamarin3+debian9b1_all.deb";
 			nativeBuildInputs = [ dpkg ];
@@ -162,7 +151,8 @@ in {
 	];
 	latestVersionFrag = lib.head releaseFrags;
 	combined = pp // asmsFromReleaseArtifacts // releasesEmuHawkInstallables // {
-		inherit depsForHistoricalRelease releaseTagSourceInfos;
+		inherit depsForHistoricalRelease populateHawkSourceInfo releaseTagSourceInfos;
+		inherit (emuhawk-local.assemblies) libretroCores;
 		bizhawkAssemblies = pp.buildAssembliesFor (fillTargetOSDifferences hawkSourceInfoDevBuild);
 		"bizhawkAssemblies-${latestVersionFrag}" = pp.buildAssembliesFor
 			(fillTargetOSDifferences releaseTagSourceInfos."info-${latestVersionFrag}");

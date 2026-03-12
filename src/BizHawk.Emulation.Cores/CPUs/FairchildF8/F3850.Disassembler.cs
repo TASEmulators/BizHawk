@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// Disassembler
 	/// </summary>
-	public sealed partial class F3850 : IDisassemblable
+	public sealed partial class F3850<TLink> : IDisassemblable
 	{
 		private static string Result(string format, Func<ushort, byte> read, ref ushort addr)
 		{
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			if (format.ContainsOrdinal('d'))
 			{
 				var b = unchecked((sbyte)read(addr++));
-				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{Math.Abs((short) b):X2}h");
 			}
 
 			return format;
@@ -299,7 +299,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			ushort start_addr = addr;
 //			ushort extra_inc = 0;
+#pragma warning disable MA0084 // shadows `const int F3850<>.A`
 			byte A = read(addr++);
+#pragma warning restore MA0084
 			string format;
 			format = mnemonics[A];
 
@@ -320,12 +322,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			set { }
 		}
 
-		public string PCRegisterName => "PC";
+		public string PCRegisterName => "PC0";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "F3850"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "F3850" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

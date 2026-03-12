@@ -1,5 +1,7 @@
 ﻿#nullable disable
 
+using System.Buffers.Binary;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
@@ -13,8 +15,14 @@ namespace BizHawk.Emulation.Common
 	{
 		public enum Endian
 		{
-			Big, Little, Unknown
+			Big,
+			Little,
+			Unknown,
 		}
+
+		private const string ERR_MSG_BUFFER_WRONG_SIZE = "Invalid length of values array";
+
+		private const string ERR_MSG_UNALIGNED = "The API contract doesn't define what to do for unaligned reads and writes!";
 
 		public string Name { get; protected set; }
 
@@ -34,83 +42,58 @@ namespace BizHawk.Emulation.Common
 
 		public virtual ushort PeekUshort(long addr, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			if (bigEndian)
 			{
-				default:
-				case Endian.Big:
-					return (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1));
-				case Endian.Little:
-					return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
+				return (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1));
 			}
+
+			return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
 		}
 
 		public virtual uint PeekUint(long addr, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			ReadOnlySpan<byte> scratch = stackalloc byte[]
 			{
-				default:
-				case Endian.Big:
-					return (uint)((PeekByte(addr) << 24)
-					| (PeekByte(addr + 1) << 16)
-					| (PeekByte(addr + 2) << 8)
-					| (PeekByte(addr + 3) << 0));
-				case Endian.Little:
-					return (uint)((PeekByte(addr) << 0)
-					| (PeekByte(addr + 1) << 8)
-					| (PeekByte(addr + 2) << 16)
-					| (PeekByte(addr + 3) << 24));
-			}
+				PeekByte(addr),
+				PeekByte(addr + 1),
+				PeekByte(addr + 2),
+				PeekByte(addr + 3),
+			};
+			return bigEndian
+				? BinaryPrimitives.ReadUInt32BigEndian(scratch)
+				: BinaryPrimitives.ReadUInt32LittleEndian(scratch);
 		}
 
 		public virtual void PokeUshort(long addr, ushort val, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
+			if (bigEndian)
 			{
-				default:
-				case Endian.Big:
-					PokeByte(addr + 0, (byte)(val >> 8));
-					PokeByte(addr + 1, (byte)val);
-					break;
-				case Endian.Little:
-					PokeByte(addr + 0, (byte)val);
-					PokeByte(addr + 1, (byte)(val >> 8));
-					break;
+				PokeByte(addr + 0, (byte)(val >> 8));
+				PokeByte(addr + 1, (byte)val);
+			}
+			else
+			{
+				PokeByte(addr + 0, (byte)val);
+				PokeByte(addr + 1, (byte)(val >> 8));
 			}
 		}
 
 		public virtual void PokeUint(long addr, uint val, bool bigEndian)
 		{
-			Endian endian = bigEndian ? Endian.Big : Endian.Little;
-			switch (endian)
-			{
-				default:
-				case Endian.Big:
-					PokeByte(addr + 0, (byte)(val >> 24));
-					PokeByte(addr + 1, (byte)(val >> 16));
-					PokeByte(addr + 2, (byte)(val >> 8));
-					PokeByte(addr + 3, (byte)val);
-					break;
-				case Endian.Little:
-					PokeByte(addr + 0, (byte)val);
-					PokeByte(addr + 1, (byte)(val >> 8));
-					PokeByte(addr + 2, (byte)(val >> 16));
-					PokeByte(addr + 3, (byte)(val >> 24));
-					break;
-			}
+			Span<byte> scratch = stackalloc byte[4];
+			if (bigEndian) BinaryPrimitives.WriteUInt32BigEndian(scratch, val);
+			else BinaryPrimitives.WriteUInt32LittleEndian(scratch, val);
+			PokeByte(addr, scratch[0]);
+			PokeByte(addr + 1, scratch[1]);
+			PokeByte(addr + 2, scratch[2]);
+			PokeByte(addr + 3, scratch[3]);
 		}
 
 		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-			if ((long) addresses.Count() != values.Length)
-			{
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if ((long) addresses.Count() != values.Length) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE);
 
 			using (this.EnterExit())
 			{
@@ -121,27 +104,22 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekUshort(Range<long> addresses,  bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
-
-			if ((start & 1) != 0 || (end & 1) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-			
-			if (values.LongLength * 2 != end - start)
-			{
-				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			var end = addresses.EndInclusive + 1;
+			if ((start & 0b1) is not 0 || (end & 0b1) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
+			if (values.LongLength * sizeof(ushort) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // a longer array could be valid, but nothing needs that so don't support it for now
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 2)
+				for (var i = 0; i < values.Length; i++, start += sizeof(ushort))
+				{
 					values[i] = PeekUshort(start, bigEndian);
+				}
 			}
 		}
 
@@ -151,21 +129,16 @@ namespace BizHawk.Emulation.Common
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end  = addresses.EndInclusive + 1;
-
-			if ((start & 3) != 0 || (end & 3) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-			
-			if (values.LongLength * 4 != end - start)
-			{
-				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			var end = addresses.EndInclusive + 1;
+			if ((start & 0b11) is not 0 || (end & 0b11) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
+			if (values.LongLength * sizeof(uint) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // `!=` not `<`, per `BulkPeekUshort`
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 4)
+				for (var i = 0; i < values.Length; i++, start += sizeof(uint))
+				{
 					values[i] = PeekUint(start, bigEndian);
+				}
 			}
 		}
 

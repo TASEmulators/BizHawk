@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using System.Linq;
 
 namespace BizHawk.Common
 {
@@ -18,12 +17,10 @@ namespace BizHawk.Common
 
 		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
 		{
-			var maxLength = (MaxLengthAttribute)context!.Instance
+			var maxLength = context!.Instance
 				.GetType()
 				.GetProperty(context.PropertyDescriptor!.Name)!
-				.GetCustomAttributes()
-				.First(i => i.GetType() == typeof(MaxLengthAttribute));
-
+				.GetCustomAttribute<MaxLengthAttribute>();
 			maxLength.Validate(value, context.PropertyDescriptor.Name);
 
 			if (value == null)

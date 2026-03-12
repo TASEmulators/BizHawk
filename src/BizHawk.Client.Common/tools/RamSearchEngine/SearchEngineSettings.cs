@@ -17,6 +17,7 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		}
 
 		/*Require restart*/
+		public SearchMode Mode { get; set; }
 		public MemoryDomain Domain { get; set; }
 		public WatchSize Size { get; set; }
 		public bool CheckMisAligned { get; set; }
@@ -24,9 +25,8 @@ namespace BizHawk.Client.Common.RamSearchEngine
 		/*Can be changed mid-search*/
 		public WatchDisplayType Type { get; set; } = WatchDisplayType.Unsigned;
 		public bool BigEndian { get; set; }
-		public PreviousType PreviousType { get; set; } = PreviousType.LastFrame;
+		public PreviousType PreviousType { get; set; } = PreviousType.LastSearch;
 		public bool UseUndoHistory { get; set; }
-		public SearchMode Mode { get; set; }
 	}
 
 	public static class SearchEngineSettingsExtensions

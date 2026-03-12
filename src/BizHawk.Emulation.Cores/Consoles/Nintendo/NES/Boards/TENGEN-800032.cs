@@ -13,12 +13,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// regenerable state
 		private readonly int[] prg_banks_8k = new int[4];
 		private readonly int[] chr_banks_1k = new int[8];
-		
+
 		// state
 		private int[] regs = new int[16];
 		private int address;
 		private bool chr_1k, chr_mode, prg_mode;
-		
+
 		// irq
 		private int irq_countdown;
 		private int a12_old;
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private void Sync()
 		{
 			SyncIRQ();
-	
+
 			if (prg_mode)
 			{
 				prg_banks_8k[0] = regs[0xF] & prg_bank_mask_8k;
@@ -226,9 +226,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						irq_countdown_2 = 9;
 					}
 				}
-				
 			}
-			
+
 			irq_counter--;
 			if (irq_counter==0)
 			{
@@ -236,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irq_countdown_2 = 9;
 				}
-				
+
 				irq_counter = irq_reload + 1;
 			}
 
@@ -262,10 +261,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter--;
 				if (irq_enable)
 				{
-					
+
 					if (irq_counter==0)
 						irq_countdown_2 = 9;
-				}		
+				}
 			}
 			*/
 		}
@@ -290,7 +289,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ClockIRQ();
 				}
 			}
-
 		}
 
 		public override void ClockPpu()
@@ -323,7 +321,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					separator_counter = 15;
 					clock_scanline_irq = true;
-
 				}
 			}
 

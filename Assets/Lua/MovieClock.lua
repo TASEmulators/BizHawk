@@ -1,3 +1,8 @@
+local START_FRAME = 0;
+local CORNER = "topright";
+local OFFSET_X = 0;
+local OFFSET_Y = 0;
+
 while true do
 	if (movie.isloaded()) then
 		if movie.getheader()["Core"] == "Gambatte" then
@@ -11,6 +16,7 @@ while true do
 		else
 			fps = movie.getfps();
 			frames = emu.framecount();
+			frames = frames < START_FRAME and 0 or (frames - START_FRAME);
 			tseconds = (frames / fps);
 		end
 		secondsraw = tseconds % 60;
@@ -33,7 +39,7 @@ while true do
 		if (hours > 0) then
 			time = "0" .. hours .. ":" .. time;
 		end
-		gui.text(0, 0, time, nil, 1);
+		gui.text(OFFSET_X, OFFSET_Y, time, nil, CORNER);
 	end
 	emu.frameadvance();
 end

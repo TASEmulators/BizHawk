@@ -68,7 +68,8 @@ namespace BizHawk.Client.EmuHawk
 				this,
 				_config,
 				_emulator,
-				_game);
+				_game,
+				_owner.DialogController);
 
 		/// <summary>
 		/// Loads the tool dialog T (T must implements <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
@@ -96,6 +97,9 @@ namespace BizHawk.Client.EmuHawk
 			f.Config = _config;
 			if (form is not ToolFormBase tool) return;
 			tool.SetToolFormBaseProps(_displayManager, _inputManager, _owner, _movieSession, this, _game);
+
+			// Lua is a special case, being the only tool that currently uses this.
+			if (form is LuaConsole luaConsole) luaConsole.MainFormForApi = _owner;
 		}
 
 		/// <summary>
@@ -131,6 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (newTool is Form form) form.Owner = _owner;
 			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null; //TODO pass `true` for `mayCache` when from EmuHawk assembly
+			if (newTool is IExternalToolForm && !ApiInjector.UpdateApis(GetOrInitApiProvider, newTool)) return null;
 			SetBaseProperties(newTool);
 			var toolTypeName = typeof(T).FullName!;
 			// auto settings
@@ -256,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Name = "CloseBtn",
 				Text = "&Close",
-				ShortcutKeyDisplayString = "Alt+F4"
+				ShortcutKeyDisplayString = "Alt+F4",
 			};
 
 			closeMenuItem.Click += (o, e) => { form.Close(); };
@@ -319,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (settings.UseWindowSize)
 			{
-				if (form.FormBorderStyle == FormBorderStyle.Sizable || form.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+				if (form.FormBorderStyle is FormBorderStyle.Sizable or FormBorderStyle.SizableToolWindow)
 				{
 					form.Size = settings.WindowSize;
 				}
@@ -446,10 +451,7 @@ namespace BizHawk.Client.EmuHawk
 			=> _tools.Find(t => t.GetType() == toolType)?.IsActive is true;
 
 		public bool IsOnScreen(Point topLeft)
-		{
-			return Screen.AllScreens.Any(
-				screen => screen.WorkingArea.Contains(topLeft));
-		}
+			=> DrawingExtensions.BoundsOfDisplayContaining(topLeft) is not null;
 
 		/// <summary>
 		/// Returns true if an instance of T exists
@@ -477,10 +479,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="condition">The condition to check for</param>
 		/// <typeparam name="T">Type of tools to check</typeparam>
-		/// <returns></returns>
 		public T FirstOrNull<T>(Predicate<T> condition) where T : class
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools) // not bothering to copy here since `condition` is expected to have no side-effects
 			{
 				if (tool.IsActive && tool is T specialTool && condition(specialTool))
 				{
@@ -565,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 				string.IsNullOrWhiteSpace(name) ? toolType.Name : name);
 		}
 
-		public IEnumerable<Type> AvailableTools => EmuHawk.ReflectionCache.Types
+		public IEnumerable<Type> AvailableTools => ReflectionCache.Types
 			.Where(t => !t.IsInterface && typeof(IToolForm).IsAssignableFrom(t) && IsAvailable(t));
 
 		/// <summary>
@@ -581,21 +582,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void GeneralUpdateActiveExtTools()
+		{
+			foreach (var tool in _tools.ToArray())
+			{
+				if (tool is IExternalToolForm { IsActive: true }) tool.UpdateValues(ToolFormUpdateType.General);
+			}
+		}
+
 		public void Restart(Config config, IEmulator emulator, IGameInfo game)
 		{
 			_config = config;
 			_emulator = emulator;
 			_game = game;
 			_apiProvider = null;
-			// If Cheat tool is loaded, restarting will restart the list too anyway
-			if (!Has<Cheats>())
-			{
-				_owner.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
-			}
 
 			var unavailable = new List<IToolForm>();
 
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				SetBaseProperties(tool);
 				if (ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool)
@@ -663,8 +667,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
-			_tools.ForEach(t => t.Close());
+			var toolsCopy = _tools.ToArray();
 			_tools.Clear();
+			foreach (var t in toolsCopy)
+			{
+				try
+				{
+					t.Close();
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"caught while calling Form.Close on tool: {e}");
+				}
+			}
 		}
 
 		/// <summary>
@@ -698,9 +713,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!skipExtToolWarning)
 				{
 					if (!_owner.ShowMessageBox2(
-						"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no.",
-						"Confirm loading",
-						EMsgBoxIcon.Question))
+						caption: "Confirm loading",
+						icon: EMsgBoxIcon.Question,
+						text: "Trust this external tool to run on your device?"
+							+ "\nIf you're not 100% sure of what the tool will do, choose \"No\"."))
 					{
 						return null;
 					}
@@ -738,7 +754,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsBefore()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -749,7 +765,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateToolsAfter()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -760,7 +776,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateBefore()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -771,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateAfter()
 		{
-			foreach (var tool in _tools)
+			foreach (var tool in _tools.ToArray()) // copy because a tool may open another
 			{
 				if (tool.IsActive)
 				{
@@ -780,7 +796,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly IList<string> PossibleToolTypeNames = EmuHawk.ReflectionCache.Types.Select(t => t.AssemblyQualifiedName).ToList();
+		public void HandleHotkeyUpdate()
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive && tool is ToolFormBase toolForm)
+				{
+					toolForm.HandleHotkeyUpdate();
+				}
+			}
+		}
+
+		public void OnPauseToggle(bool newPauseState)
+		{
+			foreach (var tool in _tools)
+			{
+				if (tool.IsActive && tool is ToolFormBase toolForm)
+				{
+					toolForm.OnPauseToggle(newPauseState);
+				}
+			}
+		}
+
+		private static readonly IReadOnlyCollection<string> PossibleToolTypeNames = ReflectionCache.Types
+			.Select(static t => t.AssemblyQualifiedName).ToHashSet();
 
 		public bool IsAvailable(Type tool)
 		{
@@ -864,13 +903,7 @@ namespace BizHawk.Client.EmuHawk
 		public string GenerateDefaultCheatFilename()
 		{
 			var path = _config.PathEntries.CheatsAbsolutePath(_game.System);
-
-			var f = new FileInfo(path);
-			if (f.Directory != null && !f.Directory.Exists)
-			{
-				f.Directory.Create();
-			}
-
+			new FileInfo(path).Directory?.Create();
 			return Path.Combine(path, $"{_game.FilesystemSafeName()}.cht");
 		}
 

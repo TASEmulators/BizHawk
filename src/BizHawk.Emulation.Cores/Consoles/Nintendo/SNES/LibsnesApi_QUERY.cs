@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	unsafe partial class LibsnesApi
+	public unsafe partial class LibsnesApi
 	{
 		public int QUERY_get_memory_size(SNES_MEMORY id)
 		{

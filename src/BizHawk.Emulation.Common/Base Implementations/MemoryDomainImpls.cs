@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	
+
 	public class MemoryDomainUshortArray : MemoryDomain
 	{
 		private ushort[] _data;
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Common
 			addr >>= 1;
 			if(bit0==0)
 				return (byte)(_data[addr] & 0xFF);
-			else 
+			else
 				return (byte)((_data[addr]>>8)&0xFF);
 		}
 
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Common
 			else
 			{
 				base.SendCheatToCore(addr, value, compare, comparetype);
-			}		
+			}
 		}
 
 		public MemoryDomainDelegateSysBusNES(

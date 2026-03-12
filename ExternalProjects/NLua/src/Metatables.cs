@@ -45,13 +45,13 @@ namespace NLua
 		//  local function index(obj, name)
 		//      local meta = getmetatable(obj)
 		//      local cached = meta.cache[name]
-			  
+
 		//      if cached ~= nil then
 		//          if cached == fakenil then
 		//              return nil
 		//          end
 		//          return cached
-			  
+
 		//      else
 		//          local value, isCached = get_object_member(obj, name)
 		//          if isCached then
@@ -64,7 +64,7 @@ namespace NLua
 		//          return value
 		//      end
 		//  end
-			  
+
 		//  return index";
 
 		public MetaFunctions(ObjectTranslator translator)
@@ -306,8 +306,8 @@ namespace NLua
 			var objType = obj.GetType();
 			var proxyType = new ProxyType(objType);
 
-			// Handle the most common case, looking up the method by name. 
-			// CP: This will fail when using indexers and attempting to get a value with the same name as a property of the object, 
+			// Handle the most common case, looking up the method by name.
+			// CP: This will fail when using indexers and attempting to get a value with the same name as a property of the object,
 			// ie: xmlelement['item'] <- item is a property of xmlelement
 
 			if (!string.IsNullOrEmpty(methodName) && IsMemberPresent(proxyType, methodName))
@@ -990,7 +990,7 @@ namespace NLua
 						var args = setter.GetParameters();
 						var valueType = args[1].ParameterType;
 
-						// The new value the user specified 
+						// The new value the user specified
 						var val = _translator.GetAsType(luaState, 3, valueType);
 						var indexType = args[0].ParameterType;
 						var index = _translator.GetAsType(luaState, 2, indexType);
@@ -1028,7 +1028,7 @@ namespace NLua
 		{
 			detailMessage = null; // No error yet
 
-			// If not already a string just return - we don't want to call tostring - which has the side effect of 
+			// If not already a string just return - we don't want to call tostring - which has the side effect of
 			// changing the lua typecode to string
 			// Note: We don't use isstring because the standard lua C isstring considers either strings or numbers to
 			// be true for isstring.
@@ -1052,7 +1052,7 @@ namespace NLua
 			{
 				var members = targetType.GetMember(fieldName, bindingType | BindingFlags.Public);
 
-				if (members.Length <= 0)
+				if (members.Length is 0)
 				{
 					detailMessage = "field or property '" + fieldName + "' does not exist";
 					return false;
@@ -1246,11 +1246,13 @@ namespace NLua
 						e.GetBaseException().Data["Traceback"] = _translator.interpreter.GetDebugTraceback();
 					}
 
-					return  _translator.Interpreter.SetPendingException(e.GetBaseException());
+					_translator.ThrowError(luaState, e.GetBaseException());
+					return 1;
 				}
 				catch (Exception e)
 				{
-					return _translator.Interpreter.SetPendingException(e);
+					_translator.ThrowError(luaState, e);
+					return 1;
 				}
 			}
 
@@ -1418,7 +1420,33 @@ namespace NLua
 			}
 
 			return paramArray;
+		}
 
+		private static bool IsNilAllowed(Type paramType)
+		{
+			if (paramType.IsByRef)
+			{
+				paramType = paramType.GetElementType();
+			}
+
+			var underlyingType = Nullable.GetUnderlyingType(paramType!);
+			if (underlyingType != null)
+			{
+				return true;
+			}
+
+			if (paramType.IsInterface || paramType.IsClass)
+			{
+				return true;
+			}
+
+			// these represent strings, in which case nil is allowed
+			if (paramType == typeof(ReadOnlyMemory<byte>) || paramType == typeof(Memory<byte>))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -1437,7 +1465,7 @@ namespace NLua
 
 			foreach (var currentNetParam in paramInfo)
 			{
-				if (!currentNetParam.IsIn && currentNetParam.IsOut) // Skips out params 
+				if (!currentNetParam.IsIn && currentNetParam.IsOut) // Skips out params
 				{
 					paramList.Add(null);
 					outList.Add(paramList.Count - 1);
@@ -1458,7 +1486,8 @@ namespace NLua
 						Index = index,
 						ExtractValue = extractValue,
 						IsParamsArray = true,
-						ParameterType = paramArrayType
+						ParameterType = paramArrayType,
+						IsNilAllowed = IsNilAllowed(paramArrayType),
 					};
 
 					argTypes.Add(methodArg);
@@ -1488,7 +1517,8 @@ namespace NLua
 					{
 						Index = index,
 						ExtractValue = extractValue,
-						ParameterType = currentNetParam.ParameterType
+						ParameterType = currentNetParam.ParameterType,
+						IsNilAllowed = IsNilAllowed(currentNetParam.ParameterType),
 					};
 
 					argTypes.Add(methodArg);
@@ -1542,7 +1572,7 @@ namespace NLua
 		{
 			extractValue = null;
 
-			if (!currentNetParam.GetCustomAttributes(typeof(ParamArrayAttribute), false).Any())
+			if (currentNetParam.GetCustomAttributes(typeof(ParamArrayAttribute), false).Length is 0)
 			{
 				return false;
 			}

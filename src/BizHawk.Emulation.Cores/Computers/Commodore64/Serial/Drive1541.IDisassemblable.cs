@@ -5,10 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541 : IDisassemblable
 	{
-		IEnumerable<string> IDisassemblable.AvailableCpus
-		{
-			get { yield return "Disk Drive 6502"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "Disk Drive 6502" ];
 
 		string IDisassemblable.Cpu
 		{

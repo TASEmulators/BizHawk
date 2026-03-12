@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		private void DIRECT_MEM_4(ushort oper, ushort dest)
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
-							IDLE,			
+							IDLE,
 							RD_INC_OP, ALU, ADDR, oper, dest, ALU);
 
 			IRQS = 3;
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
 							IDLE,
-							WR_HI_INC, ADDR, src, 
+							WR_HI_INC, ADDR, src,
 							WR_DEC_LO, ADDR, src);
 
 			IRQS = 4;
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		private void EXT_OP_ST_16(ushort src)
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
-							RD_INC, ALU2, PC, 
+							RD_INC, ALU2, PC,
 							SET_ADDR, ADDR, ALU, ALU2,
 							WR_HI_INC, ADDR, src,
 							WR_DEC_LO, ADDR, src);
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 		private void JSR_EXT()
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
-							RD_INC, ALU2, PC, 
+							RD_INC, ALU2, PC,
 							SET_ADDR, ADDR, ALU, ALU2,
 							TR, ALU, PC,
 							IDLE,
@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 							RD_INC, ALU, SP,
 							RD_INC_OP, ALU2, SP, SET_ADDR, X, ALU, ALU2,
 							RD_INC, ALU, SP,
-							RD, ALU2, SP, 
+							RD, ALU2, SP,
 							SET_ADDR, PC, ALU, ALU2);
 
 			IRQS = 9;

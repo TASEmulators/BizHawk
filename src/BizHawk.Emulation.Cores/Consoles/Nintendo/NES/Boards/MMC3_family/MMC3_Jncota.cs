@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// unclear if it is readable or has mirrors etc
 
 		public byte prg_reg;
-		
+
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(prg_reg), ref prg_reg);
-			
+
 			base.SyncState(ser);
 		}
 	}

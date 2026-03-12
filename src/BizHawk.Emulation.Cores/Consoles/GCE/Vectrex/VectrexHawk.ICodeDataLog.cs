@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 			None,
 			RAM,
-			ROM,			
+			ROM,
 		}
 
 		[Flags]

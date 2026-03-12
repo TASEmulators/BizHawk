@@ -106,7 +106,7 @@ namespace BizHawk.DATTool
 
 			foreach (var s in listBoxFiles.Items)
 			{
-				if (s.ToString().Trim() == "")
+				if (string.IsNullOrWhiteSpace(s.ToString()))
 				{
 					MessageBox.Show($"The selected file: {s}Cannot be found.\n\nSort this out and try again");
 					return;

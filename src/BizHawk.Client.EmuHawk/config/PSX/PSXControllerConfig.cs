@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			var uc = new OctoshockFIOConfigUser
 			{
 				Memcards = { [0] = cbMemcard_1.Checked, [1] = cbMemcard_2.Checked },
-				Multitaps = { [0] = cbMultitap_1.Checked, [1] = cbMultitap_2.Checked }
+				Multitaps = [ cbMultitap_1.Checked, cbMultitap_2.Checked ],
 			};
 
 			var combos = new[] { combo_1_1, combo_1_2, combo_1_3, combo_1_4, combo_2_1, combo_2_2, combo_2_3, combo_2_4 };
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 					2 => OctoshockDll.ePeripheralType.DualShock,
 					3 => OctoshockDll.ePeripheralType.DualAnalog,
 					4 => OctoshockDll.ePeripheralType.NegCon,
-					_ => uc.Devices8[i]
+					_ => uc.Devices8[i],
 				};
 			}
 
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_syncSettings.FIOConfig = UserConfigFromGui();
 			_settable.PutCoreSyncSettings(_syncSettings);
-			
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}

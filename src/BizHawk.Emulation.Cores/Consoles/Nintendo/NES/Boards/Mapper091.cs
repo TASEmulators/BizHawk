@@ -35,8 +35,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_regs_8k[3] = 0xFF;
 			prg_regs_8k[2] = 0xFE;
-			
-			mmc3 = new MMC3(this, 0x7FFFFFFF);
+
+			mmc3 = new MMC3(this);
 
 			SetMirrorType(Cart.PadH, Cart.PadV);
 

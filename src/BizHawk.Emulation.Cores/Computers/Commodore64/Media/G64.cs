@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			return new Disk(84) {WriteProtected = false};
 		}
-		
+
 		public static byte[] Write(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities)
 		{
 			const byte version = 0;

@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Atari.Jaguar
 		public abstract bool SaveRamIsDirty();
 
 		[BizImport(CC)]
-		public abstract void GetSaveRam(byte[] dst);
+		public abstract void GetSaveRam(byte[] dst, bool clearDirty);
 
 		[BizImport(CC)]
 		public abstract void PutSaveRam(byte[] src);

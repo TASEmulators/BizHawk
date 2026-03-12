@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IInputPollable
+	public sealed partial class NES : IInputPollable
 	{
 		public int LagCount
 		{

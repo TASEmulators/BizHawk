@@ -86,7 +86,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             long TStatesPerDriveCycle = (long)(_machine.ULADevice.ClockSpeed / DriveClock);
             StatesPerDriveTick = TStatesPerDriveCycle;
-
         }
 
         /// <summary>

@@ -6,7 +6,9 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Common
 {
 	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
+#pragma warning disable CA1715 // breaks IInterface convention
 	public interface Range<out T> where T : unmanaged, IComparable<T>
+#pragma warning restore CA1715
 	{
 		T Start { get; }
 
@@ -67,7 +69,8 @@ namespace BizHawk.Common
 	{
 		private const ulong MIN_LONG_NEGATION_AS_ULONG = 9223372036854775808UL;
 
-		private static readonly ArithmeticException ExclusiveRangeMinValExc = new ArithmeticException("exclusive range end is min value of integral type");
+		private static ArithmeticException ExclusiveRangeMinValExc
+			=> new("exclusive range end is min value of integral type");
 
 		/// <returns><paramref name="value"/> if it's contained in <paramref name="range"/>, or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/></returns>
 		public static T ConstrainWithin<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => value.CompareTo(range.Start) < 0

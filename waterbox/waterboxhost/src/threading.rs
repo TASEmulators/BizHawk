@@ -176,7 +176,7 @@ impl GuestThreadSet {
 
 	pub fn exit(&mut self, context: &mut Context) -> SyscallReturn {
 		if self.active_tid == 1 {
-			unsafe { std::intrinsics::breakpoint() }
+			std::intrinsics::breakpoint()
 		}
 		let addr = self.threads.get_mut(&self.active_tid).unwrap().tid_address;
 		if addr != 0 {

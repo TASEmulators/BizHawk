@@ -1,5 +1,5 @@
 CORE_DIR = libretro-uae
-TARGET   = puae.wbx
+TARGET   = uae.wbx
 EMU      = $(CORE_DIR)/sources/src
 LIBRETRO = $(CORE_DIR)/libretro
 DEPS_DIR = $(CORE_DIR)/deps

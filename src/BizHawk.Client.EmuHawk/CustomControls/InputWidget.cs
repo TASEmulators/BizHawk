@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			new SpecialBindingInfo { BindingName = "WMouse M", TooltipText = "Binds the middle mouse button" },
 			new SpecialBindingInfo { BindingName = "WMouse R", TooltipText = "Binds the right mouse button" },
 			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText = "Binds the mouse auxiliary button 1" },
-			new SpecialBindingInfo { BindingName = "WMouse 2", TooltipText = "Binds the mouse auxiliary button 2" }
+			new SpecialBindingInfo { BindingName = "WMouse 2", TooltipText = "Binds the mouse auxiliary button 2" },
 		};
 
 		public InputWidget()
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Input.Instance.Update();
 			var bindingStr = Input.Instance.GetNextBindEvent(ref _lastPress);
-			
+
 			if (bindingStr != null)
 			{
 				// has special meaning for the binding UI system (clear it).
@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 
 					_bindings.Add(bindingStr);
 				}
-				
+
 				UpdateLabel();
 				Increment();
 			}
@@ -228,7 +228,9 @@ namespace BizHawk.Client.EmuHawk
 			switch (m.Msg)
 			{
 				case 0x0201: // WM_LBUTTONDOWN
+#pragma warning disable RS0030 //TODO is this correct, or should it be `Select()`? --yoshi
 					Focus();
+#pragma warning restore RS0030
 					return;
 				case 0x0203: // WM_LBUTTONDBLCLK
 				case 0x0204: // WM_RBUTTONDOWN

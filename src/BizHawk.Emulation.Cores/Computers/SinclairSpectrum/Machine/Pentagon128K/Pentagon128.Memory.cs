@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public partial class Pentagon128 : SpectrumBase
     {
         /* 128k paging controlled by writes to port 0x7ffd
-         * 
-         * 
-         
+         *
+         *
+
             #7FFD (32765) - decoded as A15=0, A1=0 and /IORQ=0. Bits 0..5 are latched. Bits 0..2 select RAM bank in secton D. Bit 3 selects RAM bank to dispay screen (0 - RAM5, 1 - RAM7). Bit 4 selects ROM bank (0 - ROM0, 1 - ROM1). Bit 5, when set locks future writing to #7FFD port until reset. Reading #7FFD port is the same as writing #FF into it.
             #BFFD (49149) - write data byte into AY-3-8912 chip.
             #FFFD (65533) - select AY-3-8912 addres (D4..D7 ignored) and reading data byte.
@@ -318,11 +318,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // shadow screen should be outputted
                 // this lives in RAM7
-                value = RAM7[addr & 0x3FFF];                
+                value = RAM7[addr & 0x3FFF];
             }
             else
             {
-                // shadow screen is not set to display or paging is disabled (probably in 48k mode) 
+                // shadow screen is not set to display or paging is disabled (probably in 48k mode)
                 // (use screen0 at RAM5)
                 value = RAM5[addr & 0x3FFF];
             }

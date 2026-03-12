@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -48,8 +47,8 @@ namespace BizHawk.Client.Common
 
 				if (Header.TryGetValue(HeaderKeys.CycleCount, out var numCyclesStr) && Header.TryGetValue(HeaderKeys.ClockRate, out var clockRateStr))
 				{
-					var numCycles = Convert.ToUInt64(numCyclesStr);
-					var clockRate = Convert.ToDouble(clockRateStr, CultureInfo.InvariantCulture);
+					var numCycles = ulong.Parse(numCyclesStr);
+					var clockRate = double.Parse(clockRateStr, CultureInfo.InvariantCulture);
 					numSeconds = numCycles / clockRate;
 				}
 				else
@@ -68,13 +67,13 @@ namespace BizHawk.Client.Common
 			{
 				if (SystemID == VSystemID.Raw.Arcade && Header.TryGetValue(HeaderKeys.VsyncAttoseconds, out var vsyncAttoStr))
 				{
-					const decimal attosInSec = 1000000000000000000;
-					return (double)(attosInSec / Convert.ToUInt64(vsyncAttoStr));
+					const decimal attosInSec = 1_000_000_000_000_000_000.0M;
+					var m = attosInSec;
+					m /= ulong.Parse(vsyncAttoStr);
+					return decimal.ToDouble(m);
 				}
-				else
-				{
-					return PlatformFrameRates.GetFrameRate(SystemID, IsPal);
-				}
+
+				return PlatformFrameRates.GetFrameRate(SystemID, IsPal);
 			}
 		}
 
@@ -101,7 +100,7 @@ namespace BizHawk.Client.Common
 
 		public virtual string Hash
 		{
-			get => Header[HeaderKeys.Sha1];
+			get => Header[HeaderKeys.Sha1].ToUpperInvariant();
 			set => Header[HeaderKeys.Sha1] = value;
 		}
 
@@ -137,7 +136,7 @@ namespace BizHawk.Client.Common
 
 		public virtual string FirmwareHash
 		{
-			get => Header[HeaderKeys.FirmwareSha1];
+			get => Header[HeaderKeys.FirmwareSha1].ToUpperInvariant();
 			set => Header[HeaderKeys.FirmwareSha1] = value;
 		}
 

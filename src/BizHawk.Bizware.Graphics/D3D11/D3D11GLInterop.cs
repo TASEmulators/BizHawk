@@ -1,12 +1,11 @@
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
+using Silk.NET.WGL;
 using Silk.NET.WGL.Extensions.NV;
 
 using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
-
-using BizHawk.Common.StringExtensions;
 
 using static SDL2.SDL;
 
@@ -39,8 +38,66 @@ namespace BizHawk.Bizware.Graphics
 			Nvida,
 			Amd,
 			Intel,
-			Unknown
+			Unknown,
 		}
+
+		// Avoid old Intel gpus, these have been reported crashing with gl interop
+		// Reported GPUs: Intel HD Graphics 4600, Intel HD Graphics 5500, and Intel HD Graphics 530
+		// (Presumingly all Haswell, Broadwell and Skylake are affected, better safe than sorry)
+		// Note: Intel HD Graphics 4000 (Ivy Bridge) is reported as NOT crashing
+		// Presumingly it's so old it doesn't even report gl interop support
+		// Note: Intel HD Graphics 630 also reported crashing, so assuming all of Kaby Lake is broken too
+		private static readonly int[] _blacklistedIntelDeviceIds =
+		[
+			// Bay Trail GPUs (in-between Ivy Bridge and Haswell)
+			0x0155, 0x0157, 0x0F30, 0x0F31,
+			0x0F32, 0x0F33,
+			// Haswell GPUs
+			0x0402, 0x0406, 0x040A, 0x040B,
+			0x040E, 0x0412, 0x0416, 0x041A,
+			0x041B, 0x041E, 0x0422, 0x0426,
+			0x042A, 0x042B, 0x042E, 0x0A02,
+			0x0A06, 0x0A0A, 0x0A0B, 0x0A0E,
+			0x0A12, 0x0A16, 0x0A1A, 0x0A1B,
+			0x0A1E, 0x0A22, 0x0A26, 0x0A2A,
+			0x0A2B, 0x0A2E, 0x0C02, 0x0C06,
+			0x0C0A, 0x0C0B, 0x0C0E, 0x0C12,
+			0x0C16, 0x0C1A, 0x0C1B, 0x0C1E,
+			0x0C22, 0x0C26, 0x0C2A, 0x0C2B,
+			0x0C2E, 0x0D02, 0x0D06, 0x0D0A,
+			0x0D0B, 0x0D0E, 0x0D12, 0x0D16,
+			0x0D1A, 0x0D1B, 0x0D1E, 0x0D22,
+			0x0D26, 0x0D2A, 0x0D2B, 0x0D2E,
+			// Broadwell GPUs
+			0x1602, 0x1606, 0x160A, 0x160B,
+			0x160D, 0x160E, 0x1612, 0x1616,
+			0x161A, 0x161B, 0x161D, 0x161E,
+			0x1622, 0x1626, 0x162A, 0x162B,
+			0x162D, 0x162E, 0x1632, 0x1636,
+			0x163A, 0x163B, 0x163D, 0x163E,
+			// Cherryview GPUs (in-between Broadwell and Skylake)
+			0x22B0, 0x22B1, 0x22B2, 0x22B3,
+			// Skylake GPUs
+			0x1902, 0x1906, 0x190A, 0x190B,
+			0x190E, 0x1912, 0x1913, 0x1915,
+			0x1916, 0x1917, 0x191A, 0x191B,
+			0x191D, 0x191E, 0x1921, 0x1923,
+			0x1926, 0x1927, 0x192A, 0x192B,
+			0x192D, 0x1932, 0x193A, 0x193B,
+			0x193D,
+			// Apollo Lake GPUs (in-between Skylake and Kaby Lake)
+			0x0A84, 0x1A84, 0x1A85, 0x5A84,
+			0x5A85,
+			// Gemini Lake GPUs (another in-between Skylake and Kaby Lake)
+			0x3184, 0x3185,
+			// Kaby Lake GPUs
+			0x5902, 0x5906, 0x5908, 0x590A,
+			0x590B, 0x590E, 0x5912, 0x5913,
+			0x5915, 0x5916, 0x5917, 0x591A,
+			0x591B, 0x591C, 0x591D, 0x591E,
+			0x5921, 0x5923, 0x5926, 0x5927,
+			0x593B, 0x87C0,
+		];
 
 		static D3D11GLInterop()
 		{
@@ -67,17 +124,9 @@ namespace BizHawk.Bizware.Graphics
 						return;
 					}
 
-					// note: Silk.NET's WGL.IsExtensionPresent function seems to be bugged and just results in NREs...
+					if (!WGL.GetApi().IsExtensionPresent("NV_DX_interop2")) return;
+
 					NVDXInterop = new(new LamdaNativeContext(SDL2OpenGLContext.GetGLProcAddress));
-					if (NVDXInterop.CurrentVTable.Load("wglDXOpenDeviceNV") == IntPtr.Zero
-						|| NVDXInterop.CurrentVTable.Load("wglDXCloseDeviceNV") == IntPtr.Zero
-						|| NVDXInterop.CurrentVTable.Load("wglDXRegisterObjectNV") == IntPtr.Zero
-						|| NVDXInterop.CurrentVTable.Load("wglDXUnregisterObjectNV") == IntPtr.Zero
-						|| NVDXInterop.CurrentVTable.Load("wglDXLockObjectsNV") == IntPtr.Zero
-						|| NVDXInterop.CurrentVTable.Load("wglDXUnlockObjectsNV") == IntPtr.Zero)
-					{
-						return;
-					}
 
 					var glVendor = GL.GetStringS(StringName.Vendor);
 					var vendor = Vendor.Unknown;
@@ -135,6 +184,14 @@ namespace BizHawk.Bizware.Graphics
 							// for now, don't even try for unknown vendors
 							default:
 								return;
+						}
+
+						if (vendor == Vendor.Intel)
+						{
+							if (_blacklistedIntelDeviceIds.AsSpan().Contains(adapter.Description.DeviceId))
+							{
+								return;
+							}
 						}
 
 						unsafe

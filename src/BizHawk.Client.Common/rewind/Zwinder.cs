@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 				}
 				using var br = new BinaryReader(state.GetReadStream());
 				_stateSource.LoadStateBinary(br);
-				_buffer.InvalidateEnd(index);
+				_buffer.InvalidateLast();
 			}
 			else
 			{
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			_buffer.InvalidateEnd(0);
+			_buffer.InvalidateAfter(-1);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Drawing;
 
 using BizHawk.Client.Common;
 
@@ -25,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var ctrl = new AnalogBindControl(buttonName, _realConfigObject[buttonName])
 				{
-					Location = new Point(x, y)
+					Location = new(x, y),
 				};
 
 				y += ctrl.Height + 4;

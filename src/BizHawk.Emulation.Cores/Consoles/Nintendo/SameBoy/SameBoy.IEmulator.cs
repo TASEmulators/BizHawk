@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					{
 						_curTrack--;
 						LibSameboy.sameboy_switchgbstrack(SameboyState, _curTrack);
-						Comm.Notify($"Switching to Track {_curTrack}", null);
+						Comm.Notify($"Switching to Track {_curTrack}");
 					}
 				}
 				else if (nextTrack)
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 					{
 						_curTrack++;
 						LibSameboy.sameboy_switchgbstrack(SameboyState, _curTrack);
-						Comm.Notify($"Switching to Track {_curTrack}", null);
+						Comm.Notify($"Switching to Track {_curTrack}");
 					}
 				}
 			}
@@ -156,6 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 
 		public void Dispose()
 		{
+			_memorycallbacks.ActiveChanged -= SetMemoryCallbacks;
 			if (SameboyState != IntPtr.Zero)
 			{
 				LibSameboy.sameboy_destroy(SameboyState);

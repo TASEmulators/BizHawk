@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Detach();
 			};
-			ListView_ClientSizeChanged(null, null);
+			ListView_ClientSizeChanged(null, EventArgs.Empty);
 			Attach();
 		}
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Console.SetOut(new StreamWriter(Console.OpenStandardOutput())
 			{
-				AutoFlush = true
+				AutoFlush = true,
 			});
 			_logWriter.Close();
 			_logWriter = null;
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ShowReport(string title, string report)
 		{
 			var ss = report.Split('\n');
-			
+
 			lock (_lines)
 				foreach (var s in ss)
 				{
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 		private void doUpdateListSize()
 		{
 			virtualListView1.VirtualListSize = _lines.Count;
-			virtualListView1.EnsureVisible(_lines.Count - 1);
+			virtualListView1.EnsureVisible(virtualListView1.VirtualListSize - 1);
 		}
 
 		private void appendInvoked(string str)
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.IsCtrl(Keys.C))
 			{
-				ButtonCopy_Click(null, null);
+				ButtonCopy_Click(null, EventArgs.Empty);
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			s = s.Trim();
-			if (!string.IsNullOrWhiteSpace(s)) Clipboard.SetText(s, TextDataFormat.Text);
+			if (!string.IsNullOrWhiteSpace(s)) Clipboard.SetText(s);
 		}
 
 		private void ButtonCopyAll_Click(object sender, EventArgs e)
@@ -182,13 +182,13 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var s in _lines)
 					sb.AppendLine(s);
 			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+				Clipboard.SetText(sb.ToString());
 		}
 
 		private void HideShowGameDbButton()
 		{
 			AddToGameDbBtn.Visible = Emulator.CanGenerateGameDBEntries()
-				&& (Game.Status == RomStatus.Unknown || Game.Status == RomStatus.NotInDatabase);
+				&& Game.Status is RomStatus.Unknown or RomStatus.NotInDatabase;
 		}
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)
@@ -218,3 +218,4 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 }
+

@@ -11,18 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Install .NET 8
-        uses: actions/setup-dotnet@v4
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
       - name: Debug build with analyzers
-        run: Dist/BuildDebug.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+        run: Dist/BuildDebug.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
       - name: Release build with analyzers
-        run: Dist/BuildRelease.sh -warnaserror -p:RunAnalyzersDuringBuild=true
+        run: Dist/BuildRelease.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
   test:
     name: Test
@@ -32,18 +32,18 @@ jobs:
        matrix:
           os:
             - { prettyname: Windows, fullname: windows-latest }
-            - { prettyname: Linux, fullname: ubuntu-latest }
+            - { prettyname: Linux, fullname: ubuntu-22.04 } # newer ubuntu versions don't ship with mono, so we need to pin for now, see https://github.com/actions/runner-images/issues/10636
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Install .NET 8
-        uses: actions/setup-dotnet@v4
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
       - name: Test
-        run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true
+        run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
         shell: pwsh
 
   package:
@@ -51,10 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Install .NET 8
-        uses: actions/setup-dotnet@v4
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8"
 
@@ -64,7 +64,7 @@ jobs:
       - name: Package (Linux)
         run: Dist/Package.sh
       - name: Upload Linux dev build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BizHawk-dev-linux
           path: packaged_output
@@ -72,7 +72,7 @@ jobs:
       - name: Package (Windows)
         run: Dist/Package.sh windows-x64
       - name: Upload Windows dev build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: BizHawk-dev-windows
           path: packaged_output

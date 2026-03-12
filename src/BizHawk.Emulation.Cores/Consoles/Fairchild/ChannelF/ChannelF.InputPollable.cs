@@ -18,69 +18,48 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		private int _lagCount = 0;
-		private bool _isLag = false;
+		private int _lagCount;
+		private bool _isLag;
 
 		/// <summary>
 		/// Cycles through all the input callbacks
 		/// This should be done once per frame
 		/// </summary>
-		public bool PollInput()
+		private void PollInput()
 		{
-			bool noInput = true;
-
-			InputCallbacks.Call();
-
-			lock (this)
+			for (var i = 0; i < _buttonsConsole.Length; i++)
 			{
-				for (int i = 0; i < ButtonsConsole.Length; i++)
+				var key = _buttonsConsole[i];
+				var prevState = _stateConsole[i];
+				var currState = _controller.IsPressed(key);
+				if (currState != prevState)
 				{
-					var key = ButtonsConsole[i];
-					bool prevState = StateConsole[i]; // CTRLConsole.Bit(i);      
-					bool currState = _controller.IsPressed(key);
-					if (currState != prevState)
-					{
-						StateConsole[i] = currState;
-						noInput = false;
+					_stateConsole[i] = currState;
 
-						if (key == "RESET" && StateConsole[i])
+					if (key == "RESET" && _stateConsole[i])
+					{
+						ConsoleReset();
+						for (var l = 0; l < _outputLatch.Length; l++)
 						{
-							CPU.Reset();
-							for (int l = 0; l < OutputLatch.Length; l++)
-							{
-								OutputLatch[l] = 0;
-							}
-							return true;
+							_outputLatch[l] = 0;
 						}
-					}
-				}
 
-				for (int i = 0; i < ButtonsRight.Length; i++)
-				{
-					var key = "P1 " + ButtonsRight[i];
-					bool prevState = StateRight[i];
-					bool currState = _controller.IsPressed(key);
-					if (currState != prevState)
-					{
-						StateRight[i] = currState;
-						noInput = false;
-					}
-				}
-
-				for (int i = 0; i < ButtonsLeft.Length; i++)
-				{
-					var key = "P2 " + ButtonsLeft[i];
-					bool prevState = StateLeft[i];
-					bool currState = _controller.IsPressed(key);
-					if (currState != prevState)
-					{
-						StateLeft[i] = currState;
-						noInput = false;
+						return;
 					}
 				}
 			}
 
-			return noInput;
+			for (var i = 0; i < _buttonsRight.Length; i++)
+			{
+				var key = _buttonsRight[i];
+				_stateRight[i] = _controller.IsPressed(key);
+			}
+
+			for (var i = 0; i < _buttonsLeft.Length; i++)
+			{
+				var key = _buttonsLeft[i];
+				_stateLeft[i] = _controller.IsPressed(key);
+			}
 		}
 	}
 }

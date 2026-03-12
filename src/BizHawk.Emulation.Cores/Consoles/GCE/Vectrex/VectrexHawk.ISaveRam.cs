@@ -4,15 +4,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	public partial class VectrexHawk : ISaveRam
 	{
-		public byte[] CloneSaveRam()
+		public byte[] CloneSaveRam(bool clearDirty)
 		{
 			return null;
 		}
 
-		public void StoreSaveRam(byte[] data)
-		{
-
-		}
+		public void StoreSaveRam(byte[] data) {}
 
 		public bool SaveRamModified => false;
 	}

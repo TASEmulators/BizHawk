@@ -2214,7 +2214,7 @@ namespace Jellyfish.Virtu
 		private Action<int, byte> _writeIoRegionC3C3;
 		private Action<int, byte> _writeIoRegionC8CF;
 		private Action<int, byte> _writeRomRegionD0FF;
-		
+
 		public Action<uint> ReadCallback;
 		public Action<uint> WriteCallback;
 		public Action<uint> ExecuteCallback;

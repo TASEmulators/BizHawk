@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetMirrorType(EMirrorType.Vertical);
 				}
 			}
-			
+
 			chr_reg &= ~0x07;
 			chr_reg |= (chr_reg_low_0 | chr_reg_low_1);
 

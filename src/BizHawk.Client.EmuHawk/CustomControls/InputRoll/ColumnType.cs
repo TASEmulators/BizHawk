@@ -7,6 +7,9 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public enum ColumnType
 	{
-		Boolean, Axis, Text, Image
+		Boolean,
+		Axis,
+		Text,
+		Image,
 	}
 }

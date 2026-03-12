@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
@@ -142,8 +143,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				if (member.MemberType == MemberTypes.Property)
 				{
-					var field = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
-					dictionary.Add(member.Name, field);
+					var value = plugin.GetType().GetProperty(member.Name).GetValue(plugin, null);
+					dictionary.Add(member.Name, value);
 				}
 			}
 

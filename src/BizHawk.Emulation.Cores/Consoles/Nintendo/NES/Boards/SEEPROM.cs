@@ -6,9 +6,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	/// <summary>
 	/// describes a 24C01 or 24C02 as connected to a BANDAI-FCG
 	/// </summary>
-
-	// http://pdf1.alldatasheet.com/datasheet-pdf/view/56094/ATMEL/24C01.html 24C01
-	// http://www.atmel.com/Images/doc0180.pdf 24C02 and others
+	/// <remarks>
+	/// <see href="http://pdf1.alldatasheet.com/datasheet-pdf/view/56094/ATMEL/24C01.html">24C01</see><br/>
+	/// <see href="http://www.atmel.com/Images/doc0180.pdf">24C02 and others</see>
+	/// </remarks>
 	public sealed class SEEPROM
 	{
 		/// <summary>
@@ -160,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							// master didn't acknowledge.  what to do?
 						}
-						Console.WriteLine("{1:x2} <= rom[{0:x2}]", Addr, Data); 
+						Console.WriteLine("{1:x2} <= rom[{0:x2}]", Addr, Data);
 						Addr++;
 						Addr &= (byte)(rom.Length - 1);
 						Data = rom[Addr];
@@ -184,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PullDown = false;
 		}
 
-		
+
 		public void WriteByte(byte val)
 		{
 			OutEnable = val.Bit(7);
@@ -212,7 +213,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ClockStart();
 					}
 				}
-
 			}
 			SCK = newSCK;
 			SDA = newSDA;

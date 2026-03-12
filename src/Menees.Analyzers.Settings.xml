@@ -1,0 +1,8 @@
+<Menees.Analyzers.Settings>
+	<DigitSeparators> <!-- for MEN018 -->
+		<Binary GroupSize="4" MinSize="9" />
+		<!--<Decimal GroupSize="3" MinSize="8" />--> <!-- applies to float literals too :( -->
+		<Decimal GroupSize="3" MinSize="100" />
+		<Hexadecimal GroupSize="4" MinSize="9" />
+	</DigitSeparators>
+</Menees.Analyzers.Settings>

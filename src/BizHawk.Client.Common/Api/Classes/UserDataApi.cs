@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				ICollection<string> keys = _movieSession.UserBag.Keys;
-				return (keys as KeyCollectionType) ?? keys.ToList();
+				return (keys as KeyCollectionType) ?? keys.ToHashSet();
 			}
 		}
 

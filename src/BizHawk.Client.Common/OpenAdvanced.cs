@@ -1,7 +1,5 @@
 using System.IO;
 
-using BizHawk.Common.StringExtensions;
-
 using Newtonsoft.Json;
 
 //this file contains some cumbersome self-"serialization" in order to gain a modicum of control over what the serialized output looks like
@@ -18,7 +16,7 @@ namespace BizHawk.Client.Common
 		/// returns a sole path to use for opening a rom (not sure if this is a good idea)
 		/// </summary>
 		string SimplePath { get; }
-		
+
 		void Deserialize(string str);
 		void Serialize(TextWriter tw);
 	}
@@ -39,11 +37,27 @@ namespace BizHawk.Client.Common
 
 	public static class OpenAdvancedSerializer
 	{
+		/// <summary>Strips a <see cref="OpenAdvancedTypes">kind</see> prefix from <paramref name="filePath"/></summary>
+		/// <remarks><see langword="true"/> iff was able to parse a regular filename</remarks>
+		public static bool ParseRecentFile(ref string filePath, out string caption)
+		{
+			caption = filePath;
+			if (!filePath.StartsWith('*')) return true;
+			var oa = ParseWithLegacy(filePath);
+			caption = oa.DisplayName;
+			if (oa is OpenAdvanced_OpenRom openRom)
+			{
+				filePath = openRom.Path;
+				return true;
+			}
+			return false;
+		}
+
 		public static IOpenAdvanced ParseWithLegacy(string text)
 		{
 			return text.StartsWith('*')
 				? Deserialize(text.Substring(1))
-				: new OpenAdvanced_OpenRom { Path = text };
+				: new OpenAdvanced_OpenRom(text);
 		}
 
 		private static IOpenAdvanced Deserialize(string text)
@@ -58,7 +72,7 @@ namespace BizHawk.Client.Common
 				OpenAdvancedTypes.Libretro => new OpenAdvanced_Libretro(),
 				OpenAdvancedTypes.LibretroNoGame => new OpenAdvanced_LibretroNoGame(),
 				OpenAdvancedTypes.MAME => new OpenAdvanced_MAME(),
-				_ => null
+				_ => null,
 			};
 
 			if (ioa == null)
@@ -96,7 +110,7 @@ namespace BizHawk.Client.Common
 		{
 			token = JsonConvert.DeserializeObject<Token>(str);
 		}
-		
+
 		public void Serialize(TextWriter tw)
 		{
 			tw.Write(JsonConvert.SerializeObject(token));
@@ -150,6 +164,12 @@ namespace BizHawk.Client.Common
 		public string TypeName => "OpenRom";
 		public string DisplayName => Path;
 		public string SimplePath => Path;
+
+		public OpenAdvanced_OpenRom() {}
+
+		public OpenAdvanced_OpenRom(string path)
+			: this()
+			=> Path = path;
 
 		public void Deserialize(string str)
 		{

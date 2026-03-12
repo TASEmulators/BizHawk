@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 			GreaterThanOrEqual,
 			LessThan,
 			LessThanOrEqual,
-			NotEqual
+			NotEqual,
 		}
 
 		private readonly Watch _watch;
@@ -73,7 +73,11 @@ namespace BizHawk.Client.Common
 
 		public int? Compare => _compare.HasValue && !IsSeparator ? _compare : null;
 
-		public MemoryDomain Domain => _watch.Domain;
+		public MemoryDomain Domain
+		{
+			get =>	_watch.Domain;
+			set => _watch.Domain = value;
+		}
 
 		public WatchSize Size => _watch.Size;
 
@@ -94,7 +98,7 @@ namespace BizHawk.Client.Common
 					WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_val),
 					WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_val),
 					WatchSize.Separator => "",
-					_ => ""
+					_ => string.Empty,
 				};
 
 		public string CompareStr
@@ -109,10 +113,10 @@ namespace BizHawk.Client.Common
 						WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_compare.Value),
 						WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_compare.Value),
 						WatchSize.Separator => "",
-						_ => ""
+						_ => string.Empty,
 					};
 				}
-				
+
 				return "";
 			}
 		}
@@ -149,7 +153,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!IsSeparator)
 			{
-				_enabled ^= true;
+				_enabled = !_enabled;
 				if (handleChange)
 				{
 					Changes();

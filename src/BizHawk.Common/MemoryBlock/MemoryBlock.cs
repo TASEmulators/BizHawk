@@ -102,11 +102,8 @@ namespace BizHawk.Common
 
 		public void Dispose()
 		{
-			if (_pal != null)
-			{
-				_pal.Dispose();
-				_pal = null;
-			}
+			_pal?.Dispose();
+			_pal = null;
 		}
 	}
 }

@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.IO;
 using System.IO.Compression;
 
@@ -44,42 +45,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			=> throw new NotImplementedException($"Check type operation is not implemented for {SelfTypeName}");
 
 		/// <summary>
-		/// Converts an int32 value into a byte array
-		/// </summary>
-		public static byte[] GetBytes(int value)
-		{
-			byte[] buf = new byte[4];
-			buf[0] = (byte)value;
-			buf[1] = (byte)(value >> 8);
-			buf[2] = (byte)(value >> 16);
-			buf[3] = (byte)(value >> 24);
-			return buf;
-		}
-
-		/// <summary>
 		/// Returns an int32 from a byte array based on offset
 		/// </summary>
-		public static int GetInt32(byte[] buf, int offsetIndex)
-		{
-			return buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
-		}
+		public static int GetInt32(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadInt32LittleEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Returns an uint16 from a byte array based on offset
 		/// </summary>
-		public static ushort GetWordValue(byte[] buf, int offsetIndex)
-		{
-			return (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
-		}
-
-		/// <summary>
-		/// Updates a byte array with a uint16 value based on offset
-		/// </summary>
-		public static void SetWordValue(byte[] buf, int offsetIndex, ushort value)
-		{
-			buf[offsetIndex] = (byte)value;
-			buf[offsetIndex + 1] = (byte)(value >> 8);
-		}
+		public static ushort GetWordValue(ReadOnlySpan<byte> buf, int offsetIndex)
+			=> BinaryPrimitives.ReadUInt16LittleEndian(buf.Slice(start: offsetIndex));
 
 		/// <summary>
 		/// Takes a PauseInMilliseconds value and returns the value in T-States

@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/ZXSpectrum48k.jpg/1200px-ZXSpectrum48k.jpg
 					// https://upload.wikimedia.org/wikipedia/commons/c/ca/ZX_Spectrum%2B.jpg
 
-					// Keyboard - row 1    
+					// Keyboard - row 1
 					"Key True Video", "Key Inv Video", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Break",
 					// Keyboard - row 2
 					"Key Delete", "Key Graph", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P",

@@ -1758,10 +1758,10 @@ sha1:c12ae587d16c9a227dabda72a0c92d96868df4b9		Puzzle (Colin Hughes) (PD)	A26		m
 sha1:b7b9e65159af23307da54cf371aac8536c5d227c		Puzzled World (Cooper Black) (PAL) [p1]	A26		m=4K;PAL=true
 sha1:fb0eee2a5c0b74eeaacbf4c714b20881c2f4d747		Pygmy (Starsoft) (PAL) [!]	A26		m=4K;PAL=true
 sha1:962c9d8ff3a9a0e6607f159a926f6ef68125a28c		Pyramid War (Suntek) (PAL)	A26		m=4K;PAL=true
-sha1:e5d0f615fed46efca3cc931a1e5f7ebcce73d586		Q-bert (1983) (Parker Bros) (PAL) [!]	A26		m=4K;PAL=true
-sha1:dcb2c8fd8c132394b63b22b1a91ea47313e776df		Q-bert (1983) (Parker Bros) (PAL) [b1]	A26		m=4K;PAL=true
-sha1:8bf36ec012a46f8f7b17cc41ea0afdf2fe00d191		Q-bert (1988) (Atari) (PAL) [!]	A26		m=4K;PAL=true
-sha1:f3ef9787b4287a32e4d9ac7b9c3358edc16315b2		Q-bert (1988) (Atari) [!]	A26		m=4K;NTSC=true
+sha1:e5d0f615fed46efca3cc931a1e5f7ebcce73d586		Q-bert (1983) (Parker Bros) (PAL) [!]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:dcb2c8fd8c132394b63b22b1a91ea47313e776df		Q-bert (1983) (Parker Bros) (PAL) [b1]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:8bf36ec012a46f8f7b17cc41ea0afdf2fe00d191		Q-bert (1988) (Atari) (PAL) [!]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:f3ef9787b4287a32e4d9ac7b9c3358edc16315b2		Q-bert (1988) (Atari) [!]	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:a61be3702437b5d16e19c0d2cd92393515d42f23		Q-bert's Qubes (1983) (Parker Bros) [a1]	A26		m=E0;NTSC=true
 sha1:58286b711796668747d636392bc51d62191b02b3		Q-bert's Qubes (1983) (Parker Bros)	A26		m=F8;NTSC=true
 sha1:79e20411d5a6b5b9a9314733c09aed2665d28a79		Qb (0.06) (Retroactive)	A26		m=4K;NTSC=true

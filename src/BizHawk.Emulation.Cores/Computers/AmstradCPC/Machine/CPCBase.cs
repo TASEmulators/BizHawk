@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+//using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -14,10 +14,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public AmstradCPC CPC { get; set; }
 
+		/*
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
-		public Z80A CPU { get; set; }
+		public Z80A<AmstradCPC.CpuLink> CPU { get; set; }
+		*/
+
+		public LibFz80Wrapper CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info
@@ -53,22 +57,27 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The Cathode Ray Tube Controller chip
 		/// </summary>
-		public CRCT_6845 CRCT { get; set; }
+		public CRTC CRTC { get; set; }
 
 		/// <summary>
 		/// The Amstrad gate array
 		/// </summary>
-		public AmstradGateArray GateArray { get; set; }
+		public GateArray GateArray { get; set; }
 
-		//      /// <summary>
-		//      /// Renders pixels to the screen
-		//      /// </summary>
-		//      public CRTDevice CRT { get; set; }
+		/// <summary>
+		/// The CRT screen
+		/// </summary>
+		public CRTScreen CRTScreen { get; set; }
 
 		/// <summary>
 		/// The PPI contoller chip
 		/// </summary>
 		public PPI_8255 PPI { get; set; }
+
+		/// <summary>
+		/// PAL16L8 Programmable Logic Array Circuit
+		/// </summary>
+		public PAL16L8 PAL { get; set; }
 
 		/// <summary>
 		/// The length of a standard frame in CPU cycles
@@ -79,11 +88,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Signs whether the frame has ended
 		/// </summary>
 		public bool FrameCompleted;
-
-		/// <summary>
-		/// Overflow from the previous frame (in Z80 cycles)
-		/// </summary>
-		public int OverFlow;
 
 		/// <summary>
 		/// The total number of frames rendered
@@ -103,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Gets the current frame cycle according to the CPU tick count
 		/// </summary>
-		public virtual long CurrentFrameCycle => GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
+		public virtual long CurrentFrameCycle => GateArray.GAClockCounter; // GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
 		/// <summary>
 		/// Non-Deterministic bools
@@ -125,9 +129,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public virtual void ExecuteFrame(bool render, bool renderSound)
 		{
-			GateArray.FrameEnd = false;
-			CRCT.lineCounter = 0;
-
 			InputRead = false;
 			_render = render;
 			_renderSound = renderSound;
@@ -144,17 +145,24 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			PollInput();
 
-			//CRT.SetupVideo();
-			//CRT.ScanlineCounter = 0;
+			GateArray.GAClockCounter = 0;
+			GateArray.FrameEnd = false;
 
 			while (!GateArray.FrameEnd)
 			{
-				GateArray.ClockCycle();
+				GateArray.Clock();
 
 				// cycle the tape device
 				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
 					TapeDevice.TapeCycle();
 			}
+
+			GateArray.FrameEnd = false;
+
+			var ipf = GateArray.interruptsPerFrame;
+			GateArray.interruptsPerFrame = 0;
+			double nops = GateArray.LastGAFrameClocks / 16.0;
+
 			// we have reached the end of a frame
 			LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 
@@ -171,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			CPC.IsLagFrame = !InputRead;
 
 			// FDC debug
+			/*
 			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
 			{
 				// only write UPD log every second
@@ -181,8 +190,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 					//System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
 				}
 			}
+			*/
 
-			GateArray.FrameClock = 0;
+			// setup GA for next frame
+			GateArray.GAClockCounter = 0;
 		}
 
 		/// <summary>
@@ -297,7 +308,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			ser.BeginSection("CPCMachine");
 			ser.Sync(nameof(FrameCompleted), ref FrameCompleted);
-			ser.Sync(nameof(OverFlow), ref OverFlow);
 			ser.Sync(nameof(FrameCount), ref FrameCount);
 			ser.Sync(nameof(_frameCycles), ref _frameCycles);
 			ser.Sync(nameof(inputRead), ref inputRead);
@@ -317,12 +327,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync(nameof(UpperROMPosition), ref UpperROMPosition);
 			ser.Sync(nameof(UpperROMPaged), ref UpperROMPaged);
 			ser.Sync(nameof(LowerROMPaged), ref LowerROMPaged);
-			ser.Sync(nameof(RAMConfig), ref RAMConfig);
-			ser.Sync(nameof(RAM64KBank), ref RAM64KBank);
 
-			CRCT.SyncState(ser);
-			//CRT.SyncState(ser);
+			CRTC.SyncState(ser);
 			GateArray.SyncState(ser);
+			PPI.SyncState(ser);
+			PAL.SyncState(ser);
 			KeyboardDevice.SyncState(ser);
 			TapeBuzzer.SyncState(ser);
 			AYDevice.SyncState(ser);

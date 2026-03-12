@@ -34,7 +34,7 @@ namespace BizHawk.Bizware.Graphics
 		/// </summary>
 		void Discard();
 
-		CompositingMode CompositingMode { set; }
+		CompositingMode CompositingMode { [Obsolete("nonfunctional")] get; set; } //TODO refactor to a method
 
 		void DrawBezier(Color color, Point pt1, Point pt2, Point pt3, Point pt4);
 

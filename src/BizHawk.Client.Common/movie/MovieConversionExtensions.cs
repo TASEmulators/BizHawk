@@ -1,20 +1,7 @@
-﻿using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Arcades.MAME;
-using BizHawk.Emulation.Cores.Atari.Jaguar;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.Common
 {
@@ -27,23 +14,19 @@ namespace BizHawk.Client.Common
 			tas.CopyLog(old.GetLogEntries());
 			tas.LogKey = old.LogKey;
 
-			old.Truncate(0); // Trying to minimize ram usage
-
-			tas.HeaderEntries.Clear();
-			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
-
-			// TODO: we have this version number string generated in multiple places
-			tas.HeaderEntries[HeaderKeys.MovieVersion] = $"BizHawk v2.0 Tasproj v{TasMovie.CurrentVersion.ToString(NumberFormatInfo.InvariantInfo)}";
+			foreach (var (k, v) in old.HeaderEntries)
+			{
+				if (k is HeaderKeys.MovieVersion) continue;
+				tas.HeaderEntries[k] = v;
+			}
 
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
-			tas.Comments.Clear();
 			foreach (var comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
-			tas.Subtitles.Clear();
 			foreach (var sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
@@ -63,21 +46,19 @@ namespace BizHawk.Client.Common
 			bk2.CopyLog(old.GetLogEntries());
 			bk2.LogKey = old.LogKey;
 
-			bk2.HeaderEntries.Clear();
-			foreach (var (k, v) in old.HeaderEntries) bk2.HeaderEntries[k] = v;
-
-			// TODO: we have this version number string generated in multiple places
-			bk2.HeaderEntries[HeaderKeys.MovieVersion] = "BizHawk v2.0";
+			foreach (var (k, v) in old.HeaderEntries)
+			{
+				if (k is HeaderKeys.MovieVersion) continue;
+				bk2.HeaderEntries[k] = v;
+			}
 
 			bk2.SyncSettingsJson = old.SyncSettingsJson;
 
-			bk2.Comments.Clear();
 			foreach (var comment in old.Comments)
 			{
 				bk2.Comments.Add(comment);
 			}
 
-			bk2.Subtitles.Clear();
 			foreach (var sub in old.Subtitles)
 			{
 				bk2.Subtitles.Add(sub);
@@ -90,13 +71,12 @@ namespace BizHawk.Client.Common
 			return bk2;
 		}
 
-		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
+		public static FileWriteResult<ITasMovie> ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
 			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.BinarySavestate = savestate;
-			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
 
@@ -107,25 +87,21 @@ namespace BizHawk.Client.Common
 
 			// States can't be easily moved over, because they contain the frame number.
 			// TODO? I'm not sure how this would be done.
-			old.TasStateManager.Clear();
 
 			// Lag Log
 			tas.LagLog.FromLagLog(old.LagLog);
 			tas.LagLog.StartFromFrame(frame);
 
-			tas.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSavestate = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
-			tas.Comments.Clear();
 			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
-			tas.Subtitles.Clear();
 			foreach (Subtitle sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
@@ -139,172 +115,44 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			tas.TasStateManager.UpdateSettings(old.TasStateManager.Settings);
-
-			tas.Save();
-			return tas;
+			FileWriteResult saveResult = tas.Save();
+			return saveResult.Convert(tas);
 		}
 
-		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
+		public static FileWriteResult<ITasMovie> ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
 			var tas = (ITasMovie)old.Session.Get(newFilename);
 			tas.SaveRam = saveRam;
-			tas.TasStateManager.Clear();
-			tas.LagLog.Clear();
 
 			var entries = old.GetLogEntries();
 
 			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries);
 
-			tas.HeaderEntries.Clear();
 			foreach (var (k, v) in old.HeaderEntries) tas.HeaderEntries[k] = v;
 
 			tas.StartsFromSaveRam = true;
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
-			tas.Comments.Clear();
 			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
-			tas.Subtitles.Clear();
 			foreach (Subtitle sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
 			}
 
-			tas.TasStateManager.UpdateSettings(old.TasStateManager.Settings);
-
-			tas.Save();
-			return tas;
+			FileWriteResult saveResult = tas.Save();
+			return saveResult.Convert(tas);
 		}
 
-		// TODO: This doesn't really belong here, but not sure where to put it
-		public static void PopulateWithDefaultHeaderValues(
-			this IMovie movie,
-			IEmulator emulator,
-			ISettingsAdapter settable,
-			IGameInfo game,
-			FirmwareManager firmwareManager,
-			string author)
-		{
-			movie.Author = author;
-			movie.EmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.OriginalEmulatorVersion = VersionInfo.GetEmuVersion();
-			movie.SystemID = emulator.SystemId;
-
-			if (settable.HasSyncSettings)
-			{
-				movie.SyncSettingsJson = ConfigService.SaveWithType(settable.GetSyncSettings());
-			}
-
-			movie.GameName = game.FilesystemSafeName();
-			movie.Hash = game.Hash;
-			if (game.FirmwareHash != null)
-			{
-				movie.FirmwareHash = game.FirmwareHash;
-			}
-
-			if (emulator.HasBoardInfo())
-			{
-				movie.BoardName = emulator.AsBoardInfo().BoardName;
-			}
-
-			if (emulator.HasRegions())
-			{
-				var region = emulator.AsRegionable().Region;
-				if (region == DisplayType.PAL)
-				{
-					movie.HeaderEntries.Add(HeaderKeys.Pal, "1");
-				}
-			}
-
-			if (firmwareManager.RecentlyServed.Count != 0)
-			{
-				foreach (var firmware in firmwareManager.RecentlyServed)
-				{
-					var key = firmware.ID.MovieHeaderKey;
-					if (!movie.HeaderEntries.ContainsKey(key))
-					{
-						movie.HeaderEntries.Add(key, firmware.Hash);
-					}
-				}
-			}
-
-			if (emulator is NDS nds && nds.IsDSi)
-			{
-				movie.HeaderEntries.Add("IsDSi", "1");
-
-				if (nds.IsDSiWare)
-				{
-					movie.HeaderEntries.Add("IsDSiWare", "1");
-				}
-			}
-
-			if ((emulator is NES nes && nes.IsVS)
-				|| (emulator is SubNESHawk subnes && subnes.IsVs))
-			{
-				movie.HeaderEntries.Add("IsVS", "1");
-			}
-
-			if (emulator is IGameboyCommon gb)
-			{
-				//TODO doesn't IsCGBDMGMode imply IsCGBMode?
-				if (gb.IsCGBMode) movie.HeaderEntries.Add(gb.IsCGBDMGMode ? "IsCGBDMGMode" : "IsCGBMode", "1");
-			}
-
-			if (emulator is SMS sms)
-			{
-				if (sms.IsSG1000)
-				{
-					movie.HeaderEntries.Add("IsSGMode", "1");
-				}
-
-				if (sms.IsGameGear)
-				{
-					movie.HeaderEntries.Add("IsGGMode", "1");
-				}
-			}
-
-			if (emulator is GPGX gpgx && gpgx.IsMegaCD)
-			{
-				movie.HeaderEntries.Add("IsSegaCDMode", "1");
-			}
-
-			if (emulator is PicoDrive pico && pico.Is32XActive)
-			{
-				movie.HeaderEntries.Add("Is32X", "1");
-			}
-
-			if (emulator is VirtualJaguar jag && jag.IsJaguarCD)
-			{
-				movie.HeaderEntries.Add("IsJaguarCD", "1");
-			}
-
-			if (emulator is Ares64 ares && ares.IsDD)
-			{
-				movie.HeaderEntries.Add("IsDD", "1");
-			}
-
-			if (emulator is MAME mame)
-			{
-				movie.HeaderEntries.Add(HeaderKeys.VsyncAttoseconds, mame.VsyncAttoseconds.ToString());
-			}
-
-			if (emulator.HasCycleTiming())
-			{
-				movie.HeaderEntries.Add(HeaderKeys.CycleCount, "0");
-				movie.HeaderEntries.Add(HeaderKeys.ClockRate, "0");
-			}
-
-			movie.Core = emulator.Attributes().CoreName;
-		}
-
+#pragma warning disable RCS1224 // private but for unit test
 		internal static string ConvertFileNameToTasMovie(string oldFileName)
+#pragma warning restore RCS1224
 		{
 			if (oldFileName is null) return null;
 			var (dir, fileNoExt, _) = oldFileName.SplitPathToDirFileAndExt();

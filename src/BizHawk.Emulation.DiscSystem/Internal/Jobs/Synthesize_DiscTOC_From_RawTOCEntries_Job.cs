@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.DiscSystem
 					case <= 99:
 						minFoundTrack = Math.Min(minFoundTrack, point);
 						maxFoundTrack = Math.Max(maxFoundTrack, point);
-						Result.TOCItems[point].LBA = q.AP_Timestamp - 150; //RawTOCEntries contained an absolute time
+						Result.TOCItems[point].LBA = te.AbsoluteTimestamp - 150; //RawTOCEntries contained an absolute time
 						Result.TOCItems[point].Control = q.CONTROL;
 						Result.TOCItems[point].Exists = true;
 						break;
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 					//0xA2 bcd
 					case 102:
-						Result.TOCItems[100].LBA = q.AP_Timestamp - 150; //RawTOCEntries contained an absolute time
+						Result.TOCItems[100].LBA = te.AbsoluteTimestamp - 150; //RawTOCEntries contained an absolute time
 						Result.TOCItems[100].Control = 0; //not clear what this should be
 						Result.TOCItems[100].Exists = true;
 						break;

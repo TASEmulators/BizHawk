@@ -29,7 +29,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			var blo = new BitmapLoadOptions
 			{
-				AllowWrap = false // must be an independent resource
+				AllowWrap = false, // must be an independent resource
 			};
 
 			return new(SDBitmap, blo);

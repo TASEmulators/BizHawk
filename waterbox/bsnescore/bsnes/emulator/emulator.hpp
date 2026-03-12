@@ -35,7 +35,7 @@ namespace Emulator {
   static const string Website   = "https://bsnes.dev";
 
   //incremented only when serialization format changes
-  static const string SerializerVersion = "115";
+  static const string SerializerVersion = "115.1";
 
   namespace Constants {
     namespace Colorburst {

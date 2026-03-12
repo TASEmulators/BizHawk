@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 					NameTableViewer.WhichNametable.NT_2400 => 1,
 					NameTableViewer.WhichNametable.NT_2800 => 2,
 					NameTableViewer.WhichNametable.NT_2C00 => 3,
-					_ => 0
+					_ => 0,
 				};
 
 				tileX = e.X / 16;

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		public override string ToString() => $"{PC:X6}:  {RawBytes,-20}  {Mnemonic,-8}  {Args}";
 	}
 
-	partial class MC68000
+	public sealed partial class MC68000
 	{
 		public DisassemblyInfo Disassemble(int pc)
 		{
@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			else if (Opcodes[op] == OR1) OR1_Disasm(info);
 			else if (Opcodes[op] == NOT) NOT_Disasm(info);
 			else if (Opcodes[op] == NEG) NEG_Disasm(info);
+			else if (Opcodes[op] == EXG) EXG_Disasm(info);
 
 			else if (Opcodes[op] == JMP) JMP_Disasm(info);
 			else if (Opcodes[op] == JSR) JSR_Disasm(info);

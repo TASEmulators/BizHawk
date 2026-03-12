@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Config _config;
 
+		private readonly IDialogController _dialogController;
+
 		private readonly DisplayManagerBase _displayManager;
 
 		private readonly IMainFormForApi _mainForm;
@@ -30,9 +32,17 @@ namespace BizHawk.Client.Common
 
 		public event StateSavedEventHandler StateSaved;
 
-		public EmuClientApi(Action<string> logCallback, IMainFormForApi mainForm, DisplayManagerBase displayManager, Config config, IEmulator emulator, IGameInfo game)
+		public EmuClientApi(
+			Config config,
+			IDialogController dialogController,
+			DisplayManagerBase displayManager,
+			IEmulator emulator,
+			IGameInfo game,
+			IMainFormForApi mainForm,
+			Action<string> logCallback)
 		{
 			_config = config;
+			_dialogController = dialogController;
 			_displayManager = displayManager;
 			Emulator = emulator;
 			Game = game;
@@ -58,16 +68,16 @@ namespace BizHawk.Client.Common
 #pragma warning disable MA0091 // passing through `sender` is intentional
 		private void CallBeforeQuickLoad(object sender, BeforeQuickLoadEventArgs args)
 			=> BeforeQuickLoad?.Invoke(sender, args);
- 
+
 		private void CallBeforeQuickSave(object sender, BeforeQuickSaveEventArgs args)
 			=> BeforeQuickSave?.Invoke(sender, args);
- 
+
 		private void CallRomLoaded(object sender, EventArgs args)
 			=> RomLoaded?.Invoke(sender, args);
- 
+
 		private void CallStateLoaded(object sender, StateLoadedEventArgs args)
 			=> StateLoaded?.Invoke(sender, args);
- 
+
 		private void CallStateSaved(object sender, StateSavedEventArgs args)
 			=> StateSaved?.Invoke(sender, args);
 #pragma warning restore MA0091
@@ -76,7 +86,7 @@ namespace BizHawk.Client.Common
 
 		public void CloseEmulator(int? exitCode = null) => _mainForm.CloseEmulator(exitCode);
 
-		public void CloseRom() => _mainForm.CloseRom();
+		public void CloseRom() => _mainForm.LoadNullRom();
 
 		public void DisplayMessages(bool value) => _config.DisplayMessages = value;
 
@@ -133,6 +143,8 @@ namespace BizHawk.Client.Common
 
 		public bool IsTurbo() => _mainForm.IsTurboing;
 
+		public bool IsRewinding() => _mainForm.IsRewinding;
+
 		public bool LoadState(string name)
 			=> _mainForm.LoadState(
 				path: Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"),
@@ -140,7 +152,7 @@ namespace BizHawk.Client.Common
 				suppressOSD: false);
 
 		public bool OpenRom(string path)
-			=> _mainForm.LoadRom(path, new LoadRomArgs { OpenAdvanced = OpenAdvancedSerializer.ParseWithLegacy(path) });
+			=> _mainForm.LoadRom(path, new LoadRomArgs(OpenAdvancedSerializer.ParseWithLegacy(path)));
 
 		public void Pause() => _mainForm.PauseEmulator();
 
@@ -148,9 +160,19 @@ namespace BizHawk.Client.Common
 
 		public void RebootCore() => _mainForm.RebootCore();
 
+		// TODO: Change return type to FileWriteResult.
 		public void SaveRam() => _mainForm.FlushSaveRAM();
 
-		public void SaveState(string name) => _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name, fromLua: false);
+		// TODO: Change return type to FileWriteResult.
+		// We may wish to change more than that, since we have a mostly-dupicate ISaveStateApi.Save, neither has documentation indicating what the differences are.
+		public void SaveState(string name)
+		{
+			FileWriteResult result = _mainForm.SaveState(Path.Combine(_config.PathEntries.SaveStateAbsolutePath(Game.System), $"{name}.State"), name);
+			if (result.Exception != null && result.Exception is not UnlessUsingApiException)
+			{
+				throw result.Exception;
+			}
+		}
 
 		public int ScreenHeight() => _displayManager.GetPanelNativeSize().Height;
 
@@ -197,8 +219,8 @@ namespace BizHawk.Client.Common
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
 				_config.SetWindowScaleFor(Emulator.SystemId, size);
-				_mainForm.FrameBufferResized();
-				_displayManager.OSD.AddMessage($"Window size set to {size}x");
+				_mainForm.FrameBufferResized(forceWindowResize: true);
+				_dialogController.AddOnScreenMessage($"Window size set to {size}x");
 			}
 			else
 			{

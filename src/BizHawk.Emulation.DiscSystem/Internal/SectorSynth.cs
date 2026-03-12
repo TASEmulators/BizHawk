@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The data sector header is required. There's no header for audio tracks/sectors.
 		/// </summary>
 		Header16 = 1,
-		
+
 		/// <summary>
 		/// The main 2048 user data bytes are required
 		/// </summary>
@@ -71,10 +71,22 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		SubchannelQ = 32,
 
+		SubchannelR = 0x40,
+
+		SubchannelS = 0x80,
+
+		SubchannelT = 0x100,
+
+		SubchannelU = 0x200,
+
+		SubchannelV = 0x400,
+
+		SubchannelW = 0x800,
+
 		/// <summary>
 		/// Subchannels R-W (all except for P and Q)
 		/// </summary>
-		Subchannel_RSTUVW = (64|128|256|512|1024|2048),
+		Subchannel_RSTUVW = SubchannelR | SubchannelS | SubchannelT | SubchannelU | SubchannelV | SubchannelW,
 
 		/// <summary>
 		/// Complete subcode is required
@@ -155,7 +167,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private Func<int,bool> Condition;
 		private ISectorSynthJob2448 Patch;
 		private ISectorSynthProvider Parent;
-		
+
 		public void Install(Disc disc, Func<int, bool> condition, ISectorSynthJob2448 patch)
 		{
 			Parent = disc.SynthProvider;
@@ -163,7 +175,7 @@ namespace BizHawk.Emulation.DiscSystem
 			Condition = condition;
 			Patch = patch;
 		}
-		
+
 		public ISectorSynthJob2448 Get(int lba)
 		{
 			return Condition(lba) ? Patch : Parent.Get(lba);
@@ -197,7 +209,7 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		public ISectorSynthJob2448 Original;
 		public readonly byte[] Buffer_SubQ = new byte[12];
-		
+
 		public void Synth(SectorSynthJob job)
 		{
 			Original.Synth(job);
@@ -240,7 +252,7 @@ namespace BizHawk.Emulation.DiscSystem
 //			if(toc.tracks[toc.last_track].valid) control |= toc.tracks[toc.last_track].control & 0x4;
 //			else if(toc.disc_type == DISC_TYPE_CD_I) control |= 0x4;
 			control |= (EControlQ)(((int)ses.LastInformationTrack.Control) & 4);
-			
+
 			SubchannelQ sq = default;
 			sq.SetStatus(ADR, control);
 			sq.q_tno.BCDValue = 0xAA;
@@ -264,11 +276,10 @@ namespace BizHawk.Emulation.DiscSystem
 				Policy = Policy,
 				sq = sq,
 				TrackType = TrackType,
-				Pause = true //?
+				Pause = true, // ?
 			};
 
 			ss_gap.Synth(job);
 		}
 	}
-
 }

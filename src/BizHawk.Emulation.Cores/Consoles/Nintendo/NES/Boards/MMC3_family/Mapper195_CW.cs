@@ -1,4 +1,3 @@
-﻿
 // This is a modified 195 board specifically for Chaos World (CH)
 // It is a Work in Progress
 // Save Ram is broken and the game will not load with save ram written through this mapper
@@ -24,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			vram_bank_mask_1k = Cart.VramSize / 1 - 1;
-			
+
 			BaseSetup();
 
 			mmc3.MirrorMask = 3;
@@ -66,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// nothing to write to VROM
 				}
 			}
-			else 
+			else
 				base.WritePpu(addr, value);
 		}
 	}

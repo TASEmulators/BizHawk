@@ -12,7 +12,7 @@ CHR-ROM: 16KB
 CHR-RAM: None
 Battery is not available
 mirroring - both
-	 * 
+	 *
 	 * Games:
 	 * Wai Xing Zhan Shi (Ch)
 	 */

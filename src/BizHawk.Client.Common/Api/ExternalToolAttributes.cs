@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -113,7 +114,7 @@ namespace BizHawk.Client.Common
 		public readonly string Name;
 
 		public ExternalToolAttribute(string? name)
-			=> Name = string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name!;
+			=> Name = string.IsNullOrWhiteSpace(name) ? Util.GetRandomUUIDStr() : name!;
 
 		public class MissingException : Exception {}
 	}

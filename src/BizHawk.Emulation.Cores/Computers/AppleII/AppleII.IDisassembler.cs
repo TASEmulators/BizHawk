@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public string PCRegisterName => "PC";
 
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "6502"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "6502" ];
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{

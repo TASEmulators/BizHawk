@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		void WriteByte(long addr, uint value, string domain = null);
 		void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null);
-		void WriteFloat(long addr, double value, string domain = null);
+		void WriteFloat(long addr, float value, string domain = null);
 
 		void WriteS8(long addr, int value, string domain = null);
 		void WriteS16(long addr, int value, string domain = null);

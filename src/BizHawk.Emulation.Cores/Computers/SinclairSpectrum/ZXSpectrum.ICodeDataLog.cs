@@ -15,14 +15,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public void SetCDL(ICodeDataLog cdl)
 		{
 			_cdl = cdl;
-			if (cdl == null || !cdl.Active)
-			{
-				_cpu.ReadMemory = _machine.ReadMemory;
-			}
-			else
-			{
-				_cpu.ReadMemory = ReadMemory_CDL;
-			}
 		}
 
 		public void NewCDL(ICodeDataLog cdl)
@@ -41,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			AddIfExists("ROM - 48K BASIC");
 
 			// different RAM bank ordering for < 128k models
-			if (_machineType == MachineType.ZXSpectrum16 || _machineType == MachineType.ZXSpectrum48)
+			if (_machineType is MachineType.ZXSpectrum16 or MachineType.ZXSpectrum48)
 			{
 				AddIfExists("RAM - BANK 0 (Screen)");
 				AddIfExists("RAM - BANK 1");

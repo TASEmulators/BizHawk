@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 using static SDL2.SDL;
 
@@ -35,7 +36,7 @@ namespace BizHawk.Bizware.Audio
 			AudioFormat.S32LSB or AudioFormat.F32LSB => 32,
 			_ => throw new InvalidOperationException(),
 		};
-		
+
 		[DllImport("SDL2", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr SDL_LoadWAV_RW(
 			IntPtr src,
@@ -44,12 +45,13 @@ namespace BizHawk.Bizware.Audio
 			out IntPtr audio_buf,
 			out uint audio_len);
 
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SDL2WavStream(Stream wavFile)
 		{
 			using var rwOpWrapper = new SDLRwOpsStreamWrapper(wavFile);
 			if (SDL_LoadWAV_RW(rwOpWrapper.Rw, 0, out var spec, out var wav, out var len) == IntPtr.Zero)
 			{
-				throw new($"Could not load WAV file! SDL error: {SDL_GetError()}");
+				throw new Exception($"Could not load WAV file! SDL error: {SDL_GetError()}");
 			}
 
 			Frequency = spec.freq;
@@ -91,17 +93,19 @@ namespace BizHawk.Bizware.Audio
 		{
 		}
 
-		public unsafe int Read(Span<byte> buffer)
+		public int Read(Span<byte> buffer)
 		{
 			if (_wav == IntPtr.Zero)
 			{
 				throw new ObjectDisposedException(nameof(SDL2WavStream));
 			}
 
-			var count = (int)Math.Min(buffer.Length, _len - _pos);
-			new ReadOnlySpan<byte>((void*)((nint)_wav + _pos), count).CopyTo(buffer);
-			_pos += (uint)count;
-			return count;
+			uint count = Math.Min((uint) buffer.Length, _len - _pos);
+			var countSigned = unchecked((int) count); // since `Span.Length` is at most `int.MaxValue`, so must `count` be
+			// really, these fields should just be widened to whatever they're used as, which seems to be s64, and asserted to be in 0..<int.MaxValue
+			Util.UnsafeSpanFromPointer(ptr: _wav.Plus(_pos), length: countSigned).CopyTo(buffer);
+			_pos += count;
+			return countSigned;
 		}
 
 		public override int Read(byte[] buffer, int offset, int count)
@@ -114,7 +118,7 @@ namespace BizHawk.Bizware.Audio
 				SeekOrigin.Begin => offset,
 				SeekOrigin.Current => _pos + offset,
 				SeekOrigin.End => _len + offset,
-				_ => offset
+				_ => offset,
 			};
 
 			Position = newpos;
@@ -130,7 +134,7 @@ namespace BizHawk.Bizware.Audio
 		public override void Write(byte[] buffer, int offset, int count)
 			=> throw new NotSupportedException();
 
-		private unsafe class SDLRwOpsStreamWrapper : IDisposable
+		private sealed class SDLRwOpsStreamWrapper : IDisposable
 		{
 			public IntPtr Rw { get; private set; }
 			private readonly Stream _s;
@@ -141,12 +145,13 @@ namespace BizHawk.Bizware.Audio
 			private readonly SDLRWopsWriteCallback _writeCallback;
 			private readonly SDLRWopsCloseCallback _closeCallback;
 
-			public SDLRwOpsStreamWrapper(Stream s)
+			/// <exception cref="Exception">unmanaged call failed</exception>
+			public unsafe SDLRwOpsStreamWrapper(Stream s)
 			{
 				Rw = SDL_AllocRW();
 				if (Rw == IntPtr.Zero)
 				{
-					throw new($"Could not allocate SDL_RWops! SDL error: {SDL_GetError()}");
+					throw new Exception($"Could not allocate SDL_RWops! SDL error: {SDL_GetError()}");
 				}
 
 				_s = s;

@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				int b = ((reg[0] >> 1) & 0x0F);
 				return Rom[offset + (b << 15) + addr];
-			} 
+			}
 		}
 	}
 }

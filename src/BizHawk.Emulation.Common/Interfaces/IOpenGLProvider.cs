@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Common
 		/// Checks if specified OpenGL version is supported
 		/// The current context will be preserved
 		/// </summary>
-		public bool SupportsGLVersion(int major, int minor);
+		bool SupportsGLVersion(int major, int minor);
 
 		/// <summary>
 		/// Requests an OpenGL context with specified major / minor version
@@ -17,28 +17,28 @@ namespace BizHawk.Emulation.Common
 		/// The requested OpenGL context will be shared with the current context
 		/// Note: creating a context implicitly makes that created context current
 		/// </summary>
-		public object RequestGLContext(int major, int minor, bool coreProfile);
+		object RequestGLContext(int major, int minor, bool coreProfile);
 
 		/// <summary>
 		/// Frees this OpenGL context
 		/// </summary>
-		public void ReleaseGLContext(object context);
+		void ReleaseGLContext(object context);
 
 		/// <summary>
 		/// Sets this OpenGL context to current
 		/// </summary>
-		public void ActivateGLContext(object context);
+		void ActivateGLContext(object context);
 
 		/// <summary>
 		/// Deactivates the current OpenGL context
 		/// No context will be current after this call
 		/// </summary>
-		public void DeactivateGLContext();
+		void DeactivateGLContext();
 
 		/// <summary>
 		/// Gets an OpenGL function pointer
 		/// The user must make a context active before using this
 		/// </summary>
-		public IntPtr GetGLProcAddress(string proc);
+		IntPtr GetGLProcAddress(string? proc);
 	}
 }

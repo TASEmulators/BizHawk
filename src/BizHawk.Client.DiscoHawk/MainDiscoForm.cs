@@ -152,7 +152,7 @@ namespace BizHawk.Client.DiscoHawk
 						{
 							DialogResult.Yes => true,
 							DialogResult.No => false,
-							_ => null
+							_ => null,
 						};
 					AudioExtractor.Extract(disc, path, filename, PromptForOverwrite);
 				}

@@ -46,7 +46,9 @@ public:
 	{
 		if (IsWinAPI)
 		{
-			using WinAPIGLFunc = __attribute__((ms_abi)) GLFunc;
+			// doing __attribute__((ms_abi)) GLFunc; instead will crash clang on compilation
+			// https://github.com/llvm/llvm-project/issues/148325
+			using WinAPIGLFunc = __attribute__((ms_abi)) Result (*)(Args...);
 			return reinterpret_cast<WinAPIGLFunc>(glProc)(std::forward<Args>(args)...);
 		}
 

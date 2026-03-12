@@ -1,8 +1,7 @@
 namespace BizHawk.Client.Common
 {
-	public class LoadRomArgs
-	{
-		public bool? Deterministic { get; set; }
-		public IOpenAdvanced OpenAdvanced { get; set; }
-	}
+	public sealed record class LoadRomArgs(
+		IOpenAdvanced OpenAdvanced,
+		string/*?*/ ForcedSysID = null,
+		bool? Deterministic = null);
 }

@@ -34,8 +34,10 @@ namespace BizHawk.BizInvoke
 				CallingConventions.Standard,
 				new[] { typeof(object), typeof(IntPtr) });
 
-			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-			delegateCtor.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+#pragma warning disable RCS1130 // `MethodImplAttributes` isn't `[Flags]`, but this is its intended use
+			const MethodImplAttributes IMPL_FLAGS_MANAGED = MethodImplAttributes.Runtime | MethodImplAttributes.Managed;
+#pragma warning restore RCS1130
+			delegateCtor.SetImplementationFlags(IMPL_FLAGS_MANAGED);
 
 			var delegateInvoke = delegateType.DefineMethod(
 				"Invoke",
@@ -63,7 +65,7 @@ namespace BizHawk.BizInvoke
 			}
 
 			// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+			delegateInvoke.SetImplementationFlags(IMPL_FLAGS_MANAGED);
 
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
 			var attr = new CustomAttributeBuilder(

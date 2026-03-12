@@ -14,7 +14,8 @@
 		/// Unfortunately, the core may think differently of a nonexisting (null) saveram vs a 0 size saveram.
 		/// Frontend users of the ISaveRam should treat null as nonexisting (and thus not even write the file, so that the "does not exist" condition can be roundtripped and not confused with an empty file)
 		/// </summary>
-		byte[]? CloneSaveRam();
+		/// <param name="clearDirty">Whether the saveram should be considered in a clean state after this call for purposes of <see cref="SaveRamModified"/></param>
+		byte[]? CloneSaveRam(bool clearDirty = true);
 
 		/// <summary>
 		/// store new SaveRAM to the emu core. the data should be the same size as the return from ReadSaveRam()
@@ -22,12 +23,9 @@
 		void StoreSaveRam(byte[] data);
 
 		/// <summary>
-		/// Gets a value indicating whether or not SaveRAM has been modified since the last save
-		/// TODO: This is not the best interface. What defines a "save"? I suppose a Clone(), right? at least specify that here.
-		/// Clone() should probably take an option that says whether to clear the dirty flag.
-		/// And anyway, cores might not know if they can even track a functional dirty flag -- we should convey that fact somehow
-		/// (reminder: do that with flags, so we don't have to change the interface 10000 times)
-		/// Dirty SaveRAM can in principle be determined by the frontend in that case, but it could possibly be too slow for the file menu dropdown or other things
+		/// Gets a value indicating whether or not SaveRAM has been modified since the last call to either <see cref="StoreSaveRam"/> or <see cref="CloneSaveRam"/> (when passing true).
+		/// Cores may choose to always return true or return true for any non-default saveram.
+		/// This value should be considered a hint more than an absolute truth.
 		/// </summary>
 		bool SaveRamModified { get; }
 	}

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
@@ -15,11 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_machine = machine;
 			_joyLine = 0;
 			_playerNumber = playerNumber;
-
-			ButtonCollection = new List<string>
-			{
-
-			}.ToArray();
+			ButtonCollection = Array.Empty<string>();
 		}
 
 		public JoystickType JoyType => JoystickType.NULL;

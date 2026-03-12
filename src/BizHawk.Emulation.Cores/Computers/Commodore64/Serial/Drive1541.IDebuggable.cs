@@ -146,6 +146,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private const byte Rts = 0x60;
 		private const byte JsrSize = 3;
 
+		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public IMemoryCallbackSystem MemoryCallbacks => throw new NotImplementedException();
+#pragma warning restore CA1065
 	}
 }

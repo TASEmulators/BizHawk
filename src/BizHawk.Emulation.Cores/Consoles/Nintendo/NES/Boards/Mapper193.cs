@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// http://wiki.nesdev.com/w/index.php/INES_Mapper_193
-	internal sealed class Mapper193 : NesBoardBase 
+	internal sealed class Mapper193 : NesBoardBase
 	{
 		private int prg_bank_mask_8k;
 		private byte[] prg_banks_8k = new byte[4];
@@ -55,13 +55,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case 0:
 					chr_banks_2k[0] = (byte)((value & ~3) >> 1);
-					chr_banks_2k[1] = (byte)(((value & ~3) >> 1) + 1); 
+					chr_banks_2k[1] = (byte)(((value & ~3) >> 1) + 1);
 					break;
 				case 1:
 					chr_banks_2k[2] = (byte)((value & ~1) >> 1);
 					break;
 				case 2:
-					chr_banks_2k[3] = (byte)((value & ~1) >> 1); 
+					chr_banks_2k[3] = (byte)((value & ~1) >> 1);
 					break;
 				case 3:
 					prg_banks_8k[0] = value;

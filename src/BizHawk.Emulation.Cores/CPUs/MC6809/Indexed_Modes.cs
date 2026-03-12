@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 						case 0x5:
 							Regs[ADDR]  = (ushort)(Regs[indexed_reg] + (((Regs[B] & 0x80) == 0x80) ? (Regs[B] | 0xFF00) : Regs[B]));
 							PopulateCURINSTR(RD_INC, ALU, ADDR,
-											RD_INC, ALU2, ADDR, 
+											RD_INC, ALU2, ADDR,
 											SET_ADDR, IDX_EA, ALU, ALU2,
 											IDX_OP_BLD);
 							break;
@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 												RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
 												IDX_OP_BLD);
 							}
-							else 
+							else
 							{
 								// illegal
 							}

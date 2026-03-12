@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework><!-- some NuGet packages aren't for Standard, and are only loaded at runtime because EmuHawk is still Framework. More work will be required to move to Core. -->
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<Import Project="../MainSlnCommon.props" />
 	<PropertyGroup>
@@ -12,8 +12,11 @@
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" />
 		<PackageReference Include="SharpCompress" />
 		<PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />
+		<PackageReference Include="System.Drawing.Common" PrivateAssets="all" />
+		<PackageReference Include="System.CommandLine" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Input/BizHawk.Bizware.Input.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />
 	</ItemGroup>
 	<ItemGroup>

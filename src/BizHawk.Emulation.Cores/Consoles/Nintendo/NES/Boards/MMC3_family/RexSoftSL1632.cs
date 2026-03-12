@@ -111,7 +111,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0x4001: base.WritePrg(0x4001, value); break;
 					case 0x6000: base.WritePrg(0x6000, value); break;
 					case 0x6001: base.WritePrg(0x6001, value); break;
-
 				}
 			}
 			else if (addr >= 0x3000 && addr <= 0x6003)
@@ -131,8 +130,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
-
-
-
 	}
 }

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (_controller.IsPressed("Toggle Left Difficulty") && !_leftDifficultySwitchHeld)
 			{
-				_leftDifficultySwitchPressed ^= true;
+				_leftDifficultySwitchPressed = !_leftDifficultySwitchPressed;
 				_leftDifficultySwitchHeld = true;
 			}
 			else if (!_controller.IsPressed("Toggle Left Difficulty"))
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (_controller.IsPressed("Toggle Right Difficulty") && !_rightDifficultySwitchHeld)
 			{
-				_rightDifficultySwitchPressed ^= true;
+				_rightDifficultySwitchPressed = !_rightDifficultySwitchPressed;
 				_rightDifficultySwitchHeld = true;
 			}
 			else if (!_controller.IsPressed("Toggle Right Difficulty"))

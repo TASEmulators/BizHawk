@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	E7 (M-Network)
 	-----
 
-	M-network wanted something of their own too, so they came up with what they called 
+	M-network wanted something of their own too, so they came up with what they called
 	"Big Game" (this was printed on the prototype ASICs on the prototype carts).  It
 	can handle up to 16K of ROM and 2K of RAM.
 
@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Accessing 1FE7 enables 1K of the 2K RAM, instead.
 
 	When the RAM is enabled, this 1K appears at 1000-17FF.  1000-13FF is the write port, 1400-17FF
-	is the read port.  
+	is the read port.
 
-	1800-19FF also holds RAM. 1800-18FF is the write port, 1900-19FF is the read port.  
+	1800-19FF also holds RAM. 1800-18FF is the write port, 1900-19FF is the read port.
 	Only 256 bytes of RAM is accessible at time, but there are four different 256 byte
 	banks making a total of 1K accessible here.
 
@@ -82,23 +82,23 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					{
 						return _ram[addr & 0x3FF] = 0xFF; // Reading from 1k write port triggers an unwanted write
 					}
-					
+
 					return _ram[addr & 0x3FF];
 				}
-				
+
 				return Core.Rom[(_romBank1K * 0x800) + (addr & 0x7FF)];
 			}
-			
+
 			if (addr < 0x1900) // Ram 1 Write port
 			{
 				return _ram[RamBank1Offset + (_ramBank1Toggle * 0x100) + (addr & 0xFF)] = 0xFF; // Reading from the 256b write port @1800 riggers an unwanted write
 			}
-			
+
 			if (addr < 0x1A00) // Ram 1 Read port
 			{
 				return _ram[RamBank1Offset + (_ramBank1Toggle * 0x100) + (addr & 0xFF)];
 			}
-			
+
 			if (addr < 0x2000)
 			{
 				addr -= 0x1800;
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				int offset = Core.Rom.Length - 0x0800;
 				return Core.Rom[offset + addr]; // Fixed to last 1.5K
 			}
-			
+
 			return base.ReadMemory(addr);
 		}
 

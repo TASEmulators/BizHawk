@@ -52,7 +52,9 @@ namespace BizHawk.Common
 			if (PageSize != Environment.SystemPageSize)
 			{
 				// We can do it, but we'll have to change up some waterbox stuff
+#pragma warning disable CA1065 // yes, really throw
 				throw new InvalidOperationException("Wrong page size");
+#pragma warning restore CA1065
 			}
 		}
 

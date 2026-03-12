@@ -3,6 +3,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.WinForms.Controls;
@@ -34,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			void UpdateDropdownAndLabel(string newPrefix)
 			{
 				txtBoundPrefix.Text = newPrefix;
-				var wasSelected = (string) cbBoundChannel.SelectedItem;
+				var wasSelected = BoundChannels;
 				cbBoundChannel.Enabled = false;
 				cbBoundChannel.SelectedIndex = -1;
 				cbBoundChannel.Items.Clear();
@@ -112,8 +113,8 @@ namespace BizHawk.Client.EmuHawk
 				Controls =
 				{
 					flpBindReadout,
-					new SingleRowFLP { Controls = { flpButtons, flpPrescale } }
-				}
+					new SingleRowFLP { Controls = { flpButtons, flpPrescale } },
+				},
 			});
 			ResumeLayout();
 		}

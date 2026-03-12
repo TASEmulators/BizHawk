@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		public void Set(LuaTable buttons, int? controller = null)
 		{
 			var dict = new Dictionary<string, bool>();
-			foreach (var (k, v) in _th.EnumerateEntries<object, object>(buttons))
+			foreach (var (k, v) in buttons)
 			{
 				dict[k.ToString()] = Convert.ToBoolean(v); // Accepts 1/0 or true/false
 			}
@@ -45,11 +45,11 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = -63, [ \"Tilt Y\" ] = 127 } );")]
-		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
+		[LuaMethod("setanalog", "Sets the given analog controls to their provided values as autoholds. Set axes to the empty string to clear individual holds.")]
 		public void SetAnalog(LuaTable controls, int? controller = null)
 		{
 			var dict = new Dictionary<string, int?>();
-			foreach (var (k, v) in _th.EnumerateEntries<object, object>(controls))
+			foreach (var (k, v) in controls)
 			{
 				dict[k.ToString()] = long.TryParse(v.ToString(), out var d) ? (int) d : null;
 			}

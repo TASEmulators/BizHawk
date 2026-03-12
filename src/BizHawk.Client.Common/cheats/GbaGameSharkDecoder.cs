@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Linq;
 
 #pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
@@ -64,15 +63,15 @@ namespace BizHawk.Client.Common.cheats
 
 			var result = new DecodeResult
 			{
-				Size = code.First() switch
+				Size = code[0] switch
 				{
 					'0' => WatchSize.Byte,
 					'1' => WatchSize.Word,
 					'2' => WatchSize.DWord,
 					'3' => WatchSize.DWord,
 					'6' => WatchSize.Word,
-					_ => WatchSize.Byte
-				}
+					_ => WatchSize.Byte,
+				},
 			};
 
 			result.Address = int.Parse(GetLast(code, (int)result.Size), NumberStyles.HexNumber);
@@ -82,7 +81,7 @@ namespace BizHawk.Client.Common.cheats
 			{
 				WatchSize.Byte => result.Value & 0xFF,
 				WatchSize.Word => result.Value & 0xFFFF,
-				_ => result.Value
+				_ => result.Value,
 			};
 #endif
 

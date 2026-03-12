@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
-	{		
+	{
 		private byte ReadMemorySG_EX_A(ushort address)
 		{
 			byte ret;

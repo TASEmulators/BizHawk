@@ -55,7 +55,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 					ForeColor = GetUnchangedComparisonColor(nestedName, in baseline, tag),
 					Name = nestedName,
 					Tag = tag,
-					Text = GetPropertyNameDesc(pi)
+					Text = GetPropertyNameDesc(pi),
 				}.Also(it => it.CheckedChanged += ControlEventHandler);
 			}
 
@@ -158,7 +158,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 			private static readonly IReadOnlyDictionary<Type, IConfigPropEditorUIGen> DefaultFallbackGeneratorSet = new Dictionary<Type, IConfigPropEditorUIGen> {
 				[typeof(bool)] = new CheckBoxForBoolEditorUIGen(),
 				[typeof(int)] = new NumericUpDownForInt32EditorUIGen(),
-				[typeof(string)] = new TextBoxForStringEditorUIGen()
+				[typeof(string)] = new TextBoxForStringEditorUIGen(),
 			};
 		}
 
@@ -319,7 +319,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 							Maximum = int.MaxValue,
 							Minimum = int.MinValue,
 							Size = new Size(72, 20),
-							Value = baseline
+							Value = baseline,
 						}.Also(it =>
 						{
 							if (pi.GetCustomAttributes(typeof(RangeAttribute), false).FirstOrDefault() is RangeAttribute range)
@@ -328,11 +328,11 @@ namespace BizHawk.Experiment.AutoGenConfig
 								it.Minimum = (int) range.Minimum;
 							}
 							it.ValueChanged += ControlEventHandler;
-						})
+						}),
 					},
 					ForeColor = GetUnchangedComparisonColor(nestedName, in baseline, tag),
 					Name = nestedName,
-					Tag = tag
+					Tag = tag,
 				};
 			}
 
@@ -362,11 +362,11 @@ namespace BizHawk.Experiment.AutoGenConfig
 					AutoSize = true,
 					Controls = {
 						new Label { Anchor = AnchorStyles.None, AutoSize = true, Text = GetPropertyNameDesc(pi) },
-						new TextBox { AutoSize = true, Text = baseline }.Also(it => it.TextChanged += ControlEventHandler)
+						new TextBox { AutoSize = true, Text = baseline }.Also(it => it.TextChanged += ControlEventHandler),
 					},
 					ForeColor = GetUnchangedComparisonColor(nestedName, baseline, tag),
 					Name = nestedName,
-					Tag = tag
+					Tag = tag,
 				};
 			}
 
@@ -389,13 +389,13 @@ namespace BizHawk.Experiment.AutoGenConfig
 							AutoSize = true,
 							Controls = { new Label { AutoSize = true, Text = $"no editor found for type {pi.PropertyType}" } },
 							Location = new Point(4, 16),
-							MaximumSize = new Size(int.MaxValue, 20)
-						}
+							MaximumSize = new Size(int.MaxValue, 20),
+						},
 					},
 					MaximumSize = new Size(int.MaxValue, 40),
 					Name = $"{nesting}/{pi.Name}",
 					Tag = new ConfigPropEditorUITag(metadata, this),
-					Text = pi.Name
+					Text = pi.Name,
 				};
 
 			protected override object? GetTValue(GroupBox c) => throw new InvalidOperationException();

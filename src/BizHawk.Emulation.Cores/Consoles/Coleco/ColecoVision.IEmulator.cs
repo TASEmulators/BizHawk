@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						_latchedSample = v;
 					}
 
-					_sampleClock++;	
+					_sampleClock++;
 				}
 
 				// starting from scanline 20, changes to the wheel are added once per scanline (up to 144)

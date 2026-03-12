@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
@@ -11,71 +11,87 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	//
 	// Bank select is DE00, bit 7 enabled means to disable
 	// ROM in 8000-9FFF.
+
 	internal sealed class Mapper0013 : CartridgeDevice
 	{
-		private readonly int[][] _banks; // 8000
+		private const int BankSize = 0x2000;
+		private const byte DummyData = 0xFF;
 
-		private int _bankMask;
-		private int _bankNumber;
+		private readonly byte[][] _banks = new byte[128][];
 
-		private int[] _currentBank;
-
+		private readonly byte _bankMask;
+		private readonly int _bankCount;
+		private byte _bankNumber;
+		private byte[] _currentBank;
 		private bool _romEnable;
 
-		public Mapper0013(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
+		public Mapper0013(IEnumerable<CartridgeChip> chips)
 		{
-			var count = newAddresses.Count;
-
 			pinGame = true;
 			pinExRom = false;
 			_romEnable = true;
 
-			// build dummy bank
-			var dummyBank = new int[0x2000];
-			for (var i = 0; i < 0x2000; i++)
-			{
-				dummyBank[i] = 0xFF; // todo: determine if this is correct
-			}
+			// This bank will be chosen if uninitialized.
+			var dummyBank = new byte[BankSize];
+			dummyBank.AsSpan().Fill(DummyData);
+			_banks.AsSpan().Fill(dummyBank);
+			_bankMask = 0x00;
 
-			switch (count)
+			// Load in each bank.
+			var maxBank = 0;
+			foreach (var chip in chips)
 			{
-				case 16:
-					_bankMask = 0x0F;
-					_banks = new int[16][];
-					break;
-				case 8:
-					_bankMask = 0x07;
-					_banks = new int[8][];
-					break;
-				case 4:
-					_bankMask = 0x03;
-					_banks = new int[4][];
-					break;
-				default:
-					throw new Exception("This looks like a Domark/HES cartridge but cannot be loaded...");
-			}
-
-			// for safety, initialize all banks to dummy
-			for (var i = 0; i < _banks.Length; i++)
-			{
-				_banks[i] = dummyBank;
-			}
-
-			// now load in the banks
-			for (var i = 0; i < count; i++)
-			{
-				if (newAddresses[i] == 0x8000)
+				// Maximum 128 banks.
+				if (chip.Bank is > 0x7F or < 0x00)
 				{
-					_banks[newBanks[i] & _bankMask] = newData[i];
+					throw new Exception("Cartridge image has an invalid bank");
+				}
+
+				// Addresses other than 0x8000 are not supported.
+				if (chip.Address != 0x8000)
+				{
+					continue;
+				}
+
+				// Bank wrap-around is based on powers of 2.
+				while (chip.Bank > _bankMask)
+				{
+					_bankMask = unchecked((byte) ((_bankMask << 1) | 1));
+				}
+
+				var bank = new byte[BankSize];
+
+				bank.AsSpan().Fill(DummyData);
+				chip.ConvertDataToBytes().CopyTo(bank.AsSpan());
+
+				_banks[chip.Bank] = bank;
+
+				if (chip.Bank > maxBank)
+				{
+					maxBank = chip.Bank;
 				}
 			}
 
+			_bankCount = maxBank + 1;
+
+			// Start with bank 0.
 			BankSet(0);
+		}
+
+		public override IEnumerable<MemoryDomain> CreateMemoryDomains()
+		{
+			yield return new MemoryDomainDelegate(
+				name: "ROM",
+				size: _bankCount * BankSize,
+				endian: MemoryDomain.Endian.Little,
+				peek: a => _banks[a >> 13][a & 0x1FFF],
+				poke: (a, d) => _banks[a >> 13][a & 0x1FFF] = d,
+				wordSize: 1
+			);
 		}
 
 		protected override void SyncStateInternal(Serializer ser)
 		{
-			ser.Sync("BankMask", ref _bankMask);
 			ser.Sync("BankNumber", ref _bankNumber);
 			ser.Sync("ROMEnable", ref _romEnable);
 
@@ -87,15 +103,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		private void BankSet(int index)
 		{
-			_bankNumber = index & _bankMask;
+			_bankNumber = unchecked((byte) (index & _bankMask));
 			_romEnable = (index & 0x80) == 0;
 			UpdateState();
 		}
 
-		public override int Peek8000(int addr)
-		{
-			return _currentBank[addr];
-		}
+		public override int Peek8000(int addr) =>
+			_currentBank[addr];
 
 		public override void PokeDE00(int addr, int val)
 		{
@@ -105,24 +119,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public override int Read8000(int addr)
-		{
-			return _currentBank[addr];
-		}
+		public override int Read8000(int addr) =>
+			_currentBank[addr];
 
 		private void UpdateState()
 		{
 			_currentBank = _banks[_bankNumber];
-			if (_romEnable)
-			{
-				pinExRom = false;
-				pinGame = true;
-			}
-			else
-			{
-				pinExRom = true;
-				pinGame = true;
-			}
+
+			(pinExRom, pinGame) = _romEnable
+				? (false, true)
+				: (true, true);
 		}
 
 		public override void WriteDE00(int addr, int val)

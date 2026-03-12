@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores
 
 				int txtLength = b.DisName.Length;
 				int btnSize = System.Convert.ToInt32(stdButtonWidth * b.WidthFactor);
-				
+
 
 				string disp = b.DisName;
 				if (txtLength == 1)

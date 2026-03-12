@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void tick()
 		{
-			//Console.WriteLine(ramp_sig + " " + zero_sig + " " + blank_sig + " " + Core.cpu.TotalExecutedCycles + " " + (x_vel - 128.0) + " " + x_pos 
+			//Console.WriteLine(ramp_sig + " " + zero_sig + " " + blank_sig + " " + Core.cpu.TotalExecutedCycles + " " + (x_vel - 128.0) + " " + x_pos
 			//+ " " + (y_vel - 128.0) + " " + y_pos + " " + Core.t1_counter + " " + vec_scale);
 
 			if (ramp_sig && !zero_sig)
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				}
 
 				off_screen = false;
-				
+
 				if (x_pos > 257) { off_screen = true; if (x_pos > (257 + 256)) { x_pos = (257 + 256); } }
 				if (x_pos < 2) { off_screen = true; if (x_pos < (2 - 256)) { x_pos = (2 - 256); } }
 				if (y_pos > 385) { off_screen = true; if (y_pos > (385 + 256)) { y_pos = (385 + 256); } }
@@ -62,14 +62,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			/*
 			if (!blank_sig && !off_screen)
 			{
-				
+
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_1);
-				
+
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_2);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_2);
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_2);
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_2);
-				
+
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 2 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_3);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 2 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_3);
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) + 2))] |= (int)(br & bright_int_3);
@@ -78,14 +78,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_3);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_3);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_3);
-				
+
 			}
 			*/
 		}
 
 		public void draw_screen()
 		{
-			// screen is 2 times the internal size of the image 
+			// screen is 2 times the internal size of the image
 			double start_x = 0;
 			double end_x = 0;
 			double start_y = 0;
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						if ((end_y <= 385) && (start_y >= 385)) { max_y = 385 - end_y; start_y = 385; }
 
 						// screen size is double internal size
-							
+
 						start_x *= 2;
 						end_x *= 2;
 						start_y *= 2;
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 						max_x *= 2;
 						max_y *= 2;
-							
+
 						steps = Math.Max(max_x, max_y) + 1;
 
 						double x_step = (end_x - start_x) / steps;
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void draw_old_screen()
 		{
-			// screen is 2 times the internal size of the image 
+			// screen is 2 times the internal size of the image
 			double start_x = 0;
 			double end_x = 0;
 			double start_y = 0;
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			zero_old = zero_sig;
 			blank_old = blank_sig;
-			bright_int_1_old = bright_int_1;			
+			bright_int_1_old = bright_int_1;
 		}
 
 		public void Reset()

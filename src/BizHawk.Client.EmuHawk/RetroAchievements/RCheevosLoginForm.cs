@@ -1,5 +1,6 @@
-using System.Diagnostics;
 using System.Windows.Forms;
+
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -32,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Process.Start("https://retroachievements.org/createaccount.php");
+			Util.OpenUrlExternal("https://retroachievements.org/createaccount.php");
 		}
 	}
 }

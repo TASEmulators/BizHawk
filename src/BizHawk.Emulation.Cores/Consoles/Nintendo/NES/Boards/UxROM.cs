@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.BoardType)
 			{
 				case "MAPPER0002-00":
-					//probably a mistake. 
+					//probably a mistake.
 					//but (for chrram): "Use of $00 with no CHR ROM implies that the game is wired to map nametable memory in CHR space. The value $00 MUST NOT be used if a mapper isn't defined to allow this. "
 					//well, i'm not going to do that now. we'll save it for when it's needed
 					//"it's only mapper 218 and no other mappers"
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case "NES-UNROM": //mega man
-				case "HVC-UNROM": 
+				case "HVC-UNROM":
 				case "KONAMI-UNROM":
 				case "NES-UNEPROM": // proto
 				case "IREM-UNROM":
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128); AssertChr(0); AssertVram(8);
 					//AssertWram(0); //JJ - Tobidase Daisakusen Part 2 (J) includes WRAM
 					break;
-	
+
 				case "HVC-UN1ROM":
 					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);
 					adjust_prg = (x) => ((x >> 2) & 7);
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (NES._isVS)
 			{
-				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values
 				addr &= 0x2FFF;
 
 
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES.IsVS)
 			{
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
-			}	
+			}
 		}
 	}
 }

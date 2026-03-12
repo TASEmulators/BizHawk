@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
-		public Z80A CPU { get; set; }
+		public Z80A<ZXSpectrum.CpuLink> CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// is this a lag frame?
 			Spectrum.IsLagFrame = !InputRead;
 
-			// FDC debug            
+			// FDC debug
 			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
 			{
 				// only write UPD log every second
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			PagingDisabled = false;
 			RAMPaged = 0;
 			CPU.RegPC = 0;
-			
+
 			Spectrum.SetCpuRegister("SP", 0xFFFF);
 			Spectrum.SetCpuRegister("IY", 0);
 			Spectrum.SetCpuRegister("IX", 0);
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			TapeDevice.Reset();
 			AYDevice?.Reset();
 
-			byte[][] rams = 
+			byte[][] rams =
 			{
 				RAM0,
 				RAM1,

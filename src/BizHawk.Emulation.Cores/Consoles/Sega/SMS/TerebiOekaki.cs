@@ -7,7 +7,11 @@
 		private byte xCoord = 128;
 		private byte yCoord = 100;
 
-		private enum Axis { XAxis, YAxis }
+		private enum Axis
+		{
+			XAxis,
+			YAxis,
+		}
 
 		private Axis axis = Axis.XAxis;
 

@@ -9,6 +9,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" PrivateAssets="all" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 	</ItemGroup>
 </Project>

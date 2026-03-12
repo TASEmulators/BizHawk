@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		private byte ReadMemoryCD(int addr)
 		{

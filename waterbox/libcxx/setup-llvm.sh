@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-LLVM_TAG=llvmorg-18.1.3
+LLVM_TAG=llvmorg-18.1.8
 LLVM_DIRS="cmake compiler-rt libunwind libcxx libcxxabi runtimes"
 LLVM_PATH=../llvm-project
 

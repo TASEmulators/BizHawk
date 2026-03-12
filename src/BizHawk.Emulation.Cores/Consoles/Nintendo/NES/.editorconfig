@@ -1,0 +1,16 @@
+[*.cs]
+
+# The value returned by Stream.Read/Stream.ReadAsync is not used
+dotnet_diagnostic.MA0060.severity = suggestion
+
+# Do not use default value type constructor
+dotnet_diagnostic.SA1129.severity = suggestion
+
+# Elements should have the same indentation
+dotnet_diagnostic.SA1137.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion
+
+# Element documentation header should be preceded by blank line
+dotnet_diagnostic.SA1514.severity = suggestion

@@ -195,7 +195,6 @@
 			this.MarkerView.Name = "MarkerView";
 			this.MarkerView.RowCount = 0;
 			this.MarkerView.ScrollSpeed = 1;
-			this.MarkerView.SeekingCutoffInterval = 0;
 			this.MarkerView.Size = new System.Drawing.Size(186, 224);
 			this.MarkerView.TabIndex = 0;
 			this.MarkerView.TabStop = false;

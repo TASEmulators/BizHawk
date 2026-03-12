@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowFullOpen = true,
 				AnyColor = true,
 				Color = BackgroundPanel.BackColor,
-				CustomColors = new[] { customColor }
+				CustomColors = [ customColor ],
 			};
 
 			if (dlg.ShowDialog().IsOk())
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowFullOpen = true,
 				AnyColor = true,
 				Color = ForeGroundPanel.BackColor,
-				CustomColors = new[] { customColor }
+				CustomColors = [ customColor ],
 			};
 
 			if (dlg.ShowDialog().IsOk())

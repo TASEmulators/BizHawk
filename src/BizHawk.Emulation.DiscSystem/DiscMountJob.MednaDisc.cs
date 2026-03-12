@@ -8,7 +8,7 @@
 			{
 				//mednafen is always synthesizing everything, no need to worry about flags.. mostly./
 				job.Params.MednaDisc.Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
-				
+
 				//we may still need to deinterleave it if subcode was requested and it needs deinterleaving
 				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave | ESectorSynthPart.SubcodeAny)) != 0)
 				{
@@ -72,7 +72,7 @@
 					ap_min = BCD2.FromDecimal(m_ts.MIN),
 					ap_sec = BCD2.FromDecimal(m_ts.SEC),
 					ap_frame = BCD2.FromDecimal(m_ts.FRAC),
-					q_crc = 0 //meaningless
+					q_crc = 0, //meaningless
 				};
 
 				//a special fixup: mednafen's entry 100 is the lead-out track, so change it into the A2 raw toc entry
@@ -81,7 +81,11 @@
 					q.q_index.BCDValue = 0xA2;
 				}
 
-				disc.Session1.RawTOCEntries.Add(new() { QData = q });
+				disc.Session1.RawTOCEntries.Add(new()
+				{
+					QData = q,
+					AbsoluteTimestamp = (int) m_te.lba + 150,
+				});
 			}
 
 			// synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
@@ -99,7 +103,13 @@
 				ap_frame = BCD2.FromDecimal(0),
 				q_crc = 0, //meaningless
 			};
-			disc.Session1.RawTOCEntries.Add(new() { QData = qA0 });
+
+			disc.Session1.RawTOCEntries.Add(new()
+			{
+				QData = qA0,
+				AbsoluteTimestamp = 0, // meaningless
+			});
+
 			var qA1 = new SubchannelQ
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
@@ -114,7 +124,12 @@
 				ap_frame = BCD2.FromDecimal(0),
 				q_crc = 0, //meaningless
 			};
-			disc.Session1.RawTOCEntries.Add(new() { QData = qA1 });
+
+			disc.Session1.RawTOCEntries.Add(new()
+			{
+				QData = qA1,
+				AbsoluteTimestamp = 0, // meaningless
+			});
 		}
 	}
 }

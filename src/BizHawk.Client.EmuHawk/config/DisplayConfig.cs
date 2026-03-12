@@ -6,21 +6,45 @@ using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
+using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class DisplayConfig : Form, IDialogParent
 	{
-		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(new FilesystemFilter(".CGP Files", new[] { "cgp" }))
-		{
-			AppendAllFilesEntry = false,
-		};
+		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter(".CGP Files", extensions: [ "cgp", "glslp" ]));
 
 		private readonly Config _config;
 
 		private readonly IGL _gl;
 
 		private string _pathSelection;
+
+		private readonly RadioButtonGroupTracker _snowRadioTracker;
+
+		private readonly SzNUDEx nudSnowBias = new()
+		{
+			DecimalPlaces = 2,
+			Increment = 0.25m,
+			Maximum = 2.0m,
+			Minimum = -2.0m,
+			Size = new(48, 23),
+		};
+
+		private readonly SzNUDEx nudSnowIntensity = new()
+		{
+			DecimalPlaces = 1,
+			Increment = 0.1m,
+			Maximum = 1.0m,
+			Minimum = 0.1m,
+			Size = new(48, 23),
+		};
+
+		private readonly TransparentTrackBar tbSnowFramerate = new() { Maximum = 20, Minimum = 1, Size = new(160, 45) };
 
 		public IDialogController DialogController { get; }
 
@@ -31,8 +55,74 @@ namespace BizHawk.Client.EmuHawk
 			_config = config;
 			_gl = gl;
 			DialogController = dialogController;
+			var snowSettings = _config.GetCoreSettings<NullEmulator, SnowyNullVideo.Settings>() ?? new();
 
 			InitializeComponent();
+			LocSzGroupBoxEx grpSnow = new() { Location = new(6, 200), Size = new(371, 160), Text = "Snowy NullHawk" };
+			_snowRadioTracker = grpSnow.Tracker;
+			RadioButtonEx rbSnowAlways = new(_snowRadioTracker)
+			{
+				Checked = config.SnowyNullHawk is SnowyNullVideo.TriggerCriterion.Always,
+				Name = nameof(rbSnowAlways),
+				Tag = SnowyNullVideo.TriggerCriterion.Always,
+				Text = "Always",
+			};
+			RadioButtonEx rbSnowForChristmas = new(_snowRadioTracker)
+			{
+				Checked = config.SnowyNullHawk is SnowyNullVideo.TriggerCriterion.WeekOfChristmas,
+				Name = nameof(rbSnowForChristmas),
+				Tag = SnowyNullVideo.TriggerCriterion.WeekOfChristmas,
+				Text = "During Christmas (Dec. 20th through 26th)",
+			};
+			RadioButtonEx rbSnowNever = new(_snowRadioTracker)
+			{
+				Checked = config.SnowyNullHawk is SnowyNullVideo.TriggerCriterion.Never,
+				Name = nameof(rbSnowNever),
+				Tag = SnowyNullVideo.TriggerCriterion.Never,
+				Text = "Never",
+			};
+			LabelEx lblFramerate = new();
+			tbSnowFramerate.ValueChanged += (changedSender, _) =>
+			{
+				var val = ((TrackBar) changedSender).Value;
+				lblFramerate.Text = $"Framerate: {60.0 / val:F1} Hz";
+			};
+			tbSnowFramerate.Value = snowSettings.FramerateScalar;
+			nudSnowIntensity.Value = new(snowSettings.Intensity);
+			nudSnowBias.Value = new(snowSettings.Bias);
+			grpSnow.Controls.Add(new LocSzSingleColumnFLP
+			{
+				Controls =
+				{
+					new LabelEx { Text = "When no rom loaded, draw \"snow\" (white noise):" },
+					new SingleRowFLP { Controls = { rbSnowAlways, rbSnowNever } },
+					rbSnowForChristmas,
+					new SingleRowFLP
+					{
+						Controls =
+						{
+							new LabelEx { Text = "Brightness multiplier:" },
+							nudSnowIntensity,
+							new LabelEx { Text = "RNG bias:" },
+							nudSnowBias,
+						},
+					},
+					new SingleRowFLP { Controls = { lblFramerate, tbSnowFramerate } },
+				},
+				Location = new(5, 15),
+				Size = new(320, 144),
+			});
+			tpMisc.Controls.Remove(flpStaticWindowTitles);
+			tpMisc.Controls.Remove(groupBox5);
+			tpMisc.Controls.Add(new SingleColumnFLP
+			{
+				Controls =
+				{
+					groupBox5,
+					flpStaticWindowTitles,
+					grpSnow,
+				},
+			});
 
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
 			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
@@ -51,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			checkPadInteger.Checked = _config.DispFixScaleInteger;
 			cbFullscreenHacks.Checked = _config.DispFullscreenHacks;
 			cbAutoPrescale.Checked = _config.DispAutoPrescale;
+			cbScaleOSD.Checked = _config.ScaleOSDWithSystemScale;
 
 			cbAllowTearing.Checked = _config.DispAllowTearing;
 
@@ -69,10 +160,13 @@ namespace BizHawk.Client.EmuHawk
 			cbMenuWindowed.Checked = _config.DispChromeMenuWindowed;
 			cbMainFormSaveWindowPosition.Checked = _config.SaveWindowPosition;
 			cbMainFormStayOnTop.Checked = _config.MainFormStayOnTop;
+			cbMainFormMouseCaptureForcesTopmost.Checked = _config.MainFormMouseCaptureForcesTopmost;
 			if (OSTailoredCode.IsUnixHost)
 			{
 				cbMainFormStayOnTop.Enabled = false;
 				cbMainFormStayOnTop.Visible = false;
+				cbMainFormMouseCaptureForcesTopmost.Enabled = false;
+				cbMainFormMouseCaptureForcesTopmost.Visible = false;
 			}
 			cbStatusBarFullscreen.Checked = _config.DispChromeStatusBarFullscreen;
 			cbMenuFullscreen.Checked = _config.DispChromeMenuFullscreen;
@@ -144,7 +238,8 @@ namespace BizHawk.Client.EmuHawk
 			_config.DispFixScaleInteger = checkPadInteger.Checked;
 			_config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			_config.DispAutoPrescale = cbAutoPrescale.Checked;
-			
+			_config.ScaleOSDWithSystemScale = cbScaleOSD.Checked;
+
 			_config.DispAllowTearing = cbAllowTearing.Checked;
 
 			_config.DispChromeStatusBarWindowed = cbStatusBarWindowed.Checked;
@@ -153,6 +248,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SaveWindowPosition = cbMainFormSaveWindowPosition.Checked;
 			_config.MainFormStayOnTop = cbMainFormStayOnTop.Checked;
 			Owner.TopMost = _config.MainFormStayOnTop;
+			_config.MainFormMouseCaptureForcesTopmost = cbMainFormMouseCaptureForcesTopmost.Checked;
 			_config.DispChromeStatusBarFullscreen = cbStatusBarFullscreen.Checked;
 			_config.DispChromeMenuFullscreen = cbMenuFullscreen.Checked;
 			_config.DispChromeFrameWindowed = trackbarFrameSizeWindowed.Value;
@@ -164,6 +260,15 @@ namespace BizHawk.Client.EmuHawk
 			if (rbDisplayAbsoluteZero.Checked) _config.DispSpeedupFeatures = 0;
 
 			_config.UseStaticWindowTitles = cbStaticWindowTitles.Checked;
+
+			_config.SnowyNullHawk = _snowRadioTracker.GetSelectionTagAs<SnowyNullVideo.TriggerCriterion>()
+				?? SnowyNullVideo.TriggerCriterion.WeekOfChristmas;
+			_config.PutCoreSettings(
+				new SnowyNullVideo.Settings(
+					Bias: nudSnowBias.Value.ConvertToF32(),
+					FramerateScalar: tbSnowFramerate.Value,
+					Intensity: nudSnowIntensity.Value.ConvertToF32()),
+				typeof(NullEmulator));
 
 			if (rbUseRaw.Checked)
 				_config.DispManagerAR = EDispManagerAR.None;
@@ -271,13 +376,14 @@ namespace BizHawk.Client.EmuHawk
 			var result = this.ShowFileOpenDialog(
 				filter: CgShaderPresetsFSFilterSet,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
-				? string.Empty : Path.GetDirectoryName(_pathSelection)!,
+					? _config.PathEntries.GlobalBaseAbsolutePath()
+					: Path.GetDirectoryName(_pathSelection)!,
 				initFileName: _pathSelection);
 			if (result is null) return;
 
 			rbUser.Checked = true;
 			var choice = Path.GetFullPath(result);
-				
+
 			//test the preset
 			using (var stream = File.OpenRead(choice))
 			{
@@ -362,13 +468,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://tasvideos.org/Bizhawk/DisplayConfig");
+			Util.OpenUrlExternal("https://tasvideos.org/Bizhawk/DisplayConfig");
 		}
 
 		private void Label13_Click(object sender, EventArgs e)
-		{
-			cbAllowTearing.Checked ^= true;
-		}
+			=> cbAllowTearing.Checked = !cbAllowTearing.Checked;
 
 		private void BtnDefaults_Click(object sender, EventArgs e)
 		{

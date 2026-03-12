@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			return new AndAdapter
 			{
 				Source = source,
-				SourceAnd = target
+				SourceAnd = target,
 			};
 		}
 
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 			return new XorAdapter
 			{
 				Source = source,
-				SourceXor = target
+				SourceXor = target,
 			};
 		}
 
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			return new ORAdapter
 			{
 				Source = source,
-				SourceOr = target
+				SourceOr = target,
 			};
 		}
 	}

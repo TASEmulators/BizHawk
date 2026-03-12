@@ -285,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					volumeclock = 0;
 					volumespd = value & 63;
 					if (r4080_7) // envelope is off, so written value gets sent to gain directly
-						volumegain = value & 63;	
+						volumegain = value & 63;
 					break;
 				case 0x4082:
 					frequency &= 0xf00;
@@ -344,7 +344,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						modtable[modtablepos] = (byte)(value & 7);
 						modtablepos++;
 						modtablepos &= 63;
-					}					
+					}
 					break;
 				case 0x4089:
 					switch (value & 3)

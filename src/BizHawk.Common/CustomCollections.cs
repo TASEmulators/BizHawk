@@ -1,60 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.Serialization;
-
-using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Common
 {
-	/// <summary>Wrapper over <see cref="WorkingDictionary{TKey, TValue}">WorkingDictionary</see>&lt;<typeparamref name="TKey"/>, <see cref="List{T}">List</see>&lt;<typeparamref name="TValue"/>>>.</summary>
-	[Serializable]
-	public class Bag<TKey, TValue> : IEnumerable<TValue> where TKey : notnull
-	{
-		private readonly WorkingDictionary<TKey, List<TValue>> dictionary = new WorkingDictionary<TKey, List<TValue>>();
-
-		public IList<TKey> Keys => dictionary.Keys.ToList();
-
-		public List<TValue> this[TKey key]
-		{
-#pragma warning disable CS8603 // the only call to the index setter of `dictionary` is this index setter, which only takes non-null `List<TValue>`s
-			get => dictionary[key];
-#pragma warning restore CS8603
-			set => dictionary[key] = value;
-		}
-
-		public void Add(TKey key, IEnumerable<TValue> val) => this[key].AddRange(val);
-
-		public void Add(TKey key, TValue val) => this[key].Add(val);
-
-		public bool ContainsKey(TKey key) => dictionary.ContainsKey(key);
-
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-		public IEnumerator<TValue> GetEnumerator() => dictionary.Values.SelectMany(lv => lv).GetEnumerator();
-
-		public IEnumerator<KeyValuePair<TKey, List<TValue>>> GetKVPEnumerator() => dictionary.GetEnumerator();
-	}
-
-	public class SortedList<T> : ICollection<T>
+	public class SortedList<T> : IList, IList<T>, IReadOnlyList<T>
 		where T : IComparable<T>
 	{
+		private const string ERR_MSG_OUT_OF_ORDER = "setting/inserting elements must preserve ordering";
+
+		private const string ERR_MSG_WRONG_TYPE = "wrong type";
+
 		protected readonly List<T> _list;
 
 		public virtual int Count => _list.Count;
 
+		bool IList.IsFixedSize
+			=> false;
+
 		public virtual bool IsReadOnly { get; } = false;
 
-		public SortedList() => _list = new List<T>();
+		bool ICollection.IsSynchronized
+			=> false;
+
+		object ICollection.SyncRoot
+			=> this;
+
+		protected SortedList(List<T> wrapped)
+			=> _list = wrapped;
+
+		public SortedList()
+			: this(new()) {}
 
 		public SortedList(IEnumerable<T> collection)
+			: this(new(collection))
 		{
-			_list = new List<T>(collection);
 			_list.Sort();
 		}
 
-		public virtual T this[int index] => _list[index];
+		public virtual T this[int index]
+		{
+			get => _list[index];
+			set
+			{
+				// NOT allowing appends, to match BCL `List<T>`
+				if (index < 0 || Count <= index) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: $"index must be in 0..<{Count}");
+				if (Count is 0)
+				{
+					_list.Add(value);
+					return;
+				}
+				var willBeGeqPrevious = index is 0 || value.CompareTo(_list[index - 1]) >= 0;
+				var willBeLeqFollowing = index == Count - 1 || _list[index + 1].CompareTo(value) >= 0;
+				if (willBeGeqPrevious && willBeLeqFollowing) _list[index] = value;
+				else throw new NotSupportedException(ERR_MSG_OUT_OF_ORDER);
+			}
+		}
+
+		object? IList.this[int index]
+		{
+			get => _list[index];
+			set
+			{
+				if (value is not T value1) throw new ArgumentException(paramName: nameof(value), message: ERR_MSG_WRONG_TYPE);
+				this[index] = value1;
+			}
+		}
 
 		public virtual void Add(T item)
 		{
@@ -62,13 +73,26 @@ namespace BizHawk.Common
 			_list.Insert(i < 0 ? ~i : i, item);
 		}
 
+		int IList.Add(object? item)
+		{
+			if (item is not T item1) throw new ArgumentException(paramName: nameof(item), message: ERR_MSG_WRONG_TYPE);
+			Add(item1);
+			return IndexOf(item1);
+		}
+
 		public virtual int BinarySearch(T item) => _list.BinarySearch(item);
 
 		public virtual void Clear() => _list.Clear();
 
-		public virtual bool Contains(T item) => !(_list.BinarySearch(item) < 0); // can't use `!= -1`, BinarySearch can return multiple negative values
+		public virtual bool Contains(T item) => _list.BinarySearch(item) >= 0;
+
+		bool IList.Contains(object? item)
+			=> item is T item1 && Contains(item1);
 
 		public virtual void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
+
+		void ICollection.CopyTo(Array array, int arrayIndex)
+			=> ((ICollection) _list).CopyTo(array, arrayIndex);
 
 		public T FirstOrDefault()
 			=> _list.Count is 0 ? default! : _list[0];
@@ -89,6 +113,32 @@ namespace BizHawk.Common
 			return i < 0 ? -1 : i;
 		}
 
+		int IList.IndexOf(object? item)
+			=> item is T item1
+				? IndexOf(item1)
+				: throw new ArgumentException(paramName: nameof(item), message: ERR_MSG_WRONG_TYPE);
+
+		public virtual void Insert(int index, T item)
+		{
+			// allowing appends per `IList<T>` docs
+			if (index < 0 || Count < index) throw new ArgumentOutOfRangeException(paramName: nameof(index), index, message: $"index must be in 0..{Count}");
+			if (Count is 0)
+			{
+				_list.Add(item);
+				return;
+			}
+			var willBeGeqPrevious = index is 0 || item.CompareTo(_list[index - 1]) >= 0;
+			var willBeLeqFollowing = index >= Count - 1 || _list[index].CompareTo(item) >= 0;
+			if (willBeGeqPrevious && willBeLeqFollowing) _list.Insert(index, item);
+			else throw new NotSupportedException(ERR_MSG_OUT_OF_ORDER);
+		}
+
+		void IList.Insert(int index, object? item)
+		{
+			if (item is not T item1) throw new ArgumentException(paramName: nameof(item), message: ERR_MSG_WRONG_TYPE);
+			Insert(index, item1);
+		}
+
 		public T LastOrDefault()
 			=> _list.Count is 0 ? default! : _list[_list.Count - 1];
 
@@ -102,6 +152,12 @@ namespace BizHawk.Common
 #else //TODO is this any slower?
 			return _list.Remove(item);
 #endif
+		}
+
+		void IList.Remove(object? item)
+		{
+			if (item is not T item1) throw new ArgumentException(paramName: nameof(item), message: ERR_MSG_WRONG_TYPE);
+			_ = Remove(item1);
 		}
 
 
@@ -131,24 +187,12 @@ namespace BizHawk.Common
 			}
 		}
 
+		public SortedList<T> Slice(int start, int length)
+			=> new(SliceImpl(start: start, length: length));
+
+		protected List<T> SliceImpl(int start, int length)
+			=> _list.Skip(start).Take(length).ToList();
+
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-	}
-
-	/// <summary>A dictionary whose index getter creates an entry if the requested key isn't part of the collection, making it always safe to use the returned value. The new entry's value will be the result of the default constructor of <typeparamref name="TValue"/>.</summary>
-	[Serializable]
-	public class WorkingDictionary<TKey, TValue> : Dictionary<TKey, TValue>
-		where TKey : notnull
-		where TValue : new()
-	{
-		public WorkingDictionary() {}
-
-		protected WorkingDictionary(SerializationInfo info, StreamingContext context) : base(info, context) {}
-
-		[property: MaybeNull]
-		public new TValue this[TKey key]
-		{
-			get => this.GetValueOrPutNew(key);
-			set => base[key] = value;
-		}
 	}
 }

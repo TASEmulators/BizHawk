@@ -20,13 +20,15 @@ namespace BizHawk.Client.EmuHawk
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
 		private int _lastRefresh;
+		private bool _doPause;
+		private int _lastRecordAction = -1;
 
 		private void UpdateProgressBar()
 		{
-			if (MainForm.PauseOnFrame.HasValue)
+			if (_seekingTo != -1)
 			{
-				int diff = Emulator.Frame - _seekStartFrame.Value;
-				int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
+				int diff = Emulator.Frame - _seekStartFrame;
+				int unit = _seekingTo - _seekStartFrame;
 				double progress = 0;
 
 				if (diff != 0 && unit != 0)
@@ -52,6 +54,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		protected override void UpdateBefore()
+		{
+			if (CurrentTasMovie.IsAtEnd() && !CurrentTasMovie.IsRecording())
+			{
+				CurrentTasMovie.RecordFrame(CurrentTasMovie.Emulator.Frame, MovieSession.StickySource);
+			}
+		}
+
+		protected override void FastUpdateBefore() => UpdateBefore();
+
 		protected override void GeneralUpdate()
 		{
 			RefreshDialog();
@@ -69,32 +81,46 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var refreshNeeded = false;
-			if (AutoadjustInputMenuItem.Checked)
+			bool refreshNeeded = TasView.IsPartiallyVisible(Emulator.Frame) ||
+				TasView.IsPartiallyVisible(_lastRefresh) ||
+				TasView.RowCount != CurrentTasMovie.InputLogLength + 1;
+			if (Settings.AutoadjustInput)
 			{
-				refreshNeeded = AutoAdjustInput();
+				//refreshNeeded = AutoAdjustInput();
 			}
 
 			CurrentTasMovie.TasSession.UpdateValues(Emulator.Frame, CurrentTasMovie.Branches.Current);
 			MaybeFollowCursor();
 
-			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(_lastRefresh))
+			if (Settings.AutoPause && _seekingTo == -1)
 			{
-				refreshNeeded = true;
+				if (_doPause && CurrentTasMovie.IsAtEnd()) MainForm.PauseEmulator();
+				_doPause = !CurrentTasMovie.IsAtEnd();
 			}
 
+			if (!_seekingByEdit)
+			{
+				_shouldMoveGreenArrow = true;
+			}
+
+			FastUpdateAfter();
 			RefreshDialog(refreshNeeded, refreshBranches: false);
-			UpdateProgressBar();
 		}
 
 		protected override void FastUpdateAfter()
 		{
+			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
+			{
+				bool smga = _shouldMoveGreenArrow;
+				StopSeeking();
+				_shouldMoveGreenArrow = smga;
+			}
 			UpdateProgressBar();
 		}
 
 		public override void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
+			if (!IsActive)
 			{
 				return;
 			}
@@ -106,18 +132,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie != null)
 			{
-				if (Game.Hash != CurrentTasMovie.Hash || CurrentTasMovie.Filename != Settings.RecentTas.MostRecent)
+				bool loadRecent = Game.Hash == CurrentTasMovie.Hash && CurrentTasMovie.Filename == Settings.RecentTas.MostRecent;
+				TastudioStopMovie();
+				// try to load the most recent movie if it matches the currently loaded movie
+				if (loadRecent)
 				{
-					TastudioStopMovie();
-					TasView.AllColumns.Clear();
-					StartNewTasMovie();
-					SetUpColumns();
-					TasView.Refresh();
+					LoadMostRecentOrStartNew();
 				}
 				else
 				{
-					TastudioStopMovie();
-					LoadMostRecentOrStartNew();
+					StartNewTasMovie();
 				}
 			}
 		}
@@ -132,14 +156,17 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			StopSeeking();
 			if (CurrentTasMovie?.Changes is not true) return true;
-			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
+			var shouldSaveResult = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
 				caption: "Closing with Unsaved Changes",
 				icon: EMsgBoxIcon.Question,
 				text: $"Save {WindowTitleStatic} project?"));
-			if (result is null) return false;
-			if (result.Value) SaveTas();
+			if (shouldSaveResult == true)
+			{
+				TryAgainResult saveResult = this.DoWithTryAgainBox(() => SaveTas(), "Failed to save movie.");
+				return saveResult != TryAgainResult.Canceled;
+			}
+			if (shouldSaveResult is null) return false;
 			else CurrentTasMovie.ClearChanges();
 			return true;
 		}

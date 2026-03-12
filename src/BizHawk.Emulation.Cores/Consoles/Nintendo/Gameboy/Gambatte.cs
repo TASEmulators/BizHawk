@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// a gameboy/gameboy color emulator wrapped around native C++ libgambatte
 	/// </summary>
 	[PortedCore(CoreNames.Gambatte, "sinamas/PSR org", "r830", "https://github.com/pokemon-speedrunning/gambatte-core")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class Gameboy : IInputPollable, IRomInfo, IGameboyCommon, ICycleTiming, ILinkable
 	{
 		/// <remarks>HACK disables BIOS requirement if the environment looks like a test runner...</remarks>
@@ -47,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				var flags = LibGambatte.LoadFlags.READONLY_SAV;
 
-				switch (_syncSettings.ConsoleMode)
+				switch (game.System is VSystemID.Raw.SGB ? GambatteSyncSettings.ConsoleModeType.SGB2 : _syncSettings.ConsoleMode)
 				{
 					case GambatteSyncSettings.ConsoleModeType.GB:
 						break;
@@ -398,7 +397,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 #endif
 
 		public bool IsCGBDMGMode
+#if true
+		{
+			get
+			{
+				var headerCgbCompat = LibGambatte.gambatte_cpuread(GambatteState, 0x143);
+				return (headerCgbCompat & 0x80) == 0 || (headerCgbCompat & 0x84) == 0x84;
+			}
+		}
+#else
 			=> LibGambatte.gambatte_iscgbdmg(GambatteState);
+#endif
 
 		private InputCallbackSystem _inputCallbacks = new();
 
@@ -447,7 +456,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			CurrentButtons = (LibGambatte.Buttons)b;
 
-			RemoteCommand = (byte)controller.AxisValue("Remote Command");
+			RemoteCommand = _syncSettings.EnableRemote
+				? (byte) controller.AxisValue("Remote Command")
+				: default(byte);
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
@@ -627,24 +638,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				throw new InvalidOperationException("Unexpected error in gambatte_getmemoryarea");
 			}
-			return new GPUMemoryAreas
-			{
-				Vram = _vram,
-				Oam = _oam,
-				Sppal = _sppal,
-				Bgpal = _bgpal,
-			};
+			return new GPUMemoryAreas(vram: _vram, oam: _oam, sppal: _sppal, bgpal: _bgpal);
 		}
 
-		private class GPUMemoryAreas : IGPUMemoryAreas
+		private sealed class GPUMemoryAreas(IntPtr vram, IntPtr oam, IntPtr sppal, IntPtr bgpal) : IGPUMemoryAreas
 		{
-			public IntPtr Vram { get; init; }
+			public IntPtr Vram
+				=> vram;
 
-			public IntPtr Oam { get; init; }
+			public IntPtr Oam
+				=> oam;
 
-			public IntPtr Sppal { get; init; }
+			public IntPtr Sppal
+				=> sppal;
 
-			public IntPtr Bgpal { get; init; }
+			public IntPtr Bgpal
+				=> bgpal;
 
 			public void Dispose() {}
 		}
@@ -707,11 +716,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			else
 			{
 				_linkConnected = false;
-				if (printer != null) // have no idea how this is ever null???
-				{
-					printer.Disconnect();
-					printer = null;
-				}
+				printer?.Disconnect(); // have no idea how this is ever null???
+				printer = null;
 			}
 		}
 

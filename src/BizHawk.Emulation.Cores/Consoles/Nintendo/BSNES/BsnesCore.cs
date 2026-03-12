@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Components.W65816;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -14,7 +14,6 @@ using BizHawk.Emulation.Cores.Waterbox;
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
 	[PortedCore(CoreNames.Bsnes115, "bsnes team", "v115+", "https://github.com/bsnes-emu/bsnes")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
 	public partial class BsnesCore : IEmulator, IDebuggable, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<BsnesCore.SnesSettings, BsnesCore.SnesSyncSettings>, IBSNESForGfxDebugger, IBoardInfo
 	{
 		[CoreConstructor(VSystemID.Raw.GB)]
@@ -27,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath, null);
+			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringBefore('|'), null);
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			_isSGB = loadParameters.Game.System is VSystemID.Raw.GB or VSystemID.Raw.GBC;
@@ -88,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			};
 			Api.core.snes_init(ref snesInitData);
 			Api.SetCallbacks(callbacks);
-			PutSettings(loadParameters.Settings ?? new SnesSettings());
 
 			// start up audio resampler
 			InitAudio();
@@ -123,6 +121,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			{
 				Api.core.snes_load_cartridge_normal(loadParameters.Roms[0].RomData, loadParameters.Roms[0].RomData.Length);
 			}
+
+			PutSettings(loadParameters.Settings ?? new SnesSettings());
 
 			using (Api.EnterExit()) this.BoardName = Marshal.PtrToStringAnsi(Api.core.snes_get_board());
 			_region = Api.core.snes_get_region();
@@ -325,19 +325,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private void snes_trace(string disassembly, string registerInfo)
 			=> _tracer.Put(new(disassembly: disassembly, registerInfo: registerInfo));
 
-		private void ReadHook(uint addr)
+		private void ReadHook(uint addr, ref byte value)
 		{
 			if (MemoryCallbacks.HasReads)
 			{
-				MemoryCallbacks.CallMemoryCallbacks(addr, 0, (uint) MemoryCallbackFlags.AccessRead, "System Bus");
+				value = (byte) MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessRead, "System Bus");
 			}
 		}
 
-		private void WriteHook(uint addr, byte value)
+		private void WriteHook(uint addr, ref byte value)
 		{
 			if (MemoryCallbacks.HasWrites)
 			{
-				MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessWrite, "System Bus");
+				value = (byte) MemoryCallbacks.CallMemoryCallbacks(addr, value, (uint) MemoryCallbackFlags.AccessWrite, "System Bus");
 			}
 		}
 

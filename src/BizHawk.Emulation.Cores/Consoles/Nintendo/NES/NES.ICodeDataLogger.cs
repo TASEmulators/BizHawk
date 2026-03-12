@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void RunCDL(ushort address, CDLog_Flags flags)
 		{
-			
+
 			CDLog_MapResults results = Board.MapMemory(address, false);
 			switch (results.Type)
 			{

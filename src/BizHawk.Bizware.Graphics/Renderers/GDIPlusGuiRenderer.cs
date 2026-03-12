@@ -21,7 +21,7 @@ namespace BizHawk.Bizware.Graphics
 			new(1.0f, 1.0f, 1.0f, 1.0f),
 			new(1.0f, 1.0f, 1.0f, 1.0f),
 			new(1.0f, 1.0f, 1.0f, 1.0f),
-			new(1.0f, 1.0f, 1.0f, 1.0f)
+			new(1.0f, 1.0f, 1.0f, 1.0f),
 		};
 
 		public void SetCornerColor(int which, Vector4 color)
@@ -87,7 +87,7 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public void EnableBlending()
-			=> Owner.EnableBlendNormal();
+			=> Owner.EnableBlending();
 
 		public void DisableBlending()
 			=> Owner.DisableBlending();

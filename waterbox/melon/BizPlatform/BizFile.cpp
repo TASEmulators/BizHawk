@@ -15,10 +15,12 @@ public:
 	virtual bool ReadLine(char* str, int count) = 0;
 	virtual bool Seek(s64 offset, FileSeekOrigin origin) = 0;
 	virtual void Rewind() = 0;
-	virtual size_t Read(void* data, u64 count) = 0;
+	virtual size_t Read(void* data, u64 size, u64 count) = 0;
 	virtual bool Flush() = 0;
-	virtual size_t Write(const void* data, u64 count) = 0;
+	virtual size_t Write(const void* data, u64 size, u64 count) = 0;
+	virtual int WriteFormatted(const char* fmt, va_list args) = 0;
 	virtual size_t Length() = 0;
+	virtual size_t Position() = 0;
 };
 
 struct MemoryFile final : FileHandle
@@ -86,12 +88,17 @@ public:
 		pos = 0;
 	}
 
-	size_t Read(void* data_, u64 count)
+	size_t Read(void* data_, u64 size_, u64 count)
 	{
-		count = std::min(count, (u64)(size - pos));
-		memcpy(data_, &data[pos], count);
-		pos += count;
-		return count;
+		u64 len = std::min(size_ * count, (u64)(size - pos) / size_ * size_);
+		if (len == 0)
+		{
+			return 0;
+		}
+
+		memcpy(data_, &data[pos], len);
+		pos += len;
+		return len / size_;
 	}
 
 	bool Flush()
@@ -99,17 +106,59 @@ public:
 		return true;
 	}
 
-	size_t Write(const void* data_, u64 count)
+	size_t Write(const void* data_, u64 size_, u64 count)
 	{
-		count = std::min(count, (u64)(size - pos));
-		memcpy(&data[pos], data_, count);
-		pos += count;
-		return count;
+		u64 len = std::min(size_ * count, (u64)(size - pos) / size_ * size_);
+		if (len == 0)
+		{
+			return 0;
+		}
+
+		memcpy(&data[pos], data_, len);
+		pos += len;
+		return len / size_;
+	}
+
+	int WriteFormatted(const char* fmt, va_list args)
+	{
+		if (pos == size)
+		{
+			return -1;
+		}
+
+		// vsnprintf writes a null terminator, while vfprintf does not
+		// save the old character and restore it after writing characters
+
+		va_list argsCopy;
+		va_copy(argsCopy, args);
+		int numBytes = vsnprintf(nullptr, 0, fmt, argsCopy);
+		va_end(argsCopy);
+
+		if (numBytes <= 0)
+		{
+			return numBytes;
+		}
+
+		numBytes = (int)std::min((u64)numBytes, (u64)(size - pos - 1));
+		u8 oldChar = data[pos + numBytes];
+		int ret = vsnprintf((char*)&data[pos], size - pos, fmt, args);
+		data[pos + numBytes] = oldChar;
+		if (ret >= 0)
+		{
+			pos += ret;
+		}
+
+		return ret;
 	}
 
 	size_t Length()
 	{
 		return size;
+	}
+
+	size_t Position()
+	{
+		return pos;
 	}
 
 private:
@@ -174,9 +223,9 @@ public:
 		rewind(file);
 	}
 
-	size_t Read(void* data, u64 count)
+	size_t Read(void* data, u64 size, u64 count)
 	{
-		return fread(data, 1, count, file);
+		return fread(data, size, count, file);
 	}
 
 	bool Flush()
@@ -184,9 +233,14 @@ public:
 		return fflush(file) == 0;
 	}
 
-	size_t Write(const void* data, u64 count)
+	size_t Write(const void* data, u64 size, u64 count)
 	{
-		return fwrite(data, 1, count, file);
+		return fwrite(data, size, count, file);
+	}
+
+	int WriteFormatted(const char* fmt, va_list args)
+	{
+		return vfprintf(file, fmt, args);
 	}
 
 	size_t Length()
@@ -198,13 +252,32 @@ public:
 		return len;
 	}
 
+	size_t Position()
+	{
+		return ftell(file);
+	}
+
 private:
 	FILE* file;
 };
 
+std::string GetLocalFilePath(const std::string& filename)
+{
+	return filename;
+}
+
 // public APIs open C files
 FileHandle* OpenFile(const std::string& path, FileMode mode)
 {
+	if (path == "dldi.bin" || path == "dsisd.bin")
+	{
+		// SD card files opened will be new memory files (always 256MiBs currently)
+		constexpr u32 SD_CARD_SIZE = 256 * 1024 * 1024;
+		std::unique_ptr<u8[]> data(new u8[SD_CARD_SIZE]);
+		memset(data.get(), 0xFF, SD_CARD_SIZE);
+		return new MemoryFile(std::move(data), SD_CARD_SIZE);
+	}
+
 	const char* fmode;
 	if (mode & FileMode::Write)
 	{
@@ -231,6 +304,12 @@ FileHandle* OpenLocalFile(const std::string& path, FileMode mode)
 
 bool FileExists(const std::string& name)
 {
+	if (name == "dldi.bin" || name == "dsisd.bin")
+	{
+		// these always return false (always consider opening these a "new" file)
+		return false;
+	}
+
 	FILE* f = fopen(name.c_str(), "rb");
 	bool exists = f != nullptr;
 	fclose(f);
@@ -240,6 +319,24 @@ bool FileExists(const std::string& name)
 bool LocalFileExists(const std::string& name)
 {
 	return FileExists(name);
+}
+
+bool CheckFileWritable(const std::string& filepath)
+{
+	if (filepath == "dldi.bin" || filepath == "dsisd.bin")
+	{
+		return true;
+	}
+
+	FILE* f = fopen(filepath.c_str(), "rb+");
+	bool exists = f != nullptr;
+	fclose(f);
+	return exists;
+}
+
+bool CheckLocalFileWritable(const std::string& filepath)
+{
+	return CheckFileWritable(filepath);
 }
 
 bool CloseFile(FileHandle* file)
@@ -258,6 +355,11 @@ bool FileReadLine(char* str, int count, FileHandle* file)
 	return file->ReadLine(str, count);
 }
 
+u64 FilePosition(FileHandle* file)
+{
+	return file->Position();
+}
+
 bool FileSeek(FileHandle* file, s64 offset, FileSeekOrigin origin)
 {
 	return file->Seek(offset, origin);
@@ -270,7 +372,7 @@ void FileRewind(FileHandle* file)
 
 u64 FileRead(void* data, u64 size, u64 count, FileHandle* file)
 {
-	return file->Read(data, size * count);
+	return file->Read(data, size, count);
 }
 
 bool FileFlush(FileHandle* file)
@@ -280,13 +382,16 @@ bool FileFlush(FileHandle* file)
 
 u64 FileWrite(const void* data, u64 size, u64 count, FileHandle* file)
 {
-	return file->Write(data, size * count);
+	return file->Write(data, size, count);
 }
 
-// only used for FATStorage (i.e. SD cards), not supported
 u64 FileWriteFormatted(FileHandle* file, const char* fmt, ...)
 {
-	return 0;
+	va_list args;
+	va_start(args, fmt);
+	int ret = file->WriteFormatted(fmt, args);
+	va_end(args);
+	return ret;
 }
 
 u64 FileLength(FileHandle* file)

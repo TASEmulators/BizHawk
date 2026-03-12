@@ -8,7 +8,7 @@ using Jellyfish.Virtu;
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	[PortedCore(CoreNames.Virtu, "fool")]
-	[ServiceNotApplicable(new[] { typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam) })]
+	[ServiceNotApplicable(typeof(IBoardInfo), typeof(IRegionable), typeof(ISaveRam))]
 	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
 		static AppleII()
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					_ => (romAssert.FileData, ".DSK") // no idea, let's assume it's just a .DSK?
 				};
 			}
-					
+
 			_romSet = lp.Roms.Select(GetRomAndExt).ToList();
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -129,6 +129,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public bool DriveLightEnabled => true;
 		public bool DriveLightOn => _machine.DiskIIController.DriveLight;
+
+		public string DriveLightIconDescription => "Disk Drive Activity LED";
 
 		private bool _nextPressed;
 		private bool _prevPressed;
@@ -231,12 +233,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private long _clockTime;
 		private int _clockRemainder;
 		private const int TicksInSecond = 10000000; // DateTime.Ticks uses 100-nanosecond intervals
-		
+
 		private DateTime GetFrontendTime()
 		{
 			if (_useRealTime && DeterministicEmulation)
 				throw new InvalidOperationException();
-			
+
 			return _useRealTime
 				? DateTime.Now
 				: new DateTime(_clockTime * TicksInSecond + (_clockRemainder * TicksInSecond / VsyncNumerator));

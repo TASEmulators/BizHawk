@@ -17,7 +17,7 @@
 		/// Called after a frame emulates
 		/// </summary>
 		PostFrame,
-		FastPostFrame
+		FastPostFrame,
 	}
 
 	public interface IToolForm

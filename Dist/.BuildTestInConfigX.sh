@@ -7,5 +7,4 @@ config="$1"
 shift
 Dist/.InvokeCLIOnMainSln.sh "test" "$config" \
 	-l "junit;LogFilePath=$PWD/test_output/{assembly}.coverage.xml;MethodFormat=Class;FailureBodyFormat=Verbose" \
-	--test-adapter-path . \
 	"$@"

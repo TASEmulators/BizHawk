@@ -9,12 +9,12 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public interface IBlitter
 	{
-		void DrawString(string s, Color color, float x, float y);
+		void DrawString(string s, Color color, int x, int y);
 
 		SizeF MeasureString(string s);
 
 		Rectangle ClipBounds { get; }
 
-		public float Scale { get; }
+		float Scale { get; }
 	}
 }

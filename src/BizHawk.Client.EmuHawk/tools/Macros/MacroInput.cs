@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var main = new MovieZone(Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
 			{
-				Name = "Entire Movie"
+				Name = "Entire Movie",
 			};
 
 			_zones.Add(main);
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			_zones.Clear();
 			ZonesList.Items.Clear();
 
-			MacroInputTool_Load(null, null);
+			MacroInputTool_Load(null, EventArgs.Empty);
 		}
 
 		public override bool AskSaveChanges()
@@ -112,6 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
+			// Intentionally not updating this to use FileWriter because this tool is going to be removed later.
 			foreach (var zone in _unsavedZones)
 			{
 				SaveMacroAs(_zones[zone]);
@@ -130,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var newZone = new MovieZone(Emulator, Tools, MovieSession, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
 			{
-				Name = $"Zone {_zones.Count}"
+				Name = $"Zone {_zones.Count}",
 			};
 			_zones.Add(newZone);
 			ZonesList.Items.Add($"{newZone.Name} - length: {newZone.Length}");
@@ -288,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			macro.Save(result);
+			macro.Save(result); // ignore errors: This tool is going to be removed.
 			Config!.RecentMacros.Add(result);
 
 			return true;

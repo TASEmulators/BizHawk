@@ -165,7 +165,6 @@
 			this.HistoryView.Name = "HistoryView";
 			this.HistoryView.RowCount = 0;
 			this.HistoryView.ScrollSpeed = 0;
-			this.HistoryView.SeekingCutoffInterval = 0;
 			this.HistoryView.Size = new System.Drawing.Size(369, 213);
 			this.HistoryView.TabIndex = 2;
 			this.HistoryView.DoubleClick += new System.EventHandler(this.HistoryView_DoubleClick);

@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			private readonly Disc _disc;
 			private readonly DiscSectorReader _dsr;
 			private readonly DiscTrack _track;
-			private readonly byte[] _buf2448;
+			private readonly byte[] _buf2352;
 
 			public bool IsAvailable => _disc != null;
 			public int LBA => _track.LBA;
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					_disc = DiscExtensions.CreateAnyType(path, e => throw new(e));
+					_disc = DiscExtensions.CreateAnyType(path, static errMsg => throw new Exception(errMsg));
 				}
 				catch (Exception e)
 				{
@@ -192,8 +192,16 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				_dsr = new(_disc);
-				_buf2448 = new byte[2448];
+				_dsr = new(_disc)
+				{
+					Policy =
+					{
+						UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.InspectSector_AssumeForm1,
+						ThrowExceptions2048 = false,
+					},
+				};
+
+				_buf2352 = new byte[2352];
 			}
 
 			public int ReadSector(int lba, IntPtr buffer, nuint requestedBytes)
@@ -203,9 +211,11 @@ namespace BizHawk.Client.EmuHawk
 					return 0;
 				}
 
-				var numRead = _dsr.ReadLBA_2448(lba, _buf2448, 0);
+				var numRead = _track.IsAudio
+					? _dsr.ReadLBA_2352(lba, _buf2352, 0)
+					: _dsr.ReadLBA_2048(lba, _buf2352, 0);
 				var numCopied = (int)Math.Min((ulong)numRead, requestedBytes);
-				Marshal.Copy(_buf2448, 0, buffer, numCopied);
+				Marshal.Copy(_buf2352, 0, buffer, numCopied);
 				return numCopied;
 			}
 
@@ -292,9 +302,9 @@ namespace BizHawk.Client.EmuHawk
 				case ".xml":
 				{
 					var xml = XmlGame.Create(new(path));
-					foreach (var kvp in xml.Assets)
+					foreach (var pfd in xml.Assets)
 					{
-						InternalDebugHash(kvp.Key);
+						InternalDebugHash(pfd.Path);
 					}
 
 					break;
@@ -371,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 						DiscType.Dreamcast => ConsoleID.Dreamcast,
 						DiscType.SonyPS2 => ConsoleID.PlayStation2,
 						DiscType.JaguarCD => ConsoleID.JaguarCD,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 				}
 
@@ -400,7 +410,6 @@ namespace BizHawk.Client.EmuHawk
 					VSystemID.Raw.GBA => ConsoleID.GBA,
 					VSystemID.Raw.GBC => ConsoleID.GBC,
 					VSystemID.Raw.GBL => ConsoleID.GB,
-					VSystemID.Raw.GEN when rom.GameInfo.GetBool("32X", false) => ConsoleID.Sega32X,
 					VSystemID.Raw.GEN => ConsoleID.MegaDrive,
 					VSystemID.Raw.GG => ConsoleID.GameGear,
 					VSystemID.Raw.GGL => ConsoleID.GameGear,

@@ -12,7 +12,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.BoardType)
 			{
 				case "MAPPER162":
+					break;
 				case "UNIF_UNL-FS304":
+					AssertChr(0);
+					AssertPrg(512, 1024, 2048, 4096);
+					Cart.VramSize = 8;
+					Cart.WramSize = 8;
+					Cart.WramBattery = true;
 					break;
 				default:
 					return false;

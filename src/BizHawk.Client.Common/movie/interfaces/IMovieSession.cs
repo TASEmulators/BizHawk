@@ -23,21 +23,24 @@ namespace BizHawk.Client.Common
 		/// <value>The Core header of the queued movie iff one is queued, else <see langword="null"/></value>
 		string QueuedCoreName { get; }
 
+		/// <value>The <see cref="IBasicMovieInfo.SystemID"/> header of the queued movie iff one is queued, else <see langword="null"/></value>
+		string/*?*/ QueuedSysID { get; }
+
 		IDictionary<string, object> UserBag { get; set; }
 
 		IMovieController MovieController { get; }
 
 		/// <summary>
-		/// Provides a source for sticky controls ot use when recording
+		/// Provides a source for sticky controls to use when recording
 		/// </summary>
-		IStickyAdapter StickySource { get; set; }
+		IController StickySource { get; set; }
 
 		/// <summary>
 		/// Represents the input source that is fed to
 		/// the movie for the purpose of recording, if active,
 		/// or to simply pass through if inactive
 		/// </summary>
-		IInputAdapter MovieIn { get; set; }
+		IController MovieIn { get; set; }
 
 		/// <summary>
 		/// Represents the movie input in the input chain
@@ -48,14 +51,13 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Creates a <see cref="IMovieController" /> instance based on the
-		/// given button definition if provided else the
-		/// current <see cref="MovieController" /> button definition
-		/// will be used
+		/// given button definition if provided else the current
+		/// <see cref="MovieController"/>s button definition will be used
 		/// </summary>
-		IMovieController GenerateMovieController(ControllerDefinition definition = null);
+		IMovieController GenerateMovieController(ControllerDefinition definition = null, string logKey = null);
 
 		void HandleFrameBefore();
-		void HandleFrameAfter();
+		void HandleFrameAfter(bool ignoreMovieEndAction);
 		void HandleSaveState(TextWriter writer);
 
 		bool CheckSavestateTimeline(TextReader reader);
@@ -81,12 +83,7 @@ namespace BizHawk.Client.Common
 		/// <summary>clears the queued movie</summary>
 		void AbortQueuedMovie();
 
-		void StopMovie(bool saveChanges = true);
-
-		/// <summary>
-		/// If a movie is active, it will be converted to a <see cref="ITasMovie" />
-		/// </summary>
-		void ConvertToTasProj();
+		FileWriteResult StopMovie(bool saveChanges = true);
 
 		/// <summary>
 		/// Create a new (Tas)Movie with the given path as filename. If <paramref name="loadMovie"/> is true,

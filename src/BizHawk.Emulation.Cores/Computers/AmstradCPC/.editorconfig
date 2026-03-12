@@ -1,0 +1,34 @@
+[*.cs]
+
+# The value returned by Stream.Read/Stream.ReadAsync is not used
+dotnet_diagnostic.MA0060.severity = suggestion
+
+# Remove empty else/finally block
+dotnet_diagnostic.MA0090.severity = suggestion
+
+# Both if and else branch have identical code
+dotnet_diagnostic.MA0140.severity = suggestion
+
+# Expression is always equal to true/false
+dotnet_diagnostic.RCS1215.severity = suggestion
+
+# Add paragraph to documentation comment
+dotnet_diagnostic.RCS1226.severity = suggestion
+
+# Do not use banned APIs
+dotnet_diagnostic.RS0030.severity = suggestion
+
+# Elements should have the same indentation
+dotnet_diagnostic.SA1137.severity = suggestion
+
+# System using directives should be placed before other using directives
+dotnet_diagnostic.SA1208.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion
+
+# Element documentation header should be preceded by blank line
+dotnet_diagnostic.SA1514.severity = suggestion
+
+# Code should not contain blank lines at start of file
+dotnet_diagnostic.SA1517.severity = suggestion

@@ -1,221 +1,276 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.Linq;
-using System.IO;
 using System.Net.Sockets;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
 {
-	/// <summary>
-	/// Parses command line flags from a string array into various instance fields.
-	/// </summary>
-	/// <remarks>
-	/// If a flag is given multiple times, the last is taken.<br/>
-	/// If a flag that isn't recognised is given, it is parsed as a filename. As noted above, the last filename is taken.
-	/// </remarks>
+	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
 	public static class ArgParser
 	{
-		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
-		public static void ParseArguments(out ParsedCLIFlags parsed, string[] args)
+		private static readonly Argument<string?> ArgumentRomFilePath = new("rom")
 		{
-			string? cmdLoadSlot = null;
-			string? cmdLoadState = null;
-			string? cmdConfigFile = null;
-			string? cmdMovie = null;
-			string? cmdDumpType = null;
+			DefaultValueFactory = _ => null,
+			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help",
+		};
+
+		private static readonly Option<string?> OptionAVDumpAudioSync = new("--audiosync")
+		{
+			Description = "bool; `true` is the only truthy value, all else falsey; if not set, uses remembered state from config",
+		};
+
+		private static readonly Option<int?> OptionAVDumpEndAtFrame = new("--dump-length")
+		{
+			Description = "int; frame index at which to stop A/V dumping (encoding)",
+		};
+
+		private static readonly Option<string?> OptionAVDumpFrameList = new("--dump-frames"); // desc added in static ctor
+
+		private static readonly Option<string?> OptionAVDumpName = new("--dump-name"); // desc added in static ctor
+
+		private static readonly Option<bool> OptionAVDumpQuitWhenDone = new("--dump-close")
+		{
+			Description = "pass to quit completely after A/V dumping (encoding) finishes",
+		};
+
+		private static readonly Option<string?> OptionAVDumpType = new("--dump-type"); // desc added in static ctor
+
+		private static readonly Option<string?> OptionConfigFilePath = new("--config")
+		{
+			Description = "path of config file to use",
+		};
+
+		private static readonly Option<bool> OptionGDIPlus = new("--gdi")
+		{
+			Description = "use the GDI+ display method rather than whatever preference is set in the config file",
+		};
+
+		private static readonly Option<string?> OptionHTTPClientURIGET = new("--url-get", "--url_get")
+		{
+			Description = "string; URI to use for HTTP 'GET' IPC (Lua `comm.http*Get*`)",
+		};
+
+		private static readonly Option<string?> OptionHTTPClientURIPOST = new("--url-post", "--url_post")
+		{
+			Description = "string; URI to use for HTTP 'POST' IPC (Lua `comm.http*Post*`)",
+		};
+
+		private static readonly Option<bool> OptionLaunchChromeless = new("--chromeless")
+		{
+			Description = "never show the GUI (a.k.a. 'chrome'), not even in windowed mode",
+		};
+
+		private static readonly Option<bool> OptionLaunchFullscreen = new("--fullscreen")
+		{
+			Description = "launch in fullscreen",
+		};
+
+		private static readonly Option<int?> OptionLoadQuicksaveSlot = new("--load-slot")
+		{
+			Description = "int; quicksave slot which should be loaded on launch",
+		};
+
+		private static readonly Option<string?> OptionLoadSavestateFilePath = new("--load-state"); // desc added in static ctor
+
+		private static readonly Option<string?> OptionLuaFilePath = new("--lua"); // desc added in static ctor
+
+		private static readonly Option<string?> OptionMMFPath = new("--mmf")
+		{
+			Description = "path of file to use for 'memory-mapped file' IPC (Lua `comm.mmf*`)",
+		};
+
+		private static readonly Option<string?> OptionMovieFilePath = new("--movie")
+		{
+			Description = "path; input movie which should be loaded on launch",
+		};
+
+		private static readonly Option<string?> OptionOpenExternalTool = new("--open-ext-tool-dll")
+		{
+			Description = "the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened: 1) available (no load errors, correct system/rom, etc.) and 2) dll path matches given string; or dll filename matches given string with or without `.dll`",
+		};
+
+		private static readonly Option<bool> OptionOpenLuaConsole = new("--luaconsole")
+		{
+			Description = "open the Lua Console, even if not loading a script",
+		};
+
+		private static readonly Option<bool> OptionQueryAppVersion = new("--version")
+		{
+			Description = "print version information and immediately exit",
+		};
+
+		private static readonly Option<string?> OptionSocketServerIP = new("--socket-ip", "--socket_ip"); // desc added in static ctor
+
+		private static readonly Option<ushort?> OptionSocketServerPort = new("--socket-port", "--socket_port"); // desc added in static ctor
+
+		private static readonly Option<bool> OptionSocketServerUseUDP = new("--socket-udp", "--socket_udp"); // desc added in static ctor
+
+		private static readonly Option<string?> OptionUserdataUnparsedPairs = new("--userdata")
+		{
+			Description = "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string",
+		};
+
+		static ArgParser()
+		{
+			OptionAVDumpFrameList.Description = $"comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding); implies `{OptionAVDumpEndAtFrame.Name}=<end>` where `<end>` is the highest frame listed";
+			OptionAVDumpName.Description = $"ignored unless `{OptionAVDumpType.Name}` also passed";
+			OptionAVDumpType.Description = $"ignored unless `{OptionAVDumpName.Name}` also passed";
+			OptionLoadSavestateFilePath.Description = $"path; savestate which should be loaded on launch; this takes precedence over `{OptionLoadQuicksaveSlot.Name}`";
+			OptionLuaFilePath.Description = $"path; Lua script or Console session to load; implies `{OptionOpenLuaConsole.Name}`";
+			OptionSocketServerIP.Description = $"string; IP address for Unix socket IPC (Lua `comm.socket*`); must be paired with `{OptionSocketServerPort.Name}`";
+			OptionSocketServerPort.Description = $"int; port for Unix socket IPC (Lua `comm.socket*`); must be paired with `{OptionSocketServerIP.Name}`";
+			OptionSocketServerUseUDP.Description = $"pass to use UDP instead of TCP for Unix socket IPC (Lua `comm.socket*`); ignored unless `{OptionSocketServerIP.Name} {OptionSocketServerPort.Name}` also passed";
+		}
+
+		private static RootCommand GetRootCommand()
+		{
+			RootCommand root = new($"{
+				(string.IsNullOrEmpty(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString)
+			}, a multi-system emulator frontend\n{VersionInfo.GetEmuVersion()}");
+			root.Add(ArgumentRomFilePath);
+			root.Options.RemoveAll(option => option is VersionOption); // we have our own version command
+
+			// `--help` uses this order, so keep alphabetised by flag
+			root.Add(/* --audiosync */ OptionAVDumpAudioSync);
+			root.Add(/* --chromeless */ OptionLaunchChromeless);
+			root.Add(/* --config */ OptionConfigFilePath);
+			root.Add(/* --dump-close */ OptionAVDumpQuitWhenDone);
+			root.Add(/* --dump-frames */ OptionAVDumpFrameList);
+			root.Add(/* --dump-length */ OptionAVDumpEndAtFrame);
+			root.Add(/* --dump-name */ OptionAVDumpName);
+			root.Add(/* --dump-type */ OptionAVDumpType);
+			root.Add(/* --fullscreen */ OptionLaunchFullscreen);
+			root.Add(/* --gdi */ OptionGDIPlus);
+			root.Add(/* --load-slot */ OptionLoadQuicksaveSlot);
+			root.Add(/* --load-state */ OptionLoadSavestateFilePath);
+			root.Add(/* --lua */ OptionLuaFilePath);
+			root.Add(/* --luaconsole */ OptionOpenLuaConsole);
+			root.Add(/* --mmf */ OptionMMFPath);
+			root.Add(/* --movie */ OptionMovieFilePath);
+			root.Add(/* --open-ext-tool-dll */ OptionOpenExternalTool);
+			root.Add(/* --socket-ip */ OptionSocketServerIP);
+			root.Add(/* --socket-port */ OptionSocketServerPort);
+			root.Add(/* --socket-udp */ OptionSocketServerUseUDP);
+			root.Add(/* --url-get */ OptionHTTPClientURIGET);
+			root.Add(/* --url-post */ OptionHTTPClientURIPOST);
+			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
+			root.Add(/* --version */ OptionQueryAppVersion);
+
+			return root;
+		}
+
+		private static void EnsureConsole()
+		{
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				// the behavior of this kinda sucks, but it's better than nothing I think
+				Win32Imports.AttachConsole(Win32Imports.ATTACH_PARENT_PROCESS);
+			}
+		}
+
+		/// <return>exit code, or <see langword="null"/> if should not exit</return>
+		/// <exception cref="ArgParserException">parsing failure, or invariant broken</exception>
+		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
+		{
+			parsed = default;
+			if (args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
+			var rootCommand = GetRootCommand();
+			var result = CommandLineParser.Parse(rootCommand, args);
+			if (result.Errors.Count is not 0)
+			{
+				// generate useful commandline error output
+				EnsureConsole();
+				result.Invoke();
+				// show first error in modal dialog (done in `catch` block in `Program`)
+				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
+			}
+			if (result.Action is not null)
+			{
+				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has
+				EnsureConsole();
+				return result.Invoke();
+			}
+			if (result.GetValue(OptionQueryAppVersion))
+			{
+				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
+				EnsureConsole();
+				Console.WriteLine(VersionInfo.GetEmuVersion());
+				return 0;
+			}
+
+			var autoDumpLength = result.GetValue(OptionAVDumpEndAtFrame);
 			HashSet<int>? currAviWriterFrameList = null;
-			int? autoDumpLength = null;
-			bool? printVersion = null;
-			string? cmdDumpName = null;
-			bool? autoCloseOnDump = null;
-			bool? chromeless = null;
-			bool? startFullscreen = null;
-			string? luaScript = null;
-			bool? luaConsole = null;
-			ushort? socketPort = null;
-			string? socketIP = null;
-			string? mmfFilename = null;
-			string? urlGet = null;
-			string? urlPost = null;
-			bool? audiosync = null;
-			string? openExtToolDll = null;
-			var socketProtocol = ProtocolType.Tcp;
+			if (result.GetValue(OptionAVDumpFrameList) is string list)
+			{
+				currAviWriterFrameList = new();
+				currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
+				// automatically set dump length to maximum frame
+				autoDumpLength ??= currAviWriterFrameList.Max();
+			}
+
+			var luaScript = result.GetValue(OptionLuaFilePath);
+			var luaConsole = luaScript is not null || result.GetValue(OptionOpenLuaConsole);
+
+			var socketIP = result.GetValue(OptionSocketServerIP);
+			var socketPort = result.GetValue(OptionSocketServerPort);
+			var socketAddress = socketIP is null && socketPort is null
+				? ((string, ushort)?) null // don't bother
+				: socketIP is not null && socketPort is not null
+					? (socketIP, socketPort.Value)
+					: throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
+
+			var httpClientURIGET = result.GetValue(OptionHTTPClientURIGET);
+			var httpClientURIPOST = result.GetValue(OptionHTTPClientURIPOST);
+			var httpAddresses = httpClientURIGET is null && httpClientURIPOST is null
+					? ((string?, string?)?) null // don't bother
+					: (httpClientURIGET, httpClientURIPOST);
+
+			var audiosync = result.GetValue(OptionAVDumpAudioSync)?.EqualsIgnoreCase("true");
+
 			List<(string Key, string Value)>? userdataUnparsedPairs = null;
-			string? cmdRom = null;
-
-			for (var i = 0; i < args.Length; i++)
+			if (result.GetValue(OptionUserdataUnparsedPairs) is string list1)
 			{
-				var arg = args[i];
-
-				if (arg == ">")
+				userdataUnparsedPairs = new();
+				foreach (var s in list1.Split(';'))
 				{
-					// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
-					var stdout = args[++i];
-					Console.SetOut(new StreamWriter(stdout));
-					continue;
-				}
-
-				var argDowncased = arg.ToLowerInvariant();
-				if (argDowncased.StartsWithOrdinal("--load-slot="))
-				{
-					cmdLoadSlot = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--load-state="))
-				{
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--config="))
-				{
-					cmdConfigFile = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--movie="))
-				{
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-type="))
-				{
-					cmdDumpType = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-frames="))
-				{
-					string list = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-					currAviWriterFrameList = new();
-					currAviWriterFrameList.AddRange(list.Split(',').Select(int.Parse));
-					// automatically set dump length to maximum frame
-					autoDumpLength = currAviWriterFrameList.Max();
-				}
-				else if (argDowncased.StartsWithOrdinal("--version"))
-				{
-					printVersion = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-name="))
-				{
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-length="))
-				{
-					var len = int.TryParse(argDowncased.Substring(argDowncased.IndexOf('=') + 1), out var i1) ? i1 : default;
-					autoDumpLength = len;
-				}
-				else if (argDowncased.StartsWithOrdinal("--dump-close"))
-				{
-					autoCloseOnDump = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--chromeless"))
-				{
-					// chrome is never shown, even in windowed mode
-					chromeless = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--fullscreen"))
-				{
-					startFullscreen = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--lua="))
-				{
-					luaScript = arg.Substring(arg.IndexOf('=') + 1);
-					luaConsole = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--luaconsole"))
-				{
-					luaConsole = true;
-				}
-				else if (argDowncased.StartsWithOrdinal("--socket_port="))
-				{
-					var port = ushort.TryParse(arg.Substring(14), out var i1) ? i1 : (ushort) 0;
-					if (port > 0) socketPort = port;
-				}
-				else if (argDowncased.StartsWithOrdinal("--socket_ip="))
-				{
-					socketIP = argDowncased.Substring(argDowncased.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--socket_udp"))
-				{
-					socketProtocol = ProtocolType.Udp;
-				}
-				else if (argDowncased.StartsWithOrdinal("--mmf="))
-				{
-					mmfFilename = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--url_get="))
-				{
-					urlGet = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--url_post="))
-				{
-					urlPost = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (argDowncased.StartsWithOrdinal("--audiosync="))
-				{
-					audiosync = argDowncased.Substring(argDowncased.IndexOf('=') + 1) == "true";
-				}
-				else if (argDowncased.StartsWithOrdinal("--open-ext-tool-dll="))
-				{
-					// the first ext. tool from ExternalToolManager.ToolStripMenu which satisfies both of these will be opened:
-					// - available (no load errors, correct system/rom, etc.)
-					// - dll path matches given string; or dll filename matches given string with or without `.dll`
-					openExtToolDll = arg.Substring(20);
-				}
-				else if (argDowncased.StartsWithOrdinal("--userdata="))
-				{
-					userdataUnparsedPairs = new();
-					foreach (var s in arg.Substring(11).Split(';'))
-					{
-						var iColon = s.IndexOf(':');
-						if (iColon is -1) throw new ArgParserException("malformed userdata (';' without ':')");
-						userdataUnparsedPairs.Add((s.Substring(startIndex: 0, length: iColon), s.Substring(iColon + 1)));
-					}
-				}
-				else
-				{
-					cmdRom = arg;
+					var iColon = s.IndexOf(':');
+					if (iColon is -1) throw new ArgParserException("malformed userdata (';' without ':')");
+					userdataUnparsedPairs.Add((s.Substring(startIndex: 0, length: iColon), s.Substring(iColon + 1)));
 				}
 			}
 
-			var httpAddresses = urlGet == null && urlPost == null
-				? ((string?, string?)?) null // don't bother
-				: (urlGet, urlPost);
-			(string, ushort)? socketAddress;
-			if (socketIP == null && socketPort == null)
-			{
-				socketAddress = null; // don't bother
-			}
-			else if (socketIP == null || socketPort == null)
-			{
-				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
-			}
-			else
-			{
-				socketAddress = (socketIP, socketPort.Value);
-			}
-
-			parsed = new ParsedCLIFlags(
-				cmdLoadSlot: cmdLoadSlot is null ? null : int.Parse(cmdLoadSlot),
-				cmdLoadState: cmdLoadState,
-				cmdConfigFile: cmdConfigFile,
-				cmdMovie: cmdMovie,
-				cmdDumpType: cmdDumpType,
+			parsed = new(
+				cmdLoadSlot: result.GetValue(OptionLoadQuicksaveSlot),
+				cmdLoadState: result.GetValue(OptionLoadSavestateFilePath),
+				cmdConfigFile: result.GetValue(OptionConfigFilePath),
+				cmdMovie: result.GetValue(OptionMovieFilePath),
+				cmdDumpType: result.GetValue(OptionAVDumpType),
 				currAviWriterFrameList: currAviWriterFrameList,
 				autoDumpLength: autoDumpLength ?? 0,
-				printVersion: printVersion ?? false,
-				cmdDumpName: cmdDumpName,
-				autoCloseOnDump: autoCloseOnDump ?? false,
-				chromeless: chromeless ?? false,
-				startFullscreen: startFullscreen ?? false,
+				cmdDumpName: result.GetValue(OptionAVDumpName),
+				autoCloseOnDump: result.GetValue(OptionAVDumpQuitWhenDone),
+				chromeless: result.GetValue(OptionLaunchChromeless),
+				startFullscreen: result.GetValue(OptionLaunchFullscreen),
+				gdiPlusRequested: result.GetValue(OptionGDIPlus),
 				luaScript: luaScript,
-				luaConsole: luaConsole ?? false,
+				luaConsole: luaConsole,
 				socketAddress: socketAddress,
-				mmfFilename: mmfFilename,
+				mmfFilename: result.GetValue(OptionMMFPath),
 				httpAddresses: httpAddresses,
 				audiosync: audiosync,
-				openExtToolDll: openExtToolDll,
-				socketProtocol: socketProtocol,
+				openExtToolDll: result.GetValue(OptionOpenExternalTool),
+				socketProtocol: result.GetValue(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
 				userdataUnparsedPairs: userdataUnparsedPairs,
-				cmdRom: cmdRom
+				cmdRom: result.GetValue(ArgumentRomFilePath)
 			);
+			return null;
 		}
 
 		public sealed class ArgParserException : Exception

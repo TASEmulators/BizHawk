@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync(nameof(dip_switch_setting), ref dip_switch_setting);
 		}
 
-		private void UpdateChr() 
+		private void UpdateChr()
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int bank_1k = addr >> 10;
 				bank_1k = _chrRegs1K[bank_1k];
-				
+
 				if ((exRegs[0] & 0x40) > 0)
 					addr = (bank_1k << 13) | (addr & 0x1FFF);
 				else

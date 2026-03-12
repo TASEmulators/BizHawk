@@ -2,8 +2,6 @@
 
 using System.Collections.Generic;
 
-using BizHawk.Common;
-
 namespace BizHawk.Emulation.Common
 {
 	// the idea here is that various connected peripherals have their controls all merged
@@ -68,8 +66,6 @@ namespace BizHawk.Emulation.Common
 			private readonly IReadOnlyDictionary<string, string> _buttonAxisRemaps;
 
 			private readonly IController _src;
-
-			public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 			public DummyController(
 				IController src,

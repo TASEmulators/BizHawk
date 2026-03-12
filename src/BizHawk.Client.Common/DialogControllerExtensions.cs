@@ -1,13 +1,25 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BizHawk.Client.Common
 {
+	public enum TryAgainResult
+	{
+		Saved,
+		IgnoredFailure,
+		Canceled,
+	}
+
 	public static class DialogControllerExtensions
 	{
-		public static void AddOnScreenMessage(this IDialogParent dialogParent, string message, int? duration = null)
-			=> dialogParent.DialogController.AddOnScreenMessage(message, duration);
+		public static void AddOnScreenMessage(
+			this IDialogParent dialogParent,
+			string message,
+			[LiteralExpected] int? duration = null)
+				=> dialogParent.DialogController.AddOnScreenMessage(message, duration);
 
 		public static void DoWithTempMute(this IDialogController dialogController, Action action)
 		{
@@ -59,6 +71,48 @@ namespace BizHawk.Client.Common
 			string? caption = null,
 			EMsgBoxIcon? icon = null)
 				=> dialogParent.DialogController.ShowMessageBox3(owner: dialogParent, text: text, caption: caption, icon: icon);
+
+		public static void ErrorMessageBox(
+			this IDialogParent dialogParent,
+			FileWriteResult fileResult,
+			string? prefixMessage = null)
+		{
+			Debug.Assert(fileResult.IsError && fileResult.Exception != null, "Error box must have an error.");
+
+			string prefix = prefixMessage ?? "";
+			dialogParent.ModalMessageBox(
+				text: $"{prefix}\n{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
+				caption: "Error",
+				icon: EMsgBoxIcon.Error);
+		}
+
+		/// <summary>
+		/// If the action fails, asks the user if they want to try again.
+		/// The user will be repeatedly asked if they want to try again until either success or the user says no.
+		/// </summary>
+		/// <returns>Returns true on success or if the user said no. Returns false if the user said cancel.</returns>
+		public static TryAgainResult DoWithTryAgainBox(
+			this IDialogParent dialogParent,
+			Func<FileWriteResult> action,
+			string message)
+		{
+			FileWriteResult fileResult = action();
+			while (fileResult.IsError)
+			{
+				bool? askResult = dialogParent.ModalMessageBox3(
+					caption: "Failed to write file",
+					text: $"{message} Do you want to try again?"
+						+ $"\nError details: {fileResult.UserFriendlyErrorMessage()}"
+						+ $"\n\nFull info for debugging:\n--------------------\n{fileResult.Exception}\n--------------------"
+						+ "\n\n(Retry?)",
+					icon: EMsgBoxIcon.Warning);
+				if (askResult == null) return TryAgainResult.Canceled;
+				if (askResult == false) return TryAgainResult.IgnoredFailure;
+				if (askResult == true) fileResult = action();
+			}
+
+			return TryAgainResult.Saved;
+		}
 
 		/// <summary>Creates and shows a <c>System.Windows.Forms.OpenFileDialog</c> or equivalent with the receiver (<paramref name="dialogParent"/>) as its parent</summary>
 		/// <param name="discardCWDChange"><c>OpenFileDialog.RestoreDirectory</c> (isn't this useless when specifying <paramref name="initDir"/>? keeping it for backcompat)</param>

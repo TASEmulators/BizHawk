@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					//  Idunno, maybe they do come in a sector at a time.
 
 					// note to vecna: maybe not at the sector level, but at a level > 1 sample and <= 1 sector, samples come out in blocks
-					// due to the way they are jumbled up (seriously, like put into a blender) for error correction purposes. 
+					// due to the way they are jumbled up (seriously, like put into a blender) for error correction purposes.
 					// we may as well assume that the cd audio decoding magic works at the level of one sector, but it isnt one sample.
 
 					if (SectorsLeftToRead == 0)
@@ -412,7 +412,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			// to happen before reading is complete
 			// 175000 fixes 4 in 1 CD, loading Gate of Thunder
 			// which expects a certain number of timer interrupts to happen before loading is complete
-			DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 175000; 
+			DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 175000;
 			pce.CDAudio.Stop();
 		}
 

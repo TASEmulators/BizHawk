@@ -52,11 +52,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	The only way I can see it working is to disregard any access to addresses 3C-3F.
 
-	Emulators have it easier: they can simply watch the program counter, vs. the 
+	Emulators have it easier: they can simply watch the program counter, vs. the
 	address bus.  An actual system doesn't have that luxury, unfortunately, so it must
 	disregard accesses to 3C-3F instead.
 	*/
-	internal sealed class mMC : MapperBase 
+	internal sealed class mMC : MapperBase
 	{
 		public mMC(Atari2600 core) : base(core)
 		{

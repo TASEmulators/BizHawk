@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new("Start", LibGPGX.INPUT_KEYS.INPUT_START),
 		];
 
-		private static readonly CName[] Genesis6 = 
+		private static readonly CName[] Genesis6 =
 		[
 			new("Up", LibGPGX.INPUT_KEYS.INPUT_UP),
 			new("Down", LibGPGX.INPUT_KEYS.INPUT_DOWN),
@@ -78,9 +78,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			new("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
 			new("Lightgun B", LibGPGX.INPUT_KEYS.INPUT_MENACER_B),
 			new("Lightgun C", LibGPGX.INPUT_KEYS.INPUT_MENACER_C),
+			new("Lightgun Offscreen Shot", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
 		];
 
-		private static readonly CName[] Activator = 
+		private static readonly CName[] Activator =
 		[
 			new("1L", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1L),
 			new("1U", LibGPGX.INPUT_KEYS.INPUT_ACTIVATOR_1U),
@@ -164,12 +165,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			// lightgun needs to be transformed to match the current screen resolution
 			ControllerDef.AddXYPair($"P{player} Lightgun {{0}}", AxisPairOrientation.RightAndUp, 0.RangeTo(10000), 5000); //TODO verify direction against hardware
+			var no = $"P{player} Lightgun Offscreen Shot";
 			var nx = $"P{player} Lightgun X";
 			var ny = $"P{player} Lightgun Y";
 			_converts.Add(() =>
 			{
-				_target.analog[(2 * idx) + 0] = (short)(_source.AxisValue(nx) / 10000.0f * (ScreenWidth - 1));
-				_target.analog[(2 * idx) + 1] = (short)(_source.AxisValue(ny) / 10000.0f * (ScreenHeight - 1));
+				if (_source.IsPressed(no))
+				{
+					_target.analog[(2 * idx) + 0] = 512;
+					_target.analog[(2 * idx) + 1] = 512;
+				}
+				else
+				{
+					_target.analog[(2 * idx) + 0] = (short)(_source.AxisValue(nx) / 10000.0f * (ScreenWidth - 1));
+					_target.analog[(2 * idx) + 1] = (short)(_source.AxisValue(ny) / 10000.0f * (ScreenHeight - 1));
+				}
 			});
 		}
 

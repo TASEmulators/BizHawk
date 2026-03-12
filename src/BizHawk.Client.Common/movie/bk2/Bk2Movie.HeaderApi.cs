@@ -1,5 +1,7 @@
 ﻿using System.Text;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
@@ -192,7 +194,7 @@ namespace BizHawk.Client.Common
 
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }
-		public int[] SavestateFramebuffer { get; set; }
+		public BitmapBuffer SavestateFramebuffer { get; set; }
 		public byte[] SaveRam { get; set; }
 	}
 }

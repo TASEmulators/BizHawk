@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Input;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("PC Engine Controller", Properties.Resources.PceController);
 			ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
 			ControllerImages.Add("TI83 Controller", Properties.Resources.TI83Controller);
+			ControllerImages.Add("3DO Controller", Properties.Resources.ThreeDOController);
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
@@ -52,18 +53,19 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NgpController);
 			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);
 			ControllerImages.Add("NDS Controller", Properties.Resources.DSController);
+			ControllerImages.Add("Amiga Controller", Properties.Resources.AmigaKeyboard);
 		}
 
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, true);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
 		}
 
 		protected override void OnDeactivate(EventArgs e)
 		{
 			base.OnDeactivate(e);
-			Input.Instance.ControlInputFocus(this, ClientInputFocus.Mouse, false);
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 		}
 
 		private void ControllerConfig_Load(object sender, EventArgs e)
@@ -142,14 +144,12 @@ namespace BizHawk.Client.EmuHawk
 						: "Console"; // anything that wants not console can set it in the categorylabels
 				}
 
-				if (!buckets.ContainsKey(categoryLabel))
+				buckets.GetValueOrPut(categoryLabel, categoryLabel1 =>
 				{
-					var l = new List<string>();
-					buckets.Add(categoryLabel, l);
-					orderedBuckets.Add(new KeyValuePair<string, List<string>>(categoryLabel, l));
-				}
-
-				buckets[categoryLabel].Add(button);
+					List<string> l = new();
+					orderedBuckets.Add(new(categoryLabel1, l));
+					return l;
+				}).Add(button);
 			}
 
 			if (orderedBuckets.Count == 1)
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_config = config;
 			DialogController = dialogController;
-			
+
 			InitializeComponent();
 
 			SuspendLayout();
@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 				var pictureBox2 = new PictureBox
 					{
 						Image = Properties.Resources.C64Keyboard.Value,
-						Size = Properties.Resources.C64Keyboard.Value.Size
+						Size = Properties.Resources.C64Keyboard.Value.Size,
 					};
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Value.Width;
 				pictureBox1.Height /= 2;
@@ -302,11 +302,6 @@ namespace BizHawk.Client.EmuHawk
 				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards.Value;
 				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Value.Size;
 				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
-			}
-
-			if (controlName == "ChannelF Controller")
-			{
-
 			}
 
 			if (controlName == "AmstradCPC Controller")
@@ -475,7 +470,11 @@ namespace BizHawk.Client.EmuHawk
 
 				SaveToDefaults(cd);
 
-				ConfigService.Save(Config.ControlDefaultPath, cd);
+				FileWriteResult saveResult = ConfigService.Save(Config.ControlDefaultPath, cd);
+				if (saveResult.IsError)
+				{
+					this.ErrorMessageBox(saveResult);
+				}
 			}
 		}
 
@@ -490,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 					inputWidget.ClearAll();
 					break;
 				case AnalogBindControl control:
-					control.Unbind_Click(null, null);
+					control.Unbind_Click(null, EventArgs.Empty);
 					break;
 			}
 

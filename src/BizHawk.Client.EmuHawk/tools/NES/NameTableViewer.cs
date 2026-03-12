@@ -23,7 +23,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public enum WhichNametable
 		{
-			NT_2000, NT_2400, NT_2800, NT_2C00, NT_ALL, TOPS, BOTTOMS
+			NT_2000,
+			NT_2400,
+			NT_2800,
+			NT_2C00,
+			NT_ALL,
+			TOPS,
+			BOTTOMS,
 		}
 
 		public WhichNametable Which = WhichNametable.NT_ALL;
@@ -60,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		
+
 
 		public void ScreenshotToClipboard()
 		{

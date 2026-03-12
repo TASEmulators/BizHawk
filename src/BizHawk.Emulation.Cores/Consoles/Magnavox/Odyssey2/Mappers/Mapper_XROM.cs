@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	public class MapperXROM : MapperBase
 	{
 		public int ROM_mask;
-		
+
 		public override void Initialize()
 		{
 			// XROM has data instructions from 0x400-0xFFF

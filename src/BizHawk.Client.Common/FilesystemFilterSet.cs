@@ -3,37 +3,39 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common.CollectionExtensions;
-
 namespace BizHawk.Client.Common
 {
-	public sealed class FilesystemFilterSet
+	public sealed class FilesystemFilterSet(
+		string? combinedEntryDesc,
+		bool appendAllFilesEntry,
+		params FilesystemFilter[] filters)
 	{
-		private string? _ser = null;
+		private const bool DEFAULT_USE_ALL_FILES_ENTRY = true;
 
-		public bool AppendAllFilesEntry { get; init; } = true;
+		private readonly Lazy<string> _ser = new(() =>
+			{
+				var entries = filters.Select(static filter => filter.ToString()).ToList();
+				if (combinedEntryDesc is not null) entries.Insert(0, FilesystemFilter.SerializeEntry(
+					combinedEntryDesc,
+					filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList()));
+				if (appendAllFilesEntry) entries.Add(FilesystemFilter.AllFilesEntry);
+				return string.Join("|", entries);
+			});
 
-		public string? CombinedEntryDesc { get; init; } = null;
+		public IReadOnlyList<FilesystemFilter> Filters
+			=> filters;
 
-		private IReadOnlyCollection<string> CombinedExts
-			=> Filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList();
+		public FilesystemFilterSet(string combinedEntryDesc, params FilesystemFilter[] filters)
+			: this(combinedEntryDesc, appendAllFilesEntry: DEFAULT_USE_ALL_FILES_ENTRY, filters) {}
 
-		public readonly IReadOnlyList<FilesystemFilter> Filters;
+		public FilesystemFilterSet(bool appendAllFilesEntry, params FilesystemFilter[] filters)
+			: this(combinedEntryDesc: null, appendAllFilesEntry: appendAllFilesEntry, filters) {}
 
 		public FilesystemFilterSet(params FilesystemFilter[] filters)
-			=> Filters = filters;
+			: this(appendAllFilesEntry: DEFAULT_USE_ALL_FILES_ENTRY, filters) {}
 
 		public override string ToString()
-		{
-			if (_ser is null)
-			{
-				var entries = Filters.Select(static filter => filter.ToString()).ToList();
-				if (CombinedEntryDesc is not null) entries.Insert(0, FilesystemFilter.SerializeEntry(CombinedEntryDesc, CombinedExts));
-				if (AppendAllFilesEntry) entries.Add(FilesystemFilter.AllFilesEntry);
-				_ser = string.Join("|", entries);
-			}
-			return _ser;
-		}
+			=> _ser.Value;
 
 		public static readonly FilesystemFilterSet Palettes = new(new FilesystemFilter("Palette Files", new[] { "pal" }));
 

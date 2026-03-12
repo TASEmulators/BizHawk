@@ -1,7 +1,7 @@
 CXX = g++
 
 CFLAGS = -Wall -Wextra -Wpedantic -std=c++11 -O3 -fPIC -fvisibility=hidden -fomit-frame-pointer -fno-exceptions
-LFLAGS = -shared
+LFLAGS = -shared -s
 
 SRCS = LibretroBridge.cpp
 

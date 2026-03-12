@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	/* Port B writes to both the PSG and the DAC simultaneously
 	 * The trick here is that bits 3 and 4 both zero represent PSG disabled
 	 * So it's easy to not interfere with the PSG
-	 * However, the DAC will always receive some input, controlled by the multiplexer and selector bits  
+	 * However, the DAC will always receive some input, controlled by the multiplexer and selector bits
 	 * BIOS functions keep everything in order
 	 */
 
@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte portB_ret, portA_ret;
 
-		public byte t1_low, t1_high;	
-		public int t1_counter, t1_ctrl;	
+		public byte t1_low, t1_high;
+		public int t1_counter, t1_ctrl;
 		public bool t1_shot_go;
 
 		public byte t2_low, t2_high;
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						{
 							PB7_undriven = false;
 							ppu.skip = 14;
-						}	
+						}
 					}
 
 					// writing to sound reg
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							else { compare = true; }
 						}
 						else
-						{							
+						{
 							if ((byte)(portA_ret ^ 0x80) >= joy1_UD) { compare = false; }
 							else { compare = true; }
 						}
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							}
 							else
 							{
-								ppu.y_vel = (byte)(portA_ret ^ 0x80);							
+								ppu.y_vel = (byte)(portA_ret ^ 0x80);
 							}
 							ppu.new_draw_line();
 						}
@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					aux_ctrl = value;
 					t1_ctrl = aux_ctrl;
-					
+
 					break;
 				case 0xC:
 					prt_ctrl = value;
@@ -522,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						if (t1_ctrl.Bit(7)) { PB7 = true; ppu.ramp_sig = false; ppu.new_draw_line(); }
 
 						t1_shot_go = false;
-					}				
+					}
 				}
 			}
 

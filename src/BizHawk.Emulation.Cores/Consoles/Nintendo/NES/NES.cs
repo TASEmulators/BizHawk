@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[Core(CoreNames.NesHawk, "zeromus, natt, alyosha, adelikat")]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
+	public sealed partial class NES : IEmulator, ISaveRam, IDebuggable, IInputPollable, IRegionable, IVideoLogicalOffsets,
 		IBoardInfo, IRomInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor(VSystemID.Raw.NES)]
@@ -102,22 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		public bool HasMapperProperties
-		{
-			get
-			{
-				var fields = Board.GetType().GetFields();
-				foreach (var field in fields)
-				{
-					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
-					if (attrib != null)
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
+			=> Board.MapperProps().Any();
 
 		public bool IsVS => _isVS;
 
@@ -339,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			origin = EDetectionOrigin.None;
 
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
-			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
+			if (file.AsSpan(start: 0, length: 4).SequenceEqual("UNIF"u8))
 			{
 				unif = new Unif(new MemoryStream(file));
 				LoadWriteLine("Found UNIF header:");
@@ -349,13 +334,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 			}
-			else if(file.Take(5).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("NESM\x1A")))
+			else if(file.AsSpan(0, 5).SequenceEqual("NESM\x1A"u8))
 			{
 				origin = EDetectionOrigin.NSF;
 				LoadWriteLine("Loading as NSF");
 				var nsf = new NSFFormat();
 				nsf.WrapByteArray(file);
-				
+
 				cart = new CartInfo();
 				var nsfboard = new NSFBoard();
 				nsfboard.Create(this);
@@ -375,8 +360,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return;
 			}
-			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"))
-				|| file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))
+			else if (file.AsSpan(start: 0, length: 4).SequenceEqual("FDS\x1A"u8)
+				|| file.AsSpan(start: 0, length: 4).SequenceEqual("\x01*NI"u8))
 			{
 				// danger!  this is a different codepath with an early return.  accordingly, some
 				// code is duplicated twice...
@@ -415,12 +400,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				byte[] nesheader = new byte[16];
-				Buffer.BlockCopy(file, 0, nesheader, 0, 16);
-
 				bool exists = true;
 
-				if (!DetectFromINES(nesheader, out iNesHeaderInfo, out iNesHeaderInfoV2))
+				if (!DetectFromINES(file.AsSpan(start: 0, length: 16), out iNesHeaderInfo, out iNesHeaderInfoV2))
 				{
 					// we don't have an ines header, check if the game hash is in the game db
 					exists = false;
@@ -529,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (choice.WramSize == -1) choice.WramSize = 0;
 					}
 				}
-				
+
 				//if this is still null, we have to try it some other way. nescartdb perhaps?
 				if (choice == null)
 				{
@@ -543,7 +525,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						origin = EDetectionOrigin.BootGodDB;
 					}
 				}
-				
 			}
 
 			//if choice is still null, try UNIF and iNES
@@ -790,4 +771,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 //http://wiki.nesdev.com/w/index.php/Cartridge_connector
 
 //a mappers list
-//http://tuxnes.sourceforge.net/nesmapper.txt 
+//http://tuxnes.sourceforge.net/nesmapper.txt

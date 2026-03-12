@@ -1,0 +1,10 @@
+[*.cs]
+
+# Add paragraph to documentation comment
+dotnet_diagnostic.RCS1226.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion
+
+# Element documentation header should be preceded by blank line
+dotnet_diagnostic.SA1514.severity = suggestion

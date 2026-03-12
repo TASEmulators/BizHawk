@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -16,12 +15,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
-		private static readonly FilesystemFilterSet BundlesFSFilterSet = new(new FilesystemFilter("XML Files", new[] { "xml" }));
-
 		public static Icon ToolIcon
 			=> Properties.Resources.DualIcon;
 
-		private XElement _currentXml;
+		private MultiDiskBundleModel _live;
 
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
@@ -32,18 +29,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = ToolIcon;
+			SystemDropDown.Format += (_, formatArgs) =>
+			{
+				var sysID = (string) formatArgs.ListItem;
+				var dispName = EmulatorExtensions.SystemIDToDisplayName(sysID);
+				formatArgs.Value = string.IsNullOrEmpty(dispName) ? sysID : dispName;
+			};
 			SystemDropDown.Items.AddRange([
 				VSystemID.Raw.Amiga,
 				VSystemID.Raw.AmstradCPC,
 				VSystemID.Raw.AppleII,
 				VSystemID.Raw.Arcade,
 				VSystemID.Raw.C64,
+				VSystemID.Raw.Doom,
+				VSystemID.Raw.DOS,
 				VSystemID.Raw.GBL,
 				VSystemID.Raw.GEN,
 				VSystemID.Raw.GGL,
 				VSystemID.Raw.Jaguar,
+				VSystemID.Raw.N3DS,
 				VSystemID.Raw.N64,
 				VSystemID.Raw.NDS,
+				VSystemID.Raw.Panasonic3DO,
 				VSystemID.Raw.PCFX,
 				VSystemID.Raw.PSX,
 				VSystemID.Raw.SAT,
@@ -55,8 +62,8 @@ namespace BizHawk.Client.EmuHawk
 		public override void Restart()
 		{
 			FileSelectorPanel.Controls.Clear();
-			AddButton_Click(null, null);
-			AddButton_Click(null, null);
+			AddButton_Click(null, EventArgs.Empty);
+			AddButton_Click(null, EventArgs.Empty);
 
 			if (!Game.IsNullInstance())
 			{
@@ -99,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var xmlGame = XmlGame.Create(new HawkFile(xmlPath));
-				AddFiles(xmlGame.AssetFullPaths);
+				AddFiles(xmlGame.Assets.Select(static pfd => pfd.Path).ToList());
 			}
 			catch
 			{
@@ -112,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			var existingEmptyControls = FileSelectors.Count(fileSelector => string.IsNullOrEmpty(fileSelector.Path));
 			for (int i = existingEmptyControls; i < filePaths.Count; i++)
 			{
-				AddButton_Click(null, null);
+				AddButton_Click(null, EventArgs.Empty);
 			}
 
 			var fileSelectors = FileSelectors.ToArray();
@@ -148,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			File.WriteAllText(fileInfo.FullName, _currentXml.ToString());
+			File.WriteAllText(fileInfo.FullName, _live.XMLString);
 			return true;
 		}
 
@@ -165,9 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 			DialogResult = DialogResult.OK;
 			Close();
-
-			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-			_ = MainForm.LoadRom(fileInfo.FullName, lra);
+			_ = MainForm.LoadRom(fileInfo.FullName, new LoadRomArgs(new OpenAdvanced_OpenRom(fileInfo.FullName)));
 		}
 
 		private void AddButton_Click(object sender, EventArgs e)
@@ -179,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 				Text = "",
 				Location = UIHelper.Scale(new Point(6, start)),
 				Size = new Size(FileSelectorPanel.ClientSize.Width - UIHelper.ScaleX(12), UIHelper.ScaleY(41)),
-				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
 			};
 
 			var mdf = new MultiDiskFileSelector(MainForm, Config.PathEntries,
@@ -187,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
-				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
@@ -240,34 +245,21 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var basePath = Path.GetDirectoryName(Path.GetFullPath(name.SubstringBefore('|')));
-
-					_currentXml = new XElement("BizHawk-XMLGame",
-						new XAttribute("System", system),
-						new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
-						new XElement("LoadAssets",
-							names.Select(n =>
-							{
-								string currentRomPath = Path.GetFullPath(n);
-								string fileName;
-
-								try
-								{
-									fileName = PathExtensions.GetRelativePath(basePath, currentRomPath)!;
-								}
-								catch (ArgumentException)
-								{
-									// if a relative path cannot be constructed, use an absolute path
-									fileName = currentRomPath;
-								}
-
-								return new XElement(
-									"Asset",
-									new XAttribute("FileName", fileName)
-								);
-							})
-						)
-					);
-
+					_live = new(bundlePath: name, sysID: system, names.Select(n =>
+					{
+						string currentRomPath = Path.GetFullPath(n);
+						string fileName;
+						try
+						{
+							fileName = PathExtensions.GetRelativePath(basePath, currentRomPath)!;
+						}
+						catch (ArgumentException)
+						{
+							// if a relative path cannot be constructed, use an absolute path
+							fileName = currentRomPath;
+						}
+						return fileName.Replace('\\', '/'); // should still work on Windows, and makes (at least relative paths) cross-platform
+					}).ToArray());
 					SaveRunButton.Enabled = true;
 					SaveButton.Enabled = true;
 					return true;
@@ -278,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				//swallow exceptions, since this is just validation logic
 			}
 
-			_currentXml = null;
+			_live = null;
 			SaveRunButton.Enabled = false;
 			SaveButton.Enabled = false;
 			return false;
@@ -291,12 +283,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
-			string filename = "";
-			string initialDirectory = Config.PathEntries.UseRecentForRoms
-				? string.Empty
-				: Config.PathEntries.MultiDiskAbsolutePath();
-
-			if (!Game.IsNullInstance())
+			string filename;
+			string initialDirectory;
+			if (Game.IsNullInstance())
+			{
+				filename = string.Empty;
+				if (Config.PathEntries.UseRecentForRoms)
+				{
+					initialDirectory = string.Empty;
+				}
+				else
+				{
+					initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
+					if (!Directory.Exists(initialDirectory))
+					{
+						initialDirectory = Config.PathEntries.RomAbsolutePath();
+						Directory.CreateDirectory(initialDirectory);
+					}
+				}
+			}
+			else
 			{
 				filename = NameBox.Text;
 				if (string.IsNullOrWhiteSpace(filename))
@@ -308,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var result = this.ShowFileSaveDialog(
-				filter: BundlesFSFilterSet,
+				filter: MultiDiskBundleModel.BundlesFSFilterSet,
 				initDir: initialDirectory,
 				initFileName: filename);
 			if (result is not null) NameBox.Text = result;

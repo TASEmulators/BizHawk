@@ -1,23 +1,30 @@
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	NO-INTRO & TOSEC
-;;; Source:	Fairchild - Channel F - 20120223-000000
-;;; FileGen:	2021-11-24 09:30:49 (UTC)
+;;; Type:	NO-INTRO & TOSEC & Manual
+;;; Source:	Fairchild - Channel F
+;;; FileGen:	2024-29-10 13:57:49 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 C8D5CE90CB1C76C9589711B5029D3421	B	Color Organ (19xx)(-)[b]	ChannelF		board=STD
 3EF873268F8FC428DA225CADABB4703F	B	Democart (demo) (1977)(Fairchild)[b]	ChannelF		board=STD
-0CFD9B9213CFF4A9DF9DD7FEA4663236	B	Spitfire (USA) (proto)[b]	ChannelF		board=STD	USA
+5DB71E3B0CD13F7C42790A2CD9072CA1	B	Maze + Jailbreak + Blind-man's-bluff + Trailblazer (1977)(Fairchild)[b]	ChannelF		board=MAZE	USA
+E1FB8D61FFE07B53869A93A8AD0C04A8	B	Robot War (1977)(Fairchild)(proto)[b]	ChannelF		board=STD	USA
+0CFD9B9213CFF4A9DF9DD7FEA4663236	B	Spitfire (1976)(Zircon)(proto)[b]	ChannelF		board=STD	USA
 7385E596BF2A58E2186439AC1E49C075	B	Schach (Germany) [b]	ChannelF		board=SCHACH	Germany
+7B227DE474806A8AB9474C4716A270B7	B	Schach [b] (Actually Tennis)	ChannelF		board=SCHACH	Germany
+
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Hacks
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-02B4A4F523B972C63FEF21BF2E51AE58		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)	ChannelF	
-4B3657594CD1000D08704F4F0FB53C75		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)[a]	ChannelF	
-ABC6FC7083B66A65C1E18EBF911F6689		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA) (Multicart Hack)	ChannelF		board=SCHACH	USA
+02B4A4F523B972C63FEF21BF2E51AE58		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)	ChannelF		board=RIDDLE
+DFC3DF32F9FB558A6E54928559D67FE7		Channel F Multi-Cart (2004)(Riddle, Sean)	ChannelF		board=RIDDLE
+4B3657594CD1000D08704F4F0FB53C75		Channel F Multi-Cart - Menu (2004)(Riddle, Sean)[a]	ChannelF		board=RIDDLE
+0C8AE0E5776D48022F8D2B9642C6A197		Channel F Multi-Cart (2004)(Riddle, Sean)[a]	ChannelF		board=RIDDLE
 533BAC14DE68FBA49078EEF8E9502DD2		Hangman (USA) (Multicart Hack)	ChannelF		board=SCHACH	USA
+ABC6FC7083B66A65C1E18EBF911F6689		Maze + Jailbreak + Blind-man's-bluff + Trailblazer (1977)(Fairchild)[h]	ChannelF		board=SCHACH	USA
+
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Over Dumps
@@ -30,94 +37,117 @@ ABC6FC7083B66A65C1E18EBF911F6689		Maze, Jailbreak, Blind-man's-bluff, Trailblaze
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Home Brew
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+88C078FE7229ADD65F031B601064543E	D	2048-F8 (2021-05-26)(Arlasoft)	ChannelF		board=SCHACH	
+1A7590DE88E21345F60EC2BC8B2B9269	D	3rees (2021-05-26)(Arlasoft)	ChannelF		board=SCHACH	
+3BF9A8C0151A5253EFF27BABA7D8A0C1	D	Boogie 2 Music Demo (2008)(Warlord)(PD)	ChannelF		board=SCHACH	
+65A71A450CAE1E60589EFCF9B1A10456	D	Boxing v3 (2022-09-13)(Mikebloke)	ChannelF		board=SCHACH	
+8F2F03C8310F9D8D1D70BCD4389B03CA	D	Bucket Filler v3 (2022-09-13)(Mikebloke)	ChannelF		board=SCHACH	
+E2EDAD7F2BDCD01121EF1FC85C679CEA	D	Cathode Ray Tube Amusement Device (2022-09-30)(Mikebloke)	ChannelF		board=SCHACH	
+74C3961468A024D30095B0B4314E4EB0	D	Centipede v1.01 (2021-10-01)(Arlasoft)	ChannelF		board=SCHACH	
+D47D471F62CD82E75F11818352E36FE4	D	Clay Pigeon Shooting (2022-09-13)(Mikebloke)[Philips Telespiel ES-2201 port]	ChannelF		board=SCHACH	
+94530113A22AE27AF6ED87B98D9AF62A	D	Color Organ (19xx)(-)	ChannelF		board=STD
+C44BE208013B82041D01D2BC1834060B	D	Colortest Demo (200x)(Riddle, Sean)	ChannelF		board=SCHACH	
+CD4F1532783B016A84B6DC85163DED2C	D	F8 of Nations (200x)(nycurt)(PD)	ChannelF		board=SCHACH	
+4E1BA63A395C10FB840B0562F85B78B9	D	F8 of Nations (200x)(nycurt)(PD)[a]	ChannelF		board=SCHACH	
+AC408059DF85A0CD58C715199CBE3EA9	D	FNiNJA (2008)(Baron Knoxburry)(PD)	ChannelF		board=SCHACH	
+5F2C587BF948BE2B67CFAE924E4508BB	D	Fnvader (2022-08-31)(Arlasoft)	ChannelF		board=SCHACH	
 CC445080CAA95EA4A48CC013A04F9808	D	Full Screen Picture Demo (200x)(e5frog)(PD)	ChannelF	
 4B109AAF9C6896DF4EE4C5A37852DAB2	D	Full Screen Picture Demo (200x)(e5frog)(PD)[a]	ChannelF	
+399955BE50B7028D94800D13A08026B6	D	Ghost Chaser (2022-09-13)(Mikebloke)[Philips Telespiel ES-2201 port]	ChannelF		board=SCHACH	
+CBB06F403313065ED5DAAEB065612755	D	Hide and Seek (2022-09-16)(Mikebloke)	ChannelF		board=SCHACH	
 73EEF0F56736E2D8153D6F489DD0BEAD	D	International Karate Demo (200x)(-)(PD)	ChannelF	
 D337BE6E8F348FB329FBAF44D3C2FA17	D	International Karate Demo Test 2 (200x)(-)(PD)	ChannelF	
 A6607B7C30CC4A7695D3112B3271D4E8	D	International Karate Demo Test 3 (200x)(-)(PD)	ChannelF	
 7DD3F1040C774FE147FC1D825B353524	D	International Karate Demo Test 5 (200x)(-)(PD)	ChannelF	
-F680225A38C3C4A66E30DBCA8D351407	D	Test Controls (200x)(e5frog)(PD)	ChannelF	
+28AF9C65DC23035A8BA0B0B7444B2BFC	D	Lights Out (2004)(Riddle, Sean)(PD)	ChannelF		board=SCHACH	
+C0D3793BEFFA7710975BA2973FCC175F	D	Lights Out (2004)(Riddle, Sean)(PD)[a2]	ChannelF		board=SCHACH	
+D4A7F300E076B9552BFAEFB039967FC5	D	Lights Out (2004)(Riddle, Sean)(PD)[a]	ChannelF		board=SCHACH	
+815AAF2D04F6639164540E32B2FAA69D	D	Multicart Ram Test	ChannelF		board=SCHACH
+2089B12F6E7F8A014F5BCDFA6E86F438	D	NWNPNPNW Demo Song (2008)(B00daW)(PD)	ChannelF		board=SCHACH	
+C8C6D4AB5693EE6996F60D43F47327CF	D	Pac-Man (2004)(Blackbird - e5frog)[p]	ChannelF		board=SCHACH
+035B5A2A18E0D2755A839FAEC62C8999	D	Pac-Man (2004)(Blackbird - e5frog)[p][a2]	ChannelF		board=SCHACH
+42E57A820062AAC34F489453F5764901	D	Pac-Man (2004)(Blackbird - e5frog)[p][a3]	ChannelF		board=SCHACH
+30B8112EF589DA0948E913EED52EABF6	D	Pac-Man (2004)(Blackbird - e5frog)[p][a4]	ChannelF		board=SCHACH
+3978864E041CADE7D9FF40D69AC658C5	D	Pac-Man (2004)(Blackbird - e5frog)[p][a5]	ChannelF		board=SCHACH
+B50537597EE60C94004D668ACCF030BF	D	Pac-Man (2004)(Blackbird - e5frog)[p][a6]	ChannelF		board=SCHACH
+3978864E041CADE7D9FF40D69AC658C5	D	Pac-Man (2004)(Blackbird - e5frog)[p][a7]	ChannelF		board=SCHACH
+E38CD8185B02D5C2FE4B3A1309682722	D	Pac-Man (2004)(Blackbird - e5frog)[p][a8]	ChannelF		board=SCHACH
+3978864E041CADE7D9FF40D69AC658C5	D	Pac-Man (2004)(Blackbird - e5frog)[p][a8]	ChannelF		board=SCHACH
+4305CEAD642F79D1F4E503C54913836F	D	Pac-Man (2004)(Blackbird - e5frog)[p][a]	ChannelF		board=SCHACH
+9369CE5E811E2D56F68A33F7F9DD41D6	D	Pac-Man (Build FeRAM)(2012)(Blackbird - e5frog)	ChannelF		board=SCHACH
+F10E5997E23127DCFE6108BD47910094	D	Pac-Man v20041211-14 (2004)(Blackbird - e5frog)[p]	ChannelF		board=SCHACH
+3F185C15CA0A649A87C0A4524DBB1C67	D	Pixelmove (2022-09-16)(Mikebloke)	ChannelF		board=SCHACH
+C4761BB1574DB12A2D83D8E17DBFA779	D	Platform (2022-09-16)(Mikebloke)	ChannelF		board=SCHACH
+40F796FF30E39DA2F6D864C928188191	D	RG09 Demo (2009)(e5frog)(PD)	ChannelF		board=SCHACH
+442E362A39018F2D117F43FE013D1D8B	D	Scrolling Mountains (200x)(Curtdawg)	ChannelF	
+3F101828E1E64235A673F337ADDB3952	D	Shark (2022-09-13)(Mikebloke)	ChannelF		board=SCHACH	
+B604104CACFDA30315B60B00B3CA5ADE	D	Space Race (2023-02-24)(Mikebloke)	ChannelF		board=SCHACH	
+B17B3C8744C4AC8A550212B016DCAE5B	D	Speed Race (2022-10-15)(Mikebloke)[Channel F controller]	ChannelF		board=SCHACH	
+A7B94E4941ED058FF4AF9CEDC21B808B	D	Speed Race (2022-10-15)(Mikebloke)[D-Pad]	ChannelF		board=SCHACH	
+ECE8BAAF22EF385939E5C37E496CC60C	D	Submarine (2023-08-09)(Mikebloke)	ChannelF		board=SCHACH	
+0D272A1C51BFE148AD12105F3F39446D	D	Tents and Trees (2021-05-24)(Arlasoft)	ChannelF		board=SCHACH	
+F680225A38C3C4A66E30DBCA8D351407	D	Test Controls (200x)(e5frog)(PD)	ChannelF		board=SCHACH	
 D7050AF61479AA549206250441AA2B0F	D	Tetris (2004)(Trauner, Peter)[p]	ChannelF		board=SCHACH	USA
 2AEBEDA05478E8B7F5C1ECA037AC6C2F	D	Tetris (2004)(Trauner, Peter)[p][a]	ChannelF		board=SCHACH	USA
-3978864E041CADE7D9FF40D69AC658C5	D	Pac-Man (2004)(Blackbird - e5frog)[p][a8]	ChannelF		board=SCHACH
-9369CE5E811E2D56F68A33F7F9DD41D6	D	Pac-Man (Build FeRAM)(2012)(Blackbird - e5frog)	ChannelF		board=SCHACH
+745479A23FB09DDA3DF3179C56719CA8	D	Wrdl-F (2022-03-04)(Arlasoft)	ChannelF		board=SCHACH	USA
+C8A8361F9CDAC201AD6744E1D7B39E89	D	Game-No-Watch Ball (Original Release) (2024-02-12)(Mikebloke)	ChannelF		board=SCHACH
+847DE518A9ED29750F57CBE740417B9D	D	Game-No-Watch Ball (Black and White) (2024-04-15)(Mikebloke)	ChannelF		board=SCHACH
+ADACE4C5A9FA27BA71DEFA3D0F6764D6	D	Game-No-Watch Ball (Colour) (2024-04-15)(Mikebloke)	ChannelF		board=SCHACH
+66FDA5422350751E4DFAF73487E7D481	D	Super Wipeout (2024-09-19)(Mikebloke)	ChannelF		board=SCHACH
+C539CA74082665C18A38318801F467FD	D	Squash (2022-10-15)(Mikebloke)	ChannelF		board=SCHACH
+3CBB8C13F7A602425DE1733D2A28EDD3	D	Golf v71a (2019-07-25) (atari2600land & e5frog)	ChannelF		board=SCHACH
+
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-7E5C26A6D1F9A90C68669A9800BA522D		Tic-Tac-Toe, Shooting Gallery, Doodle, Quadra-Doodle (USA)	ChannelF		board=STD	USA
-1FBD86DCCA0E4619963B902C48AE77F2		Muehle, Tontauben-Schiessen, Kreatives Malspiel, Videoscope (Germany)	ChannelF		board=STD	Germany
-4F11F13CBCA685CB20E888F87B3B1586		Desert Fox, Shooting Gallery (USA)	ChannelF		board=STD	USA
-B074C867F235FB69CED96C6916673B45		Video Blackjack (USA)	ChannelF		board=STD	USA
-1B409FE1154584F4D1AB76B344A73D99		Spitfire (USA)	ChannelF		board=STD	USA
-5B86FE22007E6D0A92247809AC8934E9		Spitfire (USA) (proto)	ChannelF		board=STD	USA
-32CCA8FF09041A39251D7AADE21EE22F		Space War (USA)	ChannelF		board=STD	USA
-A8E6103FCAE4D0F9E14D9EDCFC3FC493		Math Quiz I - Addition + Subtraction (USA)	ChannelF		board=STD	USA
-86B77EAFDF7B806E19E01724987E384F		Math Quiz II - Multiplication + Division (USA)	ChannelF		board=STD	USA
-4C10FA5C7316C59EFA241043FC67DFA8		Magic Numbers - Mind Reader + Nim (USA)	ChannelF		board=STD	USA
-F80AF74B09D058B90E719BB7DFBDD50E		Drag Race (USA)	ChannelF		board=STD	USA
-6565DF74539476D66FD78DE1BAC0259C		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA)	ChannelF		board=MAZE	USA
-53E4CC2DA0F2C167E0692B794CB7692C		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA) (Alt 1)	ChannelF		board=MAZE	USA
-5DB71E3B0CD13F7C42790A2CD9072CA1		Maze, Jailbreak, Blind-man's-bluff, Trailblazer (USA) (Alt 2)	ChannelF		board=MAZE	USA
-D89B48AE8C906488CAAC2B2AE1D63D88		Backgammon, Acey-Deucey (USA)	ChannelF		board=STD	USA
-4FA83F734C139963AA02BDBB7A52E500		Baseball (USA)	ChannelF		board=STD	USA
-3783B6AC359E21B99CFA17773AA811C6		Robot War, Torpedo Alley (USA)	ChannelF		board=STD	USA
-FACB452602F59FDDDE1CFBC4D598A282		Robot War (USA) (proto)	ChannelF		board=STD	USA
-FACB452602F59FDDDE1CFBC4D598A282		Robot War (USA) (proto) [b]	ChannelF		board=STD	USA
-4CB12EDAE37DF23851884B82CA410754		Sonar Search (USA)	ChannelF		board=STD	USA
-2B3CA549E27579E4519A765FD8F52D0F		Memory Match 1 & 2 (USA)	ChannelF		board=STD	USA
-6FFEDAED3C5CD8BA74D98901849CC451		Dodge It (USA)	ChannelF		board=STD	USA
-E90339B7068C6227D54F3C0CA637E017		Pinball Challenge (USA)	ChannelF		board=STD	USA
-5CBCDA1C44F0DAD02B0DFE209B6325D5		Pinball Challenge (USA) (Alt 1)	ChannelF		board=STD	USA
-0124CD0B61DF5502AABD59029CCB6D5A		Hangman (USA)	ChannelF		board=HANG	USA
-35D61D40EF7EC337CBA092AABAC74DBD		Checkers (USA)	ChannelF		board=STD	USA
-90A9B3952568F91502A7088BFB0AE07E		Video Whizball (USA)	ChannelF		board=STD	USA
-25E231E7A464A32B4715BFB47AF89240		Bowling (USA)	ChannelF		board=STD	USA
-DFB66EE145FAB65062FDEADAFC8DC34C		Slot Machine (USA)	ChannelF		board=STD	USA
-9E0711B140E22729687DB1E1354980AB		Galactic Space Wars, Lunar Lander (USA)	ChannelF		board=STD	USA
-5CCCEE534FD002AF6EB4FCAAA6B95D88		Glactic Space Wars (proto) (USA)	ChannelF		board=STD	USA
-9A894D745356A050F95410983C3BC54A		Pro Football (USA)	ChannelF		board=STD	USA
-BB7F7BBBE21F142591CDCAFA98D7F6E4		Casino Poker (USA)	ChannelF		board=STD	USA
-F7BF7D55A7660FFA80D08AD1BA903FF7		Alien Invasion (USA)	ChannelF		board=STD	USA
-
-C2A44D22D3865B036479E9311C74D3AD		Ordtaevling (Sweden)	ChannelF		board=hang	Sweden
-913ECBAA30816C6D78DE8651251761FC		Rat' Mal (Germany)	ChannelF		board=hang	Germany
-5568205F926333914DEDC8EF8BF16AF2		Schach (Germany)	ChannelF		board=SCHACH	Germany
-7B227DE474806A8AB9474C4716A270B7		Schach [b] (Actually Tennis)	ChannelF		board=SCHACH	Germany
-
+F7BF7D55A7660FFA80D08AD1BA903FF7		Alien Invasion (1978)(Zircon)	ChannelF		board=STD	USA
+D89B48AE8C906488CAAC2B2AE1D63D88		Backgammon + Acey-Ducey (1977)(Fairchild)	ChannelF		board=STD	USA
+4FA83F734C139963AA02BDBB7A52E500		Baseball (1977)(Fairchild)	ChannelF		board=STD	USA
+25E231E7A464A32B4715BFB47AF89240		Bowling (1978)(Fairchild)	ChannelF		board=STD	USA
+BB7F7BBBE21F142591CDCAFA98D7F6E4		Casino Poker (1978)(Zircon)	ChannelF		board=STD	USA
+35D61D40EF7EC337CBA092AABAC74DBD		Checkers (1978)(Zircon)	ChannelF		board=STD	USA
 54CF17C48707467295749490D458EAFB		Democart (demo) (1977)(Fairchild)	ChannelF		board=STD
 F6916B665893AA8138CDE57C37E50ADA		Democart 2 (demo) (197x)(Fairchild)	ChannelF		board=STD
-
-
-
-94530113A22AE27AF6ED87B98D9AF62A		Color Organ (19xx)(-)	ChannelF		board=STD
-C44BE208013B82041D01D2BC1834060B		Colortest Demo (200x)(Riddle, Sean)	ChannelF	
-
-
-815AAF2D04F6639164540E32B2FAA69D		Multicart Ram Test	ChannelF		board=SCHACH
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-442E362A39018F2D117F43FE013D1D8B		Scrolling Mountains (200x)(Curtdawg)	ChannelF	
-
-
-
-
-
-
+4F11F13CBCA685CB20E888F87B3B1586		Desert Fox + Shooting Gallery (1976)(Fairchild)	ChannelF		board=STD	USA
+6FFEDAED3C5CD8BA74D98901849CC451		Dodge-It (1978)(Fairchild)	ChannelF		board=STD	USA
+F80AF74B09D058B90E719BB7DFBDD50E		Drag Race (1977)(Fairchild)	ChannelF		board=STD	USA
+06CD8CFE851390C92AC2B7C4D28D6B97		Draw Poker (197x)(Zircon)(proto)	ChannelF		board=STD	USA
+819F06CFC48D7F38E756F82B22DCAF4D		Football (197x)(Zircon)(proto)	ChannelF		board=STD	USA
+9E0711B140E22729687DB1E1354980AB		Galactic Space Wars + Lunar Lander (USA)	ChannelF		board=STD	USA
+5CCCEE534FD002AF6EB4FCAAA6B95D88		Glactic Space Wars (proto) (USA)	ChannelF		board=STD	USA
+0124CD0B61DF5502AABD59029CCB6D5A		Hangman (1978)(Fairchild)	ChannelF		board=HANG	USA
+0A723F631CA45AD290E9F3AEBA8DDB6F		Hockey + Tennis (1976)(Fairchild)[bios rip]	ChannelF		board=STD	USA
+4C10FA5C7316C59EFA241043FC67DFA8		Magic Numbers + Mind Reader + Nim (1977)(Fairchild)	ChannelF		board=STD	USA
+A8E6103FCAE4D0F9E14D9EDCFC3FC493		Math Quiz I - Addition + Subtraction (1976)(Fairchild)	ChannelF		board=STD	USA
+86B77EAFDF7B806E19E01724987E384F		Math Quiz II - Multiplication + Division (1977)(Fairchild)	ChannelF		board=STD	USA
+6565DF74539476D66FD78DE1BAC0259C		Maze + Jailbreak + Blind-man's-bluff + Trailblazer (1977)(Fairchild)	ChannelF		board=MAZE	USA
+53E4CC2DA0F2C167E0692B794CB7692C		Maze + Jailbreak + Blind-man's-bluff + Trailblazer (1977)(Fairchild)[a]	ChannelF		board=MAZE	USA
+2B3CA549E27579E4519A765FD8F52D0F		Memory Match (1978)(Fairchild)	ChannelF		board=STD	USA
+C2A44D22D3865B036479E9311C74D3AD		Ordtavling (1978)(Luxor)(SE)	ChannelF		board=hang	Sweden
+E90339B7068C6227D54F3C0CA637E017		Pinball Challenge (1978)(Fairchild)	ChannelF		board=STD	USA
+5CBCDA1C44F0DAD02B0DFE209B6325D5		Pinball Challenge (1978)(Fairchild)[a]	ChannelF		board=STD	USA
+9A894D745356A050F95410983C3BC54A		Pro Football (1978)(Zircon)	ChannelF		board=STD	USA
+913ECBAA30816C6D78DE8651251761FC		Rat' Mal (197x)(SABA)(DE)	ChannelF		board=hang	Germany
+FACB452602F59FDDDE1CFBC4D598A282		Robot War (1977)(Fairchild)(proto)	ChannelF		board=STD	USA
+3783B6AC359E21B99CFA17773AA811C6		Robot War + Torpedo Alley (1977)(Fairchild)	ChannelF		board=STD	USA
+5568205F926333914DEDC8EF8BF16AF2		Schach (197x)(SABA)(DE)	ChannelF		board=SCHACH	Germany
+DFB66EE145FAB65062FDEADAFC8DC34C		Slot Machine (1978)(Zircon)	ChannelF		board=STD	USA
+4CB12EDAE37DF23851884B82CA410754		Sonar Search (1977)(Fairchild)	ChannelF		board=STD	USA
+32CCA8FF09041A39251D7AADE21EE22F		Space War (1977)(Zircon)	ChannelF		board=STD	USA
+1B409FE1154584F4D1AB76B344A73D99		Spitfire (1976)(Zircon)	ChannelF		board=STD	USA
+5B86FE22007E6D0A92247809AC8934E9		Spitfire (1976)(Zircon)(proto)	ChannelF		board=STD	USA
+7E5C26A6D1F9A90C68669A9800BA522D		Tic Tac Toe + Shooting Gallery + Doodle + Quadra Doodle (1976)(Fairchild)	ChannelF		board=STD	USA
+B074C867F235FB69CED96C6916673B45		Video Blackjack (1976)(Fairchild)	ChannelF		board=STD	USA
+90A9B3952568F91502A7088BFB0AE07E		Video Whizball (1978)(Fairchild)	ChannelF		board=STD	USA
+1FBD86DCCA0E4619963B902C48AE77F2		Muehle &amp; Tontauben-Schiessen &amp; Kreatives Malspiel &amp; Videoscope (1978)(SABA)(DE)	ChannelF		board=STD	Germany
 C3C7B3246E50117BD5CDDB2B53E6FBAE		Werbetextcassette (198x)(Electronic-Partner)(DE)	ChannelF			DE
+
+
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; BIOSes - If any of these are loaded as a ROM ChannelFHawk will jump to the on-board games
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+AC9804D4C0E9D07E33472E3726ED15C3		Fairchild VES &amp; Channel F BIOS [PSU1] (1976)(Fairchild)[SL31253]	ChannelF		board=BIOS	
+DA98F4BB3242AB80D76629021BB27585		Fairchild VES &amp; Channel F BIOS [PSU2](1976)(Fairchild)[SL31254]	ChannelF		board=BIOS	
+95D339631D867C8F1D15A5F2EC26069D		Fairchild VES &amp; Channel F II BIOS [PSU1] (1976)(Fairchild)[SL90025]	ChannelF		board=BIOS	
+495AA78EEFD90504A15E20DDDCC4943F		Fairchild VES &amp; Channel F BIOS [PSU1+2] (1976)(Fairchild)[b concatenated SL31253 &amp; SL31254]	ChannelF		board=BIOS	
+

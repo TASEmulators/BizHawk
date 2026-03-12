@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -17,6 +20,8 @@ namespace BizHawk.Client.Common
 		{
 			FormatFlags = StringFormatFlags.MeasureTrailingSpaces,
 		};
+
+		private readonly IDialogController _dialogController;
 
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -41,13 +46,24 @@ namespace BizHawk.Client.Common
 
 		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
 
+		private readonly FontFamily[] _pixelFonts;
+
 		private DisplaySurfaceID? _usingSurfaceID;
 		public bool HasGUISurface => true;
 
-		public GuiApi(Action<string> logCallback, DisplayManagerBase displayManager)
+		public GuiApi(
+			IDialogController dialogController,
+			DisplayManagerBase displayManager,
+			Action<string> logCallback)
 		{
+			_dialogController = dialogController;
 			LogCallback = logCallback;
 			_displayManager = displayManager;
+			_pixelFonts = (new[]
+			{
+				"fceux",
+				"gens",
+			}).Select(s => _displayManager.CustomFonts.Families.First(f => f.Name.EqualsIgnoreCase(s))).ToArray();
 		}
 
 		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
@@ -63,6 +79,19 @@ namespace BizHawk.Client.Common
 
 		public void SetAttributes(ImageAttributes a)
 		{
+		}
+
+		public void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc)
+		{
+			_usingSurfaceID = surfaceID;
+			try
+			{
+				drawingCallsFunc(this);
+			}
+			finally
+			{
+				_usingSurfaceID = null;
+			}
 		}
 
 		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
@@ -103,8 +132,8 @@ namespace BizHawk.Client.Common
 
 		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
-		public void AddMessage(string message, int? duration = null)
-			=> _displayManager.OSD.AddMessage(message, duration);
+		public void AddMessage(string message, [LiteralExpected] int? duration = null)
+			=> _dialogController.AddOnScreenMessage(message, duration);
 
 		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => Get2DRenderer(surfaceID).Clear();
 
@@ -260,7 +289,8 @@ namespace BizHawk.Client.Common
 
 			if (!_imageCache.TryGetValue(path, out var img))
 			{
-				img = new(Image.FromFile(path));
+				using var file = Image.FromFile(path);
+				img = new(file);
 				if (cache) _imageCache[path] = img;
 			}
 
@@ -278,7 +308,10 @@ namespace BizHawk.Client.Common
 		}
 
 		public void ClearImageCache()
-			=> _imageCache.Clear();
+		{
+			_imageCache.Clear();
+			_displayManager.ClearApiHawkTextureCache();
+		}
 
 		public void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null)
 		{
@@ -306,7 +339,11 @@ namespace BizHawk.Client.Common
 			var r = Get2DRenderer(surfaceID);
 			r.CompositingMode = _compositingMode;
 			r.DrawImage(
-				_imageCache.GetValueOrPut(path, static i => new(Image.FromFile(i))),
+				_imageCache.GetValueOrPut(path, static i =>
+				{
+					using var file = Image.FromFile(i);
+					return new(file);
+				}),
 				new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height),
 				source_x,
 				source_y,
@@ -371,8 +408,8 @@ namespace BizHawk.Client.Common
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null, DisplaySurfaceID? surfaceID = null)
 		{
 			var r = Get2DRenderer(surfaceID);
-			var w = Math.Max(width, 1);
-			var h = Math.Max(height, 1);
+			var w = Math.Max(width, 0);
+			var h = Math.Max(height, 0);
 			// GDI+ had an off by one here, we increment width and height to preserve backwards compatibility
 			w++; h++;
 			r.DrawRectangle(line ?? _defaultForeground, x, y, w, h);
@@ -392,7 +429,7 @@ namespace BizHawk.Client.Common
 					"italic" => FontStyle.Italic,
 					"strikethrough" => FontStyle.Strikeout,
 					"underline" => FontStyle.Underline,
-					_ => FontStyle.Regular
+					_ => FontStyle.Regular,
 				};
 
 				using var g = Graphics.FromImage(_nullGraphicsBitmap);
@@ -491,7 +528,7 @@ namespace BizHawk.Client.Common
 				}
 
 				using var g = Graphics.FromImage(_nullGraphicsBitmap);
-				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				var font = new Font(_pixelFonts[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 				var sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
 
 				var r = Get2DRenderer(surfaceID);
@@ -519,7 +556,7 @@ namespace BizHawk.Client.Common
 					"bottomleft" => 2,
 					"3" => 3,
 					"bottomright" => 3,
-					_ => default
+					_ => default,
 				};
 			}
 			else

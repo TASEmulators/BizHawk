@@ -71,6 +71,7 @@ extern "C" {
 #define SNES_MEMORY_GAME_BOY_RTC        7
 #define SNES_MEMORY_GAME_BOY_WRAM       8
 #define SNES_MEMORY_GAME_BOY_HRAM       9
+#define SNES_MEMORY_SA1_IRAM            10
 
 #define SNES_MEMORY_WRAM    100
 #define SNES_MEMORY_APURAM  101

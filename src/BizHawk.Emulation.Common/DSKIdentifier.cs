@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Common
 		private string _possibleIdent = "";
 
 		/// <summary>
-		/// Default fallthrough to AppleII
+		/// Default fallthrough to AppleII - the AppleII *.dsk format seems to be very simple with no ident strings
 		/// </summary>
 		public string IdentifiedSystem { get; set; } = VSystemID.Raw.AppleII;
 
@@ -64,14 +64,7 @@ namespace BizHawk.Emulation.Common
 			var trk = Tracks[0];
 
 			// look for standard speccy bootstart
-			if (trk.Sectors[0].SectorData != null && trk.Sectors[0].SectorData.Length > 0)
-			{
-				if (trk.Sectors[0].SectorData[0] == 0 && trk.Sectors[0].SectorData[1] == 0
-					&& trk.Sectors[0].SectorData[2] == 40)
-				{
-					_possibleIdent = VSystemID.Raw.ZXSpectrum;
-				}
-			}
+			if (trk.Sectors[0].SectorData is [ 0, 0, 40, .. ]) _possibleIdent = VSystemID.Raw.ZXSpectrum;
 
 			// search for PLUS3DOS string
 			foreach (var t in Tracks)
@@ -82,7 +75,7 @@ namespace BizHawk.Emulation.Common
 						continue;
 
 					string str = Encoding.ASCII.GetString(s.SectorData, 0, s.SectorData.Length);
-					if (str.Contains("PLUS3DOS", StringComparison.OrdinalIgnoreCase))
+					if (str.ContainsIgnoreCase("PLUS3DOS"))
 					{
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 						return;
@@ -91,9 +84,9 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// check for bootable status
-			if (trk.Sectors[0].SectorData != null && trk.Sectors[0].SectorData.Length > 0)
+			if (trk.Sectors[0].SectorData?.Length is not 0)
 			{
-				switch (trk.Sectors[0].GetChecksum256())
+				switch (trk.Sectors[0].GetModChecksum256())
 				{
 					case 3:
 						IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
@@ -122,7 +115,7 @@ namespace BizHawk.Emulation.Common
 				switch (trk.GetLowestSectorID())
 				{
 					case 1:
-						switch (trk.Sectors[0].GetChecksum256())
+						switch (trk.Sectors[0].GetModChecksum256())
 						{
 							case 3:
 								IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
@@ -217,7 +210,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			// last chance. use the possible value
-			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent != "")
+			if (IdentifiedSystem == VSystemID.Raw.AppleII && _possibleIdent.Length is not 0) // wait but it's not being used for the assignment?
 			{
 				IdentifiedSystem = VSystemID.Raw.ZXSpectrum;
 			}
@@ -245,7 +238,7 @@ namespace BizHawk.Emulation.Common
 				int p = pos;
 				Tracks[i] = new Track
 				{
-					TrackIdent = Encoding.ASCII.GetString(_data, p, 12)
+					TrackIdent = Encoding.ASCII.GetString(_data, p, 12),
 				};
 				p += 16;
 				Tracks[i].TrackNumber = _data[p++];
@@ -267,7 +260,7 @@ namespace BizHawk.Emulation.Common
 						SectorSize = _data[p++],
 						Status1 = _data[p++],
 						Status2 = _data[p++],
-						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8)
+						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8),
 					};
 
 					p += 2;
@@ -340,7 +333,7 @@ namespace BizHawk.Emulation.Common
 						SectorSize = _data[p++],
 						Status1 = _data[p++],
 						Status2 = _data[p++],
-						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8)
+						ActualDataByteLength = (ushort) (_data[p] | _data[p + 1] << 8),
 					};
 
 					p += 2;
@@ -406,7 +399,7 @@ namespace BizHawk.Emulation.Common
 			public byte[] SectorData { get; set; }
 			public bool ContainsMultipleWeakSectors { get; set; }
 
-			public int GetChecksum256() => SectorData.Sum(b => b % 256);
+			public byte GetModChecksum256() => (byte) (SectorData.Sum(static b => b) & 0xFF);
 		}
 	}
 }

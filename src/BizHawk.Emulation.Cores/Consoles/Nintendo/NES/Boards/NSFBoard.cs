@@ -4,7 +4,7 @@ using BizHawk.Common;
 //1. Have a hardcoded NSF driver rom loaded to 0x3800
 //2. Have fake registers at $3FFx for the NSF driver to use
 //3. These addresses are chosen because no known NSF could possibly use them for anything.
-//4. Patch the PRG with our own IRQ vectors when the NSF play and init routines aren't running. 
+//4. Patch the PRG with our own IRQ vectors when the NSF play and init routines aren't running.
 //   That way we can use NMI for overall control and cause our code to be the NMI handler without breaking the NSF data by corrupting the last few bytes
 
 //NSF:
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//------------------------------
 		//configuration
-		
+
 		internal NSFFormat nsf;
 
 		/// <summary>
@@ -98,10 +98,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			for (int i = 0; i < 8; i++)
 			{
 				int bank = nsf.BankswitchInitValues[i];
-				
+
 				//discard out of range bankswitches.. for example, Balloon Fight is 3120B but has initial bank settings set to 0,0,0,0,0,1,0
 				if (bank * 4096 > nsf.NSFData.Length - 0x80)
-					bank = 0; 
+					bank = 0;
 
 				InitBankSwitches[i] = (byte)bank;
 				if (bank != 0)
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							//kevtris's reset process seems not to work. dunno what all is going on in there
 
-							//our own innovation, should work OK.. 
+							//our own innovation, should work OK..
 							NES.apu.NESSoftReset();
 
 							//mostly fceux's guidance
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//Suspend vector patching
 			//3800:LDA $3FF3
 			0xAD,0xF3,0x3F,
-			
+
 			//Initialize stack pointer
 			//3803:LDX #$FF
 			0xA2,0xFF,
@@ -258,35 +258,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			0xF0,0x09,
 
 			//Read the next song (resetting the player) and PAL flag into A and X and then call the INIT routine
-			//380B:LDA $3FF1 
+			//380B:LDA $3FF1
 			0xAD,0xF1,0x3F,
 			//380E:LDX $3FF2
 			0xAE,0xF2,0x3F,
 			//3811:JSR INIT
-			0x20,0x00,0x00, 
+			0x20,0x00,0x00,
 
 			//Fall through to:
 			//@Play - call PLAY routine with X and Y cleared (this is not supposed to be required, but fceux did it)
-			//3814:LDA #$00 
+			//3814:LDA #$00
 			0xA9,0x00,
 			//3816:TAX
 			0xAA,
 			//3817:TAY
 			0xA8,
 			//3818:JSR PLAY
-			0x20,0x00,0x00, 
-			
+			0x20,0x00,0x00,
+
 			//Resume vector patching and infinite loop waiting for next NMI
 			//381B:LDA $3FF4
 			0xAD,0xF4,0x3F,
 			//381E:BCC $XX1E
-			0x90,0xFE, 
+			0x90,0xFE,
 
 			//@ResetVector - just set up an infinite loop waiting for the first NMI
 			//3820:CLC
 			0x18,
-			//3821:BCC $XX24 
-			0x90,0xFE, 
+			//3821:BCC $XX24
+			0x90,0xFE,
 		};
 
 		public override void AtVsyncNmi()

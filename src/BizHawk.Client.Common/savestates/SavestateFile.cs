@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
@@ -27,6 +27,8 @@ namespace BizHawk.Client.Common
 		private readonly IVideoProvider _videoProvider;
 		private readonly IMovieSession _movieSession;
 
+		private readonly SettingsAdapter _settable;
+
 		private readonly IDictionary<string, object> _userBag;
 
 		public SavestateFile(
@@ -40,6 +42,12 @@ namespace BizHawk.Client.Common
 			}
 
 			_emulator = emulator;
+			_settable = new(
+				_emulator,
+				mayPutCoreSettings: static () => false,
+				handlePutCoreSettings: static _ => {},
+				mayPutCoreSyncSettings: static () => false,
+				handlePutCoreSyncSettings: static _ => {});
 			_statable = emulator.AsStatable();
 			if (emulator.HasVideoProvider())
 			{
@@ -50,14 +58,16 @@ namespace BizHawk.Client.Common
 			_userBag = userBag;
 		}
 
-		public void Create(string filename, SaveStateConfig config)
+		public FileWriteResult Create(string filename, SaveStateConfig config, bool makeBackup)
 		{
-			// the old method of text savestate save is now gone.
-			// a text savestate is just like a binary savestate, but with a different core lump
-			using var bs = new ZipStateSaver(filename, config.CompressionLevelNormal);
+			FileWriteResult<ZipStateSaver> createResult = ZipStateSaver.Create(filename, config.CompressionLevelNormal);
+			if (createResult.IsError) return createResult;
+			var bs = createResult.Value!;
 
 			using (new SimpleTime("Save Core"))
 			{
+				// the old method of text savestate save is now gone.
+				// a text savestate is just like a binary savestate, but with a different core lump
 				if (config.Type == SaveStateType.Text)
 				{
 					bs.PutLump(BinaryStateLump.CorestateText, tw => _statable.SaveStateText(tw));
@@ -70,32 +80,29 @@ namespace BizHawk.Client.Common
 
 			if (config.SaveScreenshot && _videoProvider != null)
 			{
-				var buff = _videoProvider.GetVideoBuffer();
-				if (buff.Length == 1)
-				{
-					// is a hacky opengl texture ID. can't handle this now!
-					// need to discuss options
-					// 1. cores must be able to provide a pixels VideoProvider in addition to a texture ID, on command (not very hard overall but interface changing and work per core)
-					// 2. SavestateManager must be setup with a mechanism for resolving texture IDs (even less work, but sloppy)
-					// There are additional problems with AVWriting. They depend on VideoProvider providing pixels.
-				}
-				else
-				{
-					int outWidth = _videoProvider.BufferWidth;
-					int outHeight = _videoProvider.BufferHeight;
+				var outWidth = _videoProvider.BufferWidth;
+				var outHeight = _videoProvider.BufferHeight;
 
-					// if buffer is too big, scale down screenshot
-					if (!config.NoLowResLargeScreenshots && buff.Length >= config.BigScreenshotSize)
-					{
-						outWidth /= 2;
-						outHeight /= 2;
-					}
-
-					using (new SimpleTime("Save Framebuffer"))
-					{
-						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight));
-					}
+				// if buffer is too big, scale down screenshot
+				if (!config.NoLowResLargeScreenshots && outWidth * outHeight >= config.BigScreenshotSize)
+				{
+					outWidth /= 2;
+					outHeight /= 2;
 				}
+
+				using (new SimpleTime("Save Framebuffer"))
+				{
+					bs.PutLump(
+						BinaryStateLump.Framebuffer,
+						s => QuickBmpFile.Save(_videoProvider, s, outWidth, outHeight),
+						zstdCompress: false);
+				}
+			}
+
+			if (_settable.HasSyncSettings)
+			{
+				var syncSettingsJson = ConfigService.SaveWithType(_settable.GetSyncSettings());
+				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(syncSettingsJson));
 			}
 
 			if (_movieSession.Movie.IsActive())
@@ -103,20 +110,14 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Input,
 					tw =>
 					{
-						// TODO: this should not happen and no exception should be thrown here.
-						// Just make this noisy for now until the issue is fixed.
-						if (_movieSession.Movie.FrameCount < _emulator.Frame)
-						{
-							throw new InvalidOperationException(
-								$"Tried to create a savestate at frame {_emulator.Frame}, but only got a log of length {_movieSession.Movie.FrameCount}!");
-						}
+						Debug.Assert(_movieSession.Movie.FrameCount >= _emulator.Frame, $"Tried to create a savestate at frame {_emulator.Frame}, but only got a log of length {_movieSession.Movie.FrameCount}!");
 						// this never should have been a core's responsibility
 						tw.WriteLine("Frame {0}", _emulator.Frame);
 						_movieSession.HandleSaveState(tw);
 					});
 			}
 
-			if (_userBag.Any())
+			if (_userBag.Count is not 0)
 			{
 				bs.PutLump(BinaryStateLump.UserData,
 					tw =>
@@ -126,10 +127,13 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie tasMovie)
 			{
-				bs.PutLump(BinaryStateLump.LagLog, tw => ((ITasMovie) _movieSession.Movie).LagLog.Save(tw));
+				bs.PutLump(BinaryStateLump.LagLog, tw => tasMovie.LagLog.Save(tw), zstdCompress: true);
 			}
+
+			makeBackup = makeBackup && config.MakeBackups;
+			return bs.CloseAndDispose(makeBackup ? $"{filename}.bak" : null);
 		}
 
 		public bool Load(string path, IDialogParent dialogParent)
@@ -153,6 +157,36 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			// next, check sync settings match
+			if (_settable.HasSyncSettings)
+			{
+				string/*?*/ loadedSyncSettings = null;
+				bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							loadedSyncSettings = line;
+							break;
+						}
+					}
+				});
+				if (loadedSyncSettings is null
+					|| !ConfigService.SaveWithType(_settable.GetSyncSettings())
+						.Equals(loadedSyncSettings, StringComparison.Ordinal))
+				{
+					dialogParent.ModalMessageBox(
+						loadedSyncSettings is null
+							? "This savestate doesn't contain sync settings, so it must be from an older version.\nLoadstate cancelled."
+							: "This savestate was made with a different core or different sync settings.\nLoadstate cancelled.",
+						"Savestate sync settings mismatch",
+						EMsgBoxIcon.Info);
+					return false;
+				}
+			}
+
 			// Movie timeline check must happen before the core state is loaded
 			if (_movieSession.Movie.IsActive())
 			{
@@ -165,7 +199,15 @@ namespace BizHawk.Client.Common
 
 			using (new SimpleTime("Load Core"))
 			{
-				bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+				try
+				{
+					bl.GetCoreState(br => _statable.LoadStateBinary(br), tr => _statable.LoadStateText(tr));
+				}
+				catch (Exception e)
+				{
+					Util.DebugWriteLine(e);
+					return false;
+				}
 			}
 
 			// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
@@ -203,9 +245,9 @@ namespace BizHawk.Client.Common
 				foreach (var (k, v) in bag) _userBag.Add(k, v);
 			}
 
-			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie)
+			if (_movieSession.Movie.IsActive() && _movieSession.Movie is ITasMovie tasMovie)
 			{
-				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => ((ITasMovie) _movieSession.Movie).LagLog.Load(tr));
+				bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => tasMovie.LagLog.Load(tr));
 			}
 
 			return true;
@@ -222,13 +264,13 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				var buff = videoProvider.GetVideoBuffer();
+				var vb = videoProvider.GetVideoBuffer();
+				var vbLen = videoProvider.BufferWidth * videoProvider.BufferHeight;
 				try
 				{
-					for (int i = 0; i < buff.Length; i++)
+					for (var i = 0; i < vbLen; i++)
 					{
-						int j = br.ReadInt32();
-						buff[i] = j;
+						vb[i] = br.ReadInt32();
 					}
 				}
 				catch (EndOfStreamException)

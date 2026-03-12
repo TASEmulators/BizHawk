@@ -1,7 +1,9 @@
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
+using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -29,28 +31,10 @@ namespace BizHawk.Emulation.DiscSystem
 		private string FindAudio(string audioPath)
 		{
 			var (dir, basePath, _) = audioPath.SplitPathToDirFileAndExt();
-			//look for potential candidates
-			DirectoryInfo di = new(dir!);
-			var fis = di.GetFiles();
-			//first, look for the file type we actually asked for
-			foreach (var fi in fis)
-			{
-				if (string.Equals(fi.FullName, audioPath, StringComparison.OrdinalIgnoreCase))
-					if (CheckForAudio(fi.FullName))
-						return fi.FullName;
-			}
-			//then look for any other type
-			foreach (var fi in fis)
-			{
-				if (string.Equals(Path.GetFileNameWithoutExtension(fi.FullName), basePath, StringComparison.OrdinalIgnoreCase))
-				{
-					if (CheckForAudio(fi.FullName))
-					{
-						return fi.FullName;
-					}
-				}
-			}
-			return null;
+			var filePaths = new DirectoryInfo(dir!).GetFiles().Select(static fi => fi.FullName).ToArray();
+			return filePaths.Where(audioPath.EqualsIgnoreCase) // first, look for the file type we actually asked for...
+				.Concat(filePaths.Where(filePath => Path.GetFileNameWithoutExtension(filePath).EqualsIgnoreCase(basePath))) // ...then look for any other type
+				.FirstOrDefault(CheckForAudio);
 		}
 
 		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>

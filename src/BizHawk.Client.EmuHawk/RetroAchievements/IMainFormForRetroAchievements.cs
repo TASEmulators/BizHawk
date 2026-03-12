@@ -3,15 +3,11 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public interface IMainFormForRetroAchievements
+	public interface IMainFormForRetroAchievements : IMainFormForTools
 	{
-		LoadRomArgs CurrentlyOpenRomArgs { get; }
-
 		IEmulator Emulator { get; }
 
 		bool FrameInch { get; set; }
-
-		bool FastForward { get; set; }
 
 		GameInfo Game { get; }
 
@@ -23,14 +19,6 @@ namespace BizHawk.Client.EmuHawk
 
 		SettingsAdapter GetSettingsAdapterForLoadedCoreUntyped();
 
-		bool LoadRom(string path, LoadRomArgs args);
-
-		void PauseEmulator();
-
 		bool RebootCore();
-
-		void UpdateWindowTitle();
-
-		void UnpauseEmulator();
 	}
 }

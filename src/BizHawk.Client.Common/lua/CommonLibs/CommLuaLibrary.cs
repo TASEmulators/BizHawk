@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common
 			long addr,
 			int length,
 			string domain)
-				=> APIs.Memory.WriteByteRange(addr, new List<byte>(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, length)), domain);
+				=> APIs.Memory.WriteByteRange(addr, APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, length), domain);
 
 		[LuaMethod("mmfRead", "Reads a string from a memory mapped file")]
 		public string MmfRead(string mmf_filename, int expectedSize)
@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 		public string HttpPost(string url, string payload)
 		{
 			CheckHttp();
-			return APIs.Comm.HTTP?.ExecPost(url, payload);
+			return APIs.Comm.HTTP?.ExecPostAsForm(url: url, payload: payload);
 		}
 
 		[LuaMethod("httpPostScreenshot", "HTTP POST screenshot")]

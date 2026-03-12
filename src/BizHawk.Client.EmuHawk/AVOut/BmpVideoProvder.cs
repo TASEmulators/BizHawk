@@ -22,11 +22,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Dispose()
 		{
-			if (_bmp != null)
-			{
-				_bmp.Dispose();
-				_bmp = null;
-			}
+			_bmp?.Dispose();
+			_bmp = null;
 		}
 
 		public int[] GetVideoBuffer()

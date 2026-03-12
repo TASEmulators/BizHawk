@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				}
 				else
 				{
-					// just process what we have as-is 
+					// just process what we have as-is
 				}
 			}
 
@@ -193,7 +193,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						else
 							sectorVal += sp.Buffer[i];
 					}
-
 				}
 
 				samples[i] = sectorVal;

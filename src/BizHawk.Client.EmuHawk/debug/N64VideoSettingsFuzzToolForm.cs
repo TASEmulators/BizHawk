@@ -41,7 +41,9 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			}
 			static object? RandomElem(IReadOnlyList<object?> a, Random rng)
 				=> a[rng.Next(a.Count)];
+#pragma warning disable RS0030 // intentionally using randomness here
 			Random rng = new();
+#pragma warning restore RS0030
 			void Fuzz(bool limit)
 			{
 				var props = propDict.Keys.ToList();

@@ -11,15 +11,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public ZX16(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
-			: base(spectrum, cpu, borderType, files, joysticks)
-		{
-
-		}
+		public ZX16(ZXSpectrum spectrum, Z80A<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
+			: base(spectrum, cpu, borderType, files, joysticks) {}
 
 		/* 48K Spectrum has NO memory paging
-         * 
-         *  
+         *
+         *
                    | Bank 0 |
                    |        |
                    |        |

@@ -10,8 +10,22 @@
 	public class CheatConfig : ICheatConfig
 	{
 		public bool DisableOnLoad { get; set; }
-		public bool LoadFileByGame { get; set; } = true;
-		public bool AutoSaveOnClose { get; set; } = true;
-		public RecentFiles Recent { get; set; } = new RecentFiles(8);
+
+		public bool LoadFileByGame { get; set; }
+
+		public bool AutoSaveOnClose { get; set; }
+
+		public RecentFiles Recent { get; set; }
+
+		public CheatConfig()
+			=> RestoreDefaults(alsoWipeRecents: true);
+
+		public void RestoreDefaults(bool alsoWipeRecents = false)
+		{
+			AutoSaveOnClose = true;
+			DisableOnLoad = true;
+			LoadFileByGame = true;
+			if (alsoWipeRecents) Recent = new(8);
+		}
 	}
 }

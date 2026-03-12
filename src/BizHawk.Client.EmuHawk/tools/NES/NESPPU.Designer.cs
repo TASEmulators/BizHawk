@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
             this.PatternImageToClipboardMenuItem,
             this.PatternRefreshMenuItem});
 			this.PatternContext.Name = "PatternContext";
-			this.PatternContext.Size = new System.Drawing.Size(166, 70);
+			this.PatternContext.Size = new System.Drawing.Size(177, 70);
 			// 
 			// PatternSaveImageMenuItem
 			// 
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
             this.PaletteImageToClipboardMenuItem,
             this.PaletteRefreshMenuItem});
 			this.PaletteContext.Name = "PaletteContext";
-			this.PaletteContext.Size = new System.Drawing.Size(166, 70);
+			this.PaletteContext.Size = new System.Drawing.Size(177, 70);
 			// 
 			// PaletteSaveImageMenuItem
 			// 
@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
             this.SpriteImageToClipboardMenuItem,
             this.SpriteRefreshMenuItem});
 			this.SpriteContext.Name = "SpriteContext";
-			this.SpriteContext.Size = new System.Drawing.Size(166, 70);
+			this.SpriteContext.Size = new System.Drawing.Size(177, 70);
 			// 
 			// SpriteSaveImageMenuItem
 			// 
@@ -609,7 +609,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripStatusLabel1
 			// 
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(319, 17);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(347, 17);
 			this.toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
 			// 
 			// Messagetimer
@@ -657,8 +657,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// NesPPU
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(854, 371);
 			this.Controls.Add(this.CHRROMGroup);
 			this.Controls.Add(this.NesPPUStatusBar);

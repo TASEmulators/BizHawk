@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			Sync();
-			_buffer.InvalidateEnd(0);
+			_buffer.InvalidateAfter(-1);
 			_count = 0;
 			_masterFrame = -1;
 		}
@@ -236,7 +236,7 @@ namespace BizHawk.Client.Common
 				{
 					var index = _buffer.Count - 1;
 					RefillMaster(_buffer.GetState(index));
-					_buffer.InvalidateEnd(index);
+					_buffer.InvalidateLast();
 					_stateSource.LoadStateBinary(new BinaryReader(new MemoryStream(_master, 0, _masterLength, false)));
 				}
 				else
@@ -290,7 +290,11 @@ namespace BizHawk.Client.Common
 					_dest = replacement;
 				}
 			}
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			public override void Write(ReadOnlySpan<byte> buffer)
+#else
 			public void Write(ReadOnlySpan<byte> buffer)
+#endif
 			{
 				var requestedSize = _position + buffer.Length;
 				MaybeResize(requestedSize);
@@ -304,7 +308,11 @@ namespace BizHawk.Client.Common
 				_dest[_position] = value;
 				_position = requestedSize;
 			}
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			public override int Read(Span<byte> buffer) => throw new IOException();
+#else
 			public int Read(Span<byte> buffer) => throw new IOException();
+#endif
 		}
 	}
 }

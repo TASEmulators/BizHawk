@@ -181,7 +181,7 @@
 
 			// some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
 			// happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
-			// assigned in some other bus access, so let's go with that. 
+			// assigned in some other bus access, so let's go with that.
 			/*
 			coll += (byte)(mask & BusState);
 
@@ -202,6 +202,7 @@
 				BusState = value;
 			}
 
+#pragma warning disable SA1508 // blank lines
 			if (maskedAddr == 0x00) // VSYNC
 			{
 
@@ -378,6 +379,7 @@
 			{
 
 			}
+#pragma warning restore SA1508
 		}
 
 		private enum AudioRegister : byte

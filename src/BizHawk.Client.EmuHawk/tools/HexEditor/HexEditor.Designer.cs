@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.HexMenuStrip = new MenuStripEx();
+			this.HexMenuStrip = new BizHawk.WinForms.Controls.MenuStripEx();
 			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveAsBinaryMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -427,13 +427,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// HexScrollBar
 			// 
-			this.HexScrollBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.HexScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
 			this.HexScrollBar.LargeChange = 16;
-			this.HexScrollBar.Location = new System.Drawing.Point(544, 16);
+			this.HexScrollBar.Location = new System.Drawing.Point(541, 16);
 			this.HexScrollBar.Name = "HexScrollBar";
-			this.HexScrollBar.Size = new System.Drawing.Size(16, 246);
+			this.HexScrollBar.Size = new System.Drawing.Size(16, 243);
 			this.HexScrollBar.TabIndex = 1;
 			this.HexScrollBar.ValueChanged += new System.EventHandler(this.HexScrollBar_ValueChanged);
 			// 
@@ -442,14 +440,14 @@ namespace BizHawk.Client.EmuHawk
 			this.AddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.AddressLabel.Location = new System.Drawing.Point(3, 30);
 			this.AddressLabel.Name = "AddressLabel";
-			this.AddressLabel.Text = "      ";
+			this.AddressLabel.Text = "Addresses";
 			// 
 			// AddressesLabel
 			// 
 			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
 			this.AddressesLabel.Location = new System.Drawing.Point(79, 30);
 			this.AddressesLabel.Name = "AddressesLabel";
-			this.AddressesLabel.Text = "RAM";
+			this.AddressesLabel.Text = "Values";
 			this.AddressesLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseDown);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
@@ -458,9 +456,9 @@ namespace BizHawk.Client.EmuHawk
 			// Header
 			// 
 			this.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.Header.Location = new System.Drawing.Point(28, 44);
+			this.Header.Location = new System.Drawing.Point(91, 44);
 			this.Header.Name = "Header";
-			this.Header.Text = "label1";
+			this.Header.Text = "Header";
 			// 
 			// HexEditor
 			// 

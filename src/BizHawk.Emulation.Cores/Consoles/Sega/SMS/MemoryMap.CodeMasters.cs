@@ -54,7 +54,7 @@
 
 		private byte ReadMemoryCMRam(ushort address)
 		{
-			if (address < 0x4000) 
+			if (address < 0x4000)
 				return RomData[(RomBank0 * BankSize) + address];
 			if (address < 0x8000)
 			{

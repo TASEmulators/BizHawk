@@ -195,7 +195,7 @@
 						_srColor3 |= ((_pixel >> 3) & 1) << (_parseSrShift + _parsePixelDataIndex);
 						_srColorEnable |= (_parseSrColorEnable ? 1 : 0) << (_parseSrShift + _parsePixelDataIndex);
 					}
-					
+
 					break;
 				case FetchTypeNone:
 					// fetch none
@@ -284,7 +284,7 @@
 				{
 					if (spr.Dma && spr.YExpand)
 					{
-						spr.YCrunch ^= true;
+						spr.YCrunch = !spr.YCrunch;
 					}
 				}
 			}

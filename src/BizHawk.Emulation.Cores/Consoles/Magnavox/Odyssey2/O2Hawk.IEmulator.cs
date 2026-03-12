@@ -118,7 +118,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ppu.tick();
 			ppu.Audio_tick();
 			cpu.ExecuteOne();
-			
 		}
 
 		public void GetControllerState(IController controller)
@@ -174,7 +173,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (controller.IsPressed("NO")) { kb_state_row = 5; kb_state_col = 2; }
 			if (controller.IsPressed("CLR")) { kb_state_row = 5; kb_state_col = 1; }
 			if (controller.IsPressed("ENT")) { kb_state_row = 5; kb_state_col = 0; }
-
 		}
 
 		public void KB_Scan()
@@ -221,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void SendVideoBuffer()
 		{
-			for (int j = 0; j < pic_height; j++) 
+			for (int j = 0; j < pic_height; j++)
 			{
 				for (int i = 0; i < 320; i++)
 				{

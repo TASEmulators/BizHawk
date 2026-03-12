@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_s.Muted = ((CheckBox)sender).Checked;
 		}
-		
+
 		private void CbRgbdsSyntax_CheckedChanged(object sender, EventArgs e)
 		{
 			_s.RgbdsSyntax = ((CheckBox)sender).Checked;

@@ -1,4 +1,3 @@
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
@@ -40,5 +39,4 @@ namespace BizHawk.Emulation.DiscSystem
 			SBI_As_Mednafen = true;
 		}
 	}
-
 }

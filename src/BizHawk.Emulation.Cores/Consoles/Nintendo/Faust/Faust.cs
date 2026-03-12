@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 		{
 			if (deterministic)
 				// force ST renderer
-				SettingOverrides.Add("snes_faust.renderer", new() { Hide = true, Default = "0" });
+				SettingOverrides["snes_faust.renderer"] = new() { Hide = true, Default = "0" };
 
 			DoInit<LibNymaCore>(game, rom, null, "faust.wbx", extension, deterministic);
 
@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Faust
 
 		protected override IDictionary<string, SettingOverride> SettingOverrides { get; } = new Dictionary<string, SettingOverride>
 		{
+			{ "snes_faust.renderer", new() { Default = "mt" } },
 			{ "snes_faust.affinity.ppu", new() { Hide = true } },
 			{ "snes_faust.affinity.msu1.audio", new() { Hide = true } },
 			{ "snes_faust.affinity.msu1.data", new() { Hide = true } },

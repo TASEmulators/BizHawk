@@ -69,10 +69,24 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseButton_Click(object sender, EventArgs e)
 		{
 			var systemName = _getSystemNameCallback();
+			string initialDirectory;
+			if (_pathEntries.UseRecentForRoms)
+			{
+				initialDirectory = string.Empty;
+			}
+			else
+			{
+				initialDirectory = _pathEntries.RomAbsolutePath(systemName);
+				if (!Directory.Exists(initialDirectory))
+				{
+					initialDirectory = _pathEntries.RomAbsolutePath();
+					Directory.CreateDirectory(initialDirectory);
+				}
+			}
 			var hawkPath = this.ShowFileOpenDialog(
 				discardCWDChange: true,
 				filter: RomLoader.RomFilter,
-				initDir: _pathEntries.UseRecentForRoms ? string.Empty : _pathEntries.RomAbsolutePath(systemName));
+				initDir: initialDirectory);
 			if (hawkPath is null) return;
 			try
 			{
@@ -94,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				using ArchiveChooser ac = new(new(hawkPath)); //TODO can we pass hf here instead of instantiating a new HawkFile?
+				using ArchiveChooser ac = new(hf);
 				if (!this.ShowDialogAsChild(ac).IsOk()
 					|| ac.SelectedMemberIndex < 0 || hf.ArchiveItems.Count <= ac.SelectedMemberIndex)
 				{

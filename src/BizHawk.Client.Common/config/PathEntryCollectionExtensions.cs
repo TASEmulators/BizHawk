@@ -24,19 +24,19 @@ namespace BizHawk.Client.Common
 			var globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
-			if (globalBase.StartsWith("%exe%", StringComparison.InvariantCultureIgnoreCase))
+			if (globalBase.StartsWithIgnoreCase("%exe%"))
 			{
 				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
 			}
 
-			// rooted paths get returned without change
+			// absolute paths get returned without change
 			// (this is done after keyword substitution to avoid problems though)
-			if (Path.IsPathRooted(globalBase))
+			if (globalBase.IsAbsolute())
 			{
 				return globalBase;
 			}
 
-			// not-rooted things are relative to exe path
+			// non-absolute things are relative to exe path
 			globalBase = Path.Combine(PathUtils.ExeDirectoryPath, globalBase);
 			return globalBase;
 		}
@@ -121,16 +121,25 @@ namespace BizHawk.Client.Common
 				return path;
 			}
 
-			if (Path.IsPathRooted(path))
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			bool isAbsolute = path.IsAbsolute();
+#else
+			bool isAbsolute;
+			try
 			{
-				return path;
+				isAbsolute = path.IsAbsolute();
 			}
+			catch
+			{
+				isAbsolute = false;
+			}
+#endif
 
 			//handling of initial .. was removed (Path.GetFullPath can handle it)
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all bad paths default to EXE
-			return PathUtils.ExeDirectoryPath;
+			return isAbsolute ? path : PathUtils.ExeDirectoryPath;
 		}
 
 		public static string MovieAbsolutePath(this PathEntryCollection collection)
@@ -159,7 +168,7 @@ namespace BizHawk.Client.Common
 
 		public static string FirmwareAbsolutePath(this PathEntryCollection collection)
 		{
-			return collection.AbsolutePathFor(collection.FirmwaresPathFragment, null);
+			return collection.AbsolutePathFor(collection.FirmwarePathFragment, null);
 		}
 
 		public static string LogAbsolutePath(this PathEntryCollection collection)
@@ -180,6 +189,12 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path, null);
 		}
 
+		public static string ExternalToolsAbsolutePath(this PathEntryCollection collection)
+		{
+			var path = collection[PathEntryCollection.GLOBAL, "External Tools"].Path;
+			return collection.AbsolutePathFor(path, null);
+		}
+
 		public static string MultiDiskAbsolutePath(this PathEntryCollection collection)
 		{
 			var path = collection.ResolveToolsPath(collection[PathEntryCollection.GLOBAL, "Multi-Disk Bundles"].Path);
@@ -193,7 +208,12 @@ namespace BizHawk.Client.Common
 				return collection.AbsolutePathFor(collection[PathEntryCollection.GLOBAL, "ROM"].Path, PathEntryCollection.GLOBAL);
 			}
 
-			if (collection.UseRecentForRoms) return /*PathUtils.SpecialRecentsDir*/string.Empty; // instructs OpenFileDialog to use the dir of the most recently-opened file, a behaviour consistent with previous versions, even though it may never have been intended; this system will be overhauled when adding #1574
+			if (collection.UseRecentForRoms)
+			{
+				return string.Empty; // instructs `OpenFileDialog` to use the dir of the most-recently-opened file
+				// that's the behaviour consistent with previous versions, even though the original intent seems to have been to mirror `%recent%` (i.e. `PathUtils.SpecialRecentsDir`)
+				// the whole path system is planned be overhauled anyway (https://github.com/TASEmulators/BizHawk/issues/1574), empowering the user to pick `%recent%` or this `%lastused%`
+			}
 
 			var path = collection[systemId, "ROM"];
 
@@ -229,13 +249,8 @@ namespace BizHawk.Client.Common
 		{
 			var name = game.FilesystemSafeName();
 			name = Path.GetDirectoryName(name);
-			if (name == "")
-			{
-				name = game.FilesystemSafeName();
-			}
-
-			name ??= "";
-
+			if (name is null) name = string.Empty;
+			else if (name.Length is 0) name = game.FilesystemSafeName();
 			var pathEntry = collection[game.System, "Save RAM"]
 				?? collection[game.System, "Base"];
 
@@ -321,7 +336,7 @@ namespace BizHawk.Client.Common
 
 		private static string ResolveToolsPath(this PathEntryCollection collection, string subPath)
 		{
-			if (Path.IsPathRooted(subPath) || subPath.StartsWith('%')) return subPath;
+			if (subPath.IsAbsolute() || subPath.StartsWith('%')) return subPath;
 
 			var toolsPath = collection[PathEntryCollection.GLOBAL, "Tools"].Path;
 

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	public abstract class LibGPGX
 	{
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_get_video(out int w, out int h, out int pitch, ref IntPtr buffer);
+		public abstract void gpgx_get_video(out int w, out int h, out int pitch, out IntPtr buffer);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_audio(ref int n, ref IntPtr buffer);
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public abstract void gpgx_set_input_callback(input_cb cb);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void mem_cb(uint addr);
+		public delegate uint mem_cb(uint addr, uint value); //value MUST be uint, since the value will be trimmed if the type is byte (8-bit) or ushort (16-bit) and the value read/written/executed is bigger than that (i.e 32 bits).
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void CDCallback(int addr, CDLog_AddrType addrtype, CDLog_Flags flags);
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
 
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-		public abstract void gpgx_swap_disc([In] CDData toc);
+		public abstract void gpgx_swap_disc([In] CDData toc, sbyte discIndex);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VDPNameTable

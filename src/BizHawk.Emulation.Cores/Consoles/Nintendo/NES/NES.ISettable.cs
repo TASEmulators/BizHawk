@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : ISettable<NES.NESSettings, NES.NESSyncSettings>
+	public sealed partial class NES : ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		public NESSettings GetSettings() => Settings.Clone();
 

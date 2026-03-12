@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
@@ -51,7 +51,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					return _memoryCallbacks;
 				}
 
+#pragma warning disable CA1065 // I guess this is like a conditional [FeatureNotImplemented], for which the convention is to throw NIE
 				throw new NotImplementedException();
+#pragma warning restore CA1065
 			}
 		}
 
@@ -61,7 +63,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new([ "M68K BUS" ]);
 
@@ -72,29 +76,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private void InitMemCallbacks()
 		{
-			ExecCallback = a =>
+			ExecCallback = (addr, val) =>
 			{
 				if (MemoryCallbacks.HasExecutes)
 				{
 					const uint flags = (uint)MemoryCallbackFlags.AccessExecute;
-					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+					val = MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
+				return val;
 			};
-			ReadCallback = a =>
+			ReadCallback = (addr, val) =>
 			{
 				if (MemoryCallbacks.HasReads)
 				{
 					const uint flags = (uint)MemoryCallbackFlags.AccessRead;
-					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+					val = MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
+				return val;
 			};
-			WriteCallback = a =>
+			WriteCallback = (addr, val) =>
 			{
 				if (MemoryCallbacks.HasWrites)
 				{
 					const uint flags = (uint)MemoryCallbackFlags.AccessWrite;
-					MemoryCallbacks.CallMemoryCallbacks(a, 0, flags, "M68K BUS");
+					val = MemoryCallbacks.CallMemoryCallbacks(addr, val, flags, "M68K BUS");
 				}
+				return val;
 			};
 			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}

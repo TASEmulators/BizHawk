@@ -1,0 +1,10 @@
+[*.cs]
+
+# Remove empty else/finally block
+dotnet_diagnostic.MA0090.severity = suggestion
+
+# Both if and else branch have identical code
+dotnet_diagnostic.MA0140.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion

@@ -2,24 +2,24 @@
 
 namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public partial class Z80A
+	public partial class Z80A<TLink>
 	{
 		public void Read_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 		}
 
 		public void Read_INC_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
 		}
 
 		public void Read_INC_TR_PC_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
-			Regs[dest_h] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest_h] = _link.ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest_h];
 			INC16_Func(src_l, src_h);
 			TR16_Func(PCl, PCh, dest_l, dest_h);
@@ -28,46 +28,46 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			_link.WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 		}
 
 		public void Write_INC_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			_link.WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 			INC16_Func(dest_l, dest_h);
 		}
 
 		public void Write_DEC_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			_link.WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 			DEC16_Func(dest_l, dest_h);
 		}
 
 		public void Write_TR_PC_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			_link.WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 			TR16_Func(PCl, PCh, Z, W);
 		}
 
 		public void OUT_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
+			_link.WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
 		}
 
 		public void OUT_INC_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
+			_link.WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
 			INC16_Func(dest_l, dest_h);
 		}
 
 		public void IN_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
 			FlagZ = Regs[dest] == 0;
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public void IN_INC_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
 			FlagZ = Regs[dest] == 0;
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public void IN_A_N_INC_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
 		}
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Reg16_d += (Regs[src] & 0xF);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagN = false;			
+			FlagN = false;
 			Flag3 = (ans & 0x08) != 0;
 			Flag5 = (ans & 0x20) != 0;
 			FlagP = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public void CCF_Func(ushort src)
 		{
 			FlagH = FlagC;
-			FlagC = !FlagC;		
+			FlagC = !FlagC;
 			FlagN = false;
 			Flag3 = (Regs[src] & 0x08) != 0;
 			Flag5 = (Regs[src] & 0x20) != 0;
@@ -645,7 +645,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Regs[dest_l] = ans_l;
 			Regs[dest_h] += temp;
 			Regs[dest_h] &= 0xFF;
-
 		}
 
 		public void EXCH_16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -714,13 +713,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			FlagZ = (Reg16_d & 0xFF) == 0;
 			FlagP = Regs[src] == 0x80;
 			FlagS = (Reg16_d & 0xFF) > 127;
-			
+
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 			// redo for half carry flag
 			Reg16_d = 0;
 			Reg16_d -= (Regs[src] & 0xF);
 			FlagH = Reg16_d.Bit(4);
-			Regs[src] = ans;			
+			Regs[src] = ans;
 			FlagN = true;
 			Flag3 = (ans & 0x08) != 0;
 			Flag5 = (ans & 0x20) != 0;
@@ -760,7 +759,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Flag5 = (temp1 & 0x20) != 0;
 		}
 
-		// sets flags for LD/R 
+		// sets flags for LD/R
 		public void SET_FL_LD_Func()
 		{
 			FlagP = (Regs[C] | (Regs[B] << 8)) != 0;
@@ -808,7 +807,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public void FTCH_DB_Func()
 		{
-			Regs[DB] = FetchDB();
+			Regs[DB] = _link.FetchDB();
 		}
 	}
 }

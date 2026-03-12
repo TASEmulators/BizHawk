@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		protected override void UpdateBefore() => Generate();
+		protected override void UpdateAfter() => Generate();
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{

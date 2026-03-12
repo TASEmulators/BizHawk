@@ -39,6 +39,12 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			toolTip1.SetToolTip(AddMarkerButton, $"Add Marker to Emulated Frame ({config.HotkeyBindings["Set Marker"]})");
+			toolTip1.SetToolTip(AddMarkerWithTextButton, $"Add Marker with Text to Emulated Frame ({config.HotkeyBindings["Set Marker"]} {config.HotkeyBindings["Set Marker"]})");
+		}
+
 		private void SetupColumns()
 		{
 			MarkerView.AllColumns.Clear();
@@ -51,37 +57,31 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
-			if (Tastudio.CurrentTasMovie is null)
-			{
-				return;
-			}
+			if (Tastudio.CurrentTasMovie is null) return;
 
+			if (index >= Markers.Count) return; // this should never happen
+
+			var marker = Markers[index];
 			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
 
-			if (prev != null && index == Markers.IndexOf(prev))
+			if (ReferenceEquals(marker, prev))
 			{
 				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
 				color = Tastudio.Palette.CurrentFrame_InputLog;
 			}
-			else if (index < Markers.Count)
+			else if (Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1] is bool lagged)
 			{
-				var marker = Markers[index];
-				bool? lagged = Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1];
-
-				if (lagged.HasValue)
+				if (lagged)
 				{
-					if (lagged.Value)
-					{
-						color = column.Name == "FrameColumn"
-							? Tastudio.Palette.LagZone_FrameCol
-							: Tastudio.Palette.LagZone_InputLog;
-					}
-					else
-					{
-						color = column.Name == "LabelColumn"
-							? Tastudio.Palette.GreenZone_FrameCol
-							: Tastudio.Palette.GreenZone_InputLog;
-					}
+					color = column.Name == "FrameColumn"
+						? Tastudio.Palette.LagZone_FrameCol
+						: Tastudio.Palette.LagZone_InputLog;
+				}
+				else
+				{
+					color = column.Name == "LabelColumn"
+						? Tastudio.Palette.GreenZone_FrameCol
+						: Tastudio.Palette.GreenZone_InputLog;
 				}
 			}
 		}
@@ -157,7 +157,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!MarkerView.AnyRowsSelected) return;
 			foreach (var i in MarkerView.SelectedRows.Select(index => Markers[index]).ToList()) Markers.Remove(i);
 			MarkerView.RowCount = Markers.Count;
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateMarkerCount()
@@ -175,18 +174,11 @@ namespace BizHawk.Client.EmuHawk
 					Text = $"Marker for frame {frame}",
 					TextInputType = InputPrompt.InputType.Text,
 					Message = "Enter a message",
-					InitialValue =
-						Markers.IsMarker(frame) ?
-						Markers.PreviousOrCurrent(frame).Message :
-						""
+					InitialValue = Markers.IsMarker(frame) ? Markers.PreviousOrCurrent(frame).Message : string.Empty,
 				};
 
-				var point = Cursor.Position;
-				point.Offset(i.Width / -2, i.Height / -2);
-				i.StartPosition = FormStartPosition.Manual;
-				i.Location = point;
-
-				if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+				i.FollowMousePointer();
+				if (!i.ShowDialogOnScreen().IsOk()) return;
 
 				UpdateTextColumnWidth();
 				marker = new TasMovieMarker(frame, i.PromptText);
@@ -200,12 +192,11 @@ namespace BizHawk.Client.EmuHawk
 			Markers.Add(marker);
 			var index = Markers.IndexOf(marker);
 			MarkerView.MakeIndexVisible(index);
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateTextColumnWidth()
 		{
-			if (Markers.Any())
+			if (Markers.Count is not 0)
 			{
 				var longestBranchText = Markers
 					.OrderBy(b => b.Message?.Length ?? 0)
@@ -216,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
+		public void EditMarkerPopUp(TasMovieMarker marker)
 		{
 			var markerFrame = marker.Frame;
 			var i = new InputPrompt
@@ -224,21 +215,11 @@ namespace BizHawk.Client.EmuHawk
 				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
-				InitialValue =
-					Markers.IsMarker(markerFrame)
-					? Markers.PreviousOrCurrent(markerFrame).Message
-					: ""
+				InitialValue = Markers.IsMarker(markerFrame) ? Markers.PreviousOrCurrent(markerFrame).Message : string.Empty,
 			};
 
-			if (followCursor)
-			{
-				var point = Cursor.Position;
-				point.Offset(i.Width / -2, i.Height / -2);
-				i.StartPosition = FormStartPosition.Manual;
-				i.Location = point;
-			}
-
-			if (!this.ShowDialogWithTempMute(i).IsOk()) return;
+			i.FollowMousePointer();
+			if (!i.ShowDialogOnScreen().IsOk()) return;
 
 			marker.Message = i.PromptText;
 			UpdateTextColumnWidth();
@@ -258,7 +239,8 @@ namespace BizHawk.Client.EmuHawk
 					: "0",
 			};
 
-			if (!this.ShowDialogWithTempMute(i).IsOk()
+			i.FollowMousePointer();
+			if (!i.ShowDialogOnScreen().IsOk()
 				|| !int.TryParse(i.PromptText, out var promptValue)
 				|| Markers.IsMarker(promptValue)) // don't move to frame with an existing marker
 			{
@@ -267,7 +249,6 @@ namespace BizHawk.Client.EmuHawk
 			Markers.Move(marker.Frame, promptValue);
 			UpdateTextColumnWidth();
 			UpdateValues();
-			Tastudio.RefreshDialog();
 		}
 
 		public void UpdateValues()

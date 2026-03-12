@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_hmove.SyncState(ser);
 			ser.Sync("hsyncCnt", ref _hsyncCnt);
 
-			// add everything to the state 
+			// add everything to the state
 			ser.Sync("Bus_State", ref BusState);
 
 			ser.Sync("_ctrlPFDelay", ref _ctrlPFDelay);
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("M0_stuff", ref _m0Stuff);
 			ser.Sync("M1_stuf", ref _m1Stuff);
 			ser.Sync("b_stuff", ref _bStuff);
-			
+
 			ser.Sync("_hmp0_no_tick", ref _hmp0_no_tick);
 			ser.Sync("_hmp1_no_tick", ref _hmp1_no_tick);
 			ser.Sync("_hmm0_no_tick", ref _hmm0_no_tick);

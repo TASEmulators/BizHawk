@@ -325,6 +325,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				return PluginType.GlideMk2;
 			}
 		}
-
 	}
 }

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -46,7 +48,7 @@ namespace BizHawk.Client.Common
 				[Diff] = new WatchValueDifferenceComparer(),
 				[Type] = new WatchFullDisplayTypeComparer(),
 				[Domain] = new WatchDomainComparer(),
-				[Notes] = new WatchNoteComparer()
+				[Notes] = new WatchNoteComparer(),
 			};
 		}
 
@@ -337,39 +339,37 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Save()
+		public FileWriteResult Save()
 		{
 			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				return false;
+				return new();
 			}
 
-			using (var sw = new StreamWriter(CurrentFileName))
+			var sb = new StringBuilder();
+			sb.Append("SystemID ").AppendLine(_systemId);
+
+			foreach (var watch in _watchList)
 			{
-				var sb = new StringBuilder();
-				sb.Append("SystemID ").AppendLine(_systemId);
-
-				foreach (var watch in _watchList)
-				{
-					sb.AppendLine(watch.ToString());
-				}
-
-				sw.WriteLine(sb.ToString());
+				sb.AppendLine(watch.ToString());
 			}
 
-			Changes = false;
-			return true;
+			FileWriteResult result = FileWriter.Write(CurrentFileName, (fs) =>
+			{
+				using var sw = new StreamWriter(fs);
+				sw.WriteLine(sb.ToString());
+			});
+
+			if (!result.IsError) Changes = false;
+			return result;
 		}
 
-		public bool SaveAs(FileInfo file)
+		public FileWriteResult SaveAs(FileInfo file)
 		{
-			if (file != null)
-			{
-				CurrentFileName = file.FullName;
-				return Save();
-			}
+			Debug.Assert(file != null, "Cannot save as without a file name.");
 
-			return false;
+			CurrentFileName = file.FullName;
+			return Save();
 		}
 
 		private bool LoadFile(string path, bool append)
@@ -399,15 +399,9 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
-				{
-					isBizHawkWatch = true;
-				}
-
-				if (line.Length >= 8 && line.Substring(0, 8) == "SystemID")
-				{
-					continue;
-				}
+				if (line.StartsWithOrdinal("Domain")) isBizHawkWatch = true;
+				// is there a step missing here? --yoshi
+				if (line.StartsWithOrdinal("SystemID")) continue;
 
 				var numColumns = line.Count(c => c == '\t');
 				int startIndex;
@@ -421,7 +415,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						startIndex = line.IndexOf('\t') + 1;
-						line = line.Substring(startIndex, line.Length - startIndex);   // 5 digit value representing the watch position number
+						line = line.Substring(startIndex: startIndex); // 5 digit value representing the watch position number
 					}
 				}
 				else
@@ -433,7 +427,7 @@ namespace BizHawk.Client.Common
 				int addr;
 				var memDomain = _memoryDomains.MainMemory;
 
-				var temp = line.Substring(0, line.IndexOf('\t'));
+				var temp = line.SubstringBefore('\t');
 				try
 				{
 					addr = int.Parse(temp, NumberStyles.HexNumber);
@@ -444,15 +438,15 @@ namespace BizHawk.Client.Common
 				}
 
 				startIndex = line.IndexOf('\t') + 1;
-				line = line.Substring(startIndex, line.Length - startIndex);   // Type
+				line = line.Substring(startIndex: startIndex); // Type
 				var size = Watch.SizeFromChar(line[0]);
 
 				startIndex = line.IndexOf('\t') + 1;
-				line = line.Substring(startIndex, line.Length - startIndex);   // Signed
+				line = line.Substring(startIndex: startIndex); // Signed
 				var type = Watch.DisplayTypeFromChar(line[0]);
 
 				startIndex = line.IndexOf('\t') + 1;
-				line = line.Substring(startIndex, line.Length - startIndex);   // Endian
+				line = line.Substring(startIndex: startIndex); // Endian
 				try
 				{
 					startIndex = short.Parse(line[0].ToString());
@@ -467,13 +461,13 @@ namespace BizHawk.Client.Common
 				if (isBizHawkWatch)
 				{
 					startIndex = line.IndexOf('\t') + 1;
-					line = line.Substring(startIndex, line.Length - startIndex);   // Domain
-					temp = line.Substring(0, line.IndexOf('\t'));
+					line = line.Substring(startIndex: startIndex); // Domain
+					temp = line.SubstringBefore('\t');
 					memDomain = size == WatchSize.Separator ? null : _memoryDomains[temp] ?? _memoryDomains.MainMemory;
 				}
 
 				startIndex = line.IndexOf('\t') + 1;
-				var notes = line.Substring(startIndex, line.Length - startIndex);
+				var notes = line.Substring(startIndex: startIndex);
 
 				_watchList.Add(
 					Watch.GenerateWatch(

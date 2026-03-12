@@ -149,7 +149,16 @@ namespace BizHawk.Bizware.Audio
 		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
-			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
+
+			var buffersQueued = _sourceVoice.State.BuffersQueued;
+			if (buffersQueued == XAudio2.MaximumQueuedBuffers)
+			{
+				// don't write any more samples if we've queued up the maximum amount of buffers possible
+				// in practice, this doesn't happen ever except for subframe cores spamming tiny sample counts
+				return;
+			}
+
+			_bufferPool.Release(buffersQueued);
 			var byteCount = sampleCount * _sound.BlockAlign;
 			var item = _bufferPool.Obtain(byteCount);
 			samples.AsSpan(sampleOffset * _sound.BlockAlign / 2, byteCount / 2)
@@ -203,6 +212,7 @@ namespace BizHawk.Bizware.Audio
 				{
 					item.AudioBuffer.Dispose();
 				}
+
 				_availableItems.Clear();
 				_obtainedItems.Clear();
 			}

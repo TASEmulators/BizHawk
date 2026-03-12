@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Add(IMemoryCallback callback)
 		{
+			if (_mgba is null) return; // disposed
 			if (!AvailableScopes.Contains(callback.Scope))
 			{
 				throw new InvalidOperationException($"{callback.Scope} is not currently supported for callbacks");
@@ -97,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void Remove(CallbackContainer cb)
 		{
+			if (_mgba is null) return; // disposed
 			_callbacks.Remove(cb);
 
 			if (cb.Callback.Type == MemoryCallbackType.Execute)
@@ -155,9 +157,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Clear()
 		{
-			foreach (var cb in _callbacks)
+			while (_callbacks.Count > 0)
 			{
-				Remove(cb);
+				Remove(_callbacks[^1]);
 			}
 		}
 
@@ -166,8 +168,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		IEnumerator IEnumerable.GetEnumerator()
 			=> GetEnumerator();
 
-		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
+		public uint CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
+			throw new NotSupportedException("Memory callbacks not supported.");
 			// Not a thing in this implementation
 		}
 
@@ -203,6 +206,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Dispose()
 		{
+			Clear();
 			_mgba = null;
 			_core = IntPtr.Zero;
 		}

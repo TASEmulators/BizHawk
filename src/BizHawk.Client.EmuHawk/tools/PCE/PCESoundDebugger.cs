@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -18,7 +18,10 @@ namespace BizHawk.Client.EmuHawk
 			=> Properties.Resources.BugIcon;
 
 		[RequiredService]
-		private PCEngine PCE { get; set; }
+		private IPCEngineSoundDebuggable/*?*/ _maybeSoundDebug { get; set; }
+
+		private IPCEngineSoundDebuggable SoundDebugImpl
+			=> _maybeSoundDebug!;
 
 		protected override string WindowTitleStatic => "Sound Debugger";
 
@@ -46,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void UpdateAfter()
 		{
+			var channelData = SoundDebugImpl.GetPSGChannelData();
+
 			foreach (var entry in _psgEntries)
 			{
 				entry.WasActive = entry.Active;
@@ -58,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < 6; i++)
 			{
-				var ch = PCE.PSG.Channels[i];
+				var ch = channelData[i];
 
 				// these conditions mean a sample isn't playing
 				if (!ch.Enabled)
@@ -95,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				lvChannels.Items[i].SubItems[3].Text = "-";
 
 				// ok, a sample is playing. copy out the waveform
-				short[] waveform = (short[])ch.Wave.Clone();
+				var waveform = ch.CloneWaveform();
 
 				// hash it
 				var ms = new MemoryStream(_waveformTemp);
@@ -116,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 						WaveForm = waveform,
 						Active = true,
 						HitCount = 1,
-						Index = _psgEntries.Count
+						Index = _psgEntries.Count,
 					};
 					_psgEntries.Add(entry);
 					_psgEntryTable[md5] = entry;
@@ -170,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly byte[] EmptyWav = {
 			0x52, 0x49, 0x46, 0x46, 0x24, 0x04, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20,
 			0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0xE0, 0x2E, 0x00, 0x00, 0xC0, 0x5D, 0x00, 0x00,
-			0x02, 0x00, 0x10, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x04, 0x00, 0x00
+			0x02, 0x00, 0x10, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x04, 0x00, 0x00,
 		};
 
 
@@ -244,11 +249,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void lvChEn_ItemChecked(object sender, ItemCheckedEventArgs e)
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				PCE.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
-			}
-		}
+			=> SoundDebugImpl.SetChannelMuted(e.Item.Index, newIsMuted: !e.Item.Checked);
 	}
 }

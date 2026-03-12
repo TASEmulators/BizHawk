@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (AllowSpace && e.KeyChar == ' ')
 			{
-
+				// pass
 			}
 			else
 			{

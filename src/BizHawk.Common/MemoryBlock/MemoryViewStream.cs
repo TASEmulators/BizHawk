@@ -99,7 +99,7 @@ namespace BizHawk.Common
 				SeekOrigin.Begin => offset,
 				SeekOrigin.Current => _pos + offset,
 				SeekOrigin.End => _length + offset,
-				_ => offset
+				_ => offset,
 			};
 
 			Position = newpos;

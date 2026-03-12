@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
@@ -8,7 +7,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common.movie.import
 {
-	// ReSharper disable once UnusedMember.Global
 	/// <summary>For Snes9x's <see href="https://tasvideos.org/EmulatorResources/Snes9x/SMV"><c>.smv</c> format</see></summary>
 	[ImporterFor("Snes9x", ".smv")]
 	internal class SmvImport : MovieImporter
@@ -28,7 +26,7 @@ namespace BizHawk.Client.Common.movie.import
 				return;
 			}
 
-			Result.Movie.HeaderEntries[HeaderKeys.Platform] = VSystemID.Raw.SNES;
+			Result.Movie.SystemID = VSystemID.Raw.SNES;
 
 			// 004 4-byte little-endian unsigned int: version number
 			uint versionNumber = r.ReadUInt32();
@@ -37,7 +35,7 @@ namespace BizHawk.Client.Common.movie.import
 				1 => "1.43",
 				4 => "1.51",
 				5 => "1.52",
-				_ => "Unknown"
+				_ => "Unknown",
 			};
 
 			Result.Movie.Comments.Add($"{EmulationOrigin} Snes9x version {version}");
@@ -190,6 +188,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			ControllerDefinition definition = new Snes9xControllers(ss).ControllerDefinition;
+			definition.BuildMnemonicsCache(Result.Movie.SystemID);
 			SimpleController controllers = new(definition);
 
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(definition);
@@ -215,7 +214,7 @@ namespace BizHawk.Client.Common.movie.import
 			*/
 			string[] buttons =
 			{
-				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
+				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A",
 			};
 
 			for (int frame = 0; frame <= frameCount; frame++)
@@ -289,7 +288,7 @@ namespace BizHawk.Client.Common.movie.import
 								break;
 						}
 
-						if (peripheral != "" && !Result.Warnings.Any())
+						if (peripheral.Length is not 0 && Result.Warnings.Count is 0)
 						{
 							Result.Warnings.Add($"Unable to import {peripheral}. Not supported yet");
 						}

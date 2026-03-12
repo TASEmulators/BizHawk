@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected CPUMonitor CPUMon;
 
-		public ULA(SpectrumBase machine)
+		protected ULA(SpectrumBase machine)
 		{
 			_machine = machine;
 			CPUMon = _machine.CPUMon;
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		/// <summary>
 		/// Contention offset
-		/// </summary> 
+		/// </summary>
 		public int ContentionOffset;
 
 		/// <summary>
@@ -521,12 +521,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					fetchBorder = BorderColor;
 				}
-				else
-				{
-
-				}
-
-				//fetchBorder = BorderColor;
 
 				// get the table entry
 				var item = RenderingTable.Renderer[t];

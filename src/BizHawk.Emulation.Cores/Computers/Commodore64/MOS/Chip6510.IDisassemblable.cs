@@ -6,10 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Chip6510 : IDisassemblable
 	{
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "6510"; }
-		}
+		public IEnumerable<string> AvailableCpus { get; } = [ "6510" ];
 
 		public string Cpu
 		{

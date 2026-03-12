@@ -18,16 +18,11 @@
 		}
 
 		private byte Unscramble(byte data)
-		{
-			return (byte)
-			(
-				(data >> 1 & 0x01) |
-				(data >> 4 & 0x02) |
-				(data << 2 & 0x04) |
-				(data >> 0 & 0xD8) |
-				(data << 3 & 0x20)
-			);
-		}
+			=> unchecked((byte) (((data >> 1) & 0x01)
+				| ((data >> 4) & 0x02)
+				| ((data << 2) & 0x04)
+				| (data & 0xD8)
+				| ((data << 3) & 0x20)));
 
 		public override void WritePrg(int addr, byte value)
 		{

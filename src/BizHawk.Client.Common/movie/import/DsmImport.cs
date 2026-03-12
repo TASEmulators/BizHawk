@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -11,14 +11,32 @@ namespace BizHawk.Client.Common
 	[ImporterFor("DeSmuME", ".dsm")]
 	internal class DsmImport : MovieImporter
 	{
+		[Flags]
+		private enum MovieCommand
+		{
+			MIC   = 1,
+			RESET = 2,
+			LID   = 4,
+		}
+
+		private bool _lidOpen = true;
+		private int _countLid;
+
 		private static readonly ControllerDefinition DeSmuMEControllerDef = new ControllerDefinition("NDS Controller")
 		{
 			BoolButtons =
 			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Y", "X", "L", "R", "LidOpen", "LidClose", "Touch", "Power"
-			}
-		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndUp, 0.RangeTo(255), 128, 0.RangeTo(191), 96) //TODO verify direction against hardware
-			.AddAxis("Mic Volume", 0.RangeTo(100), 0)
+				"Up", "Down", "Left", "Right",
+				"Start", "Select",
+				"B", "A", "Y", "X",
+				"L", "R",
+				"LidOpen", "LidClose",
+				"Touch",
+				"Microphone",
+				"Power",
+			},
+		}.AddXYPair("Touch {0}", AxisPairOrientation.RightAndDown, 0.RangeTo(255), 128, 0.RangeTo(191), 96)
+			.AddAxis("Mic Volume", 0.RangeTo(100), 100)
 			.AddAxis("GBA Light Sensor", 0.RangeTo(10), 0)
 			.MakeImmutable();
 
@@ -74,7 +92,7 @@ namespace BizHawk.Client.Common
 				{
 					Result.Movie.Comments.Add(ParseHeader(line, "comment"));
 				}
-				else if (line.StartsWith("guid", StringComparison.OrdinalIgnoreCase))
+				else if (line.StartsWithIgnoreCase("guid"))
 				{
 					// We no longer care to keep this info
 				}
@@ -93,10 +111,12 @@ namespace BizHawk.Client.Common
 
 		private void ImportInputFrame(string line)
 		{
+			DeSmuMEControllerDef.BuildMnemonicsCache(Result.Movie.SystemID);
 			SimpleController controller = new(DeSmuMEControllerDef);
 
 			controller["LidOpen"] = false;
 			controller["LidClose"] = false;
+			controller["Microphone"] = false;
 			controller["Power"] = false;
 
 			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
@@ -104,10 +124,10 @@ namespace BizHawk.Client.Common
 			{
 				ProcessCmd(sections[0], controller);
 			}
-			
+
 			if (sections.Length > 1)
 			{
-				var mnemonics = sections[1].Take(_buttons.Length).ToList();
+				var mnemonics = sections[1].AsSpan(start: 0, length: _buttons.Length);
 
 				controller["Right"] = mnemonics[0] != '.';
 				controller["Left"] = mnemonics[1] != '.';
@@ -131,7 +151,7 @@ namespace BizHawk.Client.Common
 				{
 					("Touch X", touchX),
 					("Touch Y", touchY),
-					("Mic Volume", 0),
+					("Mic Volume", 100),
 					("GBA Light Sensor", 0),
 				});
 			}
@@ -141,7 +161,30 @@ namespace BizHawk.Client.Common
 
 		private void ProcessCmd(string cmd, SimpleController controller)
 		{
-			// TODO
+			MovieCommand command = (MovieCommand) int.Parse(cmd);
+
+			controller["Microphone"] = command.HasFlag(MovieCommand.MIC);
+
+			bool hasPowerCommand = command.HasFlag(MovieCommand.RESET);
+			controller["Power"] = hasPowerCommand;
+			if (hasPowerCommand)
+			{
+				_lidOpen = true;
+				_countLid = 0;
+			}
+
+			bool hasLidCommand = command.HasFlag(MovieCommand.LID);
+			controller["LidClose"] = hasLidCommand && _lidOpen && _countLid == 0;
+			controller["LidOpen"] = hasLidCommand && !_lidOpen && _countLid == 0;
+			if (hasLidCommand && _countLid == 0)
+			{
+				_countLid = 30;
+				_lidOpen = !_lidOpen;
+			}
+			else if (_countLid > 0)
+			{
+				_countLid--;
+			}
 		}
 	}
 }

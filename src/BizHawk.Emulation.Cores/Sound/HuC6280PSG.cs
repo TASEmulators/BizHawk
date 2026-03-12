@@ -11,10 +11,11 @@ namespace BizHawk.Emulation.Cores.Components
 
 	// Sound refactor TODO: IMixedSoundProvider must inherit ISoundProvider
 	// TODo: this provides "fake" sync sound by hardcoding the number of samples
-	public sealed class HuC6280PSG : ISoundProvider, IMixedSoundProvider
+	public sealed class HuC6280PSG : ISoundProvider, IMixedSoundProvider, IPCEngineSoundDebuggable
 	{
 		private readonly int _spf;
-		public class PSGChannel
+
+		public sealed class PSGChannel : IPCEngineSoundDebuggable.ChannelData
 		{
 			public ushort Frequency;
 			public byte Panning;
@@ -26,6 +27,24 @@ namespace BizHawk.Emulation.Cores.Components
 			public short DDAValue;
 			public short[] Wave = new short[32];
 			public float SampleOffset;
+
+			bool IPCEngineSoundDebuggable.ChannelData.DDA
+				=> DDA;
+
+			bool IPCEngineSoundDebuggable.ChannelData.Enabled
+				=> Enabled;
+
+			ushort IPCEngineSoundDebuggable.ChannelData.Frequency
+				=> Frequency;
+
+			bool IPCEngineSoundDebuggable.ChannelData.NoiseChannel
+				=> NoiseChannel;
+
+			byte IPCEngineSoundDebuggable.ChannelData.Volume
+				=> Volume;
+
+			public short[] CloneWaveform()
+				=> (short[]) Wave.Clone();
 		}
 
 		public PSGChannel[] Channels = new PSGChannel[8];
@@ -72,6 +91,12 @@ namespace BizHawk.Emulation.Cores.Components
 		{
 			frameStopTime = cycles;
 		}
+
+		public ReadOnlySpan<IPCEngineSoundDebuggable.ChannelData> GetPSGChannelData()
+			=> Channels;
+
+		public void SetChannelMuted(int channelIndex, bool newIsMuted)
+			=> UserMute[channelIndex] = newIsMuted;
 
 		internal void WritePSG(byte register, byte value, long cycles)
 		{

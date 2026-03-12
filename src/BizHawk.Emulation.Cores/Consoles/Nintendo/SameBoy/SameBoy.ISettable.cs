@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				LightTemperature = o.LightTemperature,
 				HighPassFilter = o.HighPassFilter,
 				InterferenceVolume = o.InterferenceVolume,
+				RumbleMode = o.RumbleMode,
 				ChannelMask = o.GetChannelMask(),
 				BackgroundEnabled = o.EnableBGWIN,
 				ObjectsEnabled = o.EnableOBJ,
@@ -138,6 +139,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				set => _interferencevolume = Math.Max(0, Math.Min(100, value));
 			}
 
+			public enum RumbleModeType : uint
+			{
+				[Display(Name = "Disabled")]
+				RUMBLE_DISABLED,
+				[Display(Name = "Rumble Game Paks Only")]
+				RUMBLE_CARTRIDGE_ONLY,
+				[Display(Name = "All Games")]
+				RUMBLE_ALL_GAMES
+			}
+
+			[DisplayName("Rumble Mode")]
+			[Description("Sets which games should trigger rumble.")]
+			[DefaultValue(RumbleModeType.RUMBLE_CARTRIDGE_ONLY)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public RumbleModeType RumbleMode { get; set; }
+
 			[DisplayName("Enable Channel 1")]
 			[Description("")]
 			[DefaultValue(true)]
@@ -185,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 			public SameboySettings Clone()
 				=> (SameboySettings)MemberwiseClone();
 
-			public int[] GetCustomPalette() 
+			public int[] GetCustomPalette()
 				=> (int[])_customPal.Clone();
 
 			public void SetCustomPalette(int[] pal)
@@ -210,13 +227,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Sameboy
 				// GB_MODEL_DMG_C = 0x003,
 				[Display(Name = "MGB")]
 				GB_MODEL_MGB = 0x100,
-				[Display(Name = "CGB-0 (Experimental)")]
+				[Display(Name = "CGB-0")]
 				GB_MODEL_CGB_0 = 0x200,
-				[Display(Name = "CGB-A (Experimental)")]
+				[Display(Name = "CGB-A")]
 				GB_MODEL_CGB_A = 0x201,
-				[Display(Name = "CGB-B (Experimental)")]
+				[Display(Name = "CGB-B")]
 				GB_MODEL_CGB_B = 0x202,
-				[Display(Name = "CGB-C (Experimental)")]
+				[Display(Name = "CGB-C")]
 				GB_MODEL_CGB_C = 0x203,
 				[Display(Name = "CGB-D")]
 				GB_MODEL_CGB_D = 0x204,

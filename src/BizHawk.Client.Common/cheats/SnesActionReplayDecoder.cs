@@ -22,9 +22,9 @@ namespace BizHawk.Client.Common.cheats
 
 			return new DecodeResult
 			{
-				Size = WatchSize.Word,
+				Size = WatchSize.Byte,
 				Address = int.Parse(code.Remove(6, 2), NumberStyles.HexNumber),
-				Value = int.Parse(code.Remove(0, 6), NumberStyles.HexNumber)
+				Value = int.Parse(code.Remove(0, 6), NumberStyles.HexNumber),
 			};
 		}
 	}

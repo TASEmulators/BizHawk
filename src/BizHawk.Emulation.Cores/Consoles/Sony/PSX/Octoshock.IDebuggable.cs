@@ -85,7 +85,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void Step(StepType type) => throw new NotImplementedException();
 
 		[FeatureNotImplemented]
+#pragma warning disable CA1065 // convention for [FeatureNotImplemented] is to throw NIE
 		public long TotalExecutedCycles => throw new NotImplementedException();
+#pragma warning restore CA1065
 
 		private OctoshockDll.ShockCallback_Mem mem_cb;
 

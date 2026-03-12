@@ -480,18 +480,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				var m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				}
-				while (found != null && found.HasChildren);
-
-				if (found != null)
+				if (this.InnermostControlAt(Cursor.Position) is Control found)
 				{
 					var method = found.GetType().GetMethod("ScreenshotToClipboard", Type.EmptyTypes);
 					if (method != null)
@@ -540,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearDetails();
 		}
-		
+
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
 			HandleSpriteViewMouseMove(e.Location);
@@ -548,19 +537,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleSpriteViewMouseMove(Point e)
 		{
-			if (e.X < SpriteView.ClientRectangle.Left) return;
-			if (e.Y < SpriteView.ClientRectangle.Top) return;
-			if (e.X >= SpriteView.ClientRectangle.Right) return;
-			if (e.Y >= SpriteView.ClientRectangle.Bottom) return;
+			var p = UIHelper.UnscaleDpi(e);
 
 			byte[] oam = _ppu.GetOam();
 			byte[] ppuBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
 
 			bool is8x16 = _ppu.SPTall;
-			
+
 			//figure out which sprite we're over
-			int spriteSlotY = e.Y / 8;
-			int spriteSlotX = e.X / 8;
+			int spriteSlotY = p.Y / 8;
+			int spriteSlotX = p.X / 8;
 
 			//exclude mouse over empty area (vertical). this depends on how big the sprites are
 			if (is8x16)
@@ -638,12 +624,12 @@ namespace BizHawk.Client.EmuHawk
 			if (is8x16)
 			{
 				ZoomBox.Image = Section(
-					SpriteView.Sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 24) * 24), new Size(8, 16)), true);
+					SpriteView.Sprites, new Rectangle(new Point((p.X / 8) * 8, (p.Y / 24) * 24), new Size(8, 16)), true);
 			}
 			else
 			{
 				ZoomBox.Image = Section(
-					SpriteView.Sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);
+					SpriteView.Sprites, new Rectangle(new Point((p.X / 8) * 8, (p.Y / 8) * 8), new Size(8, 8)), false);
 			}
 		}
 
@@ -662,21 +648,21 @@ namespace BizHawk.Client.EmuHawk
 			HandlePaletteViewMouseMove(e.Location);
 		}
 
+		private readonly SolidBrush _brush = new(default);
+
 		private void HandlePaletteViewMouseMove(Point e)
 		{
-			if (e.X < PaletteView.ClientRectangle.Left) return;
-			if (e.Y < PaletteView.ClientRectangle.Top) return;
-			if (e.X >= PaletteView.ClientRectangle.Right) return;
-			if (e.Y >= PaletteView.ClientRectangle.Bottom) return;
+			var p = UIHelper.UnscaleDpi(e);
+			if (p.X < 0 || p.X >= 256 || p.Y < 0 || p.Y >= 32) return;
 
 			int baseAddr = 0x3F00;
-			if (e.Y > 16)
+			if (p.Y > 16)
 			{
 				baseAddr += 16;
 			}
 
-			int column = e.X / 16;
-			int addr = column + baseAddr;
+			int column = p.X / 16;
+			int addr = baseAddr + column;
 			AddressLabel.Text = $"Address: 0x{addr:X4}";
 			int val;
 
@@ -685,18 +671,20 @@ namespace BizHawk.Client.EmuHawk
 
 			byte[] palRam = _ppu.GetPalRam();
 
+			PaletteViewer.Palette pal;
 			if (baseAddr == 0x3F00)
 			{
-				val = palRam[PaletteView.BgPalettes[column].Address];
 				ValueLabel.Text = $"ID: BG{column / 4}";
-				g.FillRectangle(new SolidBrush(PaletteView.BgPalettes[column].Color), 0, 0, 64, 64);
+				pal = PaletteView.BgPalettes[column];
 			}
 			else
 			{
-				val = palRam[PaletteView.SpritePalettes[column].Address];
 				ValueLabel.Text = $"ID: SPR{column / 4}";
-				g.FillRectangle(new SolidBrush(PaletteView.SpritePalettes[column].Color), 0, 0, 64, 64);
+				pal = PaletteView.SpritePalettes[column];
 			}
+			val = palRam[pal.Address];
+			_brush.Color = pal.Color;
+			g.FillRectangle(_brush, 0, 0, 64, 64);
 
 			g.Dispose();
 
@@ -744,27 +732,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PatternView_MouseMove(object sender, MouseEventArgs e)
 		{
+			var p = UIHelper.UnscaleDpi(e.Location);
 			int table = 0;
 			int address;
 			int tile;
-			if (e.X > PatternView.Width / 2)
+			if (p.X > PatternView.Width / 2)
 			{
 				table = 1;
 			}
 
 			if (table == 0)
 			{
-				tile = (e.X - 1) / 8;
+				tile = (p.X - 1) / 8;
 				address = tile * 16;
 			}
 			else
 			{
-				tile = (e.X - 128) / 8;
+				tile = (p.X - 128) / 8;
 				address = 0x1000 + (tile * 16);
 			}
 
-			address += (e.Y / 8) * 256;
-			tile += (e.Y / 8) * 16;
+			address += (p.Y / 8) * 256;
+			tile += (p.Y / 8) * 16;
 			var usage = "Usage: ";
 
 			if (_ppu.BGBaseHigh == address >= 0x1000) // bghigh
@@ -786,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 			Value3Label.Text = $"Tile {tile:X2}";
 			Value4Label.Text = usage;
 
-			ZoomBox.Image = Section(PatternView.Pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);
+			ZoomBox.Image = Section(PatternView.Pattern, new Rectangle(new Point((p.X / 8) * 8, (p.Y / 8) * 8), new Size(8, 8)), false);
 		}
 
 		private void ScanlineTextBox_TextChanged(object sender, EventArgs e)
@@ -804,13 +793,11 @@ namespace BizHawk.Client.EmuHawk
 		private readonly byte[] _chrRomCache = new byte[8192];
 
 		private void ChrROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ChrRomView ^= true;
-		}
+			=> ChrRomView = !ChrRomView;
 
 		private void CalculateFormSize()
 		{
-			Width = ChrRomView ? 861 : 580;
+			ClientSize = ClientSize with { Width = UIHelper.ScaleDpi(ChrRomView ? 850 : 570) };
 		}
 
 		private void ChrRomViewReload()

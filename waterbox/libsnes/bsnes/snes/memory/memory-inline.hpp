@@ -12,8 +12,13 @@ void StaticRAM::write(unsigned addr, uint8 n) { data_[addr] = n; }
 uint8& StaticRAM::operator[](unsigned addr) { return data_[addr]; }
 const uint8& StaticRAM::operator[](unsigned addr) const { return data_[addr]; }
 
-StaticRAM::StaticRAM(unsigned n) : size_(n) { data_ = new uint8[size_]; }
-StaticRAM::~StaticRAM() { delete[] data_; }
+StaticRAM::StaticRAM(unsigned n, const char* name) : size_(n), name_(name) {
+  if(name_) data_ = nullptr; // data_ alloc must be deferred (static ctor is not in a cothread!)
+  else data_ = new uint8[size_]();
+}
+StaticRAM::~StaticRAM() { abort(); }
+
+void StaticRAM::init() { if(name_ && !data_) data_ = (uint8*)interface()->allocSharedMemory(name_, size_); }
 
 //MappedRAM
 

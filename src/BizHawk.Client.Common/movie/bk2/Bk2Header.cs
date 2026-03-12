@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.Common
 {
 	public class Bk2Header : Dictionary<string, string>

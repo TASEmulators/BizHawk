@@ -183,10 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 									CPC._diskInfo.Add(work);
 								}
 							}
-							else
-							{
-
-							}
 						}
 						break;
 				}
@@ -232,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			string hdr = Encoding.ASCII.GetString(data.Take(16).ToArray());
 
 			// disk checking first
-			if (hdr.Contains("EXTENDED CPC DSK", StringComparison.OrdinalIgnoreCase) || hdr.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (hdr.ContainsIgnoreCase("MV - CPC") || hdr.ContainsIgnoreCase("EXTENDED CPC DSK"))
 			{
 				// amstrad .dsk disk file
 				// check for number of sides
@@ -244,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			// tape checking
-			if (hdr.StartsWith("ZXTAPE!", StringComparison.OrdinalIgnoreCase))
+			if (hdr.StartsWithIgnoreCase("ZXTAPE!"))
 			{
 				// cdt tape file
 				return CPCMediaType.Tape;

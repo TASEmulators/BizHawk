@@ -1,13 +1,14 @@
 using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadTargetScreen : UserControl, IVirtualPadControl
 	{
-		private readonly StickyXorAdapter _stickyXorAdapter;
+		private readonly StickyHoldController _stickyHoldController;
 		private readonly Pen BlackPen = new Pen(Brushes.Black, 2);
 		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
 		private readonly Pen RedPen = new Pen(Brushes.Red, 2);
@@ -16,19 +17,19 @@ namespace BizHawk.Client.EmuHawk
 		private bool _isDragging;
 		private bool _readonly;
 		private bool _isSet; // The tool has to keep track of this because there is currently no way to know if an axis is being autoheld or just held
-		
+
 		private int? _overrideX;
 		private int? _overrideY;
 
 		public VirtualPadTargetScreen(
-			StickyXorAdapter stickyXorAdapter,
+			StickyHoldController stickyHoldController,
 			EventHandler setLastFocusedNUD,
 			string nameX,
 			string nameY,
 			int maxX,
 			int maxY)
 		{
-			_stickyXorAdapter = stickyXorAdapter;
+			_stickyHoldController = stickyHoldController;
 			Name = XName = nameX;
 			YName = nameY;
 			MaxX = maxX;
@@ -37,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			void UnsetLastFocusedNUD(object sender, EventArgs eventArgs)
-				=> setLastFocusedNUD(null, null);
+				=> setLastFocusedNUD(null, eventArgs);
 			XNumeric.GotFocus += setLastFocusedNUD;
 			XNumeric.LostFocus += UnsetLastFocusedNUD;
 			YNumeric.GotFocus += setLastFocusedNUD;
@@ -57,8 +58,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Clear()
 		{
-			_stickyXorAdapter.Unset(XName);
-			_stickyXorAdapter.Unset(YName);
+			_stickyHoldController.SetAxisHold(XName, null);
+			_stickyHoldController.SetAxisHold(YName, null);
 			_overrideX = null;
 			_overrideY = null;
 			_isSet = false;
@@ -178,13 +179,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get => _overrideX ?? (int)(_stickyXorAdapter.AxisValue(XName) / MultiplierX);
+			get => _overrideX ?? (int)(_stickyHoldController.AxisValue(XName) / MultiplierX);
 			set
 			{
 				if (value < 0)
 				{
 					XNumeric.Value = 0;
-					
 				}
 				else if (value <= XNumeric.Maximum)
 				{
@@ -195,13 +195,13 @@ namespace BizHawk.Client.EmuHawk
 					XNumeric.Value = XNumeric.Maximum;
 				}
 
-				_stickyXorAdapter.SetAxis(XName, (int)((float)XNumeric.Value * MultiplierX));
+				_stickyHoldController.SetAxisHold(XName, (XNumeric.Value.ConvertToF32() * MultiplierX).RoundToInt());
 				_isSet = true;
 			}
 		}
 		public int Y
 		{
-			get => _overrideY ?? (int)(_stickyXorAdapter.AxisValue(YName) / MultiplierY);
+			get => _overrideY ?? (int)(_stickyHoldController.AxisValue(YName) / MultiplierY);
 			set
 			{
 				if (value < 0)
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 					YNumeric.Value = YNumeric.Maximum;
 				}
 
-				_stickyXorAdapter.SetAxis(YName, (int)((float)YNumeric.Value * MultiplierY));
+				_stickyHoldController.SetAxisHold(YName, (YNumeric.Value.ConvertToF32() * MultiplierY).RoundToInt());
 				_isSet = true;
 			}
 		}

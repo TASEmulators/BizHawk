@@ -60,14 +60,23 @@ namespace BizHawk.Common
 			if (rawWinVer >= new Version(6, 3))
 			{
 				// Win8.1, Win10, and Win11 all have CurrentVersion == "6.3"
-				if ((GetRegValue("ProductName") ?? "Windows 10").Contains("Windows 10"))
+				var productName = GetRegValue("ProductName") ?? "Windows 10";
+				if (productName.Contains("Windows 10"))
 				{
 					// Win11 has ProductName == "Windows 10 Pro" MICROSOFT WHY https://stackoverflow.com/a/69922526 https://stackoverflow.com/a/70456554
-//					Version win10PlusVer = new(FileVersionInfo.GetVersionInfo(@"C:\Windows\System32\kernel32.dll").FileVersion.SubstringBefore(' ')); // bonus why: this doesn't work because the file's metadata wasn't updated
-					Version win10PlusVer = new(10, 0, int.TryParse(GetRegValue("CurrentBuild") ?? "19044", out var i) ? i : 19044); // still, leaving the Version wrapper here for when they inevitably do something stupid like decide to call Win11 11.0.x (or 10.1.x because they're incapable of doing anything sensible)
-					return (win10PlusVer < new Version(10, 0, 22000) ? WindowsVersion._10 : WindowsVersion._11, win10PlusVer);
+#if false // bonus why: this doesn't work because the file's metadata wasn't updated
+					Version win10PlusVer = new(FileVersionInfo.GetVersionInfo(@"C:\Windows\System32\kernel32.dll").FileVersion.SubstringBefore(' '));
+#else
+					const int FALLBACK_BUILD_NUMBER = 19045; // last Win10 release
+					var buildNumber = int.TryParse(GetRegValue("CurrentBuild") ?? string.Empty, out var i) ? i : FALLBACK_BUILD_NUMBER;
+					Version win10PlusVer = new(10, 0, buildNumber); // leaving this wrapped in a `Version` struct for when they inevitably do something stupid like decide to call Win12 `12.0.x` (or, since that makes too much sense, `10.2.x`)
+#endif
+					const int WIN11_BUILD_NUMBER_THRESHOLD = 21000; // first Win11 release was 22000
+					winVer = win10PlusVer < new Version(10, 0, WIN11_BUILD_NUMBER_THRESHOLD) ? WindowsVersion._10 : WindowsVersion._11;
+					if (winVer is WindowsVersion._10 && productName.Contains("LTSC")) win10PlusVer = new(10, 0, 20000 + win10PlusVer.Build / 10); // since the oldest LTSC build goes EOL on 2025-10-14, the same as the last GAC build (not global assembly cache; that's MS' name for SLS), we can just shift those build numbers over a bit and treat Win10 LTSC like it's Win10.1 (honestly this works so well I wouldn't be surprised if MS does this internally)
+					return (winVer, win10PlusVer);
 				}
-				// ...else we're on 8.1. Can't be bothered writing code for KB installed check, not that I have a Win8.1 machine to test on anyway, so it gets a free pass (though I suspect `CurrentBuild` would work here too). --yoshi
+				// ...else we're on 8.1
 				winVer = WindowsVersion._8_1;
 			}
 			else if (rawWinVer == new Version(6, 2)) winVer = WindowsVersion._8;
@@ -78,7 +87,8 @@ namespace BizHawk.Common
 			return (winVer, null);
 		});
 
-		private static readonly Lazy<bool> _isWSL = new(() => IsUnixHost && SimpleSubshell("uname", "-r", "missing uname?").Contains("microsoft", StringComparison.InvariantCultureIgnoreCase));
+		private static readonly Lazy<bool> _isWSL = new(static () => IsUnixHost
+			&& SimpleSubshell(cmd: "uname", args: "-r", noOutputMsg: "missing uname?").ContainsIgnoreCase("microsoft"));
 
 		public static (WindowsVersion Version, Version? Win10PlusVersion)? HostWindowsVersion => _HostWindowsVersion.Value;
 
@@ -111,7 +121,7 @@ namespace BizHawk.Common
 			DistinctOS.Windows => new WindowsLLManager(),
 			DistinctOS.BSD => new PosixLLManager(),
 			DistinctOS.Unknown => throw new NotSupportedException("Cannot link libraries with Unknown OS"),
-			_ => throw new InvalidOperationException()
+			_ => throw new InvalidOperationException(),
 		});
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
@@ -207,7 +217,7 @@ namespace BizHawk.Common
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
 			{
 				var ret = GetProcAddrOrZero(hModule, procName);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, {GetErrorMessage()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)} trying to find symbol {procName}, {GetErrorMessage()}");
 			}
 
 			public IntPtr LoadOrZero(string dllToLoad) => LoadLibraryW(dllToLoad);
@@ -215,7 +225,7 @@ namespace BizHawk.Common
 			public IntPtr LoadOrThrow(string dllToLoad)
 			{
 				var ret = LoadOrZero(dllToLoad);
-				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)} while trying to load {dllToLoad}, {GetErrorMessage()}");
+				return ret != IntPtr.Zero ? ret : throw new InvalidOperationException($"got null pointer from {nameof(LoadLibraryW)} trying to load {dllToLoad}, {GetErrorMessage()}");
 			}
 
 			public unsafe string GetErrorMessage()
@@ -264,8 +274,8 @@ namespace BizHawk.Common
 					RedirectStandardError = checkStderr,
 					RedirectStandardInput = true,
 					RedirectStandardOutput = checkStdout,
-					UseShellExecute = false
-				}
+					UseShellExecute = false,
+				},
 			};
 
 		/// <param name="cmd">POSIX <c>$0</c></param>
@@ -279,7 +289,7 @@ namespace BizHawk.Common
 			using var proc = ConstructSubshell(cmd, args);
 			proc.Start();
 			var stdout = proc.StandardOutput;
-			if (stdout.EndOfStream) throw new($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
+			if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
 			return stdout.ReadLine()!;
 		}
 	}

@@ -35,9 +35,9 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewSPPal.ChangeBitmapSize(256, 256);
 		}
 
-		protected override void GeneralUpdate() => UpdateBefore();
+		protected override void GeneralUpdate() => UpdateAfter();
 
-		protected override void UpdateBefore()
+		protected override void UpdateAfter()
 		{
 			DrawBacks();
 			DrawSprites();
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				checkBoxVDC2.Checked = false;
 			}
 
-			CheckBoxVDC2_CheckedChanged(null, null);
+			CheckBoxVDC2_CheckedChanged(null, EventArgs.Empty);
 		}
 
 		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
@@ -187,17 +187,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
-				// find the control under the mouse
-				Point m = Cursor.Position;
-				Control top = this;
-				Control found;
-				do
-				{
-					found = top.GetChildAtPoint(top.PointToClient(m));
-					top = found;
-				} while (found != null && found.HasChildren);
-
-				if (found is BmpView bv)
+				if (this.InnermostControlAt(Cursor.Position) is BmpView bv)
 				{
 					Clipboard.SetImage(bv.Bmp);
 				}

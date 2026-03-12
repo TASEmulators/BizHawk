@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(140, 183);
+            this.ClientSize = new System.Drawing.Size(184, 183);
             this.Controls.Add(this.ToolBoxStrip);
             this.MaximumSize = new System.Drawing.Size(270, 600);
             this.MinimumSize = new System.Drawing.Size(135, 39);

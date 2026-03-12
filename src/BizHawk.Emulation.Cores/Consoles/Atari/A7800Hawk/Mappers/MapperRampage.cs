@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			$8000 -$9fff second 8kb of bank 7
 			$e000 -$ffff first 8kb of bank 7
 
-			$a000-$dfff Banked 
+			$a000-$dfff Banked
 			*/
 			int tempAddr;
 			if (addr >= 0x4000 && addr < 0x6000)

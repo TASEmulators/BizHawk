@@ -1,0 +1,7 @@
+[*.cs]
+
+# Do not ignore method results
+dotnet_diagnostic.CA1806.severity = suggestion
+
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion

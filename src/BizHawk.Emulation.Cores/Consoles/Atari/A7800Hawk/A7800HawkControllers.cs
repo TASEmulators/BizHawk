@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				BoolButtons = BaseDefinition.Select(b => $"P{PortNum} {b}").ToList()
 			}.AddXYPair($"P{PortNum} {{0}}", AxisPairOrientation.RightAndUp, 1.RangeTo(320), 160, 1.RangeTo(242), 121); //TODO verify direction against hardware
 		}
-		
+
 		public int PortNum { get; }
 
 		public byte Read(IController c)

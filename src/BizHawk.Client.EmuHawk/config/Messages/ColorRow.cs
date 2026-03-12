@@ -37,7 +37,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var colorPicker = new ColorDialog
 			{
-				FullOpen = true, Color = Color.FromArgb(_selectedColor)
+				Color = Color.FromArgb(_selectedColor),
+				FullOpen = true,
 			};
 
 			if (colorPicker.ShowDialog().IsOk())

@@ -5,29 +5,27 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// <summary>
 	/// ALU Operations
 	/// </summary>
-	public sealed partial class F3850
+	public sealed partial class F3850<TLink>
 	{
 		public void Read_Func(byte dest, byte src_l, byte src_h)
 		{
-			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[dest] = _link.ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 		}
 
 		public void Write_Func(byte dest_l, byte dest_h, byte src)
 		{
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
+			_link.WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
 		}
 
 		public void IN_Func(byte dest, byte src)
 		{
-			Regs[dest] = ReadHardware(Regs[src]);
+			Regs[dest] = _link.ReadHardware(Regs[src]);
 		}
 
 		/// <summary>
 		/// Helper method moving from IO pins to accumulator
 		/// (complement and flags set)
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void LR_A_IO_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -43,16 +41,14 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		}
 
 		/// <summary>
-		/// Helper method moving from accumulator to IO pins 
+		/// Helper method moving from accumulator to IO pins
 		/// (complement)
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void OUT_Func(byte dest, byte src)
 		{
 			// data is complemented between accumulator and I/O pins (because PINs are active-low)
 			// however for ease here we will make them active-high
-			WriteHardware(Regs[dest], Regs[src]);
+			_link.WriteHardware(Regs[dest], Regs[src]);
 		}
 
 		public void ClearFlags_Func()
@@ -66,8 +62,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Helper function for transferring data between registers
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void LR_Func(byte dest, byte src)
 		{
 			if (dest == DB)
@@ -94,8 +88,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Right shift 'src' 'shift' positions (zero fill)
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="shift"></param>
 		public void SR_Func(byte src, byte shift)
 		{
 			// overflow and carry unconditionally reset
@@ -111,8 +103,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Left shift 'src' 'shift' positions (zero fill)
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="shift"></param>
 		public void SL_Func(byte src, byte shift)
 		{
 			// overflow and carry unconditionally reset
@@ -127,11 +117,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		/// <summary>
 		/// Binary addition
-		/// Statuses modified: OVF, ZERO, CARRY, SIGN 
+		/// Statuses modified: OVF, ZERO, CARRY, SIGN
 		/// Statuses unaffected: ICB
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void ADD_Func(byte dest, byte src, byte src2 = ZERO)
 		{
 			ushort res = (ushort)(Regs[dest] + Regs[src] + Regs[src2]);
@@ -152,26 +140,24 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// Decimal Add
 		/// http://www.bitsavers.org/components/fairchild/f8/67095664_F8_Guide_To_Programming_1976.pdf - page 40
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void ADDD_Func(byte dest, byte src)
 		{
 			// The accumulator and the memory location addressed by the DCO registers are assumed to contain two BCD digits.
 			// The content of the address memory byte is added to the contents of the accumulator to give a BCD result in the accumulator
 			// providing these steps are followed:
-			// 
+			//
 			// Decimal addition is, in reality, three binary events. Consider 8-bit decimal addition.
 			// Assume two BCD digit augend XY is added to two BCD digit addend l).N, to give a BCD result PQ:
 			//  XY
 			// +ZW
 			//  --
 			// =PQ
-			// 
+			//
 			// Two carries are important: any intermediate carry (IC) out of the low order answer digit (Q), and any overall carry (C) out of the high order digit (P).
 			// The three binary steps required to perform BCD addition are as follows:
 
 			// STEP 1: Binary add H'66' to the augend. (this should happen before this function is called)
-			// STEP 2: Binary add the addend to the sum from Step 1. Record the status of the carry (C) and intermediate carry (IC). 
+			// STEP 2: Binary add the addend to the sum from Step 1. Record the status of the carry (C) and intermediate carry (IC).
 
 			var augend = Regs[dest];
 			var addend = Regs[src];
@@ -190,15 +176,15 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			FlagZ = (working & 0xFF) == 0;
 
 
-			// STEP 3: Add a factor to the sum from Step 2, based on the status of C and IC. The factor to be added is given by the following table: 
+			// STEP 3: Add a factor to the sum from Step 2, based on the status of C and IC. The factor to be added is given by the following table:
 			// C  IC	Sum to be added
 			// ------------------------
 			// 0  0		0xAA
 			// 0  1		0xA0
 			// 1  0		0x0A
 			// 1  1		0x00
-			// 
-			// In Step 3, any carry from the low order digit to the high order digit is suppressed. 
+			//
+			// In Step 3, any carry from the low order digit to the high order digit is suppressed.
 
 			if (!highCarry && !lowCarry)
 			{
@@ -219,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 			Regs[dest] = (byte)(working & 0xFF);
 		}
-		
+
 		/// <summary>
 		/// Binary add the two's compliment of the accumulator to the value on the databus
 		/// Set flags accordingly but accumlator is not touched
@@ -231,14 +217,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[ALU0] = twosComp;
 			Regs[ALU1] = Regs[DB];
 			ADD_Func(ALU0, ALU1, ONE);
-			//ADD_Func(ALU0, ALU1);
-		}		
+		}
 
 		/// <summary>
 		/// Logical AND regs[dest] with regs[src] and store the result in regs[dest]
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void AND_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -254,8 +237,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// Logical OR regs[dest] with regs[src] and store the result in regs[dest]
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void OR_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -271,8 +252,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		/// <summary>
 		/// The destination (regs[dest]) is XORed with (regs[src]).
 		/// </summary>
-		/// <param name="dest"></param>
-		/// <param name="src"></param>
 		public void XOR_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
@@ -282,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 			Regs[dest] = (byte)(Regs[dest] ^ Regs[src]);
 
 			FlagS = !Regs[dest].Bit(7);
-			FlagZ = (Regs[dest] & 0xFF) == 0;			
+			FlagZ = (Regs[dest] & 0xFF) == 0;
 		}
 	}
 }

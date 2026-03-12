@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				VDC1.ScanLine = ScanLine;
 				VDC2.ScanLine = ScanLine;
-				
+
 				int VBlankLine = ActiveDisplayStartLine + VDC1.Registers[VDW] + 1;
 				if (VBlankLine > 261)
 					VBlankLine = 261;

@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 
 // TODO: Some of the values that are being latched (like Nusiz) are being latched based on the internal player ticks, not the external hsync ticks.
-// This can be seen for example in the player32_hblank test ROM. 
+// This can be seen for example in the player32_hblank test ROM.
 // Which values these are exactly needs to be more carefully studied.
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					}
 				}
 
-				// At counter position 0 we should initalize the scan counter. 
+				// At counter position 0 we should initalize the scan counter.
 				// Note that for double and quad sized players that the scan counter is not started immediately.
 				if (_startSignal == 160)
 				{
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Increment the counter
 				HPosCnt++;
 
-				// Counter loops at 160 
+				// Counter loops at 160
 				HPosCnt %= 160;
 
 				// our goal here is to send a start signal 4 clocks before drawing begins. This properly emulates

@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return Vrom[addr];
 			}
 			else
-				return base.ReadPpu(addr);		
+				return base.ReadPpu(addr);
 		}
 
 		public override void WritePrg(int addr, byte value)
@@ -70,7 +70,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4000: prg_reg = 8 | (value & 0x7); break;
 			}
 		}
-
-
 	}
 }

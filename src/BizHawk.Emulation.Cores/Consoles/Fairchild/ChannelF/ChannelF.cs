@@ -1,80 +1,72 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.FairchildF8;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: false)]
+	[Core(CoreNames.ChannelFHawk, "Asnivor", isReleased: true)]
 	public partial class ChannelF : IDriveLight
 	{
 		[CoreConstructor(VSystemID.Raw.ChannelF)]
-		public ChannelF(CoreLoadParameters<ChannelFSettings, ChannelFSyncSettings> lp)
+		public ChannelF(CoreLoadParameters<object, ChannelFSyncSettings> lp)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			CoreComm = lp.Comm;
-			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
-			_files = lp.Roms.Select(r => r.RomData).ToList();
-			
+			var gameInfo = lp.Roms[0].Game;
+			var rom = lp.Roms[0].RomData;
 
-			var settings = lp.Settings ?? new ChannelFSettings();
-			var syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
+			_syncSettings = lp.SyncSettings ?? new ChannelFSyncSettings();
+			_region = _syncSettings.Region;
+			_version = _syncSettings.Version;
 
-			region = syncSettings.Region;
+			MemoryCallbacks = new MemoryCallbackSystem([ "System Bus" ]);
 
+			ControllerDefinition = _channelFControllerDefinition.Value;
 
-			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
-
-			ControllerDefinition = ChannelFControllerDefinition;
-
-			var bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
-			var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
-			//var bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
-
-			Cartridge = VesCartBase.Configure(_gameInfo[0], _files[0]);
-
-			BIOS01 = bios01;
-			BIOS02 = bios02;			
-
-			CPU = new F3850
+			if (_version == ConsoleVersion.ChannelF)
 			{
-				ReadMemory = ReadBus,
-				WriteMemory = WriteBus,
-				ReadHardware = ReadPort,
-				WriteHardware = WritePort,
-				DummyReadMemory = ReadBus
-			};
+				_bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131253"));
+				_bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			}
+			else
+			{
+				_bios01 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl90025"));
+				_bios02 = CoreComm.CoreFileProvider.GetFirmwareOrThrow(new("ChannelF", "ChannelF_sl131254"));
+			}
 
-			_tracer = new TraceBuffer(CPU.TraceHeader);			
+			if (_bios01.Length != 1024 || _bios02.Length != 1024)
+			{
+				throw new InvalidOperationException("BIOS must be exactly 1024 bytes!");
+			}
 
-			//var rom = _files.First();
-			//Array.Copy(rom, 0, Rom, 0, rom.Length);
+			_cartridge = VesCartBase.Configure(gameInfo, rom);
+
+			_cpu = new F3850<CpuLink>(new CpuLink(this));
+			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			CalcClock();
+			SetupVideo();
 
-			ser.Register<IVideoProvider>(this);
 			ser.Register<ITraceable>(_tracer);
-			ser.Register<IDisassemblable>(CPU);
-			ser.Register<ISoundProvider>(this);
+			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			SetupMemoryDomains();
 		}
 
-		internal CoreComm CoreComm { get; }
+		private CoreComm CoreComm { get; }
 
-		public List<GameInfo> _gameInfo;
-		private readonly List<byte[]> _files;
-
-		public F3850 CPU;
+		private readonly F3850<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
-		public IController _controller;
+		private IController _controller;
 
-		public VesCartBase Cartridge;
-		public RegionType region;
+		private readonly VesCartBase _cartridge;
+		private readonly RegionType _region;
+		private readonly ConsoleVersion _version;
 
-		public bool DriveLightEnabled => true;
+		public bool DriveLightEnabled => _cartridge.HasActivityLED;
 
-		public bool DriveLightOn => !Cartridge.ActivityLED;
+		public bool DriveLightOn => _cartridge.ActivityLED;
+
+		public string DriveLightIconDescription => "Computer thinking activity";
 	}
 }

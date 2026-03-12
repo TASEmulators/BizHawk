@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Common;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
@@ -23,6 +24,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		static Program()
 		{
+			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -33,18 +35,14 @@ namespace BizHawk.Client.DiscoHawk
 				return;
 			}
 
-			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
-			SetDllDirectoryW(dllDir);
-
 			try
 			{
-				// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+				// before we load anything from the dll dir, whack the MOTW from everything in that directory (that's a dll)
 				// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 				// some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 				static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
-				var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+				var todo = new Queue<DirectoryInfo>([ new DirectoryInfo(dllDir) ]);
 				while (todo.Count != 0)
 				{
 					var di = todo.Dequeue();
@@ -72,6 +70,48 @@ namespace BizHawk.Client.DiscoHawk
 				WmImports.ChangeWindowMessageFilter(WM_DROPFILES, WmImports.ChangeWindowMessageFilterFlags.Add);
 				WmImports.ChangeWindowMessageFilter(WM_COPYDATA, WmImports.ChangeWindowMessageFilterFlags.Add);
 				WmImports.ChangeWindowMessageFilter(WM_COPYGLOBALDATA, WmImports.ChangeWindowMessageFilterFlags.Add);
+
+				// this will look in subdirectory "dll" to load pinvoked stuff
+				var dllDir = Path.Combine(AppContext.BaseDirectory, "dll");
+
+				// windows prohibits a semicolon for SetDllDirectoryW, although such paths are fully valid otherwise
+				// presumingly windows internally has ; used as a path separator, like with PATH
+				// or perhaps this is just some legacy junk windows keeps around for backwards compatibility reasons
+				// we can possibly workaround this by using the "short path name" rather (but this isn't guaranteed to exist)
+				const string SEMICOLON_IN_DIR_MSG =
+					"DiscoHawk requires no semicolons within its base directory! DiscoHawk will now close.";
+
+				if (dllDir.ContainsOrdinal(';'))
+				{
+					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
+					if (dllShortPathLen == 0)
+					{
+						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						return;
+					}
+
+					var dllShortPathBuffer = new char[dllShortPathLen];
+					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
+					if (dllShortPathLen == 0)
+					{
+						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						return;
+					}
+
+					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen);
+					if (dllDir.ContainsOrdinal(';'))
+					{
+						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						return;
+					}
+				}
+
+				if (!Win32Imports.SetDllDirectoryW(dllDir))
+				{
+					MessageBox.Show(
+						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. DiscoHawk will now close.");
+					return;
+				}
 			}
 
 			// Do something for visuals, I guess

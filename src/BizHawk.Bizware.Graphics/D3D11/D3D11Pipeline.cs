@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
@@ -45,7 +47,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			public IntPtr VSPendingBuffer, PSPendingBuffer;
 			public int VSBufferSize, PSBufferSize;
-			public bool VSBufferDirty, PSBufferDirty; 
+			public bool VSBufferDirty, PSBufferDirty;
 		}
 
 		public readonly D3D11PendingBuffer[] PendingBuffers = new D3D11PendingBuffer[ID3D11DeviceContext.CommonShaderConstantBufferSlotCount];
@@ -93,7 +95,7 @@ namespace BizHawk.Bizware.Graphics
 						AttribUsage.Position => "POSITION",
 						AttribUsage.Color0 => "COLOR",
 						AttribUsage.Texcoord0 or AttribUsage.Texcoord1 => "TEXCOORD",
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 
 					var format = item.Components switch
@@ -102,7 +104,7 @@ namespace BizHawk.Bizware.Graphics
 						2 => Format.R32G32_Float,
 						3 => Format.R32G32B32_Float,
 						4 => item.Integer ? Format.B8G8R8A8_UNorm : Format.R32G32B32A32_Float,
-						_ => throw new InvalidOperationException()
+						_ => throw new InvalidOperationException(),
 					};
 
 					_inputElements[i] = new(semanticName, item.Usage == AttribUsage.Texcoord1 ? 1 : 0, format, item.Offset, 0);
@@ -303,11 +305,8 @@ namespace BizHawk.Bizware.Graphics
 				var mappedVb = Context.Map(VertexBuffer, MapMode.WriteDiscard);
 				try
 				{
-					unsafe
-					{
-						Buffer.MemoryCopy((void*)data, (void*)mappedVb.DataPointer,
-							VertexBufferCount * VertexStride, count * VertexStride);
-					}
+					Util.UnsafeSpanFromPointer(ptr: data, length: count * VertexStride)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: mappedVb.DataPointer, length: VertexBufferCount * VertexStride));
 				}
 				finally
 				{
@@ -331,11 +330,8 @@ namespace BizHawk.Bizware.Graphics
 				var mappedIb = Context.Map(IndexBuffer, MapMode.WriteDiscard);
 				try
 				{
-					unsafe
-					{
-						Buffer.MemoryCopy((void*)data, (void*)mappedIb.DataPointer,
-							IndexBufferCount * 2, count * 2);
-					}
+					Util.UnsafeSpanFromPointer(ptr: data, length: count * 2)
+						.CopyTo(Util.UnsafeSpanFromPointer(ptr: mappedIb.DataPointer, length: IndexBufferCount * 2));
 				}
 				finally
 				{
@@ -395,9 +391,6 @@ namespace BizHawk.Bizware.Graphics
 				psUniform.PB.PSBufferDirty = true;
 			}
 		}
-
-		public void SetUniformMatrix(string name, Matrix4x4 mat, bool transpose)
-			=> SetUniformMatrix(name, ref mat, transpose);
 
 		public unsafe void SetUniformMatrix(string name, ref Matrix4x4 mat, bool transpose)
 		{

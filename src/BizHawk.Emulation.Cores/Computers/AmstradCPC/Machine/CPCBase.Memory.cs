@@ -50,13 +50,13 @@
 		/// <summary>
 		/// The currently selected RAM config
 		/// </summary>
-		public int RAMConfig;
+		public int RAMConfig => PAL.MMR & 0b0000_0111;
 
 		/// <summary>
 		/// Always 0 on a CPC6128
 		/// On a machine with more than 128K RAM (standard memory expansion) this selects each additional 64K above the first upper 64K
 		/// </summary>
-		public int RAM64KBank;
+		public int RAM64KBank => PAL.MMR & 0b0011_1000;
 
 		/// <summary>
 		/// Simulates reading from the bus
@@ -96,7 +96,7 @@
 		public abstract void InitROM(RomData[] romData);
 
 		/// <summary>
-		/// ULA reads the memory at the specified address
+		/// Gate Array reads the memory at the specified address
 		/// (No memory contention)
 		/// </summary>
 		public virtual byte FetchScreenMemory(ushort addr)

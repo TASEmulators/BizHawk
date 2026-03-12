@@ -1,12 +1,13 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BizHawk.Client.Common
 {
 	public interface IDialogController
 	{
-		void AddOnScreenMessage(string message, int? duration = null);
+		void AddOnScreenMessage(string message, [LiteralExpected] int? duration = null);
 
 		/// <summary>Creates and shows a <c>System.Windows.Forms.OpenFileDialog</c> or equivalent</summary>
 		/// <param name="dialogParent">parent window</param>

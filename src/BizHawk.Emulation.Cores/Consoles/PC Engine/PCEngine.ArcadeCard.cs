@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		private bool ArcadeCard, ArcadeCardRewindHack;
 		private int ShiftRegister;

@@ -12,7 +12,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int preNMIlines;
 		private int postNMIlines;
 		private bool chopdot;
-		public enum Region { NTSC, PAL, Dendy, RGB }
+
+		public enum Region
+		{
+			NTSC,
+			PAL,
+			Dendy,
+			RGB,
+		}
 
 		private Region _region;
 		public Region region
@@ -58,42 +65,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public static readonly int[] PaletteLuma2C03 =
 		{
-			27, 9, 3, 22, 9, 11, 16, 20, 18, 14, 19, 25, 14, 0, 0, 0, 
-			45, 23, 17, 12, 14, 16, 13, 30, 27, 27, 25, 34, 28, 0, 0, 0, 
-			63, 42, 37, 35, 18, 37, 39, 45, 50, 44, 45, 52, 49, 0, 0, 0, 
-			63, 52, 48, 50, 43, 48, 54, 59, 60, 55, 54, 52, 50, 0, 0, 0, 
+			27, 9, 3, 22, 9, 11, 16, 20, 18, 14, 19, 25, 14, 0, 0, 0,
+			45, 23, 17, 12, 14, 16, 13, 30, 27, 27, 25, 34, 28, 0, 0, 0,
+			63, 42, 37, 35, 18, 37, 39, 45, 50, 44, 45, 52, 49, 0, 0, 0,
+			63, 52, 48, 50, 43, 48, 54, 59, 60, 55, 54, 52, 50, 0, 0, 0,
 		};
 
 		public static readonly int[] PaletteLuma2C04_1 =
 		{
-			48, 35, 13, 37, 28, 14, 18, 16, 63, 27, 45, 11, 9, 50, 18, 63, 
-			42, 45, 12, 44, 50, 48, 54, 17, 52, 52, 0, 3, 54, 36, 18, 9, 
-			1, 52, 50, 45, 49, 14, 34, 14, 0, 20, 43, 16, 12, 3, 39, 0, 
-			0, 27, 45, 19, 55, 22, 58, 30, 12, 23, 25, 9, 60, 37, 27, 54, 
+			48, 35, 13, 37, 28, 14, 18, 16, 63, 27, 45, 11, 9, 50, 18, 63,
+			42, 45, 12, 44, 50, 48, 54, 17, 52, 52, 0, 3, 54, 36, 18, 9,
+			1, 52, 50, 45, 49, 14, 34, 14, 0, 20, 43, 16, 12, 3, 39, 0,
+			0, 27, 45, 19, 55, 22, 58, 30, 12, 23, 25, 9, 60, 37, 27, 54,
 		};
 
 		public static readonly int[] PaletteLuma2C04_2 =
 		{
-			0, 45, 27, 55, 54, 37, 28, 52, 13, 12, 60, 43, 63, 35, 50, 25, 
-			12, 42, 16, 54, 34, 44, 3, 37, 18, 18, 1, 52, 48, 18, 0, 22, 
-			9, 54, 39, 50, 23, 12, 45, 3, 14, 52, 27, 14, 17, 0, 50, 63, 
-			45, 9, 45, 30, 14, 9, 16, 27, 0, 49, 20, 58, 48, 11, 19, 36, 
+			0, 45, 27, 55, 54, 37, 28, 52, 13, 12, 60, 43, 63, 35, 50, 25,
+			12, 42, 16, 54, 34, 44, 3, 37, 18, 18, 1, 52, 48, 18, 0, 22,
+			9, 54, 39, 50, 23, 12, 45, 3, 14, 52, 27, 14, 17, 0, 50, 63,
+			45, 9, 45, 30, 14, 9, 16, 27, 0, 49, 20, 58, 48, 11, 19, 36,
 		};
 
 		public static readonly int[] PaletteLuma2C04_3 =
 		{
-			14, 37, 54, 45, 25, 63, 52, 14, 9, 0, 54, 18, 16, 54, 45, 50, 
-			37, 28, 11, 17, 27, 27, 30, 34, 27, 22, 0, 3, 13, 16, 43, 48, 
-			35, 12, 1, 58, 9, 45, 39, 63, 44, 9, 42, 18, 23, 36, 0, 12, 
-			49, 3, 55, 50, 20, 45, 50, 18, 19, 0, 48, 60, 12, 52, 52, 14, 
+			14, 37, 54, 45, 25, 63, 52, 14, 9, 0, 54, 18, 16, 54, 45, 50,
+			37, 28, 11, 17, 27, 27, 30, 34, 27, 22, 0, 3, 13, 16, 43, 48,
+			35, 12, 1, 58, 9, 45, 39, 63, 44, 9, 42, 18, 23, 36, 0, 12,
+			49, 3, 55, 50, 20, 45, 50, 18, 19, 0, 48, 60, 12, 52, 52, 14,
 		};
 
 		public static readonly int[] PaletteLuma2C04_4 =
 		{
-			27, 22, 28, 50, 0, 48, 9, 30, 45, 12, 45, 1, 54, 58, 25, 55, 
-			37, 3, 17, 43, 0, 18, 16, 39, 45, 34, 37, 27, 9, 0, 54, 42, 
-			11, 19, 20, 3, 12, 14, 27, 16, 14, 54, 23, 12, 9, 60, 36, 18, 
-			50, 63, 18, 13, 52, 52, 63, 50, 0, 45, 35, 52, 44, 48, 49, 14, 
+			27, 22, 28, 50, 0, 48, 9, 30, 45, 12, 45, 1, 54, 58, 25, 55,
+			37, 3, 17, 43, 0, 18, 16, 39, 45, 34, 37, 27, 9, 0, 54, 42,
+			11, 19, 20, 3, 12, 14, 27, 16, 14, 54, 23, 12, 9, 60, 36, 18,
+			50, 63, 18, 13, 52, 52, 63, 50, 0, 45, 35, 52, 44, 48, 49, 14,
 		};
 
 		private int[] _currentLuma = PaletteLumaNES;
@@ -126,7 +133,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int j = ymin;
 			int i = xmin;
+#pragma warning disable MA0084 // shadows `int this.s`
 			short s = 0;
+#pragma warning restore MA0084
 			short palcolor = 0;
 			short intensity = 0;
 
@@ -201,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//power-up palette verified by blargg's power_up_palette test.
 			//he speculates that these may differ depending on the system tested..
-			//and I don't see why the ppu would waste any effort setting these.. 
+			//and I don't see why the ppu would waste any effort setting these..
 			//but for the sake of uniformity, we'll do it.
 			PALRAM = new byte[] {
 				0x09,0x01,0x00,0x01,0x00,0x02,0x02,0x0D,0x08,0x10,0x08,0x24,0x00,0x00,0x04,0x2C,
@@ -251,7 +260,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
 			ser.Sync(nameof(is_even_cycle), ref is_even_cycle);
 			ser.Sync(nameof(soam_index), ref soam_index);
-			ser.Sync(nameof(soam_m_index), ref soam_m_index);
 			ser.Sync(nameof(oam_index), ref oam_index);
 			ser.Sync(nameof(oam_index_aux), ref oam_index_aux);
 			ser.Sync(nameof(soam_index_aux), ref soam_index_aux);
@@ -361,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void runppu()
 		{
-			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity			
+			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
 			if (install_2006 > 0)
 			{
 				install_2006--;
@@ -431,6 +439,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nes.Board.ClockPpu();
 			}
 			_totalCycles += 1;
-		}		
+			nes.cpu.ext_ppu_cycle += 1;
+		}
 	}
 }

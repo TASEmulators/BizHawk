@@ -48,7 +48,9 @@ namespace BizHawk.Client.Common
 				{
 					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					LogCallback(error);
+#pragma warning disable CA1065 // yes, really throw
 					throw new NotImplementedException(error);
+#pragma warning restore CA1065
 				}
 				return MemoryDomainCore;
 			}
@@ -62,7 +64,9 @@ namespace BizHawk.Client.Common
 				{
 					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					LogCallback(error);
+#pragma warning disable CA1065 // yes, really throw
 					throw new NotImplementedException(error);
+#pragma warning restore CA1065
 				}
 				return MemoryDomainCore.MainMemory.Name;
 			}
@@ -135,7 +139,7 @@ namespace BizHawk.Client.Common
 				2 => d.PeekUshort(addr, _isBigEndian),
 				3 => _isBigEndian ? ReadUnsignedBig(addr, 3, domain) : ReadUnsignedLittle(addr, 3, domain),
 				4 => d.PeekUint(addr, _isBigEndian),
-				_ => 0
+				_ => 0,
 			};
 		}
 
@@ -291,7 +295,7 @@ namespace BizHawk.Client.Common
 			return NumberExtensions.ReinterpretAsF32(d.PeekUint(addr, _isBigEndian));
 		}
 
-		public void WriteFloat(long addr, double value, string domain = null)
+		public void WriteFloat(long addr, float value, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
 			if (!d.Writable)
@@ -304,7 +308,7 @@ namespace BizHawk.Client.Common
 				LogCallback($"Warning: Attempted write {addr} outside memory size of {d.Size}");
 				return;
 			}
-			d.PokeUint(addr, NumberExtensions.ReinterpretAsUInt32((float) value), _isBigEndian);
+			d.PokeUint(addr, NumberExtensions.ReinterpretAsUInt32(value), _isBigEndian);
 		}
 
 		public int ReadS8(long addr, string domain = null) => (sbyte) ReadUnsigned(addr, 1, domain);

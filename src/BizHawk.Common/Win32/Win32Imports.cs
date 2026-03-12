@@ -16,6 +16,8 @@ namespace BizHawk.Common
 	{
 		public const int MAX_PATH = 260;
 
+		public const uint ATTACH_PARENT_PROCESS = unchecked((uint)-1);
+
 		[Flags]
 		public enum TPM
 		{
@@ -67,5 +69,22 @@ namespace BizHawk.Common
 
 		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+
+		[DllImport("kernel32.dll", ExactSpelling = true)]
+		public static extern IntPtr GetCurrentProcess();
+
+		[DllImport("kernel32.dll", ExactSpelling = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool IsWow64Process(IntPtr hProcess, [MarshalAs(UnmanagedType.Bool)] out bool Wow64Process);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetDllDirectoryW(string lpPathName);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+		public static extern int GetShortPathNameW(string lpszLongPath, char[] lpszShortPath, int cchBuffer);
+
+		[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+		public static extern bool AttachConsole(uint dwProcessId);
 	}
 }

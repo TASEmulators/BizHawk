@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	/// TODO: perhaps with the new core config system, one could automatically bring out all of the settings to a lua table, with names.
 	/// that would be completely arbitrary and would remove the whole requirement for this mess
 	/// </remarks>
-	[Description("Functions related specifically to Nes Cores")]
+	[Description("Functions related specifically to NES Cores")]
 	public sealed class NESLuaLibrary : LuaLibraryBase
 	{
 		public NESLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 			{
 				NES.NESSettings nhs => nhs.AllowMoreThanEightSprites,
 				QuickNES.QuickNESSettings qns => qns.NumSprites != 8,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			{
 				NES.NESSettings nhs => pal ? nhs.PAL_BottomLine : nhs.NTSC_BottomLine,
 				QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 231 : 239,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			{
 				NES.NESSettings nhs => nhs.ClipLeftAndRight,
 				QuickNES.QuickNESSettings qns => qns.ClipLeftAndRight,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 			{
 				NES.NESSettings nhs => nhs.DispBackground,
 				QuickNES.QuickNESSettings => true,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 			{
 				NES.NESSettings nhs => nhs.DispSprites,
 				QuickNES.QuickNESSettings qns => qns.NumSprites > 0,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 			{
 				NES.NESSettings nhs => pal ? nhs.PAL_TopLine : nhs.NTSC_TopLine,
 				QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
-				_ => throw new InvalidOperationException()
+				_ => throw new InvalidOperationException(),
 			};
 
 		/// <exception cref="InvalidOperationException">loaded core is not NESHawk or QuickNes</exception>

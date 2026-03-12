@@ -6,7 +6,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 {
 	/// <summary>
 	/// Fairchild F3850 (F8) CPU
-	/// 
+	/// Author: Asnivor
+	///
 	/// The F8 microprocessor is made up of separate interchangeable devices
 	/// The Channel F has:
 	///		* x1 F3850 CPU (central processing unit)
@@ -17,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	/// e.g. SPs and PCs should always be identical
 	/// Each device has a factory ROM mask applied and with every ROMC change observed is able to know whether it should respond (via the shared data bus)
 	/// or not based on the value within its counters.
-	/// 
+	///
 	/// For this reason we will hold the PCs and SPs within the F3850 implementation.
-	/// 
+	///
 	/// We are currently also *not* using a separate F3851 implementation. In reality the F3851 chip has/does:
 	///		* 1024 byte masked ROM
 	///		* x2 16-bit program counters
@@ -29,7 +30,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 	///
 	/// Note: Programmable timer and interrupt logic from the F3851 is not currently emulated
 	/// </summary>
-	public sealed partial class F3850
+	/// <remarks>
+	/// this type parameter might look useless—and it is—but after monomorphisation,
+	/// this way happens to perform better than the alternative
+	/// </remarks>
+	/// <seealso cref="IF3850Link"/>
+	public sealed partial class F3850<TLink> where TLink : IF3850Link
 	{
 		// operations that can take place in an instruction
 		public const byte ROMC_01 = 1;
@@ -91,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public const byte OP_LISL = 116;
 		public const byte OP_BT = 117;
 		public const byte OP_ADD8D = 118;
-		public const byte OP_BR7 = 119;		
+		public const byte OP_BR7 = 119;
 		public const byte OP_BF = 141;
 
 		public const byte OP_IN = 151;
@@ -100,8 +106,11 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		public const byte OP_DS = 157;
 		public const byte OP_LIS = 158;
 
-		public F3850()
+		private readonly TLink _link;
+
+		public F3850(TLink link)
 		{
+			_link = link;
 			Reset();
 		}
 
@@ -133,36 +142,6 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
 
-		// Memory Access 
-		public Func<ushort, byte> ReadMemory;
-		public Action<ushort, byte> WriteMemory;
-		public Func<ushort, byte> PeekMemory;
-		public Func<ushort, byte> DummyReadMemory;
-
-		// Hardware I/O Port Access
-		public Func<ushort, byte> ReadHardware;
-		public Action<ushort, byte> WriteHardware;
-
-		public Action<ushort> OnExecFetch;
-
-		public void SetCallbacks
-		(
-			Func<ushort, byte> ReadMemory,
-			Func<ushort, byte> DummyReadMemory,
-			Func<ushort, byte> PeekMemory,
-			Action<ushort, byte> WriteMemory,
-			Func<ushort, byte> ReadHardware,
-			Action<ushort, byte> WriteHardware
-		)
-		{
-			this.ReadMemory = ReadMemory;
-			this.DummyReadMemory = DummyReadMemory;
-			this.PeekMemory = PeekMemory;
-			this.WriteMemory = WriteMemory;
-			this.ReadHardware = ReadHardware;
-			this.WriteHardware = WriteHardware;
-		}
-
 		/// <summary>
 		/// Runs a single CPU clock cycle
 		/// </summary>
@@ -170,17 +149,16 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			if (Regs[ISAR] > 0x3F)
 			{
-
 			}
 			if (Regs[W] > 0x1F)
-			{ 
+			{
 			}
 
 			switch (cur_instr[instr_pntr++])
 			{
 				// always the last tick within an opcode instruction cycle
 				case END:
-					OnExecFetch?.Invoke(RegPC0);
+					_link.OnExecFetch(RegPC0);
 					TraceCallback?.Invoke(State());
 					opcode = Regs[DB];
 					instr_pntr = 0;
@@ -311,18 +289,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 				// Branch on ISARL - if any of the low 3 bits of ISAR are reset
 				case OP_BR7:
-				
+
 				if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
 					DO_BRANCH(1);
 				else
 					DONT_BRANCH(1);
-					/*
-					if Regs[ISAR] & 7) == 7)
-						DONT_BRANCH(1);
-					else
-						DO_BRANCH(1);
-					*/
-					break;				
+					break;
 
 				// Branch on FALSE
 				case OP_BF:
@@ -331,199 +303,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					else
 						DO_BRANCH(0);
 					break;
-					/*
 
-				// Unconditional Branch (relative)
-				case OP_BR:
-					DO_BF_BRANCH(0);
-					break;
-
-				// Branch on Negative
-				case OP_BM:				
-					if (!FlagS)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch if no carry
-				case OP_BNC:
-					if (!FlagC)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch if negative and no carry
-				case OP_BF_CS:
-					if (!FlagS && !FlagC)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch if not zero
-				case OP_BNZ:
-					instr_pntr = 0;
-					if (!FlagZ)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on Negative and not Zero (same thing as branch on negative)
-				case OP_BF_ZS:
-					if (!FlagS && !FlagZ)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no Carry and not Zero
-				case OP_BF_ZC:
-					if (!FlagC && !FlagZ)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no Carry and not Zero and Negative
-				case OP_BF_ZCS:
-					if (!FlagC && !FlagZ && !FlagS)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no Overflow
-				case OP_BNO:
-					if (!FlagO)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and Negative
-				case OP_BF_OS:
-					if (!FlagO && !FlagS)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and Negative
-				case OP_BF_OC:
-					if (!FlagO && !FlagC)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and no carry and Negative
-				case OP_BF_OCS:
-					if (!FlagO && !FlagC && !FlagS)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and not zero
-				case OP_BF_OZ:
-					if (!FlagO && !FlagZ)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and not zero and negative
-				case OP_BF_OZS:
-					if (!FlagO && !FlagZ && !FlagS)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and not zero and no carry
-				case OP_BF_OZC:
-					if (!FlagO && !FlagZ && !FlagC)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-
-				// Branch on no overflow and not zero and no carry and negative
-				case OP_BF_OZCS:
-					if (!FlagO && !FlagZ && !FlagC && FlagS)
-						DO_BF_BRANCH(0);
-					else
-						DONT_BF_BRANCH(0);
-					break;
-					*/
-/*
-				// Branch on true - no branch
-				case OP_BTN:
-					DONT_BT_BRANCH(0);
-					break;
-
-				// Branch if positive
-				case OP_BP:
-					if (FlagS)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-
-				// Branch on carry
-				case OP_BC:
-					if (FlagC)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-
-				// Branch on carry or positive
-				case OP_BT_CS:
-					if (FlagC || FlagS)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-
-				// Branch if zero
-				case OP_BZ:
-					if (FlagZ)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-
-				// Branch if zero or positive
-				case OP_BT_ZS:
-					if (FlagZ || FlagS)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-
-				// Branch if zero or carry
-				case OP_BT_ZC:
-					if (FlagZ || FlagC)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-
-				// Branch if zero or carry or positive
-				case OP_BT_ZCS:
-					if (FlagZ || FlagC || FlagS)
-						DO_BT_BRANCH(0);
-					else
-						DONT_BT_BRANCH(0);
-					break;
-*/
-				
-			
-				// A <- (I/O Port 0 or 1) 
+				// A <- (I/O Port 0 or 1)
 				case OP_IN:
 					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -785,12 +566,12 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 		{
 			int bytes_read = 0;
 			ushort pc = (ushort)(RegPC0 - 1);
-			string disasm = disassemble ? Disassemble(pc, ReadMemory, out bytes_read) : "---";
+			string disasm = disassemble ? Disassemble(pc, _link.ReadMemory, out bytes_read) : "---";
 			string byte_code = null;
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += ReadMemory((ushort)(pc + i)).ToString("X2");
+				byte_code += _link.ReadMemory((ushort)(pc + i)).ToString("X2");
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
@@ -804,8 +585,8 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 					byte_code.PadRight(12),
 					disasm.PadRight(26)),
 				registerInfo: string.Format(
-					"Flags:{75}{76}{77}{78}{79} " + 
-					"PC1:{0:X4} DC0:{1:X4} A:{2:X2} ISAR:{3:X2} DB:{4:X2} IO:{5:X2} J:{6:X2} H:{7:X4} K:{8:X4} Q:{9:X4} " + 
+					"Flags:{75}{76}{77}{78}{79} " +
+					"PC1:{0:X4} DC0:{1:X4} A:{2:X2} ISAR:{3:X2} DB:{4:X2} IO:{5:X2} J:{6:X2} H:{7:X4} K:{8:X4} Q:{9:X4} " +
 					"R0:{10:X2} R1:{11:X2} R2:{12:X2} R3:{13:X2} R4:{14:X2} R5:{15:X2} R6:{16:X2} R7:{17:X2} R8:{18:X2} R9:{19:X2} " +
 					"R10:{20:X2} R11:{21:X2} R12:{22:X2} R13:{23:X2} R14:{24:X2} R15:{25:X2} R16:{26:X2} R17:{27:X2} R18:{28:X2} R19:{29:X2} " +
 					"R20:{30:X2} R21:{31:X2} R22:{32:X2} R23:{33:X2} R24:{34:X2} R25:{35:X2} R26:{36:X2} R27:{37:X2} R28:{38:X2} R29:{39:X2} " +
@@ -841,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		/// <summary>
 		/// Optimization method to set cur_instr
-		/// </summary>	
+		/// </summary>
 		private void PopulateCURINSTR(byte d0 = 0, byte d1 = 0, byte d2 = 0, byte d3 = 0, byte d4 = 0, byte d5 = 0, byte d6 = 0, byte d7 = 0, byte d8 = 0,
 			byte d9 = 0, byte d10 = 0, byte d11 = 0, byte d12 = 0, byte d13 = 0, byte d14 = 0, byte d15 = 0, byte d16 = 0, byte d17 = 0, byte d18 = 0,
 			byte d19 = 0, byte d20 = 0, byte d21 = 0, byte d22 = 0, byte d23 = 0, byte d24 = 0, byte d25 = 0, byte d26 = 0, byte d27 = 0, byte d28 = 0,
@@ -868,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Components.FairchildF8
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection(nameof(F3850));
+			ser.BeginSection("F3850");
 			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);

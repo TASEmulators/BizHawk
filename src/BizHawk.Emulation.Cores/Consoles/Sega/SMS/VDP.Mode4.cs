@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (ScanLine >= FrameHeight)
 				return;
-			
+
 			if (!DisplayOn)
 			{
 				for (int x = 0; x < 256; x++)
@@ -142,9 +142,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					x -= 8;
 
 				int y = VRAM[SpriteBase + i] + 1;
-				if (y == 209 && FrameHeight == 192) 
+				if (y == 209 && FrameHeight == 192)
 					break; // 208 is special terminator sprite (in 192-line mode)
-				if (y >= (EnableLargeSprites ? 240 : 248)) 
+				if (y >= (EnableLargeSprites ? 240 : 248))
 					y -= 256;
 
 				if (y + SpriteHeight <= ScanLine || y > ScanLine)
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						if (SpriteCollisionBuffer[x + xs] != 0)
 						{
 							if (collisionHappens)
-								StatusByte |= 0x20; // Set Collision bit	
+								StatusByte |= 0x20; // Set Collision bit
 						}
 						else if (renderHappens && ScanlinePriorityBuffer[x + xs] == 0)
 						{
@@ -221,9 +221,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					x -= 8;
 
 				int y = VRAM[SpriteBase + i] + 1;
-				if (y == 209 && FrameHeight == 192) 
+				if (y == 209 && FrameHeight == 192)
 					break; // terminator sprite
-				if (y >= (EnableLargeSprites ? 240 : 248)) 
+				if (y >= (EnableLargeSprites ? 240 : 248))
 					y -= 256;
 
 				if (y + (SpriteHeight * 2) <= ScanLine || y > ScanLine)
@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// Renders left-blanking. Should be done per scanline, not per-frame.
 		internal void RenderLineBlanking(bool render)
 		{
-			if (!LeftBlanking || ScanLine >= FrameHeight || !render) 
+			if (!LeftBlanking || ScanLine >= FrameHeight || !render)
 				return;
 
 			int ofs = ScanLine * 256;
@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			for (int y=0; y<overscanTop; y++)
 				for (int x = 0; x < OverscanFrameWidth; x++)
 					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = Backdrop_SL[0];
-			
+
 			// Bottom overscan
 			for (int y = overscanTop + 192; y < OverscanFrameHeight; y++)
 				for (int x = 0; x < OverscanFrameWidth; x++)

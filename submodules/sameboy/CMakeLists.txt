@@ -91,6 +91,7 @@ target_include_directories(core PUBLIC ${CORE_DIR})
 
 if(MSVC)
 	target_include_directories(core PUBLIC ${CMAKE_SOURCE_DIR}/libsameboy/Windows)
+	target_sources(core PRIVATE ${CMAKE_SOURCE_DIR}/libsameboy/Windows/stdio.c)
 endif()
 
 add_library(

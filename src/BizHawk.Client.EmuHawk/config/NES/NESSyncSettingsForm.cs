@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				InfoLabel.Visible = true;
 			}
 
-			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)).Cast<object>().ToArray());
+			RegionComboBox.ReplaceItems(items: Enum.GetNames(typeof(NES.NESSyncSettings.Region)));
 			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), _syncSettings.RegionOverride);
 
 			var initWRAMPattern = _syncSettings.InitialWRamStatePattern;

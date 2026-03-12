@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public MovieZone(IEmulator emulator, ToolManager tools, IMovieSession movieSession, int start, int length, string key = "")
 			: this(emulator, tools, movieSession)
 		{
-			if (key == "")
+			if (key.Length is 0)
 			{
 				key = Bk2LogEntryGenerator.GenerateLogKey(movieSession.MovieController.Definition);
 			}
@@ -33,8 +33,6 @@ namespace BizHawk.Client.EmuHawk
 
 			// Get a IController that only contains buttons in key.
 			InitController(_inputKey);
-
-			var logGenerator = movieSession.Movie.LogGeneratorInstance(_controller);
 
 			string movieKey = Bk2LogEntryGenerator.GenerateLogKey(_controller.Definition).Replace("#", "");
 			movieKey = movieKey.Substring(startIndex: 0, length: movieKey.Length - 1); // drop last char
@@ -50,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < length; i++)
 				{
 					_controller.SetFrom(movieSession.Movie.GetInputState(i + start));
-					_log[i] = logGenerator.GenerateLogEntry();
+					_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(_controller);
 				}
 			}
 		}
@@ -115,18 +113,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var newController = _movieSession.GenerateMovieController(d.MakeImmutable());
-			var logGenerator = _movieSession.Movie.LogGeneratorInstance(newController);
-			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
 			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
-			var tC = _movieSession.Movie.LogGeneratorInstance(_targetController);
-			_targetController.SetFromMnemonic(tC.EmptyEntry);
+			_targetController.SetFromMnemonic(Bk2LogEntryGenerator.EmptyEntry(_targetController));
 			for (int i = 0; i < Length; i++)
 			{
 				_controller.SetFromMnemonic(_log[i]);
 				LatchFromSourceButtons(_targetController, _controller);
 				newController.SetFrom(_targetController);
-				_log[i] = logGenerator.GenerateLogEntry();
+				_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(newController);
 			}
 
 			_controller = newController;
@@ -188,7 +183,6 @@ namespace BizHawk.Client.EmuHawk
 						_tools.TAStudio.GoToFrame(Start);
 					}
 
-					_tools.UpdateToolsBefore();
 					_tools.UpdateToolsAfter();
 				}
 				else if (_tools.IsLoaded<TAStudio>())
@@ -204,19 +198,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Save(string fileName)
+		public FileWriteResult Save(string fileName)
 		{
 			// Save the controller definition/LogKey
 			// Save the controller name and player count. (Only for the user.)
 			// Save whether or not the macro should use overlay input, and/or replace
-			string[] header = new string[4];
-			header[0] = InputKey;
-			header[1] = _emulator.ControllerDefinition.Name;
-			header[2] = _emulator.ControllerDefinition.PlayerCount.ToString();
-			header[3] = $"{Overlay},{Replace}";
 
-			File.WriteAllLines(fileName, header);
-			File.AppendAllLines(fileName, _log);
+			return FileWriter.Write(fileName, (fs) =>
+			{
+				using var writer = new StreamWriter(fs);
+				writer.WriteLine(InputKey);
+				writer.WriteLine(_emulator.ControllerDefinition.Name);
+				writer.WriteLine(_emulator.ControllerDefinition.PlayerCount.ToString());
+				writer.WriteLine($"{Overlay},{Replace}");
+
+				foreach (string line in _log)
+				{
+					writer.WriteLine(line);
+				}
+			});
 		}
 
 		public MovieZone(string fileName, IDialogController dialogController, IEmulator emulator, IMovieSession movieSession, ToolManager tools)

@@ -67,7 +67,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					return Vrom[addr];
 				}
-
 			}
 			else
 				return Vram[addr];
@@ -85,10 +84,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					//nothing to write to VROM
 				}
-
 			}
 			else
-				Vram[addr] = value;	
+				Vram[addr] = value;
 		}
 
 		protected override int Get_CHRBank_1K(int addr)

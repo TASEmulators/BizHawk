@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Increment the counter
 				HPosCnt++;
 
-				// Counter loops at 160 
+				// Counter loops at 160
 				HPosCnt %= 160;
 
 				if (_startSignal == 160)

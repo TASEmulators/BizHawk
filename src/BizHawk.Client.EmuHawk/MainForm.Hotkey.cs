@@ -1,7 +1,6 @@
 using System.Linq;
+
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			void SelectAndSaveToSlot(int slot)
 			{
-				SaveQuickSave(slot);
+				SaveQuickSaveAndShowError(slot);
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}
@@ -21,28 +20,61 @@ namespace BizHawk.Client.EmuHawk
 				Config.SaveSlot = slot;
 				UpdateStatusSlots();
 			}
-			void ToggleGambatteSyncSetting(
-				string name,
-				Func<Gameboy.GambatteSyncSettings, bool> getter,
-				Action<Gameboy.GambatteSyncSettings, bool> setter)
+
+			// avoid conflict with regular hotkeys
+			if (Tools.IsLoaded<TAStudio>() && Tools.TAStudio.AxisEditingMode)
 			{
-				if (Emulator is not Gameboy gb) return;
-				if (gb.DeterministicEmulation)
+				switch (trigger)
 				{
-					AddOnScreenMessage($"{name} cannot be toggled during movie recording.");
-					return;
+					default:
+						return false;
+
+					case "Analog Increment":
+						Tools.TAStudio.AnalogIncrementByOne();
+						break;
+					case "Analog Decrement":
+						Tools.TAStudio.AnalogDecrementByOne();
+						break;
+					case "Analog Incr. by 10":
+						Tools.TAStudio.AnalogIncrementByTen();
+						break;
+					case "Analog Decr. by 10":
+						Tools.TAStudio.AnalogDecrementByTen();
+						break;
+					case "Analog Maximum":
+						Tools.TAStudio.AnalogMax();
+						break;
+					case "Analog Minimum":
+						Tools.TAStudio.AnalogMin();
+						break;
 				}
-				var ss = gb.GetSyncSettings();
-				var newState = !getter(ss);
-				setter(ss, newState);
-				gb.PutSyncSettings(ss);
-				AddOnScreenMessage($"{name} toggled {(newState ? "on" : "off")}");
+
+				return true;
 			}
 
 			switch (trigger)
 			{
 				default:
 					return false;
+
+				// Hotkeys handled elsewhere, via the hotkey controller
+				case "Autohold":
+				case "Autofire":
+				case "Frame Advance":
+				case "Turbo":
+				case "Rewind":
+				case "Fast Forward":
+				case "Open RA Overlay":
+					break;
+				case "RA Up":
+				case "RA Down":
+				case "RA Left":
+				case "RA Right":
+				case "RA Confirm":
+				case "RA Cancel":
+				case "RA Quit":
+					// don't consider these keys outside of RAIntegration overlay being active
+					return RA is RAIntegration { OverlayActive: true };
 
 				// General
 				case "Pause":
@@ -51,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Frame Inch":
 					//special! allow this key to get handled as Frame Advance, too
 					FrameInch = true;
-					return false;
+					break;
 				case "Toggle Throttle":
 					ToggleUnthrottled();
 					break;
@@ -88,13 +120,13 @@ namespace BizHawk.Client.EmuHawk
 					OpenRom();
 					break;
 				case "Close ROM":
-					CloseRom();
+					LoadNullRom();
 					break;
 				case "Load Last ROM":
 					LoadMostRecentROM();
 					break;
 				case "Flush SaveRAM":
-					FlushSaveRAM();
+					FlushSaveRAMMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Display FPS":
 					ToggleFps();
@@ -112,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleBackgroundInput();
 					break;
 				case "Toggle Menu":
-					MainMenuStrip.Visible ^= true;
+					ShowMenuContextMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Volume Up":
 					VolumeUp();
@@ -151,22 +183,27 @@ namespace BizHawk.Client.EmuHawk
 					RebootCore();
 					break;
 				case "Toggle Skip Lag Frame":
-					Config.SkipLagFrame ^= true;
+					Config.SkipLagFrame = !Config.SkipLagFrame;
 					AddOnScreenMessage($"Skip Lag Frames toggled {(Config.SkipLagFrame ? "On" : "Off")}");
 					break;
 				case "Toggle Key Priority":
 					ToggleKeyPriority();
 					break;
 				case "Toggle Messages":
-					Config.DisplayMessages ^= true;
+					DisplayMessagesMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Toggle Display Nothing":
 					// TODO: account for 1 when implemented
 					Config.DispSpeedupFeatures = Config.DispSpeedupFeatures == 0 ? 2 : 0;
 					break;
 				case "Accept Background Input":
-					Config.AcceptBackgroundInput ^= true;
-					AddOnScreenMessage($"Accept Background Input toggled {(Config.AcceptBackgroundInput ? "On" : "Off")}");
+					ToggleBackgroundInput();
+					break;
+				case "Capture Mouse":
+					ToggleCaptureMouse();
+					break;
+				case "Toggle Stay on Top":
+					ToggleStayOnTop();
 					break;
 
 				// Save States
@@ -279,10 +316,10 @@ namespace BizHawk.Client.EmuHawk
 					ToggleReadOnly();
 					break;
 				case "Play Movie":
-					PlayMovieMenuItem_Click(null, null);
+					PlayMovieMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Record Movie":
-					RecordMovieMenuItem_Click(null, null);
+					RecordMovieMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "Stop Movie":
 					StopMovie();
@@ -296,16 +333,16 @@ namespace BizHawk.Client.EmuHawk
 
 				// Tools
 				case "RAM Watch":
-					Tools.LoadRamWatch(true);
+					RamWatchMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "RAM Search":
-					Tools.Load<RamSearch>();
+					RamSearchMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Hex Editor":
-					Tools.Load<HexEditor>();
+					HexEditorMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Trace Logger":
-					Tools.Load<TraceLogger>();
+					TraceLoggerMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Lua Console":
 					OpenLuaConsole();
@@ -317,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "Cheats":
-					Tools.Load<Cheats>();
+					CheatsMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Toggle All Cheats":
 					var cheats = CheatList.Where(static c => !c.IsSeparator).ToList();
@@ -332,13 +369,13 @@ namespace BizHawk.Client.EmuHawk
 					AddOnScreenMessage($"Cheats toggled ({kind})");
 					break;
 				case "TAStudio":
-					TAStudioMenuItem_Click(null, null);
+					TAStudioMenuItem_Click(null, EventArgs.Empty);
 					break;
 				case "ToolBox":
-					Tools.Load<ToolBox>();
+					ToolBoxMenuItem_Click(this, EventArgs.Empty);
 					break;
 				case "Virtual Pad":
-					Tools.Load<VirtualpadTool>();
+					VirtualPadMenuItem_Click(this, EventArgs.Empty);
 					break;
 
 				// RAM Search
@@ -381,17 +418,28 @@ namespace BizHawk.Client.EmuHawk
 					Tools.TAStudio.SetVisibleFrame();
 					Tools.TAStudio.RefreshDialog();
 					break;
+				case "Select Current Frame":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SelectCurrentFrame();
+					break;
 				case "Toggle Follow Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
+					var playbackBox = Tools.TAStudio.TasPlaybackBox;
+					playbackBox.FollowCursor = !playbackBox.FollowCursor;
 					break;
 				case "Toggle Auto-Restore":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
+					var playbackBox1 = Tools.TAStudio.TasPlaybackBox;
+					playbackBox1.AutoRestore = !playbackBox1.AutoRestore;
+					break;
+				case "Seek To Green Arrow":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RestorePosition();
 					break;
 				case "Toggle Turbo Seek":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
+					var playbackBox2 = Tools.TAStudio.TasPlaybackBox;
+					playbackBox2.TurboSeek = !playbackBox2.TurboSeek;
 					break;
 				case "Undo":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
@@ -400,6 +448,26 @@ namespace BizHawk.Client.EmuHawk
 				case "Redo":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.RedoExternal();
+					break;
+				case "Seek To Prev Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToPreviousMarker();
+					break;
+				case "Seek To Next Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.GoToNextMarker();
+					break;
+				case "Cancel Seek":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.StopSeeking();
+					break;
+				case "Set Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SetMarker();
+					break;
+				case "Delete Marker":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.RemoveMarker();
 					break;
 				case "Sel. bet. Markers":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
@@ -433,29 +501,9 @@ namespace BizHawk.Client.EmuHawk
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesExternal();
 					break;
-				case "Analog Increment":
+				case "Clone # Times":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogIncrementByOne();
-					break;
-				case "Analog Decrement":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogDecrementByOne();
-					break;
-				case "Analog Incr. by 10":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogIncrementByTen();
-					break;
-				case "Analog Decr. by 10":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogDecrementByTen();
-					break;
-				case "Analog Maximum":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogMax();
-					break;
-				case "Analog Minimum":
-					if (!Tools.IsLoaded<TAStudio>()) return false;
-					Tools.TAStudio.AnalogMin();
+					Tools.TAStudio.CloneFramesXTimesExternal();
 					break;
 
 				// SNES
@@ -486,22 +534,13 @@ namespace BizHawk.Client.EmuHawk
 
 				// GB
 				case "GB Toggle BG":
-					ToggleGambatteSyncSetting(
-						"BG",
-						static ss => ss.DisplayBG,
-						static (ss, newState) => ss.DisplayBG = newState);
+					GB_ToggleBackgroundLayer();
 					break;
 				case "GB Toggle Obj":
-					ToggleGambatteSyncSetting(
-						"OBJ",
-						static ss => ss.DisplayOBJ,
-						static (ss, newState) => ss.DisplayOBJ = newState);
+					GB_ToggleObjectLayer();
 					break;
 				case "GB Toggle Window":
-					ToggleGambatteSyncSetting(
-						"WIN",
-						static ss => ss.DisplayWindow,
-						static (ss, newState) => ss.DisplayWindow = newState);
+					GB_ToggleWindowLayer();
 					break;
 
 				// Analog
@@ -532,91 +571,20 @@ namespace BizHawk.Client.EmuHawk
 
 				// DS
 				case "Next Screen Layout":
-					IncrementDSLayout(1);
+					NDS_IncrementLayout(1);
 					break;
 				case "Previous Screen Layout":
-					IncrementDSLayout(-1);
+					NDS_IncrementLayout(-1);
 					break;
 				case "Screen Rotate":
-					IncrementDSScreenRotate();
+					NDS_IncrementScreenRotate();
+					break;
+				case "Swap Screens":
+					NDS_SwapScreens();
 					break;
 			}
 
 			return true;
-		}
-
-		private void IncrementDSScreenRotate()
-		{
-			if (Emulator is NDS ds)
-			{
-				var settings = ds.GetSettings();
-				settings.ScreenRotation = settings.ScreenRotation switch
-				{
-					NDS.ScreenRotationKind.Rotate0 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate90,
-					NDS.ScreenRotationKind.Rotate90 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate180,
-					NDS.ScreenRotationKind.Rotate180 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate270,
-					NDS.ScreenRotationKind.Rotate270 => settings.ScreenRotation = NDS.ScreenRotationKind.Rotate0,
-					_ => settings.ScreenRotation
-				};
-				ds.PutSettings(settings);
-				AddOnScreenMessage($"Screen rotation to {settings.ScreenRotation}");
-				FrameBufferResized();
-			}
-		}
-
-		private void IncrementDSLayout(int delta)
-		{
-			bool decrement = delta == -1;
-			if (Emulator is NDS ds)
-			{
-				var settings = ds.GetSettings();
-				var num = (int)settings.ScreenLayout;
-				if (decrement)
-				{
-					num--;
-				}
-				else
-				{
-					num++;
-				}
-
-				var next = (NDS.ScreenLayoutKind)Enum.Parse(typeof(NDS.ScreenLayoutKind), num.ToString());
-				if (typeof(NDS.ScreenLayoutKind).IsEnumDefined(next))
-				{
-					settings.ScreenLayout = next;
-
-					ds.PutSettings(settings);
-					AddOnScreenMessage($"Screen layout to {next}");
-					FrameBufferResized();
-				}
-			}
-		}
-
-		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
-		private bool IsInternalHotkey(string trigger)
-		{
-			switch (trigger)
-			{
-				default:
-					return false;
-				case "Autohold":
-				case "Autofire":
-				case "Frame Advance":
-				case "Turbo":
-				case "Rewind":
-				case "Fast Forward":
-				case "Open RA Overlay":
-					return true;
-				case "RA Up":
-				case "RA Down":
-				case "RA Left":
-				case "RA Right":
-				case "RA Confirm":
-				case "RA Cancel":
-				case "RA Quit":
-					// don't consider these keys outside of RAIntegration overlay being active
-					return RA is RAIntegration { OverlayActive: true };
-			}
 		}
 	}
 }

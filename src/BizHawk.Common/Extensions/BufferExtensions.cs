@@ -55,6 +55,7 @@ namespace BizHawk.Common.BufferExtensions
 		/// <remarks>Output format is all-uppercase, no spaces, padded to an even number of nybbles, no prefix</remarks>
 		public static string BytesToHexString(this ReadOnlySpan<byte> bytes)
 		{
+			if (bytes.IsEmpty) return string.Empty;
 			StringBuilder sb = new(capacity: 2 * bytes.Length, maxCapacity: 2 * bytes.Length);
 			for (var i = 0; i < bytes.Length; i++) sb.AppendFormat("{0:X2}", bytes[i]);
 			return sb.ToString();

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -13,8 +15,6 @@ namespace BizHawk.Client.Common
 		private readonly HashSet<string> _pressed = new HashSet<string>();
 
 		public ControllerDefinition Definition { get; set; }
-
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
 
 		public bool IsPressed(string button) => _pressed.Contains(button);
 
@@ -35,27 +35,9 @@ namespace BizHawk.Client.Common
 		public void Click(string button) => _pressed.Add(button);
 
 		public void Toggle(string button)
-		{
-			if (IsPressed(button))
-			{
-				_pressed.Remove(button);
-			}
-			else
-			{
-				_pressed.Add(button);
-			}
-		}
+			=> _ = _pressed.ToggleMembership(button);
 
 		public void SetBool(string button, bool value)
-		{
-			if (value)
-			{
-				_pressed.Remove(button);
-			}
-			else
-			{
-				_pressed.Add(button);
-			}
-		}
+			=> _pressed.SetMembership(button, shouldBeMember: value);
 	}
 }

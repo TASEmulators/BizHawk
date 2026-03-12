@@ -1,9 +1,19 @@
+using System.Runtime.CompilerServices;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
-	public readonly struct AxisSpec
+	public readonly struct AxisSpec : IEquatable<AxisSpec>
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool operator ==(AxisSpec a, AxisSpec b)
+			=> a.Equals(b);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool operator !=(AxisSpec a, AxisSpec b)
+			=> !a.Equals(b);
+
 		/// <summary>
 		/// Gets the axis constraints that apply artificial constraints to float values
 		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
@@ -33,6 +43,28 @@ namespace BizHawk.Emulation.Common
 			IsReversed = isReversed;
 			Neutral = neutral;
 			Range = range;
+		}
+
+		public bool Equals(AxisSpec other)
+			=> Range == other.Range
+				&& Neutral == other.Neutral
+				&& IsReversed == other.IsReversed
+				&& Constraint == other.Constraint;
+
+		public override bool Equals(object? obj)
+			=> obj is AxisSpec other && Equals(other);
+
+		public override int GetHashCode()
+			=> HashCode.Combine(Range.Start, Range.EndInclusive, Neutral, IsReversed, Constraint);
+
+		public override string ToString()
+		{
+			string FormatAsArgument(AxisConstraint constraint)
+				=> $", {constraint.GetType().Name} {{ PairedAxis: {constraint.PairedAxis} }}";
+			return $"{nameof(AxisSpec)}({Min}..={Max}, {Neutral}{
+				(IsReversed ? ", isReversed: true" : string.Empty)}{
+				(Constraint is null ? string.Empty : FormatAsArgument(Constraint))
+				})";
 		}
 	}
 }

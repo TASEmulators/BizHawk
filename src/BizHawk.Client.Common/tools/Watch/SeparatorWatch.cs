@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public sealed class SeparatorWatch : Watch
 	{
+		public static readonly IReadOnlyList<WatchDisplayType> ValidTypes = [ WatchDisplayType.Separator ];
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SeparatorWatch"/> class.
 		/// </summary>
@@ -25,7 +27,7 @@ namespace BizHawk.Client.Common
 		{
 			return new SeparatorWatch
 			{
-				Notes = description
+				Notes = description,
 			};
 		}
 
@@ -33,10 +35,8 @@ namespace BizHawk.Client.Common
 		/// Get the appropriate WatchDisplayType
 		/// </summary>
 		/// <returns>WatchDisplayType.Separator nothing else</returns>
-		public override IEnumerable<WatchDisplayType> AvailableTypes()
-		{
-			yield return WatchDisplayType.Separator;
-		}
+		public override IReadOnlyList<WatchDisplayType> AvailableTypes()
+			=> ValidTypes;
 
 		/// <summary>
 		/// Ignore that stuff
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int Previous => 0;
+		public override uint Previous => 0;
 
 		/// <summary>
 		/// Ignore that stuff

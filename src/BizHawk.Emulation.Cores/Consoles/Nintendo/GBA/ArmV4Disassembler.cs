@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Buffers.Binary;
+using System.Collections.Generic;
 
 using BizHawk.BizInvoke;
 using BizHawk.Common;
@@ -35,11 +36,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			else
 			{
 				addr &= unchecked((uint)~3);
-				int op = m.PeekByte((int)addr)
-					| m.PeekByte((int)addr + 1) << 8
-					| m.PeekByte((int)addr + 2) << 16
-					| m.PeekByte((int)addr + 3) << 24;
-				string ret = _libdarm.DisassembleStuff(addr, (uint)op);
+				var op = BinaryPrimitives.ReadUInt32LittleEndian(stackalloc byte[]
+				{
+					m.PeekByte(addr),
+					m.PeekByte(addr + 1L),
+					m.PeekByte(addr + 2L),
+					m.PeekByte(addr + 3L),
+				});
+				var ret = _libdarm.DisassembleStuff(addr, op);
 				length = 4;
 				return ret;
 			}

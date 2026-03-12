@@ -100,13 +100,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public uint Address
 		{
-			get => AddressBox.ToRawUInt().Value & AddressMask;
+			get => (uint)AddressBox.ToRawInt().Value & AddressMask;
 			set => AddressBox.SetFromLong(value & AddressMask);
 		}
 
 		public uint AddressMask
 		{
-			get => AddressMaskBox.ToRawUInt().Value;
+			get => (uint)AddressMaskBox.ToRawInt().Value;
 			set => AddressMaskBox.SetFromLong(value);
 		}
 
@@ -139,7 +139,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public enum BreakpointOperation
 		{
-			Add, Edit, Duplicate
+			Add,
+			Edit,
+			Duplicate,
 		}
 	}
 }

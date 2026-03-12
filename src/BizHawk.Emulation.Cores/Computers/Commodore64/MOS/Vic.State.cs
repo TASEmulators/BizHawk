@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_vmli), ref _vmli);
 			ser.Sync(nameof(_xScroll), ref _xScroll);
 			ser.Sync(nameof(_yScroll), ref _yScroll);
-			
+
 			if (ser.IsReader)
 			{
 				UpdateBorder();

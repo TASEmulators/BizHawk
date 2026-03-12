@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private bool prg_mode = false;
 		private int chr_reg;
-		private int prg_reg; 
+		private int prg_reg;
 
 		public override bool Configure(EDetectionOrigin origin)
 		{
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			
+
 			SetMirrorType(EMirrorType.Vertical);
 
 			return true;
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_reg = (addr & 0x40) | ((addr >> 8) & 0x3F);
-			chr_reg = ((addr & 0x1F) << 2) | (value & 0x03); 
+			chr_reg = ((addr & 0x1F) << 2) | (value & 0x03);
 		}
 
 		public override byte ReadPrg(int addr)

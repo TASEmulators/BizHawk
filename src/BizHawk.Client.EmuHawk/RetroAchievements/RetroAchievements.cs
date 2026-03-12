@@ -22,13 +22,14 @@ namespace BizHawk.Client.EmuHawk
 		protected IMemoryDomains Domains => Emu.AsMemoryDomains();
 		protected IGameInfo Game => _mainForm.Game;
 		protected IMovieSession MovieSession => _mainForm.MovieSession;
+		protected CheatCollection CheatList => _mainForm.CheatList;
 
 		protected IReadOnlyList<MemFunctions> _memFunctions;
 
 		protected RetroAchievements(
 			MainForm mainForm,
 			InputManager inputManager,
-			ToolManager tools, 
+			ToolManager tools,
 			Func<Config> getConfig,
 			ToolStripItemCollection raDropDownItems,
 			Action shutdownRACallback)

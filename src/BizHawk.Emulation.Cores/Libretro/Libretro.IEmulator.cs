@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -13,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private LibretroApi.retro_message retro_msg = default;
 
-		private readonly Action<string, int?> _notify;
+		private readonly CoreComm.AddOnScreenMessageCallback _notify;
 
 		private void FrameAdvancePrep(IController controller)
 		{
@@ -54,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			if (retro_msg.frames > 0)
 			{
 				// TODO: pass frames for duration?
-				_notify(Mershul.PtrToStringUtf8(retro_msg.msg), null);
+				_notify(Mershul.PtrToStringUtf8(retro_msg.msg) ?? string.Empty);
 			}
 
 			Frame++;
@@ -74,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			private const string CAT_KEYBOARD = "RetroKeyboard";
 
-			public const string PFX_RETROPAD = "RetroPad ";
+			private const string PFX_RETROPAD = "RetroPad ";
 
 			public LibretroControllerDef()
 				: base(name: "LibRetro Controls"/*for compatibility*/)
@@ -85,7 +82,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 				}
 
 				BoolButtons.Add("Pointer Pressed");
-				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndUp, (-32767).RangeTo(32767), 0);
+				this.AddXYPair("Pointer {0}", AxisPairOrientation.RightAndDown, (-32767).RangeTo(32767), 0);
+				this.AddXYPair("Analog Left {0}", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
+				this.AddXYPair("Analog Right {0}", AxisPairOrientation.RightAndDown, (-32768).RangeTo(32767), 0);
 
 				foreach (var s in new[] {
 					"Backspace", "Tab", "Clear", "Return", "Pause", "Escape",
@@ -110,29 +109,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 				BoolButtons.Add("Reset");
 
 				MakeImmutable();
-			}
-
-			protected override IReadOnlyList<IReadOnlyList<string>> GenOrderedControls()
-			{
-				// all this is to remove the keyboard buttons from P0 and put them in P3 so they appear at the end of the input display
-				var players = base.GenOrderedControls().ToList();
-				List<string> retroKeyboard = new();
-				var p0 = (List<string>) players[0];
-				for (var i = 0; i < p0.Count; /* incremented in body */)
-				{
-					var buttonName = p0[i];
-					if (CategoryLabels.TryGetValue(buttonName, out var v) && v is CAT_KEYBOARD)
-					{
-						retroKeyboard.Add(buttonName);
-						p0.RemoveAt(i);
-					}
-					else
-					{
-						i++;
-					}
-				}
-				players.Add(retroKeyboard);
-				return players;
 			}
 		}
 

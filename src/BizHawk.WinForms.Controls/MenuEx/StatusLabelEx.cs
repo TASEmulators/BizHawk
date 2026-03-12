@@ -2,6 +2,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.WinForms.Controls
 {
 	public class StatusLabelEx : ToolStripStatusLabel
@@ -10,6 +12,7 @@ namespace BizHawk.WinForms.Controls
 		public new Size Size => base.Size;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new string Name => Guid.NewGuid().ToString();
+		public new string Name
+			=> Util.GetRandomUUIDStr();
 	}
 }

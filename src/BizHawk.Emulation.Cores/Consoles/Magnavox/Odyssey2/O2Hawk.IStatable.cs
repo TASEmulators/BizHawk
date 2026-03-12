@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(controller_state_1), ref controller_state_1);
 			ser.Sync(nameof(controller_state_2), ref controller_state_2);
 			ser.Sync(nameof(in_vblank), ref in_vblank);
-			ser.Sync(nameof(in_vblank_old), ref in_vblank_old);	
+			ser.Sync(nameof(in_vblank_old), ref in_vblank_old);
 			ser.Sync(nameof(vblank_rise), ref vblank_rise);
 			ser.Sync(nameof(ticker), ref ticker);
 

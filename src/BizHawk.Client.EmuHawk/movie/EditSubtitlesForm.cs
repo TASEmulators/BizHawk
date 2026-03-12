@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
 					var sub = new Subtitle();
-					
+
 					var c = SubGrid.Rows[i].Cells[0];
 					try { sub.Frame = int.Parse(c.Value.ToString()); }
 					catch { ShowError(i, 0); return; }
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new Subtitle();
 			}
-			
+
 			var sub = new Subtitle();
 
 			if (int.TryParse(SubGrid.Rows[index].Cells[0].Value.ToString(), out int frame))
@@ -171,12 +171,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				sub.Duration = duration;
 			}
-			
+
 			if (uint.TryParse(SubGrid.Rows[index].Cells[4].Value.ToString(), out uint color))
 			{
 				sub.Color = color;
 			}
-			
+
 			sub.Message = SubGrid.Rows[index].Cells[5].Value?.ToString() ?? "";
 
 			_selectedMovie.Subtitles.Add(sub);

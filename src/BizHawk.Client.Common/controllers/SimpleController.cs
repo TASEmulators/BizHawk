@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -13,31 +13,40 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition { get; }
 
-		public IInputDisplayGenerator InputDisplayGenerator { get; set; } = null;
+		protected Dictionary<string, int> Axes { get; private set; } = new();
 
-		protected WorkingDictionary<string, bool> Buttons { get; private set; } = new WorkingDictionary<string, bool>();
-		protected WorkingDictionary<string, int> Axes { get; private set; } = new WorkingDictionary<string, int>();
-		protected WorkingDictionary<string, int> HapticFeedback { get; private set; } = new WorkingDictionary<string, int>();
+		protected Dictionary<string, bool> Buttons { get; private set; } = new();
+
+		protected Dictionary<string, int> HapticFeedback { get; private set; } = new();
 
 		public SimpleController(ControllerDefinition definition)
 			=> Definition = definition;
 
 		public void Clear()
 		{
-			Buttons = new WorkingDictionary<string, bool>();
-			Axes = new WorkingDictionary<string, int>();
-			HapticFeedback = new WorkingDictionary<string, int>();
+			Buttons = new();
+			Axes = new();
+			HapticFeedback = new();
 		}
 
 		public bool this[string button]
 		{
-			get => Buttons[button];
+			get => Buttons.GetValueOrDefault(button);
 			set => Buttons[button] = value;
 		}
 
-		public virtual bool IsPressed(string button) => this[button];
+		public virtual bool IsPressed(string button)
+			=> Buttons.GetValueOrDefault(button);
 
-		public int AxisValue(string name) => Axes[name];
+		public int AxisValue(string name)
+			=> Axes.GetValueOrPut(name, NeutralValueForAxis);
+
+		private int NeutralValueForAxis(string name)
+#if false // always fails for host inputs, so if this was done in Debug builds then Debug builds would be unusable
+			=> Definition.Axes[name].Neutral; // throw if no such axis
+#else
+			=> Definition.Axes.TryGetValue(name, out var axisSpec) ? axisSpec.Neutral : default;
+#endif
 
 		public IReadOnlyCollection<(string Name, int Strength)> GetHapticsSnapshot()
 			=> HapticFeedback.Select(kvp => (kvp.Key, kvp.Value)).ToArray();

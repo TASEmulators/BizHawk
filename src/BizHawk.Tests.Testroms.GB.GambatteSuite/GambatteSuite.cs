@@ -9,9 +9,11 @@ using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 
+using ReflectionCacheGB = BizHawk.Tests.Testroms.GB.ReflectionCache_Biz_Tes_Tes_GB;
+
 using static BizHawk.Tests.Testroms.GB.GBHelper;
 
-namespace BizHawk.Tests.Testroms.GB.GambatteSuite
+namespace BizHawk.Tests.Testroms.GB
 {
 	[TestClass]
 	public sealed partial class GambatteSuite
@@ -70,7 +72,7 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 
 		private static readonly Regex HexStrFilenameRegex = new(@"_out[0-9A-F]+\.gbc?$");
 
-		private static readonly bool RomsArePresent = ReflectionCache.EmbeddedResourceList().Any(static s => s.StartsWith(SUITE_PREFIX));
+		private static readonly bool RomsArePresent = ReflectionCacheGB.EmbeddedResourceList().Any(static s => s.StartsWith(SUITE_PREFIX));
 
 		[ClassCleanup]
 		public static void AfterAll()
@@ -79,7 +81,8 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 		[ClassInitialize]
 		public static void BeforeAll(TestContext ctx)
 		{
-			if (!(GambatteHexStrTestCase.KnownFailures.IsSortedAsc() && GambatteRefImageTestCase.KnownFailures.IsSortedAsc())) throw new Exception(SUITE_ID + " known-failing testcase list must be sorted");
+			TestUtils.AssertKnownFailuresAreSorted(GambatteHexStrTestCase.KnownFailures, suiteID: nameof(GambatteHexStrTestCase));
+			TestUtils.AssertKnownFailuresAreSorted(GambatteRefImageTestCase.KnownFailures, suiteID: nameof(GambatteRefImageTestCase));
 			TestUtils.PrepareDBAndOutput(SUITE_ID);
 		}
 
@@ -102,7 +105,7 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 					endIndex = i;
 				}
 			}
-			var allFilenames = ReflectionCache.EmbeddedResourceList(SUITE_PREFIX).ToList();
+			var allFilenames = ReflectionCacheGB.EmbeddedResourceList(SUITE_PREFIX).ToList();
 			List<GambatteRefImageTestCase> refImageCases = new();
 			foreach (var filename in allFilenames.Where(static item => item.EndsWith(".png")).ToList())
 			{
@@ -133,8 +136,8 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 			return (refImageCases, hexStrCases);
 		}
 
-		[DataTestMethod]
 		[GambatteHexStrTestData]
+		[TestMethod]
 		public void RunGambatteHexStrTest(GambatteHexStrTestCase testCase)
 		{
 			static bool GlyphMatches(Bitmap b, int xOffset, byte v)
@@ -157,7 +160,7 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 			var caseStr = testCase.DisplayName();
 			TestUtils.ShortCircuitKnownFailure(caseStr, GambatteHexStrTestCase.KnownFailures, out var knownFail);
 			var actualUnnormalised = DummyFrontend.RunAndScreenshot(
-				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCache.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
+				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCacheGB.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
 				static fe => fe.FrameAdvanceBy(11)).AsBitmap();
 			var glyphCount = testCase.ExpectedValue.Length;
 			var screenshotMatches = true;
@@ -183,28 +186,28 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 			{
 				case TestUtils.TestSuccessState.ExpectedFailure:
 					Assert.Inconclusive("expected failure, verified");
-					break;
+					return;
 				case TestUtils.TestSuccessState.Failure:
 					Assert.Fail("screenshot contains incorrect value");
-					break;
+					return;
 				case TestUtils.TestSuccessState.UnexpectedSuccess:
 					Assert.Fail("screenshot contains correct value unexpectedly (this is a good thing)");
-					break;
+					return;
 			}
 		}
 
-		[DataTestMethod]
 		[GambatteRefImageTestData]
+		[TestMethod]
 		public void RunGambatteRefImageTest(GambatteRefImageTestCase testCase)
 		{
 			TestUtils.ShortCircuitMissingRom(RomsArePresent);
 			var caseStr = testCase.DisplayName();
 			TestUtils.ShortCircuitKnownFailure(caseStr, GambatteRefImageTestCase.KnownFailures, out var knownFail);
 			var actualUnnormalised = DummyFrontend.RunAndScreenshot(
-				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCache.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
+				InitGBCore(testCase.Setup, testCase.RomEmbedPath.SubstringBeforeLast('.'), ReflectionCacheGB.EmbeddedResourceStream(testCase.RomEmbedPath).ReadAllBytes()),
 				static fe => fe.FrameAdvanceBy(14));
 			var state = GBScreenshotsEqual(
-				ReflectionCache.EmbeddedResourceStream(testCase.ExpectEmbedPath),
+				ReflectionCacheGB.EmbeddedResourceStream(testCase.ExpectEmbedPath),
 				actualUnnormalised,
 				knownFail,
 				testCase.Setup,
@@ -213,13 +216,13 @@ namespace BizHawk.Tests.Testroms.GB.GambatteSuite
 			{
 				case TestUtils.TestSuccessState.ExpectedFailure:
 					Assert.Inconclusive("expected failure, verified");
-					break;
+					return;
 				case TestUtils.TestSuccessState.Failure:
 					Assert.Fail("expected and actual screenshots differ");
-					break;
+					return;
 				case TestUtils.TestSuccessState.UnexpectedSuccess:
 					Assert.Fail("expected and actual screenshots matched unexpectedly (this is a good thing)");
-					break;
+					return;
 			}
 		}
 	}

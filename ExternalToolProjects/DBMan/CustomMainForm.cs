@@ -68,38 +68,37 @@ namespace BizHawk.DBManTool
 						Controls = {
 							btnDiscHash,
 							CreateArgsLabel("DBMan.exe --dischash"),
-							tbDiscHashArgs
-						}
+							tbDiscHashArgs,
+						},
 					},
 					new FlowLayoutPanel {
 						AutoSize = true,
 						Controls = {
 							btnPSXDB,
 							CreateArgsLabel("DBMan.exe --psxdb"),
-							tbPSXDBArgs
-						}
+							tbPSXDBArgs,
+						},
 					},
 					new FlowLayoutPanel {
 						AutoSize = true,
 						Controls = {
 							btnDBMan,
-							CreateArgsLabel("DBMan.exe --dbman")
+							CreateArgsLabel("DBMan.exe --dbman"),
 						},
-						Enabled = !OSTailoredCode.IsUnixHost
+						Enabled = !OSTailoredCode.IsUnixHost,
 					},
 					new FlowLayoutPanel {
 						AutoSize = true,
 						Controls = {
 							btnDiscCMP,
 							CreateArgsLabel("DBMan.exe --disccmp"),
-							tbDiscCMPArgs
+							tbDiscCMPArgs,
 						},
-						Enabled = false
-					}
-					
+						Enabled = false,
+					},
 				},
 				Dock = DockStyle.Fill,
-				FlowDirection = FlowDirection.TopDown
+				FlowDirection = FlowDirection.TopDown,
 			});
 			ResumeLayout();
 		}

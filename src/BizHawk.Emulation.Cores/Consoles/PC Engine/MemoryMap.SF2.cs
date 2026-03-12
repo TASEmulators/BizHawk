@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public partial class PCEngine
+	public sealed partial class PCEngine
 	{
 		// Street Fighter 2 was a 20-megabit HuCard. The PCE has a maximum 8-megabit addressable ROM space.
 		// Therefore SF2 had a special mapper to make this work.

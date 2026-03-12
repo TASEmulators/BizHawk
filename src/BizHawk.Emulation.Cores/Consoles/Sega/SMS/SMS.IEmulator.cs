@@ -142,17 +142,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void Dispose()
 		{
-			if (BlipL != null)
-			{
-				BlipL.Dispose();
-				BlipL = null;
-			}
+			BlipL?.Dispose();
+			BlipL = null;
 
-			if (BlipR != null)
-			{
-				BlipR.Dispose();
-				BlipR = null;
-			}
+			BlipR?.Dispose();
+			BlipR = null;
 		}
 	}
 }

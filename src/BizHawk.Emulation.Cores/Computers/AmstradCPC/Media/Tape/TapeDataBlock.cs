@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
         /// Its basically tape information
         /// </summary>
-        private byte[][] _tapeDescriptionData; 
+        private byte[][] _tapeDescriptionData;
 
         /// <summary>
         /// Returns the Tape Description Data in a human readable format

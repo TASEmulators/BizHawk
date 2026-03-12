@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	-----
 
 	Apparently, this was only used on one cart: Stella's Stocking.
-	Similar to EF, there are 16 4K banks, for a total of up to 64K of ROM.  
+	Similar to EF, there are 16 4K banks, for a total of up to 64K of ROM.
 
 	The addresses to select banks is below the ROM area, however.
 
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	last two banks are selected (banks 14 or 15).  In that case, the new bank is:
 
 	111n   i.e. accessing 0000 will select bank 14 (Eh, 1110b) while accessing 0040
-	will select bank 15 (Fh, 1111b).  This allows for bankswitching by accessing 
+	will select bank 15 (Fh, 1111b).  This allows for bankswitching by accessing
 	TIA registers at 00-3F or 40-7F without incurring any overhead.
 	*/
 
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				return base.ReadMemory(addr);
 			}
-			
+
 			return Core.Rom[(_romBank2K << 12) + (addr & 0xFFF)];
 		}
 

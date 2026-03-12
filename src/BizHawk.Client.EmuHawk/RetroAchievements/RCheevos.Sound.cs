@@ -22,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly MemoryStream _unlockSound = ReadWavFile( "overlay/unlock.wav");
 		private static readonly MemoryStream _lboardStartSound = ReadWavFile("overlay/lb.wav");
 		private static readonly MemoryStream _lboardFailedSound = ReadWavFile("overlay/lbcancel.wav");
+		private static readonly MemoryStream _lboardCompleteSound = ReadWavFile("overlay/lbcomplete.wav");
 		private static readonly MemoryStream _infoSound = ReadWavFile("overlay/info.wav");
 
 		private readonly Action<Stream> _playWavFileCallback;

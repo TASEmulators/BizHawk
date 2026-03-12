@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES
+	public sealed partial class NES
 	{
 		public MemoryDomainList _memoryDomains;
 		private bool _memoryDomainsSetup = false;

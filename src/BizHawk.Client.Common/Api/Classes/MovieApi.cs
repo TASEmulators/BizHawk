@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -50,11 +49,10 @@ namespace BizHawk.Client.Common
 				return string.Empty;
 			}
 
-			var lg = _movieSession.Movie.LogGeneratorInstance(
-				_movieSession.Movie.GetInputState(frame));
-			return lg.GenerateLogEntry();
+			return Bk2LogEntryGenerator.GenerateLogEntry(_movieSession.Movie.GetInputState(frame));
 		}
 
+		// TODO: Change return type to FileWriteResult
 		public void Save(string filename)
 		{
 			if (_movieSession.Movie.NotActive())
@@ -72,7 +70,8 @@ namespace BizHawk.Client.Common
 				}
 				_movieSession.Movie.Filename = filename;
 			}
-			_movieSession.Movie.Save();
+			FileWriteResult result = _movieSession.Movie.Save();
+			if (result.Exception != null) throw result.Exception;
 		}
 
 		public IReadOnlyDictionary<string, string> GetHeader()

@@ -2,16 +2,27 @@
 {
 	public enum ComparisonOperator
 	{
-		Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy
+		Equal,
+		GreaterThan,
+		GreaterThanEqual,
+		LessThan,
+		LessThanEqual,
+		NotEqual,
+		DifferentBy,
 	}
 
 	public enum Compare
 	{
-		Previous, SpecificValue, SpecificAddress, Changes, Difference
+		Previous,
+		SpecificValue,
+		SpecificAddress,
+		Changes,
+		Difference,
 	}
 
 	public enum SearchMode
 	{
-		Fast, Detailed
+		Fast,
+		Detailed,
 	}
 }

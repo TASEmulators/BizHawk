@@ -8,9 +8,9 @@ namespace BizHawk.Bizware.Graphics
 	public class PipelineCompileArgs
 	{
 		/// <summary>
-		/// Defines an item within a vertex layout
-		/// This is currently restricted to to either 4 byte floats, or a 32 bit unsigned normalized integer type
-		/// If this is a 32 bit unsigned normalized type, it must have 4 components
+		/// Defines an item within a vertex layout.
+		/// This is currently restricted to either 4 byte floats, or a 32 bit unsigned normalized integer type.
+		/// If this is a 32 bit unsigned normalized type, it must have 4 components.
 		/// </summary>
 		/// <param name="Name">Name of the item</param>
 		/// <param name="Components">Number of components in the item (e.g. float2 has 2 components). Only 1-4 components is valid (unless Integer is true, then only 4 is valid)</param>

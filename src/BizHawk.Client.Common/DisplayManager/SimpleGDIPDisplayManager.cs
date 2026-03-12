@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 				new GDIPlusGuiRenderer(glImpl))
 			{}
 
-		public SimpleGDIPDisplayManager(Config config, IEmulator emuCore, Func<(int Width, int Height)> getVirtualSize)
+		public SimpleGDIPDisplayManager(Config config, IEmulator emuCore)
 			: this(config, emuCore, new IGL_GDIPlus()) {}
 
 		protected override void ActivateGraphicsControlContext() {}

@@ -10,12 +10,6 @@ namespace BizHawk.Client.Common
 		void SetFrom(IController source);
 
 		/// <summary>
-		/// Latches to the given <see cref="IStickyAdapter" />
-		/// For buttons it latches autohold state, for axes it latches neutral value.
-		/// </summary>
-		void SetFromSticky(IStickyAdapter controller);
-
-		/// <summary>
 		/// Sets the controller to the state represented by the given mnemonic string
 		/// </summary>
 		void SetFromMnemonic(string mnemonic);

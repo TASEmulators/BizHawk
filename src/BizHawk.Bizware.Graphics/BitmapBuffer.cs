@@ -1,12 +1,16 @@
 ﻿// TODO - introduce Trim for ArtManager
 // TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
 
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common.CollectionExtensions;
 
 using SDGraphics = System.Drawing.Graphics;
 
@@ -34,6 +38,11 @@ namespace BizHawk.Bizware.Graphics
 		private GCHandle CurrLockHandle;
 		private BitmapData CurrLock;
 
+		/// <summary>same as <see cref="Pixels"/> (<see cref="PixelFormat.Format32bppArgb">A8R8G8B8</see>)</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Span<int> AsSpan()
+			=> Pixels;
+
 		/// <exception cref="InvalidOperationException">already locked</exception>
 		/// <remarks>TODO add read/write semantic, for wraps</remarks>
 		public BitmapData LockBits()
@@ -53,7 +62,7 @@ namespace BizHawk.Bizware.Graphics
 				Height = Height,
 				Width = Width,
 				Stride = Width * 4,
-				Scan0 = CurrLockHandle.AddrOfPinnedObject()
+				Scan0 = CurrLockHandle.AddrOfPinnedObject(),
 			};
 
 			return CurrLock;
@@ -61,7 +70,7 @@ namespace BizHawk.Bizware.Graphics
 
 		public void UnlockBits(BitmapData bmpd)
 		{
-			Debug.Assert(CurrLock == bmpd);
+			Debug.Assert(CurrLock == bmpd, "must pass in the same object obtained from " + nameof(LockBits));
 
 			if (WrappedBitmap != null)
 			{
@@ -137,7 +146,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			UnlockBits(bmpdata);
-		
+
 			Pixels = newPixels;
 		}
 
@@ -213,19 +222,24 @@ namespace BizHawk.Bizware.Graphics
 				return new(0, 0);
 			}
 
-			var w = maxx - minx + 1;
-			var h = maxy - miny + 1;
-			var bbRet = new BitmapBuffer(w, h);
-			for (var y = 0; y < h; y++)
-			{
-				for (var x = 0; x < w; x++)
-				{
-					bbRet.SetPixel(x, y, GetPixel(x + minx, y + miny));
-				}
-			}
-
 			xofs = minx;
 			yofs = miny;
+			return Copy(region: new(x: minx, y: miny, width: maxx - minx + 1, height: maxy - miny + 1));
+		}
+
+		public BitmapBuffer Copy()
+			=> new(width: Width, height: Height, pixels: AsSpan().ToArray());
+
+		/// <remarks>TODO surely there's a better implementation --yoshi</remarks>
+		public BitmapBuffer Copy(Rectangle region)
+		{
+			BitmapBuffer bbRet = new(region.Size);
+			var miny = region.Top;
+			var minx = region.Left;
+			for (int y = 0, h = region.Height; y < h; y++) for (int x = 0, w = region.Width; x < w; x++)
+			{
+				bbRet.SetPixel(x, y, GetPixel(x + minx, y + miny));
+			}
 			return bbRet;
 		}
 
@@ -253,7 +267,7 @@ namespace BizHawk.Bizware.Graphics
 			Width = widthRound;
 			Height = heightRound;
 		}
-		
+
 		/// <summary>
 		/// Creates a BitmapBuffer image from the specified filename
 		/// </summary>
@@ -363,7 +377,7 @@ namespace BizHawk.Bizware.Graphics
 								if (srcPixel != 0)
 								{
 									var color = palette[srcPixel].ToArgb();
-									
+
 									// make transparent pixels turn into black to avoid filtering issues and other annoying issues with stray junk in transparent pixels.
 									// (yes, we can have palette entries with transparency in them (PNGs support this, annoyingly))
 									if (cleanup)
@@ -455,8 +469,13 @@ namespace BizHawk.Bizware.Graphics
 			r = (r * a) >> 8;
 			g = (g * a) >> 8;
 			b = (b * a) >> 8;
-			srcVal = b | (g << 8) | (r << 16) | (a << 24);
-			return srcVal;
+			return BinaryPrimitives.ReadInt32BigEndian(unchecked(stackalloc byte[]
+			{
+				(byte) a,
+				(byte) r,
+				(byte) g,
+				(byte) b,
+			}));
 		}
 
 		/// <summary>
@@ -535,6 +554,8 @@ namespace BizHawk.Bizware.Graphics
 			return candidate;
 		}
 
+		public bool SequenceEqual(BitmapBuffer other)
+			=> Width == other.Width/* && Height == other.Height*/ && AsSpan().SequenceEqual(other.AsSpan());
 
 		/// <summary>
 		/// Dumps this BitmapBuffer to a new System.Drawing.Bitmap
@@ -593,7 +614,5 @@ namespace BizHawk.Bizware.Graphics
 
 			bmp.UnlockBits(bmpdata);
 		}
-
 	}
-
 }

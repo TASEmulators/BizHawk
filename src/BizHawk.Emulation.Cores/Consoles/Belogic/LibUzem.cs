@@ -1,6 +1,7 @@
-﻿using BizHawk.BizInvoke;
-using BizHawk.Emulation.Cores.Waterbox;
 using System.Runtime.InteropServices;
+
+using BizHawk.BizInvoke;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Belogic
 {

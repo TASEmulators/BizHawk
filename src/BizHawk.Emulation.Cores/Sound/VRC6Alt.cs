@@ -291,6 +291,5 @@ namespace BizHawk.Emulation.Cores.Components
 				}
 			}
 		}
-
 	}
 }

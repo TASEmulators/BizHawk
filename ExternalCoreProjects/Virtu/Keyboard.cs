@@ -141,7 +141,9 @@ namespace Jellyfish.Virtu
 		Reset = 2305843009213693952UL,
 	}
 
+#pragma warning disable MA0104 // unlikely to conflict with System.Windows.Input.Keyboard
 	public sealed class Keyboard
+#pragma warning restore MA0104
 	{
 		static Keyboard()
 		{
@@ -268,7 +270,7 @@ namespace Jellyfish.Virtu
 			bool caps = keys.HasFlag(Keys.CapsLock);
 			if (caps && !_currentCapsLockState) // leading edge: toggle CapsLock
 			{
-				CapsActive ^= true;
+				CapsActive = !CapsActive;
 			}
 			_currentCapsLockState = caps;
 			shift ^= CapsActive;
@@ -330,13 +332,19 @@ namespace Jellyfish.Virtu
 			ser.Sync("Strobe", ref _strobe);
 			ser.Sync("CapsActive", ref _capsActive);
 			ser.Sync(nameof(_currentCapsLockState), ref _currentCapsLockState);
+			ser.Sync(nameof(_currentKeyPressed), ref _currentKeyPressed);
 			ser.Sync(nameof(_framesToRepeat), ref _framesToRepeat);
+			ser.Sync(nameof(_isAnyKeyDown), ref _isAnyKeyDown);
 		}
 
 		/// <summary>
 		/// true if any of the 56 basic keys are pressed
 		/// </summary>
-		public bool IsAnyKeyDown { get; private set; }
+		public bool IsAnyKeyDown
+		{
+			get => _isAnyKeyDown;
+			private set => _isAnyKeyDown = value;
+		}
 
 		/// <summary>
 		/// the currently latched key; 7 bits.
@@ -355,6 +363,7 @@ namespace Jellyfish.Virtu
 
 		private int _latch;
 		private bool _strobe;
+		private bool _isAnyKeyDown;
 
 		/// <summary>
 		/// true if caps lock is active

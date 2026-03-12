@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public override DiskType DiskFormatType => DiskType.CPC;
 
 		/// <summary>
-		/// Attempts to parse incoming disk data 
+		/// Attempts to parse incoming disk data
 		/// </summary>
 		/// <returns>
 		/// TRUE:   disk parsed
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -55,17 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				throw new NotImplementedException(sbm.ToString());
 			}
 
-			if (DiskHeader.NumberOfTracks > 42)
-			{
-				StringBuilder sbm = new StringBuilder();
-				sbm.AppendLine();
-				sbm.AppendLine();
-				sbm.AppendLine("The detected disk is an " + DiskHeader.NumberOfTracks + " track disk image.");
-				sbm.AppendLine("This is currently incompatible with the emulated +3 disk drive (42 tracks).");
-				sbm.AppendLine("Likely the disk image is an 80 track betadisk or opus image, the drives and controllers for which are not currently emulated in ZXHawk");
-				throw new NotImplementedException(sbm.ToString());
-			}
-
 			// standard CPC format all track sizes are the same in the image
 			for (int i = 0; i < DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides; i++)
 			{
@@ -81,8 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// check for unformatted track
 				if (DiskHeader.TrackSizes[i] == 0)
 				{
-					DiskTracks[i] = new Track();
-					DiskTracks[i].Sectors = new Sector[0];
+					DiskTracks[i] = new() { Sectors = Array.Empty<Sector>() };
 					continue;
 				}
 
@@ -169,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			// look for standard magic string
 			string ident = Encoding.ASCII.GetString(data, 0, 16);
-			if (!ident.Contains("MV - CPC", StringComparison.OrdinalIgnoreCase))
+			if (!ident.ContainsIgnoreCase("MV - CPC"))
 			{
 				// incorrect format
 				return false;
@@ -211,10 +199,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					Array.Copy(data, mPos, S1, s1Pos, trkSize);
 					s1Pos += trkSize;
 				}
-				else
-				{
-
-				}
 
 				mPos += trkSize;
 			}
@@ -246,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(DirtyData), ref DirtyData);
 			if (DirtyData)
 			{
-
+				//TODO
 			}
 
 			ser.EndSection();

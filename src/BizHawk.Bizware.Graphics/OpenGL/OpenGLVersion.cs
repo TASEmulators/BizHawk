@@ -32,8 +32,9 @@ namespace BizHawk.Bizware.Graphics
 						return PackGLVersion(major, minor) >= PackGLVersion(requestedMajor, requestedMinor);
 					}
 				}
-				catch
+				catch (Exception ex)
 				{
+					Console.Error.WriteLine($"OpenGL check for version {requestedMajor}.{requestedMinor} failed, underlying exception: {ex}");
 					return false;
 				}
 			}

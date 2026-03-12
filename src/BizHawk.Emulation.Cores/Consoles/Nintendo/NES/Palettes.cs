@@ -527,6 +527,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{0<<5, 7<<5, 7<<5},
 			{1<<5, 2<<5, 0<<5},
 		};
-
 	} //class palettes
 } //namespace

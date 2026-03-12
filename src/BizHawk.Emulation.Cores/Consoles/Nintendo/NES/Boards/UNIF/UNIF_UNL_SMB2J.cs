@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr)
 			{
 				case 0x4022:
-					if (Rom.Length > 0x10000) { prg = (value & 0x01) << 2; }					
+					if (Rom.Length > 0x10000) { prg = (value & 0x01) << 2; }
 					break;
 
 				case 0x4122:
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irqenable = false;
 					IrqSignal = true;
-				}				
+				}
 			}
 		}
 

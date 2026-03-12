@@ -1,5 +1,5 @@
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 #include <emu.hpp>
 #include <jaffarCommon/file.hpp>
 #include <jaffarCommon/serializers/contiguous.hpp>
@@ -21,10 +21,18 @@ QN_EXPORT quickerNES::Emu *qn_new()
 {
 	// Zero intialized emulator to make super sure no side effects from previous data remains
 	auto ptr = calloc(1, sizeof(quickerNES::Emu));
+	if (!ptr) return NULL;
 	auto e = new (ptr) quickerNES::Emu();
 
 	// Creating video buffer
 	auto videoBuffer = (uint8_t *) malloc(VIDEO_BUFFER_SIZE);
+	if (!videoBuffer)
+	{
+		e->~Emu();
+		free(e);
+		return NULL;
+	}
+
 	e->set_pixels(videoBuffer, DEFAULT_WIDTH + 8);
 
 	return e;
@@ -37,10 +45,9 @@ QN_EXPORT void qn_delete(quickerNES::Emu *e)
 	free(e);
 }
 
-QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const void *data, int length)
+QN_EXPORT const char *qn_loadines(quickerNES::Emu *e, const uint8_t *data, int length)
 {
-	e->load_ines((const uint8_t*)data);
-	return 0;
+	return e->load_ines(data, length);
 }
 
 QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
@@ -50,9 +57,45 @@ QN_EXPORT const char *qn_set_sample_rate(quickerNES::Emu *e, int rate)
 	return ret;
 }
 
-QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, int pad1, int pad2)
+
+QN_EXPORT const char *qn_emulate_frame(quickerNES::Emu *e, uint32_t pad1, uint32_t pad2, uint8_t arkanoidPosition, uint8_t arkanoidFire, int controllerType)
 {
-	return e->emulate_frame((uint32_t)pad1, (uint32_t)pad2);
+	e->setControllerType((quickerNES::Core::controllerType_t)controllerType);
+
+	uint32_t arkanoidLatch = 0;
+
+	if ((quickerNES::Core::controllerType_t) controllerType == quickerNES::Core::controllerType_t::arkanoidNES_t ||
+	    (quickerNES::Core::controllerType_t) controllerType == quickerNES::Core::controllerType_t::arkanoidFamicom_t)
+	{
+        e->setControllerType((quickerNES::Core::controllerType_t) controllerType);
+
+        // This is where we calculate the stream of bits required by the NES / Famicom to correctly interpret the Arkanoid potentiometer signal
+		// The logic and procedure were created based on the information in https://www.nesdev.org/wiki/Arkanoid_controller
+		// - The arkanoidPosition variable is the intended value 
+		// - The centeringPotValue is a calibration parameter. The arkanoidPosition value is passed to the console as a relative value to this. 
+		//   This can be change tod calibrate a misaligned physical potentiomenter (not relevant in emulation)
+		//   The minumum / maximum ranges for this values are (0x0D-0xAD) to (0x5C-0xFC). NesHawk seems to be calibrated at: 0xAB (171).
+
+		// The value of centeringPotValue is calibrated to coincide exactly with that of the NesHawk emulator
+		uint8_t centeringPotValue = 0xAB;
+
+		// Procedure, as expected by the console:
+		// 1) Obtain the relative value of arkanoidPosition from the centeringPotValue
+		uint8_t relativePosition = centeringPotValue - arkanoidPosition;
+
+		// 2) The result is bit-inverted (required by the console)
+		//    The easiest solution is simply to do this per bit
+		if ((relativePosition & 128) > 0) arkanoidLatch += 1;
+		if ((relativePosition & 64) > 0)  arkanoidLatch += 2;
+		if ((relativePosition & 32) > 0)  arkanoidLatch += 4;
+		if ((relativePosition & 16) > 0)  arkanoidLatch += 8;
+		if ((relativePosition & 8) > 0)   arkanoidLatch += 16;
+		if ((relativePosition & 4) > 0)   arkanoidLatch += 32;
+		if ((relativePosition & 2) > 0)   arkanoidLatch += 64;
+		if ((relativePosition & 1) > 0)   arkanoidLatch += 128;
+	}
+
+	return e->emulate_frame(pad1, pad2, arkanoidLatch, arkanoidFire);
 }
 
 QN_EXPORT void qn_blit(quickerNES::Emu *e, int32_t *dest, const int32_t *colors, int cropleft, int croptop, int cropright, int cropbottom)
@@ -157,7 +200,7 @@ QN_EXPORT const char *qn_battery_ram_clear(quickerNES::Emu *e)
 {
 	int size = 0;
 	qn_battery_ram_size(e, &size);
-	std::memset(e->high_mem(), 0xff, size);
+	memset(e->high_mem(), 0xff, size);
 	return 0;
 }
 

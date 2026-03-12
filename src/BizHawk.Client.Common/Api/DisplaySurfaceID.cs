@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			"emu" => DisplaySurfaceID.EmuCore,
 			"emucore" => DisplaySurfaceID.EmuCore,
 			"native" => DisplaySurfaceID.Client,
-			_ => throw new ArgumentException(message: $"{str} is not the name of a display surface", paramName: nameof(str))
+			_ => throw new ArgumentException(paramName: nameof(str), message: $"{str} is not the name of a display surface"),
 		};
 #pragma warning restore BHI1005
 
@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 		{
 			DisplaySurfaceID.EmuCore => "emucore",
 			DisplaySurfaceID.Client => "client",
-			_ => throw new InvalidOperationException()
+			_ => throw new InvalidOperationException(),
 		};
 	}
 }

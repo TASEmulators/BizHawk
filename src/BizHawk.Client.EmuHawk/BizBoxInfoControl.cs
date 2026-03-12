@@ -1,4 +1,6 @@
 ﻿using System.Windows.Forms;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -11,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			CoreNameLabel.Text = attributes.CoreName;
-			
+
 			if (!string.IsNullOrEmpty(attributes.Author))
 			{
 				CoreAuthorLabel.Text = $"authors: {attributes.Author}";
@@ -23,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (attributes is PortedCoreAttribute ported)
 			{
-				CorePortedLabel.Text = " (Ported)";
+				CorePortedLabel.Text = "(Ported)";
 				_url = ported.PortedUrl;
 				CoreUrlLink.Text = ported.PortedVersion;
 				CoreUrlLink.Visible = true;
@@ -33,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CoreUrlLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			CoreUrlLink.LinkVisited = true;
-			System.Diagnostics.Process.Start(_url);
+			Util.OpenUrlExternal(_url);
 		}
 	}
 }

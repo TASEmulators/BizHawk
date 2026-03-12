@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void FinalizeHeaders()
 		{
-			if (_numBytes + 36 >= 0x100000000)
+			if (_numBytes + 36 >= 0x1_0000_0000)
 			{
 				// passed 4G limit, nothing to be done
 				return;

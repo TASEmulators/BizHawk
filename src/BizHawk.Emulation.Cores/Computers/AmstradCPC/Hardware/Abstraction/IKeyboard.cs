@@ -26,7 +26,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Represents the spectrum key state
 		/// </summary>
+#pragma warning disable CA1721 // method name is prop name prefixed with "Get"
 		bool[] KeyStatus { get; set; }
+#pragma warning restore CA1721
 
 		/// <summary>
 		/// The currently selected line

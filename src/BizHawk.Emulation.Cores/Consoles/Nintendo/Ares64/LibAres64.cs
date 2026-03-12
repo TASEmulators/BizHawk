@@ -106,6 +106,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 			public long Gb3RomLen;
 			public IntPtr Gb4RomData;
 			public long Gb4RomLen;
+			public IntPtr SdData;
+			public long SdLen;
 		}
 
 		[BizImport(CC)]
@@ -113,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 
 		[BizImport(CC)]
 		public abstract bool GetRumbleStatus(int num);
-		
+
 		[BizImport(CC)]
 		public abstract void PostLoadState();
 

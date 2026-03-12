@@ -39,6 +39,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		Mode2_2336, //CDROM-XA Mode2 Data (could contain form 1 or form 2)
 		Mode2_2352, //CDROM-XA Mode2 Data (but there's no reason to distinguish this from Mode1_2352 other than to alert us that the entire session should be XA
 		CDI_2336, //CDI Mode2 Data
-		CDI_2352 //CDI Mode2 Data
+		CDI_2352, //CDI Mode2 Data
 	}
 }

@@ -27,6 +27,6 @@
 		/// Special case used for a separator in ram tools
 		/// Use this for <see cref="SeparatorWatch"/>
 		/// </summary>
-		Separator = 0
+		Separator = 0,
 	}
 }

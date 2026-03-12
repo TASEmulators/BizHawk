@@ -207,13 +207,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 						irqcountwidth = 16;
 					break;
-					
+
 				case 0xF003:
 				// sound chip µPD7756C
 					break;
 			}
-			
-			
 		}
 
 		public override void ClockCpu()

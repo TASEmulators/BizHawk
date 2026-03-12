@@ -6,7 +6,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public interface IBSNESForGfxDebugger : ISpecializedEmulatorService
 	{
+#pragma warning disable CA1715 // breaks IInterface convention
 		public interface SettingsObj
+#pragma warning restore CA1715
 		{
 			bool ShowBG1_0 { get; set; }
 

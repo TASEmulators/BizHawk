@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // https://faqwiki.zxnet.co.uk/wiki/ZX_Spectrum_128
                 // HAL bugs
-                // Reads from port 0x7ffd cause a crash, as the 128's HAL10H8 chip does not distinguish between reads and writes to this port, 
+                // Reads from port 0x7ffd cause a crash, as the 128's HAL10H8 chip does not distinguish between reads and writes to this port,
                 // resulting in a floating data bus being used to set the paging registers.
 
                 // -asni (2018-06-08) - need this to pass the final portread tests from fusetest.tap
@@ -155,8 +155,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				TapeDevice.WritePort(port, value);
 
                 // Tape
-                //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);                
-            }    
+                //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
+            }
         }
     }
 }

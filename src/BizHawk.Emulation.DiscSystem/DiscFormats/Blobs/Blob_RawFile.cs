@@ -19,13 +19,13 @@ namespace BizHawk.Emulation.DiscSystem
 		public readonly long Offset = 0;
 
 		private BufferedStream fs;
-		
+
 		public void Dispose()
 		{
 			fs?.Dispose();
 			fs = null;
 		}
-		
+
 		public int Read(long byte_pos, byte[] buffer, int offset, int count)
 		{
 			//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.DiscSystem
 				fs.Position = target;
 			return fs.Read(buffer, offset, count);
 		}
-		
+
 		public long Length { get; private set; }
 	}
 }

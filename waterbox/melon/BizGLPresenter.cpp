@@ -1,7 +1,7 @@
 #include "NDS.h"
 #include "GPU.h"
 #include "OpenGLSupport.h"
-#include "frontend/FrontendUtil.h"
+#include "frontend/ScreenLayout.h"
 
 #include "BizGLPresenter.h"
 
@@ -9,15 +9,7 @@
 
 // half of this is taken from melonDS/src/frontend/qt_sdl/main.cpp
 
-namespace Frontend
-{
-	extern float TouchMtx[6];
-	extern float HybTouchMtx[6];
-	extern bool BotEnable;
-	extern bool HybEnable;
-	extern int HybScreen;
-	extern void M23_Transform(float* m, float& x, float& y);
-}
+extern void M23_Transform(float* m, float& x, float& y);
 
 namespace GLPresenter
 {
@@ -67,6 +59,8 @@ void main()
 }
 )";
 
+ECL_INVISIBLE static ScreenLayout* screenLayout;
+
 ECL_INVISIBLE static GLuint ScreenShaderProgram;
 ECL_INVISIBLE static GLuint ScreenShaderTransformULoc, ScreenShaderSizeULoc;
 
@@ -86,7 +80,10 @@ ECL_INVISIBLE static GLuint OutputPboID;
 
 void Init(u32 scale)
 {
-	Frontend::OpenGL::CompileVertexFragmentProgram(
+	screenLayout = alloc_invisible<ScreenLayout>(1);
+	new (screenLayout) ScreenLayout();
+
+	melonDS::OpenGL::CompileVertexFragmentProgram(
 		ScreenShaderProgram,
 		ScreenVS, ScreenFS,
 		"GLPresenterShader",
@@ -219,45 +216,45 @@ ECL_EXPORT void ReadFrameBuffer(u32* buffer)
 
 struct ScreenSettings
 {
-	Frontend::ScreenLayout ScreenLayout;
-	Frontend::ScreenRotation ScreenRotation;
-	Frontend::ScreenSizing ScreenSizing;
+	ScreenLayoutType ScreenLayoutType;
+	ScreenRotation ScreenRotation;
+	ScreenSizing ScreenSizing;
 	int ScreenGap;
 	bool ScreenSwap;
 };
 
 static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u32 scale)
 {
-	bool isHori = screenSettings->ScreenRotation == Frontend::screenRot_90Deg
-		|| screenSettings->ScreenRotation == Frontend::screenRot_270Deg;
+	bool isHori = screenSettings->ScreenRotation == screenRot_90Deg
+		|| screenSettings->ScreenRotation == screenRot_270Deg;
 	int gap = screenSettings->ScreenGap * scale;
 
 	int w = NDS_WIDTH * scale;
 	int h = (NDS_HEIGHT / 2) * scale;
 
-	if (screenSettings->ScreenSizing == Frontend::screenSizing_TopOnly
-		|| screenSettings->ScreenSizing == Frontend::screenSizing_BotOnly)
+	if (screenSettings->ScreenSizing == screenSizing_TopOnly
+		|| screenSettings->ScreenSizing == screenSizing_BotOnly)
 	{
 		return isHori
 			? std::make_pair(h, w)
 			: std::make_pair(w, h);
 	}
 
-	switch (screenSettings->ScreenLayout)
+	switch (screenSettings->ScreenLayoutType)
 	{
-		case Frontend::screenLayout_Natural:
+		case screenLayout_Natural:
 			return isHori
 				? std::make_pair(h * 2 + gap, w)
 				: std::make_pair(w, h * 2 + gap);
-		case Frontend::screenLayout_Vertical:
+		case screenLayout_Vertical:
 			return isHori
 				? std::make_pair(h, w * 2 + gap)
 				: std::make_pair(w, h * 2 + gap);
-		case Frontend::screenLayout_Horizontal:
+		case screenLayout_Horizontal:
 			return isHori
 				? std::make_pair(h * 2 + gap, w)
 				: std::make_pair(w * 2 + gap, h);
-		case Frontend::screenLayout_Hybrid:
+		case screenLayout_Hybrid:
 			return isHori
 				? std::make_pair(h * 2 + gap, w * 3 + (int)ceil(gap * 4 / 3.0))
 				: std::make_pair(w * 3 + (int)ceil(gap * 4 / 3.0), h * 2 + gap);
@@ -266,7 +263,7 @@ static std::pair<u32, u32> GetScreenSize(const ScreenSettings* screenSettings, u
 	}
 }
 
-ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* screenSettings, u32* width, u32* height, u32* vwidth, u32* vheight)
+ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* screenSettings, u32* width, u32* height)
 {
 	auto [w, h] = GetScreenSize(screenSettings, GLScale);
 	if (w != Width || h != Height)
@@ -291,8 +288,8 @@ ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* scree
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	}
 
-	Frontend::SetupScreenLayout(w, h,
-		screenSettings->ScreenLayout,
+	screenLayout->Setup(w, h,
+		screenSettings->ScreenLayoutType,
 		screenSettings->ScreenRotation,
 		screenSettings->ScreenSizing,
 		screenSettings->ScreenGap,
@@ -300,24 +297,19 @@ ECL_EXPORT void SetScreenSettings(melonDS::NDS* nds, const ScreenSettings* scree
 		screenSettings->ScreenSwap,
 		1, 1); // Aspect Ratio
 
-	NumScreens = Frontend::GetScreenTransforms(ScreenMatrix, ScreenKinds);
+	NumScreens = screenLayout->GetScreenTransforms(ScreenMatrix, ScreenKinds);
 
 	Present(nds->GPU);
 
 	*width = w;
 	*height = h;
+}
 
-	if (GLScale > 1)
-	{
-		auto [vw, vh] = GetScreenSize(screenSettings, 1);
-		*vwidth = vw;
-		*vheight = vh;
-	}
-	else
-	{
-		*vwidth = w;
-		*vheight = h;
-	}
+ECL_EXPORT void PresentGL(melonDS::NDS* nds, u32* width, u32* height)
+{
+	Present(nds->GPU);
+	*width = Width;
+	*height = Height;
 }
 
 ECL_EXPORT void GetTouchCoords(int* x, int* y)
@@ -325,19 +317,19 @@ ECL_EXPORT void GetTouchCoords(int* x, int* y)
 	float vx = *x;
 	float vy = *y;
 
-	if (Frontend::HybEnable && Frontend::HybScreen == 1)
+	if (screenLayout->HybEnable && screenLayout->HybScreen == 1)
 	{
-		Frontend::M23_Transform(Frontend::HybTouchMtx, vx, vy);
+		M23_Transform(screenLayout->HybTouchMtx, vx, vy);
 	}
 	else
 	{
-		Frontend::M23_Transform(Frontend::TouchMtx, vx, vy);
+		M23_Transform(screenLayout->TouchMtx, vx, vy);
 	}
 
 	*x = vx;
 	*y = vy;
 
-	if (!Frontend::BotEnable)
+	if (!screenLayout->BotEnable)
 	{
 		// top screen only, offset y to account for that
 		*y -= 192;
@@ -351,7 +343,7 @@ ECL_EXPORT void GetScreenCoords(float* x, float* y)
 		// bottom screen
 		if (ScreenKinds[i] == 1)
 		{
-			Frontend::M23_Transform(&ScreenMatrix[i * 6], *x, *y);
+			M23_Transform(&ScreenMatrix[i * 6], *x, *y);
 			return;
 		}
 	}
@@ -364,7 +356,7 @@ ECL_EXPORT void GetScreenCoords(float* x, float* y)
 		// top screen
 		if (ScreenKinds[i] == 0)
 		{
-			Frontend::M23_Transform(&ScreenMatrix[i * 6], *x, *y);
+			M23_Transform(&ScreenMatrix[i * 6], *x, *y);
 			return;
 		}
 	}

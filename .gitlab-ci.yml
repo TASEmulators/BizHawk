@@ -23,13 +23,16 @@ stages:
   variables:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
+.with_dotnet_sdk:
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+
 build_asms_debug:
   artifacts:
     expire_in: "30 minutes"
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
       - output
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  extends: .with_dotnet_sdk
   script:
     - Dist/BuildDebug.sh -v normal
   stage: build
@@ -40,7 +43,7 @@ build_asms_release:
     name: "$CI_HAWK_TMPARTIFACT_NAME"
     paths:
     - output
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  extends: .with_dotnet_sdk
   script:
   - if [ "$CI_COMMIT_REF_SLUG" == "release" ]; then Dist/UpdateVersionInfoForRelease.sh; fi
   - Dist/BuildRelease.sh -v normal
@@ -48,7 +51,7 @@ build_asms_release:
 
 build_ext_projs:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  extends: .with_dotnet_sdk
   rules:
   - if: '$CI_PIPELINE_SOURCE == "schedule"'
     when: always
@@ -58,7 +61,7 @@ build_ext_projs:
 
 build_ext_tools:
   allow_failure: true
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  extends: .with_dotnet_sdk
   needs:
   - build_asms_release
   rules:
@@ -91,7 +94,7 @@ build_nix_prev_release:
   stage: test
 
 check_style:
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  extends: .with_dotnet_sdk
   needs:
   - job: build_asms_release
     artifacts: false
@@ -103,7 +106,7 @@ check_style:
     when: always
     allow_failure: false
   script:
-  - Dist/BuildRelease.sh -v normal -p:RunAnalyzersDuringBuild=true
+  - Dist/BuildRelease.sh -v normal
   stage: test
 
 .disabled_job_infersharp:
@@ -123,7 +126,12 @@ check_style:
   - /app/run_infersharp.sh "infer-in"
   stage: test
 
-.package_linux_x64:
+.package_linux_arm64:
+  extends: .package_linux_base
+  variables:
+    CI_HAWK_RID: "linux-arm64"
+
+.package_linux_base:
   artifacts:
     expire_in: "1 month"
     name: "$CI_HAWK_ARTIFACT_NAME"
@@ -135,10 +143,15 @@ check_style:
   - job: build_asms_debug
     artifacts: false
   script:
-  - Dist/Package.sh 'linux-x64'
+  - Dist/Package.sh "$CI_HAWK_RID"
   - cd packaged_output
   - tar -cf "../$CI_HAWK_ARTIFACT_NAME_TAR" *
   stage: package
+
+.package_linux_x64:
+  extends: .package_linux_base
+  variables:
+    CI_HAWK_RID: "linux-x64"
 
 .package_windows_x64:
   artifacts:
@@ -165,6 +178,14 @@ package_devbuild_linux:
   rules:
   - if: $CI_COMMIT_REF_SLUG == "master"
     when: always
+
+package_devbuild_linux_arm:
+  extends: .package_linux_arm64
+  rules:
+  - if: $CI_COMMIT_REF_SLUG == "master"
+    when: always
+  variables:
+    CI_HAWK_ARTIFACT_NAME_TAR: "${CI_HAWK_ARTIFACT_NAME}_arm64.tar"
 
 package_devbuild_windows:
   extends: .package_windows_x64
@@ -196,11 +217,12 @@ run_tests:
     reports:
       junit:
       - test_output/*.coverage.xml
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  extends: .with_dotnet_sdk
   needs:
   - job: build_asms_release
     artifacts: false
   script:
+  - apt-get update && apt-get install liblua5.4-0
   - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net8.0
   stage: test
 

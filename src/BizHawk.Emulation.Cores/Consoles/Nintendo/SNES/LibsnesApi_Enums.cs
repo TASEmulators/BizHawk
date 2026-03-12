@@ -5,7 +5,7 @@
 		public enum eMessage : int
 		{
 			eMessage_NotSet,
-			
+
 			eMessage_Resume,
 
 			eMessage_QUERY_FIRST,
@@ -185,6 +185,7 @@
 			SGB_RTC = 7,
 			SGB_WRAM = 8,
 			SGB_HRAM = 9,
+			SA1_IRAM = 10,
 
 			WRAM = 100,
 			APURAM = 101,

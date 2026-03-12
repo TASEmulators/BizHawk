@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -60,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 							Location = new(UIHelper.ScaleX(35), UIHelper.ScaleY(17)),
 							Width = UIHelper.ScaleX(121),
 						};
-						c.Items.AddRange(Disassembler.AvailableCpus.Cast<object>().ToArray());
+						c.ReplaceItems(items: Disassembler.AvailableCpus);
 						c.SelectedItem = Disassembler.Cpu;
 						c.SelectedIndexChanged += OnCpuDropDownIndexChanged;
 						return c;
@@ -74,7 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_disassemblyLines.Clear();
-			MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
@@ -118,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 				var pc = PCRegister;
 				SeekToBox.Nullable = false;
 				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
-				SeekToBox.SetFromRawUInt(0);
+				SeekToBox.SetFromRawInt(0);
 			}
 			else
 			{
@@ -149,7 +147,6 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
-			MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()
@@ -211,19 +208,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (keyData == Keys.F11)
 			{
-				StepIntoMenuItem_Click(null, null);
+				StepIntoMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
 			if (keyData == (Keys.F11 | Keys.Shift))
 			{
-				StepOutMenuItem_Click(null, null);
+				StepOutMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
 			if (keyData == Keys.F10)
 			{
-				StepOverMenuItem_Click(null, null);
+				StepOverMenuItem_Click(null, EventArgs.Empty);
 				return true;
 			}
 
@@ -263,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SeekToBtn_Click(object sender, EventArgs e)
 		{
 			CancelSeekBtn.Enabled = true;
-			var pcVal = SeekToBox.ToRawUInt() ?? 0;
+			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
 			var pcBitSize = PCRegister.BitSize;
 
 			BreakPointControl1.RemoveCurrentSeek();

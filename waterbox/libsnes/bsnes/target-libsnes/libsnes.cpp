@@ -511,6 +511,9 @@ uint8_t* snes_get_memory_data(unsigned id) {
     case SNES_MEMORY_GAME_BOY_HRAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
       return GameBoy::cpu.hram;        
+    case SNES_MEMORY_SA1_IRAM:
+      if(!SNES::cartridge.has_sa1()) break;
+      return SNES::sa1.iram.data();
 
     case SNES_MEMORY_WRAM:
       return SNES::cpu.wram;
@@ -566,6 +569,9 @@ const char* snes_get_memory_id_name(unsigned id) {
     case SNES_MEMORY_GAME_BOY_HRAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
       return "SGB_HRAM";
+    case SNES_MEMORY_SA1_IRAM:
+      if(!SNES::cartridge.has_sa1()) break;
+      return "SA1_IRAM";
 
     case SNES_MEMORY_WRAM:
       //return SNES::cpu.wram;
@@ -630,7 +636,11 @@ unsigned snes_get_memory_size(unsigned id) {
     case SNES_MEMORY_GAME_BOY_HRAM:
       if(SNES::cartridge.mode() != SNES::Cartridge::Mode::SuperGameBoy) break;
       size = 128;
-      break;        
+      break;
+    case SNES_MEMORY_SA1_IRAM:
+      if(!SNES::cartridge.has_sa1()) break;
+      size = SNES::sa1.iram.size();
+      break;
 
     case SNES_MEMORY_WRAM:
       size = 128 * 1024;

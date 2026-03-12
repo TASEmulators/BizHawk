@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 				checkBoxPad = { Checked = config.AVWriterPad },
 				numericTextBoxH = { Text = Math.Max(0, config.AVWriterResizeHeight).ToString() },
 				numericTextBoxW = { Text = Math.Max(0, config.AVWriterResizeWidth).ToString() },
-				labelDescriptionBody = { Text = "" }
+				labelDescriptionBody = { Text = "" },
 			};
 
 			int idx = 0;

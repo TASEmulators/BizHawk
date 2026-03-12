@@ -10,6 +10,7 @@ namespace NLua
 		{
 		}
 
+#if false
 		/// <summary>
 		/// Indexer for string fields of the userdata
 		/// </summary>
@@ -26,10 +27,8 @@ namespace NLua
 				lua.SetObject(_Reference, field, value);
 			}
 		}
+#endif
 
-		/// <summary>
-		/// Indexer for numeric fields of the userdata
-		/// </summary>
 		public object this[object field]
 		{
 			get => !TryGet(out var lua) ? null : lua.GetObject(_Reference, field);

@@ -1,4 +1,5 @@
 #nullable disable
+#pragma warning disable BHI1300 // explicit conversion operators w/ no checked variant
 
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

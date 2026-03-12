@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly FilesystemFilterSet CheatsFSFilterSet = new(new FilesystemFilter("Cheat Files", new[] { "cht" }));
 
 		public static Icon ToolIcon
-			=> Resources.FreezeIcon;
+			=> Resources.CheatIcon;
 
 		private string _sortedColumn;
 		private bool _sortReverse;
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = MainForm.CheatList.Load(Core, path, append: false);
 				if (!loadResult)
 				{
-					Config.Cheats.Recent.HandleLoadError(MainForm, path);
+					Config.Cheats.Recent.HandleLoadError(this, path: path);
 				}
 				else
 				{
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool SaveAs()
+		private FileWriteResult SaveAs()
 		{
 			var fileName = MainForm.CheatList.CurrentFileName;
 			if (string.IsNullOrWhiteSpace(fileName))
@@ -156,7 +156,8 @@ namespace BizHawk.Client.EmuHawk
 				CheatsFSFilterSet,
 				this);
 
-			return file != null && MainForm.CheatList.SaveFile(file.FullName);
+			if (file == null) return new();
+			else return MainForm.CheatList.SaveFile(file.FullName);
 		}
 
 		private void Cheats_Load(object sender, EventArgs e)
@@ -262,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 							Cheat.CompareType.LessThan => "<",
 							Cheat.CompareType.LessThanOrEqual => "<=",
 							Cheat.CompareType.NotEqual => "!=",
-							_ => ""
+							_ => string.Empty,
 						};
 
 					break;
@@ -361,7 +362,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MainForm.CheatList.Changes)
 			{
-				if (MainForm.CheatList.Save())
+				FileWriteResult result = MainForm.CheatList.Save();
+				if (result.IsError)
+				{
+					this.ErrorMessageBox(result);
+				}
+				else
 				{
 					UpdateMessageLabel(saved: true);
 				}
@@ -374,7 +380,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SaveAs())
+			FileWriteResult result = SaveAs();
+			if (result.IsError)
+			{
+				this.ErrorMessageBox(result);
+			}
+			else
 			{
 				UpdateMessageLabel(saved: true);
 			}
@@ -400,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count is not 0)
 			{
 				foreach (var item in items)
 				{
@@ -488,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{	
+		{
 			MainForm.CheatList.DisableAll();
 		}
 
@@ -501,23 +512,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AlwaysLoadCheatsMenuItem.Checked = Config.Cheats.LoadFileByGame;
 			AutoSaveCheatsMenuItem.Checked = Config.Cheats.AutoSaveOnClose;
-			DisableCheatsOnLoadMenuItem.Checked = Config.Cheats.DisableOnLoad;
+			DisableCheatsOnLoadMenuItem.Checked = !Config.Cheats.DisableOnLoad; // inverted because label was inverted without renaming variables
 		}
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.LoadFileByGame ^= true;
-		}
+			=> Config.Cheats.LoadFileByGame = !Config.Cheats.LoadFileByGame;
 
 		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.AutoSaveOnClose ^= true;
-		}
+			=> Config.Cheats.AutoSaveOnClose = !Config.Cheats.AutoSaveOnClose;
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.Cheats.DisableOnLoad ^= true;
-		}
+			=> Config.Cheats.DisableOnLoad = !Config.Cheats.DisableOnLoad;
 
 		[RestoreDefaults]
 		private void RestoreDefaults()
@@ -530,11 +535,7 @@ namespace BizHawk.Client.EmuHawk
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
-
-			Config.Cheats.DisableOnLoad = false;
-			Config.Cheats.LoadFileByGame = true;
-			Config.Cheats.AutoSaveOnClose = true;
-
+			Config.Cheats.RestoreDefaults();
 			CheatListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -552,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.IsCtrl(Keys.A))
 			{
-				SelectAllMenuItem_Click(null, null);
+				SelectAllMenuItem_Click(null, EventArgs.Empty);
 			}
 
 			DoSelectedIndexChange();
@@ -574,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.CheatList.Sort(column.Name, _sortReverse);
 
 			_sortedColumn = column.Name;
-			_sortReverse ^= true;
+			_sortReverse = !_sortReverse;
 			GeneralUpdate();
 		}
 
@@ -606,7 +607,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedCheats.ToList();
-			if (selected.Any())
+			if (selected.Count is not 0)
 			{
 				Tools.Load<HexEditor>();
 

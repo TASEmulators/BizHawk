@@ -1,18 +1,14 @@
 struct ProtectableMemory : Memory {
   inline auto reset() -> void override {
-    //delete[] self.data;
-    //self.data = nullptr;
-    //self.size = 0;
+    delete[] self.data;
+    self.data = nullptr;
+    self.size = 0;
   }
 
   inline auto allocate(uint size, uint8 fill = 0xff) -> void override {
-    if (!self.data) {
-        self.data = alloc_plain<uint8>(self.size = size);
-    }
     if(self.size != size) {
-      //delete[] self.data;
-      //self.data = new uint8[self.size = size];
-      abort();
+      delete[] self.data;
+      self.data = new uint8[self.size = size];
     }
     for(uint address : range(size)) {
       self.data[address] = fill;

@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 				return Successful ? "Screenshot was sent" : "Screenshot could not be sent";
 			}
 			var resp = ReceiveString();
-			return resp == "" ? "Failed to get a response" : resp;
+			return resp.Length is 0 ? "Failed to get a response" : resp;
 		}
 
 		public int SendString(string sendString, Encoding encoding = null)

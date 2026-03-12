@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
@@ -9,7 +7,7 @@ namespace BizHawk.Client.Common
 		public virtual void StartNewRecording()
 		{
 			Mode = MovieMode.Record;
-			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Any())
+			if (MakeBackup && Session.Settings.EnableBackupMovies && Log.Count is not 0)
 			{
 				SaveBackup();
 				MakeBackup = false;
@@ -22,23 +20,6 @@ namespace BizHawk.Client.Common
 		public void SwitchToRecord() => Mode = MovieMode.Record;
 		public void SwitchToPlay() => Mode = MovieMode.Play;
 		public void FinishedMode() => Mode = MovieMode.Finished;
-
-		public virtual bool Stop(bool saveChanges = true)
-		{
-			bool saved = false;
-			if (saveChanges)
-			{
-				if (Mode == MovieMode.Record || (this.IsActive() && Changes))
-				{
-					Save();
-					saved = true;
-				}
-			}
-
-			Changes = false;
-			Mode = MovieMode.Inactive;
-
-			return saved;
-		}
+		public void Stop() =>  Mode = MovieMode.Inactive;
 	}
 }

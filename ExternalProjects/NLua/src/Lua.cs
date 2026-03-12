@@ -329,23 +329,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// Convert C# exceptions into Lua errors
-		/// </summary>
-		/// <returns>num of things on stack</returns>
-		/// <param name = "e">null for no pending exception</param>
-		internal int SetPendingException(Exception e)
-		{
-			if (e == null)
-			{
-				return 0;
-			}
-
-			Translator.ThrowError(State, e);
-			return 1;
-		}
-
-		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name = "chunk"></param>
 		/// <param name = "name"></param>
@@ -373,7 +357,7 @@ namespace NLua
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name = "chunk"></param>
 		/// <param name = "name"></param>
@@ -906,6 +890,7 @@ namespace NLua
 			return obj;
 		}
 
+#if false
 		/// <summary>
 		/// Gets a field of the table or userdata corresponding to the provided reference
 		/// </summary>
@@ -917,9 +902,10 @@ namespace NLua
 			State.SetTop(oldTop);
 			return returnValue;
 		}
+#endif
 
 		/// <summary>
-		/// Gets a numeric field of the table or userdata corresponding the the provided reference
+		/// Gets a field of the table or userdata corresponding to the provided reference
 		/// </summary>
 		internal object GetObject(int reference, object field)
 		{
@@ -932,8 +918,9 @@ namespace NLua
 			return returnValue;
 		}
 
+#if false
 		/// <summary>
-		/// Sets a field of the table or userdata corresponding the the provided reference
+		/// Sets a field of the table or userdata corresponding to the provided reference
 		/// to the provided value
 		/// </summary>
 		internal void SetObject(int reference, string field, object val)
@@ -943,9 +930,10 @@ namespace NLua
 			SetObject(FullPathToArray(field), val);
 			State.SetTop(oldTop);
 		}
+#endif
 
 		/// <summary>
-		/// Sets a numeric field of the table or userdata corresponding the the provided reference
+		/// Sets a field of the table or userdata corresponding to the provided reference
 		/// to the provided value
 		/// </summary>
 		internal void SetObject(int reference, object field, object val)

@@ -116,6 +116,7 @@ void SA1::trigger_irq() {
 }
 
 void SA1::init() {
+  iram.init();
 }
 
 void SA1::load() {
@@ -323,7 +324,7 @@ void SA1::reset() {
   mmio.overflow = false;
 }
 
-SA1::SA1() : iram(2048) {
+SA1::SA1() : iram(2048, "SA1_IRAM") {
 }
 
 }

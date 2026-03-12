@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		// EA gets set to true on external memory address latch
 		public bool EA;
-		
+
 		// The 8048 has 2 flags that can be used for conditionals
 		// F0 is on the PSW, F1 is seperate
 		public bool F1;

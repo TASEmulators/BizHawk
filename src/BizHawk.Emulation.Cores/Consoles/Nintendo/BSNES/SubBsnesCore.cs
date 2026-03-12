@@ -4,8 +4,11 @@ using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 {
-	[PortedCore(CoreNames.SubBsnes115, "")]
-	[ServiceNotApplicable(new[] { typeof(IDriveLight) })]
+	[PortedCore(
+		name: CoreNames.SubBsnes115,
+		author: "bsnes team",
+		portedVersion: "v115+",
+		portedUrl: "https://github.com/bsnes-emu/bsnes")]
 	public class SubBsnesCore : IEmulator, ICycleTiming
 	{
 		[CoreConstructor(VSystemID.Raw.GB)]

@@ -6,7 +6,7 @@
 
 	Activision used this method on only three games:  Decathlon, Robot Tank, and the
 	prototype Thwocker.  This mapper is one of the more interesting ones in that it uses
-	stack access to select banks.  It is  composed of two 4K banks, similar to F8.  
+	stack access to select banks.  It is  composed of two 4K banks, similar to F8.
 	Unlike F8, however, switching occurs when the stack is accessed.
 
 	This mapper allows for "automatic" bankswitching to occur, using JSR and RTS.  The
@@ -54,7 +54,7 @@
 	Using emulators or similar there is a large cheat that can be used.  A13 can be used
 	to simply select which 8K bank to be in.
 	*/
-	internal sealed class mFE : MapperBase 
+	internal sealed class mFE : MapperBase
 	{
 		public mFE(Atari2600 core) : base(core)
 		{

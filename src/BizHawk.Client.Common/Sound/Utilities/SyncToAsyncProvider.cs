@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		{
 			_outputProvider = new SoundOutputProvider(getCoreVsyncRateCallback, standaloneMode: true)
 			{
-				BaseSoundProvider = baseProvider
+				BaseSoundProvider = baseProvider,
 			};
 		}
 

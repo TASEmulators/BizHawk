@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		/// <summary>
 		/// Signs whether the current active drive has a disk inserted
-		/// </summary>   
+		/// </summary>
 		bool FDD_IsDiskLoaded { get; }
 	}
 }

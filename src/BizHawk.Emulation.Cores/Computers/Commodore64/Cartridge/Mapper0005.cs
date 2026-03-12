@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		private readonly int[][] _banksA; // 8000
 
-		private readonly int[][] _banksB = new int[0][]; // A000
+		private readonly int[][] _banksB = [ ]; // A000
 
 		private int _bankMask;
 

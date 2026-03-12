@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Drawing;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using static BizHawk.Emulation.Cores.Nintendo.BSNES.BsnesApi.SNES_REGISTER;
@@ -20,7 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 		private readonly short[] directColorTable = new short[256];
 		private void generate_palette()
 		{
-			const int a = 0xFF;
+			Span<byte> scratch = stackalloc byte[4];
+			scratch[0] = 0xFF;
 			for (int color = 0; color < 32768; color++) {
 				int r = (color >> 10) & 31;
 				int g = (color >>  5) & 31;
@@ -30,7 +32,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 				g = g << 3 | g >> 2; g = g << 8 | g << 0;
 				b = b << 3 | b >> 2; b = b << 8 | b << 0;
 
-				palette[color] = a << 24 | b >> 8 << 16 | g >> 8 <<  8 | r >> 8 << 0;
+				unchecked
+				{
+					scratch[1] = (byte) (b >> 8);
+					scratch[2] = (byte) (g >> 8);
+					scratch[3] = (byte) (r >> 8);
+				}
+				palette[color] = BinaryPrimitives.ReadInt32BigEndian(scratch);
 			}
 		}
 
