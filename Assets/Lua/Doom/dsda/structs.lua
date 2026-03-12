@@ -516,6 +516,12 @@ structs.sector = sector
 	end)
 	.build() --[[@as domain_struct]]
 
+-- intercept_t https://github.com/TASEmulators/dsda-doom/blob/fe96d105f06a1971b633a07d6468e0f426e1f1d5/prboom2/src/p_maputl.h#L69-L76
+structs.intercept = utils.struct_layout("intercept")
+	.s32("frac")
+	.s32("isaline")
+	.ptr("d")
+	.build()
 
 
 structs.globals = utils.global_layout()

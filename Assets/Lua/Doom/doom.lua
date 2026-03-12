@@ -453,27 +453,6 @@ end
 
 -- CALLBACKS
 
-doom.on_prandom(function(info)
-	if not RNGLog then return end
-	
-	local seed = ""
-	
-	if Globals.compatibility_level >= 7 then
-		seed = string.format("%010u",
-			Globals.rng.seed[PRANDOM_ALL_IN_ONE+1]
-		)
-	else
-		seed = string.format("%03d",
-			memory.readbyte(memory.read_u32_le(symbols.rndtable) + Globals.rng.rndindex)
-		)
-	end
-	
-	table.insert(PRandomInfo, string.format(
-		"%d (%d): #%03d %s %s",
-		Globals.gametic, #PRandomInfo+1, Globals.rng.rndindex, seed, info
-	))
- end)
-
 event.onframestart(function()
 	PRandomInfo = {}
 	
@@ -508,48 +487,6 @@ end)
 
 tastudio.onbranchload(function()
 	clear_cache()
-end)
-
-function line_event(event, line, thing)
-	line  = line  - 0x36f00000000
-	thing = thing - 0x36f00000000
-	
-	for i, player in pairs(Players) do
-		if player.thinker == thing then
-			thing = "player " .. i
-			break
-		end
-	end
-	
-	if type(thing) ~= "string" -- thing is not player
-	and ((LineUseLog   == LineLogType.ALL and event == "USED")
-	or   (LineCrossLog == LineLogType.ALL and event == "CROSSED"))
-	then
-		for _, mobj in pairs(Globals.mobjs:readbulk()) do
-			if thing == mobj.thinker._address then
-				thing = "thing " .. mobj.index
-				break
-			end
-		end
-	end
-	
-	if type(thing) == "string" then
-		print(string.format(
-			"line %d %s by %s",
-			memory.read_s32_le(line, "System Bus"),
-			event, thing
-		))
-	end
-end
-doom.on_use(function(line, thing)
-	if LineUseLog ~= LineLogType.NONE
-	then line_event("USED", line, thing)
-	end
-end)
-doom.on_cross(function(line, thing)
-	if LineCrossLog ~= LineLogType.NONE
-	then line_event("CROSSED", line, thing)
-	end
 end)
 
 
