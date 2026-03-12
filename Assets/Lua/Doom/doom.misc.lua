@@ -511,12 +511,8 @@ local function line_event(event, line, thing)
 	and ((LineUseLog   == LineLogType.ALL and event == "USED")
 	or   (LineCrossLog == LineLogType.ALL and event == "CROSSED"))
 	then
-		for _, mobj in pairs(Globals.mobjs:readbulk()) do
-			if thing == mobj.thinker._address then
-				thing = "thing " .. mobj.index
-				break
-			end
-		end
+		local mobj = structs.mobj.from_pointer(thing)
+		thing = "thing " .. mobj.index
 	end
 	
 	if type(thing) == "string" then
