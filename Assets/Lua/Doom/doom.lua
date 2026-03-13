@@ -196,42 +196,8 @@ local function iterate()
 			local step  = GRID_SIZE * Zoom
 			local bmorg = game_to_screen(BlockmapOrigin)
 			local bmend = game_to_screen(BlockmapEnd)
-			
-			--[[--
-			local topleft     = screen_to_game({ x = 0, y = 0 })
-			local topleft2    = game_to_screen({ x = math.floor(topleft.x/size)*size,
-				                                 y = math.floor(topleft.y/size)*size })
-			local bottomright = screen_to_game({ x = ScreenWidth, y = ScreenHeight })
-			      bottomright = game_to_screen({ x = math.floor(bottomright.x/size)*size,
-				                                 y = math.floor(bottomright.y/size)*size })
-			local start   = { x = math.max(topleft2.x, origin.x),
-                              y = math.max(topleft2.y, bmend.y) }
-			local stop    = { x = math.min(bottomright.x, bmend.x),
-				              y = math.min(bottomright.y, origin.y) }
-			--]]--
-			local start   = { x = bmorg.x, y = bmend.y }
-			local stop    = { x = bmend.x, y = bmorg.y }
-			
-			text(10,220,string.format(
-				"bmorg: %f %f\n"..
-				"org:   %f %f\n"..
-				"size:  %d %d\n"..
-			--	"TL:    %f %f\n"..
-			--	"TL2:   %f %f\n"..
-				"start: %f %f\n"..
-				"stop:  %f %f\n"..
-				"step: %f\n"..
-				"zoom: %f",
-				Globals.bmaporgx/ FRACUNIT,  Globals.bmaporgy/ FRACUNIT,
-				bmorg.x,  bmorg.y,
-				Globals.bmapwidth, Globals.bmapheight,
-			--	math.floor(topleft.x/size)*size,
-			--	math.floor(topleft.y/size)*size,
-			--	topleft2.x, topleft2.y,
-				start.x,   start.y,
-				stop.x,    stop.y,
-			--	pan.x,     pan.y,
-				step,      Zoom))
+			local start = { x = bmorg.x, y = bmend.y }
+			local stop  = { x = bmend.x, y = bmorg.y }
 			
 			for x = start.x, stop.x-1, step do
 				drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
@@ -459,13 +425,23 @@ local function make_buttons()
 			end
 		end
 		
-		show_dialog(string.format(
+		local ret = show_dialog(string.format(
 			"Enter %s ID from\nlevel editor.\n\n" ..
-			"Hit \"Enter\" to send,\n" ..
+			"Hit \"Enter\" to confirm,\n" ..
 			"\"Backspace\" to erase,\n" ..
-			"or \"Escape\" to cancel.\n\n%s_",
+			"or \"Escape\" to cancel.\n" ..
+			"Or use the buttons.\n\n%s_\n",
 			CurrentPrompt.msg, value
 		))
+
+		if ret == true and value ~= "" then
+			CurrentPrompt.fun(tonumber(value))
+			CurrentPrompt = nil
+			return
+		elseif ret == false then
+			CurrentPrompt = nil
+			return
+		end
 		
 		if value ~= "" then
 			CurrentPrompt.value = tonumber(value)
@@ -473,22 +449,23 @@ local function make_buttons()
 			CurrentPrompt.value = nil
 		end
 	elseif Confirmation then
-		show_dialog(string.format(
+		local entity = Tracked[Confirmation.type]
+		local ret    = show_dialog(string.format(
 			"Stop tracking %s %d?\n\n" ..
 			"Hit \"Enter\" to confirm,\n" ..
-			"or \"Escape\" to cancel.",
-			Tracked[Confirmation.type].Name,
+			"or \"Escape\" to cancel.\n" ..
+			"Or use the buttons.",
+			entity.Name,
 			Confirmation.id
 		))
 		
-		if check_press("Escape") then
+		if check_press("Escape") or ret == false then
 			Confirmation = nil
-		elseif (check_press("Enter") or check_press("KeypadEnter")) then
-			local entity = Tracked[Confirmation.type]
+		elseif (check_press("Enter") or check_press("KeypadEnter")) or ret == true then
 			
 			if entity.Min == entity.Max then
-				-- it was the final entry, drop the whole thing
-				Tracked[Confirmation.type] = TrackedEntity.new(entity.Name)
+				-- it was the final entry, clear the whole thing
+				entity:clear()
 			else
 				if entity.Max == Confirmation.id then
 					scroll_list(entity, -1)
@@ -585,14 +562,6 @@ while true do
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if (framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
-		BlockmapOrigin = {
-			x = Globals.bmaporgx,
-			y = Globals.bmaporgy
-		}
-		BlockmapEnd = { 
-			x = BlockmapOrigin.x + Globals.bmapwidth  * GRID_SIZE * FRACUNIT,
-			y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
-		}
 		iterate_players()
 		iterate()
 		LastMouse.left = Mouse.Left

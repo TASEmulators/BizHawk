@@ -53,6 +53,12 @@ function TrackedEntity.new(name)
 	self.Min         = math.maxinteger
 	self.Max         = math.mininteger
 	self.Name        = name
+	function self.clear()
+		self.TrackedList = {}
+		self.Current     = nil
+		self.Min         = math.maxinteger
+		self.Max         = math.mininteger
+	end
 	return self
 end
 
@@ -794,6 +800,15 @@ function init_cache()
 		Tracked[TrackedType.SECTOR].IDs[sector.iSectorID] = true
 	end
 	
+	BlockmapOrigin = {
+		x = Globals.bmaporgx,
+		y = Globals.bmaporgy
+	}
+	BlockmapEnd = { 
+		x = BlockmapOrigin.x + Globals.bmapwidth  * GRID_SIZE * FRACUNIT,
+		y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
+	}
+	
 	settings_read()
 end
 
@@ -858,7 +873,7 @@ function make_button(x, y, name, func)
 	
 	if  in_range(mousePos.x, x,           x+boxWidth)
 	and in_range(mousePos.y, y-boxHeight, y         )
-	and not freeze_gui()
+	and not (freeze_gui() and name ~= "Confirm" and name ~= "Cancel")
 	then
 		if Mouse.Left then
 			suppress_click_input()
@@ -877,12 +892,13 @@ function make_button(x, y, name, func)
 end
 
 function show_dialog(message)
+	local ret
 	local boxWidth   = CHAR_WIDTH
 	local boxHeight  = CHAR_HEIGHT
 	local lineCount,
 	      longest    = get_line_count(message)
-	local textWidth  = longest  *CHAR_WIDTH
-	local textHeight = lineCount*CHAR_HEIGHT
+	local textWidth  = longest      *CHAR_WIDTH
+	local textHeight = (lineCount+2)*CHAR_HEIGHT
 	local padding    = 50
 	
 	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
@@ -892,9 +908,15 @@ function show_dialog(message)
 	local y     = ScreenHeight /2 - textHeight/2
 	local textX = x + boxWidth /2 - textWidth /2
 	local textY = y + boxHeight/2 - textHeight/2
+	local edge  = { x = x+boxWidth, y = y+boxHeight }
 	
-	box(x, y, x+boxWidth, y+boxHeight, 0xaaffffff, 0xaabbddff)
+	box(x, y, edge.x, edge.y, 0xaaffffff, 0xaabbddff)
 	text(textX, textY, message, 0xffffffff)
+	
+	make_button(edge.x-padding*3.8, edge.y-CHAR_HEIGHT, "Confirm", function() ret = true  end)
+	make_button(edge.x-padding*2,   edge.y-CHAR_HEIGHT, "Cancel",  function() ret = false end)
+	
+	return ret
 end
 
 function freeze_gui()
