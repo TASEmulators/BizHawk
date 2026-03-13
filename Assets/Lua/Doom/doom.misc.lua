@@ -861,6 +861,11 @@ function make_button(x, y, name, func)
 	local colorIndex = 1
 	local padding    = 6
 	
+	-- delete button
+	if name == " X " then
+		colors = { 0x66ff6666, 0xaaff0000, 0xffff0000 }
+	end
+	
 	if x < 0 then x = ScreenWidth  + x end
 	if y < 0 then y = ScreenHeight + y end
 	
@@ -893,12 +898,12 @@ end
 
 function show_dialog(message)
 	local ret
-	local boxWidth   = CHAR_WIDTH
-	local boxHeight  = CHAR_HEIGHT
 	local lineCount,
 	      longest    = get_line_count(message)
 	local textWidth  = longest      *CHAR_WIDTH
 	local textHeight = (lineCount+2)*CHAR_HEIGHT
+	local boxWidth   = CHAR_WIDTH
+	local boxHeight  = CHAR_HEIGHT
 	local padding    = 50
 	
 	if textWidth  + padding > boxWidth  then boxWidth  = textWidth  + padding end
