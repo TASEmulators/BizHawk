@@ -7,10 +7,10 @@ utils.check_pointers = false
 
 
 
-local NULL_OBJECT <const>    = 0x88888888 -- no object at that index
-local OUT_OF_BOUNDS <const>  = 0xFFFFFFFF -- no such index
+local NULL_OBJECT    <const> = 0x88888888 -- no object at that index
+local OUT_OF_BOUNDS  <const> = 0xFFFFFFFF -- no such index
 local WBX_POINTER_HI <const> = 0x36F
-local BusDomain <const>      = "System Bus"
+local BusDomain      <const> = "System Bus"
 
 
 
