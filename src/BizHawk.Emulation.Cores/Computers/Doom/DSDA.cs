@@ -167,6 +167,11 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				foreach (var cb in RandomCallbacks) cb(info);
 			};
 
+			_interceptCallback = block =>
+			{
+				foreach (var cb in InterceptCallbacks) cb(block);
+			};
+
 			_useCallback = (line, thing) =>
 			{
 				foreach (var cb in UseCallbacks) cb(line, thing);
@@ -194,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _randomCallback, _useCallback, _crossCallback, _errorCallback
+					_loadCallback, _randomCallback, _interceptCallback, _useCallback, _crossCallback, _errorCallback
 				], _elf);
 
 				using (_elf.EnterExit())
@@ -290,16 +295,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 
 				ControllerDefinition = CreateControllerDefinition(_syncSettings);
-
-				_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
-				_core.dsda_set_use_callback(UseCallbacks.Count > 0 ? _useCallback : null);
-				_core.dsda_set_cross_callback(CrossCallbacks.Count > 0 ? _crossCallback : null);
+				SetLuaCallbacks();
 			}
 			catch
 			{
 				Dispose();
 				throw;
 			}
+		}
+
+		private void SetLuaCallbacks()
+		{
+			_core.dsda_set_random_callback(   RandomCallbacks.Count    > 0 ? _randomCallback    : null);
+			_core.dsda_set_intercept_callback(InterceptCallbacks.Count > 0 ? _interceptCallback : null);
+			_core.dsda_set_use_callback(      UseCallbacks.Count       > 0 ? _useCallback       : null);
+			_core.dsda_set_cross_callback(    CrossCallbacks.Count     > 0 ? _crossCallback     : null);
 		}
 
 		private void CreateArguments(LibDSDA.InitSettings initSettings)
@@ -398,11 +408,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
+		private LibDSDA.intercept_cb _interceptCallback;
 		private LibDSDA.line_cb _useCallback;
 		private LibDSDA.line_cb _crossCallback;
 		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<string>> RandomCallbacks = [ ];
+		public List<Action<int>> InterceptCallbacks = [ ];
 		public List<Action<long, long>> UseCallbacks = [ ];
 		public List<Action<long, long>> CrossCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo

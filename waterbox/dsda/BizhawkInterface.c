@@ -457,6 +457,18 @@ ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(const char *))
   random_callback_cb = cb;
 }
 
+// PIT_Add*Intercepts() calls
+ECL_ENTRY void (*intercept_callback_cb)(int);
+void biz_intercept_callback(int block)
+{
+  if (intercept_callback_cb)
+    intercept_callback_cb(block);
+}
+ECL_EXPORT void dsda_set_intercept_callback(ECL_ENTRY void (*cb)(int))
+{
+  intercept_callback_cb = cb;
+}
+
 // showing errors to user
 ECL_ENTRY void (*error_callback_cb)(char *);
 void biz_error_callback(char *s)

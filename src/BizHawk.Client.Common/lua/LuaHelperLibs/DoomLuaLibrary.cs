@@ -52,6 +52,31 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
 #pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
 		[LuaMethodExample("""
+			local intercept_cb_id = doom.on_intercept(function(block)
+				console.log("intercept in block "..intercept);
+			end, "intercept notifier");
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "on_intercept",
+			description: "Fires immediately after a new line or thing intercept is added by Doom. Your callback can have 1 parameter, which will be an integer identifying which map block the intercept happened in.")]
+		public string OnIntercept(LuaFunction luaf, string name = null)
+		{
+			if (Emulator is not DSDA dsda)
+			{
+				throw new InvalidOperationException(ERR_MSG_UNSUPPORTED_CORE);
+			}
+
+			var callbacks = dsda.InterceptCallbacks;
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnIntercept", LogOutputCallback, CurrentFile, name: name);
+			callbacks.Add(nlf.InterceptCallback);
+			nlf.OnRemove += () => callbacks.Remove(nlf.InterceptCallback);
+			return nlf.GuidStr;
+		}
+
+		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
 			local usesuccess_cb_id = doom.on_use(function(line, thing)
 				console.log("line "..line.." used by mobj "..mobj);
 			end, "Use notifier");
