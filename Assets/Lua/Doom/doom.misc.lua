@@ -21,6 +21,7 @@ CHAR_WIDTH         = 10
 CHAR_HEIGHT        = 16
 PADDING_WIDTH      = 240
 PRANDOM_ALL_IN_ONE = 49
+GRID_SIZE          = 128
 MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
 SETTINGS_FILENAME  = "doom.settings.lua"
 
@@ -90,12 +91,13 @@ LastInput      = nil
 
 
 -- saved to config
-Zoom    = 1
-Follow  = false
-Hilite  = false
-ShowMap = true
-Angle   = AngleType.BYTE
-Tracked = {
+Zoom     = 1
+Follow   = false
+Hilite   = false
+ShowMap  = true
+ShowGrid = true
+Angle    = AngleType.BYTE
+Tracked  = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
 	[TrackedType.SECTOR] = TrackedEntity.new("sector")
@@ -118,6 +120,14 @@ OB = {
 	left   = math.maxinteger,
 	bottom = math.mininteger,
 	right  = math.mininteger
+}
+BlockmapOrigin = {
+	x = 0,
+	y = 0
+}
+BlockmapEnd = { 
+	x = 0,
+	y = 0
 }
 LastScreenSize = {
 	w = client.screenwidth(),
@@ -148,6 +158,7 @@ MapPrefs = {
 	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false, },
 --	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
 	highlight   = { color = 0xffff00ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	grid        = { color = 0xff808080, radius_min_zoom = 0.00, text_min_zoom = 0.00, },
 }
 
 
@@ -167,6 +178,10 @@ end
 
 function map_toggle()
 	ShowMap = not ShowMap
+end
+
+function grid_toggle()
+	ShowGrid = not ShowGrid
 end
 
 function prandom_toggle()
@@ -622,12 +637,13 @@ function settings_read()
 	then
 		reset_view()
 	end
-	Zoom    = Config.Zoom    or 1
-	Pan.x   = Config.PanX    or 0
-	Pan.y   = Config.PanY    or 0
-	ShowMap = Config.ShowMap or false
-	Follow  = Config.Follow  or false
-	Hilite  = Config.Hilite  or false
+	Zoom     = Config.Zoom     or 1
+	Pan.x    = Config.PanX     or 0
+	Pan.y    = Config.PanY     or 0
+	ShowMap  = Config.ShowMap  or false
+	ShowGrid = Config.ShowGrid or false
+	Follow   = Config.Follow   or false
+	Hilite   = Config.Hilite   or false
 	
 	-- TRACKED ENTITIES
 	if not Config.tracked then return end
@@ -678,12 +694,13 @@ function settings_write()
 		file:write("\n")
 		
 		-- MAP STATE
-		file:write("Zoom = "    ..          Zoom     .. "\n")
-		file:write("PanX = "    ..          Pan.x    .. "\n")
-		file:write("PanY = "    ..          Pan.y    .. "\n")
-		file:write("Follow = "  .. tostring(Follow)  .. "\n")
-		file:write("Hilite = "  .. tostring(Hilite)  .. "\n")
-		file:write("ShowMap = " .. tostring(ShowMap) .. "\n")
+		file:write(    "Zoom = " ..          Zoom      .. "\n")
+		file:write(    "PanX = " ..          Pan.x     .. "\n")
+		file:write(    "PanY = " ..          Pan.y     .. "\n")
+		file:write(  "Follow = " .. tostring(Follow)   .. "\n")
+		file:write(  "Hilite = " .. tostring(Hilite)   .. "\n")
+		file:write( "ShowMap = " .. tostring(ShowMap)  .. "\n")
+		file:write("ShowGrid = " .. tostring(ShowGrid) .. "\n")
 		file:write("\n")
 		
 		-- TRACKED ENTITIES

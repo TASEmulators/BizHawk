@@ -191,6 +191,64 @@ local function iterate()
 	end
 
 	if ShowMap then
+		if ShowGrid then
+			local size  = GRID_SIZE * FRACUNIT
+			local step  = GRID_SIZE * Zoom
+			local bmorg = game_to_screen(BlockmapOrigin)
+			local bmend = game_to_screen(BlockmapEnd)
+			
+			--[[--
+			local topleft     = screen_to_game({ x = 0, y = 0 })
+			local topleft2    = game_to_screen({ x = math.floor(topleft.x/size)*size,
+				                                 y = math.floor(topleft.y/size)*size })
+			local bottomright = screen_to_game({ x = ScreenWidth, y = ScreenHeight })
+			      bottomright = game_to_screen({ x = math.floor(bottomright.x/size)*size,
+				                                 y = math.floor(bottomright.y/size)*size })
+			local start   = { x = math.max(topleft2.x, origin.x),
+                              y = math.max(topleft2.y, bmend.y) }
+			local stop    = { x = math.min(bottomright.x, bmend.x),
+				              y = math.min(bottomright.y, origin.y) }
+			--]]--
+			local start   = { x = bmorg.x, y = bmend.y }
+			local stop    = { x = bmend.x, y = bmorg.y }
+			
+			text(10,220,string.format(
+				"bmorg: %f %f\n"..
+				"org:   %f %f\n"..
+				"size:  %d %d\n"..
+			--	"TL:    %f %f\n"..
+			--	"TL2:   %f %f\n"..
+				"start: %f %f\n"..
+				"stop:  %f %f\n"..
+				"step: %f\n"..
+				"zoom: %f",
+				Globals.bmaporgx/ FRACUNIT,  Globals.bmaporgy/ FRACUNIT,
+				bmorg.x,  bmorg.y,
+				Globals.bmapwidth, Globals.bmapheight,
+			--	math.floor(topleft.x/size)*size,
+			--	math.floor(topleft.y/size)*size,
+			--	topleft2.x, topleft2.y,
+				start.x,   start.y,
+				stop.x,    stop.y,
+			--	pan.x,     pan.y,
+				step,      Zoom))
+			
+			for x = start.x, stop.x-1, step do
+				drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
+			end
+			for y = start.y, stop.y-1, step do
+				drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
+			end
+			
+			-- due to step being float in screen coords, we can't avoid rounding error
+			-- so final 2 lines won't match grid size and sometimes won't even be drawn
+			-- so we draw them separately where they "should be"
+			-- while embracing the rounding error of all the rest
+			-- since drawing them all perfectly is too complicated
+			drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
+			drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
+		end
+	
 		for _, mobj in pairs(Globals.mobjs:readbulk()) do
 			local type   = mobj.type
 			local index  = mobj.index
@@ -349,11 +407,12 @@ local function iterate()
 end
 
 local function make_buttons()
-	local w = PADDING_WIDTH
+	local w = PADDING_WIDTH -- horizontal offset
+	local h = 26            -- button height
 	
-	make_button(-110, 26, "Add Thing ", function() add_entity(TrackedType.THING ) end)
-	make_button(-110, 52, "Add Line  ", function() add_entity(TrackedType.LINE  ) end)
-	make_button(-110, 78, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
+	make_button(w+5, h*1, "Add Thing ", function() add_entity(TrackedType.THING ) end)
+	make_button(w+5, h*2, "Add Line  ", function() add_entity(TrackedType.LINE  ) end)
+	make_button(w+5, h*3, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
 	
 	local useName = "NONE"
 	if     LineUseLog == LineLogType.PLAYER then useName = "PLAYER"
@@ -365,13 +424,14 @@ local function make_buttons()
 	elseif LineCrossLog == LineLogType.ALL    then crossName = "ALL"
 	end
 	
-	make_button(w+5,  26, "Log Use   "..useName,   function() cycle_log_types(true ) end)
-	make_button(w+5,  52, "Log Cross "..crossName, function() cycle_log_types(false) end)
-	make_button(w+5,  78, "Log RNG "  ..(RNGLog and "ON" or "OFF"),       prandom_toggle)
-	make_button(w+5, 104, (ShowMap and "Hide" or "Show").." Map  ",       map_toggle    )
-	make_button(w+5, 130, "Reset View",                                   reset_view    )
-	make_button(w+5, 156, "Hilite "   ..(Hilite and "ON " or "OFF"),      hilite_toggle )
-	make_button(w+5, 182, "Follow "   ..(Follow and "ON " or "OFF"),      follow_toggle )
+	make_button(-150, h*1, "Log Use   "..useName,   function() cycle_log_types(true ) end)
+	make_button(-150, h*2, "Log Cross "..crossName, function() cycle_log_types(false) end)
+	make_button(-120, h*3, "Log RNG "  ..(RNGLog   and "ON " or "OFF"),    prandom_toggle)
+	make_button(-110, h*4, "Map    "   ..(ShowMap  and "ON " or "OFF"),        map_toggle)
+	make_button(-110, h*5, "Grid   "   ..(ShowGrid and "ON " or "OFF"),       grid_toggle)
+	make_button(-110, h*6, "Hilite "   ..(Hilite   and "ON " or "OFF"),     hilite_toggle)
+	make_button(-110, h*7, "Follow "   ..(Follow   and "ON " or "OFF"),     follow_toggle)
+	make_button(-110, h*8, "Reset View",                                       reset_view)
 	
 	Input = input.get()
 	
@@ -525,6 +585,14 @@ while true do
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if (framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
+		BlockmapOrigin = {
+			x = Globals.bmaporgx,
+			y = Globals.bmaporgy
+		}
+		BlockmapEnd = { 
+			x = BlockmapOrigin.x + Globals.bmapwidth  * GRID_SIZE * FRACUNIT,
+			y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
+		}
 		iterate_players()
 		iterate()
 		LastMouse.left = Mouse.Left
