@@ -80,7 +80,9 @@ ScreenWidth    = client.screenwidth()
 ScreenHeight   = client.screenheight()
 LineUseLog     = LineLogType.NONE
 LineCrossLog   = LineLogType.NONE
+BlockmapWidth  = 0
 RNGLog         = false
+InterceptLog   = false
 LastFramecount = -1
 Input          = nil
 Lines          = nil
@@ -188,6 +190,25 @@ end
 
 function grid_toggle()
 	ShowGrid = not ShowGrid
+end
+
+function intercept_toggle()
+	InterceptLog = not InterceptLog
+	local name = "Intercepts"
+	
+	if InterceptLog then
+		doom.on_intercept(function(block)
+			if ShowMap and ShowGrid then
+				local bmorg = game_to_screen(BlockmapOrigin)
+				local x     = bmorg.x+(           block % BlockmapWidth   )*128*Zoom
+				local y     = bmorg.y-(math.floor(block / BlockmapWidth)+1)*128*Zoom
+				box(x, y, x+128*Zoom, y+128*Zoom, "red", 0x80ff0000)
+			end
+		--	print(block)
+		end, name)
+	else
+		event.unregisterbyname(name)
+	end
 end
 
 function prandom_toggle()
@@ -800,6 +821,7 @@ function init_cache()
 		Tracked[TrackedType.SECTOR].IDs[sector.iSectorID] = true
 	end
 	
+	BlockmapWidth  = Globals.bmapwidth
 	BlockmapOrigin = {
 		x = Globals.bmaporgx,
 		y = Globals.bmaporgy

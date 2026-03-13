@@ -386,24 +386,25 @@ local function make_buttons()
 	make_button(w+5, h*2, "Add Line  ", function() add_entity(TrackedType.LINE  ) end)
 	make_button(w+5, h*3, "Add Sector", function() add_entity(TrackedType.SECTOR) end)
 	
-	local useName = "NONE"
+	local useName = "  NONE"
 	if     LineUseLog == LineLogType.PLAYER then useName = "PLAYER"
-	elseif LineUseLog == LineLogType.ALL    then useName = "ALL"
+	elseif LineUseLog == LineLogType.ALL    then useName = "   ALL"
 	end
 	
-	local crossName = "NONE"
+	local crossName = "  NONE"
 	if     LineCrossLog == LineLogType.PLAYER then crossName = "PLAYER"
-	elseif LineCrossLog == LineLogType.ALL    then crossName = "ALL"
+	elseif LineCrossLog == LineLogType.ALL    then crossName = "   ALL"
 	end
 	
-	make_button(-150, h*1, "Log Use   "..useName,   function() cycle_log_types(true ) end)
-	make_button(-150, h*2, "Log Cross "..crossName, function() cycle_log_types(false) end)
-	make_button(-120, h*3, "Log RNG "  ..(RNGLog   and "ON " or "OFF"),    prandom_toggle)
-	make_button(-110, h*4, "Map    "   ..(ShowMap  and "ON " or "OFF"),        map_toggle)
-	make_button(-110, h*5, "Grid   "   ..(ShowGrid and "ON " or "OFF"),       grid_toggle)
-	make_button(-110, h*6, "Hilite "   ..(Hilite   and "ON " or "OFF"),     hilite_toggle)
-	make_button(-110, h*7, "Follow "   ..(Follow   and "ON " or "OFF"),     follow_toggle)
-	make_button(-110, h*8, "Reset View",                                       reset_view)
+	make_button(-170, h*1, "Log Use   "   ..useName,   function() cycle_log_types(true ) end)
+	make_button(-170, h*2, "Log Cross "   ..crossName, function() cycle_log_types(false) end)
+	make_button(-170, h*3, "Log P_Random "..(RNGLog   and " ON" or "OFF"),    prandom_toggle)
+	make_button(-170, h*4, "Log Interc.  "..(InterceptLog and " ON" or "OFF"),intercept_toggle)
+	make_button(-110, h*5, "Map    "      ..(ShowMap  and " ON" or "OFF"),        map_toggle)
+	make_button(-110, h*6, "Grid   "      ..(ShowGrid and " ON" or "OFF"),       grid_toggle)
+	make_button(-110, h*7, "Hilite "      ..(Hilite   and " ON" or "OFF"),     hilite_toggle)
+	make_button(-110, h*8, "Follow "      ..(Follow   and " ON" or "OFF"),     follow_toggle)
+	make_button(-110, h*9, "Reset View",                                          reset_view)
 	
 	Input = input.get()
 	
