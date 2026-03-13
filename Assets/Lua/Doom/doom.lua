@@ -96,100 +96,6 @@ local function iterate()
 		player.angle
 	)
 	
-	if Tracked[TrackedType.THING].Current then
-		local entity = Tracked[TrackedType.THING]
-		local min    = entity.Current == entity.Min and "  " or "<-"
-		local max    = entity.Current == entity.Max and "  " or "->"
-		local mobj   = entity.TrackedList[entity.Current]
-		
-		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Thing, TextPosY.Line-1) then
-			box(0, TextPosY.Thing, PADDING_WIDTH, TextPosY.Line-1, 0xffffffff, 0x88ffffff)
-			
-			if input.get()["Delete"] then
-				Confirmation = {
-					type = TrackedType.THING,
-					id   = mobj.index
-				}
-			end
-		end
-		
-		texts.thing  = string.format(
-			"%sTHING %d (%s)%s\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
-			"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
-			min,
-			mobj.index, MobjType[mobj.type],
-			max,
-			mobj.x      / FRACUNIT,
-			mobj.y      / FRACUNIT,
-			mobj.z      / FRACUNIT,
-			mobj.radius / FRACUNIT,
-			mobj.tics,
-			mobj.health,
-			mobj.reactiontime,
-			mobj.threshold)
-	end
-	
-	if Tracked[TrackedType.LINE].Current then
-		local entity         = Tracked[TrackedType.LINE]
-		local min            = entity.Current == entity.Min and "  " or "<-"
-		local max            = entity.Current == entity.Max and "  " or "->"
-		local line           = entity.TrackedList[entity.Current]
-		local x1, y1, x2, y2 = line:coords()
-		local distance       = distance_from_line(
-			{ x = player.x,      y = player.y      },
-			{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
-			{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
-		)
-		
-		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Line, TextPosY.Sector-1) then
-			box(0, TextPosY.Line, PADDING_WIDTH, TextPosY.Sector-1, 0xffffffff, 0x88ffffff)
-			
-			if input.get()["Delete"] then
-				Confirmation = {
-					type = TrackedType.LINE,
-					id   = line.iLineID
-				}
-			end
-		end
-		
-		texts.line = string.format(
-			"%sLINEDEF %d%s\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-			min, line.iLineID, max,
-			distance,
-			math.floor(x1 / FRACUNIT),
-			math.floor(y1 / FRACUNIT),
-			math.floor(x2 / FRACUNIT),
-			math.floor(y2 / FRACUNIT))
-	end
-	
-	if Tracked[TrackedType.SECTOR].Current then
-		local entity = Tracked[TrackedType.SECTOR]
-		local min    = entity.Current == entity.Min and "  " or "<-"
-		local max    = entity.Current == entity.Max and "  " or "->"
-		local sector = entity.TrackedList[entity.Current]
-		
-		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
-			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+64, 0xffffffff, 0x88ffffff)
-			
-			if input.get()["Delete"] then
-				Confirmation = {
-					type = TrackedType.SECTOR,
-					id   = sector.iSectorID
-				}
-			end
-		end
-		
-		texts.sector = string.format(
-			"%sSECTOR %d%s\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
-			min, sector.iSectorID, max,
-			sector.special,
-			sector.floorheight   / FRACUNIT,
-			sector.ceilingheight / FRACUNIT)
-	end
-
 	if ShowMap then
 		if ShowGrid then
 			local size  = GRID_SIZE * FRACUNIT
@@ -348,6 +254,106 @@ local function iterate()
 					math.floor(closestLine.v2.y / FRACUNIT))
 			end
 		end
+	end
+	
+	if Tracked[TrackedType.THING].Current then
+		local entity = Tracked[TrackedType.THING]
+		local min    = entity.Current == entity.Min and "  " or "<-"
+		local max    = entity.Current == entity.Max and "  " or "->"
+		local mobj   = entity.TrackedList[entity.Current]
+		
+		if mousePos.x <= PADDING_WIDTH
+		and in_range(mousePos.y, TextPosY.Thing, TextPosY.Line-1) then
+			local delete = false
+			box(0, TextPosY.Thing, PADDING_WIDTH, TextPosY.Line-1, 0xffffffff, 0x88ffffff)
+			make_button(PADDING_WIDTH-40, TextPosY.Thing+26, " X ", function() delete = true end)
+			
+			if input.get()["Delete"] or delete then
+				Confirmation = {
+					type = TrackedType.THING,
+					id   = mobj.index
+				}
+			end
+		end
+		
+		texts.thing  = string.format(
+			"%sTHING %d (%s)%s\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
+			"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+			min,
+			mobj.index, MobjType[mobj.type],
+			max,
+			mobj.x      / FRACUNIT,
+			mobj.y      / FRACUNIT,
+			mobj.z      / FRACUNIT,
+			mobj.radius / FRACUNIT,
+			mobj.tics,
+			mobj.health,
+			mobj.reactiontime,
+			mobj.threshold)
+	end
+	
+	if Tracked[TrackedType.LINE].Current then
+		local entity         = Tracked[TrackedType.LINE]
+		local min            = entity.Current == entity.Min and "  " or "<-"
+		local max            = entity.Current == entity.Max and "  " or "->"
+		local line           = entity.TrackedList[entity.Current]
+		local x1, y1, x2, y2 = line:coords()
+		local distance       = distance_from_line(
+			{ x = player.x,      y = player.y      },
+			{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+			{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+		)
+		
+		if mousePos.x <= PADDING_WIDTH
+		and in_range(mousePos.y, TextPosY.Line, TextPosY.Sector-1) then
+			local delete = false
+			box(0, TextPosY.Line, PADDING_WIDTH, TextPosY.Sector-1, 0xffffffff, 0x88ffffff)
+			make_button(PADDING_WIDTH-40, TextPosY.Line+26, " X ", function() delete = true end)
+			
+			if input.get()["Delete"] or delete then
+				Confirmation = {
+					type = TrackedType.LINE,
+					id   = line.iLineID
+				}
+			end
+		end
+		
+		texts.line = string.format(
+			"%sLINEDEF %d%s\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+			min, line.iLineID, max,
+			distance,
+			math.floor(x1 / FRACUNIT),
+			math.floor(y1 / FRACUNIT),
+			math.floor(x2 / FRACUNIT),
+			math.floor(y2 / FRACUNIT))
+	end
+	
+	if Tracked[TrackedType.SECTOR].Current then
+		local entity = Tracked[TrackedType.SECTOR]
+		local min    = entity.Current == entity.Min and "  " or "<-"
+		local max    = entity.Current == entity.Max and "  " or "->"
+		local sector = entity.TrackedList[entity.Current]
+		
+		if mousePos.x <= PADDING_WIDTH
+		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
+			local delete = false
+			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+64, 0xffffffff, 0x88ffffff)
+			make_button(PADDING_WIDTH-40, TextPosY.Sector+26, " X ", function() delete = true end)
+			
+			if input.get()["Delete"] or delete then
+				Confirmation = {
+					type = TrackedType.SECTOR,
+					id   = sector.iSectorID
+				}
+			end
+		end
+		
+		texts.sector = string.format(
+			"%sSECTOR %d%s\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
+			min, sector.iSectorID, max,
+			sector.special,
+			sector.floorheight   / FRACUNIT,
+			sector.ceilingheight / FRACUNIT)
 	end
 	
 	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
