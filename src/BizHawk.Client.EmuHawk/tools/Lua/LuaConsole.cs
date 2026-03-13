@@ -165,6 +165,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private LuaLibraries LuaImp;
+		private List<LuaFile> _scriptsToRestart = new();
 
 		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
@@ -195,10 +196,22 @@ namespace BizHawk.Client.EmuHawk
 			Settings.SplitDistance = splitContainer1.SplitterDistance;
 		}
 
+		public override void Stop()
+		{
+			if (LuaImp is not null && !LuaImp.IsRebootingCore)
+			{
+				_scriptsToRestart = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
+
+				// we don't use _scriptsToRestart here as the other scripts need to be stopped too
+				foreach (var file in LuaImp.ScriptList)
+				{
+					DisableLuaScript(file);
+				}
+			}
+		}
+
 		public override void Restart()
 		{
-			List<LuaFile> runningScripts = new();
-
 			ApiContainer apiContainer = ApiManager.RestartLua(
 				Emulator.ServiceProvider,
 				WriteToOutputWindow,
@@ -212,23 +225,11 @@ namespace BizHawk.Client.EmuHawk
 				Game,
 				DialogController);
 
-			// Things we need to do with the existing LuaImp before we can make a new one
-			if (LuaImp is not null)
+			if (LuaImp is not null && LuaImp.IsRebootingCore)
 			{
-				if (LuaImp.IsRebootingCore)
-				{
-					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
-					return;
-				}
-
-				runningScripts = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
-
-				// we don't use runningScripts here as the other scripts need to be stopped too
-				foreach (var file in LuaImp.ScriptList)
-				{
-					DisableLuaScript(file);
-				}
+				// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
+				LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
+				return;
 			}
 
 			LuaFileList newScripts = new(LuaImp?.ScriptList, onChanged: SessionChangedCallback);
@@ -249,7 +250,7 @@ namespace BizHawk.Client.EmuHawk
 				.Select(static f => $"{f.Library}.{f.Name}")
 				.ToArray());
 
-			foreach (var file in runningScripts)
+			foreach (var file in _scriptsToRestart)
 			{
 				try
 				{
