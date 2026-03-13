@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 				mm.Add(_elf.GetPagesDomain());
-				_memoryDomains = new MemoryDomainList(mm) { SystemBus = systemBus };
+				_memoryDomains = new MemoryDomainList(mm, this) { SystemBus = systemBus };
 				((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 			}
 		}
