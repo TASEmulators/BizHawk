@@ -35,9 +35,9 @@ namespace BizHawk.Emulation.Common
 
 		public string? PairedAxis => Constraint?.PairedAxis;
 
-		public readonly Range<int> Range;
+		public readonly Int32ClosedRange Range;
 
-		public AxisSpec(Range<int> range, int neutral, bool isReversed = false, AxisConstraint? constraint = null)
+		public AxisSpec(Int32ClosedRange range, int neutral, bool isReversed = false, AxisConstraint? constraint = null)
 		{
 			Constraint = constraint;
 			IsReversed = isReversed;
