@@ -516,13 +516,20 @@ structs.sector = sector
 	end)
 	.build() --[[@as domain_struct]]
 
+-- divline_t https://github.com/TASEmulators/dsda-doom/blob/fe96d105f06a1971b633a07d6468e0f426e1f1d5/prboom2/src/p_maputl.h#L62-L67
+structs.divline = utils.struct_layout("divline")
+	.s32("x")
+	.s32("y")
+	.s32("dx")
+	.s32("dy")
+	.build()
+
 -- intercept_t https://github.com/TASEmulators/dsda-doom/blob/fe96d105f06a1971b633a07d6468e0f426e1f1d5/prboom2/src/p_maputl.h#L69-L76
 structs.intercept = utils.struct_layout("intercept")
 	.s32("frac")
 	.s32("isaline")
 	.ptr("d")
 	.build()
-
 
 structs.globals = utils.global_layout()
 	.sym  ("s32",   "gameskill")
@@ -549,6 +556,8 @@ structs.globals = utils.global_layout()
 	.sym  ("s32",   "bmaporgy")
 	.sym  ("s32",   "bmapwidth")
 	.sym  ("s32",   "bmapheight")
+	.sym  ("u32",   "intercept_p")
+	.sym  ("embed", "trace", structs.divline)
 	-- game state
 	.sym  ("bool",  "automap_active")
 	.sym  ("s32" ,  "gameaction")
