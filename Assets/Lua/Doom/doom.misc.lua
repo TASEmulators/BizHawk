@@ -126,6 +126,7 @@ Players     = {}
 Config      = {}
 PRandomInfo = {}
 DivLines    = {}
+GUITexts    = {}
 -- map object positions bounds
 OB = {
 	top    = math.maxinteger,

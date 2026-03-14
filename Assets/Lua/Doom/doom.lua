@@ -65,61 +65,157 @@ local function iterate_players()
 	--]]--
 end
 
-local function iterate()
-	if Init then return end
+local function thing_handler()
+	if not ShowMap then return end
+	
+	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
+	
+	for _, mobj in pairs(Globals.mobjs:readbulk()) do
+		local type   = mobj.type
+		local index  = mobj.index
+		local radius_color, text_color = get_mobj_color(mobj, type)
+		
+		if radius_color or text_color then -- not hidden
+			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
-	init_cache()
+			if  in_range(pos.x, 0, ScreenWidth)
+			and in_range(pos.y, 0, ScreenHeight)
+			then
+				local radius = mobj.radius
+				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
+				
+				if  Hilite
+				and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
+				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
+				and mousePos.x > PADDING_WIDTH and not freeze_gui()
+				then
+					radius_color = "white"
+					text_color   = "white"
+					
+					GUITexts.thing = string.format(
+						"  THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
+						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+						mobj.index, MobjType[type],
+						mobj.x      / FRACUNIT,
+						mobj.y      / FRACUNIT,
+						mobj.z      / FRACUNIT,
+						mobj.radius / FRACUNIT,
+						mobj.tics,
+						mobj.health,
+						mobj.reactiontime,
+						mobj.threshold)
+				end
+				
+				if radius_color then
+					box(
+						pos.x - screen_radius, 
+						pos.y - screen_radius,
+						pos.x + screen_radius,
+						pos.y + screen_radius,
+						radius_color)
+				end
+				
+				if text_color and index >= 0 then
+					text(
+						pos.x - screen_radius + 1,
+						pos.y - screen_radius,
+						string.format("%d", index),
+						text_color)
+				end
+			end
+		end
+	end
+end
+
+local function line_handler()
+	if not ShowMap then return end
 	
 	local closestLine
-	local selectedSector
-	local texts        = {}
 	local player       = select(2, next(Players)) -- first present player only for now
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos = screen_to_game(mousePos)
 	local shortestDist = math.maxinteger
 	
-	texts.player = string.format(
-		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
-		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
-		" momX: %.6f\n momY: %.6f\n" ..
-		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
-		player.x,
-		player.y,
-		player.z,
-		player.distx,
-		player.disty,
-		player.distz,
-		player.momx,
-		player.momy,
-		player.distmoved,
-		player.dirmoved,
-		player.angle
-	)
-	
-	if ShowMap and ShowGrid then
-		local size  = GRID_SIZE * FRACUNIT
-		local step  = GRID_SIZE * Zoom
-		local bmorg = game_to_screen(BlockmapOrigin)
-		local bmend = game_to_screen(BlockmapEnd)
-		local start = { x = bmorg.x, y = bmend.y }
-		local stop  = { x = bmend.x, y = bmorg.y }
+	for _, line in ipairs(Lines) do
+		local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
+		local color   = 0xffffffff
+		local special = line.special
+		local index   = line.iLineID
+		local entity  = Tracked[TrackedType.LINE]
+		local list    = entity.TrackedList
+
+		if special ~= 0 then color = 0xffff00ff end
+
+		drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
+		x1, y1, x2, y2 = cached_line_coords(line)
 		
-		for x = start.x, stop.x-1, step do
-			drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
+		if Hilite then
+			local dist = distance_from_line(
+				gameMousePos,
+				tuple_to_vertex(x1, y1),
+				tuple_to_vertex(x2, y2))
+			
+			if math.abs(dist) < shortestDist then
+				shortestDist = math.abs(dist)
+				closestLine  = line
+			end
 		end
-		for y = start.y, stop.y-1, step do
-			drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
-		end
-		
-		-- due to step being float in screen coords, we can't avoid rounding error
-		-- so final 2 lines won't match grid size and sometimes won't even be drawn
-		-- so we draw them separately where they "should be"
-		-- while embracing the rounding error of all the rest
-		-- since drawing them all perfectly is too complicated
-		drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
-		drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
 	end
 	
+	if mousePos.x > PADDING_WIDTH and not freeze_gui() then
+		if closestLine then
+			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closestLine))
+			local side =
+				(mousePos.y - y1) * (x2 - x1) -
+				(mousePos.x - x1) * (y2 - y1)
+			
+			if side <= 0 then
+				if closestLine.backsector then
+					selectedSector = closestLine.backsector
+				end
+			else
+				if closestLine.frontsector then
+					selectedSector = closestLine.frontsector
+				end
+			end
+		end
+		
+		if selectedSector then
+			for _, line in ipairs(selectedSector.lines) do
+				-- cached_line_coords gives some length error?
+				local x1, y1, x2, y2 = game_to_screen(line:coords())
+				drawline(x1, y1, x2, y2, 0xff00ffff)
+				GUITexts.sector = string.format(
+					"  SECTOR %d\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
+					selectedSector.iSectorID,
+					selectedSector.special,
+					selectedSector.floorheight   / FRACUNIT,
+					selectedSector.ceilingheight / FRACUNIT)
+			end
+		end
+		
+		if closestLine then
+			local x1, y1, x2, y2 = cached_line_coords(closestLine)
+			local distance = distance_from_line(
+				{ x = player.x,      y = player.y      },
+				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
+				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+			)
+			
+			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
+			drawline(x1, y1, x2, y2, 0xffff8800)
+			GUITexts.line = string.format(
+				"  LINEDEF %d\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+				closestLine.iLineID, distance,
+				math.floor(closestLine.v1.x / FRACUNIT),
+				math.floor(closestLine.v1.y / FRACUNIT),
+				math.floor(closestLine.v2.x / FRACUNIT),
+				math.floor(closestLine.v2.y / FRACUNIT))
+		end
+	end
+end
+
+local function tracked_handler()
 	if Tracked[TrackedType.THING].Current then
 		local entity = Tracked[TrackedType.THING]
 		local min    = entity.Current == entity.Min and "  " or "<-"
@@ -140,7 +236,7 @@ local function iterate()
 			end
 		end
 		
-		texts.thing  = string.format(
+		GUITexts.thing  = string.format(
 			"%sTHING %d (%s)%s\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
 			"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
 			min,
@@ -182,7 +278,7 @@ local function iterate()
 			end
 		end
 		
-		texts.line = string.format(
+		GUITexts.line = string.format(
 			"%sLINEDEF %d%s\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 			min, line.iLineID, max,
 			distance,
@@ -212,179 +308,104 @@ local function iterate()
 			end
 		end
 		
-		texts.sector = string.format(
+		GUITexts.sector = string.format(
 			"%sSECTOR %d%s\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
 			min, sector.iSectorID, max,
 			sector.special,
 			sector.floorheight   / FRACUNIT,
 			sector.ceilingheight / FRACUNIT)
 	end
+end
+
+local function draw_grid()
+	if ShowMap and ShowGrid then
+		local size  = GRID_SIZE * FRACUNIT
+		local step  = GRID_SIZE * Zoom
+		local bmorg = game_to_screen(BlockmapOrigin)
+		local bmend = game_to_screen(BlockmapEnd)
+		local start = { x = bmorg.x, y = bmend.y }
+		local stop  = { x = bmend.x, y = bmorg.y }
+		
+		for x = start.x, stop.x-1, step do
+			drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
+		end
+		for y = start.y, stop.y-1, step do
+			drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
+		end
+		
+		-- due to step being float in screen coords, we can't avoid rounding error
+		-- so final 2 lines won't match grid size and sometimes won't even be drawn
+		-- so we draw them separately where they "should be"
+		-- while embracing the rounding error of all the rest
+		-- since drawing them all perfectly is too complicated
+		drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
+		drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
+	end
+end
+
+local function draw_tracelines()
+	if not ShowMap then return end
 	
-	if ShowMap then
-		for _, mobj in pairs(Globals.mobjs:readbulk()) do
-			local type   = mobj.type
-			local index  = mobj.index
-			local radius_color, text_color = get_mobj_color(mobj, type)
-			
-			if radius_color or text_color then -- not hidden
-				local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
-
-				if  in_range(pos.x, 0, ScreenWidth)
-				and in_range(pos.y, 0, ScreenHeight)
-				then
-					local radius = mobj.radius
-					local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
-					
-					if  Hilite
-					and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
-					and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
-					and mousePos.x > PADDING_WIDTH and not freeze_gui()
-					then
-						radius_color = "white"
-						text_color   = "white"
-						
-						texts.thing = string.format(
-							"  THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
-							"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
-							mobj.index, MobjType[type],
-							mobj.x      / FRACUNIT,
-							mobj.y      / FRACUNIT,
-							mobj.z      / FRACUNIT,
-							mobj.radius / FRACUNIT,
-							mobj.tics,
-							mobj.health,
-							mobj.reactiontime,
-							mobj.threshold)
-					end
-					
-					if radius_color then
-						box(
-							pos.x - screen_radius, 
-							pos.y - screen_radius,
-							pos.x + screen_radius,
-							pos.y + screen_radius,
-							radius_color)
-					end
-					
-					if text_color and index >= 0 then
-						text(
-							pos.x - screen_radius + 1,
-							pos.y - screen_radius,
-							string.format("%d", index),
-							text_color)
-					end
-				end
-			end
+	for k,v in pairs(DivLines) do
+		local color
+		local i     = 0
+		local line  = {}
+		local delta = v - Framecount
+		
+		for token in string.gmatch(k, "([^%s]+)") do
+		   line[i] = tonumber(token)
+		   i = i + 1
 		end
 		
-		for _, line in ipairs(Lines) do
-			local x1, y1, x2, y2 = game_to_screen(cached_line_coords(line))
-			local color   = 0xffffffff
-			local special = line.special
-			local index   = line.iLineID
-			local entity  = Tracked[TrackedType.LINE]
-			local list    = entity.TrackedList
-
-			if special ~= 0 then color = 0xffff00ff end
-
-			drawline(x1, y1, x2, y2, color) -- no speedup from doing range check
-			x1, y1, x2, y2 = cached_line_coords(line)
-			
-			if Hilite then
-				local dist = distance_from_line(
-					gameMousePos,
-					tuple_to_vertex(x1, y1),
-					tuple_to_vertex(x2, y2))
-				
-				if math.abs(dist) < shortestDist then
-					shortestDist = math.abs(dist)
-					closestLine  = line
-				end
-			end
+		-- full red or grey with dynamically reduced alpha
+		if delta == FADEOUT_TIMER - 1
+		then color = 0xffff0000
+		else color = (math.floor(0xff / FADEOUT_TIMER * delta) << 24) | 0x888888
 		end
 		
-		if mousePos.x > PADDING_WIDTH and not freeze_gui() then
-			if closestLine then
-				local x1, y1, x2, y2 = game_to_screen(cached_line_coords(closestLine))
-				local side =
-					(mousePos.y - y1) * (x2 - x1) -
-					(mousePos.x - x1) * (y2 - y1)
-				
-				if side <= 0 then
-					if closestLine.backsector then
-						selectedSector = closestLine.backsector
-					end
-				else
-					if closestLine.frontsector then
-						selectedSector = closestLine.frontsector
-					end
-				end
-			end
-			
-			if selectedSector then
-				for _, line in ipairs(selectedSector.lines) do
-					-- cached_line_coords gives some length error?
-					local x1, y1, x2, y2 = game_to_screen(line:coords())
-					drawline(x1, y1, x2, y2, 0xff00ffff)
-					texts.sector = string.format(
-						"  SECTOR %d\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
-						selectedSector.iSectorID,
-						selectedSector.special,
-						selectedSector.floorheight   / FRACUNIT,
-						selectedSector.ceilingheight / FRACUNIT)
-				end
-			end
-			
-			if closestLine then
-				local x1, y1, x2, y2 = cached_line_coords(closestLine)
-				local distance = distance_from_line(
-					{ x = player.x,      y = player.y      },
-					{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
-					{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
-				)
-				
-				x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
-				drawline(x1, y1, x2, y2, 0xffff8800)
-				texts.line = string.format(
-					"  LINEDEF %d\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-					closestLine.iLineID, distance,
-					math.floor(closestLine.v1.x / FRACUNIT),
-					math.floor(closestLine.v1.y / FRACUNIT),
-					math.floor(closestLine.v2.x / FRACUNIT),
-					math.floor(closestLine.v2.y / FRACUNIT))
-			end
-		end
-		
-		for k,v in pairs(DivLines) do
-			local color
-			local i     = 0
-			local line  = {}
-			local delta = v - Framecount
-			
-			for token in string.gmatch(k, "([^%s]+)") do
-			   line[i] = tonumber(token)
-			   i = i + 1
-			end
-			
-			-- full red or grey with dynamically reduced alpha
-			if delta == FADEOUT_TIMER - 1
-			then color = 0xffff0000
-			else color = (math.floor(0xff / FADEOUT_TIMER * delta) << 24) | 0x888888
-			end
-			
-			if delta > 0 then
-				local x1, y1, x2, y2 = game_to_screen(line[0], line[1], line[2], line[3])
-				drawline(x1, y1, x2, y2, color)
-			else
-				DivLines[k] = nil
-			end
+		if delta > 0 then
+			local x1, y1, x2, y2 = game_to_screen(line[0], line[1], line[2], line[3])
+			drawline(x1, y1, x2, y2, color)
+		else
+			DivLines[k] = nil
 		end
 	end
+end
+
+local function iterate()
+	if Init then return end
+
+	init_cache()
+	
+	local player    = select(2, next(Players)) -- first present player only for now
+	local rngindex  = Globals.rng.rndindex
+	GUITexts        = {}
+	GUITexts.player = string.format(
+		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
+		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
+		" momX: %.6f\n momY: %.6f\n" ..
+		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
+		player.x,
+		player.y,
+		player.z,
+		player.distx,
+		player.disty,
+		player.distz,
+		player.momx,
+		player.momy,
+		player.distmoved,
+		player.dirmoved,
+		player.angle
+	)
+	
+	draw_grid()
+	tracked_handler()
+	thing_handler()
+	line_handler()
+	draw_tracelines()
 	
 	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
-	text(10, 42, texts.player, MapPrefs.player.color)
-	
-	local rngindex = Globals.rng.rndindex
+	text(10, 42, GUITexts.player, MapPrefs.player.color)
 	text(
 		PADDING_WIDTH,
 		ScreenHeight-32*ScreenHeight/200-50,
@@ -398,9 +419,9 @@ local function iterate()
 			memory.readbyte(memory.read_u32_le(symbols.rndtable) + rngindex, "System Bus")
 	))
 	
-	if texts.thing  then text(10, TextPosY.Thing,  texts.thing             ) end
-	if texts.line   then text(10, TextPosY.Line,   texts.line,   0xffff8800) end
-	if texts.sector then text(10, TextPosY.Sector, texts.sector, 0xff00ffff) end
+	if GUITexts.thing  then text(10, TextPosY.Thing,  GUITexts.thing             ) end
+	if GUITexts.line   then text(10, TextPosY.Line,   GUITexts.line,   0xffff8800) end
+	if GUITexts.sector then text(10, TextPosY.Sector, GUITexts.sector, 0xff00ffff) end
 end
 
 local function make_buttons()
