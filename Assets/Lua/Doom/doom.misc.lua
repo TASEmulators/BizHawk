@@ -85,6 +85,7 @@ BlockmapWidth  = 0
 InterceptPtr   = 0
 InterceptLog   = false
 RNGLog         = false
+Framecount     = 0
 LastFramecount = -1
 Input          = nil
 Lines          = nil
@@ -211,7 +212,7 @@ function intercept_toggle()
 					divline.x + divline.dx,
 					divline.y + divline.dy
 				)
-				if not DivLines[key] then DivLines[key] = FADEOUT_TIMER end
+				if not DivLines[key] then DivLines[key] = Framecount + FADEOUT_TIMER end
 				
 				-- new intercept was just added
 				if intercept_p ~= InterceptPtr then

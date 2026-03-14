@@ -354,6 +354,31 @@ local function iterate()
 					math.floor(closestLine.v2.y / FRACUNIT))
 			end
 		end
+		
+		for k,v in pairs(DivLines) do
+			local color
+			local i     = 0
+			local line  = {}
+			local delta = v - Framecount
+			
+			for token in string.gmatch(k, "([^%s]+)") do
+			   line[i] = tonumber(token)
+			   i = i + 1
+			end
+			
+			-- full red or grey with dynamically reduced alpha
+			if delta == FADEOUT_TIMER - 1
+			then color = 0xffff0000
+			else color = (math.floor(0xff / FADEOUT_TIMER * delta) << 24) | 0x888888
+			end
+			
+			if delta > 0 then
+				local x1, y1, x2, y2 = game_to_screen(line[0], line[1], line[2], line[3])
+				drawline(x1, y1, x2, y2, color)
+			else
+				DivLines[k] = nil
+			end
+		end
 	end
 	
 	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
@@ -514,33 +539,9 @@ event.onframestart(function()
 end)
 
 event.onframeend(function()
+	Framecount = emu.framecount()
 	for _,v in pairs(PRandomInfo) do
 		print(v)
-	end
-	
-	if ShowMap then
-		for k,v in pairs(DivLines) do
-			local color
-			local line = {}
-			local i    = 0
-			for token in string.gmatch(k, "([^%s]+)") do
-			   line[i] = tonumber(token)
-			   i = i + 1
-			end
-			
-			if v == FADEOUT_TIMER
-			then color = 0xffff0000
-			else color = (math.floor(0xff / FADEOUT_TIMER * v) << 24) | 0x888888
-			end
-			
-			if v > 0 then
-				local x1, y1, x2, y2 = game_to_screen(line[0], line[1], line[2], line[3])
-				drawline(x1, y1, x2, y2, color)
-				DivLines[k] = v - 1
-			else
-				DivLines[k] = nil
-			end
-		end
 	end
 end)
 
@@ -565,7 +566,6 @@ while true do
 	Mouse              = input.getmouse()
 	ScreenWidth        = client.screenwidth()
 	ScreenHeight       = client.screenheight()
-	local framecount   = emu.framecount()
 	local paused       = client.ispaused()
 	local episode, map = Globals.gameepisode, Globals.gamemap
 	
@@ -578,7 +578,7 @@ while true do
 
 	-- clear cache after rewind, turbo etc.
 	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
-	if framecount ~= LastFramecount and framecount ~= LastFramecount + 1 then
+	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
 		clear_cache()
 	end
 
@@ -593,7 +593,7 @@ while true do
 	end
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
-	if (framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
+	if (Framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
 		iterate_players()
 		iterate()
 		LastMouse.left = Mouse.Left
@@ -601,7 +601,7 @@ while true do
 
 	LastScreenSize.w = ScreenWidth
 	LastScreenSize.h = ScreenHeight
-	LastFramecount   = framecount
+	LastFramecount   = Framecount
 
 	emu.yield()
 end
