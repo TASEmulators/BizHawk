@@ -501,6 +501,9 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   displayplayer = consoleplayer = settings->DisplayPlayer;
 
+  // Enabling DSDA output, for debugging
+  enableOutput = 1;
+
   // Initializing DSDA core
   headlessMain(argc, argv);
   printf("DSDA Initialized\n");
@@ -517,9 +520,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   printf("Prevent Level Exit:  %d\n", preventLevelExit);
   printf("Prevent Game End:    %d\n", preventGameEnd);
   printf("Compatibility Level: %d\n", compatibility_level);
-
-  // Enabling DSDA output, for debugging
-  enableOutput = 1;
 
   return 1;
 }
