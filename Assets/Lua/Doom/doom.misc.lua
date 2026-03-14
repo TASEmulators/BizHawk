@@ -22,6 +22,7 @@ CHAR_HEIGHT        = 16
 PADDING_WIDTH      = 240
 PRANDOM_ALL_IN_ONE = 49
 GRID_SIZE          = 128
+FADEOUT_TIMER      = 20
 MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
 SETTINGS_FILENAME  = "doom.settings.lua"
 
@@ -81,8 +82,9 @@ ScreenHeight   = client.screenheight()
 LineUseLog     = LineLogType.NONE
 LineCrossLog   = LineLogType.NONE
 BlockmapWidth  = 0
-RNGLog         = false
+InterceptPtr   = 0
 InterceptLog   = false
+RNGLog         = false
 LastFramecount = -1
 Input          = nil
 Lines          = nil
@@ -122,6 +124,7 @@ Pan = {
 Players     = {}
 Config      = {}
 PRandomInfo = {}
+DivLines    = {}
 -- map object positions bounds
 OB = {
 	top    = math.maxinteger,
@@ -198,13 +201,28 @@ function intercept_toggle()
 	
 	if InterceptLog then
 		doom.on_intercept(function(block)
+			local intercept_p = Globals.intercept_p
+			
 			if ShowMap and ShowGrid then
-				local bmorg = game_to_screen(BlockmapOrigin)
-				local x     = bmorg.x+(           block % BlockmapWidth   )*128*Zoom
-				local y     = bmorg.y-(math.floor(block / BlockmapWidth)+1)*128*Zoom
-				box(x, y, x+128*Zoom, y+128*Zoom, "red", 0x80ff0000)
+				local divline = Globals.trace
+				local key = string.format(
+					"%d %d %d %d",
+					divline.x,  divline.y,
+					divline.x + divline.dx,
+					divline.y + divline.dy
+				)
+				if not DivLines[key] then DivLines[key] = FADEOUT_TIMER end
+				
+				-- new intercept was just added
+				if intercept_p ~= InterceptPtr then
+					local org = game_to_screen(BlockmapOrigin)
+					local x     = org.x+(           block % BlockmapWidth   )*128*Zoom
+					local y     = org.y-(math.floor(block / BlockmapWidth)+1)*128*Zoom
+				--	box(x, y, x+128*Zoom, y+128*Zoom, "red", 0x40ff0000)
+					InterceptPtr = intercept_p
+				end
 			end
-		--	print(block)
+			
 		end, name)
 	else
 		event.unregisterbyname(name)
@@ -835,9 +853,10 @@ function init_cache()
 end
 
 function clear_cache()
-	Lines = nil
 	reset_view()
-	Tracked = {
+	Lines    = nil
+	DivLines = {}
+	Tracked  = {
 		[TrackedType.THING ] = TrackedEntity.new("thing" ),
 		[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
 		[TrackedType.SECTOR] = TrackedEntity.new("sector")

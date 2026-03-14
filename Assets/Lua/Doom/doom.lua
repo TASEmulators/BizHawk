@@ -517,6 +517,31 @@ event.onframeend(function()
 	for _,v in pairs(PRandomInfo) do
 		print(v)
 	end
+	
+	if ShowMap then
+		for k,v in pairs(DivLines) do
+			local color
+			local line = {}
+			local i    = 0
+			for token in string.gmatch(k, "([^%s]+)") do
+			   line[i] = tonumber(token)
+			   i = i + 1
+			end
+			
+			if v == FADEOUT_TIMER
+			then color = 0xffff0000
+			else color = (math.floor(0xff / FADEOUT_TIMER * v) << 24) | 0x888888
+			end
+			
+			if v > 0 then
+				local x1, y1, x2, y2 = game_to_screen(line[0], line[1], line[2], line[3])
+				drawline(x1, y1, x2, y2, color)
+				DivLines[k] = v - 1
+			else
+				DivLines[k] = nil
+			end
+		end
+	end
 end)
 
 event.onexit(function()
