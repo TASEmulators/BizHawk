@@ -23,6 +23,7 @@ PADDING_WIDTH      = 240
 PRANDOM_ALL_IN_ONE = 49
 GRID_SIZE          = 128
 FADEOUT_TIMER      = 20
+MAXIMUM_INTERCEPTS = 128
 MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
 SETTINGS_FILENAME  = "doom.settings.lua"
 
@@ -84,6 +85,7 @@ LineCrossLog   = LineLogType.NONE
 BlockmapWidth  = 0
 InterceptPtr   = 0
 InterceptLog   = false
+InterceptShow  = false
 RNGLog         = false
 Framecount     = 0
 LastFramecount = -1
@@ -102,12 +104,13 @@ LastInput      = nil
 
 
 -- saved to config
-Zoom     = 1
-Follow   = false
-Hilite   = false
-ShowMap  = true
-ShowGrid = true
-Angle    = AngleType.BYTE
+Zoom           = 1
+Follow         = false
+Hilite         = false
+ShowMap        = true
+ShowGrid       = true
+Angle          = AngleType.BYTE
+InterceptLimit = MAXIMUM_INTERCEPTS
 Tracked  = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
@@ -126,6 +129,7 @@ Players     = {}
 Config      = {}
 PRandomInfo = {}
 DivLines    = {}
+MapBlocks   = {}
 GUITexts    = {}
 -- map object positions bounds
 OB = {
@@ -189,23 +193,23 @@ function hilite_toggle()
 	Hilite = not Hilite
 end
 
-function map_toggle()
+function map_show()
 	ShowMap = not ShowMap
 end
 
-function grid_toggle()
+function grid_show()
 	ShowGrid = not ShowGrid
 end
 
-function intercept_toggle()
-	InterceptLog = not InterceptLog
+local function hook_intercepts()
 	local name = "Intercepts"
 	
-	if InterceptLog then
+	if InterceptLog or InterceptShow then
 		doom.on_intercept(function(block)
 			local intercept_p = Globals.intercept_p
 			
-			if ShowMap and ShowGrid then
+			if ShowMap and InterceptShow then
+				-- fetch traceline while at it
 				local divline = Globals.trace
 				local key = string.format(
 					"%d %d %d %d",
@@ -213,15 +217,15 @@ function intercept_toggle()
 					divline.x + divline.dx,
 					divline.y + divline.dy
 				)
-				if not DivLines[key] then DivLines[key] = Framecount + FADEOUT_TIMER end
-				
+				DivLines[key] = Framecount + FADEOUT_TIMER
+			end
+			
+			if intercept_p ~= InterceptPtr then
 				-- new intercept was just added
-				if intercept_p ~= InterceptPtr then
-					local org = game_to_screen(BlockmapOrigin)
-					local x     = org.x+(           block % BlockmapWidth   )*128*Zoom
-					local y     = org.y-(math.floor(block / BlockmapWidth)+1)*128*Zoom
-				--	box(x, y, x+128*Zoom, y+128*Zoom, "red", 0x40ff0000)
-					InterceptPtr = intercept_p
+				InterceptPtr = intercept_p
+				
+				if ShowMap and ShowGrid and InterceptShow then
+					MapBlocks[block] = Framecount + FADEOUT_TIMER
 				end
 			end
 			
@@ -231,7 +235,25 @@ function intercept_toggle()
 	end
 end
 
-function prandom_toggle()
+function intercept_log()
+	if Globals.compatibility_level < 7 then
+		InterceptLog = not InterceptLog
+		hook_intercepts()
+		
+		if InterceptLog then
+			print("Logging intercepts beyond " .. MAXIMUM_INTERCEPTS .. "...")
+		end
+	else
+		print("Boom fixed intercept overflow! No point in logging it.")
+	end
+end
+
+function intercept_show()
+	InterceptShow = not InterceptShow
+	hook_intercepts()
+end
+
+function prandom_log()
 	RNGLog = not RNGLog
 	local name = "PRandom"
 	
@@ -676,6 +698,9 @@ function settings_read()
 	-- ANGLE TYPE
 	Angle = Config.Angle or AngleType.BYTE
 	
+	-- INTERCEPTS
+	InterceptLimit = Config.InterceptLimit or MAXIMUM_INTERCEPTS
+	
 	-- MAP STATE
 	if not Config.Zoom
 	or not Config.PanX
@@ -738,6 +763,10 @@ function settings_write()
 			file:write(string.format("-- %5d (%s)\n", v, k))
 		end
 		file:write("Angle = " .. Angle .. "\n")
+		file:write("\n")
+		
+		-- INTERCEPTS
+		file:write("InterceptLimit = " .. InterceptLimit .. "\n")
 		file:write("\n")
 		
 		-- MAP STATE
@@ -856,8 +885,9 @@ end
 
 function clear_cache()
 	reset_view()
-	Lines    = nil
-	DivLines = {}
+	Lines     = nil
+	DivLines  = {}
+	MapBlocks = {}
 	Tracked  = {
 		[TrackedType.THING ] = TrackedEntity.new("thing" ),
 		[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
