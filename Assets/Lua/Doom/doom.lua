@@ -130,7 +130,7 @@ end
 local function line_handler()
 	if not ShowMap then return end
 	
-	local closestLine
+	local closestLine, selectedSector
 	local player       = select(2, next(Players)) -- first present player only for now
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos = screen_to_game(mousePos)
@@ -318,41 +318,67 @@ local function tracked_handler()
 end
 
 local function draw_grid()
-	if ShowMap and ShowGrid then
-		local size  = GRID_SIZE * FRACUNIT
-		local step  = GRID_SIZE * Zoom
-		local bmorg = game_to_screen(BlockmapOrigin)
-		local bmend = game_to_screen(BlockmapEnd)
-		local start = { x = bmorg.x, y = bmend.y }
-		local stop  = { x = bmend.x, y = bmorg.y }
+	if not (ShowMap and ShowGrid) then return end
+	
+	local size  = GRID_SIZE * FRACUNIT
+	local step  = GRID_SIZE * Zoom
+	local bmorg = game_to_screen(BlockmapOrigin)
+	local bmend = game_to_screen(BlockmapEnd)
+	local start = { x = bmorg.x, y = bmend.y }
+	local stop  = { x = bmend.x, y = bmorg.y }
+	
+	for x = start.x, stop.x-1, step do
+		drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
+	end
+	for y = start.y, stop.y-1, step do
+		drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
+	end
+	
+	-- due to step being float in screen coords, we can't avoid rounding error
+	-- so final 2 lines won't match grid size and sometimes won't even be drawn
+	-- so we draw them separately where they "should be"
+	-- while embracing the rounding error of all the rest
+	-- since drawing them all perfectly is too complicated
+	drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
+	drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
+
+	for block,timer in pairs(MapBlocks) do
+		local forecolor
+		local backcolor
+		local delta = timer - Framecount
 		
-		for x = start.x, stop.x-1, step do
-			drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
-		end
-		for y = start.y, stop.y-1, step do
-			drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
+		-- red or grey with dynamically reduced alpha
+		if delta == FADEOUT_TIMER - 1 then
+			forecolor = 0xffff0000
+			backcolor = 0x33ff0000
+		else
+			forecolor = 0x88888888
+			backcolor = (math.floor(0x88 / FADEOUT_TIMER * delta) << 24) | 0x888888
 		end
 		
-		-- due to step being float in screen coords, we can't avoid rounding error
-		-- so final 2 lines won't match grid size and sometimes won't even be drawn
-		-- so we draw them separately where they "should be"
-		-- while embracing the rounding error of all the rest
-		-- since drawing them all perfectly is too complicated
-		drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
-		drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
+		if delta > 0 then
+			local origin = game_to_screen(BlockmapOrigin)
+			local x      = origin.x +            block % BlockmapWidth  * GRID_SIZE * Zoom
+			local y      = origin.y - math.floor(block / BlockmapWidth) * GRID_SIZE * Zoom
+			-- positioning precision is a bit higher than of the overall grid
+			-- so it may look off at some zoom levels
+			box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
+		else
+			MapBlocks[block] = nil
+		end
 	end
 end
 
 local function draw_tracelines()
 	if not ShowMap then return end
 	
-	for k,v in pairs(DivLines) do
+	for key,timer in pairs(DivLines) do
 		local color
 		local i     = 0
 		local line  = {}
-		local delta = v - Framecount
+		local delta = timer - Framecount
 		
-		for token in string.gmatch(k, "([^%s]+)") do
+		for token in string.gmatch(key, "([^%s]+)") do
 		   line[i] = tonumber(token)
 		   i = i + 1
 		end
@@ -367,7 +393,7 @@ local function draw_tracelines()
 			local x1, y1, x2, y2 = game_to_screen(line[0], line[1], line[2], line[3])
 			drawline(x1, y1, x2, y2, color)
 		else
-			DivLines[k] = nil
+			DivLines[key] = nil
 		end
 	end
 end
@@ -442,15 +468,16 @@ local function make_buttons()
 	elseif LineCrossLog == LineLogType.ALL    then crossName = "   ALL"
 	end
 	
-	make_button(-170, h*1, "Log Use   "   ..useName,   function() cycle_log_types(true ) end)
-	make_button(-170, h*2, "Log Cross "   ..crossName, function() cycle_log_types(false) end)
-	make_button(-170, h*3, "Log P_Random "..(RNGLog   and " ON" or "OFF"),    prandom_toggle)
-	make_button(-170, h*4, "Log Interc.  "..(InterceptLog and " ON" or "OFF"),intercept_toggle)
-	make_button(-110, h*5, "Map    "      ..(ShowMap  and " ON" or "OFF"),        map_toggle)
-	make_button(-110, h*6, "Grid   "      ..(ShowGrid and " ON" or "OFF"),       grid_toggle)
-	make_button(-110, h*7, "Hilite "      ..(Hilite   and " ON" or "OFF"),     hilite_toggle)
-	make_button(-110, h*8, "Follow "      ..(Follow   and " ON" or "OFF"),     follow_toggle)
-	make_button(-110, h*9, "Reset View",                                          reset_view)
+	make_button(-170, h*1, "Log Use   "   ..useName,    function() cycle_log_types(true ) end)
+	make_button(-170, h*2, "Log Cross "   ..crossName,  function() cycle_log_types(false) end)
+	make_button(-170, h*3, "Log P_Random "..(RNGLog        and " ON" or "OFF"),   prandom_log)
+	make_button(-170, h*4, "Log  Interc. "..(InterceptLog  and " ON" or "OFF"), intercept_log)
+	make_button(-170, h*5, "Show Interc. "..(InterceptShow and " ON" or "OFF"),intercept_show)
+	make_button(-110, h*6, "Map    "      ..(ShowMap       and " ON" or "OFF"),      map_show)
+	make_button(-110, h*7, "Grid   "      ..(ShowGrid      and " ON" or "OFF"),     grid_show)
+	make_button(-110, h*8, "Hilite "      ..(Hilite        and " ON" or "OFF"), hilite_toggle)
+	make_button(-110, h*9, "Follow "      ..(Follow        and " ON" or "OFF"), follow_toggle)
+	make_button(-110, h*10,"Reset View",                                           reset_view)
 	
 	Input = input.get()
 	
