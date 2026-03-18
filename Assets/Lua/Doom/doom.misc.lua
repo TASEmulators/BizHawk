@@ -149,13 +149,14 @@ Tracked = {
 
 -- tables
 
-Players     = {}
-Config      = {}
-PRandomInfo = {}
-DivLines    = {}
-MapBlocks   = {}
-Intercepts  = {}
-GUITexts    = {}
+Players            = {}
+Config             = {}
+PRandomInfo        = {}
+DivLines           = {}
+MapBlocks          = {}
+Intercepts         = {}
+InterceptsOverruns = {}
+GUITexts           = {}
 -- map object positions bounds
 OB = {
 	top    = math.maxinteger,
@@ -226,6 +227,57 @@ function grid_show()
 	ShowGrid = not ShowGrid
 end
 
+local function fetch_intercept_overruns(limit)
+	local ret  = {}
+	local list = {
+		[ 12] = { name = "line_opening.lowfloor",   value = Globals.line_opening.lowfloor     },
+		[ 16] = { name = "line_opening.bottom",     value = Globals.line_opening.bottom       },
+		[ 20] = { name = "line_opening.top",        value = Globals.line_opening.top          },
+		[ 24] = { name = "line_opening.range",      value = Globals.line_opening.range        },
+		[160] = { name = "bulletslope",             value = Globals.bulletslope               },
+		-- originally nested lists, we keep them as one flat list for simplicity
+		-- augend is taken from the original, addend is to indicate lua's 1-based lists
+		[176] = { name = "playerstarts[0].x",       value = Globals.playerstarts[0+1].x       },
+		[178] = { name = "playerstarts[0].y",       value = Globals.playerstarts[0+1].y       },
+		[180] = { name = "playerstarts[0].angle",   value = Globals.playerstarts[0+1].angle   },
+		[182] = { name = "playerstarts[0].type",    value = Globals.playerstarts[0+1].type    },
+		[184] = { name = "playerstarts[0].options", value = Globals.playerstarts[0+1].options },
+		[186] = { name = "playerstarts[1].x",       value = Globals.playerstarts[1+1].x       },
+		[188] = { name = "playerstarts[1].y",       value = Globals.playerstarts[1+1].y       },
+		[190] = { name = "playerstarts[1].angle",   value = Globals.playerstarts[1+1].angle   },
+		[192] = { name = "playerstarts[1].type",    value = Globals.playerstarts[1+1].type    },
+		[194] = { name = "playerstarts[1].options", value = Globals.playerstarts[1+1].options },
+		[196] = { name = "playerstarts[2].x",       value = Globals.playerstarts[2+1].x       },
+		[198] = { name = "playerstarts[2].y",       value = Globals.playerstarts[2+1].y       },
+		[200] = { name = "playerstarts[2].angle",   value = Globals.playerstarts[2+1].angle   },
+		[202] = { name = "playerstarts[2].type",    value = Globals.playerstarts[2+1].type    },
+		[204] = { name = "playerstarts[2].options", value = Globals.playerstarts[2+1].options },
+		[206] = { name = "playerstarts[3].x",       value = Globals.playerstarts[3+1].x       },
+		[208] = { name = "playerstarts[3].y",       value = Globals.playerstarts[3+1].y       },
+		[210] = { name = "playerstarts[3].angle",   value = Globals.playerstarts[3+1].angle   },
+		[212] = { name = "playerstarts[3].type",    value = Globals.playerstarts[3+1].type    },
+		[214] = { name = "playerstarts[3].options", value = Globals.playerstarts[3+1].options },
+		[220] = { name = "bmapwidth",               value = Globals.bmapwidth                 },
+		[228] = { name = "bmaporgx",                value = Globals.bmaporgx                  },
+		[232] = { name = "bmaporgy",                value = Globals.bmaporgy                  },
+		[230] = { name = "bmapheight",              value = Globals.bmapheight                }
+	}
+	
+	for i = 0, 230 do
+		local source = list[i]
+		if source and i <= limit then
+			local item = {
+				offset   = string.format("%d bytes", i),
+				value    = string.format("0x%X", source.value & 0xffffffff),
+				variable = source.name
+			}
+			table.insert(ret, item)
+		end
+	end
+	
+	return ret
+end
+
 local function hook_intercepts()
 	local name = "Intercepts"
 	
@@ -264,6 +316,14 @@ local function hook_intercepts()
 							)
 							block = -block -- custom way to indicate overflow
 							InterceptsInfo = InterceptsState.OVERFLOW
+						
+							if not InterceptsOverruns[math.abs(block)] then
+								InterceptsOverruns[math.abs(block)] = {}
+							end
+							InterceptsOverruns[math.abs(block)] = fetch_intercept_overruns(
+								(count - MAXIMUM_INTERCEPTS) * 12
+							)
+							
 							client.pause()
 						else
 							text = string.format(
@@ -284,7 +344,7 @@ local function hook_intercepts()
 							local object    = {
 								frac    = string.format("0x%08x", intercept.frac),
 								isaline = string.format("0x%08x", intercept.isaline),
-								offset  = string.format("%d bytes", (i - 1) * 12),
+								offset  = string.format("%d bytes",(i-1-MAXIMUM_INTERCEPTS)*12),
 								pointer = intercept.d,
 								block   = math.abs(block)
 							}
@@ -973,11 +1033,12 @@ end
 
 function clear_cache()
 	reset_view()
-	Lines      = nil
-	DivLines   = {}
-	MapBlocks  = {}
-	Intercepts = {}
-	Tracked    = {
+	Lines              = nil
+	DivLines           = {}
+	MapBlocks          = {}
+	Intercepts         = {}
+	InterceptsOverruns = {}
+	Tracked            = {
 		[TrackedType.THING ] = TrackedEntity.new("thing" ),
 		[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
 		[TrackedType.SECTOR] = TrackedEntity.new("sector")
