@@ -9,10 +9,12 @@ symbols = require("dsda.symbols")
 
 -- CONSTANTS
 
+SETTINGS_FILENAME  = "doom.settings.lua"
+MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
 FRACBITS           = 16
 FRACUNIT           = 1 << FRACBITS
 ANGLE_90           = 0x40000000
-MINIMAL_ZOOM       = 0.0001 -- ???
+MINIMAL_ZOOM       = 0.0001 -- stuff breaks if it's smaller
 ZOOM_FACTOR        = 0.01
 WHEEL_ZOOM_FACTOR  = 10
 DRAG_FACTOR        = 10
@@ -24,8 +26,10 @@ PRANDOM_ALL_IN_ONE = 49
 GRID_SIZE          = 128
 FADEOUT_TIMER      = 20
 MAXIMUM_INTERCEPTS = 128
-MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
-SETTINGS_FILENAME  = "doom.settings.lua"
+-- initially 12 but we have 64-bit architecture + pointer alignment.
+-- when intercept overflow is emulated, the size of 12 is still used internally
+-- to corrupt the same values as in vanilla
+INTERCEPT_SIZE     = 16
 
 -- enums
 TrackedType = {
@@ -43,6 +47,11 @@ LineLogType = {
 	NONE   = 0,
 	PLAYER = 1,
 	ALL    = 2
+}
+InterceptsState = {
+	NONE     = 0,
+	PRINT    = 1,
+	OVERFLOW = 2
 }
 
 -- closure object
@@ -65,13 +74,24 @@ function TrackedEntity.new(name)
 end
 
 -- shortcuts
-
 text     = gui.text
 box      = gui.drawBox
 drawline = gui.drawLine
 
 
 -- TOP LEVEL VARIABLES
+
+Defaults = {
+	Zoom           = 1,
+	PanX           = 0,
+	PanY           = 0,
+	ShowMap        = false,
+	ShowGrid       = false,
+	Follow         = false,
+	Hilite         = false,
+	Angle          = AngleType.BYTE,
+	InterceptLimit = MAXIMUM_INTERCEPTS
+}
 
 Init           = true
 Globals        = structs.globals
@@ -86,6 +106,7 @@ BlockmapWidth  = 0
 InterceptPtr   = 0
 InterceptLog   = false
 InterceptShow  = false
+InterceptsInfo = InterceptsState.NONE
 RNGLog         = false
 Framecount     = 0
 LastFramecount = -1
@@ -101,25 +122,28 @@ Confirmation   = nil
 LastEpisode    = nil
 LastMap        = nil
 LastInput      = nil
+LastBMWidth    = nil
+LastBMOrigin   = nil
+LastBMEnd      = nil
 
 
 -- saved to config
-Zoom           = 1
-Follow         = false
-Hilite         = false
-ShowMap        = true
-ShowGrid       = true
-Angle          = AngleType.BYTE
-InterceptLimit = MAXIMUM_INTERCEPTS
-Tracked  = {
+Zoom           = Defaults.Zoom
+Follow         = nil
+Hilite         = nil
+ShowMap        = nil
+ShowGrid       = nil
+Angle          = nil
+InterceptLimit = nil
+-- view offset
+Pan = {
+	x = Defaults.PanX,
+	y = Defaults.PanY
+}
+Tracked = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
 	[TrackedType.SECTOR] = TrackedEntity.new("sector")
-}
--- view offset
-Pan = {
-	x = 0,
-	y = 0
 }
 
 
@@ -130,6 +154,7 @@ Config      = {}
 PRandomInfo = {}
 DivLines    = {}
 MapBlocks   = {}
+Intercepts  = {}
 GUITexts    = {}
 -- map object positions bounds
 OB = {
@@ -224,6 +249,66 @@ local function hook_intercepts()
 				-- new intercept was just added
 				InterceptPtr = intercept_p
 				
+				if InterceptLog then
+					local origin = Globals.intercepts
+					local count  = math.floor((InterceptPtr - origin) / INTERCEPT_SIZE)
+					
+					if count > InterceptLimit then
+						local text
+						local i = 1 -- intercept #0 gets printed last so we start with 1 instead
+						
+						if count > MAXIMUM_INTERCEPTS then
+							text = string.format(
+								"Frame %d, block %d, %d intercepts INTERCEPT OVERFLOW",
+								Framecount, block, count
+							)
+							block = -block -- custom way to indicate overflow
+							InterceptsInfo = InterceptsState.OVERFLOW
+							client.pause()
+						else
+							text = string.format(
+								"Frame %d, block %d, %d intercepts",
+								Framecount, block, count
+							)
+							InterceptsInfo = InterceptsState.PRINT
+						end
+						
+						print(text)
+						
+						if not Intercepts[math.abs(block)] then
+							Intercepts[math.abs(block)] = {}
+						end
+						
+						for address = origin, InterceptPtr - INTERCEPT_SIZE, INTERCEPT_SIZE do
+							local intercept = structs.intercept.from_pointer(address)
+							local object    = {
+								frac    = string.format("0x%08x", intercept.frac),
+								isaline = string.format("0x%08x", intercept.isaline),
+								offset  = string.format("%d bytes", (i - 1) * 12),
+								pointer = intercept.d,
+								block   = math.abs(block)
+							}
+							
+							if tonumber(intercept.isaline) == 1 then
+								object.id = structs.line.from_pointer(object.pointer).iLineID
+							else
+								object.id = structs.mobj.from_pointer(object.pointer).index
+							end
+							
+							object.pointer = string.format("0x%08X", object.pointer)
+							
+							-- we insert the same interecepts over and over for every new call,
+							-- because we can't know when they'll end,
+							-- and we may be asked to do this before it actually overflows.
+							-- so we can't just sit and wait for an overflow and only
+							-- then build the list. there won't be thousands of them anyway.
+							Intercepts[math.abs(block)][i] = object
+							
+							i = i + 1
+						end
+					end
+				end
+				
 				if ShowMap and ShowGrid and InterceptShow then
 					MapBlocks[block] = Framecount + FADEOUT_TIMER
 				end
@@ -241,7 +326,7 @@ function intercept_log()
 		hook_intercepts()
 		
 		if InterceptLog then
-			print("Logging intercepts beyond " .. MAXIMUM_INTERCEPTS .. "...")
+			print("Logging intercepts beyond " .. InterceptLimit .. "...")
 		end
 	else
 		print("Boom fixed intercept overflow! No point in logging it.")
@@ -696,10 +781,10 @@ function settings_read()
 	end
 	
 	-- ANGLE TYPE
-	Angle = Config.Angle or AngleType.BYTE
+	Angle = Config.Angle or Defaults.Angle
 	
 	-- INTERCEPTS
-	InterceptLimit = Config.InterceptLimit or MAXIMUM_INTERCEPTS
+	InterceptLimit = Config.InterceptLimit or Defaults.InterceptLimit
 	
 	-- MAP STATE
 	if not Config.Zoom
@@ -709,13 +794,13 @@ function settings_read()
 	then
 		reset_view()
 	end
-	Zoom     = Config.Zoom     or 1
-	Pan.x    = Config.PanX     or 0
-	Pan.y    = Config.PanY     or 0
-	ShowMap  = Config.ShowMap  or false
-	ShowGrid = Config.ShowGrid or false
-	Follow   = Config.Follow   or false
-	Hilite   = Config.Hilite   or false
+	Zoom     = Config.Zoom     or Defaults.Zoom
+	Pan.x    = Config.PanX     or Defaults.PanX
+	Pan.y    = Config.PanY     or Defaults.PanY
+	ShowMap  = Config.ShowMap  or Defaults.ShowMap
+	ShowGrid = Config.ShowGrid or Defaults.ShowGrid
+	Follow   = Config.Follow   or Defaults.Follow
+	Hilite   = Config.Hilite   or Defaults.Hilite
 	
 	-- TRACKED ENTITIES
 	if not Config.tracked then return end
@@ -879,16 +964,20 @@ function init_cache()
 		x = BlockmapOrigin.x + Globals.bmapwidth  * GRID_SIZE * FRACUNIT,
 		y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
 	}
+	LastBMWidth  = BlockmapWidth
+	LastBMOrigin = BlockmapOrigin
+	LastBMEnd    = BlockmapEnd
 	
 	settings_read()
 end
 
 function clear_cache()
 	reset_view()
-	Lines     = nil
-	DivLines  = {}
-	MapBlocks = {}
-	Tracked  = {
+	Lines      = nil
+	DivLines   = {}
+	MapBlocks  = {}
+	Intercepts = {}
+	Tracked    = {
 		[TrackedType.THING ] = TrackedEntity.new("thing" ),
 		[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
 		[TrackedType.SECTOR] = TrackedEntity.new("sector")

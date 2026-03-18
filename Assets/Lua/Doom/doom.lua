@@ -81,7 +81,7 @@ local function thing_handler()
 			if  in_range(pos.x, 0, ScreenWidth)
 			and in_range(pos.y, 0, ScreenHeight)
 			then
-				local radius = mobj.radius
+				local radius        = mobj.radius
 				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
 				
 				if  Hilite
@@ -320,49 +320,77 @@ end
 local function draw_grid()
 	if not (ShowMap and ShowGrid) then return end
 	
-	local size  = GRID_SIZE * FRACUNIT
-	local step  = GRID_SIZE * Zoom
-	local bmorg = game_to_screen(BlockmapOrigin)
-	local bmend = game_to_screen(BlockmapEnd)
-	local start = { x = bmorg.x, y = bmend.y }
-	local stop  = { x = bmend.x, y = bmorg.y }
-	
-	for x = start.x, stop.x-1, step do
-		drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
-	end
-	for y = start.y, stop.y-1, step do
-		drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
+	if InterceptsInfo == InterceptsState.OVERFLOW then
+		BlockmapWidth  = Globals.bmapwidth
+		BlockmapOrigin = {
+			x = Globals.bmaporgx,
+			y = Globals.bmaporgy
+		}
+		BlockmapEnd = { 
+			x = BlockmapOrigin.x + BlockmapWidth      * GRID_SIZE * FRACUNIT,
+			y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
+		}
 	end
 	
-	-- due to step being float in screen coords, we can't avoid rounding error
-	-- so final 2 lines won't match grid size and sometimes won't even be drawn
-	-- so we draw them separately where they "should be"
-	-- while embracing the rounding error of all the rest
-	-- since drawing them all perfectly is too complicated
-	drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
-	drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
+	if BlockmapWidth ~= 0 then
+		local size  = GRID_SIZE * FRACUNIT
+		local step  = GRID_SIZE * Zoom
+		local bmorg = game_to_screen(BlockmapOrigin)
+		local bmend = game_to_screen(BlockmapEnd)
+		local start = { x = bmorg.x, y = bmend.y }
+		local stop  = { x = bmend.x, y = bmorg.y }
+		
+		for x = start.x, stop.x-1, step do
+			drawline(x, start.y, x, stop.y, MapPrefs.grid.color)
+		end
+		for y = start.y, stop.y-1, step do
+			drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
+		end
+		
+		-- due to step being float in screen coords, we can't avoid rounding error
+		-- so final 2 lines won't match grid size and sometimes won't even be drawn
+		-- so we draw them separately where they "should be"
+		-- while embracing the rounding error of all the rest
+		-- since drawing them all perfectly is too complicated
+		drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
+		drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
+	end
 
+	-- if overflow corrupted actual blockmap
+	-- we still use original values just to show where it happened
 	for block,timer in pairs(MapBlocks) do
 		local forecolor
 		local backcolor
-		local delta = timer - Framecount
+		local delta    = timer - Framecount
+		local visblock = block
 		
-		-- red or grey with dynamically reduced alpha
-		if delta == FADEOUT_TIMER - 1 then
+		if block < 0 then -- custom way to indicate overflow
+			visblock  = -block
+			forecolor = 0xffffff00
+			backcolor = 0x33ffff00
+		elseif delta == FADEOUT_TIMER - 1 then
 			forecolor = 0xffff0000
 			backcolor = 0x33ff0000
 		else
-			forecolor = 0x88888888
+			forecolor = 0x88aaaaaa
+			-- dynamically reduced alpha
 			backcolor = (math.floor(0x88 / FADEOUT_TIMER * delta) << 24) | 0x888888
 		end
 		
 		if delta > 0 then
-			local origin = game_to_screen(BlockmapOrigin)
-			local x      = origin.x +            block % BlockmapWidth  * GRID_SIZE * Zoom
-			local y      = origin.y - math.floor(block / BlockmapWidth) * GRID_SIZE * Zoom
 			-- positioning precision is a bit higher than of the overall grid
 			-- so it may look off at some zoom levels
-			box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
+			local origin = game_to_screen(LastBMOrigin)
+			local x      = origin.x +            visblock % LastBMWidth  * GRID_SIZE * Zoom
+			local y      = origin.y - math.floor(visblock / LastBMWidth) * GRID_SIZE * Zoom
+			
+			-- if overflow happened, only show its block(s)
+			if InterceptsInfo < InterceptsState.OVERFLOW then
+				box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
+			elseif block < 0 then
+				text(x, y - GRID_SIZE * Zoom, visblock, forecolor)
+				box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
+			end
 		else
 			MapBlocks[block] = nil
 		end
@@ -400,8 +428,8 @@ end
 
 local function iterate()
 	if Init then return end
-
-	init_cache()
+	
+	iterate_players()
 	
 	local player    = select(2, next(Players)) -- first present player only for now
 	local rngindex  = Globals.rng.rndindex
@@ -434,7 +462,7 @@ local function iterate()
 	text(10, 42, GUITexts.player, MapPrefs.player.color)
 	text(
 		PADDING_WIDTH,
-		ScreenHeight-32*ScreenHeight/200-50,
+		ScreenHeight - 32 * ScreenHeight / 200 - 50,
 		string.format(
 			" tic: %d\n" ..
 			"time: %.2f\n" .. -- xdre limits to centiseconds
@@ -478,6 +506,15 @@ local function make_buttons()
 	make_button(-110, h*8, "Hilite "      ..(Hilite        and " ON" or "OFF"), hilite_toggle)
 	make_button(-110, h*9, "Follow "      ..(Follow        and " ON" or "OFF"), follow_toggle)
 	make_button(-110, h*10,"Reset View",                                           reset_view)
+	
+	if InterceptsInfo > InterceptsState.NONE then
+		make_button(w + 5, h * 10, "Print Intercepts", function()
+			print("")
+			print("Intercepts in blocks =")
+			print(dump(Intercepts))
+			Intercepts = {}
+		end)
+	end
 	
 	Input = input.get()
 	
@@ -629,6 +666,8 @@ while true do
 	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
 		clear_cache()
 	end
+	
+	init_cache()
 
 	if paused then
 		-- OSD text is not automatically cleared while paused
@@ -642,7 +681,6 @@ while true do
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if (Framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
-		iterate_players()
 		iterate()
 		LastMouse.left = Mouse.Left
 	end

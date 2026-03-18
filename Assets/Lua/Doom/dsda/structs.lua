@@ -556,6 +556,7 @@ structs.globals = utils.global_layout()
 	.sym  ("s32",   "bmaporgy")
 	.sym  ("s32",   "bmapwidth")
 	.sym  ("s32",   "bmapheight")
+	.sym  ("u32",   "intercepts")
 	.sym  ("u32",   "intercept_p")
 	.sym  ("embed", "trace", structs.divline)
 	-- game state
