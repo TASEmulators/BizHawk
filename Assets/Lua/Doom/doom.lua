@@ -320,17 +320,15 @@ end
 local function draw_grid()
 	if not (ShowMap and ShowGrid) then return end
 	
-	if InterceptsInfo == InterceptsState.OVERFLOW then
-		BlockmapWidth  = Globals.bmapwidth
-		BlockmapOrigin = {
-			x = Globals.bmaporgx,
-			y = Globals.bmaporgy
-		}
-		BlockmapEnd = { 
-			x = BlockmapOrigin.x + BlockmapWidth      * GRID_SIZE * FRACUNIT,
-			y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
-		}
-	end
+	BlockmapWidth  = Globals.bmapwidth
+	BlockmapOrigin = {
+		x = Globals.bmaporgx,
+		y = Globals.bmaporgy
+	}
+	BlockmapEnd = { 
+		x = BlockmapOrigin.x + BlockmapWidth      * GRID_SIZE * FRACUNIT,
+		y = BlockmapOrigin.y + Globals.bmapheight * GRID_SIZE * FRACUNIT
+	}
 	
 	if BlockmapWidth ~= 0 then
 		local size  = GRID_SIZE * FRACUNIT
@@ -513,6 +511,15 @@ local function make_buttons()
 			print("Intercepts in blocks =")
 			print(dump(Intercepts))
 			Intercepts = {}
+			
+			if InterceptsInfo == InterceptsState.OVERFLOW then
+				print("")
+				print("InterceptsOverruns in blocks =")
+				print(dump(InterceptsOverruns))
+				InterceptsOverruns = {}
+			end
+			
+			InterceptsInfo = InterceptsState.NONE
 		end)
 	end
 	
