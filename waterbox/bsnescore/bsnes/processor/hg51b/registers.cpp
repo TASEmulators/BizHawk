@@ -12,13 +12,13 @@ auto HG51B::readRegister(uint7 address) -> uint24 {
   case 0x2e:
     io.bus.enable  = 1;
     io.bus.reading = 1;
-    io.bus.pending = 1 + io.wait.rom;
+    io.bus.pending = io.wait.rom;
     io.bus.address = r.mar;
     return 0x000000;
   case 0x2f:
     io.bus.enable  = 1;
     io.bus.reading = 1;
-    io.bus.pending = 1 + io.wait.ram;
+    io.bus.pending = io.wait.ram;
     io.bus.address = r.mar;
     return 0x000000;
 
@@ -76,13 +76,13 @@ auto HG51B::writeRegister(uint7 address, uint24 data) -> void {
   case 0x2e:
     io.bus.enable  = 1;
     io.bus.writing = 1;
-    io.bus.pending = 1 + io.wait.rom;
+    io.bus.pending = io.wait.rom;
     io.bus.address = r.mar;
     return;
   case 0x2f:
     io.bus.enable  = 1;
     io.bus.writing = 1;
-    io.bus.pending = 1 + io.wait.ram;
+    io.bus.pending = io.wait.ram;
     io.bus.address = r.mar;
     return;
 

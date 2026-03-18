@@ -152,6 +152,7 @@ protected:
     struct Cache {
       uint1  enable;
       uint1  page;
+      uint1  preload;
       uint1  lock[2];
       uint24 address[2];  //cache address is in bytes; so 24-bit
       uint24 base;        //base address is also in bytes
