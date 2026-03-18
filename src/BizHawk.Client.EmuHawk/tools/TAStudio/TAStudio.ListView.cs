@@ -1315,6 +1315,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AnalogChangeBy(int change)
 		{
 			if (!AxisEditingMode) return;
+			if (change == 0) return; // prevent issues with user accidentally moving mouse by 1 pixel before typing
 
 			if (_didAxisType)
 			{
