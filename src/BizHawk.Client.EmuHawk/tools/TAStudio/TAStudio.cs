@@ -89,6 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
+				EditInvisibleColumns = true;
 				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
 				CopyIncludesFrameNo = false;
@@ -120,6 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool DenoteStatesWithBGColor { get; set; }
 			public bool DenoteMarkersWithIcons { get; set; }
 			public bool DenoteMarkersWithBGColor { get; set; }
+			public bool EditInvisibleColumns { get; set; }
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
 			public bool BindMarkersToInput { get; set; }
@@ -533,6 +535,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TasView.AllColumns.ColumnsChanged();
+			UpdateActiveMovieInputs();
 		}
 
 		private void SetupCustomPatterns()

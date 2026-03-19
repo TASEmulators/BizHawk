@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -84,9 +85,9 @@ namespace BizHawk.Client.Common
 		void AddAxisChange(int frame, string button, int oldState, int newState, string name = "");
 		void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "");
 		void AddInputBind(int frame, bool isDelete, string name = "");
-		void AddInsertFrames(int frame, int count, bool bindMarkers, string name = "");
-		void AddInsertInput(int frame, List<string> newInputs, bool bindMarkers, string name = "");
-		void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, bool bindMarkers, string name = "");
+		void AddInsertFrames(int frame, int count, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers, string name = "");
+		void AddInsertInput(int frame, List<string> newInputs, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers, string name = "");
+		void AddRemoveFrames(int removeStart, List<string> oldInputs, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers, string name = "");
 		void AddExtend(int originalLength, int count, string inputs);
 	}
 
@@ -425,30 +426,30 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void AddInsertFrames(int frame, int count, bool bindMarkers, string name = "")
+		public void AddInsertFrames(int frame, int count, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers, string name = "")
 		{
 			if (IsRecording)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionInsertFrames(frame, bindMarkers, count));
+				LatestBatch.Add(new MovieActionInsertFrames(frame, bindMarkers, count, activeDefinition));
 			}
 		}
 
-		public void AddInsertInput(int frame, List<string> newInputs, bool bindMarkers, string name = "")
+		public void AddInsertInput(int frame, List<string> newInputs, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers, string name = "")
 		{
 			if (IsRecording)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionInsertFrames(frame, bindMarkers, newInputs));
+				LatestBatch.Add(new MovieActionInsertFrames(frame, bindMarkers, newInputs, activeDefinition));
 			}
 		}
 
-		public void AddRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, bool bindMarkers, string name = "")
+		public void AddRemoveFrames(int removeStart, List<string> oldInputs, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers, string name = "")
 		{
 			if (IsRecording)
 			{
 				AddMovieAction(name);
-				LatestBatch.Add(new MovieActionRemoveFrames(removeStart, removeUpTo, oldInputs, bindMarkers));
+				LatestBatch.Add(new MovieActionRemoveFrames(removeStart, oldInputs, activeDefinition, bindMarkers));
 			}
 		}
 
@@ -521,6 +522,8 @@ namespace BizHawk.Client.Common
 		{
 			bool wasBinding = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = _bindMarkers;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = null;
 
 			if (_redoLength != Length)
 			{
@@ -534,8 +537,10 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < _undoLength; i++)
 			{
-				movie.SetFrame(FirstFrame + i, _oldLog[i]);
+				movie.PokeFrame(FirstFrame + i, _oldLog[i]);
 			}
+
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasBinding;
 		}
 
@@ -543,6 +548,8 @@ namespace BizHawk.Client.Common
 		{
 			bool wasBinding = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = _bindMarkers;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = null;
 
 			if (_undoLength != Length)
 			{
@@ -556,8 +563,10 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < _redoLength; i++)
 			{
-				movie.SetFrame(FirstFrame + i, _newLog[i]);
+				movie.PokeFrame(FirstFrame + i, _newLog[i]);
 			}
+
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasBinding;
 		}
 	}
@@ -805,22 +814,25 @@ namespace BizHawk.Client.Common
 		private readonly bool _bindMarkers;
 
 		private readonly List<string> _newInputs;
+		private readonly ControllerDefinition/*?*/ _activeDefinition;
 
-		public MovieActionInsertFrames(int frame, bool bindMarkers, int count)
+		public MovieActionInsertFrames(int frame, bool bindMarkers, int count, ControllerDefinition/*?*/ activeDefinition)
 		{
 			FirstFrame = frame;
 			LastFrame = frame + count;
 			_count = count;
 			_onlyEmpty = true;
+			_activeDefinition = activeDefinition;
 			_bindMarkers = bindMarkers;
 		}
 
-		public MovieActionInsertFrames(int frame, bool bindMarkers, List<string> newInputs)
+		public MovieActionInsertFrames(int frame, bool bindMarkers, List<string> newInputs, ControllerDefinition/*?*/ activeDefinition)
 		{
 			FirstFrame = frame;
 			LastFrame = frame + newInputs.Count;
 			_onlyEmpty = false;
 			_newInputs = newInputs;
+			_activeDefinition = activeDefinition;
 			_bindMarkers = bindMarkers;
 		}
 
@@ -828,9 +840,19 @@ namespace BizHawk.Client.Common
 		{
 			bool wasBinding = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = _bindMarkers;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = _activeDefinition;
 
 			movie.RemoveFrames(FirstFrame, LastFrame);
+			if (_activeDefinition != null)
+			{
+				// RemoveFrames will not have removed frames, but the insert operation we are undoing added frames
+				// so un-add them; we know they're empty
+				movie.ActiveControllerInputs = null;
+				movie.Truncate(movie.InputLogLength - (LastFrame - FirstFrame));
+			}
 
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasBinding;
 		}
 
@@ -838,6 +860,8 @@ namespace BizHawk.Client.Common
 		{
 			bool wasBinding = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = _bindMarkers;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = _activeDefinition;
 
 			if (_onlyEmpty)
 			{
@@ -848,6 +872,7 @@ namespace BizHawk.Client.Common
 				movie.InsertInput(FirstFrame, _newInputs);
 			}
 
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasBinding;
 		}
 	}
@@ -859,22 +884,34 @@ namespace BizHawk.Client.Common
 
 		private readonly List<string> _oldInputs;
 		private readonly bool _bindMarkers;
+		private readonly ControllerDefinition/*?*/ _activeDefinition;
 
-		public MovieActionRemoveFrames(int removeStart, int removeUpTo, List<string> oldInputs, bool bindMarkers)
+		public MovieActionRemoveFrames(int removeStart, List<string> oldInputs, ControllerDefinition/*?*/ activeDefinition, bool bindMarkers)
 		{
 			FirstFrame = removeStart;
-			LastFrame = removeUpTo;
+			LastFrame = removeStart + oldInputs.Count;
 			_oldInputs = oldInputs;
 			_bindMarkers = bindMarkers;
+			_activeDefinition = activeDefinition;
 		}
 
 		public void Undo(ITasMovie movie)
 		{
 			bool wasBinding = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = _bindMarkers;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = _activeDefinition;
 
 			movie.InsertInput(FirstFrame, _oldInputs);
+			if (_activeDefinition != null)
+			{
+				// insert will have added frames, but the delete operation we are undoing didn't delete any
+				// so un-add them; we know they're empty
+				movie.ActiveControllerInputs = null;
+				movie.Truncate(movie.InputLogLength - _oldInputs.Count);
+			}
 
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasBinding;
 		}
 
@@ -882,9 +919,12 @@ namespace BizHawk.Client.Common
 		{
 			bool wasBinding = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = _bindMarkers;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = _activeDefinition;
 
 			movie.RemoveFrames(FirstFrame, LastFrame);
 
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasBinding;
 		}
 	}
@@ -909,8 +949,12 @@ namespace BizHawk.Client.Common
 		{
 			bool wasMarkerBound = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = false;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = null;
 
 			movie.RemoveFrames(FirstFrame, LastFrame + 1);
+
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasMarkerBound;
 		}
 
@@ -918,8 +962,12 @@ namespace BizHawk.Client.Common
 		{
 			bool wasMarkerBound = movie.BindMarkersToInput;
 			movie.BindMarkersToInput = false;
+			ControllerDefinition/*?*/ definition = movie.ActiveControllerInputs;
+			movie.ActiveControllerInputs = null;
 
 			movie.InsertInput(FirstFrame, Enumerable.Repeat(_inputs, _count));
+
+			movie.ActiveControllerInputs = definition;
 			movie.BindMarkersToInput = wasMarkerBound;
 		}
 	}
