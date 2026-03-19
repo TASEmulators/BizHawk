@@ -55,11 +55,12 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// If <see cref="IMovie.ActiveControllerInputs"/> is not null, this will not actually change the length of the movie.
 		/// </summary>
 		/// <param name="removeStart">The first frame to remove.</param>
 		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
 		void RemoveFrames(int removeStart, int removeUpTo);
-		void SetFrame(int frame, string source);
+		void PokeFrame(int frame, string source);
 
 		void LoadBranch(TasBranch branch);
 
