@@ -150,12 +150,12 @@ local function line_handler()
 		x1, y1, x2, y2 = cached_line_coords(line)
 		
 		if Hilite then
-			local dist = distance_from_line(
+			local dist = distance_to_segment(
 				gameMousePos,
 				tuple_to_vertex(x1, y1),
 				tuple_to_vertex(x2, y2))
 			
-			if math.abs(dist) < shortestDist then
+			if dist < shortestDist then
 				shortestDist = math.abs(dist)
 				closestLine  = line
 			end
@@ -196,7 +196,7 @@ local function line_handler()
 		
 		if closestLine then
 			local x1, y1, x2, y2 = cached_line_coords(closestLine)
-			local distance = distance_from_line(
+			local distance = distance_to_line(
 				{ x = player.x,      y = player.y      },
 				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
 				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
@@ -216,6 +216,9 @@ local function line_handler()
 end
 
 local function tracked_handler()
+	local player   = select(2, next(Players)) -- first present player only for now
+	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
+	
 	if Tracked[TrackedType.THING].Current then
 		local entity = Tracked[TrackedType.THING]
 		local min    = entity.Current == entity.Min and "  " or "<-"
@@ -258,7 +261,7 @@ local function tracked_handler()
 		local max            = entity.Current == entity.Max and "  " or "->"
 		local line           = entity.TrackedList[entity.Current]
 		local x1, y1, x2, y2 = line:coords()
-		local distance       = distance_from_line(
+		local distance       = distance_to_line(
 			{ x = player.x,      y = player.y      },
 			{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
 			{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
@@ -279,7 +282,7 @@ local function tracked_handler()
 		end
 		
 		GUITexts.line = string.format(
-			"%sLINEDEF %d%s\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+			"%sLINEDEF %d%s\ndist: %f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 			min, line.iLineID, max,
 			distance,
 			math.floor(x1 / FRACUNIT),

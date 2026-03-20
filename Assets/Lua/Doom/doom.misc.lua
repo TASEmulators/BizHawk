@@ -342,6 +342,18 @@ local function hook_intercepts()
 						for address = origin, InterceptPtr - INTERCEPT_SIZE, INTERCEPT_SIZE do
 							local intercept = structs.intercept.from_pointer(address)
 							local object    = {
+								-- frac is the most complicated part of intercept struct.
+								-- when intercept is checked, traceline length is normalized
+								-- to [0, 1], and the point where it crosses something
+								-- denotes the fraction of that length, meaning how soon the
+								-- traceline hits it. negative value means behind the origin,
+								-- and more than 1 means outside the trace range.
+								-- then for all the intercepts in the list, those fractions
+								-- are compared and the shortest one wins.
+								-- so to manipulate what value is used for memory corruption,
+								-- we just need to adjust the distance between trace origin
+								-- and something it hits, keeping in mind intercept at which
+								-- index/offset matches our target address.
 								frac    = string.format("0x%08x", intercept.frac),
 								isaline = string.format("0x%08x", intercept.isaline),
 								offset  = string.format("%d bytes",(i-1-MAXIMUM_INTERCEPTS)*12),
@@ -795,36 +807,33 @@ function in_range(var, minimum, maximum)
 	return var >= minimum and var <= maximum
 end
 
--- helper to get squared distance (avoids sqrt for comparison)
+-- distance between point and its projecton on infinite line
+function distance_to_line(point, v1, v2)
+	local lengthx = v1.x - v2.x
+	local lengthy = v1.y - v2.y
+	local length = math.sqrt(lengthx * lengthx + lengthy * lengthy)
+	local distancex = (v2.x - v1.x) / length
+	local distancey = (v2.y - v1.y) / length
+	return (point.x - v1.x) * distancey - (point.y - v1.y) * distancex
+end
+
 function dist_sq(p1, p2)
     return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
 end
 
-function distance_from_line(p, a, b)
-	local ab_sq = dist_sq(a, b)
-	
-	if ab_sq == 0 then return math.sqrt(dist_sq(p, a)) end -- A and B are the same point
-
-	-- project point P onto the line AB
-	-- t = ((P-A) . (B-A)) / |B-A|^2
+-- distance to closest point of the segment
+function distance_to_segment(point, v1, v2)
+	local ab_sq = dist_sq(v1, v2)
+	if ab_sq == 0 then return math.sqrt(dist_sq(point, v1)) end
 	local t =
-		((p.x - a.x) * (b.x - a.x) +
-		 (p.y - a.y) * (b.y - a.y)) / ab_sq
-	
-	-- clamp t to [0, 1] to stay within the segment
+		((point.x - v1.x) * (v2.x - v1.x) +
+		 (point.y - v1.y) * (v2.y - v1.y)) / ab_sq
 	t = math.max(0, math.min(1, t))
-
-	-- find the closest point on the segment (D)
 	local closestPoint = {
-		x = a.x + t * (b.x - a.x),
-		y = a.y + t * (b.y - a.y)
+		x = v1.x + t * (v2.x - v1.x),
+		y = v1.y + t * (v2.y - v1.y)
 	}
-
-	-- return the distance from P to the closest point D
-	local dist = math.sqrt(dist_sq(p, closestPoint))
-		
-	if ((b.y - a.y) / (b.x - a.x)) * (p.x - a.x) + a.y < p.y then return -dist end
-	
+	local dist = math.sqrt(dist_sq(point, closestPoint))	
 	return dist
 end
 
