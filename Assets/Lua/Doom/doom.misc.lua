@@ -183,9 +183,9 @@ LastMouse = {
 	left  = false
 }
 TextPosY = {
-	Thing  = 252,
-	Line   = 350,
-	Sector = 416
+	Thing  = 220,
+	Line   = 318,
+	Sector = 400
 }
 -- map colors (0xAARRGGBB or "name")
 MapPrefs = {
@@ -758,7 +758,8 @@ local function line_event(event, line, thing)
 	
 	if type(thing) == "string" then
 		print(string.format(
-			"line %d %s by %s",
+			"tic %d: line %d %s by %s",
+			Globals.gametic - 1,
 			memory.read_s32_le(line, "System Bus"),
 			event, thing
 		))
@@ -807,14 +808,23 @@ function in_range(var, minimum, maximum)
 	return var >= minimum and var <= maximum
 end
 
--- distance between point and its projecton on infinite line
+-- distance to point projecton on infinite line
 function distance_to_line(point, v1, v2)
-	local lengthx = v1.x - v2.x
-	local lengthy = v1.y - v2.y
-	local length = math.sqrt(lengthx * lengthx + lengthy * lengthy)
-	local distancex = (v2.x - v1.x) / length
-	local distancey = (v2.y - v1.y) / length
-	return (point.x - v1.x) * distancey - (point.y - v1.y) * distancex
+	local PAx = v1.x - point.x
+	local PAy = v1.y - point.y
+	local ABx = v2.x - v1.x
+	local ABy = v2.y - v1.y
+	local t = -PAx * ABx + -PAy * ABy
+	t = t / (ABx * ABx + ABy * ABy)
+	local PXx = PAx + t * ABx;
+	local PXy = PAy + t * ABy;
+	local dist = math.sqrt(PXx * PXx + PXy * PXy)
+
+	if (((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y) then
+		return -dist
+	end
+
+	return dist
 end
 
 function dist_sq(p1, p2)
@@ -833,7 +843,12 @@ function distance_to_segment(point, v1, v2)
 		x = v1.x + t * (v2.x - v1.x),
 		y = v1.y + t * (v2.y - v1.y)
 	}
-	local dist = math.sqrt(dist_sq(point, closestPoint))	
+	local dist = math.sqrt(dist_sq(point, closestPoint))
+
+	if (((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y) then
+		return -dist
+	end
+
 	return dist
 end
 

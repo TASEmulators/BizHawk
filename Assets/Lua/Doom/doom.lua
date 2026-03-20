@@ -150,13 +150,13 @@ local function line_handler()
 		x1, y1, x2, y2 = cached_line_coords(line)
 		
 		if Hilite then
-			local dist = distance_to_segment(
+			local dist = math.abs(distance_to_segment(
 				gameMousePos,
 				tuple_to_vertex(x1, y1),
-				tuple_to_vertex(x2, y2))
+				tuple_to_vertex(x2, y2)))
 			
 			if dist < shortestDist then
-				shortestDist = math.abs(dist)
+				shortestDist = dist
 				closestLine  = line
 			end
 		end
@@ -196,17 +196,19 @@ local function line_handler()
 		
 		if closestLine then
 			local x1, y1, x2, y2 = cached_line_coords(closestLine)
-			local distance = distance_to_line(
-				{ x = player.x,      y = player.y      },
-				{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
-				{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
-			)
+			local v1              = { x = x1 / FRACUNIT, y = y1 / FRACUNIT }
+			local v2              = { x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+			local distanceLine    = distance_to_line   ({ x = player.x, y = player.y }, v1, v2)
+			local distanceSegment = distance_to_segment({ x = player.x, y = player.y }, v1, v2)
 			
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
 			drawline(x1, y1, x2, y2, 0xffff8800)
 			GUITexts.line = string.format(
-				"  LINEDEF %d\ndist: %.0f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
-				closestLine.iLineID, distance,
+				"  LINEDEF %d\n"..
+				"dist(line): %f\ndist( seg): %f\n"..
+				"v1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+				closestLine.iLineID,
+				distanceLine, distanceSegment,
 				math.floor(closestLine.v1.x / FRACUNIT),
 				math.floor(closestLine.v1.y / FRACUNIT),
 				math.floor(closestLine.v2.x / FRACUNIT),
@@ -229,7 +231,7 @@ local function tracked_handler()
 		and in_range(mousePos.y, TextPosY.Thing, TextPosY.Line-1) then
 			local delete = false
 			box(0, TextPosY.Thing, PADDING_WIDTH, TextPosY.Line-1, 0xffffffff, 0x88ffffff)
-			make_button(PADDING_WIDTH-40, TextPosY.Thing+26, " X ", function() delete = true end)
+			make_button(PADDING_WIDTH-36, TextPosY.Thing+22, " X ", function() delete = true end)
 			
 			if input.get()["Delete"] or delete then
 				Confirmation = {
@@ -256,22 +258,21 @@ local function tracked_handler()
 	end
 	
 	if Tracked[TrackedType.LINE].Current then
-		local entity         = Tracked[TrackedType.LINE]
-		local min            = entity.Current == entity.Min and "  " or "<-"
-		local max            = entity.Current == entity.Max and "  " or "->"
-		local line           = entity.TrackedList[entity.Current]
-		local x1, y1, x2, y2 = line:coords()
-		local distance       = distance_to_line(
-			{ x = player.x,      y = player.y      },
-			{ x = x1 / FRACUNIT, y = y1 / FRACUNIT },
-			{ x = x2 / FRACUNIT, y = y2 / FRACUNIT }
-		)
+		local entity          = Tracked[TrackedType.LINE]
+		local min             = entity.Current == entity.Min and "  " or "<-"
+		local max             = entity.Current == entity.Max and "  " or "->"
+		local line            = entity.TrackedList[entity.Current]
+		local x1, y1, x2, y2  = line:coords()
+		local v1              = { x = x1 / FRACUNIT, y = y1 / FRACUNIT }
+		local v2              = { x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+		local distanceLine    = distance_to_line   ({ x = player.x, y = player.y }, v1, v2)
+		local distanceSegment = distance_to_segment({ x = player.x, y = player.y }, v1, v2)
 		
 		if mousePos.x <= PADDING_WIDTH
 		and in_range(mousePos.y, TextPosY.Line, TextPosY.Sector-1) then
 			local delete = false
 			box(0, TextPosY.Line, PADDING_WIDTH, TextPosY.Sector-1, 0xffffffff, 0x88ffffff)
-			make_button(PADDING_WIDTH-40, TextPosY.Line+26, " X ", function() delete = true end)
+			make_button(PADDING_WIDTH-36, TextPosY.Line+22, " X ", function() delete = true end)
 			
 			if input.get()["Delete"] or delete then
 				Confirmation = {
@@ -282,9 +283,11 @@ local function tracked_handler()
 		end
 		
 		GUITexts.line = string.format(
-			"%sLINEDEF %d%s\ndist: %f\nv1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
+			"%sLINEDEF %d%s\n"..
+			"dist(line): %f\ndist( seg): %f\n"..
+			"v1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 			min, line.iLineID, max,
-			distance,
+			distanceLine, distanceSegment,
 			math.floor(x1 / FRACUNIT),
 			math.floor(y1 / FRACUNIT),
 			math.floor(x2 / FRACUNIT),
@@ -301,7 +304,7 @@ local function tracked_handler()
 		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
 			local delete = false
 			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+64, 0xffffffff, 0x88ffffff)
-			make_button(PADDING_WIDTH-40, TextPosY.Sector+26, " X ", function() delete = true end)
+			make_button(PADDING_WIDTH-36, TextPosY.Sector+22, " X ", function() delete = true end)
 			
 			if input.get()["Delete"] or delete then
 				Confirmation = {
@@ -429,8 +432,6 @@ end
 
 local function iterate()
 	if Init then return end
-	
-	iterate_players()
 	
 	local player    = select(2, next(Players)) -- first present player only for now
 	local rngindex  = Globals.rng.rndindex
@@ -674,10 +675,11 @@ while true do
 	-- clear cache after rewind, turbo etc.
 	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
 	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
-		clear_cache()
+	--	clear_cache()
 	end
 	
 	init_cache()
+	iterate_players()
 
 	if paused then
 		-- OSD text is not automatically cleared while paused
