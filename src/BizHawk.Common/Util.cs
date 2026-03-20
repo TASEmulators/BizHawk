@@ -97,7 +97,9 @@ namespace BizHawk.Common
 		}
 
 		public static string GetRandomUUIDStr()
+#pragma warning disable RS0030 // transitive (this method is also banned)
 			=> Guid.NewGuid().ToString("D");
+#pragma warning restore RS0030
 
 		/// <returns>all <see cref="Type">Types</see> with the name <paramref name="className"/></returns>
 		/// <remarks>adapted from https://stackoverflow.com/a/13727044/7467292</remarks>

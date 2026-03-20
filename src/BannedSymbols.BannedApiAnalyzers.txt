@@ -1,3 +1,4 @@
+M:BizHawk.Common.Util.GetRandomUUIDStr;this is a source of nondeterminism
 M:System.BitConverter.ToDouble(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<double> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from an 8-octet struct, reinterpret-cast it with Unsafe.As instead
 M:System.BitConverter.ToInt16(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<short> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 2-octet struct, reinterpret-cast it with Unsafe.As instead
 M:System.BitConverter.ToInt32(System.Byte[],System.Int32);use MemoryMarshal.{Try,}Read<int> (implicit/host endianness; for explicit there's BinaryPrimitives), or if the byte array was made from a 4-octet struct, reinterpret-cast it with Unsafe.As instead
@@ -17,6 +18,7 @@ M:System.Convert.ToSingle(System.String);use float.{Try,}Parse
 M:System.Convert.ToUInt16(System.String);use ushort.{Try,}Parse
 M:System.Convert.ToUInt32(System.String);use uint.{Try,}Parse
 M:System.Convert.ToUInt64(System.String);use ulong.{Try,}Parse
+M:System.Guid.NewGuid();this is a source of nondeterminism
 M:System.Guid.ToString();specify format (default is "D")
 M:System.Diagnostics.Debug.Assert(System.Boolean);include a unique message
 M:System.Diagnostics.Debug.WriteLine(System.String);use Util.DebugWriteLine (first-party) because apparently the BCL's version doesn't work properly in some circumstances?

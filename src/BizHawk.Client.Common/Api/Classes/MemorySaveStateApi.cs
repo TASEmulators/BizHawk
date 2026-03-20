@@ -16,7 +16,9 @@ namespace BizHawk.Client.Common
 
 		public string SaveCoreStateToMemory()
 		{
+#pragma warning disable RS0030 // this is to ensure no collisions
 			var guid = Guid.NewGuid();
+#pragma warning restore RS0030
 			_memorySavestates.Add(guid, StatableCore.CloneSavestate());
 			return guid.ToString("D");
 		}

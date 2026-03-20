@@ -19,7 +19,10 @@ namespace BizHawk.Common
 
 		public static string GetTempFilename(string friendlyName, string? dotAndExtension = null, bool delete = true)
 		{
-			var fname = $"biz-{Process.GetCurrentProcess().Id}-{friendlyName}-{Util.GetRandomUUIDStr()}{dotAndExtension ?? ""}";
+#pragma warning disable RS0030 // this is to ensure no collisions
+			var uuid = Util.GetRandomUUIDStr();
+#pragma warning restore RS0030
+			var fname = $"biz-{Process.GetCurrentProcess().Id}-{friendlyName}-{uuid}{dotAndExtension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);
