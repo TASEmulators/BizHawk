@@ -225,7 +225,9 @@ namespace BizHawk.Client.EmuHawk
 			var currentHashes = Branches.Select(b => b.Uuid.GetHashCode()).ToList();
 			do
 			{
+#pragma warning disable RS0030 // this is to ensure no collisions
 				_backupBranch.Uuid = Guid.NewGuid();
+#pragma warning restore RS0030
 			}
 			while (currentHashes.Contains(_backupBranch.Uuid.GetHashCode()));
 

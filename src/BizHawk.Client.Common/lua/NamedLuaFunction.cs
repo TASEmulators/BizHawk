@@ -55,7 +55,9 @@ namespace BizHawk.Client.Common
 				LuaFile = luaFile;
 			}
 
+#pragma warning disable RS0030 // this is to ensure no collisions
 			Guid = Guid.NewGuid();
+#pragma warning restore RS0030
 
 			Callback = args =>
 			{
