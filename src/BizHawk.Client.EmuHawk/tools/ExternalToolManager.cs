@@ -148,13 +148,14 @@ namespace BizHawk.Client.EmuHawk
 				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();
 
 				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
-				item.Text = toolAttribute.Name;
+				Lazy<string> lazyAsmChecksum = new(() => SHA512Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)));
+				item.Text = string.IsNullOrWhiteSpace(toolAttribute.Name) ? $"{lazyAsmChecksum.Value[..8]}..." : toolAttribute.Name;
 				if (toolAttribute.LoadAssemblyFiles != null)
 				{
 					foreach (var depFilename in toolAttribute.LoadAssemblyFiles)
 					{
 						var depFilePath = Path.Combine(_config.PathEntries.ExternalToolsAbsolutePath(), depFilename);
-						Console.WriteLine($"preloading assembly {depFilePath} requested by ext. tool {toolAttribute.Name}");
+						Console.WriteLine($"preloading assembly {depFilePath} requested by ext. tool {item.Text}");
 						Assembly.LoadFrom(depFilePath);
 					}
 				}
@@ -171,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 #if DEBUG
 					asmChecksum: string.Empty,
 #else
-					asmChecksum: SHA512Checksum.ComputePrefixedHex(File.ReadAllBytes(fileName)),
+					asmChecksum: lazyAsmChecksum.Value,
 #endif
 					asmFilename: fileName,
 					entryPointTypeName: entryPoint.FullName);
