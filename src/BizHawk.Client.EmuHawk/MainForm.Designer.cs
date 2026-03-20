@@ -945,8 +945,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.EmulationSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PauseMenuItem,
-            this.RebootCoreMenuItem,
             this.toolStripSeparator1,
+            this.RebootCoreMenuItem,
             this.SoftResetMenuItem,
             this.HardResetMenuItem,
             this.EmulatorMenuSeparator2,
