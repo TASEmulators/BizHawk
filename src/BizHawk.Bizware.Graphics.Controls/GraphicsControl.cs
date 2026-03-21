@@ -4,6 +4,9 @@ namespace BizHawk.Bizware.Graphics.Controls
 {
 	public abstract class GraphicsControl : Control
 	{
+		protected GraphicsControl()
+			=> base.Text = "Render target"; // for screen readers
+
 		/// <summary>
 		/// Allows the control to tear when out of vsync
 		/// Only relevant for D3D11Control currently
