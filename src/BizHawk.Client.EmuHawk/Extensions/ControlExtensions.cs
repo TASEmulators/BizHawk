@@ -167,17 +167,29 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 #pragma warning disable CS0618 // WinForms doesn't use generics ofc
+		public static bool InsertAfter(this Control.ControlCollection controls, Control needle, Control insert)
+		{
+			var insertPoint = controls.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			controls.Add(insert);
+			controls.SetChildIndex(insert, insertPoint + 1);
+			return true;
+		}
+
 		public static bool InsertAfter(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
 			=> ((IList) items).InsertAfter(needle, insert: insert);
 
-		public static bool InsertAfterLast(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
-			=> ((IList) items).InsertAfterLast(needle, insert: insert);
+		public static bool InsertBefore(this Control.ControlCollection controls, Control needle, Control insert)
+		{
+			var insertPoint = controls.IndexOf(needle);
+			if (insertPoint < 0) return false;
+			controls.Add(insert);
+			controls.SetChildIndex(insert, insertPoint);
+			return true;
+		}
 
 		public static bool InsertBefore(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
 			=> ((IList) items).InsertBefore(needle, insert: insert);
-
-		public static bool InsertBeforeLast(this ToolStripItemCollection items, ToolStripItem needle, ToolStripItem insert)
-			=> ((IList) items).InsertBeforeLast(needle, insert: insert);
 #pragma warning restore CS0618
 
 		public static void ReplaceDropDownItems(this ToolStripDropDownItem menu, params ToolStripItem[] items)
