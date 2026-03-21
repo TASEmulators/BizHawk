@@ -640,8 +640,8 @@ function update_zoom()
 	end
 	
 	if not Init
-	and LastScreenSize.w == ScreenWidth
-	and LastScreenSize.h == ScreenHeight
+--	and LastScreenSize.w == ScreenWidth
+--	and LastScreenSize.h == ScreenHeight
 	then return end
 	
 	if  OB.top    ~= math.maxinteger
@@ -668,8 +668,6 @@ function update_zoom()
 end
 
 function reset_view()
-	if LastMouse.left then return end
-	
 	OB = {
 		top    = math.maxinteger,
 		left   = math.maxinteger,
@@ -794,6 +792,17 @@ function cycle_log_types(isUse)
 	end
 end
 
+function check_map_change()
+	local episode = Globals.gameepisode
+	local map     = Globals.gamemap
+	
+	if episode ~= LastEpisode or map ~= LastMap then
+		clear_cache()
+		reset_view()
+		LastEpisode, LastMap = episode, map
+	end
+end
+
 
 -- MATH
 
@@ -808,6 +817,10 @@ function in_range(var, minimum, maximum)
 	return var >= minimum and var <= maximum
 end
 
+local function check_side(point, v1, v2)
+	return ((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y
+end
+
 -- distance to point projecton on infinite line
 function distance_to_line(point, v1, v2)
 	local PAx = v1.x - point.x
@@ -820,14 +833,14 @@ function distance_to_line(point, v1, v2)
 	local PXy = PAy + t * ABy;
 	local dist = math.sqrt(PXx * PXx + PXy * PXy)
 
-	if (((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y) then
+	if check_side(point, v1, v2) then
 		return -dist
 	end
 
 	return dist
 end
 
-function dist_sq(p1, p2)
+local function dist_sq(p1, p2)
     return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
 end
 
@@ -845,7 +858,7 @@ function distance_to_segment(point, v1, v2)
 	}
 	local dist = math.sqrt(dist_sq(point, closestPoint))
 
-	if (((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y) then
+	if check_side(point, v1, v2) then
 		return -dist
 	end
 
@@ -1056,7 +1069,6 @@ function init_cache()
 end
 
 function clear_cache()
-	reset_view()
 	Lines              = nil
 	DivLines           = {}
 	MapBlocks          = {}

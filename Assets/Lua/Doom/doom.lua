@@ -647,28 +647,20 @@ event.onexit(function()
 	settings_write()
 end)
 
-event.onloadstate(function()
-	clear_cache()
-end)
+event.onloadstate(check_map_change)
 
-tastudio.onbranchload(function()
-	clear_cache()
-end)
+tastudio.onbranchload(check_map_change)
 
 
 -- MAIN LOOP
 
 while true do
-	Mouse              = input.getmouse()
-	ScreenWidth        = client.screenwidth()
-	ScreenHeight       = client.screenheight()
-	local paused       = client.ispaused()
-	local episode, map = Globals.gameepisode, Globals.gamemap
-	
-	if episode ~= LastEpisode or map ~= LastMap then
-		clear_cache()
-		LastEpisode, LastMap = episode, map
-	end
+	Mouse        = input.getmouse()
+	ScreenWidth  = client.screenwidth()
+	ScreenHeight = client.screenheight()
+	local paused = client.ispaused()
+
+	check_map_change()
 
 	if Init then init_mobj_bounds() end
 
