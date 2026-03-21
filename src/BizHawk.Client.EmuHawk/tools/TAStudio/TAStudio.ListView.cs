@@ -1156,7 +1156,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (int i = startVal; i <= endVal; i++)
 						{
-							CurrentTasMovie.SetFrame(i, _rightClickInput[(i - _rightClickFrame).Mod(_rightClickInput.Length)]);
+							CurrentTasMovie.PokeFrame(i, _rightClickInput[(i - _rightClickFrame).Mod(_rightClickInput.Length)]);
 						}
 					}
 				}
@@ -1166,14 +1166,14 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (int i = 0; i < _rightClickInput.Length; i++) // Re-set initial range, just to verify it's still there.
 						{
-							CurrentTasMovie.SetFrame(_rightClickFrame + i, _rightClickInput[i]);
+							CurrentTasMovie.PokeFrame(_rightClickFrame + i, _rightClickInput[i]);
 						}
 
 						if (_rightClickOverInput != null) // Restore overwritten input from previous movement
 						{
 							for (int i = 0; i < _rightClickOverInput.Length; i++)
 							{
-								CurrentTasMovie.SetFrame(_rightClickLastFrame + i, _rightClickOverInput[i]);
+								CurrentTasMovie.PokeFrame(_rightClickLastFrame + i, _rightClickOverInput[i]);
 							}
 						}
 						else
@@ -1186,7 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 
 						for (int i = 0; i < _rightClickInput.Length; i++) // Place copied input
 						{
-							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
+							CurrentTasMovie.PokeFrame(frame + i, _rightClickInput[i]);
 						}
 					}
 					else if (_rightClickAlt)
@@ -1203,12 +1203,12 @@ namespace BizHawk.Client.EmuHawk
 						int shiftTo = shiftFrom + (_rightClickInput.Length * Math.Sign(shiftBy));
 						for (int i = 0; i < shiftInput.Length; i++)
 						{
-							CurrentTasMovie.SetFrame(shiftTo + i, shiftInput[i]);
+							CurrentTasMovie.PokeFrame(shiftTo + i, shiftInput[i]);
 						}
 
 						for (int i = 0; i < _rightClickInput.Length; i++)
 						{
-							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
+							CurrentTasMovie.PokeFrame(frame + i, _rightClickInput[i]);
 						}
 
 						_rightClickFrame = frame;
@@ -1290,6 +1290,43 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetSplicer();
+		}
+
+		private void UpdateActiveMovieInputs()
+		{
+			if (Settings.EditInvisibleColumns)
+			{
+				CurrentTasMovie.ActiveControllerInputs = null;
+				return;
+			}
+
+			var controlTuples = ControllerType.ControlsOrdered.SelectMany(x => x);
+			Dictionary<string, AxisSpec?> controlSpecs = new();
+			foreach (var tuple in controlTuples)
+				controlSpecs.Add(tuple.Name, tuple.AxisSpec);
+
+			if (!TasView.AllColumns.Any(c => !c.Visible && controlSpecs.ContainsKey(c.Name)))
+			{
+				CurrentTasMovie.ActiveControllerInputs = null;
+				return;
+			}
+
+			ControllerDefinition visibleDefinition = new("visible");
+			foreach (RollColumn col in TasView.VisibleColumns)
+			{
+				if (!controlSpecs.TryGetValue(col.Name, out AxisSpec? maybeSpec))
+					continue; // frame, cursor, or Lua column
+
+				if (maybeSpec == null)
+					visibleDefinition.BoolButtons.Add(col.Name);
+				else
+				{
+					AxisSpec spec = maybeSpec.Value;
+					visibleDefinition.AddAxis(col.Name, spec.Range, spec.Neutral, spec.IsReversed, spec.Constraint);
+				}
+			}
+
+			CurrentTasMovie.ActiveControllerInputs = visibleDefinition.MakeImmutable();
 		}
 
 		public void AnalogIncrementByOne()

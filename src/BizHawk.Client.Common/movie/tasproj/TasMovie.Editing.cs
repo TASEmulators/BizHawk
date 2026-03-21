@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		public override void RecordFrame(int frame, IController source)
 		{
 			ChangeLog.AddGeneralUndo(frame, frame, $"Record Frame: {frame}");
-			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
+			base.PokeFrame(frame, source);
 			ChangeLog.SetGeneralRedo();
 
 			LagLog[frame] = _inputPollable.IsLagFrame;
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 
 		public override void Truncate(int frame)
 		{
-			if (frame >= Log.Count - 1) return;
+			if (frame >= Log.Count) return;
 
 			bool endBatch = ChangeLog.BeginNewBatch($"Truncate Movie: {frame}", true);
 
@@ -56,22 +56,17 @@ namespace BizHawk.Client.Common
 			InvalidateAfter(frame);
 		}
 
-		public void SetFrame(int frame, string source)
+		public void PokeFrame(int frame, string source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame, $"Set Frame At: {frame}");
-			SetFrameAt(frame, source);
-			ChangeLog.SetGeneralRedo();
-
-			InvalidateAfter(frame);
+			Bk2Controller controller = new(Session.MovieController.Definition, LogKey);
+			controller.SetFromMnemonic(source);
+			PokeFrame(frame, controller);
 		}
 
 		public void ClearFrame(int frame)
 		{
-			string empty = Bk2LogEntryGenerator.EmptyEntry(Session.MovieController);
-			if (GetInputLogEntry(frame) == empty) return;
-
 			ChangeLog.AddGeneralUndo(frame, frame, $"Clear Frame: {frame}");
-			SetFrameAt(frame, empty);
+			base.PokeFrame(frame, DefaultValueController);
 			ChangeLog.SetGeneralRedo();
 
 			InvalidateAfter(frame);
@@ -118,6 +113,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrames(int removeStart, int removeUpTo)
 		{
+			// TODO: column limiting
 			bool endBatch = ChangeLog.BeginNewBatch($"Remove frames {removeStart}-{removeUpTo - 1}", true);
 			if (BindMarkersToInput)
 			{
@@ -133,12 +129,22 @@ namespace BizHawk.Client.Common
 			// Log.GetRange() might be preferrable, but Log's type complicates that.
 			string[] removedInputs = new string[removeUpTo - removeStart];
 			Log.CopyTo(removeStart, removedInputs, 0, removedInputs.Length);
-			Log.RemoveRange(removeStart, removeUpTo - removeStart);
+
+			if (ActiveControllerInputs == null)
+			{
+				Log.RemoveRange(removeStart, removeUpTo - removeStart);
+			}
+			else
+			{
+				int count = removeUpTo - removeStart;
+				for (int i = removeStart; i < Log.Count; i++)
+					base.PokeFrame(i, GetInputState(i + count) ?? DefaultValueController);
+			}
 
 			ChangeLog.AddRemoveFrames(
 				removeStart,
-				removeUpTo,
 				removedInputs.ToList(),
+				ActiveControllerInputs,
 				BindMarkersToInput
 			);
 			if (endBatch) ChangeLog.EndBatch();
@@ -155,9 +161,29 @@ namespace BizHawk.Client.Common
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
 			var inputLogCopy = inputLog.ToList();
-			Log.InsertRange(frame, inputLogCopy);
+			if (ActiveControllerInputs == null)
+			{
+				Log.InsertRange(frame, inputLogCopy);
+			}
+			else
+			{
+				int count = inputLogCopy.Count;
+				// add empty frames at the end
+				Log.AddRange(Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+				// shift inputs to future frames
+				for (int i = Log.Count - 1; i >= frame + count; i--)
+					base.PokeFrame(i, GetInputState(i - count));
+				// write the new inputs
+				Bk2Controller controller = new(Session.MovieController.Definition, LogKey);
+				for (int i = 0; i < count; i++)
+				{
+					controller.SetFromMnemonic(inputLogCopy[i]);
+					base.PokeFrame(frame + i, controller);
+				}
+			}
+
 			ShiftBindedMarkers(frame, inputLogCopy.Count);
-			ChangeLog.AddInsertInput(frame, inputLogCopy, BindMarkersToInput, $"Insert {inputLogCopy.Count} frame(s) at {frame}");
+			ChangeLog.AddInsertInput(frame, inputLogCopy, ActiveControllerInputs, BindMarkersToInput, $"Insert {inputLogCopy.Count} frame(s) at {frame}");
 			InvalidateAfter(frame);
 		}
 
@@ -175,6 +201,7 @@ namespace BizHawk.Client.Common
 
 		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
+			// TODO: column limiting
 			var states = inputStates.ToList();
 
 			bool endBatch = ChangeLog.BeginNewBatch($"Copy Over Input: {frame}", true);
@@ -187,7 +214,10 @@ namespace BizHawk.Client.Common
 			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
 			for (int i = 0; i < states.Count; i++)
 			{
-				Log[frame + i] = Bk2LogEntryGenerator.GenerateLogEntry(states[i]);
+				IController controller = states[i];
+				if (ActiveControllerInputs != null)
+					controller = new MultitrackAdapter(controller, GetInputState(frame + i), ActiveControllerInputs);
+				Log[frame + i] = Bk2LogEntryGenerator.GenerateLogEntry(controller);
 			}
 			int firstChangedFrame = ChangeLog.SetGeneralRedo();
 
@@ -203,9 +233,24 @@ namespace BizHawk.Client.Common
 		{
 			frame = Math.Min(frame, Log.Count);
 
-			Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+			if (ActiveControllerInputs == null)
+			{
+				Log.InsertRange(frame, Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+			}
+			else
+			{
+				// add empty frames at the end
+				Log.AddRange(Enumerable.Repeat(Bk2LogEntryGenerator.EmptyEntry(Session.MovieController), count));
+				// shift inputs to future frames
+				for (int i = Log.Count - 1; i >= frame + count; i--)
+					base.PokeFrame(i, GetInputState(i - count));
+				// clear frames
+				for (int i = frame; i < frame + count; i++)
+					base.PokeFrame(i, DefaultValueController);
+			}
+
 			ShiftBindedMarkers(frame, count);
-			ChangeLog.AddInsertFrames(frame, count, BindMarkersToInput, $"Insert {count} empty frame(s) at {frame}");
+			ChangeLog.AddInsertFrames(frame, count, ActiveControllerInputs, BindMarkersToInput, $"Insert {count} empty frame(s) at {frame}");
 
 			InvalidateAfter(frame);
 		}
@@ -214,7 +259,6 @@ namespace BizHawk.Client.Common
 		{
 			int oldLength = InputLogLength;
 
-			// account for autohold TODO: What about auto-fire?
 			string inputs = Bk2LogEntryGenerator.GenerateLogEntry(Session.StickySource);
 			for (int i = 0; i < numFrames; i++)
 			{

@@ -5,7 +5,16 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : BasicMovieInfo, IMovie
 	{
-		private Bk2Controller _adapter;
+		private IController _defaultValueController;
+		protected IController DefaultValueController
+		{
+			get
+			{
+				// LogKey isn't available at construction time, so we have to create this instance when it is accessed.
+				_defaultValueController ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
+				return _defaultValueController;
+			}
+		}
 
 		public Bk2Movie(IMovieSession session, string filename) : base(filename)
 		{
@@ -16,6 +25,17 @@ namespace BizHawk.Client.Common
 		public virtual void Attach(IEmulator emulator)
 		{
 			Emulator = emulator;
+		}
+
+		private ControllerDefinition/*?*/ _activeControllerInputs = null;
+		public ControllerDefinition/*?*/ ActiveControllerInputs
+		{
+			get => _activeControllerInputs;
+			set
+			{
+				value?.AssertImmutable();
+				_activeControllerInputs = value;
+			}
 		}
 
 		protected bool IsAttached() => Emulator != null;
@@ -48,6 +68,11 @@ namespace BizHawk.Client.Common
 
 		public void AppendFrame(IController source)
 		{
+			if (ActiveControllerInputs != null)
+			{
+				source = new MultitrackAdapter(source, new Bk2Controller(Session.MovieController.Definition, LogKey), ActiveControllerInputs);
+			}
+
 			Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(source));
 			Changes = true;
 		}
@@ -62,15 +87,24 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
-
-			Changes = true;
+			PokeFrame(frame, source);
 		}
 
 		public virtual void Truncate(int frame)
 		{
 			if (frame < Log.Count)
 			{
+				if (ActiveControllerInputs != null)
+				{
+					for (int i = frame; i < Log.Count; i++)
+						PokeFrame(i, DefaultValueController);
+					string defaultEntry = Bk2LogEntryGenerator.EmptyEntry(DefaultValueController);
+					int firstDefault = Log.Count;
+					while (firstDefault > frame && Log[firstDefault - 1] == defaultEntry)
+						firstDefault--;
+					frame = firstDefault;
+				}
+
 				Log.RemoveRange(frame, Log.Count - frame);
 				Changes = true;
 			}
@@ -80,9 +114,9 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= -1)
 			{
-				_adapter ??= new Bk2Controller(Session.MovieController.Definition, LogKey);
-				_adapter.SetFromMnemonic(frame >= 0 ? Log[frame] : Bk2LogEntryGenerator.EmptyEntry(_adapter));
-				return _adapter;
+				Bk2Controller controller = new(Session.MovieController.Definition, LogKey);
+				controller.SetFromMnemonic(frame >= 0 ? Log[frame] : Bk2LogEntryGenerator.EmptyEntry(controller));
+				return controller;
 			}
 
 			return null;
@@ -90,10 +124,18 @@ namespace BizHawk.Client.Common
 
 		public virtual void PokeFrame(int frame, IController source)
 		{
+			if (ActiveControllerInputs != null)
+			{
+				source = new MultitrackAdapter(source, GetInputState(frame) ?? DefaultValueController, ActiveControllerInputs);
+			}
+
 			SetFrameAt(frame, Bk2LogEntryGenerator.GenerateLogEntry(source));
 			Changes = true;
 		}
 
+		/// <summary>
+		/// Does not use <see cref="ActiveControllerInputs"/>.
+		/// </summary>
 		protected void SetFrameAt(int frameNum, string frame)
 		{
 			if (Log.Count > frameNum)
