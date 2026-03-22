@@ -712,5 +712,19 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodExample("""
+			tastudio.createnewbranch();
+		""")]
+		[LuaMethod(
+			name: "createnewbranch",
+			description: "creates a new branch at the current frame")]
+		public void CreateNewBranch()
+		{
+			if (Engaged())
+			{
+				Tastudio.Branch();
+			}
+		}
 	}
 }
