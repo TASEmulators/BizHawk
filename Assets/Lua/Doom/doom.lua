@@ -6,13 +6,6 @@ dofile("doom.misc.lua")
 -- ACTUAL WORK
 
 local function iterate_players()
-	--[[--
-	local playercount       = 0
-	local total_killcount   = 0
-	local total_itemcount   = 0
-	local total_secretcount = 0
-	local stats             = "      HP Armr Kill Item Secr\n"
-	--]]--
 	for i, player in Globals:iterate_players() do
 		Players[i] = {
 			thinker = player.mo.thinker._address,
@@ -29,7 +22,7 @@ local function iterate_players()
 		
 		Players[i].distx      = Players[i].x - Players[i].prevx
 		Players[i].disty      = Players[i].y - Players[i].prevy
-		Players[i].distz      = Players[i].z - Players[i].prevz		
+		Players[i].distz      = Players[i].z - Players[i].prevz	
 		Players[i].distmoved  = math.sqrt(
 			Players[i].distx * Players[i].distx +
 			Players[i].disty * Players[i].disty)
@@ -43,26 +36,9 @@ local function iterate_players()
 			else Players[i].dirmoved = -angle + 180
 			end
 		end
-		--[[--
-		playercount       = playercount + 1
-		local killcount   = player.killcount
-		local itemcount   = player.itemcount
-		local secretcount = player.secretcount
 
-		total_killcount   = total_killcount   + killcount
-		total_itemcount   = total_itemcount   + itemcount
-		total_secretcount = total_secretcount + secretcount
-
-		stats = string.format("%s P%i %4i %4i %4i %4i %4i\n",
-			stats, i, player.health, player.armorpoints1, killcount, itemcount, secretcount)
-		--]]--
+		if Players.Current == nil then Players.Current = i end
 	end
-	--[[--
-	if playercount > 1 then
-		stats = string.format("%s %-12s %4i %4i %4i\n", stats, "All", total_killcount, total_itemcount, total_secretcount)
-	end
-	text(0, 0, stats, nil, "topright")
-	--]]--
 end
 
 local function thing_handler()
@@ -71,22 +47,32 @@ local function thing_handler()
 	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local type   = mobj.type
-		local index  = mobj.index
+		local type  = mobj.type
+		local index = mobj.index
+		local name  = MobjType[type]
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		
 		if radius_color or text_color then -- not hidden
 			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
 
+			if name == "PLAYER" then
+				for i, player in pairs(Players) do
+					if player.thinker == mobj.thinker._address then
+						name  = name .. " " .. i
+						index = i
+						break
+					end
+				end
+			end
+
 			if  in_range(pos.x, 0, ScreenWidth)
 			and in_range(pos.y, 0, ScreenHeight)
 			then
-				local radius        = mobj.radius
-				local screen_radius = math.floor((radius / FRACUNIT) * Zoom)
+				local radius = math.floor((mobj.radius / FRACUNIT) * Zoom)
 				
 				if  Hilite
-				and in_range(mousePos.x, pos.x - screen_radius, pos.x + screen_radius)
-				and in_range(mousePos.y, pos.y - screen_radius, pos.y + screen_radius)
+				and in_range(mousePos.x, pos.x - radius, pos.x + radius)
+				and in_range(mousePos.y, pos.y - radius, pos.y + radius)
 				and mousePos.x > PADDING_WIDTH and not freeze_gui()
 				then
 					radius_color = "white"
@@ -95,7 +81,7 @@ local function thing_handler()
 					GUITexts.thing = string.format(
 						"  THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
 						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
-						mobj.index, MobjType[type],
+						mobj.index, name,
 						mobj.x      / FRACUNIT,
 						mobj.y      / FRACUNIT,
 						mobj.z      / FRACUNIT,
@@ -108,17 +94,17 @@ local function thing_handler()
 				
 				if radius_color then
 					box(
-						pos.x - screen_radius, 
-						pos.y - screen_radius,
-						pos.x + screen_radius,
-						pos.y + screen_radius,
+						pos.x - radius, 
+						pos.y - radius,
+						pos.x + radius,
+						pos.y + radius,
 						radius_color)
 				end
 				
 				if text_color and index >= 0 then
 					text(
-						pos.x - screen_radius + 1,
-						pos.y - screen_radius,
+						pos.x - radius + 1,
+						pos.y - radius,
 						string.format("%d", index),
 						text_color)
 				end
@@ -131,7 +117,7 @@ local function line_handler()
 	if not ShowMap then return end
 	
 	local closestLine, selectedSector
-	local player       = select(2, next(Players)) -- first present player only for now
+	local player       = Players[Players.Current]
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos = screen_to_game(mousePos)
 	local shortestDist = math.maxinteger
@@ -218,7 +204,7 @@ local function line_handler()
 end
 
 local function tracked_handler()
-	local player   = select(2, next(Players)) -- first present player only for now
+	local player   = Players[Players.Current]
 	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	if Tracked[TrackedType.THING].Current then
@@ -433,14 +419,16 @@ end
 local function iterate()
 	if Init then return end
 	
-	local player    = select(2, next(Players)) -- first present player only for now
+	local player    = Players[Players.Current]
 	local rngindex  = Globals.rng.rndindex
 	GUITexts        = {}
 	GUITexts.player = string.format(
+		"       PLAYER %d  \n" ..
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
 		" momX: %.6f\n momY: %.6f\n" ..
 		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
+		Players.Current,
 		player.x,
 		player.y,
 		player.z,
@@ -460,11 +448,11 @@ local function iterate()
 	line_handler()
 	draw_tracelines()
 	
-	box ( 0,  0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
-	text(10, 42, GUITexts.player, MapPrefs.player.color)
+	box(0, 0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
+	text(10, TextPosY.Player, GUITexts.player, MapPrefs.player.color)
 	text(
 		PADDING_WIDTH,
-		ScreenHeight - 32 * ScreenHeight / 200 - 50,
+		ScreenHeight - 32 * ScreenHeight / 200 - 50, -- just above hud
 		string.format(
 			" tic: %d\n" ..
 			"time: %.2f\n" .. -- xdre limits to centiseconds
@@ -474,7 +462,6 @@ local function iterate()
 			rngindex,
 			memory.readbyte(memory.read_u32_le(symbols.rndtable) + rngindex, "System Bus")
 	))
-	
 	if GUITexts.thing  then text(10, TextPosY.Thing,  GUITexts.thing             ) end
 	if GUITexts.line   then text(10, TextPosY.Line,   GUITexts.line,   0xffff8800) end
 	if GUITexts.sector then text(10, TextPosY.Sector, GUITexts.sector, 0xff00ffff) end
@@ -666,12 +653,16 @@ while true do
 
 	-- clear cache after rewind, turbo etc.
 	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
-	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
-	--	clear_cache()
+--	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
+	if Globals.gamestate ~= 0 then
+		clear_cache()
 	end
 	
 	init_cache()
-	iterate_players()
+
+	if Globals.gamestate == 0 then
+		iterate_players()
+	end
 
 	if paused then
 		-- OSD text is not automatically cleared while paused
