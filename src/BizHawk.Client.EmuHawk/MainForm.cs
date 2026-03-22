@@ -550,7 +550,8 @@ namespace BizHawk.Client.EmuHawk
 				MainForm_MouseWheel);
 
 			DisplayManager = new(Config, Emulator, InputManager, MovieSession, GL, _presentationPanel, () => DisableSecondaryThrottling);
-			Controls.InsertAfter(MainformMenu, insert: _presentationPanel.Control);
+			Controls.Add(_presentationPanel);
+			Controls.SetChildIndex(_presentationPanel, 0);
 
 			// set up networking before ApiManager (in ToolManager)
 			byte[] NetworkingTakeScreenshot()
