@@ -28,7 +28,7 @@ FADEOUT_TIMER      = 20
 MAXIMUM_INTERCEPTS = 128
 -- initially 12 but we have 64-bit architecture + pointer alignment.
 -- when intercept overflow is emulated, the size of 12 is still used internally
--- to corrupt the same values as in vanilla
+-- to corrupt the same target values as in vanilla
 INTERCEPT_SIZE     = 16
 
 -- enums
@@ -128,7 +128,7 @@ LastBMEnd      = nil
 
 
 -- saved to config
-Zoom           = Defaults.Zoom
+Zoom           = nil
 Follow         = nil
 Hilite         = nil
 ShowMap        = nil
@@ -183,13 +183,14 @@ LastMouse = {
 	left  = false
 }
 TextPosY = {
+	Player = 26,
 	Thing  = 220,
 	Line   = 318,
 	Sector = 400
 }
 -- map colors (0xAARRGGBB or "name")
 MapPrefs = {
-	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
+	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 --	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
@@ -440,6 +441,63 @@ function prandom_log()
 	end
 end
 
+local function line_event(event, line, thing)
+	line  = line  - 0x36f00000000
+	thing = thing - 0x36f00000000
+	
+	for i, player in pairs(Players) do
+		if player.thinker == thing then
+			thing = "player " .. i
+			break
+		end
+	end
+	
+	if type(thing) ~= "string" -- thing is not player
+	and ((LineUseLog   == LineLogType.ALL and event == "USED")
+	or   (LineCrossLog == LineLogType.ALL and event == "CROSSED"))
+	then
+		local mobj = structs.mobj.from_pointer(thing)
+		thing = "thing " .. mobj.index
+	end
+	
+	if type(thing) == "string" then
+		print(string.format(
+			"tic %d: line %d %s by %s",
+			Globals.gametic - 1,
+			memory.read_s32_le(line, "System Bus"),
+			event, thing
+		))
+	end
+end
+
+function cycle_log_types(isUse)
+	if isUse then
+		local name = "Use"
+		LineUseLog = (LineUseLog + 1) % (LineLogType.ALL + 1)
+		event.unregisterbyname(name)
+		
+		if LineUseLog ~= LineLogType.NONE then
+			doom.on_use(function(line, thing)
+				if LineUseLog ~= LineLogType.NONE
+				then line_event("USED", line, thing)
+				end
+			end, name)
+		end
+	else
+		local name = "Cross"
+		LineCrossLog = (LineCrossLog + 1) % (LineLogType.ALL + 1)
+		event.unregisterbyname(name)
+		
+		if LineCrossLog ~= LineLogType.NONE then
+			doom.on_cross(function(line, thing)
+				if LineCrossLog ~= LineLogType.NONE
+				then line_event("CROSSED", line, thing)
+				end
+			end, name)
+		end
+	end
+end
+
 
 -- GAME/SCREEN CODECS
 
@@ -605,7 +663,7 @@ function update_zoom()
 	local deltaY     = mousePos.y - LastMouse.y
 	local deltaWheel = mouseWheel - LastMouse.wheel
 	
-	if deltaWheel ~= 0 then
+	if deltaWheel ~= 0 and not Init then
 		if mousePos.x > PADDING_WIDTH then
 			zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true)
 		elseif in_range(mousePos.y, TextPosY.Thing, TextPosY.Line) then
@@ -627,7 +685,7 @@ function update_zoom()
 	LastMouse.wheel = mouseWheel
 	
 	if Follow and Globals.gamestate == 0 then
-		local player = select(2, next(Players))
+		local player       = Players[Players.Current]
 		local screenCenter = screen_to_game({
 			x = (ScreenWidth+PADDING_WIDTH)/2,
 			y = ScreenHeight/2
@@ -638,11 +696,9 @@ function update_zoom()
 		Pan.x = Pan.x + screenCenter.x
 		Pan.y = Pan.y - screenCenter.y
 	end
-	
-	if not Init
---	and LastScreenSize.w == ScreenWidth
---	and LastScreenSize.h == ScreenHeight
-	then return end
+
+	if Config.Zoom then Init = false end
+	if not Init    then return       end
 	
 	if  OB.top    ~= math.maxinteger
 	and OB.left   ~= math.maxinteger
@@ -674,7 +730,8 @@ function reset_view()
 		bottom = math.mininteger,
 		right  = math.mininteger
 	}
-	Init = true
+	Init        = true
+	Config.Zoom = nil
 	update_zoom()
 end
 
@@ -735,72 +792,17 @@ function check_press(key)
 	return Input[key] and not LastInput[key]
 end
 
-local function line_event(event, line, thing)
-	line  = line  - 0x36f00000000
-	thing = thing - 0x36f00000000
-	
-	for i, player in pairs(Players) do
-		if player.thinker == thing then
-			thing = "player " .. i
-			break
-		end
-	end
-	
-	if type(thing) ~= "string" -- thing is not player
-	and ((LineUseLog   == LineLogType.ALL and event == "USED")
-	or   (LineCrossLog == LineLogType.ALL and event == "CROSSED"))
-	then
-		local mobj = structs.mobj.from_pointer(thing)
-		thing = "thing " .. mobj.index
-	end
-	
-	if type(thing) == "string" then
-		print(string.format(
-			"tic %d: line %d %s by %s",
-			Globals.gametic - 1,
-			memory.read_s32_le(line, "System Bus"),
-			event, thing
-		))
-	end
-end
-
-function cycle_log_types(isUse)
-	if isUse then
-		local name = "Use"
-		LineUseLog = (LineUseLog + 1) % (LineLogType.ALL + 1)
-		event.unregisterbyname(name)
-		
-		if LineUseLog ~= LineLogType.NONE then
-			doom.on_use(function(line, thing)
-				if LineUseLog ~= LineLogType.NONE
-				then line_event("USED", line, thing)
-				end
-			end, name)
-		end
-	else
-		local name = "Cross"
-		LineCrossLog = (LineCrossLog + 1) % (LineLogType.ALL + 1)
-		event.unregisterbyname(name)
-		
-		if LineCrossLog ~= LineLogType.NONE then
-			doom.on_cross(function(line, thing)
-				if LineCrossLog ~= LineLogType.NONE
-				then line_event("CROSSED", line, thing)
-				end
-			end, name)
-		end
-	end
-end
-
 function check_map_change()
 	local episode = Globals.gameepisode
 	local map     = Globals.gamemap
 	
-	if episode ~= LastEpisode or map ~= LastMap then
+	if Globals.gamestate ~= 0
+	or (LastEpisode and LastMap and (episode ~= LastEpisode or map ~= LastMap)) then
 		clear_cache()
 		reset_view()
-		LastEpisode, LastMap = episode, map
 	end
+
+	LastEpisode, LastMap = episode, map
 end
 
 
