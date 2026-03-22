@@ -409,6 +409,7 @@ namespace BizHawk.Client.EmuHawk
             this.amstradCPCToolStripMenuItem,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
+			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
 			this.MainformMenu.MenuDeactivate += new System.EventHandler(this.MainformMenu_MenuDeactivate);
 			// 
@@ -2032,6 +2033,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.ShowItemToolTips = true;
 			this.MainStatusBar.SizingGrip = false;
+			this.MainStatusBar.TabIndex = 1;
 			// 
 			// DumpStatusButton
 			// 
@@ -2412,8 +2414,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(470, 408);
-			this.Controls.Add(this.MainformMenu);
 			this.Controls.Add(this.MainStatusBar);
+			this.Controls.Add(this.MainformMenu);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MainMenuStrip = this.MainformMenu;
 			this.Name = "MainForm";
