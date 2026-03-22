@@ -127,6 +127,15 @@ namespace BizHawk.Bizware.Graphics
 					if (!WGL.GetApi().IsExtensionPresent("NV_DX_interop2")) return;
 
 					NVDXInterop = new(new LamdaNativeContext(SDL2OpenGLContext.GetGLProcAddress));
+					if (NVDXInterop.CurrentVTable.Load("wglDXOpenDeviceNV") == IntPtr.Zero
+						|| NVDXInterop.CurrentVTable.Load("wglDXCloseDeviceNV") == IntPtr.Zero
+						|| NVDXInterop.CurrentVTable.Load("wglDXRegisterObjectNV") == IntPtr.Zero
+						|| NVDXInterop.CurrentVTable.Load("wglDXUnregisterObjectNV") == IntPtr.Zero
+						|| NVDXInterop.CurrentVTable.Load("wglDXLockObjectsNV") == IntPtr.Zero
+						|| NVDXInterop.CurrentVTable.Load("wglDXUnlockObjectsNV") == IntPtr.Zero)
+					{
+						return;
+					}
 
 					var glVendor = GL.GetStringS(StringName.Vendor);
 					var vendor = Vendor.Unknown;
