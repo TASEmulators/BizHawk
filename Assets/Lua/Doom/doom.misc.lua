@@ -1,4 +1,5 @@
 -- feos, kalimag, 2025-2026
+---@diagnostic disable
 
 -- MODULES
 
@@ -183,10 +184,10 @@ LastMouse = {
 	left  = false
 }
 TextPosY = {
-	Player = 26,
-	Thing  = 220,
-	Line   = 318,
-	Sector = 400
+	Player = 42,
+	Thing  = 236,
+	Line   = 334,
+	Sector = 416
 }
 -- map colors (0xAARRGGBB or "name")
 MapPrefs = {
@@ -666,6 +667,8 @@ function update_zoom()
 	if deltaWheel ~= 0 and not Init then
 		if mousePos.x > PADDING_WIDTH then
 			zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true)
+		elseif in_range(mousePos.y, TextPosY.Player, TextPosY.Thing) then
+			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
 		elseif in_range(mousePos.y, TextPosY.Thing, TextPosY.Line) then
 			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
 		elseif in_range(mousePos.y, TextPosY.Line, TextPosY.Sector) then
