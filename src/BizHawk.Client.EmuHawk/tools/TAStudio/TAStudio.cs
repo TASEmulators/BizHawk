@@ -168,6 +168,9 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			_inputRolls.Add(TasView);
+			_activeInputRoll = _inputRolls[0];
+
 			ToolStripMenuItemEx goToFrameMenuItem = new()
 			{
 				ShortcutKeys = Keys.Control | Keys.G,
@@ -599,8 +602,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectCurrentFrame()
 		{
-			TasView.DeselectAll();
-			TasView.SelectRow(Emulator.Frame, true);
+			_activeInputRoll.DeselectAll();
+			_activeInputRoll.SelectRow(Emulator.Frame, true);
 
 			RefreshDialog();
 		}
@@ -618,23 +621,6 @@ namespace BizHawk.Client.EmuHawk
 			var controller = MovieSession.GenerateMovieController();
 			controller.SetFromMnemonic(branch.InputLog[frame]);
 			return controller;
-		}
-
-		private int? FirstNonEmptySelectedFrame
-		{
-			get
-			{
-				var empty = Bk2LogEntryGenerator.EmptyEntry(MovieSession.MovieController);
-				foreach (var row in TasView.SelectedRows)
-				{
-					if (CurrentTasMovie[row].LogEntry != empty)
-					{
-						return row;
-					}
-				}
-
-				return null;
-			}
 		}
 
 		private bool LoadMovie(ITasMovie tasMovie, bool startsFromSavestate = false, int gotoFrame = 0)
@@ -663,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// clear all selections
-			TasView.DeselectAll();
+			_activeInputRoll.DeselectAll();
 			BookMarkControl.Restart();
 			MarkerControl.Restart();
 
@@ -689,7 +675,7 @@ namespace BizHawk.Client.EmuHawk
 			if (success)
 			{
 				// clear all selections
-				TasView.DeselectAll();
+				_activeInputRoll.DeselectAll();
 				BookMarkControl.Restart();
 				MarkerControl.Restart();
 				RefreshDialog();
@@ -805,14 +791,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			if (!TasView.AnyRowsSelected)
+			if (!AnyRowsSelected)
 			{
 				return;
 			}
 
 			var loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools)
 			{
-				Start = TasView.SelectionStartIndex!.Value,
+				Start = FirstSelectedRowIndex,
 			};
 			loadZone.PlaceZone(CurrentTasMovie, Config);
 		}
@@ -986,7 +972,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override string WindowTitleStatic => "TAStudio";
 
-		public IEnumerable<int> GetSelection() => TasView.SelectedRows;
+		public IEnumerable<int> GetSelection() => _activeInputRoll.SelectedRows;
 
 		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
@@ -1015,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTasViewRowCount()
 		{
-			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
+			_inputRolls.ForEach(r => r.RowCount = CurrentTasMovie.InputLogLength + 1);
 			_lastRefresh = Emulator.Frame;
 		}
 
@@ -1066,7 +1052,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
-			var selectedRowCount = TasView.SelectedRows.Count();
+			var selectedRowCount = GetSelection().Count();
 			var temp = $"Selected: {selectedRowCount} {(selectedRowCount == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
 			var clipboardCount = _tasClipboard.Count;
 			if (clipboardCount is not 0) temp += $", Clipboard: {clipboardCount} {(clipboardCount is 1 ? "frame" : "frames")}";
@@ -1116,7 +1102,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_MouseLeave(object sender, EventArgs e)
 		{
-			toolTip1.SetToolTip(TasView, null);
+			toolTip1.SetToolTip(_inputRolls[0], null);
 		}
 
 		private void TAStudio_Deactivate(object sender, EventArgs e)
