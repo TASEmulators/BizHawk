@@ -70,7 +70,10 @@ internal class LuaCatsGenerator
 			string libraryDescription = libraryGroup.First().LibraryDescription;
 
 			if (!string.IsNullOrEmpty(libraryDescription))
+			{
 				sb.AppendLine(FormatDescription(libraryDescription));
+			}
+
 			sb.AppendLine($"---@class {library}");
 			sb.AppendLine($"{library} = {{}}");
 			sb.AppendLine();
@@ -78,7 +81,9 @@ internal class LuaCatsGenerator
 			foreach (var func in libraryGroup.OrderBy(func => func.Name))
 			{
 				if (!string.IsNullOrEmpty(func.Description))
+				{
 					sb.AppendLine(FormatDescription(func.Description));
+				}
 
 				if (func.Example != null)
 				{
@@ -93,7 +98,9 @@ internal class LuaCatsGenerator
 				}
 
 				if (func.IsDeprecated)
+				{
 					sb.AppendLine("---@deprecated");
+				}
 
 				foreach (var parameter in func.Method.GetParameters())
 				{
