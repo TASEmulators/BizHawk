@@ -1,4 +1,5 @@
 -- feos, kalimag, 2025-2026
+---@diagnostic disable
 
 dofile("doom.misc.lua")
 
@@ -37,7 +38,9 @@ local function iterate_players()
 			end
 		end
 
-		if Players.Current == nil then Players.Current = i end
+		if not Players.Current then Players.Current = i end
+		if not Players.Min     then Players.Min     = i end
+		Players.Max = i
 	end
 end
 
@@ -79,8 +82,8 @@ local function thing_handler()
 					text_color   = "white"
 					
 					GUITexts.thing = string.format(
-						"  THING %d (%s)\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
-						"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+						"  THING %d (%s)\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
+						"   rad: %.0f\ntics: %d     hp:   %d\n  rt: %d     thre: %d",
 						mobj.index, name,
 						mobj.x      / FRACUNIT,
 						mobj.y      / FRACUNIT,
@@ -228,8 +231,8 @@ local function tracked_handler()
 		end
 		
 		GUITexts.thing  = string.format(
-			"%sTHING %d (%s)%s\nx:    %.5f\ny:    %.5f\nz:    %.2f" ..
-			"  rad:  %.0f\ntics: %d     hp:   %d\nrt:   %d     thre: %d",
+			"%sTHING %d (%s)%s\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
+			"   rad: %.0f\ntics: %d    hp:   %d\n  rt: %d    thre: %d",
 			min,
 			mobj.index, MobjType[mobj.type],
 			max,
