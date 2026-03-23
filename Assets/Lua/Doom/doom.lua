@@ -212,15 +212,15 @@ local function tracked_handler()
 	
 	if Tracked[TrackedType.THING].Current then
 		local entity = Tracked[TrackedType.THING]
-		local min    = entity.Current == entity.Min and "  " or "<-"
-		local max    = entity.Current == entity.Max and "  " or "->"
+		local min    = entity.Current == entity.Min and Scroller.NONE or Scroller.LEFT
+		local max    = entity.Current == entity.Max and Scroller.NONE or Scroller.RIGHT
 		local mobj   = entity.TrackedList[entity.Current]
 		
 		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Thing, TextPosY.Line-1) then
+		and in_range(mousePos.y, TextPosY.THING, TextPosY.LINE-1) then
 			local delete = false
-			box(0, TextPosY.Thing, PADDING_WIDTH, TextPosY.Line-1, 0xffffffff, 0x88ffffff)
-			make_button(PADDING_WIDTH-36, TextPosY.Thing+22, " X ", function() delete = true end)
+			box(0, TextPosY.THING, PADDING_WIDTH, TextPosY.LINE-1, 0xffffffff, 0x88ffffff)
+			make_button(PADDING_WIDTH-36, TextPosY.THING+22, " X ", function() delete = true end)
 			
 			if input.get()["Delete"] or delete then
 				Confirmation = {
@@ -233,9 +233,7 @@ local function tracked_handler()
 		GUITexts.thing  = string.format(
 			"%sTHING %d (%s)%s\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
 			"   rad: %.0f\ntics: %d    hp:   %d\n  rt: %d    thre: %d",
-			min,
-			mobj.index, MobjType[mobj.type],
-			max,
+			min, mobj.index, MobjType[mobj.type], max,
 			mobj.x      / FRACUNIT,
 			mobj.y      / FRACUNIT,
 			mobj.z      / FRACUNIT,
@@ -248,8 +246,8 @@ local function tracked_handler()
 	
 	if Tracked[TrackedType.LINE].Current then
 		local entity          = Tracked[TrackedType.LINE]
-		local min             = entity.Current == entity.Min and "  " or "<-"
-		local max             = entity.Current == entity.Max and "  " or "->"
+		local min             = entity.Current == entity.Min and Scroller.NONE or Scroller.LEFT
+		local max             = entity.Current == entity.Max and Scroller.NONE or Scroller.RIGHT
 		local line            = entity.TrackedList[entity.Current]
 		local x1, y1, x2, y2  = line:coords()
 		local v1              = { x = x1 / FRACUNIT, y = y1 / FRACUNIT }
@@ -258,10 +256,10 @@ local function tracked_handler()
 		local distanceSegment = distance_to_segment({ x = player.x, y = player.y }, v1, v2)
 		
 		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Line, TextPosY.Sector-1) then
+		and in_range(mousePos.y, TextPosY.LINE, TextPosY.SECTOR-1) then
 			local delete = false
-			box(0, TextPosY.Line, PADDING_WIDTH, TextPosY.Sector-1, 0xffffffff, 0x88ffffff)
-			make_button(PADDING_WIDTH-36, TextPosY.Line+22, " X ", function() delete = true end)
+			box(0, TextPosY.LINE, PADDING_WIDTH, TextPosY.SECTOR-1, 0xffffffff, 0x88ffffff)
+			make_button(PADDING_WIDTH-36, TextPosY.LINE+22, " X ", function() delete = true end)
 			
 			if input.get()["Delete"] or delete then
 				Confirmation = {
@@ -285,15 +283,15 @@ local function tracked_handler()
 	
 	if Tracked[TrackedType.SECTOR].Current then
 		local entity = Tracked[TrackedType.SECTOR]
-		local min    = entity.Current == entity.Min and "  " or "<-"
-		local max    = entity.Current == entity.Max and "  " or "->"
+		local min    = entity.Current == entity.Min and Scroller.NONE or Scroller.LEFT
+		local max    = entity.Current == entity.Max and Scroller.NONE or Scroller.RIGHT
 		local sector = entity.TrackedList[entity.Current]
 		
 		if mousePos.x <= PADDING_WIDTH
-		and in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
+		and in_range(mousePos.y, TextPosY.SECTOR, TextPosY.SECTOR+64) then
 			local delete = false
-			box(0, TextPosY.Sector, PADDING_WIDTH, TextPosY.Sector+64, 0xffffffff, 0x88ffffff)
-			make_button(PADDING_WIDTH-36, TextPosY.Sector+22, " X ", function() delete = true end)
+			box(0, TextPosY.SECTOR, PADDING_WIDTH, TextPosY.SECTOR+64, 0xffffffff, 0x88ffffff)
+			make_button(PADDING_WIDTH-36, TextPosY.SECTOR+22, " X ", function() delete = true end)
 			
 			if input.get()["Delete"] or delete then
 				Confirmation = {
@@ -422,16 +420,19 @@ end
 local function iterate()
 	if Init then return end
 	
+	local mousePos  = client.transformPoint(Mouse.X, Mouse.Y)
 	local player    = Players[Players.Current]
 	local rngindex  = Globals.rng.rndindex
+	local min       = Players.Current == Players.Min and Scroller.NONE or Scroller.LEFT
+	local max       = Players.Current == Players.Max and Scroller.NONE or Scroller.RIGHT
 	GUITexts        = {}
 	GUITexts.player = string.format(
-		"       PLAYER %d  \n" ..
+		"     %sPLAYER %d%s\n" ..
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
 		" momX: %.6f\n momY: %.6f\n" ..
 		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
-		Players.Current,
+		min, Players.Current, max,
 		player.x,
 		player.y,
 		player.z,
@@ -450,9 +451,14 @@ local function iterate()
 	thing_handler()
 	line_handler()
 	draw_tracelines()
+
+	if mousePos.x <= PADDING_WIDTH
+	and in_range(mousePos.y, TextPosY.PLAYER, TextPosY.THING-1) then
+		box(0, TextPosY.PLAYER, PADDING_WIDTH, TextPosY.THING-1, 0xffffffff, 0x88ffffff)
+	end
 	
 	box(0, 0, PADDING_WIDTH, ScreenHeight, 0xb0000000, 0xb0000000)
-	text(10, TextPosY.Player, GUITexts.player, MapPrefs.player.color)
+	text(10, TextPosY.PLAYER, GUITexts.player, MapPrefs.player.color)
 	text(
 		PADDING_WIDTH,
 		ScreenHeight - 32 * ScreenHeight / 200 - 50, -- just above hud
@@ -465,9 +471,9 @@ local function iterate()
 			rngindex,
 			memory.readbyte(memory.read_u32_le(symbols.rndtable) + rngindex, "System Bus")
 	))
-	if GUITexts.thing  then text(10, TextPosY.Thing,  GUITexts.thing             ) end
-	if GUITexts.line   then text(10, TextPosY.Line,   GUITexts.line,   0xffff8800) end
-	if GUITexts.sector then text(10, TextPosY.Sector, GUITexts.sector, 0xff00ffff) end
+	if GUITexts.thing  then text(10, TextPosY.THING,  GUITexts.thing             ) end
+	if GUITexts.line   then text(10, TextPosY.LINE,   GUITexts.line,   0xffff8800) end
+	if GUITexts.sector then text(10, TextPosY.SECTOR, GUITexts.sector, 0xff00ffff) end
 end
 
 local function make_buttons()
