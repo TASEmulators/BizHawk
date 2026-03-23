@@ -1261,7 +1261,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (this.ShowFileSaveDialog(initDir, initFileName: "BizHawk.lua", fileExt: ".lua", filter: JustScriptsFSFilterSet) is string path)
 			{
-				File.WriteAllText(path, LuaImp.Docs.ToLuaLanguageServerDefinitions()); 
+				File.WriteAllText(path, LuaImp.Docs.ToLuaLanguageServerDefinitions());
 			}
 		}
 
