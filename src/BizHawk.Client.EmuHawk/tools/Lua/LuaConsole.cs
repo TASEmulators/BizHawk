@@ -1193,7 +1193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RegisterToTextEditorsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void IntegrationMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			// Hide until this one is implemented
 			RegisterNotePadMenuItem.Visible = false;
