@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			this.CommentsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SubtitlesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ColumnsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.TAStudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.HelpSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TASEditorManualOnlineMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -132,7 +132,10 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.TAStudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ColumnRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.AutoHoldContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.HideColumnContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ShowColumnsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -144,6 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.Panel1.SuspendLayout();
 			this.MainVertialSplit.Panel2.SuspendLayout();
 			this.MainVertialSplit.SuspendLayout();
+			this.ColumnRightClickMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -153,7 +157,6 @@ namespace BizHawk.Client.EmuHawk
             this.EditSubMenu,
             this.MetaSubMenu,
             this.SettingsSubMenu,
-            this.ColumnsSubMenu,
             this.HelpSubMenu});
 			this.TASMenu.TabIndex = 0;
 			// 
@@ -442,11 +445,12 @@ namespace BizHawk.Client.EmuHawk
             this.TAStudioSettingsToolStripMenuItem});
 			this.SettingsSubMenu.Text = "&Settings";
 			// 
-			// ColumnsSubMenu
+			// TAStudioSettingsToolStripMenuItem
 			// 
-			this.ColumnsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator19});
-			this.ColumnsSubMenu.Text = "&Columns";
+			this.TAStudioSettingsToolStripMenuItem.Name = "TAStudioSettingsToolStripMenuItem";
+			this.TAStudioSettingsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.TAStudioSettingsToolStripMenuItem.Text = "Open settings...";
+			this.TAStudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.TAStudioSettingsToolStripMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -765,12 +769,35 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.TabIndex = 10;
 			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
 			// 
-			// TAStudioSettingsToolStripMenuItem
+			// ColumnRightClickMenu
 			// 
-			this.TAStudioSettingsToolStripMenuItem.Name = "TAStudioSettingsToolStripMenuItem";
-			this.TAStudioSettingsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.TAStudioSettingsToolStripMenuItem.Text = "Open settings...";
-			this.TAStudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.TAStudioSettingsToolStripMenuItem_Click);
+			this.ColumnRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AutoHoldContextMenuItem,
+            this.HideColumnContextMenuItem,
+            this.ShowColumnsContextMenuItem});
+			this.ColumnRightClickMenu.Name = "ColumnRightClickMenu";
+			this.ColumnRightClickMenu.Size = new System.Drawing.Size(181, 92);
+			this.ColumnRightClickMenu.Opened += new System.EventHandler(this.ColumnRightClickMenu_Opened);
+			// 
+			// AutoHoldContextMenuItem
+			// 
+			this.AutoHoldContextMenuItem.Name = "AutoHoldContextMenuItem";
+			this.AutoHoldContextMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.AutoHoldContextMenuItem.Text = "Auto-hold";
+			this.AutoHoldContextMenuItem.Click += new System.EventHandler(this.AutoHoldContextMenuItem_Click);
+			// 
+			// HideColumnContextMenuItem
+			// 
+			this.HideColumnContextMenuItem.Name = "HideColumnContextMenuItem";
+			this.HideColumnContextMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.HideColumnContextMenuItem.Text = "Hide column";
+			this.HideColumnContextMenuItem.Click += new System.EventHandler(this.HideColumnContextMenuItem_Click);
+			// 
+			// ShowColumnsContextMenuItem
+			// 
+			this.ShowColumnsContextMenuItem.Name = "ShowColumnsContextMenuItem";
+			this.ShowColumnsContextMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.ShowColumnsContextMenuItem.Text = "Show columns";
 			// 
 			// TAStudio
 			// 
@@ -804,6 +831,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).EndInit();
 			this.MainVertialSplit.ResumeLayout(false);
+			this.ColumnRightClickMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -879,7 +907,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearGreenzoneMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx GreenzoneICheckSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StateHistoryIntegrityCheckMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ColumnsSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator19;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CancelSeekContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx StartFromNowSeparator;
@@ -913,5 +940,9 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveBk2BackupMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripMenuItem TAStudioSettingsToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip ColumnRightClickMenu;
+		private System.Windows.Forms.ToolStripMenuItem AutoHoldContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem HideColumnContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ShowColumnsContextMenuItem;
 	}
 }

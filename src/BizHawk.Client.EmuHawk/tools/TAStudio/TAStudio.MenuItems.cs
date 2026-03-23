@@ -719,33 +719,48 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpToolStripColumns()
 		{
-			ColumnsSubMenu.DropDownItems.Clear();
+			ShowColumnsContextMenuItem.DropDownItems.Clear();
 
-			var columns = TasView.AllColumns
-				.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not "FrameColumn")
+			var columns = _inputRolls[0].AllColumns
+				.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not FrameColumnName)
 				.ToList();
 
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
-			int rowHeight = ColumnsSubMenu.Height + 4;
+			int rowHeight = ShowColumnsContextMenuItem.Height + 4;
 			int maxRows = workingHeight / rowHeight;
 			int keyCount = columns.Count(c => c.Name.StartsWithOrdinal("Key "));
 			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
 
+			// Groupings for keys (we just have a lot of them) and for players
 			var keysMenus = new ToolStripMenuItem[keysMenusCount];
-
 			for (int i = 0; i < keysMenus.Length; i++)
 			{
 				keysMenus[i] = new ToolStripMenuItem();
+				ShowColumnsContextMenuItem.DropDownItems.Add(keysMenus[i]);
 			}
 
 			var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
-			playerMenus[0] = ColumnsSubMenu;
-
+			playerMenus[0] = ShowColumnsContextMenuItem;
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
 				playerMenus[i] = new ToolStripMenuItem($"Player {i}");
 			}
 
+			bool programmaticallyHidingColumns = false;
+			void AfterCheckChange(ToolStripMenuItem item)
+			{
+				if (!programmaticallyHidingColumns)
+				{
+					_activeInputRoll.AllColumns.ColumnsChanged();
+					CurrentTasMovie.FlagChanges();
+					_activeInputRoll.Refresh();
+
+					if (item.OwnerItem != ShowColumnsContextMenuItem) ShowColumnsContextMenuItem.ShowDropDown();
+					((ToolStripMenuItem)item.OwnerItem).ShowDropDown();
+				}
+			}
+
+			// Items for individual columns
 			foreach (var column in columns)
 			{
 				var menuItem = new ToolStripMenuItem
@@ -759,14 +774,8 @@ namespace BizHawk.Client.EmuHawk
 				menuItem.CheckedChanged += (o, ev) =>
 				{
 					ToolStripMenuItem sender = (ToolStripMenuItem)o;
-					TasView.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
-					TasView.AllColumns.ColumnsChanged();
-					CurrentTasMovie.FlagChanges();
-					TasView.Refresh();
-					ColumnsSubMenu.ShowDropDown();
-					((ToolStripMenuItem)sender.OwnerItem).ShowDropDown();
-
-					UpdateActiveMovieInputs();
+					_activeInputRoll.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					AfterCheckChange(sender);
 				};
 
 				if (column.Name.StartsWithOrdinal("Key "))
@@ -792,44 +801,37 @@ namespace BizHawk.Client.EmuHawk
 					playerMenus[player].DropDownItems.Add(menuItem);
 				}
 			}
-
+			// update text on key group dropdowns
 			foreach (var menu in keysMenus)
 			{
 				string text = $"Keys ({menu.DropDownItems[0].Tag} - {menu.DropDownItems[menu.DropDownItems.Count - 1].Tag})";
 				menu.Text = text.Replace("Key ", "");
-				ColumnsSubMenu.DropDownItems.Add(menu);
 			}
-
-			for (int i = 1; i < playerMenus.Length; i++)
+			// add player menus only if they actually contain items
+			foreach (ToolStripMenuItem menu in playerMenus.Skip(1).Where(static m => m.HasDropDown))
 			{
-				if (playerMenus[i].HasDropDownItems)
-				{
-					ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
-				}
+				ShowColumnsContextMenuItem.DropDownItems.Add(menu);
 			}
 
-			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+			ShowColumnsContextMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
+			// button for the group of all keys
 			if (keysMenus.Length > 0)
 			{
 				ToolStripMenuItem item = new("Show Keys") { CheckOnClick = true };
-				void UpdateAggregateCheckState()
-					=> item.CheckState = keysMenus
-						.SelectMany(static submenu => submenu.DropDownItems.OfType<ToolStripMenuItem>())
-						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
-				UpdateAggregateCheckState();
-				var programmaticallyHidingColumns = false;
-				EventHandler columnHandler = (_, _) =>
+
+				// Handle updating the check state when individual keys are toggled
+				ShowColumnsContextMenuItem.DropDownOpening += (_, _) =>
 				{
 					if (programmaticallyHidingColumns) return;
 					programmaticallyHidingColumns = true;
-					UpdateAggregateCheckState();
+					item.CheckState = keysMenus
+						.SelectMany(static submenu => submenu.DropDownItems.OfType<ToolStripMenuItem>())
+						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
 					programmaticallyHidingColumns = false;
 				};
-				foreach (var submenu in keysMenus) foreach (ToolStripMenuItem button in submenu.DropDownItems)
-				{
-					button.CheckedChanged += columnHandler;
-				}
+
+				// Handle checking the button for all keys
 				item.CheckedChanged += (o, ev) =>
 				{
 					if (programmaticallyHidingColumns) return;
@@ -840,37 +842,41 @@ namespace BizHawk.Client.EmuHawk
 						{
 							menuItem.Checked = item.Checked;
 						}
-
-						CurrentTasMovie.FlagChanges();
-						TasView.AllColumns.ColumnsChanged();
-						TasView.Refresh();
 					}
 					programmaticallyHidingColumns = false;
+
+					AfterCheckChange(item);
 				};
-				ColumnsSubMenu.DropDownItems.Add(item);
+				ShowColumnsContextMenuItem.DropDownItems.Add(item);
 			}
 
+			// buttons for the groups of each players' columns
+			void UpdateIndividualItems(ToolStripMenuItem menu)
+			{
+				foreach (ToolStripMenuItem item in menu.DropDownItems.OfType<ToolStripMenuItem>())
+				{
+					string/*?*/ tag = item.Tag as string;
+					if (!string.IsNullOrEmpty(tag))
+					{
+						item.Checked = _activeInputRoll.AllColumns.Find(c => c.Name == tag).Visible;
+					}
+				}
+			}
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
 				ToolStripMenuItem dummyObject = playerMenus[i];
 				if (!dummyObject.HasDropDownItems) continue;
 				ToolStripMenuItem item = new($"Show Player {i}") { CheckOnClick = true };
-				void UpdateAggregateCheckState()
-					=> item.CheckState = dummyObject.DropDownItems.OfType<ToolStripMenuItem>().Skip(1)
-						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
-				UpdateAggregateCheckState();
-				var programmaticallyHidingColumns = false;
-				EventHandler columnHandler = (_, _) =>
+				dummyObject.DropDownOpening += (_, _) =>
 				{
-					if (programmaticallyHidingColumns) return;
 					programmaticallyHidingColumns = true;
-					UpdateAggregateCheckState();
+
+					UpdateIndividualItems(dummyObject);
+					item.CheckState = dummyObject.DropDownItems.OfType<ToolStripMenuItem>().Skip(1)
+						.Select(static mi => mi.Checked).Unanimity().ToCheckState();
+
 					programmaticallyHidingColumns = false;
 				};
-				foreach (ToolStripMenuItem button in dummyObject.DropDownItems)
-				{
-					button.CheckedChanged += columnHandler;
-				}
 				item.CheckedChanged += (o, ev) =>
 				{
 					if (programmaticallyHidingColumns) return;
@@ -882,16 +888,20 @@ namespace BizHawk.Client.EmuHawk
 					}
 					programmaticallyHidingColumns = false;
 
-					CurrentTasMovie.FlagChanges();
-					TasView.AllColumns.ColumnsChanged();
-					TasView.Refresh();
+					AfterCheckChange(item);
 				};
 
 				dummyObject.DropDownItems.Insert(0, item);
 				dummyObject.DropDownItems.Insert(1, new ToolStripSeparator());
 			}
+			playerMenus[0].DropDownOpening += (_,_) => // "player menu 0" is for buttons not associated with a player, and doesn't have a button for the entire group
+			{
+				programmaticallyHidingColumns = true;
+				UpdateIndividualItems(playerMenus[0]);
+				programmaticallyHidingColumns = false;
+			};
 
-			ColumnsSubMenu.DropDownItems.Add(new ToolStripMenuItem
+			ShowColumnsContextMenuItem.DropDownItems.Add(new ToolStripMenuItem
 			{
 				Enabled = false,
 				Text = "Change Peripherals...",
@@ -911,6 +921,34 @@ namespace BizHawk.Client.EmuHawk
 
 			MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
 			BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
+		}
+
+		private void ColumnRightClickMenu_Opened(object sender, EventArgs e)
+		{
+			if (_clickedColumn == null) return;
+
+			bool cursorOrFrame = _clickedColumn.Name is (CursorColumnName or FrameColumnName);
+			ControllerDefinition cd = MovieSession.MovieController.Definition;
+			AutoHoldContextMenuItem.Visible = !cursorOrFrame
+				&& (cd.BoolButtons.Contains(_clickedColumn.Name) || cd.Axes.ContainsKey(_clickedColumn.Name));
+			HideColumnContextMenuItem.Visible = !cursorOrFrame;
+				
+		}
+
+		private void AutoHoldContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_clickedColumn == null) return;
+			ToggleAutoFire(_clickedColumn);
+			_activeInputRoll.Refresh();
+		}
+
+		private void HideColumnContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_clickedColumn == null) return;
+			_clickedColumn.Visible = false;
+			_activeInputRoll.AllColumns.ColumnsChanged();
+			CurrentTasMovie.FlagChanges();
+			_activeInputRoll.Refresh();
 		}
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)

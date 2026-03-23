@@ -568,8 +568,21 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <remarks>for Lua</remarks>
-		public void AddColumn(string name, string text, int widthUnscaled)
-			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, text: text));
+		public void AddColumn(string name, string text, int widthUnscaled, int rollIndex)
+		{
+			if (_inputRolls[0].AllColumns.Exists(c => c.Name == name)) return;
+
+			for (int i = 0; i < _inputRolls.Count; i++)
+			{
+				RollColumn col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+				col.Visible = i == rollIndex;
+				_inputRolls[rollIndex].AllColumns.Add(col);
+				_inputRolls[rollIndex].AllColumns.ColumnsChanged();
+				_inputRolls[rollIndex].Refresh();
+			}
+
+			SetUpToolStripColumns();
+		}
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
 

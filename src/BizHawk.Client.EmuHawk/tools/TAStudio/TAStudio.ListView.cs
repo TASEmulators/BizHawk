@@ -153,6 +153,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private Cell/*?*/ CurrentCell => _inputRolls.Find(static r => r.CurrentCell != null)?.CurrentCell;
 
+		private RollColumn/*?*/ _clickedColumn;
+
 		private bool IsRowSelected(int frame) => _activeInputRoll.IsRowSelected(frame);
 
 		private bool IsRowVisibleAnyRoll(int frame) => _inputRolls.Exists(r => r.IsPartiallyVisible(frame));
@@ -472,12 +474,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnRightClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var col = e.Column!;
+			_clickedColumn = e.Column!;
+			ColumnRightClickMenu.Show(GetLocationForContextMenu(ColumnRightClickMenu));
+		}
+
+		private void ToggleAutoFire(RollColumn col)
+		{
 			if (col.Name is FrameColumnName or CursorColumnName) return;
 
 			col.Emphasis = !col.Emphasis;
 			UpdateAutoFire(col.Name, col.Emphasis);
-			((InputRoll)sender).Refresh();
 		}
 
 		private void UpdateAutoFire()
@@ -938,6 +944,31 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog(); // Even if no edits happened, the undo form may need updating because we potentially ended a batch.
 		}
 
+		private Point GetLocationForContextMenu(ContextMenuStrip menu)
+		{
+			var offset = new Point(0);
+			var topLeft = Cursor.Position;
+			var bottomRight = new Point(
+				topLeft.X + menu.Width,
+				topLeft.Y + menu.Height);
+			var screen = DrawingExtensions.BoundsOfDisplayContaining(topLeft)
+				?? default; //TODO is zeroed the correct fallback value? --yoshi
+			// if we don't fully fit, move to the other side of the pointer
+			if (bottomRight.X > screen.Right)
+			{
+				offset.X -= menu.Width;
+			}
+			if (bottomRight.Y > screen.Bottom)
+			{
+				offset.Y -= menu.Height;
+			}
+			topLeft.Offset(offset);
+			// if the screen is insultingly tiny, best we can do is avoid negative pos
+			return new(
+				Math.Max(0, topLeft.X),
+				Math.Max(0, topLeft.Y));
+		}
+
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
 			InputRoll roll = (InputRoll)sender;
@@ -955,27 +986,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var offset = new Point(0);
-					var topLeft = Cursor.Position;
-					var bottomRight = new Point(
-						topLeft.X + RightClickMenu.Width,
-						topLeft.Y + RightClickMenu.Height);
-					var screen = DrawingExtensions.BoundsOfDisplayContaining(topLeft)
-						?? default; //TODO is zeroed the correct fallback value? --yoshi
-					// if we don't fully fit, move to the other side of the pointer
-					if (bottomRight.X > screen.Right)
-					{
-						offset.X -= RightClickMenu.Width;
-					}
-					if (bottomRight.Y > screen.Bottom)
-					{
-						offset.Y -= RightClickMenu.Height;
-					}
-					topLeft.Offset(offset);
-					// if the screen is insultingly tiny, best we can do is avoid negative pos
-					RightClickMenu.Show(
-						Math.Max(0, topLeft.X),
-						Math.Max(0, topLeft.Y));
+					RightClickMenu.Show(GetLocationForContextMenu(RightClickMenu));
 				}
 			}
 			else if (e.Button == MouseButtons.Left)
