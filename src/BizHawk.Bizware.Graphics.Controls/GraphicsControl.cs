@@ -5,9 +5,11 @@ namespace BizHawk.Bizware.Graphics.Controls
 	public abstract class GraphicsControl : Control
 	{
 		protected GraphicsControl()
-#pragma warning disable SA1100
-			=> base.Text = "Render target"; // for screen readers
-#pragma warning restore SA1100
+		{
+			// for screen readers
+			AccessibleName = "Render target";
+			AccessibleRole = AccessibleRole.Graphic;
+		}
 
 		/// <summary>
 		/// Allows the control to tear when out of vsync
