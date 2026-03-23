@@ -138,7 +138,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public class MovieClientSettings
 		{
-			public InputRoll.InputRollSettings InputRollSettings { get; set; }
+			public bool HorizontalOrientation { get; set; } = false;
+			public bool HideWasLagFrames { get; set; } = false;
+			public int LagFramesToHide { get; set; } = 0;
+			public RollColumns[] Columns { get; set; } = [ ];
 
 			public AutoPatternBool[] BoolPatterns { get; set; }
 			public AutoPatternAxis[] AxisPatterns { get; set; }
@@ -155,15 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			public IStateManagerSettings DefaultStateManagerSettings;
 		}
 
-		private MovieClientSettings GetMovieSettings()
-		{
-			return new MovieClientSettings()
-			{
-				InputRollSettings = TasView.GetUserSettings(),
-				AxisPatterns = AxisPatterns,
-				BoolPatterns = BoolPatterns,
-			};
-		}
+		private MovieClientSettings _movieSettings = new();
 
 		public TAStudio()
 		{
@@ -449,9 +444,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpColumns()
 		{
-			TasView.AllColumns.Clear();
-			TasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
-			TasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
+			_movieSettings.Columns = new RollColumns[_inputRolls.Count];
+			for (int i = 0; i < _inputRolls.Count; i++)
+			{
+				MakeDefaultColumns(_inputRolls[i]);
+				_movieSettings.Columns[i] = _inputRolls[i].AllColumns;
+			}
+
+			UpdateActiveMovieInputs();
+		}
+
+		private void MakeDefaultColumns(InputRoll roll)
+		{
+			roll.AllColumns.Clear();
+			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
+			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
 			{
 				Rotatable = true,
 			});
@@ -462,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
 					: mnemonic0;
 
-				TasView.AllColumns.Add(new(
+				roll.AllColumns.Add(new(
 					name: name,
 					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
 					horizontalHeight: (maxLength * 6) + 14,
@@ -472,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			var columnsToHide = TasView.AllColumns
+			var columnsToHide = roll.AllColumns
 				.Where(c =>
 					// todo: make a proper user editable list?
 					c.Name == "Power"
@@ -495,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator.SystemId is VSystemID.Raw.N64)
 			{
-				var fakeAnalogControls = TasView.AllColumns
+				var fakeAnalogControls = roll.AllColumns
 					.Where(c =>
 						c.Name.EndsWithOrdinal("A Up")
 						|| c.Name.EndsWithOrdinal("A Down")
@@ -506,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.SystemId is VSystemID.Raw.Doom)
 			{
-				var columns = TasView.AllColumns
+				var columns = roll.AllColumns
 					.Where(c =>
 						c.Name.Contains("Forward")
 						|| c.Name.Contains("Backward")
@@ -529,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 				column.Visible = false;
 			}
 
-			foreach (var column in TasView.VisibleColumns)
+			foreach (var column in roll.VisibleColumns)
 			{
 				if (InputManager.StickyHoldController.IsSticky(column.Name) || InputManager.StickyAutofireController.IsSticky(column.Name))
 				{
@@ -537,27 +544,26 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			TasView.AllColumns.ColumnsChanged();
-			UpdateActiveMovieInputs();
+			roll.AllColumns.ColumnsChanged();
 		}
 
 		private void SetupCustomPatterns()
 		{
 			// custom autofire patterns to allow configuring a unique pattern for each button or axis
-			BoolPatterns = new AutoPatternBool[ControllerType.BoolButtons.Count];
-			AxisPatterns = new AutoPatternAxis[ControllerType.Axes.Count];
+			_movieSettings.BoolPatterns = new AutoPatternBool[ControllerType.BoolButtons.Count];
+			_movieSettings.AxisPatterns = new AutoPatternAxis[ControllerType.Axes.Count];
 
-			for (int i = 0; i < BoolPatterns.Length; i++)
+			for (int i = 0; i < _movieSettings.BoolPatterns.Length; i++)
 			{
 				// standard 1 on 1 off autofire pattern
-				BoolPatterns[i] = new AutoPatternBool(1, 1);
+				_movieSettings.BoolPatterns[i] = new AutoPatternBool(1, 1);
 			}
 
-			for (int i = 0; i < AxisPatterns.Length; i++)
+			for (int i = 0; i < _movieSettings.AxisPatterns.Length; i++)
 			{
 				// autohold pattern with the maximum axis range as hold value (bit arbitrary)
 				var axisSpec = ControllerType.Axes[ControllerType.Axes[i]];
-				AxisPatterns[i] = new AutoPatternAxis([ axisSpec.Range.EndInclusive ]);
+				_movieSettings.AxisPatterns[i] = new AutoPatternAxis([ axisSpec.Range.EndInclusive ]);
 			}
 		}
 
@@ -689,7 +695,7 @@ namespace BizHawk.Client.EmuHawk
 			_initializing = true;
 
 			movie.ClientSettingsForSave = () =>
-				ConfigService.SaveWithType(GetMovieSettings());
+				ConfigService.SaveWithType(_movieSettings);
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
@@ -728,14 +734,25 @@ namespace BizHawk.Client.EmuHawk
 
 					if (settings is InputRoll.InputRollSettings inputRollSettings)
 					{
-						// Old movie.
-						TasView.LoadSettings(inputRollSettings);
+						// Old movie, 2.11 or earlier
+						_inputRolls[0].LoadColumns(inputRollSettings.Columns);
+						_inputRolls[0].HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
+						_inputRolls[0].LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
+						_inputRolls[0].HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
+						_movieSettings.Columns = [ _inputRolls[0].AllColumns ];
 					}
 					else if (settings is MovieClientSettings clientSettings)
 					{
-						TasView.LoadSettings(clientSettings.InputRollSettings);
-						AxisPatterns = clientSettings.AxisPatterns;
-						BoolPatterns = clientSettings.BoolPatterns;
+						for (int i = 0; i < clientSettings.Columns.Length; i++)
+						{
+							_inputRolls[i].LoadColumns(clientSettings.Columns[i]);
+							_inputRolls[i].HorizontalOrientation = clientSettings.HorizontalOrientation;
+							_inputRolls[i].LagFramesToHide = clientSettings.LagFramesToHide;
+							_inputRolls[i].HideWasLagFrames = clientSettings.HideWasLagFrames;
+						}
+						_movieSettings.AxisPatterns = clientSettings.AxisPatterns;
+						_movieSettings.BoolPatterns = clientSettings.BoolPatterns;
+						_movieSettings.Columns = _inputRolls.Select(static t => t.AllColumns).ToArray();
 					}
 					else
 					{

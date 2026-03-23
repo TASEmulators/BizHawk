@@ -55,9 +55,9 @@ namespace BizHawk.Client.EmuHawk
 			MarkerIconsCheckbox.Checked = _settings.GeneralClientSettings.DenoteMarkersWithIcons;
 			StateColorCheckbox.Checked = _settings.GeneralClientSettings.DenoteStatesWithBGColor;
 			StateIconsCheckbox.Checked = _settings.GeneralClientSettings.DenoteStatesWithIcons;
-			HideLagNum.Value = _settings.MovieSettings.InputRollSettings.LagFramesToHide;
-			HideWasLagCheckbox.Checked = _settings.MovieSettings.InputRollSettings.HideWasLagFrames;
-			RotateCheckbox.Checked = _settings.MovieSettings.InputRollSettings.HorizontalOrientation;
+			HideLagNum.Value = _settings.MovieSettings.LagFramesToHide;
+			HideWasLagCheckbox.Checked = _settings.MovieSettings.HideWasLagFrames;
+			RotateCheckbox.Checked = _settings.MovieSettings.HorizontalOrientation;
 
 			// autosave
 			AutosaveBackupCheckbox.Checked = _settings.GeneralClientSettings.AutosaveAsBackupFile;
@@ -465,9 +465,9 @@ namespace BizHawk.Client.EmuHawk
 			_settings.GeneralClientSettings.DenoteMarkersWithIcons = MarkerIconsCheckbox.Checked;
 			_settings.GeneralClientSettings.DenoteStatesWithBGColor = StateColorCheckbox.Checked;
 			_settings.GeneralClientSettings.DenoteStatesWithIcons = StateIconsCheckbox.Checked;
-			_settings.MovieSettings.InputRollSettings.LagFramesToHide = (int)HideLagNum.Value;
-			_settings.MovieSettings.InputRollSettings.HideWasLagFrames = HideWasLagCheckbox.Checked;
-			_settings.MovieSettings.InputRollSettings.HorizontalOrientation = RotateCheckbox.Checked;
+			_settings.MovieSettings.LagFramesToHide = (int)HideLagNum.Value;
+			_settings.MovieSettings.HideWasLagFrames = HideWasLagCheckbox.Checked;
+			_settings.MovieSettings.HorizontalOrientation = RotateCheckbox.Checked;
 
 			_settings.GeneralClientSettings.AutosaveAsBackupFile = AutosaveBackupCheckbox.Checked;
 			_settings.GeneralClientSettings.AutosaveAsBk2 = AutosaveBk2Checkbox.Checked;

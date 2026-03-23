@@ -974,7 +974,7 @@ namespace BizHawk.Client.EmuHawk
 			TAStudioSettingsForm settingsForm = new(new()
 				{
 					GeneralClientSettings = Settings,
-					MovieSettings = GetMovieSettings(),
+					MovieSettings = _movieSettings,
 					CurrentStateManagerSettings = CurrentTasMovie.TasStateManager.Settings,
 					DefaultStateManagerSettings = Config.Movies.DefaultTasStateManagerSettings,
 				},
@@ -982,14 +982,18 @@ namespace BizHawk.Client.EmuHawk
 				(s) =>
 				{
 					// settings objects are mutated by the settings form, but some still need to be handled
-					TasView.LoadSettings(s.MovieSettings.InputRollSettings);
-					TasView.Font = Settings.TasViewFont;
-					TasView.ScrollSpeed = Settings.ScrollSpeed;
-					TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-					TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+					for (int i = 0; i < s.MovieSettings.Columns.Length; i++)
+					{
+						_inputRolls[i].LoadColumns(s.MovieSettings.Columns[i]);
+						_inputRolls[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
+						_inputRolls[i].Font = Settings.TasViewFont;
+						_inputRolls[i].HorizontalOrientation = s.MovieSettings.HorizontalOrientation;
+						_inputRolls[i].LagFramesToHide = s.MovieSettings.LagFramesToHide;
+						_inputRolls[i].HideWasLagFrames = s.MovieSettings.HideWasLagFrames;
+						_inputRolls[i].ScrollMethod = Settings.FollowCursorScrollMethod;
+						_inputRolls[i].ScrollSpeed = Settings.ScrollSpeed;
+					}
 
-					AxisPatterns = s.MovieSettings.AxisPatterns;
-					BoolPatterns = s.MovieSettings.BoolPatterns;
 					UpdateAutoFire();
 
 					if (CurrentTasMovie.TasStateManager.Settings != s.CurrentStateManagerSettings)

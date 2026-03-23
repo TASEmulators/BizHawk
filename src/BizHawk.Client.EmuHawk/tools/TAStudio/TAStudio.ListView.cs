@@ -102,8 +102,6 @@ namespace BizHawk.Client.EmuHawk
 		private ControllerDefinition ControllerType => MovieSession.MovieController.Definition;
 
 		public bool WasRecording { get; set; }
-		public AutoPatternBool[] BoolPatterns;
-		public AutoPatternAxis[] AxisPatterns;
 
 		public void StopSeeking(bool skipRecModeCheck = false)
 		{
@@ -453,12 +451,12 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
+							_movieSettings.BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							CurrentTasMovie.SingleInvalidation(() =>
 							{
 								foreach (var index in GetSelection())
 								{
-									CurrentTasMovie.SetBoolState(index, buttonName, BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
+									CurrentTasMovie.SetBoolState(index, buttonName, _movieSettings.BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
 								}
 							});
 						}
@@ -508,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (useCustom)
 				{
-					InputManager.StickyAutofireController.SetButtonAutofire(button, true, BoolPatterns[ControllerType.BoolButtons.IndexOf(button)]);
+					InputManager.StickyAutofireController.SetButtonAutofire(button, true, _movieSettings.BoolPatterns[ControllerType.BoolButtons.IndexOf(button)]);
 				}
 				else if (autoHold)
 				{
@@ -528,7 +526,7 @@ namespace BizHawk.Client.EmuHawk
 				int holdValue = ControllerType.Axes[button].Range.EndInclusive; // it's not clear what value to use for auto-hold, just use max i guess
 				if (useCustom)
 				{
-					InputManager.StickyAutofireController.SetAxisAutofire(button, holdValue, AxisPatterns[ControllerType.Axes.IndexOf(button)]);
+					InputManager.StickyAutofireController.SetAxisAutofire(button, holdValue, _movieSettings.AxisPatterns[ControllerType.Axes.IndexOf(button)]);
 				}
 				else if (autoHold)
 				{
@@ -652,7 +650,7 @@ namespace BizHawk.Client.EmuHawk
 							|| Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.Always
 							|| (targetCol.Emphasis && Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.AutoFireOnly))
 						{
-							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
+							_movieSettings.BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							_patternPaint = true;
 							_startRow = frame;
 							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
@@ -705,8 +703,8 @@ namespace BizHawk.Client.EmuHawk
 						if (Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.Always
 							|| (targetCol.Emphasis && Settings.PatternPaintMode == TAStudioSettings.PatternPaintModeEnum.AutoFireOnly))
 						{
-							AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].Reset();
-							CurrentTasMovie.SetAxisState(frame, buttonName, AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].GetNextValue());
+							_movieSettings.AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].Reset();
+							CurrentTasMovie.SetAxisState(frame, buttonName, _movieSettings.AxisPatterns[ControllerType.Axes.IndexOf(buttonName)].GetNextValue());
 							_patternPaint = true;
 						}
 						else
@@ -1277,7 +1275,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							setVal = BoolPatterns[ControllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
+							setVal = _movieSettings.BoolPatterns[ControllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 						}
 					}
 
@@ -1303,7 +1301,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							setVal = AxisPatterns[ControllerType.Axes.IndexOf(_startAxisDrawColumn)].GetNextValue();
+							setVal = _movieSettings.AxisPatterns[ControllerType.Axes.IndexOf(_startAxisDrawColumn)].GetNextValue();
 						}
 					}
 

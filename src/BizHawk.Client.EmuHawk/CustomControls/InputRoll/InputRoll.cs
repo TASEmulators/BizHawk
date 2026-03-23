@@ -655,25 +655,12 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool RightButtonHeld { get; private set; }
 
-		public InputRollSettings GetUserSettings() => Settings;
-
-		public void LoadSettings(InputRollSettings settings)
+		public void LoadColumns(RollColumns columns)
 		{
-			_columns = settings.Columns;
+			_columns = columns;
 			_columns.ChangedCallback = ColumnChangedCallback;
 			_columns.ColumnsChanged();
-			HorizontalOrientation = settings.HorizontalOrientation;
-			LagFramesToHide = settings.LagFramesToHide;
-			HideWasLagFrames = settings.HideWasLagFrames;
 		}
-
-		private InputRollSettings Settings => new InputRollSettings
-		{
-			Columns = _columns,
-			HorizontalOrientation = HorizontalOrientation,
-			LagFramesToHide = LagFramesToHide,
-			HideWasLagFrames = HideWasLagFrames,
-		};
 
 		public class InputRollSettings
 		{
