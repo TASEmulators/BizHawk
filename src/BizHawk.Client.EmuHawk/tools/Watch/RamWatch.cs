@@ -658,7 +658,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchCountLabel.Text = _watches.WatchCount + (_watches.WatchCount == 1 ? " watch" : " watches");
 		}
 
-		private void WatchListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void WatchListView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			if (index >= _watches.Count)
 			{
@@ -679,7 +679,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void WatchListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void WatchListView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= _watches.Count)

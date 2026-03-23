@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsRowVisibleAnyRoll(int frame) => _inputRolls.Exists(r => r.IsPartiallyVisible(frame));
 
-		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
+		private void TasView_QueryItemIcon(InputRoll sender, int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			if (!_engaged || _initializing)
 			{
@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == CursorColumnName)
 			{
-				if (TasView.HorizontalOrientation)
+				if (sender.HorizontalOrientation)
 				{
 					offsetX = -1;
 					offsetY = 5;
@@ -187,12 +187,12 @@ namespace BizHawk.Client.EmuHawk
 				if (index == Emulator.Frame)
 				{
 					bitmap = index == _seekingTo
-						? TasView.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
-						: TasView.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
+						? sender.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
+						: sender.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
 				else if (index == RestorePositionFrame)
 				{
-					bitmap = TasView.HorizontalOrientation ?
+					bitmap = sender.HorizontalOrientation ?
 						ts_v_arrow_green :
 						ts_h_arrow_green;
 				}
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void TasView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			if (!_engaged || _initializing)
 			{
@@ -247,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 					color = Color.FromArgb(0x60, 0xFF, 0xFF, 0xFF);
 				}
 			}
-			else if (columnName == AxisEditColumn && TasView.IsRowSelected(index))
+			else if (columnName == AxisEditColumn && sender.IsRowSelected(index))
 			{
 				color = Palette.AnalogEdit_Col;
 			}
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryRowBkColor(int index, ref Color color)
+		private void TasView_QueryRowBkColor(InputRoll sender, int index, ref Color color)
 		{
 			if (!_engaged || _initializing)
 			{
@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool TasView_QueryShouldSelect(MouseButtons button)
+		private bool TasView_QueryShouldSelect(InputRoll sender, MouseButtons button)
 		{
 			if (AxisEditingMode)
 			{
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 					// This just makes it easier to select multiple rows with axis editing mode, by allowing multiple row selection when clicking columns that aren't the frame column.
 					return true;
 				}
-				else if (TasView.CurrentCell.Column.Name == AxisEditColumn && TasView.IsRowSelected(TasView.CurrentCell.RowIndex.Value))
+				else if (sender.CurrentCell.Column.Name == AxisEditColumn && sender.IsRowSelected(sender.CurrentCell.RowIndex.Value))
 				{
 					// We will start editing via mouse, so don't unselect if we have multiple selected rows.
 					return false;
@@ -328,7 +328,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (TasView.CurrentCell.Column.Name == FrameColumnName)
+			if (sender.CurrentCell.Column.Name == FrameColumnName)
 			{
 				return true;
 			}
@@ -340,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// This may not be necessary, but it is the behavior we've always had based on copying what TASeditor does.
 				// Ctrl-click on a button selects the same as a regular click: the only row left selected is the one clicked
-				if (ModifierKeys == Keys.Control) TasView.DeselectAll();
+				if (ModifierKeys == Keys.Control) sender.DeselectAll();
 				return true;
 			}
 		}
@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 				4,
 				NumberExtensions.Log10(Math.Max(CurrentTasMovie.InputLogLength, 1)))]);
 
-		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void TasView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			if (!_engaged || _initializing)
 			{
@@ -383,13 +383,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName == FrameColumnName)
 				{
-					offsetX = TasView.HorizontalOrientation ? 2 : 7;
+					offsetX = sender.HorizontalOrientation ? 2 : 7;
 					text = FrameToStringPadded(index);
 				}
 				else
 				{
 					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
-					bool axisEditing = columnName == AxisEditColumn && TasView.IsRowSelected(index);
+					bool axisEditing = columnName == AxisEditColumn && sender.IsRowSelected(index);
 					if (axisEditing && _didAxisType)
 					{
 						text = _axisTypedValue;
@@ -411,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool TasView_QueryFrameLag(int index, bool hideWasLag)
+		private bool TasView_QueryFrameLag(InputRoll sender, int index, bool hideWasLag)
 		{
 			var lag = CurrentTasMovie[index];
 			return (lag.Lagged.HasValue && lag.Lagged.Value) || (hideWasLag && lag.WasLagged.HasValue && lag.WasLagged.Value);
@@ -422,6 +422,7 @@ namespace BizHawk.Client.EmuHawk
 			if (AnyRowsSelected)
 			{
 				var columnName = e.Column!.Name;
+				InputRoll roll = (InputRoll)sender;
 
 				if (columnName == FrameColumnName)
 				{
@@ -429,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != CursorColumnName)
 				{
-					var buttonName = TasView.CurrentCell.Column!.Name;
+					var buttonName = roll.CurrentCell.Column!.Name;
 
 					if (ControllerType.BoolButtons.Contains(buttonName))
 					{
@@ -478,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 
 			col.Emphasis = !col.Emphasis;
 			UpdateAutoFire(col.Name, col.Emphasis);
-			TasView.Refresh();
+			((InputRoll)sender).Refresh();
 		}
 
 		private void UpdateAutoFire()
@@ -549,7 +550,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ContainsFocus)
 			{
-				TasView.Select();
+				// We want to ensure that one of the input rolls is selected, so it gets keyboard input (such as arrow keys to change the selected row)
+				// We could select the input roll that the mouse is over, but this could be confusing.
+				// It is better to select the most recent active one.
+				_activeInputRoll.Select();
 			}
 		}
 
@@ -560,11 +564,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			_activeInputRoll = (InputRoll)sender;
+
+			InputRoll roll = (InputRoll)sender;
+			_activeInputRoll = roll;
 
 			// only on mouse button down, check that the pointed to cell is the correct one (can be wrong due to scroll while playing)
-			TasView._programmaticallyChangingRow = true;
-			TasView.PointMouseToNewCell();
+			roll._programmaticallyChangingRow = true;
+			roll.PointMouseToNewCell();
 
 			if (e.Button == MouseButtons.Middle)
 			{
@@ -589,7 +595,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.CurrentCell is not { RowIndex: int frame, Column: RollColumn targetCol }) return;
+			if (roll.CurrentCell is not { RowIndex: int frame, Column: RollColumn targetCol }) return;
 
 			var buttonName = targetCol.Name;
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
@@ -621,12 +627,12 @@ namespace BizHawk.Client.EmuHawk
 					if (ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
 					{
 						// TODO
-						TasView.DragCurrentCell();
+						roll.DragCurrentCell();
 					}
 					else
 					{
 						_startSelectionDrag = true;
-						_selectionDragState = TasView.IsRowSelected(frame);
+						_selectionDragState = roll.IsRowSelected(frame);
 					}
 				}
 				else
@@ -738,7 +744,7 @@ namespace BizHawk.Client.EmuHawk
 					_rightClickControl = (ModifierKeys | Keys.Control) == ModifierKeys;
 					_rightClickShift = (ModifierKeys | Keys.Shift) == ModifierKeys;
 					_rightClickAlt = (ModifierKeys | Keys.Alt) == ModifierKeys;
-					if (TasView.IsRowSelected(frame))
+					if (roll.IsRowSelected(frame))
 					{
 						_rightClickInput = new string[GetSelection().Count()];
 						_rightClickFrame = FirstSelectedRowIndex;
@@ -924,7 +930,6 @@ namespace BizHawk.Client.EmuHawk
 			_startSelectionDrag = false;
 			_startBoolDrawColumn = "";
 			_startAxisDrawColumn = "";
-			TasView.ReleaseCurrentCell();
 
 			CurrentTasMovie.ChangeLog.EndBatch();
 
@@ -937,7 +942,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader
+			InputRoll roll = (InputRoll)sender;
+
+			if (e.Button == MouseButtons.Right && !roll.IsPointingAtColumnHeader
 				&& !_suppressContextMenu && !_leftButtonHeld && AnyRowsSelected)
 			{
 				if (CurrentTasMovie.FrameCount < SelectionEndIndex)
@@ -945,7 +952,7 @@ namespace BizHawk.Client.EmuHawk
 					// trying to be smart here
 					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu
 					// you might need it when you load again the branch where this frame exists
-					TasView.DeselectAll();
+					roll.DeselectAll();
 					SetTasViewRowCount();
 				}
 				else
@@ -975,6 +982,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
+				roll.ReleaseCurrentCell();
 				ClearLeftMouseStates();
 			}
 
@@ -1016,7 +1024,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (TasView.RightButtonHeld && TasView?.CurrentCell.RowIndex.HasValue == true)
+			InputRoll roll = (InputRoll)sender;
+			if (roll.RightButtonHeld && roll.CurrentCell.RowIndex.HasValue)
 			{
 				_suppressContextMenu = true;
 				int notch = e.Delta / 120;
@@ -1051,20 +1060,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (TasView.CurrentCell?.Column is not { Name: var columnName }) return;
+			InputRoll roll = (InputRoll)sender;
+			if (roll.CurrentCell?.Column is not { Name: var columnName }) return;
 
 			if (e.Button == MouseButtons.Left)
 			{
 				if (!AxisEditingMode && columnName is FrameColumnName)
 				{
-					SetMarker(TasView.CurrentCell.RowIndex.Value);
+					SetMarker(roll.CurrentCell.RowIndex.Value);
 				}
 			}
 		}
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			toolTip1.SetToolTip(TasView, null);
+			InputRoll roll = (InputRoll)sender;
+			toolTip1.SetToolTip(roll, null);
 
 			if (e.NewCell.RowIndex is null)
 			{
@@ -1110,8 +1121,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = startVal; i <= endVal; i++)
 				{
-					if (!TasView.IsRowSelected(i))
-						TasView.SelectRow(i, _selectionDragState);
+					if (!roll.IsRowSelected(i))
+						roll.SelectRow(i, _selectionDragState);
 				}
 
 				SetSplicer();
@@ -1122,11 +1133,11 @@ namespace BizHawk.Client.EmuHawk
 				FramePaint(frame, startVal, endVal);
 			}
 			// Left-click
-			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startBoolDrawColumn))
+			else if (roll.IsPaintDown && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
 				BoolPaint(frame, startVal, endVal);
 			}
-			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startAxisDrawColumn))
+			else if (roll.IsPaintDown && !string.IsNullOrEmpty(_startAxisDrawColumn))
 			{
 				AxisPaint(frame, startVal, endVal);
 			}
@@ -1135,7 +1146,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MouseButtonHeld)
 			{
-				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+				roll.MakeIndexVisible(roll.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
 				SetTasViewRowCount(); // refreshes
 			}
 		}

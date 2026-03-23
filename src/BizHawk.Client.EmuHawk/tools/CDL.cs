@@ -567,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		private void LvCDL_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void LvCDL_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var subItem = lvCDL.AllColumns.IndexOf(column);
 			text = _listContents[index][subItem];

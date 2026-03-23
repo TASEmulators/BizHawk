@@ -686,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 			using MovieHeaderEditor form = new(CurrentTasMovie, Config)
 			{
 				Owner = this,
-				Location = this.ChildPointToScreen(TasView),
+				Location = this.ChildPointToScreen(_inputRolls[0]),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -697,7 +697,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Owner = this,
 				StartPosition = FormStartPosition.Manual,
-				Location = this.ChildPointToScreen(TasView),
+				Location = this.ChildPointToScreen(_inputRolls[0]),
 			};
 			form.ShowDialogOnScreen();
 		}
@@ -712,7 +712,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Owner = this,
 				StartPosition = FormStartPosition.Manual,
-				Location = this.ChildPointToScreen(TasView),
+				Location = this.ChildPointToScreen(_inputRolls[0]),
 			};
 			form.ShowDialogOnScreen();
 		}

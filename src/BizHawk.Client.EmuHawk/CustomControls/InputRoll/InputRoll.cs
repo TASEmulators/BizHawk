@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						string text = "";
 						int offSetX = 0, offSetY = 0;
-						QueryItemText?.Invoke(i, col, out text, ref offSetX, ref offSetY);
+						QueryItemText?.Invoke(this, i, col, out text, ref offSetX, ref offSetY);
 						if (text.Length > maxLength)
 						{
 							maxLength = text.Length;
@@ -489,32 +489,32 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
-		public delegate void QueryItemTextHandler(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY);
+		public delegate void QueryItemTextHandler(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY);
 
 		/// <summary>
 		/// Retrieve the background color for a cell
 		/// </summary>
-		public delegate void QueryItemBkColorHandler(int index, RollColumn column, ref Color color);
-		public delegate void QueryRowBkColorHandler(int index, ref Color color);
+		public delegate void QueryItemBkColorHandler(InputRoll sender, int index, RollColumn column, ref Color color);
+		public delegate void QueryRowBkColorHandler(InputRoll sender, int index, ref Color color);
 
 		/// <summary>
 		/// Retrieve the image for a given cell
 		/// </summary>
-		public delegate void QueryItemIconHandler(int index, RollColumn column, ref Bitmap icon, ref int offsetX, ref int offsetY);
+		public delegate void QueryItemIconHandler(InputRoll sender, int index, RollColumn column, ref Bitmap icon, ref int offsetX, ref int offsetY);
 
 		/// <summary>
 		/// Check if a given frame is a lag frame
 		/// </summary>
-		public delegate bool QueryFrameLagHandler(int index, bool hideWasLag);
+		public delegate bool QueryFrameLagHandler(InputRoll sender, int index, bool hideWasLag);
 
 		/// <summary>
 		/// Check if clicking the current cell should select it.
 		/// </summary>
-		public delegate bool QueryShouldSelectCellHandler(MouseButtons button);
+		public delegate bool QueryShouldSelectCellHandler(InputRoll sender, MouseButtons button);
 
-		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
+		public delegate void CellChangeEventHandler(InputRoll sender, CellEventArgs e);
 
-		public delegate void HoverEventHandler(object sender, CellEventArgs e);
+		public delegate void HoverEventHandler(InputRoll sender, CellEventArgs e);
 
 		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
@@ -1145,7 +1145,7 @@ namespace BizHawk.Client.EmuHawk
 					OnMouseMove(e);
 			}
 
-			if (IsHoveringOnDataCell && QueryShouldSelectCell?.Invoke(e.Button) != false)
+			if (IsHoveringOnDataCell && QueryShouldSelectCell?.Invoke(this, e.Button) != false)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
@@ -2032,7 +2032,7 @@ namespace BizHawk.Client.EmuHawk
 				// First one needs to check BACKWARDS for lag frame count.
 				SetLagFramesFirst();
 				int f = _lagFrames[0];
-				if (QueryFrameLag(firstVisibleRow + f, HideWasLagFrames))
+				if (QueryFrameLag(this, firstVisibleRow + f, HideWasLagFrames))
 				{
 					showNext = true;
 				}
@@ -2044,7 +2044,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (; _lagFrames[i] < LagFramesToHide; _lagFrames[i]++)
 						{
-							if (!QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
+							if (!QueryFrameLag(this, firstVisibleRow + i + f, HideWasLagFrames))
 							{
 								break;
 							}
@@ -2054,13 +2054,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						if (!QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
+						if (!QueryFrameLag(this, firstVisibleRow + i + f, HideWasLagFrames))
 						{
 							showNext = false;
 						}
 					}
 
-					if (_lagFrames[i] == LagFramesToHide && QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
+					if (_lagFrames[i] == LagFramesToHide && QueryFrameLag(this, firstVisibleRow + i + f, HideWasLagFrames))
 					{
 						showNext = true;
 					}
@@ -2085,7 +2085,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					count++;
 				}
-				while (QueryFrameLag(firstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
+				while (QueryFrameLag(this, firstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
 				count--;
 
 				// Count forward
@@ -2094,7 +2094,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					fCount++;
 				}
-				while (QueryFrameLag(firstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
+				while (QueryFrameLag(this, firstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
 				_lagFrames[0] = (byte)fCount;
 			}
 			else
