@@ -54,6 +54,17 @@ InterceptsState = {
 	PRINT    = 1,
 	OVERFLOW = 2
 }
+TextPosY = {
+	PLAYER = 42,
+	THING  = 236,
+	LINE   = 334,
+	SECTOR = 416
+}
+Scroller = {
+	LEFT  = "< ",
+	RIGHT = " >",
+	NONE  = "  "
+}
 
 -- closure object
 TrackedEntity = {}
@@ -182,12 +193,6 @@ LastMouse = {
 	y     = 0,
 	wheel = 0,
 	left  = false
-}
-TextPosY = {
-	Player = 42,
-	Thing  = 236,
-	Line   = 334,
-	Sector = 416
 }
 -- map colors (0xAARRGGBB or "name")
 MapPrefs = {
@@ -667,13 +672,13 @@ function update_zoom()
 	if deltaWheel ~= 0 and not Init then
 		if mousePos.x > PADDING_WIDTH then
 			zoom(deltaWheel * WHEEL_ZOOM_FACTOR, true)
-		elseif in_range(mousePos.y, TextPosY.Player, TextPosY.Thing) then
+		elseif in_range(mousePos.y, TextPosY.PLAYER, TextPosY.THING) then
+			scroll_list(Players, -deltaWheel)
+		elseif in_range(mousePos.y, TextPosY.THING, TextPosY.LINE) then
 			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
-		elseif in_range(mousePos.y, TextPosY.Thing, TextPosY.Line) then
-			scroll_list(Tracked[TrackedType.THING], -deltaWheel)
-		elseif in_range(mousePos.y, TextPosY.Line, TextPosY.Sector) then
+		elseif in_range(mousePos.y, TextPosY.LINE, TextPosY.SECTOR) then
 			scroll_list(Tracked[TrackedType.LINE], -deltaWheel)
-		elseif in_range(mousePos.y, TextPosY.Sector, TextPosY.Sector+64) then
+		elseif in_range(mousePos.y, TextPosY.SECTOR, TextPosY.SECTOR+64) then
 			scroll_list(Tracked[TrackedType.SECTOR], -deltaWheel)
 		end
 	end
@@ -1092,7 +1097,7 @@ end
 function scroll_list(entity, delta)
 	if not entity.Current then return end
 	
-	local list  = entity.TrackedList
+	local list  = entity.TrackedList or entity
 	local limit = entity.Max
 	local step  = 1
 	
