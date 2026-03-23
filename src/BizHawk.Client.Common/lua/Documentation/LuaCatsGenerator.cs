@@ -43,6 +43,8 @@ internal class LuaCatsGenerator
 	private const string Preamble = @"error(""This is a definition file for Lua Language Server and not a usable script"")
 
 ---@meta _
+--- Lua functions available for the BizHawk emulator
+--- https://tasvideos.org/Bizhawk
 
 ---@class color : userdata
 
@@ -77,6 +79,18 @@ internal class LuaCatsGenerator
 			{
 				if (!string.IsNullOrEmpty(func.Description))
 					sb.AppendLine(FormatDescription(func.Description));
+
+				if (func.Example != null)
+				{
+					sb.AppendLine("---");
+					sb.AppendLine("---Example:");
+					sb.AppendLine("---");
+					sb.AppendFormat("---\t{0}", func.Example
+							.Replace("\r\n", "\r\n---\t")
+							.Replace("{{", "`")
+							.Replace("}}", "`"));
+					sb.AppendLine();
+				}
 
 				if (func.IsDeprecated)
 					sb.AppendLine("---@deprecated");
