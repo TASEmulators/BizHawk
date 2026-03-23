@@ -73,11 +73,11 @@ namespace BizHawk.Client.EmuHawk
 			this.DisableScriptsOnLoadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ReturnAllIfNoneSelectedMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ReloadWhenScriptFileChangesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.RegisterToTextEditorsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.integrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenerateLuaCatsDefinitionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.RegisterSublimeText2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.RegisterNotePadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.GenerateLuaCatsDefinitionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.HelpSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FunctionsListMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.OnlineDocsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -178,6 +178,7 @@ namespace BizHawk.Client.EmuHawk
             this.FileSubMenu,
             this.ScriptSubMenu,
             this.SettingsSubMenu,
+            this.integrationToolStripMenuItem,
             this.HelpSubMenu});
 			this.menuStrip1.TabIndex = 1;
 			// 
@@ -349,9 +350,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DisableScriptsOnLoadMenuItem,
             this.ReturnAllIfNoneSelectedMenuItem,
-            this.ReloadWhenScriptFileChangesMenuItem,
-            this.toolStripSeparator4,
-            this.RegisterToTextEditorsSubMenu});
+            this.ReloadWhenScriptFileChangesMenuItem});
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
@@ -370,29 +369,37 @@ namespace BizHawk.Client.EmuHawk
 			this.ReloadWhenScriptFileChangesMenuItem.Text = "Reload When Script File Changes";
 			this.ReloadWhenScriptFileChangesMenuItem.Click += new System.EventHandler(this.ReloadWhenScriptFileChangesMenuItem_Click);
 			// 
-			// RegisterToTextEditorsSubMenu
+			// integrationToolStripMenuItem
 			// 
-			this.RegisterToTextEditorsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.integrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GenerateLuaCatsDefinitionMenuItem,
+            this.toolStripSeparator1,
             this.RegisterSublimeText2MenuItem,
-            this.RegisterNotePadMenuItem,
-            this.GenerateLuaCatsDefinitionMenuItem});
-			this.RegisterToTextEditorsSubMenu.Text = "Register To Text Editors";
-			this.RegisterToTextEditorsSubMenu.DropDownOpened += new System.EventHandler(this.RegisterToTextEditorsSubMenu_DropDownOpened);
+            this.RegisterNotePadMenuItem});
+			this.integrationToolStripMenuItem.Name = "integrationToolStripMenuItem";
+			this.integrationToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
+			this.integrationToolStripMenuItem.Text = "&Integration";
+			this.integrationToolStripMenuItem.DropDownOpened += new System.EventHandler(this.IntegrationMenu_DropDownOpened);
+			// 
+			// GenerateLuaCatsDefinitionMenuItem
+			// 
+			this.GenerateLuaCatsDefinitionMenuItem.Text = "Export &LuaCATS (Lua Language Server) File";
+			this.GenerateLuaCatsDefinitionMenuItem.Click += new System.EventHandler(this.GenerateLuaCatsDefinitionMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(322, 6);
 			// 
 			// RegisterSublimeText2MenuItem
 			// 
-			this.RegisterSublimeText2MenuItem.Text = "&Sublime Text 2";
+			this.RegisterSublimeText2MenuItem.Text = "Register to &Sublime Text 2";
 			this.RegisterSublimeText2MenuItem.Click += new System.EventHandler(this.RegisterSublimeText2MenuItem_Click);
 			// 
 			// RegisterNotePadMenuItem
 			// 
-			this.RegisterNotePadMenuItem.Text = "Notepad++";
+			this.RegisterNotePadMenuItem.Text = "Register to &Notepad++";
 			this.RegisterNotePadMenuItem.Click += new System.EventHandler(this.RegisterNotePadMenuItem_Click);
-			// 
-			// GenerateLuaCatsDefinitionMenuItem
-			// 
-			this.GenerateLuaCatsDefinitionMenuItem.Text = "LuaCATS (Lua Language Server)";
-			this.GenerateLuaCatsDefinitionMenuItem.Click += new System.EventHandler(this.GenerateLuaCatsDefinitionMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -793,15 +800,15 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReturnAllIfNoneSelectedMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReloadWhenScriptFileChangesMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator4;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisterToTextEditorsSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisterSublimeText2MenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RegisterNotePadMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GenerateLuaCatsDefinitionMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SelectAllContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CopyContextItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearRegisteredFunctionsContextItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator5;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearRegisteredFunctionsLogContextItem;
+		private System.Windows.Forms.ToolStripMenuItem integrationToolStripMenuItem;
+		private ToolStripMenuItemEx GenerateLuaCatsDefinitionMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private ToolStripMenuItemEx RegisterSublimeText2MenuItem;
+		private ToolStripMenuItemEx RegisterNotePadMenuItem;
 	}
 }

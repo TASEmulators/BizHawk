@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsNotepadInstalled()
 		{
 			// The most likely location of the app, eventually we should consider looking through the registry or installed apps as a more robust way to detect it;
-			string exePath = @"C:\Program Files (x86)\Notepad++\notepad++.exe";
+			string exePath = @"C:\Program Files\Notepad++\notepad++.exe";
 			return File.Exists(exePath);
 		}
 
