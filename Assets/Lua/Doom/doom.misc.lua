@@ -33,33 +33,39 @@ MAXIMUM_INTERCEPTS = 128
 INTERCEPT_SIZE     = 16
 
 -- enums
+---@enum tracked_type
 TrackedType = {
 	THING  = 1,
 	LINE   = 2,
 	SECTOR = 3
 }
+---@enum angle_type
 AngleType = {
 	LONGTICS = 16384,
     FINE     = 2048,
     DEGREES  = 90,
     BYTE     = 64
 }
+---@enum line_log_type
 LineLogType = {
 	NONE   = 0,
 	PLAYER = 1,
 	ALL    = 2
 }
+---@enum intercepts_state
 InterceptsState = {
 	NONE     = 0,
 	PRINT    = 1,
 	OVERFLOW = 2
 }
+---@enum text_pos_y
 TextPosY = {
 	PLAYER = 42,
 	THING  = 236,
 	LINE   = 334,
 	SECTOR = 416
 }
+---@enum scroller
 Scroller = {
 	LEFT  = "< ",
 	RIGHT = " >",
@@ -67,6 +73,7 @@ Scroller = {
 }
 
 -- closure object
+---@class (exact) tracked_entity
 TrackedEntity = {}
 function TrackedEntity.new(name)
 	local self       = {}
@@ -152,6 +159,7 @@ Pan = {
 	x = Defaults.PanX,
 	y = Defaults.PanY
 }
+---@type tracked_entity[]
 Tracked = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
@@ -234,6 +242,8 @@ function grid_show()
 	ShowGrid = not ShowGrid
 end
 
+---@param limit integer
+---@return table
 local function fetch_intercept_overruns(limit)
 	local ret  = {}
 	local list = {
@@ -447,6 +457,10 @@ function prandom_log()
 	end
 end
 
+--- Does the actual logging for cross/use event
+---@param event string How to call the event in the log
+---@param line integer Pointer to line that we got from the hook
+---@param thing integer Pointer to mobj that we got from the hook
 local function line_event(event, line, thing)
 	line  = line  - 0x36f00000000
 	thing = thing - 0x36f00000000
@@ -476,6 +490,8 @@ local function line_event(event, line, thing)
 	end
 end
 
+--- Decides what to log exactly for cross/use events and installs the hook accordingly. When nothing is to be logged, the hook is removed.
+---@param isUse boolean Indicates event type we're cycling though
 function cycle_log_types(isUse)
 	if isUse then
 		local name = "Use"
@@ -507,24 +523,37 @@ end
 
 -- GAME/SCREEN CODECS
 
-function decode_x(coord)
+--- Converts in-game coordinate into onscreen
+---@param coord integer
+---@return integer
+local function decode_x(coord)
 	return math.floor(((coord / FRACUNIT) + Pan.x) * Zoom)
 end
 
-function decode_y(coord)
+--- Converts in-game coordinate into onscreen
+---@param coord integer
+---@return integer
+local function decode_y(coord)
 	return math.floor(((-coord / FRACUNIT) + Pan.y) * Zoom)
 end
 
-function encode_x(coord)
+--- Converts onscreen coordinate into in-game
+---@param coord integer
+---@return integer
+local function encode_x(coord)
 	return math.floor(((coord / Zoom) - Pan.x) * FRACUNIT)
 end
 
-function encode_y(coord)
+--- Converts onscreen coordinate into in-game
+---@param coord integer
+---@return integer
+local function encode_y(coord)
 	return -math.floor(((coord / Zoom) - Pan.y) * FRACUNIT)
 end
 
 -- return value matches passed value (line/vertex tuple/table)
-function codec(method, arg1, arg2, arg3, arg4)
+---@param method string
+local function codec(method, arg1, arg2, arg3, arg4)
 	local func_x, func_y
 	
 	if method == "encode" then
@@ -609,23 +638,29 @@ end
 
 -- AUTOMAP
 
+---@param divider integer
 function pan_left(divider)
 	Pan.x = Pan.x + PAN_FACTOR/Zoom/(divider or 2)
 end
 
+---@param divider integer
 function pan_right(divider)
 	Pan.x = Pan.x - PAN_FACTOR/Zoom/(divider or 2)
 end
 
+---@param divider integer
 function pan_up(divider)
 	Pan.y = Pan.y + PAN_FACTOR/Zoom/(divider or 2)
 end
 
+---@param divider integer
 function pan_down(divider)
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
 end
 
-function zoom(times, mouseCenter)
+---@param times integer
+---@param mouseCenter boolean
+local function zoom(times, mouseCenter)
 	local mouse
 	local mousePos
 	local zoomCenter
@@ -769,15 +804,20 @@ function dump(o, indent)
 	end
 end
 
-function to_lookup(table)
+---@param tab table
+---@return table
+function to_lookup(tab)
 	local lookup = {}
-	for k, v in pairs(table) do
+	for k, v in pairs(tab) do
 		lookup[v] = k
 	end
 	return lookup
 end
 
-function get_line_count(str)
+---@param str string
+---@return integer count How many lines we detected
+---@return integer longest How many chars the longest line is
+local function get_line_count(str)
 	local count   = 1
 	local longest = 0
 	local size    = 0
@@ -796,6 +836,9 @@ function get_line_count(str)
 	return count, longest
 end
 
+--- Checks if a key has just been pressed by user. Keys that remain pressed from before are ignored.
+---@param key string User input key to check
+---@return boolean
 function check_press(key)
 	return Input[key] and not LastInput[key]
 end
@@ -816,7 +859,7 @@ end
 
 -- MATH
 
-function maybe_swap(smaller, bigger)
+local function maybe_swap(smaller, bigger)
 	if smaller > bigger then
 		return bigger, smaller
 	end
@@ -831,7 +874,7 @@ local function check_side(point, v1, v2)
 	return ((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y
 end
 
--- distance to point projecton on infinite line
+--- Distance to point projecton on infinite line
 function distance_to_line(point, v1, v2)
 	local PAx = v1.x - point.x
 	local PAy = v1.y - point.y
@@ -854,7 +897,7 @@ local function dist_sq(p1, p2)
     return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
 end
 
--- distance to closest point of the segment
+--- Distance to closest point of the segment
 function distance_to_segment(point, v1, v2)
 	local ab_sq = dist_sq(v1, v2)
 	if ab_sq == 0 then return math.sqrt(dist_sq(point, v1)) end
@@ -878,7 +921,7 @@ end
 
 -- IO
 
-function settings_read()
+local function settings_read()
 	local file, err = loadfile(SETTINGS_FILENAME, "t", Config)
 	if file then
 		file()
@@ -946,7 +989,7 @@ function settings_read()
 	end
 end
 
-function settings_write()
+local function settings_write()
 	local file, err = io.open(SETTINGS_FILENAME, "w")
 	if file then
 		-- ANGLE TYPE
@@ -1094,6 +1137,9 @@ end
 
 -- GUI
 
+--- Displays next or previous entity from a given list. Nothing happens if there's nowhere to scroll.
+---@param entity tracked_entity | table TODO: turn Players into class so it shows up properly here and not as just a table
+---@param delta integer Direction and amount to scroll by
 function scroll_list(entity, delta)
 	if not entity.Current then return end
 	
@@ -1106,7 +1152,7 @@ function scroll_list(entity, delta)
 		step  = -1
 		delta = -delta
 	end
-		
+	
 	if entity.Current == limit then return end
 	
 	for i = entity.Current+step, limit, step do
@@ -1116,9 +1162,13 @@ function scroll_list(entity, delta)
 			return
 		end
 	end
-	
 end
 
+--- Shows clickable button on the screen that executes a given function. Only initial click is detected, holding it does nothing.
+---@param x integer Onscreen coordinate X
+---@param y integer Onscreen coordinate Y
+---@param name string Text to appear on the button
+---@param func function Function to execute when the button is pressed
 function make_button(x, y, name, func)
 	local lineCount,
 	      longest    = get_line_count(name)
@@ -1165,6 +1215,9 @@ function make_button(x, y, name, func)
 	text(textX, textY, name, colors[colorIndex] | 0xff000000) -- full alpha
 end
 
+--- Shows a dialog that blocks everything else and expects confirmation or cancelation
+---@param message string
+---@return boolean # Whether the user confirmed or canceled
 function show_dialog(message)
 	local ret
 	local lineCount,
@@ -1193,6 +1246,7 @@ function show_dialog(message)
 	return ret
 end
 
+---@return boolean # Whether GUI is currently frozen by a dialog that requires user input
 function freeze_gui()
 	return CurrentPrompt ~= nil
 	or     Confirmation  ~= nil
@@ -1201,6 +1255,7 @@ end
 
 -- MISC
 
+--- Doom uses left mouse clock for firing and if we're running unpaused we don't want clicking script buttons to trigger fire. Currently only blocks first player fire. TODO: block for all players
 function suppress_click_input()
 	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
 		joypad.set({ [MAP_CLICK_BLOCK] = false })
