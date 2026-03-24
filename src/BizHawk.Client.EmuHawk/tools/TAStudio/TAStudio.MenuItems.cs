@@ -755,6 +755,8 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.FlagChanges();
 					_activeInputRoll.Refresh();
 
+					UpdateInputRollDefinition(_activeInputRoll);
+
 					if (item.OwnerItem != ShowColumnsContextMenuItem) ShowColumnsContextMenuItem.ShowDropDown();
 					((ToolStripMenuItem)item.OwnerItem).ShowDropDown();
 				}
@@ -1022,7 +1024,6 @@ namespace BizHawk.Client.EmuHawk
 					// settings objects are mutated by the settings form, but some still need to be handled
 					for (int i = 0; i < s.MovieSettings.Columns.Length; i++)
 					{
-						_inputRolls[i].LoadColumns(s.MovieSettings.Columns[i]);
 						_inputRolls[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 						_inputRolls[i].Font = Settings.TasViewFont;
 						_inputRolls[i].HorizontalOrientation = s.MovieSettings.HorizontalOrientation;

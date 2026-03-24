@@ -172,5 +172,20 @@ namespace BizHawk.Emulation.Common
 
 		public bool Any()
 			=> BoolButtons.Count is not 0 || Axes.Count is not 0;
+
+		public static ControllerDefinition Merge(ControllerDefinition def1, ControllerDefinition def2)
+		{
+			ControllerDefinition merged = new("merged");
+			merged.BoolButtons = def1.BoolButtons.Union(def2.BoolButtons).ToList();
+			foreach (var axis in def1.Axes.Concat(def2.Axes))
+			{
+				if (!merged.Axes.ContainsKey(axis.Key))
+				{
+					merged.AddAxis(axis.Key, axis.Value.Range, axis.Value.Neutral, axis.Value.IsReversed, axis.Value.Constraint);
+				}
+			}
+
+			return merged.MakeImmutable();
+		}
 	}
 }

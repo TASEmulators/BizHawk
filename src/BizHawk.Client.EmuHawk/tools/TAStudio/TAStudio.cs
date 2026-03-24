@@ -447,11 +447,11 @@ namespace BizHawk.Client.EmuHawk
 			_movieSettings.Columns = new RollColumns[_inputRolls.Count];
 			for (int i = 0; i < _inputRolls.Count; i++)
 			{
-				MakeDefaultColumns(_inputRolls[i]);
-				_movieSettings.Columns[i] = _inputRolls[i].AllColumns;
+				InputRoll roll = _inputRolls[i];
+				MakeDefaultColumns(roll);
+				_movieSettings.Columns[i] = roll.AllColumns;
+				UpdateInputRollDefinition(roll);
 			}
-
-			UpdateActiveMovieInputs();
 		}
 
 		private void MakeDefaultColumns(InputRoll roll)
@@ -1139,12 +1139,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_leftButtonHeld)
 			{
-				TasView_MouseUp(this, new(MouseButtons.Left, 0, 0, 0, 0));
+				TasView_MouseUp(_activeInputRoll, new(MouseButtons.Left, 0, 0, 0, 0));
 			}
 			if (_rightClickFrame != -1)
 			{
 				_suppressContextMenu = true;
-				TasView_MouseUp(this, new(MouseButtons.Right, 0, 0, 0, 0));
+				TasView_MouseUp(_activeInputRoll, new(MouseButtons.Right, 0, 0, 0, 0));
 			}
 		}
 

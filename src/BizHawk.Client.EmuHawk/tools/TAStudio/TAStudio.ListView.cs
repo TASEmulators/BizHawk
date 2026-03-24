@@ -143,6 +143,7 @@ namespace BizHawk.Client.EmuHawk
 		/// The selected input roll. Only the selected input roll's row selection will be considered.
 		/// </summary>
 		private InputRoll _activeInputRoll;
+		private Dictionary<InputRoll, ControllerDefinition/*?*/> _rollDefinitions = new();
 
 		private bool AnyRowsSelected => _activeInputRoll.AnyRowsSelected;
 		private int FirstSelectedRowIndex => _activeInputRoll.FirstSelectedRowIndex;
@@ -1336,6 +1337,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			UpdateActiveMovieInputs();
 			SetSplicer();
 		}
 
@@ -1344,22 +1346,29 @@ namespace BizHawk.Client.EmuHawk
 			if (Settings.EditInvisibleColumns)
 			{
 				CurrentTasMovie.ActiveControllerInputs = null;
-				return;
 			}
+			else
+			{
+				CurrentTasMovie.ActiveControllerInputs = _rollDefinitions[_activeInputRoll];
+			}
+		}
 
+		private void UpdateInputRollDefinition(InputRoll roll)
+		{
 			var controlTuples = ControllerType.ControlsOrdered.SelectMany(x => x);
 			Dictionary<string, AxisSpec?> controlSpecs = new();
 			foreach (var tuple in controlTuples)
 				controlSpecs.Add(tuple.Name, tuple.AxisSpec);
 
-			if (!TasView.AllColumns.Any(c => !c.Visible && controlSpecs.ContainsKey(c.Name)))
+			if (!roll.AllColumns.Any(c => !c.Visible && controlSpecs.ContainsKey(c.Name)))
 			{
-				CurrentTasMovie.ActiveControllerInputs = null;
+				_rollDefinitions[roll] = null;
+				UpdateActiveMovieInputs();
 				return;
 			}
 
 			ControllerDefinition visibleDefinition = new("visible");
-			foreach (RollColumn col in TasView.VisibleColumns)
+			foreach (RollColumn col in roll.VisibleColumns)
 			{
 				if (!controlSpecs.TryGetValue(col.Name, out AxisSpec? maybeSpec))
 					continue; // frame, cursor, or Lua column
@@ -1373,7 +1382,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			CurrentTasMovie.ActiveControllerInputs = visibleDefinition.MakeImmutable();
+			_rollDefinitions[roll] = visibleDefinition.MakeImmutable();
+
+			UpdateActiveMovieInputs();
 		}
 
 		public void AnalogIncrementByOne()
