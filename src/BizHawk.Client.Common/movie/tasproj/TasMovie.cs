@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 		/// Returns the mnemonic value for boolean buttons, and actual value for axes,
 		/// for a given frame and button.
 		/// </summary>
-		public string DisplayValue(int frame, string buttonName)
+		public string DisplayValue(int frame, string buttonName, bool defaultAxisAsBlank)
 		{
 			if (_displayCache.Frame != frame || Log.Count == 1)
 			{
@@ -159,10 +159,10 @@ namespace BizHawk.Client.Common
 				_displayCache.Frame = frame;
 			}
 
-			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
+			return CreateDisplayValueForButton(_displayCache.Controller, buttonName, defaultAxisAsBlank);
 		}
 
-		private static string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private string CreateDisplayValueForButton(IController adapter, string buttonName, bool defaultAxisAsBlank)
 		{
 			// those Contains checks could be avoided by passing in the button type
 			// this should be considered if this becomes a significant performance issue
@@ -175,10 +175,16 @@ namespace BizHawk.Client.Common
 
 			if (adapter.Definition.Axes.ContainsKey(buttonName))
 			{
-				return adapter.AxisValue(buttonName).ToString();
+				int value = adapter.AxisValue(buttonName);
+				if (defaultAxisAsBlank)
+				{
+					int defaultValue = Session.MovieController.Definition.Axes[buttonName].Neutral;
+					if (value == defaultValue) return "";
+				}
+				return value.ToString();
 			}
 
-			return "!";
+			return "";
 		}
 
 		public void GreenzoneCurrentFrame()

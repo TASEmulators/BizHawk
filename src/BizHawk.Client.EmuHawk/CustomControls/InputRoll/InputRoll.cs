@@ -510,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Check if clicking the current cell should select it.
 		/// </summary>
-		public delegate bool? QueryShouldSelectCellHandler(MouseButtons button);
+		public delegate bool QueryShouldSelectCellHandler(MouseButtons button);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
@@ -1145,31 +1145,11 @@ namespace BizHawk.Client.EmuHawk
 					OnMouseMove(e);
 			}
 
-			bool shouldSelect = false;
-			bool useDefaultSelection = true;
-			if (IsHoveringOnDataCell)
+			if (IsHoveringOnDataCell && QueryShouldSelectCell?.Invoke(e.Button) != false)
 			{
-				if (QueryShouldSelectCell != null)
+				if (e.Button == MouseButtons.Left)
 				{
-					bool? result = QueryShouldSelectCell(e.Button);
-					shouldSelect = result != false;
-					useDefaultSelection = result == null;
-				}
-				else
-				{
-					shouldSelect = true;
-				}
-			}
-
-			if (e.Button == MouseButtons.Left)
-			{
-				if (shouldSelect)
-				{
-					if (ModifierKeys == Keys.Alt)
-					{
-						// do marker drag here
-					}
-					else if (ModifierKeys is Keys.Shift && (!useDefaultSelection || CurrentCell.Column!.Type is ColumnType.Text))
+					if (ModifierKeys is Keys.Shift)
 					{
 						if (_selectedItems.Count is not 0)
 						{
@@ -1214,11 +1194,11 @@ namespace BizHawk.Client.EmuHawk
 							SelectCell(CurrentCell);
 						}
 					}
-					else if (ModifierKeys is Keys.Control && (!useDefaultSelection || CurrentCell.Column!.Type is ColumnType.Text))
+					else if (ModifierKeys is Keys.Control)
 					{
 						SelectCell(CurrentCell, toggle: true);
 					}
-					else if (ModifierKeys != Keys.Shift)
+					else if (ModifierKeys != Keys.Alt)
 					{
 						_selectedItems.Clear();
 						SelectCell(CurrentCell);
@@ -1228,11 +1208,7 @@ namespace BizHawk.Client.EmuHawk
 
 					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
-			}
-
-			if (AllowRightClickSelection && e.Button == MouseButtons.Right)
-			{
-				if (shouldSelect)
+				else if (e.Button == MouseButtons.Right && AllowRightClickSelection)
 				{
 					// If this cell is not currently selected, clear and select
 					if (!_selectedItems.Contains(CurrentCell))

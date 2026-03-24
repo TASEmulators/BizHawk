@@ -16,8 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>TODO rename to <c>Label</c>?</remarks>
 		public string Text { get; private set; }
 
-		public ColumnType Type { get; private set; }
-
 		public bool Visible { get; set; } = true;
 
 		/// <summary>
@@ -37,20 +35,17 @@ namespace BizHawk.Client.EmuHawk
 			Text = default!;
 		}
 
-		public RollColumn(string name, int widthUnscaled, ColumnType type, string text)
-			: this(name, widthUnscaled, widthUnscaled, type, text) { }
+		public RollColumn(string name, int widthUnscaled, string text)
+			: this(name, widthUnscaled, widthUnscaled, text) { }
 
-		public RollColumn(string name, int verticalWidth, int horizontalHeight, ColumnType type, string text)
+		public RollColumn(string name, int verticalWidth, int horizontalHeight, string text)
 		{
 			Name = name;
 			Text = text;
-			Type = type;
 			VerticalWidth = UIHelper.ScaleX(verticalWidth);
 			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
 			Width = VerticalWidth;
 		}
 
-		public RollColumn(string name, int widthUnscaled, string text)
-			: this(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text) {}
 	}
 }

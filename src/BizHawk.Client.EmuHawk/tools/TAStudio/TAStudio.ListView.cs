@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool? TasView_QueryShouldSelect(MouseButtons button)
+		private bool TasView_QueryShouldSelect(MouseButtons button)
 		{
 			if (AxisEditingMode)
 			{
@@ -308,7 +308,21 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			return null;
+			if (TasView.CurrentCell.Column.Name == FrameColumnName)
+			{
+				return true;
+			}
+			else if (ModifierKeys == Keys.Shift)
+			{
+				return false;
+			}
+			else
+			{
+				// This may not be necessary, but it is the behavior we've always had based on copying what TASeditor does.
+				// Ctrl-click on a button selects the same as a regular click: the only row left selected is the one clicked
+				if (ModifierKeys == Keys.Control) TasView.DeselectAll();
+				return true;
+			}
 		}
 
 		private readonly string[] _formatCache = Enumerable.Range(1, 10).Select(i => $"D{i}").ToArray();
@@ -352,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 					offsetX = TasView.HorizontalOrientation ? 2 : 7;
 					text = FrameToStringPadded(index);
 				}
-				else if (column.Type is ColumnType.Boolean or ColumnType.Axis)
+				else
 				{
 					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
 					bool axisEditing = columnName == AxisEditColumn && TasView.IsRowSelected(index);
@@ -362,15 +376,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (index < CurrentTasMovie.InputLogLength)
 					{
-						text = CurrentTasMovie.DisplayValue(index, columnName);
-						if (column.Type == ColumnType.Axis)
-						{
-							// feos: this could be cached, but I don't notice any slowdown this way either
-							if (!axisEditing && text == ((float) ControllerType.Axes[columnName].Neutral).ToString(NumberFormatInfo.InvariantInfo))
-							{
-								text = "";
-							}
-						}
+						text = CurrentTasMovie.DisplayValue(index, columnName, !axisEditing);
 					}
 				}
 			}
@@ -602,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.IsRowSelected(frame);
 					}
 				}
-				else if (targetCol.Type is not ColumnType.Text) // User changed input
+				else
 				{
 					// Pausing the emulator is insufficient to actually stop frame advancing as the frame advance hotkey can
 					// still take effect. This can lead to desyncs by simultaneously changing input and frame advancing.
@@ -660,11 +666,11 @@ namespace BizHawk.Client.EmuHawk
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
 					}
-					else
+					else if (ControllerType.Axes.TryGetValue(buttonName, out AxisSpec spec))
 					{
 						if (frame >= CurrentTasMovie.InputLogLength)
 						{
-							CurrentTasMovie.SetAxisState(frame, buttonName, ControllerType.Axes[buttonName].Neutral);
+							CurrentTasMovie.SetAxisState(frame, buttonName, spec.Neutral);
 							RefreshDialog();
 						}
 

@@ -445,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TasView.AllColumns.Clear();
-			TasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, type: ColumnType.Boolean, text: string.Empty));
+			TasView.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
 			TasView.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
 			{
 				Rotatable = true,
@@ -457,16 +457,13 @@ namespace BizHawk.Client.EmuHawk
 					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
 					: mnemonic0;
 
-				var type = ControllerType.Axes.ContainsKey(name) ? ColumnType.Axis : ColumnType.Boolean;
-
 				TasView.AllColumns.Add(new(
 					name: name,
 					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
 					horizontalHeight: (maxLength * 6) + 14,
-					type: type,
 					text: mnemonic)
 				{
-					Rotatable = type is ColumnType.Axis,
+					Rotatable = ControllerType.Axes.ContainsKey(name),
 				});
 			}
 
@@ -560,7 +557,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <remarks>for Lua</remarks>
 		public void AddColumn(string name, string text, int widthUnscaled)
-			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text));
+			=> TasView.AllColumns.Add(new(name: name, widthUnscaled: widthUnscaled, text: text));
 
 		public void LoadBranchByIndex(int index) => BookMarkControl.LoadBranchExternal(index);
 
