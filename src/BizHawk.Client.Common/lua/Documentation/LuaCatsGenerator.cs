@@ -70,7 +70,7 @@ internal class LuaCatsGenerator
 
 			if (!string.IsNullOrEmpty(libraryDescription))
 			{
-				sb.AppendLine(FormatDescription(libraryDescription));
+				sb.AppendLine(FormatMarkdown(libraryDescription));
 			}
 
 			sb.AppendLine($"---@class {library}");
@@ -81,7 +81,7 @@ internal class LuaCatsGenerator
 			{
 				if (!string.IsNullOrEmpty(func.Description))
 				{
-					sb.AppendLine(FormatDescription(func.Description));
+					sb.AppendLine(FormatMarkdown(func.Description));
 				}
 
 				if (func.Example != null)
@@ -89,11 +89,7 @@ internal class LuaCatsGenerator
 					sb.AppendLine("---");
 					sb.AppendLine("---Example:");
 					sb.AppendLine("---");
-					sb.AppendFormat("---\t{0}", func.Example
-							.Replace("\r\n", "\r\n---\t")
-							.Replace("{{", "`")
-							.Replace("}}", "`"));
-					sb.AppendLine();
+					sb.AppendLine(FormatMarkdown(func.Example, "---\t"));
 				}
 
 				if (func.IsDeprecated)
@@ -143,15 +139,15 @@ internal class LuaCatsGenerator
 		return sb.ToString();
 	}
 
-	private static string FormatDescription(string description)
+	private static string FormatMarkdown(string value, string prefix = "---")
 	{
-		// prefix every line with ---
-		description = Regex.Replace(description, "^", "---", RegexOptions.Multiline);
+		// prefix every line
+		value = Regex.Replace(value, "^", prefix, RegexOptions.Multiline);
 		// replace {{wiki markup}} with `markdown`
-		description = Regex.Replace(description, @"{{(.+?)}}", "`$1`");
+		value = Regex.Replace(value, "{{(.+?)}}", "`$1`");
 		// replace wiki image markup with markdown
-		description = Regex.Replace(description, @"\[(?<url>.+?)\|alt=(?<alt>.+?)\]", "![${alt}](${url})");
-		return description;
+		value = Regex.Replace(value, @"\[(?<url>.+?)\|alt=(?<alt>.+?)\]", "![${alt}](${url})");
+		return value;
 	}
 
 	private static string GetLuaType(ParameterInfo parameter)
