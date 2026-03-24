@@ -71,10 +71,21 @@ Scroller = {
 	RIGHT = " >",
 	NONE  = "  "
 }
+---@alias converted_coordinates number|[number,number]|[number,number,number,number]|vertex|[vertex,vertex]|line
+---@alias line_t structs.line
 
--- closure object
----@class (exact) tracked_entity
+
+--- Closure object for entities we can track. Involves showing them on the screen and saving them to config.
 TrackedEntity = {}
+---@class (exact) tracked_entity
+---@field TrackedList table[] List of individual objects that we're tracking
+---@field IDs integer[] List IDs of a given entity type that are currently present in the level
+---@field Current integer ID of the currently displayed object
+---@field Min integer Lowest tracked ID, for scrolling
+---@field Max integer Highest tracked ID, for scrolling
+---@field Name string Entity type name to show to user in dialogs
+--- Constructor
+---@param name string Entity type name to show to user in dialogs
 function TrackedEntity.new(name)
 	local self       = {}
 	self.TrackedList = {}
@@ -83,6 +94,8 @@ function TrackedEntity.new(name)
 	self.Min         = math.maxinteger
 	self.Max         = math.mininteger
 	self.Name        = name
+	--- Removes all tracked objects of this type
+	-- TODO: appears in annotations as just nil in calls
 	function self.clear()
 		self.TrackedList = {}
 		self.Current     = nil
@@ -91,6 +104,25 @@ function TrackedEntity.new(name)
 	end
 	return self
 end
+
+
+--- Vanilla variables that intercepts overflow would corrupt. `playerstarts` is a `mapthing_t` list in vanilla; nested one in upstream but we're not displaying that detail. Index augend is taken from the original, and index addend exists to indicate lua's 1-based lists.
+---@class (exact) intercept_overrun
+---@field name string Full name of the vanilla variable we're corrupting
+---@field value integer Value that the vanilla variable has at the moment
+---@type intercept_overrun
+InterceptOverrun = {}
+
+--- Used for specific things like point coordinates, but also for anything that can have x/y values
+---@class (exact) vertex
+---@field x number
+---@field y number
+
+--- Depending on the situation this object is more useful than a tuple of indiviaual coords
+---@class (exact) line
+---@field v1 vertex Starting point of the line
+---@field v2 vertex End point of the line
+
 
 -- shortcuts
 text     = gui.text
@@ -154,7 +186,7 @@ ShowMap        = nil
 ShowGrid       = nil
 Angle          = nil
 InterceptLimit = nil
--- view offset
+--- View offset
 Pan = {
 	x = Defaults.PanX,
 	y = Defaults.PanY
@@ -242,8 +274,9 @@ function grid_show()
 	ShowGrid = not ShowGrid
 end
 
+--- After intercept overflow, shows which variables got corrupted and their resulting values. The list is consctructed on the fly so we could read from memory directly.
 ---@param limit integer
----@return table
+---@return intercept_overrun[] # Table index indicates offset, usable for comparing with offsets of individual intercepts after overflow
 local function fetch_intercept_overruns(limit)
 	local ret  = {}
 	local list = {
@@ -252,8 +285,6 @@ local function fetch_intercept_overruns(limit)
 		[ 20] = { name = "line_opening.top",        value = Globals.line_opening.top          },
 		[ 24] = { name = "line_opening.range",      value = Globals.line_opening.range        },
 		[160] = { name = "bulletslope",             value = Globals.bulletslope               },
-		-- originally nested lists, we keep them as one flat list for simplicity
-		-- augend is taken from the original, addend is to indicate lua's 1-based lists
 		[176] = { name = "playerstarts[0].x",       value = Globals.playerstarts[0+1].x       },
 		[178] = { name = "playerstarts[0].y",       value = Globals.playerstarts[0+1].y       },
 		[180] = { name = "playerstarts[0].angle",   value = Globals.playerstarts[0+1].angle   },
@@ -280,6 +311,9 @@ local function fetch_intercept_overruns(limit)
 		[230] = { name = "bmapheight",              value = Globals.bmapheight                }
 	}
 	
+	-- walk through the list to check how far corruption went for this particular intercept
+	-- TODO: probably check based on farthest affected offset,
+	-- since intercepts are 12 bytes in size and overruns have different sizes
 	for i = 0, 230 do
 		local source = list[i]
 		if source and i <= limit then
@@ -295,6 +329,7 @@ local function fetch_intercept_overruns(limit)
 	return ret
 end
 
+--- Very complicated thing that handles tracelines display and intercepts display and logging. Installs the hook while anything is enabled. When an intercept is added by the game, we read `trace` from memory which is the thing creating intercepts, and we add all those tracelines to a table that we then display once per frame. When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that. Upon overflow we also let the user dump all their contents and info to console.
 local function hook_intercepts()
 	local name = "Intercepts"
 	
@@ -551,8 +586,13 @@ local function encode_y(coord)
 	return -math.floor(((coord / Zoom) - Pan.y) * FRACUNIT)
 end
 
--- return value matches passed value (line/vertex tuple/table)
----@param method string
+--- Converter between screen-to-game and game-to-screen coordinates/vertex/line
+---@param method string `"encode"`|`"decode"` screen-to-game or game-to-screen
+---@param arg1? number|vertex|line 
+---@param arg2? number|vertex
+---@param arg3? number
+---@param arg4? number
+---@return converted_coordinates # Return value matches passed value (line/vertex (tuple)/coord(s))
 local function codec(method, arg1, arg2, arg3, arg4)
 	local func_x, func_y
 	
@@ -605,10 +645,22 @@ local function codec(method, arg1, arg2, arg3, arg4)
 	end
 end
 
+--- Converts in-game coordinates into onscreen.
+---@param arg1? number|vertex|line 
+---@param arg2? number|vertex
+---@param arg3? number
+---@param arg4? number
+---@return converted_coordinates # Return value matches passed value (line/vertex (tuple)/coord(s))
 function game_to_screen(arg1, arg2, arg3, arg4)
 	return codec("decode", arg1, arg2, arg3, arg4)
 end
 
+--- Converts onscreen coordinates into in-game.
+---@param arg1? number|vertex|line 
+---@param arg2? number|vertex
+---@param arg3? number
+---@param arg4? number
+---@return converted_coordinates # Return value matches passed value (line/vertex (tuple)/coord(s))
 function screen_to_game(arg1, arg2, arg3, arg4)
 	return codec("encode", arg1, arg2, arg3, arg4)
 end
@@ -616,14 +668,24 @@ end
 
 -- TYPE CONVERTERS
 
-function tuple_to_vertex(xx, yy)
-	return { x = xx, y = yy }
+---@param x number
+---@param y number
+---@return vertex
+function tuple_to_vertex(x, y)
+	return { x = x, y = y }
 end
 
+---@param v vertex
+---@return [number,number]
 function vertex_to_tuple(v)
 	return table.unpack(v)
 end
 
+---@param x1 number
+---@param y1 number
+---@param x2 number
+---@param y2 number
+---@return line
 function tuple_to_line(x1, y1, x2, y2)
 	return {
 		v1 = { x = x1, y = y1 },
@@ -631,8 +693,10 @@ function tuple_to_line(x1, y1, x2, y2)
 	}
 end
 
-function line_to_tuple(l)
-	return table.unpack(l.v1), table.unpack(l.v2)
+---@param ln line
+---@return [number,number,number,number]
+function line_to_tuple(ln)
+	return table.unpack(ln.v1), table.unpack(ln.v2)
 end
 
 
@@ -781,6 +845,10 @@ end
 
 -- UTIL
 
+--- Converts an object into a table-like string that can be saved to file and parsed back into the same object
+---@param o any Object to print out
+---@param indent? string Current indentation for recursion
+---@return string
 function dump(o, indent)
 	local offset = ""
 	if not indent then
@@ -815,8 +883,7 @@ function to_lookup(tab)
 end
 
 ---@param str string
----@return integer count How many lines we detected
----@return integer longest How many chars the longest line is
+---@return [integer,integer] # First returned value is how many lines we detected, second one is how many chars the longest line is
 local function get_line_count(str)
 	local count   = 1
 	local longest = 0
@@ -843,6 +910,7 @@ function check_press(key)
 	return Input[key] and not LastInput[key]
 end
 
+--- Refreshes things when a map changes
 function check_map_change()
 	local episode = Globals.gameepisode
 	local map     = Globals.gamemap
@@ -859,6 +927,9 @@ end
 
 -- MATH
 
+---@param smaller number
+---@param bigger number
+---@return [number,number]
 local function maybe_swap(smaller, bigger)
 	if smaller > bigger then
 		return bigger, smaller
@@ -866,15 +937,27 @@ local function maybe_swap(smaller, bigger)
 	return smaller - 100, bigger + 100
 end
 
+---@param var number
+---@param minimum number
+---@param maximum number
+---@return boolean
 function in_range(var, minimum, maximum)
 	return var >= minimum and var <= maximum
 end
 
+---@param point vertex
+---@param v1 vertex
+---@param v2 vertex
+---@return boolean
 local function check_side(point, v1, v2)
 	return ((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y
 end
 
 --- Distance to point projecton on infinite line
+---@param point vertex
+---@param v1 vertex
+---@param v2 vertex
+---@return number # Sign indicates which side the point is on
 function distance_to_line(point, v1, v2)
 	local PAx = v1.x - point.x
 	local PAy = v1.y - point.y
@@ -898,6 +981,10 @@ local function dist_sq(p1, p2)
 end
 
 --- Distance to closest point of the segment
+---@param point vertex
+---@param v1 vertex
+---@param v2 vertex
+---@return number # Sign indicates which side the point is on
 function distance_to_segment(point, v1, v2)
 	local ab_sq = dist_sq(v1, v2)
 	if ab_sq == 0 then return math.sqrt(dist_sq(point, v1)) end
@@ -921,6 +1008,7 @@ end
 
 -- IO
 
+--- Deserializer
 local function settings_read()
 	local file, err = loadfile(SETTINGS_FILENAME, "t", Config)
 	if file then
@@ -989,6 +1077,7 @@ local function settings_read()
 	end
 end
 
+--- Serializer
 local function settings_write()
 	local file, err = io.open(SETTINGS_FILENAME, "w")
 	if file then
@@ -1045,6 +1134,8 @@ end
 
 -- CACHE
 
+---@param line line_t
+---@return [number,number,number,number] # x1, y1, x2, y2 tuple
 function cached_line_coords(line)
 	if line._polyobj then
 		local validcount = line.validcount
