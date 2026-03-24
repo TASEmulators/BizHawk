@@ -1,3 +1,5 @@
+#pragma warning disable MA0136 // Raw String contains an implicit end of line character, line endings will be normalized
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -40,27 +42,31 @@ internal class LuaCatsGenerator
 		[typeof(System.Drawing.Color)] = "color",
 	};
 
-	private const string Preamble = @"error(""This is a definition file for Lua Language Server and not a usable script"")
+	private const string Preamble = """
+	-- https://tasvideos.org/Bizhawk
 
----@meta _
---- Lua functions available for the BizHawk emulator
---- https://tasvideos.org/Bizhawk
+	error("This is a definition file for Lua Language Server and not a usable script")
 
----@class color : userdata
+	---@meta _
 
----A color in one of the following formats:
---- - Number in the format `0xAARRGGBB`
---- - String in the format `""#RRGGBB""` or `""#AARRGGBB""`
---- - A CSS3/X11 color name e.g. `""blue""`, `""palegoldenrod""`
---- - Color created with `forms.createcolor`
----@alias luacolor integer | string | color
-";
+	---@class color : userdata
+
+	---A color in one of the following formats:
+	--- - Number in the format `0xAARRGGBB`
+	--- - String in the format `"#RRGGBB"` or `"#AARRGGBB"`
+	--- - A CSS3/X11 color name e.g. `"blue"`, `"palegoldenrod"`
+	--- - Color created with `forms.createcolor`
+	---@alias luacolor integer | string | color
+
+	""";
+
+
 
 	public string Generate(LuaDocumentation docs)
 	{
 		var sb = new StringBuilder();
 
-		sb.AppendLine($"--Generated with BizHawk {VersionInfo.MainVersion}");
+		sb.AppendLine($"-- Lua functions available in EmuHawk {VersionInfo.MainVersion}");
 		sb.AppendLine(Preamble);
 
 		foreach (var libraryGroup in docs.GroupBy(func => func.Library).OrderBy(group => group.Key))
@@ -136,7 +142,7 @@ internal class LuaCatsGenerator
 			}
 			sb.AppendLine();
 		}
-		return sb.ToString();
+		return sb.ToString().ReplaceLineEndings();
 	}
 
 	private static string FormatMarkdown(string value, string prefix = "---")
