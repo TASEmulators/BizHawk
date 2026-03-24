@@ -92,7 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			this.aboutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator10 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.EnableTooltipsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.TasView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.TasStatusStrip = new BizHawk.WinForms.Controls.StatusStripEx();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -136,6 +135,8 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoHoldContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HideColumnContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowColumnsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewInputRollContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DeleteInputRollContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -144,7 +145,6 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.Panel2.SuspendLayout();
 			this.BranchesMarkersSplit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).BeginInit();
-			this.MainVertialSplit.Panel1.SuspendLayout();
 			this.MainVertialSplit.Panel2.SuspendLayout();
 			this.MainVertialSplit.SuspendLayout();
 			this.ColumnRightClickMenu.SuspendLayout();
@@ -482,44 +482,6 @@ namespace BizHawk.Client.EmuHawk
 			this.EnableTooltipsMenuItem.Enabled = false;
 			this.EnableTooltipsMenuItem.Text = "&Enable Tooltips";
 			// 
-			// TasView
-			// 
-			this.TasView.AllowColumnReorder = false;
-			this.TasView.AllowColumnResize = false;
-			this.TasView.AllowMassNavigationShortcuts = false;
-			this.TasView.AllowRightClickSelection = false;
-			this.TasView.AlwaysScroll = false;
-			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasView.CellHeightPadding = 0;
-			this.TasView.ChangeSelectionWhenPaging = false;
-			this.TasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TasView.FullRowSelect = true;
-			this.TasView.HorizontalOrientation = false;
-			this.TasView.InputPaintingMode = true;
-			this.TasView.LetKeysModifySelection = true;
-			this.TasView.Location = new System.Drawing.Point(3, 0);
-			this.TasView.Name = "TasView";
-			this.TasView.Rotatable = true;
-			this.TasView.RowCount = 0;
-			this.TasView.ScrollSpeed = 1;
-			this.TasView.Size = new System.Drawing.Size(289, 528);
-			this.TasView.TabIndex = 1;
-			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
-			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
-			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
-			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
-			this.TasView.ColumnReordered += new BizHawk.Client.EmuHawk.InputRoll.ColumnReorderedEventHandler(this.TasView_ColumnReordered);
-			this.TasView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.TasView_CellDropped);
-			this.TasView.RotationChanged += new System.EventHandler(this.HandleRotationChanged);
-			this.TasView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TasView_KeyDown);
-			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
-			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
-			this.TasView.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
-			this.TasView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseMove);
-			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
-			// 
 			// TasStatusStrip
 			// 
 			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -757,10 +719,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.Location = new System.Drawing.Point(2, 23);
 			this.MainVertialSplit.Name = "MainVertialSplit";
 			// 
-			// MainVertialSplit.Panel1
-			// 
-			this.MainVertialSplit.Panel1.Controls.Add(this.TasView);
-			// 
 			// MainVertialSplit.Panel2
 			// 
 			this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
@@ -774,7 +732,9 @@ namespace BizHawk.Client.EmuHawk
 			this.ColumnRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AutoHoldContextMenuItem,
             this.HideColumnContextMenuItem,
-            this.ShowColumnsContextMenuItem});
+            this.ShowColumnsContextMenuItem,
+            this.NewInputRollContextMenuItem,
+            this.DeleteInputRollContextMenuItem});
 			this.ColumnRightClickMenu.Name = "ColumnRightClickMenu";
 			this.ColumnRightClickMenu.Size = new System.Drawing.Size(181, 92);
 			this.ColumnRightClickMenu.Opened += new System.EventHandler(this.ColumnRightClickMenu_Opened);
@@ -799,6 +759,20 @@ namespace BizHawk.Client.EmuHawk
 			this.ShowColumnsContextMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.ShowColumnsContextMenuItem.Text = "Show columns";
 			// 
+			// NewInputRollContextMenuItem
+			// 
+			this.NewInputRollContextMenuItem.Name = "NewInputRollContextMenuItem";
+			this.NewInputRollContextMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.NewInputRollContextMenuItem.Text = "New input roll";
+			this.NewInputRollContextMenuItem.Click += new System.EventHandler(this.NewInputRollContextMenuItem_Click);
+			// 
+			// DeleteInputRollContextMenuItem
+			// 
+			this.DeleteInputRollContextMenuItem.Name = "DeleteInputRollContextMenuItem";
+			this.DeleteInputRollContextMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.DeleteInputRollContextMenuItem.Text = "Delete input roll";
+			this.DeleteInputRollContextMenuItem.Click += new System.EventHandler(this.DeleteInputRollContextMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -818,6 +792,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
+			this.Resize += new System.EventHandler(this.TAStudio_Resize);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
 			this.TasStatusStrip.ResumeLayout(false);
@@ -827,7 +802,6 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).EndInit();
 			this.BranchesMarkersSplit.ResumeLayout(false);
-			this.MainVertialSplit.Panel1.ResumeLayout(false);
 			this.MainVertialSplit.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).EndInit();
 			this.MainVertialSplit.ResumeLayout(false);
@@ -847,7 +821,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveAsTASMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EditSubMenu;
-		private InputRoll TasView;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx RecentSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator3;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx InsertFrameMenuItem;
@@ -944,5 +917,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem AutoHoldContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem HideColumnContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ShowColumnsContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem NewInputRollContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DeleteInputRollContextMenuItem;
 	}
 }

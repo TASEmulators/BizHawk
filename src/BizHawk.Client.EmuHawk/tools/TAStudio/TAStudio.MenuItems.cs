@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -934,7 +935,8 @@ namespace BizHawk.Client.EmuHawk
 			AutoHoldContextMenuItem.Visible = !cursorOrFrame
 				&& (cd.BoolButtons.Contains(_clickedColumn.Name) || cd.Axes.ContainsKey(_clickedColumn.Name));
 			HideColumnContextMenuItem.Visible = !cursorOrFrame;
-				
+
+			DeleteInputRollContextMenuItem.Visible = _inputRolls.Count > 1;
 		}
 
 		private void AutoHoldContextMenuItem_Click(object sender, EventArgs e)
@@ -951,6 +953,44 @@ namespace BizHawk.Client.EmuHawk
 			_activeInputRoll.AllColumns.ColumnsChanged();
 			CurrentTasMovie.FlagChanges();
 			_activeInputRoll.Refresh();
+		}
+
+		private void NewInputRollContextMenuItem_Click(object sender, EventArgs e)
+		{
+			HashSet<string> hiddenCols = _inputRolls
+				.SelectMany(static r => r.AllColumns.Where(static c => !c.Visible))
+				.Select(static c => c.Name)
+				.Distinct()
+				.ToHashSet();
+
+			int index = _inputRolls.IndexOf(_activeInputRoll);
+			InputRoll roll = MakeInputRoll(index);
+			roll.AllColumns.AddRange(_activeInputRoll.AllColumns.Select(static c => c.Clone()));
+
+			// If any columns aren't visible, default to showing those instead of showing all.
+			if (hiddenCols.Count != 0)
+			{
+				foreach (RollColumn col in roll.AllColumns)
+				{
+					col.Visible = hiddenCols.Contains(col.Name) || col.Name is (CursorColumnName or FrameColumnName);
+				}
+			}
+			roll.AllColumns.ColumnsChanged();
+
+			RefreshDialog();
+		}
+
+		private void DeleteInputRollContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_inputRolls.Count == 1) return;
+
+			_tasViewPanel.Controls.Remove(_activeInputRoll);
+			_rollDefinitions.Remove(_activeInputRoll);
+			int index = _inputRolls.IndexOf(_activeInputRoll);
+			_inputRolls.RemoveAt(index);
+			_activeInputRoll = _inputRolls[0];
+
+			RepositionRolls();
 		}
 
 		private void RightClickMenu_Opened(object sender, EventArgs e)

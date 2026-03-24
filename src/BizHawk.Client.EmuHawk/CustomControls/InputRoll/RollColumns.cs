@@ -14,9 +14,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action? ChangedCallback { get; set; } = null;
 
+		private bool _suspendChanged = false;
+
 		// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a change callback, and all property changes must call it, it is quicker and easier to just call this when needed
 		public void ColumnsChanged()
 		{
+			if (_suspendChanged) return;
+
 			int pos = 0;
 
 			foreach (var col in VisibleColumns)
@@ -40,13 +44,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public new void AddRange(IEnumerable<RollColumn> collection)
 		{
+			_suspendChanged = true;
 			foreach (var column in collection)
 			{
-				if (this[column.Name] == null)
-				{
-					Add(column);
-				}
+				Add(column);
 			}
+			_suspendChanged = false;
 
 			ColumnsChanged();
 		}

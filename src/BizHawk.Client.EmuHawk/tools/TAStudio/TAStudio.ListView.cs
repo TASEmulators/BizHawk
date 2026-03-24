@@ -137,6 +137,10 @@ namespace BizHawk.Client.EmuHawk
 		private Bitmap icon_anchor_lag => Properties.Resources.icon_anchor_lag;
 		private Bitmap icon_anchor => Properties.Resources.icon_anchor;
 
+		private Panel _tasViewPanel;
+		private HScrollBar _tasViewHBar = new();
+		private VScrollBar _tasViewVBar = new();
+
 		private List<InputRoll> _inputRolls = new();
 
 		/// <summary>
@@ -159,6 +163,177 @@ namespace BizHawk.Client.EmuHawk
 		private bool IsRowSelected(int frame) => _activeInputRoll.IsRowSelected(frame);
 
 		private bool IsRowVisibleAnyRoll(int frame) => _inputRolls.Exists(r => r.IsPartiallyVisible(frame));
+
+		private InputRoll MakeInputRoll(int? insertAfter = null)
+		{
+			int index;
+			if (insertAfter == null) index = _inputRolls.Count;
+			else index = insertAfter.Value + 1;
+
+			InputRoll roll = new()
+			{
+				// non user configurable
+				AllowColumnReorder = false,
+				AllowColumnResize = false,
+				AllowMassNavigationShortcuts = false,
+				AllowRightClickSelection = false,
+				CellHeightPadding = 0,
+				ChangeSelectionWhenPaging = false,
+				FullRowSelect = true,
+				InputPaintingMode = true,
+				LetKeysModifySelection = true,
+				Rotatable = true,
+				// user configurable
+				AlwaysScroll = Settings.FollowCursorAlwaysScroll,
+				Font = Settings.TasViewFont,
+				RowCount = (CurrentTasMovie?.InputLogLength ?? 0) + 1,
+				ScrollMethod = Settings.FollowCursorScrollMethod,
+				ScrollSpeed = Settings.ScrollSpeed,
+				// per-movie configurable
+				HideWasLagFrames = _movieSettings.HideWasLagFrames,
+				HorizontalOrientation = _movieSettings.HorizontalOrientation,
+				LagFramesToHide = _movieSettings.LagFramesToHide,
+			};
+
+			roll.KeyDown += TasView_KeyDown;
+			roll.MouseDoubleClick += TasView_MouseDoubleClick;
+			roll.MouseDown += TasView_MouseDown;
+			roll.MouseUp += TasView_MouseUp;
+			roll.MouseEnter += TasView_MouseEnter;
+			roll.MouseLeave += TAStudio_MouseLeave;
+			roll.MouseMove += TasView_MouseMove;
+
+			roll.PointedCellChanged += TasView_PointedCellChanged;
+			roll.ColumnClick += TasView_ColumnClick;
+			roll.ColumnRightClick += TasView_ColumnRightClick;
+			roll.SelectedIndexChanged += TasView_SelectedIndexChanged;
+			roll.RightMouseScrolled += TasView_MouseWheel;
+			roll.ColumnReordered += TasView_ColumnReordered;
+			roll.CellDropped += TasView_CellDropped;
+			roll.RotationChanged += HandleRotationChanged;
+			roll.ColumnsChanged += RepositionRolls;
+
+			roll.QueryItemText += TasView_QueryItemText;
+			roll.QueryItemBkColor += TasView_QueryItemBkColor;
+			roll.QueryRowBkColor += TasView_QueryRowBkColor;
+			roll.QueryItemIcon += TasView_QueryItemIcon;
+			roll.QueryFrameLag += TasView_QueryFrameLag;
+			roll.QueryShouldSelectCell += TasView_QueryShouldSelect;
+
+			roll.CellHovered += (_, e) =>
+			{
+				if (e.NewCell.RowIndex is null)
+				{
+					toolTip1.Show(e.NewCell.Column!.Name, roll, roll.PointToClient(Cursor.HotSpot));
+				}
+			};
+
+			_inputRolls.Insert(index, roll);
+			_tasViewPanel.Controls.Add(roll);
+
+			return roll;
+		}
+
+		private void RepositionRolls()
+		{
+			if (_inputRolls[0].HorizontalOrientation)
+			{
+				int margin = _inputRolls[0].Margin.Top;
+
+				int y = margin;
+				for (int i = 0; i < _inputRolls.Count; i++)
+				{
+					_inputRolls[i].Top = y - _tasViewVBar.Value;
+					_inputRolls[i].Height = _inputRolls[i].TotalColWidth + 1 + _tasViewHBar.Height;
+
+					y += _inputRolls[i].Height + margin;
+				}
+
+				_tasViewVBar.Visible = y >= _tasViewPanel.Height;
+				_tasViewHBar.Visible = false;
+				InputRoll lastRoll = _inputRolls[_inputRolls.Count - 1];
+				if (!_tasViewVBar.Visible) lastRoll.Height += _tasViewPanel.Height - y;
+
+				int desiredMaximum = _inputRolls[_inputRolls.Count - 1].Bottom + _tasViewVBar.Value - _tasViewPanel.Height + 1;
+				desiredMaximum = Math.Max(0, desiredMaximum);
+				_tasViewVBar.Maximum = desiredMaximum + _tasViewVBar.LargeChange - 1; // scroll bar dumbness
+				_tasViewVBar.Minimum = 0; // 0 is default, but somehow it gets set to a low negative value
+
+				foreach (InputRoll roll in _inputRolls)
+				{
+					roll.Width = _tasViewPanel.Width - (_tasViewVBar.Visible ? _tasViewVBar.Width : 0);
+					roll.Anchor = AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+					roll.Refresh();
+				}
+
+				if (_tasViewVBar.Value > desiredMaximum)
+				{
+					_tasViewVBar.Value = desiredMaximum;
+					RepositionRolls();
+				}
+			}
+			else
+			{
+				int margin = _inputRolls[0].Margin.Left;
+
+				int x = margin;
+				for (int i = 0; i < _inputRolls.Count; i++)
+				{
+					_inputRolls[i].Left = x - _tasViewHBar.Value;
+					_inputRolls[i].Width = _inputRolls[i].TotalColWidth + 1 + _tasViewVBar.Width;
+
+					x += _inputRolls[i].Width + margin;
+				}
+
+				_tasViewHBar.Visible = x >= _tasViewPanel.Width;
+				_tasViewVBar.Visible = false;
+				InputRoll lastRoll = _inputRolls[_inputRolls.Count - 1];
+				if (!_tasViewHBar.Visible) lastRoll.Width += _tasViewPanel.Width - x;
+
+				int desiredMaximum = _inputRolls[_inputRolls.Count - 1].Right + _tasViewHBar.Value - _tasViewPanel.Width + 1;
+				desiredMaximum = Math.Max(0, desiredMaximum);
+				_tasViewHBar.Maximum = desiredMaximum + _tasViewHBar.LargeChange - 1; // scroll bar dumbness
+				_tasViewHBar.Minimum = 0; // 0 is default, but somehow it gets set to a low negative value
+
+				foreach (InputRoll roll in _inputRolls)
+				{
+					roll.Height = _tasViewPanel.Height - (_tasViewHBar.Visible ? _tasViewHBar.Height : 0);
+					roll.Anchor = AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
+					roll.Refresh();
+				}
+
+				if (_tasViewHBar.Value > desiredMaximum)
+				{
+					_tasViewHBar.Value = desiredMaximum;
+					RepositionRolls();
+				}
+			}
+
+			_tasViewPanel.Refresh(); // without this, parts of input rolls remain drawn in spaces where there are no input rolls anymore
+		}
+
+		private void RemoveAllRolls()
+		{
+			foreach (InputRoll r in _inputRolls)
+				_tasViewPanel.Controls.Remove(r);
+			_inputRolls.Clear();
+			_rollDefinitions.Clear();
+		}
+
+		private void MakeInputRollsFromSettings()
+		{
+			RemoveAllRolls();
+			foreach (RollColumns cols in _movieSettings.Columns)
+			{
+				InputRoll roll = MakeInputRoll();
+				roll.AllColumns.AddRange(cols);
+			}
+
+			_movieSettings.Columns = _inputRolls.Select(static r => r.AllColumns).ToArray();
+
+			_activeInputRoll = _inputRolls[0];
+			_inputRolls.ForEach(UpdateInputRollDefinition); // after setting active roll
+		}
 
 		private void TasView_QueryItemIcon(InputRoll sender, int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{

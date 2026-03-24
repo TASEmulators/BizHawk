@@ -163,8 +163,14 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
-			_inputRolls.Add(TasView);
-			_activeInputRoll = _inputRolls[0];
+			_tasViewPanel = MainVertialSplit.Panel1;
+			// The built-in scroll feature of .NET's scrollable controls is non-functional. So, custom scroll behavior!
+			_tasViewHBar.Dock = DockStyle.Bottom;
+			_tasViewVBar.Dock = DockStyle.Right;
+			_tasViewHBar.Scroll += (_, _) => RepositionRolls();
+			_tasViewVBar.Scroll += (_, _) => RepositionRolls();
+			_tasViewPanel.Controls.Add(_tasViewHBar);
+			_tasViewPanel.Controls.Add(_tasViewVBar);
 
 			ToolStripMenuItemEx goToFrameMenuItem = new()
 			{
@@ -201,45 +207,24 @@ namespace BizHawk.Client.EmuHawk
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			BookMarkControl.Tastudio = this;
-			TasView.QueryItemText += TasView_QueryItemText;
-			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
-			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
-			TasView.QueryItemIcon += TasView_QueryItemIcon;
-			TasView.QueryFrameLag += TasView_QueryFrameLag;
-			TasView.QueryShouldSelectCell += TasView_QueryShouldSelect;
-			TasView.PointedCellChanged += TasView_PointedCellChanged;
-
-			TasView.MouseLeave += TAStudio_MouseLeave;
-			TasView.CellHovered += (_, e) =>
-			{
-				if (e.NewCell.RowIndex is null)
-				{
-					toolTip1.Show(e.NewCell.Column!.Name, TasView, PointToClient(Cursor.Position));
-				}
-			};
 		}
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
+			MainVertialSplit.SetDistanceOrDefault(
+				Settings.MainVerticalSplitDistance,
+				_defaultMainSplitDistance);
+			_activeInputRoll = MakeInputRoll(); // first because stuff in Engage assumes we have at least one
+
 			if (!Engage())
 			{
 				Close();
 				return;
 			}
 
-			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
-
-			TasView.ScrollSpeed = Settings.ScrollSpeed;
-			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
-
 			_autosaveTimer = new Timer(components);
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
 			ScheduleAutoSave(Settings.AutosaveInterval);
-
-			MainVertialSplit.SetDistanceOrDefault(
-				Settings.MainVerticalSplitDistance,
-				_defaultMainSplitDistance);
 
 			BranchesMarkersSplit.SetDistanceOrDefault(
 				Settings.BranchMarkerSplitDistance,
@@ -247,7 +232,6 @@ namespace BizHawk.Client.EmuHawk
 
 			HandleHotkeyUpdate();
 
-			TasView.Font = Settings.TasViewFont;
 			RefreshDialog();
 			_initialized = true;
 		}
@@ -463,13 +447,14 @@ namespace BizHawk.Client.EmuHawk
 				Rotatable = true,
 			});
 
+			List<RollColumn> columns = new(); // add to list first then AddRange to avoid 100 refreshes
 			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
 			{
 				var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
 					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
 					: mnemonic0;
 
-				roll.AllColumns.Add(new(
+				columns.Add(new(
 					name: name,
 					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
 					horizontalHeight: (maxLength * 6) + 14,
@@ -478,6 +463,7 @@ namespace BizHawk.Client.EmuHawk
 					Rotatable = ControllerType.Axes.ContainsKey(name),
 				});
 			}
+			roll.AllColumns.AddRange(columns);
 
 			var columnsToHide = roll.AllColumns
 				.Where(c =>
@@ -513,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.SystemId is VSystemID.Raw.Doom)
 			{
-				var columns = roll.AllColumns
+				var doomColsToHide = roll.AllColumns
 					.Where(c =>
 						c.Name.Contains("Forward")
 						|| c.Name.Contains("Backward")
@@ -528,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 						|| c.Name.EndsWithOrdinal("Strafe")
 						|| c.Name.EndsWithOrdinal("Run"));
 
-				columnsToHide = columnsToHide.Concat(columns);
+				columnsToHide = columnsToHide.Concat(doomColsToHide);
 			}
 
 			foreach (var column in columnsToHide)
@@ -748,24 +734,21 @@ namespace BizHawk.Client.EmuHawk
 					if (settings is InputRoll.InputRollSettings inputRollSettings)
 					{
 						// Old movie, 2.11 or earlier
-						_inputRolls[0].LoadColumns(inputRollSettings.Columns);
-						_inputRolls[0].HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
-						_inputRolls[0].LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
-						_inputRolls[0].HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
-						_movieSettings.Columns = [ _inputRolls[0].AllColumns ];
+						RemoveAllRolls();
+						InputRoll roll = _activeInputRoll = MakeInputRoll();
+						roll.LoadColumns(inputRollSettings.Columns);
+						roll.HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
+						roll.LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
+						roll.HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
+						_movieSettings.Columns = [ roll.AllColumns ];
+						UpdateInputRollDefinition(roll);
 					}
 					else if (settings is MovieClientSettings clientSettings)
 					{
-						for (int i = 0; i < clientSettings.Columns.Length; i++)
-						{
-							_inputRolls[i].LoadColumns(clientSettings.Columns[i]);
-							_inputRolls[i].HorizontalOrientation = clientSettings.HorizontalOrientation;
-							_inputRolls[i].LagFramesToHide = clientSettings.LagFramesToHide;
-							_inputRolls[i].HideWasLagFrames = clientSettings.HideWasLagFrames;
-						}
 						_movieSettings.AxisPatterns = clientSettings.AxisPatterns;
 						_movieSettings.BoolPatterns = clientSettings.BoolPatterns;
 						_movieSettings.Columns = _inputRolls.Select(static t => t.AllColumns).ToArray();
+						MakeInputRollsFromSettings();
 					}
 					else
 					{
@@ -775,6 +758,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (!hasClientSettings)
 				{
+					RemoveAllRolls();
+					_activeInputRoll = MakeInputRoll();
 					SetUpColumns();
 					SetupCustomPatterns();
 				}
@@ -1148,6 +1133,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TAStudio_Resize(object sender, EventArgs e)
+		{
+			if (_inputRolls.Count == 0) return;
+			RepositionRolls();
+		}
+
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			if (keyData is Keys.Tab or (Keys.Shift | Keys.Tab) or Keys.Space) return true;
@@ -1210,6 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MainVerticalSplit_SplitterMoved(object sender, SplitterEventArgs e)
 		{
 			Settings.MainVerticalSplitDistance = MainVertialSplit.SplitterDistance;
+			if (_inputRolls.Count != 0) RepositionRolls(); // this event gets called while loading
 		}
 
 		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
