@@ -61,7 +61,6 @@ internal class LuaCatsGenerator
 		var sb = new StringBuilder();
 
 		sb.AppendLine($"--Generated with BizHawk {VersionInfo.MainVersion}");
-
 		sb.AppendLine(Preamble);
 
 		foreach (var libraryGroup in docs.GroupBy(func => func.Library).OrderBy(group => group.Key))
@@ -130,7 +129,9 @@ internal class LuaCatsGenerator
 				foreach (var parameter in func.Method.GetParameters())
 				{
 					if (parameter.Position > 0)
+					{
 						sb.Append(", ");
+					}
 					sb.Append(IsParams(parameter) ? "..." : parameter.Name);
 				}
 
@@ -156,16 +157,22 @@ internal class LuaCatsGenerator
 	private static string GetLuaType(ParameterInfo parameter)
 	{
 		if (parameter.ParameterType == typeof(object) && parameter.GetCustomAttribute<LuaColorParamAttribute>() is not null)
+		{
 			return "luacolor"; // see Preamble
+		}
 
 		// no [] array modifier for varargs
 		if (parameter.ParameterType.IsArray && IsParams(parameter))
+		{
 			return GetLuaType(parameter.ParameterType.GetElementType());
+		}
 
 		// technically any string parameter can be passed a number, but let's just focus on the ones where it's commonly used
 		// like `gui.text` and `forms.settext` instead of polluting the entire API surface
 		if (parameter.ParameterType == typeof(string) && parameter.Name is "message" or "caption")
+		{
 			return "string | number";
+		}
 
 		return GetLuaType(parameter.ParameterType);
 	}
@@ -174,16 +181,24 @@ internal class LuaCatsGenerator
 	{
 		// try this twice, before and after extracting the array/nullable type
 		if (TypeConversions.TryGetValue(type, out string luaType))
+		{
 			return luaType;
+		}
 
 		if (type.IsArray)
+		{
 			return GetLuaType(type.GetElementType()) + "[]";
+		}
 
 		if (IsNullable(type))
+		{
 			type = type.GetGenericArguments()[0];
+		}
 
 		if (TypeConversions.TryGetValue(type, out luaType))
+		{
 			return luaType;
+		}
 
 		throw new NotSupportedException($"Unknown type {type.FullName} used in API. Generator must be updated to handle this.");
 	}
