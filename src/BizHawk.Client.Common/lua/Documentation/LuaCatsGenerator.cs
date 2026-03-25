@@ -82,7 +82,7 @@ internal static class LuaCatsGenerator
 		return null;
 	}
 
-	public string Generate(LuaDocumentation docs)
+	public static string Generate(LuaDocumentation docs)
 	{
 		var sb = new StringBuilder();
 

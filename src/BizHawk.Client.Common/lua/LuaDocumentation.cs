@@ -202,8 +202,7 @@ namespace BizHawk.Client.Common
 
 		public string ToLuaLanguageServerDefinitions()
 		{
-			var generator = new LuaCatsGenerator();
-			return generator.Generate(this);
+			return LuaCatsGenerator.Generate(this);
 		}
 	}
 
