@@ -46,6 +46,5 @@ namespace BizHawk.Client.EmuHawk
 			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
 			Width = VerticalWidth;
 		}
-
 	}
 }
