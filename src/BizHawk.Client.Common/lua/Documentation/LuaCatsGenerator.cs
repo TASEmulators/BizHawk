@@ -60,6 +60,9 @@ internal class LuaCatsGenerator
 	--- - Color created with `forms.createcolor`
 	---@alias luacolor integer | string | color
 
+	---@alias surface
+	---| "emucore" # Draw on the emulated screen. Resolution depends on emulated system and game. Drawing is scaled with the rest of the display.
+	---| "client" # Draw on the BizHawk window. Resolution depends on the window size. Drawing is not scaled.
 	""";
 
 	private static string? GetHardcodedType(ParameterInfo parameter)
@@ -71,6 +74,11 @@ internal class LuaCatsGenerator
 			return "string | number";
 		}
 
+		if (parameter.Member.DeclaringType == typeof(GuiLuaLibrary) && parameter.Name == "surfaceName" && parameter.ParameterType == typeof(string))
+		{
+			return "surface";
+		}
+
 		return null;
 	}
 
@@ -80,6 +88,7 @@ internal class LuaCatsGenerator
 
 		sb.AppendLine($"-- Lua functions available in EmuHawk {VersionInfo.MainVersion}");
 		sb.AppendLine(Preamble);
+		sb.AppendLine();
 
 		foreach (var libraryGroup in docs.GroupBy(func => func.Library).OrderBy(group => group.Key))
 		{
