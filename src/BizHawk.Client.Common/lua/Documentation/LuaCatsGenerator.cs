@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common;
 /// <remarks>
 /// See https://luals.github.io/wiki/annotations
 /// </remarks>
-internal class LuaCatsGenerator
+internal static class LuaCatsGenerator
 {
 	private static readonly Dictionary<Type, string> TypeConversions = new()
 	{
