@@ -136,7 +136,9 @@ internal class LuaCatsGenerator
 					{
 						sb.Append($"---@param {parameter.Name}");
 						if (parameter.IsOptional || IsNullable(parameter.ParameterType))
+						{
 							sb.Append('?');
+						}
 					}
 
 					sb.Append(' ');
