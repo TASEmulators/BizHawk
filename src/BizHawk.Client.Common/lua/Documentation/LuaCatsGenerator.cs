@@ -73,6 +73,7 @@ internal class LuaCatsGenerator
 		{
 			string library = libraryGroup.Key;
 			string libraryDescription = libraryGroup.First().LibraryDescription;
+			var libraryType = libraryGroup.First().Method.DeclaringType;
 
 			if (!string.IsNullOrEmpty(libraryDescription))
 			{
@@ -80,6 +81,7 @@ internal class LuaCatsGenerator
 			}
 
 			sb.AppendLine($"---@class {library}");
+			if (!typeof(LuaLibraryBase).IsAssignableFrom(libraryType)) sb.Append("local "); // don't make LuaCanvas global
 			sb.AppendLine($"{library} = {{}}");
 			sb.AppendLine();
 
