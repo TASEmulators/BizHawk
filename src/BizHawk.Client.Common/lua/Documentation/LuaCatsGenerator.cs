@@ -1,3 +1,5 @@
+#nullable enable
+
 #pragma warning disable MA0136 // Raw String contains an implicit end of line character, line endings will be normalized
 
 using System.Collections.Generic;
@@ -60,7 +62,17 @@ internal class LuaCatsGenerator
 
 	""";
 
+	private static string? GetHardcodedType(ParameterInfo parameter)
+	{
+		// technically any string parameter can be passed a number, but let's just focus on the ones where it's commonly used
+		// like `gui.text` and `forms.settext` instead of polluting the entire API surface
+		if (parameter.Name is "message" or "caption" && parameter.ParameterType == typeof(string))
+		{
+			return "string | number";
+		}
 
+		return null;
+	}
 
 	public string Generate(LuaDocumentation docs)
 	{
@@ -160,22 +172,20 @@ internal class LuaCatsGenerator
 
 	private static string GetLuaType(ParameterInfo parameter)
 	{
-		if (parameter.ParameterType == typeof(object) && parameter.GetCustomAttribute<LuaColorParamAttribute>() is not null)
+		if (GetHardcodedType(parameter) is string hardcodedType)
+		{
+			return hardcodedType;
+		}
+
+		if (parameter.GetCustomAttribute<LuaColorParamAttribute>() is not null)
 		{
 			return "luacolor"; // see Preamble
 		}
 
-		// no [] array modifier for varargs
 		if (parameter.ParameterType.IsArray && IsParams(parameter))
 		{
+			// no [] array modifier for varargs
 			return GetLuaType(parameter.ParameterType.GetElementType());
-		}
-
-		// technically any string parameter can be passed a number, but let's just focus on the ones where it's commonly used
-		// like `gui.text` and `forms.settext` instead of polluting the entire API surface
-		if (parameter.ParameterType == typeof(string) && parameter.Name is "message" or "caption")
-		{
-			return "string | number";
 		}
 
 		return GetLuaType(parameter.ParameterType);
