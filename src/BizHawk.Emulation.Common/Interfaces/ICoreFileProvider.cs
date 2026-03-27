@@ -8,12 +8,12 @@
 		/// <summary>
 		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
-		string GetRetroSaveRAMDirectory(IGameInfo game);
+		string GetRetroSaveRAMDirectory(string corePath);
 
 		/// <summary>
 		/// produces a path for use as a libretro system path (different for each core)
 		/// </summary>
-		string GetRetroSystemPath(IGameInfo game);
+		string GetRetroSystemPath(string corePath);
 
 		/// <summary>
 		/// produces a 'user' path for a given system id

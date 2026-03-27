@@ -73,12 +73,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
-		/// <remarks>does not keep a reference to <paramref name="game"/></remarks>
-		public LibretroHost(CoreComm comm, IGameInfo game, string corePath, bool analysis = false)
+		public LibretroHost(CoreComm comm, string corePath, bool analysis = false)
 			: this(
 				comm,
-				libretroSystemDir: comm.CoreFileProvider.GetRetroSystemPath(game),
-				libretroSaveRAMDir: comm.CoreFileProvider.GetRetroSaveRAMDirectory(game),
+				libretroSystemDir: comm.CoreFileProvider.GetRetroSystemPath(corePath),
+				libretroSaveRAMDir: comm.CoreFileProvider.GetRetroSaveRAMDirectory(corePath),
 				corePath: corePath,
 				analysis: analysis) {}
 

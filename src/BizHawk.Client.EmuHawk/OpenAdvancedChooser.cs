@@ -29,8 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private RetroDescription _currentDescription;
 
-		private readonly IGameInfo _game;
-
 		private readonly Func<bool> _libretroCoreChooserCallback;
 
 		public IDialogController DialogController { get; }
@@ -39,11 +37,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public FilesystemFilterSet SuggestedExtensionFilter = null;
 
-		public OpenAdvancedChooser(IDialogController dialogController, Config config, Func<CoreComm> createCoreComm, IGameInfo game, Func<bool> libretroCoreChooserCallback)
+		public OpenAdvancedChooser(IDialogController dialogController, Config config, Func<CoreComm> createCoreComm, Func<bool> libretroCoreChooserCallback)
 		{
 			_config = config;
 			_createCoreComm = createCoreComm;
-			_game = game;
 			_libretroCoreChooserCallback = libretroCoreChooserCallback;
 			DialogController = dialogController;
 
@@ -82,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var coreComm = _createCoreComm();
-				using var retro = new LibretroHost(coreComm, _game, core, true);
+				using var retro = new LibretroHost(coreComm, core, true);
 				if (retro.Description.SupportsNoGame)
 					btnLibretroLaunchNoGame.Enabled = true;
 				if (!string.IsNullOrEmpty(retro.Description.ValidExtensions))

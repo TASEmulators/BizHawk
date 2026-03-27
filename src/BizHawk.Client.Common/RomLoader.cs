@@ -849,7 +849,7 @@ namespace BizHawk.Client.Common
 						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(launchLibretroCore) };
 					}
 					game.System = VSystemID.Raw.Libretro;
-					var retro = new LibretroHost(nextComm, game, launchLibretroCore);
+					var retro = new LibretroHost(nextComm, launchLibretroCore);
 					nextEmulator = retro;
 
 					if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
