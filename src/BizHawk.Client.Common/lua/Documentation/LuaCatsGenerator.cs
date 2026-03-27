@@ -3,6 +3,7 @@
 #pragma warning disable MA0136 // Raw String contains an implicit end of line character, line endings will be normalized
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -44,26 +45,28 @@ internal static class LuaCatsGenerator
 		[typeof(System.Drawing.Color)] = "color",
 	};
 
+	private const string Classes = """
+---@class color : userdata
+
+---A color in one of the following formats:
+--- - Number in the format `0xAARRGGBB`
+--- - String in the format `"#RRGGBB"` or `"#AARRGGBB"`
+--- - A CSS3/X11 color name e.g. `"blue"`, `"palegoldenrod"`
+--- - Color created with `forms.createcolor`
+---@alias luacolor integer | string | color
+
+---@alias surface
+---| "emucore" # Draw on the emulated screen. Resolution depends on emulated system and game. Drawing is scaled with the rest of the display.
+---| "client" # Draw on the BizHawk window. Resolution depends on the window size. Drawing is not scaled.
+""";
+
 	private const string Preamble = """
-	-- https://tasvideos.org/Bizhawk
+-- https://tasvideos.org/Bizhawk
 
-	error("This is a definition file for Lua Language Server and not a usable script")
+error("This is a definition file for Lua Language Server and not a usable script")
 
-	---@meta _
-
-	---@class color : userdata
-
-	---A color in one of the following formats:
-	--- - Number in the format `0xAARRGGBB`
-	--- - String in the format `"#RRGGBB"` or `"#AARRGGBB"`
-	--- - A CSS3/X11 color name e.g. `"blue"`, `"palegoldenrod"`
-	--- - Color created with `forms.createcolor`
-	---@alias luacolor integer | string | color
-
-	---@alias surface
-	---| "emucore" # Draw on the emulated screen. Resolution depends on emulated system and game. Drawing is scaled with the rest of the display.
-	---| "client" # Draw on the BizHawk window. Resolution depends on the window size. Drawing is not scaled.
-	""";
+---@meta _
+""";
 
 	private static string? GetHardcodedType(ParameterInfo parameter)
 	{
@@ -82,19 +85,29 @@ internal static class LuaCatsGenerator
 		return null;
 	}
 
-	public static string Generate(LuaDocumentation docs)
+	public static void Generate(LuaDocumentation docs, string path)
 	{
-		var sb = new StringBuilder();
+		var sb0 = new StringBuilder();
 
-		sb.AppendLine($"-- Lua functions available in EmuHawk {VersionInfo.MainVersion}");
-		sb.AppendLine(Preamble);
-		sb.AppendLine();
+		sb0.AppendLine($"-- Lua functions available in EmuHawk {VersionInfo.MainVersion}");
+		sb0.AppendLine(Preamble);
+		sb0.AppendLine();
+		sb0.AppendLine(Classes);
+		sb0.AppendLine();
+
+		File.WriteAllText(Path.Combine(path, "classes.d.lua"), sb0.ToString().ReplaceLineEndings());
 
 		foreach (var libraryGroup in docs.GroupBy(func => func.Library).OrderBy(group => group.Key))
 		{
 			string library = libraryGroup.Key;
 			string libraryDescription = libraryGroup.First().LibraryDescription;
 			var libraryType = libraryGroup.First().Method.DeclaringType;
+			var filePath = Path.Combine(path, library + ".d.lua");
+			var sb = new StringBuilder();
+
+			sb.AppendLine($"-- Lua functions available in EmuHawk {VersionInfo.MainVersion}");
+			sb.AppendLine(Preamble);
+			sb.AppendLine();
 
 			if (!string.IsNullOrEmpty(libraryDescription))
 			{
@@ -165,9 +178,9 @@ internal static class LuaCatsGenerator
 				sb.AppendLine(") end");
 				sb.AppendLine();
 			}
-			sb.AppendLine();
+			sb.AppendLine($"return {library}");
+			File.WriteAllText(filePath, sb.ToString().ReplaceLineEndings());
 		}
-		return sb.ToString().ReplaceLineEndings();
 	}
 
 	private static string FormatMarkdown(string value, string prefix = "---")
