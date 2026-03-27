@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 				_emulator.ControllerDefinition.Axes.Keys.ToList(),
 				_emulator.ControllerDefinition.CategoryLabels,
 				analog,
-				new AnalogBind("", 1.0f, 0.1f),
+				new AnalogBind("", 1.0f, 0.1f, "", ""),
 				CreateAnalogPanel
 			);
 			LoadToPanel(

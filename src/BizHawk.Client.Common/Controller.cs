@@ -115,8 +115,20 @@ namespace BizHawk.Client.Common
 
 			foreach (var (k, v) in _axisBindings)
 			{
-				// values from finalHostController are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
-				var value = finalHostController.AxisValue(v.Value) / 10000.0f;
+				float value = 0;
+				if (!string.IsNullOrEmpty(v.ButtonBindPositive) && finalHostController.IsPressed(v.ButtonBindPositive))
+				{
+					value++;
+				}
+				if (!string.IsNullOrEmpty(v.ButtonBindNegative) && finalHostController.IsPressed(v.ButtonBindNegative))
+				{
+					value--;
+				}
+				if (value == 0)
+				{
+					// values from finalHostController are ints in -10000..10000 (or 0..10000), so scale to -1..1, using floats to keep fractional part
+					value = finalHostController.AxisValue(v.Value) / 10000.0f;
+				}
 
 				// apply deadzone (and scale diminished range back up to -1..1)
 				var deadzone = v.Deadzone;
