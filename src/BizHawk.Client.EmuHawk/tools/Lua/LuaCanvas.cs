@@ -11,7 +11,7 @@ using NLua;
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
-	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
+	[Description("Represents a canvas object, as returned by the `gui.createcanvas()` method.\nNote that the member functions do not have a `self` parameter, and so must be called with the regular invocation syntax, not the OOP syntax.")]
 	public sealed class LuaCanvas : Form
 	{
 		private readonly EmulationLuaLibrary _emuLib;
