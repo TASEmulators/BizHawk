@@ -1318,7 +1318,5 @@ namespace BizHawk.Client.EmuHawk
 			StopSeeking();
 			RefreshDialog();
 		}
-
-		public void Branch() => BookMarkControl.Branch();
 	}
 }
