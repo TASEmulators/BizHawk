@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			using var oac = new OpenAdvancedChooser(this, Config, CreateCoreComm, Game, RunLibretroCoreChooser);
+			using var oac = new OpenAdvancedChooser(this, Config, CreateCoreComm, RunLibretroCoreChooser);
 			if (this.ShowDialogWithTempMute(oac) == DialogResult.Cancel) return;
 
 			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
