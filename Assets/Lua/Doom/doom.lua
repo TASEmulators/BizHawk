@@ -4,7 +4,7 @@
 dofile("doom.misc.lua")
 
 
--- ACTUAL WORK
+--#region ACTUAL WORK
 
 local function iterate_players()
 	for i, player in Globals:iterate_players() do
@@ -611,8 +611,9 @@ local function make_buttons()
 	LastInput = Input
 end
 
+--#endregion
 
--- CALLBACKS
+--#region CALLBACKS
 
 event.onframestart(function()
 	PRandomInfo = {}
@@ -647,8 +648,10 @@ event.onloadstate(check_map_change)
 
 tastudio.onbranchload(check_map_change)
 
+--#endregion
 
--- MAIN LOOP
+
+--#region MAIN LOOP
 
 while true do
 	Mouse        = input.getmouse()
@@ -695,3 +698,5 @@ while true do
 
 	emu.yield()
 end
+
+--#endregion

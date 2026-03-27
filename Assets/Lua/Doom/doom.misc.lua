@@ -1,14 +1,16 @@
 -- feos, kalimag, 2025-2026
 ---@diagnostic disable
 
--- MODULES
+--#region MODULES
 
 enums   = require("dsda.enums")
 structs = require("dsda.structs")
 symbols = require("dsda.symbols")
 
+--#endregion
 
--- CONSTANTS
+
+--#region CONSTANTS
 
 SETTINGS_FILENAME  = "doom.settings.lua"
 MAP_CLICK_BLOCK    = "P1 Fire" -- prevent this input while clicking on map buttons
@@ -32,7 +34,10 @@ MAXIMUM_INTERCEPTS = 128
 -- to corrupt the same target values as in vanilla
 INTERCEPT_SIZE     = 16
 
--- enums
+--#endregion
+
+--#region ENUMS
+
 ---@enum tracked_type
 TrackedType = {
 	THING  = 1,
@@ -71,9 +76,12 @@ Scroller = {
 	RIGHT = " >",
 	NONE  = "  "
 }
----@alias converted_coordinates number|[number,number]|[number,number,number,number]|vertex|[vertex,vertex]|line
 ---@alias line_t structs.line
+---@alias codec_method
+---| "encode" Onscreen to in-game
+---| "decode" In-game to onscreen
 
+--#endregion
 
 --- Closure object for entities we can track. Involves showing them on the screen and saving them to config.
 TrackedEntity = {}
@@ -84,8 +92,10 @@ TrackedEntity = {}
 ---@field Min integer Lowest tracked ID, for scrolling
 ---@field Max integer Highest tracked ID, for scrolling
 ---@field Name string Entity type name to show to user in dialogs
+
 --- Constructor
 ---@param name string Entity type name to show to user in dialogs
+---@return tracked_entity
 function TrackedEntity.new(name)
 	local self       = {}
 	self.TrackedList = {}
@@ -105,12 +115,11 @@ function TrackedEntity.new(name)
 	return self
 end
 
-
 --- Vanilla variables that intercepts overflow would corrupt. `playerstarts` is a `mapthing_t` list in vanilla; nested one in upstream but we're not displaying that detail. Index augend is taken from the original, and index addend exists to indicate lua's 1-based lists.
 ---@class (exact) intercept_overrun
 ---@field name string Full name of the vanilla variable we're corrupting
 ---@field value integer Value that the vanilla variable has at the moment
----@type intercept_overrun
+---@type intercept_overrun[]
 InterceptOverrun = {}
 
 --- Used for specific things like point coordinates, but also for anything that can have x/y values
@@ -130,7 +139,7 @@ box      = gui.drawBox
 drawline = gui.drawLine
 
 
--- TOP LEVEL VARIABLES
+--#region TOP LEVEL VARIABLES
 
 Defaults = {
 	Zoom           = 1,
@@ -187,6 +196,7 @@ ShowGrid       = nil
 Angle          = nil
 InterceptLimit = nil
 --- View offset
+---@type vertex
 Pan = {
 	x = Defaults.PanX,
 	y = Defaults.PanY
@@ -234,7 +244,14 @@ LastMouse = {
 	wheel = 0,
 	left  = false
 }
+--- Which thing types to display on the map and how
+---@class map_pref
+---@field color color
+---@field radius_min_zoom number
+---@field text_min_zoom number
+
 -- map colors (0xAARRGGBB or "name")
+---@type table<string, map_pref>
 MapPrefs = {
 	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
@@ -251,12 +268,13 @@ MapPrefs = {
 	grid        = { color = 0xff808080, radius_min_zoom = 0.00, text_min_zoom = 0.00, },
 }
 
+--#endregion
+
 
 gui.use_surface("client")
 client.SetClientExtraPadding(PADDING_WIDTH, 0, 0, 0)
 
-
--- TOGGLES
+--#region TOGGLES
 
 function follow_toggle()
 	Follow = not Follow
@@ -279,6 +297,7 @@ end
 ---@return intercept_overrun[] # Table index indicates offset, usable for comparing with offsets of individual intercepts after overflow
 local function fetch_intercept_overruns(limit)
 	local ret  = {}
+	---@type intercept_overrun[]
 	local list = {
 		[ 12] = { name = "line_opening.lowfloor",   value = Globals.line_opening.lowfloor     },
 		[ 16] = { name = "line_opening.bottom",     value = Globals.line_opening.bottom       },
@@ -555,44 +574,53 @@ function cycle_log_types(isUse)
 	end
 end
 
+--#endregion
 
--- GAME/SCREEN CODECS
+
+--#region GAME/SCREEN CODECS
 
 --- Converts in-game coordinate into onscreen
----@param coord integer
+---@param coord number
 ---@return integer
 local function decode_x(coord)
 	return math.floor(((coord / FRACUNIT) + Pan.x) * Zoom)
 end
 
 --- Converts in-game coordinate into onscreen
----@param coord integer
+---@param coord number
 ---@return integer
 local function decode_y(coord)
 	return math.floor(((-coord / FRACUNIT) + Pan.y) * Zoom)
 end
 
 --- Converts onscreen coordinate into in-game
----@param coord integer
+---@param coord number
 ---@return integer
 local function encode_x(coord)
 	return math.floor(((coord / Zoom) - Pan.x) * FRACUNIT)
 end
 
 --- Converts onscreen coordinate into in-game
----@param coord integer
+---@param coord number
 ---@return integer
 local function encode_y(coord)
 	return -math.floor(((coord / Zoom) - Pan.y) * FRACUNIT)
 end
 
---- Converter between screen-to-game and game-to-screen coordinates/vertex/line
----@param method string `"encode"`|`"decode"` screen-to-game or game-to-screen
----@param arg1? number|vertex|line 
----@param arg2? number|vertex
----@param arg3? number
----@param arg4? number
----@return converted_coordinates # Return value matches passed value (line/vertex (tuple)/coord(s))
+--- Converter between screen-to-game and game-to-screen coordinates/vertex/line. Return type matches passed type.
+---@overload fun(method: codec_method, l: line): line
+---@overload fun(method: codec_method, v: vertex): vertex
+---@overload fun(method: codec_method, v1: vertex, v2: vertex): vertex, vertex
+---@overload fun(method: codec_method, coord: number): integer
+---@param method codec_method
+---@param arg1 number
+---@param arg2 number
+---@param arg3 number
+---@param arg4 number
+---@return integer
+---@return integer
+---@return integer
+---@return integer
 local function codec(method, arg1, arg2, arg3, arg4)
 	local func_x, func_y
 	
@@ -645,28 +673,44 @@ local function codec(method, arg1, arg2, arg3, arg4)
 	end
 end
 
---- Converts in-game coordinates into onscreen.
----@param arg1? number|vertex|line 
----@param arg2? number|vertex
----@param arg3? number
----@param arg4? number
----@return converted_coordinates # Return value matches passed value (line/vertex (tuple)/coord(s))
-function game_to_screen(arg1, arg2, arg3, arg4)
-	return codec("decode", arg1, arg2, arg3, arg4)
+--- Converts in-game coordinates into onscreen. Return type matches passed type.
+---@overload fun(l: line): line
+---@overload fun(v: vertex): vertex
+---@overload fun(v1: vertex, v2: vertex): vertex, vertex
+---@overload fun(coord: number): integer
+---@param x1 number
+---@param y1 number
+---@param x2 number
+---@param y2 number
+---@return integer x1
+---@return integer y1
+---@return integer x2
+---@return integer y2
+function game_to_screen(x1, y1, x2, y2)
+	return codec("decode", x1, y1, x2, y2)
 end
 
---- Converts onscreen coordinates into in-game.
----@param arg1? number|vertex|line 
----@param arg2? number|vertex
----@param arg3? number
----@param arg4? number
----@return converted_coordinates # Return value matches passed value (line/vertex (tuple)/coord(s))
-function screen_to_game(arg1, arg2, arg3, arg4)
-	return codec("encode", arg1, arg2, arg3, arg4)
+--- Converts onscreen coordinates into in-game. Return type matches passed type.
+---@overload fun(l: line): line
+---@overload fun(v: vertex): vertex
+---@overload fun(v1: vertex, v2: vertex): vertex, vertex
+---@overload fun(coord: number): integer
+---@param x1 number
+---@param y1 number
+---@param x2 number
+---@param y2 number
+---@return integer x1
+---@return integer y1
+---@return integer x2
+---@return integer y2
+function screen_to_game(x1, y1, x2, y2)
+	return codec("encode", x1, y1, x2, y2)
 end
 
+--#endregion
 
--- TYPE CONVERTERS
+
+--#region TYPE CONVERTERS
 
 ---@param x number
 ---@param y number
@@ -676,7 +720,8 @@ function tuple_to_vertex(x, y)
 end
 
 ---@param v vertex
----@return [number,number]
+---@return integer x
+---@return integer y
 function vertex_to_tuple(v)
 	return table.unpack(v)
 end
@@ -693,14 +738,19 @@ function tuple_to_line(x1, y1, x2, y2)
 	}
 end
 
----@param ln line
----@return [number,number,number,number]
-function line_to_tuple(ln)
-	return table.unpack(ln.v1), table.unpack(ln.v2)
+---@param l line
+---@return integer x1
+---@return integer y1
+---@return integer x2
+---@return integer y2
+function line_to_tuple(l)
+	return table.unpack(l.v1), table.unpack(l.v2)
 end
 
+--#endregion
 
--- AUTOMAP
+
+--#region AUTOMAP
 
 ---@param divider integer
 function pan_left(divider)
@@ -722,20 +772,20 @@ function pan_down(divider)
 	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
 end
 
----@param times integer
+---@param factor integer
 ---@param mouseCenter boolean
-local function zoom(times, mouseCenter)
+local function zoom(factor, mouseCenter)
 	local mouse
 	local mousePos
 	local zoomCenter
 	local direction = 1
-	times = times or 1
+	factor = factor or 1
 	
 	if Follow then mouseCenter = false end
 	
-	if times < 0 then
+	if factor < 0 then
 		direction = -1
-		times = -times
+		factor = -factor
 	end
 	
 	if mouseCenter then
@@ -749,7 +799,7 @@ local function zoom(times, mouseCenter)
 		})
 	end
 	
-	for i=0, times do
+	for i=0, factor do
 		local newZoom = Zoom + Zoom * ZOOM_FACTOR * direction
 		if newZoom < MINIMAL_ZOOM then return end
 		Zoom = newZoom
@@ -842,8 +892,10 @@ function reset_view()
 	update_zoom()
 end
 
+--#endregion
 
--- UTIL
+
+--#region UTIL
 
 --- Converts an object into a table-like string that can be saved to file and parsed back into the same object
 ---@param o any Object to print out
@@ -883,7 +935,8 @@ function to_lookup(tab)
 end
 
 ---@param str string
----@return [integer,integer] # First returned value is how many lines we detected, second one is how many chars the longest line is
+---@return integer lines How many lines we detected
+---@return integer chars How many chars the longest line is
 local function get_line_count(str)
 	local count   = 1
 	local longest = 0
@@ -924,12 +977,16 @@ function check_map_change()
 	LastEpisode, LastMap = episode, map
 end
 
+--#endregion
 
--- MATH
 
+--#region MATH
+
+--- Returns 2 passed numbers in order from smaller to bigger. Expands them further apart by 200, because this is meant to be used by `reset_view()` and to have a bit more space around visible objects.
 ---@param smaller number
 ---@param bigger number
----@return [number,number]
+---@return number smaller
+---@return number bigger
 local function maybe_swap(smaller, bigger)
 	if smaller > bigger then
 		return bigger, smaller
@@ -1005,8 +1062,10 @@ function distance_to_segment(point, v1, v2)
 	return dist
 end
 
+--#endregion
 
--- IO
+
+--#region IO
 
 --- Deserializer
 local function settings_read()
@@ -1131,11 +1190,16 @@ local function settings_write()
 	file:close()
 end
 
+--#endregion
 
--- CACHE
+
+--#region CACHE
 
 ---@param line line_t
----@return [number,number,number,number] # x1, y1, x2, y2 tuple
+---@return number x1
+---@return number y1
+---@return number x2
+---@return number y2
 function cached_line_coords(line)
 	if line._polyobj then
 		local validcount = line.validcount
@@ -1225,8 +1289,10 @@ function clear_cache()
 	}
 end
 
+--#endregion
 
--- GUI
+
+--#region GUI
 
 --- Displays next or previous entity from a given list. Nothing happens if there's nowhere to scroll.
 ---@param entity tracked_entity | table TODO: turn Players into class so it shows up properly here and not as just a table
@@ -1343,8 +1409,10 @@ function freeze_gui()
 	or     Confirmation  ~= nil
 end
 
+--#endregion
 
--- MISC
+
+--#region MISC
 
 --- Doom uses left mouse clock for firing and if we're running unpaused we don't want clicking script buttons to trigger fire. Currently only blocks first player fire. TODO: block for all players
 function suppress_click_input()
@@ -1353,6 +1421,7 @@ function suppress_click_input()
 	end
 end
 
+--- Default map view is when all things are on the screen, which dictates zoom and pan. This function sets that up by checking positions of all things. It also creates a lookup list of IDs for when we add things to the tracker.
 function init_mobj_bounds()
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
 		local x      = mobj.x / FRACUNIT
@@ -1371,6 +1440,7 @@ function init_mobj_bounds()
 	end
 end
 
+--- 
 function get_mobj_pref(mobj, mobjtype)
 	if HighlightTypes[mobjtype] then return MapPrefs.highlight end
 	if InertTypes    [mobjtype] then return MapPrefs.inert     end
@@ -1471,6 +1541,8 @@ function add_entity(type)
 		value = nil
 	}
 end
+
+--#endregion
 
 
 -- Additional types that are not identifiable by flags alone
