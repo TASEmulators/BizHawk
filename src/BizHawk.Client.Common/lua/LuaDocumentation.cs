@@ -198,9 +198,9 @@ namespace BizHawk.Client.Common
 			return ""; // TODO
 		}
 
-		public string ToLuaLanguageServerDefinitions()
+		public void ToLuaLanguageServerDefinitions(string path)
 		{
-			return LuaCatsGenerator.Generate(this);
+			LuaCatsGenerator.Generate(this, path);
 		}
 	}
 

@@ -1255,13 +1255,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenerateLuaCatsDefinitionMenuItem_Click(object sender, EventArgs e)
 		{
-			string initDir = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename)
-				? Path.GetDirectoryName(LuaImp.ScriptList.Filename)
-				: Config!.PathEntries.LuaAbsolutePath();
-
-			if (this.ShowFileSaveDialog(initDir, initFileName: "emuhawk.d.lua", fileExt: ".d.lua", filter: JustScriptsFSFilterSet) is string path)
+			DialogResult result;
+			string selectedPath;
+			string description = "Set the directory for LuaCATS definitions";
+			if (OSTailoredCode.IsUnixHost)
 			{
-				File.WriteAllText(path, LuaImp.Docs.ToLuaLanguageServerDefinitions());
+				// FolderBrowserEx doesn't work in Mono for obvious reasons
+				using var f = new FolderBrowserDialog
+				{
+					Description = description,
+					SelectedPath = Config!.PathEntries.LuaAbsolutePath(),
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+			else
+			{
+				using var f = new FolderBrowserEx
+				{
+					Description = description,
+					SelectedPath = Config!.PathEntries.LuaAbsolutePath(),
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+			if (result.IsOk())
+			{
+				LuaImp.Docs.ToLuaLanguageServerDefinitions(selectedPath);
 			}
 		}
 
