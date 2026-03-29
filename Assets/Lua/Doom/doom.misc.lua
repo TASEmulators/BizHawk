@@ -36,6 +36,7 @@ INTERCEPT_SIZE     = 16
 
 --#endregion
 
+
 --#region ENUMS
 
 ---@enum tracked_type
@@ -80,8 +81,15 @@ Scroller = {
 ---@alias codec_method
 ---| "encode" Onscreen to in-game
 ---| "decode" In-game to onscreen
+---@alias entity_name
+---| "thing"
+---| "line"
+---| "sector"
 
 --#endregion
+
+
+--#region CLASSES
 
 --- Closure object for entities we can track. Involves showing them on the screen and saving them to config.
 TrackedEntity = {}
@@ -94,7 +102,7 @@ TrackedEntity = {}
 ---@field Name string Entity type name to show to user in dialogs
 
 --- Constructor
----@param name string Entity type name to show to user in dialogs
+---@param name entity_name Entity type name to show to user in dialogs
 ---@return tracked_entity
 function TrackedEntity.new(name)
 	local self       = {}
@@ -111,6 +119,7 @@ function TrackedEntity.new(name)
 		self.Current     = nil
 		self.Min         = math.maxinteger
 		self.Max         = math.mininteger
+		settings_write()
 	end
 	return self
 end
@@ -119,8 +128,6 @@ end
 ---@class (exact) intercept_overrun
 ---@field name string Full name of the vanilla variable we're corrupting
 ---@field value integer Value that the vanilla variable has at the moment
----@type intercept_overrun[]
-InterceptOverrun = {}
 
 --- Used for specific things like point coordinates, but also for anything that can have x/y values
 ---@class (exact) vertex
@@ -131,6 +138,31 @@ InterceptOverrun = {}
 ---@class (exact) line
 ---@field v1 vertex Starting point of the line
 ---@field v2 vertex End point of the line
+
+--- Dialog info for removal of tracked entity
+---@class (exact) confirmation
+---@field type tracked_type
+---@field id integer
+
+---@class (exact) current_prompt
+---@field msg string Message to show in the dialog that adds tracked entity
+---@field value integer Currently typed value
+---@field fun fun(id: integer) Callback that actually adds tracked entity
+
+--- Which thing types to display on the map and how
+---@class (exact) map_pref
+---@field color luacolor
+---@field radius_min_zoom number
+---@field text_min_zoom number
+
+--- Thing angle display via rotating triangle
+---@class triangle
+---@field a vertex
+---@field b vertex
+---@field c vertex
+---@field center vertex
+
+--#endregion
 
 
 -- shortcuts
@@ -149,8 +181,9 @@ Defaults = {
 	ShowGrid       = false,
 	Follow         = false,
 	Hilite         = false,
-	Angle          = AngleType.BYTE,
-	InterceptLimit = MAXIMUM_INTERCEPTS
+	InterceptLimit = MAXIMUM_INTERCEPTS,
+	---@type angle_type
+	Angle = AngleType.BYTE,
 }
 
 Init           = true
@@ -160,13 +193,10 @@ SpriteNumber   = enums.doom.spritenum
 MobjFlags      = enums.mobjflags
 ScreenWidth    = client.screenwidth()
 ScreenHeight   = client.screenheight()
-LineUseLog     = LineLogType.NONE
-LineCrossLog   = LineLogType.NONE
 BlockmapWidth  = 0
 InterceptPtr   = 0
 InterceptLog   = false
 InterceptShow  = false
-InterceptsInfo = InterceptsState.NONE
 RNGLog         = false
 Framecount     = 0
 LastFramecount = -1
@@ -177,22 +207,33 @@ EnemyTypes     = nil
 MissileTypes   = nil
 MiscTypes      = nil
 InertTypes     = nil
-CurrentPrompt  = nil
-Confirmation   = nil
 LastEpisode    = nil
 LastMap        = nil
 LastInput      = nil
 LastBMWidth    = nil
 LastBMOrigin   = nil
 LastBMEnd      = nil
+---@type current_prompt
+CurrentPrompt = nil
+---@type confirmation
+Confirmation = nil
+---@type intercept_overrun[]
+InterceptOverrun = {}
+---@type intercepts_state
+InterceptsInfo = InterceptsState.NONE
+---@type line_log_type
+LineUseLog = LineLogType.NONE
+---@type line_log_type
+LineCrossLog = LineLogType.NONE
 
 
--- saved to config
+-- SAVED TO CONFIG
 Zoom           = nil
 Follow         = nil
 Hilite         = nil
 ShowMap        = nil
 ShowGrid       = nil
+---@type angle_type
 Angle          = nil
 InterceptLimit = nil
 --- View offset
@@ -205,12 +246,11 @@ Pan = {
 Tracked = {
 	[TrackedType.THING ] = TrackedEntity.new("thing" ),
 	[TrackedType.LINE  ] = TrackedEntity.new("line"  ),
-	[TrackedType.SECTOR] = TrackedEntity.new("sector")
+	[TrackedType.SECTOR] = TrackedEntity.new("sector"),
 }
 
 
--- tables
-
+-- TABLES
 Players            = {}
 Config             = {}
 PRandomInfo        = {}
@@ -244,28 +284,22 @@ LastMouse = {
 	wheel = 0,
 	left  = false
 }
---- Which thing types to display on the map and how
----@class map_pref
----@field color color
----@field radius_min_zoom number
----@field text_min_zoom number
-
 -- map colors (0xAARRGGBB or "name")
 ---@type table<string, map_pref>
 MapPrefs = {
 	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
---	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
 	missile     = { color = 0xffff8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
 	shootable   = { color = 0xffaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
 	countitem   = { color = 0xffffff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
 	item        = { color = 0xff00ff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
---	misc        = { color = 0xffa0a0a0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
-	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false, },
---	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false,},
 	highlight   = { color = 0xffff00ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 	grid        = { color = 0xff808080, radius_min_zoom = 0.00, text_min_zoom = 0.00, },
+--	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
+--	misc        = { color = 0xffa0a0a0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
+--	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
 }
 
 --#endregion
@@ -1062,6 +1096,22 @@ function distance_to_segment(point, v1, v2)
 	return dist
 end
 
+--- Rotate triangle around its center
+---@param t triangle
+---@param angle integer
+---@return triangle
+function rotate_triangle(t, angle)
+	local rad = (angle * math.pi) / 180.0;
+	local newt = { a = {}, b = {}, c = {}, center = t.center }
+	newt.a.x = (t.a.x-t.center.x)*math.cos(rad)-(t.a.y-t.center.y)*math.sin(rad)+t.center.x
+	newt.a.y = (t.a.x-t.center.x)*math.sin(rad)+(t.a.y-t.center.y)*math.cos(rad)+t.center.y
+	newt.b.x = (t.b.x-t.center.x)*math.cos(rad)-(t.b.y-t.center.y)*math.sin(rad)+t.center.x
+	newt.b.y = (t.b.x-t.center.x)*math.sin(rad)+(t.b.y-t.center.y)*math.cos(rad)+t.center.y
+	newt.c.x = (t.c.x-t.center.x)*math.cos(rad)-(t.c.y-t.center.y)*math.sin(rad)+t.center.x
+	newt.c.y = (t.c.x-t.center.x)*math.sin(rad)+(t.c.y-t.center.y)*math.cos(rad)+t.center.y
+	return newt
+end
+
 --#endregion
 
 
@@ -1137,7 +1187,7 @@ local function settings_read()
 end
 
 --- Serializer
-local function settings_write()
+function settings_write()
 	local file, err = io.open(SETTINGS_FILENAME, "w")
 	if file then
 		-- ANGLE TYPE
