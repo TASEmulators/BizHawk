@@ -50,19 +50,31 @@ local function thing_handler()
 	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local type  = mobj.type
-		local index = mobj.index
-		local name  = MobjType[type]
+		local type   = mobj.type
+		local index  = mobj.index
+		local angle  = mobj.angle * (AngleType.DEGREES / ANGLE_90) - AngleType.DEGREES
+		local radius = math.floor((mobj.radius / FRACUNIT) * Zoom)
+		local name   = MobjType[type]
 		local radius_color, text_color = get_mobj_color(mobj, type)
 		
 		if radius_color or text_color then -- not hidden
-			local pos = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
+			local pos      = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
+			local triangle = rotate_triangle({
+				a = { x = pos.x - radius / 2, y = pos.y          },
+				b = { x = pos.x,              y = pos.y - radius },
+				c = { x = pos.x + radius / 2, y = pos.y          },
+				center = pos,
+			}, -angle)
+
+			drawline(triangle.a.x, triangle.a.y, triangle.b.x, triangle.b.y, radius_color)
+			drawline(triangle.b.x, triangle.b.y, triangle.c.x, triangle.c.y, radius_color)
+		--	drawline(triangle.c.x, triangle.c.y, triangle.a.x, triangle.a.y, radius_color)
 
 			if name == "PLAYER" then
 				for i, player in pairs(Players) do
 					if player.thinker == mobj.thinker._address then
 						name  = name .. " " .. i
-						index = i
+						index = i -- override local index for players
 						break
 					end
 				end
@@ -71,7 +83,6 @@ local function thing_handler()
 			if  in_range(pos.x, 0, ScreenWidth)
 			and in_range(pos.y, 0, ScreenHeight)
 			then
-				local radius = math.floor((mobj.radius / FRACUNIT) * Zoom)
 				
 				if  Hilite
 				and in_range(mousePos.x, pos.x - radius, pos.x + radius)
@@ -84,7 +95,8 @@ local function thing_handler()
 					GUITexts.thing = string.format(
 						"  THING %d (%s)\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
 						"   rad: %.0f\ntics: %d     hp:   %d\n  rt: %d     thre: %d",
-						mobj.index, name,
+						mobj.index, -- original index display
+						name,
 						mobj.x      / FRACUNIT,
 						mobj.y      / FRACUNIT,
 						mobj.z      / FRACUNIT,
@@ -310,6 +322,96 @@ local function tracked_handler()
 	end
 end
 
+local function dialog_handler()
+	
+	Input = input.get()
+	
+	if CurrentPrompt then
+		local value = tostring(CurrentPrompt.value or "")
+		
+		if check_press("Escape") then
+			CurrentPrompt = nil
+			return
+		elseif check_press("Backspace") then
+			value = value:sub(1, -2)
+		elseif (check_press("Enter") or check_press("KeypadEnter")) and value ~= "" then
+			CurrentPrompt.fun(tonumber(value))
+			CurrentPrompt = nil
+			return
+		else
+			for i = 0, 9 do
+				local digit  = tostring(i)
+				local number = "Number" .. digit
+				local keypad = "Keypad" .. digit
+				if (check_press(number)
+				or  check_press(keypad))
+				then value = value .. digit
+				end
+			end
+		end
+		
+		local ret = show_dialog(string.format(
+			"Enter %s ID from\nlevel editor.\n\n" ..
+			"Hit \"Enter\" to confirm,\n" ..
+			"\"Backspace\" to erase,\n" ..
+			"or \"Escape\" to cancel.\n" ..
+			"Or use the buttons.\n\n%s_\n",
+			CurrentPrompt.msg, value
+		))
+
+		if ret == true and value ~= "" then
+			CurrentPrompt.fun(tonumber(value))
+			CurrentPrompt = nil
+			return
+		elseif ret == false then
+			CurrentPrompt = nil
+			return
+		end
+		
+		if value ~= "" then
+			CurrentPrompt.value = tonumber(value)
+		else
+			CurrentPrompt.value = nil
+		end
+	elseif Confirmation then
+		local entity = Tracked[Confirmation.type]
+		local ret    = show_dialog(string.format(
+			"Stop tracking %s %d?\n\n" ..
+			"Hit \"Enter\" to confirm,\n" ..
+			"or \"Escape\" to cancel.\n" ..
+			"Or use the buttons.",
+			entity.Name,
+			Confirmation.id
+		))
+		
+		if check_press("Escape") or ret == false then
+			Confirmation = nil
+		elseif (check_press("Enter") or check_press("KeypadEnter")) or ret == true then
+			
+			if entity.Min == entity.Max then
+				-- it was the final entry, clear the whole thing
+				entity:clear()
+			else
+				if entity.Max == Confirmation.id then
+					scroll_list(entity, -1)
+					entity.Max = entity.Current
+				else
+					scroll_list(entity, 1)
+					
+					if entity.Min == Confirmation.id then
+						entity.Min = entity.Current
+					end
+				end
+				entity.TrackedList[Confirmation.id] = nil
+			end
+			
+			Confirmation = nil
+		end
+	end
+		
+	LastInput = Input
+end
+
 local function draw_grid()
 	if not (ShowMap and ShowGrid) then return end
 	
@@ -506,7 +608,7 @@ local function make_buttons()
 	make_button(-110, h*10,"Reset View",                                           reset_view)
 	
 	if InterceptsInfo > InterceptsState.NONE then
-		make_button(w + 5, h * 10, "Print Intercepts", function()
+		make_button(w+5, h*10, "Print Intercepts", function()
 			print("")
 			print("Intercepts in blocks =")
 			print(dump(Intercepts))
@@ -522,96 +624,12 @@ local function make_buttons()
 			InterceptsInfo = InterceptsState.NONE
 		end)
 	end
-	
-	Input = input.get()
-	
-	if CurrentPrompt then
-		local value = tostring(CurrentPrompt.value or "")
-		
-		if check_press("Escape") then
-			CurrentPrompt = nil
-			return
-		elseif check_press("Backspace") then
-			value = value:sub(1, -2)
-		elseif (check_press("Enter") or check_press("KeypadEnter")) and value ~= "" then
-			CurrentPrompt.fun(tonumber(value))
-			CurrentPrompt = nil
-			return
-		else
-			for i = 0, 9 do
-				local digit  = tostring(i)
-				local number = "Number" .. digit
-				local keypad = "Keypad" .. digit
-				if (check_press(number)
-				or  check_press(keypad))
-				then value = value .. digit
-				end
-			end
-		end
-		
-		local ret = show_dialog(string.format(
-			"Enter %s ID from\nlevel editor.\n\n" ..
-			"Hit \"Enter\" to confirm,\n" ..
-			"\"Backspace\" to erase,\n" ..
-			"or \"Escape\" to cancel.\n" ..
-			"Or use the buttons.\n\n%s_\n",
-			CurrentPrompt.msg, value
-		))
 
-		if ret == true and value ~= "" then
-			CurrentPrompt.fun(tonumber(value))
-			CurrentPrompt = nil
-			return
-		elseif ret == false then
-			CurrentPrompt = nil
-			return
-		end
-		
-		if value ~= "" then
-			CurrentPrompt.value = tonumber(value)
-		else
-			CurrentPrompt.value = nil
-		end
-	elseif Confirmation then
-		local entity = Tracked[Confirmation.type]
-		local ret    = show_dialog(string.format(
-			"Stop tracking %s %d?\n\n" ..
-			"Hit \"Enter\" to confirm,\n" ..
-			"or \"Escape\" to cancel.\n" ..
-			"Or use the buttons.",
-			entity.Name,
-			Confirmation.id
-		))
-		
-		if check_press("Escape") or ret == false then
-			Confirmation = nil
-		elseif (check_press("Enter") or check_press("KeypadEnter")) or ret == true then
-			
-			if entity.Min == entity.Max then
-				-- it was the final entry, clear the whole thing
-				entity:clear()
-			else
-				if entity.Max == Confirmation.id then
-					scroll_list(entity, -1)
-					entity.Max = entity.Current
-				else
-					scroll_list(entity, 1)
-					
-					if entity.Min == Confirmation.id then
-						entity.Min = entity.Current
-					end
-				end
-				entity.TrackedList[Confirmation.id] = nil
-			end
-			
-			Confirmation = nil
-		end
-	end
-		
-	LastInput = Input
+	dialog_handler()
 end
 
 --#endregion
+
 
 --#region CALLBACKS
 
@@ -687,7 +705,10 @@ while true do
 	end
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
-	if (Framecount ~= LastFramecount or paused) and Globals.gamestate == 0 then
+	if (Framecount ~= LastFramecount or paused)
+	and Globals.gamestate == 0
+	and emu.framecount() > 0
+	then
 		iterate()
 		LastMouse.left = Mouse.Left
 	end
