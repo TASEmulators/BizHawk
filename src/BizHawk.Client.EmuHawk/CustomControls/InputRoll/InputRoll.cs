@@ -1876,7 +1876,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!(IsPaintDown || RightButtonHeld) && newCell.RowIndex <= -1) // -2 if we're entering from the top
+			// We don't show the pointed cell as being a column header (RowIndex = null) if we are holding right mouse button. (This allows right-click dragging to rows above the top one.)
+			// hack: MouseMove events do not happen while a context menu is open, leading to a column right-click not working if a context menu was already open.
+			// we solve this by only considering right button if the prior cell has a row value
+			bool rightButton = RightButtonHeld && CurrentCell.RowIndex != null;
+			if (!(IsPaintDown || rightButton) && newCell.RowIndex <= -1) // -2 if we're entering from the top
 			{
 				newCell.RowIndex = null;
 			}
