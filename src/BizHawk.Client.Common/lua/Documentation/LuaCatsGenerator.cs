@@ -178,7 +178,6 @@ error("This is a definition file for Lua Language Server and not a usable script
 				sb.AppendLine(") end");
 				sb.AppendLine();
 			}
-			sb.AppendLine($"return {library}");
 			File.WriteAllText(filePath, sb.ToString().ReplaceLineEndings());
 		}
 	}
