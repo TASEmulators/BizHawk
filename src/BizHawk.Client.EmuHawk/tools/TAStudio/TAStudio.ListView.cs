@@ -243,6 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				int y = margin;
 				for (int i = 0; i < _inputRolls.Count; i++)
 				{
+					_inputRolls[i].SuspendDrawing();
 					_inputRolls[i].Top = y - _tasViewVBar.Value;
 					_inputRolls[i].Height = _inputRolls[i].TotalColWidth + 1 + _tasViewHBar.Height;
 
@@ -263,6 +264,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					roll.Width = _tasViewPanel.Width - (_tasViewVBar.Visible ? _tasViewVBar.Width : 0);
 					roll.Anchor = AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+					roll.RepositionScrollbars();
+					roll.ResumeDrawing();
 					roll.Refresh();
 				}
 
@@ -279,6 +282,7 @@ namespace BizHawk.Client.EmuHawk
 				int x = margin;
 				for (int i = 0; i < _inputRolls.Count; i++)
 				{
+					_inputRolls[i].SuspendDrawing();
 					_inputRolls[i].Left = x - _tasViewHBar.Value;
 					_inputRolls[i].Width = _inputRolls[i].TotalColWidth + 1 + _tasViewVBar.Width;
 
@@ -299,6 +303,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					roll.Height = _tasViewPanel.Height - (_tasViewHBar.Visible ? _tasViewHBar.Height : 0);
 					roll.Anchor = AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
+					roll.RepositionScrollbars();
+					roll.ResumeDrawing();
 					roll.Refresh();
 				}
 
