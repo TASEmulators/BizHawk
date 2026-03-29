@@ -155,7 +155,12 @@ error("This is a definition file for Lua Language Server and not a usable script
 					}
 
 					sb.Append(' ');
-					sb.AppendLine(GetLuaType(parameter));
+					sb.Append(GetLuaType(parameter));
+					if (parameter.HasDefaultValue && parameter.DefaultValue is not null and not "")
+					{
+						sb.Append($" Defaults to `{FormatValue(parameter.DefaultValue)}`");
+					}
+					sb.AppendLine();
 				}
 
 				if (func.Method.ReturnType != typeof(void))
@@ -192,6 +197,15 @@ error("This is a definition file for Lua Language Server and not a usable script
 		value = Regex.Replace(value, @"\[(?<url>.+?)\|alt=(?<alt>.+?)\]", "![${alt}](${url})");
 		return value;
 	}
+
+	private static string FormatValue(object value) => value switch
+	{
+		string str => $"\"{str}\"",
+		true => "true",
+		false => "false",
+		null => "nil",
+		_ => value.ToString()
+	};
 
 	private static string GetLuaType(ParameterInfo parameter)
 	{
