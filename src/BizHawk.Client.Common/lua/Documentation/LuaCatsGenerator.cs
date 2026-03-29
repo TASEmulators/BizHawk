@@ -204,7 +204,7 @@ error("This is a definition file for Lua Language Server and not a usable script
 		true => "true",
 		false => "false",
 		null => "nil",
-		_ => value.ToString()
+		_ => value.ToString(),
 	};
 
 	private static string GetLuaType(ParameterInfo parameter)
