@@ -32,7 +32,8 @@ MAXIMUM_INTERCEPTS = 128
 -- initially 12 but we have 64-bit architecture + pointer alignment.
 -- when intercept overflow is emulated, the size of 12 is still used internally
 -- to corrupt the same target values as in vanilla
-INTERCEPT_SIZE     = 16
+INTERCEPT_SIZE         = 16
+INTERCEPT_SIZE_VANILLA = 12
 
 --#endregion
 
@@ -129,6 +130,20 @@ end
 ---@field name string Full name of the vanilla variable we're corrupting
 ---@field value integer Value that the vanilla variable has at the moment
 
+---@class (exact) intercept_overrun_info
+---@field offset string
+---@field value string
+---@field variable string
+
+--- `intercept_t` plus some extra info for the user.
+---@class intercept_info
+---@field frac string `frac` is the most complicated part of `intercept_t` struct. When an intercept is checked, traceline length is normalized to [0, 1], and the point where it crosses something denotes the fraction of that length, meaning how soon the traceline hits it. Negative value means behind the origin, and more than 1 means outside the trace range. Then for all the intercepts in the list, those fractions are compared and the shortest one wins. So to manipulate what value is used for memory corruption, we just need to adjust the distance between trace origin and something it hits, keeping in mind intercept at which index/offset matches our target address. Internally represented as 32-bit integer, basically means percentage of traceline length if we multiply the value by 100.
+---@field isaline string Whether intercept is with a line or a thing. Internally represented as 32-bit integer.
+---@field offset string How far into corrupted memory we are. Informational addition.
+---@field pointer integer `d` field of `intercept_t`. Not super relevant outside vanilla executable. Current codebase makes it a 64-bit integer and when intercept overruns are emulated it's just truncated to 32 bits.
+---@field block integer Blockmap block where the intercept happened.
+---@field id integer `iLineID` or `index`, depending on `isaline`.
+
 --- Used for specific things like point coordinates, but also for anything that can have x/y values
 ---@class (exact) vertex
 ---@field x number
@@ -217,8 +232,6 @@ LastBMEnd      = nil
 CurrentPrompt = nil
 ---@type confirmation
 Confirmation = nil
----@type intercept_overrun[]
-InterceptOverrun = {}
 ---@type intercepts_state
 InterceptsInfo = InterceptsState.NONE
 ---@type line_log_type
@@ -256,9 +269,13 @@ Config             = {}
 PRandomInfo        = {}
 DivLines           = {}
 MapBlocks          = {}
-Intercepts         = {}
-InterceptsOverruns = {}
 GUITexts           = {}
+
+--- Intercept objects per block
+---@type table<number, intercept_info[]>
+Intercepts = {}
+---@type table<number, intercept_overrun_info[]>
+InterceptsOverruns = {}
 -- map object positions bounds
 OB = {
 	top    = math.maxinteger,
@@ -328,9 +345,10 @@ end
 
 --- After intercept overflow, shows which variables got corrupted and their resulting values. The list is consctructed on the fly so we could read from memory directly.
 ---@param limit integer
----@return intercept_overrun[] # Table index indicates offset, usable for comparing with offsets of individual intercepts after overflow
+---@return intercept_overrun_info[] # Table index indicates offset, usable for comparing with offsets of individual intercepts after overflow
 local function fetch_intercept_overruns(limit)
-	local ret  = {}
+	---@type intercept_overrun_info[]
+	local ret = {}
 	---@type intercept_overrun[]
 	local list = {
 		[ 12] = { name = "line_opening.lowfloor",   value = Globals.line_opening.lowfloor     },
@@ -365,11 +383,10 @@ local function fetch_intercept_overruns(limit)
 	}
 	
 	-- walk through the list to check how far corruption went for this particular intercept
-	-- TODO: probably check based on farthest affected offset,
-	-- since intercepts are 12 bytes in size and overruns have different sizes
 	for i = 0, 230 do
 		local source = list[i]
 		if source and i <= limit then
+			---@type intercept_overrun_info
 			local item = {
 				offset   = string.format("%d bytes", i),
 				value    = string.format("0x%X", source.value & 0xffffffff),
@@ -382,7 +399,84 @@ local function fetch_intercept_overruns(limit)
 	return ret
 end
 
---- Very complicated thing that handles tracelines display and intercepts display and logging. Installs the hook while anything is enabled. When an intercept is added by the game, we read `trace` from memory which is the thing creating intercepts, and we add all those tracelines to a table that we then display once per frame. When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that. Upon overflow we also let the user dump all their contents and info to console.
+--- When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that. Upon overflow we also let the user dump all their contents and info to console.
+---@param block integer
+local function intercept_logger(block)
+	if InterceptLog then
+		local origin = Globals.intercepts
+		local count  = math.floor((InterceptPtr - origin) / INTERCEPT_SIZE)
+		
+		if count > InterceptLimit then
+			local text
+			local i = 1 -- intercept #0 gets printed last so we start with 1 instead
+			
+			if count > MAXIMUM_INTERCEPTS then
+				text = string.format(
+					"Frame %d, block %d, %d intercepts INTERCEPT OVERFLOW",
+					Framecount, block, count
+				)
+				block = -block -- custom way to indicate overflow
+				InterceptsInfo = InterceptsState.OVERFLOW
+			
+				if not InterceptsOverruns[math.abs(block)] then
+					InterceptsOverruns[math.abs(block)] = {}
+				end
+				InterceptsOverruns[math.abs(block)] = fetch_intercept_overruns(
+					(count - MAXIMUM_INTERCEPTS)
+					* INTERCEPT_SIZE_VANILLA
+					+ INTERCEPT_SIZE_VANILLA
+				)
+				
+				client.pause()
+			else
+				text = string.format(
+					"Frame %d, block %d, %d intercepts",
+					Framecount, block, count
+				)
+				InterceptsInfo = InterceptsState.PRINT
+			end
+			
+			print(text)
+			
+			if not Intercepts[math.abs(block)] then
+				Intercepts[math.abs(block)] = {}
+			end
+			
+			for address = origin, InterceptPtr - INTERCEPT_SIZE, INTERCEPT_SIZE do
+				local intercept = structs.intercept.from_pointer(address)
+				---@type intercept_info
+				local object = {
+					frac    = string.format("0x%08x", intercept.frac),
+					isaline = string.format("0x%08x", intercept.isaline),
+					offset  = string.format("%d bytes", 
+						(i-1-MAXIMUM_INTERCEPTS)
+						*INTERCEPT_SIZE_VANILLA),
+					pointer = intercept.d,
+					block   = math.abs(block)
+				}
+				
+				if tonumber(intercept.isaline) == 1 then
+					object.id = structs.line.from_pointer(object.pointer).iLineID
+				else
+					object.id = structs.mobj.from_pointer(object.pointer).index
+				end
+				
+				object.pointer = string.format("0x%08X", object.pointer)
+				
+				-- we insert the same interecepts over and over for every new call,
+				-- because we can't know when they'll end,
+				-- and we may be asked to do this before it actually overflows.
+				-- so we can't just sit and wait for an overflow and only
+				-- then build the list. there won't be thousands of them anyway.
+				Intercepts[math.abs(block)][i] = object
+				
+				i = i + 1
+			end
+		end
+	end
+end
+
+--- Very complicated thing that handles tracelines display and intercepts display and logging. Installs the hook while anything is enabled. When an intercept is added by the game, we read `trace` from memory which is the thing creating intercepts, and we add all those tracelines to a table that we then display once per frame.
 local function hook_intercepts()
 	local name = "Intercepts"
 	
@@ -405,86 +499,8 @@ local function hook_intercepts()
 			if intercept_p ~= InterceptPtr then
 				-- new intercept was just added
 				InterceptPtr = intercept_p
-				
-				if InterceptLog then
-					local origin = Globals.intercepts
-					local count  = math.floor((InterceptPtr - origin) / INTERCEPT_SIZE)
-					
-					if count > InterceptLimit then
-						local text
-						local i = 1 -- intercept #0 gets printed last so we start with 1 instead
-						
-						if count > MAXIMUM_INTERCEPTS then
-							text = string.format(
-								"Frame %d, block %d, %d intercepts INTERCEPT OVERFLOW",
-								Framecount, block, count
-							)
-							block = -block -- custom way to indicate overflow
-							InterceptsInfo = InterceptsState.OVERFLOW
-						
-							if not InterceptsOverruns[math.abs(block)] then
-								InterceptsOverruns[math.abs(block)] = {}
-							end
-							InterceptsOverruns[math.abs(block)] = fetch_intercept_overruns(
-								(count - MAXIMUM_INTERCEPTS) * 12
-							)
-							
-							client.pause()
-						else
-							text = string.format(
-								"Frame %d, block %d, %d intercepts",
-								Framecount, block, count
-							)
-							InterceptsInfo = InterceptsState.PRINT
-						end
-						
-						print(text)
-						
-						if not Intercepts[math.abs(block)] then
-							Intercepts[math.abs(block)] = {}
-						end
-						
-						for address = origin, InterceptPtr - INTERCEPT_SIZE, INTERCEPT_SIZE do
-							local intercept = structs.intercept.from_pointer(address)
-							local object    = {
-								-- frac is the most complicated part of intercept struct.
-								-- when intercept is checked, traceline length is normalized
-								-- to [0, 1], and the point where it crosses something
-								-- denotes the fraction of that length, meaning how soon the
-								-- traceline hits it. negative value means behind the origin,
-								-- and more than 1 means outside the trace range.
-								-- then for all the intercepts in the list, those fractions
-								-- are compared and the shortest one wins.
-								-- so to manipulate what value is used for memory corruption,
-								-- we just need to adjust the distance between trace origin
-								-- and something it hits, keeping in mind intercept at which
-								-- index/offset matches our target address.
-								frac    = string.format("0x%08x", intercept.frac),
-								isaline = string.format("0x%08x", intercept.isaline),
-								offset  = string.format("%d bytes",(i-1-MAXIMUM_INTERCEPTS)*12),
-								pointer = intercept.d,
-								block   = math.abs(block)
-							}
-							
-							if tonumber(intercept.isaline) == 1 then
-								object.id = structs.line.from_pointer(object.pointer).iLineID
-							else
-								object.id = structs.mobj.from_pointer(object.pointer).index
-							end
-							
-							object.pointer = string.format("0x%08X", object.pointer)
-							
-							-- we insert the same interecepts over and over for every new call,
-							-- because we can't know when they'll end,
-							-- and we may be asked to do this before it actually overflows.
-							-- so we can't just sit and wait for an overflow and only
-							-- then build the list. there won't be thousands of them anyway.
-							Intercepts[math.abs(block)][i] = object
-							
-							i = i + 1
-						end
-					end
-				end
+
+				intercept_logger(block)
 				
 				if ShowMap and ShowGrid and InterceptShow then
 					MapBlocks[block] = Framecount + FADEOUT_TIMER
