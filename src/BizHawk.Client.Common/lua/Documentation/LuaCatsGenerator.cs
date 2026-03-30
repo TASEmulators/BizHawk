@@ -42,18 +42,18 @@ internal static class LuaCatsGenerator
 		[typeof(ReadOnlyMemory<byte>)] = "string",
 		[typeof(LuaFunction)] = "function",
 		[typeof(LuaTable)] = "table",
-		[typeof(System.Drawing.Color)] = "color",
+		[typeof(System.Drawing.Color)] = "dotnetcolor",
 	};
 
 	private const string Classes = """
----@class color : userdata
+---@class dotnetcolor : userdata
 
 ---A color in one of the following formats:
 --- - Number in the format `0xAARRGGBB`
 --- - String in the format `"#RRGGBB"` or `"#AARRGGBB"`
 --- - A CSS3/X11 color name e.g. `"blue"`, `"palegoldenrod"`
 --- - Color created with `forms.createcolor`
----@alias luacolor integer | string | color
+---@alias color integer | string | dotnetcolor
 
 ---@alias surface
 ---| "emucore" # Draw on the emulated screen. Resolution depends on emulated system and game. Drawing is scaled with the rest of the display.
@@ -216,7 +216,7 @@ error("This is a definition file for Lua Language Server and not a usable script
 
 		if (parameter.GetCustomAttribute<LuaColorParamAttribute>() is not null)
 		{
-			return "luacolor"; // see Preamble
+			return "color"; // see Preamble
 		}
 
 		if (parameter.ParameterType.IsArray && IsParams(parameter))
