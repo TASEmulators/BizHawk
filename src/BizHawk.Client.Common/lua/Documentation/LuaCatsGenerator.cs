@@ -114,7 +114,7 @@ error("This is a definition file for Lua Language Server and not a usable script
 				sb.AppendLine(FormatMarkdown(libraryDescription));
 			}
 
-			sb.AppendLine($"---@class {library}");
+			sb.AppendLine($"---@class {SafeLibraryTypeName(library)}");
 			if (!typeof(LuaLibraryBase).IsAssignableFrom(libraryType)) sb.Append("local "); // don't make LuaCanvas global
 			sb.AppendLine($"{library} = {{}}");
 			sb.AppendLine();
@@ -205,6 +205,17 @@ error("This is a definition file for Lua Language Server and not a usable script
 		false => "false",
 		null => "nil",
 		_ => value.ToString(),
+	};
+
+	/// <summary>
+	/// Avoid name collisions with existing Lua types.
+	/// Only for the <c>@class</c> annotation, not the name of the global.
+	/// <see href="https://luals.github.io/wiki/annotations/#documenting-types" />
+	/// </summary>
+	private static string SafeLibraryTypeName(string name) => name switch
+	{
+		"userdata" => $"biz{name}",
+		_ => name,
 	};
 
 	private static string GetLuaType(ParameterInfo parameter)
