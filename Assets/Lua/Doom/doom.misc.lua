@@ -287,19 +287,19 @@ LastMouse = {
 -- map colors (0xAARRGGBB or "name")
 ---@type table<string, map_pref>
 MapPrefs = {
-	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	missile     = { color = 0xffff8000, radius_min_zoom = 0.00, text_min_zoom = 0.25, },
-	shootable   = { color = 0xffaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
+	player      = { color = 0xff60d0ff, radius_min_zoom = 0.00, text_min_zoom = 0.50, },
+	enemy       = { color = 0xffff0000, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
+	enemy_idle  = { color = 0xffaa0000, radius_min_zoom = 0.00, text_min_zoom = 1.00, },
+	missile     = { color = 0xffff8000, radius_min_zoom = 0.00, text_min_zoom = 1.00, },
+	shootable   = { color = 0xffaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 1.00, },
 	countitem   = { color = 0xffffff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
 	item        = { color = 0xff00ff00, radius_min_zoom = 0.00, text_min_zoom = 1.50, },
-	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false,},
 	highlight   = { color = 0xffff00ff, radius_min_zoom = 0.00, text_min_zoom = 0.20, },
 	grid        = { color = 0xff808080, radius_min_zoom = 0.00, text_min_zoom = 0.00, },
+	solid       = { color = 0xff505050, radius_min_zoom = 0.75, text_min_zoom = false,},
 --	corpse      = { color = 0xaaaaaaaa, radius_min_zoom = 0.00, text_min_zoom = 0.75, },
 --	misc        = { color = 0xffa0a0a0, radius_min_zoom = 0.75, text_min_zoom = 1.00, },
---	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false, },
+--	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false,},
 }
 
 --#endregion
@@ -784,6 +784,107 @@ end
 --#endregion
 
 
+--#region MATH
+
+--- Returns 2 passed numbers in order from smaller to bigger. Expands them further apart by 200, because this is meant to be used by `reset_view()` and to have a bit more space around visible objects.
+---@param smaller number
+---@param bigger number
+---@return number smaller
+---@return number bigger
+local function maybe_swap(smaller, bigger)
+	if smaller > bigger then
+		return bigger, smaller
+	end
+	return smaller - 100, bigger + 100
+end
+
+---@param var number
+---@param minimum number
+---@param maximum number
+---@return boolean
+function in_range(var, minimum, maximum)
+	return var >= minimum and var <= maximum
+end
+
+---@param point vertex
+---@param v1 vertex
+---@param v2 vertex
+---@return boolean
+local function check_side(point, v1, v2)
+	return ((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y
+end
+
+--- Distance to point projecton on infinite line
+---@param point vertex
+---@param v1 vertex
+---@param v2 vertex
+---@return number # Sign indicates which side the point is on
+function distance_to_line(point, v1, v2)
+	local PAx = v1.x - point.x
+	local PAy = v1.y - point.y
+	local ABx = v2.x - v1.x
+	local ABy = v2.y - v1.y
+	local t = -PAx * ABx + -PAy * ABy
+	t = t / (ABx * ABx + ABy * ABy)
+	local PXx = PAx + t * ABx;
+	local PXy = PAy + t * ABy;
+	local dist = math.sqrt(PXx * PXx + PXy * PXy)
+
+	if check_side(point, v1, v2) then
+		return -dist
+	end
+
+	return dist
+end
+
+local function dist_sq(p1, p2)
+    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
+end
+
+--- Distance to closest point of the segment
+---@param point vertex
+---@param v1 vertex
+---@param v2 vertex
+---@return number # Sign indicates which side the point is on
+function distance_to_segment(point, v1, v2)
+	local ab_sq = dist_sq(v1, v2)
+	if ab_sq == 0 then return math.sqrt(dist_sq(point, v1)) end
+	local t =
+		((point.x - v1.x) * (v2.x - v1.x) +
+		 (point.y - v1.y) * (v2.y - v1.y)) / ab_sq
+	t = math.max(0, math.min(1, t))
+	local closestPoint = {
+		x = v1.x + t * (v2.x - v1.x),
+		y = v1.y + t * (v2.y - v1.y)
+	}
+	local dist = math.sqrt(dist_sq(point, closestPoint))
+
+	if check_side(point, v1, v2) then
+		return -dist
+	end
+
+	return dist
+end
+
+--- Rotate triangle around its center
+---@param t triangle
+---@param angle integer
+---@return triangle
+function rotate_triangle(t, angle)
+	local rad = (angle * math.pi) / 180.0;
+	local newt = { a = {}, b = {}, c = {}, center = t.center }
+	newt.a.x = (t.a.x-t.center.x)*math.cos(rad)-(t.a.y-t.center.y)*math.sin(rad)+t.center.x
+	newt.a.y = (t.a.x-t.center.x)*math.sin(rad)+(t.a.y-t.center.y)*math.cos(rad)+t.center.y
+	newt.b.x = (t.b.x-t.center.x)*math.cos(rad)-(t.b.y-t.center.y)*math.sin(rad)+t.center.x
+	newt.b.y = (t.b.x-t.center.x)*math.sin(rad)+(t.b.y-t.center.y)*math.cos(rad)+t.center.y
+	newt.c.x = (t.c.x-t.center.x)*math.cos(rad)-(t.c.y-t.center.y)*math.sin(rad)+t.center.x
+	newt.c.y = (t.c.x-t.center.x)*math.sin(rad)+(t.c.y-t.center.y)*math.cos(rad)+t.center.y
+	return newt
+end
+
+--#endregion
+
+
 --#region AUTOMAP
 
 ---@param divider integer
@@ -1009,107 +1110,6 @@ function check_map_change()
 	end
 
 	LastEpisode, LastMap = episode, map
-end
-
---#endregion
-
-
---#region MATH
-
---- Returns 2 passed numbers in order from smaller to bigger. Expands them further apart by 200, because this is meant to be used by `reset_view()` and to have a bit more space around visible objects.
----@param smaller number
----@param bigger number
----@return number smaller
----@return number bigger
-local function maybe_swap(smaller, bigger)
-	if smaller > bigger then
-		return bigger, smaller
-	end
-	return smaller - 100, bigger + 100
-end
-
----@param var number
----@param minimum number
----@param maximum number
----@return boolean
-function in_range(var, minimum, maximum)
-	return var >= minimum and var <= maximum
-end
-
----@param point vertex
----@param v1 vertex
----@param v2 vertex
----@return boolean
-local function check_side(point, v1, v2)
-	return ((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y
-end
-
---- Distance to point projecton on infinite line
----@param point vertex
----@param v1 vertex
----@param v2 vertex
----@return number # Sign indicates which side the point is on
-function distance_to_line(point, v1, v2)
-	local PAx = v1.x - point.x
-	local PAy = v1.y - point.y
-	local ABx = v2.x - v1.x
-	local ABy = v2.y - v1.y
-	local t = -PAx * ABx + -PAy * ABy
-	t = t / (ABx * ABx + ABy * ABy)
-	local PXx = PAx + t * ABx;
-	local PXy = PAy + t * ABy;
-	local dist = math.sqrt(PXx * PXx + PXy * PXy)
-
-	if check_side(point, v1, v2) then
-		return -dist
-	end
-
-	return dist
-end
-
-local function dist_sq(p1, p2)
-    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
-end
-
---- Distance to closest point of the segment
----@param point vertex
----@param v1 vertex
----@param v2 vertex
----@return number # Sign indicates which side the point is on
-function distance_to_segment(point, v1, v2)
-	local ab_sq = dist_sq(v1, v2)
-	if ab_sq == 0 then return math.sqrt(dist_sq(point, v1)) end
-	local t =
-		((point.x - v1.x) * (v2.x - v1.x) +
-		 (point.y - v1.y) * (v2.y - v1.y)) / ab_sq
-	t = math.max(0, math.min(1, t))
-	local closestPoint = {
-		x = v1.x + t * (v2.x - v1.x),
-		y = v1.y + t * (v2.y - v1.y)
-	}
-	local dist = math.sqrt(dist_sq(point, closestPoint))
-
-	if check_side(point, v1, v2) then
-		return -dist
-	end
-
-	return dist
-end
-
---- Rotate triangle around its center
----@param t triangle
----@param angle integer
----@return triangle
-function rotate_triangle(t, angle)
-	local rad = (angle * math.pi) / 180.0;
-	local newt = { a = {}, b = {}, c = {}, center = t.center }
-	newt.a.x = (t.a.x-t.center.x)*math.cos(rad)-(t.a.y-t.center.y)*math.sin(rad)+t.center.x
-	newt.a.y = (t.a.x-t.center.x)*math.sin(rad)+(t.a.y-t.center.y)*math.cos(rad)+t.center.y
-	newt.b.x = (t.b.x-t.center.x)*math.cos(rad)-(t.b.y-t.center.y)*math.sin(rad)+t.center.x
-	newt.b.y = (t.b.x-t.center.x)*math.sin(rad)+(t.b.y-t.center.y)*math.cos(rad)+t.center.y
-	newt.c.x = (t.c.x-t.center.x)*math.cos(rad)-(t.c.y-t.center.y)*math.sin(rad)+t.center.x
-	newt.c.y = (t.c.x-t.center.x)*math.sin(rad)+(t.c.y-t.center.y)*math.cos(rad)+t.center.y
-	return newt
 end
 
 --#endregion
@@ -1464,6 +1464,34 @@ end
 
 --#region MISC
 
+function print_help()
+	local help = "Script for Doom engine games by feos and kalimag.\n\n"..
+
+	"Shows player info. If you have several players in-game you can hover on player info and scroll the mouse wheel to show info for different players.\n"..
+	"Shows current tic, in-game time, and RNG index along with value at that index.\n\n"..
+
+	"Shows Automap consisting of linedefs, sectors, and things (toggled via the 'Map' button).\n"..
+	"Shows blockmap grid (toggled via the 'Grid' button).\n"..
+	"The 'Reset View' button zooms and pans the automap to make all things visible.\n"..
+	"The 'Follow' button makes the camera stick to the player that is currently selected on the left panel.\n"..
+	"The 'Hilite' buttons enables highlight/selection mode where you can hover on sectors, linedefs, and things to see their info on the left, in corresponding colors.\n"..
+	"Use Mouse Wheel to zoom in and out, and mouse movement with the 'Space' key held down to pan.\n\n"..
+
+	"Buttons for adding things, lines, and sectors allow to track those entities. If more than one object of a given type is tracked, you can hoven on them and scroll through them with the mouse wheel. They can also be removed from the tracked list by hitting the red cross button that appears on hover. \n\n"..
+
+	"Tracked entity lists and Automap config are saved when the script is stopped or restarted or when you add or remove tracked entities. To manually edit the config file, disable the script, edit the 'doom.settings.lua' file if it exists, then start the script again. Editing it while the script is running will overwrite your edits later. Config also stored Angle type which has no other way to change it.\n\n"..
+
+	"You can log which thing has used or crossed linedefs, with options being None, Player, and All\n\n"..
+
+	"You can log various info every time a P_Random() call happens with a class that changes the RNG value. Log prints tic count when the call happened, which call it is per that tic, the RNG index, the value at that index, and the call stack (while file and line called P_Random() within which function).\n\n"..
+
+	"You can display intercepts on the Automap: tracelines and blockmap blocks where intercepts happen. Red color means an intercept happened on this tic, then the color fades to grey.\n\n"..
+
+	"And the most complicated feature is intercept logging. It will inform you when the intercept count exceeded a user-defined limit, which is 128 by default but can be changed in config (the 'InterceptLimit' value). If the intercept count exceeded exactly 128 (regardless of user defined limit), a button will appear that will print info on all the intercepts that caused the overflow, as well as info on all the vanilla addresses they corrupted. Boom fixed intercept overflow, so in Boom complevel this feature is disabled."
+
+	print(help)
+end
+
 --- Doom uses left mouse clock for firing and if we're running unpaused we don't want clicking script buttons to trigger fire. Currently only blocks first player fire. TODO: block for all players
 function suppress_click_input()
 	if MAP_CLICK_BLOCK and MAP_CLICK_BLOCK ~= "" then
@@ -1595,6 +1623,8 @@ end
 --#endregion
 
 
+--#region LOOKUPS
+
 -- Additional types that are not identifiable by flags alone
 HighlightTypes = to_lookup({
 
@@ -1656,3 +1686,5 @@ InertTypes = to_lookup({
 	MobjType.HEXEN_SGSHARD9,
 	MobjType.HEXEN_WRAITHFX3,
 })
+
+--#endregion

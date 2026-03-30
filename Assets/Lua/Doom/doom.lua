@@ -606,6 +606,7 @@ local function make_buttons()
 	make_button(-110, h*8, "Hilite "      ..(Hilite        and " ON" or "OFF"), hilite_toggle)
 	make_button(-110, h*9, "Follow "      ..(Follow        and " ON" or "OFF"), follow_toggle)
 	make_button(-110, h*10,"Reset View",                                           reset_view)
+	make_button( -50, h*11,"Help",                                                 print_help)
 	
 	if InterceptsInfo > InterceptsState.NONE then
 		make_button(w+5, h*10, "Print Intercepts", function()
