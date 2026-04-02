@@ -166,7 +166,10 @@ error("This is a definition file for Lua Language Server and not a usable script
 				if (func.Method.ReturnType != typeof(void))
 				{
 					sb.Append("---@return ");
-					sb.AppendLine(GetLuaType(func.Method.ReturnType));
+					sb.Append(GetLuaType(func.Method.ReturnParameter));
+					if (IsZeroIndexed(func.Method.ReturnParameter))
+						sb.Append(" # Zero-indexed array.");
+					sb.AppendLine();
 				}
 
 				sb.Append($"function {library}.{func.Name}(");
@@ -268,4 +271,6 @@ error("This is a definition file for Lua Language Server and not a usable script
 	private static bool IsNullable(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
 	private static bool IsParams(ParameterInfo parameter) => parameter.GetCustomAttribute<ParamArrayAttribute>() is not null;
+
+	private static bool IsZeroIndexed(ParameterInfo parameter) => parameter.GetCustomAttribute<LuaZeroIndexedAttribute>() is not null;
 }
