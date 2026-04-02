@@ -3941,6 +3941,8 @@ namespace BizHawk.Client.EmuHawk
 				if (saveMovieResult == TryAgainResult.Canceled) return false;
 			}
 
+			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.CallScriptExitCallbacks(); // important to do this here with the stale `IEmulator`, see https://github.com/TASEmulators/BizHawk/issues/4629
+
 			if (clearSram)
 			{
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
