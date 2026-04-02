@@ -38,4 +38,10 @@ namespace BizHawk.Client.Common
 
 		public bool Released { get; }
 	}
+
+	/// <summary>
+	/// Marks table return values that are indexed starting from zero, for documentation purposes only.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.ReturnValue)]
+	public sealed class LuaZeroIndexedAttribute : Attribute { }
 }
