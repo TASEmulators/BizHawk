@@ -50,12 +50,12 @@ local function thing_handler()
 	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	for _, mobj in pairs(Globals.mobjs:readbulk()) do
-		local type   = mobj.type
+		local mtype  = mobj.type
 		local index  = mobj.index
 		local angle  = mobj.angle * (AngleType.DEGREES / ANGLE_90) - AngleType.DEGREES
 		local radius = math.floor((mobj.radius / FRACUNIT) * Zoom)
-		local name   = MobjType[type]
-		local radius_color, text_color = get_mobj_color(mobj, type)
+		local name   = MobjType[mtype]
+		local radius_color, text_color = get_mobj_color(mobj, mtype)
 		
 		if radius_color or text_color then -- not hidden
 			local pos      = tuple_to_vertex(game_to_screen(mobj.x, mobj.y))
@@ -72,7 +72,10 @@ local function thing_handler()
 
 			if name == "PLAYER" then
 				for i, player in pairs(Players) do
-					if player.thinker == mobj.thinker._address then
+					if type(player) == "table"
+					and player.thinker == mobj.thinker._address
+					and Players.Min ~= Players.Max
+					then
 						name  = name .. " " .. i
 						index = i -- override local index for players
 						break
@@ -685,13 +688,13 @@ while true do
 	-- clear cache after rewind, turbo etc.
 	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
 --	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
-	if Globals.gamestate ~= 0 then
+	if Globals.gamestate ~= GameState.LEVEL then
 		clear_cache()
 	end
 	
 	init_cache()
 
-	if Globals.gamestate == 0 then
+	if Globals.gamestate == GameState.LEVEL then
 		iterate_players()
 	end
 
@@ -707,7 +710,7 @@ while true do
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
 	if (Framecount ~= LastFramecount or paused)
-	and Globals.gamestate == 0
+	and Globals.gamestate == GameState.LEVEL
 	and emu.framecount() > 0
 	then
 		iterate()
