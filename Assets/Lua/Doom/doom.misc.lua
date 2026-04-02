@@ -406,7 +406,7 @@ local function fetch_intercept_overruns(limit)
 	return ret
 end
 
---- When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that. Upon overflow we also let the user dump all their contents and info to console.
+--- When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that and let the user dump all their contents and info to console.
 ---@param block integer
 local function intercept_logger(block)
 	if InterceptLog then
@@ -419,8 +419,8 @@ local function intercept_logger(block)
 			
 			if count > MAXIMUM_INTERCEPTS then
 				text = string.format(
-					"Frame %d, block %d, %d intercepts INTERCEPT OVERFLOW",
-					Framecount, block, count
+					"Tic %d, block %d, %d intercepts INTERCEPT OVERFLOW",
+					FraGlobals.gameticmecount, block, count
 				)
 				block = -block -- custom way to indicate overflow
 				InterceptsInfo = InterceptsState.OVERFLOW
@@ -437,8 +437,8 @@ local function intercept_logger(block)
 				client.pause()
 			else
 				text = string.format(
-					"Frame %d, block %d, %d intercepts",
-					Framecount, block, count
+					"Tic %d, block %d, %d intercepts",
+					Globals.gametic, block, count
 				)
 				InterceptsInfo = InterceptsState.PRINT
 			end
@@ -466,6 +466,10 @@ local function intercept_logger(block)
 					object.id = structs.line.from_pointer(object.pointer).iLineID
 				else
 					object.id = structs.mobj.from_pointer(object.pointer).index
+				end
+
+				if InterceptsInfo ~= InterceptsState.OVERFLOW then
+					object.offset = "N/A"
 				end
 				
 				object.pointer = string.format("0x%08X", object.pointer)
@@ -1177,32 +1181,47 @@ local function settings_read()
 		local entity   = Tracked[type]
 		local source   = Config.tracked[entity.Name]
 		entity.Current = source.Current
-		entity.Min     = source.Min
-		entity.Max     = source.Max
-		
-		if type == TrackedType.LINE then
-			for _,v in pairs(source.TrackedList) do
-				for _, line in pairs(Globals.lines) do
-					if v == line.iLineID then
-						entity.TrackedList[v] = line
+		entity.Min     = math.maxinteger
+		entity.Max     = math.mininteger
+
+		if entity.Current then
+			if type == TrackedType.LINE then
+				for _,v in pairs(source.TrackedList) do
+					for _, line in pairs(Globals.lines) do
+						if v == line.iLineID then
+							entity.TrackedList[v] = line
+
+							if v < entity.Min then entity.Min = v end
+							if v > entity.Max then entity.Max = v end
+						end
+					end
+				end
+			elseif type == TrackedType.SECTOR then
+				for _,v in pairs(source.TrackedList) do
+					for _, sector in pairs(Globals.sectors) do
+						if v == sector.iSectorID then
+							entity.TrackedList[v] = sector
+
+							if v < entity.Min then entity.Min = v end
+							if v > entity.Max then entity.Max = v end
+						end
+					end
+				end
+			elseif type == TrackedType.THING then
+				for _,v in pairs(source.TrackedList) do
+					for _, mobj in pairs(Globals.mobjs:readbulk()) do
+						if v == mobj.index then
+							entity.TrackedList[v] = mobj
+
+							if v < entity.Min then entity.Min = v end
+							if v > entity.Max then entity.Max = v end
+						end
 					end
 				end
 			end
-		elseif type == TrackedType.SECTOR then
-			for _,v in pairs(source.TrackedList) do
-				for _, sector in pairs(Globals.sectors) do
-					if v == sector.iSectorID then
-						entity.TrackedList[v] = sector
-					end
-				end
-			end
-		elseif type == TrackedType.THING then
-			for _,v in pairs(source.TrackedList) do
-				for _, mobj in pairs(Globals.mobjs:readbulk()) do
-					if v == mobj.index then
-						entity.TrackedList[v] = mobj
-					end
-				end
+
+			if not entity.TrackedList[entity.Current] then
+				entity.Current = entity.Min
 			end
 		end
 	end
@@ -1221,6 +1240,8 @@ function settings_write()
 		file:write("\n")
 		
 		-- INTERCEPTS
+		file:write("-- 128 intercepts is when intercept overflow happens in vanilla\n")
+		file:write("-- but you can set it to lower values to make the script report them too\n")
 		file:write("InterceptLimit = " .. InterceptLimit .. "\n")
 		file:write("\n")
 		
@@ -1244,8 +1265,6 @@ function settings_write()
 			local setting       = tracked[name]
 			setting.TrackedList = {}
 			setting.Current     = entity.Current
-			setting.Min         = entity.Min
-			setting.Max         = entity.Max
 			
 			for k,_ in pairs(entity.TrackedList) do
 				table.insert(setting.TrackedList, k)
@@ -1509,7 +1528,7 @@ function print_help()
 
 	"You can display intercepts on the Automap: tracelines and blockmap blocks where intercepts happen. Red color means an intercept happened on this tic, then the color fades to grey.\n\n"..
 
-	"And the most complicated feature is intercept logging. It will inform you when the intercept count exceeded a user-defined limit, which is 128 by default but can be changed in config (the 'InterceptLimit' value). If the intercept count exceeded exactly 128 (regardless of user defined limit), a button will appear that will print info on all the intercepts that caused the overflow, as well as info on all the vanilla addresses they corrupted. Boom fixed intercept overflow, so in Boom complevel this feature is disabled."
+	"And the most complicated feature is intercept logging. It will inform you when the intercept count exceeded a user-defined limit, which is 128 by default but can be changed in config (the 'InterceptLimit' value). If the intercept count exceeded that value, a button will appear that will print info on all the intercepts, as well as info on all the vanilla addresses they corrupted, if any. Boom fixed intercept overflow, so in Boom complevel this feature is disabled.\n\n"
 
 	print(help)
 end
