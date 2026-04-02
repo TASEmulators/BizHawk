@@ -1140,7 +1140,6 @@ local function settings_read()
 		file()
 	else
 	--	print(err)
-		return
 	end
 	
 	-- ANGLE TYPE
