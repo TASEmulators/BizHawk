@@ -30,15 +30,15 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.labelAxisName = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.trackBarSensitivity = new System.Windows.Forms.TrackBar();
+			this.labelSensitivity = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.buttonBind = new System.Windows.Forms.Button();
 			this.trackBarDeadzone = new System.Windows.Forms.TrackBar();
+			this.labelDeadzone = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.buttonFlip = new System.Windows.Forms.Button();
 			this.buttonUnbind = new System.Windows.Forms.Button();
-			this.labelDeadzone = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.labelSensitivity = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.labelAxisName = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.iwPositiveButton = new BizHawk.Client.EmuHawk.InputWidget();
 			this.iwNegativeButton = new BizHawk.Client.EmuHawk.InputWidget();
 			this.labelPositiveButtonName = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -55,6 +55,12 @@
 			this.textBox1.Size = new System.Drawing.Size(100, 20);
 			this.textBox1.TabIndex = 0;
 			// 
+			// labelAxisName
+			// 
+			this.labelAxisName.Location = new System.Drawing.Point(109, 6);
+			this.labelAxisName.Name = "labelAxisName";
+			this.labelAxisName.Text = "Bindname";
+			// 
 			// trackBarSensitivity
 			// 
 			this.trackBarSensitivity.LargeChange = 4;
@@ -66,6 +72,12 @@
 			this.trackBarSensitivity.TabIndex = 2;
 			this.trackBarSensitivity.TickFrequency = 10;
 			this.trackBarSensitivity.ValueChanged += new System.EventHandler(this.TrackBarSensitivity_ValueChanged);
+			// 
+			// labelSensitivity
+			// 
+			this.labelSensitivity.Location = new System.Drawing.Point(206, 35);
+			this.labelSensitivity.Name = "labelSensitivity";
+			this.labelSensitivity.Text = "Sensitivity: 5 billion";
 			// 
 			// timer1
 			// 
@@ -91,6 +103,12 @@
 			this.trackBarDeadzone.TickFrequency = 5;
 			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.TrackBarDeadzone_ValueChanged);
 			// 
+			// labelDeadzone
+			// 
+			this.labelDeadzone.Location = new System.Drawing.Point(206, 65);
+			this.labelDeadzone.Name = "labelDeadzone";
+			this.labelDeadzone.Text = "Deadzone: 5 billion";
+			// 
 			// buttonFlip
 			// 
 			this.buttonFlip.Location = new System.Drawing.Point(387, 3);
@@ -110,24 +128,6 @@
 			this.buttonUnbind.Text = "Unbind!";
 			this.buttonUnbind.UseVisualStyleBackColor = true;
 			this.buttonUnbind.Click += new System.EventHandler(this.Unbind_Click);
-			// 
-			// labelDeadzone
-			// 
-			this.labelDeadzone.Location = new System.Drawing.Point(206, 65);
-			this.labelDeadzone.Name = "labelDeadzone";
-			this.labelDeadzone.Text = "Deadzone: 5 billion";
-			// 
-			// labelSensitivity
-			// 
-			this.labelSensitivity.Location = new System.Drawing.Point(206, 35);
-			this.labelSensitivity.Name = "labelSensitivity";
-			this.labelSensitivity.Text = "Sensitivity: 5 billion";
-			// 
-			// labelAxisName
-			// 
-			this.labelAxisName.Location = new System.Drawing.Point(109, 6);
-			this.labelAxisName.Name = "labelAxisName";
-			this.labelAxisName.Text = "Bindname";
 			// 
 			// iwPositiveButton
 			// 
