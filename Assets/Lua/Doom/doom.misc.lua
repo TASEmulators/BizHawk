@@ -40,6 +40,13 @@ INTERCEPT_SIZE_VANILLA = 12
 
 --#region ENUMS
 
+---@enum game_state
+GameState = {
+	LEVEL        = 0,
+	INTERMISSION = 1,
+	FINALE       = 2,
+	DEMOSCREEN   = 3
+}
 ---@enum tracked_type
 TrackedType = {
 	THING  = 1,
@@ -992,7 +999,7 @@ function update_zoom()
 	LastMouse.y     = mousePos.y
 	LastMouse.wheel = mouseWheel
 	
-	if Follow and Globals.gamestate == 0 then
+	if Follow and Globals.gamestate == GameState.LEVEL then
 		local player       = Players[Players.Current]
 		local screenCenter = screen_to_game({
 			x = (ScreenWidth+PADDING_WIDTH)/2,
@@ -1119,7 +1126,7 @@ function check_map_change()
 	local episode = Globals.gameepisode
 	local map     = Globals.gamemap
 	
-	if Globals.gamestate ~= 0
+	if Globals.gamestate ~= GameState.LEVEL
 	or (LastEpisode and LastMap and (episode ~= LastEpisode or map ~= LastMap)) then
 		clear_cache()
 		reset_view()
