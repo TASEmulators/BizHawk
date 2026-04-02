@@ -532,12 +532,12 @@ local function iterate()
 	local max       = Players.Current == Players.Max and Scroller.NONE or Scroller.RIGHT
 	GUITexts        = {}
 	GUITexts.player = string.format(
-		"     %sPLAYER %d%s\n" ..
+		"     %sPLAYER %s%s\n" ..
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
 		" momX: %.6f\n momY: %.6f\n" ..
 		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
-		min, Players.Current, max,
+		min, Players.Min ~= Players.Max and Players.Current or "", max,
 		player.x,
 		player.y,
 		player.z,
@@ -709,11 +709,10 @@ while true do
 	end
 
 	-- workaround: prevent multiple execution per frame because of emu.yield(), except when paused
-	if (Framecount ~= LastFramecount or paused)
-	and Globals.gamestate == GameState.LEVEL
-	and emu.framecount() > 0
-	then
-		iterate()
+	if (Framecount ~= LastFramecount or paused) then
+		if Globals.gamestate == GameState.LEVEL and emu.framecount() > 0 then
+			iterate()
+		end
 		LastMouse.left = Mouse.Left
 	end
 
