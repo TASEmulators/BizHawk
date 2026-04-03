@@ -1077,7 +1077,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Cursor = IsHoveringOnColumnEdge || _columnResizing != null
 				? Cursors.VSplit
-				: Cursors.Default;
+				: null; // use parent's cursor
 
 			base.OnMouseMove(e);
 		}
