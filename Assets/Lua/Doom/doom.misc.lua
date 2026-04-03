@@ -1177,15 +1177,15 @@ local function settings_read()
 	
 	-- TRACKED ENTITIES
 	if not Config.tracked then return end
-	for _,type in pairs(TrackedType) do
-		local entity   = Tracked[type]
+	for _,ttype in pairs(TrackedType) do
+		local entity   = Tracked[ttype]
 		local source   = Config.tracked[entity.Name]
 		entity.Current = source.Current
 		entity.Min     = math.maxinteger
 		entity.Max     = math.mininteger
 
 		if entity.Current then
-			if type == TrackedType.LINE then
+			if ttype == TrackedType.LINE then
 				for _,v in pairs(source.TrackedList) do
 					for _, line in pairs(Globals.lines) do
 						if v == line.iLineID then
@@ -1196,7 +1196,7 @@ local function settings_read()
 						end
 					end
 				end
-			elseif type == TrackedType.SECTOR then
+			elseif ttype == TrackedType.SECTOR then
 				for _,v in pairs(source.TrackedList) do
 					for _, sector in pairs(Globals.sectors) do
 						if v == sector.iSectorID then
@@ -1207,7 +1207,7 @@ local function settings_read()
 						end
 					end
 				end
-			elseif type == TrackedType.THING then
+			elseif ttype == TrackedType.THING then
 				for _,v in pairs(source.TrackedList) do
 					for _, mobj in pairs(Globals.mobjs:readbulk()) do
 						if v == mobj.index then
@@ -1220,8 +1220,14 @@ local function settings_read()
 				end
 			end
 
-			if not entity.TrackedList[entity.Current] then
+			if not entity.TrackedList[entity.Current]
+			and entity.Min ~= math.maxinteger
+			then
 				entity.Current = entity.Min
+			end
+
+			if entity.Min == math.maxinteger then
+				entity.Current = nil
 			end
 		end
 	end
@@ -1256,6 +1262,7 @@ function settings_write()
 		file:write("\n")
 		
 		-- TRACKED ENTITIES
+		file:write("-- keys in TrackedList are internal and meaningless, values hold actual IDs of tracked entities\n")
 		local tracked = {}
 		
 		for _,t in pairs(TrackedType) do
@@ -1430,7 +1437,7 @@ function make_button(x, y, name, func)
 	
 	-- delete button
 	if name == " X " then
-		colors = { 0x66ff6666, 0xaaff0000, 0xffff0000 }
+		colors = { 0x88ff8888, 0xffff0000, 0xffff0000 }
 	end
 	
 	if x < 0 then x = ScreenWidth  + x end
