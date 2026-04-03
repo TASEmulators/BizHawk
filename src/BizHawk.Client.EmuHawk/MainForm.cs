@@ -3941,6 +3941,8 @@ namespace BizHawk.Client.EmuHawk
 				if (saveMovieResult == TryAgainResult.Canceled) return false;
 			}
 
+			Tools.Stop();
+
 			if (clearSram)
 			{
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
