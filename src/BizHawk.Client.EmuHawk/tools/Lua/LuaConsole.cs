@@ -1193,7 +1193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RegisterToTextEditorsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void IntegrationMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			// Hide until this one is implemented
 			RegisterNotePadMenuItem.Visible = false;
@@ -1251,6 +1251,38 @@ namespace BizHawk.Client.EmuHawk
 		private void RegisterNotePadMenuItem_Click(object sender, EventArgs e)
 		{
 			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad, LuaImp.Docs);
+		}
+
+		private void GenerateLuaCatsDefinitionMenuItem_Click(object sender, EventArgs e)
+		{
+			DialogResult result;
+			string selectedPath;
+			string description = "Set the directory for LuaCATS definitions";
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// FolderBrowserEx doesn't work in Mono for obvious reasons
+				using var f = new FolderBrowserDialog
+				{
+					Description = description,
+					SelectedPath = Config!.PathEntries.LuaAbsolutePath(),
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+			else
+			{
+				using var f = new FolderBrowserEx
+				{
+					Description = description,
+					SelectedPath = Config!.PathEntries.LuaAbsolutePath(),
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+			if (result.IsOk())
+			{
+				LuaImp.Docs.ToLuaLanguageServerDefinitions(selectedPath);
+			}
 		}
 
 		private void FunctionsListMenuItem_Click(object sender, EventArgs e)

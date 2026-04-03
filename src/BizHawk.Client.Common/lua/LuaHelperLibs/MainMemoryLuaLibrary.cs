@@ -56,6 +56,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
+		[return: LuaZeroIndexed]
 		public LuaTable ReadByteRange(long addr, int length)
 			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName), indexFrom: 0);
 

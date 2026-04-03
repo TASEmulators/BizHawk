@@ -46,17 +46,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private string AppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
+		private string ProgramFilesFolder => Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+
 		private bool IsSublimeInstalled()
 		{
 			// The most likely location of the app, eventually we should consider looking through the registry or installed apps as a more robust way to detect it;
-			string exePath = @"C:\Program Files\Sublime Text 2\sublime_text.exe";
+			string exePath = Path.Combine(ProgramFilesFolder, @"Sublime Text 2\sublime_text.exe");
 			return File.Exists(exePath);
 		}
 
 		private bool IsNotepadInstalled()
 		{
 			// The most likely location of the app, eventually we should consider looking through the registry or installed apps as a more robust way to detect it;
-			string exePath = @"C:\Program Files (x86)\Notepad++\notepad++.exe";
+			string exePath = Path.Combine(ProgramFilesFolder, @"Notepad++\notepad++.exe");
 			return File.Exists(exePath);
 		}
 

@@ -16,6 +16,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetMemoryDomainList()
 			=> _th.EnumerateToLuaTable(APIs.Memory.GetMemoryDomainList(), indexFrom: 0);
 
@@ -56,6 +57,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
+		[return: LuaZeroIndexed]
 		public LuaTable ReadByteRange(long addr, int length, string domain = null)
 			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain), indexFrom: 0);
 
