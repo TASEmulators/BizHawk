@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
@@ -24,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _scanline;
 
-		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
+		private Bitmap _zoomBoxDefaultImage = BitmapBuffer.CreateBitmapObject(new(64, 64));
 		private bool _forceChange;
 
 		[RequiredService]
@@ -300,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 		private static Bitmap Section(Image srcBitmap, Rectangle section, bool is8x16)
 		{
 			// Create the new bitmap and associated graphics object
-			var bmp = new Bitmap(64, 64);
+			var bmp = BitmapBuffer.CreateBitmapObject(new(64, 64));
 			var g = Graphics.FromImage(bmp);
 
 			// Draw the specified section of the source bitmap to the new one
@@ -473,7 +474,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesPPU_MouseClick(object sender, MouseEventArgs e)
 		{
-			ZoomBox.Image = new Bitmap(64, 64);
+			ZoomBox.Image = BitmapBuffer.CreateBitmapObject(new(64, 64));
 		}
 
 		private void NesPPU_KeyDown(object sender, KeyEventArgs e)
@@ -666,7 +667,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = $"Address: 0x{addr:X4}";
 			int val;
 
-			var bmp = new Bitmap(64, 64);
+			var bmp = BitmapBuffer.CreateBitmapObject(new(64, 64));
 			var g = Graphics.FromImage(bmp);
 
 			byte[] palRam = _ppu.GetPalRam();

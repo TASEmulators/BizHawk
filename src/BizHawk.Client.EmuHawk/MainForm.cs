@@ -3352,7 +3352,7 @@ namespace BizHawk.Client.EmuHawk
 
 					bbIn.DiscardAlpha();
 
-					Bitmap bmpOut = new(width: Config.AVWriterResizeWidth, height: Config.AVWriterResizeHeight, PixelFormat.Format32bppArgb);
+					var bmpOut = BitmapBuffer.CreateBitmapObject(new(width: Config.AVWriterResizeWidth, height: Config.AVWriterResizeHeight));
 					bmpIn = bbIn.ToSysdrawingBitmap();
 					using (var g = Graphics.FromImage(bmpOut))
 					{

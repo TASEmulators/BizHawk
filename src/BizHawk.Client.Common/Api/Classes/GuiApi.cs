@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, Bitmap> _imageCache = new();
 
-		private readonly Bitmap _nullGraphicsBitmap = new(1, 1);
+		private readonly Bitmap _nullGraphicsBitmap = BitmapBuffer.CreateBitmapObject(new(1, 1));
 
 		private CompositingMode _compositingMode = CompositingMode.SourceOver;
 

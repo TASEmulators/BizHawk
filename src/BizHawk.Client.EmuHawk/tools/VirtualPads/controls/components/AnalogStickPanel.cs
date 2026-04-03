@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -137,8 +139,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Pen _bluePen = new Pen(Brushes.Blue, 2);
 		private readonly Pen _grayPen = new Pen(Brushes.Gray, 2);
 
-		private readonly Bitmap _dot = new Bitmap(7, 7);
-		private readonly Bitmap _grayDot = new Bitmap(7, 7);
+		private readonly Bitmap _dot = BitmapBuffer.CreateBitmapObject(new(7, 7));
+
+		private readonly Bitmap _grayDot = BitmapBuffer.CreateBitmapObject(new(7, 7));
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Action ClearCallback { get; set; }

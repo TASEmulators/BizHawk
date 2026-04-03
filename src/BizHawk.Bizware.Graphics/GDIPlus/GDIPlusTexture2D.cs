@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace BizHawk.Bizware.Graphics
 {
@@ -16,7 +15,7 @@ namespace BizHawk.Bizware.Graphics
 		{
 			Width = width;
 			Height = height;
-			SDBitmap = new(width, height, PixelFormat.Format32bppArgb);
+			SDBitmap = BitmapBuffer.CreateBitmapObject(new(width: width, height: height));
 		}
 
 		public virtual void Dispose()

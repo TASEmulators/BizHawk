@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class PatternViewer : Control
@@ -12,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		public PatternViewer()
 		{
 			var pSize = new Size(256, 128);
-			Pattern = new Bitmap(pSize.Width, pSize.Height);
+			Pattern = BitmapBuffer.CreateBitmapObject(pSize);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -32,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			var b = new Bitmap(Width, Height);
+			var b = BitmapBuffer.CreateBitmapObject(Size);
 			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
