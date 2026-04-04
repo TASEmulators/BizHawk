@@ -208,7 +208,8 @@ namespace BizHawk.Client.Common
 
 #if DEBUG
 			var bindings = dict.Values
-				.Where(static info => !info.DisplayName.StartsWith("RA ") && !string.IsNullOrEmpty(info.DefaultBinding))
+				// We skip TAStudio analog hotkeys because they have special handling (no other hotkey can trigger when in analog editing mode)
+				.Where(static info => !(info.DisplayName.StartsWith("Analog ") && info.TabGroup == "TAStudio") && !string.IsNullOrEmpty(info.DefaultBinding))
 				.Select(static info => info.DefaultBinding)
 				.ToArray();
 			Debug.Assert(bindings.Distinct().CountIsExactly(bindings.Length), "Do not default bind multiple hotkeys to the same button combination.");
