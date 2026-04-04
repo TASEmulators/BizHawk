@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					1)
 			};
 
-			_memoryDomains = new MemoryDomainList(domains);
+			_memoryDomains = new MemoryDomainList(domains, this);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 

@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					pokeByte, 4
 				));
 
-			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			MemoryDomains = new MemoryDomainList(_memoryDomains, this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 	}
