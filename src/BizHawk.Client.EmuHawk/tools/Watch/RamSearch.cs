@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 			ErrorIconButton.Visible = _searches.OutOfRangeAddress.Any();
 		}
 
-		private void ListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void ListView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			if ((_searches.Count > 0) && (index < _searches.Count))
 			{
@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void ListView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 

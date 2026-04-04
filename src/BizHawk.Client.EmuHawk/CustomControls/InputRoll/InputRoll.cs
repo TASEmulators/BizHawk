@@ -95,6 +95,8 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SuspendHotkeys { get; set; }
 
+		public event Action ColumnsChanged;
+
 		public InputRoll()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -183,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						string text = "";
 						int offSetX = 0, offSetY = 0;
-						QueryItemText?.Invoke(i, col, out text, ref offSetX, ref offSetY);
+						QueryItemText?.Invoke(this, i, col, out text, ref offSetX, ref offSetY);
 						if (text.Length > maxLength)
 						{
 							maxLength = text.Length;
@@ -489,32 +491,32 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
-		public delegate void QueryItemTextHandler(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY);
+		public delegate void QueryItemTextHandler(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY);
 
 		/// <summary>
 		/// Retrieve the background color for a cell
 		/// </summary>
-		public delegate void QueryItemBkColorHandler(int index, RollColumn column, ref Color color);
-		public delegate void QueryRowBkColorHandler(int index, ref Color color);
+		public delegate void QueryItemBkColorHandler(InputRoll sender, int index, RollColumn column, ref Color color);
+		public delegate void QueryRowBkColorHandler(InputRoll sender, int index, ref Color color);
 
 		/// <summary>
 		/// Retrieve the image for a given cell
 		/// </summary>
-		public delegate void QueryItemIconHandler(int index, RollColumn column, ref Bitmap icon, ref int offsetX, ref int offsetY);
+		public delegate void QueryItemIconHandler(InputRoll sender, int index, RollColumn column, ref Bitmap icon, ref int offsetX, ref int offsetY);
 
 		/// <summary>
 		/// Check if a given frame is a lag frame
 		/// </summary>
-		public delegate bool QueryFrameLagHandler(int index, bool hideWasLag);
+		public delegate bool QueryFrameLagHandler(InputRoll sender, int index, bool hideWasLag);
 
 		/// <summary>
 		/// Check if clicking the current cell should select it.
 		/// </summary>
-		public delegate bool QueryShouldSelectCellHandler(MouseButtons button);
+		public delegate bool QueryShouldSelectCellHandler(InputRoll sender, MouseButtons button);
 
-		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
+		public delegate void CellChangeEventHandler(InputRoll sender, CellEventArgs e);
 
-		public delegate void HoverEventHandler(object sender, CellEventArgs e);
+		public delegate void HoverEventHandler(InputRoll sender, CellEventArgs e);
 
 		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
@@ -655,25 +657,12 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool RightButtonHeld { get; private set; }
 
-		public InputRollSettings GetUserSettings() => Settings;
-
-		public void LoadSettings(InputRollSettings settings)
+		public void LoadColumns(RollColumns columns)
 		{
-			_columns = settings.Columns;
+			_columns = columns;
 			_columns.ChangedCallback = ColumnChangedCallback;
 			_columns.ColumnsChanged();
-			HorizontalOrientation = settings.HorizontalOrientation;
-			LagFramesToHide = settings.LagFramesToHide;
-			HideWasLagFrames = settings.HideWasLagFrames;
 		}
-
-		private InputRollSettings Settings => new InputRollSettings
-		{
-			Columns = _columns,
-			HorizontalOrientation = HorizontalOrientation,
-			LagFramesToHide = LagFramesToHide,
-			HideWasLagFrames = HideWasLagFrames,
-		};
 
 		public class InputRollSettings
 		{
@@ -1145,7 +1134,7 @@ namespace BizHawk.Client.EmuHawk
 					OnMouseMove(e);
 			}
 
-			if (IsHoveringOnDataCell && QueryShouldSelectCell?.Invoke(e.Button) != false)
+			if (IsHoveringOnDataCell && QueryShouldSelectCell?.Invoke(this, e.Button) != false)
 			{
 				if (e.Button == MouseButtons.Left)
 				{
@@ -1659,6 +1648,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
 			}
+
+			ColumnsChanged?.Invoke();
 		}
 
 		private void DoColumnReorder()
@@ -1751,7 +1742,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				_vBar.Location = new Point(Width - _vBar.Width, 0);
 				_vBar.Height = Height;
 				_vBar.Visible = true;
 			}
@@ -1773,7 +1763,6 @@ namespace BizHawk.Client.EmuHawk
 					_hBar.Maximum = TotalColWidth - _drawWidth + _hBar.LargeChange;
 				}
 
-				_hBar.Location = new Point(0, Height - _hBar.Height);
 				_hBar.Width = Width - (NeedsVScrollbar ? (_vBar.Width + 1) : 0);
 				_hBar.Visible = true;
 			}
@@ -1782,6 +1771,17 @@ namespace BizHawk.Client.EmuHawk
 				_hBar.Visible = false;
 				_hBar.Value = 0;
 			}
+
+			RepositionScrollbars();
+		}
+
+		public void RepositionScrollbars()
+		{
+			int edge = Parent != null ? Math.Min(Width, Parent.Width - Left) : Width;
+			_vBar.Location = new Point(Math.Max(edge - _vBar.Width, 0), 0);
+
+			edge = Parent != null ? Math.Min(Height, Parent.Height - Top) : Height;
+			_hBar.Location = new Point(0, Math.Max(edge - _hBar.Height, 0));
 		}
 
 		private void UpdateDrawSize()
@@ -1885,7 +1885,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!(IsPaintDown || RightButtonHeld) && newCell.RowIndex <= -1) // -2 if we're entering from the top
+			// We don't show the pointed cell as being a column header (RowIndex = null) if we are holding right mouse button. (This allows right-click dragging to rows above the top one.)
+			// hack: MouseMove events do not happen while a context menu is open, leading to a column right-click not working if a context menu was already open.
+			// we solve this by only considering right button if the prior cell has a row value
+			bool rightButton = RightButtonHeld && CurrentCell.RowIndex != null;
+			if (!(IsPaintDown || rightButton) && newCell.RowIndex <= -1) // -2 if we're entering from the top
 			{
 				newCell.RowIndex = null;
 			}
@@ -1900,7 +1904,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool NeedsHScrollbar { get; set; }
 
 		// Gets the total width of all the columns by using the last column's Right property.
-		private int TotalColWidth => _columns.VisibleColumns.Any()
+		public int TotalColWidth => _columns.VisibleColumns.Any()
 			? _columns.VisibleColumns.Last().Right
 			: 0;
 
@@ -2032,7 +2036,7 @@ namespace BizHawk.Client.EmuHawk
 				// First one needs to check BACKWARDS for lag frame count.
 				SetLagFramesFirst();
 				int f = _lagFrames[0];
-				if (QueryFrameLag(firstVisibleRow + f, HideWasLagFrames))
+				if (QueryFrameLag(this, firstVisibleRow + f, HideWasLagFrames))
 				{
 					showNext = true;
 				}
@@ -2044,7 +2048,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (; _lagFrames[i] < LagFramesToHide; _lagFrames[i]++)
 						{
-							if (!QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
+							if (!QueryFrameLag(this, firstVisibleRow + i + f, HideWasLagFrames))
 							{
 								break;
 							}
@@ -2054,13 +2058,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						if (!QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
+						if (!QueryFrameLag(this, firstVisibleRow + i + f, HideWasLagFrames))
 						{
 							showNext = false;
 						}
 					}
 
-					if (_lagFrames[i] == LagFramesToHide && QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
+					if (_lagFrames[i] == LagFramesToHide && QueryFrameLag(this, firstVisibleRow + i + f, HideWasLagFrames))
 					{
 						showNext = true;
 					}
@@ -2085,7 +2089,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					count++;
 				}
-				while (QueryFrameLag(firstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
+				while (QueryFrameLag(this, firstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
 				count--;
 
 				// Count forward
@@ -2094,7 +2098,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					fCount++;
 				}
-				while (QueryFrameLag(firstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
+				while (QueryFrameLag(this, firstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
 				_lagFrames[0] = (byte)fCount;
 			}
 			else

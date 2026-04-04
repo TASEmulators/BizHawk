@@ -113,6 +113,12 @@ namespace BizHawk.Emulation.Common
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
 		}
 
+		public void AssertImmutable()
+		{
+			const string ERR_MSG = "this " + nameof(ControllerDefinition) + " has not been marked immutable";
+			if (_mutable) throw new InvalidOperationException(ERR_MSG);
+		}
+
 		/// <remarks>implementors should include empty lists for empty players, including "player 0", to match this base implementation</remarks>
 		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
@@ -166,5 +172,20 @@ namespace BizHawk.Emulation.Common
 
 		public bool Any()
 			=> BoolButtons.Count is not 0 || Axes.Count is not 0;
+
+		public static ControllerDefinition Merge(ControllerDefinition def1, ControllerDefinition def2)
+		{
+			ControllerDefinition merged = new("merged");
+			merged.BoolButtons = def1.BoolButtons.Union(def2.BoolButtons).ToList();
+			foreach (var axis in def1.Axes.Concat(def2.Axes))
+			{
+				if (!merged.Axes.ContainsKey(axis.Key))
+				{
+					merged.AddAxis(axis.Key, axis.Value.Range, axis.Value.Neutral, axis.Value.IsReversed, axis.Value.Constraint);
+				}
+			}
+
+			return merged.MakeImmutable();
+		}
 	}
 }

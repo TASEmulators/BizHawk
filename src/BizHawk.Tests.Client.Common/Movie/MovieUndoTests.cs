@@ -97,11 +97,14 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void InsertFrame()
+		[DataRow(true)]
+		[DataRow(false)]
+		public void InsertFrame(bool useMultitrack)
 		{
 			ITasMovie movie = TasMovieTests.MakeMovie(5);
 			movie.SetBoolState(2, "A", true);
 			movie.SetBoolState(3, "B", true);
+			if (useMultitrack) Bk2MovieTests.SetSingleActiveInput(movie, "B");
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
@@ -110,11 +113,14 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void DeleteFrame()
+		[DataRow(true)]
+		[DataRow(false)]
+		public void DeleteFrame(bool useMultitrack)
 		{
 			ITasMovie movie = TasMovieTests.MakeMovie(5);
 			movie.SetBoolState(2, "A", true);
 			movie.SetBoolState(4, "B", true);
+			if (useMultitrack) Bk2MovieTests.SetSingleActiveInput(movie, "B");
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
@@ -123,11 +129,14 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void DeleteFrames()
+		[DataRow(true)]
+		[DataRow(false)]
+		public void DeleteFrames(bool useMultitrack)
 		{
 			ITasMovie movie = TasMovieTests.MakeMovie(10);
 			movie.SetBoolState(2, "A", true);
 			movie.SetBoolState(4, "B", true);
+			if (useMultitrack) Bk2MovieTests.SetSingleActiveInput(movie, "B");
 
 			// both overloads
 			ValidateActionCanUndoAndRedo(movie, () =>
@@ -143,11 +152,14 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void CloneFrame()
+		[DataRow(true)]
+		[DataRow(false)]
+		public void CloneFrame(bool useMultitrack)
 		{
 			ITasMovie movie = TasMovieTests.MakeMovie(5);
 			movie.SetBoolState(2, "A", true);
 			movie.SetBoolState(3, "B", true);
+			if (useMultitrack) Bk2MovieTests.SetSingleActiveInput(movie, "B");
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
@@ -182,9 +194,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void RecordFrameAtEnd()
+		[DataRow(true)]
+		[DataRow(false)]
+		public void RecordFrameAtEnd(bool useMultitrack)
 		{
 			ITasMovie movie = TasMovieTests.MakeMovie(5);
+			if (useMultitrack) Bk2MovieTests.SetSingleActiveInput(movie, "A");
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
@@ -195,9 +210,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		}
 
 		[TestMethod]
-		public void RecordFrameInMiddle()
+		[DataRow(true)]
+		[DataRow(false)]
+		public void RecordFrameInMiddle(bool useMultitrack)
 		{
 			ITasMovie movie = TasMovieTests.MakeMovie(5);
+			if (useMultitrack) Bk2MovieTests.SetSingleActiveInput(movie, "A");
 
 			ValidateActionCanUndoAndRedo(movie, () =>
 			{
@@ -296,7 +314,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 				},
 				() =>
 				{
-					movie.SetFrame(0, entryA);
+					movie.PokeFrame(0, entryA);
 					movie.ChangeLog.EndBatch();
 
 #pragma warning disable BHI1600 //TODO disambiguate assert calls

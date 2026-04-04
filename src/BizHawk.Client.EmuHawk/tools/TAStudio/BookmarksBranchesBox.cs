@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.AllColumns.Add(new(name: UserTextColumnName, widthUnscaled: 90, text: "UserText"));
 		}
 
-		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private void QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
 			if (Tastudio.CurrentTasMovie == null)

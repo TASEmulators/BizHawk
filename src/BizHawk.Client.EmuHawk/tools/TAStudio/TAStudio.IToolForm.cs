@@ -81,9 +81,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			bool refreshNeeded = TasView.IsPartiallyVisible(Emulator.Frame) ||
-				TasView.IsPartiallyVisible(_lastRefresh) ||
-				TasView.RowCount != CurrentTasMovie.InputLogLength + 1;
+			bool refreshNeeded = IsRowVisibleAnyRoll(Emulator.Frame) ||
+				IsRowVisibleAnyRoll(_lastRefresh) ||
+				_inputRolls[0].RowCount != CurrentTasMovie.InputLogLength + 1;
 			if (Settings.AutoadjustInput)
 			{
 				//refreshNeeded = AutoAdjustInput();

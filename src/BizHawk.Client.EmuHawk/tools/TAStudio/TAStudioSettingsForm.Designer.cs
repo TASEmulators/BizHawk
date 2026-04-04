@@ -100,6 +100,7 @@
 			this.AutopauseCheckbox = new System.Windows.Forms.CheckBox();
 			this.SettingsCancelButton = new System.Windows.Forms.Button();
 			this.ApplyButton = new System.Windows.Forms.Button();
+			this.EditInvisibleColumnsCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
@@ -701,6 +702,7 @@
 			// tabPage3
 			// 
 			this.tabPage3.Controls.Add(this.OldBranchesCheckbox);
+			this.tabPage3.Controls.Add(this.EditInvisibleColumnsCheckbox);
 			this.tabPage3.Controls.Add(this.BranchDoubleClickCheckbox);
 			this.tabPage3.Controls.Add(this.FastRewindNum);
 			this.tabPage3.Controls.Add(this.label8);
@@ -970,6 +972,16 @@
 			this.ApplyButton.UseVisualStyleBackColor = true;
 			this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
 			// 
+			// EditInvisibleColumnsCheckbox
+			// 
+			this.EditInvisibleColumnsCheckbox.AutoSize = true;
+			this.EditInvisibleColumnsCheckbox.Location = new System.Drawing.Point(12, 369);
+			this.EditInvisibleColumnsCheckbox.Name = "EditInvisibleColumnsCheckbox";
+			this.EditInvisibleColumnsCheckbox.Size = new System.Drawing.Size(308, 17);
+			this.EditInvisibleColumnsCheckbox.TabIndex = 518;
+			this.EditInvisibleColumnsCheckbox.Text = "Allow editing hidden columns (with clear, record, paste, etc.)";
+			this.EditInvisibleColumnsCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// TAStudioSettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1084,5 +1096,6 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.CheckBox OldBranchesCheckbox;
+		private System.Windows.Forms.CheckBox EditInvisibleColumnsCheckbox;
 	}
 }

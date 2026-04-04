@@ -55,9 +55,9 @@ namespace BizHawk.Client.EmuHawk
 			MarkerIconsCheckbox.Checked = _settings.GeneralClientSettings.DenoteMarkersWithIcons;
 			StateColorCheckbox.Checked = _settings.GeneralClientSettings.DenoteStatesWithBGColor;
 			StateIconsCheckbox.Checked = _settings.GeneralClientSettings.DenoteStatesWithIcons;
-			HideLagNum.Value = _settings.MovieSettings.InputRollSettings.LagFramesToHide;
-			HideWasLagCheckbox.Checked = _settings.MovieSettings.InputRollSettings.HideWasLagFrames;
-			RotateCheckbox.Checked = _settings.MovieSettings.InputRollSettings.HorizontalOrientation;
+			HideLagNum.Value = _settings.MovieSettings.LagFramesToHide;
+			HideWasLagCheckbox.Checked = _settings.MovieSettings.HideWasLagFrames;
+			RotateCheckbox.Checked = _settings.MovieSettings.HorizontalOrientation;
 
 			// autosave
 			AutosaveBackupCheckbox.Checked = _settings.GeneralClientSettings.AutosaveAsBackupFile;
@@ -72,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			OldBranchesCheckbox.Checked = _settings.GeneralClientSettings.OldControlSchemeForBranches;
 			IncludeFrameNumberCheckbox.Checked = _settings.GeneralClientSettings.CopyIncludesFrameNo;
 			AlwaysScrollCheckbox.Checked =  _settings.GeneralClientSettings.FollowCursorAlwaysScroll;
+			EditInvisibleColumnsCheckbox.Checked = _settings.GeneralClientSettings.EditInvisibleColumns;
 			UndoCountNum.Value = _settings.GeneralClientSettings.MaxUndoSteps;
 			RewindNum.Value = _settings.GeneralClientSettings.RewindStep;
 			FastRewindNum.Value = _settings.GeneralClientSettings.RewindStepFast;
@@ -436,6 +437,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ApplyButton_Click(object sender, EventArgs e)
 		{
+			// warn the user of potentailly harmful settings
+			bool wasAlreadyBad = _settings.GeneralClientSettings.BindMarkersToInput && !_settings.GeneralClientSettings.EditInvisibleColumns;
+			bool isBad = BindMarkersCheckbox.Checked && !EditInvisibleColumnsCheckbox.Checked;
+			if (isBad && !wasAlreadyBad)
+			{
+				if (MessageBox.Show(
+					text: "You have enabled 'bind markers to input' and disabled 'allow editing hidden columns'. This combination is not recommended, and may result in your markers being moved in unexpected ways. Continue?",
+					caption: "Warning",
+					buttons: MessageBoxButtons.OKCancel,
+					icon: MessageBoxIcon.Warning) == DialogResult.Cancel)
+				{
+					return;
+				}
+			}
+
 			// stuff we keep copies of
 			_settings.GeneralClientSettings.Palette = _palette;
 			_settings.GeneralClientSettings.TasViewFont = _font;
@@ -449,9 +465,9 @@ namespace BizHawk.Client.EmuHawk
 			_settings.GeneralClientSettings.DenoteMarkersWithIcons = MarkerIconsCheckbox.Checked;
 			_settings.GeneralClientSettings.DenoteStatesWithBGColor = StateColorCheckbox.Checked;
 			_settings.GeneralClientSettings.DenoteStatesWithIcons = StateIconsCheckbox.Checked;
-			_settings.MovieSettings.InputRollSettings.LagFramesToHide = (int)HideLagNum.Value;
-			_settings.MovieSettings.InputRollSettings.HideWasLagFrames = HideWasLagCheckbox.Checked;
-			_settings.MovieSettings.InputRollSettings.HorizontalOrientation = RotateCheckbox.Checked;
+			_settings.MovieSettings.LagFramesToHide = (int)HideLagNum.Value;
+			_settings.MovieSettings.HideWasLagFrames = HideWasLagCheckbox.Checked;
+			_settings.MovieSettings.HorizontalOrientation = RotateCheckbox.Checked;
 
 			_settings.GeneralClientSettings.AutosaveAsBackupFile = AutosaveBackupCheckbox.Checked;
 			_settings.GeneralClientSettings.AutosaveAsBk2 = AutosaveBk2Checkbox.Checked;
@@ -464,6 +480,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.GeneralClientSettings.OldControlSchemeForBranches = OldBranchesCheckbox.Checked;
 			_settings.GeneralClientSettings.CopyIncludesFrameNo = IncludeFrameNumberCheckbox.Checked;
 			_settings.GeneralClientSettings.FollowCursorAlwaysScroll = AlwaysScrollCheckbox.Checked;
+			_settings.GeneralClientSettings.EditInvisibleColumns = EditInvisibleColumnsCheckbox.Checked;
 			_settings.GeneralClientSettings.MaxUndoSteps = (int)UndoCountNum.Value;
 			_settings.GeneralClientSettings.RewindStep = (int)RewindNum.Value;
 			_settings.GeneralClientSettings.RewindStepFast = (int)FastRewindNum.Value;

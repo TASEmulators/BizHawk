@@ -419,10 +419,11 @@ namespace BizHawk.Client.EmuHawk
 			name: "addcolumn",
 			description: "Extends the piano roll with an extra column for data visualisation."
 				+ " The text parameter is used as the column header, while the name parameter is used to identify the column for {{onqueryitem*}} callbacks."
-				+ " And width is obviously the width (in dp).")]
-		public void AddColumn(string name, string text, int width)
+				+ " And width is obviously the width (in dp)."
+				+ " If you have multiple input rolls, rollIndex can specify which one it should be visible in.")]
+		public void AddColumn(string name, string text, int width, int? rollIndex = null)
 		{
-			if (Engaged()) Tastudio.AddColumn(name: name, widthUnscaled: width, text: text);
+			if (Engaged()) Tastudio.AddColumn(name: name, widthUnscaled: width, text: text, rollIndex: rollIndex ?? 0);
 		}
 
 		[LuaMethodExample("tastudio.setbranchtext( \"Some text\", 1 );")]
