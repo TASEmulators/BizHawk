@@ -7,8 +7,10 @@ dofile("doom.misc.lua")
 --#region ACTUAL WORK
 
 local function iterate_players()
+	Players.List = {}
+
 	for i, player in Globals:iterate_players() do
-		Players[i] = {
+		Players.List[i] = {
 			thinker = player.mo.thinker._address,
 			x       = player.mo.x     / FRACUNIT,
 			y       = player.mo.y     / FRACUNIT,
@@ -21,20 +23,21 @@ local function iterate_players()
 			angle   = math.floor(player.mo.angle * (Angle / ANGLE_90))
 		}
 		
-		Players[i].distx      = Players[i].x - Players[i].prevx
-		Players[i].disty      = Players[i].y - Players[i].prevy
-		Players[i].distz      = Players[i].z - Players[i].prevz	
-		Players[i].distmoved  = math.sqrt(
-			Players[i].distx * Players[i].distx +
-			Players[i].disty * Players[i].disty)
+		Players.List[i].distx      = Players.List[i].x - Players.List[i].prevx
+		Players.List[i].disty      = Players.List[i].y - Players.List[i].prevy
+		Players.List[i].distz      = Players.List[i].z - Players.List[i].prevz	
+		Players.List[i].distmoved  = math.sqrt(
+			Players.List[i].distx * Players.List[i].distx +
+			Players.List[i].disty * Players.List[i].disty)
 		
-		if Players[i].distx == 0 and Players[i].disty == 0 then
-			Players[i].dirmoved = 0
+		if Players.List[i].distx == 0 and Players.List[i].disty == 0 then
+			Players.List[i].dirmoved = 0
 		else
-			local angle = math.atan(Players[i].distx / Players[i].disty) * 180 / math.pi - 90
-			if Players[i].disty >= 0
-			then Players[i].dirmoved = -angle
-			else Players[i].dirmoved = -angle + 180
+			local angle = math.atan(Players.List[i].distx / Players.List[i].disty)
+				* 180 / math.pi - 90
+			if Players.List[i].disty >= 0
+			then Players.List[i].dirmoved = -angle
+			else Players.List[i].dirmoved = -angle + 180
 			end
 		end
 
@@ -71,7 +74,7 @@ local function thing_handler()
 		--	drawline(triangle.c.x, triangle.c.y, triangle.a.x, triangle.a.y, radius_color)
 
 			if name == "PLAYER" then
-				for i, player in pairs(Players) do
+				for i, player in pairs(Players.List) do
 					if type(player) == "table"
 					and player.thinker == mobj.thinker._address
 					and Players.Min ~= Players.Max
@@ -135,7 +138,7 @@ local function line_handler()
 	if not ShowMap then return end
 	
 	local closestLine, selectedSector
-	local player       = Players[Players.Current]
+	local player       = Players.List[Players.Current]
 	local mousePos     = client.transformPoint(Mouse.X, Mouse.Y)
 	local gameMousePos = screen_to_game(mousePos)
 	local shortestDist = math.maxinteger
@@ -222,7 +225,7 @@ local function line_handler()
 end
 
 local function tracked_handler()
-	local player   = Players[Players.Current]
+	local player   = Players.List[Players.Current]
 	local mousePos = client.transformPoint(Mouse.X, Mouse.Y)
 	
 	if Tracked[TrackedType.THING].Current then
@@ -525,8 +528,9 @@ end
 local function iterate()
 	if Init then return end
 	
+	---@type player
+	local player    = Players.List[Players.Current]
 	local mousePos  = client.transformPoint(Mouse.X, Mouse.Y)
-	local player    = Players[Players.Current]
 	local rngindex  = Globals.rng.rndindex
 	local min       = Players.Current == Players.Min and Scroller.NONE or Scroller.LEFT
 	local max       = Players.Current == Players.Max and Scroller.NONE or Scroller.RIGHT

@@ -132,6 +132,27 @@ function TrackedEntity.new(name)
 	return self
 end
 
+--- Just a list of things we display for players
+---@class (exact) player
+---@field x number
+---@field y number
+---@field z number
+---@field distx number
+---@field disty number
+---@field distz number
+---@field momx number
+---@field momy number
+---@field distmoved number
+---@field dirmoved number
+---@field angle integer
+
+--- Players can't be fully deduced from `mobj` list because they will all have -1 `index`, but they have separate predetermined slots in memory, so we display player indices deduced from those the way we display `mobj` indices.
+---@class (exact) players
+---@field List player[] List of actual player objects
+---@field Current integer Index of the currently displayed player
+---@field Min integer Lowest present index
+---@field Max integer Highest present index
+
 --- Vanilla variables that intercepts overflow would corrupt. `playerstarts` is a `mapthing_t` list in vanilla; nested one in upstream but we're not displaying that detail. Index augend is taken from the original, and index addend exists to indicate lua's 1-based lists.
 ---@class (exact) intercept_overrun
 ---@field name string Full name of the vanilla variable we're corrupting
@@ -271,13 +292,14 @@ Tracked = {
 
 
 -- TABLES
-Players            = {}
-Config             = {}
-PRandomInfo        = {}
-DivLines           = {}
-MapBlocks          = {}
-GUITexts           = {}
+Config      = {}
+PRandomInfo = {}
+DivLines    = {}
+MapBlocks   = {}
+GUITexts    = {}
 
+---@type players
+Players = {}
 --- Intercept objects per block
 ---@type table<number, intercept_info[]>
 Intercepts = {}
@@ -437,7 +459,7 @@ local function intercept_logger(block)
 				client.pause()
 			else
 				text = string.format(
-					"Tic %d, block %d, %d intercepts",
+					"tic %d, block %d, %d intercepts",
 					Globals.gametic, block, count
 				)
 				InterceptsInfo = InterceptsState.PRINT
@@ -580,7 +602,7 @@ local function line_event(event, line, thing)
 	line  = line  - 0x36f00000000
 	thing = thing - 0x36f00000000
 	
-	for i, player in pairs(Players) do
+	for i, player in pairs(Players.List) do
 		if player.thinker == thing then
 			thing = "player " .. i
 			break
@@ -1004,7 +1026,7 @@ function update_zoom()
 	LastMouse.wheel = mouseWheel
 	
 	if Follow and Globals.gamestate == GameState.LEVEL then
-		local player       = Players[Players.Current]
+		local player       = Players.List[Players.Current]
 		local screenCenter = screen_to_game({
 			x = (ScreenWidth+PADDING_WIDTH)/2,
 			y = ScreenHeight/2
@@ -1392,13 +1414,13 @@ end
 
 --#region GUI
 
---- Displays next or previous entity from a given list. Nothing happens if there's nowhere to scroll.
----@param entity tracked_entity | table TODO: turn Players into class so it shows up properly here and not as just a table
+--- Displays next or previous entity from a given list. Nothing happens if there's nowhere to scroll. Depends on some metadata being present in the entity, it's not just a flat list!
+---@param entity tracked_entity | players Source of the list to scroll through
 ---@param delta integer Direction and amount to scroll by
 function scroll_list(entity, delta)
 	if not entity.Current then return end
 	
-	local list  = entity.TrackedList or entity
+	local list  = entity.TrackedList or entity.List
 	local limit = entity.Max
 	local step  = 1
 	
