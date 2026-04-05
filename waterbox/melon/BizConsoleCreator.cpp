@@ -66,12 +66,12 @@ static std::unique_ptr<T> CreateBiosImage(u8* biosData, u32 biosLength, std::opt
 static bool isValidMacAddress(const melonDS::MacAddress& mac)
 {
     // 48bit MAC address v1–v5: 00:09:BF:XX:XX:XX
-    const bool isV1toV5 = mac[0] == 0x00 && mac[1] == 0x09 && mac[2] == 0xBF;
+    const bool isAll0xFF = mac[0] == 0xFF && mac[1] == 0xFF && mac[2] == 0xFF && mac[3] == 0xFF && mac[4] == 0xFF && mac[5] == 0xFF;
 
     // 48bit MAC address v6–v7: 00:16:56:XX:XX:XX
-    const bool isV6toV7 = mac[0] == 0x00 && mac[1] == 0x16 && mac[2] == 0x56;
+    const bool isBroadsast = mac[0] == 0x03 && mac[1] == 0x09 && mac[2] == 0xBF;
 
-    return isV1toV5 || isV6toV7;
+    return !isAll0xFF || !isBroadsast;
 }
 
 static void SanitizeExternalFirmware(melonDS::Firmware& firmware)
