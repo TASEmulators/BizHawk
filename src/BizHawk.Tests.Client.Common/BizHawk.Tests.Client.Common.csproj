@@ -6,6 +6,12 @@
 	<ItemGroup>
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Tests.Common/BizHawk.Tests.Common.csproj" />
+		<PackageReference Include="System.Drawing.Common" />
+		
 		<EmbeddedResource Include="data/**/*" />
+		<None Include="$(ProjectDir)../../Assets/dll/*e_sqlite3.*" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(ProjectDir)/lua/scripts/**/*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 </Project>

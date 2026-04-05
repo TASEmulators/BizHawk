@@ -11,7 +11,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to Doom games (functions may not run when a Doom game is not loaded)")]
-	public sealed class DoomLuaLibrary : LuaLibraryBase
+	public sealed class DoomLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
 		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
@@ -43,9 +43,11 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.RandomCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.RandomCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<string> RandomCallback = pr_class => nlf.Call(pr_class);
+
+			callbacks.Add(RandomCallback);
+			nlf.OnRemove += () => callbacks.Remove(RandomCallback);
 			return nlf.GuidStr;
 		}
 
@@ -68,9 +70,11 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.InterceptCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnIntercept", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.InterceptCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.InterceptCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnIntercept", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<int> InterceptCallback = block => nlf.Call(block);
+
+			callbacks.Add(InterceptCallback);
+			nlf.OnRemove += () => callbacks.Remove(InterceptCallback);
 			return nlf.GuidStr;
 		}
 
@@ -93,9 +97,11 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.UseCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.LineCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<long, long> LineCallback = (line, thing) => nlf.Call(line, thing);
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 
@@ -118,9 +124,11 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.CrossCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.LineCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.LineCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<long, long> LineCallback = (line, thing) => nlf.Call(line, thing);
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 	}

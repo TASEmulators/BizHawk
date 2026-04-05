@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("savecorestate", "creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate")]
 		public string SaveCoreStateToMemory()
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.STATES))
 			{
 				throw new InvalidOperationException("memorysavestate.savecorestate() is not allowed during input/memory callbacks");
 			}
@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("loadcorestate", "loads an in memory state with the given identifier")]
 		public void LoadCoreStateFromMemory(string identifier)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.STATES))
 			{
 				throw new InvalidOperationException("memorysavestate.loadcorestate() is not allowed during input/memory callbacks");
 			}

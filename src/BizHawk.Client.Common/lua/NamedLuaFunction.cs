@@ -1,7 +1,5 @@
 using NLua;
 
-using BizHawk.Emulation.Common;
-
 namespace BizHawk.Client.Common
 {
 	public sealed class NamedLuaFunction : INamedLuaFunction
@@ -30,118 +28,29 @@ namespace BizHawk.Client.Common
 
 		private readonly LuaFunction _function;
 
+		private readonly ILuaLibraries _luaImp;
+
+		private readonly Action<string> _exceptionCallback;
+
+
+		private readonly ApiGroup _prohibitedApis;
+
 		public Action/*?*/ OnRemove { get; set; } = null;
 
 		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile,
-			Func<LuaThread> createThreadCallback, ILuaLibraries luaLibraries, string name = null)
+			ILuaLibraries luaLibraries, ApiGroup prohibitedApis, string name = null)
 		{
 			_function = function;
+			_luaImp = luaLibraries;
+			_exceptionCallback = logCallback;
+			_prohibitedApis = prohibitedApis;
 			Name = name ?? "Anonymous";
 			Event = theEvent;
-			CreateThreadCallback = createThreadCallback;
-
-			// When would a file be null?
-			// When a script is loaded with a callback, but no infinite loop so it closes
-			// Then that callback proceeds to register more callbacks
-			// In these situations, we will generate a thread for this new callback on the fly here
-			// Scenarios like this suggest that a thread being managed by a LuaFile is a bad idea,
-			// and we should refactor
-			if (luaFile == null)
-			{
-				DetachFromScript();
-			}
-			else
-			{
-				LuaFile = luaFile;
-			}
+			LuaFile = luaFile;
 
 #pragma warning disable RS0030 // this is to ensure no collisions
 			Guid = Guid.NewGuid();
 #pragma warning restore RS0030
-
-			Callback = args =>
-			{
-				try
-				{
-					return _function.Call(args);
-				}
-				catch (Exception ex)
-				{
-					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
-				}
-				return null;
-			};
-			InputCallback = () =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				try
-				{
-					Callback(Array.Empty<object>());
-				}
-				finally
-				{
-					luaLibraries.IsInInputOrMemoryCallback = false;
-				}
-			};
-			MemCallback = (addr, val, flags) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				try
-				{
-					return Callback([ addr, val, flags ]) is [ long n ] ? unchecked((uint) n) : null;
-				}
-				finally
-				{
-					luaLibraries.IsInInputOrMemoryCallback = false;
-				}
-			};
-			RandomCallback = info =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				try
-				{
-					Callback([ info ]);
-				}
-				finally
-				{
-					luaLibraries.IsInInputOrMemoryCallback = false;
-				}
-			};
-			InterceptCallback = block =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				try
-				{
-					Callback([ block ]);
-				}
-				finally
-				{
-					luaLibraries.IsInInputOrMemoryCallback = false;
-				}
-			};
-			LineCallback = (line, thing) =>
-			{
-				luaLibraries.IsInInputOrMemoryCallback = true;
-				try
-				{
-					Callback([ line, thing ]);
-				}
-				finally
-				{
-					luaLibraries.IsInInputOrMemoryCallback = false;
-				}
-			};
-		}
-
-		public void DetachFromScript()
-		{
-			var thread = CreateThreadCallback();
-
-			// Current dir will have to do for now, but this will inevitably not be desired
-			// Users will expect it to be the same directly as the thread that spawned this callback
-			// But how do we know what that directory was?
-			LuaSandbox.CreateSandbox(thread, ".");
-			LuaFile = new LuaFile(".") { Thread = thread };
 		}
 
 		public Guid Guid { get; }
@@ -151,30 +60,20 @@ namespace BizHawk.Client.Common
 
 		public string Name { get; }
 
-		public LuaFile LuaFile { get; private set; }
-
-		private Func<LuaThread> CreateThreadCallback { get; }
+		private LuaFile LuaFile { get; }
 
 		public string Event { get; }
 
-		private Func<object[], object[]> Callback { get; }
-
-		public Action InputCallback { get; }
-
-		public MemoryCallbackDelegate MemCallback { get; }
-
-		public Action<string> RandomCallback { get; }
-
-		public Action<int> InterceptCallback { get; }
-
-		public Action<long, long> LineCallback { get; }
-
-		public void Call(string name = null)
+		public object[] Call(params object[] args)
 		{
-			LuaSandbox.Sandbox(LuaFile.Thread, () =>
-			{
-				_function.Call(name);
-			});
+			object[] ret = null;
+			_luaImp.Sandbox(
+				luaFile: LuaFile,
+				callback: () => ret = _function.Call(args),
+				exceptionCallback: (s) => _exceptionCallback($"error running function attached by the event {Event}\nError message: {s}"),
+				prohibitedApis: _prohibitedApis);
+
+			return ret;
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("load", "Loads a savestate with the given path. Returns true iff succeeded. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
 		public bool Load(string path, bool suppressOSD = false)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.STATES))
 			{
 				throw new InvalidOperationException("savestate.load() is not allowed during input/memory callbacks");
 			}
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("loadslot", "Loads the savestate at the given slot number (must be an integer between 1 and 10). Returns true iff succeeded. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
 		public bool LoadSlot(int slotNum, bool suppressOSD = false)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.STATES))
 			{
 				throw new InvalidOperationException("savestate.loadslot() is not allowed during input/memory callbacks");
 			}
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("save", "Saves a state at the given path. If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes (and the path is ignored).")]
 		public bool Save(string path, bool suppressOSD = false)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.STATES))
 			{
 				throw new InvalidOperationException("savestate.save() is not allowed during input/memory callbacks");
 			}
@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("saveslot", "Saves a state at the given save slot (must be an integer between 1 and 10). If EmuHawk is deferring quicksaves, to TAStudio for example, that form will do what it likes with the slot number.")]
 		public bool SaveSlot(int slotNum, bool suppressOSD = false)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.STATES))
 			{
 				throw new InvalidOperationException("savestate.saveslot() is not allowed during input/memory callbacks");
 			}
