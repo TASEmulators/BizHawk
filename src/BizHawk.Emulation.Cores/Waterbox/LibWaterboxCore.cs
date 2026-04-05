@@ -92,6 +92,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// If true, Data is a function to call and not a pointer
 			/// </summary>
 			FunctionHook = 1024,
+			/// <summary>
+			/// If true, Data is a list of functions; function(s) may be null
+			/// </summary>
+			SizedFunctionHooks = 2048,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
