@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 #pragma warning restore MA0136
 		[LuaMethod(
 			name: "on_intercept",
-			description: "Fires immediately after a new line or thing intercept is added by Doom. Your callback can have 1 parameter, which will be an integer identifying which map block the intercept happened in.")]
+			description: "Fires immediately after a new line or thing intercept is added by Doom. Your callback can have 3 parameters: integers identifying x and y position of the map block the intercept happened in, and whether the call is from `PIT_AddThingIntercepts()` (0) or `PIT_AddLineIntercepts()` (1).")]
 		public string OnIntercept(LuaFunction luaf, string name = null)
 		{
 			if (Emulator is not DSDA dsda)

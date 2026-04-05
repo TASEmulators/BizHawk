@@ -98,7 +98,7 @@ local function thing_handler()
 					radius_color = "white"
 					text_color   = "white"
 					
-					GUITexts.thing = string.format(
+					GUITexts.thing = sf(
 						"  THING %d (%s)\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
 						"   rad: %.0f\ntics: %d     hp:   %d\n  rt: %d     thre: %d",
 						mobj.index, -- original index display
@@ -126,7 +126,7 @@ local function thing_handler()
 					text(
 						pos.x - radius + 1,
 						pos.y - radius,
-						string.format("%d", index),
+						sf("%d", index),
 						text_color)
 				end
 			end
@@ -192,7 +192,7 @@ local function line_handler()
 				-- cached_line_coords gives some length error?
 				local x1, y1, x2, y2 = game_to_screen(line:coords())
 				drawline(x1, y1, x2, y2, 0xff00ffff)
-				GUITexts.sector = string.format(
+				GUITexts.sector = sf(
 					"  SECTOR %d\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
 					selectedSector.iSectorID,
 					selectedSector.special,
@@ -210,7 +210,7 @@ local function line_handler()
 			
 			x1, y1, x2, y2 = game_to_screen(x1, y1, x2, y2)		
 			drawline(x1, y1, x2, y2, 0xffff8800)
-			GUITexts.line = string.format(
+			GUITexts.line = sf(
 				"  LINEDEF %d\n"..
 				"dist(line): %f\ndist( seg): %f\n"..
 				"v1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
@@ -248,7 +248,7 @@ local function tracked_handler()
 			end
 		end
 		
-		GUITexts.thing  = string.format(
+		GUITexts.thing  = sf(
 			"%sTHING %d (%s)%s\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
 			"   rad: %.0f\ntics: %d    hp:   %d\n  rt: %d    thre: %d",
 			min, mobj.index, MobjType[mobj.type], max,
@@ -287,7 +287,7 @@ local function tracked_handler()
 			end
 		end
 		
-		GUITexts.line = string.format(
+		GUITexts.line = sf(
 			"%sLINEDEF %d%s\n"..
 			"dist(line): %f\ndist( seg): %f\n"..
 			"v1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
@@ -319,7 +319,7 @@ local function tracked_handler()
 			end
 		end
 		
-		GUITexts.sector = string.format(
+		GUITexts.sector = sf(
 			"%sSECTOR %d%s\nspecial: %d\n  floor: %.2f\nceiling: %.2f",
 			min, sector.iSectorID, max,
 			sector.special,
@@ -356,7 +356,7 @@ local function dialog_handler()
 			end
 		end
 		
-		local ret = show_dialog(string.format(
+		local ret = show_dialog(sf(
 			"Enter %s ID from\nlevel editor.\n\n" ..
 			"Hit \"Enter\" to confirm,\n" ..
 			"\"Backspace\" to erase,\n" ..
@@ -381,7 +381,7 @@ local function dialog_handler()
 		end
 	elseif Confirmation then
 		local entity = Tracked[Confirmation.type]
-		local ret    = show_dialog(string.format(
+		local ret    = show_dialog(sf(
 			"Stop tracking %s %d?\n\n" ..
 			"Hit \"Enter\" to confirm,\n" ..
 			"or \"Escape\" to cancel.\n" ..
@@ -447,7 +447,7 @@ local function draw_grid()
 		end
 		
 		-- due to step being float in screen coords, we can't avoid rounding error
-		-- so final 2 lines won't match grid size and sometimes won't even be drawn
+		-- so final 2 lines won't match grid size and sometimes won't even be drawn.
 		-- so we draw them separately where they "should be"
 		-- while embracing the rounding error of all the rest
 		-- since drawing them all perfectly is too complicated
@@ -460,11 +460,10 @@ local function draw_grid()
 	for block,timer in pairs(MapBlocks) do
 		local forecolor
 		local backcolor
-		local delta    = timer - Framecount
-		local visblock = block
+		local delta = timer - Framecount
+		local x, y  = block:match("(%d+).-(%d+)")
 		
-		if block < 0 then -- custom way to indicate overflow
-			visblock  = -block
+		if InterceptsInfo == InterceptsState.OVERFLOW then
 			forecolor = 0xffffff00
 			backcolor = 0x33ffff00
 		elseif delta == FADEOUT_TIMER - 1 then
@@ -480,14 +479,14 @@ local function draw_grid()
 			-- positioning precision is a bit higher than of the overall grid
 			-- so it may look off at some zoom levels
 			local origin = game_to_screen(LastBMOrigin)
-			local x      = origin.x +            visblock % LastBMWidth  * GRID_SIZE * Zoom
-			local y      = origin.y - math.floor(visblock / LastBMWidth) * GRID_SIZE * Zoom
+			local x      = origin.x + x * GRID_SIZE * Zoom
+			local y      = origin.y - y * GRID_SIZE * Zoom
 			
 			-- if overflow happened, only show its block(s)
 			if InterceptsInfo < InterceptsState.OVERFLOW then
 				box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
-			elseif block < 0 then
-				text(x, y - GRID_SIZE * Zoom, visblock, forecolor)
+			else
+				text(x, y - GRID_SIZE * Zoom, block, forecolor)
 				box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
 			end
 		else
@@ -535,7 +534,7 @@ local function iterate()
 	local min       = Players.Current == Players.Min and Scroller.NONE or Scroller.LEFT
 	local max       = Players.Current == Players.Max and Scroller.NONE or Scroller.RIGHT
 	GUITexts        = {}
-	GUITexts.player = string.format(
+	GUITexts.player = sf(
 		"     %sPLAYER %s%s\n" ..
 		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
 		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
@@ -571,7 +570,7 @@ local function iterate()
 	text(
 		PADDING_WIDTH,
 		ScreenHeight - 32 * ScreenHeight / 200 - 50, -- just above hud
-		string.format(
+		sf(
 			" tic: %d\n" ..
 			"time: %.2f\n" .. -- xdre limits to centiseconds
 			" rng: #%03d %d",
@@ -618,13 +617,15 @@ local function make_buttons()
 	if InterceptsInfo > InterceptsState.NONE then
 		make_button(w+5, h*10, "Print Intercepts", function()
 			print("")
-			print("Intercepts in blocks =")
+			print("")
+			print("-- Intercepts in blocks:")
 			print(dump(Intercepts))
 			Intercepts = {}
 			
 			if InterceptsInfo == InterceptsState.OVERFLOW then
 				print("")
-				print("InterceptsOverruns in blocks =")
+				print("")
+				print("-- Intercept Overruns in blocks:")
 				print(dump(InterceptsOverruns))
 				InterceptsOverruns = {}
 			end

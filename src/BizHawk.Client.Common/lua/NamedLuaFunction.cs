@@ -107,12 +107,12 @@ namespace BizHawk.Client.Common
 					luaLibraries.IsInInputOrMemoryCallback = false;
 				}
 			};
-			InterceptCallback = block =>
+			InterceptCallback = (x, y, isaline) =>
 			{
 				luaLibraries.IsInInputOrMemoryCallback = true;
 				try
 				{
-					Callback([ block ]);
+					Callback([ x, y, isaline ]);
 				}
 				finally
 				{
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 
 		public Action<string> RandomCallback { get; }
 
-		public Action<int> InterceptCallback { get; }
+		public Action<int, int, int> InterceptCallback { get; }
 
 		public Action<long, long> LineCallback { get; }
 

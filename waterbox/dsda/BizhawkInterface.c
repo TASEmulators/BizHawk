@@ -458,13 +458,13 @@ ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(const char *))
 }
 
 // PIT_Add*Intercepts() calls
-ECL_ENTRY void (*intercept_callback_cb)(int);
-void biz_intercept_callback(int block)
+ECL_ENTRY void (*intercept_callback_cb)(int, int, int);
+void biz_intercept_callback(int x, int y, int isaline)
 {
   if (intercept_callback_cb)
-    intercept_callback_cb(block);
+    intercept_callback_cb(x, y, isaline);
 }
-ECL_EXPORT void dsda_set_intercept_callback(ECL_ENTRY void (*cb)(int))
+ECL_EXPORT void dsda_set_intercept_callback(ECL_ENTRY void (*cb)(int, int, int))
 {
   intercept_callback_cb = cb;
 }
