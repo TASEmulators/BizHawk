@@ -102,7 +102,6 @@ namespace BizHawk.Client.EmuHawk
 			this.label8 = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
 			this.ControlGroupBox = new System.Windows.Forms.GroupBox();
-			this.InvisibleEmulationCheckBox = new System.Windows.Forms.CheckBox();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.StatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ClearStatsContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -955,7 +954,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.ControlGroupBox.Controls.Add(this.InvisibleEmulationCheckBox);
 			this.ControlGroupBox.Controls.Add(this.panel2);
 			this.ControlGroupBox.Controls.Add(this.StopBtn);
 			this.ControlGroupBox.Controls.Add(this.RunBtn);
@@ -967,17 +965,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ControlGroupBox.TabIndex = 2004;
 			this.ControlGroupBox.TabStop = false;
 			this.ControlGroupBox.Text = "Control";
-			// 
-			// InvisibleEmulationCheckBox
-			// 
-			this.InvisibleEmulationCheckBox.AutoSize = true;
-			this.InvisibleEmulationCheckBox.Location = new System.Drawing.Point(88, 60);
-			this.InvisibleEmulationCheckBox.Name = "InvisibleEmulationCheckBox";
-			this.InvisibleEmulationCheckBox.Size = new System.Drawing.Size(127, 17);
-			this.InvisibleEmulationCheckBox.TabIndex = 2004;
-			this.InvisibleEmulationCheckBox.Text = "Turn Off Audio/Video";
-			this.InvisibleEmulationCheckBox.UseVisualStyleBackColor = true;
-			this.InvisibleEmulationCheckBox.CheckedChanged += new System.EventHandler(this.InvisibleEmulationCheckBox_CheckedChanged);
 			// 
 			// panel2
 			// 
@@ -1149,6 +1136,5 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.Button btnCopyBestInput;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx helpToolStripMenuItem;
-		private System.Windows.Forms.CheckBox InvisibleEmulationCheckBox;
 	}
 }

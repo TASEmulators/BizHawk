@@ -122,4 +122,11 @@ namespace BizHawk.Client.Common
 	/// <param name="sender">Object that raised the event</param>
 	/// <param name="e">Event arguments</param>
 	public delegate void StateSavedEventHandler(object sender, StateSavedEventArgs e);
+
+	/// <summary>
+	/// Represent a method that will control future emulation.
+	/// </summary>
+	/// <param name="futureFramesEmulated">The number of frames into the future that have been emulated.</param>
+	/// <returns>True to display the current frame, false to continue emulating into the future.</returns>
+	public delegate bool ShowFutureCallback(int futureFramesEmulated);
 }
