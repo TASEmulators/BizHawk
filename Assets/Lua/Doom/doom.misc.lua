@@ -156,20 +156,24 @@ end
 --- Vanilla variables that intercepts overflow would corrupt. `playerstarts` is a `mapthing_t` list in vanilla; nested one in upstream but we're not displaying that detail. Index augend is taken from the original, and index addend exists to indicate lua's 1-based lists.
 ---@class (exact) intercept_overrun
 ---@field name string Full name of the vanilla variable we're corrupting
+---@field size integer Size of the varitable in bytes
 ---@field value integer Value that the vanilla variable has at the moment
 
 ---@class (exact) intercept_overrun_info
 ---@field offset string
 ---@field value string
 ---@field variable string
+---@field size integer
+---@field block string
 
 --- `intercept_t` plus some extra info for the user.
 ---@class intercept_info
----@field frac string `frac` is the most complicated part of `intercept_t` struct. When an intercept is checked, traceline length is normalized to [0, 1], and the point where it crosses something denotes the fraction of that length, meaning how soon the traceline hits it. Negative value means behind the origin, and more than 1 means outside the trace range. Then for all the intercepts in the list, those fractions are compared and the shortest one wins. So to manipulate what value is used for memory corruption, we just need to adjust the distance between trace origin and something it hits, keeping in mind intercept at which index/offset matches our target address. Internally represented as 32-bit integer, basically means percentage of traceline length if we multiply the value by 100.
----@field isaline string Whether intercept is with a line or a thing. Internally represented as 32-bit integer.
----@field offset string How far into corrupted memory we are. Informational addition.
----@field pointer integer `d` field of `intercept_t`. Not super relevant outside vanilla executable. Current codebase makes it a 64-bit integer and when intercept overruns are emulated it's just truncated to 32 bits.
----@field block integer Blockmap block where the intercept happened.
+--- `data` holds 3 32-bit integers of `intercept_t` (offsets represent how far into corrupted memory we are):
+--- 1. `frac` is the most complicated part of `intercept_t` struct. When an intercept is checked, traceline length is normalized to [0, 1], and the point where it crosses something denotes the fraction of that length, meaning how soon the traceline hits it. Negative value means behind the origin, and more than 1 means outside the trace range. Then for all the intercepts in the list, those fractions are compared and the shortest one wins. So to manipulate what value is used for memory corruption, we just need to adjust the distance between trace origin and something it hits, keeping in mind intercept at which index/offset matches our target address. Basically means percentage of traceline length if we multiply the value by 100.
+--- 2. `isaline` means whether intercept is with a line or a thing.
+--- 3. `d` is a pointer to the object we're intercepting with. It's not super relevant outside vanilla executable. Memory corruption using this value won't match what happens in vanilla because addresses won't match. Additionally, current codebase makes it a 64-bit integer and when intercept overruns are emulated it's just truncated to 32 bits.
+---@field data string[]
+---@field block string x and y of blockmap block where the intercept happened.
 ---@field id integer `iLineID` or `index`, depending on `isaline`.
 
 --- Used for specific things like point coordinates, but also for anything that can have x/y values
@@ -212,6 +216,7 @@ end
 text     = gui.text
 box      = gui.drawBox
 drawline = gui.drawLine
+sf       = string.format
 
 
 --#region TOP LEVEL VARIABLES
@@ -373,53 +378,80 @@ function grid_show()
 end
 
 --- After intercept overflow, shows which variables got corrupted and their resulting values. The list is consctructed on the fly so we could read from memory directly.
+--- 
+--- https://github.com/TASEmulators/dsda-doom/blob/wbx/prboom2/src/p_maputl.c#L1165-L1199
 ---@param limit integer
+---@param block string
 ---@return intercept_overrun_info[] # Table index indicates offset, usable for comparing with offsets of individual intercepts after overflow
-local function fetch_intercept_overruns(limit)
+local function fetch_intercept_overruns(limit, block)
 	---@type intercept_overrun_info[]
 	local ret = {}
 	---@type intercept_overrun[]
-	local list = {
-		[ 12] = { name = "line_opening.lowfloor",   value = Globals.line_opening.lowfloor     },
-		[ 16] = { name = "line_opening.bottom",     value = Globals.line_opening.bottom       },
-		[ 20] = { name = "line_opening.top",        value = Globals.line_opening.top          },
-		[ 24] = { name = "line_opening.range",      value = Globals.line_opening.range        },
-		[160] = { name = "bulletslope",             value = Globals.bulletslope               },
-		[176] = { name = "playerstarts[0].x",       value = Globals.playerstarts[0+1].x       },
-		[178] = { name = "playerstarts[0].y",       value = Globals.playerstarts[0+1].y       },
-		[180] = { name = "playerstarts[0].angle",   value = Globals.playerstarts[0+1].angle   },
-		[182] = { name = "playerstarts[0].type",    value = Globals.playerstarts[0+1].type    },
-		[184] = { name = "playerstarts[0].options", value = Globals.playerstarts[0+1].options },
-		[186] = { name = "playerstarts[1].x",       value = Globals.playerstarts[1+1].x       },
-		[188] = { name = "playerstarts[1].y",       value = Globals.playerstarts[1+1].y       },
-		[190] = { name = "playerstarts[1].angle",   value = Globals.playerstarts[1+1].angle   },
-		[192] = { name = "playerstarts[1].type",    value = Globals.playerstarts[1+1].type    },
-		[194] = { name = "playerstarts[1].options", value = Globals.playerstarts[1+1].options },
-		[196] = { name = "playerstarts[2].x",       value = Globals.playerstarts[2+1].x       },
-		[198] = { name = "playerstarts[2].y",       value = Globals.playerstarts[2+1].y       },
-		[200] = { name = "playerstarts[2].angle",   value = Globals.playerstarts[2+1].angle   },
-		[202] = { name = "playerstarts[2].type",    value = Globals.playerstarts[2+1].type    },
-		[204] = { name = "playerstarts[2].options", value = Globals.playerstarts[2+1].options },
-		[206] = { name = "playerstarts[3].x",       value = Globals.playerstarts[3+1].x       },
-		[208] = { name = "playerstarts[3].y",       value = Globals.playerstarts[3+1].y       },
-		[210] = { name = "playerstarts[3].angle",   value = Globals.playerstarts[3+1].angle   },
-		[212] = { name = "playerstarts[3].type",    value = Globals.playerstarts[3+1].type    },
-		[214] = { name = "playerstarts[3].options", value = Globals.playerstarts[3+1].options },
-		[220] = { name = "bmapwidth",               value = Globals.bmapwidth                 },
-		[228] = { name = "bmaporgx",                value = Globals.bmaporgx                  },
-		[232] = { name = "bmaporgy",                value = Globals.bmaporgy                  },
-		[230] = { name = "bmapheight",              value = Globals.bmapheight                }
-	}
+	local list = {}
+
+	---@param offset integer
+	---@param name string
+	---@param size integer
+	---@param value integer
+	local function adder(offset, name, size, value)
+		list[offset] = { name = name, size = size, value = value }
+	end
+
+--	adder(  0, "nil",                     4, 0                                )
+--	adder(  4, "earlyout",                4, 0                                )
+--	adder(  8, "intercept_p",             4, 0                                )
+	adder( 12, "line_opening.lowfloor",   4, Globals.line_opening.lowfloor    )
+	adder( 16, "line_opening.bottom",     4, Globals.line_opening.bottom      )
+	adder( 20, "line_opening.top",        4, Globals.line_opening.top         )
+	adder( 24, "line_opening.range",      4, Globals.line_opening.range       )
+--	adder( 28, "nil",                     4, 0                                )
+--	adder( 32, "activeplats",           120, 0                                )
+--	adder(152, "nil",                     8, 0                                )
+	adder(160, "bulletslope",             4, Globals.bulletslope              )
+--	adder(164, "swingx",                  4, 0                                )
+--	adder(168, "swingy",                  4, 0                                )
+--	adder(172, "nil",                     4, 0                                )
+	adder(176, "playerstarts[0].x",       2, Globals.playerstarts[0+1].x >> 16)
+	adder(178, "playerstarts[0].y",       2, Globals.playerstarts[0+1].y >> 16)
+	adder(180, "playerstarts[0].angle",   2, Globals.playerstarts[0+1].angle  )
+	adder(182, "playerstarts[0].type",    2, Globals.playerstarts[0+1].type   )
+	adder(184, "playerstarts[0].options", 2, Globals.playerstarts[0+1].options)
+	adder(186, "playerstarts[1].x",       2, Globals.playerstarts[1+1].x >> 16)
+	adder(188, "playerstarts[1].y",       2, Globals.playerstarts[1+1].y >> 16)
+	adder(190, "playerstarts[1].angle",   2, Globals.playerstarts[1+1].angle  )
+	adder(192, "playerstarts[1].type",    2, Globals.playerstarts[1+1].type   )
+	adder(194, "playerstarts[1].options", 2, Globals.playerstarts[1+1].options)
+	adder(196, "playerstarts[2].x",       2, Globals.playerstarts[2+1].x >> 16)
+	adder(198, "playerstarts[2].y",       2, Globals.playerstarts[2+1].y >> 16)
+	adder(200, "playerstarts[2].angle",   2, Globals.playerstarts[2+1].angle  )
+	adder(202, "playerstarts[2].type",    2, Globals.playerstarts[2+1].type   )
+	adder(204, "playerstarts[2].options", 2, Globals.playerstarts[2+1].options)
+	adder(206, "playerstarts[3].x",       2, Globals.playerstarts[3+1].x >> 16)
+	adder(208, "playerstarts[3].y",       2, Globals.playerstarts[3+1].y >> 16)
+	adder(210, "playerstarts[3].angle",   2, Globals.playerstarts[3+1].angle  )
+	adder(212, "playerstarts[3].type",    2, Globals.playerstarts[3+1].type   )
+	adder(214, "playerstarts[3].options", 2, Globals.playerstarts[3+1].options)
+--	adder(216, "blocklinks",              4, 0                                )
+	adder(220, "bmapwidth",               4, Globals.bmapwidth                )
+--	adder(224, "blockmap",                4, 0                                )
+	adder(228, "bmaporgx",                4, Globals.bmaporgx                 )
+	adder(232, "bmaporgy",                4, Globals.bmaporgy                 )
+--	adder(236, "blockmaplump",            4, 0                                )
+	adder(240, "bmapheight",              4, Globals.bmapheight               )
 	
 	-- walk through the list to check how far corruption went for this particular intercept
-	for i = 0, 230 do
+	for i = 0, 240 do
 		local source = list[i]
 		if source and i <= limit then
+			local valueFormat = source.size == 4 and "0x%08X"   or "0x%04X"
+			local valueSize   = source.size == 4 and 0xffffffff or 0xffff
 			---@type intercept_overrun_info
 			local item = {
-				offset   = string.format("%d bytes", i),
-				value    = string.format("0x%X", source.value & 0xffffffff),
-				variable = source.name
+				offset   = sf("%d bytes", i+MAXIMUM_INTERCEPTS*INTERCEPT_SIZE_VANILLA),
+				size     = sf("%d bytes", source.size),
+				value    = sf(valueFormat, source.value & valueSize),
+				variable = source.name,
+				block    = block,
 			}
 			table.insert(ret, item)
 		end
@@ -430,7 +462,9 @@ end
 
 --- When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that and let the user dump all their contents and info to console.
 ---@param block integer
-local function intercept_logger(block)
+local function intercept_logger(x, y, isaline)
+	local block  = sf("%dx%d", x, y)
+
 	if InterceptLog then
 		local origin = Globals.intercepts
 		local count  = math.floor((InterceptPtr - origin) / INTERCEPT_SIZE)
@@ -440,26 +474,29 @@ local function intercept_logger(block)
 			local i = 1 -- intercept #0 gets printed last so we start with 1 instead
 			
 			if count > MAXIMUM_INTERCEPTS then
-				text = string.format(
-					"tic %d, block %d, %d intercepts INTERCEPT OVERFLOW",
+				text = sf(
+					"tic %d, block %s, %d intercepts INTERCEPT OVERFLOW",
 					Globals.gametic, block, count
 				)
-				block = -block -- custom way to indicate overflow
 				InterceptsInfo = InterceptsState.OVERFLOW
 			
-				if not InterceptsOverruns[math.abs(block)] then
-					InterceptsOverruns[math.abs(block)] = {}
+				if not InterceptsOverruns[block] then
+					InterceptsOverruns[block] = {}
 				end
-				InterceptsOverruns[math.abs(block)] = fetch_intercept_overruns(
+
+				-- passed limit includes last variable in full until the start of the next thing in memory
+				InterceptsOverruns[block] = fetch_intercept_overruns(
 					(count - MAXIMUM_INTERCEPTS)
 					* INTERCEPT_SIZE_VANILLA
 					+ INTERCEPT_SIZE_VANILLA
+					- 1,
+					block
 				)
 				
 				client.pause()
 			else
-				text = string.format(
-					"tic %d, block %d, %d intercepts",
+				text = sf(
+					"tic %d, block %s, %d intercepts",
 					Globals.gametic, block, count
 				)
 				InterceptsInfo = InterceptsState.PRINT
@@ -467,46 +504,46 @@ local function intercept_logger(block)
 			
 			print(text)
 			
-			if not Intercepts[math.abs(block)] then
-				Intercepts[math.abs(block)] = {}
+			if not Intercepts[block] then
+				Intercepts[block] = {}
 			end
 			
 			for address = origin, InterceptPtr - INTERCEPT_SIZE, INTERCEPT_SIZE do
 				local intercept = structs.intercept.from_pointer(address)
+				local offset = (i - 1) * INTERCEPT_SIZE_VANILLA
 				---@type intercept_info
 				local object = {
-					frac    = string.format("0x%08x", intercept.frac),
-					isaline = string.format("0x%08x", intercept.isaline),
-					offset  = string.format("%d bytes", 
-						(i-1-MAXIMUM_INTERCEPTS)
-						*INTERCEPT_SIZE_VANILLA),
-					pointer = intercept.d,
-					block   = math.abs(block)
+					data = {
+						sf("offset %d = 0x%08X (frac)",    offset,   intercept.frac),
+						sf("offset %d = 0x%08X (isaline)", offset+4, intercept.isaline),
+						sf("offset %d = 0x%08X (d)",       offset+8, intercept.d),
+					},
+					block = block
 				}
 				
 				if tonumber(intercept.isaline) == 1 then
-					object.id = structs.line.from_pointer(object.pointer).iLineID
+					object.id = structs.line.from_pointer(intercept.d).iLineID
 				else
-					object.id = structs.mobj.from_pointer(object.pointer).index
+					object.id = structs.mobj.from_pointer(intercept.d).index
 				end
 
 				if InterceptsInfo ~= InterceptsState.OVERFLOW then
 					object.offset = "N/A"
 				end
 				
-				object.pointer = string.format("0x%08X", object.pointer)
-				
 				-- we insert the same interecepts over and over for every new call,
 				-- because we can't know when they'll end,
 				-- and we may be asked to do this before it actually overflows.
 				-- so we can't just sit and wait for an overflow and only
 				-- then build the list. there won't be thousands of them anyway.
-				Intercepts[math.abs(block)][i] = object
+				Intercepts[block][i] = object
 				
 				i = i + 1
 			end
 		end
 	end
+
+	return block
 end
 
 --- Very complicated thing that handles tracelines display and intercepts display and logging. Installs the hook while anything is enabled. When an intercept is added by the game, we read `trace` from memory which is the thing creating intercepts, and we add all those tracelines to a table that we then display once per frame.
@@ -514,13 +551,13 @@ local function hook_intercepts()
 	local name = "Intercepts"
 	
 	if InterceptLog or InterceptShow then
-		doom.on_intercept(function(block)
+		doom.on_intercept(function(x, y, isaline)
 			local intercept_p = Globals.intercept_p
 			
 			if ShowMap and InterceptShow then
 				-- fetch traceline while at it
 				local divline = Globals.trace
-				local key = string.format(
+				local key = sf(
 					"%d %d %d %d",
 					divline.x,  divline.y,
 					divline.x + divline.dx,
@@ -533,7 +570,7 @@ local function hook_intercepts()
 				-- new intercept was just added
 				InterceptPtr = intercept_p
 
-				intercept_logger(block)
+				local block = intercept_logger(x, y, isaline)
 				
 				if ShowMap and ShowGrid and InterceptShow then
 					MapBlocks[block] = Framecount + FADEOUT_TIMER
@@ -575,16 +612,16 @@ function prandom_log()
 			local seed = ""
 			
 			if Globals.compatibility_level >= 7 then
-				seed = string.format("%010u",
+				seed = sf("%010u",
 					Globals.rng.seed[PRANDOM_ALL_IN_ONE+1]
 				)
 			else
-				seed = string.format("%03d",
+				seed = sf("%03d",
 					memory.readbyte(memory.read_u32_le(symbols.rndtable) + Globals.rng.rndindex)
 				)
 			end
 			
-			table.insert(PRandomInfo, string.format(
+			table.insert(PRandomInfo, sf(
 				"%d (%d): #%03d %s %s",
 				Globals.gametic, #PRandomInfo+1, Globals.rng.rndindex, seed, info
 			))
@@ -618,7 +655,7 @@ local function line_event(event, line, thing)
 	end
 	
 	if type(thing) == "string" then
-		print(string.format(
+		print(sf(
 			"tic %d: line %d %s by %s",
 			Globals.gametic - 1,
 			memory.read_s32_le(line, "System Bus"),
@@ -1099,11 +1136,11 @@ function dump(o, indent)
 		for k,v in pairs(o) do
 			if type(k) ~= 'number' then k = '"'..k..'"' end
 			if type(v) == 'string' then v = '"'..v..'"' end
-			s = string.format("%s\n%s\t[%s] = %s,", s, offset, k, dump(v, indent+1))
+			s = sf("%s\n%s\t[%s] = %s,", s, offset, k, dump(v, indent+1))
 		end
 		return s .. '\n' .. offset .. '}'
 	else
-		if type(o) == 'number' then o = string.format("%d", o) end
+		if type(o) == 'number' then o = sf("%d", o) end
 		return tostring(o)
 	end
 end
@@ -1262,7 +1299,7 @@ function settings_write()
 		-- ANGLE TYPE
 		file:write("-- available angle types:\n")
 		for k,v in pairs(AngleType) do
-			file:write(string.format("-- %5d (%s)\n", v, k))
+			file:write(sf("-- %5d (%s)\n", v, k))
 		end
 		file:write("Angle = " .. Angle .. "\n")
 		file:write("\n")
@@ -1665,14 +1702,14 @@ function add_entity(type)
 		msg = name,
 		fun = function(id)
 			if not lookup[id] then
-				print(string.format(
+				print(sf(
 					"\nERROR: Can't add %s %d because it doesn't exist!\n", name, id
 				))
 				return
 			end
 			
 			if array[id] then
-				print(string.format(
+				print(sf(
 					"\nERROR: Can't add %s %d because it's already there!\n", name, id
 				))
 				return
@@ -1683,7 +1720,7 @@ function add_entity(type)
 			
 			adder(id)
 			entity.Current = id
-			print(string.format("Added %s %d", name, id))
+			print(sf("Added %s %d", name, id))
 			settings_write()
 		end,
 		value = nil

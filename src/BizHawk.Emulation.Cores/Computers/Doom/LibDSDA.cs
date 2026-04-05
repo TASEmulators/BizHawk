@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		public abstract void dsda_set_random_callback(random_cb cb);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void intercept_cb(int block);
+		public delegate void intercept_cb(int x, int y, int isaline);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_set_intercept_callback(intercept_cb cb);
 

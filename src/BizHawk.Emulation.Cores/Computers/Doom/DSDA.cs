@@ -167,9 +167,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				foreach (var cb in RandomCallbacks) cb(info);
 			};
 
-			_interceptCallback = block =>
+			_interceptCallback = (x, y, isaline) =>
 			{
-				foreach (var cb in InterceptCallbacks) cb(block);
+				foreach (var cb in InterceptCallbacks) cb(x, y, isaline);
 			};
 
 			_useCallback = (line, thing) =>
@@ -414,7 +414,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private LibDSDA.error_cb _errorCallback;
 
 		public List<Action<string>> RandomCallbacks = [ ];
-		public List<Action<int>> InterceptCallbacks = [ ];
+		public List<Action<int, int, int>> InterceptCallbacks = [ ];
 		public List<Action<long, long>> UseCallbacks = [ ];
 		public List<Action<long, long>> CrossCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo
