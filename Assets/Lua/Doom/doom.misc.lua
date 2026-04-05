@@ -441,8 +441,8 @@ local function intercept_logger(block)
 			
 			if count > MAXIMUM_INTERCEPTS then
 				text = string.format(
-					"Tic %d, block %d, %d intercepts INTERCEPT OVERFLOW",
-					FraGlobals.gameticmecount, block, count
+					"tic %d, block %d, %d intercepts INTERCEPT OVERFLOW",
+					Globals.gametic, block, count
 				)
 				block = -block -- custom way to indicate overflow
 				InterceptsInfo = InterceptsState.OVERFLOW
