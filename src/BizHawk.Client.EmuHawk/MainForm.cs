@@ -2452,7 +2452,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Config.SaveWindowPosition)
 			{
 				if (WindowState is FormWindowState.Normal
-					&& Location is { X: -32000, Y: -32000 }) // this is the location when minimized on Windows --adelikat // and can occur in some unknown edge case even when `WindowState is Normal` --yoshi
+					&& Location is not { X: -32000, Y: -32000 }) // this is the location when minimized on Windows --adelikat // and can occur in some unknown edge case even when `WindowState is Normal` --yoshi
 				{
 					Config.MainWindowPosition = Location;
 					Config.MainWindowSize = Size;
