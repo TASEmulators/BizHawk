@@ -29,11 +29,10 @@ PRANDOM_ALL_IN_ONE = 49
 GRID_SIZE          = 128
 FADEOUT_TIMER      = 20
 MAXIMUM_INTERCEPTS = 128
--- initially 12 but we have 64-bit architecture + pointer alignment.
--- when intercept overflow is emulated, the size of 12 is still used internally
--- to corrupt the same target values as in vanilla
+-- Initially 12, but we have 64-bit architecture + pointer alignment. when intercept overflow is emulated, the size of 12 is still used internally to corrupt the same target values as in vanilla
 INTERCEPT_SIZE         = 16
 INTERCEPT_SIZE_VANILLA = 12
+OVERFLOW_INDICATOR     = '+'
 
 --#endregion
 
@@ -160,7 +159,10 @@ end
 ---@field value integer Value that the vanilla variable has at the moment
 
 ---@class (exact) intercept_overrun_info
----@field offset string
+---@field offset string Offset is calculated in a wild way.
+--- 1. Upstream's emulation of intercept overflow relies on current intercept count to determine offset, and it calculates their count as `intercept_p - intercepts`. But memory corruption happens **right before** `intercept_p` is incremented! It makes sense since we're calculating index of the target intercept overrun and their table is 0-based (obviously). But that means that `InterceptsOverrun()`'s `num_intercepts` argument is first passed as `0` even tho we've just added our first intercept, so logically it should imply `1`.
+--- 2. But our intercept hook fires **right after** `intercept_p` got incremented! So if we do the calculation exactly like upstream does, we'll be 1 `intercept_t` size off. This is why we have to add that size to our `MAXIMUM_INTERCEPTS * INTERCEPT_SIZE_VANILLA`.
+--- 3. Another oddity is that in upstream, memory is corrupted not after 128 intercepts but after 129. `num_intercepts` is 0 when we have 1 intercept, and `InterceptsOverrun()` check every time that `num_intercepts > MAXINTERCEPTS_ORIGINAL` to decide whether to start corrupting. but when it's finally bigger than 128, our actual intercept count is not 129 but 130! But then when actually corrupting memory the code goes back 12 bytes and corrupts what it was meant to corrupt 1 intercept ago!
 ---@field value string
 ---@field variable string
 ---@field size integer
@@ -443,12 +445,13 @@ local function fetch_intercept_overruns(limit, block)
 	for i = 0, 240 do
 		local source = list[i]
 		if source and i <= limit then
-			local valueFormat = source.size == 4 and "0x%08X"   or "0x%04X"
+			local iSize        = INTERCEPT_SIZE_VANILLA
 			local valueSize   = source.size == 4 and 0xffffffff or 0xffff
+			local valueFormat = source.size == 4 and "0x%08X"   or "0x%04X"
 			---@type intercept_overrun_info
 			local item = {
-				offset   = sf("%d bytes", i+MAXIMUM_INTERCEPTS*INTERCEPT_SIZE_VANILLA),
-				size     = sf("%d bytes", source.size),
+				offset   = sf("%d bytes",  i + iSize + MAXIMUM_INTERCEPTS * iSize),
+				size     = sf("%d bytes",  source.size),
 				value    = sf(valueFormat, source.value & valueSize),
 				variable = source.name,
 				block    = block,
@@ -461,9 +464,13 @@ local function fetch_intercept_overruns(limit, block)
 end
 
 --- When the amount of intercepts per block exceeds user defined value, or if the overflow has happened, we print that and let the user dump all their contents and info to console.
----@param block integer
+---@param x integer How many blocks to the right our interept happened at
+---@param y integer How many blocks up our interept happened at
+---@param isaline integer Potentially similar to `intercept_t`'s `isaline`, set to 1 when intercepts are added by `PIT_AddLineIntercepts()` and 0 for `PIT_AddThingIntercepts()`
+---@return string block String representing xy block position, with additional custom indicator of overflow
 local function intercept_logger(x, y, isaline)
-	local block  = sf("%dx%d", x, y)
+	local block = sf("%dx%d", x, y)
+	local ret   = block
 
 	if InterceptLog then
 		local origin = Globals.intercepts
@@ -474,6 +481,7 @@ local function intercept_logger(x, y, isaline)
 			local i = 1 -- intercept #0 gets printed last so we start with 1 instead
 			
 			if count > MAXIMUM_INTERCEPTS then
+				ret  = ret .. OVERFLOW_INDICATOR
 				text = sf(
 					"tic %d, block %s, %d intercepts INTERCEPT OVERFLOW",
 					Globals.gametic, block, count
@@ -488,7 +496,7 @@ local function intercept_logger(x, y, isaline)
 				InterceptsOverruns[block] = fetch_intercept_overruns(
 					(count - MAXIMUM_INTERCEPTS)
 					* INTERCEPT_SIZE_VANILLA
-					+ INTERCEPT_SIZE_VANILLA
+					- INTERCEPT_SIZE_VANILLA
 					- 1,
 					block
 				)
@@ -514,9 +522,9 @@ local function intercept_logger(x, y, isaline)
 				---@type intercept_info
 				local object = {
 					data = {
-						sf("offset %d = 0x%08X (frac)",    offset,   intercept.frac),
+						sf("offset %d = 0x%08X (frac)",    offset,   intercept.frac   ),
 						sf("offset %d = 0x%08X (isaline)", offset+4, intercept.isaline),
-						sf("offset %d = 0x%08X (d)",       offset+8, intercept.d),
+						sf("offset %d = 0x%08X (d)",       offset+8, intercept.d      ),
 					},
 					block = block
 				}
@@ -531,11 +539,7 @@ local function intercept_logger(x, y, isaline)
 					object.offset = "N/A"
 				end
 				
-				-- we insert the same interecepts over and over for every new call,
-				-- because we can't know when they'll end,
-				-- and we may be asked to do this before it actually overflows.
-				-- so we can't just sit and wait for an overflow and only
-				-- then build the list. there won't be thousands of them anyway.
+				-- we insert the same interecepts over and over for every new call, because we can't know when they'll end, and we may be asked to do this before it actually overflows. so we can't just sit and wait for an overflow and only then build the list. there won't be thousands of them anyway.
 				Intercepts[block][i] = object
 				
 				i = i + 1
@@ -543,7 +547,7 @@ local function intercept_logger(x, y, isaline)
 		end
 	end
 
-	return block
+	return ret
 end
 
 --- Very complicated thing that handles tracelines display and intercepts display and logging. Installs the hook while anything is enabled. When an intercept is added by the game, we read `trace` from memory which is the thing creating intercepts, and we add all those tracelines to a table that we then display once per frame.
@@ -566,6 +570,7 @@ local function hook_intercepts()
 				DivLines[key] = Framecount + FADEOUT_TIMER
 			end
 			
+			-- `intercept_p` equals `intercepts` before all the checks. when a new intercept is added, `intercept_p` gets incremented and then immediately after that the hook fires
 			if intercept_p ~= InterceptPtr then
 				-- new intercept was just added
 				InterceptPtr = intercept_p
@@ -900,20 +905,20 @@ local function check_side(point, v1, v2)
 	return ((v2.y - v1.y) / (v2.x - v1.x)) * (point.x - v1.x) + v1.y < point.y
 end
 
---- Distance to point projecton on infinite line
+--- Distance to point projecton on infinite line. Code converted from XDRE's `getDistanceFromLine()`
 ---@param point vertex
 ---@param v1 vertex
 ---@param v2 vertex
 ---@return number # Sign indicates which side the point is on
 function distance_to_line(point, v1, v2)
-	local PAx = v1.x - point.x
-	local PAy = v1.y - point.y
-	local ABx = v2.x - v1.x
-	local ABy = v2.y - v1.y
-	local t = -PAx * ABx + -PAy * ABy
-	t = t / (ABx * ABx + ABy * ABy)
-	local PXx = PAx + t * ABx;
-	local PXy = PAy + t * ABy;
+	local PAx  = v1.x - point.x
+	local PAy  = v1.y - point.y
+	local ABx  = v2.x - v1.x
+	local ABy  = v2.y - v1.y
+	local t    =      -PAx * ABx + -PAy * ABy
+	      t    = t / ( ABx * ABx +  ABy * ABy)
+	local PXx  = PAx + t * ABx;
+	local PXy  = PAy + t * ABy;
 	local dist = math.sqrt(PXx * PXx + PXy * PXy)
 
 	if check_side(point, v1, v2) then
@@ -959,12 +964,14 @@ end
 function rotate_triangle(t, angle)
 	local rad = (angle * math.pi) / 180.0;
 	local newt = { a = {}, b = {}, c = {}, center = t.center }
-	newt.a.x = (t.a.x-t.center.x)*math.cos(rad)-(t.a.y-t.center.y)*math.sin(rad)+t.center.x
-	newt.a.y = (t.a.x-t.center.x)*math.sin(rad)+(t.a.y-t.center.y)*math.cos(rad)+t.center.y
-	newt.b.x = (t.b.x-t.center.x)*math.cos(rad)-(t.b.y-t.center.y)*math.sin(rad)+t.center.x
-	newt.b.y = (t.b.x-t.center.x)*math.sin(rad)+(t.b.y-t.center.y)*math.cos(rad)+t.center.y
-	newt.c.x = (t.c.x-t.center.x)*math.cos(rad)-(t.c.y-t.center.y)*math.sin(rad)+t.center.x
-	newt.c.y = (t.c.x-t.center.x)*math.sin(rad)+(t.c.y-t.center.y)*math.cos(rad)+t.center.y
+	local cx = t.center.x
+	local cy = t.center.y
+	newt.a.x = (t.a.x - cx) * math.cos(rad) - (t.a.y - cy) * math.sin(rad) + cx
+	newt.a.y = (t.a.x - cx) * math.sin(rad) + (t.a.y - cy) * math.cos(rad) + cy
+	newt.b.x = (t.b.x - cx) * math.cos(rad) - (t.b.y - cy) * math.sin(rad) + cx
+	newt.b.y = (t.b.x - cx) * math.sin(rad) + (t.b.y - cy) * math.cos(rad) + cy
+	newt.c.x = (t.c.x - cx) * math.cos(rad) - (t.c.y - cy) * math.sin(rad) + cx
+	newt.c.y = (t.c.x - cx) * math.sin(rad) + (t.c.y - cy) * math.cos(rad) + cy
 	return newt
 end
 
@@ -1395,8 +1402,7 @@ function init_cache()
 		local lineId = line.iLineID
 		Tracked[TrackedType.LINE].IDs[lineId] = true
 
-		-- assumption: lines can't become special, except for script command CmdSetLineSpecial
-		-- exclude lines that have a line id set (and therefore can be targeted by scripts)
+		-- assumption: lines can't become special, except for script command `CmdSetLineSpecial`. exclude lines that have a line id set (and therefore can be targeted by scripts)
 		if line.special == 0 and not tagged_lines[lineId] then
 			line.special = 0
 		end

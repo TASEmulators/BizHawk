@@ -446,22 +446,16 @@ local function draw_grid()
 			drawline(start.x, y, stop.x, y, MapPrefs.grid.color)
 		end
 		
-		-- due to step being float in screen coords, we can't avoid rounding error
-		-- so final 2 lines won't match grid size and sometimes won't even be drawn.
-		-- so we draw them separately where they "should be"
-		-- while embracing the rounding error of all the rest
-		-- since drawing them all perfectly is too complicated
+		-- due to step being float in screen coords, we can't avoid rounding error, so final 2 lines won't match grid size and sometimes won't even be drawn. so we draw them separately where they "should be", while embracing the rounding error of all the rest, since drawing them all perfectly is too complicated
 		drawline(stop.x, start.y, stop.x, stop.y, MapPrefs.grid.color)
 		drawline(start.x, stop.y, stop.x, stop.y, MapPrefs.grid.color)
 	end
 
-	-- if overflow corrupted actual blockmap
-	-- we still use original values just to show where it happened
+	-- if overflow corrupted actual blockmap, we still use original values just to show where it happened
 	for block,timer in pairs(MapBlocks) do
-		local forecolor
-		local backcolor
-		local delta = timer - Framecount
-		local x, y  = block:match("(%d+).-(%d+)")
+		local forecolor, backcolor
+		local blockX, blockY = block:match("(%d+).-(%d+)")
+		local delta          = timer - Framecount
 		
 		if InterceptsInfo == InterceptsState.OVERFLOW then
 			forecolor = 0xffffff00
@@ -476,18 +470,17 @@ local function draw_grid()
 		end
 		
 		if delta > 0 then
-			-- positioning precision is a bit higher than of the overall grid
-			-- so it may look off at some zoom levels
+			-- positioning precision is a bit higher than of the overall grid, so it may look off at some zoom levels
 			local origin = game_to_screen(LastBMOrigin)
-			local x      = origin.x + x * GRID_SIZE * Zoom
-			local y      = origin.y - y * GRID_SIZE * Zoom
+			local x      = origin.x + blockX * GRID_SIZE * Zoom
+			local y      = origin.y - blockY * GRID_SIZE * Zoom
 			
 			-- if overflow happened, only show its block(s)
 			if InterceptsInfo < InterceptsState.OVERFLOW then
-				box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
-			else
-				text(x, y - GRID_SIZE * Zoom, block, forecolor)
-				box(x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
+				box (x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
+			elseif block:sub(-1) == OVERFLOW_INDICATOR then
+				text(x, y - GRID_SIZE * Zoom, string.gsub(block, OVERFLOW_INDICATOR, ""), forecolor)
+				box (x, y, x + GRID_SIZE * Zoom, y - GRID_SIZE * Zoom, forecolor, backcolor)
 			end
 		else
 			MapBlocks[block] = nil
@@ -690,8 +683,7 @@ while true do
 
 	if Init then init_mobj_bounds() end
 
-	-- clear cache after rewind, turbo etc.
-	-- this is only necessary to invalidate line specials, the rest is handled by map change detection above
+	-- clear cache after rewind, turbo etc. this is only necessary to invalidate line specials, the rest is handled by map change detection above
 --	if Framecount ~= LastFramecount and Framecount ~= LastFramecount + 1 then
 	if Globals.gamestate ~= GameState.LEVEL then
 		clear_cache()
