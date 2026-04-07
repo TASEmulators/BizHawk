@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -157,8 +156,9 @@ namespace BizHawk.Emulation.Common
 
 		/// <summary>
 		/// Returns the number of players.
-		/// Currently only returns 0 for consoles where all control ports are empty,
-		/// so returns 1 for (non-linked) Game Boy and similar cases.
+		/// Returns 0 for both consoles where all control ports are empty and
+		/// consoles where system buttons aren't separate from "player" buttons,
+		/// like (non-linked) Game Boy
 		/// </summary>
 		public int PlayerCount
 		{
@@ -169,14 +169,7 @@ namespace BizHawk.Emulation.Common
 					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
 					.Max();
-
-				if (player > 0)
-				{
-					return player;
-				}
-
-				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				return allNames.Exists(static b => b.StartsWithOrdinal("Up")) ? 1 : 0;
+				return player;
 			}
 		}
 
