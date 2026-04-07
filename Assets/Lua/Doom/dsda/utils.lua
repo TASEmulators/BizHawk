@@ -354,7 +354,7 @@ function utils.domain_struct_layout(struct_name, padded_size, domain, max_count)
 	local max_address
 	-- Core must be loaded to get memory domain sizes. Throw an error so Lua doesn't cache the module in an invalid state
 	assert(emu.getsystemid() == "Doom", "Doom core not loaded")
-	max_count = max_count or math.floor(memory.getmemorydomainsize(domain) / padded_size)
+	max_count = max_count or memory.getmemorydomainsize(domain) // padded_size
 	max_address = (max_count - 1) * padded_size
 	struct.max_count = max_count
 	struct.max_address = max_address

@@ -12,14 +12,14 @@ local function iterate_players()
 	for i, player in Globals:iterate_players() do
 		Players.List[i] = {
 			thinker = player.mo.thinker._address,
-			x       = player.mo.x     / FRACUNIT,
-			y       = player.mo.y     / FRACUNIT,
-			z       = player.mo.z     / FRACUNIT,
-			prevx   = player.mo.PrevX / FRACUNIT,
-			prevy   = player.mo.PrevY / FRACUNIT,
-			prevz   = player.mo.PrevZ / FRACUNIT,
-			momx    = player.mo.momx  / FRACUNIT,
-			momy    = player.mo.momy  / FRACUNIT,
+			x       = player.mo.x,
+			y       = player.mo.y,
+			z       = player.mo.z,
+			prevx   = player.mo.PrevX,
+			prevy   = player.mo.PrevY,
+			prevz   = player.mo.PrevZ,
+			momx    = player.mo.momx,
+			momy    = player.mo.momy,
 			angle   = math.floor(player.mo.angle * (Angle / ANGLE_90))
 		}
 		
@@ -99,13 +99,13 @@ local function thing_handler()
 					text_color   = "white"
 					
 					GUITexts.thing = sf(
-						"  THING %d (%s)\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
+						"  THING %d (%s)\n   x: %s\n   y: %s\n   z: %s" ..
 						"   rad: %.0f\ntics: %d     hp:   %d\n  rt: %d     thre: %d",
 						mobj.index, -- original index display
 						name,
-						mobj.x      / FRACUNIT,
-						mobj.y      / FRACUNIT,
-						mobj.z      / FRACUNIT,
+						coord_string(mobj.x),
+						coord_string(mobj.y),
+						coord_string(mobj.z),
 						mobj.radius / FRACUNIT,
 						mobj.tics,
 						mobj.health,
@@ -203,8 +203,8 @@ local function line_handler()
 		
 		if closestLine then
 			local x1, y1, x2, y2 = cached_line_coords(closestLine)
-			local v1              = { x = x1 / FRACUNIT, y = y1 / FRACUNIT }
-			local v2              = { x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+			local v1              = { x = x1, y = y1 }
+			local v2              = { x = x2, y = y2 }
 			local distanceLine    = distance_to_line   ({ x = player.x, y = player.y }, v1, v2)
 			local distanceSegment = distance_to_segment({ x = player.x, y = player.y }, v1, v2)
 			
@@ -215,11 +215,12 @@ local function line_handler()
 				"dist(line): %f\ndist( seg): %f\n"..
 				"v1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 				closestLine.iLineID,
-				distanceLine, distanceSegment,
-				math.floor(closestLine.v1.x / FRACUNIT),
-				math.floor(closestLine.v1.y / FRACUNIT),
-				math.floor(closestLine.v2.x / FRACUNIT),
-				math.floor(closestLine.v2.y / FRACUNIT))
+				distanceLine    / FRACUNIT,
+				distanceSegment / FRACUNIT,
+				closestLine.v1.x // FRACUNIT,
+				closestLine.v1.y // FRACUNIT,
+				closestLine.v2.x // FRACUNIT,
+				closestLine.v2.y // FRACUNIT)
 		end
 	end
 end
@@ -249,12 +250,12 @@ local function tracked_handler()
 		end
 		
 		GUITexts.thing  = sf(
-			"%sTHING %d (%s)%s\n   x: %.5f\n   y: %.5f\n   z: %.2f" ..
+			"%sTHING %d (%s)%s\n   x: %s\n   y: %s\n   z: %s" ..
 			"   rad: %.0f\ntics: %d    hp:   %d\n  rt: %d    thre: %d",
 			min, mobj.index, MobjType[mobj.type], max,
-			mobj.x      / FRACUNIT,
-			mobj.y      / FRACUNIT,
-			mobj.z      / FRACUNIT,
+			coord_string(mobj.x),
+			coord_string(mobj.y),
+			coord_string(mobj.z),
 			mobj.radius / FRACUNIT,
 			mobj.tics,
 			mobj.health,
@@ -268,8 +269,8 @@ local function tracked_handler()
 		local max             = entity.Current == entity.Max and Scroller.NONE or Scroller.RIGHT
 		local line            = entity.TrackedList[entity.Current]
 		local x1, y1, x2, y2  = line:coords()
-		local v1              = { x = x1 / FRACUNIT, y = y1 / FRACUNIT }
-		local v2              = { x = x2 / FRACUNIT, y = y2 / FRACUNIT }
+		local v1              = { x = x1, y = y1 }
+		local v2              = { x = x2, y = y2 }
 		local distanceLine    = distance_to_line   ({ x = player.x, y = player.y }, v1, v2)
 		local distanceSegment = distance_to_segment({ x = player.x, y = player.y }, v1, v2)
 		
@@ -292,11 +293,12 @@ local function tracked_handler()
 			"dist(line): %f\ndist( seg): %f\n"..
 			"v1 x: %5d  y: %5d\nv2 x: %5d  y: %5d",
 			min, line.iLineID, max,
-			distanceLine, distanceSegment,
-			math.floor(x1 / FRACUNIT),
-			math.floor(y1 / FRACUNIT),
-			math.floor(x2 / FRACUNIT),
-			math.floor(y2 / FRACUNIT))
+			distanceLine    / FRACUNIT,
+			distanceSegment / FRACUNIT,
+			x1 // FRACUINT,
+			y1 // FRACUINT,
+			x2 // FRACUINT,
+			y2 // FRACUINT)
 	end
 	
 	if Tracked[TrackedType.SECTOR].Current then
@@ -529,23 +531,28 @@ local function iterate()
 	GUITexts        = {}
 	GUITexts.player = sf(
 		"     %sPLAYER %s%s\n" ..
-		"    X: %.6f\n    Y: %.6f\n    Z: %.2f\n" ..
-		"distX: %.6f\ndistY: %.6f\ndistZ: %.2f\n" ..
-		" momX: %.6f\n momY: %.6f\n" ..
-		"distM: %.6f\n dirM: %.6f\nangle: %d\n",
+		"    X: %s\n    Y: %s\n    Z: %s\n" ..
+		"distX: %s\ndistY: %s\ndistZ: %s\n" ..
+		" momX: %s\n momY: %s\n" ..
+		"distM: %f\n dirM: %.6f\n" ..
+		"angle: %d\n",
 		min, Players.Min ~= Players.Max and Players.Current or "", max,
-		player.x,
-		player.y,
-		player.z,
-		player.distx,
-		player.disty,
-		player.distz,
-		player.momx,
-		player.momy,
-		player.distmoved,
+		coord_string(player.x),
+		coord_string(player.y),
+		coord_string(player.z),
+		coord_string(player.distx),
+		coord_string(player.disty),
+		coord_string(player.distz),
+		coord_string(player.momx),
+		coord_string(player.momy),
+		player.distmoved / FRACUNIT,
 		player.dirmoved,
 		player.angle
 	)
+
+	if ShowMap then
+		box(PADDING_WIDTH, 0, ScreenWidth, ScreenHeight, 0x60000000, 0x60000000)
+	end
 	
 	draw_grid()
 	tracked_handler()

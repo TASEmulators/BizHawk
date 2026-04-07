@@ -34,6 +34,9 @@ INTERCEPT_SIZE         = 16
 INTERCEPT_SIZE_VANILLA = 12
 OVERFLOW_INDICATOR     = '+'
 
+gui.use_surface("client")
+client.SetClientExtraPadding(PADDING_WIDTH, 0, 0, 0)
+
 --#endregion
 
 
@@ -133,15 +136,15 @@ end
 
 --- Just a list of things we display for players
 ---@class (exact) player
----@field x number
----@field y number
----@field z number
----@field distx number
----@field disty number
----@field distz number
----@field momx number
----@field momy number
----@field distmoved number
+---@field x integer
+---@field y integer
+---@field z integer
+---@field distx integer
+---@field disty integer
+---@field distz integer
+---@field momx integer
+---@field momy integer
+---@field distmoved integer
 ---@field dirmoved number
 ---@field angle integer
 
@@ -214,13 +217,6 @@ end
 --#endregion
 
 
--- shortcuts
-text     = gui.text
-box      = gui.drawBox
-drawline = gui.drawLine
-sf       = string.format
-
-
 --#region TOP LEVEL VARIABLES
 
 Defaults = {
@@ -231,6 +227,7 @@ Defaults = {
 	ShowGrid       = false,
 	Follow         = false,
 	Hilite         = false,
+	ScaleCoords    = false,
 	InterceptLimit = MAXIMUM_INTERCEPTS,
 	---@type angle_type
 	Angle = AngleType.BYTE,
@@ -248,6 +245,7 @@ InterceptPtr   = 0
 InterceptLog   = false
 InterceptShow  = false
 RNGLog         = false
+ScaleCoords    = false
 Framecount     = 0
 LastFramecount = -1
 Input          = nil
@@ -355,11 +353,15 @@ MapPrefs = {
 --	inert       = { color = 0x80808080, radius_min_zoom = 0.75, text_min_zoom = false,},
 }
 
+
+-- SHORTCUTS
+text     = gui.text
+box      = gui.drawBox
+drawline = gui.drawLine
+sf       = string.format
+
 --#endregion
 
-
-gui.use_surface("client")
-client.SetClientExtraPadding(PADDING_WIDTH, 0, 0, 0)
 
 --#region TOGGLES
 
@@ -474,7 +476,7 @@ local function intercept_logger(x, y, isaline)
 
 	if InterceptLog then
 		local origin = Globals.intercepts
-		local count  = math.floor((InterceptPtr - origin) / INTERCEPT_SIZE)
+		local count  = (InterceptPtr - origin) // INTERCEPT_SIZE
 		
 		if count > InterceptLimit then
 			local text
@@ -518,21 +520,22 @@ local function intercept_logger(x, y, isaline)
 			
 			for address = origin, InterceptPtr - INTERCEPT_SIZE, INTERCEPT_SIZE do
 				local intercept = structs.intercept.from_pointer(address)
-				local offset = (i - 1) * INTERCEPT_SIZE_VANILLA
+				local pointer   = intercept.d
+				local offset    = (i - 1) * INTERCEPT_SIZE_VANILLA
 				---@type intercept_info
 				local object = {
 					data = {
-						sf("offset %d = 0x%08X (frac)",    offset,   intercept.frac   ),
-						sf("offset %d = 0x%08X (isaline)", offset+4, intercept.isaline),
-						sf("offset %d = 0x%08X (d)",       offset+8, intercept.d      ),
+						sf("offset %d = 0x%08X (frac)",    offset,     intercept.frac   ),
+						sf("offset %d = 0x%08X (isaline)", offset + 4, intercept.isaline),
+						sf("offset %d = 0x%08X (d)",       offset + 8, pointer          ),
 					},
 					block = block
 				}
 				
 				if tonumber(intercept.isaline) == 1 then
-					object.id = structs.line.from_pointer(intercept.d).iLineID
+					object.id = structs.line.from_pointer(pointer).iLineID
 				else
-					object.id = structs.mobj.from_pointer(intercept.d).index
+					object.id = structs.mobj.from_pointer(pointer).index
 				end
 
 				if InterceptsInfo ~= InterceptsState.OVERFLOW then
@@ -982,22 +985,22 @@ end
 
 ---@param divider integer
 function pan_left(divider)
-	Pan.x = Pan.x + PAN_FACTOR/Zoom/(divider or 2)
+	Pan.x = Pan.x + PAN_FACTOR / Zoom / (divider or 2)
 end
 
 ---@param divider integer
 function pan_right(divider)
-	Pan.x = Pan.x - PAN_FACTOR/Zoom/(divider or 2)
+	Pan.x = Pan.x - PAN_FACTOR / Zoom / (divider or 2)
 end
 
 ---@param divider integer
 function pan_up(divider)
-	Pan.y = Pan.y + PAN_FACTOR/Zoom/(divider or 2)
+	Pan.y = Pan.y + PAN_FACTOR / Zoom / (divider or 2)
 end
 
 ---@param divider integer
 function pan_down(divider)
-	Pan.y = Pan.y - PAN_FACTOR/Zoom/(divider or 2)
+	Pan.y = Pan.y - PAN_FACTOR / Zoom / (divider or 2)
 end
 
 ---@param factor integer
@@ -1013,7 +1016,7 @@ local function zoom(factor, mouseCenter)
 	
 	if factor < 0 then
 		direction = -1
-		factor = -factor
+		factor    = -factor
 	end
 	
 	if mouseCenter then
@@ -1022,8 +1025,8 @@ local function zoom(factor, mouseCenter)
 		zoomCenter = screen_to_game(mousePos)
 	else
 		zoomCenter = screen_to_game({
-			x = ScreenWidth /2,
-			y = ScreenHeight/2
+			x = ScreenWidth  / 2,
+			y = ScreenHeight / 2
 		})
 	end
 	
@@ -1041,7 +1044,7 @@ end
 
 function update_zoom()
 	local mousePos   = client.transformPoint(Mouse.X, Mouse.Y)
-	local mouseWheel = math.floor(Mouse.Wheel/120)
+	local mouseWheel = Mouse.Wheel // 120
 	local deltaX     = mousePos.x - LastMouse.x
 	local deltaY     = mousePos.y - LastMouse.y
 	local deltaWheel = mouseWheel - LastMouse.wheel
@@ -1061,8 +1064,8 @@ function update_zoom()
 	end
 	
 	if input.get()["Space"] then
-		if deltaX ~= 0 then pan_left(DRAG_FACTOR/deltaX) end
-		if deltaY ~= 0 then pan_up  (DRAG_FACTOR/deltaY) end
+		if deltaX ~= 0 then pan_left(DRAG_FACTOR / deltaX) end
+		if deltaY ~= 0 then pan_up  (DRAG_FACTOR / deltaY) end
 	end
 	
 	LastMouse.x     = mousePos.x
@@ -1072,14 +1075,14 @@ function update_zoom()
 	if Follow and Globals.gamestate == GameState.LEVEL then
 		local player       = Players.List[Players.Current]
 		local screenCenter = screen_to_game({
-			x = (ScreenWidth+PADDING_WIDTH)/2,
-			y = ScreenHeight/2
+			x = (ScreenWidth + PADDING_WIDTH) / 2,
+			y = ScreenHeight / 2
 		})
 		
-		screenCenter.x = screenCenter.x / FRACUNIT - player.x
-		screenCenter.y = screenCenter.y / FRACUNIT - player.y
-		Pan.x = Pan.x + screenCenter.x
-		Pan.y = Pan.y - screenCenter.y
+		screenCenter.x = screenCenter.x - player.x
+		screenCenter.y = screenCenter.y - player.y
+		Pan.x = Pan.x + screenCenter.x / FRACUNIT
+		Pan.y = Pan.y - screenCenter.y / FRACUNIT
 	end
 
 	if Config.Zoom then Init = false end
@@ -1221,6 +1224,9 @@ local function settings_read()
 	
 	-- ANGLE TYPE
 	Angle = Config.Angle or Defaults.Angle
+
+	-- COORDINATE SCALING
+	ScaleCoords = Config.ScaleCoords or Defaults.ScaleCoords
 	
 	-- INTERCEPTS
 	InterceptLimit = Config.InterceptLimit or Defaults.InterceptLimit
@@ -1310,10 +1316,15 @@ function settings_write()
 		end
 		file:write("Angle = " .. Angle .. "\n")
 		file:write("\n")
+
+		-- COORDINATE SCALING
+		file:write("-- when enabled, turns fixed point coordinate values into regular fractions, losing precision for fractional units, similarly to XDRE.\n"..
+		"-- when disabled, shows integer part normally but fractional part as is in the [0, 65535] range, separated with ':' to communicate that it's not a regular number.\n")
+		file:write("ScaleCoords = " .. tostring(ScaleCoords) .. "\n")
+		file:write("\n")
 		
 		-- INTERCEPTS
-		file:write("-- 128 intercepts is when intercept overflow happens in vanilla\n")
-		file:write("-- but you can set it to lower values to make the script report them too\n")
+		file:write("-- intercept overflow happens in vanilla after 128 intercepts, but you can set it to lower values to make the script report them too\n")
 		file:write("InterceptLimit = " .. InterceptLimit .. "\n")
 		file:write("\n")
 		
@@ -1457,6 +1468,16 @@ end
 
 --#region GUI
 
+function coord_string(coord)
+	if ScaleCoords then
+		return sf("%f", coord / FRACUNIT)
+	else
+		local whole = bit.arshift(coord, FRACBITS)
+		local frac  = coord & (FRACUNIT-1)
+		return sf("%d:%d", whole, frac)
+	end
+end
+
 --- Displays next or previous entity from a given list. Nothing happens if there's nowhere to scroll. Depends on some metadata being present in the entity, it's not just a flat list!
 ---@param entity tracked_entity | players Source of the list to scroll through
 ---@param delta integer Direction and amount to scroll by
@@ -1591,6 +1612,8 @@ function print_help()
 	"Use Mouse Wheel to zoom in and out, and mouse movement with the 'Space' key held down to pan.\n\n"..
 
 	"Buttons for adding things, lines, and sectors allow to track those entities. If more than one object of a given type is tracked, you can hoven on them and scroll through them with the mouse wheel. They can also be removed from the tracked list by hitting the red cross button that appears on hover. \n\n"..
+
+	"Tracked and highlighted entities show info similar to what XDRE shows. For linedefs, distance from the currently selected player is shown in 2 ways: \"distance from line\" is similar to that in XDRE, when the line is assumed to be infinite and player position is projected onto it at a right angle. \"Distance from segment\" assumes line to be finite and only calculates distance to the closest point of that segment regardless of the angle.\n\n"..
 
 	"Tracked entity lists and Automap config are saved when the script is stopped or restarted or when you add or remove tracked entities. To manually edit the config file, disable the script, edit the 'doom.settings.lua' file if it exists, then start the script again. Editing it while the script is running will overwrite your edits later. Config also stored Angle type which has no other way to change it.\n\n"..
 
