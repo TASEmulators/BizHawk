@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 		public FileWriteResult Save(string fileName)
 		{
 			// Save the controller definition/LogKey
-			// Save the controller name and player count. (Only for the user.)
+			// Save the controller name and controller groups count. (Only for the user)
 			// Save whether or not the macro should use overlay input, and/or replace
 
 			return FileWriter.Write(fileName, (fs) =>
@@ -158,7 +158,7 @@ namespace BizHawk.Client.Common
 				using var writer = new StreamWriter(fs);
 				writer.WriteLine(InputKey);
 				writer.WriteLine(_movieDefinition.Name);
-				writer.WriteLine(_movieDefinition.PlayerCount.ToString());
+				writer.WriteLine(_movieDefinition.NumControllerGroups.ToString());
 				writer.WriteLine($"{Overlay},{Replace}");
 
 				foreach (string line in _log)
@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!emuKeys.Contains(macroKey))
 				{
-					dialogController.ShowMessageBox($"The selected macro is not compatible with the current emulator core.\nMacro controller: {readText[1]}\nMacro player count: {readText[2]}", "Error");
+					dialogController.ShowMessageBox($"The selected macro is not compatible with the current emulator core.\nMacro controller: {readText[1]}\nMacro controller groups (\"players\" + 1) count: {readText[2]}", "Error");
 					return null;
 				}
 			}

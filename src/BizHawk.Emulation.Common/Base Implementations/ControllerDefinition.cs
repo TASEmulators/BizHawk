@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Common
 		/// <remarks>Implementors should include empty lists for empty players, including "player 0" (console buttons), to match this base implementation</remarks>
 		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
-			var ret = new List<(string, AxisSpec?)>[PlayerCount + 1];
+			var ret = new List<(string, AxisSpec?)>[NumControllerGroups];
 			for (var i = 0; i < ret.Length; i++) ret[i] = new();
 			foreach ((string buttonName, var axisSpec) in Axes) ret[PlayerNumber(buttonName)].Add((buttonName, axisSpec));
 			foreach (var btn in BoolButtons) ret[PlayerNumber(btn)].Add((btn, null));
@@ -155,12 +155,13 @@ namespace BizHawk.Emulation.Common
 		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
 
 		/// <summary>
-		/// Returns the number of players.
-		/// Returns 0 for both consoles where all control ports are empty and
+		/// Returns the number of controller groups.
+		/// Usually is number of players + 1.
+		/// Returns 1 for both consoles where all control ports are empty and
 		/// consoles where system buttons aren't separate from "player" buttons,
 		/// like (non-linked) Game Boy
 		/// </summary>
-		public int PlayerCount
+		public int NumControllerGroups
 		{
 			get
 			{
@@ -169,7 +170,7 @@ namespace BizHawk.Emulation.Common
 					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
 					.Max();
-				return player;
+				return player + 1;
 			}
 		}
 
