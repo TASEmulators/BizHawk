@@ -235,7 +235,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			MovieZone loadZone = new MovieZone(path, MainForm, CurrentMovie);
+			MovieZone loadZone = MovieZone.Load(path, MainForm, CurrentMovie);
+			if (loadZone == null) return;
 			_zones.Add(loadZone);
 			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}
@@ -286,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 				initDir: SuggestedFolder(Config, Game));
 			if (result is null) return null;
 			Config!.RecentMacros.Add(result);
-			return new MovieZone(result, MainForm, CurrentMovie);
+			return MovieZone.Load(result, MainForm, CurrentMovie);
 		}
 	}
 }

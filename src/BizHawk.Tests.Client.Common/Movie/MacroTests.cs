@@ -49,7 +49,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			movie.SetAxisState(0, "Stick", 7);
 			string expectedFrame = movie.GetInputLogEntry(0);
 
-			MovieZone macro = new(Path.Combine(BASE_MACRO_PATH, "MacroWithJustANotPressed.bk2m"), null!, movie);
+			MovieZone macro = MovieZone.Load(Path.Combine(BASE_MACRO_PATH, "MacroWithJustANotPressed.bk2m"), null!, movie);
 			movie.SetBoolState(0, "A", true);
 
 			// act

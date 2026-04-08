@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 {
 	public class MovieZone
 	{
-		private readonly string[] _log;
+		private string[] _log;
 		private string _inputKey;
 
 		/// <summary>
@@ -164,46 +164,48 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public MovieZone(string fileName, IDialogController dialogController, IMovie movie)
-			: this(movie)
+		public static MovieZone/*?*/ Load(string fileName, IDialogController dialogController, IMovie movie)
 		{
 			if (!File.Exists(fileName))
 			{
-				return;
+				return null;
 			}
 
+			MovieZone macro = new(movie);
 			string[] readText = File.ReadAllLines(fileName);
 
 			// If the LogKey contains buttons/controls not accepted by the emulator,
 			// tell the user and display the macro's controller name and player count
-			_inputKey = readText[0];
-			string key = CleanInputKey(Bk2LogEntryGenerator.GenerateLogKey(_movieDefinition));
+			macro._inputKey = readText[0];
+			string key = CleanInputKey(Bk2LogEntryGenerator.GenerateLogKey(macro._movieDefinition));
 			string[] emuKeys = key.Split('|');
-			string[] macroKeys = _inputKey.Split('|');
-			foreach (var macro in macroKeys)
+			string[] macroKeys = macro._inputKey.Split('|');
+			foreach (var macroKey in macroKeys)
 			{
-				if (!emuKeys.Contains(macro))
+				if (!emuKeys.Contains(macroKey))
 				{
 					dialogController.ShowMessageBox($"The selected macro is not compatible with the current emulator core.\nMacro controller: {readText[1]}\nMacro player count: {readText[2]}", "Error");
-					return;
+					return null;
 				}
 			}
 
 			// Settings
 			string[] settings = readText[3].Split(',');
-			Overlay = Convert.ToBoolean(settings[0]);
-			Replace = Convert.ToBoolean(settings[1]);
+			macro.Overlay = Convert.ToBoolean(settings[0]);
+			macro.Replace = Convert.ToBoolean(settings[1]);
 
-			_log = new string[readText.Length - 4];
-			readText.ToList().CopyTo(4, _log, 0, _log.Length);
+			macro._log = new string[readText.Length - 4];
+			readText.ToList().CopyTo(4, macro._log, 0, macro._log.Length);
 
-			Name = Path.GetFileNameWithoutExtension(fileName);
+			macro.Name = Path.GetFileNameWithoutExtension(fileName);
 
 			// Get a IController that only contains buttons in key.
-			InitController();
+			macro.InitController();
+
+			return macro;
 		}
 
-		private string CleanInputKey(string rawKey)
+		private static string CleanInputKey(string rawKey)
 		{
 			string key = rawKey.Replace("#", ""); // Movies separate players with #, but that character has no meaning for us.
 			key = key.Substring(startIndex: 0, length: key.Length - 1); // drop last |, so we don't have an empty button when we split
