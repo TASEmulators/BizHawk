@@ -174,7 +174,6 @@ namespace BizHawk.Client.EmuHawk
 				var selectionStart = TasView.SelectionStartIndex!.Value;
 				MovieZone macro = new(
 					Emulator,
-					Tools,
 					MovieSession,
 					start: selectionStart,
 					length: TasView.SelectionEndIndex!.Value - selectionStart + 1);

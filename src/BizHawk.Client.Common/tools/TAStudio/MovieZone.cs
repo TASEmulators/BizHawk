@@ -2,22 +2,20 @@ using System.Linq;
 using System.IO;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public class MovieZone
 	{
 		private readonly IEmulator _emulator;
-		private readonly ToolManager _tools;
 		private readonly IMovieSession _movieSession;
 		private readonly string[] _log;
 		private readonly IMovieController _targetController;
 		private string _inputKey;
 		private IMovieController _controller;
 
-		public MovieZone(IEmulator emulator, ToolManager tools, IMovieSession movieSession, int start, int length, string key = "")
-			: this(emulator, tools, movieSession)
+		public MovieZone(IEmulator emulator, IMovieSession movieSession, int start, int length, string key = "")
+			: this(emulator, movieSession)
 		{
 			if (key.Length is 0)
 			{
@@ -53,10 +51,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private MovieZone(IEmulator emulator, ToolManager tools, IMovieSession movieSession)
+		private MovieZone(IEmulator emulator, IMovieSession movieSession)
 		{
 			_emulator = emulator;
-			_tools = tools;
 			_movieSession = movieSession;
 
 			_targetController = movieSession.GenerateMovieController();
@@ -167,28 +164,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (movie is ITasMovie tasMovie3) // Assume TAStudio is open?
+			if (movie is ITasMovie tasMovie3)
 			{
 				tasMovie3.ChangeLog.EndBatch();
-				if (_emulator.Frame > Start)
-				{
-					// TODO: Go to start of macro? Ask TAStudio to do that?
-
-					// TasMovie.InvalidateAfter(Start) [this is private]
-					// Load last state, Emulate to Start
-
-					// Or do this, if TAStudio has to be open.
-					if (_tools.IsLoaded<TAStudio>())
-					{
-						_tools.TAStudio.GoToFrame(Start);
-					}
-
-					_tools.UpdateToolsAfter();
-				}
-				else if (_tools.IsLoaded<TAStudio>())
-				{
-					_tools.UpdateValues<TAStudio>();
-				}
 			}
 
 			if (movie.InputLogLength >= _emulator.Frame)
@@ -219,8 +197,8 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public MovieZone(string fileName, IDialogController dialogController, IEmulator emulator, IMovieSession movieSession, ToolManager tools)
-			: this(emulator, tools, movieSession)
+		public MovieZone(string fileName, IDialogController dialogController, IEmulator emulator, IMovieSession movieSession)
+			: this(emulator, movieSession)
 		{
 			if (!File.Exists(fileName))
 			{
