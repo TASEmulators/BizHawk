@@ -235,7 +235,7 @@ namespace BizHawk.Client.Common
 			foreach (string name in latching.Definition.Axes.Keys.Union(source.Definition.Axes.Keys))
 			{
 				var axisValue = source.AxisValue(name);
-				if (axisValue == source.Definition.Axes[name].Neutral)
+				if (axisValue != source.Definition.Axes[name].Neutral)
 				{
 					latching.SetAxis(name, axisValue);
 				}
