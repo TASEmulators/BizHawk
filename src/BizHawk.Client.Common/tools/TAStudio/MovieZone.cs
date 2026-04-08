@@ -10,6 +10,8 @@ namespace BizHawk.Client.Common
 		private string[] _log;
 		private string _inputKey;
 
+		private string _sysId;
+
 		/// <summary>
 		/// The macro's controller, which might not have the same definition as the movie controller.
 		/// </summary>
@@ -50,6 +52,7 @@ namespace BizHawk.Client.Common
 		private MovieZone(IMovie movie)
 		{
 			_movieDefinition = movie.Session.MovieController.Definition;
+			_sysId = movie.SystemID;
 		}
 
 		private void InitController()
@@ -69,6 +72,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_controller = new Bk2Controller(d.MakeImmutable());
+			d.BuildMnemonicsCache(_sysId);
 		}
 
 		public string Name { get; set; }
