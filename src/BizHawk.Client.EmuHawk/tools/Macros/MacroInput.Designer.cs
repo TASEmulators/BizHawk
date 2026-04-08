@@ -130,7 +130,6 @@
 			this.PlaceNum.Name = "PlaceNum";
 			this.PlaceNum.Size = new System.Drawing.Size(63, 20);
 			this.PlaceNum.TabIndex = 6;
-			this.PlaceNum.ValueChanged += new System.EventHandler(this.PlaceNum_ValueChanged);
 			// 
 			// EndNum
 			// 

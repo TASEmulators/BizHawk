@@ -807,11 +807,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var loadZone = new MovieZone(path, MainForm, Emulator, MovieSession)
-			{
-				Start = TasView.SelectionStartIndex!.Value,
-			};
-			loadZone.PlaceZone(CurrentTasMovie, Config);
+			var loadZone = new MovieZone(path, MainForm, CurrentTasMovie);
+			loadZone.PlaceZone(CurrentTasMovie, TasView.FirstSelectedRowIndex);
 		}
 
 		private void TastudioToggleReadOnly()

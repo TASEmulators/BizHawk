@@ -7,81 +7,79 @@ namespace BizHawk.Client.Common
 {
 	public class MovieZone
 	{
-		private readonly IEmulator _emulator;
-		private readonly IMovieSession _movieSession;
 		private readonly string[] _log;
-		private readonly IMovieController _targetController;
 		private string _inputKey;
+
+		/// <summary>
+		/// The macro's controller, which might not have the same definition as the movie controller.
+		/// </summary>
 		private IMovieController _controller;
 
-		public MovieZone(IEmulator emulator, IMovieSession movieSession, int start, int length, string key = "")
-			: this(emulator, movieSession)
+		/// <summary>
+		/// A controller who's definition matches the movie controller.
+		/// </summary>
+		private readonly IMovieController _targetController;
+
+		/// <summary>
+		/// The controller definition for the movie the macro is being applied to.
+		/// </summary>
+		private readonly ControllerDefinition _movieDefinition;
+
+		public MovieZone(IMovie movie, int start, int length)
+			: this(movie)
 		{
-			if (key.Length is 0)
-			{
-				key = Bk2LogEntryGenerator.GenerateLogKey(movieSession.MovieController.Definition);
-			}
-
-			key = key.Replace("#", "");
-			key = key.Substring(startIndex: 0, length: key.Length - 1); // drop last char
-
-			_inputKey = key;
-			Length = length;
+			_inputKey = CleanInputKey(Bk2LogEntryGenerator.GenerateLogKey(_movieDefinition));
 			_log = new string[length];
 
 			// Get a IController that only contains buttons in key.
-			InitController(_inputKey);
+			InitController();
 
-			string movieKey = Bk2LogEntryGenerator.GenerateLogKey(_controller.Definition).Replace("#", "");
-			movieKey = movieKey.Substring(startIndex: 0, length: movieKey.Length - 1); // drop last char
-			if (key == movieKey)
+			string movieKey = CleanInputKey(Bk2LogEntryGenerator.GenerateLogKey(_controller.Definition));
+			if (_inputKey == movieKey)
 			{
 				for (int i = 0; i < length; i++)
 				{
-					_log[i] = movieSession.Movie.GetInputLogEntry(i + start);
+					_log[i] = movie.GetInputLogEntry(i + start);
 				}
 			}
 			else
 			{
 				for (int i = 0; i < length; i++)
 				{
-					_controller.SetFrom(movieSession.Movie.GetInputState(i + start));
+					_controller.SetFrom(movie.GetInputState(i + start));
 					_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(_controller);
 				}
 			}
 		}
 
-		private MovieZone(IEmulator emulator, IMovieSession movieSession)
+		private MovieZone(IMovie movie)
 		{
-			_emulator = emulator;
-			_movieSession = movieSession;
-
-			_targetController = movieSession.GenerateMovieController();
+			_movieDefinition = movie.Session.MovieController.Definition;
+			_targetController = new Bk2Controller(_movieDefinition);
 			_targetController.SetFrom(_targetController); // Reference and create all buttons
 		}
 
-		private void InitController(string key)
+		private void InitController()
 		{
-			string[] keys = key.Split('|');
-			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
+			string[] keys = _inputKey.Split('|');
+			ControllerDefinition d = new(_movieDefinition.Name);
 			foreach (var k in keys)
 			{
-				if (_emulator.ControllerDefinition.BoolButtons.Contains(k))
+				if (_movieDefinition.BoolButtons.Contains(k))
 				{
 					d.BoolButtons.Add(k);
 				}
 				else
 				{
-					d.Axes.Add(k, _emulator.ControllerDefinition.Axes[k]);
+					d.Axes.Add(k, _movieDefinition.Axes[k]);
 				}
 			}
 
-			_controller = _movieSession.GenerateMovieController(d.MakeImmutable());
+			_controller = new Bk2Controller(d.MakeImmutable());
 		}
 
 		public string Name { get; set; }
-		public int Start { get; set; }
-		public int Length { get; set; }
+		public int Length => _log.Length;
 
 		public bool Replace { get; set; } = true;
 		public bool Overlay { get; set; }
@@ -94,63 +92,46 @@ namespace BizHawk.Client.Common
 
 		private void ReSetLog()
 		{
-			// Get a IController that only contains buttons in key.
-			string[] keys = _inputKey.Split('|');
-			ControllerDefinition d = new(_emulator.ControllerDefinition.Name);
-			foreach (var key in keys)
-			{
-				if (_emulator.ControllerDefinition.BoolButtons.Contains(key))
-				{
-					d.BoolButtons.Add(key);
-				}
-				else
-				{
-					d.Axes.Add(key, _emulator.ControllerDefinition.Axes[key]);
-				}
-			}
-
-			var newController = _movieSession.GenerateMovieController(d.MakeImmutable());
+			IMovieController oldController = _controller;
+			InitController();
 
 			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
 			_targetController.SetFromMnemonic(Bk2LogEntryGenerator.EmptyEntry(_targetController));
 			for (int i = 0; i < Length; i++)
 			{
-				_controller.SetFromMnemonic(_log[i]);
-				LatchFromSourceButtons(_targetController, _controller);
-				newController.SetFrom(_targetController);
-				_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(newController);
+				oldController.SetFromMnemonic(_log[i]);
+				LatchFromSourceButtons(_targetController, oldController);
+				_controller.SetFrom(_targetController);
+				_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(_controller);
 			}
-
-			_controller = newController;
 		}
 
-		public void PlaceZone(IMovie movie, Config config)
+		public void PlaceZone(IMovie movie, int start)
 		{
-			if (movie is ITasMovie tasMovie)
-			{
-				tasMovie.ChangeLog.BeginNewBatch($"Place Macro at {Start}");
-			}
+			ITasMovie/*?*/ tasMovie = movie as ITasMovie;
+			tasMovie?.ChangeLog.BeginNewBatch($"Place Macro at {start}");
 
-			if (Start > movie.InputLogLength)
+			if (start > movie.InputLogLength)
 			{
 				// Cannot place a frame here. Find a nice way around this.
 				return;
 			}
 
-			// Can't be done with a regular movie.
-			if (!Replace && movie is ITasMovie tasMovie2)
+			if (!Replace)
 			{
-				tasMovie2.InsertEmptyFrame(Start, Length);
+				// Can't be done with a regular movie.
+				tasMovie?.InsertEmptyFrame(start, Length);
 			}
 
 			if (Overlay)
 			{
+				// Overlay the frames.
 				for (int i = 0; i < Length; i++)
-				{ // Overlay the frames.
+				{
 					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
-					ORLatchFromSource(_targetController, movie.GetInputState(i + Start));
-					movie.PokeFrame(i + Start, _targetController);
+					ORLatchFromSource(_targetController, movie.GetInputState(i + start));
+					movie.PokeFrame(i + start, _targetController);
 				}
 			}
 			else
@@ -160,20 +141,11 @@ namespace BizHawk.Client.Common
 				{
 					_controller.SetFromMnemonic(_log[i]);
 					LatchFromSourceButtons(_targetController, _controller);
-					movie.PokeFrame(i + Start, _targetController);
+					movie.PokeFrame(i + start, _targetController);
 				}
 			}
 
-			if (movie is ITasMovie tasMovie3)
-			{
-				tasMovie3.ChangeLog.EndBatch();
-			}
-
-			if (movie.InputLogLength >= _emulator.Frame)
-			{
-				movie.SwitchToPlay();
-				config.Movies.MovieEndAction = MovieEndAction.Record; // TODO: this is a bad place to do this, and introduces a config dependency
-			}
+			tasMovie?.ChangeLog.EndBatch();
 		}
 
 		public FileWriteResult Save(string fileName)
@@ -186,8 +158,8 @@ namespace BizHawk.Client.Common
 			{
 				using var writer = new StreamWriter(fs);
 				writer.WriteLine(InputKey);
-				writer.WriteLine(_emulator.ControllerDefinition.Name);
-				writer.WriteLine(_emulator.ControllerDefinition.PlayerCount.ToString());
+				writer.WriteLine(_movieDefinition.Name);
+				writer.WriteLine(_movieDefinition.PlayerCount.ToString());
 				writer.WriteLine($"{Overlay},{Replace}");
 
 				foreach (string line in _log)
@@ -197,8 +169,8 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public MovieZone(string fileName, IDialogController dialogController, IEmulator emulator, IMovieSession movieSession)
-			: this(emulator, movieSession)
+		public MovieZone(string fileName, IDialogController dialogController, IMovie movie)
+			: this(movie)
 		{
 			if (!File.Exists(fileName))
 			{
@@ -208,11 +180,9 @@ namespace BizHawk.Client.Common
 			string[] readText = File.ReadAllLines(fileName);
 
 			// If the LogKey contains buttons/controls not accepted by the emulator,
-			//	tell the user and display the macro's controller name and player count
+			// tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
-			string key = Bk2LogEntryGenerator.GenerateLogKey(_movieSession.MovieController.Definition);
-			key = key.Replace("#", "");
-			key = key.Substring(startIndex: 0, length: key.Length - 1); // drop last char
+			string key = CleanInputKey(Bk2LogEntryGenerator.GenerateLogKey(_movieDefinition));
 			string[] emuKeys = key.Split('|');
 			string[] macroKeys = _inputKey.Split('|');
 			foreach (var macro in macroKeys)
@@ -231,13 +201,18 @@ namespace BizHawk.Client.Common
 
 			_log = new string[readText.Length - 4];
 			readText.ToList().CopyTo(4, _log, 0, _log.Length);
-			Length = _log.Length;
-			Start = 0;
 
 			Name = Path.GetFileNameWithoutExtension(fileName);
 
 			// Get a IController that only contains buttons in key.
-			InitController(_inputKey);
+			InitController();
+		}
+
+		private string CleanInputKey(string rawKey)
+		{
+			string key = rawKey.Replace("#", ""); // Movies separate players with #, but that character has no meaning for us.
+			key = key.Substring(startIndex: 0, length: key.Length - 1); // drop last |, so we don't have an empty button when we split
+			return key;
 		}
 
 		private void LatchFromSourceButtons(IMovieController latching, IController source)
