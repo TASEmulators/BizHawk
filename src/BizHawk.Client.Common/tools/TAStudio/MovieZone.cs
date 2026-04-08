@@ -16,11 +16,6 @@ namespace BizHawk.Client.Common
 		private IMovieController _controller;
 
 		/// <summary>
-		/// A controller who's definition matches the movie controller.
-		/// </summary>
-		private readonly IMovieController _targetController;
-
-		/// <summary>
 		/// The controller definition for the movie the macro is being applied to.
 		/// </summary>
 		private readonly ControllerDefinition _movieDefinition;
@@ -55,8 +50,6 @@ namespace BizHawk.Client.Common
 		private MovieZone(IMovie movie)
 		{
 			_movieDefinition = movie.Session.MovieController.Definition;
-			_targetController = new Bk2Controller(_movieDefinition);
-			_targetController.SetFrom(_targetController); // Reference and create all buttons
 		}
 
 		private void InitController()
@@ -95,13 +88,12 @@ namespace BizHawk.Client.Common
 			IMovieController oldController = _controller;
 			InitController();
 
-			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
-			_targetController.SetFromMnemonic(Bk2LogEntryGenerator.EmptyEntry(_targetController));
+			IMovieController temp = new Bk2Controller(_movieDefinition);
 			for (int i = 0; i < Length; i++)
 			{
 				oldController.SetFromMnemonic(_log[i]);
-				LatchFromSourceButtons(_targetController, oldController);
-				_controller.SetFrom(_targetController);
+				LatchFromSourceButtons(temp, oldController);
+				_controller.SetFrom(temp);
 				_log[i] = Bk2LogEntryGenerator.GenerateLogEntry(_controller);
 			}
 		}
@@ -128,10 +120,11 @@ namespace BizHawk.Client.Common
 				// Overlay the frames.
 				for (int i = 0; i < Length; i++)
 				{
+					int frame = i + start;
 					_controller.SetFromMnemonic(_log[i]);
-					LatchFromSourceButtons(_targetController, _controller);
-					ORLatchFromSource(_targetController, movie.GetInputState(i + start));
-					movie.PokeFrame(i + start, _targetController);
+					IMovieController frameState = movie.GetInputState(frame) ?? new Bk2Controller(_movieDefinition);
+					ORLatchFromSource(frameState, _controller);
+					movie.PokeFrame(frame, frameState);
 				}
 			}
 			else
@@ -139,9 +132,11 @@ namespace BizHawk.Client.Common
 				// Copy over the frame.
 				for (int i = 0; i < Length; i++)
 				{
+					int frame = i + start;
 					_controller.SetFromMnemonic(_log[i]);
-					LatchFromSourceButtons(_targetController, _controller);
-					movie.PokeFrame(i + start, _targetController);
+					IMovieController frameState = movie.GetInputState(frame) ?? new Bk2Controller(_movieDefinition);
+					LatchFromSourceButtons(frameState, _controller);
+					movie.PokeFrame(frame, frameState);
 				}
 			}
 
@@ -230,12 +225,12 @@ namespace BizHawk.Client.Common
 
 		private void ORLatchFromSource(IMovieController latching, IController source)
 		{
-			foreach (string button in latching.Definition.BoolButtons)
+			foreach (string button in latching.Definition.BoolButtons.Union(source.Definition.BoolButtons))
 			{
 				latching.SetBool(button, latching.IsPressed(button) | source.IsPressed(button));
 			}
 
-			foreach (string name in latching.Definition.Axes.Keys)
+			foreach (string name in latching.Definition.Axes.Keys.Union(source.Definition.Axes.Keys))
 			{
 				var axisValue = source.AxisValue(name);
 				if (axisValue == source.Definition.Axes[name].Neutral)
