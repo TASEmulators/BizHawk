@@ -158,7 +158,7 @@ namespace BizHawk.Client.Common
 				using var writer = new StreamWriter(fs);
 				writer.WriteLine(InputKey);
 				writer.WriteLine(_movieDefinition.Name);
-				writer.WriteLine(_movieDefinition.NumControllerGroups.ToString());
+				writer.WriteLine(_movieDefinition.ControlsOrdered.Count.ToString());
 				writer.WriteLine($"{Overlay},{Replace}");
 
 				foreach (string line in _log)
