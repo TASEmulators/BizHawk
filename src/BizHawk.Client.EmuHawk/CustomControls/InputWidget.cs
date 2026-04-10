@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AutoTab)
 			{
-				CompositeWidget.TabNext();
+				CompositeWidget?.TabNext();
 			}
 		}
 
@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateLabel()
 		{
 			Text = string.Join(",", _bindings.Where(str => !string.IsNullOrWhiteSpace(str)));
-			CompositeWidget.RefreshTooltip();
+			CompositeWidget?.RefreshTooltip();
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)

@@ -16,16 +16,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_bind = bind;
 			ButtonName = buttonName;
-			labelButtonName.Text = buttonName;
+			labelAxisName.Text = buttonName;
+			labelPositiveButtonName.Text = $"{buttonName}+";
+			labelNegativeButtonName.Text = $"{buttonName}-";
 			trackBarSensitivity.Value = (int) Math.Round(bind.Mult * 20.0);
 			trackBarDeadzone.Value = (int) Math.Round(bind.Deadzone * 50.0);
 			TrackBarSensitivity_ValueChanged(null, EventArgs.Empty);
 			TrackBarDeadzone_ValueChanged(null, EventArgs.Empty);
 			textBox1.Text = bind.Value;
+			iwPositiveButton.Text = bind.ButtonBindPositive;
+			iwNegativeButton.Text = bind.ButtonBindNegative;
 		}
 
 		public string ButtonName { get; }
-		public AnalogBind Bind => _bind;
+		public AnalogBind Bind => new(_bind.Value, _bind.Mult, _bind.Deadzone, iwPositiveButton.Text, iwNegativeButton.Text);
 
 		private AnalogBind _bind;
 		private bool _listening;
