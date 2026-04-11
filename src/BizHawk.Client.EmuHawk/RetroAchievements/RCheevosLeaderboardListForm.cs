@@ -27,7 +27,6 @@ namespace BizHawk.Client.EmuHawk
 			flowLayoutPanel1.BoundScrollBar = vScrollBar1;
 			if (OSTailoredCode.IsUnixHost)
 				vScrollBar1.Location += new Size(7, 0);
-
 		}
 
 		private void DisposeLboardForms()
@@ -112,4 +111,3 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 }
-
