@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -23,6 +25,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			FormClosing += RCheevosLeaderboardListForm_FormClosing;
 			flowLayoutPanel1.BoundScrollBar = vScrollBar1;
+			if (OSTailoredCode.IsUnixHost)
+				vScrollBar1.Location += new Size(7, 0);
+
 		}
 
 		private void DisposeLboardForms()
