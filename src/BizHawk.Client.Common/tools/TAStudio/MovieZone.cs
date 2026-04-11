@@ -104,19 +104,30 @@ namespace BizHawk.Client.Common
 
 		public void PlaceZone(IMovie movie, int start)
 		{
-			ITasMovie/*?*/ tasMovie = movie as ITasMovie;
-			tasMovie?.ChangeLog.BeginNewBatch($"Place Macro at {start}");
-
 			if (start > movie.InputLogLength)
 			{
 				// Cannot place a frame here. Find a nice way around this.
 				return;
 			}
 
+			if (movie is ITasMovie tasMovie)
+			{
+				tasMovie.ChangeLog.BeginNewBatch($"Place Macro at {start}");
+				tasMovie.SingleInvalidation(() => PlaceMacroInternal(movie, start));
+				tasMovie.ChangeLog.EndBatch();
+			}
+			else
+			{
+				PlaceMacroInternal(movie, start);
+			}
+		}
+
+		private void PlaceMacroInternal(IMovie movie, int start)
+		{
 			if (!Replace)
 			{
 				// Can't be done with a regular movie.
-				tasMovie?.InsertEmptyFrame(start, Length);
+				(movie as ITasMovie)?.InsertEmptyFrame(start, Length);
 			}
 
 			if (Overlay)
@@ -143,8 +154,6 @@ namespace BizHawk.Client.Common
 					movie.PokeFrame(frame, frameState);
 				}
 			}
-
-			tasMovie?.ChangeLog.EndBatch();
 		}
 
 		public FileWriteResult Save(string fileName)
