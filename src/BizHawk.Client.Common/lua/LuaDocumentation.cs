@@ -44,8 +44,8 @@ namespace BizHawk.Client.Common
 * nluafunc
 ** A Lua function. Note that these are always parameters, and never return values of a call.
 ** Some callbacks will be called with arguments, if the function you register has the right number of parameters. This will be noted in the registration function's docs.
-* table
-** A standard Lua table
+* nluatable
+** A standard Lua table, either list-like (used with {{ipairs}}) or dict-like (used with {{pairs}}).
 * binary string
 ** A regular Lua string containing raw bytes instead of text, used in some memory functions. Can contain any bytes including null bytes.
 ** Not encoded as hex or any valid text encoding. Should not be written to the console.
@@ -283,8 +283,8 @@ namespace BizHawk.Client.Common
 				.Replace("Boolean[]", "bool[] ")
 				.Replace("Boolean", "bool ")
 				.Replace("String", "string ")
-				.Replace("LuaTable", "table ")
-				.Replace("LuaFunction", "func ")
+				.Replace(/*"NLua."+*/"LuaTable", /*"nlua"+*/"table ")
+				.Replace(/*"NLua."+*/"LuaFunction", /*"nlua"+*/"func ")
 				.Replace("Nullable`1[Int32]", "int? ")
 				.Replace("Nullable`1[UInt32]", "uint? ")
 				.Replace("Byte[]", "string ")
