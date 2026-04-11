@@ -279,7 +279,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void CallExitEvent(LuaFile lf)
+		/// <param name="alsoUnregister">
+		/// <c>LuaConsole.CallScriptExitCallbacks</c> passes <see langword="true" /> for this so that the subsequent call to <c>LuaConsole.Restart</c>
+		/// doesn't cause those callbacks to run at a point where the core has already been disposed
+		/// </param>
+		public void CallExitEvent(LuaFile lf, bool alsoUnregister = false)
 		{
 			foreach (var exitCallback in RegisteredFunctions
 				.Where(l => l.Event == NamedLuaFunction.EVENT_TYPE_ENGINESTOP
@@ -287,6 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				.ToList())
 			{
 				exitCallback.Call();
+				if (alsoUnregister) RegisteredFunctions.Remove(exitCallback);
 			}
 		}
 

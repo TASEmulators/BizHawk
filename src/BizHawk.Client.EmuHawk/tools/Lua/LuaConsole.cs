@@ -592,6 +592,11 @@ namespace BizHawk.Client.EmuHawk
 		public void CallStateSaveCallbacks(string userFriendlyStateName)
 			=> LuaImp.CallSaveStateEvent(userFriendlyStateName);
 
+		public void CallScriptExitCallbacks()
+		{
+			foreach (var lf in LuaImp.ScriptList) LuaImp.CallExitEvent(lf, alsoUnregister: true);
+		}
+
 		protected override void UpdateBefore()
 		{
 			if (LuaImp.IsUpdateSupressed)
