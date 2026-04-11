@@ -121,11 +121,13 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmovget = movie.getcomments( );")]
 		[LuaMethod("getcomments", "If a movie is active, will return the movie comments as a lua table")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetComments()
 			=> _th.ListToTable(APIs.Movie.GetComments(), indexFrom: 0);
 
 		[LuaMethodExample("local nlmovget = movie.getsubtitles( );")]
 		[LuaMethod("getsubtitles", "If a movie is active, will return the movie subtitles as a lua table")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetSubtitles()
 			=> _th.ListToTable(APIs.Movie.GetSubtitles(), indexFrom: 0);
 	}

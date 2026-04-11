@@ -46,6 +46,8 @@ namespace BizHawk.Client.Common
 ** Some callbacks will be called with arguments, if the function you register has the right number of parameters. This will be noted in the registration function's docs.
 * nluatable
 ** A standard Lua table, either list-like (used with {{ipairs}}) or dict-like (used with {{pairs}}).
+* nluatable0Indexed
+** A list-like table (or dict-like with integer keys) which is ""0-indexed"", that is, it begins counting from 0 instead of 1 as would be expected in Lua. Use {{pairs}} instead of {{ipairs}} for these.
 * binary string
 ** A regular Lua string containing raw bytes instead of text, used in some memory functions. Can contain any bytes including null bytes.
 ** Not encoded as hex or any valid text encoding. Should not be written to the console.
@@ -247,6 +249,7 @@ namespace BizHawk.Client.Common
 					{
 						var p = TypeCleanup(parameters[i].ToString());
 						if (parameters[i].GetCustomAttribute<LuaColorParamAttribute>() != null) p = p.Replace("object", "luacolor");
+						if (parameters[i].GetCustomAttribute<LuaZeroIndexedAttribute>() is not null) p = p.Replace("nluatable", "nluatable0Indexed");
 						if (parameters[i].IsOptional)
 						{
 							list.Append($"[{p} = {parameters[i].DefaultValue?.ToString() ?? "nil"}]");
@@ -307,12 +310,18 @@ namespace BizHawk.Client.Common
 				.ToLowerInvariant();
 		}
 
+		private string/*?*/ field = null;
 		public string ReturnType
 		{
 			get
 			{
-				var returnType = Method.ReturnType.ToString();
-				return TypeCleanup(returnType).Trim();
+				if (field is not null) return field;
+				var returnType = TypeCleanup(Method.ReturnType.ToString()).Trim();
+				if (Method.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(LuaZeroIndexedAttribute), inherit: false).Length is not 0)
+				{
+					returnType = returnType.Replace("nluatable", "nluatable0Indexed");
+				}
+				return field = returnType;
 			}
 		}
 	}

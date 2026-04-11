@@ -16,6 +16,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmemget = memory.getmemorydomainlist();")]
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetMemoryDomainList()
 			=> _th.EnumerateToLuaTable(APIs.Memory.GetMemoryDomainList(), indexFrom: 0);
 
@@ -56,6 +57,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
+		[return: LuaZeroIndexed]
 		public LuaTable ReadByteRange(long addr, int length, string domain = null)
 			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, domain), indexFrom: 0);
 
@@ -66,6 +68,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local bytes = memory.read_bytes_as_dict(0x100, 30, \"WRAM\");")]
 		[LuaMethod("read_bytes_as_dict", "Reads length bytes starting at addr into a dict-like table (where the keys are the addresses, relative to the start of the domain).")]
+		[return: LuaZeroIndexed]
 		public LuaTable ReadBytesAsDict(long addr, int length, string domain = null)
 			=> _th.MemoryBlockToTable(APIs.Memory.ReadByteRange(addr, length, domain), addr);
 
@@ -86,7 +89,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
-		public void WriteByteRange(LuaTable memoryblock, string domain = null)
+		public void WriteByteRange([LuaZeroIndexed] LuaTable memoryblock, string domain = null)
 		{
 #if true
 			WriteBytesAsDict(memoryblock, domain);
@@ -121,7 +124,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("memory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });")]
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the domain).")]
-		public void WriteBytesAsDict(LuaTable addrMap, string domain = null)
+		public void WriteBytesAsDict([LuaZeroIndexed] LuaTable addrMap, string domain = null)
 		{
 			foreach (var (addr, v) in addrMap)
 			{

@@ -325,6 +325,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local scopes = event.availableScopes();")]
 		[LuaMethod("availableScopes", "Lists the available scopes that can be specified for on_bus_* events")]
+		[return: LuaZeroIndexed]
 		public LuaTable AvailableScopes()
 		{
 			return DebuggableCore?.MemoryCallbacksAvailable() == true
