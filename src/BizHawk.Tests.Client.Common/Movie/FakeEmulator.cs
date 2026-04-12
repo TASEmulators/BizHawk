@@ -5,6 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Tests.Client.Common.Movie
 {
+	[Core("Fake", "Author", false, false)]
 	internal class FakeEmulator : IEmulator, IStatable, IInputPollable
 	{
 		private BasicServiceProvider _serviceProvider;
@@ -35,19 +36,21 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 
-#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
-		public IInputCallbackSystem InputCallbacks => throw new NotImplementedException();
-#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
+		private InputCallbackSystem _inputCallbacks = new();
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		public FakeEmulator()
 		{
 			_serviceProvider = new(this);
 		}
 
+		public bool PollInputOnFrameAdvance = true;
+
 		public void Dispose() { }
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			Frame++;
+			if (PollInputOnFrameAdvance) InputCallbacks.Call();
 			return true;
 		}
 
