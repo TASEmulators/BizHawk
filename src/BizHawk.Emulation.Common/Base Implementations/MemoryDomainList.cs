@@ -20,8 +20,10 @@ namespace BizHawk.Emulation.Common
 			return this.Any(md => md.Name == name);
 		}
 
-		public MemoryDomainList(IList<MemoryDomain> domains)
-			: base(domains)
+		public MemoryDomainList(IList<MemoryDomain> domains, IDebuggable/*?*/ debuggableCore = null)
+			: base(debuggableCore is null
+				? domains
+				: domains.Append(new RegistersMemoryDomain(debuggableCore)).ToArray())
 		{
 		}
 

@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				domains.Add(CartRam);
 			}
 
-			MemoryDomains = new MemoryDomainList(domains);
+			MemoryDomains = new MemoryDomainList(domains, this);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 

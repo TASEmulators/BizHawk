@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (!_memoryDomainsSetup)
 			{
-				_memoryDomains = new MemoryDomainList(domains);
+				_memoryDomains = new MemoryDomainList(domains, this);
 				(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 				_memoryDomainsSetup = true;
 			}
