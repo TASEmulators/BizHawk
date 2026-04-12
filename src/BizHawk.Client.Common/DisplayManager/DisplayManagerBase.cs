@@ -1,4 +1,4 @@
-﻿// TODO
+// TODO
 // we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
 
 using System.Collections.Generic;
@@ -112,6 +112,7 @@ namespace BizHawk.Client.Common
 			// `_apiHawkIDTo2DRenderer` is a new empty dict, members are lazily-initialised
 
 			RefreshUserShader();
+			RefreshLibrashader();
 		}
 
 		public void UpdateGlobals(Config config, IEmulator emulator)
@@ -157,6 +158,8 @@ namespace BizHawk.Client.Common
 			{
 				s?.Dispose();
 			}
+
+			_librashaderFilter?.Dispose();
 
 			_theOneFont?.Dispose();
 			_renderer.Dispose();
@@ -222,6 +225,8 @@ namespace BizHawk.Client.Common
 
 		private RetroShaderChain _shaderChainUser;
 
+		private LibrashaderFilter _librashaderFilter;
+
 		public abstract void ActivateOpenGLContext();
 
 		protected abstract void ActivateGraphicsControlContext();
@@ -231,11 +236,31 @@ namespace BizHawk.Client.Common
 		public void RefreshUserShader()
 		{
 			_shaderChainUser?.Dispose();
+			_shaderChainUser = null;
 			if (File.Exists(GlobalConfig.DispUserFilterPath))
 			{
 				var fi = new FileInfo(GlobalConfig.DispUserFilterPath);
 				using var stream = fi.OpenRead();
 				_shaderChainUser = new(_gl, new(stream), Path.GetDirectoryName(GlobalConfig.DispUserFilterPath));
+			}
+		}
+
+		public void RefreshLibrashader()
+		{
+			Console.WriteLine($"[librashader] RefreshLibrashader called, path: {GlobalConfig.DispUserFilterPath}");
+			_librashaderFilter?.Dispose();
+			_librashaderFilter = null;
+			if (_gl is IGL_OpenGL && File.Exists(GlobalConfig.DispUserFilterPath))
+			{
+				Console.WriteLine("[librashader] Creating LibrashaderFilter");
+				_librashaderFilter = new LibrashaderFilter(GlobalConfig.DispUserFilterPath);
+			}
+			else
+			{
+				if (_gl is not IGL_OpenGL)
+					Console.WriteLine("[librashader] GL is not IGL_OpenGL, skipping librashader");
+				else if (!File.Exists(GlobalConfig.DispUserFilterPath))
+					Console.WriteLine("[librashader] Shader preset file not found");
 			}
 		}
 
@@ -282,6 +307,7 @@ namespace BizHawk.Client.Common
 			// select user special FX shader chain
 			KeyValuePair<string, float>[] selectedChainProperties = null;
 			RetroShaderChain selectedChain = null;
+			bool useLibrashader = false;
 			switch (GlobalConfig.TargetDisplayFilter)
 			{
 				case 1 when _shaderChainHq2X is { Available: true }:
@@ -294,11 +320,15 @@ namespace BizHawk.Client.Common
 				case 3 when _shaderChainUser is { Available: true }:
 					selectedChain = _shaderChainUser;
 					break;
+				case 4 when _librashaderFilter != null:
+					useLibrashader = true;
+					break;
 			}
 
 			if (!includeUserFilters)
 			{
 				selectedChain = null;
+				useLibrashader = false;
 			}
 
 			var fCoreScreenControl = CreateCoreScreenControl();
@@ -360,6 +390,12 @@ namespace BizHawk.Client.Common
 			if (selectedChain != null)
 			{
 				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
+			}
+
+			// add librashader filter
+			if (useLibrashader)
+			{
+				chain.AddFilter(_librashaderFilter, "librashader");
 			}
 
 			// AutoPrescale makes no sense for a None final filter

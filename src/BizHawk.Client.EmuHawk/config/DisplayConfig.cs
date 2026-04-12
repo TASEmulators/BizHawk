@@ -14,9 +14,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class DisplayConfig : Form, IDialogParent
 	{
-		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(
-			appendAllFilesEntry: false,
-			new FilesystemFilter(".CGP Files", extensions: [ "cgp", "glslp" ]));
+		private static readonly FilesystemFilterSet CgpFSFilterSet = new(
+		appendAllFilesEntry: false,
+		new FilesystemFilter(".CGP Files", new[] { "cgp" }));
+
+	private static readonly FilesystemFilterSet LibrashaderFSFilterSet = new(
+		appendAllFilesEntry: false,
+		new FilesystemFilter("SLANG Presets", new[] { "slangp" }),
+		new FilesystemFilter("GLSL Presets", new[] { "glslp" }));
 
 		private readonly Config _config;
 
@@ -128,6 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
 			rbScanlines.Checked = _config.TargetDisplayFilter == 2;
 			rbUser.Checked = _config.TargetDisplayFilter == 3;
+			rbLibrashader.Checked = _config.TargetDisplayFilter == 4;
 
 			_pathSelection = _config.DispUserFilterPath ?? "";
 			RefreshState();
@@ -223,6 +229,8 @@ namespace BizHawk.Client.EmuHawk
 				_config.TargetDisplayFilter = 2;
 			if (rbUser.Checked)
 				_config.TargetDisplayFilter = 3;
+			if (rbLibrashader.Checked)
+				_config.TargetDisplayFilter = 4;
 
 			if (rbFinalFilterNone.Checked)
 				_config.DispFinalFilter = 0;
@@ -373,37 +381,44 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
+			var fsFilter = rbLibrashader.Checked ? LibrashaderFSFilterSet : CgpFSFilterSet;
 			var result = this.ShowFileOpenDialog(
-				filter: CgShaderPresetsFSFilterSet,
+				filter: fsFilter,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
 					? _config.PathEntries.GlobalBaseAbsolutePath()
 					: Path.GetDirectoryName(_pathSelection)!,
 				initFileName: _pathSelection);
 			if (result is null) return;
 
-			rbUser.Checked = true;
 			var choice = Path.GetFullPath(result);
+			var ext = Path.GetExtension(choice).ToLowerInvariant();
 
-			//test the preset
-			using (var stream = File.OpenRead(choice))
+			if (ext == ".slangp" || ext == ".glslp")
 			{
-				var cgp = new RetroShaderPreset(stream);
+				rbLibrashader.Checked = true;
+			}
+			else
+			{
+				rbUser.Checked = true;
+				using (var stream = File.OpenRead(choice))
+				{
+					var cgp = new RetroShaderPreset(stream);
 
-				// try compiling it
-				bool ok = false;
-				string errors = "";
-				try
-				{
-					var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
-					ok = filter.Available;
-					errors = filter.Errors;
-				}
-				catch {}
-				if (!ok)
-				{
-					using var errorForm = new ExceptionBox(errors);
-					this.ShowDialogAsChild(errorForm);
-					return;
+					bool ok = false;
+					string errors = "";
+					try
+					{
+						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
+						ok = filter.Available;
+						errors = filter.Errors;
+					}
+					catch {}
+					if (!ok)
+					{
+						using var errorForm = new ExceptionBox(errors);
+						this.ShowDialogAsChild(errorForm);
+						return;
+					}
 				}
 			}
 
