@@ -162,6 +162,12 @@ namespace BizHawk.Client.Common
 				// useful debugging:
 				// Console.WriteLine(ie);
 
+				if (ie.Source == Bizware.Input.HostInputType.Ignored)
+				{
+					processSpecialInput(ie, false);
+					continue;
+				}
+
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				HostInputCoalescer.Receive(ie);
