@@ -156,6 +156,10 @@ error("This is a definition file for Lua Language Server and not a usable script
 
 					sb.Append(' ');
 					sb.Append(GetLuaType(parameter));
+					if (IsZeroIndexed(parameter))
+					{
+						sb.Append(" Zero-indexed array.");
+					}
 					if (parameter.HasDefaultValue && parameter.DefaultValue is not null and not "")
 					{
 						sb.Append($" Defaults to `{FormatValue(parameter.DefaultValue)}`");
@@ -168,7 +172,9 @@ error("This is a definition file for Lua Language Server and not a usable script
 					sb.Append("---@return ");
 					sb.Append(GetLuaType(func.Method.ReturnParameter));
 					if (IsZeroIndexed(func.Method.ReturnParameter))
+					{
 						sb.Append(" # Zero-indexed array.");
+					}
 					sb.AppendLine();
 				}
 
