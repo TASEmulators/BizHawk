@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -226,7 +225,7 @@ namespace BizHawk.Client.Common.Filters
 				handle = inputTexId,
 				format = 0x8058,
 				width = (uint)InputTexture.Width,
-				height = (uint)InputTexture.Height
+				height = (uint)InputTexture.Height,
 			};
 
 			var output = new Librashader.libra_image_gl_t
@@ -234,7 +233,7 @@ namespace BizHawk.Client.Common.Filters
 				handle = _framebufferTexture,
 				format = 0x1907,
 				width = (uint)_filteredWidth,
-				height = (uint)_filteredHeight
+				height = (uint)_filteredHeight,
 			};
 
 			Librashader.gl_filter_chain_frame(ref _chain, new UIntPtr(_frameCount++), input, output,

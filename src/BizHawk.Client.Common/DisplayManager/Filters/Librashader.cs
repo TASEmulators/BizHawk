@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common.Filters
 				glsl_version = 330,
 				use_dsa = false,
 				force_no_mipmaps = false,
-				disable_cache = false
+				disable_cache = false,
 			};
 		}
 	}

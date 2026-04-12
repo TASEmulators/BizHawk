@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		appendAllFilesEntry: false,
 		new FilesystemFilter(".CGP Files", new[] { "cgp" }));
 
-	private static readonly FilesystemFilterSet LibrashaderFSFilterSet = new(
+		private static readonly FilesystemFilterSet LibrashaderFSFilterSet = new(
 		appendAllFilesEntry: false,
 		new FilesystemFilter("SLANG Presets", new[] { "slangp" }),
 		new FilesystemFilter("GLSL Presets", new[] { "glslp" }));
