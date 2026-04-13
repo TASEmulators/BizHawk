@@ -2,6 +2,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -43,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Bitmap UpscaleBadge(Bitmap src)
 		{
-			var ret = new Bitmap(120, 120);
+			var ret = BitmapBuffer.CreateBitmapObject(new(120, 120));
 			using var g = Graphics.FromImage(ret);
 			g.InterpolationMode = InterpolationMode.NearestNeighbor;
 			g.PixelOffsetMode = PixelOffsetMode.Half;

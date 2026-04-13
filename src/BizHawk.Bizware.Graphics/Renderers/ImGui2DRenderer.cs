@@ -318,7 +318,7 @@ namespace BizHawk.Bizware.Graphics
 				_stringTexture?.Dispose();
 				_stringGraphics?.Dispose();
 				_stringOutput?.Dispose();
-				_stringOutput = new(width, height, PixelFormat.Format32bppArgb);
+				_stringOutput = BitmapBuffer.CreateBitmapObject(new(width: width, height: height));
 				_stringGraphics = SDGraphics.FromImage(_stringOutput);
 				_stringTexture = _igl.CreateTexture(width, height);
 			}

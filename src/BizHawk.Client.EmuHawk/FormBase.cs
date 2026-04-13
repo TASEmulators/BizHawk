@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
@@ -16,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>removes transparency from an image by combining it with a solid background</summary>
 		public static Image FillImageBackground(Image img, Color c)
 		{
-			Bitmap result = new(width: img.Width, height: img.Height);
+			var result = BitmapBuffer.CreateBitmapObject(img.Size);
 			using var g = Graphics.FromImage(result);
 			g.Clear(c);
 			g.DrawImage(img, x: 0, y: 0, width: img.Width, height: img.Height);

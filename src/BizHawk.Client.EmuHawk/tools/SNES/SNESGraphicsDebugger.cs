@@ -29,6 +29,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Common;
@@ -346,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Action<int, int> allocate = (w, h) =>
 			{
-				bmp = new Bitmap(w, h);
+				bmp = BitmapBuffer.CreateBitmapObject(new(width: w, height: h));
 				bmpdata = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				pixelptr = (int*)bmpdata.Scan0.ToPointer();
 				stride = bmpdata.Stride;
@@ -670,7 +671,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int pixsize = paletteCellSize * 16 + paletteCellSpacing * 17;
 			int cellTotalSize = (paletteCellSize + paletteCellSpacing);
-			var bmp = new Bitmap(pixsize, pixsize, PixelFormat.Format32bppArgb);
+			var bmp = BitmapBuffer.CreateBitmapObject(new(pixsize, pixsize));
 			using (var g = Graphics.FromImage(bmp))
 			{
 				using SolidBrush brush = new(default);
@@ -959,7 +960,7 @@ namespace BizHawk.Client.EmuHawk
 				int tileSize = si.BG[bgs.bgnum].TileSize;
 				int pixels = tileSize * tileSize;
 
-				var bmp = new Bitmap(tileSize, tileSize, PixelFormat.Format32bppArgb);
+				var bmp = BitmapBuffer.CreateBitmapObject(new(tileSize, tileSize));
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, tileSize, tileSize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 				if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7)
@@ -983,7 +984,7 @@ namespace BizHawk.Client.EmuHawk
 				//view a tileset tile
 				int bpp = currTileDataState.Bpp;
 
-				var bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
+				var bmp = BitmapBuffer.CreateBitmapObject(new(8, 8));
 				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				if (currTileDataState.Type == eDisplayType.TilesMode7)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, currTileDataState.Tile, 1);
@@ -1007,7 +1008,7 @@ namespace BizHawk.Client.EmuHawk
 				var bounds = si.ObjSizeBoundsSquare;
 				int width = bounds.Width;
 				int height = bounds.Height;
-				var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+				var bmp = BitmapBuffer.CreateBitmapObject(bounds);
 				var bmpData = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 				gd.RenderSpriteToScreen((int*)bmpData.Scan0, bmpData.Stride / 4, 0, 0, si, currObjDataState.Number);
 				bmp.UnlockBits(bmpData);
@@ -1015,7 +1016,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var bmp = new Bitmap(8, 8, PixelFormat.Format32bppArgb);
+				var bmp = BitmapBuffer.CreateBitmapObject(new(8, 8));
 				viewerTile.SetBitmap(bmp);
 			}
 		}

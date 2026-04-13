@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -75,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			int w = pictureBoxPalette.Size.Width;
 			int h = pictureBoxPalette.Size.Height;
 
-			var bmp = new Bitmap(w, h);
+			var bmp = BitmapBuffer.CreateBitmapObject(pictureBoxPalette.Size);
 			for (int j = 0; j < h; j++)
 			{
 				int cy = j * 4 / h;

@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
+
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
@@ -38,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
 
-			SetBitmap(new Bitmap(2, 2));
+			SetBitmap(BitmapBuffer.CreateBitmapObject(new(2, 2)));
 		}
 
 

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common.CollectionExtensions;
 
@@ -40,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaPictureBox(NLuaTableHelper tableHelper, Action<string> logOutputCallback)
 		{
-			Image = new Bitmap(Width, Height);
+			Image = BitmapBuffer.CreateBitmapObject(Size);
 			LogOutputCallback = logOutputCallback;
 			TableHelper = tableHelper;
 		}
@@ -49,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Width = width;
 			Height = height;
-			Image = new Bitmap(width, height);
+			Image = BitmapBuffer.CreateBitmapObject(Size);
 		}
 
 		public void Clear([LuaColorParam] object color)

@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -330,7 +331,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static Bitmap ToBitMap(this Control control)
 		{
-			var b = new Bitmap(control.Width, control.Height);
+			var b = BitmapBuffer.CreateBitmapObject(control.Size);
 			var rect = new Rectangle(new Point(0, 0), control.Size);
 			control.DrawToBitmap(b, rect);
 			return b;

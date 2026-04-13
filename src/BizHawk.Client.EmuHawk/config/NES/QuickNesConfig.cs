@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Bizware.Graphics;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -38,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int w = pictureBox1.Size.Width;
 			int h = pictureBox1.Size.Height;
-			var bmp = new Bitmap(w, h);
+			var bmp = BitmapBuffer.CreateBitmapObject(pictureBox1.Size);
 			var pal = _settings.Palette;
 
 			for (int j = 0; j < h; j++)

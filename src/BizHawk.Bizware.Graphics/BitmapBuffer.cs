@@ -24,6 +24,13 @@ namespace BizHawk.Bizware.Graphics
 	/// </summary>
 	public unsafe class BitmapBuffer : IDisposable
 	{
+		public static Bitmap CreateBitmapObject(Size size, PixelFormat format = PixelFormat.Format32bppArgb)
+			=> size.Width is >= 1 and <= 0xFFFF || size.Height is >= 1 and <= 0xFFFF
+#pragma warning disable RS0030 // this is the sanctioned call-site
+				? new Bitmap(width: size.Width, height: size.Height, format)
+#pragma warning restore RS0030
+				: throw new ArgumentOutOfRangeException(paramName: nameof(size), size, message: "width and height must each be in the range 1..<65536");
+
 		public int Width, Height;
 		public int[] Pixels;
 
@@ -568,7 +575,7 @@ namespace BizHawk.Bizware.Graphics
 			}
 
 			var pf = HasAlpha ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
-			var bmp = new Bitmap(Width, Height, pf);
+			var bmp = CreateBitmapObject(Size, pf);
 			ToSysdrawingBitmap(bmp);
 			return bmp;
 		}
