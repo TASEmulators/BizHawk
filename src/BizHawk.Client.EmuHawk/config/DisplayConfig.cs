@@ -7,6 +7,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
 
