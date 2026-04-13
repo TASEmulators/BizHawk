@@ -3081,7 +3081,7 @@ namespace BizHawk.Client.EmuHawk
 					statable.SaveStateBinary(new(state));
 
 					int frameCount = 0;
-					while (!PreFutureFrameCallback((short)frameCount) && frameCount < MaxFutureFrames)
+					while (!PreFutureFrameCallback(frameCount) && frameCount < MaxFutureFrames)
 					{
 						frameCount++;
 						MovieSession.HandleFrameBefore();

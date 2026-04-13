@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// Represent a method that will control future emulation.
 	/// </summary>
-	/// <param name="futureFramesEmulated">The number of frames into the future that have been emulated. This is a short purely to help avoid accidentally passing in absurdly large numbers.</param>
+	/// <param name="futureFramesEmulated">The number of frames into the future that have been emulated.</param>
 	/// <returns>True to display the current frame, false to continue emulating into the future.</returns>
-	public delegate bool ShowFutureCallback(short futureFramesEmulated);
+	public delegate bool ShowFutureCallback(int futureFramesEmulated);
 }
