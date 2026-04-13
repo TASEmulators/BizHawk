@@ -391,29 +391,32 @@ namespace BizHawk.Client.EmuHawk
 			if (result is null) return;
 
 			var choice = Path.GetFullPath(result);
-			var ext = Path.GetExtension(choice).ToLowerInvariant();
 
-			if (ext == ".cgp")
+			if (!Path.GetExtension(choice).EqualsIgnoreCase(".cgp"))
 			{
-				using (var stream = File.OpenRead(choice))
-				{
-					var cgp = new RetroShaderPreset(stream);
+				_pathSelection = choice;
+				RefreshState();
+				return;
+			}
 
-					bool ok = false;
-					string errors = "";
-					try
-					{
-						var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
-						ok = filter.Available;
-						errors = filter.Errors;
-					}
-					catch {}
-					if (!ok)
-					{
-						using var errorForm = new ExceptionBox(errors);
-						this.ShowDialogAsChild(errorForm);
-						return;
-					}
+			using (var stream = File.OpenRead(choice))
+			{
+				var cgp = new RetroShaderPreset(stream);
+
+				bool ok = false;
+				string errors = "";
+				try
+				{
+					var filter = new RetroShaderChain(_gl, cgp, Path.GetDirectoryName(choice));
+					ok = filter.Available;
+					errors = filter.Errors;
+				}
+				catch {}
+				if (!ok)
+				{
+					using var errorForm = new ExceptionBox(errors);
+					this.ShowDialogAsChild(errorForm);
+					return;
 				}
 			}
 
