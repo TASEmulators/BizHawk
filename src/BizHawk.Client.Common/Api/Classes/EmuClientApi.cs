@@ -219,11 +219,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ShowFuture(ShowFutureCallback/*?*/ preFrameCallback, short maxFrames)
+		public void ShowFuture(ShowFutureCallback/*?*/ preFrameCallback, ushort maxFrames)
 		{
 			if (preFrameCallback is not null)
 			{
-				if (maxFrames <= 0) throw new ArgumentOutOfRangeException(paramName: nameof(maxFrames), maxFrames, message: "Invalid number of future frames, number must be positive.");
+				if (maxFrames is 0) throw new ArgumentOutOfRangeException(paramName: nameof(maxFrames), maxFrames, message: "0 frames is not in the future. Did you mean to disable this by passing (null, 0)?");
 				_mainForm.MaxFutureFrames = maxFrames;
 			}
 			else

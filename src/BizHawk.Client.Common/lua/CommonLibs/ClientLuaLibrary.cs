@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 				"the client UI in case of accidentally never returning true from the callback.")]
 		public string ShowFuture(LuaFunction luaf, long maxFrames, string name = null)
 		{
-			if (maxFrames < 1 || maxFrames > short.MaxValue)
+			if (maxFrames is < 1 or > ushort.MaxValue)
 			{
 				Log($"Invalid number of future frames ({maxFrames}); number must be positive and less than 2^15.");
 				return EventsLuaLibrary.EMPTY_UUID_STR;
@@ -296,7 +296,7 @@ namespace BizHawk.Client.Common
 
 			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_FUTURE, prohibitedApis: ApiGroup.PROHIBITED_MID_FRAME, name: name);
 			ShowFutureCallback FutureCallback = (f) => nlf.Call(f) is [ bool r ] ? r : false;
-			APIs.EmuClient.ShowFuture(FutureCallback, (short)maxFrames);
+			APIs.EmuClient.ShowFuture(FutureCallback, (ushort) maxFrames);
 			nlf.OnRemove += () => APIs.EmuClient.ShowFuture(null, 0);
 			return nlf.GuidStr;
 		}
