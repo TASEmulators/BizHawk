@@ -14,14 +14,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class DisplayConfig : Form, IDialogParent
 	{
-		private static readonly FilesystemFilterSet CgpFSFilterSet = new(
-		appendAllFilesEntry: false,
-		new FilesystemFilter(".CGP Files", new[] { "cgp" }));
+		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter(".CGP Files", extensions: [ "cgp" ]));
 
 		private static readonly FilesystemFilterSet LibrashaderFSFilterSet = new(
-		appendAllFilesEntry: false,
-		new FilesystemFilter("SLANG Presets", new[] { "slangp" }),
-		new FilesystemFilter("GLSL Presets", new[] { "glslp" }));
+			appendAllFilesEntry: false,
+			new FilesystemFilter("SLANG Presets", extensions: [ "slangp" ]),
+			new FilesystemFilter("GLSL Presets", extensions: [ "glslp" ]));
 
 		private readonly Config _config;
 
@@ -381,9 +381,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			var fsFilter = rbLibrashader.Checked ? LibrashaderFSFilterSet : CgpFSFilterSet;
 			var result = this.ShowFileOpenDialog(
-				filter: fsFilter,
+				filter: rbLibrashader.Checked ? LibrashaderFSFilterSet : CgShaderPresetsFSFilterSet,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
 					? _config.PathEntries.GlobalBaseAbsolutePath()
 					: Path.GetDirectoryName(_pathSelection)!,
@@ -399,10 +398,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			//test the preset
 			using (var stream = File.OpenRead(choice))
 			{
 				var cgp = new RetroShaderPreset(stream);
 
+				// try compiling it
 				bool ok = false;
 				string errors = "";
 				try
