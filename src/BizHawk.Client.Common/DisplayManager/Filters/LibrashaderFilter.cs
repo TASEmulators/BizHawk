@@ -26,7 +26,10 @@ namespace BizHawk.Client.Common.Filters
 		private int _filteredHeight;
 
 		private static IntPtr _getProcAddressPtr = IntPtr.Zero;
-		private static Librashader.PFN_libra_gl_loader_t _getProcAddressDelegate;
+		private static GetProcAddressDelegate _getProcAddressDelegate;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr GetProcAddressDelegate(byte* name);
 
 		private GL _gl;
 
@@ -112,7 +115,7 @@ namespace BizHawk.Client.Common.Filters
 				IntPtr error = Librashader.PresetCreate(_shaderPresetPath, out _preset);
 				if (error != IntPtr.Zero)
 				{
-					Librashader.error_print?.Invoke(error);
+					_ = Librashader.libra_error_print(error);
 					return false;
 				}
 			}
@@ -127,10 +130,10 @@ namespace BizHawk.Client.Common.Filters
 					_getProcAddressPtr = Marshal.GetFunctionPointerForDelegate(_getProcAddressDelegate);
 				}
 
-				IntPtr error = Librashader.gl_filter_chain_create(ref _preset, _getProcAddressPtr, ref options, out _chain);
+				IntPtr error = Librashader.libra_gl_filter_chain_create(ref _preset, _getProcAddressPtr, ref options, out _chain);
 				if (error != IntPtr.Zero)
 				{
-					Librashader.error_print?.Invoke(error);
+					_ = Librashader.libra_error_print(error);
 					return false;
 				}
 			}
@@ -236,7 +239,7 @@ namespace BizHawk.Client.Common.Filters
 				height = (uint)_filteredHeight,
 			};
 
-			Librashader.gl_filter_chain_frame(ref _chain, new UIntPtr(_frameCount++), input, output,
+			_ = Librashader.libra_gl_filter_chain_frame(ref _chain, new UIntPtr(_frameCount++), input, output,
 				IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
 			_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _framebuffer);
@@ -253,13 +256,13 @@ namespace BizHawk.Client.Common.Filters
 
 			if (_chain != IntPtr.Zero)
 			{
-				Librashader.gl_filter_chain_free(ref _chain);
+				_ = Librashader.libra_gl_filter_chain_free(ref _chain);
 				_chain = IntPtr.Zero;
 			}
 
 			if (_preset != IntPtr.Zero)
 			{
-				Librashader.preset_free(ref _preset);
+				_ = Librashader.libra_preset_free(ref _preset);
 				_preset = IntPtr.Zero;
 			}
 

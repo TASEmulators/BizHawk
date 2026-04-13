@@ -393,13 +393,8 @@ namespace BizHawk.Client.EmuHawk
 			var choice = Path.GetFullPath(result);
 			var ext = Path.GetExtension(choice).ToLowerInvariant();
 
-			if (ext == ".slangp" || ext == ".glslp")
+			if (ext == ".cgp")
 			{
-				rbLibrashader.Checked = true;
-			}
-			else
-			{
-				rbUser.Checked = true;
 				using (var stream = File.OpenRead(choice))
 				{
 					var cgp = new RetroShaderPreset(stream);
