@@ -291,7 +291,7 @@ namespace BizHawk.Client.Common
 			if (maxFrames < 1 || maxFrames > short.MaxValue)
 			{
 				Log($"Invalid number of future frames ({maxFrames}); number must be positive and less than 2^15.");
-				return "";
+				return EventsLuaLibrary.EMPTY_UUID_STR;
 			}
 
 			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_FUTURE, prohibitedApis: ApiGroup.PROHIBITED_MID_FRAME, name: name);
