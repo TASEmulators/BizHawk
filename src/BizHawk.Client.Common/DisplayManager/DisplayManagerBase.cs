@@ -250,18 +250,18 @@ namespace BizHawk.Client.Common
 			Console.WriteLine($"[librashader] RefreshLibrashader called, path: {GlobalConfig.DispUserFilterPath}");
 			_librashaderFilter?.Dispose();
 			_librashaderFilter = null;
-			if (_gl is IGL_OpenGL && File.Exists(GlobalConfig.DispUserFilterPath))
+			if (_gl is not IGL_OpenGL)
 			{
-				Console.WriteLine("[librashader] Creating LibrashaderFilter");
-				_librashaderFilter = new LibrashaderFilter(GlobalConfig.DispUserFilterPath);
+				Console.WriteLine("[librashader] GL is not IGL_OpenGL, skipping librashader");
+				return;
 			}
-			else
+			if (!File.Exists(GlobalConfig.DispUserFilterPath))
 			{
-				if (_gl is not IGL_OpenGL)
-					Console.WriteLine("[librashader] GL is not IGL_OpenGL, skipping librashader");
-				else if (!File.Exists(GlobalConfig.DispUserFilterPath))
-					Console.WriteLine("[librashader] Shader preset file not found");
+				Console.WriteLine("[librashader] Shader preset file not found");
+				return;
 			}
+			Console.WriteLine("[librashader] Creating LibrashaderFilter");
+			_librashaderFilter = new LibrashaderFilter(GlobalConfig.DispUserFilterPath);
 		}
 
 		private (int Left, int Top, int Right, int Bottom) CalculateCompleteContentPadding(bool user, bool source)
