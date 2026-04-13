@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ApiContainer apiContainer = ApiManager.RestartLua(
 				Emulator.ServiceProvider,
-				WriteToOutputWindow,
+				s => LuaLibraries.Print(s),
 				MainFormForApi,
 				DisplayManager,
 				InputManager,

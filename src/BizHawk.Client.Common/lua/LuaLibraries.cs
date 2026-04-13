@@ -61,6 +61,7 @@ namespace BizHawk.Client.Common
 				foreach (object obj in o)
 					printCallback(obj.ToString());
 			};
+			Action<string> logOutputCallback = s => Print(s);
 			LuaWait = new AutoResetEvent(false);
 			PathEntries = config.PathEntries;
 			ScriptList = scriptList;
@@ -84,7 +85,7 @@ namespace BizHawk.Client.Common
 						continue;
 					}
 
-					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, this, _apiContainer, printCallback);
+					var instance = (LuaLibraryBase) Activator.CreateInstance(lib, this, _apiContainer, logOutputCallback);
 					if (!ServiceInjector.UpdateServices(serviceProvider, instance, mayCache: true)) throw new Exception("Lua lib has required service(s) that can't be fulfilled");
 
 					if (instance is ClientLuaLibrary clientLib)
