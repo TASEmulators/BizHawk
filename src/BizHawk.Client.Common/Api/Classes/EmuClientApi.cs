@@ -221,14 +221,16 @@ namespace BizHawk.Client.Common
 
 		public void ShowFuture(ShowFutureCallback/*?*/ preFrameCallback, short maxFrames)
 		{
-			if (maxFrames < 1 && preFrameCallback != null)
+			if (preFrameCallback is not null)
 			{
-				_logCallback($"Invalid number of future frames ({maxFrames}); number must be positive.");
-				return;
+				if (maxFrames <= 0) throw new ArgumentOutOfRangeException(paramName: nameof(maxFrames), maxFrames, message: "Invalid number of future frames, number must be positive.");
+				_mainForm.MaxFutureFrames = maxFrames;
 			}
-
+			else
+			{
+				_mainForm.MaxFutureFrames = 0;
+			}
 			_mainForm.PreFutureFrameCallback = preFrameCallback;
-			_mainForm.MaxFutureFrames = maxFrames;
 		}
 
 		public void SpeedMode(int percent)
