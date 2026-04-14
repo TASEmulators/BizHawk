@@ -33,9 +33,6 @@ namespace BizHawk.Client.Common.Filters
 
 		private GL _gl;
 
-		private static readonly FieldInfo TexIDField = typeof(ITexture2D).Assembly.GetType("BizHawk.Bizware.Graphics.OpenGLTexture2D")?.GetField("TexID", BindingFlags.Public | BindingFlags.Instance);
-		private static readonly FieldInfo FBOField = typeof(ITexture2D).Assembly.GetType("BizHawk.Bizware.Graphics.OpenGLRenderTarget")?.GetField("FBO", BindingFlags.Public | BindingFlags.Instance);
-
 		public bool IsAvailable => _initialized;
 
 		public LibrashaderFilter(string shaderPresetPath)
@@ -195,28 +192,16 @@ namespace BizHawk.Client.Common.Filters
 			return glField?.GetValue(igl) as GL;
 		}
 
-		private static uint GetTexID(ITexture2D texture)
-		{
-			if (texture == null || TexIDField == null) return 0;
-			return (uint)TexIDField.GetValue(texture);
-		}
-
-		private static uint GetFBO(IRenderTarget renderTarget)
-		{
-			if (renderTarget == null || FBOField == null) return 0;
-			return (uint)FBOField.GetValue(renderTarget);
-		}
-
 		public override void Run()
 		{
 			if (!InitChain()) return;
 
 			if (_chain == IntPtr.Zero) return;
 
-			var inputTexId = GetTexID(InputTexture);
+			var inputTexId = (InputTexture as OpenGLTexture2D)?.TexID ?? default;
 			if (inputTexId == 0) return;
 
-			var drawFbo = GetFBO(FilterProgram.CurrRenderTarget);
+			var drawFbo = (FilterProgram.CurrRenderTarget as OpenGLRenderTarget)?.FBO ?? default;
 
 			_gl.ActiveTexture(TextureUnit.Texture0);
 			_gl.BindTexture(TextureTarget.Texture2D, inputTexId);
