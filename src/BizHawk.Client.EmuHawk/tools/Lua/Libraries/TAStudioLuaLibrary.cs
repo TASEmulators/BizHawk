@@ -471,12 +471,12 @@ namespace BizHawk.Client.EmuHawk
 		""")]
 		[LuaMethod(
 			name: "get_branch_index_by_id",
-			description: "Finds the branch with the given UUID (0-indexed). Returns nil if not found.")]
+			description: "Finds the branch with the given ID (0-indexed). Returns nil if not found.")]
 		public int? GetBranchIndexByID(string id)
 		{
 			if (!Guid.TryParseExact(id, format: "D", out var parsed))
 			{
-				Log($"not a valid UUID: {id}");
+				Log($"[tastudio.get_branch_index_by_id] not a valid UUID: {id}");
 				return null;
 			}
 			return Tastudio.CurrentTasMovie.Branches.Index()
