@@ -25,7 +25,7 @@ jobs:
         run: Dist/BuildRelease.sh -p:ContinuousIntegrationBuild=true -warnaserror
 
   test:
-    name: Test
+    name: Unit tests (.NET Framework Runtime)
     runs-on: ${{matrix.os.fullname}}
     strategy:
        fail-fast: false
@@ -44,6 +44,28 @@ jobs:
 
       - name: Test
         run: dotnet test BizHawk.sln -c Release -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
+        shell: pwsh
+
+  test-netcore:
+    name: Unit tests (.NET Core Runtime)
+    runs-on: ${{matrix.os.fullname}}
+    strategy:
+       fail-fast: false
+       matrix:
+          os:
+            - { prettyname: Windows, fullname: windows-latest }
+            - { prettyname: Linux, fullname: ubuntu-22.04 } # newer ubuntu versions don't ship with mono, so we need to pin for now, see https://github.com/actions/runner-images/issues/10636
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8"
+
+      - name: Test
+        run: dotnet test BizHawk.sln -c Release -p:TestProjTargetFrameworkOverride=net8.0 -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
         shell: pwsh
 
   package:
