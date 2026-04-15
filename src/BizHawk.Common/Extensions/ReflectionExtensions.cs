@@ -87,5 +87,9 @@ namespace BizHawk.Common.ReflectionExtensions
 		{
 			return (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
 		}
+
+		/// <returns><see langword="true"/> iff <paramref name="type"/> is any parameterisation of <see cref="Nullable{T}"/></returns>
+		public static bool IsNullableT(this Type type)
+			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 	}
 }
