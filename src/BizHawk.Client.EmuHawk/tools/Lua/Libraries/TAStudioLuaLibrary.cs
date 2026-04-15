@@ -547,6 +547,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample("""
+			local branch_id = tastudio.create_branch("automated attempt");
+		""")]
+		[LuaMethod(
+			name: "create_branch",
+			description: "Creates a new branch at the end of the list, and returns its ID.")]
+		public string CreateBranch(string/*?*/ text = null)
+		{
+			Tastudio.BookMarkControl.Branch();
+			var index = Tastudio.CurrentTasMovie.Branches.Count - 1;
+			var branch = Tastudio.CurrentTasMovie.Branches[index];
+			branch.UserText = text;
+			Tastudio.BranchSavedCallback?.Invoke(index);
+			return branch.Uuid.ToString("D");
+		}
+
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
 		[LuaMethod(
 			name: "getmarker",
