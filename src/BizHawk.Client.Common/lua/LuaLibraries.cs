@@ -455,9 +455,9 @@ namespace BizHawk.Client.Common
 		private void FrameAdvance()
 		{
 			if (ProhibitedApis.HasFlag(ApiGroup.YIELDING))
- 			{
- 				throw new InvalidOperationException("emu.frameadvance() is not allowed during any callbacks");
- 			}
+			{
+				throw new InvalidOperationException("emu.frameadvance() is not allowed during any callbacks");
+			}
 
 			FrameAdvanceRequested = true;
 			CurrentFile.Thread.Yield();
@@ -466,9 +466,9 @@ namespace BizHawk.Client.Common
 		private void EmuYield()
 		{
 			if (ProhibitedApis.HasFlag(ApiGroup.YIELDING))
- 			{
- 				throw new InvalidOperationException("emu.yield() is not allowed during any callbacks");
- 			}
+			{
+				throw new InvalidOperationException("emu.yield() is not allowed during any callbacks");
+			}
 
 			CurrentFile.Thread.Yield();
 		}
