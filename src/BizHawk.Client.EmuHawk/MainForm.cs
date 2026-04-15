@@ -2918,7 +2918,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
-				// client input-related duties
+				// Clear stuff previously drawn by gui API
 				OSD.ClearGuiText();
 
 				CheatList.Pulse();
