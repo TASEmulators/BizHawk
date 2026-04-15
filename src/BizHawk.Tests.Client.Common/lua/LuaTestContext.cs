@@ -28,7 +28,7 @@ namespace BizHawk.Tests.Client.Common.lua
 				emulator.ServiceProvider,
 				print,
 				mainApi,
-				new SimpleGDIPDisplayManager(config, emulator),
+				null!,
 				null!,
 				null!,
 				null!,
