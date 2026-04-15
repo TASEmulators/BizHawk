@@ -51,6 +51,8 @@ namespace BizHawk.Client.Common
 
 		public SnowyNullVideo SnowyVP { get; private set; }
 
+		public Action/*?*/ OnDraw;
+
 		protected DisplayManagerBase(
 			Config config,
 			IEmulator emulator,
@@ -971,6 +973,15 @@ namespace BizHawk.Client.Common
 				renderer.Clear();
 			}
 			OSD.ClearApiHawkText();
+		}
+
+		/// <summary>
+		/// Clear stuff drawn by the gui API and raise the draw event.
+		/// </summary>
+		public void DoApiRedraw()
+		{
+			ClearApiHawkSurfaces();
+			OnDraw?.Invoke();
 		}
 
 		public void DiscardApiHawkSurfaces()

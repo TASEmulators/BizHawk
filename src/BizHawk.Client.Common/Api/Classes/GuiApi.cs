@@ -140,9 +140,15 @@ namespace BizHawk.Client.Common
 		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _dialogController.AddOnScreenMessage(message, duration);
 
-		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => Get2DRenderer(surfaceID).Clear();
+		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => LogCallback("the `ClearGraphics()` function has been deprecated; use `Draw()`\n");
 
-		public void ClearText() => _displayManager.OSD.ClearApiHawkText();
+		public void ClearText() => LogCallback("the `ClearText()` function has been deprecated; use `Draw()`\n");
+
+		public void Draw() => _displayManager.DoApiRedraw();
+
+		public void AddDrawCallback(Action callback) => _displayManager.OnDraw += callback;
+
+		public void RemoveDrawCallback(Action callback) => _displayManager.OnDraw -= callback;
 
 		public void SetDefaultForegroundColor(Color color) => _defaultForeground = color;
 

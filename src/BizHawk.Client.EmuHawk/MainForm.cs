@@ -3033,6 +3033,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					UpdateToolsAfter();
 				}
+				DisplayManager.OnDraw?.Invoke();
 
 				if (newFrame)
 				{
