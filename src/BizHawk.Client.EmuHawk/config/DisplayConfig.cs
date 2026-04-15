@@ -133,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
 			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
 			rbScanlines.Checked = _config.TargetDisplayFilter == 2;
-			rbUser.Checked = _config.TargetDisplayFilter == 3;
+			rbLegacy.Checked = _config.TargetDisplayFilter == 3;
 			rbLibrashader.Checked = _config.TargetDisplayFilter == 4;
 
 			_pathSelection = _config.DispUserFilterPath ?? "";
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				_config.TargetDisplayFilter = 1;
 			if (rbScanlines.Checked)
 				_config.TargetDisplayFilter = 2;
-			if (rbUser.Checked)
+			if (rbLegacy.Checked)
 				_config.TargetDisplayFilter = 3;
 			if (rbLibrashader.Checked)
 				_config.TargetDisplayFilter = 4;

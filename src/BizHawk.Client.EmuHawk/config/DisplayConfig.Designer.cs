@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			this.lblScanlines = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.lblUserFilterName = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
-			this.rbUser = new System.Windows.Forms.RadioButton();
+			this.rbLegacy = new System.Windows.Forms.RadioButton();
 			this.rbLibrashader = new System.Windows.Forms.RadioButton();
 			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.Controls.Add(this.lblUserFilterName);
 			this.groupBox1.Controls.Add(this.btnSelectUserFilter);
 			this.groupBox1.Controls.Add(this.rbLibrashader);
-			this.groupBox1.Controls.Add(this.rbUser);
+			this.groupBox1.Controls.Add(this.rbLegacy);
 			this.groupBox1.Controls.Add(this.tbScanlineIntensity);
 			this.groupBox1.Controls.Add(this.rbNone);
 			this.groupBox1.Controls.Add(this.rbScanlines);
@@ -198,16 +198,16 @@ namespace BizHawk.Client.EmuHawk
 			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
 			this.btnSelectUserFilter.Click += new System.EventHandler(this.BtnSelectUserFilter_Click);
 			// 
-			// rbUser
+			// rbLegacy
 			// 
-			this.rbUser.AutoSize = true;
-			this.rbUser.Location = new System.Drawing.Point(6, 88);
-			this.rbUser.Name = "rbUser";
-			this.rbUser.Size = new System.Drawing.Size(47, 17);
-			this.rbUser.TabIndex = 4;
-			this.rbUser.TabStop = true;
-			this.rbUser.Text = "User";
-			this.rbUser.UseVisualStyleBackColor = true;
+			this.rbLegacy.AutoSize = true;
+			this.rbLegacy.Location = new System.Drawing.Point(6, 88);
+			this.rbLegacy.Name = "rbLegacy";
+			this.rbLegacy.Size = new System.Drawing.Size(47, 17);
+			this.rbLegacy.TabIndex = 4;
+			this.rbLegacy.TabStop = true;
+			this.rbLegacy.Text = "Legacy";
+			this.rbLegacy.UseVisualStyleBackColor = true;
 			// 
 			// rbLibrashader
 			// 
@@ -1068,7 +1068,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.RadioButton rbFinalFilterNone;
 		private System.Windows.Forms.RadioButton rbFinalFilterBilinear;
 		private System.Windows.Forms.Button btnSelectUserFilter;
-		private System.Windows.Forms.RadioButton rbUser;
+		private System.Windows.Forms.RadioButton rbLegacy;
 
 		private System.Windows.Forms.RadioButton rbLibrashader;
 		private BizHawk.WinForms.Controls.LocLabelEx lblUserFilterName;

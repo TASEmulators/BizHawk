@@ -2,9 +2,9 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 
 using BizHawk.Bizware.Graphics;
+using BizHawk.Common;
 
 using Silk.NET.OpenGL;
 
@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common.Filters
 
 		private static IntPtr GetProcAddressCallback(byte* name)
 		{
-			string procName = PtrToStringUTF8((IntPtr)name);
+			string procName = Mershul.PtrToStringUtf8((IntPtr)name);
 			if (procName == null) return IntPtr.Zero;
 
 			try
@@ -170,20 +170,6 @@ namespace BizHawk.Client.Common.Filters
 			{
 				return IntPtr.Zero;
 			}
-		}
-
-		private static string PtrToStringUTF8(IntPtr ptr)
-		{
-			if (ptr == IntPtr.Zero) return null;
-
-			int len = 0;
-			while (Marshal.ReadByte(ptr, len) != 0) len++;
-
-			if (len == 0) return string.Empty;
-
-			byte[] buffer = new byte[len];
-			Marshal.Copy(ptr, buffer, 0, len);
-			return Encoding.UTF8.GetString(buffer);
 		}
 
 		private static GL GetSilkGL(IGL_OpenGL igl)
