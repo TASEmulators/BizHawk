@@ -448,6 +448,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample("""
+			tastudio.set_branch_text_by_id("97021544-2454-4483-824f-47f75e7fcb6a", "success at frame "..emu.framecount());
+		""")]
+		[LuaMethod(
+			name: "set_branch_text_by_id",
+			description: "Loads the branch with the given ID.")]
+		public void SetBranchTextByID(string id, string/*?*/ text)
+		{
+			var found = GetBranchObjByID(id: id, callerFunctionName: "set_branch_text_by_id");
+			if (found is not null) found.UserText = text;
+			// else already logged error
+		}
+
 		[LuaMethodExample("local nltasget = tastudio.getbranches( );")]
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
 		[return: LuaZeroIndexed]
