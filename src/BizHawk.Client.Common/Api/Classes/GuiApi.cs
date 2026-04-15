@@ -142,7 +142,7 @@ namespace BizHawk.Client.Common
 
 		public void ClearGraphics(DisplaySurfaceID? surfaceID = null) => Get2DRenderer(surfaceID).Clear();
 
-		public void ClearText() => _displayManager.OSD.ClearGuiText();
+		public void ClearText() => _displayManager.OSD.ClearApiHawkText();
 
 		public void SetDefaultForegroundColor(Color color) => _defaultForeground = color;
 

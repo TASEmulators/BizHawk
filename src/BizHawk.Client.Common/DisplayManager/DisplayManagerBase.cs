@@ -961,12 +961,16 @@ namespace BizHawk.Client.Common
 				? _apiHawkIDTo2DRenderer.GetValueOrPut(surfaceID, _ => _gl.Create2DRenderer(_imGuiResourceCache))
 				: throw new ArgumentOutOfRangeException(paramName: nameof(surfaceID), surfaceID, message: "invalid surface ID");
 
+		/// <summary>
+		/// Clear stuff drawn by the gui API
+		/// </summary>
 		public void ClearApiHawkSurfaces()
 		{
 			foreach (var renderer in _apiHawkIDTo2DRenderer.Values)
 			{
 				renderer.Clear();
 			}
+			OSD.ClearApiHawkText();
 		}
 
 		public void DiscardApiHawkSurfaces()
