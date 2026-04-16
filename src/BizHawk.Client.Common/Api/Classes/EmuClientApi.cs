@@ -6,6 +6,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class EmuClientApi : IEmuClientApi
 	{
+		internal const ushort SHOW_FUTURE_MAX_USER_TIMEOUT = 0x7FFF; // arbitrary; see https://github.com/TASEmulators/BizHawk/pull/4598#discussion_r2760712788
+
 		private readonly Config _config;
 
 		private readonly IDialogController _dialogController;
@@ -224,6 +226,7 @@ namespace BizHawk.Client.Common
 			if (preFrameCallback is not null)
 			{
 				if (maxFrames is 0) throw new ArgumentOutOfRangeException(paramName: nameof(maxFrames), maxFrames, message: "0 frames is not in the future. Did you mean to disable this by passing (null, 0)?");
+				if (maxFrames > SHOW_FUTURE_MAX_USER_TIMEOUT) throw new ArgumentOutOfRangeException(paramName: nameof(maxFrames), maxFrames, message: $"Invalid number of future frames for timeout; must be in 1..={SHOW_FUTURE_MAX_USER_TIMEOUT}.");
 				_mainForm.MaxFutureFrames = maxFrames;
 			}
 			else
