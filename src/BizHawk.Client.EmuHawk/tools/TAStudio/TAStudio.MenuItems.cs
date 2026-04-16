@@ -734,7 +734,7 @@ namespace BizHawk.Client.EmuHawk
 				keysMenus[i] = new ToolStripMenuItem();
 			}
 
-			var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
+			var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.ControlsOrdered.Count];
 			playerMenus[0] = ColumnsSubMenu;
 
 			for (int i = 1; i < playerMenus.Length; i++)

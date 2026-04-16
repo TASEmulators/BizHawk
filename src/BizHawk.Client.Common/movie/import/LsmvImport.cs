@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common.movie.import
 			controllerDefinition.BuildMnemonicsCache(VSystemID.Raw.SNES);
 			_emptyController = new SimpleController(controllerDefinition);
 			_controller = new SimpleController(controllerDefinition);
-			_playerCount = controllerDefinition.PlayerCount;
+			_playerCount = controllerDefinition.ControlsOrdered.Count - 1;
 
 			Result.Movie.LogKey = Bk2LogEntryGenerator.GenerateLogKey(controllerDefinition);
 

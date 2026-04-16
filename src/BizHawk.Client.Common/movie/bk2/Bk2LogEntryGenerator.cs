@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 		{
 			var sb = new StringBuilder();
 
-			foreach (var group in definition.ControlsOrdered.Where(static c => c.Count is not 0))
+			foreach (var group in definition.ControlsOrdered)
 			{
 				sb.Append('#');
 				foreach ((string buttonName, _) in group)

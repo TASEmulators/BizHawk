@@ -55,6 +55,60 @@ namespace BizHawk.Tests.Client.Common.Movie
 			var actual = Bk2LogEntryGenerator.GenerateLogEntry(_axisController);
 			Assert.AreEqual("|  100,  100,|", actual);
 		}
+
+		[TestMethod]
+		public void GenerateLogEntry_NoStupidHack()
+		{
+			var upController = new SimpleController(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "Up" } }.MakeImmutable());
+			upController.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
+
+			var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(upController);
+			Assert.AreEqual("|.|", logEntry);
+		}
+
+		[TestMethod]
+		public void GenerateLogEntry_EmptyPlayerGroups()
+		{
+			var upController = new SimpleController(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "P2 Up" } }.MakeImmutable());
+			upController.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
+
+			var logEntry = Bk2LogEntryGenerator.GenerateLogEntry(upController);
+			Assert.AreEqual("|||.|", logEntry);
+		}
+
+		[TestMethod]
+		public void GenerateLogKey_EmptyPlayerGroups()
+		{
+			var upControllerDefinition = new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "P2 Up" } }.MakeImmutable();
+			upControllerDefinition.BuildMnemonicsCache(VSystemID.Raw.NES);
+
+			var logKey = Bk2LogEntryGenerator.GenerateLogKey(upControllerDefinition);
+			Assert.AreEqual("###P2 Up|", logKey);
+		}
+
+		[TestMethod]
+		public void GenerateLogEntry_Bk2Controller()
+		{
+			var simpleController = new SimpleController(new ControllerDefinition("Dummy Gamepad") { BoolButtons = { "P1 Up", "P3 A" } }.MakeImmutable());
+			simpleController.Definition.BuildMnemonicsCache(VSystemID.Raw.NES);
+
+			var originalLogEntry = Bk2LogEntryGenerator.GenerateLogEntry(simpleController);
+			var originalLogKey = Bk2LogEntryGenerator.GenerateLogKey(simpleController.Definition);
+
+			// just for safety, should be covered by the above tests already
+			Assert.AreEqual("||.||.|", originalLogEntry);
+			Assert.AreEqual("##P1 Up|##P3 A|", originalLogKey);
+
+			// ensure a Bk2Controller constructed with ControllerDefinition and LogKey
+			// generates the exact same outputs as the original SimpleController
+			Bk2Controller bk2Controller = new Bk2Controller(simpleController.Definition, originalLogKey);
+
+			var newLogEntry = Bk2LogEntryGenerator.GenerateLogEntry(bk2Controller);
+			Assert.AreEqual(originalLogEntry, newLogEntry);
+
+			var newLogKey = Bk2LogEntryGenerator.GenerateLogKey(bk2Controller.Definition);
+			Assert.AreEqual(originalLogKey, newLogKey);
+		}
 #pragma warning restore BHI1600
 	}
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -20,7 +19,7 @@ namespace BizHawk.Emulation.Common
 
 		private IReadOnlyList<IReadOnlyList<(string, AxisSpec?)>>? _orderedControls;
 
-		/// <summary>starts with console buttons, then each player's buttons individually</summary>
+		/// <summary>Starts with console buttons, then each player's buttons individually</summary>
 		public IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> ControlsOrdered
 		{
 			get
@@ -35,6 +34,11 @@ namespace BizHawk.Emulation.Common
 		public readonly string Name;
 
 		private Dictionary<string, char>? _mnemonicsCache;
+
+		/// <summary>
+		/// A mapping between buttons names and their Bk2 mnemonics.
+		/// (it's only relevant for buttons, not axes)
+		/// </summary>
 		public IReadOnlyDictionary<string, char>? MnemonicsCache => _mnemonicsCache;
 
 		/// <remarks>
@@ -113,17 +117,17 @@ namespace BizHawk.Emulation.Common
 			if (!_mutable) throw new InvalidOperationException(ERR_MSG);
 		}
 
-		/// <remarks>implementors should include empty lists for empty players, including "player 0", to match this base implementation</remarks>
+		/// <remarks>Implementors should include empty lists for empty players, including "player 0" (console buttons), to match this base implementation</remarks>
 		protected virtual IReadOnlyList<IReadOnlyList<(string Name, AxisSpec? AxisSpec)>> GenOrderedControls()
 		{
-			var ret = new List<(string, AxisSpec?)>[PlayerCount + 1];
+			var ret = new List<(string, AxisSpec?)>[NumControllerGroups];
 			for (var i = 0; i < ret.Length; i++) ret[i] = new();
 			foreach ((string buttonName, var axisSpec) in Axes) ret[PlayerNumber(buttonName)].Add((buttonName, axisSpec));
 			foreach (var btn in BoolButtons) ret[PlayerNumber(btn)].Add((btn, null));
 			return ret;
 		}
 
-		/// <summary>permanently disables the ability to mutate this instance; returns this reference</summary>
+		/// <summary>Permanently disables the ability to mutate this instance; returns this reference</summary>
 		public ControllerDefinition MakeImmutable()
 		{
 			BoolButtons = BoolButtons.ToImmutableList();
@@ -134,6 +138,12 @@ namespace BizHawk.Emulation.Common
 			return this;
 		}
 
+		/// <summary>
+		/// Get the player number associated with a control (button, analog axis, etc.).
+		/// Returns 0 for general console buttons not associated with a particular player's control port.
+		/// (for example, returns 0 for the Power button on NES)
+		/// For some consoles like (non-linked) Game Boy, this always returns 0.
+		/// </summary>
 		public static int PlayerNumber(string buttonName)
 		{
 			var match = PlayerRegex.Match(buttonName);
@@ -144,7 +154,14 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
 
-		public int PlayerCount
+		/// <summary>
+		/// Returns the number of controller groups.
+		/// Usually is number of players + 1.
+		/// Returns 1 for both consoles where all control ports are empty and
+		/// consoles where system buttons aren't separate from "player" buttons,
+		/// like (non-linked) Game Boy
+		/// </summary>
+		public int NumControllerGroups
 		{
 			get
 			{
@@ -153,14 +170,7 @@ namespace BizHawk.Emulation.Common
 					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
 					.Max();
-
-				if (player > 0)
-				{
-					return player;
-				}
-
-				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				return allNames.Exists(static b => b.StartsWithOrdinal("Up")) ? 1 : 0;
+				return player + 1;
 			}
 		}
 
