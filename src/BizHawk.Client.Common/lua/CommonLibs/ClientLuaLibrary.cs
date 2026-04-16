@@ -285,12 +285,13 @@ namespace BizHawk.Client.Common
 				"When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displayed. " +
 				"Unregister the callback with event.unregister____ to disable future frame display. " +
 				"No more than `maxFrames` future frames will be emulated. Useful to avoid freezing " +
-				"the client UI in case of accidentally never returning true from the callback.")]
+				"the client UI in case of accidentally never returning true from the callback. " +
+				"Your timeout can be as low as 1 frame or as high as 32767 frames.")]
 		public string ShowFuture(LuaFunction luaf, long maxFrames, string name = null)
 		{
-			if (maxFrames is < 1 or > ushort.MaxValue)
+			if (maxFrames is < 1 or > EmuClientApi.SHOW_FUTURE_MAX_USER_TIMEOUT)
 			{
-				Log($"Invalid number of future frames ({maxFrames}); number must be positive and less than 2^15.");
+				Log($"Invalid number of future frames for timeout ({maxFrames}); number must be in 1..={EmuClientApi.SHOW_FUTURE_MAX_USER_TIMEOUT}.");
 				return EventsLuaLibrary.EMPTY_UUID_STR;
 			}
 

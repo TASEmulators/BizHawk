@@ -144,10 +144,14 @@ namespace BizHawk.Client.Common
 		/// Return false to emulate another future frame.
 		/// When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displayed.
 		/// <br/>Pass null to disable future frame display.</param>
-		/// <param name="maxFrames">The maximum number of future frames to emulate. Useful to avoid freezing the client UI in case of accidentally never returning true from the callback.</param>
+		/// <param name="maxFrames">
+		/// The maximum number of future frames to emulate. Useful to avoid freezing the client UI in case of accidentally never returning true from the callback.
+		/// Your timeout can be as low as 1 frame or as high as 32767 frames.
+		/// </param>
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="maxFrames"/> is <c>0</c>
 		/// (and <paramref name="preFrameCallback"/> is a delegate, since <paramref name="maxFrames"/> is ignored when it's <see langword="null"/>)
+		/// or is greater than 32767
 		/// </exception>
 		void ShowFuture(ShowFutureCallback/*?*/ preFrameCallback, ushort maxFrames);
 
