@@ -239,6 +239,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				static string DisplayDefaultValue(object/*?*/ defaultValue)
+					=> defaultValue is null
+						? "nil"
+						: defaultValue is string s
+							? $"\"{defaultValue}\""
+							: defaultValue.ToString();
 				if (_parameterList == null)
 				{
 					var parameters = Method.GetParameters();
@@ -252,7 +258,7 @@ namespace BizHawk.Client.Common
 						if (pi.GetCustomAttribute<LuaZeroIndexedAttribute>() is not null) p = p.Replace("nluatable", "nluatable0Indexed");
 						p += $" {pi.Name.ToLowerInvariant()}";
 						list.Append(pi.IsOptional
-							? $"[{p} = {pi.DefaultValue?.ToString() ?? "nil"}]"
+							? $"[{p} = {DisplayDefaultValue(pi.DefaultValue)}]"
 							: p);
 						if (i < parameters.Length - 1)
 						{
