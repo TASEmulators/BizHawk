@@ -324,7 +324,12 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (field is not null) return field;
-				var returnType = TypeCleanup(Method.ReturnType).Trim();
+				var rType = Method.ReturnType;
+				var returnType = rType.IsValueType
+					? rType.IsNullableT()
+						? TypeCleanup(rType.GenericTypeArguments[0]) + "?" // unwrap `Nullable<>`
+						: TypeCleanup(rType)
+					: TypeCleanup(rType) + "?"; //TODO read NRT metadata, see existing methods in `ReflectionExtensions`
 				if (Method.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(LuaZeroIndexedAttribute), inherit: false).Length is not 0)
 				{
 					returnType = returnType.Replace("nluatable", "nluatable0Indexed");
