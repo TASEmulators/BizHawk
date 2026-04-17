@@ -245,20 +245,15 @@ namespace BizHawk.Client.Common
 
 					var list = new StringBuilder();
 					list.Append('(');
-					for (var i = 0; i < parameters.Length; i++)
+					foreach (var (i, pi) in parameters.Index())
 					{
-						var p = TypeCleanup(parameters[i].ToString());
-						if (parameters[i].GetCustomAttribute<LuaColorParamAttribute>() != null) p = p.Replace("object", "luacolor");
-						if (parameters[i].GetCustomAttribute<LuaZeroIndexedAttribute>() is not null) p = p.Replace("nluatable", "nluatable0Indexed");
-						if (parameters[i].IsOptional)
-						{
-							list.Append($"[{p} = {parameters[i].DefaultValue?.ToString() ?? "nil"}]");
-						}
-						else
-						{
-							list.Append(p);
-						}
-
+						var p = TypeCleanup(pi.ParameterType);
+						if (pi.GetCustomAttribute<LuaColorParamAttribute>() is not null) p = p.Replace("object", "luacolor");
+						if (pi.GetCustomAttribute<LuaZeroIndexedAttribute>() is not null) p = p.Replace("nluatable", "nluatable0Indexed");
+						p += $" {pi.Name.ToLowerInvariant()}";
+						list.Append(pi.IsOptional
+							? $"[{p} = {pi.DefaultValue?.ToString() ?? "nil"}]"
+							: p);
 						if (i < parameters.Length - 1)
 						{
 							list.Append(", ");
@@ -273,9 +268,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private static string TypeCleanup(string str)
+		private static string TypeCleanup(Type type)
 		{
-			return str
+			return type.ToString()
 				.Replace("System", "")
 				.Replace(" ", "")
 				.Replace(".", "")
@@ -299,14 +294,13 @@ namespace BizHawk.Client.Common
 				.Replace("Int16", "short ")
 				.Replace("Int32", "int ")
 				.Replace("Int64", "long ")
-				.Replace("Ushort", "ushort ")
-				.Replace("Ulong", "ulong ")
 				.Replace("UInt32", "uint ")
 				.Replace("UInt64", "ulong ")
+				.Replace("Single", "float ")
 				.Replace("Double", "double ")
-				.Replace("Uint", "uint ")
 				.Replace("Nullable`1[DrawingColor]", "Color? ")
 				.Replace("DrawingColor", "Color ")
+				.TrimEnd(' ')
 				.ToLowerInvariant();
 		}
 
@@ -316,7 +310,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (field is not null) return field;
-				var returnType = TypeCleanup(Method.ReturnType.ToString()).Trim();
+				var returnType = TypeCleanup(Method.ReturnType).Trim();
 				if (Method.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(LuaZeroIndexedAttribute), inherit: false).Length is not 0)
 				{
 					returnType = returnType.Replace("nluatable", "nluatable0Indexed");
