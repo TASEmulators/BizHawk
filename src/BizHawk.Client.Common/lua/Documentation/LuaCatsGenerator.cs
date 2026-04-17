@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
 using NLua;
 
 namespace BizHawk.Client.Common;
@@ -148,7 +149,7 @@ error("This is a definition file for Lua Language Server and not a usable script
 					else
 					{
 						sb.Append($"---@param {parameter.Name}");
-						if (CanBeNil(parameter))
+						if (parameter.HasDefaultValue || (parameter.IsNRTOrNullableT() ?? true))
 						{
 							sb.Append('?');
 						}
@@ -171,7 +172,7 @@ error("This is a definition file for Lua Language Server and not a usable script
 				{
 					sb.Append("---@return ");
 					var luaType = GetLuaType(func.Method.ReturnParameter);
-					var nilable = CanBeNil(func.Method.ReturnParameter);
+					var nilable = func.Method.ReturnParameter.IsNRTOrNullableT() ?? true;
 					var wrapType = nilable && luaType.IndexOfAny([ ':', '|' ]) != -1; // ? is ambiguous on complex types like `string|int` or `fun(): string`
 					if (wrapType) sb.Append('(');
 					sb.Append(luaType);
@@ -267,9 +268,9 @@ error("This is a definition file for Lua Language Server and not a usable script
 			return GetLuaType(type.GetElementType()) + "[]";
 		}
 
-		if (IsNullableValueType(type))
+		if (Nullable.GetUnderlyingType(type) is Type underlyingType)
 		{
-			type = type.GetGenericArguments()[0];
+			type = underlyingType;
 		}
 
 		if (TypeConversions.TryGetValue(type, out luaType))
@@ -278,49 +279,6 @@ error("This is a definition file for Lua Language Server and not a usable script
 		}
 
 		throw new NotSupportedException($"Unknown type {type.FullName} used in API. Generator must be updated to handle this.");
-	}
-
-	private static bool CanBeNil(ParameterInfo parameter) => parameter.HasDefaultValue || IsNullableValueType(parameter.ParameterType) || IsNullableReferenceType(parameter);
-
-	private static bool IsNullableValueType(Type type) => type.IsValueType && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-
-	/// <summary>
-	/// Returns <see langword="true"/> if <paramref name="parameter"/> is a reference type and is annotated as nullable or lacks NRT annotations.
-	/// </summary>
-	/// <remarks>
-	/// Only handles "top-level" types, not array elements or generic type parameters.
-	/// </remarks>
-	private static bool IsNullableReferenceType(ParameterInfo parameter)
-	{
-		if (parameter.ParameterType.IsValueType) return false;
-
-		// https://github.com/dotnet/roslyn/blob/main/docs/features/nullable-metadata.md
-		const byte AnnotatedNotNull = 1;
-
-		// Check [Nullable] on the parameter first
-		if (GetNullableFlags(parameter) is byte[] flags)
-		{
-			return flags[0] != AnnotatedNotNull;
-		}
-
-		// Check [NullableContext] on the method and parent types
-		var parent = parameter.Member;
-		while (parent is not null)
-		{
-			if (GetNullableContext(parent) is byte flag)
-			{
-				return flag != AnnotatedNotNull;
-			}
-			parent = parent.DeclaringType;
-		}
-
-		return true;
-
-		// Attributes may be compiled into each assembly, so can't be strongly typed
-		static byte[]? GetNullableFlags(ParameterInfo parameter) =>
-			((dynamic) parameter.GetCustomAttributes().SingleOrDefault(attr => attr.GetType().FullName == "System.Runtime.CompilerServices.NullableAttribute"))?.NullableFlags;
-		static byte? GetNullableContext(MemberInfo member) =>
-			((dynamic) member.GetCustomAttributes().SingleOrDefault(attr => attr.GetType().FullName == "System.Runtime.CompilerServices.NullableContextAttribute"))?.Flag;
 	}
 
 	private static bool IsParams(ParameterInfo parameter) => parameter.GetCustomAttribute<ParamArrayAttribute>() is not null;
