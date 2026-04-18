@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -26,9 +28,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly IDictionary<string, Icon> _iconCache = new Dictionary<string, Icon>();
 
-		public ToolManager Tools { get; set; }
+		public required ToolManager Tools { get; set; }
 
-		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; } = null!;
 
 		public TAStudioLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
@@ -531,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 			description: "Returns the label of the marker on the given frame. This may be an empty string."
 				+ " If that frame doesn't have a marker (or TAStudio isn't running), returns nil."
 				+ " If branchID is specified, searches the markers in that branch instead.")]
-		public string/*?*/ GetMarker(int frame, string/*?*/ branchID = null)
+		public string? GetMarker(int frame, string? branchID = null)
 		{
 			if (Engaged())
 			{
@@ -546,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <remarks>assumes a TAStudio project is loaded</remarks>
-		private TasMovieMarkerList/*?*/ MarkerListForBranch(string/*?*/ branchID)
+		private TasMovieMarkerList? MarkerListForBranch(string? branchID)
 			=> Guid.TryParseExact(branchID, format: "D", out var parsed)
 				? Tastudio.CurrentTasMovie.Branches.FirstOrDefault(branch => branch.Uuid == parsed)?.Markers
 				: branchID is null ? Tastudio.CurrentTasMovie.Markers : null; // not a typo; null `branchID` indicates main log
@@ -559,7 +561,7 @@ namespace BizHawk.Client.EmuHawk
 			description: "Returns the frame number of the marker closest to the given frame (including that frame, but not after it)."
 				+ " This may be the power-on marker at 0. Returns nil if the arguments are invalid or TAStudio isn't active."
 				+ " If branchID is specified, searches the markers in that branch instead.")]
-		public int? FindMarkerOnOrBefore(int frame, string/*?*/ branchID = null)
+		public int? FindMarkerOnOrBefore(int frame, string? branchID = null)
 			=> Engaged() && MarkerListForBranch(branchID) is TasMovieMarkerList markers
 				? markers.PreviousOrCurrent(frame)?.Frame
 				: null;
@@ -571,7 +573,7 @@ namespace BizHawk.Client.EmuHawk
 			name: "get_frames_with_markers",
 			description: "Returns a list of all the frames which have markers on them."
 				+ " If branchID is specified, instead returns the frames which have markers in that branch.")]
-		public LuaTable GetFramesWithMarkers(string/*?*/ branchID = null)
+		public LuaTable GetFramesWithMarkers(string? branchID = null)
 			=> Engaged() && MarkerListForBranch(branchID) is TasMovieMarkerList markers
 				? _th.EnumerateToLuaTable(markers.Select(static m => m.Frame))
 				: _th.CreateTable();
@@ -592,7 +594,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.setmarker( 500, \"Some message\" );")]
 		[LuaMethod("setmarker", "Adds or sets a marker at the given frame, with an optional message")]
-		public void SetMarker(int frame, string message = null)
+		public void SetMarker(int frame, string? message = null)
 		{
 			if (Engaged())
 			{
@@ -611,7 +613,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.onqueryitembg( function( currentindex, itemname )\r\n\tconsole.log( \"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitembg", "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
-		public string OnQueryItemBg(LuaFunction luaf, string name = null)
+		public string OnQueryItemBg(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
@@ -628,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.onqueryitemtext( function( currentindex, itemname )\r\n\tconsole.log( \"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitemtext", "Called during the text draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string to be displayed.")]
-		public string OnQueryItemText(LuaFunction luaf, string name = null)
+		public string OnQueryItemText(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
@@ -645,7 +647,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.onqueryitemicon( function( currentindex, itemname )\r\n\tconsole.log( \"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitemicon", "Called during the icon draw event of the tastudio listview. {{luaf}} must be a function that takes 2 params: {{(index, column)}}. The first is the integer row index of the listview, and the 2nd is the string column name. The callback should return a string, the path to the {{.ico}} file to be displayed. The file will be cached, so if you change the file on disk, call {{tastudio.clearIconCache()}}.")]
-		public string OnQueryItemIcon(LuaFunction luaf, string name = null)
+		public string OnQueryItemIcon(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
@@ -679,7 +681,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.ongreenzoneinvalidated( function( currentindex )\r\n\tconsole.log( \"Called whenever the greenzone is invalidated.\" );\r\nend );")]
 		[LuaMethod("ongreenzoneinvalidated", "Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history. Called regardless of whether any states were actually invalidated. Your callback can have 1 parameter, which will be the last frame before the invalidated ones. That is, the first of the modified frames.")]
-		public string OnGreenzoneInvalidated(LuaFunction luaf, string name = null)
+		public string OnGreenzoneInvalidated(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
@@ -696,7 +698,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("tastudio.onbranchload( function( currentindex )\r\n\tconsole.log( \"Called whenever a branch is loaded.\" );\r\nend );")]
 		[LuaMethod("onbranchload", "called whenever a branch is loaded. luaf must be a function that takes the integer branch index as a parameter")]
-		public string OnBranchLoad(LuaFunction luaf, string name = null)
+		public string OnBranchLoad(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
@@ -718,7 +720,7 @@ namespace BizHawk.Client.EmuHawk
 			name: "onbranchsave",
 			description: "Sets a callback which fires after any branch is created or updated."
 				+ DESC_LINE_BRANCH_CHANGE_CB)]
-		public string OnBranchSave(LuaFunction luaf, string name = null)
+		public string OnBranchSave(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
@@ -740,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 			name: "onbranchremove",
 			description: "Sets a callback which fires after any branch is removed."
 				+ DESC_LINE_BRANCH_CHANGE_CB)]
-		public string OnBranchRemove(LuaFunction luaf, string name = null)
+		public string OnBranchRemove(LuaFunction luaf, string? name = null)
 		{
 			if (Engaged())
 			{
