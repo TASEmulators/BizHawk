@@ -222,12 +222,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				var start = addresses.Start;
 				var end = addresses.EndInclusive + 1;
 
-				if ((start & 1) != 0 || (end & 1) != 0)
-					throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-				if (values.LongLength * 2 != end - start)
+				if (values.LongLength * sizeof(ushort) < end - start)
 				{
-					// a longer array could be valid, but nothing needs that so don't support it for now
 					throw new InvalidOperationException("Invalid length of values array");
 				}
 
@@ -250,12 +246,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				var start = addresses.Start;
 				var end = addresses.EndInclusive + 1;
 
-				if ((start & 3) != 0 || (end & 3) != 0)
-					throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-				if (values.LongLength * 4 != end - start)
+				if (values.LongLength * sizeof(uint) < end - start)
 				{
-					// a longer array could be valid, but nothing needs that so don't support it for now
 					throw new InvalidOperationException("Invalid length of values array");
 				}
 
