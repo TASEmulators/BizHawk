@@ -308,8 +308,8 @@ namespace BizHawk.Client.Common
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_ENGINESTOP, name: name)
 				.GuidStr;
 
-		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the emulator console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
-		[LuaMethod("onconsoleclose", "Fires when the emulator console closes")]
+		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the Lua Console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
+		[LuaMethod("onconsoleclose", "Fires when the Lua Console closes")]
 		public string OnConsoleClose(LuaFunction luaf, string name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE, name: name)
 				.GuidStr;
