@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
@@ -11,10 +13,10 @@ namespace BizHawk.Client.EmuHawk
 		public int Right { get; set; }
 
 		/// <remarks>TODO rename to <c>Key</c>?</remarks>
-		public string Name { get; private set; }
+		public string Name { get; }
 
 		/// <remarks>TODO rename to <c>Label</c>?</remarks>
-		public string Text { get; private set; }
+		public string Text { get; }
 
 		public bool Visible { get; set; } = true;
 
@@ -28,11 +30,13 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool Rotatable { get; set; }
 
-//		[JsonConstructor]
-		private RollColumn()
+		[JsonConstructor]
+		private RollColumn(string name, string text, int verticalWidth, int horizontalHeight)
 		{
-			Name = default!;
-			Text = default!;
+			Name = name;
+			Text = text;
+			VerticalWidth = verticalWidth;
+			HorizontalHeight = horizontalHeight;
 		}
 
 		public RollColumn(string name, int widthUnscaled, string text)
