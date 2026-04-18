@@ -5,7 +5,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// implements a minimal dialog for configuring JMDWriter
 	/// </summary>
-	public partial class JmdForm : Form
+	public partial class JmdForm : FormBase
 	{
 		public JmdForm()
 		{

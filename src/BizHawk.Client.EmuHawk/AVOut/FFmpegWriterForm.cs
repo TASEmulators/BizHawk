@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// configures the FFmpegWriter
 	/// </summary>
-	public partial class FFmpegWriterForm : Form
+	public partial class FFmpegWriterForm : FormBase
 	{
 		/// <summary>
 		/// stores a single format preset

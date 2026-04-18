@@ -3,7 +3,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class AutofireConfig : Form
+	public partial class AutofireConfig : FormBase
 	{
 		private readonly Config _config;
 		private readonly AutofireController _autoFireController;

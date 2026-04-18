@@ -12,7 +12,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ControllerConfig : Form, IDialogParent
+	public partial class ControllerConfig : FormBase, IDialogParent
 	{
 		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new Dictionary<string, Lazy<Bitmap>>();
 		private readonly IEmulator _emulator;

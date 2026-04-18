@@ -3,7 +3,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GifWriterForm : Form
+	public partial class GifWriterForm : FormBase
 	{
 		public GifWriterForm()
 		{
