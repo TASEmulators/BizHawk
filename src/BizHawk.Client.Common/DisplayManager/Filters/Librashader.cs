@@ -52,6 +52,17 @@ namespace BizHawk.Client.Common.Filters
 		[DllImport("librashader", CallingConvention = CC)]
 		public static extern int libra_error_errno(IntPtr error);
 
+		public static IntPtr PresetCreate(string filename, out IntPtr preset)
+		{
+			byte[] bytes = Encoding.UTF8.GetBytes(filename + "\0");
+			fixed (byte* ptr = bytes)
+			{
+				return libra_preset_create(ptr, out preset);
+			}
+		}
+
+		#region OpenGL
+
 		[DllImport("librashader", CallingConvention = CC)]
 		public static extern IntPtr libra_gl_filter_chain_create(
 			ref IntPtr preset,
@@ -71,15 +82,6 @@ namespace BizHawk.Client.Common.Filters
 
 		[DllImport("librashader", CallingConvention = CC)]
 		public static extern int libra_gl_filter_chain_free(ref IntPtr chain);
-
-		public static IntPtr PresetCreate(string filename, out IntPtr preset)
-		{
-			byte[] bytes = Encoding.UTF8.GetBytes(filename + "\0");
-			fixed (byte* ptr = bytes)
-			{
-				return libra_preset_create(ptr, out preset);
-			}
-		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct filter_chain_gl_opt_t
@@ -103,6 +105,53 @@ namespace BizHawk.Client.Common.Filters
 			public uint height;
 		}
 
+		public static filter_chain_gl_opt_t CreateDefaultGLOptions()
+		{
+			return new filter_chain_gl_opt_t
+			{
+				version = new UIntPtr(2),
+				glsl_version = 330,
+				use_dsa = false,
+				force_no_mipmaps = false,
+				disable_cache = false,
+			};
+		}
+
+		#endregion
+
+		#region D3D11
+
+		[DllImport("librashader", CallingConvention = CC)]
+		public static extern IntPtr libra_d3d11_filter_chain_create(
+			ref IntPtr preset,
+			IntPtr device,
+			[In] ref filter_chain_d3d11_opt_t options,
+			out IntPtr chain);
+
+		[DllImport("librashader", CallingConvention = CC)]
+		public static extern int libra_d3d11_filter_chain_frame(
+			ref IntPtr chain,
+			IntPtr device_context,
+			UIntPtr frame_count,
+			IntPtr image,
+			IntPtr output,
+			ref libra_viewport_t viewport,
+			IntPtr mvp,
+			IntPtr options);
+
+		[DllImport("librashader", CallingConvention = CC)]
+		public static extern int libra_d3d11_filter_chain_free(ref IntPtr chain);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct filter_chain_d3d11_opt_t
+		{
+			public UIntPtr version;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool force_no_mipmaps;
+			[MarshalAs(UnmanagedType.U1)]
+			public bool disable_cache;
+		}
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct libra_viewport_t
 		{
@@ -112,16 +161,16 @@ namespace BizHawk.Client.Common.Filters
 			public uint height;
 		}
 
-		public static filter_chain_gl_opt_t CreateDefaultOptions()
+		public static filter_chain_d3d11_opt_t CreateDefaultD3D11Options()
 		{
-			return new filter_chain_gl_opt_t
+			return new filter_chain_d3d11_opt_t
 			{
-				version = new UIntPtr(1),
-				glsl_version = 330,
-				use_dsa = false,
+				version = new UIntPtr(2),
 				force_no_mipmaps = false,
 				disable_cache = false,
 			};
 		}
+
+		#endregion
 	}
 }

@@ -159,7 +159,8 @@ namespace BizHawk.Client.Common
 				s?.Dispose();
 			}
 
-			_librashaderFilter?.Dispose();
+			_librashaderFilterGL?.Dispose();
+			_librashaderFilterD3D11?.Dispose();
 
 			_theOneFont?.Dispose();
 			_renderer.Dispose();
@@ -225,7 +226,8 @@ namespace BizHawk.Client.Common
 
 		private RetroShaderChain _shaderChainUser;
 
-		private LibrashaderFilter _librashaderFilter;
+		private LibrashaderFilterBase _librashaderFilterGL;
+		private LibrashaderFilterBase _librashaderFilterD3D11;
 
 		public abstract void ActivateOpenGLContext();
 
@@ -247,21 +249,21 @@ namespace BizHawk.Client.Common
 
 		public void RefreshLibrashader()
 		{
-			Console.WriteLine($"[librashader] RefreshLibrashader called, path: {GlobalConfig.DispUserFilterPath}");
-			_librashaderFilter?.Dispose();
-			_librashaderFilter = null;
-			if (_gl is not IGL_OpenGL)
+			_librashaderFilterGL?.Dispose();
+			_librashaderFilterGL = null;
+			_librashaderFilterD3D11?.Dispose();
+			_librashaderFilterD3D11 = null;
+
+			if (!File.Exists(GlobalConfig.DispUserFilterPath)) return;
+
+			if (_gl is IGL_OpenGL)
 			{
-				Console.WriteLine("[librashader] GL is not IGL_OpenGL, skipping librashader");
-				return;
+				_librashaderFilterGL = new LibrashaderFilterGL(GlobalConfig.DispUserFilterPath);
 			}
-			if (!File.Exists(GlobalConfig.DispUserFilterPath))
+			else if (_gl is IGL_D3D11)
 			{
-				Console.WriteLine("[librashader] Shader preset file not found");
-				return;
+				_librashaderFilterD3D11 = new LibrashaderFilterD3D11(GlobalConfig.DispUserFilterPath);
 			}
-			Console.WriteLine("[librashader] Creating LibrashaderFilter");
-			_librashaderFilter = new LibrashaderFilter(GlobalConfig.DispUserFilterPath);
 		}
 
 		private (int Left, int Top, int Right, int Bottom) CalculateCompleteContentPadding(bool user, bool source)
@@ -320,7 +322,7 @@ namespace BizHawk.Client.Common
 				case 3 when _shaderChainUser is { Available: true }:
 					selectedChain = _shaderChainUser;
 					break;
-				case 4 when _librashaderFilter != null:
+				case 4 when _librashaderFilterGL != null || _librashaderFilterD3D11 != null:
 					useLibrashader = true;
 					break;
 			}
@@ -395,7 +397,14 @@ namespace BizHawk.Client.Common
 			// add librashader filter
 			if (useLibrashader)
 			{
-				chain.AddFilter(_librashaderFilter, "librashader");
+				if (_librashaderFilterGL != null)
+				{
+					chain.AddFilter(_librashaderFilterGL, "librashader");
+				}
+				else if (_librashaderFilterD3D11 != null)
+				{
+					chain.AddFilter(_librashaderFilterD3D11, "librashader");
+				}
 			}
 
 			// AutoPrescale makes no sense for a None final filter
