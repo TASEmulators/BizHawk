@@ -632,15 +632,13 @@ namespace BizHawk.Client.EmuHawk
 			if (end <= start)
 				return dict;
 
-			var range = start.RangeToExclusive(end);
-
 			switch (dataSize)
 			{
 				default:
 				case 1:
 				{
 					var vals = new byte[end - start];
-					_domain.BulkPeekByte(range, vals);
+					_domain.BulkPeekByte(start, vals);
 					int i = 0;
 					for (var addr = start; addr < end; addr += dataSize)
 						dict.Add(addr, vals[i++]);
@@ -649,7 +647,7 @@ namespace BizHawk.Client.EmuHawk
 				case 2:
 				{
 					var vals = new ushort[(end - start) >> 1];
-					_domain.BulkPeekUshort(range, BigEndian, vals);
+					_domain.BulkPeekUshort(start, vals, BigEndian);
 					int i = 0;
 					for (var addr = start; addr < end; addr += dataSize)
 						dict.Add(addr, vals[i++]);
@@ -658,7 +656,7 @@ namespace BizHawk.Client.EmuHawk
 				case 4:
 				{
 					var vals = new uint[(end - start) >> 2];
-					_domain.BulkPeekUint(range, BigEndian, vals);
+					_domain.BulkPeekUint(start, vals, BigEndian);
 					int i = 0;
 					for (var addr = start; addr < end; addr += dataSize)
 						dict.Add(addr, vals[i++]);
@@ -2131,7 +2129,7 @@ namespace BizHawk.Client.EmuHawk
 			var addr = _highlightedAddress.Value & ~0b11L;
 			const int SIZE = 4;
 			var raw = new ushort[2 * SIZE * SIZE];
-			_domain.BulkPeekUshort(addr.RangeTo(addr + (SIZE * SIZE * sizeof(float) - 1)), bigEndian: true, raw);
+			_domain.BulkPeekUshort(addr, raw, bigEndian: true);
 			List<List<string>> strings = new();
 			for (var y = 0; y < SIZE; y++)
 			{

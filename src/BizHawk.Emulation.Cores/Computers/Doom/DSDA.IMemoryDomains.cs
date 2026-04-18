@@ -182,8 +182,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			private void BulkPeekByte(uint startAddr, Span<byte> values)
+			public override void BulkPeekByte(long startAddress, Span<byte> values)
 			{
+				uint startAddr = (uint)startAddress;
 				using (_exe.EnterExit())
 				{
 					while (!values.IsEmpty)
@@ -207,37 +208,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			public override void BulkPeekByte(Range<long> addresses, byte[] values)
+			public override void BulkPeekUshort(long startAddress, Span<ushort> values, bool bigEndian)
 			{
-				if (addresses is null)
-					throw new ArgumentNullException(paramName: nameof(addresses));
-				if (values is null)
-					throw new ArgumentNullException(paramName: nameof(values));
-
-				if ((long) addresses.Count() != values.Length)
-				{
-					throw new InvalidOperationException("Invalid length of values array");
-				}
-
-				BulkPeekByte((uint) addresses.Start, values);
-			}
-
-			public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
-			{
-				if (addresses is null)
-					throw new ArgumentNullException(paramName: nameof(addresses));
-				if (values is null)
-					throw new ArgumentNullException(paramName: nameof(values));
-
-				var start = addresses.Start;
-				var end = addresses.EndInclusive + 1;
-
-				if (values.LongLength * sizeof(ushort) < end - start)
-				{
-					throw new InvalidOperationException("Invalid length of values array");
-				}
-
-				BulkPeekByte((uint) addresses.Start, values.BytesSpan());
+				BulkPeekByte(startAddress, values.BytesSpan());
 
 				if (bigEndian)
 				{
@@ -248,22 +221,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+			public override void BulkPeekUint(long startAddress, Span<uint> values, bool bigEndian)
 			{
-				if (addresses is null)
-					throw new ArgumentNullException(paramName: nameof(addresses));
-				if (values is null)
-					throw new ArgumentNullException(paramName: nameof(values));
-
-				var start = addresses.Start;
-				var end = addresses.EndInclusive + 1;
-
-				if (values.LongLength * sizeof(uint) < end - start)
-				{
-					throw new InvalidOperationException("Invalid length of values array");
-				}
-
-				BulkPeekByte((uint) addresses.Start, values.BytesSpan());
+				BulkPeekByte(startAddress, values.BytesSpan());
 
 				if (bigEndian)
 				{

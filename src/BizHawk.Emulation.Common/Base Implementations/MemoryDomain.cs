@@ -20,8 +20,6 @@ namespace BizHawk.Emulation.Common
 			Unknown,
 		}
 
-		private const string ERR_MSG_BUFFER_WRONG_SIZE = "Invalid length of values array";
-
 		public string Name { get; protected set; }
 
 		public long Size { get; protected set; }
@@ -87,53 +85,38 @@ namespace BizHawk.Emulation.Common
 			PokeByte(addr + 3, scratch[3]);
 		}
 
-		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
+		public virtual void BulkPeekByte(long startAddress, Span<byte> values)
 		{
-			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-			if ((long) addresses.Count() > values.Length) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE);
-
+			long addr = startAddress;
 			using (this.EnterExit())
 			{
-				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				for (int i = 0; i < values.Length; i++, addr += sizeof(byte))
 				{
-					values[i - addresses.Start] = PeekByte(i);
+					values[i] = PeekByte(addr);
 				}
 			}
 		}
 
-		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(long startAddress, Span<ushort> values, bool bigEndian)
 		{
-			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
-			if (values.LongLength * sizeof(ushort) < end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE);
-
+			long addr = startAddress;
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += sizeof(ushort))
+				for (int i = 0; i < values.Length; i++, addr += sizeof(ushort))
 				{
-					values[i] = PeekUshort(start, bigEndian);
+					values[i] = PeekUshort(addr, bigEndian);
 				}
 			}
 		}
 
-		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		public virtual void BulkPeekUint(long startAddress, Span<uint> values, bool bigEndian)
 		{
-			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
-			if (values.LongLength * sizeof(uint) < end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE);
-
+			long addr = startAddress;
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += sizeof(uint))
+				for (int i = 0; i < values.Length; i++, addr += sizeof(uint))
 				{
-					values[i] = PeekUint(start, bigEndian);
+					values[i] = PeekUint(addr, bigEndian);
 				}
 			}
 		}
