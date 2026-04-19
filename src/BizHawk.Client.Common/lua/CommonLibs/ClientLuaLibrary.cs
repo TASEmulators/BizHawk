@@ -420,7 +420,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.addcheat(\"NNNPAK\");")]
 		[LuaMethod("addcheat", "adds a cheat code, if supported")]
-		public void AddCheat(string? code)
+		public void AddCheat(string code)
 		{
 			if (string.IsNullOrWhiteSpace(code))
 			{
@@ -440,7 +440,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.removecheat(\"NNNPAK\");")]
 		[LuaMethod("removecheat", "removes a cheat, if it already exists")]
-		public void RemoveCheat(string? code)
+		public void RemoveCheat(string code)
 		{
 			if (string.IsNullOrWhiteSpace(code))
 			{

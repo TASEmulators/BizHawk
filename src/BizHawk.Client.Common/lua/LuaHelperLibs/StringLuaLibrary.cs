@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 		public static string? Replace(
 			string? str,
 			string str2,
-			string? replace)
+			string replace = "")
 		{
 			return string.IsNullOrEmpty(str)
 				? null
