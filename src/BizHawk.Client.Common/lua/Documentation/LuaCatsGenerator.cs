@@ -71,11 +71,11 @@ error("This is a definition file for Lua Language Server and not a usable script
 
 	private static string? GetHardcodedType(ParameterInfo parameter)
 	{
-		// technically any string parameter can be passed a number, but let's just focus on the ones where it's commonly used
+		// Technically any string parameter can be passed a number in BizHawk's Lua API, but let's just focus on the ones where it's commonly used
 		// like `gui.text` and `forms.settext` instead of polluting the entire API surface
 		if (parameter.Name is "message" or "caption" && parameter.ParameterType == typeof(string))
 		{
-			return "string | number";
+			return "string|number";
 		}
 
 		if (parameter.Member.DeclaringType.Name == "GuiLuaLibrary" && parameter.Name == "surfaceName" && parameter.ParameterType == typeof(string))
