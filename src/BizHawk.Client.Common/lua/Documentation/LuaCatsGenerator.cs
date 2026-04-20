@@ -236,6 +236,11 @@ error("This is a definition file for Lua Language Server and not a usable script
 
 	private static string GetLuaType(ParameterInfo parameter)
 	{
+		if (GetOverrideType(parameter) is string overrideType)
+		{
+			return overrideType;
+		}
+
 		if (GetHardcodedType(parameter) is string hardcodedType)
 		{
 			return hardcodedType;
@@ -284,4 +289,6 @@ error("This is a definition file for Lua Language Server and not a usable script
 	private static bool IsParams(ParameterInfo parameter) => parameter.GetCustomAttribute<ParamArrayAttribute>() is not null;
 
 	private static bool IsZeroIndexed(ParameterInfo parameter) => parameter.GetCustomAttribute<LuaZeroIndexedAttribute>() is not null;
+
+	private static string? GetOverrideType(ParameterInfo parameter) => parameter.GetCustomAttribute<LuaCatsTypeAttribute>()?.Type;
 }
