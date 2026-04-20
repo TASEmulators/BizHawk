@@ -28,6 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudioSettingsForm));
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.label10 = new System.Windows.Forms.Label();
@@ -100,6 +102,7 @@
 			this.AutopauseCheckbox = new System.Windows.Forms.CheckBox();
 			this.SettingsCancelButton = new System.Windows.Forms.Button();
 			this.ApplyButton = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
@@ -198,6 +201,8 @@
 			this.HideLagNum.Name = "HideLagNum";
 			this.HideLagNum.Size = new System.Drawing.Size(50, 21);
 			this.HideLagNum.TabIndex = 102;
+			this.toolTip1.SetToolTip(this.HideLagNum, "Hide up to this many lag frames per group of consecutive lag frames. Intended for" +
+        " use in 30FPS games running on 60FPS consoles.");
 			// 
 			// MarkerColorCheckbox
 			// 
@@ -207,6 +212,8 @@
 			this.MarkerColorCheckbox.Size = new System.Drawing.Size(233, 17);
 			this.MarkerColorCheckbox.TabIndex = 6;
 			this.MarkerColorCheckbox.Text = "Denote markers with color on frame column";
+			this.toolTip1.SetToolTip(this.MarkerColorCheckbox, "If enabled, the frame column will have a different background color on each frame" +
+        " that TAStudio has a marker for.\r\n");
 			this.MarkerColorCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// MarkerIconsCheckbox
@@ -217,6 +224,8 @@
 			this.MarkerIconsCheckbox.Size = new System.Drawing.Size(152, 17);
 			this.MarkerIconsCheckbox.TabIndex = 5;
 			this.MarkerIconsCheckbox.Text = "Denote markers with icons";
+			this.toolTip1.SetToolTip(this.MarkerIconsCheckbox, "If enabled, the frame column will contain an icon on each frame that TAStudio has" +
+        " a marker for.\r\n");
 			this.MarkerIconsCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// StateColorCheckbox
@@ -227,6 +236,8 @@
 			this.StateColorCheckbox.Size = new System.Drawing.Size(202, 17);
 			this.StateColorCheckbox.TabIndex = 4;
 			this.StateColorCheckbox.Text = "Denote states with background color";
+			this.toolTip1.SetToolTip(this.StateColorCheckbox, "If enabled, the the background color of a row will be slightly different when TAS" +
+        "tudio has a savestate for that frame.");
 			this.StateColorCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// StateIconsCheckbox
@@ -237,6 +248,8 @@
 			this.StateIconsCheckbox.Size = new System.Drawing.Size(144, 17);
 			this.StateIconsCheckbox.TabIndex = 3;
 			this.StateIconsCheckbox.Text = "Denote states with icons";
+			this.toolTip1.SetToolTip(this.StateIconsCheckbox, "If enabled, the frame column will contain an icon on each frame that TAStudio has" +
+        " a savestate for.");
 			this.StateIconsCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// HideWasLagCheckbox
@@ -247,6 +260,7 @@
 			this.HideWasLagCheckbox.Size = new System.Drawing.Size(130, 17);
 			this.HideWasLagCheckbox.TabIndex = 103;
 			this.HideWasLagCheckbox.Text = "Hide \"was lag\" frames";
+			this.toolTip1.SetToolTip(this.HideWasLagCheckbox, resources.GetString("HideWasLagCheckbox.ToolTip"));
 			this.HideWasLagCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// RotateCheckbox
@@ -303,6 +317,7 @@
 			this.BackupOnSaveCheckbox.Size = new System.Drawing.Size(222, 17);
 			this.BackupOnSaveCheckbox.TabIndex = 204;
 			this.BackupOnSaveCheckbox.Text = "When manually saving, also save .backup";
+			this.toolTip1.SetToolTip(this.BackupOnSaveCheckbox, "Save a backup .tasproj after each manual file save.");
 			this.BackupOnSaveCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// AutosaveBackupCheckbox
@@ -313,6 +328,7 @@
 			this.AutosaveBackupCheckbox.Size = new System.Drawing.Size(182, 17);
 			this.AutosaveBackupCheckbox.TabIndex = 203;
 			this.AutosaveBackupCheckbox.Text = "Save as .backup (no greenzone)";
+			this.toolTip1.SetToolTip(this.AutosaveBackupCheckbox, resources.GetString("AutosaveBackupCheckbox.ToolTip"));
 			this.AutosaveBackupCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// AutosaveBk2Checkbox
@@ -323,6 +339,7 @@
 			this.AutosaveBk2Checkbox.Size = new System.Drawing.Size(88, 17);
 			this.AutosaveBk2Checkbox.TabIndex = 202;
 			this.AutosaveBk2Checkbox.Text = "Save as .bk2";
+			this.toolTip1.SetToolTip(this.AutosaveBk2Checkbox, "Autosave will export movie to a .bk2 file instead of saving a .tasproj file.");
 			this.AutosaveBk2Checkbox.UseVisualStyleBackColor = true;
 			// 
 			// label5
@@ -354,6 +371,7 @@
 			this.AutosaveIntervalNum.Name = "AutosaveIntervalNum";
 			this.AutosaveIntervalNum.Size = new System.Drawing.Size(85, 21);
 			this.AutosaveIntervalNum.TabIndex = 201;
+			this.toolTip1.SetToolTip(this.AutosaveIntervalNum, resources.GetString("AutosaveIntervalNum.ToolTip"));
 			// 
 			// tabPage4
 			// 
@@ -628,6 +646,8 @@
 			this.PatternCustomRadioButton.TabIndex = 412;
 			this.PatternCustomRadioButton.TabStop = true;
 			this.PatternCustomRadioButton.Text = "Custom";
+			this.toolTip1.SetToolTip(this.PatternCustomRadioButton, "Autofire buttons will use a custom pattern when the movie is extended via playing" +
+        ".");
 			this.PatternCustomRadioButton.UseVisualStyleBackColor = true;
 			this.PatternCustomRadioButton.CheckedChanged += new System.EventHandler(this.PatternCustomRadioButton_CheckedChanged);
 			// 
@@ -640,6 +660,7 @@
 			this.PatternHoldRadioButton.TabIndex = 410;
 			this.PatternHoldRadioButton.TabStop = true;
 			this.PatternHoldRadioButton.Text = "Hold";
+			this.toolTip1.SetToolTip(this.PatternHoldRadioButton, "Autofire buttons will be held when the movie is extended via playing.");
 			this.PatternHoldRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternAutoFireRadioButton
@@ -651,6 +672,7 @@
 			this.PatternAutoFireRadioButton.TabIndex = 411;
 			this.PatternAutoFireRadioButton.TabStop = true;
 			this.PatternAutoFireRadioButton.Text = "Auto-Fire";
+			this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, "Autofire buttons will alternate on/off when the movie is extended via playing.");
 			this.PatternAutoFireRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
@@ -674,6 +696,8 @@
 			this.PatternPaintAlwaysRadioButton.TabIndex = 402;
 			this.PatternPaintAlwaysRadioButton.TabStop = true;
 			this.PatternPaintAlwaysRadioButton.Text = "Always";
+			this.toolTip1.SetToolTip(this.PatternPaintAlwaysRadioButton, "Painting in all button columns will be painted as auto-fire, or\r\nwith their custo" +
+        "m pattern, if auto-fire or custom is selected.\r\n");
 			this.PatternPaintAlwaysRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternPaintAutoColumnsOnlyRadioButton
@@ -685,6 +709,8 @@
 			this.PatternPaintAutoColumnsOnlyRadioButton.TabIndex = 401;
 			this.PatternPaintAutoColumnsOnlyRadioButton.TabStop = true;
 			this.PatternPaintAutoColumnsOnlyRadioButton.Text = "Auto-Fire columns only";
+			this.toolTip1.SetToolTip(this.PatternPaintAutoColumnsOnlyRadioButton, "Painting in autofire columns will be painted as auto-fire, or\r\nwith their custom " +
+        "pattern, if auto-fire or custom is selected.");
 			this.PatternPaintAutoColumnsOnlyRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternPaintNeverRadioButton
@@ -696,6 +722,7 @@
 			this.PatternPaintNeverRadioButton.TabIndex = 400;
 			this.PatternPaintNeverRadioButton.TabStop = true;
 			this.PatternPaintNeverRadioButton.Text = "Never";
+			this.toolTip1.SetToolTip(this.PatternPaintNeverRadioButton, "Normal painting.");
 			this.PatternPaintNeverRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// tabPage3
@@ -731,6 +758,7 @@
 			this.OldBranchesCheckbox.Size = new System.Drawing.Size(181, 17);
 			this.OldBranchesCheckbox.TabIndex = 518;
 			this.OldBranchesCheckbox.Text = "Old control scheme for branches";
+			this.toolTip1.SetToolTip(this.OldBranchesCheckbox, resources.GetString("OldBranchesCheckbox.ToolTip"));
 			this.OldBranchesCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// BranchDoubleClickCheckbox
@@ -754,6 +782,8 @@
 			this.FastRewindNum.Name = "FastRewindNum";
 			this.FastRewindNum.Size = new System.Drawing.Size(67, 21);
 			this.FastRewindNum.TabIndex = 512;
+			this.toolTip1.SetToolTip(this.FastRewindNum, "how many frames backward to go when you press the rewind button or hotkey,\r\nwhile" +
+        " also holding the turbo hotkey or fast forward hotkey");
 			this.FastRewindNum.Value = new decimal(new int[] {
             1,
             0,
@@ -780,6 +810,7 @@
 			this.RewindNum.Name = "RewindNum";
 			this.RewindNum.Size = new System.Drawing.Size(67, 21);
 			this.RewindNum.TabIndex = 511;
+			this.toolTip1.SetToolTip(this.RewindNum, "how many frames backward to go when you press the rewind button or hotkey");
 			this.RewindNum.Value = new decimal(new int[] {
             1,
             0,
@@ -817,6 +848,7 @@
 			this.ScrollToCenterRadio.TabIndex = 504;
 			this.ScrollToCenterRadio.TabStop = true;
 			this.ScrollToCenterRadio.Text = "scroll to center";
+			this.toolTip1.SetToolTip(this.ScrollToCenterRadio, "scroll so that the cursor is in the middle of the visible frames.");
 			this.ScrollToCenterRadio.UseVisualStyleBackColor = true;
 			// 
 			// ScrollToBottomRadio
@@ -828,6 +860,7 @@
 			this.ScrollToBottomRadio.TabIndex = 503;
 			this.ScrollToBottomRadio.TabStop = true;
 			this.ScrollToBottomRadio.Text = "scroll to bottom";
+			this.toolTip1.SetToolTip(this.ScrollToBottomRadio, "scroll so that the cursor is at the bottom of the visible frames.");
 			this.ScrollToBottomRadio.UseVisualStyleBackColor = true;
 			// 
 			// ScrollToTopRadio
@@ -839,6 +872,7 @@
 			this.ScrollToTopRadio.TabIndex = 502;
 			this.ScrollToTopRadio.TabStop = true;
 			this.ScrollToTopRadio.Text = "scroll to top";
+			this.toolTip1.SetToolTip(this.ScrollToTopRadio, "scroll so that the cursor is at the top of the visible frames.");
 			this.ScrollToTopRadio.UseVisualStyleBackColor = true;
 			// 
 			// ScrollToViewRadio
@@ -850,6 +884,7 @@
 			this.ScrollToViewRadio.TabIndex = 501;
 			this.ScrollToViewRadio.TabStop = true;
 			this.ScrollToViewRadio.Text = "scroll to view";
+			this.toolTip1.SetToolTip(this.ScrollToViewRadio, "scroll the minimum amount needed to make the cursor visible.");
 			this.ScrollToViewRadio.UseVisualStyleBackColor = true;
 			// 
 			// AlwaysScrollCheckbox
@@ -860,6 +895,8 @@
 			this.AlwaysScrollCheckbox.Size = new System.Drawing.Size(238, 17);
 			this.AlwaysScrollCheckbox.TabIndex = 500;
 			this.AlwaysScrollCheckbox.Text = "When following cursor, scroll at every frame";
+			this.toolTip1.SetToolTip(this.AlwaysScrollCheckbox, "When disabled, \"follow cursor\" will not scroll when the cursor is already visible" +
+        ".");
 			this.AlwaysScrollCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// BindMarkersCheckbox
@@ -870,6 +907,9 @@
 			this.BindMarkersCheckbox.Size = new System.Drawing.Size(127, 17);
 			this.BindMarkersCheckbox.TabIndex = 514;
 			this.BindMarkersCheckbox.Text = "Bind markers to input";
+			this.toolTip1.SetToolTip(this.BindMarkersCheckbox, "When enabled, inserting or deleting frames will move any markers that are on futu" +
+        "re frames by the same amount.\r\nDeleting a frame that has a marker will delete th" +
+        "e marker.");
 			this.BindMarkersCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// IncludeFrameNumberCheckbox
@@ -898,6 +938,7 @@
 			this.UndoCountNum.Name = "UndoCountNum";
 			this.UndoCountNum.Size = new System.Drawing.Size(67, 21);
 			this.UndoCountNum.TabIndex = 513;
+			this.toolTip1.SetToolTip(this.UndoCountNum, "the maximum number of edit actions TAStudio should keep in the undo history");
 			this.UndoCountNum.Value = new decimal(new int[] {
             10,
             0,
@@ -928,6 +969,7 @@
 			this.ScrollSpeedNum.Name = "ScrollSpeedNum";
 			this.ScrollSpeedNum.Size = new System.Drawing.Size(67, 21);
 			this.ScrollSpeedNum.TabIndex = 510;
+			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "how many frames to scroll per tick of the mouse wheel");
 			// 
 			// label2
 			// 
@@ -1084,5 +1126,6 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.CheckBox OldBranchesCheckbox;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

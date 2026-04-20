@@ -64,8 +64,43 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateHotkeyTooltips(Config config)
 		{
-			toolTip1.SetToolTip(NextMarkerButton, config.HotkeyBindings["Seek To Next Marker"]);
-			toolTip1.SetToolTip(PreviousMarkerButton, config.HotkeyBindings["Seek To Prev Marker"]);
+			string GetBindingText(string hotkey, string hardcodedBinding = null)
+			{
+				string raw = config.HotkeyBindings[hotkey];
+				if (raw.Length == 0)
+				{
+					return $"Hotkey: {hardcodedBinding ?? "unbound"}";
+				}
+				else if (hardcodedBinding != null)
+				{
+					return $"Hotkey: {hardcodedBinding} or {raw.Replace(",", " or ")}";
+				}
+				return $"Hotkey: {raw.Replace(",", " or ")}";
+			}
+
+			toolTip1.SetToolTip(NextMarkerButton, GetBindingText("Seek To Next Marker")
+				+ "\nseek to next marker");
+			toolTip1.SetToolTip(PreviousMarkerButton, GetBindingText("Seek To Prev Marker")
+				+ "\nseek to previous marker");
+			toolTip1.SetToolTip(FrameAdvanceButton, GetBindingText("Frame Advance", "Right Mouse Button + Wheel Down")
+				+ "\nframe advance");
+			toolTip1.SetToolTip(RewindButton, GetBindingText("Rewind", "Right Mouse Button + Wheel Up")
+				+ "\ngo back 1 step (size of step is configurable in settings)"
+				+ "\nWheel is always 1 frame per tick.");
+			toolTip1.SetToolTip(PauseButton, GetBindingText("Pause", "Middle Mouse Button")
+				+ "\ntoggle pause");
+
+			toolTip1.SetToolTip(FollowCursorCheckbox, GetBindingText("Toggle Follow Cursor")
+				+ "\nWhen enabled, the current emulator frame will be"
+				+ "\nmade visible every time the current frame changes.");
+			toolTip1.SetToolTip(AutoRestoreCheckbox, GetBindingText("Toggle Auto-Restore")
+				+ "\nWhen enabled and you edit a frame before the current emulator frame,"
+				+ "\nTAStudio will automatically seek back to said emulator frame.");
+			toolTip1.SetToolTip(TurboSeekCheckbox, GetBindingText("Toggle Turbo Seek")
+				+ "\nWhen enabled, TAStudio will run the emulator as fast as possible during seeks.");
+			toolTip1.SetToolTip(RecordingModeCheckbox, GetBindingText("Toggle read-only")
+				+ "\nWhen enabled, you can record inputs while unpaused or when frame advancing.");
+			
 		}
 
 		protected override void OnLoad(EventArgs e)

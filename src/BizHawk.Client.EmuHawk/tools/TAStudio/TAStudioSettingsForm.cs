@@ -46,6 +46,18 @@ namespace BizHawk.Client.EmuHawk
 			_axisPatterns = new AutoPatternAxis[_settings.MovieSettings.AxisPatterns.Length];
 			for (int i = 0; i < _boolPatterns.Length; i++) _boolPatterns[i] = _settings.MovieSettings.BoolPatterns[i].Clone();
 			for (int i = 0; i < _axisPatterns.Length; i++) _axisPatterns[i] = _settings.MovieSettings.AxisPatterns[i].Clone();
+
+			// tips
+			const string HowToSetAutoFire = "\nYou can set a column as auto hold/fire by right-clicking on the column header.";
+			toolTip1.SetToolTip(PatternHoldRadioButton, toolTip1.GetToolTip(PatternHoldRadioButton) + HowToSetAutoFire);
+			toolTip1.SetToolTip(PatternAutoFireRadioButton, toolTip1.GetToolTip(PatternAutoFireRadioButton) + HowToSetAutoFire);
+			toolTip1.SetToolTip(PatternCustomRadioButton, toolTip1.GetToolTip(PatternCustomRadioButton) + HowToSetAutoFire);
+
+			const string ScrollMethodPrefix = "When scrolling with \"Follow cursor\", ";
+			toolTip1.SetToolTip(ScrollToViewRadio, ScrollMethodPrefix + toolTip1.GetToolTip(ScrollToViewRadio));
+			toolTip1.SetToolTip(ScrollToTopRadio, ScrollMethodPrefix + toolTip1.GetToolTip(ScrollToTopRadio));
+			toolTip1.SetToolTip(ScrollToBottomRadio, ScrollMethodPrefix + toolTip1.GetToolTip(ScrollToBottomRadio));
+			toolTip1.SetToolTip(ScrollToCenterRadio, ScrollMethodPrefix + toolTip1.GetToolTip(ScrollToCenterRadio));
 		}
 
 		private void TAStudioSettingsForm_Load(object sender, EventArgs e)

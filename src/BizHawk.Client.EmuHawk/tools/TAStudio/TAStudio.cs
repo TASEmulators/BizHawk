@@ -275,6 +275,7 @@ namespace BizHawk.Client.EmuHawk
 			CloneXTimesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
 
 			TasPlaybackBox.UpdateHotkeyTooltips(Config);
+			BookMarkControl.UpdateHotkeyTooltips(Config);
 			MarkerControl.UpdateHotkeyTooltips(Config);
 		}
 

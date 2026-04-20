@@ -122,7 +122,6 @@
 			this.AddBranchButton.Name = "AddBranchButton";
 			this.AddBranchButton.Size = new System.Drawing.Size(24, 24);
 			this.AddBranchButton.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.AddBranchButton, "Add Branch");
 			this.AddBranchButton.UseVisualStyleBackColor = true;
 			this.AddBranchButton.Click += new System.EventHandler(this.AddBranchToolStripMenuItem_Click);
 			// 

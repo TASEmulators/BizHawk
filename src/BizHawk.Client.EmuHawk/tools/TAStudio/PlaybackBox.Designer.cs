@@ -125,7 +125,6 @@
 			this.FrameAdvanceButton.Size = new System.Drawing.Size(38, 23);
 			this.FrameAdvanceButton.TabIndex = 3;
 			this.FrameAdvanceButton.Text = ">";
-			this.toolTip1.SetToolTip(this.FrameAdvanceButton, "Right Mouse Button + Wheel Down");
 			this.FrameAdvanceButton.UseVisualStyleBackColor = true;
 			this.FrameAdvanceButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrameAdvanceButton_MouseDown);
 			this.FrameAdvanceButton.MouseLeave += new System.EventHandler(this.FrameAdvanceButton_MouseLeave);
@@ -138,7 +137,6 @@
 			this.PauseButton.Size = new System.Drawing.Size(38, 23);
 			this.PauseButton.TabIndex = 2;
 			this.PauseButton.Text = "> ||";
-			this.toolTip1.SetToolTip(this.PauseButton, "Middle Mouse Button");
 			this.PauseButton.UseVisualStyleBackColor = true;
 			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
 			// 
@@ -151,7 +149,6 @@
 			this.RewindButton.Size = new System.Drawing.Size(38, 23);
 			this.RewindButton.TabIndex = 1;
 			this.RewindButton.Text = "<";
-			this.toolTip1.SetToolTip(this.RewindButton, "Right Mouse Button + Wheel Up");
 			this.RewindButton.UseVisualStyleBackColor = true;
 			this.RewindButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RewindButton_MouseDown);
 			this.RewindButton.MouseLeave += new System.EventHandler(this.RewindButton_MouseLeave);

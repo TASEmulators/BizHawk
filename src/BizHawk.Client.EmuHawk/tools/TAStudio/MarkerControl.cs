@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			toolTip1.SetToolTip(AddMarkerButton, $"Add Marker to Emulated Frame ({config.HotkeyBindings["Set Marker"]})");
 			toolTip1.SetToolTip(AddMarkerWithTextButton, $"Add Marker with Text to Emulated Frame ({config.HotkeyBindings["Set Marker"]} {config.HotkeyBindings["Set Marker"]})");
+			toolTip1.SetToolTip(RemoveMarkerButton, $"Remove Marker ({config.HotkeyBindings["Delete Marker"]} on marker's frame)");
 		}
 
 		private void SetupColumns()

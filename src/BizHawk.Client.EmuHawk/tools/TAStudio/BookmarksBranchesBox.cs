@@ -66,6 +66,18 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			if (config.HotkeyBindings["Add Branch"].Length > 0)
+			{
+				toolTip1.SetToolTip(AddBranchButton, $"Add Branch ({config.HotkeyBindings["Add Branch"]})");
+			}
+			else
+			{
+				toolTip1.SetToolTip(AddBranchButton, "Add Branch");
+			}
+		}
+
 		private void SetupColumns()
 		{
 			BranchView.AllColumns.Clear();
