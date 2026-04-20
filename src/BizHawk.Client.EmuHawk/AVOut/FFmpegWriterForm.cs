@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class FFmpegWriterForm : FormBase
 	{
+		protected override string WindowTitleStatic => "Choose Video Format";
+
 		/// <summary>
 		/// stores a single format preset
 		/// </summary>

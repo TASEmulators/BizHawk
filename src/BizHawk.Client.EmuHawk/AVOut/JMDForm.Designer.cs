@@ -138,7 +138,6 @@
             this.Name = "JmdForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "JMD Compression Options";
             ((System.ComponentModel.ISupportInitialize)(this.threadsBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.compressionBar)).EndInit();
             this.ResumeLayout(false);

@@ -7,6 +7,8 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class JmdForm : FormBase
 	{
+		protected override string WindowTitleStatic => "JMD Compression Options";
+
 		public JmdForm()
 		{
 			InitializeComponent();

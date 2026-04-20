@@ -5,6 +5,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AutofireConfig : FormBase
 	{
+		protected override string WindowTitleStatic => "Autofire Configuration";
+
 		private readonly Config _config;
 		private readonly AutofireController _autoFireController;
 		private readonly StickyAutofireController _stickyAutofireController;
