@@ -41,6 +41,9 @@ namespace BizHawk.Common
 			}
 			r = (start, endInclusive);
 		}
+
+		public override string ToString()
+			=> $"{Start}..={EndInclusive}";
 	}
 
 	/// <summary>contains most of the logic for ranges</summary>
