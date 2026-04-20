@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			public override void BulkPeekByte(Range<long> addresses, byte[] values)
+			public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
 			{
 				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				BulkPeekByte((uint)addresses.Start, values);
 			}
 
-			public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+			public override void BulkPeekUshort(Int64ClosedRange addresses, bool bigEndian, ushort[] values)
 			{
 				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+			public override void BulkPeekUint(Int64ClosedRange addresses, bool bigEndian, uint[] values)
 			{
 				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
