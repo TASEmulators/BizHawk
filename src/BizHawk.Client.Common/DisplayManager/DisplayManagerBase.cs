@@ -765,6 +765,8 @@ namespace BizHawk.Client.Common
 						job.OffscreenBb = new(new(1, 1));
 					}
 
+					DiscardApiHawkSurfaces();
+
 					return null;
 				}
 			}
@@ -883,6 +885,7 @@ namespace BizHawk.Client.Common
 			_gl.BindDefaultRenderTarget();
 			_gl.ClearColor(Color.Black);
 			SwapBuffersOfGraphicsControl();
+			DiscardApiHawkSurfaces();
 		}
 
 		protected virtual void UpdateSourceDrawingWork(JobInfo job)
