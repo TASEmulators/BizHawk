@@ -32,67 +32,76 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("socketServerIsConnected", "socketServerIsConnected")]
-		public bool? SocketServerIsConnected()
-			=> APIs.Comm.Sockets?.Connected;
+		public bool SocketServerIsConnected()
+			=> APIs.Comm.Sockets.Connected;
 
 		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
-		public string? SocketServerScreenShot()
+		public string SocketServerScreenShot()
 		{
-			return GetSocketServer()?.SendScreenshot();
+			CheckSocketServer();
+			return APIs.Comm.Sockets?.SendScreenshot();
 		}
 
 		[LuaMethod("socketServerScreenShotResponse", "sends a screenshot to the Socket server and retrieves the response")]
-		public string? SocketServerScreenShotResponse()
+		public string SocketServerScreenShotResponse()
 		{
-			return GetSocketServer()?.SendScreenshot(1000);
+			CheckSocketServer();
+			return APIs.Comm.Sockets?.SendScreenshot(1000);
 		}
 
 		[LuaMethod("socketServerSend", "sends a string to the Socket server")]
 		public int SocketServerSend(string SendString)
 		{
-			return GetSocketServer()?.SendString(SendString) ?? -1;
+			if (!CheckSocketServer())
+			{
+				return -1;
+			}
+			return APIs.Comm.Sockets.SendString(SendString);
 		}
 
 		[LuaMethod("socketServerSendBytes", "sends bytes to the Socket server")]
 		public int SocketServerSendBytes(LuaTable byteArray)
 		{
-			return GetSocketServer()
-				?.SendBytes(_th.EnumerateValues<long>(byteArray).Select(l => (byte) l).ToArray())
-				?? -1;
+			if (!CheckSocketServer()) return -1;
+			return APIs.Comm.Sockets.SendBytes(_th.EnumerateValues<long>(byteArray).Select(l => (byte) l).ToArray());
 		}
 
 		[LuaMethod("socketServerResponse", "Receives a message from the Socket server. Since BizHawk 2.6.2, all responses must be of the form $\"{msg.Length:D} {msg}\" i.e. prefixed with the length in base-10 and a space.")]
-		public string? SocketServerResponse()
+		public string SocketServerResponse()
 		{
-			return GetSocketServer()?.ReceiveString();
+			CheckSocketServer();
+			return APIs.Comm.Sockets?.ReceiveString();
 		}
 
 		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
 		public bool SocketServerSuccessful()
 		{
-			return GetSocketServer()?.Successful ?? false;
+			return CheckSocketServer() && APIs.Comm.Sockets.Successful;
 		}
 
 		[LuaMethod("socketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
 		public void SocketServerSetTimeout(int timeout)
 		{
-			GetSocketServer()?.SetTimeout(timeout);
+			CheckSocketServer();
+			APIs.Comm.Sockets?.SetTimeout(timeout);
 		}
 
 		[LuaMethod("socketServerSetIp", "sets the IP address of the Lua socket server")]
 		public void SocketServerSetIp(string ip)
 		{
-			if (GetSocketServer() is { } sockets) sockets.IP = ip;
+			CheckSocketServer();
+			APIs.Comm.Sockets.IP = ip;
 		}
 
 		[LuaMethod("socketServerSetPort", "sets the port of the Lua socket server")]
 		public void SocketServerSetPort(ushort port)
 		{
-			if (GetSocketServer() is { } sockets) sockets.Port = port;
+			CheckSocketServer();
+			APIs.Comm.Sockets.Port = port;
 		}
 
 		[LuaMethod("socketServerGetIp", "returns the IP address of the Lua socket server")]
-		public string? SocketServerGetIp()
+		public string SocketServerGetIp()
 		{
 			return APIs.Comm.Sockets?.IP;
 		}
@@ -106,16 +115,20 @@ namespace BizHawk.Client.Common
 		[LuaMethod("socketServerGetInfo", "returns the IP and port of the Lua socket server")]
 		public string SocketServerGetInfo()
 		{
-			return GetSocketServer()?.GetInfo() ?? "";
+			return CheckSocketServer()
+				? APIs.Comm.Sockets.GetInfo()
+				: "";
 		}
 
-		private SocketServer? GetSocketServer()
+		private bool CheckSocketServer()
 		{
-			if (APIs.Comm.Sockets is null)
+			if (APIs.Comm.Sockets == null)
 			{
 				Log("Socket server was not initialized, please initialize it via the command line");
+				return false;
 			}
-			return APIs.Comm.Sockets;
+
+			return true;
 		}
 
 		// All MemoryMappedFile related methods
