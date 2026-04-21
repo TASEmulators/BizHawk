@@ -100,7 +100,6 @@ namespace BizHawk.Client.EmuHawk
 				+ "\nWhen enabled, TAStudio will run the emulator as fast as possible during seeks.");
 			toolTip1.SetToolTip(RecordingModeCheckbox, GetBindingText("Toggle read-only")
 				+ "\nWhen enabled, you can record inputs while unpaused or when frame advancing.");
-			
 		}
 
 		protected override void OnLoad(EventArgs e)
