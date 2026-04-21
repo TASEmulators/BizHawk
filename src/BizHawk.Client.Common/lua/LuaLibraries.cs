@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 
 		public void AddTypeToDocs(Type type)
 		{
-			EnumerateLuaFunctions(type.GetType().Name, type, null);
+			EnumerateLuaFunctions(type.Name, type, null);
 		}
 
 		public bool FrameAdvanceRequested { get; private set; }

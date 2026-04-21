@@ -249,6 +249,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaImp.AddLibrary(new FormsLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { OwnerForm = (IDialogParent)MainForm });
 			LuaImp.AddLibrary(new TAStudioLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow) { Tools = Tools });
 			LuaImp.AddLibrary(new GuiLuaLibrary(LuaImp, apiContainer, WriteToOutputWindow));
+			LuaImp.AddTypeToDocs(typeof(LuaCanvas));
 
 			InputBox.AutoCompleteCustomSource.Clear();
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Where(static f => f.SuggestInREPL)
