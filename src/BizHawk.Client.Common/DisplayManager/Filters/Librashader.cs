@@ -61,8 +61,6 @@ namespace BizHawk.Client.Common.Filters
 			}
 		}
 
-		#region OpenGL
-
 		[DllImport("librashader", CallingConvention = CC)]
 		public static extern IntPtr libra_gl_filter_chain_create(
 			ref IntPtr preset,
@@ -117,10 +115,6 @@ namespace BizHawk.Client.Common.Filters
 			};
 		}
 
-		#endregion
-
-		#region D3D11
-
 		[DllImport("librashader", CallingConvention = CC)]
 		public static extern IntPtr libra_d3d11_filter_chain_create(
 			ref IntPtr preset,
@@ -170,7 +164,5 @@ namespace BizHawk.Client.Common.Filters
 				disable_cache = false,
 			};
 		}
-
-		#endregion
 	}
 }
