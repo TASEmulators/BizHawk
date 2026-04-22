@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OldBranchesCheckbox.ToolTip" xml:space="preserve">
-    <value>When enabled, branches cannot be loaded when recording mode is off; instead TAStudio will seek to the branch frame.
-And when recording mode is on, the movie will be truncated at the branch frame after loading a branch.</value>
+    <value>When enabled, branches cannot be loaded when "Recording mode" is off; instead TAStudio will seek to the branch frame.
+And when "Recording mode" is on, the movie will be truncated at the branch frame after loading a branch.</value>
   </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
