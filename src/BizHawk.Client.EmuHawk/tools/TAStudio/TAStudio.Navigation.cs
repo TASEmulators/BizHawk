@@ -96,7 +96,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			TasView.ScrollToIndex(frame ?? Emulator.Frame);
+			int scrollTo = frame ?? Emulator.Frame;
+			if (Settings.ScrollSync)
+			{
+				_inputRolls.ForEach(r => r.ScrollToIndex(scrollTo));
+			}
+			else
+			{
+				_activeInputRoll.ScrollToIndex(scrollTo);
+			}
 		}
 
 		private void MaybeFollowCursor()

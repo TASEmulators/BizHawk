@@ -117,6 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="OldBranchesCheckbox.ToolTip" xml:space="preserve">
+    <value>When enabled, branches cannot be loaded when recording mode is off; instead TAStudio will seek to the branch frame.
+And when recording mode is on, the movie will be truncated at the branch frame after loading a branch.</value>
+  </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="EditInvisibleColumnsCheckbox.ToolTip" xml:space="preserve">
+    <value>When disabled, inputs that are not visible on the active input roll cannot be edited.
+This allows you to, for example, insert and delete frames on a roll with player 1's inputs
+without affecting player 2's inputs, by hiding all columns for player 2.
+You can hide columns and create/delete input rolls by right-clicking on a column header.
+Because markers are not associated with any input column, it is recommended that you turn
+off "Bind markers to input" if you uncheck this box. Otherwise markers may move unexpectedly.
+This feature is experimental but should be ready for use.</value>
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
@@ -132,9 +148,5 @@ Backup movies will not contain any "greenzone" savestates, which makes them smal
     <value>How many seconds between each time TAStudio automatically saves.
 If neither "Save as ..." boxes are checked, autosave will overwrite whatever file is open.
 In no file is open, autosave will never do anything.</value>
-  </data>
-  <data name="OldBranchesCheckbox.ToolTip" xml:space="preserve">
-    <value>When enabled, branches cannot be loaded when recording mode is off; instead TAStudio will seek to the branch frame.
-And when recording mode is on, the movie will be truncated at the branch frame after loading a branch.</value>
   </data>
 </root>

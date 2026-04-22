@@ -28,14 +28,14 @@ namespace BizHawk.Client.EmuHawk
 			MaxStepsNum.Value = Log.MaxSteps;
 		}
 
-		private void HistoryView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void HistoryView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = column.Name == UndoColumnName
 				? Log.GetActionName(index)
 				: index.ToString();
 		}
 
-		private void HistoryView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void HistoryView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			if (index == Log.UndoIndex)
 			{
