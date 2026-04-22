@@ -102,7 +102,7 @@
 			this.FollowCursorCheckbox.Name = "FollowCursorCheckbox";
 			this.FollowCursorCheckbox.Size = new System.Drawing.Size(89, 17);
 			this.FollowCursorCheckbox.TabIndex = 5;
-			this.FollowCursorCheckbox.Text = "Follow Cursor";
+			this.FollowCursorCheckbox.Text = "Follow cursor";
 			this.FollowCursorCheckbox.UseVisualStyleBackColor = true;
 			this.FollowCursorCheckbox.CheckedChanged += new System.EventHandler(this.FollowCursorCheckbox_CheckedChanged);
 			// 

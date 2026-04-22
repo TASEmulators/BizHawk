@@ -241,7 +241,7 @@
 			this.StateColorCheckbox.Size = new System.Drawing.Size(200, 17);
 			this.StateColorCheckbox.TabIndex = 4;
 			this.StateColorCheckbox.Text = "Denote states with background color";
-			this.toolTip1.SetToolTip(this.StateColorCheckbox, "If enabled, the the background color of a row will be slightly different when TAS" +
+			this.toolTip1.SetToolTip(this.StateColorCheckbox, "If enabled, the background color of a row will be slightly different when TAS" +
         "tudio has a savestate for that frame.");
 			this.StateColorCheckbox.UseVisualStyleBackColor = true;
 			// 
@@ -344,7 +344,7 @@
 			this.AutosaveBk2Checkbox.Size = new System.Drawing.Size(89, 17);
 			this.AutosaveBk2Checkbox.TabIndex = 202;
 			this.AutosaveBk2Checkbox.Text = "Save as .bk2";
-			this.toolTip1.SetToolTip(this.AutosaveBk2Checkbox, "Autosave will export movie to a .bk2 file instead of saving a .tasproj file.");
+			this.toolTip1.SetToolTip(this.AutosaveBk2Checkbox, "Autosave will export the movie to a .bk2 file instead of saving a .tasproj file.");
 			this.AutosaveBk2Checkbox.UseVisualStyleBackColor = true;
 			// 
 			// label5
@@ -651,7 +651,7 @@
 			this.PatternCustomRadioButton.TabIndex = 412;
 			this.PatternCustomRadioButton.TabStop = true;
 			this.PatternCustomRadioButton.Text = "Custom";
-			this.toolTip1.SetToolTip(this.PatternCustomRadioButton, "Autofire buttons will use a custom pattern when the movie is extended via playing" +
+			this.toolTip1.SetToolTip(this.PatternCustomRadioButton, "Auto-fire buttons will use a custom pattern when the movie is extended by playing past the end of the movie." +
         ".");
 			this.PatternCustomRadioButton.UseVisualStyleBackColor = true;
 			this.PatternCustomRadioButton.CheckedChanged += new System.EventHandler(this.PatternCustomRadioButton_CheckedChanged);
@@ -665,7 +665,7 @@
 			this.PatternHoldRadioButton.TabIndex = 410;
 			this.PatternHoldRadioButton.TabStop = true;
 			this.PatternHoldRadioButton.Text = "Hold";
-			this.toolTip1.SetToolTip(this.PatternHoldRadioButton, "Autofire buttons will be held when the movie is extended via playing.");
+			this.toolTip1.SetToolTip(this.PatternHoldRadioButton, "Auto-fire buttons will be held when the movie is extended by playing past the end of the movie.");
 			this.PatternHoldRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternAutoFireRadioButton
@@ -677,7 +677,7 @@
 			this.PatternAutoFireRadioButton.TabIndex = 411;
 			this.PatternAutoFireRadioButton.TabStop = true;
 			this.PatternAutoFireRadioButton.Text = "Auto-Fire";
-			this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, "Autofire buttons will alternate on/off when the movie is extended via playing.");
+			this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, "Auto-fire buttons will alternate on/off when the movie is extended by playing past the end of the movie.");
 			this.PatternAutoFireRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
@@ -702,7 +702,7 @@
 			this.PatternPaintAlwaysRadioButton.TabStop = true;
 			this.PatternPaintAlwaysRadioButton.Text = "Always";
 			this.toolTip1.SetToolTip(this.PatternPaintAlwaysRadioButton, "Painting in all button columns will be painted as auto-fire, or\r\nwith their custo" +
-        "m pattern, if auto-fire or custom is selected.\r\n");
+        "m pattern, if \"Auto-Fire\" or \"Custom\" is selected.\r\n");
 			this.PatternPaintAlwaysRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternPaintAutoColumnsOnlyRadioButton
@@ -714,8 +714,8 @@
 			this.PatternPaintAutoColumnsOnlyRadioButton.TabIndex = 401;
 			this.PatternPaintAutoColumnsOnlyRadioButton.TabStop = true;
 			this.PatternPaintAutoColumnsOnlyRadioButton.Text = "Auto-Fire columns only";
-			this.toolTip1.SetToolTip(this.PatternPaintAutoColumnsOnlyRadioButton, "Painting in autofire columns will be painted as auto-fire, or\r\nwith their custom " +
-        "pattern, if auto-fire or custom is selected.");
+			this.toolTip1.SetToolTip(this.PatternPaintAutoColumnsOnlyRadioButton, "Painting in auto-fire columns will be painted as auto-fire, or\r\nwith their custom " +
+        "pattern, if \"Auto-Fire\" or \"Custom\" is selected.");
 			this.PatternPaintAutoColumnsOnlyRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternPaintNeverRadioButton
@@ -782,8 +782,8 @@
 			this.FastRewindNum.Name = "FastRewindNum";
 			this.FastRewindNum.Size = new System.Drawing.Size(67, 20);
 			this.FastRewindNum.TabIndex = 512;
-			this.toolTip1.SetToolTip(this.FastRewindNum, "how many frames backward to go when you press the rewind button or hotkey,\r\nwhile" +
-        " also holding the turbo hotkey or fast forward hotkey");
+			this.toolTip1.SetToolTip(this.FastRewindNum, "How many frames backward to go when you press the rewind button or hotkey,\r\nwhile" +
+        " also holding the turbo hotkey or fast forward hotkey.");
 			this.FastRewindNum.Value = new decimal(new int[] {
             1,
             0,
@@ -810,7 +810,7 @@
 			this.RewindNum.Name = "RewindNum";
 			this.RewindNum.Size = new System.Drawing.Size(67, 20);
 			this.RewindNum.TabIndex = 511;
-			this.toolTip1.SetToolTip(this.RewindNum, "how many frames backward to go when you press the rewind button or hotkey");
+			this.toolTip1.SetToolTip(this.RewindNum, "How many frames backward to go when you press the rewind button or hotkey.");
 			this.RewindNum.Value = new decimal(new int[] {
             1,
             0,
@@ -846,7 +846,7 @@
 			this.IncludeFrameNumberCheckbox.Name = "IncludeFrameNumberCheckbox";
 			this.IncludeFrameNumberCheckbox.Size = new System.Drawing.Size(228, 17);
 			this.IncludeFrameNumberCheckbox.TabIndex = 515;
-			this.IncludeFrameNumberCheckbox.Text = "Include frame numbers when copying input";
+			this.IncludeFrameNumberCheckbox.Text = "Include frame numbers when copying input.";
 			this.IncludeFrameNumberCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// UndoCountNum
@@ -865,7 +865,7 @@
 			this.UndoCountNum.Name = "UndoCountNum";
 			this.UndoCountNum.Size = new System.Drawing.Size(67, 20);
 			this.UndoCountNum.TabIndex = 513;
-			this.toolTip1.SetToolTip(this.UndoCountNum, "the maximum number of edit actions TAStudio should keep in the undo history");
+			this.toolTip1.SetToolTip(this.UndoCountNum, "The maximum number of edit actions TAStudio should keep in the undo history.");
 			this.UndoCountNum.Value = new decimal(new int[] {
             10,
             0,
@@ -888,7 +888,7 @@
 			this.AutopauseCheckbox.Name = "AutopauseCheckbox";
 			this.AutopauseCheckbox.Size = new System.Drawing.Size(196, 17);
 			this.AutopauseCheckbox.TabIndex = 516;
-			this.AutopauseCheckbox.Text = "Automatically pause at end of movie";
+			this.AutopauseCheckbox.Text = "Automatically pause at end of movie.";
 			this.AutopauseCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// SettingsCancelButton
@@ -999,7 +999,7 @@
 			this.AlwaysScrollCheckbox.Size = new System.Drawing.Size(231, 17);
 			this.AlwaysScrollCheckbox.TabIndex = 514;
 			this.AlwaysScrollCheckbox.Text = "When following cursor, scroll at every frame";
-			this.toolTip1.SetToolTip(this.AlwaysScrollCheckbox, "When disabled, \"follow cursor\" will not scroll when the cursor is already visible" +
+			this.toolTip1.SetToolTip(this.AlwaysScrollCheckbox, "When disabled, \"Follow cursor\" will not scroll when the cursor is already visible" +
         ".");
 			this.AlwaysScrollCheckbox.UseVisualStyleBackColor = true;
 			// 
@@ -1018,7 +1018,7 @@
 			this.ScrollSpeedNum.Name = "ScrollSpeedNum";
 			this.ScrollSpeedNum.Size = new System.Drawing.Size(67, 20);
 			this.ScrollSpeedNum.TabIndex = 515;
-			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "how many frames to scroll per tick of the mouse wheel");
+			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "How many frames to scroll per tick of the mouse wheel.");
 			// 
 			// label2
 			// 
