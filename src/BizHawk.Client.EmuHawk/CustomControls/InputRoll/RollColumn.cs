@@ -50,5 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
 			Width = VerticalWidth;
 		}
+
+		public RollColumn Clone() => (MemberwiseClone() as RollColumn)!;
 	}
 }

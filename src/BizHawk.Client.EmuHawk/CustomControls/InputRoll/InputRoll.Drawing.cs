@@ -25,13 +25,13 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					visibleColumns = VisibleColumns
-						.Where(c => c.Right > _vBar.Value && c.Left - _vBar.Value < e.ClipRectangle.Height)
+						.Where(c => c.Right - _vBar.Value > e.ClipRectangle.Top && c.Left - _vBar.Value < e.ClipRectangle.Bottom)
 						.ToList();
 				}
 				else
 				{
 					visibleColumns = _columns.VisibleColumns
-						.Where(c => c.Right > _hBar.Value && c.Left - _hBar.Value < e.ClipRectangle.Width)
+						.Where(c => c.Right - _hBar.Value > e.ClipRectangle.Left && c.Left - _hBar.Value < e.ClipRectangle.Right)
 						.ToList();
 				}
 
@@ -116,10 +116,10 @@ namespace BizHawk.Client.EmuHawk
 				var text = "";
 				int offsetX = 0;
 				int offsetY = 0;
-				QueryItemText?.Invoke(targetRow, targetCol, out text, ref offsetX, ref offsetY);
+				QueryItemText?.Invoke(this, targetRow, targetCol, out text, ref offsetX, ref offsetY);
 
 				Color bgColor = _backColor;
-				QueryItemBkColor?.Invoke(targetRow, targetCol, ref bgColor);
+				QueryItemBkColor?.Invoke(this, targetRow, targetCol, ref bgColor);
 
 				int columnHeight = CellHeight;
 				if (HorizontalOrientation)
@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 							int bitmapOffsetX = 0;
 							int bitmapOffsetY = 0;
 
-							QueryItemIcon?.Invoke(f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+							QueryItemIcon?.Invoke(this, f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
 
 							if (image != null)
 							{
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 						int strOffsetX = 0;
 						int strOffsetY = 0;
-						QueryItemText(f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
+						QueryItemText(this, f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
 
 						int textWidth = (int)_renderer.MeasureString(text, Font).Width;
 						if (col.Rotatable)
@@ -261,14 +261,14 @@ namespace BizHawk.Client.EmuHawk
 						int bitmapOffsetX = 0;
 						int bitmapOffsetY = 0;
 
-						QueryItemIcon?.Invoke(f + startRow, column, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+						QueryItemIcon?.Invoke(this, f + startRow, column, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
 
 						if (image != null)
 						{
 							_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding));
 						}
 
-						QueryItemText(f + startRow, column, out var text, ref strOffsetX, ref strOffsetY);
+						QueryItemText(this, f + startRow, column, out var text, ref strOffsetX, ref strOffsetY);
 
 						bool rePrep = false;
 						currentCell.Column = column;
@@ -297,7 +297,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				_renderer.FillRectangle(new Rectangle(0, 0, MaxColumnWidth + 1, rect.Height));
+				int rightEdge = MaxColumnWidth;
+				_renderer.FillRectangle(new Rectangle(0, 0, rightEdge + 1, rect.Bottom));
 
 				for (int j = 0; j < visibleColumns.Count; j++)
 				{
@@ -307,20 +308,20 @@ namespace BizHawk.Client.EmuHawk
 
 				if (visibleColumns.Count is not 0)
 				{
-					_renderer.Line(1, TotalColWidth, MaxColumnWidth, TotalColWidth);
+					_renderer.Line(1, TotalColWidth, rightEdge, TotalColWidth);
 				}
 
-				_renderer.Line(0, 0, 0, rect.Height);
-				_renderer.Line(MaxColumnWidth, 0, MaxColumnWidth, rect.Height);
+				if (rect.Left <= 0) _renderer.Line(0, 0, 0, rect.Bottom);
+				_renderer.Line(rightEdge, 0, rightEdge, rect.Bottom);
 			}
 			else
 			{
 				int bottomEdge = RowsToPixels(0);
 
 				// Gray column box and black line underneath
-				_renderer.FillRectangle(new Rectangle(0, 0, rect.Width, bottomEdge + 1));
-				_renderer.Line(0, 0, rect.Width, 0);
-				_renderer.Line(0, bottomEdge, rect.Width, bottomEdge);
+				_renderer.FillRectangle(new Rectangle(0, 0, rect.Right, bottomEdge + 1));
+				if (rect.Top <= 0) _renderer.Line(0, 0, rect.Right, 0);
+				_renderer.Line(0, bottomEdge, rect.Right, bottomEdge);
 
 				// Vertical black separators
 				foreach (var column in visibleColumns)
@@ -421,18 +422,18 @@ namespace BizHawk.Client.EmuHawk
 					for (int i = 1; i < lastVisibleRow - firstVisibleRow + 1; i++)
 					{
 						int x = RowsToPixels(i);
-						_renderer.Line(x, 1, x, rect.Height);
+						_renderer.Line(x, 1, x, rect.Bottom);
 					}
 
 					// Rows
-					_renderer.Line(RowsToPixels(0) + 1, 0, rect.Width + MaxColumnWidth, 0);
+					int startX = RowsToPixels(0) + 1;
+					_renderer.Line(startX, 0, rect.Right, 0);
 					for (int i = 0; i < visibleColumns.Count; i++)
 					{
 						// TODO: MaxColumnWidth shouldn't be necessary
 						// This also makes too many assumptions, the parameters need to drive what is being drawn
 						int y = visibleColumns[i].Right - _vBar.Value;
-						int x = RowsToPixels(0) + 1;
-						_renderer.Line(x, y, rect.Width + MaxColumnWidth, y);
+						_renderer.Line(startX, y, rect.Right, y);
 					}
 				}
 				else
@@ -442,19 +443,19 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var column in visibleColumns)
 					{
 						int x = column.Left - _hBar.Value;
-						_renderer.Line(x, y, x, rect.Height - 1);
+						_renderer.Line(x, y, x, rect.Bottom - 1);
 					}
 
 					if (visibleColumns.Count is not 0)
 					{
 						int x = TotalColWidth - _hBar.Value;
-						_renderer.Line(x, y, x, rect.Height - 1);
+						_renderer.Line(x, y, x, rect.Bottom - 1);
 					}
 
 					// Rows
 					for (int i = 1; i < VisibleRows + 1; i++)
 					{
-						_renderer.Line(0, RowsToPixels(i), rect.Width + 1, RowsToPixels(i));
+						_renderer.Line(0, RowsToPixels(i), rect.Right + 1, RowsToPixels(i));
 					}
 				}
 			}
@@ -483,12 +484,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (QueryRowBkColor != null && lastRow != cell.RowIndex.Value)
 				{
-					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
+					QueryRowBkColor(this, cell.RowIndex.Value, ref rowColor);
 					lastRow = cell.RowIndex.Value;
 				}
 
 				Color cellColor = rowColor;
-				QueryItemBkColor?.Invoke(cell.RowIndex.Value, cell.Column, ref cellColor);
+				QueryItemBkColor?.Invoke(this, cell.RowIndex.Value, cell.Column, ref cellColor);
 
 				// Alpha layering for cell before selection
 				float alpha = (float)cellColor.A / 255;
@@ -555,12 +556,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				f += _lagFrames[i];
 				var rowColor = _backColor;
-				QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
+				QueryRowBkColor?.Invoke(this, f + startIndex, ref rowColor);
 
 				foreach (var column in visibleColumns)
 				{
 					var itemColor = rowColor;
-					QueryItemBkColor?.Invoke(f + startIndex, column, ref itemColor);
+					QueryItemBkColor?.Invoke(this, f + startIndex, column, ref itemColor);
 					if (itemColor.A is not (0 or 255))
 					{
 						float alpha = (float)itemColor.A / 255;

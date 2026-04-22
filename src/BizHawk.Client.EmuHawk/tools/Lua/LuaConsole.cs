@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 				Path.GetFileName(_openedFiles.Filename);
 		}
 
-		private void LuaListView_QueryItemImage(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
+		private void LuaListView_QueryItemImage(InputRoll sender, int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			if (column.Name != IconColumnName)
 			{
@@ -449,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private void LuaListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void LuaListView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			var lf = _openedFiles[index];
 			if (lf.IsSeparator) color = BackColor;
@@ -457,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (lf.Enabled) color = Color.LightCyan;
 		}
 
-		private void LuaListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void LuaListView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 

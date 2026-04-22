@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 		}
 
-		private void CheatListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void CheatListView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= MainForm.CheatList.Count || MainForm.CheatList[index].IsSeparator)
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CheatListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void CheatListView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			if (index < MainForm.CheatList.Count)
 			{
