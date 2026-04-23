@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 
 using NLua;
@@ -42,6 +41,6 @@ namespace BizHawk.Client.Common
 		[LuaMethodExample("console.writeline(#userdata.get_keys());")]
 		[LuaMethod("get_keys", "returns a list-like table of valid keys")]
 		public LuaTable GetKeys()
-			=> _th.ListToTable((List<string>) APIs.UserData.Keys); //HACK cast will succeed as long as impl. returns Dictionary<K, V>.Keys.ToList() as IROC<K>
+			=> _th.EnumerateToLuaTable(APIs.UserData.Keys);
 	}
 }
