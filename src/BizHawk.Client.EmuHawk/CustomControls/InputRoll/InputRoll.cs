@@ -1660,13 +1660,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var oldIndex = _columns.IndexOf(_columnDown);
 				var newIndex = _columns.IndexOf(CurrentCell.Column);
+				_columns.Move(oldIndex, newIndex);
 
 				ColumnReordered?.Invoke(this, new ColumnReorderedEventArgs(oldIndex, newIndex, _columnDown));
-
-				//TODO surely this only works properly in one direction?
-				// also the event is "...Reordered"--past tense--so it should be called AFTER the change --yoshi
-				_columns.Remove(_columnDown);
-				_columns.Insert(newIndex, _columnDown);
 			}
 		}
 

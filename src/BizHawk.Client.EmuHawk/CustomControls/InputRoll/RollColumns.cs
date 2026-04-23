@@ -87,6 +87,15 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
+		public void Move(int oldIndex, int newIndex)
+		{
+			RollColumn col = this[oldIndex];
+			_suspendChanged = true;
+			RemoveAt(oldIndex);
+			_suspendChanged = false;
+			Insert(newIndex, col);
+		}
+
 		public new int RemoveAll(Predicate<RollColumn> match)
 		{
 			var result = base.RemoveAll(match);
