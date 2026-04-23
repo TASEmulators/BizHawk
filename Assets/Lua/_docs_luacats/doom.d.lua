@@ -16,7 +16,7 @@ doom = {}
 ---		local crossline_cb_id = doom.on_cross(function(line, thing)
 ---			console.log("line "..line.." crossed by mobj "..mobj);
 ---		end, "Cross notifier");
----@param luaf function
+---@param luaf fun(line: integer, thing: integer)
 ---@param name? string
 ---@return string
 function doom.on_cross(luaf, name) end
@@ -28,7 +28,7 @@ function doom.on_cross(luaf, name) end
 ---		local intercept_cb_id = doom.on_intercept(function(block)
 ---			console.log("intercept in block "..intercept);
 ---		end, "intercept notifier");
----@param luaf function
+---@param luaf fun(x: integer, y: integer, isaline: 0|1)
 ---@param name? string
 ---@return string
 function doom.on_intercept(luaf, name) end
@@ -40,7 +40,7 @@ function doom.on_intercept(luaf, name) end
 ---		local rngcall_cb_id = doom.on_prandom(function(pr_class)
 ---			console.log("RNG advanced (class-"..pr_class.." caller)");
 ---		end, "RNG notifier");
----@param luaf function
+---@param luaf fun(pr_class: integer)
 ---@param name? string
 ---@return string
 function doom.on_prandom(luaf, name) end
@@ -52,7 +52,7 @@ function doom.on_prandom(luaf, name) end
 ---		local usesuccess_cb_id = doom.on_use(function(line, thing)
 ---			console.log("line "..line.." used by mobj "..mobj);
 ---		end, "Use notifier");
----@param luaf function
+---@param luaf fun(line: integer, thing: integer)
 ---@param name? string
 ---@return string
 function doom.on_use(luaf, name) end

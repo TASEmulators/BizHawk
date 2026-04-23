@@ -15,25 +15,25 @@ function comm.getluafunctionslist() end
 
 ---makes a HTTP GET request
 ---@param url string
----@return string
+---@return string?
 function comm.httpGet(url) end
 
 ---Gets HTTP GET URL
----@return string
+---@return string?
 function comm.httpGetGetUrl() end
 
 ---Gets HTTP POST URL
----@return string
+---@return string?
 function comm.httpGetPostUrl() end
 
 ---makes a HTTP POST request
 ---@param url string
 ---@param payload string
----@return string
+---@return string?
 function comm.httpPost(url, payload) end
 
 ---HTTP POST screenshot
----@return string
+---@return string?
 function comm.httpPostScreenshot() end
 
 ---Sets HTTP GET URL
@@ -49,18 +49,18 @@ function comm.httpSetPostUrl(url) end
 function comm.httpSetTimeout(timeout) end
 
 ---tests HTTP connections
----@return string
+---@return string?
 function comm.httpTest() end
 
 ---tests the HTTP GET connection
----@return string
+---@return string?
 function comm.httpTestGet() end
 
 ---Copy a section of the memory to a memory mapped file
 ---@param mmf_filename string
 ---@param addr integer
 ---@param length integer
----@param domain string
+---@param domain? string
 ---@return integer
 function comm.mmfCopyFromMemory(mmf_filename, addr, length, domain) end
 
@@ -68,7 +68,7 @@ function comm.mmfCopyFromMemory(mmf_filename, addr, length, domain) end
 ---@param mmf_filename string
 ---@param addr integer
 ---@param length integer
----@param domain string
+---@param domain? string
 function comm.mmfCopyToMemory(mmf_filename, addr, length, domain) end
 
 ---Gets the filename for the screenshots
@@ -84,7 +84,7 @@ function comm.mmfRead(mmf_filename, expectedSize) end
 ---Reads bytes from a memory mapped file
 ---@param mmf_filename string
 ---@param expectedSize integer
----@return table # Zero-indexed array.
+---@return byte[] # Zero-indexed array.
 function comm.mmfReadBytes(mmf_filename, expectedSize) end
 
 ---Saves screenshot to memory mapped file
@@ -103,7 +103,7 @@ function comm.mmfWrite(mmf_filename, outputString) end
 
 ---Write bytes to a memory mapped file
 ---@param mmf_filename string
----@param byteArray table
+---@param byteArray byte[]
 ---@return integer
 function comm.mmfWriteBytes(mmf_filename, byteArray) end
 
@@ -112,11 +112,11 @@ function comm.mmfWriteBytes(mmf_filename, byteArray) end
 function comm.socketServerGetInfo() end
 
 ---returns the IP address of the Lua socket server
----@return string
+---@return string?
 function comm.socketServerGetIp() end
 
 ---returns the port of the Lua socket server
----@return integer
+---@return integer?
 function comm.socketServerGetPort() end
 
 ---socketServerIsConnected
@@ -124,15 +124,15 @@ function comm.socketServerGetPort() end
 function comm.socketServerIsConnected() end
 
 ---Receives a message from the Socket server. Since BizHawk 2.6.2, all responses must be of the form $"{msg.Length:D} {msg}" i.e. prefixed with the length in base-10 and a space.
----@return string
+---@return string?
 function comm.socketServerResponse() end
 
 ---sends a screenshot to the Socket server
----@return string
+---@return string?
 function comm.socketServerScreenShot() end
 
 ---sends a screenshot to the Socket server and retrieves the response
----@return string
+---@return string?
 function comm.socketServerScreenShotResponse() end
 
 ---sends a string to the Socket server
@@ -141,7 +141,7 @@ function comm.socketServerScreenShotResponse() end
 function comm.socketServerSend(SendString) end
 
 ---sends bytes to the Socket server
----@param byteArray table
+---@param byteArray byte[]
 ---@return integer
 function comm.socketServerSendBytes(byteArray) end
 

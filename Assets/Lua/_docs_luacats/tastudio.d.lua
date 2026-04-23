@@ -9,7 +9,7 @@ error("This is a definition file for Lua Language Server and not a usable script
 ---@class tastudio
 tastudio = {}
 
----Extends the piano roll with an extra column for data visualisation. The text parameter is used as the column header, while the name parameter is used to identify the column for `onqueryitem*` callbacks. And width is obviously the width (in dp).
+---Extends the piano roll with an extra column for data visualisation. The text parameter is used as the column header, while the name parameter is used to identify the column for `onqueryitem*` callbacks. And width is obviously the width (in dp). If you have multiple input rolls, rollIndex can specify which one it should be visible in.
 ---
 ---Example:
 ---
@@ -24,7 +24,8 @@ tastudio = {}
 ---@param name string
 ---@param text string
 ---@param width integer
-function tastudio.addcolumn(name, text, width) end
+---@param rollIndex? integer
+function tastudio.addcolumn(name, text, width, rollIndex) end
 
 ---Applies the queued edit operations to the TAStudio project as a single batch. (For technical reasons, the queue is shared between all loaded scripts.)
 ---
@@ -50,13 +51,6 @@ function tastudio.clearIconCache() end
 ---		tastudio.applyinputchanges(); -- does nothing
 function tastudio.clearinputchanges() end
 
----creates a new branch at the current frame
----
----Example:
----
----		tastudio.createnewbranch();
-function tastudio.createnewbranch() end
-
 ---returns whether or not tastudio is currently engaged (active)
 ---
 ---Example:
@@ -74,7 +68,7 @@ function tastudio.engaged() end
 ---		local marker_label = tastudio.getmarker(tastudio.find_marker_on_or_before(100));
 ---@param frame integer
 ---@param branchID? string
----@return integer
+---@return integer?
 function tastudio.find_marker_on_or_before(frame, branchID) end
 
 ---Finds the branch with the given UUID (0-indexed). Returns nil if not found.
@@ -83,7 +77,7 @@ function tastudio.find_marker_on_or_before(frame, branchID) end
 ---
 ---		tastudio.setbranchtext("New label", tastudio.get_branch_index_by_id(branch_id));
 ---@param id string
----@return integer
+---@return integer?
 function tastudio.get_branch_index_by_id(id) end
 
 ---Returns a list of all the frames which have markers on them. If branchID is specified, instead returns the frames which have markers in that branch.
@@ -92,7 +86,7 @@ function tastudio.get_branch_index_by_id(id) end
 ---
 ---		local marker_label = tastudio.getmarker(tastudio.get_frames_with_markers()[2]);
 ---@param branchID? string
----@return table
+---@return integer[]
 function tastudio.get_frames_with_markers(branchID) end
 
 ---Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch
@@ -100,7 +94,7 @@ function tastudio.get_frames_with_markers(branchID) end
 ---Example:
 ---
 ---	local nltasget = tastudio.getbranches( );
----@return table # Zero-indexed array.
+---@return { Id: string, Frame: integer, Text: string }[] # Zero-indexed array.
 function tastudio.getbranches() end
 
 ---Gets the controller state of the given frame with the given branch identifier
@@ -110,7 +104,7 @@ function tastudio.getbranches() end
 ---	local nltasget = tastudio.getbranchinput( "97021544-2454-4483-824f-47f75e7fcb6a", 500 );
 ---@param branchId string
 ---@param frame integer
----@return table
+---@return table<string, boolean|integer>
 function tastudio.getbranchinput(branchId, frame) end
 
 ---Returns the label of the marker on the given frame. This may be an empty string. If that frame doesn't have a marker (or TAStudio isn't running), returns nil. If branchID is specified, searches the markers in that branch instead.
@@ -120,7 +114,7 @@ function tastudio.getbranchinput(branchId, frame) end
 ---	local sttasget = tastudio.getmarker( 500 );
 ---@param frame integer
 ---@param branchID? string
----@return string
+---@return string?
 function tastudio.getmarker(frame, branchID) end
 
 ---returns whether or not TAStudio is in recording mode
@@ -146,7 +140,7 @@ function tastudio.getseekframe() end
 ---Example:
 ---
 ---	local nltasget = tastudio.getselection( );
----@return table # Zero-indexed array.
+---@return integer[] # Zero-indexed array.
 function tastudio.getselection() end
 
 ---Returns whether or not the given frame has a savestate associated with it
@@ -166,7 +160,7 @@ function tastudio.hasstate(frame) end
 ---
 ---	local botasisl = tastudio.islag( 500 );
 ---@param frame integer
----@return boolean
+---@return boolean?
 function tastudio.islag(frame) end
 
 ---Loads a branch at the given index, if a branch at that index exists.
@@ -184,7 +178,7 @@ function tastudio.loadbranch(index) end
 ---	tastudio.onbranchload( function( currentindex )
 ---		console.log( "Called whenever a branch is loaded." );
 ---	end );
----@param luaf function
+---@param luaf fun(branch: integer)
 ---@param name? string
 ---@return string
 function tastudio.onbranchload(luaf, name) end
@@ -194,7 +188,7 @@ function tastudio.onbranchload(luaf, name) end
 ---Example:
 ---
 ---		tastudio.onbranchremove(function(branch_index) console.writeline(branch_index); end);
----@param luaf function
+---@param luaf fun(branch: integer)
 ---@param name? string
 ---@return string
 function tastudio.onbranchremove(luaf, name) end
@@ -204,7 +198,7 @@ function tastudio.onbranchremove(luaf, name) end
 ---Example:
 ---
 ---		tastudio.onbranchsave(function(branch_index) console.writeline(branch_index); end);
----@param luaf function
+---@param luaf fun(branch: integer)
 ---@param name? string
 ---@return string
 function tastudio.onbranchsave(luaf, name) end
@@ -216,7 +210,7 @@ function tastudio.onbranchsave(luaf, name) end
 ---	tastudio.ongreenzoneinvalidated( function( currentindex )
 ---		console.log( "Called whenever the greenzone is invalidated." );
 ---	end );
----@param luaf function
+---@param luaf fun(frame: integer)
 ---@param name? string
 ---@return string
 function tastudio.ongreenzoneinvalidated(luaf, name) end
@@ -228,7 +222,7 @@ function tastudio.ongreenzoneinvalidated(luaf, name) end
 ---	tastudio.onqueryitembg( function( currentindex, itemname )
 ---		console.log( "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)" );
 ---	end );
----@param luaf function
+---@param luaf fun(index: integer, column: string): color?
 ---@param name? string
 ---@return string
 function tastudio.onqueryitembg(luaf, name) end
@@ -240,7 +234,7 @@ function tastudio.onqueryitembg(luaf, name) end
 ---	tastudio.onqueryitemicon( function( currentindex, itemname )
 ---		console.log( "called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)" );
 ---	end );
----@param luaf function
+---@param luaf fun(index: integer, column: string): string?
 ---@param name? string
 ---@return string
 function tastudio.onqueryitemicon(luaf, name) end
@@ -252,7 +246,7 @@ function tastudio.onqueryitemicon(luaf, name) end
 ---	tastudio.onqueryitemtext( function( currentindex, itemname )
 ---		console.log( "called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)" );
 ---	end );
----@param luaf function
+---@param luaf fun(index: integer, column: string): string?
 ---@param name? string
 ---@return string
 function tastudio.onqueryitemtext(luaf, name) end
@@ -289,7 +283,7 @@ function tastudio.setlag(frame, value) end
 ---
 ---	tastudio.setmarker( 500, "Some message" );
 ---@param frame integer
----@param message? string | number
+---@param message? string|number
 function tastudio.setmarker(frame, message) end
 
 ---Seeks the given frame (a number) or marker (a string)
@@ -297,7 +291,7 @@ function tastudio.setmarker(frame, message) end
 ---Example:
 ---
 ---	tastudio.setplayback( 1500 );
----@param frame any
+---@param frame integer|string
 function tastudio.setplayback(frame) end
 
 ---sets the recording mode on/off depending on the parameter

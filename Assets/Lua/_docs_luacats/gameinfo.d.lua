@@ -21,7 +21,7 @@ function gameinfo.getboardtype() end
 ---Example:
 ---
 ---	local nlgamget = gameinfo.getoptions( );
----@return table
+---@return table<string, string>
 function gameinfo.getoptions() end
 
 ---returns the hash of the currently loaded rom, if a rom is loaded
@@ -45,7 +45,7 @@ function gameinfo.getromname() end
 ---Example:
 ---
 ---	local stgamget = gameinfo.getstatus( );
----@return string
+---@return string?
 function gameinfo.getstatus() end
 
 ---returns whether or not the currently loaded rom is in the game database

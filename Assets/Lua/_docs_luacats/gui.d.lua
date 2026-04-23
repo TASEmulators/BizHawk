@@ -13,7 +13,7 @@ gui = {}
 ---Example:
 ---
 ---	gui.addmessage( "Some message" );
----@param message string | number
+---@param message string|number
 function gui.addmessage(message) end
 
 ---clears all lua drawn graphics from the screen
@@ -47,7 +47,7 @@ function gui.cleartext() end
 ---@param height integer
 ---@param x? integer
 ---@param y? integer
----@return table
+---@return LuaCanvas
 function gui.createcanvas(width, height, x, y) end
 
 ---Sets the default background color to use in drawing methods, transparent by default
@@ -99,7 +99,7 @@ function gui.drawAxis(x, y, size, color, surfaceName) end
 ---Example:
 ---
 ---	gui.drawBezier( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );
----@param points table
+---@param points drawingpoint[]
 ---@param color color
 ---@param surfaceName? surface
 function gui.drawBezier(points, color, surfaceName) end
@@ -231,7 +231,7 @@ function gui.drawPixel(x, y, color, surfaceName) end
 ---Example:
 ---
 ---		gui.drawPolygon({ { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF);
----@param points table
+---@param points drawingpoint[]
 ---@param offsetX? integer
 ---@param offsetY? integer
 ---@param line? color
@@ -260,7 +260,7 @@ function gui.drawRectangle(x, y, width, height, line, background, surfaceName) e
 ---	gui.drawString( 16, 32, "Some message", 0x7F0000FF, 0x00007FFF, 8, "Arial Narrow", "bold", "center", "middle" );
 ---@param x integer
 ---@param y integer
----@param message string | number
+---@param message string|number
 ---@param forecolor? color
 ---@param backcolor? color
 ---@param fontsize? integer
@@ -278,7 +278,7 @@ function gui.drawString(x, y, message, forecolor, backcolor, fontsize, fontfamil
 ---	gui.drawText( 16, 32, "Some message", 0x7F0000FF, 0x00007FFF, 8, "Arial Narrow", "bold", "center", "middle" );
 ---@param x integer
 ---@param y integer
----@param message string | number
+---@param message string|number
 ---@param forecolor? color
 ---@param backcolor? color
 ---@param fontsize? integer
@@ -296,7 +296,7 @@ function gui.drawText(x, y, message, forecolor, backcolor, fontsize, fontfamily,
 ---	gui.pixelText( 16, 32, "Some message", 0x7F0000FF, 0x00007FFF, "Arial Narrow" );
 ---@param x integer
 ---@param y integer
----@param message string | number
+---@param message string|number
 ---@param forecolor? color
 ---@param backcolor? color
 ---@param fontfamily? string
@@ -310,7 +310,7 @@ function gui.pixelText(x, y, message, forecolor, backcolor, fontfamily, surfaceN
 ---	gui.text( 16, 32, "Some message", 0x7F0000FF, "bottomleft" );
 ---@param x integer
 ---@param y integer
----@param message string | number
+---@param message string|number
 ---@param forecolor? color
 ---@param anchor? string
 function gui.text(x, y, message, forecolor, anchor) end

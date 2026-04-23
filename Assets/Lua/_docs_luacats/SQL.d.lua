@@ -33,7 +33,7 @@ function SQL.opendatabase(name) end
 ---
 ---	local obSQLrea = SQL.readcommand( "SELECT * FROM eg_tab WHERE eg_tab_id = 1;" );
 ---@param query? string
----@return any
+---@return string|table<string, any>
 function SQL.readcommand(query) end
 
 ---Runs a SQLite write command which includes CREATE,INSERT, UPDATE. Ex: create TABLE rewards (ID integer  PRIMARY KEY, action VARCHAR(20)) 
