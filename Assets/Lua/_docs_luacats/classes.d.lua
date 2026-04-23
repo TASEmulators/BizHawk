@@ -12,9 +12,14 @@ error("This is a definition file for Lua Language Server and not a usable script
 --- - String in the format `"#RRGGBB"` or `"#AARRGGBB"`
 --- - A CSS3/X11 color name e.g. `"blue"`, `"palegoldenrod"`
 --- - Color created with `forms.createcolor`
----@alias color integer | string | dotnetcolor
+---@alias color dotnetcolor | integer | string
 
 ---@alias surface
 ---| "emucore" # Draw on the emulated screen. Resolution depends on emulated system and game. Drawing is scaled with the rest of the display.
 ---| "client" # Draw on the BizHawk window. Resolution depends on the window size. Drawing is not scaled.
+
+---A two-element array containing a pair of X and Y coordinates
+---@alias drawingpoint integer[]
+
+---@alias byte integer
 

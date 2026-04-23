@@ -14,7 +14,7 @@ joypad = {}
 ---
 ---	local nljoyget = joypad.get( 1 );
 ---@param controller? integer
----@return table
+---@return table<string, boolean|integer>
 function joypad.get(controller) end
 
 ---returns a lua table of any controller buttons currently pressed by the user
@@ -23,7 +23,7 @@ function joypad.get(controller) end
 ---
 ---	local nljoyget = joypad.getimmediate( );
 ---@param controller? integer
----@return table
+---@return table<string, boolean|integer>
 function joypad.getimmediate(controller) end
 
 ---returns a lua table of the controller buttons pressed, including ones pressed by the current movie. If supplied, it will only return a table of buttons for the given controller
@@ -32,7 +32,7 @@ function joypad.getimmediate(controller) end
 ---
 ---	local nljoyget = joypad.getwithmovie( 1 );
 ---@param controller? integer
----@return table
+---@return table<string, boolean|integer>
 function joypad.getwithmovie(controller) end
 
 ---sets the given buttons to their provided values for the current frame
@@ -40,7 +40,7 @@ function joypad.getwithmovie(controller) end
 ---Example:
 ---
 ---	joypad.set( { ["Left"] = true, [ "A" ] = true, [ "B" ] = true } );
----@param buttons table
+---@param buttons table<string, boolean>
 ---@param controller? integer
 function joypad.set(buttons, controller) end
 
@@ -49,7 +49,7 @@ function joypad.set(buttons, controller) end
 ---Example:
 ---
 ---	joypad.setanalog( { [ "Tilt X" ] = -63, [ "Tilt Y" ] = 127 } );
----@param controls table
+---@param controls table<string, integer|"">
 ---@param controller? integer
 function joypad.setanalog(controls, controller) end
 

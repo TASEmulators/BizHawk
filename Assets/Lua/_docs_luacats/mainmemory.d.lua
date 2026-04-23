@@ -32,7 +32,7 @@ function mainmemory.getname() end
 ---	local bytes = mainmemory.read_bytes_as_array(0x100, 30);
 ---@param addr integer
 ---@param length integer
----@return table
+---@return byte[]
 function mainmemory.read_bytes_as_array(addr, length) end
 
 ---Reads `length` bytes starting at `addr` into a binary string. This string can be read with functions such as `string.byte` and `string.unpack`. This string can contain any bytes including null bytes, and is not suitable for display as text.
@@ -56,7 +56,7 @@ function mainmemory.read_bytes_as_binary_string(addr, length) end
 ---	local bytes = mainmemory.read_bytes_as_dict(0x100, 30);
 ---@param addr integer
 ---@param length integer
----@return table # Zero-indexed array.
+---@return table<integer, byte>
 function mainmemory.read_bytes_as_dict(addr, length) end
 
 ---read signed 2 byte value, big endian
@@ -198,7 +198,7 @@ function mainmemory.readbyte(addr) end
 ---@deprecated
 ---@param addr integer
 ---@param length integer
----@return table # Zero-indexed array.
+---@return byte[] # Zero-indexed array.
 function mainmemory.readbyterange(addr, length) end
 
 ---Reads the given address as a 32-bit float value from the main memory domain with th e given endian
@@ -217,7 +217,7 @@ function mainmemory.readfloat(addr, bigendian) end
 ---
 ---	mainmemory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });
 ---@param addr integer
----@param bytes table
+---@param bytes byte[]
 function mainmemory.write_bytes_as_array(addr, bytes) end
 
 ---Writes bytes from a binary string to `addr`. The string can be created with functions such as `string.pack`, and can contain any bytes including null bytes. This is not a text encoding function.
@@ -236,7 +236,7 @@ function mainmemory.write_bytes_as_binary_string(addr, bytes) end
 ---Example:
 ---
 ---	mainmemory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });
----@param addrMap table Zero-indexed array.
+---@param addrMap table<integer, byte>
 function mainmemory.write_bytes_as_dict(addrMap) end
 
 ---write signed 2 byte value, big endian
@@ -376,7 +376,7 @@ function mainmemory.writebyte(addr, value) end
 
 ---Writes the given values to the given addresses as unsigned bytes
 ---@deprecated
----@param memoryblock table Zero-indexed array.
+---@param memoryblock table<integer, byte>
 function mainmemory.writebyterange(memoryblock) end
 
 ---Writes the given 32-bit float value to the given address and endian

@@ -69,7 +69,7 @@ function client.closerom() end
 ---
 ---	local nlclicre = client.createinstance( "objectname" );
 ---@param name string
----@return table
+---@return table<string, function>?
 function client.createinstance(name) end
 
 ---sets whether or not on screen messages will display
@@ -136,7 +136,7 @@ function client.get_lua_engine() end
 ---Example:
 ---
 ---	local nlcliget = client.getavailabletools( );
----@return table # Zero-indexed array.
+---@return string[] # Zero-indexed array.
 function client.getavailabletools() end
 
 ---gets the current config settings object
@@ -179,7 +179,7 @@ function client.gettargetscanlineintensity() end
 ---
 ---	local nlcliget = client.gettool( "Tool name" );
 ---@param name string
----@return table
+---@return table<string, function>?
 function client.gettool(name) end
 
 ---Returns the current stable BizHawk version
@@ -197,14 +197,6 @@ function client.getversion() end
 ---	local incliget = client.getwindowsize( );
 ---@return integer
 function client.getwindowsize() end
-
----Enters/exits turbo mode and disables/enables most emulator updates.
----
----Example:
----
----	client.invisibleemulation( true );
----@param invisible boolean
-function client.invisibleemulation(invisible) end
 
 ---Returns true iff the frontend is rewinding.
 ---
@@ -371,11 +363,6 @@ function client.screenshottoclipboard() end
 ---@return integer
 function client.screenwidth() end
 
----Does nothing. Use the pause/unpause functions instead and a loop that waits for the desired frame.
----@deprecated
----@param frame integer
-function client.seekframe(frame) end
-
 ---Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
 ---
 ---Example:
@@ -430,6 +417,17 @@ function client.settargetscanlineintensity(val) end
 ---@param size integer
 function client.setwindowsize(size) end
 
+---Tell the client to display a frame from the future, instead of the current frame. The given lua function will be called before emulating each future frame. It can have 1 parameter, which is the number of frames into the future that have already been emulated. Return false to emulate another future frame. When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displayed. Unregister the callback with event.unregister____ to disable future frame display. No more than `maxFrames` future frames will be emulated. Useful to avoid freezing the client UI in case of accidentally never returning true from the callback. Your timeout can be as low as 1 frame or as high as 32767 frames.
+---
+---Example:
+---
+---	client.show_future(function(frame) return frame == 1 end, 1)
+---@param luaf fun(frame: integer): boolean
+---@param maxFrames integer
+---@param name? string
+---@return string
+function client.show_future(luaf, maxFrames, name) end
+
 ---sleeps for n milliseconds
 ---
 ---Example:
@@ -460,7 +458,7 @@ function client.togglepause() end
 ---	local newY = client.transform_point( 32, 100 ).y;
 ---@param x integer
 ---@param y integer
----@return table
+---@return { x: integer, y: integer }
 function client.transformPoint(x, y) end
 
 ---Unpauses the emulator. Note that the user can pause again before the next frame, either with the pause key or by releasing frame advance. If you want to force emulation to continue, put this and emu.yield (not frameadvance) inside a loop that runs until the desired frame.

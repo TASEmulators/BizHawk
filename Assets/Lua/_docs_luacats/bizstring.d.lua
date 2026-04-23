@@ -25,7 +25,7 @@ function bizstring.binary(num) end
 ---	if ( bizstring.contains( "Some string", "Some") ) then
 ---		console.log( "Returns whether or not str contains str2" );
 ---	end;
----@param str string
+---@param str? string
 ---@param str2 string
 ---@return boolean
 function bizstring.contains(str, str2) end
@@ -35,7 +35,7 @@ function bizstring.contains(str, str2) end
 ---Example:
 ---
 ---		local str = bizstring.decode(memory.read_bytes_as_array(0x1234, 0x20, "WRAM"), "shift_jis");
----@param bytes table
+---@param bytes byte[]
 ---@param encoding? string Defaults to `"utf-8"`
 ---@return string
 function bizstring.decode(bytes, encoding) end
@@ -47,7 +47,7 @@ function bizstring.decode(bytes, encoding) end
 ---		local bytes = bizstring.encode("こんにちは", "shift_jis");
 ---@param str string
 ---@param encoding? string Defaults to `"utf-8"`
----@return table
+---@return byte[]
 function bizstring.encode(str, encoding) end
 
 ---Returns whether str ends wth str2
@@ -57,7 +57,7 @@ function bizstring.encode(str, encoding) end
 ---	if ( bizstring.endswith( "Some string", "string") ) then
 ---		console.log( "Returns whether str ends wth str2" );
 ---	end;
----@param str string
+---@param str? string
 ---@param str2 string
 ---@return boolean
 function bizstring.endswith(str, str2) end
@@ -118,10 +118,10 @@ function bizstring.pad_start(str, length, pad_char) end
 ---Example:
 ---
 ---	local stbizrem = bizstring.remove( "Some string", 4, 5 );
----@param str string
+---@param str? string
 ---@param position integer
 ---@param count integer
----@return string
+---@return string?
 function bizstring.remove(str, position, count) end
 
 ---Returns a string that replaces all occurrences of str2 in str1 with the value of replace
@@ -129,10 +129,10 @@ function bizstring.remove(str, position, count) end
 ---Example:
 ---
 ---	local stbizrep = bizstring.replace( "Some string", "Some", "Replaced" );
----@param str string
+---@param str? string
 ---@param str2 string
----@param replace string
----@return string
+---@param replace? string
+---@return string?
 function bizstring.replace(str, str2, replace) end
 
 ---Splits str into a Lua-style array using the given separator (consecutive separators in str will NOT create empty entries in the array). If the separator is not a string exactly one char long, ',' will be used.
@@ -140,9 +140,9 @@ function bizstring.replace(str, str2, replace) end
 ---Example:
 ---
 ---	local nlbizspl = bizstring.split( "Some, string", ", " );
----@param str string
+---@param str? string
 ---@param separator string
----@return table
+---@return string[]
 function bizstring.split(str, separator) end
 
 ---Returns whether str starts with str2
@@ -152,7 +152,7 @@ function bizstring.split(str, separator) end
 ---	if ( bizstring.startswith( "Some string", "Some") ) then
 ---		console.log( "Returns whether str starts with str2" );
 ---	end;
----@param str string
+---@param str? string
 ---@param str2 string
 ---@return boolean
 function bizstring.startswith(str, str2) end
@@ -162,10 +162,10 @@ function bizstring.startswith(str, str2) end
 ---Example:
 ---
 ---	local stbizsub = bizstring.substring( "Some string", 6, 3 );
----@param str string
+---@param str? string
 ---@param position integer
 ---@param length integer
----@return string
+---@return string?
 function bizstring.substring(str, position, length) end
 
 ---Returns an lowercase version of the given string
@@ -173,8 +173,8 @@ function bizstring.substring(str, position, length) end
 ---Example:
 ---
 ---	local stbiztol = bizstring.tolower( "Some string" );
----@param str string
----@return string
+---@param str? string
+---@return string?
 function bizstring.tolower(str) end
 
 ---Returns an uppercase version of the given string
@@ -182,8 +182,8 @@ function bizstring.tolower(str) end
 ---Example:
 ---
 ---	local stbiztou = bizstring.toupper( "Some string" );
----@param str string
----@return string
+---@param str? string
+---@return string?
 function bizstring.toupper(str) end
 
 ---returns a string that trims whitespace on the left and right ends of the string
@@ -191,7 +191,7 @@ function bizstring.toupper(str) end
 ---Example:
 ---
 ---	local stbiztri = bizstring.trim( "Some trim string	 " );
----@param str string
----@return string
+---@param str? string
+---@return string?
 function bizstring.trim(str) end
 

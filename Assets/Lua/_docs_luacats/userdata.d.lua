@@ -33,7 +33,7 @@ function userdata.containskey(key) end
 ---
 ---	local obuseget = userdata.get( "Unique key" );
 ---@param key string
----@return any
+---@return (string|number|boolean)?
 function userdata.get(key) end
 
 ---returns a list-like table of valid keys
@@ -41,7 +41,7 @@ function userdata.get(key) end
 ---Example:
 ---
 ---	console.writeline(#userdata.get_keys());
----@return table
+---@return string[]
 function userdata.get_keys() end
 
 ---remove the data with the given key. Returns true if the element is successfully found and removed; otherwise, false.
@@ -61,6 +61,6 @@ function userdata.remove(key) end
 ---
 ---	userdata.set("Unique key", "Current key data");
 ---@param name string
----@param value any
+---@param value? string|number|boolean
 function userdata.set(name, value) end
 

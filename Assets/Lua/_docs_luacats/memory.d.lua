@@ -30,7 +30,7 @@ function memory.getcurrentmemorydomainsize() end
 ---Example:
 ---
 ---	local nlmemget = memory.getmemorydomainlist();
----@return table # Zero-indexed array.
+---@return string[] # Zero-indexed array.
 function memory.getmemorydomainlist() end
 
 ---Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size
@@ -61,7 +61,7 @@ function memory.hash_region(addr, count, domain) end
 ---@param addr integer
 ---@param length integer
 ---@param domain? string
----@return table
+---@return byte[]
 function memory.read_bytes_as_array(addr, length, domain) end
 
 ---Reads `length` bytes starting at `addr` into a binary string. This string can be read with functions such as `string.byte` and `string.unpack`. This string can contain any bytes including null bytes, and is not suitable for display as text.
@@ -87,7 +87,7 @@ function memory.read_bytes_as_binary_string(addr, length, domain) end
 ---@param addr integer
 ---@param length integer
 ---@param domain? string
----@return table # Zero-indexed array.
+---@return table<integer, byte>
 function memory.read_bytes_as_dict(addr, length, domain) end
 
 ---read signed 2 byte value, big endian
@@ -245,7 +245,7 @@ function memory.readbyte(addr, domain) end
 ---@param addr integer
 ---@param length integer
 ---@param domain? string
----@return table # Zero-indexed array.
+---@return byte[] # Zero-indexed array.
 function memory.readbyterange(addr, length, domain) end
 
 ---Reads the given address as a 32-bit float value from the main memory domain with th e given endian
@@ -276,7 +276,7 @@ function memory.usememorydomain(domain) end
 ---
 ---	memory.write_bytes_as_array(0x100, { 0xAB, 0x12, 0xCD, 0x34 });
 ---@param addr integer
----@param bytes table
+---@param bytes byte[]
 ---@param domain? string
 function memory.write_bytes_as_array(addr, bytes, domain) end
 
@@ -297,7 +297,7 @@ function memory.write_bytes_as_binary_string(addr, bytes, domain) end
 ---Example:
 ---
 ---	memory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });
----@param addrMap table Zero-indexed array.
+---@param addrMap table<integer, byte>
 ---@param domain? string
 function memory.write_bytes_as_dict(addrMap, domain) end
 
@@ -453,7 +453,7 @@ function memory.writebyte(addr, value, domain) end
 
 ---Writes the given values to the given addresses as unsigned bytes
 ---@deprecated
----@param memoryblock table Zero-indexed array.
+---@param memoryblock table<integer, byte>
 ---@param domain? string
 function memory.writebyterange(memoryblock, domain) end
 

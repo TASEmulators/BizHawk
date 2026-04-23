@@ -21,7 +21,7 @@ function movie.filename() end
 ---Example:
 ---
 ---	local nlmovget = movie.getcomments( );
----@return table # Zero-indexed array.
+---@return string[] # Zero-indexed array.
 function movie.getcomments() end
 
 ---If a movie is loaded, gets the frames per second used by the movie to determine the movie length time
@@ -37,7 +37,7 @@ function movie.getfps() end
 ---Example:
 ---
 ---	local nlmovget = movie.getheader( );
----@return table
+---@return table<string, string>
 function movie.getheader() end
 
 ---Returns a table of buttons pressed on a given frame of the loaded movie
@@ -47,7 +47,7 @@ function movie.getheader() end
 ---	local nlmovget = movie.getinput( 500 );
 ---@param frame integer
 ---@param controller? integer
----@return table
+---@return (table<string, boolean|integer>)?
 function movie.getinput(frame, controller) end
 
 ---Returns the input of a given frame of the loaded movie in a raw inputlog string
@@ -92,7 +92,7 @@ function movie.getrerecordcounting() end
 ---Example:
 ---
 ---	local nlmovget = movie.getsubtitles( );
----@return table # Zero-indexed array.
+---@return string[] # Zero-indexed array.
 function movie.getsubtitles() end
 
 ---Returns true if a movie is loaded in memory (play, record, or finished modes), false if not (inactive mode)

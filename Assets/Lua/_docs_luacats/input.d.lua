@@ -16,7 +16,7 @@ input = {}
 ---	local is_b_down = buttons_down["B"];
 ---	if is_b_down and not was_b_down then console.writeline("B pressed"); end
 ---	was_b_down = is_b_down;
----@return table
+---@return table<string, boolean>
 function input.get() end
 
 ---Returns a dict-like table of (host) axis names and their state. Axes may not appear if they have never been seen with a value other than `0` (for example, if the gamepad has been set down on a table since launch, or if it was recently reconnected). Includes mouse cursor position axes, but not mouse wheel rotation. Unlike `getmouse`, these have the names `"WMouse X"` and `"WMouse Y"`.
@@ -25,7 +25,7 @@ function input.get() end
 ---
 ---	local axis_values = input.get_pressed_axes();
 ---	if axis_values["X1 RightThumbY Axis"] < -8000 then console.writeline("LStick is down"); end
----@return table
+---@return table<string, integer>
 function input.get_pressed_axes() end
 
 ---Returns a lua table of the mouse X/Y coordinates and button states. Table keys are X, Y, Left, Middle, Right, XButton1, XButton2, Wheel.
@@ -36,6 +36,6 @@ function input.get_pressed_axes() end
 ---	local is_m3_down = mouse_buttons_down["Middle"];
 ---	if is_m3_down and not was_m3_down then console.writeline("M3 pressed"); end
 ---	was_m3_down = is_m3_down;
----@return table
+---@return { X: integer, Y: integer, Wheel: integer, Left: boolean, Middle: boolean, Right: boolean, XButton1: boolean, XButton2: boolean }
 function input.getmouse() end
 

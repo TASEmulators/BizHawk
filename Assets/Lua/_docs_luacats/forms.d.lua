@@ -17,7 +17,7 @@ forms = {}
 ---		console.log( "adds the given lua function as a click event to the given control" );
 ---	end );
 ---@param handle integer
----@param clickEvent function
+---@param clickEvent fun()
 function forms.addclick(handle, clickEvent) end
 
 ---Creates a button control on the form at formHandle, returning an opaque handle to the new control. The button's label will be set to the value passed for the caption parameter. The callback passed for the clickEvent parameter will be invoked whenever the button is clicked. If the x and y parameters are both nil/unset, the control's Location property won't be set. If both are specified, the control will be positioned at (x, y) within the given form. If the width and height parameters are both nil/unset, the control will be the default size. If both are specified, the control will be that size.
@@ -26,8 +26,8 @@ function forms.addclick(handle, clickEvent) end
 ---
 ---		local button_handle = forms.button(form_handle, "Click me", function() console.writeline("boop"); end, 2, 48, 18, 24);
 ---@param formHandle integer
----@param caption string | number
----@param clickEvent function
+---@param caption string|number
+---@param clickEvent fun()
 ---@param x? integer
 ---@param y? integer
 ---@param width? integer
@@ -41,7 +41,7 @@ function forms.button(formHandle, caption, clickEvent, x, y, width, height) end
 ---
 ---		local checkbox_handle = forms.checkbox(form_handle, "Enable", 2, 48);
 ---@param formHandle integer
----@param caption string | number
+---@param caption string|number
 ---@param x? integer
 ---@param y? integer
 ---@return integer
@@ -135,7 +135,7 @@ function forms.drawAxis(componentHandle, x, y, size, color) end
 ---
 ---	forms.drawBezier( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );
 ---@param componentHandle integer
----@param points table
+---@param points drawingpoint[]
 ---@param color color
 function forms.drawBezier(componentHandle, points, color) end
 
@@ -257,7 +257,7 @@ function forms.drawPixel(componentHandle, x, y, color) end
 ---
 ---		forms.drawPolygon(picturebox_handle, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF);
 ---@param componentHandle integer
----@param points table
+---@param points drawingpoint[]
 ---@param x? integer
 ---@param y? integer
 ---@param line? color
@@ -286,7 +286,7 @@ function forms.drawRectangle(componentHandle, x, y, width, height, line, backgro
 ---@param componentHandle integer
 ---@param x integer
 ---@param y integer
----@param message string | number
+---@param message string|number
 ---@param forecolor? color
 ---@param backcolor? color
 ---@param fontsize? integer
@@ -304,7 +304,7 @@ function forms.drawString(componentHandle, x, y, message, forecolor, backcolor, 
 ---@param componentHandle integer
 ---@param x integer
 ---@param y integer
----@param message string | number
+---@param message string|number
 ---@param forecolor? color
 ---@param backcolor? color
 ---@param fontsize? integer
@@ -320,7 +320,7 @@ function forms.drawText(componentHandle, x, y, message, forecolor, backcolor, fo
 ---
 ---		local dropdown_handle = forms.dropdown(form_handle, { "item 1", "item 2" }, 2, 48, 18, 24);
 ---@param formHandle integer
----@param items table
+---@param items table<any, string>
 ---@param x? integer
 ---@param y? integer
 ---@param width? integer
@@ -382,7 +382,7 @@ function forms.ischecked(handle) end
 ---
 ---		local label_handle = forms.label(form_handle, "Caption", 2, 48, 18, 24);
 ---@param formHandle integer
----@param caption string | number
+---@param caption string|number
 ---@param x? integer
 ---@param y? integer
 ---@param width? integer
@@ -399,7 +399,7 @@ function forms.label(formHandle, caption, x, y, width, height, fixedWidth) end
 ---@param width? integer
 ---@param height? integer
 ---@param title? string
----@param onClose? function
+---@param onClose? fun()
 ---@return integer
 function forms.newform(width, height, title, onClose) end
 
@@ -468,7 +468,7 @@ function forms.setDefaultTextBackground(componentHandle, color) end
 ---
 ---		forms.setdropdownitems(dropdown_handle, { "item1", "item2" });
 ---@param handle integer
----@param items table
+---@param items table<any, string>
 ---@param alphabetize? boolean Defaults to `true`
 function forms.setdropdownitems(handle, items, alphabetize) end
 
@@ -489,7 +489,7 @@ function forms.setlocation(handle, x, y) end
 ---	forms.setproperty( 332, "Property", "Property value" );
 ---@param handle integer
 ---@param property string
----@param value any
+---@param value? any
 function forms.setproperty(handle, property, value) end
 
 ---Sets the size of a form (window) or a UI element.
@@ -508,7 +508,7 @@ function forms.setsize(handle, width, height) end
 ---
 ---	forms.settext( 332, "Caption" );
 ---@param handle integer
----@param caption string | number
+---@param caption string|number
 function forms.settext(handle, caption) end
 
 ---Creates a textbox control on the form at formHandle, returning an opaque handle to the new control. The initial value of the textbox will be set to the value passed for the caption parameter, or if nil/unset, left blank. If the x and y parameters are both nil/unset, the control's Location property won't be set. If both are specified, the control will be positioned at (x, y) within the given form. If the width and height parameters are both nil/unset, the control will be the default size. If both are specified, the control will be that size. Passing "HEX", "SIGNED", or "UNSIGNED" for the boxtype parameter will restrict the textbox to accepting valid numbers in that format. If nil/unset, any string value can be entered. If true is passed for the fixedWidth parameters, a monospace font will be used. If true is passed for the multiline parameter, the textbox will accept line breaks. Passing "Vertical", "Horizontal", "Both", or "None" for the scrollbars parameter will set whether the vertical scrollbar is visible for a multiline textbox, and also whether lines should wrap or remain in-line with a scrollbar.
@@ -517,7 +517,7 @@ function forms.settext(handle, caption) end
 ---
 ---		local textbox_handle = forms.textbox(form_handle, "Caption", 18, 24, "HEX", 2, 48, true, false, "Both");
 ---@param formHandle integer
----@param caption? string | number
+---@param caption? string|number
 ---@param width? integer
 ---@param height? integer
 ---@param boxtype? string

@@ -16,7 +16,7 @@ emu = {}
 ---	local obemudis = emu.disassemble( 0x8000 );
 ---@param pc integer
 ---@param name? string
----@return table
+---@return ({ disasm: string, length: integer })?
 function emu.disassemble(pc, name) end
 
 ---Sets the display vsync property of the emulator
@@ -72,7 +72,7 @@ function emu.getregister(name) end
 ---Example:
 ---
 ---	local nlemuget = emu.getregisters( );
----@return table
+---@return table<string, integer>
 function emu.getregisters() end
 
 ---Returns the ID string of the current core loaded. Note: No ROM loaded will return the string NULL
