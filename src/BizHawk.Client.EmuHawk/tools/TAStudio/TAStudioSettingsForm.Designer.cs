@@ -651,8 +651,7 @@
 			this.PatternCustomRadioButton.TabIndex = 412;
 			this.PatternCustomRadioButton.TabStop = true;
 			this.PatternCustomRadioButton.Text = "Custom";
-			this.toolTip1.SetToolTip(this.PatternCustomRadioButton, "Auto-fire buttons will use a custom pattern when the movie is extended by playing past the end of the movie." +
-        ".");
+			this.toolTip1.SetToolTip(this.PatternCustomRadioButton, "Auto-fire buttons will use a custom pattern on newly emulated frames past the end of the movie.");
 			this.PatternCustomRadioButton.UseVisualStyleBackColor = true;
 			this.PatternCustomRadioButton.CheckedChanged += new System.EventHandler(this.PatternCustomRadioButton_CheckedChanged);
 			// 
@@ -665,7 +664,7 @@
 			this.PatternHoldRadioButton.TabIndex = 410;
 			this.PatternHoldRadioButton.TabStop = true;
 			this.PatternHoldRadioButton.Text = "Hold";
-			this.toolTip1.SetToolTip(this.PatternHoldRadioButton, "Auto-fire buttons will be held when the movie is extended by playing past the end of the movie.");
+			this.toolTip1.SetToolTip(this.PatternHoldRadioButton, "Auto-fire buttons will be held on newly emulated frames past the end of the movie.");
 			this.PatternHoldRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// PatternAutoFireRadioButton
@@ -677,7 +676,7 @@
 			this.PatternAutoFireRadioButton.TabIndex = 411;
 			this.PatternAutoFireRadioButton.TabStop = true;
 			this.PatternAutoFireRadioButton.Text = "Auto-Fire";
-			this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, "Auto-fire buttons will alternate on/off when the movie is extended by playing past the end of the movie.");
+			this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, "Auto-fire buttons will alternate on/off on newly emulated frames past the end of the movie.");
 			this.PatternAutoFireRadioButton.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
