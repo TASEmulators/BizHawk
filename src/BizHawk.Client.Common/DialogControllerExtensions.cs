@@ -193,6 +193,20 @@ namespace BizHawk.Client.Common
 					initFileName: initFileName,
 					muteOverwriteWarning: muteOverwriteWarning);
 
+		/// <summary>Creates and shows a <c>System.Windows.Forms.FolderBrowserDialog</c> or equivalent</summary>
+		/// <param name="dialogParent">parent window</param>
+		/// <param name="initDir"><c>FolderBrowserDialog.SelectedPath</c>; pre-selected directory</param>
+		/// <param name="subtitle"><c>FolderBrowserDialog.Description</c></param>
+		/// <returns>filename of selected directory, or <see langword="null"/> iff cancelled</returns>
+		public static string? ShowFolderSelectDialog(
+			this IDialogParent dialogParent,
+			string? initDir = null,
+			string? subtitle = null)
+				=> dialogParent.DialogController.ShowFolderSelectDialog(
+					dialogParent: dialogParent,
+					initDir: initDir,
+					subtitle: subtitle);
+
 		/// <summary>
 		/// Creates and shows a <c>System.Windows.Forms.MessageBox</c> or equivalent without a parent, with the given <paramref name="text"/>,
 		/// and with the given <paramref name="caption"/> and <paramref name="icon"/> if they're specified.

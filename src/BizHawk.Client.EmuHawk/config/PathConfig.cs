@@ -10,7 +10,7 @@ using BizHawk.Emulation.Cores;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PathConfig : Form
+	public sealed partial class PathConfig : Form, IDialogParent
 	{
 		private readonly PathEntryCollection _pathEntries;
 
@@ -25,7 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			"%rom%",
 		};
 
+		public IDialogController DialogController { get; }
+
 		public PathConfig(
+			IDialogController dialogController,
 			PathEntryCollection pathEntries,
 			string sysID,
 			Action<string> setMovieBackupPath)
@@ -33,6 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			_pathEntries = pathEntries;
 			_setMovieBackupPath = setMovieBackupPath;
 			_sysID = sysID;
+			DialogController = dialogController;
 			InitializeComponent();
 			SpecialCommandsBtn.Image = Properties.Resources.Help;
 		}
@@ -181,31 +185,10 @@ namespace BizHawk.Client.EmuHawk
 				BrowseFolder(box, name, system: null);
 				return;
 			}
-
-			DialogResult result;
-			string selectedPath;
-			if (OSTailoredCode.IsUnixHost)
-			{
-				// FolderBrowserEx doesn't work in Mono for obvious reasons
-				using var f = new FolderBrowserDialog
-				{
-					Description = $"Set the directory for {name}",
-					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system),
-				};
-				result = f.ShowDialog();
-				selectedPath = f.SelectedPath;
-			}
-			else
-			{
-				using var f = new FolderBrowserEx
-				{
-					Description = $"Set the directory for {name}",
-					SelectedPath = _pathEntries.AbsolutePathFor(box.Text, system),
-				};
-				result = f.ShowDialog();
-				selectedPath = f.SelectedPath;
-			}
-			if (result.IsOk())
+			var selectedPath = this.ShowFolderSelectDialog(
+				initDir: _pathEntries.AbsolutePathFor(box.Text, system),
+				subtitle: $"Set the directory for {name}");
+			if (selectedPath is not null)
 			{
 				box.Text = _pathEntries.TryMakeRelative(selectedPath, system);
 			}
