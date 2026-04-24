@@ -33,3 +33,4 @@ M:System.Windows.Forms.Control.Focus;use Activate for Forms, or Select otherwise
 F:System.Windows.Forms.DataFormats.StringFormat;use UnicodeText
 F:System.Windows.Forms.DataFormats.Text;use UnicodeText
 F:System.Windows.Forms.TextDataFormat.Text;use UnicodeText
+P:System.Windows.Forms.ToolStripDropDownItem.HasDropDown;not supported under Mono (also, did you mean HasDropDownItems?)
