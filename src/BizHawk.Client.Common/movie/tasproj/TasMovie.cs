@@ -14,6 +14,10 @@ namespace BizHawk.Client.Common
 		public new const string Extension = "tasproj";
 		private IInputPollable _inputPollable;
 
+		private Func<int>/*?*/ _getCurrentFrame;
+
+		private IMemoryDomains/*?*/ _memDomains;
+
 		public const double CurrentVersion = 1.1;
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
@@ -39,9 +43,12 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException($"A core must be able to provide an {nameof(IInputPollable)} service");
 			}
 
+			_getCurrentFrame = () => emulator.Frame; // capture local I guess
 			_inputPollable = emulator.AsInputPollable();
+			_memDomains = emulator.HasMemoryDomains() ? emulator.AsMemoryDomains() : null;
 
 			TasStateManager ??= Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
+			SetUpPokeListener();
 			if (StartsFromSavestate)
 			{
 				TasStateManager.Engage(BinarySavestate);
@@ -56,6 +63,18 @@ namespace BizHawk.Client.Common
 			}
 
 			base.Attach(emulator);
+		}
+
+		private void FlagCheated()
+			=> TasStateManager.SetCheatedFlagStarting(_getCurrentFrame());
+
+		public void SetUpPokeListener()
+		{
+			if (_memDomains is not null) foreach (var domain in _memDomains)
+			{
+				domain.Poked -= FlagCheated;
+				domain.Poked += FlagCheated;
+			}
 		}
 
 		public override bool StartsFromSavestate
@@ -99,9 +118,11 @@ namespace BizHawk.Client.Common
 					}
 				}
 
+				var cheated = TasStateManager.HasCheatedState(index);
 				return new TasMovieRecord
 				{
-					HasState = TasStateManager.HasState(index),
+					Cheated = cheated,
+					HasState = cheated || TasStateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = lagged,
 					WasLagged = LagLog.History(lagIndex),
