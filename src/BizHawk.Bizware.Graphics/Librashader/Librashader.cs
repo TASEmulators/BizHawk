@@ -3,7 +3,7 @@ using System.Text;
 
 using BizHawk.Common;
 
-namespace BizHawk.Client.Common.Filters
+namespace BizHawk.Bizware.Graphics
 {
 	public static unsafe class Librashader
 	{
