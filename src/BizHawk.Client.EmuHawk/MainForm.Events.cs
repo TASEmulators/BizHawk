@@ -787,7 +787,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(Config.PathEntries, Game.System, newPath => MovieSession.BackupDirectory = newPath);
+			using PathConfig form = new(
+				DialogController,
+				Config.PathEntries,
+				sysID: Game.System,
+				newPath => MovieSession.BackupDirectory = newPath);
 			if (this.ShowDialogWithTempMute(form).IsOk()) AddOnScreenMessage("Path settings saved");
 		}
 

@@ -4563,6 +4563,30 @@ namespace BizHawk.Client.EmuHawk
 			return result.IsOk() ? sfd.FileName : null;
 		}
 
+		public string ShowFolderSelectDialog(
+			IDialogParent dialogParent,
+			string/*?*/ initDir = null,
+			string/*?*/ subtitle = null)
+		{
+			subtitle ??= string.Empty;
+			initDir = SanitiseForFileDialog(initDir ?? string.Empty);
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// FolderBrowserEx doesn't work in Mono for obvious reasons
+				using FolderBrowserDialog f = new();
+				f.Description = subtitle;
+				f.SelectedPath = initDir;
+				return f.ShowDialog().IsOk() ? f.SelectedPath : null;
+			}
+			else
+			{
+				using FolderBrowserEx f = new();
+				f.Description = subtitle;
+				f.SelectedPath = initDir;
+				return f.ShowDialog().IsOk() ? f.SelectedPath : null;
+			}
+		}
+
 		public void ShowMessageBox(
 			IDialogParent/*?*/ owner,
 			string text,
