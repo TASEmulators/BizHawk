@@ -8,6 +8,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>embedded</DebugType>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT;BIZHAWKBUILD_SUPERHAWK</DefineConstants>
+		<MeziantouPolyfill_AllowUnsafeBlocks>false</MeziantouPolyfill_AllowUnsafeBlocks>
 		<MeziantouPolyfill_ExcludedPolyfills>@(MeziantouPolyfill_DeferToPolySharp, '|')</MeziantouPolyfill_ExcludedPolyfills>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573</NoWarn>
@@ -34,6 +35,9 @@
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.RequiredMemberAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.CompilerServices.SkipLocalsInitAttribute" />
 		<MeziantouPolyfill_DeferToPolySharp Include="T:System.Runtime.Versioning.RequiresPreviewFeaturesAttribute" />
+		<!-- strictly speaking, these aren't provided by PolySharp, but we don't want Meziantou.Polyfill generating them because those implementations use `unsafe` -->
+		<MeziantouPolyfill_DeferToPolySharp Include="M:System.Text.StringBuilder.Append(System.ReadOnlyMemory{System.Char})" />
+		<MeziantouPolyfill_DeferToPolySharp Include="M:System.Text.StringBuilder.Append(System.ReadOnlySpan{System.Char})" />
 	</ItemGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(SolutionDir)' != '' ">
 		<PathMap>$(SolutionDir)=/</PathMap>
