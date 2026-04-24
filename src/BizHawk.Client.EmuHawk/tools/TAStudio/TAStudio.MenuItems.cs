@@ -809,7 +809,7 @@ namespace BizHawk.Client.EmuHawk
 				menu.Text = text.Replace("Key ", "");
 			}
 			// add player menus only if they actually contain items
-			foreach (ToolStripMenuItem menu in playerMenus.Skip(1).Where(static m => m.HasDropDown))
+			foreach (ToolStripMenuItem menu in playerMenus.Skip(1).Where(static m => m.HasDropDownItems))
 			{
 				ShowColumnsContextMenuItem.DropDownItems.Add(menu);
 			}
