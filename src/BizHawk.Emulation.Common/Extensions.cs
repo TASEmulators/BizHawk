@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Common
 		public static ControllerDefinition AddAxis(
 			this ControllerDefinition def,
 			string name,
-			Int32ClosedRange range,
+			Int32HalfOpenRange range,
 			int neutral,
 			bool isReversed = false,
 			AxisConstraint constraint = null)
@@ -463,9 +463,9 @@ namespace BizHawk.Emulation.Common
 			this ControllerDefinition def,
 			string nameFormat,
 			AxisPairOrientation pDir,
-			Int32ClosedRange rangeX,
+			Int32HalfOpenRange rangeX,
 			int neutralX,
-			Int32ClosedRange rangeY,
+			Int32HalfOpenRange rangeY,
 			int neutralY,
 			AxisConstraint constraint = null)
 		{
@@ -485,7 +485,7 @@ namespace BizHawk.Emulation.Common
 			this ControllerDefinition def,
 			string nameFormat,
 			AxisPairOrientation pDir,
-			Int32ClosedRange rangeBoth,
+			Int32HalfOpenRange rangeBoth,
 			int neutralBoth,
 			AxisConstraint constraint = null)
 				=> def.AddXYPair(nameFormat, pDir, rangeBoth, neutralBoth, rangeBoth, neutralBoth, constraint);
@@ -496,12 +496,12 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="nameFormat">format string e.g. <c>"P1 Tilt {0}"</c> (will be used to interpolate <c>"X"</c>, <c>"Y"</c>, and <c>"Z"</c>)</param>
 		/// <returns>identical reference to <paramref name="def"/>; the object is mutated</returns>
-		public static ControllerDefinition AddXYZTriple(this ControllerDefinition def, string nameFormat, Int32ClosedRange rangeAll, int neutralAll)
+		public static ControllerDefinition AddXYZTriple(this ControllerDefinition def, string nameFormat, Int32HalfOpenRange rangeAll, int neutralAll)
 			=> def.AddAxis(string.Format(nameFormat, "X"), rangeAll, neutralAll)
 				.AddAxis(string.Format(nameFormat, "Y"), rangeAll, neutralAll)
 				.AddAxis(string.Format(nameFormat, "Z"), rangeAll, neutralAll);
 
-		public static AxisSpec With(this in AxisSpec spec, Int32ClosedRange range, int neutral)
+		public static AxisSpec With(this in AxisSpec spec, Int32HalfOpenRange range, int neutral)
 			=> new(range, neutral, spec.IsReversed, spec.Constraint);
 
 #pragma warning disable RCS1224 // don't want extension on nonspecific `string`

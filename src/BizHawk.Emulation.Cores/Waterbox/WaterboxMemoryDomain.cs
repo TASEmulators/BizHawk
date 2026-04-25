@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
+		public override void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 		{
 			if (_addressMangler != 0)
 			{
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
+		public override void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 		{
 			if (_addressMangler != 0)
 			{
@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_write32.Access((IntPtr)(&val), addr, 1);
 		}
 
-		public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
+		public override void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 		{
 			if ((ulong)addresses.Start + addresses.Count() > (ulong)Size || addresses.Start < 0) throw new ArgumentOutOfRangeException(nameof(addresses), message: AddressRangeError);
 			if (addresses.Count() > (uint)values.Length) throw new ArgumentException(message: $"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_write8.Access((IntPtr)p, addr, values.Length);
 		}
 
-		public override void BulkPeekUshort(Int64ClosedRange addresses, bool bigEndian, ushort[] values)
+		public override void BulkPeekUshort(Int64HalfOpenRange addresses, bool bigEndian, ushort[] values)
 		{
 			if ((ulong)addresses.Start + addresses.Count() > (ulong)Size || addresses.Start < 0) throw new ArgumentOutOfRangeException(nameof(addresses), message: AddressRangeError);
 			if (addresses.Count() > (uint)values.Length * sizeof(ushort)) throw new ArgumentException(message: $"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_write16.Access((IntPtr)p, addr, values.Length);
 		}
 
-		public override void BulkPeekUint(Int64ClosedRange addresses, bool bigEndian, uint[] values)
+		public override void BulkPeekUint(Int64HalfOpenRange addresses, bool bigEndian, uint[] values)
 		{
 			if ((ulong)addresses.Start + addresses.Count() > (ulong)Size || addresses.Start < 0) throw new ArgumentOutOfRangeException(nameof(addresses), message: AddressRangeError);
 			if (addresses.Count() > (uint)values.Length * sizeof(uint)) throw new ArgumentException(message: $"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));

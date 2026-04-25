@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Common
 			PokeByte(addr + 3, scratch[3]);
 		}
 
-		public virtual void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
+		public virtual void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -97,20 +97,20 @@ namespace BizHawk.Emulation.Common
 
 			using (this.EnterExit())
 			{
-				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				for (var i = addresses.Start; i < addresses.EndExclusive; i++)
 				{
 					values[i - addresses.Start] = PeekByte(i);
 				}
 			}
 		}
 
-		public virtual void BulkPeekUshort(Int64ClosedRange addresses, bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(Int64HalfOpenRange addresses, bool bigEndian, ushort[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
+			var end = addresses.EndExclusive;
 			if ((start & 0b1) is not 0 || (end & 0b1) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
 			if (values.LongLength * sizeof(ushort) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // a longer array could be valid, but nothing needs that so don't support it for now
 
@@ -123,13 +123,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual void BulkPeekUint(Int64ClosedRange addresses, bool bigEndian, uint[] values)
+		public virtual void BulkPeekUint(Int64HalfOpenRange addresses, bool bigEndian, uint[] values)
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
+			var end = addresses.EndExclusive;
 			if ((start & 0b11) is not 0 || (end & 0b11) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
 			if (values.LongLength * sizeof(uint) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // `!=` not `<`, per `BulkPeekUshort`
 

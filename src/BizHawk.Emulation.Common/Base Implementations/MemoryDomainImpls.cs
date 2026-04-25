@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.Common
 		private Action<long, byte> _poke;
 
 		// TODO: use an array of Ranges
-		private Action<Int64ClosedRange, byte[]> _bulkPeekByte { get; set; }
+		private Action<Int64HalfOpenRange, byte[]> _bulkPeekByte { get; set; }
 
-		private Action<Int64ClosedRange, bool, ushort[]> _bulkPeekUshort { get; set; }
+		private Action<Int64HalfOpenRange, bool, ushort[]> _bulkPeekUshort { get; set; }
 
-		private Action<Int64ClosedRange, bool, uint[]> _bulkPeekUint { get; set; }
+		private Action<Int64HalfOpenRange, bool, uint[]> _bulkPeekUint { get; set; }
 
 		public Func<long, byte> Peek { get; set; }
 
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Common
 			_poke?.Invoke(addr, val);
 		}
 
-		public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
+		public override void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 		{
 			if (_bulkPeekByte != null)
 			{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public override void BulkPeekUshort(Int64ClosedRange addresses, bool bigEndian, ushort[] values)
+		public override void BulkPeekUshort(Int64HalfOpenRange addresses, bool bigEndian, ushort[] values)
 		{
 			if (_bulkPeekUshort != null)
 			{
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public override void BulkPeekUint(Int64ClosedRange addresses, bool bigEndian, uint[] values)
+		public override void BulkPeekUint(Int64HalfOpenRange addresses, bool bigEndian, uint[] values)
 		{
 			if (_bulkPeekUint != null)
 			{
@@ -82,9 +82,9 @@ namespace BizHawk.Emulation.Common
 			Func<long, byte> peek,
 			Action<long, byte> poke,
 			int wordSize,
-			Action<Int64ClosedRange, byte[]> bulkPeekByte = null,
-			Action<Int64ClosedRange, bool, ushort[]> bulkPeekUshort = null,
-			Action<Int64ClosedRange, bool, uint[]> bulkPeekUint = null)
+			Action<Int64HalfOpenRange, byte[]> bulkPeekByte = null,
+			Action<Int64HalfOpenRange, bool, ushort[]> bulkPeekUshort = null,
+			Action<Int64HalfOpenRange, bool, uint[]> bulkPeekUint = null)
 		{
 			Name = name;
 			EndianType = endian;
@@ -212,7 +212,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public override void BulkPeekByte(Int64ClosedRange addresses, byte[] values)
+		public override void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 		{
 			var start = (ulong)addresses.Start;
 			var count = addresses.Count();

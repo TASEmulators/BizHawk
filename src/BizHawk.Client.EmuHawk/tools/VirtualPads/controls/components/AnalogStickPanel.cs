@@ -76,9 +76,9 @@ namespace BizHawk.Client.EmuHawk
 			Rerange();
 		}
 
-		private Int32ClosedRange _rangeX = 0.RangeTo(0);
+		private Int32HalfOpenRange _rangeX = 0.RangeTo(0);
 
-		private Int32ClosedRange _rangeY = 0.RangeTo(0);
+		private Int32HalfOpenRange _rangeY = 0.RangeTo(0);
 
 		private AxisSpec _fullRangeX;
 		private AxisSpec _fullRangeY;
@@ -289,6 +289,6 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		private static readonly Int32ClosedRange PercentRange = 0.RangeTo(100);
+		private static readonly Int32HalfOpenRange PercentRange = 0.RangeTo(100);
 	}
 }
