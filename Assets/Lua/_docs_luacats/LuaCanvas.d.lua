@@ -15,7 +15,7 @@ local LuaCanvas = {}
 ---Example:
 ---
 ---	LuaCanvas.Clear( 0x000000FF );
----@param color? color
+---@param color color
 function LuaCanvas.Clear(color) end
 
 ---clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images
@@ -55,8 +55,8 @@ function LuaCanvas.DrawAxis(x, y, size, color) end
 ---Example:
 ---
 ---	LuaCanvas.DrawBezier( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );
----@param points? drawingpoint[]
----@param color? color
+---@param points drawingpoint[]
+---@param color color
 function LuaCanvas.DrawBezier(points, color) end
 
 ---Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height
@@ -90,7 +90,7 @@ function LuaCanvas.DrawEllipse(x, y, width, height, line, background) end
 ---Example:
 ---
 ---		canvas.DrawIcon("C:\\icon.ico", 16, 32, 18, 24);
----@param path? string
+---@param path string
 ---@param x integer
 ---@param y integer
 ---@param width? integer
@@ -102,7 +102,7 @@ function LuaCanvas.DrawIcon(path, x, y, width, height) end
 ---Example:
 ---
 ---		canvas.DrawImage("C:\\image.png", 16, 32, 18, 24, false);
----@param path? string
+---@param path string
 ---@param x integer
 ---@param y integer
 ---@param width? integer
@@ -115,7 +115,7 @@ function LuaCanvas.DrawImage(path, x, y, width, height, cache) end
 ---Example:
 ---
 ---		canvas.DrawImageRegion("C:\\image.png", 11, 22, 33, 44, 21, 43, 34, 45);
----@param path? string
+---@param path string
 ---@param sourceX integer
 ---@param sourceY integer
 ---@param sourceWidth integer
@@ -168,7 +168,7 @@ function LuaCanvas.DrawPixel(x, y, color) end
 ---Example:
 ---
 ---		canvas.DrawPolygon({ { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF);
----@param points? drawingpoint[]
+---@param points drawingpoint[]
 ---@param x? integer
 ---@param y? integer
 ---@param line? color
@@ -195,7 +195,7 @@ function LuaCanvas.DrawRectangle(x, y, width, height, line, background) end
 ---	LuaCanvas.DrawString( 16, 32, "Some message", 0x7F0000FF, 0x00007FFF, 8, "Arial Narrow", "bold", "center", "middle" );
 ---@param x integer
 ---@param y integer
----@param message? string|number
+---@param message string|number
 ---@param foreColor? color
 ---@param backColor? color
 ---@param fontSize? integer
@@ -212,7 +212,7 @@ function LuaCanvas.DrawString(x, y, message, foreColor, backColor, fontSize, fon
 ---	LuaCanvas.DrawText( 16, 32, "Some message", 0x7F0000FF, 0x00007FFF, 8, "Arial Narrow", "bold", "center", "middle" );
 ---@param x integer
 ---@param y integer
----@param message? string|number
+---@param message string|number
 ---@param foreColor? color
 ---@param backColor? color
 ---@param fontSize? integer
@@ -246,7 +246,7 @@ function LuaCanvas.GetMouseY() end
 function LuaCanvas.Refresh() end
 
 ---Saves everything that's been drawn to a .png file at the given path. Relative paths are relative to the path set for "Screenshots" for the current system.
----@param path? string
+---@param path string
 function LuaCanvas.save_image_to_disk(path) end
 
 ---Sets the default background color to use in drawing methods, transparent by default
@@ -254,7 +254,7 @@ function LuaCanvas.save_image_to_disk(path) end
 ---Example:
 ---
 ---	LuaCanvas.SetDefaultBackgroundColor( 0x000000FF );
----@param color? color
+---@param color color
 function LuaCanvas.SetDefaultBackgroundColor(color) end
 
 ---Sets the default foreground color to use in drawing methods, white by default
@@ -262,7 +262,7 @@ function LuaCanvas.SetDefaultBackgroundColor(color) end
 ---Example:
 ---
 ---	LuaCanvas.SetDefaultForegroundColor( 0x000000FF );
----@param color? color
+---@param color color
 function LuaCanvas.SetDefaultForegroundColor(color) end
 
 ---Sets the default background color to use in text drawing methods, half-transparent black by default
@@ -270,7 +270,7 @@ function LuaCanvas.SetDefaultForegroundColor(color) end
 ---Example:
 ---
 ---	LuaCanvas.SetDefaultTextBackground( 0x000000FF );
----@param color? color
+---@param color color
 function LuaCanvas.SetDefaultTextBackground(color) end
 
 ---Sets the location of the canvas window
@@ -287,6 +287,6 @@ function LuaCanvas.SetLocation(x, y) end
 ---Example:
 ---
 ---	LuaCanvas.SetTitle( "Title" );
----@param title? string
+---@param title string
 function LuaCanvas.SetTitle(title) end
 
