@@ -115,14 +115,14 @@ bool loadFileIntoMemoryFile(const std::string& srcFile, const std::string& dstFi
 		}
 	}
 
-	// Copying remainder
-	auto remainder = srcFileSize % FAT_SECTOR_SIZE;
-	if (remainder > 0) 
+	// Copying reminder
+	auto reminder = srcFileSize % FAT_SECTOR_SIZE;
+	if (reminder > 0) 
 	{
-		printf("Copying remainder chunk, size: %d\n", remainder);
+		printf("Copying reminder chunk, size: %d\n", reminder);
 
-		auto readBytes = fread(readBuffer, 1, remainder, srcFilePtr);
-		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, remainder, dstFilePtr);
+		auto readBytes = fread(readBuffer, 1, reminder, srcFilePtr);
+		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, reminder, dstFilePtr);
 
 		if (readBytes != writtenBytes)
 		{
