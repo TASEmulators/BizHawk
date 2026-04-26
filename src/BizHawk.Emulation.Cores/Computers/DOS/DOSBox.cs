@@ -641,9 +641,6 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				}
 			}
 
-			// Freeing up core's own resources
-			_libDOSBox.deInit();
-
 			base.Dispose();
 		}
 	}
