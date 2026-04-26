@@ -115,14 +115,14 @@ bool loadFileIntoMemoryFile(const std::string& srcFile, const std::string& dstFi
 		}
 	}
 
-	// Copying reminder
-	auto reminder = srcFileSize % FAT_SECTOR_SIZE;
-	if (reminder > 0) 
+	// Copying remainder
+	auto remainder = srcFileSize % FAT_SECTOR_SIZE;
+	if (remainder > 0) 
 	{
-		printf("Copying reminder chunk, size: %d\n", reminder);
+		printf("Copying remainder chunk, size: %d\n", remainder);
 
-		auto readBytes = fread(readBuffer, 1, reminder, srcFilePtr);
-		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, reminder, dstFilePtr);
+		auto readBytes = fread(readBuffer, 1, remainder, srcFilePtr);
+		auto writtenBytes = jaffarCommon::file::MemoryFile::fwrite(readBuffer, 1, remainder, dstFilePtr);
 
 		if (readBytes != writtenBytes)
 		{
@@ -200,6 +200,16 @@ ECL_EXPORT bool Init(InitSettings* settings)
 	_ticksElapsed = 0;
 
 	return true;
+}
+
+// Freeing up all allocated buffers
+ECL_EXPORT void deInit()
+{
+	// Deallocating video buffer
+	if (_videoBuffer != nullptr) free(_videoBuffer);
+
+	// Deallocating any memory-loaded RW HDD, if defined
+	if (settings->writableHDDImageFileSize > 0) free(GetHDDBuffer());
 }
 
 // A callback function to update the output render, only when requested by the core
