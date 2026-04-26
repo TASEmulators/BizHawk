@@ -78,6 +78,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing input files
 			var ConfigFiles = new List<IRomAsset>();
 
+			// Remember which files we need to remove after initialization
+			var filesToRemove = new List<string>();
+
 			// Parsing rom files
 			foreach (var file in _romAssets)
 			{
@@ -247,6 +250,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				// Adding HDD to the core
 				_exe.AddReadonlyFile(HDDImageData, FileNames.HDD);
+				filesToRemove.Add(FileNames.HDD);
 				configString += "imgmount c " + FileNames.HDD + ".img\n";
 			}
 
@@ -307,6 +311,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 
 			PostInit();
+
+			foreach (var f in filesToRemove)
+			{
+				_exe.RemoveReadonlyFile(f);
+			}
 
 			DriveLightEnabled = false;
 			if (_syncSettings.FormattedHardDisk != HardDiskOptions.None) DriveLightEnabled = true;
@@ -631,6 +640,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 					discAsset.DiscData.Dispose();
 				}
 			}
+
+			// Freeing up core's own resources
+			_libDOSBox.deInit();
 
 			base.Dispose();
 		}

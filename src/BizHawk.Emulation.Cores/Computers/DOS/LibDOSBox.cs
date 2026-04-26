@@ -91,6 +91,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		public abstract bool Init(InitSettings settings);
 
 		[BizImport(CC)]
+		public abstract void deInit();
+
+		[BizImport(CC)]
 		public abstract bool GetDriveActivityFlag();
 
 		[StructLayout(LayoutKind.Sequential)]
