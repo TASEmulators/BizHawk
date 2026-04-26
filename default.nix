@@ -26,7 +26,7 @@ in {
 # makedeps
 , dotnet-sdk_8 ? pkgs.dotnet-sdk_8
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
-, dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
+, dotnet-sdk_5 ? let result = builtins.tryEval (pkgs.dotnet-sdk_5 or builtins.throw "no .NET 5 SDK"); in if result.success
 	then result.value
 	else ((import Dist/nixpkgs.nix).nixpkgs-22_11-with-dotnet-5 system fetchzip).dotnet-sdk_5
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
