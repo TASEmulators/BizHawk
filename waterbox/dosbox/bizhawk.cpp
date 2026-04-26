@@ -145,7 +145,6 @@ bool _driveUsed = false;
 ECL_EXPORT bool GetDriveActivityFlag() { return _driveUsed; }
 
 // SRAM Management
-bool isHDDFileLoaded = false;
 constexpr char writableHDDSrcFile[] = "HardDiskDrive";
 constexpr char writableHDDDstFile[] = "HardDiskDrive.img";
 ECL_EXPORT int GetHDDSize() { return (int)_memFileDirectory.getFileSize(writableHDDDstFile); }
@@ -167,9 +166,6 @@ ECL_EXPORT bool Init(InitSettings* settings)
 			fprintf(stderr, "Could not create hard disk drive mem file\n");
 			return false; 
 		}
-
-		// Remember we loaded an HDD, for future deallocation
-		isHDDFileLoaded = true;
 	}
 
 	// Setting dummy drivers for env variables
@@ -206,13 +202,22 @@ ECL_EXPORT bool Init(InitSettings* settings)
 	return true;
 }
 
+// Freeing up all allocated buffers
+ECL_EXPORT void deInit()
+{
+	// Deallocating video buffer
+	if (_videoBuffer != nullptr) free(_videoBuffer);
+
+	// Deallocating any memory-loaded RW HDD, if defined
+	if (settings->writableHDDImageFileSize > 0) free(GetHDDBuffer());
+}
+
 // A callback function to update the output render, only when requested by the core
 // Doing it on demand avoids screen tearing
 uint32_t* _videoBuffer = nullptr;
 size_t _videoBufferSize = 0;
 int _videoWidth = 0;
 int _videoHeight = 0;
-
 void doRenderUpdateCallback()
 {
 	// printf("w: %u, h: %u, bytes: %p\n", sdl.surface->w, sdl.surface->h, sdl.surface->pixels);
@@ -373,16 +378,6 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo* f)
 	// Setting audio buffer
 	memcpy(f->base.SoundBuffer, _audioSamples.data(), _audioSamples.size() * sizeof(int16_t));
 	f->base.Samples  = _audioSamples.size() / 2;
-}
-
-// Freeing up all allocated buffers on closure
-ECL_EXPORT void deInit()
-{
-	// Deallocating video buffer
-	if (_videoBuffer != nullptr) free(_videoBuffer);
-
-	// Deallocating any memory-loaded RW HDD, if defined
-	if (isHDDFileLoaded == true) free(GetHDDBuffer());
 }
 
 ECL_EXPORT uint64_t GetRefreshRateNumerator() { return _refreshRateNumerator; }
