@@ -202,16 +202,6 @@ ECL_EXPORT bool Init(InitSettings* settings)
 	return true;
 }
 
-// Freeing up all allocated buffers
-ECL_EXPORT void deInit()
-{
-	// Deallocating video buffer
-	if (_videoBuffer != nullptr) free(_videoBuffer);
-
-	// Deallocating any memory-loaded RW HDD, if defined
-	if (settings->writableHDDImageFileSize > 0) free(GetHDDBuffer());
-}
-
 // A callback function to update the output render, only when requested by the core
 // Doing it on demand avoids screen tearing
 uint32_t* _videoBuffer = nullptr;
