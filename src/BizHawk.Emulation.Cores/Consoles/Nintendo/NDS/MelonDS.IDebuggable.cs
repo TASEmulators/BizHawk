@@ -76,11 +76,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			LibMelonDS.MemoryCallback CreateCallback(MemoryCallbackFlags flags, Func<bool> getHasCBOfType)
 			{
 				var rawFlags = (uint)flags;
-				return address =>
+				return (address, value) =>
 				{
 					if (getHasCBOfType())
 					{
-						_memoryCallbacks.CallMemoryCallbacks(address, 0, rawFlags, "ARM9 System Bus");
+						_memoryCallbacks.CallMemoryCallbacks(address, value, rawFlags, "ARM9 System Bus");
 					}
 				};
 			}
