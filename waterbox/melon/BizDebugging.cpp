@@ -20,11 +20,11 @@ ECL_EXPORT void SetInputCallback(void (*callback)())
 	InputCallback = callback;
 }
 
-void (*ReadCallback)(u32) = nullptr;
-void (*WriteCallback)(u32) = nullptr;
-void (*ExecuteCallback)(u32) = nullptr;
+void (*ReadCallback)(u32 addr, u32 val) = nullptr;
+void (*WriteCallback)(u32 addr, u32 val) = nullptr;
+void (*ExecuteCallback)(u32 addr, u32 val) = nullptr;
 
-ECL_EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr))
+ECL_EXPORT void SetMemoryCallback(u32 which, void (*callback)(u32 addr, u32 val))
 {
 	switch (which)
 	{

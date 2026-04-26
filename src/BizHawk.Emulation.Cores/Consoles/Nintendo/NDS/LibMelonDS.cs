@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public abstract int GetCallbackCycleOffset(IntPtr console);
 
 		[UnmanagedFunctionPointer(CC)]
-		public delegate void MemoryCallback(uint addr);
+		public delegate void MemoryCallback(uint addr, uint val);
 
 		[BizImport(CC)]
 		public abstract void SetMemoryCallback(int which, MemoryCallback callback);
