@@ -3794,7 +3794,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (previousRom != CurrentlyOpenRom)
 					{
-						CheatList.NewList(Tools.GenerateDefaultCheatFilename());
+						CheatList.NewList(Tools.GenerateDefaultCheatFilename(), autosave: true);
 						if (Config.Cheats.LoadFileByGame && Emulator.HasMemoryDomains())
 						{
 							if (CheatList.AttemptToLoadCheatFile(Emulator.AsMemoryDomains()))
@@ -3811,7 +3811,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							CheatList.NewList(Tools.GenerateDefaultCheatFilename());
+							CheatList.NewList(Tools.GenerateDefaultCheatFilename(), autosave: true);
 						}
 					}
 
@@ -3854,7 +3854,7 @@ namespace BizHawk.Client.EmuHawk
 					DisplayManager.UpdateGlobals(Config, Emulator);
 					DisplayManager.Blank();
 					ExtToolManager.BuildToolStrip();
-					CheatList.NewList("");
+					CheatList.NewList("", autosave: true);
 					OnRomChanged();
 					return false;
 				}
@@ -4014,7 +4014,7 @@ namespace BizHawk.Client.EmuHawk
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
-				CheatList.NewList("");
+				CheatList.NewList("", autosave: true);
 				OnRomChanged();
 			}
 		}
