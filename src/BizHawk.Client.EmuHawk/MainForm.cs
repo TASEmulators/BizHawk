@@ -883,12 +883,7 @@ namespace BizHawk.Client.EmuHawk
 				StopAv();
 			}
 
-			TryAgainResult configSaveResult = this.DoWithTryAgainBox(() => SaveConfig(), "Failed to save config file.");
-			if (configSaveResult == TryAgainResult.Canceled)
-			{
-				closingArgs.Cancel = true;
-				return;
-			}
+			SaveConfig(); // TODO: Handle failure.
 
 			if (!CloseGame())
 			{
@@ -2394,7 +2389,7 @@ namespace BizHawk.Client.EmuHawk
 		public SettingsAdapter GetSettingsAdapterForLoadedCoreUntyped()
 			=> new(Emulator, static () => true, HandlePutCoreSettings, MayPutCoreSyncSettings, HandlePutCoreSyncSettings);
 
-		private FileWriteResult SaveConfig(string path = "")
+		private void SaveConfig(string path = "")
 		{
 			if (Config.SaveWindowPosition)
 			{
@@ -2421,7 +2416,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			CommitCoreSettingsToConfig();
-			return ConfigService.Save(path, Config);
+			ConfigService.Save(path, Config);
 		}
 
 		private void ToggleFps()
@@ -3927,7 +3922,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			// There is a cheats tool, but cheats can be active while the "cheats tool" is not. And have auto-save option.
 			TryAgainResult cheatSaveResult = this.DoWithTryAgainBox(CheatList.SaveOnClose, "Failed to save cheats.");
-			if (cheatSaveResult == TryAgainResult.Canceled) return false;
+			if (cheatSaveResult == TryAgainResult.Canceled)
+			{
+				return false;
+			}
 
 			// If TAStudio is open, we already asked about saving the movie.
 			if (!Tools.IsLoaded<TAStudio>())

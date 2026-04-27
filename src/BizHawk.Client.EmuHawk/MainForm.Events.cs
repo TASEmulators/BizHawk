@@ -987,15 +987,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			FileWriteResult result = SaveConfig();
-			if (result.IsError)
-			{
-				this.ErrorMessageBox(result);
-			}
-			else
-			{
-				AddOnScreenMessage("Saved settings");
-			}
+			SaveConfig();
+			AddOnScreenMessage("Saved settings");
 		}
 
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
@@ -1007,15 +1000,8 @@ namespace BizHawk.Client.EmuHawk
 				initFileName: file);
 			if (result is not null)
 			{
-				FileWriteResult saveResult = SaveConfig(result);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult);
-				}
-				else
-				{
-					AddOnScreenMessage("Copied settings");
-				}
+				SaveConfig(result);
+				AddOnScreenMessage("Copied settings");
 			}
 		}
 

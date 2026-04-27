@@ -470,11 +470,7 @@ namespace BizHawk.Client.EmuHawk
 
 				SaveToDefaults(cd);
 
-				FileWriteResult saveResult = ConfigService.Save(Config.ControlDefaultPath, cd);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult);
-				}
+				ConfigService.Save(Config.ControlDefaultPath, cd);
 			}
 		}
 
