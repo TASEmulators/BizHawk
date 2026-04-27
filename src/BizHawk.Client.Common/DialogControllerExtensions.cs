@@ -99,13 +99,12 @@ namespace BizHawk.Client.Common
 			FileWriteResult fileResult = action();
 			while (fileResult.IsError)
 			{
+				string prefix = message ?? "";
 				bool? askResult = dialogParent.ModalMessageBox3(
-					caption: "Failed to write file",
-					text: $"{message} Do you want to try again?"
-						+ $"\nError details: {fileResult.UserFriendlyErrorMessage()}"
-						+ $"\n\nFull info for debugging:\n--------------------\n{fileResult.Exception}\n--------------------"
-						+ "\n\n(Retry?)",
-					icon: EMsgBoxIcon.Warning);
+						text: $"{prefix} Do you want to try again?\n\nError details:" +
+							$"{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
+						caption: "Error",
+						icon: EMsgBoxIcon.Error);
 				if (askResult == null) return TryAgainResult.Canceled;
 				if (askResult == false) return TryAgainResult.IgnoredFailure;
 				if (askResult == true) fileResult = action();
