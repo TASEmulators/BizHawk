@@ -20,6 +20,9 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from PlaybackBox</remarks>
 		bool HoldFrameAdvance { get; set; }
 
+		/// <remarks>only referenced from BasicBot</remarks>
+		bool InvisibleEmulation { get; set; }
+
 		/// <remarks>only referenced from LuaConsole</remarks>
 		bool IsTurboing { get; }
 
