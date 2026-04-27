@@ -514,18 +514,21 @@ namespace BizHawk.Client.EmuHawk
 			description: "Loads the branch with the given ID.")]
 		public void LoadBranchByID(string id)
 		{
+			var found = GetBranchObjByID(id: id, callerFunctionName: "load_branch_by_id");
+			if (found is not null) Tastudio.LoadBranch(found);
+			// else already logged error
+		}
+
+		private TasBranch/*?*/ GetBranchObjByID(string id, string callerFunctionName)
+		{
 			if (!Guid.TryParseExact(id, format: "D", out var parsed))
 			{
-				Log($"[tastudio.load_branch_by_id] not a valid UUID: {id}");
-				return;
+				Log($"[tastudio.{callerFunctionName}] not a valid UUID: {id}");
+				return null;
 			}
 			var found = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid == parsed);
-			if (found is null)
-			{
-				Log($"[tastudio.load_branch_by_id] no such branch: {id}");
-				return;
-			}
-			Tastudio.LoadBranch(found);
+			if (found is null) Log($"[tastudio.{callerFunctionName}] no such branch: {id}");
+			return found;
 		}
 
 		[LuaMethodExample("tastudio.loadbranch(0)")]
@@ -561,6 +564,20 @@ namespace BizHawk.Client.EmuHawk
 			branch.UserText = text;
 			Tastudio.BranchSavedCallback?.Invoke(index);
 			return branch.Uuid.ToString("D");
+		}
+
+		[LuaMethodExample("""
+			tastudio.delete_branch_by_id("97021544-2454-4483-824f-47f75e7fcb6a");
+		""")]
+		[LuaMethod(
+			name: "delete_branch_by_id",
+			description: "Deletes the branch with the given ID."
+				+ " There is no confirmation, so remember to back up your project before botting with it.")]
+		public void DeleteBranchByID(string id)
+		{
+			var found = GetBranchObjByID(id: id, callerFunctionName: "delete_branch_by_id");
+			if (found is not null) Tastudio.CurrentTasMovie.Branches.Remove(found);
+			// else already logged error
 		}
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
