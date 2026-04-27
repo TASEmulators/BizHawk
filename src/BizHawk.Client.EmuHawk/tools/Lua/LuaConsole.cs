@@ -685,25 +685,15 @@ namespace BizHawk.Client.EmuHawk
 			return result is not null ? new FileInfo(result) : null;
 		}
 
-		private FileWriteResult SaveSessionAs()
+		private void SaveSessionAs()
 		{
 			var file = GetSaveFileFromUser();
 			if (file != null)
 			{
-				FileWriteResult saveResult = LuaImp.ScriptList.Save(file.FullName);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult);
-					OutputMessages.Text = $"Lua session could not be saved to {file.Name}";
-				}
-				else
-				{
-					Config.RecentLuaSession.Add(file.FullName);
-					OutputMessages.Text = $"{file.Name} saved.";
-				}
-				return saveResult;
+				LuaImp.ScriptList.Save(file.FullName);
+				Config.RecentLuaSession.Add(file.FullName);
+				OutputMessages.Text = $"{file.Name} saved.";
 			}
-			return new();
 		}
 
 		private void LoadSessionFromRecent(string path)
@@ -731,11 +721,7 @@ namespace BizHawk.Client.EmuHawk
 				icon: EMsgBoxIcon.Question,
 				text: $"Save {WindowTitleStatic} session?"));
 			if (result is null) return false;
-			if (result.Value)
-			{
-				TryAgainResult saveResult = this.DoWithTryAgainBox(SaveOrSaveAs, "Failed to save Lua session.");
-				return saveResult != TryAgainResult.Canceled;
-			}
+			if (result.Value) SaveOrSaveAs();
 			else LuaImp.ScriptList.Changes = false;
 			return true;
 		}
@@ -750,20 +736,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private FileWriteResult SaveOrSaveAs()
+		private void SaveOrSaveAs()
 		{
 			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
 			{
-				FileWriteResult result = LuaImp.ScriptList.Save(LuaImp.ScriptList.Filename);
-				if (!result.IsError)
-				{
-					Config.RecentLuaSession.Add(LuaImp.ScriptList.Filename);
-				}
-				return result;
+				LuaImp.ScriptList.Save(LuaImp.ScriptList.Filename);
+				Config.RecentLuaSession.Add(LuaImp.ScriptList.Filename);
 			}
 			else
 			{
-				return SaveSessionAs();
+				SaveSessionAs();
 			}
 		}
 
@@ -806,16 +788,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LuaImp.ScriptList.Changes)
 			{
-				FileWriteResult result = SaveOrSaveAs();
-				if (result.IsError)
-				{
-					this.ErrorMessageBox(result, "Failed to save Lua session.");
-					OutputMessages.Text = $"Failed to save {Path.GetFileName(LuaImp.ScriptList.Filename)}";
-				}
-				else
-				{
-					OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
-				}
+				SaveOrSaveAs();
+				OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
 			}
 		}
 

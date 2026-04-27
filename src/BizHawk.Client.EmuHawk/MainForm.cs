@@ -3921,17 +3921,18 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 			// There is a cheats tool, but cheats can be active while the "cheats tool" is not. And have auto-save option.
-			TryAgainResult cheatSaveResult = this.DoWithTryAgainBox(CheatList.SaveOnClose, "Failed to save cheats.");
-			if (cheatSaveResult == TryAgainResult.Canceled)
-			{
-				return false;
-			}
+			CheatList.SaveOnClose();
 
-			// If TAStudio is open, we already asked about saving the movie.
-			if (!Tools.IsLoaded<TAStudio>())
+			FileWriteResult saveResult = MovieSession.StopMovie();
+			if (saveResult.IsError)
 			{
-				TryAgainResult saveMovieResult = this.DoWithTryAgainBox(() => MovieSession.StopMovie(), "Failed to save movie.");
-				if (saveMovieResult == TryAgainResult.Canceled) return false;
+				if (!this.ModalMessageBox2(
+					caption: "Quit anyway?",
+					icon: EMsgBoxIcon.Question,
+					text: "The currently playing movie could not be saved. Continue and quit anyway? All unsaved changes will be lost."))
+				{
+					return false;
+				}
 			}
 
 			if (clearSram)
@@ -3939,7 +3940,7 @@ namespace BizHawk.Client.EmuHawk
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
 				if (File.Exists(path))
 				{
-					TryAgainResult clearResult = this.DoWithTryAgainBox(() => {
+					bool clearResult = this.DoWithTryAgainBox(() => {
 						try
 						{
 							File.Delete(path);
@@ -3951,7 +3952,7 @@ namespace BizHawk.Client.EmuHawk
 							return new(FileWriteEnum.FailedToDeleteGeneric, new(path, ""), ex);
 						}
 					}, "Failed to clear SRAM.");
-					if (clearResult == TryAgainResult.Canceled)
+					if (!clearResult)
 					{
 						return false;
 					}
@@ -3959,14 +3960,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.HasSaveRam())
 			{
-				TryAgainResult flushResult = this.DoWithTryAgainBox(
+				bool flushResult = this.DoWithTryAgainBox(
 					() => FlushSaveRAM(),
 					"Failed flushing the game's Save RAM to your disk.");
-				if (flushResult == TryAgainResult.Canceled) return false;
+				if (!flushResult) return false;
 			}
 
-			TryAgainResult stateSaveResult = this.DoWithTryAgainBox(AutoSaveStateIfConfigured, "Failed to auto-save state.");
-			if (stateSaveResult == TryAgainResult.Canceled) return false;
+			bool stateSaveResult = this.DoWithTryAgainBox(AutoSaveStateIfConfigured, "Failed to auto-save state.");
+			if (!stateSaveResult) return false;
 
 			StopAv();
 

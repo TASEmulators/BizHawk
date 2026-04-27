@@ -112,7 +112,6 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
-			// Intentionally not updating this to use FileWriter because this tool is going to be removed later.
 			foreach (var zone in _unsavedZones)
 			{
 				SaveMacroAs(_zones[zone]);

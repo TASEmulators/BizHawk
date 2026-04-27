@@ -213,8 +213,15 @@ namespace BizHawk.Client.EmuHawk
 			if (result is null) return false;
 			if (result.Value)
 			{
-				TryAgainResult saveResult = this.DoWithTryAgainBox(Save, "Failed to save watch list.");
-				return saveResult != TryAgainResult.Canceled;
+				if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
+				{
+					SaveAs();
+				}
+				else
+				{
+					_watches.Save();
+					Config.RecentWatches.Add(_watches.CurrentFileName);
+				}
 			}
 			else
 			{
@@ -580,45 +587,13 @@ namespace BizHawk.Client.EmuHawk
 				: Game.FilesystemSafeName();
 		}
 
-		private FileWriteResult SaveAs()
+		private void SaveAs()
 		{
-			FileInfo/*?*/ file = GetWatchSaveFileFromUser(CurrentFileName());
-			if (file == null) return new();
-
-			FileWriteResult result = _watches.SaveAs(file);
-			if (result.IsError)
+			var result = _watches.SaveAs(GetWatchSaveFileFromUser(CurrentFileName()));
+			if (result)
 			{
-				MessageLabel.Text = $"Failed to save {Path.GetFileName(_watches.CurrentFileName)}";
-			}
-			else
-			{
-				MessageLabel.Text = $"{Path.GetFileName(_watches.CurrentFileName)} saved";
-				Config.RecentWatches.Add(_watches.CurrentFileName);
 				UpdateStatusBar(saved: true);
-			}
-			return result;
-		}
-
-		private FileWriteResult Save()
-		{
-			if (string.IsNullOrWhiteSpace(_watches.CurrentFileName))
-			{
-				return SaveAs();
-			}
-			else
-			{
-				FileWriteResult saveResult = _watches.Save();
-				if (saveResult.IsError)
-				{
-					MessageLabel.Text = $"Failed to save {Path.GetFileName(_watches.CurrentFileName)}";
-				}
-				else
-				{
-					MessageLabel.Text = $"{Path.GetFileName(_watches.CurrentFileName)} saved";
-					Config.RecentWatches.Add(_watches.CurrentFileName);
-					UpdateStatusBar(saved: true);
-				}
-				return saveResult;
+				Config.RecentWatches.Add(_watches.CurrentFileName);
 			}
 		}
 
@@ -748,20 +723,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			FileWriteResult saveResult = Save();
-			if (saveResult.IsError)
+			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
-				this.ErrorMessageBox(saveResult, "Failed to save watch list.");
+				if (_watches.Save())
+				{
+					Config.RecentWatches.Add(_watches.CurrentFileName);
+					UpdateStatusBar(saved: true);
+				}
+			}
+			else
+			{
+				SaveAs();
 			}
 		}
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			FileWriteResult saveResult = SaveAs();
-			if (saveResult.IsError)
-			{
-				this.ErrorMessageBox(saveResult, "Failed to save watch list.");
-			}
+			SaveAs();
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)

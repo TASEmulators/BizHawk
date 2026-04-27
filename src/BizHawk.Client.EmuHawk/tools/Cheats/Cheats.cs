@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private FileWriteResult SaveAs()
+		private bool SaveAs()
 		{
 			var fileName = MainForm.CheatList.CurrentFileName;
 			if (string.IsNullOrWhiteSpace(fileName))
@@ -156,8 +156,7 @@ namespace BizHawk.Client.EmuHawk
 				CheatsFSFilterSet,
 				this);
 
-			if (file == null) return new();
-			else return MainForm.CheatList.SaveFile(file.FullName);
+			return file != null && MainForm.CheatList.SaveFile(file.FullName);
 		}
 
 		private void Cheats_Load(object sender, EventArgs e)
@@ -362,12 +361,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MainForm.CheatList.Changes)
 			{
-				FileWriteResult result = MainForm.CheatList.Save();
-				if (result.IsError)
-				{
-					this.ErrorMessageBox(result);
-				}
-				else
+				if (MainForm.CheatList.Save())
 				{
 					UpdateMessageLabel(saved: true);
 				}
@@ -380,12 +374,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			FileWriteResult result = SaveAs();
-			if (result.IsError)
-			{
-				this.ErrorMessageBox(result);
-			}
-			else
+			if (SaveAs())
 			{
 				UpdateMessageLabel(saved: true);
 			}

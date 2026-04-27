@@ -163,8 +163,15 @@ namespace BizHawk.Client.EmuHawk
 				text: $"Save {WindowTitleStatic} project?"));
 			if (shouldSaveResult == true)
 			{
-				TryAgainResult saveResult = this.DoWithTryAgainBox(() => SaveTas(), "Failed to save movie.");
-				return saveResult != TryAgainResult.Canceled;
+				FileWriteResult saveResult = SaveTas();
+				while (saveResult.IsError && shouldSaveResult != true)
+				{
+					shouldSaveResult = this.ModalMessageBox3(
+						$"Failed to save movie. {saveResult.UserFriendlyErrorMessage()}\n{saveResult.Exception.Message}\n\nTry again?",
+						"Error",
+						EMsgBoxIcon.Error);
+					if (shouldSaveResult == true) saveResult = SaveTas();
+				}
 			}
 			if (shouldSaveResult is null) return false;
 			else CurrentTasMovie.ClearChanges();
