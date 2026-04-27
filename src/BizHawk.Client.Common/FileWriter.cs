@@ -92,8 +92,7 @@ namespace BizHawk.Client.Common
 			FileWritePaths paths = new(path, writePath);
 			try
 			{
-				var parentDir = Path.GetDirectoryName(path);
-				if (!string.IsNullOrWhiteSpace(parentDir)) Directory.CreateDirectory(parentDir);
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
 				FileStream fs = new(writePath, FileMode.Create, FileAccess.Write);
 				return new(new FileWriter(paths, fs), paths);
 			}
