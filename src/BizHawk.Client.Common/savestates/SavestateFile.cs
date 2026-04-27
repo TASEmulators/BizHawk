@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 			_userBag = userBag;
 		}
 
-		public FileWriteResult Create(string filename, SaveStateConfig config, bool makeBackup)
+		public FileWriteResult Create(string filename, SaveStateConfig config)
 		{
 			FileWriteResult<ZipStateSaver> createResult = ZipStateSaver.Create(filename, config.CompressionLevelNormal);
 			if (createResult.IsError) return createResult;
@@ -132,8 +132,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.LagLog, tw => tasMovie.LagLog.Save(tw), zstdCompress: true);
 			}
 
-			makeBackup = makeBackup && config.MakeBackups;
-			return bs.CloseAndDispose(makeBackup ? $"{filename}.bak" : null);
+			return bs.CloseAndDispose();
 		}
 
 		public bool Load(string path, IDialogParent dialogParent)

@@ -1,7 +1,6 @@
 #nullable enable
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BizHawk.Client.Common
@@ -64,20 +63,6 @@ namespace BizHawk.Client.Common
 			string? caption = null,
 			EMsgBoxIcon? icon = null)
 				=> dialogParent.DialogController.ShowMessageBox3(owner: dialogParent, text: text, caption: caption, icon: icon);
-
-		public static void ErrorMessageBox(
-			this IDialogParent dialogParent,
-			FileWriteResult fileResult,
-			string? prefixMessage = null)
-		{
-			Debug.Assert(fileResult.IsError && fileResult.Exception != null, "Error box must have an error.");
-
-			string prefix = prefixMessage == null ? "" : prefixMessage + "\n";
-			dialogParent.ModalMessageBox(
-				text: $"{prefix}{fileResult.UserFriendlyErrorMessage()}\n{fileResult.Exception!.Message}",
-				caption: "Error",
-				icon: EMsgBoxIcon.Error);
-		}
 
 		/// <summary>Creates and shows a <c>System.Windows.Forms.OpenFileDialog</c> or equivalent with the receiver (<paramref name="dialogParent"/>) as its parent</summary>
 		/// <param name="discardCWDChange"><c>OpenFileDialog.RestoreDirectory</c> (isn't this useless when specifying <paramref name="initDir"/>? keeping it for backcompat)</param>

@@ -3985,21 +3985,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			bool? tryAgain = null;
-			do
-			{
-				FileWriteResult stateSaveResult = AutoSaveStateIfConfigured();
-				if (stateSaveResult.IsError)
-				{
-					tryAgain = this.ShowMessageBox3(
-						$"Failed to auto-save state. Do you want to try again?\n\nError details:\n{stateSaveResult.UserFriendlyErrorMessage()}\n{stateSaveResult.Exception.Message}",
-						"IOError while writing savestate",
-						EMsgBoxIcon.Error);
-					if (tryAgain == null) return;
-				}
-			} while (tryAgain == true);
-
 			StopAv();
+			AutoSaveStateIfConfigured();
 
 			CommitCoreSettingsToConfig();
 			DisableRewind();
@@ -4021,14 +4008,9 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = false;
 		}
 
-		private FileWriteResult AutoSaveStateIfConfigured()
+		private void AutoSaveStateIfConfigured()
 		{
-			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates())
-			{
-				return SaveQuickSave(Config.SaveSlot);
-			}
-
-			return new();
+			if (Config.AutoSaveLastSaveSlot && Emulator.HasSavestates()) SavestateCurrentSlot();
 		}
 
 		public bool GameIsClosing { get; private set; } // Lets tools make better decisions when being called by CloseGame
@@ -4184,30 +4166,27 @@ namespace BizHawk.Client.EmuHawk
 			return LoadState(path: path, userFriendlyStateName: quickSlotName, suppressOSD: suppressOSD);
 		}
 
-		private FileWriteResult SaveStateInternal(string path, string userFriendlyStateName, bool suppressOSD, bool makeBackup)
+		public void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
-				return new(FileWriteEnum.Aborted, new("", ""), new UnlessUsingApiException("The current emulator does not support savestates."));
+				return;
 			}
 
 			if (ToolControllingSavestates is { } tool)
 			{
 				tool.SaveState();
-				// assume success by the tool: state was created, but not as a file. So no path.
-				return new();
+				return;
 			}
 
 			if (MovieSession.Movie.IsActive() && Emulator.Frame > MovieSession.Movie.FrameCount)
 			{
-				const string errmsg = "Cannot savestate after movie end!";
-				AddOnScreenMessage(errmsg);
-				// Failed to create state due to limitations of our movie handling code.
-				return new(FileWriteEnum.Aborted, new("", ""), new UnlessUsingApiException(errmsg));
+				AddOnScreenMessage("Cannot savestate after movie end!");
+				return;
 			}
 
 			FileWriteResult result = new SavestateFile(Emulator, MovieSession, MovieSession.UserBag)
-				.Create(path, Config.Savestates, makeBackup);
+				.Create(path, Config.Savestates);
 			if (result.IsError)
 			{
 				AddOnScreenMessage($"Unable to save state {path}");
@@ -4221,32 +4200,25 @@ namespace BizHawk.Client.EmuHawk
 				}
 				RA?.OnSaveState(path);
 
-				if (Tools.Has<LuaConsole>())
-				{
-					Tools.LuaConsole.CallStateSaveCallbacks(userFriendlyStateName);
-				}
-
 				if (!suppressOSD)
 				{
 					AddOnScreenMessage($"Saved state: {userFriendlyStateName}");
 				}
 			}
 
-			return result;
+			if (!fromLua)
+			{
+				UpdateStatusSlots();
+			}
 		}
 
-		public FileWriteResult SaveState(string path, string userFriendlyStateName, bool suppressOSD = false)
-		{
-			return SaveStateInternal(path, userFriendlyStateName, suppressOSD, false);
-		}
-
-		public FileWriteResult SaveQuickSave(int slot, bool suppressOSD = false)
+		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
+		public void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
-				return new(FileWriteEnum.Aborted, new("", ""), new UnlessUsingApiException("The current emulator does not support savestates."));
+				return;
 			}
-
 			var quickSlotName = $"QuickSave{slot % 10}";
 			var handled = false;
 			if (QuicksaveSave is not null)
@@ -4257,33 +4229,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 			if (handled)
 			{
-				// I suppose this is a success? But we have no path.
-				return new();
+				return;
 			}
 
 			if (ToolControllingSavestates is { } tool)
 			{
 				tool.SaveQuickSave(slot);
-				// assume success by the tool: state was created, but not as a file. So no path.
-				return new();
+				return;
 			}
 
 			var path = $"{SaveStatePrefix()}.{quickSlotName}.State";
-			var ret = SaveStateInternal(path, quickSlotName, suppressOSD, true);
-			UpdateStatusSlots();
-			return ret;
-		}
+			new FileInfo(path).Directory?.Create();
 
-		/// <summary>
-		/// Runs <see cref="SaveQuickSave(int, bool)"/> and displays a pop up message if there was an error.
-		/// </summary>
-		private void SaveQuickSaveAndShowError(int slot)
-		{
-			FileWriteResult result = SaveQuickSave(slot);
-			if (result.IsError)
+			// Make backup first
+			if (Config.Savestates.MakeBackups)
 			{
-				this.ErrorMessageBox(result, "Quick save failed.");
+				Util.TryMoveBackupFile(path, $"{path}.bak");
 			}
+
+			SaveState(path, quickSlotName, fromLua, suppressOSD);
+
+			if (Tools.Has<LuaConsole>()) Tools.LuaConsole.CallStateSaveCallbacks(quickSlotName);
 		}
 
 		public bool EnsureCoreIsAccurate()
@@ -4346,19 +4312,12 @@ namespace BizHawk.Client.EmuHawk
 			var path = Config.PathEntries.SaveStateAbsolutePath(Game.System);
 			new FileInfo(path).Directory?.Create();
 
-			var shouldSaveResult = this.ShowFileSaveDialog(
+			var result = this.ShowFileSaveDialog(
 				fileExt: "State",
 				filter: EmuHawkSaveStatesFSFilterSet,
 				initDir: path,
 				initFileName: $"{SaveStatePrefix()}.QuickSave0.State");
-			if (shouldSaveResult is not null)
-			{
-				FileWriteResult saveResult = SaveState(path: shouldSaveResult, userFriendlyStateName: shouldSaveResult);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult, "Unable to save.");
-				}
-			}
+			if (result is not null) SaveState(path: result, userFriendlyStateName: result);
 
 			if (Tools.IsLoaded<TAStudio>())
 			{
