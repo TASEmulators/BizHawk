@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 
 			Movie = null;
 
-			return result ?? new();
+			return result ?? new(FileWriteEnum.Success, "", null);
 		}
 
 		public IMovie Get(string path, bool loadMovie)

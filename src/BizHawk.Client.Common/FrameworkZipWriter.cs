@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 			return fs.Convert(ret);
 		}
 
-		public FileWriteResult CloseAndDispose(string? backupPath = null)
+		public FileWriteResult CloseAndDispose()
 		{
 			if (_archive == null || _fs == null) throw new ObjectDisposedException("Cannot use disposed ZipWriter.");
 
@@ -58,11 +58,11 @@ namespace BizHawk.Client.Common
 			FileWriteResult ret;
 			if (_writeException == null)
 			{
-				ret = _fs.CloseAndDispose(backupPath);
+				ret = _fs.CloseAndDispose();
 			}
 			else
 			{
-				ret = new(FileWriteEnum.FailedDuringWrite, _fs.Paths, _writeException);
+				ret = new(FileWriteEnum.FailedDuringWrite, _fs.TempPath, _writeException);
 				_fs.Abort();
 			}
 

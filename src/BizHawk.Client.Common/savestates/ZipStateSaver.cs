@@ -48,10 +48,9 @@ namespace BizHawk.Client.Common
 		/// This method must be called after writing has finished and must not be called twice.
 		/// Dispose will be called regardless of the result.
 		/// </summary>
-		/// <param name="backupPath">If not null, renames the original file to this path.</param>
-		public FileWriteResult CloseAndDispose(string? backupPath = null)
+		public FileWriteResult CloseAndDispose()
 		{
-			FileWriteResult result = _zip.CloseAndDispose(backupPath);
+			FileWriteResult result = _zip.CloseAndDispose();
 			Dispose();
 			return result;
 		}
