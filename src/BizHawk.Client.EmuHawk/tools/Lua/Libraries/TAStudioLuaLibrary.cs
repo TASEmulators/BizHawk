@@ -506,6 +506,28 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
+		[LuaMethodExample("""
+			tastudio.load_branch_by_id("97021544-2454-4483-824f-47f75e7fcb6a");
+		""")]
+		[LuaMethod(
+			name: "load_branch_by_id",
+			description: "Loads the branch with the given ID.")]
+		public void LoadBranchByID(string id)
+		{
+			if (!Guid.TryParseExact(id, format: "D", out var parsed))
+			{
+				Log($"[tastudio.load_branch_by_id] not a valid UUID: {id}");
+				return;
+			}
+			var found = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid == parsed);
+			if (found is null)
+			{
+				Log($"[tastudio.load_branch_by_id] no such branch: {id}");
+				return;
+			}
+			Tastudio.LoadBranch(found);
+		}
+
 		[LuaMethodExample("tastudio.loadbranch(0)")]
 		[LuaMethod("loadbranch", "Loads a branch at the given index, if a branch at that index exists.")]
 		public void LoadBranch(int index)
