@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					LoadMostRecentROM();
 					break;
 				case "Flush SaveRAM":
-					FlushSaveRAMMenuItem_Click(null, EventArgs.Empty);
+					FlushSaveRAM();
 					break;
 				case "Display FPS":
 					ToggleFps();
