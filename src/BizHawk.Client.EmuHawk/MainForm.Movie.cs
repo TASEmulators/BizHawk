@@ -125,14 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				FileWriteResult saveResult = MovieSession.StopMovie(saveChanges);
-				if (saveResult.IsError)
-				{
-					this.ShowMessageBox(
-						$"Failed to save movie.\n{saveResult.UserFriendlyErrorMessage()}\n{saveResult.Exception.Message}",
-						"Error",
-						EMsgBoxIcon.Error);
-				}
+				MovieSession.StopMovie(saveChanges);
 				SetMainformMovieInfo();
 			}
 		}

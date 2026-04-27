@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 		/// <summary>clears the queued movie</summary>
 		void AbortQueuedMovie();
 
-		FileWriteResult StopMovie(bool saveChanges = true);
+		void StopMovie(bool saveChanges = true);
 
 		/// <summary>
 		/// Create a new (Tas)Movie with the given path as filename. If <paramref name="loadMovie"/> is true,

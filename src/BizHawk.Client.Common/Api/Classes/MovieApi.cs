@@ -52,7 +52,6 @@ namespace BizHawk.Client.Common
 			return Bk2LogEntryGenerator.GenerateLogEntry(_movieSession.Movie.GetInputState(frame));
 		}
 
-		// TODO: Change return type to FileWriteResult
 		public void Save(string filename)
 		{
 			if (_movieSession.Movie.NotActive())
@@ -70,8 +69,7 @@ namespace BizHawk.Client.Common
 				}
 				_movieSession.Movie.Filename = filename;
 			}
-			FileWriteResult result = _movieSession.Movie.Save();
-			if (result.Exception != null) throw result.Exception;
+			_movieSession.Movie.Save();
 		}
 
 		public IReadOnlyDictionary<string, string> GetHeader()

@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 			return bk2;
 		}
 
-		public static FileWriteResult<ITasMovie> ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
+		public static ITasMovie ConvertToSavestateAnchoredMovie(this ITasMovie old, int frame, byte[] savestate)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
@@ -115,11 +115,11 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			FileWriteResult saveResult = tas.Save();
-			return saveResult.Convert(tas);
+			tas.Save();
+			return tas;
 		}
 
-		public static FileWriteResult<ITasMovie> ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
+		public static ITasMovie ConvertToSaveRamAnchoredMovie(this ITasMovie old, byte[] saveRam)
 		{
 			string newFilename = ConvertFileNameToTasMovie(old.Filename);
 
@@ -146,8 +146,8 @@ namespace BizHawk.Client.Common
 				tas.Subtitles.Add(sub);
 			}
 
-			FileWriteResult saveResult = tas.Save();
-			return saveResult.Convert(tas);
+			tas.Save();
+			return tas;
 		}
 
 #pragma warning disable RCS1224 // private but for unit test
