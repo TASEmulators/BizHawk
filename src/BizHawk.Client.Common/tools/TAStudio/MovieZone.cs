@@ -159,15 +159,15 @@ namespace BizHawk.Client.Common
 		public FileWriteResult Save(string fileName)
 		{
 			// Save the controller definition/LogKey
-			// Save the controller name and controller groups count. (Only for the user)
+			// Save the controller name and player count. (Only for the user.)
 			// Save whether or not the macro should use overlay input, and/or replace
 
 			return FileWriter.Write(fileName, (fs) =>
 			{
 				using var writer = new StreamWriter(fs);
 				writer.WriteLine(InputKey);
-				writer.WriteLine(_movieDefinition.Name);
-				writer.WriteLine(_movieDefinition.ControlsOrdered.Count.ToString());
+				writer.WriteLine(_emulator.ControllerDefinition.Name);
+				writer.WriteLine(_emulator.ControllerDefinition.PlayerCount.ToString());
 				writer.WriteLine($"{Overlay},{Replace}");
 
 				foreach (string line in _log)
