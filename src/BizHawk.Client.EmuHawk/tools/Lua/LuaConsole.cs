@@ -690,7 +690,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = GetSaveFileFromUser();
 			if (file != null)
 			{
-				FileWriteResult saveResult = _openedFiles.Save(file.FullName);
+				FileWriteResult saveResult = LuaImp.ScriptList.Save(file.FullName);
 				if (saveResult.IsError)
 				{
 					this.ErrorMessageBox(saveResult);
@@ -725,7 +725,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool AskSaveChanges()
 		{
-			if (!_openedFiles.Changes || string.IsNullOrEmpty(_openedFiles.Filename)) return true;
+			if (!LuaImp.ScriptList.Changes || string.IsNullOrEmpty(LuaImp.ScriptList.Filename)) return true;
 			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
 				caption: "Closing with Unsaved Changes",
 				icon: EMsgBoxIcon.Question,
@@ -736,7 +736,7 @@ namespace BizHawk.Client.EmuHawk
 				TryAgainResult saveResult = this.DoWithTryAgainBox(SaveOrSaveAs, "Failed to save Lua session.");
 				return saveResult != TryAgainResult.Canceled;
 			}
-			else _openedFiles.Changes = false;
+			else LuaImp.ScriptList.Changes = false;
 			return true;
 		}
 
@@ -752,12 +752,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileWriteResult SaveOrSaveAs()
 		{
-			if (!string.IsNullOrWhiteSpace(_openedFiles.Filename))
+			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
 			{
-				FileWriteResult result = _openedFiles.Save(_openedFiles.Filename);
+				FileWriteResult result = LuaImp.ScriptList.Save(LuaImp.ScriptList.Filename);
 				if (!result.IsError)
 				{
-					Config.RecentLuaSession.Add(_openedFiles.Filename);
+					Config.RecentLuaSession.Add(LuaImp.ScriptList.Filename);
 				}
 				return result;
 			}
@@ -804,17 +804,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			if (_openedFiles.Changes)
+			if (LuaImp.ScriptList.Changes)
 			{
 				FileWriteResult result = SaveOrSaveAs();
 				if (result.IsError)
 				{
 					this.ErrorMessageBox(result, "Failed to save Lua session.");
-					OutputMessages.Text = $"Failed to save {Path.GetFileName(_openedFiles.Filename)}";
+					OutputMessages.Text = $"Failed to save {Path.GetFileName(LuaImp.ScriptList.Filename)}";
 				}
 				else
 				{
-					OutputMessages.Text = $"{Path.GetFileName(_openedFiles.Filename)} saved.";
+					OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
 				}
 			}
 		}
