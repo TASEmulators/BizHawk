@@ -159,12 +159,12 @@ namespace BizHawk.Client.Common
 		public void Save(string fileName)
 		{
 			// Save the controller definition/LogKey
-			// Save the controller name and player count. (Only for the user.)
+			// Save the controller name and controller groups count. (Only for the user)
 			// Save whether or not the macro should use overlay input, and/or replace
 			string[] header = new string[4];
 			header[0] = InputKey;
-			header[1] = _emulator.ControllerDefinition.Name;
-			header[2] = _emulator.ControllerDefinition.PlayerCount.ToString();
+			header[1] = _movieDefinition.Name;
+			header[2] = _movieDefinition.ControlsOrdered.Count.ToString();
 			header[3] = $"{Overlay},{Replace}";
 
 			File.WriteAllLines(fileName, header);
