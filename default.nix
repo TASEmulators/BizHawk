@@ -32,7 +32,7 @@ in {
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
-, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
+, gnome-themes-extra ? pkgs.gnome-themes-extra or pkgs.gnome3.gnome-themes-extra
 , gtk2-x11 ? pkgs.gtk2-x11
 , kate ? pkgs.kate.overrideAttrs (oldAttrs: {
 	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {
