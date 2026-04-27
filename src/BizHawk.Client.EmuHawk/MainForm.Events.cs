@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
 			Console.WriteLine($"Closing rom clicked Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
-			LoadNullRom();
+			CloseRom();
 			Console.WriteLine($"Closing rom clicked DONE Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
 		}
 
@@ -1400,7 +1400,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearSramContextMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadNullRom(clearSram: true);
+			CloseRom(clearSram: true);
 		}
 
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)

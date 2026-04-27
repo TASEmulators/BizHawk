@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 
 		public void CloseEmulator(int? exitCode = null) => _mainForm.CloseEmulator(exitCode);
 
-		public void CloseRom() => _mainForm.LoadNullRom();
+		public void CloseRom() => _mainForm.CloseRom();
 
 		public void DisplayMessages(bool value) => _config.DisplayMessages = value;
 

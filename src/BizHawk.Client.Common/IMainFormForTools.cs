@@ -18,6 +18,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
 		bool EmulatorPaused { get; }
 
+		/// <remarks>only referenced from <see cref="TAStudio"/></remarks>
+		bool GameIsClosing { get; }
+
 		/// <remarks>only referenced from <see cref="PlaybackBox"/></remarks>
 		bool HoldFrameAdvance { get; set; }
 

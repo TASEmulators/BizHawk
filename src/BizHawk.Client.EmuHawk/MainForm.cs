@@ -901,7 +901,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 			}
-
+			// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
 			CloseGame();
 			SaveConfig();
 		}
@@ -3663,6 +3663,10 @@ namespace BizHawk.Client.EmuHawk
 				loader.OnLoadSettings += CoreSettings;
 				loader.OnLoadSyncSettings += CoreSyncSettings;
 
+				// this also happens in CloseGame(). But it needs to happen here since if we're restarting with the same core,
+				// any settings changes that we made need to make it back to config before we try to instantiate that core with
+				// the new settings objects
+				CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 				CloseGame();
 
 				var nextComm = CreateCoreComm();
@@ -3947,12 +3951,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// This closes the game but does not set things up for using the client with the new null emulator.
-		/// This method should only be called (outside of <see cref="LoadNullRom(bool)"/>) if the caller is about to load a new game with no user interaction between close and load.
-		/// </summary>
+		// whats the difference between these two methods??
+		// its very tricky. rename to be more clear or combine them.
+		// This gets called whenever a core related thing is changed.
+		// Like reboot core.
 		private void CloseGame(bool clearSram = false)
 		{
+			GameIsClosing = true;
 			if (clearSram)
 			{
 				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
@@ -3999,7 +4004,7 @@ namespace BizHawk.Client.EmuHawk
 			CommitCoreSettingsToConfig();
 			DisableRewind();
 
-			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig() because it checks if we have an active movie.
+			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
 				StopMovie();
 			}
@@ -4008,15 +4013,12 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatList.SaveOnClose();
 			Emulator.Dispose();
-
-			// This stuff might belong in LoadNullRom.
-			// However, Emulator.IsNull is used all over and at least one use (in LoadRomInternal) appears to depend on this code being here.
-			// Some refactoring is needed if these things are to be actually moved to LoadNullRom.
 			Emulator = new NullEmulator();
 			Game = GameInfo.NullInstance;
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
+			GameIsClosing = false;
 		}
 
 		private FileWriteResult AutoSaveStateIfConfigured()
@@ -4029,12 +4031,12 @@ namespace BizHawk.Client.EmuHawk
 			return new();
 		}
 
-		/// <summary>
-		/// This closes the current ROM, closes tools that require emulator services, and sets things up for the user to interact with the client having no loaded ROM.
-		/// </summary>
-		/// <param name="clearSram">True if SRAM should be deleted instead of saved.</param>
-		public void LoadNullRom(bool clearSram = false)
+		public bool GameIsClosing { get; private set; } // Lets tools make better decisions when being called by CloseGame
+
+		public void CloseRom(bool clearSram = false)
 		{
+			// This gets called after Close Game gets called.
+			// Tested with NESHawk and SMB3 (U)
 			if (Tools.AskSave())
 			{
 				CloseGame(clearSram);
