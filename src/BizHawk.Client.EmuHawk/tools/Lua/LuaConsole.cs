@@ -225,10 +225,10 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				runningScripts = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
+				runningScripts = _openedFiles.Where(lf => lf.Enabled).ToList();
 
 				// we don't use runningScripts here as the other scripts need to be stopped too
-				foreach (var file in LuaImp.ScriptList)
+				foreach (var file in _openedFiles)
 				{
 					file.Stop();
 				}
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath(), UpdateRegisteredFunctionsDialog);
 			_nonFile.Start(LuaImp.SpawnBlankCoroutineAndSandbox(null));
-			LuaImp.ScriptList.Insert(0, _nonFile);
+			_openedFiles.Insert(0, _nonFile);
 
 			UpdateDialog();
 		}
@@ -360,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var luaFile = new LuaFile(absolutePath, UpdateRegisteredFunctionsDialog);
 
-				LuaImp.ScriptList.Add(luaFile);
+				_openedFiles.Add(luaFile);
 				_openedFiles.Add(luaFile);
 				LuaListView.RowCount = _openedFiles.Count;
 				Config.RecentLua.Add(absolutePath);
@@ -403,7 +403,7 @@ namespace BizHawk.Client.EmuHawk
 				item.Stop();
 				RemoveFileWatcher(item);
 			}
-			LuaImp.ScriptList.Remove(item);
+			_openedFiles.Remove(item);
 			_openedFiles.Remove(item);
 		}
 
@@ -549,9 +549,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncScriptList()
 		{
-			LuaImp.ScriptList.Clear();
-			LuaImp.ScriptList.Add(_nonFile);
-			LuaImp.ScriptList.AddRange(_openedFiles.Where(static lf => !lf.IsSeparator));
+			_openedFiles.Clear();
+			_openedFiles.Add(_nonFile);
+			_openedFiles.AddRange(_openedFiles.Where(static lf => !lf.IsSeparator));
 		}
 
 		public bool LoadLuaSession(string path)
@@ -690,7 +690,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = GetSaveFileFromUser();
 			if (file != null)
 			{
-				LuaImp.ScriptList.Save(file.FullName);
+				_openedFiles.Save(file.FullName);
 				Config.RecentLuaSession.Add(file.FullName);
 				OutputMessages.Text = $"{file.Name} saved.";
 			}
@@ -715,14 +715,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool AskSaveChanges()
 		{
-			if (!LuaImp.ScriptList.Changes || string.IsNullOrEmpty(LuaImp.ScriptList.Filename)) return true;
+			if (!_openedFiles.Changes || string.IsNullOrEmpty(_openedFiles.Filename)) return true;
 			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
 				caption: "Closing with Unsaved Changes",
 				icon: EMsgBoxIcon.Question,
 				text: $"Save {WindowTitleStatic} session?"));
 			if (result is null) return false;
 			if (result.Value) SaveOrSaveAs();
-			else LuaImp.ScriptList.Changes = false;
+			else _openedFiles.Changes = false;
 			return true;
 		}
 
@@ -732,16 +732,16 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
-				form.UpdateValues(LuaImp.ScriptList);
+				form.UpdateValues(_openedFiles);
 			}
 		}
 
 		private void SaveOrSaveAs()
 		{
-			if (!string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename))
+			if (!string.IsNullOrWhiteSpace(_openedFiles.Filename))
 			{
-				LuaImp.ScriptList.Save(LuaImp.ScriptList.Filename);
-				Config.RecentLuaSession.Add(LuaImp.ScriptList.Filename);
+				_openedFiles.Save(_openedFiles.Filename);
+				Config.RecentLuaSession.Add(_openedFiles.Filename);
 			}
 			else
 			{
@@ -786,10 +786,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaImp.ScriptList.Changes)
+			if (_openedFiles.Changes)
 			{
 				SaveOrSaveAs();
-				OutputMessages.Text = $"{Path.GetFileName(LuaImp.ScriptList.Filename)} saved.";
+				OutputMessages.Text = $"{Path.GetFileName(_openedFiles.Filename)} saved.";
 			}
 		}
 
@@ -1086,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!alreadyOpen)
 			{
-				new LuaRegisteredFunctionsList(LuaImp.ScriptList)
+				new LuaRegisteredFunctionsList(_openedFiles)
 				{
 					StartLocation = this.ChildPointToScreen(LuaListView),
 				}.Show();
@@ -1199,15 +1199,15 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAllScriptsContextItem.Visible =
 				ScriptContextSeparator.Visible =
-				LuaImp.ScriptList.Exists(file => file.Enabled);
+				_openedFiles.Exists(file => file.Enabled);
 
-			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.ScriptList.Exists(lf => lf.Functions.Count != 0);
+			ClearRegisteredFunctionsContextItem.Enabled = _openedFiles.Exists(lf => lf.Functions.Count != 0);
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = ClearRegisteredFunctionsLogContextItem.Enabled
-				= LuaImp.ScriptList.Exists(lf => lf.Functions.Count != 0);
+				= _openedFiles.Exists(lf => lf.Functions.Count != 0);
 			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
 			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 		}
@@ -1241,7 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (LuaFile lf in LuaImp.ScriptList)
+			foreach (LuaFile lf in _openedFiles)
 				lf.Functions.Clear();
 		}
 
