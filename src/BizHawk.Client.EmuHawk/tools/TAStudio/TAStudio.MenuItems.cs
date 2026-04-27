@@ -174,25 +174,15 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				var selectionStart = TasView.SelectionStartIndex!.Value;
-				MovieZone macro = new(
+				new MovieZone(
 					Emulator,
 					Tools,
 					MovieSession,
 					start: selectionStart,
-					length: TasView.SelectionEndIndex!.Value - selectionStart + 1);
-				FileWriteResult saveResult = macro.Save(file.FullName);
+					length: TasView.SelectionEndIndex!.Value - selectionStart + 1)
+					.Save(file.FullName);
 
-				if (saveResult.IsError)
-				{
-					DialogController.ShowMessageBox(
-						$"Failed to save macro.\n{saveResult.UserFriendlyErrorMessage()}\n{saveResult.Exception.Message}",
-						"Error",
-						EMsgBoxIcon.Error);
-				}
-				else
-				{
-					Config.RecentMacros.Add(file.FullName);
-				}
+				Config.RecentMacros.Add(file.FullName);
 			}
 		}
 

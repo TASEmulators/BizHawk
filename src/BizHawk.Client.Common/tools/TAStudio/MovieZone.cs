@@ -156,25 +156,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public FileWriteResult Save(string fileName)
+		public void Save(string fileName)
 		{
 			// Save the controller definition/LogKey
 			// Save the controller name and player count. (Only for the user.)
 			// Save whether or not the macro should use overlay input, and/or replace
+			string[] header = new string[4];
+			header[0] = InputKey;
+			header[1] = _emulator.ControllerDefinition.Name;
+			header[2] = _emulator.ControllerDefinition.PlayerCount.ToString();
+			header[3] = $"{Overlay},{Replace}";
 
-			return FileWriter.Write(fileName, (fs) =>
-			{
-				using var writer = new StreamWriter(fs);
-				writer.WriteLine(InputKey);
-				writer.WriteLine(_emulator.ControllerDefinition.Name);
-				writer.WriteLine(_emulator.ControllerDefinition.PlayerCount.ToString());
-				writer.WriteLine($"{Overlay},{Replace}");
-
-				foreach (string line in _log)
-				{
-					writer.WriteLine(line);
-				}
-			});
+			File.WriteAllLines(fileName, header);
+			File.AppendAllLines(fileName, _log);
 		}
 
 		public static MovieZone/*?*/ Load(string fileName, IDialogController dialogController, IMovie movie)

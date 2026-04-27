@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			macro.Save(result); // ignore errors: This tool is going to be removed.
+			macro.Save(result);
 			Config!.RecentMacros.Add(result);
 
 			return true;
