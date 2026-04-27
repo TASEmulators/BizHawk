@@ -164,13 +164,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file != null)
 			{
-				var selectionStart = TasView.SelectionStartIndex!.Value;
+				var selectionStart = FirstSelectedRowIndex;
 				new MovieZone(
-					Emulator,
-					Tools,
-					MovieSession,
+					CurrentTasMovie,
 					start: selectionStart,
-					length: TasView.SelectionEndIndex!.Value - selectionStart + 1)
+					length: endIndex - selectionStart + 1)
 					.Save(file.FullName);
 
 				Config.RecentMacros.Add(file.FullName);
