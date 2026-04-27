@@ -288,6 +288,7 @@ namespace BizHawk.Client.Common
 			{
 				StreamWriter sw = new(fs);
 				sw.Write(sb.ToString());
+				sw.Flush();
 			});
 			if (!result.IsError)
 			{
