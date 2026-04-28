@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SubtitlesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TAStudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ColumnsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.HelpSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TASEditorManualOnlineMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -157,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
             this.EditSubMenu,
             this.MetaSubMenu,
             this.SettingsSubMenu,
+            this.ColumnsSubMenu,
             this.HelpSubMenu});
 			this.TASMenu.TabIndex = 0;
 			// 
@@ -451,6 +453,10 @@ namespace BizHawk.Client.EmuHawk
 			this.TAStudioSettingsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.TAStudioSettingsToolStripMenuItem.Text = "Open settings...";
 			this.TAStudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.TAStudioSettingsToolStripMenuItem_Click);
+			// 
+			// ColumnsSubMenu
+			// 
+			this.ColumnsSubMenu.Text = "&Columns";
 			// 
 			// HelpSubMenu
 			// 
@@ -880,6 +886,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ClearGreenzoneMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx GreenzoneICheckSeparator;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx StateHistoryIntegrityCheckMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ColumnsSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator19;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx CancelSeekContextMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx StartFromNowSeparator;
