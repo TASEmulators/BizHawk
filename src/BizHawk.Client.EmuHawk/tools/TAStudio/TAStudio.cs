@@ -7,6 +7,7 @@ using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
@@ -169,6 +170,12 @@ namespace BizHawk.Client.EmuHawk
 				Enabled = false,
 				Text = "Menu moved! (Right-click any column's heading)",
 			});
+			if (OSTailoredCode.IsUnixHost)
+			{
+				// workaround for https://github.com/mono/mono/issues/12644
+				ColumnRightClickMenu.Items.Insert(0, new ToolStripMenuItemEx { Text = "(Dismiss Menu)" }); // don't even need to attach any behaviour, since clicking anything will dismiss the menu first
+				ColumnRightClickMenu.Items.Insert(1, new ToolStripSeparatorEx());
+			}
 			_tasViewPanel = MainVertialSplit.Panel1;
 			// The built-in scroll feature of .NET's scrollable controls is non-functional. So, custom scroll behavior!
 			_tasViewHBar.Dock = DockStyle.Bottom;
