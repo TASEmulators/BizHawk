@@ -164,6 +164,11 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			ColumnsSubMenu.DropDownItems.Add(new ToolStripMenuItem
+			{
+				Enabled = false,
+				Text = "Menu moved! (Right-click any column's heading)",
+			});
 			_tasViewPanel = MainVertialSplit.Panel1;
 			// The built-in scroll feature of .NET's scrollable controls is non-functional. So, custom scroll behavior!
 			_tasViewHBar.Dock = DockStyle.Bottom;
