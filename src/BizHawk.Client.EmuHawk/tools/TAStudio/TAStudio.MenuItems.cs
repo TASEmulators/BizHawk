@@ -967,9 +967,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewInputRollContextMenuItem_Click(object sender, EventArgs e)
 		{
+			IEnumerable<string> defaultHidden = GetDefaultHiddenColums(_inputRolls[0]).Select(static r => r.Name);
 			HashSet<string> hiddenCols = _inputRolls
 				.SelectMany(static r => r.AllColumns.Where(static c => !c.Visible))
 				.Select(static c => c.Name)
+				.Where(n => !defaultHidden.Contains(n))
 				.Distinct()
 				.ToHashSet();
 

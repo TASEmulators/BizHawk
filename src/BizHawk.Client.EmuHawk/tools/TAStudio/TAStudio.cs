@@ -447,33 +447,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void MakeDefaultColumns(InputRoll roll)
+		private IEnumerable<RollColumn> GetDefaultHiddenColums(InputRoll roll)
 		{
-			roll.AllColumns.Clear();
-			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
-			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
-			{
-				Rotatable = true,
-			});
-
-			List<RollColumn> columns = new(); // add to list first then AddRange to avoid 100 refreshes
-			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
-			{
-				var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
-					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
-					: mnemonic0;
-
-				columns.Add(new(
-					name: name,
-					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
-					horizontalHeight: (maxLength * 6) + 14,
-					text: mnemonic)
-				{
-					Rotatable = ControllerType.Axes.ContainsKey(name),
-				});
-			}
-			roll.AllColumns.AddRange(columns);
-
 			var columnsToHide = roll.AllColumns
 				.Where(c =>
 					// todo: make a proper user editable list?
@@ -526,7 +501,38 @@ namespace BizHawk.Client.EmuHawk
 				columnsToHide = columnsToHide.Concat(doomColsToHide);
 			}
 
-			foreach (var column in columnsToHide)
+			return columnsToHide;
+		}
+
+		private void MakeDefaultColumns(InputRoll roll)
+		{
+			roll.AllColumns.Clear();
+			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
+			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
+			{
+				Rotatable = true,
+			});
+
+			List<RollColumn> columns = new(); // add to list first then AddRange to avoid 100 refreshes
+			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
+			{
+				var mnemonic = Emulator.SystemId is VSystemID.Raw.N64 && N64CButtonSuffixes.Any(name.EndsWithOrdinal)
+					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
+					: mnemonic0;
+
+				columns.Add(new(
+					name: name,
+					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
+					horizontalHeight: (maxLength * 6) + 14,
+					text: mnemonic)
+				{
+					Rotatable = ControllerType.Axes.ContainsKey(name),
+				});
+			}
+			roll.AllColumns.AddRange(columns);
+
+
+			foreach (var column in GetDefaultHiddenColums(roll))
 			{
 				column.Visible = false;
 			}
