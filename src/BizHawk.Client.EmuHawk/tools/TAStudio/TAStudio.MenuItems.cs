@@ -718,14 +718,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpToolStripColumns()
 		{
-			ShowColumnsContextMenuItem.DropDownItems.Clear();
+			SetUpToolStripColumns(ShowColumnsContextMenuItem);
+			SetUpToolStripColumns(ColumnsSubMenu);
+			ToolStripMenuItem rollIndicatorItem = new();
+			ColumnsSubMenu.DropDownItems.Insert(0, rollIndicatorItem);
+			ColumnsSubMenu.DropDownOpening += (_, _) => {
+				rollIndicatorItem.Text = $"Current roll: #{_inputRolls.IndexOf(_activeInputRoll) + 1}";
+				rollIndicatorItem.Visible = _inputRolls.Count > 1;
+			};
+		}
+
+		private void SetUpToolStripColumns(ToolStripMenuItem parent)
+		{
+			parent.DropDownItems.Clear();
 
 			var columns = _inputRolls[0].AllColumns
 				.Where(static c => !string.IsNullOrWhiteSpace(c.Text) && c.Name is not FrameColumnName)
 				.ToList();
 
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
-			int rowHeight = ShowColumnsContextMenuItem.Height + 4;
+			int rowHeight = parent.Height + 4;
 			int maxRows = workingHeight / rowHeight;
 			int keyCount = columns.Count(c => c.Name.StartsWithOrdinal("Key "));
 			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
@@ -735,11 +747,11 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < keysMenus.Length; i++)
 			{
 				keysMenus[i] = new ToolStripMenuItem();
-				ShowColumnsContextMenuItem.DropDownItems.Add(keysMenus[i]);
+				parent.DropDownItems.Add(keysMenus[i]);
 			}
 
 			var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.ControlsOrdered.Count];
-			playerMenus[0] = ShowColumnsContextMenuItem;
+			playerMenus[0] = parent;
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
 				playerMenus[i] = new ToolStripMenuItem($"Player {i}");
@@ -756,7 +768,7 @@ namespace BizHawk.Client.EmuHawk
 
 					UpdateInputRollDefinition(_activeInputRoll);
 
-					if (item.OwnerItem != ShowColumnsContextMenuItem) ShowColumnsContextMenuItem.ShowDropDown();
+					if (item.OwnerItem != parent) parent.ShowDropDown();
 					((ToolStripMenuItem)item.OwnerItem).ShowDropDown();
 				}
 			}
@@ -811,10 +823,10 @@ namespace BizHawk.Client.EmuHawk
 			// add player menus only if they actually contain items
 			foreach (ToolStripMenuItem menu in playerMenus.Skip(1).Where(static m => m.HasDropDownItems))
 			{
-				ShowColumnsContextMenuItem.DropDownItems.Add(menu);
+				parent.DropDownItems.Add(menu);
 			}
 
-			ShowColumnsContextMenuItem.DropDownItems.Add(new ToolStripSeparator());
+			parent.DropDownItems.Add(new ToolStripSeparator());
 
 			// button for the group of all keys
 			if (keysMenus.Length > 0)
@@ -822,7 +834,7 @@ namespace BizHawk.Client.EmuHawk
 				ToolStripMenuItem item = new("Show Keys") { CheckOnClick = true };
 
 				// Handle updating the check state when individual keys are toggled
-				ShowColumnsContextMenuItem.DropDownOpening += (_, _) =>
+				parent.DropDownOpening += (_, _) =>
 				{
 					if (programmaticallyHidingColumns) return;
 					programmaticallyHidingColumns = true;
@@ -848,7 +860,7 @@ namespace BizHawk.Client.EmuHawk
 
 					AfterCheckChange(item);
 				};
-				ShowColumnsContextMenuItem.DropDownItems.Add(item);
+				parent.DropDownItems.Add(item);
 			}
 
 			// buttons for the groups of each players' columns
@@ -902,7 +914,7 @@ namespace BizHawk.Client.EmuHawk
 				programmaticallyHidingColumns = false;
 			};
 
-			ShowColumnsContextMenuItem.DropDownItems.Add(new ToolStripMenuItem
+			parent.DropDownItems.Add(new ToolStripMenuItem
 			{
 				Enabled = false,
 				Text = "Change Peripherals...",

@@ -165,11 +165,6 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
-			ColumnsSubMenu.DropDownItems.Add(new ToolStripMenuItem
-			{
-				Enabled = false,
-				Text = "Menu moved! (Right-click any column's heading)",
-			});
 			if (OSTailoredCode.IsUnixHost)
 			{
 				// workaround for https://github.com/mono/mono/issues/12644
