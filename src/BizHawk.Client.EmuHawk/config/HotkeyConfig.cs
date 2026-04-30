@@ -20,18 +20,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = Properties.Resources.HotKeysIcon;
 			tabPage1.Select();
-		}
 
-		protected override void OnActivated(EventArgs e)
-		{
-			base.OnActivated(e);
 			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
-		}
-
-		protected override void OnDeactivate(EventArgs e)
-		{
-			base.OnDeactivate(e);
-			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 		}
 
 		private void HotkeyConfig_Load(object sender, EventArgs e)
@@ -50,6 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HotkeyConfig_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Input.Instance.ClearEvents();
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 		}
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)

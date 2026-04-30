@@ -56,27 +56,17 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Amiga Controller", Properties.Resources.AmigaKeyboard);
 		}
 
-		protected override void OnActivated(EventArgs e)
-		{
-			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
-		}
-
-		protected override void OnDeactivate(EventArgs e)
-		{
-			base.OnDeactivate(e);
-			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
-		}
-
 		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
 			Icon = Properties.Resources.GameControllerIcon;
 			Text = $"{_emulator.ControllerDefinition.Name} Configuration";
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
 		}
 
 		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Input.Instance.ClearEvents();
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 		}
 
 		private delegate Control PanelCreator<TBindValue>(Dictionary<string, TBindValue> settings, List<string> buttons, Size size);
