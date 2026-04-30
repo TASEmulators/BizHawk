@@ -31,6 +31,12 @@ namespace BizHawk.Client.EmuHawk
 			if (_backupBranch != null) _backupBranch.ChangeLog.MaxSteps = value;
 		}
 
+		public void ClearBackupBranch()
+		{
+			_backupBranch = null;
+			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = false;
+		}
+
 		private enum BranchUndo
 		{
 			Load,

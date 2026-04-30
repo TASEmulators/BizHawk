@@ -734,6 +734,7 @@ namespace BizHawk.Client.EmuHawk
 				RestorePositionFrame = -1;
 				_lastRecordAction = -1;
 				_doPause = false;
+				BookMarkControl.ClearBackupBranch();
 
 				StopSeeking();
 
