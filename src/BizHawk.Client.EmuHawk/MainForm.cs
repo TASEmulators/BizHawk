@@ -865,6 +865,8 @@ namespace BizHawk.Client.EmuHawk
 #endif
 				}
 			}
+
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
 		}
 
 		private void CheckMayCloseAndCleanup(object/*?*/ closingSender, CancelEventArgs closingArgs)
@@ -896,6 +898,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			Tools.Close();
+
+			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
 		}
 
 		private readonly bool _suppressSyncSettingsWarning;
@@ -1286,7 +1290,6 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
-			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, true);
 
 			if (Config.CaptureMouse)
 			{
@@ -1297,8 +1300,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			Input.Instance.ControlInputFocus(this, HostInputType.Mouse, false);
-
 			if (Config.CaptureMouse)
 			{
 				CaptureMouse(false);

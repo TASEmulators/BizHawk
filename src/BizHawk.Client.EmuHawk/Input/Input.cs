@@ -23,6 +23,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private readonly HashSet<Control> _wantingMouseFocus = new HashSet<Control>();
+		private bool _wantsMouse;
+		private Control/*?*/ _lastControl;
 
 #pragma warning disable CA2211 // public field
 		public static Input Instance;
@@ -244,8 +246,22 @@ namespace BizHawk.Client.EmuHawk
 					EnqueueNewEvents();
 
 					// analyze moose
-					bool wantsMouse = _wantingMouseFocus.Contains(Form.ActiveForm);
-					if (wantsMouse)
+					Control/*?*/ activeForm = Form.ActiveForm;
+					bool newWantsMouse = _wantingMouseFocus.Contains(activeForm);
+					if (activeForm != _lastControl && !_wantsMouse && newWantsMouse)
+					{
+						// We set our internal state to unpress all mouse buttons, so any pressed buttons can get new events for the newly active form.
+						HandleButton("WMouse L", false, HostInputType.Mouse);
+						HandleButton("WMouse M", false, HostInputType.Mouse);
+						HandleButton("WMouse R", false, HostInputType.Mouse);
+						HandleButton("WMouse 1", false, HostInputType.Mouse);
+						HandleButton("WMouse 2", false, HostInputType.Mouse);
+						EnqueueNewEvents(prohibitInput: !_wantsMouse); // if any unpress event were generated, process them even though they probably do nothing
+					}
+					_lastControl = activeForm;
+					_wantsMouse = newWantsMouse;
+
+					if (_wantsMouse)
 					{
 						lock (_axisValues)
 						{
@@ -275,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 					HandleButton("WMouse R", (mouseBtns & MouseButtons.Right) != 0, HostInputType.Mouse);
 					HandleButton("WMouse 1", (mouseBtns & MouseButtons.XButton1) != 0, HostInputType.Mouse);
 					HandleButton("WMouse 2", (mouseBtns & MouseButtons.XButton2) != 0, HostInputType.Mouse);
-					EnqueueNewEvents(prohibitInput: !wantsMouse);
+					EnqueueNewEvents(prohibitInput: !_wantsMouse);
 
 					_ignoreEventsNextPoll = false;
 				} //lock(this)
