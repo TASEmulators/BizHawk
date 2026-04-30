@@ -88,9 +88,19 @@ namespace BizHawk.Client.Common
 			return file.Exists && Load(domains, file.FullName, false);
 		}
 
-		public void NewList(string defaultFileName)
+		public void NewList(string defaultFileName, bool autosave = false)
 		{
 			_defaultFileName = defaultFileName;
+
+			if (autosave && _changes && _cheatList.Count is not 0)
+			{
+				if (string.IsNullOrEmpty(CurrentFileName))
+				{
+					CurrentFileName = _defaultFileName;
+				}
+
+				Save();
+			}
 
 			_cheatList.Clear();
 			CurrentFileName = "";
@@ -210,7 +220,7 @@ namespace BizHawk.Client.Common
 		public bool IsActive(MemoryDomain domain, long address)
 			=> _cheatList.Exists(cheat => !cheat.IsSeparator && cheat.Enabled && cheat.Domain == domain && cheat.Contains(address));
 
-		public FileWriteResult SaveOnClose()
+		public void SaveOnClose()
 		{
 			if (_config.AutoSaveOnClose)
 			{
@@ -221,27 +231,17 @@ namespace BizHawk.Client.Common
 						CurrentFileName = _defaultFileName;
 					}
 
-					return SaveFile(CurrentFileName);
+					SaveFile(CurrentFileName);
 				}
 				else if (_cheatList.Count is 0 && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					try
-					{
-						File.Delete(CurrentFileName);
-					}
-					catch (Exception ex)
-					{
-						return new(FileWriteEnum.FailedToDeleteGeneric, new(CurrentFileName, ""), ex);
-					}
+					File.Delete(CurrentFileName);
 					_config.Recent.Remove(CurrentFileName);
-					return new();
 				}
 			}
-
-			return new();
 		}
 
-		public FileWriteResult Save()
+		public bool Save()
 		{
 			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
@@ -251,52 +251,54 @@ namespace BizHawk.Client.Common
 			return SaveFile(CurrentFileName);
 		}
 
-		public FileWriteResult SaveFile(string path)
+		public bool SaveFile(string path)
 		{
-			var sb = new StringBuilder();
-
-			foreach (var cheat in _cheatList)
+			try
 			{
-				if (cheat.IsSeparator)
+				new FileInfo(path).Directory?.Create();
+				var sb = new StringBuilder();
+
+				foreach (var cheat in _cheatList)
 				{
-					sb.AppendLine("----");
+					if (cheat.IsSeparator)
+					{
+						sb.AppendLine("----");
+					}
+					else
+					{
+						// Set to hex for saving
+						var tempCheatType = cheat.Type;
+
+						cheat.SetType(WatchDisplayType.Hex);
+
+						sb
+							.Append(cheat.AddressStr).Append('\t')
+							.Append(cheat.ValueStr).Append('\t')
+							.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
+							.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
+							.Append(cheat.Enabled ? '1' : '0').Append('\t')
+							.Append(cheat.Name).Append('\t')
+							.Append(cheat.SizeAsChar).Append('\t')
+							.Append(cheat.TypeAsChar).Append('\t')
+							.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
+							.Append(cheat.ComparisonType).Append('\t')
+							.AppendLine();
+
+						cheat.SetType(tempCheatType);
+					}
 				}
-				else
-				{
-					// Set to hex for saving
-					var tempCheatType = cheat.Type;
 
-					cheat.SetType(WatchDisplayType.Hex);
+				File.WriteAllText(path, sb.ToString());
 
-					sb
-						.Append(cheat.AddressStr).Append('\t')
-						.Append(cheat.ValueStr).Append('\t')
-						.Append(cheat.Compare is null ? "N" : cheat.CompareStr).Append('\t')
-						.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
-						.Append(cheat.Enabled ? '1' : '0').Append('\t')
-						.Append(cheat.Name).Append('\t')
-						.Append(cheat.SizeAsChar).Append('\t')
-						.Append(cheat.TypeAsChar).Append('\t')
-						.Append(cheat.BigEndian is true ? '1' : '0').Append('\t')
-						.Append(cheat.ComparisonType).Append('\t')
-						.AppendLine();
-
-					cheat.SetType(tempCheatType);
-				}
-			}
-			FileWriteResult result = FileWriter.Write(path, (fs) =>
-			{
-				StreamWriter sw = new(fs);
-				sw.Write(sb.ToString());
-				sw.Flush();
-			});
-			if (!result.IsError)
-			{
 				CurrentFileName = path;
 				_config.Recent.Add(CurrentFileName);
 				Changes = false;
+				return true;
 			}
-			return result;
+			catch
+			{
+				return false;
+			}
 		}
 
 		public bool Load(IMemoryDomains domains, string path, bool append)

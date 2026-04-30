@@ -225,10 +225,10 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				runningScripts = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
+				runningScripts = _openedFiles.Where(lf => lf.Enabled).ToList();
 
 				// we don't use runningScripts here as the other scripts need to be stopped too
-				foreach (var file in LuaImp.ScriptList)
+				foreach (var file in _openedFiles)
 				{
 					file.Stop();
 				}
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_nonFile = new LuaFile(Config.PathEntries.LuaAbsolutePath(), UpdateRegisteredFunctionsDialog);
 			_nonFile.Start(LuaImp.SpawnBlankCoroutineAndSandbox(null));
-			LuaImp.ScriptList.Insert(0, _nonFile);
+			_openedFiles.Insert(0, _nonFile);
 
 			UpdateDialog();
 		}
@@ -360,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var luaFile = new LuaFile(absolutePath, UpdateRegisteredFunctionsDialog);
 
-				LuaImp.ScriptList.Add(luaFile);
+				_openedFiles.Add(luaFile);
 				_openedFiles.Add(luaFile);
 				LuaListView.RowCount = _openedFiles.Count;
 				Config.RecentLua.Add(absolutePath);
@@ -403,7 +403,7 @@ namespace BizHawk.Client.EmuHawk
 				item.Stop();
 				RemoveFileWatcher(item);
 			}
-			LuaImp.ScriptList.Remove(item);
+			_openedFiles.Remove(item);
 			_openedFiles.Remove(item);
 		}
 
@@ -549,9 +549,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncScriptList()
 		{
-			LuaImp.ScriptList.Clear();
-			LuaImp.ScriptList.Add(_nonFile);
-			LuaImp.ScriptList.AddRange(_openedFiles.Where(static lf => !lf.IsSeparator));
+			_openedFiles.Clear();
+			_openedFiles.Add(_nonFile);
+			_openedFiles.AddRange(_openedFiles.Where(static lf => !lf.IsSeparator));
 		}
 
 		public bool LoadLuaSession(string path)
@@ -685,25 +685,15 @@ namespace BizHawk.Client.EmuHawk
 			return result is not null ? new FileInfo(result) : null;
 		}
 
-		private FileWriteResult SaveSessionAs()
+		private void SaveSessionAs()
 		{
 			var file = GetSaveFileFromUser();
 			if (file != null)
 			{
-				FileWriteResult saveResult = _openedFiles.Save(file.FullName);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult);
-					OutputMessages.Text = $"Lua session could not be saved to {file.Name}";
-				}
-				else
-				{
-					Config.RecentLuaSession.Add(file.FullName);
-					OutputMessages.Text = $"{file.Name} saved.";
-				}
-				return saveResult;
+				_openedFiles.Save(file.FullName);
+				Config.RecentLuaSession.Add(file.FullName);
+				OutputMessages.Text = $"{file.Name} saved.";
 			}
-			return new();
 		}
 
 		private void LoadSessionFromRecent(string path)
@@ -731,11 +721,7 @@ namespace BizHawk.Client.EmuHawk
 				icon: EMsgBoxIcon.Question,
 				text: $"Save {WindowTitleStatic} session?"));
 			if (result is null) return false;
-			if (result.Value)
-			{
-				TryAgainResult saveResult = this.DoWithTryAgainBox(SaveOrSaveAs, "Failed to save Lua session.");
-				return saveResult != TryAgainResult.Canceled;
-			}
+			if (result.Value) SaveOrSaveAs();
 			else _openedFiles.Changes = false;
 			return true;
 		}
@@ -746,24 +732,20 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
-				form.UpdateValues(LuaImp.ScriptList);
+				form.UpdateValues(_openedFiles);
 			}
 		}
 
-		private FileWriteResult SaveOrSaveAs()
+		private void SaveOrSaveAs()
 		{
 			if (!string.IsNullOrWhiteSpace(_openedFiles.Filename))
 			{
-				FileWriteResult result = _openedFiles.Save(_openedFiles.Filename);
-				if (!result.IsError)
-				{
-					Config.RecentLuaSession.Add(_openedFiles.Filename);
-				}
-				return result;
+				_openedFiles.Save(_openedFiles.Filename);
+				Config.RecentLuaSession.Add(_openedFiles.Filename);
 			}
 			else
 			{
-				return SaveSessionAs();
+				SaveSessionAs();
 			}
 		}
 
@@ -806,16 +788,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_openedFiles.Changes)
 			{
-				FileWriteResult result = SaveOrSaveAs();
-				if (result.IsError)
-				{
-					this.ErrorMessageBox(result, "Failed to save Lua session.");
-					OutputMessages.Text = $"Failed to save {Path.GetFileName(_openedFiles.Filename)}";
-				}
-				else
-				{
-					OutputMessages.Text = $"{Path.GetFileName(_openedFiles.Filename)} saved.";
-				}
+				SaveOrSaveAs();
+				OutputMessages.Text = $"{Path.GetFileName(_openedFiles.Filename)} saved.";
 			}
 		}
 
@@ -1112,7 +1086,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!alreadyOpen)
 			{
-				new LuaRegisteredFunctionsList(LuaImp.ScriptList)
+				new LuaRegisteredFunctionsList(_openedFiles)
 				{
 					StartLocation = this.ChildPointToScreen(LuaListView),
 				}.Show();
@@ -1225,15 +1199,15 @@ namespace BizHawk.Client.EmuHawk
 
 			StopAllScriptsContextItem.Visible =
 				ScriptContextSeparator.Visible =
-				LuaImp.ScriptList.Exists(file => file.Enabled);
+				_openedFiles.Exists(file => file.Enabled);
 
-			ClearRegisteredFunctionsContextItem.Enabled = LuaImp.ScriptList.Exists(lf => lf.Functions.Count != 0);
+			ClearRegisteredFunctionsContextItem.Enabled = _openedFiles.Exists(lf => lf.Functions.Count != 0);
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = ClearRegisteredFunctionsLogContextItem.Enabled
-				= LuaImp.ScriptList.Exists(lf => lf.Functions.Count != 0);
+				= _openedFiles.Exists(lf => lf.Functions.Count != 0);
 			CopyContextItem.Enabled = OutputBox.SelectedText.Length is not 0;
 			ClearConsoleContextItem.Enabled = SelectAllContextItem.Enabled = OutputBox.Text.Length is not 0;
 		}
@@ -1267,7 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (LuaFile lf in LuaImp.ScriptList)
+			foreach (LuaFile lf in _openedFiles)
 				lf.Functions.Clear();
 		}
 

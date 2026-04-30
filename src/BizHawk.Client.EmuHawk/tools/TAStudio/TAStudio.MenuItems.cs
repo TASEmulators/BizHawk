@@ -44,15 +44,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				var result = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+				var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 					Emulator.Frame, StatableEmulator.CloneSavestate());
-				DisplayMessageIfFailed(() => result, "Failed to create movie.");
 
-				if (result.Value is ITasMovie newProject)
-				{
-					MainForm.PauseEmulator();
-					LoadMovie(newProject, true);
-				}
+				MainForm.PauseEmulator();
+				LoadMovie(newProject, true);
 			}
 		}
 
@@ -62,14 +58,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var saveRam = SaveRamEmulator?.CloneSaveRam(clearDirty: false) ?? throw new Exception("No SaveRam");
 				GoToFrame(AnyRowsSelected ? FirstSelectedRowIndex : 0);
-				var result = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
-				DisplayMessageIfFailed(() => result, "Failed to create movie.");
-
-				if (result.Value is ITasMovie newProject)
-				{
-					MainForm.PauseEmulator();
-					LoadMovie(newProject, true);
-				}
+				var newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(saveRam);
+				MainForm.PauseEmulator();
+				LoadMovie(newProject, true);
 			}
 		}
 
@@ -125,30 +116,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveTasMenuItem_Click(object sender, EventArgs e)
 		{
-			DisplayMessageIfFailed(() => SaveTas(), "Failed to save movie.");
+			SaveTas();
 			if (Settings.BackupPerFileSave)
 			{
-				DisplayMessageIfFailed(() => SaveTas(saveBackup: true), "Failed to save backup.");
+				SaveTas(saveBackup: true);
 			}
 		}
 
 		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
 		{
-			DisplayMessageIfFailed(() => SaveAsTas(), "Failed to save movie.");
+			SaveAsTas();
 			if (Settings.BackupPerFileSave)
 			{
-				DisplayMessageIfFailed(() => SaveTas(saveBackup: true), "Failed to save backup.");
+				SaveTas(saveBackup: true);
 			}
 		}
 
 		private void SaveBackupMenuItem_Click(object sender, EventArgs e)
 		{
-			DisplayMessageIfFailed(() => SaveTas(saveBackup: true), "Failed to save backup.");
+			SaveTas(saveBackup: true);
 		}
 
 		private void SaveBk2BackupMenuItem_Click(object sender, EventArgs e)
 		{
-			DisplayMessageIfFailed(() => SaveTas(saveAsBk2: true, saveBackup: true), "Failed to save backup.");
+			SaveTas(saveAsBk2: true, saveBackup: true);
 		}
 
 		private void SaveSelectionToMacroMenuItem_Click(object sender, EventArgs e)
@@ -174,23 +165,13 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				var selectionStart = FirstSelectedRowIndex;
-				MovieZone macro = new(
+				new MovieZone(
 					CurrentTasMovie,
 					start: selectionStart,
-					length: endIndex - selectionStart + 1);
-				FileWriteResult saveResult = macro.Save(file.FullName);
+					length: endIndex - selectionStart + 1)
+					.Save(file.FullName);
 
-				if (saveResult.IsError)
-				{
-					DialogController.ShowMessageBox(
-						$"Failed to save macro.\n{saveResult.UserFriendlyErrorMessage()}\n{saveResult.Exception.Message}",
-						"Error",
-						EMsgBoxIcon.Error);
-				}
-				else
-				{
-					Config.RecentMacros.Add(file.FullName);
-				}
+				Config.RecentMacros.Add(file.FullName);
 			}
 		}
 
@@ -239,24 +220,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageStatusLabel.Text = "Exporting to .bk2...";
 				MessageStatusLabel.Owner.Update();
-
 				Cursor = Cursors.WaitCursor;
 				var bk2 = CurrentTasMovie.ToBk2();
 				bk2.Filename = fileInfo.FullName;
 				bk2.Attach(Emulator); // required to be able to save the cycle count for ICycleTiming emulators
-				FileWriteResult saveResult = bk2.Save();
+				bk2.Save();
+				MessageStatusLabel.Text = $"{bk2.Name} exported.";
 				Cursor = Cursors.Default;
-
-				while (saveResult.IsError)
-				{
-					DialogResult d = MessageBox.Show(
-						$"Failed to save .bk2. {saveResult.UserFriendlyErrorMessage()}\nTry again?",
-						"Error",
-						MessageBoxButtons.YesNo);
-					if (d == DialogResult.Yes) saveResult = bk2.Save();
-					else break;
-				}
-				if (!saveResult.IsError) MessageStatusLabel.Text = $"{bk2.Name} exported.";
 			}
 			else
 			{

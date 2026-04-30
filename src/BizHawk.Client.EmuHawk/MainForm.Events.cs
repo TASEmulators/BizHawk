@@ -264,12 +264,12 @@ namespace BizHawk.Client.EmuHawk
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
 		{
 			Console.WriteLine($"Closing rom clicked Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
-			LoadNullRom();
+			CloseRom();
 			Console.WriteLine($"Closing rom clicked DONE Frame: {Emulator.Frame} Emulator: {Emulator.GetType().Name}");
 		}
 
 		private void QuickSavestateMenuItem_Click(object sender, EventArgs e)
-			=> SaveQuickSaveAndShowError(int.Parse(((ToolStripMenuItem) sender).Text));
+			=> SaveQuickSave(int.Parse(((ToolStripMenuItem) sender).Text));
 
 		private void SaveNamedStateMenuItem_Click(object sender, EventArgs e) => SaveStateAs();
 
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			=> SavestateCurrentSlot();
 
 		private void SavestateCurrentSlot()
-			=> SaveQuickSaveAndShowError(Config.SaveSlot);
+			=> SaveQuickSave(Config.SaveSlot);
 
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 			=> LoadstateCurrentSlot();
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
-			ShowMessageIfError(() => FlushSaveRAM(), "Failed to flush saveram!");
+			FlushSaveRAM();
 		}
 
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
@@ -987,15 +987,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			FileWriteResult result = SaveConfig();
-			if (result.IsError)
-			{
-				this.ErrorMessageBox(result);
-			}
-			else
-			{
-				AddOnScreenMessage("Saved settings");
-			}
+			SaveConfig();
+			AddOnScreenMessage("Saved settings");
 		}
 
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
@@ -1007,15 +1000,8 @@ namespace BizHawk.Client.EmuHawk
 				initFileName: file);
 			if (result is not null)
 			{
-				FileWriteResult saveResult = SaveConfig(result);
-				if (saveResult.IsError)
-				{
-					this.ErrorMessageBox(saveResult);
-				}
-				else
-				{
-					AddOnScreenMessage("Copied settings");
-				}
+				SaveConfig(result);
+				AddOnScreenMessage("Copied settings");
 			}
 		}
 
@@ -1401,20 +1387,13 @@ namespace BizHawk.Client.EmuHawk
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var slot = Config.SaveSlot;
-			FileWriteResult swapResult = _stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{slot % 10}.State", slot);
-			if (swapResult.IsError)
-			{
-				this.ErrorMessageBox(swapResult, "Failed to swap state files.");
-			}
-			else
-			{
-				AddOnScreenMessage($"Save slot {slot} restored.");
-			}
+			_stateSlots.SwapBackupSavestate(MovieSession.Movie, $"{SaveStatePrefix()}.QuickSave{slot % 10}.State", slot);
+			AddOnScreenMessage($"Save slot {slot} restored.");
 		}
 
 		private void ClearSramContextMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadNullRom(clearSram: true);
+			CloseRom(clearSram: true);
 		}
 
 		private void ShowMenuContextMenuItem_Click(object sender, EventArgs e)
@@ -1479,7 +1458,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sender == Slot9StatusButton) slot = 9;
 			if (sender == Slot0StatusButton) slot = 10;
 
-			if (e.Button is MouseButtons.Right) SaveQuickSaveAndShowError(slot);
+			if (e.Button is MouseButtons.Right) SaveQuickSave(slot);
 			else if (e.Button is MouseButtons.Left && HasSlot(slot)) _ = LoadQuickSave(slot);
 		}
 

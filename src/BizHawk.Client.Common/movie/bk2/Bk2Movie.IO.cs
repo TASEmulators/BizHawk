@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -14,25 +12,25 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		public FileWriteResult Save()
+		public void Save()
 		{
-			return Write(Filename);
+			Write(Filename);
 		}
 
-		public FileWriteResult SaveBackup()
+		public void SaveBackup()
 		{
 			if (string.IsNullOrWhiteSpace(Filename))
 			{
-				return new();
+				return;
 			}
 
-			string backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
+			var backupName = Filename.InsertBeforeLast('.', insert: $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}", out _);
 			backupName = Path.Combine(Session.BackupDirectory, Path.GetFileName(backupName));
 
-			return Write(backupName, isBackup: true);
+			Write(backupName, isBackup: true);
 		}
 
-		protected virtual FileWriteResult Write(string fn, bool isBackup = false)
+		protected virtual void Write(string fn, bool isBackup = false)
 		{
 			SetCycleValues();
 			// EmulatorVersion used to store the unchanging original emulator version.
@@ -43,27 +41,13 @@ namespace BizHawk.Client.Common
 			Header[HeaderKeys.EmulatorVersion] = VersionInfo.GetEmuVersion();
 			Directory.CreateDirectory(Path.GetDirectoryName(fn)!);
 
-			var createResult = ZipStateSaver.Create(fn, Session.Settings.MovieCompressionLevel);
-			if (createResult.IsError) return createResult;
+			using var bs = new ZipStateSaver(fn, Session.Settings.MovieCompressionLevel);
+			AddLumps(bs, isBackup);
 
-			ZipStateSaver saver = createResult.Value!;
-			try
-			{
-				AddLumps(saver, isBackup);
-			}
-			catch (Exception ex)
-			{
-				saver.Abort();
-				return new(FileWriteEnum.FailedDuringWrite, createResult.Paths, ex);
-			}
-
-			FileWriteResult result = saver.CloseAndDispose();
-			if (!isBackup && !result.IsError)
+			if (!isBackup)
 			{
 				Changes = false;
 			}
-
-			return result;
 		}
 
 		public void SetCycleValues() //TODO IEmulator should not be an instance prop of movies, it should be passed in to every call (i.e. from MovieService) --yoshi
@@ -150,7 +134,7 @@ namespace BizHawk.Client.Common
 
 			bl.GetLump(BinaryStateLump.SyncSettings, abort: false, tr =>
 			{
-				string? line;
+				string line;
 				while ((line = tr.ReadLine()) != null)
 				{
 					if (!string.IsNullOrWhiteSpace(line))

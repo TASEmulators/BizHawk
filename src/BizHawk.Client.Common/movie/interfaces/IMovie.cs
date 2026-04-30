@@ -81,12 +81,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Forces the creation of a backup file of the current movie state
 		/// </summary>
-		FileWriteResult SaveBackup();
+		void SaveBackup();
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
-		FileWriteResult Save();
+		void Save();
 
 		/// <summary>updates the <see cref="HeaderKeys.CycleCount"/> and <see cref="HeaderKeys.ClockRate"/> headers from the currently loaded core</summary>
 		void SetCycleValues();

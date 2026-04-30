@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 		void CloseEmulator(int? exitCode = null);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		void LoadNullRom(bool clearSram = false);
+		void CloseRom(bool clearSram = false);
 
 		/// <remarks>only referenced from <see cref="ClientLuaLibrary"/></remarks>
 		IDecodeResult DecodeCheatForAPI(string code, out MemoryDomain/*?*/ domain);
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 		void EnableRewind(bool enabled);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
-		FileWriteResult FlushSaveRAM(bool autosave = false);
+		bool FlushSaveRAM(bool autosave = false);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void FrameAdvance(bool discardApiHawkSurfaces = true);
@@ -100,17 +100,11 @@ namespace BizHawk.Client.Common
 		/// <remarks>only referenced from <see cref="MovieApi"/></remarks>
 		bool RestartMovie();
 
-		FileWriteResult SaveQuickSave(int slot, bool suppressOSD = false);
+		/// <remarks>only referenced from <see cref="SaveStateApi"/></remarks>
+		void SaveQuickSave(int slot, bool suppressOSD = false, bool fromLua = false);
 
-		/// <summary>
-		/// Creates a savestate and writes it to a file.
-		/// </summary>
-		/// <param name="path">The path of the file to write.</param>
-		/// <param name="userFriendlyStateName">The name to use for the state on the client's on-screen display.</param>
-		/// <param name="suppressOSD">If true, the client will not show a success message.</param>
-		/// <returns>Returns a value indicating if there was an error and (if there was) why.</returns>
 		/// <remarks>referenced from <see cref="EmuClientApi"/> and <see cref="SaveStateApi"/></remarks>
-		FileWriteResult SaveState(string path, string userFriendlyStateName, bool suppressOSD = false);
+		void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false);
 
 		/// <remarks>only referenced from <see cref="EmuClientApi"/></remarks>
 		void StepRunLoop_Throttle();

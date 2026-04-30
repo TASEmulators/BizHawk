@@ -69,65 +69,31 @@ namespace BizHawk.Client.Common
 		public bool IsRedo(IMovie movie, int slot)
 			=> slot is >= 1 and <= 10 && movie is not ITasMovie && _redo[slot - 1];
 
-		/// <summary>
-		/// Takes the .state and .bak files and swaps them
-		/// </summary>
-		public FileWriteResult SwapBackupSavestate(IMovie movie, string path, int currentSlot)
+		public void SwapBackupSavestate(IMovie movie, string path, int currentSlot)
 		{
-			string backupPath = $"{path}.bak";
-			string tempPath = $"{path}.bak.tmp";
-
+			// Takes the .state and .bak files and swaps them
 			var state = new FileInfo(path);
-			var backup = new FileInfo(backupPath);
+			var backup = new FileInfo($"{path}.bak");
+			var temp = new FileInfo($"{path}.bak.tmp");
 
 			if (!state.Exists || !backup.Exists)
 			{
-				return new();
+				return;
 			}
 
-			// Delete old temp file if it exists.
-			try
+			if (temp.Exists)
 			{
-				if (File.Exists(tempPath)) File.Delete(tempPath);
-			}
-			catch (Exception ex)
-			{
-				return new(FileWriteEnum.FailedToDeleteGeneric, new(tempPath, ""), ex);
+				temp.Delete();
 			}
 
-			// Move backup to temp.
-			try
-			{
-				backup.MoveTo(tempPath);
-			}
-			catch (Exception ex)
-			{
-				return new(FileWriteEnum.FailedToMoveForSwap, new(tempPath, backupPath), ex);
-			}
-			// Move current to backup.
-			try
-			{
-				state.MoveTo(backupPath);
-			}
-			catch (Exception ex)
-			{
-				// Attempt to restore the backup
-				try { backup.MoveTo(backupPath); } catch { /* eat? unlikely to fail here */ }
-				return new(FileWriteEnum.FailedToMoveForSwap, new(backupPath, path), ex);
-			}
-			// Move backup to current.
-			try
-			{
-				backup.MoveTo(path);
-			}
-			catch (Exception ex)
-			{
-				// Should we attempt to restore? Unlikely to fail here since we've already touched all files.
-				return new(FileWriteEnum.FailedToMoveForSwap, new(path, tempPath), ex);
-			}
+			backup.CopyTo($"{path}.bak.tmp");
+			backup.Delete();
+			state.CopyTo($"{path}.bak");
+			state.Delete();
+			temp.CopyTo(path);
+			temp.Delete();
 
 			ToggleRedo(movie, currentSlot);
-			return new();
 		}
 	}
 }

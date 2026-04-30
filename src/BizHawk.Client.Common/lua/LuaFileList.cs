@@ -102,8 +102,9 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public FileWriteResult Save(string path)
+		public void Save(string path)
 		{
+			using var sw = new StreamWriter(path);
 			var sb = new StringBuilder();
 			var saveDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
 			foreach (var file in this)
@@ -122,19 +123,10 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			FileWriteResult result = FileWriter.Write(path, (fs) =>
-			{
-				using var sw = new StreamWriter(fs);
-				sw.Write(sb.ToString());
-			});
+			sw.Write(sb.ToString());
 
-			if (!result.IsError)
-			{
-				Filename = path;
-				Changes = false;
-			}
-
-			return result;
+			Filename = path;
+			Changes = false;
 		}
 	}
 }
