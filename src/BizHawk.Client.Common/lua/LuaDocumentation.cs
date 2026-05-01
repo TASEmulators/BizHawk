@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine("Lua supports integer arithmetic starting with BizHawk 2.9. Note {{~}} is both bitwise NOT and XOR. Some of the {{bit}} helper functions remain, but you should try to avoid them if you need performance (or [https://github.com/TASEmulators/BizHawk-ExternalTools/wiki|switch to .NET]). If you're getting overwhelmed with deprecation warnings while trying to migrate a script, add this one-liner at the top: {{bit = (require \"migration_helpers\").EmuHawk_pre_2_9_bit();}}")
 				.AppendLine()
-				.AppendLine("We include LuaCATS definition files for all BizHawk Lua functionality in {{Lua/_docs_luacats}}")
+				.AppendLine("We include LuaCATS definition files for all BizHawk Lua functionality in {{Lua/_docs_luacats}}.")
 				.AppendLine()
 				.AppendLine("FCEUX users: While this API surface may look similar, even functions with the same name may take different arguments, or behave differently in a way that isn't immediately obvious. (TODO: create a migration helper function for FCEUX)")
 				.AppendLine()
