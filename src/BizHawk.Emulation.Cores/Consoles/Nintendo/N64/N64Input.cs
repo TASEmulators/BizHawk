@@ -34,47 +34,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			ThisFrameInputPolled = false;
 		}
 
-		private const sbyte _maxAnalogX = 127;
-		private const sbyte _minAnalogX = -128;
-		private const sbyte _maxAnalogY = 127;
-		private const sbyte _minAnalogY = -128;
-
 		/// <param name="i">player number (from 1)</param>
 		public static (sbyte X, sbyte Y) GetStickValues(IController Controller, int i)
-		{
-			// Analog stick right = +X
-			// Analog stick up = +Y
-			string p = "P" + i;
-			sbyte x;
-			if (Controller.IsPressed(p + " A Left"))
-			{
-				x = _minAnalogX;
-			}
-			else if (Controller.IsPressed(p + " A Right"))
-			{
-				x = _maxAnalogX;
-			}
-			else
-			{
-				x = (sbyte)Controller.AxisValue(p + " X Axis");
-			}
-
-			sbyte y;
-			if (Controller.IsPressed(p + " A Up"))
-			{
-				y = _maxAnalogY;
-			}
-			else if (Controller.IsPressed(p + " A Down"))
-			{
-				y = _minAnalogY;
-			}
-			else
-			{
-				y = (sbyte)Controller.AxisValue(p + " Y Axis");
-			}
-
-			return (x, y);
-		}
+			=> ((sbyte) Controller.AxisValue($"P{i} X Axis"),
+				(sbyte) Controller.AxisValue($"P{i} Y Axis"));
 
 		/// <summary>
 		/// Translates controller input from EmuHawk into

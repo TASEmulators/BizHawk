@@ -216,10 +216,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Ares64
 				}
 				else if (controllerSettings[i] != LibAres64.ControllerType.Unplugged)
 				{
-					ret.BoolButtons.Add($"P{i + 1} A Up");
-					ret.BoolButtons.Add($"P{i + 1} A Down");
-					ret.BoolButtons.Add($"P{i + 1} A Left");
-					ret.BoolButtons.Add($"P{i + 1} A Right");
 					ret.BoolButtons.Add($"P{i + 1} DPad U");
 					ret.BoolButtons.Add($"P{i + 1} DPad D");
 					ret.BoolButtons.Add($"P{i + 1} DPad L");
