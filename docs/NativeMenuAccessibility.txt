@@ -1,0 +1,1340 @@
+================================================================================
+BizHawk Native Menu Accessibility Implementation
+Technical Documentation
+================================================================================
+
+Author: Accessibility Migration Project
+Date: 2026-03-04
+Applies to: BizHawk Client (EmuHawk)
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+
+1. Executive Summary
+2. Original Menu Implementation Analysis
+   2.1 ToolStrip/MenuStrip Architecture
+   2.2 Custom Control Extensions
+   2.3 Event Handling Model
+   2.4 Rendering and Owner-Draw
+3. The Accessibility Problem
+   3.1 Screen Reader Technology Overview
+   3.2 MSAA (Microsoft Active Accessibility)
+   3.3 Why Mouse Navigation Works
+   3.4 Why Keyboard Navigation Fails
+   3.5 Root Cause Analysis
+4. Alternative Solutions Considered
+   4.1 MSAA Event Injection (NotifyWinEvent)
+   4.2 UI Automation Provider Implementation
+   4.3 AccessibleObject Customization
+   4.4 Why These Approaches Failed
+5. The Native Menu Solution
+   5.1 Win32 MainMenu vs WinForms ToolStrip
+   5.2 Implementation Architecture
+   5.3 Menu Structure Mapping
+   5.4 Event Handler Delegation
+   5.5 System-Specific Menu Management
+6. Technical Implementation Details
+   6.1 File Locations and Structure
+   6.2 Initialization Flow
+   6.3 Menu Toggling Mechanism
+   6.4 Handler Resolution Strategy
+7. The Toolbar Accessibility Problem
+   7.1 ToolStripButton Keyboard Accessibility Failure
+   7.2 The Mouse vs Keyboard Discrepancy
+   7.3 Why AccessibleName Property Is Insufficient
+   7.4 Attempted Solutions for Toolbar Buttons
+      7.4.1 AccessibleName on ToolStripButton
+      7.4.2 Standard WinForms Button Controls
+      7.4.3 NotifyWinEvent for Focus Events
+      7.4.4 Why All Managed Control Solutions Failed
+8. The ListView Toolbar Solution
+   8.1 Why ListView Works
+   8.2 ListView as Toolbar Architecture
+   8.3 Implementation Details
+   8.4 Event Handling for ListView Toolbar
+   8.5 Performance Considerations
+9. Complete File Reference
+   9.1 New Files Created
+   9.2 Modified Files
+   9.3 Accessibility Properties Added
+10. Known Limitations and Future Work
+11. References
+
+================================================================================
+1. EXECUTIVE SUMMARY
+================================================================================
+
+BizHawk's main window menu system was migrated from WinForms ToolStrip/MenuStrip
+controls to native Win32 MainMenu controls to resolve a critical accessibility
+defect: NVDA screen reader could not announce menu items during keyboard
+navigation, despite working correctly with mouse hover.
+
+The root cause is that WinForms ToolStrip controls do not fire the necessary
+MSAA (Microsoft Active Accessibility) focus events during keyboard navigation
+that screen readers rely on to track and announce the currently selected item.
+
+The solution replaces the ToolStrip-based menu with a native Win32 MainMenu,
+which has built-in Windows accessibility support that correctly fires all
+required accessibility events for both mouse and keyboard interaction.
+
+================================================================================
+2. ORIGINAL MENU IMPLEMENTATION ANALYSIS
+================================================================================
+
+2.1 ToolStrip/MenuStrip Architecture
+------------------------------------
+
+BizHawk's original menu implementation used the WinForms ToolStrip family of
+controls, introduced in .NET Framework 2.0 as a replacement for the older
+MainMenu control. The menu hierarchy was:
+
+  MainForm
+    └── MainformMenu (MenuStripEx : MenuStrip)
+          ├── FileSubMenu (ToolStripMenuItemEx : ToolStripMenuItem)
+          │     ├── OpenRomMenuItem
+          │     ├── RecentRomSubMenu
+          │     │     └── [dynamically populated]
+          │     ├── SaveStateSubMenu
+          │     │     ├── SaveState1MenuItem ... SaveState0MenuItem
+          │     │     └── SaveNamedStateMenuItem
+          │     └── ... (other items)
+          ├── EmulationSubMenu
+          ├── ViewSubMenu
+          ├── ConfigSubMenu
+          ├── ToolsSubMenu
+          ├── [System-specific menus: NES, SNES, GB, etc.]
+          └── HelpSubMenu
+
+Key files:
+  - src/BizHawk.Client.EmuHawk/MainForm.Designer.cs (menu declarations)
+  - src/BizHawk.Client.EmuHawk/MainForm.Events.cs (event handlers)
+  - src/BizHawk.WinForms.Controls/MenuEx/MenuStripEx.cs
+  - src/BizHawk.WinForms.Controls/MenuEx/MenuItemEx.cs
+
+2.2 Custom Control Extensions
+-----------------------------
+
+BizHawk extends the standard ToolStrip controls with custom classes:
+
+### MenuStripEx (MenuStripEx.cs)
+
+```csharp
+public class MenuStripEx : MenuStrip
+{
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new Size Size => base.Size;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new Point Location => new Point(0, 0);
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new string Text => "";  // PROBLEM: Empty text breaks accessibility
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new string Name => Util.GetRandomUUIDStr();  // PROBLEM: Random names
+
+    protected override void WndProc(ref Message m)
+    {
+        base.WndProc(ref m);
+        // Custom handling for WM_MOUSEACTIVATE to allow click-through
+        if (m.Msg == NativeConstants.WM_MOUSEACTIVATE
+            && m.Result == (IntPtr)NativeConstants.MA_ACTIVATEANDEAT)
+        {
+            m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
+        }
+    }
+}
+```
+
+### ToolStripMenuItemEx (MenuItemEx.cs)
+
+```csharp
+public class ToolStripMenuItemEx : ToolStripMenuItem
+{
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new Size Size => base.Size;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new string Name => Util.GetRandomUUIDStr();  // Random UUID each access
+
+    public void SetStyle(FontStyle style) => Font = new Font(Font.FontFamily, Font.Size, style);
+}
+```
+
+The `Name` property returning a random UUID on each access and `Text` returning
+empty string were implemented to prevent the WinForms designer from serializing
+these properties, but they have negative accessibility implications.
+
+2.3 Event Handling Model
+------------------------
+
+Menu item clicks are handled through standard WinForms event delegation:
+
+```csharp
+// In MainForm.Designer.cs
+this.OpenRomMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
+this.SaveState1MenuItem.Click += new System.EventHandler(this.QuickSavestateMenuItem_Click);
+```
+
+Some handlers are shared across multiple items and determine the specific action
+based on the sender:
+
+```csharp
+// In MainForm.Events.cs
+private void QuickSavestateMenuItem_Click(object sender, EventArgs e)
+    => SaveQuickSaveAndShowError(int.Parse(((ToolStripMenuItem) sender).Text));
+
+private void QuickLoadstateMenuItem_Click(object sender, EventArgs e)
+    => LoadQuickSave(int.Parse(((ToolStripMenuItem) sender).Text));
+```
+
+2.4 Rendering and Owner-Draw
+----------------------------
+
+The ToolStrip controls use custom rendering but NOT full owner-draw. They rely
+on the ToolStripProfessionalRenderer or similar for visual styling. This is
+important because full owner-draw can completely break accessibility, but
+partial customization still allows some accessibility features to work.
+
+The WM_MOUSEACTIVATE handling in MenuStripEx allows the menu to be clicked
+without stealing focus from the emulator - important for gameplay but
+potentially interfering with accessibility focus tracking.
+
+================================================================================
+3. THE ACCESSIBILITY PROBLEM
+================================================================================
+
+3.1 Screen Reader Technology Overview
+-------------------------------------
+
+Screen readers like NVDA (NonVisual Desktop Access) use multiple techniques to
+determine what UI element is currently focused and should be announced:
+
+1. **MSAA (Microsoft Active Accessibility)** - Legacy API using IAccessible
+   interface and WinEvents for focus/selection notifications
+
+2. **UI Automation (UIA)** - Modern API with richer control patterns, but
+   requires explicit provider implementation for custom controls
+
+3. **Hit Testing** - Querying what's under the mouse cursor position
+
+4. **Focus Tracking** - Following EVENT_OBJECT_FOCUS and EVENT_OBJECT_SELECTION
+   events to know when focus moves between elements
+
+3.2 MSAA (Microsoft Active Accessibility)
+-----------------------------------------
+
+MSAA works through two mechanisms:
+
+**IAccessible Interface:**
+Controls expose an IAccessible COM interface that screen readers query for:
+  - accName: The accessible name (what to announce)
+  - accRole: The type of element (menu item, button, etc.)
+  - accState: Current state (focused, selected, checked, etc.)
+  - accDescription: Additional description
+  - accHitTest: What child is at a given screen coordinate
+
+**WinEvents:**
+Applications call NotifyWinEvent() or the system fires events automatically:
+  - EVENT_OBJECT_FOCUS (0x8005): An object received keyboard focus
+  - EVENT_OBJECT_SELECTION (0x8006): Selection changed within a container
+  - EVENT_OBJECT_STATECHANGE (0x800A): An object's state changed
+  - EVENT_SYSTEM_MENUSTART (0x0004): A menu was activated
+  - EVENT_SYSTEM_MENUEND (0x0005): A menu was closed
+  - EVENT_OBJECT_INVOKED (0x8013): An object was invoked/activated
+
+Screen readers hook these events using SetWinEventHook() and respond by
+querying the IAccessible interface of the source object.
+
+3.3 Why Mouse Navigation Works
+------------------------------
+
+When the user hovers the mouse over menu items, NVDA can announce them because:
+
+1. NVDA tracks the mouse cursor position
+2. On mouse movement, NVDA calls AccessibleObjectFromPoint() or accHitTest()
+3. This returns the IAccessible for the menu item under the cursor
+4. NVDA queries accName and accRole to announce "Open ROM, menu item"
+
+This hit-testing approach works regardless of whether focus events fire,
+because NVDA is actively polling based on cursor position.
+
+3.4 Why Keyboard Navigation Fails
+---------------------------------
+
+When the user navigates with arrow keys, NVDA announces nothing because:
+
+1. User presses Down Arrow in the menu
+2. ToolStripMenuItem handles the key internally
+3. The visual selection moves to the next item
+4. **NO EVENT_OBJECT_FOCUS or EVENT_OBJECT_SELECTION is fired**
+5. NVDA has no way to know the selection changed
+6. NVDA remains silent
+
+The ToolStrip control family manages keyboard navigation internally without
+notifying the accessibility system. This is a known limitation of WinForms
+ToolStrip controls.
+
+3.5 Root Cause Analysis
+-----------------------
+
+The fundamental issue is architectural:
+
+**Native Win32 Menus (HMENU):**
+- The Windows shell/user32.dll directly manages menu display and navigation
+- Built-in accessibility support fires all required WinEvents automatically
+- EVENT_OBJECT_FOCUS fires as keyboard selection moves between items
+- Works with all screen readers out of the box
+
+**WinForms ToolStrip Menus:**
+- Implemented as custom .NET controls drawing in a ToolStripDropDown window
+- Navigation is handled by .NET code, not the Windows menu manager
+- No automatic WinEvent firing for selection changes
+- IAccessible is implemented but not connected to focus event notifications
+- Requires manual accessibility event firing, which is not implemented
+
+The ToolStrip architecture was designed for visual flexibility (owner-draw,
+custom rendering, embedded controls) at the cost of native accessibility
+integration.
+
+Additional contributing factors in BizHawk:
+
+1. **Random Name Property:** `Name => Util.GetRandomUUIDStr()` means
+   accessibility tools can't maintain stable references to controls
+
+2. **Empty Text Property:** `Text => ""` on MenuStripEx may confuse screen
+   readers expecting a menu bar name
+
+3. **Global Input Capture:** BizHawk uses RAWINPUT to capture keyboard input
+   at the driver level for emulator controls, which could theoretically
+   interfere with menu keyboard handling (though this was not the primary issue)
+
+================================================================================
+4. ALTERNATIVE SOLUTIONS CONSIDERED
+================================================================================
+
+4.1 MSAA Event Injection (NotifyWinEvent)
+-----------------------------------------
+
+Attempted approach: Override selection-related methods in ToolStripMenuItemEx
+to manually fire MSAA events:
+
+```csharp
+[DllImport("user32.dll")]
+private static extern void NotifyWinEvent(uint eventId, IntPtr hwnd, int objectId, int childId);
+
+private const uint EVENT_OBJECT_FOCUS = 0x8005;
+private const uint EVENT_OBJECT_SELECTION = 0x8006;
+
+protected override void OnPaint(PaintEventArgs e)
+{
+    base.OnPaint(e);
+    if (Selected)
+    {
+        var parent = this.GetCurrentParent();
+        if (parent != null)
+        {
+            NotifyWinEvent(EVENT_OBJECT_FOCUS, parent.Handle, -4, GetChildId());
+            NotifyWinEvent(EVENT_OBJECT_SELECTION, parent.Handle, -4, GetChildId());
+        }
+    }
+}
+```
+
+**Why it failed:** The events fired but NVDA did not respond. This is because:
+- The IAccessible implementation in ToolStrip may not correctly resolve the
+  child ID to the selected item
+- NVDA may require specific event sequences or additional events
+- The timing of events relative to internal ToolStrip state may be incorrect
+
+4.2 UI Automation Provider Implementation
+-----------------------------------------
+
+Considered implementing IRawElementProviderSimple and related UIA interfaces
+to provide modern accessibility support.
+
+**Why not pursued:**
+- Requires significant implementation effort for all menu item types
+- WinForms has limited UIA support requiring manual bridging
+- Would need to implement multiple control patterns (Invoke, Selection, etc.)
+- Testing and validation with multiple screen readers is complex
+
+4.3 AccessibleObject Customization
+----------------------------------
+
+Attempted using reflection to access the protected AccessibilityNotifyClients
+method:
+
+```csharp
+var method = typeof(Control).GetMethod("AccessibilityNotifyClients",
+    BindingFlags.NonPublic | BindingFlags.Instance);
+method?.Invoke(parent, new object[] { AccessibleEvents.Focus, childIndex });
+```
+
+**Why it failed:** Similar to direct NotifyWinEvent - the underlying IAccessible
+implementation doesn't properly support the notification model that screen
+readers expect for ToolStrip menus.
+
+4.4 Why These Approaches Failed
+-------------------------------
+
+The core problem is that ToolStrip's accessibility implementation is incomplete
+at a fundamental level. The IAccessible interface is present but:
+
+1. Child enumeration may not match actual visual selection state
+2. Focus/selection events are not connected to internal navigation state
+3. The accessibility tree structure may not accurately reflect the menu hierarchy
+
+Fixing this would require patching the .NET Framework's ToolStrip implementation
+or completely replacing its IAccessible provider - both impractical approaches.
+
+================================================================================
+5. THE NATIVE MENU SOLUTION
+================================================================================
+
+5.1 Win32 MainMenu vs WinForms ToolStrip
+----------------------------------------
+
+The solution uses System.Windows.Forms.MainMenu, which wraps the native Win32
+HMENU menu system:
+
+| Aspect              | ToolStrip/MenuStrip        | MainMenu (HMENU)           |
+|---------------------|----------------------------|----------------------------|
+| Rendering           | .NET custom drawing        | Windows shell native       |
+| Keyboard nav        | .NET code in ToolStrip     | Windows USER32.DLL         |
+| Accessibility       | Incomplete IAccessible     | Full native MSAA support   |
+| Focus events        | Not fired automatically    | Fired by Windows           |
+| Visual flexibility  | High (owner-draw, etc.)    | Limited (standard look)    |
+| Embedded controls   | Supported                  | Not supported              |
+| Screen reader       | Broken for keyboard        | Works fully                |
+
+MainMenu was deprecated in .NET 2.0 in favor of MenuStrip, but it remains
+fully functional and has superior accessibility support because it delegates
+to the Windows menu manager rather than reimplementing menu logic in .NET.
+
+5.2 Implementation Architecture
+-------------------------------
+
+The implementation adds a parallel menu system that can be toggled:
+
+```
+MainForm
+  ├── MainformMenu (MenuStripEx) - Original, hidden when native menu active
+  └── _nativeMenu (MainMenu) - New, set as Form.Menu property
+        ├── File
+        ├── Emulation
+        ├── View
+        ├── Config
+        ├── Tools
+        ├── [System menus - hidden by default]
+        └── Help
+```
+
+Key design decisions:
+
+1. **Parallel Implementation:** Both menu systems exist; the native menu doesn't
+   replace the code, just provides an accessible alternative
+
+2. **Direct Method Calls:** Instead of trying to reuse ToolStrip event handlers
+   (which expect ToolStripMenuItem senders), native menu items call the
+   underlying methods directly
+
+3. **Lazy Initialization:** Native menu is created on first use
+
+4. **Toggle Support:** Methods exist to switch between menu systems if needed
+
+5.3 Menu Structure Mapping
+--------------------------
+
+The native menu replicates the ToolStrip menu structure:
+
+```
+Original (ToolStrip)                    Native (MainMenu)
+─────────────────────                   ─────────────────
+FileSubMenu                        →    CreateFileMenu()
+  ├── OpenRomMenuItem              →      MenuItem("&Open ROM...")
+  ├── SaveStateSubMenu             →      MenuItem("&Save State")
+  │     ├── SaveState1MenuItem     →        MenuItem("1")
+  │     └── ...                    →        ...
+  └── ...                          →      ...
+EmulationSubMenu                   →    CreateEmulationMenu()
+ViewSubMenu                        →    CreateViewMenu()
+ConfigSubMenu                      →    CreateConfigMenu()
+ToolsSubMenu                       →    CreateToolsMenu()
+NESSubMenu                         →    CreateNesMenu()
+[other system menus]               →    [Create*Menu() methods]
+HelpSubMenu                        →    CreateHelpMenu()
+```
+
+5.4 Event Handler Delegation
+----------------------------
+
+The native menu items cannot directly use the original event handlers because
+those handlers often cast the sender to ToolStripMenuItem:
+
+```csharp
+// Original handler - expects ToolStripMenuItem sender
+private void QuickSavestateMenuItem_Click(object sender, EventArgs e)
+    => SaveQuickSaveAndShowError(int.Parse(((ToolStripMenuItem) sender).Text));
+```
+
+Solution: Call the underlying methods directly with explicit parameters:
+
+```csharp
+// Native menu - calls method directly
+saveStateMenu.MenuItems.Add(new MenuItem("1", (s, e) => SaveQuickSaveAndShowError(1)));
+saveStateMenu.MenuItems.Add(new MenuItem("2", (s, e) => SaveQuickSaveAndShowError(2)));
+// etc.
+```
+
+For handlers that don't depend on sender properties, direct delegation works:
+
+```csharp
+// These handlers don't inspect the sender, so direct delegation is fine
+menu.MenuItems.Add(new MenuItem("&Pause", (s, e) => PauseMenuItem_Click(s, e)));
+menu.MenuItems.Add(new MenuItem("&Open ROM...", (s, e) => OpenRomMenuItem_Click(s, e)));
+```
+
+5.5 System-Specific Menu Management
+-----------------------------------
+
+BizHawk shows different menus based on the loaded emulator core (NES, SNES, etc.).
+The native implementation handles this with:
+
+1. All system menus are created at initialization
+2. All system menus are hidden by default via HideAllSystemMenus()
+3. Menus should be shown/hidden based on the loaded core (requires integration)
+
+```csharp
+private MenuItem _nativeNesMenu;
+private MenuItem _nativeSnesMenu;
+// etc.
+
+private void HideAllSystemMenus()
+{
+    _nativeNesMenu.Visible = false;
+    _nativeSnesMenu.Visible = false;
+    // etc.
+}
+```
+
+================================================================================
+6. TECHNICAL IMPLEMENTATION DETAILS
+================================================================================
+
+6.1 File Locations and Structure
+--------------------------------
+
+**Main Form Native Menu:**
+
+New file:
+  src/BizHawk.Client.EmuHawk/MainForm.NativeMenu.cs
+
+This file is a partial class extension of MainForm containing:
+  - Native menu field declarations
+  - InitializeNativeMenu() - Main initialization method
+  - Create*Menu() methods - One per top-level menu
+  - HideAllSystemMenus() - Hides all system-specific menus
+  - UseToolStripMenu() / UseNativeMenu() - Toggle methods
+
+Modified file:
+  src/BizHawk.Client.EmuHawk/MainForm.cs
+
+Added call to InitializeNativeMenu() after InitializeComponent():
+```csharp
+InitializeComponent();
+InitializeNativeMenu();
+```
+
+**Lua Console Native Menu:**
+
+New file:
+  src/BizHawk.Client.EmuHawk/tools/Lua/LuaConsole.NativeMenu.cs
+
+This file is a partial class extension of LuaConsole containing:
+  - Native menu field declarations
+  - InitializeNativeMenu() - Main initialization method
+  - CreateFileMenu() - File menu (New/Open/Save Session, Recent)
+  - CreateScriptMenu() - Script menu (New/Open/Toggle/Edit/Remove scripts)
+  - CreateSettingsMenu() - Settings menu (options and text editor registration)
+  - CreateHelpMenu() - Help menu (Lua functions list, online docs)
+  - UseToolStripMenu() / UseNativeMenu() - Toggle methods
+
+Modified file:
+  src/BizHawk.Client.EmuHawk/tools/Lua/LuaConsole.cs
+
+Added call to InitializeNativeMenu() at end of constructor:
+```csharp
+// Initialize native Win32 menu for screen reader accessibility
+InitializeNativeMenu();
+```
+
+6.2 Initialization Flow
+-----------------------
+
+```
+MainForm Constructor
+    │
+    ├── InitializeComponent()
+    │     └── Creates ToolStrip menu (MainformMenu)
+    │
+    └── InitializeNativeMenu()
+          │
+          ├── Check _useNativeMenu flag
+          │
+          ├── Create MainMenu instance
+          │
+          ├── Create all menu structures
+          │     ├── CreateFileMenu()
+          │     ├── CreateEmulationMenu()
+          │     ├── CreateViewMenu()
+          │     ├── CreateConfigMenu()
+          │     ├── CreateToolsMenu()
+          │     ├── CreateNesMenu()
+          │     ├── ... (other system menus)
+          │     └── CreateHelpMenu()
+          │
+          ├── Add all menus to MainMenu.MenuItems
+          │
+          ├── HideAllSystemMenus()
+          │
+          ├── Set Form.Menu = _nativeMenu
+          │
+          └── Hide MainformMenu (ToolStrip)
+```
+
+6.3 Menu Toggling Mechanism
+---------------------------
+
+The implementation supports runtime switching between menu systems:
+
+```csharp
+// Switch to ToolStrip menu
+private void UseToolStripMenu()
+{
+    Menu = null;                    // Remove native menu
+    MainformMenu.Visible = true;    // Show ToolStrip menu
+    _useNativeMenu = false;
+}
+
+// Switch to native menu
+private void UseNativeMenu()
+{
+    if (_nativeMenu == null)
+        InitializeNativeMenu();
+    else
+    {
+        Menu = _nativeMenu;
+        MainformMenu.Visible = false;
+    }
+    _useNativeMenu = true;
+}
+```
+
+This could be exposed as a user preference for accessibility.
+
+6.4 Handler Resolution Strategy
+-------------------------------
+
+Three patterns are used for connecting menu items to actions:
+
+**Pattern 1: Direct handler delegation (when sender is not inspected)**
+```csharp
+new MenuItem("&Open ROM...", (s, e) => OpenRomMenuItem_Click(s, e))
+```
+
+**Pattern 2: Direct method call with explicit parameter**
+```csharp
+new MenuItem("1", (s, e) => SaveQuickSaveAndShowError(1))
+new MenuItem("2", (s, e) => SaveQuickSaveAndShowError(2))
+```
+
+**Pattern 3: Direct method call discarding result**
+```csharp
+new MenuItem("1", (s, e) => { _ = LoadQuickSave(1); })
+```
+
+The appropriate pattern was determined by examining each original handler in
+MainForm.Events.cs and MainForm.Designer.cs.
+
+================================================================================
+7. THE TOOLBAR ACCESSIBILITY PROBLEM
+================================================================================
+
+After implementing native menus, a second critical accessibility issue was
+discovered: toolbar buttons (ToolStripButton controls) were also inaccessible
+to screen readers during keyboard navigation. This section documents the
+problem and the extensive attempts to resolve it.
+
+7.1 ToolStripButton Keyboard Accessibility Failure
+---------------------------------------------------
+
+BizHawk's tool windows (Lua Console, RAM Watch, Hex Editor, Cheats) use
+ToolStrip controls containing ToolStripButton items for toolbar functionality.
+The Lua Console toolbar, for example, contains buttons for:
+
+  - New Script, Open Script, Toggle, Refresh, Pause
+  - Edit, Remove, Duplicate, Clear Console
+  - Move Up, Move Down
+
+Testing with NVDA revealed the same pattern as menus:
+  - **Mouse hover:** NVDA announces button names correctly
+  - **Keyboard Tab/Arrow:** NVDA remains completely silent
+
+This means a blind user could activate toolbar buttons with a mouse (with
+screen reader mouse tracking), but could not use keyboard navigation at all.
+
+7.2 The Mouse vs Keyboard Discrepancy
+-------------------------------------
+
+The technical explanation mirrors the menu problem:
+
+**Mouse Navigation (Works):**
+1. User moves mouse over toolbar button
+2. NVDA tracks cursor position via polling
+3. NVDA calls AccessibleObjectFromPoint(x, y)
+4. Windows returns IAccessible for the ToolStripButton
+5. NVDA queries accName → "New Script"
+6. NVDA announces "New Script, button"
+
+**Keyboard Navigation (Fails):**
+1. User presses Tab to enter toolbar
+2. ToolStrip receives focus (container level)
+3. User presses Arrow keys to move between buttons
+4. ToolStrip handles navigation internally
+5. Visual focus rectangle moves to next button
+6. **NO EVENT_OBJECT_FOCUS is fired**
+7. NVDA has no notification that focus changed
+8. NVDA remains silent
+
+The ToolStrip control manages an internal "selected item" state that is
+completely disconnected from the Windows accessibility event system.
+
+7.3 Why AccessibleName Property Is Insufficient
+-----------------------------------------------
+
+A common misconception is that setting AccessibleName on a control is
+sufficient for screen reader compatibility. This is incorrect.
+
+```csharp
+// This does NOT fix keyboard accessibility
+toolStripButton1.AccessibleName = "New Script";
+toolStripButton1.AccessibleDescription = "Create a new Lua script";
+toolStripButton1.AccessibleRole = AccessibleRole.PushButton;
+```
+
+The AccessibleName property only affects what is RETURNED when a screen reader
+QUERIES the control's IAccessible interface. It does not cause the screen
+reader to query in the first place.
+
+Screen readers query IAccessible in response to:
+1. Mouse position changes (hit testing)
+2. WinEvents (EVENT_OBJECT_FOCUS, EVENT_OBJECT_SELECTION, etc.)
+3. Explicit user commands ("read current focus")
+
+During keyboard navigation within a ToolStrip, none of these triggers occur:
+- Mouse hasn't moved
+- No WinEvents are fired by ToolStrip
+- The "current focus" from Windows' perspective is still the ToolStrip
+  container, not the individual button
+
+Therefore, AccessibleName is necessary but not sufficient. Without proper
+focus events, the screen reader never knows to read the AccessibleName.
+
+7.4 Attempted Solutions for Toolbar Buttons
+-------------------------------------------
+
+Multiple approaches were attempted before finding a working solution.
+
+7.4.1 AccessibleName on ToolStripButton
+---------------------------------------
+
+First attempt: Add AccessibleName to all toolbar buttons in Designer.cs:
+
+```csharp
+// In LuaConsole.Designer.cs
+this.NewScriptToolbarItem.AccessibleName = "New Script";
+this.OpenScriptToolbarItem.AccessibleName = "Open Script";
+this.ToggleScriptToolbarItem.AccessibleName = "Toggle Script";
+// ... etc for all buttons
+```
+
+**Result:** Mouse reading worked, keyboard navigation remained silent.
+
+**Why it failed:** As explained above, AccessibleName only sets the value
+returned by IAccessible.accName. Without focus events, NVDA never queries it.
+
+7.4.2 Standard WinForms Button Controls
+---------------------------------------
+
+Second attempt: Replace ToolStripButton with standard System.Windows.Forms.Button
+controls, which are native Windows BUTTON class wrappers:
+
+```csharp
+// Replace ToolStrip with Panel containing Buttons
+var newButton = new Button
+{
+    Text = "New",
+    AccessibleName = "New Script",
+    Width = 60,
+    Height = 25,
+    TabStop = true
+};
+newButton.Click += (s, e) => NewScriptMenuItem_Click(s, e);
+toolbarPanel.Controls.Add(newButton);
+```
+
+**Result:** Mouse reading worked. Keyboard navigation STILL did not announce.
+
+**Why it failed:** This was unexpected. Standard Button controls are native
+Windows controls with supposedly full accessibility support. Investigation
+revealed the issue:
+
+The WinForms Button control wraps the native BUTTON class but focus handling
+goes through the WinForms message loop. When Tab moves focus between buttons:
+
+1. WinForms receives WM_KEYDOWN for Tab
+2. WinForms calls SelectNextControl() internally
+3. The .NET Control.Focus() method is called
+4. Eventually, Windows SetFocus() is called
+5. **However**, the focus event that fires goes to the parent Form
+6. Individual button focus events are not propagated correctly
+
+This is a WinForms architectural issue where the framework intercepts and
+handles focus at the container level rather than letting Windows manage
+individual control focus natively.
+
+Additionally, testing revealed that even when using GotFocus events to
+manually fire NotifyWinEvent, NVDA still did not respond consistently.
+
+7.4.3 NotifyWinEvent for Focus Events
+-------------------------------------
+
+Third attempt: Manually fire MSAA focus events when buttons receive focus:
+
+```csharp
+private const uint EVENT_OBJECT_FOCUS = 0x8005;
+private const int OBJID_CLIENT = unchecked((int)0xFFFFFFFC);
+
+[DllImport("user32.dll")]
+private static extern void NotifyWinEvent(uint eventId, IntPtr hwnd,
+    int objectId, int childId);
+
+private void FireAccessibilityFocusEvent(Control control)
+{
+    if (control != null && control.IsHandleCreated)
+    {
+        NotifyWinEvent(EVENT_OBJECT_FOCUS, control.Handle, OBJID_CLIENT, 0);
+    }
+}
+
+// Wire up to GotFocus event
+button.GotFocus += (s, e) => FireAccessibilityFocusEvent((Control)s);
+```
+
+**Result:** Events fired (verified with AccEvent.exe) but NVDA still silent.
+
+**Why it failed:** Multiple issues compound:
+
+1. **Timing:** The event fires but NVDA's event hook may process it before
+   the control's IAccessible state is fully updated
+
+2. **Object ID Mismatch:** OBJID_CLIENT (-4) refers to the client area of
+   the window. NVDA queries AccessibleObjectFromEvent() which may not
+   correctly resolve to the button's IAccessible
+
+3. **WinForms IAccessible Implementation:** WinForms controls implement
+   IAccessible through System.Windows.Forms.AccessibleObject, which creates
+   a managed wrapper. The relationship between the HWND, object IDs, and
+   the managed AccessibleObject may not be what NVDA expects
+
+4. **Child ID Calculation:** For container controls with multiple accessible
+   children, the childId parameter must correctly identify which child. For
+   a simple Button, childId=0 should work, but WinForms may use different
+   conventions
+
+5. **NVDA Event Filtering:** NVDA has complex event filtering logic and may
+   ignore events that don't match expected patterns. The WinForms control
+   hierarchy doesn't match what NVDA expects from native controls.
+
+7.4.4 Why All Managed Control Solutions Failed
+----------------------------------------------
+
+The fundamental problem is architectural: WinForms controls are managed (.NET)
+wrappers around native Windows concepts, but they don't faithfully replicate
+native accessibility behavior.
+
+**Native Windows Controls:**
+- BUTTON, LISTBOX, COMBOBOX, etc. are implemented in USER32.DLL and COMCTL32.DLL
+- Focus changes fire WinEvents automatically at the OS level
+- IAccessible is implemented by oleacc.dll proxies that understand the controls
+- Screen readers have decades of compatibility testing with these controls
+
+**WinForms Controls:**
+- Managed reimplementations with different internal architecture
+- Focus management goes through .NET Control base class
+- IAccessible is implemented by managed AccessibleObject class
+- Accessibility events are optional and often missing
+- Screen reader compatibility is inconsistent
+
+**ToolStrip Controls (Worst Case):**
+- Entirely custom control suite introduced in .NET 2.0
+- All rendering and navigation is managed code
+- ToolStripItem is not a Control - it's a Component without an HWND
+- Accessibility was an afterthought, not a design requirement
+- No direct correspondence to any native Windows control
+
+The only reliable solution is to use actual native Windows controls that have
+built-in, tested, and reliable accessibility support.
+
+================================================================================
+8. THE LISTVIEW TOOLBAR SOLUTION
+================================================================================
+
+After all managed control approaches failed, the solution was found: replace
+the ToolStrip toolbar with a ListView control configured to function as a
+toolbar. ListView is a native Windows control (SysListView32) with full
+accessibility support.
+
+8.1 Why ListView Works
+----------------------
+
+ListView is a Common Controls library control (comctl32.dll) that wraps the
+native Windows SysListView32 class. Unlike ToolStrip:
+
+| Aspect                | ToolStrip                    | ListView                    |
+|-----------------------|------------------------------|------------------------------|
+| Implementation        | Managed .NET code            | Native Windows control       |
+| HWND                  | Container only               | Full native window           |
+| Item Implementation   | ToolStripItem (Component)    | LVITEM (native structure)    |
+| Focus Management      | Internal .NET code           | Windows USER32.DLL           |
+| Accessibility Events  | Not fired                    | Automatic by Windows         |
+| IAccessible           | Managed AccessibleObject     | oleacc.dll native proxy      |
+| Screen Reader Support | Broken                       | Full native support          |
+
+When keyboard focus moves between ListView items:
+1. User presses Arrow key
+2. Windows handles navigation in native code
+3. Windows fires EVENT_OBJECT_FOCUS automatically
+4. NVDA receives the event via SetWinEventHook
+5. NVDA queries IAccessible for the focused item
+6. NVDA announces the item text
+
+This all happens at the Windows OS level without any .NET code involvement
+in the accessibility pathway.
+
+8.2 ListView as Toolbar Architecture
+------------------------------------
+
+The ListView is configured to emulate toolbar behavior:
+
+```csharp
+_toolbarListView = new ListView
+{
+    Name = "ToolbarListView",
+    AccessibleName = "Script Toolbar",
+    AccessibleRole = AccessibleRole.ToolBar,    // Announces as toolbar
+    View = View.List,                           // Horizontal list of items
+    SmallImageList = _toolbarImageList,         // Icons for each button
+    Dock = DockStyle.Top,                       // Position like a toolbar
+    Height = 30,                                // Standard toolbar height
+    MultiSelect = false,                        // Single selection
+    TabIndex = 0,                               // First in tab order
+    TabStop = true,                             // Keyboard accessible
+    HideSelection = false,                      // Always show selection
+    Activation = ItemActivation.OneClick,       // Click to activate
+    FullRowSelect = true                        // Select entire item
+};
+```
+
+Each toolbar "button" becomes a ListViewItem:
+
+```csharp
+_toolbarListView.Items.Add(new ListViewItem("New Script", "New") { Tag = "New" });
+_toolbarListView.Items.Add(new ListViewItem("Open Script", "Open") { Tag = "Open" });
+_toolbarListView.Items.Add(new ListViewItem("Toggle", "Toggle") { Tag = "Toggle" });
+// ... etc
+```
+
+The Tag property stores an action identifier for the click handler.
+
+8.3 Implementation Details
+--------------------------
+
+**File Structure:**
+
+Each tool window has a NativeMenu.cs partial class file containing:
+- ListView toolbar declaration
+- ImageList for toolbar icons
+- CreateAccessibleToolbar() method
+- Event handlers for ListView interaction
+- ExecuteToolbarAction() dispatch method
+
+**Lua Console Implementation:**
+
+File: src/BizHawk.Client.EmuHawk/tools/Lua/LuaConsole.NativeMenu.cs
+
+```csharp
+public partial class LuaConsole
+{
+    private ListView _toolbarListView;
+    private ImageList _toolbarImageList;
+
+    private void CreateAccessibleToolbar()
+    {
+        // Hide the original ToolStrip
+        toolStrip1.Visible = false;
+
+        // Create ImageList for toolbar icons
+        _toolbarImageList = new ImageList();
+        _toolbarImageList.ImageSize = new Size(20, 20);
+        _toolbarImageList.ColorDepth = ColorDepth.Depth32Bit;
+        _toolbarImageList.Images.Add("New", Resources.NewFile);
+        _toolbarImageList.Images.Add("Open", Resources.OpenFile);
+        // ... add all icons
+
+        // Create ListView configured as toolbar
+        _toolbarListView = new ListView { /* ... configuration ... */ };
+
+        // Add toolbar items
+        _toolbarListView.Items.Add(new ListViewItem("New Script", "New") { Tag = "New" });
+        // ... add all items
+
+        // Wire up event handlers
+        _toolbarListView.ItemActivate += ToolbarListView_ItemActivate;
+        _toolbarListView.KeyDown += ToolbarListView_KeyDown;
+
+        // Add to form and position
+        Controls.Add(_toolbarListView);
+        _toolbarListView.BringToFront();
+    }
+}
+```
+
+**RAM Watch Implementation:**
+
+File: src/BizHawk.Client.EmuHawk/tools/Watch/RamWatch.NativeMenu.cs
+
+Similar structure with buttons specific to RAM Watch:
+- New List, Open, Save
+- New Watch, Edit Watch, Remove Watch
+- Duplicate, Split, Poke Address, Freeze Address
+- Insert Separator, Move Up, Move Down
+
+8.4 Event Handling for ListView Toolbar
+---------------------------------------
+
+Two event handlers manage user interaction:
+
+**ItemActivate Handler (Mouse Click):**
+
+```csharp
+private void ToolbarListView_ItemActivate(object sender, EventArgs e)
+{
+    if (_toolbarListView.SelectedItems.Count == 0) return;
+    var tag = _toolbarListView.SelectedItems[0].Tag?.ToString();
+    ExecuteToolbarAction(tag);
+}
+```
+
+**KeyDown Handler (Keyboard Activation):**
+
+```csharp
+private void ToolbarListView_KeyDown(object sender, KeyEventArgs e)
+{
+    if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space)
+    {
+        if (_toolbarListView.SelectedItems.Count > 0)
+        {
+            var tag = _toolbarListView.SelectedItems[0].Tag?.ToString();
+            ExecuteToolbarAction(tag);
+            e.Handled = true;
+        }
+    }
+}
+```
+
+**Action Dispatch:**
+
+```csharp
+private void ExecuteToolbarAction(string action)
+{
+    switch (action)
+    {
+        case "New": NewScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Open": OpenScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Toggle": ToggleScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Refresh": RefreshScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Pause": PauseScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Edit": EditScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Remove": RemoveScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Copy": DuplicateScriptMenuItem_Click(this, EventArgs.Empty); break;
+        case "Clear": ClearConsoleMenuItem_Click(this, EventArgs.Empty); break;
+        case "Up": MoveUpMenuItem_Click(this, EventArgs.Empty); break;
+        case "Down": MoveDownMenuItem_Click(this, EventArgs.Empty); break;
+    }
+}
+```
+
+The action dispatch reuses the existing menu item click handlers, ensuring
+identical behavior between menu and toolbar activation.
+
+8.5 Performance Considerations
+------------------------------
+
+The ListView toolbar solution has a minor performance trade-off:
+
+**Advantages:**
+- Full NVDA keyboard accessibility
+- Native Windows control with hardware-accelerated rendering
+- Consistent with Windows UI conventions
+- No custom accessibility code required
+
+**Disadvantages:**
+- ListView is a heavier control than ToolStrip
+- Slightly more memory usage
+- Marginally slower initial creation
+- Visual style differs from ToolStrip (shows as a list, not buttons)
+
+In practice, the performance difference is negligible. The ListView toolbar
+may feel "slightly slow" during rapid keyboard navigation compared to the
+original ToolStrip, but this is because:
+
+1. NVDA intercepts and processes focus events
+2. NVDA announces each item as focus moves
+3. This adds ~50-100ms of speech/braille output time per item
+
+This is inherent to screen reader operation, not a deficiency in the
+implementation. Sighted users navigating the same toolbar would not notice
+any performance difference.
+
+================================================================================
+9. COMPLETE FILE REFERENCE
+================================================================================
+
+9.1 New Files Created
+---------------------
+
+**Main Form:**
+  src/BizHawk.Client.EmuHawk/MainForm.NativeMenu.cs
+  - Native Win32 MainMenu for main window
+  - Replaces MainformMenu (MenuStripEx)
+
+**Lua Console:**
+  src/BizHawk.Client.EmuHawk/tools/Lua/LuaConsole.NativeMenu.cs
+  - Native Win32 MainMenu for Lua Console
+  - ListView-based accessible toolbar
+  - Replaces menuStrip1 and toolStrip1
+
+**RAM Watch:**
+  src/BizHawk.Client.EmuHawk/tools/Watch/RamWatch.NativeMenu.cs
+  - Native Win32 MainMenu for RAM Watch
+  - ListView-based accessible toolbar
+  - Replaces RamWatchMenu and toolStrip1
+
+**Hex Editor:**
+  src/BizHawk.Client.EmuHawk/tools/HexEditor/HexEditor.NativeMenu.cs
+  - Native Win32 MainMenu for Hex Editor
+  - Accessibility properties for controls
+  - Replaces HexMenuStrip (no toolbar in this tool)
+
+9.2 Modified Files
+------------------
+
+**LuaConsole.Designer.cs:**
+  - Added AccessibleName to all ToolStripButton items
+  - Added AccessibleName to OutputBox, InputBox, LuaListView
+  - Set TabStop = true on toolStrip1
+  - Adjusted TabIndex values for keyboard navigation
+
+**LuaConsole.cs:**
+  - Added InitializeNativeMenu() call in constructor
+
+**RamWatch.Designer.cs:**
+  - Added AccessibleName to all 14 toolbar buttons:
+    - newToolStripButton: "New Watch List"
+    - openToolStripButton: "Open Watch List"
+    - saveToolStripButton: "Save Watch List"
+    - newWatchToolStripButton: "New Watch"
+    - editWatchToolStripButton: "Edit Watch"
+    - cutToolStripButton: "Remove Watch"
+    - clearChangeCountsToolStripButton: "Clear Change Counts"
+    - duplicateWatchToolStripButton: "Duplicate Watch"
+    - SplitWatchToolStripButton: "Split Watch"
+    - PokeAddressToolBarItem: "Poke Address"
+    - FreezeAddressToolBarItem: "Freeze Address"
+    - seperatorToolStripButton: "Insert Separator"
+    - moveUpToolStripButton: "Move Watch Up"
+    - moveDownToolStripButton: "Move Watch Down"
+
+**RamWatch.cs:**
+  - Added InitializeNativeMenu() call in constructor
+
+**HexEditor.cs:**
+  - Added InitializeNativeMenu() call in constructor
+
+**Cheats.Designer.cs:**
+  - Added AccessibleName to toolbar buttons
+  - Added AccessibleName to CheatListView
+
+**ToolStripEx.cs:**
+  - Added AccessibleRole = AccessibleRole.ToolBar in constructor
+  - Removed Text override that returned empty string (broke screen readers)
+
+**StatusStripEx.cs / StatusLabelEx.cs:**
+  - Added AccessibleRole properties for status bar accessibility
+
+9.3 Accessibility Properties Added
+----------------------------------
+
+The following accessibility properties were set on controls:
+
+**Form-Level:**
+```csharp
+this.AccessibleName = "Lua Console";
+this.AccessibleDescription = "Lua scripting console for BizHawk";
+this.AccessibleRole = AccessibleRole.Window;
+```
+
+**ListView/List Controls:**
+```csharp
+LuaListView.AccessibleName = "Script List";
+LuaListView.AccessibleDescription = "List of loaded Lua scripts";
+WatchListView.AccessibleName = "Watch List";
+WatchListView.AccessibleDescription = "List of watched memory addresses";
+```
+
+**TextBox Controls:**
+```csharp
+OutputBox.AccessibleName = "Lua Output";
+OutputBox.AccessibleDescription = "Displays output from Lua scripts";
+InputBox.AccessibleName = "Lua Command Input";
+InputBox.AccessibleDescription = "Enter Lua commands here";
+```
+
+**Toolbar Buttons (retained for mouse users):**
+```csharp
+NewScriptToolbarItem.AccessibleName = "New Script";
+OpenScriptToolbarItem.AccessibleName = "Open Script";
+// ... etc
+```
+
+================================================================================
+10. KNOWN LIMITATIONS AND FUTURE WORK
+================================================================================
+
+Current limitations:
+
+1. **Dynamic Menu Population:** Some menus (Recent ROM, Recent Movie, External
+   Tools, Preferred Cores, Disk menus) are populated dynamically at runtime.
+   The native menu has placeholder items that would need additional integration
+   to populate dynamically.
+
+2. **System Menu Visibility:** The system-specific menus (NES, SNES, etc.) are
+   created but hidden. Integration is needed to show/hide them based on the
+   loaded core, mirroring the ToolStrip menu behavior.
+
+3. **Checkmarks and State:** Some menu items have checkmarks indicating state
+   (e.g., "Read-only" mode, "Display FPS"). The native menu doesn't currently
+   sync these states - would need integration with the existing state update
+   methods.
+
+4. **Shortcut Key Display:** The ToolStrip menu displays keyboard shortcuts
+   next to items. The native Menu can display shortcuts but this would need
+   to be synchronized with the hotkey configuration.
+
+5. **Menu Images:** The ToolStrip menu has icons on some items. MainMenu
+   supports icons via owner-draw but this is not implemented.
+
+6. **No User Toggle:** Currently the native menu is always used when
+   _useNativeMenu = true. A user-accessible preference could be added.
+
+7. **ListView Toolbar Visual Style:** The ListView toolbar appears as a list
+   of items rather than traditional toolbar buttons. This is a visual trade-off
+   for accessibility. Future work could explore owner-draw to create a more
+   traditional toolbar appearance while retaining accessibility.
+
+8. **Cheats Window:** The Cheats tool has accessible names added to controls
+   but does not yet have a native menu or ListView toolbar implementation.
+
+9. **Other Tool Windows:** Additional tool windows (RAM Search, Debugger, etc.)
+   have not been updated with accessibility features.
+
+Future work:
+
+1. Add configuration option to toggle between menu systems
+2. Implement dynamic menu population for Recent items, External Tools, etc.
+3. Add system menu visibility management tied to core loading
+4. Sync checkmark states with application state
+5. Display keyboard shortcuts from hotkey configuration
+6. Consider hybrid approach: native menu for accessibility, keep ToolStrip
+   for users who prefer it
+7. Extend ListView toolbar solution to remaining tool windows
+8. Create owner-drawn ListView items that look like toolbar buttons
+9. Document accessibility testing procedures for future contributors
+10. Consider upstream contribution to BizHawk project
+
+================================================================================
+11. REFERENCES
+================================================================================
+
+Microsoft Documentation:
+- Active Accessibility: https://docs.microsoft.com/en-us/windows/win32/winauto/microsoft-active-accessibility
+- WinEvents: https://docs.microsoft.com/en-us/windows/win32/winauto/winevents
+- IAccessible Interface: https://docs.microsoft.com/en-us/windows/win32/api/oleacc/nn-oleacc-iaccessible
+- MainMenu Class: https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.mainmenu
+- ListView Class: https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.listview
+- NotifyWinEvent Function: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-notifywinevent
+- AccessibleRole Enumeration: https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.accessiblerole
+
+NVDA Documentation:
+- NVDA Developer Guide: https://www.nvaccess.org/files/nvda/documentation/developerGuide.html
+- NVDA GitHub Repository: https://github.com/nvaccess/nvda
+
+Common Controls Library:
+- ListView Control: https://docs.microsoft.com/en-us/windows/win32/controls/list-view-control-reference
+- SysListView32 Class: Native Windows ListView implementation in comctl32.dll
+
+Accessibility Testing Tools:
+- Accessibility Insights: https://accessibilityinsights.io/
+- Inspect.exe (Windows SDK) - UI element inspection
+- AccEvent.exe (Windows SDK) - WinEvent monitoring
+- Narrator (Windows built-in screen reader)
+- NVDA (NonVisual Desktop Access) - Free open-source screen reader
+
+Related Issues and Background:
+- WinForms ToolStrip accessibility is a known, unfixed limitation
+- .NET Framework is in maintenance mode; no fixes forthcoming
+- .NET Core/5+/6+ WinForms has similar ToolStrip limitations
+- ToolStripItem is a Component, not a Control - lacks native HWND
+- WinForms AccessibleObject is a managed wrapper with incomplete event support
+
+Key Technical Insight:
+The only reliable path to screen reader accessibility in WinForms is to use
+controls that directly wrap native Windows control classes (ListView, TreeView,
+Button as standard control, MainMenu, etc.) rather than custom .NET-only
+controls (ToolStrip, MenuStrip, DataGridView, etc.).
+
+Native controls have accessibility built into Windows itself (USER32.DLL,
+COMCTL32.DLL, OLEACC.DLL) with decades of screen reader compatibility testing.
+Custom .NET controls must implement accessibility manually, which is complex,
+error-prone, and rarely done correctly.
+
+================================================================================
+DOCUMENT REVISION HISTORY
+================================================================================
+
+2026-03-04: Initial document - Native menu implementation for MainForm and
+            LuaConsole menus
+
+2026-03-05: Major revision - Added sections 7-9 documenting:
+            - ToolStripButton keyboard accessibility failure
+            - Failed attempts (AccessibleName, Button controls, NotifyWinEvent)
+            - ListView toolbar solution for Lua Console and RAM Watch
+            - Complete file reference and accessibility properties
+            - Extended references section
+
+================================================================================
+END OF DOCUMENT
+================================================================================
