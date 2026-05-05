@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					AxisPairOrientation.RightAndUp,
 					(-128).RangeTo(127),
 					0,
-					new CircularAxisConstraint("Natural Circle", $"P{player} Y Axis", 127.0f)
+					new CircularAxisConstraint("Natural Circle", $"P{player} Y Axis", 91.0f)
 				);
 				if (hasRumblePak) def.HapticsChannels.Add($"P{player} Rumble Pak");
 			}
