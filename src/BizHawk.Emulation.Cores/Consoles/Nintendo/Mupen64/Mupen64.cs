@@ -151,12 +151,21 @@ public partial class Mupen64 : IEmulator
 
 		InitSound(AudioPluginApi.GetAudioRate());
 
+		int width = 640 * (1 << (int)_syncSettings.Resolution);
+		int height = 480 * (1 << (int)_syncSettings.Resolution);
+
+		Mupen64Api.ConfigSetParameter(coreConfigSection, "ScreenWidth", width);
+		Mupen64Api.ConfigSetParameter(coreConfigSection, "ScreenHeight", height);
+
 		IntPtr configSectionHandle = default;
 		switch (_syncSettings.VideoPlugin)
 		{
 			case N64VideoPlugin.Parallel:
 				Mupen64Api.ConfigOpenSection("Video-Parallel", ref configSectionHandle);
-				Mupen64Api.ConfigSetParameter(configSectionHandle, "Upscaling", _syncSettings.UpscaleFactor);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "ScreenWidth", width);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "ScreenHeight", height);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "Upscaling", 1 << (int)_syncSettings.UpscaleFactor);
+				Mupen64Api.ConfigSetParameter(configSectionHandle, "DownScale", (int)_syncSettings.DownscaleFactor);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "DeinterlaceMode", _syncSettings.DeinterlaceMode);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "VIAA", _syncSettings.Antialiasing);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "Divot", _syncSettings.Divot);
@@ -173,7 +182,6 @@ public partial class Mupen64 : IEmulator
 				Mupen64Api.ConfigOpenSection("Video-GLideN64", ref configSectionHandle);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableCustomSettings", false);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "ThreadedVideo", _syncSettings.ThreadedVideo);
-				Mupen64Api.ConfigSetParameter(configSectionHandle, "UseNativeResolutionFactor", _syncSettings.UseNativeResolutionFactor);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableHWLighting", _syncSettings.EnableHWLighting);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "EnableCoverage", _syncSettings.EnableCoverage);
 				Mupen64Api.ConfigSetParameter(configSectionHandle, "txHiresEnable", _syncSettings.EnableHiResTextures);

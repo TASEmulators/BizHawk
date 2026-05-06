@@ -52,6 +52,30 @@ public partial class Mupen64 : ISettable<object, Mupen64.SyncSettings>
 		Hle,
 	}
 
+	public enum OutputResolution
+	{
+		[Display(Name = "640x480")]
+		Native,
+		[Display(Name = "1280x960")]
+		Double,
+		[Display(Name = "1920x1440")]
+		Triple,
+		[Display(Name = "2560x1920")]
+		Quadruple,
+	}
+
+	public enum ScalingFactor
+	{
+		[Display(Name = "1x")]
+		One,
+		[Display(Name = "2x")]
+		Two,
+		[Display(Name = "4x")]
+		Four,
+		[Display(Name = "8x")]
+		Eight,
+	}
+
 	private static string RspPluginFileName(N64RspPlugin rspPlugin)
 	{
 		return rspPlugin switch
@@ -138,11 +162,24 @@ public partial class Mupen64 : ISettable<object, Mupen64.SyncSettings>
 		[Category("General")]
 		public N64ControllerPakType Port4PakType { get; set; }
 
+		[Description("Adjust the output resolution of the video plugin.")]
+		[DefaultValue(OutputResolution.Native)]
+		[TypeConverter(typeof(DescribableEnumConverter))]
+		[Category("General")]
+		public OutputResolution Resolution { get; set; }
+
 		// video-parallel settings
-		[Description("Amount of rescaling: 1=None, 2=2x, 4=4x, 8=8x")]
-		[DefaultValue(1)]
+		[Description("Scales the internal framebuffer with this factor before applying filters, resulting in higher-resolution rendering.")]
+		[DefaultValue(ScalingFactor.One)]
+		[TypeConverter(typeof(DescribableEnumConverter))]
 		[Category("Video Plugin: parallel")]
-		public int UpscaleFactor { get; set; }
+		public ScalingFactor UpscaleFactor { get; set; }
+
+		[Description("Downscales the internal framebuffer after filters have been applied. Effectively acts as SSAA.")]
+		[DefaultValue(ScalingFactor.One)]
+		[TypeConverter(typeof(DescribableEnumConverter))]
+		[Category("Video Plugin: parallel")]
+		public ScalingFactor DownscaleFactor { get; set; }
 
 		[Description("Deinterlacing method. False=Bob, True=Weave")]
 		[DefaultValue(false)]
@@ -150,7 +187,7 @@ public partial class Mupen64 : ISettable<object, Mupen64.SyncSettings>
 		public bool DeinterlaceMode { get; set; }
 
 		[Description("VI anti-aliasing, smooths polygon edges")]
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		[Category("Video Plugin: parallel")]
 		public bool Antialiasing { get; set; }
 
@@ -190,11 +227,6 @@ public partial class Mupen64 : ISettable<object, Mupen64.SyncSettings>
 		[DefaultValue(false)]
 		[Category("Video Plugin: GLideN64")]
 		public bool ThreadedVideo { get; set; }
-
-		[Description("Frame buffer size is the factor of N64 native resolution.")]
-		[DefaultValue(0)]
-		[Category("Video Plugin: GLideN64")]
-		public int UseNativeResolutionFactor { get; set; }
 
 		[Description("Enable hardware per-pixel lighting.")]
 		[DefaultValue(false)]
