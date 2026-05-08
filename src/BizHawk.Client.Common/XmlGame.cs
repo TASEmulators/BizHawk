@@ -51,7 +51,8 @@ namespace BizHawk.Client.Common
 
 					foreach (XmlNode a in n.ChildNodes)
 					{
-						var filename = a.Attributes!["FileName"].Value;
+						var filename = a.Attributes?["FileName"].Value;
+						if (string.IsNullOrWhiteSpace(filename)) continue; // comment, or otherwise edited manually to be invalid
 						byte[] data;
 						if (filename[0] == '|')
 						{
