@@ -14,6 +14,8 @@ namespace BizHawk.Client.Common
 {
 	public class XmlGame
 	{
+		private sealed class XmlGameException(string message, Exception innerException = null) : Exception(message, innerException);
+
 		public XmlDocument Xml { get; set; }
 		public GameInfo GI { get; } = new();
 		public IList<(string Path, string Filename, byte[] FileData)> Assets { get; } = [ ];
@@ -67,7 +69,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								throw new Exception($"Couldn't load XMLGame Asset \"{filename}\"");
+								throw new XmlGameException($"Couldn't load XMLGame Asset \"{filename}\".");
 							}
 						}
 						else
@@ -104,7 +106,7 @@ namespace BizHawk.Client.Common
 							}
 							catch (Exception e)
 							{
-								throw new Exception($"Couldn't load XMLGame LoadAsset \"{filename}\"", e);
+								throw new XmlGameException($"Couldn't load XMLGame LoadAsset \"{filename}\".", e);
 							}
 						}
 
@@ -128,9 +130,13 @@ namespace BizHawk.Client.Common
 
 				return ret;
 			}
+			catch (XmlGameException x)
+			{
+				throw new InvalidOperationException($".xml bundle loading failed: {x.Message}", x.InnerException);
+			}
 			catch (Exception ex)
 			{
-				throw new InvalidOperationException(ex.ToString());
+				throw new InvalidOperationException(".xml bundle loading failed.", ex);
 			}
 		}
 	}
