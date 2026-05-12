@@ -133,6 +133,8 @@ SRCS = 	bizhawk.cpp \
 		dosbox-x/src/aviwriter/avi_writer.cpp \
 		dosbox-x/src/aviwriter/guid.cpp \
 		dosbox-x/src/builtin/move_exe.cpp \
+		dosbox-x/src/builtin/ipsmake.cpp \
+		dosbox-x/src/builtin/ipspatch.cpp \
 		dosbox-x/src/builtin/hexmem16_exe.cpp \
 		dosbox-x/src/builtin/fdisk_exe.cpp \
 		dosbox-x/src/builtin/textutil.cpp \
