@@ -10,7 +10,7 @@
 	<ItemGroup>
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" />
-		<PackageReference Include="SharpCompress" />
+		<PackageReference Include="SharpCompress" PrivateAssets="all" NoWarn="NU1902" />
 		<PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />
 		<PackageReference Include="System.Drawing.Common" PrivateAssets="all" />
 		<PackageReference Include="System.CommandLine" />

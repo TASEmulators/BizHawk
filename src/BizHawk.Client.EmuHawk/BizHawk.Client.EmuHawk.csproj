@@ -17,6 +17,7 @@
 		<Reference Include="PresentationFramework" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="SharpCompress" PrivateAssets="all" NoWarn="NU1902" />
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 	</ItemGroup>
