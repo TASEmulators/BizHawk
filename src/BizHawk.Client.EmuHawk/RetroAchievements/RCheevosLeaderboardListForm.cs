@@ -40,7 +40,6 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart(IEnumerable<RCheevos.LBoard> lboards)
 		{
 			_lboards = lboards.ToArray();
-			flowLayoutPanel1.Controls.Clear();
 
 			RCheevosLeaderboardListForm_SizeChanged(this, EventArgs.Empty);
 			vScrollBar1.Value = 0;
