@@ -564,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName })
+				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName } currentCell && currentCell.RowIndex < Branches.Count)
 				{
 					BranchView.DragCurrentCell();
 				}
@@ -593,10 +593,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_screenshot.FadeOut();
 			}
-			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
-			{
-				BranchView.Refresh();
-			}
 		}
 
 		private void BranchView_MouseLeave(object sender, EventArgs e)
@@ -615,8 +611,11 @@ namespace BizHawk.Client.EmuHawk
 				Branches.Swap(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 				int newIndex = Branches.IndexOfHash(guid);
 				Branches.Current = newIndex;
+				BranchView.DeselectAll();
 				Select(newIndex, true);
 			}
+
+			Refresh();
 		}
 
 		private void BranchView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
