@@ -1552,7 +1552,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Deactivate(object sender, EventArgs e)
 		{
-			_skipNextAltRelease = true; // Alt+Tab to activate window may result in us seeing an alt release with no corresponding press
 			if (!Config.RunInBackground) MaybePauseFromMenuOpened();
 		}
 

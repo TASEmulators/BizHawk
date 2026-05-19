@@ -945,15 +945,19 @@ namespace BizHawk.Client.EmuHawk
 
 				InputManager.ProcessInput(Input.Instance, CheckHotkey, Config, (ie, handled) =>
 				{
-					if (ActiveForm is not FormBase afb) return;
-
 					// Alt key for menu items.
-					if (ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U)
+					bool isAltCombination = ie.EventType is InputEventType.Press && (ie.LogicalButton.Modifiers & LogicalButton.MASK_ALT) is not 0U;
+					if (isAltCombination || ie.LogicalButton.Button == Input.BUTTON_FORM_CHANGED)
 					{
 						// Windows will not focus the menu if any other key was pressed while Alt is held. Regardless of whether that key did anything.
+						// And the active form will not be us if the user presed alt+tab.
 						_skipNextAltRelease = true;
-						if (handled) return;
+					}
 
+					if (handled || ActiveForm is not FormBase afb) return;
+
+					if (isAltCombination)
+					{
 						if (ie.LogicalButton.Button.Length == 1)
 						{
 							var c = ie.LogicalButton.Button.ToLowerInvariant()[0];
@@ -964,7 +968,6 @@ namespace BizHawk.Client.EmuHawk
 							afb.SendAltCombination(' ');
 						}
 					}
-					else if (handled) return;
 					else if (ie.EventType is InputEventType.Press && ie.LogicalButton.Button == "Alt")
 					{
 						// We will only do the alt release if the alt press itself was not already handled.

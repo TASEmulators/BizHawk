@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class Input : IPhysicalInputSource
 	{
+		public const string BUTTON_FORM_CHANGED = "ActiveFormChanged";
+
 		/// <summary>
 		/// If your form needs this kind of input focus, be sure to say so.
 		/// Really, this only makes sense for mouse, but I've started building it out for other things
@@ -247,6 +249,16 @@ namespace BizHawk.Client.EmuHawk
 
 					// analyze moose
 					Control/*?*/ activeForm = Form.ActiveForm;
+					if (activeForm != _lastControl)
+					{
+						// On Windows, the tab key in a alt+tab combination cannot be detected. But it will change the active form.
+						// We need to generate an event, or alt+tab between windows will be detected as just alt.
+						EnqueueEvent(new InputEvent() {
+							EventType = InputEventType.Press,
+							LogicalButton = new(BUTTON_FORM_CHANGED, 0, () => _getConfigCallback().ModifierKeysEffective),
+							Source = HostInputType.Ignored,
+						});
+					}
 					bool newWantsMouse = _wantingMouseFocus.Contains(activeForm);
 					if (activeForm != _lastControl && !_wantsMouse && newWantsMouse)
 					{
