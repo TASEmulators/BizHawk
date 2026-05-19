@@ -341,8 +341,6 @@ namespace BizHawk.Client.EmuHawk
 				roll.AllColumns.AddRange(cols);
 			}
 
-			_movieSettings.Columns = _inputRolls.Select(static r => r.AllColumns).ToArray();
-
 			_activeInputRoll = _inputRolls[0];
 			_inputRolls.ForEach(UpdateInputRollDefinition); // after setting active roll
 		}

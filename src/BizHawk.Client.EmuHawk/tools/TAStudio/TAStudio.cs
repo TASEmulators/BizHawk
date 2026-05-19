@@ -437,12 +437,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetUpColumns()
 		{
-			_movieSettings.Columns = new RollColumns[_inputRolls.Count];
 			for (int i = 0; i < _inputRolls.Count; i++)
 			{
 				InputRoll roll = _inputRolls[i];
 				MakeDefaultColumns(roll);
-				_movieSettings.Columns[i] = roll.AllColumns;
 				UpdateInputRollDefinition(roll);
 			}
 		}
@@ -698,7 +696,10 @@ namespace BizHawk.Client.EmuHawk
 			_initializing = true;
 
 			movie.ClientSettingsForSave = () =>
-				ConfigService.SaveWithType(_movieSettings);
+			{
+				_movieSettings.Columns = _inputRolls.Select(static r => r.AllColumns).ToArray();
+				return ConfigService.SaveWithType(_movieSettings);
+			};
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
@@ -745,7 +746,6 @@ namespace BizHawk.Client.EmuHawk
 						roll.HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
 						roll.LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
 						roll.HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
-						_movieSettings.Columns = [ roll.AllColumns ];
 						UpdateInputRollDefinition(roll);
 					}
 					else if (settings is MovieClientSettings clientSettings)
