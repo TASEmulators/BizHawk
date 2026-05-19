@@ -295,7 +295,9 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					initialDirectory = Config.PathEntries.MultiDiskAbsolutePath();
+#pragma warning disable RS0030 // passes the dir on to `ShowFileSaveDialog` ctor
 					if (!Directory.Exists(initialDirectory))
+#pragma warning restore RS0030
 					{
 						initialDirectory = Config.PathEntries.RomAbsolutePath();
 						Directory.CreateDirectory(initialDirectory);

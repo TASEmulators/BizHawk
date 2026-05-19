@@ -34,7 +34,9 @@ namespace BizHawk.Client.Common
 			if (currDirSpeedHack == path) return true;
 
 			if (!OSTailoredCode.IsUnixHost) return CWDHacks.Set(target);
+#pragma warning disable RS0030 // passes the dir on to `CurrentDirectory` setter
 			if (!System.IO.Directory.Exists(path)) return false; //TODO is this necessary with Mono? Linux is fine with the CWD being nonexistent. also, is this necessary with .NET Core on Windows? --yoshi
+#pragma warning restore RS0030
 			Environment.CurrentDirectory = path;
 			return true;
 		}

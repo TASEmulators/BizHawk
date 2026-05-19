@@ -39,8 +39,20 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			string targetFile = Path.GetFileName(path);
 			string targetFragment = Path.GetFileNameWithoutExtension(path);
 
-			var directory = Path.GetDirectoryName(path);
-			var filePaths = Directory.Exists(directory) ? Directory.GetFiles(directory).Select(Path.GetFullPath) : _baseDirPaths;
+			IEnumerable<string> filePaths = _baseDirPaths;
+			try
+			{
+				filePaths = Directory.GetFiles(Path.GetDirectoryName(path) ?? string.Empty).Select(Path.GetFullPath);
+			}
+			catch (DirectoryNotFoundException)
+			{
+				// continue with initial value `_baseDirPaths`
+			}
+			catch (ArgumentException) // `Path.GetDirectoryName` must not have returned a valid dir
+			{
+				// ditto
+			}
+
 			//TODO - don't do the search until a resolve fails // leftover comment from 3c26d48a59f64a7a94bda57fbcfd13eca49d8b9d, is this still relevant?
 
 			var results = new List<string>();

@@ -89,7 +89,9 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryMonitor.Dispose();
 			}
 			var path = _config.PathEntries.ExternalToolsAbsolutePath();
+#pragma warning disable RS0030 // passes the dir on to `FileSystemWatcher` ctor
 			if (Directory.Exists(path))
+#pragma warning restore RS0030
 			{
 				DirectoryMonitor = new FileSystemWatcher(path, "*.dll")
 				{

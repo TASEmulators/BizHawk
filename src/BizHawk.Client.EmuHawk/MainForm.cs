@@ -4503,7 +4503,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string SanitiseForFileDialog(string initDir)
 		{
+#pragma warning disable RS0030 // passes the dir on to caller
 			if (initDir.Length is 0 || Directory.Exists(initDir)) return initDir;
+#pragma warning restore RS0030
 #if DEBUG
 			throw new ArgumentException(
 				paramName: nameof(initDir),

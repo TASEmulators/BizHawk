@@ -81,10 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			// copy firmware over to the user folder
 			// this must be done before Encore_CreateContext is called!
 			var sysDataDir = Path.Combine(_userPath, "sysdata");
-			if (!Directory.Exists(sysDataDir))
-			{
-				Directory.CreateDirectory(sysDataDir);
-			}
+			_ = Directory.CreateDirectory(sysDataDir);
 
 			var aesKeys = lp.Comm.CoreFileProvider.GetFirmware(new("3DS", "aes_keys"));
 			if (aesKeys is not null)

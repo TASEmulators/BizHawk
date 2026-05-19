@@ -39,11 +39,14 @@ namespace BizHawk.Client.Common
 			if (temp)
 			{
 				var tempUserPath = Path.Combine(Path.GetTempPath(), $"biz-temp{sysID}user");
-				if (Directory.Exists(tempUserPath))
+				try
 				{
 					Directory.Delete(tempUserPath, true);
 				}
-
+				catch (DirectoryNotFoundException)
+				{
+					// didn't exist in the first place, good
+				}
 				return tempUserPath;
 			}
 

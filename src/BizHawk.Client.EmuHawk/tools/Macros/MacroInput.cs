@@ -251,29 +251,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool SaveMacroAs(MovieZone macro)
 		{
 			string suggestedFolder = SuggestedFolder(Config, Game);
-
-			// Create directory?
-			bool create = false;
-			if (!Directory.Exists(suggestedFolder))
-			{
-				Directory.CreateDirectory(suggestedFolder);
-				create = true;
-			}
-
+			_ = Directory.CreateDirectory(suggestedFolder);
 			var result = this.ShowFileSaveDialog(
 				filter: MacrosFSFilterSet,
 				initDir: suggestedFolder,
 				initFileName: macro.Name);
-			if (result is null)
-			{
-				if (create)
-				{
-					Directory.Delete(suggestedFolder);
-				}
-
-				return false;
-			}
-
+			if (result is null) return false;
 			macro.Save(result); // ignore errors: This tool is going to be removed.
 			Config!.RecentMacros.Add(result);
 

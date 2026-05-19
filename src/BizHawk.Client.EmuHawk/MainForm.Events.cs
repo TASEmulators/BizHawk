@@ -486,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var (dir, file) = $"{ScreenshotPrefix()}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png".SplitPathToDirAndFile();
-			if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+			_ = Directory.CreateDirectory(dir);
 			var result = this.ShowFileSaveDialog(
 				filter: ScreenshotsFSFilterSet,
 				initDir: dir,
