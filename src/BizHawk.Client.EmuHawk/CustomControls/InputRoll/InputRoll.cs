@@ -1069,6 +1069,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Refresh();
 			}
+			else if (_draggingCell is not null)
+			{
+				Refresh();
+			}
 
 			Cursor = IsHoveringOnColumnEdge || _columnResizing != null
 				? Cursors.VSplit
