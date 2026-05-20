@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				DefaultHeight = 224,
 				MaxWidth = 320,
 				MaxHeight = 480,
-				SystemId = VSystemID.Raw.GEN,
+				SystemId = game.System,
 			})
 		{
 			var biosg = comm.CoreFileProvider.GetFirmware(new("32X", "G"));
