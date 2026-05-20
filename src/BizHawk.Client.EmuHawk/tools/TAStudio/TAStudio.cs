@@ -704,12 +704,12 @@ namespace BizHawk.Client.EmuHawk
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
 
-			movie.PropertyChanged += TasMovie_OnPropertyChanged;
+			movie.ChangesChanged += TasMovie_OnChangesChanged;
 			System.Collections.Specialized.NotifyCollectionChangedEventHandler refreshOnMarker = (_, _) => RefreshDialog();
 			movie.Markers.CollectionChanged += refreshOnMarker;
 			this.Disposed += (s, e) =>
 			{
-				movie.PropertyChanged -= TasMovie_OnPropertyChanged;
+				movie.ChangesChanged -= TasMovie_OnChangesChanged;
 				movie.Markers.CollectionChanged -= refreshOnMarker;
 			};
 
@@ -1112,7 +1112,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// This method is called every time the Changes property is toggled on a <see cref="TasMovie"/> instance.
 		/// </summary>
-		private void TasMovie_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void TasMovie_OnChangesChanged(object sender, EventArgs e)
 		{
 			UpdateWindowTitle();
 		}

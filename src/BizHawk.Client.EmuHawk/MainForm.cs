@@ -497,6 +497,7 @@ namespace BizHawk.Client.EmuHawk
 				this,
 				PauseEmulator,
 				SetMainformMovieInfo,
+				(_, _) => UpdateWindowTitle(),
 				() => Sound.PlayWavFile(Properties.Resources.GetNotHawkCallSFX(), Config.SoundVolume / 100f));
 
 			void MainForm_MouseClick(object sender, MouseEventArgs e)

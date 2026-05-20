@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface ITasMovie : IMovie, INotifyPropertyChanged, IDisposable
+	public interface ITasMovie : IMovie, IDisposable
 	{
 		bool BindMarkersToInput { get; set; }
 

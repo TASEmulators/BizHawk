@@ -49,6 +49,8 @@ namespace BizHawk.Client.Common
 
 		bool Changes { get; }
 
+		event EventHandler ChangesChanged;
+
 		/// <summary>
 		/// Gets the actual length of the input log, should only be used by code that needs the input log length
 		/// specifically, not the frame count

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -312,29 +311,6 @@ namespace BizHawk.Client.Common
 			ChangeLog = branch.ChangeLog.Clone();
 
 			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		private bool _changes;
-		public override bool Changes
-		{
-			get => _changes;
-			protected set
-			{
-				if (_changes != value)
-				{
-					_changes = value;
-					OnPropertyChanged(nameof(Changes));
-				}
-			}
-		}
-
-		// This event is Raised only when Changes is TOGGLED.
-		private void OnPropertyChanged(string propertyName)
-		{
-			// Raising the event when FirstName or LastName property value changed
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

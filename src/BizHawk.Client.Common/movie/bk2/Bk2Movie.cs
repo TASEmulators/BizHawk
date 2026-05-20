@@ -49,7 +49,21 @@ namespace BizHawk.Client.Common
 
 		public const string Extension = "bk2";
 
-		public virtual bool Changes { get; protected set; }
+		public event EventHandler ChangesChanged;
+
+		private bool _changes;
+		public bool Changes
+		{
+			get => _changes;
+			protected set
+			{
+				if (_changes != value)
+				{
+					_changes = value;
+					ChangesChanged?.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
 		public bool IsCountingRerecords { get; set; } = true;
 
 		public override int FrameCount => Log.Count;

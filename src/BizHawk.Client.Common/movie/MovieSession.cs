@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
+		private readonly EventHandler _changesChangedCallback;
 		private readonly Action _movieEndSound;
 
 		private IMovie _queuedMovie;
@@ -32,6 +33,7 @@ namespace BizHawk.Client.Common
 			IDialogParent dialogParent,
 			Action pauseCallback,
 			Action modeChangedCallback,
+			EventHandler changesChangedCallback,
 			Action movieEndSound = null)
 		{
 			Settings = settings;
@@ -41,6 +43,7 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
+			_changesChangedCallback = changesChangedCallback;
 			_movieEndSound = movieEndSound;
 		}
 
@@ -302,6 +305,8 @@ namespace BizHawk.Client.Common
 
 			if (loadMovie)
 				movie.Load();
+
+			movie.ChangesChanged += _changesChangedCallback;
 
 			return movie;
 		}
