@@ -108,14 +108,6 @@ namespace BizHawk.Client.EmuHawk
 			_shouldMoveGreenArrow = true;
 			if (_seekingTo == -1) return;
 
-			if (Config.TurboSeek && Emulator.Frame < _seekingTo)
-			{
-				// Turbo seek does various things, including telling the core to skip rendering most frames.
-				// Thus, we need the seek to end naturally.
-				_seekingTo = Emulator.Frame + 1;
-				return;
-			}
-
 			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
