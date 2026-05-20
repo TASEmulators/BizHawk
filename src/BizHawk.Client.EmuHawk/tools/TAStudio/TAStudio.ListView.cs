@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		public void StopSeeking(bool skipRecModeCheck = false)
 		{
 			_shouldMoveGreenArrow = true;
-			if (_seekingTo == -1) return;
+			if (SeekingTo == -1) return;
 
 			if (WasRecording && !skipRecModeCheck)
 			{
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_seekingByEdit = false;
-			_seekingTo = -1;
+			SeekingTo = -1;
 			if (_pauseAfterSeeking)
 			{
 				MainForm.PauseEmulator();
@@ -371,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (index == Emulator.Frame)
 				{
-					bitmap = index == _seekingTo
+					bitmap = index == SeekingTo
 						? sender.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
 						: sender.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
@@ -456,11 +456,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var record = CurrentTasMovie[index];
 
-			if (_seekingTo == index)
+			if (SeekingTo == index)
 			{
 				color = Palette.CurrentFrame_InputLog;
 			}
-			else if (_seekingTo == -1 && Emulator.Frame == index)
+			else if (SeekingTo == -1 && Emulator.Frame == index)
 			{
 				color = Palette.CurrentFrame_InputLog;
 			}
@@ -770,7 +770,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MainForm.EmulatorPaused)
 				{
-					if (_seekingTo != -1)
+					if (SeekingTo != -1)
 					{
 						MainForm.UnpauseEmulator(); // resume seek
 						return;
@@ -1065,7 +1065,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_shouldMoveGreenArrow)
 					{
-						RestorePositionFrame = _seekingTo != -1 ? _seekingTo : Emulator.Frame;
+						RestorePositionFrame = SeekingTo != -1 ? SeekingTo : Emulator.Frame;
 					}
 
 					GoToFrame(frame);
@@ -1203,14 +1203,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WheelSeek(int count)
 		{
-			if (_seekingTo != -1)
+			if (SeekingTo != -1)
 			{
 				_shouldMoveGreenArrow = true;
-				_seekingTo = Math.Max(_seekingTo - count, 0);
+				SeekingTo = Math.Max(SeekingTo - count, 0);
 
-				if (count > 0 && Emulator.Frame >= _seekingTo)
+				if (count > 0 && Emulator.Frame >= SeekingTo)
 				{
-					GoToFrame(_seekingTo);
+					GoToFrame(SeekingTo);
 				}
 
 				RefreshDialog();
