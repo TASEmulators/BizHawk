@@ -108,6 +108,14 @@ namespace BizHawk.Client.EmuHawk
 			_shouldMoveGreenArrow = true;
 			if (_seekingTo == -1) return;
 
+			if (Config.TurboSeek && Emulator.Frame < _seekingTo)
+			{
+				// Turbo seek does various things, including telling the core to skip rendering most frames.
+				// Thus, we need the seek to end naturally.
+				_seekingTo = Emulator.Frame + 1;
+				return;
+			}
+
 			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
@@ -116,7 +124,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekingByEdit = false;
 			_seekingTo = -1;
-			MainForm.PauseOnFrame = null; // This being unset is how MainForm knows we are not seeking, and controls TurboSeek.
 			if (_pauseAfterSeeking)
 			{
 				MainForm.PauseEmulator();
