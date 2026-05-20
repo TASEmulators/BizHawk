@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _shouldMoveGreenArrow;
 		private bool _seekingByEdit;
 
-		private int _seekingTo
+		private int SeekingTo
 		{
 			get => MainForm.PauseOnFrame ?? -1;
 			set

@@ -1038,7 +1038,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromNowSeparator.Visible = StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => IsRowSelected(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-			CancelSeekContextMenuItem.Enabled = _seekingTo != -1;
+			CancelSeekContextMenuItem.Enabled = SeekingTo != -1;
 			BranchContextMenuItem.Visible = CurrentCell?.RowIndex == Emulator.Frame;
 		}
 

@@ -79,7 +79,7 @@
 			WheelSeek(rewindStep);
 			// we need a frame advance if a state was loaded (frame has changed)
 			// and also we are seeking (not already at the target frame)
-			return Emulator.Frame != frame && _seekingTo != -1;
+			return Emulator.Frame != frame && SeekingTo != -1;
 		}
 
 		public bool WantsToControlRestartMovie { get; }
