@@ -54,7 +54,17 @@ namespace BizHawk.Client.EmuHawk
 		private bool _shouldMoveGreenArrow;
 		private bool _seekingByEdit;
 
-		private int _seekingTo = -1;
+		private int _seekingTo
+		{
+			get => MainForm.PauseOnFrame ?? -1;
+			set
+			{
+				if (value == -1)
+					MainForm.PauseOnFrame = null;
+				else
+					MainForm.PauseOnFrame = value;
+			}
+		}
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; } = new TAStudioSettings();

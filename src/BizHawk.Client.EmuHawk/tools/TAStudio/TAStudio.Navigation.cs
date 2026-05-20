@@ -38,7 +38,6 @@ namespace BizHawk.Client.EmuHawk
 				_seekingByEdit = false;
 
 				_seekingTo = frame;
-				MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
 				MainForm.UnpauseEmulator();
 
 				if (_seekingTo - _seekStartFrame > 1)

@@ -1121,15 +1121,8 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				bool wasTurboSeeking = IsTurboSeeking;
 				_pauseOnFrame = value;
 				SetPauseStatusBarIcon();
-
-				if (wasTurboSeeking && value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
-				{
-					// Tools.UpdateToolsBefore(); // TODO: do we need this?
-					Tools.UpdateToolsAfter();
-				}
 			}
 		}
 
@@ -2932,6 +2925,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var isFastForwarding = IsFastForwarding;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || Config.Unthrottled;
+				bool atTurboSeekEnd = IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value - 1;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
 				{
@@ -2949,7 +2943,7 @@ namespace BizHawk.Client.EmuHawk
 				InputManager.ClickyVirtualPadController.FrameTick();
 				InputManager.ButtonOverrideAdapter.FrameTick();
 
-				if (IsTurboing)
+				if (IsTurboing && !atTurboSeekEnd)
 				{
 					Tools.FastUpdateBefore();
 				}
@@ -3019,7 +3013,6 @@ namespace BizHawk.Client.EmuHawk
 					atten = 0;
 				}
 
-				bool atTurboSeekEnd = IsTurboSeeking && Emulator.Frame == PauseOnFrame.Value - 1;
 				bool render = !_throttle.skipNextFrame || _currAviWriter?.UsesVideo is true || atTurboSeekEnd;
 				bool newFrame = Emulator.FrameAdvance(InputManager.ControllerOutput, render, renderSound);
 
@@ -3048,17 +3041,13 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				// Update tools, but not if we're at the end of a turbo seek. In that case, updating will happen later when the seek is ended.
-				if (!atTurboSeekEnd)
+				if (IsTurboing && !atTurboSeekEnd)
 				{
-					if (IsTurboing)
-					{
-						Tools.FastUpdateAfter();
-					}
-					else
-					{
-						UpdateToolsAfter();
-					}
+					Tools.FastUpdateAfter();
+				}
+				else
+				{
+					UpdateToolsAfter();
 				}
 
 				if (newFrame)
