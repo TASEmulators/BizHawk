@@ -37,8 +37,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.BlastEm
 				SbrkHeapSizeKB = 3 * 512,
 				SealedHeapSizeKB = 10 * 1024,
 				MmapHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 12 * 1024,
+				PlainHeapSizeKB = 8 * 1024,
+				InvisibleHeapSizeKB = 32 * 1024,
 				SkipCoreConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, Array.Empty<Delegate>());
