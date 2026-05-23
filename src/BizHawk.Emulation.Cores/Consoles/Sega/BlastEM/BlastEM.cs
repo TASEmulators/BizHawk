@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.BlastEm
 	[PortedCore(CoreNames.BlastEm, "mikepavone", "1234567", "https://www.retrodev.com/repos/blastem/file/tip")]
 	public class BlastEm : WaterboxCore, IRegionable, ISettable<object, BlastEm.SyncSettings>
 	{
-        private readonly LibBlastEm _core;
+		private readonly LibBlastEm _core;
 		private readonly bool _isPal = false;
 
 		[CoreConstructor(VSystemID.Raw.GEN, Priority = CorePriority.Low)]
@@ -66,15 +66,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.BlastEm
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 A", "P1 B", "P1 C", "P1 Start", "P1 X", "P1 Y", "P1 Z", "P1 Mode",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 A", "P2 B", "P2 C", "P2 Start", "P2 X", "P2 Y", "P2 Z", "P2 Mode",
-				"Power", "Reset"
-			}
+				"Power", "Reset",
+			},
 		}.MakeImmutable();
 
 		private static readonly string[] ButtonOrders =
 		{
 			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B", "P1 C", "P1 A", "P1 Start", "P1 Z", "P1 Y", "P1 X", "P1 Mode",
 			"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B", "P2 C", "P2 A", "P2 Start", "P2 Z", "P2 Y", "P2 X", "P2 Mode",
-			"Power", "Reset"
+			"Power", "Reset",
 		};
 
 		[CoreSettings]
@@ -136,6 +136,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.BlastEm
 			}
 			return new LibBlastEm.FrameInfo { Buttons = b };
 		}
-
 	}
 }

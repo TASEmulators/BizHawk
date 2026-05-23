@@ -1,7 +1,7 @@
-﻿using BizHawk.BizInvoke;
-using BizHawk.Emulation.Cores.Waterbox;
+﻿using System.Runtime.InteropServices;
 
-using System.Runtime.InteropServices;
+using BizHawk.BizInvoke;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.BlastEm
 {
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.BlastEm
 			JapanNTSC = 1,
 			JapanPAL = 2,
 			US = 4,
-			Europe = 8
+			Europe = 8,
 		}
 
 		[BizImport(CC)]
