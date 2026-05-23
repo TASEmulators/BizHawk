@@ -42,7 +42,7 @@ void* alloc_helper(size_t size, const struct __AddressRange* range, unsigned lon
 		unsigned long pend = (end + 0xfff) & ~0xffful;
 		if (pstart < pend)
 		{
-			if (mmap((void*)pstart, pend - pstart, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED | MAP_FIXED_NOREPLACE, -1, 0) == MAP_FAILED)
+			if (mmap((void*)pstart, pend - pstart, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE | MAP_32BIT, -1, 0) == MAP_FAILED)
 			{
 				fprintf(stderr, "VERY STRANGE: mmap() failed to satisfy allocation of %lu bytes on %s heap\n", size, name);
 				return NULL;
