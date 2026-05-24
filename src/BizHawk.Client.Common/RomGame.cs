@@ -93,6 +93,14 @@ namespace BizHawk.Client.Common
 				Console.WriteLine("Assuming header of {0} bytes.", headerOffset);
 			}
 
+			// SMD files have a 512-byte header and 16KB interleaved blocks
+			// The header detection should be based on 16KB (16384 bytes) alignment, not 1KB
+			if (file.Extension == ".smd" && (fileLength & 0x3FFF) == 0x200)
+			{
+				headerOffset = 512;
+				Console.WriteLine("SMD format detected with 512-byte header.");
+			}
+
 			// read the entire file into FileData.
 			FileData = new byte[fileLength];
 			stream.Position = 0;
@@ -177,13 +185,8 @@ namespace BizHawk.Client.Common
 		private static byte[] DeInterleaveSMD(byte[] source)
 		{
 			// SMD files are interleaved in pages of 16k, with the first 8k containing all
-			// odd bytes and the second 8k containing all even bytes.
+			// even bytes and the second 8k containing all odd bytes.
 			int size = source.Length;
-			if (size > 0x400000)
-			{
-				size = 0x400000;
-			}
-
 			int pages = size / 0x4000;
 			var output = new byte[size];
 
@@ -191,9 +194,17 @@ namespace BizHawk.Client.Common
 			{
 				for (int i = 0; i < 0x2000; i++)
 				{
-					output[(page * 0x4000) + (i * 2) + 0] = source[(page * 0x4000) + 0x2000 + i];
-					output[(page * 0x4000) + (i * 2) + 1] = source[(page * 0x4000) + 0x0000 + i];
+					output[(page * 0x4000) + (i * 2) + 0] = source[(page * 0x4000) + 0x0000 + i];
+					output[(page * 0x4000) + (i * 2) + 1] = source[(page * 0x4000) + 0x2000 + i];
 				}
+			}
+
+			// Copy remaining bytes that don't form a complete 16KB block
+			int remainder = size % 0x4000;
+			if (remainder > 0)
+			{
+				int remainderStart = pages * 0x4000;
+				Buffer.BlockCopy(source, remainderStart, output, remainderStart, remainder);
 			}
 
 			return output;
