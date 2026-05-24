@@ -69,9 +69,9 @@ static bool isValidMacAddress(const melonDS::MacAddress& mac)
     const bool isAll0xFF = mac[0] == 0xFF && mac[1] == 0xFF && mac[2] == 0xFF && mac[3] == 0xFF && mac[4] == 0xFF && mac[5] == 0xFF;
 
     // Broadcast channel 48bit MAC address: 03:09:BF:XX:XX:XX
-    const bool isBroadsast = mac[0] == 0x03 && mac[1] == 0x09 && mac[2] == 0xBF;
+    const bool isBroadcast = mac[0] == 0x03 && mac[1] == 0x09 && mac[2] == 0xBF;
 
-    return !isAll0xFF || !isBroadsast;
+    return !isAll0xFF && !isBroadcast;
 }
 
 static void SanitizeExternalFirmware(melonDS::Firmware& firmware)
