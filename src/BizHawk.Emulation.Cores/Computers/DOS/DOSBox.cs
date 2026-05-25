@@ -618,6 +618,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_lastMouseState.MiddleButtonHeld = reader.ReadBoolean();
 			_lastMouseState.RightButtonHeld = reader.ReadBoolean();
 
+			_useMouseInternalResolution = reader.ReadBoolean();
+
 			// Restoring refresh rate
 			var newVsyncNumerator = reader.ReadInt32();
 			var newVsyncDenominator = reader.ReadInt32();
