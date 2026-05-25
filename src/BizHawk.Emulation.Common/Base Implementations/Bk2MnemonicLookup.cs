@@ -900,6 +900,7 @@ namespace BizHawk.Emulation.Common
 				["Mouse Left Button"] = 'l',
 				["Mouse Middle Button"] = 'm',
 				["Mouse Right Button"] = 'r',
+				["Switch Mouse Internal Resolution"] = 'M',
 				["Previous Floppy Disk"] = '<',
 				["Next Floppy Disk"] = '>',
 				["Swap Floppy Disk"] = 'v',
