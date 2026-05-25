@@ -905,7 +905,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ToBk2MenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx recentMacrosToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator22;
-		private BookmarksBranchesBox BookMarkControl;
+		internal BookmarksBranchesBox BookMarkControl;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx BranchContextMenuItem;
 		private System.Windows.Forms.SplitContainer BranchesMarkersSplit;
 		private System.Windows.Forms.SplitContainer MainVertialSplit;
