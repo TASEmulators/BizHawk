@@ -72,6 +72,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 				// To adjust sensitivity, use the corresponding sync setting (global sensitivity for raw deltas is a TODO)
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedX, (-180).RangeTo(180), 0);
 				controller.AddAxis(Inputs.Mouse + " " + MouseInputs.SpeedY, (-180).RangeTo(180), 0);
+
+				// Adding switch for enabling/disabling mouse internal resolution for games (e.g., Syndicate) that apply software-based resolution which offsets the mouse position
+				controller.BoolButtons.Add(Inputs.SwitchMouseInternalResolution);
 			}
 
 			// Adding drive management buttons
@@ -138,6 +141,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			public const string PrevCDROM = "Previous CDROM";
 			public const string NextCDROM = "Next CDROM";
 			public const string SwapCDROM = "Swap CDROM";
+			public const string SwitchMouseInternalResolution = "Switch Mouse Internal Resolution";
 		}
 	}
 }

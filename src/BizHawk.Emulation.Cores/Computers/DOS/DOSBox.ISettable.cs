@@ -277,6 +277,27 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			[DefaultValue(LibDOSBox.SVGA_MAX_HEIGHT)]
 			public uint MouseAbsoluteScreenHeight { get; set; }
 
+			[DisplayName("Mouse Internal Resolution (Left)")]
+			[Description("Indicates the left position (in pixels) of the internal mouse resolution. Useful for games (e.g., Syndicate) that implement an internal resolution that is different from the screen resolution. Must be activated manually during gameplay.")]
+			[DefaultValue(0)]
+			public uint MouseInternalResolutionLeft { get; set; }
+
+			[DisplayName("Mouse Internal Resolution (Right)")]
+			[Description("Indicates the right position (in pixels) of the internal mouse resolution. Useful for games (e.g., Syndicate) that implement an internal resolution that is different from the screen resolution. Must be activated manually during gameplay.")]
+			[DefaultValue(LibDOSBox.SVGA_MAX_WIDTH)]
+			public uint MouseInternalResolutionRight { get; set; }
+
+			[DisplayName("Mouse Internal Resolution (Top)")]
+			[Description("Indicates the top position (in pixels) of the internal mouse resolution. Useful for games (e.g., Syndicate) that implement an internal resolution that is different from the screen resolution. Must be activated manually during gameplay.")]
+			[DefaultValue(0)]
+			public uint MouseInternalResolutionTop { get; set; }
+
+			[DisplayName("Mouse Internal Resolution (Bottom)")]
+			[Description("Indicates the bottom position (in pixels) of the internal mouse resolution. Useful for games (e.g., Syndicate) that implement an internal resolution that is different from the screen resolution. Must be activated manually during gameplay.")]
+			[DefaultValue(LibDOSBox.SVGA_MAX_HEIGHT)]
+			public uint MouseInternalResolutionBottom { get; set; }
+
+
 			[DisplayName("Mount Formatted Hard Disk Drive")]
 			[Description("Determines whether to mount an empty writable formatted hard disk in drive C:. The hard disk will be fully located in memory so make sure you have enough RAM available. Its contents can be exported to the host filesystem.\n\nThis value will be ignored if a hard disk image (.hdd) is provided.")]
 			[DefaultValue(HardDiskOptions.None)]

@@ -50,6 +50,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _currentCDROM = 0;
 		private bool _disposed;
 
+		// Mouse-related variables
+		private bool _useMouseInternalResolution = false;
+
 		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
 		private string GetFullName(IDiscAsset disk) => Path.GetFileName(disk.DiscData.Name.SubstringAfter('|'));
 
@@ -385,6 +388,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private bool _isNextCDROMPressed = false;
 		private bool _isSwapCDROMPressed = false;
 
+		private bool _isSwitchMouseInternalResolutionPressed = false;
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			DriveLightOn = false;
@@ -414,6 +419,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Setting mouse inputs
 			if (_syncSettings.EnableMouse)
 			{
+				if (!_isSwitchMouseInternalResolutionPressed && controller.IsPressed(Inputs.SwitchMouseInternalResolution))
+				{
+					_useMouseInternalResolution = !_useMouseInternalResolution;
+				}
+
 				// Getting new mouse state values
 				DOSBox.MouseState mouseState = new()
 				{
@@ -426,8 +436,25 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 
 				var deltaX = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedX}");
 				var deltaY = controller.AxisValue($"{Inputs.Mouse} {MouseInputs.SpeedY}");
-				fi.Mouse.PosX = mouseState.PosX;
-				fi.Mouse.PosY = mouseState.PosY;
+
+				if (_useMouseInternalResolution)
+				{
+					var horizontalOffset = Math.Max(0, mouseState.PosX - (int) _syncSettings.MouseInternalResolutionLeft);
+					horizontalOffset = Math.Min(horizontalOffset, (int) _syncSettings.MouseInternalResolutionRight);
+					var horizontalRatio = (float) _syncSettings.MouseAbsoluteScreenWidth / (_syncSettings.MouseInternalResolutionRight - _syncSettings.MouseInternalResolutionLeft);
+					fi.Mouse.PosX = (int) (horizontalOffset * horizontalRatio);
+
+					var verticalOffset = Math.Max(0, mouseState.PosY - (int) _syncSettings.MouseInternalResolutionTop);
+					verticalOffset = Math.Min(verticalOffset, (int) _syncSettings.MouseInternalResolutionBottom);
+					var verticalRatio = (float) _syncSettings.MouseAbsoluteScreenHeight / (_syncSettings.MouseInternalResolutionBottom - _syncSettings.MouseInternalResolutionTop);
+					fi.Mouse.PosY = (int) (verticalOffset * verticalRatio);
+				}
+				else
+				{
+					fi.Mouse.PosX = mouseState.PosX;
+					fi.Mouse.PosY = mouseState.PosY;
+				}
+
 				fi.Mouse.DeltaX = deltaX != 0 ? deltaX : fi.Mouse.PosX - _lastMouseState.PosX;
 				fi.Mouse.DeltaY = deltaY != 0 ? deltaY : fi.Mouse.PosY - _lastMouseState.PosY;
 
@@ -505,6 +532,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			_isNextCDROMPressed = controller.IsPressed(Inputs.NextCDROM);
 			_isSwapCDROMPressed = controller.IsPressed(Inputs.SwapCDROM);
 
+			_isSwitchMouseInternalResolutionPressed = controller.IsPressed(Inputs.SwitchMouseInternalResolution);
+
 			// Processing keyboard inputs
 			foreach (var (name, key) in _keyboardMap)
 			{
@@ -570,6 +599,8 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			writer.Write(_lastMouseState.LeftButtonHeld);
 			writer.Write(_lastMouseState.MiddleButtonHeld);
 			writer.Write(_lastMouseState.RightButtonHeld);
+
+			writer.Write(_useMouseInternalResolution);
 
 			// Storing current refresh rate
 			writer.Write(VsyncNumerator);
