@@ -159,6 +159,7 @@ namespace BizHawk.Client.Common
 				try
 				{
 					TasStateManager = settings.CreateManager(IsReserved);
+					SetUpPokeListener();
 					TasStateManager.LoadStateHistory(br);
 				}
 				catch
@@ -181,6 +182,7 @@ namespace BizHawk.Client.Common
 				{
 					TasStateManager = Session.Settings.DefaultTasStateManagerSettings.CreateManager(IsReserved);
 				}
+				SetUpPokeListener();
 			}
 		}
 	}
