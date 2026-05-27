@@ -9,8 +9,6 @@ namespace BizHawk.Client.Common
 	{
 		private static readonly ConditionalWeakTable<LuaThread, LuaSandbox> SandboxForThread = new();
 
-		public static Action<string> DefaultLogger { get; set; }
-
 		public void SetSandboxCurrentDirectory(string dir)
 		{
 			_currentDirectory = dir;
@@ -36,12 +34,14 @@ namespace BizHawk.Client.Common
 			if (currDirSpeedHack == path) return true;
 
 			if (!OSTailoredCode.IsUnixHost) return CWDHacks.Set(target);
+#pragma warning disable RS0030 // passes the dir on to `CurrentDirectory` setter
 			if (!System.IO.Directory.Exists(path)) return false; //TODO is this necessary with Mono? Linux is fine with the CWD being nonexistent. also, is this necessary with .NET Core on Windows? --yoshi
+#pragma warning restore RS0030
 			Environment.CurrentDirectory = path;
 			return true;
 		}
 
-		private void Sandbox(Action callback, Action exceptionCallback)
+		public void Sandbox(Action callback, Action<string> exceptionCallback)
 		{
 			string savedEnvironmentCurrDir = null;
 			try
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 
 				EnvironmentSandbox.Sandbox(callback);
 			}
-			catch (NLua.Exceptions.LuaException ex)
+			catch (Exception ex)
 			{
 				var exStr = ex.ToString() + '\n';
 				if (ex.InnerException is not null)
@@ -64,8 +64,7 @@ namespace BizHawk.Client.Common
 				}
 
 				Console.Write(exStr);
-				DefaultLogger(exStr);
-				exceptionCallback?.Invoke();
+				exceptionCallback.Invoke(exStr);
 			}
 			finally
 			{
@@ -105,11 +104,6 @@ namespace BizHawk.Client.Common
 				// return CreateSandbox(thread);
 				throw new InvalidOperationException("HOARY GORILLA HIJINX");
 			}
-		}
-
-		public static void Sandbox(LuaThread thread, Action callback, Action exceptionCallback = null)
-		{
-			GetSandbox(thread).Sandbox(callback, exceptionCallback);
 		}
 	}
 }

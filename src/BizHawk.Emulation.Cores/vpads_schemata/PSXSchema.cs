@@ -225,13 +225,13 @@ namespace BizHawk.Emulation.Cores
 					new ButtonSchema(90 + 140, 62, controller, "Select", "s"),
 					new AnalogSchema(3, 120, $"P{controller} Left Stick, Left / Right")
 					{
-						SecondaryName = $"P{controller} Left Stick, Fore / Back",
+						SecondaryName = $"P{controller} Left Stick, Up / Down",
 						Spec = stickRanges[0],
 						SecondarySpec = stickRanges[1]
 					},
 					new AnalogSchema(260, 120, $"P{controller} Right Stick, Left / Right")
 					{
-						SecondaryName = $"P{controller} Right Stick, Fore / Back",
+						SecondaryName = $"P{controller} Right Stick, Up / Down",
 						Spec = stickRanges[0],
 						SecondarySpec = stickRanges[1]
 					}
@@ -326,7 +326,7 @@ namespace BizHawk.Emulation.Cores
 						MinValue = 0,
 						MaxValue = 65535
 					},
-					new SingleAxisSchema(125, 15, controller, "Twist | / |", isVertical: true)
+					new SingleAxisSchema(125, 15, controller, "Twist Ccwise / Cwise", isVertical: true)
 					{
 						DisplayName = "Twist",
 						TargetSize = new Size(64, 178),

@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			_memoryDomainList.Add(Api.GetPagesDomain());
 
-			_memoryDomains = new MemoryDomainList(_memoryDomainList);
+			_memoryDomains = new MemoryDomainList(_memoryDomainList, this);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 

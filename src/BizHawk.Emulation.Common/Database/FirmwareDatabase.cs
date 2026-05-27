@@ -187,8 +187,8 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("1D503E56DF85A62FEE696E7618DC5B4E781DF1BB", 8192, "C64", "Kernal", "C64_Kernal.bin", "Kernal Rom");
 			FirmwareAndOption("79015323128650C742A3694C9429AA91F355905E", 8192, "C64", "Basic", "C64_Basic.bin", "Basic Rom");
 			FirmwareAndOption("ADC7C31E18C7C7413D54802EF2F4193DA14711AA", 4096, "C64", "Chargen", "C64_Chargen.bin", "Chargen Rom");
-			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "C64_Drive-1541.bin", "1541 Disk Drive Rom");
-			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "C64_Drive-1541ii.bin", "1541-II Disk Drive Rom");
+			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "C64_Drive-1541.bin", "1541 Disk Drive Rom"); //TODO TOSEC calls this `1541-II 355640-01 (1987)(Commodore)[!]`, one of 4 first-party 1541-II firmware variants, and separately lists 7 first-party variants of original 1541 firmware
+			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "C64_Drive-1541ii.bin", "1541-II Disk Drive Rom"); // TOSEC: `1541-II 251968-03 (1987)(Commodore)[!]`
 
 			// Channel F
 			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF_SL31253.rom", "Channel F BIOS (PSU1)");

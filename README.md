@@ -148,8 +148,8 @@ No package for your distro? Install via Nix ([see below](#nixnixos)), or install
 [![Misc. Linux | bizhawk-monort](https://img.shields.io/badge/Misc._Linux-bizhawk--monort-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASEmulators/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder.
-The runtime dependencies are glibc, Mono "complete", OpenAL, Lua 5.4, and `lsb_release`.  
-The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. Wine is also **not** a runtime dependency. If you try to use Wine anyway then you're on your own.  
+The runtime dependencies are glibc, **Mono "complete"**, OpenAL, Lua 5.4, and `lsb_release`.  
+<sup>The .NET 8 Runtime (a.k.a. .NET Core) is **not** a runtime dependency, only Mono. Wine is also **not** a runtime dependency. If you try to use Wine anyway then you're on your own.</sup>  
 If it's not clear from the downloads here or in your package manager, EmuHawk is for x86_64 CPUs only.
 You may be able to run on AArch64 with missing features: see [#4052](https://github.com/TASEmulators/BizHawk/issues/4052).
 
@@ -382,7 +382,7 @@ For an idea of what systems may be covered in the future, check [our core reques
 A short [FAQ](https://tasvideos.org/Bizhawk/FAQ) is provided on the TASVideos wiki. If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASEmulators/BizHawk/issues?q=is%3Aissue+PUT_ISSUE_KEYWORDS_HERE), you can try:
 - `#bizhawk` on [the TASVideos Discord](https://discordapp.com/invite/GySG2b6)
 	- Also the more specialised channels `#tas-production` and `#scripting` (for Lua) on that server
-	- For the .NET API, [the ApiHawk server](https://discord.gg/UPhN4um3px)
+	- For the .NET API, [the ApiHawk server](https://tinyurl.com/3xhy7973)
 - The [TASVideos forum for BizHawk](https://tasvideos.org/Forum/Subforum/64)
 - `#bizhawk` on Libera Chat ([via Matrix](https://matrix.to/#/#bizhawk:libera.chat) or [via IRC](https://libera.chat/guides/connect))
 - The [/r/BizHawk](https://reddit.com/r/BizHawk) and [/r/TAS](https://reddit.com/r/TAS) subreddits

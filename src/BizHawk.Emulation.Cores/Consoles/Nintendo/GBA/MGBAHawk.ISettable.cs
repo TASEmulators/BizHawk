@@ -162,6 +162,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[TypeConverter(typeof(BizDateTimeConverter))]
 			public DateTime RTCInitialTime { get; set; }
 
+			[DisplayName("Subframe Input")]
+			[Description("If true, subframe inputs will be possible.")]
+			[DefaultValue(false)]
+			public bool SubframeInput { get; set; }
+
 			[DisplayName("Save Type")]
 			[Description("Save type used in games.")]
 			[DefaultValue(LibmGBA.SaveType.Autodetect)]

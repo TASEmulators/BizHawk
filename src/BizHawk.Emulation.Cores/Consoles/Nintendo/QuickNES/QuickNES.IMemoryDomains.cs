@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					QN.qn_poke_prgbus(Context, (int)addr, val);
 				}, 1));
 
-			_memoryDomains = new MemoryDomainList(mm);
+			_memoryDomains = new MemoryDomainList(mm, this);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 

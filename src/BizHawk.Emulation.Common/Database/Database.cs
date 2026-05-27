@@ -208,13 +208,19 @@ namespace BizHawk.Emulation.Common
 			if (initialized) throw new InvalidOperationException("Did not expect re-initialize of game Database");
 			initialized = true;
 
+#pragma warning disable RS0030 // not sure how this could be rewritten as a `try`/`catch`
 			if (Directory.Exists(bundledRoot))
+#pragma warning restore RS0030
 			{
 				_bundledRoot = bundledRoot;
+#pragma warning disable RS0030 // ditto
 				_userRoot = Directory.Exists(userRoot) ? userRoot : bundledRoot;
+#pragma warning restore RS0030
 			}
 #if false //TODO synthesise `#includeuser gamedb_user.txt` and load
+#pragma warning disable RS0030 // ditto
 			else if (Directory.Exists(userRoot))
+#pragma warning restore RS0030
 			{
 				_bundledRoot = userRoot;
 				_userRoot = userRoot;

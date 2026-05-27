@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
@@ -11,12 +13,10 @@ namespace BizHawk.Client.EmuHawk
 		public int Right { get; set; }
 
 		/// <remarks>TODO rename to <c>Key</c>?</remarks>
-		public string Name { get; private set; }
+		public string Name { get; }
 
 		/// <remarks>TODO rename to <c>Label</c>?</remarks>
-		public string Text { get; private set; }
-
-		public ColumnType Type { get; private set; }
+		public string Text { get; }
 
 		public bool Visible { get; set; } = true;
 
@@ -30,27 +30,27 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool Rotatable { get; set; }
 
-//		[JsonConstructor]
-		private RollColumn()
-		{
-			Name = default!;
-			Text = default!;
-		}
-
-		public RollColumn(string name, int widthUnscaled, ColumnType type, string text)
-			: this(name, widthUnscaled, widthUnscaled, type, text) { }
-
-		public RollColumn(string name, int verticalWidth, int horizontalHeight, ColumnType type, string text)
+		[JsonConstructor]
+		private RollColumn(string name, string text, int verticalWidth, int horizontalHeight)
 		{
 			Name = name;
 			Text = text;
-			Type = type;
+			VerticalWidth = verticalWidth;
+			HorizontalHeight = horizontalHeight;
+		}
+
+		public RollColumn(string name, int widthUnscaled, string text)
+			: this(name, widthUnscaled, widthUnscaled, text) { }
+
+		public RollColumn(string name, int verticalWidth, int horizontalHeight, string text)
+		{
+			Name = name;
+			Text = text;
 			VerticalWidth = UIHelper.ScaleX(verticalWidth);
 			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
 			Width = VerticalWidth;
 		}
 
-		public RollColumn(string name, int widthUnscaled, string text)
-			: this(name: name, widthUnscaled: widthUnscaled, type: ColumnType.Text, text: text) {}
+		public RollColumn Clone() => (MemberwiseClone() as RollColumn)!;
 	}
 }

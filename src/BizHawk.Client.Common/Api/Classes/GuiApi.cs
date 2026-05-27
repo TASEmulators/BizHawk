@@ -5,15 +5,22 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Bizware.Graphics;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class GuiApi : IGuiApi
 	{
+		private static Bitmap/*?*/ field = null;
+
+		private static Bitmap NullGraphicsBitmap
+			=> field ??= new(1, 1);
+
 		private static readonly StringFormat PixelTextFormat = new(StringFormat.GenericTypographic)
 		{
 			FormatFlags = StringFormatFlags.MeasureTrailingSpaces,
@@ -30,8 +37,6 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<string, Bitmap> _imageCache = new();
 
-		private readonly Bitmap _nullGraphicsBitmap = new(1, 1);
-
 		private CompositingMode _compositingMode = CompositingMode.SourceOver;
 
 		private Color? _defaultBackground;
@@ -43,6 +48,8 @@ namespace BizHawk.Client.Common
 		private Color _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
 		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
+
+		private FontFamily[]/*?*/ _pixelFonts = null;
 
 		private DisplaySurfaceID? _usingSurfaceID;
 		public bool HasGUISurface => true;
@@ -56,6 +63,13 @@ namespace BizHawk.Client.Common
 			LogCallback = logCallback;
 			_displayManager = displayManager;
 		}
+
+		private IReadOnlyList<FontFamily> PixelFonts
+			=> _pixelFonts ??= (new[]
+			{
+				"fceux",
+				"gens",
+			}).Select(s => _displayManager.CustomFonts.Families.First(f => f.Name.EqualsIgnoreCase(s))).ToArray();
 
 		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
 		{
@@ -301,7 +315,7 @@ namespace BizHawk.Client.Common
 		public void ClearImageCache()
 		{
 			_imageCache.Clear();
-			_displayManager.ClearApiHawkTextureCache();
+			_displayManager?.ClearApiHawkTextureCache();
 		}
 
 		public void DrawImageRegion(Image img, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null, DisplaySurfaceID? surfaceID = null)
@@ -423,7 +437,7 @@ namespace BizHawk.Client.Common
 					_ => FontStyle.Regular,
 				};
 
-				using var g = Graphics.FromImage(_nullGraphicsBitmap);
+				using var g = Graphics.FromImage(NullGraphicsBitmap);
 
 				// The text isn't written out using GenericTypographic, so measuring it using GenericTypographic seemed to make it worse.
 				// And writing it out with GenericTypographic just made it uglier. :p
@@ -518,8 +532,8 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				using var g = Graphics.FromImage(_nullGraphicsBitmap);
-				var font = new Font(_displayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+				using var g = Graphics.FromImage(NullGraphicsBitmap);
+				Font font = new(PixelFonts[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 				var sizeOfText = g.MeasureString(message, font, width: 0, PixelTextFormat).ToSize();
 
 				var r = Get2DRenderer(surfaceID);

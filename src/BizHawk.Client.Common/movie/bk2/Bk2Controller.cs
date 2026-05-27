@@ -100,10 +100,10 @@ namespace BizHawk.Client.Common
 			public Bk2ControllerDefinition(ControllerDefinition sourceDefinition, string logKey)
 				: base(sourceDefinition)
 			{
-				var groups = logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
+				var groups = logKey.Split('#');
 
-				_controlsFromLogKey = groups
-					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries)
+				_controlsFromLogKey = groups.Skip(1) // ignore everything before the first '#'
+					.Select(group => group.Split('|', StringSplitOptions.RemoveEmptyEntries)
 						.Select(buttonname => (buttonname, sourceDefinition.Axes.TryGetValue(buttonname, out var axisSpec) ? axisSpec : (AxisSpec?)null))
 						.ToArray())
 					.ToArray();

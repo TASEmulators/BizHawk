@@ -229,7 +229,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 					for (int x = 0; x < w; x++)
 					{
 						for (int n = 0; n < wf; n++)
-							*dst++ = *src; 
+							*dst++ = *src;
 						src++;
 					}
 					while (dst < dstNext) // 1024 % 3 == 1, not quite "lcm"
@@ -245,6 +245,9 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo& frame)
 			}
 		}
 	}
+
+	// need to copy this back to get rumble information from the core to frontend
+	memcpy(frame.InputPortData, InputPortData, sizeof(InputPortData));
 }
 
 struct SystemInfo

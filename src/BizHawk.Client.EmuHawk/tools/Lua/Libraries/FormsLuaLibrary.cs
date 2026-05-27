@@ -12,7 +12,7 @@ using NLua;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for creating and managing custom dialogs")]
-	public sealed class FormsLuaLibrary : LuaLibraryBase
+	public sealed class FormsLuaLibrary : LuaLibraryBase, IDisposable
 	{
 		private const string DESC_LINE_OPT_CTRL_POS = " If the x and y parameters are both nil/unset, the control's Location property won't be set. If both are specified, the control will be positioned at (x, y) within the given form.";
 
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public FormsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
-		public IDialogParent MainForm { get; set; }
+		public IDialogParent OwnerForm { get; set; }
 
 		public override string Name => "forms";
 
@@ -57,6 +57,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void SetText(Control control, string caption)
 			=> control.Text = caption ?? string.Empty;
+
+		public void Dispose()
+		{
+			DestroyAll();
+		}
 
 		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
@@ -148,9 +153,10 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("destroyall", "Closes and removes all Lua created dialogs")]
 		public void DestroyAll()
 		{
-			for (var i = _luaForms.Count - 1; i >= 0; i--)
+			// A form's close handler may close other forms.
+			foreach (LuaWinform form in _luaForms.ToArray())
 			{
-				_luaForms[i].Close();
+				if (!form.IsDisposed) form.Close();
 			}
 			_luaForms.Clear();
 		}
@@ -284,7 +290,10 @@ namespace BizHawk.Client.EmuHawk
 			string title = null,
 			LuaFunction onClose = null)
 		{
-			var form = new LuaWinform(CurrentFile, WindowClosed);
+			if (OwnerForm is not IWin32Window ownerForm)
+				throw new Exception("IDialogParent must implement IWin32Window");
+
+			var form = new LuaWinform(_luaLibsImpl.CurrentFile, _luaLibsImpl, WindowClosed, onClose);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
@@ -295,23 +304,7 @@ namespace BizHawk.Client.EmuHawk
 			form.MaximizeBox = false;
 			form.FormBorderStyle = FormBorderStyle.FixedDialog;
 			form.Icon = SystemIcons.Application;
-			form.Owner = (Form) MainForm;
-			form.Show();
-
-			form.FormClosed += (o, e) =>
-			{
-				if (onClose != null)
-				{
-					try
-					{
-						onClose.Call();
-					}
-					catch (Exception ex)
-					{
-						Log(ex.ToString());
-					}
-				}
-			};
+			form.Show(ownerForm);
 
 			return (long)form.Handle;
 		}
@@ -325,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 			string filter = null)
 		{
 			if (initialDirectory is null && fileName is not null) initialDirectory = Path.GetDirectoryName(fileName);
-			var result = MainForm.ShowFileOpenDialog(
+			var result = OwnerForm.ShowFileOpenDialog(
 				filterStr: filter ?? FilesystemFilter.AllFilesEntry,
 				initDir: initialDirectory ?? PathEntries.LuaAbsolutePath(),
 				initFileName: fileName);

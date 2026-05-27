@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -150,7 +149,7 @@ namespace BizHawk.Client.Common
 		/// Returns the mnemonic value for boolean buttons, and actual value for axes,
 		/// for a given frame and button.
 		/// </summary>
-		public string DisplayValue(int frame, string buttonName)
+		public string DisplayValue(int frame, string buttonName, bool defaultAxisAsBlank)
 		{
 			if (_displayCache.Frame != frame || Log.Count == 1)
 			{
@@ -159,10 +158,10 @@ namespace BizHawk.Client.Common
 				_displayCache.Frame = frame;
 			}
 
-			return CreateDisplayValueForButton(_displayCache.Controller, buttonName);
+			return CreateDisplayValueForButton(_displayCache.Controller, buttonName, defaultAxisAsBlank);
 		}
 
-		private static string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private string CreateDisplayValueForButton(IController adapter, string buttonName, bool defaultAxisAsBlank)
 		{
 			// those Contains checks could be avoided by passing in the button type
 			// this should be considered if this becomes a significant performance issue
@@ -175,10 +174,16 @@ namespace BizHawk.Client.Common
 
 			if (adapter.Definition.Axes.ContainsKey(buttonName))
 			{
-				return adapter.AxisValue(buttonName).ToString();
+				int value = adapter.AxisValue(buttonName);
+				if (defaultAxisAsBlank)
+				{
+					int defaultValue = Session.MovieController.Definition.Axes[buttonName].Neutral;
+					if (value == defaultValue) return "";
+				}
+				return value.ToString();
 			}
 
-			return "!";
+			return "";
 		}
 
 		public void GreenzoneCurrentFrame()
@@ -210,7 +215,9 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (Session.Settings.EnableBackupMovies && MakeBackup && Log.Count != 0)
 			{
-				SaveBackup();
+				// TODO: This isn't ideal, but making it ideal would mean a big refactor.
+				FileWriteResult saveResult = SaveBackup();
+				if (saveResult.Exception != null) throw saveResult.Exception;
 				MakeBackup = false;
 			}
 
@@ -304,29 +311,6 @@ namespace BizHawk.Client.Common
 			ChangeLog = branch.ChangeLog.Clone();
 
 			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		private bool _changes;
-		public override bool Changes
-		{
-			get => _changes;
-			protected set
-			{
-				if (_changes != value)
-				{
-					_changes = value;
-					OnPropertyChanged(nameof(Changes));
-				}
-			}
-		}
-
-		// This event is Raised only when Changes is TOGGLED.
-		private void OnPropertyChanged(string propertyName)
-		{
-			// Raising the event when FirstName or LastName property value changed
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

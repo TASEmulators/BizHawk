@@ -4,6 +4,13 @@ namespace BizHawk.Bizware.Graphics.Controls
 {
 	public abstract class GraphicsControl : Control
 	{
+		protected GraphicsControl()
+		{
+			// for screen readers
+			AccessibleName = "Render target";
+			AccessibleRole = AccessibleRole.Graphic;
+		}
+
 		/// <summary>
 		/// Allows the control to tear when out of vsync
 		/// Only relevant for D3D11Control currently

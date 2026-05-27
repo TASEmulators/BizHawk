@@ -116,6 +116,8 @@
 				-e 's/SimpleSubshell("uname", "-s", [^)]\+)/"${builtins.toString stdenv.hostPlatform.uname.system}"/' \
 				-i src/BizHawk.Common/OSTailoredCode.cs
 
+			sed 's/_latestVersionInfoURL = ".\+"/_latestVersionInfoURL = ""/' -i src/BizHawk.Client.EmuHawk/UpdateChecker.cs
+
 			sed '/Assets\/\*\*/d' -i ${if hawkSourceInfo.copyingAssetsInEmuHawkProj # stop MSBuild from copying Assets, we'll do that in installPhase
 				then "src/BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj"
 				else "src/BizHawk.Common/BizHawk.Common.csproj"}

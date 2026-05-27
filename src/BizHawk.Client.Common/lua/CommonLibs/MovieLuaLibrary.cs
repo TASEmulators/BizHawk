@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
 		public bool PlayFromStart(string path = "")
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.BOOTING))
 			{
 				throw new InvalidOperationException("movie.play_from_start() is not allowed during input/memory callbacks");
 			}
@@ -121,11 +121,13 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmovget = movie.getcomments( );")]
 		[LuaMethod("getcomments", "If a movie is active, will return the movie comments as a lua table")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetComments()
 			=> _th.ListToTable(APIs.Movie.GetComments(), indexFrom: 0);
 
 		[LuaMethodExample("local nlmovget = movie.getsubtitles( );")]
 		[LuaMethod("getsubtitles", "If a movie is active, will return the movie subtitles as a lua table")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetSubtitles()
 			=> _th.ListToTable(APIs.Movie.GetSubtitles(), indexFrom: 0);
 	}

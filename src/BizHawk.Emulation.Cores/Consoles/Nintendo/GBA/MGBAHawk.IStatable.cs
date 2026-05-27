@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBAHawk : IStatable
 	{
-		private byte[] _savebuff = Array.Empty<byte>();
+		private byte[] _savebuff = [ ];
 
 		public bool AvoidRewind => false;
 
@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+			writer.Write(_cycleOverflow);
+			writer.Write(CycleCount);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -41,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_savebuff = new byte[length];
 			}
 
-			reader.Read(_savebuff, 0, length);
+			_ = reader.Read(_savebuff, 0, length);
 			if (!LibmGBA.BizPutState(Core, _savebuff, length))
 			{
 				throw new InvalidOperationException("Core rejected the savestate!");
@@ -51,6 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
+			_cycleOverflow = reader.ReadInt32();
+			CycleCount = reader.ReadInt64();
 		}
 	}
 }

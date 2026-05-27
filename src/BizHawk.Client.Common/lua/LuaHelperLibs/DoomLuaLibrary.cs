@@ -11,7 +11,7 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to Doom games (functions may not run when a Doom game is not loaded)")]
-	public sealed class DoomLuaLibrary : LuaLibraryBase
+	public sealed class DoomLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
 		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
@@ -43,9 +43,92 @@ namespace BizHawk.Client.Common
 			}
 
 			var callbacks = dsda.RandomCallbacks;
-			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", LogOutputCallback, CurrentFile, name: name);
-			callbacks.Add(nlf.RandomCallback);
-			nlf.OnRemove += () => callbacks.Remove(nlf.RandomCallback);
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnPrandom", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<string> RandomCallback = info => nlf.Call(info);
+
+			callbacks.Add(RandomCallback);
+			nlf.OnRemove += () => callbacks.Remove(RandomCallback);
+			return nlf.GuidStr;
+		}
+
+		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local intercept_cb_id = doom.on_intercept(function(block)
+				console.log("intercept in block "..intercept);
+			end, "intercept notifier");
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "on_intercept",
+			description: "Fires immediately after a new line or thing intercept is added by Doom. Your callback can have 3 parameters: integers identifying x and y position of the map block the intercept happened in, and whether the call is from `PIT_AddThingIntercepts()` (0) or `PIT_AddLineIntercepts()` (1).")]
+		public string OnIntercept(LuaFunction luaf, string name = null)
+		{
+			if (Emulator is not DSDA dsda)
+			{
+				throw new InvalidOperationException(ERR_MSG_UNSUPPORTED_CORE);
+			}
+
+			var callbacks = dsda.InterceptCallbacks;
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnIntercept", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<int, int, int> InterceptCallback = (x, y, isaline) => nlf.Call(x, y, isaline);
+
+			callbacks.Add(InterceptCallback);
+			nlf.OnRemove += () => callbacks.Remove(InterceptCallback);
+			return nlf.GuidStr;
+		}
+
+		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local usesuccess_cb_id = doom.on_use(function(line, thing)
+				console.log("line "..line.." used by mobj "..mobj);
+			end, "Use notifier");
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "on_use",
+			description: "Fires when P_UseSpecialLine() is called by a mobj (thing). Your callback can have 2 parameters, which will be pointers to activated line and to mobj that triggered it.")]
+		public string OnUse(LuaFunction luaf, string name = null)
+		{
+			if (Emulator is not DSDA dsda)
+			{
+				throw new InvalidOperationException(ERR_MSG_UNSUPPORTED_CORE);
+			}
+
+			var callbacks = dsda.UseCallbacks;
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnUse", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<long, long> LineCallback = (line, thing) => nlf.Call(line, thing);
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
+			return nlf.GuidStr;
+		}
+
+		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
+#pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
+		[LuaMethodExample("""
+			local crossline_cb_id = doom.on_cross(function(line, thing)
+				console.log("line "..line.." crossed by mobj "..mobj);
+			end, "Cross notifier");
+		""")]
+#pragma warning restore MA0136
+		[LuaMethod(
+			name: "on_cross",
+			description: "Fires when P_CrossCompatibleSpecialLine() is called by a mobj (thing). Your callback can have 2 parameters, which will be pointers to activated line and to mobj that triggered it.")]
+		public string OnCross(LuaFunction luaf, string name = null)
+		{
+			if (Emulator is not DSDA dsda)
+			{
+				throw new InvalidOperationException(ERR_MSG_UNSUPPORTED_CORE);
+			}
+
+			var callbacks = dsda.CrossCallbacks;
+			var nlf = CreateAndRegisterNamedFunction(luaf, "OnCross", ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			Action<long, long> LineCallback = (line, thing) => nlf.Call(line, thing);
+
+			callbacks.Add(LineCallback);
+			nlf.OnRemove += () => callbacks.Remove(LineCallback);
 			return nlf.GuidStr;
 		}
 	}

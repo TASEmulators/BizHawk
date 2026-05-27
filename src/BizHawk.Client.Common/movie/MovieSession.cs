@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Action _pauseCallback;
 		private readonly Action _modeChangedCallback;
+		private readonly EventHandler _changesChangedCallback;
 		private readonly Action _movieEndSound;
 
 		private IMovie _queuedMovie;
@@ -32,6 +33,7 @@ namespace BizHawk.Client.Common
 			IDialogParent dialogParent,
 			Action pauseCallback,
 			Action modeChangedCallback,
+			EventHandler changesChangedCallback,
 			Action movieEndSound = null)
 		{
 			Settings = settings;
@@ -41,6 +43,7 @@ namespace BizHawk.Client.Common
 				?? throw new ArgumentNullException(paramName: nameof(pauseCallback));
 			_modeChangedCallback = modeChangedCallback
 				?? throw new ArgumentNullException(paramName: nameof(modeChangedCallback));
+			_changesChangedCallback = changesChangedCallback;
 			_movieEndSound = movieEndSound;
 		}
 
@@ -244,8 +247,9 @@ namespace BizHawk.Client.Common
 		public void AbortQueuedMovie()
 			=> _queuedMovie = null;
 
-		public void StopMovie(bool saveChanges = true)
+		public FileWriteResult StopMovie(bool saveChanges = true)
 		{
+			FileWriteResult/*?*/ result = null;
 			if (Movie.IsActive())
 			{
 				var message = "Movie ";
@@ -262,8 +266,17 @@ namespace BizHawk.Client.Common
 
 				if (saveChanges && Movie.Changes)
 				{
-					Movie.Save();
-					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+					result = Movie.Save();
+					if (result.IsError)
+					{
+						Output($"Failed to write {Path.GetFileName(Movie.Filename)} to disk.");
+						Output(result.UserFriendlyErrorMessage());
+						return result;
+					}
+					else
+					{
+						Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
+					}
 				}
 				Movie.Stop();
 
@@ -279,6 +292,8 @@ namespace BizHawk.Client.Common
 			}
 
 			Movie = null;
+
+			return result ?? new();
 		}
 
 		public IMovie Get(string path, bool loadMovie)
@@ -290,6 +305,8 @@ namespace BizHawk.Client.Common
 
 			if (loadMovie)
 				movie.Load();
+
+			movie.ChangesChanged += _changesChangedCallback;
 
 			return movie;
 		}
@@ -373,6 +390,8 @@ namespace BizHawk.Client.Common
 			switch (Settings.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
+					// Technically this can save the movie, but it'd be weird to be in that situation.
+					// Do we want that?
 					StopMovie();
 					break;
 				case MovieEndAction.Record:

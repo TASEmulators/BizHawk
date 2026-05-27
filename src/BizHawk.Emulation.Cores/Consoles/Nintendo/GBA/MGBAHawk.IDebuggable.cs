@@ -59,10 +59,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[FeatureNotImplemented]
 		public void Step(StepType type) => throw new NotImplementedException();
 
-		public long TotalExecutedCycles => (long)LibmGBA.BizGetGlobalTime(Core);
+		public long TotalExecutedCycles => CycleCount + LibmGBA.BizGetCallbackCycleOffset(Core);
 
 		private static readonly string[] RegisterNames =
-		{
+		[
 			"R0",
 			"R1",
 			"R2",
@@ -81,6 +81,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			"R15",
 			"CPSR",
 			"SPSR"
-		};
+		];
 	}
 }

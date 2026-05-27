@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool SaveAs()
+		private FileWriteResult SaveAs()
 		{
 			var fileName = MainForm.CheatList.CurrentFileName;
 			if (string.IsNullOrWhiteSpace(fileName))
@@ -156,7 +156,8 @@ namespace BizHawk.Client.EmuHawk
 				CheatsFSFilterSet,
 				this);
 
-			return file != null && MainForm.CheatList.SaveFile(file.FullName);
+			if (file == null) return new();
+			else return MainForm.CheatList.SaveFile(file.FullName);
 		}
 
 		private void Cheats_Load(object sender, EventArgs e)
@@ -213,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 		}
 
-		private void CheatListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void CheatListView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= MainForm.CheatList.Count || MainForm.CheatList[index].IsSeparator)
@@ -269,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CheatListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void CheatListView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			if (index < MainForm.CheatList.Count)
 			{
@@ -361,7 +362,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MainForm.CheatList.Changes)
 			{
-				if (MainForm.CheatList.Save())
+				FileWriteResult result = MainForm.CheatList.Save();
+				if (result.IsError)
+				{
+					this.ErrorMessageBox(result);
+				}
+				else
 				{
 					UpdateMessageLabel(saved: true);
 				}
@@ -374,7 +380,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SaveAs())
+			FileWriteResult result = SaveAs();
+			if (result.IsError)
+			{
+				this.ErrorMessageBox(result);
+			}
+			else
 			{
 				UpdateMessageLabel(saved: true);
 			}

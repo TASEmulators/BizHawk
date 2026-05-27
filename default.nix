@@ -18,7 +18,7 @@
 , writeText ? pkgs.writeText
 # source
 , hawkSourceInfoDevBuild ? let # called "dev build", but you could pass whatever branch and commit you want here
-	version = "2.11.1-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
+	version = "2.11.2-local"; # used in default value of `BIZHAWK_DATA_HOME`, which distinguishes parallel installs' config and other data
 in {
 	inherit version;
 	src = builtins.path { path = ./.; name = "BizHawk-${version}"; }; # source derivation; did have filter here for speed, but it wasn't faster and it wasn't correct and it couldn't be made correct and I'm mad
@@ -26,13 +26,13 @@ in {
 # makedeps
 , dotnet-sdk_8 ? pkgs.dotnet-sdk_8
 , dotnet-sdk_6 ? pkgs.dotnet-sdk_6
-, dotnet-sdk_5 ? let result = builtins.tryEval pkgs.dotnet-sdk_5; in if result.success
+, dotnet-sdk_5 ? let result = builtins.tryEval (pkgs.dotnet-sdk_5 or builtins.throw "no .NET 5 SDK"); in if result.success
 	then result.value
 	else ((import Dist/nixpkgs.nix).nixpkgs-22_11-with-dotnet-5 system fetchzip).dotnet-sdk_5
 , git ? pkgs.gitMinimal # only when building from-CWD (`-local`)
 # rundeps
 , coreutils ? pkgs.coreutils
-, gnome-themes-extra ? pkgs.gnome3.gnome-themes-extra
+, gnome-themes-extra ? pkgs.gnome-themes-extra or pkgs.gnome3.gnome-themes-extra
 , gtk2-x11 ? pkgs.gtk2-x11
 , kate ? pkgs.kate.overrideAttrs (oldAttrs: {
 	patches = (oldAttrs.patches or []) ++ [ (fetchpatch {

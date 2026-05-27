@@ -31,6 +31,12 @@ namespace BizHawk.Client.EmuHawk
 			if (_backupBranch != null) _backupBranch.ChangeLog.MaxSteps = value;
 		}
 
+		public void ClearBackupBranch()
+		{
+			_backupBranch = null;
+			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = false;
+		}
+
 		private enum BranchUndo
 		{
 			Load,
@@ -66,6 +72,18 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
 
+		public void UpdateHotkeyTooltips(Config config)
+		{
+			if (config.HotkeyBindings["Add Branch"].Length > 0)
+			{
+				toolTip1.SetToolTip(AddBranchButton, $"Add Branch ({config.HotkeyBindings["Add Branch"]})");
+			}
+			else
+			{
+				toolTip1.SetToolTip(AddBranchButton, "Add Branch");
+			}
+		}
+
 		private void SetupColumns()
 		{
 			BranchView.AllColumns.Clear();
@@ -74,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.AllColumns.Add(new(name: UserTextColumnName, widthUnscaled: 90, text: "UserText"));
 		}
 
-		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
@@ -93,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private void QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
 			if (Tastudio.CurrentTasMovie == null)
@@ -225,7 +243,9 @@ namespace BizHawk.Client.EmuHawk
 			var currentHashes = Branches.Select(b => b.Uuid.GetHashCode()).ToList();
 			do
 			{
+#pragma warning disable RS0030 // this is to ensure no collisions
 				_backupBranch.Uuid = Guid.NewGuid();
+#pragma warning restore RS0030
 			}
 			while (currentHashes.Contains(_backupBranch.Uuid.GetHashCode()));
 
@@ -237,7 +257,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!BranchView.AnyRowsSelected) return false; // why'd we do all that then
 
 			var success = LoadSelectedBranch();
-			Tastudio.BranchLoadedCallback?.Invoke(BranchView.FirstSelectedRowIndex);
 			return success;
 		}
 
@@ -337,7 +356,6 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				Tastudio.LoadBranch(_backupBranch);
-				Tastudio.BranchLoadedCallback?.Invoke(Branches.IndexOf(_backupBranch));
 				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
@@ -546,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName })
+				if (BranchView.CurrentCell is { RowIndex: not null, Column.Name: BranchNumberColumnName } currentCell && currentCell.RowIndex < Branches.Count)
 				{
 					BranchView.DragCurrentCell();
 				}
@@ -575,10 +593,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_screenshot.FadeOut();
 			}
-			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
-			{
-				BranchView.Refresh();
-			}
 		}
 
 		private void BranchView_MouseLeave(object sender, EventArgs e)
@@ -597,8 +611,11 @@ namespace BizHawk.Client.EmuHawk
 				Branches.Swap(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 				int newIndex = Branches.IndexOfHash(guid);
 				Branches.Current = newIndex;
+				BranchView.DeselectAll();
 				Select(newIndex, true);
 			}
+
+			Refresh();
 		}
 
 		private void BranchView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)

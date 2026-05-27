@@ -121,6 +121,7 @@ namespace BizHawk.Client.Common
 		private Dictionary<string, int> TargetZoomFactors { get; set; } = new()
 		{
 			[VSystemID.Raw.Doom] = 2,
+			[VSystemID.Raw.DOS] = 1,
 			[VSystemID.Raw.GB] = 3,
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
@@ -262,7 +263,7 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D11 && !OSTailoredCode.IsWine ? EDispMethod.D3D11 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D11 ? EDispMethod.D3D11 : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;

@@ -21,14 +21,14 @@ namespace BizHawk.Client.EmuHawk
 			// what is the significance of a seek to frame if we don't pause?
 			// Answer: We use this in order to temporarily disable recording mode when the user navigates to a frame. (to avoid recording between whatever is the most recent state and the user-specified frame)
 			// Other answer: turbo seek, navigating while unpaused
-			_pauseAfterSeeking = MainForm.EmulatorPaused || (_seekingTo != -1 && _pauseAfterSeeking);
+			_pauseAfterSeeking = MainForm.EmulatorPaused || (SeekingTo != -1 && _pauseAfterSeeking);
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode();
 
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (frame < Emulator.Frame || (closestState.Key > Emulator.Frame && !skipLoadState))
 			{
-				LoadState(closestState, true);
+				LoadState(closestState);
 			}
 			closestState.Value.Dispose();
 
@@ -37,11 +37,10 @@ namespace BizHawk.Client.EmuHawk
 				_seekStartFrame = Emulator.Frame;
 				_seekingByEdit = false;
 
-				_seekingTo = frame;
-				MainForm.PauseOnFrame = int.MaxValue; // This being set is how MainForm knows we are seeking, and controls TurboSeek.
+				SeekingTo = frame;
 				MainForm.UnpauseEmulator();
 
-				if (_seekingTo - _seekStartFrame > 1)
+				if (SeekingTo - _seekStartFrame > 1)
 				{
 					MessageStatusLabel.Text = "Seeking...";
 					ProgressBar.Visible = true;
@@ -96,7 +95,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			TasView.ScrollToIndex(frame ?? Emulator.Frame);
+			int scrollTo = frame ?? Emulator.Frame;
+			if (Settings.ScrollSync)
+			{
+				_inputRolls.ForEach(r => r.ScrollToIndex(scrollTo));
+			}
+			else
+			{
+				_activeInputRoll.ScrollToIndex(scrollTo);
+			}
 		}
 
 		private void MaybeFollowCursor()
@@ -105,6 +112,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetVisibleFrame();
 			}
+		}
+
+		public int GetSeekFrame()
+		{
+			return SeekingTo == -1 ? Emulator.Frame : SeekingTo;
 		}
 	}
 }

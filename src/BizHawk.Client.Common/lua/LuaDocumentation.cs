@@ -20,6 +20,8 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine("Lua supports integer arithmetic starting with BizHawk 2.9. Note {{~}} is both bitwise NOT and XOR. Some of the {{bit}} helper functions remain, but you should try to avoid them if you need performance (or [https://github.com/TASEmulators/BizHawk-ExternalTools/wiki|switch to .NET]). If you're getting overwhelmed with deprecation warnings while trying to migrate a script, add this one-liner at the top: {{bit = (require \"migration_helpers\").EmuHawk_pre_2_9_bit();}}")
 				.AppendLine()
+				.AppendLine("We include LuaCATS definition files for all BizHawk Lua functionality in {{Lua/_docs_luacats}}.")
+				.AppendLine()
 				.AppendLine("FCEUX users: While this API surface may look similar, even functions with the same name may take different arguments, or behave differently in a way that isn't immediately obvious. (TODO: create a migration helper function for FCEUX)")
 				.AppendLine()
 				.AppendLine(@"__Types and notation__
@@ -44,8 +46,10 @@ namespace BizHawk.Client.Common
 * nluafunc
 ** A Lua function. Note that these are always parameters, and never return values of a call.
 ** Some callbacks will be called with arguments, if the function you register has the right number of parameters. This will be noted in the registration function's docs.
-* table
-** A standard Lua table
+* nluatable
+** A standard Lua table, either list-like (used with {{ipairs}}) or dict-like (used with {{pairs}}).
+* nluatable0Indexed
+** A list-like table (or dict-like with integer keys) which is ""0-indexed"", that is, it begins counting from 0 instead of 1 as would be expected in Lua. Use {{pairs}} instead of {{ipairs}} for these.
 * binary string
 ** A regular Lua string containing raw bytes instead of text, used in some memory functions. Can contain any bytes including null bytes.
 ** Not encoded as hex or any valid text encoding. Should not be written to the console.
@@ -237,25 +241,27 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				static string DisplayDefaultValue(object/*?*/ defaultValue)
+					=> defaultValue is null
+						? "nil"
+						: defaultValue is string s
+							? $"\"{defaultValue}\""
+							: defaultValue.ToString();
 				if (_parameterList == null)
 				{
 					var parameters = Method.GetParameters();
 
 					var list = new StringBuilder();
 					list.Append('(');
-					for (var i = 0; i < parameters.Length; i++)
+					foreach (var (i, pi) in parameters.Index())
 					{
-						var p = TypeCleanup(parameters[i].ToString());
-						if (parameters[i].GetCustomAttribute<LuaColorParamAttribute>() != null) p = p.Replace("object", "luacolor");
-						if (parameters[i].IsOptional)
-						{
-							list.Append($"[{p} = {parameters[i].DefaultValue?.ToString() ?? "nil"}]");
-						}
-						else
-						{
-							list.Append(p);
-						}
-
+						var p = TypeCleanup(pi.ParameterType);
+						if (pi.GetCustomAttribute<LuaColorParamAttribute>() is not null) p = p.Replace("object", "luacolor");
+						if (pi.GetCustomAttribute<LuaZeroIndexedAttribute>() is not null) p = p.Replace("nluatable", "nluatable0Indexed");
+						p += $" {pi.Name.ToLowerInvariant()}";
+						list.Append(pi.IsOptional
+							? $"[{p} = {DisplayDefaultValue(pi.DefaultValue)}]"
+							: p);
 						if (i < parameters.Length - 1)
 						{
 							list.Append(", ");
@@ -270,9 +276,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private static string TypeCleanup(string str)
+		private static string TypeCleanup(Type type)
 		{
-			return str
+			return type.ToString()
 				.Replace("System", "")
 				.Replace(" ", "")
 				.Replace(".", "")
@@ -283,8 +289,8 @@ namespace BizHawk.Client.Common
 				.Replace("Boolean[]", "bool[] ")
 				.Replace("Boolean", "bool ")
 				.Replace("String", "string ")
-				.Replace("LuaTable", "table ")
-				.Replace("LuaFunction", "func ")
+				.Replace(/*"NLua."+*/"LuaTable", /*"nlua"+*/"table ")
+				.Replace(/*"NLua."+*/"LuaFunction", /*"nlua"+*/"func ")
 				.Replace("Nullable`1[Int32]", "int? ")
 				.Replace("Nullable`1[UInt32]", "uint? ")
 				.Replace("Byte[]", "string ")
@@ -296,23 +302,28 @@ namespace BizHawk.Client.Common
 				.Replace("Int16", "short ")
 				.Replace("Int32", "int ")
 				.Replace("Int64", "long ")
-				.Replace("Ushort", "ushort ")
-				.Replace("Ulong", "ulong ")
 				.Replace("UInt32", "uint ")
 				.Replace("UInt64", "ulong ")
+				.Replace("Single", "float ")
 				.Replace("Double", "double ")
-				.Replace("Uint", "uint ")
 				.Replace("Nullable`1[DrawingColor]", "Color? ")
 				.Replace("DrawingColor", "Color ")
+				.TrimEnd(' ')
 				.ToLowerInvariant();
 		}
 
+		private string/*?*/ field = null;
 		public string ReturnType
 		{
 			get
 			{
-				var returnType = Method.ReturnType.ToString();
-				return TypeCleanup(returnType).Trim();
+				if (field is not null) return field;
+				var returnType = TypeCleanup(Method.ReturnType).Trim();
+				if (Method.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(LuaZeroIndexedAttribute), inherit: false).Length is not 0)
+				{
+					returnType = returnType.Replace("nluatable", "nluatable0Indexed");
+				}
+				return field = returnType;
 			}
 		}
 	}

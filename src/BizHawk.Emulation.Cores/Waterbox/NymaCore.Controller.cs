@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							case InputType.Axis:
 							{
 								var data = input.Extra.AsAxis();
-								var fullName = $"{name} {overrideName(data.NameNeg)} / {overrideName(data.NamePos)}";
+								var fullName = $"{name} {overrideName(data.SettingsNameNeg)} / {overrideName(data.SettingsNamePos)}";
 								ControllerThunk thunk = (c, b) =>
 								{
 									var val = c.AxisValue(fullName);

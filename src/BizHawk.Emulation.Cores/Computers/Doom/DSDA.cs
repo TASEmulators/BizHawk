@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 							paramName: nameof(lp));
 					}
 
-					_iwadName = wadFile.RomPath;
+					_iwadName = GetFullName(wadFile);
 					_iwadData = wadFile.RomData;
 					foundIWAD = true;
 					recognized = true;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				{
 					if (_fakePwads.Contains(GetFullName(wadFile).ToLowerInvariant()))
 					{
-						_iwadName = wadFile.RomPath;
+						_iwadName = GetFullName(wadFile);
 						_iwadData = wadFile.RomData;
 						foundIWAD = true;
 					}
@@ -117,8 +117,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			Point resolution;
 			int multiplier = 1;
-			var aspectIndex = (int)_settings.InternalAspect;
-			var resolutionIndex = _settings.ScaleFactor - 1;
+			var aspectIndex = (int) _syncSettings.InternalAspect;
+			var resolutionIndex = _syncSettings.ScaleFactor - 1;
 			var resolutions = _resolutions[aspectIndex];
 
 			if (resolutionIndex < resolutions.Length)
@@ -127,13 +127,13 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			}
 			else
 			{
-				multiplier = _settings.ScaleFactor - resolutions.Length + 1;
+				multiplier = _syncSettings.ScaleFactor - resolutions.Length + 1;
 				resolution = resolutions[^1];
 			}
 
 			BufferWidth = resolution.X * multiplier;
 			BufferHeight = resolution.Y * multiplier;
-			VirtualHeight = _settings.InternalAspect == AspectRatio.Native
+			VirtualHeight = _syncSettings.InternalAspect == AspectRatio.Native
 				? BufferWidth * 3 / 4
 				: BufferHeight;
 
@@ -141,9 +141,9 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				$"screen_resolution \"{BufferWidth}x{BufferHeight}\"\n"
 				// we need the core to treat native resolution as 4:3 aspect,
 				// that ensures FOV is correct on higher resolutions
-				+ $"render_aspect {(int)(_settings.InternalAspect == AspectRatio.Native
+				+ $"render_aspect {(int)(_syncSettings.InternalAspect == AspectRatio.Native
 					? AspectRatio._4by3
-					: _settings.InternalAspect)}\n"
+					: _syncSettings.InternalAspect)}\n"
 				+ $"render_wipescreen {(_syncSettings.RenderWipescreen ? 1 : 0)}\n"
 				+ "render_stretch_hud 1\n" // patch_stretch_doom_format
 				+ "uncapped_framerate 0\n"
@@ -162,9 +162,24 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 			}
 
-			_randomCallback = pr_class =>
+			_randomCallback = info =>
 			{
-				foreach (var cb in RandomCallbacks) cb(pr_class);
+				foreach (var cb in RandomCallbacks) cb(info);
+			};
+
+			_interceptCallback = (x, y, isaline) =>
+			{
+				foreach (var cb in InterceptCallbacks) cb(x, y, isaline);
+			};
+
+			_useCallback = (line, thing) =>
+			{
+				foreach (var cb in UseCallbacks) cb(line, thing);
+			};
+
+			_crossCallback = (line, thing) =>
+			{
+				foreach (var cb in CrossCallbacks) cb(line, thing);
 			};
 
 			_elf = new WaterboxHost(new WaterboxOptions
@@ -184,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			{
 				var callingConventionAdapter = CallingConventionAdapters.MakeWaterbox(
 				[
-					_loadCallback, _randomCallback, _errorCallback
+					_loadCallback, _randomCallback, _interceptCallback, _useCallback, _crossCallback, _errorCallback
 				], _elf);
 
 				using (_elf.EnterExit())
@@ -206,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					// Adding PWAD file(s)
 					foreach (var wadFile in _pwadFiles)
 					{
-						_gameMode = _core.dsda_add_wad_file(wadFile.RomPath, wadFile.RomData.Length, _loadCallback);
+						_gameMode = _core.dsda_add_wad_file(GetFullName(wadFile), wadFile.RomData.Length, _loadCallback);
 						if (_gameMode is LibDSDA.GameMode.Fail)
 						{
 							throw new ArgumentException(
@@ -280,14 +295,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				}
 
 				ControllerDefinition = CreateControllerDefinition(_syncSettings);
-
-				_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
+				SetLuaCallbacks();
 			}
 			catch
 			{
 				Dispose();
 				throw;
 			}
+		}
+
+		private void SetLuaCallbacks()
+		{
+			_core.dsda_set_random_callback(   RandomCallbacks.Count    > 0 ? _randomCallback    : null);
+			_core.dsda_set_intercept_callback(InterceptCallbacks.Count > 0 ? _interceptCallback : null);
+			_core.dsda_set_use_callback(      UseCallbacks.Count       > 0 ? _useCallback       : null);
+			_core.dsda_set_cross_callback(    CrossCallbacks.Count     > 0 ? _crossCallback     : null);
 		}
 
 		private void CreateArguments(LibDSDA.InitSettings initSettings)
@@ -386,9 +408,15 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 		private List<IRomAsset> _pwadFiles;
 		private LibDSDA.GameMode _gameMode;
 		private LibDSDA.random_cb _randomCallback;
+		private LibDSDA.intercept_cb _interceptCallback;
+		private LibDSDA.line_cb _useCallback;
+		private LibDSDA.line_cb _crossCallback;
 		private LibDSDA.error_cb _errorCallback;
 
-		public List<Action<int>> RandomCallbacks = [ ];
+		public List<Action<string>> RandomCallbacks = [ ];
+		public List<Action<int, int, int>> InterceptCallbacks = [ ];
+		public List<Action<long, long>> UseCallbacks = [ ];
+		public List<Action<long, long>> CrossCallbacks = [ ];
 		public string RomDetails { get; } // IRomInfo
 
 		private void ErrorCallback(string error)
@@ -435,7 +463,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			foreach (var wadFile in _wadFiles)
 			{
-				if (filename == wadFile.RomPath)
+				if (filename == GetFullName(wadFile))
 				{
 					if (wadFile.FileData == null)
 					{

@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										{
 											oam_index &= 0x1FC;
 										}
-										soam_index++;
+										// soam_index no longer increments now that Secondary OAM is full.
 										spr_true_count = 0;
 									}
 								}
@@ -386,13 +386,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									}
 								}
 
-								read_value = soam[0]; //writes change to reads
+								read_value = soam[(soam_index * 4) & 0x1F]; //writes change to reads
 							}
 						}
 						else
 						{
 							// if we don't write sprites anymore, just scan through the oam
-							read_value = soam[0];
+							read_value = soam[(soam_index * 4) & 0x1F];
 							oam_index += 4;
 						}
 					}

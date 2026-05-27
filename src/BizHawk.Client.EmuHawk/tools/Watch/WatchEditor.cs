@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					SelectedWidth = MemoryDomains.First().WordSize;
+					SelectedWidth = MemoryDomains[0].WordSize;
 					break;
 				case Mode.Duplicate:
 				case Mode.Edit:

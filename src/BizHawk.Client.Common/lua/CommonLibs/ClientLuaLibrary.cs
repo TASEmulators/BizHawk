@@ -15,8 +15,12 @@ using NLua;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class ClientLuaLibrary : LuaLibraryBase
+	public sealed class ClientLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
+		public Lazy<string> AllAPINames { get; set; }
+
+		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+
 		[OptionalService]
 		private IVideoProvider VideoProvider { get; set; }
 
@@ -70,7 +74,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("closerom", "Closes the loaded Rom")]
 		public void CloseRom()
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.BOOTING))
 			{
 				throw new InvalidOperationException("client.closerom() is not allowed during input/memory callbacks");
 			}
@@ -94,22 +98,15 @@ namespace BizHawk.Client.Common
 		public string GetLuaEngine()
 			=> "NLua+Lua";
 
-		[LuaMethodExample("client.invisibleemulation( true );")]
-		[LuaMethod("invisibleemulation", "Enters/exits turbo mode and disables/enables most emulator updates.")]
-		public void InvisibleEmulation(bool invisible)
-			=> APIs.EmuClient.InvisibleEmulation(invisible);
-
-		[LuaDeprecatedMethod]
-		[LuaMethod("seekframe", "Does nothing. Use the pause/unpause functions instead and a loop that waits for the desired frame.")]
-		public void SeekFrame(int frame)
-		{
-			Log("Deprecated function client.seekframe() used. Replace the call with pause/unpause functions and a loop that waits for the desired frame.");
-		}
-
 		[LuaMethodExample("local sounds_terrible = client.get_approx_framerate() < 55;")]
 		[LuaMethod("get_approx_framerate", "Gets the (host) framerate, approximated from frame durations.")]
 		public int GetApproxFramerate()
 			=> APIs.EmuClient.GetApproxFramerate();
+
+		[LuaMethodExample("local stconget = client.getluafunctionslist( );")]
+		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
+		public string GetLuaFunctionsList()
+			=> AllAPINames.Value;
 
 		[LuaMethodExample("local incliget = client.gettargetscanlineintensity( );")]
 		[LuaMethod("gettargetscanlineintensity", "Gets the current scanline intensity setting, used for the scanline display filter")]
@@ -193,7 +190,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("openrom", "Loads a ROM from the given path. Returns true if the ROM was successfully loaded, otherwise false.")]
 		public bool OpenRom(string path)
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.BOOTING))
 			{
 				throw new InvalidOperationException("client.openrom() is not allowed during input/memory callbacks");
 			}
@@ -233,7 +230,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("reboot_core", "Reboots the currently loaded core")]
 		public void RebootCore()
 		{
-			if (_luaLibsImpl.IsInInputOrMemoryCallback)
+			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.BOOTING))
 			{
 				throw new InvalidOperationException("client.reboot_core() is not allowed during input/memory callbacks");
 			}
@@ -278,6 +275,33 @@ namespace BizHawk.Client.Common
 		public void SetWindowSize(int size)
 			=> APIs.EmuClient.SetWindowSize(size);
 
+		[LuaMethodExample("client.show_future(function(frame) return frame == 1 end, 1)")]
+		[LuaMethod(
+			name: "show_future",
+			description: "Tell the client to display a frame from the future, instead of the current frame. " +
+				"The given lua function will be called before emulating each future frame. " +
+				"It can have 1 parameter, which is the number of frames into the future that have already been emulated. " +
+				"Return false to emulate another future frame. " +
+				"When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displayed. " +
+				"Unregister the callback with event.unregister____ to disable future frame display. " +
+				"No more than `maxFrames` future frames will be emulated. Useful to avoid freezing " +
+				"the client UI in case of accidentally never returning true from the callback. " +
+				"Your timeout can be as low as 1 frame or as high as 32767 frames.")]
+		public string ShowFuture(LuaFunction luaf, long maxFrames, string name = null)
+		{
+			if (maxFrames is < 1 or > EmuClientApi.SHOW_FUTURE_MAX_USER_TIMEOUT)
+			{
+				Log($"Invalid number of future frames for timeout ({maxFrames}); number must be in 1..={EmuClientApi.SHOW_FUTURE_MAX_USER_TIMEOUT}.");
+				return EventsLuaLibrary.EMPTY_UUID_STR;
+			}
+
+			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_FUTURE, prohibitedApis: ApiGroup.PROHIBITED_MID_FRAME, name: name);
+			ShowFutureCallback FutureCallback = (f) => nlf.Call(f) is [ bool r ] ? r : false;
+			APIs.EmuClient.ShowFuture(FutureCallback, (ushort) maxFrames);
+			nlf.OnRemove += () => APIs.EmuClient.ShowFuture(null, 0);
+			return nlf.GuidStr;
+		}
+
 		[LuaMethodExample("client.speedmode( 75 );")]
 		[LuaMethod("speedmode", "Sets the speed of the emulator (in terms of percent)")]
 		public void SpeedMode(int percent)
@@ -304,7 +328,12 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("client.unpause( );")]
-		[LuaMethod("unpause", "Unpauses the emulator")]
+		[LuaMethod(
+			"unpause",
+			"Unpauses the emulator. Note that the user can pause again before the next frame,"
+				+ " either with the pause key or by releasing frame advance."
+				+ " If you want to force emulation to continue, put this and emu.yield (not frameadvance)"
+				+ " inside a loop that runs until the desired frame.")]
 		public void Unpause()
 			=> APIs.EmuClient.Unpause();
 
@@ -332,6 +361,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
+		[return: LuaZeroIndexed]
 		public LuaTable GetAvailableTools()
 			=> _th.EnumerateToLuaTable(APIs.Tool.AvailableTools.Select(tool => tool.Name.ToLowerInvariant()), indexFrom: 0);
 

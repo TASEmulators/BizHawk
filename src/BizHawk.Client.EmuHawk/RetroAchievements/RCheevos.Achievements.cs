@@ -6,9 +6,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class RCheevos
 	{
-#if false
 		private readonly RCheevosAchievementListForm _cheevoListForm = new();
-#endif
 
 		private sealed class CheevoUnlockRequest : RCheevoHttpRequest
 		{
@@ -95,6 +93,17 @@ namespace BizHawk.Client.EmuHawk
 				_badgeLockedRequest = new(BadgeName, LibRCheevos.rc_api_image_type_t.RC_IMAGE_TYPE_ACHIEVEMENT_LOCKED);
 				requests.Add(_badgeUnlockedRequest);
 				requests.Add(_badgeLockedRequest);
+			}
+
+			public int OrderByKey(Func<uint, string> getCheevoProgress)
+			{
+				var ret = 0;
+				ret += IsHardcoreUnlocked ? 3 : 0;
+				ret += IsSoftcoreUnlocked ? 2 : 0;
+				ret += IsPrimed ? 1 : 0;
+				ret += string.IsNullOrEmpty(getCheevoProgress(ID)) ? 0 : 1;
+				ret += IsOfficial ? 0 : -10;
+				return ret;
 			}
 
 			public Cheevo(in LibRCheevos.rc_api_achievement_definition_t cheevo, Func<bool> allowUnofficialCheevos)

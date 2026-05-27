@@ -89,7 +89,9 @@ namespace BizHawk.Common.PathExtensions
 			//TODO merge this with the Windows implementation in MakeRelativeTo
 			static FileAttributes GetPathAttribute(string path1)
 			{
+#pragma warning disable RS0030 // only needs the existence metadata
 				if (Directory.Exists(path1.SubstringBefore('|'))) return FileAttributes.Directory;
+#pragma warning restore RS0030
 				if (File.Exists(path1.SubstringBefore('|'))) return FileAttributes.Normal;
 				throw new FileNotFoundException();
 			}
@@ -202,7 +204,9 @@ namespace BizHawk.Common.PathExtensions
 				try
 				{
 					envVar = envVar?.MakeAbsolute() ?? string.Empty;
+#pragma warning disable RS0030 // passes the dir on to caller
 					if (Directory.Exists(envVar)) return envVar;
+#pragma warning restore RS0030
 				}
 				catch
 				{

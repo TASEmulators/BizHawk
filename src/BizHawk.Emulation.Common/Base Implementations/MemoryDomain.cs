@@ -20,6 +20,10 @@ namespace BizHawk.Emulation.Common
 			Unknown,
 		}
 
+		private const string ERR_MSG_BUFFER_WRONG_SIZE = "Invalid length of values array";
+
+		private const string ERR_MSG_UNALIGNED = "The API contract doesn't define what to do for unaligned reads and writes!";
+
 		public string Name { get; protected set; }
 
 		public long Size { get; protected set; }
@@ -89,11 +93,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-			if ((long)addresses.Count() != values.Length)
-			{
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if ((long) addresses.Count() != values.Length) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE);
 
 			using (this.EnterExit())
 			{
@@ -111,20 +111,15 @@ namespace BizHawk.Emulation.Common
 
 			var start = addresses.Start;
 			var end = addresses.EndInclusive + 1;
-
-			if ((start & 1) != 0 || (end & 1) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-			if (values.LongLength * 2 != end - start)
-			{
-				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if ((start & 0b1) is not 0 || (end & 0b1) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
+			if (values.LongLength * sizeof(ushort) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // a longer array could be valid, but nothing needs that so don't support it for now
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 2)
+				for (var i = 0; i < values.Length; i++, start += sizeof(ushort))
+				{
 					values[i] = PeekUshort(start, bigEndian);
+				}
 			}
 		}
 
@@ -135,20 +130,15 @@ namespace BizHawk.Emulation.Common
 
 			var start = addresses.Start;
 			var end = addresses.EndInclusive + 1;
-
-			if ((start & 3) != 0 || (end & 3) != 0)
-				throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-			if (values.LongLength * 4 != end - start)
-			{
-				// a longer array could be valid, but nothing needs that so don't support it for now
-				throw new InvalidOperationException("Invalid length of values array");
-			}
+			if ((start & 0b11) is not 0 || (end & 0b11) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
+			if (values.LongLength * sizeof(uint) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // `!=` not `<`, per `BulkPeekUshort`
 
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += 4)
+				for (var i = 0; i < values.Length; i++, start += sizeof(uint))
+				{
 					values[i] = PeekUint(start, bigEndian);
+				}
 			}
 		}
 

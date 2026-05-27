@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 
 		public void StopAllScripts()
 		{
-			ForEach(lf => lf.State = LuaFile.RunState.Disabled);
+			ForEach(lf => lf.Stop());
 		}
 
 		public new void Clear()
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			return base.Remove(item);
 		}
 
-		public bool Load(string path, bool disableOnLoad)
+		public bool Load(string path, bool disableOnLoad, Action onFunctionListChange)
 		{
 			var file = new FileInfo(path);
 			if (!file.Exists)
@@ -91,10 +91,10 @@ namespace BizHawk.Client.Common
 						scriptPath = Path.GetFullPath(Path.Combine(directory ?? "", scriptPath));
 					}
 
-					Add(new LuaFile(scriptPath)
-					{
-						State = !disableOnLoad && line.StartsWith('1') ? LuaFile.RunState.Running : LuaFile.RunState.Disabled,
-					});
+					LuaFile lf = new LuaFile(scriptPath, onFunctionListChange);
+					Add(lf);
+					if (!disableOnLoad && line.StartsWith('1'))
+						lf.ScheduleStart();
 				}
 			}
 
@@ -102,9 +102,8 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Save(string path)
+		public FileWriteResult Save(string path)
 		{
-			using var sw = new StreamWriter(path);
 			var sb = new StringBuilder();
 			var saveDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
 			foreach (var file in this)
@@ -123,10 +122,19 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			sw.Write(sb.ToString());
+			FileWriteResult result = FileWriter.Write(path, (fs) =>
+			{
+				using var sw = new StreamWriter(fs);
+				sw.Write(sb.ToString());
+			});
 
-			Filename = path;
-			Changes = false;
+			if (!result.IsError)
+			{
+				Filename = path;
+				Changes = false;
+			}
+
+			return result;
 		}
 	}
 }

@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 				RenderVideo = Convert.ToInt32(renderVideo)
 			};
 
-			_core.dsda_set_random_callback(RandomCallbacks.Count > 0 ? _randomCallback : null);
+			SetLuaCallbacks();
 
 			IsLagFrame = _core.dsda_frame_advance(
 				automapButtons,

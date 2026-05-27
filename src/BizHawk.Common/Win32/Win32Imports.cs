@@ -16,6 +16,8 @@ namespace BizHawk.Common
 	{
 		public const int MAX_PATH = 260;
 
+		public const uint ATTACH_PARENT_PROCESS = unchecked((uint)-1);
+
 		[Flags]
 		public enum TPM
 		{
@@ -81,5 +83,8 @@ namespace BizHawk.Common
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
 		public static extern int GetShortPathNameW(string lpszLongPath, char[] lpszShortPath, int cchBuffer);
+
+		[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+		public static extern bool AttachConsole(uint dwProcessId);
 	}
 }

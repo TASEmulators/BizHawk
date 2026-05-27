@@ -516,7 +516,32 @@ structs.sector = sector
 	end)
 	.build() --[[@as domain_struct]]
 
+-- divline_t https://github.com/TASEmulators/dsda-doom/blob/fe96d105f06a1971b633a07d6468e0f426e1f1d5/prboom2/src/p_maputl.h#L62-L67
+structs.divline = utils.struct_layout("divline")
+	.s32("x")
+	.s32("y")
+	.s32("dx")
+	.s32("dy")
+	.build()
 
+-- intercept_t https://github.com/TASEmulators/dsda-doom/blob/fe96d105f06a1971b633a07d6468e0f426e1f1d5/prboom2/src/p_maputl.h#L69-L76
+structs.intercept = utils.struct_layout("intercept")
+	.s32("frac")
+	.s32("isaline")
+	.ptr("d")
+	.build()
+
+-- line_opening_t  https://github.com/TASEmulators/dsda-doom/blob/fe96d105f06a1971b633a07d6468e0f426e1f1d5/prboom2/src/p_maputl.h#L50-L60
+structs.line_opening = utils.struct_layout("line_opening")
+	.s32  ("top")
+	.s32  ("bottom")
+	.s32  ("range")
+	.s32  ("lowfloor")
+	.ptrto("frontsector", sector)
+	.ptrto("backsector", sector)
+	.u32  ("touchmidtex")
+	.u32  ("abovemidtex")
+	.build()
 
 structs.globals = utils.global_layout()
 	.sym  ("s32",   "gameskill")
@@ -539,6 +564,15 @@ structs.globals = utils.global_layout()
 	.sym  ("bool",  "hexen")
 	.sym  ("s32",   "gamemode")
 	.sym  ("s32",   "gamemission")
+	.sym  ("s32",   "bmaporgx")
+	.sym  ("s32",   "bmaporgy")
+	.sym  ("s32",   "bmapwidth")
+	.sym  ("s32",   "bmapheight")
+	.sym  ("u32",   "intercepts")
+	.sym  ("u32",   "intercept_p")
+	.sym  ("s32",   "bulletslope")
+	.sym  ("embed", "trace", structs.divline)
+	.sym  ("embed", "line_opening", structs.line_opening)
 	-- game state
 	.sym  ("bool",  "automap_active")
 	.sym  ("s32" ,  "gameaction")
@@ -553,6 +587,7 @@ structs.globals = utils.global_layout()
 	.sym  ("array", "thinkerclasscap", "embed", 5, structs.thinker)
 	.sym  ("array", "playeringame", "bool", structs.MAX_PLAYERS)
 	.sym  ("array", "players", "embed", structs.MAX_PLAYERS, structs.player)
+	.sym  ("array", "playerstarts", "embed", structs.MAX_PLAYERS^2, structs.mapthing)
 	.sym  ("s32",   "thinker_count") -- for mobj_ptrs
 	.sym  ("s32",   "numlines")
 	.symas("ptr",   "lines", "lines_ptr")

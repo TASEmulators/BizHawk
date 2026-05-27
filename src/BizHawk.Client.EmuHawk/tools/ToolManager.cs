@@ -16,8 +16,15 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class ToolManager
+	public class ToolManager : IToolLoader
 	{
+		static ToolManager()
+		{
+			// APIs are used by tools, so this seems like a good place to add API types to the manager.
+			// Only API types not visible to BizHawk.Client.Common need to be added here.
+			ApiManager.AddApiType(typeof(ToolApi));
+		}
+
 		private readonly MainForm _owner;
 		private Config _config;
 		private readonly DisplayManager _displayManager;
@@ -68,17 +75,10 @@ namespace BizHawk.Client.EmuHawk
 				this,
 				_config,
 				_emulator,
-				_game);
+				_game,
+				_owner.DialogController);
 
-		/// <summary>
-		/// Loads the tool dialog T (T must implements <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
-		/// This method should be used only if you can't use the generic one
-		/// </summary>
-		/// <param name="toolType">Type of tool you want to load</param>
-		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
-		/// <returns>An instantiated <see cref="IToolForm"/></returns>
-		/// <exception cref="ArgumentException">Raised if <paramref name="toolType"/> can't cast into IToolForm </exception>
-		internal IToolForm Load(Type toolType, bool focus = true)
+		public IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{
@@ -96,16 +96,11 @@ namespace BizHawk.Client.EmuHawk
 			f.Config = _config;
 			if (form is not ToolFormBase tool) return;
 			tool.SetToolFormBaseProps(_displayManager, _inputManager, _owner, _movieSession, this, _game);
-			if (form is LuaConsole luaConsole) luaConsole.MainForm = _owner; // could go via ServiceProvider but nah
+
+			// Lua is a special case, being the only tool that currently uses this.
+			if (form is LuaConsole luaConsole) luaConsole.MainFormForApi = _owner;
 		}
 
-		/// <summary>
-		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
-		/// </summary>
-		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
-		/// <param name="toolPath">Path to the .dll of the external tool</param>
-		/// <typeparam name="T">Type of tool you want to load</typeparam>
-		/// <returns>An instantiated <see cref="IToolForm"/></returns>
 		public T Load<T>(bool focus = true, string toolPath = "")
 			where T : class, IToolForm
 		{
@@ -132,6 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (newTool is Form form) form.Owner = _owner;
 			if (!ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool)) return null; //TODO pass `true` for `mayCache` when from EmuHawk assembly
+			if (newTool is IExternalToolForm && !ApiInjector.UpdateApis(GetOrInitApiProvider, newTool)) return null;
 			SetBaseProperties(newTool);
 			var toolTypeName = typeof(T).FullName!;
 			// auto settings

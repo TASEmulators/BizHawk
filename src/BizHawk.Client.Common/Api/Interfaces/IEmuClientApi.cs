@@ -71,12 +71,6 @@ namespace BizHawk.Client.Common
 
 		int GetWindowSize();
 
-		/// <summary>
-		/// Use with <see cref="SeekFrame(int)"/> for CamHack.
-		/// Refer to <c>MainForm.InvisibleEmulation</c> for the workflow details.
-		/// </summary>
-		void InvisibleEmulation(bool invisible);
-
 		bool IsPaused();
 
 		bool IsSeeking();
@@ -117,12 +111,6 @@ namespace BizHawk.Client.Common
 		int ScreenWidth();
 
 		/// <summary>
-		/// Use with <see cref="InvisibleEmulation(bool)"/> for CamHack.
-		/// Refer to <c>MainForm.InvisibleEmulation</c> for the workflow details.
-		/// </summary>
-		void SeekFrame(int frame);
-
-		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
 		/// </summary>
 		/// <param name="left">Left padding</param>
@@ -148,12 +136,35 @@ namespace BizHawk.Client.Common
 
 		void SetWindowSize(int size);
 
+		/// <summary>
+		/// Tell the client to display a frame from the future, instead of the current frame.
+		/// </summary>
+		/// <param name="preFrameCallback">This will be called before emulating each future frame.
+		/// The parameter is the number of frames into the future that have already been emulated.
+		/// Return false to emulate another future frame.
+		/// When the callback returns true, emulation will rewind to the real current frame and the just-run future frame will be displayed.
+		/// <br/>Pass null to disable future frame display.</param>
+		/// <param name="maxFrames">
+		/// The maximum number of future frames to emulate. Useful to avoid freezing the client UI in case of accidentally never returning true from the callback.
+		/// Your timeout can be as low as 1 frame or as high as 32767 frames.
+		/// </param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// <paramref name="maxFrames"/> is <c>0</c>
+		/// (and <paramref name="preFrameCallback"/> is a delegate, since <paramref name="maxFrames"/> is ignored when it's <see langword="null"/>)
+		/// or is greater than 32767
+		/// </exception>
+		void ShowFuture(ShowFutureCallback/*?*/ preFrameCallback, ushort maxFrames);
+
 		void SpeedMode(int percent);
 
 		void TogglePause();
 
 		Point TransformPoint(Point point);
 
+		/// <summary>
+		/// Unpauses the emulator. Note that the user can pause again before the next frame, either with the pause key or by releasing frame advance.
+		/// If you wish to force emulation to continue, consider using <see cref="DoFrameAdvance"/> instead.
+		/// </summary>
 		void Unpause();
 
 		void UnpauseAv();

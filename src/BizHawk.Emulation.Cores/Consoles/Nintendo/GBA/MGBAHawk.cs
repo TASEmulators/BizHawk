@@ -69,6 +69,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				RumbleCallback = SetRumble;
 				LibmGBA.BizSetRumbleCallback(Core, RumbleCallback);
+
+				_subframeMode = _syncSettings.SubframeInput;
+				ControllerDefinition = _subframeMode ? SubGBAController : GBAController;
+				if (!_subframeMode)
+				{
+					ser.Unregister<ICycleTiming>();
+				}
 			}
 			catch
 			{
@@ -151,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 
 			long baseTime = (long)_syncSettings.RTCInitialTime.Subtract(_epoch).TotalSeconds;
-			long increment = Frame * 4389L >> 18;
+			long increment = CycleCount >> 24;
 			return baseTime + increment;
 		}
 	}

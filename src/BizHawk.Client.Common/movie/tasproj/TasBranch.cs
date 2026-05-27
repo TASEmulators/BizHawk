@@ -107,7 +107,9 @@ namespace BizHawk.Client.Common
 
 			if (item.Uuid == Guid.Empty)
 			{
+#pragma warning disable RS0030 // this is to ensure no collisions
 				item.Uuid = Guid.NewGuid();
+#pragma warning restore RS0030
 			}
 
 			base.Add(item);
@@ -216,10 +218,6 @@ namespace BizHawk.Client.Common
 					if (identifier != null)
 					{
 						b.Uuid = (Guid)identifier;
-					}
-					else
-					{
-						b.Uuid = Guid.NewGuid();
 					}
 				}))
 				{

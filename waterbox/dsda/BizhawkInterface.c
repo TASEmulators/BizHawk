@@ -323,8 +323,8 @@ void walkcam_inputs(struct PackedPlayerInput *inputs)
     (ORIG_FRICTION / 6) * inputs->StrafingSpeed,
     finesine[(walkcamera.angle - ANG90) >> ANGLETOFINESHIFT]);
 
-  walkcamera.z     += (char)inputs->FlyLook * FRACUNIT; // repurposed!
-  walkcamera.angle += (     inputs->TurningSpeed / 8) << ANGLETOFINESHIFT;
+  walkcamera.z     +=  inputs->FlyLook * FRACUNIT; // repurposed!
+  walkcamera.angle += (inputs->TurningSpeed / 8) << ANGLETOFINESHIFT;
 }
 
 ECL_EXPORT void dsda_get_audio(int *n, void **buffer)
@@ -421,16 +421,52 @@ ECL_EXPORT bool dsda_frame_advance(AutomapButtons buttons, struct PackedPlayerIn
   return !wipeDone;
 }
 
+// P_UseSpecialLine() calls
+ECL_ENTRY void (*use_callback_cb)(line_t*, mobj_t*);
+void biz_use_callback(line_t* line, mobj_t* mo)
+{
+  if (use_callback_cb)
+    use_callback_cb(line, mo);
+}
+ECL_EXPORT void dsda_set_use_callback(ECL_ENTRY void (*cb)(line_t*, mobj_t*))
+{
+  use_callback_cb = cb;
+}
+
+// P_CrossCompatibleSpecialLine() calls
+ECL_ENTRY void (*cross_callback_cb)(line_t*, mobj_t*);
+void biz_cross_callback(line_t* line, mobj_t* mo)
+{
+  if (cross_callback_cb)
+    cross_callback_cb(line, mo);
+}
+ECL_EXPORT void dsda_set_cross_callback(ECL_ENTRY void (*cb)(line_t*, mobj_t*))
+{
+  cross_callback_cb = cb;
+}
+
 // P_Random() calls
-ECL_ENTRY void (*random_callback_cb)(int);
-void biz_random_callback(int pr_class)
+ECL_ENTRY void (*random_callback_cb)(const char *);
+void biz_random_callback(const char *info)
 {
   if (random_callback_cb)
-    random_callback_cb(pr_class);
+    random_callback_cb(info);
 }
-ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(int))
+ECL_EXPORT void dsda_set_random_callback(ECL_ENTRY void (*cb)(const char *))
 {
   random_callback_cb = cb;
+}
+
+// PIT_Add*Intercepts() calls
+ECL_ENTRY void (*intercept_callback_cb)(int, int, int);
+void biz_intercept_callback(int x, int y, int isaline)
+{
+  if (intercept_callback_cb)
+    intercept_callback_cb(x, y, isaline);
+}
+ECL_EXPORT void dsda_set_intercept_callback(ECL_ENTRY void (*cb)(int, int, int))
+{
+  intercept_callback_cb = cb;
 }
 
 // showing errors to user
@@ -465,6 +501,9 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
 
   displayplayer = consoleplayer = settings->DisplayPlayer;
 
+  // Enabling DSDA output, for debugging
+  enableOutput = 1;
+
   // Initializing DSDA core
   headlessMain(argc, argv);
   printf("DSDA Initialized\n");
@@ -481,9 +520,6 @@ ECL_EXPORT int dsda_init(struct InitSettings *settings, int argc, char **argv)
   printf("Prevent Level Exit:  %d\n", preventLevelExit);
   printf("Prevent Game End:    %d\n", preventGameEnd);
   printf("Compatibility Level: %d\n", compatibility_level);
-
-  // Enabling DSDA output, for debugging
-  enableOutput = 1;
 
   return 1;
 }
@@ -572,67 +608,70 @@ ECL_EXPORT int dsda_add_wad_file(const char *filename, const int size, ECL_ENTRY
 // TODO: expose sectors and linedefs like xdre does (but better)
 ECL_EXPORT char dsda_read_memory_array(int type, uint32_t addr)
 {
-  if (type == ARRAY_PLAYERS)
+  switch (type)
   {
-    if (addr >= g_maxplayers * MEMORY_PADDED_PLAYER)
+    case ARRAY_PLAYERS:
+    {
+      if (addr >= g_maxplayers * MEMORY_PADDED_PLAYER)
+        return MEMORY_OUT_OF_BOUNDS;
+
+      int index  = addr / MEMORY_PADDED_PLAYER;
+      int offset = addr % MEMORY_PADDED_PLAYER;
+
+      if (!playeringame[index] || offset >= sizeof(player_t))
+        return MEMORY_NULL;
+
+      player_t *player = &players[index];
+
+      char *data = (char *)player + offset;  
+      return *data;
+    }
+    case ARRAY_THINGS:
+    {
+      if (addr >= thinker_count * MEMORY_PADDED_THING)
+        return MEMORY_OUT_OF_BOUNDS;
+
+      int index    = addr / MEMORY_PADDED_THING;
+      int offset   = addr % MEMORY_PADDED_THING;
+      mobj_t *mobj = mobj_ptrs[index];
+
+      if (mobj == NULL || offset >= sizeof(mobj_t))
+        return MEMORY_NULL;
+
+      char *data = (char *)mobj + offset;  
+      return *data;
+    }
+    case ARRAY_LINES:
+    {
+      if (addr >= numlines * MEMORY_PADDED_LINE)
+        return MEMORY_OUT_OF_BOUNDS;
+
+      int index    = addr / MEMORY_PADDED_LINE;
+      int offset   = addr % MEMORY_PADDED_LINE;
+      line_t *line = &lines[index];
+
+      if (line == NULL || offset >= sizeof(line_t))
+        return MEMORY_NULL;
+
+      char *data = (char *)line + offset;
+      return *data;
+    }
+    case ARRAY_SECTORS:
+    {
+      if (addr >= numsectors * MEMORY_PADDED_SECTOR)
+        return MEMORY_OUT_OF_BOUNDS;
+
+      int index    = addr / MEMORY_PADDED_SECTOR;
+      int offset   = addr % MEMORY_PADDED_SECTOR;
+      sector_t *sector = &sectors[index];
+
+      if (sector == NULL || offset >= sizeof(sector_t))
+        return MEMORY_NULL;
+
+      char *data = (char *)sector + offset;  
+      return *data;
+    }
+    default:
       return MEMORY_OUT_OF_BOUNDS;
-
-    int index  = addr / MEMORY_PADDED_PLAYER;
-    int offset = addr % MEMORY_PADDED_PLAYER;
-
-    if (!playeringame[index] || offset >= sizeof(player_t))
-      return MEMORY_NULL;
-
-    player_t *player = &players[index];
-
-    char *data = (char *)player + offset;  
-    return *data;
   }
-  else if (type == ARRAY_THINGS)
-  {
-    if (addr >= thinker_count * MEMORY_PADDED_THING)
-      return MEMORY_OUT_OF_BOUNDS;
-
-    int index    = addr / MEMORY_PADDED_THING;
-    int offset   = addr % MEMORY_PADDED_THING;
-    mobj_t *mobj = mobj_ptrs[index];
-
-    if (mobj == NULL || offset >= sizeof(mobj_t))
-      return MEMORY_NULL;
-
-    char *data = (char *)mobj + offset;  
-    return *data;
-  }
-  else if (type == ARRAY_LINES)
-  {
-    if (addr >= numlines * MEMORY_PADDED_LINE)
-      return MEMORY_OUT_OF_BOUNDS;
-
-    int index    = addr / MEMORY_PADDED_LINE;
-    int offset   = addr % MEMORY_PADDED_LINE;
-    line_t *line = &lines[index];
-
-    if (line == NULL || offset >= sizeof(line_t))
-      return MEMORY_NULL;
-
-    char *data = (char *)line + offset;
-    return *data;
-  }
-  else if (type == ARRAY_SECTORS)
-  {
-    if (addr >= numsectors * MEMORY_PADDED_SECTOR)
-      return MEMORY_OUT_OF_BOUNDS;
-
-    int index    = addr / MEMORY_PADDED_SECTOR;
-    int offset   = addr % MEMORY_PADDED_SECTOR;
-    sector_t *sector = &sectors[index];
-
-    if (sector == NULL || offset >= sizeof(sector_t))
-      return MEMORY_NULL;
-
-    char *data = (char *)sector + offset;  
-    return *data;
-  }
-  else
-    return MEMORY_OUT_OF_BOUNDS;
 }

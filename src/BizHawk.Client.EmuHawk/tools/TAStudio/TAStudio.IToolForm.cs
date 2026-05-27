@@ -25,10 +25,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateProgressBar()
 		{
-			if (_seekingTo != -1)
+			if (SeekingTo != -1)
 			{
 				int diff = Emulator.Frame - _seekStartFrame;
-				int unit = _seekingTo - _seekStartFrame;
+				int unit = SeekingTo - _seekStartFrame;
 				double progress = 0;
 
 				if (diff != 0 && unit != 0)
@@ -81,9 +81,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			bool refreshNeeded = TasView.IsPartiallyVisible(Emulator.Frame) ||
-				TasView.IsPartiallyVisible(_lastRefresh) ||
-				TasView.RowCount != CurrentTasMovie.InputLogLength + 1;
+			bool refreshNeeded = IsRowVisibleAnyRoll(Emulator.Frame) ||
+				IsRowVisibleAnyRoll(_lastRefresh) ||
+				_inputRolls[0].RowCount != CurrentTasMovie.InputLogLength + 1;
 			if (Settings.AutoadjustInput)
 			{
 				//refreshNeeded = AutoAdjustInput();
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.TasSession.UpdateValues(Emulator.Frame, CurrentTasMovie.Branches.Current);
 			MaybeFollowCursor();
 
-			if (Settings.AutoPause && _seekingTo == -1)
+			if (Settings.AutoPause && SeekingTo == -1)
 			{
 				if (_doPause && CurrentTasMovie.IsAtEnd()) MainForm.PauseEmulator();
 				_doPause = !CurrentTasMovie.IsAtEnd();
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void FastUpdateAfter()
 		{
-			if (_seekingTo != -1 && Emulator.Frame >= _seekingTo)
+			if (SeekingTo != -1 && Emulator.Frame >= SeekingTo)
 			{
 				bool smga = _shouldMoveGreenArrow;
 				StopSeeking();
@@ -157,12 +157,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (CurrentTasMovie?.Changes is not true) return true;
-			var result = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
+			var shouldSaveResult = DialogController.DoWithTempMute(() => this.ModalMessageBox3(
 				caption: "Closing with Unsaved Changes",
 				icon: EMsgBoxIcon.Question,
 				text: $"Save {WindowTitleStatic} project?"));
-			if (result is null) return false;
-			if (result.Value) SaveTas();
+			if (shouldSaveResult == true)
+			{
+				TryAgainResult saveResult = this.DoWithTryAgainBox(() => SaveTas(), "Failed to save movie.");
+				return saveResult != TryAgainResult.Canceled;
+			}
+			if (shouldSaveResult is null) return false;
 			else CurrentTasMovie.ClearChanges();
 			return true;
 		}

@@ -398,11 +398,6 @@ namespace BizHawk.Emulation.Common
 				["C Left"] = 'l',
 				["C Right"] = 'r',
 
-				["A Up"] = 'U',
-				["A Down"] = 'D',
-				["A Left"] = 'L',
-				["A Right"] = 'R',
-
 				["DPad U"] = 'U',
 				["DPad D"] = 'D',
 				["DPad L"] = 'L',
@@ -1024,12 +1019,12 @@ namespace BizHawk.Emulation.Common
 				["Right Stick Left / Right"] = "rsX",
 				["Right Stick Up / Down"] = "rsY",
 				["Left Stick, Left / Right"] = "lsX",
-				["Left Stick, Fore / Back"] = "lsZ",
+				["Left Stick, Up / Down"] = "lsZ",
 				["Right Stick, Left / Right"] = "rsX",
-				["Right Stick, Fore / Back"] = "rsZ",
+				["Right Stick, Up / Down"] = "rsZ",
 				["Motion Left / Right"] = "mX",
 				["Motion Up / Down"] = "mY",
-				["Twist | / |"] = "Twist",
+				["Twist Ccwise / Cwise"] = "Twist",
 			},
 			[VSystemID.Raw.TIC80] = new()
 			{

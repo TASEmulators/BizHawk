@@ -136,7 +136,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[BizImport(cc)]
 		public abstract bool BizAdvance(IntPtr ctx, Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
-			long time, short gyrox, short gyroy, short gyroz, byte luma);
+			long time, short gyrox, short gyroy, short gyroz, byte luma, out int cycles);
+
+		[BizImport(cc)]
+		public abstract bool BizSubAdvance(IntPtr ctx, Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
+			long time, short gyrox, short gyroy, short gyroz, byte luma, ref int cycles);
 
 		[BizImport(cc)]
 		public abstract void BizSetPalette(IntPtr ctx, int[] palette);
@@ -184,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public abstract void BizSetRegister(IntPtr ctx, int index, int value);
 
 		[BizImport(cc)]
-		public abstract ulong BizGetGlobalTime(IntPtr ctx);
+		public abstract int BizGetCallbackCycleOffset(IntPtr ctx);
 
 		[BizImport(cc)]
 		public abstract void BizWriteBus(IntPtr ctx, uint addr, byte val);

@@ -149,9 +149,21 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 			ref PackedRenderInfo renderInfo);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void random_cb(int pr_class);
+		public delegate void random_cb(string info);
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void dsda_set_random_callback(random_cb cb);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void intercept_cb(int x, int y, int isaline);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void dsda_set_intercept_callback(intercept_cb cb);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void line_cb(long line, long thing);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void dsda_set_use_callback(line_cb cb);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void dsda_set_cross_callback(line_cb cb);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void error_cb(string error);

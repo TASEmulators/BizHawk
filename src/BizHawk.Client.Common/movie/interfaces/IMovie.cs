@@ -34,6 +34,13 @@ namespace BizHawk.Client.Common
 	public interface IMovie : IBasicMovieInfo
 	{
 		/// <summary>
+		/// When not null, methods that edit the movie will only affect buttons or axis values present in this definition,
+		/// with the exceoption of adding or removing default-value frames at the end of the movie.
+		/// The instance must be made immutable before assignment.
+		/// </summary>
+		ControllerDefinition/*?*/ ActiveControllerInputs { get; set; }
+
+		/// <summary>
 		/// Gets the current movie mode
 		/// </summary>
 		MovieMode Mode { get; }
@@ -41,6 +48,8 @@ namespace BizHawk.Client.Common
 		bool IsCountingRerecords { get; set; }
 
 		bool Changes { get; }
+
+		event EventHandler ChangesChanged;
 
 		/// <summary>
 		/// Gets the actual length of the input log, should only be used by code that needs the input log length
@@ -74,12 +83,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Forces the creation of a backup file of the current movie state
 		/// </summary>
-		void SaveBackup();
+		FileWriteResult SaveBackup();
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
-		void Save();
+		FileWriteResult Save();
 
 		/// <summary>updates the <see cref="HeaderKeys.CycleCount"/> and <see cref="HeaderKeys.ClockRate"/> headers from the currently loaded core</summary>
 		void SetCycleValues();
@@ -161,6 +170,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Instructs the movie to remove all input from its input log starting with the input at frame.
+		/// If <see cref="ActiveControllerInputs"/> is not null, this might not actually change the length of the movie.
 		/// </summary>
 		/// <param name="frame">The frame at which to truncate</param>
 		void Truncate(int frame);

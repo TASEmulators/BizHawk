@@ -1,3 +1,10 @@
+# if running from default powershell and not dotnet pwsh,
+# set encoding param before running the scipt:
+# $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+#
+# otherwise just run:
+# .\dump-symbols.ps1 > symbols.lua
+
 param(
 	[Parameter(Position = 0)]
 	[string] $Path = '../../../dll/dsda.wbx.zst',

@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			//Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
-		private void TraceView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void TraceView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index < _instructions.Count)

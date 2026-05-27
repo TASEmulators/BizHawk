@@ -245,32 +245,19 @@ namespace BizHawk.Client.Common
 		}
 
 		// Shenanigans
-		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game)
+		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, string coreName)
 		{
-			var name = game.FilesystemSafeName();
-			name = Path.GetDirectoryName(name);
-			if (name is null) name = string.Empty;
-			else if (name.Length is 0) name = game.FilesystemSafeName();
-			var pathEntry = collection[game.System, "Save RAM"]
-				?? collection[game.System, "Base"];
+			var pathEntry = collection[VSystemID.Raw.Libretro, "Save RAM"];
 
-			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name);
+			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, VSystemID.Raw.Libretro), coreName);
 		}
 
 		// Shenanigans
-		public static string RetroSystemAbsolutePath(this PathEntryCollection collection, IGameInfo game)
+		public static string RetroSystemAbsolutePath(this PathEntryCollection collection, string coreName)
 		{
-			var name = game.FilesystemSafeName();
-			name = Path.GetDirectoryName(name);
-			if (string.IsNullOrEmpty(name))
-			{
-				name = game.FilesystemSafeName();
-			}
+			var pathEntry = collection[VSystemID.Raw.Libretro, "System"];
 
-			var pathEntry = collection[game.System, "System"]
-				?? collection[game.System, "Base"];
-
-			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name);
+			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, VSystemID.Raw.Libretro), coreName);
 		}
 
 		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)

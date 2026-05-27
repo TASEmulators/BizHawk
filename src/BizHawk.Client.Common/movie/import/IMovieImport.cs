@@ -67,7 +67,11 @@ namespace BizHawk.Client.Common
 						Result.Movie.Hash = hash;
 				}
 
-				Result.Movie.Save();
+				if (Result.Movie.Save().IsError)
+				{
+					Result.Errors.Add($"Could not write the file {newFileName}");
+					return Result;
+				}
 			}
 
 			return Result;

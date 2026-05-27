@@ -1344,9 +1344,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			var data = Clipboard.GetDataObject();
 			PasteMenuItem.Enabled = _domain.Writable && AreAnyHighlighted
-				&& data?.GetDataPresent(DataFormats.Text) is true;
+				&& Clipboard.ContainsText();
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
@@ -1406,14 +1405,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			var data = Clipboard.GetDataObject();
-
-			if (data == null || !data.GetDataPresent(DataFormats.Text))
-			{
-				return;
-			}
-
-			var clipboardRaw = (string)data.GetData(DataFormats.Text);
+			var clipboardRaw = Clipboard.GetText();
+			if (string.IsNullOrEmpty(clipboardRaw)) return;
 			var hex = clipboardRaw.OnlyHex();
 
 			var numBytes = hex.Length / 2;
@@ -1506,7 +1499,15 @@ namespace BizHawk.Client.EmuHawk
 					Checked = _domain.Name == _romDomain.Name,
 				};
 
-				MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+				var n = MemoryDomains.Count - 1;
+				if (MemoryDomains[n] is RegistersMemoryDomain)
+				{
+					MemoryDomainsMenuItem.DropDownItems.Insert(n, new ToolStripSeparator());
+				}
+				else
+				{
+					MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+				}
 				MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
 
 				romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
@@ -1883,8 +1884,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
 		{
-			var data = Clipboard.GetDataObject();
-
 			CopyContextItem.Visible = AddToRamWatchContextItem.Visible = AreAnyHighlighted;
 
 			FreezeContextItem.Visible = PokeContextItem.Visible
@@ -1894,9 +1893,9 @@ namespace BizHawk.Client.EmuHawk
 					= AreAnyHighlighted && _domain.Writable;
 
 			UnfreezeAllContextItem.Visible = MainForm.CheatList.AnyActive;
-			PasteContextItem.Visible = _domain.Writable && data != null && data.GetDataPresent(DataFormats.Text);
+			PasteContextItem.Visible = _domain.Writable && Clipboard.ContainsText();
 
-			ContextSeparator1.Visible = AreAnyHighlighted || data?.GetDataPresent(DataFormats.Text) is true;
+			ContextSeparator1.Visible = AreAnyHighlighted || Clipboard.ContainsText();
 
 			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{

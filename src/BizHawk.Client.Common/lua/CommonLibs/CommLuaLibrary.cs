@@ -171,6 +171,7 @@ namespace BizHawk.Client.Common
 			=> APIs.Comm.MMF.ReadFromFile(mmf_filename, expectedSize);
 
 		[LuaMethod("mmfReadBytes", "Reads bytes from a memory mapped file")]
+		[return: LuaZeroIndexed]
 		public LuaTable MmfReadBytes(string mmf_filename, int expectedSize)
 			=> _th.ListToTable(APIs.Comm.MMF.ReadBytesFromFile(mmf_filename, expectedSize), indexFrom: 0);
 

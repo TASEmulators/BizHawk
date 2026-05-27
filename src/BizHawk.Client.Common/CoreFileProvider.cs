@@ -27,23 +27,26 @@ namespace BizHawk.Client.Common
 		}
 
 		// Poop
-		public string GetRetroSaveRAMDirectory(IGameInfo game)
-			=> _pathEntries.RetroSaveRamAbsolutePath(game);
+		public string GetRetroSaveRAMDirectory(string corePath)
+			=> _pathEntries.RetroSaveRamAbsolutePath(Path.GetFileNameWithoutExtension(corePath));
 
 		// Poop
-		public string GetRetroSystemPath(IGameInfo game)
-			=> _pathEntries.RetroSystemAbsolutePath(game);
+		public string GetRetroSystemPath(string corePath)
+			=> _pathEntries.RetroSystemAbsolutePath(Path.GetFileNameWithoutExtension(corePath));
 
 		public string GetUserPath(string sysID, bool temp)
 		{
 			if (temp)
 			{
 				var tempUserPath = Path.Combine(Path.GetTempPath(), $"biz-temp{sysID}user");
-				if (Directory.Exists(tempUserPath))
+				try
 				{
 					Directory.Delete(tempUserPath, true);
 				}
-
+				catch (DirectoryNotFoundException)
+				{
+					// didn't exist in the first place, good
+				}
 				return tempUserPath;
 			}
 

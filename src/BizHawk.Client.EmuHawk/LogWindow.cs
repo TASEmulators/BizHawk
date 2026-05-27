@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			s = s.Trim();
-			if (!string.IsNullOrWhiteSpace(s)) Clipboard.SetText(s, TextDataFormat.Text);
+			if (!string.IsNullOrWhiteSpace(s)) Clipboard.SetText(s);
 		}
 
 		private void ButtonCopyAll_Click(object sender, EventArgs e)
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var s in _lines)
 					sb.AppendLine(s);
 			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+				Clipboard.SetText(sb.ToString());
 		}
 
 		private void HideShowGameDbButton()

@@ -150,7 +150,6 @@
 			this.RemoveMarkerButton.Name = "RemoveMarkerButton";
 			this.RemoveMarkerButton.Size = new System.Drawing.Size(24, 24);
 			this.RemoveMarkerButton.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.RemoveMarkerButton, "Remove Marker");
 			this.RemoveMarkerButton.UseVisualStyleBackColor = true;
 			this.RemoveMarkerButton.Click += new System.EventHandler(this.RemoveMarkerToolStripMenuItem_Click);
 			// 

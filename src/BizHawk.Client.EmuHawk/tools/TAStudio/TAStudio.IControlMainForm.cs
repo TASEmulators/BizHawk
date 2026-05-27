@@ -59,13 +59,10 @@
 
 		public void StopMovie(bool suppressSave)
 		{
-			if (!MainForm.GameIsClosing)
-			{
-				Activate();
-				_suppressAskSave = suppressSave;
-				StartNewTasMovie();
-				_suppressAskSave = false;
-			}
+			Activate();
+			_suppressAskSave = suppressSave;
+			StartNewTasMovie();
+			_suppressAskSave = false;
 		}
 
 		public bool WantsToControlRewind { get; private set; } = true;
@@ -82,7 +79,7 @@
 			WheelSeek(rewindStep);
 			// we need a frame advance if a state was loaded (frame has changed)
 			// and also we are seeking (not already at the target frame)
-			return Emulator.Frame != frame && _seekingTo != -1;
+			return Emulator.Frame != frame && SeekingTo != -1;
 		}
 
 		public bool WantsToControlRestartMovie { get; }

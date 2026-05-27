@@ -77,7 +77,9 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				initialDirectory = _pathEntries.RomAbsolutePath(systemName);
+#pragma warning disable RS0030 // passes the dir on to `ShowFileOpenDialog` ctor
 				if (!Directory.Exists(initialDirectory))
+#pragma warning restore RS0030
 				{
 					initialDirectory = _pathEntries.RomAbsolutePath();
 					Directory.CreateDirectory(initialDirectory);

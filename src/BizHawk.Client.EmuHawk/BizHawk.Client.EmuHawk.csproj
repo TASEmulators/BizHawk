@@ -14,11 +14,10 @@
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Net.Http" />
 		<Reference Include="PresentationFramework" />
-		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="SharpCompress" PrivateAssets="all" NoWarn="NU1902" />
 		<Reference Include="PcxFileTypePlugin.HawkQuantizer" HintPath="$(ProjectDir)../../References/PcxFileTypePlugin.HawkQuantizer.dll" Private="true" />
 		<Reference Include="NLua, Version=1.4.1.0, Culture=neutral, PublicKeyToken=null, processorArchitecture=MSIL" SpecificVersion="false" HintPath="$(ProjectDir)../../References/NLua.dll" Private="true" />
 	</ItemGroup>
@@ -449,9 +448,9 @@
 		<Compile Update="tools/TAStudio/MarkerControl.cs" SubType="UserControl" />
 		<Compile Update="tools/TAStudio/MarkerControl.Designer.cs" DependentUpon="MarkerControl.cs" />
 		<EmbeddedResource Update="tools/TAStudio/MarkerControl.resx" DependentUpon="MarkerControl.cs" />
-		<Compile Update="tools/TAStudio/PatternsForm.cs" SubType="Form" />
-		<Compile Update="tools/TAStudio/PatternsForm.Designer.cs" DependentUpon="PatternsForm.cs" />
-		<EmbeddedResource Update="tools/TAStudio/PatternsForm.resx" DependentUpon="PatternsForm.cs" />
+		<Compile Update="tools/TAStudio/TAStudioSettingsForm.cs" SubType="Form" />
+		<Compile Update="tools/TAStudio/TAStudioSettingsForm.Designer.cs" DependentUpon="TAStudioSettingsForm.cs" />
+		<EmbeddedResource Update="tools/TAStudio/TAStudioSettingsForm.resx" DependentUpon="TAStudioSettingsForm.cs" />
 		<Compile Update="tools/TAStudio/PlaybackBox.cs" SubType="UserControl" />
 		<Compile Update="tools/TAStudio/PlaybackBox.Designer.cs" DependentUpon="PlaybackBox.cs" />
 		<EmbeddedResource Update="tools/TAStudio/PlaybackBox.resx" DependentUpon="PlaybackBox.cs" />

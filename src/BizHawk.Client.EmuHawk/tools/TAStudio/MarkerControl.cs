@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			toolTip1.SetToolTip(AddMarkerButton, $"Add Marker to Emulated Frame ({config.HotkeyBindings["Set Marker"]})");
 			toolTip1.SetToolTip(AddMarkerWithTextButton, $"Add Marker with Text to Emulated Frame ({config.HotkeyBindings["Set Marker"]} {config.HotkeyBindings["Set Marker"]})");
+			toolTip1.SetToolTip(RemoveMarkerButton, $"Remove Marker ({config.HotkeyBindings["Delete Marker"]} on marker's frame)");
 		}
 
 		private void SetupColumns()
@@ -54,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll MarkerInputRoll => MarkerView;
 
-		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
+		private void MarkerView_QueryItemBkColor(InputRoll sender, int index, RollColumn column, ref Color color)
 		{
 			// This could happen if the control is told to redraw while Tastudio is rebooting, as we would not have a TasMovie just yet
 			if (Tastudio.CurrentTasMovie is null) return;
@@ -86,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void MarkerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void MarkerView_QueryItemText(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 

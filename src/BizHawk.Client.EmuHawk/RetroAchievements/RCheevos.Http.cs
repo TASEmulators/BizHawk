@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			protected void DisposeWithoutWait()
 			{
-				if (this is FailedRCheevosRequest) throw new InvalidOperationException();
+				if (this is not FailedRCheevosRequest) throw new InvalidOperationException();
 				_completionEvent.Dispose();
 				_isDisposed = true;
 			}

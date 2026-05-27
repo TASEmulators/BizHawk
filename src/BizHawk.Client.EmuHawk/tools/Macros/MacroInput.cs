@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ReplaceBox.Enabled = OverlayBox.Enabled = PlaceNum.Enabled = CurrentMovie is ITasMovie;
 
-			var main = new MovieZone(Emulator, Tools, MovieSession, 0, CurrentMovie.InputLogLength)
+			var main = new MovieZone(CurrentMovie, 0, CurrentMovie.InputLogLength)
 			{
 				Name = "Entire Movie",
 			};
@@ -112,6 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
+			// Intentionally not updating this to use FileWriter because this tool is going to be removed later.
 			foreach (var zone in _unsavedZones)
 			{
 				SaveMacroAs(_zones[zone]);
@@ -128,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var newZone = new MovieZone(Emulator, Tools, MovieSession, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
+			var newZone = new MovieZone(CurrentMovie, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
 			{
 				Name = $"Zone {_zones.Count}",
 			};
@@ -148,7 +149,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_selecting = true;
-			PlaceNum.Value = SelectedZone.Start;
 			ReplaceBox.Checked = SelectedZone.Replace;
 			NameTextbox.Text = SelectedZone.Name;
 			OverlayBox.Checked = SelectedZone.Overlay;
@@ -164,16 +164,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SelectedZone.Name = NameTextbox.Text;
 			ZonesList.Items[ZonesList.SelectedIndex] = $"{SelectedZone.Name} - length: {SelectedZone.Length}";
-		}
-
-		private void PlaceNum_ValueChanged(object sender, EventArgs e)
-		{
-			if (SelectedZone == null || _selecting)
-			{
-				return;
-			}
-
-			SelectedZone.Start = (int)PlaceNum.Value;
 		}
 
 		private void ReplaceBox_CheckedChanged(object sender, EventArgs e)
@@ -208,12 +198,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (CurrentMovie is not ITasMovie)
-			{
-				SelectedZone.Start = Emulator.Frame;
-			}
-
-			SelectedZone.PlaceZone(CurrentMovie, Config);
+			SelectedZone.PlaceZone(CurrentMovie, CurrentMovie is ITasMovie ? (int)PlaceNum.Value : Emulator.Frame);
 		}
 
 		private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -250,7 +235,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DummyLoadMacro(string path)
 		{
-			MovieZone loadZone = new MovieZone(path, MainForm, Emulator, MovieSession, Tools);
+			MovieZone loadZone = MovieZone.Load(path, MainForm, CurrentMovie);
+			if (loadZone == null) return;
 			_zones.Add(loadZone);
 			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}
@@ -265,43 +251,26 @@ namespace BizHawk.Client.EmuHawk
 		private bool SaveMacroAs(MovieZone macro)
 		{
 			string suggestedFolder = SuggestedFolder(Config, Game);
-
-			// Create directory?
-			bool create = false;
-			if (!Directory.Exists(suggestedFolder))
-			{
-				Directory.CreateDirectory(suggestedFolder);
-				create = true;
-			}
-
+			_ = Directory.CreateDirectory(suggestedFolder);
 			var result = this.ShowFileSaveDialog(
 				filter: MacrosFSFilterSet,
 				initDir: suggestedFolder,
 				initFileName: macro.Name);
-			if (result is null)
-			{
-				if (create)
-				{
-					Directory.Delete(suggestedFolder);
-				}
-
-				return false;
-			}
-
-			macro.Save(result);
+			if (result is null) return false;
+			macro.Save(result); // ignore errors: This tool is going to be removed.
 			Config!.RecentMacros.Add(result);
 
 			return true;
 		}
 
-		private MovieZone LoadMacro(IEmulator emulator = null, ToolManager tools = null)
+		private MovieZone LoadMacro()
 		{
 			var result = this.ShowFileOpenDialog(
 				filter: MacrosFSFilterSet,
 				initDir: SuggestedFolder(Config, Game));
 			if (result is null) return null;
 			Config!.RecentMacros.Add(result);
-			return new MovieZone(result, MainForm, emulator ?? Emulator, MovieSession, tools ?? Tools);
+			return MovieZone.Load(result, MainForm, CurrentMovie);
 		}
 	}
 }

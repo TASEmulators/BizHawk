@@ -1,17 +1,16 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public interface ITasMovie : IMovie, INotifyPropertyChanged, IDisposable
+	public interface ITasMovie : IMovie, IDisposable
 	{
 		bool BindMarkersToInput { get; set; }
 
 		IMovieChangeLog ChangeLog { get; }
 		IStateManager TasStateManager { get; set; }
-		Func<string> InputRollSettingsForSave { get; set; }
-		string InputRollSettings { get; }
+		Func<string> ClientSettingsForSave { get; set; }
+		string LoadedClientSettings { get; }
 		ITasMovieRecord this[int index] { get; }
 		ITasSession TasSession { get; }
 		TasMovieMarkerList Markers { get; }
@@ -28,7 +27,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		Action<int> GreenzoneInvalidated { get; set; }
 
-		string DisplayValue(int frame, string buttonName);
+		string DisplayValue(int frame, string buttonName, bool defaultAxisAsBlank);
 		void FlagChanges();
 		void ClearChanges();
 
@@ -55,11 +54,12 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Remove all frames between removeStart and removeUpTo (excluding removeUpTo).
+		/// If <see cref="IMovie.ActiveControllerInputs"/> is not null, this will not actually change the length of the movie.
 		/// </summary>
 		/// <param name="removeStart">The first frame to remove.</param>
 		/// <param name="removeUpTo">The frame after the last frame to remove.</param>
 		void RemoveFrames(int removeStart, int removeUpTo);
-		void SetFrame(int frame, string source);
+		void PokeFrame(int frame, string source);
 
 		void LoadBranch(TasBranch branch);
 

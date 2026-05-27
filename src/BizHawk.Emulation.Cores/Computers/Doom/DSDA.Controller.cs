@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					}
 
 					controller
-						.AddAxis($"P{port} Weapon Select", 0.RangeTo(7), 0)
+						.AddAxis($"P{port} Weapon Select",  0.RangeTo(7), 0)
 						.AddAxis($"P{port} Mouse Run", (-128).RangeTo(127), 0)
 						// current max raw mouse delta is 180
 						.AddAxis($"P{port} Mouse Turn", (longtics ? -180 : -128)
@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 					if (settings.InputFormat is not ControllerType.Doom)
 					{
 						controller
-							.AddAxis($"P{port} Look", (-7).RangeTo(8), 0)
-							.AddAxis($"P{port} Fly",  (-7).RangeTo(8), 0)
+							.AddAxis($"P{port} Look",      (-7).RangeTo(8), 0)
+							.AddAxis($"P{port} Fly",       (-7).RangeTo(8), 0)
 							.AddAxis($"P{port} Use Artifact", 0.RangeTo(10), 0);
 					}
 
@@ -117,10 +117,10 @@ namespace BizHawk.Emulation.Cores.Computers.Doom
 
 			controller
 				.AddAxis($"Camera Mode",           (-1).RangeTo(2),  -1)
-				.AddAxis($"Camera Run Speed",    (-128).RangeTo(127), 0)
-				.AddAxis($"Camera Strafe Speed", (-128).RangeTo(127), 0)
-				.AddAxis($"Camera Turn Speed",   (-128).RangeTo(127), 0)
-				.AddAxis($"Camera Fly",          (-128).RangeTo(127), 0);
+				.AddAxis($"Camera Run Speed",    (int.MinValue+1).RangeTo(int.MaxValue), 0)
+				.AddAxis($"Camera Strafe Speed", (int.MinValue+1).RangeTo(int.MaxValue), 0)
+				.AddAxis($"Camera Turn Speed",             (-128).RangeTo(127), 0)
+				.AddAxis($"Camera Fly",          (int.MinValue+1).RangeTo(int.MaxValue), 0);
 
 			controller.BoolButtons.Add("Camera Reset");
 

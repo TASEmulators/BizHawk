@@ -56,6 +56,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns a zero-indexed table containing the read values (an array of bytes.)")]
+		[return: LuaZeroIndexed]
 		public LuaTable ReadByteRange(long addr, int length)
 			=> _th.ListToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName), indexFrom: 0);
 
@@ -66,6 +67,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local bytes = mainmemory.read_bytes_as_dict(0x100, 30);")]
 		[LuaMethod("read_bytes_as_dict", "Reads length bytes starting at addr into a dict-like table (where the keys are the addresses, relative to the start of the main memory).")]
+		[return: LuaZeroIndexed]
 		public LuaTable ReadBytesAsDict(long addr, int length)
 			=> _th.MemoryBlockToTable(APIs.Memory.ReadByteRange(addr, length, MainMemName), addr);
 
@@ -86,7 +88,7 @@ namespace BizHawk.Client.Common
 
 		[LuaDeprecatedMethod]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
-		public void WriteByteRange(LuaTable memoryblock)
+		public void WriteByteRange([LuaZeroIndexed] LuaTable memoryblock)
 		{
 #if true
 			WriteBytesAsDict(memoryblock);
@@ -121,7 +123,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("mainmemory.write_bytes_as_dict({ [0x100] = 0xAB, [0x104] = 0xCD, [0x106] = 0x12, [0x107] = 0x34, [0x108] = 0xEF });")]
 		[LuaMethod("write_bytes_as_dict", "Writes bytes at arbitrary addresses (the keys of the given table are the addresses, relative to the start of the main memory).")]
-		public void WriteBytesAsDict(LuaTable addrMap)
+		public void WriteBytesAsDict([LuaZeroIndexed] LuaTable addrMap)
 		{
 			foreach (var (addr, v) in addrMap)
 			{
