@@ -12,7 +12,7 @@ if ! cd "$(dirname -- "$(realpath -- "$0")")"; then
 	exit 1
 fi
 if [ "$1" = '--install' ]; then
-	cat >"${XDG_DATA_HOME:-"$HOME/.local/share"}/applications/bizhawk.s"h <<-EOF
+	cat >"${XDG_DATA_HOME:-"$HOME/.local/share"}/applications/bizhawk.desktop" <<-EOF
 		[Desktop Entry]
 		Categories=Game
 		Comment=A multi-system emulator.
