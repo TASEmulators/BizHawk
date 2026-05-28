@@ -3,7 +3,7 @@ set -e
 case "$0" in
 	*"/"*);;
 	*)
-		printf %s\\n "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?" >&2
+		printf "I don't know where I am! Could you run me as \"/path/to/EmuHawkMono.sh\"?\\n" >&2
 		# shellcheck disable=SC2317
 		return 1 2>/dev/null || exit 1
 esac
