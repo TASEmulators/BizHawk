@@ -20,7 +20,7 @@ if [ "$1" = '--install' ]; then
 		$(
 		# "application/octet-stream" is provided since many ROMs don't actually have a
 		# dedicated mimetype.
-		)MimeType=application/octet-stream;vnd.nintendo.snes.rom;x-atari-2600-rom;x-atari-7800-rom;x-atari-lynx-rom;x-gameboy-color-rom;x-gameboy-rom;x-gamegear-rom;x-gba-rom;x-genesis-32x-rom;x-genesis-rom;x-msx-rom;x-n64-rom;x-neo-geo-pocket-color-rom;x-neo-geo-pocket-rom;x-nes-rom;x-nintendo-3ds-rom;x-nintendo-ds-rom;x-pc-engine-rom;x-saturn-rom;x-sega-cd-rom;x-sg1000-rom;x-sms-rom;x-virtual-boy-rom;
+		)MimeType=application/octet-stream;application/vnd.nintendo.snes.rom;application/x-atari-2600-rom;application/x-atari-7800-rom;application/x-atari-lynx-rom;application/x-dreamcast-rom;application/x-gameboy-color-rom;application/x-gameboy-rom;application/x-gamegear-rom;application/x-gba-rom;application/x-genesis-32x-rom;application/x-genesis-rom;application/x-msx-rom;application/x-n64-rom;application/x-neo-geo-pocket-color-rom;application/x-neo-geo-pocket-rom;application/x-nes-rom;application/x-nintendo-3ds-rom;application/x-nintendo-ds-rom;application/x-pc-engine-rom;application/x-saturn-rom;application/x-sega-cd-rom;application/x-sg1000-rom;application/x-sms-rom;application/x-virtual-boy-rom;
 		Name=BizHawk
 		Path=$PWD
 		Type=Application
