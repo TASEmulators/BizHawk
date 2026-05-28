@@ -5,14 +5,14 @@ if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | head -n1 | cut -c17- | tr A-Z a-z)" in
 		"arch"|"artix"|"manjarolinux") libpath="/usr/lib";;
 		"fedora"|"gentoo"|"nobaralinux"|"opensuse") libpath="/usr/lib64";;
-		"nixos") libpath="/usr/lib"; printf "Running on NixOS? Why aren't you using the Nix expr?\n";;
+		"nixos") libpath="/usr/lib"; printf "Running on NixOS? Why aren't you using the Nix expr?\n" >&2;;
 		"debian"|"linuxmint"|"pop"|"ubuntu") libpath="/usr/lib/x86_64-linux-gnu";;
 	esac
 else
-	printf "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)\n"
+	printf "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)\n" >&2
 fi
 if [ -z "$libpath" ]; then
-	printf "%s\n" "Unknown distro, assuming system-wide libraries are in /usr/lib..."
+	printf "%s\n" "Unknown distro, assuming system-wide libraries are in /usr/lib..." >&2
 	libpath="/usr/lib"
 fi
 export LD_LIBRARY_PATH="$PWD/dll:$PWD:$libpath"
