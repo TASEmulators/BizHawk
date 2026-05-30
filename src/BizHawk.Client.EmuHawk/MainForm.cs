@@ -1658,12 +1658,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool RunLibretroCoreChooser()
 		{
 			string initFileName = null;
-			string initDir;
+			string initDir = null;
 			if (Config.LibretroCore is not null)
 			{
 				(initDir, initFileName) = Config.LibretroCore.SplitPathToDirAndFile();
 			}
-			else
+			if (!Directory.Exists(initDir))
 			{
 				initDir = Config.PathEntries.AbsolutePathForType(VSystemID.Raw.Libretro, "Cores");
 				Directory.CreateDirectory(initDir);
