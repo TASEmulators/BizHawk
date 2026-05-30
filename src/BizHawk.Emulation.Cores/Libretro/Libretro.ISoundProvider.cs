@@ -16,6 +16,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private void SetupResampler(double sps)
 		{
+			if (sps == 0)
+			{
+				_serviceProvider.Unregister<ISoundProvider>();
+				return;
+			}
 			_blipL = new(OUT_SAMPLE_RATE);
 			_blipL.SetRates(sps, OUT_SAMPLE_RATE);
 			_blipR = new(OUT_SAMPLE_RATE);
