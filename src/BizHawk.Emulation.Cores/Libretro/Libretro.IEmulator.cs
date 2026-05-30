@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			FrameAdvancePrep(controller);
+			bridge.LibretroBridge_SetFrameTime(cbHandler);
 			api.retro_run();
 			FrameAdvancePost(render, renderSound);
 			return true;

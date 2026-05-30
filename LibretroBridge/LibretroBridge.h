@@ -398,3 +398,14 @@ typedef void (*retro_log_printf_t)(RETRO_LOG level, const char* fmt, ...);
 struct retro_log_callback {
 	retro_log_printf_t log;
 };
+
+typedef int64_t retro_usec_t;
+typedef void (*retro_frame_time_callback_t)(retro_usec_t usec);
+struct retro_frame_time_callback
+{
+   retro_frame_time_callback_t callback;
+   /* Represents the time of one frame. It is computed as
+    * 1000000 / fps, but the implementation will resolve the
+    * rounding to ensure that framestepping, etc is exact. */
+   retro_usec_t reference;
+};

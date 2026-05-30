@@ -207,11 +207,8 @@ public:
 				//so in practice this callback is useless
 				return false;
 			case RETRO_ENVIRONMENT::SET_FRAME_TIME_CALLBACK:
-				//the frontend can send real time to the core
-				//and the frontend is meant to tamper with
-				//this timing for fast forward/slow motion?
-				//just no, those are pure frontend responsibilities
-				return false;
+				ftCallback = static_cast<retro_frame_time_callback*>(data);
+				return true;
 			case RETRO_ENVIRONMENT::GET_RUMBLE_INTERFACE:
 				//TODO low priority
 				return false;
@@ -564,6 +561,13 @@ public:
 		}
 	}
 
+	void SetFrameTime() {
+		// just always send the reference value
+		if (ftCallback && ftCallback->callback) {
+			ftCallback->callback(ftCallback->reference);
+		}
+	}
+
 private:
 	// environment vars
 	bool supportsNoGame;
@@ -609,6 +613,9 @@ private:
 	s16 analogAxes[2][static_cast<u32>(RETRO_DEVICE_ID_ANALOG::LAST)];
 	s16 analogButtons[static_cast<u32>(RETRO_DEVICE_ID_JOYPAD::LAST)];
 	s16 pointer[static_cast<u32>(RETRO_DEVICE_ID_POINTER::LAST)];
+
+	// callbacks
+	retro_frame_time_callback* ftCallback = nullptr;
 };
 
 static CallbackHandler * gCbHandler = nullptr;
@@ -689,6 +696,10 @@ EXPORT void LibretroBridge_GetAudio(CallbackHandler* cbHandler, u32* numSamples,
 // input is expected to be sent through an array of signed 16 bit integers, the positions of input in this array defined by RETRO_DEVICE_ID_* or RETRO_KEY
 EXPORT void LibretroBridge_SetInput(CallbackHandler* cbHandler, RETRO_DEVICE device, u32 port, s16* input) {
 	cbHandler->SetInput(device, port, input);
+}
+
+EXPORT void LibretroBridge_SetFrameTime(CallbackHandler* cbHandler) {
+	cbHandler->SetFrameTime();
 }
 
 // retro callbacks

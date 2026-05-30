@@ -503,5 +503,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		[BizImport(cc)]
 		public abstract void LibretroBridge_GetRetroProcs(out retro_procs cb_procs);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetFrameTime(IntPtr cbHandler);
 	}
 }
