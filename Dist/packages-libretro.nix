@@ -1,5 +1,5 @@
 { system ? builtins.currentSystem
-, pkgs ? (import Dist/nixpkgs.nix).nixpkgs-24_05 system
+, pkgs ? (import ./nixpkgs.nix).nixpkgs-24_05 system
 , lib ? pkgs.lib
 , symlinkJoin ? pkgs.symlinkJoin
 , libretro ? pkgs.libretro

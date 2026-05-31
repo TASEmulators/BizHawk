@@ -63,7 +63,7 @@ in {
 , extraDefines ? "" # added to `<DefineConstants/>`, so ';'-separated
 , extraDotnetBuildFlags ? "" # currently passed to EVERY `dotnet build` and `dotnet test` invocation (and does not replace the flags for parallel compilation added by default)
 , forNixOS ? true
-, libretroCores ? pkgs.callPackage Dist/packages-libretro.nix {}
+, libretroCores ? import Dist/packages-libretro.nix { inherit system; }
 , initConfig ? {} # forwarded to Dist/launch-scripts.nix (see docs there)
 , profileManagedCalls ? false # forwarded to Dist/launch-scripts.nix
 }: let
