@@ -1,3 +1,5 @@
+#nullable enable
+
 using NLua;
 
 namespace BizHawk.Client.Common

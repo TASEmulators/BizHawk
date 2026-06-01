@@ -1,3 +1,5 @@
+#nullable enable
+
 using BizHawk.Emulation.Common;
 
 using NLua;
@@ -30,7 +32,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local stgamget = gameinfo.getstatus( );")]
 		[LuaMethod("getstatus", "returns the game database status of the currently loaded rom. Statuses are for example: GoodDump, BadDump, Hack, Unknown, NotInDatabase")]
-		public string GetStatus()
+		public string? GetStatus()
 			=> (APIs.Emulation.GetGameInfo()?.Status)?.ToString();
 
 		[LuaMethodExample("if ( gameinfo.isstatusbad( ) ) then\r\n\tconsole.log( \"returns the currently loaded rom's game database status is considered 'bad'\" );\r\nend;")]

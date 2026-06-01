@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -17,14 +19,14 @@ namespace BizHawk.Client.Common
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class ClientLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
-		public Lazy<string> AllAPINames { get; set; }
+		public required Lazy<string> AllAPINames { get; set; }
 
-		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+		public required NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
 		[OptionalService]
-		private IVideoProvider VideoProvider { get; set; }
+		private IVideoProvider? VideoProvider { get; set; }
 
-		public IMainFormForApi MainForm { get; set; }
+		public required IMainFormForApi MainForm { get; set; }
 
 		public ClientLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
@@ -247,7 +249,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("client.screenshot( \"C:\\\" );")]
 		[LuaMethod("screenshot", "if a parameter is passed it will function as the Screenshot As menu item of EmuHawk, else it will function as the Screenshot menu item")]
-		public void Screenshot(string path = null)
+		public void Screenshot(string? path = null)
 			=> APIs.EmuClient.Screenshot(path);
 
 		[LuaMethodExample("client.screenshottoclipboard( );")]
@@ -287,7 +289,7 @@ namespace BizHawk.Client.Common
 				"No more than `maxFrames` future frames will be emulated. Useful to avoid freezing " +
 				"the client UI in case of accidentally never returning true from the callback. " +
 				"Your timeout can be as low as 1 frame or as high as 32767 frames.")]
-		public string ShowFuture(LuaFunction luaf, long maxFrames, string name = null)
+		public string ShowFuture(LuaFunction luaf, long maxFrames, string? name = null)
 		{
 			if (maxFrames is < 1 or > EmuClientApi.SHOW_FUTURE_MAX_USER_TIMEOUT)
 			{
@@ -367,7 +369,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlcliget = client.gettool( \"Tool name\" );")]
 		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use getavailabletools to get a list of names")]
-		public LuaTable GetTool(string name)
+		public LuaTable? GetTool(string name)
 		{
 			var selectedTool = APIs.Tool.GetTool(name);
 			return selectedTool == null ? null : _th.ObjectToTable(selectedTool);
@@ -375,7 +377,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlclicre = client.createinstance( \"objectname\" );")]
 		[LuaMethod("createinstance", "returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned")]
-		public LuaTable CreateInstance(string name)
+		public LuaTable? CreateInstance(string name)
 		{
 			var instance = APIs.Tool.CreateInstance(name);
 			return instance == null ? null : _th.ObjectToTable(instance);

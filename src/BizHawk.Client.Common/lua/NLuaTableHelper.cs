@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Buffers;
 using System.Collections.Generic;
 using System.Drawing;
@@ -105,9 +107,9 @@ namespace BizHawk.Client.Common
 
 		public Color ParseColor(object o) => ParseColor(o, safe: false, _logCallback) ?? throw new ArgumentException("failed to parse Color", nameof(o));
 
-		public Color? SafeParseColor(object o) => ParseColor(o, safe: true, _logCallback);
+		public Color? SafeParseColor(object? o) => ParseColor(o, safe: true, _logCallback);
 
-		private static Color? ParseColor(object o, bool safe, Action<string> logCallback)
+		private static Color? ParseColor(object? o, bool safe, Action<string> logCallback)
 		{
 			switch (o)
 			{
