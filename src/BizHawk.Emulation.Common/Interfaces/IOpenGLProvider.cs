@@ -1,5 +1,13 @@
 namespace BizHawk.Emulation.Common
 {
+	public interface IFboWithTexture : IDisposable
+	{
+		uint FBO { get; }
+		uint TextureId { get; }
+
+		void Bind();
+	}
+
 	/// <summary>
 	/// Defines an interface for cores to obtain OpenGL contexts and functions
 	/// </summary>
@@ -40,5 +48,9 @@ namespace BizHawk.Emulation.Common
 		/// The user must make a context active before using this
 		/// </summary>
 		IntPtr GetGLProcAddress(string? proc);
+
+		IFboWithTexture GetOpenGLFBOWithTexture(int width, int height, bool depth);
+
+		void ReadFBO(IFboWithTexture fbo, int width, int height, Span<int> dest);
 	}
 }
