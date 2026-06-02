@@ -108,6 +108,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 					throw new InvalidOperationException("Unsupported Libretro API version (or major error in interop)");
 				}
 
+				Directory.CreateDirectory(libretroSystemDir);
+				Directory.CreateDirectory(libretroSaveRAMDir);
 				var libretroCoreDir = Path.GetDirectoryName(corePath);
 				bridge.LibretroBridge_SetDirectories(
 					cbHandler,
