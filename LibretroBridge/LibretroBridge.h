@@ -429,6 +429,19 @@ enum retro_hw_context_type
    /* Vulkan, see RETRO_ENVIRONMENT_GET_HW_RENDER_INTERFACE. */
    RETRO_HW_CONTEXT_VULKAN           = 6,
 
+   /* Direct3D11, see RETRO_ENVIRONMENT_GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D11            = 7,
+
+   /* Direct3D10, see RETRO_ENVIRONMENT_GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D10            = 8,
+
+   /* Direct3D12, see RETRO_ENVIRONMENT_GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D12            = 9,
+
+   /* Direct3D9, see RETRO_ENVIRONMENT_GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D9             = 10,
+
+   /** Dummy value to ensure sizeof(enum retro_hw_context_type) == sizeof(int). Do not use. */
    RETRO_HW_CONTEXT_DUMMY = INT_MAX
 };
 
