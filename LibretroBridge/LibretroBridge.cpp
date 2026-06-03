@@ -284,6 +284,10 @@ public:
 			case RETRO_ENVIRONMENT::GET_LANGUAGE:
 				*static_cast<RETRO_LANGUAGE*>(data) = RETRO_LANGUAGE::ENGLISH;
 				return true;
+			case RETRO_ENVIRONMENT::GET_PREFERRED_HW_RENDER:
+				// we only really support opengl
+				*static_cast<retro_hw_context_type*>(data) = retro_hw_context_type::RETRO_HW_CONTEXT_OPENGL_CORE;
+				return true;
 			default:
 				return false;
 		}

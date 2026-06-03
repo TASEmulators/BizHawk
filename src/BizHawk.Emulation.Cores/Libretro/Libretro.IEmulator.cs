@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			if (_openGLContext is not null)
 			{
 				bridge.LibretroBridge_HWContextDestroy(cbHandler);
-				fboObject.Dispose();
+				fboObject?.Dispose();
 				openGLProvider.ReleaseGLContext(_openGLContext);
 				_openGLContext = null;
 			}

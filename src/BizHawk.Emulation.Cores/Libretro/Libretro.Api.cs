@@ -294,6 +294,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 			OPENGLES_VERSION = 5,
 
 			VULKAN           = 6,
+			D3D11            = 7,
+            D3D10            = 8,
+            D3D12            = 9,
+            D3D9             = 10,
 		}
 
 		public enum RETRO_REGION : uint
