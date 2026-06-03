@@ -27,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		private readonly LibretroApi api;
+		private readonly BridgeGuard guard;
 		private readonly IntPtr cbHandler;
 
 		private class BridgeGuard(IntPtr parentHandler) : IMonitor
@@ -112,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					throw new Exception("Failed to create callback handler!");
 				}
 
-				var guard = new BridgeGuard(cbHandler);
+				guard = new BridgeGuard(cbHandler);
 				api = BizInvoker.GetInvoker<LibretroApi>(
 					new DynamicLibraryImportResolver(corePath, hasLimitedLifetime: false), guard, CallingConventionAdapters.Native);
 
@@ -253,7 +254,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			if (_openGLContext is not null)
 			{
 				fboObject = new OpenGLFBOWithTexture((int) av_info.geometry.max_width, (int) av_info.geometry.max_height, _depth);
-				bridge.LibretroBridge_HWContextReset(cbHandler);
+				using (guard.EnterExit())
+					bridge.LibretroBridge_HWContextReset(cbHandler);
 				var videoProvider = new Libretro_IGLTextureProvider(this);
 				_serviceProvider.Register<IVideoProvider>(videoProvider);
 			}
