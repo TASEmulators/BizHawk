@@ -370,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		// this is allowed to not initialize every variable, so ref is used instead of out
 
 		[BizImport(cc)]
-		public abstract void retro_get_system_av_info(ref retro_system_av_info retro_system_av_info);
+		public abstract void retro_get_system_av_info(out retro_system_av_info retro_system_av_info);
 
 		[BizImport(cc)]
 		public abstract void retro_set_environment(IntPtr retro_environment);

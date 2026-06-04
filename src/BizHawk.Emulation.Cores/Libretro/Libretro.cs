@@ -225,26 +225,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			inited = true;
 
-			av_info = default;
-			api.retro_get_system_av_info(ref av_info);
+			api.retro_get_system_av_info(out av_info);
 
 			api.retro_set_video_refresh(cb_procs.retro_video_refresh_proc);
 			api.retro_set_audio_sample(cb_procs.retro_audio_sample_proc);
 			api.retro_set_audio_sample_batch(cb_procs.retro_audio_sample_batch_proc);
 			api.retro_set_input_poll(cb_procs.retro_input_poll_proc);
 			api.retro_set_input_state(cb_procs.retro_input_state_proc);
-
-			var len = checked((int)api.retro_serialize_size());
-			if (len > 0)
-			{
-				_stateBuf = new byte[len];
-			}
-			else
-			{
-				_serviceProvider.Unregister<IStatable>();
-			}
-
-			_region = api.retro_get_region();
 
 			// this stuff can only happen after the game is loaded
 
@@ -259,6 +246,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 			SetupResampler(av_info.timing.sample_rate);
 
 			Console.WriteLine("FPS {0} SPS {1}", av_info.timing.fps, av_info.timing.sample_rate);
+
+			var len = checked((int)api.retro_serialize_size());
+			if (len > 0)
+			{
+				_stateBuf = new byte[len];
+			}
+			else
+			{
+				_serviceProvider.Unregister<IStatable>();
+			}
+
+			_region = api.retro_get_region();
 
 			InitMemoryDomains(); // im going to assume this should happen when a game is loaded
 
