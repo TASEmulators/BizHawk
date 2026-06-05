@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RCheevosAchievementListForm_SizeChanged(this, EventArgs.Empty);
 			vScrollBar1.Value = 0;
-			vScrollBar1.Maximum = _controlHeight * _cheevos.Length;
+			vScrollBar1.Maximum = _controlHeight * _cheevos.Length - 1;
 		}
 
 		public void OnFrameAdvance(bool hardcore)

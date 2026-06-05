@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RCheevosLeaderboardListForm_SizeChanged(this, EventArgs.Empty);
 			vScrollBar1.Value = 0;
-			vScrollBar1.Maximum = _controlHeight * _lboards.Length;
+			vScrollBar1.Maximum = _controlHeight * _lboards.Length - 1;
 		}
 
 		public void OnFrameAdvance()
