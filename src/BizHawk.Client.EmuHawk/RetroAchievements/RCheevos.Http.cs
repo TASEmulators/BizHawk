@@ -227,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static async Task<(byte[] body, bool isTransient)> HttpGet(string url)
+		private static async Task<(byte[] Body, bool IsTransient)> HttpGet(string url)
 		{
 			try
 			{
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static async Task<(byte[] body, bool isTransient)> HttpPost(string url, string post, string type)
+		private static async Task<(byte[] Body, bool IsTransient)> HttpPost(string url, string post, string type)
 		{
 			try
 			{
