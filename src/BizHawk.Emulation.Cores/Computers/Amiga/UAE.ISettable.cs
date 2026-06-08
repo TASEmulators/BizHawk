@@ -116,6 +116,25 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			Auto
 		}
 
+		public enum MotherboardFastRam
+		{
+			None = 0,
+			[Display(Name = "1MB")]
+			MB_1 = 1,
+			[Display(Name = "2MB")]
+			MB_2 = 2,
+			[Display(Name = "4MB")]
+			MB_4 = 4,
+			[Display(Name = "8MB")]
+			MB_8 = 8,
+			[Display(Name = "16MB")]
+			MB_16 = 16,
+			[Display(Name = "32MB")]
+			MB_32 = 32,
+			[Display(Name = "64MB")]
+			MB_64 = 64,
+		}
+
 		public enum DriveType
 		{
 			DRV_NONE = -1,
@@ -204,6 +223,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 						"chipmem_size=" + (int)ChipMemory.MB_2,
 						"bogomem_size=" + (int)SlowMemory.KB_0,
 						"fastmem_size=8",
+						"a3000mem_size=" + (int)settings.MBFastRam,
 					]);
 					break;
 			}
@@ -353,6 +373,12 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			[DefaultValue(LibUAE.FASTMEM_AUTO)]
 			[TypeConverter(typeof(ConstrainedIntConverter))]
 			public int FastMemory { get; set; }
+
+			[DisplayName("Motherboard Fast RAM")]
+			[Description("Only applicable for A4000.")]
+			[DefaultValue(MotherboardFastRam.None)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public MotherboardFastRam MBFastRam { get; set; }
 
 			[DisplayName("Controller port 1")]
 			[Description("")]
