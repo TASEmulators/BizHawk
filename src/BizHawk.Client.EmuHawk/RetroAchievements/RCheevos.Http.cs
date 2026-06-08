@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			private readonly Lock _syncObject = new();
 			private readonly ManualResetEventSlim _completionEvent = new();
 			private bool _isDisposed;
+			private int _transientRetriesRemaining = 3;
 
 			public virtual bool ShouldRetry { get; protected set; }
 
@@ -111,18 +112,20 @@ namespace BizHawk.Client.EmuHawk
 
 				_ = apiTask.ContinueWith(async t =>
 				{
-					var result = await t;
-					if (result is null) // likely a timeout
+					var (body, isTransient) = await t;
+					if (body is null)
 					{
-						ShouldRetry = true;
-						_completionEvent.Set();
+						// only retry if we got no usable response (network failure or 5xx)
+						// a 4xx means the server already answered, and retrying just makes it worse
+						ShouldRetry = isTransient && _transientRetriesRemaining > 0;
+						if (ShouldRetry) _transientRetriesRemaining--;
 					}
 					else
 					{
-						ResponseCallback(result);
+						ResponseCallback(body);
 						ShouldRetry = false; // this is a bit naive, but if the response callback "fails," retrying will just result in the same thing
-						_completionEvent.Set();
 					}
+					_completionEvent.Set();
 				}, default, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.DenyChildAttach, TaskScheduler.Default);
 
 				_lib.rc_api_destroy_request(ref request);
@@ -224,36 +227,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static async Task<byte[]> HttpGet(string url)
+		private static async Task<(byte[] Body, bool IsTransient)> HttpGet(string url)
 		{
 			try
 			{
-				var response = await _http.GetAsync(url).ConfigureAwait(false);
+				using var response = await _http.GetAsync(url).ConfigureAwait(false);
 				return response.IsSuccessStatusCode
-					? await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false)
-					: null;
+					? (await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), false)
+					: (null, (int)response.StatusCode >= 500); // 4xx is the server's final answer, a 5xx might recover
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
-				return null;
+				return (null, true); // no response at all, very likely a timeout
 			}
 		}
 
-		private static async Task<byte[]> HttpPost(string url, string post, string type)
+		private static async Task<(byte[] Body, bool IsTransient)> HttpPost(string url, string post, string type)
 		{
 			try
 			{
 				using var content = new StringContent(post, Encoding.UTF8, type ?? "application/x-www-form-urlencoded");
 				using var response = await _http.PostAsync(url, content).ConfigureAwait(false);
 				return response.IsSuccessStatusCode
-					? await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false)
-					: null;
+					? (await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), false)
+					: (null, (int)response.StatusCode >= 500); // 4xx is the server's final answer, a 5xx might recover
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
-				return null;
+				return (null, true); // no response at all, very likely a timeout
 			}
 		}
 	}
