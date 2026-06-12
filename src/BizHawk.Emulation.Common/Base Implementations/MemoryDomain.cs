@@ -121,6 +121,43 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public virtual void BulkPokeByte(long startAddress, ReadOnlySpan<byte> values)
+		{
+			long addr = startAddress;
+			using (this.EnterExit())
+			{
+				for (int i = 0; i < values.Length; i++, addr += sizeof(byte))
+				{
+					PokeByte(addr, values[i]);
+				}
+			}
+		}
+
+		public virtual void BulkPokeUshort(long startAddress, ReadOnlySpan<ushort> values, bool bigEndian)
+		{
+			long addr = startAddress;
+			using (this.EnterExit())
+			{
+				for (int i = 0; i < values.Length; i++, addr += sizeof(ushort))
+				{
+					PokeUshort(addr, values[i], bigEndian);
+				}
+			}
+		}
+
+		public virtual void BulkPokeUint(long startAddress, ReadOnlySpan<uint> values, bool bigEndian)
+		{
+			long addr = startAddress;
+			using (this.EnterExit())
+			{
+				for (int i = 0; i < values.Length; i++, addr += sizeof(uint))
+				{
+					PokeUint(addr, values[i], bigEndian);
+				}
+			}
+		}
+
+
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
 
 		/// <summary>
