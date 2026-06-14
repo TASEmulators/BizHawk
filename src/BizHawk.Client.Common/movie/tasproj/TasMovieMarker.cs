@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using BizHawk.Common.CollectionExtensions;
@@ -202,7 +203,8 @@ namespace BizHawk.Client.Common
 
 		public new void Remove(TasMovieMarker item)
 		{
-			if (item == null || item.Frame == 0) // TODO: Don't do this.
+			Debug.Assert(item != null, "Attempted to remove a marker that doens't exist.");
+			if (item == null || item.Frame == 0)
 			{
 				return;
 			}
@@ -248,7 +250,8 @@ namespace BizHawk.Client.Common
 			}
 
 			TasMovieMarker m = Get(fromFrame);
-			if (m == null) // TODO: Don't do this.
+			Debug.Assert(m != null, "Attempted to move a marker that doens't exist.");
+			if (m == null)
 			{
 				return;
 			}
