@@ -422,6 +422,14 @@ namespace BizHawk.Client.EmuHawk
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.SelectCurrentFrame();
 					break;
+				case "Seek To Selected Frame":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SeekToSelectedFrame();
+					break;
+				case "Seek To...":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.SeekToUserSpecifiedFrame();
+					break;
 				case "Toggle Follow Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					var playbackBox = Tools.TAStudio.TasPlaybackBox;
@@ -504,6 +512,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone # Times":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.CloneFramesXTimesExternal();
+					break;
+				case "Paste Insert":
+					if (!Tools.IsLoaded<TAStudio>()) return false;
+					Tools.TAStudio.PasteInsertExternal();
 					break;
 
 				// SNES

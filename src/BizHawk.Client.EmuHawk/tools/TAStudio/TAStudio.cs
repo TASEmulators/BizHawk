@@ -190,24 +190,6 @@ namespace BizHawk.Client.EmuHawk
 			_tasViewPanel.Controls.Add(_tasViewHBar);
 			_tasViewPanel.Controls.Add(_tasViewVBar);
 
-			ToolStripMenuItemEx goToFrameMenuItem = new()
-			{
-				ShortcutKeys = Keys.Control | Keys.G,
-				Text = "Go to Frame...",
-			};
-			goToFrameMenuItem.Click += (_, _) =>
-			{
-				MainForm.PauseEmulator();
-				using InputPrompt dialog = new()
-				{
-					Text = "Go to Frame",
-					Message = "Jump/Seek to frame index:",
-					TextInputType = InputPrompt.InputType.Unsigned,
-				};
-				if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
-			};
-			_ = EditSubMenu.DropDownItems.InsertAfter(ReselectClipboardMenuItem, insert: goToFrameMenuItem);
-
 			RecentSubMenu.Image = Resources.Recent;
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
 			TASEditorManualOnlineMenuItem.Image = Resources.Help;
@@ -261,6 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
 			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
 			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
+			GoToFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Seek To..."];
 			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
 			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
 			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
@@ -275,6 +258,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
 			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
 			CloneXTimesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+			PasteInsertMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Paste Insert"];
 
 			TasPlaybackBox.UpdateHotkeyTooltips(Config);
 			BookMarkControl.UpdateHotkeyTooltips(Config);
@@ -602,6 +586,8 @@ namespace BizHawk.Client.EmuHawk
 		public void CloneFramesXTimesExternal()
 			=> CloneFramesXTimesMenuItem_Click(null, EventArgs.Empty);
 
+		public void PasteInsertExternal() => MaybePasteFromClipboard(overwriteSelection: false);
+
 		public void UndoExternal()
 			=> UndoMenuItem_Click(null, EventArgs.Empty);
 
@@ -624,6 +610,14 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshDialog();
 		}
+
+		public void SeekToSelectedFrame()
+		{
+			if (!AnyRowsSelected) return;
+			GoToFrame(FirstSelectedRowIndex);
+		}
+
+		public void SeekToUserSpecifiedFrame() => GoToFrameMenuItem_Click(null, EventArgs.Empty);
 
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{

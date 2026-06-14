@@ -137,6 +137,8 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Delete Branch", "Alt+Delete");
 			Bind("TAStudio", "Show Cursor");
 			Bind("TAStudio", "Select Current Frame");
+			Bind("TAStudio", "Seek To Selected Frame");
+			Bind("TAStudio", "Seek To...", "Ctrl+G");
 			Bind("TAStudio", "Toggle Follow Cursor", "Shift+F");
 			Bind("TAStudio", "Toggle Auto-Restore", "Alt+R");
 			Bind("TAStudio", "Seek To Green Arrow", "R");
@@ -157,6 +159,7 @@ namespace BizHawk.Client.Common
 			Bind("TAStudio", "Insert # Frames", "Shift+Insert");
 			Bind("TAStudio", "Clone Frames", "Ctrl+Insert");
 			Bind("TAStudio", "Clone # Times", "Ctrl+Shift+Insert");
+			Bind("TAStudio", "Paste Insert", "Ctrl+Shift+V");
 			Bind("TAStudio", "Analog Increment", "Up");
 			Bind("TAStudio", "Analog Decrement", "Down");
 			Bind("TAStudio", "Analog Incr. by 10", "Shift+Up");

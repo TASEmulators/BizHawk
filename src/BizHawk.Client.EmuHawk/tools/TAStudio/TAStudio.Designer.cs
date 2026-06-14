@@ -62,6 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectBetweenMarkersMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ReselectClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.GoToFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.PasteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -276,6 +277,7 @@ namespace BizHawk.Client.EmuHawk
             this.SelectBetweenMarkersMenuItem,
             this.SelectAllMenuItem,
             this.ReselectClipboardMenuItem,
+            this.GoToFrameMenuItem,
             this.toolStripSeparator7,
             this.CopyMenuItem,
             this.PasteMenuItem,
@@ -344,6 +346,11 @@ namespace BizHawk.Client.EmuHawk
 			this.ReselectClipboardMenuItem.Text = "Reselect Clipboard";
 			this.ReselectClipboardMenuItem.Click += new System.EventHandler(this.ReselectClipboardMenuItem_Click);
 			// 
+			// ReselectClipboardMenuItem
+			// 
+			this.GoToFrameMenuItem.Text = "Go to Frame...";
+			this.GoToFrameMenuItem.Click += new System.EventHandler(this.GoToFrameMenuItem_Click);
+			// 
 			// CopyMenuItem
 			// 
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
@@ -358,8 +365,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// PasteInsertMenuItem
 			// 
-			this.PasteInsertMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.V)));
 			this.PasteInsertMenuItem.Text = "&Paste Insert";
 			this.PasteInsertMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
 			// 
@@ -851,6 +856,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx DeselectMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SelectBetweenMarkersMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx ReselectClipboardMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GoToFrameMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator6;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HelpSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EnableTooltipsMenuItem;

@@ -382,6 +382,18 @@ namespace BizHawk.Client.EmuHawk
 			SetSplicer();
 		}
 
+		private void GoToFrameMenuItem_Click(object sender, EventArgs e)
+		{
+			MainForm.PauseEmulator();
+			using InputPrompt dialog = new()
+			{
+				Text = "Go to Frame",
+				Message = "Jump/Seek to frame index:",
+				TextInputType = InputPrompt.InputType.Unsigned,
+			};
+			if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
+		}
+
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
 			if (AnyRowsSelected)
