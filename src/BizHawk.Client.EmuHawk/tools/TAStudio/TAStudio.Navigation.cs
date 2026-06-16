@@ -24,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			_pauseAfterSeeking = MainForm.EmulatorPaused || (SeekingTo != -1 && _pauseAfterSeeking);
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode();
+			SeekingTo = frame; // must be before LoadState, since it calls UpdateAfter (potentially doing end-of-seek logic if prior seek was to before this frame) instead of SavestateLoaded for ??? reason.
 
 			var closestState = GetPriorStateForFramebuffer(frame);
 			if (frame < Emulator.Frame || (closestState.Key > Emulator.Frame && !skipLoadState))
@@ -37,7 +38,6 @@ namespace BizHawk.Client.EmuHawk
 				_seekStartFrame = Emulator.Frame;
 				_seekingByEdit = false;
 
-				SeekingTo = frame;
 				MainForm.UnpauseEmulator();
 
 				if (SeekingTo - _seekStartFrame > 1)
