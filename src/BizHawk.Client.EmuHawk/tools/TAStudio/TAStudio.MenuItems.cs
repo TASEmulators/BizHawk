@@ -1087,7 +1087,7 @@ namespace BizHawk.Client.EmuHawk
 				(s) =>
 				{
 					// settings objects are mutated by the settings form, but some still need to be handled
-					for (int i = 0; i < s.MovieSettings.Columns.Length; i++)
+					for (int i = 0; i < _inputRolls.Count; i++)
 					{
 						_inputRolls[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 						_inputRolls[i].Font = Settings.TasViewFont;
