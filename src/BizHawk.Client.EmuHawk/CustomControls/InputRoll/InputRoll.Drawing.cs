@@ -233,6 +233,7 @@ namespace BizHawk.Client.EmuHawk
 						if (col.Rotatable || rePrep)
 						{
 							_renderer.PrepDrawString(Font, foreColor, rotate: col.Rotatable);
+							rePrep = true;
 						}
 
 						int textWidth = (int)_renderer.MeasureString(text, Font).Width;
