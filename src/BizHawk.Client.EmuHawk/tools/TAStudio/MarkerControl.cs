@@ -1,15 +1,18 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Properties;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MarkerControl : UserControl, IDialogParent
 	{
+		private static string SAVESTATE_COL_NAME = "Savestate";
+
 		public TAStudio Tastudio { get; set; }
 		public TasMovieMarkerList Markers => Tastudio.CurrentTasMovie.Markers;
 
@@ -50,6 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MarkerView.AllColumns.Clear();
 			MarkerView.AllColumns.Add(new(name: "FrameColumn", widthUnscaled: 52, text: "Frame"));
+			MarkerView.AllColumns.Add(new(name: SAVESTATE_COL_NAME, widthUnscaled: 24, text: "State"));
 			MarkerView.AllColumns.Add(new(name: "LabelColumn", widthUnscaled: 125, text: string.Empty));
 		}
 
@@ -72,16 +76,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Tastudio.CurrentTasMovie.LagLog[marker.Frame + 1] is bool lagged)
 			{
-				if (lagged)
+				if (column.Name == "FrameColumn")
 				{
-					color = column.Name == "FrameColumn"
+					color = lagged
 						? Tastudio.Palette.LagZone_FrameCol
-						: Tastudio.Palette.LagZone_InputLog;
+						: Tastudio.Palette.GreenZone_FrameCol;
 				}
 				else
 				{
-					color = column.Name == "LabelColumn"
-						? Tastudio.Palette.GreenZone_FrameCol
+					color = lagged
+						? Tastudio.Palette.LagZone_InputLog
 						: Tastudio.Palette.GreenZone_InputLog;
 				}
 			}
@@ -97,13 +101,26 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			TasMovieMarker marker = Markers[index];
 			if (column.Name == "FrameColumn")
 			{
-				text = Markers[index].Frame.ToString();
+				text = marker.Frame.ToString();
 			}
 			else if (column.Name == "LabelColumn")
 			{
-				text = Markers[index].Message;
+				text = marker.Message;
+			}
+			else if (column.Name == SAVESTATE_COL_NAME)
+			{
+				if (marker.WantsState)
+				{
+					bool hasState = marker.Frame == 0 || Tastudio.CurrentTasMovie.TasStateManager.HasState(marker.Frame - 1);
+					text = hasState ? "✔" : "!";
+				}
+				else
+				{
+					text = "";
+				}
 			}
 		}
 
@@ -188,6 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				marker = new TasMovieMarker(frame);
 			}
+			marker.WantsState = Tastudio.Settings.StatesForMarkers;
 
 			UpdateValues();
 			Markers.Add(marker);
@@ -284,6 +302,25 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_MouseDoubleClick(object sender, EventArgs e)
 		{
 			if (MarkerView.AnyRowsSelected) Tastudio.GoToFrame(FirstSelectedMarker.Frame);
+		}
+
+		private void MarkerView_MouseDown(object sender, MouseEventArgs e)
+		{
+			Cell cell = MarkerView.CurrentCell;
+			if (cell == null || cell.RowIndex < 0 || cell.RowIndex >= Markers.Count) return;
+			if (cell.Column?.Name != SAVESTATE_COL_NAME) return;
+
+			TasMovieMarker marker = Markers[cell.RowIndex.Value];
+			marker.WantsState = !marker.WantsState;
+			if (!marker.WantsState)
+			{
+				Tastudio.CurrentTasMovie.TasStateManager.Unreserve(marker.Frame - 1);
+			}
+			else if (Tastudio.Emulator.Frame == marker.Frame - 1)
+			{
+				Tastudio.CurrentTasMovie.TasStateManager.Capture(marker.Frame - 1, Tastudio.Emulator.AsStatable());
+			}
+			Tastudio.RefreshDialog();
 		}
 	}
 }

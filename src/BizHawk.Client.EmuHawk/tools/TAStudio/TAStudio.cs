@@ -143,6 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			public int RewindStep { get; set; } = 1;
 			public int RewindStepFast { get; set; } = 4;
 			public bool ScrollSync { get; set; } = true;
+			public bool StatesForMarkers { get; set; } = true;
 			public PatternPaintModeEnum PatternPaintMode { get; set; } = TAStudioSettings.PatternPaintModeEnum.Never;
 			public PatternSelectionEnum PatternSelection { get; set; } = TAStudioSettings.PatternSelectionEnum.Hold;
 			public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
