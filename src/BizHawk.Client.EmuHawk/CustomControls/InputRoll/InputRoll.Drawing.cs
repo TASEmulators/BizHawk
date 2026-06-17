@@ -188,6 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			int range = Math.Min(lastVisibleRow, RowCount - 1) - startRow + 1;
 			_renderer.PrepDrawString(Font, _foreColor);
 
+			Cell currentCell = new();
 			if (HorizontalOrientation)
 			{
 				for (int j = 0; j < visibleColumns.Count; j++)
@@ -199,28 +200,40 @@ namespace BizHawk.Client.EmuHawk
 					{
 						f += _lagFrames[i];
 
-						int baseX = RowsToPixels(i) + (col.Rotatable ? CellWidth : 0);
+						int baseX = RowsToPixels(i);
 						int baseY = col.Left - _vBar.Value;
 
-						if (!col.Rotatable)
+						Bitmap image = null;
+						int bitmapOffsetX = 0;
+						int bitmapOffsetY = 0;
+
+						QueryItemIcon?.Invoke(this, f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+
+						if (image != null)
 						{
-							Bitmap image = null;
-							int bitmapOffsetX = 0;
-							int bitmapOffsetY = 0;
-
-							QueryItemIcon?.Invoke(this, f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
-
-							if (image != null)
-							{
-								int x = baseX + CellWidthPadding + bitmapOffsetX;
-								int y = baseY + CellHeightPadding + bitmapOffsetY;
-								_renderer.DrawBitmap(image, new Point(x, y));
-							}
+							int x = baseX + CellWidthPadding + bitmapOffsetX;
+							int y = baseY + CellHeightPadding + bitmapOffsetY;
+							_renderer.DrawBitmap(image, new Point(x, y));
 						}
 
+						if (col.Rotatable) baseX += CellWidth;
 						int strOffsetX = 0;
 						int strOffsetY = 0;
 						QueryItemText(this, f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
+
+						bool rePrep = false;
+						Color foreColor = _foreColor;
+						currentCell.Column = col;
+						currentCell.RowIndex = f + startRow;
+						if (_selectedItems.Contains(currentCell))
+						{
+							foreColor = SystemColors.HighlightText;
+							rePrep = true;
+						}
+						if (col.Rotatable || rePrep)
+						{
+							_renderer.PrepDrawString(Font, foreColor, rotate: col.Rotatable);
+						}
 
 						int textWidth = (int)_renderer.MeasureString(text, Font).Width;
 						if (col.Rotatable)
@@ -229,9 +242,7 @@ namespace BizHawk.Client.EmuHawk
 							int textX = Math.Max(((colHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
 							int textY = CellHeightPadding + strOffsetY;
 
-							_renderer.PrepDrawString(Font, _foreColor, rotate: true);
 							DrawString(text, new Rectangle(baseX - textY, baseY + textX, 999, CellHeight));
-							_renderer.PrepDrawString(Font, _foreColor, rotate: false);
 						}
 						else
 						{
@@ -241,13 +252,17 @@ namespace BizHawk.Client.EmuHawk
 
 							DrawString(text, new Rectangle(baseX + textX, baseY + textY, MaxColumnWidth, CellHeight));
 						}
+
+						if (rePrep)
+						{
+							_renderer.PrepDrawString(Font, _foreColor);
+						}
 					}
 				}
 			}
 			else
 			{
 				int xPadding = CellWidthPadding + 1 - _hBar.Value;
-				var currentCell = new Cell();
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];

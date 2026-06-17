@@ -384,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (columnName == FrameColumnName)
 			{
-				offsetX = -3;
+				offsetX = sender.HorizontalOrientation ? -2 : -3;
 				offsetY = 1;
 
 				if (Settings.DenoteMarkersWithIcons && CurrentTasMovie.Markers.IsMarker(index))
