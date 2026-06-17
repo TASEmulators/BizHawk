@@ -124,6 +124,14 @@ And when "Recording mode" is on, the movie will be truncated at the branch frame
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="StatesForMarkersCheckbox.ToolTip" xml:space="preserve">
+    <value>TAStudio can automatically keep savestates for each marker.
+If this is enabled, new markers will have savestates enabled by default.
+Note: The savestate needs to be on the frame before the marker. Thus, making
+a marker on the current frame will not automatically create a state.
+(The reason for the state being on the frame before is so that TAStudio
+does not need to store a screenshot with the savestate.)</value>
+  </data>
   <data name="EditInvisibleColumnsCheckbox.ToolTip" xml:space="preserve">
     <value>When disabled, inputs that are not visible on the active input roll cannot be edited.
 This allows you to, for example, insert and delete frames on a roll with player 1's inputs

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common.CollectionExtensions;
@@ -22,18 +23,32 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TasMovieMarker"/> class from a line of text
 		/// </summary>
-		public TasMovieMarker(string line)
+		public TasMovieMarker(string line, int version)
 		{
 			var split = line.Split('\t');
 			Frame = int.Parse(split[0]);
-			Message = split[1];
+			if (version == 1)
+			{
+				Message = split[1];
+			}
+			else if (version == 2)
+			{
+				WantsState = bool.Parse(split[1]);
+				Message = split[2];
+			}
+			else
+			{
+				throw new Exception("Invalid version.");
+			}
 		}
 
 		public int Frame { get; private set; }
 
 		public string Message { get; set; }
 
-		public override string ToString() => Frame.ToString() + '\t' + Message;
+		public bool WantsState { get; set; } = true;
+
+		public override string ToString() => $"{Frame}\t{WantsState}\t{Message}";
 
 		public override int GetHashCode() => Frame.GetHashCode();
 
@@ -111,12 +126,36 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
+			sb.AppendLine("2"); // version
 			foreach (var marker in this)
 			{
 				sb.AppendLine(marker.ToString());
 			}
 
 			return sb.ToString();
+		}
+
+		public void LoadFromFile(TextReader tr)
+		{
+			string line;
+			int version = -1;
+			while ((line = tr.ReadLine()) != null)
+			{
+				if (string.IsNullOrWhiteSpace(line)) continue;
+				if (version == -1)
+				{
+					if (line.Contains('\t'))
+					{
+						version = 1;
+					}
+					else
+					{
+						version = int.Parse(line);
+						continue;
+					}
+				}
+				Add(new TasMovieMarker(line, version));
+			}
 		}
 
 		// the inherited one
