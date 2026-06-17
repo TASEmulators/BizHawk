@@ -125,6 +125,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.GB] = 3,
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
+			[VSystemID.Raw.Libretro] = 1,
 			[VSystemID.Raw.N64] = 1,
 			[VSystemID.Raw.WSWAN] = 3,
 		};
