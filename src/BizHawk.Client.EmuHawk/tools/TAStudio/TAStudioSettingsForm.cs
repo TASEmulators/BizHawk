@@ -102,6 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			FastRewindNum.Value = _settings.GeneralClientSettings.RewindStepFast;
 			ScrollSpeedNum.Value = _settings.GeneralClientSettings.ScrollSpeed;
 			StatesForMarkersCheckbox.Checked = _settings.GeneralClientSettings.StatesForMarkers;
+			StateOnBranchFrameCheckbox.Checked = _settings.GeneralClientSettings.StateOnBranchFrame;
 
 			// patterns
 			foreach (var button in _controllerDef.BoolButtons)
@@ -504,6 +505,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings.GeneralClientSettings.RewindStep = (int)RewindNum.Value;
 			_settings.GeneralClientSettings.RewindStepFast = (int)FastRewindNum.Value;
 			_settings.GeneralClientSettings.StatesForMarkers = StatesForMarkersCheckbox.Checked;
+			_settings.GeneralClientSettings.StateOnBranchFrame = StateOnBranchFrameCheckbox.Checked;
 
 			if (ScrollToViewRadio.Checked) _settings.GeneralClientSettings.FollowCursorScrollMethod = "near";
 			else if (ScrollToTopRadio.Checked) _settings.GeneralClientSettings.FollowCursorScrollMethod = "top";

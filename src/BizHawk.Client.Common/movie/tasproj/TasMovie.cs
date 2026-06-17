@@ -84,6 +84,26 @@ namespace BizHawk.Client.Common
 
 		public Action<int> GreenzoneInvalidated { get; set; }
 
+		private bool _reserveBranchFrames;
+		public bool ReserveBranchFrames
+		{
+			get => _reserveBranchFrames;
+			set
+			{
+				_reserveBranchFrames = value;
+				if (!value)
+				{
+					foreach (TasBranch branch in Branches)
+					{
+						if (!IsReserved(branch.Frame))
+						{
+							TasStateManager.Unreserve(branch.Frame);
+						}
+					}
+				}
+			}
+		}
+
 		public ITasMovieRecord this[int index]
 		{
 			get
@@ -327,7 +347,7 @@ namespace BizHawk.Client.Common
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
 			return Markers.Exists(m => m.WantsState && m.Frame - 1 == frame)
-				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
+				|| (ReserveBranchFrames && Branches.Any(b => b.Frame == frame));
 		}
 
 		public void Dispose()

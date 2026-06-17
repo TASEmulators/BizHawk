@@ -104,6 +104,7 @@
 			this.ScrollSpeedNum = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.StateOnBranchFrameCheckbox = new System.Windows.Forms.CheckBox();
 			this.EditInvisibleColumnsCheckbox = new System.Windows.Forms.CheckBox();
 			this.ScrollSyncCheckbox = new System.Windows.Forms.CheckBox();
 			this.StatesForMarkersCheckbox = new System.Windows.Forms.CheckBox();
@@ -734,6 +735,7 @@
 			// tabPage3
 			// 
 			this.tabPage3.Controls.Add(this.StatesForMarkersCheckbox);
+			this.tabPage3.Controls.Add(this.StateOnBranchFrameCheckbox);
 			this.tabPage3.Controls.Add(this.OldBranchesCheckbox);
 			this.tabPage3.Controls.Add(this.BranchDoubleClickCheckbox);
 			this.tabPage3.Controls.Add(this.FastRewindNum);
@@ -925,6 +927,17 @@
 			this.StatesForMarkersCheckbox.Text = "Markers keep states by default";
 			this.toolTip1.SetToolTip(this.StatesForMarkersCheckbox, resources.GetString("StatesForMarkersCheckbox.ToolTip"));
 			this.StatesForMarkersCheckbox.UseVisualStyleBackColor = true;
+			// 
+			// StateOnBranchFrameCheckbox
+			// 
+			this.StateOnBranchFrameCheckbox.AutoSize = true;
+			this.StateOnBranchFrameCheckbox.Location = new System.Drawing.Point(12, 223);
+			this.StateOnBranchFrameCheckbox.Name = "StateOnBranchFrameCheckbox";
+			this.StateOnBranchFrameCheckbox.Size = new System.Drawing.Size(168, 17);
+			this.StateOnBranchFrameCheckbox.TabIndex = 518;
+			this.StateOnBranchFrameCheckbox.Text = "Keep a state on branch fames";
+			this.toolTip1.SetToolTip(this.StateOnBranchFrameCheckbox, resources.GetString("StateOnBranchFrameCheckbox.ToolTip"));
+			this.StateOnBranchFrameCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// tabPage6
 			// 
@@ -1185,5 +1198,6 @@
 		private System.Windows.Forms.NumericUpDown ScrollSpeedNum;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox StatesForMarkersCheckbox;
+		private System.Windows.Forms.CheckBox StateOnBranchFrameCheckbox;
 	}
 }
