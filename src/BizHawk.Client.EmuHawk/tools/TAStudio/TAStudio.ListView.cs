@@ -182,6 +182,7 @@ namespace BizHawk.Client.EmuHawk
 				InputPaintingMode = true,
 				LetKeysModifySelection = true,
 				Rotatable = true,
+				ShowColumnTextOnHover = true,
 				// user configurable
 				AlwaysScroll = Settings.FollowCursorAlwaysScroll,
 				Font = Settings.TasViewFont,
@@ -1280,13 +1281,9 @@ namespace BizHawk.Client.EmuHawk
 			InputRoll roll = (InputRoll)sender;
 			toolTip1.SetToolTip(roll, null);
 
-			if (e.NewCell.RowIndex is null)
+			if (e.NewCell.RowIndex is null || !MouseButtonHeld)
 			{
-				return;
-			}
-
-			if (!MouseButtonHeld)
-			{
+				SetTasViewRowCount(); // redraw
 				return;
 			}
 

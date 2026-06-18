@@ -238,6 +238,13 @@ namespace BizHawk.Client.EmuHawk
 		public bool GridLines { get; set; } = true;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether empty cells will display their column's text when the mouse cursor is placed over them
+		/// </summary>
+		[DefaultValue(false)]
+		[Category("Appearance")]
+		public bool ShowColumnTextOnHover { get; set; }
+
+		/// <summary>
 		/// Gets or sets a value indicating whether the control is horizontal or vertical
 		/// </summary>
 		[Category("Behavior")]
