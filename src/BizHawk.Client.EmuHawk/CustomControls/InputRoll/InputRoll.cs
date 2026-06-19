@@ -759,8 +759,6 @@ namespace BizHawk.Client.EmuHawk
 						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
-				_programmaticallyChangingRow = false;
-				PointMouseToNewCell();
 			}
 		}
 
@@ -833,8 +831,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 					while ((lastVisible - value < 0 || _lagFrames[VisibleRows - halfRow] < lastVisible - value) && FirstVisibleRow != 0);
 				}
-				_programmaticallyChangingRow = false;
-				PointMouseToNewCell();
 			}
 		}
 
@@ -945,11 +941,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			_programmaticallyChangingRow = false;
-			PointMouseToNewCell();
 		}
-
-		public bool _programmaticallyChangingRow = false;
 
 		/// <summary>
 		/// Scrolls so that the given index is visible, if it isn't already; doesn't use scroll settings.
@@ -958,8 +950,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsVisible(index))
 			{
-				_programmaticallyChangingRow = true;
-
 				if (FirstVisibleRow > index)
 				{
 					FirstVisibleRow = index;
@@ -1017,32 +1007,16 @@ namespace BizHawk.Client.EmuHawk
 		private bool _columnDownMoved;
 		private int _previousX; // TODO: move me
 
-		// It's necessary to call this anytime the control is programmatically scrolled
-		// Since the mouse may not be pointing to the same cell anymore
-		public void PointMouseToNewCell()
+		public bool SuppressCellChange;
+
+		private void PointMouseToNewCell()
 		{
+			if (SuppressCellChange) return;
+
 			if (_currentX.HasValue && _currentY.HasValue)
 			{
 				var newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-				if (CurrentCell != newCell)
-				{
-					if (QueryFrameLag != null && newCell.RowIndex.HasValue)
-					{
-						newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
-					}
-
-					newCell.RowIndex += FirstVisibleRow;
-					if (newCell.RowIndex < 0)
-					{
-						newCell.RowIndex = 0;
-					}
-
-					if (_programmaticallyChangingRow)
-					{
-						_programmaticallyChangingRow = false;
-						CellChanged(newCell);
-					}
-				}
+				CellChanged(newCell);
 			}
 		}
 
@@ -1072,18 +1046,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-
-			// SuuperW: Hide lag frames
-			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
-			{
-				newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
-			}
-
-			newCell.RowIndex += FirstVisibleRow;
-			if (newCell.RowIndex < 0)
-			{
-				newCell.RowIndex = 0;
-			}
 
 			if (!newCell.Equals(CurrentCell))
 			{
@@ -1654,6 +1616,7 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+			PointMouseToNewCell();
 			if (_horizontalOrientation)
 			{
 				ColumnScroll?.Invoke(this, e);
@@ -1671,6 +1634,7 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+			PointMouseToNewCell();
 			if (_horizontalOrientation)
 			{
 				RowScroll?.Invoke(this, e);
@@ -1930,6 +1894,18 @@ namespace BizHawk.Client.EmuHawk
 			if (!(IsPaintDown || rightButton) && newCell.RowIndex <= -1) // -2 if we're entering from the top
 			{
 				newCell.RowIndex = null;
+				return newCell;
+			}
+
+			if (QueryFrameLag != null)
+			{
+				newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+			}
+
+			newCell.RowIndex += FirstVisibleRow;
+			if (newCell.RowIndex < 0)
+			{
+				newCell.RowIndex = 0;
 			}
 
 			return newCell;
