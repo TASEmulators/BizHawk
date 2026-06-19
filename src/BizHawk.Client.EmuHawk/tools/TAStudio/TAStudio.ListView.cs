@@ -763,10 +763,6 @@ namespace BizHawk.Client.EmuHawk
 				UpdateActiveMovieInputs();
 			}
 
-			// only on mouse button down, check that the pointed to cell is the correct one (can be wrong due to scroll while playing)
-			roll._programmaticallyChangingRow = true;
-			roll.PointMouseToNewCell();
-
 			if (e.Button == MouseButtons.Middle)
 			{
 				if (MainForm.EmulatorPaused)
@@ -1342,7 +1338,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MouseButtonHeld)
 			{
-				roll.MakeIndexVisible(roll.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+				roll.SuppressCellChange = true; // avoid inifinite recursion of scrolling cuasing PointedCellChanged
+				roll.MakeIndexVisible(roll.CurrentCell.RowIndex.Value);
+				roll.SuppressCellChange = false;
 				SetTasViewRowCount(); // refreshes
 			}
 		}
