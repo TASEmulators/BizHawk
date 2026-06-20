@@ -1057,7 +1057,7 @@ namespace BizHawk.Client.EmuHawk
 			bool refresh = false;
 			_currentX = null;
 			_currentY = null;
-			if (IsHoveringOnColumnCell)
+			if (IsHoveringOnColumnCell || ShowColumnTextOnHover)
 			{
 				refresh = true;
 			}
