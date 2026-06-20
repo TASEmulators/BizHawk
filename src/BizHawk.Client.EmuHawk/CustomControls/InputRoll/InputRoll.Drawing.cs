@@ -189,7 +189,11 @@ namespace BizHawk.Client.EmuHawk
 			_renderer.PrepDrawString(Font, _foreColor);
 
 			Cell currentCell = new();
-			Cell mouseCell = ShowColumnTextOnHover ? CurrentCell : null;
+			Cell mouseCell = null;
+			if (ShowColumnTextOnHover && _draggingCell == null && !IsPaintDown)
+			{
+				mouseCell = CurrentCell;
+			}
 			if (HorizontalOrientation)
 			{
 				for (int j = 0; j < visibleColumns.Count; j++)
