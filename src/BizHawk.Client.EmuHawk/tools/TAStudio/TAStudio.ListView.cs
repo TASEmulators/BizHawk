@@ -1275,7 +1275,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.NewCell.RowIndex is null || !MouseButtonHeld)
 			{
-				SetTasViewRowCount(); // redraw
 				return;
 			}
 

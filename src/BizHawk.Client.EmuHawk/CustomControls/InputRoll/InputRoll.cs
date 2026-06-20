@@ -1020,21 +1020,12 @@ namespace BizHawk.Client.EmuHawk
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 
-			if (!newCell.Equals(CurrentCell))
+			bool changed = CellChanged(newCell);
+			if (changed && (ShowColumnTextOnHover || IsHoveringOnColumnCell || WasHoveringOnColumnCell))
 			{
-				CellChanged(newCell);
-
-				if (IsHoveringOnColumnCell
-					|| (WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
-				{
-					Refresh();
-				}
-				else if (_columnDown != null)
-				{
-					Refresh();
-				}
+				Refresh();
 			}
-			else if (_columnDown != null)  // Kind of silly feeling to have this check twice, but the only alternative I can think of has it refreshing twice when pointed column changes with column down, and speed matters
+			else if (_columnDown != null)
 			{
 				Refresh();
 			}
@@ -1561,13 +1552,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Call this function to change the CurrentCell to newCell
 		/// </summary>
-		private void CellChanged(Cell newCell)
+		/// <returns>true if CurrentCell was changed</returns>
+		private bool CellChanged(Cell newCell)
 		{
+			if (newCell == CurrentCell) return false;
+
 			_lastCell = CurrentCell;
 			CurrentCell = newCell;
 
-			if (PointedCellChanged is not null
-				&& !(_lastCell?.Column == CurrentCell.Column && _lastCell?.RowIndex == CurrentCell.RowIndex)) //TODO isn't this just `Cell.==`? --yoshi
+			if (PointedCellChanged is not null)
 			{
 				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}
@@ -1580,6 +1573,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_hoverTimer.Stop();
 			}
+
+			return true;
 		}
 
 		private void VerticalBar_ValueChanged(object sender, EventArgs e)
