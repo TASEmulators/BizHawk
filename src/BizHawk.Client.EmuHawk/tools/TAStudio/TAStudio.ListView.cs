@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _axisPaintState;
 		private bool _patternPaint;
 		private bool _startCursorDrag;
-		private bool _startSelectionDrag;
+		private int _startSelectionDrag = -1;
 		private bool _selectionDragState;
 		private bool _suppressContextMenu;
 		private int _startRow;
@@ -828,7 +828,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_startSelectionDrag = true;
+						_startSelectionDrag = frame;
 						_selectionDragState = roll.IsRowSelected(frame);
 					}
 				}
@@ -1124,7 +1124,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_leftButtonHeld = false;
 			_startCursorDrag = false;
-			_startSelectionDrag = false;
+			_startSelectionDrag = -1;
 			_startBoolDrawColumn = "";
 			_startAxisDrawColumn = "";
 
@@ -1314,12 +1314,33 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToFrame(e.NewCell.RowIndex.Value);
 			}
-			else if (_startSelectionDrag)
+			else if (_startSelectionDrag != -1)
 			{
-				for (var i = startVal; i <= endVal; i++)
+				void selectRange(int a, int b, bool v)
 				{
-					if (!roll.IsRowSelected(i))
-						roll.SelectRow(i, _selectionDragState);
+					if (a < b) for (int i = a; i <= b; i++) roll.SelectRow(i, v);
+					else for (int i = b; i <= a; i++) roll.SelectRow(i, v);
+				}
+				int rawStart = e.OldCell.RowIndex.Value;
+				int rawEnd = e.NewCell.RowIndex.Value;
+				int sign = Math.Sign(rawEnd - rawStart);
+				int startDiff = rawStart - _startSelectionDrag;
+				int endDiff = rawEnd - _startSelectionDrag;
+				if (sign != 0) // moved to another cell horizontally
+				{
+					if (Math.Sign(startDiff) == Math.Sign(endDiff))
+					{
+						// select if moving away from start, deselect if moving towards
+						bool movingAway = Math.Abs(endDiff) > Math.Abs(startDiff);
+						if (movingAway) selectRange(rawStart + sign, rawEnd, _selectionDragState);
+						else selectRange(rawStart, rawEnd - sign, !_selectionDragState);
+					}
+					else
+					{
+						// crossing from one side of selection start to the other
+						if (rawStart != _startSelectionDrag) selectRange(rawStart, _startSelectionDrag - sign, !_selectionDragState);
+						if (rawEnd != _startSelectionDrag) selectRange(_startSelectionDrag + sign, rawEnd, _selectionDragState);
+					}
 				}
 
 				SetSplicer();
