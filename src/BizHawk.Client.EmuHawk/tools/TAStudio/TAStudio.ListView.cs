@@ -256,6 +256,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_tasViewVBar.Visible = y >= _tasViewPanel.Height;
+				_tasViewVBar.SmallChange = 30;
+				_tasViewVBar.LargeChange = _tasViewPanel.Height / 2;
 				_tasViewHBar.Visible = false;
 				InputRoll lastRoll = _inputRolls[_inputRolls.Count - 1];
 				if (!_tasViewVBar.Visible) lastRoll.Height += _tasViewPanel.Height - y;
@@ -295,6 +297,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_tasViewHBar.Visible = x >= _tasViewPanel.Width;
+				_tasViewHBar.SmallChange = 30;
+				_tasViewHBar.LargeChange = _tasViewPanel.Width / 2;
 				_tasViewVBar.Visible = false;
 				InputRoll lastRoll = _inputRolls[_inputRolls.Count - 1];
 				if (!_tasViewHBar.Visible) lastRoll.Width += _tasViewPanel.Width - x;
