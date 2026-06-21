@@ -66,6 +66,9 @@ namespace BizHawk.Client.EmuHawk
 		private int _drawHeight;
 		private int _drawWidth;
 
+		private int _cellWidthPadding = 3;
+		private int _cellHeightPadding = 1;
+
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -113,12 +116,6 @@ namespace BizHawk.Client.EmuHawk
 			_renderer = new GdiPlusRenderer(Font);
 
 			UpdateCellSize();
-
-			_vBar.SmallChange = CellHeight;
-			_vBar.LargeChange = CellHeight * 20;
-
-			_hBar.SmallChange = CellWidth;
-			_hBar.LargeChange = 20;
 
 			Controls.Add(_vBar);
 			Controls.Add(_hBar);
@@ -208,14 +205,30 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[DefaultValue(3)]
 		[Category("Behavior")]
-		public int CellWidthPadding { get; set; } = 3;
+		public int CellWidthPadding
+		{
+			get => _cellWidthPadding;
+			set
+			{
+				_cellWidthPadding = value;
+				RecalculateScrollBars();
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the amount of top and bottom padding on the text inside a cell
 		/// </summary>
 		[DefaultValue(1)]
 		[Category("Behavior")]
-		public int CellHeightPadding { get; set; } = 1;
+		public int CellHeightPadding
+		{
+			get => _cellHeightPadding;
+			set
+			{
+				_cellHeightPadding = value;
+				RecalculateScrollBars();
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether grid lines are displayed around cells
@@ -1758,6 +1771,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
+				_vBar.SmallChange = CellHeight;
 				_vBar.Height = Height;
 				_vBar.Visible = true;
 			}
@@ -1779,6 +1793,7 @@ namespace BizHawk.Client.EmuHawk
 					_hBar.Maximum = TotalColWidth - _drawWidth + _hBar.LargeChange;
 				}
 
+				_hBar.SmallChange = CellWidth;
 				_hBar.Width = Width - (NeedsVScrollbar ? (_vBar.Width + 1) : 0);
 				_hBar.Visible = true;
 			}
@@ -1983,7 +1998,7 @@ namespace BizHawk.Client.EmuHawk
 		private int CellHeight => (int)_charSize.Height + CellHeightPadding * 2;
 
 		/// <summary>
-		/// Call when _charSize, MaxCharactersInHorizontal, or CellPadding is changed.
+		/// Call when font is changed.
 		/// </summary>
 		private void UpdateCellSize()
 		{
