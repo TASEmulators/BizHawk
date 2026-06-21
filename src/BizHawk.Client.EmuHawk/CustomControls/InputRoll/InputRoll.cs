@@ -51,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _programmaticallyUpdatingScrollBarValues;
 
 		private int _rowCount;
+		private int _scrollSpeed = SystemInformation.MouseWheelScrollLines;
 		private SizeF _charSize;
 
 		private RollColumn/*?*/ _columnDown;
@@ -244,9 +245,22 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>
 		/// Gets or sets the scrolling speed
+		/// Set 0 to use the default scroll speed
 		/// </summary>
 		[Category("Behavior")]
-		public int ScrollSpeed { get; set; }
+		public int ScrollSpeed
+		{
+			get
+			{
+				if (_scrollSpeed == -1) return VisibleRows - 1; // -1 to ensure we don't skip over a partially visible row
+				else return _scrollSpeed;
+			}
+			set
+			{
+				if (value == 0) _scrollSpeed = SystemInformation.MouseWheelScrollLines;
+				else _scrollSpeed = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the sets the virtual number of rows to be displayed. Does not include the column header row.

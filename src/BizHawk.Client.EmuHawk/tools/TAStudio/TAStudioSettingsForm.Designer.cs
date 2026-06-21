@@ -1017,7 +1017,7 @@
 			this.ScrollSpeedNum.Name = "ScrollSpeedNum";
 			this.ScrollSpeedNum.Size = new System.Drawing.Size(67, 20);
 			this.ScrollSpeedNum.TabIndex = 515;
-			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "How many frames to scroll per tick of the mouse wheel.");
+			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "How many frames to scroll per tick of the mouse wheel.\nSet to 0 to use the system default.");
 			// 
 			// label2
 			// 
