@@ -186,7 +186,6 @@ namespace BizHawk.Client.EmuHawk
 
 			int startRow = firstVisibleRow;
 			int range = Math.Min(lastVisibleRow, RowCount - 1) - startRow + 1;
-			_renderer.PrepDrawString(Font, _foreColor);
 
 			Cell currentCell = new();
 			Cell mouseCell = null;
@@ -226,28 +225,21 @@ namespace BizHawk.Client.EmuHawk
 						int strOffsetY = 0;
 						QueryItemText(this, f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
 
-						bool rePrep = false;
-						Color foreColor = _foreColor;
+						Color? foreColor = QueryItemForeColor?.Invoke(this, f + startRow, col);
 						Font font = Font;
 						currentCell.Column = col;
 						currentCell.RowIndex = f + startRow;
-						if (_selectedItems.Contains(currentCell))
+						if (foreColor == null && _selectedItems.Contains(currentCell))
 						{
 							foreColor = SystemColors.HighlightText;
-							rePrep = true;
 						}
 						if (string.IsNullOrEmpty(text) && mouseCell == currentCell)
 						{
 							font = new Font(Font, FontStyle.Regular);
 							foreColor = SystemColors.GrayText;
 							text = col.Text;
-							rePrep = true;
 						}
-						if (col.Rotatable || rePrep)
-						{
-							_renderer.PrepDrawString(font, foreColor, rotate: col.Rotatable);
-							rePrep = true;
-						}
+						_renderer.PrepDrawString(font, foreColor ?? _foreColor, rotate: col.Rotatable);
 
 						int textWidth = (int)_renderer.MeasureString(text, font).Width;
 						if (col.Rotatable)
@@ -265,11 +257,6 @@ namespace BizHawk.Client.EmuHawk
 							int textY = CellWidthPadding + strOffsetY;
 
 							DrawString(text, new Rectangle(baseX + textX, baseY + textY, MaxColumnWidth, CellHeight));
-						}
-
-						if (rePrep)
-						{
-							_renderer.PrepDrawString(Font, _foreColor);
 						}
 					}
 				}
@@ -299,34 +286,23 @@ namespace BizHawk.Client.EmuHawk
 
 						QueryItemText(this, f + startRow, column, out var text, ref strOffsetX, ref strOffsetY);
 
-						bool rePrep = false;
-						Color foreColor = _foreColor;
+						Color? foreColor = QueryItemForeColor?.Invoke(this, f + startRow, column);
 						Font font = Font;
 						currentCell.Column = column;
 						currentCell.RowIndex = f + startRow;
-						if (_selectedItems.Contains(currentCell))
+						if (foreColor == null && _selectedItems.Contains(currentCell))
 						{
 							foreColor = SystemColors.HighlightText;
-							rePrep = true;
 						}
 						if (string.IsNullOrEmpty(text) && mouseCell == currentCell)
 						{
 							font = new Font(Font, FontStyle.Regular);
 							foreColor = SystemColors.GrayText;
 							text = column.Text;
-							rePrep = true;
-						}
-						if (rePrep)
-						{
-							_renderer.PrepDrawString(font, foreColor);
 						}
 
+						_renderer.PrepDrawString(font, foreColor ?? _foreColor);
 						DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, column.Width, ColumnHeight));
-
-						if (rePrep)
-						{
-							_renderer.PrepDrawString(Font, _foreColor);
-						}
 					}
 				}
 			}

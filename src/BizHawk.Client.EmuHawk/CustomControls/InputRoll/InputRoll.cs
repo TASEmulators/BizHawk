@@ -449,6 +449,12 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Virtual")]
 		public event QueryItemBkColorHandler QueryItemBkColor;
 
+		/// <summary>
+		/// Fire the <see cref="QueryItemForeColor"/> event which requests the color of text for the passed cell
+		/// </summary>
+		[Category("Virtual")]
+		public event QueryItemForeColorHandler QueryItemForeColor;
+
 		[Category("Virtual")]
 		public event QueryRowBkColorHandler QueryRowBkColor;
 
@@ -530,6 +536,11 @@ namespace BizHawk.Client.EmuHawk
 		/// Retrieve the text for a cell
 		/// </summary>
 		public delegate void QueryItemTextHandler(InputRoll sender, int index, RollColumn column, out string text, ref int offsetX, ref int offsetY);
+
+		/// <summary>
+		/// Retrieve the foreground color for a cell. Return null to use the default.
+		/// </summary>
+		public delegate Color? QueryItemForeColorHandler(InputRoll sender, int index, RollColumn column);
 
 		/// <summary>
 		/// Retrieve the background color for a cell
