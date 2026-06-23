@@ -307,6 +307,10 @@ namespace BizHawk.Client.EmuHawk
 						while (iLastToKeep > -1 && (_selectedItems[iLastToKeep].RowIndex ?? -1) >= _rowCount) iLastToKeep--;
 						_selectedItems = _selectedItems.Slice(start: 0, length: iLastToKeep + 1);
 					}
+					else if (_lastFailedSelection != null && _selectedItems.Count == 0)
+					{
+						SelectCell(_lastFailedSelection);
+					}
 
 					RecalculateScrollBars();
 				}
@@ -603,6 +607,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private int? _lastSelectedRow;
+
+		/// <summary>
+		/// The idea for this is to allow a row to be "selected" before it exists.
+		/// <br/>For example, clicking on the cursor column in TAStudio to seek to a frame that is past the end of the movie. This should select the row once the seek ends.
+		/// </summary>
+		private Cell/*?*/ _lastFailedSelection;
 
 		public void SelectRow(int index, bool val)
 		{
@@ -1799,6 +1809,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="toggle">Specifies whether or not to toggle the current state, rather than force the value to true</param>
 		private void SelectCell(Cell cell, bool toggle = false)
 		{
+			_lastFailedSelection = null;
 			if (cell.RowIndex is int row && row < RowCount)
 			{
 				if (!MultiSelect)
@@ -1841,6 +1852,10 @@ namespace BizHawk.Client.EmuHawk
 						_selectedItems.Add(CurrentCell);
 					}
 				}
+			}
+			else
+			{
+				_lastFailedSelection = cell;
 			}
 		}
 
