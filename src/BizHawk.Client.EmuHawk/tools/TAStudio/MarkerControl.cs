@@ -115,11 +115,11 @@ namespace BizHawk.Client.EmuHawk
 				if (marker.WantsState)
 				{
 					bool hasState = marker.Frame == 0 || Tastudio.CurrentTasMovie.TasStateManager.HasState(marker.Frame - 1);
-					text = hasState ? "✔" : "!";
+					text = hasState ? "✔" : "-";
 				}
 				else
 				{
-					text = "";
+					text = "x";
 				}
 			}
 		}
