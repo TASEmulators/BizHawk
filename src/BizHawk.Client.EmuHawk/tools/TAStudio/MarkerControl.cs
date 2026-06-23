@@ -40,6 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			SetupColumns();
 			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
+			MarkerView.QueryItemForeColor += MarkerView_QueryItemForeColor;
 		}
 
 		public void UpdateHotkeyTooltips(Config config)
@@ -122,6 +123,20 @@ namespace BizHawk.Client.EmuHawk
 					text = "x";
 				}
 			}
+		}
+
+		private Color? MarkerView_QueryItemForeColor(InputRoll sender, int index, RollColumn column)
+		{
+			if (column.Name == SAVESTATE_COL_NAME)
+			{
+				TasMovieMarker marker = Markers[index];
+				if (!marker.WantsState)
+				{
+					return Color.OrangeRed;
+				}
+			}
+
+			return null;
 		}
 
 		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
