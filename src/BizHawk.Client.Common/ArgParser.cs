@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 
 		private static readonly Option<string?> OptionWMClass = new ("--wmclass")
 		{
-			Description = "set a custom WM_CLASS for this Bizhawk initiation, Linux only."
+			Description = "set a custom WM_CLASS for this Bizhawk initiation, Linux only.",
 		};
 
 		static ArgParser()

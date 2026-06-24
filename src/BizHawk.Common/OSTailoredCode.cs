@@ -309,7 +309,6 @@ namespace BizHawk.Common
 				XlibImports.XFetchName(x11Display, windowList[windowIterator], out string name);
 				if(name?.Contains("BizHawk") == true)
 				{
-					//A bizhawk window found:
 					//Interogate if a WM_CLASS is already set
 					XlibImports.XGetClassHint(x11Display, windowList[windowIterator], out var classHint);
 					if(classHint == IntPtr.Zero)
