@@ -292,5 +292,36 @@ namespace BizHawk.Common
 			if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
 			return stdout.ReadLine()!;
 		}
+
+		public static void SetWMClass(IntPtr x11Display, string className)
+		{
+			//Setup the ClassHint
+			var wmSet = new XlibImports.XClassHint{res_name = Marshal.StringToCoTaskMemAnsi("BizHawk"), res_class = Marshal.StringToCoTaskMemAnsi(className)};
+			IntPtr point = XlibImports.XAllocClassHint();
+			Marshal.StructureToPtr(wmSet, point, true);
+
+			//To find the window we must query twice, once to get the array length and the second to populate
+			XlibImports.XQueryTree(x11Display, XlibImports.XDefaultRootWindow(x11Display), out _, out _, out _, out int windowCount);
+			IntPtr[] windowList = new IntPtr[windowCount];
+			XlibImports.XQueryTree(x11Display, XlibImports.XDefaultRootWindow(x11Display), out _, out _, out windowList, out windowCount);
+			for(int windowIterator = 0; windowIterator < windowCount; windowIterator++) 
+			{
+				XlibImports.XFetchName(x11Display, windowList[windowIterator], out string name);
+				if(name?.Contains("BizHawk") == true)
+				{
+					//A bizhawk window found:
+					//Interogate if a WM_CLASS is already set
+					XlibImports.XGetClassHint(x11Display, windowList[windowIterator], out var classHint);
+					if(classHint == IntPtr.Zero)
+					{
+						//Assign+Retrieve - doesn't seem to set properly without retrieving it after)
+						XlibImports.XSetClassHint(x11Display, windowList[windowIterator], point);
+						XlibImports.XGetClassHint(x11Display, windowList[windowIterator],out _);
+					}
+					//Reset classHint after checking, doesn't seem to overwrite otherwise.
+					classHint = IntPtr.Zero;
+				}
+			}
+		}
 	}
 }
