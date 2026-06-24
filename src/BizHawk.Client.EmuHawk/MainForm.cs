@@ -1020,7 +1020,8 @@ namespace BizHawk.Client.EmuHawk
 				//Code to set WM_CLASS only need be run once, but must be run after the application has rendered at least once
 				if(_runWMSetOnce && OSTailoredCode.CurrentOS==OSTailoredCode.DistinctOS.Linux)
 				{
-					OSTailoredCode.SetWMClass(_x11Display,"BizHawk");
+					string wmclass = _argParser.wmClassName is not null ? _argParser.wmClassName : "BizHawk";
+					OSTailoredCode.SetWMClass(_x11Display,wmclass);
 					_runWMSetOnce = false;
 				}
 
