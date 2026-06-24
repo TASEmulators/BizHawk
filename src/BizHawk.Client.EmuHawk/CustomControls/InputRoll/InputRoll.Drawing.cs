@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 							foreColor = SystemColors.HighlightText;
 							rePrep = true;
 						}
-						if (text.Length == 0 && mouseCell == currentCell)
+						if (string.IsNullOrEmpty(text) && mouseCell == currentCell)
 						{
 							font = new Font(Font, FontStyle.Regular);
 							foreColor = SystemColors.GrayText;
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 							foreColor = SystemColors.HighlightText;
 							rePrep = true;
 						}
-						if (text.Length == 0 && mouseCell == currentCell)
+						if (string.IsNullOrEmpty(text) && mouseCell == currentCell)
 						{
 							font = new Font(Font, FontStyle.Regular);
 							foreColor = SystemColors.GrayText;
