@@ -304,7 +304,7 @@ namespace BizHawk.Common
 			XlibImports.XQueryTree(x11Display, XlibImports.XDefaultRootWindow(x11Display), out _, out _, out _, out int windowCount);
 			IntPtr[] windowList = new IntPtr[windowCount];
 			XlibImports.XQueryTree(x11Display, XlibImports.XDefaultRootWindow(x11Display), out _, out _, out windowList, out windowCount);
-			for(int windowIterator = 0; windowIterator < windowCount; windowIterator++) 
+			for(int windowIterator = 0; windowIterator < windowCount; windowIterator++)
 			{
 				XlibImports.XFetchName(x11Display, windowList[windowIterator], out string name);
 				if(name?.Contains("BizHawk") == true)
