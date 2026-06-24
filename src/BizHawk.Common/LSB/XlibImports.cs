@@ -715,5 +715,27 @@ namespace BizHawk.Common
 		[DllImport(XLIB)]
 		[return: MarshalAs(UnmanagedType.SysUInt)]
 		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, uint keycode, int group, int level);
+	
+			[DllImport(XLIB)]
+		public static extern IntPtr XAllocClassHint();
+
+		[DllImport(XLIB)]
+		public static extern Status XSetClassHint(IntPtr display, IntPtr window, IntPtr classHint);
+
+		[DllImport(XLIB)]
+		public static extern Status XGetClassHint(IntPtr display, IntPtr window, out IntPtr classHint);
+
+		public struct XClassHint
+		{
+			public IntPtr res_name;	
+			public IntPtr res_class;
+		}
+
+		[DllImport(XLIB)]
+		public static extern Status XQueryTree(IntPtr display, IntPtr window, out IntPtr rootReturn, out IntPtr parentReturn, out IntPtr[] childrenReturn, out int childCount);
+	
+		[DllImport(XLIB)]
+		public static extern Status XFetchName(IntPtr display, IntPtr window, out string returnedName);
+
 	}
 }
