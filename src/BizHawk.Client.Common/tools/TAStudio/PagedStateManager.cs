@@ -656,8 +656,11 @@ namespace BizHawk.Client.Common
 				if (statesToSave.Count > 2)
 				{
 					int diff = statesToSave[statesToSave.Count - 1].Frame - statesToSave[statesToSave.Count - 3].Frame;
-					bool shouldSave = diff > Settings.FramesBetweenSavedStates ||
-						(Settings.ForceSaveMarkerStates && _reserveCallback(state.Frame));
+					bool shouldSave = diff > Settings.FramesBetweenSavedStates;
+					if (!shouldSave && Settings.ForceSaveMarkerStates)
+					{
+						shouldSave = _reserveCallback(statesToSave[statesToSave.Count - 2].Frame);
+					}
 
 					if (!shouldSave) statesToSave.RemoveAt(statesToSave.Count - 2);
 				}

@@ -628,6 +628,38 @@ namespace BizHawk.Tests.Client.Common.Movie
 			Assert.IsFalse(manager.HasState(1));
 		}
 
+		[TestMethod]
+		public void ForceSaveMarkerTest()
+		{
+			// arrange
+			IStatable ss = CreateStateSource();
+			List<int> reservedFrames = [ 2 ];
+			PagedStateManager.PagedSettings settings = new()
+			{
+				FramesBetweenNewStates = 4,
+				FramesBetweenSavedStates = 100,
+				ForceSaveMarkerStates = true,
+			};
+			PagedStateManager manager = new(settings, reservedFrames.Contains);
+			manager.Engage(ss.CloneSavestate());
+			for (int i = 0; i <= manager.Settings.FramesBetweenNewStates * 2; i++)
+			{
+				manager.Capture(i, ss);
+			}
+
+			MemoryStream ms = new();
+			BinaryWriter bw = new(ms);
+
+			// act
+			manager.SaveStateHistory(bw);
+
+			// assert
+			PagedStateManager loadingManager = new(settings, reservedFrames.Contains);
+			ms.Seek(0, SeekOrigin.Begin);
+			loadingManager.LoadStateHistory(new BinaryReader(ms));
+			Assert.IsTrue(loadingManager.HasState(2));
+		}
+
 		private class StateSource : IStatable
 		{
 			public int Frame { get; set; }
