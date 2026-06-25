@@ -1,4 +1,7 @@
+#nullable enable
+
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 using NLua;
 using BizHawk.Emulation.Common;
@@ -12,30 +15,30 @@ namespace BizHawk.Client.Common
 	{
 		internal static readonly string EMPTY_UUID_STR = Guid.Empty.ToString("D");
 
-		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+		public required NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
-		public NLFRemoveCallback RemoveNamedFunctionMatching { get; set; }
-
-		[OptionalService]
-		private IInputPollable InputPollableCore { get; set; }
+		public required NLFRemoveCallback RemoveNamedFunctionMatching { get; set; }
 
 		[OptionalService]
-		private IDebuggable DebuggableCore { get; set; }
+		private IInputPollable? InputPollableCore { get; set; }
+
+		[OptionalService]
+		private IDebuggable? DebuggableCore { get; set; }
 
 		[RequiredService]
-		private IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; } = null!;
 
 		[OptionalService]
-		private IMemoryDomains Domains { get; set; }
+		private IMemoryDomains? Domains { get; set; }
 
 		public EventsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
 		public override string Name => "event";
 
-		private void AddMemCallbackOnCore(INamedLuaFunction nlf, MemoryCallbackType kind, string/*?*/ scope, uint? address)
+		private void AddMemCallbackOnCore(INamedLuaFunction nlf, MemoryCallbackType kind, string? scope, uint? address)
 		{
-			var memCallbackImpl = DebuggableCore.MemoryCallbacks;
+			var memCallbackImpl = DebuggableCore!.MemoryCallbacks;
 			MemoryCallbackDelegate memCallback = (addr, val, flags) =>
 				nlf.Call(addr, val, flags) is [ long n ] ? unchecked((uint) n) : null;
 
@@ -62,24 +65,24 @@ namespace BizHawk.Client.Common
 
 		[LuaMethod("can_use_callback_params", "Returns whether EmuHawk will pass arguments to callbacks. The current version passes arguments to \"memory\" callbacks (RAM/ROM/bus R/W), so this function will return true for that input. (It returns false for any other input.) This tells you whether it's necessary to enable workarounds/hacks because a script is running in a version without parameter support.")]
 		[LuaMethodExample("local mem_callback = event.can_use_callback_params(\"memory\") and mem_callback or mem_callback_pre_29;")]
-		public bool CanUseCallbackParams(string subset = null)
+		public bool CanUseCallbackParams(string? subset = null)
 			=> subset is "memory";
 
 		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
-		public string OnFrameEnd(LuaFunction luaf, string name = null)
+		public string OnFrameEnd(LuaFunction luaf, string? name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_POSTFRAME, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local steveonf = event.onframestart(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the beginning of each frame before any emulation and drawing occurs\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
-		public string OnFrameStart(LuaFunction luaf, string name = null)
+		public string OnFrameStart(LuaFunction luaf, string? name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_PREFRAME, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local steveoni = event.oninputpoll(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each time the emulator core polls for input\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
-		public string OnInputPoll(LuaFunction luaf, string name = null)
+		public string OnInputPoll(LuaFunction luaf, string? name = null)
 		{
 			var nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_INPUTPOLL, ApiGroup.PROHIBITED_MID_FRAME, name: name);
 			//TODO should we bother registering the function if the service isn't supported? none of the other events work this way --yoshi
@@ -112,7 +115,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Your callback can have 1 parameter, which will be the name of the loaded state.")]
-		public string OnLoadState(LuaFunction luaf, string name = null)
+		public string OnLoadState(LuaFunction luaf, string? name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_LOADSTATE, name: name)
 				.GuidStr;
 
@@ -121,8 +124,8 @@ namespace BizHawk.Client.Common
 		public string OnMemoryExecute(
 			LuaFunction luaf,
 			uint address,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 //			Log("Deprecated function event.onmemoryexecute() used, replace the call with event.on_bus_exec().");
 			return OnBusExec(luaf, address, name: name, scope: scope);
@@ -133,8 +136,8 @@ namespace BizHawk.Client.Common
 		public string OnBusExec(
 			LuaFunction luaf,
 			uint address,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 			try
 			{
@@ -167,8 +170,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("onmemoryexecuteany", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
 		public string OnMemoryExecuteAny(
 			LuaFunction luaf,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 //			Log("Deprecated function event.onmemoryexecuteany(...) used, replace the call with event.on_bus_exec_any(...).");
 			return OnBusExecAny(luaf, name: name, scope: scope);
@@ -178,8 +181,8 @@ namespace BizHawk.Client.Common
 		[LuaMethod("on_bus_exec_any", "Fires immediately before every instruction executed (in the specified scope) by the core (CPU-intensive). Your callback can have 3 parameters {{(addr, val, flags)}}. {{val}} is the value to be executed (or {{0}} always, if this feature is only partially implemented).")]
 		public string OnBusExecAny(
 			LuaFunction luaf,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 			try
 			{
@@ -211,8 +214,8 @@ namespace BizHawk.Client.Common
 		public string OnMemoryRead(
 			LuaFunction luaf,
 			uint? address = null,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 //			Log("Deprecated function event.onmemoryread(...) used, replace the call with event.on_bus_read(...).");
 			return OnBusRead(luaf, address, name: name, scope: scope);
@@ -223,8 +226,8 @@ namespace BizHawk.Client.Common
 		public string OnBusRead(
 			LuaFunction luaf,
 			uint? address = null,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 			try
 			{
@@ -256,8 +259,8 @@ namespace BizHawk.Client.Common
 		public string OnMemoryWrite(
 			LuaFunction luaf,
 			uint? address = null,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 //			Log("Deprecated function event.onmemorywrite(...) used, replace the call with event.on_bus_write(...).");
 			return OnBusWrite(luaf, address, name: name, scope: scope);
@@ -268,8 +271,8 @@ namespace BizHawk.Client.Common
 		public string OnBusWrite(
 			LuaFunction luaf,
 			uint? address = null,
-			string name = null,
-			string scope = null)
+			string? name = null,
+			string? scope = null)
 		{
 			try
 			{
@@ -298,19 +301,19 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onsavestate", "Fires after a state is saved. Your callback can have 1 parameter, which will be the name of the saved state.")]
-		public string OnSaveState(LuaFunction luaf, string name = null)
+		public string OnSaveState(LuaFunction luaf, string? name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_SAVESTATE, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local steveone = event.onexit(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the calling script has stopped\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
-		public string OnExit(LuaFunction luaf, string name = null)
+		public string OnExit(LuaFunction luaf, string? name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_ENGINESTOP, name: name)
 				.GuidStr;
 
 		[LuaMethodExample("local closeGuid = event.onconsoleclose(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires when the Lua Console closes\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onconsoleclose", "Fires when the Lua Console closes")]
-		public string OnConsoleClose(LuaFunction luaf, string name = null)
+		public string OnConsoleClose(LuaFunction luaf, string? name = null)
 			=> CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_CONSOLECLOSE, name: name)
 				.GuidStr;
 
@@ -337,7 +340,7 @@ namespace BizHawk.Client.Common
 				: _th.CreateTable();
 		}
 
-		private string ProcessScope(string scope)
+		private string ProcessScope(string? scope)
 		{
 			if (string.IsNullOrWhiteSpace(scope))
 			{
@@ -347,15 +350,15 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					scope = DebuggableCore.MemoryCallbacks.AvailableScopes[0];
+					scope = DebuggableCore!.MemoryCallbacks.AvailableScopes[0];
 				}
 			}
 
-			return scope;
+			return scope!;
 		}
 
-		private bool HasScope(string scope)
+		private bool HasScope([NotNullWhen(false)] string? scope)
 			=> string.IsNullOrWhiteSpace(scope)
-				|| DebuggableCore.MemoryCallbacks.AvailableScopes.AsSpan().Contains(scope);
+				|| DebuggableCore!.MemoryCallbacks.AvailableScopes.AsSpan().Contains(scope);
 	}
 }
