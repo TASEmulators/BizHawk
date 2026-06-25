@@ -80,6 +80,8 @@ namespace BizHawk.Client.EmuHawk
 			_axisRestoreId = CurrentTasMovie.ChangeLog.MostRecentId;
 
 			CurrentTasMovie.ChangeLog.BeginNewBatch($"Axis mouse edit, frame {GetSelection().First()}");
+
+			Cursor = Cursors.SizeNS;
 		}
 
 		public bool AxisEditingMode => AxisEditColumn != null;
@@ -1131,6 +1133,8 @@ namespace BizHawk.Client.EmuHawk
 			_axisEditYPos = -1; // exit mouse edit mode
 
 			MainForm.BlockFrameAdvance = false;
+
+			Cursor = null;
 
 			RefreshDialog(); // Even if no edits happened, the undo form may need updating because we potentially ended a batch.
 		}
