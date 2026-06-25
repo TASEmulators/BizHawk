@@ -180,6 +180,9 @@ namespace BizHawk.Client.EmuHawk
 				// workaround for https://github.com/mono/mono/issues/12644
 				ColumnRightClickMenu.Items.Insert(0, new ToolStripMenuItemEx { Text = "(Dismiss Menu)" }); // don't even need to attach any behaviour, since clicking anything will dismiss the menu first
 				ColumnRightClickMenu.Items.Insert(1, new ToolStripSeparatorEx());
+
+				// see https://github.com/TASEmulators/BizHawk/issues/4779#issuecomment-4800440717
+				this.Shown += (_, _) => RepositionRolls();
 			}
 			_tasViewPanel = MainVertialSplit.Panel1;
 			// The built-in scroll feature of .NET's scrollable controls is non-functional. So, custom scroll behavior!
