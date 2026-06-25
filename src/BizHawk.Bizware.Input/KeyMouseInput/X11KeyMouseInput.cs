@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -23,9 +23,9 @@ namespace BizHawk.Bizware.Input
 
 		public X11KeyMouseInput()
 		{
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Linux)
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Linux && OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.macOS)
 			{
-				throw new NotSupportedException("X11 is Linux only");
+				throw new NotSupportedException("X11 is Linux/macOS only");
 			}
 
 			Display = XOpenDisplay(null);
