@@ -295,6 +295,13 @@ namespace BizHawk.Client.EmuHawk
 				else Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 
+			//Code to set WM_CLASS
+			if(OSTailoredCode.CurrentOS==OSTailoredCode.DistinctOS.Linux)
+			{
+				string wmclass = _argParser.wmClassName is not null ? _argParser.wmClassName : "BizHawk";
+				XlibImports.SetWMClass(_x11Display, wmclass);
+			}
+
 #if DEBUG
 			AddDebugMenu();
 #endif
@@ -914,8 +921,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private bool _skipNextAltRelease = true;
 
-		private bool _runWMSetOnce = true;
-
 		public int ProgramRunLoop()
 		{
 			// needs to be done late, after the log console snaps on top
@@ -1016,14 +1021,6 @@ namespace BizHawk.Client.EmuHawk
 				StepRunLoop_Core();
 				Render();
 				StepRunLoop_Throttle();
-
-				//Code to set WM_CLASS only need be run once, but must be run after the application has rendered at least once
-				if(_runWMSetOnce && OSTailoredCode.CurrentOS==OSTailoredCode.DistinctOS.Linux)
-				{
-					string wmclass = _argParser.wmClassName is not null ? _argParser.wmClassName : "BizHawk";
-					OSTailoredCode.SetWMClass(_x11Display,wmclass);
-					_runWMSetOnce = false;
-				}
 
 				// HACK: RAIntegration might peek at memory during messages
 				// we need this to allow memory access here, otherwise it will deadlock
