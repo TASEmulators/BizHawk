@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -221,6 +222,11 @@ namespace BizHawk.Client.EmuHawk
 			initialConfig.ResolveDefaults();
 			if (cliFlags.GDIPlusRequested) initialConfig.DispMethod = EDispMethod.GdiPlus;
 			// initialConfig should really be globalConfig as it's mutable
+
+			if (initialConfig.SetInvariantCulture)
+			{
+				CultureInfo.CurrentCulture = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+			}
 
 			StringLogUtil.DefaultToDisk = initialConfig.Movies.MoviesOnDisk;
 
