@@ -48,3 +48,5 @@ UpgradeLog.htm
 /packages
 
 launchSettings.json
+Assets/EmuHawkMono_laststderr.txt
+Assets/EmuHawkMono_laststdout.txt
