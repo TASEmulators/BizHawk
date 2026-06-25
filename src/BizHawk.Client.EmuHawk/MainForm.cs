@@ -2934,8 +2934,8 @@ namespace BizHawk.Client.EmuHawk
 
 				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
-				// client input-related duties
-				OSD.ClearGuiText();
+				// Clear stuff previously drawn by gui API
+				DisplayManager.ClearApiHawkSurfaces();
 
 				CheatList.Pulse();
 
@@ -3049,6 +3049,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					UpdateToolsAfter();
 				}
+				DisplayManager.OnDraw?.Invoke();
 
 				if (newFrame)
 				{
@@ -4092,7 +4093,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			OSD.ClearGuiText();
+			DisplayManager.ClearApiHawkSurfaces();
 			if (SavestateLoaded is not null)
 			{
 				StateLoadedEventArgs args = new(userFriendlyStateName);
