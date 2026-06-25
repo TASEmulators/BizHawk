@@ -23,19 +23,23 @@ namespace BizHawk.Bizware.Graphics
 		{
 			if (OSTailoredCode.IsUnixHost)
 			{
-				// make sure that Linux uses the x11 video driver
-				// we need this as mono winforms uses x11
+				// make sure that we use the x11 video driver
+				// we need this as mono winforms uses x11 (on macOS, via XQuartz)
 				// and the user could potentially try to force the wayland video driver via env vars
 				SDL_SetHintWithPriority("SDL_VIDEODRIVER", "x11", SDL_HintPriority.SDL_HINT_OVERRIDE);
-				// try to use EGL if it is available
-				// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
-				// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
-				SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
-				// set EGL_PLATFORM, many users have reported crashes with SDL_GL_LoadLibrary
-				// this is from EGL_PLATFORM being set to wayland by users to workaround wonky autodetection with nvidia drivers
-				// this is made worse with SDL as it uses eglGetDisplay rather than eglGetPlatformDisplay
-				// as such EGL assumes the display is a wayland display and proceeds to crash with that assumption
-				Environment.SetEnvironmentVariable("EGL_PLATFORM", "x11");
+				if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.macOS)
+				{
+					// try to use EGL if it is available
+					// GLX is the old API, and is the more or less "deprecated" at this point, and potentially more buggy with some drivers
+					// we do need to a bit more work, in case EGL is not actually available or potentially doesn't have desktop GL support
+					SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "1");
+					// set EGL_PLATFORM, many users have reported crashes with SDL_GL_LoadLibrary
+					// this is from EGL_PLATFORM being set to wayland by users to workaround wonky autodetection with nvidia drivers
+					// this is made worse with SDL as it uses eglGetDisplay rather than eglGetPlatformDisplay
+					// as such EGL assumes the display is a wayland display and proceeds to crash with that assumption
+					Environment.SetEnvironmentVariable("EGL_PLATFORM", "x11");
+					// on macOS, XQuartz provides GLX (not EGL), so we leave the above unset and let SDL use GLX
+				}
 			}
 
 			// init SDL video
