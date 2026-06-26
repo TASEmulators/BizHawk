@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			NativeImpl = BizInvoker.GetInvoker<WaterboxHostNative>(
 				new DynamicLibraryImportResolver(
-					(OSTailoredCode.IsUnixHost ? "libwaterboxhost" : "waterboxhost") + OSTailoredCode.DllExtension,
+					DynamicLibraryImportResolver.PlatformFileName("waterboxhost"),
 					hasLimitedLifetime: false),
 				CallingConventionAdapters.Native);
 #if !DEBUG
