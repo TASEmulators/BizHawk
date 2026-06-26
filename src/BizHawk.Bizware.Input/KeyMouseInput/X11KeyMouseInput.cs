@@ -3,8 +3,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-using BizHawk.Common;
-
 using static BizHawk.Common.XInput2Imports;
 using static BizHawk.Common.XlibImports;
 
