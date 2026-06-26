@@ -7,6 +7,11 @@ namespace BizHawk.Common
 {
 	internal sealed class MemoryBlockLinuxPal : IMemoryBlockPal
 	{
+		private const int MAP_PRIVATE = 0x2;
+
+		// MAP_ANON is 0x20 on Linux/BSD but 0x1000 on macOS
+		private static readonly int MAP_ANON = OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS ? 0x1000 : 0x20;
+
 		public ulong Start { get; }
 		private readonly ulong _size;
 		private bool _disposed;
@@ -17,13 +22,9 @@ namespace BizHawk.Common
 		/// <exception cref="InvalidOperationException">
 		/// failed to mmap
 		/// </exception>
-		// MAP_PRIVATE is 0x02 everywhere, but MAP_ANON differs: 0x20 on Linux/BSD, 0x1000 on macOS.
-		private static readonly int MapPrivateAnon
-			= 0x02 | (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.macOS ? 0x1000 : 0x20);
-
 		public MemoryBlockLinuxPal(ulong size)
 		{
-			var ptr = mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, MapPrivateAnon, -1, IntPtr.Zero);
+			var ptr = mmap(IntPtr.Zero, Z.UU(size), MemoryProtection.None, MAP_PRIVATE | MAP_ANON, -1, IntPtr.Zero);
 			if (ptr == new IntPtr(-1))
 			{
 				throw new InvalidOperationException($"{nameof(mmap)}() failed with error {Marshal.GetLastWin32Error()}");

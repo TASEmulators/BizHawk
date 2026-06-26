@@ -23,11 +23,8 @@ namespace BizHawk.Bizware.Input
 
 		public X11KeyMouseInput()
 		{
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Linux && OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.macOS)
-			{
-				throw new NotSupportedException("X11 is Linux/macOS only");
-			}
-
+			// no OS check: X11 may work on any host with an X server (e.g. macOS via XQuartz);
+			// XOpenDisplay below fails cleanly otherwise, and Windows uses RawKeyMouseInput
 			Display = XOpenDisplay(null);
 
 			if (Display == IntPtr.Zero)

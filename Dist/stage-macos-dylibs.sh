@@ -2,10 +2,10 @@
 # Stage the macOS (x86_64 / Rosetta) native-library glue into the EmuHawk output dir.
 #
 # Run this once after building (Dist/BuildRelease.sh) and before launching with
-# Assets/EmuHawkMonoMacOS.sh. It symlinks the Homebrew-provided dependencies (SDL deps,
+# Assets/EmuHawkMono.sh. It symlinks the Homebrew-provided dependencies (SDL deps,
 # OpenAL, Lua, zstd, SQLite, the X11 client stack) and creates the Linux-soname aliases
 # (libX11.so.6, etc.) that BizHawk's P/Invokes and Mono expect, all pointing at the SAME
-# Homebrew libX11 so cairo/libgdiplus/WinForms/SDL agree (see notes in EmuHawkMonoMacOS.sh).
+# Homebrew libX11 so cairo/libgdiplus/WinForms/SDL agree (see notes in EmuHawkMono.sh).
 #
 # The dylibs BizHawk itself builds/bundles (libSDL2, libgdiplus, libcimgui, libwaterboxhost)
 # ship in Assets/dll and are copied to output/dll by the build, so they are not handled here.

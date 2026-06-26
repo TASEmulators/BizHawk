@@ -12,12 +12,6 @@ namespace BizHawk.Common
 		public static readonly DistinctOS CurrentOS;
 		public static readonly bool IsUnixHost;
 
-		/// <summary>
-		/// The host OS' conventional file extension for dynamically-linked libraries, including the leading dot
-		/// (<c>".dll"</c> on Windows, <c>".dylib"</c> on macOS, <c>".so"</c> on Linux/BSD).
-		/// </summary>
-		public static readonly string DllExtension;
-
 		static OSTailoredCode()
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -42,13 +36,6 @@ namespace BizHawk.Common
 			}
 
 			IsUnixHost = CurrentOS != DistinctOS.Windows;
-
-			DllExtension = CurrentOS switch
-			{
-				DistinctOS.Windows => ".dll",
-				DistinctOS.macOS => ".dylib",
-				_ => ".so", // Linux/BSD
-			};
 		}
 
 		private static readonly Lazy<(WindowsVersion, Version?)?> _HostWindowsVersion = new(() =>
