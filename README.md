@@ -188,11 +188,11 @@ Setup (all the brew commands must be the **x86_64** Homebrew under `/usr/local`)
    `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
    (prefix every command below with `arch -x86_64` and use `/usr/local/bin/brew`).
 3. Install the runtime dependencies:
-   `brew install mono mono-libgdiplus sdl2 openal-soft lua@5.4 zstd sqlite`
+   `brew install mono mono-libgdiplus sdl2 openal-soft lua@5.4 zstd sqlite libx11 libxext libxrender libxcursor libxinerama libxi libxrandr libxtst libxfixes libxscrnsaver libxau libxdmcp libxcb`
    `brew install --cask xquartz` (then log out/in so the X server is registered)
-4. Get a build: either download the macOS dev build, or build from source (see [*Building*](#building)) and then run `Dist/stage-macos-dylibs.sh` to link the dependencies into `output/dll`.
+4. Get a build: either download the macOS dev build, or build from source (see [*Building*](#building)).
 
-Run `EmuHawkMono.sh` to start EmuHawk (it forces the X11 WinForms driver and GdiPlus video, which are required on macOS). **XQuartz must be running.** It takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments), e.g. `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.nds`.
+Run `EmuHawkMono.sh` to start EmuHawk. **XQuartz must be running.** The script forces the X11 WinForms driver and symlinks the Homebrew/XQuartz dependencies into `dll/` on each launch; the display method defaults to GdiPlus (software) on macOS. It takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments), e.g. `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.nds`.
 
 What works: most non-GL cores including **Game Boy/Color (Gambatte)**, **GBA (mGBA)**, and **Nintendo DS (melonDS)**, plus Lua scripting. Cores that require host OpenGL fall back to their software renderers. N64 and other GL-only paths are not expected to work.
 
