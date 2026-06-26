@@ -44,6 +44,7 @@ Darwin)
 	[ -d /usr/local/bin ] && export PATH="/usr/local/bin:$PATH"
 	export MONO_MWF_MAC_FORCE_X11=1 # the default macOS WinForms driver (Carbon) is unported to 64-bit
 	[ -z "$DISPLAY" ] && export DISPLAY=:0
+	export MONO_GC_PARAMS="nursery-size=256m${MONO_GC_PARAMS:+,}$MONO_GC_PARAMS"
 	;;
 *)
 	# GNU+Linux (and other Unix)
