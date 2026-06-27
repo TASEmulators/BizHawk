@@ -345,6 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputRoll roll = MakeInputRoll();
 				roll.AllColumns.AddRange(cols);
+				UpdateColumnWidths(roll);
 			}
 
 			_activeInputRoll = _inputRolls[0];
