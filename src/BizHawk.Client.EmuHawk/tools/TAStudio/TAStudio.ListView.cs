@@ -252,6 +252,7 @@ namespace BizHawk.Client.EmuHawk
 					_inputRolls[i].SuspendDrawing();
 					_inputRolls[i].Top = y - _tasViewVBar.Value;
 					_inputRolls[i].Height = _inputRolls[i].TotalColWidth + 1 + _tasViewHBar.Height;
+					_inputRolls[i].Left = _inputRolls[i].Margin.Left;
 
 					y += _inputRolls[i].Height + margin;
 				}
@@ -293,6 +294,7 @@ namespace BizHawk.Client.EmuHawk
 					_inputRolls[i].SuspendDrawing();
 					_inputRolls[i].Left = x - _tasViewHBar.Value;
 					_inputRolls[i].Width = _inputRolls[i].TotalColWidth + 1 + _tasViewVBar.Width;
+					_inputRolls[i].Top = _inputRolls[i].Margin.Top;
 
 					x += _inputRolls[i].Width + margin;
 				}
