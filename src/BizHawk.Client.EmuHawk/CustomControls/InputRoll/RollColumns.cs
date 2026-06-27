@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var col in VisibleColumns)
 			{
 				col.Left = pos;
-				pos += col.Width;
+				pos += col.ScaledWidth;
 				col.Right = pos;
 			}
 
