@@ -1303,6 +1303,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			foreach (InputRoll roll2 in _inputRolls)
+			{
+				roll2.HorizontalOrientation = roll.HorizontalOrientation;
+			}
+
 			roll.AllColumns.ColumnsChanged();
 		}
 
