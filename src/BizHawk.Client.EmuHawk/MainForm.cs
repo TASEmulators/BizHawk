@@ -1337,12 +1337,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EmulatorPaused = !EmulatorPaused;
 			SetPauseStatusBarIcon();
-
-			// TODO: have tastudio set a pause status change callback, or take control over pause
-			if (Tools.Has<TAStudio>())
-			{
-				Tools.UpdateValues<TAStudio>();
-			}
 		}
 
 		public void TakeScreenshotToClipboard()

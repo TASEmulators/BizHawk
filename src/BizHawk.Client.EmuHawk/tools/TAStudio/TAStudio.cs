@@ -1079,8 +1079,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void OnPauseToggle(bool newPauseState)
 		{
-			// On pause, interrupt merging of recorded frames.
-			if (newPauseState) _lastRecordAction = -1;
+			if (newPauseState)
+			{
+				// On pause, interrupt merging of recorded frames.
+				_lastRecordAction = -1;
+
+				if (TasPlaybackBox.TurboSeek && SeekingTo != -1)
+				{
+					SetTasViewRowCount(); // so follow cursor works
+					UpdateAfter();
+				}
+			}
 		}
 
 		private void SetSplicer()

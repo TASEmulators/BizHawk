@@ -64,11 +64,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void FastUpdateBefore() => UpdateBefore();
 
-		protected override void GeneralUpdate()
-		{
-			RefreshDialog();
-		}
-
 		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
