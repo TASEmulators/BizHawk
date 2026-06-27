@@ -579,15 +579,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>for Lua</remarks>
 		public void AddColumn(string name, string text, int widthUnscaled, int rollIndex)
 		{
-			if (_inputRolls[0].AllColumns.Exists(c => c.Name == name)) return;
-
 			for (int i = 0; i < _inputRolls.Count; i++)
 			{
-				RollColumn col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+				RollColumn/*?*/ col = _inputRolls[i].AllColumns[name];
+				if (col == null)
+				{
+					col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+					_inputRolls[i].AllColumns.Add(col);
+				}
+				else
+				{
+					col.VerticalWidth = col.HorizontalHeight = widthUnscaled;
+					col.Text = text;
+				}
 				col.Visible = i == rollIndex;
-				_inputRolls[rollIndex].AllColumns.Add(col);
-				_inputRolls[rollIndex].AllColumns.ColumnsChanged();
-				_inputRolls[rollIndex].Refresh();
+				_inputRolls[i].AllColumns.ColumnsChanged();
+				_inputRolls[i].Refresh();
 			}
 
 			SetUpToolStripColumns();
@@ -777,6 +784,7 @@ namespace BizHawk.Client.EmuHawk
 						roll.HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
 						roll.LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
 						roll.HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
+						roll.AllColumns[CursorColumnName].VerticalWidth = roll.AllColumns[CursorColumnName].HorizontalHeight = 18;
 						UpdateColumnWidths(roll);
 						UpdateInputRollDefinition(roll);
 					}
