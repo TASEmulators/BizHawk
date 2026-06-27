@@ -8,7 +8,30 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public int VerticalWidth { get; }
 		public int HorizontalHeight { get; }
-		public int Width { get; set; }
+
+		private int _width;
+		public int Width
+		{
+			get => _width;
+			set
+			{
+				_width = value;
+				_scaledWidth = UIHelper.ScaleX(value);
+			}
+		}
+
+		private int _scaledWidth;
+		[JsonIgnore]
+		public int ScaledWidth
+		{
+			get => _scaledWidth;
+			set
+			{
+				_scaledWidth = value;
+				_width = UIHelper.UnscaleX(value);
+			}
+		}
+
 		public int Left { get; set; }
 		public int Right { get; set; }
 
@@ -46,8 +69,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Name = name;
 			Text = text;
-			VerticalWidth = UIHelper.ScaleX(verticalWidth);
-			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
+			VerticalWidth = verticalWidth;
+			HorizontalHeight = horizontalHeight;
 			Width = VerticalWidth;
 		}
 

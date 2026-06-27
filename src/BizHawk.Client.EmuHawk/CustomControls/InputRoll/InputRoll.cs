@@ -156,9 +156,9 @@ namespace BizHawk.Client.EmuHawk
 				using (_renderer.LockGraphics(g))
 				{
 					var strLength = (int)_renderer.MeasureString(text, Font).Width + (CellWidthPadding * 2);
-					if (column.Width < strLength)
+					if (column.ScaledWidth < strLength)
 					{
-						column.Width = strLength;
+						column.ScaledWidth = strLength;
 						AllColumns.ColumnsChanged();
 						Refresh();
 					}
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var newWidth = (maxLength * _charSize.Width) + (CellWidthPadding * 2);
-					col.Width = (int) newWidth;
+					col.ScaledWidth = (int) newWidth;
 					_columns.ColumnsChanged();
 					Refresh();
 				}
@@ -1051,7 +1051,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_currentX != _previousX)
 				{
-					_columnResizing.Width += _currentX.Value - _previousX;
+					_columnResizing.ScaledWidth += _currentX.Value - _previousX;
 					if (_columnResizing.Width <= 0)
 					{
 						_columnResizing.Width = 1;
@@ -1666,7 +1666,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
+				MaxColumnWidth = UIHelper.ScaleX(_columns.VisibleColumns.Max(c => c.VerticalWidth));
 			}
 
 			ColumnsChanged?.Invoke();
@@ -1880,7 +1880,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsPointingOnCellEdge(int? x) => x.HasValue
 			&& !HorizontalOrientation //TODO support column resize in horizontal orientation
-			&& _columns.VisibleColumns.Any(column => (column.Left - _hBar.Value + (column.Width - column.Width / 6)).RangeTo(column.Right - _hBar.Value).Contains(x.Value));
+			&& _columns.VisibleColumns.Any(column => (column.Left - _hBar.Value + (column.ScaledWidth - column.ScaledWidth / 6)).RangeTo(column.Right - _hBar.Value).Contains(x.Value));
 
 		/// <summary>
 		/// Finds the specific cell that contains the (x, y) coordinate.
@@ -2017,7 +2017,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_columns.VisibleColumns.Any())
 			{
-				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.VerticalWidth);
+				MaxColumnWidth = UIHelper.ScaleX(_columns.VisibleColumns.Max(c => c.VerticalWidth));
 			}
 		}
 
