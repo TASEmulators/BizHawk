@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			set => base.ForeColor = _foreColor = value;
 		}
 
-		private RollColumns _columns = new RollColumns();
+		private RollColumns _columns;
 		private bool _horizontalOrientation;
 		private bool _programmaticallyUpdatingScrollBarValues;
 
@@ -103,6 +103,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
+			_columns = new RollColumns(this);
+
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
@@ -152,17 +154,22 @@ namespace BizHawk.Client.EmuHawk
 			var column = AllColumns.SingleOrDefault(c => c.Name == columnName);
 			if (column != null)
 			{
-				using var g = CreateGraphics();
-				using (_renderer.LockGraphics(g))
+				int strLength = GetCellWidthForText(text);
+				if (column.ScaledWidth < strLength)
 				{
-					var strLength = (int)_renderer.MeasureString(text, Font).Width + (CellWidthPadding * 2);
-					if (column.ScaledWidth < strLength)
-					{
-						column.ScaledWidth = strLength;
-						AllColumns.ColumnsChanged();
-						Refresh();
-					}
+					column.ScaledWidth = strLength;
+					AllColumns.ColumnsChanged();
+					Refresh();
 				}
+			}
+		}
+
+		public int GetCellWidthForText(string text)
+		{
+			using var g = CreateGraphics();
+			using (_renderer.LockGraphics(g))
+			{
+				return (int)_renderer.MeasureString(text, Font).Width + (CellWidthPadding * 2);
 			}
 		}
 
@@ -714,7 +721,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadColumns(RollColumns columns)
 		{
+			Debug.Assert(columns.owner == null, "Sharing columns collection between multiple input rolls? That isn't supported.");
 			_columns = columns;
+			_columns.owner = this;
 			_columns.ChangedCallback = ColumnChangedCallback;
 			_columns.ColumnsChanged();
 		}
