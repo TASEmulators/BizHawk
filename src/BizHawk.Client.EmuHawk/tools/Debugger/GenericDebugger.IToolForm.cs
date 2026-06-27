@@ -112,10 +112,14 @@ namespace BizHawk.Client.EmuHawk
 			BreakPointControl1.UpdateValues();
 		}
 
+		public override void Stop()
+		{
+			DisengageDebugger();
+		}
+
 		public override void Restart()
 		{
 			UpdateCapabilitiesProps();
-			DisengageDebugger();
 			EngageDebugger();
 		}
 
