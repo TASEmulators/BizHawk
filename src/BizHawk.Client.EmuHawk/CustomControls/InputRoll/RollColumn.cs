@@ -9,6 +9,7 @@ namespace BizHawk.Client.EmuHawk
 		public int VerticalWidth { get; set; }
 		public int HorizontalHeight { get; set; }
 
+		[JsonIgnore]
 		public int Width
 		{
 			get => (owner?.HorizontalOrientation == true) ? HorizontalHeight : VerticalWidth;
@@ -33,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public string Name { get; }
 
 		/// <remarks>TODO rename to <c>Label</c>?</remarks>
-		public string Text { get; }
+		public string Text { get; set; }
 
 		public bool Visible { get; set; } = true;
 
