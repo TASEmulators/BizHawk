@@ -1096,6 +1096,7 @@ namespace BizHawk.Client.EmuHawk
 						_inputRolls[i].HideWasLagFrames = s.MovieSettings.HideWasLagFrames;
 						_inputRolls[i].ScrollMethod = Settings.FollowCursorScrollMethod;
 						_inputRolls[i].ScrollSpeed = Settings.ScrollSpeed;
+						UpdateColumnWidths(_inputRolls[i]);
 					}
 
 					UpdateAutoFire();

@@ -6,30 +6,24 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
 	{
-		public int VerticalWidth { get; }
-		public int HorizontalHeight { get; }
+		public int VerticalWidth { get; set; }
+		public int HorizontalHeight { get; set; }
 
-		private int _width;
 		public int Width
 		{
-			get => _width;
+			get => (owner?.HorizontalOrientation == true) ? HorizontalHeight : VerticalWidth;
 			set
 			{
-				_width = value;
-				_scaledWidth = UIHelper.ScaleX(value);
+				if (owner?.HorizontalOrientation == true) HorizontalHeight = value;
+				else VerticalWidth = value;
 			}
 		}
 
-		private int _scaledWidth;
 		[JsonIgnore]
 		public int ScaledWidth
 		{
-			get => _scaledWidth;
-			set
-			{
-				_scaledWidth = value;
-				_width = UIHelper.UnscaleX(value);
-			}
+			get => UIHelper.ScaleX(Width);
+			set => Width = UIHelper.UnscaleX(value);
 		}
 
 		public int Left { get; set; }
@@ -52,6 +46,9 @@ namespace BizHawk.Client.EmuHawk
 		/// Column text will be drawn rotated if true
 		/// </summary>
 		public bool Rotatable { get; set; }
+
+		[JsonIgnore]
+		public InputRoll? owner;
 
 		[JsonConstructor]
 		private RollColumn(string name, string text, int verticalWidth, int horizontalHeight)
