@@ -1312,7 +1312,7 @@ namespace BizHawk.Client.EmuHawk
 					if (axisSpec.HasValue)
 					{
 						string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
-						yield return (name, mnemonic, axisSpec.Value.MaxDigits);
+						yield return (name, mnemonic, axisSpec.Value.MaxCharacters);
 					}
 					else
 					{
