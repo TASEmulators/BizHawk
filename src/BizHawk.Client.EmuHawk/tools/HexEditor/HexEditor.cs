@@ -1600,7 +1600,6 @@ namespace BizHawk.Client.EmuHawk
 			using var poke = new RamPoke(DialogController, watches, MainForm.CheatList)
 			{
 				InitialLocation = this.ChildPointToScreen(AddressLabel),
-				ParentTool = this,
 			};
 			this.ShowDialogWithTempMute(poke);
 			GeneralUpdate();

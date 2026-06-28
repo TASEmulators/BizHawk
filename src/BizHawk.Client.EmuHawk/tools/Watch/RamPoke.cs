@@ -27,9 +27,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = Properties.Resources.PokeIcon;
 		}
-
-		public IToolForm ParentTool { get; set; }
-
 		private void UnSupportedConfiguration()
 		{
 			DialogController.ShowMessageBox("RAM Poke does not support mixed types", "Unsupported Options", EMsgBoxIcon.Error);
@@ -103,8 +100,6 @@ namespace BizHawk.Client.EmuHawk
 					success = false;
 				}
 			}
-
-			ParentTool?.UpdateValues(ToolFormUpdateType.General);
 
 			if (success)
 			{
