@@ -282,7 +282,6 @@
 			this.MinimumSize = new System.Drawing.Size(948, 611);
 			this.Name = "ControllerConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Controller Config";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ControllerConfig_FormClosed);
 			this.Load += new System.EventHandler(this.ControllerConfig_Load);
 			this.tabControl1.ResumeLayout(false);
