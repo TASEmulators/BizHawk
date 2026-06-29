@@ -6,9 +6,27 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
 	{
-		public int VerticalWidth { get; }
-		public int HorizontalHeight { get; }
-		public int Width { get; set; }
+		public int VerticalWidth { get; set; }
+		public int HorizontalHeight { get; set; }
+
+		[JsonIgnore]
+		public int Width
+		{
+			get => (owner?.HorizontalOrientation == true) ? HorizontalHeight : VerticalWidth;
+			set
+			{
+				if (owner?.HorizontalOrientation == true) HorizontalHeight = value;
+				else VerticalWidth = value;
+			}
+		}
+
+		[JsonIgnore]
+		public int ScaledWidth
+		{
+			get => UIHelper.ScaleX(Width);
+			set => Width = UIHelper.UnscaleX(value);
+		}
+
 		public int Left { get; set; }
 		public int Right { get; set; }
 
@@ -16,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public string Name { get; }
 
 		/// <remarks>TODO rename to <c>Label</c>?</remarks>
-		public string Text { get; }
+		public string Text { get; set; }
 
 		public bool Visible { get; set; } = true;
 
@@ -29,6 +47,9 @@ namespace BizHawk.Client.EmuHawk
 		/// Column text will be drawn rotated if true
 		/// </summary>
 		public bool Rotatable { get; set; }
+
+		[JsonIgnore]
+		public InputRoll? owner;
 
 		[JsonConstructor]
 		private RollColumn(string name, string text, int verticalWidth, int horizontalHeight)
@@ -46,8 +67,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Name = name;
 			Text = text;
-			VerticalWidth = UIHelper.ScaleX(verticalWidth);
-			HorizontalHeight = UIHelper.ScaleX(horizontalHeight);
+			VerticalWidth = verticalWidth;
+			HorizontalHeight = horizontalHeight;
 			Width = VerticalWidth;
 		}
 

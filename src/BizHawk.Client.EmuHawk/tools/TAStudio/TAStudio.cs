@@ -493,11 +493,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			roll.AllColumns.Clear();
 			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
-			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
+			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: UIHelper.UnscaleX(roll.GetCellWidthForText("0000000")) + 7, text: "Frame#")
 			{
 				Rotatable = true,
 			});
 
+			int minColumnWidth = UIHelper.UnscaleX(roll.GetCellWidthForText("W"));
 			List<RollColumn> columns = new(); // add to list first then AddRange to avoid 100 refreshes
 			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
 			{
@@ -505,10 +506,14 @@ namespace BizHawk.Client.EmuHawk
 					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
 					: mnemonic0;
 
+				int mnemonicLegth = mnemonic.Length > 1
+					? UIHelper.UnscaleX(roll.GetCellWidthForText(mnemonic))
+					: minColumnWidth; // keep single-character columns a uniform width, for prettyness
+				int inputLength = UIHelper.UnscaleX(roll.GetCellWidthForText("".PadRight(maxLength, '8')));
 				columns.Add(new(
 					name: name,
-					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
-					horizontalHeight: (maxLength * 6) + 14,
+					verticalWidth: Math.Max(mnemonicLegth, inputLength),
+					horizontalHeight: inputLength,
 					text: mnemonic)
 				{
 					Rotatable = ControllerType.Axes.ContainsKey(name),
@@ -529,6 +534,24 @@ namespace BizHawk.Client.EmuHawk
 					column.Emphasis = true;
 				}
 			}
+
+			roll.AllColumns.ColumnsChanged();
+		}
+
+		private void UpdateColumnWidths(InputRoll roll)
+		{
+			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
+			{
+				RollColumn col = roll.AllColumns[name];
+				int mnemonicLegth = UIHelper.UnscaleX(roll.GetCellWidthForText(col.Text));
+				int inputLength = UIHelper.UnscaleX(roll.GetCellWidthForText("".PadRight(maxLength, '8')));
+				col.VerticalWidth = Math.Max(mnemonicLegth, inputLength) + 4;
+				col.HorizontalHeight = inputLength + 4;
+			}
+
+			roll.AllColumns[FrameColumnName].VerticalWidth
+				= roll.AllColumns[FrameColumnName].HorizontalHeight
+				= UIHelper.UnscaleX(roll.GetCellWidthForText("0000000")) + 7;
 
 			roll.AllColumns.ColumnsChanged();
 		}
@@ -556,15 +579,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>for Lua</remarks>
 		public void AddColumn(string name, string text, int widthUnscaled, int rollIndex)
 		{
-			if (_inputRolls[0].AllColumns.Exists(c => c.Name == name)) return;
-
 			for (int i = 0; i < _inputRolls.Count; i++)
 			{
-				RollColumn col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+				RollColumn/*?*/ col = _inputRolls[i].AllColumns[name];
+				if (col == null)
+				{
+					col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+					_inputRolls[i].AllColumns.Add(col);
+				}
+				else
+				{
+					col.VerticalWidth = col.HorizontalHeight = widthUnscaled;
+					col.Text = text;
+				}
 				col.Visible = i == rollIndex;
-				_inputRolls[rollIndex].AllColumns.Add(col);
-				_inputRolls[rollIndex].AllColumns.ColumnsChanged();
-				_inputRolls[rollIndex].Refresh();
+				_inputRolls[i].AllColumns.ColumnsChanged();
+				_inputRolls[i].Refresh();
 			}
 
 			SetUpToolStripColumns();
@@ -754,6 +784,8 @@ namespace BizHawk.Client.EmuHawk
 						roll.HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
 						roll.LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
 						roll.HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
+						roll.AllColumns[CursorColumnName].VerticalWidth = roll.AllColumns[CursorColumnName].HorizontalHeight = 18;
+						UpdateColumnWidths(roll);
 						UpdateInputRollDefinition(roll);
 					}
 					else if (settings is MovieClientSettings clientSettings)
@@ -1280,7 +1312,7 @@ namespace BizHawk.Client.EmuHawk
 					if (axisSpec.HasValue)
 					{
 						string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
-						yield return (name, mnemonic, axisSpec.Value.MaxDigits);
+						yield return (name, mnemonic, axisSpec.Value.MaxCharacters);
 					}
 					else
 					{

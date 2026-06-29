@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Newtonsoft.Json;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumns : List<RollColumn>
@@ -13,6 +15,16 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<RollColumn> VisibleColumns => this.Where(c => c.Visible);
 
 		public Action? ChangedCallback { get; set; } = null;
+
+		public InputRoll? owner;
+
+		[JsonConstructor]
+		private RollColumns() { }
+
+		public RollColumns(InputRoll owner)
+		{
+			this.owner = owner;
+		}
 
 		private bool _suspendChanged = false;
 
@@ -26,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var col in VisibleColumns)
 			{
 				col.Left = pos;
-				pos += col.Width;
+				pos += col.ScaledWidth;
 				col.Right = pos;
 			}
 
@@ -38,6 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			if (this[column.Name] == null)
 			{
 				base.Add(column);
+				column.owner = owner;
 				ColumnsChanged();
 			}
 		}
@@ -62,6 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.Insert(index, column);
+			column.owner = owner;
 			ColumnsChanged();
 		}
 
@@ -77,6 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.InsertRange(index, items);
+			foreach (var column in items) column.owner = owner;
 			ColumnsChanged();
 		}
 
