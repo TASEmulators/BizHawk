@@ -74,14 +74,14 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(next);
 		}
 
-		public void RestorePosition()
+		public void RestorePosition(bool byEdit = false)
 		{
 			if (RestorePositionFrame != -1)
 			{
 				// restore makes no sense without pausing
 				// Pausing here ensures any seek done by GoToFrame pauses after completing.
 				MainForm.PauseEmulator();
-				GoToFrame(RestorePositionFrame, skipLoadState: !Config.TurboSeek);
+				GoToFrame(RestorePositionFrame, skipLoadState: !Config.TurboSeek && !byEdit);
 			}
 		}
 
