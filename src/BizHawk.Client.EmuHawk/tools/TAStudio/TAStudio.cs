@@ -1338,7 +1338,12 @@ namespace BizHawk.Client.EmuHawk
 			_suspendEditLogic = false;
 			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)), CurrentTasMovie.Branches.IndexOf(branch));
 
-			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
+			// We capture this state to ensure edits at or after the branch frame will not require seeking from prior greenzone
+			// (which might be very far back). Zwinder manager requires it be reserved since it cannot capture out of order.
+			// There may be benefits to reserve capture with Paged manager too.
+			// (Note: IsReserved may say it is not reserved, if StateOnBranchFrame is false.
+			// We won't need it reserved on re-greenzoning, but we still want to capture it here.)
+			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), IStateManager.CaptureType.Reserve);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
 
 			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)

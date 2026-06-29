@@ -468,13 +468,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Capture(int frame, IStatable source, bool force = false)
+		public void Capture(int frame, IStatable source, IStateManager.CaptureType type = IStateManager.CaptureType.Normal)
 		{
 			Debug.Assert(_states.Contains(new(0)), "State manager cannot be used until engaged.");
 
 			if (HasState(frame)) return;
 
-			if (force)
+			if (type == IStateManager.CaptureType.LastEditedFrame)
 			{
 				if (HasState(_lastForceCapture))
 				{
@@ -486,7 +486,7 @@ namespace BizHawk.Client.Common
 			}
 
 			StateGroup group = StateGroup.None;
-			if (_reserveCallback(frame))
+			if (type == IStateManager.CaptureType.Reserve || _reserveCallback(frame))
 			{
 				group = StateGroup.Old;
 			}
@@ -542,7 +542,7 @@ namespace BizHawk.Client.Common
 
 			if (group != StateGroup.None)
 				InternalCapture(frame, source, group);
-			else if (force)
+			else if (type == IStateManager.CaptureType.LastEditedFrame)
 			{
 				_lastForceCapture = frame;
 				InternalCapture(frame, source, StateGroup.Old);

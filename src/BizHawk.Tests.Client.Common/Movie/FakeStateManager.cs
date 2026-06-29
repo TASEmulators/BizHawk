@@ -14,7 +14,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 		public int Last => throw new NotImplementedException();
 
-		public void Capture(int frame, IStatable source, bool force) => throw new NotImplementedException();
+		public void Capture(int frame, IStatable source, IStateManager.CaptureType force = IStateManager.CaptureType.Normal) => throw new NotImplementedException();
 		public void Clear() => throw new NotImplementedException();
 		public void Dispose() => throw new NotImplementedException();
 		public void Engage(byte[] frameZeroState) { /* nothing */ }

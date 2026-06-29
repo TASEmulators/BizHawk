@@ -275,7 +275,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			{
 				// Load branch with frame number almost at two old intervals
 				int branchFrame = manager.Settings.FramesBetweenOldStates * 2 - 1;
-				manager.Capture(branchFrame, ss, true);
+				manager.Capture(branchFrame, ss, IStateManager.CaptureType.Reserve);
 				// Rewind to frame 0, play far enough that it will kick states before the branch.
 				for (int i = 0; i < 2000; i++)
 					manager.Capture(i, ss);
@@ -514,10 +514,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 			for (int i = 1; i <= lastNonForce; i++)
 				manager.Capture(i, ss);
 
-			manager.Capture(lastNonForce + 1, ss, true);
+			manager.Capture(lastNonForce + 1, ss, IStateManager.CaptureType.LastEditedFrame);
 
 			// act
-			manager.Capture(lastNonForce + 2, ss, true);
+			manager.Capture(lastNonForce + 2, ss, IStateManager.CaptureType.LastEditedFrame);
 
 			// assert
 			Assert.IsFalse(manager.HasState(lastNonForce + 1));
@@ -538,7 +538,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 			manager.Engage(ss.CloneSavestate());
 
 			// act
-			manager.Capture(1, ss, true);
+			manager.Capture(1, ss, IStateManager.CaptureType.LastEditedFrame);
 
 			// assert
 			Assert.IsTrue(manager.HasState(1));

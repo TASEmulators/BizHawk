@@ -355,7 +355,7 @@ namespace BizHawk.Client.Common
 			return nextState - previousState > _ancientInterval;
 		}
 
-		public void Capture(int frame, IStatable source, bool force = false)
+		public void Capture(int frame, IStatable source, IStateManager.CaptureType type = IStateManager.CaptureType.Normal)
 		{
 			// We already have this state, no need to capture
 			if (StateCache.Contains(frame))
@@ -363,7 +363,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (_reserveCallback(frame))
+			if (type == IStateManager.CaptureType.Reserve || _reserveCallback(frame))
 			{
 				CaptureReserved(frame, source);
 				return;
@@ -376,7 +376,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// We use the gap buffer for forced capture to avoid crowding the "current" buffer and thus reducing it's actual span of covered frames.
-			if (NeedsGap(frame) || force)
+			if (NeedsGap(frame) || type == IStateManager.CaptureType.LastEditedFrame)
 			{
 				CaptureGap(frame, source);
 				return;

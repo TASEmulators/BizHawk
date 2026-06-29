@@ -211,7 +211,10 @@ namespace BizHawk.Client.Common
 			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
 			// We will forcibly capture a state for the last edited frame (requested by https://github.com/TASEmulators/BizHawk/issues/916 for case of "platforms with analog stick")
-			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
+			TasStateManager.Capture(
+				Emulator.Frame,
+				Emulator.AsStatable(),
+				Emulator.Frame == LastEditedFrame - 1 ? IStateManager.CaptureType.LastEditedFrame : IStateManager.CaptureType.Normal);
 		}
 
 
