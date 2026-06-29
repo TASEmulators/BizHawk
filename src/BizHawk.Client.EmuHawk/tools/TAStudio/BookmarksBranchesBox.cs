@@ -172,7 +172,6 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.RowCount = Branches.Count;
 			Branches.Current = Branches.Count - 1;
 			Movie.TasSession.UpdateValues(Tastudio.Emulator.Frame, Branches.Current);
-			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			BranchView.ScrollToIndex(Branches.Current);
 			BranchView.DeselectAll();
 			Select(Branches.Current, true);
@@ -281,7 +280,6 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.ScrollToIndex(Branches.Current);
 			var branch = CreateBranch();
 			Branches.Replace(SelectedBranch, branch);
-			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
 			Tastudio.RefreshDialog();
 			Tastudio.BranchSavedCallback?.Invoke(Branches.Current);
 			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");

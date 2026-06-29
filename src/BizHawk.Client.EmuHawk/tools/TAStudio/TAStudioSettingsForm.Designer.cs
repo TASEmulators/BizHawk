@@ -935,7 +935,7 @@
 			this.StateOnBranchFrameCheckbox.Name = "StateOnBranchFrameCheckbox";
 			this.StateOnBranchFrameCheckbox.Size = new System.Drawing.Size(168, 17);
 			this.StateOnBranchFrameCheckbox.TabIndex = 518;
-			this.StateOnBranchFrameCheckbox.Text = "Keep a state on branch fames";
+			this.StateOnBranchFrameCheckbox.Text = "Enable \"jump to branch frame\" states";
 			this.toolTip1.SetToolTip(this.StateOnBranchFrameCheckbox, resources.GetString("StateOnBranchFrameCheckbox.ToolTip"));
 			this.StateOnBranchFrameCheckbox.UseVisualStyleBackColor = true;
 			// 

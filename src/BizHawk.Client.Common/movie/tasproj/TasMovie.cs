@@ -95,9 +95,9 @@ namespace BizHawk.Client.Common
 				{
 					foreach (TasBranch branch in Branches)
 					{
-						if (!IsReserved(branch.Frame))
+						if (!IsReserved(branch.Frame - 1))
 						{
-							TasStateManager.Unreserve(branch.Frame);
+							TasStateManager.Unreserve(branch.Frame - 1);
 						}
 					}
 				}
@@ -350,7 +350,7 @@ namespace BizHawk.Client.Common
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
 			return Markers.Exists(m => m.WantsState && m.Frame - 1 == frame)
-				|| (ReserveBranchFrames && Branches.Any(b => b.Frame == frame));
+				|| (ReserveBranchFrames && Branches.Any(b => b.Frame - 1 == frame));
 		}
 
 		public void Dispose()
