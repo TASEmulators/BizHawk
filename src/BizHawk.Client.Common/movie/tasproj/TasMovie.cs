@@ -84,6 +84,26 @@ namespace BizHawk.Client.Common
 
 		public Action<int> GreenzoneInvalidated { get; set; }
 
+		private bool _reserveBranchFrames;
+		public bool ReserveBranchFrames
+		{
+			get => _reserveBranchFrames;
+			set
+			{
+				_reserveBranchFrames = value;
+				if (!value)
+				{
+					foreach (TasBranch branch in Branches)
+					{
+						if (!IsReserved(branch.Frame - 1))
+						{
+							TasStateManager.Unreserve(branch.Frame - 1);
+						}
+					}
+				}
+			}
+		}
+
 		public ITasMovieRecord this[int index]
 		{
 			get
@@ -191,7 +211,10 @@ namespace BizHawk.Client.Common
 			LagLog[Emulator.Frame] = _inputPollable.IsLagFrame;
 
 			// We will forcibly capture a state for the last edited frame (requested by https://github.com/TASEmulators/BizHawk/issues/916 for case of "platforms with analog stick")
-			TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), Emulator.Frame == LastEditedFrame - 1);
+			TasStateManager.Capture(
+				Emulator.Frame,
+				Emulator.AsStatable(),
+				Emulator.Frame == LastEditedFrame - 1 ? IStateManager.CaptureType.LastEditedFrame : IStateManager.CaptureType.Normal);
 		}
 
 
@@ -327,7 +350,7 @@ namespace BizHawk.Client.Common
 			// because we always navigate to the frame before and emulate 1 frame so that we ensure a proper frame buffer on the screen
 			// users want instant navigation to markers, so to do this, we need to reserve the frame before the marker, not the marker itself
 			return Markers.Exists(m => m.WantsState && m.Frame - 1 == frame)
-				|| Branches.Any(b => b.Frame == frame); // Branches should already be in the reserved list, but it doesn't hurt to check
+				|| (ReserveBranchFrames && Branches.Any(b => b.Frame - 1 == frame));
 		}
 
 		public void Dispose()

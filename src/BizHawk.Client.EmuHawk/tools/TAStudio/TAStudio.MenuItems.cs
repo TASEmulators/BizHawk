@@ -1098,6 +1098,8 @@ namespace BizHawk.Client.EmuHawk
 						_inputRolls[i].ScrollSpeed = Settings.ScrollSpeed;
 					}
 
+					CurrentTasMovie.ReserveBranchFrames = Settings.StateOnBranchFrame;
+
 					UpdateAutoFire();
 
 					if (CurrentTasMovie.TasStateManager.Settings != s.CurrentStateManagerSettings)

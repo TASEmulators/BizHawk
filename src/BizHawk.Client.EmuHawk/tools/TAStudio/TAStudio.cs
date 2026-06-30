@@ -105,6 +105,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadBranchOnDoubleClick = true;
 				CopyIncludesFrameNo = false;
 				AutoadjustInput = false;
+				StateOnBranchFrame = false;
 
 				// default to taseditor fashion
 				DenoteStatesWithIcons = false;
@@ -144,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			public int RewindStepFast { get; set; } = 4;
 			public bool ScrollSync { get; set; } = true;
 			public bool StatesForMarkers { get; set; } = true;
+			public bool StateOnBranchFrame { get; set; }
 			public PatternPaintModeEnum PatternPaintMode { get; set; } = TAStudioSettings.PatternPaintModeEnum.Never;
 			public PatternSelectionEnum PatternSelection { get; set; } = TAStudioSettings.PatternSelectionEnum.Hold;
 			public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -711,6 +713,7 @@ namespace BizHawk.Client.EmuHawk
 			movie.BindMarkersToInput = Settings.BindMarkersToInput;
 			movie.GreenzoneInvalidated = (f) => _ = FrameEdited(f);
 			movie.ChangeLog.MaxSteps = Settings.MaxUndoSteps;
+			movie.ReserveBranchFrames = Settings.StateOnBranchFrame;
 
 			movie.ChangesChanged += TasMovie_OnChangesChanged;
 			System.Collections.Specialized.NotifyCollectionChangedEventHandler refreshOnMarker = (_, _) => RefreshDialog();
@@ -1335,7 +1338,11 @@ namespace BizHawk.Client.EmuHawk
 			_suspendEditLogic = false;
 			LoadState(new(branch.Frame, new MemoryStream(branch.CoreData, false)), CurrentTasMovie.Branches.IndexOf(branch));
 
-			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
+			// We capture this state to ensure edits at or after the branch frame will not require seeking from prior greenzone
+			// (which might be very far back). Zwinder manager requires it be reserved since it cannot capture out of order.
+			// There may be benefits to reserve capture with Paged manager too.
+			// (Note: IsReserved will say not reserved. We won't need it reserved on re-greenzoning, but we still want to capture it here.)
+			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), IStateManager.CaptureType.Reserve);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
 
 			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)
