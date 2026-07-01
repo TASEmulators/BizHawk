@@ -7,6 +7,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.Common.Filters;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
 
@@ -16,7 +17,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private static readonly FilesystemFilterSet CgShaderPresetsFSFilterSet = new(
 			appendAllFilesEntry: false,
-			new FilesystemFilter(".CGP Files", extensions: [ "cgp", "glslp" ]));
+			new FilesystemFilter(".CGP Files", extensions: [ "cgp" ]));
+
+		private static readonly FilesystemFilterSet LibrashaderFSFilterSet = new(
+			appendAllFilesEntry: false,
+			new FilesystemFilter("SLANG Presets", extensions: [ "slangp" ]),
+			new FilesystemFilter("GLSL Presets", extensions: [ "glslp" ]));
 
 		private readonly Config _config;
 
@@ -127,7 +133,8 @@ namespace BizHawk.Client.EmuHawk
 			rbNone.Checked = _config.TargetDisplayFilter == 0;
 			rbHq2x.Checked = _config.TargetDisplayFilter == 1;
 			rbScanlines.Checked = _config.TargetDisplayFilter == 2;
-			rbUser.Checked = _config.TargetDisplayFilter == 3;
+			rbLegacy.Checked = _config.TargetDisplayFilter == 3;
+			rbLibrashader.Checked = _config.TargetDisplayFilter == 4;
 
 			_pathSelection = _config.DispUserFilterPath ?? "";
 			RefreshState();
@@ -221,8 +228,10 @@ namespace BizHawk.Client.EmuHawk
 				_config.TargetDisplayFilter = 1;
 			if (rbScanlines.Checked)
 				_config.TargetDisplayFilter = 2;
-			if (rbUser.Checked)
+			if (rbLegacy.Checked)
 				_config.TargetDisplayFilter = 3;
+			if (rbLibrashader.Checked)
+				_config.TargetDisplayFilter = 4;
 
 			if (rbFinalFilterNone.Checked)
 				_config.DispFinalFilter = 0;
@@ -374,15 +383,21 @@ namespace BizHawk.Client.EmuHawk
 		private void BtnSelectUserFilter_Click(object sender, EventArgs e)
 		{
 			var result = this.ShowFileOpenDialog(
-				filter: CgShaderPresetsFSFilterSet,
+				filter: rbLibrashader.Checked ? LibrashaderFSFilterSet : CgShaderPresetsFSFilterSet,
 				initDir: string.IsNullOrWhiteSpace(_pathSelection)
 					? _config.PathEntries.GlobalBaseAbsolutePath()
 					: Path.GetDirectoryName(_pathSelection)!,
 				initFileName: _pathSelection);
 			if (result is null) return;
 
-			rbUser.Checked = true;
 			var choice = Path.GetFullPath(result);
+
+			if (!Path.GetExtension(choice).EqualsIgnoreCase(".cgp"))
+			{
+				_pathSelection = choice;
+				RefreshState();
+				return;
+			}
 
 			//test the preset
 			using (var stream = File.OpenRead(choice))

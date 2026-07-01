@@ -1326,6 +1326,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayManager.UpdateGlobals(Config, Emulator);
 				DisplayManager.RefreshUserShader();
+				DisplayManager.RefreshLibrashader();
 				FrameBufferResized();
 				SynchChrome();
 				if (window.NeedReset)
