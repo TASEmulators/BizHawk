@@ -139,7 +139,9 @@ namespace BizHawk.Client.Common
 		private readonly Lock ThreadMutex = new();
 
 		private Stack<LuaFile> _runningFiles = new();
-		public LuaFile CurrentFile => _runningFiles.Peek();
+
+		public LuaFile/*?*/ CurrentFile
+			=> _runningFiles.Count is 0 ? null : _runningFiles.Peek();
 
 		private readonly NLuaTableHelper _th;
 

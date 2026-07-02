@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -15,6 +16,8 @@ using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.WinForms.Controls;
+
+using NLua.Exceptions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -510,6 +513,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _messageCount;
 		private const int MaxCount = 100;
+
+		private string/*?*/ _lastLoadedFilePathHack = null;
+
 		public void WriteToOutputWindow(string message)
 		{
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
@@ -527,9 +533,10 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.ScrollToCaret();
 			});
 			if (!Settings.DuplicateToStdout) return;
+			var senderFile = LuaImp.CurrentFile;
 			Console.Write(
-				LuaImp.CurrentFile == _nonFile ? "[Lua REPL] {1}" : "[Lua script: {0}] {1}",
-				Path.GetFileNameWithoutExtension(LuaImp.CurrentFile.Path),
+				senderFile == _nonFile ? "[Lua REPL] {1}" : "[Lua script: {0}] {1}",
+				Path.GetFileNameWithoutExtension(senderFile?.Path ?? _lastLoadedFilePathHack), // if this method is being called from the `catch` block in `EnableLuaFile`, `senderFile` will be null, so this field is set to the file's path before the file is reparsed
 				message);
 			if (!message.EndsWith('\n')) Console.WriteLine('\\'); // indicate continued lines; still won't make sense w.r.t. backslashes as an escape character, but it's good enough for humans
 		}
@@ -935,6 +942,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EnableLuaFile(LuaFile item)
 		{
+			_lastLoadedFilePathHack = item.Path;
 			try
 			{
 				item.Start(LuaImp.SpawnCoroutineAndSandbox(item.Path));
@@ -943,6 +951,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				item.Stop();
 				WriteLine($"Unable to access file {item.Path}");
+			}
+			catch (LuaException e)
+			{
+				Console.WriteLine($"[{WindowTitleStatic}] failed to start script {item.Path}");
+				StringBuilder sb = new(e.ToString());
+				sb.AppendLine();
+				if (e.InnerException is not null)
+				{
+					sb.AppendLine(e.InnerException.ToString());
+					sb.AppendLine();
+				}
+				WriteToOutputWindow(sb.ToString());
 			}
 			catch (Exception ex)
 			{
@@ -1371,7 +1391,8 @@ namespace BizHawk.Client.EmuHawk
 						.ThenBy(lf => lf.Path)
 						.ToList();
 					break;
-				default: // case "PathName":
+				default:
+				case "PathName":
 					luaListTemp = _openedFiles
 						.OrderBy(lf => lf.Path, _sortReverse)
 						.ThenBy(lf => Path.GetFileNameWithoutExtension(lf.Path))
@@ -1409,7 +1430,7 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Maybe make these try-catches more general // what try-catches? LuaSandbox.Sandbox? --yoshi
 				if (!string.IsNullOrWhiteSpace(rawCommand))
 				{
-					if (rawCommand.Contains("emu.frameadvance(")) // This will be checked properly later, but keep this for now because the error reporting later isn't great.
+					if (rawCommand.Contains("emu.frameadvance(")) //TODO This will be checked properly later, but keep this for now because the error reporting later isn't great.
 					{
 						WriteLine("emu.frameadvance() can not be called from the console");
 						return;
