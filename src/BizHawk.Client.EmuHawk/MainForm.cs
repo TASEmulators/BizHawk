@@ -3689,8 +3689,12 @@ namespace BizHawk.Client.EmuHawk
 					Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
 					Game = loader.Game;
-					Config.RecentCores.Enqueue(Emulator.Attributes().CoreName);
-					while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
+					var currentCoreName = Emulator.Attributes().CoreName;
+					if (!Config.RecentCores.Contains(currentCoreName))
+					{
+						Config.RecentCores.Enqueue(currentCoreName);
+						while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
+					}
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 
