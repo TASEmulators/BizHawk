@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			Size = new(48, 23),
 		};
 
-		private readonly TextBox txtSWTOverride;
+		private readonly SzTextBoxEx txtSWTOverride;
 
 		private readonly TransparentTrackBar tbSnowFramerate = new() { Maximum = 20, Minimum = 1, Size = new(160, 45) };
 
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 			InitializeComponent();
 			flpStaticWindowTitles.Controls.Remove(cbStaticWindowTitles);
-			txtSWTOverride = new() { Location = new(), Size = new(80, 23), Text = _config.MainFormStaticWindowTitleOverrideEffective };
+			txtSWTOverride = new() { Size = new(80, 23), Text = _config.MainFormStaticWindowTitleOverrideEffective };
 			flpStaticWindowTitles.Controls.InsertBefore(
 				lblStaticWindowTitles,
 				insert: new SingleRowFLP
