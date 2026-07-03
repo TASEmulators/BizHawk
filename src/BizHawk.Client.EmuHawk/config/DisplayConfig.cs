@@ -44,6 +44,8 @@ namespace BizHawk.Client.EmuHawk
 			Size = new(48, 23),
 		};
 
+		private readonly TextBox txtSWTOverride;
+
 		private readonly TransparentTrackBar tbSnowFramerate = new() { Maximum = 20, Minimum = 1, Size = new(160, 45) };
 
 		public IDialogController DialogController { get; }
@@ -58,6 +60,20 @@ namespace BizHawk.Client.EmuHawk
 			var snowSettings = _config.GetCoreSettings<NullEmulator, SnowyNullVideo.Settings>() ?? new();
 
 			InitializeComponent();
+			flpStaticWindowTitles.Controls.Remove(cbStaticWindowTitles);
+			txtSWTOverride = new() { Location = new(), Size = new(80, 23), Text = _config.MainFormStaticWindowTitleOverrideEffective };
+			flpStaticWindowTitles.Controls.InsertBefore(
+				lblStaticWindowTitles,
+				insert: new SingleRowFLP
+				{
+					Controls =
+					{
+						cbStaticWindowTitles,
+						new Label { Size = new(32, 1) }, // whitespace
+						new LabelEx { Text = "Window title suffix (static and not):" },
+						txtSWTOverride,
+					},
+				});
 			LocSzGroupBoxEx grpSnow = new() { Location = new(6, 200), Size = new(371, 160), Text = "Snowy NullHawk" };
 			_snowRadioTracker = grpSnow.Tracker;
 			RadioButtonEx rbSnowAlways = new(_snowRadioTracker)
@@ -263,6 +279,10 @@ namespace BizHawk.Client.EmuHawk
 
 			_config.SnowyNullHawk = _snowRadioTracker.GetSelectionTagAs<SnowyNullVideo.TriggerCriterion>()
 				?? SnowyNullVideo.TriggerCriterion.WeekOfChristmas;
+			_config.MainFormStaticWindowTitleOverride = string.IsNullOrWhiteSpace(txtSWTOverride.Text)
+				|| txtSWTOverride.Text.Equals(VersionInfo.CustomBuildString, StringComparison.Ordinal)
+					? string.Empty
+					: txtSWTOverride.Text;
 			_config.PutCoreSettings(
 				new SnowyNullVideo.Settings(
 					Bias: nudSnowBias.Value.ConvertToF32(),

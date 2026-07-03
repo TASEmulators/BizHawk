@@ -1328,6 +1328,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayManager.RefreshUserShader();
 				FrameBufferResized();
 				SynchChrome();
+				UpdateWindowTitle();
 				if (window.NeedReset)
 				{
 					AddOnScreenMessage("Restart program for changed settings");

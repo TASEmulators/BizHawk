@@ -429,6 +429,14 @@ namespace BizHawk.Client.Common
 
 		public bool UseStaticWindowTitles { get; set; }
 
+		public string MainFormStaticWindowTitleOverride { get; set; } = string.Empty;
+
+		[JsonIgnore]
+		public string MainFormStaticWindowTitleOverrideEffective
+			=> string.IsNullOrWhiteSpace(MainFormStaticWindowTitleOverride)
+				? string.IsNullOrWhiteSpace(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString
+				: MainFormStaticWindowTitleOverride;
+
 		public List<string> ModifierKeys { get; set; } = new();
 
 		[JsonIgnore]

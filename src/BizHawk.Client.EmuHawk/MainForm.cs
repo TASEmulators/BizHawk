@@ -1773,9 +1773,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
-					? "BizHawk"
-					: VersionInfo.CustomBuildString);
+				sb.Append(Config.MainFormStaticWindowTitleOverrideEffective);
 				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
 
 				return sb.ToString();
@@ -1783,17 +1781,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		protected override string WindowTitleStatic
-		{
-			get
-			{
-				var sb = new StringBuilder();
-				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
-					? "BizHawk"
-					: VersionInfo.CustomBuildString);
-				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
-				return sb.ToString();
-			}
-		}
+			=> VersionInfo.DeveloperBuild
+				? Config.MainFormStaticWindowTitleOverrideEffective + " (interim)"
+				: Config.MainFormStaticWindowTitleOverrideEffective;
 
 		private void ClearAutohold()
 		{
