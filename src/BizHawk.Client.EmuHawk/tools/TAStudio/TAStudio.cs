@@ -225,6 +225,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return;
 			}
+			GenerateIcons();
 
 			_autosaveTimer = new Timer(components);
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
@@ -492,8 +493,8 @@ namespace BizHawk.Client.EmuHawk
 		private void MakeDefaultColumns(InputRoll roll)
 		{
 			roll.AllColumns.Clear();
-			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
-			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: UIHelper.UnscaleX(roll.GetCellWidthForText("0000000")) + 7, text: "Frame#")
+			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: UIHelper.UnscaleX(roll.GetCellWidthForText("10") - 4), text: string.Empty));
+			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: UIHelper.UnscaleX(roll.GetCellWidthForText("0000000") + 7), text: "Frame#")
 			{
 				Rotatable = true,
 			});
@@ -549,9 +550,12 @@ namespace BizHawk.Client.EmuHawk
 				col.HorizontalHeight = inputLength + 4;
 			}
 
+			roll.AllColumns[CursorColumnName].VerticalWidth
+				= roll.AllColumns[CursorColumnName].HorizontalHeight
+				= UIHelper.UnscaleX(roll.GetCellWidthForText("10") - 4);
 			roll.AllColumns[FrameColumnName].VerticalWidth
 				= roll.AllColumns[FrameColumnName].HorizontalHeight
-				= UIHelper.UnscaleX(roll.GetCellWidthForText("0000000")) + 7;
+				= UIHelper.UnscaleX(roll.GetCellWidthForText("0000000") + 7);
 
 			roll.AllColumns.ColumnsChanged();
 		}
@@ -784,7 +788,6 @@ namespace BizHawk.Client.EmuHawk
 						roll.HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
 						roll.LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
 						roll.HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
-						roll.AllColumns[CursorColumnName].VerticalWidth = roll.AllColumns[CursorColumnName].HorizontalHeight = 18;
 						UpdateColumnWidths(roll);
 						UpdateInputRollDefinition(roll);
 					}

@@ -2010,6 +2010,8 @@ namespace BizHawk.Client.EmuHawk
 		// The height of a cell in Vertical Orientation.
 		private int CellHeight => (int)_charSize.Height + CellHeightPadding * 2;
 
+		public int TextHeight => (int)_charSize.Height;
+
 		/// <summary>
 		/// Call when font is changed.
 		/// </summary>
