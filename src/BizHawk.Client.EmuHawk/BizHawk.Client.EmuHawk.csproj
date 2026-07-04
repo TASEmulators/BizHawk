@@ -38,8 +38,6 @@
 		<EmbeddedResource Remove="images/pcejin1.bmp" />
 		<EmbeddedResource Remove="images/PlayButton.png" />
 		<EmbeddedResource Remove="images/sms-icon.png" />
-		<EmbeddedResource Remove="images/tastudio/ts_h_piano_*.png" />
-		<EmbeddedResource Remove="images/tastudio/ts_v_piano_*.png" />
 		<None Remove="packages.config" />
 		<None Remove="Properties/Resources.resources" />
 	</ItemGroup>
