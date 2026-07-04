@@ -8,6 +8,31 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class InputRoll
 	{
+		private const int WM_SETREDRAW = 0x000B;
+
+		private int _suspendCount = 0;
+
+		public void SuspendDrawing()
+		{
+			_suspendCount++;
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
+			}
+		}
+
+		public void ResumeDrawing()
+		{
+			_suspendCount--;
+			if (_suspendCount > 0) return;
+
+			if (!OSTailoredCode.IsUnixHost)
+			{
+				WmImports.SendMessageW(Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+				Refresh(); // per docs, an explicit redraw is required
+			}
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			using (_renderer.LockGraphics(e.Graphics))
