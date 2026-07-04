@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bitmap = _openedFiles[index].State switch
 			{
-				LuaFile.RunState.Running => Resources.ts_h_arrow_green,
+				LuaFile.RunState.Running => Resources.LuaRunning,
 				LuaFile.RunState.Paused => Resources.Pause,
 				_ => Resources.Stop,
 			};

@@ -1098,6 +1098,7 @@ namespace BizHawk.Client.EmuHawk
 						_inputRolls[i].ScrollSpeed = Settings.ScrollSpeed;
 						UpdateColumnWidths(_inputRolls[i]);
 					}
+					GenerateIcons();
 
 					UpdateAutoFire();
 

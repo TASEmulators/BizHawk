@@ -125,16 +125,17 @@ namespace BizHawk.Client.EmuHawk
 			UpdateProgressBar();
 		}
 
-		private Bitmap ts_v_arrow_green_blue => Properties.Resources.ts_v_arrow_green_blue;
-		private Bitmap ts_h_arrow_green_blue => Properties.Resources.ts_h_arrow_green_blue;
-		private Bitmap ts_v_arrow_blue => Properties.Resources.ts_v_arrow_blue;
-		private Bitmap ts_h_arrow_blue => Properties.Resources.ts_h_arrow_blue;
-		private Bitmap ts_v_arrow_green => Properties.Resources.ts_v_arrow_green;
-		private Bitmap ts_h_arrow_green => Properties.Resources.ts_h_arrow_green;
+		private Bitmap ts_v_arrow_blue;
+		private Bitmap ts_h_arrow_blue;
+		private Bitmap ts_v_arrow_green;
+		private Bitmap ts_h_arrow_green;
 
-		private Bitmap icon_marker => Properties.Resources.icon_marker;
-		private Bitmap icon_anchor_lag => Properties.Resources.icon_anchor_lag;
-		private Bitmap icon_anchor => Properties.Resources.icon_anchor;
+		private Point _arrowOffset;
+		private Point _arrowOffsetH;
+
+		private Bitmap icon_marker;
+		private Bitmap icon_anchor_lag;
+		private Bitmap icon_anchor;
 
 		private Panel _tasViewPanel;
 		private HScrollBar _tasViewHBar = new();
@@ -352,6 +353,52 @@ namespace BizHawk.Client.EmuHawk
 			_inputRolls.ForEach(UpdateInputRollDefinition); // after setting active roll
 		}
 
+		private void GenerateIcons()
+		{
+			void DoPolygon(Bitmap bitmap, Brush brush, Point[] points)
+			{
+				using Graphics g = Graphics.FromImage(bitmap);
+				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+				g.FillPolygon(brush, points);
+			}
+
+			double scaleFactor = _inputRolls[0].TextHeight / 13f;
+
+			int arrowSize = (int)(5 * scaleFactor);
+			Point[] arrowPoints = [
+				new(0, 0),
+				new(arrowSize, arrowSize),
+				new(0, 2 * arrowSize),
+			];
+			int baseWidth = _inputRolls[0].AllColumns[CursorColumnName].VerticalWidth;
+			_arrowOffset = new(baseWidth - _inputRolls[0].CellWidthPadding - arrowSize - (int)(2 * scaleFactor), (int)(1.5 * scaleFactor));
+			_arrowOffsetH = new((int)(1.5 * scaleFactor), baseWidth - _inputRolls[0].CellHeightPadding - arrowSize - (int)(2 * scaleFactor));
+
+			int anchorSize = (int)(6 * scaleFactor);
+			Point[] anchorPoints = [
+				new(0, 0),
+				new(0, anchorSize),
+				new(anchorSize, 0),
+			];
+
+			ts_h_arrow_blue = new(arrowSize, arrowSize * 2);
+			ts_h_arrow_green = new(arrowSize, arrowSize * 2);
+			DoPolygon(ts_h_arrow_blue, new SolidBrush(Color.FromArgb(83, 217, 255)), arrowPoints);
+			DoPolygon(ts_h_arrow_green, new SolidBrush(Color.FromArgb(0, 194, 64)), arrowPoints);
+
+			ts_v_arrow_blue = ts_h_arrow_blue.Clone() as Bitmap;
+			ts_v_arrow_green = ts_h_arrow_green.Clone() as Bitmap;
+			ts_v_arrow_blue.RotateFlip(RotateFlipType.Rotate90FlipNone);
+			ts_v_arrow_green.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
+			icon_anchor = new(anchorSize, anchorSize);
+			icon_marker = new(anchorSize, anchorSize);
+			icon_anchor_lag = new(anchorSize, anchorSize);
+			DoPolygon(icon_marker, new SolidBrush(Color.FromArgb(252, 209, 55)), anchorPoints);
+			DoPolygon(icon_anchor, new SolidBrush(Color.FromArgb(0, 222, 98)), anchorPoints);
+			DoPolygon(icon_anchor_lag, new SolidBrush(Color.FromArgb(255, 96, 100)), anchorPoints);
+		}
+
 		private void TasView_QueryItemIcon(InputRoll sender, int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			if (!_engaged || _initializing)
@@ -373,15 +420,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (sender.HorizontalOrientation)
 				{
-					offsetX = -1;
-					offsetY = 5;
+					offsetX = _arrowOffsetH.X;
+					offsetY = _arrowOffsetH.Y;
+				}
+				else
+				{
+					offsetX = _arrowOffset.X;
+					offsetY = _arrowOffset.Y;
 				}
 
 				if (index == Emulator.Frame)
 				{
-					bitmap = index == SeekingTo
-						? sender.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
-						: sender.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
+					bitmap = sender.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
 				else if (index == RestorePositionFrame)
 				{
