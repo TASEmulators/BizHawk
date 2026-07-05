@@ -48,7 +48,3 @@ UpgradeLog.htm
 /packages
 
 launchSettings.json
-
-# FUSE Z80 test suite (GPL-licensed) — not distributable in this MIT repo. Kept locally for the
-# Z80 FuseZ80Tests; download URLs are in that file's header comment. Untracked test data, not source.
-/src/BizHawk.Tests.Emulation.Cores/Resources/fuse/

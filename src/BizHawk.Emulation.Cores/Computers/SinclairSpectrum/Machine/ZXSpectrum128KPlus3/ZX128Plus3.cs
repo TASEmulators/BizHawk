@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			TapeDevice = new DatacorderDevice(spectrum.SyncSettings.AutoLoadTape);
 			TapeDevice.Init(this);
 
-			UPDDiskDevice = new NECUPD765();
+			UPDDiskDevice = new Upd765DiskController();
 			UPDDiskDevice.Init(this);
 
 			InitializeMedia(files);

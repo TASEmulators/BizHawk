@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			sb.Append("DISK INSERTED (" + _machine.DiskMediaIndex + ": " + _diskInfo[_machine.DiskMediaIndex].Name + ")");
+			sb.Append(" - Protection: " + _machine.UPDDiskDevice.ProtectionName);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 		}
 
@@ -107,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (_machine.UPDDiskDevice != null)
 			{
-				if (_machine.UPDDiskDevice.DiskPointer == null)
+				if (!_machine.UPDDiskDevice.DiskInserted)
 				{
 					sb.Append("No Disk Loaded");
 					SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
@@ -118,12 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 				sb.Clear();
 
-				string protection = "None";
-				protection = Enum.GetName(typeof(ProtectionType), _machine.UPDDiskDevice.DiskPointer.Protection);
-				if (protection == "None")
-					protection += " (OR UNKNOWN)";
-
-				sb.Append("Detected Protection: " + protection);
+				sb.Append("Detected Protection: " + _machine.UPDDiskDevice.ProtectionName);
 				SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 				sb.Clear();
 

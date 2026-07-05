@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The +3 built-in disk drive
 		/// </summary>
-		public virtual NECUPD765 UPDDiskDevice { get; set; }
+		public virtual IFloppyDiskController UPDDiskDevice { get; set; }
 
 		/// <summary>
 		/// Holds the currently selected joysticks
@@ -185,18 +185,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// is this a lag frame?
 			Spectrum.IsLagFrame = !InputRead;
-
-			// FDC debug
-			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
-			{
-				// only write UPD log every second
-				if (FrameCount % 10 == 0)
-				{
-					System.IO.File.AppendAllLines(UPDDiskDevice.outputfile, UPDDiskDevice.dLog);
-					UPDDiskDevice.dLog = new System.Collections.Generic.List<string>();
-					//System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
-				}
-			}
 		}
 
 		/// <summary>

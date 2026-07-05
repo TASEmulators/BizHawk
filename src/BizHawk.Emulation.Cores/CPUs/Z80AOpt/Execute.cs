@@ -1,5 +1,3 @@
-using BizHawk.Emulation.Cores.Components.Z80A;
-
 namespace BizHawk.Emulation.Cores.Components.Z80AOpt
 {
 	public partial class Z80AOpt<TLink>

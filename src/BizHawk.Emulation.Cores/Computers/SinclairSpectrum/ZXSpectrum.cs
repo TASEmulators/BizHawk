@@ -151,6 +151,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			HardReset();
 			SetupMemoryDomains();
+
+			// announce the inserted disk and its detected protection (media is loaded during machine
+			// construction, before _machine is assigned, so this can't be done from LoadAllMedia)
+			if (_machine.diskImages?.Count > 0)
+				OSD_DiskInserted();
 		}
 
 		public Action HardReset;
