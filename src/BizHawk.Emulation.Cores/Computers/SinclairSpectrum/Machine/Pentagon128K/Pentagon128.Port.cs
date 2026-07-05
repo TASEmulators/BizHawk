@@ -118,6 +118,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // Bit 5 set signifies that paging is disabled until next reboot
                     PagingDisabled = bits[5];
+
+                    // paging changed → rebuild PageContended (and the memory map) so the per-cycle
+                    // contention decode isn't stale. Pentagon uses the fallback memory path, but
+                    // PageContended is consulted every memory cycle, so this MUST run on paging changes.
+                    RebuildMemoryMap();
                 }
                 else
                 {
@@ -152,6 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
 				// Buzzer
+				BuzzerDevice.SetClock((int)CurrentFrameCycle);
 				BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 				TapeDevice.WritePort(port, value);
 

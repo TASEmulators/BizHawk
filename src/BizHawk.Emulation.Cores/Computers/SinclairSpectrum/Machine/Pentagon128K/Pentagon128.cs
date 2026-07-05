@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public Pentagon128(ZXSpectrum spectrum, Z80A<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
+		public Pentagon128(ZXSpectrum spectrum, Z80AOpt<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
 		{
 			Spectrum = spectrum;
 			CPU = cpu;

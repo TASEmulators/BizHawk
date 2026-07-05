@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public sealed class DatacorderDevice : IPortIODevice
 	{
 		private SpectrumBase _machine { get; set; }
-		private Z80A<ZXSpectrum.CpuLink> _cpu { get; set; }
+		private Z80AOpt<ZXSpectrum.CpuLink> _cpu { get; set; }
 		private OneBitBeeper _buzzer { get; set; }
 
 		/// <summary>
@@ -402,6 +402,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				{
 					counter = 0;
 					bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
+					// event-driven clock: position the beeper at the current frame cycle before the pulse
+					_buzzer.SetClock((int)_machine.CurrentFrameCycle);
 					_buzzer.ProcessPulseValue(state);
 				}
 			}

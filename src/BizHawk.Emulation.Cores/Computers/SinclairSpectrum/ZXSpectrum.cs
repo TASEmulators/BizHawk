@@ -4,7 +4,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Components;
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 
-			_cpu = new Z80A<CpuLink>(default);
+			_cpu = new Z80AOpt<CpuLink>(default);
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			_files = lp.Roms.Select(r => r.RomData).ToList();
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public Action HardReset;
 		public Action SoftReset;
 
-		private readonly Z80A<CpuLink> _cpu;
+		private readonly Z80AOpt<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
 
