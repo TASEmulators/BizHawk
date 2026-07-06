@@ -37,6 +37,13 @@ namespace BizHawk.Client.EmuHawk
 			Application.SetCompatibleTextRenderingDefault(false); // prepopulates `Label.UseCompatibleTextRendering` and friends; `false` means to use the "new" renderer rather than the compatibility renderer
 		}
 
+		private static void Show32BitWarningDialog()
+		{
+			EnsureWinFormsInitialized();
+			using ExceptionBox box = new("EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.");
+			box.ShowDialog();
+		}
+
 		static Program()
 		{
 			// Quickly check if the user is running this as a 32 bit process somehow
@@ -44,13 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			// (There are no longer any hard 64 bit deps, i.e. SlimDX is no longer around)
 			if (!Environment.Is64BitProcess)
 			{
-				EnsureWinFormsInitialized();
-				using (var box = new ExceptionBox(
-							"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close."))
-				{
-					box.ShowDialog();
-				}
-
+				Show32BitWarningDialog();
 				Process.GetCurrentProcess().Kill();
 				return;
 			}
