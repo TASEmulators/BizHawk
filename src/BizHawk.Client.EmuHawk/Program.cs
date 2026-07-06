@@ -56,6 +56,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			try
+			{
+				_ = Assembly.ReflectionOnlyLoad("System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+			}
+			catch (FileNotFoundException)
+			{
+				Console.Error.WriteLine("The WinForms assembly can't be found. Make sure you've installed the \"complete\" Mono package if one is available, or else look into alternate repos. Try Nix!");
+				throw;
+			}
+
 			// In case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
