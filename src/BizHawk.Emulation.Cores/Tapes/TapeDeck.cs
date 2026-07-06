@@ -433,11 +433,20 @@ namespace BizHawk.Emulation.Cores.Tapes
 				}
 
 				// update waitEdge with current position within the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count > 0
-					? ScalePeriod(_dataBlocks[_currentDataBlockIndex].DataPeriods[_position]) : 0;
+				var curBlock = _dataBlocks[_currentDataBlockIndex];
+				_waitEdge = _position < curBlock.DataPeriods.Count
+					? ScalePeriod(curBlock.DataPeriods[_position]) : 0;
 
-				// set the current state
-				currentState = _dataBlocks[_currentDataBlockIndex].DataLevels[_position];
+				// Set the current EAR state. Blocks that carry an explicit per-period level (e.g. direct
+				// recording / CSW / standard-speed data) use it; blocks that only populate DataPeriods
+				// (pure tone, pulse sequences, turbo pilots - as used by Speedlock and other custom loaders)
+				// toggle the level each period, which is the canonical datacorder behaviour. Guarding against
+				// DataLevels being shorter than DataPeriods here also stops a malformed/short block from
+				// throwing an IndexOutOfRangeException that would crash the whole application.
+				if (_position < curBlock.DataLevels.Count)
+					currentState = curBlock.DataLevels[_position];
+				else
+					currentState = !currentState;
 			}
 
 			// update lastCycle and return currentstate

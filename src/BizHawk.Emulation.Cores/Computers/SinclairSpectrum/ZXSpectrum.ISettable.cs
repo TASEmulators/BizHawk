@@ -121,6 +121,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[DefaultValue(TapeLoadSpeed.Accurate)]
 			public TapeLoadSpeed TapeLoadSpeed { get; set; }
 
+			[DisplayName("Turbo Load Multiplier")]
+			[Description("When Turbo Loading is enabled, how many machine-frames to run per host frame while a tape is loading. Higher = faster loading but lower on-screen framerate during the load")]
+			[DefaultValue(20)]
+			public int TapeLoadTurboMultiplier { get; set; }
+
 			[DisplayName("Joystick 1")]
 			[Description("The emulated joystick assigned to P1 (SHOULD BE UNIQUE TYPE!)")]
 			[DefaultValue(JoystickType.Kempston)]
@@ -210,13 +215,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		/// <summary>
 		/// The speed at which the tape is loaded
-		/// NOT IN USE YET
 		/// </summary>
 		public enum TapeLoadSpeed
 		{
+			/// <summary>Cycle-accurate: the tape's pulses are replayed in real time.</summary>
 			Accurate,
-			//Fast,
-			//Fastest
+
+			/// <summary>
+			/// Instant/flash load: the ROM load routine is trapped and the block's bytes are injected directly,
+			/// skipping pulse replay. Non-cycle-accurate, so it only takes effect when Deterministic Emulation
+			/// is off (a movie forces determinism, which disables it).
+			/// </summary>
+			Instant,
 		}
 	}
 
