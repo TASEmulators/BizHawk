@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 	/// </summary>
 	public sealed class WeakBitRng
 	{
-		private const ulong Gamma = 0x9E3779B97F4A7C15UL;
+		private const ulong Gamma = 0x9E37_79B9_7F4A_7C15UL;
 		private ulong _state;
 
 		public WeakBitRng(ulong seed = 0) => _state = seed;

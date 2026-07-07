@@ -59,6 +59,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _deck.DataBlocks = value;
 		}
 
+		/// <summary>The loading / copy-protection scheme detected from the currently loaded tape (report-only).</summary>
+		public TapeProtectionScheme DetectedLoader => TapeProtection.Detect(_deck.DataBlocks);
+
+		/// <summary>Human-readable name of <see cref="DetectedLoader"/> for the OSD.</summary>
+		public string DetectedLoaderName => TapeProtection.DisplayName(DetectedLoader);
+
 		public int CurrentDataBlockIndex
 		{
 			get => _deck.CurrentDataBlockIndex;

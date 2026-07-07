@@ -32,7 +32,8 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 	/// This guard already earned its keep: it caught a +2a/+3/Pentagon regression (stale PageContended after
 	/// paging) that every other test missed. If it fails after a future change, confirm the change is
 	/// intended, then regenerate the golden: temporarily exclude any branch-only-member test files, `git
-	/// stash` to master, run this test, and paste the new fingerprint lines from scratchpad/zx_fingerprints.txt.
+	/// stash` to master, run this test, and paste the new fingerprint lines from zx_fingerprints.txt (written to
+	/// the system temp dir).
 	/// </summary>
 	[TestClass]
 	public sealed class ZXModelFingerprintTests
@@ -147,7 +148,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 				}
 			}
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\zx_fingerprints.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zx_fingerprints.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, sb.ToString());
 			Console.WriteLine(sb.ToString());

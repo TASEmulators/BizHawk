@@ -200,6 +200,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			StringBuilder sb = new StringBuilder();
 			sb.Append("TAPE INSERTED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
+			if (_machine.TapeDevice != null)
+				sb.Append(" - Loader: " + _machine.TapeDevice.DetectedLoaderName);
 
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 		}
@@ -370,6 +372,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			sb.Clear();
 
 			sb.Append("Tape: " + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name);
+			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+			sb.Clear();
+
+			sb.Append("Detected Loader: " + _machine.TapeDevice.DetectedLoaderName);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 			sb.Clear();
 

@@ -71,11 +71,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// load the media into the tape device
 				tapeMediaIndex = result;
 
+				// load first so the tape blocks (and detected loader) are current, then fire the osd message
+				LoadTapeMedia();
+
 				// fire osd message
 				if (!IsLoadState)
 					Spectrum.OSD_TapeInserted();
-
-				LoadTapeMedia();
 			}
 		}
 

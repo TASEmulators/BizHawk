@@ -195,7 +195,7 @@ namespace BizHawk.Tests.Emulation.Cores.Tape
 					mismatches.Add($"{mt}:\n    golden {expected}\n    actual {a}");
 			}
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\zx_tape_fingerprints.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zx_tape_fingerprints.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, sb.ToString());
 			Console.WriteLine(sb.ToString());

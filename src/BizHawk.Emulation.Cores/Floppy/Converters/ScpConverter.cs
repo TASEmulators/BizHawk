@@ -3,18 +3,18 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Cores.Floppy
 {
 	/// <summary>
-	/// Loader for the SuperCard Pro (.scp) flux image format. SCP records raw flux-reversal timings
+	/// <para>Loader for the SuperCard Pro (.scp) flux image format. SCP records raw flux-reversal timings
 	/// (16-bit big-endian, in 25 ns ticks) per revolution, not decoded cells - so we recover cells with a
 	/// per-track software PLL (auto-estimate the real bit-cell time, then track it) and emit one flux
-	/// transition per interval.
-	///
-	/// SCP stores several revolutions of each track (header byte 5). We decode revolution 0 as the track the
-	/// FDC reads, and use the remaining revolutions to recover WEAK/FUZZY bits: a copy-protection weak sector
+	/// transition per interval.</para>
+	/// <para>SCP stores several revolutions of each track (header byte 5). We decode every revolution and let
+	/// the FDC read whichever recovered the most valid-CRC sectors (a marginal read on one pass is often clean
+	/// on another), then use the remaining revolutions to recover WEAK/FUZZY bits: a copy-protection weak sector
 	/// deliberately reads unstably, which shows up as the same sector's data differing from revolution to
 	/// revolution. Cells whose byte differs across revolutions (in a sector that does not already read cleanly)
 	/// are flagged weak so the FDC returns unpredictable data there, reproducing the protection - the whole
 	/// point of a flux-level dump. To avoid corrupting genuinely-stable sectors with our own decode jitter, we
-	/// only weaken sectors that fail their data CRC on revolution 0 (a solid read is left solid).
+	/// only weaken sectors that fail their data CRC (a solid read is left solid).</para>
 	/// </summary>
 	public static class ScpConverter
 	{

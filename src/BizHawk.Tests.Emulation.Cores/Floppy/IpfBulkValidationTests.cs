@@ -69,7 +69,7 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 
 			sb.AppendLine($"summary: {seen.Count} unique, {failures} failures, {doubleSided} double-sided");
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\ipf_bulk.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "ipf_bulk.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, sb.ToString());
 

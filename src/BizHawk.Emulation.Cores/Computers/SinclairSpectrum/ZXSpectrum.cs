@@ -156,6 +156,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// construction, before _machine is assigned, so this can't be done from LoadAllMedia)
 			if (_machine.diskImages?.Count > 0)
 				OSD_DiskInserted();
+
+			// likewise announce the inserted tape and its detected loading scheme
+			if (_tapeInfo.Count > 0)
+				OSD_TapeInserted();
 		}
 
 		public Action HardReset;

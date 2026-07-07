@@ -18,7 +18,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 	/// per-cycle pipeline (ULA/RenderScreen, beepers, tape, contention, virtual memory dispatch).
 	/// Instantiates the real 48K core (embedded firmware — no external files) and times
 	/// FrameAdvance with rendering on vs off. Excluded from normal runs; run with
-	/// --filter "TestCategory=Benchmark". Result written to the scratchpad file + console.
+	/// --filter "TestCategory=Benchmark". Result written to a temp file + console.
 	/// </summary>
 	[TestClass]
 	public sealed class ZXWholeFrameBenchmark
@@ -442,7 +442,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 			sb.AppendLine($"  devirt OFF (virtual) : {medOff:F2}");
 			sb.AppendLine($"  ratio off/on         : {medOff / medOn:F4}  ({(medOff / medOn - 1) * 100:+0.0;-0.0}% : devirt is this much faster than virtual)");
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\zx_devirt_ab.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zx_devirt_ab.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, sb.ToString());
 			Console.WriteLine(sb.ToString());
@@ -498,7 +498,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 			sb.AppendLine($"  So non-CPU per-cycle overhead ~= ({medOff / TStatesPerFrame48K:F0} - 39) ns/T-state in the render-off frame,");
 			sb.AppendLine($"  plus ~{renderCost / TStatesPerFrame48K:F0} ns/T-state for RenderScreen when rendering.");
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\zx_frame.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zx_frame.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, sb.ToString());
 			Console.WriteLine(sb.ToString());
@@ -607,7 +607,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 			sb2.AppendLine("  contention-stretch cycles that cost no call, so [B] slightly understates the true per-call");
 			sb2.AppendLine("  pipeline cost and (B-A) slightly understates ULA+contention. Good for shares, not exact.");
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\zx_profile.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "zx_profile.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, sb2.ToString());
 			Console.WriteLine(sb2.ToString());

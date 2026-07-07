@@ -13,7 +13,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 	/// fixed pseudo-random program. Not rigorous (single process, no isolation), but stable enough
 	/// to see whether a Z80AOpt optimisation actually moves the needle. Excluded from the normal run;
 	/// invoke with: dotnet test ... --filter "TestCategory=Benchmark".
-	/// Result is written to the scratchpad file below and to the console.
+	/// Result is written to a temp file (see below) and to the console.
 	/// </summary>
 	[TestClass]
 	public sealed class Z80ABenchmark
@@ -58,7 +58,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 				$"MEDIAN Z80AOpt (fork)    : {newMed:F3} ns/cycle\n" +
 				$"MEDIAN fork/ref ratio  : {ratioMed:F4}  ({(1 - ratioMed) * 100:+0.0;-0.0}% vs reference)";
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\z80_bench.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "z80_bench.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, msg);
 			System.Console.WriteLine(msg);
@@ -103,7 +103,7 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 				$"MEDIAN native floooh   : {Median(native):F3} ns/cycle\n" +
 				$"MEDIAN native/managed  : {Median(ratios):F4}  (>1 means native is SLOWER per tick)";
 
-			string outPath = @"C:\Users\matt\AppData\Local\Temp\claude\D--Repos-BH-BizHawk\856ebaad-1f4b-4da2-9a07-b5626fdb9560\scratchpad\z80_native.txt";
+			string outPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "z80_native.txt");
 			Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
 			File.WriteAllText(outPath, msg);
 			System.Console.WriteLine(msg);
