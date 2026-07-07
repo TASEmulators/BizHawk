@@ -147,6 +147,9 @@ namespace BizHawk.Client.EmuHawk
 			public PatternPaintModeEnum PatternPaintMode { get; set; } = TAStudioSettings.PatternPaintModeEnum.Never;
 			public PatternSelectionEnum PatternSelection { get; set; } = TAStudioSettings.PatternSelectionEnum.Hold;
 			public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+
+			public Rectangle SettingsWindow { get; set; }
+			public Rectangle UndoHistoryWindow { get; set; }
 		}
 
 		public class MovieClientSettings

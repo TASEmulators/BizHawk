@@ -331,6 +331,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_undoForm = new UndoHistoryForm(this) { Owner = this };
+			if (Settings.UndoHistoryWindow.Width != 0)
+			{
+				_undoForm.Location = Settings.UndoHistoryWindow.Location;
+				_undoForm.Size = Settings.UndoHistoryWindow.Size;
+			}
+			_undoForm.FormClosed += (s, e) => Settings.UndoHistoryWindow = new(_undoForm.Location, _undoForm.Size);
 			_undoForm.Show();
 			_undoForm.UpdateValues();
 		}
@@ -1117,7 +1123,13 @@ namespace BizHawk.Client.EmuHawk
 					UpdateActiveMovieInputs();
 				}
 			);
+			if (Settings.SettingsWindow.Width != 0)
+			{
+				settingsForm.Location = Settings.SettingsWindow.Location;
+				settingsForm.Size = Settings.SettingsWindow.Size;
+			}
 			settingsForm.ShowDialog(this);
+			Settings.SettingsWindow = new(settingsForm.Location, settingsForm.Size);
 
 			RefreshDialog();
 		}
