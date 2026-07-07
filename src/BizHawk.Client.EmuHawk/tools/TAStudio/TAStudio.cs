@@ -493,13 +493,14 @@ namespace BizHawk.Client.EmuHawk
 		private void MakeDefaultColumns(InputRoll roll)
 		{
 			roll.AllColumns.Clear();
-			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: UIHelper.UnscaleX(roll.GetCellWidthForText("10") - 4), text: string.Empty));
-			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: UIHelper.UnscaleX(roll.GetCellWidthForText("0000000") + 7), text: "Frame#")
+
+			// All final widths are computed in UpdateColumnWidths, after column creation.
+			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 10, text: string.Empty));
+			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 10, text: "Frame#")
 			{
 				Rotatable = true,
 			});
 
-			int minColumnWidth = UIHelper.UnscaleX(roll.GetCellWidthForText("W"));
 			List<RollColumn> columns = new(); // add to list first then AddRange to avoid 100 refreshes
 			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
 			{
@@ -507,21 +508,15 @@ namespace BizHawk.Client.EmuHawk
 					? $"c{mnemonic0.ToUpperInvariant()}" // prepend 'c' to differentiate from L/R buttons -- this only affects the column headers
 					: mnemonic0;
 
-				int mnemonicLegth = mnemonic.Length > 1
-					? UIHelper.UnscaleX(roll.GetCellWidthForText(mnemonic))
-					: minColumnWidth; // keep single-character columns a uniform width, for prettyness
-				int inputLength = UIHelper.UnscaleX(roll.GetCellWidthForText("".PadRight(maxLength, '8')));
 				columns.Add(new(
 					name: name,
-					verticalWidth: Math.Max(mnemonicLegth, inputLength),
-					horizontalHeight: inputLength,
+					widthUnscaled: 10,
 					text: mnemonic)
 				{
 					Rotatable = ControllerType.Axes.ContainsKey(name),
 				});
 			}
 			roll.AllColumns.AddRange(columns);
-
 
 			foreach (var column in GetDefaultHiddenColums(roll))
 			{
@@ -536,18 +531,23 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			roll.AllColumns.ColumnsChanged();
+			UpdateColumnWidths(roll);
 		}
 
 		private void UpdateColumnWidths(InputRoll roll)
 		{
+			int minColumnWidth = UIHelper.UnscaleX(roll.GetCellWidthForText("W")); // this gives the same width as the old hard-coded width, with default font
 			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
 			{
 				RollColumn col = roll.AllColumns[name];
-				int mnemonicLegth = UIHelper.UnscaleX(roll.GetCellWidthForText(col.Text));
+
+				int textLength = col.Text.Length > 1
+					? UIHelper.UnscaleX(roll.GetCellWidthForText(col.Text))
+					: minColumnWidth; // keep single-character columns a uniform width, for prettyness
 				int inputLength = UIHelper.UnscaleX(roll.GetCellWidthForText("".PadRight(maxLength, '8')));
-				col.VerticalWidth = Math.Max(mnemonicLegth, inputLength) + 4;
-				col.HorizontalHeight = inputLength + 4;
+
+				col.VerticalWidth = Math.Max(textLength, inputLength);
+				col.HorizontalHeight = inputLength;
 			}
 
 			roll.AllColumns[CursorColumnName].VerticalWidth
