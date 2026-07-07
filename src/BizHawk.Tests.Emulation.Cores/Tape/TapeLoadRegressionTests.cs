@@ -54,7 +54,9 @@ namespace BizHawk.Tests.Emulation.Cores.Tape
 			public GameInfo Game { get; set; }
 		}
 
-		/// <summary>A controller that reports a fixed set of buttons as pressed.</summary>
+		/// <summary>
+		/// A controller that reports a fixed set of buttons as pressed.
+		/// </summary>
 		private sealed class PressController : IController
 		{
 			private readonly HashSet<string> _pressed;

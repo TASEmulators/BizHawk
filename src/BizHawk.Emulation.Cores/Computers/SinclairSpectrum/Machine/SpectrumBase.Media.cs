@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public List<byte[]> diskImages { get; set; }
 
 		/// <summary>
-		/// The side to present for each entry in <see cref="diskImages"/>: 0 or 1 selects one side of a
+		/// The side to present for each entry in diskImages: 0 or 1 selects one side of a
 		/// double-sided image (which is registered as two disks), -1 loads the image as-is.
 		/// </summary>
 		public List<int> diskSides { get; set; }

@@ -2,7 +2,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Floppy
 {
-	/// <summary>One track/side extracted from an HFE image: the raw MFM cell bitstream as an MfmTrack.</summary>
+	/// <summary>
+	/// One track/side extracted from an HFE image: the raw MFM cell bitstream as an MfmTrack.
+	/// </summary>
 	public sealed class HfeTrack
 	{
 		public int Cylinder;

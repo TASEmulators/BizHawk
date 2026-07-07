@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Tapes
 	/// Represents a tape block.
 	/// This is the shared, core-agnostic tape data model used by any core with a standard tape player
 	/// (originally the ZX Spectrum datacorder; the same block structure covers the Amstrad CPC CDT format).
-	/// Pulse timings in <see cref="DataPeriods"/> are stored in the format's native 3.5MHz T-state reference;
+	/// Pulse timings in DataPeriods are stored in the format's native 3.5MHz T-state reference;
 	/// a consuming core scales them to its own CPU clock when generating the signal.
-	/// <see cref="BlockData"/> retains the raw decoded payload so a future trap/flash-loader can read block
+	/// BlockData retains the raw decoded payload so a future trap/flash-loader can read block
 	/// bytes directly rather than replaying pulses.
 	/// </summary>
 	public class TapeDataBlock
@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 		public int ControlValue;
 
 		/// <summary>
-		/// Control-flow relative block offsets for a call-sequence or select block (see <see cref="ControlValue"/>).
+		/// Control-flow relative block offsets for a call-sequence or select block (see ControlValue).
 		/// </summary>
 		public int[] ControlOffsets;
 

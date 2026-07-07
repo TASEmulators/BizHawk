@@ -11,7 +11,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 	{
 		public const ushort Init = 0xFFFF;
 
-		/// <summary>Fold one byte into a running CRC (MSB-first).</summary>
+		/// <summary>
+		/// Fold one byte into a running CRC (MSB-first).
+		/// </summary>
 		public static ushort Update(ushort crc, byte b)
 		{
 			crc ^= (ushort)(b << 8);
@@ -24,7 +26,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return crc;
 		}
 
-		/// <summary>Compute the CRC over a span of bytes.</summary>
+		/// <summary>
+		/// Compute the CRC over a span of bytes.
+		/// </summary>
 		public static ushort Compute(System.ReadOnlySpan<byte> data, ushort init = Init)
 		{
 			ushort crc = init;

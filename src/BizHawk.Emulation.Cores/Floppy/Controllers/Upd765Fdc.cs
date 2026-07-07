@@ -38,22 +38,34 @@ namespace BizHawk.Emulation.Cores.Floppy
 			CmdReadDeleted = 0x0C, CmdVersion = 0x10, CmdReadDiagnostic = 0x02,
 			CmdScanEqual = 0x11, CmdScanLow = 0x19, CmdScanHigh = 0x1D;
 
-		/// <summary>Up to four drives; the +3/CPC populate index 0. Host sets these.</summary>
+		/// <summary>
+		/// Up to four drives; the +3/CPC populate index 0. Host sets these.
+		/// </summary>
 		public IFloppyDrive[] Drives { get; } = new IFloppyDrive[4];
 
-		/// <summary>Optional host callback for the INT/DRQ lines. Null is fine (a polling host ignores them).</summary>
+		/// <summary>
+		/// Optional host callback for the INT/DRQ lines. Null is fine (a polling host ignores them).
+		/// </summary>
 		public IFdcHost Host { get; set; }
 
-		/// <summary>RNG for weak/fuzzy sectors, shared so repeated reads vary; seedable for determinism.</summary>
+		/// <summary>
+		/// RNG for weak/fuzzy sectors, shared so repeated reads vary; seedable for determinism.
+		/// </summary>
 		public WeakBitRng WeakRng { get; set; } = new WeakBitRng(0);
 
-		/// <summary>Host CPU clock the timing is expressed against; defaults to the +3 Z80 clock.</summary>
+		/// <summary>
+		/// Host CPU clock the timing is expressed against; defaults to the +3 Z80 clock.
+		/// </summary>
 		public long CpuClockHz { get; private set; } = 3_546_900;
 
-		/// <summary>Current state of the FDC interrupt request line.</summary>
+		/// <summary>
+		/// Current state of the FDC interrupt request line.
+		/// </summary>
 		public bool IntPending => _intActive;
 
-		/// <summary>True while a command is in progress (not idle) - drives the disk activity light.</summary>
+		/// <summary>
+		/// True while a command is in progress (not idle) - drives the disk activity light.
+		/// </summary>
 		public bool Active => _phase != Phase.Idle;
 
 		private Phase _phase = Phase.Idle;
@@ -103,7 +115,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 
 		public Upd765Fdc() => RecomputeTiming();
 
-		/// <summary>Point the controller (and its drives) at the host CPU clock so timing lands correctly.</summary>
+		/// <summary>
+		/// Point the controller (and its drives) at the host CPU clock so timing lands correctly.
+		/// </summary>
 		public void ConfigureTiming(long cpuClockHz)
 		{
 			CpuClockHz = cpuClockHz > 0 ? cpuClockHz : 3_546_900;
@@ -111,7 +125,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			for (int i = 0; i < 4; i++) Drives[i]?.ConfigureTiming(CpuClockHz);
 		}
 
-		/// <summary>Serialize the controller's operational state (the loaded disk is restored separately).</summary>
+		/// <summary>
+		/// Serialize the controller's operational state (the loaded disk is restored separately).
+		/// </summary>
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Upd765Fdc");

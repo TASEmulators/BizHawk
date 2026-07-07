@@ -2,7 +2,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Floppy
 {
-	/// <summary>A recognized +3/CPC disk copy-protection / special-format scheme (None if nothing matched).</summary>
+	/// <summary>
+	/// A recognized +3/CPC disk copy-protection / special-format scheme (None if nothing matched).
+	/// </summary>
 	public enum DiskProtectionScheme
 	{
 		None,
@@ -35,7 +37,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public static string DisplayName(DiskProtectionScheme scheme)
 			=> scheme == DiskProtectionScheme.None ? "None (or unknown)" : scheme.ToString();
 
-		/// <summary>Detect a protection / special-format scheme from the flux (best-effort, for reporting).</summary>
+		/// <summary>
+		/// Detect a protection / special-format scheme from the flux (best-effort, for reporting).
+		/// </summary>
 		public static DiskProtectionScheme Detect(FluxDisk disk)
 		{
 			if (disk == null) return DiskProtectionScheme.None;
@@ -70,7 +74,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return DiskProtectionScheme.None;
 		}
 
-		/// <summary>The Speedlock track-0 fingerprint: a 9-sector track whose first sector carries the signature.</summary>
+		/// <summary>
+		/// The Speedlock track-0 fingerprint: a 9-sector track whose first sector carries the signature.
+		/// </summary>
 		public static bool IsSpeedlock(int sectorCount, byte[] firstSectorData)
 			=> sectorCount == 9 && ContainsAscii(firstSectorData, "SPEEDLOCK");
 

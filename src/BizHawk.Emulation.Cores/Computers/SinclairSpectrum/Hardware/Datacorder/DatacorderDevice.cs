@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// Represents the tape device (or built-in datacorder as it was called +2 and above).
 	///
 	/// The generic tape mechanism (block model, transport, EAR signal generation) lives in the shared
-	/// <see cref="TapeDeck"/>; this class owns a deck and supplies the Spectrum-specific pieces via
-	/// <see cref="ITapeHost"/>: the Z80 cycle counter, the tape beeper, on-screen notifications, tape-format
+	/// TapeDeck; this class owns a deck and supplies the Spectrum-specific pieces via
+	/// ITapeHost: the Z80 cycle counter, the tape beeper, on-screen notifications, tape-format
 	/// loading, the ROM auto-detect (tape-trap) monitor, the flash loader and the tape input/output ports.
 	/// </summary>
 	public sealed class DatacorderDevice : IPortIODevice, ITapeHost
@@ -59,10 +59,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			set => _deck.DataBlocks = value;
 		}
 
-		/// <summary>The loading / copy-protection scheme detected from the currently loaded tape (report-only).</summary>
+		/// <summary>
+		/// The loading / copy-protection scheme detected from the currently loaded tape (report-only).
+		/// </summary>
 		public TapeProtectionScheme DetectedLoader => TapeProtection.Detect(_deck.DataBlocks);
 
-		/// <summary>Human-readable name of <see cref="DetectedLoader"/> for the OSD.</summary>
+		/// <summary>
+		/// Human-readable name of DetectedLoader for the OSD.
+		/// </summary>
 		public string DetectedLoaderName => TapeProtection.DisplayName(DetectedLoader);
 
 		public int CurrentDataBlockIndex

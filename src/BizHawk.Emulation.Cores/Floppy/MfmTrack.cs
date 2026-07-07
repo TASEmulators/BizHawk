@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public bool IsWeak(int i) => _weak != null && (_weak[i >> 3] & (1 << (i & 7))) != 0;
 
 		/// <summary>
-		/// Read a 16-cell window starting at <paramref name="pos"/> as a big-endian 16-bit value
+		/// Read a 16-cell window starting at pos as a big-endian 16-bit value
 		/// (cell at pos = bit 15). Used to match sync patterns. Wraps around the track (circular).
 		/// </summary>
 		public ushort Window16(int pos)
@@ -48,10 +48,10 @@ namespace BizHawk.Emulation.Cores.Floppy
 	}
 
 	/// <summary>
-	/// Builds an <see cref="MfmTrack"/> by appending MFM-encoded bytes and the special missing-clock sync
+	/// Builds an MfmTrack by appending MFM-encoded bytes and the special missing-clock sync
 	/// marks. Pure cell encoding - CRC is the format builder's concern (it feeds the same bytes to
-	/// <see cref="Crc16Ccitt"/> and writes the resulting CRC bytes via <see cref="WriteByte"/>). Bytes
-	/// written via <see cref="WriteByteWeak"/> have their cells flagged weak/fuzzy.
+	/// Crc16Ccitt and writes the resulting CRC bytes via WriteByte). Bytes
+	/// written via WriteByteWeak have their cells flagged weak/fuzzy.
 	/// </summary>
 	public sealed class MfmTrackWriter
 	{
@@ -81,14 +81,18 @@ namespace BizHawk.Emulation.Cores.Floppy
 			_prevDataBit = dataBit;
 		}
 
-		/// <summary>Append one MFM-encoded data byte (MSB first). Does NOT touch any CRC.</summary>
+		/// <summary>
+		/// Append one MFM-encoded data byte (MSB first). Does NOT touch any CRC.
+		/// </summary>
 		public void WriteByte(byte b)
 		{
 			for (int i = 7; i >= 0; i--)
 				EmitDataBit((b >> i) & 1);
 		}
 
-		/// <summary>Append an MFM-encoded byte whose cells are flagged weak/fuzzy (reads vary per pass).</summary>
+		/// <summary>
+		/// Append an MFM-encoded byte whose cells are flagged weak/fuzzy (reads vary per pass).
+		/// </summary>
 		public void WriteByteWeak(byte b)
 		{
 			_weakMode = true;
@@ -112,14 +116,18 @@ namespace BizHawk.Emulation.Cores.Floppy
 				AddCell(((pattern >> i) & 1) != 0);
 		}
 
-		/// <summary>Append an A1 (0x4489) sync mark. Data-bit continuity: A1's last data bit is 1.</summary>
+		/// <summary>
+		/// Append an A1 (0x4489) sync mark. Data-bit continuity: A1's last data bit is 1.
+		/// </summary>
 		public void WriteSyncA1()
 		{
 			EmitFixed16(SyncA1);
 			_prevDataBit = 1;
 		}
 
-		/// <summary>Append a C2 (0x5224) sync mark (IAM). C2's last data bit is 0.</summary>
+		/// <summary>
+		/// Append a C2 (0x5224) sync mark (IAM). C2's last data bit is 0.
+		/// </summary>
 		public void WriteSyncC2()
 		{
 			EmitFixed16(SyncC2);
@@ -127,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 		}
 
 		/// <summary>
-		/// Append raw cells taken verbatim from <paramref name="sample"/> (MSB first), for stream data that is
+		/// Append raw cells taken verbatim from sample (MSB first), for stream data that is
 		/// already at the cell level (IPF Sync/Raw elements, which carry the recorded flux bits directly).
 		/// </summary>
 		public void WriteRawCells(byte[] sample, int cellCount, bool weak = false)
@@ -143,7 +151,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			_weakMode = false;
 		}
 
-		/// <summary>Append <paramref name="cellCount"/> weak/fuzzy cells (IPF Fuzzy: consumer-generated bits).</summary>
+		/// <summary>
+		/// Append cellCount weak/fuzzy cells (IPF Fuzzy: consumer-generated bits).
+		/// </summary>
 		public void WriteWeakCells(int cellCount)
 		{
 			_weakMode = true;

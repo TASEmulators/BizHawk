@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	/// <summary>
 	/// Reads the +3DOS (CP/M 2.2-style) directory off a +3 disk's flux, listing the files it contains. Useful
 	/// for diagnostics / OSD - e.g. to see what to LOAD when a disk is a data disk rather than a self-booting
-	/// one, or to confirm a disk decoded into a usable filesystem. Works on the shared <see cref="FluxDisk"/>
+	/// one, or to confirm a disk decoded into a usable filesystem. Works on the shared FluxDisk
 	/// (side 0), reading the +3 disk specification from logical sector 0 when present, otherwise assuming the
 	/// standard 180K +3 DATA format. This reads the filesystem only; it does not interpret copy protection.
 	/// </summary>
@@ -30,8 +30,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 		}
 
-		/// <summary>Read the directory from side 0 of the disk. Returns an empty list if no valid +3DOS
-		/// directory is present (e.g. a custom-formatted / non-filesystem disk).</summary>
+		/// <summary>
+		/// Read the directory from side 0 of the disk. Returns an empty list if no valid +3DOS
+		/// directory is present (e.g. a custom-formatted / non-filesystem disk).
+		/// </summary>
 		public static List<Entry> Read(FluxDisk disk)
 		{
 			var files = new List<Entry>();
@@ -95,7 +97,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			return files;
 		}
 
-		/// <summary>Convenience: a human-readable multi-line catalogue (empty string if no files).</summary>
+		/// <summary>
+		/// Convenience: a human-readable multi-line catalogue (empty string if no files).
+		/// </summary>
 		public static string Catalogue(FluxDisk disk)
 		{
 			var files = Read(disk);

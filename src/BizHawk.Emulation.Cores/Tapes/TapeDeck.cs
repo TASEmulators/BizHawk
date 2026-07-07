@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 	/// <summary>
 	/// <para>
 	/// A shared, core-agnostic tape player (datacorder). Holds the loaded tape as a list of
-	/// <see cref="TapeDataBlock"/>, drives transport (play / stop / rewind / block skip), and generates the
+	/// TapeDataBlock, drives transport (play / stop / rewind / block skip), and generates the
 	/// EAR signal by comparing pulse periods against the host CPU's cycle counter.
 	/// </para>
 	/// <para>
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 	/// </para>
 	/// <para>
 	/// Everything core-specific (auto-detect of tape reads, trap/fast loading, port I/O, a motor/remote line)
-	/// lives in the owning core behind <see cref="ITapeHost"/>; this class references no CPU or machine type.
+	/// lives in the owning core behind ITapeHost; this class references no CPU or machine type.
 	/// </para>
 	/// </summary>
 	public sealed class TapeDeck

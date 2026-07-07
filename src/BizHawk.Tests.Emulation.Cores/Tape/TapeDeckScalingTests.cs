@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Tapes;
 namespace BizHawk.Tests.Emulation.Cores.Tape
 {
 	/// <summary>
-	/// White-box tests for the shared <see cref="TapeDeck"/> clock scaling - the "frequency piece". Tape
+	/// White-box tests for the shared TapeDeck clock scaling - the "frequency piece". Tape
 	/// formats store pulse timings against a 3.5MHz reference; a core with a different CPU clock passes a
 	/// cyclesPerTapeTState ratio so the same tape plays at the correct real rate. This drives the deck through
 	/// a stub host and confirms a fixed cycle budget consumes exactly budget/(period*ratio) pulses, so a faster

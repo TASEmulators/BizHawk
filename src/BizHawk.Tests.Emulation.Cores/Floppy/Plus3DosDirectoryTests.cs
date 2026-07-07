@@ -5,8 +5,10 @@ using BizHawk.Emulation.Cores.Floppy;
 
 namespace BizHawk.Tests.Emulation.Cores.Floppy
 {
-	/// <summary>Reads a synthesised +3DOS directory off a flux disk and confirms the file list, sizes and
-	/// attributes come back correctly.</summary>
+	/// <summary>
+	/// Reads a synthesised +3DOS directory off a flux disk and confirms the file list, sizes and
+	/// attributes come back correctly.
+	/// </summary>
 	[TestClass]
 	public sealed class Plus3DosDirectoryTests
 	{

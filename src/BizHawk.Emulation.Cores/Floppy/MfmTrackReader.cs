@@ -18,8 +18,10 @@ namespace BizHawk.Emulation.Cores.Floppy
 
 		public int CellCount => _t.CellCount;
 
-		/// <summary>Decode the 16-cell window at <paramref name="pos"/> as one data byte (data cells are
-		/// the odd cells; first data bit is the MSB). A weak data cell yields a random bit. Wraps around.</summary>
+		/// <summary>
+		/// Decode the 16-cell window at pos as one data byte (data cells are
+		/// the odd cells; first data bit is the MSB). A weak data cell yields a random bit. Wraps around.
+		/// </summary>
 		public byte ReadByteAt(int pos)
 		{
 			int b = 0;
@@ -34,8 +36,8 @@ namespace BizHawk.Emulation.Cores.Floppy
 		}
 
 		/// <summary>
-		/// From <paramref name="pos"/>, scan forward for an A1 (0x4489) sync, consume consecutive A1 sync
-		/// windows, and decode the following byte as the address mark. On success <paramref name="pos"/> is
+		/// From pos, scan forward for an A1 (0x4489) sync, consume consecutive A1 sync
+		/// windows, and decode the following byte as the address mark. On success pos is
 		/// left immediately after the mark byte, ready to read the field. Returns false if no A1 is found
 		/// within one revolution.
 		/// </summary>
@@ -68,7 +70,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return true;
 		}
 
-		/// <summary>Read <paramref name="count"/> MFM bytes starting at <paramref name="pos"/>, advancing it.</summary>
+		/// <summary>
+		/// Read count MFM bytes starting at pos, advancing it.
+		/// </summary>
 		public byte[] ReadBytes(ref int pos, int count)
 		{
 			var buf = new byte[count];

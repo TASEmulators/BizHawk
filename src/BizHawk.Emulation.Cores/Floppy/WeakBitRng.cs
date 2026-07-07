@@ -2,8 +2,8 @@ namespace BizHawk.Emulation.Cores.Floppy
 {
 	/// <summary>
 	/// Deterministic PRNG used to resolve weak/fuzzy cells (copy protection) so repeated reads of a weak sector
-	/// vary. Unlike <see cref="System.Random"/>, its whole state is a single value that can be serialized, so
-	/// weak reads replay identically across savestate/TAS load (the FDC syncs <see cref="State"/>). splitmix64.
+	/// vary. Unlike System.Random, its whole state is a single value that can be serialized, so
+	/// weak reads replay identically across savestate/TAS load (the FDC syncs State). splitmix64.
 	/// </summary>
 	public sealed class WeakBitRng
 	{
@@ -12,10 +12,14 @@ namespace BizHawk.Emulation.Cores.Floppy
 
 		public WeakBitRng(ulong seed = 0) => _state = seed;
 
-		/// <summary>The full RNG state - serialize this for deterministic replay.</summary>
+		/// <summary>
+		/// The full RNG state - serialize this for deterministic replay.
+		/// </summary>
 		public ulong State { get => _state; set => _state = value; }
 
-		/// <summary>Returns a value in [0, maxExclusive). Mirrors the System.Random.Next(int) signature.</summary>
+		/// <summary>
+		/// Returns a value in [0, maxExclusive). Mirrors the System.Random.Next(int) signature.
+		/// </summary>
 		public int Next(int maxExclusive)
 		{
 			_state += Gamma;

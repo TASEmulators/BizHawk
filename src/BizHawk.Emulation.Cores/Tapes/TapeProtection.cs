@@ -2,7 +2,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Tapes
 {
-	/// <summary>A recognized ZX Spectrum tape loading-scheme / copy-protection (None if nothing matched).</summary>
+	/// <summary>
+	/// A recognized ZX Spectrum tape loading-scheme / copy-protection (None if nothing matched).
+	/// </summary>
 	public enum TapeProtectionScheme
 	{
 		None,
@@ -38,13 +40,13 @@ namespace BizHawk.Emulation.Cores.Tapes
 
 	/// <summary>
 	/// Identifies well-known ZX Spectrum tape loading / copy-protection schemes from the parsed tape blocks,
-	/// for logging (the tape analogue of <see cref="BizHawk.Emulation.Cores.Floppy.DiskProtection"/>).
+	/// for logging (the tape analogue of DiskProtection).
 	/// Detection is PASSIVE - report-only; it never changes loading behaviour, so it runs unconditionally
 	/// (no determinism gate). Two signal sources, mirroring the disk detector:
 	/// (1) CODE-side - most custom loaders deliver their edge-poll stub as ordinary block data, so the loop's
-	///     opcode bytes around <c>IN A,(0xFE)</c> are present in <see cref="TapeDataBlock.BlockData"/>. The
-	///     bytes around the port read - the counter (<c>INC B</c>/<c>DEC B</c>), the bit mask (0x20 = bit 5 vs
-	///     0x40 = bit 6) and the no-edge exit (<c>RET NC</c> / <c>RET Z</c> / <c>NOP</c> / <c>JP</c>) - are what
+	///     opcode bytes around IN A,(0xFE) are present in TapeDataBlock.BlockData. The
+	///     bytes around the port read - the counter (INC B/DEC B), the bit mask (0x20 = bit 5 vs
+	///     0x40 = bit 6) and the no-edge exit (RET NC / RET Z / NOP / JP) - are what
 	///     distinguish one scheme's ROM-derived loop from another's.
 	/// (2) PULSE-side - a few schemes have a uniquely distinctive pilot-tone pulse width (Gremlin 2 = 2670T,
 	///     Micromega = 1739T) that identifies them straight from the pulse list.
@@ -77,7 +79,9 @@ namespace BizHawk.Emulation.Cores.Tapes
 				_ => scheme.ToString(),
 			};
 
-		/// <summary>Detect a tape loading scheme from the parsed block list (best-effort, for reporting).</summary>
+		/// <summary>
+		/// Detect a tape loading scheme from the parsed block list (best-effort, for reporting).
+		/// </summary>
 		public static TapeProtectionScheme Detect(IReadOnlyList<TapeDataBlock> blocks)
 		{
 			if (blocks == null || blocks.Count == 0) return TapeProtectionScheme.None;
@@ -238,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 			return 0;
 		}
 
-		// Length of the longest run of pulses near <paramref name="width"/> (the pilot tone at the given width),
+		// Length of the longest run of pulses near width (the pilot tone at the given width),
 		// so a scheme can be keyed on an unusual pilot COUNT at the standard 2168T width. 0 if none.
 		private static int PilotPulseCount(TapeDataBlock b, int width)
 		{
@@ -274,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 			return a <= bb ? (a, bb) : (bb, a);
 		}
 
-		// True if any pulse in the block is near <paramref name="target"/> T-states.
+		// True if any pulse in the block is near target T-states.
 		private static bool HasPulseNear(TapeDataBlock b, int target)
 		{
 			var p = b.DataPeriods;

@@ -2,7 +2,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Floppy
 {
-	/// <summary>Physical geometry for a headerless raw sector image (which carries no metadata of its own).</summary>
+	/// <summary>
+	/// Physical geometry for a headerless raw sector image (which carries no metadata of its own).
+	/// </summary>
 	public sealed class DiskGeometry
 	{
 		public int Cylinders { get; set; }
@@ -12,7 +14,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public int FirstSectorId { get; set; } = 1;
 		public int Gap3 { get; set; } = 78;
 
-		/// <summary>The standard ZX Spectrum +3 / PCW format: 40 cylinders, 1 side, 9x512 sectors from id 1.</summary>
+		/// <summary>
+		/// The standard ZX Spectrum +3 / PCW format: 40 cylinders, 1 side, 9x512 sectors from id 1.
+		/// </summary>
 		public static DiskGeometry Plus3 => new() { Cylinders = 40, Heads = 1, SectorsPerTrack = 9, SectorSize = 512, FirstSectorId = 1 };
 
 		public int TotalBytes => Cylinders * Heads * SectorsPerTrack * SectorSize;

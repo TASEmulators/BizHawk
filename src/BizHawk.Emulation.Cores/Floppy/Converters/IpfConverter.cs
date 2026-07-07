@@ -2,7 +2,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Floppy
 {
-	/// <summary>Kinds of IPF data-area stream element (dataType, 5 LSB of the dataHead byte).</summary>
+	/// <summary>
+	/// Kinds of IPF data-area stream element (dataType, 5 LSB of the dataHead byte).
+	/// </summary>
 	public enum IpfDataType
 	{
 		End = 0,
@@ -13,7 +15,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		Fuzzy = 5,
 	}
 
-	/// <summary>One IPF data-stream element, already tokenized (Fuzzy carries no sample - generate random).</summary>
+	/// <summary>
+	/// One IPF data-stream element, already tokenized (Fuzzy carries no sample - generate random).
+	/// </summary>
 	public sealed class IpfDataElement
 	{
 		public IpfDataType Type;
@@ -22,7 +26,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public byte[] Sample = System.Array.Empty<byte>(); // empty for Fuzzy
 	}
 
-	/// <summary>One IPF gap-stream element (GapLength = repeat count, or SampleLength = a bit sample).</summary>
+	/// <summary>
+	/// One IPF gap-stream element (GapLength = repeat count, or SampleLength = a bit sample).
+	/// </summary>
 	public sealed class IpfGapElement
 	{
 		public int ElemType;      // 1 = GapLength (repeat count), 2 = SampleLength (bit sample)
@@ -30,7 +36,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public byte[] Sample = System.Array.Empty<byte>(); // only for type 2
 	}
 
-	/// <summary>A DATA-record block descriptor (32 bytes) plus its decoded data-stream elements.</summary>
+	/// <summary>
+	/// A DATA-record block descriptor (32 bytes) plus its decoded data-stream elements.
+	/// </summary>
 	public sealed class IpfBlockDescriptor
 	{
 		public int DataBits;
@@ -47,7 +55,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public List<IpfDataElement> DataElements { get; } = new List<IpfDataElement>();
 	}
 
-	/// <summary>IPF INFO record.</summary>
+	/// <summary>
+	/// IPF INFO record.
+	/// </summary>
 	public sealed class IpfInfo
 	{
 		public int MediaType, EncoderType, EncoderRev, FileKey, FileRev, Origin;
@@ -55,7 +65,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public int[] Platforms = new int[4];
 	}
 
-	/// <summary>IPF IMGE record: describes one track/side and points at a DATA record by DataKey.</summary>
+	/// <summary>
+	/// IPF IMGE record: describes one track/side and points at a DATA record by DataKey.
+	/// </summary>
 	public sealed class IpfImage
 	{
 		public int Track, Side, Density, SignalType;
@@ -66,7 +78,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public bool Fuzzy => (TrackFlags & 0x01) != 0;
 	}
 
-	/// <summary>IPF DATA record: the block descriptors + stream data for the matching IMGE (by DataKey).</summary>
+	/// <summary>
+	/// IPF DATA record: the block descriptors + stream data for the matching IMGE (by DataKey).
+	/// </summary>
 	public sealed class IpfDataRecord
 	{
 		public int DataKey;
@@ -74,7 +88,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public List<IpfBlockDescriptor> Blocks { get; } = new List<IpfBlockDescriptor>();
 	}
 
-	/// <summary>Parsed IPF file: the INFO block plus IMGE records and DATA records keyed by DataKey.</summary>
+	/// <summary>
+	/// Parsed IPF file: the INFO block plus IMGE records and DATA records keyed by DataKey.
+	/// </summary>
 	public sealed class IpfDisk
 	{
 		public IpfInfo Info;

@@ -23,8 +23,10 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public static bool IsScp(byte[] d)
 			=> d != null && d.Length >= 16 && d[0] == (byte)'S' && d[1] == (byte)'C' && d[2] == (byte)'P';
 
-		/// <summary>Number of revolutions captured per track (SCP header byte 5). Multi-rev dumps let a
-		/// marginal read on one revolution be recovered from another, and weak bits to be detected.</summary>
+		/// <summary>
+		/// Number of revolutions captured per track (SCP header byte 5). Multi-rev dumps let a
+		/// marginal read on one revolution be recovered from another, and weak bits to be detected.
+		/// </summary>
 		public static int RevolutionCount(byte[] d) => d != null && d.Length > 5 ? d[5] : 0;
 
 		public static FluxDisk ToFluxDisk(byte[] d, long cellTimeNs = DefaultCellTimeNs)
@@ -83,8 +85,10 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return disk;
 		}
 
-		/// <summary>Decode one revolution's flux into packed MFM cells. Returns null if the revolution is
-		/// missing/out of range.</summary>
+		/// <summary>
+		/// Decode one revolution's flux into packed MFM cells. Returns null if the revolution is
+		/// missing/out of range.
+		/// </summary>
 		private static byte[] DecodeRevolution(byte[] d, int tdh, int rev, int revs, long tickNs, long cellTimeNs, out int cellCount)
 		{
 			cellCount = 0;

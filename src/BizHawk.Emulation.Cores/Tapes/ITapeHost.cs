@@ -1,17 +1,21 @@
 namespace BizHawk.Emulation.Cores.Tapes
 {
 	/// <summary>
-	/// The per-core services a <see cref="TapeDeck"/> needs from its host machine. This lets the shared deck
+	/// The per-core services a TapeDeck needs from its host machine. This lets the shared deck
 	/// generate the tape signal and drive transport without referencing any core-specific CPU or machine type:
 	/// the host supplies the CPU cycle counter, feeds its own tape beeper, and receives tape notifications.
 	/// A core with a tape motor/remote line or a fast-loader layers those on top; the deck itself is unaware.
 	/// </summary>
 	public interface ITapeHost
 	{
-		/// <summary>Running total of executed CPU cycles. The deck compares pulse periods against this.</summary>
+		/// <summary>
+		/// Running total of executed CPU cycles. The deck compares pulse periods against this.
+		/// </summary>
 		long TotalExecutedCycles { get; }
 
-		/// <summary>True when the host is running in 48K mode (gates the STOP_THE_TAPE_48K command block).</summary>
+		/// <summary>
+		/// True when the host is running in 48K mode (gates the STOP_THE_TAPE_48K command block).
+		/// </summary>
 		bool IsIn48kMode { get; }
 
 		/// <summary>
@@ -20,7 +24,9 @@ namespace BizHawk.Emulation.Cores.Tapes
 		/// </summary>
 		bool FastLoadAllowed { get; }
 
-		/// <summary>Feeds the current tape EAR level to the host's tape beeper.</summary>
+		/// <summary>
+		/// Feeds the current tape EAR level to the host's tape beeper.
+		/// </summary>
 		void FeedBeeper(bool earLevel);
 
 		// Notifications - a host may surface these on-screen (OSD) or ignore them entirely.

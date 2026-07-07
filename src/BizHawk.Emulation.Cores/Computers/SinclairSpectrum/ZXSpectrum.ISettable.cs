@@ -218,7 +218,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public enum TapeLoadSpeed
 		{
-			/// <summary>Cycle-accurate: the tape's pulses are replayed in real time.</summary>
+			/// <summary>
+			/// Cycle-accurate: the tape's pulses are replayed in real time.
+			/// </summary>
 			Accurate,
 
 			/// <summary>

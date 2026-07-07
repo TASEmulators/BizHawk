@@ -6,7 +6,7 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 {
 	/// <summary>
 	/// Weak/fuzzy sector behaviour: a weak sector reads unpredictably (so copy-protection checks see variation),
-	/// yet the read sequence is fully deterministic from the <see cref="WeakBitRng"/> state, so it replays
+	/// yet the read sequence is fully deterministic from the WeakBitRng state, so it replays
 	/// identically across savestate/TAS load.
 	/// </summary>
 	[TestClass]

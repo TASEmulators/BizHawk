@@ -2,7 +2,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Floppy
 {
-	/// <summary>Input to track synthesis: one sector's ID + data (what a DSK/EDSK loader produces).</summary>
+	/// <summary>
+	/// Input to track synthesis: one sector's ID + data (what a DSK/EDSK loader produces).
+	/// </summary>
 	public sealed class TrackSector
 	{
 		public byte C, H, R, N;
@@ -21,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public int SizeBytes => 128 << (N & 7);
 	}
 
-	/// <summary>Decoded result of reading a sector back off a track.</summary>
+	/// <summary>
+	/// Decoded result of reading a sector back off a track.
+	/// </summary>
 	public sealed class DecodedSector
 	{
 		public byte C, H, R, N;
@@ -131,16 +135,20 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return list;
 		}
 
-		/// <summary>A decoded sector plus where its data field sits on the track, in cells (the first data byte
-		/// starts at <see cref="DataStartCell"/>, each subsequent byte 16 cells later). Used to map a sector's
-		/// bytes back to track cells - e.g. to flag weak/fuzzy cells derived from cross-revolution comparison.</summary>
+		/// <summary>
+		/// A decoded sector plus where its data field sits on the track, in cells (the first data byte
+		/// starts at DataStartCell, each subsequent byte 16 cells later). Used to map a sector's
+		/// bytes back to track cells - e.g. to flag weak/fuzzy cells derived from cross-revolution comparison.
+		/// </summary>
 		public sealed class SectorLocation
 		{
 			public DecodedSector Sector;
 			public int DataStartCell;
 		}
 
-		/// <summary>Like <see cref="DecodeSectors"/> but also reports each sector's data-field start cell.</summary>
+		/// <summary>
+		/// Like DecodeSectors but also reports each sector's data-field start cell.
+		/// </summary>
 		public static List<SectorLocation> DecodeSectorLocations(MfmTrack track, WeakBitRng weakRng = null)
 		{
 			var r = new MfmTrackReader(track);

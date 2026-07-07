@@ -15,29 +15,43 @@ namespace BizHawk.Emulation.Cores.Floppy
 		int CurrentCylinder { get; }
 		int SideCount { get; }
 
-		/// <summary>True while the motor is spun up to operating speed (rotation/index only run then).</summary>
+		/// <summary>
+		/// True while the motor is spun up to operating speed (rotation/index only run then).
+		/// </summary>
 		bool AtSpeed { get; }
 
-		/// <summary>True during the index-hole pulse window once per revolution (only while AtSpeed).</summary>
+		/// <summary>
+		/// True during the index-hole pulse window once per revolution (only while AtSpeed).
+		/// </summary>
 		bool Index { get; }
 
-		/// <summary>Mechanical track-to-track step time; a floor on how fast the controller can step. 0 = none.</summary>
+		/// <summary>
+		/// Mechanical track-to-track step time; a floor on how fast the controller can step. 0 = none.
+		/// </summary>
 		int TrackToTrackMs { get; }
 
-		/// <summary>Head settling time added after the final step of a seek before it completes. 0 = none.</summary>
+		/// <summary>
+		/// Head settling time added after the final step of a seek before it completes. 0 = none.
+		/// </summary>
 		int SettleMs { get; }
 
 		void Step(bool towardHigherCylinder);
 		void SeekTo(int cylinder);
 		MfmTrack CurrentTrack(int side);
 
-		/// <summary>Replace the flux at the current cylinder / given side (Write Data, Format).</summary>
+		/// <summary>
+		/// Replace the flux at the current cylinder / given side (Write Data, Format).
+		/// </summary>
 		void WriteTrack(int side, MfmTrack track);
 
-		/// <summary>Precompute rotation/spin-up thresholds for the host CPU clock (T-states per second).</summary>
+		/// <summary>
+		/// Precompute rotation/spin-up thresholds for the host CPU clock (T-states per second).
+		/// </summary>
 		void ConfigureTiming(long cpuClockHz);
 
-		/// <summary>Advance the mechanical timing by the given number of host CPU cycles.</summary>
+		/// <summary>
+		/// Advance the mechanical timing by the given number of host CPU cycles.
+		/// </summary>
 		void Clock(int cpuCycles);
 	}
 
@@ -55,7 +69,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public int TrackToTrackMs { get; set; }   // step-to-step access time (0 = no floor)
 		public int SettleMs { get; set; }         // head settle after the final step (0 = none)
 
-		/// <summary>A permissive generic profile (no cylinder limit, no step floor or settle).</summary>
+		/// <summary>
+		/// A permissive generic profile (no cylinder limit, no step floor or settle).
+		/// </summary>
 		public static FloppyDriveProfile Generic { get; } = new();
 	}
 
@@ -87,7 +103,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public int TrackToTrackMs => _profile.TrackToTrackMs;
 		public int SettleMs => _profile.SettleMs;
 
-		/// <summary>Recorded cylinder count for this drive model (0 if unspecified).</summary>
+		/// <summary>
+		/// Recorded cylinder count for this drive model (0 if unspecified).
+		/// </summary>
 		public int CylinderCount => _profile.Cylinders;
 
 		private long _cpuHz = 3_546_900;
@@ -141,7 +159,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 
 		public void WriteTrack(int side, MfmTrack track) => Disk?.SetTrack(CurrentCylinder, side, track);
 
-		/// <summary>Serialize the mechanical state (head position, motor, rotation). The disk is restored separately.</summary>
+		/// <summary>
+		/// Serialize the mechanical state (head position, motor, rotation). The disk is restored separately.
+		/// </summary>
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("FloppyDrive");

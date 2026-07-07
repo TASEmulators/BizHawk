@@ -79,7 +79,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public bool DiskInserted => _drive.Disk != null;
 		public bool DriveLight => FDD_FLAG_MOTOR && _fdc.Active;
 
-		/// <summary>The detected copy-protection scheme, for the disk status display.</summary>
+		/// <summary>
+		/// The detected copy-protection scheme, for the disk status display.
+		/// </summary>
 		public string ProtectionName => DiskProtection.DisplayName(_protection);
 
 		public void SyncState(Serializer ser)

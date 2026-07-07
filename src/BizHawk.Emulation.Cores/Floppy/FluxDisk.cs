@@ -23,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			if (side + 1 > Sides) Sides = side + 1;
 		}
 
-		/// <summary>The flux for a (cylinder, side), or null if that track is not present/formatted.</summary>
+		/// <summary>
+		/// The flux for a (cylinder, side), or null if that track is not present/formatted.
+		/// </summary>
 		public MfmTrack GetTrack(int cylinder, int side)
 			=> _tracks.TryGetValue(Key(cylinder, side), out var t) ? t : null;
 
@@ -43,7 +45,9 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return one;
 		}
 
-		/// <summary>Build a flux disk from a CPC DSK/EDSK image (each track synthesized into MFM cells).</summary>
+		/// <summary>
+		/// Build a flux disk from a CPC DSK/EDSK image (each track synthesized into MFM cells).
+		/// </summary>
 		public static FluxDisk FromCpcDsk(byte[] dsk)
 		{
 			var parsed = CpcDskConverter.Parse(dsk);
@@ -54,22 +58,34 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return disk;
 		}
 
-		/// <summary>Build a flux disk from an HxC HFE image (raw cell bitstream, de-interleaved per side).</summary>
+		/// <summary>
+		/// Build a flux disk from an HxC HFE image (raw cell bitstream, de-interleaved per side).
+		/// </summary>
 		public static FluxDisk FromHfe(byte[] hfe) => HfeConverter.ToFluxDisk(hfe);
 
-		/// <summary>Build a flux disk from a ZX Spectrum FDI sector image.</summary>
+		/// <summary>
+		/// Build a flux disk from a ZX Spectrum FDI sector image.
+		/// </summary>
 		public static FluxDisk FromFdi(byte[] fdi) => FdiConverter.ToFluxDisk(fdi);
 
-		/// <summary>Build a flux disk from a ZX Spectrum UDI v1.0 track image.</summary>
+		/// <summary>
+		/// Build a flux disk from a ZX Spectrum UDI v1.0 track image.
+		/// </summary>
 		public static FluxDisk FromUdi(byte[] udi) => UdiConverter.ToFluxDisk(udi);
 
-		/// <summary>Build a flux disk from a SuperCard Pro (.scp) flux image (flux quantized to MFM cells).</summary>
+		/// <summary>
+		/// Build a flux disk from a SuperCard Pro (.scp) flux image (flux quantized to MFM cells).
+		/// </summary>
 		public static FluxDisk FromScp(byte[] scp) => ScpConverter.ToFluxDisk(scp);
 
-		/// <summary>Build a flux disk from a headerless raw sector image using an explicit geometry.</summary>
+		/// <summary>
+		/// Build a flux disk from a headerless raw sector image using an explicit geometry.
+		/// </summary>
 		public static FluxDisk FromRawSectors(byte[] data, DiskGeometry geometry) => RawSectorConverter.ToFluxDisk(data, geometry);
 
-		/// <summary>Build a flux disk from an IPF image (each formatted track rolled into MFM cells).</summary>
+		/// <summary>
+		/// Build a flux disk from an IPF image (each formatted track rolled into MFM cells).
+		/// </summary>
 		public static FluxDisk FromIpf(byte[] ipf)
 		{
 			var parsed = IpfConverter.Parse(ipf);

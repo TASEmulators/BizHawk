@@ -8,12 +8,16 @@ namespace BizHawk.Emulation.Cores.Floppy
 	/// </summary>
 	public interface IFdcHost
 	{
-		/// <summary>The FDC interrupt request (INT) line changed. Raised at result-phase start and on seek
-		/// completion; lowered when the result is read or the seek interrupt is sensed.</summary>
+		/// <summary>
+		/// The FDC interrupt request (INT) line changed. Raised at result-phase start and on seek
+		/// completion; lowered when the result is read or the seek interrupt is sensed.
+		/// </summary>
 		void OnFdcInterrupt(bool asserted);
 
-		/// <summary>The FDC data request (DRQ) line changed. Only meaningful to DMA-driven hosts; the +3/CPC
-		/// transfer bytes by polling RQM instead and can ignore this.</summary>
+		/// <summary>
+		/// The FDC data request (DRQ) line changed. Only meaningful to DMA-driven hosts; the +3/CPC
+		/// transfer bytes by polling RQM instead and can ignore this.
+		/// </summary>
 		void OnFdcDataRequest(bool asserted);
 	}
 }
