@@ -266,6 +266,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 			}
 
+			// SuperCard Pro (.scp) and HxC (.hfe) flux images. These carry sidedness inside the flux rather
+			// than in a fixed header field, so AddDiskImage derives the side count from the decoded flux;
+			// classifying as Disk here is enough to route them down the disk path.
+			if (Floppy.ScpConverter.IsScp(data)
+				|| Floppy.HfeConverter.IsHfe(data) || Floppy.HfeConverter.IsHfeV3(data))
+			{
+				return SpectrumMediaType.Disk;
+			}
+
 			// tape checking
 			if (hdr.StartsWithIgnoreCase("ZXTAPE!"))
 			{

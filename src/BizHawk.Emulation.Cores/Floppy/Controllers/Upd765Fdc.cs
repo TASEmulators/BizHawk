@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 		public IFdcHost Host { get; set; }
 
 		/// <summary>RNG for weak/fuzzy sectors, shared so repeated reads vary; seedable for determinism.</summary>
-		public System.Random WeakRng { get; set; } = new System.Random(0);
+		public WeakBitRng WeakRng { get; set; } = new WeakBitRng(0);
 
 		/// <summary>Host CPU clock the timing is expressed against; defaults to the +3 Z80 clock.</summary>
 		public long CpuClockHz { get; private set; } = 3_546_900;
@@ -146,6 +146,10 @@ namespace BizHawk.Emulation.Cores.Floppy
 			ser.Sync(nameof(_unit), ref _unit);
 			ser.Sync(nameof(_side), ref _side);
 			ser.Sync(nameof(_intActive), ref _intActive);
+			// weak-cell RNG state, so weak-sector reads replay identically across savestate/TAS load
+			ulong weakState = WeakRng.State;
+			ser.Sync("_weakRngState", ref weakState);
+			WeakRng.State = weakState;
 			ser.EndSection();
 			RecomputeTiming();
 		}
@@ -453,11 +457,22 @@ namespace BizHawk.Emulation.Cores.Floppy
 			var drive = ActiveDrive;
 			byte st0 = (byte)((_side << 2) | (_unit & 3));
 
-			var track = drive?.CurrentTrack(_side);
-			var sectors = track == null ? null : StandardMfmFormat.DecodeSectors(track, WeakRng);
-			if (drive == null || !drive.Ready || sectors == null || sectors.Count == 0)
+			if (drive == null || !drive.Ready)
 			{
+				// genuinely not ready (no disk / motor off) -> ST0 Not Ready
 				st0 |= ST0_IC_ABTERM | ST0_NR;
+				PrepareResultChrn(st0, 0, 0, 0, 0, 0, 0);
+				EnterResultPrepared();
+				return;
+			}
+			var track = drive.CurrentTrack(_side);
+			var sectors = track == null ? null : StandardMfmFormat.DecodeSectors(track, WeakRng);
+			if (sectors == null || sectors.Count == 0)
+			{
+				// drive IS ready but the track has no readable address mark -> Missing Address Mark, NOT Not Ready
+				// (a real uPD765 only sets NR when the drive itself is not ready; the frontend maps NR to
+				// "disk not ready", so a track with damaged/absent marks must report MA, not NR).
+				st0 |= ST0_IC_ABTERM;
 				PrepareResultChrn(st0, ST1_MA, 0, 0, 0, 0, 0);
 				EnterResultPrepared();
 				return;
@@ -484,11 +499,19 @@ namespace BizHawk.Emulation.Cores.Floppy
 			var drive = ActiveDrive;
 			byte st0 = (byte)((_side << 2) | (_unit & 3));
 
-			var track = drive?.CurrentTrack(_side);
-			if (drive == null || !drive.Ready || track == null)
+			if (drive == null || !drive.Ready)
 			{
 				st0 |= ST0_IC_ABTERM | ST0_NR;
 				PrepareResultChrn(st0, 0, 0, cyl, head, sector, n);
+				EnterResultPrepared();
+				return;
+			}
+			var track = drive.CurrentTrack(_side);
+			if (track == null)
+			{
+				// drive ready but the current cylinder has no track (unformatted) -> Missing Address Mark, not NR
+				st0 |= ST0_IC_ABTERM;
+				PrepareResultChrn(st0, ST1_MA, 0, cyl, head, sector, n);
 				EnterResultPrepared();
 				return;
 			}
@@ -563,11 +586,19 @@ namespace BizHawk.Emulation.Cores.Floppy
 			var drive = ActiveDrive;
 			byte st0 = (byte)((_side << 2) | (_unit & 3));
 
-			var track = drive?.CurrentTrack(_side);
-			if (drive == null || !drive.Ready || track == null)
+			if (drive == null || !drive.Ready)
 			{
 				st0 |= ST0_IC_ABTERM | ST0_NR;
 				PrepareResultChrn(st0, 0, 0, cyl, head, sector, n);
+				EnterResultPrepared();
+				return;
+			}
+			var track = drive.CurrentTrack(_side);
+			if (track == null)
+			{
+				// drive ready but no track at this cylinder -> no address mark to write into, not NR
+				st0 |= ST0_IC_ABTERM;
+				PrepareResultChrn(st0, ST1_MA, 0, cyl, head, sector, n);
 				EnterResultPrepared();
 				return;
 			}

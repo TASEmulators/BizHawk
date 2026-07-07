@@ -114,6 +114,46 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 			Assert.AreEqual((byte)2, res[6], "N reported");
 		}
 
+		private const byte ST0_NR = 0x08;
+		private const byte ST1_MA = 0x01;
+
+		[TestMethod]
+		public void ReadId_ReadyDriveMarklessTrack_ReportsMissingAddressMark_NotNotReady()
+		{
+			// A ready drive whose current track has no readable address mark (damaged/blank flux, or a track
+			// whose only sector's sync was corrupted) must report Missing Address Mark - NOT Not Ready. The
+			// frontend maps ST0 NR to "Drive not ready", so a wrongly-set NR turns a read error into a spurious
+			// "disk not ready" (the symptom seen on real protected/degraded SCP dumps).
+			var disk = new FluxDisk();
+			disk.SetTrack(0, 0, new MfmTrack(new byte[2000], 16000)); // all-zero cells: no A1 sync anywhere
+			var fdc = new Upd765Fdc();
+			fdc.Drives[0] = new FloppyDrive { Disk = disk, MotorOn = true };
+			fdc.ConfigureTiming(3_546_900);
+			fdc.Reset();
+
+			Send(fdc, 0x4A, 0x00); // Read ID
+			var res = new byte[7];
+			for (int i = 0; i < 7; i++) res[i] = fdc.ReadData();
+			Assert.AreEqual(ST0_IC_ABTERM, (byte)(res[0] & 0xC0), "ST0 IC = abnormal termination");
+			Assert.AreEqual(0, res[0] & ST0_NR, "NR must be clear: the drive IS ready, the marks are just missing");
+			Assert.AreEqual(ST1_MA, (byte)(res[1] & ST1_MA), "ST1 Missing Address Mark set");
+		}
+
+		[TestMethod]
+		public void ReadId_NoDisk_ReportsNotReady()
+		{
+			// genuinely not ready (no disk) -> NR is correct here
+			var fdc = new Upd765Fdc();
+			fdc.Drives[0] = new FloppyDrive { Disk = null, MotorOn = true };
+			fdc.ConfigureTiming(3_546_900);
+			fdc.Reset();
+
+			Send(fdc, 0x4A, 0x00);
+			var res = new byte[7];
+			for (int i = 0; i < 7; i++) res[i] = fdc.ReadData();
+			Assert.AreEqual(ST0_NR, (byte)(res[0] & ST0_NR), "no disk -> ST0 Not Ready set");
+		}
+
 		[TestMethod]
 		public void Seek_IsTimed_AndReportedViaSenseInterrupt_WithInterruptLine()
 		{

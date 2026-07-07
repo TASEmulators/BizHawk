@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 		/// path: read the current track, modify the target sector(s), then rebuild. Preserves each sector's
 		/// deleted mark and CRC-error state; weak data is not reconstructed (a rewrite makes the track clean).
 		/// </summary>
-		public static List<TrackSector> ToTrackSectors(MfmTrack track, System.Random weakRng = null)
+		public static List<TrackSector> ToTrackSectors(MfmTrack track, WeakBitRng weakRng = null)
 		{
 			var list = new List<TrackSector>();
 			if (track == null) return list;
@@ -124,11 +124,28 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return list;
 		}
 
-		public static List<DecodedSector> DecodeSectors(MfmTrack track, System.Random weakRng = null)
+		public static List<DecodedSector> DecodeSectors(MfmTrack track, WeakBitRng weakRng = null)
+		{
+			var list = new List<DecodedSector>();
+			foreach (var loc in DecodeSectorLocations(track, weakRng)) list.Add(loc.Sector);
+			return list;
+		}
+
+		/// <summary>A decoded sector plus where its data field sits on the track, in cells (the first data byte
+		/// starts at <see cref="DataStartCell"/>, each subsequent byte 16 cells later). Used to map a sector's
+		/// bytes back to track cells - e.g. to flag weak/fuzzy cells derived from cross-revolution comparison.</summary>
+		public sealed class SectorLocation
+		{
+			public DecodedSector Sector;
+			public int DataStartCell;
+		}
+
+		/// <summary>Like <see cref="DecodeSectors"/> but also reports each sector's data-field start cell.</summary>
+		public static List<SectorLocation> DecodeSectorLocations(MfmTrack track, WeakBitRng weakRng = null)
 		{
 			var r = new MfmTrackReader(track);
 			if (weakRng != null) r.WeakRng = weakRng; // shared RNG so repeated weak reads vary
-			var list = new List<DecodedSector>();
+			var list = new List<SectorLocation>();
 			var seen = new HashSet<int>();
 			int pos = 0;
 			DecodedSector pending = null;
@@ -158,6 +175,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 				{
 					int n = pending?.N ?? 2;
 					int size = 128 << (n & 7);
+					int dataStart = pos; // cell position of the first data byte (before ReadBytes advances pos)
 					var data = r.ReadBytes(ref pos, size);
 					var crcBytes = r.ReadBytes(ref pos, 2);
 
@@ -169,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 						pending.HasData = true;
 						pending.DataCrcOk = read == calc;
 						pending.Deleted = mark == DeletedDamMark;
-						list.Add(pending);
+						list.Add(new SectorLocation { Sector = pending, DataStartCell = dataStart });
 						pending = null;
 					}
 				}
@@ -181,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 		/// Read a specific sector (matched on full CHRN) off a track, the way the FDC Read Data command
 		/// locates it. Returns null if no matching sector ID is present on the track.
 		/// </summary>
-		public static DecodedSector ReadSectorById(MfmTrack track, byte c, byte h, byte r, byte n, System.Random weakRng = null)
+		public static DecodedSector ReadSectorById(MfmTrack track, byte c, byte h, byte r, byte n, WeakBitRng weakRng = null)
 		{
 			if (track == null) return null;
 			foreach (var s in DecodeSectors(track, weakRng))

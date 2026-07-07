@@ -52,7 +52,7 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 
 			// build the flux track, decode it back
 			var flux = track.BuildFlux();
-			var rng = new Random(12345);
+			var rng = new WeakBitRng(12345);
 			var dec = StandardMfmFormat.DecodeSectors(flux, rng);
 			Assert.AreEqual(2, dec.Count);
 
@@ -91,7 +91,7 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 			Assert.IsTrue(disk.Tracks.Count > 0, "tracks parsed");
 
 			int totalSectors = 0, decodedBack = 0, weakSectors = 0;
-			var rng = new Random(1);
+			var rng = new WeakBitRng(1);
 			foreach (var t in disk.Tracks)
 			{
 				totalSectors += t.Sectors.Count;

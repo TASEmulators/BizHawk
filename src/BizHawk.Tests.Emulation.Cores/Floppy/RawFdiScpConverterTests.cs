@@ -88,8 +88,10 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 
 			byte[] scp = BuildScpSingleTrack(track, trackIndex: 4);
 			var disk = ScpConverter.ToFluxDisk(scp);
-			var loaded = disk.GetTrack(4, 0);
-			Assert.IsNotNull(loaded, "SCP track 4 (side 0) loaded");
+			// SCP track slots are physical (cyl*2+head), so slot 4 (side 0) maps to cylinder 2 — which matches
+			// the C=2 recorded in these sectors' ID headers.
+			var loaded = disk.GetTrack(2, 0);
+			Assert.IsNotNull(loaded, "SCP track slot 4 (side 0) maps to cylinder 2");
 
 			var decoded = StandardMfmFormat.DecodeSectors(loaded);
 			int good = 0;

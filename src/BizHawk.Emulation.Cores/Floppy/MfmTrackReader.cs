@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 		/// RNG used to resolve weak/fuzzy data cells so repeated reads of a weak sector vary. Seeded and
 		/// resettable so a savestate/TAS replays identically (the seed lives in serialized state).
 		/// </summary>
-		public System.Random WeakRng { get; set; } = new System.Random(0);
+		public WeakBitRng WeakRng { get; set; } = new WeakBitRng(0);
 
 		public MfmTrackReader(MfmTrack track) => _t = track;
 

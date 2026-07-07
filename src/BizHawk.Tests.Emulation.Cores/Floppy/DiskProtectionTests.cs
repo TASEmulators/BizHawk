@@ -57,8 +57,8 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 
 			// the weak sector now reads differently across passes and fails its data CRC (as Speedlock expects)
 			var flux = disk.Tracks[0].BuildFlux();
-			var readA = StandardMfmFormat.ReadSectorById(flux, 0, 0, 2, 2, new Random(1));
-			var readB = StandardMfmFormat.ReadSectorById(flux, 0, 0, 2, 2, new Random(99));
+			var readA = StandardMfmFormat.ReadSectorById(flux, 0, 0, 2, 2, new WeakBitRng(1));
+			var readB = StandardMfmFormat.ReadSectorById(flux, 0, 0, 2, 2, new WeakBitRng(99));
 			Assert.IsNotNull(readA);
 			Assert.IsFalse(readA.DataCrcOk, "weak sector reads with a data CRC error");
 			CollectionAssert.AreNotEqual(readA.Data, readB.Data, "weak sector varies between reads");
@@ -101,16 +101,16 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 			// every pass - Speedlock's "must differ between reads" check fails.
 			var parsed = CpcDskConverter.Parse(bytes);
 			var rawTrack0 = parsed.Tracks.Find(t => t.Cylinder == 0 && t.Side == 0).BuildFlux();
-			var raw1 = StandardMfmFormat.ReadSectorById(rawTrack0, 0, 0, 2, 2, new Random(1));
-			var raw2 = StandardMfmFormat.ReadSectorById(rawTrack0, 0, 0, 2, 2, new Random(2));
+			var raw1 = StandardMfmFormat.ReadSectorById(rawTrack0, 0, 0, 2, 2, new WeakBitRng(1));
+			var raw2 = StandardMfmFormat.ReadSectorById(rawTrack0, 0, 0, 2, 2, new WeakBitRng(2));
 			Assert.IsNotNull(raw1);
 			CollectionAssert.AreEqual(raw1.Data, raw2.Data, "un-synthesized weak sector reads identically (protection would fail)");
 
 			// WITH synthesis (FluxDisk.FromCpcDsk applies it): the sector now varies between reads and errors,
 			// so the Speedlock check passes.
 			var track0 = FluxDisk.FromCpcDsk(bytes).GetTrack(0, 0);
-			var s1 = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new Random(1));
-			var s2 = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new Random(2));
+			var s1 = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new WeakBitRng(1));
+			var s2 = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new WeakBitRng(2));
 			Assert.IsNotNull(s1);
 			CollectionAssert.AreNotEqual(s1.Data, s2.Data, "synthesized weak sector varies between reads");
 			Assert.IsFalse(s1.DataCrcOk, "and reads with a data CRC error, as Speedlock expects");
@@ -178,8 +178,8 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 			// with a valid CRC) in sector 2 - synthesis must NOT touch it (only a sector with a data CRC error
 			// is the genuine weak sector). Regression for the black-screen bug.
 			var track0 = FluxDisk.FromCpcDsk(bytes).GetTrack(0, 0);
-			var a = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new Random(1));
-			var b = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new Random(2));
+			var a = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new WeakBitRng(1));
+			var b = StandardMfmFormat.ReadSectorById(track0, 0, 0, 2, 2, new WeakBitRng(2));
 			Assert.IsNotNull(a);
 			Assert.IsTrue(a.Deleted, "sector 2 keeps its deleted address mark");
 			Assert.IsTrue(a.DataCrcOk, "sector 2 reads with a valid CRC (not corrupted by weak synthesis)");
