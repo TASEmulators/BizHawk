@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool StickyPads { get; set; }
 
 		[ConfigPersist]
-		public bool ClearAlsoClearsAnalog { get; set; }
+		public bool ClearAlsoClearsAnalog { get; set; } = true;
 
 		private bool _readOnly;
 
