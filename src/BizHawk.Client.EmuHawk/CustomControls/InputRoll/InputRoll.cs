@@ -913,6 +913,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CellDropped?.Invoke(this, new CellEventArgs(draggedCell, CurrentCell));
 				}
+
+				int w = draggedCell.Column.ScaledWidth;
+				int h = CellHeight;
+				if (HorizontalOrientation)
+				{
+					w = CellHeight;
+					h = draggedCell.Column.ScaledWidth;
+				}
+				Invalidate(new Rectangle(_currentX.Value - w / 2, _currentY.Value - h / 2, w, h));
 			}
 		}
 
@@ -1035,7 +1044,6 @@ namespace BizHawk.Client.EmuHawk
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
 
 		private bool _columnDownMoved;
-		private int _previousX; // TODO: move me
 
 		public bool SuppressCellChange;
 
@@ -1052,15 +1060,16 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			_previousX = _currentX ?? 0;
+			int previousX = _currentX ?? 0;
+			int previousY = _currentY ?? 0;
 			_currentX = e.X;
 			_currentY = e.Y;
 
 			if (_columnResizing != null)
 			{
-				if (_currentX != _previousX)
+				if (_currentX != previousX)
 				{
-					_columnResizing.ScaledWidth += _currentX.Value - _previousX;
+					_columnResizing.ScaledWidth += _currentX.Value - previousX;
 					if (_columnResizing.Width <= 0)
 					{
 						_columnResizing.Width = 1;
@@ -1076,17 +1085,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+			Cell oldCell = CurrentCell;
 
 			bool changed = CellChanged(newCell);
-			if (changed && (ShowColumnTextOnHover || IsHoveringOnColumnCell || WasHoveringOnColumnCell))
+			if (_draggingCell is not null)
 			{
-				Refresh();
+				int w = _draggingCell.Column.ScaledWidth;
+				int h = CellHeight;
+				if (HorizontalOrientation)
+				{
+					w = CellHeight;
+					h = _draggingCell.Column.ScaledWidth;
+				}
+				Invalidate(new Rectangle(previousX - w / 2, previousY - h / 2, w, h));
+				Invalidate(new Rectangle(_currentX.Value - w / 2, _currentY.Value - h / 2, w, h));
+			}
+			else if (changed && (ShowColumnTextOnHover || IsHoveringOnColumnCell || WasHoveringOnColumnCell))
+			{
+				InvalidateCell(oldCell);
+				InvalidateCell(newCell);
 			}
 			else if (_columnDown != null)
-			{
-				Refresh();
-			}
-			else if (_draggingCell is not null)
 			{
 				Refresh();
 			}

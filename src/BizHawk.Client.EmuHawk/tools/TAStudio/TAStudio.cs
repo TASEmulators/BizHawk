@@ -1277,7 +1277,6 @@ namespace BizHawk.Client.EmuHawk
 			if (e.NewCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
 			{
 				CurrentTasMovie.Markers.Move(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
-				RefreshDialog(); // Marker move might have been rejected so we need to manually refresh.
 			}
 		}
 
