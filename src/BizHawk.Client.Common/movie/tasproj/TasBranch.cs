@@ -87,8 +87,7 @@ namespace BizHawk.Client.Common
 			newBranch.Uuid = old.Uuid;
 			if (newBranch.UserText.Length is 0) newBranch.UserText = old.UserText;
 			this[index] = newBranch;
-			if (!_movie.IsReserved(old.Frame - 1))
-				_movie.TasStateManager.Unreserve(old.Frame - 1);
+			DoUnreserve(old);
 
 			_movie.FlagChanges();
 		}
@@ -121,8 +120,7 @@ namespace BizHawk.Client.Common
 			var result = base.Remove(item);
 			if (result)
 			{
-				if (!_movie.IsReserved(item!.Frame - 1))
-					_movie.TasStateManager.Unreserve(item.Frame - 1);
+				DoUnreserve(item);
 
 				_movie.FlagChanges();
 			}
@@ -276,6 +274,16 @@ namespace BizHawk.Client.Common
 				nmarkers.Increment();
 				nusertext.Increment();
 			}
+		}
+
+		private void DoUnreserve(TasBranch branch)
+		{
+			// The regularly reserved frame
+			if (!_movie.IsReserved(branch.Frame - 1))
+				_movie.TasStateManager.Unreserve(branch.Frame - 1);
+			// The potentially semi-reserved frame from when a branch was loaded
+			if (!_movie.IsReserved(branch.Frame))
+				_movie.TasStateManager.Unreserve(branch.Frame);
 		}
 	}
 
