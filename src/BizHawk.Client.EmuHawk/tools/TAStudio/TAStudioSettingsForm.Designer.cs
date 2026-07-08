@@ -142,8 +142,9 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(374, 433);
+			this.tabControl1.Size = new System.Drawing.Size(377, 433);
 			this.tabControl1.TabIndex = 0;
+			this.tabControl1.Multiline = true;
 			// 
 			// tabPage2
 			// 
@@ -399,6 +400,7 @@
 			// 
 			// label12
 			// 
+			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(9, 362);
 			this.label12.Name = "label12";
@@ -418,7 +420,7 @@
 			// 
 			// SetDefaultStateSettingsButton
 			// 
-			this.SetDefaultStateSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.SetDefaultStateSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.SetDefaultStateSettingsButton.Location = new System.Drawing.Point(196, 378);
 			this.SetDefaultStateSettingsButton.Name = "SetDefaultStateSettingsButton";
 			this.SetDefaultStateSettingsButton.Size = new System.Drawing.Size(155, 23);
@@ -896,7 +898,7 @@
 			// SettingsCancelButton
 			// 
 			this.SettingsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.SettingsCancelButton.Location = new System.Drawing.Point(307, 449);
+			this.SettingsCancelButton.Location = new System.Drawing.Point(310, 449);
 			this.SettingsCancelButton.Name = "SettingsCancelButton";
 			this.SettingsCancelButton.Size = new System.Drawing.Size(75, 23);
 			this.SettingsCancelButton.TabIndex = 3;
@@ -907,7 +909,7 @@
 			// ApplyButton
 			// 
 			this.ApplyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.ApplyButton.Location = new System.Drawing.Point(226, 449);
+			this.ApplyButton.Location = new System.Drawing.Point(229, 449);
 			this.ApplyButton.Name = "ApplyButton";
 			this.ApplyButton.Size = new System.Drawing.Size(75, 23);
 			this.ApplyButton.TabIndex = 3;
@@ -1068,7 +1070,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(394, 484);
+			this.ClientSize = new System.Drawing.Size(397, 484);
 			this.Controls.Add(this.ApplyButton);
 			this.Controls.Add(this.SettingsCancelButton);
 			this.Controls.Add(this.tabControl1);
