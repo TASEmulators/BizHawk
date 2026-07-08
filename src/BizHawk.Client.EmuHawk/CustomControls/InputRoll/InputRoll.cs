@@ -980,6 +980,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
+			FastDraw();
 		}
 
 		/// <summary>

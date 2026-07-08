@@ -682,5 +682,25 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+		public void InvalidateRow(int index)
+		{
+			if (!IsPartiallyVisible(index)) return;
+
+			if (HorizontalOrientation)
+			{
+				int barValue = _hBar.Value / CellHeight * CellHeight;
+				int h = Math.Min(TotalColWidth, _drawHeight);
+				Invalidate(new Rectangle(RowsToPixels(index) - barValue, 0, CellHeight, h));
+			}
+			else
+			{
+				int barValue = _vBar.Value / CellHeight * CellHeight;
+				int w = VisibleColumns.Any()
+					? Math.Min(VisibleColumns.Max(c => c.Right) - _hBar.Value, Width)
+					: 0;
+				Invalidate(new Rectangle(0, RowsToPixels(index) - barValue, w, CellHeight));
+			}
+		}
 	}
 }
