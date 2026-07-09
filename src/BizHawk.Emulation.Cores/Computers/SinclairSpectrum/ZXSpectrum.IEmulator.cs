@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public void Dispose()
 		{
+			_machine?.AYDevice?.Dispose();
 			_machine = null;
 		}
 	}
