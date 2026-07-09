@@ -1,7 +1,7 @@
+using System.Collections.Generic;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Components
 {

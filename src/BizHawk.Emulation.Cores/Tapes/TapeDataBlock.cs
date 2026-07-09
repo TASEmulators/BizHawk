@@ -1,6 +1,7 @@
-using BizHawk.Common;
 using System.Collections.Generic;
 using System.Linq;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Tapes
 {
@@ -224,8 +225,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 
 		// zxhawk proprietry
 		PAUSE_BLOCK,
-
-		WAV_Recording
+		WAV_Recording,
 	}
 
 
@@ -269,6 +269,6 @@ namespace BizHawk.Emulation.Cores.Tapes
 		Origin,
 		Comments,
 
-		Needs_Parsing
+		Needs_Parsing,
 	}
 }

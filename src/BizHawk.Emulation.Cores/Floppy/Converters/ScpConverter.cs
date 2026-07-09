@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 				if (d[tdh] != 'T' || d[tdh + 1] != 'R' || d[tdh + 2] != 'K') continue;
 
 				// decode every revolution once, keeping its cells and its decoded sectors
-				var revCells = new List<(byte[] packed, int count)>();
+				var revCells = new List<(byte[] Packed, int Count)>();
 				var revSectors = new List<List<StandardMfmFormat.SectorLocation>>();
 				for (int rev = 0; rev < revs; rev++)
 				{
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 				int baseRev = -1, bestGood = -1;
 				for (int rev = 0; rev < revs; rev++)
 				{
-					if (revCells[rev].packed == null) continue;
+					if (revCells[rev].Packed == null) continue;
 					int good = 0;
 					foreach (var loc in revSectors[rev]) if (loc.Sector.IdCrcOk && loc.Sector.DataCrcOk) good++;
 					if (good > bestGood) { bestGood = good; baseRev = rev; }
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Floppy
 			return weak;
 		}
 
-		private static (int cyl, int head) MapTrack(int track, int headMode)
+		private static (int Cyl, int Head) MapTrack(int track, int headMode)
 			// SCP track slots are ALWAYS physical (track = cylinder*2 + head): even slots = side 0, odd = side 1,
 			// even for a single-sided image (which just leaves the other side's slots empty). So the cylinder is
 			// always track>>1; headMode only fixes which head a single-sided image's slots belong to.

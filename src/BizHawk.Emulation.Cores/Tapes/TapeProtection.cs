@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Tapes
 
 		// The two most common short pulse widths in a block = its bit-0 / bit-1 cell timings (returned low,high).
 		// A ZX bit is two equal pulses, so these values are directly comparable to the documented bit-0/bit-1.
-		private static (int bit0, int bit1) BitCells(TapeDataBlock b)
+		private static (int Bit0, int Bit1) BitCells(TapeDataBlock b)
 		{
 			var p = b.DataPeriods;
 			if (p == null) return (0, 0);
