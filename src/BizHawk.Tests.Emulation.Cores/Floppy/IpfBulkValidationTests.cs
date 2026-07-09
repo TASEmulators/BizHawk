@@ -15,12 +15,14 @@ namespace BizHawk.Tests.Emulation.Cores.Floppy
 	[TestClass]
 	public sealed class IpfBulkValidationTests
 	{
-		private const string Dir = @"D:\Downloads\Sinclair ZX Spectrum - Compilations - Games - [IPF] (TOSEC-v2023-06-10)";
+		// Point BIZHAWK_IPF_CORPUS at a local folder of .ipf files (e.g. a TOSEC compilation set) to run this
+		// bulk robustness check. Inconclusive when unset/absent, so it never runs on a machine without the set.
+		private static readonly string Dir = Environment.GetEnvironmentVariable("BIZHAWK_IPF_CORPUS");
 
 		[TestMethod]
 		public void AllCompilationIpfs_LoadAndDecode()
 		{
-			if (!Directory.Exists(Dir)) { Assert.Inconclusive($"local IPF set not present: {Dir}"); return; }
+			if (string.IsNullOrEmpty(Dir) || !Directory.Exists(Dir)) { Assert.Inconclusive("local IPF set not present (set BIZHAWK_IPF_CORPUS)"); return; }
 
 			var files = new List<string>(Directory.EnumerateFiles(Dir, "*.ipf", SearchOption.AllDirectories));
 			files.Sort();
