@@ -146,6 +146,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_machine.TapeBuzzer.Volume = settings.TapeVolume;
 			}
 
+			if (_machine.ULADevice != null)
+			{
+				_machine.ULADevice.FrameBlend = settings.GigascreenFrameBlend;
+			}
+
 			DCFilter dc = new DCFilter(SoundMixer, 512);
 			ser.Register<ISoundProvider>(dc);
 			ser.Register<IStatable>(new StateSerializer(SyncState));

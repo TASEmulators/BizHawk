@@ -64,7 +64,9 @@ namespace BizHawk.Tests.Emulation.Cores.Z80ATests
 			var lp = new CoreLoadParameters<ZX.ZXSpectrumSettings, ZX.ZXSpectrumSyncSettings>
 			{
 				Comm = comm,
-				Settings = new ZX.ZXSpectrumSettings(),
+				// GigascreenFrameBlend off: this guard fingerprints the RAW rendered frame (what the emulation
+				// produced), matching the golden captured on master which had no frame-blend post-process.
+				Settings = new ZX.ZXSpectrumSettings { GigascreenFrameBlend = false },
 				SyncSettings = new ZX.ZXSpectrumSyncSettings { MachineType = machineType },
 			};
 			return new ZX(lp);

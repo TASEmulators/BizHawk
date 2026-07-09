@@ -319,6 +319,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(RAM6), ref RAM6, false);
 			ser.Sync(nameof(RAM7), ref RAM7, false);
 			ser.Sync(nameof(ROMPaged), ref ROMPaged);
+			ser.Sync(nameof(TRDOSPaged), ref TRDOSPaged);
 			ser.Sync(nameof(SHADOWPaged), ref SHADOWPaged);
 			ser.Sync(nameof(RAMPaged), ref RAMPaged);
 			ser.Sync(nameof(PagingDisabled), ref PagingDisabled);

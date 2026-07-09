@@ -225,7 +225,12 @@ namespace BizHawk.Emulation.Cores.Floppy
 			w.WriteByte((byte)(crc & 0xFF));
 		}
 
-		private static ushort IdFieldCrc(byte c, byte h, byte r, byte n)
+		/// <summary>
+		/// The CRC-16-CCITT of an ID field (computed over the three A1 sync bytes, the IDAM, then C H R N),
+		/// as recorded on the disk and returned by a WD179X Read Address command. Public so a controller can
+		/// report the real CRC bytes.
+		/// </summary>
+		public static ushort IdFieldCrc(byte c, byte h, byte r, byte n)
 		{
 			ushort crc = Crc16Ccitt.Init;
 			crc = Feed(crc, 0xA1); crc = Feed(crc, 0xA1); crc = Feed(crc, 0xA1);

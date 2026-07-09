@@ -11,10 +11,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 
+		// Gigascreen frame blending is a display-only (non-sync) Setting, but it is shown here alongside the
+		// other picture options (border type). It is saved separately via PutCoreSettings so toggling it does
+		// not reboot the core or affect movie sync.
+		private readonly ZXSpectrum.ZXSpectrumSettings _settings;
+
 		public ZxSpectrumCoreEmulationSettings(ISettingsAdapter settable)
 		{
 			_settable = settable;
 			_syncSettings = (ZXSpectrum.ZXSpectrumSyncSettings) _settable.GetSyncSettings();
+			_settings = (ZXSpectrum.ZXSpectrumSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -44,6 +50,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// autoload tape
 			autoLoadcheckBox1.Checked = _syncSettings.AutoLoadTape;
+
+			// gigascreen frame blending (non-sync display setting)
+			gigascreenBlendCheckBox.Checked = _settings.GigascreenFrameBlend;
 
 			// turbo tape loading - only takes effect when Deterministic Emulation is off, so the turbo controls
 			// are disabled (greyed out) whenever deterministic emulation is enabled
@@ -99,6 +108,14 @@ namespace BizHawk.Client.EmuHawk
 
 				_settable.PutCoreSyncSettings(_syncSettings);
 			}
+
+			// non-sync display setting: applied live (no reboot), so handled independently of 'changed' above
+			if (gigascreenBlendCheckBox.Checked != _settings.GigascreenFrameBlend)
+			{
+				_settings.GigascreenFrameBlend = gigascreenBlendCheckBox.Checked;
+				_settable.PutCoreSettings(_settings);
+			}
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}

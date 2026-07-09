@@ -33,6 +33,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public bool SHADOWPaged;
 
         /// <summary>
+        /// Signs that the TR-DOS ROM is currently paged into the low 16K.
+        /// Pentagon only: the Beta 128 interface overlays its TR-DOS ROM over the low 16K when the CPU
+        /// executes an opcode in 0x3D00-0x3DFF, and removes it when execution leaves 0x0000-0x3FFF.
+        /// </summary>
+        public bool TRDOSPaged;
+
+        /// <summary>
         /// Index of the current RAM page
         /// /// 128k, +2/2a and +3 only
         /// </summary>
@@ -53,6 +60,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get => ROMPaged;
             set => ROMPaged = value;
+        }
+
+        /// <summary>
+        /// Called on every Z80 M1 opcode fetch (before the opcode byte is read), with the address being
+        /// fetched. The base machine does nothing; the Pentagon overrides this to page the TR-DOS ROM in
+        /// and out based on the fetch address (the Beta 128 automatic EPROM switch).
+        /// </summary>
+        public virtual void TrapTrDos(ushort addr)
+        {
         }
 
         /*

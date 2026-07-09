@@ -19,6 +19,13 @@ namespace BizHawk.Emulation.Cores.Floppy
 		/// </summary>
 		public static DiskGeometry Plus3 => new() { Cylinders = 40, Heads = 1, SectorsPerTrack = 9, SectorSize = 512, FirstSectorId = 1 };
 
+		/// <summary>
+		/// The standard TR-DOS format used by the Beta 128 interface: 80 cylinders, 2 sides, 16x256 sectors
+		/// numbered from id 1 = 640K. TrdConverter narrows this to 40-track or single-sided variants from the
+		/// disk-info sector's disk-type byte.
+		/// </summary>
+		public static DiskGeometry TrDos => new() { Cylinders = 80, Heads = 2, SectorsPerTrack = 16, SectorSize = 256, FirstSectorId = 1 };
+
 		public int TotalBytes => Cylinders * Heads * SectorsPerTrack * SectorSize;
 	}
 

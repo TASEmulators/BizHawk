@@ -370,12 +370,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// Called when the first byte of an instruction is fetched
+		/// Called when the first byte of an instruction is fetched (M1), before the opcode byte is read.
+		/// The Pentagon uses this to drive the Beta 128 automatic TR-DOS ROM switch off the fetch address;
+		/// the enum check keeps every other model off the virtual dispatch on this per-fetch hot path.
 		/// </summary>
 		public void OnExecFetch(ushort firstByte)
 		{
-			// fetch instruction without incrementing pc
-			//_cpu.FetchInstruction(_cpu.FetchMemory(firstByte));
+			if (machineType == MachineType.Pentagon128)
+				_machine.TrapTrDos(firstByte);
 		}
 
 		public void SyncState(Serializer ser)

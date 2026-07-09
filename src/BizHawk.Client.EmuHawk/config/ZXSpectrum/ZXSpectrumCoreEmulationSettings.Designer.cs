@@ -43,6 +43,7 @@
             this.turboMultiplierTrackBar = new System.Windows.Forms.TrackBar();
             this.turboMultiplierValueLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.textBoxCoreDetails = new System.Windows.Forms.TextBox();
+            this.gigascreenBlendCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.turboMultiplierTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -190,15 +191,26 @@
             this.textBoxCoreDetails.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxCoreDetails.Size = new System.Drawing.Size(424, 206);
             this.textBoxCoreDetails.TabIndex = 28;
-            // 
+            //
+            // gigascreenBlendCheckBox
+            //
+            this.gigascreenBlendCheckBox.AutoSize = true;
+            this.gigascreenBlendCheckBox.Location = new System.Drawing.Point(15, 414);
+            this.gigascreenBlendCheckBox.Name = "gigascreenBlendCheckBox";
+            this.gigascreenBlendCheckBox.Size = new System.Drawing.Size(300, 17);
+            this.gigascreenBlendCheckBox.TabIndex = 30;
+            this.gigascreenBlendCheckBox.Text = "Gigascreen frame blending (smooths per-frame flicker)";
+            this.gigascreenBlendCheckBox.UseVisualStyleBackColor = true;
+            //
             // ZXSpectrumCoreEmulationSettings
-            // 
+            //
             this.AcceptButton = this.OkBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
             this.ClientSize = new System.Drawing.Size(448, 469);
             this.Controls.Add(this.textBoxCoreDetails);
+            this.Controls.Add(this.gigascreenBlendCheckBox);
             this.Controls.Add(this.lblAutoLoadText);
             this.Controls.Add(this.autoLoadcheckBox1);
             this.Controls.Add(this.flashLoadcheckBox1);
@@ -241,5 +253,6 @@
         private System.Windows.Forms.TrackBar turboMultiplierTrackBar;
         private BizHawk.WinForms.Controls.LocLabelEx turboMultiplierValueLabel;
         private System.Windows.Forms.TextBox textBoxCoreDetails;
+        private System.Windows.Forms.CheckBox gigascreenBlendCheckBox;
     }
 }

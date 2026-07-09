@@ -40,6 +40,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			TapeDevice = new DatacorderDevice(spectrum.SyncSettings.AutoLoadTape);
 			TapeDevice.Init(this);
 
+			// Beta 128 disk interface (WD1793 + TR-DOS). Set up before media load so a .TRD can be inserted.
+			var beta = new BetaDiskController
+			{
+				DriveType = spectrum.SyncSettings.PentagonDriveType == ZXSpectrum.PentagonDiskDriveType.Drive525Inch
+					? BetaDiskController.DriveKind.FiveQuarterInch
+					: BetaDiskController.DriveKind.ThreeHalfInch,
+			};
+			UPDDiskDevice = beta;
+			UPDDiskDevice.Init(this);
+
 			InitializeMedia(files);
 		}
 	}

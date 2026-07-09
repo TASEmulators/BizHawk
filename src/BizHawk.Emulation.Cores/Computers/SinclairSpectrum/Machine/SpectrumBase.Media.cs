@@ -174,7 +174,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			try { sides = DiskImageLoader.ToFluxDisk(image).Sides; }
 			catch { sides = 1; }
 
-			if (sides <= 1)
+			// The +3's 3" drive is single-headed, so a double-sided image is split into two selectable disks.
+			// The Beta 128 drive (Pentagon) is double-headed and reads both sides of one disk, so never split.
+			if (sides <= 1 || this is Pentagon128)
 			{
 				diskImages.Add(image);
 				diskSides.Add(-1);
@@ -213,13 +215,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected void LoadDiskMedia()
 		{
-			if (this is not ZX128Plus3)
+			var image = diskImages[diskMediaIndex];
+
+			// route by format to the machine that can actually read it, and warn (like the +3 gate) if the
+			// wrong model is selected: TR-DOS .trd/.scl need the Pentagon's Beta 128, every other disk image
+			// (+3/PCW .dsk/.edsk and the flux formats) needs the +3's uPD765.
+			bool isTrDos = Floppy.TrdConverter.IsTrd(image) || Floppy.SclConverter.IsScl(image);
+
+			if (isTrDos && this is not Pentagon128)
 			{
-				Spectrum.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
+				Spectrum.CoreComm.ShowMessage("You are trying to load a TR-DOS (.trd/.scl) disk image.\n\n Please select Pentagon 128 emulation immediately and reboot the core");
 				return;
 			}
 
-			UPDDiskDevice.FDD_LoadDisk(diskImages[diskMediaIndex], diskSides[diskMediaIndex]);
+			if (!isTrDos && this is not ZX128Plus3)
+			{
+				Spectrum.CoreComm.ShowMessage("You are trying to load a +3 disk image.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
+				return;
+			}
+
+			UPDDiskDevice.FDD_LoadDisk(image, diskSides[diskMediaIndex]);
 		}
 
 		/// <summary>
@@ -272,6 +287,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// classifying as Disk here is enough to route them down the disk path.
 			if (Floppy.ScpConverter.IsScp(data)
 				|| Floppy.HfeConverter.IsHfe(data) || Floppy.HfeConverter.IsHfeV3(data))
+			{
+				return SpectrumMediaType.Disk;
+			}
+
+			// TR-DOS disk images: .trd is headerless (validated structurally), .scl carries a SINCLAIR header
+			if (Floppy.TrdConverter.IsTrd(data) || hdr.StartsWithIgnoreCase("SINCLAIR"))
 			{
 				return SpectrumMediaType.Disk;
 			}
