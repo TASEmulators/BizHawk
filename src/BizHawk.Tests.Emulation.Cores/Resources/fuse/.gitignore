@@ -1,5 +1,0 @@
-# FUSE Z80 test suite (GPL-licensed) - not distributable in this MIT repo. Kept locally for the
-# Z80 FuseZ80Tests; download URLs are in that file's header comment.
-# Ignore everything in this folder except this .gitignore (which keeps the folder present).
-*
-!.gitignore

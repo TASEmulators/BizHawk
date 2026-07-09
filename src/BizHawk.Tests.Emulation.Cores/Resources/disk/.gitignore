@@ -1,4 +1,0 @@
-# Copyrighted disk images kept locally for the Floppy tests - not committable.
-# Ignore everything in this folder except this .gitignore (which keeps the folder present).
-*
-!.gitignore

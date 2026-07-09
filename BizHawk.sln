@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.33627.172
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11819.183 stable
 MinimumVisualStudioVersion = 16.0.28729.10
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Client.Common", "src\BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
 EndProject
@@ -40,8 +40,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Common", "src\BizHawk.Tests.Common\BizHawk.Tests.Common.csproj", "{39546396-C4D0-45D3-8C6A-D56D29B5BD72}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Tests.Emulation.Common", "src\BizHawk.Tests.Emulation.Common\BizHawk.Tests.Emulation.Common.csproj", "{D95E2B42-757A-4D19-8A76-84C6350BAD8D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Tests.Emulation.Cores", "src\BizHawk.Tests.Emulation.Cores\BizHawk.Tests.Emulation.Cores.csproj", "{482806A8-5372-46C1-A100-181CA1DB3F0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -245,18 +243,6 @@ Global
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|x64.Build.0 = Release|Any CPU
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|x86.ActiveCfg = Release|Any CPU
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D}.Release|x86.Build.0 = Release|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Debug|x64.Build.0 = Debug|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Debug|x86.Build.0 = Debug|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Release|x64.ActiveCfg = Release|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Release|x64.Build.0 = Release|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Release|x86.ActiveCfg = Release|Any CPU
-		{482806A8-5372-46C1-A100-181CA1DB3F0E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -272,7 +258,6 @@ Global
 		{284E19E2-661D-4A7D-864A-AC2FC91E7C25} = {74391239-9BC1-40CE-A3D7-180737C5302A}
 		{39546396-C4D0-45D3-8C6A-D56D29B5BD72} = {74391239-9BC1-40CE-A3D7-180737C5302A}
 		{D95E2B42-757A-4D19-8A76-84C6350BAD8D} = {74391239-9BC1-40CE-A3D7-180737C5302A}
-		{482806A8-5372-46C1-A100-181CA1DB3F0E} = {74391239-9BC1-40CE-A3D7-180737C5302A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B9E4316-9185-412E-B951-A63355ACA956}

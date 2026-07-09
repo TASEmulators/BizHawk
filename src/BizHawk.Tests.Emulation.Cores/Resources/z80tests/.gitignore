@@ -1,6 +1,0 @@
-# ZX Spectrum Z80 test tapes (zexall/zexdoc, Patrik Rak's z80test suite, Bobrowski/Rak btime/ptime/etc.)
-# used by Z80TestSuiteHarness. Licensing varies / is unclear, so kept locally and NOT committed; download
-# URLs are in that test file's header comment.
-# Ignore everything in this folder except this .gitignore (which keeps the folder present).
-*
-!.gitignore
