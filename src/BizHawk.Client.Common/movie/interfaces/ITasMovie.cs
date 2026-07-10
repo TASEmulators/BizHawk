@@ -27,6 +27,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		Action<int> GreenzoneInvalidated { get; set; }
 
+		void SetUpPokeListener();
+
 		string DisplayValue(int frame, string buttonName, bool defaultAxisAsBlank);
 		void FlagChanges();
 		void ClearChanges();

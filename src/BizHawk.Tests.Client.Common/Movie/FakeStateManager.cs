@@ -19,10 +19,12 @@ namespace BizHawk.Tests.Client.Common.Movie
 		public void Dispose() => throw new NotImplementedException();
 		public void Engage(byte[] frameZeroState) { /* nothing */ }
 		public KeyValuePair<int, Stream> GetStateClosestToFrame(int frame) => throw new NotImplementedException();
+		public bool HasCheatedState(int frame) => throw new NotImplementedException();
 		public bool HasState(int frame) => throw new NotImplementedException();
 		public bool InvalidateAfter(int frame) => false;
 		public void LoadStateHistory(BinaryReader br) => throw new NotImplementedException();
 		public void SaveStateHistory(BinaryWriter bw) => throw new NotImplementedException();
+		public void SetCheatedFlagStarting(int frame) => throw new NotImplementedException();
 		public void Unreserve(int frame) { /* nothing */ }
 		public IStateManager UpdateSettings(IStateManagerSettings settings, bool keepOldStates = false) => throw new NotImplementedException();
 	}
