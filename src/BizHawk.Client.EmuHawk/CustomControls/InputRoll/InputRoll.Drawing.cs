@@ -658,7 +658,7 @@ namespace BizHawk.Client.EmuHawk
 						RowsToPixels(cell.RowIndex.Value) - barValue,
 						col.Left,
 						CellHeight,
-						col.ScaledWidth));
+						this.Width)); // hover text may overflow the cell in horizontal mode
 				}
 				else
 				{
