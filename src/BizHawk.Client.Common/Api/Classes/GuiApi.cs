@@ -27,8 +27,8 @@ namespace BizHawk.Client.Common
 
 		private readonly IDialogController _dialogController;
 
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
+//		[RequiredService]
+		internal IEmulator Emulator { get; set; }
 
 		private readonly Action<string> LogCallback;
 
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 		private FontFamily[]/*?*/ _pixelFonts = null;
 
-		private DisplaySurfaceID? _usingSurfaceID;
+		internal DisplaySurfaceID? SurfaceID { get; set; } = null;
 
 		public GuiApi(
 			IDialogController dialogController,
@@ -69,7 +69,8 @@ namespace BizHawk.Client.Common
 
 		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
 		{
-			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
+			if (surfaceID is not null && surfaceID != SurfaceID) throw new InvalidOperationException($"Mixed drawing surfaces! (Draw call targeting {surfaceID} within {nameof(WithSurface)}({SurfaceID}) scope)");
+			var nnID = surfaceID ?? SurfaceID ?? throw new Exception();
 			return _displayManager.GetApiHawk2DRenderer(nnID);
 		}
 
@@ -78,15 +79,11 @@ namespace BizHawk.Client.Common
 
 		public void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc)
 		{
-			_usingSurfaceID = surfaceID;
-			try
-			{
-				drawingCallsFunc(this);
-			}
-			finally
-			{
-				_usingSurfaceID = null;
-			}
+			const string ERR_MSG_NESTED = $"Nested call to {nameof(IGuiApi)}.{nameof(WithSurface)} (or reference stored out of scope)!";
+			if (surfaceID != SurfaceID) throw new InvalidOperationException(ERR_MSG_NESTED);
+			// else it should be fine, but warn anyway
+			LogCallback(ERR_MSG_NESTED);
+			drawingCallsFunc(this);
 		}
 
 		public void AddMessage(string message, [LiteralExpected] int? duration = null)
