@@ -4096,6 +4096,8 @@ namespace BizHawk.Client.EmuHawk
 			UpdateToolsLoadstate();
 			InputManager.AutoFireController.ClearStarts();
 
+			DisplayManager.OnDraw?.Invoke(); // not DoApiRedraw, so scripts drawing in the savestate load event still work
+
 			//we don't want to analyze how to intermix movies, rewinding, and states
 			//so purge rewind history when loading a state while doing a movie
 			if (ToolControllingRewind is null && MovieSession.Movie.IsActive())

@@ -144,7 +144,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Settings.Columns = LuaListView.AllColumns;
 
-					DisplayManager.ClearApiHawkSurfaces();
+					_openedFiles.StopAllScripts();
+					DisplayManager.DoApiRedraw();
 					DisplayManager.ClearApiHawkTextureCache();
 					ResetDrawSurfacePadding();
 					ClearFileWatches();
@@ -1003,7 +1004,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				UpdateDialog();
-				DisplayManager.ClearApiHawkSurfaces();
+				DisplayManager.DoApiRedraw();
 				DisplayManager.ClearApiHawkTextureCache();
 				if (!_openedFiles.Any(static lf => !lf.IsSeparator)) ResetDrawSurfacePadding(); // just removed last script, reset padding
 			}
@@ -1511,7 +1512,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EraseToolbarItem_Click(object sender, EventArgs e)
 		{
-			DisplayManager.ClearApiHawkSurfaces();
+			// tooltip says this is specifically for "stale" or "stuck" stuff
+			DisplayManager.DoApiRedraw();
 		}
 
 		// Stupid designer
