@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Common.StringExtensions;
-
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -84,7 +82,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Frozen)
 			{
-				return recentlist.RemoveAll(newFile.EqualsIgnoreCase) is not 0; // none removed => return false
+				return recentlist.RemoveAll(newFile.Equals) is not 0; // none removed => return false
 			}
 
 			return false;
