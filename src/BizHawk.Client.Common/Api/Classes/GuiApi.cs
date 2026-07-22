@@ -47,8 +47,6 @@ namespace BizHawk.Client.Common
 
 		private Color _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
-		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
-
 		private FontFamily[]/*?*/ _pixelFonts = null;
 
 		private DisplaySurfaceID? _usingSurfaceID;
@@ -128,14 +126,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public void DrawFinish() => LogCallback("the `DrawFinish()` function has been deprecated");
-
-		public void SetPadding(int all) => _padding = (all, all, all, all);
-
-		public void SetPadding(int x, int y) => _padding = (x / 2, y / 2, x / 2 + x & 1, y / 2 + y & 1);
-
-		public void SetPadding(int l, int t, int r, int b) => _padding = (l, t, r, b);
-
-		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
 		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _dialogController.AddOnScreenMessage(message, duration);

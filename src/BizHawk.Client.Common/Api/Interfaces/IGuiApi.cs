@@ -26,11 +26,6 @@ namespace BizHawk.Client.Common
 		[Obsolete("Always true")]
 		bool HasGUISurface { get; }
 
-		void SetPadding(int all);
-		void SetPadding(int x, int y);
-		void SetPadding(int l, int t, int r, int b);
-		(int Left, int Top, int Right, int Bottom) GetPadding();
-
 		void AddMessage(string message, int? duration = null);
 
 		void ClearGraphics(DisplaySurfaceID? surfaceID = null);
