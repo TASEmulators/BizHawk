@@ -89,19 +89,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
-		{
-			_usingSurfaceID = surfaceID;
-			try
-			{
-				drawingCallsFunc();
-			}
-			finally
-			{
-				_usingSurfaceID = null;
-			}
-		}
-
 		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _dialogController.AddOnScreenMessage(message, duration);
 

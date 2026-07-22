@@ -8,9 +8,6 @@ namespace BizHawk.Client.Common
 
 		void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc);
 
-		[Obsolete("use the other overload e.g. `APIs.Gui.WithSurface(..., gui => { gui.DrawLine(...); });`")]
-		void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc);
-
 		void AddMessage(string message, int? duration = null);
 
 		void ClearGraphics(DisplaySurfaceID? surfaceID = null);
