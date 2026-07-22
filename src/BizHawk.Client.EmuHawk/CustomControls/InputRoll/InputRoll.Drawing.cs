@@ -68,6 +68,11 @@ namespace BizHawk.Client.EmuHawk
 
 				var lastVisibleRow = LastVisibleRow;
 
+				int startIndex = _selectedItems.LowerBoundByRow(firstVisibleRow);
+				int endIndex = _selectedItems.LowerBoundByRow(lastVisibleRow + 1);
+				int length = endIndex - startIndex;
+				CellList selectedCells = length == _selectedItems.Count ? _selectedItems : _selectedItems.Slice(startIndex, length);
+
 				if (HorizontalOrientation || e.ClipRectangle.Y <= ColumnHeight)
 				{
 					DrawColumnBg(visibleColumns, e.ClipRectangle);
@@ -75,10 +80,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Background
-				DrawBg(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow);
+				DrawBg(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow, selectedCells);
 
 				// Foreground
-				DrawData(visibleColumns, firstVisibleRow, lastVisibleRow);
+				DrawData(visibleColumns, firstVisibleRow, lastVisibleRow, selectedCells);
 
 				DrawColumnDrag();
 				DrawCellDrag();
@@ -217,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawData(List<RollColumn> visibleColumns, int firstVisibleRow, int lastVisibleRow)
+		private void DrawData(List<RollColumn> visibleColumns, int firstVisibleRow, int lastVisibleRow, CellList selectedCells)
 		{
 			if (QueryItemText == null)
 			{
@@ -270,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 						Font font = Font;
 						currentCell.Column = col;
 						currentCell.RowIndex = f + startRow;
-						if (foreColor == null && _selectedItems.Contains(currentCell))
+						if (foreColor == null && selectedCells.Contains(currentCell))
 						{
 							foreColor = SystemColors.HighlightText;
 						}
@@ -331,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 						Font font = Font;
 						currentCell.Column = column;
 						currentCell.RowIndex = f + startRow;
-						if (foreColor == null && _selectedItems.Contains(currentCell))
+						if (foreColor == null && selectedCells.Contains(currentCell))
 						{
 							foreColor = SystemColors.HighlightText;
 						}
@@ -466,7 +471,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO refactor this and DoBackGroundCallback functions.
 		// Draw Gridlines and background colors using QueryItemBkColor.
-		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
+		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow, CellList selectedCells)
 		{
 			if (QueryItemBkColor is not null || QueryRowBkColor is not null)
 			{
@@ -526,17 +531,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_selectedItems.Count is not 0) DoSelectionBG();
+			if (selectedCells.Count is not 0) DoSelectionBG(selectedCells);
 		}
 
-		private void DoSelectionBG()
+		private void DoSelectionBG(CellList selectedCells)
 		{
 			var visibleRows = FirstVisibleRow.RangeTo(LastVisibleRow);
 			int lastRow = -1;
 			var rowColor = _backColor;
-			foreach (Cell cell in _selectedItems)
+			foreach (Cell cell in selectedCells)
 			{
-				if (!cell.RowIndex.HasValue || !visibleRows.Contains(cell.RowIndex.Value) || !VisibleColumns.Contains(cell.Column))
+				if (!cell.RowIndex.HasValue || !VisibleColumns.Contains(cell.Column))
 				{
 					continue;
 				}

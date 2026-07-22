@@ -647,7 +647,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_selectedItems.RemoveAll(cell => cell.RowIndex == index);
+					int startIndex = _selectedItems.LowerBoundByRow(index);
+					if (startIndex < _selectedItems.Count && _selectedItems[startIndex].RowIndex == index)
+					{
+						int endIndex = _selectedItems.LowerBoundByRow(index + 1);
+						_selectedItems.RemoveRange(startIndex, endIndex - startIndex);
+					}
 					_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 				}
 			}
@@ -1863,8 +1868,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (toggle && _selectedItems.IncludesRow(row))
 					{
-						_selectedItems.RemoveAll(x => x.RowIndex == row);
-						_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
+						SelectRow(row, false);
 					}
 					else
 					{

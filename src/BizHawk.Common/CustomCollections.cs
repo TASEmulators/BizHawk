@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Common
 {
@@ -187,11 +186,20 @@ namespace BizHawk.Common
 			}
 		}
 
+		public virtual void RemoveRange(int index, int count) => _list.RemoveRange(index, count);
+
 		public SortedList<T> Slice(int start, int length)
 			=> new(SliceImpl(start: start, length: length));
 
 		protected List<T> SliceImpl(int start, int length)
-			=> _list.Skip(start).Take(length).ToList();
+		{
+			List<T> slice = new(length);
+			for (int i = start; i < start + length; i++)
+			{
+				slice.Add(_list[i]);
+			}
+			return slice;
+		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
