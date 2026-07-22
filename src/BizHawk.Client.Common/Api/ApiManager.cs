@@ -23,6 +23,7 @@ namespace BizHawk.Client.Common
 
 		public static void AddApiType(Type type)
 		{
+			if (type == typeof(GuiApi)) return; // using `GuiApiShim` instead
 			var interfaceType = type.GetInterfaces().FirstOrDefault(t => typeof(IExternalApi).IsAssignableFrom(t) && t != typeof(IExternalApi));
 			if (interfaceType == null) return; // if we couldn't determine what it's implementing, then it's not an api impl. type
 			var ctor = type.GetConstructors().Single();
