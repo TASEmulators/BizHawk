@@ -166,6 +166,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private LuaLibraries LuaImp;
+		private List<LuaFile> _scriptsToRestart = new();
 
 		private ConsoleLuaLibrary _consoleLib;
 
@@ -201,10 +202,22 @@ namespace BizHawk.Client.EmuHawk
 			Settings.SplitDistance = splitContainer1.SplitterDistance;
 		}
 
+		public override void Stop()
+		{
+			if (LuaImp is not null && !LuaImp.IsRebootingCore)
+			{
+				_scriptsToRestart = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
+
+				// we don't use _scriptsToRestart here, in case something is somehow partially active
+				foreach (var file in LuaImp.ScriptList)
+				{
+					file.Stop();
+				}
+			}
+		}
+
 		public override void Restart()
 		{
-			List<LuaFile> runningScripts = new();
-
 			ApiContainer apiContainer = ApiManager.RestartLua(
 				Emulator.ServiceProvider,
 				s => LuaLibraries.Print(s),
@@ -218,23 +231,11 @@ namespace BizHawk.Client.EmuHawk
 				Game,
 				DialogController);
 
-			// Things we need to do with the existing LuaImp before we can make a new one
-			if (LuaImp is not null)
+			if (LuaImp is not null && LuaImp.IsRebootingCore)
 			{
-				if (LuaImp.IsRebootingCore)
-				{
-					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-					LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
-					return;
-				}
-
-				runningScripts = LuaImp.ScriptList.Where(lf => lf.Enabled).ToList();
-
-				// we don't use runningScripts here as the other scripts need to be stopped too
-				foreach (var file in LuaImp.ScriptList)
-				{
-					file.Stop();
-				}
+				// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
+				LuaImp.Restart(Emulator.ServiceProvider, Config, apiContainer);
+				return;
 			}
 
 			_openedFiles = new(_openedFiles, onChanged: SessionChangedCallback);
@@ -259,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 				.Select(static f => $"{f.Library}.{f.Name}")
 				.ToArray());
 
-			foreach (var file in runningScripts)
+			foreach (var file in _scriptsToRestart)
 			{
 				EnableLuaFile(file);
 			}
