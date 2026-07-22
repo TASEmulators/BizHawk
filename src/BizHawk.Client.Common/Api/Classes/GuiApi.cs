@@ -50,7 +50,6 @@ namespace BizHawk.Client.Common
 		private FontFamily[]/*?*/ _pixelFonts = null;
 
 		private DisplaySurfaceID? _usingSurfaceID;
-		public bool HasGUISurface => true;
 
 		public GuiApi(
 			IDialogController dialogController,
@@ -109,23 +108,6 @@ namespace BizHawk.Client.Common
 				_usingSurfaceID = null;
 			}
 		}
-
-		public void DrawNew(string name, bool clear)
-		{
-			switch (name)
-			{
-				case null:
-				case "emu":
-					LogCallback("the `DrawNew(\"emu\")` function has been deprecated");
-					return;
-				case "native":
-					throw new InvalidOperationException("the ability to draw in the margins with `DrawNew(\"native\")` has been removed");
-				default:
-					throw new InvalidOperationException("invalid surface name");
-			}
-		}
-
-		public void DrawFinish() => LogCallback("the `DrawFinish()` function has been deprecated");
 
 		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _dialogController.AddOnScreenMessage(message, duration);

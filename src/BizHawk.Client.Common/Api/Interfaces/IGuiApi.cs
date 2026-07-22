@@ -17,15 +17,6 @@ namespace BizHawk.Client.Common
 		[Obsolete("use the other overload e.g. `APIs.Gui.WithSurface(..., gui => { gui.DrawLine(...); });`")]
 		void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc);
 
-		[Obsolete("No longer supported, no-op.")]
-		void DrawNew(string name, bool clear = true);
-
-		[Obsolete("No longer supported, no-op.")]
-		void DrawFinish();
-
-		[Obsolete("Always true")]
-		bool HasGUISurface { get; }
-
 		void AddMessage(string message, int? duration = null);
 
 		void ClearGraphics(DisplaySurfaceID? surfaceID = null);
