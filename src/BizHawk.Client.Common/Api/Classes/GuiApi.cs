@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
@@ -76,12 +75,6 @@ namespace BizHawk.Client.Common
 
 		public void ToggleCompositingMode()
 			=> _compositingMode = (CompositingMode) (1 - (int) _compositingMode); // enum has two members, 0 and 1
-
-		public ImageAttributes GetAttributes() => null;
-
-		public void SetAttributes(ImageAttributes a)
-		{
-		}
 
 		public void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc)
 		{

@@ -1,16 +1,10 @@
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace BizHawk.Client.Common
 {
 	public interface IGuiApi : IDisposable, IExternalApi
 	{
 		void ToggleCompositingMode();
-
-		[Obsolete("No longer supported, returns null always.")]
-		ImageAttributes GetAttributes();
-		[Obsolete("No longer supported, no-op.")]
-		void SetAttributes(ImageAttributes a);
 
 		void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc);
 
