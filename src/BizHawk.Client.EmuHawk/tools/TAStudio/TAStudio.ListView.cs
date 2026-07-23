@@ -1140,12 +1140,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// In this case our regular capture logic won't get the chance
 					// to do a force capture for this edited frame. So do it here.
-					CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), true);
+					CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), IStateManager.CaptureType.LastEditedFrame);
 				}
 				else if (!CurrentTasMovie.TasStateManager.HasState(frame - 1) && Emulator.Frame == frame)
 				{
 					// A less-than-ideal frame to be captured, but still useful for autorestore.
-					CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), true);
+					CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), IStateManager.CaptureType.LastEditedFrame);
 				}
 				_batchEditMinFrame = -1;
 			}

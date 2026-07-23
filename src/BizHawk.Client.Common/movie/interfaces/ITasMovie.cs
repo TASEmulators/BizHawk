@@ -20,6 +20,8 @@ namespace BizHawk.Client.Common
 		int LastEditedFrame { get; }
 		bool LastEditWasRecording { get; }
 
+		bool ReserveBranchFrames { get; set; }
+
 		/// <summary>
 		/// Called whenever the movie is modified in a way that could invalidate savestates in the movie's state history.
 		/// Called regardless of whether any states were actually invalidated.

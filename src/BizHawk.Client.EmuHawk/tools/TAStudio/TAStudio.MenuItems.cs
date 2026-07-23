@@ -1108,6 +1108,8 @@ namespace BizHawk.Client.EmuHawk
 					GenerateIcons();
 					foreach (InputRoll roll in _inputRolls) roll.ResumeDrawing();
 
+					CurrentTasMovie.ReserveBranchFrames = Settings.StateOnBranchFrame;
+
 					UpdateAutoFire();
 
 					if (CurrentTasMovie.TasStateManager.Settings != s.CurrentStateManagerSettings)

@@ -161,6 +161,8 @@ namespace BizHawk.Client.Common
 		private readonly SortedSet<StateInfo> _midStates = new();
 		private readonly SortedSet<StateInfo> _newStates = new();
 
+		private readonly Queue<StateInfo> _statesPendingRemoval = new();
+
 		private readonly Func<int, bool> _reserveCallback;
 
 		private bool _bufferIsFull = false;
@@ -350,6 +352,16 @@ namespace BizHawk.Client.Common
 
 			_bufferIsFull = true;
 
+			while (_statesPendingRemoval.Count > 0)
+			{
+				StateInfo si = _statesPendingRemoval.Dequeue();
+				if (_states.Contains(si))
+				{
+					RemoveState(si);
+					return si.FirstPage;
+				}
+			}
+
 			while (true)
 			{
 				// A very special case: We have no mid or new states.
@@ -468,25 +480,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Capture(int frame, IStatable source, bool force = false)
+		public void Capture(int frame, IStatable source, IStateManager.CaptureType type = IStateManager.CaptureType.Normal)
 		{
 			Debug.Assert(_states.Contains(new(0)), "State manager cannot be used until engaged.");
 
 			if (HasState(frame)) return;
 
-			if (force)
+			if (type == IStateManager.CaptureType.LastEditedFrame)
 			{
 				if (HasState(_lastForceCapture))
 				{
 					StateInfo state = _states.GetViewBetween(new(_lastForceCapture), new(_lastForceCapture)).Min;
 					if (!_reserveCallback(_lastForceCapture) && !ShouldKeepForOld(_lastForceCapture))
-						RemoveState(state);
+						_statesPendingRemoval.Enqueue(state);
 				}
 				_lastForceCapture = -1; // This will get set if the frame is actually captured because of force.
 			}
 
 			StateGroup group = StateGroup.None;
-			if (_reserveCallback(frame))
+			if (type == IStateManager.CaptureType.Reserve || _reserveCallback(frame))
 			{
 				group = StateGroup.Old;
 			}
@@ -542,7 +554,7 @@ namespace BizHawk.Client.Common
 
 			if (group != StateGroup.None)
 				InternalCapture(frame, source, group);
-			else if (force)
+			else if (type == IStateManager.CaptureType.LastEditedFrame)
 			{
 				_lastForceCapture = frame;
 				InternalCapture(frame, source, StateGroup.Old);
@@ -608,7 +620,7 @@ namespace BizHawk.Client.Common
 			// Remove the state if it's an old state we don't need.
 			if (!_newStates.Contains(state) && !_midStates.Contains(state) && !ShouldKeepForOld(frame))
 			{
-				RemoveState(state);
+				_statesPendingRemoval.Enqueue(state);
 			}
 		}
 
