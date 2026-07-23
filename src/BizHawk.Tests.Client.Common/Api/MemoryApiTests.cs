@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Tests.Client.Common.Api
 {
@@ -97,6 +98,215 @@ namespace BizHawk.Tests.Client.Common.Api
 				new byte[8],
 				memApi => memApi.WriteByteRange(9, new byte[] { 0x01, 0x23, 0x45, 0x67 }),
 				"fully above upper boundary");
+		}
+
+		[TestMethod]
+		public void TestBulkPeekU8()
+		{
+			byte[] memContents = new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
+			var memApi = CreateDummyApi(memContents);
+			byte[] outputArray = new byte[12];
+
+			Assert.Throws<Exception>(() => memApi.BulkReadU8(addr: -6, dst: new Span<byte>(outputArray, 0, 2)), "fully below lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU8(addr: -1, dst: new Span<byte>(outputArray, 0, 2)), "crosses lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU8(addr: 8, dst: new Span<byte>(outputArray, 0, 2)), "fully above upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU8(addr: 7, dst: new Span<byte>(outputArray, 0, 2)), "crosses upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU8(addr: -2, dst: new Span<byte>(outputArray, 0, 12)), "crosses both boundaries");
+
+			Span<byte> output;
+			output = new(outputArray, 0, 8);
+			memApi.BulkReadU8(addr: 0, dst: output);
+			CollectionAssert.That.AreEqual(
+				new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF },
+				output,
+				"whole domain");
+			output = new(outputArray, 0, 4);
+			memApi.BulkReadU8(addr: 2, dst: output);
+			CollectionAssert.That.AreEqual(
+				new byte[] { 0x45, 0x67, 0x89, 0xAB },
+				output,
+				"strict contains");
+			output = new(outputArray, 0, 0);
+			memApi.BulkReadU8(addr: 0, dst: output);
+			CollectionAssert.That.AreEqual(
+				Array.Empty<byte>(),
+				output,
+				"empty");
+		}
+
+		[TestMethod]
+		public void TestBulkPokeU8()
+		{
+			IMemoryApi memApi = CreateDummyApi(new byte[8]);
+			Assert.Throws<Exception>(() => memApi.BulkWriteU8(-4, new byte[] { 0x01, 0x23, 0x45, 0x67 }), "fully below lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU8(-2, new byte[] { 0x01, 0x23, 0x45, 0x67 }), "crosses lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU8(8, new byte[] { 0x01, 0x23, 0x45, 0x67 }), "fully above upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU8(6, new byte[] { 0x01, 0x23, 0x45, 0x67 }), "crosses upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU8(-2, new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xFE, 0xDC, 0xBA, 0x98 }), "crosses both boundaries");
+
+			void TestCase(IReadOnlyList<byte> expected, Action<IMemoryApi> action, string message)
+			{
+				var memDomainContents = new byte[8];
+				action(CreateDummyApi(memDomainContents));
+
+				CollectionAssert.That.AreEqual(expected, memDomainContents, message);
+			}
+
+			TestCase(
+				new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF },
+				memApi => memApi.BulkWriteU8(0, new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF }),
+				"whole domain");
+			TestCase(
+				new byte[] { default, default, 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB },
+				memApi => memApi.BulkWriteU8(2, new byte[] { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB }),
+				"strict contains");
+			TestCase(
+				new byte[8],
+				memApi => memApi.BulkWriteU8(2, Array.Empty<byte>()),
+				"empty");
+		}
+
+
+		[TestMethod]
+		public void TestBulkPeekU16()
+		{
+			ushort[] memContents = new ushort[] { 0x0123, 0x4567, 0x89AB, 0xCDEF };
+			byte[] memBytes = new byte[8];
+			memContents.BytesSpan().CopyTo(memBytes);
+
+			var memApi = CreateDummyApi(memBytes);
+			ushort[] outputArray = new ushort[6];
+
+			Assert.Throws<Exception>(() => memApi.BulkReadU16(addr: -6, dst: new Span<ushort>(outputArray, 0, 2)), "fully below lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU16(addr: -2, dst: new Span<ushort>(outputArray, 0, 2)), "crosses lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU16(addr: 8, dst: new Span<ushort>(outputArray, 0, 2)), "fully above upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU16(addr: 6, dst: new Span<ushort>(outputArray, 0, 2)), "crosses upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU16(addr: -2, dst: new Span<ushort>(outputArray, 0, 6)), "crosses both boundaries");
+
+			Span<ushort> output;
+			output = new(outputArray, 0, 4);
+			memApi.BulkReadU16(addr: 0, dst: output);
+			CollectionAssert.That.AreEqual(
+				new ushort[] { 0x0123, 0x4567, 0x89AB, 0xCDEF },
+				output,
+				"whole domain");
+			output = new(outputArray, 0, 3);
+			memApi.BulkReadU16(addr: 2, dst: output);
+			CollectionAssert.That.AreEqual(
+				new ushort[] { 0x4567, 0x89AB, 0xCDEF },
+				output,
+				"strict contains");
+			output = new(outputArray, 0, 0);
+			memApi.BulkReadU16(addr: 2, dst: output);
+			CollectionAssert.That.AreEqual(
+				Array.Empty<ushort>(),
+				output,
+				"empty");
+		}
+
+		[TestMethod]
+		public void TestBulkPokeU16()
+		{
+			IMemoryApi memApi = CreateDummyApi(new byte[8]);
+			Assert.Throws<Exception>(() => memApi.BulkWriteU16(-4, new ushort[] { 0x0123, 0x4567 }), "fully below lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU16(-2, new ushort[] { 0x0123, 0x4567 }), "crosses lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU16(8, new ushort[] { 0x0123, 0x4567 }), "fully above upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU16(6, new ushort[] { 0x0123, 0x4567 }), "crosses upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU16(-2, new ushort[] { 0x0123, 0x4567, 0x89AB, 0xCDEF, 0xFEDC, 0xBA98 }), "crosses both boundaries");
+
+			void TestCase(IReadOnlyList<ushort> expected, Action<IMemoryApi> action, string message)
+			{
+				var memDomainContents = new byte[8];
+				action(CreateDummyApi(memDomainContents));
+				ushort[] memUshorts = new ushort[4];
+				memDomainContents.CopyTo(memUshorts.BytesSpan());
+
+				CollectionAssert.That.AreEqual(expected, memUshorts, message);
+			}
+
+			TestCase(
+				new ushort[] { 0x0123, 0x4567, 0x89AB, 0xCDEF },
+				memApi => memApi.BulkWriteU16(0, new ushort[] { 0x0123, 0x4567, 0x89AB, 0xCDEF }),
+				"whole domain");
+			TestCase(
+				new ushort[] { default, 0x0123, 0x4567, 0x89AB },
+				memApi => memApi.BulkWriteU16(2, new ushort[] { 0x0123, 0x4567, 0x89AB }),
+				"strict contains");
+			TestCase(
+				new ushort[4],
+				memApi => memApi.BulkWriteU16(2, Array.Empty<ushort>()),
+				"empty");
+		}
+
+		[TestMethod]
+		public void TestBulkPeekU32()
+		{
+			uint[] memContents = new uint[] { 0x01234567, 0x89ABCDEF };
+			byte[] memBytes = new byte[8];
+			memContents.BytesSpan().CopyTo(memBytes);
+
+			var memApi = CreateDummyApi(memBytes);
+			uint[] outputArray = new uint[2];
+
+			Assert.Throws<Exception>(() => memApi.BulkReadU32(addr: -10, dst: new Span<uint>(outputArray, 0, 2)), "fully below lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU32(addr: -4, dst: new Span<uint>(outputArray, 0, 2)), "crosses lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU32(addr: 8, dst: new Span<uint>(outputArray, 0, 2)), "fully above upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU32(addr: 4, dst: new Span<uint>(outputArray, 0, 2)), "crosses upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkReadU32(addr: -4, dst: new Span<uint>(outputArray, 0, 4)), "crosses both boundaries");
+
+
+			Span<uint> output;
+			output = new(outputArray, 0, 2);
+			memApi.BulkReadU32(addr: 0, dst: output);
+			CollectionAssert.That.AreEqual(
+				new uint[] { 0x01234567, 0x89ABCDEF },
+				output,
+				"whole domain");
+			output = new(outputArray, 0, 1);
+			memApi.BulkReadU32(addr: 4, dst: output);
+			CollectionAssert.That.AreEqual(
+				new uint[] { 0x89ABCDEF },
+				output,
+				"strict contains");
+			output = new(outputArray, 0, 0);
+			memApi.BulkReadU32(addr: 0, dst: output);
+			CollectionAssert.That.AreEqual(
+				Array.Empty<uint>(),
+				output,
+				"empty");
+		}
+
+		[TestMethod]
+		public void TestBulkPokeU32()
+		{
+			IMemoryApi memApi = CreateDummyApi(new byte[8]);
+			Assert.Throws<Exception>(() => memApi.BulkWriteU32(-8, new uint[] { 0x01234567, 0x89ABCDEF }), "fully below lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU32(-4, new uint[] { 0x01234567, 0x89ABCDEF }), "crosses lower boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU32(8, new uint[] { 0x01234567, 0x89ABCDEF }), "fully above upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU32(4, new uint[] { 0x01234567, 0x89ABCDEF }), "crosses upper boundary");
+			Assert.Throws<Exception>(() => memApi.BulkWriteU32(-4, new uint[] { 0x01234567, 0x89ABCDEF, 0xFEDCBA98, 0x76543210 }), "crosses both boundaries");
+
+			void TestCase(IReadOnlyList<uint> expected, Action<IMemoryApi> action, string message)
+			{
+				var memDomainContents = new byte[8];
+				action(CreateDummyApi(memDomainContents));
+				uint[] memUints = new uint[2];
+				memDomainContents.CopyTo(memUints.BytesSpan());
+
+				CollectionAssert.That.AreEqual(expected, memUints, message);
+			}
+			TestCase(
+				new uint[] { 0x01234567, 0x89ABCDEF },
+				memApi => memApi.BulkWriteU32(0, new uint[] { 0x01234567, 0x89ABCDEF }),
+				"whole domain");
+			TestCase(
+				new uint[] { default, 0x01234567 },
+				memApi => memApi.BulkWriteU32(4, new uint[] { 0x01234567 }),
+				"strict contains");
+			TestCase(
+				new uint[2],
+				memApi => memApi.BulkWriteU32(0, Array.Empty<uint>()),
+				"empty");
 		}
 
 		[TestMethod]
