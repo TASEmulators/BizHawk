@@ -4,7 +4,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Components;
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			_gameInfo = lp.Roms.Select(r => r.Game).ToList();
 
-			_cpu = new Z80A<CpuLink>(default);
+			_cpu = new Z80AOpt<CpuLink>(default);
 			_tracer = new TraceBuffer(_cpu.TraceHeader);
 
 			_files = lp.Roms.Select(r => r.RomData).ToList();
@@ -146,17 +146,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_machine.TapeBuzzer.Volume = settings.TapeVolume;
 			}
 
+			if (_machine.ULADevice != null)
+			{
+				_machine.ULADevice.FrameBlend = settings.GigascreenFrameBlend;
+			}
+
 			DCFilter dc = new DCFilter(SoundMixer, 512);
 			ser.Register<ISoundProvider>(dc);
 			ser.Register<IStatable>(new StateSerializer(SyncState));
 			HardReset();
 			SetupMemoryDomains();
+
+			// announce the inserted disk and its detected protection (media is loaded during machine
+			// construction, before _machine is assigned, so this can't be done from LoadAllMedia)
+			if (_machine.diskImages?.Count > 0)
+				OSD_DiskInserted();
+
+			// likewise announce the inserted tape and its detected loading scheme
+			if (_tapeInfo.Count > 0)
+				OSD_TapeInserted();
 		}
 
 		public Action HardReset;
 		public Action SoftReset;
 
-		private readonly Z80A<CpuLink> _cpu;
+		private readonly Z80AOpt<CpuLink> _cpu;
 		private readonly TraceBuffer _tracer;
 		public IController _controller;
 

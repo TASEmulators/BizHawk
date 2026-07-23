@@ -33,6 +33,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public bool SHADOWPaged;
 
         /// <summary>
+        /// Signs that the TR-DOS ROM is currently paged into the low 16K.
+        /// Pentagon only: the Beta 128 interface overlays its TR-DOS ROM over the low 16K when the CPU
+        /// executes an opcode in 0x3D00-0x3DFF, and removes it when execution leaves 0x0000-0x3FFF.
+        /// </summary>
+        public bool TRDOSPaged;
+
+        /// <summary>
         /// Index of the current RAM page
         /// /// 128k, +2/2a and +3 only
         /// </summary>
@@ -53,6 +60,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get => ROMPaged;
             set => ROMPaged = value;
+        }
+
+        /// <summary>
+        /// Called on every Z80 M1 opcode fetch (before the opcode byte is read), with the address being
+        /// fetched. The base machine does nothing; the Pentagon overrides this to page the TR-DOS ROM in
+        /// and out based on the fetch address (the Beta 128 automatic EPROM switch).
+        /// </summary>
+        public virtual void TrapTrDos(ushort addr)
+        {
         }
 
         /*
@@ -83,6 +99,97 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The last byte that was read after contended cycles
         /// </summary>
         public byte LastContendedReadByte;
+
+        // ---- Devirtualised memory access (opt-in per model) ----
+        // When a model builds these maps, ReadMemoryMapped/WriteMemoryMapped index them directly — a
+        // non-virtual, inlinable path — instead of the virtual ReadMemory/WriteMemory (which the net48
+        // JIT cannot devirtualise through a SpectrumBase reference). Indexed by 16K region (addr >> 14);
+        // a null _writeMap entry marks a read-only (ROM) region.
+        // These are NOT serialized — they are derived from the (serialized) banks + paging state and
+        // rebuilt via RebuildMemoryMap() at init AND after savestate load (loading may reallocate the
+        // bank arrays the maps point at, which would otherwise leave the maps stale).
+        protected byte[][] _readMap;
+        protected byte[][] _writeMap;
+
+        /// <summary>
+        /// Per-16K-page (addr >> 14) precomputed copy of IsContended, so the per-memory-cycle contention
+        /// decode in CPUMonitor reads a non-virtual array instead of calling the virtual IsContended
+        /// (+ its paging switch on 128K/+2a) every cycle. Allocated once and mutated IN PLACE by
+        /// RebuildPageContention() (so a cached reference stays valid) — NOT serialized, rebuilt from the
+        /// (serialized) paging state exactly like _readMap/_writeMap.
+        /// </summary>
+        public readonly bool[] PageContended = new bool[4];
+
+        /// <summary>
+        /// Rebuilds the memory maps from the current paging state. Base default: no map, so models that
+        /// don't override fall back to the virtual ReadMemory/WriteMemory (unchanged behaviour).
+        /// </summary>
+        public virtual void RebuildMemoryMap()
+        {
+            _readMap = null;
+            _writeMap = null;
+            RebuildPageContention();
+        }
+
+        /// <summary>
+        /// Recomputes PageContended[] from the current paging state. Universal across models: it evaluates
+        /// the (virtual) IsContended at each 16K page boundary, so it matches IsContended exactly for
+        /// every model. Called from every RebuildMemoryMap() path (base + each override), which the
+        /// existing plumbing already invokes on paging changes, resets, and savestate load.
+        /// </summary>
+        protected void RebuildPageContention()
+        {
+            PageContended[0] = IsContended(0x0000);
+            PageContended[1] = IsContended(0x4000);
+            PageContended[2] = IsContended(0x8000);
+            PageContended[3] = IsContended(0xC000);
+        }
+
+        /// <summary>
+        /// Devirtualised memory read; falls back to the virtual ReadMemory when no map is built.
+        /// </summary>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public byte ReadMemoryMapped(ushort addr)
+        {
+            var m = _readMap;
+            return m == null ? ReadMemory(addr) : m[addr >> 14][addr & 0x3FFF];
+        }
+
+        /// <summary>
+        /// Devirtualised memory write; writes to read-only (null) regions are ignored; falls back when
+        /// no map is built.
+        /// </summary>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public void WriteMemoryMapped(ushort addr, byte value)
+        {
+            if (EventDrivenDisplay) ScreenWriteCatchUp(addr);
+            var m = _writeMap;
+            if (m == null) { WriteMemory(addr, value); return; }
+            var bank = m[addr >> 14];
+            if (bank != null) bank[addr & 0x3FFF] = value;
+        }
+
+        /// <summary>
+        /// When true, the ULA display is rendered event-driven — a catch-up render up to the current frame
+        /// cycle before each screen/border change and at frame end — instead of per-T-state from
+        /// CycleClock. Default false = exactly the current per-cycle behaviour (the hooks below are dormant
+        /// and add only a predicted-not-taken bool test). This is both the revert switch and the A/B toggle
+        /// for the event-driven-display experiment; NOT serialized (transient rendering strategy).
+        /// </summary>
+        public bool EventDrivenDisplay;
+
+        /// <summary>
+        /// Event-driven display hook: if addr is in the currently-displayed screen region, render up to the
+        /// current frame cycle BEFORE the write lands, so the write only affects not-yet-drawn cycles (this
+        /// is what preserves per-cycle display accuracy for beam-racing effects). Base impl covers the fixed
+        /// lower screen 0x4000-0x5AFF (48K/16K, and 128K's normal screen mapped at 0x4000). 128K shadow
+        /// screen (RAM7) and 0xC000-mapped screen writes need a model override — TODO before enabling 128K.
+        /// </summary>
+        protected virtual void ScreenWriteCatchUp(ushort addr)
+        {
+            if (_render && (uint)(addr - 0x4000) < 0x1B00)
+                ULADevice.RenderScreen((int)CurrentFrameCycle);
+        }
 
         /// <summary>
         /// Simulates reading from the bus

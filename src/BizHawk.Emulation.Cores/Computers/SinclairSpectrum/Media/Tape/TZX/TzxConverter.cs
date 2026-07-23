@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Cores.Tapes;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
@@ -37,11 +39,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Position counter
 		/// </summary>
 		private int _position = 0;
-
-		/// <summary>
-		/// Object to keep track of loops - this assumes there is only one loop at a time
-		/// </summary>
-		private readonly List<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
 		/// <summary>
 		/// The virtual cassette deck
@@ -215,10 +212,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				ProcessBlock();
 			}
 
-			// final pause (some games require this to finish loading properly - eg Kong2)
+			// resolve control-flow blocks (jump / loop / call / return / select) into the final linear play
+			// list. Control markers are consumed here and do not appear in the played blocks.
+			ExpandControlFlow();
+
+			// final pause as its own dedicated block (some games require a trailing silence to finish loading -
+			// eg Kong2). Emitting it as a new block avoids depending on whichever block the field 't' last
+			// referenced (blocks that use a local 't', eg 0x15/0x19, would otherwise get the pause on the wrong block).
+			t = new TapeDataBlock
+			{
+				BlockID = 0x20,
+				BlockDescription = BlockType.Pause_or_Stop_the_Tape,
+				PauseInMS = 1000,
+				PauseInTStates = TranslatePause(1000),
+			};
 			pauseLen = 1000;
-			t.PauseInTStates = TranslatePause(1000);
 			DoPause();
+			_datacorder.DataBlocks.Add(t);
 
 			/* debugging stuff
 			StringBuilder export = new StringBuilder();
@@ -247,6 +257,103 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private void ToggleSignal()
 		{
 			signal = !signal;
+		}
+
+		/// <summary>
+		/// Resolves the control-flow blocks (jump / loop / call / return / select) into a linear list of
+		/// playable blocks. Walks the parsed blocks following the control flow - loops repeat, jumps redirect,
+		/// call/return follow the call list, select defaults to the first option - and rebuilds the datacorder's
+		/// block list from the blocks actually visited. A visit cap guards against a malformed infinite loop.
+		/// </summary>
+		private void ExpandControlFlow()
+		{
+			var raw = _datacorder.DataBlocks;
+
+			// fast path: nothing to do if there are no control blocks
+			bool hasControl = raw.Exists(b => b.Command
+				is TapeCommand.JUMP or TapeCommand.LOOP_START or TapeCommand.LOOP_END
+				or TapeCommand.CALL_SEQUENCE or TapeCommand.RETURN_FROM_SEQUENCE or TapeCommand.SELECT_BLOCK);
+			if (!hasControl)
+				return;
+
+			var outList = new List<TapeDataBlock>();
+			int loopStart = -1;
+			int loopRemaining = 0;
+			var callStack = new Stack<(int ReturnIndex, int[] Offsets, int CallBase, int NextCall)>();
+
+			int i = 0;
+			int guard = 0;
+			const int Cap = 500000;
+
+			while (i >= 0 && i < raw.Count && guard++ < Cap)
+			{
+				var b = raw[i];
+				switch (b.Command)
+				{
+					case TapeCommand.LOOP_START:
+						loopStart = i + 1;
+						loopRemaining = b.ControlValue;
+						i++;
+						break;
+					case TapeCommand.LOOP_END:
+						if (loopRemaining > 1 && loopStart >= 0)
+						{
+							loopRemaining--;
+							i = loopStart;
+						}
+						else
+						{
+							i++;
+						}
+						break;
+					case TapeCommand.JUMP:
+						// signed relative offset; 'jump 0' (loop forever) is treated as 'next block'
+						i += b.ControlValue == 0 ? 1 : b.ControlValue;
+						break;
+					case TapeCommand.CALL_SEQUENCE:
+						if (b.ControlOffsets is { Length: > 0 })
+						{
+							callStack.Push((i + 1, b.ControlOffsets, i, 0));
+							i += b.ControlOffsets[0];
+						}
+						else
+						{
+							i++;
+						}
+						break;
+					case TapeCommand.RETURN_FROM_SEQUENCE:
+						if (callStack.Count > 0)
+						{
+							var f = callStack.Pop();
+							int next = f.NextCall + 1;
+							if (next < f.Offsets.Length)
+							{
+								callStack.Push((f.ReturnIndex, f.Offsets, f.CallBase, next));
+								i = f.CallBase + f.Offsets[next];
+							}
+							else
+							{
+								i = f.ReturnIndex;
+							}
+						}
+						else
+						{
+							i++;
+						}
+						break;
+					case TapeCommand.SELECT_BLOCK:
+						// default to the first selection (a full interactive menu is a front-end concern)
+						i += b.ControlOffsets is { Length: > 0 } ? b.ControlOffsets[0] : 1;
+						break;
+					default:
+						outList.Add(b);
+						i++;
+						break;
+				}
+			}
+
+			_datacorder.DataBlocks.Clear();
+			_datacorder.DataBlocks.AddRange(outList);
 		}
 
 		/// <summary>
@@ -419,9 +526,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			byte[] blockdata = new byte[blockLen];
 			blockdata = data.Skip(_position).Take(blockLen).ToArray();
 
-			// pilot count needs to be ascertained from flag byte
-			//pilotCount = blockdata[0] < 128 ? 8063 : 3222; // 3223;
-			pilotCount = blockdata[0] == 0 ? 8064 : 3219;
+			// pilot count is ascertained from the flag byte (spec: 8063 pulses if flag < 128, else 3223)
+			pilotCount = blockdata[0] < 128 ? 8063 : 3223;
 
 			pilotToneLength = 2168; // 2133;// 2168;
 			sync1PulseLength = 667; // 632; // 667;
@@ -820,7 +926,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Please, if you can, don't use other sampling frequencies.
 			Please use this block only if you cannot use any other block. */
 
-			TapeDataBlock t = new TapeDataBlock
+			// use the field 't' (not a local) so DoPause appends the pause to THIS block
+			t = new TapeDataBlock
 			{
 				BlockID = 0x15,
 				BlockDescription = BlockType.Direct_Recording
@@ -880,7 +987,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				}
 
 				blockLen--;
-				_position++;
 			}
 
 			// pause processing
@@ -922,43 +1028,56 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			blockLen = GetInt32(data, _position);
 			_position += 4;
 
-			t.PauseInMS = GetWordValue(data, _position);
+			// pause after this block (ms) - assign pauseLen so DoPause and PauseInTStates use the right value
+			pauseLen = GetWordValue(data, _position);
+			t.PauseInMS = pauseLen;
 			t.PauseInTStates = TranslatePause(pauseLen);
-
 			_position += 2;
 
-			int sampleRate = data[_position++] << 16 | data[_position++] << 8 | data[_position++];
+			// sampling rate is a 3-byte little-endian value
+			int sampleRate = data[_position] | (data[_position + 1] << 8) | (data[_position + 2] << 16);
+			_position += 3;
+
 			byte compType = data[_position++];
 			int pulses = GetInt32(data, _position);
 			_position += 4;
 
 			int dataLen = blockLen - 10;
 
-			// build source array
+			// copy the raw (RLE or Z-RLE compressed) CSW data out of the block, then decode it
 			byte[] src = new byte[dataLen];
+			Array.Copy(data, _position, src, 0, dataLen);
 			// build destination array
 			byte[] dest = new byte[pulses + 1];
 
 			// process the CSW data
 			CswConverter.ProcessCSWV2(src, ref dest, compType, pulses);
 
-			// create the periods
+			// create the periods (and their alternating levels)
 			var rate = (69888 * 50) / sampleRate;
 
-			for (int i = 0; i < dest.Length;)
+			// decode exactly 'pulses' pulses (iterating by buffer length would read the +1 padding byte and
+			// misfire the extended-pulse path). Each pulse is one sample-count byte; a zero byte means the next
+			// 4 bytes hold a 32-bit sample count. Period T-states = samples * (T-states per sample).
+			int p = 0;
+			for (int decoded = 0; decoded < pulses && p < dest.Length; decoded++)
 			{
-				int length = dest[i++] * rate;
-				if (length == 0)
+				int samples = dest[p++];
+				if (samples == 0 && p + 4 <= dest.Length)
 				{
-					length = GetInt32(dest, i) / rate;
-					i += 4;
+					samples = GetInt32(dest, p);
+					p += 4;
 				}
 
-				t.DataPeriods.Add(length);
+				t.DataPeriods.Add(samples * rate);
+				ToggleSignal();
+				t.DataLevels.Add(signal);
 			}
 
 			// add closing period
 			t.DataPeriods.Add((69888 * 50) / 10);
+			ToggleSignal();
+			t.DataLevels.Add(signal);
 
 			_position += dataLen;
 
@@ -1096,23 +1215,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t = new TapeDataBlock();
 			t.BlockID = 0x24;
 			t.BlockDescription = BlockType.Loop_Start;
-
-			// loop should start from the next block
-			int loopStart = _datacorder.DataBlocks.Count + 1;
-
-			int numberOfRepetitions = GetWordValue(data, _position);
-
-			// update loop counter
-			_loopCounter.Add(
-				new KeyValuePair<int, int>(
-					loopStart,
-					numberOfRepetitions));
-
-			// update description
-			//t.BlockDescription = "[LOOP START - " + numberOfRepetitions + " times]";
-
 			t.PauseInMS = 0;
 			t.PauseInTStates = 0;
+
+			// repetition count; the loop body is repeated during control-flow expansion
+			t.Command = TapeCommand.LOOP_START;
+			t.ControlValue = GetWordValue(data, _position);
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1139,38 +1247,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.BlockID = 0x25;
 			t.DataPeriods = new List<int>();
 			t.BlockDescription = BlockType.Loop_End;
+			t.PauseInMS = 0;
+			t.PauseInTStates = 0;
 
-			// get the most recent loop info
-			var loop = _loopCounter.LastOrDefault();
+			// the loop body (between loop start and here) is repeated during control-flow expansion
+			t.Command = TapeCommand.LOOP_END;
 
-			int loopStart = loop.Key;
-			int numberOfRepetitions = loop.Value;
-
-			if (numberOfRepetitions == 0)
-			{
-				return;
-			}
-
-			// get the number of blocks to loop
-			int blockCnt = _datacorder.DataBlocks.Count - loopStart;
-
-			// loop through each group to repeat
-			for (int b = 0; b < numberOfRepetitions; b++)
-			{
-				TapeDataBlock repeater = new TapeDataBlock();
-				//repeater.BlockDescription = "[LOOP REPEAT - " + (b + 1) + "]";
-				repeater.DataPeriods = new List<int>();
-
-				// add the repeat block
-				_datacorder.DataBlocks.Add(repeater);
-
-				// now iterate through and add the blocks to be repeated
-				for (int i = 0; i < blockCnt; i++)
-				{
-					var block = _datacorder.DataBlocks[loopStart + i];
-					_datacorder.DataBlocks.Add(block);
-				}
-			}
+			// add to tape
+			_datacorder.DataBlocks.Add(t);
 
 			// ready for next block
 			ZeroVars();
@@ -1233,13 +1317,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			t.PauseInMS = 0;
 			t.PauseInTStates = 0;
 
-			// we already flip the signal *before* adding to the buffer elsewhere
-			// so set the opposite level specified in this block
+			// set the current signal level (spec: 0 = low, 1 = high). 'signal' holds the current level and the
+			// next block's first pulse edges away from it (matching how a pause leaves the level).
 			byte signalLev = data[_position + 4];
-			if (signalLev == 0)
-				signal = true;
-			else
-				signal = false;
+			signal = signalLev != 0;
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1628,16 +1709,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			sequences and vice versa. The value is relative for the obvious reasons - so that you can add some blocks in the beginning of the
 			file without disturbing the call values. Please take a look at 'Jump To Block' for reference on the values.          */
 
-			// block processing not implemented for this - just gets added for informational purposes only
 			t = new TapeDataBlock();
 			t.BlockID = 0x26;
 			t.DataPeriods = new List<int>();
 			t.BlockDescription = BlockType.Call_Sequence;
-
-			int blockSize = 2 + 2 * GetWordValue(data, _position);
-
 			t.PauseInMS = 0;
 			t.PauseInTStates = 0;
+
+			// signed relative offsets of the blocks to call, resolved during control-flow expansion
+			int numCalls = GetWordValue(data, _position);
+			int blockSize = 2 + 2 * numCalls;
+			var callOffsets = new int[numCalls];
+			for (int c = 0; c < numCalls; c++)
+				callOffsets[c] = (short)GetWordValue(data, _position + 2 + c * 2);
+			t.Command = TapeCommand.CALL_SEQUENCE;
+			t.ControlOffsets = callOffsets;
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1660,12 +1746,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if the Call block had multiple calls).
 			Again, this block has no body.          */
 
-			// block processing not implemented for this - just gets added for informational purposes only
 			t = new TapeDataBlock();
 			t.BlockID = 0x27;
 			t.BlockDescription = BlockType.Return_From_Sequence;
 			t.PauseInMS = 0;
 			t.PauseInTStates = 0;
+
+			// resolved during control-flow expansion (returns into the calling sequence)
+			t.Command = TapeCommand.RETURN_FROM_SEQUENCE;
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1699,16 +1787,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			separate Trainer or when it is a multiload. Of course, to make some use of it the emulator/utility has to show a menu with the
 			selections when it encounters such a block. All offsets are relative signed words.          */
 
-			// block processing not implemented for this - just gets added for informational purposes only
 			t = new TapeDataBlock();
 			t.BlockID = 0x28;
 			t.DataPeriods = new List<int>();
 			t.BlockDescription = BlockType.Select_Block;
+			t.PauseInMS = 0;
+			t.PauseInTStates = 0;
 
 			int blockSize = 2 + GetWordValue(data, _position);
 
-			t.PauseInMS = 0;
-			t.PauseInTStates = 0;
+			// parse the selection offsets (each: WORD signed offset + BYTE descLen + description). Expansion
+			// defaults to the first selection - a full interactive menu is a front-end concern.
+			int selPos = _position + 2;
+			int numSel = data[selPos++];
+			var selOffsets = new int[numSel];
+			for (int s = 0; s < numSel; s++)
+			{
+				selOffsets[s] = (short)GetWordValue(data, selPos);
+				selPos += 2;
+				int descLen = data[selPos++];
+				selPos += descLen;
+			}
+			t.Command = TapeCommand.SELECT_BLOCK;
+			t.ControlOffsets = selOffsets;
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1739,36 +1840,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			All blocks are included in the block count!.           */
 
 
-			// not implemented properly
-
 			t = new TapeDataBlock();
 			t.BlockID = 0x23;
 			t.DataPeriods = new List<int>();
 			t.BlockDescription = BlockType.Jump_to_Block;
-
-			int relativeJumpValue = GetWordValue(data, _position);
-			string result = string.Empty;
-
-			switch (relativeJumpValue)
-			{
-				case 0:
-					result = "Loop Forever";
-					break;
-				case 1:
-					result = "To Next Block";
-					break;
-				case 2:
-					result = "Skip One Block";
-					break;
-				case -1:
-					result = "Go to Previous Block";
-					break;
-			}
-
-			//t.BlockDescription = "[JUMP BLOCK - " + result +"]";
-
 			t.PauseInMS = 0;
 			t.PauseInTStates = 0;
+
+			// signed relative jump value, resolved during control-flow expansion
+			t.Command = TapeCommand.JUMP;
+			t.ControlValue = (short)GetWordValue(data, _position);
 
 			// add to tape
 			_datacorder.DataBlocks.Add(t);
@@ -1846,43 +1927,144 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			Thus the length of the whole data stream in bits is NB*TOTD, or in bytes DS=ceil(NB*TOTD/8).
 			----                                                    */
 
-			// not currently implemented properly
-
-			TapeDataBlock t = new TapeDataBlock();
-			t.BlockID = 0x19;
-			t.BlockDescription = BlockType.Generalized_Data_Block;
-			t.DataPeriods = new List<int>();
+			t = new TapeDataBlock
+			{
+				BlockID = 0x19,
+				BlockDescription = BlockType.Generalized_Data_Block
+			};
 
 			int blockLen = GetInt32(data, _position);
 			_position += 4;
+			int blockEnd = _position + blockLen; // the block body (from here) is blockLen bytes
 
-			int pause = GetWordValue(data, _position);
+			pauseLen = GetWordValue(data, _position);
 			_position += 2;
+			t.PauseInMS = pauseLen;
+			t.PauseInTStates = TranslatePause(pauseLen);
 
-			int totp = GetInt32(data, _position);
-			_position += 4;
+			int totp = GetInt32(data, _position); _position += 4; // symbols in the pilot/sync stream
+			int npp = data[_position++];                          // max pulses per pilot/sync symbol
+			int asp = data[_position++]; if (asp == 0) asp = 256; // pilot/sync alphabet size
 
-			int npp = data[_position++];
+			int totd = GetInt32(data, _position); _position += 4; // symbols in the data stream
+			int npd = data[_position++];                          // max pulses per data symbol
+			int asd = data[_position++]; if (asd == 0) asd = 256; // data alphabet size
 
-			int asp = data[_position++];
+			// pilot and sync: a symbol-definition table followed by an RLE stream of (symbol, repetitions)
+			if (totp > 0)
+			{
+				ReadSymDefs(asp, npp, out var flags, out var pulses);
+				for (int i = 0; i < totp; i++)
+				{
+					int symbol = data[_position++];
+					int reps = GetWordValue(data, _position); _position += 2;
+					if (symbol >= asp) continue;
+					for (int r = 0; r < reps; r++)
+						EmitSymbol(flags[symbol], pulses[symbol]);
+				}
+			}
 
-			int totd = GetInt32(data, _position);
-			_position += 4;
+			// data: a symbol-definition table followed by a packed bitstream (NB bits per symbol, MSb first)
+			if (totd > 0)
+			{
+				ReadSymDefs(asd, npd, out var flags, out var pulses);
+				int nb = BitsPerSymbol(asd);
+				int streamStart = _position;
+				int bitPos = 0;
+				for (int s = 0; s < totd; s++)
+				{
+					int symbol = ReadBits(nb, streamStart, ref bitPos);
+					if (symbol < asd)
+						EmitSymbol(flags[symbol], pulses[symbol]);
+				}
+			}
 
-			int npd = data[_position++];
-
-			int asd = data[_position++];
+			// pause after the block
+			DoPause();
 
 			// add the block
 			_datacorder.DataBlocks.Add(t);
 
-			// advance the position to the next block
-			_position += blockLen;
+			// advance to the next block (the packed bitstream may stop short of the declared block end)
+			_position = blockEnd;
 
 			// ready for next block
 			ZeroVars();
 		}
 
+
+		/// <summary>
+		/// Reads a Generalized Data Block symbol-definition table: 'count' symbols, each a flags byte followed
+		/// by 'maxp' pulse-length words.
+		/// </summary>
+		private void ReadSymDefs(int count, int maxp, out byte[] flags, out int[][] pulses)
+		{
+			flags = new byte[count];
+			pulses = new int[count][];
+			for (int i = 0; i < count; i++)
+			{
+				flags[i] = data[_position++];
+				pulses[i] = new int[maxp];
+				for (int p = 0; p < maxp; p++)
+				{
+					pulses[i][p] = GetWordValue(data, _position);
+					_position += 2;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Emits one Generalized Data Block symbol (a wave of pulses). The low 2 bits of the flags byte set the
+		/// starting polarity; a zero-length pulse terminates the wave early.
+		/// </summary>
+		private void EmitSymbol(byte flags, int[] pulses)
+		{
+			switch (flags & 0x03)
+			{
+				case 0: ToggleSignal(); break; // opposite to the current level (make an edge) - default
+				case 1: break;                 // same as the current level (prolong the previous pulse)
+				case 2: signal = false; break; // force low
+				case 3: signal = true; break;  // force high
+			}
+
+			for (int p = 0; p < pulses.Length; p++)
+			{
+				int len = pulses[p];
+				if (len == 0)
+					break; // a zero-length pulse terminates the wave
+				if (p > 0)
+					ToggleSignal();
+				t.DataPeriods.Add(len);
+				t.DataLevels.Add(signal);
+			}
+		}
+
+		/// <summary>
+		/// Number of bits used to encode one data-stream symbol: ceil(log2(alphabetSize)).
+		/// </summary>
+		private static int BitsPerSymbol(int alphabetSize)
+		{
+			int nb = 0;
+			int v = alphabetSize - 1;
+			while (v > 0) { nb++; v >>= 1; }
+			return nb == 0 ? 1 : nb;
+		}
+
+		/// <summary>
+		/// Reads 'nb' bits (MSb first) from the data stream beginning at 'streamStart', advancing 'bitPos'.
+		/// </summary>
+		private int ReadBits(int nb, int streamStart, ref int bitPos)
+		{
+			int val = 0;
+			for (int b = 0; b < nb; b++)
+			{
+				int byteIndex = streamStart + (bitPos >> 3);
+				int bit = byteIndex < data.Length ? (data[byteIndex] >> (7 - (bitPos & 7))) & 1 : 0;
+				val = (val << 1) | bit;
+				bitPos++;
+			}
+			return val;
+		}
 
 		// These mostly should be ignored by ZXHawk - here for completeness
 
@@ -2086,12 +2268,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		private void DoPause()
 		{
-			if (pauseLen > 0)
+			// spec: a pause of zero duration is completely ignored and the current level does NOT change
+			if (pauseLen <= 0)
+				return;
+
+			// spec: to finish the last edge there must be at least 1ms at the opposite level, after which the
+			// signal goes to 'low' for the remainder; a 'Pause' block always ends at the low level.
+			int oneMs = TranslatePause(1);
+			int total = t.PauseInTStates;
+			int edge = total < oneMs ? total : oneMs;
+
+			ToggleSignal();
+			t.DataPeriods.Add(edge);
+			t.DataLevels.Add(signal);
+			t.PulseDescription.Add("Pause edge (opposite level): " + edge);
+
+			int remainder = total - edge;
+			signal = false; // force the pause tail (and the level the next block starts from) to low
+			if (remainder > 0)
 			{
-				t.DataPeriods.Add(t.PauseInTStates);
-				ToggleSignal();
+				t.DataPeriods.Add(remainder);
 				t.DataLevels.Add(signal);
-				t.PulseDescription.Add("Pause after block: " + t.PauseInTStates);
+				t.PulseDescription.Add("Pause silence (low): " + remainder);
 			}
 		}
 	}
