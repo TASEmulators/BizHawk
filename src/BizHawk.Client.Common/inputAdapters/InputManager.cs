@@ -282,5 +282,14 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
+
+		public void AfterFrame(bool isLagFrame, Config config)
+		{
+			ClickyController.FrameTick();
+			OverrideAdapter.FrameTick();
+
+			if (isLagFrame && config.AutofireLagFrames) AutoFireController.IncrementStarts();
+			StickyAutofireController.IncrementLoops(isLagFrame);
+		}
 	}
 }

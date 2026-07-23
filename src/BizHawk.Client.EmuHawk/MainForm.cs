@@ -3012,15 +3012,7 @@ namespace BizHawk.Client.EmuHawk
 
 				CheatList.Pulse();
 
-				InputManager.ClickyController.FrameTick();
-				InputManager.OverrideAdapter.FrameTick();
-
-				if (Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && Config.AutofireLagFrames)
-				{
-					InputManager.AutoFireController.IncrementStarts();
-				}
-
-				InputManager.StickyAutofireController.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
+				InputManager.AfterFrame(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame, Config);
 
 				PressFrameAdvance = false;
 
