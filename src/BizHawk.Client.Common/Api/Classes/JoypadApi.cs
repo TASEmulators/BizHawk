@@ -46,8 +46,8 @@ namespace BizHawk.Client.Common
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in controller.Definition.BoolButtons) _inputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
-			foreach (var axis in controller.Definition.Axes.Keys) _inputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
+			foreach (var button in controller.Definition.BoolButtons) _inputManager.OverrideAdapter.SetButton(button, controller.IsPressed(button));
+			foreach (var axis in controller.Definition.Axes.Keys) _inputManager.OverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
 		public void Set(IReadOnlyDictionary<string, bool> buttons, int? controller = null)
@@ -65,8 +65,8 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var buttonToSet = controller == null ? button : $"P{controller} {button}";
-				if (state == null) _inputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
-				else _inputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
+				if (state == null) _inputManager.OverrideAdapter.UnSet(buttonToSet);
+				else _inputManager.OverrideAdapter.SetButton(buttonToSet, state.Value);
 
 				//"Overrides" is a gross line of code in that flushes overrides into the current controller.
 				//That's not really the way it was meant to work which was that it should pull all its values through the filters before ever using them.
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 				_inputManager.ActiveController.LatchFromPhysical(_inputManager.ControllerInputCoalescer);
 
 				//and here's where the overrides managed by this API are pushed in
-				_inputManager.ActiveController.Overrides(_inputManager.ButtonOverrideAdapter);
+				_inputManager.ActiveController.Overrides(_inputManager.OverrideAdapter);
 			}
 			catch
 			{

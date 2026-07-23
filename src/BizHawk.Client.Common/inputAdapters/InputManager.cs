@@ -35,12 +35,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Used to AND to another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
 		/// </summary>
-		public OverrideAdapter ButtonOverrideAdapter { get; } = new OverrideAdapter();
+		public OverrideAdapter OverrideAdapter { get; } = new OverrideAdapter();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
 		/// </summary>
-		public ClickyVirtualPadController ClickyVirtualPadController { get; } = new ClickyVirtualPadController();
+		public ClickyVirtualPadController ClickyController { get; } = new ClickyVirtualPadController();
 
 		// Input state for game controller inputs are coalesced here
 		// This relies on a client specific implementation!
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 			// allow propagating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system? --natt 2013
 			// they were *mostly* not required, see https://github.com/TASEmulators/BizHawk/issues/3458 --yoshi 2022
-			ClickyVirtualPadController.Definition = def;
+			ClickyController.Definition = def;
 
 			// Wire up input chain
 
@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common
 			List<string> oldPressedButtons = ActiveController.PressedButtons;
 
 			ActiveController.LatchFromPhysical(ControllerInputCoalescer);
-			ActiveController.OR_FromLogical(ClickyVirtualPadController);
+			ActiveController.OR_FromLogical(ClickyController);
 			AutoFireController.LatchFromPhysical(ControllerInputCoalescer);
 
 			if (config.N64UseCircularAnalogConstraint)
@@ -267,8 +267,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			// autohold/autofire must not be affected by the following inputs
-			ActiveController.Overrides(ButtonOverrideAdapter);
+			// last, inputs set via Joypad API should override everything else
+			// TODO: Autofire gets OR'd in outside of InputManager, so it currently can override joypad.set({A = false})
+			ActiveController.Overrides(OverrideAdapter);
 		}
 	}
 }
