@@ -295,6 +295,13 @@ namespace BizHawk.Client.EmuHawk
 				else Console.WriteLine($"requested ext. tool dll {requestedExtToolDll} could not be loaded");
 			}
 
+			//Code to set WM_CLASS
+			if(OSTailoredCode.CurrentOS==OSTailoredCode.DistinctOS.Linux)
+			{
+				string wmclass = _argParser.wmClassName is not null ? _argParser.wmClassName : "BizHawk";
+				XlibImports.SetWMClass(_x11Display, wmclass);
+			}
+
 #if DEBUG
 			AddDebugMenu();
 #endif
