@@ -322,8 +322,7 @@ namespace BizHawk.Client.EmuHawk
 				message => this.ModalMessageBox(message, "Warning", EMsgBoxIcon.Warning),
 				AddOnScreenMessage,
 				cfp,
-				prefs,
-				new OpenGLProvider());
+				prefs);
 		}
 
 		private void SetImages()
