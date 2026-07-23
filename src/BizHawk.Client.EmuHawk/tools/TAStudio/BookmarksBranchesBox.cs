@@ -63,6 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			AddBranchWithTextContextMenuItem.Image = Resources.AddEdit;
 			LoadBranchContextMenuItem.Image = Resources.Debugger;
 			UpdateBranchContextMenuItem.Image = Resources.Reboot;
+			UpdateWithTextToolStripMenuItem.Image = Resources.UpdateWithText;
 			EditBranchTextContextMenuItem.Image = Resources.Pencil;
 			JumpToBranchContextMenuItem.Image = Resources.JumpTo;
 			UndoBranchToolStripMenuItem.Image = Resources.Undo;
@@ -263,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
 			=> PrepareHistoryAndLoadSelectedBranch();
 
-		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
+		private void UpdateSelectedBranch()
 		{
 			if (SelectedBranch == null)
 			{
@@ -282,8 +283,22 @@ namespace BizHawk.Client.EmuHawk
 			var branch = CreateBranch();
 			Branches.Replace(SelectedBranch, branch);
 			Movie.TasStateManager.Capture(Tastudio.Emulator.Frame, new BufferedStatable(branch.CoreData));
-			Tastudio.RefreshDialog();
 			Tastudio.BranchSavedCallback?.Invoke(Branches.Current);
+		}
+
+		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			UpdateSelectedBranch();
+			Tastudio.RefreshDialog();
+			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");
+		}
+
+		private void UpdateWithTextToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			UpdateSelectedBranch();
+			EditBranchTextPopUp(BranchView.FirstSelectedRowIndex);
+			// no need to do anything with branch undo: undoing the replacement will also restore the original text
+			Tastudio.RefreshDialog();
 			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Branches.Current + 1}");
 		}
 

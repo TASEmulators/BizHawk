@@ -201,6 +201,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap TvIcon = ReadEmbeddedBitmap("tvIcon");
 		internal static readonly Bitmap Undo = ReadEmbeddedBitmap("undo");
 		internal static readonly Bitmap Unfreeze = ReadEmbeddedBitmap("Unfreeze");
+		internal static readonly Bitmap UpdateWithText = ReadEmbeddedBitmap("updateWithText");
 		internal static readonly Bitmap Profile = ReadEmbeddedBitmap("user_blue_small");
 		internal static readonly Icon ProfileIcon = ReadEmbeddedIcon("user_blue");
 		internal static readonly Bitmap Watch = ReadEmbeddedIconAsBitmap("watch");

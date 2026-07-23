@@ -42,6 +42,7 @@
 			this.AddBranchWithTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.LoadBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UpdateBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.UpdateWithTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.EditBranchTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.JumpToBranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.UndoBranchToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -174,13 +175,14 @@
             this.AddBranchWithTextContextMenuItem,
             this.LoadBranchContextMenuItem,
             this.UpdateBranchContextMenuItem,
+            this.UpdateWithTextToolStripMenuItem,
             this.EditBranchTextContextMenuItem,
             this.JumpToBranchContextMenuItem,
             this.UndoBranchToolStripMenuItem,
             this.toolStripSeparator2,
             this.RemoveBranchContextMenuItem});
 			this.BranchesContextMenu.Name = "BranchesContextMenu";
-			this.BranchesContextMenu.Size = new System.Drawing.Size(147, 186);
+			this.BranchesContextMenu.Size = new System.Drawing.Size(163, 208);
 			this.BranchesContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.BranchesContextMenu_Opening);
 			// 
 			// AddBranchContextMenu
@@ -202,6 +204,13 @@
 			// 
 			this.UpdateBranchContextMenuItem.Text = "&Update";
 			this.UpdateBranchContextMenuItem.Click += new System.EventHandler(this.UpdateBranchToolStripMenuItem_Click);
+			// 
+			// UpdateWithTextToolStripMenuItem
+			// 
+			this.UpdateWithTextToolStripMenuItem.Name = "UpdateWithTextToolStripMenuItem";
+			this.UpdateWithTextToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.UpdateWithTextToolStripMenuItem.Text = "Update with Text";
+			this.UpdateWithTextToolStripMenuItem.Click += new System.EventHandler(this.UpdateWithTextToolStripMenuItem_Click);
 			// 
 			// EditBranchTextContextMenuItem
 			// 
@@ -257,5 +266,6 @@
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx JumpToBranchContextMenuItem;
 		private System.Windows.Forms.Button UndoBranchButton;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx UndoBranchToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem UpdateWithTextToolStripMenuItem;
 	}
 }
