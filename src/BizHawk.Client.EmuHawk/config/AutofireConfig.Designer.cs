@@ -146,7 +146,6 @@
 			this.MinimumSize = new System.Drawing.Size(339, 129);
 			this.Name = "AutofireConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Autofire Configuration";
 			this.Load += new System.EventHandler(this.AutofireConfig_Load);
 			((System.ComponentModel.ISupportInitialize)(this.nudPatternOn)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudPatternOff)).EndInit();
