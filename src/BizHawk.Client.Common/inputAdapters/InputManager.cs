@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		public Controller ActiveController { get; private set; }
 
 		/// <summary>
-		/// rapid fire version on the user controller, has its own key bindings and is OR'ed against <see cref="ActiveController"/>
+		/// rapid fire version on the user controller, has its own key bindings and is OR'ed against <see cref="OverrideAdapter"/>
 		/// </summary>
 		public AutofireController AutoFireController { get; private set; }
 
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Used to override a subset of inputs on another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
 		/// </summary>
-		public OverrideAdapter OverrideAdapter { get; } = new OverrideAdapter();
+		public OverrideAdapter OverrideAdapter { get; private set; }
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
@@ -77,13 +77,14 @@ namespace BizHawk.Client.Common
 			AutoFireController = BindToDefinitionAF(emulator, config.AllTrollersAutoFire, config.AutofireOn, config.AutofireOff);
 			StickyHoldController = new StickyHoldController(def);
 			StickyAutofireController = new StickyAutofireController(def, config.AutofireOn, config.AutofireOff);
+			OverrideAdapter = new(ActiveController);
 
 			ClickyController.Definition = def; // We don't need a new instance, but we do need the definitions to match.
 
 			// Wire up input chain (some things also happen in RunControllerChain)
 
 			UdlrControllerAdapter udLRControllerAdapter = new UdlrControllerAdapter();
-			udLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
+			udLRControllerAdapter.Source = OverrideAdapter.Or(AutoFireController);
 			udLRControllerAdapter.OpposingDirPolicy = config.OpposingDirPolicy;
 
 			StickyController = StickyHoldController.Or(StickyAutofireController);
@@ -257,8 +258,6 @@ namespace BizHawk.Client.Common
 			{
 				ActiveController.ApplyAxisConstraints("Natural Circle");
 			}
-
-			ActiveController.Overrides(OverrideAdapter);
 
 			// This method is where we can most easily detect presses, so handle sticky toggles here
 			if (ClientControls["Autohold"] || ClientControls["Autofire"])
