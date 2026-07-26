@@ -7,33 +7,46 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.Common
 {
 
-	// don't take my word for it, but here is a guide...
-	// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
-	// .. -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
-	// (1)->Input Display
+	// Input chain:
+	// ControllerInputCoalescer (host inputs) -> ActiveController and AutoFireController and ClientControls (with an indirect route into sticky toggles too)
+	// Output is: ((OverrideAdapter ?? ActiveController) || AutoFireController || ClickyController) ^ (StickyHoldController || StickyAutofireController)
+
 #pragma warning disable MA0104 // unlikely to conflict with System.Windows.Input.InputManager
 	public class InputManager
 #pragma warning restore MA0104
 	{
-		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
+		/// <summary>
+		/// the "main" controller that is bound to regular user inputs
+		/// </summary>
 		public Controller ActiveController { get; private set; }
 
-		// rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
+		/// <summary>
+		/// rapid fire version on the user controller, has its own key bindings and is OR'ed against <see cref="ActiveController"/>
+		/// </summary>
 		public AutofireController AutoFireController { get; private set; }
 
-		// the "output" port for the controller chain.
+		/// <summary>
+		/// the "output" port for the controller chain; this is what gets sent to the core
+		/// </summary>
 		public CopyControllerAdapter ControllerOutput { get; } = new CopyControllerAdapter();
 
-		private UdlrControllerAdapter UdLRControllerAdapter { get; } = new UdlrControllerAdapter();
-
+		/// <summary>
+		/// a controller for auto-hold, that may be used by tools; XOR'ed with user inputs
+		/// also used when the user sets a auto-hold via the auto-hold hotkey
+		/// </summary>
 		public StickyHoldController StickyHoldController { get; private set; }
+
+		/// <summary>
+		/// a controller for auto-fire, that may be used by tools; XOR'ed with user inputs
+		/// also used when the user sets a auto-fire via the auto-fire hotkey (this is separate from normal autofire controller)
+		/// </summary>
 		public StickyAutofireController StickyAutofireController { get; private set; }
 
 		// StickyHold OR StickyAutofire
 		public IController StickyController { get; private set; }
 
 		/// <summary>
-		/// Used to AND to another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
+		/// Used to override a subset of inputs on another controller, used for <see cref="IJoypadApi.Set(IReadOnlyDictionary{string, bool}, int?)">JoypadApi.Set</see>
 		/// </summary>
 		public OverrideAdapter OverrideAdapter { get; } = new OverrideAdapter();
 
@@ -65,19 +78,17 @@ namespace BizHawk.Client.Common
 			StickyHoldController = new StickyHoldController(def);
 			StickyAutofireController = new StickyAutofireController(def, config.AutofireOn, config.AutofireOff);
 
-			// allow propagating controls that are in the current controller definition but not in the prebaked one
-			// these two lines shouldn't be required anymore under the new system? --natt 2013
-			// they were *mostly* not required, see https://github.com/TASEmulators/BizHawk/issues/3458 --yoshi 2022
-			ClickyController.Definition = def;
+			ClickyController.Definition = def; // We don't need a new instance, but we do need the definitions to match.
 
-			// Wire up input chain
+			// Wire up input chain (some things also happen in RunControllerChain)
 
-			UdLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
-			UdLRControllerAdapter.OpposingDirPolicy = config.OpposingDirPolicy;
+			UdlrControllerAdapter udLRControllerAdapter = new UdlrControllerAdapter();
+			udLRControllerAdapter.Source = ActiveController.Or(AutoFireController);
+			udLRControllerAdapter.OpposingDirPolicy = config.OpposingDirPolicy;
 
 			StickyController = StickyHoldController.Or(StickyAutofireController);
 
-			session.MovieIn = UdLRControllerAdapter.Xor(StickyController);
+			session.MovieIn = udLRControllerAdapter.Xor(StickyController);
 			session.StickySource = StickyController;
 			ControllerOutput.Source = session.MovieOut;
 		}
@@ -235,6 +246,7 @@ namespace BizHawk.Client.Common
 			ClientControls.LatchFromPhysical(_hotkeyCoalescer);
 
 			// controller, which actually has a chain
+			// Note: ControllerOutput gets a bunch of stuff from a controller chain set up in SyncControls
 			List<string> oldPressedButtons = ActiveController.PressedButtons;
 
 			ActiveController.LatchFromPhysical(ControllerInputCoalescer);
@@ -246,6 +258,9 @@ namespace BizHawk.Client.Common
 				ActiveController.ApplyAxisConstraints("Natural Circle");
 			}
 
+			ActiveController.Overrides(OverrideAdapter);
+
+			// This method is where we can most easily detect presses, so handle sticky toggles here
 			if (ClientControls["Autohold"] || ClientControls["Autofire"])
 			{
 				List<string> newPressedButtons = ActiveController.PressedButtons;
@@ -266,10 +281,6 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-
-			// last, inputs set via Joypad API should override everything else
-			// TODO: Autofire gets OR'd in outside of InputManager, so it currently can override joypad.set({A = false})
-			ActiveController.Overrides(OverrideAdapter);
 		}
 	}
 }

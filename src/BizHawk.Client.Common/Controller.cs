@@ -178,8 +178,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void OR_FromLogical(IController controller)
 		{
-			// change: or from each button that the other input controller has
-			// foreach (string button in type.BoolButtons)
 			if (controller.Definition != null)
 			{
 				foreach (var button in controller.Definition.BoolButtons)
