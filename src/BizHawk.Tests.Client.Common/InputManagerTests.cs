@@ -37,6 +37,19 @@ namespace BizHawk.Tests.Client.Common
 				_hotkeys = hotkeys;
 			}
 
+			public Context(IEmulator emulator, IMovieSession movieSession)
+			{
+				this.emulator = emulator;
+				manager.SyncControls(emulator, movieSession, config);
+
+				_hotkeys = [ ];
+				ControllerDefinition cd = new("fake")
+				{
+					BoolButtons = _hotkeys.ToList(),
+				};
+				manager.ClientControls = new Controller(cd.MakeImmutable());
+			}
+
 			/// <summary>
 			/// After running this, <see cref="InputManager.ControllerOutput"/> will hold the values for the NEXT frame, not the one just simulated.
 			/// </summary>
