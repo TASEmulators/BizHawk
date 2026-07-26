@@ -2923,10 +2923,6 @@ namespace BizHawk.Client.EmuHawk
 
 				CheatList.Pulse();
 
-				// zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
-				InputManager.ClickyController.FrameTick();
-				InputManager.OverrideAdapter.FrameTick();
-
 				if (IsTurboing && !atTurboSeekEnd)
 				{
 					Tools.FastUpdateBefore();
@@ -3015,6 +3011,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CheatList.Pulse();
+
+				InputManager.ClickyController.FrameTick();
+				InputManager.OverrideAdapter.FrameTick();
 
 				if (Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && Config.AutofireLagFrames)
 				{
