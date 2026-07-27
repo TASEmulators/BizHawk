@@ -128,7 +128,7 @@ namespace BizHawk.Tests.Client.Common.Api
 			Context context = new();
 
 			// act
-			context.api.SetAnalog(new Dictionary<string, int?>() { ["Stick"] = 2 });
+			context.api.SetAnalog(new Dictionary<string, int>() { ["Stick"] = 2 });
 
 			// assert
 			Assert.AreEqual(2, context.OutputController.AxisValue("Stick"));
@@ -159,7 +159,7 @@ namespace BizHawk.Tests.Client.Common.Api
 			inputsWithStick["Stick"] = 2;
 
 			// act
-			context.api.SetAnalog(new Dictionary<string, int?>() { ["Stick"] = 2});
+			context.api.SetAnalog(new Dictionary<string, int>() { ["Stick"] = 2});
 			var inputs = context.api.Get();
 
 			// assert
@@ -188,7 +188,7 @@ namespace BizHawk.Tests.Client.Common.Api
 			context.Press("S");
 
 			// act
-			context.api.SetAnalog(new Dictionary<string, int?>() { ["Stick"] = 2});
+			context.api.SetAnalog(new Dictionary<string, int>() { ["Stick"] = 2});
 
 			// assert
 			Assert.AreEqual(2, context.OutputController.AxisValue("Stick"));
@@ -213,10 +213,10 @@ namespace BizHawk.Tests.Client.Common.Api
 		{
 			// arrange
 			Context context = new();
-			context.api.SetAnalog(new Dictionary<string, int?>() { ["Stick"] = 2 });
+			context.api.SetAnalog(new Dictionary<string, int>() { ["Stick"] = 2 });
 
 			// act
-			context.api.SetAnalog(new Dictionary<string, int?>());
+			context.api.SetAnalog(new Dictionary<string, int>());
 
 			// assert
 			Assert.AreEqual(FakeEmulator.Definition.Axes["Stick"].Neutral, context.OutputController.AxisValue("Stick"));

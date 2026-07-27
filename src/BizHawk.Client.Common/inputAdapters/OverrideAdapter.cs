@@ -50,6 +50,11 @@ namespace BizHawk.Client.Common
 			_inverses.Remove(button);
 		}
 
+		public void UnSetAxis(string name)
+		{
+			_axisOverrides.Remove(name);
+		}
+
 		public void SetInverse(string button)
 		{
 			_inverses.Add(button);

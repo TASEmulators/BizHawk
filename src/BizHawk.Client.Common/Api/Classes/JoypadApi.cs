@@ -74,16 +74,23 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetAnalog(IReadOnlyDictionary<string, int?> controls, int? controller = null)
+		public void SetAnalog(IReadOnlyDictionary<string, int> controls, int? controller = null)
 		{
-			foreach (var (k, v) in controls) SetAnalog(k, v, controller);
+			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
+			// ALL button names with P{controller} prefixes
+			foreach (var axis in _inputManager.ActiveController.ToAxisControlNameList(controller))
+			{
+				SetAnalog(axis, controls.TryGetValue(axis, out var state) ? state : null, controller);
+			}
 		}
 
 		public void SetAnalog(string control, int? value = null, int? controller = null)
 		{
 			try
 			{
-				_inputManager.StickyHoldController.SetAxisHold(controller == null ? control : $"P{controller} {control}", value);
+				var axisToSet = controller == null ? control : $"P{controller} {control}";
+				if (value == null) _inputManager.OverrideAdapter.UnSetAxis(axisToSet);
+				else _inputManager.OverrideAdapter.SetAxis(axisToSet, value.Value);
 			}
 			catch
 			{
