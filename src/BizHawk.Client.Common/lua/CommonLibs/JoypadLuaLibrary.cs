@@ -28,12 +28,12 @@ namespace BizHawk.Client.Common
 			=> _th.DictToTable(APIs.Joypad.GetImmediate(controller));
 
 		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
-		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpreted the same way an entry from a movie input log would be")]
+		[LuaMethod("setfrommnemonicstr", "Sets the input for the current frame, as if the inputs came from the user. String will be interpreted the same way an entry from a movie input log would be.")]
 		public void SetFromMnemonicStr(string inputLogEntry)
 			=> APIs.Joypad.SetFromMnemonicStr(inputLogEntry);
 
 		[LuaMethodExample("joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]
-		[LuaMethod("set", "sets the given buttons to their provided values for the current frame")]
+		[LuaMethod("set", "Sets the given buttons to their provided values for the current frame, as if the inputs came from the user. Any buttons previously set but missing from the given table will be unset.")]
 		public void Set(LuaTable buttons, int? controller = null)
 		{
 			var dict = new Dictionary<string, bool>();
