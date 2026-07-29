@@ -1133,8 +1133,6 @@ namespace BizHawk.Client.EmuHawk
 					// This means any state load or unpause/frame advance/seek, that is not caused by an input edit.
 					// This is so that the user can make multiple edits with auto restore off, in any order, before a manual restore.
 					_shouldMoveGreenArrow = false;
-
-					needsRefresh = false; // Refresh will happen via GoToFrame.
 				}
 				else if (Emulator.Frame == frame - 1)
 				{
