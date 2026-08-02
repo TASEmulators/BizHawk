@@ -838,19 +838,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool movieLoadSucceeded = false;
 
-			if (!File.Exists(path))
-			{
-				Settings.RecentTas.HandleLoadError(this, path: path);
-			}
-			else
+			if (File.Exists(path))
 			{
 				var movie = MovieSession.Get(path, loadMovie: true);
-				var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
-				movieLoadSucceeded = LoadMovie(tasMovie);
+				if (movie != null)
+				{
+					var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
+					movieLoadSucceeded = LoadMovie(tasMovie);
+				}
 			}
 
 			if (!movieLoadSucceeded)
 			{
+				Settings.RecentTas.HandleLoadError(this, path: path);
 				movieLoadSucceeded = StartNewTasMovie();
 				_engaged = true;
 			}

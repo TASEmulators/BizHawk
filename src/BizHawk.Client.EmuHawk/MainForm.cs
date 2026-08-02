@@ -727,26 +727,33 @@ namespace BizHawk.Client.EmuHawk
 				if (!Game.IsNullInstance())
 				{
 					var movie = MovieSession.Get(_argParser.cmdMovie, true);
-					MovieSession.ReadOnly = true;
-
-					// if user is dumping and didn't supply dump length, make it as long as the loaded movie
-					if (_autoDumpLength == 0)
+					if (movie != null)
 					{
-						_autoDumpLength = movie.InputLogLength;
-					}
+						MovieSession.ReadOnly = true;
 
-					// Copy pasta from drag & drop
-					if (MovieImport.IsValidMovieExtension(Path.GetExtension(_argParser.cmdMovie)))
-					{
-						ProcessMovieImport(_argParser.cmdMovie, true);
+						// if user is dumping and didn't supply dump length, make it as long as the loaded movie
+						if (_autoDumpLength == 0)
+						{
+							_autoDumpLength = movie.InputLogLength;
+						}
+
+						// Copy pasta from drag & drop
+						if (MovieImport.IsValidMovieExtension(Path.GetExtension(_argParser.cmdMovie)))
+						{
+							ProcessMovieImport(_argParser.cmdMovie, true);
+						}
+						else
+						{
+							StartNewMovie(movie, false);
+							Config.RecentMovies.Add(_argParser.cmdMovie);
+						}
+
+						_suppressSyncSettingsWarning = false;
 					}
 					else
 					{
-						StartNewMovie(movie, false);
-						Config.RecentMovies.Add(_argParser.cmdMovie);
+						ShowMessageBox(owner: null, $"Failed to load movie {_argParser.cmdMovie} specified on commandline");
 					}
-
-					_suppressSyncSettingsWarning = false;
 				}
 			}
 			else if (Config.RecentMovies.AutoLoad && !Config.RecentMovies.Empty)
@@ -2038,13 +2045,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
+			bool loaded = false;
 			if (File.Exists(path))
 			{
 				var movie = MovieSession.Get(path, true);
-				MovieSession.ReadOnly = true;
-				StartNewMovie(movie, false);
+				if (movie != null)
+				{
+					MovieSession.ReadOnly = true;
+					StartNewMovie(movie, false);
+					loaded = true;
+				}
 			}
-			else
+			if (!loaded)
 			{
 				Config.RecentMovies.HandleLoadError(this, path);
 			}
