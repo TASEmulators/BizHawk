@@ -304,7 +304,10 @@ namespace BizHawk.Client.Common
 				: new Bk2Movie(this, path);
 
 			if (loadMovie)
-				movie.Load();
+			{
+				bool loaded = movie.Load();
+				if (!loaded) return null;
+			}
 
 			movie.ChangesChanged += _changesChangedCallback;
 

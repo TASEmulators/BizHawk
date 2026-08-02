@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 				SealedHeapSizeKB = 512,
 				InvisibleHeapSizeKB = 512,
 				PlainHeapSizeKB = 512,
-				MmapHeapSizeKB = 20 * 1024,
+				MmapHeapSizeKB = 20 * 1024 * 8,
 				SkipCoreConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxCoreConsistencyCheck),
 				SkipMemoryConsistencyCheck = lp.Comm.CorePreferences.HasFlag(CoreComm.CorePreferencesFlags.WaterboxMemoryConsistencyCheck),
 			}, [ _ledCallback ]);

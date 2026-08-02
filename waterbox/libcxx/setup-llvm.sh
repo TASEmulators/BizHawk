@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 LLVM_TAG=llvmorg-18.1.8
-LLVM_DIRS="cmake compiler-rt libunwind libcxx libcxxabi runtimes"
+LLVM_DIRS="cmake compiler-rt libunwind libcxx libcxxabi runtimes llvm/cmake"
 LLVM_PATH=../llvm-project
 
 if [ ! -e "$LLVM_PATH/.git" ] || ! git -C "$LLVM_PATH" rev-parse $LLVM_TAG > /dev/null 2>&1; then

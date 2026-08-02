@@ -232,9 +232,15 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				using var response = await _http.GetAsync(url).ConfigureAwait(false);
-				return response.IsSuccessStatusCode
-					? (await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), false)
-					: (null, (int)response.StatusCode >= 500); // 4xx is the server's final answer, a 5xx might recover
+				if (response.IsSuccessStatusCode)
+				{
+					return (await response.Content
+						.ReadAsByteArrayAsync()
+						.ConfigureAwait(false), false);
+				}
+
+				Console.WriteLine($"{url} GET failed with status code {response.StatusCode}");
+				return (null, (int)response.StatusCode >= 500); // 4xx is the server's final answer, a 5xx might recover
 			}
 			catch (Exception e)
 			{
@@ -249,9 +255,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				using var content = new StringContent(post, Encoding.UTF8, type ?? "application/x-www-form-urlencoded");
 				using var response = await _http.PostAsync(url, content).ConfigureAwait(false);
-				return response.IsSuccessStatusCode
-					? (await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), false)
-					: (null, (int)response.StatusCode >= 500); // 4xx is the server's final answer, a 5xx might recover
+				if (response.IsSuccessStatusCode)
+				{
+					return (await response.Content
+						.ReadAsByteArrayAsync()
+						.ConfigureAwait(false), false);
+				}
+
+				Console.WriteLine($"{url} POST failed with status code {response.StatusCode}");
+				return (null, (int)response.StatusCode >= 500); // 4xx is the server's final answer, a 5xx might recover
 			}
 			catch (Exception e)
 			{

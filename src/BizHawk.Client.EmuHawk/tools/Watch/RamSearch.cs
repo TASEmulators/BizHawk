@@ -262,12 +262,25 @@ namespace BizHawk.Client.EmuHawk
 			switch (type)
 			{
 				case ToolFormUpdateType.PostFrame:
-				case ToolFormUpdateType.General:
 					FrameUpdate();
+					break;
+				case ToolFormUpdateType.General:
+					GeneralUpdate();
 					break;
 				case ToolFormUpdateType.FastPostFrame:
 					MinimalUpdate();
 					break;
+			}
+		}
+
+		protected override void GeneralUpdate()
+		{
+			if (_searches.Count > 0)
+			{
+				_searches.Update();
+
+				_forcePreviewClear = false;
+				WatchListView.RowCount = _searches.Count;
 			}
 		}
 

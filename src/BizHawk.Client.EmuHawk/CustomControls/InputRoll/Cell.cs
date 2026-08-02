@@ -127,6 +127,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 #endif
 
+		/// <summary>
+		/// Gets the lowest index where a cell has the given row, or if none exist then the index where such a cell would be inserted.
+		/// </summary>
+		public int LowerBoundByRow(int rowIndex)
+		{
+			int cellIndex = _list.LowerBoundBinarySearch(static c => c.RowIndex ?? -1, rowIndex - 1); // -1 to ensure we don't get an index in the middle of a group of cells on this row
+			cellIndex = Math.Max(cellIndex, 0);
+			while (cellIndex < _list.Count && _list[cellIndex].RowIndex < rowIndex) cellIndex++;
+			return cellIndex;
+		}
+
+
 		public new CellList Slice(int start, int length)
 			=> new(SliceImpl(start: start, length: length));
 	}

@@ -64,11 +64,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void FastUpdateBefore() => UpdateBefore();
 
-		protected override void GeneralUpdate()
-		{
-			RefreshDialog();
-		}
-
 		protected override void UpdateAfter()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
@@ -81,9 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			bool refreshNeeded = IsRowVisibleAnyRoll(Emulator.Frame) ||
-				IsRowVisibleAnyRoll(_lastRefresh) ||
-				_inputRolls[0].RowCount != CurrentTasMovie.InputLogLength + 1;
+			bool refreshNeeded = _inputRolls[0].RowCount != CurrentTasMovie.InputLogLength + 1;
 			if (Settings.AutoadjustInput)
 			{
 				//refreshNeeded = AutoAdjustInput();
@@ -105,6 +98,12 @@ namespace BizHawk.Client.EmuHawk
 
 			FastUpdateAfter();
 			RefreshDialog(refreshNeeded, refreshBranches: false);
+			if (!refreshNeeded)
+			{
+				_inputRolls.ForEach(r => r.InvalidateRow(_lastRefresh));
+				_inputRolls.ForEach(r => r.InvalidateRow(Emulator.Frame));
+				_lastRefresh = Emulator.Frame;
+			}
 		}
 
 		protected override void FastUpdateAfter()

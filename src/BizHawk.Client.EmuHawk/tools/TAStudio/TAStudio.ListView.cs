@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _axisPaintState;
 		private bool _patternPaint;
 		private bool _startCursorDrag;
-		private bool _startSelectionDrag;
+		private int _startSelectionDrag = -1;
 		private bool _selectionDragState;
 		private bool _suppressContextMenu;
 		private int _startRow;
@@ -125,16 +125,17 @@ namespace BizHawk.Client.EmuHawk
 			UpdateProgressBar();
 		}
 
-		private Bitmap ts_v_arrow_green_blue => Properties.Resources.ts_v_arrow_green_blue;
-		private Bitmap ts_h_arrow_green_blue => Properties.Resources.ts_h_arrow_green_blue;
-		private Bitmap ts_v_arrow_blue => Properties.Resources.ts_v_arrow_blue;
-		private Bitmap ts_h_arrow_blue => Properties.Resources.ts_h_arrow_blue;
-		private Bitmap ts_v_arrow_green => Properties.Resources.ts_v_arrow_green;
-		private Bitmap ts_h_arrow_green => Properties.Resources.ts_h_arrow_green;
+		private Bitmap ts_v_arrow_blue;
+		private Bitmap ts_h_arrow_blue;
+		private Bitmap ts_v_arrow_green;
+		private Bitmap ts_h_arrow_green;
 
-		private Bitmap icon_marker => Properties.Resources.icon_marker;
-		private Bitmap icon_anchor_lag => Properties.Resources.icon_anchor_lag;
-		private Bitmap icon_anchor => Properties.Resources.icon_anchor;
+		private Point _arrowOffset;
+		private Point _arrowOffsetH;
+
+		private Bitmap icon_marker;
+		private Bitmap icon_anchor_lag;
+		private Bitmap icon_anchor;
 
 		private Panel _tasViewPanel;
 		private HScrollBar _tasViewHBar = new();
@@ -182,6 +183,7 @@ namespace BizHawk.Client.EmuHawk
 				InputPaintingMode = true,
 				LetKeysModifySelection = true,
 				Rotatable = true,
+				ShowColumnTextOnHover = true,
 				// user configurable
 				AlwaysScroll = Settings.FollowCursorAlwaysScroll,
 				Font = Settings.TasViewFont,
@@ -251,11 +253,14 @@ namespace BizHawk.Client.EmuHawk
 					_inputRolls[i].SuspendDrawing();
 					_inputRolls[i].Top = y - _tasViewVBar.Value;
 					_inputRolls[i].Height = _inputRolls[i].TotalColWidth + 1 + _tasViewHBar.Height;
+					_inputRolls[i].Left = _inputRolls[i].Margin.Left;
 
 					y += _inputRolls[i].Height + margin;
 				}
 
 				_tasViewVBar.Visible = y >= _tasViewPanel.Height;
+				_tasViewVBar.SmallChange = 30;
+				_tasViewVBar.LargeChange = _tasViewPanel.Height / 2;
 				_tasViewHBar.Visible = false;
 				InputRoll lastRoll = _inputRolls[_inputRolls.Count - 1];
 				if (!_tasViewVBar.Visible) lastRoll.Height += _tasViewPanel.Height - y;
@@ -290,11 +295,14 @@ namespace BizHawk.Client.EmuHawk
 					_inputRolls[i].SuspendDrawing();
 					_inputRolls[i].Left = x - _tasViewHBar.Value;
 					_inputRolls[i].Width = _inputRolls[i].TotalColWidth + 1 + _tasViewVBar.Width;
+					_inputRolls[i].Top = _inputRolls[i].Margin.Top;
 
 					x += _inputRolls[i].Width + margin;
 				}
 
 				_tasViewHBar.Visible = x >= _tasViewPanel.Width;
+				_tasViewHBar.SmallChange = 30;
+				_tasViewHBar.LargeChange = _tasViewPanel.Width / 2;
 				_tasViewVBar.Visible = false;
 				InputRoll lastRoll = _inputRolls[_inputRolls.Count - 1];
 				if (!_tasViewHBar.Visible) lastRoll.Width += _tasViewPanel.Width - x;
@@ -338,10 +346,57 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InputRoll roll = MakeInputRoll();
 				roll.AllColumns.AddRange(cols);
+				UpdateColumnWidths(roll);
 			}
 
 			_activeInputRoll = _inputRolls[0];
 			_inputRolls.ForEach(UpdateInputRollDefinition); // after setting active roll
+		}
+
+		private void GenerateIcons()
+		{
+			void DoPolygon(Bitmap bitmap, Brush brush, Point[] points)
+			{
+				using Graphics g = Graphics.FromImage(bitmap);
+				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+				g.FillPolygon(brush, points);
+			}
+
+			double scaleFactor = _inputRolls[0].TextHeight / 13f;
+
+			int arrowSize = (int)(5 * scaleFactor);
+			Point[] arrowPoints = [
+				new(0, 0),
+				new(arrowSize, arrowSize),
+				new(0, 2 * arrowSize),
+			];
+			int baseWidth = _inputRolls[0].AllColumns[CursorColumnName].VerticalWidth;
+			_arrowOffset = new(baseWidth - _inputRolls[0].CellWidthPadding - arrowSize - (int)(2 * scaleFactor), (int)(1.5 * scaleFactor));
+			_arrowOffsetH = new((int)(1.5 * scaleFactor), baseWidth - _inputRolls[0].CellHeightPadding - arrowSize - (int)(2 * scaleFactor));
+
+			int anchorSize = (int)(6 * scaleFactor);
+			Point[] anchorPoints = [
+				new(0, 0),
+				new(0, anchorSize),
+				new(anchorSize, 0),
+			];
+
+			ts_h_arrow_blue = new(arrowSize, arrowSize * 2);
+			ts_h_arrow_green = new(arrowSize, arrowSize * 2);
+			DoPolygon(ts_h_arrow_blue, new SolidBrush(Color.FromArgb(83, 217, 255)), arrowPoints);
+			DoPolygon(ts_h_arrow_green, new SolidBrush(Color.FromArgb(0, 194, 64)), arrowPoints);
+
+			ts_v_arrow_blue = ts_h_arrow_blue.Clone() as Bitmap;
+			ts_v_arrow_green = ts_h_arrow_green.Clone() as Bitmap;
+			ts_v_arrow_blue.RotateFlip(RotateFlipType.Rotate90FlipNone);
+			ts_v_arrow_green.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
+			icon_anchor = new(anchorSize, anchorSize);
+			icon_marker = new(anchorSize, anchorSize);
+			icon_anchor_lag = new(anchorSize, anchorSize);
+			DoPolygon(icon_marker, new SolidBrush(Color.FromArgb(252, 209, 55)), anchorPoints);
+			DoPolygon(icon_anchor, new SolidBrush(Color.FromArgb(0, 222, 98)), anchorPoints);
+			DoPolygon(icon_anchor_lag, new SolidBrush(Color.FromArgb(255, 96, 100)), anchorPoints);
 		}
 
 		private void TasView_QueryItemIcon(InputRoll sender, int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
@@ -365,15 +420,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (sender.HorizontalOrientation)
 				{
-					offsetX = -1;
-					offsetY = 5;
+					offsetX = _arrowOffsetH.X;
+					offsetY = _arrowOffsetH.Y;
+				}
+				else
+				{
+					offsetX = _arrowOffset.X;
+					offsetY = _arrowOffset.Y;
 				}
 
 				if (index == Emulator.Frame)
 				{
-					bitmap = index == SeekingTo
-						? sender.HorizontalOrientation ? ts_v_arrow_green_blue : ts_h_arrow_green_blue
-						: sender.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
+					bitmap = sender.HorizontalOrientation ? ts_v_arrow_blue : ts_h_arrow_blue;
 				}
 				else if (index == RestorePositionFrame)
 				{
@@ -384,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (columnName == FrameColumnName)
 			{
-				offsetX = -3;
+				offsetX = sender.HorizontalOrientation ? -2 : -3;
 				offsetY = 1;
 
 				if (Settings.DenoteMarkersWithIcons && CurrentTasMovie.Markers.IsMarker(index))
@@ -762,10 +820,6 @@ namespace BizHawk.Client.EmuHawk
 				UpdateActiveMovieInputs();
 			}
 
-			// only on mouse button down, check that the pointed to cell is the correct one (can be wrong due to scroll while playing)
-			roll._programmaticallyChangingRow = true;
-			roll.PointMouseToNewCell();
-
 			if (e.Button == MouseButtons.Middle)
 			{
 				if (MainForm.EmulatorPaused)
@@ -825,7 +879,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_startSelectionDrag = true;
+						_startSelectionDrag = frame;
 						_selectionDragState = roll.IsRowSelected(frame);
 					}
 				}
@@ -1071,7 +1125,7 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(frame);
 					if (Settings.AutoRestoreLastPosition)
 					{
-						RestorePosition();
+						RestorePosition(byEdit: true);
 					}
 					_seekingByEdit = true; // must be after GoToFrame & RestorePosition (they'll set _seekingByEdit to false)
 
@@ -1079,13 +1133,16 @@ namespace BizHawk.Client.EmuHawk
 					// This means any state load or unpause/frame advance/seek, that is not caused by an input edit.
 					// This is so that the user can make multiple edits with auto restore off, in any order, before a manual restore.
 					_shouldMoveGreenArrow = false;
-
-					needsRefresh = false; // Refresh will happen via GoToFrame.
 				}
 				else if (Emulator.Frame == frame - 1)
 				{
 					// In this case our regular capture logic won't get the chance
 					// to do a force capture for this edited frame. So do it here.
+					CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), true);
+				}
+				else if (!CurrentTasMovie.TasStateManager.HasState(frame - 1) && Emulator.Frame == frame)
+				{
+					// A less-than-ideal frame to be captured, but still useful for autorestore.
 					CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable(), true);
 				}
 				_batchEditMinFrame = -1;
@@ -1121,7 +1178,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_leftButtonHeld = false;
 			_startCursorDrag = false;
-			_startSelectionDrag = false;
+			_startSelectionDrag = -1;
 			_startBoolDrawColumn = "";
 			_startAxisDrawColumn = "";
 
@@ -1276,12 +1333,7 @@ namespace BizHawk.Client.EmuHawk
 			InputRoll roll = (InputRoll)sender;
 			toolTip1.SetToolTip(roll, null);
 
-			if (e.NewCell.RowIndex is null)
-			{
-				return;
-			}
-
-			if (!MouseButtonHeld)
+			if (e.NewCell.RowIndex is null || !MouseButtonHeld)
 			{
 				return;
 			}
@@ -1316,12 +1368,33 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToFrame(e.NewCell.RowIndex.Value);
 			}
-			else if (_startSelectionDrag)
+			else if (_startSelectionDrag != -1)
 			{
-				for (var i = startVal; i <= endVal; i++)
+				void selectRange(int a, int b, bool v)
 				{
-					if (!roll.IsRowSelected(i))
-						roll.SelectRow(i, _selectionDragState);
+					if (a < b) for (int i = a; i <= b; i++) roll.SelectRow(i, v);
+					else for (int i = b; i <= a; i++) roll.SelectRow(i, v);
+				}
+				int rawStart = e.OldCell.RowIndex.Value;
+				int rawEnd = e.NewCell.RowIndex.Value;
+				int sign = Math.Sign(rawEnd - rawStart);
+				int startDiff = rawStart - _startSelectionDrag;
+				int endDiff = rawEnd - _startSelectionDrag;
+				if (sign != 0) // moved to another cell horizontally
+				{
+					if (Math.Sign(startDiff) == Math.Sign(endDiff))
+					{
+						// select if moving away from start, deselect if moving towards
+						bool movingAway = Math.Abs(endDiff) > Math.Abs(startDiff);
+						if (movingAway) selectRange(rawStart + sign, rawEnd, _selectionDragState);
+						else selectRange(rawStart, rawEnd - sign, !_selectionDragState);
+					}
+					else
+					{
+						// crossing from one side of selection start to the other
+						if (rawStart != _startSelectionDrag) selectRange(rawStart, _startSelectionDrag - sign, !_selectionDragState);
+						if (rawEnd != _startSelectionDrag) selectRange(_startSelectionDrag + sign, rawEnd, _selectionDragState);
+					}
 				}
 
 				SetSplicer();
@@ -1345,7 +1418,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MouseButtonHeld)
 			{
-				roll.MakeIndexVisible(roll.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+				roll.SuppressCellChange = true; // avoid inifinite recursion of scrolling cuasing PointedCellChanged
+				roll.MakeIndexVisible(roll.CurrentCell.RowIndex.Value);
+				roll.SuppressCellChange = false;
 				SetTasViewRowCount(); // refreshes
 			}
 		}

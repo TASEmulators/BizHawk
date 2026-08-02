@@ -727,26 +727,33 @@ namespace BizHawk.Client.EmuHawk
 				if (!Game.IsNullInstance())
 				{
 					var movie = MovieSession.Get(_argParser.cmdMovie, true);
-					MovieSession.ReadOnly = true;
-
-					// if user is dumping and didn't supply dump length, make it as long as the loaded movie
-					if (_autoDumpLength == 0)
+					if (movie != null)
 					{
-						_autoDumpLength = movie.InputLogLength;
-					}
+						MovieSession.ReadOnly = true;
 
-					// Copy pasta from drag & drop
-					if (MovieImport.IsValidMovieExtension(Path.GetExtension(_argParser.cmdMovie)))
-					{
-						ProcessMovieImport(_argParser.cmdMovie, true);
+						// if user is dumping and didn't supply dump length, make it as long as the loaded movie
+						if (_autoDumpLength == 0)
+						{
+							_autoDumpLength = movie.InputLogLength;
+						}
+
+						// Copy pasta from drag & drop
+						if (MovieImport.IsValidMovieExtension(Path.GetExtension(_argParser.cmdMovie)))
+						{
+							ProcessMovieImport(_argParser.cmdMovie, true);
+						}
+						else
+						{
+							StartNewMovie(movie, false);
+							Config.RecentMovies.Add(_argParser.cmdMovie);
+						}
+
+						_suppressSyncSettingsWarning = false;
 					}
 					else
 					{
-						StartNewMovie(movie, false);
-						Config.RecentMovies.Add(_argParser.cmdMovie);
+						ShowMessageBox(owner: null, $"Failed to load movie {_argParser.cmdMovie} specified on commandline");
 					}
-
-					_suppressSyncSettingsWarning = false;
 				}
 			}
 			else if (Config.RecentMovies.AutoLoad && !Config.RecentMovies.Empty)
@@ -1337,12 +1344,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			EmulatorPaused = !EmulatorPaused;
 			SetPauseStatusBarIcon();
-
-			// TODO: have tastudio set a pause status change callback, or take control over pause
-			if (Tools.Has<TAStudio>())
-			{
-				Tools.UpdateValues<TAStudio>();
-			}
 		}
 
 		public void TakeScreenshotToClipboard()
@@ -1779,9 +1780,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
-					? "BizHawk"
-					: VersionInfo.CustomBuildString);
+				sb.Append(Config.MainFormStaticWindowTitleOverrideEffective);
 				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
 
 				return sb.ToString();
@@ -1789,17 +1788,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		protected override string WindowTitleStatic
-		{
-			get
-			{
-				var sb = new StringBuilder();
-				sb.Append(string.IsNullOrEmpty(VersionInfo.CustomBuildString)
-					? "BizHawk"
-					: VersionInfo.CustomBuildString);
-				if (VersionInfo.DeveloperBuild) sb.Append(" (interim)");
-				return sb.ToString();
-			}
-		}
+			=> VersionInfo.DeveloperBuild
+				? Config.MainFormStaticWindowTitleOverrideEffective + " (interim)"
+				: Config.MainFormStaticWindowTitleOverrideEffective;
 
 		private void ClearAutohold()
 		{
@@ -2054,13 +2045,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMoviesFromRecent(string path)
 		{
+			bool loaded = false;
 			if (File.Exists(path))
 			{
 				var movie = MovieSession.Get(path, true);
-				MovieSession.ReadOnly = true;
-				StartNewMovie(movie, false);
+				if (movie != null)
+				{
+					MovieSession.ReadOnly = true;
+					StartNewMovie(movie, false);
+					loaded = true;
+				}
 			}
-			else
+			if (!loaded)
 			{
 				Config.RecentMovies.HandleLoadError(this, path);
 			}
@@ -3705,8 +3701,12 @@ namespace BizHawk.Client.EmuHawk
 					Emulator.Dispose();
 					Emulator = loader.LoadedEmulator;
 					Game = loader.Game;
-					Config.RecentCores.Enqueue(Emulator.Attributes().CoreName);
-					while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
+					var currentCoreName = Emulator.Attributes().CoreName;
+					if (!Config.RecentCores.Contains(currentCoreName))
+					{
+						Config.RecentCores.Enqueue(currentCoreName);
+						while (Config.RecentCores.Count > 5) Config.RecentCores.Dequeue();
+					}
 					InputManager.SyncControls(Emulator, MovieSession, Config);
 					_multiDiskMode = false;
 

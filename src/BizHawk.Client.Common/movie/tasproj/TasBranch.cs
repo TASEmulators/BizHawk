@@ -252,17 +252,7 @@ namespace BizHawk.Client.Common
 				});
 
 				b.Markers = new TasMovieMarkerList(movie);
-				bl.GetLump(nmarkers, abort: false, tr =>
-				{
-					string line;
-					while ((line = tr.ReadLine()) != null)
-					{
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							b.Markers.Add(new TasMovieMarker(line));
-						}
-					}
-				});
+				bl.GetLump(nmarkers, abort: false, b.Markers.LoadFromFile);
 
 				bl.GetLump(nusertext, abort: false, tr =>
 				{

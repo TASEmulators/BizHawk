@@ -143,9 +143,13 @@ namespace BizHawk.Client.EmuHawk
 			public int RewindStep { get; set; } = 1;
 			public int RewindStepFast { get; set; } = 4;
 			public bool ScrollSync { get; set; } = true;
+			public bool StatesForMarkers { get; set; } = true;
 			public PatternPaintModeEnum PatternPaintMode { get; set; } = TAStudioSettings.PatternPaintModeEnum.Never;
 			public PatternSelectionEnum PatternSelection { get; set; } = TAStudioSettings.PatternSelectionEnum.Hold;
 			public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+
+			public Rectangle SettingsWindow { get; set; }
+			public Rectangle UndoHistoryWindow { get; set; }
 		}
 
 		public class MovieClientSettings
@@ -180,6 +184,9 @@ namespace BizHawk.Client.EmuHawk
 				// workaround for https://github.com/mono/mono/issues/12644
 				ColumnRightClickMenu.Items.Insert(0, new ToolStripMenuItemEx { Text = "(Dismiss Menu)" }); // don't even need to attach any behaviour, since clicking anything will dismiss the menu first
 				ColumnRightClickMenu.Items.Insert(1, new ToolStripSeparatorEx());
+
+				// see https://github.com/TASEmulators/BizHawk/issues/4779#issuecomment-4800440717
+				this.Shown += (_, _) => RepositionRolls();
 			}
 			_tasViewPanel = MainVertialSplit.Panel1;
 			// The built-in scroll feature of .NET's scrollable controls is non-functional. So, custom scroll behavior!
@@ -189,24 +196,6 @@ namespace BizHawk.Client.EmuHawk
 			_tasViewVBar.Scroll += (_, _) => RepositionRolls();
 			_tasViewPanel.Controls.Add(_tasViewHBar);
 			_tasViewPanel.Controls.Add(_tasViewVBar);
-
-			ToolStripMenuItemEx goToFrameMenuItem = new()
-			{
-				ShortcutKeys = Keys.Control | Keys.G,
-				Text = "Go to Frame...",
-			};
-			goToFrameMenuItem.Click += (_, _) =>
-			{
-				MainForm.PauseEmulator();
-				using InputPrompt dialog = new()
-				{
-					Text = "Go to Frame",
-					Message = "Jump/Seek to frame index:",
-					TextInputType = InputPrompt.InputType.Unsigned,
-				};
-				if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
-			};
-			_ = EditSubMenu.DropDownItems.InsertAfter(ReselectClipboardMenuItem, insert: goToFrameMenuItem);
 
 			RecentSubMenu.Image = Resources.Recent;
 			recentMacrosToolStripMenuItem.Image = Resources.Recent;
@@ -239,6 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return;
 			}
+			GenerateIcons();
 
 			_autosaveTimer = new Timer(components);
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
@@ -261,6 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"];
 			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"];
 			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."];
+			GoToFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Seek To..."];
 			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"];
 			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"];
 			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"];
@@ -275,6 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"];
 			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"];
 			CloneXTimesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone # Times"];
+			PasteInsertMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Paste Insert"];
 
 			TasPlaybackBox.UpdateHotkeyTooltips(Config);
 			BookMarkControl.UpdateHotkeyTooltips(Config);
@@ -504,8 +496,10 @@ namespace BizHawk.Client.EmuHawk
 		private void MakeDefaultColumns(InputRoll roll)
 		{
 			roll.AllColumns.Clear();
-			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 18, text: string.Empty));
-			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 60, text: "Frame#")
+
+			// All final widths are computed in UpdateColumnWidths, after column creation.
+			roll.AllColumns.Add(new(name: CursorColumnName, widthUnscaled: 10, text: string.Empty));
+			roll.AllColumns.Add(new(name: FrameColumnName, widthUnscaled: 10, text: "Frame#")
 			{
 				Rotatable = true,
 			});
@@ -519,15 +513,13 @@ namespace BizHawk.Client.EmuHawk
 
 				columns.Add(new(
 					name: name,
-					verticalWidth: (Math.Max(maxLength, mnemonic.Length) * 6) + 14,
-					horizontalHeight: (maxLength * 6) + 14,
+					widthUnscaled: 10,
 					text: mnemonic)
 				{
 					Rotatable = ControllerType.Axes.ContainsKey(name),
 				});
 			}
 			roll.AllColumns.AddRange(columns);
-
 
 			foreach (var column in GetDefaultHiddenColums(roll))
 			{
@@ -541,6 +533,32 @@ namespace BizHawk.Client.EmuHawk
 					column.Emphasis = true;
 				}
 			}
+
+			UpdateColumnWidths(roll);
+		}
+
+		private void UpdateColumnWidths(InputRoll roll)
+		{
+			int minColumnWidth = UIHelper.UnscaleX(roll.GetCellWidthForText("W")); // this gives the same width as the old hard-coded width, with default font
+			foreach ((string name, string mnemonic0, int maxLength) in MnemonicMap())
+			{
+				RollColumn col = roll.AllColumns[name];
+
+				int textLength = col.Text.Length > 1
+					? UIHelper.UnscaleX(roll.GetCellWidthForText(col.Text))
+					: minColumnWidth; // keep single-character columns a uniform width, for prettyness
+				int inputLength = UIHelper.UnscaleX(roll.GetCellWidthForText("".PadRight(maxLength, '8')));
+
+				col.VerticalWidth = Math.Max(textLength, inputLength);
+				col.HorizontalHeight = inputLength;
+			}
+
+			roll.AllColumns[CursorColumnName].VerticalWidth
+				= roll.AllColumns[CursorColumnName].HorizontalHeight
+				= UIHelper.UnscaleX(roll.GetCellWidthForText("10") - 4);
+			roll.AllColumns[FrameColumnName].VerticalWidth
+				= roll.AllColumns[FrameColumnName].HorizontalHeight
+				= UIHelper.UnscaleX(roll.GetCellWidthForText("0000000") + 7);
 
 			roll.AllColumns.ColumnsChanged();
 		}
@@ -568,15 +586,22 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>for Lua</remarks>
 		public void AddColumn(string name, string text, int widthUnscaled, int rollIndex)
 		{
-			if (_inputRolls[0].AllColumns.Exists(c => c.Name == name)) return;
-
 			for (int i = 0; i < _inputRolls.Count; i++)
 			{
-				RollColumn col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+				RollColumn/*?*/ col = _inputRolls[i].AllColumns[name];
+				if (col == null)
+				{
+					col = new(name: name, widthUnscaled: widthUnscaled, text: text);
+					_inputRolls[i].AllColumns.Add(col);
+				}
+				else
+				{
+					col.VerticalWidth = col.HorizontalHeight = widthUnscaled;
+					col.Text = text;
+				}
 				col.Visible = i == rollIndex;
-				_inputRolls[rollIndex].AllColumns.Add(col);
-				_inputRolls[rollIndex].AllColumns.ColumnsChanged();
-				_inputRolls[rollIndex].Refresh();
+				_inputRolls[i].AllColumns.ColumnsChanged();
+				_inputRolls[i].Refresh();
 			}
 
 			SetUpToolStripColumns();
@@ -602,6 +627,8 @@ namespace BizHawk.Client.EmuHawk
 		public void CloneFramesXTimesExternal()
 			=> CloneFramesXTimesMenuItem_Click(null, EventArgs.Empty);
 
+		public void PasteInsertExternal() => MaybePasteFromClipboard(overwriteSelection: false);
+
 		public void UndoExternal()
 			=> UndoMenuItem_Click(null, EventArgs.Empty);
 
@@ -624,6 +651,14 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshDialog();
 		}
+
+		public void SeekToSelectedFrame()
+		{
+			if (!AnyRowsSelected) return;
+			GoToFrame(FirstSelectedRowIndex);
+		}
+
+		public void SeekToUserSpecifiedFrame() => GoToFrameMenuItem_Click(null, EventArgs.Empty);
 
 		public IMovieController GetBranchInput(string branchId, int frame)
 		{
@@ -756,6 +791,7 @@ namespace BizHawk.Client.EmuHawk
 						roll.HorizontalOrientation = _movieSettings.HorizontalOrientation = inputRollSettings.HorizontalOrientation;
 						roll.LagFramesToHide = _movieSettings.LagFramesToHide = inputRollSettings.LagFramesToHide;
 						roll.HideWasLagFrames = _movieSettings.HideWasLagFrames = inputRollSettings.HideWasLagFrames;
+						UpdateColumnWidths(roll);
 						UpdateInputRollDefinition(roll);
 					}
 					else if (settings is MovieClientSettings clientSettings)
@@ -802,19 +838,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool movieLoadSucceeded = false;
 
-			if (!File.Exists(path))
-			{
-				Settings.RecentTas.HandleLoadError(this, path: path);
-			}
-			else
+			if (File.Exists(path))
 			{
 				var movie = MovieSession.Get(path, loadMovie: true);
-				var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
-				movieLoadSucceeded = LoadMovie(tasMovie);
+				if (movie != null)
+				{
+					var tasMovie = movie as ITasMovie ?? movie.ToTasMovie();
+					movieLoadSucceeded = LoadMovie(tasMovie);
+				}
 			}
 
 			if (!movieLoadSucceeded)
 			{
+				Settings.RecentTas.HandleLoadError(this, path: path);
 				movieLoadSucceeded = StartNewTasMovie();
 				_engaged = true;
 			}
@@ -1081,8 +1117,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void OnPauseToggle(bool newPauseState)
 		{
-			// On pause, interrupt merging of recorded frames.
-			if (newPauseState) _lastRecordAction = -1;
+			if (newPauseState)
+			{
+				// On pause, interrupt merging of recorded frames.
+				_lastRecordAction = -1;
+
+				if (TasPlaybackBox.TurboSeek && SeekingTo != -1)
+				{
+					SetTasViewRowCount(); // so follow cursor works
+					UpdateAfter();
+				}
+			}
 		}
 
 		private void SetSplicer()
@@ -1235,7 +1280,6 @@ namespace BizHawk.Client.EmuHawk
 			if (e.NewCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
 			{
 				CurrentTasMovie.Markers.Move(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
-				RefreshDialog(); // Marker move might have been rejected so we need to manually refresh.
 			}
 		}
 
@@ -1273,7 +1317,7 @@ namespace BizHawk.Client.EmuHawk
 					if (axisSpec.HasValue)
 					{
 						string mnemonic = Bk2MnemonicLookup.LookupAxis(name, MovieSession.Movie.SystemID);
-						yield return (name, mnemonic, axisSpec.Value.MaxDigits);
+						yield return (name, mnemonic, axisSpec.Value.MaxCharacters);
 					}
 					else
 					{
@@ -1304,6 +1348,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					rollColumn.Width = rollColumn.VerticalWidth;
 				}
+			}
+
+			foreach (InputRoll roll2 in _inputRolls)
+			{
+				roll2.HorizontalOrientation = roll.HorizontalOrientation;
 			}
 
 			roll.AllColumns.ColumnsChanged();

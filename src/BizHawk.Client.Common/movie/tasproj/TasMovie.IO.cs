@@ -84,17 +84,7 @@ namespace BizHawk.Client.Common
 		{
 			bl.GetLump(BinaryStateLump.LagLog, abort: false, tr => LagLog.Load(tr));
 
-			bl.GetLump(BinaryStateLump.Markers, abort: false, tr =>
-			{
-				string line;
-				while ((line = tr.ReadLine()) != null)
-				{
-					if (!string.IsNullOrWhiteSpace(line))
-					{
-						Markers.Add(new TasMovieMarker(line));
-					}
-				}
-			});
+			bl.GetLump(BinaryStateLump.Markers, abort: false, Markers.LoadFromFile);
 
 			bl.GetLump(BinaryStateLump.ClientSettings, abort: false, tr =>
 			{

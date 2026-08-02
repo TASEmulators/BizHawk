@@ -331,6 +331,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_undoForm = new UndoHistoryForm(this) { Owner = this };
+			if (Settings.UndoHistoryWindow.Width != 0)
+			{
+				_undoForm.Location = Settings.UndoHistoryWindow.Location;
+				_undoForm.Size = Settings.UndoHistoryWindow.Size;
+			}
+			_undoForm.FormClosed += (s, e) => Settings.UndoHistoryWindow = new(_undoForm.Location, _undoForm.Size);
 			_undoForm.Show();
 			_undoForm.UpdateValues();
 		}
@@ -380,6 +386,18 @@ namespace BizHawk.Client.EmuHawk
 			_activeInputRoll.Refresh();
 
 			SetSplicer();
+		}
+
+		private void GoToFrameMenuItem_Click(object sender, EventArgs e)
+		{
+			MainForm.PauseEmulator();
+			using InputPrompt dialog = new()
+			{
+				Text = "Go to Frame",
+				Message = "Jump/Seek to frame index:",
+				TextInputType = InputPrompt.InputType.Unsigned,
+			};
+			if (this.ShowDialogWithTempMute(dialog).IsOk()) GoToFrame(int.Parse(dialog.PromptText));
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
@@ -1075,8 +1093,9 @@ namespace BizHawk.Client.EmuHawk
 				(s) =>
 				{
 					// settings objects are mutated by the settings form, but some still need to be handled
-					for (int i = 0; i < s.MovieSettings.Columns.Length; i++)
+					for (int i = 0; i < _inputRolls.Count; i++)
 					{
+						_inputRolls[i].SuspendDrawing();
 						_inputRolls[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 						_inputRolls[i].Font = Settings.TasViewFont;
 						_inputRolls[i].HorizontalOrientation = s.MovieSettings.HorizontalOrientation;
@@ -1084,7 +1103,10 @@ namespace BizHawk.Client.EmuHawk
 						_inputRolls[i].HideWasLagFrames = s.MovieSettings.HideWasLagFrames;
 						_inputRolls[i].ScrollMethod = Settings.FollowCursorScrollMethod;
 						_inputRolls[i].ScrollSpeed = Settings.ScrollSpeed;
+						UpdateColumnWidths(_inputRolls[i]);
 					}
+					GenerateIcons();
+					foreach (InputRoll roll in _inputRolls) roll.ResumeDrawing();
 
 					UpdateAutoFire();
 
@@ -1101,7 +1123,13 @@ namespace BizHawk.Client.EmuHawk
 					UpdateActiveMovieInputs();
 				}
 			);
+			if (Settings.SettingsWindow.Width != 0)
+			{
+				settingsForm.Location = Settings.SettingsWindow.Location;
+				settingsForm.Size = Settings.SettingsWindow.Size;
+			}
 			settingsForm.ShowDialog(this);
+			Settings.SettingsWindow = new(settingsForm.Location, settingsForm.Size);
 
 			RefreshDialog();
 		}

@@ -25,9 +25,8 @@ namespace BizHawk.Emulation.Common
 
 		public int Max => Range.EndInclusive;
 
-		/// <value>maximum decimal digits analog input can occupy with no-args ToString</value>
-		/// <remarks>does not include the extra char needed for a minus sign</remarks>
-		public int MaxDigits => Math.Max(Math.Abs(Min).ToString().Length, Math.Abs(Max).ToString().Length);
+		/// <value>maximum length of a string representation of this analog input (with no-args ToString)</value>
+		public int MaxCharacters => Math.Max(Min.ToString().Length, Max.ToString().Length);
 
 		public readonly int Neutral;
 

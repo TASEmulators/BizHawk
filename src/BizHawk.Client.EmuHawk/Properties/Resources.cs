@@ -148,6 +148,7 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap OpenFile = ReadEmbeddedBitmap("OpenFile");
 		internal static readonly Bitmap Paste = ReadEmbeddedBitmap("Paste");
 		internal static readonly Bitmap Pause = ReadEmbeddedBitmap("Pause");
+		internal static readonly Bitmap LuaRunning = ReadEmbeddedBitmap("arrow_green");
 		internal static readonly Bitmap Pcb = ReadEmbeddedBitmap("pcb");
 		internal static readonly Icon PceIcon = ReadEmbeddedIcon("pce");
 		internal static readonly Bitmap Pencil = ReadEmbeddedBitmap("pencil");
@@ -189,15 +190,6 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap SW = ReadEmbeddedBitmap("SW");
 		internal static readonly Icon TAStudioIcon = ReadEmbeddedIcon("TAStudio");
 		internal static readonly Bitmap TAStudio = ReadEmbeddedBitmap("TAStudio");
-		internal static readonly Bitmap icon_anchor = ReadEmbeddedBitmap("tastudio.icon_anchor");
-		internal static readonly Bitmap icon_anchor_lag = ReadEmbeddedBitmap("tastudio.icon_anchor_lag");
-		internal static readonly Bitmap icon_marker = ReadEmbeddedBitmap("tastudio.icon_marker");
-		internal static readonly Bitmap ts_h_arrow_blue = ReadEmbeddedBitmap("tastudio.ts_h_arrow_blue");
-		internal static readonly Bitmap ts_h_arrow_green = ReadEmbeddedBitmap("tastudio.ts_h_arrow_green");
-		internal static readonly Bitmap ts_h_arrow_green_blue = ReadEmbeddedBitmap("tastudio.ts_h_arrow_green_blue");
-		internal static readonly Bitmap ts_v_arrow_blue = ReadEmbeddedBitmap("tastudio.ts_v_arrow_blue");
-		internal static readonly Bitmap ts_v_arrow_green = ReadEmbeddedBitmap("tastudio.ts_v_arrow_green");
-		internal static readonly Bitmap ts_v_arrow_green_blue = ReadEmbeddedBitmap("tastudio.ts_v_arrow_green_blue");
 		internal static readonly Bitmap TextDoc = ReadEmbeddedBitmap("textdoc");
 		internal static readonly Icon TextDocIcon = ReadEmbeddedIcon("textdoc");
 		internal static readonly Bitmap ThumbsDown = ReadEmbeddedBitmap("thumbsdown");
@@ -209,6 +201,8 @@ namespace BizHawk.Client.EmuHawk.Properties
 		internal static readonly Bitmap TvIcon = ReadEmbeddedBitmap("tvIcon");
 		internal static readonly Bitmap Undo = ReadEmbeddedBitmap("undo");
 		internal static readonly Bitmap Unfreeze = ReadEmbeddedBitmap("Unfreeze");
+		internal static readonly Bitmap UpdateBranch = ReadEmbeddedBitmap("updateBranch");
+		internal static readonly Bitmap UpdateWithText = ReadEmbeddedBitmap("updateWithText");
 		internal static readonly Bitmap Profile = ReadEmbeddedBitmap("user_blue_small");
 		internal static readonly Icon ProfileIcon = ReadEmbeddedIcon("user_blue");
 		internal static readonly Bitmap Watch = ReadEmbeddedIconAsBitmap("watch");

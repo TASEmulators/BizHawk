@@ -125,6 +125,7 @@ namespace BizHawk.Client.Common
 			[VSystemID.Raw.GB] = 3,
 			[VSystemID.Raw.GBA] = 3,
 			[VSystemID.Raw.GBC] = 3,
+			[VSystemID.Raw.Libretro] = 1,
 			[VSystemID.Raw.N64] = 1,
 			[VSystemID.Raw.WSWAN] = 3,
 		};
@@ -427,6 +428,14 @@ namespace BizHawk.Client.Common
 		public string LastWrittenFromDetailed { get; set; } = VersionInfo.GetEmuVersion();
 
 		public bool UseStaticWindowTitles { get; set; }
+
+		public string MainFormStaticWindowTitleOverride { get; set; } = string.Empty;
+
+		[JsonIgnore]
+		public string MainFormStaticWindowTitleOverrideEffective
+			=> string.IsNullOrWhiteSpace(MainFormStaticWindowTitleOverride)
+				? string.IsNullOrWhiteSpace(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString
+				: MainFormStaticWindowTitleOverride;
 
 		public List<string> ModifierKeys { get; set; } = new();
 

@@ -37,6 +37,13 @@ namespace BizHawk.Client.EmuHawk
 			Application.SetCompatibleTextRenderingDefault(false); // prepopulates `Label.UseCompatibleTextRendering` and friends; `false` means to use the "new" renderer rather than the compatibility renderer
 		}
 
+		private static void Show32BitWarningDialog()
+		{
+			EnsureWinFormsInitialized();
+			using ExceptionBox box = new("EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close.");
+			box.ShowDialog();
+		}
+
 		static Program()
 		{
 			// Quickly check if the user is running this as a 32 bit process somehow
@@ -44,15 +51,19 @@ namespace BizHawk.Client.EmuHawk
 			// (There are no longer any hard 64 bit deps, i.e. SlimDX is no longer around)
 			if (!Environment.Is64BitProcess)
 			{
-				EnsureWinFormsInitialized();
-				using (var box = new ExceptionBox(
-							"EmuHawk requires a 64 bit environment in order to run! EmuHawk will now close."))
-				{
-					box.ShowDialog();
-				}
-
+				Show32BitWarningDialog();
 				Process.GetCurrentProcess().Kill();
 				return;
+			}
+
+			try
+			{
+				_ = Assembly.ReflectionOnlyLoad("System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+			}
+			catch (FileNotFoundException)
+			{
+				Console.Error.WriteLine("The WinForms assembly can't be found. Make sure you've installed the \"complete\" Mono package if one is available, or else look into alternate repos. Try Nix!");
+				throw;
 			}
 
 			// In case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them

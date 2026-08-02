@@ -33,10 +33,15 @@ namespace BizHawk.Client.EmuHawk
 				Username = null;
 				ApiToken = null;
 
-				if (_lib.rc_api_process_login_response(out var resp, serv_resp) == LibRCheevos.rc_error_t.RC_OK)
+				var res = _lib.rc_api_process_login_response(out var resp, serv_resp);
+				if (res == LibRCheevos.rc_error_t.RC_OK)
 				{
 					Username = resp.Username;
 					ApiToken = resp.ApiToken;
+				}
+				else
+				{
+					Console.WriteLine($"LoginRequest failed in ResponseCallback with {res}");
 				}
 
 				_lib.rc_api_destroy_login_response(ref resp);

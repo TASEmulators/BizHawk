@@ -106,6 +106,7 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.EditInvisibleColumnsCheckbox = new System.Windows.Forms.CheckBox();
 			this.ScrollSyncCheckbox = new System.Windows.Forms.CheckBox();
+			this.StatesForMarkersCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
@@ -141,8 +142,9 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(374, 433);
+			this.tabControl1.Size = new System.Drawing.Size(377, 433);
 			this.tabControl1.TabIndex = 0;
+			this.tabControl1.Multiline = true;
 			// 
 			// tabPage2
 			// 
@@ -380,6 +382,7 @@
 			// 
 			// tabPage4
 			// 
+			this.tabPage4.Controls.Add(this.StatesForMarkersCheckbox);
 			this.tabPage4.Controls.Add(this.label12);
 			this.tabPage4.Controls.Add(this.DefaultManagerSettingsAppliedLabel);
 			this.tabPage4.Controls.Add(this.SetDefaultStateSettingsButton);
@@ -397,6 +400,7 @@
 			// 
 			// label12
 			// 
+			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(9, 362);
 			this.label12.Name = "label12";
@@ -416,7 +420,7 @@
 			// 
 			// SetDefaultStateSettingsButton
 			// 
-			this.SetDefaultStateSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.SetDefaultStateSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.SetDefaultStateSettingsButton.Location = new System.Drawing.Point(196, 378);
 			this.SetDefaultStateSettingsButton.Name = "SetDefaultStateSettingsButton";
 			this.SetDefaultStateSettingsButton.Size = new System.Drawing.Size(155, 23);
@@ -731,6 +735,7 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.StatesForMarkersCheckbox);
 			this.tabPage3.Controls.Add(this.OldBranchesCheckbox);
 			this.tabPage3.Controls.Add(this.BranchDoubleClickCheckbox);
 			this.tabPage3.Controls.Add(this.FastRewindNum);
@@ -893,7 +898,7 @@
 			// SettingsCancelButton
 			// 
 			this.SettingsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.SettingsCancelButton.Location = new System.Drawing.Point(307, 449);
+			this.SettingsCancelButton.Location = new System.Drawing.Point(310, 449);
 			this.SettingsCancelButton.Name = "SettingsCancelButton";
 			this.SettingsCancelButton.Size = new System.Drawing.Size(75, 23);
 			this.SettingsCancelButton.TabIndex = 3;
@@ -904,13 +909,24 @@
 			// ApplyButton
 			// 
 			this.ApplyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.ApplyButton.Location = new System.Drawing.Point(226, 449);
+			this.ApplyButton.Location = new System.Drawing.Point(229, 449);
 			this.ApplyButton.Name = "ApplyButton";
 			this.ApplyButton.Size = new System.Drawing.Size(75, 23);
 			this.ApplyButton.TabIndex = 3;
 			this.ApplyButton.Text = "Apply";
 			this.ApplyButton.UseVisualStyleBackColor = true;
 			this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
+			// 
+			// StatesForMarkersCheckbox
+			// 
+			this.StatesForMarkersCheckbox.AutoSize = true;
+			this.StatesForMarkersCheckbox.Location = new System.Drawing.Point(12, 200);
+			this.StatesForMarkersCheckbox.Name = "StatesForMarkersCheckbox";
+			this.StatesForMarkersCheckbox.Size = new System.Drawing.Size(171, 17);
+			this.StatesForMarkersCheckbox.TabIndex = 518;
+			this.StatesForMarkersCheckbox.Text = "Markers keep states by default";
+			this.toolTip1.SetToolTip(this.StatesForMarkersCheckbox, resources.GetString("StatesForMarkersCheckbox.ToolTip"));
+			this.StatesForMarkersCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// tabPage6
 			// 
@@ -1017,7 +1033,7 @@
 			this.ScrollSpeedNum.Name = "ScrollSpeedNum";
 			this.ScrollSpeedNum.Size = new System.Drawing.Size(67, 20);
 			this.ScrollSpeedNum.TabIndex = 515;
-			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "How many frames to scroll per tick of the mouse wheel.");
+			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "How many frames to scroll per tick of the mouse wheel.\nSet to 0 to use the system default.");
 			// 
 			// label2
 			// 
@@ -1054,7 +1070,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(394, 484);
+			this.ClientSize = new System.Drawing.Size(397, 484);
 			this.Controls.Add(this.ApplyButton);
 			this.Controls.Add(this.SettingsCancelButton);
 			this.Controls.Add(this.tabControl1);
@@ -1170,5 +1186,6 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown ScrollSpeedNum;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox StatesForMarkersCheckbox;
 	}
 }
