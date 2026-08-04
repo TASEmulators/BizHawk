@@ -74,15 +74,11 @@ namespace BizHawk.Bizware.Input
 
 		public static void AddDevice(int deviceIndex)
 		{
-			var instanceId = SDL_JoystickGetDeviceInstanceID(deviceIndex);
-			if (!Gamepads.ContainsKey(instanceId))
-			{
-				var gamepad = new SDL2Gamepad(deviceIndex);
-				Gamepads.Add(gamepad.InstanceID, gamepad);
-			}
-			else
+			var gamepad = new SDL2Gamepad(deviceIndex);
+			if (!Gamepads.TryAdd(gamepad.InstanceID, gamepad))
 			{
 				Console.WriteLine($"Gamepads contained a joystick with instance ID {instanceId}, ignoring add device event");
+				gamepad.Dispose();
 			}
 
 			RefreshIndexes();
