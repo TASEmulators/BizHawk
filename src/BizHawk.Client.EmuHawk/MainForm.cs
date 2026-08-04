@@ -55,8 +55,6 @@ namespace BizHawk.Client.EmuHawk
 			appendAllFilesEntry: false,
 			new FilesystemFilter("Libretro Cores", extensions: [ (OSTailoredCode.IsUnixHost ? "so" : "dll") ]));
 
-		private const int WINDOW_SCALE_MAX = 10;
-
 		private readonly ToolStripMenuItemEx DOSSubMenu = new() { Text = "&DOS" };
 
 		private readonly ToolStripMenuItemEx DumpStatusReportMenuItem = new()
@@ -97,8 +95,9 @@ namespace BizHawk.Client.EmuHawk
 			EmulationSubMenu.DropDownItems.InsertBefore(LoadedCoreNameMenuItem, insert: RealTimeCounterMenuItem);
 
 			{
-				for (int i = 1; i <= WINDOW_SCALE_MAX; i++)
+				for (int i = 1; i <= EmuClientApi.WINDOW_SCALE_MAX; i++)
 				{
+					// inferred mnemonics assume WINDOW_SCALE_MAX is 10 though...
 					long quotient = Math.DivRem(i, 10, out long remainder);
 					var temp = new ToolStripMenuItemEx
 					{
@@ -2554,7 +2553,7 @@ namespace BizHawk.Client.EmuHawk
 		private void IncreaseWindowSize()
 		{
 			var windowScale = Config.GetWindowScaleFor(Emulator.SystemId);
-			if (windowScale < WINDOW_SCALE_MAX)
+			if (windowScale < EmuClientApi.WINDOW_SCALE_MAX)
 			{
 				windowScale++;
 				Config.SetWindowScaleFor(Emulator.SystemId, windowScale);

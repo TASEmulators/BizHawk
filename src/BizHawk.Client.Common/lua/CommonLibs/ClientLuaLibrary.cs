@@ -270,8 +270,14 @@ namespace BizHawk.Client.Common
 		public int ScreenWidth()
 			=> APIs.EmuClient.ScreenWidth();
 
-		[LuaMethodExample("client.setwindowsize( 100 );")]
-		[LuaMethod("setwindowsize", "Sets the main window's size to the give value. Accepted values are 1, 2, 3, 4, 5, and 10")]
+		[LuaMethodExample("""
+			client.setwindowsize(2);
+		""")]
+		[LuaMethod(
+			name: "setwindowsize",
+			description: "Sets the MainForm scale (window size multiplier) for the system of the current rom."
+//				+ $" The size argument must be an integer between 1 and {EmuClientApi.WINDOW_SCALE_MAX}, inclusive.")]
+				+ $" The size argument must be an integer between 1 and 10, inclusive.")]
 		public void SetWindowSize(int size)
 			=> APIs.EmuClient.SetWindowSize(size);
 

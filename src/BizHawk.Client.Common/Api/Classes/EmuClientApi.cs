@@ -8,6 +8,8 @@ namespace BizHawk.Client.Common
 	{
 		internal const ushort SHOW_FUTURE_MAX_USER_TIMEOUT = 0x7FFF; // arbitrary; see https://github.com/TASEmulators/BizHawk/pull/4598#discussion_r2760712788
 
+		public const int WINDOW_SCALE_MAX = 10;
+
 		private readonly Config _config;
 
 		private readonly IDialogController _dialogController;
@@ -209,7 +211,7 @@ namespace BizHawk.Client.Common
 
 		public void SetWindowSize(int size)
 		{
-			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
+			if (size is >= 1 and <= WINDOW_SCALE_MAX)
 			{
 				_config.SetWindowScaleFor(Emulator.SystemId, size);
 				_mainForm.FrameBufferResized(forceWindowResize: true);

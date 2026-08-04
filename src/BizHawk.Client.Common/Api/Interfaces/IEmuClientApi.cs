@@ -134,6 +134,8 @@ namespace BizHawk.Client.Common
 
 		void SetTargetScanlineIntensity(int val);
 
+		/// <summary>sets the MainForm scale (window size multiplier) for the current rom's system</summary>
+		/// <param name="size">an integer between <c>1</c> and <see cref="EmuClientApi.WINDOW_SCALE_MAX"/>, inclusive</param>
 		void SetWindowSize(int size);
 
 		/// <summary>
