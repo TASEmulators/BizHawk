@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private const string START_FROM_SAVERAM = "SaveRAM";
 
-		private const string START_FROM_SAVESTATE = "SaveRAM + savestate";
+		private const string START_FROM_SAVESTATE = "Savestate";
 
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
