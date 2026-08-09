@@ -1138,6 +1138,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing;
 		public bool IsRewinding { get; private set; }
 
+		private bool _saveSramOnReboot = true;
+
 		/// <summary>
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
 		/// </summary>
@@ -1311,7 +1313,9 @@ namespace BizHawk.Client.EmuHawk
 			base.OnDeactivate(e);
 		}
 
-		public bool RebootCore()
+		public bool RebootCore() => RebootCore(true);
+
+		private bool RebootCore(bool saveSram)
 		{
 			if (ToolControllingReboot is { } tool)
 			{
@@ -1321,9 +1325,17 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				if (CurrentlyOpenRomArgs == null) return true;
-				return LoadRom(
-					CurrentlyOpenRomArgs.OpenAdvanced.SimplePath,
-					CurrentlyOpenRomArgs with { ForcedSysID = Emulator.SystemId });
+				if (!saveSram) _saveSramOnReboot = false;
+				try
+				{
+					return LoadRom(
+						CurrentlyOpenRomArgs.OpenAdvanced.SimplePath,
+						CurrentlyOpenRomArgs with { ForcedSysID = Emulator.SystemId });
+				}
+				finally
+				{
+					_saveSramOnReboot = true;
+				}
 			}
 		}
 
@@ -3952,7 +3964,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (Emulator.HasSaveRam())
+			else if (Emulator.HasSaveRam() && _saveSramOnReboot)
 			{
 				TryAgainResult flushResult = this.DoWithTryAgainBox(
 					() => FlushSaveRAM(),

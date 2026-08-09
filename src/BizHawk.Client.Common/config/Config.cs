@@ -197,6 +197,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int FlushSaveRamFrames { get; set; }
 
+		public bool WarnLoadSramReboots { get; set; } = true;
+
 		public bool TurboSeek { get; set; }
 
 		public ClientProfile SelectedProfile { get; set; } = ClientProfile.Unknown;
