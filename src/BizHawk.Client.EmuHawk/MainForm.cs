@@ -1138,8 +1138,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsFastForwarding => InputManager.ClientControls["Fast Forward"] || IsTurboing;
 		public bool IsRewinding { get; private set; }
 
-		private bool _saveSramOnReboot = true;
-
 		/// <summary>
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
 		/// </summary>
@@ -1313,9 +1311,9 @@ namespace BizHawk.Client.EmuHawk
 			base.OnDeactivate(e);
 		}
 
-		public bool RebootCore() => RebootCore(true);
+		public bool RebootCore() => RebootCore(CurrentlyOpenRomArgs?.SaveRamPath);
 
-		private bool RebootCore(bool saveSram)
+		private bool RebootCore(string/*?*/ saveRamPath)
 		{
 			if (ToolControllingReboot is { } tool)
 			{
@@ -1325,17 +1323,9 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				if (CurrentlyOpenRomArgs == null) return true;
-				if (!saveSram) _saveSramOnReboot = false;
-				try
-				{
-					return LoadRom(
-						CurrentlyOpenRomArgs.OpenAdvanced.SimplePath,
-						CurrentlyOpenRomArgs with { ForcedSysID = Emulator.SystemId });
-				}
-				finally
-				{
-					_saveSramOnReboot = true;
-				}
+				return LoadRom(
+					CurrentlyOpenRomArgs.OpenAdvanced.SimplePath,
+					CurrentlyOpenRomArgs with { ForcedSysID = Emulator.SystemId, SaveRamPath = saveRamPath });
 			}
 		}
 
@@ -1873,12 +1863,17 @@ namespace BizHawk.Client.EmuHawk
 		// Better is to just keep the game and rom hashes as properties and then generate the rom info from this
 		private string _defaultRomDetails = "";
 
+		private static string MakeSaveRamAutosavePath(string sramPath)
+		{
+			return sramPath.Insert(sramPath.Length - 8, ".AutoSaveRAM");
+		}
+
 		private void LoadSaveRam()
 		{
 			if (Emulator.HasSaveRam())
 			{
-				var saveRam = new FileInfo(Config.PathEntries.SaveRamAbsolutePath(Game));
-				var autoSaveRam = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game));
+				var saveRam = new FileInfo(CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game));
+				var autoSaveRam = new FileInfo(MakeSaveRamAutosavePath(saveRam.FullName));
 
 				FileInfo saveramToLoad;
 				if (saveRam.Exists && (!autoSaveRam.Exists || autoSaveRam.LastWriteTimeUtc <= saveRam.LastWriteTimeUtc))
@@ -1947,14 +1942,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSaveRam())
 			{
-				string path;
+				string path = CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game);
 				if (autosave)
 				{
-					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game);
-				}
-				else
-				{
-					path = Config.PathEntries.SaveRamAbsolutePath(Game);
+					path = MakeSaveRamAutosavePath(path);
 				}
 
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
@@ -3789,16 +3780,16 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.AsBoardInfo().BoardName);
 					}
 
+					var previousRom = CurrentlyOpenRom;
+					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
+					CurrentlyOpenRomArgs = args;
+
 					// Don't load Save Ram if a movie is being loaded
 					if (!MovieSession.NewMovieQueued)
 					{
 						LoadSaveRam();
 						AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 					}
-
-					var previousRom = CurrentlyOpenRom;
-					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
-					CurrentlyOpenRomArgs = args;
 
 					Tools.Restart(Config, Emulator, Game);
 
@@ -3964,7 +3955,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (Emulator.HasSaveRam() && _saveSramOnReboot && !_hadMovie)
+			else if (Emulator.HasSaveRam() && !_hadMovie)
 			{
 				TryAgainResult flushResult = this.DoWithTryAgainBox(
 					() => FlushSaveRAM(),

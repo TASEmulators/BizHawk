@@ -379,14 +379,8 @@ namespace BizHawk.Client.EmuHawk
 				filter: filterset);
 			if (fileToLoad == null) return;
 
-			// copy the file
-			File.Copy(
-				sourceFileName: fileToLoad,
-				destFileName: Config.PathEntries.SaveRamAbsolutePath(Game),
-				overwrite: true);
-
 			// reboot
-			RebootCore(false);
+			RebootCore(fileToLoad);
 		}
 
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)

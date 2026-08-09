@@ -264,12 +264,6 @@ namespace BizHawk.Client.Common
 			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, VSystemID.Raw.Libretro), coreName);
 		}
 
-		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game)
-		{
-			var path = collection.SaveRamAbsolutePath(game);
-			return path.Insert(path.Length - 8, ".AutoSaveRAM");
-		}
-
 		public static string CheatsAbsolutePath(this PathEntryCollection collection, string systemId)
 		{
 			var pathEntry = collection[systemId, "Cheats"]
