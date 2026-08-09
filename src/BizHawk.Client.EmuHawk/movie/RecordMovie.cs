@@ -12,7 +12,6 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	// TODO - Allow relative paths in record TextBox
 	public sealed class RecordMovie : Form, IDialogParent
 	{
 		private const string START_FROM_POWERON = "Power-on (clean)";
