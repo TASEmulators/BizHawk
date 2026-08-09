@@ -298,12 +298,12 @@ namespace BizHawk.Client.EmuHawk
 			string selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
 			if (selectedStartFromValue == START_FROM_SAVESTATE && !SavestateCheckbox.Checked && !File.Exists(SavestateBox.Text))
 			{
-				DialogController.ShowMessageBox2($"Savestate file {SavestateBox.Text} does not exist.");
+				DialogController.ShowMessageBox($"Savestate file {SavestateBox.Text} does not exist.", caption: "File does not exist");
 				return;
 			}
 			if (selectedStartFromValue == START_FROM_SAVERAM && !SramCheckbox.Checked && !File.Exists(SramBox.Text))
 			{
-				DialogController.ShowMessageBox2($"SaveRam file {SramBox.Text} does not exist.");
+				DialogController.ShowMessageBox($"SaveRam file {SramBox.Text} does not exist.", caption: "File does not exist");
 				return;
 			}
 
@@ -409,7 +409,11 @@ namespace BizHawk.Client.EmuHawk
 				initDir: movieFolderPath,
 				initFileName: RecordBox.Text,
 				muteOverwriteWarning: true);
-			if (!string.IsNullOrWhiteSpace(result)) RecordBox.Text = result;
+			if (!string.IsNullOrWhiteSpace(result))
+			{
+				RecordBox.Text = result;
+				RecordBox.SelectionStart = RecordBox.Text.Length;
+			}
 		}
 
 		private void BrowseSramBtn_Click(object sender, EventArgs e)
@@ -434,6 +438,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(result))
 			{
 				SramBox.Text = result;
+				SramBox.SelectionStart = SramBox.Text.Length;
 				SramCheckbox.Checked = false;
 			}
 		}
@@ -460,6 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(result))
 			{
 				SavestateBox.Text = result;
+				SavestateBox.SelectionStart = SavestateBox.Text.Length;
 				SavestateCheckbox.Checked = false;
 			}
 		}
