@@ -92,8 +92,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TASEditorManualOnlineMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ForumThreadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.aboutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator10 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.EnableTooltipsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.TasStatusStrip = new BizHawk.WinForms.Controls.StatusStripEx();
 			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -162,6 +160,7 @@ namespace BizHawk.Client.EmuHawk
             this.ColumnsSubMenu,
             this.HelpSubMenu});
 			this.TASMenu.TabIndex = 0;
+			this.TASMenu.ShowItemToolTips = true;
 			// 
 			// FileSubMenu
 			// 
@@ -468,9 +467,7 @@ namespace BizHawk.Client.EmuHawk
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TASEditorManualOnlineMenuItem,
             this.ForumThreadMenuItem,
-            this.aboutToolStripMenuItem,
-            this.toolStripSeparator10,
-            this.EnableTooltipsMenuItem});
+            this.aboutToolStripMenuItem});
 			this.HelpSubMenu.Text = "&Help";
 			// 
 			// TASEditorManualOnlineMenuItem
@@ -487,11 +484,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.aboutToolStripMenuItem.Enabled = false;
 			this.aboutToolStripMenuItem.Text = "&About";
-			// 
-			// EnableTooltipsMenuItem
-			// 
-			this.EnableTooltipsMenuItem.Enabled = false;
-			this.EnableTooltipsMenuItem.Text = "&Enable Tooltips";
 			// 
 			// TasStatusStrip
 			// 
@@ -859,8 +851,6 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx GoToFrameMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator6;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx HelpSubMenu;
-		private BizHawk.WinForms.Controls.ToolStripMenuItemEx EnableTooltipsMenuItem;
-		private BizHawk.WinForms.Controls.ToolStripSeparatorEx toolStripSeparator10;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx aboutToolStripMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SettingsSubMenu;
 		private StatusStripEx TasStatusStrip;
