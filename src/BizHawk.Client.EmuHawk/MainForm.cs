@@ -1877,8 +1877,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSaveRam())
 			{
-				var saveRam = new FileInfo(Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie));
-				var autoSaveRam = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie));
+				var saveRam = new FileInfo(Config.PathEntries.SaveRamAbsolutePath(Game));
+				var autoSaveRam = new FileInfo(Config.PathEntries.AutoSaveRamAbsolutePath(Game));
 
 				FileInfo saveramToLoad;
 				if (saveRam.Exists && (!autoSaveRam.Exists || autoSaveRam.LastWriteTimeUtc <= saveRam.LastWriteTimeUtc))
@@ -1950,11 +1950,11 @@ namespace BizHawk.Client.EmuHawk
 				string path;
 				if (autosave)
 				{
-					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game, MovieSession.Movie);
+					path = Config.PathEntries.AutoSaveRamAbsolutePath(Game);
 				}
 				else
 				{
-					path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
+					path = Config.PathEntries.SaveRamAbsolutePath(Game);
 				}
 
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
@@ -3943,7 +3943,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (clearSram)
 			{
-				var path = Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie);
+				var path = Config.PathEntries.SaveRamAbsolutePath(Game);
 				if (File.Exists(path))
 				{
 					TryAgainResult clearResult = this.DoWithTryAgainBox(() => {
@@ -3964,13 +3964,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (Emulator.HasSaveRam() && _saveSramOnReboot)
+			else if (Emulator.HasSaveRam() && _saveSramOnReboot && !_hadMovie)
 			{
 				TryAgainResult flushResult = this.DoWithTryAgainBox(
 					() => FlushSaveRAM(),
 					"Failed flushing the game's Save RAM to your disk.");
 				if (flushResult == TryAgainResult.Canceled) return false;
 			}
+			_hadMovie = false;
 
 			TryAgainResult stateSaveResult = this.DoWithTryAgainBox(AutoSaveStateIfConfigured, "Failed to auto-save state.");
 			if (stateSaveResult == TryAgainResult.Canceled) return false;

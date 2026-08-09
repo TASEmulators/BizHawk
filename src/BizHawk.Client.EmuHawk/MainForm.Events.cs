@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			// copy the file
 			File.Copy(
 				sourceFileName: fileToLoad,
-				destFileName: Config.PathEntries.SaveRamAbsolutePath(Game, movie: null),
+				destFileName: Config.PathEntries.SaveRamAbsolutePath(Game),
 				overwrite: true);
 
 			// reboot
@@ -1341,7 +1341,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
-			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie));
+			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 

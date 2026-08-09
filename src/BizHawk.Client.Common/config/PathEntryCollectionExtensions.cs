@@ -230,13 +230,9 @@ namespace BizHawk.Client.Common
 			return collection.AbsolutePathFor(path.Path, systemId);
 		}
 
-		public static string SaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)
+		public static string SaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game)
 		{
 			var name = game.FilesystemSafeName();
-			if (movie.IsActive())
-			{
-				name += $".{Path.GetFileNameWithoutExtension(movie.Filename)}";
-			}
 
 			var pathEntry = collection[game.System, "Save RAM"]
 				?? collection[game.System, "Base"];
@@ -268,9 +264,9 @@ namespace BizHawk.Client.Common
 			return Path.Combine(collection.AbsolutePathFor(pathEntry.Path, VSystemID.Raw.Libretro), coreName);
 		}
 
-		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game, IMovie movie)
+		public static string AutoSaveRamAbsolutePath(this PathEntryCollection collection, IGameInfo game)
 		{
-			var path = collection.SaveRamAbsolutePath(game, movie);
+			var path = collection.SaveRamAbsolutePath(game);
 			return path.Insert(path.Length - 8, ".AutoSaveRAM");
 		}
 
