@@ -39,10 +39,6 @@ namespace BizHawk.Client.Common
 
 		public static readonly FilesystemFilterSet Palettes = new(new FilesystemFilter("Palette Files", new[] { "pal" }));
 
-		public static readonly FilesystemFilterSet SaveRams = new(new FilesystemFilter("SaveRAM Files", new[] { "SaveRAM", "bin" }));
-
-		public static readonly FilesystemFilterSet Savetates = new(new FilesystemFilter("Savestate Files", new[] { "State" }));
-
 		public static readonly FilesystemFilterSet Screenshots = new FilesystemFilterSet(FilesystemFilter.PNGs, new FilesystemFilter(".bmp Files", new[] { "bmp" }));
 	}
 }

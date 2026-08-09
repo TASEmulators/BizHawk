@@ -428,13 +428,11 @@ namespace BizHawk.Client.EmuHawk
 			catch (IOException) { /* ignored */ }
 			catch (UnauthorizedAccessException) { /* ignored */ }
 
-			var filterset = FilesystemFilterSet.SaveRams;
-			var result = this.ShowFileSaveDialog(
-				fileExt: $".{filterset.Filters[0].Extensions.First()}",
-				filter: filterset,
+			FilesystemFilterSet filterset = new(FilesystemFilter.SaveRams);
+			var result = this.ShowFileOpenDialog(
 				initDir: sramFolderPath,
-				initFileName: SramBox.Text,
-				muteOverwriteWarning: true);
+				filter: filterset,
+				initFileName: SramBox.Text);
 			if (!string.IsNullOrWhiteSpace(result))
 			{
 				SramBox.Text = result;
@@ -455,13 +453,11 @@ namespace BizHawk.Client.EmuHawk
 			catch (IOException) { /* ignored */ }
 			catch (UnauthorizedAccessException) { /* ignored */ }
 
-			var filterset = FilesystemFilterSet.Savetates;
-			var result = this.ShowFileSaveDialog(
-				fileExt: $".{filterset.Filters[0].Extensions.First()}",
-				filter: filterset,
+			FilesystemFilterSet filterset = new(FilesystemFilter.EmuHawkSaveStates);
+			var result = this.ShowFileOpenDialog(
 				initDir: stateFolderPath,
-				initFileName: SavestateBox.Text,
-				muteOverwriteWarning: true);
+				filter: filterset,
+				initFileName: SavestateBox.Text);
 			if (!string.IsNullOrWhiteSpace(result))
 			{
 				SavestateBox.Text = result;
