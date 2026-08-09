@@ -318,6 +318,35 @@ namespace BizHawk.Client.EmuHawk
 			ShowMessageIfError(() => FlushSaveRAM(), "Failed to flush saveram!");
 		}
 
+		private void SaveSramAsMenuItem_Click(object sender, EventArgs e)
+		{
+			string sramFolderPath = Config.PathEntries.SaveRamAbsolutePath(Game.System);
+
+			// Create folder if it doesn't already exist
+			try
+			{
+				Directory.CreateDirectory(sramFolderPath);
+			}
+			catch (IOException) { /* ignored */ }
+			catch (UnauthorizedAccessException) { /* ignored */ }
+
+			FilesystemFilterSet filterset = new(FilesystemFilter.SaveRams);
+			var shouldSaveResult = this.ShowFileSaveDialog(
+				initDir: sramFolderPath,
+				discardCWDChange: true,
+				fileExt: $".{filterset.Filters[0].Extensions.First()}",
+				filter: filterset);
+			if (shouldSaveResult is not null)
+			{
+				byte[] saveram = Emulator.AsSaveRam().CloneSaveRam();
+				if (saveram == null)
+					return;
+				ShowMessageIfError(
+					() => FileWriter.Write(shouldSaveResult, saveram),
+					"Unable to save Save RAM.");
+			}
+		}
+
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
 		{
 			ToggleReadOnly();

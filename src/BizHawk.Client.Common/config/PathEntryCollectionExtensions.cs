@@ -244,6 +244,14 @@ namespace BizHawk.Client.Common
 			return $"{Path.Combine(collection.AbsolutePathFor(pathEntry.Path, game.System), name)}.SaveRAM";
 		}
 
+		public static string SaveRamAbsolutePath(this PathEntryCollection collection, string system)
+		{
+			var pathEntry = collection[system, "Save RAM"]
+				?? collection[system, "Base"];
+
+			return collection.AbsolutePathFor(pathEntry.Path, system);
+		}
+
 		// Shenanigans
 		public static string RetroSaveRamAbsolutePath(this PathEntryCollection collection, string coreName)
 		{

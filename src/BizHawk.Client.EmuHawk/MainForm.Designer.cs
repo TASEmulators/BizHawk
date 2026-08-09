@@ -74,6 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			this.LoadCurrentSlotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.SaveRAMSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.FlushSaveRAMMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+			this.SaveSramAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.toolStripMenuItem2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
 			this.MovieSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
 			this.ReadonlyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -709,7 +710,8 @@ namespace BizHawk.Client.EmuHawk
 			// SaveRAMSubMenu
 			// 
 			this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FlushSaveRAMMenuItem});
+            this.FlushSaveRAMMenuItem,
+            this.SaveSramAsMenuItem});
 			this.SaveRAMSubMenu.Text = "Save &RAM";
 			this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.SaveRamSubMenu_DropDownOpened);
 			// 
@@ -717,6 +719,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
 			this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
+			// 
+			// SaveSramAsMenuItem
+			// 
+			this.SaveSramAsMenuItem.Text = "Save SRAM &As";
+			this.SaveSramAsMenuItem.Click += new System.EventHandler(this.SaveSramAsMenuItem_Click);
 			// 
 			// MovieSubMenu
 			// 
@@ -2716,6 +2723,7 @@ namespace BizHawk.Client.EmuHawk
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PSXOptionsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveRAMSubMenu;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx FlushSaveRAMMenuItem;
+		private BizHawk.WinForms.Controls.ToolStripMenuItemEx SaveSramAsMenuItem;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PSXDiscControlsMenuItem;
 		private BizHawk.WinForms.Controls.StatusLabelEx UpdateNotification;
 		private BizHawk.WinForms.Controls.ToolStripMenuItemEx PSXControllerSettingsMenuItem;
