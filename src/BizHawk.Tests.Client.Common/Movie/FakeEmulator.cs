@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -6,10 +8,9 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Tests.Client.Common.Movie
 {
 	[Core("Fake", "Author", false, false)]
-	internal class FakeEmulator : IEmulator, IStatable, IInputPollable
+	internal class FakeEmulator : IEmulator, IStatable, IInputPollable, IMemoryDomains
 	{
-		private BasicServiceProvider _serviceProvider;
-		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
+		public static readonly byte[] InitialMemory;
 
 		private static readonly ControllerDefinition _cd = new ControllerDefinition("fake controller")
 		{
@@ -21,7 +22,14 @@ namespace BizHawk.Tests.Client.Common.Movie
 		static FakeEmulator()
 		{
 			_cd.BuildMnemonicsCache("fake");
+
+			InitialMemory = new byte[16];
+			for (int i = 0; i < InitialMemory.Length; i++) InitialMemory[i] = (byte)(i + 1);
 		}
+
+		private BasicServiceProvider _serviceProvider;
+		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
+
 
 		public ControllerDefinition ControllerDefinition => _cd;
 
@@ -39,8 +47,26 @@ namespace BizHawk.Tests.Client.Common.Movie
 		private InputCallbackSystem _inputCallbacks = new();
 		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
+		private List<MemoryDomain> _domains;
+		public MemoryDomain MainMemory { get; set; }
+
+		public bool HasSystemBus => false;
+
+		public MemoryDomain SystemBus => throw new NotImplementedException();
+
+		int IReadOnlyCollection<MemoryDomain>.Count => 1;
+
+		public MemoryDomain this[int index] => _domains[index];
+
+		public MemoryDomain? this[string name] => name == MainMemory.Name ? MainMemory : null;
+
 		public FakeEmulator()
 		{
+			byte[] mem = new byte[InitialMemory.Length];
+			InitialMemory.CopyTo(mem, 0);
+			MainMemory = new MemoryDomainByteArray("main", MemoryDomain.Endian.Little, mem, true, 4);
+			_domains = new() { MainMemory };
+
 			_serviceProvider = new(this);
 		}
 
@@ -74,5 +100,9 @@ namespace BizHawk.Tests.Client.Common.Movie
 			writer.Write(LagCount);
 			writer.Write(IsLagFrame);
 		}
+
+		public bool Has(string name) => name == MainMemory.Name;
+		public IEnumerator<MemoryDomain> GetEnumerator() => _domains.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }

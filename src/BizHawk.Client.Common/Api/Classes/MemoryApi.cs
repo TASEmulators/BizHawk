@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common
 			var data = new byte[count];
 			using (d.EnterExit())
 			{
-				d.BulkPeekByte(addr.RangeToExclusive(addr + count), data);
+				d.BulkPeekByte(addr, data);
 			}
 			return SHA256Checksum.ComputeDigestHex(data);
 		}
@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 			var iSrc = Math.Min(Math.Max(0L, addr), d.Size);
 			var iDst = iSrc - addr;
 			var bytes = new byte[indexAfterLast - iSrc];
-			if (iSrc < indexAfterLast) using (d.EnterExit()) d.BulkPeekByte(iSrc.RangeToExclusive(indexAfterLast), bytes);
+			if (iSrc < indexAfterLast) using (d.EnterExit()) d.BulkPeekByte(iSrc, bytes);
 			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
 			if (bytes.Length == length) return bytes;
 			var newBytes = new byte[length];
@@ -343,5 +343,82 @@ namespace BizHawk.Client.Common
 
 		// goes here
 		public void WriteU32(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 4, domain);
+
+		public void BulkReadU8(long addr, Span<byte> dst, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) throw new ArgumentOutOfRangeException(message: $"Attempted to read U8 values starting at address {addr:X}, which is outside the range of domain {d.Name}.", paramName: nameof(addr));
+			if (dst.IsEmpty) return;
+			ulong lastReqAddr = (ulong)(addr + dst.Length) - 1; // cannot overflow
+			if (lastReqAddr >= (ulong)d.Size) throw new Exception($"Attempted to read U8 values ending at address {lastReqAddr:X}, which is outside range of domain {d.Name}.");
+			using (d.EnterExit())
+			{
+				d.BulkPeekByte(addr, dst);
+			}
+		}
+
+		public void BulkReadU16(long addr, Span<ushort> dst, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) throw new ArgumentOutOfRangeException(message: $"Attempted to read U16 values starting at address {addr:X}, which is outside the range of domain {d.Name}.", paramName: nameof(addr));
+			if (dst.IsEmpty) return;
+			ulong lastReqAddr = (ulong)(addr + dst.Length * sizeof(ushort)) - 1; // cannot overflow
+			if (lastReqAddr >= (ulong)d.Size) throw new Exception($"Attempted to read U16 values ending at address {lastReqAddr:X}, which is outside range of domain {d.Name}.");
+			using (d.EnterExit())
+			{
+				d.BulkPeekUshort(addr, dst, _isBigEndian);
+			}
+		}
+		public void BulkReadU32(long addr, Span<uint> dst, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) throw new ArgumentOutOfRangeException(message: $"Attempted to read U32 values starting at address {addr:X}, which is outside the range of domain {d.Name}.", paramName: nameof(addr));
+			if (dst.IsEmpty) return;
+			ulong lastReqAddr = (ulong)(addr + dst.Length * sizeof(uint)) - 1; // cannot overflow
+			if (lastReqAddr >= (ulong)d.Size) throw new Exception($"Attempted to read U32 values ending at address {lastReqAddr:X}, which is outside range of domain {d.Name}.");
+			using (d.EnterExit())
+			{
+				d.BulkPeekUint(addr, dst, _isBigEndian);
+			}
+		}
+
+		public void BulkWriteU8(long addr, ReadOnlySpan<byte> values, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) throw new ArgumentOutOfRangeException(message: $"Attempted to write U8 values starting at address {addr:X}, which is outside the range of domain {d.Name}.", paramName: nameof(addr));
+			if (values.IsEmpty) return;
+			ulong lastReqAddr = (ulong)(addr + values.Length) - 1; // cannot overflow
+			if (lastReqAddr >= (ulong)d.Size) throw new Exception($"Attempted to write U8 values ending at address {lastReqAddr:X}, which is outside range of domain {d.Name}.");
+			using (d.EnterExit())
+			{
+				d.BulkPokeByte(addr, values);
+			}
+		}
+
+		public void BulkWriteU16(long addr, ReadOnlySpan<ushort> values, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) throw new ArgumentOutOfRangeException(message: $"Attempted to write U16 values starting at address {addr:X}, which is outside the range of domain {d.Name}.", paramName: nameof(addr));
+			if (values.IsEmpty) return;
+			ulong lastReqAddr = (ulong)(addr + values.Length * sizeof(ushort)) - 1; // cannot overflow
+			if (lastReqAddr >= (ulong)d.Size) throw new Exception($"Attempted to write U16 values ending at address {lastReqAddr:X}, which is outside range of domain {d.Name}.");
+			using (d.EnterExit())
+			{
+				d.BulkPokeUshort(addr, values, _isBigEndian);
+			}
+		}
+
+		public void BulkWriteU32(long addr, ReadOnlySpan<uint> values, string domain = null)
+		{
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) throw new ArgumentOutOfRangeException(message: $"Attempted to write U32 values starting at address {addr:X}, which is outside the range of domain {d.Name}.", paramName: nameof(addr));
+			if (values.IsEmpty) return;
+			ulong lastReqAddr = (ulong)(addr + values.Length * sizeof(uint)) - 1; // cannot overflow
+			if (lastReqAddr >= (ulong)d.Size) throw new Exception($"Attempted to write U32 values ending at address {lastReqAddr:X}, which is outside range of domain {d.Name}.");
+			using (d.EnterExit())
+			{
+				d.BulkPokeUint(addr, values, _isBigEndian);
+			}
+		}
 	}
 }

@@ -102,27 +102,31 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(long startAddress, Span<byte> values)
 		{
 			if (_addressMangler != 0)
 			{
-				base.BulkPeekByte(addresses, values);
+				base.BulkPeekByte(startAddress, values);
 				return;
 			}
 
-			var start = (ulong)addresses.Start;
-			var count = addresses.Count();
+			var start = (ulong)startAddress;
 
-			if (start < (ulong)Size && (start + count) <= (ulong)Size)
+			if (startAddress < Size && (start + (ulong)values.Length) <= (ulong)Size)
 			{
 				using (_monitor.EnterExit())
 				{
-					Marshal.Copy(Z.US((ulong)_data + start), values, 0, (int)count);
+					Span<byte> data = new(Z.US((ulong)_data + start).ToPointer(), values.Length);
+					data.CopyTo(values);
 				}
+			}
+			else if (startAddress < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(startAddress));
 			}
 			else
 			{
-				throw new ArgumentOutOfRangeException(nameof(addresses));
+				throw new ArgumentOutOfRangeException(nameof(values));
 			}
 		}
 	}
@@ -219,25 +223,28 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(long startAddress, Span<byte> values)
 		{
 			if (_addressMangler != 0)
 			{
-				base.BulkPeekByte(addresses, values);
+				base.BulkPeekByte(startAddress, values);
 				return;
 			}
 
-			var start = (ulong)addresses.Start;
-			var count = addresses.Count();
+			var start = (ulong)startAddress;
 
-			if (start < (ulong)Size && (start + count) <= (ulong)Size)
+			if (startAddress < Size && (start + (ulong)values.Length) <= (ulong)Size)
 			{
 				fixed (byte* p = values)
-					_access.Access((IntPtr)p, (long)start, (long)count, false);
+					_access.Access((IntPtr)p, (long)start, values.Length, false);
+			}
+			else if (startAddress < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(startAddress));
 			}
 			else
 			{
-				throw new ArgumentOutOfRangeException(nameof(addresses));
+				throw new ArgumentOutOfRangeException(nameof(values));
 			}
 		}
 	}
@@ -329,16 +336,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_write32.Access((IntPtr)(&val), addr, 1);
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(long startAddress, Span<byte> values)
 		{
-			if ((ulong)addresses.Start + addresses.Count() > (ulong)Size || addresses.Start < 0) throw new ArgumentOutOfRangeException(nameof(addresses), message: AddressRangeError);
-			if (addresses.Count() > (uint)values.Length) throw new ArgumentException(message: $"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
+			if ((ulong)startAddress + (ulong)values.Length > (ulong)Size) throw new ArgumentOutOfRangeException(nameof(values), message: AddressRangeError);
+			else if (startAddress < 0) throw new ArgumentOutOfRangeException(nameof(startAddress), message: AddressRangeError);
 
 			fixed (byte* p = values)
-				_read8.Access((IntPtr)p, addresses.Start, (long)addresses.Count());
+				_read8.Access((IntPtr)p, startAddress, values.Length);
 		}
 
-		public void BulkPokeByte(long addr, Span<byte> values)
+		public override void BulkPokeByte(long addr, ReadOnlySpan<byte> values)
 		{
 			if ((ulong)addr + (ulong)values.Length > (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr), message: AddressRangeError);
 
@@ -346,17 +353,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_write8.Access((IntPtr)p, addr, values.Length);
 		}
 
-		public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+		public override void BulkPeekUshort(long startAddress, Span<ushort> values, bool bigEndian)
 		{
-			if ((ulong)addresses.Start + addresses.Count() > (ulong)Size || addresses.Start < 0) throw new ArgumentOutOfRangeException(nameof(addresses), message: AddressRangeError);
-			if (addresses.Count() > (uint)values.Length * sizeof(ushort)) throw new ArgumentException(message: $"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
-			if ((addresses.Count() & 1) != 0) throw new ArgumentOutOfRangeException(nameof(addresses), "Requested byte count must be divisible by 2."); // TODO: The caller should be specifying the count of ushorts, not the count of bytes!
+			if ((ulong)startAddress + (ulong)values.Length * sizeof(ushort) > (ulong)Size) throw new ArgumentOutOfRangeException(nameof(values), message: AddressRangeError);
+			else if (startAddress < 0) throw new ArgumentOutOfRangeException(nameof(startAddress), message: AddressRangeError);
 
 			fixed (ushort* p = values)
-				_read16.Access((IntPtr)p, addresses.Start, (long)addresses.Count() / sizeof(ushort));
+				_read16.Access((IntPtr)p, startAddress, values.Length);
 		}
 
-		public void BulkPokeUshort(long addr, Span<ushort> values)
+		public override void BulkPokeUshort(long addr, ReadOnlySpan<ushort> values, bool bigEndian)
 		{
 			if ((ulong)addr + (ulong)values.Length * sizeof(ushort) > (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr), message: AddressRangeError);
 
@@ -364,17 +370,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_write16.Access((IntPtr)p, addr, values.Length);
 		}
 
-		public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		public override void BulkPeekUint(long startAddress, Span<uint> values, bool bigEndian)
 		{
-			if ((ulong)addresses.Start + addresses.Count() > (ulong)Size || addresses.Start < 0) throw new ArgumentOutOfRangeException(nameof(addresses), message: AddressRangeError);
-			if (addresses.Count() > (uint)values.Length * sizeof(uint)) throw new ArgumentException(message: $"Length of {nameof(values)} must be at least {nameof(addresses)} count.", nameof(values));
-			if ((addresses.Count() & 3) != 0) throw new ArgumentOutOfRangeException(nameof(addresses), "Requested byte count must be divisible by 4."); // TODO: The caller should be specifying the count of uints, not the count of bytes!
+			if ((ulong)startAddress + (ulong)values.Length * sizeof(uint) > (ulong)Size) throw new ArgumentOutOfRangeException(nameof(values), message: AddressRangeError);
+			else if (startAddress < 0) throw new ArgumentOutOfRangeException(nameof(startAddress), message: AddressRangeError);
 
 			fixed (uint* p = values)
-				_read32.Access((IntPtr)p, addresses.Start, (long)addresses.Count() / sizeof(uint));
+				_read32.Access((IntPtr)p, startAddress, values.Length);
 		}
 
-		public void BulkPokeUint(long addr, Span<uint> values)
+		public override void BulkPokeUint(long addr, ReadOnlySpan<uint> values, bool bigEndian)
 		{
 			if ((ulong)addr + (ulong)values.Length * sizeof(uint) > (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr), message: AddressRangeError);
 

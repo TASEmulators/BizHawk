@@ -25,9 +25,16 @@ namespace BizHawk.Client.Common
 		int ReadS32(long addr, string domain = null);
 
 		uint ReadU8(long addr, string domain = null);
+		void BulkReadU8(long addr, Span<byte> dst, string domain = null);
+
 		uint ReadU16(long addr, string domain = null);
+		void BulkReadU16(long addr, Span<ushort> dst, string domain = null);
+
 		uint ReadU24(long addr, string domain = null);
+
 		uint ReadU32(long addr, string domain = null);
+		void BulkReadU32(long addr, Span<uint> dst, string domain = null);
+
 
 		void WriteByte(long addr, uint value, string domain = null);
 		void WriteByteRange(long addr, IReadOnlyList<byte> memoryblock, string domain = null);
@@ -39,8 +46,14 @@ namespace BizHawk.Client.Common
 		void WriteS32(long addr, int value, string domain = null);
 
 		void WriteU8(long addr, uint value, string domain = null);
+		void BulkWriteU8(long addr, ReadOnlySpan<byte> values, string domain = null);
+
 		void WriteU16(long addr, uint value, string domain = null);
+		void BulkWriteU16(long addr, ReadOnlySpan<ushort> values, string domain = null);
+
 		void WriteU24(long addr, uint value, string domain = null);
+
 		void WriteU32(long addr, uint value, string domain = null);
+		void BulkWriteU32(long addr, ReadOnlySpan<uint> values, string domain = null);
 	}
 }

@@ -1,7 +1,5 @@
 ﻿#nullable disable
 
-using System.Runtime.InteropServices;
-
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
@@ -10,10 +8,16 @@ namespace BizHawk.Emulation.Common
 	{
 		private Action<long, byte> _poke;
 
+		public delegate void BulkBytePeekDel(long startAddress, Span<byte> values);
+
+		public delegate void BulkUshortPeekDel(long startAddress, Span<ushort> values, bool bigEndian);
+
+		public delegate void BulkUintPeekDel(long startAddress, Span<uint> values, bool bigEndian);
+
 		// TODO: use an array of Ranges
-		private Action<Range<long>, byte[]> _bulkPeekByte { get; set; }
-		private Action<Range<long>, bool, ushort[]> _bulkPeekUshort { get; set; }
-		private Action<Range<long>, bool, uint[]> _bulkPeekUint { get; set; }
+		private BulkBytePeekDel _bulkPeekByte { get; set; }
+		private BulkUshortPeekDel _bulkPeekUshort { get; set; }
+		private BulkUintPeekDel _bulkPeekUint { get; set; }
 
 		public Func<long, byte> Peek { get; set; }
 
@@ -37,39 +41,39 @@ namespace BizHawk.Emulation.Common
 			_poke?.Invoke(addr, val);
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(long startAddress, Span<byte> values)
 		{
 			if (_bulkPeekByte != null)
 			{
-				_bulkPeekByte.Invoke(addresses, values);
+				_bulkPeekByte.Invoke(startAddress, values);
 			}
 			else
 			{
-				base.BulkPeekByte(addresses, values);
+				base.BulkPeekByte(startAddress, values);
 			}
 		}
 
-		public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+		public override void BulkPeekUshort(long startAddress, Span<ushort> values, bool bigEndian)
 		{
 			if (_bulkPeekUshort != null)
 			{
-				_bulkPeekUshort.Invoke(addresses, bigEndian, values);
+				_bulkPeekUshort.Invoke(startAddress, values, bigEndian);
 			}
 			else
 			{
-				base.BulkPeekUshort(addresses, bigEndian, values);
+				base.BulkPeekUshort(startAddress, values, bigEndian);
 			}
 		}
 
-		public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		public override void BulkPeekUint(long startAddress, Span<uint> values, bool bigEndian)
 		{
 			if (_bulkPeekUint != null)
 			{
-				_bulkPeekUint.Invoke(addresses, bigEndian, values);
+				_bulkPeekUint.Invoke(startAddress, values, bigEndian);
 			}
 			else
 			{
-				base.BulkPeekUint(addresses, bigEndian, values);
+				base.BulkPeekUint(startAddress, values, bigEndian);
 			}
 		}
 
@@ -80,9 +84,9 @@ namespace BizHawk.Emulation.Common
 			Func<long, byte> peek,
 			Action<long, byte> poke,
 			int wordSize,
-			Action<Range<long>, byte[]> bulkPeekByte = null,
-			Action<Range<long>, bool, ushort[]> bulkPeekUshort = null,
-			Action<Range<long>, bool, uint[]> bulkPeekUint = null)
+			BulkBytePeekDel bulkPeekByte = null,
+			BulkUshortPeekDel bulkPeekUshort = null,
+			BulkUintPeekDel bulkPeekUint = null)
 		{
 			Name = name;
 			EndianType = endian;
@@ -210,18 +214,20 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public override void BulkPeekByte(Range<long> addresses, byte[] values)
+		public override void BulkPeekByte(long startAddress, Span<byte> values)
 		{
-			var start = (ulong)addresses.Start;
-			var count = addresses.Count();
-
-			if (start < (ulong)Size && (start + count) <= (ulong)Size)
+			if (startAddress < Size && (startAddress + values.Length) <= Size)
 			{
-				Marshal.Copy((IntPtr)((ulong)Data + start), values, 0, (int)count);
+				Span<byte> data = new(((IntPtr)((long)Data + startAddress)).ToPointer(), values.Length);
+				data.CopyTo(values);
+			}
+			else if (startAddress < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(startAddress));
 			}
 			else
 			{
-				throw new ArgumentOutOfRangeException(nameof(addresses));
+				throw new ArgumentOutOfRangeException(nameof(values));
 			}
 		}
 
