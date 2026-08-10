@@ -217,10 +217,10 @@ namespace BizHawk.Client.EmuHawk
 			DOSSubMenu.DropDownOpened += (_, _) => DOSExportHDDImageToolStripMenuItem.Enabled = Emulator is DOSBox dosbox && dosbox.HasValidHDD();
 			_ = MainformMenu.Items.InsertAfter(NullHawkVSysSubmenu, insert: DOSSubMenu);
 
-			MainStatusBar.MouseEnter += (s, e) => _mouseOverMenu = true;
-			MainStatusBar.MouseLeave += (s, e) => _mouseOverMenu = false;
-			MainformMenu.MouseEnter += (s, e) => _mouseOverMenu = true;
-			MainformMenu.MouseLeave += (s, e) => _mouseOverMenu = false;
+			MainStatusBar.MouseEnter += (s, e) => InputManager.MouseOverMenu = true;
+			MainStatusBar.MouseLeave += (s, e) => InputManager.MouseOverMenu = false;
+			MainformMenu.MouseEnter += (s, e) => InputManager.MouseOverMenu = true;
+			MainformMenu.MouseLeave += (s, e) => InputManager.MouseOverMenu = false;
 
 			// Hide Status bar icons and general StatusBar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -493,7 +493,6 @@ namespace BizHawk.Client.EmuHawk
 						(b & MouseButtons.XButton2) != 0
 					);
 				},
-				GetMouseOverMenu = () => _mouseOverMenu,
 			};
 			FirmwareManager = new FirmwareManager();
 			movieSession = MovieSession = new MovieSession(
@@ -1115,11 +1114,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool BlockFrameAdvance { get; set; }
-
-		/// <summary>
-		/// This is used to prevent mouse clicks from being used as input when clicking on menu items.
-		/// </summary>
-		private bool _mouseOverMenu = false;
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }
