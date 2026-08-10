@@ -101,25 +101,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadReg2xxx(int addr)
 		{
-			if ((addr & 7) == 4)
+			if ((addr & 0b111) is 0b100)
 			{
 				return NES.ppu.ppu_open_bus; // The Vs. System uses an RGB PPU, which cannot read from $2004
 			}
 			else
 			{
-				return NES.ppu.ReadReg(addr & 7);
+				return NES.ppu.ReadReg(addr & 0b111);
 			}
 		}
 
 		public override byte PeekReg2xxx(int addr)
 		{
-			if ((addr & 7) == 4)
+			if ((addr & 0b111) is 0b100)
 			{
 				return NES.ppu.ppu_open_bus; // The Vs. System uses an RGB PPU, which cannot read from $2004
 			}
 			else
 			{
-				return NES.ppu.PeekReg(addr & 7);
+				return NES.ppu.PeekReg(addr & 0b111);
 			}
 		}
 
