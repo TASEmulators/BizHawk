@@ -55,6 +55,11 @@ namespace BizHawk.Client.Common
 
 		public Func<(Point Pos, long Scroll, bool LMB, bool MMB, bool RMB, bool X1MB, bool X2MB)> GetMainFormMouseInfo { get; set; }
 
+		/// <summary>
+		/// This is used to prevent mouse clicks from being used as input when clicking on menu items.
+		/// </summary>
+		public Func<bool> GetMouseOverMenu { get; set; }
+
 		public void SyncControls(IEmulator emulator, IMovieSession session, Config config)
 		{
 			var def = emulator.ControllerDefinition;
@@ -166,6 +171,11 @@ namespace BizHawk.Client.Common
 				{
 					processSpecialInput(ie, false);
 					continue;
+				}
+
+				if (ie.EventType == InputEventType.Press && ie.ToString().Contains("WMouse L"))
+				{
+					if (GetMouseOverMenu?.Invoke() == true) continue;
 				}
 
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
