@@ -1742,6 +1742,8 @@ namespace BizHawk.Client.EmuHawk
 		public int AutoFlushSaveRamIn { get; set; }
 		private bool AutoFlushSaveRamFailed;
 
+		private int _lastSaveRamFlush = -1;
+
 		private void SetStatusBar()
 		{
 			if (!_inFullscreen)
@@ -1956,7 +1958,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					return FileWriter.Write(normalPath, saveram, Config.BackupSaveram ? $"{normalPath}.bak" : null);
+					FileWriteResult result = FileWriter.Write(normalPath, saveram, Config.BackupSaveram ? $"{normalPath}.bak" : null);
+					if (!result.IsError) _lastSaveRamFlush = Emulator.Frame;
+					try { File.Delete(autoPath); } catch { /* nothing */ }
+					return result;
 				}
 			}
 
@@ -3796,6 +3801,7 @@ namespace BizHawk.Client.EmuHawk
 						LoadSaveRam();
 						AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 					}
+					_lastSaveRamFlush = -1;
 
 					Tools.Restart(Config, Emulator, Game);
 
@@ -3958,6 +3964,28 @@ namespace BizHawk.Client.EmuHawk
 					if (clearResult == TryAgainResult.Canceled)
 					{
 						return false;
+					}
+				}
+			}
+			else if (!_hadMovie)
+			{
+				ISaveRam sramService = Emulator.AsSaveRam();
+				// if (sramService.SaveRamModified) // not a good idea because some core always return true (do any return false negative?)
+				if (sramService != null && _lastSaveRamFlush < Emulator.Frame)
+				{
+					if (this.ShowMessageBox2(
+						text: "Flsuh Save RAM?",
+						caption: "Save?",
+						icon: EMsgBoxIcon.Question))
+					{
+						TryAgainResult saveSramResult = this.DoWithTryAgainBox(() => FlushSaveRAM(), "Failed to save Save RAM.");
+						if (saveSramResult == TryAgainResult.Canceled) return false;
+					}
+					else
+					{
+						// either way, we don't need to keep a backup if the user explicitly said they don't want a save
+						string normalPath = CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game);
+						try { File.Delete(MakeSaveRamAutosavePath(normalPath)); } catch { /* nothing */ }
 					}
 				}
 			}
