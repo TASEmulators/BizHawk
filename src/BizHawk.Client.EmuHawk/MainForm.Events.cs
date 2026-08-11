@@ -338,12 +338,11 @@ namespace BizHawk.Client.EmuHawk
 				filter: filterset);
 			if (shouldSaveResult is not null)
 			{
-				byte[] saveram = Emulator.AsSaveRam().CloneSaveRam();
-				if (saveram == null)
-					return;
-				ShowMessageIfError(
-					() => FileWriter.Write(shouldSaveResult, saveram),
-					"Unable to save Save RAM.");
+				string normalPath = CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game);
+				string oldAutoPath = MakeSaveRamAutosavePath(normalPath);
+				CurrentlyOpenRomArgs = CurrentlyOpenRomArgs with { SaveRamPath = shouldSaveResult };
+				FlushSaveRAMMenuItem_Click(sender, e);
+				try { File.Delete(oldAutoPath); } catch { /* nothing */ }
 			}
 		}
 
