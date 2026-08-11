@@ -2980,7 +2980,7 @@ namespace BizHawk.Client.EmuHawk
 
 				RA?.OnFrameAdvance();
 
-				if (Config.AutosaveSaveRAM)
+				if (Config.AutosaveSaveRAM && !_hadMovie)
 				{
 					AutoFlushSaveRamIn--;
 					if (AutoFlushSaveRamIn <= 0)
