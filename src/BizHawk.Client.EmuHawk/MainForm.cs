@@ -1942,16 +1942,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSaveRam())
 			{
-				string path = CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game);
-				if (autosave)
-				{
-					path = MakeSaveRamAutosavePath(path);
-				}
+				string normalPath = CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game);
+				string autoPath = MakeSaveRamAutosavePath(normalPath);
 
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 				if (saveram == null)
 					return new();
-				return FileWriter.Write(path, saveram, $"{path}.bak");
+
+				if (autosave)
+				{
+					// No backup: autosave is already a backup
+					return FileWriter.Write(autoPath, saveram);
+				}
+				else
+				{
+					return FileWriter.Write(normalPath, saveram, Config.BackupSaveram ? $"{normalPath}.bak" : null);
+				}
 			}
 
 			return new();
@@ -3954,13 +3960,6 @@ namespace BizHawk.Client.EmuHawk
 						return false;
 					}
 				}
-			}
-			else if (Emulator.HasSaveRam() && !_hadMovie)
-			{
-				TryAgainResult flushResult = this.DoWithTryAgainBox(
-					() => FlushSaveRAM(),
-					"Failed flushing the game's Save RAM to your disk.");
-				if (flushResult == TryAgainResult.Canceled) return false;
 			}
 			_hadMovie = false;
 
