@@ -482,6 +482,9 @@ namespace BizHawk.Client.Common
 			return new KeyValuePair<int, Stream>(closestState!.Frame, closestState.Read());
 		}
 
+		public bool HasCheatedState(int frame)
+			=> throw new NotImplementedException();
+
 		public bool HasState(int frame)
 		{
 			return StateCache.Contains(frame);
@@ -559,6 +562,9 @@ namespace BizHawk.Client.Common
 				bw.Write(data);
 			}
 		}
+
+		public void SetCheatedFlagStarting(int frame)
+			=> throw new NotImplementedException();
 
 		public void Dispose()
 		{

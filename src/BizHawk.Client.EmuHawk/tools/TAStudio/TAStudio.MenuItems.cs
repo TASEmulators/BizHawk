@@ -1114,6 +1114,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						bool keep = DialogController.ShowMessageBox2("Attempt to keep old states?", "Keep old states?");
 						CurrentTasMovie.TasStateManager = CurrentTasMovie.TasStateManager.UpdateSettings(s.CurrentStateManagerSettings, keep);
+						CurrentTasMovie.SetUpPokeListener();
 					}
 					Config.Movies.DefaultTasStateManagerSettings = s.DefaultStateManagerSettings;
 

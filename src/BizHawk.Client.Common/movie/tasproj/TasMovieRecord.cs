@@ -2,6 +2,7 @@
 {
 	public interface ITasMovieRecord
 	{
+		bool Cheated { get; }
 		bool? Lagged { get; }
 		bool? WasLagged { get; }
 		string LogEntry { get; }
@@ -10,6 +11,7 @@
 
 	public class TasMovieRecord : ITasMovieRecord
 	{
+		public bool Cheated { get; internal set; }
 		public bool? Lagged { get; internal set; }
 		public bool? WasLagged { get; internal set; }
 		public string LogEntry { get; internal set; }
