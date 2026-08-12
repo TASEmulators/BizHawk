@@ -22,7 +22,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[CoreConstructor(VSystemID.Raw.Arcade)]
 		public MAME(CoreLoadParameters<object, MAMESyncSettings> lp)
 		{
+#pragma warning disable CS0618
 			_gameFileName = Path.GetFileName(lp.Roms[0].RomPath.SubstringAfter('|')).ToLowerInvariant();
+#pragma warning restore CS0618
 			_syncSettings = lp.SyncSettings ?? new();
 
 			ServiceProvider = new BasicServiceProvider(this);
@@ -174,8 +176,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// mame expects chd files in a folder of the game name
 			string MakeFileName(IRomAsset rom)
 				=> rom.Extension.ToLowerInvariant() is ".chd"
+#pragma warning disable CS0618
 					? gameName + '/' + Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant()
 					: Path.GetFileNameWithoutExtension(rom.RomPath.SubstringAfter('|')).ToLowerInvariant() + rom.Extension.ToLowerInvariant();
+#pragma warning restore CS0618
 
 			foreach (var rom in roms)
 			{
