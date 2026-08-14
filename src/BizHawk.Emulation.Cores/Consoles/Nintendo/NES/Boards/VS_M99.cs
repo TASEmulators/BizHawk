@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				addr -= 0x2000;
+				addr &= 0x0FFF;
 				if (addr<0x800)
 				{
 					return NES.CIRAM[addr];
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				addr -= 0x2000;
+				addr &= 0x0FFF;
 				if (addr < 0x800)
 				{
 					NES.CIRAM[addr] = value;
@@ -96,6 +96,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					CIRAM_VS[addr-0x800] = value;
 				}
+			}
+		}
+
+		public override byte ReadReg2xxx(int addr)
+		{
+			if ((addr & 0b111) is 0b100)
+			{
+				return NES.ppu.ppu_open_bus; // The Vs. System uses an RGB PPU, which cannot read from $2004
+			}
+			else
+			{
+				return NES.ppu.ReadReg(addr & 0b111);
+			}
+		}
+
+		public override byte PeekReg2xxx(int addr)
+		{
+			if ((addr & 0b111) is 0b100)
+			{
+				return NES.ppu.ppu_open_bus; // The Vs. System uses an RGB PPU, which cannot read from $2004
+			}
+			else
+			{
+				return NES.ppu.PeekReg(addr & 0b111);
 			}
 		}
 
