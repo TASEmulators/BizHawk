@@ -41,12 +41,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int Value => 0;
+		public override long Value
+			=> default;
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override uint Previous => 0;
+		public override ulong Previous
+			=> default;
 
 		/// <summary>
 		/// Ignore that stuff
@@ -104,7 +106,8 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override uint MaxValue => 0;
+		public override ulong MaxValue
+			=> default;
 
 		/// <summary>
 		/// Ignore that stuff

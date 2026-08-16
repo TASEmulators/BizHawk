@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This class holds a watch i.e. something inside a <see cref="MemoryDomain"/> identified by an address
-	/// with a specific size (8, 16 or 32bits).
+	/// with a specific size (8, 16, 32, or 64 bits).
 	/// This is an abstract class
 	/// </summary>
 	[DebuggerDisplay("Note={Notes}, Value={ValueString}")]
@@ -117,7 +117,8 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Generates a new <see cref="Watch"/> instance
-		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
+		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/>, <see cref="QWordWatch"/>,
+		/// or <see cref="SeparatorWatch"/>
 		/// </summary>
 		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
 		/// <param name="address">The address into the <see cref="MemoryDomain"/></param>
@@ -129,7 +130,16 @@ namespace BizHawk.Client.Common
 		/// <param name="prev">Previous value</param>
 		/// <param name="changeCount">Number of changes occurs in current <see cref="Watch"/></param>
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, WatchDisplayType type, bool bigEndian, string note = "", long value = 0, long prev = 0, int changeCount = 0)
+		public static Watch GenerateWatch(
+			MemoryDomain domain,
+			long address,
+			WatchSize size,
+			WatchDisplayType type,
+			bool bigEndian,
+			string note = "",
+			long value = 0,
+			long prev = 0,
+			int changeCount = 0)
 		{
 			return size switch
 			{
@@ -137,6 +147,7 @@ namespace BizHawk.Client.Common
 				WatchSize.Byte => new ByteWatch(domain, address, type, bigEndian, note, (byte) value, (byte) prev, changeCount),
 				WatchSize.Word => new WordWatch(domain, address, type, bigEndian, note, (ushort) value, (ushort) prev, changeCount),
 				WatchSize.DWord => new DWordWatch(domain, address, type, bigEndian, note, (uint) value, (uint) prev, changeCount),
+				WatchSize.QWord => new QWordWatch(domain, address, type, bigEndian, note, (ulong) value, (ulong) prev, changeCount),
 				_ => SeparatorWatch.NewSeparatorWatch(note),
 			};
 		}
@@ -285,6 +296,9 @@ namespace BizHawk.Client.Common
 				: 0;
 		}
 
+		protected ulong GetQWord()
+			=> IsValid ? _domain.PeekUlong(Address, BigEndian) : 0UL;
+
 		protected void PokeByte(byte val)
 		{
 			if (IsValid)
@@ -307,6 +321,11 @@ namespace BizHawk.Client.Common
 			{
 				_domain.PokeUint(Address, val, BigEndian);
 			}
+		}
+
+		protected void PokeQWord(ulong val)
+		{
+			if (IsValid) _domain.PokeUlong(Address, val, BigEndian);
 		}
 
 		/// <summary>
@@ -430,12 +449,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the maximum possible value
 		/// </summary>
-		public abstract uint MaxValue { get; }
+		public abstract ulong MaxValue { get; }
 
 		/// <summary>
 		/// Gets the current value
 		/// </summary>
-		public abstract int Value { get; }
+		public abstract long Value { get; }
 
 		/// <summary>
 		/// Gets a string representation of the current value
@@ -458,7 +477,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the previous value
 		/// </summary>
-		public abstract uint Previous { get; }
+		public abstract ulong Previous { get; }
 
 		/// <summary>
 		/// Gets a string representation of the previous value
@@ -581,6 +600,7 @@ namespace BizHawk.Client.Common
 					WatchSize.Byte => 'b',
 					WatchSize.Word => 'w',
 					WatchSize.DWord => 'd',
+					WatchSize.QWord => 'q',
 					_ => 'S',
 				};
 			}
@@ -594,6 +614,7 @@ namespace BizHawk.Client.Common
 				'b' => WatchSize.Byte,
 				'w' => WatchSize.Word,
 				'd' => WatchSize.DWord,
+				'q' => WatchSize.QWord,
 				_ => WatchSize.Separator,
 			};
 		}
@@ -635,7 +656,7 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		public bool IsSplittable => Size is WatchSize.Word or WatchSize.DWord
-			&& Type is WatchDisplayType.Hex or WatchDisplayType.Binary;
+		public bool IsSplittable
+			=> Size >= WatchSize.Word && Type is WatchDisplayType.Hex or WatchDisplayType.Binary;
 	}
 }
