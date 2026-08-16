@@ -284,6 +284,22 @@ namespace BizHawk.Emulation.Cores.Libretro
 			LAST,
 		}
 
+		public enum retro_hw_context_type
+		{
+			NONE             = 0,
+			OPENGL           = 1,
+			OPENGLES2        = 2,
+			OPENGL_CORE      = 3,
+			OPENGLES3        = 4,
+			OPENGLES_VERSION = 5,
+
+			VULKAN           = 6,
+			D3D11            = 7,
+			D3D10            = 8,
+			D3D12            = 9,
+			D3D9             = 10,
+		}
+
 		public enum RETRO_REGION : uint
 		{
 			NTSC = 0,
@@ -506,5 +522,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		[BizImport(cc)]
 		public abstract void LibretroBridge_SetFrameTime(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_HWContextReset(IntPtr cbHandler);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_HWContextDestroy(IntPtr cbHandler);
+
+		public delegate IntPtr GetGLProcAddr(string proc);
+		public delegate ulong GetCurrentFramebufferFunc();
+		public delegate void InitializeHardwareContextFunc(LibretroApi.retro_hw_context_type contextType, int major, int minor, bool depth);
+
+		[BizImport(cc)]
+		public abstract void LibretroBridge_SetGLCallbacks(IntPtr cbHandler, GetGLProcAddr getGLProcAddressCb, GetCurrentFramebufferFunc getFramebufferCb, InitializeHardwareContextFunc initializeHardwareContextCb);
 	}
 }

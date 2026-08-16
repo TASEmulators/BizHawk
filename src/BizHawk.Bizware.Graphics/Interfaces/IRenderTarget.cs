@@ -12,4 +12,10 @@ namespace BizHawk.Bizware.Graphics
 		/// </summary>
 		void Bind();
 	}
+
+	public interface IFBOWithTexture : IRenderTarget
+	{
+		uint FBO { get; }
+		uint TexID { get; }
+	}
 }

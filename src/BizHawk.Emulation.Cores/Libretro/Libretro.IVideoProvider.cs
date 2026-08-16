@@ -63,4 +63,31 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public int VsyncNumerator { get; private set; }
 		public int VsyncDenominator { get; private set; }
 	}
+
+	public class Libretro_IGLTextureProvider : IGLTextureProvider
+	{
+		private readonly LibretroHost _host;
+
+		public Libretro_IGLTextureProvider(LibretroHost host)
+		{
+			_host = host;
+		}
+
+		public int GetGLTexture() => (int)_host.fboObject.TextureId;
+
+		public int[] GetVideoBuffer()
+		{
+			var videoBuffer = _host.GetVideoBuffer();
+			_host.openGLProvider.ReadFBO(_host.fboObject, BufferWidth, BufferHeight, videoBuffer.AsSpan());
+			return videoBuffer;
+		}
+
+		public int VirtualWidth => _host.VirtualWidth;
+		public int VirtualHeight => _host.VirtualHeight;
+		public int BufferWidth => _host.BufferWidth;
+		public int BufferHeight => _host.BufferHeight;
+		public int VsyncNumerator => _host.VsyncNumerator;
+		public int VsyncDenominator => _host.VsyncDenominator;
+		public int BackgroundColor => _host.BackgroundColor;
+	}
 }
