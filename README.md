@@ -353,7 +353,7 @@ MSX | **MSXHawk**
 N64 | **Ares64**, Mupen64Plus
 NDS | **melonDS**
 Neo Geo Pocket | **NeoPop**
-NES | **NesHawk**, QuickNES
+NES | **NesHawk**, quickerNES
 Odyssey² | **O2Hawk**
 PC-FX | **T.S.T.**
 Playstation (PSX) | **Nymashock**, **Octoshock**
@@ -415,7 +415,7 @@ Unless specified, the below emulators are all available for both Windows and Lin
 	* [Mupen64Plus](https://mupen64plus.org) for N64
 	* [mGBA](https://mgba.io) for GBA and GB/C
 	* [PicoDrive](https://github.com/irixxxx/picodrive) for Sega's 8- and 16-bit consoles
-	* [QuickNES](https://github.com/kode54/QuickNES) for NES/Famicom
+	* [quickerNES](https://github.com/SergioMartin86/quickerNES) for NES/Famicom
 	* [SameBoy](https://sameboy.github.io) for GB/C
 	* [Stella](https://stella-emu.github.io) for Atari VCS/2600
 <!--* A full list of libraries used by BizHawk can be found under `Help` > `About...` from within EmuHawk, or in the bundled `licences.md` file.--><!-- TODO that -->
