@@ -72,10 +72,6 @@
 [submodule "ExternalProjects/SDL2/libusb"]
 	path = ExternalProjects/SDL2/libusb
 	url = https://github.com/libusb/libusb.git
-[submodule "quicknes/core"]
-	path = quicknes/core
-	url = https://github.com/TASEmulators/quickerNES.git
-	branch = main
 [submodule "waterbox/gpgx/Genesis-Plus-GX"]
 	path = waterbox/gpgx/Genesis-Plus-GX
 	url = https://github.com/TASEmulators/Genesis-Plus-GX.git

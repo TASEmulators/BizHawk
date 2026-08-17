@@ -11,11 +11,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[PortedCore(
-		name: CoreNames.QuickNes,
-		author: "SergioMartin86, kode54, Blargg",
-		portedVersion: "1.0.0",
-		portedUrl: "https://github.com/SergioMartin86/quickerNES")]
+	[PortedCore(CoreNames.QuickNes, "Shay Green, kode54", "0.7.0", "https://github.com/kode54/QuickNES")]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public sealed partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IBoardInfo, IVideoLogicalOffsets, IStatable, IDebuggable,
 		ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, INESPPUViewable
@@ -25,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			var resolver = new DynamicLibraryImportResolver(
 				$"libquicknes{(OSTailoredCode.IsUnixHost ? ".so" : ".dll")}", hasLimitedLifetime: false);
 			QN = BizInvoker.GetInvoker<LibQuickNES>(resolver, CallingConventionAdapters.Native);
+			QN.qn_setup_mappers();
 		}
 
 		[CoreConstructor(VSystemID.Raw.NES)]
@@ -48,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				InitMemoryDomains();
 
 				int mapper = 0;
-				string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
+				string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper))!;
 				Console.WriteLine($"{CoreNames.QuickNes}: Booted with Mapper #{mapper} \"{mappername}\"");
 				BoardName = mappername;
 				PutSettings(settings ?? new QuickNESSettings());
@@ -82,207 +80,74 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			ControllerDefinition def = new("NES Controller");
 
-			// Function to add gamepad buttons
-			void AddButtons(IEnumerable<(string PrefixedName, uint Bitmask)> entries)
-				=> def.BoolButtons.AddRange(entries.Select(static p => p.PrefixedName));
+			if (_syncSettings.LeftPortConnected || _syncSettings.RightPortConnected)
+				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
+			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)
+				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
 
-			// Parsing Port1 inputs
-
-			switch (_syncSettings.Port1)
-			{
-				case Port1PeripheralOption.Gamepad:
-
-					// Adding set of gamepad buttons (P1)
-					AddButtons(GamepadButtons[0]);
-
-					break;
-
-				case Port1PeripheralOption.FourScore:
-
-					// Adding set of gamepad buttons (P1)
-					AddButtons(FourScoreButtons[0]);
-
-					break;
-
-				case Port1PeripheralOption.ArkanoidNES:
-
-					// Adding Arkanoid Paddle potentiometer
-					def.AddAxis("P2 Paddle", 0.RangeTo(160), 80);
-
-					// Adding Arkanoid Fire button
-					def.BoolButtons.Add("P2 Fire");
-
-					break;
-
-				case Port1PeripheralOption.ArkanoidFamicom:
-
-					// Adding set of gamepad buttons (P1)
-					AddButtons(GamepadButtons[0]);
-
-					// Adding dummy set of P2 buttons (not yet supported)
-					def.BoolButtons.Add("P2 Up");
-					def.BoolButtons.Add("P2 Down");
-					def.BoolButtons.Add("P2 Left");
-					def.BoolButtons.Add("P2 Right");
-					def.BoolButtons.Add("P2 B");
-					def.BoolButtons.Add("P2 A");
-					def.BoolButtons.Add("P2 M"); // Microphone
-
-					// Adding Arkanoid Paddle potentiometer
-					def.AddAxis("P3 Paddle", 0.RangeTo(160), 80);
-
-					// Adding Arkanoid Fire button
-					def.BoolButtons.Add("P3 Fire");
-
-					break;
-			}
-
-			// Parsing Port2 inputs
-
-			switch (_syncSettings.Port2)
-			{
-				case Port2PeripheralOption.Gamepad:
-
-					// Adding set of gamepad buttons (P1)
-					AddButtons(GamepadButtons[1]);
-
-					break;
-
-				case Port2PeripheralOption.FourScore2:
-
-					// Adding set of gamepad buttons (P2)
-					AddButtons(FourScoreButtons[1]);
-
-					break;
-			}
-
-			// Adding console buttons
-			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
+			// console buttons
+			def.BoolButtons.AddRange([ "Reset", "Power" ]);
 
 			ControllerDefinition = def.MakeImmutable();
 		}
 
-		private static readonly (string PrefixedName, uint Bitmask)[][] GamepadButtons = new[]
+		private readonly struct PadEnt(string name, int mask)
 		{
-			new[] {
-				("P1 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
-				("P1 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
-				("P1 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
-				("P1 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
-				("P1 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
-				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
-				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
-				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-			},
-			new[] {
-				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
-				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
-				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
-				("P2 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
-				("P2 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
-				("P2 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
-				("P2 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
-				("P2 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-			},
-		};
-
-		private static readonly (string PrefixedName, uint Bitmask)[][] FourScoreButtons = new[]
-		{
-			new[] {
-				("P1 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
-				("P1 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
-				("P1 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
-				("P1 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
-				("P1 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
-				("P1 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
-				("P1 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
-				("P1 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-
-			    ("P3 Up",     0b0000_0000_0000_0000_0001_0000_0000_0000u),
-				("P3 Down",   0b0000_0000_0000_0000_0010_0000_0000_0000u),
-				("P3 Left",   0b0000_0000_0000_0000_0100_0000_0000_0000u),
-				("P3 Right",  0b0000_0000_0000_0000_1000_0000_0000_0000u),
-				("P3 Start",  0b0000_0000_0000_0000_0000_1000_0000_0000u),
-				("P3 Select", 0b0000_0000_0000_0000_0000_0100_0000_0000u),
-				("P3 B",      0b0000_0000_0000_0000_0000_0010_0000_0000u),
-				("P3 A",      0b0000_0000_0000_0000_0000_0001_0000_0000u),
-			},
-			new[] {
-				("P2 Up",     0b0000_0000_0000_0000_0000_0000_0001_0000u),
-				("P2 Down",   0b0000_0000_0000_0000_0000_0000_0010_0000u),
-				("P2 Left",   0b0000_0000_0000_0000_0000_0000_0100_0000u),
-				("P2 Right",  0b0000_0000_0000_0000_0000_0000_1000_0000u),
-				("P2 Start",  0b0000_0000_0000_0000_0000_0000_0000_1000u),
-				("P2 Select", 0b0000_0000_0000_0000_0000_0000_0000_0100u),
-				("P2 B",      0b0000_0000_0000_0000_0000_0000_0000_0010u),
-				("P2 A",      0b0000_0000_0000_0000_0000_0000_0000_0001u),
-
-				("P4 Up",     0b0000_0000_0000_0000_0001_0000_0000_0000u),
-				("P4 Down",   0b0000_0000_0000_0000_0010_0000_0000_0000u),
-				("P4 Left",   0b0000_0000_0000_0000_0100_0000_0000_0000u),
-				("P4 Right",  0b0000_0000_0000_0000_1000_0000_0000_0000u),
-				("P4 Start",  0b0000_0000_0000_0000_0000_1000_0000_0000u),
-				("P4 Select", 0b0000_0000_0000_0000_0000_0100_0000_0000u),
-				("P4 B",      0b0000_0000_0000_0000_0000_0010_0000_0000u),
-				("P4 A",      0b0000_0000_0000_0000_0000_0001_0000_0000u),
-			},
-		};
-
-
-		private void SetPads(IController controller, out uint j1, out uint j2)
-		{
-			static uint PackGamepadButtonsFor(int portNumber, IController controller)
-			{
-				uint ret = unchecked(0xFFFFFF00u);
-				foreach (var (prefixedName, bitmask) in GamepadButtons[portNumber])
-				{
-					if (controller.IsPressed(prefixedName)) ret |= bitmask;
-				}
-				return ret;
-			}
-
-			static uint PackFourscoreButtonsFor(int portNumber, IController controller)
-			{
-				uint ret = 0;
-				if (portNumber == 0) ret |= 0b1111_1111_0000_1000_0000_0000_0000_0000u;
-				if (portNumber == 1) ret |= 0b1111_1111_0000_0100_0000_0000_0000_0000u;
-
-				foreach (var (prefixedName, bitmask) in FourScoreButtons[portNumber])
-				{
-					if (controller.IsPressed(prefixedName)) ret |= bitmask;
-				}
-				return ret;
-			}
-
-			j1 = 0;
-			j2 = 0;
-			switch (_syncSettings.Port1)
-			{
-				case Port1PeripheralOption.Gamepad:
-				case Port1PeripheralOption.ArkanoidFamicom:
-					j1 = PackGamepadButtonsFor(0, controller);
-					break;
-				case Port1PeripheralOption.FourScore:
-					j1 = PackFourscoreButtonsFor(0, controller);
-					break;
-			}
-			switch (_syncSettings.Port2)
-			{
-				case Port2PeripheralOption.Gamepad:
-					j2 = PackGamepadButtonsFor(1, controller);
-					break;
-				case Port2PeripheralOption.FourScore2:
-					j2 = PackFourscoreButtonsFor(1, controller);
-					break;
-			}
+			public readonly string Name = name;
+			public readonly int Mask = mask;
 		}
 
-		public enum QuickerNESInternalControllerTypeEnumeration : byte
+		private static PadEnt[] GetPadList(int player)
 		{
-			None = 0x0,
-			Joypad = 0x1,
-			ArkanoidNES = 0x2,
-			ArkanoidFamicom = 0x3,
+			string prefix = $"P{player} ";
+			return PadNames.Zip(PadMasks, (s, i) => new PadEnt(prefix + s, i)).ToArray();
+		}
+
+		private static readonly string[] PadNames =
+		[
+			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A"
+		];
+
+		private static readonly int[] PadMasks =
+		[
+			16, 32, 64, 128, 8, 4, 2, 1
+		];
+
+		private static readonly PadEnt[] PadP1 = GetPadList(1);
+		private static readonly PadEnt[] PadP2 = GetPadList(2);
+
+		private static int GetPad(IController controller, IEnumerable<PadEnt> buttons)
+		{
+			int ret = 0;
+			// ReSharper disable once LoopCanBeConvertedToQuery
+			foreach (var b in buttons)
+			{
+				if (controller.IsPressed(b.Name))
+					ret |= b.Mask;
+			}
+
+			return ret;
+		}
+
+		private void SetPads(IController controller, out int j1, out int j2)
+		{
+			if (_syncSettings.LeftPortConnected)
+			{
+				j1 = GetPad(controller, PadP1) | unchecked((int)0xffffff00);
+			}
+			else
+			{
+				j1 = 0;
+			}
+
+			if (_syncSettings.RightPortConnected)
+			{
+				j2 = GetPad(controller, _syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
+			}
+			else
+			{
+				j2 = 0;
+			}
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
@@ -298,55 +163,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			QN.qn_set_tracecb(Context, Tracer.IsEnabled() ? _traceCb : null);
 
-			// Getting correct internal controller type for QuickerNES
-			QuickerNESInternalControllerTypeEnumeration internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.None;
-
-			// Handling Port2
-			switch (_syncSettings.Port2)
-			{
-				case Port2PeripheralOption.Gamepad:
-				case Port2PeripheralOption.FourScore2:
-					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.Joypad; break;
-			}
-
-			// Handling Port1 -- Using Arkanoid overrides the selection for Port2
-			switch (_syncSettings.Port1)
-			{
-				case Port1PeripheralOption.Gamepad:
-				case Port1PeripheralOption.FourScore:
-					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.Joypad; break;
-				case Port1PeripheralOption.ArkanoidNES:
-					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.ArkanoidNES; break;
-				case Port1PeripheralOption.ArkanoidFamicom:
-					internalQuickerNESControllerType = QuickerNESInternalControllerTypeEnumeration.ArkanoidFamicom; break;
-			}
-
-			// Parsing arkanoid inputs
-			byte arkanoidPos = 0;
-			byte arkanoidFire = 0;
-
-			switch (_syncSettings.Port1)
-			{
-				case Port1PeripheralOption.ArkanoidNES:
-					arkanoidPos = unchecked((byte)controller.AxisValue("P2 Paddle"));
-					arkanoidFire = controller.IsPressed("P2 Fire") ? (byte) 1 : (byte) 0;
-					break;
-
-				case Port1PeripheralOption.ArkanoidFamicom:
-					arkanoidPos = unchecked((byte)controller.AxisValue("P3 Paddle"));
-					arkanoidFire = controller.IsPressed("P3 Fire") ? (byte) 1 : (byte) 0;
-					break;
-			}
-
-			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2, arkanoidPos, arkanoidFire, (uint) internalQuickerNESControllerType));
+			LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
 			IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 			if (IsLagFrame)
+			{
 				LagCount++;
+			}
 
 			if (render)
+			{
 				Blit();
+			}
+
 			if (rendersound)
+			{
 				DrainAudio();
+			}
 
 			_callBack1?.Invoke();
 			_callBack2?.Invoke();
@@ -381,10 +213,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			var ms = new MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)
+			{
 				ms.WriteByte(prgrom.PeekByte(i));
+			}
+
 			if (chrrom != null)
+			{
 				for (int i = 0; i < chrrom.Size; i++)
+				{
 					ms.WriteByte(chrrom.PeekByte(i));
+				}
+			}
 
 			var sha1 = SHA1Checksum.ComputeDigestHex(ms.ToArray());
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
@@ -434,18 +273,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void CheckDisposed()
 		{
 			if (Context == IntPtr.Zero)
+			{
 				throw new ObjectDisposedException(nameof(QuickNES));
+			}
 		}
 
 		// Fix some incorrect ines header entries that QuickNES uses to load games.
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
-		private byte[] FixInesHeader(byte[] file)
+		private static byte[] FixInesHeader(byte[] file)
 		{
 			var sha1 = SHA1Checksum.ComputeDigestHex(file);
 			bool didSomething = false;
 
 			Console.WriteLine(sha1);
-			if (sha1== "93010514AA1300499ABC8F145D6ABCDBF3084090") // Ms. Pac Man (Tengen) [!]
+			if (sha1 is "93010514AA1300499ABC8F145D6ABCDBF3084090") // Ms. Pac Man (Tengen) [!]
 			{
 				file[6] &= 0xFE;
 				didSomething = true;
@@ -461,8 +302,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
-		private static readonly HashSet<string> HashBlackList = new HashSet<string>
-		{
+		private static readonly HashSet<string> HashBlackList =
+		[
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure
 			"E8BC7E6BAE7032D571152F6834516535C34C68F0", // Bill and Ted's Excellent Adventure bad dump
 			"401023BAE92A38B89F7D0C2E0F023E35F1FFEEFD", // Bill and Ted's Excellent Adventure bad dump
@@ -478,7 +319,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"20AA75A93B2909E79E5F292049D1894D9B89BD38", // A Ressha de Ikou (J) [b3]
 			"67D8E0E135B8E38164D791F4846346D3AA5787C4", // Advanced Dungeons and Dragons - Hillsfar (J) [b1]
 			"85DC8BF106CBE7E3359B30337DFB07ABB43A31B2", // Advanced Dungeons and Dragons - Hillsfar (J) [o1]
-			"85DC8BF106CBE7E3359B30337DFB07ABB43A31B2", // Advanced Dungeons and Dragons - Hillsfar (J) [!]
+			//"85DC8BF106CBE7E3359B30337DFB07ABB43A31B2", // Advanced Dungeons and Dragons - Hillsfar (J) [!] (same as above)
 			"B2662816D0367143D41A697B7B714F312E9AC125", // Advanced Dungeons and Dragons - Hillsfar (U) [!]
 			"2462212CA9B3D2773EB0F36D806DACC20C7876AD", // Adventures of Lolo (U) [b3]
 			"BF19A52458C5B773E9AC9AE1472E52DFF078E25B", // Akira (J) [hM04][t1]
@@ -720,6 +561,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"3356604FC7F9A0E797266DDF75BED409B73996EC", // Super Mario All Stars NES ("2017") by infidelity on RHDN
 			"1739219B2D45C1BED0F1D4FA3E4E405985D564DC", // Super Mario All-Stars NES (crt_v10-15-17) by infidelity on RHDN
 			"E47FAE77EF57A5D2C8FB34C9EF38AC50B0B9FE7F", // Super Mario All-Stars NES (emu_v10-15-17) by infidelity on RHDN
-		};
+		];
 	}
 }

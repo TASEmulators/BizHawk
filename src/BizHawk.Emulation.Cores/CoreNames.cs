@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores
 		public const string PceHawk = "PCEHawk";
 		public const string PicoDrive = "PicoDrive";
 		public const string PPSSPP = "PPSSPP";
-		public const string QuickNes = "quickerNES";
+		public const string QuickNes = "QuickNES";
 		public const string Sameboy = "SameBoy";
 		public const string Saturnus = "Saturnus";
 		public const string SMSHawk = "SMSHawk";

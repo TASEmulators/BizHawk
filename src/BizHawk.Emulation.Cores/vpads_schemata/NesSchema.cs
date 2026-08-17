@@ -136,26 +136,24 @@ namespace BizHawk.Emulation.Cores
 				}
 			}
 			else
-				// Quicknes Can support none, one or two controllers.
 			{
+				// QuickNES can support none, one or two controllers
 				var ss = ((QuickNES)core).GetSyncSettings();
-				var playerNo = 1;
-				switch (ss.Port1)
+				if (ss.LeftPortConnected && ss.RightPortConnected)
 				{
-					case QuickNES.Port1PeripheralOption.Gamepad:
-						yield return StandardController(playerNo++);
-						break;
-					case QuickNES.Port1PeripheralOption.FourScore:
-						throw new NotImplementedException("TODO");
+					// Set both controllers
+					yield return StandardController(1);
+					yield return StandardController(2);
 				}
-				switch (ss.Port2)
+				else if (ss.LeftPortConnected && !ss.RightPortConnected)
 				{
-					case QuickNES.Port2PeripheralOption.Gamepad:
-						yield return StandardController(playerNo++);
-						break;
-					case QuickNES.Port2PeripheralOption.FourScore2:
-						throw new NotImplementedException("TODO");
+					yield return StandardController(1);
 				}
+				else if (!ss.LeftPortConnected && ss.RightPortConnected)
+				{
+					yield return StandardController(1);
+				}
+
 				yield return NesConsoleButtons();
 			}
 		}
