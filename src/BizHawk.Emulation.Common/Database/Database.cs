@@ -402,6 +402,9 @@ namespace BizHawk.Emulation.Common
 				case ".PZX":
 				case ".CSW":
 				case ".WAV":
+				case ".UDI": // Ultra Disk Image - ZX Spectrum only
+				case ".TRD": // TR-DOS disk - ZX Spectrum (Beta 128 / Pentagon) only
+				case ".SCL": // TR-DOS packed disk - ZX Spectrum only
 					game.System = VSystemID.Raw.ZXSpectrum;
 					break;
 

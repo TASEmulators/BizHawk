@@ -465,6 +465,15 @@ namespace BizHawk.Client.Common
 				_ => rom.GameInfo.System,
 			};
 
+			// Container-agnostic flux images (.scp/.hfe) carry no reliable platform id in their header, and
+			// the gamedb extension switch (in BizHawk.Emulation.Common) cannot decode flux; identify by
+			// content here, where the Cores flux decoders are reachable. Defers to the chooser if unsure.
+			if (string.IsNullOrEmpty(rom.GameInfo.System) && ext is ".scp" or ".hfe")
+			{
+				var fluxSystem = Emulation.Cores.Floppy.FluxDiskFormatIdentifier.IdentifySystem(rom.FileData);
+				if (!string.IsNullOrEmpty(fluxSystem)) rom.GameInfo.System = fluxSystem;
+			}
+
 			if (string.IsNullOrEmpty(rom.GameInfo.System))
 			{
 				// Has the user picked a preference for this extension?
@@ -1097,7 +1106,7 @@ namespace BizHawk.Client.Common
 
 			public static readonly IReadOnlyCollection<string> WSWAN = new[] { "ws", "wsc", "pc2" };
 
-			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx", "ipf" };
+			public static readonly IReadOnlyCollection<string> ZXSpectrum = new[] { "tzx", "tap", "dsk", "pzx", "ipf", "scp", "hfe", "fdi", "udi", "trd", "scl" };
 
 			public static readonly IReadOnlyCollection<string> AutoloadFromArchive = Array.Empty<string>()
 				.Concat(A26)

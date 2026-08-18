@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Cores.Floppy;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -25,6 +26,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Disk images
 		/// </summary>
 		public List<byte[]> diskImages { get; set; }
+
+		/// <summary>
+		/// The side to present for each entry in diskImages: 0 or 1 selects one side of a
+		/// double-sided image (which is registered as two disks), -1 loads the image as-is.
+		/// </summary>
+		public List<int> diskSides { get; set; }
 
 		/// <summary>
 		/// Set when a savestate is loaded
@@ -64,11 +71,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// load the media into the tape device
 				tapeMediaIndex = result;
 
+				// load first so the tape blocks (and detected loader) are current, then fire the osd message
+				LoadTapeMedia();
+
 				// fire osd message
 				if (!IsLoadState)
 					Spectrum.OSD_TapeInserted();
-
-				LoadTapeMedia();
 			}
 		}
 
@@ -104,11 +112,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// load the media into the disk device
 				diskMediaIndex = result;
 
-				// fire osd message
+				LoadDiskMedia();
+
+				// fire osd message (after load, so it can report the detected protection)
 				if (!IsLoadState)
 					Spectrum.OSD_DiskInserted();
-
-				LoadDiskMedia();
 			}
 		}
 
@@ -128,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			tapeImages = new List<byte[]>();
 			diskImages = new List<byte[]>();
+			diskSides = new List<int>();
 
 			int cnt = 0;
 			foreach (var m in mediaImages)
@@ -139,64 +148,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						Spectrum._tapeInfo.Add(Spectrum._gameInfo[cnt]);
 						break;
 					case SpectrumMediaType.Disk:
-						diskImages.Add(m);
-						Spectrum._diskInfo.Add(Spectrum._gameInfo[cnt]);
-						break;
 					case SpectrumMediaType.DiskDoubleSided:
-						// this is a bit tricky. we will attempt to parse the double sided disk image byte array,
-						// then output two separate image byte arrays
-						List<byte[]> working = new List<byte[]>();
-						foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
-						{
-							bool found = false;
-
-							switch (type)
-							{
-								case DiskType.CPCExtended:
-									found = CPCExtendedFloppyDisk.SplitDoubleSided(m, working);
-									break;
-								case DiskType.CPC:
-									found = CPCFloppyDisk.SplitDoubleSided(m, working);
-									break;
-								case DiskType.UDI:
-									found =  UDI1_0FloppyDisk.SplitDoubleSided(m, working);
-									break;
-							}
-
-							if (found)
-							{
-								// add side 1
-								diskImages.Add(working[0]);
-								// add side 2
-								diskImages.Add(working[1]);
-
-								Common.GameInfo one = new Common.GameInfo();
-								Common.GameInfo two = new Common.GameInfo();
-								var gi = Spectrum._gameInfo[cnt];
-								for (int i = 0; i < 2; i++)
-								{
-									Common.GameInfo work = new Common.GameInfo();
-									if (i == 0)
-									{
-										work = one;
-									}
-									else if (i == 1)
-									{
-										work = two;
-									}
-
-									work.FirmwareHash = gi.FirmwareHash;
-									work.Hash = gi.Hash;
-									work.Name = gi.Name + " (Parsed Side " + (i + 1) + ")";
-									work.Region = gi.Region;
-									work.NotInDatabase = gi.NotInDatabase;
-									work.Status = gi.Status;
-									work.System = gi.System;
-
-									Spectrum._diskInfo.Add(work);
-								}
-							}
-						}
+						AddDiskImage(m, Spectrum._gameInfo[cnt]);
 						break;
 				}
 
@@ -208,6 +161,45 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (diskImages.Count > 0)
 				LoadDiskMedia();
+		}
+
+		/// <summary>
+		/// Registers a disk image, splitting a double-sided disk into two selectable single-sided disks. This
+		/// works for every supported format (DSK/EDSK/IPF/HFE/SCP/FDI/UDI) because the double-sidedness is
+		/// determined from the shared flux model rather than per-format byte layouts.
+		/// </summary>
+		private void AddDiskImage(byte[] image, Common.GameInfo gameInfo)
+		{
+			int sides;
+			try { sides = DiskImageLoader.ToFluxDisk(image).Sides; }
+			catch { sides = 1; }
+
+			// The +3's 3" drive is single-headed, so a double-sided image is split into two selectable disks.
+			// The Beta 128 drive (Pentagon) is double-headed and reads both sides of one disk, so never split.
+			if (sides <= 1 || this is Pentagon128)
+			{
+				diskImages.Add(image);
+				diskSides.Add(-1);
+				Spectrum._diskInfo.Add(gameInfo);
+				return;
+			}
+
+			// double-sided: register both sides as separate disks (the +3 drive is single-headed)
+			for (int s = 0; s < 2; s++)
+			{
+				diskImages.Add(image);
+				diskSides.Add(s);
+				Spectrum._diskInfo.Add(new Common.GameInfo
+				{
+					FirmwareHash = gameInfo.FirmwareHash,
+					Hash = gameInfo.Hash,
+					Name = gameInfo.Name + " (Side " + (s + 1) + ")",
+					Region = gameInfo.Region,
+					NotInDatabase = gameInfo.NotInDatabase,
+					Status = gameInfo.Status,
+					System = gameInfo.System,
+				});
+			}
 		}
 
 		/// <summary>
@@ -223,13 +215,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		protected void LoadDiskMedia()
 		{
-			if (this is not ZX128Plus3)
+			var image = diskImages[diskMediaIndex];
+
+			// route by format to the machine that can actually read it, and warn (like the +3 gate) if the
+			// wrong model is selected: TR-DOS .trd/.scl need the Pentagon's Beta 128, every other disk image
+			// (+3/PCW .dsk/.edsk and the flux formats) needs the +3's uPD765.
+			bool isTrDos = Floppy.TrdConverter.IsTrd(image) || Floppy.SclConverter.IsScl(image);
+
+			if (isTrDos && this is not Pentagon128)
 			{
-				Spectrum.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
+				Spectrum.CoreComm.ShowMessage("You are trying to load a TR-DOS (.trd/.scl) disk image.\n\n Please select Pentagon 128 emulation immediately and reboot the core");
 				return;
 			}
 
-			UPDDiskDevice.FDD_LoadDisk(diskImages[diskMediaIndex]);
+			if (!isTrDos && this is not ZX128Plus3)
+			{
+				Spectrum.CoreComm.ShowMessage("You are trying to load a +3 disk image.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
+				return;
+			}
+
+			UPDDiskDevice.FDD_LoadDisk(image, diskSides[diskMediaIndex]);
 		}
 
 		/// <summary>
@@ -275,6 +280,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					else
 						return SpectrumMediaType.Disk;
 				}
+			}
+
+			// SuperCard Pro (.scp) and HxC (.hfe) flux images. These carry sidedness inside the flux rather
+			// than in a fixed header field, so AddDiskImage derives the side count from the decoded flux;
+			// classifying as Disk here is enough to route them down the disk path.
+			if (Floppy.ScpConverter.IsScp(data)
+				|| Floppy.HfeConverter.IsHfe(data) || Floppy.HfeConverter.IsHfeV3(data))
+			{
+				return SpectrumMediaType.Disk;
+			}
+
+			// TR-DOS disk images: .trd is headerless (validated structurally), .scl carries a SINCLAIR header
+			if (Floppy.TrdConverter.IsTrd(data) || hdr.StartsWithIgnoreCase("SINCLAIR"))
+			{
+				return SpectrumMediaType.Disk;
 			}
 
 			// tape checking

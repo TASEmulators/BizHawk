@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+﻿using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	{
 		private readonly SpectrumBase _machine;
 
-		private Z80A<ZXSpectrum.CpuLink> _cpu => _machine.CPU;
+		private Z80AOpt<ZXSpectrum.CpuLink> _cpu => _machine.CPU;
 
 		private SZX(SpectrumBase machine)
 		{

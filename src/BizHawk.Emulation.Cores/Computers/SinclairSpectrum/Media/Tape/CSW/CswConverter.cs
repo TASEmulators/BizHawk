@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Cores.Tapes;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -49,23 +50,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool CheckType(byte[] data)
 		{
-			// CSW Header
-
-			// check whether this is a valid csw format file by looking at the identifier in the header
-			// (first 22 bytes of the file)
-			string ident = Encoding.ASCII.GetString(data, 0, 22);
-
-			// version info
-			int majorVer = data[8];
-			int minorVer = data[9];
-
-			if (!"COMPRESSED SQUARE WAVE".EqualsIgnoreCase(ident))
-			{
-				// this is not a valid CSW format file
+			// CSW Header. The 22-byte signature is followed by a 0x1A terminator at 0x16. Guard against shorter
+			// files first: CheckType runs on every tape during type-detection, so a short file of another
+			// format must not throw here.
+			if (data == null || data.Length < 23)
 				return false;
-			}
 
-			return true;
+			if (data[0x16] != 0x1A)
+				return false;
+
+			string ident = Encoding.ASCII.GetString(data, 0, 22);
+			return "COMPRESSED SQUARE WAVE".EqualsIgnoreCase(ident);
 		}
 
 		/// <summary>
@@ -180,6 +175,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				_position += 3;
 
+				totalPulses = -1; // v1 has no pulse count; the buffer holds exactly the pulse data
 				cswDataUncompressed = new byte[data.Length - _position];
 
 				if (compressionType == 1)
@@ -209,19 +205,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			var rate = (69888 * 50) / sampleRate;
 
-			for (int i = 0; i < cswDataUncompressed.Length;)
+			// each pulse is one sample-count byte; a zero byte means the next 4 bytes hold a 32-bit sample
+			// count. Period T-states = samples * (T-states per sample). For v2 stop after 'totalPulses' pulses
+			// (its buffer is padded by one byte, which would otherwise misfire the extended-pulse path and read
+			// past the end); v1 has no count so the whole buffer is consumed.
+			int idx = 0;
+			int emitted = 0;
+			while (idx < cswDataUncompressed.Length && (totalPulses < 0 || emitted < totalPulses))
 			{
-				int length = cswDataUncompressed[i++] * rate;
-				if (length == 0)
+				int samples = cswDataUncompressed[idx++];
+				if (samples == 0 && idx + 4 <= cswDataUncompressed.Length)
 				{
-					length = GetInt32(cswDataUncompressed, i) / rate;
-					i += 4;
+					samples = GetInt32(cswDataUncompressed, idx);
+					idx += 4;
 				}
 
-				t.DataPeriods.Add(length);
-
+				t.DataPeriods.Add(samples * rate);
 				currLevel = !currLevel;
 				t.DataLevels.Add(currLevel);
+				emitted++;
 			}
 
 			// add closing period

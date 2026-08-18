@@ -16,24 +16,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             int result = 0xFF;
 
-            // ports 0x3ffd & 0x7ffd
-            // traditionally thought to be write-only
-            if (port == 0x3ffd || port == 0x7ffd)
-            {
-                // https://faqwiki.zxnet.co.uk/wiki/ZX_Spectrum_128
-                // HAL bugs
-                // Reads from port 0x7ffd cause a crash, as the 128's HAL10H8 chip does not distinguish between reads and writes to this port,
-                // resulting in a floating data bus being used to set the paging registers.
-
-                // -asni (2018-06-08) - need this to pass the final portread tests from fusetest.tap
-
-                // get the floating bus value
-                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);
-                // use this to set the paging registers
-                WritePort(port, (byte)result);
-                // return the floating bus value
+            // Beta 128 disk ports (0x1F/0x3F/0x5F/0x7F/0xFF) are only decoded while TR-DOS is paged in, and
+            // take priority over the Kempston/keyboard decode of 0x1F.
+            if (TRDOSPaged && UPDDiskDevice != null && UPDDiskDevice.ReadPort(port, ref result))
                 return (byte)result;
-            }
+
+            // NOTE: the 128K/+2 has a HAL10H8 bug where reading 0x7ffd feeds the floating bus into the
+            // paging latch. That is Sinclair-specific silicon and does NOT apply to the Pentagon's discrete
+            // logic, so there is no special-case here: a read of 0x7ffd/0x3ffd falls through to the normal
+            // even-address keyboard/ULA handling and never disturbs the paging registers.
 
             // check AY
             if (AYDevice.ReadPort(port, ref result))
@@ -77,6 +68,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override void WritePort(ushort port, byte value)
         {
+            // Beta 128 disk ports, only while TR-DOS is paged in (see ReadPort).
+            if (TRDOSPaged && UPDDiskDevice != null && UPDDiskDevice.WritePort(port, value))
+                return;
+
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -118,6 +113,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // Bit 5 set signifies that paging is disabled until next reboot
                     PagingDisabled = bits[5];
+
+                    // paging changed → rebuild PageContended (and the memory map) so the per-cycle
+                    // contention decode isn't stale. Pentagon uses the fallback memory path, but
+                    // PageContended is consulted every memory cycle, so this MUST run on paging changes.
+                    RebuildMemoryMap();
                 }
                 else
                 {
@@ -152,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
 				// Buzzer
+				BuzzerDevice.SetClock((int)CurrentFrameCycle);
 				BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 				TapeDevice.WritePort(port, value);
 

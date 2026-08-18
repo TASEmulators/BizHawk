@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Cores.Tapes;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -33,19 +34,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			=> nameof(PzxConverter);
 
 		/// <summary>
-		/// Working list of generated tape data blocks
-		/// </summary>
-		private readonly IList<TapeDataBlock> _blocks = new List<TapeDataBlock>();
-
-		/// <summary>
 		/// Position counter
 		/// </summary>
 		private int _position = 0;
-
-		/// <summary>
-		/// Object to keep track of loops - this assumes there is only one loop at a time
-		/// </summary>
-		private readonly IList<KeyValuePair<int, int>> _loopCounter = new List<KeyValuePair<int, int>>();
 
 		private readonly DatacorderDevice _datacorder;
 
@@ -59,23 +50,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool CheckType(byte[] data)
 		{
-			// PZX Header
-
-			// check whether this is a valid pzx format file by looking at the identifier in the header
-			// (first 4 bytes of the file)
-			string ident = Encoding.ASCII.GetString(data, 0, 4);
-
-			// version info
-			int majorVer = data[8];
-			int minorVer = data[9];
-
-			if (!"PZXT".EqualsIgnoreCase(ident))
-			{
-				// this is not a valid PZX format file
+			// PZX Header - the "PZXT" tag is the first 4 bytes. Guard against shorter files: CheckType runs on
+			// every tape during type-detection, so a short file of another format must not throw here.
+			if (data == null || data.Length < 4)
 				return false;
-			}
 
-			return true;
+			string ident = Encoding.ASCII.GetString(data, 0, 4);
+			return "PZXT".EqualsIgnoreCase(ident);
 		}
 
 		/// <summary>
@@ -167,42 +148,42 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						t.InitialPulseLevel = false;
 						bool pLevel = !t.InitialPulseLevel;
 
-						List<ushort[]> pulses = new List<ushort[]>();
+						var pulses = new List<(int Count, int Duration)>();
 
 						while (pos < blockSize + 8)
 						{
-							ushort[] p = new ushort[2];
-							p[0] = 1;
-							p[1] = GetWordValue(b, pos);
+							int count = 1;
+							int duration = GetWordValue(b, pos);
 							pos += 2;
 
-							if (p[1] > 0x8000)
+							// bit 15 of the first word => a repeat count (low 15 bits) is present; the duration follows
+							if (duration >= 0x8000)
 							{
-								p[0] = (ushort)(p[1] & 0x7fff);
-								p[1] = GetWordValue(b, pos);
+								count = duration & 0x7FFF;
+								duration = GetWordValue(b, pos);
 								pos += 2;
 							}
 
-							if (p[1] >= 0x8000)
+							// bit 15 of the duration word => extended duration ((d & 0x7FFF) << 16) | next word.
+							// (kept as int, not ushort - the old code shifted a ushort left 16 and lost the high bits)
+							if (duration >= 0x8000)
 							{
-								p[1] &= 0x7fff;
-								p[1] <<= 16;
-								p[1] |= GetWordValue(b, pos);
+								duration = ((duration & 0x7FFF) << 16) | GetWordValue(b, pos);
 								pos += 2;
 							}
 
-							pulses.Add(p);
+							pulses.Add((count, duration));
 						}
 
 						// convert to tape block
 						t.BlockDescription = BlockType.PULS;
 						t.PauseInMS = 0;
 
-						foreach (var x in pulses)
+						foreach (var (count, duration) in pulses)
 						{
-							for (int i = 0; i < x[0]; i++)
+							for (int i = 0; i < count; i++)
 							{
-								t.DataPeriods.Add(x[1]);
+								t.DataPeriods.Add(duration);
 								pLevel = !pLevel;
 								t.DataLevels.Add(pLevel);
 							}
@@ -254,7 +235,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 							var p0 = b[pos++];
 							var p1 = b[pos++];
 
-							for (int i = 0; i < p1; i++)
+							// s0 has p0 pulse durations, s1 has p1 (the s0 loop previously used p1 in error,
+							// mis-reading s0 and generating the wrong pulses whenever p0 != p1)
+							for (int i = 0; i < p0; i++)
 							{
 								var s = GetWordValue(b, pos);
 								pos += 2;
@@ -270,9 +253,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 							var dData = b.AsSpan(start: pos, length: (dCount + 7) >> 3/* == `ceil(dCount/8)` */);
 							pos += dData.Length;
+
+							// retain the raw data bytes so a trap/flash-loader can read the block directly
+							t.BlockData = dData.ToArray();
+
+							// emit exactly dCount bits (MSb first); the final byte may be partial
+							int bitsDone = 0;
 							foreach (var by in dData)
 							{
-								for (int i = 7; i >= 0; i--)
+								for (int i = 7; i >= 0 && bitsDone < dCount; i--, bitsDone++)
 								{
 									if (by.Bit(i))
 									{

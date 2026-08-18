@@ -119,10 +119,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Cycles the ULA clock
 		/// Handles interrupt generation
 		/// </summary>
-		public virtual void CycleClock(long totalCycles)
+		// non-virtual (no model overrides it) so this per-T-state call is a direct dispatch, not a vtable lookup
+		public void CycleClock(long totalCycles)
 		{
-			// render the screen
-			if (_machine._render)
+			// render the screen (skipped in event-driven mode, where catch-up renders fire on
+			// screen/border writes and at frame end instead)
+			if (_machine._render && !_machine.EventDrivenDisplay)
 				RenderScreen((int)_machine.CurrentFrameCycle);
 
 			// has more than one cycle past since this last ran
@@ -162,7 +164,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 						_machine.CPU.FlagI = true;
 						FrameEnd = true;
 						ULACycleCounter = InterruptStartTime;
-						CalcFlashCounter();
+						// event-driven: render this frame's remaining cycles up to now BEFORE flashOn
+							// flips below — the same CurrentFrameCycle and flash state that per-cycle
+							// mode used for its final render of the frame.
+							if (_machine.EventDrivenDisplay && _machine._render)
+								RenderScreen((int)_machine.CurrentFrameCycle);
+							CalcFlashCounter();
 					}
 				}
 			}
@@ -262,6 +269,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			public RenderCycle[] Renderer;
 
 			/// <summary>
+			/// Flat per-frame-T-state copy of Renderer[t].ContentionValue — a contiguous int[] instead of
+			/// the pointer-chase into the RenderCycle class array, for the per-cycle contention hot path.
+			/// Built once here (Renderer is a pure function of static per-model timing), never mutated,
+			/// never serialized. Value-identical to Renderer[t].ContentionValue.
+			/// </summary>
+			public int[] ContentionByCycle;
+
+			/// <summary>
 			/// The emulated machine
 			/// </summary>
 			public MachineType _machineType;
@@ -277,6 +292,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				_machineType = machineType;
 				Renderer = new RenderCycle[_ula.FrameCycleLength];
 				InitRenderer(machineType);
+
+				ContentionByCycle = new int[_ula.FrameCycleLength];
+				for (int t = 0; t < ContentionByCycle.Length; t++)
+					ContentionByCycle[t] = Renderer[t].ContentionValue;
 			}
 
 			/// <summary>
@@ -735,7 +754,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (tstate < 0)
 				tstate += FrameCycleLength;
 
-			return RenderingTable.Renderer[tstate].ContentionValue;
+			return RenderingTable.ContentionByCycle[tstate];
 		}
 
 		/// <summary>
@@ -749,7 +768,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (tstate < 0)
 				tstate += FrameCycleLength;
 
-			return RenderingTable.Renderer[tstate].ContentionValue;
+			return RenderingTable.ContentionByCycle[tstate];
 		}
 
 		/// <summary>
@@ -807,7 +826,57 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int VsyncDenominator => ClockSpeed; // FrameLength;
 
+		/// <summary>
+		/// When true, each displayed frame is averaged with the previous one. This mimics the phosphor
+		/// persistence of a real CRT/TV, which is what makes gigascreen effects (software that alternates two
+		/// images every frame for extra colours or resolution) resolve into their intended blended picture
+		/// instead of a harsh 25Hz flicker. Display-only: it never touches the emulated ScreenBuffer, the
+		/// emulation timing or savestates, so it is safe to toggle at runtime and does not desync movies.
+		/// </summary>
+		public bool FrameBlend = true;
+
+		private int[] _blendBuffer;
+		private int[] _prevFrame;
+		private int[] _holdFrame;
+		private int _lastBlendFrame = -1;
+
 		public int[] GetVideoBuffer()
+		{
+			var cur = GetVideoBufferRaw();
+			if (!FrameBlend)
+				return cur;
+
+			if (_prevFrame == null || _prevFrame.Length != cur.Length)
+			{
+				_prevFrame = (int[])cur.Clone();
+				_holdFrame = (int[])cur.Clone();
+				_blendBuffer = new int[cur.Length];
+				_lastBlendFrame = _machine?.FrameCount ?? 0;
+			}
+
+			// Promote last frame's buffer to "previous" only when the emulated frame actually advances, so
+			// that several GetVideoBuffer calls within one frame (display + screenshot + A/V dump) all blend
+			// against the same prior frame rather than collapsing the blend.
+			int frame = _machine?.FrameCount ?? 0;
+			if (frame != _lastBlendFrame)
+			{
+				System.Array.Copy(_holdFrame, _prevFrame, cur.Length);
+				_lastBlendFrame = frame;
+			}
+			System.Array.Copy(cur, _holdFrame, cur.Length);
+
+			for (int i = 0; i < cur.Length; i++)
+			{
+				int c = cur[i], p = _prevFrame[i];
+				int r = ((((c >> 16) & 0xFF) + ((p >> 16) & 0xFF)) >> 1) & 0xFF;
+				int g = ((((c >> 8) & 0xFF) + ((p >> 8) & 0xFF)) >> 1) & 0xFF;
+				int b = (((c & 0xFF) + (p & 0xFF)) >> 1) & 0xFF;
+				_blendBuffer[i] = (0xFF << 24) | (r << 16) | (g << 8) | b;
+			}
+			return _blendBuffer;
+		}
+
+		private int[] GetVideoBufferRaw()
 		{
 			switch (borderType)
 			{

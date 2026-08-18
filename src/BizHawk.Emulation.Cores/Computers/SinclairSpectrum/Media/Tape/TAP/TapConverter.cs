@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Cores.Tapes;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
@@ -267,14 +269,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// calculate the data periods for this block
 				int pilotLength = 0;
 
-				// work out pilot length
-				if (blockdata[0] < 4)
+				// work out pilot length (spec: 8063 pulses for a header, flag byte < 128, else 3223 for data)
+				if (blockdata[0] < 128)
 				{
-					pilotLength = 8064;
+					pilotLength = 8063;
 				}
 				else
 				{
-					pilotLength = 3220;
+					pilotLength = 3223;
 				}
 
 				// create a list to hold the data periods

@@ -142,6 +142,17 @@
         }
 
         /// <summary>
+        /// 48K has a fixed memory layout (no paging): ROM0 (read-only) at 0x0000, then RAM banks
+        /// 0/1/2. Build the devirtualised maps once — they never change for 48K.
+        /// </summary>
+        public override void RebuildMemoryMap()
+        {
+            _readMap = new[] { ROM0, RAM0, RAM1, RAM2 };
+            _writeMap = new byte[][] { null, RAM0, RAM1, RAM2 }; // ROM region is read-only
+            RebuildPageContention();
+        }
+
+        /// <summary>
         /// Sets up the ROM
         /// </summary>
         public override void InitROM(RomData romData)
@@ -149,6 +160,7 @@
             RomData = romData;
             // for 16/48k machines only ROM0 is used (no paging)
             RomData.RomBytes?.CopyTo(ROM0, 0);
+            RebuildMemoryMap();
         }
     }
 }
