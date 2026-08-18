@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_US", in us_la_102);
 
 			// GG
-			FirmwareAndOption("914AA165E3D879F060BE77870D345B60CFEB4EDE", 1024, "GG", "Majesco", "GG_majesco.gg", "GG BIOS (USA/Majesco)");
+			FirmwareAndOption("914AA165E3D879F060BE77870D345B60CFEB4EDE", 1024, "GG", "Majesco", "GG_majesco.gg", "GG BIOS (USA/Majesco)"); // https://www.smspower.org/Development/BIOSes#TMSSGameGearBIOS "majbios.gg"
 
 			// INTV
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "INTV_EROM.bin", "Executive Rom");
@@ -567,11 +567,11 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "STV_E", in ss_stv_e, FirmwareOptionStatus.Ideal);
 
 			// SMS
-			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "SMS_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
-			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "SMS_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
-			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "SMS_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)");
-			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "SMS_m404.sms", "SMS BIOS (USA) (M404) (Proto)");
-			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "SMS_kr.sms", "SMS BIOS (Kr)");
+			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "SMS_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)"); // https://www.smspower.org/Development/BIOSes#USEuropeanBIOSV131986 "bios13fx.sms"
+			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "SMS_jp_2.1.sms", "SMS BIOS 2.1 (Japan)"); // https://www.smspower.org/Development/BIOSes#JapaneseBIOSV211987 "MPR11124.SMS"
+			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "SMS_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); // https://www.smspower.org/Development/BIOSes#PrototypeBIOSV101986 "SMS Prototype (v1.0) [Proto] [BIOS].sms"
+			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "SMS_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); // https://www.smspower.org/Development/BIOSes#M404PrototypeBIOS "SMS Prototype (M404) [BIOS].sms"
+			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "SMS_kr.sms", "SMS BIOS (Kr)"); // https://www.smspower.org/Development/BIOSes#KoreanSamsungGamBoyAladdinBoyIIBIOSWithAlexKiddInMiracleWorld "Alex Kidd in Miracle World [BIOS] (KR).sms"
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
 			Firmware("SMS", "Korea", "SMS Bios (Korea)");
