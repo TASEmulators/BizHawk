@@ -569,9 +569,9 @@ namespace BizHawk.Emulation.Common
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "SMS_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "SMS_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
-			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "SMS_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); // ?? is this size correct?
-			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "SMS_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); // ?? is this size correct?
-			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "SMS_kr.sms", "SMS BIOS (Kr)"); // ?? is this size correct?
+			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "SMS_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)");
+			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "SMS_m404.sms", "SMS BIOS (USA) (M404) (Proto)");
+			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "SMS_kr.sms", "SMS BIOS (Kr)");
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
 			Firmware("SMS", "Korea", "SMS Bios (Korea)");
