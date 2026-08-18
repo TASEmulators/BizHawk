@@ -572,9 +572,19 @@ namespace BizHawk.Emulation.Common
 			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "SMS_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); // https://www.smspower.org/Development/BIOSes#PrototypeBIOSV101986 "SMS Prototype (v1.0) [Proto] [BIOS].sms"
 			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "SMS_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); // https://www.smspower.org/Development/BIOSes#M404PrototypeBIOS "SMS Prototype (M404) [BIOS].sms"
 			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "SMS_kr.sms", "SMS BIOS (Kr)"); // https://www.smspower.org/Development/BIOSes#KoreanSamsungGamBoyAladdinBoyIIBIOSWithAlexKiddInMiracleWorld "Alex Kidd in Miracle World [BIOS] (KR).sms"
+			var sms_us_24 = File("9E179392CD416AF14024D8F31C981D9EE9A64517", 131072, "hshbios.sms", "SMS BIOS 2.4 (USA, Europe) (1988, with Hang On and Safari Hunt)"); // https://www.smspower.org/Development/BIOSes#USEuropeanBIOSV24WithHangOnAndSafariHunt1988 "hshbios.sms"
+			var sms_us_34 = File("51FD6D7990F62CD9D18C9ECFC62ED7936169107E", 131072, "hangbios.sms", "SMS BIOS 3.4 (USA, Europe) (1988, with Hang On)"); // https://www.smspower.org/Development/BIOSes#USEuropeanBIOSV34WithHangOn1988 "hangbios.sms"
+			var sms_us_44 = File("AA92AE576CA670B00855E278378D89E9F85E0351", 131072, "Missile Defense 3-D [BIOS].sms", "SMS BIOS 4.4 (USA, Europe) (1988, with Missile Defense 3-D)"); // https://www.smspower.org/Development/BIOSes#USEuropeanBIOSV44WithMissileDefense3D1988 "Missile Defense 3-D [BIOS].sms"
+			var sms_us_441 = File("3AF7B66248D34EB26DA40C92BF2FA4C73A46A051", 131072, "akbios.sms", "SMS BIOS 4.4 (USA, Europe) (1990, with Alex Kidd in Miracle World)"); // https://www.smspower.org/Development/BIOSes#USEuropeanBIOSWithAlexKiddInMiracleWorld1990 "akbios.sms"
+			var sms_eu_131 = File("6ACA0E3DFFE461BA1CB11A86CD4CAF5B97E1B8DF", 262144, "sonbios.sms", "SMS BIOS 1.3 (Europe) (1992, with Sonic The Hedgehog)"); // https://www.smspower.org/Development/BIOSes#EuropeanBIOSWithSonicTheHedgehog1992 "sonbios.sms"
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
 			Firmware("SMS", "Korea", "SMS Bios (Korea)");
+			Option("SMS", "Export", in sms_us_441);
+			Option("SMS", "Export", in sms_us_44);
+			Option("SMS", "Export", in sms_us_34);
+			Option("SMS", "Export", in sms_us_24);
+			Option("SMS", "Export", in sms_eu_131);
 			Option("SMS", "Export", in sms_us_13, FirmwareOptionStatus.Ideal);
 			Option("SMS", "Export", in sms_us_1b);
 			Option("SMS", "Export", in sms_m404);
