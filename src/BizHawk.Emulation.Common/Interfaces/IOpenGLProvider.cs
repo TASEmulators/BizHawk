@@ -1,3 +1,5 @@
+using SDL2;
+
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -17,12 +19,12 @@ namespace BizHawk.Emulation.Common
 		/// The requested OpenGL context will be shared with the current context
 		/// Note: creating a context implicitly makes that created context current
 		/// </summary>
-		object RequestGLContext(int major, int minor, bool coreProfile);
+		object RequestGLContext(int major, int minor, bool coreProfile, int width=1, int height=1);
 
 		/// <summary>
-		/// Frees this OpenGL context
+		/// Frees this OpenGL or Vulkan context
 		/// </summary>
-		void ReleaseGLContext(object context);
+		void ReleaseContext(object context);
 
 		/// <summary>
 		/// Sets this OpenGL context to current
@@ -40,5 +42,19 @@ namespace BizHawk.Emulation.Common
 		/// The user must make a context active before using this
 		/// </summary>
 		IntPtr GetGLProcAddress(string? proc);
+
+		/// <summary>
+		/// Gets the current value for <paramref name="attribute"/> in the current OpenGL context
+		/// </summary>
+		/// <param name="attribute">The attribute to check</param>
+		int GLGetAttribute(SDL.SDL_GLattr attribute);
+
+		void SwapBuffers(object context);
+
+		object RequestVulkanContext(int width, int height);
+
+		ulong CreateVulkanSurface(object context, IntPtr instance);
+
+		IntPtr[] GetVulkanInstanceExtensions();
 	}
 }
