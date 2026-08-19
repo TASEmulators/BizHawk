@@ -2934,8 +2934,8 @@ namespace BizHawk.Client.EmuHawk
 
 				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
-				// client input-related duties
-				OSD.ClearGuiText();
+				// Clear stuff previously drawn by gui API
+				DisplayManager.ClearApiHawkSurfaces();
 
 				CheatList.Pulse();
 
@@ -3049,6 +3049,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					UpdateToolsAfter();
 				}
+				DisplayManager.OnDraw?.Invoke();
 
 				if (newFrame)
 				{
@@ -4096,7 +4097,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			OSD.ClearGuiText();
+			DisplayManager.ClearApiHawkSurfaces();
 			if (SavestateLoaded is not null)
 			{
 				StateLoadedEventArgs args = new(userFriendlyStateName);
@@ -4110,6 +4111,8 @@ namespace BizHawk.Client.EmuHawk
 			UpdateToolsAfter();
 			UpdateToolsLoadstate();
 			InputManager.AutoFireController.ClearStarts();
+
+			DisplayManager.OnDraw?.Invoke(); // not DoApiRedraw, so scripts drawing in the savestate load event still work
 
 			//we don't want to analyze how to intermix movies, rewinding, and states
 			//so purge rewind history when loading a state while doing a movie
