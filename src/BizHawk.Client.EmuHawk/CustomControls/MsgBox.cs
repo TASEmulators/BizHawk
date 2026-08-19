@@ -18,13 +18,16 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		// The min required width of the button and checkbox row. Sum of button widths + checkbox width + margins.
 		private int _minButtonRowWidth;
 
+		public bool UserSaysDontShowAgain => chkBx.Checked;
+
 		/// <summary>
 		/// Create a new instance of the dialog box with a message and title and a standard windows MessageBox icon.
 		/// </summary>
 		/// <param name="message">Message text.</param>
 		/// <param name="title">Dialog Box title.</param>
 		/// <param name="boxIcon">Standard system MessageBox icon.</param>
-		public MsgBox(string message, string title, MessageBoxIcon boxIcon)
+		/// <param name="showCheckbox">Show a checkbox letting the user say "don't show this again".</param>
+		public MsgBox(string message, string title, MessageBoxIcon boxIcon, bool showCheckbox = false)
 		{
 			var icon = GetMessageBoxIcon(boxIcon);
 			InitializeComponent();
@@ -39,6 +42,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			{
 				messageLbl.Location = new Point(FormXMargin, FormYMargin);
 			}
+
+			chkBx.Visible = showCheckbox;
 		}
 
 		/// <summary>

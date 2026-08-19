@@ -65,6 +65,8 @@ namespace BizHawk.Client.Common
 
 		public static readonly FilesystemFilter PNGs = new FilesystemFilter("PNG Files", new[] { "png" });
 
+		public static readonly FilesystemFilter SaveRams = new FilesystemFilter("SaveRAM Files", new[] { "SaveRAM", "bin" });
+
 		public static readonly FilesystemFilter TAStudioProjects = new FilesystemFilter("TAS Project Files", new[] { MovieService.TasMovieExtension });
 
 		public static readonly FilesystemFilter TextFiles = new FilesystemFilter("Text Files", new[] { "txt" });
