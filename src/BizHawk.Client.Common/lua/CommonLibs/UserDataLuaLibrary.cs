@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.ComponentModel;
 
 using NLua;
@@ -15,12 +17,12 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("userdata.set(\"Unique key\", \"Current key data\");")]
 		[LuaMethod("set", "adds or updates the data with the given key with the given value")]
-		public void Set(string name, object value)
+		public void Set(string name, object? value)
 			=> APIs.UserData.Set(name, value);
 
 		[LuaMethodExample("local obuseget = userdata.get( \"Unique key\" );")]
 		[LuaMethod("get", "gets the data with the given key, if the key does not exist it will return nil")]
-		public object Get(string key)
+		public object? Get(string key)
 			=> APIs.UserData.Get(key);
 
 		[LuaMethodExample("userdata.clear( );")]

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.ComponentModel;
 
 using NLua;
@@ -9,8 +11,8 @@ namespace BizHawk.Client.Common
 	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmulationLuaLibrary : LuaLibraryBase
 	{
-		public Action FrameAdvanceCallback { get; set; }
-		public Action YieldCallback { get; set; }
+		public required Action FrameAdvanceCallback { get; set; }
+		public required Action YieldCallback { get; set; }
 
 		public EmulationLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
@@ -36,7 +38,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local obemudis = emu.disassemble( 0x8000 );")]
 		[LuaMethod("disassemble", "Returns the disassembly object (disasm string and length int) for the given PC address. Uses System Bus domain if no domain name provided")]
-		public LuaTable Disassemble(uint pc, string name = "")
+		public LuaTable? Disassemble(uint pc, string name = "")
 		{
 			var (disasm, length) = APIs.Emulation.Disassemble(pc, name);
 			if (length is 0) return null;
