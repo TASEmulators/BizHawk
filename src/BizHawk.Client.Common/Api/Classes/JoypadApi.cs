@@ -46,8 +46,8 @@ namespace BizHawk.Client.Common
 				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 				return;
 			}
-			foreach (var button in controller.Definition.BoolButtons) _inputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
-			foreach (var axis in controller.Definition.Axes.Keys) _inputManager.ButtonOverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
+			foreach (var button in controller.Definition.BoolButtons) _inputManager.OverrideAdapter.SetButton(button, controller.IsPressed(button));
+			foreach (var axis in controller.Definition.Axes.Keys) _inputManager.OverrideAdapter.SetAxis(axis, controller.AxisValue(axis));
 		}
 
 		public void Set(IReadOnlyDictionary<string, bool> buttons, int? controller = null)
@@ -65,21 +65,8 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var buttonToSet = controller == null ? button : $"P{controller} {button}";
-				if (state == null) _inputManager.ButtonOverrideAdapter.UnSet(buttonToSet);
-				else _inputManager.ButtonOverrideAdapter.SetButton(buttonToSet, state.Value);
-
-				//"Overrides" is a gross line of code in that flushes overrides into the current controller.
-				//That's not really the way it was meant to work which was that it should pull all its values through the filters before ever using them.
-				//Of course the code that does that is in the main loop and the lua API wouldnt know how to do it.
-				//I regret the whole hotkey filter chain OOP soup approach. Anyway, the code that
-
-				//in a crude, CRUDE, *CRUDE* approximation of what the main loop does, we need to pull the physical input again before it's freshly overridded
-				//but really, everything the main loop does needs to be done here again.
-				//I'm not doing that now.
-				_inputManager.ActiveController.LatchFromPhysical(_inputManager.ControllerInputCoalescer);
-
-				//and here's where the overrides managed by this API are pushed in
-				_inputManager.ActiveController.Overrides(_inputManager.ButtonOverrideAdapter);
+				if (state == null) _inputManager.OverrideAdapter.UnSet(buttonToSet);
+				else _inputManager.OverrideAdapter.SetButton(buttonToSet, state.Value);
 			}
 			catch
 			{
@@ -87,16 +74,23 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetAnalog(IReadOnlyDictionary<string, int?> controls, int? controller = null)
+		public void SetAnalog(IReadOnlyDictionary<string, int> controls, int? controller = null)
 		{
-			foreach (var (k, v) in controls) SetAnalog(k, v, controller);
+			// If a controller is specified, we need to iterate over unique button names. If not, we iterate over
+			// ALL button names with P{controller} prefixes
+			foreach (var axis in _inputManager.ActiveController.ToAxisControlNameList(controller))
+			{
+				SetAnalog(axis, controls.TryGetValue(axis, out var state) ? state : null, controller);
+			}
 		}
 
 		public void SetAnalog(string control, int? value = null, int? controller = null)
 		{
 			try
 			{
-				_inputManager.StickyHoldController.SetAxisHold(controller == null ? control : $"P{controller} {control}", value);
+				var axisToSet = controller == null ? control : $"P{controller} {control}";
+				if (value == null) _inputManager.OverrideAdapter.UnSetAxis(axisToSet);
+				else _inputManager.OverrideAdapter.SetAxis(axisToSet, value.Value);
 			}
 			catch
 			{
