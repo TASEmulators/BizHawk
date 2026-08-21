@@ -6,11 +6,21 @@ namespace BizHawk.WinForms.Controls
 {
 	public class StatusLabelEx : ToolStripStatusLabel
 	{
+		private string? _name;
+
+		public StatusLabelEx()
+		{
+			AccessibleRole = AccessibleRole.StaticText;
+		}
+
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new Size Size => base.Size;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new string Name
-			=> base.Name;
+		{
+			get => _name ?? base.Name;
+			set => _name = value;
+		}
 	}
 }

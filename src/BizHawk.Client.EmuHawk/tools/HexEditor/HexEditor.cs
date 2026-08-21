@@ -203,6 +203,8 @@ namespace BizHawk.Client.EmuHawk
 			Header.Font = font;
 			AddressesLabel.Font = font;
 			AddressLabel.Font = font;
+
+			InitializeNativeMenu();
 		}
 
 		private void HexEditor_Load(object sender, EventArgs e)

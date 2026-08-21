@@ -291,7 +291,8 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStrip1.TabStop = true;
 			// 
 			// newToolStripButton
-			// 
+			//
+			this.newToolStripButton.AccessibleName = "New Watch List";
 			this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.newToolStripButton.Name = "newToolStripButton";
@@ -300,7 +301,8 @@ namespace BizHawk.Client.EmuHawk
 			this.newToolStripButton.Click += new System.EventHandler(this.NewListMenuItem_Click);
 			// 
 			// openToolStripButton
-			// 
+			//
+			this.openToolStripButton.AccessibleName = "Open Watch List";
 			this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.openToolStripButton.Name = "openToolStripButton";
@@ -309,7 +311,8 @@ namespace BizHawk.Client.EmuHawk
 			this.openToolStripButton.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// saveToolStripButton
-			// 
+			//
+			this.saveToolStripButton.AccessibleName = "Save Watch List";
 			this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripButton.Name = "saveToolStripButton";
@@ -318,7 +321,8 @@ namespace BizHawk.Client.EmuHawk
 			this.saveToolStripButton.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// newWatchToolStripButton
-			// 
+			//
+			this.newWatchToolStripButton.AccessibleName = "New Watch";
 			this.newWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.newWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.newWatchToolStripButton.Name = "newWatchToolStripButton";
@@ -328,7 +332,8 @@ namespace BizHawk.Client.EmuHawk
 			this.newWatchToolStripButton.Click += new System.EventHandler(this.NewWatchMenuItem_Click);
 			// 
 			// editWatchToolStripButton
-			// 
+			//
+			this.editWatchToolStripButton.AccessibleName = "Edit Watch";
 			this.editWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.editWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.editWatchToolStripButton.Name = "editWatchToolStripButton";
@@ -337,7 +342,8 @@ namespace BizHawk.Client.EmuHawk
 			this.editWatchToolStripButton.Click += new System.EventHandler(this.EditWatchMenuItem_Click);
 			// 
 			// cutToolStripButton
-			// 
+			//
+			this.cutToolStripButton.AccessibleName = "Remove Watch";
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
@@ -347,7 +353,8 @@ namespace BizHawk.Client.EmuHawk
 			this.cutToolStripButton.Click += new System.EventHandler(this.RemoveWatchMenuItem_Click);
 			// 
 			// clearChangeCountsToolStripButton
-			// 
+			//
+			this.clearChangeCountsToolStripButton.AccessibleName = "Clear Change Counts";
 			this.clearChangeCountsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.clearChangeCountsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.clearChangeCountsToolStripButton.Name = "clearChangeCountsToolStripButton";
@@ -357,7 +364,8 @@ namespace BizHawk.Client.EmuHawk
 			this.clearChangeCountsToolStripButton.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
 			// duplicateWatchToolStripButton
-			// 
+			//
+			this.duplicateWatchToolStripButton.AccessibleName = "Duplicate Watch";
 			this.duplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.duplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.duplicateWatchToolStripButton.Name = "duplicateWatchToolStripButton";
@@ -366,7 +374,8 @@ namespace BizHawk.Client.EmuHawk
 			this.duplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
 			// 
 			// SplitWatchToolStripButton
-			// 
+			//
+			this.SplitWatchToolStripButton.AccessibleName = "Split Watch";
 			this.SplitWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.SplitWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SplitWatchToolStripButton.Name = "SplitWatchToolStripButton";
@@ -375,7 +384,8 @@ namespace BizHawk.Client.EmuHawk
 			this.SplitWatchToolStripButton.Click += new System.EventHandler(this.SplitWatchMenuItem_Click);
 			// 
 			// PokeAddressToolBarItem
-			// 
+			//
+			this.PokeAddressToolBarItem.AccessibleName = "Poke Address";
 			this.PokeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.PokeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PokeAddressToolBarItem.Name = "PokeAddressToolBarItem";
@@ -385,7 +395,8 @@ namespace BizHawk.Client.EmuHawk
 			this.PokeAddressToolBarItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
 			// FreezeAddressToolBarItem
-			// 
+			//
+			this.FreezeAddressToolBarItem.AccessibleName = "Freeze Address";
 			this.FreezeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.FreezeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezeAddressToolBarItem.Name = "FreezeAddressToolBarItem";
@@ -394,7 +405,8 @@ namespace BizHawk.Client.EmuHawk
 			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// seperatorToolStripButton
-			// 
+			//
+			this.seperatorToolStripButton.AccessibleName = "Insert Separator";
 			this.seperatorToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.seperatorToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.seperatorToolStripButton.Name = "seperatorToolStripButton";
@@ -404,7 +416,8 @@ namespace BizHawk.Client.EmuHawk
 			this.seperatorToolStripButton.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// moveUpToolStripButton
-			// 
+			//
+			this.moveUpToolStripButton.AccessibleName = "Move Watch Up";
 			this.moveUpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.moveUpToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.moveUpToolStripButton.Name = "moveUpToolStripButton";
@@ -413,7 +426,8 @@ namespace BizHawk.Client.EmuHawk
 			this.moveUpToolStripButton.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
 			// 
 			// moveDownToolStripButton
-			// 
+			//
+			this.moveDownToolStripButton.AccessibleName = "Move Watch Down";
 			this.moveDownToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.moveDownToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.moveDownToolStripButton.Name = "moveDownToolStripButton";

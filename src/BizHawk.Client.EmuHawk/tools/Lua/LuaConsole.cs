@@ -163,6 +163,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
 			_defaultSplitDistance = splitContainer1.SplitterDistance;
+
+			// Initialize native Win32 menu for screen reader accessibility
+			InitializeNativeMenu();
 		}
 
 		private LuaLibraries LuaImp;
