@@ -17,7 +17,8 @@ CCFLAGS := 	-I. \
 			-Idosbox-x/src/hardware/snd_pc98/x11 \
 			-Idosbox-x/src/hardware/snd_pc98/sound/getsnd \
 			-Idosbox-x/src/hardware/snd_pc98/cbus \
-    		-DSDL_BUILD_MAJOR_VERSION=2 \
+			-Idosbox-x/third_party/jaffarCommon/subprojects/zlib \
+	    		-DSDL_BUILD_MAJOR_VERSION=2 \
 			-DSDL_BUILD_MINOR_VERSION=32 \
 			-DSDL_BUILD_MICRO_VERSION=0 \
 			-DHAVE_LINUX_VERSION_H \
@@ -133,6 +134,8 @@ SRCS = 	bizhawk.cpp \
 		dosbox-x/src/aviwriter/avi_writer.cpp \
 		dosbox-x/src/aviwriter/guid.cpp \
 		dosbox-x/src/builtin/move_exe.cpp \
+		dosbox-x/src/builtin/ipsmake.cpp \
+		dosbox-x/src/builtin/ipspatch.cpp \
 		dosbox-x/src/builtin/hexmem16_exe.cpp \
 		dosbox-x/src/builtin/fdisk_exe.cpp \
 		dosbox-x/src/builtin/textutil.cpp \
