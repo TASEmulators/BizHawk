@@ -21,9 +21,15 @@ namespace BizHawk.Bizware.Graphics
 #pragma warning disable CA1065 // not sure how else to handle failure other than throwing with a good message
 		static SDL2OpenGLContext()
 		{
-			if (OSTailoredCode.IsUnixHost)
+			if (OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS)
 			{
-				// make sure that Linux uses the x11 video driver
+				// mono winforms uses x11 (via XQuartz) on macOS too, so use the x11 video driver,
+				// but XQuartz only provides GLX (not EGL), so don't force EGL like on Linux
+				SDL_SetHintWithPriority("SDL_VIDEODRIVER", "x11", SDL_HintPriority.SDL_HINT_OVERRIDE);
+			}
+			else if (OSTailoredCode.IsUnixHost)
+			{
+				// make sure that we use the x11 video driver
 				// we need this as mono winforms uses x11
 				// and the user could potentially try to force the wayland video driver via env vars
 				SDL_SetHintWithPriority("SDL_VIDEODRIVER", "x11", SDL_HintPriority.SDL_HINT_OVERRIDE);

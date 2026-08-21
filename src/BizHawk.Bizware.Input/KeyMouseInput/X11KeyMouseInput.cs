@@ -1,9 +1,7 @@
-﻿#nullable enable
+#nullable enable
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
-using BizHawk.Common;
 
 using static BizHawk.Common.XInput2Imports;
 using static BizHawk.Common.XlibImports;
@@ -23,11 +21,8 @@ namespace BizHawk.Bizware.Input
 
 		public X11KeyMouseInput()
 		{
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Linux)
-			{
-				throw new NotSupportedException("X11 is Linux only");
-			}
-
+			// no OS check: X11 may work on any host with an X server (e.g. macOS via XQuartz);
+			// XOpenDisplay below fails cleanly otherwise, and Windows uses RawKeyMouseInput
 			Display = XOpenDisplay(null);
 
 			if (Display == IntPtr.Zero)

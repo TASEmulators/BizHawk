@@ -121,18 +121,30 @@ mod trip_pal {
 	type SaHandler = unsafe extern "C" fn(i32) -> ();
 	type SaSigaction = unsafe extern "C" fn(i32, *const siginfo_t, *const ucontext_t) -> ();
 	static mut SA_OLD: Option<Box<sigaction>> = None;
+	// macOS delivers SIGBUS (not SIGSEGV) for protection violations on mapped memory,
+	// which is exactly the fault the tripguard catches, so we hook it as well.
+	#[cfg(target_os = "macos")]
+	static mut SA_OLD_BUS: Option<Box<sigaction>> = None;
 
 	pub fn initialize() {
 		use std::mem::{transmute, zeroed};
 
 		unsafe extern "C" fn handler(sig: i32, info: *const siginfo_t, ucontext: *const ucontext_t) {
 			let fault_address = (*info).si_addr() as usize;
+			// Bit 1 (value 2) of the x86 page-fault error code means the access was a write.
+			// The error code lives in different places depending on the OS' mcontext layout.
+			#[cfg(target_os = "linux")]
 			let write = (*ucontext).uc_mcontext.gregs[REG_ERR as usize] & 2 != 0;
+			#[cfg(target_os = "macos")]
+			let write = ((*(*ucontext).uc_mcontext).__es.__err & 2) != 0;
 			let rethrow = !write || match trip(fault_address) {
 				TripResult::NotHandled => true,
 				_ => false
 			};
 			if rethrow {
+				#[cfg(target_os = "macos")]
+				let sa_old = if sig == SIGBUS { SA_OLD_BUS.as_ref().unwrap() } else { SA_OLD.as_ref().unwrap() };
+				#[cfg(not(target_os = "macos"))]
 				let sa_old = SA_OLD.as_ref().unwrap();
 				if sa_old.sa_flags & SA_SIGINFO != 0 {
 					transmute::<usize, SaSigaction>(sa_old.sa_sigaction)(sig, info, ucontext);
@@ -156,14 +168,18 @@ mod trip_pal {
 			// };
 			// assert!(sigaltstack(&ss, &mut ss_old) == 0, "sigaltstack failed");
 			SA_OLD = Some(Box::new(zeroed()));
-			let mut sa = sigaction {
-				sa_mask: zeroed(),
-				sa_sigaction: transmute::<SaSigaction, usize>(handler),
-				sa_flags: SA_ONSTACK | SA_SIGINFO,
-				sa_restorer: None,
-			};
+			// Build via zeroed() + field assignment so this compiles on both Linux
+			// (which has the extra `sa_restorer` field) and macOS (which does not).
+			let mut sa: sigaction = zeroed();
+			sa.sa_sigaction = transmute::<SaSigaction, usize>(handler);
+			sa.sa_flags = SA_ONSTACK | SA_SIGINFO;
 			sigfillset(&mut sa.sa_mask);
 			assert!(sigaction(SIGSEGV, &sa, &mut **SA_OLD.as_mut().unwrap() as *mut sigaction) == 0, "sigaction failed");
+			#[cfg(target_os = "macos")]
+			{
+				SA_OLD_BUS = Some(Box::new(zeroed()));
+				assert!(sigaction(SIGBUS, &sa, &mut **SA_OLD_BUS.as_mut().unwrap() as *mut sigaction) == 0, "sigaction SIGBUS failed");
+			}
 		}
 	}
 }
