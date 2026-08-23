@@ -62,6 +62,36 @@ enum class RETRO_ENVIRONMENT {
 	SET_SUPPORT_ACHIEVEMENTS = 42 | RETRO_ENVIRONMENT::EXPERIMENTAL,
 	SET_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE = 43 | RETRO_ENVIRONMENT::EXPERIMENTAL,
 	SET_SERIALIZATION_QUIRKS = 44,
+	GET_VFS_INTERFACE  = 45 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_LED_INTERFACE = 46 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_AUDIO_VIDEO_ENABLE = 47 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_MIDI_INTERFACE = 48 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_FASTFORWARDING = 49 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_TARGET_REFRESH_RATE = 50 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_INPUT_BITMASKS = 51 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_CORE_OPTIONS_VERSION = 52,
+	SET_CORE_OPTIONS = 53,
+	SET_CORE_OPTIONS_INTL = 54,
+	SET_CORE_OPTIONS_DISPLAY = 55,
+	GET_PREFERRED_HW_RENDER = 56,
+	GET_DISK_CONTROL_INTERFACE_VERSION = 57,
+	SET_DISK_CONTROL_EXT_INTERFACE = 58,
+	GET_MESSAGE_INTERFACE_VERSION = 59,
+	SET_MESSAGE_EXT = 60,
+	GET_INPUT_MAX_USERS = 61,
+	SET_AUDIO_BUFFER_STATUS_CALLBACK = 62,
+	SET_MINIMUM_AUDIO_LATENCY = 63,
+	SET_FASTFORWARDING_OVERRIDE = 64,
+	SET_CONTENT_INFO_OVERRIDE = 65,
+	GET_GAME_INFO_EXT = 66,
+	SET_CORE_OPTIONS_V2 = 67,
+	SET_CORE_OPTIONS_V2_INTL = 68,
+	SET_CORE_OPTIONS_UPDATE_DISPLAY_CALLBACK = 69,
+	SET_VARIABLE = 70,
+	GET_THROTTLE_STATE = 71 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_SAVESTATE_CONTEXT = 72 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE_SUPPORT = 73 | RETRO_ENVIRONMENT::EXPERIMENTAL,
+	GET_JIT_CAPABLE = 74,
 };
 
 enum class RETRO_DEVICE {
@@ -409,3 +439,148 @@ struct retro_frame_time_callback
     * rounding to ensure that framestepping, etc is exact. */
    retro_usec_t reference;
 };
+
+enum retro_hw_context_type
+{
+   RETRO_HW_CONTEXT_NONE             = 0,
+   /* OpenGL 2.x. Driver can choose to use latest compatibility context. */
+   RETRO_HW_CONTEXT_OPENGL           = 1,
+   /* OpenGL ES 2.0. */
+   RETRO_HW_CONTEXT_OPENGLES2        = 2,
+   /* Modern desktop core GL context. Use version_major/
+    * version_minor fields to set GL version. */
+   RETRO_HW_CONTEXT_OPENGL_CORE      = 3,
+   /* OpenGL ES 3.0 */
+   RETRO_HW_CONTEXT_OPENGLES3        = 4,
+   /* OpenGL ES 3.1+. Set version_major/version_minor. For GLES2 and GLES3,
+    * use the corresponding enums directly. */
+   RETRO_HW_CONTEXT_OPENGLES_VERSION = 5,
+
+   /* Vulkan, see RETRO_ENVIRONMENT::GET_HW_RENDER_INTERFACE. */
+   RETRO_HW_CONTEXT_VULKAN           = 6,
+
+   /* Direct3D11, see RETRO_ENVIRONMENT::GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D11            = 7,
+
+   /* Direct3D10, see RETRO_ENVIRONMENT::GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D10            = 8,
+
+   /* Direct3D12, see RETRO_ENVIRONMENT::GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D12            = 9,
+
+   /* Direct3D9, see RETRO_ENVIRONMENT::GET_HW_RENDER_INTERFACE */
+   RETRO_HW_CONTEXT_D3D9             = 10,
+
+   /** Dummy value to ensure sizeof(enum retro_hw_context_type) == sizeof(int). Do not use. */
+   RETRO_HW_CONTEXT_DUMMY = INT_MAX
+};
+
+/* Gets current framebuffer which is to be rendered to.
+ * Could change every frame potentially.
+ */
+typedef uintptr_t (*retro_hw_get_current_framebuffer_t)(void);
+
+typedef void (*retro_proc_address_t)(void);
+
+/* Get a symbol from HW context. */
+typedef retro_proc_address_t (*retro_hw_get_proc_address_t)(const char *sym);
+
+/* Invalidates the current HW context.
+ * Any GL state is lost, and must not be deinitialized explicitly.
+ * If explicit deinitialization is desired by the libretro core,
+ * it should implement context_destroy callback.
+ * If called, all GPU resources must be reinitialized.
+ * Usually called when frontend reinits video driver.
+ * Also called first time video driver is initialized,
+ * allowing libretro core to initialize resources.
+ */
+typedef void (*retro_hw_context_reset_t)(void);
+
+struct retro_hw_render_callback
+{
+   /* Which API to use. Set by libretro core. */
+   enum retro_hw_context_type context_type;
+
+   /* Called when a context has been created or when it has been reset.
+    * An OpenGL context is only valid after context_reset() has been called.
+    *
+    * When context_reset is called, OpenGL resources in the libretro
+    * implementation are guaranteed to be invalid.
+    *
+    * It is possible that context_reset is called multiple times during an
+    * application lifecycle.
+    * If context_reset is called without any notification (context_destroy),
+    * the OpenGL context was lost and resources should just be recreated
+    * without any attempt to "free" old resources.
+    */
+   retro_hw_context_reset_t context_reset;
+
+   /* Set by frontend.
+    * TODO: This is rather obsolete. The frontend should not
+    * be providing preallocated framebuffers. */
+   retro_hw_get_current_framebuffer_t get_current_framebuffer;
+
+   /* Set by frontend.
+    * Can return all relevant functions, including glClear on Windows. */
+   retro_hw_get_proc_address_t get_proc_address;
+
+   /* Set if render buffers should have depth component attached.
+    * TODO: Obsolete. */
+   bool depth;
+
+   /* Set if stencil buffers should be attached.
+    * TODO: Obsolete. */
+   bool stencil;
+
+   /* If depth and stencil are true, a packed 24/8 buffer will be added.
+    * Only attaching stencil is invalid and will be ignored. */
+
+   /* Use conventional bottom-left origin convention. If false,
+    * standard libretro top-left origin semantics are used.
+    * TODO: Move to GL specific interface. */
+   bool bottom_left_origin;
+
+   /* Major version number for core GL context or GLES 3.1+. */
+   unsigned version_major;
+
+   /* Minor version number for core GL context or GLES 3.1+. */
+   unsigned version_minor;
+
+   /* If this is true, the frontend will go very far to avoid
+    * resetting context in scenarios like toggling fullscreen, etc.
+    * TODO: Obsolete? Maybe frontend should just always assume this ...
+    */
+   bool cache_context;
+
+   /* The reset callback might still be called in extreme situations
+    * such as if the context is lost beyond recovery.
+    *
+    * For optimal stability, set this to false, and allow context to be
+    * reset at any time.
+    */
+
+   /* A callback to be called before the context is destroyed in a
+    * controlled way by the frontend. */
+   retro_hw_context_reset_t context_destroy;
+
+   /* OpenGL resources can be deinitialized cleanly at this step.
+    * context_destroy can be set to NULL, in which resources will
+    * just be destroyed without any notification.
+    *
+    * Even when context_destroy is non-NULL, it is possible that
+    * context_reset is called without any destroy notification.
+    * This happens if context is lost by external factors (such as
+    * notified by GL_ARB_robustness).
+    *
+    * In this case, the context is assumed to be already dead,
+    * and the libretro implementation must not try to free any OpenGL
+    * resources in the subsequent context_reset.
+    */
+
+   /* Creates a debug context. */
+   bool debug_context;
+};
+
+#define RETRO_HW_FRAME_BUFFER_VALID ((void*)-1)
+
+typedef void (*InitializeHardwareContextCb_t)(retro_hw_context_type contextType, int major, int minor, bool needDepth);

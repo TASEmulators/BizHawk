@@ -138,8 +138,18 @@ public:
 				//TODO high priority (to support disc systems)
 				return false;
 			case RETRO_ENVIRONMENT::SET_HW_RENDER:
-				//TODO high priority (to support 3d renderers)
-				return false;
+			{
+				struct retro_hw_render_callback* hw_render_callback = static_cast<struct retro_hw_render_callback*>(data);
+
+				initializeHardwareContextCb(hw_render_callback->context_type, hw_render_callback->version_major, hw_render_callback->version_minor, hw_render_callback->depth);
+
+				context_reset = hw_render_callback->context_reset;
+				context_destroy = hw_render_callback->context_destroy;
+
+				hw_render_callback->get_proc_address = getGLProcAddrCb;
+				hw_render_callback->get_current_framebuffer = getFramebufferCb;
+				return true;
+			}
 			case RETRO_ENVIRONMENT::GET_VARIABLE:
 			{
 				//according to retroarch's `core_option_manager_get` this is what we should do
@@ -263,9 +273,9 @@ public:
 			case RETRO_ENVIRONMENT::SET_GEOMETRY:
 			{
 				const retro_game_geometry* geo = static_cast<const retro_game_geometry*>(data);
-				std::memcpy(&geoInfo, geo, sizeof (retro_game_geometry));
-				SetVideoSize(geoInfo.max_width * geoInfo.max_height);
-				geoInfoDirty = true;
+				geoInfo.base_width = geo->base_width;
+				geoInfo.base_height = geo->base_height;
+				geoInfo.base_height = geo->aspect_ratio;
 				return true;
 			}
 			case RETRO_ENVIRONMENT::GET_USERNAME:
@@ -273,6 +283,10 @@ public:
 				return false;
 			case RETRO_ENVIRONMENT::GET_LANGUAGE:
 				*static_cast<RETRO_LANGUAGE*>(data) = RETRO_LANGUAGE::ENGLISH;
+				return true;
+			case RETRO_ENVIRONMENT::GET_PREFERRED_HW_RENDER:
+				// we only really support opengl
+				*static_cast<retro_hw_context_type*>(data) = retro_hw_context_type::RETRO_HW_CONTEXT_OPENGL_CORE;
 				return true;
 			default:
 				return false;
@@ -372,13 +386,13 @@ public:
 	}
 
 	void RetroVideoRefresh(const void* data, u32 width, u32 height, std::size_t pitch) {
-		if (!data) {
-			return;
-		}
-
 		assert((width * height) <= videoBufSz);
 		this->width = width;
 		this->height = height;
+
+		if (!data || data == RETRO_HW_FRAME_BUFFER_VALID) {
+			return;
+		}
 
 		switch (pixelFormat) {
 			case RETRO_PIXEL_FORMAT::ZRGB1555:
@@ -568,6 +582,26 @@ public:
 		}
 	}
 
+	void SetGetGLProcAddrCb(retro_hw_get_proc_address_t cb) {
+		getGLProcAddrCb = cb;
+	}
+
+	void SetFramebufferCb(retro_hw_get_current_framebuffer_t cb) {
+		getFramebufferCb = cb;
+	}
+
+	void SetInitializeHardwareContextCb(InitializeHardwareContextCb_t cb) {
+		initializeHardwareContextCb = cb;
+	}
+
+	void HWContextReset() {
+		if (context_reset) context_reset();
+	}
+
+	void HWContextDestroy() {
+		if (context_destroy) context_destroy();
+	}
+
 private:
 	// environment vars
 	bool supportsNoGame;
@@ -616,6 +650,11 @@ private:
 
 	// callbacks
 	retro_frame_time_callback* ftCallback = nullptr;
+	retro_hw_get_proc_address_t getGLProcAddrCb = nullptr;
+	retro_hw_get_current_framebuffer_t getFramebufferCb = nullptr;
+	InitializeHardwareContextCb_t initializeHardwareContextCb = nullptr;
+	retro_hw_context_reset_t context_reset = nullptr;
+	retro_hw_context_reset_t context_destroy = nullptr;
 };
 
 static CallbackHandler * gCbHandler = nullptr;
@@ -702,6 +741,25 @@ EXPORT void LibretroBridge_SetFrameTime(CallbackHandler* cbHandler) {
 	cbHandler->SetFrameTime();
 }
 
+EXPORT void LibretroBridge_HWContextReset(CallbackHandler* cbHandler) {
+	cbHandler->HWContextReset();
+}
+
+EXPORT void LibretroBridge_HWContextDestroy(CallbackHandler* cbHandler) {
+	cbHandler->HWContextDestroy();
+}
+
+EXPORT void LibretroBridge_SetGLCallbacks(
+	CallbackHandler* cbHandler,
+	retro_hw_get_proc_address_t getGLProcAddressCb,
+	retro_hw_get_current_framebuffer_t getFramebufferCb,
+	InitializeHardwareContextCb_t initializeHardwareContextCb
+	) {
+	cbHandler->SetGetGLProcAddrCb(getGLProcAddressCb);
+	cbHandler->SetFramebufferCb(getFramebufferCb);
+	cbHandler->SetInitializeHardwareContextCb(initializeHardwareContextCb);
+}
+
 // retro callbacks
 
 static boolean retro_environment(u32 cmd, void* data) {
@@ -745,7 +803,7 @@ struct RetroProcs {
 
 // get procs for retro callbacks
 // these are not linked to any specific callback handler
-// please call LibretroBridge_SetCallbackHandler to set a global callback handler
+// please call LibretroBridge_SetGlobalCallbackHandler to set a global callback handler
 // as you can guess, this means only a single instance can use this at a time :/
 // (not like you can multi-instance libretro cores in the first place)
 EXPORT void LibretroBridge_GetRetroProcs(RetroProcs* retroProcs) {
