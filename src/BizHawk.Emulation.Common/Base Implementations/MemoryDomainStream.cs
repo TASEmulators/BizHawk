@@ -1,7 +1,6 @@
 #nullable disable
 
 using System.IO;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
@@ -58,11 +57,8 @@ namespace BizHawk.Emulation.Common
 			count = (int)Math.Min(count, Length - Position);
 			if (count == 0)
 				return 0;
-			// TODO: Memory domain doesn't have the overload we need :(
-			var poop = new byte[count];
-			// TODO: Range has the wrong end value
-			_d.BulkPeekByte(Position.RangeToExclusive(Position + count), poop);
-			Array.Copy(poop, 0, buffer, offset, count);
+			Span<byte> dst = new(buffer, offset, count);
+			_d.BulkPeekByte(Position, dst);
 			Position += count;
 			return count;
 		}
