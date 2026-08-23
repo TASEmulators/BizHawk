@@ -871,28 +871,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TastudioToggleReadOnly()
 		{
-			TasPlaybackBox.RecordingMode = !TasPlaybackBox.RecordingMode;
-			WasRecording = TasPlaybackBox.RecordingMode; // hard reset at manual click and hotkey
+			TasPlaybackBox.SetRecordingState(TasPlaybackBox.IsRecording ? PlaybackBox.RecordingModeState.Off : PlaybackBox.RecordingModeState.On);
+			WasRecording = TasPlaybackBox.IsRecording; // hard reset at manual click and hotkey
 		}
 
 		private void TastudioPlayMode(bool resetWasRecording = false)
 		{
-			TasPlaybackBox.RecordingMode = false;
+			TasPlaybackBox.SetRecordingState(PlaybackBox.RecordingModeState.Off);
 
 			// once user started editing, rec mode is unsafe
 			if (resetWasRecording)
 			{
-				WasRecording = TasPlaybackBox.RecordingMode;
+				WasRecording = TasPlaybackBox.IsRecording;
 			}
 		}
 
 		private void TastudioRecordMode(bool resetWasRecording = false)
 		{
-			TasPlaybackBox.RecordingMode = true;
+			TasPlaybackBox.SetRecordingState(PlaybackBox.RecordingModeState.On);
 
 			if (resetWasRecording)
 			{
-				WasRecording = TasPlaybackBox.RecordingMode;
+				WasRecording = TasPlaybackBox.IsRecording;
 			}
 		}
 
@@ -1361,7 +1361,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suspendEditLogic;
 		public void LoadBranch(TasBranch branch)
 		{
-			if (Settings.OldControlSchemeForBranches && !TasPlaybackBox.RecordingMode)
+			if (Settings.OldControlSchemeForBranches && !TasPlaybackBox.IsRecording)
 			{
 				GoToFrame(branch.Frame);
 				return;
@@ -1375,7 +1375,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.TasStateManager.Capture(Emulator.Frame, Emulator.AsStatable());
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), VideoProvider);
 
-			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.RecordingMode)
+			if (Settings.OldControlSchemeForBranches && TasPlaybackBox.IsRecording)
 			{
 				CurrentTasMovie.Truncate(branch.Frame);
 			}

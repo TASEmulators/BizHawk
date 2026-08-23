@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			// Other answer: turbo seek, navigating while unpaused
 			_pauseAfterSeeking = MainForm.EmulatorPaused || (SeekingTo != -1 && _pauseAfterSeeking);
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
-			TastudioPlayMode();
+			TasPlaybackBox.SetRecordingState(WasRecording ? PlaybackBox.RecordingModeState.Suspended : PlaybackBox.RecordingModeState.Off);
 			SeekingTo = frame; // must be before LoadState, since it calls UpdateAfter (potentially doing end-of-seek logic if prior seek was to before this frame) instead of SavestateLoaded for ??? reason.
 
 			var closestState = GetPriorStateForFramebuffer(frame);
