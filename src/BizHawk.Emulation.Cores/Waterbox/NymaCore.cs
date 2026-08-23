@@ -57,7 +57,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return DoInit<T>(
 				lp.Roms.Select(r => (r.RomData,
+#pragma warning disable CS0618
 					Path.GetFileName(r.RomPath.SubstringAfter('|')).ToLowerInvariant())).ToArray(),
+#pragma warning restore CS0618
 				lp.Discs.Select(d => d.DiscData).ToArray(),
 				wbxFilename,
 				lp.Roms.FirstOrDefault()?.Extension,
