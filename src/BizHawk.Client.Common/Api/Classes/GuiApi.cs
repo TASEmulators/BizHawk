@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
@@ -28,8 +27,8 @@ namespace BizHawk.Client.Common
 
 		private readonly IDialogController _dialogController;
 
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
+//		[RequiredService]
+		internal IEmulator Emulator { get; set; }
 
 		private readonly Action<string> LogCallback;
 
@@ -47,12 +46,9 @@ namespace BizHawk.Client.Common
 
 		private Color _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
-		private (int Left, int Top, int Right, int Bottom) _padding = (0, 0, 0, 0);
-
 		private FontFamily[]/*?*/ _pixelFonts = null;
 
-		private DisplaySurfaceID? _usingSurfaceID;
-		public bool HasGUISurface => true;
+		internal DisplaySurfaceID? SurfaceID { get; set; } = null;
 
 		public GuiApi(
 			IDialogController dialogController,
@@ -73,69 +69,22 @@ namespace BizHawk.Client.Common
 
 		private I2DRenderer Get2DRenderer(DisplaySurfaceID? surfaceID)
 		{
-			var nnID = surfaceID ?? _usingSurfaceID ?? throw new Exception();
+			if (surfaceID is not null && surfaceID != SurfaceID) throw new InvalidOperationException($"Mixed drawing surfaces! (Draw call targeting {surfaceID} within {nameof(WithSurface)}({SurfaceID}) scope)");
+			var nnID = surfaceID ?? SurfaceID ?? throw new Exception();
 			return _displayManager.GetApiHawk2DRenderer(nnID);
 		}
 
 		public void ToggleCompositingMode()
 			=> _compositingMode = (CompositingMode) (1 - (int) _compositingMode); // enum has two members, 0 and 1
 
-		public ImageAttributes GetAttributes() => null;
-
-		public void SetAttributes(ImageAttributes a)
-		{
-		}
-
 		public void WithSurface(DisplaySurfaceID surfaceID, Action<IGuiApi> drawingCallsFunc)
 		{
-			_usingSurfaceID = surfaceID;
-			try
-			{
-				drawingCallsFunc(this);
-			}
-			finally
-			{
-				_usingSurfaceID = null;
-			}
+			const string ERR_MSG_NESTED = $"Nested call to {nameof(IGuiApi)}.{nameof(WithSurface)} (or reference stored out of scope)!";
+			if (surfaceID != SurfaceID) throw new InvalidOperationException(ERR_MSG_NESTED);
+			// else it should be fine, but warn anyway
+			LogCallback(ERR_MSG_NESTED);
+			drawingCallsFunc(this);
 		}
-
-		public void WithSurface(DisplaySurfaceID surfaceID, Action drawingCallsFunc)
-		{
-			_usingSurfaceID = surfaceID;
-			try
-			{
-				drawingCallsFunc();
-			}
-			finally
-			{
-				_usingSurfaceID = null;
-			}
-		}
-
-		public void DrawNew(string name, bool clear)
-		{
-			switch (name)
-			{
-				case null:
-				case "emu":
-					LogCallback("the `DrawNew(\"emu\")` function has been deprecated");
-					return;
-				case "native":
-					throw new InvalidOperationException("the ability to draw in the margins with `DrawNew(\"native\")` has been removed");
-				default:
-					throw new InvalidOperationException("invalid surface name");
-			}
-		}
-
-		public void DrawFinish() => LogCallback("the `DrawFinish()` function has been deprecated");
-
-		public void SetPadding(int all) => _padding = (all, all, all, all);
-
-		public void SetPadding(int x, int y) => _padding = (x / 2, y / 2, x / 2 + x & 1, y / 2 + y & 1);
-
-		public void SetPadding(int l, int t, int r, int b) => _padding = (l, t, r, b);
-
-		public (int Left, int Top, int Right, int Bottom) GetPadding() => _padding;
 
 		public void AddMessage(string message, [LiteralExpected] int? duration = null)
 			=> _dialogController.AddOnScreenMessage(message, duration);
@@ -489,16 +438,6 @@ namespace BizHawk.Client.Common
 				// ignored
 			}
 		}
-
-		public void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null, DisplaySurfaceID? surfaceID = null)
-			=> PixelText(
-				x: x,
-				y: y,
-				message: message,
-				forecolor: forecolor,
-				backcolor: backcolor,
-				fontfamily: fontfamily,
-				surfaceID: surfaceID);
 
 		public void PixelText(
 			int x,
