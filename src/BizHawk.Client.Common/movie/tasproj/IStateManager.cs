@@ -20,7 +20,24 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		void Unreserve(int frame);
 
+		/// <returns><see langword="true"/> iff this collection has a state at <paramref name="frame"/></returns>
 		bool HasState(int frame);
+
+		/// <returns>
+		/// <see langword="true"/> iff this collection has a state at <paramref name="frame"/>
+		/// and that state was "cheated" i.e. made after a poke
+		/// </returns>
+		bool HasCheatedState(int frame);
+
+		/// <summary>
+		/// marks the state at <paramref name="frame"/>, if there is one, and all states following it
+		/// as being "cheated" i.e. made after a poke
+		/// </summary>
+		/// <remarks>
+		/// the state manager automatically propagates the flag to subsequent states,
+		/// so there's no need to call this method repeatedly
+		/// </remarks>
+		void SetCheatedFlagStarting(int frame);
 
 		/// <summary>
 		/// Clears out all savestates after the given frame number

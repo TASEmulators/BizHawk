@@ -34,6 +34,11 @@ namespace BizHawk.Emulation.Common
 
 		public bool Writable { get; protected set; }
 
+		public event Action Poked;
+
+		protected void OnPoked()
+			=> Poked?.Invoke();
+
 		public abstract byte PeekByte(long addr);
 
 		public abstract void PokeByte(long addr, byte val);

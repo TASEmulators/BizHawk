@@ -532,9 +532,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					color = record.Lagged.Value
-						? Palette.LagZone_InputLog_Stated
-						: Palette.GreenZone_InputLog_Stated;
+					color = record.Cheated
+						? record.Lagged.Value
+							? Palette.LagZone_InputLog_Cheated
+							: Palette.GreenZone_InputLog_Cheated
+						: record.Lagged.Value
+							? Palette.LagZone_InputLog_Stated
+							: Palette.GreenZone_InputLog_Stated;
 				}
 			}
 			else if (record.WasLagged.HasValue)
