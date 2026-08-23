@@ -117,6 +117,11 @@ namespace BizHawk.Client.Common
 			Description = "pairs in the format `k1:v1;k2:v2` (mind your shell escape sequences); if the value is `true`/`false` it's interpreted as a boolean, if it's a valid 32-bit signed integer e.g. `-1234` it's interpreted as such, if it's a valid 32-bit float e.g. `12.34` it's interpreted as such, else it's interpreted as a string",
 		};
 
+		private static readonly Option<string?> OptionWMClass = new ("--wmclass")
+		{
+			Description = "set a custom WM_CLASS for this Bizhawk initiation, Linux only.",
+		};
+
 		static ArgParser()
 		{
 			OptionAVDumpFrameList.Description = $"comma-separated list of integers, indices of frames which should be included in the A/V dump (encoding); implies `{OptionAVDumpEndAtFrame.Name}=<end>` where `<end>` is the highest frame listed";
@@ -162,6 +167,7 @@ namespace BizHawk.Client.Common
 			root.Add(/* --url-post */ OptionHTTPClientURIPOST);
 			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
 			root.Add(/* --version */ OptionQueryAppVersion);
+			root.Add(/* --wmclass */ OptionWMClass);
 
 			return root;
 		}
@@ -268,7 +274,8 @@ namespace BizHawk.Client.Common
 				openExtToolDll: result.GetValue(OptionOpenExternalTool),
 				socketProtocol: result.GetValue(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
 				userdataUnparsedPairs: userdataUnparsedPairs,
-				cmdRom: result.GetValue(ArgumentRomFilePath)
+				cmdRom: result.GetValue(ArgumentRomFilePath),
+				wmClassName: result.GetValue(OptionWMClass)
 			);
 			return null;
 		}
