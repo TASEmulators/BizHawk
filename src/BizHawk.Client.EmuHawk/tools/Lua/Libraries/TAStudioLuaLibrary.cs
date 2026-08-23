@@ -448,6 +448,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample("""
+			tastudio.set_branch_text_by_id("97021544-2454-4483-824f-47f75e7fcb6a", "success at frame "..emu.framecount());
+		""")]
+		[LuaMethod(
+			name: "set_branch_text_by_id",
+			description: "Loads the branch with the given ID.")]
+		public void SetBranchTextByID(string id, string/*?*/ text)
+		{
+			var found = GetBranchObjByID(id: id, callerFunctionName: "set_branch_text_by_id");
+			if (found is not null) found.UserText = text;
+			// else already logged error
+		}
+
 		[LuaMethodExample("local nltasget = tastudio.getbranches( );")]
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
 		[return: LuaZeroIndexed]
@@ -471,12 +484,12 @@ namespace BizHawk.Client.EmuHawk
 		""")]
 		[LuaMethod(
 			name: "get_branch_index_by_id",
-			description: "Finds the branch with the given UUID (0-indexed). Returns nil if not found.")]
+			description: "Finds the branch with the given ID (0-indexed). Returns nil if not found.")]
 		public int? GetBranchIndexByID(string id)
 		{
 			if (!Guid.TryParseExact(id, format: "D", out var parsed))
 			{
-				Log($"not a valid UUID: {id}");
+				Log($"[tastudio.get_branch_index_by_id] not a valid UUID: {id}");
 				return null;
 			}
 			return Tastudio.CurrentTasMovie.Branches.Index()
@@ -506,6 +519,31 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
+		[LuaMethodExample("""
+			tastudio.load_branch_by_id("97021544-2454-4483-824f-47f75e7fcb6a");
+		""")]
+		[LuaMethod(
+			name: "load_branch_by_id",
+			description: "Loads the branch with the given ID.")]
+		public void LoadBranchByID(string id)
+		{
+			var found = GetBranchObjByID(id: id, callerFunctionName: "load_branch_by_id");
+			if (found is not null) Tastudio.LoadBranch(found);
+			// else already logged error
+		}
+
+		private TasBranch/*?*/ GetBranchObjByID(string id, string callerFunctionName)
+		{
+			if (!Guid.TryParseExact(id, format: "D", out var parsed))
+			{
+				Log($"[tastudio.{callerFunctionName}] not a valid UUID: {id}");
+				return null;
+			}
+			var found = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.Uuid == parsed);
+			if (found is null) Log($"[tastudio.{callerFunctionName}] no such branch: {id}");
+			return found;
+		}
+
 		[LuaMethodExample("tastudio.loadbranch(0)")]
 		[LuaMethod("loadbranch", "Loads a branch at the given index, if a branch at that index exists.")]
 		public void LoadBranch(int index)
@@ -523,6 +561,36 @@ namespace BizHawk.Client.EmuHawk
 
 				_luaLibsImpl.IsUpdateSupressed = false;
 			}
+		}
+
+		[LuaMethodExample("""
+			local branch_id = tastudio.create_branch("automated attempt");
+		""")]
+		[LuaMethod(
+			name: "create_branch",
+			description: "Creates a new branch at the end of the list, and returns its ID.")]
+		public string CreateBranch(string/*?*/ text = null)
+		{
+			Tastudio.BookMarkControl.Branch();
+			var index = Tastudio.CurrentTasMovie.Branches.Count - 1;
+			var branch = Tastudio.CurrentTasMovie.Branches[index];
+			branch.UserText = text;
+			Tastudio.BranchSavedCallback?.Invoke(index);
+			return branch.Uuid.ToString("D");
+		}
+
+		[LuaMethodExample("""
+			tastudio.delete_branch_by_id("97021544-2454-4483-824f-47f75e7fcb6a");
+		""")]
+		[LuaMethod(
+			name: "delete_branch_by_id",
+			description: "Deletes the branch with the given ID."
+				+ " There is no confirmation, so remember to back up your project before botting with it.")]
+		public void DeleteBranchByID(string id)
+		{
+			var found = GetBranchObjByID(id: id, callerFunctionName: "delete_branch_by_id");
+			if (found is not null) Tastudio.CurrentTasMovie.Branches.Remove(found);
+			// else already logged error
 		}
 
 		[LuaMethodExample("local sttasget = tastudio.getmarker( 500 );")]
