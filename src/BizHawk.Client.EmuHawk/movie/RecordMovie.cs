@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -11,14 +12,13 @@ using BizHawk.WinForms.Controls;
 
 namespace BizHawk.Client.EmuHawk
 {
-	// TODO - Allow relative paths in record TextBox
 	public sealed class RecordMovie : Form, IDialogParent
 	{
 		private const string START_FROM_POWERON = "Power-on (clean)";
 
 		private const string START_FROM_SAVERAM = "SaveRAM";
 
-		private const string START_FROM_SAVESTATE = "SaveRAM + savestate";
+		private const string START_FROM_SAVESTATE = "Savestate";
 
 		private readonly IMainFormForTools _mainForm;
 		private readonly Config _config;
@@ -33,6 +33,14 @@ namespace BizHawk.Client.EmuHawk
 		private readonly TextBox RecordBox;
 
 		private readonly ComboBox StartFromCombo;
+
+		private readonly TextBox SramBox;
+		private readonly CheckBox SramCheckbox;
+		private readonly Panel SramPanel;
+
+		private readonly TextBox SavestateBox;
+		private readonly CheckBox SavestateCheckbox;
+		private readonly Panel SavestatePanel;
 
 		public IDialogController DialogController => _mainForm;
 
@@ -57,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
 				DialogResult = DialogResult.Cancel,
-				Location = new(391, 135),
+				Location = new(391, 145),
 				Size = new(75, 23),
 				Text = "&Cancel",
 				UseVisualStyleBackColor = true,
@@ -67,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			Button OK = new()
 			{
 				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Location = new(310, 135),
+				Location = new(310, 145),
 				Size = new(75, 23),
 				Text = "&OK",
 				UseVisualStyleBackColor = true,
@@ -105,6 +113,85 @@ namespace BizHawk.Client.EmuHawk
 			};
 			if (_emulator.HasSaveRam() && _emulator.AsSaveRam().CloneSaveRam(clearDirty: false) is not null) StartFromCombo.Items.Add(START_FROM_SAVERAM);
 			if (_emulator.HasSavestates()) StartFromCombo.Items.Add(START_FROM_SAVESTATE);
+			StartFromCombo.SelectedIndexChanged += StartFromCombo_SelectedIndexChanged;
+
+			SramBox = new()
+			{
+				AllowDrop = true,
+				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+				Enabled = false,
+				Location = new(133, 2),
+				Size = new(274, 20),
+			};
+			SramCheckbox = new()
+			{
+				AutoSize = true,
+				Checked = true,
+				Location = new(73, 4),
+				Text = "current",
+			};
+			SramCheckbox.CheckedChanged += (s, e) => SramBox.Enabled = !SramCheckbox.Checked;
+			Button SramBrowseBtn = new()
+			{
+				Anchor = AnchorStyles.Top | AnchorStyles.Right,
+				Image = Properties.Resources.OpenFile,
+				Location = new(413, 2),
+				Size = new(25, 23),
+				UseVisualStyleBackColor = true,
+			};
+			SramBrowseBtn.Click += BrowseSramBtn_Click;
+			LocLabelEx sramLabel = new() { Location = new(25, 4), Text = "SRAM:" };
+			SramPanel = new()
+			{
+				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+				Location = new(10, 89),
+				Size = new(438, 30),
+				BorderStyle = BorderStyle.None,
+				Visible = false,
+			};
+			SramPanel.Controls.Add(sramLabel);
+			SramPanel.Controls.Add(SramCheckbox);
+			SramPanel.Controls.Add(SramBox);
+			SramPanel.Controls.Add(SramBrowseBtn);
+
+			SavestateBox = new()
+			{
+				AllowDrop = true,
+				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+				Enabled = false,
+				Location = new(133, 2),
+				Size = new(274, 20),
+			};
+			SavestateCheckbox = new()
+			{
+				AutoSize = true,
+				Checked = true,
+				Location = new(73, 4),
+				Text = "current",
+			};
+			SavestateCheckbox.CheckedChanged += (s, e) => SavestateBox.Enabled = !SavestateCheckbox.Checked;
+			Button SavestateBrowseBtn = new()
+			{
+				Anchor = AnchorStyles.Top | AnchorStyles.Right,
+				Image = Properties.Resources.OpenFile,
+				Location = new(413, 2),
+				Size = new(25, 23),
+				UseVisualStyleBackColor = true,
+			};
+			SavestateBrowseBtn.Click += BrowseSavestateBtn_Click;
+			LocLabelEx savestateLabel = new() { Location = new(9, 4), Text = "Savestate:" };
+			SavestatePanel = new()
+			{
+				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+				Location = new(10, 89),
+				Size = new(438, 30),
+				BorderStyle = BorderStyle.None,
+				Visible = false,
+			};
+			SavestatePanel.Controls.Add(savestateLabel);
+			SavestatePanel.Controls.Add(SavestateCheckbox);
+			SavestatePanel.Controls.Add(SavestateBox);
+			SavestatePanel.Controls.Add(SavestateBrowseBtn);
 
 			DefaultAuthorCheckBox = new()
 			{
@@ -128,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 				Location = new(12, 12),
-				Size = new(454, 112),
+				Size = new(454, 122),
 			};
 			groupBox1.SuspendLayout();
 			groupBox1.Controls.Add(new LocLabelEx { Location = new(51, 16), Text = "File:" });
@@ -139,12 +226,14 @@ namespace BizHawk.Client.EmuHawk
 			groupBox1.Controls.Add(new LocLabelEx { Location = new(6, 68), Text = "Record From:" });
 			groupBox1.Controls.Add(StartFromCombo);
 			groupBox1.Controls.Add(DefaultAuthorCheckBox);
+			groupBox1.Controls.Add(SramPanel);
+			groupBox1.Controls.Add(SavestatePanel);
 
 			AcceptButton = OK;
 			AutoScaleDimensions = new(6.0f, 13.0f);
 			AutoScaleMode = AutoScaleMode.Font;
 			CancelButton = Cancel;
-			ClientSize = new(478, 163);
+			ClientSize = new(478, 173);
 			FormBorderStyle = FormBorderStyle.FixedDialog;
 			Icon = Properties.Resources.TAStudioIcon;
 			MaximizeBox = false;
@@ -163,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 				},
 				FlowDirection = FlowDirection.RightToLeft, // going for two rows so the buttons are right-aligned
 				Margin = Padding.Empty,
-				Size = new(464, 144),
+				Size = new(464, 154),
 			});
 			Load += RecordMovie_Load;
 			if (OSTailoredCode.IsUnixHost) Load += (_, _) =>
@@ -176,6 +265,12 @@ namespace BizHawk.Client.EmuHawk
 			groupBox1.ResumeLayout(performLayout: false);
 			groupBox1.PerformLayout();
 			ResumeLayout(performLayout: false);
+		}
+
+		private void StartFromCombo_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SramPanel.Visible = (StartFromCombo.SelectedItem as string) == START_FROM_SAVERAM;
+			SavestatePanel.Visible = (StartFromCombo.SelectedItem as string) == START_FROM_SAVESTATE;
 		}
 
 		private string MakePath()
@@ -200,6 +295,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
+			string selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
+			if (selectedStartFromValue == START_FROM_SAVESTATE && !SavestateCheckbox.Checked && !File.Exists(SavestateBox.Text))
+			{
+				DialogController.ShowMessageBox($"Savestate file {SavestateBox.Text} does not exist.", caption: "File does not exist");
+				return;
+			}
+			if (selectedStartFromValue == START_FROM_SAVERAM && !SramCheckbox.Checked && !File.Exists(SramBox.Text))
+			{
+				DialogController.ShowMessageBox($"SaveRam file {SramBox.Text} does not exist.", caption: "File does not exist");
+				return;
+			}
+
 			var path = MakePath();
 			if (!string.IsNullOrWhiteSpace(path))
 			{
@@ -215,33 +322,41 @@ namespace BizHawk.Client.EmuHawk
 				var movieToRecord = _movieSession.Get(path);
 				movieToRecord.Author = AuthorBox.Text ?? _config.DefaultAuthor;
 
-				var selectedStartFromValue = StartFromCombo.SelectedItem.ToString();
 				if (selectedStartFromValue is START_FROM_SAVESTATE && _emulator.HasSavestates())
 				{
-					var core = _emulator.AsStatable();
-
 					movieToRecord.StartsFromSavestate = true;
-
-					if (_config.Savestates.Type == SaveStateType.Binary)
+					if (SavestateCheckbox.Checked)
 					{
-						movieToRecord.BinarySavestate = core.CloneSavestate();
+						IStatable core = _emulator.AsStatable();
+						if (_config.Savestates.Type == SaveStateType.Binary)
+						{
+							movieToRecord.BinarySavestate = core.CloneSavestate();
+						}
+						else
+						{
+							using var sw = new StringWriter();
+							core.SaveStateText(sw);
+							movieToRecord.TextSavestate = sw.ToString();
+						}
+
+						if (_emulator.HasVideoProvider())
+						{
+							var v = _emulator.AsVideoProvider();
+							movieToRecord.SavestateFramebuffer = new BitmapBuffer(v.BufferWidth, v.BufferHeight, v.GetVideoBuffer());
+						}
 					}
 					else
 					{
-						using var sw = new StringWriter();
-						core.SaveStateText(sw);
-						movieToRecord.TextSavestate = sw.ToString();
-					}
-
-					if (_emulator.HasVideoProvider())
-					{
-						var v = _emulator.AsVideoProvider();
-						movieToRecord.SavestateFramebuffer = new BitmapBuffer(v.BufferWidth, v.BufferHeight, v.GetVideoBuffer());
+						SavestateFile file = new(_emulator, _movieSession, new Dictionary<string, object>());
+						Savestate state = file.GetSavestate(SavestateBox.Text, this);
+						if (state == null) return; // error message will have already been displayed
+						movieToRecord.BinarySavestate = state.coreData;
+						movieToRecord.SavestateFramebuffer = state.screenshot;
 					}
 				}
 				else if (selectedStartFromValue is START_FROM_SAVERAM && _emulator.HasSaveRam())
 				{
-					var core = _emulator.AsSaveRam();
+					var core = SramCheckbox.Checked ? _emulator.AsSaveRam() : new SaveRamByFile(SramBox.Text);
 					movieToRecord.StartsFromSaveRam = true;
 					movieToRecord.SaveRam = core.CloneSaveRam(clearDirty: false);
 				}
@@ -294,7 +409,61 @@ namespace BizHawk.Client.EmuHawk
 				initDir: movieFolderPath,
 				initFileName: RecordBox.Text,
 				muteOverwriteWarning: true);
-			if (!string.IsNullOrWhiteSpace(result)) RecordBox.Text = result;
+			if (!string.IsNullOrWhiteSpace(result))
+			{
+				RecordBox.Text = result;
+				RecordBox.SelectionStart = RecordBox.Text.Length;
+			}
+		}
+
+		private void BrowseSramBtn_Click(object sender, EventArgs e)
+		{
+			string sramFolderPath = _config.PathEntries.SaveRamAbsolutePath(_game.System);
+
+			// Create folder if it doesn't already exist
+			try
+			{
+				Directory.CreateDirectory(sramFolderPath);
+			}
+			catch (IOException) { /* ignored */ }
+			catch (UnauthorizedAccessException) { /* ignored */ }
+
+			FilesystemFilterSet filterset = new(FilesystemFilter.SaveRams);
+			var result = this.ShowFileOpenDialog(
+				initDir: sramFolderPath,
+				filter: filterset,
+				initFileName: SramBox.Text);
+			if (!string.IsNullOrWhiteSpace(result))
+			{
+				SramBox.Text = result;
+				SramBox.SelectionStart = SramBox.Text.Length;
+				SramCheckbox.Checked = false;
+			}
+		}
+
+		private void BrowseSavestateBtn_Click(object sender, EventArgs e)
+		{
+			string stateFolderPath = _config.PathEntries.SaveStateAbsolutePath(_game.System);
+
+			// Create folder if it doesn't already exist
+			try
+			{
+				Directory.CreateDirectory(stateFolderPath);
+			}
+			catch (IOException) { /* ignored */ }
+			catch (UnauthorizedAccessException) { /* ignored */ }
+
+			FilesystemFilterSet filterset = new(FilesystemFilter.EmuHawkSaveStates);
+			var result = this.ShowFileOpenDialog(
+				initDir: stateFolderPath,
+				filter: filterset,
+				initFileName: SavestateBox.Text);
+			if (!string.IsNullOrWhiteSpace(result))
+			{
+				SavestateBox.Text = result;
+				SavestateBox.SelectionStart = SavestateBox.Text.Length;
+				SavestateCheckbox.Checked = false;
+			}
 		}
 
 		private void RecordMovie_Load(object sender, EventArgs e)
