@@ -2470,7 +2470,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.ControllerDefinition.BoolButtons.Contains("Reset")
 				&& !MovieSession.Movie.IsPlaying())
 			{
-				InputManager.ClickyVirtualPadController.Click("Reset");
+				InputManager.ClickyController.Click("Reset");
 				AddOnScreenMessage("Reset button pressed.");
 			}
 		}
@@ -2481,7 +2481,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator.ControllerDefinition.BoolButtons.Contains("Power")
 				&& !MovieSession.Movie.IsPlaying())
 			{
-				InputManager.ClickyVirtualPadController.Click("Power");
+				InputManager.ClickyController.Click("Power");
 				AddOnScreenMessage("Power button pressed.");
 			}
 		}
@@ -2746,7 +2746,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Emulator.ControllerDefinition.BoolButtons.Contains(button)
 					&& !MovieSession.Movie.IsPlaying())
 				{
-					InputManager.ClickyVirtualPadController.Click(button);
+					InputManager.ClickyController.Click(button);
 					AddOnScreenMessage(msg);
 				}
 			});
@@ -2939,10 +2939,6 @@ namespace BizHawk.Client.EmuHawk
 
 				CheatList.Pulse();
 
-				// zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
-				InputManager.ClickyVirtualPadController.FrameTick();
-				InputManager.ButtonOverrideAdapter.FrameTick();
-
 				if (IsTurboing && !atTurboSeekEnd)
 				{
 					Tools.FastUpdateBefore();
@@ -3032,12 +3028,7 @@ namespace BizHawk.Client.EmuHawk
 
 				CheatList.Pulse();
 
-				if (Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame && Config.AutofireLagFrames)
-				{
-					InputManager.AutoFireController.IncrementStarts();
-				}
-
-				InputManager.StickyAutofireController.IncrementLoops(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame);
+				InputManager.AfterFrame(Emulator.CanPollInput() && Emulator.AsInputPollable().IsLagFrame, Config);
 
 				PressFrameAdvance = false;
 

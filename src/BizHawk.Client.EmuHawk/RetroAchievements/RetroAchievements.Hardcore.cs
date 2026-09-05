@@ -60,8 +60,6 @@ namespace BizHawk.Client.EmuHawk
 			[typeof(Snes9x)] = new[] { "ShowBg0", "ShowBg1", "ShowBg2", "ShowBg3", "ShowSprites0", "ShowSprites1", "ShowSprites2", "ShowSprites3", "ShowWindow", "ShowTransparency" },
 		};
 
-		private readonly OverrideAdapter _hardcoreHotkeyOverrides = new();
-
 		protected abstract void HandleHardcoreModeDisable(string reason);
 
 		protected void CheckHardcoreModeConditions()
@@ -85,10 +83,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// suppress rewind and frame advance hotkeys
-			_hardcoreHotkeyOverrides.FrameTick();
-			_hardcoreHotkeyOverrides.SetButton("Frame Advance", false);
-			_hardcoreHotkeyOverrides.SetButton("Rewind", false);
-			_inputManager.ClientControls.Overrides(_hardcoreHotkeyOverrides);
+			_inputManager.ClientControls.OverrideButton("Frame Advance", false);
+			_inputManager.ClientControls.OverrideButton("Rewind", false);
 			_mainForm.FrameInch = false;
 
 			var fastForward = _mainForm.IsFastForwarding;
