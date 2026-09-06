@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.ComponentModel;
 
 using BizHawk.Emulation.Cores.Consoles.Nintendo.NDS;
