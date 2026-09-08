@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			public override void BulkPeekByte(Range<long> addresses, byte[] values)
+			public override void BulkPeekByte(Int64HalfOpenRange addresses, byte[] values)
 			{
 				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
@@ -214,13 +214,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				BulkPeekByte((uint)addresses.Start, values);
 			}
 
-			public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+			public override void BulkPeekUshort(Int64HalfOpenRange addresses, bool bigEndian, ushort[] values)
 			{
 				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 				var start = addresses.Start;
-				var end = addresses.EndInclusive + 1;
+				var end = addresses.EndExclusive;
 
 				if ((start & 1) != 0 || (end & 1) != 0)
 					throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
@@ -242,13 +242,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+			public override void BulkPeekUint(Int64HalfOpenRange addresses, bool bigEndian, uint[] values)
 			{
 				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
 				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
 
 				var start = addresses.Start;
-				var end = addresses.EndInclusive + 1;
+				var end = addresses.EndExclusive;
 
 				if ((start & 3) != 0 || (end & 3) != 0)
 					throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
