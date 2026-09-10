@@ -3,8 +3,10 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GifWriterForm : Form
+	public partial class GifWriterForm : FormBase
 	{
+		protected override string WindowTitleStatic => "GIF Writer Options";
+
 		public GifWriterForm()
 		{
 			InitializeComponent();

@@ -10,8 +10,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SynclessRecordingTools : Form, IDialogParent
+	public partial class SynclessRecordingTools : FormBase, IDialogParent
 	{
+		protected override string WindowTitleStatic => "Syncless Recording";
+
 		private readonly Config _config;
 
 		private readonly IGameInfo _game;
