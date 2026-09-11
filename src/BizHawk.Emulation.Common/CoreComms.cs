@@ -18,15 +18,13 @@ namespace BizHawk.Emulation.Common
 			ModalMessageBoxCallback showMessage,
 			AddOnScreenMessageCallback notifyMessage,
 			ICoreFileProvider coreFileProvider,
-			CorePreferencesFlags prefs,
-			IOpenGLProvider oglProvider
+			CorePreferencesFlags prefs
 			)
 		{
 			ShowMessage = showMessage;
 			Notify = notifyMessage;
 			CoreFileProvider = coreFileProvider;
 			CorePreferences = prefs;
-			OpenGLProvider = oglProvider;
 		}
 
 		public ICoreFileProvider CoreFileProvider { get; }
@@ -53,10 +51,5 @@ namespace BizHawk.Emulation.Common
 		/// Yeah, I put more stuff in corecomm. If you don't like it, change the settings/syncsettings stuff to support multiple "settings sets" to act like ini file sections kind of, so that we can hand a generic settings object to cores instead of strictly ones defined by the cores
 		/// </summary>
 		public CorePreferencesFlags CorePreferences { get; }
-
-		/// <summary>
-		/// Interface to provide OpenGL resources to the core
-		/// </summary>
-		public IOpenGLProvider OpenGLProvider { get; }
 	}
 }

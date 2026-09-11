@@ -13,6 +13,7 @@
 		<Analyzer Include="$(ProjectDir)../../References/BizHawk.SrcGen.SettingsUtil.dll" Private="true" />
 		<Reference Include="FlatBuffers.GenOutput" HintPath="$(ProjectDir)../../References/FlatBuffers.GenOutput.dll" Private="true" />
 		<Reference Include="Virtu" HintPath="$(ProjectDir)../../References/Virtu.dll" Private="true" />
+		<ProjectReference Include="$(ProjectDir)../BizHawk.Bizware.Graphics/BizHawk.Bizware.Graphics.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
 		<ProjectReference Include="$(ProjectDir)../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 		<EmbeddedResource Include="Resources/**/*" />

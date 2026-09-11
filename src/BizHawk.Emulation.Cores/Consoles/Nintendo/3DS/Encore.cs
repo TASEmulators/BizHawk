@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
@@ -39,9 +40,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private static Encore CurrentCore;
 
-		private readonly IOpenGLProvider _openGLProvider;
 		private readonly bool _supportsOpenGL43;
-		private readonly List<object> _glContexts = new();
+		private readonly List<SDL2OpenGLContext> _glContexts = new();
 		private readonly LibEncore.ConfigCallbackInterface _configCallbackInterface;
 		private readonly LibEncore.GLCallbackInterface _glCallbackInterface;
 		private readonly LibEncore.InputCallbackInterface _inputCallbackInterface;
@@ -100,8 +100,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_configCallbackInterface.GetFloat = GetFloatSettingCallback;
 			_configCallbackInterface.GetString = GetStringSettingCallback;
 
-			_openGLProvider = lp.Comm.OpenGLProvider;
-			_supportsOpenGL43 = _openGLProvider.SupportsGLVersion(4, 3);
+			_supportsOpenGL43 = OpenGLVersion.SupportsVersion(4, 3);
 			if (!_supportsOpenGL43/* && _syncSettings.GraphicsApi == EncoreSyncSettings.EGraphicsApi.OpenGL*/)
 			{
 				throw new PlatformNotSupportedException("OpenGL 4.3 is required, but it is not supported on this machine");
@@ -111,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 			_glCallbackInterface.RequestGLContext = RequestGLContextCallback;
 			_glCallbackInterface.ReleaseGLContext = ReleaseGLContextCallback;
 			_glCallbackInterface.ActivateGLContext = ActivateGLContextCallback;
-			_glCallbackInterface.GetGLProcAddress = GetGLProcAddressCallback;
+			_glCallbackInterface.GetGLProcAddress = SDL2OpenGLContext.GetGLProcAddress;
 
 			_inputCallbackInterface.GetButton = GetButtonCallback;
 			_inputCallbackInterface.GetAxis = GetAxisCallback;
@@ -209,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 		private IntPtr RequestGLContextCallback()
 		{
-			var context = _openGLProvider.RequestGLContext(4, 3, true);
+			var context = new SDL2OpenGLContext(4, 3, true);
 			_glContexts.Add(context);
 			var handle = GCHandle.Alloc(context, GCHandleType.Weak);
 			return GCHandle.ToIntPtr(handle);
@@ -218,18 +217,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 		private void ReleaseGLContextCallback(IntPtr context)
 		{
 			var handle = GCHandle.FromIntPtr(context);
-			_openGLProvider.ReleaseGLContext(handle.Target);
-			_glContexts.Remove(handle.Target);
+			var glContext = (SDL2OpenGLContext) handle.Target;
+			glContext.Dispose();
+			_glContexts.Remove(glContext);
 			handle.Free();
 		}
 
 		private void ActivateGLContextCallback(IntPtr context)
 		{
-			var handle = GCHandle.FromIntPtr(context);
-			_openGLProvider.ActivateGLContext(handle.Target);
+			var glContext = (SDL2OpenGLContext) GCHandle.FromIntPtr(context).Target;
+			glContext.MakeContextCurrent();
 		}
-
-		private IntPtr GetGLProcAddressCallback(string proc)
-			=> _openGLProvider.GetGLProcAddress(proc);
 	}
 }

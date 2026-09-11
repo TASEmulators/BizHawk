@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 
 			foreach (var glContext in _glContexts)
 			{
-				_openGLProvider.ReleaseGLContext(glContext);
+				glContext.Dispose();
 			}
 
 			_glContexts.Clear();
