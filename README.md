@@ -183,11 +183,14 @@ EmuHawk depends on certain libraries for graphics, and these don't work on macOS
 
 #### Nix/NixOS
 
-(Curious what this Nix thing is about? [Start here](https://zero-to-nix.com).)
+> Curious what this Nix thing is about? [Start here](https://zero-to-nix.com).
 
-You can get a dev build or recent release with Nix, either by cloning the repo, or by `fetchzip`'ing a commit and importing the expression from it. (The repo isn't a Flake yet, but you should be able to IFD.)
-See the [dedicated Nix usage readme](Dist/nix_expr_usage_docs.md) for what attributes are exposed.
-If you use a non-NixOS distro with Nix installed, you just need to add one argument and your host graphics drivers will be picked up thanks to nixGL.
+You can get a dev build or recent release with Nix, either by running `nix-build` in a clone of the repo, or by importing the expression from a tarball:
+```sh
+nix-env -f https://github.com/TASEmulators/BizHawk/archive/master.tar.gz -iA emuhawk-2_10
+```
+See the [dedicated Nix usage readme](Dist/nix_expr_usage_docs.md) for what attributes are exposed.  
+If you use Nix on a non-NixOS distro, you just need to add one `--arg` and your host graphics drivers will be picked up thanks to nixGL.
 
 You can also quickly get a development setup, including the .NET SDK and an IDE, with the provided `shell.nix`. See the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup) for details.
 
