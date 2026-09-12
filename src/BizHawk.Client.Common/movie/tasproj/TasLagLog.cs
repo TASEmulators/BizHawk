@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-#if NET8_0_OR_GREATER
 using System.Linq;
-#endif
 
 using BizHawk.Common.CollectionExtensions;
 
@@ -100,11 +98,8 @@ namespace BizHawk.Client.Common
 
 		public void StartFromFrame(int index)
 		{
-			for (int i = 0; i < index; i++)
-			{
-				_lagLog.Remove(i);
-				_wasLag.Remove(i);
-			}
+			_lagLog = new SortedList<int, bool>(_lagLog.SkipWhile(entry => entry.Key < index).ToDictionary());
+			_wasLag.RemoveAll(entry => entry.Key < index);
 		}
 
 		private void RemoveLagEntry(int frame)
