@@ -47,7 +47,7 @@ in {
 , nixGLChannel ? (pkgs.nixgl or import (fetchzip {
 	url = "https://github.com/guibou/nixGL/archive/489d6b095ab9d289fe11af0219a9ff00fe87c7c5.tar.gz";
 	hash = "sha512-GvV707ftLvE0MCTfMJb/M86S2Nxf3vai+HPwq0QvJylmMBwliqYx/nW8X2ja2ruOHzaw3MXXmAxjnv5MMUn07w==";
-}) { inherit system; })
+}) { inherit pkgs; })
 , nixGL ? nixGLChannel.auto.nixGLDefault
 , omnisharp-roslyn ? pkgs.omnisharp-roslyn
 #, nixVulkan ? nixGLChannel.auto.nixVulkanNvidia
