@@ -144,8 +144,11 @@ namespace BizHawk.Client.EmuHawk
 			_sortedColumn = "";
 			_sortReverse = false;
 
-
 			SetColumns();
+
+			// Initialize native menu and accessibility
+			InitializeNativeMenu();
+			SetupAccessibility();
 		}
 
 		public override bool IsActive => Config!.DisplayRamWatch || base.IsActive;

@@ -98,6 +98,81 @@ namespace BizHawk.Client.EmuHawk
 				MainMenuStrip.MenuActivate += (_, _) => MenuIsOpen = true;
 				MainMenuStrip.MenuDeactivate += (_, _) => MenuIsOpen = false;
 			}
+
+			InstallNativeMenuShim();
+		}
+
+		/// <summary>
+		/// Set to <see langword="false"/> in a derived form to opt out of the native Win32 menu shim.
+		/// </summary>
+		protected virtual bool UseNativeMenuShim => OSTailoredCode.IsUnixHost ? false : MainMenuStrip != null;
+
+		private MainMenu? _nativeMenuShim;
+
+		/// <summary>
+		/// Mirrors <see cref="Form.MainMenuStrip"/> as a native Win32 <see cref="MainMenu"/>, which
+		/// fires the MSAA focus events that screen readers (e.g. NVDA) rely on for keyboard nav.
+		/// The original <see cref="MenuStrip"/> is hidden but still owns the click handlers; native
+		/// items forward to it via <see cref="ToolStripItem.PerformClick"/>.
+		/// </summary>
+		private void InstallNativeMenuShim()
+		{
+			if (!UseNativeMenuShim || MainMenuStrip == null) return;
+
+			var native = new MainMenu();
+			foreach (ToolStripItem item in MainMenuStrip.Items)
+			{
+				var converted = ConvertToolStripItem(item);
+				if (converted != null) native.MenuItems.Add(converted);
+			}
+			Menu = native;
+			_nativeMenuShim = native;
+			MainMenuStrip.Visible = false;
+		}
+
+		private static MenuItem? ConvertToolStripItem(ToolStripItem item)
+		{
+			if (item is ToolStripSeparator) return new MenuItem("-");
+			if (item is not ToolStripMenuItem tsmi) return null;
+
+			var native = new MenuItem(BuildNativeText(tsmi));
+			native.Click += (_, _) => tsmi.PerformClick();
+			native.Enabled = tsmi.Enabled;
+			native.Checked = tsmi.Checked;
+
+			tsmi.EnabledChanged += (_, _) => native.Enabled = tsmi.Enabled;
+			tsmi.CheckedChanged += (_, _) => native.Checked = tsmi.Checked;
+			tsmi.TextChanged += (_, _) => native.Text = BuildNativeText(tsmi);
+
+			RebuildChildren(native, tsmi);
+			// Rebuild children right before the native dropdown opens so dynamic submenus
+			// (recent-files lists, memory-domain lists, etc.) reflect their current contents.
+			native.Popup += (_, _) => RebuildChildren(native, tsmi);
+			return native;
+		}
+
+		private static void RebuildChildren(MenuItem native, ToolStripMenuItem tsmi)
+		{
+			native.MenuItems.Clear();
+			foreach (ToolStripItem child in tsmi.DropDownItems)
+			{
+				var c = ConvertToolStripItem(child);
+				if (c != null) native.MenuItems.Add(c);
+			}
+		}
+
+		private static string BuildNativeText(ToolStripMenuItem tsmi)
+		{
+			var text = tsmi.Text ?? string.Empty;
+			if (!string.IsNullOrEmpty(tsmi.ShortcutKeyDisplayString))
+			{
+				text += "\t" + tsmi.ShortcutKeyDisplayString;
+			}
+			else if (tsmi.ShortcutKeys != Keys.None)
+			{
+				text += "\t" + TypeDescriptor.GetConverter(typeof(Keys)).ConvertToString(tsmi.ShortcutKeys);
+			}
+			return text;
 		}
 
 		public void UpdateWindowTitle()

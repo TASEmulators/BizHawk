@@ -409,6 +409,9 @@ namespace BizHawk.Client.EmuHawk
             this.amstradCPCToolStripMenuItem,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
+			this.MainformMenu.TabIndex = 0;
+			this.MainformMenu.AccessibleName = "Main Menu";
+			this.MainformMenu.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuBar;
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
 			this.MainformMenu.MenuDeactivate += new System.EventHandler(this.MainformMenu_MenuDeactivate);
 			// 
@@ -2030,6 +2033,8 @@ namespace BizHawk.Client.EmuHawk
             this.UpdateNotification});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 386);
 			this.MainStatusBar.Name = "MainStatusBar";
+			this.MainStatusBar.AccessibleName = "Status Bar";
+			this.MainStatusBar.AccessibleRole = System.Windows.Forms.AccessibleRole.StatusBar;
 			this.MainStatusBar.ShowItemToolTips = true;
 			this.MainStatusBar.SizingGrip = false;
 			// 
@@ -2417,6 +2422,8 @@ namespace BizHawk.Client.EmuHawk
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MainMenuStrip = this.MainformMenu;
 			this.Name = "MainForm";
+			this.AccessibleName = "BizHawk Emulator";
+			this.AccessibleDescription = "Multi-system game emulator main window";
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
 			this.Load += new System.EventHandler(this.MainForm_Load);

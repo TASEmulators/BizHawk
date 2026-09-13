@@ -406,9 +406,11 @@ namespace BizHawk.Client.EmuHawk
 			this.OnlineDocsMenuItem.Click += new System.EventHandler(this.OnlineDocsMenuItem_Click);
 			// 
 			// OutputBox
-			// 
-			this.OutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+			//
+			this.OutputBox.AccessibleName = "Lua Output";
+			this.OutputBox.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+			this.OutputBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.OutputBox.ContextMenuStrip = this.ConsoleContextMenu;
 			this.OutputBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -417,7 +419,7 @@ namespace BizHawk.Client.EmuHawk
 			this.OutputBox.Name = "OutputBox";
 			this.OutputBox.ReadOnly = true;
 			this.OutputBox.Size = new System.Drawing.Size(288, 249);
-			this.OutputBox.TabIndex = 2;
+			this.OutputBox.TabIndex = 3;
 			this.OutputBox.Text = "";
 			this.OutputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OutputBox_KeyDown);
 			// 
@@ -470,10 +472,12 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Output";
-			// 
+			//
 			// InputBox
-			// 
-			this.InputBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			//
+			this.InputBox.AccessibleName = "Lua Command Input";
+			this.InputBox.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+			this.InputBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.InputBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
 			this.InputBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
@@ -481,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InputBox.Location = new System.Drawing.Point(6, 272);
 			this.InputBox.Name = "InputBox";
 			this.InputBox.Size = new System.Drawing.Size(288, 20);
-			this.InputBox.TabIndex = 3;
+			this.InputBox.TabIndex = 4;
 			this.InputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InputBox_KeyDown);
 			// 
 			// NumberOfScripts
@@ -498,7 +502,9 @@ namespace BizHawk.Client.EmuHawk
 			this.OutputMessages.Text = "                                 ";
 			// 
 			// toolStrip1
-			// 
+			//
+			this.toolStrip1.AccessibleName = "Lua Script Toolbar";
+			this.toolStrip1.AccessibleRole = System.Windows.Forms.AccessibleRole.ToolBar;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewScriptToolbarItem,
             this.OpenScriptToolbarItem,
@@ -517,10 +523,12 @@ namespace BizHawk.Client.EmuHawk
             this.EraseToolbarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.TabIndex = 5;
+			this.toolStrip1.TabIndex = 1;
+			this.toolStrip1.TabStop = true;
 			// 
 			// NewScriptToolbarItem
-			// 
+			//
+			this.NewScriptToolbarItem.AccessibleName = "New Lua Script";
 			this.NewScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.NewScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewScriptToolbarItem.Name = "NewScriptToolbarItem";
@@ -529,7 +537,8 @@ namespace BizHawk.Client.EmuHawk
 			this.NewScriptToolbarItem.Click += new System.EventHandler(this.NewScriptMenuItem_Click);
 			// 
 			// OpenScriptToolbarItem
-			// 
+			//
+			this.OpenScriptToolbarItem.AccessibleName = "Open Script";
 			this.OpenScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.OpenScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenScriptToolbarItem.Name = "OpenScriptToolbarItem";
@@ -538,7 +547,8 @@ namespace BizHawk.Client.EmuHawk
 			this.OpenScriptToolbarItem.Click += new System.EventHandler(this.OpenScriptMenuItem_Click);
 			// 
 			// ToggleScriptToolbarItem
-			// 
+			//
+			this.ToggleScriptToolbarItem.AccessibleName = "Toggle Script";
 			this.ToggleScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.ToggleScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ToggleScriptToolbarItem.Name = "ToggleScriptToolbarItem";
@@ -547,7 +557,8 @@ namespace BizHawk.Client.EmuHawk
 			this.ToggleScriptToolbarItem.Click += new System.EventHandler(this.ToggleScriptMenuItem_Click);
 			// 
 			// RefreshScriptToolbarItem
-			// 
+			//
+			this.RefreshScriptToolbarItem.AccessibleName = "Refresh Script";
 			this.RefreshScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.RefreshScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RefreshScriptToolbarItem.Name = "RefreshScriptToolbarItem";
@@ -556,7 +567,8 @@ namespace BizHawk.Client.EmuHawk
 			this.RefreshScriptToolbarItem.Click += new System.EventHandler(this.RefreshScriptMenuItem_Click);
 			// 
 			// PauseToolbarItem
-			// 
+			//
+			this.PauseToolbarItem.AccessibleName = "Pause or Resume Script";
 			this.PauseToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.PauseToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PauseToolbarItem.Name = "PauseToolbarItem";
@@ -565,7 +577,8 @@ namespace BizHawk.Client.EmuHawk
 			this.PauseToolbarItem.Click += new System.EventHandler(this.PauseScriptMenuItem_Click);
 			// 
 			// EditToolbarItem
-			// 
+			//
+			this.EditToolbarItem.AccessibleName = "Edit Script";
 			this.EditToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.EditToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EditToolbarItem.Name = "EditToolbarItem";
@@ -574,7 +587,8 @@ namespace BizHawk.Client.EmuHawk
 			this.EditToolbarItem.Click += new System.EventHandler(this.EditScriptMenuItem_Click);
 			// 
 			// RemoveScriptToolbarItem
-			// 
+			//
+			this.RemoveScriptToolbarItem.AccessibleName = "Remove Script";
 			this.RemoveScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.RemoveScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveScriptToolbarItem.Name = "RemoveScriptToolbarItem";
@@ -583,7 +597,8 @@ namespace BizHawk.Client.EmuHawk
 			this.RemoveScriptToolbarItem.Click += new System.EventHandler(this.RemoveScriptMenuItem_Click);
 			// 
 			// DuplicateToolbarButton
-			// 
+			//
+			this.DuplicateToolbarButton.AccessibleName = "Duplicate Script";
 			this.DuplicateToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.DuplicateToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DuplicateToolbarButton.Name = "DuplicateToolbarButton";
@@ -592,7 +607,8 @@ namespace BizHawk.Client.EmuHawk
 			this.DuplicateToolbarButton.Click += new System.EventHandler(this.DuplicateScriptMenuItem_Click);
 			// 
 			// ClearConsoleToolbarButton
-			// 
+			//
+			this.ClearConsoleToolbarButton.AccessibleName = "Clear Output";
 			this.ClearConsoleToolbarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.ClearConsoleToolbarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ClearConsoleToolbarButton.Name = "ClearConsoleToolbarButton";
@@ -601,7 +617,8 @@ namespace BizHawk.Client.EmuHawk
 			this.ClearConsoleToolbarButton.Click += new System.EventHandler(this.ClearConsoleMenuItem_Click);
 			// 
 			// MoveUpToolbarItem
-			// 
+			//
+			this.MoveUpToolbarItem.AccessibleName = "Move Script Up";
 			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.MoveUpToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpToolbarItem.Name = "MoveUpToolbarItem";
@@ -610,7 +627,8 @@ namespace BizHawk.Client.EmuHawk
 			this.MoveUpToolbarItem.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
 			// 
 			// toolStripButtonMoveDown
-			// 
+			//
+			this.toolStripButtonMoveDown.AccessibleName = "Move Script Down";
 			this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
@@ -619,7 +637,8 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
 			// InsertSeparatorToolbarItem
-			// 
+			//
+			this.InsertSeparatorToolbarItem.AccessibleName = "Insert Separator";
 			this.InsertSeparatorToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.InsertSeparatorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.InsertSeparatorToolbarItem.Name = "InsertSeparatorToolbarItem";
@@ -628,7 +647,8 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertSeparatorToolbarItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// EraseToolbarItem
-			// 
+			//
+			this.EraseToolbarItem.AccessibleName = "Erase Stale Lua Drawing Layers";
 			this.EraseToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.EraseToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.EraseToolbarItem.Name = "EraseToolbarItem";
@@ -637,7 +657,9 @@ namespace BizHawk.Client.EmuHawk
 			this.EraseToolbarItem.Click += new System.EventHandler(this.EraseToolbarItem_Click);
 			// 
 			// LuaListView
-			// 
+			//
+			this.LuaListView.AccessibleName = "Script List";
+			this.LuaListView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
 			this.LuaListView.AllowColumnReorder = false;
 			this.LuaListView.AllowColumnResize = true;
 			this.LuaListView.AlwaysScroll = false;
@@ -655,7 +677,7 @@ namespace BizHawk.Client.EmuHawk
 			this.LuaListView.RowCount = 0;
 			this.LuaListView.ScrollSpeed = 1;
 			this.LuaListView.Size = new System.Drawing.Size(273, 271);
-			this.LuaListView.TabIndex = 0;
+			this.LuaListView.TabIndex = 2;
 			this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
 			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
 			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);

@@ -79,6 +79,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateWindowTitle();
 
+			// Sync accessibility settings from config
+			WinFormsUIAutomation.AnnouncementsEnabled = Config.EnableScreenReaderAnnouncements;
+
 			Slot1StatusButton.Tag = SelectSlot1MenuItem.Tag = 1;
 			Slot2StatusButton.Tag = SelectSlot2MenuItem.Tag = 2;
 			Slot3StatusButton.Tag = SelectSlot3MenuItem.Tag = 3;
@@ -526,6 +529,7 @@ namespace BizHawk.Client.EmuHawk
 			MouseMove += MainForm_MouseMove;
 
 			InitializeComponent();
+			InitializeNativeMenu(); // Use native Win32 menu for screen reader accessibility
 			Icon = Properties.Resources.Logo;
 			SetImages();
 #if !DEBUG
@@ -2824,6 +2828,7 @@ namespace BizHawk.Client.EmuHawk
 			ExtToolManager.Restart(Config);
 			Sound.Config = Config;
 			DisplayManager.UpdateGlobals(Config, Emulator);
+			WinFormsUIAutomation.AnnouncementsEnabled = Config.EnableScreenReaderAnnouncements;
 			RA?.Restart();
 			AddOnScreenMessage($"Config file loaded: {iniPath}");
 		}
