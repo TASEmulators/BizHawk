@@ -117,6 +117,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // Bit 5 set signifies that paging is disabled until next reboot
                     PagingDisabled = bits[5];
+
+                    // paging (ROMPaged / RAMPaged) may have changed — rebuild the devirtualisation map
+                    RebuildMemoryMap();
                 }
                 else
                 {
@@ -151,6 +154,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
 				// Buzzer
+				BuzzerDevice.SetClock((int)CurrentFrameCycle);
 				BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 				TapeDevice.WritePort(port, value);
 

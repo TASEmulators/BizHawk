@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			sb.Append("DISK INSERTED (" + _machine.DiskMediaIndex + ": " + _diskInfo[_machine.DiskMediaIndex].Name + ")");
+			sb.Append(" - Protection: " + _machine.UPDDiskDevice.ProtectionName);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 		}
 
@@ -107,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			if (_machine.UPDDiskDevice != null)
 			{
-				if (_machine.UPDDiskDevice.DiskPointer == null)
+				if (!_machine.UPDDiskDevice.DiskInserted)
 				{
 					sb.Append("No Disk Loaded");
 					SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
@@ -118,12 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 				sb.Clear();
 
-				string protection = "None";
-				protection = Enum.GetName(typeof(ProtectionType), _machine.UPDDiskDevice.DiskPointer.Protection);
-				if (protection == "None")
-					protection += " (OR UNKNOWN)";
-
-				sb.Append("Detected Protection: " + protection);
+				sb.Append("Detected Protection: " + _machine.UPDDiskDevice.ProtectionName);
 				SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
 				sb.Clear();
 
@@ -204,6 +200,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			StringBuilder sb = new StringBuilder();
 			sb.Append("TAPE INSERTED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
+			if (_machine.TapeDevice != null)
+				sb.Append(" - Loader: " + _machine.TapeDevice.DetectedLoaderName);
 
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 		}
@@ -374,6 +372,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			sb.Clear();
 
 			sb.Append("Tape: " + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name);
+			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+			sb.Clear();
+
+			sb.Append("Detected Loader: " + _machine.TapeDevice.DetectedLoaderName);
 			SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
 			sb.Clear();
 

@@ -7,15 +7,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public readonly struct CpuLink(ZXSpectrum spectrum, SpectrumBase machine) : IZ80ALink
 		{
 			public byte FetchMemory(ushort address)
-				=> machine.ReadMemory(address);
+				=> machine.ReadMemoryMapped(address);
 
 			public byte ReadMemory(ushort address)
 				=> spectrum._cdl == null
-					? machine.ReadMemory(address)
+					? machine.ReadMemoryMapped(address)
 					: spectrum.ReadMemory_CDL(address);
 
 			public void WriteMemory(ushort address, byte value)
-				=> machine.WriteMemory(address, value);
+				=> machine.WriteMemoryMapped(address, value);
 
 			public byte ReadHardware(ushort address)
 				=> machine.ReadPort(address);

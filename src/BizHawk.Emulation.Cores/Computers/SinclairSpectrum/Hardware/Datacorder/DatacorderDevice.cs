@@ -1,21 +1,30 @@
-﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Common;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Emulation.Cores.Sound;
+using BizHawk.Emulation.Cores.Tapes;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
-	/// Represents the tape device (or build-in datacorder as it was called +2 and above)
+	/// Represents the tape device (or built-in datacorder as it was called +2 and above).
+	///
+	/// The generic tape mechanism (block model, transport, EAR signal generation) lives in the shared
+	/// TapeDeck; this class owns a deck and supplies the Spectrum-specific pieces via
+	/// ITapeHost: the Z80 cycle counter, the tape beeper, on-screen notifications, tape-format
+	/// loading, the ROM auto-detect (tape-trap) monitor, the flash loader and the tape input/output ports.
 	/// </summary>
-	public sealed class DatacorderDevice : IPortIODevice
+	public sealed class DatacorderDevice : IPortIODevice, ITapeHost
 	{
 		private SpectrumBase _machine { get; set; }
-		private Z80A<ZXSpectrum.CpuLink> _cpu { get; set; }
+		private Z80AOpt<ZXSpectrum.CpuLink> _cpu { get; set; }
 		private OneBitBeeper _buzzer { get; set; }
+
+		/// <summary>
+		/// The shared tape player that holds the loaded blocks and generates the signal.
+		/// </summary>
+		private TapeDeck _deck;
 
 		/// <summary>
 		/// Default constructor
@@ -33,79 +42,56 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_machine = machine;
 			_cpu = _machine.CPU;
 			_buzzer = machine.TapeBuzzer;
+
+			// Tape formats (TAP/TZX/PZX and CPC CDT) store pulse timings against a 3.5MHz reference. Scale them
+			// into this model's CPU clock so the tape plays at the correct rate regardless of model: the 48K is
+			// 3.5MHz exactly (ratio 1.0, unchanged), the 128K family is 3.5469MHz (ratio ~1.0134). Without this
+			// the 128K plays the same tape ~1.3% faster than the 48K (its higher clock burns the unscaled
+			// periods quicker), which does not happen on real hardware where the tape is an external source.
+			_deck = new TapeDeck(this, _machine.ULADevice.ClockSpeed / 3_500_000.0);
 		}
 
-		/// <summary>
-		/// Internal counter used to trigger tape buzzer output
-		/// </summary>
-		private int counter = 0;
+		// -- shared deck proxies (external callers still talk to DatacorderDevice) --
 
-		/// <summary>
-		/// The index of the current tape data block that is loaded
-		/// </summary>
-		private int _currentDataBlockIndex = 0;
-		public int CurrentDataBlockIndex
-		{
-			get
-			{
-				if (_dataBlocks.Count > 0) { return _currentDataBlockIndex; }
-				else { return -1; }
-			}
-			set
-			{
-				if (value == _currentDataBlockIndex) { return; }
-				if (value < _dataBlocks.Count && value >= 0)
-				{
-					_currentDataBlockIndex = value;
-					_position = 0;
-				}
-			}
-		}
-
-		/// <summary>
-		/// The current position within the current data block
-		/// </summary>
-		private int _position = 0;
-		public int Position
-		{
-			get
-			{
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count) { return 0; }
-
-				return _position;
-			}
-		}
-
-		/// <summary>
-		/// Signs whether the tape is currently playing or not
-		/// </summary>
-		private bool _tapeIsPlaying = false;
-		public bool TapeIsPlaying => _tapeIsPlaying;
-
-		/// <summary>
-		/// A list of the currently loaded data blocks
-		/// </summary>
-		private List<TapeDataBlock> _dataBlocks = new List<TapeDataBlock>();
 		public List<TapeDataBlock> DataBlocks
 		{
-			get => _dataBlocks;
-			set => _dataBlocks = value;
+			get => _deck.DataBlocks;
+			set => _deck.DataBlocks = value;
 		}
 
 		/// <summary>
-		/// Stores the last CPU t-state value
+		/// The loading / copy-protection scheme detected from the currently loaded tape (report-only).
 		/// </summary>
-		private long _lastCycle = 0;
+		public TapeProtectionScheme DetectedLoader => TapeProtection.Detect(_deck.DataBlocks);
 
 		/// <summary>
-		/// Edge
+		/// Human-readable name of DetectedLoader for the OSD.
 		/// </summary>
-		private int _waitEdge = 0;
+		public string DetectedLoaderName => TapeProtection.DisplayName(DetectedLoader);
 
-		/// <summary>
-		/// Current tapebit state
-		/// </summary>
-		private bool currentState = false;
+		public int CurrentDataBlockIndex
+		{
+			get => _deck.CurrentDataBlockIndex;
+			set => _deck.CurrentDataBlockIndex = value;
+		}
+
+		public int Position => _deck.Position;
+
+		public bool TapeIsPlaying => _deck.TapeIsPlaying;
+
+		public void Play() => _deck.Play();
+
+		public void Stop() => _deck.Stop();
+
+		public void RTZ() => _deck.RTZ();
+
+		public void SkipBlock(bool skipForward) => _deck.SkipBlock(skipForward);
+
+		public void TapeCycle() => _deck.TapeCycle();
+
+		public void Reset() => _deck.Reset();
+
+		public bool GetEarBit(long cpuCycle) => _deck.GetEarBit(cpuCycle);
 
 		/// <summary>
 		/// Signs whether the device should autodetect when the Z80 has entered into
@@ -120,161 +106,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public void EndFrame()
 		{
 			MonitorFrame();
-		}
-
-		/// <summary>
-		/// Starts the tape playing from the beginning of the current block
-		/// </summary>
-		public void Play()
-		{
-			if (_tapeIsPlaying)
-				return;
-
-			_machine.Spectrum.OSD_TapePlaying();
-
-			// update the lastCycle
-			_lastCycle = _cpu.TotalExecutedCycles;
-
-			// reset waitEdge and position
-			_waitEdge = 0;
-			_position = 0;
-
-			if (_dataBlocks.Count > 0 && _currentDataBlockIndex >= 0) //TODO removed a comment that said "index is 1 or greater", but code is clearly "0 or greater"--which is correct? --yoshi
-			{
-				while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
-				{
-					// we are at the end of a data block - move to the next
-					_position = 0;
-					_currentDataBlockIndex++;
-
-					// are we at the end of the tape?
-					if (_currentDataBlockIndex >= _dataBlocks.Count)
-					{
-						break;
-					}
-				}
-
-				// check for end of tape
-				if (_currentDataBlockIndex >= _dataBlocks.Count)
-				{
-					// end of tape reached. Rewind to beginning
-					AutoStopTape();
-					RTZ();
-					return;
-				}
-
-				// update waitEdge with the current position in the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
-
-				// sign that the tape is now playing
-				_tapeIsPlaying = true;
-			}
-		}
-
-		/// <summary>
-		/// Stops the tape
-		/// (should move to the beginning of the next block)
-		/// </summary>
-		public void Stop()
-		{
-			if (!_tapeIsPlaying)
-				return;
-
-			_machine.Spectrum.OSD_TapeStopped();
-
-			// sign that the tape is no longer playing
-			_tapeIsPlaying = false;
-
-			if (_currentDataBlockIndex >= 0 // we are at datablock 1 or above //TODO 1-indexed then? --yoshi
-				&& _position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count - 1) // the block is still playing back
-			{
-				// move to the next block
-				_currentDataBlockIndex++;
-
-				if (_currentDataBlockIndex >= _dataBlocks.Count)
-				{
-					_currentDataBlockIndex = -1;
-				}
-
-				// reset waitEdge and position
-				_waitEdge = 0;
-				_position = 0;
-
-				if (_currentDataBlockIndex < 0 && _dataBlocks.Count > 0) //TODO deleted a comment that said "block index is -1", but code is clearly "is negative"--are lower values not reachable? --yoshi
-				{
-					// move the index on to 0
-					_currentDataBlockIndex = 0;
-				}
-			}
-
-			// update the lastCycle
-			_lastCycle = _cpu.TotalExecutedCycles;
-		}
-
-		/// <summary>
-		/// Rewinds the tape to it's beginning (return to zero)
-		/// </summary>
-		public void RTZ()
-		{
-			Stop();
-			_machine.Spectrum.OSD_TapeRTZ();
-			_currentDataBlockIndex = 0;
-		}
-
-		/// <summary>
-		/// Performs a block skip operation on the current tape
-		/// TRUE:   skip forward
-		/// FALSE:  skip backward
-		/// </summary>
-		public void SkipBlock(bool skipForward)
-		{
-			int blockCount = _dataBlocks.Count;
-			int targetBlockId = _currentDataBlockIndex;
-
-			if (skipForward)
-			{
-				if (_currentDataBlockIndex == blockCount - 1)
-				{
-					// last block, go back to beginning
-					targetBlockId = 0;
-				}
-				else
-				{
-					targetBlockId++;
-				}
-			}
-			else
-			{
-				if (_currentDataBlockIndex == 0)
-				{
-					// already first block, goto last block
-					targetBlockId = blockCount - 1;
-				}
-				else
-				{
-					targetBlockId--;
-				}
-			}
-
-			var bl = _dataBlocks[targetBlockId];
-
-			StringBuilder sbd = new StringBuilder();
-			sbd.Append('(');
-			sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count);
-			sbd.Append(") : ");
-			sbd.Append(bl.BlockDescription);
-			if (bl.MetaData.Count > 0)
-			{
-				sbd.Append(" - ");
-				sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
-			}
-
-			if (skipForward)
-				_machine.Spectrum.OSD_TapeNextBlock(sbd.ToString());
-			else
-				_machine.Spectrum.OSD_TapePrevBlock(sbd.ToString());
-
-			CurrentDataBlockIndex = targetBlockId;
 		}
 
 		/// <summary>
@@ -380,190 +211,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// Resets the tape
-		/// </summary>
-		public void Reset()
-		{
-			RTZ();
-		}
-
-		/// <summary>
-		/// Is called every cpu cycle but runs every 50 t-states
-		/// This enables the tape devices to play out even if the spectrum itself is not
-		/// requesting tape data
-		/// </summary>
-		public void TapeCycle()
-		{
-			if (TapeIsPlaying)
-			{
-				counter++;
-
-				if (counter > 20)
-				{
-					counter = 0;
-					bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
-					_buzzer.ProcessPulseValue(state);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Simulates the spectrum 'EAR' input reading data from the tape
-		/// </summary>
-		public bool GetEarBit(long cpuCycle)
-		{
-			// decide how many cycles worth of data we are capturing
-			long cycles = cpuCycle - _lastCycle;
-
-			bool is48k = _machine.IsIn48kMode();
-
-			// check whether tape is actually playing
-			if (!_tapeIsPlaying)
-			{
-				// it's not playing. Update lastCycle and return
-				_lastCycle = cpuCycle;
-				return false;
-			}
-
-			// check for end of tape
-			if (_currentDataBlockIndex < 0)
-			{
-				// end of tape reached - RTZ (and stop)
-				RTZ();
-				return currentState;
-			}
-
-			// process the cycles based on the waitEdge
-			while (cycles >= _waitEdge)
-			{
-				// decrement cycles
-				cycles -= _waitEdge;
-
-				if (_position == 0 && _tapeIsPlaying)
-				{
-					// notify about the current block
-					var bl = _dataBlocks[_currentDataBlockIndex];
-
-					StringBuilder sbd = new StringBuilder();
-					sbd.Append('(');
-					sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
-					sbd.Append(") : ");
-					sbd.Append(bl.BlockDescription);
-					if (bl.MetaData.Count > 0)
-					{
-						sbd.Append(" - ");
-						sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
-					}
-					_machine.Spectrum.OSD_TapePlayingBlockInfo(sbd.ToString());
-				}
-
-				// increment the current period position
-				_position++;
-
-				if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
-				{
-					// we have reached the end of the current block
-					if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count == 0)
-					{
-						// notify about the current block (we are skipping it because its empty)
-						var bl = _dataBlocks[_currentDataBlockIndex];
-						StringBuilder sbd = new StringBuilder();
-						sbd.Append('(');
-						sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count);
-						sbd.Append(") : ");
-						sbd.Append(bl.BlockDescription);
-						if (bl.MetaData.Count > 0)
-						{
-							sbd.Append(" - ");
-							sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
-						}
-						_machine.Spectrum.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
-					}
-
-					// skip any empty blocks (and process any command blocks)
-					while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count)
-					{
-						// check for any commands
-						var command = _dataBlocks[_currentDataBlockIndex].Command;
-						var block = _dataBlocks[_currentDataBlockIndex];
-						bool shouldStop = false;
-						switch (command)
-						{
-							// Stop the tape command found - if this is the end of the tape RTZ
-							// otherwise just STOP and move to the next block
-							case TapeCommand.STOP_THE_TAPE:
-
-								_machine.Spectrum.OSD_TapeStoppedAuto();
-								shouldStop = true;
-
-								if (_currentDataBlockIndex >= _dataBlocks.Count)
-									RTZ();
-								else
-								{
-									Stop();
-								}
-
-								_monitorTimeOut = 2000;
-								break;
-							case TapeCommand.STOP_THE_TAPE_48K:
-								if (is48k)
-								{
-									_machine.Spectrum.OSD_TapeStoppedAuto();
-									shouldStop = true;
-
-									if (_currentDataBlockIndex >= _dataBlocks.Count)
-										RTZ();
-									else
-									{
-										Stop();
-									}
-
-									_monitorTimeOut = 2000;
-								}
-								break;
-						}
-
-						if (shouldStop)
-							break;
-
-						_position = 0;
-						_currentDataBlockIndex++;
-
-						if (_currentDataBlockIndex >= _dataBlocks.Count)
-						{
-							break;
-						}
-					}
-
-					// check for end of tape
-					if (_currentDataBlockIndex >= _dataBlocks.Count)
-					{
-						_currentDataBlockIndex = -1;
-						RTZ();
-						return currentState;
-					}
-				}
-
-				// update waitEdge with current position within the current block
-				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
-
-				// flip the current state
-				//FlipTapeState();
-				currentState = _dataBlocks[_currentDataBlockIndex].DataLevels[_position];
-			}
-
-			// update lastCycle and return currentstate
-			_lastCycle = cpuCycle - cycles;
-
-			return currentState;
-		}
-
-		private void FlipTapeState()
-		{
-			currentState = !currentState;
-		}
-
-		/// <summary>
 		/// Flash loading implementation
 		/// (Deterministic Emulation must be FALSE)
 		/// CURRENTLY NOT ENABLED/WORKING
@@ -576,10 +223,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			var util = _machine.Spectrum;
 
-			if (_currentDataBlockIndex < 0)
-				_currentDataBlockIndex = 0;
+			if (CurrentDataBlockIndex < 0)
+				CurrentDataBlockIndex = 0;
 
-			if (_currentDataBlockIndex >= DataBlocks.Count)
+			if (CurrentDataBlockIndex >= DataBlocks.Count)
 				return false;
 
 			//var val = GetEarBit(_cpu.TotalExecutedCycles);
@@ -587,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			ushort addr = _cpu.RegPC;
 
-			var tb = DataBlocks[_currentDataBlockIndex];
+			var tb = DataBlocks[CurrentDataBlockIndex];
 			var tData = tb.BlockData;
 
 			if (tData == null || tData.Length < 2)
@@ -652,7 +299,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			util.SetCpuRegister("PC", pc);
 
-			_currentDataBlockIndex++;
+			CurrentDataBlockIndex++;
 
 			return true;
 		}
@@ -714,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 					if (_monitorCount >= 16 && _autoPlay)
 					{
-						if (!_tapeIsPlaying)
+						if (!TapeIsPlaying)
 						{
 							Play();
 							_machine.Spectrum.OSD_TapePlayingAuto();
@@ -735,7 +382,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public void AutoStopTape()
 		{
-			if (!_tapeIsPlaying)
+			if (!TapeIsPlaying)
 				return;
 
 			if (!_autoPlay)
@@ -747,7 +394,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public void AutoStartTape()
 		{
-			if (_tapeIsPlaying)
+			if (TapeIsPlaying)
 				return;
 
 			if (!_autoPlay)
@@ -761,10 +408,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		private void MonitorFrame()
 		{
-			if (_tapeIsPlaying && _autoPlay)
+			if (TapeIsPlaying && _autoPlay)
 			{
 				if (DataBlocks.Count > 1
-					|| _dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.CSW_Recording or BlockType.WAV_Recording))
+					|| DataBlocks[CurrentDataBlockIndex].BlockDescription is not (BlockType.CSW_Recording or BlockType.WAV_Recording))
 				{
 					// we should only stop the tape when there are multiple blocks
 					// if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
@@ -773,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				if (_monitorTimeOut < 0)
 				{
-					if (_dataBlocks[_currentDataBlockIndex].BlockDescription is not (BlockType.PAUSE_BLOCK or BlockType.PAUS))
+					if (DataBlocks[CurrentDataBlockIndex].BlockDescription is not (BlockType.PAUSE_BLOCK or BlockType.PAUS))
 					{
 						AutoStopTape();
 					}
@@ -787,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				long diff = _machine.CPU.TotalExecutedCycles - _lastINCycle;
 
 				// get current datablock
-				var block = DataBlocks[_currentDataBlockIndex];
+				var block = DataBlocks[CurrentDataBlockIndex];
 
 				// is this a pause block?
 				if (block.BlockDescription is BlockType.PAUS or BlockType.PAUSE_BLOCK)
@@ -808,7 +455,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 				// don't autostop if there is only 1 block
 				if (DataBlocks.Count is 1
-					|| _dataBlocks[_currentDataBlockIndex].BlockDescription is BlockType.CSW_Recording or BlockType.WAV_Recording)
+					|| DataBlocks[CurrentDataBlockIndex].BlockDescription is BlockType.CSW_Recording or BlockType.WAV_Recording)
 				{
 					return;
 				}
@@ -818,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					// There have been no attempted tape reads by the CPU within the double timeout period
 					// Autostop the tape
 					AutoStopTape();
-					_lastCycle = _cpu.TotalExecutedCycles;
+					_deck.ResetLastCycleToNow();
 				}
 			}
 		}
@@ -837,9 +484,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			if (TapeIsPlaying)
 			{
-				GetEarBit(_cpu.TotalExecutedCycles);
+				_deck.GetEarBit(_cpu.TotalExecutedCycles);
 			}
-			if (currentState)
+			if (_deck.CurrentEarLevel)
 			{
 				result |= TAPE_BIT;
 			}
@@ -866,7 +513,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		{
 			if (!TapeIsPlaying)
 			{
-				currentState = ((byte)result & 0x10) != 0;
+				_deck.CurrentEarLevel = ((byte)result & 0x10) != 0;
 			}
 
 			return true;
@@ -878,13 +525,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection(nameof(DatacorderDevice));
-			ser.Sync(nameof(counter), ref counter);
-			ser.Sync(nameof(_currentDataBlockIndex), ref _currentDataBlockIndex);
-			ser.Sync(nameof(_position), ref _position);
-			ser.Sync(nameof(_tapeIsPlaying), ref _tapeIsPlaying);
-			ser.Sync(nameof(_lastCycle), ref _lastCycle);
-			ser.Sync(nameof(_waitEdge), ref _waitEdge);
-			ser.Sync(nameof(currentState), ref currentState);
+			// transport/signal state (field names + order preserve the pre-extraction savestate layout)
+			_deck.SyncState(ser);
+			// auto-detect (tape-trap) monitor state
 			ser.Sync(nameof(_lastINCycle), ref _lastINCycle);
 			ser.Sync(nameof(_monitorCount), ref _monitorCount);
 			ser.Sync(nameof(_monitorTimeOut), ref _monitorTimeOut);
@@ -892,5 +535,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(_monitorLastRegs), ref _monitorLastRegs, false);
 			ser.EndSection();
 		}
+
+		// -- ITapeHost: the services the shared deck needs from the Spectrum --
+
+		long ITapeHost.TotalExecutedCycles => _cpu.TotalExecutedCycles;
+
+		bool ITapeHost.IsIn48kMode => _machine.IsIn48kMode();
+
+		bool ITapeHost.FastLoadAllowed => !_machine.Spectrum.DeterministicEmulation;
+
+		void ITapeHost.FeedBeeper(bool earLevel)
+		{
+			// event-driven clock: position the beeper at the current frame cycle before the pulse
+			_buzzer.SetClock((int)_machine.CurrentFrameCycle);
+			_buzzer.ProcessPulseValue(earLevel);
+		}
+
+		void ITapeHost.NotifyPlay() => _machine.Spectrum.OSD_TapePlaying();
+
+		void ITapeHost.NotifyStop() => _machine.Spectrum.OSD_TapeStopped();
+
+		void ITapeHost.NotifyRewind() => _machine.Spectrum.OSD_TapeRTZ();
+
+		void ITapeHost.NotifyNextBlock(string blockInfo) => _machine.Spectrum.OSD_TapeNextBlock(blockInfo);
+
+		void ITapeHost.NotifyPrevBlock(string blockInfo) => _machine.Spectrum.OSD_TapePrevBlock(blockInfo);
+
+		void ITapeHost.NotifyPlayingBlock(string blockInfo) => _machine.Spectrum.OSD_TapePlayingBlockInfo(blockInfo);
+
+		void ITapeHost.NotifySkipBlock(string blockInfo) => _machine.Spectrum.OSD_TapePlayingSkipBlockInfo(blockInfo);
+
+		void ITapeHost.NotifyStoppedAuto() => _machine.Spectrum.OSD_TapeStoppedAuto();
+
+		void ITapeHost.NotifyStopCommand() => _monitorTimeOut = 2000;
 	}
 }

@@ -11,10 +11,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 
+		// Gigascreen frame blending is a display-only (non-sync) Setting, but it is shown here alongside the
+		// other picture options (border type). It is saved separately via PutCoreSettings so toggling it does
+		// not reboot the core or affect movie sync.
+		private readonly ZXSpectrum.ZXSpectrumSettings _settings;
+
 		public ZxSpectrumCoreEmulationSettings(ISettingsAdapter settable)
 		{
 			_settable = settable;
 			_syncSettings = (ZXSpectrum.ZXSpectrumSyncSettings) _settable.GetSyncSettings();
+			_settings = (ZXSpectrum.ZXSpectrumSettings) _settable.GetSettings();
 			InitializeComponent();
 			Icon = Properties.Resources.GameControllerIcon;
 		}
@@ -44,15 +50,52 @@ namespace BizHawk.Client.EmuHawk
 
 			// autoload tape
 			autoLoadcheckBox1.Checked = _syncSettings.AutoLoadTape;
+
+			// gigascreen frame blending (non-sync display setting)
+			gigascreenBlendCheckBox.Checked = _settings.GigascreenFrameBlend;
+
+			// turbo tape loading - only takes effect when Deterministic Emulation is off, so the turbo controls
+			// are disabled (greyed out) whenever deterministic emulation is enabled
+			flashLoadcheckBox1.Checked = _syncSettings.TapeLoadSpeed == ZXSpectrum.TapeLoadSpeed.Instant;
+
+			// turbo multiplier slider: internal range 1..10 maps to 5x..50x (multiplier = Value * 5)
+			int storedMult = _syncSettings.TapeLoadTurboMultiplier;
+			if (storedMult < 5) storedMult = 5;
+			else if (storedMult > 50) storedMult = 50;
+			turboMultiplierTrackBar.Value = storedMult / 5;
+			UpdateTurboMultiplierLabel();
+
+			UpdateTurboControlsEnabled();
+			determEmucheckBox1.CheckedChanged += (_, _) => UpdateTurboControlsEnabled();
+			flashLoadcheckBox1.CheckedChanged += (_, _) => UpdateTurboControlsEnabled();
+		}
+
+		private void TurboMultiplierTrackBar_Scroll(object sender, EventArgs e) => UpdateTurboMultiplierLabel();
+
+		private void UpdateTurboMultiplierLabel() => turboMultiplierValueLabel.Text = $"{turboMultiplierTrackBar.Value * 5}x";
+
+		private void UpdateTurboControlsEnabled()
+		{
+			// turbo loading only applies on a non-deterministic core
+			flashLoadcheckBox1.Enabled = !determEmucheckBox1.Checked;
+			// the multiplier only matters when turbo loading is both available and ticked
+			bool turboActive = flashLoadcheckBox1.Enabled && flashLoadcheckBox1.Checked;
+			turboMultiplierTrackBar.Enabled = turboActive;
+			turboMultiplierValueLabel.Enabled = turboActive;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
+			var tapeLoadSpeed = flashLoadcheckBox1.Checked ? ZXSpectrum.TapeLoadSpeed.Instant : ZXSpectrum.TapeLoadSpeed.Accurate;
+			int turboMultiplier = turboMultiplierTrackBar.Value * 5;
+
 			bool changed =
 				_syncSettings.MachineType.ToString() != MachineSelectionComboBox.SelectedItem.ToString()
 				|| _syncSettings.BorderType.ToString() != borderTypecomboBox1.SelectedItem.ToString()
 				|| _syncSettings.DeterministicEmulation != determEmucheckBox1.Checked
-				|| _syncSettings.AutoLoadTape != autoLoadcheckBox1.Checked;
+				|| _syncSettings.AutoLoadTape != autoLoadcheckBox1.Checked
+				|| _syncSettings.TapeLoadSpeed != tapeLoadSpeed
+				|| _syncSettings.TapeLoadTurboMultiplier != turboMultiplier;
 
 			if (changed)
 			{
@@ -60,9 +103,19 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.BorderType = (ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), borderTypecomboBox1.SelectedItem.ToString());
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
+				_syncSettings.TapeLoadSpeed = tapeLoadSpeed;
+				_syncSettings.TapeLoadTurboMultiplier = turboMultiplier;
 
 				_settable.PutCoreSyncSettings(_syncSettings);
 			}
+
+			// non-sync display setting: applied live (no reboot), so handled independently of 'changed' above
+			if (gigascreenBlendCheckBox.Checked != _settings.GigascreenFrameBlend)
+			{
+				_settings.GigascreenFrameBlend = gigascreenBlendCheckBox.Checked;
+				_settable.PutCoreSettings(_settings);
+			}
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}

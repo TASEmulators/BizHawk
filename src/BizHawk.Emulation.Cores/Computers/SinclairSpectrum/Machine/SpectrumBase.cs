@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Reference to the instantiated Z80 cpu (piped in via constructor)
 		/// </summary>
-		public Z80A<ZXSpectrum.CpuLink> CPU { get; set; }
+		public Z80AOpt<ZXSpectrum.CpuLink> CPU { get; set; }
 
 		/// <summary>
 		/// ROM and extended info
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// The +3 built-in disk drive
 		/// </summary>
-		public virtual NECUPD765 UPDDiskDevice { get; set; }
+		public virtual IFloppyDiskController UPDDiskDevice { get; set; }
 
 		/// <summary>
 		/// Holds the currently selected joysticks
@@ -104,7 +104,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Gets the current frame cycle according to the CPU tick count
 		/// </summary>
-		public virtual long CurrentFrameCycle => CPU.TotalExecutedCycles - LastFrameStartCPUTick;
+		// non-virtual (no overrides) so this per-cycle-hot property can be inlined
+		public long CurrentFrameCycle => CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
 		/// <summary>
 		/// Non-Deterministic bools
@@ -150,12 +151,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				// run the CPU Monitor cycle
 				CPUMon.ExecuteCycle();
 
-				// clock the beepers
-				TapeBuzzer.SetClock((int)CurrentFrameCycle);
-				BuzzerDevice.SetClock((int)CurrentFrameCycle);
+				// The beepers are clocked event-driven now: SetClock is called immediately before each
+				// ProcessPulseValue (in the port-0xFE write handlers and the datacorder) rather than
+				// every T-state. clockCounter is only consumed by ProcessPulseValue, so the blip output
+				// is equivalent while removing two per-cycle calls from this hot loop.
 
-				// cycle the tape device
-				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+				// Only cycle the tape while it is actually playing — TapeCycle is a no-op otherwise, and
+				// CPU tape reads (GetEarBit) are delta-based and driven from the port-read path, so this
+				// changes nothing functionally.
+				if (TapeDevice.TapeIsPlaying && (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded))
 					TapeDevice.TapeCycle();
 
 				// has frame end been reached?
@@ -181,18 +185,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 			// is this a lag frame?
 			Spectrum.IsLagFrame = !InputRead;
-
-			// FDC debug
-			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
-			{
-				// only write UPD log every second
-				if (FrameCount % 10 == 0)
-				{
-					System.IO.File.AppendAllLines(UPDDiskDevice.outputfile, UPDDiskDevice.dLog);
-					UPDDiskDevice.dLog = new System.Collections.Generic.List<string>();
-					//System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
-				}
-			}
 		}
 
 		/// <summary>
@@ -245,6 +237,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					r[i] = 0x00;
 				}
 			}
+
+			// reset zeroed the paging state (ROMPaged / RAMPaged) — rebuild the devirtualisation map
+			RebuildMemoryMap();
 		}
 
 		/// <summary>
@@ -296,6 +291,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					r[i] = 0x00;
 				}
 			}
+
+			// reset zeroed the paging state (ROMPaged / RAMPaged) — rebuild the devirtualisation map
+			RebuildMemoryMap();
 		}
 
 		public void SyncState(Serializer ser)
@@ -321,6 +319,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			ser.Sync(nameof(RAM6), ref RAM6, false);
 			ser.Sync(nameof(RAM7), ref RAM7, false);
 			ser.Sync(nameof(ROMPaged), ref ROMPaged);
+			ser.Sync(nameof(TRDOSPaged), ref TRDOSPaged);
 			ser.Sync(nameof(SHADOWPaged), ref SHADOWPaged);
 			ser.Sync(nameof(RAMPaged), ref RAMPaged);
 			ser.Sync(nameof(PagingDisabled), ref PagingDisabled);
@@ -361,6 +360,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			}
 
 			UPDDiskDevice?.SyncState(ser);
+
+			// Loading may have reallocated the bank arrays; rebuild the devirtualisation memory maps
+			// from the freshly-loaded paging state so they don't point at stale arrays.
+			if (ser.IsReader)
+				RebuildMemoryMap();
 
 			ser.EndSection();
 		}

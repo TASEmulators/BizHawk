@@ -1,5 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80AOpt;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 	public class CPUMonitor
 	{
 		private readonly SpectrumBase _machine;
-		private readonly Z80A<ZXSpectrum.CpuLink> _cpu;
+		private readonly Z80AOpt<ZXSpectrum.CpuLink> _cpu;
 		public MachineType machineType = MachineType.ZXSpectrum48;
 
 		/// <summary>
@@ -61,13 +61,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			_machine.ULADevice.CycleClock(TotalExecutedCycles);
 
 			// is the next CPU cycle causing a BUSRQ or IORQ?
-			if (BUSRQ > 0)
+			// cache BUSRQ once: the getter does a machineType switch + array index, and it is otherwise
+			// re-read inside CheckIO and AscertainBUSRQAddress (2-3 reads/cycle)
+			ushort busrq = BUSRQ;
+			if (busrq > 0)
 			{
-				// check for IORQ
-				if (!CheckIO())
+				// check for IORQ. Only IO bus codes are >= BIO1 (100); every memory code is <= 21, and
+				// CheckIO matches nothing below BIO1 — so short-circuiting on the range skips its 8-case
+				// switch on the common memory cycle while staying exactly equivalent to `!CheckIO(busrq)`.
+				if (!(busrq >= Z80AOpt<ZXSpectrum.CpuLink>.BIO1 && CheckIO(busrq)))
 				{
-					// is the memory address of the BUSRQ potentially contended?
-					if (_machine.IsContended(AscertainBUSRQAddress()))
+					// Is the memory address of the BUSRQ potentially contended? PageContended[addr >> 14]
+					// is a precomputed, non-virtual replacement for the per-cycle virtual IsContended(addr)
+					// (+ its paging switch on 128K/+2a). It is rebuilt from the paging state in
+					// RebuildMemoryMap and is value-identical to IsContended. GetContentionValue already
+					// reads the flat ContentionByCycle table.
+					ushort addr = AscertainBUSRQAddress(busrq);
+					if (_machine.PageContended[addr >> 14])
 					{
 						var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
 						if (cont > 0)
@@ -85,10 +95,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Looks up the current BUSRQ address that is about to be signalled on the upcoming cycle
 		/// </summary>
-		private ushort AscertainBUSRQAddress()
+		private ushort AscertainBUSRQAddress(ushort busrq)
 		{
 			ushort addr = 0;
-			switch (BUSRQ)
+			switch (busrq)
 			{
 				// PCh
 				case 1:
@@ -131,17 +141,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					addr = (ushort)(_cpu.Regs[_cpu.R] | _cpu.Regs[_cpu.I] << 8);
 					break;
 				// BC
-				case Z80A<ZXSpectrum.CpuLink>.BIO1:
-				case Z80A<ZXSpectrum.CpuLink>.BIO2:
-				case Z80A<ZXSpectrum.CpuLink>.BIO3:
-				case Z80A<ZXSpectrum.CpuLink>.BIO4:
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO1:
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO2:
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO3:
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO4:
 					addr = (ushort)(_cpu.Regs[_cpu.C] | _cpu.Regs[_cpu.B] << 8);
 					break;
 				// WZ
-				case Z80A<ZXSpectrum.CpuLink>.WIO1:
-				case Z80A<ZXSpectrum.CpuLink>.WIO2:
-				case Z80A<ZXSpectrum.CpuLink>.WIO3:
-				case Z80A<ZXSpectrum.CpuLink>.WIO4:
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO1:
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO2:
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO3:
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO4:
 					addr = (ushort)(_cpu.Regs[_cpu.Z] | _cpu.Regs[_cpu.W] << 8);
 					break;
 			}
@@ -153,65 +163,65 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Running every cycle, this determines whether the upcoming BUSRQ is for an IO operation
 		/// Also processes any contention
 		/// </summary>
-		private bool CheckIO()
+		private bool CheckIO(ushort busrq)
 		{
 			bool isIO = false;
 
-			switch (BUSRQ)
+			switch (busrq)
 			{
 				// BC: T1
-				case Z80A<ZXSpectrum.CpuLink>.BIO1:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO1:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(1))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// BC: T2
-				case Z80A<ZXSpectrum.CpuLink>.BIO2:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO2:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(2))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// BC: T3
-				case Z80A<ZXSpectrum.CpuLink>.BIO3:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO3:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(3))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// BC: T4
-				case Z80A<ZXSpectrum.CpuLink>.BIO4:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.BIO4:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(4))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 
 				// WZ: T1
-				case Z80A<ZXSpectrum.CpuLink>.WIO1:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO1:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(1))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// WZ: T2
-				case Z80A<ZXSpectrum.CpuLink>.WIO2:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO2:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(2))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// WZ: T3
-				case Z80A<ZXSpectrum.CpuLink>.WIO3:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO3:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(3))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
 					break;
 				// WZ: T4
-				case Z80A<ZXSpectrum.CpuLink>.WIO4:
-					lastPortAddr = AscertainBUSRQAddress();
+				case Z80AOpt<ZXSpectrum.CpuLink>.WIO4:
+					lastPortAddr = AscertainBUSRQAddress(busrq);
 					isIO = true;
 					if (IsIOCycleContended(4))
 						_cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
@@ -360,12 +370,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
-		/// Called when the first byte of an instruction is fetched
+		/// Called when the first byte of an instruction is fetched (M1), before the opcode byte is read.
+		/// The Pentagon uses this to drive the Beta 128 automatic TR-DOS ROM switch off the fetch address;
+		/// the enum check keeps every other model off the virtual dispatch on this per-fetch hot path.
 		/// </summary>
 		public void OnExecFetch(ushort firstByte)
 		{
-			// fetch instruction without incrementing pc
-			//_cpu.FetchInstruction(_cpu.FetchMemory(firstByte));
+			if (machineType == MachineType.Pentagon128)
+				_machine.TrapTrDos(firstByte);
 		}
 
 		public void SyncState(Serializer ser)
