@@ -147,6 +147,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
+		public void Remove(IMemoryCallback item)
+		{
+			var cbToRemove = _callbacks.SingleOrDefault(container => container.Callback == item);
+
+			if (cbToRemove != null)
+			{
+				Remove(cbToRemove);
+			}
+		}
+
 		public void RemoveAll(IEnumerable<MemoryCallbackDelegate> actions)
 		{
 			foreach (var action in actions)

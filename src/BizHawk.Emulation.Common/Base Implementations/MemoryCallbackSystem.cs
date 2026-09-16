@@ -156,9 +156,30 @@ namespace BizHawk.Emulation.Common
 			return anyRemoved;
 		}
 
+		private bool RemoveInternal(IMemoryCallback item)
+		{
+			bool anyRemoved = false;
+			anyRemoved |= _reads.Remove(item);
+			anyRemoved |= _writes.Remove(item);
+			anyRemoved |= _execs.Remove(item);
+			return anyRemoved;
+		}
+
 		public void Remove(MemoryCallbackDelegate action)
 		{
 			if (RemoveInternal(action))
+			{
+				if (UpdateHasVariables())
+				{
+					Changes();
+				}
+			}
+		}
+
+
+		public void Remove(IMemoryCallback item)
+		{
+			if (RemoveInternal(item))
 			{
 				if (UpdateHasVariables())
 				{
@@ -287,6 +308,17 @@ namespace BizHawk.Emulation.Common
 			ItemRemoved?.Invoke(this, removedItem);
 		}
 
+		private bool RemoveInternal(IMemoryCallback item)
+		{
+			Debug.Assert(_modifyInProgress, "unexpected collection mutation state");
+			CopyIfRequired();
+
+			bool removed = _items.Remove(item);
+			if (removed)
+				ItemRemoved?.Invoke(this, item);
+			return removed;
+		}
+
 		public bool Remove(MemoryCallbackDelegate callback)
 		{
 			BeginModify();
@@ -311,6 +343,13 @@ namespace BizHawk.Emulation.Common
 			{
 				EndModify();
 			}
+		}
+
+		public bool Remove(IMemoryCallback item)
+		{
+			BeginModify();
+			try { return RemoveInternal(item); }
+			finally { EndModify(); }
 		}
 
 		public void Clear()

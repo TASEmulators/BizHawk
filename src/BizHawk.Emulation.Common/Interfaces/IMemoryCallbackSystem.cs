@@ -63,6 +63,11 @@ namespace BizHawk.Emulation.Common
 		void Remove(MemoryCallbackDelegate action);
 
 		/// <summary>
+		/// Removes the given callback from the list
+		/// </summary>
+		void Remove(IMemoryCallback item);
+
+		/// <summary>
 		/// Removes the given callbacks from the list
 		/// </summary>
 		void RemoveAll(IEnumerable<MemoryCallbackDelegate> actions);
