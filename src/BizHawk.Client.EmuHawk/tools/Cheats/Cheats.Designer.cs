@@ -85,7 +85,9 @@ namespace BizHawk.Client.EmuHawk
 			this.SuspendLayout();
 			// 
 			// CheatListView
-			// 
+			//
+			this.CheatListView.AccessibleName = "Cheat List";
+			this.CheatListView.AccessibleRole = System.Windows.Forms.AccessibleRole.List;
 			this.CheatListView.AllowColumnReorder = true;
 			this.CheatListView.AllowColumnResize = true;
 			this.CheatListView.AllowDrop = true;
@@ -293,7 +295,9 @@ namespace BizHawk.Client.EmuHawk
 			this.DisableCheatsOnLoadMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadMenuItem_Click);
 			// 
 			// toolStrip1
-			// 
+			//
+			this.toolStrip1.AccessibleName = "Cheats Toolbar";
+			this.toolStrip1.AccessibleRole = System.Windows.Forms.AccessibleRole.ToolBar;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewToolBarItem,
             this.OpenToolBarItem,
@@ -311,7 +315,8 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStrip1.TabIndex = 3;
 			// 
 			// NewToolBarItem
-			// 
+			//
+			this.NewToolBarItem.AccessibleName = "New Cheat List";
 			this.NewToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.NewToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewToolBarItem.Name = "NewToolBarItem";
@@ -320,7 +325,8 @@ namespace BizHawk.Client.EmuHawk
 			this.NewToolBarItem.Click += new System.EventHandler(this.NewMenuItem_Click);
 			// 
 			// OpenToolBarItem
-			// 
+			//
+			this.OpenToolBarItem.AccessibleName = "Open Cheat List";
 			this.OpenToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.OpenToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenToolBarItem.Name = "OpenToolBarItem";
@@ -329,7 +335,8 @@ namespace BizHawk.Client.EmuHawk
 			this.OpenToolBarItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// SaveToolBarItem
-			// 
+			//
+			this.SaveToolBarItem.AccessibleName = "Save Cheat List";
 			this.SaveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.SaveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SaveToolBarItem.Name = "SaveToolBarItem";
@@ -338,7 +345,8 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveToolBarItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// RemoveToolbarItem
-			// 
+			//
+			this.RemoveToolbarItem.AccessibleName = "Remove Cheat";
 			this.RemoveToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.RemoveToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveToolbarItem.Name = "RemoveToolbarItem";
@@ -347,7 +355,8 @@ namespace BizHawk.Client.EmuHawk
 			this.RemoveToolbarItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
 			// SeparatorToolbarItem
-			// 
+			//
+			this.SeparatorToolbarItem.AccessibleName = "Insert Separator";
 			this.SeparatorToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.SeparatorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SeparatorToolbarItem.Name = "SeparatorToolbarItem";
@@ -356,7 +365,8 @@ namespace BizHawk.Client.EmuHawk
 			this.SeparatorToolbarItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// MoveUpToolbarItem
-			// 
+			//
+			this.MoveUpToolbarItem.AccessibleName = "Move Cheat Up";
 			this.MoveUpToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.MoveUpToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpToolbarItem.Name = "MoveUpToolbarItem";
@@ -365,7 +375,8 @@ namespace BizHawk.Client.EmuHawk
 			this.MoveUpToolbarItem.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
 			// 
 			// MoveDownToolbarItem
-			// 
+			//
+			this.MoveDownToolbarItem.AccessibleName = "Move Cheat Down";
 			this.MoveDownToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.MoveDownToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveDownToolbarItem.Name = "MoveDownToolbarItem";
@@ -374,7 +385,8 @@ namespace BizHawk.Client.EmuHawk
 			this.MoveDownToolbarItem.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
 			// LoadGameGenieToolbarItem
-			// 
+			//
+			this.LoadGameGenieToolbarItem.AccessibleName = "Code Converter";
 			this.LoadGameGenieToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";

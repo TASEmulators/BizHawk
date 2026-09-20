@@ -242,6 +242,14 @@ namespace BizHawk.Client.Common
 		public bool DisplayRerecordCount { get; set; }
 		public bool DisplayMessages { get; set; } = true;
 
+		// Accessibility options
+
+		/// <summary>
+		/// When enabled, on-screen messages are announced to screen readers (NVDA, JAWS, Narrator).
+		/// Disable if experiencing performance issues with screen readers.
+		/// </summary>
+		public bool EnableScreenReaderAnnouncements { get; set; } = true;
+
 		public bool DispFixAspectRatio { get; set; } = true;
 		public bool DispFixScaleInteger { get; set; }
 		public bool DispFullscreenHacks { get; set; }

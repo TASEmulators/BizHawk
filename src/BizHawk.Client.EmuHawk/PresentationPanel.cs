@@ -32,6 +32,12 @@ namespace BizHawk.Client.EmuHawk
 			GraphicsControl.Dock = DockStyle.Fill;
 			GraphicsControl.BackColor = Color.Black;
 
+			// Accessibility: Mark as non-interactive display to prevent
+			// screen readers from trying to track rapid redraws
+			GraphicsControl.AccessibleRole = AccessibleRole.Graphic;
+			GraphicsControl.AccessibleName = "Game Display";
+			GraphicsControl.CausesValidation = false;
+
 			// pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
 			// http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
 			GraphicsControl.MouseClick += onClick;
