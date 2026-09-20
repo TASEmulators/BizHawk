@@ -50,7 +50,11 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 		private int _currentCDROM = 0;
 		private bool _disposed;
 
-		private string GetFullName(IRomAsset rom) => Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+		private string GetFullName(IRomAsset rom)
+#pragma warning disable CS0618
+			=> Path.GetFileName(rom.RomPath.SubstringAfter('|'));
+#pragma warning restore CS0618
+
 		private string GetFullName(IDiscAsset disk) => Path.GetFileName(disk.DiscData.Name.SubstringAfter('|'));
 
 		// CD Handling logic
@@ -81,7 +85,10 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			// Parsing rom files
 			foreach (var file in _romAssets)
 			{
-				switch (Path.GetExtension(file.RomPath))
+#pragma warning disable CS0618
+				var filePath = file.RomPath;
+#pragma warning restore CS0618
+				switch (Path.GetExtension(filePath))
 				{
 					case ".ima" or ".img" or ".xdf" or ".dmf" or ".fdd" or ".fdi" or ".nfd" or ".d88":
 						_floppyDiskImageFiles.Add(file);
@@ -96,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 						break;
 
 					default:
-						throw new Exception($"Unrecognized input file provided: '{file.RomPath}'");
+						throw new Exception($"Provided file was not recognised: \"{filePath}\"");
 				}
 			}
 
@@ -209,7 +216,9 @@ namespace BizHawk.Emulation.Cores.Computers.DOS
 			string floppyMountLine = "imgmount a ";
 			foreach (var file in _floppyDiskImageFiles)
 			{
+#pragma warning disable CS0618
 				string floppyNewName = $"{FileNames.FD}{_floppyDiskCount}{Path.GetExtension(file.RomPath)}";
+#pragma warning restore CS0618
 				_exe.AddReadonlyFile(file.FileData, floppyNewName);
 				floppyMountLine += floppyNewName + " ";
 				_floppyDiskCount++;
