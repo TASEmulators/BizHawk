@@ -715,5 +715,61 @@ namespace BizHawk.Common
 		[DllImport(XLIB)]
 		[return: MarshalAs(UnmanagedType.SysUInt)]
 		public static extern Keysym XkbKeycodeToKeysym(IntPtr display, uint keycode, int group, int level);
+
+		[DllImport(XLIB)]
+		public static extern IntPtr XAllocClassHint();
+
+		[DllImport(XLIB)]
+		public static extern Status XSetClassHint(IntPtr display, IntPtr window, IntPtr classHint);
+
+		[DllImport(XLIB)]
+		public static extern Status XGetClassHint(IntPtr display, IntPtr window, out IntPtr classHint);
+
+		public struct XClassHint
+		{
+			public IntPtr res_name;
+			public IntPtr res_class;
+		}
+
+		[DllImport(XLIB)]
+		public static extern Status XQueryTree(IntPtr display, IntPtr window, out IntPtr rootReturn, out IntPtr parentReturn, out IntPtr[] childrenReturn, out int childCount);
+		[DllImport(XLIB)]
+		public static extern Status XFetchName(IntPtr display, IntPtr window, out string returnedName);
+
+		public static void SetWMClass(IntPtr x11Display, string className)
+		{
+			//Establish reference to xDisplay
+			if(x11Display == IntPtr.Zero)
+			{
+				x11Display = XOpenDisplay(null);
+			}
+			//Setup the ClassHint
+			var wmSet = new XClassHint{res_name = Marshal.StringToCoTaskMemAnsi("BizHawk"), res_class = Marshal.StringToCoTaskMemAnsi(className)};
+			IntPtr point = XAllocClassHint();
+			Marshal.StructureToPtr(wmSet, point, true);
+
+			//To find the window we must query twice, once to get the array length and the second to populate
+			XQueryTree(x11Display, XDefaultRootWindow(x11Display), out _, out _, out _, out int windowCount);
+			IntPtr[] windowList = new IntPtr[windowCount];
+			XQueryTree(x11Display, XDefaultRootWindow(x11Display), out _, out _, out windowList, out windowCount);
+			for(int windowIterator = 0; windowIterator < windowCount; windowIterator++)
+			{
+				XFetchName(x11Display, windowList[windowIterator], out string name);
+				if(name?.Contains("BizHawk") == true)
+				{
+					//Interogate if a WM_CLASS is already set
+					XGetClassHint(x11Display, windowList[windowIterator], out var classHint);
+					if(classHint == IntPtr.Zero)
+					{
+						//Assign+Retrieve - doesn't seem to set properly without retrieving it after)
+						XSetClassHint(x11Display, windowList[windowIterator], point);
+						XGetClassHint(x11Display, windowList[windowIterator],out _);
+					}
+					//Reset classHint after checking, doesn't seem to overwrite otherwise.
+					classHint = IntPtr.Zero;
+				}
+			}
+			_ = XFlush(x11Display);
+		}
 	}
 }

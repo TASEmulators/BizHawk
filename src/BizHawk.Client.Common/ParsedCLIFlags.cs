@@ -51,6 +51,8 @@ namespace BizHawk.Client.Common
 
 		public readonly string? cmdRom;
 
+		public readonly string? wmClassName;
+
 		public ParsedCLIFlags(
 			int? cmdLoadSlot,
 			string? cmdLoadState,
@@ -73,7 +75,8 @@ namespace BizHawk.Client.Common
 			string? openExtToolDll,
 			ProtocolType socketProtocol,
 			IReadOnlyList<(string Key, string Value)>? userdataUnparsedPairs,
-			string? cmdRom)
+			string? cmdRom,
+			string? wmClassName)
 		{
 			this.cmdLoadSlot = cmdLoadSlot;
 			this.cmdLoadState = cmdLoadState;
@@ -97,6 +100,7 @@ namespace BizHawk.Client.Common
 			SocketProtocol = socketProtocol;
 			UserdataUnparsedPairs = userdataUnparsedPairs;
 			this.cmdRom = cmdRom;
+			this.wmClassName = wmClassName;
 		}
 	}
 }
