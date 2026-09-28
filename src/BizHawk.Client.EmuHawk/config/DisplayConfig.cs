@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
@@ -32,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			Increment = 0.25m,
 			Maximum = 2.0m,
 			Minimum = -2.0m,
-			Size = new(48, 23),
+			Size = UIHelper.Scale(new Size(48, 23)),
 		};
 
 		private readonly SzNUDEx nudSnowIntensity = new()
@@ -41,12 +42,12 @@ namespace BizHawk.Client.EmuHawk
 			Increment = 0.1m,
 			Maximum = 1.0m,
 			Minimum = 0.1m,
-			Size = new(48, 23),
+			Size = UIHelper.Scale(new Size(48, 23)),
 		};
 
 		private readonly SzTextBoxEx txtSWTOverride;
 
-		private readonly TransparentTrackBar tbSnowFramerate = new() { Maximum = 20, Minimum = 1, Size = new(160, 45) };
+		private readonly TransparentTrackBar tbSnowFramerate = new() { Maximum = 20, Minimum = 1, Size = UIHelper.Scale(new Size(160, 45)) };
 
 		public IDialogController DialogController { get; }
 
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 			InitializeComponent();
 			flpStaticWindowTitles.Controls.Remove(cbStaticWindowTitles);
-			txtSWTOverride = new() { Size = new(80, 23), Text = _config.MainFormStaticWindowTitleOverrideEffective };
+			txtSWTOverride = new() { Size = UIHelper.Scale(new Size(80, 23)), Text = _config.MainFormStaticWindowTitleOverrideEffective };
 			flpStaticWindowTitles.Controls.InsertBefore(
 				lblStaticWindowTitles,
 				insert: new SingleRowFLP
@@ -74,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 						txtSWTOverride,
 					},
 				});
-			LocSzGroupBoxEx grpSnow = new() { Location = new(6, 200), Size = new(371, 160), Text = "Snowy NullHawk" };
+			LocSzGroupBoxEx grpSnow = new() { Location = UIHelper.Scale(new Point(6, 200)), Size = UIHelper.Scale(new Size(371, 160)), Text = "Snowy NullHawk" };
 			_snowRadioTracker = grpSnow.Tracker;
 			RadioButtonEx rbSnowAlways = new(_snowRadioTracker)
 			{
@@ -125,8 +126,8 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new SingleRowFLP { Controls = { lblFramerate, tbSnowFramerate } },
 				},
-				Location = new(5, 15),
-				Size = new(320, 144),
+				Location = UIHelper.Scale(new Point(5, 15)),
+				Size = UIHelper.Scale(new Size(320, 144)),
 			});
 			tpMisc.Controls.Remove(flpStaticWindowTitles);
 			tpMisc.Controls.Remove(groupBox5);
