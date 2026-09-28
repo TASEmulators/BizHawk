@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public void ClearGuiText()
+		public void ClearApiHawkText()
 			=> _guiTextList.Clear();
 
 		private void DrawMessage(IBlitter g, UIMessage message, int yOffset)

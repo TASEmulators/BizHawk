@@ -6,9 +6,11 @@ using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class GuiLuaLibrary : LuaLibraryBase, IDisposable
+	public sealed class GuiLuaLibrary : LuaLibraryBase, IDisposable, IRegisterFunctions
 	{
 		private DisplaySurfaceID _rememberedSurfaceID = DisplaySurfaceID.EmuCore;
+
+		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
 		public GuiLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
@@ -37,15 +39,36 @@ namespace BizHawk.Client.EmuHawk
 		public void AddMessage(string message)
 			=> APIs.Gui.AddMessage(message);
 
-		[LuaMethodExample("gui.clearGraphics( );")]
+#pragma warning disable CS0618
+		[LuaDeprecatedMethod]
 		[LuaMethod("clearGraphics", "clears all lua drawn graphics from the screen")]
 		public void ClearGraphics(string surfaceName = null)
 			=> APIs.Gui.ClearGraphics(surfaceID: UseOrFallback(surfaceName));
 
-		[LuaMethodExample("gui.cleartext( );")]
+		[LuaDeprecatedMethod]
 		[LuaMethod("cleartext", "clears all text created by gui.text()")]
 		public void ClearText()
 			=> APIs.Gui.ClearText();
+#pragma warning restore CS0618
+
+		[LuaMethodExample("gui.draw();")]
+		[LuaMethod("draw", "Clears all prior drawings and calls any functions given to gui.addDrawCallback. Use this to re-draw while paused.")]
+		public void Draw()
+		{
+			APIs.Gui.Draw();
+		}
+
+		[LuaMethodExample("local draw_cb_id = gui.addDrawCallback(\r\n\tfunction()\r\n\t\t-- gui.draw*** calls go here\r\n\tend);")]
+		[LuaMethod("addDrawCallback", "The given function will be called before each API draw. This means after each frame and any time gui.draw is called.")]
+		public string AddDrawCallback(LuaFunction luaf, string name = null)
+		{
+			INamedLuaFunction nlf = CreateAndRegisterNamedFunction(luaf, NamedLuaFunction.EVENT_TYPE_DRAW, ApiGroup.PROHIBITED_MID_FRAME, name);
+			Action callback = () => nlf.Call();
+			APIs.Gui.AddDrawCallback(callback);
+			nlf.OnRemove += () => APIs.Gui.RemoveDrawCallback(callback);
+
+			return nlf.GuidStr;
+		}
 
 		[LuaMethodExample("gui.defaultForeground( 0x000000FF );")]
 		[LuaMethod("defaultForeground", "Sets the default foreground color to use in drawing methods, white by default")]
