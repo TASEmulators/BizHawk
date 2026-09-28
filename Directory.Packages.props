@@ -18,6 +18,7 @@
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.2" />
 		<PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="8.0.4" />
+		<PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.9" />
 		<PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
 		<PackageVersion Include="Microsoft.Win32.Registry" Version="5.0.0" />
 		<PackageVersion Include="MSTest" Version="3.9.3" />
