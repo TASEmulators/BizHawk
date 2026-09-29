@@ -224,9 +224,9 @@ namespace BizHawk.Client.EmuHawk
 
 			roll.CellHovered += (_, e) =>
 			{
-				if (e.NewCell.RowIndex is null)
+				if (e.Cell.RowIndex is null)
 				{
-					toolTip1.Show(e.NewCell.Column!.Name, roll, roll.PointToClient(Cursor.HotSpot));
+					toolTip1.Show(e.Cell.Column!.Name, roll, roll.PointToClient(Cursor.HotSpot));
 				}
 			};
 
@@ -1328,12 +1328,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
+		private void TasView_PointedCellChanged(object sender, InputRoll.CellChangeEventArgs e)
 		{
 			InputRoll roll = (InputRoll)sender;
 			toolTip1.SetToolTip(roll, null);
 
-			if (e.NewCell.RowIndex is null || !MouseButtonHeld)
+			if (e.NewCell?.RowIndex is null || !MouseButtonHeld)
 			{
 				return;
 			}

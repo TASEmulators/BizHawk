@@ -615,15 +615,16 @@ namespace BizHawk.Client.EmuHawk
 			_screenshot.FadeOut();
 		}
 
-		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		private void BranchView_CellDropped(object sender, InputRoll.CellDroppedEventArgs e)
 		{
-			if (e.NewCell.IsDataCell() && e.OldCell.RowIndex < Branches.Count)
+			if (e.TargetCell == null) return;
+			if (e.TargetCell.IsDataCell() && e.DroppedCell.RowIndex < Branches.Count)
 			{
 				var guid = Branches.Current > Branches.Count
 					? Guid.Empty
 					: Branches[Branches.Current].Uuid;
 
-				Branches.Swap(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				Branches.Swap(e.DroppedCell.RowIndex.Value, e.TargetCell.RowIndex.Value);
 				int newIndex = Branches.IndexOfHash(guid);
 				Branches.Current = newIndex;
 				BranchView.DeselectAll();
@@ -633,7 +634,7 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		private void BranchView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
+		private void BranchView_PointedCellChanged(object sender, InputRoll.CellChangeEventArgs e)
 		{
 			if (e.NewCell?.RowIndex != null && e.NewCell.Column != null && e.NewCell.RowIndex < Branches.Count)
 			{

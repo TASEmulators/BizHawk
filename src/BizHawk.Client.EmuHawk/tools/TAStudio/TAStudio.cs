@@ -1275,11 +1275,11 @@ namespace BizHawk.Client.EmuHawk
 			Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 		}
 
-		private void TasView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		private void TasView_CellDropped(object sender, InputRoll.CellDroppedEventArgs e)
 		{
-			if (e.NewCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
+			if (e.TargetCell?.RowIndex != null && !CurrentTasMovie.Markers.IsMarker(e.TargetCell.RowIndex.Value))
 			{
-				CurrentTasMovie.Markers.Move(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				CurrentTasMovie.Markers.Move(e.DroppedCell.RowIndex.Value, e.TargetCell.RowIndex.Value);
 			}
 		}
 

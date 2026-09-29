@@ -1,6 +1,9 @@
+#nullable enable
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -54,14 +57,14 @@ namespace BizHawk.Client.EmuHawk
 		private int _scrollSpeed = SystemInformation.MouseWheelScrollLines;
 		private SizeF _charSize;
 
-		private RollColumn/*?*/ _columnDown;
+		private RollColumn? _columnDown;
 
-		private RollColumn/*?*/ _columnResizing;
+		private RollColumn? _columnResizing;
 
 		private int? _currentX;
 		private int? _currentY;
 
-		private Cell _lastCell; // The previous cell the mouse was in
+		private Cell? _lastCell; // The previous cell the mouse was in
 
 		private int _drawHeight;
 		private int _drawWidth;
@@ -99,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SuspendHotkeys { get; set; }
 
-		public event Action ColumnsChanged;
+		public event Action? ColumnsChanged;
 
 		public InputRoll()
 		{
@@ -140,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_hoverTimer.Stop();
 
-			CellHovered?.Invoke(this, new CellEventArgs(_lastCell, CurrentCell));
+			if (CurrentCell != null) CellHovered?.Invoke(this, new CellHoverEventArgs(CurrentCell));
 		}
 
 		protected override void Dispose(bool disposing)
@@ -183,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var col = CurrentCell.Column!;
+					var col = CurrentCell!.Column!;
 					var maxLength = col.Text.Length;
 
 					for (int i = 0; i < RowCount; i++)
@@ -448,96 +451,96 @@ namespace BizHawk.Client.EmuHawk
 		/// Fire the <see cref="QueryItemText"/> event which requests the text for the passed cell
 		/// </summary>
 		[Category("Virtual")]
-		public event QueryItemTextHandler QueryItemText;
+		public event QueryItemTextHandler? QueryItemText;
 
 		/// <summary>
 		/// Fire the <see cref="QueryItemBkColor"/> event which requests the background color for the passed cell
 		/// </summary>
 		[Category("Virtual")]
-		public event QueryItemBkColorHandler QueryItemBkColor;
+		public event QueryItemBkColorHandler? QueryItemBkColor;
 
 		/// <summary>
 		/// Fire the <see cref="QueryItemForeColor"/> event which requests the color of text for the passed cell
 		/// </summary>
 		[Category("Virtual")]
-		public event QueryItemForeColorHandler QueryItemForeColor;
+		public event QueryItemForeColorHandler? QueryItemForeColor;
 
 		[Category("Virtual")]
-		public event QueryRowBkColorHandler QueryRowBkColor;
+		public event QueryRowBkColorHandler? QueryRowBkColor;
 
 		/// <summary>
 		/// Fire the <see cref="QueryItemIconHandler"/> event which requests an icon for a given cell
 		/// </summary>
 		[Category("Virtual")]
-		public event QueryItemIconHandler QueryItemIcon;
+		public event QueryItemIconHandler? QueryItemIcon;
 
 		/// <summary>
 		/// Fire the QueryFrameLag event which checks if a given frame is a lag frame
 		/// </summary>
 		[Category("Virtual")]
-		public event QueryFrameLagHandler QueryFrameLag;
+		public event QueryFrameLagHandler? QueryFrameLag;
 
 		/// <summary>
 		/// Fires when a cell that can be selected is clicked. Return null to use default selection logic.
 		/// </summary>
 		[Category("Mouse")]
-		public event QueryShouldSelectCellHandler QueryShouldSelectCell;
+		public event QueryShouldSelectCellHandler? QueryShouldSelectCell;
 
 		/// <summary>
 		/// Fires when the mouse moves from one cell to another (including column header cells)
 		/// </summary>
 		[Category("Mouse")]
-		public event CellChangeEventHandler PointedCellChanged;
+		public event CellChangeEventHandler? PointedCellChanged;
 
 		/// <summary>
 		/// Fires when a cell is hovered on
 		/// </summary>
 		[Category("Mouse")]
-		public event HoverEventHandler CellHovered;
+		public event HoverEventHandler? CellHovered;
 
 		/// <summary>
 		/// Occurs when a column header is clicked
 		/// </summary>
 		[Category("Action")]
-		public event ColumnClickEventHandler ColumnClick;
+		public event ColumnClickEventHandler? ColumnClick;
 
 		/// <summary>
 		/// Occurs when a column header is right-clicked
 		/// </summary>
 		[Category("Action")]
-		public event ColumnClickEventHandler ColumnRightClick;
+		public event ColumnClickEventHandler? ColumnRightClick;
 
 		/// <summary>
 		/// Occurs whenever the 'SelectedItems' property for this control changes
 		/// </summary>
 		[Category("Behavior")]
-		public event EventHandler SelectedIndexChanged;
+		public event EventHandler? SelectedIndexChanged;
 
 		/// <summary>
 		/// Occurs whenever the mouse wheel is scrolled while the right mouse button is held
 		/// </summary>
 		[Category("Behavior")]
-		public event RightMouseScrollEventHandler RightMouseScrolled;
+		public event RightMouseScrollEventHandler? RightMouseScrolled;
 
 		[Category("Property Changed")]
 		[Description("Occurs when the column header has been reordered")]
-		public event ColumnReorderedEventHandler ColumnReordered;
+		public event ColumnReorderedEventHandler? ColumnReordered;
 
 		[Category("Action")]
 		[Description("Occurs when the scroll value of the visible rows change (in vertical orientation this is the vertical scroll bar change, and in horizontal it is the horizontal scroll bar)")]
-		public event RowScrollEvent RowScroll;
+		public event RowScrollEvent? RowScroll;
 
 		[Category("Action")]
 		[Description("Occurs when the scroll value of the columns (in vertical orientation this is the horizontal scroll bar change, and in horizontal it is the vertical scroll bar)")]
-		public event ColumnScrollEvent ColumnScroll;
+		public event ColumnScrollEvent? ColumnScroll;
 
 		[Category("Action")]
 		[Description("Occurs when a cell is dragged and then dropped into a new cell, old cell is the cell that was being dragged, new cell is its new destination")]
-		public event CellDroppedEvent CellDropped;
+		public event CellDroppedEvent? CellDropped;
 
 		[Category("Property Changed")]
 		[Description("Fires after rotation has been changed.")]
-		public event EventHandler RotationChanged;
+		public event EventHandler? RotationChanged;
 
 		/// <summary>
 		/// Retrieve the text for a cell
@@ -570,9 +573,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public delegate bool QueryShouldSelectCellHandler(InputRoll sender, MouseButtons button);
 
-		public delegate void CellChangeEventHandler(InputRoll sender, CellEventArgs e);
+		public delegate void CellChangeEventHandler(InputRoll sender, CellChangeEventArgs e);
 
-		public delegate void HoverEventHandler(InputRoll sender, CellEventArgs e);
+		public delegate void HoverEventHandler(InputRoll sender, CellHoverEventArgs e);
 
 		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
@@ -584,41 +587,33 @@ namespace BizHawk.Client.EmuHawk
 
 		public delegate void ColumnScrollEvent(InputRoll sender, EventArgs e);
 
-		public delegate void CellDroppedEvent(object sender, CellEventArgs e);
+		public delegate void CellDroppedEvent(object sender, CellDroppedEventArgs e);
 
-		public class CellEventArgs
-		{
-			public CellEventArgs(Cell oldCell, Cell newCell)
-			{
-				OldCell = oldCell;
-				NewCell = newCell;
-			}
-
-			public Cell OldCell { get; }
-			public Cell NewCell { get; }
-		}
+		public record class CellChangeEventArgs(Cell? OldCell, Cell? NewCell);
+		public record class CellHoverEventArgs(Cell Cell);
+		public record class CellDroppedEventArgs(Cell DroppedCell, Cell? TargetCell);
 
 		public class ColumnClickEventArgs
 		{
-			public ColumnClickEventArgs(RollColumn/*?*/ column)
+			public ColumnClickEventArgs(RollColumn? column)
 			{
 				Column = column;
 			}
 
-			public RollColumn/*?*/ Column { get; }
+			public RollColumn? Column { get; }
 		}
 
 		/// <remarks>this is only used in TAStudio, which ignores the args param completely</remarks>
 		public class ColumnReorderedEventArgs
 		{
-			public ColumnReorderedEventArgs(int oldDisplayIndex, int newDisplayIndex, RollColumn/*?*/ column)
+			public ColumnReorderedEventArgs(int oldDisplayIndex, int newDisplayIndex, RollColumn? column)
 			{
 				Column = column;
 				OldDisplayIndex = oldDisplayIndex;
 				NewDisplayIndex = newDisplayIndex;
 			}
 
-			public RollColumn/*?*/ Column { get; }
+			public RollColumn? Column { get; }
 
 			public int OldDisplayIndex { get; }
 			public int NewDisplayIndex { get; }
@@ -630,7 +625,7 @@ namespace BizHawk.Client.EmuHawk
 		/// The idea for this is to allow a row to be "selected" before it exists.
 		/// <br/>For example, clicking on the cursor column in TAStudio to seek to a frame that is past the end of the movie. This should select the row once the seek ends.
 		/// </summary>
-		private Cell/*?*/ _lastFailedSelection;
+		private Cell? _lastFailedSelection;
 
 		public void SelectRow(int index, bool val)
 		{
@@ -695,6 +690,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		[MemberNotNullWhen(true, nameof(CurrentCell))]
 		public bool IsPointingAtColumnHeader => IsHoveringOnColumnCell;
 
 		/// <returns>the <see cref="Cell.RowIndex"/> of the selected row with the earliest index, or <see langword="null"/> if no rows are selected</returns>
@@ -714,7 +710,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public Cell CurrentCell { get; set; }
+		public Cell? CurrentCell { get; set; }
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -735,7 +731,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public class InputRollSettings
 		{
-			public RollColumns Columns { get; set; }
+			public required RollColumns Columns { get; set; }
 			public bool HorizontalOrientation { get; set; }
 			public int LagFramesToHide { get; set; }
 			public bool HideWasLagFrames { get; set; }
@@ -900,10 +896,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Cell _draggingCell;
+		private Cell? _draggingCell;
 
 		public void DragCurrentCell()
 		{
+			if (CurrentCell?.RowIndex == null || CurrentCell.Column == null) return;
 			_draggingCell = CurrentCell;
 		}
 
@@ -916,17 +913,20 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentCell != draggedCell)
 				{
-					CellDropped?.Invoke(this, new CellEventArgs(draggedCell, CurrentCell));
+					CellDropped?.Invoke(this, new CellDroppedEventArgs(draggedCell, CurrentCell));
 				}
 
-				int w = draggedCell.Column.ScaledWidth;
+				int w = draggedCell.Column!.ScaledWidth;
 				int h = CellHeight;
 				if (HorizontalOrientation)
 				{
 					w = CellHeight;
 					h = draggedCell.Column.ScaledWidth;
 				}
-				Invalidate(new Rectangle(_currentX.Value - w / 2, _currentY.Value - h / 2, w, h));
+				if (_currentX.HasValue && _currentY.HasValue)
+				{
+					Invalidate(new Rectangle(_currentX.Value - w / 2, _currentY.Value - h / 2, w, h));
+				}
 			}
 		}
 
@@ -1065,7 +1065,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		protected override void OnMouseMove(MouseEventArgs e)
+		// When a context menu is open, we get a MouseLeave event and then no MouseMove events happen until it is closed.
+		// When we click to close it, we get a MouseDown event before a MouseMove event. This is contrary to the normal and expected order of MouseEnter -> MouseMove -> MouseDown.
+		// We use this to track that, and call our MouseMove logic before our MouseDown logic.
+		private bool _mouseHackForContextMenu;
+
+		private void OnMouseMoveInternal(MouseEventArgs e)
 		{
 			int previousX = _currentX ?? 0;
 			int previousY = _currentY ?? 0;
@@ -1092,12 +1097,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-			Cell oldCell = CurrentCell;
+			Cell? oldCell = CurrentCell;
 
 			bool changed = CellChanged(newCell);
 			if (_draggingCell is not null)
 			{
-				int w = _draggingCell.Column.ScaledWidth;
+				int w = _draggingCell.Column!.ScaledWidth;
 				int h = CellHeight;
 				if (HorizontalOrientation)
 				{
@@ -1120,18 +1125,18 @@ namespace BizHawk.Client.EmuHawk
 			Cursor = IsHoveringOnColumnEdge || _columnResizing != null
 				? Cursors.VSplit
 				: Cursors.Default;
+		}
 
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			if (_mouseHackForContextMenu) _mouseHackForContextMenu = false;
+			else OnMouseMoveInternal(e);
 			base.OnMouseMove(e);
 		}
 
 		protected override void OnMouseEnter(EventArgs e)
 		{
-			CurrentCell = new Cell
-			{
-				Column = null,
-				RowIndex = null,
-			};
-
+			_mouseHackForContextMenu = false;
 			base.OnMouseEnter(e);
 		}
 
@@ -1145,20 +1150,23 @@ namespace BizHawk.Client.EmuHawk
 				refresh = true;
 			}
 
-			CurrentCell = null;
+			CellChanged(null);
 			IsPaintDown = false;
 			_columnResizing = null;
-			_hoverTimer.Stop();
 			if (refresh)
 			{
 				Refresh();
 			}
+
+			_mouseHackForContextMenu = true;
 
 			base.OnMouseLeave(e);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			if (_mouseHackForContextMenu) OnMouseMoveInternal(e);
+
 			if (e.Button == MouseButtons.Left)
 			{
 				if (IsHoveringOnColumnEdge)
@@ -1181,10 +1189,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					RightButtonHeld = true;
 				}
-
-				// In the case that we have a context menu already open, we must manually update the CurrentCell as MouseMove isn't triggered while it is open.
-				if (AllowRightClickSelection && CurrentCell == null)
-					OnMouseMove(e);
 			}
 
 			if (IsHoveringOnDataCell && QueryShouldSelectCell?.Invoke(this, e.Button) != false)
@@ -1197,7 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (FullRowSelect)
 							{
-								var targetRow = CurrentCell.RowIndex.Value;
+								var targetRow = CurrentCell.RowIndex!.Value;
 								if (!_selectedItems.IncludesRow(targetRow))
 								{
 									int additionStart, additionEndExcl;
@@ -1348,7 +1352,7 @@ namespace BizHawk.Client.EmuHawk
 					while (_lagFrames[0] != 0 && _vBar.Value != 0 && _vBar.Value != _vBar.Maximum);
 				}
 
-				if (_currentX != null)
+				if (_currentX != null && _currentY != null)
 				{
 					OnMouseMove(new MouseEventArgs(MouseButtons.None, 0, _currentX.Value, _currentY.Value, 0));
 				}
@@ -1364,12 +1368,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 #pragma warning restore MA0091
 
-		private void ColumnClickEvent(RollColumn/*?*/ column)
+		private void ColumnClickEvent(RollColumn? column)
 		{
 			ColumnClick?.Invoke(this, new ColumnClickEventArgs(column));
 		}
 
-		private void ColumnRightClickEvent(RollColumn/*?*/ column)
+		private void ColumnRightClickEvent(RollColumn? column)
 		{
 			ColumnRightClick?.Invoke(this, new ColumnClickEventArgs(column));
 		}
@@ -1636,7 +1640,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Call this function to change the CurrentCell to newCell
 		/// </summary>
 		/// <returns>true if CurrentCell was changed</returns>
-		private bool CellChanged(Cell newCell)
+		private bool CellChanged(Cell? newCell)
 		{
 			if (newCell == CurrentCell) return false;
 
@@ -1645,7 +1649,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (PointedCellChanged is not null)
 			{
-				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
+				PointedCellChanged(this, new CellChangeEventArgs(_lastCell, CurrentCell));
 			}
 
 			if (CurrentCell?.Column is not null)
@@ -1709,10 +1713,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoColumnReorder()
 		{
-			if (_columnDown! != CurrentCell.Column!)
+			if (_columnDown != CurrentCell!.Column)
 			{
-				var oldIndex = _columns.IndexOf(_columnDown);
-				var newIndex = _columns.IndexOf(CurrentCell.Column);
+				var oldIndex = _columns.IndexOf(_columnDown!);
+				var newIndex = _columns.IndexOf(CurrentCell.Column!);
 				_columns.Move(oldIndex, newIndex);
 
 				ColumnReordered?.Invoke(this, new ColumnReorderedEventArgs(oldIndex, newIndex, _columnDown));
@@ -1894,7 +1898,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_selectedItems.Add(CurrentCell);
+						_selectedItems.Add(cell);
 					}
 				}
 			}
@@ -1904,10 +1908,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[MemberNotNullWhen(true, nameof(CurrentCell))]
 		private bool IsHoveringOnColumnCell => CurrentCell?.Column != null && !CurrentCell.RowIndex.HasValue;
 
+		[MemberNotNullWhen(true, nameof(CurrentCell))]
 		private bool IsHoveringOnColumnEdge => AllowColumnResize && IsHoveringOnColumnCell && IsPointingOnCellEdge(_currentX);
 
+		[MemberNotNullWhen(true, nameof(CurrentCell))]
 		private bool IsHoveringOnDataCell => CurrentCell?.Column != null && CurrentCell.RowIndex.HasValue;
 
 		private bool WasHoveringOnColumnCell => _lastCell?.Column != null && !_lastCell.RowIndex.HasValue;
@@ -1927,26 +1934,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var newCell = new Cell();
 
-			// If pointing to a column header
-			if (_columns.VisibleColumns.Any())
+			if (HorizontalOrientation)
 			{
-				if (HorizontalOrientation)
-				{
-					newCell.RowIndex = PixelsToRows(x);
-					newCell.Column = ColumnAtPixel(y);
-				}
-				else
-				{
-					newCell.RowIndex = PixelsToRows(y);
-					newCell.Column = ColumnAtPixel(x);
-				}
+				newCell.RowIndex = PixelsToRows(x);
+				newCell.Column = ColumnAtPixel(y);
+			}
+			else
+			{
+				newCell.RowIndex = PixelsToRows(y);
+				newCell.Column = ColumnAtPixel(x);
 			}
 
 			// We don't show the pointed cell as being a column header (RowIndex = null) if we are holding right mouse button. (This allows right-click dragging to rows above the top one.)
-			// hack: MouseMove events do not happen while a context menu is open, leading to a column right-click not working if a context menu was already open.
-			// we solve this by only considering right button if the prior cell has a row value
-			bool rightButton = RightButtonHeld && CurrentCell.RowIndex != null;
-			if (!(IsPaintDown || rightButton) && newCell.RowIndex <= -1) // -2 if we're entering from the top
+			if (!(IsPaintDown || RightButtonHeld) && newCell.RowIndex <= -1) // -2 if we're entering from the top
 			{
 				newCell.RowIndex = null;
 				return newCell;
@@ -1982,7 +1982,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="pixel">The pixel coordinate.</param>
 		/// <returns>RollColumn object that contains the pixel coordinate or null if none exists.</returns>
-		private RollColumn/*?*/ ColumnAtPixel(int pixel)
+		private RollColumn? ColumnAtPixel(int pixel)
 		{
 			if (_horizontalOrientation)
 			{
