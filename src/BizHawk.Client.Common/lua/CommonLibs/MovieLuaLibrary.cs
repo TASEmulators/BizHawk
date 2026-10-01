@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections.Generic;
 
 using NLua;
@@ -29,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nlmovget = movie.getinput( 500 );")]
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
-		public LuaTable GetInput(int frame, int? controller = null)
+		public LuaTable? GetInput(int frame, int? controller = null)
 			=> APIs.Movie.GetInput(frame, controller) is IReadOnlyDictionary<string, object> dict
    				? _th.DictToTable(dict)
 	   			: null;
@@ -71,7 +73,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample(@"movie.play_from_start(""C:\\moviename.ext"");")]
 		[LuaMethod("play_from_start", "Resets the core to frame 0 with the currently loaded movie in playback mode. If a path to a movie is specified, attempts to load it, then continues with playback if it was successful. Returns true iff successful.")]
-		public bool PlayFromStart(string path = "")
+		public bool PlayFromStart(string? path = "")
 		{
 			if (_luaLibsImpl.ProhibitedApis.HasFlag(ApiGroup.BOOTING))
 			{
@@ -86,7 +88,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("movie.save( \"C:\\moviename.ext\" );")]
 		[LuaMethod("save", "Saves the current movie to the disc. If the filename is provided (no extension or path needed), the movie is saved under the specified name to the current movie directory. The filename may contain a subdirectory, it will be created if it doesn't exist. Existing files won't get overwritten.")]
-		public void Save(string filename = "")
+		public void Save(string? filename = "")
 			=> APIs.Movie.Save(filename);
 
 		[LuaMethodExample("movie.setreadonly( false );")]

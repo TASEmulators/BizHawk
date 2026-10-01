@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -27,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		public FormsLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) {}
 
-		public IDialogParent OwnerForm { get; set; }
+		public required IDialogParent OwnerForm { get; set; }
 
 		public override string Name => "forms";
 
@@ -39,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			if (i is not -1) _luaForms.RemoveAt(i);
 		}
 
-		private LuaWinform GetForm(long formHandle)
+		private LuaWinform? GetForm(long formHandle)
 		{
 			var ptr = new IntPtr(formHandle);
 			return _luaForms.Find(form => form.Handle == ptr);
@@ -55,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			else control.Size = scaled;
 		}
 
-		private static void SetText(Control control, string caption)
+		private static void SetText(Control control, string? caption)
 			=> control.Text = caption ?? string.Empty;
 
 		public void Dispose()
@@ -68,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddClick(long handle, LuaFunction clickEvent)
 		{
 			var found = FindControlWithHandle(handle, out var form);
-			if (found is not null) form.ControlEvents.Add(new(found.Handle, clickEvent));
+			if (found is not null) form!.ControlEvents.Add(new(found.Handle, clickEvent));
 		}
 
 		[LuaMethodExample("""
@@ -136,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ptr = new IntPtr(handle);
 			var found = FindControlWithHandle(ptr, out var form);
-			if (found is not null) form.ControlEvents.RemoveAll(x => x.Control == ptr);
+			if (found is not null) form!.ControlEvents.RemoveAll(x => x.Control == ptr);
 		}
 
 		[LuaMethodExample("if ( forms.destroy( 332 ) ) then\r\n\tconsole.log( \"Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false\" );\r\nend;")]
@@ -287,8 +289,8 @@ namespace BizHawk.Client.EmuHawk
 		public long NewForm(
 			int? width = null,
 			int? height = null,
-			string title = null,
-			LuaFunction onClose = null)
+			string? title = null,
+			LuaFunction? onClose = null)
 		{
 			if (OwnerForm is not IWin32Window ownerForm)
 				throw new Exception("IDialogParent must implement IWin32Window");
@@ -313,9 +315,9 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
 		public string OpenFile(
-			string fileName = null,
-			string initialDirectory = null,
-			string filter = null)
+			string? fileName = null,
+			string? initialDirectory = null,
+			string? filter = null)
 		{
 			if (initialDirectory is null && fileName is not null) initialDirectory = Path.GetDirectoryName(fileName);
 			var result = OwnerForm.ShowFileOpenDialog(
@@ -487,8 +489,8 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int x2,
 			int y2,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -524,8 +526,8 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int width,
 			int height,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -725,7 +727,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
-		public void DrawLine(long componentHandle, int x1, int y1, int x2, int y2, [LuaColorParam] object color = null)
+		public void DrawLine(long componentHandle, int x1, int y1, int x2, int y2, [LuaColorParam] object? color = null)
 		{
 			try
 			{
@@ -745,7 +747,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawAxis",
 			"Draws an axis of the specified size at the coordinate pair.)")]
-		public void DrawAxis(long componentHandle, int x, int y, int size, [LuaColorParam] object color = null)
+		public void DrawAxis(long componentHandle, int x, int y, int size, [LuaColorParam] object? color = null)
 		{
 			try
 			{
@@ -774,7 +776,7 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startangle,
 			int sweepangle,
-			[LuaColorParam] object line = null)
+			[LuaColorParam] object? line = null)
 		{
 			try
 			{
@@ -818,8 +820,8 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startangle,
 			int sweepangle,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -857,7 +859,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
-		public void DrawPixel(long componentHandle, int x, int y, [LuaColorParam] object color = null)
+		public void DrawPixel(long componentHandle, int x, int y, [LuaColorParam] object? color = null)
 		{
 			try
 			{
@@ -888,8 +890,8 @@ namespace BizHawk.Client.EmuHawk
 			LuaTable points,
 			int? x = null,
 			int? y = null,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -926,8 +928,8 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int width,
 			int height,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -968,13 +970,13 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			[LuaColorParam] object forecolor = null,
-			[LuaColorParam] object backcolor = null,
+			[LuaColorParam] object? forecolor = null,
+			[LuaColorParam] object? backcolor = null,
 			int? fontsize = null,
-			string fontfamily = null,
-			string fontstyle = null,
-			string horizalign = null,
-			string vertalign = null)
+			string? fontfamily = null,
+			string? fontstyle = null,
+			string? horizalign = null,
+			string? vertalign = null)
 				=> DrawText(
 					componentHandle: componentHandle,
 					x: x,
@@ -997,13 +999,13 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			[LuaColorParam] object forecolor = null,
-			[LuaColorParam] object backcolor = null,
+			[LuaColorParam] object? forecolor = null,
+			[LuaColorParam] object? backcolor = null,
 			int? fontsize = null,
-			string fontfamily = null,
-			string fontstyle = null,
-			string horizalign = null,
-			string vertalign = null)
+			string? fontfamily = null,
+			string? fontstyle = null,
+			string? horizalign = null,
+			string? vertalign = null)
 		{
 			try
 			{
@@ -1039,7 +1041,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Control/*?*/ FindControlWithHandle(IntPtr handle)
+		private Control? FindControlWithHandle(IntPtr handle)
 		{
 			foreach (var form in _luaForms) foreach (Control control in form.Controls)
 			{
@@ -1048,7 +1050,7 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private Control/*?*/ FindControlWithHandle(IntPtr handle, out LuaWinform parentForm)
+		private Control? FindControlWithHandle(IntPtr handle, out LuaWinform? parentForm)
 		{
 			foreach (var form in _luaForms) foreach (Control control in form.Controls)
 			{
@@ -1060,13 +1062,13 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private Control/*?*/ FindControlWithHandle(long handle)
+		private Control? FindControlWithHandle(long handle)
 			=> FindControlWithHandle(new IntPtr(handle));
 
-		private Control/*?*/ FindControlWithHandle(long handle, out LuaWinform parentForm)
+		private Control? FindControlWithHandle(long handle, out LuaWinform? parentForm)
 			=> FindControlWithHandle(new IntPtr(handle), out parentForm);
 
-		private Control/*?*/ FindFormOrControlWithHandle(IntPtr handle)
+		private Control? FindFormOrControlWithHandle(IntPtr handle)
 		{
 			foreach (var form in _luaForms)
 			{
@@ -1076,7 +1078,7 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		private Control/*?*/ FindFormOrControlWithHandle(long handle)
+		private Control? FindFormOrControlWithHandle(long handle)
 			=> FindFormOrControlWithHandle(new IntPtr(handle));
 
 		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
@@ -1187,7 +1189,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </exception>
 		[LuaMethodExample("forms.setproperty( 332, \"Property\", \"Property value\" );")]
 		[LuaMethod("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
-		public void SetProperty(long handle, string property, object value)
+		public void SetProperty(long handle, string property, object? value)
 		{
 			var c = FindFormOrControlWithHandle(handle);
 			if (c is null) return;
@@ -1195,9 +1197,9 @@ namespace BizHawk.Client.EmuHawk
 			var pi = c.GetType().GetProperty(property) ?? throw new Exception($"no property with the identifier {property}");
 			var pt = pi.PropertyType;
 			var o = pt.IsEnum
-				? Enum.Parse(pt, value.ToString(), true)
+				? Enum.Parse(pt, value!.ToString(), true)
 				: pt == typeof(Color)
-					? _th.ParseColor(value)
+					? _th.ParseColor(value!)
 					: Convert.ChangeType(value, pt);
 			pi.SetValue(c, o, null);
 		}
@@ -1249,15 +1251,15 @@ namespace BizHawk.Client.EmuHawk
 				+ " Passing \"Vertical\", \"Horizontal\", \"Both\", or \"None\" for the scrollbars parameter will set whether the vertical scrollbar is visible for a multiline textbox, and also whether lines should wrap or remain in-line with a scrollbar.")] // technically case-insensitive but let's stick to fixed values
 		public long Textbox(
 			long formHandle,
-			string caption = null,
+			string? caption = null,
 			int? width = null,
 			int? height = null,
-			string boxtype = null,
+			string? boxtype = null,
 			int? x = null,
 			int? y = null,
 			bool multiline = false,
 			bool fixedWidth = false,
-			string scrollbars = null)
+			string? scrollbars = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)

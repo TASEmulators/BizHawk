@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.ComponentModel;
 using System.Linq;
 
@@ -16,9 +18,9 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "mainmemory";
 
-		private MemoryDomain _mainMemDomain;
+		private MemoryDomain? _mainMemDomain;
 
-		private string _mainMemName;
+		private string? _mainMemName;
 
 		private MemoryDomain Domain => _mainMemDomain ??= ((MemoryApi) APIs.Memory).DomainList[MainMemName]!;
 

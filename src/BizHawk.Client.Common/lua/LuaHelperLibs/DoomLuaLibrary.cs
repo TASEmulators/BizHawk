@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿#nullable enable
+
+using System.ComponentModel;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
@@ -13,7 +15,7 @@ namespace BizHawk.Client.Common
 	[Description("Functions specific to Doom games (functions may not run when a Doom game is not loaded)")]
 	public sealed class DoomLuaLibrary : LuaLibraryBase, IRegisterFunctions
 	{
-		public NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
+		public required NLFAddCallback CreateAndRegisterNamedFunction { get; set; }
 
 		public DoomLuaLibrary(ILuaLibraries luaLibsImpl, ApiContainer apiContainer, Action<string> logOutputCallback)
 			: base(luaLibsImpl, apiContainer, logOutputCallback) { }
@@ -22,7 +24,7 @@ namespace BizHawk.Client.Common
 		private const string ERR_MSG_UNSUPPORTED_CORE = $"`doom.*` functions can only be used with {CoreNames.DSDA}";
 
 		[RequiredService]
-		private IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; } = null!;
 
 		/// <exception cref="InvalidOperationException">loaded core is not DSDA-Doom</exception>
 #pragma warning disable MA0136 // multi-line string literals (passed to `[LuaMethodExample]`, which converts to host newlines)
@@ -35,7 +37,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod(
 			name: "on_prandom",
 			description: "Fires immediately after each P_Random() call by Doom. Your callback can have 1 parameter, which will be an integer identifying what kind of object or action made the RNG call.")]
-		public string OnPrandom(LuaFunction luaf, string name = null)
+		public string OnPrandom(LuaFunction luaf, string? name = null)
 		{
 			if (Emulator is not DSDA dsda)
 			{
@@ -62,7 +64,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod(
 			name: "on_intercept",
 			description: "Fires immediately after a new line or thing intercept is added by Doom. Your callback can have 3 parameters: integers identifying x and y position of the map block the intercept happened in, and whether the call is from `PIT_AddThingIntercepts()` (0) or `PIT_AddLineIntercepts()` (1).")]
-		public string OnIntercept(LuaFunction luaf, string name = null)
+		public string OnIntercept(LuaFunction luaf, string? name = null)
 		{
 			if (Emulator is not DSDA dsda)
 			{
@@ -89,7 +91,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod(
 			name: "on_use",
 			description: "Fires when P_UseSpecialLine() is called by a mobj (thing). Your callback can have 2 parameters, which will be pointers to activated line and to mobj that triggered it.")]
-		public string OnUse(LuaFunction luaf, string name = null)
+		public string OnUse(LuaFunction luaf, string? name = null)
 		{
 			if (Emulator is not DSDA dsda)
 			{
@@ -116,7 +118,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod(
 			name: "on_cross",
 			description: "Fires when P_CrossCompatibleSpecialLine() is called by a mobj (thing). Your callback can have 2 parameters, which will be pointers to activated line and to mobj that triggered it.")]
-		public string OnCross(LuaFunction luaf, string name = null)
+		public string OnCross(LuaFunction luaf, string? name = null)
 		{
 			if (Emulator is not DSDA dsda)
 			{
