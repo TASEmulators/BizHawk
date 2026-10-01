@@ -441,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var button in controller.Definition.BoolButtons)
 			{
 				// TODO: make an input adapter specifically for the bot?
-				InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+				InputManager.OverrideAdapter.SetButton(button, controller.IsPressed(button));
 			}
 
 			InputManager.SyncControls(Emulator, MovieSession, Config);
@@ -862,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var button in controller.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
-						InputManager.ButtonOverrideAdapter.SetButton(button, controller.IsPressed(button));
+						InputManager.OverrideAdapter.SetButton(button, controller.IsPressed(button));
 					}
 
 					InputManager.SyncControls(Emulator, MovieSession, Config);
@@ -991,12 +991,12 @@ namespace BizHawk.Client.EmuHawk
 				double probability = _cachedControlProbabilities[button];
 				bool pressed = rand.Next(100) < probability;
 
-				InputManager.ClickyVirtualPadController.SetBool(button, pressed);
+				InputManager.ClickyController.SetBool(button, pressed);
 			}
 			InputManager.SyncControls(Emulator, MovieSession, Config);
 
 			if (clear_log) { _currentBotAttempt.Log.Clear(); }
-			_currentBotAttempt.Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(InputManager.ClickyVirtualPadController));
+			_currentBotAttempt.Log.Add(Bk2LogEntryGenerator.GenerateLogEntry(InputManager.ClickyController));
 		}
 
 		private void StartBot()

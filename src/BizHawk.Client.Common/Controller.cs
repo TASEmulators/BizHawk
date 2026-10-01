@@ -178,8 +178,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void OR_FromLogical(IController controller)
 		{
-			// change: or from each button that the other input controller has
-			// foreach (string button in type.BoolButtons)
 			if (controller.Definition != null)
 			{
 				foreach (var button in controller.Definition.BoolButtons)
@@ -192,20 +190,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Overrides(OverrideAdapter controller)
-		{
-			foreach (var button in controller.Overrides)
-			{
-				_buttons[button] = controller.IsPressed(button);
-			}
-
-			foreach (var button in controller.AxisOverrides)
-			{
-				_axes[button] = controller.AxisValue(button);
-			}
-
-			foreach (var button in controller.InversedButtons) _buttons[button] = !_buttons.GetValueOrDefault(button);
-		}
+		public void OverrideButton(string button, bool value)
+			=> _buttons[button] = value;
 
 		public void BindMulti(string button, string controlString)
 		{
