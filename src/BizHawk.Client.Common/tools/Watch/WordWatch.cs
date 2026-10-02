@@ -152,12 +152,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Get the maximum possible value
 		/// </summary>
-		public override uint MaxValue => ushort.MaxValue;
+		public override ulong MaxValue
+			=> ushort.MaxValue;
 
 		/// <summary>
 		/// Gets the current value
 		/// </summary>
-		public override int Value => GetWord();
+		public override long Value
+			=> GetWord();
 
 		/// <summary>
 		/// Get a string representation of the current value
@@ -167,7 +169,8 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Get the previous value
 		/// </summary>
-		public override uint Previous => _previous;
+		public override ulong Previous
+			=> _previous;
 
 		/// <summary>
 		/// Get a string representation of the previous value

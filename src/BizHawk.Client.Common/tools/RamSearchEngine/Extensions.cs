@@ -21,6 +21,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 				? addresses.ToDetailedDWords(settings.Domain, settings.BigEndian)
 				: addresses.ToDWords(settings.Domain, settings.BigEndian);
 
+		public static IEnumerable<IMiniWatch> ToQWords(this IEnumerable<long> addresses, SearchEngineSettings settings)
+			=> settings.IsDetailed()
+				? addresses.ToDetailedQWords(settings.Domain, settings.BigEndian)
+				: addresses.ToQWords(settings.Domain, settings.BigEndian);
+
 		private static IEnumerable<IMiniWatch> ToBytes(this IEnumerable<long> addresses, MemoryDomain domain)
 			=> addresses.Select(a => new MiniByteWatch(domain, a));
 
@@ -38,5 +43,11 @@ namespace BizHawk.Client.Common.RamSearchEngine
 
 		private static IEnumerable<IMiniWatch> ToDetailedDWords(this IEnumerable<long> addresses, MemoryDomain domain, bool bigEndian)
 			=> addresses.Select(a => new MiniDWordWatchDetailed(domain, a, bigEndian));
+
+		private static IEnumerable<IMiniWatch> ToQWords(this IEnumerable<long> addresses, MemoryDomain domain, bool bigEndian)
+			=> addresses.Select(a => new MiniQWordWatch(domain, a, bigEndian));
+
+		private static IEnumerable<IMiniWatch> ToDetailedQWords(this IEnumerable<long> addresses, MemoryDomain domain, bool bigEndian)
+			=> addresses.Select(a => new MiniQWordWatchDetailed(domain, a, bigEndian));
 	}
 }

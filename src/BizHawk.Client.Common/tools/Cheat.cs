@@ -17,10 +17,17 @@ namespace BizHawk.Client.Common
 
 		private readonly Watch _watch;
 		private int? _compare;
-		private int _val;
+
+		private long _val;
+
 		private bool _enabled;
 
-		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, CompareType comparisonType = CompareType.None)
+		public Cheat(
+			Watch watch,
+			long value,
+			int? compare = null,
+			bool enabled = true,
+			CompareType comparisonType = CompareType.None)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -67,7 +74,8 @@ namespace BizHawk.Client.Common
 
 		public long? Address => _watch.Address;
 
-		public int? Value => IsSeparator ? null : _val;
+		public long? Value
+			=> IsSeparator ? null : _val;
 
 		public bool? BigEndian => IsSeparator ? null : _watch.BigEndian;
 
@@ -97,6 +105,7 @@ namespace BizHawk.Client.Common
 					WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_val),
 					WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_val),
 					WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_val),
+					WatchSize.QWord => ((QWordWatch) _watch).FormatValue(unchecked((ulong) _val)),
 					WatchSize.Separator => "",
 					_ => string.Empty,
 				};
@@ -112,6 +121,7 @@ namespace BizHawk.Client.Common
 						WatchSize.Byte => ((ByteWatch) _watch).FormatValue((byte)_compare.Value),
 						WatchSize.Word => ((WordWatch) _watch).FormatValue((ushort)_compare.Value),
 						WatchSize.DWord => ((DWordWatch) _watch).FormatValue((uint)_compare.Value),
+						WatchSize.QWord => ((QWordWatch) _watch).FormatValue(unchecked((ulong) _compare.Value)),
 						WatchSize.Separator => "",
 						_ => string.Empty,
 					};
@@ -178,6 +188,9 @@ namespace BizHawk.Client.Common
 						case WatchSize.DWord:
 							_watch.Poke(((DWordWatch)_watch).FormatValue((uint)_val));
 							break;
+						case WatchSize.QWord:
+							_watch.Poke(((QWordWatch) _watch).FormatValue(unchecked((ulong) _val)));
+							break;
 					}
 				}
 
@@ -229,10 +242,12 @@ namespace BizHawk.Client.Common
 					return addr == _watch.Address || addr == _watch.Address + 1;
 				case WatchSize.DWord:
 					return addr >= _watch.Address && addr <= _watch.Address + 3;
+				case WatchSize.QWord:
+					return _watch.Address <= addr && addr <= _watch.Address + (sizeof(ulong) - 1);
 			}
 		}
 
-		public void PokeValue(int val)
+		public void PokeValue(long val)
 		{
 			if (!IsSeparator)
 			{
@@ -245,7 +260,7 @@ namespace BizHawk.Client.Common
 			if (!IsSeparator)
 			{
 				_val++;
-				if (_val > _watch.MaxValue)
+				if (unchecked((ulong) _val) > _watch.MaxValue)
 				{
 					_val = 0;
 				}
@@ -260,10 +275,7 @@ namespace BizHawk.Client.Common
 			if (!IsSeparator)
 			{
 				_val--;
-				if ((uint)_val > _watch.MaxValue)
-				{
-					_val = (int)_watch.MaxValue;
-				}
+				if (unchecked((ulong) _val) > _watch.MaxValue) _val = unchecked((long) _watch.MaxValue);
 
 				Pulse();
 				Changes();
