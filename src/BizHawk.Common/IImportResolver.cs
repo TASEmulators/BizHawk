@@ -13,6 +13,19 @@ namespace BizHawk.Common
 
 	public class DynamicLibraryImportResolver : IDisposable, IImportResolver
 	{
+		/// <summary>
+		/// Maps a bare library name (as you'd pass to <see cref="DllImportAttribute">[DllImport]</see>) to
+		/// the host's conventional filename: <c>name.dll</c> on Windows, <c>libname.dylib</c> on macOS, and
+		/// <c>libname.so</c> on Linux/BSD. Use this instead of hardcoding <c>IsUnixHost ? "lib…so" : "….dll"</c>
+		/// at each call site.
+		/// </summary>
+		public static string PlatformFileName(string baseName) => OSTailoredCode.CurrentOS switch
+		{
+			OSTailoredCode.DistinctOS.Windows => $"{baseName}.dll",
+			OSTailoredCode.DistinctOS.macOS => $"lib{baseName}.dylib",
+			_ => $"lib{baseName}.so", // Linux/BSD
+		};
+
 		private IntPtr _p;
 
 		public readonly bool HasLimitedLifetime;

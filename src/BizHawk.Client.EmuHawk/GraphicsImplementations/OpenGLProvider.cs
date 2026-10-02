@@ -1,4 +1,5 @@
 using BizHawk.Bizware.Graphics;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,7 +10,11 @@ namespace BizHawk.Client.EmuHawk
 	public class OpenGLProvider : IOpenGLProvider
 	{
 		public bool SupportsGLVersion(int major, int minor)
-			=> OpenGLVersion.SupportsVersion(major, minor);
+			// On macOS the only GL available (XQuartz/GLX) is the legacy Apple bridge, which is
+			// capped at GL 2.1 and aborts under Rosetta; probing it crashes. Report no host GL so
+			// cores (melonDS, N64, ...) fall back to their software renderers.
+			=> OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.macOS
+				&& OpenGLVersion.SupportsVersion(major, minor);
 
 		public object RequestGLContext(int major, int minor, bool coreProfile)
 			=> new SDL2OpenGLContext(major, minor, coreProfile);
