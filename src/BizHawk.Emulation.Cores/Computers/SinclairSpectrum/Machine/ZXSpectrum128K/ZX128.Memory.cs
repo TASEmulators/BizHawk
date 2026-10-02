@@ -331,6 +331,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Builds the devirtualised memory maps from the current paging state (ROMPaged / RAMPaged).
+        /// Mirrors ReadBus/WriteBus exactly: region 0 = ROM0/ROM1 (read-only), 1 = RAM5, 2 = RAM2,
+        /// 3 = the paged RAM bank. MUST be called on every paging change (0x7ffd write) and reset.
+        /// (SHADOWPaged only affects the ULA screen fetch, not the CPU map, so it is not consulted.)
+        /// </summary>
+        public override void RebuildMemoryMap()
+        {
+            byte[] rom = ROMPaged == 0 ? ROM0 : ROM1;
+            byte[] hi = RAMPaged switch
+            {
+                0 => RAM0, 1 => RAM1, 2 => RAM2, 3 => RAM3,
+                4 => RAM4, 5 => RAM5, 6 => RAM6, 7 => RAM7,
+                _ => RAM0,
+            };
+            _readMap = new[] { rom, RAM5, RAM2, hi };
+            _writeMap = new byte[][] { null, RAM5, RAM2, hi }; // ROM region is read-only
+            RebuildPageContention();
+        }
+
+        /// <summary>
         /// Sets up the ROM
         /// </summary>
         public override void InitROM(RomData romData)
@@ -344,6 +364,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (RomData.RomBytes.Length > 0x4000)
                     ROM1[i] = RomData.RomBytes[i + 0x4000];
             }
+            RebuildMemoryMap();
         }
     }
 }

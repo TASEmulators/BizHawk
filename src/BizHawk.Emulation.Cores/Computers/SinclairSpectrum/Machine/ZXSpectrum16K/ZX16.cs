@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+﻿using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public ZX16(ZXSpectrum spectrum, Z80A<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
+		public ZX16(ZXSpectrum spectrum, Z80AOpt<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
 			: base(spectrum, cpu, borderType, files, joysticks) {}
 
 		/* 48K Spectrum has NO memory paging
@@ -115,6 +115,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		}
 
 		/// <summary>
+		/// 16K's layout differs from 48K (regions 2/3 are unmapped) so it does NOT use the 48K map —
+		/// stay on the virtual ReadMemory/WriteMemory path. (Overrides ZX48's map build.)
+		/// </summary>
+		public override void RebuildMemoryMap()
+		{
+			_readMap = null;
+			_writeMap = null;
+			RebuildPageContention();
+		}
+
+		/// <summary>
 		/// Sets up the ROM
 		/// </summary>
 		public override void InitROM(RomData romData)
@@ -122,6 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			RomData = romData;
 			// for 16/48k machines only ROM0 is used (no paging)
 			RomData.RomBytes?.CopyTo(ROM0, 0);
+			RebuildMemoryMap();
 		}
 	}
 }

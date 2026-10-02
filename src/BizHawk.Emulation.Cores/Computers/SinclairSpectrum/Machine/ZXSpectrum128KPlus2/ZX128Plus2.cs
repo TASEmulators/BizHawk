@@ -1,4 +1,4 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+﻿using BizHawk.Emulation.Cores.Components.Z80AOpt;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Main constructor
 		/// </summary>
-		public ZX128Plus2(ZXSpectrum spectrum, Z80A<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
+		public ZX128Plus2(ZXSpectrum spectrum, Z80AOpt<ZXSpectrum.CpuLink> cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
 			: base(spectrum, cpu, borderType, files, joysticks) {}
 	}
 }

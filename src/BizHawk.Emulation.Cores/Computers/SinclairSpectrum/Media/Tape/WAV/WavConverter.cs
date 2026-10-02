@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 
 using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Cores.Tapes;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -47,20 +48,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public override bool CheckType(byte[] data)
 		{
-			// WAV Header
-
-			// check whether this is a valid wav format file by looking at the identifier in the header
-			string ident = Encoding.ASCII.GetString(data, 8, 4);
-
-			if (!"WAVE".EqualsIgnoreCase(ident))
-			{
-				// this is not a valid WAV format file
+			// WAV Header - the "WAVE" identifier is at offset 8. Guard against shorter files: CheckType runs on
+			// every tape during type-detection, so a short file of another format must not throw here.
+			if (data == null || data.Length < 12)
 				return false;
-			}
-			else
-			{
-				return true;
-			}
+
+			string ident = Encoding.ASCII.GetString(data, 8, 4);
+			return "WAVE".EqualsIgnoreCase(ident);
 		}
 
 		/// <summary>

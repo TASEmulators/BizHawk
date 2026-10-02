@@ -4,9 +4,10 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
 	/// <summary>
-	/// Represents a PSG device (in this case an AY-3-891x)
+	/// Represents a PSG device (in this case an AY-3-891x). IDisposable so the host can release the
+	/// shared AY391x core's unmanaged BlipBuffers on core teardown.
 	/// </summary>
-	public interface IPSG : ISoundProvider, IPortIODevice
+	public interface IPSG : ISoundProvider, IPortIODevice, IDisposable
 	{
 		/// <summary>
 		/// Initlization routine

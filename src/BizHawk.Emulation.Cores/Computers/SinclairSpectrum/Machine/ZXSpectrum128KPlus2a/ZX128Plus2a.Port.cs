@@ -87,6 +87,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // portbit 4 is the LOW BIT of the ROM selection
                     ROMlow = bits[4];
+
+                    // paging changed → rebuild PageContended (and the memory map) so the per-cycle
+                    // contention decode isn't stale. +2a uses the fallback memory path, but PageContended
+                    // is still consulted every memory cycle, so this MUST run on every paging change.
+                    RebuildMemoryMap();
                 }
             }
             // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
@@ -122,6 +127,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // set the special paging mode flag
                         SpecialPagingMode = true;
                     }
+
+                    // paging changed → rebuild PageContended (see the 0x7ffd handler above)
+                    RebuildMemoryMap();
                 }
 
                 // bit 4 is the printer port strobe
@@ -151,6 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
 				// Buzzer
+				BuzzerDevice.SetClock((int)CurrentFrameCycle);
 				BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 
 				// Tape

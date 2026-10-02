@@ -39,7 +39,12 @@
             this.lblBorderInfo = new BizHawk.WinForms.Controls.LocLabelEx();
             this.lblAutoLoadText = new BizHawk.WinForms.Controls.LocLabelEx();
             this.autoLoadcheckBox1 = new System.Windows.Forms.CheckBox();
+            this.flashLoadcheckBox1 = new System.Windows.Forms.CheckBox();
+            this.turboMultiplierTrackBar = new System.Windows.Forms.TrackBar();
+            this.turboMultiplierValueLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.textBoxCoreDetails = new System.Windows.Forms.TextBox();
+            this.gigascreenBlendCheckBox = new System.Windows.Forms.CheckBox();
+            ((System.ComponentModel.ISupportInitialize)(this.turboMultiplierTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // OkBtn
@@ -143,7 +148,37 @@
             this.autoLoadcheckBox1.TabIndex = 26;
             this.autoLoadcheckBox1.Text = "Auto-Load Tape";
             this.autoLoadcheckBox1.UseVisualStyleBackColor = true;
-            // 
+            //
+            // flashLoadcheckBox1
+            //
+            this.flashLoadcheckBox1.AutoSize = true;
+            this.flashLoadcheckBox1.Location = new System.Drawing.Point(170, 302);
+            this.flashLoadcheckBox1.Name = "flashLoadcheckBox1";
+            this.flashLoadcheckBox1.Size = new System.Drawing.Size(180, 17);
+            this.flashLoadcheckBox1.TabIndex = 27;
+            this.flashLoadcheckBox1.Text = "Turbo Loading";
+            this.flashLoadcheckBox1.UseVisualStyleBackColor = true;
+            //
+            // turboMultiplierTrackBar
+            //
+            // internal range 1..10 maps to 5x..50x (i.e. multiplier = Value * 5), so the slider only ever lands
+            // on multiples of 5
+            this.turboMultiplierTrackBar.Location = new System.Drawing.Point(268, 298);
+            this.turboMultiplierTrackBar.Minimum = 1;
+            this.turboMultiplierTrackBar.Maximum = 10;
+            this.turboMultiplierTrackBar.Name = "turboMultiplierTrackBar";
+            this.turboMultiplierTrackBar.Size = new System.Drawing.Size(120, 30);
+            this.turboMultiplierTrackBar.TabIndex = 29;
+            this.turboMultiplierTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.turboMultiplierTrackBar.Value = 4;
+            this.turboMultiplierTrackBar.Scroll += new System.EventHandler(this.TurboMultiplierTrackBar_Scroll);
+            //
+            // turboMultiplierValueLabel
+            //
+            this.turboMultiplierValueLabel.Location = new System.Drawing.Point(392, 302);
+            this.turboMultiplierValueLabel.Name = "turboMultiplierValueLabel";
+            this.turboMultiplierValueLabel.Text = "20x";
+            //
             // textBoxCoreDetails
             // 
             this.textBoxCoreDetails.AcceptsReturn = true;
@@ -156,17 +191,31 @@
             this.textBoxCoreDetails.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxCoreDetails.Size = new System.Drawing.Size(424, 206);
             this.textBoxCoreDetails.TabIndex = 28;
-            // 
+            //
+            // gigascreenBlendCheckBox
+            //
+            this.gigascreenBlendCheckBox.AutoSize = true;
+            this.gigascreenBlendCheckBox.Location = new System.Drawing.Point(15, 414);
+            this.gigascreenBlendCheckBox.Name = "gigascreenBlendCheckBox";
+            this.gigascreenBlendCheckBox.Size = new System.Drawing.Size(300, 17);
+            this.gigascreenBlendCheckBox.TabIndex = 30;
+            this.gigascreenBlendCheckBox.Text = "Gigascreen frame blending (smooths per-frame flicker)";
+            this.gigascreenBlendCheckBox.UseVisualStyleBackColor = true;
+            //
             // ZXSpectrumCoreEmulationSettings
-            // 
+            //
             this.AcceptButton = this.OkBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
             this.ClientSize = new System.Drawing.Size(448, 469);
             this.Controls.Add(this.textBoxCoreDetails);
+            this.Controls.Add(this.gigascreenBlendCheckBox);
             this.Controls.Add(this.lblAutoLoadText);
             this.Controls.Add(this.autoLoadcheckBox1);
+            this.Controls.Add(this.flashLoadcheckBox1);
+            this.Controls.Add(this.turboMultiplierTrackBar);
+            this.Controls.Add(this.turboMultiplierValueLabel);
             this.Controls.Add(this.lblBorderInfo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.borderTypecomboBox1);
@@ -181,6 +230,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Core Emulation Settings";
             this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.turboMultiplierTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -199,6 +249,10 @@
         private BizHawk.WinForms.Controls.LocLabelEx lblBorderInfo;
         private BizHawk.WinForms.Controls.LocLabelEx lblAutoLoadText;
         private System.Windows.Forms.CheckBox autoLoadcheckBox1;
+        private System.Windows.Forms.CheckBox flashLoadcheckBox1;
+        private System.Windows.Forms.TrackBar turboMultiplierTrackBar;
+        private BizHawk.WinForms.Controls.LocLabelEx turboMultiplierValueLabel;
         private System.Windows.Forms.TextBox textBoxCoreDetails;
+        private System.Windows.Forms.CheckBox gigascreenBlendCheckBox;
     }
 }

@@ -36,6 +36,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				_machine.TapeBuzzer.Volume = o.TapeVolume;
 			}
+			if (_machine?.ULADevice != null)
+			{
+				_machine.ULADevice.FrameBlend = o.GigascreenFrameBlend;
+			}
 
 			Settings = o;
 
@@ -87,6 +91,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[DefaultValue(false)]
 			public bool UseCoreBorderForBackground { get; set; }
 
+			[DisplayName("Gigascreen frame blending")]
+			[Description("Averages each frame with the previous one before display, mimicking CRT/TV persistence.\nMany Spectrum demos and games use 'gigascreen' - alternating two images every frame - to fake extra colours or resolution; without blending these flicker harshly, and with it they resolve into the intended smooth picture with soft shaded edges.\nDisplay-only: does not affect emulation, savestates or movies.")]
+			[DefaultValue(true)]
+			public bool GigascreenFrameBlend { get; set; }
+
 			public ZXSpectrumSettings Clone()
 			{
 				return (ZXSpectrumSettings)MemberwiseClone();
@@ -121,6 +130,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[DefaultValue(TapeLoadSpeed.Accurate)]
 			public TapeLoadSpeed TapeLoadSpeed { get; set; }
 
+			[DisplayName("Turbo Load Multiplier")]
+			[Description("When Turbo Loading is enabled, how many machine-frames to run per host frame while a tape is loading. Higher = faster loading but lower on-screen framerate during the load")]
+			[DefaultValue(20)]
+			public int TapeLoadTurboMultiplier { get; set; }
+
 			[DisplayName("Joystick 1")]
 			[Description("The emulated joystick assigned to P1 (SHOULD BE UNIQUE TYPE!)")]
 			[DefaultValue(JoystickType.Kempston)]
@@ -141,6 +155,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			[DefaultValue(true)]
 			public bool AutoLoadTape { get; set; }
 
+			[DisplayName("Pentagon Disk Drive")]
+			[Description("The physical Beta 128 floppy drive fitted to the Pentagon. Both drive types spin at 300 RPM (so the index and data timing that software depends on are identical); this only affects the secondary spin-up and track-to-track/settle timing. Only applies to the Pentagon 128 model.")]
+			[DefaultValue(PentagonDiskDriveType.Drive35Inch)]
+			public PentagonDiskDriveType PentagonDriveType { get; set; }
+
 
 			public ZXSpectrumSyncSettings Clone()
 			{
@@ -156,6 +175,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			{
 				return !DeepEquality.DeepEquals(x, y);
 			}
+		}
+
+		/// <summary>
+		/// The physical floppy drive fitted to the Pentagon's Beta 128 interface
+		/// </summary>
+		public enum PentagonDiskDriveType
+		{
+			/// <summary>
+			/// 3.5" double-density drive (400 ms spin-up, 3 ms track-to-track)
+			/// </summary>
+			Drive35Inch,
+
+			/// <summary>
+			/// 5.25" double-density drive (750 ms spin-up, 6 ms track-to-track)
+			/// </summary>
+			Drive525Inch,
 		}
 
 		/// <summary>
@@ -210,13 +245,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		/// <summary>
 		/// The speed at which the tape is loaded
-		/// NOT IN USE YET
 		/// </summary>
 		public enum TapeLoadSpeed
 		{
+			/// <summary>
+			/// Cycle-accurate: the tape's pulses are replayed in real time.
+			/// </summary>
 			Accurate,
-			//Fast,
-			//Fastest
+
+			/// <summary>
+			/// Instant/flash load: the ROM load routine is trapped and the block's bytes are injected directly,
+			/// skipping pulse replay. Non-cycle-accurate, so it only takes effect when Deterministic Emulation
+			/// is off (a movie forces determinism, which disables it).
+			/// </summary>
+			Instant,
 		}
 	}
 
@@ -319,15 +361,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					m.Media = "3\" Floppy Disk (via built-in Floppy Drive)";
 					break;
 				case MachineType.Pentagon128:
-					m.Name = "(NOT WORKING YET) Pentagon 128 Clone";
-					m.Description = " ";
-					m.Description += " ";
-					m.Released = " ";
-					m.CPU = " ";
-					m.Memory = " ";
-					m.Video = " ";
-					m.Audio = " ";
-					m.Media = " ";
+					m.Name = "Pentagon 128 (Clone)";
+					m.Description = "A Russian-built clone of the ZX Spectrum 128, constructed entirely from discrete 74-series TTL logic rather than a Ferranti ULA. ";
+					m.Description += "The discrete design gives it no memory contention (the CPU is never stalled by video RAM access) and a clean, slightly longer video frame - qualities that made it the favourite machine of the ex-USSR demoscene. ";
+					m.Description += "It integrates a clone of the Beta 128 disk interface running TR-DOS directly on the motherboard, so it boots from disk as well as tape, and it became the de-facto standard Spectrum across the former Soviet Union.";
+					m.Released = "1989 (first USSR clones)";
+					m.CPU = "Zilog Z80A (clone) @ 3.5MHz";
+					m.Memory = "48KB ROM (128 + 48 BASIC + TR-DOS) / 128KB RAM";
+					m.Video = "Discrete TTL video @ 7MHz - PAL (50.00Hz Interrupt, 71680 T-States/frame, no memory contention)";
+					m.Audio = "Beeper (HW 1ch. / 10oct.) & General Instruments AY-3-8912 PSG (3ch)";
+					m.Media = "Cassette Tape & 3.5\"/5.25\" Floppy Disk (via built-in Beta 128 interface / TR-DOS)";
 					break;
 			}
 

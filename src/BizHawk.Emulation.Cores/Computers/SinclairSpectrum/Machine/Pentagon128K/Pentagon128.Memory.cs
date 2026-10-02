@@ -52,7 +52,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case 0:
                     TestForTapeTraps(addr % 0x4000);
 
-                    if (ROMPaged == 0)
+                    if (TRDOSPaged)
+                        result = ROM2[addr % 0x4000];
+                    else if (ROMPaged == 0)
                         result = ROM0[addr % 0x4000];
                     else
                         result = ROM1[addr % 0x4000];
@@ -197,7 +199,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // ROM 0x000
                 case 0:
-                    if (ROMPaged == 0)
+                    if (TRDOSPaged)
+                        result.Type = ZXSpectrum.CDLType.ROM2;
+                    else if (ROMPaged == 0)
                         result.Type = ZXSpectrum.CDLType.ROM0;
                     else
                         result.Type = ZXSpectrum.CDLType.ROM1;
@@ -260,48 +264,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Checks whether supplied address is in a potentially contended bank
+        /// Checks whether supplied address is in a potentially contended bank.
+        /// The Pentagon is built from discrete TTL logic that interleaves CPU and video RAM access,
+        /// so the CPU clock is never stolen: there is NO memory contention on any bank. Always false.
         /// </summary>
         public override bool IsContended(ushort addr)
         {
-            var a = addr & 0xc000;
-
-            if (a == 0x4000)
-            {
-                // low port contention
-                return true;
-            }
-
-            if (a == 0xc000)
-            {
-                // high port contention - check for contended bank paged in
-                switch (RAMPaged)
-                {
-                    case 1:
-                    case 3:
-                    case 5:
-                    case 7:
-                        return true;
-                }
-            }
-
             return false;
         }
 
         /// <summary>
-        /// Returns TRUE if there is a contended bank paged in
+        /// Returns TRUE if there is a contended bank paged in.
+        /// The Pentagon has no contended banks (no contention at all), so always false.
         /// </summary>
         public override bool ContendedBankPaged()
         {
-            switch (RAMPaged)
-            {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                    return true;
-            }
-
             return false;
         }
 
@@ -331,18 +308,41 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Drives the Beta 128 automatic TR-DOS ROM switch from the Z80 M1 fetch address.
+        /// Page TR-DOS in when an opcode is fetched from 0x3D00-0x3DFF while the 48K BASIC ROM (ROM1) is
+        /// selected; page it back out on the first opcode fetched from outside the low 16K ROM window
+        /// (address 0x4000 and above). This runs before the opcode byte is read, so the instruction at
+        /// 0x3Dxx is fetched from the TR-DOS ROM, which is where its entry code lives.
+        /// </summary>
+        public override void TrapTrDos(ushort addr)
+        {
+            if (!TRDOSPaged)
+            {
+                if (ROMPaged == 1 && addr >= 0x3D00 && addr <= 0x3DFF)
+                    TRDOSPaged = true;
+            }
+            else if (addr >= 0x4000)
+            {
+                TRDOSPaged = false;
+            }
+        }
+
+        /// <summary>
         /// Sets up the ROM
         /// </summary>
         public override void InitROM(RomData romData)
         {
             RomData = romData;
-            // 128k uses ROM0 and ROM1
-            // 128k loader is in ROM0, and fallback 48k rom is in ROM1
+            // The Pentagon EPROM image is three 16K banks concatenated: ROM0 = 128K editor/menu,
+            // ROM1 = 48K BASIC, ROM2 = TR-DOS. ROM2 is overlaid into the low 16K by the Beta 128
+            // automatic switch (see TrapTrDos).
             for (int i = 0; i < 0x4000; i++)
             {
                 ROM0[i] = RomData.RomBytes[i];
                 if (RomData.RomBytes.Length > 0x4000)
                     ROM1[i] = RomData.RomBytes[i + 0x4000];
+                if (RomData.RomBytes.Length > 0x8000)
+                    ROM2[i] = RomData.RomBytes[i + 0x8000];
             }
         }
     }
