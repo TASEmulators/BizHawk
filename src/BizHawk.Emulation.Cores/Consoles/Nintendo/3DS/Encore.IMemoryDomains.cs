@@ -129,6 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 
 				page[0] = val;
+				OnPoked();
 			}
 
 			public override void PokeUshort(long addr, ushort val, bool bigEndian)
@@ -154,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				{
 					BinaryPrimitives.WriteUInt16LittleEndian(page, val);
 				}
+				OnPoked();
 			}
 
 			public override void PokeUint(long addr, uint val, bool bigEndian)
@@ -179,6 +181,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				{
 					BinaryPrimitives.WriteUInt32LittleEndian(page, val);
 				}
+				OnPoked();
 			}
 
 			private void BulkPeekByte(uint startAddr, Span<byte> values)

@@ -34,7 +34,9 @@ namespace BizHawk.Emulation.Common
 
 		public override void PokeByte(long addr, byte val)
 		{
-			_poke?.Invoke(addr, val);
+			if (_poke is null) return;
+			_poke.Invoke(addr, val);
+			OnPoked();
 		}
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
@@ -121,6 +123,7 @@ namespace BizHawk.Emulation.Common
 			if (Writable)
 			{
 				Data[addr] = val;
+				OnPoked();
 			}
 		}
 
@@ -169,6 +172,7 @@ namespace BizHawk.Emulation.Common
 				Data[addr] = (ushort)((_data[addr] & 0xFF00) | val);
 			else
 				Data[addr] = (ushort)((_data[addr] & 0x00FF) | (val<<8));
+			OnPoked();
 		}
 
 		public MemoryDomainUshortArray(string name, Endian endian, ushort[] data, bool writable)
@@ -207,6 +211,7 @@ namespace BizHawk.Emulation.Common
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+				OnPoked();
 			}
 		}
 
@@ -274,6 +279,7 @@ namespace BizHawk.Emulation.Common
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+				OnPoked();
 			}
 		}
 
@@ -327,6 +333,7 @@ namespace BizHawk.Emulation.Common
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+				OnPoked();
 			}
 		}
 
@@ -374,6 +381,7 @@ namespace BizHawk.Emulation.Common
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+				OnPoked();
 			}
 		}
 

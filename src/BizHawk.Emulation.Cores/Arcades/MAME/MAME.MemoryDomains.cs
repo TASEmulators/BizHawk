@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 					if ((ulong)addr >= (ulong)_systemBusSize) throw new ArgumentOutOfRangeException(paramName: nameof(addr), addr, message: "address out of range");
 					addr += _firstOffset;
 					_core.mame_lua_execute($"{MAMELuaCommand.GetSpace}:write_u8({addr << _systemBusAddressShift}, {val})");
+					OnPoked();
 				}
 			}
 
