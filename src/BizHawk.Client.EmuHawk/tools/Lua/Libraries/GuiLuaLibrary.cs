@@ -360,6 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			description: "Creates a dedicated canvas window, returning a table containing some callbacks for drawing. These are the LuaCanvas functions in the API reference."
 				+ " The width and height parameters determine the size of the canvas."
 				+ " If the x and y parameters are both nil/unset, the form (window) will appear at the default position. If both are specified, the form will be positioned at (x, y) on the screen.")] // technically x can be specified w/o y but let's leave that as UB
+		[return: LuaCatsType("LuaCanvas")]
 		public LuaTable CreateCanvas(int width, int height, int? x = null, int? y = null)
 		{
 			var canvas = new LuaCanvas(APIs.Emulation, PathEntries, width, height, x, y, _th, LogOutputCallback);
