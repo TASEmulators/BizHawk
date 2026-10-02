@@ -31,6 +31,8 @@ namespace BizHawk.Client.EmuHawk
 		public virtual bool IsActive => IsHandleCreated && !IsDisposed;
 		public virtual bool IsLoaded => IsActive;
 
+		public virtual void Stop() {}
+
 		public virtual void Restart() {}
 
 		public void SetToolFormBaseProps(
