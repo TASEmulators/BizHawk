@@ -1,7 +1,6 @@
 #nullable enable
 
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Bizware.Input
 {
@@ -41,7 +40,11 @@ namespace BizHawk.Bizware.Input
 			}
 
 			var ret = _keyMouseInput!.UpdateKeyInputs(_getHandleAlternateKeyboardLayouts());
-			return ret.Concat(IPCKeyInput.Update());
+			return ret;
+		}
+		public virtual IEnumerable<KeyEvent> ProcessHostIPC()
+		{
+			return IPCKeyInput.Update();
 		}
 
 		public virtual (int DeltaX, int DeltaY) ProcessHostMice()

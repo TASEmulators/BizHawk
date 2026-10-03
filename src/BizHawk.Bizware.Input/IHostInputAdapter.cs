@@ -23,6 +23,7 @@ namespace BizHawk.Bizware.Input
 		void ProcessHostGamepads(Action<string?, bool, HostInputType> handleButton, Action<string?, int> handleAxis);
 
 		IEnumerable<KeyEvent> ProcessHostKeyboards();
+		IEnumerable<KeyEvent> ProcessHostIPC();
 
 		(int DeltaX, int DeltaY) ProcessHostMice();
 
