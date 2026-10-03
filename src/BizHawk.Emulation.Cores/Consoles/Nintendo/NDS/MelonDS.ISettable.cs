@@ -521,7 +521,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				ScreenSwap = settings.ScreenInvert
 			};
 
-			_openGLProvider.ActivateGLContext(_glContext); // SetScreenSettings will re-present the frame, so needs OpenGL context active
+			_glContext.MakeContextCurrent(); // SetScreenSettings will re-present the frame, so needs OpenGL context active
 			_core.SetScreenSettings(_console, ref screenSettings, out var w , out var h);
 
 			BufferWidth = w;

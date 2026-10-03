@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
+
+using CE = BizHawk.Common.CollectionExtensions.CollectionExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -589,7 +590,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			/// (including any multiple weak/random data)
 			/// </summary>
 			public byte[] TrackSectorData
-				=> CollectionExtensions.ConcatArrays(Sectors.Select(static sec => sec.ActualData).ToArray());
+				=> CE.ConcatArrays(Sectors.Select(static sec => sec.ActualData).ToArray());
 		}
 
 		public class Sector

@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.BizInvoke;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Common.NumberExtensions;
@@ -47,13 +48,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		private readonly MelonDSGLTextureProvider _glTextureProvider;
-		private readonly IOpenGLProvider _openGLProvider;
 		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 		private readonly LibMelonDS.GetGLProcAddressCallback _getGLProcAddressCallback;
-		private object _glContext;
-
-		private IntPtr GetGLProcAddressCallback(string proc)
-			=> _openGLProvider.GetGLProcAddress(proc);
+		private SDL2OpenGLContext _glContext;
 
 		// TODO: Probably can make these into an interface (ITouchScreen with UntransformPoint/TransformPoint methods?)
 		// Which case the hackiness of the current screen controls wouldn't be as bad
@@ -315,8 +312,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				_logCallback = LogCallback;
 
-				_openGLProvider = CoreComm.OpenGLProvider;
-				_getGLProcAddressCallback = GetGLProcAddressCallback;
+				_getGLProcAddressCallback = SDL2OpenGLContext.GetGLProcAddress;
 
 				if (lp.DeterministicEmulationRequested)
 				{
@@ -333,14 +329,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 						_ => throw new InvalidOperationException($"Invalid {nameof(NDSSyncSettings.ThreeDeeRenderer)}")
 					};
 
-					if (!_openGLProvider.SupportsGLVersion(majorGlVersion, minorGlVersion))
+					if (!OpenGLVersion.SupportsVersion(majorGlVersion, minorGlVersion))
 					{
 						lp.Comm.Notify($"OpenGL {majorGlVersion}.{minorGlVersion} is not supported on this machine, falling back to software renderer");
 						_activeSyncSettings.ThreeDeeRenderer = NDSSyncSettings.ThreeDeeRendererType.Software;
 					}
 					else
 					{
-						_glContext = _openGLProvider.RequestGLContext(majorGlVersion, minorGlVersion, true);
+						_glContext = new SDL2OpenGLContext(majorGlVersion, minorGlVersion, true);
 						// reallocate video buffer for scaling
 						if (_activeSyncSettings.GLScaleFactor > 1)
 						{
@@ -353,13 +349,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				if (_activeSyncSettings.ThreeDeeRenderer == NDSSyncSettings.ThreeDeeRendererType.Software)
 				{
-					if (!_openGLProvider.SupportsGLVersion(3, 1))
+					if (!OpenGLVersion.SupportsVersion(3, 1))
 					{
 						lp.Comm.Notify("OpenGL 3.1 is not supported on this machine, screen control options will not work.");
 					}
 					else
 					{
-						_glContext = _openGLProvider.RequestGLContext(3, 1, true);
+						_glContext = new SDL2OpenGLContext(3, 1, true);
 					}
 				}
 
@@ -626,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 				if (_glContext != null)
 				{
-					_glTextureProvider = new(this, _core, () => _openGLProvider.ActivateGLContext(_glContext));
+					_glTextureProvider = new(this, _core, () => _glContext.MakeContextCurrent());
 					_serviceProvider.Register<IVideoProvider>(_glTextureProvider);
 					RefreshScreenSettings(_settings);
 				}
@@ -788,10 +784,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			if (_glContext != null)
-			{
-				_openGLProvider.ActivateGLContext(_glContext);
-			}
+			_glContext?.MakeContextCurrent();
 
 			var isTracing = Tracer?.IsEnabled() ?? false;
 			_core.SetTraceCallback(isTracing ? _traceCallback : null, _settings.GetTraceMask());
@@ -840,11 +833,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			_frameThreadStartEvent.Dispose();
 			_frameThreadEndEvent.Dispose();
 
-			if (_glContext != null)
-			{
-				_openGLProvider.ReleaseGLContext(_glContext);
-				_glContext = null;
-			}
+			_glContext?.Dispose();
+			_glContext = null;
 
 			_memoryCallbacks.ActiveChanged -= SetMemoryCallbacks;
 
@@ -906,7 +896,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			// But at least width and height will be corrected (since base LoadStateBinary overrides them)
 			if (_glTextureProvider != null)
 			{
-				_openGLProvider.ActivateGLContext(_glContext);
+				_glContext.MakeContextCurrent();
 				_core.PresentGL(_console, out var w , out var h);
 				BufferWidth = w;
 				BufferHeight = h;
