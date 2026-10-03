@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private void FrameAdvancePrep(IController controller)
 		{
+			_openGLContext?.MakeContextCurrent();
 			UpdateInput(controller);
 
 			if (controller.IsPressed("Reset"))
@@ -129,6 +130,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public void Dispose()
 		{
+			if (_openGLContext is not null)
+			{
+				bridge.LibretroBridge_HWContextDestroy(cbHandler);
+				fboObject?.Dispose();
+				_openGLContext.Dispose();
+				_openGLContext = null;
+			}
 			if (inited)
 			{
 				api.retro_unload_game();

@@ -2,10 +2,10 @@ using Silk.NET.OpenGL;
 
 namespace BizHawk.Bizware.Graphics
 {
-	internal class OpenGLTexture2D : ITexture2D
+	public class OpenGLTexture2D : ITexture2D
 	{
 		private readonly GL GL;
-		public readonly uint TexID;
+		public uint TexID { get; }
 
 		public int Width { get; }
 		public int Height { get; }

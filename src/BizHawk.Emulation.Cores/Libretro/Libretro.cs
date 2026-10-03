@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 using BizHawk.BizInvoke;
+using BizHawk.Bizware.Graphics;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -26,6 +27,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		private readonly LibretroApi api;
+		private readonly BridgeGuard guard;
 		private readonly IntPtr cbHandler;
 
 		private class BridgeGuard(IntPtr parentHandler) : IMonitor
@@ -73,6 +75,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
+		internal OpenGLFBOWithTexture fboObject;
+		private SDL2OpenGLContext _openGLContext;
+		private bool _depth;
+
+		private readonly LibretroBridge.GetGLProcAddr _getGLProcAddr;
+		private LibretroBridge.GetCurrentFramebufferFunc _getCurrentFramebuffer;
+		private LibretroBridge.InitializeHardwareContextFunc _initializeHardwareContext;
+
 		public LibretroHost(CoreComm comm, string corePath, bool analysis = false)
 			: this(
 				comm,
@@ -92,12 +102,18 @@ namespace BizHawk.Emulation.Cores.Libretro
 			{
 				cbHandler = bridge.LibretroBridge_CreateCallbackHandler();
 
+				_getGLProcAddr = SDL2OpenGLContext.GetGLProcAddress;
+				_getCurrentFramebuffer = GetCurrentFramebuffer;
+				_initializeHardwareContext = InitializeHardwareContext;
+
+				bridge.LibretroBridge_SetGLCallbacks(cbHandler, _getGLProcAddr, _getCurrentFramebuffer, _initializeHardwareContext);
+
 				if (cbHandler == IntPtr.Zero)
 				{
 					throw new Exception("Failed to create callback handler!");
 				}
 
-				var guard = new BridgeGuard(cbHandler);
+				guard = new BridgeGuard(cbHandler);
 				api = BizInvoker.GetInvoker<LibretroApi>(
 					new DynamicLibraryImportResolver(corePath, hasLimitedLifetime: false), guard, CallingConventionAdapters.Native);
 
@@ -235,6 +251,15 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			// this stuff can only happen after the game is loaded
 
+			if (_openGLContext is not null)
+			{
+				fboObject = new OpenGLFBOWithTexture((int) av_info.geometry.max_width, (int) av_info.geometry.max_height, _depth);
+				using (guard.EnterExit())
+					bridge.LibretroBridge_HWContextReset(cbHandler);
+				var videoProvider = new Libretro_IGLTextureProvider(this);
+				_serviceProvider.Register<IVideoProvider>(videoProvider);
+			}
+
 			// allocate a video buffer which will definitely be large enough (if it isn't, that's the core's fault)
 			InitVideoBuffer((int)av_info.geometry.base_width, (int)av_info.geometry.base_height,
 				(int)(av_info.geometry.max_width * av_info.geometry.max_height));
@@ -275,6 +300,26 @@ namespace BizHawk.Emulation.Cores.Libretro
 			descr.NeedsArchives = sys_info.block_extract;
 			descr.SupportsNoGame = bridge.LibretroBridge_GetSupportsNoGame(cbHandler);
 			return descr;
+		}
+
+		private void InitializeHardwareContext(LibretroApi.retro_hw_context_type contextType, int major, int minor, bool needDepth)
+		{
+			switch (contextType)
+			{
+				case LibretroApi.retro_hw_context_type.OPENGL: _openGLContext = new SDL2OpenGLContext(2, 1, false); break;
+				case LibretroApi.retro_hw_context_type.OPENGL_CORE: _openGLContext = new SDL2OpenGLContext(major, minor, true); break;
+				// case LibretroApi.retro_hw_context_type.VULKAN: openGLContext = _openGLProvider.RequestVulkanContext(); break;
+				default: throw new InvalidOperationException($"Unsupported OpenGL context type requested: {contextType}");
+			}
+
+			_openGLContext.SetVsync(false);
+
+			this._depth = needDepth;
+		}
+
+		private ulong GetCurrentFramebuffer()
+		{
+			return fboObject.FBO;
 		}
 	}
 }
