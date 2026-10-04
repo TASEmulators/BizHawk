@@ -1,12 +1,12 @@
-using System.Runtime.InteropServices;
-using System.Reflection;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
-
+using BizHawk.Client.DiscoHawk.TheLocalization;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.DiscoHawk
 {
@@ -86,7 +86,8 @@ namespace BizHawk.Client.DiscoHawk
 					var dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, null, 0);
 					if (dllShortPathLen == 0)
 					{
-						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						//MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						MessageBox.Show(TheLocalizer.TranslateText(SEMICOLON_IN_DIR_MSG));
 						return;
 					}
 
@@ -94,22 +95,26 @@ namespace BizHawk.Client.DiscoHawk
 					dllShortPathLen = Win32Imports.GetShortPathNameW(dllDir, dllShortPathBuffer, dllShortPathLen);
 					if (dllShortPathLen == 0)
 					{
-						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						//MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						MessageBox.Show(TheLocalizer.TranslateText(SEMICOLON_IN_DIR_MSG));
 						return;
 					}
 
 					dllDir = new string(dllShortPathBuffer, 0, dllShortPathLen);
 					if (dllDir.ContainsOrdinal(';'))
 					{
-						MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						//MessageBox.Show(SEMICOLON_IN_DIR_MSG);
+						MessageBox.Show(TheLocalizer.TranslateText(SEMICOLON_IN_DIR_MSG));
 						return;
 					}
 				}
 
 				if (!Win32Imports.SetDllDirectoryW(dllDir))
 				{
+					// MessageBox.Show(
+					// 	$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. DiscoHawk will now close.");
 					MessageBox.Show(
-						$"SetDllDirectoryW failed with error code {Marshal.GetLastWin32Error()}, this is fatal. DiscoHawk will now close.");
+					 	TheLocalizer.TranslateFormatString("SetDllDirectoryW failed with error code {0}, this is fatal. DiscoHawk will now close.", Marshal.GetLastWin32Error()));
 					return;
 				}
 			}
@@ -151,6 +156,25 @@ namespace BizHawk.Client.DiscoHawk
 				// load missing assemblies by trying to find them in the dll directory
 				var dllname = $"{new AssemblyName(requested).Name}.dll";
 				var directory = Path.Combine(AppContext.BaseDirectory, "dll");
+
+				// 为了实现本地化，我们必须在这里处理 cultureName 字段，
+				// In order to realize localization, we must process the cultureName field here,
+				// 让系统优先选择对应 cultureName 的资源包，找不到再选择默认的资源包，
+				// so that the system can choose the resource package corresponding to cultureName first,
+				// and then choose the default resource package if it cannot be found.
+				// by ElderMeow 猫妖喵长老注
+				var cultureName = $"{new AssemblyName(requested).CultureName}";
+				if (!string.IsNullOrEmpty(cultureName))
+				{
+					var nomalizedCultureName = TheLocalizer.NormalizeCultureName(cultureName);
+					var fnameWithCulture = Path.Combine(directory, nomalizedCultureName, dllname);
+					if (File.Exists(fnameWithCulture))
+					{
+						return Assembly.LoadFile(fnameWithCulture);
+					}
+				}
+				// cultureName processing completed.
+
 				var fname = Path.Combine(directory, dllname);
 				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;
