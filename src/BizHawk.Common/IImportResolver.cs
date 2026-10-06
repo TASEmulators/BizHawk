@@ -17,7 +17,7 @@ namespace BizHawk.Common
 		/// Maps a bare library name (as you'd pass to <see cref="DllImportAttribute">[DllImport]</see>) to
 		/// the host's conventional filename: <c>name.dll</c> on Windows, <c>libname.dylib</c> on macOS, and
 		/// <c>libname.so</c> on Linux/BSD. Use this instead of hardcoding <c>IsUnixHost ? "lib…so" : "….dll"</c>
-		/// at each call site.
+		/// at each call site. The constructor applies this mapping to bare names automatically.
 		/// </summary>
 		public static string PlatformFileName(string baseName) => OSTailoredCode.CurrentOS switch
 		{
@@ -30,11 +30,14 @@ namespace BizHawk.Common
 
 		public readonly bool HasLimitedLifetime;
 
+		/// <param name="dllName">Bare library name, or an explicit filename/path (including versioned sonames).</param>
 		/// <param name="hasLimitedLifetime">will never be unloaded iff false (like <see cref="DllImportAttribute">[DllImport]</see>)</param>
 		public DynamicLibraryImportResolver(string dllName, bool hasLimitedLifetime = true)
 		{
 			// on Windows, SetDllDirectoryW is used to adjust .dll searches
 			// on Linux, LD_LIBRARY_PATH is set to adjust .so searches
+			// Preserve explicit filenames and paths, including irregular names used by older cores.
+			if (dllName.IndexOfAny([ '/', '\\', '.' ]) < 0) dllName = PlatformFileName(dllName);
 			_p = OSTailoredCode.LinkedLibManager.LoadOrThrow(dllName);
 			HasLimitedLifetime = hasLimitedLifetime;
 			if (!hasLimitedLifetime) GC.SuppressFinalize(this);

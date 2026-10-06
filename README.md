@@ -179,7 +179,7 @@ If you were looking to emulate iOS apps, see [#3956](https://github.com/TASEmula
 > It runs the **x86_64** build under Mono + XQuartz (natively on Intel Macs, via Rosetta 2 on Apple silicon). Expect rough edges: software (GdiPlus) video only, no hardware OpenGL (so no HD/upscaled rendering or GL shader filters), and it needs a manual dependency setup.
 > **Please do not open issues about this port on the main tracker** unless you can also reproduce them on Windows/Linux — most of the dev team is on Windows and cannot support it. Discuss macOS-specific problems in the relevant macOS thread instead.
 
-Requirements: **macOS 14 (Sonoma) or newer** (this is the floor imposed by the Homebrew dependencies; the bundled native libraries themselves target macOS 11). x86_64 only — on Apple silicon everything runs through **Rosetta 2**.
+Requirements: **macOS 14 (Sonoma) or newer**, x86_64 Mono, and XQuartz. On Apple silicon, EmuHawk runs through **Rosetta 2**.
 
 Setup (all the brew commands must be the **x86_64** Homebrew under `/usr/local`):
 
@@ -188,13 +188,31 @@ Setup (all the brew commands must be the **x86_64** Homebrew under `/usr/local`)
    `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
    (prefix every command below with `arch -x86_64` and use `/usr/local/bin/brew`).
 3. Install the runtime dependencies:
-   `brew install mono mono-libgdiplus sdl2 openal-soft lua@5.4 zstd sqlite libx11 libxext libxrender libxcursor libxinerama libxi libxrandr libxtst libxfixes libxscrnsaver libxau libxdmcp libxcb`
+   `brew install mono openal-soft lua@5.4 zstd sqlite cairo pango glib libexif libjpeg-turbo giflib libtiff libx11 libxext libxrender libxcursor libxinerama libxi libxrandr libxtst libxfixes libxscrnsaver libxau libxdmcp libxcb`
    `brew install --cask xquartz` (then log out/in so the X server is registered)
-4. Get a build: either download the macOS dev build, or build from source (see [*Building*](#building)).
+4. Install the .NET 8 SDK and build from the repository root:
 
-Run `EmuHawkMono.sh` to start EmuHawk. **XQuartz must be running.** The script forces the X11 WinForms driver and symlinks the Homebrew/XQuartz dependencies into `dll/` on each launch; the display method defaults to GdiPlus (software) on macOS. It takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments), e.g. `./EmuHawkMono.sh --lua=/path/to/script.lua /path/to/rom.nds`.
+   ```sh
+   sh Dist/BuildRelease.sh
+   ```
 
-What works: most non-GL cores including **Game Boy/Color (Gambatte)**, **GBA (mGBA)**, and **Nintendo DS (melonDS)**, plus Lua scripting. Cores that require host OpenGL fall back to their software renderers. N64 and other GL-only paths are not expected to work.
+   The native libraries are included in `Assets/dll`. See [macOS native libraries](Assets/native-licenses/README.md) for their sources and licenses.
+5. Start XQuartz, then launch the build:
+
+   ```sh
+   sh output/EmuHawkMono.sh
+   ```
+
+The launcher takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
+
+To rebuild the native assets, install Xcode Command Line Tools (`xcode-select --install`), Rust via rustup, and x86_64 Homebrew build dependencies (`brew install cmake pkg-config libusb`). NASM is optional when using the checked-in interop blobs (`brew install nasm` to regenerate them). Then run:
+
+```sh
+git submodule update --init ExternalProjects/SDL2/SDL
+sh Dist/BuildMacOS.sh
+```
+
+Software rendering only. N64, the libretro bridge, and other GL-only paths are not supported. Other cores may need their macOS native libraries built separately.
 
 If you need an older 1.x macOS build instead, @Sappharad's Rosetta port is described in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659); see also [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) and [#1430](https://github.com/TASEmulators/BizHawk/issues/1430).
 

@@ -1,5 +1,9 @@
 #!/bin/sh
 cd "$(dirname "$(realpath "$0")")"
+if [ ! -f EmuHawk.exe ]; then
+	printf '%s\n' 'EmuHawk.exe is missing. For a source build, run sh Dist/BuildMacOS.sh, then sh output/EmuHawkMono.sh.' >&2
+	exit 1
+fi
 case "$(uname -s)" in
 Darwin)
 	# macOS (x86_64; natively on Intel or via Rosetta 2 on Apple silicon). Mono's WinForms is
@@ -31,11 +35,22 @@ Darwin)
 	ln_dep /usr/local/opt/libxau/lib/libXau.6.dylib          libXau.6.dylib
 	ln_dep /usr/local/opt/libxdmcp/lib/libXdmcp.6.dylib      libXdmcp.6.dylib
 	ln_dep /usr/local/opt/libxcb/lib/libxcb.1.dylib          libxcb.1.dylib
+	ln_dep /usr/local/opt/gtk+/lib/libgtk-quartz-2.0.dylib   libgtk-quartz-2.0.dylib
+	ln_dep /usr/local/opt/gtk+/lib/libgdk-quartz-2.0.dylib   libgdk-quartz-2.0.dylib
+	ln_dep /usr/local/opt/gdk-pixbuf/lib/libgdk_pixbuf-2.0.dylib libgdk_pixbuf-2.0.dylib
+	ln_dep /usr/local/opt/glib/lib/libglib-2.0.dylib         libglib-2.0.dylib
+	ln_dep /usr/local/opt/glib/lib/libgobject-2.0.dylib      libgobject-2.0.dylib
 	# soname/unversioned aliases hardcoded by BizHawk's P/Invokes and Mono (resolve within ./dll)
 	[ -e "$dll/libX11.6.dylib" ] && { ln -sf libX11.6.dylib "$dll/libX11.dylib"; ln -sf libX11.6.dylib "$dll/libX11.so.6"; }
 	[ -e "$dll/libXi.6.dylib" ] && ln -sf libXi.6.dylib "$dll/libXi.so.6"
 	[ -e "$dll/libXfixes.3.dylib" ] && ln -sf libXfixes.3.dylib "$dll/libXfixes.so.3"
+	[ -e "$dll/libbizhash.dylib" ] && ln -sf libbizhash.dylib "$dll/libbizhash.so"
 	[ -e "$dll/libgdiplus.0.dylib" ] && ln -sf libgdiplus.0.dylib "$dll/libgdiplus.dylib"
+	[ -e "$dll/libgtk-quartz-2.0.dylib" ] && ln -sf libgtk-quartz-2.0.dylib "$dll/libgtk-x11-2.0.dylib"
+	[ -e "$dll/libgdk-quartz-2.0.dylib" ] && ln -sf libgdk-quartz-2.0.dylib "$dll/libgdk-x11-2.0.dylib"
+	[ -e "$dll/libgdk_pixbuf-2.0.dylib" ] && ln -sf libgdk_pixbuf-2.0.dylib "$dll/libgdk_pixbuf-2.0.so.0"
+	[ -e "$dll/libglib-2.0.dylib" ] && ln -sf libglib-2.0.dylib "$dll/libglib-2.0.so.0"
+	[ -e "$dll/libgobject-2.0.dylib" ] && ln -sf libgobject-2.0.dylib "$dll/libgobject-2.0.so.0"
 	# Let the loader find ./dll, the Homebrew deps under /usr/local, and XQuartz under /opt/X11.
 	export DYLD_LIBRARY_PATH="$dll:$PWD:/usr/local/lib:/opt/X11/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
 	export DYLD_FALLBACK_LIBRARY_PATH="$dll:$PWD:/usr/local/lib:/opt/X11/lib:/usr/lib${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
@@ -43,7 +58,9 @@ Darwin)
 	# Mono through `arch` — it's SIP-protected and strips the DYLD_* vars.
 	[ -d /usr/local/bin ] && export PATH="/usr/local/bin:$PATH"
 	export MONO_MWF_MAC_FORCE_X11=1 # the default macOS WinForms driver (Carbon) is unported to 64-bit
-	[ -z "$DISPLAY" ] && export DISPLAY=:0
+	case "$DISPLAY" in
+		""|/var/run/com.apple.launchd.*) export DISPLAY=:0;;
+	esac
 	export MONO_GC_PARAMS="nursery-size=256m${MONO_GC_PARAMS:+,}$MONO_GC_PARAMS"
 	;;
 *)
@@ -68,7 +85,7 @@ Darwin)
 esac
 export MONO_CRASH_NOFILE=1
 export MONO_WINFORMS_XIM_STYLE=disabled # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
-if (ps -A -o command= | grep -F "EmuHawk.exe" | grep -Fvq "grep"); then
+if (ps -A -o command= 2>/dev/null | grep -F "EmuHawk.exe" | grep -Fvq "grep"); then
 	printf "(it seems EmuHawk is already running, NOT capturing output)\n" >&2
 	exec mono EmuHawk.exe "$@"
 fi

@@ -73,7 +73,8 @@ Currently, you'll need version 8.x of the SDK.
 	- VS Community isn't available for Linux, but Rider and VS Code are.
 	- Nix/NixOS users can get the .NET SDK ephemerally with the provided `shell.nix`. For IDE setup and more, see the [Nix-specific docs](Dist/nix_expr_usage_docs.md#ide-setup).
 - macOS
-	- Note that EmuHawk does not currently support macOS.
+	- The experimental x86_64 Mono + XQuartz port can be built with `sh Dist/BuildMacOS.sh`; see [macOS setup](README.md#macos-experimental-x86_64-port).
+	- Not officially supported.
 	- Install the .NET SDK [manually](https://learn.microsoft.com/dotnet/core/install/macos) or with Homebrew.
 	- VS Community isn't available for macOS, but Rider and VS Code are.
 - Windows

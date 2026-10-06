@@ -1,10 +1,9 @@
 #!/bin/sh
 # Build libwaterboxhost for macOS as an x86_64 Mach-O dylib (runs under Rosetta 2 on
-# Apple Silicon). Cross-compiles from any host; only needs rustup + the x86_64-apple-darwin
-# std for a compatible nightly. See build-release.sh for the Linux/.so equivalent.
+# Apple Silicon). Build on macOS with rustup, the x86_64-apple-darwin target,
+# and Xcode Command Line Tools. See build-release.sh for the Linux/.so equivalent.
 #
-# NOTE: this builds the host. Guest-entry on macOS is not yet fully correct; see the
-# TODO[macOS] in src/context/mod.rs (the %gs / TLS scratch mechanism still needs work).
+# The macOS interop trampoline supports guest entry under native x86_64 and Rosetta 2.
 set -e
 if [ -z "$BIZHAWKBUILD_HOME" ]; then export BIZHAWKBUILD_HOME="$(realpath "$(dirname "$0")/../..")"; fi
 cd "$(dirname "$0")"
@@ -30,9 +29,11 @@ if command -v nasm >/dev/null 2>&1; then
 	make -C src/context
 fi
 
-RUSTC="$RUSTC_BIN" cargo "+$TOOLCHAIN" build --release --target "$TARGET"
+RUSTC="$RUSTC_BIN" rustup run "$TOOLCHAIN" cargo build --release --target "$TARGET"
 
 OUT="target/$TARGET/release/libwaterboxhost.dylib"
+install_name_tool -id @rpath/libwaterboxhost.dylib "$OUT"
+codesign --force --sign - "$OUT"
 cp "$OUT" "$BIZHAWKBUILD_HOME/Assets/dll/libwaterboxhost.dylib"
 if [ -e "$BIZHAWKBUILD_HOME/output" ]; then
 	cp "$OUT" "$BIZHAWKBUILD_HOME/output/dll/libwaterboxhost.dylib"
